@@ -27,6 +27,6 @@ import java.lang.annotation.Target;
 @Target( { ElementType.TYPE } )
 @Documented
 @Inherited
-public @interface Mixin
+public @interface Introduction
 {
 }

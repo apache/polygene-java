@@ -14,20 +14,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.orthogon;
+package org.ops4j.orthogon.internal;
 
-public class MixinUnavailableException extends RuntimeException
+import org.ops4j.orthogon.Identity;
+
+public class IdentityIntroduction
+    implements Identity
 {
-    private Class m_invokedOn;
+    private String m_identity;
 
-    public MixinUnavailableException( Class invokedOn )
+    public IdentityIntroduction( String identity )
     {
-        super( "No Mixin has been registered for " + invokedOn );
-        m_invokedOn = invokedOn;
+        m_identity = identity;
     }
 
-    public Class getInvokedOn()
+    public String getIdentity()
     {
-        return m_invokedOn;
+        return m_identity;
     }
 }

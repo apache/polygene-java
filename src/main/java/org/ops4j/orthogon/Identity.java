@@ -16,7 +16,7 @@
  */
 package org.ops4j.orthogon;
 
-@Mixin
+@Introduction
 public interface Identity
 {
     String getIdentity();

@@ -19,62 +19,61 @@ package org.ops4j.orthogon.internal;
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.HashSet;
-import org.ops4j.orthogon.Mixin;
-import org.ops4j.orthogon.MixinUnavailableException;
+import org.ops4j.orthogon.Introduction;
 
-public class MixinFactory
+public class IntroductionFactory
 {
-    private HashMap<Class, Class> m_mixinMapping;
-    private HashSet<Class> m_mixinImplementations;
+    private HashMap<Class, Class> m_introductionMapping;
+    private HashSet<Class> m_introductionImplementations;
 
-    public MixinFactory()
+    public IntroductionFactory()
     {
-        m_mixinMapping = new HashMap<Class, Class>();
-        m_mixinImplementations = new HashSet<Class>();
-        registerMixin( IdentityMixin.class );
+        m_introductionMapping = new HashMap<Class, Class>();
+        m_introductionImplementations = new HashSet<Class>();
+        registerIntroduction( IdentityIntroduction.class );
     }
 
-    public void registerMixin( Class aspectImplementationClass )
+    public void registerIntroduction( Class introductionImplementationClass )
     {
         synchronized( this )
         {
-            if( m_mixinImplementations.contains( aspectImplementationClass ) )
+            if( m_introductionImplementations.contains( introductionImplementationClass ) )
             {
                 return;
             }
-            Class[] classes = aspectImplementationClass.getInterfaces();
+            Class[] classes = introductionImplementationClass.getInterfaces();
             for( Class<?> cls : classes )
             {
                 Annotation[] annots = cls.getAnnotations();
                 for( Annotation annot : annots )
                 {
-                    if( annot instanceof Mixin )
+                    if( annot instanceof Introduction )
                     {
-                        m_mixinMapping.put( cls, aspectImplementationClass );
+                        m_introductionMapping.put( cls, introductionImplementationClass );
                     }
                 }
             }
-            m_mixinImplementations.add( aspectImplementationClass );
+            m_introductionImplementations.add( introductionImplementationClass );
         }
     }
 
-    public void unregisterMixin( Class aspectImplementationClass )
+    public void unregisterIntroduction( Class introductionImplementationClass )
     {
         synchronized( this )
         {
-            Class[] classes = aspectImplementationClass.getInterfaces();
+            Class[] classes = introductionImplementationClass.getInterfaces();
             for( Class<?> cls : classes )
             {
                 Annotation[] annots = cls.getAnnotations();
                 for( Annotation annot : annots )
                 {
-                    if( annot instanceof Mixin )
+                    if( annot instanceof Introduction )
                     {
-                        m_mixinMapping.remove( cls );
+                        m_introductionMapping.remove( cls );
                     }
                 }
             }
-            m_mixinImplementations.remove( aspectImplementationClass );
+            m_introductionImplementations.remove( introductionImplementationClass );
         }
     }
 
@@ -83,7 +82,7 @@ public class MixinFactory
         Class aspectImplClass;
         synchronized( this )
         {
-            aspectImplClass = m_mixinMapping.get( aspectInterface );
+            aspectImplClass = m_introductionMapping.get( aspectInterface );
         }
         if( aspectImplClass == null )
         {
@@ -106,6 +105,6 @@ public class MixinFactory
 
     public boolean checkExistence( Class invokedOn )
     {
-        return m_mixinMapping.containsKey( invokedOn );
+        return m_introductionMapping.containsKey( invokedOn );
     }
 }

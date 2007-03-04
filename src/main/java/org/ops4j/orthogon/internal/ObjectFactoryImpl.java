@@ -17,8 +17,6 @@
 package org.ops4j.orthogon.internal;
 
 import java.lang.reflect.Proxy;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 import java.util.HashSet;
 import org.ops4j.orthogon.ObjectFactory;
@@ -28,12 +26,12 @@ public final class ObjectFactoryImpl
 {
     private static final Class[] EMPTY_CLASS_ARRAY = new Class[0];
     private static final Class[] EMPTY_ASPECTS = EMPTY_CLASS_ARRAY;
-    private MixinFactory m_mixinFactory;
+    private IntroductionFactory m_introductionFactory;
     private AdviceFactory m_adviceFactory;
 
-    public ObjectFactoryImpl( MixinFactory mixinFactory, AdviceFactory adviceFactory )
+    public ObjectFactoryImpl( IntroductionFactory introductionFactory, AdviceFactory adviceFactory )
     {
-        m_mixinFactory = mixinFactory;
+        m_introductionFactory = introductionFactory;
         m_adviceFactory = adviceFactory;
     }
 
@@ -57,6 +55,6 @@ public final class ObjectFactoryImpl
 
     private <T> AspectRoutingHandler getInvocationHandler( Set<Class> aspects )
     {
-        return new AspectRoutingHandler( m_mixinFactory, aspects, m_adviceFactory );
+        return new AspectRoutingHandler( m_introductionFactory, aspects, m_adviceFactory );
     }
 }

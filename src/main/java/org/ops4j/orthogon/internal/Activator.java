@@ -29,9 +29,9 @@ public class Activator
     public void start( BundleContext bundleContext )
         throws Exception
     {
-        MixinFactory mixinFactory = new MixinFactory();
+        IntroductionFactory introductionFactory = new IntroductionFactory();
         AdviceFactory adviceFactory = new AdviceFactory();
-        ObjectFactory factory = new ObjectFactoryImpl( mixinFactory, adviceFactory );
+        ObjectFactory factory = new ObjectFactoryImpl( introductionFactory, adviceFactory );
         m_factoryRegistration = bundleContext.registerService( ObjectFactory.class.getName(), factory, null );
     }
 

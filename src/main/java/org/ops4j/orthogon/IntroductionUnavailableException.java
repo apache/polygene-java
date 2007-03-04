@@ -14,22 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.orthogon.internal;
+package org.ops4j.orthogon;
 
-import org.ops4j.orthogon.Identity;
-
-public class IdentityMixin
-    implements Identity
+public class IntroductionUnavailableException extends RuntimeException
 {
-    private String m_identity;
+    private Class m_invokedOn;
 
-    public IdentityMixin( String identity )
+    public IntroductionUnavailableException( Class invokedOn )
     {
-        m_identity = identity;
+        super( "No Introduction has been registered for " + invokedOn );
+        m_invokedOn = invokedOn;
     }
 
-    public String getIdentity()
+    public Class getInvokedOn()
     {
-        return m_identity;
+        return m_invokedOn;
     }
 }
