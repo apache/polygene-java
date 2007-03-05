@@ -21,22 +21,24 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Set;
-import org.ops4j.orthogon.IntroductionUnavailableException;
+import org.ops4j.orthogon.mixin.MixinUnavailableException;
 
 public final class AspectRoutingHandler
     implements InvocationHandler
 {
     private static final Object DUMMY = new Object();
 
-    private IntroductionFactory m_introductionFactory;
-    private AdviceFactory m_adviceFactory;
-    private final HashMap<Class, Object> m_aspectInstances;
+    private MixinFactory m_mixinFactory;
+    private AdviceFactoryImpl m_adviceFactory;
+    private final HashMap<Class, Object> m_introductionInstances;
 
-    public AspectRoutingHandler( IntroductionFactory introductionFactory, Set<Class> introductionInterfaces, AdviceFactory adviceFactory )
+    public AspectRoutingHandler( MixinFactory mixinFactory, Set<Class> introductionInterfaces,
+                                 AdviceFactoryImpl adviceFactory
+    )
     {
         m_adviceFactory = adviceFactory;
-        m_introductionFactory = introductionFactory;
-        m_aspectInstances = new HashMap<Class, Object>();
+        m_mixinFactory = mixinFactory;
+        m_introductionInstances = new HashMap<Class, Object>();
         for( Class cls : introductionInterfaces )
         {
             addIntroductionInterface( cls );
@@ -50,17 +52,17 @@ public final class AspectRoutingHandler
         synchronized( this )
         {
             Class invokedOn = method.getDeclaringClass();
-            m_introductionFactory.checkExistence( invokedOn );
-            instance = m_aspectInstances.get( invokedOn );
+            m_mixinFactory.checkExistence( invokedOn );
+            instance = m_introductionInstances.get( invokedOn );
             if( instance == null || instance == DUMMY )
             {
-                instance = m_introductionFactory.create( invokedOn );
+                instance = m_mixinFactory.create( invokedOn );
                 if( instance == null )
                 {
-                    throw new IntroductionUnavailableException( invokedOn );
+                    throw new MixinUnavailableException( invokedOn );
                 }
                 instance = m_adviceFactory.create( invokedOn, instance );
-                m_aspectInstances.put( invokedOn, instance );
+                m_introductionInstances.put( invokedOn, instance );
             }
         }
         return method.invoke( instance, args );
@@ -68,25 +70,25 @@ public final class AspectRoutingHandler
 
     public Set<Class> getIntroductionInterfaces()
     {
-        synchronized( m_aspectInstances )
+        synchronized( m_introductionInstances )
         {
-            return Collections.unmodifiableSet( m_aspectInstances.keySet() );
+            return Collections.unmodifiableSet( m_introductionInstances.keySet() );
         }
     }
 
     public void addIntroductionInterface( Class introductionInterface )
     {
-        synchronized( m_aspectInstances )
+        synchronized( m_introductionInstances )
         {
-            m_aspectInstances.put( introductionInterface, DUMMY );
+            m_introductionInstances.put( introductionInterface, DUMMY );
         }
     }
 
     public void removeIntroductionInterface( Class introductionInterface )
     {
-        synchronized( m_aspectInstances )
+        synchronized( m_introductionInstances )
         {
-            m_aspectInstances.remove( introductionInterface );
+            m_introductionInstances.remove( introductionInterface );
         }
     }
 }

@@ -14,19 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.orthogon;
+package org.ops4j.orthogon.mixin;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
-@Retention( RetentionPolicy.RUNTIME )
-@Target( { ElementType.TYPE } )
-@Documented
-@Inherited
-public @interface Introduction
+public class MixinUnavailableException extends RuntimeException
 {
+    private Class m_invokedOn;
+
+    public MixinUnavailableException( Class invokedOn )
+    {
+        super( "No Mixin has been registered for " + invokedOn );
+        m_invokedOn = invokedOn;
+    }
+
+    public Class getInvokedOn()
+    {
+        return m_invokedOn;
+    }
 }

@@ -20,19 +20,22 @@ import java.lang.reflect.Proxy;
 import java.util.Set;
 import java.util.HashSet;
 import org.ops4j.orthogon.ObjectFactory;
+import org.ops4j.orthogon.pointcut.AspectRegistry;
 
 public final class ObjectFactoryImpl
     implements ObjectFactory
 {
     private static final Class[] EMPTY_CLASS_ARRAY = new Class[0];
     private static final Class[] EMPTY_ASPECTS = EMPTY_CLASS_ARRAY;
-    private IntroductionFactory m_introductionFactory;
-    private AdviceFactory m_adviceFactory;
+    private MixinFactory m_mixinFactory;
+    private AdviceFactoryImpl m_adviceFactory;
+    private AspectRegistry m_aspectRegistry;
 
-    public ObjectFactoryImpl( IntroductionFactory introductionFactory, AdviceFactory adviceFactory )
+    public ObjectFactoryImpl( MixinFactory mixinFactory, AdviceFactoryImpl adviceFactory, AspectRegistry aspectRegistry )
     {
-        m_introductionFactory = introductionFactory;
+        m_mixinFactory = mixinFactory;
         m_adviceFactory = adviceFactory;
+        m_aspectRegistry = aspectRegistry;
     }
 
     public <T> T newInstance( ClassLoader classloader, Class<T> primaryAspect )
@@ -55,6 +58,7 @@ public final class ObjectFactoryImpl
 
     private <T> AspectRoutingHandler getInvocationHandler( Set<Class> aspects )
     {
-        return new AspectRoutingHandler( m_introductionFactory, aspects, m_adviceFactory );
+
+        return new AspectRoutingHandler( m_mixinFactory, aspects, m_adviceFactory );
     }
 }

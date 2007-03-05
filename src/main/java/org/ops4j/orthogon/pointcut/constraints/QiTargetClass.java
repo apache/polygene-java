@@ -14,22 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.orthogon.internal;
+package org.ops4j.orthogon.constraints;
 
-import org.ops4j.orthogon.Identity;
-
-public class IdentityIntroduction
-    implements Identity
+public @interface QiTargetClass
 {
-    private String m_identity;
-
-    public IdentityIntroduction( String identity )
-    {
-        m_identity = identity;
-    }
-
-    public String getIdentity()
-    {
-        return m_identity;
-    }
 }

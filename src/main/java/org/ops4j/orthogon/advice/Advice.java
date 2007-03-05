@@ -14,20 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.orthogon;
+package org.ops4j.orthogon.advice;
 
-public class IntroductionUnavailableException extends RuntimeException
+public interface Advice<T>
 {
-    private Class m_invokedOn;
-
-    public IntroductionUnavailableException( Class invokedOn )
-    {
-        super( "No Introduction has been registered for " + invokedOn );
-        m_invokedOn = invokedOn;
-    }
-
-    public Class getInvokedOn()
-    {
-        return m_invokedOn;
-    }
+    T _next();
 }

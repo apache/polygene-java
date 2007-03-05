@@ -14,20 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.orthogon;
+package org.ops4j.orthogon.advice;
 
-public class NotAnAdviceException extends RuntimeException
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Inherited;
+
+@Retention( RetentionPolicy.RUNTIME )
+@Target( { ElementType.FIELD } )
+@Documented
+@Inherited
+public @interface QiDependency
 {
-    private Class m_advice;
-
-    public NotAnAdviceException( String s, Class advice )
-    {
-        super( s + ": " + advice.getName() );
-        m_advice = advice;
-    }
-
-    public Class getInvalidAdvice()
-    {
-        return m_advice;
-    }
 }

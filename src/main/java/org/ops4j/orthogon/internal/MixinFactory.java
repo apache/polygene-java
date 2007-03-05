@@ -19,18 +19,18 @@ package org.ops4j.orthogon.internal;
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.HashSet;
-import org.ops4j.orthogon.Introduction;
+import org.ops4j.orthogon.mixin.QiMixin;
 
-public class IntroductionFactory
+public class MixinFactory
 {
     private HashMap<Class, Class> m_introductionMapping;
     private HashSet<Class> m_introductionImplementations;
 
-    public IntroductionFactory()
+    public MixinFactory()
     {
         m_introductionMapping = new HashMap<Class, Class>();
         m_introductionImplementations = new HashSet<Class>();
-        registerIntroduction( IdentityIntroduction.class );
+        registerIntroduction( IdentityMixin.class );
     }
 
     public void registerIntroduction( Class introductionImplementationClass )
@@ -47,7 +47,7 @@ public class IntroductionFactory
                 Annotation[] annots = cls.getAnnotations();
                 for( Annotation annot : annots )
                 {
-                    if( annot instanceof Introduction )
+                    if( annot instanceof QiMixin )
                     {
                         m_introductionMapping.put( cls, introductionImplementationClass );
                     }
@@ -67,7 +67,7 @@ public class IntroductionFactory
                 Annotation[] annots = cls.getAnnotations();
                 for( Annotation annot : annots )
                 {
-                    if( annot instanceof Introduction )
+                    if( annot instanceof QiMixin )
                     {
                         m_introductionMapping.remove( cls );
                     }

@@ -14,22 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.orthogon.internal;
+package org.ops4j.orthogon.advice;
 
-import org.ops4j.orthogon.advice.Advice;
-
-public class InstanceAdvice
-    implements Advice
+public class NotAnAdviceException extends RuntimeException
 {
-    private Object m_inner;
+    private Class m_advice;
 
-    public Object _next()
+    public NotAnAdviceException( String s, Class advice )
     {
-        return m_inner;
+        super( s + ": " + advice.getName() );
+        m_advice = advice;
     }
 
-    public void setInner( Object inner )
+    public Class getInvalidAdvice()
     {
-        m_inner = inner;
+        return m_advice;
     }
 }

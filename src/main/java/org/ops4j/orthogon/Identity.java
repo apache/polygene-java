@@ -16,7 +16,9 @@
  */
 package org.ops4j.orthogon;
 
-@Introduction
+import org.ops4j.orthogon.mixin.QiMixin;
+
+@QiMixin
 public interface Identity
 {
     String getIdentity();

@@ -14,22 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.orthogon.internal;
+package org.ops4j.orthogon.pointcut;
 
-import org.ops4j.orthogon.advice.Advice;
-
-public class InstanceAdvice
-    implements Advice
+public final class AspectRegistry
 {
-    private Object m_inner;
 
-    public Object _next()
+    public AspectRegistry()
     {
-        return m_inner;
     }
 
-    public void setInner( Object inner )
-    {
-        m_inner = inner;
-    }
+    
 }

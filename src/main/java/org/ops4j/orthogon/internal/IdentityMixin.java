@@ -16,20 +16,20 @@
  */
 package org.ops4j.orthogon.internal;
 
-import org.ops4j.orthogon.advice.Advice;
+import org.ops4j.orthogon.Identity;
 
-public class InstanceAdvice
-    implements Advice
+public class IdentityMixin
+    implements Identity
 {
-    private Object m_inner;
+    private String m_identity;
 
-    public Object _next()
+    public IdentityMixin( String identity )
     {
-        return m_inner;
+        m_identity = identity;
     }
 
-    public void setInner( Object inner )
+    public String getIdentity()
     {
-        m_inner = inner;
+        return m_identity;
     }
 }
