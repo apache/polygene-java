@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.orthogon.mixin;
+package org.ops4j.orthogon.joinpoint.constraints;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -24,10 +24,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention( RetentionPolicy.RUNTIME )
-@Target( { ElementType.TYPE, ElementType.PACKAGE }  )
+@Target( { ElementType.TYPE } )
 @Documented
 @Inherited
-public @interface QiMixin
+public @interface QiMethodAttribute
 {
-    Class[] value() default { } ;
+    Class[] value() default {};
 }

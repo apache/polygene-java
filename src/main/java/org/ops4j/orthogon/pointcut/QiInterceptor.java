@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.orthogon.constraints;
+package org.ops4j.orthogon.pointcut;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -27,8 +27,7 @@ import java.lang.annotation.Inherited;
 @Target( { ElementType.TYPE } )
 @Documented
 @Inherited
-
-public @interface QiImplements
+public @interface QiInterceptor
 {
-    String[] value();
+    Class[] value() default {};
 }

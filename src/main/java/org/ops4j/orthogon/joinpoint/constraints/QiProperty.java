@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.orthogon.constraints;
+package org.ops4j.orthogon.joinpoint.constraints;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -27,9 +27,8 @@ import java.lang.annotation.Inherited;
 @Target( { ElementType.TYPE } )
 @Documented
 @Inherited
-
-public @interface QiMethodAttribute
+public @interface QiProperty
 {
-    String[] value();
-    
+    String[] value() default {};
+    String[] notpresent() default {};
 }

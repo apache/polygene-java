@@ -14,20 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.orthogon.mixin;
+package org.ops4j.orthogon.pointcut;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Inherited;
 
 @Retention( RetentionPolicy.RUNTIME )
-@Target( { ElementType.TYPE, ElementType.PACKAGE }  )
+@Target( { ElementType.TYPE } )
 @Documented
 @Inherited
-public @interface QiMixin
+public @interface QiImplementation
 {
-    Class[] value() default { } ;
+    Class value();
 }
