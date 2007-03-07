@@ -22,73 +22,68 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Set;
 import org.ops4j.orthogon.mixin.MixinUnavailableException;
+import org.ops4j.orthogon.AspectFactory;
 
 public final class AspectRoutingHandler
     implements InvocationHandler
 {
     private static final Object DUMMY = new Object();
 
-    private MixinFactory m_mixinFactory;
-    private AdviceFactoryImpl m_adviceFactory;
-    private final HashMap<Class, Object> m_introductionInstances;
+    private final AspectFactory m_aspectFactory;
+    private final HashMap<Class, Object> m_mixinInstances;
 
-    public AspectRoutingHandler( MixinFactory mixinFactory, Set<Class> introductionInterfaces,
-                                 AdviceFactoryImpl adviceFactory
-    )
+    public AspectRoutingHandler( AspectFactory aspectFactory )
     {
-        m_adviceFactory = adviceFactory;
-        m_mixinFactory = mixinFactory;
-        m_introductionInstances = new HashMap<Class, Object>();
-        for( Class cls : introductionInterfaces )
-        {
-            addIntroductionInterface( cls );
-        }
+        m_aspectFactory = aspectFactory;
+        m_mixinInstances = new HashMap<Class, Object>();
     }
 
     public Object invoke( Object proxy, Method method, Object[] args )
         throws Throwable
     {
         Object instance;
+        Class invokedOn = method.getDeclaringClass();
         synchronized( this )
         {
-            Class invokedOn = method.getDeclaringClass();
-            m_mixinFactory.checkExistence( invokedOn );
-            instance = m_introductionInstances.get( invokedOn );
+            m_aspectFactory.checkExistence( invokedOn );  // Make sure that the Mixin is still valid
+            instance = m_mixinInstances.get( invokedOn );
             if( instance == null || instance == DUMMY )
             {
-                instance = m_mixinFactory.create( invokedOn );
+                instance = m_aspectFactory.createMixin( invokedOn );
                 if( instance == null )
                 {
                     throw new MixinUnavailableException( invokedOn );
                 }
-                instance = m_adviceFactory.create( invokedOn, instance );
-                m_introductionInstances.put( invokedOn, instance );
+                m_mixinInstances.put( invokedOn, instance );
             }
         }
-        return method.invoke( instance, args );
+        InvocationStack stack = m_aspectFactory.getInvocationStack( method, proxy );
+        stack.resolveDependencies( proxy );
+        stack.setTarget( instance );
+        return stack.invoke( method, args );
     }
 
-    public Set<Class> getIntroductionInterfaces()
+    public Set<Class> getMixinInterfaces()
     {
-        synchronized( m_introductionInstances )
+        synchronized( m_mixinInstances )
         {
-            return Collections.unmodifiableSet( m_introductionInstances.keySet() );
+            return Collections.unmodifiableSet( m_mixinInstances.keySet() );
         }
     }
 
-    public void addIntroductionInterface( Class introductionInterface )
+    public void addMixinInterface( Class introductionInterface )
     {
-        synchronized( m_introductionInstances )
+        synchronized( m_mixinInstances )
         {
-            m_introductionInstances.put( introductionInterface, DUMMY );
+            m_mixinInstances.put( introductionInterface, DUMMY );
         }
     }
 
-    public void removeIntroductionInterface( Class introductionInterface )
+    public void removeMixinInterface( Class introductionInterface )
     {
-        synchronized( m_introductionInstances )
+        synchronized( m_mixinInstances )
         {
-            m_introductionInstances.remove( introductionInterface );
+            m_mixinInstances.remove( introductionInterface );
         }
     }
 }

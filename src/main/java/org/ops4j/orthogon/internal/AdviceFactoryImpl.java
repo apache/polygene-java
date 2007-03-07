@@ -18,9 +18,6 @@ package org.ops4j.orthogon.internal;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.SortedSet;
 
 public final class AdviceFactoryImpl
 {

@@ -14,24 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.orthogon.pointcut;
+package org.ops4j.orthogon.pointcut.constraints;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.WeakHashMap;
-import org.ops4j.orthogon.advice.Advice;
-import org.ops4j.orthogon.internal.PointcutDescriptor;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-public final class AspectRegistry
+@Retention( RetentionPolicy.RUNTIME )
+@Target( { ElementType.TYPE } )
+@Documented
+@Inherited
+public @interface QiTargetAttribute
 {
-
-    public AspectRegistry()
-    {
-    }
-
-    public PointcutDescriptor getPointcutDescriptor( Method method, Object proxy )
-    {
-        return null;  //To change body of created methods use File | Settings | File Templates.
-    }
+    Class[] value() default {};
 }

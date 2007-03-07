@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.orthogon.joinpoint.constraints;
+package org.ops4j.orthogon.pointcut.constraints;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

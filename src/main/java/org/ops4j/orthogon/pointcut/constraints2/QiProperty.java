@@ -14,20 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.orthogon.joinpoint.constraints;
+package org.ops4j.orthogon.pointcut.constraints;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Inherited;
 
 @Retention( RetentionPolicy.RUNTIME )
 @Target( { ElementType.TYPE } )
 @Documented
 @Inherited
-public @interface QiMethodAttribute
+public @interface QiProperty
 {
-    Class[] value() default {};
+    String[] value() default {};
+    String[] notpresent() default {};
 }

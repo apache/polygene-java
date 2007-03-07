@@ -16,7 +16,7 @@
  */
 package org.ops4j.orthogon.internal;
 
-import org.ops4j.orthogon.ObjectFactory;
+import org.ops4j.orthogon.AspectFactory;
 import org.ops4j.orthogon.pointcut.AspectRegistry;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -33,8 +33,8 @@ public class Activator
         MixinFactory mixinFactory = new MixinFactory();
         AdviceFactoryImpl adviceFactory = new AdviceFactoryImpl();
         AspectRegistry aspectRegistry = new AspectRegistry();
-        ObjectFactory factory = new ObjectFactoryImpl( mixinFactory, adviceFactory, aspectRegistry );
-        m_factoryRegistration = bundleContext.registerService( ObjectFactory.class.getName(), factory, null );
+        AspectFactory factory = new AspectFactoryImpl( mixinFactory, adviceFactory, aspectRegistry );
+        m_factoryRegistration = bundleContext.registerService( AspectFactory.class.getName(), factory, null );
     }
 
     public void stop( BundleContext bundleContext )

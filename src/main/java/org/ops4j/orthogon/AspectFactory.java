@@ -14,21 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.orthogon.joinpoint.constraints;
+package org.ops4j.orthogon;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Documented;
-import java.lang.annotation.Inherited;
+import org.ops4j.orthogon.internal.InvocationStack;
+import org.ops4j.orthogon.pointcut.AspectRegistry;
+import java.lang.reflect.Method;
 
-@Retention( RetentionPolicy.RUNTIME )
-@Target( { ElementType.TYPE } )
-@Documented
-@Inherited
-public @interface QiProperty
+public interface AspectFactory
 {
-    String[] value() default {};
-    String[] notpresent() default {};
+    <T> T newInstance( ClassLoader classloader, Class<T> primaryAspect );
+
+    <T> T getInstance( String identity );
+
+    void checkExistence( Class invokedOn );
+
+    Object createMixin( Class invokedOn );
+
+    InvocationStack getInvocationStack( Method invokedMethod, Object proxy );
+
+    AspectRegistry getAspectRegistry();
 }

@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.orthogon.joinpoint.constraints;
+package org.ops4j.orthogon.pointcut.constraints;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -27,8 +27,7 @@ import java.lang.annotation.Target;
 @Target( { ElementType.TYPE } )
 @Documented
 @Inherited
-public @interface QiTargetClass
+public @interface QiMethodAttribute
 {
     Class[] value() default {};
-    Class[] exclude() default {} ;
 }
