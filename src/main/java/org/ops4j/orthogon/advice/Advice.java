@@ -18,5 +18,9 @@ package org.ops4j.orthogon.advice;
 
 public interface Advice<T>
 {
-    T _next();
+    Object getTarget( Class targetClass );
+    
+    void resolveDependency( Object instance );
+
+    void setTarget( Class targetClass, Object target );
 }

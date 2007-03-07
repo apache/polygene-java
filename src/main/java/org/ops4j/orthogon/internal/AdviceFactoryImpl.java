@@ -32,7 +32,7 @@ public final class AdviceFactoryImpl
         try
         {
             concreteAdviceClass = (Class<T>) cl.loadClass( concrete );
-            Constructor<T>[] constructors = concreteAdviceClass.getConstructors();
+            Constructor<T>[] constructors = (Constructor<T>[]) concreteAdviceClass.getConstructors();
             Constructor<T> theOnlyOne = constructors[ 0 ];
             return theOnlyOne.newInstance( inner );
         }
