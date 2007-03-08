@@ -1,4 +1,6 @@
 /*  Copyright 2007 Niclas Hedhman.
+ *  Copyright 2007 Edward Yakop
+ *  Copyright 2007 Rickard Oberg
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,71 +21,83 @@ package org.ops4j.orthogon.internal;
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.HashSet;
+import org.ops4j.lang.NullArgumentException;
 import org.ops4j.orthogon.mixin.QiMixin;
 
-public class MixinFactory
+public final class MixinFactory
 {
-    private HashMap<Class, Class> m_introductionMapping;
-    private HashSet<Class> m_introductionImplementations;
+
+    private final HashMap<Class, Class> m_mixinMapping;
+    private final HashSet<Class> m_mixinImplementations;
 
     public MixinFactory()
     {
-        m_introductionMapping = new HashMap<Class, Class>();
-        m_introductionImplementations = new HashSet<Class>();
-        registerIntroduction( IdentityMixin.class );
+        m_mixinMapping = new HashMap<Class, Class>();
+        m_mixinImplementations = new HashSet<Class>();
+        registerMixin( IdentityMixin.class );
     }
 
-    public void registerIntroduction( Class introductionImplementationClass )
+    public void registerMixin( Class mixinImplementationClass )
+        throws IllegalArgumentException
     {
+        NullArgumentException.validateNotNull( mixinImplementationClass, "mixinImplementationClass" );
+
         synchronized( this )
         {
-            if( m_introductionImplementations.contains( introductionImplementationClass ) )
+            if( m_mixinImplementations.contains( mixinImplementationClass ) )
             {
                 return;
             }
-            Class[] classes = introductionImplementationClass.getInterfaces();
-            for( Class<?> cls : classes )
+            Class[] classes = mixinImplementationClass.getInterfaces();
+            for( Class cls : classes )
             {
                 Annotation[] annots = cls.getAnnotations();
                 for( Annotation annot : annots )
                 {
                     if( annot instanceof QiMixin )
                     {
-                        m_introductionMapping.put( cls, introductionImplementationClass );
+                        m_mixinMapping.put( cls, mixinImplementationClass );
                     }
                 }
             }
-            m_introductionImplementations.add( introductionImplementationClass );
+            m_mixinImplementations.add( mixinImplementationClass );
         }
     }
 
-    public void unregisterIntroduction( Class introductionImplementationClass )
+    public void unregisterMixin( Class mixinImplementationClass )
+        throws IllegalArgumentException
     {
+        NullArgumentException.validateNotNull( mixinImplementationClass, "mixinImplementationClass" );
+
         synchronized( this )
         {
-            Class[] classes = introductionImplementationClass.getInterfaces();
-            for( Class<?> cls : classes )
+            Class[] classes = mixinImplementationClass.getInterfaces();
+            for( Class cls : classes )
             {
                 Annotation[] annots = cls.getAnnotations();
                 for( Annotation annot : annots )
                 {
                     if( annot instanceof QiMixin )
                     {
-                        m_introductionMapping.remove( cls );
+                        m_mixinMapping.remove( cls );
                     }
                 }
             }
-            m_introductionImplementations.remove( introductionImplementationClass );
+            m_mixinImplementations.remove( mixinImplementationClass );
         }
     }
 
     public Object create( Class aspectInterface )
+        throws IllegalArgumentException
     {
+        NullArgumentException.validateNotNull( aspectInterface, "aspectInterface" );
+
         Class aspectImplClass;
         synchronized( this )
         {
-            aspectImplClass = m_introductionMapping.get( aspectInterface );
+            aspectImplClass = m_mixinMapping.get( aspectInterface );
         }
+
         if( aspectImplClass == null )
         {
             return null;
@@ -100,11 +114,17 @@ public class MixinFactory
         {
             e.printStackTrace(); // TODO
         }
+
         return null;
     }
 
     public boolean checkExistence( Class invokedOn )
+        throws IllegalArgumentException
     {
-        return m_introductionMapping.containsKey( invokedOn );
+        NullArgumentException.validateNotNull( invokedOn, "invokedOn" );
+        synchronized( this )
+        {
+            return m_mixinMapping.containsKey( invokedOn );
+        }
     }
 }

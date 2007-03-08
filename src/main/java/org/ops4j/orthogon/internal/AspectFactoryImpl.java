@@ -16,14 +16,16 @@
  */
 package org.ops4j.orthogon.internal;
 
-import java.lang.reflect.Proxy;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import org.ops4j.lang.NullArgumentException;
 import org.ops4j.orthogon.AspectFactory;
 import org.ops4j.orthogon.pointcut.AspectRegistry;
 
 public final class AspectFactoryImpl
     implements AspectFactory
 {
+
     private static final Class[] EMPTY_CLASS_ARRAY = new Class[0];
     private static final Class[] EMPTY_ASPECTS = EMPTY_CLASS_ARRAY;
     private MixinFactory m_mixinFactory;
@@ -31,10 +33,15 @@ public final class AspectFactoryImpl
     private AspectRegistry m_aspectRegistry;
     private InvocationStackPool m_pool;
 
-    public AspectFactoryImpl( MixinFactory mixinFactory, AdviceFactoryImpl adviceFactory,
-                              AspectRegistry aspectRegistry
+    public AspectFactoryImpl(
+        MixinFactory mixinFactory, AdviceFactoryImpl adviceFactory, AspectRegistry aspectRegistry
     )
+        throws IllegalArgumentException
     {
+        NullArgumentException.validateNotNull( mixinFactory, "mixinFactory" );
+        NullArgumentException.validateNotNull( adviceFactory, "adviceFactory" );
+        NullArgumentException.validateNotNull( aspectRegistry, "aspectRegistry" );
+
         m_mixinFactory = mixinFactory;
         m_adviceFactory = adviceFactory;
         m_aspectRegistry = aspectRegistry;
@@ -46,7 +53,7 @@ public final class AspectFactoryImpl
     public <T> T newInstance( ClassLoader classloader, Class<T> primaryAspect )
     {
         AspectRoutingHandler handler = getInvocationHandler( primaryAspect );
-        return (T) Proxy.newProxyInstance( classloader, new Class[] { primaryAspect }, handler );
+        return (T) Proxy.newProxyInstance( classloader, new Class[]{ primaryAspect }, handler );
     }
 
     public <T> T getInstance( String identity )

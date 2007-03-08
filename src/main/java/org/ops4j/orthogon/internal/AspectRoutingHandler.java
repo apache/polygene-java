@@ -21,19 +21,24 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Set;
-import org.ops4j.orthogon.mixin.MixinUnavailableException;
+import org.ops4j.lang.NullArgumentException;
 import org.ops4j.orthogon.AspectFactory;
+import org.ops4j.orthogon.mixin.MixinUnavailableException;
 
 public final class AspectRoutingHandler
     implements InvocationHandler
 {
+
     private static final Object DUMMY = new Object();
 
     private final AspectFactory m_aspectFactory;
     private final HashMap<Class, Object> m_mixinInstances;
 
     public AspectRoutingHandler( AspectFactory aspectFactory )
+        throws IllegalArgumentException
     {
+        NullArgumentException.validateNotNull( aspectFactory, "aspectFactory" );
+
         m_aspectFactory = aspectFactory;
         m_mixinInstances = new HashMap<Class, Object>();
     }
@@ -71,19 +76,25 @@ public final class AspectRoutingHandler
         }
     }
 
-    public void addMixinInterface( Class introductionInterface )
+    public void addMixinInterface( Class mixinInterface )
+        throws IllegalArgumentException
     {
+        NullArgumentException.validateNotNull( mixinInterface, "mixinInterface" );
+
         synchronized( m_mixinInstances )
         {
-            m_mixinInstances.put( introductionInterface, DUMMY );
+            m_mixinInstances.put( mixinInterface, DUMMY );
         }
     }
 
-    public void removeMixinInterface( Class introductionInterface )
+    public void removeMixinInterface( Class mixinInterface )
+        throws IllegalArgumentException
     {
+        NullArgumentException.validateNotNull( mixinInterface, "mixinInterface" );
+
         synchronized( m_mixinInstances )
         {
-            m_mixinInstances.remove( introductionInterface );
+            m_mixinInstances.remove( mixinInterface );
         }
     }
 }
