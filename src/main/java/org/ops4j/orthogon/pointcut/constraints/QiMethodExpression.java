@@ -27,7 +27,7 @@ import java.lang.annotation.Target;
 @Target( { ElementType.TYPE } )
 @Documented
 @Inherited
-public @interface QiMethodAttribute
+public @interface QiMethodExpression
 {
-    Class[] value() default {};
+    String value();
 }

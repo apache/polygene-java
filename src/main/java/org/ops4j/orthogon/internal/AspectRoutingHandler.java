@@ -63,6 +63,7 @@ public final class AspectRoutingHandler
             }
         }
         InvocationStack stack = m_aspectFactory.getInvocationStack( method, proxy );
+        
         stack.resolveDependencies( proxy );
         stack.setTarget( instance );
         return stack.invoke( method, args );

@@ -17,7 +17,7 @@
 package org.ops4j.orthogon;
 
 import org.ops4j.orthogon.internal.InvocationStack;
-import org.ops4j.orthogon.pointcut.AspectRegistry;
+import org.ops4j.orthogon.internal.AspectRegistry;
 import java.lang.reflect.Method;
 
 public interface AspectFactory

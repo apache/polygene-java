@@ -25,13 +25,13 @@ import org.ops4j.orthogon.advice.Advice;
 
 public final class InvocationStack
 {
-    private final PointcutDescriptor m_descriptor;
+    private final JoinpointDescriptor m_descriptor;
     private final Advice m_first;
     private final Advice m_last;
     private final Class m_targetClass;
     private Object m_target;
 
-    InvocationStack( PointcutDescriptor descriptor, Class targetClass, List<Advice> advices )
+    InvocationStack( JoinpointDescriptor descriptor, Class targetClass, List<Advice> advices )
         throws IllegalArgumentException
     {
         NullArgumentException.validateNotNull( targetClass, "targetClass" );
@@ -128,7 +128,7 @@ public final class InvocationStack
         m_target = target;
     }
 
-    PointcutDescriptor getDescriptor()
+    JoinpointDescriptor getDescriptor()
     {
         return m_descriptor;
     }

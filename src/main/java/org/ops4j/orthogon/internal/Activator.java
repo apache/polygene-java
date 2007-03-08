@@ -17,7 +17,7 @@
 package org.ops4j.orthogon.internal;
 
 import org.ops4j.orthogon.AspectFactory;
-import org.ops4j.orthogon.pointcut.AspectRegistry;
+import org.ops4j.orthogon.internal.AspectRegistry;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;

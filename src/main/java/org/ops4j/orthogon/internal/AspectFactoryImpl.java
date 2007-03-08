@@ -20,7 +20,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import org.ops4j.lang.NullArgumentException;
 import org.ops4j.orthogon.AspectFactory;
-import org.ops4j.orthogon.pointcut.AspectRegistry;
+import org.ops4j.orthogon.internal.AspectRegistry;
 
 public final class AspectFactoryImpl
     implements AspectFactory
@@ -45,7 +45,7 @@ public final class AspectFactoryImpl
         m_mixinFactory = mixinFactory;
         m_adviceFactory = adviceFactory;
         m_aspectRegistry = aspectRegistry;
-        InvocationStackFactory invocationStackFactory = new InvocationStackFactory();
+        InvocationStackFactory invocationStackFactory = new InvocationStackFactory( aspectRegistry );
         m_pool = new InvocationStackPool( invocationStackFactory );
     }
 
@@ -53,7 +53,7 @@ public final class AspectFactoryImpl
     public <T> T newInstance( ClassLoader classloader, Class<T> primaryAspect )
     {
         AspectRoutingHandler handler = getInvocationHandler( primaryAspect );
-        return (T) Proxy.newProxyInstance( classloader, new Class[]{ primaryAspect }, handler );
+        return (T) Proxy.newProxyInstance( classloader, new Class[] { primaryAspect }, handler );
     }
 
     public <T> T getInstance( String identity )
@@ -72,9 +72,10 @@ public final class AspectFactoryImpl
 
     public InvocationStack getInvocationStack( Method invokedMethod, Object proxy )
     {
-        PointcutDescriptor adviceDescriptor = m_aspectRegistry.getPointcutDescriptor( invokedMethod, proxy );
-        InvocationStack stack = m_pool.getInvocationStack( adviceDescriptor );
-        return stack;
+        Class<? extends Object> proxyClass = proxy.getClass();
+        Class[] targetClasses = proxyClass.getInterfaces();
+        JoinpointDescriptor adviceDescriptor = new JoinpointDescriptor( invokedMethod, targetClasses );
+        return m_pool.getInvocationStack( adviceDescriptor );
     }
 
     public void release( InvocationStack stack )

@@ -16,6 +16,41 @@
  */
 package org.ops4j.orthogon.internal;
 
-public class InvocationStackFactory
+import java.util.Collections;
+import java.util.List;
+import java.lang.reflect.Method;
+import org.ops4j.lang.NullArgumentException;
+import org.ops4j.orthogon.advice.Advice;
+
+final class InvocationStackFactory
 {
+    private final AspectRegistry m_registry;
+
+    InvocationStackFactory( AspectRegistry registry )
+        throws IllegalArgumentException
+    {
+        NullArgumentException.validateNotNull( registry, "registry" );
+        m_registry = registry;
+    }
+
+    InvocationStack create( JoinpointDescriptor descriptor )
+        throws IllegalArgumentException
+    {
+        NullArgumentException.validateNotNull( descriptor, "descriptor" );
+
+        List<Pointcut> pointcuts = m_registry.getPointcuts( descriptor );
+        Method method = descriptor.getMethod();
+        Class<?> targetClass = method.getDeclaringClass();
+        List<Advice> advices;
+        if( pointcuts.isEmpty() )
+        {
+            advices = Collections.emptyList();
+        } else
+        {
+            // TODO
+            advices = null;
+        }
+
+        return new InvocationStack( descriptor, targetClass, advices );
+    }
 }

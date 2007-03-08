@@ -16,6 +16,26 @@
  */
 package org.ops4j.orthogon.internal;
 
-public interface PointcutDescriptor
+import java.util.List;
+import java.util.Collections;
+import org.ops4j.lang.NullArgumentException;
+
+public final class AspectRegistry
 {
+
+    public AspectRegistry()
+    {
+    }
+
+    List<Pointcut> getPointcuts( JoinpointDescriptor descriptor )
+        throws IllegalArgumentException
+    {
+        NullArgumentException.validateNotNull( descriptor, "descriptor" );
+        return Collections.emptyList();
+    }
+
+    void registerPointcut( Pointcut pointcut )
+    {
+        
+    }
 }

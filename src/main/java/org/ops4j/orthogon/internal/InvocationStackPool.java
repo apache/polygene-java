@@ -16,32 +16,51 @@
  */
 package org.ops4j.orthogon.internal;
 
-import java.lang.reflect.Method;
 import java.util.HashMap;
-import java.util.ArrayList;
 import java.util.LinkedList;
+import org.ops4j.lang.NullArgumentException;
 
+/**
+ * TODO: Removal of entries that are not used for a period of time
+ * TODO: Thread safe
+ */
 public class InvocationStackPool
 {
-    private HashMap<PointcutDescriptor, LinkedList<PoolEntry>> m_pool;
+    private HashMap<JoinpointDescriptor, LinkedList<PoolEntry>> m_pool;
 
     private InvocationStackFactory m_factory;
 
     public InvocationStackPool( InvocationStackFactory factory )
+        throws IllegalArgumentException
     {
-
+        NullArgumentException.validateNotNull( factory, "factory" );
         m_factory = factory;
     }
 
-    public InvocationStack getInvocationStack( PointcutDescriptor descriptor )
+    public InvocationStack getInvocationStack( JoinpointDescriptor descriptor )
+        throws IllegalArgumentException
     {
+        NullArgumentException.validateNotNull( descriptor, "descriptor" );
 
-        return null;
+        LinkedList<PoolEntry> entries = m_pool.get( descriptor );
+        if( entries == null )
+        {
+            entries = new LinkedList<PoolEntry>();
+            m_pool.put( descriptor, entries );
+        }
+
+        if( entries.isEmpty() )
+        {
+            return m_factory.create( descriptor );
+        }
+        
+        PoolEntry poolEntry = entries.remove();
+        return poolEntry.stack;
     }
 
     public void release( InvocationStack stack )
     {
-        PointcutDescriptor descriptor = stack.getDescriptor();
+        JoinpointDescriptor descriptor = stack.getDescriptor();
         PoolEntry entry = new PoolEntry( stack );
         LinkedList<PoolEntry> list = m_pool.get( descriptor );
         if( list == null )
@@ -49,7 +68,7 @@ public class InvocationStackPool
             list = new LinkedList<PoolEntry>();
             m_pool.put( descriptor, list );
         }
-        list.add( entry );
+        list.addFirst( entry );
     }
 
     private static class PoolEntry
