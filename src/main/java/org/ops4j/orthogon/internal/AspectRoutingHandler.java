@@ -22,7 +22,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Set;
 import org.ops4j.lang.NullArgumentException;
-import org.ops4j.orthogon.AspectFactory;
 import org.ops4j.orthogon.mixin.MixinUnavailableException;
 
 public final class AspectRoutingHandler
@@ -31,10 +30,10 @@ public final class AspectRoutingHandler
 
     private static final Object DUMMY = new Object();
 
-    private final AspectFactory m_aspectFactory;
+    private final AspectFactoryImpl m_aspectFactory;
     private final HashMap<Class, Object> m_mixinInstances;
 
-    public AspectRoutingHandler( AspectFactory aspectFactory )
+    public AspectRoutingHandler( AspectFactoryImpl aspectFactory )
         throws IllegalArgumentException
     {
         NullArgumentException.validateNotNull( aspectFactory, "aspectFactory" );
@@ -50,7 +49,13 @@ public final class AspectRoutingHandler
         Class invokedOn = method.getDeclaringClass();
         synchronized( this )
         {
-            m_aspectFactory.checkExistence( invokedOn );  // Make sure that the Mixin is still valid
+            // Make sure that the Mixin is still valid
+            boolean valid = m_aspectFactory.isMixinInterfaceExists( invokedOn );
+            if( !valid )
+            {
+                throw new MixinUnavailableException( invokedOn );
+            }
+
             instance = m_mixinInstances.get( invokedOn );
             if( instance == null || instance == DUMMY )
             {
@@ -63,13 +68,13 @@ public final class AspectRoutingHandler
             }
         }
         InvocationStack stack = m_aspectFactory.getInvocationStack( method, proxy );
-        
+
         stack.resolveDependencies( proxy );
         stack.setTarget( instance );
         return stack.invoke( method, args );
     }
 
-    public Set<Class> getMixinInterfaces()
+    public final Set<Class> getMixinInterfaces()
     {
         synchronized( m_mixinInstances )
         {

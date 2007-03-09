@@ -48,6 +48,7 @@ public final class MixinFactory
             {
                 return;
             }
+
             Class[] classes = mixinImplementationClass.getInterfaces();
             for( Class cls : classes )
             {
@@ -87,15 +88,15 @@ public final class MixinFactory
         }
     }
 
-    public Object create( Class aspectInterface )
+    public Object create( Class mixinInterface )
         throws IllegalArgumentException
     {
-        NullArgumentException.validateNotNull( aspectInterface, "aspectInterface" );
+        NullArgumentException.validateNotNull( mixinInterface, "mixinInterface" );
 
         Class aspectImplClass;
         synchronized( this )
         {
-            aspectImplClass = m_mixinMapping.get( aspectInterface );
+            aspectImplClass = m_mixinMapping.get( mixinInterface );
         }
 
         if( aspectImplClass == null )
@@ -122,6 +123,7 @@ public final class MixinFactory
         throws IllegalArgumentException
     {
         NullArgumentException.validateNotNull( invokedOn, "invokedOn" );
+
         synchronized( this )
         {
             return m_mixinMapping.containsKey( invokedOn );

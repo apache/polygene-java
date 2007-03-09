@@ -21,6 +21,7 @@ import java.lang.reflect.InvocationTargetException;
 
 public final class AdviceFactoryImpl
 {
+    @SuppressWarnings( "unchecked" )
     <T> T create( Class<? extends T> advice, T inner )
     {
         Package pakkage = advice.getPackage();

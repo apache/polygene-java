@@ -90,6 +90,11 @@ public final class InvocationStack
     {
         NullArgumentException.validateNotNull( proxy, "proxy" );
 
+        if( m_first == null )
+        {
+            return;
+        }
+
         Advice current = m_first;
         while( true )
         {

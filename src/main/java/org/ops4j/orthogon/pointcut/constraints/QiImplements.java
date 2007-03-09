@@ -27,7 +27,6 @@ import java.lang.annotation.Inherited;
 @Target( { ElementType.TYPE } )
 @Documented
 @Inherited
-
 public @interface QiImplements
 {
     Class[] value();

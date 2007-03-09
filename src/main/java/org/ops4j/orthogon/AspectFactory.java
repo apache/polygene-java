@@ -16,21 +16,9 @@
  */
 package org.ops4j.orthogon;
 
-import org.ops4j.orthogon.internal.InvocationStack;
-import org.ops4j.orthogon.internal.AspectRegistry;
-import java.lang.reflect.Method;
-
 public interface AspectFactory
 {
     <T> T newInstance( ClassLoader classloader, Class<T> primaryAspect );
 
     <T> T getInstance( String identity );
-
-    void checkExistence( Class invokedOn );
-
-    Object createMixin( Class invokedOn );
-
-    InvocationStack getInvocationStack( Method invokedMethod, Object proxy );
-
-    AspectRegistry getAspectRegistry();
 }

@@ -20,7 +20,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import org.ops4j.lang.NullArgumentException;
 import org.ops4j.orthogon.AspectFactory;
-import org.ops4j.orthogon.internal.AspectRegistry;
 
 public final class AspectFactoryImpl
     implements AspectFactory
@@ -61,13 +60,40 @@ public final class AspectFactoryImpl
         return null;
     }
 
-    public void checkExistence( Class invokedOn )
+    /**
+     * Returns {@code true} if the specified {@code mixinInterface} is still exists, {@code false} otherwise.
+     *
+     * @param mixinInterface The mixin interface class to check. This argument must not be {@code null}.
+     *
+     * @return A {@code boolean} indicator whether the specified {@code mixinInterface} is exists.
+     *
+     * @throws IllegalArgumentException Thrown if the specified {@code mixinInterface} is {@code null}.
+     * @since 1.0.0
+     */
+    final boolean isMixinInterfaceExists( Class mixinInterface )
+        throws IllegalArgumentException
     {
+        NullArgumentException.validateNotNull( mixinInterface, "mixinInterface" );
+        return m_mixinFactory.checkExistence( mixinInterface );
     }
 
-    public Object createMixin( Class invokedOn )
+    /**
+     * Returns the mixing implementation instance of the specified {@code mixinInterface}. Returns {@code null} if the
+     * mixin interface implementation is not registered.
+     *
+     * @param mixinInterface The mixin interface. This argument must not be {@code null}.
+     *
+     * @return Returns the mixin implementation.
+     *
+     * @throws IllegalArgumentException Thrown if the specified {@code mixinInterface} is {@code null}.
+     * @since 1.0.0
+     */
+    public Object createMixin( Class mixinInterface )
+        throws IllegalArgumentException
     {
-        return null;
+        NullArgumentException.validateNotNull( mixinInterface, "mixinInterface" );
+
+        return m_mixinFactory.create( mixinInterface );
     }
 
     public InvocationStack getInvocationStack( Method invokedMethod, Object proxy )
