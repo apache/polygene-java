@@ -26,7 +26,7 @@ public final class AspectFactoryImpl
 {
 
     private static final Class[] EMPTY_CLASS_ARRAY = new Class[0];
-    private static final Class[] EMPTY_ASPECTS = EMPTY_CLASS_ARRAY;
+
     private MixinFactory m_mixinFactory;
     private AdviceFactoryImpl m_adviceFactory;
     private AspectRegistry m_aspectRegistry;
@@ -57,6 +57,7 @@ public final class AspectFactoryImpl
 
     public <T> T getInstance( String identity )
     {
+        // TODO: finish implementation
         return null;
     }
 
@@ -115,10 +116,11 @@ public final class AspectFactoryImpl
         m_pool.release( stack );
     }
 
-    private <T> AspectRoutingHandler getInvocationHandler( Class aspect )
+    private AspectRoutingHandler getInvocationHandler( Class aspect )
         throws IllegalArgumentException
     {
         NullArgumentException.validateNotNull( aspect, "aspect" );
+
         // TODO: AspectRoutingHandler must have the aspect
         return new AspectRoutingHandler( this );
     }

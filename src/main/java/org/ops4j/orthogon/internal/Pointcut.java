@@ -16,6 +16,7 @@
  */
 package org.ops4j.orthogon.internal;
 
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -23,6 +24,9 @@ import java.util.List;
 import java.util.Set;
 import org.ops4j.lang.NullArgumentException;
 import org.ops4j.orthogon.advice.Advice;
+import static org.ops4j.orthogon.internal.util.CollectionUtil.addAllToCollection;
+import static org.ops4j.orthogon.internal.util.CollectionUtil.isAllPartOf;
+import static org.ops4j.orthogon.internal.util.CollectionUtil.isAnyPartOf;
 import org.ops4j.orthogon.pointcut.QiInterceptor;
 import org.ops4j.orthogon.pointcut.constraints.QiImplements;
 import org.ops4j.orthogon.pointcut.constraints.QiMethodExpression;
@@ -32,7 +36,7 @@ import org.ops4j.orthogon.pointcut.constraints.QiTargetClass;
 /**
  * TODO: Finish up this class
  * TODO: Figure out how to evaluate this in the most efficient manner.
- * TODO: Should we flatten these pointcuts?
+ * TODO: Should we flatten these pointcuts? i.e. no more m_parent?
  *
  * @since 1.0.0
  */
@@ -67,32 +71,42 @@ final class Pointcut
 
     /**
      * Creates advices of this pointcut.
+     * <p>Note: The ONLY check that is being done is whether the interceptor listed matches the requested method
+     * invocation.</p>
+     *
+     * @param descriptor The descriptor. This argument must not be {@code null}.
      *
      * @return a list of advices of this pointcut.
      *
+     * @throws IllegalArgumentException Thrown if the specified {@code descriptor} is {@code null}.
      * @since 1.0.0
      */
-    final List<Advice> createAdvices()
+    final List<Advice> createAdvices( JoinpointDescriptor descriptor )
+        throws IllegalArgumentException
     {
+        NullArgumentException.validateNotNull( descriptor, "descriptor" );
         List<Advice> advices = new ArrayList<Advice>();
+
         // TODO: Need to figure out how to hand in sort order.
         if( m_parent != null )
         {
-            List<Advice> parentAdvices = m_parent.createAdvices();
+            List<Advice> parentAdvices = m_parent.createAdvices( descriptor );
             advices.addAll( parentAdvices );
         }
 
-        // TODO: This is a wrong implementation
         if( !m_interceptors.isEmpty() )
         {
+            Method method = descriptor.getMethod();
+            Class declaringClass = method.getDeclaringClass();
+            String methodName = method.getName();
+            Class[] parameterTypes = method.getParameterTypes();
             for( QiInterceptor interceptor : m_interceptors )
             {
                 Class[] classes = interceptor.value();
                 for( Class aClass : classes )
                 {
-                    if( aClass == null )
+                    if( !isInterceptorInvocationRequired( aClass, declaringClass, methodName, parameterTypes ) )
                     {
-                        // TODO warning
                         continue;
                     }
 
@@ -106,6 +120,41 @@ final class Pointcut
         }
 
         return advices;
+    }
+
+    private static boolean isInterceptorInvocationRequired(
+        Class interceptorClass, Class declaringClass, String methodName, Class[] parameterTypes
+    )
+        throws IllegalArgumentException
+    {
+        NullArgumentException.validateNotNull( declaringClass, "declaringClass" );
+        NullArgumentException.validateNotNull( methodName, "methodName" );
+        NullArgumentException.validateNotNull( parameterTypes, "parameterTypes" );
+
+        if( interceptorClass == null )
+        {
+            return false;
+        }
+
+        if( !InvocationHandler.class.isAssignableFrom( interceptorClass ) )
+        {
+            if( !declaringClass.isAssignableFrom( interceptorClass ) )
+            {
+                return false;
+            }
+
+            try
+            {
+                interceptorClass.getMethod( methodName, parameterTypes );
+            }
+            catch( NoSuchMethodException e )
+            {
+                // Ignore this as this means that the interceptor is not interested with the requested
+                // method invocation
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -139,57 +188,86 @@ final class Pointcut
         }
         catch( ClassNotFoundException e )
         {
-            // TODO means that the class is not generated yet.
+            // TODO: means that the class is not generated.
             e.printStackTrace();
         }
         catch( IllegalAccessException e )
         {
-            e.printStackTrace();  //TODO: Auto-generated, need attention.
+            // TODO: means that the class is generated but invalid.
+            e.printStackTrace();
         }
         catch( InstantiationException e )
         {
-            e.printStackTrace();  //TODO: Auto-generated, need attention.
+            // TODO: means that the class is generated but invalid.
+            e.printStackTrace();
         }
 
         return instance;
     }
 
+    /**
+     * Returns all the joinpoint classes that probably matches with this pointcut. This method does not return a
+     * {@code null} object.
+     *
+     * @return all the joinpoint classes that probably matches with this pointcut.
+     *
+     * @since 1.0.0
+     */
     final Set<Class> getJoinpointClasses()
     {
         Set<Class> joinpointClasses = new HashSet<Class>();
         if( m_parent != null )
         {
-            joinpointClasses.addAll( m_parent.getJoinpointClasses() );
+            Set<Class> parentJoinpointClasses = m_parent.getJoinpointClasses();
+            joinpointClasses.addAll( parentJoinpointClasses );
         }
+
         for( QiImplements qiImplements : m_implementsConstraints )
         {
             Class[] classes = qiImplements.value();
 
-            addAllClassToSet( classes, joinpointClasses );
+            addAllToCollection( classes, joinpointClasses );
         }
 
         for( QiTargetClass qiTargetClass : m_targetClassConstraints )
         {
             Class[] classes = qiTargetClass.value();
 
-            addAllClassToSet( classes, joinpointClasses );
+            addAllToCollection( classes, joinpointClasses );
+        }
+
+        // The user probably forgot to set @QiImplements or @QiTargetClasses, let's search for dynamic interceptor
+        if( joinpointClasses.isEmpty() )
+        {
+            for( QiInterceptor qiInterceptor : m_interceptors )
+            {
+                Class[] classes = qiInterceptor.value();
+                for( Class aClass : classes )
+                {
+                    if( InvocationHandler.class.isAssignableFrom( aClass ) )
+                    {
+                        joinpointClasses.add( Object.class );
+                        return joinpointClasses;
+                    }
+                }
+            }
         }
 
         return joinpointClasses;
     }
 
-    private static void addAllClassToSet( Class[] arrays, Set<Class> set )
-        throws IllegalArgumentException
-    {
-        NullArgumentException.validateNotNull( set, "set" );
-        NullArgumentException.validateNotNull( arrays, "arrays" );
-
-        for( Class aClass : arrays )
-        {
-            set.add( aClass );
-        }
-    }
-
+    /**
+     * Returns {@code true} if the specified {@code descriptor} argument intersects with this {@code pointcut},
+     * {@code false} otherwise.
+     *
+     * @param descriptor The descriptor. This argument must not be {@code null}.
+     *
+     * @return A {@code boolean} indicator whether this {@code pointcut} instance intersect with the specified
+     *         {@code descriptor} argument.
+     *
+     * @throws IllegalArgumentException Thrown if the specified {@code descriptor} is {@code null}.
+     * @since 1.0.0
+     */
     final boolean isIntersect( JoinpointDescriptor descriptor )
         throws IllegalArgumentException
     {
@@ -227,37 +305,6 @@ final class Pointcut
         return true;
     }
 
-    private boolean isMatchAnyInterceptor( Method method )
-        throws IllegalArgumentException
-    {
-        NullArgumentException.validateNotNull( method, "method" );
-
-        if( !m_interceptors.isEmpty() )
-        {
-            String name = method.getName();
-            Class<?>[] parameterType = method.getParameterTypes();
-            for( QiInterceptor qiInterceptor : m_interceptors )
-            {
-                Class[] interceptorClasses = qiInterceptor.value();
-
-                for( Class interceptorClass : interceptorClasses )
-                {
-                    try
-                    {
-                        interceptorClass.getMethod( name, parameterType );
-
-                        return true;
-                    }
-                    catch( NoSuchMethodException e )
-                    {
-                        // This means, that there is no match method given the name and parameter.
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
     private boolean isMatchTargetClassConstraint( Class[] classes )
     {
         if( !m_targetClassConstraints.isEmpty() )
@@ -282,29 +329,6 @@ final class Pointcut
         return true;
     }
 
-    private static boolean isAnyPartOf( Class[] parts, Class[] list )
-    {
-        NullArgumentException.validateNotNull( list, "list" );
-
-        if( parts == null )
-        {
-            return false;
-        }
-
-        for( Class part : parts )
-        {
-            for( Class aClass : list )
-            {
-                if( aClass.equals( part ) )
-                {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
     private boolean isMatchImplementConstraints( Class[] descriptorTargetClasses )
     {
         if( !m_implementsConstraints.isEmpty() )
@@ -322,33 +346,30 @@ final class Pointcut
         return true;
     }
 
-    private static boolean isAllPartOf( Class[] parts, Class[] list )
+    private boolean isMatchAnyInterceptor( Method method )
+        throws IllegalArgumentException
     {
-        NullArgumentException.validateNotNull( list, "list" );
+        NullArgumentException.validateNotNull( method, "method" );
 
-        if( parts == null )
+        if( !m_interceptors.isEmpty() )
         {
-            return true;
-        }
-
-        for( Class part : parts )
-        {
-            boolean found = false;
-            for( Class aClass : list )
+            Class declaringClass = method.getDeclaringClass();
+            String methodName = method.getName();
+            Class[] parameterType = method.getParameterTypes();
+            for( QiInterceptor qiInterceptor : m_interceptors )
             {
-                if( aClass.equals( part ) )
+                Class[] interceptorClasses = qiInterceptor.value();
+
+                for( Class interceptorClass : interceptorClasses )
                 {
-                    found = true;
-                    break;
+                    if( isInterceptorInvocationRequired( interceptorClass, declaringClass, methodName, parameterType ) )
+                    {
+                        return true;
+                    }
                 }
             }
-
-            if( !found )
-            {
-                return false;
-            }
         }
 
-        return true;
+        return false;
     }
 }

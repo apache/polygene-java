@@ -60,7 +60,7 @@ final class InvocationStackFactory
             advices = new LinkedList<Advice>();
             for( Pointcut pointcut : pointcuts )
             {
-                List<Advice> createdAdvices = pointcut.createAdvices();
+                List<Advice> createdAdvices = pointcut.createAdvices( descriptor );
                 advices.addAll( createdAdvices );
             }
         }
