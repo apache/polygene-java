@@ -16,9 +16,10 @@
  */
 package org.ops4j.orthogon.internal;
 
-import java.util.Collections;
-import java.util.List;
 import java.lang.reflect.Method;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import org.ops4j.lang.NullArgumentException;
 import org.ops4j.orthogon.advice.Advice;
 
@@ -33,24 +34,39 @@ final class InvocationStackFactory
         m_registry = registry;
     }
 
+    /**
+     * Creates an invocation stack given the specified {@code descriptor} argument.
+     *
+     * @param descriptor The joinpoint descriptor. This argument must not be {@code null}.
+     *
+     * @return The invocation stack.
+     *
+     * @throws IllegalArgumentException Thrown if the specified {@code descriptor} is {@code null}.
+     * @since 1.0.0
+     */
     InvocationStack create( JoinpointDescriptor descriptor )
         throws IllegalArgumentException
     {
         NullArgumentException.validateNotNull( descriptor, "descriptor" );
 
         List<Pointcut> pointcuts = m_registry.getPointcuts( descriptor );
-        Method method = descriptor.getMethod();
-        Class<?> targetClass = method.getDeclaringClass();
         List<Advice> advices;
         if( pointcuts.isEmpty() )
         {
             advices = Collections.emptyList();
-        } else
+        }
+        else
         {
-            // TODO
-            advices = null;
+            advices = new LinkedList<Advice>();
+            for( Pointcut pointcut : pointcuts )
+            {
+                List<Advice> createdAdvices = pointcut.createAdvices();
+                advices.addAll( createdAdvices );
+            }
         }
 
+        Method method = descriptor.getMethod();
+        Class<?> targetClass = method.getDeclaringClass();
         return new InvocationStack( descriptor, targetClass, advices );
     }
 }

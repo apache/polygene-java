@@ -34,6 +34,7 @@ public class InvocationStackPool
         throws IllegalArgumentException
     {
         NullArgumentException.validateNotNull( factory, "factory" );
+
         m_pool = new HashMap<JoinpointDescriptor, LinkedList<PoolEntry>>();
         m_factory = factory;
     }

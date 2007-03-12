@@ -16,48 +16,119 @@
  */
 package org.ops4j.orthogon.internal;
 
-import org.ops4j.orthogon.pointcut.constraints.QiImplements;
-import org.ops4j.orthogon.pointcut.constraints.QiProperty;
-import org.ops4j.orthogon.pointcut.constraints.QiMethodExpression;
-import org.ops4j.orthogon.pointcut.constraints.QiTargetClass;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.ArrayList;
+import org.ops4j.lang.NullArgumentException;
+import org.ops4j.orthogon.pointcut.QiInterceptor;
+import org.ops4j.orthogon.pointcut.constraints.QiImplements;
+import org.ops4j.orthogon.pointcut.constraints.QiMethodExpression;
+import org.ops4j.orthogon.pointcut.constraints.QiProperty;
+import org.ops4j.orthogon.pointcut.constraints.QiTargetClass;
 
-public class PointcutBuilder
+final class PointcutBuilder
 {
+    private Pointcut m_parent;
     private List<QiImplements> m_implements;
     private List<QiProperty> m_property;
     private List<QiMethodExpression> m_methodExpressions;
     private List<QiTargetClass> m_targetClasses;
-    private Pointcut m_parent;
+    private List<QiInterceptor> m_interceptors;
 
-    public PointcutBuilder( Pointcut parent )
+    PointcutBuilder( Pointcut parent )
     {
         m_parent = parent;
     }
 
     void addImplementsConstraint( QiImplements implementsConstraint )
+        throws IllegalArgumentException
     {
-        m_implements.add( implementsConstraint );
+        NullArgumentException.validateNotNull( implementsConstraint, "implementsConstraint" );
+
+        m_implements = addToList( m_implements, implementsConstraint );
     }
 
-    void addPropertyConstraint( QiProperty propertyConstraint )
+    final void addPropertyConstraint( QiProperty propertyConstraint )
+        throws IllegalArgumentException
     {
-        m_property.add( propertyConstraint );
+        NullArgumentException.validateNotNull( propertyConstraint, "propertyConstraint" );
+
+        m_property = addToList( m_property, propertyConstraint );
     }
 
-    void addMethodExpressionConstraint( QiMethodExpression methodExpressionConstraint )
+    final void addMethodExpressionConstraint( QiMethodExpression methodExpressionConstraint )
+        throws IllegalArgumentException
     {
-        m_methodExpressions.add( methodExpressionConstraint );
+        NullArgumentException.validateNotNull( methodExpressionConstraint, "methodExpressionConstraint" );
+
+        m_methodExpressions = addToList( m_methodExpressions, methodExpressionConstraint );
     }
 
-    void addTargetClassConstraint( QiTargetClass targetClassConstraint )
+    final void addTargetClassConstraint( QiTargetClass targetClassConstraint )
+        throws IllegalArgumentException
     {
-        m_targetClasses.add( targetClassConstraint );
+        NullArgumentException.validateNotNull( targetClassConstraint, "targetClassConstraint" );
+
+        m_targetClasses = addToList( m_targetClasses, targetClassConstraint );
     }
 
-    Pointcut create()
+    final void addInterceptor( QiInterceptor interceptor )
+        throws IllegalArgumentException
     {
-        return new Pointcut( m_parent, m_implements, m_property, m_methodExpressions, m_targetClasses );
+        NullArgumentException.validateNotNull( interceptor, "interceptor" );
+
+        m_interceptors = addToList( m_interceptors, interceptor );
+    }
+
+    final Pointcut create()
+    {
+        List<QiImplements> implementations = ensureNotNull( m_implements );
+        List<QiProperty> properties = ensureNotNull( m_property );
+        List<QiMethodExpression> methodExpressions = ensureNotNull( m_methodExpressions );
+        List<QiTargetClass> targetClasses = ensureNotNull( m_targetClasses );
+        List<QiInterceptor> interceptors = ensureNotNull( m_interceptors );
+        return new Pointcut( m_parent, implementations, properties, methodExpressions, targetClasses, interceptors );
+    }
+
+    /**
+     * Add the specified {@code entry} argument to the {@code list} argument. If the specified {@code list} is
+     * {@code null} initialized it with a {@code LinkedList}.
+     *
+     * @param list  The list to be added.
+     * @param entry The entry.
+     *
+     * @return The specified {@code list} or a new initialized list with {@code entry} as the first element.
+     *
+     * @since 1.0.0
+     */
+    private <T> List<T> addToList( List<T> list, T entry )
+    {
+        if( list == null )
+        {
+            list = new LinkedList<T>();
+        }
+        list.add( entry );
+        return list;
+    }
+
+    /**
+     * Returns an empty list if the specified {@code list} argument is {@code null}, returns the specified {@code list}
+     * argument otherwise.
+     *
+     * @param list The list to check.
+     *
+     * @return The specified {@code list} or empty list.
+     *
+     * @see Collections#emptyList()
+     * @since 1.0.0
+     */
+    private <T> List<T> ensureNotNull( List<T> list )
+    {
+        if( list == null )
+        {
+            return Collections.emptyList();
+        }
+
+        return list;
     }
 }

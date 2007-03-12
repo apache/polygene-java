@@ -33,7 +33,7 @@ public final class AspectRoutingHandler
     private final AspectFactoryImpl m_aspectFactory;
     private final HashMap<Class, Object> m_mixinInstances;
 
-    public AspectRoutingHandler( AspectFactoryImpl aspectFactory )
+    AspectRoutingHandler( AspectFactoryImpl aspectFactory )
         throws IllegalArgumentException
     {
         NullArgumentException.validateNotNull( aspectFactory, "aspectFactory" );
@@ -42,7 +42,7 @@ public final class AspectRoutingHandler
         m_mixinInstances = new HashMap<Class, Object>();
     }
 
-    public Object invoke( Object proxy, Method method, Object[] args )
+    public final Object invoke( Object proxy, Method method, Object[] args )
         throws Throwable
     {
         Object instance;
@@ -67,11 +67,21 @@ public final class AspectRoutingHandler
                 m_mixinInstances.put( invokedOn, instance );
             }
         }
-        InvocationStack stack = m_aspectFactory.getInvocationStack( method, proxy );
 
-        stack.resolveDependencies( proxy );
-        stack.setTarget( instance );
-        return stack.invoke( method, args );
+        InvocationStack stack = m_aspectFactory.getInvocationStack( method, proxy );
+        Object values;
+        try
+        {
+            stack.resolveDependencies( proxy );
+            stack.setTarget( instance );
+            values = stack.invoke( method, args );
+        }
+        finally
+        {
+            m_aspectFactory.release( stack );
+        }
+
+        return values;
     }
 
     public final Set<Class> getMixinInterfaces()
@@ -82,7 +92,7 @@ public final class AspectRoutingHandler
         }
     }
 
-    public void addMixinInterface( Class mixinInterface )
+    public final void addMixinInterface( Class mixinInterface )
         throws IllegalArgumentException
     {
         NullArgumentException.validateNotNull( mixinInterface, "mixinInterface" );
@@ -93,7 +103,7 @@ public final class AspectRoutingHandler
         }
     }
 
-    public void removeMixinInterface( Class mixinInterface )
+    public final void removeMixinInterface( Class mixinInterface )
         throws IllegalArgumentException
     {
         NullArgumentException.validateNotNull( mixinInterface, "mixinInterface" );

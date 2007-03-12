@@ -96,26 +96,30 @@ public final class AspectFactoryImpl
         return m_mixinFactory.create( mixinInterface );
     }
 
-    public InvocationStack getInvocationStack( Method invokedMethod, Object proxy )
+    final InvocationStack getInvocationStack( Method invokedMethod, Object proxy )
+        throws IllegalArgumentException
     {
+        NullArgumentException.validateNotNull( invokedMethod, "invokedMethod" );
+        NullArgumentException.validateNotNull( proxy, "proxy" );
+
         Class<? extends Object> proxyClass = proxy.getClass();
         Class[] targetClasses = proxyClass.getInterfaces();
         JoinpointDescriptor adviceDescriptor = new JoinpointDescriptor( invokedMethod, targetClasses );
         return m_pool.getInvocationStack( adviceDescriptor );
     }
 
-    public void release( InvocationStack stack )
+    final void release( InvocationStack stack )
+        throws IllegalArgumentException
     {
+        NullArgumentException.validateNotNull( stack, "stack" );
         m_pool.release( stack );
     }
 
-    public AspectRegistry getAspectRegistry()
-    {
-        return m_aspectRegistry;
-    }
-
     private <T> AspectRoutingHandler getInvocationHandler( Class aspect )
+        throws IllegalArgumentException
     {
+        NullArgumentException.validateNotNull( aspect, "aspect" );
+        // TODO: AspectRoutingHandler must have the aspect
         return new AspectRoutingHandler( this );
     }
 }

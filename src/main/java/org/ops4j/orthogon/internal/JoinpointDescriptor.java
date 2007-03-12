@@ -16,6 +16,7 @@
  */
 package org.ops4j.orthogon.internal;
 
+import java.io.StringWriter;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import org.ops4j.lang.NullArgumentException;
@@ -35,14 +36,14 @@ final class JoinpointDescriptor
         m_targetClasses = targetClasses;
     }
 
-    Class[] getTargetClasses()
-    {
-        return m_targetClasses;
-    }
-
-    Method getMethod()
+    final Method getMethod()
     {
         return m_method;
+    }
+
+    final Class[] getTargetClasses()
+    {
+        return m_targetClasses;
     }
 
     public boolean equals( Object o )
@@ -76,5 +77,26 @@ final class JoinpointDescriptor
         result = Arrays.hashCode( m_targetClasses );
         result = 31 * result + m_method.hashCode();
         return result;
+    }
+
+    public final String toString()
+    {
+        StringWriter strWriter = new StringWriter();
+        strWriter.append( "targetClassess[" );
+        int length = m_targetClasses.length;
+        for( int i = 0; i < length; i++ )
+        {
+            Class targetClass = m_targetClasses[ i ];
+            strWriter.append( targetClass.getName() );
+
+            if( i < length - 1 )
+            {
+                strWriter.append( ", " );
+            }
+        }
+        strWriter.append( "]" );
+        strWriter.append( ", method [" ).append( m_method.toString() ).append( "]" );
+
+        return strWriter.toString();
     }
 }

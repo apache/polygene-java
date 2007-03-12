@@ -17,57 +17,88 @@
 package org.ops4j.orthogon.internal;
 
 import java.lang.annotation.Annotation;
-import org.ops4j.orthogon.pointcut.constraints.QiTargetClass;
+import org.ops4j.lang.NullArgumentException;
+import org.ops4j.orthogon.pointcut.QiInterceptor;
 import org.ops4j.orthogon.pointcut.constraints.QiImplements;
-import org.ops4j.orthogon.pointcut.constraints.QiProperty;
 import org.ops4j.orthogon.pointcut.constraints.QiMethodExpression;
+import org.ops4j.orthogon.pointcut.constraints.QiProperty;
+import org.ops4j.orthogon.pointcut.constraints.QiTargetClass;
 
-public class AspectParser
+public final class AspectParser
 {
     private AspectRegistry m_registry;
 
-    void parse( Class source )
+    public AspectParser( AspectRegistry registry )
+        throws IllegalArgumentException
     {
-        parse( null, source );
+        NullArgumentException.validateNotNull( registry, "registry" );
+
+        m_registry = registry;
     }
 
+    public final void parse( Class... sources )
+        throws IllegalArgumentException
+    {
+        NullArgumentException.validateNotNull( sources, "sources" );
+
+        for( int i = 0; i < sources.length; i++ )
+        {
+            Class source = sources[ i ];
+            if( source == null )
+            {
+                throw new IllegalArgumentException( "Sources element [" + i + "] is null." );
+            }
+
+            parse( null, source );
+        }
+    }
+
+    /**
+     * TODO: I think it is best to flatten the pointcut, unless if we want to support updates of the parent will update
+     * the child. Sounds dangerous to me.
+     */
     private void parse( Pointcut parent, Class aspect )
     {
         // Signal the change in hierarchy.
-        PointcutBuilder builder = new PointcutBuilder(parent);
+        PointcutBuilder builder = new PointcutBuilder( parent );
         Annotation[] annotations = aspect.getAnnotations();
-        for( Annotation annotation: annotations)
+        for( Annotation annotation : annotations )
         {
             Class<? extends Annotation> annotationType = annotation.annotationType();
-            if( annotationType.equals( QiImplements.class ) )
+            if( QiImplements.class.equals( annotationType ) )
             {
                 QiImplements implementsConstraint = (QiImplements) annotation;
                 builder.addImplementsConstraint( implementsConstraint );
             }
-            else if( annotationType.equals( QiProperty.class ) )
+            else if( QiProperty.class.equals( annotationType ) )
             {
                 QiProperty propertyConstraint = (QiProperty) annotation;
                 builder.addPropertyConstraint( propertyConstraint );
             }
-            else if( annotationType.equals( QiMethodExpression.class ) )
+            else if( QiMethodExpression.class.equals( annotationType ) )
             {
                 QiMethodExpression methodExpressionConstraint = (QiMethodExpression) annotation;
                 builder.addMethodExpressionConstraint( methodExpressionConstraint );
             }
-            else if( annotationType.equals( QiTargetClass.class ) )
+            else if( QiTargetClass.class.equals( annotationType ) )
             {
                 QiTargetClass targetClassConstraint = (QiTargetClass) annotation;
                 builder.addTargetClassConstraint( targetClassConstraint );
             }
+            else if( QiInterceptor.class.equals( annotationType ) )
+            {
+                QiInterceptor interceptor = (QiInterceptor) annotation;
+                builder.addInterceptor( interceptor );
+            }
             else
             {
-                // TODO: Problem
+                //  TODO: problem
             }
         }
         Pointcut pointcut = builder.create();
         m_registry.registerPointcut( pointcut );
         Class[] superclasses = aspect.getInterfaces();
-        for( Class superclass:superclasses)
+        for( Class superclass : superclasses )
         {
             parse( pointcut, superclass );
         }

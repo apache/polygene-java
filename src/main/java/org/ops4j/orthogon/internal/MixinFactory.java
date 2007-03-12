@@ -37,31 +37,41 @@ public final class MixinFactory
         registerMixin( IdentityMixin.class );
     }
 
-    public void registerMixin( Class mixinImplementationClass )
+    public void registerMixin( Class... mixinImplementationClasses )
         throws IllegalArgumentException
     {
-        NullArgumentException.validateNotNull( mixinImplementationClass, "mixinImplementationClass" );
+        NullArgumentException.validateNotNull( mixinImplementationClasses, "mixinImplementationClasses" );
 
-        synchronized( this )
+        for( int i = 0; i < mixinImplementationClasses.length; i++ )
         {
-            if( m_mixinImplementations.contains( mixinImplementationClass ) )
+            Class mixinImplementationClass = mixinImplementationClasses[ i ];
+
+            if( mixinImplementationClass == null )
             {
-                return;
+                throw new IllegalArgumentException( "Mixin implementation index [" + i + "] is [null]." );
             }
 
-            Class[] classes = mixinImplementationClass.getInterfaces();
-            for( Class cls : classes )
+            synchronized( this )
             {
-                Annotation[] annots = cls.getAnnotations();
-                for( Annotation annot : annots )
+                if( m_mixinImplementations.contains( mixinImplementationClasses ) )
                 {
-                    if( annot instanceof QiMixin )
+                    return;
+                }
+
+                Class[] classes = mixinImplementationClass.getInterfaces();
+                for( Class cls : classes )
+                {
+                    Annotation[] annots = cls.getAnnotations();
+                    for( Annotation annot : annots )
                     {
-                        m_mixinMapping.put( cls, mixinImplementationClass );
+                        if( annot instanceof QiMixin )
+                        {
+                            m_mixinMapping.put( cls, mixinImplementationClass );
+                        }
                     }
                 }
+                m_mixinImplementations.add( mixinImplementationClass );
             }
-            m_mixinImplementations.add( mixinImplementationClass );
         }
     }
 

@@ -29,5 +29,5 @@ import java.lang.annotation.Inherited;
 @Inherited
 public @interface QiInterceptor
 {
-    Class[] value() default {};
+    Class[] value();
 }
