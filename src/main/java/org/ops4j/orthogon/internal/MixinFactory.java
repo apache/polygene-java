@@ -26,7 +26,6 @@ import org.ops4j.orthogon.mixin.QiMixin;
 
 public final class MixinFactory
 {
-
     private final HashMap<Class, Class> m_mixinMapping;
     private final HashSet<Class> m_mixinImplementations;
 
@@ -37,7 +36,7 @@ public final class MixinFactory
         registerMixin( IdentityMixin.class );
     }
 
-    public void registerMixin( Class... mixinImplementationClasses )
+    public final void registerMixin( Class... mixinImplementationClasses )
         throws IllegalArgumentException
     {
         NullArgumentException.validateNotNull( mixinImplementationClasses, "mixinImplementationClasses" );
@@ -75,68 +74,83 @@ public final class MixinFactory
         }
     }
 
-    public void unregisterMixin( Class mixinImplementationClass )
-        throws IllegalArgumentException
+    public final boolean checkExistence( Class mixinInterface )
     {
-        NullArgumentException.validateNotNull( mixinImplementationClass, "mixinImplementationClass" );
+        if( mixinInterface == null )
+        {
+            return false;
+        }
 
         synchronized( this )
         {
-            Class[] classes = mixinImplementationClass.getInterfaces();
-            for( Class cls : classes )
-            {
-                Annotation[] annots = cls.getAnnotations();
-                for( Annotation annot : annots )
-                {
-                    if( annot instanceof QiMixin )
-                    {
-                        m_mixinMapping.remove( cls );
-                    }
-                }
-            }
-            m_mixinImplementations.remove( mixinImplementationClass );
+            return m_mixinMapping.containsKey( mixinInterface );
         }
     }
 
-    public Object create( Class mixinInterface )
+    public final Object create( Class mixinInterface )
         throws IllegalArgumentException
     {
         NullArgumentException.validateNotNull( mixinInterface, "mixinInterface" );
 
-        Class aspectImplClass;
+        Class mixinImplementation;
         synchronized( this )
         {
-            aspectImplClass = m_mixinMapping.get( mixinInterface );
+            mixinImplementation = m_mixinMapping.get( mixinInterface );
         }
 
-        if( aspectImplClass == null )
+        if( mixinImplementation == null )
         {
             return null;
         }
         try
         {
-            return aspectImplClass.newInstance();
+            return mixinImplementation.newInstance();
         }
         catch( InstantiationException e )
         {
-            e.printStackTrace(); // TODO
+            // TODO: means the mixin implementation is an abstract or an interface. This should not happened.
+            e.printStackTrace();
         }
         catch( IllegalAccessException e )
         {
-            e.printStackTrace(); // TODO
+            // TODO: means the default constructor is not public. This should not happened
+            e.printStackTrace();
         }
 
         return null;
     }
 
-    public boolean checkExistence( Class invokedOn )
+    public void unregisterMixin( Class... mixinImplementationClasses )
         throws IllegalArgumentException
     {
-        NullArgumentException.validateNotNull( invokedOn, "invokedOn" );
-
-        synchronized( this )
+        if( mixinImplementationClasses == null )
         {
-            return m_mixinMapping.containsKey( invokedOn );
+            return;
+        }
+
+        for( Class mixinImplementationClass : mixinImplementationClasses )
+        {
+            if( mixinImplementationClass == null )
+            {
+                continue;
+            }
+
+            synchronized( this )
+            {
+                Class[] classes = mixinImplementationClass.getInterfaces();
+                for( Class cls : classes )
+                {
+                    Annotation[] annots = cls.getAnnotations();
+                    for( Annotation annot : annots )
+                    {
+                        if( annot instanceof QiMixin )
+                        {
+                            m_mixinMapping.remove( cls );
+                        }
+                    }
+                }
+                m_mixinImplementations.remove( mixinImplementationClasses );
+            }
         }
     }
 }

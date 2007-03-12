@@ -18,20 +18,20 @@ package org.ops4j.orthogon.internal;
 
 import java.io.StringWriter;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import org.ops4j.lang.NullArgumentException;
+import static org.ops4j.orthogon.internal.util.CollectionUtil.isAllPartOf;
 
 final class JoinpointDescriptor
 {
-    private final Class[] m_targetClasses;
-
     private final Method m_method;
+    private final Class[] m_targetClasses;
 
     JoinpointDescriptor( Method method, Class... targetClasses )
         throws IllegalArgumentException
     {
         NullArgumentException.validateNotNull( method, "method" );
         NullArgumentException.validateNotNull( targetClasses, "targetClasses" );
+
         m_method = method;
         m_targetClasses = targetClasses;
     }
@@ -63,7 +63,13 @@ final class JoinpointDescriptor
         {
             return false;
         }
-        if( !Arrays.equals( m_targetClasses, that.m_targetClasses ) )
+
+        if( m_targetClasses.length != that.m_targetClasses.length )
+        {
+            return false;
+        }
+
+        if( !isAllPartOf( m_targetClasses, that.m_targetClasses ) )
         {
             return false;
         }
@@ -74,8 +80,7 @@ final class JoinpointDescriptor
     public int hashCode()
     {
         int result;
-        result = Arrays.hashCode( m_targetClasses );
-        result = 31 * result + m_method.hashCode();
+        result = m_method.hashCode();
         return result;
     }
 

@@ -24,58 +24,34 @@ import org.ops4j.orthogon.AspectFactory;
 public final class AspectFactoryImpl
     implements AspectFactory
 {
+    private final MixinFactory m_mixinFactory;
+    private final InvocationStackPool m_pool;
 
-    private static final Class[] EMPTY_CLASS_ARRAY = new Class[0];
-
-    private MixinFactory m_mixinFactory;
-    private AdviceFactoryImpl m_adviceFactory;
-    private AspectRegistry m_aspectRegistry;
-    private InvocationStackPool m_pool;
-
-    public AspectFactoryImpl(
-        MixinFactory mixinFactory, AdviceFactoryImpl adviceFactory, AspectRegistry aspectRegistry
-    )
+    public AspectFactoryImpl( MixinFactory mixinFactory, InvocationStackFactory invocationStackFactory )
         throws IllegalArgumentException
     {
         NullArgumentException.validateNotNull( mixinFactory, "mixinFactory" );
-        NullArgumentException.validateNotNull( adviceFactory, "adviceFactory" );
-        NullArgumentException.validateNotNull( aspectRegistry, "aspectRegistry" );
+        NullArgumentException.validateNotNull( invocationStackFactory, "invocationStackFactory" );
 
         m_mixinFactory = mixinFactory;
-        m_adviceFactory = adviceFactory;
-        m_aspectRegistry = aspectRegistry;
-        InvocationStackFactory invocationStackFactory = new InvocationStackFactory( aspectRegistry );
         m_pool = new InvocationStackPool( invocationStackFactory );
     }
 
     @SuppressWarnings( "unchecked" )
-    public <T> T newInstance( ClassLoader classloader, Class<T> primaryAspect )
+    public <T> T newInstance( Class<T> primaryAspect )
+        throws IllegalArgumentException
     {
+        NullArgumentException.validateNotNull( primaryAspect, "primaryAspect" );
         AspectRoutingHandler handler = getInvocationHandler( primaryAspect );
-        return (T) Proxy.newProxyInstance( classloader, new Class[] { primaryAspect }, handler );
+        ClassLoader classLoader = primaryAspect.getClassLoader();
+        Class[] classes = new Class[] { primaryAspect };
+        return (T) Proxy.newProxyInstance( classLoader, classes, handler );
     }
 
     public <T> T getInstance( String identity )
     {
         // TODO: finish implementation
         return null;
-    }
-
-    /**
-     * Returns {@code true} if the specified {@code mixinInterface} is still exists, {@code false} otherwise.
-     *
-     * @param mixinInterface The mixin interface class to check. This argument must not be {@code null}.
-     *
-     * @return A {@code boolean} indicator whether the specified {@code mixinInterface} is exists.
-     *
-     * @throws IllegalArgumentException Thrown if the specified {@code mixinInterface} is {@code null}.
-     * @since 1.0.0
-     */
-    final boolean isMixinInterfaceExists( Class mixinInterface )
-        throws IllegalArgumentException
-    {
-        NullArgumentException.validateNotNull( mixinInterface, "mixinInterface" );
-        return m_mixinFactory.checkExistence( mixinInterface );
     }
 
     /**
@@ -97,6 +73,15 @@ public final class AspectFactoryImpl
         return m_mixinFactory.create( mixinInterface );
     }
 
+    private AspectRoutingHandler getInvocationHandler( Class aspect )
+        throws IllegalArgumentException
+    {
+        NullArgumentException.validateNotNull( aspect, "aspect" );
+
+        // TODO: AspectRoutingHandler must have the aspect
+        return new AspectRoutingHandler( this );
+    }
+
     final InvocationStack getInvocationStack( Method invokedMethod, Object proxy )
         throws IllegalArgumentException
     {
@@ -109,19 +94,24 @@ public final class AspectFactoryImpl
         return m_pool.getInvocationStack( adviceDescriptor );
     }
 
+    /**
+     * Returns {@code true} if the specified {@code mixinInterface} is still exists, {@code false} otherwise.
+     *
+     * @param mixinInterface The mixin interface class to check.
+     *
+     * @return A {@code boolean} indicator whether the specified {@code mixinInterface} is exists.
+     *
+     * @since 1.0.0
+     */
+    final boolean isMixinInterfaceExists( Class mixinInterface )
+    {
+        return m_mixinFactory.checkExistence( mixinInterface );
+    }
+
     final void release( InvocationStack stack )
         throws IllegalArgumentException
     {
         NullArgumentException.validateNotNull( stack, "stack" );
         m_pool.release( stack );
-    }
-
-    private AspectRoutingHandler getInvocationHandler( Class aspect )
-        throws IllegalArgumentException
-    {
-        NullArgumentException.validateNotNull( aspect, "aspect" );
-
-        // TODO: AspectRoutingHandler must have the aspect
-        return new AspectRoutingHandler( this );
     }
 }

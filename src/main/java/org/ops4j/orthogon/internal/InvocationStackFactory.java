@@ -23,11 +23,11 @@ import java.util.List;
 import org.ops4j.lang.NullArgumentException;
 import org.ops4j.orthogon.advice.Advice;
 
-final class InvocationStackFactory
+public final class InvocationStackFactory
 {
     private final AspectRegistry m_registry;
 
-    InvocationStackFactory( AspectRegistry registry )
+    public InvocationStackFactory( AspectRegistry registry )
         throws IllegalArgumentException
     {
         NullArgumentException.validateNotNull( registry, "registry" );

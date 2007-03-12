@@ -18,7 +18,7 @@ package org.ops4j.orthogon;
 
 public interface AspectFactory
 {
-    <T> T newInstance( ClassLoader classloader, Class<T> primaryAspect );
+    <T> T newInstance( Class<T> primaryAspect );
 
     <T> T getInstance( String identity );
 }

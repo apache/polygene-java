@@ -26,7 +26,6 @@ import org.ops4j.lang.NullArgumentException;
 
 /**
  * TODO: Figure out how to do this in the most efficient manner.
- * TODO: Handle Dynamic type pointcut (i.e. the interceptor that implements InvocationHandler)
  * TODO: Need to have AspectRegistry listener.
  *
  * @since 1.0.0

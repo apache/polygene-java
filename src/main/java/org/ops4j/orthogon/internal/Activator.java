@@ -30,9 +30,9 @@ public class Activator
         throws Exception
     {
         MixinFactory mixinFactory = new MixinFactory();
-        AdviceFactoryImpl adviceFactory = new AdviceFactoryImpl();
         AspectRegistry aspectRegistry = new AspectRegistry();
-        AspectFactory factory = new AspectFactoryImpl( mixinFactory, adviceFactory, aspectRegistry );
+        InvocationStackFactory invocationStackFactory = new InvocationStackFactory( aspectRegistry );
+        AspectFactory factory = new AspectFactoryImpl( mixinFactory, invocationStackFactory );
         m_factoryRegistration = bundleContext.registerService( AspectFactory.class.getName(), factory, null );
     }
 

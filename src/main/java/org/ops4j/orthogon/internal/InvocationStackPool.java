@@ -39,7 +39,7 @@ public class InvocationStackPool
         m_factory = factory;
     }
 
-    public InvocationStack getInvocationStack( JoinpointDescriptor descriptor )
+    final InvocationStack getInvocationStack( JoinpointDescriptor descriptor )
         throws IllegalArgumentException
     {
         NullArgumentException.validateNotNull( descriptor, "descriptor" );
@@ -60,7 +60,7 @@ public class InvocationStackPool
         return poolEntry.stack;
     }
 
-    public void release( InvocationStack stack )
+    final void release( InvocationStack stack )
     {
         JoinpointDescriptor descriptor = stack.getDescriptor();
         PoolEntry entry = new PoolEntry( stack );
