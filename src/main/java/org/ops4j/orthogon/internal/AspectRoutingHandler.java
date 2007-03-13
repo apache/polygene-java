@@ -69,19 +69,21 @@ public final class AspectRoutingHandler
         }
 
         InvocationStack stack = m_aspectFactory.getInvocationStack( method, proxy );
-        Object values;
+        if( stack == null )
+        {
+            return method.invoke( instance, args );
+        }
+        
         try
         {
             stack.resolveDependencies( proxy );
             stack.setTarget( instance );
-            values = stack.invoke( method, args );
+            return stack.invoke( method, args );
         }
         finally
         {
             m_aspectFactory.release( stack );
         }
-
-        return values;
     }
 
     public final Set<Class> getMixinInterfaces()

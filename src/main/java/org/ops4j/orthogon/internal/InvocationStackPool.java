@@ -16,72 +16,87 @@
  */
 package org.ops4j.orthogon.internal;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import org.ops4j.lang.NullArgumentException;
 
 /**
  * TODO: Removal of entries that are not used for a period of time
  * TODO: Thread safe
  */
-public class InvocationStackPool
+final class InvocationStackPool
 {
-    private HashMap<JoinpointDescriptor, LinkedList<PoolEntry>> m_pool;
+    private final InvocationStackFactory m_factory;
+    private final Map<JoinpointDescriptor, List<InvocationStack>> m_pool;
+    private final Set<JoinpointDescriptor> m_noInvocationStack;
 
-    private InvocationStackFactory m_factory;
-
-    public InvocationStackPool( InvocationStackFactory factory )
+    InvocationStackPool( InvocationStackFactory factory )
         throws IllegalArgumentException
     {
         NullArgumentException.validateNotNull( factory, "factory" );
 
-        m_pool = new HashMap<JoinpointDescriptor, LinkedList<PoolEntry>>();
         m_factory = factory;
+        m_pool = new HashMap<JoinpointDescriptor, List<InvocationStack>>();
+        m_noInvocationStack = new HashSet<JoinpointDescriptor>();
     }
 
     final InvocationStack getInvocationStack( JoinpointDescriptor descriptor )
-        throws IllegalArgumentException
     {
-        NullArgumentException.validateNotNull( descriptor, "descriptor" );
-
-        LinkedList<PoolEntry> entries = m_pool.get( descriptor );
-        if( entries == null )
+        if( descriptor == null )
         {
-            entries = new LinkedList<PoolEntry>();
-            m_pool.put( descriptor, entries );
+            return null;
         }
 
-        if( entries.isEmpty() )
+        synchronized( m_noInvocationStack )
         {
-            return m_factory.create( descriptor );
+            if( m_noInvocationStack.contains( descriptor ) )
+            {
+                return null;
+            }
         }
 
-        PoolEntry poolEntry = entries.remove();
-        return poolEntry.stack;
+        synchronized( this )
+        {
+            List<InvocationStack> entries = m_pool.get( descriptor );
+            if( entries != null && !entries.isEmpty() )
+            {
+                return entries.remove( 0 );
+            }
+        }
+
+        InvocationStack stack = m_factory.create( descriptor );
+        if( stack == null )
+        {
+            synchronized( m_noInvocationStack )
+            {
+                m_noInvocationStack.add( descriptor );
+            }
+        }
+
+        return stack;
     }
 
     final void release( InvocationStack stack )
     {
-        JoinpointDescriptor descriptor = stack.getDescriptor();
-        PoolEntry entry = new PoolEntry( stack );
-        LinkedList<PoolEntry> list = m_pool.get( descriptor );
-        if( list == null )
+        if( stack == null )
         {
-            list = new LinkedList<PoolEntry>();
-            m_pool.put( descriptor, list );
+            return;
         }
-        list.addFirst( entry );
-    }
 
-    private static class PoolEntry
-    {
-        InvocationStack stack;
-        long lastused;
-
-        public PoolEntry( InvocationStack stack )
+        JoinpointDescriptor descriptor = stack.getDescriptor();
+        synchronized( this )
         {
-            this.stack = stack;
-            lastused = System.currentTimeMillis();
+            List<InvocationStack> entries = m_pool.get( descriptor );
+            if( entries == null )
+            {
+                entries = new ArrayList<InvocationStack>();
+                m_pool.put( descriptor, entries );
+            }
+            entries.add( 0, stack );
         }
     }
 }

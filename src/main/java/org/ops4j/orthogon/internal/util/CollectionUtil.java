@@ -67,26 +67,29 @@ public final class CollectionUtil
      * Returns {@code true} if all the parts belong to the specified {@code array}, {@code false} otherwise.
      *
      * @param parts The parts to check.
-     * @param array The array to check against. This argument must not be {@code null}.
+     * @param array The array to check against.
      *
      * @return A {@code boolean} value indicates whether any of the parts specified in the specified {@code array}
      *         argument.
      *
-     * @throws IllegalArgumentException Thrown if the specified {@code array} argument is {@code null}.
      * @since 1.0.0
      */
     public static <T> boolean isAllPartOf( T[] parts, T[] array )
     {
-        NullArgumentException.validateNotNull( array, "array" );
-
         if( parts == null )
         {
             return true;
         }
 
+        if( array == null )
+        {
+            return false;
+        }
+
+        boolean found;
         for( T part : parts )
         {
-            boolean found = false;
+            found = false;
             for( T entry : array )
             {
                 if( equals( entry, part ) )

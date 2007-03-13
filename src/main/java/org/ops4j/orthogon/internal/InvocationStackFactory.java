@@ -17,7 +17,6 @@
 package org.ops4j.orthogon.internal;
 
 import java.lang.reflect.Method;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import org.ops4j.lang.NullArgumentException;
@@ -50,19 +49,16 @@ public final class InvocationStackFactory
         NullArgumentException.validateNotNull( descriptor, "descriptor" );
 
         List<Pointcut> pointcuts = m_registry.getPointcuts( descriptor );
-        List<Advice> advices;
         if( pointcuts.isEmpty() )
         {
-            advices = Collections.emptyList();
+            return null;
         }
-        else
+
+        List<Advice> advices = new LinkedList<Advice>();
+        for( Pointcut pointcut : pointcuts )
         {
-            advices = new LinkedList<Advice>();
-            for( Pointcut pointcut : pointcuts )
-            {
-                List<Advice> createdAdvices = pointcut.createAdvices( descriptor );
-                advices.addAll( createdAdvices );
-            }
+            List<Advice> createdAdvices = pointcut.createAdvices( descriptor );
+            advices.addAll( createdAdvices );
         }
 
         Method method = descriptor.getMethod();

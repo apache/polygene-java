@@ -88,7 +88,7 @@ public final class AspectFactoryImpl
         NullArgumentException.validateNotNull( invokedMethod, "invokedMethod" );
         NullArgumentException.validateNotNull( proxy, "proxy" );
 
-        Class<? extends Object> proxyClass = proxy.getClass();
+        Class proxyClass = proxy.getClass();
         Class[] targetClasses = proxyClass.getInterfaces();
         JoinpointDescriptor adviceDescriptor = new JoinpointDescriptor( invokedMethod, targetClasses );
         return m_pool.getInvocationStack( adviceDescriptor );
@@ -109,9 +109,12 @@ public final class AspectFactoryImpl
     }
 
     final void release( InvocationStack stack )
-        throws IllegalArgumentException
     {
-        NullArgumentException.validateNotNull( stack, "stack" );
+        if( stack == null )
+        {
+            return;
+        }
+
         m_pool.release( stack );
     }
 }

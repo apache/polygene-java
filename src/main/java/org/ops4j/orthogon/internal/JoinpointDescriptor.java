@@ -52,17 +52,13 @@ final class JoinpointDescriptor
         {
             return true;
         }
-        if( o == null || getClass() != o.getClass() )
+
+        if( o == null || JoinpointDescriptor.class != o.getClass() )
         {
             return false;
         }
 
         JoinpointDescriptor that = (JoinpointDescriptor) o;
-
-        if( !m_method.equals( that.m_method ) )
-        {
-            return false;
-        }
 
         if( m_targetClasses.length != that.m_targetClasses.length )
         {
@@ -74,19 +70,18 @@ final class JoinpointDescriptor
             return false;
         }
 
-        return true;
+        return m_method.equals( that.m_method );
     }
 
-    public int hashCode()
+    public final int hashCode()
     {
-        int result;
-        result = m_method.hashCode();
-        return result;
+        return m_method.hashCode();
     }
 
     public final String toString()
     {
         StringWriter strWriter = new StringWriter();
+        strWriter.append( "method [" ).append( m_method.toString() ).append( "], " );
         strWriter.append( "targetClassess[" );
         int length = m_targetClasses.length;
         for( int i = 0; i < length; i++ )
@@ -100,7 +95,6 @@ final class JoinpointDescriptor
             }
         }
         strWriter.append( "]" );
-        strWriter.append( ", method [" ).append( m_method.toString() ).append( "]" );
 
         return strWriter.toString();
     }

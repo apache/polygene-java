@@ -21,13 +21,15 @@ package org.ops4j.orthogon.internal;
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import org.ops4j.lang.NullArgumentException;
 import org.ops4j.orthogon.mixin.QiMixin;
 
 public final class MixinFactory
 {
-    private final HashMap<Class, Class> m_mixinMapping;
-    private final HashSet<Class> m_mixinImplementations;
+    private final Map<Class, Class> m_mixinMapping;
+    private final Set<Class> m_mixinImplementations;
 
     public MixinFactory()
     {
