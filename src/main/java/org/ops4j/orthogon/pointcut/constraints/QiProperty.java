@@ -16,19 +16,20 @@
  */
 package org.ops4j.orthogon.pointcut.constraints;
 
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Documented;
-import java.lang.annotation.Inherited;
 
 @Retention( RetentionPolicy.RUNTIME )
-@Target( { ElementType.TYPE } )
+@Target( ElementType.TYPE )
 @Documented
 @Inherited
 public @interface QiProperty
 {
-    String[] value() default {};
     String[] notpresent() default {};
+
+    String[] value() default {};
 }

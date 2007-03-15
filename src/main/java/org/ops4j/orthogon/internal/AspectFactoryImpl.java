@@ -58,28 +58,29 @@ public final class AspectFactoryImpl
      * Returns the mixing implementation instance of the specified {@code mixinInterface}. Returns {@code null} if the
      * mixin interface implementation is not registered.
      *
-     * @param mixinInterface The mixin interface. This argument must not be {@code null}.
+     * @param mixinInterface The mixin interface.
+     * @param primaryAspect  The primary aspect that creates the specified {@code mixinInterface}.
+     *                       This argument must not be {@code null}.
      *
      * @return Returns the mixin implementation.
      *
-     * @throws IllegalArgumentException Thrown if the specified {@code mixinInterface} is {@code null}.
+     * @throws IllegalArgumentException Thrown if the specified {@code primaryAspect} argument is {@code null}.
      * @since 1.0.0
      */
-    public Object createMixin( Class mixinInterface )
+    public Object createMixin( Class mixinInterface, Class primaryAspect )
         throws IllegalArgumentException
     {
-        NullArgumentException.validateNotNull( mixinInterface, "mixinInterface" );
+        NullArgumentException.validateNotNull( primaryAspect, "primaryAspect" );
 
-        return m_mixinFactory.create( mixinInterface );
+        return m_mixinFactory.create( mixinInterface, primaryAspect );
     }
 
-    private AspectRoutingHandler getInvocationHandler( Class aspect )
+    private AspectRoutingHandler getInvocationHandler( Class primaryAspect )
         throws IllegalArgumentException
     {
-        NullArgumentException.validateNotNull( aspect, "aspect" );
+        NullArgumentException.validateNotNull( primaryAspect, "primaryAspect" );
 
-        // TODO: AspectRoutingHandler must have the aspect
-        return new AspectRoutingHandler( this );
+        return new AspectRoutingHandler( primaryAspect, this );
     }
 
     final InvocationStack getInvocationStack( Method invokedMethod, Object proxy )

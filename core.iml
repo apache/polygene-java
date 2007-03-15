@@ -11,7 +11,6 @@
     <orderEntry type="library" name="osgi_R4_core-1.0" level="project" />
     <orderEntry type="library" name="junit-4.1" level="project" />
     <orderEntry type="library" name="ops4j-base-0.4.0" level="project" />
-    <orderEntry type="library" name="trove" level="project" />
     <orderEntryProperties />
   </component>
 </module>

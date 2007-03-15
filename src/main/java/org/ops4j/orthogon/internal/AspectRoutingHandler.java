@@ -17,6 +17,7 @@
 package org.ops4j.orthogon.internal;
 
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.HashMap;
@@ -30,13 +31,16 @@ public final class AspectRoutingHandler
 
     private static final Object DUMMY = new Object();
 
+    private final Class m_primaryAspect;
     private final AspectFactoryImpl m_aspectFactory;
     private final HashMap<Class, Object> m_mixinInstances;
 
-    AspectRoutingHandler( AspectFactoryImpl aspectFactory )
+    AspectRoutingHandler( Class primaryAspect, AspectFactoryImpl aspectFactory )
         throws IllegalArgumentException
     {
         NullArgumentException.validateNotNull( aspectFactory, "aspectFactory" );
+
+        m_primaryAspect = primaryAspect;
 
         m_aspectFactory = aspectFactory;
         m_mixinInstances = new HashMap<Class, Object>();
@@ -59,7 +63,7 @@ public final class AspectRoutingHandler
             instance = m_mixinInstances.get( invokedOn );
             if( instance == null || instance == DUMMY )
             {
-                instance = m_aspectFactory.createMixin( invokedOn );
+                instance = m_aspectFactory.createMixin( invokedOn, m_primaryAspect );
                 if( instance == null )
                 {
                     throw new MixinUnavailableException( invokedOn );
@@ -79,6 +83,10 @@ public final class AspectRoutingHandler
             stack.resolveDependencies( proxy );
             stack.setTarget( instance );
             return stack.invoke( method, args );
+        }
+        catch( InvocationTargetException ute )
+        {
+            throw ute.getCause();
         }
         finally
         {

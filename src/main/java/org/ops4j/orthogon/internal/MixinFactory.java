@@ -24,16 +24,21 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import org.ops4j.lang.NullArgumentException;
+import org.ops4j.orthogon.Identity;
+import org.ops4j.orthogon.mixin.IdGenerator;
+import org.ops4j.orthogon.mixin.QiIdGenerator;
 import org.ops4j.orthogon.mixin.QiMixin;
 
 public final class MixinFactory
 {
-    private final Map<Class, Class> m_mixinMapping;
+    private final Map<Class, Class<Object>> m_mixinMapping;
     private final Set<Class> m_mixinImplementations;
+    private final Map<Class, IdGenerator> m_generators;
 
     public MixinFactory()
     {
-        m_mixinMapping = new HashMap<Class, Class>();
+        m_mixinMapping = new HashMap<Class, Class<Object>>();
+        m_generators = new HashMap<Class, IdGenerator>();
         m_mixinImplementations = new HashSet<Class>();
         registerMixin( IdentityMixin.class );
     }
@@ -89,12 +94,68 @@ public final class MixinFactory
         }
     }
 
-    public final Object create( Class mixinInterface )
+    public final Object create( Class mixinInterface, Class primaryAspect )
         throws IllegalArgumentException
     {
-        NullArgumentException.validateNotNull( mixinInterface, "mixinInterface" );
+        NullArgumentException.validateNotNull( primaryAspect, "primaryAspect" );
 
-        Class mixinImplementation;
+        if( mixinInterface == null )
+        {
+            return null;
+        }
+
+        if( Identity.class.equals( mixinInterface ) )
+        {
+            return createsIdentityMixin( primaryAspect );
+        }
+        else
+        {
+            return createsNonIdentityMixin( mixinInterface );
+        }
+    }
+
+    /**
+     * Creates identity mixin. Returns {@code null}
+     *
+     * @param primaryAspect The primary aspect used to identify the identity generator.
+     *
+     * @return An instance of identity mixin.
+     */
+    private Identity createsIdentityMixin( Class primaryAspect )
+    {
+        QiIdGenerator annotation = (QiIdGenerator) primaryAspect.getAnnotation( QiIdGenerator.class );
+        if( annotation == null )
+        {
+            // TODO: Should we use standard id generator?
+            return null;
+        }
+
+        Class<? extends IdGenerator> generatorClass = annotation.value();
+
+        IdGenerator generator;
+        synchronized( m_generators )
+        {
+            generator = m_generators.get( generatorClass );
+
+            if( generator == null )
+            {
+                generator = newInstance( generatorClass );
+                m_generators.put( generatorClass, generator );
+            }
+        }
+
+        if( generator != null )
+        {
+            String identity = generator.generateId( primaryAspect );
+            return new IdentityMixin( identity );
+        }
+
+        return null;
+    }
+
+    private Object createsNonIdentityMixin( Class mixinInterface )
+    {
+        Class<Object> mixinImplementation;
         synchronized( this )
         {
             mixinImplementation = m_mixinMapping.get( mixinInterface );
@@ -104,9 +165,15 @@ public final class MixinFactory
         {
             return null;
         }
+
+        return newInstance( mixinImplementation );
+    }
+
+    private <T> T newInstance( Class<T> aClass )
+    {
         try
         {
-            return mixinImplementation.newInstance();
+            return aClass.newInstance();
         }
         catch( InstantiationException e )
         {
@@ -118,7 +185,6 @@ public final class MixinFactory
             // TODO: means the default constructor is not public. This should not happened
             e.printStackTrace();
         }
-
         return null;
     }
 

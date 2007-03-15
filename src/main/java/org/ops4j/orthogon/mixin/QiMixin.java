@@ -24,10 +24,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention( RetentionPolicy.RUNTIME )
-@Target( { ElementType.TYPE, ElementType.PACKAGE }  )
+@Target( ElementType.TYPE )
 @Documented
 @Inherited
 public @interface QiMixin
 {
-    Class[] value() default { } ;
+    Class[] value() default {};
 }
