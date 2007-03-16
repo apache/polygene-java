@@ -18,11 +18,9 @@
  */
 package org.ops4j.orthogon.internal;
 
-import java.lang.annotation.Annotation;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
+
 import org.ops4j.lang.NullArgumentException;
 import org.ops4j.orthogon.Identity;
 import org.ops4j.orthogon.mixin.IdGenerator;
@@ -31,26 +29,24 @@ import org.ops4j.orthogon.mixin.QiMixin;
 
 public final class MixinFactory
 {
-    private final Map<Class, Class<Object>> m_mixinMapping;
-    private final Set<Class> m_mixinImplementations;
+    private final Map<Class, Class<?>> m_mixinMapping;
     private final Map<Class, IdGenerator> m_generators;
 
     public MixinFactory()
     {
-        m_mixinMapping = new HashMap<Class, Class<Object>>();
+        m_mixinMapping = new HashMap<Class, Class<?>>();
         m_generators = new HashMap<Class, IdGenerator>();
-        m_mixinImplementations = new HashSet<Class>();
         registerMixin( IdentityMixin.class );
     }
 
-    public final void registerMixin( Class... mixinImplementationClasses )
+    public final void registerMixin( Class<?>... mixinImplementationClasses )
         throws IllegalArgumentException
     {
         NullArgumentException.validateNotNull( mixinImplementationClasses, "mixinImplementationClasses" );
 
         for( int i = 0; i < mixinImplementationClasses.length; i++ )
         {
-            Class mixinImplementationClass = mixinImplementationClasses[ i ];
+            Class<?> mixinImplementationClass = mixinImplementationClasses[ i ];
 
             if( mixinImplementationClass == null )
             {
@@ -59,24 +55,18 @@ public final class MixinFactory
 
             synchronized( this )
             {
-                if( m_mixinImplementations.contains( mixinImplementationClasses ) )
+                if( m_mixinMapping.containsValue( mixinImplementationClass ) )
                 {
-                    return;
+                    continue;
                 }
 
-                Class[] classes = mixinImplementationClass.getInterfaces();
-                for( Class cls : classes )
+                Class<?>[] classes = mixinImplementationClass.getInterfaces();
+                for( Class<?> cls : classes )
                 {
-                    Annotation[] annots = cls.getAnnotations();
-                    for( Annotation annot : annots )
-                    {
-                        if( annot instanceof QiMixin )
-                        {
-                            m_mixinMapping.put( cls, mixinImplementationClass );
-                        }
+                    if ( cls.isAnnotationPresent( QiMixin.class ) ) {
+                        m_mixinMapping.put( cls, mixinImplementationClass );
                     }
                 }
-                m_mixinImplementations.add( mixinImplementationClass );
             }
         }
     }
@@ -121,7 +111,7 @@ public final class MixinFactory
      *
      * @return An instance of identity mixin.
      */
-    private Identity createsIdentityMixin( Class primaryAspect )
+    private Identity createsIdentityMixin( Class<?> primaryAspect )
     {
         QiIdGenerator annotation = (QiIdGenerator) primaryAspect.getAnnotation( QiIdGenerator.class );
         if( annotation == null )
@@ -155,7 +145,7 @@ public final class MixinFactory
 
     private Object createsNonIdentityMixin( Class mixinInterface )
     {
-        Class<Object> mixinImplementation;
+        Class<?> mixinImplementation;
         synchronized( this )
         {
             mixinImplementation = m_mixinMapping.get( mixinInterface );
@@ -208,17 +198,13 @@ public final class MixinFactory
                 Class[] classes = mixinImplementationClass.getInterfaces();
                 for( Class cls : classes )
                 {
-                    Annotation[] annots = cls.getAnnotations();
-                    for( Annotation annot : annots )
+                    if ( cls.isAnnotationPresent( QiMixin.class ) )
                     {
-                        if( annot instanceof QiMixin )
-                        {
-                            m_mixinMapping.remove( cls );
-                        }
+                        m_mixinMapping.remove( cls );
                     }
                 }
-                m_mixinImplementations.remove( mixinImplementationClasses );
             }
         }
+        
     }
 }
