@@ -18,6 +18,7 @@ package org.ops4j.orthogon.internal;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+
 import org.ops4j.lang.NullArgumentException;
 import org.ops4j.orthogon.AspectFactory;
 
@@ -27,6 +28,30 @@ public final class AspectFactoryImpl
     private final MixinFactory m_mixinFactory;
     private final InvocationStackPool m_pool;
 
+    private static final class ProxyCache
+    {
+        final Class m_proxyClass;
+        final Class[] m_interfaces;
+
+        public ProxyCache( final Class proxyClass )
+        {
+            m_proxyClass = proxyClass;
+            m_interfaces = proxyClass.getInterfaces();
+        }
+
+        public boolean needsRefresh( Class proxyClass )
+        {
+            return false == m_proxyClass.equals( proxyClass );
+        }
+
+        public Class[] getInterfaces()
+        {
+            return m_interfaces;
+        }
+    }
+
+    private final ThreadLocal<ProxyCache> m_proxyCache;
+
     public AspectFactoryImpl( MixinFactory mixinFactory, InvocationStackFactory invocationStackFactory )
         throws IllegalArgumentException
     {
@@ -35,6 +60,8 @@ public final class AspectFactoryImpl
 
         m_mixinFactory = mixinFactory;
         m_pool = new InvocationStackPool( invocationStackFactory );
+
+        m_proxyCache = new ThreadLocal<ProxyCache>();
     }
 
     @SuppressWarnings( "unchecked" )
@@ -89,8 +116,16 @@ public final class AspectFactoryImpl
         NullArgumentException.validateNotNull( invokedMethod, "invokedMethod" );
         NullArgumentException.validateNotNull( proxy, "proxy" );
 
-        Class proxyClass = proxy.getClass();
-        Class[] targetClasses = proxyClass.getInterfaces();
+        final Class proxyClass = proxy.getClass();
+        ProxyCache localProxyCache = m_proxyCache.get();
+
+        if ( localProxyCache == null || localProxyCache.needsRefresh( proxyClass ) )
+        {
+            localProxyCache = new ProxyCache( proxyClass );
+            m_proxyCache.set( localProxyCache );
+        }
+
+        final Class[] targetClasses = localProxyCache.getInterfaces();
         JoinpointDescriptor adviceDescriptor = new JoinpointDescriptor( invokedMethod, targetClasses );
         return m_pool.getInvocationStack( adviceDescriptor );
     }
