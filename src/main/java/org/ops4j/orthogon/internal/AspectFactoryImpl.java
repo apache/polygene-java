@@ -50,7 +50,7 @@ public final class AspectFactoryImpl
         }
     }
 
-    private final ThreadLocal<ProxyCache> m_proxyCache;
+    private static final ThreadLocal<ProxyCache> m_proxyCache = new ThreadLocal<ProxyCache>();
 
     public AspectFactoryImpl( MixinFactory mixinFactory, InvocationStackFactory invocationStackFactory )
         throws IllegalArgumentException
@@ -60,8 +60,6 @@ public final class AspectFactoryImpl
 
         m_mixinFactory = mixinFactory;
         m_pool = new InvocationStackPool( invocationStackFactory );
-
-        m_proxyCache = new ThreadLocal<ProxyCache>();
     }
 
     @SuppressWarnings( "unchecked" )
