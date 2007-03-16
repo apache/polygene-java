@@ -23,13 +23,37 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Set;
 import org.ops4j.lang.NullArgumentException;
+import org.ops4j.orthogon.Identity;
 import org.ops4j.orthogon.mixin.MixinUnavailableException;
 
 public final class AspectRoutingHandler
     implements InvocationHandler
 {
-
     private static final Object DUMMY = new Object();
+    private static final Method METHOD_EQUALS;
+    private static final Method METHOD_GET_IDENTITY;
+    private static final Method METHOD_TO_STRING;
+
+    static
+    {
+        Method equalsMethod = null;
+        Method toStringMethod = null;
+        Method getIdentityMethod = null;
+        try
+        {
+            equalsMethod = Object.class.getMethod( "equals", Object.class );
+            getIdentityMethod = Identity.class.getMethod( "getIdentity" );
+            toStringMethod = Object.class.getMethod( "toString" );
+        }
+        catch( NoSuchMethodException e )
+        {
+            // Should not happened.
+            e.printStackTrace();  //TODO: Auto-generated, need attention.
+        }
+        METHOD_EQUALS = equalsMethod;
+        METHOD_TO_STRING = toStringMethod;
+        METHOD_GET_IDENTITY = getIdentityMethod;
+    }
 
     private final Class m_primaryAspect;
     private final AspectFactoryImpl m_aspectFactory;
@@ -46,7 +70,26 @@ public final class AspectRoutingHandler
         m_mixinInstances = new HashMap<Class, Object>();
     }
 
-    public final Object invoke( Object proxy, Method method, Object[] args )
+    public final void addMixinInterface( Class mixinInterface )
+        throws IllegalArgumentException
+    {
+        NullArgumentException.validateNotNull( mixinInterface, "mixinInterface" );
+
+        synchronized( m_mixinInstances )
+        {
+            m_mixinInstances.put( mixinInterface, DUMMY );
+        }
+    }
+
+    public final Set<Class> getMixinInterfaces()
+    {
+        synchronized( m_mixinInstances )
+        {
+            return Collections.unmodifiableSet( m_mixinInstances.keySet() );
+        }
+    }
+
+    private Object handleNonObjectClassInvocation( Method method, Object proxy, Object[] args )
         throws Throwable
     {
         Object instance;
@@ -63,7 +106,7 @@ public final class AspectRoutingHandler
             instance = m_mixinInstances.get( invokedOn );
             if( instance == null || instance == DUMMY )
             {
-                instance = m_aspectFactory.createMixin( invokedOn, m_primaryAspect );
+                instance = m_aspectFactory.createMixin( invokedOn, m_primaryAspect, proxy );
                 if( instance == null )
                 {
                     throw new MixinUnavailableException( invokedOn );
@@ -77,7 +120,7 @@ public final class AspectRoutingHandler
         {
             return method.invoke( instance, args );
         }
-        
+
         try
         {
             stack.resolveDependencies( proxy );
@@ -94,22 +137,47 @@ public final class AspectRoutingHandler
         }
     }
 
-    public final Set<Class> getMixinInterfaces()
+    private Object handleObjectClassInvocation( Method method, Object[] args, Object proxy )
+        throws Throwable
     {
-        synchronized( m_mixinInstances )
+        if( METHOD_EQUALS.equals( method ) )
         {
-            return Collections.unmodifiableSet( m_mixinInstances.keySet() );
+            Object other = args[ 0 ];
+            if( !( other instanceof Identity ) )
+            {
+                return false;
+            }
+
+            Identity otherIdentity = (Identity) other;
+            String otherId = otherIdentity.getIdentity();
+            String id = (String) invoke( proxy, METHOD_GET_IDENTITY, null );
+
+            return id.equals( otherId );
         }
+        else if( METHOD_TO_STRING.equals( method ) )
+        {
+            String id = (String) invoke( proxy, METHOD_GET_IDENTITY, null );
+            return id;
+        }
+        else
+        {
+            // TODO: Unhandled case
+        }
+
+        return null;
     }
 
-    public final void addMixinInterface( Class mixinInterface )
-        throws IllegalArgumentException
+    public final Object invoke( Object proxy, Method method, Object[] args )
+        throws Throwable
     {
-        NullArgumentException.validateNotNull( mixinInterface, "mixinInterface" );
-
-        synchronized( m_mixinInstances )
+        Class<?> invokedOn = method.getDeclaringClass();
+        if( Object.class.equals( invokedOn ) )
         {
-            m_mixinInstances.put( mixinInterface, DUMMY );
+            return handleObjectClassInvocation( method, args, proxy );
+        }
+        else
+        {
+            return handleNonObjectClassInvocation( method, proxy, args );
         }
     }
 

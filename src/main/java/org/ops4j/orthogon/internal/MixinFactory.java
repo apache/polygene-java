@@ -18,12 +18,14 @@
  */
 package org.ops4j.orthogon.internal;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.ops4j.lang.NullArgumentException;
 import org.ops4j.orthogon.Identity;
 import org.ops4j.orthogon.mixin.IdGenerator;
+import org.ops4j.orthogon.mixin.QiEntity;
 import org.ops4j.orthogon.mixin.QiIdGenerator;
 import org.ops4j.orthogon.mixin.QiMixin;
 
@@ -84,24 +86,30 @@ public final class MixinFactory
         }
     }
 
-    public final Object create( Class mixinInterface, Class primaryAspect )
+    public final Object create( Class mixinInterface, Class primaryAspect, Object proxy )
         throws IllegalArgumentException
     {
         NullArgumentException.validateNotNull( primaryAspect, "primaryAspect" );
+        NullArgumentException.validateNotNull( proxy, "proxy" );
 
         if( mixinInterface == null )
         {
             return null;
         }
 
+        Object mixin;
         if( Identity.class.equals( mixinInterface ) )
         {
-            return createsIdentityMixin( primaryAspect );
+            mixin = createsIdentityMixin( primaryAspect );
         }
         else
         {
-            return createsNonIdentityMixin( mixinInterface );
+            mixin = createsNonIdentityMixin( mixinInterface );
         }
+
+        resolveDependency( mixin, proxy );
+
+        return mixin;
     }
 
     /**
@@ -143,22 +151,6 @@ public final class MixinFactory
         return null;
     }
 
-    private Object createsNonIdentityMixin( Class mixinInterface )
-    {
-        Class<?> mixinImplementation;
-        synchronized( this )
-        {
-            mixinImplementation = m_mixinMapping.get( mixinInterface );
-        }
-
-        if( mixinImplementation == null )
-        {
-            return null;
-        }
-
-        return newInstance( mixinImplementation );
-    }
-
     private <T> T newInstance( Class<T> aClass )
     {
         try
@@ -176,6 +168,49 @@ public final class MixinFactory
             e.printStackTrace();
         }
         return null;
+    }
+
+    private Object createsNonIdentityMixin( Class mixinInterface )
+    {
+        Class<?> mixinImplementation;
+        synchronized( this )
+        {
+            mixinImplementation = m_mixinMapping.get( mixinInterface );
+        }
+
+        if( mixinImplementation == null )
+        {
+            return null;
+        }
+
+        return newInstance( mixinImplementation );
+    }
+
+    private void resolveDependency( Object mixin, Object proxy )
+    {
+        if( mixin == null )
+        {
+            return;
+        }
+
+        Class<? extends Object> aClass = mixin.getClass();
+        Field[] fields = aClass.getDeclaredFields();
+        for( Field field : fields )
+        {
+            QiEntity annotation = field.getAnnotation( QiEntity.class );
+            if( annotation != null )
+            {
+                try
+                {
+                    field.setAccessible( true );
+                    field.set( mixin, proxy );
+                }
+                catch( IllegalAccessException e )
+                {
+                    e.printStackTrace();  //TODO: Auto-generated, need attention.
+                }
+            }
+        }
     }
 
     public void unregisterMixin( Class... mixinImplementationClasses )

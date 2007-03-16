@@ -16,41 +16,24 @@
  */
 package org.ops4j.orthogon.internal;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-
+import java.util.HashSet;
+import java.util.Set;
+import java.util.Stack;
 import org.ops4j.lang.NullArgumentException;
 import org.ops4j.orthogon.AspectFactory;
+import org.ops4j.orthogon.mixin.QiMixin;
 
 public final class AspectFactoryImpl
     implements AspectFactory
 {
-    private final MixinFactory m_mixinFactory;
-    private final InvocationStackPool m_pool;
-
-    private static final class ProxyCache
-    {
-        final Class m_proxyClass;
-        final Class[] m_interfaces;
-
-        public ProxyCache( final Class proxyClass )
-        {
-            m_proxyClass = proxyClass;
-            m_interfaces = proxyClass.getInterfaces();
-        }
-
-        public boolean needsRefresh( Class proxyClass )
-        {
-            return false == m_proxyClass.equals( proxyClass );
-        }
-
-        public Class[] getInterfaces()
-        {
-            return m_interfaces;
-        }
-    }
+    private static final Class[] BLANK_CLASS_ARRAY = new Class[0];
 
     private static final ThreadLocal<ProxyCache> m_proxyCache = new ThreadLocal<ProxyCache>();
+    private final MixinFactory m_mixinFactory;
+    private final InvocationStackPool m_pool;
 
     public AspectFactoryImpl( MixinFactory mixinFactory, InvocationStackFactory invocationStackFactory )
         throws IllegalArgumentException
@@ -68,8 +51,9 @@ public final class AspectFactoryImpl
     {
         NullArgumentException.validateNotNull( primaryAspect, "primaryAspect" );
         AspectRoutingHandler handler = getInvocationHandler( primaryAspect );
+
         ClassLoader classLoader = primaryAspect.getClassLoader();
-        Class[] classes = new Class[] { primaryAspect };
+        Class[] classes = getAllDeclaringInterfaces( primaryAspect );
         return (T) Proxy.newProxyInstance( classLoader, classes, handler );
     }
 
@@ -86,18 +70,50 @@ public final class AspectFactoryImpl
      * @param mixinInterface The mixin interface.
      * @param primaryAspect  The primary aspect that creates the specified {@code mixinInterface}.
      *                       This argument must not be {@code null}.
+     * @param proxy          The proxy that creates this mxin. This argument must not be {@code null}.
      *
      * @return Returns the mixin implementation.
      *
-     * @throws IllegalArgumentException Thrown if the specified {@code primaryAspect} argument is {@code null}.
+     * @throws IllegalArgumentException Thrown if the specified {@code primaryAspect} or(and) {@code proxy} arguments
+     *                                  are {@code null}.
      * @since 1.0.0
      */
-    public Object createMixin( Class mixinInterface, Class primaryAspect )
+    final Object createMixin( Class mixinInterface, Class primaryAspect, Object proxy )
         throws IllegalArgumentException
     {
         NullArgumentException.validateNotNull( primaryAspect, "primaryAspect" );
 
-        return m_mixinFactory.create( mixinInterface, primaryAspect );
+        return m_mixinFactory.create( mixinInterface, primaryAspect, proxy );
+    }
+
+    private <T> Class[] getAllDeclaringInterfaces( Class<T> aClass )
+    {
+        Set<Class> results = new HashSet<Class>();
+        results.add( aClass );
+
+        Stack<Class> stack = new Stack<Class>();
+        stack.add( aClass );
+        while( !stack.isEmpty() )
+        {
+            Class current = stack.pop();
+
+            Class[] interfaces = current.getInterfaces();
+            for( Class aInterface : interfaces )
+            {
+                if( !results.contains( aInterface ) )
+                {
+                    stack.add( aInterface );
+                }
+            }
+
+            Annotation qiMixin = current.getAnnotation( QiMixin.class );
+            if( qiMixin != null )
+            {
+                results.add( current );
+            }
+        }
+
+        return results.toArray( BLANK_CLASS_ARRAY );
     }
 
     private AspectRoutingHandler getInvocationHandler( Class primaryAspect )
@@ -114,16 +130,16 @@ public final class AspectFactoryImpl
         NullArgumentException.validateNotNull( invokedMethod, "invokedMethod" );
         NullArgumentException.validateNotNull( proxy, "proxy" );
 
-        final Class proxyClass = proxy.getClass();
+        Class proxyClass = proxy.getClass();
         ProxyCache localProxyCache = m_proxyCache.get();
 
-        if ( localProxyCache == null || localProxyCache.needsRefresh( proxyClass ) )
+        if( localProxyCache == null || localProxyCache.needsRefresh( proxyClass ) )
         {
             localProxyCache = new ProxyCache( proxyClass );
             m_proxyCache.set( localProxyCache );
         }
 
-        final Class[] targetClasses = localProxyCache.getInterfaces();
+        Class[] targetClasses = localProxyCache.getInterfaces();
         JoinpointDescriptor adviceDescriptor = new JoinpointDescriptor( invokedMethod, targetClasses );
         return m_pool.getInvocationStack( adviceDescriptor );
     }
@@ -150,5 +166,27 @@ public final class AspectFactoryImpl
         }
 
         m_pool.release( stack );
+    }
+
+    private static final class ProxyCache
+    {
+        final Class m_proxyClass;
+        final Class[] m_interfaces;
+
+        public ProxyCache( Class proxyClass )
+        {
+            m_proxyClass = proxyClass;
+            m_interfaces = proxyClass.getInterfaces();
+        }
+
+        public boolean needsRefresh( Class proxyClass )
+        {
+            return !m_proxyClass.equals( proxyClass );
+        }
+
+        public Class[] getInterfaces()
+        {
+            return m_interfaces;
+        }
     }
 }

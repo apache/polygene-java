@@ -98,12 +98,13 @@ public final class InvocationStack
         Advice current = m_first;
         while( true )
         {
+            current.resolveDependency( proxy );
+            
             Object next = getNext( current );
             if( current == m_last )
             {
                 break;
             }
-            current.resolveDependency( proxy );
             current = (Advice) next;
         }
     }
