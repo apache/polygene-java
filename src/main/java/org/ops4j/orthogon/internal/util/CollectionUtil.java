@@ -18,49 +18,34 @@
 package org.ops4j.orthogon.internal.util;
 
 import java.util.Collection;
+import java.util.Set;
 import org.ops4j.lang.NullArgumentException;
 
 public final class CollectionUtil
 {
     /**
-     * Returns {@code true} if any of the parts belong to the specified {@code array}, {@code false} if the specified
-     * {@code parts} argument is {@code null} or none of the item in the {@code parts} argument is specified in
-     * {@code array}.
+     * Add all entry in {@code array} argument to the specified {@code collection} argument.
      *
-     * @param parts The parts to check.
-     * @param array The array to check against. This argument must not be {@code null}.
+     * @param array      The array to be added.
+     * @param collection The collection.
      *
-     * @return A {@code boolean} value indicates whether any of the parts specified in the specified {@code array}
-     *         argument.
-     *
-     * @throws IllegalArgumentException Thrown if the specified {@code array} argument is {@code null}.
+     * @throws IllegalArgumentException Thrown if the specified {@code collection} is {@code null}.
      * @since 1.0.0
      */
-    public static <T> boolean isAnyPartOf( T[] parts, T[] array )
+    public static <T> void addAllToCollection( T[] array, Collection<T> collection )
         throws IllegalArgumentException
     {
-        NullArgumentException.validateNotNull( array, "array" );
+        NullArgumentException.validateNotNull( collection, "collection" );
 
-        if( parts == null )
+        if( array == null )
         {
-            return false;
+            return;
         }
 
-        for( T part : parts )
+        for( T entry : array )
         {
-            for( T entry : array )
-            {
-                if( entry != null )
-                {
-                    if( entry.equals( part ) )
-                    {
-                        return true;
-                    }
-                }
-            }
+            collection.add( entry );
         }
-
-        return false;
     }
 
     /**
@@ -124,27 +109,43 @@ public final class CollectionUtil
     }
 
     /**
-     * Add all entry in {@code array} argument to the specified {@code collection} argument.
+     * Returns {@code true} if any of the parts belong to the specified {@code array}, {@code false} if the specified
+     * {@code parts} argument is {@code null} or none of the item in the {@code parts} argument is specified in
+     * {@code array}.
      *
-     * @param array      The array to be added.
-     * @param collection The collection.
+     * @param parts The parts to check.
+     * @param array The array to check against. This argument must not be {@code null}.
      *
-     * @throws IllegalArgumentException Thrown if the specified {@code collection} is {@code null}.
+     * @return A {@code boolean} value indicates whether any of the parts specified in the specified {@code array}
+     *         argument.
+     *
+     * @throws IllegalArgumentException Thrown if the specified {@code array} argument is {@code null}.
      * @since 1.0.0
      */
-    public static <T> void addAllToCollection( T[] array, Collection<T> collection )
+    public static <T> boolean isAnyPartOf( T[] parts, T[] array )
         throws IllegalArgumentException
     {
-        NullArgumentException.validateNotNull( collection, "collection" );
+        NullArgumentException.validateNotNull( array, "array" );
 
-        if( array == null )
+        if( parts == null )
         {
-            return;
+            return false;
         }
 
-        for( T entry : array )
+        for( T part : parts )
         {
-            collection.add( entry );
+            for( T entry : array )
+            {
+                if( entry != null )
+                {
+                    if( entry.equals( part ) )
+                    {
+                        return true;
+                    }
+                }
+            }
         }
+
+        return false;
     }
 }

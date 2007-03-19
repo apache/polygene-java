@@ -17,23 +17,63 @@
 package org.ops4j.orthogon.internal;
 
 import java.io.StringWriter;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import org.ops4j.lang.NullArgumentException;
-import static org.ops4j.orthogon.internal.util.CollectionUtil.isAllPartOf;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.Stack;
+import org.ops4j.orthogon.internal.util.CollectionUtil;
+import org.ops4j.orthogon.mixin.QiMixin;
 
 final class JoinpointDescriptor
 {
+    private static final Class[] BLANK_CLASS_ARRAY = new Class[0];
     private final Method m_method;
     private final Class[] m_targetClasses;
+    private final int m_hashCode;
 
     JoinpointDescriptor( Method method, Class... targetClasses )
         throws IllegalArgumentException
     {
-        NullArgumentException.validateNotNull( method, "method" );
-        NullArgumentException.validateNotNull( targetClasses, "targetClasses" );
-
         m_method = method;
-        m_targetClasses = targetClasses;
+        m_targetClasses = getAllDeclaringInterfaces( targetClasses );
+        m_hashCode = method.hashCode();
+    }
+
+    private static Class[] getAllDeclaringInterfaces( Class... classes )
+    {
+        Set<Class> results = new HashSet<Class>();
+        Stack<Class> stack = new Stack<Class>();
+        for( Class aClass : classes )
+        {
+            if( !results.add( aClass ) )
+            {
+                continue;
+            }
+
+            stack.add( aClass );
+            while( !stack.isEmpty() )
+            {
+                Class current = stack.pop();
+
+                Class[] interfaces = current.getInterfaces();
+                for( Class aInterface : interfaces )
+                {
+                    if( !results.contains( aInterface ) )
+                    {
+                        stack.add( aInterface );
+                    }
+                }
+
+                Annotation qiMixin = current.getAnnotation( QiMixin.class );
+                if( qiMixin != null )
+                {
+                    results.add( current );
+                }
+            }
+        }
+
+        return results.toArray( BLANK_CLASS_ARRAY );
     }
 
     final Method getMethod()
@@ -60,22 +100,17 @@ final class JoinpointDescriptor
 
         JoinpointDescriptor that = (JoinpointDescriptor) o;
 
-        if( m_targetClasses.length != that.m_targetClasses.length )
+        if( CollectionUtil.isAllPartOf( m_targetClasses, that.m_targetClasses ) )
         {
-            return false;
+            return m_method.equals( that.m_method );
         }
 
-        if( !isAllPartOf( m_targetClasses, that.m_targetClasses ) )
-        {
-            return false;
-        }
-
-        return m_method.equals( that.m_method );
+        return false;
     }
 
     public final int hashCode()
     {
-        return m_method.hashCode();
+        return m_hashCode;
     }
 
     public final String toString()
@@ -83,16 +118,17 @@ final class JoinpointDescriptor
         StringWriter strWriter = new StringWriter();
         strWriter.append( "method [" ).append( m_method.toString() ).append( "], " );
         strWriter.append( "targetClassess[" );
+        int i = 0;
         int length = m_targetClasses.length;
-        for( int i = 0; i < length; i++ )
+        for( Class targetClass : m_targetClasses )
         {
-            Class targetClass = m_targetClasses[ i ];
             strWriter.append( targetClass.getName() );
 
             if( i < length - 1 )
             {
                 strWriter.append( ", " );
             }
+            i++;
         }
         strWriter.append( "]" );
 

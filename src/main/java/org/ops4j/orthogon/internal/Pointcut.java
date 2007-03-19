@@ -336,7 +336,7 @@ final class Pointcut
             for( QiImplements qiImplements : m_implementsConstraints )
             {
                 Class[] classes = qiImplements.value();
-                if( !isAllPartOf( classes, descriptorTargetClasses ) )
+                if( !isAnyPartOf( classes, descriptorTargetClasses ) )
                 {
                     return false;
                 }

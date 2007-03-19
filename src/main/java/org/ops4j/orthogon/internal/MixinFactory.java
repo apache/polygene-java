@@ -24,6 +24,7 @@ import java.util.Map;
 
 import org.ops4j.lang.NullArgumentException;
 import org.ops4j.orthogon.Identity;
+import org.ops4j.orthogon.advice.QiDependency;
 import org.ops4j.orthogon.mixin.IdGenerator;
 import org.ops4j.orthogon.mixin.QiEntity;
 import org.ops4j.orthogon.mixin.QiIdGenerator;
@@ -197,7 +198,7 @@ public final class MixinFactory
         Field[] fields = aClass.getDeclaredFields();
         for( Field field : fields )
         {
-            QiEntity annotation = field.getAnnotation( QiEntity.class );
+            QiDependency annotation = field.getAnnotation( QiDependency.class );
             if( annotation != null )
             {
                 try

@@ -16,15 +16,14 @@
  */
 package org.ops4j.orthogon.internal;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
-import java.util.Stack;
 import org.ops4j.lang.NullArgumentException;
 import org.ops4j.orthogon.AspectFactory;
-import org.ops4j.orthogon.mixin.QiMixin;
 
 public final class AspectFactoryImpl
     implements AspectFactory
@@ -53,7 +52,7 @@ public final class AspectFactoryImpl
         AspectRoutingHandler handler = getInvocationHandler( primaryAspect );
 
         ClassLoader classLoader = primaryAspect.getClassLoader();
-        Class[] classes = getAllDeclaringInterfaces( primaryAspect );
+        Class[] classes = new Class[] { primaryAspect };
         return (T) Proxy.newProxyInstance( classLoader, classes, handler );
     }
 
@@ -86,36 +85,6 @@ public final class AspectFactoryImpl
         return m_mixinFactory.create( mixinInterface, primaryAspect, proxy );
     }
 
-    private <T> Class[] getAllDeclaringInterfaces( Class<T> aClass )
-    {
-        Set<Class> results = new HashSet<Class>();
-        results.add( aClass );
-
-        Stack<Class> stack = new Stack<Class>();
-        stack.add( aClass );
-        while( !stack.isEmpty() )
-        {
-            Class current = stack.pop();
-
-            Class[] interfaces = current.getInterfaces();
-            for( Class aInterface : interfaces )
-            {
-                if( !results.contains( aInterface ) )
-                {
-                    stack.add( aInterface );
-                }
-            }
-
-            Annotation qiMixin = current.getAnnotation( QiMixin.class );
-            if( qiMixin != null )
-            {
-                results.add( current );
-            }
-        }
-
-        return results.toArray( BLANK_CLASS_ARRAY );
-    }
-
     private AspectRoutingHandler getInvocationHandler( Class primaryAspect )
         throws IllegalArgumentException
     {
@@ -125,10 +94,11 @@ public final class AspectFactoryImpl
     }
 
     final InvocationStack getInvocationStack( Method invokedMethod, Object proxy )
-        throws IllegalArgumentException
     {
-        NullArgumentException.validateNotNull( invokedMethod, "invokedMethod" );
-        NullArgumentException.validateNotNull( proxy, "proxy" );
+        if( invokedMethod == null || proxy == null )
+        {
+            return null;
+        }
 
         Class proxyClass = proxy.getClass();
         ProxyCache localProxyCache = m_proxyCache.get();
@@ -139,9 +109,8 @@ public final class AspectFactoryImpl
             m_proxyCache.set( localProxyCache );
         }
 
-        Class[] targetClasses = localProxyCache.getInterfaces();
-        JoinpointDescriptor adviceDescriptor = new JoinpointDescriptor( invokedMethod, targetClasses );
-        return m_pool.getInvocationStack( adviceDescriptor );
+        JoinpointDescriptor descriptor = localProxyCache.getJoinpointDescriptor( invokedMethod );
+        return m_pool.getInvocationStack( descriptor );
     }
 
     /**
@@ -170,23 +139,37 @@ public final class AspectFactoryImpl
 
     private static final class ProxyCache
     {
-        final Class m_proxyClass;
-        final Class[] m_interfaces;
+        private final Class m_proxyClass;
+        private final Class[] m_interfaces;
+        private final Map<Method, JoinpointDescriptor> m_descriptors;
 
-        public ProxyCache( Class proxyClass )
+        private ProxyCache( Class proxyClass )
         {
             m_proxyClass = proxyClass;
             m_interfaces = proxyClass.getInterfaces();
+
+            m_descriptors = new HashMap<Method, JoinpointDescriptor>();
         }
 
-        public boolean needsRefresh( Class proxyClass )
+        private boolean needsRefresh( Class proxyClass )
         {
             return !m_proxyClass.equals( proxyClass );
         }
 
-        public Class[] getInterfaces()
+        private JoinpointDescriptor getJoinpointDescriptor( Method invokedMethod )
         {
-            return m_interfaces;
+            JoinpointDescriptor descriptor;
+            synchronized( m_descriptors )
+            {
+                descriptor = m_descriptors.get( invokedMethod );
+                if( descriptor == null )
+                {
+                    descriptor = new JoinpointDescriptor( invokedMethod, m_interfaces );
+                    m_descriptors.put( invokedMethod, descriptor );
+                }
+            }
+
+            return descriptor;
         }
     }
 }
