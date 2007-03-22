@@ -25,9 +25,14 @@ import java.util.Stack;
 import org.ops4j.orthogon.internal.util.CollectionUtil;
 import org.ops4j.orthogon.mixin.QiMixin;
 
-final class JoinpointDescriptor
+public final class JoinpointDescriptor
 {
     private static final Class[] BLANK_CLASS_ARRAY = new Class[0];
+    public static int COUNTER1 = 0;
+    public static int COUNTER2 = 0;
+    public static int COUNTER3 = 0;
+    public static int COUNTER4 = 0;
+    public static int COUNTER5 = 0;
     private final Method m_method;
     private final Class[] m_targetClasses;
     private final int m_hashCode;
@@ -88,24 +93,33 @@ final class JoinpointDescriptor
 
     public boolean equals( Object o )
     {
+        COUNTER1++;
         if( this == o )
         {
             return true;
         }
+        COUNTER2++;
 
         if( o == null || JoinpointDescriptor.class != o.getClass() )
         {
             return false;
         }
+        COUNTER3++;
 
         JoinpointDescriptor that = (JoinpointDescriptor) o;
-
-        if( CollectionUtil.isAllPartOf( m_targetClasses, that.m_targetClasses ) )
+        if( ! m_method.equals( that.m_method ) )
         {
-            return m_method.equals( that.m_method );
+            return false;
         }
+        COUNTER4++;
 
-        return false;
+        if( m_targetClasses.length != that.m_targetClasses.length )
+        {
+            return false;
+        }
+        COUNTER5++;
+
+        return CollectionUtil.isAllPartOf( m_targetClasses, that.m_targetClasses );
     }
 
     public final int hashCode()

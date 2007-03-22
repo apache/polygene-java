@@ -70,7 +70,7 @@ public final class CollectionUtil
         {
             return false;
         }
-
+        
         boolean found;
         for( T part : parts )
         {
@@ -148,4 +148,5 @@ public final class CollectionUtil
 
         return false;
     }
+
 }
