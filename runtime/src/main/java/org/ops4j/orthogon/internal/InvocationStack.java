@@ -74,7 +74,8 @@ public final class InvocationStack
         {
             return method.invoke( m_target, args );
         }
-        return method.invoke( m_first, args );
+        Object result = method.invoke( m_first, args );
+        return result;
     }
 
     /**

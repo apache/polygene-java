@@ -125,7 +125,8 @@ public final class AspectRoutingHandler
         {
             stack.resolveDependencies( proxy );
             stack.setTarget( instance );
-            return stack.invoke( method, args );
+            Object result = stack.invoke( method, args );
+            return result;
         }
         catch( InvocationTargetException ute )
         {
@@ -177,7 +178,8 @@ public final class AspectRoutingHandler
         }
         else
         {
-            return handleNonObjectClassInvocation( method, proxy, args );
+            Object result = handleNonObjectClassInvocation( method, proxy, args );
+            return result;
         }
     }
 
