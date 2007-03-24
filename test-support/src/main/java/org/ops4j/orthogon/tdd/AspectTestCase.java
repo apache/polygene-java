@@ -20,13 +20,13 @@ import java.lang.reflect.Proxy;
 import java.util.Set;
 import org.ops4j.lang.NullArgumentException;
 import org.ops4j.orthogon.AspectFactory;
-import org.ops4j.orthogon.internal.AspectFactoryImpl;
-import org.ops4j.orthogon.internal.AspectParser;
-import org.ops4j.orthogon.internal.AspectRegistry;
-import org.ops4j.orthogon.internal.AspectRoutingHandler;
-import org.ops4j.orthogon.internal.InvocationStackFactory;
-import org.ops4j.orthogon.internal.MixinFactory;
-import org.ops4j.orthogon.mixin.MixinUnavailableException;
+import org.qi4j.runtime.internal.AspectFactoryImpl;
+import org.qi4j.runtime.internal.AspectParser;
+import org.qi4j.runtime.internal.AspectRegistry;
+import org.qi4j.runtime.internal.AspectRoutingHandler;
+import org.qi4j.runtime.internal.InvocationStackFactory;
+import org.qi4j.runtime.internal.MixinFactory;
+import org.qi4j.runtime.mixin.MixinUnavailableException;
 
 public class AspectTestCase
 {

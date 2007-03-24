@@ -14,12 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.orthogon;
+package org.qi4j.runtime.advice;
 
-import org.qi4j.runtime.mixin.QiMixin;
-
-@QiMixin
-public interface Identity
+public class NotAnAdviceException extends RuntimeException
 {
-    String getIdentity();
+    private Class m_advice;
+
+    public NotAnAdviceException( String s, Class advice )
+    {
+        super( s + ": " + advice.getName() );
+        m_advice = advice;
+    }
+
+    public Class getInvalidAdvice()
+    {
+        return m_advice;
+    }
 }

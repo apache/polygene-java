@@ -14,12 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.orthogon;
+package org.qi4j.runtime.pointcut.constraints;
 
-import org.qi4j.runtime.mixin.QiMixin;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-@QiMixin
-public interface Identity
+@Retention( RetentionPolicy.RUNTIME )
+@Target( ElementType.TYPE )
+@Documented
+@Inherited
+public @interface QiMethodExpression
 {
-    String getIdentity();
+    String value();
 }

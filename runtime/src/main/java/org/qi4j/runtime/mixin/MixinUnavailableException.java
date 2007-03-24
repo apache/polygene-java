@@ -14,12 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.orthogon;
+package org.qi4j.runtime.mixin;
 
-import org.qi4j.runtime.mixin.QiMixin;
-
-@QiMixin
-public interface Identity
+public class MixinUnavailableException extends RuntimeException
 {
-    String getIdentity();
+    private Class m_invokedOn;
+
+    public MixinUnavailableException( Class invokedOn )
+    {
+        super( "No Mixin has been registered for " + invokedOn );
+        m_invokedOn = invokedOn;
+    }
+
+    public Class getInvokedOn()
+    {
+        return m_invokedOn;
+    }
 }

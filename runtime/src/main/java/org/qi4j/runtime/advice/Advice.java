@@ -14,12 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.orthogon;
+package org.qi4j.runtime.advice;
 
-import org.qi4j.runtime.mixin.QiMixin;
-
-@QiMixin
-public interface Identity
+public interface Advice<T>
 {
-    String getIdentity();
+    Object getTarget( Class targetClass );
+    
+    void resolveDependency( Object instance );
+
+    void setTarget( Class targetClass, Object target );
 }

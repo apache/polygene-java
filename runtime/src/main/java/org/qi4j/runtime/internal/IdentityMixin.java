@@ -14,12 +14,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.orthogon;
+package org.qi4j.runtime.internal;
 
-import org.qi4j.runtime.mixin.QiMixin;
+import org.ops4j.orthogon.Identity;
 
-@QiMixin
-public interface Identity
+public class IdentityMixin
+    implements Identity
 {
-    String getIdentity();
+    private String m_identity;
+
+    public IdentityMixin( String identity )
+    {
+        m_identity = identity;
+    }
+
+    public String getIdentity()
+    {
+        return m_identity;
+    }
 }
