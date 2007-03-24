@@ -18,7 +18,7 @@
 package org.qi4j.samples.common.generator;
 
 import java.util.Random;
-import org.ops4j.orthogon.mixin.IdGenerator;
+import org.qi4j.runtime.mixin.IdGenerator;
 
 public final class CommonIdGenerator
     implements IdGenerator
