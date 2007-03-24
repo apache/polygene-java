@@ -18,7 +18,7 @@ package org.qi4j.general.attribution;
 
 import org.qi4j.runtime.mixin.QiMixin;
 
-@QiMixin
+@QiMixin( AddressMixin.class )
 public interface Address
 {
     String getCity();

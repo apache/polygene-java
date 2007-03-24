@@ -20,7 +20,7 @@ package org.qi4j.business.operations;
 import org.qi4j.runtime.mixin.QiMixin;
 import java.util.List;
 
-@QiMixin
+@QiMixin( SellerMixin.class )
 public interface Seller
 {
     List<Transaction> getSellerTransactions();

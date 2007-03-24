@@ -19,7 +19,7 @@ package org.qi4j.business.operations;
 
 import org.qi4j.runtime.mixin.QiMixin;
 
-@QiMixin
+@QiMixin( PriceMixin.class )
 public interface Price
 {
     void setPrice( Money money );

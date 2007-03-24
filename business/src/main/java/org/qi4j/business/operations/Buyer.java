@@ -26,7 +26,7 @@ import org.qi4j.runtime.mixin.QiMixin;
  * @see org.qi4j.business.organization.LegalEntity
  * @since 1.0.0
  */
-@QiMixin
+@QiMixin( BuyerMixin.class )
 public interface Buyer
 {
     List<Transaction> getBuyerTransactions();

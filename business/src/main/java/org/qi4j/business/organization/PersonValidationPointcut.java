@@ -21,7 +21,6 @@ import org.qi4j.runtime.pointcut.QiInterceptor;
 import org.qi4j.runtime.pointcut.QiPointcut;
 import org.qi4j.general.validation.CityValidationAdvice;
 import org.qi4j.general.validation.Validation;
-import org.qi4j.business.organization.Person;
 
 @QiPointcut
 @QiImplements( { Validation.class, Person.class } )

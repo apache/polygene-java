@@ -19,7 +19,7 @@ package org.qi4j.business.operations;
 
 import org.qi4j.runtime.mixin.QiMixin;
 
-@QiMixin
+@QiMixin( TransactionEntryMixin.class )
 public interface TransactionEntry<E extends Number, F extends Item>
 {
     F getItem();

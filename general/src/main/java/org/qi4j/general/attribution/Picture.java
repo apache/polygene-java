@@ -21,7 +21,7 @@ import java.net.URL;
 import java.util.List;
 import org.qi4j.runtime.mixin.QiMixin;
 
-@QiMixin
+@QiMixin( PictureMixin.class )
 public interface Picture
 {
     List<URL> getPictures();

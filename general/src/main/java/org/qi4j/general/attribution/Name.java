@@ -19,7 +19,7 @@ package org.qi4j.general.attribution;
 
 import org.qi4j.runtime.mixin.QiMixin;
 
-@QiMixin
+@QiMixin( NameMixin.class )
 public interface Name
 {
     String getName();

@@ -18,7 +18,7 @@ package org.qi4j.business.organization;
 
 import org.qi4j.runtime.mixin.QiMixin;
 
-@QiMixin
+@QiMixin( PersonNameMixin.class )
 public interface PersonName
 {
     String getFirstName();
