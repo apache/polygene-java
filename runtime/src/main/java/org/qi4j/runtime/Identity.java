@@ -17,8 +17,9 @@
 package org.qi4j.runtime;
 
 import org.qi4j.runtime.mixin.QiMixin;
+import org.qi4j.runtime.internal.IdentityMixin;
 
-@QiMixin
+@QiMixin( IdentityMixin.class )
 public interface Identity
 {
     String getIdentity();

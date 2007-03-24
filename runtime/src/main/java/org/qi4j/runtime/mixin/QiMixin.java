@@ -29,5 +29,5 @@ import java.lang.annotation.Target;
 @Inherited
 public @interface QiMixin
 {
-    Class[] value() default {};
+    Class[] value();
 }
