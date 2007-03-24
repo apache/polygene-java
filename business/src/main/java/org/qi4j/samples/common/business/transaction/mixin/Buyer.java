@@ -23,7 +23,7 @@ import org.qi4j.runtime.mixin.QiMixin;
 /**
  * Buyer is aspect that should be only added to LegalEntity.
  *
- * @see org.qi4j.samples.common.business.entity.mixin.LegalEntity
+ * @see org.qi4j.business.entity.mixin.LegalEntity
  * @since 1.0.0
  */
 @QiMixin
