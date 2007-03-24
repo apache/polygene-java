@@ -15,11 +15,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.ops4j.orthogon.samples.common.mixin;
+package org.qi4j.samples.common.mixin;
 
+import org.qi4j.runtime.mixin.QiMixin;
 import java.net.URL;
 import java.util.List;
-import org.ops4j.orthogon.mixin.QiMixin;
 
 @QiMixin
 public interface Picture

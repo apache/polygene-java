@@ -14,11 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.orthogon.samples.common.advice;
+package org.qi4j.samples.common.advice;
 
-import org.ops4j.orthogon.advice.Advice;
-import org.ops4j.orthogon.samples.common.mixin.Address;
-import org.ops4j.orthogon.samples.common.validation.mixin.Validation;
+import org.qi4j.runtime.advice.Advice;
+import org.qi4j.samples.common.mixin.Address;
+import org.qi4j.samples.common.validation.mixin.Validation;
 
 /** THIS IS A SAMPLE GENERATED ADVICE SUBCLASS * */
 public class _CityValidationAdvice_ extends CityValidationAdvice

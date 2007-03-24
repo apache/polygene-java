@@ -15,9 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.ops4j.orthogon.samples.common.business.transaction.mixin;
+package org.qi4j.samples.common.business.transaction.mixin;
 
-import org.ops4j.orthogon.Identity;
+import org.qi4j.runtime.Identity;
 
 public interface Item extends Identity
 {

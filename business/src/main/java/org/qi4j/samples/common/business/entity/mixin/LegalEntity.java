@@ -15,10 +15,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.ops4j.orthogon.samples.common.business.entity.mixin;
+package org.qi4j.samples.common.business.entity.mixin;
 
-import org.ops4j.orthogon.Identity;
-import org.ops4j.orthogon.samples.common.mixin.Address;
+import org.qi4j.samples.common.mixin.Address;
+import org.qi4j.runtime.Identity;
 
 public interface LegalEntity
     extends Identity, Address

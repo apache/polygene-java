@@ -15,9 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.ops4j.orthogon.samples.common.business.mixin;
+package org.qi4j.samples.common.business.mixin;
 
-import org.ops4j.orthogon.mixin.QiMixin;
+import org.qi4j.runtime.mixin.QiMixin;
 
 @QiMixin
 public interface Price

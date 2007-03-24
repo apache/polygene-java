@@ -14,10 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.orthogon.samples.common.business.entity.mixin;
+package org.qi4j.samples.common.business.entity.mixin;
 
-import org.ops4j.orthogon.mixin.QiIdGenerator;
-import org.ops4j.orthogon.samples.common.generator.CommonIdGenerator;
+import org.qi4j.samples.common.generator.CommonIdGenerator;
+import org.qi4j.runtime.mixin.QiIdGenerator;
 
 @QiIdGenerator( CommonIdGenerator.class )
 public interface Person

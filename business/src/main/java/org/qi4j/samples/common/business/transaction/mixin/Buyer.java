@@ -15,15 +15,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.ops4j.orthogon.samples.common.business.transaction.mixin;
+package org.qi4j.samples.common.business.transaction.mixin;
 
 import java.util.List;
-import org.ops4j.orthogon.mixin.QiMixin;
+import org.qi4j.runtime.mixin.QiMixin;
 
 /**
  * Buyer is aspect that should be only added to LegalEntity.
  *
- * @see org.ops4j.orthogon.samples.common.business.entity.mixin.LegalEntity
+ * @see org.qi4j.samples.common.business.entity.mixin.LegalEntity
  * @since 1.0.0
  */
 @QiMixin

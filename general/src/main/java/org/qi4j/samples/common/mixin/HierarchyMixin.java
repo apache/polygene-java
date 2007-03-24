@@ -15,11 +15,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.ops4j.orthogon.samples.common.mixin;
+package org.qi4j.samples.common.mixin;
 
-import org.ops4j.orthogon.advice.QiDependency;
+import org.qi4j.runtime.advice.QiDependency;
 
-public final class HierarchyMixin<T extends Hierarchy> implements Hierarchy<T>
+public final class HierarchyMixin<T extends Hierarchy>
+    implements Hierarchy<T>
 {
     @QiDependency
     Hierarchy m_proxy;

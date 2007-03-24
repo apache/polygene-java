@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.ops4j.orthogon.samples.common.mixin;
+package org.qi4j.samples.common.mixin;
 
 public final class DescriptionMixin implements Description
 {

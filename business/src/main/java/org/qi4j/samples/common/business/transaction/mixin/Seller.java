@@ -15,10 +15,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.ops4j.orthogon.samples.common.business.transaction.mixin;
+package org.qi4j.samples.common.business.transaction.mixin;
 
+import org.qi4j.runtime.mixin.QiMixin;
 import java.util.List;
-import org.ops4j.orthogon.mixin.QiMixin;
 
 @QiMixin
 public interface Seller
