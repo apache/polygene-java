@@ -14,18 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.business.entity.pointcut;
+package org.qi4j.general.validation;
 
-import org.qi4j.runtime.pointcut.constraints.QiImplements;
-import org.qi4j.runtime.pointcut.QiInterceptor;
-import org.qi4j.runtime.pointcut.QiPointcut;
-import org.qi4j.general.validation.CityValidationAdvice;
-import org.qi4j.general.validation.Validation;
-import org.qi4j.business.organization.Person;
+import org.qi4j.runtime.mixin.QiMixin;
 
-@QiPointcut
-@QiImplements( { Validation.class, Person.class } )
-@QiInterceptor( CityValidationAdvice.class )
-public interface PersonValidationPointcut
+@QiMixin( ValidationMixin.class )
+public interface Validation
 {
+    boolean isValid();
 }

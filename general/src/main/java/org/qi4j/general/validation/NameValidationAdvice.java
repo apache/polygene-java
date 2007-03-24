@@ -14,18 +14,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.business.entity.pointcut;
+package org.qi4j.general.validation;
 
-import org.qi4j.runtime.pointcut.constraints.QiImplements;
-import org.qi4j.runtime.pointcut.QiInterceptor;
-import org.qi4j.runtime.pointcut.QiPointcut;
-import org.qi4j.general.validation.CityValidationAdvice;
-import org.qi4j.general.validation.Validation;
-import org.qi4j.business.organization.Person;
+import org.qi4j.general.attribution.Name;
+import org.qi4j.runtime.advice.QiDependency;
+import org.qi4j.runtime.advice.QiTarget;
 
-@QiPointcut
-@QiImplements( { Validation.class, Person.class } )
-@QiInterceptor( CityValidationAdvice.class )
-public interface PersonValidationPointcut
+public abstract class NameValidationAdvice
+    implements Validation
 {
+    @QiTarget
+    Validation next;
+
+    @QiDependency
+    Name target;
+
+    public boolean isValid()
+    {
+        String name = target.getName();
+        boolean validName = name != null && name.length() > 0;
+        if( validName )
+        {
+            return next.isValid();
+        }
+
+        return false;
+    }
 }

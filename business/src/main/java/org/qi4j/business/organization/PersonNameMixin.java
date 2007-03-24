@@ -14,18 +14,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.business.entity.pointcut;
+package org.qi4j.business.organization;
 
-import org.qi4j.runtime.pointcut.constraints.QiImplements;
-import org.qi4j.runtime.pointcut.QiInterceptor;
-import org.qi4j.runtime.pointcut.QiPointcut;
-import org.qi4j.general.validation.CityValidationAdvice;
-import org.qi4j.general.validation.Validation;
-import org.qi4j.business.organization.Person;
-
-@QiPointcut
-@QiImplements( { Validation.class, Person.class } )
-@QiInterceptor( CityValidationAdvice.class )
-public interface PersonValidationPointcut
+public final class PersonNameMixin
+    implements PersonName
 {
+    private String m_firstName;
+    private String m_lastName;
+
+    public PersonNameMixin()
+    {
+    }
+
+    public String getFirstName()
+    {
+        return m_firstName;
+    }
+
+    public void setFirstName( String name )
+    {
+        m_firstName = name;
+    }
+
+    public String getLastName()
+    {
+        return m_lastName;
+    }
+
+    public void setLastName( String lastName )
+    {
+        m_lastName = lastName;
+    }
 }
