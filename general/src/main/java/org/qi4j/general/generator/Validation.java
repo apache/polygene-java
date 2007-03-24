@@ -14,13 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.business.entity.mixin;
+package org.qi4j.general.generator;
 
-import org.qi4j.general.generator.CommonIdGenerator;
-import org.qi4j.runtime.mixin.QiIdGenerator;
+import org.qi4j.runtime.mixin.QiMixin;
 
-@QiIdGenerator( CommonIdGenerator.class )
-public interface Person
-    extends LegalEntity, PersonName
+@QiMixin
+public interface Validation
 {
+    boolean isValid();
 }

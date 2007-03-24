@@ -15,12 +15,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.business.entity.mixin;
+package org.qi4j.business.transaction.mixin;
 
-import org.qi4j.general.generator.Address;
 import org.qi4j.runtime.Identity;
 
-public interface LegalEntity
-    extends Identity, Address
+public interface Item extends Identity
 {
 }

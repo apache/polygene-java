@@ -15,12 +15,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.business.entity.mixin;
+package org.qi4j.general.generator;
 
-import org.qi4j.general.generator.Address;
-import org.qi4j.runtime.Identity;
-
-public interface LegalEntity
-    extends Identity, Address
+public final class DescriptionMixin implements Description
 {
+    private String m_description;
+
+    public DescriptionMixin()
+    {
+    }
+
+    public String getDescription()
+    {
+        return m_description;
+    }
+
+    public void setDescription( String description )
+    {
+        m_description = description;
+    }
 }

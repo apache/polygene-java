@@ -14,18 +14,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.business.entity.pointcut;
+package org.qi4j.general.advice;
 
-import org.qi4j.runtime.pointcut.constraints.QiImplements;
-import org.qi4j.runtime.pointcut.QiInterceptor;
-import org.qi4j.runtime.pointcut.QiPointcut;
-import org.qi4j.general.advice.CityValidationAdvice;
+import org.qi4j.runtime.advice.Advice;
+import org.qi4j.general.generator.Address;
 import org.qi4j.general.generator.Validation;
-import org.qi4j.business.entity.mixin.Person;
 
-@QiPointcut
-@QiImplements( { Validation.class, Person.class } )
-@QiInterceptor( CityValidationAdvice.class )
-public interface PersonValidationPointcut
+/** THIS IS A SAMPLE GENERATED ADVICE SUBCLASS * */
+public class _CityValidationAdvice_ extends CityValidationAdvice
+    implements Advice
 {
+    public final Object getTarget( Class targetClass )
+    {
+        return next;
+    }
+
+    public final void resolveDependency( Object instance )
+    {
+        target = (Address) instance;
+    }
+
+    public final void setTarget( Class targetClass, Object target )
+    {
+        next = (Validation) target;
+    }
 }

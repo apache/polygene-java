@@ -15,12 +15,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.business.entity.mixin;
+package org.qi4j.general.generator;
 
-import org.qi4j.general.generator.Address;
-import org.qi4j.runtime.Identity;
+import java.util.Random;
+import org.qi4j.runtime.mixin.IdGenerator;
 
-public interface LegalEntity
-    extends Identity, Address
+public final class CommonIdGenerator
+    implements IdGenerator
 {
+    private static final long SEED = System.currentTimeMillis();
+    private static final Random RANDOM = new Random( SEED );
+
+    public CommonIdGenerator()
+    {
+    }
+
+    public String generateId( Class primaryAspect )
+    {
+        if( primaryAspect == null )
+        {
+            return null;
+        }
+
+        String classSimpleName = primaryAspect.getSimpleName();
+        return classSimpleName + "-" + RANDOM.nextInt( 10000 );
+    }
 }

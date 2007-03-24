@@ -15,12 +15,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.business.entity.mixin;
+package org.qi4j.general.generator;
 
-import org.qi4j.general.generator.Address;
-import org.qi4j.runtime.Identity;
+import org.qi4j.runtime.mixin.QiMixin;
 
-public interface LegalEntity
-    extends Identity, Address
+@QiMixin
+public interface Name
 {
+    String getName();
+
+    void setName( String name );
 }

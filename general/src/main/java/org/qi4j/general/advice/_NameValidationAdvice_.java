@@ -1,5 +1,5 @@
 /*
- * Copyright 2007 Edward Yakop.
+ * Copyright 2006 Niclas Hedhman.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -15,14 +15,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.business.entity.mixin;
+package org.qi4j.general.advice;
 
-import org.qi4j.runtime.mixin.QiIdGenerator;
-import org.qi4j.general.generator.CommonIdGenerator;
 import org.qi4j.general.generator.Name;
+import org.qi4j.general.generator.Validation;
+import org.qi4j.runtime.advice.Advice;
 
-@QiIdGenerator( CommonIdGenerator.class )
-public interface Company
-    extends LegalEntity, Name
+public final class _NameValidationAdvice_ extends NameValidationAdvice
+    implements Advice
 {
+    public final Object getTarget( Class targetClass )
+    {
+        return next;
+    }
+
+    public final void resolveDependency( Object instance )
+    {
+        target = (Name) instance;
+    }
+
+    public final void setTarget( Class targetClass, Object target )
+    {
+        next = (Validation) target;
+    }
 }

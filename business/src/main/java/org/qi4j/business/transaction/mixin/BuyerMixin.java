@@ -15,12 +15,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.business.entity.mixin;
+package org.qi4j.business.transaction.mixin;
 
-import org.qi4j.general.generator.Address;
-import org.qi4j.runtime.Identity;
+import java.util.List;
 
-public interface LegalEntity
-    extends Identity, Address
+public final class BuyerMixin implements Buyer
 {
+    private List<Transaction> m_transactions;
+
+    public BuyerMixin()
+    {
+    }
+
+    public final List<Transaction> getBuyerTransactions()
+    {
+        return m_transactions;
+    }
+
+    public final void setBuyerTransactions( List<Transaction> transactions )
+    {
+        m_transactions = transactions;
+    }
 }

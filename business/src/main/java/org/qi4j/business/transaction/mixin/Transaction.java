@@ -15,12 +15,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.business.entity.mixin;
+package org.qi4j.business.transaction.mixin;
 
-import org.qi4j.general.generator.Address;
-import org.qi4j.runtime.Identity;
+import java.util.List;
+import org.qi4j.runtime.mixin.QiMixin;
 
-public interface LegalEntity
-    extends Identity, Address
+@QiMixin
+public interface Transaction
 {
+    List<TransactionEntry> getTransactionEntries();
+
+    long getTransactionTime();
+
+    void setTransactionEntries( List<TransactionEntry> entries );
+
+    void setTransactionTime( long time );
 }

@@ -14,13 +14,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.business.entity.mixin;
+package org.qi4j.general.advice;
 
-import org.qi4j.general.generator.CommonIdGenerator;
-import org.qi4j.runtime.mixin.QiIdGenerator;
+import org.qi4j.general.generator.Name;
+import org.qi4j.general.generator.Validation;
+import org.qi4j.runtime.advice.QiDependency;
+import org.qi4j.runtime.advice.QiTarget;
 
-@QiIdGenerator( CommonIdGenerator.class )
-public interface Person
-    extends LegalEntity, PersonName
+public abstract class NameValidationAdvice
+    implements Validation
 {
+    @QiTarget
+    Validation next;
+
+    @QiDependency
+    Name target;
+
+    public boolean isValid()
+    {
+        String name = target.getName();
+        boolean validName = name != null && name.length() > 0;
+        if( validName )
+        {
+            return next.isValid();
+        }
+
+        return false;
+    }
 }

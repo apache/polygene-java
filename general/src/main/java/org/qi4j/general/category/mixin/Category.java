@@ -15,12 +15,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.business.entity.mixin;
+package org.qi4j.general.category.mixin;
 
-import org.qi4j.general.generator.Address;
+import org.qi4j.runtime.mixin.QiIdGenerator;
 import org.qi4j.runtime.Identity;
+import org.qi4j.general.generator.CommonIdGenerator;
+import org.qi4j.general.generator.Name;
+import org.qi4j.general.generator.Description;
+import org.qi4j.general.generator.Hierarchy;
 
-public interface LegalEntity
-    extends Identity, Address
+@QiIdGenerator( CommonIdGenerator.class )
+public interface Category extends Identity, Description, Hierarchy<Category>, Name
 {
 }
