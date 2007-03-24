@@ -19,7 +19,7 @@ package org.ops4j.orthogon.tdd;
 import java.lang.reflect.Proxy;
 import java.util.Set;
 import org.ops4j.lang.NullArgumentException;
-import org.ops4j.orthogon.AspectFactory;
+import org.qi4j.runtime.AspectFactory;
 import org.qi4j.runtime.internal.AspectFactoryImpl;
 import org.qi4j.runtime.internal.AspectParser;
 import org.qi4j.runtime.internal.AspectRegistry;

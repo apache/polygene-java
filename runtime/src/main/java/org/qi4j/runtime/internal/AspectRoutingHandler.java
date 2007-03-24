@@ -23,7 +23,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Set;
 import org.ops4j.lang.NullArgumentException;
-import org.ops4j.orthogon.Identity;
+import org.qi4j.runtime.Identity;
 import org.qi4j.runtime.mixin.MixinUnavailableException;
 
 public final class AspectRoutingHandler

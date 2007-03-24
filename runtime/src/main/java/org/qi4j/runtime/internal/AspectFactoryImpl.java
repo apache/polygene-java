@@ -21,7 +21,7 @@ import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 import org.ops4j.lang.NullArgumentException;
-import org.ops4j.orthogon.AspectFactory;
+import org.qi4j.runtime.AspectFactory;
 
 public final class AspectFactoryImpl
     implements AspectFactory

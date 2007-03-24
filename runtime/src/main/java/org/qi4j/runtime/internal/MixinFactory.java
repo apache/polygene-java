@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.ops4j.lang.NullArgumentException;
-import org.ops4j.orthogon.Identity;
+import org.qi4j.runtime.Identity;
 import org.qi4j.runtime.advice.QiDependency;
 import org.qi4j.runtime.mixin.IdGenerator;
 import org.qi4j.runtime.mixin.QiIdGenerator;

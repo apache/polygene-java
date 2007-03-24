@@ -16,7 +16,7 @@
  */
 package org.qi4j.runtime.internal;
 
-import org.ops4j.orthogon.Identity;
+import org.qi4j.runtime.Identity;
 
 public class IdentityMixin
     implements Identity

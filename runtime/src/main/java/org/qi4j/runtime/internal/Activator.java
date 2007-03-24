@@ -16,7 +16,7 @@
  */
 package org.qi4j.runtime.internal;
 
-import org.ops4j.orthogon.AspectFactory;
+import org.qi4j.runtime.AspectFactory;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
