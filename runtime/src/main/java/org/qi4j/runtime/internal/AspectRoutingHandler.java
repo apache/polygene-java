@@ -32,32 +32,29 @@ public final class AspectRoutingHandler
     private static final Object DUMMY = new Object();
     private static final Method METHOD_EQUALS;
     private static final Method METHOD_GET_IDENTITY;
-    private static final Method METHOD_TO_STRING;
-
-    static
-    {
-        Method equalsMethod = null;
-        Method toStringMethod = null;
-        Method getIdentityMethod = null;
-        try
-        {
-            equalsMethod = Object.class.getMethod( "equals", Object.class );
-            getIdentityMethod = Identity.class.getMethod( "getIdentity" );
-            toStringMethod = Object.class.getMethod( "toString" );
-        }
-        catch( NoSuchMethodException e )
-        {
-            // Should not happened.
-            e.printStackTrace();  //TODO: Auto-generated, need attention.
-        }
-        METHOD_EQUALS = equalsMethod;
-        METHOD_TO_STRING = toStringMethod;
-        METHOD_GET_IDENTITY = getIdentityMethod;
-    }
+    private static final Method METHOD_TOSTRING;
+    private static final Method METHOD_HASHCODE;
 
     private final Class m_primaryAspect;
     private final AspectFactoryImpl m_aspectFactory;
     private final HashMap<Class, Object> m_mixinInstances;
+
+    static
+    {
+        try
+        {
+            METHOD_EQUALS = Object.class.getMethod( "equals", Object.class );
+            METHOD_GET_IDENTITY = Identity.class.getMethod( "getIdentity" );
+            METHOD_TOSTRING = Object.class.getMethod( "toString" );
+            METHOD_HASHCODE = Object.class.getMethod( "hashCode" );
+        }
+        catch( NoSuchMethodException e )
+        {
+            // Can not happened.
+            e.printStackTrace();
+            throw new InternalError();
+        }
+    }
 
     AspectRoutingHandler( Class primaryAspect, AspectFactoryImpl aspectFactory )
         throws IllegalArgumentException
@@ -155,7 +152,7 @@ public final class AspectRoutingHandler
 
             return id.equals( otherId );
         }
-        else if( METHOD_TO_STRING.equals( method ) )
+        else if( METHOD_TOSTRING.equals( method ) )
         {
             String id = (String) invoke( proxy, METHOD_GET_IDENTITY, null );
             return id;
