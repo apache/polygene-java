@@ -20,26 +20,36 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import org.ops4j.lang.NullArgumentException;
 import org.qi4j.runtime.AspectFactory;
+import org.qi4j.runtime.mixin.QiMixin;
 
 public final class AspectFactoryImpl
     implements AspectFactory
 {
-    private static final Class[] BLANK_CLASS_ARRAY = new Class[0];
+    private static final Class[] EMPTY_CLASS_ARRAY = new Class[0];
 
     private static final ThreadLocal<ProxyCache> m_proxyCache = new ThreadLocal<ProxyCache>();
     private final MixinFactory m_mixinFactory;
     private final InvocationStackPool m_pool;
 
+    private final AspectRegistry m_registry;
+
+    public AspectFactoryImpl()
+    {
+    }
+
     public AspectFactoryImpl( MixinFactory mixinFactory, InvocationStackFactory invocationStackFactory )
         throws IllegalArgumentException
     {
+        super();
         NullArgumentException.validateNotNull( mixinFactory, "mixinFactory" );
         NullArgumentException.validateNotNull( invocationStackFactory, "invocationStackFactory" );
 
         m_mixinFactory = mixinFactory;
         m_pool = new InvocationStackPool( invocationStackFactory );
+        m_registry = new AspectRegistry();
     }
 
     @SuppressWarnings( "unchecked" )
@@ -88,7 +98,8 @@ public final class AspectFactoryImpl
     {
         NullArgumentException.validateNotNull( primaryAspect, "primaryAspect" );
 
-        return new AspectRoutingHandler( primaryAspect, this );
+        Set<Class> mixins = null;
+        return new AspectRoutingHandler( primaryAspect, this, mixins );
     }
 
     final InvocationStack getInvocationStack( Method invokedMethod, Object proxy )
@@ -109,6 +120,17 @@ public final class AspectFactoryImpl
 
         JoinpointDescriptor descriptor = localProxyCache.getJoinpointDescriptor( invokedMethod );
         return m_pool.getInvocationStack( descriptor );
+    }
+
+    public void registerAspects( Class... aspects)
+    {
+        AspectParser parser = new AspectParser( m_registry );
+        parser.parse( aspects );
+    }
+
+    public void unregisterAspects( Class... aspects )
+    {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     /**
