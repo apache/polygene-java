@@ -16,14 +16,9 @@
  */
 package org.qi4j.runtime;
 
-
 public interface AspectFactory
 {
-    <T> T newInstance( Class<T> aspect );
+    <T> T newInstance( Class<T> primaryAspect );
 
     <T> T getInstance( String identity );
-
-    void registerAspects( Class... aspects );
-
-    void unregisterAspects( Class... aspects );
 }

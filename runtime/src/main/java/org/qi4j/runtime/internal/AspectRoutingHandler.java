@@ -56,16 +56,25 @@ public final class AspectRoutingHandler
         }
     }
 
-    AspectRoutingHandler( Class primaryAspect, AspectFactoryImpl aspectFactory, Set<Class> mixins )
+    AspectRoutingHandler( Class primaryAspect, AspectFactoryImpl aspectFactory )
         throws IllegalArgumentException
     {
         NullArgumentException.validateNotNull( aspectFactory, "aspectFactory" );
+
         m_primaryAspect = primaryAspect;
+
         m_aspectFactory = aspectFactory;
-        m_mixinInstances = new HashMap<Class, Object>( mixins.size() );
-        for( Class mixin : mixins )
+        m_mixinInstances = new HashMap<Class, Object>();
+    }
+
+    public final void addMixinInterface( Class mixinInterface )
+        throws IllegalArgumentException
+    {
+        NullArgumentException.validateNotNull( mixinInterface, "mixinInterface" );
+
+        synchronized( m_mixinInstances )
         {
-            m_mixinInstances.put( mixin, DUMMY );
+            m_mixinInstances.put( mixinInterface, DUMMY );
         }
     }
 
@@ -77,54 +86,6 @@ public final class AspectRoutingHandler
         }
     }
 
-    public final Object invoke( Object proxy, Method method, Object[] args )
-        throws Throwable
-    {
-        Class<?> invokedOn = method.getDeclaringClass();
-        if( Object.class.equals( invokedOn ) )
-        {
-            return handleObjectClassInvocation( method, args, proxy );
-        }
-        else
-        {
-            Object result = handleNonObjectClassInvocation( method, proxy, args );
-            return result;
-        }
-    }
-
-    private Object handleObjectClassInvocation( Method method, Object[] args, Object proxy )
-        throws Throwable
-    {
-        if( METHOD_EQUALS.equals( method ) )
-        {
-            Object other = args[ 0 ];
-            if( !( other instanceof Identity ) )
-            {
-                return false;
-            }
-            Identity otherIdentity = (Identity) other;
-            String otherId = otherIdentity.getIdentity();
-            String id = (String) invoke( proxy, METHOD_GET_IDENTITY, null );
-            return id.equals( otherId );
-        }
-        else if( METHOD_HASHCODE.equals( method ) )
-        {
-            String id = (String) invoke( proxy, METHOD_GET_IDENTITY, null );
-            return id.hashCode();
-        }
-        else if( METHOD_TOSTRING.equals( method ) )
-        {
-            String id = (String) invoke( proxy, METHOD_GET_IDENTITY, null );
-            return id;
-        }
-        else
-        {
-            // TODO: Unhandled case
-        }
-
-        return null;
-    }
-
     private Object handleNonObjectClassInvocation( Method method, Object proxy, Object[] args )
         throws Throwable
     {
@@ -132,6 +93,13 @@ public final class AspectRoutingHandler
         Class invokedOn = method.getDeclaringClass();
         synchronized( this )
         {
+            // Make sure that the Mixin is still valid
+            boolean valid = m_aspectFactory.isMixinInterfaceExists( invokedOn );
+            if( !valid )
+            {
+                throw new MixinUnavailableException( invokedOn );
+            }
+
             instance = m_mixinInstances.get( invokedOn );
             if( instance == null || instance == DUMMY )
             {
@@ -164,6 +132,62 @@ public final class AspectRoutingHandler
         finally
         {
             m_aspectFactory.release( stack );
+        }
+    }
+
+    private Object handleObjectClassInvocation( Method method, Object[] args, Object proxy )
+        throws Throwable
+    {
+        if( METHOD_EQUALS.equals( method ) )
+        {
+            Object other = args[ 0 ];
+            if( !( other instanceof Identity ) )
+            {
+                return false;
+            }
+
+            Identity otherIdentity = (Identity) other;
+            String otherId = otherIdentity.getIdentity();
+            String id = (String) invoke( proxy, METHOD_GET_IDENTITY, null );
+
+            return id.equals( otherId );
+        }
+        else if( METHOD_TOSTRING.equals( method ) )
+        {
+            String id = (String) invoke( proxy, METHOD_GET_IDENTITY, null );
+            return id;
+        }
+        else
+        {
+            // TODO: Unhandled case
+        }
+
+        return null;
+    }
+
+    public final Object invoke( Object proxy, Method method, Object[] args )
+        throws Throwable
+    {
+        Class<?> invokedOn = method.getDeclaringClass();
+        if( Object.class.equals( invokedOn ) )
+        {
+            return handleObjectClassInvocation( method, args, proxy );
+        }
+        else
+        {
+            Object result = handleNonObjectClassInvocation( method, proxy, args );
+            return result;
+        }
+    }
+
+    public final void removeMixinInterface( Class mixinInterface )
+        throws IllegalArgumentException
+    {
+        NullArgumentException.validateNotNull( mixinInterface, "mixinInterface" );
+
+        synchronized( m_mixinInstances )
+        {
+            m_mixinInstances.remove( mixinInterface );
         }
     }
 }
