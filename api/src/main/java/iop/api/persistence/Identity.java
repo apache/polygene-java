@@ -16,7 +16,6 @@ package iop.api.persistence;
 
 import iop.api.annotation.ImplementedBy;
 import iop.runtime.persistence.IdentityImpl;
-import iop.runtime.persistence.PersistentImpl;
 
 /**
  * This interface provides the identity of the object which may be used
