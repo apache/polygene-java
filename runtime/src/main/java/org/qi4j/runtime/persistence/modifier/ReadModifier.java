@@ -12,10 +12,10 @@
  * limitations under the License.
  *
  */
-package iop.api.persistence.modifier;
+package org.qi4j.runtime.persistence.modifier;
 
-import iop.runtime.ObjectInvocationHandler;
-import iop.runtime.OldMethodInvocationHandler;
+import org.qi4j.runtime.ObjectInvocationHandler;
+import org.qi4j.runtime.OldMethodInvocationHandler;
 import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
