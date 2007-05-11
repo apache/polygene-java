@@ -1,0 +1,318 @@
+/*
+ * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2007, Niclas Hedhman. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
+package iop.runtime;
+
+import iop.api.MixinFactory;
+import iop.api.ObjectFactory;
+import iop.api.ObjectInstantiationException;
+import iop.api.persistence.Identity;
+import iop.api.annotation.ImplementedBy;
+import iop.api.annotation.Uses;
+import iop.api.annotation.Dependency;
+
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.UndeclaredThrowableException;
+import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.IdentityHashMap;
+
+/**
+ * TODO
+ *
+ */
+public class ObjectInvocationHandler
+    implements InvocationHandler
+{
+    // Static --------------------------------------------------------
+    public static ObjectInvocationHandler getInvocationHandler( Object aProxy )
+    {
+        return (ObjectInvocationHandler) Proxy.getInvocationHandler( aProxy );
+    }
+
+    // Attributes ----------------------------------------------------
+    ObjectContext context;
+
+    Map<Class, Object> mixins;
+
+    // Constructors --------------------------------------------------
+    public ObjectInvocationHandler( ObjectContext aContext)
+    {
+        this.context = aContext;
+        mixins = new IdentityHashMap<Class, Object>();
+    }
+
+    // InvocationHandler implementation ------------------------------
+    public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
+    {
+        Class proxyInterface = method.getDeclaringClass();
+
+        if (proxyInterface.equals( Object.class))
+        {
+            if (method.getName().equals( "hashCode"))
+            {
+                if ( Identity.class.isAssignableFrom( context.getBindingType()))
+                {
+                    String id = ((Identity)proxy).getIdentity();
+                    if (id != null)
+                    {
+                        return id.hashCode();
+                    } else
+                    {
+                        return 0;
+                    }
+                } else
+                {
+                    return 0; // TODO ?
+                }
+            }
+            if (method.getName().equals( "equals"))
+            {
+                if ( Identity.class.isAssignableFrom( context.getBindingType()))
+                {
+                    String id = ((Identity)proxy).getIdentity();
+                    return id != null && id.equals( ( (Identity) args[ 0 ] ).getIdentity() );
+                } else
+                {
+                    return false;
+                }
+            }
+            if (method.getName().equals( "toString"))
+            {
+                if ( Identity.class.isAssignableFrom( context.getBindingType()))
+                {
+                    String id = ((Identity)proxy).getIdentity();
+                    return id != null ? id : "";
+                } else
+                {
+                    return "";
+                }
+            }
+        }
+
+        Object mixin = mixins.get( proxyInterface );
+
+        if( mixin == null )
+        {
+            mixin = initializeMixin( proxyInterface, proxy, getWrappedInstance() );
+        }
+
+        Object invokedObject = mixin;
+
+        // Get interface modifiers
+        ArrayList<InvocationInstance> instances = context.getInvocationInstancePool().get( method );
+        if (instances == null)
+        {
+            instances = new ArrayList<InvocationInstance>();
+            context.getInvocationInstancePool().put( method, instances);
+        }
+        InvocationInstance invocationInstance;
+        try
+        {
+            invocationInstance = instances.remove( instances.size()-1);
+        }
+        catch( ArrayIndexOutOfBoundsException e )
+        {
+            invocationInstance = context.getPool().newInstance( method, context.getBindingType(), mixin, instances);
+        }
+
+        ModifierInstance interfaceModifierInstance = invocationInstance.getInterfaceInstance();
+        ModifierInstance mixinModifierInstance = invocationInstance.getMixinInstance();
+        Object interfaceFirstModifier = interfaceModifierInstance.getFirstModifier();
+        Object mixinFirstModifier = mixinModifierInstance.getFirstModifier();
+        if( interfaceFirstModifier != null )
+        {
+            invokedObject = interfaceFirstModifier;
+
+            if( mixinFirstModifier != null )
+            {
+                interfaceModifierInstance.setNextModifier( mixinFirstModifier );
+                mixinModifierInstance.setNextModifier( mixin );
+            }
+            else
+            {
+                interfaceModifierInstance.setNextModifier( mixin );
+            }
+        }
+        else
+        {
+            if( mixinFirstModifier != null )
+            {
+                invokedObject = mixinFirstModifier;
+                mixinModifierInstance.setNextModifier( mixin );
+            }
+        }
+
+        invocationInstance.getProxyHandler().setContext( proxy , mixin, proxyInterface );
+
+        // Invoke
+        try
+        {
+            return method.invoke( invokedObject, args );
+        }
+        catch( InvocationTargetException e )
+        {
+            throw e.getTargetException();
+        }
+        catch( UndeclaredThrowableException e )
+        {
+            throw e.getUndeclaredThrowable();
+        }
+        finally
+        {
+            invocationInstance.release();
+        }
+    }
+
+    public Map<Class, Object> getMixins()
+    {
+        return mixins;
+    }
+
+    // Private -------------------------------------------------------
+    private void findImplementations( Class aMethodClass, Class aType, List<Class> anImplementationClasses )
+    {
+        ImplementedBy impls = (ImplementedBy) aType.getAnnotation( ImplementedBy.class );
+        if( impls != null )
+        {
+            Class[] implementationClasses = impls.value();
+            for( Class implementationClass : implementationClasses )
+            {
+                if( aMethodClass.isAssignableFrom( implementationClass ) )
+                {
+                    anImplementationClasses.add( implementationClass );
+                }
+            }
+        }
+
+        // Check subinterfaces
+        Class[] subTypes = aType.getInterfaces();
+        for( Class subType : subTypes )
+        {
+            findImplementations( aMethodClass, subType, anImplementationClasses );
+        }
+    }
+
+    protected Object initializeMixin( Class aProxyInterface, Object proxy, Object wrappedInstance )
+        throws IllegalAccessException
+    {
+        if( aProxyInterface.isInstance( wrappedInstance ) )
+        {
+            return wrappedInstance;
+        }
+
+        Object mixin;
+        List<Class> implementationClasses = new ArrayList<Class>();
+        findImplementations( aProxyInterface, context.getBindingType(), implementationClasses );
+        if( implementationClasses.size() == 0 && wrappedInstance != null )
+        {
+            findImplementations( aProxyInterface, wrappedInstance.getClass().getInterfaces()[ 0 ], implementationClasses );
+        }
+
+        if( implementationClasses.size() == 0 )
+        {
+            throw new ObjectInstantiationException( "Could not find implementation for " + aProxyInterface.getName() + " in binding " + context.getBindingType().getName() );
+        }
+
+        ObjectInstantiationException ex = null;
+        mixins:
+        for( Class mixinClass : implementationClasses )
+        {
+            mixin = context.getMixinFactory().newInstance( mixinClass );
+
+            Class currentClass = mixin.getClass();
+            while( currentClass != Object.class )
+            {
+                for( Field field : currentClass.getDeclaredFields() )
+                {
+                    Uses uses = field.getAnnotation( Uses.class );
+                    if( uses != null )
+                    {
+                        field.setAccessible( true );
+                        if( field.getType().isInstance( proxy ) )
+                        {
+                            field.set( mixin, proxy );
+                        }
+                        else if( field.getType().isInstance( wrappedInstance ) )
+                        {
+                            field.set( mixin, wrappedInstance );
+                        }
+                        else
+                        {
+                            Object current = wrappedInstance;
+                            boolean done = false;
+                            while( current instanceof Proxy )
+                            {
+                                InvocationHandler handler = Proxy.getInvocationHandler( current );
+                                if( handler instanceof WrappedObjectInvocationHandler )
+                                {
+                                    current = ( (WrappedObjectInvocationHandler) handler ).getWrappedInstance();
+                                    if( field.getType().isInstance( current ) )
+                                    {
+                                        field.set( mixin, current );
+                                        done = true;
+                                    }
+                                }
+                                else
+                                {
+                                    break;
+                                }
+                            }
+
+                            if( !done )
+                            {
+                                ex = new ObjectInstantiationException( "@Uses field " + field.getName() + " in class " + currentClass.getName() + " could not be resolved for binding " + context.getBindingType().getName() + "." );
+                                continue mixins;
+                            }
+                        }
+                    }
+                    Dependency dependency = field.getAnnotation( Dependency.class );
+                    if( dependency != null )
+                    {
+                        field.setAccessible( true );
+                        if( field.getType().equals( ObjectFactory.class ) )
+                        {
+                            field.set( mixin, context.getObjectFactory() );
+                        }
+                        else if( field.getType().equals( MixinFactory.class ) )
+                        {
+                            field.set( mixin, context.getMixinFactory() );
+                        }
+                        else
+                        {
+                            ex = new ObjectInstantiationException( "@Dependency field " + field.getName() + " in class " + currentClass.getName() + " could not be resolved." );
+                            continue mixins;
+                        }
+                    }
+                }
+                currentClass = currentClass.getSuperclass();
+            }
+            mixins.put( aProxyInterface, mixin );
+            return mixin;
+        }
+
+        throw ex;
+    }
+
+    protected Object getWrappedInstance()
+    {
+        return null;
+    }
+}
