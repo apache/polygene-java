@@ -25,7 +25,8 @@ import iop.api.persistence.binding.PersistenceBinding;
 public final class PersistentRepositoryTraceModifier
     implements PersistentRepository
 {
-    @Modifies PersistentRepository repository;
+    @Modifies
+    PersistentRepository repository;
 
     public void create( PersistenceBinding aProxy )
     {

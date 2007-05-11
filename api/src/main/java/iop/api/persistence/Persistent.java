@@ -14,22 +14,20 @@
  */
 package iop.api.persistence;
 
-import iop.api.persistence.PersistentRepository;
 import iop.api.annotation.ImplementedBy;
-import iop.runtime.persistence.IdentityImpl;
 import iop.runtime.persistence.PersistentImpl;
 
 /**
  * Objects which are persistent implement this interface which
  * gives them a reference to a persistent repository.
- *
+ * <p/>
  * The repository reference can be set to null in order to detach
  * the object.
- *
  */
-@ImplementedBy(PersistentImpl.class)
+@ImplementedBy( PersistentImpl.class )
 public interface Persistent
 {
-   void setPersistentRepository(PersistentRepository aRepository);
-   PersistentRepository getPersistentRepository();
+    void setPersistentRepository( PersistentRepository aRepository );
+
+    PersistentRepository getPersistentRepository();
 }

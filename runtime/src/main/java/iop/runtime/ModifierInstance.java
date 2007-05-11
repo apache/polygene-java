@@ -15,7 +15,6 @@
 package iop.runtime;
 
 import iop.api.annotation.Modifies;
-import iop.sample.domain.HelloWorldSpeakerProxy;
 import java.lang.reflect.Field;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.InvocationHandler;

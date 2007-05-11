@@ -27,8 +27,10 @@ import iop.api.persistence.binding.PersistenceBinding;
 public final class PersistentRepositoryReferenceModifier
     implements PersistentRepository
 {
-    @Uses PersistentRepository repo;
-    @Modifies PersistentRepository repository;
+    @Uses
+    PersistentRepository repo;
+    @Modifies
+    PersistentRepository repository;
 
     public void create( PersistenceBinding aProxy )
     {

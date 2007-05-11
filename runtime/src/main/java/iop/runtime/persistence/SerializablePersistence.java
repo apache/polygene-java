@@ -14,36 +14,38 @@
  */
 package iop.runtime.persistence;
 
-import iop.api.persistence.PersistentRepository;
-import iop.api.persistence.PersistenceException;
-import iop.api.persistence.ObjectNotFoundException;
-import iop.api.persistence.modifier.PersistentRepositoryTraceModifier;
-import iop.api.persistence.modifier.PersistentRepositoryReferenceModifier;
-import iop.api.persistence.binding.PersistenceBinding;
-import iop.api.ObjectHelper;
+import iop.api.ObjectFactory;
 import iop.api.annotation.ModifiedBy;
+import iop.api.persistence.ObjectNotFoundException;
+import iop.api.persistence.PersistenceException;
+import iop.api.persistence.PersistentRepository;
+import iop.api.persistence.binding.PersistenceBinding;
+import iop.api.persistence.modifier.PersistentRepositoryReferenceModifier;
+import iop.api.persistence.modifier.PersistentRepositoryTraceModifier;
 import iop.runtime.ObjectInvocationHandler;
 import iop.runtime.ProxyReferenceInvocationHandler;
-import java.util.Map;
-import java.util.HashMap;
-import java.rmi.MarshalledObject;
-import java.io.Serializable;
-import java.io.IOException;
-import java.lang.reflect.Proxy;
-import java.lang.reflect.Method;
 import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.io.IOException;
+import java.io.Serializable;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.rmi.MarshalledObject;
+import java.util.HashMap;
+import java.util.Map;
 
 @ModifiedBy( { PersistentRepositoryTraceModifier.class, PersistentRepositoryReferenceModifier.class } )
 public final class SerializablePersistence
     implements PersistentRepository
 {
     SerializablePersistenceSpi delegate;
+    private ObjectFactory objectFactory;
 
-    public SerializablePersistence( SerializablePersistenceSpi aDelegate )
+    public SerializablePersistence( SerializablePersistenceSpi aDelegate, ObjectFactory objectFactory )
     {
         delegate = aDelegate;
+        this.objectFactory = objectFactory;
     }
 
     public void create( PersistenceBinding aProxy )
@@ -84,7 +86,7 @@ public final class SerializablePersistence
         }
 
         ProxyReferenceInvocationHandler proxyHandler = (ProxyReferenceInvocationHandler) Proxy.getInvocationHandler( aProxy );
-        ObjectInvocationHandler handler = ObjectInvocationHandler.getInvocationHandler( ObjectHelper.getThat( aProxy ) );
+        ObjectInvocationHandler handler = ObjectInvocationHandler.getInvocationHandler( objectFactory.getThat( aProxy ) );
         Map<Class, Object> deserializedMixins = handler.getMixins();
         for( Map.Entry<Class, MarshalledObject> entry : mixins.entrySet() )
         {

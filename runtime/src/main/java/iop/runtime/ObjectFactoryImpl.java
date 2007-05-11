@@ -106,5 +106,18 @@ public final class ObjectFactoryImpl
         }
         return false;
     }
-
+    
+    public <T> T getThat( T proxy )
+    {
+        InvocationHandler handler = Proxy.getInvocationHandler( proxy );
+        if( handler instanceof ProxyReferenceInvocationHandler )
+        {
+            return (T) ((ProxyReferenceInvocationHandler) handler).getProxy();
+        }
+        if( handler instanceof ObjectInvocationHandler )
+        {
+            return proxy;
+        }
+        return null;
+    }
 }

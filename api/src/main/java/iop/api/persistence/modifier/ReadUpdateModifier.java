@@ -33,9 +33,12 @@ import java.lang.reflect.Method;
 public final class ReadUpdateModifier
     implements InvocationHandler
 {
-    @Uses PersistenceBinding persistent;
-    @Dependency InvocationContext context;
-    @Modifies Object next;
+    @Uses
+    PersistenceBinding persistent;
+    @Dependency
+    InvocationContext context;
+    @Modifies
+    Object next;
 
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
     {

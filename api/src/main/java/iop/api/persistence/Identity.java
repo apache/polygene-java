@@ -21,11 +21,11 @@ import iop.runtime.persistence.IdentityImpl;
  * This interface provides the identity of the object which may be used
  * to store the state in a database. It is not the responsibility of the
  * framework to come up with a good identity string.
- *
  */
-@ImplementedBy(IdentityImpl.class)
+@ImplementedBy( IdentityImpl.class )
 public interface Identity
 {
-   public void setIdentity(String anIdentity);
-   public String getIdentity();
+    public void setIdentity( String anIdentity );
+
+    public String getIdentity();
 }

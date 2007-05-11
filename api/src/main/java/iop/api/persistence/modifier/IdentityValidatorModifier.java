@@ -24,8 +24,10 @@ import iop.api.persistence.Identity;
 public final class IdentityValidatorModifier
     implements Identity
 {
-    @Uses Identity currentIdentity;
-    @Modifies Identity identity;
+    @Uses
+    Identity currentIdentity;
+    @Modifies
+    Identity identity;
 
     public void setIdentity( String anIdentity )
     {

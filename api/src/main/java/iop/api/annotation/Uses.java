@@ -14,21 +14,20 @@
  */
 package iop.api.annotation;
 
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Inherited;
 import java.lang.annotation.Documented;
-import java.lang.annotation.Retention;
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 
 /**
  * This annotation should be used by modifiers and mixins which
  * needs to access other mixins.
- *
  */
 @Retention( RetentionPolicy.RUNTIME )
-@Target( ElementType.FIELD)
+@Target( ElementType.FIELD )
 @Documented
 @Inherited
 public @interface Uses

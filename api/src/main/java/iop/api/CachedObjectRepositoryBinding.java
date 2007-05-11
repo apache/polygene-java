@@ -15,18 +15,13 @@
 package iop.api;
 
 import iop.runtime.ObjectRepositoryCache;
-import iop.runtime.ObjectRepositoryCacheImpl;
-import iop.runtime.modifier.ObjectRepositoryCacheModifier;
-import iop.api.annotation.ImplementedBy;
-import iop.api.annotation.ModifiedBy;
 
 /**
  * Caching repositories return the same proxy
  * if one with a particular identity is asked for twice.
- *
+ * <p/>
  * The cache is a Decorator for the ObjectRepository.
- *
  */
-public interface CachedObjectRepositoryBinding  extends ObjectRepository, ObjectRepositoryCache
+public interface CachedObjectRepositoryBinding extends ObjectRepository, ObjectRepositoryCache
 {
 }

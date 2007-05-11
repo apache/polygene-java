@@ -16,29 +16,28 @@ package iop.api.persistence;
 
 /**
  * TODO
- *
  */
 public class ObjectNotFoundException
-   extends PersistenceException
+    extends PersistenceException
 {
-   public ObjectNotFoundException()
-   {
-   }
+    public ObjectNotFoundException()
+    {
+    }
 
-   public ObjectNotFoundException(String message)
-   {
-      super(message);
-   }
+    public ObjectNotFoundException( String message )
+    {
+        super( message );
+    }
 
-   public ObjectNotFoundException(String message, Throwable cause)
-   {
-      super(message, cause);
-   }
+    public ObjectNotFoundException( String message, Throwable cause )
+    {
+        super( message, cause );
+    }
 
-   public ObjectNotFoundException(Throwable cause)
-   {
-      super(cause);
-   }
+    public ObjectNotFoundException( Throwable cause )
+    {
+        super( cause );
+    }
 
-    
+
 }

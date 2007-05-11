@@ -16,27 +16,26 @@ package iop.api;
 
 /**
  * TODO
- *
  */
 public class ObjectInstantiationException
-   extends RuntimeException
+    extends RuntimeException
 {
-   public ObjectInstantiationException()
-   {
-   }
+    public ObjectInstantiationException()
+    {
+    }
 
-   public ObjectInstantiationException(String message)
-   {
-      super(message);
-   }
+    public ObjectInstantiationException( String message )
+    {
+        super( message );
+    }
 
-   public ObjectInstantiationException(String message, Throwable cause)
-   {
-      super(message, cause);
-   }
+    public ObjectInstantiationException( String message, Throwable cause )
+    {
+        super( message, cause );
+    }
 
-   public ObjectInstantiationException(Throwable cause)
-   {
-      super(cause);
-   }
+    public ObjectInstantiationException( Throwable cause )
+    {
+        super( cause );
+    }
 }

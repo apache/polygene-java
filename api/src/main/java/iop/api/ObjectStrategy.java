@@ -20,7 +20,6 @@ import iop.runtime.ObjectStrategyDelegatorImpl;
 /**
  * This factory creates proxies that implement the given
  * binding interfaces.
- *
  */
 @ImplementedBy( ObjectStrategyDelegatorImpl.class )
 public interface ObjectStrategy
@@ -44,11 +43,11 @@ public interface ObjectStrategy
      */
     <T> T cast( Class<T> anObjectType );
 
-    /** Checks if the object can be cast() to the provided object type.
+    /**
+     * Checks if the object can be cast() to the provided object type.
      *
      * @param anObjectType The object type we want to check the assignability to for this object.
-     *
      * @return true if a cast() is possible of this object to the provided object type.
      */
-    boolean isInstance( Class anObjectType);
+    boolean isInstance( Class anObjectType );
 }

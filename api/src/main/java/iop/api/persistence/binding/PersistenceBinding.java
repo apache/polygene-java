@@ -22,9 +22,8 @@ import iop.api.persistence.modifier.ReadUpdateModifier;
 /**
  * Persistent domain objects should implement this binding
  * which provides an identity and a reference to a repository
- *
  */
-@ModifiedBy( ReadUpdateModifier.class)
-public interface PersistenceBinding  extends Identity, Persistent
+@ModifiedBy( ReadUpdateModifier.class )
+public interface PersistenceBinding extends Identity, Persistent
 {
 }

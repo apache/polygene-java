@@ -17,7 +17,7 @@ package iop.api.persistence;
 import iop.api.annotation.ImplementedBy;
 import iop.runtime.persistence.LifecycleImpl;
 
-@ImplementedBy( LifecycleImpl.class)
+@ImplementedBy( LifecycleImpl.class )
 public interface Lifecycle
 {
     void create()

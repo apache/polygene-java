@@ -14,23 +14,20 @@
  */
 package iop.api;
 
-import iop.api.persistence.Identity;
-import iop.api.persistence.ObjectNotFoundException;
 import iop.api.persistence.binding.PersistenceBinding;
 
 /**
- * This repository is used to get proxies representing persistent objects. 
- *
+ * This repository is used to get proxies representing persistent objects.
  */
 public interface ObjectRepository
 {
-   /**
-    * Get a proxy to a persistent object. This proxy may have been cached
-    * and returned from previous invocations with the same identity.
-    *
-    * @param anIdentity
-    * @param aType
-    * @return
-    */
-   <T extends PersistenceBinding> T getInstance(String anIdentity, Class<T> aType);
+    /**
+     * Get a proxy to a persistent object. This proxy may have been cached
+     * and returned from previous invocations with the same identity.
+     *
+     * @param anIdentity
+     * @param aType
+     * @return
+     */
+    <T extends PersistenceBinding> T getInstance( String anIdentity, Class<T> aType );
 }

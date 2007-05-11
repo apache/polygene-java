@@ -18,9 +18,8 @@ package iop.api;
 /**
  * This factory is responsible for instantiating mixins. This is where
  * you would put DI integrations.
- *
  */
 public interface MixinFactory
 {
-   <T> T newInstance(Class<T> anObjectType);
+    <T> T newInstance( Class<T> anObjectType );
 }

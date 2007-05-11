@@ -17,6 +17,8 @@ package iop.api;
 public interface InvocationContext
 {
     Object getProxy();
+
     Object getMixin();
+
     Class getMixinType();
 }

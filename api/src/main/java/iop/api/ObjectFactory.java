@@ -17,29 +17,30 @@ package iop.api;
 /**
  * This factory creates proxies that implement the given
  * binding interfaces.
- *
  */
 public interface ObjectFactory
 {
-   /**
-    * Create a new object that implements the given interface.
-    *
-    * @param anObjectType an interface that describes the object to be created
-    * @return a new proxy object implementing the interface
-    */
-   <T> T newInstance(Class<T> anObjectType);
+    /**
+     * Create a new object that implements the given interface.
+     *
+     * @param anObjectType an interface that describes the object to be created
+     * @return a new proxy object implementing the interface
+     */
+    <T> T newInstance( Class<T> anObjectType );
 
-   /**
-    * Create a new object that implements the given interface.
-    *
-    * The new object wraps another object which provides mixin implementations
-    * that should be reused for this new object.
-    *
-    * @param anObjectType an interface that describes the object to be created
-    * @param anObject  an existing object whose mixins should be reused
-    * @return a new proxy object implementing the interface
-    */
-   <T> T cast(Class<T> anObjectType, Object anObject);
+    /**
+     * Create a new object that implements the given interface.
+     * <p/>
+     * The new object wraps another object which provides mixin implementations
+     * that should be reused for this new object.
+     *
+     * @param anObjectType an interface that describes the object to be created
+     * @param anObject     an existing object whose mixins should be reused
+     * @return a new proxy object implementing the interface
+     */
+    <T> T cast( Class<T> anObjectType, Object anObject );
 
     boolean isInstance( Class anObjectType, Object anObject );
+
+    <T> T getThat( T proxy );
 }

@@ -15,7 +15,6 @@
 package iop.runtime;
 
 import iop.api.ObjectFactory;
-import iop.api.ObjectHelper;
 import iop.api.ObjectStrategy;
 import iop.api.annotation.Dependency;
 import iop.api.annotation.Uses;
@@ -33,12 +32,12 @@ public final class ObjectStrategyDelegatorImpl
 
     public <T> T cast( Class<T> anObjectType )
     {
-        return delegate.cast( anObjectType, ObjectHelper.getThat( meAsStrategy ) );
+        return delegate.cast( anObjectType, delegate.getThat( meAsStrategy ) );
     }
 
     public boolean isInstance( Class anObjectType )
     {
-        return delegate.isInstance( anObjectType, ObjectHelper.getThat( meAsStrategy ) );
+        return delegate.isInstance( anObjectType, delegate.getThat( meAsStrategy ) );
     }
 
 

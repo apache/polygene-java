@@ -15,14 +15,10 @@
 package iop.api.persistence;
 
 import iop.api.persistence.binding.PersistenceBinding;
-import iop.api.persistence.modifier.PersistentRepositoryReferenceModifier;
-import iop.api.persistence.modifier.PersistentRepositoryTraceModifier;
-import iop.api.annotation.ModifiedBy;
 
 
 /**
  * Persistent repositories must implement this.
- *
  */
 public interface PersistentRepository
 {

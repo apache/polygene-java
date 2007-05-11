@@ -14,22 +14,27 @@
  */
 package iop.runtime.persistence;
 
+import iop.api.ObjectFactory;
+import iop.api.annotation.Dependency;
 import iop.api.annotation.Modifies;
 import iop.api.annotation.Uses;
 import iop.api.persistence.binding.PersistenceBinding;
-import iop.api.ObjectHelper;
 
 public final class PeristentCloneableModifier<T extends PersistenceBinding>
     implements iop.api.persistence.Cloneable<T>
 {
-    @Modifies iop.api.persistence.Cloneable<T> cloneable;
-    @Uses PersistenceBinding persistent;
+    @Modifies
+    iop.api.persistence.Cloneable<T> cloneable;
+    @Uses
+    PersistenceBinding persistent;
+    @Dependency
+    ObjectFactory factory;
 
     public T clone()
     {
         T cloned = cloneable.clone();
-        cloned.setIdentity( persistent.getIdentity()+"cloned");
-        persistent.getPersistentRepository().create( ObjectHelper.getThat(cloned));
+        cloned.setIdentity( persistent.getIdentity() + "cloned" );
+        persistent.getPersistentRepository().create( factory.getThat( cloned ) );
         return cloned;
     }
 }

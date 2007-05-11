@@ -14,16 +14,15 @@
  */
 package iop.api.annotation;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 /**
  * This annotation is used in modifier fields to get a reference
  * to the mixin whose methods the modifier adapts.
- *
  */
 @Retention( RetentionPolicy.RUNTIME )
 @java.lang.annotation.Target( ElementType.FIELD )

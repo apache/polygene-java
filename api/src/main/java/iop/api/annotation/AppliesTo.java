@@ -15,10 +15,10 @@
 
 package iop.api.annotation;
 
-import java.lang.annotation.Inherited;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
 import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
@@ -27,10 +27,9 @@ import java.lang.annotation.Target;
  * Modifiers that implement InvocationHandler and which should only
  * be applied to methods that have a particular annotation should use
  * this.
- *
+ * <p/>
  * Example: a transaction modifier would use @AppliesTo(Transaction.class) to
  * denote that it only applies to methods which are marked as transactional.
- *
  */
 @Retention( RetentionPolicy.RUNTIME )
 @Target( ElementType.TYPE )

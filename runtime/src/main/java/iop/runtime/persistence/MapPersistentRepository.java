@@ -14,33 +14,16 @@
  */
 package iop.runtime.persistence;
 
-import iop.api.persistence.PersistentRepository;
-import iop.api.persistence.ObjectNotFoundException;
-import iop.api.persistence.PersistenceException;
-import iop.api.persistence.modifier.PersistentRepositoryTraceModifier;
-import iop.api.persistence.modifier.PersistentRepositoryReferenceModifier;
-import iop.api.persistence.binding.PersistenceBinding;
 import iop.api.annotation.ModifiedBy;
-import iop.api.ObjectHelper;
-import iop.runtime.ObjectInvocationHandler;
-import iop.runtime.ProxyReferenceInvocationHandler;
-import iop.runtime.InvocationInstance;
-
-import java.util.Map;
-import java.util.HashMap;
-import java.io.Serializable;
-import java.io.IOException;
+import iop.api.persistence.modifier.PersistentRepositoryReferenceModifier;
+import iop.api.persistence.modifier.PersistentRepositoryTraceModifier;
 import java.rmi.MarshalledObject;
-import java.lang.reflect.Proxy;
-import java.lang.reflect.Method;
-import java.beans.Introspector;
-import java.beans.BeanInfo;
-import java.beans.PropertyDescriptor;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
  * In-memory repository which stores objects in a hashmap.
- *
  */
 @ModifiedBy( { PersistentRepositoryTraceModifier.class, PersistentRepositoryReferenceModifier.class } )
 public final class MapPersistentRepository
