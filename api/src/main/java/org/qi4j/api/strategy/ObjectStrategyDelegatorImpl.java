@@ -12,7 +12,7 @@
  * limitations under the License.
  *
  */
-package iop.runtime;
+package org.qi4j.api.strategy;
 
 import org.qi4j.api.ObjectFactory;
 import org.qi4j.api.ObjectStrategy;

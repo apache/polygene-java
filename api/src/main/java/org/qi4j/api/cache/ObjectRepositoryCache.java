@@ -12,29 +12,24 @@
  * limitations under the License.
  *
  */
-package iop.runtime.persistence;
+package org.qi4j.api.cache;
 
-import org.qi4j.api.persistence.modifier.IdentityValidatorModifier;
-import org.qi4j.api.persistence.Identity;
+import org.qi4j.api.annotation.ImplementedBy;
 import org.qi4j.api.annotation.ModifiedBy;
-
+import org.qi4j.api.persistence.binding.PersistenceBinding;
 
 /**
- * This mixin contains the identity of an object.
+ * Proxy caches should implement this.
  */
-@ModifiedBy( IdentityValidatorModifier.class )
-public final class IdentityImpl
-    implements Identity
+@ModifiedBy( ObjectRepositoryCacheModifier.class )
+@ImplementedBy( ObjectRepositoryCacheImpl.class )
+public interface ObjectRepositoryCache
 {
-    String identity;
+    <T extends PersistenceBinding> T getObject( String anIdentity );
 
-    public void setIdentity( String anIdentity )
-    {
-        identity = anIdentity;
-    }
+    <T extends PersistenceBinding> void addObject( String anIdentity, T anObject );
 
-    public String getIdentity()
-    {
-        return identity;
-    }
+    void removeObject( String anIdentity );
+
+    void removeAll();
 }

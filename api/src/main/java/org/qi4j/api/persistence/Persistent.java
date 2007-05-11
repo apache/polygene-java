@@ -15,7 +15,7 @@
 package org.qi4j.api.persistence;
 
 import org.qi4j.api.annotation.ImplementedBy;
-import iop.runtime.persistence.PersistentImpl;
+import org.qi4j.api.persistence.impl.PersistentImpl;
 
 /**
  * Objects which are persistent implement this interface which

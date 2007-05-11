@@ -12,27 +12,29 @@
  * limitations under the License.
  *
  */
-package iop.runtime.persistence;
+package org.qi4j.api.persistence.impl;
 
-import org.qi4j.api.persistence.PersistentRepository;
-import org.qi4j.api.persistence.Persistent;
+import org.qi4j.api.persistence.modifier.IdentityValidatorModifier;
+import org.qi4j.api.persistence.Identity;
+import org.qi4j.api.annotation.ModifiedBy;
 
 
 /**
- * Mixin that holds a reference to a persistent repository
+ * This mixin contains the identity of an object.
  */
-public final class PersistentImpl
-    implements Persistent
+@ModifiedBy( IdentityValidatorModifier.class )
+public final class IdentityImpl
+    implements Identity
 {
-    PersistentRepository persistentRepository;
+    String identity;
 
-    public void setPersistentRepository( PersistentRepository aRepository )
+    public void setIdentity( String anIdentity )
     {
-        persistentRepository = aRepository;
+        identity = anIdentity;
     }
 
-    public PersistentRepository getPersistentRepository()
+    public String getIdentity()
     {
-        return persistentRepository;
+        return identity;
     }
 }

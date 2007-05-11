@@ -15,7 +15,7 @@
 package org.qi4j.api.persistence;
 
 import org.qi4j.api.annotation.ImplementedBy;
-import iop.runtime.persistence.IdentityImpl;
+import org.qi4j.api.persistence.impl.IdentityImpl;
 
 /**
  * This interface provides the identity of the object which may be used

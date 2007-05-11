@@ -15,7 +15,7 @@
 package org.qi4j.api.persistence;
 
 import org.qi4j.api.annotation.ImplementedBy;
-import iop.runtime.persistence.LifecycleImpl;
+import org.qi4j.api.persistence.impl.LifecycleImpl;
 
 @ImplementedBy( LifecycleImpl.class )
 public interface Lifecycle

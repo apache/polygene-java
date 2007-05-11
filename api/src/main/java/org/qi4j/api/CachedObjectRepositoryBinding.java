@@ -14,7 +14,7 @@
  */
 package org.qi4j.api;
 
-import iop.runtime.ObjectRepositoryCache;
+import org.qi4j.api.cache.ObjectRepositoryCache;
 
 /**
  * Caching repositories return the same proxy

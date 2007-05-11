@@ -12,24 +12,27 @@
  * limitations under the License.
  *
  */
-package iop.runtime;
+package org.qi4j.api.persistence.impl;
 
-import org.qi4j.api.annotation.ImplementedBy;
-import org.qi4j.api.annotation.ModifiedBy;
-import org.qi4j.api.persistence.binding.PersistenceBinding;
+import org.qi4j.api.persistence.PersistentRepository;
+import org.qi4j.api.persistence.Persistent;
+
 
 /**
- * Proxy caches should implement this.
+ * Mixin that holds a reference to a persistent repository
  */
-@ModifiedBy( ObjectRepositoryCacheModifier.class )
-@ImplementedBy( ObjectRepositoryCacheImpl.class )
-public interface ObjectRepositoryCache
+public final class PersistentImpl
+    implements Persistent
 {
-    <T extends PersistenceBinding> T getObject( String anIdentity );
+    PersistentRepository persistentRepository;
 
-    <T extends PersistenceBinding> void addObject( String anIdentity, T anObject );
+    public void setPersistentRepository( PersistentRepository aRepository )
+    {
+        persistentRepository = aRepository;
+    }
 
-    void removeObject( String anIdentity );
-
-    void removeAll();
+    public PersistentRepository getPersistentRepository()
+    {
+        return persistentRepository;
+    }
 }

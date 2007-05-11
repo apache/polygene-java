@@ -15,7 +15,7 @@
 package org.qi4j.api;
 
 import org.qi4j.api.annotation.ImplementedBy;
-import iop.runtime.ObjectStrategyDelegatorImpl;
+import org.qi4j.api.strategy.ObjectStrategyDelegatorImpl;
 
 /**
  * This factory creates proxies that implement the given

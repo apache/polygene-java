@@ -12,7 +12,7 @@
  * limitations under the License.
  *
  */
-package iop.runtime;
+package org.qi4j.api.cache;
 
 import java.util.HashMap;
 import java.util.Map;

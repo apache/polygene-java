@@ -12,7 +12,7 @@
  * limitations under the License.
  *
  */
-package iop.runtime.persistence;
+package org.qi4j.api.persistence.impl;
 
 import org.qi4j.api.annotation.Uses;
 import org.qi4j.api.persistence.Lifecycle;
