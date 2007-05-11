@@ -32,7 +32,7 @@ import java.util.Random;
 public final class BinaryFilePersistence
     implements SerializablePersistenceSpi
 {
-    private static final String INDEX_FILE = "index.iop";
+    private static final String INDEX_FILE = "index.qi4j";
     private File storageDir;
     private Properties fileMap;
     private Random random;
