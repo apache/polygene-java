@@ -14,7 +14,7 @@
  */
 package iop.runtime;
 
-import iop.api.persistence.ObjectNotFoundException;
+import org.qi4j.api.persistence.ObjectNotFoundException;
 
 public interface ObjectReference
 {

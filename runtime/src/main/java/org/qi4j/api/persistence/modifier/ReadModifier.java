@@ -14,16 +14,16 @@
  */
 package iop.api.persistence.modifier;
 
-import iop.api.annotation.AppliesTo;
-import iop.api.annotation.Dependency;
-import iop.api.annotation.Uses;
-import iop.api.persistence.PersistentRepository;
-import iop.api.persistence.binding.PersistenceBinding;
 import iop.runtime.ObjectInvocationHandler;
 import iop.runtime.OldMethodInvocationHandler;
 import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import org.qi4j.api.annotation.Dependency;
+import org.qi4j.api.annotation.AppliesTo;
+import org.qi4j.api.annotation.Uses;
+import org.qi4j.api.persistence.binding.PersistenceBinding;
+import org.qi4j.api.persistence.PersistentRepository;
 
 /**
  * When methods in stateful mixins that modify state have been called

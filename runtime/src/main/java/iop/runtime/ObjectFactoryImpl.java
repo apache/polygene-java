@@ -14,15 +14,12 @@
  */
 package iop.runtime;
 
-import iop.api.MixinFactory;
-import iop.api.ObjectFactory;
-import iop.api.ObjectInstantiationException;
+import org.qi4j.api.MixinFactory;
+import org.qi4j.api.ObjectInstantiationException;
+import org.qi4j.api.ObjectFactory;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.IdentityHashMap;
 
 /**
  * TODO

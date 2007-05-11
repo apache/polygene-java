@@ -14,9 +14,9 @@
  */
 package iop.runtime.persistence;
 
-import iop.api.annotation.ModifiedBy;
-import iop.api.persistence.modifier.PersistentRepositoryReferenceModifier;
-import iop.api.persistence.modifier.PersistentRepositoryTraceModifier;
+import org.qi4j.api.annotation.ModifiedBy;
+import org.qi4j.api.persistence.modifier.PersistentRepositoryReferenceModifier;
+import org.qi4j.api.persistence.modifier.PersistentRepositoryTraceModifier;
 import java.rmi.MarshalledObject;
 import java.util.HashMap;
 import java.util.Map;

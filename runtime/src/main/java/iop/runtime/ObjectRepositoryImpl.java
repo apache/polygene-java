@@ -14,12 +14,9 @@
  */
 package iop.runtime;
 
-import iop.api.ObjectRepository;
-import iop.api.ObjectFactory;
-import iop.api.persistence.PersistentRepository;
-import iop.api.persistence.Identity;
-import iop.api.persistence.ObjectNotFoundException;
-import iop.api.persistence.binding.PersistenceBinding;
+import org.qi4j.api.ObjectRepository;
+import org.qi4j.api.ObjectFactory;
+import org.qi4j.api.persistence.binding.PersistenceBinding;
 
 /**
  * TODO

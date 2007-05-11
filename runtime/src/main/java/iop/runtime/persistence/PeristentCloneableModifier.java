@@ -14,17 +14,17 @@
  */
 package iop.runtime.persistence;
 
-import iop.api.ObjectFactory;
-import iop.api.annotation.Dependency;
-import iop.api.annotation.Modifies;
-import iop.api.annotation.Uses;
-import iop.api.persistence.binding.PersistenceBinding;
+import org.qi4j.api.ObjectFactory;
+import org.qi4j.api.annotation.Dependency;
+import org.qi4j.api.annotation.Modifies;
+import org.qi4j.api.annotation.Uses;
+import org.qi4j.api.persistence.binding.PersistenceBinding;
 
 public final class PeristentCloneableModifier<T extends PersistenceBinding>
-    implements iop.api.persistence.Cloneable<T>
+    implements org.qi4j.api.persistence.Cloneable<T>
 {
     @Modifies
-    iop.api.persistence.Cloneable<T> cloneable;
+    org.qi4j.api.persistence.Cloneable<T> cloneable;
     @Uses
     PersistenceBinding persistent;
     @Dependency

@@ -18,7 +18,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.UndeclaredThrowableException;
-import iop.api.InvocationContext;
+import org.qi4j.api.InvocationContext;
 
 public final class ProxyReferenceInvocationHandler
     implements InvocationHandler, InvocationContext

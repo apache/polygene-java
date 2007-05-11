@@ -14,8 +14,8 @@
  */
 package iop.runtime;
 
-import iop.api.MixinFactory;
-import iop.api.ObjectInstantiationException;
+import org.qi4j.api.MixinFactory;
+import org.qi4j.api.ObjectInstantiationException;
 
 /**
  * TODO

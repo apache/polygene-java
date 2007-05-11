@@ -14,14 +14,14 @@
  */
 package iop.runtime.persistence;
 
-import iop.api.ObjectFactory;
-import iop.api.annotation.ModifiedBy;
-import iop.api.persistence.ObjectNotFoundException;
-import iop.api.persistence.PersistenceException;
-import iop.api.persistence.PersistentRepository;
-import iop.api.persistence.binding.PersistenceBinding;
-import iop.api.persistence.modifier.PersistentRepositoryReferenceModifier;
-import iop.api.persistence.modifier.PersistentRepositoryTraceModifier;
+import org.qi4j.api.ObjectFactory;
+import org.qi4j.api.annotation.ModifiedBy;
+import org.qi4j.api.persistence.ObjectNotFoundException;
+import org.qi4j.api.persistence.PersistenceException;
+import org.qi4j.api.persistence.PersistentRepository;
+import org.qi4j.api.persistence.binding.PersistenceBinding;
+import org.qi4j.api.persistence.modifier.PersistentRepositoryReferenceModifier;
+import org.qi4j.api.persistence.modifier.PersistentRepositoryTraceModifier;
 import iop.runtime.ObjectInvocationHandler;
 import iop.runtime.ProxyReferenceInvocationHandler;
 import java.beans.BeanInfo;

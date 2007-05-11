@@ -15,13 +15,13 @@
 
 package iop.runtime;
 
-import iop.api.MixinFactory;
-import iop.api.ObjectFactory;
-import iop.api.ObjectInstantiationException;
-import iop.api.persistence.Identity;
-import iop.api.annotation.ImplementedBy;
-import iop.api.annotation.Uses;
-import iop.api.annotation.Dependency;
+import org.qi4j.api.MixinFactory;
+import org.qi4j.api.ObjectFactory;
+import org.qi4j.api.ObjectInstantiationException;
+import org.qi4j.api.persistence.Identity;
+import org.qi4j.api.annotation.ImplementedBy;
+import org.qi4j.api.annotation.Uses;
+import org.qi4j.api.annotation.Dependency;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;

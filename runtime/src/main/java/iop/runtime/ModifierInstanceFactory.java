@@ -14,18 +14,17 @@
  */
 package iop.runtime;
 
-import iop.api.MixinFactory;
-import iop.api.ObjectFactory;
-import iop.api.InvocationContext;
-import iop.api.annotation.ModifiedBy;
-import iop.api.annotation.Modifies;
-import iop.api.annotation.Uses;
-import iop.api.annotation.Dependency;
-import iop.api.annotation.AppliesTo;
+import org.qi4j.api.MixinFactory;
+import org.qi4j.api.ObjectFactory;
+import org.qi4j.api.InvocationContext;
+import org.qi4j.api.annotation.ModifiedBy;
+import org.qi4j.api.annotation.Modifies;
+import org.qi4j.api.annotation.Uses;
+import org.qi4j.api.annotation.Dependency;
+import org.qi4j.api.annotation.AppliesTo;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
-import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 

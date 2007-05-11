@@ -14,8 +14,8 @@
  */
 package iop.runtime;
 
-import iop.api.ObjectFactory;
-import iop.api.MixinFactory;
+import org.qi4j.api.ObjectFactory;
+import org.qi4j.api.MixinFactory;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.IdentityHashMap;

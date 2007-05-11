@@ -14,8 +14,8 @@
  */
 package iop.runtime;
 
-import iop.api.annotation.Modifies;
-import iop.api.annotation.Uses;
+import org.qi4j.api.annotation.Modifies;
+import org.qi4j.api.annotation.Uses;
 
 import java.lang.reflect.*;
 import java.lang.annotation.Annotation;
