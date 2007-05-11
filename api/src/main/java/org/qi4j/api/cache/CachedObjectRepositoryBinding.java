@@ -12,9 +12,10 @@
  * limitations under the License.
  *
  */
-package org.qi4j.api;
+package org.qi4j.api.cache;
 
 import org.qi4j.api.cache.ObjectRepositoryCache;
+import org.qi4j.api.ObjectRepository;
 
 /**
  * Caching repositories return the same proxy
