@@ -17,7 +17,7 @@ package iop.runtime;
 import iop.api.annotation.ImplementedBy;
 import iop.api.annotation.ModifiedBy;
 import iop.api.persistence.binding.PersistenceBinding;
-import iop.runtime.modifier.ObjectRepositoryCacheModifier;
+import iop.runtime.ObjectRepositoryCacheModifier;
 
 /**
  * Proxy caches should implement this.

@@ -12,7 +12,7 @@
  * limitations under the License.
  *
  */
-package iop.runtime.modifier;
+package iop.runtime;
 
 import iop.api.ObjectRepository;
 import iop.api.annotation.Uses;
