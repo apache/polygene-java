@@ -14,9 +14,9 @@
  */
 package org.qi4j.api.persistence.impl;
 
-import org.qi4j.api.persistence.modifier.IdentityValidatorModifier;
-import org.qi4j.api.persistence.Identity;
 import org.qi4j.api.annotation.ModifiedBy;
+import org.qi4j.api.persistence.Identity;
+import org.qi4j.api.persistence.modifier.IdentityValidatorModifier;
 
 
 /**

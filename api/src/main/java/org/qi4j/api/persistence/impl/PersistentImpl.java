@@ -14,8 +14,8 @@
  */
 package org.qi4j.api.persistence.impl;
 
-import org.qi4j.api.persistence.PersistentRepository;
 import org.qi4j.api.persistence.Persistent;
+import org.qi4j.api.persistence.PersistentRepository;
 
 
 /**

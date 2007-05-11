@@ -14,6 +14,9 @@
  */
 package org.qi4j.api.persistence.modifier;
 
+import java.io.Serializable;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
 import org.qi4j.api.InvocationContext;
 import org.qi4j.api.annotation.AppliesTo;
 import org.qi4j.api.annotation.Dependency;
@@ -21,9 +24,6 @@ import org.qi4j.api.annotation.Modifies;
 import org.qi4j.api.annotation.Uses;
 import org.qi4j.api.persistence.PersistentRepository;
 import org.qi4j.api.persistence.binding.PersistenceBinding;
-import java.io.Serializable;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
 
 /**
  * When methods in stateful mixins that modify state have been called
