@@ -14,26 +14,25 @@
  */
 package iop.runtime.persistence;
 
-import iop.api.persistence.Persistent;
-import iop.api.persistence.PersistentRepository;
+import org.qi4j.api.persistence.PersistentRepository;
+import org.qi4j.api.persistence.Persistent;
 
 
 /**
  * Mixin that holds a reference to a persistent repository
- *
  */
 public final class PersistentImpl
-   implements Persistent
+    implements Persistent
 {
-   PersistentRepository persistentRepository;
+    PersistentRepository persistentRepository;
 
-   public void setPersistentRepository(PersistentRepository aRepository)
-   {
-      persistentRepository = aRepository;
-   }
+    public void setPersistentRepository( PersistentRepository aRepository )
+    {
+        persistentRepository = aRepository;
+    }
 
-   public PersistentRepository getPersistentRepository()
-   {
-      return persistentRepository;
-   }
+    public PersistentRepository getPersistentRepository()
+    {
+        return persistentRepository;
+    }
 }

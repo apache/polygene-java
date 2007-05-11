@@ -12,10 +12,30 @@
  * limitations under the License.
  *
  */
-package iop.api.persistence;
+package org.qi4j.api;
 
-public interface Cloneable<T>
-    extends java.lang.Cloneable
+/**
+ * TODO
+ */
+public class ObjectInstantiationException
+    extends RuntimeException
 {
-    T clone();
+    public ObjectInstantiationException()
+    {
+    }
+
+    public ObjectInstantiationException( String message )
+    {
+        super( message );
+    }
+
+    public ObjectInstantiationException( String message, Throwable cause )
+    {
+        super( message, cause );
+    }
+
+    public ObjectInstantiationException( Throwable cause )
+    {
+        super( cause );
+    }
 }

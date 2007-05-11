@@ -12,9 +12,9 @@
  * limitations under the License.
  *
  */
-package iop.api.persistence;
+package org.qi4j.api.persistence;
 
-import iop.api.annotation.ImplementedBy;
+import org.qi4j.api.annotation.ImplementedBy;
 import iop.runtime.persistence.LifecycleImpl;
 
 @ImplementedBy( LifecycleImpl.class )

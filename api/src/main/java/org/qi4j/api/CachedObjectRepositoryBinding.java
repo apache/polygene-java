@@ -12,22 +12,16 @@
  * limitations under the License.
  *
  */
-package iop.api.annotation;
+package org.qi4j.api;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import iop.runtime.ObjectRepositoryCache;
 
 /**
- * This annotation is used in modifier fields to get a reference
- * to the mixin whose methods the modifier adapts.
+ * Caching repositories return the same proxy
+ * if one with a particular identity is asked for twice.
+ * <p/>
+ * The cache is a Decorator for the ObjectRepository.
  */
-@Retention( RetentionPolicy.RUNTIME )
-@java.lang.annotation.Target( ElementType.FIELD )
-@Documented
-@Inherited
-public @interface Modifies
+public interface CachedObjectRepositoryBinding extends ObjectRepository, ObjectRepositoryCache
 {
 }

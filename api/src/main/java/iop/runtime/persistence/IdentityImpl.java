@@ -14,27 +14,27 @@
  */
 package iop.runtime.persistence;
 
-import iop.api.persistence.Identity;
-import iop.api.persistence.modifier.IdentityValidatorModifier;
-import iop.api.annotation.ModifiedBy;
+import org.qi4j.api.persistence.modifier.IdentityValidatorModifier;
+import org.qi4j.api.persistence.Identity;
+import org.qi4j.api.annotation.ModifiedBy;
+
 
 /**
  * This mixin contains the identity of an object.
- *
  */
-@ModifiedBy(IdentityValidatorModifier.class)
+@ModifiedBy( IdentityValidatorModifier.class )
 public final class IdentityImpl
-   implements Identity
+    implements Identity
 {
-   String identity;
+    String identity;
 
-   public void setIdentity(String anIdentity)
-   {
-      identity = anIdentity;
-   }
+    public void setIdentity( String anIdentity )
+    {
+        identity = anIdentity;
+    }
 
-   public String getIdentity()
-   {
-      return identity;
-   }
+    public String getIdentity()
+    {
+        return identity;
+    }
 }

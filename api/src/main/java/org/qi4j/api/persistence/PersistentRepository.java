@@ -12,32 +12,25 @@
  * limitations under the License.
  *
  */
-package iop.api.persistence;
+package org.qi4j.api.persistence;
+
+import org.qi4j.api.persistence.binding.PersistenceBinding;
+
 
 /**
- * TODO
+ * Persistent repositories must implement this.
  */
-public class ObjectNotFoundException
-    extends PersistenceException
+public interface PersistentRepository
 {
-    public ObjectNotFoundException()
-    {
-    }
+    void create( PersistenceBinding aProxy )
+        throws PersistenceException;
 
-    public ObjectNotFoundException( String message )
-    {
-        super( message );
-    }
+    void read( PersistenceBinding aProxy )
+        throws PersistenceException;
 
-    public ObjectNotFoundException( String message, Throwable cause )
-    {
-        super( message, cause );
-    }
+    void update( PersistenceBinding aProxy, Object aMixin )
+        throws PersistenceException;
 
-    public ObjectNotFoundException( Throwable cause )
-    {
-        super( cause );
-    }
-
-
+    void delete( PersistenceBinding aProxy )
+        throws PersistenceException;
 }

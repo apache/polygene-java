@@ -12,16 +12,32 @@
  * limitations under the License.
  *
  */
-package iop.api;
-
-import iop.runtime.ObjectRepositoryCache;
+package org.qi4j.api.persistence;
 
 /**
- * Caching repositories return the same proxy
- * if one with a particular identity is asked for twice.
- * <p/>
- * The cache is a Decorator for the ObjectRepository.
+ * TODO
  */
-public interface CachedObjectRepositoryBinding extends ObjectRepository, ObjectRepositoryCache
+public class ObjectNotFoundException
+    extends PersistenceException
 {
+    public ObjectNotFoundException()
+    {
+    }
+
+    public ObjectNotFoundException( String message )
+    {
+        super( message );
+    }
+
+    public ObjectNotFoundException( String message, Throwable cause )
+    {
+        super( message, cause );
+    }
+
+    public ObjectNotFoundException( Throwable cause )
+    {
+        super( cause );
+    }
+
+
 }

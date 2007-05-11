@@ -14,39 +14,35 @@
  */
 package iop.runtime;
 
-import iop.api.ObjectRepository;
-import iop.api.annotation.Uses;
-import iop.api.annotation.Modifies;
-import iop.api.persistence.binding.PersistenceBinding;
-import iop.api.persistence.ObjectNotFoundException;
-import iop.api.persistence.PersistentRepository;
-import iop.runtime.ObjectRepositoryCache;
+import org.qi4j.api.ObjectRepository;
+import org.qi4j.api.annotation.Modifies;
+import org.qi4j.api.annotation.Uses;
+import org.qi4j.api.persistence.binding.PersistenceBinding;
 
 /**
  * Implement caching of created proxies to persistent objects.
- *
  */
 public final class ObjectRepositoryCacheModifier
-   implements ObjectRepository
+    implements ObjectRepository
 {
-   @Uses ObjectRepositoryCache cache;
-   @Modifies ObjectRepository repository;
+    @Uses ObjectRepositoryCache cache;
+    @Modifies ObjectRepository repository;
 
-   public <T extends PersistenceBinding> T getInstance(String anIdentity, Class<T> aType)
-   {
-      // Check cache
-      PersistenceBinding cachedObj = cache.getObject(anIdentity);
-      if (cachedObj != null)
-      {
-         return (T) cachedObj;
-      }
+    public <T extends PersistenceBinding> T getInstance( String anIdentity, Class<T> aType )
+    {
+        // Check cache
+        PersistenceBinding cachedObj = cache.getObject( anIdentity );
+        if( cachedObj != null )
+        {
+            return (T) cachedObj;
+        }
 
-      // Not found in cache - create it
-      cachedObj = repository.getInstance(anIdentity, aType);
+        // Not found in cache - create it
+        cachedObj = repository.getInstance( anIdentity, aType );
 
-      // Add to cache
-      cache.addObject(anIdentity, cachedObj);
+        // Add to cache
+        cache.addObject( anIdentity, cachedObj );
 
-      return (T) cachedObj;
-   }
+        return (T) cachedObj;
+    }
 }

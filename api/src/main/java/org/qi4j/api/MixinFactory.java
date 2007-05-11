@@ -12,13 +12,14 @@
  * limitations under the License.
  *
  */
-package iop.api;
+package org.qi4j.api;
 
-public interface InvocationContext
+
+/**
+ * This factory is responsible for instantiating mixins. This is where
+ * you would put DI integrations.
+ */
+public interface MixinFactory
 {
-    Object getProxy();
-
-    Object getMixin();
-
-    Class getMixinType();
+    <T> T newInstance( Class<T> anObjectType );
 }

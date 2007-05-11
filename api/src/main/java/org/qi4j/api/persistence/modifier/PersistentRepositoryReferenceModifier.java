@@ -12,43 +12,46 @@
  * limitations under the License.
  *
  */
-package iop.api.persistence.modifier;
+package org.qi4j.api.persistence.modifier;
 
-import iop.api.annotation.Modifies;
-import iop.api.persistence.ObjectNotFoundException;
-import iop.api.persistence.PersistentRepository;
-import iop.api.persistence.binding.PersistenceBinding;
+import org.qi4j.api.annotation.Modifies;
+import org.qi4j.api.annotation.Uses;
+import org.qi4j.api.persistence.ObjectNotFoundException;
+import org.qi4j.api.persistence.PersistentRepository;
+import org.qi4j.api.persistence.binding.PersistenceBinding;
 
 /**
- * This modifier traces calls to a persistent repository
+ * This modifier ensures that objects have a proper reference
+ * to its repository.
  */
-public final class PersistentRepositoryTraceModifier
+public final class PersistentRepositoryReferenceModifier
     implements PersistentRepository
 {
+    @Uses
+    PersistentRepository repo;
     @Modifies
     PersistentRepository repository;
 
     public void create( PersistenceBinding aProxy )
     {
         repository.create( aProxy );
-        System.out.println( "Created " + aProxy.getIdentity() );
+        aProxy.setPersistentRepository( repo );
     }
 
     public void read( PersistenceBinding aProxy ) throws ObjectNotFoundException
     {
         repository.read( aProxy );
-        System.out.println( "Read " + aProxy.getIdentity() );
+        aProxy.setPersistentRepository( repo );
     }
 
     public void update( PersistenceBinding aProxy, Object aMixin )
     {
         repository.update( aProxy, aMixin );
-        System.out.println( "Updated mixin " + aMixin.getClass().getSimpleName() + " for " + aProxy.getIdentity() );
     }
 
     public void delete( PersistenceBinding aProxy )
     {
         repository.delete( aProxy );
-        System.out.println( "Deleted " + aProxy.getIdentity() );
+        aProxy.setPersistentRepository( null );
     }
 }

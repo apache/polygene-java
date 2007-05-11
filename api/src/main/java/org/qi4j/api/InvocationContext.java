@@ -12,22 +12,13 @@
  * limitations under the License.
  *
  */
-package iop.api.persistence;
+package org.qi4j.api;
 
-import iop.api.annotation.ImplementedBy;
-import iop.runtime.persistence.PersistentImpl;
-
-/**
- * Objects which are persistent implement this interface which
- * gives them a reference to a persistent repository.
- * <p/>
- * The repository reference can be set to null in order to detach
- * the object.
- */
-@ImplementedBy( PersistentImpl.class )
-public interface Persistent
+public interface InvocationContext
 {
-    void setPersistentRepository( PersistentRepository aRepository );
+    Object getProxy();
 
-    PersistentRepository getPersistentRepository();
+    Object getMixin();
+
+    Class getMixinType();
 }

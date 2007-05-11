@@ -12,24 +12,27 @@
  * limitations under the License.
  *
  */
-package iop.api.annotation;
+package org.qi4j.api.persistence;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
-
-/**
- * This annotation should be used by modifiers and mixins which
- * needs to access other mixins.
- */
-@Retention( RetentionPolicy.RUNTIME )
-@Target( ElementType.FIELD )
-@Documented
-@Inherited
-public @interface Uses
+public class PersistenceException
+    extends RuntimeException
 {
+    public PersistenceException()
+    {
+    }
+
+    public PersistenceException( String message )
+    {
+        super( message );
+    }
+
+    public PersistenceException( String message, Throwable cause )
+    {
+        super( message, cause );
+    }
+
+    public PersistenceException( Throwable cause )
+    {
+        super( cause );
+    }
 }

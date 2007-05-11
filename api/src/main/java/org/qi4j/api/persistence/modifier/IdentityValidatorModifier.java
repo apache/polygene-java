@@ -12,11 +12,11 @@
  * limitations under the License.
  *
  */
-package iop.api.persistence.modifier;
+package org.qi4j.api.persistence.modifier;
 
-import iop.api.annotation.Modifies;
-import iop.api.annotation.Uses;
-import iop.api.persistence.Identity;
+import org.qi4j.api.annotation.Modifies;
+import org.qi4j.api.annotation.Uses;
+import org.qi4j.api.persistence.Identity;
 
 /**
  * This modifier ensures that the identity is correct.

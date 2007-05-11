@@ -12,25 +12,20 @@
  * limitations under the License.
  *
  */
+package org.qi4j.api.persistence;
 
-package iop.api.annotation;
-
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
+import org.qi4j.api.annotation.ImplementedBy;
+import iop.runtime.persistence.IdentityImpl;
 
 /**
- * This annotation is used in bindings to declare mixin implementation classes.
+ * This interface provides the identity of the object which may be used
+ * to store the state in a database. It is not the responsibility of the
+ * framework to come up with a good identity string.
  */
-@Retention( RetentionPolicy.RUNTIME )
-@Target( ElementType.TYPE )
-@Documented
-@Inherited
-public @interface ImplementedBy
+@ImplementedBy( IdentityImpl.class )
+public interface Identity
 {
-    Class[] value();
+    public void setIdentity( String anIdentity );
+
+    public String getIdentity();
 }

@@ -14,11 +14,12 @@
  */
 package iop.runtime.persistence;
 
-import iop.api.persistence.Lifecycle;
-import iop.api.persistence.PersistenceException;
-import iop.api.persistence.PersistentRepository;
-import iop.api.persistence.binding.PersistenceBinding;
-import iop.api.annotation.Uses;
+import org.qi4j.api.annotation.Uses;
+import org.qi4j.api.persistence.Lifecycle;
+import org.qi4j.api.persistence.PersistenceException;
+import org.qi4j.api.persistence.PersistentRepository;
+import org.qi4j.api.persistence.binding.PersistenceBinding;
+
 
 public final class LifecycleImpl
     implements Lifecycle
@@ -28,16 +29,20 @@ public final class LifecycleImpl
     public void create() throws PersistenceException
     {
         PersistentRepository repository = meAsPersistence.getPersistentRepository();
-        if (repository == null)
-            throw new PersistenceException( "No repository set for object");
-        repository.create( meAsPersistence);
+        if( repository == null )
+        {
+            throw new PersistenceException( "No repository set for object" );
+        }
+        repository.create( meAsPersistence );
     }
 
     public void delete() throws PersistenceException
     {
         PersistentRepository repository = meAsPersistence.getPersistentRepository();
-        if (repository == null)
-            throw new PersistenceException( "No repository set for object");
-        repository.delete( meAsPersistence);
+        if( repository == null )
+        {
+            throw new PersistenceException( "No repository set for object" );
+        }
+        repository.delete( meAsPersistence );
     }
 }

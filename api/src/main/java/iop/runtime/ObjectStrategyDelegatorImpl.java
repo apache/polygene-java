@@ -14,10 +14,10 @@
  */
 package iop.runtime;
 
-import iop.api.ObjectFactory;
-import iop.api.ObjectStrategy;
-import iop.api.annotation.Dependency;
-import iop.api.annotation.Uses;
+import org.qi4j.api.ObjectFactory;
+import org.qi4j.api.ObjectStrategy;
+import org.qi4j.api.annotation.Dependency;
+import org.qi4j.api.annotation.Uses;
 
 public final class ObjectStrategyDelegatorImpl
     implements ObjectStrategy

@@ -12,9 +12,9 @@
  * limitations under the License.
  *
  */
-package iop.api;
+package org.qi4j.api;
 
-import iop.api.annotation.ImplementedBy;
+import org.qi4j.api.annotation.ImplementedBy;
 import iop.runtime.ObjectStrategyDelegatorImpl;
 
 /**

@@ -12,15 +12,15 @@
  * limitations under the License.
  *
  */
-package iop.api.persistence.modifier;
+package org.qi4j.api.persistence.modifier;
 
-import iop.api.InvocationContext;
-import iop.api.annotation.AppliesTo;
-import iop.api.annotation.Dependency;
-import iop.api.annotation.Modifies;
-import iop.api.annotation.Uses;
-import iop.api.persistence.PersistentRepository;
-import iop.api.persistence.binding.PersistenceBinding;
+import org.qi4j.api.InvocationContext;
+import org.qi4j.api.annotation.AppliesTo;
+import org.qi4j.api.annotation.Dependency;
+import org.qi4j.api.annotation.Modifies;
+import org.qi4j.api.annotation.Uses;
+import org.qi4j.api.persistence.PersistentRepository;
+import org.qi4j.api.persistence.binding.PersistenceBinding;
 import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;

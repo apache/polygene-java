@@ -12,7 +12,7 @@
  * limitations under the License.
  *
  */
-package iop.api;
+package org.qi4j.api;
 
 /**
  * This factory creates proxies that implement the given

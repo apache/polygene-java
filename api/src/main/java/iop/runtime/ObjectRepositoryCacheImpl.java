@@ -14,37 +14,35 @@
  */
 package iop.runtime;
 
-import iop.api.persistence.binding.PersistenceBinding;
-
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
+import org.qi4j.api.persistence.binding.PersistenceBinding;
 
 /**
  * Implementation of a proxy cache.
- *
  */
 public final class ObjectRepositoryCacheImpl
-   implements ObjectRepositoryCache
+    implements ObjectRepositoryCache
 {
-   static Map<String,Object> cache = new HashMap<String,Object>();
+    static Map<String, Object> cache = new HashMap<String, Object>();
 
-   public <T extends PersistenceBinding> T getObject(String anIdentity)
-   {
-      return (T) cache.get(anIdentity);
-   }
+    public <T extends PersistenceBinding> T getObject( String anIdentity )
+    {
+        return (T) cache.get( anIdentity );
+    }
 
-   public void addObject(String anIdentity, Object anObject)
-   {
-      cache.put(anIdentity, anObject);
-   }
+    public <T extends PersistenceBinding> void addObject( String anIdentity, T anObject )
+    {
+        cache.put( anIdentity, anObject );
+    }
 
-   public void removeObject(String anIdentity)
-   {
-      cache.remove(anIdentity);
-   }
+    public void removeObject( String anIdentity )
+    {
+        cache.remove( anIdentity );
+    }
 
-   public void removeAll()
-   {
-      cache.clear();
-   }
+    public void removeAll()
+    {
+        cache.clear();
+    }
 }

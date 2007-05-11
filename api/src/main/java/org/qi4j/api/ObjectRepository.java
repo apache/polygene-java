@@ -12,30 +12,22 @@
  * limitations under the License.
  *
  */
-package iop.api;
+package org.qi4j.api;
+
+import org.qi4j.api.persistence.binding.PersistenceBinding;
 
 /**
- * TODO
+ * This repository is used to get proxies representing persistent objects.
  */
-public class ObjectInstantiationException
-    extends RuntimeException
+public interface ObjectRepository
 {
-    public ObjectInstantiationException()
-    {
-    }
-
-    public ObjectInstantiationException( String message )
-    {
-        super( message );
-    }
-
-    public ObjectInstantiationException( String message, Throwable cause )
-    {
-        super( message, cause );
-    }
-
-    public ObjectInstantiationException( Throwable cause )
-    {
-        super( cause );
-    }
+    /**
+     * Get a proxy to a persistent object. This proxy may have been cached
+     * and returned from previous invocations with the same identity.
+     *
+     * @param identity The identity of the object to retrieve from the repository.
+     * @param type The type of the object to retrieve from the repository.
+     * @return Returns the instance of the given identity of the given type. 
+     */
+    <T extends PersistenceBinding> T getInstance( String identity, Class<T> type );
 }

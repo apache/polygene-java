@@ -12,26 +12,18 @@
  * limitations under the License.
  *
  */
+package org.qi4j.api.persistence.binding;
 
-package iop.api.annotation;
-
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
+import org.qi4j.api.annotation.ModifiedBy;
+import org.qi4j.api.persistence.Identity;
+import org.qi4j.api.persistence.Persistent;
+import org.qi4j.api.persistence.modifier.ReadUpdateModifier;
 
 /**
- * This annotation is used by bindings and mixins to declare what modifiers
- * should be used.
+ * Persistent domain objects should implement this binding
+ * which provides an identity and a reference to a repository
  */
-@Retention( RetentionPolicy.RUNTIME )
-@Target( ElementType.TYPE )
-@Documented
-@Inherited
-public @interface ModifiedBy
+@ModifiedBy( ReadUpdateModifier.class )
+public interface PersistenceBinding extends Identity, Persistent
 {
-    Class[] value();
 }

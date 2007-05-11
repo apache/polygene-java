@@ -12,14 +12,22 @@
  * limitations under the License.
  *
  */
-package iop.api;
+package org.qi4j.api.persistence;
 
+import org.qi4j.api.annotation.ImplementedBy;
+import iop.runtime.persistence.PersistentImpl;
 
 /**
- * This factory is responsible for instantiating mixins. This is where
- * you would put DI integrations.
+ * Objects which are persistent implement this interface which
+ * gives them a reference to a persistent repository.
+ * <p/>
+ * The repository reference can be set to null in order to detach
+ * the object.
  */
-public interface MixinFactory
+@ImplementedBy( PersistentImpl.class )
+public interface Persistent
 {
-    <T> T newInstance( Class<T> anObjectType );
+    void setPersistentRepository( PersistentRepository aRepository );
+
+    PersistentRepository getPersistentRepository();
 }
