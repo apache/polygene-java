@@ -15,5 +15,6 @@
   <packaging>pom</packaging>
   <!-- This POM is ONLY to initiate the modules to be built. -->
   <modules>
+    <module>persistence</module>
   </modules>
 </project>
