@@ -22,8 +22,8 @@ import org.qi4j.api.annotation.Uses;
 public final class ObjectStrategyDelegatorImpl
     implements ObjectStrategy
 {
-    @Dependency ObjectFactory delegate;
-    @Uses ObjectStrategy meAsStrategy;
+    @Dependency private ObjectFactory delegate;
+    @Uses private ObjectStrategy meAsStrategy;
 
     public <T> T newInstance( Class<T> anObjectType )
     {

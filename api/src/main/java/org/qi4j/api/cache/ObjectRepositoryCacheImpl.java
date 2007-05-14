@@ -24,7 +24,7 @@ import org.qi4j.api.persistence.binding.PersistenceBinding;
 public final class ObjectRepositoryCacheImpl
     implements ObjectRepositoryCache
 {
-    static Map<String, Object> cache = new HashMap<String, Object>();
+    private static Map<String, Object> cache = new HashMap<String, Object>();
 
     public <T extends PersistenceBinding> T getObject( String anIdentity )
     {

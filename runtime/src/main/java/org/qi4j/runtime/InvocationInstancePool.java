@@ -14,51 +14,52 @@
  */
 package org.qi4j.runtime;
 
-import java.util.Map;
-import java.util.IdentityHashMap;
-import java.util.HashMap;
-import java.util.ArrayList;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.IdentityHashMap;
+import java.util.Map;
 
 public final class InvocationInstancePool
 {
-    ThreadLocal<IdentityHashMap<Method, IdentityHashMap<Class, ArrayList<InvocationInstance>>>> threadInstances = new ThreadLocal<IdentityHashMap<Method, IdentityHashMap<Class, ArrayList<InvocationInstance>>>>()
-    {
-
-        protected IdentityHashMap<Method, IdentityHashMap<Class, ArrayList<InvocationInstance>>> initialValue()
-        {
-            return new IdentityHashMap<Method, IdentityHashMap<Class, ArrayList<InvocationInstance>>>();
-        }
-    };
-    Map<Class, IdentityHashMap<Method, ArrayList<InvocationInstance>>> pools = new HashMap<Class, IdentityHashMap<Method, ArrayList<InvocationInstance>>>();
-//    Map<Method, Map<Class, LinkedList<InvocationInstance>>> instances = new IdentityHashMap<Method, Map<Class, LinkedList<InvocationInstance>>>();
-
-    ModifierInstanceFactory factory;
+    private Map<Class, IdentityHashMap<Method, ArrayList<InvocationInstance>>> pools;
+    private ThreadLocal<IdentityHashMap<Method, IdentityHashMap<Class, ArrayList<InvocationInstance>>>> threadInstances;
+    private ModifierInstanceFactory factory;
 
     public InvocationInstancePool( ModifierInstanceFactory aFactory )
     {
+        pools = new HashMap<Class, IdentityHashMap<Method, ArrayList<InvocationInstance>>>();
         factory = aFactory;
+        threadInstances = new ThreadLocal<IdentityHashMap<Method, IdentityHashMap<Class, ArrayList<InvocationInstance>>>>()
+        {
+
+            protected IdentityHashMap<Method, IdentityHashMap<Class, ArrayList<InvocationInstance>>> initialValue()
+            {
+                return new IdentityHashMap<Method, IdentityHashMap<Class, ArrayList<InvocationInstance>>>();
+            }
+        };
+
     }
 
-    public InvocationInstance get( Method method, Class bindingType , Object mixin)
+    public InvocationInstance get( Method method, Class bindingType, Object mixin )
     {
         IdentityHashMap<Method, IdentityHashMap<Class, ArrayList<InvocationInstance>>> instances = threadInstances.get();
         IdentityHashMap<Class, ArrayList<InvocationInstance>> stacks = instances.get( method );
-        if (stacks == null)
+        if( stacks == null )
         {
-            stacks = new IdentityHashMap<Class, ArrayList<InvocationInstance>>( );
-            instances.put( method, stacks);
+            stacks = new IdentityHashMap<Class, ArrayList<InvocationInstance>>();
+            instances.put( method, stacks );
         }
-        ArrayList<InvocationInstance> pool = stacks.get( bindingType);
+        ArrayList<InvocationInstance> pool = stacks.get( bindingType );
         if( pool == null )
         {
             pool = new ArrayList<InvocationInstance>();
-            stacks.put( bindingType, pool);
+            stacks.put( bindingType, pool );
         }
 
         try
         {
-            return pool.remove( pool.size()-1);
+            return pool.remove( pool.size() - 1 );
         }
         catch( ArrayIndexOutOfBoundsException e )
         {
@@ -75,34 +76,35 @@ public final class InvocationInstancePool
         ModifierInstance interfaceInstance = factory.newInstance( declaringClass, bindingType, mixin.getClass(), proxyHandler );
         ModifierInstance mixinInstance = factory.newInstance( declaringClass, mixin.getClass(), mixin.getClass(), proxyHandler );
 
-        return new InvocationInstance(interfaceInstance, mixinInstance, proxyHandler, aPool );
+        return new InvocationInstance( interfaceInstance, mixinInstance, proxyHandler, aPool );
     }
 
-    public ArrayList<InvocationInstance> getPool( Method method, Class modifierType)
+    public ArrayList<InvocationInstance> getPool( Method method, Class modifierType )
     {
         IdentityHashMap<Method, IdentityHashMap<Class, ArrayList<InvocationInstance>>> instances = threadInstances.get();
         IdentityHashMap<Class, ArrayList<InvocationInstance>> stacks = instances.get( method );
-        if (stacks == null)
+        if( stacks == null )
         {
-            stacks = new IdentityHashMap<Class, ArrayList<InvocationInstance>>( );
-            instances.put( method, stacks);
+            stacks = new IdentityHashMap<Class, ArrayList<InvocationInstance>>();
+            instances.put( method, stacks );
         }
-        ArrayList<InvocationInstance> pool = stacks.get( modifierType);
+        ArrayList<InvocationInstance> pool = stacks.get( modifierType );
         if( pool == null )
         {
             pool = new ArrayList<InvocationInstance>();
-            stacks.put( modifierType, pool);
+            stacks.put( modifierType, pool );
         }
 
         return pool;
     }
-    public IdentityHashMap<Method, ArrayList<InvocationInstance>> getPool( Class bindingType)
+
+    public IdentityHashMap<Method, ArrayList<InvocationInstance>> getPool( Class bindingType )
     {
         IdentityHashMap<Method, ArrayList<InvocationInstance>> pool = pools.get( bindingType );
         if( pool == null )
         {
             pool = new IdentityHashMap<Method, ArrayList<InvocationInstance>>();
-            pools.put( bindingType, pool);
+            pools.put( bindingType, pool );
         }
 
         return pool;

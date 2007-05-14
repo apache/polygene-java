@@ -22,7 +22,7 @@ import org.qi4j.api.annotation.AppliesTo;
 import org.qi4j.api.annotation.Dependency;
 import org.qi4j.api.annotation.Modifies;
 import org.qi4j.api.annotation.Uses;
-import org.qi4j.api.persistence.PersistentRepository;
+import org.qi4j.api.persistence.PersistentStorage;
 import org.qi4j.api.persistence.binding.PersistenceBinding;
 
 /**
@@ -33,28 +33,25 @@ import org.qi4j.api.persistence.binding.PersistenceBinding;
 public final class ReadUpdateModifier
     implements InvocationHandler
 {
-    @Uses
-    PersistenceBinding persistent;
-    @Dependency
-    InvocationContext context;
-    @Modifies
-    Object next;
+    @Uses private PersistenceBinding persistent;
+    @Dependency private InvocationContext context;
+    @Modifies private Object next;
 
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
     {
         // Load mixin
-        PersistentRepository repository = persistent.getPersistentRepository();
-        if( repository != null && isReadMethod( method ) )
+        PersistentStorage storage = persistent.getPersistentRepository();
+        if( storage != null && isReadMethod( method ) )
         {
-            repository.read( persistent );
+            storage.read( persistent );
         }
 
         Object result = method.invoke( next, args );
 
         // Store mixin
-        if( repository != null && isWriteMethod( method ) )
+        if( storage != null && isWriteMethod( method ) )
         {
-            repository.update( persistent, context.getMixin() );
+            storage.update( persistent, context.getMixin() );
         }
 
         return result;

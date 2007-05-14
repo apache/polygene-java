@@ -12,14 +12,17 @@
  * limitations under the License.
  *
  */
-package org.qi4j.runtime.persistence;
+package org.qi4j.runtime.persistence.spi;
 
 import java.rmi.MarshalledObject;
 import java.util.Map;
+import java.io.IOException;
 
 public interface SerializablePersistenceSpi
 {
     void putInstance( String anId, Map<Class, MarshalledObject> mixins );
     Map<Class, MarshalledObject> getInstance( String anId );
     void removeInstance( String anId );
+
+    void close() throws IOException;
 }

@@ -24,10 +24,8 @@ import org.qi4j.api.persistence.Identity;
 public final class IdentityValidatorModifier
     implements Identity
 {
-    @Uses
-    Identity currentIdentity;
-    @Modifies
-    Identity identity;
+    @Uses private Identity currentIdentity;
+    @Modifies private Identity identity;
 
     public void setIdentity( String anIdentity )
     {

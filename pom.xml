@@ -15,8 +15,10 @@
   <packaging>pom</packaging>
   <!-- This POM is ONLY to initiate the modules to be built. -->
   <modules>
+    <module>api</module>
+    <module>spi</module>
     <module>runtime</module>
-    <module>test-support</module>
+    <module>testsupport</module>
   </modules>
 </project>
 

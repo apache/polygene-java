@@ -15,48 +15,42 @@
 
 package org.qi4j.runtime;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.lang.reflect.UndeclaredThrowableException;
+import java.util.ArrayList;
+import java.util.IdentityHashMap;
+import java.util.List;
+import java.util.Map;
 import org.qi4j.api.MixinFactory;
 import org.qi4j.api.ObjectFactory;
 import org.qi4j.api.ObjectInstantiationException;
-import org.qi4j.api.persistence.Identity;
+import org.qi4j.api.annotation.Dependency;
 import org.qi4j.api.annotation.ImplementedBy;
 import org.qi4j.api.annotation.Uses;
-import org.qi4j.api.annotation.Dependency;
-
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.UndeclaredThrowableException;
-import java.util.Map;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.IdentityHashMap;
+import org.qi4j.api.persistence.Identity;
 
 /**
  * TODO
- *
  */
 public class ObjectInvocationHandler
     implements InvocationHandler
 {
-    // Static --------------------------------------------------------
-    public static ObjectInvocationHandler getInvocationHandler( Object aProxy )
-    {
-        return (ObjectInvocationHandler) Proxy.getInvocationHandler( aProxy );
-    }
+    private ObjectContext context;
+    private Map<Class, Object> mixins;
 
-    // Attributes ----------------------------------------------------
-    ObjectContext context;
-
-    Map<Class, Object> mixins;
-
-    // Constructors --------------------------------------------------
-    public ObjectInvocationHandler( ObjectContext aContext)
+    public ObjectInvocationHandler( ObjectContext aContext )
     {
         this.context = aContext;
         mixins = new IdentityHashMap<Class, Object>();
+    }
+
+    public static ObjectInvocationHandler getInvocationHandler( Object aProxy )
+    {
+        return (ObjectInvocationHandler) Proxy.getInvocationHandler( aProxy );
     }
 
     // InvocationHandler implementation ------------------------------
@@ -64,43 +58,47 @@ public class ObjectInvocationHandler
     {
         Class proxyInterface = method.getDeclaringClass();
 
-        if (proxyInterface.equals( Object.class))
+        if( proxyInterface.equals( Object.class ) )
         {
-            if (method.getName().equals( "hashCode"))
+            if( method.getName().equals( "hashCode" ) )
             {
-                if ( Identity.class.isAssignableFrom( context.getBindingType()))
+                if( Identity.class.isAssignableFrom( context.getBindingType() ) )
                 {
-                    String id = ((Identity)proxy).getIdentity();
-                    if (id != null)
+                    String id = ( (Identity) proxy ).getIdentity();
+                    if( id != null )
                     {
                         return id.hashCode();
-                    } else
+                    }
+                    else
                     {
                         return 0;
                     }
-                } else
+                }
+                else
                 {
                     return 0; // TODO ?
                 }
             }
-            if (method.getName().equals( "equals"))
+            if( method.getName().equals( "equals" ) )
             {
-                if ( Identity.class.isAssignableFrom( context.getBindingType()))
+                if( Identity.class.isAssignableFrom( context.getBindingType() ) )
                 {
-                    String id = ((Identity)proxy).getIdentity();
+                    String id = ( (Identity) proxy ).getIdentity();
                     return id != null && id.equals( ( (Identity) args[ 0 ] ).getIdentity() );
-                } else
+                }
+                else
                 {
                     return false;
                 }
             }
-            if (method.getName().equals( "toString"))
+            if( method.getName().equals( "toString" ) )
             {
-                if ( Identity.class.isAssignableFrom( context.getBindingType()))
+                if( Identity.class.isAssignableFrom( context.getBindingType() ) )
                 {
-                    String id = ((Identity)proxy).getIdentity();
+                    String id = ( (Identity) proxy ).getIdentity();
                     return id != null ? id : "";
-                } else
+                }
+                else
                 {
                     return "";
                 }
@@ -118,19 +116,19 @@ public class ObjectInvocationHandler
 
         // Get interface modifiers
         ArrayList<InvocationInstance> instances = context.getInvocationInstancePool().get( method );
-        if (instances == null)
+        if( instances == null )
         {
             instances = new ArrayList<InvocationInstance>();
-            context.getInvocationInstancePool().put( method, instances);
+            context.getInvocationInstancePool().put( method, instances );
         }
         InvocationInstance invocationInstance;
         try
         {
-            invocationInstance = instances.remove( instances.size()-1);
+            invocationInstance = instances.remove( instances.size() - 1 );
         }
         catch( ArrayIndexOutOfBoundsException e )
         {
-            invocationInstance = context.getPool().newInstance( method, context.getBindingType(), mixin, instances);
+            invocationInstance = context.getPool().newInstance( method, context.getBindingType(), mixin, instances );
         }
 
         ModifierInstance interfaceModifierInstance = invocationInstance.getInterfaceInstance();
@@ -160,7 +158,7 @@ public class ObjectInvocationHandler
             }
         }
 
-        invocationInstance.getProxyHandler().setContext( proxy , mixin, proxyInterface );
+        invocationInstance.getProxyHandler().setContext( proxy, mixin, proxyInterface );
 
         // Invoke
         try

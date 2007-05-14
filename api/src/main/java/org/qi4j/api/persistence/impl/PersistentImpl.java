@@ -15,7 +15,7 @@
 package org.qi4j.api.persistence.impl;
 
 import org.qi4j.api.persistence.Persistent;
-import org.qi4j.api.persistence.PersistentRepository;
+import org.qi4j.api.persistence.PersistentStorage;
 
 
 /**
@@ -24,15 +24,15 @@ import org.qi4j.api.persistence.PersistentRepository;
 public final class PersistentImpl
     implements Persistent
 {
-    PersistentRepository persistentRepository;
+    private PersistentStorage persistentStorage;
 
-    public void setPersistentRepository( PersistentRepository aRepository )
+    public void setPersistentRepository( PersistentStorage aStorage )
     {
-        persistentRepository = aRepository;
+        persistentStorage = aStorage;
     }
 
-    public PersistentRepository getPersistentRepository()
+    public PersistentStorage getPersistentRepository()
     {
-        return persistentRepository;
+        return persistentStorage;
     }
 }

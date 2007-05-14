@@ -25,7 +25,7 @@ import org.qi4j.api.persistence.binding.PersistenceBinding;
 public final class ObjectRepositoryImpl
    implements ObjectRepository
 {
-   ObjectFactory factory;
+   private ObjectFactory factory;
 
    public ObjectRepositoryImpl(ObjectFactory aFactory)
    {

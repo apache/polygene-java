@@ -18,9 +18,9 @@ import java.util.ArrayList;
 
 public final class InvocationInstance
 {
-    ModifierInstance interfaceInstance;
-    ModifierInstance mixinInstance;
-    ProxyReferenceInvocationHandler proxyHandler;
+    private ModifierInstance interfaceInstance;
+    private ModifierInstance mixinInstance;
+    private ProxyReferenceInvocationHandler proxyHandler;
     private ArrayList<InvocationInstance> pool;
 
     public InvocationInstance( ModifierInstance aInterfaceInstance, ModifierInstance aMixinInstance, ProxyReferenceInvocationHandler aProxyHandler, ArrayList<InvocationInstance> aPool )

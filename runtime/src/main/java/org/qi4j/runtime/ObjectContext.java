@@ -26,11 +26,11 @@ import java.util.IdentityHashMap;
  */
 public final class ObjectContext
 {
-    Class bindingType;
-    ObjectFactory objectFactory;
-    MixinFactory mixinFactory;
-    InvocationInstancePool pool;
-    IdentityHashMap<Method, ArrayList<InvocationInstance>> invocationInstancePool;
+    private Class bindingType;
+    private ObjectFactory objectFactory;
+    private MixinFactory mixinFactory;
+    private InvocationInstancePool pool;
+    private IdentityHashMap<Method, ArrayList<InvocationInstance>> invocationInstancePool;
 
     public ObjectContext( Class aBindingType, ObjectFactory aObjectFactory, MixinFactory aMixinFactory, InvocationInstancePool instancePool)
     {

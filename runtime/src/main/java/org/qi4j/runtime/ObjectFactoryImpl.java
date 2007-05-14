@@ -28,9 +28,8 @@ import java.lang.reflect.Proxy;
 public final class ObjectFactoryImpl
     implements ObjectFactory
 {
-    ClassLoader loader;
-    MixinFactory mixinFactory;
-    InvocationInstancePool invocationInstancePool;
+    private MixinFactory mixinFactory;
+    private InvocationInstancePool invocationInstancePool;
 
     public ObjectFactoryImpl( MixinFactory aMixinFactory )
     {

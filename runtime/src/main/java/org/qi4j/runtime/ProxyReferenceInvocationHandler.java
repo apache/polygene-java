@@ -23,8 +23,8 @@ import org.qi4j.api.InvocationContext;
 public final class ProxyReferenceInvocationHandler
     implements InvocationHandler, InvocationContext
 {
-    Object proxy;
-    Object mixin;
+    private Object proxy;
+    private Object mixin;
     private Class mixinType;
 
     public Object getProxy()

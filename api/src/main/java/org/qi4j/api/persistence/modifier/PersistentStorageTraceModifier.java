@@ -15,43 +15,63 @@
 package org.qi4j.api.persistence.modifier;
 
 import org.qi4j.api.annotation.Modifies;
-import org.qi4j.api.annotation.Uses;
 import org.qi4j.api.persistence.ObjectNotFoundException;
-import org.qi4j.api.persistence.PersistentRepository;
+import org.qi4j.api.persistence.PersistentStorage;
 import org.qi4j.api.persistence.binding.PersistenceBinding;
 
 /**
- * This modifier ensures that objects have a proper reference
- * to its repository.
+ * This modifier traces calls to a persistent storage
  */
-public final class PersistentRepositoryReferenceModifier
-    implements PersistentRepository
+public final class PersistentStorageTraceModifier
+    implements PersistentStorage
 {
-    @Uses
-    PersistentRepository repo;
-    @Modifies
-    PersistentRepository repository;
+    private static boolean enabled = true;
+    
+    @Modifies private PersistentStorage storage;
 
     public void create( PersistenceBinding aProxy )
     {
-        repository.create( aProxy );
-        aProxy.setPersistentRepository( repo );
+        storage.create( aProxy );
+        if( enabled )
+        {
+            System.out.println( "Created " + aProxy.getIdentity() );
+        }
     }
 
     public void read( PersistenceBinding aProxy ) throws ObjectNotFoundException
     {
-        repository.read( aProxy );
-        aProxy.setPersistentRepository( repo );
+        storage.read( aProxy );
+        if( enabled )
+        {
+            System.out.println( "Read " + aProxy.getIdentity() );
+        }
     }
 
     public void update( PersistenceBinding aProxy, Object aMixin )
     {
-        repository.update( aProxy, aMixin );
+        storage.update( aProxy, aMixin );
+        if( enabled )
+        {
+            System.out.println( "Updated mixin " + aMixin.getClass().getSimpleName() + " for " + aProxy.getIdentity() );
+        }
     }
 
     public void delete( PersistenceBinding aProxy )
     {
-        repository.delete( aProxy );
-        aProxy.setPersistentRepository( null );
+        storage.delete( aProxy );
+        if( enabled )
+        {
+            System.out.println( "Deleted " + aProxy.getIdentity() );
+        }
+    }
+
+    public static boolean isEnabled()
+    {
+        return enabled;
+    }
+
+    public static void setEnabled( boolean enable )
+    {
+        enabled = enable;
     }
 }

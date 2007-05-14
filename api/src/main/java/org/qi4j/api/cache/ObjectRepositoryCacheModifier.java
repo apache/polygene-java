@@ -25,8 +25,8 @@ import org.qi4j.api.persistence.binding.PersistenceBinding;
 public final class ObjectRepositoryCacheModifier
     implements ObjectRepository
 {
-    @Uses ObjectRepositoryCache cache;
-    @Modifies ObjectRepository repository;
+    @Uses private ObjectRepositoryCache cache;
+    @Modifies private ObjectRepository repository;
 
     public <T extends PersistenceBinding> T getInstance( String anIdentity, Class<T> aType )
     {

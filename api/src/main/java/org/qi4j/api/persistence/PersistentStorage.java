@@ -12,29 +12,25 @@
  * limitations under the License.
  *
  */
-package org.qi4j.runtime.persistence;
+package org.qi4j.api.persistence;
 
-import org.qi4j.api.ObjectFactory;
-import org.qi4j.api.annotation.Dependency;
-import org.qi4j.api.annotation.Modifies;
-import org.qi4j.api.annotation.Uses;
 import org.qi4j.api.persistence.binding.PersistenceBinding;
 
-public final class PeristentCloneableModifier<T extends PersistenceBinding>
-    implements org.qi4j.api.persistence.Cloneable<T>
-{
-    @Modifies
-    org.qi4j.api.persistence.Cloneable<T> cloneable;
-    @Uses
-    PersistenceBinding persistent;
-    @Dependency
-    ObjectFactory factory;
 
-    public T clone()
-    {
-        T cloned = cloneable.clone();
-        cloned.setIdentity( persistent.getIdentity() + "cloned" );
-        persistent.getPersistentRepository().create( factory.getThat( cloned ) );
-        return cloned;
-    }
+/**
+ * Persistent repositories must implement this.
+ */
+public interface PersistentStorage
+{
+    void create( PersistenceBinding aProxy )
+        throws PersistenceException;
+
+    void read( PersistenceBinding aProxy )
+        throws PersistenceException;
+
+    void update( PersistenceBinding aProxy, Object aMixin )
+        throws PersistenceException;
+
+    void delete( PersistenceBinding aProxy )
+        throws PersistenceException;
 }

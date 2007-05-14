@@ -17,32 +17,32 @@ package org.qi4j.api.persistence.impl;
 import org.qi4j.api.annotation.Uses;
 import org.qi4j.api.persistence.Lifecycle;
 import org.qi4j.api.persistence.PersistenceException;
-import org.qi4j.api.persistence.PersistentRepository;
+import org.qi4j.api.persistence.PersistentStorage;
 import org.qi4j.api.persistence.binding.PersistenceBinding;
 
 
 public final class LifecycleImpl
     implements Lifecycle
 {
-    @Uses PersistenceBinding meAsPersistence;
+    @Uses private PersistenceBinding meAsPersistence;
 
     public void create() throws PersistenceException
     {
-        PersistentRepository repository = meAsPersistence.getPersistentRepository();
-        if( repository == null )
+        PersistentStorage storage = meAsPersistence.getPersistentRepository();
+        if( storage == null )
         {
-            throw new PersistenceException( "No repository set for object" );
+            throw new PersistenceException( "No storage set for object" );
         }
-        repository.create( meAsPersistence );
+        storage.create( meAsPersistence );
     }
 
     public void delete() throws PersistenceException
     {
-        PersistentRepository repository = meAsPersistence.getPersistentRepository();
-        if( repository == null )
+        PersistentStorage storage = meAsPersistence.getPersistentRepository();
+        if( storage == null )
         {
-            throw new PersistenceException( "No repository set for object" );
+            throw new PersistenceException( "No storage set for object" );
         }
-        repository.delete( meAsPersistence );
+        storage.delete( meAsPersistence );
     }
 }

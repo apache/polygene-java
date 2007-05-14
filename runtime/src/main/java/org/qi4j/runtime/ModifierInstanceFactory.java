@@ -30,8 +30,8 @@ import java.util.List;
 
 public final class ModifierInstanceFactory
 {
-    ObjectFactory objectFactory;
-    MixinFactory mixinFactory;
+    private ObjectFactory objectFactory;
+    private MixinFactory mixinFactory;
 
     public ModifierInstanceFactory( ObjectFactory anObjectFactory, MixinFactory aMixinFactory )
     {

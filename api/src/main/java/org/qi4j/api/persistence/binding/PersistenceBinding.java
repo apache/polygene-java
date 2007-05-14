@@ -17,6 +17,7 @@ package org.qi4j.api.persistence.binding;
 import org.qi4j.api.annotation.ModifiedBy;
 import org.qi4j.api.persistence.Identity;
 import org.qi4j.api.persistence.Persistent;
+import org.qi4j.api.persistence.Lifecycle;
 import org.qi4j.api.persistence.modifier.ReadUpdateModifier;
 
 /**
@@ -24,6 +25,6 @@ import org.qi4j.api.persistence.modifier.ReadUpdateModifier;
  * which provides an identity and a reference to a repository
  */
 @ModifiedBy( ReadUpdateModifier.class )
-public interface PersistenceBinding extends Identity, Persistent
+public interface PersistenceBinding extends Identity, Persistent, Lifecycle
 {
 }

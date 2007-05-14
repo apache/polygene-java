@@ -23,10 +23,10 @@ import java.lang.reflect.InvocationTargetException;
 
 public final class ModifierInstance
 {
-    @Modifies Object firstModifier;
-    Field lastModifies;
-    Object lastModifier;
-    LastModifierInvocationHandler lastHandler;
+    @Modifies private Object firstModifier;
+    private Field lastModifies;
+    private Object lastModifier;
+    private LastModifierInvocationHandler lastHandler;
 
     public Object getFirstModifier()
     {

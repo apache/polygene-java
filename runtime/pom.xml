@@ -8,18 +8,15 @@
     <version>0.1.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.qi4j</groupId>
+  <groupId>org.qi4j.core</groupId>
   <artifactId>qi4j-runtime</artifactId>
   <name>Qi4J Core - Runtime</name>
   <version>0.1.0-SNAPSHOT</version>
   <dependencies>
     <dependency>
-      <groupId>org.ops4j.base</groupId>
-      <artifactId>ops4j-base</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>osgi_R4_core</artifactId>
+      <groupId>org.qi4j.core</groupId>
+      <artifactId>qi4j-api</artifactId>
+      <version>0.1.0-SNAPSHOT</version>
     </dependency>
   </dependencies>
 </project>

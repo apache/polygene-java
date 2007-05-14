@@ -15,40 +15,41 @@
 package org.qi4j.api.persistence.modifier;
 
 import org.qi4j.api.annotation.Modifies;
+import org.qi4j.api.annotation.Uses;
 import org.qi4j.api.persistence.ObjectNotFoundException;
-import org.qi4j.api.persistence.PersistentRepository;
+import org.qi4j.api.persistence.PersistentStorage;
 import org.qi4j.api.persistence.binding.PersistenceBinding;
 
 /**
- * This modifier traces calls to a persistent repository
+ * This modifier ensures that objects have a proper reference
+ * to its storage.
  */
-public final class PersistentRepositoryTraceModifier
-    implements PersistentRepository
+public final class PersistentStorageReferenceModifier
+    implements PersistentStorage
 {
-    @Modifies
-    PersistentRepository repository;
+    @Uses private PersistentStorage repo;
+    @Modifies private PersistentStorage storage;
 
     public void create( PersistenceBinding aProxy )
     {
-        repository.create( aProxy );
-        System.out.println( "Created " + aProxy.getIdentity() );
+        storage.create( aProxy );
+        aProxy.setPersistentRepository( repo );
     }
 
     public void read( PersistenceBinding aProxy ) throws ObjectNotFoundException
     {
-        repository.read( aProxy );
-        System.out.println( "Read " + aProxy.getIdentity() );
+        storage.read( aProxy );
+        aProxy.setPersistentRepository( repo );
     }
 
     public void update( PersistenceBinding aProxy, Object aMixin )
     {
-        repository.update( aProxy, aMixin );
-        System.out.println( "Updated mixin " + aMixin.getClass().getSimpleName() + " for " + aProxy.getIdentity() );
+        storage.update( aProxy, aMixin );
     }
 
     public void delete( PersistenceBinding aProxy )
     {
-        repository.delete( aProxy );
-        System.out.println( "Deleted " + aProxy.getIdentity() );
+        storage.delete( aProxy );
+        aProxy.setPersistentRepository( null );
     }
 }
