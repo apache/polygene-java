@@ -30,11 +30,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
 import org.qi4j.api.ObjectInstantiationException;
-import org.qi4j.api.annotation.ModifiedBy;
 import org.qi4j.api.persistence.ObjectNotFoundException;
-import org.qi4j.api.persistence.modifier.PersistentStorageReferenceModifier;
-import org.qi4j.api.persistence.modifier.PersistentStorageTraceModifier;
-import org.qi4j.runtime.persistence.spi.SerializablePersistenceSpi;
+import org.qi4j.spi.persistence.SerializablePersistenceSpi;
 
 public final class BinaryFilePersistenceProvider
     implements SerializablePersistenceSpi

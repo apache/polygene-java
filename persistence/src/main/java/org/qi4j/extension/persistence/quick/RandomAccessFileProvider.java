@@ -27,7 +27,7 @@ import java.rmi.MarshalledObject;
 import java.util.HashMap;
 import java.util.Map;
 import org.qi4j.api.ObjectInstantiationException;
-import org.qi4j.runtime.persistence.spi.SerializablePersistenceSpi;
+import org.qi4j.spi.persistence.SerializablePersistenceSpi;
 
 public class RandomAccessFileProvider
     implements SerializablePersistenceSpi

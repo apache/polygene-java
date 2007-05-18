@@ -17,7 +17,7 @@ package org.qi4j.extension.persistence.quick;
 import org.qi4j.api.annotation.ModifiedBy;
 import org.qi4j.api.persistence.modifier.PersistentStorageReferenceModifier;
 import org.qi4j.api.persistence.modifier.PersistentStorageTraceModifier;
-import org.qi4j.runtime.persistence.spi.SerializablePersistenceSpi;
+import org.qi4j.spi.persistence.SerializablePersistenceSpi;
 import java.rmi.MarshalledObject;
 import java.util.HashMap;
 import java.util.Map;
