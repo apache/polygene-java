@@ -32,6 +32,9 @@ import org.qi4j.api.annotation.Dependency;
 import org.qi4j.api.annotation.ImplementedBy;
 import org.qi4j.api.annotation.Uses;
 import org.qi4j.api.persistence.Identity;
+import org.qi4j.spi.object.InvocationInstance;
+import org.qi4j.spi.object.ModifierInstance;
+import org.qi4j.spi.object.ObjectContext;
 
 /**
  * TODO
@@ -115,20 +118,21 @@ public class ObjectInvocationHandler
         Object invokedObject = mixin;
 
         // Get interface modifiers
-        ArrayList<InvocationInstance> instances = context.getInvocationInstancePool().get( method );
+        List<InvocationInstance> instances = context.getMethodToInvocationInstanceMap().get( method );
         if( instances == null )
         {
             instances = new ArrayList<InvocationInstance>();
-            context.getInvocationInstancePool().put( method, instances );
+            context.getMethodToInvocationInstanceMap().put( method, instances );
         }
         InvocationInstance invocationInstance;
-        try
+        int size = instances.size();
+        if( size > 0 )
         {
-            invocationInstance = instances.remove( instances.size() - 1 );
+            invocationInstance = instances.remove( size - 1 );
         }
-        catch( ArrayIndexOutOfBoundsException e )
+        else
         {
-            invocationInstance = context.getPool().newInstance( method, context.getBindingType(), mixin, instances );
+            invocationInstance = context.newInvocationInstance( method, mixin, instances );
         }
 
         ModifierInstance interfaceModifierInstance = invocationInstance.getInterfaceInstance();

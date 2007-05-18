@@ -12,7 +12,7 @@
  * limitations under the License.
  *
  */
-package org.qi4j.runtime.persistence.spi;
+package org.qi4j.spi.persistence;
 
 import java.rmi.MarshalledObject;
 import java.util.Map;

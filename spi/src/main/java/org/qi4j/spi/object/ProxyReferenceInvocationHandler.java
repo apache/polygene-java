@@ -12,7 +12,7 @@
  * limitations under the License.
  *
  */
-package org.qi4j.runtime;
+package org.qi4j.spi.object;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;

@@ -15,13 +15,14 @@
 package org.qi4j.runtime;
 
 import org.qi4j.api.annotation.Modifies;
+import org.qi4j.spi.object.ModifierInstance;
 import java.lang.reflect.Field;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
 
-public final class ModifierInstance
+public final class ModifierInstanceImpl implements ModifierInstance
 {
     @Modifies private Object firstModifier;
     private Field lastModifies;

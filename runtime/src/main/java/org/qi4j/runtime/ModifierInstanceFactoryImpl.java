@@ -22,31 +22,34 @@ import org.qi4j.api.annotation.Modifies;
 import org.qi4j.api.annotation.Uses;
 import org.qi4j.api.annotation.Dependency;
 import org.qi4j.api.annotation.AppliesTo;
+import org.qi4j.spi.object.ModifierInstance;
+import org.qi4j.spi.object.ProxyReferenceInvocationHandler;
+import org.qi4j.spi.object.ModifierInstanceFactory;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class ModifierInstanceFactory
+public final class ModifierInstanceFactoryImpl implements ModifierInstanceFactory
 {
     private ObjectFactory objectFactory;
     private MixinFactory mixinFactory;
 
-    public ModifierInstanceFactory( ObjectFactory anObjectFactory, MixinFactory aMixinFactory )
+    public ModifierInstanceFactoryImpl( ObjectFactory anObjectFactory, MixinFactory aMixinFactory )
     {
         objectFactory = anObjectFactory;
         mixinFactory = aMixinFactory;
     }
 
-    ModifierInstance newInstance( Class invocationType, Class modifierType, Class mixinClass, ProxyReferenceInvocationHandler proxyHandler )
+    public ModifierInstance newInstance( Class invocationType, Class modifierType, Class mixinClass, ProxyReferenceInvocationHandler proxyHandler )
     {
         try
         {
             // Instantiate modifier
             List<Class> modifierClasses = new ArrayList<Class>();
             findModifiers( invocationType, modifierType, modifierClasses );
-            ModifierInstance instance = new ModifierInstance();
+            ModifierInstance instance = new ModifierInstanceImpl();
             Object previousModifier = instance;
             if( !Proxy.class.isAssignableFrom( mixinClass ) )
             {
@@ -148,7 +151,7 @@ public final class ModifierInstanceFactory
         }
     }
 
-    private void findUses( Class<? extends Object> aClass, List<Field> aUsesFields )
+    public void findUses( Class<? extends Object> aClass, List<Field> aUsesFields )
     {
         Field[] fields = aClass.getDeclaredFields();
         for( Field field : fields )
@@ -166,7 +169,7 @@ public final class ModifierInstanceFactory
         }
     }
 
-    private void findDependency( Class<? extends Object> aClass, List<Field> aDependencyFields )
+    public void findDependency( Class<? extends Object> aClass, List<Field> aDependencyFields )
     {
         Field[] fields = aClass.getDeclaredFields();
         for( Field field : fields )
@@ -184,7 +187,7 @@ public final class ModifierInstanceFactory
         }
     }
 
-    private Field findModifies( Class<? extends Object> aClass )
+    public Field findModifies( Class<? extends Object> aClass )
     {
         Field[] fields = aClass.getDeclaredFields();
         for( Field field : fields )
@@ -203,7 +206,7 @@ public final class ModifierInstanceFactory
         return null;
     }
 
-    private void findModifiers( Class invocationType, Class modifierType, List<Class> aModifierList )
+    public void findModifiers( Class invocationType, Class modifierType, List<Class> aModifierList )
     {
         ModifiedBy modifiedBy = (ModifiedBy) modifierType.getAnnotation( ModifiedBy.class );
         if( modifiedBy != null )

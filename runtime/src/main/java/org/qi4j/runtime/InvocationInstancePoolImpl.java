@@ -19,23 +19,30 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.List;
+import org.qi4j.spi.object.InvocationInstance;
+import org.qi4j.spi.object.ModifierInstance;
+import org.qi4j.spi.object.ProxyReferenceInvocationHandler;
+import org.qi4j.spi.object.ModifierInstanceFactory;
+import org.qi4j.spi.object.InvocationInstancePool;
 
-public final class InvocationInstancePool
+public final class InvocationInstancePoolImpl
+    implements InvocationInstancePool
 {
-    private Map<Class, IdentityHashMap<Method, ArrayList<InvocationInstance>>> pools;
-    private ThreadLocal<IdentityHashMap<Method, IdentityHashMap<Class, ArrayList<InvocationInstance>>>> threadInstances;
+    private Map<Class, IdentityHashMap<Method, List<InvocationInstance>>> pools;
+    private ThreadLocal<IdentityHashMap<Method, IdentityHashMap<Class, List<InvocationInstance>>>> threadInstances;
     private ModifierInstanceFactory factory;
 
-    public InvocationInstancePool( ModifierInstanceFactory aFactory )
+    public InvocationInstancePoolImpl( ModifierInstanceFactory aFactory )
     {
-        pools = new HashMap<Class, IdentityHashMap<Method, ArrayList<InvocationInstance>>>();
+        pools = new HashMap<Class, IdentityHashMap<Method, List<InvocationInstance>>>();
         factory = aFactory;
-        threadInstances = new ThreadLocal<IdentityHashMap<Method, IdentityHashMap<Class, ArrayList<InvocationInstance>>>>()
+        threadInstances = new ThreadLocal<IdentityHashMap<Method, IdentityHashMap<Class, List<InvocationInstance>>>>()
         {
 
-            protected IdentityHashMap<Method, IdentityHashMap<Class, ArrayList<InvocationInstance>>> initialValue()
+            protected IdentityHashMap<Method, IdentityHashMap<Class, List<InvocationInstance>>> initialValue()
             {
-                return new IdentityHashMap<Method, IdentityHashMap<Class, ArrayList<InvocationInstance>>>();
+                return new IdentityHashMap<Method, IdentityHashMap<Class, List<InvocationInstance>>>();
             }
         };
 
@@ -43,14 +50,14 @@ public final class InvocationInstancePool
 
     public InvocationInstance get( Method method, Class bindingType, Object mixin )
     {
-        IdentityHashMap<Method, IdentityHashMap<Class, ArrayList<InvocationInstance>>> instances = threadInstances.get();
-        IdentityHashMap<Class, ArrayList<InvocationInstance>> stacks = instances.get( method );
+        IdentityHashMap<Method, IdentityHashMap<Class, List<InvocationInstance>>> instances = threadInstances.get();
+        IdentityHashMap<Class, List<InvocationInstance>> stacks = instances.get( method );
         if( stacks == null )
         {
-            stacks = new IdentityHashMap<Class, ArrayList<InvocationInstance>>();
+            stacks = new IdentityHashMap<Class, List<InvocationInstance>>();
             instances.put( method, stacks );
         }
-        ArrayList<InvocationInstance> pool = stacks.get( bindingType );
+        List<InvocationInstance> pool = stacks.get( bindingType );
         if( pool == null )
         {
             pool = new ArrayList<InvocationInstance>();
@@ -69,26 +76,26 @@ public final class InvocationInstancePool
         return newInstance( method, bindingType, mixin, pool );
     }
 
-    public InvocationInstance newInstance( Method method, Class bindingType, Object mixin, ArrayList<InvocationInstance> aPool )
+    public InvocationInstance newInstance( Method method, Class bindingType, Object mixin, List<InvocationInstance> aPool )
     {
         ProxyReferenceInvocationHandler proxyHandler = new ProxyReferenceInvocationHandler();
         Class<?> declaringClass = method.getDeclaringClass();
         ModifierInstance interfaceInstance = factory.newInstance( declaringClass, bindingType, mixin.getClass(), proxyHandler );
         ModifierInstance mixinInstance = factory.newInstance( declaringClass, mixin.getClass(), mixin.getClass(), proxyHandler );
 
-        return new InvocationInstance( interfaceInstance, mixinInstance, proxyHandler, aPool );
+        return new InvocationInstanceImpl( interfaceInstance, mixinInstance, proxyHandler, aPool );
     }
 
-    public ArrayList<InvocationInstance> getPool( Method method, Class modifierType )
+    public List<InvocationInstance> getPool( Method method, Class modifierType )
     {
-        IdentityHashMap<Method, IdentityHashMap<Class, ArrayList<InvocationInstance>>> instances = threadInstances.get();
-        IdentityHashMap<Class, ArrayList<InvocationInstance>> stacks = instances.get( method );
+        IdentityHashMap<Method, IdentityHashMap<Class, List<InvocationInstance>>> instances = threadInstances.get();
+        IdentityHashMap<Class, List<InvocationInstance>> stacks = instances.get( method );
         if( stacks == null )
         {
-            stacks = new IdentityHashMap<Class, ArrayList<InvocationInstance>>();
+            stacks = new IdentityHashMap<Class, List<InvocationInstance>>();
             instances.put( method, stacks );
         }
-        ArrayList<InvocationInstance> pool = stacks.get( modifierType );
+        List<InvocationInstance> pool = stacks.get( modifierType );
         if( pool == null )
         {
             pool = new ArrayList<InvocationInstance>();
@@ -98,12 +105,12 @@ public final class InvocationInstancePool
         return pool;
     }
 
-    public IdentityHashMap<Method, ArrayList<InvocationInstance>> getPool( Class bindingType )
+    public IdentityHashMap<Method, List<InvocationInstance>> getPool( Class bindingType )
     {
-        IdentityHashMap<Method, ArrayList<InvocationInstance>> pool = pools.get( bindingType );
+        IdentityHashMap<Method, List<InvocationInstance>> pool = pools.get( bindingType );
         if( pool == null )
         {
-            pool = new IdentityHashMap<Method, ArrayList<InvocationInstance>>();
+            pool = new IdentityHashMap<Method, List<InvocationInstance>>();
             pools.put( bindingType, pool );
         }
 

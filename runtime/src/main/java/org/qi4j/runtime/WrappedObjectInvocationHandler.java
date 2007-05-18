@@ -15,6 +15,7 @@
 package org.qi4j.runtime;
 
 import java.lang.reflect.Method;
+import org.qi4j.spi.object.ObjectContext;
 
 public final class WrappedObjectInvocationHandler
     extends ObjectInvocationHandler

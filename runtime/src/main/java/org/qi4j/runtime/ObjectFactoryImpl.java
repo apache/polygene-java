@@ -17,6 +17,9 @@ package org.qi4j.runtime;
 import org.qi4j.api.MixinFactory;
 import org.qi4j.api.ObjectInstantiationException;
 import org.qi4j.api.ObjectFactory;
+import org.qi4j.spi.object.ProxyReferenceInvocationHandler;
+import org.qi4j.spi.object.ObjectContext;
+import org.qi4j.spi.object.InvocationInstancePool;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
@@ -34,14 +37,14 @@ public final class ObjectFactoryImpl
     public ObjectFactoryImpl( MixinFactory aMixinFactory )
     {
         mixinFactory = aMixinFactory;
-        invocationInstancePool = new InvocationInstancePool( new ModifierInstanceFactory( this, mixinFactory) );
+        invocationInstancePool = new InvocationInstancePoolImpl( new ModifierInstanceFactoryImpl( this, mixinFactory) );
     }
 
     public <T> T newInstance( Class<T> anObjectType )
     {
         try
         {
-            ObjectContext context= new ObjectContext( anObjectType, this, mixinFactory, invocationInstancePool);
+            ObjectContext context= new ObjectContextImpl( anObjectType, this, mixinFactory, invocationInstancePool);
 
             ObjectInvocationHandler handler = new ObjectInvocationHandler( context);
             ClassLoader proxyClassloader = anObjectType.getClassLoader();
@@ -71,7 +74,7 @@ public final class ObjectFactoryImpl
                 }
             }
 
-            ObjectContext context = new ObjectContext( anObjectType, this, mixinFactory, invocationInstancePool );
+            ObjectContext context = new ObjectContextImpl( anObjectType, this, mixinFactory, invocationInstancePool );
             ObjectInvocationHandler handler = new WrappedObjectInvocationHandler( anObject, context );
             ClassLoader proxyClassLoader = anObjectType.getClassLoader();
             Class[] interfaces = new Class[]{ anObjectType };
@@ -112,6 +115,9 @@ public final class ObjectFactoryImpl
         {
             return proxy;
         }
+
         return null;
     }
+
+
 }

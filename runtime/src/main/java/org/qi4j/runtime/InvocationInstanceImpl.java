@@ -14,16 +14,19 @@
  */
 package org.qi4j.runtime;
 
-import java.util.ArrayList;
+import java.util.List;
+import org.qi4j.spi.object.InvocationInstance;
+import org.qi4j.spi.object.ModifierInstance;
+import org.qi4j.spi.object.ProxyReferenceInvocationHandler;
 
-public final class InvocationInstance
+public final class InvocationInstanceImpl implements InvocationInstance
 {
     private ModifierInstance interfaceInstance;
     private ModifierInstance mixinInstance;
     private ProxyReferenceInvocationHandler proxyHandler;
-    private ArrayList<InvocationInstance> pool;
+    private List<InvocationInstance> pool;
 
-    public InvocationInstance( ModifierInstance aInterfaceInstance, ModifierInstance aMixinInstance, ProxyReferenceInvocationHandler aProxyHandler, ArrayList<InvocationInstance> aPool )
+    public InvocationInstanceImpl( ModifierInstance aInterfaceInstance, ModifierInstance aMixinInstance, ProxyReferenceInvocationHandler aProxyHandler, List<InvocationInstance> aPool )
     {
         interfaceInstance = aInterfaceInstance;
         mixinInstance = aMixinInstance;

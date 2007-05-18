@@ -1,7 +1,6 @@
 /*
- * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
  * Copyright (c) 2007, Niclas Hedhman. All Rights Reserved.
- *
+ * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
@@ -12,14 +11,20 @@
  * limitations under the License.
  *
  */
-package org.qi4j.runtime;
 
-import org.qi4j.api.persistence.ObjectNotFoundException;
+package org.qi4j.spi.object;
 
-public interface ObjectReference
+import java.lang.reflect.Method;
+import java.util.Map;
+import java.util.List;
+
+public interface InvocationInstancePool
 {
-    Object get()
-        throws ObjectNotFoundException;
+    InvocationInstance get( Method method, Class bindingType, Object mixin );
 
-    void release();
+    InvocationInstance newInstance( Method method, Class bindingType, Object mixin, List<InvocationInstance> aPool );
+
+    List<InvocationInstance> getPool( Method method, Class modifierType );
+
+    Map<Method, List<InvocationInstance>> getPool( Class bindingType );
 }

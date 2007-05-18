@@ -16,29 +16,33 @@ package org.qi4j.runtime;
 
 import org.qi4j.api.ObjectFactory;
 import org.qi4j.api.MixinFactory;
+import org.qi4j.spi.object.ObjectContext;
+import org.qi4j.spi.object.InvocationInstance;
+import org.qi4j.spi.object.InvocationInstancePool;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.IdentityHashMap;
+import java.util.Map;
+import java.util.List;
 
 /**
  * TODO
  *
  */
-public final class ObjectContext
+public final class ObjectContextImpl
+    implements ObjectContext
 {
     private Class bindingType;
     private ObjectFactory objectFactory;
     private MixinFactory mixinFactory;
     private InvocationInstancePool pool;
-    private IdentityHashMap<Method, ArrayList<InvocationInstance>> invocationInstancePool;
+    private Map<Method, List<InvocationInstance>> methodToInvocationInstanceMap;
 
-    public ObjectContext( Class aBindingType, ObjectFactory aObjectFactory, MixinFactory aMixinFactory, InvocationInstancePool instancePool)
+    public ObjectContextImpl( Class aBindingType, ObjectFactory aObjectFactory, MixinFactory aMixinFactory, InvocationInstancePool instancePool)
     {
         bindingType = aBindingType;
         objectFactory = aObjectFactory;
         mixinFactory = aMixinFactory;
         pool = instancePool;
-        invocationInstancePool = instancePool.getPool( aBindingType);
+        methodToInvocationInstanceMap = instancePool.getPool( aBindingType);
     }
 
     public Class getBindingType()
@@ -61,8 +65,13 @@ public final class ObjectContext
         return pool;
     }
 
-    public IdentityHashMap<Method, ArrayList<InvocationInstance>> getInvocationInstancePool()
+    public InvocationInstance newInvocationInstance( Method method, Object mixin, List<InvocationInstance> instances )
     {
-        return invocationInstancePool;
+        return pool.newInstance( method, bindingType, mixin, instances );
+    }
+
+    public Map<Method, List<InvocationInstance>> getMethodToInvocationInstanceMap()
+    {
+        return methodToInvocationInstanceMap;
     }
 }
