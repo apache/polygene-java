@@ -18,6 +18,11 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.UndeclaredThrowableException;
+import java.beans.BeanInfo;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.beans.IntrospectionException;
+import java.util.Map;
 import org.qi4j.api.InvocationContext;
 
 public final class ProxyReferenceInvocationHandler
@@ -62,6 +67,27 @@ public final class ProxyReferenceInvocationHandler
         catch ( UndeclaredThrowableException e)
         {
             throw e.getUndeclaredThrowable();
+        }
+    }
+
+    public void initializeMixins( Map<Class, Object> mixins )
+        throws IntrospectionException, IllegalAccessException, InvocationTargetException
+    {
+        // TODO Improve?
+        Object currentMixin = mixins.get( getMixinType() );
+        Object invokedMixin = getMixin();
+        BeanInfo info = Introspector.getBeanInfo( currentMixin.getClass() );
+        PropertyDescriptor[] properties = info.getPropertyDescriptors();
+        for( PropertyDescriptor property : properties )
+        {
+            Method read = property.getReadMethod();
+            Method write = property.getWriteMethod();
+            if( read != null && write != null )
+            {
+                Object value = property.getReadMethod().invoke( currentMixin, new Object[0] );
+                Method writeMethod = property.getWriteMethod();
+                writeMethod.invoke( invokedMixin, value );
+            }
         }
     }
 }

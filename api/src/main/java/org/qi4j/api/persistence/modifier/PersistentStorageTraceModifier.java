@@ -18,6 +18,7 @@ import org.qi4j.api.annotation.Modifies;
 import org.qi4j.api.persistence.ObjectNotFoundException;
 import org.qi4j.api.persistence.PersistentStorage;
 import org.qi4j.api.persistence.binding.PersistenceBinding;
+import java.io.Serializable;
 
 /**
  * This modifier traces calls to a persistent storage
@@ -47,7 +48,7 @@ public final class PersistentStorageTraceModifier
         }
     }
 
-    public void update( PersistenceBinding aProxy, Object aMixin )
+    public void update( PersistenceBinding aProxy, Serializable aMixin )
     {
         storage.update( aProxy, aMixin );
         if( enabled )

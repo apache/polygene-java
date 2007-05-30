@@ -16,6 +16,7 @@ package org.qi4j.api.persistence.impl;
 
 import org.qi4j.api.persistence.Persistent;
 import org.qi4j.api.persistence.PersistentStorage;
+import javax.transaction.xa.XAResource;
 
 
 /**
@@ -29,6 +30,10 @@ public final class PersistentImpl
     public void setPersistentRepository( PersistentStorage aStorage )
     {
         persistentStorage = aStorage;
+        if( aStorage instanceof XAResource )
+        {
+//            aStorage.enlistResource();
+        }
     }
 
     public PersistentStorage getPersistentRepository()

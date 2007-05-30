@@ -15,6 +15,7 @@
 package org.qi4j.api.persistence;
 
 import org.qi4j.api.persistence.binding.PersistenceBinding;
+import java.io.Serializable;
 
 
 /**
@@ -28,7 +29,7 @@ public interface PersistentStorage
     void read( PersistenceBinding aProxy )
         throws PersistenceException;
 
-    void update( PersistenceBinding aProxy, Object aMixin )
+    void update( PersistenceBinding aProxy, Serializable aMixin )
         throws PersistenceException;
 
     void delete( PersistenceBinding aProxy )

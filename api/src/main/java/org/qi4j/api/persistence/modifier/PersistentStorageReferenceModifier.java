@@ -19,6 +19,7 @@ import org.qi4j.api.annotation.Uses;
 import org.qi4j.api.persistence.ObjectNotFoundException;
 import org.qi4j.api.persistence.PersistentStorage;
 import org.qi4j.api.persistence.binding.PersistenceBinding;
+import java.io.Serializable;
 
 /**
  * This modifier ensures that objects have a proper reference
@@ -42,7 +43,7 @@ public final class PersistentStorageReferenceModifier
         aProxy.setPersistentRepository( repo );
     }
 
-    public void update( PersistenceBinding aProxy, Object aMixin )
+    public void update( PersistenceBinding aProxy, Serializable aMixin )
     {
         storage.update( aProxy, aMixin );
     }

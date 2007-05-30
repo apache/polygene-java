@@ -51,7 +51,7 @@ public final class ReadUpdateModifier
         // Store mixin
         if( storage != null && isWriteMethod( method ) )
         {
-            storage.update( persistent, context.getMixin() );
+            storage.update( persistent, (Serializable) context.getMixin() );
         }
 
         return result;
