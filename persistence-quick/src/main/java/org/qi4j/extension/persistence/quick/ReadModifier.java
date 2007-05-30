@@ -44,7 +44,7 @@ public final class ReadModifier
         if( storage != null && !method.getName().startsWith( "get" ) )
         {
             Object object = ObjectInvocationHandler.getInvocationHandler( proxy );
-            storage.update( persistent, object );
+            storage.update( persistent, (Serializable) object );
         }
 
         return result;

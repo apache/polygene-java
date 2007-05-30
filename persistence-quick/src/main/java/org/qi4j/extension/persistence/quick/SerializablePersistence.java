@@ -25,12 +25,8 @@ import org.qi4j.api.persistence.modifier.PersistentStorageTraceModifier;
 import org.qi4j.spi.object.ProxyReferenceInvocationHandler;
 import org.qi4j.spi.persistence.SerializablePersistenceSpi;
 import org.qi4j.runtime.ObjectInvocationHandler;
-import java.beans.BeanInfo;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.io.Serializable;
-import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.rmi.MarshalledObject;
 import java.util.HashMap;
@@ -107,22 +103,7 @@ public final class SerializablePersistence
 
         try
         {
-            // TODO Improve?
-            Object currentMixin = deserializedMixins.get( proxyHandler.getMixinType() );
-            Object invokedMixin = proxyHandler.getMixin();
-            BeanInfo info = Introspector.getBeanInfo( currentMixin.getClass() );
-            PropertyDescriptor[] properties = info.getPropertyDescriptors();
-            for( PropertyDescriptor property : properties )
-            {
-                Method read = property.getReadMethod();
-                Method write = property.getWriteMethod();
-                if( read != null && write != null )
-                {
-                    Object value = property.getReadMethod().invoke( currentMixin, new Object[0] );
-                    Method writeMethod = property.getWriteMethod();
-                    writeMethod.invoke( invokedMixin, value );
-                }
-            }
+            proxyHandler.initializeMixins( deserializedMixins );
         }
         catch( Exception e )
         {
@@ -130,7 +111,7 @@ public final class SerializablePersistence
         }
     }
 
-    public void update( PersistenceBinding aProxy, Object aMixin )
+    public void update( PersistenceBinding aProxy, Serializable aMixin )
         throws PersistenceException
     {
         ProxyReferenceInvocationHandler handler = (ProxyReferenceInvocationHandler) Proxy.getInvocationHandler( aProxy );

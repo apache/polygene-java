@@ -9,8 +9,8 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.qi4j.extensions</groupId>
-  <artifactId>qi4j-persistence</artifactId>
-  <name>Qi4J Extension - Persistence</name>
+  <artifactId>qi4j-persistence-quick</artifactId>
+  <name>Qi4J Extension - Persistence Quick</name>
   <version>0.1.0-SNAPSHOT</version>
   <dependencies>
     <dependency>
