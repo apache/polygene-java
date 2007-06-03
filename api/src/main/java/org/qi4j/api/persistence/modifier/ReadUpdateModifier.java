@@ -60,11 +60,13 @@ public final class ReadUpdateModifier
     protected boolean isReadMethod( Method aMethod )
     {
         String name = aMethod.getName();
-        return name.startsWith( "get" ) || name.startsWith( "is" );
+        return name.startsWith( "get" ) || name.startsWith( "is" ) || name.startsWith( "has" );
     }
 
     protected boolean isWriteMethod( Method aMethod )
     {
+        // The argument is that if there are side-effects in non-read methods,
+        // we will need to store those state changes (if any).
         return !isReadMethod( aMethod );
     }
 }

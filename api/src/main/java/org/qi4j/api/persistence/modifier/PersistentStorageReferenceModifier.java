@@ -37,7 +37,8 @@ public final class PersistentStorageReferenceModifier
         aProxy.setPersistentRepository( repo );
     }
 
-    public void read( PersistenceBinding aProxy ) throws ObjectNotFoundException
+    public void read( PersistenceBinding aProxy )
+        throws ObjectNotFoundException
     {
         storage.read( aProxy );
         aProxy.setPersistentRepository( repo );

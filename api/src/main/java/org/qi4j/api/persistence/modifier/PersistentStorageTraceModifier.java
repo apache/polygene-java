@@ -66,6 +66,8 @@ public final class PersistentStorageTraceModifier
         }
     }
 
+    // Niclas says ; How is it possible to call these methods???
+    
     public static boolean isEnabled()
     {
         return enabled;
