@@ -27,12 +27,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import javax.transaction.RollbackException;
-import javax.transaction.Status;
 import javax.transaction.SystemException;
 import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
-import javax.transaction.xa.XAException;
-import javax.transaction.xa.XAResource;
 import javax.transaction.xa.Xid;
 import jdbm.RecordManager;
 import jdbm.RecordManagerFactory;
@@ -46,21 +43,19 @@ import org.qi4j.spi.object.ProxyReferenceInvocationHandler;
 
 
 public class JdbmStorage
-    implements PersistentStorage, XAResource
+    implements PersistentStorage
 {
     private ObjectFactory objectFactory;
     private TransactionManager transactionManager;
-    private HashMap<Transaction, TransactionBuffer> transactions;
     private RecordManager recordManager;
-    private HashMap<Xid, Transaction> xids;
+    private HashMap<Transaction, TransactionResource> transactions;
 
     public JdbmStorage( ObjectFactory factory, File directory, TransactionManager theTransactionManager )
         throws IOException
     {
         objectFactory = factory;
         transactionManager = theTransactionManager;
-        transactions = new HashMap<Transaction, TransactionBuffer>();
-        xids = new HashMap<Xid, Transaction>();
+        transactions = new HashMap<Transaction, TransactionResource>();
 
         String name = new File( directory, "qi4j.data" ).getAbsolutePath();
         Properties properties;
@@ -80,11 +75,14 @@ public class JdbmStorage
     {
         try
         {
-            Transaction transaction = transactionManager.getTransaction();
-            TransactionBuffer transactionBuffer = transactions.get( transaction );
-            transactionBuffer.create( aProxy );
+            TransactionResource transactionResource = getTransactionResource();
+            transactionResource.create( aProxy );
         }
         catch( SystemException e )
+        {
+            throw new TransactionSystemException( "TransactionManager failure.", e );
+        }
+        catch( RollbackException e )
         {
             throw new TransactionSystemException( "TransactionManager failure.", e );
         }
@@ -95,72 +93,18 @@ public class JdbmStorage
     {
         try
         {
-            Transaction transaction = transactionManager.getTransaction();
-            TransactionBuffer transactionBuffer = transactions.get( transaction );
+            TransactionResource transactionResource = getTransactionResource();
+            transactionResource.read( aProxy );
         }
         catch( SystemException e )
         {
             throw new TransactionSystemException( "TransactionManager failure.", e );
         }
+        catch( RollbackException e )
+        {
+            throw new TransactionSystemException( "TransactionManager failure.", e );
+        }
 
-        String objectId = aProxy.getIdentity();
-        try
-        {
-            long recordId = recordManager.getNamedObject( objectId );
-            Map<Class, Serializable> mixins = (Map<Class, Serializable>) recordManager.fetch( recordId );
-            if( mixins == null )
-            {
-                throw new ObjectNotFoundException( "Object with identity " + objectId + " does not exist" );
-            }
-
-            ProxyReferenceInvocationHandler proxyHandler = (ProxyReferenceInvocationHandler) Proxy.getInvocationHandler( aProxy );
-            ObjectInvocationHandler handler = ObjectInvocationHandler.getInvocationHandler( objectFactory.getThat( aProxy ) );
-            Map<Class, Object> existingMixins = handler.getMixins();
-            existingMixins.putAll( mixins );
-            proxyHandler.initializeMixins( existingMixins );
-            recordManager.commit();
-        }
-        catch( EOFException e )
-        {
-            try
-            {
-                recordManager.rollback();
-            }
-            catch( IOException e1 )
-            {
-                e1.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            }
-            throw new ObjectNotFoundException( "Object with identity " + objectId + " does not exist" );
-        }
-        // Possible Exceptions
-//        catch( IOException e )
-//        {
-//            throw new PersistenceException( e );
-//        }
-//        catch( IllegalAccessException e )
-//        {
-//            throw new PersistenceException( e );
-//        }
-//        catch( InvocationTargetException e )
-//        {
-//            throw new PersistenceException( e );
-//        }
-//        catch( IntrospectionException e )
-//        {
-//            throw new PersistenceException( e );
-//        }
-        catch( Exception e )
-        {
-            try
-            {
-                recordManager.rollback();
-            }
-            catch( IOException e1 )
-            {
-                e1.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            }
-            throw new PersistenceException( e );
-        }
     }
 
     public void update( PersistenceBinding aProxy, Serializable aMixin )
@@ -168,11 +112,14 @@ public class JdbmStorage
     {
         try
         {
-            Transaction transaction = transactionManager.getTransaction();
-            TransactionBuffer transactionBuffer = transactions.get( transaction );
-            transactionBuffer.update( aProxy, aMixin );
+            TransactionResource transactionResource = getTransactionResource();
+            transactionResource.update( aProxy, aMixin );
         }
         catch( SystemException e )
+        {
+            throw new TransactionSystemException( "TransactionManager failure.", e );
+        }
+        catch( RollbackException e )
         {
             throw new TransactionSystemException( "TransactionManager failure.", e );
         }
@@ -183,23 +130,31 @@ public class JdbmStorage
     {
         try
         {
-            Transaction transaction = transactionManager.getTransaction();
-            TransactionBuffer transactionBuffer = transactions.get( transaction );
-            transactionBuffer.delete( aProxy );
+            TransactionResource transactionResource = getTransactionResource();
+            transactionResource.delete( aProxy );
         }
         catch( SystemException e )
         {
             throw new TransactionSystemException( "TransactionManager failure.", e );
         }
+        catch( RollbackException e )
+        {
+            throw new TransactionSystemException( "TransactionManager failure.", e );
+        }
     }
 
-    public void enlistResource() throws SystemException, RollbackException
+    private TransactionResource getTransactionResource()
+        throws SystemException, RollbackException
     {
-        if( transactionManager.getStatus() == Status.STATUS_NO_TRANSACTION )
+        Transaction transaction = transactionManager.getTransaction();
+        TransactionResource transactionResource = transactions.get( transaction );
+        if( transactionResource == null )
         {
-            Transaction transaction = transactionManager.getTransaction();
-            transaction.enlistResource( this );
+            transactionResource = new TransactionResource( recordManager, objectFactory );
+            transaction.enlistResource( transactionResource );
+            transactions.put( transaction, transactionResource );
         }
+        return transactionResource;
     }
 
     private Properties getProperties( File directory )
@@ -225,125 +180,5 @@ public class JdbmStorage
             }
         }
         return properties;
-    }
-
-    // XAResource Implementation -----
-
-    public void commit( Xid xid, boolean onePhase )
-        throws XAException
-    {
-        if( onePhase )
-        {
-            onePhaseCommit( xid );
-            return;
-        }
-        twoPhaseCommitPhase2( xid );
-    }
-
-    private void twoPhaseCommitPhase2( Xid xid )
-    {
-        // Phase 1 == prepare();
-
-    }
-
-    private void onePhaseCommit( Xid xid )
-        throws XAException
-    {
-        Transaction tx = xids.get( xid );
-        TransactionBuffer buffer = transactions.get( tx );
-        try
-        {
-            buffer.commit( recordManager );
-        }
-        catch( IOException e )
-        {
-            // TODO: What to return?
-            throw new XAException();
-        }
-    }
-
-    public void end( Xid xid, int flags )
-        throws XAException
-    {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public void forget( Xid xid )
-        throws XAException
-    {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public int getTransactionTimeout()
-        throws XAException
-    {
-        return 0;
-    }
-
-    public boolean isSameRM( XAResource xaResource )
-        throws XAException
-    {
-        return xaResource == this;
-    }
-
-    public int prepare( Xid xid )
-        throws XAException
-    {
-        return 0;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public Xid[] recover( int flag )
-        throws XAException
-    {
-        return new Xid[0];  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public void rollback( Xid xid )
-        throws XAException
-    {
-
-    }
-
-    public boolean setTransactionTimeout( int seconds )
-        throws XAException
-    {
-        return false;
-    }
-
-    public void start( Xid xid, int flags )
-        throws XAException
-    {
-        try
-        {
-            if( ( flags & TMJOIN ) == TMJOIN )
-            {
-                join( xid );
-                return;
-            }
-            if( ( flags & TMRESUME ) == TMRESUME )
-            {
-                resume( xid );
-                return;
-            }
-            Transaction transaction = transactionManager.getTransaction();
-            TransactionBuffer trm = new TransactionBuffer( xid );
-            xids.put( xid, transaction );
-            transactions.put( transaction, trm );
-        }
-        catch( SystemException e )
-        {
-            // TODO: What shall we do here?
-            throw new XAException( e.getMessage() );
-        }
-    }
-
-    private void join( Xid xid )
-    {
-        //To change body of created methods use File | Settings | File Templates.
-    }
-
-    private void resume( Xid xid )
-    {
-
     }
 }

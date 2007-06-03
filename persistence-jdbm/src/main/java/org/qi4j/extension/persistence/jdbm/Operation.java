@@ -16,13 +16,16 @@
  */
 package org.qi4j.extension.persistence.jdbm;
 
-import javax.transaction.SystemException;
-import org.qi4j.api.persistence.PersistenceException;
+import jdbm.RecordManager;
+import org.qi4j.api.persistence.binding.PersistenceBinding;
+import java.util.Map;
+import java.io.Serializable;
 
-public class TransactionSystemException extends PersistenceException
+interface Operation
 {
-    public TransactionSystemException( String message, Throwable cause )
-    {
-        super( message, cause );
-    }
+    void perform( RecordManager recordManager );
+
+    String getIdentity();
+
+    void playback( String identity, Map<Class, Object> mixins );
 }
