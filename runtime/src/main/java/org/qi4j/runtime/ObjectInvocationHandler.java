@@ -230,7 +230,7 @@ public class ObjectInvocationHandler
 
         if( implementationClasses.size() == 0 )
         {
-            throw new ObjectInstantiationException( "Could not find implementation for " + aProxyInterface.getName() + " in binding " + context.getBindingType().getName() );
+            throw new ObjectInstantiationException( "Could not find implementation for " + aProxyInterface.getName() + " in composite " + context.getBindingType().getName() );
         }
 
         ObjectInstantiationException ex = null;
@@ -280,7 +280,7 @@ public class ObjectInvocationHandler
 
                             if( !done )
                             {
-                                ex = new ObjectInstantiationException( "@Uses field " + field.getName() + " in class " + currentClass.getName() + " could not be resolved for binding " + context.getBindingType().getName() + "." );
+                                ex = new ObjectInstantiationException( "@Uses field " + field.getName() + " in class " + currentClass.getName() + " could not be resolved for composite " + context.getBindingType().getName() + "." );
                                 continue mixins;
                             }
                         }
