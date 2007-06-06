@@ -163,10 +163,22 @@ public final class Composite
         if( impls != null )
         {
             Class[] implementationClasses = impls.value();
-            for( Class implementationClass : implementationClasses )
+            classes : for( Class implementationClass : implementationClasses )
             {
                 if( aMethodClass.isAssignableFrom( implementationClass ) )
                 {
+                    if (anImplementationClasses.size() > 0)
+                    {
+                        // Find generic implementation - this one overrides it
+                        for (int i = 0; i < anImplementationClasses.size() ; i++)
+                        {
+                            if (InvocationHandler.class.isAssignableFrom(anImplementationClasses.get( i ).getFragmentClass()))
+                            {
+                                anImplementationClasses.add( i, new Mixin(implementationClass));
+                                continue classes;
+                            }
+                        }
+                    }
                     anImplementationClasses.add( new Mixin(implementationClass) );
                 }
                 else
