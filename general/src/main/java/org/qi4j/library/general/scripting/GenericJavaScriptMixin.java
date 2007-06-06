@@ -20,7 +20,7 @@ import org.qi4j.api.annotation.AppliesTo;
  * @version $Revision: 1.0 $
  */
 @AppliesTo( Object.class)
-public class GenericScriptMixin
-    extends ScriptMixin
+public class GenericJavaScriptMixin
+    extends JavaScriptMixin
 {
 }

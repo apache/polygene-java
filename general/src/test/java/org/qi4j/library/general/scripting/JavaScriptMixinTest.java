@@ -12,15 +12,15 @@ package org.qi4j.library.general.scripting;
 */
 
 import junit.framework.*;
-import org.qi4j.library.general.scripting.ScriptMixin;
+import org.qi4j.library.general.scripting.JavaScriptMixin;
 import org.qi4j.library.general.scripting.ScriptComposite;
 import org.qi4j.api.ObjectFactory;
 import org.qi4j.runtime.ObjectFactoryImpl;
 import org.qi4j.test.model.DomainInterface;
 
-public class ScriptMixinTest extends TestCase
+public class JavaScriptMixinTest extends TestCase
 {
-    ScriptMixin scriptMixin;
+    JavaScriptMixin scriptMixin;
 
     public void testInvoke() throws Throwable
     {

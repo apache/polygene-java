@@ -29,12 +29,23 @@ import org.mozilla.javascript.Wrapper;
 import org.mozilla.javascript.NativeJavaObject;
 
 /**
- * TODO
+ * Generic mixin that implements interfaces by delegating to JavaScript functions
+ * using Rhino. Each method in an interface is declared as a JS function
+ * in a file located in classpath with the name "<interface>.<method>.js",
+ * where the interface name includes the package, and has "." replaced with "/".
+ *
+ * Example:
+ * org/qi4j/samples/hello/domain/HelloWorldSpeaker.say.js
+ *
+ * It needs to be subclassed in order to specify what interface it should be applied
+ * to by using an @AppliesTo annotation.
+ *
+ * @see GenericJavaScriptMixin
  *
  * @author rickard
  * @version $Revision: 1.0 $
  */
-public class ScriptMixin
+public abstract class JavaScriptMixin
     implements Serializable, InvocationHandler
 {
     // Static --------------------------------------------------------
@@ -51,7 +62,7 @@ public class ScriptMixin
     Scriptable instanceScope;
 
     // Constructors --------------------------------------------------
-    public ScriptMixin()
+    public JavaScriptMixin()
     {
         Context cx = Context.enter();
         instanceScope = cx.newObject( standardScope );
