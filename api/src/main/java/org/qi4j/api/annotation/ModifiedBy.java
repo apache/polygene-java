@@ -24,7 +24,7 @@ import java.lang.annotation.Target;
 
 
 /**
- * This annotation is used by bindings and mixins to declare what modifiers
+ * This annotation is used by composites and mixins to declare what modifiers
  * should be used.
  */
 @Retention( RetentionPolicy.RUNTIME )

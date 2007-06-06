@@ -24,7 +24,7 @@ import java.lang.annotation.Target;
 
 
 /**
- * This annotation is used in bindings to declare mixin implementation classes.
+ * This annotation is used in composites to declare mixin implementation classes.
  */
 @Retention( RetentionPolicy.RUNTIME )
 @Target( ElementType.TYPE )

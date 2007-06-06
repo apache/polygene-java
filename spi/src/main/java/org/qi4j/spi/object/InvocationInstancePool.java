@@ -24,5 +24,5 @@ public interface InvocationInstancePool
 {
     InvocationInstance newInstance( Method method, Composite composite, List<InvocationInstance> aPool );
 
-    ConcurrentHashMap<Method, List<InvocationInstance>> getPool( Class bindingType );
+    ConcurrentHashMap<Method, List<InvocationInstance>> getPool( Class aCompositeClass );
 }
