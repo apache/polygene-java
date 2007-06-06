@@ -241,7 +241,7 @@ public final class Composite
                             }
                             else
                             {
-                                if( !appliesTo.isAssignableFrom( getMixin( method.getDeclaringClass()).getFragmentClass() ) )
+                                if( !appliesTo.isAssignableFrom( getMixin( method.getDeclaringClass()).getFragmentClass() ) && !appliesTo.isAssignableFrom( method.getDeclaringClass()) )
                                 {
                                     continue; // Skip this modifier
                                 }

@@ -100,14 +100,22 @@ public final class InvocationInstancePoolImpl
                     else if (dependencyField.getType().equals( Method.class))
                     {
                         Class<? extends Object> fragmentClass = composite.getMixin( method.getDeclaringClass() ).getFragmentClass();
-                        try
+                        Method dependencyMethod;
+                        if (InvocationHandler.class.isAssignableFrom( fragmentClass))
                         {
-                            dependencyField.set( modifierInstance, fragmentClass.getMethod( method.getName(), method.getParameterTypes()));
-                        }
-                        catch( NoSuchMethodException e )
+                            dependencyMethod = method;
+                        } else
                         {
-                            throw new ObjectInstantiationException("Could not resolve @Dependency to annotated element in mixin "+fragmentClass.getName()+" for composite "+composite.getCompositeClass().getName(), e);
+                            try
+                            {
+                                dependencyMethod = fragmentClass.getMethod( method.getName(), method.getParameterTypes());
+                            }
+                            catch( NoSuchMethodException e )
+                            {
+                                throw new ObjectInstantiationException("Could not resolve @Dependency to method in mixin "+fragmentClass.getName()+" for composite "+composite.getCompositeClass().getName(), e);
+                            }
                         }
+                        dependencyField.set( modifierInstance, dependencyMethod);
                     }
                 }
 
