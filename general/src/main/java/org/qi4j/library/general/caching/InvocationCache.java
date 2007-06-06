@@ -1,7 +1,7 @@
-package org.qi4j.library.general.remote;
+package org.qi4j.library.general.caching;
 
+import org.qi4j.api.annotation.ModifiedBy;
 import org.qi4j.api.annotation.ImplementedBy;
-import org.qi4j.library.general.caching.InvocationCache;
 /*
  * Copyright 2007 Rickard Öberg
  * Licensed under the Apache License, Version 2.0 (the "License"); 
@@ -15,13 +15,15 @@ import org.qi4j.library.general.caching.InvocationCache;
 */
 
 /**
- * Implement the RemoteInterface by using RMI
+ * TODO
  *
  * @author rickard
  * @version $Revision: 1.0 $
  */
-@ImplementedBy(RMIMixin.class)
-public interface RemoteInterfaceComposite
-    extends RemoteInterface, InvocationCache
+@ImplementedBy(InvocationCacheImpl.class)
+public interface InvocationCache
 {
+    // Public --------------------------------------------------------
+    void set(String aName, Object aResult);
+    Object get(String aName);
 }

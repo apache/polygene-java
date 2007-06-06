@@ -1,7 +1,3 @@
-package org.qi4j.library.general.remote;
-
-import org.qi4j.api.annotation.ImplementedBy;
-import org.qi4j.library.general.caching.InvocationCache;
 /*
  * Copyright 2007 Rickard Öberg
  * Licensed under the Apache License, Version 2.0 (the "License"); 
@@ -13,15 +9,33 @@ import org.qi4j.library.general.caching.InvocationCache;
  * See the License for the specific language governing permissions and 
  * limitations under the License.
 */
+package org.qi4j.library.general.caching;
+
+import org.qi4j.api.annotation.ModifiedBy;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * Implement the RemoteInterface by using RMI
+ * TODO
  *
  * @author rickard
  * @version $Revision: 1.0 $
  */
-@ImplementedBy(RMIMixin.class)
-public interface RemoteInterfaceComposite
-    extends RemoteInterface, InvocationCache
+@ModifiedBy( RemoteInvocationCacheModifier.class)
+public class InvocationCacheImpl
+    implements InvocationCache
 {
+    // Attributes ----------------------------------------------------
+    Map cachedValues = new HashMap();
+
+    // InvocationCache implementation --------------------------------
+    public void set( String aName, Object aResult )
+    {
+        cachedValues.put( aName, aResult );
+    }
+
+    public Object get( String aName )
+    {
+        return cachedValues.get( aName);
+    }
 }

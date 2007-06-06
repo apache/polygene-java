@@ -11,8 +11,10 @@
 */
 package org.qi4j.library.general.remote;
 
+import java.io.IOException;
+
 /**
- * TODO
+ * Implementation of RemoteInterface.
  *
  * @author rickard
  * @version $Revision: 1.0 $
@@ -20,29 +22,17 @@ package org.qi4j.library.general.remote;
 public class RemoteInterfaceImpl
     implements RemoteInterface
 {
-    // Static --------------------------------------------------------
-
-    // Attributes ----------------------------------------------------
-
-    // Constructors --------------------------------------------------
-
-    // Public --------------------------------------------------------
+    int count = 0;
 
     // RemoteInterface implementation --------------------------------
-
-    // Public --------------------------------------------------------
     public String foo( String aBar )
+        throws IOException
     {
+        count++;
+
+        if (count%2 == 0)
+            throw new IOException("Something went wrong");
+
         return "Foo:"+aBar;
     }
-
-    // Y overrides ---------------------------------------------------
-
-    // Package protected ---------------------------------------------
-
-    // Protected -----------------------------------------------------
-
-    // Private -------------------------------------------------------
-
-    // Inner classes -------------------------------------------------
 }
