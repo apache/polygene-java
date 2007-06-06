@@ -17,29 +17,22 @@
 package org.qi4j.extension.persistence.jdbm;
 
 import java.io.BufferedInputStream;
-import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.Serializable;
-import java.lang.reflect.Proxy;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 import javax.transaction.RollbackException;
 import javax.transaction.SystemException;
 import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
-import javax.transaction.xa.Xid;
 import jdbm.RecordManager;
 import jdbm.RecordManagerFactory;
 import org.qi4j.api.ObjectFactory;
-import org.qi4j.api.persistence.ObjectNotFoundException;
 import org.qi4j.api.persistence.PersistenceException;
 import org.qi4j.api.persistence.PersistentStorage;
-import org.qi4j.api.persistence.binding.PersistenceBinding;
-import org.qi4j.runtime.ObjectInvocationHandler;
-import org.qi4j.spi.object.ProxyReferenceInvocationHandler;
+import org.qi4j.api.persistence.composite.PersistenceComposite;
 
 
 public class JdbmStorage
@@ -70,7 +63,7 @@ public class JdbmStorage
         recordManager = RecordManagerFactory.createRecordManager( name, properties );
     }
 
-    public void create( PersistenceBinding aProxy )
+    public void create( PersistenceComposite aProxy )
         throws PersistenceException
     {
         try
@@ -88,7 +81,7 @@ public class JdbmStorage
         }
     }
 
-    public void read( PersistenceBinding aProxy )
+    public void read( PersistenceComposite aProxy )
         throws PersistenceException
     {
         try
@@ -107,7 +100,7 @@ public class JdbmStorage
 
     }
 
-    public void update( PersistenceBinding aProxy, Serializable aMixin )
+    public void update( PersistenceComposite aProxy, Serializable aMixin )
         throws PersistenceException
     {
         try
@@ -125,7 +118,7 @@ public class JdbmStorage
         }
     }
 
-    public void delete( PersistenceBinding aProxy )
+    public void delete( PersistenceComposite aProxy )
         throws PersistenceException
     {
         try

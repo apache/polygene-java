@@ -21,22 +21,22 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import jdbm.RecordManager;
-import org.qi4j.api.persistence.binding.PersistenceBinding;
+import org.qi4j.api.persistence.composite.PersistenceComposite;
 import org.qi4j.runtime.ObjectInvocationHandler;
 
 class CreateOperation
     implements Operation
 {
-    private PersistenceBinding binding;
+    private PersistenceComposite composite;
 
-    public CreateOperation( PersistenceBinding binding )
+    public CreateOperation( PersistenceComposite composite )
     {
-        this.binding = binding;
+        this.composite = composite;
     }
 
     public void perform( RecordManager recordManager )
     {
-        ObjectInvocationHandler handler = ObjectInvocationHandler.getInvocationHandler( binding );
+        ObjectInvocationHandler handler = ObjectInvocationHandler.getInvocationHandler( composite );
         Map<Class, Object> mixins = handler.getMixins();
 
         Map<Class, Serializable> persistentMixins = new HashMap<Class, Serializable>();
@@ -48,7 +48,7 @@ class CreateOperation
                 persistentMixins.put( entry.getKey(), (Serializable) value );
             }
         }
-        String objectId = binding.getIdentity();
+        String objectId = composite.getIdentity();
         try
         {
             long recordId = recordManager.insert( persistentMixins );
@@ -62,14 +62,14 @@ class CreateOperation
 
     public String getIdentity()
     {
-        return binding.getIdentity();
+        return composite.getIdentity();
     }
 
     public void playback( String identity, Map<Class, Object> newMixinsToPopulate )
     {
-        if( identity.equals( binding.getIdentity() ) && newMixinsToPopulate != null )
+        if( identity.equals( composite.getIdentity() ) && newMixinsToPopulate != null )
         {
-            ObjectInvocationHandler handler = ObjectInvocationHandler.getInvocationHandler( binding );
+            ObjectInvocationHandler handler = ObjectInvocationHandler.getInvocationHandler( composite );
             Map<Class, Object> mixins = handler.getMixins();
 
             for( Map.Entry<Class, Object> entry : mixins.entrySet() )

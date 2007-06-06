@@ -17,9 +17,7 @@
 package org.qi4j.extension.persistence.jdbm;
 
 import jdbm.RecordManager;
-import org.qi4j.api.persistence.binding.PersistenceBinding;
 import java.util.Map;
-import java.io.Serializable;
 
 interface Operation
 {

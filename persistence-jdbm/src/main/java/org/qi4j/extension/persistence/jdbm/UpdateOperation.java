@@ -21,25 +21,25 @@ import java.io.Serializable;
 import java.lang.reflect.Proxy;
 import java.util.Map;
 import jdbm.RecordManager;
-import org.qi4j.api.persistence.binding.PersistenceBinding;
+import org.qi4j.api.persistence.composite.PersistenceComposite;
 import org.qi4j.spi.object.ProxyReferenceInvocationHandler;
 
 class UpdateOperation
     implements Operation
 {
-    private PersistenceBinding binding;
+    private PersistenceComposite composite;
     private Serializable mixin;
 
-    public UpdateOperation( PersistenceBinding binding, Serializable mixin )
+    public UpdateOperation( PersistenceComposite composite, Serializable mixin )
     {
-        this.binding = binding;
+        this.composite = composite;
         this.mixin = mixin;
     }
 
     public void perform( RecordManager recordManager )
     {
-        ProxyReferenceInvocationHandler handler = (ProxyReferenceInvocationHandler) Proxy.getInvocationHandler( binding );
-        String identity = binding.getIdentity();
+        ProxyReferenceInvocationHandler handler = (ProxyReferenceInvocationHandler) Proxy.getInvocationHandler( composite );
+        String identity = composite.getIdentity();
         try
         {
             long recordId = recordManager.getNamedObject( identity );
@@ -66,7 +66,7 @@ class UpdateOperation
 
     public String getIdentity()
     {
-        return binding.getIdentity();
+        return composite.getIdentity();
     }
 
     public void playback( String identity, Map<Class, Object> mixins )
@@ -75,8 +75,8 @@ class UpdateOperation
         {
             return;
         }
-        ProxyReferenceInvocationHandler handler = (ProxyReferenceInvocationHandler) Proxy.getInvocationHandler( binding );
-        if( identity.equals( binding.getIdentity() ) )
+        ProxyReferenceInvocationHandler handler = (ProxyReferenceInvocationHandler) Proxy.getInvocationHandler( composite );
+        if( identity.equals( composite.getIdentity() ) )
         {
             Class mixinType = handler.getMixinType();
             Object oldValueObject = mixins.get( mixinType );

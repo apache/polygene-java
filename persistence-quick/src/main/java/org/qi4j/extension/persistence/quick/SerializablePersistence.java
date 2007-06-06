@@ -19,7 +19,7 @@ import org.qi4j.api.annotation.ModifiedBy;
 import org.qi4j.api.persistence.ObjectNotFoundException;
 import org.qi4j.api.persistence.PersistenceException;
 import org.qi4j.api.persistence.PersistentStorage;
-import org.qi4j.api.persistence.binding.PersistenceBinding;
+import org.qi4j.api.persistence.composite.PersistenceComposite;
 import org.qi4j.api.persistence.modifier.PersistentStorageReferenceModifier;
 import org.qi4j.api.persistence.modifier.PersistentStorageTraceModifier;
 import org.qi4j.spi.object.ProxyReferenceInvocationHandler;
@@ -45,7 +45,7 @@ public final class SerializablePersistence
         this.objectFactory = objectFactory;
     }
 
-    public void create( PersistenceBinding aProxy )
+    public void create( PersistenceComposite aProxy )
         throws PersistenceException
     {
         ObjectInvocationHandler handler = ObjectInvocationHandler.getInvocationHandler( aProxy );
@@ -72,7 +72,7 @@ public final class SerializablePersistence
         delegate.putInstance( id, persistentMixins );
     }
 
-    public void read( PersistenceBinding aProxy )
+    public void read( PersistenceComposite aProxy )
         throws PersistenceException
     {
         String id = aProxy.getIdentity();
@@ -111,7 +111,7 @@ public final class SerializablePersistence
         }
     }
 
-    public void update( PersistenceBinding aProxy, Serializable aMixin )
+    public void update( PersistenceComposite aProxy, Serializable aMixin )
         throws PersistenceException
     {
         ProxyReferenceInvocationHandler handler = (ProxyReferenceInvocationHandler) Proxy.getInvocationHandler( aProxy );
@@ -141,7 +141,7 @@ public final class SerializablePersistence
         }
     }
 
-    public void delete( PersistenceBinding aProxy )
+    public void delete( PersistenceComposite aProxy )
         throws PersistenceException
     {
         String id = aProxy.getIdentity();

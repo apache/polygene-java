@@ -18,13 +18,13 @@ import org.qi4j.api.ObjectFactory;
 import org.qi4j.api.annotation.Dependency;
 import org.qi4j.api.annotation.Modifies;
 import org.qi4j.api.annotation.Uses;
-import org.qi4j.api.persistence.binding.PersistenceBinding;
+import org.qi4j.api.persistence.composite.PersistenceComposite;
 
-public final class PeristentCloneableModifier<T extends PersistenceBinding>
+public final class PeristentCloneableModifier<T extends PersistenceComposite>
     implements org.qi4j.api.persistence.Cloneable<T>
 {
     @Modifies org.qi4j.api.persistence.Cloneable<T> cloneable;
-    @Uses PersistenceBinding persistent;
+    @Uses PersistenceComposite persistent;
     @Dependency ObjectFactory factory;
 
     public T clone()

@@ -32,7 +32,7 @@ import jdbm.RecordManager;
 import org.qi4j.api.ObjectFactory;
 import org.qi4j.api.persistence.ObjectNotFoundException;
 import org.qi4j.api.persistence.PersistenceException;
-import org.qi4j.api.persistence.binding.PersistenceBinding;
+import org.qi4j.api.persistence.composite.PersistenceComposite;
 import org.qi4j.runtime.ObjectInvocationHandler;
 import org.qi4j.spi.object.ProxyReferenceInvocationHandler;
 
@@ -52,12 +52,12 @@ public class TransactionResource
         operations = new LinkedList<Operation>();
     }
 
-    void create( PersistenceBinding binding )
+    void create( PersistenceComposite composite )
     {
-        operations.add( new CreateOperation( binding ) );
+        operations.add( new CreateOperation( composite ) );
     }
 
-    public void read( PersistenceBinding aProxy )
+    public void read( PersistenceComposite aProxy )
     {
         String objectId = aProxy.getIdentity();
         try
@@ -116,14 +116,14 @@ public class TransactionResource
         }
     }
 
-    void update( PersistenceBinding binding, Serializable mixin )
+    void update( PersistenceComposite composite, Serializable mixin )
     {
-        operations.add( new UpdateOperation( binding, mixin ) );
+        operations.add( new UpdateOperation( composite, mixin ) );
     }
 
-    void delete( PersistenceBinding binding )
+    void delete( PersistenceComposite composite )
     {
-        operations.add( new DeleteOperation( binding ) );
+        operations.add( new DeleteOperation( composite ) );
     }
 
     // XAResource Implementation

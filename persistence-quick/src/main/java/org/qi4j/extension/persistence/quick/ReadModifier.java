@@ -21,7 +21,7 @@ import java.lang.reflect.Method;
 import org.qi4j.api.annotation.Dependency;
 import org.qi4j.api.annotation.AppliesTo;
 import org.qi4j.api.annotation.Uses;
-import org.qi4j.api.persistence.binding.PersistenceBinding;
+import org.qi4j.api.persistence.composite.PersistenceComposite;
 import org.qi4j.api.persistence.PersistentStorage;
 
 /**
@@ -32,7 +32,7 @@ import org.qi4j.api.persistence.PersistentStorage;
 public final class ReadModifier
     implements InvocationHandler
 {
-    @Uses PersistenceBinding persistent;
+    @Uses PersistenceComposite persistent;
     @Dependency ObjectInvocationHandler handler;
 
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable

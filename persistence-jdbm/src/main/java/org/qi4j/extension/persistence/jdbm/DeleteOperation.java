@@ -19,21 +19,21 @@ package org.qi4j.extension.persistence.jdbm;
 import java.io.IOException;
 import java.util.Map;
 import jdbm.RecordManager;
-import org.qi4j.api.persistence.binding.PersistenceBinding;
+import org.qi4j.api.persistence.composite.PersistenceComposite;
 
 class DeleteOperation
     implements Operation
 {
-    private PersistenceBinding binding;
+    private PersistenceComposite composite;
 
-    public DeleteOperation( PersistenceBinding binding )
+    public DeleteOperation( PersistenceComposite composite )
     {
-        this.binding = binding;
+        this.composite = composite;
     }
 
     public void perform( RecordManager recordManager )
     {
-        String identity = binding.getIdentity();
+        String identity = composite.getIdentity();
         try
         {
             long recordId = recordManager.getNamedObject( identity );
@@ -47,12 +47,12 @@ class DeleteOperation
 
     public String getIdentity()
     {
-        return binding.getIdentity();
+        return composite.getIdentity();
     }
 
     public void playback( String identity, Map<Class, Object> mixins )
     {
-        if( identity.equals( binding.getIdentity() ) )
+        if( identity.equals( composite.getIdentity() ) )
         {
             mixins.clear();
         }
