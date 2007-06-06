@@ -16,31 +16,33 @@ package org.qi4j.api;
 
 /**
  * This factory creates proxies that implement the given
- * binding interfaces.
+ * composite interfaces.
  */
 public interface ObjectFactory
 {
     /**
      * Create a new object that implements the given interface.
      *
-     * @param anObjectType an interface that describes the object to be created
+     * @param aCompositeClass an interface that describes the object to be created
      * @return a new proxy object implementing the interface
      */
-    <T> T newInstance( Class<T> anObjectType );
+    <T> T newInstance( Class<T> aCompositeClass );
 
     /**
      * Create a new object that implements the given interface.
      * <p/>
-     * The new object wraps another object which provides mixin implementations
+     * The new object wraps another object which provides mixin mixins
      * that should be reused for this new object.
      *
-     * @param anObjectType an interface that describes the object to be created
+     * @param aCompositeClass an interface that describes the object to be created
      * @param anObject     an existing object whose mixins should be reused
      * @return a new proxy object implementing the interface
      */
-    <T> T cast( Class<T> anObjectType, Object anObject );
+    <T> T cast( Class<T> aCompositeClass, Object anObject );
 
-    boolean isInstance( Class anObjectType, Object anObject );
+    boolean isInstance( Class aCompositeClass, Object anObject );
 
     <T> T getThat( T proxy );
+
+    Composite getComposite( Class aCompositeClass );
 }

@@ -44,14 +44,13 @@ public final class ProxyReferenceInvocationHandler
 
     public Class getMixinType()
     {
-        return mixinType;
+        return mixin.getClass();
     }
 
-    public void setContext( Object aProxy , Object aMixin, Class aMixinType )
+    public void setContext( Object aProxy , Object aMixin)
     {
         proxy = aProxy;
         mixin = aMixin;
-        mixinType = aMixinType;
     }
 
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable

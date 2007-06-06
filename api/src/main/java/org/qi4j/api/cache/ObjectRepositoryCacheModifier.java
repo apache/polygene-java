@@ -17,7 +17,7 @@ package org.qi4j.api.cache;
 import org.qi4j.api.ObjectRepository;
 import org.qi4j.api.annotation.Modifies;
 import org.qi4j.api.annotation.Uses;
-import org.qi4j.api.persistence.binding.PersistenceBinding;
+import org.qi4j.api.persistence.composite.PersistenceComposite;
 
 /**
  * Implement caching of created proxies to persistent objects.
@@ -28,10 +28,10 @@ public final class ObjectRepositoryCacheModifier
     @Uses private ObjectRepositoryCache cache;
     @Modifies private ObjectRepository repository;
 
-    public <T extends PersistenceBinding> T getInstance( String anIdentity, Class<T> aType )
+    public <T extends PersistenceComposite> T getInstance( String anIdentity, Class<T> aType )
     {
         // Check cache
-        PersistenceBinding cachedObj = cache.getObject( anIdentity );
+        PersistenceComposite cachedObj = cache.getObject( anIdentity );
         if( cachedObj != null )
         {
             return (T) cachedObj;

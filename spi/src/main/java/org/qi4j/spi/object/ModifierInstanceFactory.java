@@ -20,12 +20,4 @@ import java.util.List;
 public interface ModifierInstanceFactory
 {
     ModifierInstance newInstance( Class invocationType, Class modifierType, Class mixinClass, ProxyReferenceInvocationHandler proxyHandler );
-
-    void findUses( Class<? extends Object> aClass, List<Field> aUsesFields );
-
-    void findDependency( Class<? extends Object> aClass, List<Field> aDependencyFields );
-
-    Field findModifies( Class<? extends Object> aClass );
-
-    void findModifiers( Class invocationType, Class modifierType, List<Class> aModifierList );
 }

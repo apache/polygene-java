@@ -15,20 +15,23 @@
 package org.qi4j.spi.object;
 
 import org.qi4j.api.ObjectFactory;
-import org.qi4j.api.MixinFactory;
+import org.qi4j.api.FragmentFactory;
+import org.qi4j.api.Composite;
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.List;
+import java.util.IdentityHashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 public interface ObjectContext
 {
-    Class getBindingType();
+    Composite getComposite();
 
     ObjectFactory getObjectFactory();
 
-    MixinFactory getMixinFactory();
+    FragmentFactory getMixinFactory();
 
-    InvocationInstance newInvocationInstance( Method method, Object mixin, List<InvocationInstance> instances );
+    InvocationInstance newInvocationInstance( Method method);
 
-    Map<Method, List<InvocationInstance>> getMethodToInvocationInstanceMap();
+    ConcurrentHashMap<Method, List<InvocationInstance>> getMethodToInvocationInstanceMap();
 }

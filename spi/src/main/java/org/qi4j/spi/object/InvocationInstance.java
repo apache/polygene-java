@@ -14,13 +14,10 @@
 
 package org.qi4j.spi.object;
 
+import java.lang.reflect.Method;
+
 public interface InvocationInstance
 {
-    ModifierInstance getInterfaceInstance();
-
-    ModifierInstance getMixinInstance();
-
-    ProxyReferenceInvocationHandler getProxyHandler();
-
-    void release();
+    Object invoke(Object proxy, Method method, Object[] args, Object mixin)
+        throws Throwable;
 }

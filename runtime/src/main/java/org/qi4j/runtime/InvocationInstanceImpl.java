@@ -14,43 +14,54 @@
  */
 package org.qi4j.runtime;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
 import java.util.List;
 import org.qi4j.spi.object.InvocationInstance;
-import org.qi4j.spi.object.ModifierInstance;
 import org.qi4j.spi.object.ProxyReferenceInvocationHandler;
 
-public final class InvocationInstanceImpl implements InvocationInstance
+public final class InvocationInstanceImpl
+    implements InvocationInstance
 {
-    private ModifierInstance interfaceInstance;
-    private ModifierInstance mixinInstance;
+    private Object firstModifier;
+    private Object lastModifier;
+    private FragmentInvocationHandler mixinInvocationHandler;
     private ProxyReferenceInvocationHandler proxyHandler;
     private List<InvocationInstance> pool;
 
-    public InvocationInstanceImpl( ModifierInstance aInterfaceInstance, ModifierInstance aMixinInstance, ProxyReferenceInvocationHandler aProxyHandler, List<InvocationInstance> aPool )
+    public InvocationInstanceImpl( Object aFirstModifier, Object aLastModifier, FragmentInvocationHandler aMixinInvocationHandler, ProxyReferenceInvocationHandler aProxyHandler, List<InvocationInstance> aPool )
     {
-        interfaceInstance = aInterfaceInstance;
-        mixinInstance = aMixinInstance;
+        firstModifier = aFirstModifier;
+        lastModifier = aLastModifier;
         proxyHandler = aProxyHandler;
+        mixinInvocationHandler = aMixinInvocationHandler;
         pool = aPool;
     }
 
-    public ModifierInstance getInterfaceInstance()
+    public Object invoke( Object proxy, Method method, Object[] args, Object mixin ) throws Throwable
     {
-        return interfaceInstance;
-    }
-
-    public ModifierInstance getMixinInstance()
-    {
-        return mixinInstance;
-    }
-
-    public ProxyReferenceInvocationHandler getProxyHandler()
-    {
-        return proxyHandler;
-    }
-
-    public void release()
-    {
-        pool.add( this );
+        try
+        {
+            if (firstModifier == null)
+            {
+                if (mixin instanceof InvocationHandler)
+                    return ((InvocationHandler)mixin).invoke( proxy, method, args);
+                else
+                    return method.invoke( mixin, args);
+            } else
+            {
+                proxyHandler.setContext( proxy, mixin);
+                if (mixinInvocationHandler != null)
+                    mixinInvocationHandler.setFragment( mixin );
+                if (firstModifier instanceof InvocationHandler)
+                    return ((InvocationHandler)firstModifier).invoke( proxy, method, args);
+                else
+                    return method.invoke( firstModifier, args);
+            }
+        }
+        finally
+        {
+            pool.add( this );
+        }
     }
 }

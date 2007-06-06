@@ -17,7 +17,7 @@ package org.qi4j.api.persistence.modifier;
 import org.qi4j.api.annotation.Modifies;
 import org.qi4j.api.persistence.ObjectNotFoundException;
 import org.qi4j.api.persistence.PersistentStorage;
-import org.qi4j.api.persistence.binding.PersistenceBinding;
+import org.qi4j.api.persistence.composite.PersistenceComposite;
 import java.io.Serializable;
 
 /**
@@ -30,7 +30,7 @@ public final class PersistentStorageTraceModifier
     
     @Modifies private PersistentStorage storage;
 
-    public void create( PersistenceBinding aProxy )
+    public void create( PersistenceComposite aProxy )
     {
         storage.create( aProxy );
         if( enabled )
@@ -39,7 +39,7 @@ public final class PersistentStorageTraceModifier
         }
     }
 
-    public void read( PersistenceBinding aProxy ) throws ObjectNotFoundException
+    public void read( PersistenceComposite aProxy ) throws ObjectNotFoundException
     {
         storage.read( aProxy );
         if( enabled )
@@ -48,7 +48,7 @@ public final class PersistentStorageTraceModifier
         }
     }
 
-    public void update( PersistenceBinding aProxy, Serializable aMixin )
+    public void update( PersistenceComposite aProxy, Serializable aMixin )
     {
         storage.update( aProxy, aMixin );
         if( enabled )
@@ -57,7 +57,7 @@ public final class PersistentStorageTraceModifier
         }
     }
 
-    public void delete( PersistenceBinding aProxy )
+    public void delete( PersistenceComposite aProxy )
     {
         storage.delete( aProxy );
         if( enabled )

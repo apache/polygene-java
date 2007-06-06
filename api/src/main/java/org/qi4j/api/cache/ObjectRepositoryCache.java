@@ -16,7 +16,7 @@ package org.qi4j.api.cache;
 
 import org.qi4j.api.annotation.ImplementedBy;
 import org.qi4j.api.annotation.ModifiedBy;
-import org.qi4j.api.persistence.binding.PersistenceBinding;
+import org.qi4j.api.persistence.composite.PersistenceComposite;
 
 /**
  * Proxy caches should implement this.
@@ -25,9 +25,9 @@ import org.qi4j.api.persistence.binding.PersistenceBinding;
 @ImplementedBy( ObjectRepositoryCacheImpl.class )
 public interface ObjectRepositoryCache
 {
-    <T extends PersistenceBinding> T getObject( String anIdentity );
+    <T extends PersistenceComposite> T getObject( String anIdentity );
 
-    <T extends PersistenceBinding> void addObject( String anIdentity, T anObject );
+    <T extends PersistenceComposite> void addObject( String anIdentity, T anObject );
 
     void removeObject( String anIdentity );
 

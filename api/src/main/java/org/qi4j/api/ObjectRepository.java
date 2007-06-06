@@ -14,7 +14,7 @@
  */
 package org.qi4j.api;
 
-import org.qi4j.api.persistence.binding.PersistenceBinding;
+import org.qi4j.api.persistence.composite.PersistenceComposite;
 
 /**
  * This repository is used to get proxies representing persistent objects.
@@ -29,5 +29,5 @@ public interface ObjectRepository
      * @param type The type of the object to retrieve from the repository.
      * @return Returns the instance of the given identity of the given type. 
      */
-    <T extends PersistenceBinding> T getInstance( String identity, Class<T> type );
+    <T extends PersistenceComposite> T getInstance( String identity, Class<T> type );
 }

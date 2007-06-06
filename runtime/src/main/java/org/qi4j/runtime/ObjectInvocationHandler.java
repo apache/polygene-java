@@ -25,15 +25,14 @@ import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
-import org.qi4j.api.MixinFactory;
+import org.qi4j.api.Composite;
+import org.qi4j.api.FragmentFactory;
+import org.qi4j.api.Mixin;
 import org.qi4j.api.ObjectFactory;
 import org.qi4j.api.ObjectInstantiationException;
-import org.qi4j.api.annotation.Dependency;
 import org.qi4j.api.annotation.ImplementedBy;
-import org.qi4j.api.annotation.Uses;
 import org.qi4j.api.persistence.Identity;
 import org.qi4j.spi.object.InvocationInstance;
-import org.qi4j.spi.object.ModifierInstance;
 import org.qi4j.spi.object.ObjectContext;
 
 /**
@@ -61,69 +60,69 @@ public class ObjectInvocationHandler
     {
         Class proxyInterface = method.getDeclaringClass();
 
-        if( proxyInterface.equals( Object.class ) )
-        {
-            if( method.getName().equals( "hashCode" ) )
-            {
-                if( Identity.class.isAssignableFrom( context.getBindingType() ) )
-                {
-                    String id = ( (Identity) proxy ).getIdentity();
-                    if( id != null )
-                    {
-                        return id.hashCode();
-                    }
-                    else
-                    {
-                        return 0;
-                    }
-                }
-                else
-                {
-                    return 0; // TODO ?
-                }
-            }
-            if( method.getName().equals( "equals" ) )
-            {
-                if( Identity.class.isAssignableFrom( context.getBindingType() ) )
-                {
-                    String id = ( (Identity) proxy ).getIdentity();
-                    return id != null && id.equals( ( (Identity) args[ 0 ] ).getIdentity() );
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            if( method.getName().equals( "toString" ) )
-            {
-                if( Identity.class.isAssignableFrom( context.getBindingType() ) )
-                {
-                    String id = ( (Identity) proxy ).getIdentity();
-                    return id != null ? id : "";
-                }
-                else
-                {
-                    return "";
-                }
-            }
-        }
-
         Object mixin = mixins.get( proxyInterface );
 
         if( mixin == null )
         {
-            mixin = initializeMixin( proxyInterface, proxy, getWrappedInstance() );
-        }
+            if( proxyInterface.equals( Object.class ) )
+            {
+                if( method.getName().equals( "hashCode" ) )
+                {
+                    if( Identity.class.isAssignableFrom( context.getComposite().getCompositeClass() ) )
+                    {
+                        String id = ( (Identity) proxy ).getIdentity();
+                        if( id != null )
+                        {
+                            return id.hashCode();
+                        }
+                        else
+                        {
+                            return 0;
+                        }
+                    }
+                    else
+                    {
+                        return 0; // TODO ?
+                    }
+                }
+                if( method.getName().equals( "equals" ) )
+                {
+                    if( Identity.class.isAssignableFrom( context.getComposite().getCompositeClass() ) )
+                    {
+                        String id = ( (Identity) proxy ).getIdentity();
+                        return id != null && id.equals( ( (Identity) args[ 0 ] ).getIdentity() );
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                if( method.getName().equals( "toString" ) )
+                {
+                    if( Identity.class.isAssignableFrom( context.getComposite().getCompositeClass() ) )
+                    {
+                        String id = ( (Identity) proxy ).getIdentity();
+                        return id != null ? id : "";
+                    }
+                    else
+                    {
+                        return "";
+                    }
+                }
+            }
 
-        Object invokedObject = mixin;
+            mixin = initializeMixin( proxyInterface, proxy, getDecoratedInstance() );
+        }
 
         // Get interface modifiers
         List<InvocationInstance> instances = context.getMethodToInvocationInstanceMap().get( method );
+
         if( instances == null )
         {
             instances = new ArrayList<InvocationInstance>();
             context.getMethodToInvocationInstanceMap().put( method, instances );
         }
+
         InvocationInstance invocationInstance;
         int size = instances.size();
         if( size > 0 )
@@ -132,42 +131,13 @@ public class ObjectInvocationHandler
         }
         else
         {
-            invocationInstance = context.newInvocationInstance( method, mixin, instances );
+            invocationInstance = context.newInvocationInstance( method);
         }
-
-        ModifierInstance interfaceModifierInstance = invocationInstance.getInterfaceInstance();
-        ModifierInstance mixinModifierInstance = invocationInstance.getMixinInstance();
-        Object interfaceFirstModifier = interfaceModifierInstance.getFirstModifier();
-        Object mixinFirstModifier = mixinModifierInstance.getFirstModifier();
-        if( interfaceFirstModifier != null )
-        {
-            invokedObject = interfaceFirstModifier;
-
-            if( mixinFirstModifier != null )
-            {
-                interfaceModifierInstance.setNextModifier( mixinFirstModifier );
-                mixinModifierInstance.setNextModifier( mixin );
-            }
-            else
-            {
-                interfaceModifierInstance.setNextModifier( mixin );
-            }
-        }
-        else
-        {
-            if( mixinFirstModifier != null )
-            {
-                invokedObject = mixinFirstModifier;
-                mixinModifierInstance.setNextModifier( mixin );
-            }
-        }
-
-        invocationInstance.getProxyHandler().setContext( proxy, mixin, proxyInterface );
 
         // Invoke
         try
         {
-            return method.invoke( invokedObject, args );
+            return invocationInstance.invoke(proxy, method, args, mixin);
         }
         catch( InvocationTargetException e )
         {
@@ -177,10 +147,6 @@ public class ObjectInvocationHandler
         {
             throw e.getUndeclaredThrowable();
         }
-        finally
-        {
-            invocationInstance.release();
-        }
     }
 
     public Map<Class, Object> getMixins()
@@ -189,131 +155,86 @@ public class ObjectInvocationHandler
     }
 
     // Private -------------------------------------------------------
-    private void findImplementations( Class aMethodClass, Class aType, List<Class> anImplementationClasses )
-    {
-        ImplementedBy impls = (ImplementedBy) aType.getAnnotation( ImplementedBy.class );
-        if( impls != null )
-        {
-            Class[] implementationClasses = impls.value();
-            for( Class implementationClass : implementationClasses )
-            {
-                if( aMethodClass.isAssignableFrom( implementationClass ) )
-                {
-                    anImplementationClasses.add( implementationClass );
-                }
-            }
-        }
-
-        // Check subinterfaces
-        Class[] subTypes = aType.getInterfaces();
-        for( Class subType : subTypes )
-        {
-            findImplementations( aMethodClass, subType, anImplementationClasses );
-        }
-    }
-
-    protected Object initializeMixin( Class aProxyInterface, Object proxy, Object wrappedInstance )
+    protected Object initializeMixin( Class aProxyInterface, Object proxy, Object decoratedInstance )
         throws IllegalAccessException
     {
-        if( aProxyInterface.isInstance( wrappedInstance ) )
+        if( aProxyInterface.isInstance( decoratedInstance ) )
         {
-            return wrappedInstance;
+            return decoratedInstance;
+        }
+
+        List<Mixin> implementationClasses = context.getComposite().getMixins( aProxyInterface );
+
+        // Check if implementation is latent in decorated object
+        if( implementationClasses == null && decoratedInstance != null )
+        {
+            Composite decoratedComposite = context.getObjectFactory().getComposite( decoratedInstance.getClass().getInterfaces()[ 0 ] );
+            implementationClasses = decoratedComposite.getMixins( aProxyInterface );
+        }
+
+        if( implementationClasses == null )
+        {
+            throw new ObjectInstantiationException( "Could not find implementation for " + aProxyInterface.getName() + " in composite " + context.getComposite().getCompositeClass().getName() );
         }
 
         Object mixin;
-        List<Class> implementationClasses = new ArrayList<Class>();
-        findImplementations( aProxyInterface, context.getBindingType(), implementationClasses );
-        if( implementationClasses.size() == 0 && wrappedInstance != null )
-        {
-            findImplementations( aProxyInterface, wrappedInstance.getClass().getInterfaces()[ 0 ], implementationClasses );
-        }
-
-        if( implementationClasses.size() == 0 )
-        {
-            throw new ObjectInstantiationException( "Could not find implementation for " + aProxyInterface.getName() + " in composite " + context.getBindingType().getName() );
-        }
 
         ObjectInstantiationException ex = null;
         mixins:
-        for( Class mixinClass : implementationClasses )
+        for( Mixin mixinClass : implementationClasses )
         {
-            mixin = context.getMixinFactory().newInstance( mixinClass );
+            mixin = context.getMixinFactory().newInstance( mixinClass.getFragmentClass() );
 
-            Class currentClass = mixin.getClass();
-            while( currentClass != Object.class )
+            List<Field> usesFields = mixinClass.getUsesFields();
+            for( Field usesField : usesFields )
             {
-                for( Field field : currentClass.getDeclaredFields() )
+                if( usesField.getType().isInstance( proxy ) )
                 {
-                    Uses uses = field.getAnnotation( Uses.class );
-                    if( uses != null )
-                    {
-                        field.setAccessible( true );
-                        if( field.getType().isInstance( proxy ) )
-                        {
-                            field.set( mixin, proxy );
-                        }
-                        else if( field.getType().isInstance( wrappedInstance ) )
-                        {
-                            field.set( mixin, wrappedInstance );
-                        }
-                        else
-                        {
-                            Object current = wrappedInstance;
-                            boolean done = false;
-                            while( current instanceof Proxy )
-                            {
-                                InvocationHandler handler = Proxy.getInvocationHandler( current );
-                                if( handler instanceof WrappedObjectInvocationHandler )
-                                {
-                                    current = ( (WrappedObjectInvocationHandler) handler ).getWrappedInstance();
-                                    if( field.getType().isInstance( current ) )
-                                    {
-                                        field.set( mixin, current );
-                                        done = true;
-                                    }
-                                }
-                                else
-                                {
-                                    break;
-                                }
-                            }
-
-                            if( !done )
-                            {
-                                ex = new ObjectInstantiationException( "@Uses field " + field.getName() + " in class " + currentClass.getName() + " could not be resolved for composite " + context.getBindingType().getName() + "." );
-                                continue mixins;
-                            }
-                        }
-                    }
-                    Dependency dependency = field.getAnnotation( Dependency.class );
-                    if( dependency != null )
-                    {
-                        field.setAccessible( true );
-                        if( field.getType().equals( ObjectFactory.class ) )
-                        {
-                            field.set( mixin, context.getObjectFactory() );
-                        }
-                        else if( field.getType().equals( MixinFactory.class ) )
-                        {
-                            field.set( mixin, context.getMixinFactory() );
-                        }
-                        else
-                        {
-                            ex = new ObjectInstantiationException( "@Dependency field " + field.getName() + " in class " + currentClass.getName() + " could not be resolved." );
-                            continue mixins;
-                        }
-                    }
+                    usesField.set( mixin, proxy );
                 }
-                currentClass = currentClass.getSuperclass();
+                else if( usesField.getType().isInstance( decoratedInstance ) )
+                {
+                    usesField.set( mixin, decoratedInstance );
+                }
+                else if( context.getObjectFactory().isInstance( usesField.getType(), decoratedInstance ) )
+                {
+                    usesField.set( mixin, context.getObjectFactory().cast( usesField.getType(), decoratedInstance ) );
+                }
+                else
+                {
+                    ex = new ObjectInstantiationException( "@Uses field " + usesField.getName() + " in class " + mixinClass.getFragmentClass().getName() + " could not be resolved for composite " + context.getComposite().getCompositeClass().getName() + "." );
+                    continue mixins;
+                }
             }
+
+            List<Field> dependencyFields = mixinClass.getDependencyFields();
+            for( Field dependencyField : dependencyFields )
+            {
+                if( dependencyField.getType().equals( ObjectFactory.class ) )
+                {
+                    dependencyField.set( mixin, context.getObjectFactory() );
+                }
+                else if( dependencyField.getType().equals( FragmentFactory.class ) )
+                {
+                    dependencyField.set( mixin, context.getMixinFactory() );
+                }
+                else
+                {
+                    ex = new ObjectInstantiationException( "@Dependency field " + dependencyField.getName() + " in class " + mixinClass.getFragmentClass().getName() + " could not be resolved." );
+                    continue mixins;
+                }
+            }
+
+            // Successfully instantiated
             mixins.put( aProxyInterface, mixin );
             return mixin;
         }
 
+        // No mixin was successfully instantiated - throw exception
         throw ex;
     }
 
-    protected Object getWrappedInstance()
+    protected Object getDecoratedInstance()
     {
         return null;
     }

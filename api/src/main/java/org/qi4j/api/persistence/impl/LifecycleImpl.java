@@ -18,13 +18,13 @@ import org.qi4j.api.annotation.Uses;
 import org.qi4j.api.persistence.Lifecycle;
 import org.qi4j.api.persistence.PersistenceException;
 import org.qi4j.api.persistence.PersistentStorage;
-import org.qi4j.api.persistence.binding.PersistenceBinding;
+import org.qi4j.api.persistence.composite.PersistenceComposite;
 
 
 public final class LifecycleImpl
     implements Lifecycle
 {
-    @Uses private PersistenceBinding meAsPersistence;
+    @Uses private PersistenceComposite meAsPersistence;
 
     public void create() throws PersistenceException
     {

@@ -17,14 +17,12 @@ package org.qi4j.spi.object;
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import org.qi4j.api.Composite;
 
 public interface InvocationInstancePool
 {
-    InvocationInstance get( Method method, Class bindingType, Object mixin );
+    InvocationInstance newInstance( Method method, Composite composite, List<InvocationInstance> aPool );
 
-    InvocationInstance newInstance( Method method, Class bindingType, Object mixin, List<InvocationInstance> aPool );
-
-    List<InvocationInstance> getPool( Method method, Class modifierType );
-
-    Map<Method, List<InvocationInstance>> getPool( Class bindingType );
+    ConcurrentHashMap<Method, List<InvocationInstance>> getPool( Class bindingType );
 }

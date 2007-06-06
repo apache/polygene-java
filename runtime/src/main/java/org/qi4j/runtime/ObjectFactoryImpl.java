@@ -14,9 +14,10 @@
  */
 package org.qi4j.runtime;
 
-import org.qi4j.api.MixinFactory;
+import org.qi4j.api.FragmentFactory;
 import org.qi4j.api.ObjectInstantiationException;
 import org.qi4j.api.ObjectFactory;
+import org.qi4j.api.Composite;
 import org.qi4j.spi.object.ProxyReferenceInvocationHandler;
 import org.qi4j.spi.object.ObjectContext;
 import org.qi4j.spi.object.InvocationInstancePool;
@@ -31,24 +32,30 @@ import java.lang.reflect.Proxy;
 public final class ObjectFactoryImpl
     implements ObjectFactory
 {
-    private MixinFactory mixinFactory;
+    private FragmentFactory fragmentFactory;
     private InvocationInstancePool invocationInstancePool;
 
-    public ObjectFactoryImpl( MixinFactory aMixinFactory )
+    public ObjectFactoryImpl()
     {
-        mixinFactory = aMixinFactory;
-        invocationInstancePool = new InvocationInstancePoolImpl( new ModifierInstanceFactoryImpl( this, mixinFactory) );
+        this (new FragmentFactoryImpl());
     }
 
-    public <T> T newInstance( Class<T> anObjectType )
+    public ObjectFactoryImpl( FragmentFactory aFragmentFactory )
+    {
+        fragmentFactory = aFragmentFactory;
+        invocationInstancePool = new InvocationInstancePoolImpl( this, fragmentFactory );
+    }
+
+    public <T> T newInstance( Class<T> aCompositeClass )
     {
         try
         {
-            ObjectContext context= new ObjectContextImpl( anObjectType, this, mixinFactory, invocationInstancePool);
+            Composite composite = new Composite( aCompositeClass );
+            ObjectContext context= new ObjectContextImpl( composite, this, fragmentFactory, invocationInstancePool);
 
             ObjectInvocationHandler handler = new ObjectInvocationHandler( context);
-            ClassLoader proxyClassloader = anObjectType.getClassLoader();
-            Class[] interfaces = new Class[]{ anObjectType };
+            ClassLoader proxyClassloader = aCompositeClass.getClassLoader();
+            Class[] interfaces = new Class[]{ aCompositeClass };
             return (T) Proxy.newProxyInstance( proxyClassloader, interfaces, handler );
         }
         catch( Exception e )
@@ -57,27 +64,27 @@ public final class ObjectFactoryImpl
         }
     }
 
-    public <T> T cast( Class<T> anObjectType, Object anObject )
+    public <T> T cast( Class<T> aCompositeClass, Object anObject )
     {
         try
         {
             if( anObject instanceof Proxy )
             {
                 InvocationHandler wrappedHandler = Proxy.getInvocationHandler( anObject );
-                if( wrappedHandler instanceof WrappedObjectInvocationHandler )
+                if( wrappedHandler instanceof DecoratorObjectInvocationHandler )
                 {
-                    Object wrappedObject = ( (WrappedObjectInvocationHandler) wrappedHandler ).getWrappedInstance();
-                    if( anObjectType.isInstance( wrappedObject ) )
+                    Object wrappedObject = ( (DecoratorObjectInvocationHandler) wrappedHandler ).getDecoratedInstance();
+                    if( aCompositeClass.isInstance( wrappedObject ) )
                     {
                         anObject = wrappedObject;
                     }
                 }
             }
 
-            ObjectContext context = new ObjectContextImpl( anObjectType, this, mixinFactory, invocationInstancePool );
-            ObjectInvocationHandler handler = new WrappedObjectInvocationHandler( anObject, context );
-            ClassLoader proxyClassLoader = anObjectType.getClassLoader();
-            Class[] interfaces = new Class[]{ anObjectType };
+            ObjectContext context = new ObjectContextImpl( new Composite(aCompositeClass), this, fragmentFactory, invocationInstancePool );
+            ObjectInvocationHandler handler = new DecoratorObjectInvocationHandler( anObject, context );
+            ClassLoader proxyClassLoader = aCompositeClass.getClassLoader();
+            Class[] interfaces = new Class[]{ aCompositeClass };
             return (T) Proxy.newProxyInstance( proxyClassLoader, interfaces, handler );
         }
         catch( Exception e )
@@ -95,10 +102,10 @@ public final class ObjectFactoryImpl
         if( anObject instanceof Proxy )
         {
             InvocationHandler handler = Proxy.getInvocationHandler( anObject );
-            if( handler instanceof WrappedObjectInvocationHandler )
+            if( handler instanceof DecoratorObjectInvocationHandler )
             {
-                WrappedObjectInvocationHandler wrappedHandler = (WrappedObjectInvocationHandler) handler;
-                return isInstance( anObjectType, wrappedHandler.getWrappedInstance());
+                DecoratorObjectInvocationHandler decoratorHandler = (DecoratorObjectInvocationHandler) handler;
+                return isInstance( anObjectType, decoratorHandler.getDecoratedInstance());
             }
         }
         return false;
@@ -120,4 +127,8 @@ public final class ObjectFactoryImpl
     }
 
 
+    public Composite getComposite( Class aCompositeClass )
+    {
+        return new Composite( aCompositeClass );
+    }
 }

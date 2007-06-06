@@ -19,7 +19,7 @@ import org.qi4j.api.strategy.ObjectStrategyDelegatorImpl;
 
 /**
  * This factory creates proxies that implement the given
- * binding interfaces.
+ * composite interfaces.
  */
 @ImplementedBy( ObjectStrategyDelegatorImpl.class )
 public interface ObjectStrategy
@@ -35,7 +35,7 @@ public interface ObjectStrategy
     /**
      * Create a new object that implements the given interface.
      * <p/>
-     * The new object wraps the current object which provides mixin implementations
+     * The new object wraps the current object which provides mixin mixins
      * that should be reused for this new object.
      *
      * @param anObjectType an interface that describes the object to be created
@@ -50,4 +50,6 @@ public interface ObjectStrategy
      * @return true if a cast() is possible of this object to the provided object type.
      */
     boolean isInstance( Class anObjectType );
+
+    Composite getComposite();
 }

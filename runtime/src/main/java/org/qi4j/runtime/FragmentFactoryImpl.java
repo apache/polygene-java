@@ -14,15 +14,15 @@
  */
 package org.qi4j.runtime;
 
-import org.qi4j.api.MixinFactory;
+import org.qi4j.api.FragmentFactory;
 import org.qi4j.api.ObjectInstantiationException;
 
 /**
  * TODO
  *
  */
-public final class MixinFactoryImpl
-    implements MixinFactory
+public final class FragmentFactoryImpl
+    implements FragmentFactory
 {
     public <T> T newInstance( Class<T> anObjectType )
         throws ObjectInstantiationException

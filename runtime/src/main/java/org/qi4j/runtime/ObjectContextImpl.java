@@ -15,13 +15,16 @@
 package org.qi4j.runtime;
 
 import org.qi4j.api.ObjectFactory;
-import org.qi4j.api.MixinFactory;
+import org.qi4j.api.FragmentFactory;
+import org.qi4j.api.Composite;
 import org.qi4j.spi.object.ObjectContext;
 import org.qi4j.spi.object.InvocationInstance;
 import org.qi4j.spi.object.InvocationInstancePool;
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.List;
+import java.util.IdentityHashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * TODO
@@ -30,24 +33,24 @@ import java.util.List;
 public final class ObjectContextImpl
     implements ObjectContext
 {
-    private Class bindingType;
+    private Composite composite;
     private ObjectFactory objectFactory;
-    private MixinFactory mixinFactory;
+    private FragmentFactory fragmentFactory;
     private InvocationInstancePool pool;
-    private Map<Method, List<InvocationInstance>> methodToInvocationInstanceMap;
+    private ConcurrentHashMap<Method, List<InvocationInstance>> methodToInvocationInstanceMap;
 
-    public ObjectContextImpl( Class aBindingType, ObjectFactory aObjectFactory, MixinFactory aMixinFactory, InvocationInstancePool instancePool)
+    public ObjectContextImpl( Composite aComposite, ObjectFactory aObjectFactory, FragmentFactory aFragmentFactory, InvocationInstancePool instancePool)
     {
-        bindingType = aBindingType;
+        composite = aComposite;
         objectFactory = aObjectFactory;
-        mixinFactory = aMixinFactory;
+        fragmentFactory = aFragmentFactory;
         pool = instancePool;
-        methodToInvocationInstanceMap = instancePool.getPool( aBindingType);
+        methodToInvocationInstanceMap = instancePool.getPool( aComposite.getCompositeClass());
     }
 
-    public Class getBindingType()
+    public Composite getComposite()
     {
-        return bindingType;
+        return composite;
     }
 
     public ObjectFactory getObjectFactory()
@@ -55,9 +58,9 @@ public final class ObjectContextImpl
         return objectFactory;
     }
 
-    public MixinFactory getMixinFactory()
+    public FragmentFactory getMixinFactory()
     {
-        return mixinFactory;
+        return fragmentFactory;
     }
 
     public InvocationInstancePool getPool()
@@ -65,12 +68,13 @@ public final class ObjectContextImpl
         return pool;
     }
 
-    public InvocationInstance newInvocationInstance( Method method, Object mixin, List<InvocationInstance> instances )
+    public InvocationInstance newInvocationInstance( Method method)
     {
-        return pool.newInstance( method, bindingType, mixin, instances );
+        List<InvocationInstance> instances = methodToInvocationInstanceMap.get( method );
+        return pool.newInstance( method, composite , instances );
     }
 
-    public Map<Method, List<InvocationInstance>> getMethodToInvocationInstanceMap()
+    public ConcurrentHashMap<Method, List<InvocationInstance>> getMethodToInvocationInstanceMap()
     {
         return methodToInvocationInstanceMap;
     }

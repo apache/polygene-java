@@ -16,7 +16,7 @@ package org.qi4j.runtime;
 
 import org.qi4j.api.ObjectRepository;
 import org.qi4j.api.ObjectFactory;
-import org.qi4j.api.persistence.binding.PersistenceBinding;
+import org.qi4j.api.persistence.composite.PersistenceComposite;
 
 /**
  * TODO
@@ -32,7 +32,7 @@ public final class ObjectRepositoryImpl
       factory = aFactory;
    }
 
-   public <T extends PersistenceBinding> T getInstance(String anIdentity, Class<T> aType)
+   public <T extends PersistenceComposite> T getInstance(String anIdentity, Class<T> aType)
    {
       T object = factory.newInstance(aType);
       object.setIdentity(anIdentity);

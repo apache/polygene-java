@@ -19,7 +19,7 @@ package org.qi4j.api;
  * This factory is responsible for instantiating mixins. This is where
  * you would put DI integrations.
  */
-public interface MixinFactory
+public interface FragmentFactory
 {
     <T> T newInstance( Class<T> anObjectType );
 }
