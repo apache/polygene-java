@@ -15,7 +15,10 @@ import org.qi4j.library.general.caching.InvocationCache;
 */
 
 /**
- * Implement the RemoteInterface by using RMI
+ * Implement the RemoteInterface by using RMI.
+ * Results of RMI calls are cached, so if an
+ * IOException occurs we can reuse a previous result
+ * if possible.
  *
  * @author rickard
  * @version $Revision: 1.0 $
