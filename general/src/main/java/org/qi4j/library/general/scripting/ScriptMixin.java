@@ -101,6 +101,9 @@ public class ScriptMixin
             scriptUrl = aMethod.getDeclaringClass().getClassLoader().getResource( scriptFile );
         }
 
+        if (scriptUrl == null)
+            throw new IOException("No script found for method "+aMethod.getName());
+
         InputStream in = scriptUrl.openStream();
         BufferedReader scriptReader = new BufferedReader(new InputStreamReader(in));
         String line;
