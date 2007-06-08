@@ -3,23 +3,22 @@
  */
 package org.qi4j.api;
 
-import java.util.Map;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.HashSet;
-import java.lang.reflect.Method;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Field;
-import java.lang.annotation.Annotation;
-import java.io.StringWriter;
 import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import org.qi4j.api.annotation.AppliesTo;
 import org.qi4j.api.annotation.ImplementedBy;
 import org.qi4j.api.annotation.ModifiedBy;
 import org.qi4j.api.annotation.Uses;
-import org.qi4j.api.annotation.AppliesTo;
 
 /**
  * Composites are descriptors of what an interface represent. <TODO better docs needed here>
@@ -35,7 +34,7 @@ public final class Composite
     Map<Method, List<Modifier>> modifiers = new HashMap<Method, List<Modifier>>();
 
     // Constructors --------------------------------------------------
-    public Composite( Class aCompositeClass)
+    public Composite( Class aCompositeClass )
     {
         this.composite = aCompositeClass;
 
@@ -51,7 +50,7 @@ public final class Composite
                 findMixins( methodClass, aCompositeClass, methodMixins );
                 if( methodMixins.size() > 0 )
                 {
-                    mixins.put( methodClass, methodMixins);
+                    mixins.put( methodClass, methodMixins );
                 }
                 else
                 {
@@ -76,7 +75,7 @@ public final class Composite
             // 3) Modifiers from other mixins
             for( List<Mixin> mixins : this.mixins.values() )
             {
-                for (Mixin mixin : mixins )
+                for( Mixin mixin : mixins )
                 {
                     if( !mixin.equals( methodMixin ) )
                     {
@@ -98,10 +97,14 @@ public final class Composite
     public Mixin getMixin( Class anInterface )
     {
         List<Mixin> classes = mixins.get( anInterface );
-        if (classes != null && classes.size() > 0)
+        if( classes != null && classes.size() > 0 )
+        {
             return classes.get( 0 );
+        }
         else
+        {
             return null;
+        }
     }
 
     public List<Mixin> getMixins( Class anInterface )
@@ -119,7 +122,7 @@ public final class Composite
         Set<Fragment> fragments = new HashSet<Fragment>();
         for( List<Mixin> mixins : this.mixins.values() )
         {
-            fragments.addAll( mixins);
+            fragments.addAll( mixins );
         }
         for( List<Modifier> methodModifiers : modifiers.values() )
         {
@@ -136,7 +139,7 @@ public final class Composite
         out.println( composite.getName() );
         for( Iterator<Map.Entry<Class, List<Mixin>>> iterator = mixins.entrySet().iterator(); iterator.hasNext(); )
         {
-            Map.Entry<Class,List<Mixin>> entry = iterator.next();
+            Map.Entry<Class, List<Mixin>> entry = iterator.next();
             Class interfaceClass = entry.getKey();
             List<Mixin> mixinClasses = entry.getValue();
             out.println( "  " + interfaceClass.getName() );
@@ -163,33 +166,34 @@ public final class Composite
         if( impls != null )
         {
             Class[] implementationClasses = impls.value();
-            classes : for( Class implementationClass : implementationClasses )
+            classes:
+            for( Class implementationClass : implementationClasses )
             {
                 if( aMethodClass.isAssignableFrom( implementationClass ) )
                 {
-                    if (anImplementationClasses.size() > 0)
+                    if( anImplementationClasses.size() > 0 )
                     {
                         // Find generic implementation - this one overrides it
-                        for (int i = 0; i < anImplementationClasses.size() ; i++)
+                        for( int i = 0; i < anImplementationClasses.size(); i++ )
                         {
-                            if (InvocationHandler.class.isAssignableFrom(anImplementationClasses.get( i ).getFragmentClass()))
+                            if( InvocationHandler.class.isAssignableFrom( anImplementationClasses.get( i ).getFragmentClass() ) )
                             {
-                                anImplementationClasses.add( i, new Mixin(implementationClass));
+                                anImplementationClasses.add( i, new Mixin( implementationClass ) );
                                 continue classes;
                             }
                         }
                     }
-                    anImplementationClasses.add( new Mixin(implementationClass) );
+                    anImplementationClasses.add( new Mixin( implementationClass ) );
                 }
                 else
                 {
                     AppliesTo appliesTo = (AppliesTo) implementationClass.getAnnotation( AppliesTo.class );
-                    if ( appliesTo != null)
+                    if( appliesTo != null )
                     {
-                        if (appliesTo.value().isAssignableFrom(aMethodClass))
+                        if( appliesTo.value().isAssignableFrom( aMethodClass ) )
                         {
                             // Generic mixin that can apply to this interface
-                            anImplementationClasses.add( new Mixin(implementationClass));
+                            anImplementationClasses.add( new Mixin( implementationClass ) );
                         }
                     }
                 }
@@ -210,7 +214,8 @@ public final class Composite
         if( modifiedBy != null )
         {
             Class[] modificationClasses = modifiedBy.value();
-            modifications : for( Class modificationClass : modificationClasses )
+            modifications:
+            for( Class modificationClass : modificationClasses )
             {
                 Modifier modifier = new Modifier( modificationClass );
 
@@ -229,7 +234,7 @@ public final class Composite
                                 try
                                 {
                                     Method implMethod = implClass.getFragmentClass().getMethod( method.getName(), method.getParameterTypes() );
-                                    if( implClass.getFragmentClass().getAnnotation( appliesTo ) == null && implMethod.getAnnotation( appliesTo) == null)
+                                    if( implClass.getFragmentClass().getAnnotation( appliesTo ) == null && implMethod.getAnnotation( appliesTo ) == null )
                                     {
                                         continue; // Skip this modifier
                                     }
@@ -241,27 +246,28 @@ public final class Composite
                             }
                             else
                             {
-                                if( !appliesTo.isAssignableFrom( getMixin( method.getDeclaringClass()).getFragmentClass() ) && !appliesTo.isAssignableFrom( method.getDeclaringClass()) )
+                                if( !appliesTo.isAssignableFrom( getMixin( method.getDeclaringClass() ).getFragmentClass() ) && !appliesTo.isAssignableFrom( method.getDeclaringClass() ) )
                                 {
                                     continue; // Skip this modifier
                                 }
                             }
                         }
-                    } else if( !method.getDeclaringClass().isAssignableFrom( modificationClass ) )
+                    }
+                    else if( !method.getDeclaringClass().isAssignableFrom( modificationClass ) )
                     {
                         continue; // Skip this modifier
                     }
 
-
-
                     // Check @Uses
                     List<Field> usesFields = new ArrayList<Field>();
-                    findUses( modificationClass, usesFields);
+                    findUses( modificationClass, usesFields );
                     for( Field usesField : usesFields )
                     {
                         boolean isAssignable = usesField.getType().isAssignableFrom( composite );
-                        if (!isAssignable )
+                        if( !isAssignable )
+                        {
                             continue modifications; // Skip this modifier
+                        }
                     }
 
                     aModifierList.add( modifier );

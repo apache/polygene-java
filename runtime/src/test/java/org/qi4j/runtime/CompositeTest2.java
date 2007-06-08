@@ -3,7 +3,6 @@ package org.qi4j.runtime;
 * Copyright (C) Senselogic 2006, all rights reserved
 */
 
-import junit.framework.*;
 import org.qi4j.api.Composite;
 import org.qi4j.api.ObjectFactory;
 import org.qi4j.test.model.DomainInterface;
@@ -15,8 +14,9 @@ import org.qi4j.test.model.Standard;
 import org.qi4j.test.model.StandardThatImpl;
 import org.qi4j.test.model.DomainInterfaceImpl;
 import org.qi4j.test.model.CustomTestComposite;
+import junit.framework.TestCase;
 
-public class CompositeTest extends TestCase
+public class CompositeTest2 extends TestCase
 {
     Composite composite;
 

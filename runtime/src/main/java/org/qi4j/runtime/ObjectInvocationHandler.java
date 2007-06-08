@@ -210,6 +210,10 @@ public class ObjectInvocationHandler
             List<Field> dependencyFields = mixinClass.getDependencyFields();
             for( Field dependencyField : dependencyFields )
             {
+                /* TODO: Dependency Resolver, something like;
+                    Object value = dependecyResolver.get( dependencyField.getType );
+                    dependencyField.set( mixin. value );
+                 */
                 if( dependencyField.getType().equals( ObjectFactory.class ) )
                 {
                     dependencyField.set( mixin, context.getObjectFactory() );

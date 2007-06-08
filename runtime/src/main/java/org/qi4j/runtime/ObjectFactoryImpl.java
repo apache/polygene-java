@@ -14,20 +14,18 @@
  */
 package org.qi4j.runtime;
 
-import org.qi4j.api.FragmentFactory;
-import org.qi4j.api.ObjectInstantiationException;
-import org.qi4j.api.ObjectFactory;
-import org.qi4j.api.Composite;
-import org.qi4j.spi.object.ProxyReferenceInvocationHandler;
-import org.qi4j.spi.object.ObjectContext;
-import org.qi4j.spi.object.InvocationInstancePool;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
+import org.qi4j.api.Composite;
+import org.qi4j.api.FragmentFactory;
+import org.qi4j.api.ObjectFactory;
+import org.qi4j.api.ObjectInstantiationException;
+import org.qi4j.spi.object.InvocationInstancePool;
+import org.qi4j.spi.object.ObjectContext;
+import org.qi4j.spi.object.ProxyReferenceInvocationHandler;
 
 /**
  * TODO
- *
  */
 public final class ObjectFactoryImpl
     implements ObjectFactory
@@ -37,7 +35,7 @@ public final class ObjectFactoryImpl
 
     public ObjectFactoryImpl()
     {
-        this (new FragmentFactoryImpl());
+        this( new FragmentFactoryImpl() );
     }
 
     public ObjectFactoryImpl( FragmentFactory aFragmentFactory )
@@ -51,9 +49,9 @@ public final class ObjectFactoryImpl
         try
         {
             Composite composite = new Composite( aCompositeClass );
-            ObjectContext context= new ObjectContextImpl( composite, this, fragmentFactory, invocationInstancePool);
+            ObjectContext context = new ObjectContextImpl( composite, this, fragmentFactory, invocationInstancePool );
 
-            ObjectInvocationHandler handler = new ObjectInvocationHandler( context);
+            ObjectInvocationHandler handler = new ObjectInvocationHandler( context );
             ClassLoader proxyClassloader = aCompositeClass.getClassLoader();
             Class[] interfaces = new Class[]{ aCompositeClass };
             return (T) Proxy.newProxyInstance( proxyClassloader, interfaces, handler );
@@ -81,7 +79,7 @@ public final class ObjectFactoryImpl
                 }
             }
 
-            ObjectContext context = new ObjectContextImpl( new Composite(aCompositeClass), this, fragmentFactory, invocationInstancePool );
+            ObjectContext context = new ObjectContextImpl( new Composite( aCompositeClass ), this, fragmentFactory, invocationInstancePool );
             ObjectInvocationHandler handler = new DecoratorObjectInvocationHandler( anObject, context );
             ClassLoader proxyClassLoader = aCompositeClass.getClassLoader();
             Class[] interfaces = new Class[]{ aCompositeClass };
@@ -105,18 +103,18 @@ public final class ObjectFactoryImpl
             if( handler instanceof DecoratorObjectInvocationHandler )
             {
                 DecoratorObjectInvocationHandler decoratorHandler = (DecoratorObjectInvocationHandler) handler;
-                return isInstance( anObjectType, decoratorHandler.getDecoratedInstance());
+                return isInstance( anObjectType, decoratorHandler.getDecoratedInstance() );
             }
         }
         return false;
     }
-    
+
     public <T> T getThat( T proxy )
     {
         InvocationHandler handler = Proxy.getInvocationHandler( proxy );
         if( handler instanceof ProxyReferenceInvocationHandler )
         {
-            return (T) ((ProxyReferenceInvocationHandler) handler).getProxy();
+            return (T) ( (ProxyReferenceInvocationHandler) handler ).getProxy();
         }
         if( handler instanceof ObjectInvocationHandler )
         {

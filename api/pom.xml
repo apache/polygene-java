@@ -12,6 +12,4 @@
   <artifactId>qi4j-api</artifactId>
   <name>Qi4J Core - API</name>
   <version>0.1.0-SNAPSHOT</version>
-  <dependencies>
-  </dependencies>
 </project>

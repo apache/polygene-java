@@ -3,8 +3,8 @@ package org.qi4j.runtime;
 * Copyright (C) Senselogic 2006, all rights reserved
 */
 
-import junit.framework.*;
 import org.qi4j.runtime.Composite;
+import junit.framework.TestCase;
 
 public class CompositeTest extends TestCase
 {
