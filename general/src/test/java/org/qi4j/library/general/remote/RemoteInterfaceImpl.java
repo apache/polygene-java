@@ -30,9 +30,11 @@ public class RemoteInterfaceImpl
     {
         count++;
 
-        if (count%2 == 0)
-            throw new IOException("Something went wrong");
+        if( count % 2 == 0 )
+        {
+            throw new IOException( "Something went wrong" );
+        }
 
-        return "Foo:"+aBar;
+        return "Foo:" + aBar;
     }
 }
