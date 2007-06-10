@@ -1,21 +1,29 @@
 /*
- * Copyright (C) Senselogic 2006, all rights reserved
+ * Copyright 2007 Rickard Öberg
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.qi4j.runtime;
 
-import java.util.Map;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.lang.reflect.Method;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Field;
-import java.io.StringWriter;
 import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import org.qi4j.api.annotation.AppliesTo;
 import org.qi4j.api.annotation.ImplementedBy;
 import org.qi4j.api.annotation.ModifiedBy;
-import org.qi4j.api.annotation.AppliesTo;
 import org.qi4j.api.annotation.Uses;
 
 /**
@@ -34,7 +42,7 @@ public class Composite
     Map<Method, List<Class>> modifiers = new HashMap<Method, List<Class>>();
 
     // Constructors --------------------------------------------------
-    public Composite( Class aCompositeClass)
+    public Composite( Class aCompositeClass )
     {
         this.composite = aCompositeClass;
 
@@ -167,7 +175,8 @@ public class Composite
         if( modifiedBy != null )
         {
             Class[] modificationClasses = modifiedBy.value();
-            modifications : for( Class modificationClass : modificationClasses )
+            modifications:
+            for( Class modificationClass : modificationClasses )
             {
                 if( !aModifierList.contains( modificationClass ) )
                 {
@@ -184,7 +193,7 @@ public class Composite
                                 try
                                 {
                                     Method implMethod = implClass.getMethod( method.getName(), method.getParameterTypes() );
-                                    if( implClass.getAnnotation( appliesTo.value() ) == null && implMethod.getAnnotation( appliesTo.value()) == null)
+                                    if( implClass.getAnnotation( appliesTo.value() ) == null && implMethod.getAnnotation( appliesTo.value() ) == null )
                                     {
                                         continue; // Skip this modifier
                                     }
@@ -196,27 +205,28 @@ public class Composite
                             }
                             else
                             {
-                                if( !appliesTo.value().isAssignableFrom( getImplementation( method.getDeclaringClass()) ) )
+                                if( !appliesTo.value().isAssignableFrom( getImplementation( method.getDeclaringClass() ) ) )
                                 {
                                     continue; // Skip this modifier
                                 }
                             }
                         }
-                    } else if( !method.getDeclaringClass().isAssignableFrom( modificationClass ) )
+                    }
+                    else if( !method.getDeclaringClass().isAssignableFrom( modificationClass ) )
                     {
                         continue; // Skip this modifier
                     }
 
-
-
                     // Check @Uses
                     List<Field> usesFields = new ArrayList<Field>();
-                    findUses( modificationClass, usesFields);
+                    findUses( modificationClass, usesFields );
                     for( Field usesField : usesFields )
                     {
                         boolean isAssignable = usesField.getType().isAssignableFrom( composite );
-                        if (!isAssignable )
+                        if( !isAssignable )
+                        {
                             continue modifications; // Skip this modifier
+                        }
                     }
 
                     aModifierList.add( modificationClass );

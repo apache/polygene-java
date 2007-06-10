@@ -16,24 +16,24 @@ package org.qi4j.runtime;
 
 import org.qi4j.api.FragmentFactory;
 import org.qi4j.api.ObjectInstantiationException;
+import org.qi4j.api.model.CompositeInterface;
+import org.qi4j.api.model.Fragment;
 
 /**
- * TODO
- *
+ * Default fragment factory. Simply instantiates the fragment class using newInstance.
  */
 public final class FragmentFactoryImpl
     implements FragmentFactory
 {
-    public <T> T newInstance( Class<T> anObjectType )
-        throws ObjectInstantiationException
+    public Object newFragment( Fragment aFragment, CompositeInterface aCompositeInterface )
     {
         try
         {
-            return anObjectType.newInstance();
+            return aFragment.getFragmentClass().newInstance();
         }
         catch( Exception e )
         {
-            throw new ObjectInstantiationException( e );
+            throw new ObjectInstantiationException( "Could not instantiate class " + aFragment.getFragmentClass().getName(), e );
         }
     }
 }

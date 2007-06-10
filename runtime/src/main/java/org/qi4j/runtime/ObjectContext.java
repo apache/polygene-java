@@ -18,47 +18,75 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.lang.reflect.AnnotatedElement;
-import java.util.HashMap;
-import java.util.IdentityHashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import org.qi4j.api.Composite;
 import org.qi4j.api.FragmentFactory;
 import org.qi4j.api.InvocationContext;
-import org.qi4j.api.Modifier;
 import org.qi4j.api.ObjectFactory;
 import org.qi4j.api.ObjectInstantiationException;
-import org.qi4j.spi.object.InvocationInstance;
-import org.qi4j.spi.object.InvocationInstancePool;
-import org.qi4j.spi.object.ProxyReferenceInvocationHandler;
+import org.qi4j.api.model.CompositeInterface;
+import org.qi4j.api.model.Modifier;
 
-public final class InvocationInstancePoolImpl
-    implements InvocationInstancePool
+/**
+ * TODO
+ */
+public final class ObjectContext
 {
-    private Map<Class, ConcurrentHashMap<Method, List<InvocationInstance>>> pools;
-    private ThreadLocal<IdentityHashMap<Method, IdentityHashMap<Class, List<InvocationInstance>>>> threadInstances;
+    private CompositeInterface composite;
     private ObjectFactory objectFactory;
     private FragmentFactory fragmentFactory;
+    private ConcurrentHashMap<Method, List<InvocationInstance>> invocationInstancePool;
 
-    public InvocationInstancePoolImpl( ObjectFactory anObjectFactory, FragmentFactory aFragmentFactory)
+
+    public ObjectContext( CompositeInterface aComposite, ObjectFactory aObjectFactory, FragmentFactory aFragmentFactory )
     {
-        pools = new HashMap<Class, ConcurrentHashMap<Method, List<InvocationInstance>>>();
-        objectFactory = anObjectFactory;
+        composite = aComposite;
+        objectFactory = aObjectFactory;
         fragmentFactory = aFragmentFactory;
-        threadInstances = new ThreadLocal<IdentityHashMap<Method, IdentityHashMap<Class, List<InvocationInstance>>>>()
-        {
-
-            protected IdentityHashMap<Method, IdentityHashMap<Class, List<InvocationInstance>>> initialValue()
-            {
-                return new IdentityHashMap<Method, IdentityHashMap<Class, List<InvocationInstance>>>();
-            }
-        };
-
+        invocationInstancePool = new ConcurrentHashMap<Method, List<InvocationInstance>>();
     }
 
-    public InvocationInstance newInstance( Method method, Composite composite, List<InvocationInstance> aPool )
+    public CompositeInterface getCompositeInterface()
+    {
+        return composite;
+    }
+
+    public ObjectFactory getObjectFactory()
+    {
+        return objectFactory;
+    }
+
+    public FragmentFactory getFragmentFactory()
+    {
+        return fragmentFactory;
+    }
+
+    public InvocationInstance getInvocationInstance( Method method )
+    {
+        List<InvocationInstance> instances = invocationInstancePool.get( method );
+
+        if( instances == null )
+        {
+            instances = new ArrayList<InvocationInstance>();
+            invocationInstancePool.put( method, instances );
+        }
+
+        InvocationInstance invocationInstance;
+        int size = instances.size();
+        if( size > 0 )
+        {
+            invocationInstance = instances.remove( size - 1 );
+        }
+        else
+        {
+            invocationInstance = newInstance( method );
+        }
+
+        return invocationInstance;
+    }
+
+    public InvocationInstance newInstance( Method method )
     {
         try
         {
@@ -70,20 +98,22 @@ public final class InvocationInstancePoolImpl
             Field previousModifies = null;
             for( Modifier modifier : modifiers )
             {
-                Object modifierInstance = fragmentFactory.newInstance( modifier.getFragmentClass() );
+                Object modifierInstance = fragmentFactory.newFragment( modifier, composite );
 
-                if (firstModifier == null)
+                if( firstModifier == null )
+                {
                     firstModifier = modifierInstance;
+                }
 
                 // @Uses
-                for( Field usesField : modifier.getUsesFields())
+                for( Field usesField : modifier.getUsesFields() )
                 {
                     Object usesProxy = Proxy.newProxyInstance( usesField.getType().getClassLoader(), new Class[]{ usesField.getType() }, proxyHandler );
                     usesField.set( modifierInstance, usesProxy );
                 }
 
                 // @Dependency
-                for( Field dependencyField : modifier.getDependencyFields())
+                for( Field dependencyField : modifier.getDependencyFields() )
                 {
                     if( dependencyField.getType().equals( ObjectFactory.class ) )
                     {
@@ -97,38 +127,40 @@ public final class InvocationInstancePoolImpl
                     {
                         dependencyField.set( modifierInstance, proxyHandler );
                     }
-                    else if (dependencyField.getType().equals( Method.class))
+                    else if( dependencyField.getType().equals( Method.class ) )
                     {
                         Class<? extends Object> fragmentClass = composite.getMixin( method.getDeclaringClass() ).getFragmentClass();
                         Method dependencyMethod;
-                        if (InvocationHandler.class.isAssignableFrom( fragmentClass))
+                        if( InvocationHandler.class.isAssignableFrom( fragmentClass ) )
                         {
                             dependencyMethod = method;
-                        } else
+                        }
+                        else
                         {
                             try
                             {
-                                dependencyMethod = fragmentClass.getMethod( method.getName(), method.getParameterTypes());
+                                dependencyMethod = fragmentClass.getMethod( method.getName(), method.getParameterTypes() );
                             }
                             catch( NoSuchMethodException e )
                             {
-                                throw new ObjectInstantiationException("Could not resolve @Dependency to method in mixin "+fragmentClass.getName()+" for composite "+composite.getCompositeClass().getName(), e);
+                                throw new ObjectInstantiationException( "Could not resolve @Dependency to method in mixin " + fragmentClass.getName() + " for composite " + composite.getCompositeInterface().getName(), e );
                             }
                         }
-                        dependencyField.set( modifierInstance, dependencyMethod);
+                        dependencyField.set( modifierInstance, dependencyMethod );
                     }
                 }
 
                 // @Modifies
-                if (previousModifies != null)
+                if( previousModifies != null )
                 {
-                    if( lastModifier instanceof InvocationHandler)
+                    if( lastModifier instanceof InvocationHandler )
                     {
-                        if (modifierInstance instanceof InvocationHandler )
+                        if( modifierInstance instanceof InvocationHandler )
                         {
-                            // One IH to another IH
-                            previousModifies.set( lastModifier, modifierInstance);
-                        } else
+                            // IH to another IH
+                            previousModifies.set( lastModifier, modifierInstance );
+                        }
+                        else
                         {
                             // IH to an object modifier
                             FragmentInvocationHandler handler = new FragmentInvocationHandler( modifierInstance );
@@ -137,8 +169,17 @@ public final class InvocationInstancePoolImpl
                     }
                     else
                     {
-                        // Object modifier to another object modifier
-                        previousModifies.set( lastModifier, modifierInstance );
+                        if( modifierInstance instanceof InvocationHandler )
+                        {
+                            // Object modifier to IH modifier
+                            Object modifierProxy = Proxy.newProxyInstance( previousModifies.getType().getClassLoader(), new Class[]{ previousModifies.getType() }, (InvocationHandler) modifierInstance );
+                            previousModifies.set( lastModifier, modifierProxy );
+                        }
+                        else
+                        {
+                            // Object modifier to another object modifier
+                            previousModifies.set( lastModifier, modifierInstance );
+                        }
                     }
                 }
 
@@ -148,36 +189,26 @@ public final class InvocationInstancePoolImpl
 
 
             FragmentInvocationHandler mixinInvocationHandler = null;
-            if (previousModifies != null)
+            if( previousModifies != null )
             {
                 mixinInvocationHandler = new FragmentInvocationHandler();
-                if (lastModifier instanceof InvocationHandler)
+                if( lastModifier instanceof InvocationHandler )
                 {
                     previousModifies.set( lastModifier, mixinInvocationHandler );
-                } else
+                }
+                else
                 {
-                    Object mixinProxy = Proxy.newProxyInstance( composite.getMixin( method.getDeclaringClass()).getFragmentClass().getClassLoader(), new Class[]{ previousModifies.getType() }, mixinInvocationHandler);
+                    Object mixinProxy = Proxy.newProxyInstance( composite.getMixin( method.getDeclaringClass() ).getFragmentClass().getClassLoader(), new Class[]{ previousModifies.getType() }, mixinInvocationHandler );
                     previousModifies.set( lastModifier, mixinProxy );
                 }
             }
 
-            return new InvocationInstanceImpl( firstModifier, lastModifier, mixinInvocationHandler, proxyHandler, aPool );
+            return new InvocationInstance( firstModifier, mixinInvocationHandler, proxyHandler, invocationInstancePool.get( method ) );
         }
         catch( IllegalAccessException e )
         {
-            throw new ObjectInstantiationException("Could not create invocation instance", e);
+            throw new ObjectInstantiationException( "Could not create invocation instance", e );
         }
     }
 
-    public ConcurrentHashMap<Method, List<InvocationInstance>> getPool( Class compositeClass )
-    {
-        ConcurrentHashMap<Method, List<InvocationInstance>> pool = pools.get( compositeClass );
-        if( pool == null )
-        {
-            pool = new ConcurrentHashMap<Method, List<InvocationInstance>>();
-            pools.put( compositeClass, pool );
-        }
-
-        return pool;
-    }
 }

@@ -16,13 +16,13 @@ package org.qi4j.runtime;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
-import org.qi4j.api.Composite;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import org.qi4j.api.FragmentFactory;
 import org.qi4j.api.ObjectFactory;
 import org.qi4j.api.ObjectInstantiationException;
-import org.qi4j.spi.object.InvocationInstancePool;
-import org.qi4j.spi.object.ObjectContext;
-import org.qi4j.spi.object.ProxyReferenceInvocationHandler;
+import org.qi4j.api.model.Composite;
+import org.qi4j.api.model.CompositeInterface;
 
 /**
  * TODO
@@ -31,7 +31,8 @@ public final class ObjectFactoryImpl
     implements ObjectFactory
 {
     private FragmentFactory fragmentFactory;
-    private InvocationInstancePool invocationInstancePool;
+    private Map<Class, Composite> composites;
+    private Map<CompositeInterface, ObjectContext> objectContexts;
 
     public ObjectFactoryImpl()
     {
@@ -41,15 +42,17 @@ public final class ObjectFactoryImpl
     public ObjectFactoryImpl( FragmentFactory aFragmentFactory )
     {
         fragmentFactory = aFragmentFactory;
-        invocationInstancePool = new InvocationInstancePoolImpl( this, fragmentFactory );
+        objectContexts = new ConcurrentHashMap<CompositeInterface, ObjectContext>();
+        composites = new ConcurrentHashMap();
     }
 
     public <T> T newInstance( Class<T> aCompositeClass )
     {
         try
         {
-            Composite composite = new Composite( aCompositeClass );
-            ObjectContext context = new ObjectContextImpl( composite, this, fragmentFactory, invocationInstancePool );
+            Composite composite = getComposite( aCompositeClass );
+            CompositeInterface compositeInterface = new CompositeInterface( composite, aCompositeClass );
+            ObjectContext context = getObjectContext( compositeInterface );
 
             ObjectInvocationHandler handler = new ObjectInvocationHandler( context );
             ClassLoader proxyClassloader = aCompositeClass.getClassLoader();
@@ -64,24 +67,33 @@ public final class ObjectFactoryImpl
 
     public <T> T cast( Class<T> aCompositeClass, Object anObject )
     {
-        try
+        if( anObject instanceof Proxy )
         {
-            if( anObject instanceof Proxy )
+            InvocationHandler wrappedHandler = Proxy.getInvocationHandler( anObject );
+            if( wrappedHandler instanceof DecoratorObjectInvocationHandler )
             {
-                InvocationHandler wrappedHandler = Proxy.getInvocationHandler( anObject );
-                if( wrappedHandler instanceof DecoratorObjectInvocationHandler )
+                Object wrappedObject = ( (DecoratorObjectInvocationHandler) wrappedHandler ).getDecoratedInstance();
+                if( aCompositeClass.isInstance( wrappedObject ) )
                 {
-                    Object wrappedObject = ( (DecoratorObjectInvocationHandler) wrappedHandler ).getDecoratedInstance();
-                    if( aCompositeClass.isInstance( wrappedObject ) )
-                    {
-                        anObject = wrappedObject;
-                    }
+                    anObject = wrappedObject;
                 }
             }
+        }
 
-            ObjectContext context = new ObjectContextImpl( new Composite( aCompositeClass ), this, fragmentFactory, invocationInstancePool );
-            ObjectInvocationHandler handler = new DecoratorObjectInvocationHandler( anObject, context );
-            ClassLoader proxyClassLoader = aCompositeClass.getClassLoader();
+        CompositeInterface wrappedCompositeInterface = null;
+        if( anObject instanceof Proxy )
+        {
+            wrappedCompositeInterface = ObjectInvocationHandler.getInvocationHandler( anObject ).getContext().getCompositeInterface();
+        }
+
+        Composite composite = getComposite( aCompositeClass );
+        CompositeInterface compositeInterface = new CompositeInterface( composite, aCompositeClass, wrappedCompositeInterface );
+        ObjectContext context = getObjectContext( compositeInterface );
+        ObjectInvocationHandler handler = new DecoratorObjectInvocationHandler( anObject, context );
+        ClassLoader proxyClassLoader = aCompositeClass.getClassLoader();
+
+        try
+        {
             Class[] interfaces = new Class[]{ aCompositeClass };
             return (T) Proxy.newProxyInstance( proxyClassLoader, interfaces, handler );
         }
@@ -125,8 +137,27 @@ public final class ObjectFactoryImpl
     }
 
 
-    public Composite getComposite( Class aCompositeClass )
+    public org.qi4j.api.model.Composite getComposite( Class aCompositeClass )
     {
-        return new Composite( aCompositeClass );
+        Composite composite = composites.get( aCompositeClass );
+        if( composite == null )
+        {
+            composite = new Composite( aCompositeClass );
+            composites.put( aCompositeClass, composite );
+        }
+
+        return composite;
+    }
+
+    // Private ------------------------------------------------------
+    private ObjectContext getObjectContext( CompositeInterface aComposite )
+    {
+        ObjectContext context = objectContexts.get( aComposite );
+        if( context == null )
+        {
+            context = new ObjectContext( aComposite, this, fragmentFactory );
+            objectContexts.put( aComposite, context );
+        }
+        return context;
     }
 }

@@ -15,24 +15,20 @@
 package org.qi4j.runtime;
 
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
-import org.qi4j.spi.object.InvocationInstance;
-import org.qi4j.spi.object.ProxyReferenceInvocationHandler;
 
-public final class InvocationInstanceImpl
-    implements InvocationInstance
+public final class InvocationInstance
 {
     private Object firstModifier;
-    private Object lastModifier;
     private FragmentInvocationHandler mixinInvocationHandler;
     private ProxyReferenceInvocationHandler proxyHandler;
     private List<InvocationInstance> pool;
 
-    public InvocationInstanceImpl( Object aFirstModifier, Object aLastModifier, FragmentInvocationHandler aMixinInvocationHandler, ProxyReferenceInvocationHandler aProxyHandler, List<InvocationInstance> aPool )
+    public InvocationInstance( Object aFirstModifier, FragmentInvocationHandler aMixinInvocationHandler, ProxyReferenceInvocationHandler aProxyHandler, List<InvocationInstance> aPool )
     {
         firstModifier = aFirstModifier;
-        lastModifier = aLastModifier;
         proxyHandler = aProxyHandler;
         mixinInvocationHandler = aMixinInvocationHandler;
         pool = aPool;
@@ -42,22 +38,34 @@ public final class InvocationInstanceImpl
     {
         try
         {
-            if (firstModifier == null)
+            if( firstModifier == null )
             {
-                if (mixin instanceof InvocationHandler)
-                    return ((InvocationHandler)mixin).invoke( proxy, method, args);
+                if( mixin instanceof InvocationHandler )
+                {
+                    return ( (InvocationHandler) mixin ).invoke( proxy, method, args );
+                }
                 else
-                    return method.invoke( mixin, args);
-            } else
-            {
-                proxyHandler.setContext( proxy, mixin);
-                if (mixinInvocationHandler != null)
-                    mixinInvocationHandler.setFragment( mixin );
-                if (firstModifier instanceof InvocationHandler)
-                    return ((InvocationHandler)firstModifier).invoke( proxy, method, args);
-                else
-                    return method.invoke( firstModifier, args);
+                {
+                    return method.invoke( mixin, args );
+                }
             }
+            else
+            {
+                proxyHandler.setContext( proxy, mixin );
+                mixinInvocationHandler.setFragment( mixin );
+                if( firstModifier instanceof InvocationHandler )
+                {
+                    return ( (InvocationHandler) firstModifier ).invoke( proxy, method, args );
+                }
+                else
+                {
+                    return method.invoke( firstModifier, args );
+                }
+            }
+        }
+        catch( InvocationTargetException e )
+        {
+            throw e.getTargetException();
         }
         finally
         {
