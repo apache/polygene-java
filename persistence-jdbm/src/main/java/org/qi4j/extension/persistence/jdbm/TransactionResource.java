@@ -34,7 +34,7 @@ import org.qi4j.api.persistence.ObjectNotFoundException;
 import org.qi4j.api.persistence.PersistenceException;
 import org.qi4j.api.persistence.composite.PersistenceComposite;
 import org.qi4j.runtime.ObjectInvocationHandler;
-import org.qi4j.spi.object.ProxyReferenceInvocationHandler;
+import org.qi4j.runtime.ProxyReferenceInvocationHandler;
 
 
 public class TransactionResource
@@ -74,7 +74,7 @@ public class TransactionResource
                 {
                     op.playback( identity, mixins );
                 }
-                if( mixins.size() == 0)
+                if( mixins.size() == 0 )
                 {
                     throw new ObjectNotFoundException( "Object with identity " + objectId + " does not exist" );
                 }

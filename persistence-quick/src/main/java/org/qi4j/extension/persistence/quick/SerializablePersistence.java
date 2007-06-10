@@ -14,6 +14,12 @@
  */
 package org.qi4j.extension.persistence.quick;
 
+import java.io.IOException;
+import java.io.Serializable;
+import java.lang.reflect.Proxy;
+import java.rmi.MarshalledObject;
+import java.util.HashMap;
+import java.util.Map;
 import org.qi4j.api.ObjectFactory;
 import org.qi4j.api.annotation.ModifiedBy;
 import org.qi4j.api.persistence.ObjectNotFoundException;
@@ -22,15 +28,9 @@ import org.qi4j.api.persistence.PersistentStorage;
 import org.qi4j.api.persistence.composite.PersistenceComposite;
 import org.qi4j.api.persistence.modifier.PersistentStorageReferenceModifier;
 import org.qi4j.api.persistence.modifier.PersistentStorageTraceModifier;
-import org.qi4j.spi.object.ProxyReferenceInvocationHandler;
-import org.qi4j.spi.persistence.SerializablePersistenceSpi;
 import org.qi4j.runtime.ObjectInvocationHandler;
-import java.io.IOException;
-import java.io.Serializable;
-import java.lang.reflect.Proxy;
-import java.rmi.MarshalledObject;
-import java.util.HashMap;
-import java.util.Map;
+import org.qi4j.runtime.ProxyReferenceInvocationHandler;
+import org.qi4j.spi.persistence.SerializablePersistenceSpi;
 
 @ModifiedBy( { PersistentStorageTraceModifier.class, PersistentStorageReferenceModifier.class } )
 public final class SerializablePersistence

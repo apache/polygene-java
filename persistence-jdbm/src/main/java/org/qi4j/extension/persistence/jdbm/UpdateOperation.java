@@ -22,7 +22,7 @@ import java.lang.reflect.Proxy;
 import java.util.Map;
 import jdbm.RecordManager;
 import org.qi4j.api.persistence.composite.PersistenceComposite;
-import org.qi4j.spi.object.ProxyReferenceInvocationHandler;
+import org.qi4j.runtime.ProxyReferenceInvocationHandler;
 
 class UpdateOperation
     implements Operation
