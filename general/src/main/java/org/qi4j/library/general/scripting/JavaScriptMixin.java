@@ -11,41 +11,34 @@
 */
 package org.qi4j.library.general.scripting;
 
-import java.io.Serializable;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.net.URL;
 import org.mozilla.javascript.Context;
-import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.Function;
+import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.Undefined;
-import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.Wrapper;
-import org.mozilla.javascript.NativeJavaObject;
 
 /**
  * Generic mixin that implements interfaces by delegating to JavaScript functions
  * using Rhino. Each method in an interface is declared as a JS function
  * in a file located in classpath with the name "<interface>.<method>.js",
  * where the interface name includes the package, and has "." replaced with "/".
- *
+ * <p/>
  * Example:
  * org/qi4j/samples/hello/domain/HelloWorldSpeaker.say.js
- *
- * It needs to be subclassed in order to specify what interface it should be applied
- * to by using an @AppliesTo annotation.
- *
- * @see GenericJavaScriptMixin
  *
  * @author rickard
  * @version $Revision: 1.0 $
  */
-public abstract class JavaScriptMixin
+public class JavaScriptMixin
     implements Serializable, InvocationHandler
 {
     // Static --------------------------------------------------------
@@ -73,6 +66,7 @@ public abstract class JavaScriptMixin
     // Public --------------------------------------------------------
 
     // InvocationHandler implementation ------------------------------
+
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
     {
         Context cx = Context.enter();
@@ -80,18 +74,24 @@ public abstract class JavaScriptMixin
 
         try
         {
-            Scriptable proxyScope = Context.toObject( proxy, instanceScope);
-            proxyScope.setPrototype( instanceScope);
+            Scriptable proxyScope = Context.toObject( proxy, instanceScope );
+            proxyScope.setPrototype( instanceScope );
 
-            Function fn = getFunction(cx, proxyScope, method);
-            Object result = fn.call( cx, instanceScope, proxyScope, args);
+            Function fn = getFunction( cx, proxyScope, method );
+            Object result = fn.call( cx, instanceScope, proxyScope, args );
 
-            if (result instanceof Undefined )
+            if( result instanceof Undefined )
+            {
                 return null;
-            else if (result instanceof Wrapper )
-                return ((Wrapper)result).unwrap();
+            }
+            else if( result instanceof Wrapper )
+            {
+                return ( (Wrapper) result ).unwrap();
+            }
             else
+            {
                 return result;
+            }
         }
         finally
         {
@@ -100,30 +100,32 @@ public abstract class JavaScriptMixin
     }
 
     // Protected -----------------------------------------------------
-    protected Function getFunction(Context cx, Scriptable scope, Method aMethod)
+    protected Function getFunction( Context cx, Scriptable scope, Method aMethod )
         throws IOException
     {
-        String scriptFile = aMethod.getDeclaringClass().getSimpleName()+"."+aMethod.getName()+".js";
+        String scriptFile = aMethod.getDeclaringClass().getSimpleName() + "." + aMethod.getName() + ".js";
 
-        URL scriptUrl = getClass().getResource( scriptFile);
-        if (scriptUrl == null)
+        URL scriptUrl = getClass().getResource( scriptFile );
+        if( scriptUrl == null )
         {
-            scriptFile = aMethod.getDeclaringClass().getName().replace( '.', File.separatorChar)+"."+aMethod.getName()+".js";
+            scriptFile = aMethod.getDeclaringClass().getName().replace( '.', File.separatorChar ) + "." + aMethod.getName() + ".js";
             scriptUrl = aMethod.getDeclaringClass().getClassLoader().getResource( scriptFile );
         }
 
-        if (scriptUrl == null)
-            throw new IOException("No script found for method "+aMethod.getName());
-
-        InputStream in = scriptUrl.openStream();
-        BufferedReader scriptReader = new BufferedReader(new InputStreamReader(in));
-        String line;
-        String script = "";
-        while ((line = scriptReader.readLine()) != null)
+        if( scriptUrl == null )
         {
-            script+=line+"\n";
+            throw new IOException( "No script found for method " + aMethod.getName() );
         }
 
-        return cx.compileFunction( scope, script, "<"+scriptFile+">", 0, null);
+        InputStream in = scriptUrl.openStream();
+        BufferedReader scriptReader = new BufferedReader( new InputStreamReader( in ) );
+        String line;
+        String script = "";
+        while( ( line = scriptReader.readLine() ) != null )
+        {
+            script += line + "\n";
+        }
+
+        return cx.compileFunction( scope, script, "<" + scriptFile + ">", 0, null );
     }
 }

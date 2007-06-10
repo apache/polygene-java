@@ -20,7 +20,7 @@ import org.qi4j.test.model.DomainInterface;
  * @author rickard
  * @version $Revision: 1.0 $
  */
-@ImplementedBy(ScriptedDomainInterface.class)
+@ImplementedBy( JavaScriptMixin.class )
 public interface ScriptComposite
     extends DomainInterface
 {

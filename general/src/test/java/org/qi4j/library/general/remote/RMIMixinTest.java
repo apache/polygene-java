@@ -11,12 +11,13 @@
 */
 package org.qi4j.library.general.remote;
 
-import junit.framework.TestCase;
-import java.rmi.server.UnicastRemoteObject;
-import java.rmi.registry.Registry;
+import java.io.IOException;
 import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
+import junit.framework.TestCase;
 import org.qi4j.api.ObjectFactory;
-import org.qi4j.api.Composite;
+import org.qi4j.api.model.Composite;
 import org.qi4j.runtime.ObjectFactoryImpl;
 
 /**
@@ -34,19 +35,28 @@ public class RMIMixinTest
     {
         // Instantiate, export, and bind server object
         RemoteInterfaceImpl remoteObject = new RemoteInterfaceImpl();
-        RemoteInterface stub = (RemoteInterface) UnicastRemoteObject.exportObject( remoteObject, 0);
+        RemoteInterface stub = (RemoteInterface) UnicastRemoteObject.exportObject( remoteObject, 0 );
         Registry registry = LocateRegistry.createRegistry( 1099 );
         registry.rebind( RemoteInterface.class.getSimpleName(), stub );
 
-        Composite comp = new Composite(RemoteInterfaceComposite.class);
+        Composite comp = new Composite( RemoteInterfaceComposite.class );
 
         ObjectFactory factory = new ObjectFactoryImpl();
         RemoteInterface remote = factory.newInstance( RemoteInterfaceComposite.class );
 
         // Call remote interface
-        System.out.println(remote.foo( "Bar"));
-        System.out.println(remote.foo( "Bar"));
-        System.out.println(remote.foo( "Xyz"));
-        System.out.println(remote.foo( "Zyx"));
+        System.out.println( remote.foo( "Bar" ) );
+        System.out.println( remote.foo( "Bar" ) );
+        System.out.println( remote.foo( "Xyz" ) );
+
+        try
+        {
+            System.out.println( remote.foo( "Zyx" ) );
+            fail( "Should have thrown IOException " );
+        }
+        catch( IOException e )
+        {
+            // Ok!
+        }
     }
 }

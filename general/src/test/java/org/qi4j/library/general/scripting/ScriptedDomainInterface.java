@@ -11,8 +11,6 @@
 */
 package org.qi4j.library.general.scripting;
 
-import org.qi4j.library.general.scripting.GenericJavaScriptMixin;
-
 /**
  * TODO
  *
@@ -20,7 +18,7 @@ import org.qi4j.library.general.scripting.GenericJavaScriptMixin;
  * @version $Revision: 1.0 $
  */
 public class ScriptedDomainInterface
-    extends GenericJavaScriptMixin
+    extends JavaScriptMixin
 {
     // Static --------------------------------------------------------
 
