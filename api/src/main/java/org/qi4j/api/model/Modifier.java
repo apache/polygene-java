@@ -9,18 +9,16 @@
  * See the License for the specific language governing permissions and 
  * limitations under the License.
 */
-package org.qi4j.api;
+package org.qi4j.api.model;
 
-import java.lang.reflect.Field;
-import java.io.StringWriter;
 import java.io.PrintWriter;
-import org.qi4j.api.annotation.Dependency;
-import org.qi4j.api.annotation.AppliesTo;
+import java.io.StringWriter;
+import java.lang.reflect.Field;
 import org.qi4j.api.annotation.Modifies;
 
 /**
  * Modifiers provide stateless modifications of method invocation behaviour.
- *
+ * <p/>
  * Modifiers can either be classes implementing the interfaces of the modified
  * methods, or they can be generic InvocationHandler mixins.
  *
@@ -31,26 +29,19 @@ public final class Modifier
     extends Fragment
 {
     Field modifiesField;
-    Class appliesTo;
 
     // Constructors --------------------------------------------------
-    public Modifier( Class<? extends Object> modifierClass)
+    public Modifier( Class modifierClass )
     {
         super( modifierClass );
 
         this.modifiesField = findModifies( modifierClass );
 
-        this.appliesTo = findAppliesTo( modifierClass );
     }
 
     public Field getModifiesField()
     {
         return modifiesField;
-    }
-
-    public Class getAppliesTo()
-    {
-        return appliesTo;
     }
 
     // Object overrides ---------------------------------------------
@@ -61,20 +52,20 @@ public final class Modifier
 
         StringWriter str = new StringWriter();
         PrintWriter out = new PrintWriter( str );
-        out.println( "  @Modifies");
-        out.println("    "+modifiesField.getType().getName());
+        out.println( "  @Modifies" );
+        out.println( "    " + modifiesField.getType().getName() );
 
-        if (appliesTo != null)
+        if( appliesTo != null )
         {
-            out.println( "  @AppliesTo");
-            out.println("    "+appliesTo.getName());
+            out.println( "  @AppliesTo" );
+            out.println( "    " + appliesTo.getName() );
         }
         out.close();
         return string + str.toString();
     }
 
     // Private ------------------------------------------------------
-    private Field findModifies( Class<? extends Object> aModifierClass)
+    private Field findModifies( Class<? extends Object> aModifierClass )
     {
         Field[] fields = aModifierClass.getDeclaredFields();
         for( Field field : fields )
@@ -89,22 +80,12 @@ public final class Modifier
         Class<?> parent = aModifierClass.getSuperclass();
         if( parent != Object.class )
         {
-            return findModifies ( parent );
-        } else
-            return null;
-    }
-
-    private Class findAppliesTo( Class<? extends Object> aModifierClass)
-    {
-        AppliesTo appliesTo = aModifierClass.getAnnotation( AppliesTo.class );
-        if ( appliesTo != null)
-            return appliesTo.value();
-
-        Class<?> parent = aModifierClass.getSuperclass();
-        if( parent != Object.class )
+            return findModifies( parent );
+        }
+        else
         {
-            return findAppliesTo ( parent );
-        } else
             return null;
+        }
     }
+
 }

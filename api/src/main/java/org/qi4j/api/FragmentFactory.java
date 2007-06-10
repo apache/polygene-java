@@ -14,12 +14,27 @@
  */
 package org.qi4j.api;
 
+import org.qi4j.api.model.CompositeInterface;
+import org.qi4j.api.model.Fragment;
+
 
 /**
- * This factory is responsible for instantiating mixins. This is where
+ * This factory is responsible for instantiating fragments. This is where
  * you would put DI integrations.
  */
 public interface FragmentFactory
 {
-    <T> T newInstance( Class<T> anObjectType );
+    /**
+     * Instantiate a new fragment. It could be either a modifier or a mixin.
+     * The composite for which this modifier is instantiated is provided as extra context.
+     *
+     * @param aFragment           the mixin or modifier to be instantiated
+     * @param aCompositeInterface the composite for which the fragment will be used
+     * @return a fragment instance
+     * @throws ObjectInstantiationException if the fragment could not be instantiated for any reason
+     * @see org.qi4j.api.model.Modifier
+     * @see org.qi4j.api.model.Mixin
+     */
+    Object newFragment( Fragment aFragment, CompositeInterface aCompositeInterface )
+        throws ObjectInstantiationException;
 }

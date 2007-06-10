@@ -9,18 +9,17 @@
  * See the License for the specific language governing permissions and 
  * limitations under the License.
 */
-package org.qi4j.api;
+package org.qi4j.api.model;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
+import java.lang.reflect.InvocationHandler;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Iterator;
-import java.io.StringWriter;
-import java.io.PrintWriter;
-import org.qi4j.api.annotation.Uses;
+import org.qi4j.api.annotation.AppliesTo;
 import org.qi4j.api.annotation.Dependency;
+import org.qi4j.api.annotation.Uses;
 
 /**
  * Base class for fragments. Fragments are composed into objects.
@@ -33,12 +32,13 @@ import org.qi4j.api.annotation.Dependency;
 public abstract class Fragment
 {
     // Attributes ----------------------------------------------------
-    Class<? extends Object> fragmentClass;
+    Class fragmentClass;
     List<Field> usesFields;
     List<Field> dependencyFields;
+    Class appliesTo;
 
     // Constructors --------------------------------------------------
-    public Fragment( Class<? extends Object> modifierClass )
+    public Fragment( Class modifierClass )
     {
         fragmentClass = modifierClass;
 
@@ -47,10 +47,11 @@ public abstract class Fragment
 
         this.dependencyFields = new ArrayList<Field>();
         findDependency( modifierClass, dependencyFields );
+        appliesTo = findAppliesTo( modifierClass );
     }
 
     // Public -------------------------------------------------------
-    public Class<? extends Object> getFragmentClass()
+    public Class getFragmentClass()
     {
         return fragmentClass;
     }
@@ -63,6 +64,21 @@ public abstract class Fragment
     public List<Field> getDependencyFields()
     {
         return dependencyFields;
+    }
+
+    public Class getAppliesTo()
+    {
+        return appliesTo;
+    }
+
+    public boolean isAbstract()
+    {
+        return fragmentClass.isInterface();
+    }
+
+    public boolean isGeneric()
+    {
+        return InvocationHandler.class.isAssignableFrom( fragmentClass );
     }
 
     // Object overrides ---------------------------------------------
@@ -115,7 +131,7 @@ public abstract class Fragment
     }
 
     // Private ------------------------------------------------------
-    private void findUses( Class<? extends Object> aModifierClass, List<Field> aUsesFields )
+    private void findUses( Class aModifierClass, List<Field> aUsesFields )
     {
         Field[] fields = aModifierClass.getDeclaredFields();
         for( Field field : fields )
@@ -127,13 +143,13 @@ public abstract class Fragment
             }
         }
         Class<?> parent = aModifierClass.getSuperclass();
-        if( parent != Object.class )
+        if( parent != null && parent != Object.class )
         {
             findUses( parent, aUsesFields );
         }
     }
 
-    private void findDependency( Class<? extends Object> aModifierClass, List<Field> aDependencyFields )
+    private void findDependency( Class aModifierClass, List<Field> aDependencyFields )
     {
         Field[] fields = aModifierClass.getDeclaredFields();
         for( Field field : fields )
@@ -146,9 +162,28 @@ public abstract class Fragment
         }
 
         Class<?> parent = aModifierClass.getSuperclass();
-        if( parent != Object.class )
+        if( parent != null && parent != Object.class )
         {
             findDependency( parent, aDependencyFields );
+        }
+    }
+
+    private Class findAppliesTo( Class aModifierClass )
+    {
+        AppliesTo appliesTo = (AppliesTo) aModifierClass.getAnnotation( AppliesTo.class );
+        if( appliesTo != null )
+        {
+            return appliesTo.value();
+        }
+
+        Class<?> parent = aModifierClass.getSuperclass();
+        if( parent != null && parent != Object.class )
+        {
+            return findAppliesTo( parent );
+        }
+        else
+        {
+            return null;
         }
     }
 }

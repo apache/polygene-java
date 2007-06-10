@@ -14,6 +14,8 @@
  */
 package org.qi4j.api;
 
+import org.qi4j.api.model.Composite;
+
 /**
  * This factory creates proxies that implement the given
  * composite interfaces.
@@ -35,11 +37,21 @@ public interface ObjectFactory
      * that should be reused for this new object.
      *
      * @param aCompositeClass an interface that describes the object to be created
-     * @param anObject     an existing object whose mixins should be reused
+     * @param anObject        an existing object whose mixins should be reused
      * @return a new proxy object implementing the interface
      */
     <T> T cast( Class<T> aCompositeClass, Object anObject );
 
+    /**
+     * Check if an object can implement a given composite class.
+     * <p/>
+     * This includes checking if generic mixins exist that can satisfy
+     * the requirements.
+     *
+     * @param aCompositeClass
+     * @param anObject
+     * @return
+     */
     boolean isInstance( Class aCompositeClass, Object anObject );
 
     <T> T getThat( T proxy );

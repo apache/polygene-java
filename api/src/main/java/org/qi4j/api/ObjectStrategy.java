@@ -15,6 +15,7 @@
 package org.qi4j.api;
 
 import org.qi4j.api.annotation.ImplementedBy;
+import org.qi4j.api.model.Composite;
 import org.qi4j.api.strategy.ObjectStrategyDelegatorImpl;
 
 /**

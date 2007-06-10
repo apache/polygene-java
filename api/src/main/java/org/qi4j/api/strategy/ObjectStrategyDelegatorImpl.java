@@ -16,9 +16,9 @@ package org.qi4j.api.strategy;
 
 import org.qi4j.api.ObjectFactory;
 import org.qi4j.api.ObjectStrategy;
-import org.qi4j.api.Composite;
 import org.qi4j.api.annotation.Dependency;
 import org.qi4j.api.annotation.Uses;
+import org.qi4j.api.model.Composite;
 
 public final class ObjectStrategyDelegatorImpl
     implements ObjectStrategy
@@ -43,6 +43,6 @@ public final class ObjectStrategyDelegatorImpl
 
     public Composite getComposite()
     {
-        return delegate.getComposite( meAsStrategy.getClass().getInterfaces()[0]);
+        return delegate.getComposite( meAsStrategy.getClass().getInterfaces()[ 0 ] );
     }
 }
