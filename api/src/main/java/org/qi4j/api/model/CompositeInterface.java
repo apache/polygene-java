@@ -17,7 +17,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -180,9 +179,8 @@ public final class CompositeInterface
         StringWriter str = new StringWriter();
         PrintWriter out = new PrintWriter( str );
         out.println( composite.getCompositeClass().getName() );
-        for( Iterator<Map.Entry<Class, Mixin>> iterator = mixins.entrySet().iterator(); iterator.hasNext(); )
+        for( Map.Entry<Class, Mixin> entry : mixins.entrySet() )
         {
-            Map.Entry<Class, Mixin> entry = iterator.next();
             Class interfaceClass = entry.getKey();
             Mixin mixin = entry.getValue();
             out.println( "  " + interfaceClass.getName() );
@@ -253,8 +251,6 @@ public final class CompositeInterface
                     if( appliesTo.isAnnotation() )
                     {
                         Mixin mixin = getMixin( method.getDeclaringClass() );
-
-                        boolean ok = false;
 
                         if( mixin.getFragmentClass().getAnnotation( appliesTo ) == null )
                         {
