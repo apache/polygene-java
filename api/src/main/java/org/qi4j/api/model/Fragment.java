@@ -38,6 +38,10 @@ public abstract class Fragment
     // Constructors --------------------------------------------------
     public Fragment( Class modifierClass )
     {
+        if( modifierClass == null )
+        {
+            throw new NullArgumentException( "modifierClass is null" );
+        }
         fragmentClass = modifierClass;
 
         this.usesFields = new ArrayList<Field>();

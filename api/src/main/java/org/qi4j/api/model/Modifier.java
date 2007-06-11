@@ -32,6 +32,10 @@ public final class Modifier
     public Modifier( Class modifierClass )
     {
         super( modifierClass );
+        if( modifierClass.isInterface() )
+        {
+            throw new IllegalModifierException( modifierClass );
+        }
         this.modifiesField = findModifies( modifierClass );
     }
 

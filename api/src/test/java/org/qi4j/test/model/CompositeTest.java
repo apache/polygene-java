@@ -20,6 +20,8 @@ import junit.framework.TestCase;
 import org.qi4j.api.model.Composite;
 import org.qi4j.api.model.Mixin;
 import org.qi4j.api.model.Modifier;
+import org.qi4j.api.model.MissingModifiesFieldException;
+import org.qi4j.api.model.IllegalModifierException;
 import java.util.List;
 
 public class CompositeTest extends TestCase
@@ -74,5 +76,33 @@ public class CompositeTest extends TestCase
         Modifier modifier4 = modifiers2.get( 0 );
         assertEquals( Modifier4.class, modifier4.getFragmentClass() );
         assertEquals( Modifier4.class.getDeclaredField( "next" ), modifier4.getModifiesField() );
+    }
+
+    // Testing that system check that at least one @Modifies field exist.
+    public void testComposition3()
+        throws Exception
+    {
+        try
+        {
+            Composite composite1 = new Composite( Composition3.class );
+            fail( "Should throw an MissingModifiesFieldException.");
+        } catch( MissingModifiesFieldException e )
+        {
+            return;
+        }
+    }
+
+    // Test that interfaces can't be modifiers.
+    public void testComposition4()
+        throws Exception
+    {
+        try
+        {
+            Composite composite1 = new Composite( Composition4.class );
+            fail( "Should throw an IllegalModifierException.");
+        } catch( IllegalModifierException e )
+        {
+            return;
+        }
     }
 }
