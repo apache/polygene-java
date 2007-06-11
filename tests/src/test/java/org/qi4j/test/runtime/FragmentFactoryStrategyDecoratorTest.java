@@ -10,12 +10,15 @@
  * limitations under the License.
  */
 
-package org.qi4j.runtime;
+package org.qi4j.test.runtime;
 
 import junit.framework.TestCase;
 import org.qi4j.api.ObjectFactory;
 import org.qi4j.test.model.StandardThis;
 import org.qi4j.test.model.StandardThisImpl;
+import org.qi4j.runtime.FragmentFactoryStrategyDecorator;
+import org.qi4j.runtime.FragmentFactoryImpl;
+import org.qi4j.runtime.ObjectFactoryImpl;
 
 public class FragmentFactoryStrategyDecoratorTest extends TestCase
 {

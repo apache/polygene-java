@@ -10,10 +10,11 @@
  * limitations under the License.
  */
 
-package org.qi4j.api.model;
+package org.qi4j.test.model;
 
 import junit.framework.TestCase;
 import org.qi4j.api.ObjectFactory;
+import org.qi4j.api.model.Composite;
 import org.qi4j.runtime.ObjectFactoryImpl;
 import org.qi4j.test.model.CustomTestComposite;
 import org.qi4j.test.model.DomainInterface;
