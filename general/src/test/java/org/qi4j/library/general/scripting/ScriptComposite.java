@@ -1,7 +1,7 @@
 package org.qi4j.library.general.scripting;
 
 import org.qi4j.api.annotation.ImplementedBy;
-import org.qi4j.test.model.DomainInterface;
+import org.qi4j.test.model.Mixin1;
 /*
  * Copyright 2007 Rickard Öberg
  * Licensed under the Apache License, Version 2.0 (the "License"); 
@@ -20,7 +20,7 @@ import org.qi4j.test.model.DomainInterface;
  */
 @ImplementedBy( JavaScriptMixin.class )
 public interface ScriptComposite
-    extends DomainInterface
+    extends Mixin1
 {
     // Static --------------------------------------------------------
 

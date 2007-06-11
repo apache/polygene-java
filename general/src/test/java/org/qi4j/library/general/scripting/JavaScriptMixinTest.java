@@ -16,7 +16,7 @@ import org.qi4j.library.general.scripting.JavaScriptMixin;
 import org.qi4j.library.general.scripting.ScriptComposite;
 import org.qi4j.api.ObjectFactory;
 import org.qi4j.runtime.ObjectFactoryImpl;
-import org.qi4j.test.model.DomainInterface;
+import org.qi4j.test.model.Mixin1;
 
 public class JavaScriptMixinTest extends TestCase
 {
@@ -26,10 +26,8 @@ public class JavaScriptMixinTest extends TestCase
     {
         ObjectFactory factory = new ObjectFactoryImpl();
 
-        DomainInterface domain = factory.newInstance( ScriptComposite.class);
+        Mixin1 domain = factory.newInstance( ScriptComposite.class);
 
-        domain.setFoo( "xyz");
-        String result = domain.getFoo();
-        System.out.println(result);
+        System.out.println(domain.do1());
     }
 }
