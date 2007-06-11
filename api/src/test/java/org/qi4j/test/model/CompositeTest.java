@@ -40,8 +40,10 @@ public class CompositeTest extends TestCase
         assertEquals( composite1, composite2 );
         assertEquals( composite1.hashCode(), composite2.hashCode() );
 
-        // TODO Is this really what is expected?
         List<Modifier> modifiers2 = mixin.getModifiers();
-        assertEquals( 0, modifiers2.size() );
+        assertEquals( 1, modifiers2.size() );
+        Modifier modifier4 = modifiers2.get( 0 );
+        assertEquals( Modifier4.class, modifier4.getFragmentClass() );
+        assertEquals( Modifier4.class.getDeclaredField( "next" ), modifier4.getModifiesField() );
     }
 }

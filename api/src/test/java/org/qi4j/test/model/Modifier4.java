@@ -23,11 +23,11 @@ import org.qi4j.api.annotation.Modifies;
 public class Modifier4
     implements InvocationHandler
 {
-    @Modifies InvocationHandler handler;
+    @Modifies InvocationHandler next;
 
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
     {
-        Object obj = handler.invoke( proxy, method, args );
+        Object obj = next.invoke( proxy, method, args );
         if( obj instanceof String )
         {
             return "handled: " + obj;
