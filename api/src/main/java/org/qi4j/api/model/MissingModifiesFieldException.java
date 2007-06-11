@@ -14,12 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.test;
+package org.qi4j.api.model;
 
-import org.qi4j.api.annotation.ImplementedBy;
-import org.qi4j.api.ObjectStrategy;
-
-@ImplementedBy( ObjectStrategy.class )
-public class ClassAnnotatedWithImplementedBy
+public class MissingModifiesFieldException extends RuntimeException
 {
+    private Class modifier;
+
+    public MissingModifiesFieldException( String message, Class modifier )
+    {
+        super( message );
+        this.modifier = modifier;
+    }
+
+    public Class getModifier()
+    {
+        return modifier;
+    }
 }

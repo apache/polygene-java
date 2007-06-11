@@ -14,12 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.test;
+package org.qi4j.test.model;
 
-import org.qi4j.api.annotation.AppliesTo;
-import org.qi4j.api.ObjectStrategy;
-
-@AppliesTo( ObjectStrategy.class )
-public class ClassAnnotatedWithAppliesTo
+public class Mixin1Impl
+    implements Mixin1
 {
+    public String do1()
+    {
+        return "do1()";
+    }
 }

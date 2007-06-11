@@ -14,11 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.test;
+package org.qi4j.test.model;
 
-import org.qi4j.api.annotation.Dependency;
+import org.qi4j.api.annotation.ImplementedBy;
+import org.qi4j.api.annotation.ModifiedBy;
 
-public class ClassAnnotatedWithDependency
+@ModifiedBy( { Modifier1.class } )
+@ImplementedBy( { Mixin1Impl.class } )
+public interface Composition1 extends Mixin1
 {
-    @Dependency public String abc;
 }

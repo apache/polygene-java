@@ -14,11 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.test;
+package org.qi4j.test.annotation;
 
-import org.qi4j.api.annotation.Modifies;
+import org.qi4j.api.annotation.AppliesTo;
+import org.qi4j.api.ObjectStrategy;
 
-public class ClassAnnotatedWithModifies
+@AppliesTo( ObjectStrategy.class )
+public class ClassAnnotatedWithAppliesTo
 {
-    @Modifies public String abc;
 }

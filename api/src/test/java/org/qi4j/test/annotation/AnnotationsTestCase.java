@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.test;
+package org.qi4j.test.annotation;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Documented;

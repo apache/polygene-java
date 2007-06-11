@@ -32,9 +32,7 @@ public final class Modifier
     public Modifier( Class modifierClass )
     {
         super( modifierClass );
-
         this.modifiesField = findModifies( modifierClass );
-
     }
 
     public Field getModifiesField()
@@ -82,7 +80,7 @@ public final class Modifier
         }
         else
         {
-            return null;
+            throw new MissingModifiesFieldException( aModifierClass.getName() + " does not specify a @Modifies field.", aModifierClass );
         }
     }
 
