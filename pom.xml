@@ -16,8 +16,9 @@
   <!-- This POM is ONLY to initiate the modules to be built. -->
   <modules>
     <module>api</module>
-    <module>spi</module>
+    <module>cache</module>
     <module>runtime</module>
+    <module>spi</module>
     <module>testsupport</module>
   </modules>
 </project>
