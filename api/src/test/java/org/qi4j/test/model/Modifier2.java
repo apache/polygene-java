@@ -16,6 +16,15 @@
  */
 package org.qi4j.test.model;
 
+import org.qi4j.api.annotation.Modifies;
+
 public class Modifier2
+    implements Mixin2
 {
+    @Modifies Mixin2 next;
+
+    public String do2()
+    {
+        return next.do2() + "-m2";
+    }
 }

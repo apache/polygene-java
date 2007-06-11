@@ -46,4 +46,33 @@ public class CompositeTest extends TestCase
         assertEquals( Modifier4.class, modifier4.getFragmentClass() );
         assertEquals( Modifier4.class.getDeclaredField( "next" ), modifier4.getModifiesField() );
     }
+
+    public void testComposition2()
+        throws Exception
+    {
+        Composite composite1 = new Composite( Composition2.class );
+        assertEquals( Composition2.class, composite1.getCompositeClass() );
+        List<Mixin> list = composite1.getImplementations();
+        assertEquals( 2, list.size() );
+        
+        Mixin mixin1 = list.get( 0 );
+        assertEquals( Mixin1Impl.class, mixin1.getFragmentClass() );
+        Mixin mixin2 = list.get( 1 );
+        assertEquals( Mixin2Impl.class, mixin2.getFragmentClass() );
+        List<Modifier> modifiers1 = composite1.getModifiers();
+        assertEquals( 1, modifiers1.size() );
+        assertEquals( list.get(0), composite1.getImplementations( Mixin1.class ).get(0) );
+        Composite composite2 = new Composite( Composition2.class );
+        assertEquals( composite1, composite2 );
+        assertEquals( composite1.hashCode(), composite2.hashCode() );
+
+        List<Modifier> modifiers3 = mixin2.getModifiers();
+        assertEquals( 0, modifiers3.size() );
+
+        List<Modifier> modifiers2 = mixin1.getModifiers();
+        assertEquals( 1, modifiers2.size() );
+        Modifier modifier4 = modifiers2.get( 0 );
+        assertEquals( Modifier4.class, modifier4.getFragmentClass() );
+        assertEquals( Modifier4.class.getDeclaredField( "next" ), modifier4.getModifiesField() );
+    }
 }

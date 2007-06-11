@@ -21,6 +21,6 @@ import org.qi4j.api.annotation.ImplementedBy;
 
 @ModifiedBy( { Modifier2.class } )
 @ImplementedBy( { Mixin1Impl.class, Mixin2Impl.class } )
-public interface Composition2 extends Mixin1, Mixin2
+public interface Composition2 extends Mixin2, Mixin1
 {
 }
