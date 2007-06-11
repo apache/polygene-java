@@ -11,6 +11,7 @@
 */
 package org.qi4j.library.general.remote;
 
+import org.qi4j.api.Composite;
 import org.qi4j.api.annotation.ImplementedBy;
 import org.qi4j.library.general.caching.InvocationCache;
 
@@ -23,6 +24,6 @@ import org.qi4j.library.general.caching.InvocationCache;
  */
 @ImplementedBy(RMIMixin.class)
 public interface RemoteInterfaceComposite
-    extends RemoteInterface, InvocationCache
+    extends RemoteInterface, InvocationCache, Composite
 {
 }

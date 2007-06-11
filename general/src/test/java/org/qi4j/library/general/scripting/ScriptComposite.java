@@ -1,5 +1,6 @@
 package org.qi4j.library.general.scripting;
 
+import org.qi4j.api.Composite;
 import org.qi4j.api.annotation.ImplementedBy;
 import org.qi4j.test.model.Mixin1;
 /*
@@ -16,13 +17,9 @@ import org.qi4j.test.model.Mixin1;
 
 /**
  * TODO
- *
  */
 @ImplementedBy( JavaScriptMixin.class )
 public interface ScriptComposite
-    extends Mixin1
+    extends Mixin1, Composite
 {
-    // Static --------------------------------------------------------
-
-    // Public --------------------------------------------------------
 }

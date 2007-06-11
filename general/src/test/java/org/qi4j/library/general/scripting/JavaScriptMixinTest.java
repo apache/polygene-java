@@ -11,12 +11,9 @@ package org.qi4j.library.general.scripting;
  * limitations under the License.
 */
 
-import junit.framework.*;
-import org.qi4j.library.general.scripting.JavaScriptMixin;
-import org.qi4j.library.general.scripting.ScriptComposite;
+import junit.framework.TestCase;
 import org.qi4j.api.ObjectFactory;
 import org.qi4j.runtime.ObjectFactoryImpl;
-import org.qi4j.test.model.Mixin1;
 
 public class JavaScriptMixinTest extends TestCase
 {
@@ -26,8 +23,8 @@ public class JavaScriptMixinTest extends TestCase
     {
         ObjectFactory factory = new ObjectFactoryImpl();
 
-        Mixin1 domain = factory.newInstance( ScriptComposite.class);
-
+        ScriptComposite domain = factory.newInstance( ScriptComposite.class);
+        
         System.out.println(domain.do1());
     }
 }

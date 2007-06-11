@@ -11,11 +11,19 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="core-api" />
     <orderEntry type="library" name="junit-4.1" level="project" />
-    <orderEntry type="library" name="js-1.6R5" level="project" />
     <orderEntry type="module" module-name="core-runtime" />
     <orderEntry type="library" name="jta-1_1-classes" level="project" />
     <orderEntry type="module" module-name="core-testsupport" />
     <orderEntry type="module" module-name="core-tests" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../../../java/rhino1_6R1/js.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
     <orderEntryProperties />
   </component>
   <component name="copyright">

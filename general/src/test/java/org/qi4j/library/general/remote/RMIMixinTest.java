@@ -17,7 +17,7 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import junit.framework.TestCase;
 import org.qi4j.api.ObjectFactory;
-import org.qi4j.api.model.Composite;
+import org.qi4j.api.model.CompositeModel;
 import org.qi4j.runtime.ObjectFactoryImpl;
 
 /**
@@ -37,7 +37,7 @@ public class RMIMixinTest
         Registry registry = LocateRegistry.createRegistry( 1099 );
         registry.rebind( RemoteInterface.class.getSimpleName(), stub );
 
-        Composite comp = new Composite( RemoteInterfaceComposite.class );
+        CompositeModel comp = new CompositeModel( RemoteInterfaceComposite.class );
 
         ObjectFactory factory = new ObjectFactoryImpl();
         RemoteInterface remote = factory.newInstance( RemoteInterfaceComposite.class );
