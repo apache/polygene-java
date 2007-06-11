@@ -22,15 +22,15 @@ import org.qi4j.api.annotation.ModifiedBy;
  * Composites are descriptors of what an interface represent. <TODO better docs needed here>
  *
  */
-public final class Composite
+public final class CompositeModel
 {
     // Attributes ----------------------------------------------------
     private Class composite;
-    private List<Mixin> implementations = new ArrayList<Mixin>();
-    private List<Modifier> modifiers = new ArrayList<Modifier>();
+    private List<MixinModel> implementations = new ArrayList<MixinModel>();
+    private List<ModifierModel> modifierModels = new ArrayList<ModifierModel>();
 
     // Constructors --------------------------------------------------
-    public Composite( Class compositeClass )
+    public CompositeModel( Class compositeClass )
     {
         if( compositeClass == null )
         {
@@ -48,22 +48,22 @@ public final class Composite
         return composite;
     }
 
-    public List<Mixin> getImplementations()
+    public List<MixinModel> getImplementations()
     {
         return implementations;
     }
 
-    public List<Modifier> getModifiers()
+    public List<ModifierModel> getModifiers()
     {
-        return modifiers;
+        return modifierModels;
     }
 
-    public List<Mixin> getImplementations( Class aType )
+    public List<MixinModel> getImplementations( Class aType )
     {
-        List<Mixin> impls = new ArrayList<Mixin>();
+        List<MixinModel> impls = new ArrayList<MixinModel>();
 
         // Check non-generic impls first
-        for( Mixin implementation : implementations )
+        for( MixinModel implementation : implementations )
         {
             if( !implementation.isGeneric() )
             {
@@ -75,7 +75,7 @@ public final class Composite
         }
 
         // Check generic impls
-        for( Mixin implementation : implementations )
+        for( MixinModel implementation : implementations )
         {
             if( implementation.isGeneric() )
             {
@@ -99,15 +99,15 @@ public final class Composite
         out.println( composite.getName() );
 
         out.println( "  implemented by" );
-        for( Mixin implementation : implementations )
+        for( MixinModel implementation : implementations )
         {
             out.println( "    " + implementation.getFragmentClass().getName() );
         }
 
         out.println( "  modified by" );
-        for( Modifier modifier : modifiers )
+        for( ModifierModel modifierModel : modifierModels )
         {
-            out.println( "    " + modifier.getFragmentClass().getName() );
+            out.println( "    " + modifierModel.getFragmentClass().getName() );
         }
         out.close();
         return str.toString();
@@ -125,7 +125,7 @@ public final class Composite
             return false;
         }
 
-        Composite composite1 = (Composite) o;
+        CompositeModel composite1 = (CompositeModel) o;
 
         return composite.equals( composite1.composite );
 
@@ -144,7 +144,7 @@ public final class Composite
         {
             for( Class impl : impls.value() )
             {
-                implementations.add( new Mixin( impl ) );
+                implementations.add( new MixinModel( impl ) );
             }
         }
 
@@ -163,7 +163,7 @@ public final class Composite
         {
             for( Class<? extends Object> modifier : modifiedBy.value() )
             {
-                modifiers.add( new Modifier( modifier ) );
+                modifierModels.add( new ModifierModel( modifier ) );
             }
         }
 

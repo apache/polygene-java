@@ -14,8 +14,8 @@
  */
 package org.qi4j.api;
 
-import org.qi4j.api.model.CompositeInterface;
-import org.qi4j.api.model.Fragment;
+import org.qi4j.api.model.CompositeObject;
+import org.qi4j.api.model.FragmentModel;
 
 
 /**
@@ -28,13 +28,13 @@ public interface FragmentFactory
      * Instantiate a new fragment. It could be either a modifier or a mixin.
      * The composite for which this modifier is instantiated is provided as extra context.
      *
-     * @param aFragment           the mixin or modifier to be instantiated
-     * @param aCompositeInterface the composite for which the fragment will be used
+     * @param aFragmentModel           the mixin or modifier to be instantiated
+     * @param aCompositeObject the composite for which the fragment will be used
      * @return a fragment instance
      * @throws ObjectInstantiationException if the fragment could not be instantiated for any reason
-     * @see org.qi4j.api.model.Modifier
-     * @see org.qi4j.api.model.Mixin
+     * @see org.qi4j.api.model.ModifierModel
+     * @see org.qi4j.api.model.MixinModel
      */
-    Object newFragment( Fragment aFragment, CompositeInterface aCompositeInterface )
+    Object newFragment( FragmentModel aFragmentModel, CompositeObject aCompositeObject )
         throws ObjectInstantiationException;
 }

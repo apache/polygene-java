@@ -16,10 +16,10 @@
  */
 package org.qi4j.test.annotation;
 
+import org.qi4j.api.Composite;
 import org.qi4j.api.annotation.AppliesTo;
-import org.qi4j.api.ObjectStrategy;
 
-@AppliesTo( ObjectStrategy.class )
+@AppliesTo( Composite.class )
 public class ClassAnnotatedWithAppliesTo
 {
 }

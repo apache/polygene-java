@@ -20,24 +20,24 @@ import org.qi4j.api.annotation.ModifiedBy;
  * and is used as a fragment in a composite.
  *
  */
-public final class Mixin
-    extends Fragment
+public final class MixinModel
+    extends FragmentModel
 {
     // Attribute -----------------------------------------------------
-    private List<Modifier> modifiers;
+    private List<ModifierModel> modifierModels;
 
     // Constructors --------------------------------------------------
-    public Mixin( Class mixinClass )
+    public MixinModel( Class mixinClass )
     {
         super( mixinClass );
 
-        modifiers = new ArrayList<Modifier>();
+        modifierModels = new ArrayList<ModifierModel>();
         findModifiers( mixinClass );
     }
 
-    public List<Modifier> getModifiers()
+    public List<ModifierModel> getModifiers()
     {
-        return modifiers;
+        return modifierModels;
     }
 
     // Private ------------------------------------------------------
@@ -48,7 +48,7 @@ public final class Mixin
         {
             for( Class modifier : modifiedBy.value() )
             {
-                modifiers.add( new Modifier( modifier ) );
+                modifierModels.add( new ModifierModel( modifier ) );
             }
         }
 

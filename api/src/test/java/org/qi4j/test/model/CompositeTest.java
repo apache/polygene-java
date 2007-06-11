@@ -16,37 +16,37 @@
  */
 package org.qi4j.test.model;
 
+import java.util.List;
 import junit.framework.TestCase;
-import org.qi4j.api.model.Composite;
-import org.qi4j.api.model.Mixin;
-import org.qi4j.api.model.Modifier;
-import org.qi4j.api.model.MissingModifiesFieldException;
+import org.qi4j.api.model.CompositeModel;
 import org.qi4j.api.model.IllegalModifierException;
+import org.qi4j.api.model.MissingModifiesFieldException;
+import org.qi4j.api.model.MixinModel;
+import org.qi4j.api.model.ModifierModel;
 import org.qi4j.api.model.MultipleModifiesFieldException;
 import org.qi4j.api.model.NullArgumentException;
-import java.util.List;
 
 public class CompositeTest extends TestCase
 {
     public void testComposition1()
         throws Exception
     {
-        Composite composite1 = new Composite( Composition1.class );
+        CompositeModel composite1 = new CompositeModel( Composition1.class );
         assertEquals( Composition1.class, composite1.getCompositeClass() );
-        List<Mixin> list = composite1.getImplementations();
-        assertEquals( 1, list.size() );
-        Mixin mixin = list.get( 0 );
-        assertEquals( Mixin1Impl.class, mixin.getFragmentClass() );
-        List<Modifier> modifiers1 = composite1.getModifiers();
+        List<MixinModel> lists = composite1.getImplementations();
+        assertEquals( 1, lists.size() );
+        MixinModel mixinModel = lists.get( 0 );
+        assertEquals( Mixin1Impl.class, mixinModel.getFragmentClass() );
+        List<ModifierModel> modifiers1 = composite1.getModifiers();
         assertEquals( 1, modifiers1.size() );
-        assertEquals( list, composite1.getImplementations( Mixin1.class ) );
-        Composite composite2 = new Composite( Composition1.class );
+        assertEquals( lists, composite1.getImplementations( Mixin1.class ) );
+        CompositeModel composite2 = new CompositeModel( Composition1.class );
         assertEquals( composite1, composite2 );
         assertEquals( composite1.hashCode(), composite2.hashCode() );
 
-        List<Modifier> modifiers2 = mixin.getModifiers();
+        List<ModifierModel> modifiers2 = mixinModel.getModifiers();
         assertEquals( 1, modifiers2.size() );
-        Modifier modifier4 = modifiers2.get( 0 );
+        ModifierModel modifier4 = modifiers2.get( 0 );
         assertEquals( Modifier4.class, modifier4.getFragmentClass() );
         assertEquals( Modifier4.class.getDeclaredField( "next" ), modifier4.getModifiesField() );
     }
@@ -54,28 +54,28 @@ public class CompositeTest extends TestCase
     public void testComposition2()
         throws Exception
     {
-        Composite composite1 = new Composite( Composition2.class );
+        CompositeModel composite1 = new CompositeModel( Composition2.class );
         assertEquals( Composition2.class, composite1.getCompositeClass() );
-        List<Mixin> list = composite1.getImplementations();
-        assertEquals( 2, list.size() );
+        List<MixinModel> lists = composite1.getImplementations();
+        assertEquals( 2, lists.size() );
         
-        Mixin mixin1 = list.get( 0 );
+        MixinModel mixin1 = lists.get( 0 );
         assertEquals( Mixin1Impl.class, mixin1.getFragmentClass() );
-        Mixin mixin2 = list.get( 1 );
+        MixinModel mixin2 = lists.get( 1 );
         assertEquals( Mixin2Impl.class, mixin2.getFragmentClass() );
-        List<Modifier> modifiers1 = composite1.getModifiers();
+        List<ModifierModel> modifiers1 = composite1.getModifiers();
         assertEquals( 1, modifiers1.size() );
-        assertEquals( list.get(0), composite1.getImplementations( Mixin1.class ).get(0) );
-        Composite composite2 = new Composite( Composition2.class );
+        assertEquals( lists.get(0), composite1.getImplementations( Mixin1.class ).get(0) );
+        CompositeModel composite2 = new CompositeModel( Composition2.class );
         assertEquals( composite1, composite2 );
         assertEquals( composite1.hashCode(), composite2.hashCode() );
 
-        List<Modifier> modifiers3 = mixin2.getModifiers();
+        List<ModifierModel> modifiers3 = mixin2.getModifiers();
         assertEquals( 0, modifiers3.size() );
 
-        List<Modifier> modifiers2 = mixin1.getModifiers();
+        List<ModifierModel> modifiers2 = mixin1.getModifiers();
         assertEquals( 1, modifiers2.size() );
-        Modifier modifier4 = modifiers2.get( 0 );
+        ModifierModel modifier4 = modifiers2.get( 0 );
         assertEquals( Modifier4.class, modifier4.getFragmentClass() );
         assertEquals( Modifier4.class.getDeclaredField( "next" ), modifier4.getModifiesField() );
     }
@@ -86,7 +86,7 @@ public class CompositeTest extends TestCase
     {
         try
         {
-            Composite composite1 = new Composite( Composition3.class );
+            CompositeModel composite1 = new CompositeModel( Composition3.class );
             fail( "Should throw an MissingModifiesFieldException.");
         } catch( MissingModifiesFieldException e )
         {
@@ -100,7 +100,7 @@ public class CompositeTest extends TestCase
     {
         try
         {
-            Composite composite1 = new Composite( Composition4.class );
+            CompositeModel composite1 = new CompositeModel( Composition4.class );
             fail( "Should throw an IllegalModifierException.");
         } catch( IllegalModifierException e )
         {
@@ -113,7 +113,7 @@ public class CompositeTest extends TestCase
     {
         try
         {
-            Composite composite1 = new Composite( null );
+            CompositeModel composite1 = new CompositeModel( null );
             fail( "Should throw an NullArgumentException.");
         } catch( NullArgumentException e )
         {
@@ -126,7 +126,7 @@ public class CompositeTest extends TestCase
     {        
         try
         {
-            Composite composite5 = new Composite(Composition5.class);
+            CompositeModel composite5 = new CompositeModel(Composition5.class);
             
             fail( "Should throw MultipleModifiesFieldException." );
         }

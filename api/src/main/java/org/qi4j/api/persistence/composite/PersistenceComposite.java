@@ -14,10 +14,11 @@
  */
 package org.qi4j.api.persistence.composite;
 
+import org.qi4j.api.Composite;
 import org.qi4j.api.annotation.ModifiedBy;
 import org.qi4j.api.persistence.Identity;
-import org.qi4j.api.persistence.Persistent;
 import org.qi4j.api.persistence.Lifecycle;
+import org.qi4j.api.persistence.Persistent;
 import org.qi4j.api.persistence.modifier.ReadUpdateModifier;
 
 /**
@@ -25,6 +26,6 @@ import org.qi4j.api.persistence.modifier.ReadUpdateModifier;
  * which provides an identity and a reference to a repository
  */
 @ModifiedBy( ReadUpdateModifier.class )
-public interface PersistenceComposite extends Identity, Persistent, Lifecycle
+public interface PersistenceComposite extends Identity, Persistent, Lifecycle, Composite
 {
 }

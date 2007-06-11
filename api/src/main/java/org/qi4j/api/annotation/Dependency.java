@@ -22,7 +22,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation to denote the injection of a supported dependency into a Modifier or Mixin.
+ * Annotation to denote the injection of a supported dependency into a ModifierModel or MixinModel.
  */
 @Retention( RetentionPolicy.RUNTIME )
 @Target( ElementType.FIELD )

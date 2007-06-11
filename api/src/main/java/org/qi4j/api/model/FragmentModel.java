@@ -24,10 +24,10 @@ import org.qi4j.api.annotation.Uses;
 /**
  * Base class for fragments. Fragments are composed into objects.
  *
- * @see Mixin
- * @see Modifier
+ * @see MixinModel
+ * @see ModifierModel
  */
-public abstract class Fragment
+public abstract class FragmentModel
 {
     // Attributes ----------------------------------------------------
     private Class fragmentClass;
@@ -36,7 +36,7 @@ public abstract class Fragment
     protected Class appliesTo;
 
     // Constructors --------------------------------------------------
-    public Fragment( Class fragmentClass )
+    public FragmentModel( Class fragmentClass )
     {
         if( fragmentClass == null )
         {
@@ -95,9 +95,9 @@ public abstract class Fragment
             return false;
         }
 
-        Fragment fragment = (Fragment) o;
+        FragmentModel fragmentModel = (FragmentModel) o;
 
-        return fragmentClass.equals( fragment.fragmentClass );
+        return fragmentClass.equals( fragmentModel.fragmentClass );
     }
 
     public int hashCode()

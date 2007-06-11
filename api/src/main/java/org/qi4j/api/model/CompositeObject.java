@@ -21,33 +21,33 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * The CompositeInterface is the runtime resolution of how a compile-time Composite
+ * The CompositeObject is the runtime resolution of how a compile-time CompositeModel
  * will be instantiated. It decides what mixins to be used for each
  * interface and what modifiers to use for each method.
  * <p/>
- * It also considers whether a method or interface is backed by the composite
+ * It also considers whether a method or interface is backed by the compositeModel
  * itself or a wrapped object.
  *
- * @see Composite
+ * @see CompositeModel
  */
-public final class CompositeInterface
+public final class CompositeObject
 {
     // Attributes ----------------------------------------------------
-    private Composite composite;
+    private CompositeModel compositeModel;
     private Class compositeInterface;
-    private CompositeInterface wrappedComposite;
-    private Map<Class, Mixin> mixins = new HashMap<Class, Mixin>();
-    private Map<Method, List<Modifier>> modifiers = new HashMap<Method, List<Modifier>>();
+    private CompositeObject wrappedComposite;
+    private Map<Class, MixinModel> mixins = new HashMap<Class, MixinModel>();
+    private Map<Method, List<ModifierModel>> modifiers = new HashMap<Method, List<ModifierModel>>();
 
     // Constructors --------------------------------------------------
-    public CompositeInterface( Composite aComposite, Class anInterface )
+    public CompositeObject( CompositeModel aCompositeModel, Class anInterface )
     {
-        this( aComposite, anInterface, null );
+        this( aCompositeModel, anInterface, null );
     }
 
-    public CompositeInterface( Composite aComposite, Class anInterface, CompositeInterface aWrappedComposite )
+    public CompositeObject( CompositeModel aCompositeModel, Class anInterface, CompositeObject aWrappedComposite )
     {
-        this.composite = aComposite;
+        this.compositeModel = aCompositeModel;
         this.compositeInterface = anInterface;
         this.wrappedComposite = aWrappedComposite;
 
@@ -57,10 +57,10 @@ public final class CompositeInterface
             // Find mixin
             {
                 Class<?> methodClass = method.getDeclaringClass();
-                Mixin mixin = getMixin( methodClass );
-                if( mixin == null && ( aWrappedComposite == null || !aWrappedComposite.isAssignableFrom( methodClass ) ) )
+                MixinModel mixinModel = getMixin( methodClass );
+                if( mixinModel == null && ( aWrappedComposite == null || !aWrappedComposite.isAssignableFrom( methodClass ) ) )
                 {
-                    throw new IllegalStateException( "No implementation for interface " + methodClass.getName() + " found in composite " + composite.getCompositeClass().getName() );
+                    throw new IllegalStateException( "No implementation for interface " + methodClass.getName() + " found in composite " + compositeModel.getCompositeClass().getName() );
                 }
             }
         }
@@ -69,37 +69,37 @@ public final class CompositeInterface
         {
             // Find modifiers for method
             {
-                List<Modifier> modifierClasses = new ArrayList<Modifier>();
+                List<ModifierModel> modifierClassModels = new ArrayList<ModifierModel>();
 
                 // 1) Interface modifiers
-                addModifiers( method, composite.getModifiers(), modifierClasses );
+                addModifiers( method, compositeModel.getModifiers(), modifierClassModels );
 
-                // 2) Mixin modifiers
+                // 2) MixinModel modifiers
                 Class<?> methodClass = method.getDeclaringClass();
-                Mixin mixin = getMixin( methodClass );
-                if( mixin != null )
+                MixinModel mixinModel = getMixin( methodClass );
+                if( mixinModel != null )
                 {
-                    addModifiers( method, mixin.getModifiers(), modifierClasses );
+                    addModifiers( method, mixinModel.getModifiers(), modifierClassModels );
                 }
 
                 // 3) Modifiers from other mixins
-                for( Map.Entry<Class, Mixin> mapping : mixins.entrySet() )
+                for( Map.Entry<Class, MixinModel> mapping : mixins.entrySet() )
                 {
                     if( !methodClass.equals( mapping.getKey() ) )
                     {
-                        addModifiers( method, mapping.getValue().getModifiers(), modifierClasses );
+                        addModifiers( method, mapping.getValue().getModifiers(), modifierClassModels );
                     }
                 }
 
-                modifiers.put( method, modifierClasses );
+                modifiers.put( method, modifierClassModels );
             }
         }
     }
 
     // Public --------------------------------------------------------
-    public Composite getComposite()
+    public CompositeModel getComposite()
     {
-        return composite;
+        return compositeModel;
     }
 
     public Class getCompositeInterface()
@@ -107,53 +107,53 @@ public final class CompositeInterface
         return compositeInterface;
     }
 
-    public CompositeInterface getWrappedComposite()
+    public CompositeObject getWrappedComposite()
     {
         return wrappedComposite;
     }
 
-    public Mixin getMixin( Class anInterface )
+    public MixinModel getMixin( Class anInterface )
     {
-        Mixin mixin = mixins.get( anInterface );
+        MixinModel mixinModel = mixins.get( anInterface );
 
-        if( mixin == null )
+        if( mixinModel == null )
         {
-            List<Mixin> possibleMixins = composite.getImplementations( anInterface );
+            List<MixinModel> possibleMixinModels = compositeModel.getImplementations( anInterface );
 
-            // Add from composite, if necessary
+            // Add from compositeModel, if necessary
             if( wrappedComposite != null && !anInterface.isAssignableFrom( wrappedComposite.getCompositeInterface() ) )
             {
-                List<Mixin> possibleWrapperMixins = wrappedComposite.getComposite().getImplementations( anInterface );
-                if( possibleWrapperMixins.size() > 0 )
+                List<MixinModel> possibleWrapperMixinModels = wrappedComposite.getComposite().getImplementations( anInterface );
+                if( possibleWrapperMixinModels.size() > 0 )
                 {
-                    possibleMixins = new ArrayList<Mixin>( possibleMixins );
-                    possibleMixins.addAll( possibleWrapperMixins );
+                    possibleMixinModels = new ArrayList<MixinModel>( possibleMixinModels );
+                    possibleMixinModels.addAll( possibleWrapperMixinModels );
                 }
             }
 
-            for( Mixin possibleMixin : possibleMixins )
+            for( MixinModel possibleMixinModel : possibleMixinModels )
             {
-                // Check if this mixin is valid
-                if( isMixinValid( possibleMixin, anInterface ) )
+                // Check if this mixinModel is valid
+                if( isMixinValid( possibleMixinModel, anInterface ) )
                 {
-                    mixin = possibleMixin;
+                    mixinModel = possibleMixinModel;
                     break;
                 }
             }
 
-            if( mixin != null )
+            if( mixinModel != null )
             {
-                mixins.put( anInterface, mixin );
+                mixins.put( anInterface, mixinModel );
             }
         }
 
-        return mixin;
+        return mixinModel;
     }
 
-    private boolean isMixinValid( Mixin possibleMixin, Class anInterface )
+    private boolean isMixinValid( MixinModel possibleMixinModel, Class anInterface )
     {
         // Verify that all @Uses fields can be resolved
-        List<Field> uses = possibleMixin.getUsesFields();
+        List<Field> uses = possibleMixinModel.getUsesFields();
         for( Field use : uses )
         {
             Class<?> useInterface = use.getType();
@@ -173,7 +173,7 @@ public final class CompositeInterface
         return getMixin( anInterface ) != null || ( wrappedComposite != null && wrappedComposite.isAssignableFrom( anInterface ) );
     }
 
-    public List<Modifier> getModifiers( Method aMethod )
+    public List<ModifierModel> getModifiers( Method aMethod )
     {
         return modifiers.get( aMethod );
     }
@@ -183,21 +183,21 @@ public final class CompositeInterface
     {
         StringWriter str = new StringWriter();
         PrintWriter out = new PrintWriter( str );
-        out.println( composite.getCompositeClass().getName() );
-        for( Map.Entry<Class, Mixin> entry : mixins.entrySet() )
+        out.println( compositeModel.getCompositeClass().getName() );
+        for( Map.Entry<Class, MixinModel> entry : mixins.entrySet() )
         {
             Class interfaceClass = entry.getKey();
-            Mixin mixin = entry.getValue();
+            MixinModel mixinModel = entry.getValue();
             out.println( "  " + interfaceClass.getName() );
-            out.println( "  implemented by " + mixin.getFragmentClass().getName() );
+            out.println( "  implemented by " + mixinModel.getFragmentClass().getName() );
             Method[] methods = interfaceClass.getMethods();
             for( Method method : methods )
             {
                 out.println( "    " + method.toGenericString() );
-                List<Modifier> methodModifiers = getModifiers( method );
-                for( Modifier methodModifier : methodModifiers )
+                List<ModifierModel> methodModifierModels = getModifiers( method );
+                for( ModifierModel methodModifierModel : methodModifierModels )
                 {
-                    out.println( "      " + methodModifier.getFragmentClass().getName() );
+                    out.println( "      " + methodModifierModel.getFragmentClass().getName() );
                 }
             }
         }
@@ -217,9 +217,9 @@ public final class CompositeInterface
             return false;
         }
 
-        CompositeInterface that = (CompositeInterface) o;
+        CompositeObject that = (CompositeObject) o;
 
-        if( !composite.equals( that.composite ) )
+        if( !compositeModel.equals( that.compositeModel ) )
         {
             return false;
         }
@@ -241,43 +241,43 @@ public final class CompositeInterface
     }
 
     // Private -------------------------------------------------------
-    private void addModifiers( Method method, List<Modifier> aModifierList, List<Modifier> aMethodModifierList )
+    private void addModifiers( Method method, List<ModifierModel> aModifierList, List<ModifierModel> aMethodModifierList )
     {
         nextmodifier:
-        for( Modifier modifier : aModifierList )
+        for( ModifierModel modifierModel : aModifierList )
         {
-            if( !aMethodModifierList.contains( modifier ) )
+            if( !aMethodModifierList.contains( modifierModel ) )
             {
                 // Check AppliesTo
-                Class appliesTo = modifier.getAppliesTo();
+                Class appliesTo = modifierModel.getAppliesTo();
                 if( appliesTo != null )
                 {
                     // Check AppliesTo
                     if( appliesTo.isAnnotation() )
                     {
-                        Mixin mixin = getMixin( method.getDeclaringClass() );
+                        MixinModel mixinModel = getMixin( method.getDeclaringClass() );
 
-                        if( mixin.getFragmentClass().getAnnotation( appliesTo ) == null )
+                        if( mixinModel.getFragmentClass().getAnnotation( appliesTo ) == null )
                         {
                             // Check method
-                            if( !mixin.isGeneric() )
+                            if( !mixinModel.isGeneric() )
                             {
                                 try
                                 {
-                                    Method implMethod = mixin.getFragmentClass().getMethod( method.getName(), method.getParameterTypes() );
+                                    Method implMethod = mixinModel.getFragmentClass().getMethod( method.getName(), method.getParameterTypes() );
                                     if( implMethod.getAnnotation( appliesTo ) == null )
                                     {
-                                        continue; // Skip this modifier
+                                        continue; // Skip this modifierModel
                                     }
                                 }
                                 catch( NoSuchMethodException e )
                                 {
-                                    continue; // Skip this modifier
+                                    continue; // Skip this modifierModel
                                 }
                             }
                             else
                             {
-                                continue; // Skip this modifier
+                                continue; // Skip this modifierModel
                             }
                         }
                     }
@@ -285,22 +285,22 @@ public final class CompositeInterface
                     {
                         if( !appliesTo.isAssignableFrom( getMixin( method.getDeclaringClass() ).getFragmentClass() ) && !appliesTo.isAssignableFrom( method.getDeclaringClass() ) )
                         {
-                            continue; // Skip this modifier
+                            continue; // Skip this modifierModel
                         }
                     }
                 }
 
                 // Check interface
-                if( !modifier.isGeneric() )
+                if( !modifierModel.isGeneric() )
                 {
-                    if( !method.getDeclaringClass().isAssignableFrom( modifier.getFragmentClass() ) )
+                    if( !method.getDeclaringClass().isAssignableFrom( modifierModel.getFragmentClass() ) )
                     {
-                        continue; // Modifier does not implement interface of this method
+                        continue; // ModifierModel does not implement interface of this method
                     }
                 }
 
                 // Check @Uses
-                List<Field> uses = modifier.getUsesFields();
+                List<Field> uses = modifierModel.getUsesFields();
                 for( Field use : uses )
                 {
                     if( getMixin( use.getType() ) != null && wrappedComposite != null && !wrappedComposite.isAssignableFrom( use.getType() ) )
@@ -309,8 +309,8 @@ public final class CompositeInterface
                     }
                 }
 
-                // Modifier is ok!
-                aMethodModifierList.add( modifier );
+                // ModifierModel is ok!
+                aMethodModifierList.add( modifierModel );
             }
         }
     }

@@ -14,35 +14,35 @@
  */
 package org.qi4j.api.strategy;
 
+import org.qi4j.api.Composite;
 import org.qi4j.api.ObjectFactory;
-import org.qi4j.api.ObjectStrategy;
 import org.qi4j.api.annotation.Dependency;
 import org.qi4j.api.annotation.Uses;
-import org.qi4j.api.model.Composite;
+import org.qi4j.api.model.CompositeObject;
 
-public final class ObjectStrategyDelegatorImpl
-    implements ObjectStrategy
+public final class CompositeImpl
+    implements Composite
 {
     @Dependency private ObjectFactory delegate;
-    @Uses private ObjectStrategy meAsStrategy;
+    @Uses private Composite meAsComposite;
 
-    public <T> T newInstance( Class<T> anObjectType )
+    public <T extends Composite> T newInstance( Class<T> anObjectType )
     {
         return delegate.newInstance( anObjectType );
     }
 
     public <T> T cast( Class<T> anObjectType )
     {
-        return delegate.cast( anObjectType, delegate.getThat( meAsStrategy ) );
+        return delegate.cast( anObjectType, delegate.getThat( meAsComposite ) );
     }
 
     public boolean isInstance( Class anObjectType )
     {
-        return delegate.isInstance( anObjectType, delegate.getThat( meAsStrategy ) );
+        return delegate.isInstance( anObjectType, delegate.getThat( meAsComposite ) );
     }
 
-    public Composite getComposite()
+    public CompositeObject getCompositeObject()
     {
-        return delegate.getComposite( meAsStrategy.getClass().getInterfaces()[ 0 ] );
+        return delegate.getCompositeObject( meAsComposite );
     }
 }

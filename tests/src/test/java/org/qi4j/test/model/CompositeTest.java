@@ -14,25 +14,16 @@ package org.qi4j.test.model;
 
 import junit.framework.TestCase;
 import org.qi4j.api.ObjectFactory;
-import org.qi4j.api.model.Composite;
+import org.qi4j.api.model.CompositeModel;
 import org.qi4j.runtime.ObjectFactoryImpl;
-import org.qi4j.test.model.CustomTestComposite;
-import org.qi4j.test.model.DomainInterface;
-import org.qi4j.test.model.DomainInterfaceImpl;
-import org.qi4j.test.model.Standard;
-import org.qi4j.test.model.StandardThat;
-import org.qi4j.test.model.StandardThatImpl;
-import org.qi4j.test.model.StandardThis;
-import org.qi4j.test.model.StandardThisImpl;
-import org.qi4j.test.model.TestComposite;
 
 public class CompositeTest extends TestCase
 {
-    Composite composite;
+    CompositeModel composite;
 
     protected void setUp() throws Exception
     {
-        composite = new Composite( TestComposite.class );
+        composite = new CompositeModel( TestComposite.class );
     }
 
     public void testGetImplementation() throws Exception
@@ -70,7 +61,7 @@ public class CompositeTest extends TestCase
             object.setFoo( "xyz" );
             assertEquals( "FOO:foo:xyz", object.getFoo() );
 
-            System.out.println( object.getComposite() );
+            System.out.println( object.getCompositeObject());
 
             object.setFoo( null );
         }

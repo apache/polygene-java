@@ -18,21 +18,22 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import org.qi4j.api.Composite;
 import org.qi4j.api.FragmentFactory;
 import org.qi4j.api.ObjectFactory;
 import org.qi4j.api.ObjectInstantiationException;
-import org.qi4j.api.model.Composite;
-import org.qi4j.api.model.CompositeInterface;
+import org.qi4j.api.model.CompositeModel;
+import org.qi4j.api.model.CompositeObject;
 
 /**
- * TODO
+ * Default implementation of ObjectFactory
  */
 public final class ObjectFactoryImpl
     implements ObjectFactory
 {
     private FragmentFactory fragmentFactory;
-    private Map<Class, Composite> composites;
-    private Map<CompositeInterface, ObjectContext> objectContexts;
+    private Map<Class, CompositeModel> composites;
+    private Map<CompositeObject, ObjectContext> objectContexts;
 
     public ObjectFactoryImpl()
     {
@@ -42,17 +43,23 @@ public final class ObjectFactoryImpl
     public ObjectFactoryImpl( FragmentFactory aFragmentFactory )
     {
         fragmentFactory = aFragmentFactory;
-        objectContexts = new ConcurrentHashMap<CompositeInterface, ObjectContext>();
+        objectContexts = new ConcurrentHashMap<CompositeObject, ObjectContext>();
         composites = new ConcurrentHashMap();
     }
 
-    public <T> T newInstance( Class<T> aCompositeClass )
+    public <T extends Composite> T newInstance( Class<T> aCompositeClass )
+        throws ObjectInstantiationException
     {
+        // Ensure that given class extends Composite
+        if (!Composite.class.isAssignableFrom(aCompositeClass))
+            throw new ObjectInstantiationException( "Class "+aCompositeClass.getName()+" does not extend "+ Composite.class.getName());
+
+        // Instantiate proxy for given composite interface
         try
         {
-            Composite composite = getComposite( aCompositeClass );
-            CompositeInterface compositeInterface = new CompositeInterface( composite, aCompositeClass );
-            ObjectContext context = getObjectContext( compositeInterface );
+            CompositeModel compositeModel = getCompositeModel( aCompositeClass );
+            CompositeObject compositeObject = new CompositeObject( compositeModel, aCompositeClass );
+            ObjectContext context = getObjectContext( compositeObject );
 
             ObjectInvocationHandler handler = new ObjectInvocationHandler( context );
             ClassLoader proxyClassloader = aCompositeClass.getClassLoader();
@@ -80,15 +87,15 @@ public final class ObjectFactoryImpl
             }
         }
 
-        CompositeInterface wrappedCompositeInterface = null;
+        CompositeObject wrappedCompositeObject = null;
         if( anObject instanceof Proxy )
         {
-            wrappedCompositeInterface = ObjectInvocationHandler.getInvocationHandler( anObject ).getContext().getCompositeInterface();
+            wrappedCompositeObject = ObjectInvocationHandler.getInvocationHandler( anObject ).getContext().getCompositeObject();
         }
 
-        Composite composite = getComposite( aCompositeClass );
-        CompositeInterface compositeInterface = new CompositeInterface( composite, aCompositeClass, wrappedCompositeInterface );
-        ObjectContext context = getObjectContext( compositeInterface );
+        CompositeModel compositeModel = getCompositeModel( aCompositeClass );
+        CompositeObject compositeObject = new CompositeObject( compositeModel, aCompositeClass, wrappedCompositeObject );
+        ObjectContext context = getObjectContext( compositeObject );
         ObjectInvocationHandler handler = new DecoratorObjectInvocationHandler( anObject, context );
         ClassLoader proxyClassLoader = aCompositeClass.getClassLoader();
 
@@ -137,20 +144,25 @@ public final class ObjectFactoryImpl
     }
 
 
-    public org.qi4j.api.model.Composite getComposite( Class aCompositeClass )
+    public CompositeModel getCompositeModel( Class aCompositeClass )
     {
-        Composite composite = composites.get( aCompositeClass );
-        if( composite == null )
+        CompositeModel compositeModel = composites.get( aCompositeClass );
+        if( compositeModel == null )
         {
-            composite = new Composite( aCompositeClass );
-            composites.put( aCompositeClass, composite );
+            compositeModel = new CompositeModel( aCompositeClass );
+            composites.put( aCompositeClass, compositeModel );
         }
 
-        return composite;
+        return compositeModel;
+    }
+
+    public CompositeObject getCompositeObject( Composite aComposite)
+    {
+        return ObjectInvocationHandler.getInvocationHandler( aComposite ).getContext().getCompositeObject();
     }
 
     // Private ------------------------------------------------------
-    private ObjectContext getObjectContext( CompositeInterface aComposite )
+    private ObjectContext getObjectContext( CompositeObject aComposite )
     {
         ObjectContext context = objectContexts.get( aComposite );
         if( context == null )

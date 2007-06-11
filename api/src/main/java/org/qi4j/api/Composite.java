@@ -15,15 +15,15 @@
 package org.qi4j.api;
 
 import org.qi4j.api.annotation.ImplementedBy;
-import org.qi4j.api.model.Composite;
-import org.qi4j.api.strategy.ObjectStrategyDelegatorImpl;
+import org.qi4j.api.model.CompositeObject;
+import org.qi4j.api.strategy.CompositeImpl;
 
 /**
  * This factory creates proxies that implement the given
  * composite interfaces.
  */
-@ImplementedBy( ObjectStrategyDelegatorImpl.class )
-public interface ObjectStrategy
+@ImplementedBy( CompositeImpl.class )
+public interface Composite
 {
     /**
      * Create a new object that implements the given interface.
@@ -31,7 +31,7 @@ public interface ObjectStrategy
      * @param anObjectType an interface that describes the object to be created
      * @return a new proxy object implementing the interface
      */
-    <T> T newInstance( Class<T> anObjectType );
+    <T extends Composite> T newInstance( Class<T> anObjectType );
 
     /**
      * Create a new object that implements the given interface.
@@ -52,5 +52,9 @@ public interface ObjectStrategy
      */
     boolean isInstance( Class anObjectType );
 
-    Composite getComposite();
+    /**
+     * Get the composite object
+     * @return the CompositeObject that describes this composite
+     */
+    CompositeObject getCompositeObject();
 }

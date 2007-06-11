@@ -16,6 +16,7 @@
  */
 package org.qi4j.test.model;
 
+import org.qi4j.api.Composite;
 import org.qi4j.api.annotation.ModifiedBy;
 
 /** This will be to test some error case.
@@ -23,5 +24,6 @@ import org.qi4j.api.annotation.ModifiedBy;
  */
 @ModifiedBy( Modifier5.class )
 public interface Composition3
+    extends Composite
 {
 }

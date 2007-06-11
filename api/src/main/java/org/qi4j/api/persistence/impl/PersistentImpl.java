@@ -16,11 +16,10 @@ package org.qi4j.api.persistence.impl;
 
 import org.qi4j.api.persistence.Persistent;
 import org.qi4j.api.persistence.PersistentStorage;
-import javax.transaction.xa.XAResource;
 
 
 /**
- * Mixin that holds a reference to a persistent repository
+ * MixinModel that holds a reference to a persistent repository
  */
 public final class PersistentImpl
     implements Persistent

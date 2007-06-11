@@ -11,7 +11,7 @@
  */
 package org.qi4j.test.model;
 
-import org.qi4j.api.ObjectStrategy;
+import org.qi4j.api.Composite;
 import org.qi4j.api.annotation.ImplementedBy;
 import org.qi4j.api.annotation.ModifiedBy;
 
@@ -22,6 +22,6 @@ import org.qi4j.api.annotation.ModifiedBy;
 @ImplementedBy( StandardThisImpl.class )
 @ModifiedBy( { StandardThisModifier.class, FooModifier.class } )
 public interface Standard
-    extends StandardThis, StandardThat, ObjectStrategy
+    extends StandardThis, StandardThat, Composite
 {
 }

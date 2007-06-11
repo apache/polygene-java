@@ -16,11 +16,12 @@
  */
 package org.qi4j.test.model;
 
+import org.qi4j.api.Composite;
 import org.qi4j.api.annotation.ImplementedBy;
 import org.qi4j.api.annotation.ModifiedBy;
 
 @ModifiedBy( { Modifier1.class } )
 @ImplementedBy( { Mixin1Impl.class } )
-public interface Composition1 extends Mixin1
+public interface Composition1 extends Mixin1, Composite
 {
 }

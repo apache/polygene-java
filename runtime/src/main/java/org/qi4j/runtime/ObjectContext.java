@@ -25,31 +25,31 @@ import org.qi4j.api.FragmentFactory;
 import org.qi4j.api.InvocationContext;
 import org.qi4j.api.ObjectFactory;
 import org.qi4j.api.ObjectInstantiationException;
-import org.qi4j.api.model.CompositeInterface;
-import org.qi4j.api.model.Modifier;
+import org.qi4j.api.model.CompositeObject;
+import org.qi4j.api.model.ModifierModel;
 
 /**
  * TODO
  */
 public final class ObjectContext
 {
-    private CompositeInterface composite;
+    private CompositeObject compositeObject;
     private ObjectFactory objectFactory;
     private FragmentFactory fragmentFactory;
     private ConcurrentHashMap<Method, List<InvocationInstance>> invocationInstancePool;
 
 
-    public ObjectContext( CompositeInterface aComposite, ObjectFactory aObjectFactory, FragmentFactory aFragmentFactory )
+    public ObjectContext( CompositeObject aComposite, ObjectFactory aObjectFactory, FragmentFactory aFragmentFactory )
     {
-        composite = aComposite;
+        compositeObject = aComposite;
         objectFactory = aObjectFactory;
         fragmentFactory = aFragmentFactory;
         invocationInstancePool = new ConcurrentHashMap<Method, List<InvocationInstance>>();
     }
 
-    public CompositeInterface getCompositeInterface()
+    public CompositeObject getCompositeObject()
     {
-        return composite;
+        return compositeObject;
     }
 
     public ObjectFactory getObjectFactory()
@@ -92,13 +92,13 @@ public final class ObjectContext
         {
             ProxyReferenceInvocationHandler proxyHandler = new ProxyReferenceInvocationHandler();
 
-            List<Modifier> modifiers = composite.getModifiers( method );
+            List<ModifierModel> modifierModels = compositeObject.getModifiers( method );
             Object firstModifier = null;
             Object lastModifier = null;
             Field previousModifies = null;
-            for( Modifier modifier : modifiers )
+            for( ModifierModel modifierModel : modifierModels )
             {
-                Object modifierInstance = fragmentFactory.newFragment( modifier, composite );
+                Object modifierInstance = fragmentFactory.newFragment( modifierModel, compositeObject );
 
                 if( firstModifier == null )
                 {
@@ -106,14 +106,14 @@ public final class ObjectContext
                 }
 
                 // @Uses
-                for( Field usesField : modifier.getUsesFields() )
+                for( Field usesField : modifierModel.getUsesFields() )
                 {
                     Object usesProxy = Proxy.newProxyInstance( usesField.getType().getClassLoader(), new Class[]{ usesField.getType() }, proxyHandler );
                     usesField.set( modifierInstance, usesProxy );
                 }
 
                 // @Dependency
-                for( Field dependencyField : modifier.getDependencyFields() )
+                for( Field dependencyField : modifierModel.getDependencyFields() )
                 {
                     if( dependencyField.getType().equals( ObjectFactory.class ) )
                     {
@@ -129,7 +129,7 @@ public final class ObjectContext
                     }
                     else if( dependencyField.getType().equals( Method.class ) )
                     {
-                        Class<? extends Object> fragmentClass = composite.getMixin( method.getDeclaringClass() ).getFragmentClass();
+                        Class<? extends Object> fragmentClass = compositeObject.getMixin( method.getDeclaringClass() ).getFragmentClass();
                         Method dependencyMethod;
                         if( InvocationHandler.class.isAssignableFrom( fragmentClass ) )
                         {
@@ -143,7 +143,7 @@ public final class ObjectContext
                             }
                             catch( NoSuchMethodException e )
                             {
-                                throw new ObjectInstantiationException( "Could not resolve @Dependency to method in mixin " + fragmentClass.getName() + " for composite " + composite.getCompositeInterface().getName(), e );
+                                throw new ObjectInstantiationException( "Could not resolve @Dependency to method in mixin " + fragmentClass.getName() + " for composite " + compositeObject.getCompositeInterface().getName(), e );
                             }
                         }
                         dependencyField.set( modifierInstance, dependencyMethod );
@@ -162,7 +162,7 @@ public final class ObjectContext
                         }
                         else
                         {
-                            // IH to an object modifier
+                            // IH to an object modifierModel
                             FragmentInvocationHandler handler = new FragmentInvocationHandler( modifierInstance );
                             previousModifies.set( lastModifier, handler );
                         }
@@ -171,20 +171,20 @@ public final class ObjectContext
                     {
                         if( modifierInstance instanceof InvocationHandler )
                         {
-                            // Object modifier to IH modifier
+                            // Object modifierModel to IH modifierModel
                             Object modifierProxy = Proxy.newProxyInstance( previousModifies.getType().getClassLoader(), new Class[]{ previousModifies.getType() }, (InvocationHandler) modifierInstance );
                             previousModifies.set( lastModifier, modifierProxy );
                         }
                         else
                         {
-                            // Object modifier to another object modifier
+                            // Object modifierModel to another object modifierModel
                             previousModifies.set( lastModifier, modifierInstance );
                         }
                     }
                 }
 
                 lastModifier = modifierInstance;
-                previousModifies = modifier.getModifiesField();
+                previousModifies = modifierModel.getModifiesField();
             }
 
 
@@ -198,7 +198,7 @@ public final class ObjectContext
                 }
                 else
                 {
-                    Object mixinProxy = Proxy.newProxyInstance( composite.getMixin( method.getDeclaringClass() ).getFragmentClass().getClassLoader(), new Class[]{ previousModifies.getType() }, mixinInvocationHandler );
+                    Object mixinProxy = Proxy.newProxyInstance( compositeObject.getMixin( method.getDeclaringClass() ).getFragmentClass().getClassLoader(), new Class[]{ previousModifies.getType() }, mixinInvocationHandler );
                     previousModifies.set( lastModifier, mixinProxy );
                 }
             }

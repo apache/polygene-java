@@ -14,7 +14,8 @@
  */
 package org.qi4j.api;
 
-import org.qi4j.api.model.Composite;
+import org.qi4j.api.model.CompositeModel;
+import org.qi4j.api.model.CompositeObject;
 
 /**
  * This factory creates proxies that implement the given
@@ -27,8 +28,10 @@ public interface ObjectFactory
      *
      * @param aCompositeClass an interface that describes the object to be created
      * @return a new proxy object implementing the interface
+     * @throws ObjectInstantiationException thrown if instantiation fails
      */
-    <T> T newInstance( Class<T> aCompositeClass );
+    <T extends Composite> T newInstance( Class<T> aCompositeClass )
+        throws ObjectInstantiationException;
 
     /**
      * Create a new object that implements the given interface.
@@ -56,5 +59,7 @@ public interface ObjectFactory
 
     <T> T getThat( T proxy );
 
-    Composite getComposite( Class aCompositeClass );
+    CompositeModel getCompositeModel( Class<? extends Composite> aCompositeClass );
+
+    CompositeObject getCompositeObject( Composite aComposite);
 }

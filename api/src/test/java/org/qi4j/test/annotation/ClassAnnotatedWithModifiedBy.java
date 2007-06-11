@@ -16,10 +16,10 @@
  */
 package org.qi4j.test.annotation;
 
+import org.qi4j.api.Composite;
 import org.qi4j.api.annotation.ModifiedBy;
-import org.qi4j.api.ObjectStrategy;
 
-@ModifiedBy( ObjectStrategy.class )
+@ModifiedBy( Composite.class )
 public class ClassAnnotatedWithModifiedBy
 {
 }
