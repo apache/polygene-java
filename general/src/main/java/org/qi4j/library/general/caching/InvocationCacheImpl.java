@@ -18,8 +18,6 @@ import java.util.Map;
 /**
  * TODO
  *
- * @author rickard
- * @version $Revision: 1.0 $
  */
 @ModifiedBy( RemoteInvocationCacheModifier.class)
 public class InvocationCacheImpl

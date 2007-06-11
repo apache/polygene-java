@@ -35,8 +35,6 @@ import org.mozilla.javascript.Wrapper;
  * Example:
  * org/qi4j/samples/hello/domain/HelloWorldSpeaker.say.js
  *
- * @author rickard
- * @version $Revision: 1.0 $
  */
 public class JavaScriptMixin
     implements Serializable, InvocationHandler

@@ -23,8 +23,6 @@ import org.qi4j.runtime.ObjectFactoryImpl;
 /**
  * TODO
  *
- * @author rickard
- * @version $Revision: 1.0 $
  */
 public class RMIMixinTest
     extends TestCase

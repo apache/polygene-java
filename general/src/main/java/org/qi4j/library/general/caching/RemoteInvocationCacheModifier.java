@@ -26,8 +26,6 @@ import org.qi4j.api.annotation.Uses;
  * of remote invocations and if an IOException
  * occurs, try to reuse a previous result.
  *
- * @author rickard
- * @version $Revision: 1.0 $
  */
 @AppliesTo( Remote.class)
 public class RemoteInvocationCacheModifier

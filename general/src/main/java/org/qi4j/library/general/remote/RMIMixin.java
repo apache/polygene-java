@@ -22,8 +22,6 @@ import java.lang.reflect.InvocationTargetException;
 /**
  * Generic mixin that looks up and invokes an object through RMI
  *
- * @author rickard
- * @version $Revision: 1.0 $
  */
 @AppliesTo( Remote.class)
 public class RMIMixin

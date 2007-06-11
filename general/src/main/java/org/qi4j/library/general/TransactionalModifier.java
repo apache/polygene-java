@@ -28,8 +28,6 @@ import javax.transaction.Status;
  * and commit transactions.
  *
  * @see Transactional
- * @author rickard
- * @version $Revision: 1.0 $
  */
 @AppliesTo(Transactional.class)
 public class TransactionalModifier

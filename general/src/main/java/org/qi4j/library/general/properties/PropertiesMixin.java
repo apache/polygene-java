@@ -11,16 +11,15 @@
 */
 package org.qi4j.library.general.properties;
 
-import org.qi4j.api.annotation.AppliesTo;
+import java.beans.Introspector;
 import java.io.Serializable;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ArrayList;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.beans.Beans;
-import java.beans.Introspector;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.qi4j.api.annotation.AppliesTo;
 
 /**
  * Generic property mixin. Methods in interface
@@ -28,56 +27,91 @@ import java.beans.Introspector;
  * setFoo = set property named foo
  * getFoo = get property named foo
  * addFoo = add object to list named foo
- * removeFoo = remove object from list named foo 
- *
- * @author rickard
- * @version $Revision: 1.0 $
+ * removeFoo = remove object from list named foo
  */
-@AppliesTo( Serializable.class)
+@AppliesTo( Serializable.class )
 public class PropertiesMixin
     implements InvocationHandler
 {
     // Attributes ----------------------------------------------------
-    Map properties = new HashMap();
+    Map<String, Object> properties = new HashMap<String, Object>();
 
     // InvocationHandler implementation ------------------------------
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
     {
         String methodName = method.getName();
-        if ( methodName.startsWith("set"))
+        if( methodName.startsWith( "set" ) )
         {
             // Setter
-            String name = Introspector.decapitalize( methodName.substring( 3 ) );
-            properties.put( name, args[0]);
+            String propertyName = methodName.substring( 3 );
+            String name = Introspector.decapitalize( propertyName );
+            Object value = args[ 0 ];
+            Object oldValue;
+            if( value == null )
+            {
+                oldValue = properties.remove( name );
+            }
+            else
+            {
+                oldValue = properties.put( name, value );
+            }
+            if( oldValue instanceof ValueList )
+            {
+                properties.put( name, oldValue );
+                throw new ClassCastException( "Property '" + name + "' is a List. Must use add" + propertyName + "() and remove" + propertyName + "()." );
+            }
             return null;
-        } else if (methodName.startsWith( "get"))
+        }
+        else if( methodName.startsWith( "get" ) )
         {
             // Getter
             String name = Introspector.decapitalize( methodName.substring( 3 ) );
-            return properties.get(name);
-        } else if (methodName.startsWith( "add"))
+            return properties.get( name );
+        }
+        else if( methodName.startsWith( "add" ) )
         {
             // Add to list
             String name = Introspector.decapitalize( methodName.substring( 3 ) );
-            List list = (List) properties.get( name);
-            if (list == null)
+            List<Object> list = (List<Object>) properties.get( name );
+            if( list == null )
             {
-                list = new ArrayList();
-                properties.put( name, list);
+                list = new ValueList<Object>();
+                properties.put( name, list );
             }
-            list.add( args[0]);
-        } else if (methodName.startsWith( "remove"))
+            list.add( args[ 0 ] );
+        }
+        else if( methodName.startsWith( "remove" ) )
         {
             // Remove from list
             String name = Introspector.decapitalize( methodName.substring( 6 ) );
-            List list = (List) properties.get( name);
-            if (list == null)
+            Object value = properties.get( name );
+            if( value instanceof ValueList )
             {
-                return null;
+                ValueList list = (ValueList) value;
+                list.remove( args[ 0 ] );
+                if( list.size() == 0 )
+                {
+                    properties.remove( name );
+                }
             }
-            list.remove( args[0]);
         }
-
+        else if( methodName.endsWith( "Iterator" ) )
+        {
+            String name = Introspector.decapitalize( methodName.substring( 0, methodName.length() - 8 ) );
+            Object value = properties.get( name );
+            if( value instanceof ValueList )
+            {
+                ValueList list = (ValueList) value;
+                return list.iterator();
+            }
+        }
         return null;
+    }
+
+    /** Marker class to distinguish a internal list from a assigned List
+     * 
+     */
+    private static class ValueList <T> extends ArrayList<T>
+    {
     }
 }

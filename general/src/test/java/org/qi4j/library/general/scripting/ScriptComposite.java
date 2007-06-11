@@ -17,8 +17,6 @@ import org.qi4j.test.model.DomainInterface;
 /**
  * TODO
  *
- * @author rickard
- * @version $Revision: 1.0 $
  */
 @ImplementedBy( JavaScriptMixin.class )
 public interface ScriptComposite

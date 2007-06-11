@@ -18,8 +18,6 @@ import org.qi4j.api.annotation.ImplementedBy;
 /**
  * TODO
  *
- * @author rickard
- * @version $Revision: 1.0 $
  */
 @ImplementedBy(ScriptUtilImpl.class)
 public interface ScriptUtil

@@ -17,8 +17,6 @@ package org.qi4j.library.general;
  * Note: preferably one should use the Spring tx annotations instead!
  * This is just as a sample of how tx support could work.
  *
- * @author rickard
- * @version $Revision: 1.0 $
  */
 public @interface Transactional
 {

@@ -21,8 +21,6 @@ import java.lang.annotation.Inherited;
 /**
  * TODO
  *
- * @author rickard
- * @version $Revision: 1.0 $
  */
 @Retention( RetentionPolicy.RUNTIME )
 @Target( ElementType.METHOD )

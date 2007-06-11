@@ -14,8 +14,6 @@ package org.qi4j.library.general.scripting;
 /**
  * TODO
  *
- * @author rickard
- * @version $Revision: 1.0 $
  */
 public class ScriptedDomainInterface
     extends JavaScriptMixin
