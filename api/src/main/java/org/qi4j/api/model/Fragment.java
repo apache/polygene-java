@@ -30,10 +30,10 @@ import org.qi4j.api.annotation.Uses;
 public abstract class Fragment
 {
     // Attributes ----------------------------------------------------
-    Class fragmentClass;
-    List<Field> usesFields;
-    List<Field> dependencyFields;
-    Class appliesTo;
+    private Class fragmentClass;
+    private List<Field> usesFields;
+    private List<Field> dependencyFields;
+    protected Class appliesTo;
 
     // Constructors --------------------------------------------------
     public Fragment( Class modifierClass )

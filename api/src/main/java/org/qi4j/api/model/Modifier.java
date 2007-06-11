@@ -26,7 +26,7 @@ import org.qi4j.api.annotation.Modifies;
 public final class Modifier
     extends Fragment
 {
-    Field modifiesField;
+    private Field modifiesField;
 
     // Constructors --------------------------------------------------
     public Modifier( Class modifierClass )

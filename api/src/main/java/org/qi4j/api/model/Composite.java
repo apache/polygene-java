@@ -25,9 +25,9 @@ import org.qi4j.api.annotation.ModifiedBy;
 public final class Composite
 {
     // Attributes ----------------------------------------------------
-    Class composite;
-    List<Mixin> implementations = new ArrayList<Mixin>();
-    List<Modifier> modifiers = new ArrayList<Modifier>();
+    private Class composite;
+    private List<Mixin> implementations = new ArrayList<Mixin>();
+    private List<Modifier> modifiers = new ArrayList<Modifier>();
 
     // Constructors --------------------------------------------------
     public Composite( Class aCompositeClass )

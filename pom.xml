@@ -19,6 +19,7 @@
     <module>cache</module>
     <module>runtime</module>
     <module>spi</module>
+    <module>tests</module>
     <module>testsupport</module>
   </modules>
 </project>

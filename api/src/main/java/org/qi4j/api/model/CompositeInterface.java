@@ -33,11 +33,11 @@ import java.util.Map;
 public final class CompositeInterface
 {
     // Attributes ----------------------------------------------------
-    Composite composite;
-    Class compositeInterface;
-    CompositeInterface wrappedComposite;
-    Map<Class, Mixin> mixins = new HashMap<Class, Mixin>();
-    Map<Method, List<Modifier>> modifiers = new HashMap<Method, List<Modifier>>();
+    private Composite composite;
+    private Class compositeInterface;
+    private CompositeInterface wrappedComposite;
+    private Map<Class, Mixin> mixins = new HashMap<Class, Mixin>();
+    private Map<Method, List<Modifier>> modifiers = new HashMap<Method, List<Modifier>>();
 
     // Constructors --------------------------------------------------
     public CompositeInterface( Composite aComposite, Class anInterface )

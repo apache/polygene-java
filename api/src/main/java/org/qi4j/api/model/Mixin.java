@@ -24,7 +24,7 @@ public final class Mixin
     extends Fragment
 {
     // Attribute -----------------------------------------------------
-    List<Modifier> modifiers;
+    private List<Modifier> modifiers;
 
     // Constructors --------------------------------------------------
     public Mixin( Class mixinClass )
