@@ -22,6 +22,7 @@ import org.qi4j.api.model.Mixin;
 import org.qi4j.api.model.Modifier;
 import org.qi4j.api.model.MissingModifiesFieldException;
 import org.qi4j.api.model.IllegalModifierException;
+import org.qi4j.api.model.MultipleModifiesFieldException;
 import org.qi4j.api.model.NullArgumentException;
 import java.util.List;
 
@@ -119,4 +120,20 @@ public class CompositeTest extends TestCase
             // Expected
         }
     }
+    
+    public void testCompositeMultipleNexts()
+        throws Exception
+    {        
+        try
+        {
+            Composite composite5 = new Composite(Composition5.class);
+            
+            fail( "Should throw MultipleModifiesFieldException." );
+        }
+        catch ( MultipleModifiesFieldException e )
+        {
+            //Expected
+        }
+    }
+    
 }

@@ -68,13 +68,23 @@ public final class Modifier
     private Field findModifies( Class<? extends Object> aModifierClass )
     {
         Field[] fields = aModifierClass.getDeclaredFields();
+        Field modifiesField = null;
         for( Field field : fields )
         {
             if( field.getAnnotation( Modifies.class ) != null )
             {
+                if( modifiesField != null )
+                {
+                    throw new MultipleModifiesFieldException( "Modifier " + aModifierClass + " has more than one @Modifies field: " + modifiesField.getName() + ", " + field.getName(), aModifierClass );
+                }
                 field.setAccessible( true );
-                return field;
+                modifiesField = field;
             }
+        }
+        
+        if( modifiesField != null )
+        {
+            return modifiesField;
         }
 
         Class<?> parent = aModifierClass.getSuperclass();
