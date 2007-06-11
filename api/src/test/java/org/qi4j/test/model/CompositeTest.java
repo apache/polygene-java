@@ -22,6 +22,7 @@ import org.qi4j.api.model.Mixin;
 import org.qi4j.api.model.Modifier;
 import org.qi4j.api.model.MissingModifiesFieldException;
 import org.qi4j.api.model.IllegalModifierException;
+import org.qi4j.api.model.NullArgumentException;
 import java.util.List;
 
 public class CompositeTest extends TestCase
@@ -88,7 +89,7 @@ public class CompositeTest extends TestCase
             fail( "Should throw an MissingModifiesFieldException.");
         } catch( MissingModifiesFieldException e )
         {
-            return;
+            // Expected
         }
     }
 
@@ -102,7 +103,20 @@ public class CompositeTest extends TestCase
             fail( "Should throw an IllegalModifierException.");
         } catch( IllegalModifierException e )
         {
-            return;
+            // Expected
+        }
+    }
+
+    public void testCompositionNull()
+        throws Exception
+    {
+        try
+        {
+            Composite composite1 = new Composite( null );
+            fail( "Should throw an NullArgumentException.");
+        } catch( NullArgumentException e )
+        {
+            // Expected
         }
     }
 }

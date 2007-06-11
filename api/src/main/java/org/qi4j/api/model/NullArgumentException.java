@@ -16,7 +16,7 @@
  */
 package org.qi4j.api.model;
 
-public class NullArgumentException extends RuntimeException
+public class NullArgumentException extends IllegalArgumentException
 {
     public NullArgumentException( String message )
     {

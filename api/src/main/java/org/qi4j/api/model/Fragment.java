@@ -36,20 +36,20 @@ public abstract class Fragment
     protected Class appliesTo;
 
     // Constructors --------------------------------------------------
-    public Fragment( Class modifierClass )
+    public Fragment( Class fragmentClass )
     {
-        if( modifierClass == null )
+        if( fragmentClass == null )
         {
-            throw new NullArgumentException( "modifierClass is null" );
+            throw new NullArgumentException( "fragmentClass is null" );
         }
-        fragmentClass = modifierClass;
+        this.fragmentClass = fragmentClass;
 
         this.usesFields = new ArrayList<Field>();
-        findUses( modifierClass, usesFields );
+        findUses( fragmentClass, usesFields );
 
         this.dependencyFields = new ArrayList<Field>();
-        findDependency( modifierClass, dependencyFields );
-        appliesTo = findAppliesTo( modifierClass );
+        findDependency( fragmentClass, dependencyFields );
+        appliesTo = findAppliesTo( fragmentClass );
     }
 
     // Public -------------------------------------------------------

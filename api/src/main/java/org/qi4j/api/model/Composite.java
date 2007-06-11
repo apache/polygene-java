@@ -30,9 +30,13 @@ public final class Composite
     private List<Modifier> modifiers = new ArrayList<Modifier>();
 
     // Constructors --------------------------------------------------
-    public Composite( Class aCompositeClass )
+    public Composite( Class compositeClass )
     {
-        this.composite = aCompositeClass;
+        if( compositeClass == null )
+        {
+            throw new NullArgumentException( "compositeClass is null" );
+        }
+        this.composite = compositeClass;
 
         findImplementations( composite );
         findModifiers( composite );
