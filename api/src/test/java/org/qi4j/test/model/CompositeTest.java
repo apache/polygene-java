@@ -39,5 +39,9 @@ public class CompositeTest extends TestCase
         Composite composite2 = new Composite( Composition1.class );
         assertEquals( composite1, composite2 );
         assertEquals( composite1.hashCode(), composite2.hashCode() );
+
+        // TODO Is this really what is expected?
+        List<Modifier> modifiers2 = mixin.getModifiers();
+        assertEquals( 0, modifiers2.size() );
     }
 }
