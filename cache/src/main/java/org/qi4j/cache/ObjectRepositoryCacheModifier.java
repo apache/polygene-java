@@ -12,7 +12,7 @@
  * limitations under the License.
  *
  */
-package org.qi4j.api.cache;
+package org.qi4j.cache;
 
 import org.qi4j.api.ObjectRepository;
 import org.qi4j.api.annotation.Modifies;

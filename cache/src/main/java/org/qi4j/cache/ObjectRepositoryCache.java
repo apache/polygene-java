@@ -12,37 +12,24 @@
  * limitations under the License.
  *
  */
-package org.qi4j.api.cache;
+package org.qi4j.cache;
 
-import java.util.HashMap;
-import java.util.Map;
+import org.qi4j.api.annotation.ImplementedBy;
+import org.qi4j.api.annotation.ModifiedBy;
 import org.qi4j.api.persistence.composite.PersistenceComposite;
 
 /**
- * Implementation of a proxy cache.
+ * Proxy caches should implement this.
  */
-public final class ObjectRepositoryCacheImpl
-    implements ObjectRepositoryCache
+@ModifiedBy( ObjectRepositoryCacheModifier.class )
+@ImplementedBy( ObjectRepositoryCacheImpl.class )
+public interface ObjectRepositoryCache
 {
-    private static Map<String, Object> cache = new HashMap<String, Object>();
+    <T extends PersistenceComposite> T getObject( String anIdentity );
 
-    public <T extends PersistenceComposite> T getObject( String anIdentity )
-    {
-        return (T) cache.get( anIdentity );
-    }
+    <T extends PersistenceComposite> void addObject( String anIdentity, T anObject );
 
-    public <T extends PersistenceComposite> void addObject( String anIdentity, T anObject )
-    {
-        cache.put( anIdentity, anObject );
-    }
+    void removeObject( String anIdentity );
 
-    public void removeObject( String anIdentity )
-    {
-        cache.remove( anIdentity );
-    }
-
-    public void removeAll()
-    {
-        cache.clear();
-    }
+    void removeAll();
 }
