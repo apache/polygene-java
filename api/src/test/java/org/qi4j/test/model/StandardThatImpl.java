@@ -14,8 +14,6 @@ package org.qi4j.test.model;
 /**
  * TODO
  *
- * @author rickard
- * @version $Revision: 1.7 $
  */
 public class StandardThatImpl
     implements StandardThat

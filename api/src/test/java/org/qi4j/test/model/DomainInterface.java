@@ -16,8 +16,6 @@ import org.qi4j.api.annotation.ImplementedBy;
 /**
  * TODO
  *
- * @author rickard
- * @version $Revision: 1.7 $
  */
 @ImplementedBy( DomainInterfaceImpl.class )
 public interface DomainInterface

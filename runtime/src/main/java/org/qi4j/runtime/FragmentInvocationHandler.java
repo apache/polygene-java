@@ -18,8 +18,6 @@ import java.lang.reflect.InvocationTargetException;
 /**
  * TODO
  *
- * @author rickard
- * @version $Revision: 1.0 $
  */
 public class FragmentInvocationHandler
     implements InvocationHandler

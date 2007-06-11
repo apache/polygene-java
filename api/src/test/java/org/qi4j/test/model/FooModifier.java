@@ -21,8 +21,6 @@ import org.qi4j.api.annotation.Modifies;
  * Override only the methods that have the FooAnnotation, and print out the value of
  * the annotation on the mixin method.
  *
- * @author rickard
- * @version $Revision: 1.7 $
  */
 @AppliesTo( FooAnnotation.class )
 public class FooModifier

@@ -18,8 +18,6 @@ import org.qi4j.api.annotation.ModifiedBy;
 /**
  * TODO
  *
- * @author rickard
- * @version $Revision: 1.7 $
  */
 @ImplementedBy( StandardThisImpl.class )
 @ModifiedBy( { StandardThisModifier.class, FooModifier.class } )

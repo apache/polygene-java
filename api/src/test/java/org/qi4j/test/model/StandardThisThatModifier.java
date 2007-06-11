@@ -17,8 +17,6 @@ import org.qi4j.api.annotation.Uses;
 /**
  * TODO
  *
- * @author rickard
- * @version $Revision: 1.7 $
  */
 public class StandardThisThatModifier
     implements StandardThat

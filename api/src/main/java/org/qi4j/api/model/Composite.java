@@ -21,8 +21,6 @@ import org.qi4j.api.annotation.ModifiedBy;
 /**
  * Composites are descriptors of what an interface represent. <TODO better docs needed here>
  *
- * @author rickard
- * @version $Revision: 1.7 $
  */
 public final class Composite
 {

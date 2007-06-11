@@ -16,8 +16,6 @@ import org.qi4j.api.annotation.Modifies;
 /**
  * TODO
  *
- * @author rickard
- * @version $Revision: 1.0 $
  */
 public class DomainValidationModifier
     implements DomainInterface

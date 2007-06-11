@@ -30,10 +30,6 @@ public final class PersistentImpl
     public void setPersistentRepository( PersistentStorage aStorage )
     {
         persistentStorage = aStorage;
-        if( aStorage instanceof XAResource )
-        {
-//            aStorage.enlistResource();
-        }
     }
 
     public PersistentStorage getPersistentRepository()

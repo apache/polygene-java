@@ -25,8 +25,6 @@ import org.qi4j.api.model.Modifier;
  * makes it possible, for example, to specify an interface as a modifier
  * and then map that to a concrete class here.
  *
- * @author rickard
- * @version $Revision: 1.0 $
  */
 public class FragmentFactoryStrategyDecorator
     implements FragmentFactory

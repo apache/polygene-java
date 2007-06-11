@@ -24,8 +24,6 @@ import org.qi4j.api.annotation.Uses;
 /**
  * Base class for fragments. Fragments are composed into objects.
  *
- * @author rickard
- * @version $Revision: 1.0 $
  * @see Mixin
  * @see Modifier
  */

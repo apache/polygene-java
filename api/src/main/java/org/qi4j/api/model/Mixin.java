@@ -19,8 +19,6 @@ import org.qi4j.api.annotation.ModifiedBy;
  * A mixin is an implementation of a particular interface,
  * and is used as a fragment in a composite.
  *
- * @author rickard
- * @version $Revision: 1.0 $
  */
 public final class Mixin
     extends Fragment

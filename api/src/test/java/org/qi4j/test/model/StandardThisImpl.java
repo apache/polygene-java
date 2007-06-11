@@ -16,8 +16,6 @@ import org.qi4j.api.annotation.ModifiedBy;
 /**
  * TODO
  *
- * @author rickard
- * @version $Revision: 1.7 $
  */
 @ModifiedBy( StandardThisThatModifier.class )
 public class StandardThisImpl

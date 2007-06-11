@@ -22,8 +22,6 @@ import org.qi4j.api.annotation.Modifies;
  * Modifiers can either be classes implementing the interfaces of the modified
  * methods, or they can be generic InvocationHandler mixins.
  *
- * @author rickard
- * @version $Revision: 1.0 $
  */
 public final class Modifier
     extends Fragment

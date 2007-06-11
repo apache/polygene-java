@@ -21,16 +21,13 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * The CI is the runtime resolution of how a compile-time Composite
+ * The CompositeInterface is the runtime resolution of how a compile-time Composite
  * will be instantiated. It decides what mixins to be used for each
  * interface and what modifiers to use for each method.
  * <p/>
- * It also
- * considers whether a method or interface is backed by the composite
+ * It also considers whether a method or interface is backed by the composite
  * itself or a wrapped object.
  *
- * @author rickard
- * @version $Revision: 1.7 $
  * @see Composite
  */
 public final class CompositeInterface
@@ -134,24 +131,14 @@ public final class CompositeInterface
                 }
             }
 
-            nextmixin:
             for( Mixin possibleMixin : possibleMixins )
             {
                 // Check if this mixin is valid
-
-                // Verify that all @Uses fields can be resolved
-                List<Field> uses = possibleMixin.getUsesFields();
-                for( Field use : uses )
+                if( isMixinValid( possibleMixin, anInterface ) )
                 {
-                    Class<?> useInterface = use.getType();
-                    if( !useInterface.equals( anInterface ) && getMixin( useInterface ) != null && wrappedComposite != null && !wrappedComposite.isAssignableFrom( use.getType() ) )
-                    {
-                        continue nextmixin;
-                    }
+                    mixin = possibleMixin;
+                    break;
                 }
-
-                mixin = possibleMixin;
-                break;
             }
 
             if( mixin != null )
@@ -161,6 +148,24 @@ public final class CompositeInterface
         }
 
         return mixin;
+    }
+
+    private boolean isMixinValid( Mixin possibleMixin, Class anInterface )
+    {
+        // Verify that all @Uses fields can be resolved
+        List<Field> uses = possibleMixin.getUsesFields();
+        for( Field use : uses )
+        {
+            Class<?> useInterface = use.getType();
+            if( !useInterface.equals( anInterface ) &&
+                getMixin( useInterface ) != null &&
+                wrappedComposite != null &&
+                !wrappedComposite.isAssignableFrom( useInterface ) )
+            {
+                return false;
+            }
+        }
+        return true;
     }
 
     public boolean isAssignableFrom( Class anInterface )
