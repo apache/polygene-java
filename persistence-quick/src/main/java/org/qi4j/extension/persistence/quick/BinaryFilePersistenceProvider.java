@@ -29,7 +29,7 @@ import java.rmi.MarshalledObject;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
-import org.qi4j.api.ObjectInstantiationException;
+import org.qi4j.api.CompositeInstantiationException;
 import org.qi4j.api.persistence.ObjectNotFoundException;
 import org.qi4j.spi.persistence.SerializablePersistenceSpi;
 
@@ -101,11 +101,11 @@ public final class BinaryFilePersistenceProvider
         }
         catch( IOException e )
         {
-            throw new ObjectInstantiationException( "Error reading I/O for object [" + anId + "].", e );
+            throw new CompositeInstantiationException( "Error reading I/O for object [" + anId + "].", e );
         }
         catch( ClassNotFoundException e )
         {
-            throw new ObjectInstantiationException( "Class(es) for object [" + anId + "] can not be found.", e );
+            throw new CompositeInstantiationException( "Class(es) for object [" + anId + "] can not be found.", e );
         }
         finally
         {

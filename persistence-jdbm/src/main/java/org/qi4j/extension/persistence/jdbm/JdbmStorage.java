@@ -29,24 +29,24 @@ import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
 import jdbm.RecordManager;
 import jdbm.RecordManagerFactory;
-import org.qi4j.api.ObjectFactory;
+import org.qi4j.api.CompositeFactory;
 import org.qi4j.api.persistence.PersistenceException;
 import org.qi4j.api.persistence.PersistentStorage;
-import org.qi4j.api.persistence.composite.PersistenceComposite;
+import org.qi4j.api.persistence.composite.PersistentComposite;
 
 
 public class JdbmStorage
     implements PersistentStorage
 {
-    private ObjectFactory objectFactory;
+    private CompositeFactory compositeFactory;
     private TransactionManager transactionManager;
     private RecordManager recordManager;
     private HashMap<Transaction, TransactionResource> transactions;
 
-    public JdbmStorage( ObjectFactory factory, File directory, TransactionManager theTransactionManager )
+    public JdbmStorage( CompositeFactory factory, File directory, TransactionManager theTransactionManager )
         throws IOException
     {
-        objectFactory = factory;
+        compositeFactory = factory;
         transactionManager = theTransactionManager;
         transactions = new HashMap<Transaction, TransactionResource>();
 
@@ -63,7 +63,7 @@ public class JdbmStorage
         recordManager = RecordManagerFactory.createRecordManager( name, properties );
     }
 
-    public void create( PersistenceComposite aProxy )
+    public void create( PersistentComposite aProxy )
         throws PersistenceException
     {
         try
@@ -81,7 +81,7 @@ public class JdbmStorage
         }
     }
 
-    public void read( PersistenceComposite aProxy )
+    public void read( PersistentComposite aProxy )
         throws PersistenceException
     {
         try
@@ -100,7 +100,7 @@ public class JdbmStorage
 
     }
 
-    public void update( PersistenceComposite aProxy, Serializable aMixin )
+    public void update( PersistentComposite aProxy, Serializable aMixin )
         throws PersistenceException
     {
         try
@@ -118,7 +118,7 @@ public class JdbmStorage
         }
     }
 
-    public void delete( PersistenceComposite aProxy )
+    public void delete( PersistentComposite aProxy )
         throws PersistenceException
     {
         try
@@ -143,7 +143,7 @@ public class JdbmStorage
         TransactionResource transactionResource = transactions.get( transaction );
         if( transactionResource == null )
         {
-            transactionResource = new TransactionResource( recordManager, objectFactory );
+            transactionResource = new TransactionResource( recordManager, compositeFactory );
             transaction.enlistResource( transactionResource );
             transactions.put( transaction, transactionResource );
         }

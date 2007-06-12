@@ -19,14 +19,14 @@ package org.qi4j.extension.persistence.jdbm;
 import java.io.IOException;
 import java.util.Map;
 import jdbm.RecordManager;
-import org.qi4j.api.persistence.composite.PersistenceComposite;
+import org.qi4j.api.persistence.composite.PersistentComposite;
 
 class DeleteOperation
     implements Operation
 {
-    private PersistenceComposite composite;
+    private PersistentComposite composite;
 
-    public DeleteOperation( PersistenceComposite composite )
+    public DeleteOperation( PersistentComposite composite )
     {
         this.composite = composite;
     }

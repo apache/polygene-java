@@ -20,14 +20,14 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.lang.reflect.Method;
 import java.util.Properties;
+import jdbm.RecordManagerOptions;
 import junit.framework.TestCase;
-import org.qi4j.api.ObjectFactory;
-import org.qi4j.api.FragmentFactory;
-import org.qi4j.runtime.ObjectFactoryImpl;
-import org.qi4j.runtime.FragmentFactoryImpl;
 import org.objectweb.jotm.Jotm;
 import org.objectweb.transaction.jta.TransactionManager;
-import jdbm.RecordManagerOptions;
+import org.qi4j.api.CompositeFactory;
+import org.qi4j.api.FragmentFactory;
+import org.qi4j.runtime.CompositeFactoryImpl;
+import org.qi4j.runtime.FragmentFactoryImpl;
 
 public class JdbmPersistenceTest extends TestCase
 {
@@ -66,9 +66,9 @@ public class JdbmPersistenceTest extends TestCase
         p.store( fos, "" );
         fos.close();
         FragmentFactory fragmentFactory = new FragmentFactoryImpl();
-        ObjectFactory objectFactory = new ObjectFactoryImpl( fragmentFactory );
+        CompositeFactory compositeFactory = new CompositeFactoryImpl( fragmentFactory );
         Jotm jotm = new Jotm( true, false );
         TransactionManager transactionManager = jotm.getTransactionManager();
-        underTest = new JdbmStorage( objectFactory, testDir, transactionManager );
+        underTest = new JdbmStorage( compositeFactory, testDir, transactionManager );
     }
 }

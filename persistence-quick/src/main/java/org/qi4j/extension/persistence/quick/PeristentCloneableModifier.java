@@ -14,18 +14,18 @@
  */
 package org.qi4j.extension.persistence.quick;
 
-import org.qi4j.api.ObjectFactory;
+import org.qi4j.api.CompositeFactory;
 import org.qi4j.api.annotation.Dependency;
 import org.qi4j.api.annotation.Modifies;
 import org.qi4j.api.annotation.Uses;
-import org.qi4j.api.persistence.composite.PersistenceComposite;
+import org.qi4j.api.persistence.composite.PersistentComposite;
 
-public final class PeristentCloneableModifier<T extends PersistenceComposite>
+public final class PeristentCloneableModifier<T extends PersistentComposite>
     implements org.qi4j.api.persistence.Cloneable<T>
 {
     @Modifies org.qi4j.api.persistence.Cloneable<T> cloneable;
-    @Uses PersistenceComposite persistent;
-    @Dependency ObjectFactory factory;
+    @Uses PersistentComposite persistent;
+    @Dependency CompositeFactory factory;
 
     public T clone()
     {
