@@ -25,6 +25,8 @@ import org.qi4j.api.model.MixinModel;
 import org.qi4j.api.model.ModifierModel;
 import org.qi4j.api.model.MultipleModifiesFieldException;
 import org.qi4j.api.model.NullArgumentException;
+import org.qi4j.api.Composite;
+import org.qi4j.api.strategy.CompositeImpl;
 
 public class CompositeTest extends TestCase
 {
@@ -34,9 +36,11 @@ public class CompositeTest extends TestCase
         CompositeModel composite1 = new CompositeModel( Composition1.class );
         assertEquals( Composition1.class, composite1.getCompositeClass() );
         List<MixinModel> lists = composite1.getImplementations();
-        assertEquals( 1, lists.size() );
+        assertEquals( 2, lists.size() );
         MixinModel mixinModel = lists.get( 0 );
         assertEquals( Mixin1Impl.class, mixinModel.getFragmentClass() );
+        mixinModel = lists.get( 1 );
+        assertEquals( CompositeImpl.class, mixinModel.getFragmentClass() );
         List<ModifierModel> modifiers1 = composite1.getModifiers();
         assertEquals( 1, modifiers1.size() );
         assertEquals( lists, composite1.getImplementations( Mixin1.class ) );

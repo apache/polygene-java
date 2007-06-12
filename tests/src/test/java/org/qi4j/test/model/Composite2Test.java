@@ -17,7 +17,7 @@ import org.qi4j.api.ObjectFactory;
 import org.qi4j.api.model.CompositeModel;
 import org.qi4j.runtime.ObjectFactoryImpl;
 
-public class CompositeTest extends TestCase
+public class Composite2Test extends TestCase
 {
     CompositeModel composite;
 
