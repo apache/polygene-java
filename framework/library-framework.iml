@@ -18,7 +18,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../../../java/rhino1_6R1/js.jar!/" />
+          <root url="jar://$M2_REPO$/rhino/js/1.6R5/js-1.6R5.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

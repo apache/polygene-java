@@ -1,6 +1,5 @@
-package org.qi4j.library.general.caching;
+package org.qi4j.library.framework.caching;
 
-import org.qi4j.api.annotation.ModifiedBy;
 import org.qi4j.api.annotation.ImplementedBy;
 /*
  * Copyright 2007 Rickard Öberg

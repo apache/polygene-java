@@ -9,7 +9,7 @@
  * See the License for the specific language governing permissions and 
  * limitations under the License.
 */
-package org.qi4j.library.general.properties;
+package org.qi4j.library.framework.properties;
 
 import java.beans.Introspector;
 import java.io.Serializable;

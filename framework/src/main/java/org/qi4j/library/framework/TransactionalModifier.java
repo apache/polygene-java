@@ -9,14 +9,13 @@
  * See the License for the specific language governing permissions and 
  * limitations under the License.
 */
-package org.qi4j.library.general;
+package org.qi4j.library.framework;
 
 import org.qi4j.api.annotation.AppliesTo;
 import org.qi4j.api.annotation.Modifies;
 import org.qi4j.api.annotation.Dependency;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import javax.transaction.UserTransaction;
 import javax.transaction.TransactionManager;
 import javax.transaction.Transaction;
 import javax.transaction.Status;

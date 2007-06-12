@@ -9,30 +9,20 @@
  * See the License for the specific language governing permissions and 
  * limitations under the License.
 */
-package org.qi4j.library.general.remote;
+package org.qi4j.library.framework.scripting;
 
-import java.io.IOException;
+import java.io.PrintStream;
 
 /**
- * Implementation of RemoteInterface.
+ * TODO
  *
  */
-public class RemoteInterfaceImpl
-    implements RemoteInterface
+public class ScriptUtilImpl
+    implements ScriptUtil
 {
-    int count = 0;
-
-    // RemoteInterface implementation --------------------------------
-    public String foo( String aBar )
-        throws IOException
+    // ScriptUtil implementation -------------------------------------
+    public PrintStream getOut()
     {
-        count++;
-
-        if( count % 2 == 0 )
-        {
-            throw new IOException( "Something went wrong" );
-        }
-
-        return "Foo:" + aBar;
+        return System.out;
     }
 }

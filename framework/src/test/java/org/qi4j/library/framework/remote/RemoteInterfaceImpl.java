@@ -1,8 +1,3 @@
-package org.qi4j.library.general.scripting;
-
-import java.io.PrintWriter;
-import java.io.PrintStream;
-import org.qi4j.api.annotation.ImplementedBy;
 /*
  * Copyright 2007 Rickard Öberg
  * Licensed under the Apache License, Version 2.0 (the "License"); 
@@ -14,14 +9,30 @@ import org.qi4j.api.annotation.ImplementedBy;
  * See the License for the specific language governing permissions and 
  * limitations under the License.
 */
+package org.qi4j.library.framework.remote;
+
+import java.io.IOException;
 
 /**
- * TODO
+ * Implementation of RemoteInterface.
  *
  */
-@ImplementedBy(ScriptUtilImpl.class)
-public interface ScriptUtil
+public class RemoteInterfaceImpl
+    implements RemoteInterface
 {
-    // Public --------------------------------------------------------
-    PrintStream getOut();
+    int count = 0;
+
+    // RemoteInterface implementation --------------------------------
+    public String foo( String aBar )
+        throws IOException
+    {
+        count++;
+
+        if( count % 2 == 0 )
+        {
+            throw new IOException( "Something went wrong" );
+        }
+
+        return "Foo:" + aBar;
+    }
 }

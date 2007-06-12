@@ -1,3 +1,8 @@
+package org.qi4j.library.framework.scripting;
+
+import org.qi4j.api.Composite;
+import org.qi4j.api.annotation.ImplementedBy;
+import org.qi4j.test.model.Mixin1;
 /*
  * Copyright 2007 Rickard Öberg
  * Licensed under the Apache License, Version 2.0 (the "License"); 
@@ -9,23 +14,12 @@
  * See the License for the specific language governing permissions and 
  * limitations under the License.
 */
-package org.qi4j.library.general.caching;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Documented;
-import java.lang.annotation.Inherited;
 
 /**
  * TODO
- *
  */
-@Retention( RetentionPolicy.RUNTIME )
-@Target( ElementType.METHOD )
-@Documented
-@Inherited
-public @interface Cached
+@ImplementedBy( JavaScriptMixin.class )
+public interface ScriptComposite
+    extends Mixin1, Composite
 {
 }

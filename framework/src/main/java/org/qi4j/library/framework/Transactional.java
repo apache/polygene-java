@@ -1,4 +1,3 @@
-package org.qi4j.library.general.scripting;
 /*
  * Copyright 2007 Rickard Öberg
  * Licensed under the Apache License, Version 2.0 (the "License"); 
@@ -10,21 +9,22 @@ package org.qi4j.library.general.scripting;
  * See the License for the specific language governing permissions and 
  * limitations under the License.
 */
+package org.qi4j.library.framework;
 
-import junit.framework.TestCase;
-import org.qi4j.api.ObjectFactory;
-import org.qi4j.runtime.ObjectFactoryImpl;
-
-public class JavaScriptMixinTest extends TestCase
+/**
+ * Example transaction attribute.
+ *
+ * Note: preferably one should use the Spring tx annotations instead!
+ * This is just as a sample of how tx support could work.
+ *
+ */
+public @interface Transactional
 {
-    JavaScriptMixin scriptMixin;
+    public static final int NEVER = 0;
+    public static final int NOT_SUPPORTED = 1;
+    public static final int REQUIRED = 2;
+    public static final int REQUIRES_NEW = 3;
+    public static final int SUPPORTS = 4;
 
-    public void testInvoke() throws Throwable
-    {
-        ObjectFactory factory = new ObjectFactoryImpl();
-
-        ScriptComposite domain = factory.newInstance( ScriptComposite.class);
-        
-        System.out.println(domain.do1());
-    }
+    int value();
 }

@@ -9,11 +9,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
-package org.qi4j.library.general.remote;
+package org.qi4j.library.framework.remote;
 
 import org.qi4j.api.Composite;
 import org.qi4j.api.annotation.ImplementedBy;
-import org.qi4j.library.general.caching.InvocationCache;
+import org.qi4j.library.framework.caching.InvocationCache;
 
 /**
  * Implement the RemoteInterface by using RMI.

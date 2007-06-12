@@ -9,7 +9,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
-package org.qi4j.library.general.remote;
+package org.qi4j.library.framework.remote;
 
 import java.rmi.Remote;
 import java.io.IOException;
