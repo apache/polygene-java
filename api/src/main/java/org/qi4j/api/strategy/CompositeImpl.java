@@ -15,7 +15,7 @@
 package org.qi4j.api.strategy;
 
 import org.qi4j.api.Composite;
-import org.qi4j.api.ObjectFactory;
+import org.qi4j.api.CompositeFactory;
 import org.qi4j.api.annotation.Dependency;
 import org.qi4j.api.annotation.Uses;
 import org.qi4j.api.model.CompositeObject;
@@ -23,7 +23,7 @@ import org.qi4j.api.model.CompositeObject;
 public final class CompositeImpl
     implements Composite
 {
-    @Dependency private ObjectFactory delegate;
+    @Dependency private CompositeFactory delegate;
     @Uses private Composite meAsComposite;
 
     public <T extends Composite> T newInstance( Class<T> anObjectType )

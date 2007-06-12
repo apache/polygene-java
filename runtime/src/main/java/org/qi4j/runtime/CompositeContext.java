@@ -21,28 +21,28 @@ import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import org.qi4j.api.CompositeFactory;
+import org.qi4j.api.CompositeInstantiationException;
 import org.qi4j.api.FragmentFactory;
 import org.qi4j.api.InvocationContext;
-import org.qi4j.api.ObjectFactory;
-import org.qi4j.api.ObjectInstantiationException;
 import org.qi4j.api.model.CompositeObject;
 import org.qi4j.api.model.ModifierModel;
 
 /**
  * TODO
  */
-public final class ObjectContext
+public final class CompositeContext
 {
     private CompositeObject compositeObject;
-    private ObjectFactory objectFactory;
+    private CompositeFactory compositeFactory;
     private FragmentFactory fragmentFactory;
     private ConcurrentHashMap<Method, List<InvocationInstance>> invocationInstancePool;
 
 
-    public ObjectContext( CompositeObject aComposite, ObjectFactory aObjectFactory, FragmentFactory aFragmentFactory )
+    public CompositeContext( CompositeObject aComposite, CompositeFactory aCompositeFactory, FragmentFactory aFragmentFactory )
     {
         compositeObject = aComposite;
-        objectFactory = aObjectFactory;
+        compositeFactory = aCompositeFactory;
         fragmentFactory = aFragmentFactory;
         invocationInstancePool = new ConcurrentHashMap<Method, List<InvocationInstance>>();
     }
@@ -52,9 +52,9 @@ public final class ObjectContext
         return compositeObject;
     }
 
-    public ObjectFactory getObjectFactory()
+    public CompositeFactory getObjectFactory()
     {
-        return objectFactory;
+        return compositeFactory;
     }
 
     public FragmentFactory getFragmentFactory()
@@ -115,9 +115,9 @@ public final class ObjectContext
                 // @Dependency
                 for( Field dependencyField : modifierModel.getDependencyFields() )
                 {
-                    if( dependencyField.getType().equals( ObjectFactory.class ) )
+                    if( dependencyField.getType().equals( CompositeFactory.class ) )
                     {
-                        dependencyField.set( modifierInstance, objectFactory );
+                        dependencyField.set( modifierInstance, compositeFactory );
                     }
                     else if( dependencyField.getType().equals( FragmentFactory.class ) )
                     {
@@ -143,7 +143,7 @@ public final class ObjectContext
                             }
                             catch( NoSuchMethodException e )
                             {
-                                throw new ObjectInstantiationException( "Could not resolve @Dependency to method in mixin " + fragmentClass.getName() + " for composite " + compositeObject.getCompositeInterface().getName(), e );
+                                throw new CompositeInstantiationException( "Could not resolve @Dependency to method in mixin " + fragmentClass.getName() + " for composite " + compositeObject.getCompositeInterface().getName(), e );
                             }
                         }
                         dependencyField.set( modifierInstance, dependencyMethod );
@@ -198,7 +198,8 @@ public final class ObjectContext
                 }
                 else
                 {
-                    Object mixinProxy = Proxy.newProxyInstance( compositeObject.getMixin( method.getDeclaringClass() ).getFragmentClass().getClassLoader(), new Class[]{ previousModifies.getType() }, mixinInvocationHandler );
+                    ClassLoader loader = previousModifies.getType().getClassLoader();
+                    Object mixinProxy = Proxy.newProxyInstance( loader, new Class[]{ previousModifies.getType() }, mixinInvocationHandler );
                     previousModifies.set( lastModifier, mixinProxy );
                 }
             }
@@ -207,7 +208,7 @@ public final class ObjectContext
         }
         catch( IllegalAccessException e )
         {
-            throw new ObjectInstantiationException( "Could not create invocation instance", e );
+            throw new CompositeInstantiationException( "Could not create invocation instance", e );
         }
     }
 

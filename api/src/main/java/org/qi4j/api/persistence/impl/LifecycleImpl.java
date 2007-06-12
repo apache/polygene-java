@@ -18,31 +18,31 @@ import org.qi4j.api.annotation.Uses;
 import org.qi4j.api.persistence.Lifecycle;
 import org.qi4j.api.persistence.PersistenceException;
 import org.qi4j.api.persistence.PersistentStorage;
-import org.qi4j.api.persistence.composite.PersistenceComposite;
+import org.qi4j.api.persistence.composite.PersistentComposite;
 
 
 public final class LifecycleImpl
     implements Lifecycle
 {
-    @Uses private PersistenceComposite meAsPersistence;
+    @Uses private PersistentComposite meAsPersistent;
 
     public void create() throws PersistenceException
     {
-        PersistentStorage storage = meAsPersistence.getPersistentRepository();
+        PersistentStorage storage = meAsPersistent.getPersistentRepository();
         if( storage == null )
         {
             throw new PersistenceException( "No storage set for object" );
         }
-        storage.create( meAsPersistence );
+        storage.create( meAsPersistent );
     }
 
     public void delete() throws PersistenceException
     {
-        PersistentStorage storage = meAsPersistence.getPersistentRepository();
+        PersistentStorage storage = meAsPersistent.getPersistentRepository();
         if( storage == null )
         {
             throw new PersistenceException( "No storage set for object" );
         }
-        storage.delete( meAsPersistence );
+        storage.delete( meAsPersistent );
     }
 }

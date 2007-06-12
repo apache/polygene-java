@@ -13,12 +13,12 @@ package org.qi4j.runtime;
 
 import java.lang.reflect.Method;
 
-public final class WrappedObjectInvocationHandler
-    extends ObjectInvocationHandler
+public final class WrappedCompositeInvocationHandler
+    extends CompositeInvocationHandler
 {
     private Object wrappedInstance;
 
-    public WrappedObjectInvocationHandler( Object wrappedInstance, ObjectContext aContext )
+    public WrappedCompositeInvocationHandler( Object wrappedInstance, CompositeContext aContext )
     {
         super( aContext );
         this.wrappedInstance = wrappedInstance;

@@ -31,10 +31,10 @@ public interface FragmentFactory
      * @param aFragmentModel           the mixin or modifier to be instantiated
      * @param aCompositeObject the composite for which the fragment will be used
      * @return a fragment instance
-     * @throws ObjectInstantiationException if the fragment could not be instantiated for any reason
+     * @throws CompositeInstantiationException if the fragment could not be instantiated for any reason
      * @see org.qi4j.api.model.ModifierModel
      * @see org.qi4j.api.model.MixinModel
      */
     Object newFragment( FragmentModel aFragmentModel, CompositeObject aCompositeObject )
-        throws ObjectInstantiationException;
+        throws CompositeInstantiationException;
 }

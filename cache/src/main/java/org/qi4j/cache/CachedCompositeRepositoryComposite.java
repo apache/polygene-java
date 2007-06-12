@@ -14,14 +14,15 @@
  */
 package org.qi4j.cache;
 
-import org.qi4j.api.ObjectRepository;
+import org.qi4j.api.Composite;
+import org.qi4j.api.CompositeRepository;
 
 /**
  * Caching repositories return the same proxy
  * if one with a particular identity is asked for twice.
  * <p/>
- * The cache is a Decorator for the ObjectRepository.
+ * The cache is a Decorator for the CompositeRepository.
  */
-public interface CachedObjectRepositoryComposite extends ObjectRepository, ObjectRepositoryCache
+public interface CachedCompositeRepositoryComposite extends CompositeRepository, ObjectRepositoryCache, Composite
 {
 }

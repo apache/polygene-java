@@ -14,12 +14,12 @@
  */
 package org.qi4j.api.persistence.modifier;
 
+import java.io.Serializable;
 import org.qi4j.api.annotation.Modifies;
 import org.qi4j.api.annotation.Uses;
 import org.qi4j.api.persistence.ObjectNotFoundException;
 import org.qi4j.api.persistence.PersistentStorage;
-import org.qi4j.api.persistence.composite.PersistenceComposite;
-import java.io.Serializable;
+import org.qi4j.api.persistence.composite.PersistentComposite;
 
 /**
  * This modifier ensures that objects have a proper reference
@@ -31,25 +31,25 @@ public final class PersistentStorageReferenceModifier
     @Uses private PersistentStorage repo;
     @Modifies private PersistentStorage storage;
 
-    public void create( PersistenceComposite aProxy )
+    public void create( PersistentComposite aProxy )
     {
         storage.create( aProxy );
         aProxy.setPersistentRepository( repo );
     }
 
-    public void read( PersistenceComposite aProxy )
+    public void read( PersistentComposite aProxy )
         throws ObjectNotFoundException
     {
         storage.read( aProxy );
         aProxy.setPersistentRepository( repo );
     }
 
-    public void update( PersistenceComposite aProxy, Serializable aMixin )
+    public void update( PersistentComposite aProxy, Serializable aMixin )
     {
         storage.update( aProxy, aMixin );
     }
 
-    public void delete( PersistenceComposite aProxy )
+    public void delete( PersistentComposite aProxy )
     {
         storage.delete( aProxy );
         aProxy.setPersistentRepository( null );

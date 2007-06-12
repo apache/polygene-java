@@ -14,24 +14,23 @@
  */
 package org.qi4j.api.persistence;
 
-import org.qi4j.api.persistence.composite.PersistenceComposite;
 import java.io.Serializable;
-
+import org.qi4j.api.persistence.composite.PersistentComposite;
 
 /**
  * Persistent repositories must implement this.
  */
 public interface PersistentStorage
 {
-    void create( PersistenceComposite aProxy )
+    void create( PersistentComposite aProxy )
         throws PersistenceException;
 
-    void read( PersistenceComposite aProxy )
+    void read( PersistentComposite aProxy )
         throws PersistenceException;
 
-    void update( PersistenceComposite aProxy, Serializable aMixin )
+    void update( PersistentComposite aProxy, Serializable aMixin )
         throws PersistenceException;
 
-    void delete( PersistenceComposite aProxy )
+    void delete( PersistentComposite aProxy )
         throws PersistenceException;
 }

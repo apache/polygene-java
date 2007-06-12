@@ -13,9 +13,9 @@
 package org.qi4j.test.model;
 
 import junit.framework.TestCase;
-import org.qi4j.api.ObjectFactory;
+import org.qi4j.api.CompositeFactory;
 import org.qi4j.api.model.CompositeModel;
-import org.qi4j.runtime.ObjectFactoryImpl;
+import org.qi4j.runtime.CompositeFactoryImpl;
 
 public class Composite2Test extends TestCase
 {
@@ -36,7 +36,7 @@ public class Composite2Test extends TestCase
         assertEquals( StandardThisImpl.class, composite.getImplementations( StandardThis.class ).get( 0 ).getFragmentClass() );
         assertEquals( StandardThatImpl.class, composite.getImplementations( StandardThat.class ).get( 0 ).getFragmentClass() );
 
-        ObjectFactory factory = new ObjectFactoryImpl();
+        CompositeFactory factory = new CompositeFactoryImpl();
 
         {
             TestComposite object = factory.newInstance( TestComposite.class );

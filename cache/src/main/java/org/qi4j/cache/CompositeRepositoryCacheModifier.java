@@ -14,24 +14,24 @@
  */
 package org.qi4j.cache;
 
-import org.qi4j.api.ObjectRepository;
+import org.qi4j.api.CompositeRepository;
 import org.qi4j.api.annotation.Modifies;
 import org.qi4j.api.annotation.Uses;
-import org.qi4j.api.persistence.composite.PersistenceComposite;
+import org.qi4j.api.persistence.composite.PersistentComposite;
 
 /**
  * Implement caching of created proxies to persistent objects.
  */
-public final class ObjectRepositoryCacheModifier
-    implements ObjectRepository
+public final class CompositeRepositoryCacheModifier
+    implements CompositeRepository
 {
     @Uses private ObjectRepositoryCache cache;
-    @Modifies private ObjectRepository repository;
+    @Modifies private CompositeRepository repository;
 
-    public <T extends PersistenceComposite> T getInstance( String anIdentity, Class<T> aType )
+    public <T extends PersistentComposite> T getInstance( String anIdentity, Class<T> aType )
     {
         // Check cache
-        PersistenceComposite cachedObj = cache.getObject( anIdentity );
+        PersistentComposite cachedObj = cache.getObject( anIdentity );
         if( cachedObj != null )
         {
             return (T) cachedObj;

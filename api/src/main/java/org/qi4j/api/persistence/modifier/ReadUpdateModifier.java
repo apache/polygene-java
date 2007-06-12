@@ -23,7 +23,7 @@ import org.qi4j.api.annotation.Dependency;
 import org.qi4j.api.annotation.Modifies;
 import org.qi4j.api.annotation.Uses;
 import org.qi4j.api.persistence.PersistentStorage;
-import org.qi4j.api.persistence.composite.PersistenceComposite;
+import org.qi4j.api.persistence.composite.PersistentComposite;
 
 /**
  * When methods in stateful mixins that modify state have been called
@@ -33,7 +33,7 @@ import org.qi4j.api.persistence.composite.PersistenceComposite;
 public final class ReadUpdateModifier
     implements InvocationHandler
 {
-    @Uses private PersistenceComposite persistent;
+    @Uses private PersistentComposite persistent;
     @Dependency private InvocationContext context;
     @Modifies private InvocationHandler next;
 

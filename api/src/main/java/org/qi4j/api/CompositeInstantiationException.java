@@ -12,30 +12,30 @@
  * limitations under the License.
  *
  */
-package org.qi4j.runtime;
-
-import org.qi4j.api.ObjectRepository;
-import org.qi4j.api.ObjectFactory;
-import org.qi4j.api.persistence.composite.PersistenceComposite;
+package org.qi4j.api;
 
 /**
  * TODO
- *
  */
-public final class ObjectRepositoryImpl
-   implements ObjectRepository
+public class CompositeInstantiationException
+    extends RuntimeException
 {
-   private ObjectFactory factory;
+    public CompositeInstantiationException()
+    {
+    }
 
-   public ObjectRepositoryImpl(ObjectFactory aFactory)
-   {
-      factory = aFactory;
-   }
+    public CompositeInstantiationException( String message )
+    {
+        super( message );
+    }
 
-   public <T extends PersistenceComposite> T getInstance(String anIdentity, Class<T> aType)
-   {
-      T object = factory.newInstance(aType);
-      object.setIdentity(anIdentity);
-      return object;
-   }
+    public CompositeInstantiationException( String message, Throwable cause )
+    {
+        super( message, cause );
+    }
+
+    public CompositeInstantiationException( Throwable cause )
+    {
+        super( cause );
+    }
 }

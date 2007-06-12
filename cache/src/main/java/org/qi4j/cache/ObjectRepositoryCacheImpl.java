@@ -16,7 +16,7 @@ package org.qi4j.cache;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.qi4j.api.persistence.composite.PersistenceComposite;
+import org.qi4j.api.persistence.composite.PersistentComposite;
 
 /**
  * Implementation of a proxy cache.
@@ -26,12 +26,12 @@ public final class ObjectRepositoryCacheImpl
 {
     private static Map<String, Object> cache = new HashMap<String, Object>();
 
-    public <T extends PersistenceComposite> T getObject( String anIdentity )
+    public <T extends PersistentComposite> T getObject( String anIdentity )
     {
         return (T) cache.get( anIdentity );
     }
 
-    public <T extends PersistenceComposite> void addObject( String anIdentity, T anObject )
+    public <T extends PersistentComposite> void addObject( String anIdentity, T anObject )
     {
         cache.put( anIdentity, anObject );
     }

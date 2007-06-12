@@ -14,8 +14,8 @@
  */
 package org.qi4j.runtime;
 
+import org.qi4j.api.CompositeInstantiationException;
 import org.qi4j.api.FragmentFactory;
-import org.qi4j.api.ObjectInstantiationException;
 import org.qi4j.api.model.CompositeObject;
 import org.qi4j.api.model.FragmentModel;
 
@@ -33,7 +33,7 @@ public final class FragmentFactoryImpl
         }
         catch( Exception e )
         {
-            throw new ObjectInstantiationException( "Could not instantiate class " + aFragmentModel.getFragmentClass().getName(), e );
+            throw new CompositeInstantiationException( "Could not instantiate class " + aFragmentModel.getFragmentClass().getName(), e );
         }
     }
 }

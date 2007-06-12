@@ -22,9 +22,9 @@ import java.lang.reflect.Proxy;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import org.qi4j.api.CompositeFactory;
+import org.qi4j.api.CompositeInstantiationException;
 import org.qi4j.api.FragmentFactory;
-import org.qi4j.api.ObjectFactory;
-import org.qi4j.api.ObjectInstantiationException;
 import org.qi4j.api.model.CompositeObject;
 import org.qi4j.api.model.MixinModel;
 import org.qi4j.api.persistence.Identity;
@@ -32,21 +32,21 @@ import org.qi4j.api.persistence.Identity;
 /**
  * InvocationHandler for proxy objects.
  */
-public class ObjectInvocationHandler
+public class CompositeInvocationHandler
     implements InvocationHandler
 {
-    private ObjectContext context;
+    private CompositeContext context;
     private Map<Class, Object> mixins;
 
-    public ObjectInvocationHandler( ObjectContext aContext )
+    public CompositeInvocationHandler( CompositeContext aContext )
     {
         this.context = aContext;
         mixins = new IdentityHashMap<Class, Object>();
     }
 
-    public static ObjectInvocationHandler getInvocationHandler( Object aProxy )
+    public static CompositeInvocationHandler getInvocationHandler( Object aProxy )
     {
-        return (ObjectInvocationHandler) Proxy.getInvocationHandler( aProxy );
+        return (CompositeInvocationHandler) Proxy.getInvocationHandler( aProxy );
     }
 
     // InvocationHandler implementation ------------------------------
@@ -64,7 +64,7 @@ public class ObjectInvocationHandler
             }
             else
             {
-                mixin = initializeMixin( proxyInterface, proxy, getDecoratedInstance() );
+                mixin = initializeMixin( proxyInterface, proxy, getWrappedInstance() );
             }
         }
 
@@ -77,7 +77,7 @@ public class ObjectInvocationHandler
         return mixins;
     }
 
-    public ObjectContext getContext()
+    public CompositeContext getContext()
     {
         return context;
     }
@@ -97,10 +97,10 @@ public class ObjectInvocationHandler
                 return wrappedInstance;
             }
 
-            CompositeObject decoratedComposite = context.getCompositeObject().getWrappedComposite();
-            if( decoratedComposite != null )
+            CompositeObject wrappedComposite = context.getCompositeObject().getWrappedCompositeModel();
+            if( wrappedComposite != null )
             {
-                mixinModel = decoratedComposite.getMixin( aProxyInterface );
+                mixinModel = wrappedComposite.getMixin( aProxyInterface );
             }
         }
 
@@ -112,10 +112,10 @@ public class ObjectInvocationHandler
             {
                 instance = context.getFragmentFactory().newFragment( new MixinModel( aProxyInterface ), context.getCompositeObject() );
             }
-            catch( ObjectInstantiationException e )
+            catch( CompositeInstantiationException e )
             {
                 // Didn't work
-                throw new ObjectInstantiationException( "Could not find implementation for " + aProxyInterface.getName() + " in composite " + context.getCompositeObject().getCompositeInterface().getName() );
+                throw new CompositeInstantiationException( "Could not find implementation for " + aProxyInterface.getName() + " in composite " + context.getCompositeObject().getCompositeInterface().getName() );
             }
 
         }
@@ -130,11 +130,17 @@ public class ObjectInvocationHandler
         {
             if( usesField.getType().isInstance( proxy ) )
             {
+                // Current proxy
                 usesField.set( instance, proxy );
             }
             else if( usesField.getType().isInstance( wrappedInstance ) )
             {
+                // The wrapped object is of the required type
                 usesField.set( instance, wrappedInstance );
+            }
+            else if( context.getObjectFactory().isInstance( usesField.getType(), proxy ) )
+            {
+                usesField.set( instance, context.getObjectFactory().cast( usesField.getType(), proxy ) );
             }
             else if( context.getObjectFactory().isInstance( usesField.getType(), wrappedInstance ) )
             {
@@ -142,14 +148,14 @@ public class ObjectInvocationHandler
             }
             else
             {
-                throw new ObjectInstantiationException( "@Uses field " + usesField.getName() + " in class " + mixinModel.getFragmentClass().getName() + " could not be resolved for composite " + context.getCompositeObject().getCompositeInterface().getName() + "." );
+                throw new CompositeInstantiationException( "@Uses field " + usesField.getName() + " in class " + mixinModel.getFragmentClass().getName() + " could not be resolved for composite " + context.getCompositeObject().getCompositeInterface().getName() + "." );
             }
         }
 
         List<Field> dependencyFields = mixinModel.getDependencyFields();
         for( Field dependencyField : dependencyFields )
         {
-            if( dependencyField.getType().equals( ObjectFactory.class ) )
+            if( dependencyField.getType().equals( CompositeFactory.class ) )
             {
                 dependencyField.set( instance, context.getObjectFactory() );
             }
@@ -159,7 +165,7 @@ public class ObjectInvocationHandler
             }
             else
             {
-                throw new ObjectInstantiationException( "@Dependency field " + dependencyField.getName() + " in class " + mixinModel.getFragmentClass().getName() + " could not be resolved." );
+                throw new CompositeInstantiationException( "@Dependency field " + dependencyField.getName() + " in class " + mixinModel.getFragmentClass().getName() + " could not be resolved." );
             }
         }
 
@@ -205,7 +211,7 @@ public class ObjectInvocationHandler
         {
             if( context.getCompositeObject().isAssignableFrom( Identity.class ) )
             {
-                String id = ( (Identity) proxy ).getIdentity();
+                String id = context.getObjectFactory().cast( Identity.class, proxy ).getIdentity();
                 return id != null ? id : "";
             }
             else
@@ -217,7 +223,7 @@ public class ObjectInvocationHandler
         return null;
     }
 
-    protected Object getDecoratedInstance()
+    protected Object getWrappedInstance()
     {
         return null;
     }
