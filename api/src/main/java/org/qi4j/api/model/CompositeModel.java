@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.qi4j.api.annotation.ImplementedBy;
 import org.qi4j.api.annotation.ModifiedBy;
+import org.qi4j.api.Composite;
 
 /**
  * Composites are descriptors of what an interface represent. <TODO better docs needed here>
@@ -35,6 +36,16 @@ public final class CompositeModel
         if( compositeClass == null )
         {
             throw new NullArgumentException( "compositeClass is null" );
+        }
+        if( ! compositeClass.isInterface() )
+        {
+            String message = compositeClass.getName() + " is not an interface.";
+            throw new InvalidCompositeException( message, compositeClass );
+        }
+        if( ! Composite.class.isAssignableFrom( compositeClass) )
+        {
+            String message = compositeClass.getName() + " does not extend from " + Composite.class.getName();
+            throw new InvalidCompositeException( message, compositeClass );
         }
         this.composite = compositeClass;
 

@@ -28,7 +28,8 @@ public interface CompositeFactory
      *
      * @param aCompositeClass an interface that describes the object to be created
      * @return a new proxy object implementing the interface
-     * @throws CompositeInstantiationException thrown if instantiation fails
+     * @throws CompositeInstantiationException
+     *          thrown if instantiation fails
      */
     <T extends Composite> T newInstance( Class<T> aCompositeClass )
         throws CompositeInstantiationException;
@@ -63,5 +64,5 @@ public interface CompositeFactory
 
     CompositeModel getCompositeModel( Class<? extends Composite> aCompositeClass );
 
-    CompositeObject getCompositeObject( Composite aComposite);
+    CompositeObject getCompositeObject( Composite aComposite );
 }

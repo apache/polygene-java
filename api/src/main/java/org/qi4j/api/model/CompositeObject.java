@@ -46,7 +46,7 @@ public final class CompositeObject
         this( aCompositeModel, anInterface, null, null );
     }
 
-    public CompositeObject( CompositeModel aCompositeModel, Class anInterface, CompositeObject aWrappedComposite , Class aWrappedInterface)
+    public CompositeObject( CompositeModel aCompositeModel, Class anInterface, CompositeObject aWrappedComposite, Class aWrappedInterface )
     {
         this.compositeModel = aCompositeModel;
         this.compositeInterface = anInterface;
@@ -57,13 +57,11 @@ public final class CompositeObject
         for( Method method : methods )
         {
             // Find mixin
+            Class<?> methodClass = method.getDeclaringClass();
+            MixinModel mixinModel = getMixin( methodClass );
+            if( mixinModel == null && ( aWrappedComposite == null || !aWrappedComposite.isAssignableFrom( methodClass ) ) && ( aWrappedInterface == null || !methodClass.isAssignableFrom( aWrappedInterface ) ) )
             {
-                Class<?> methodClass = method.getDeclaringClass();
-                MixinModel mixinModel = getMixin( methodClass );
-                if( mixinModel == null && ( aWrappedComposite == null || !aWrappedComposite.isAssignableFrom( methodClass )) && (aWrappedInterface == null || !methodClass.isAssignableFrom( aWrappedInterface)))
-                {
-                    throw new IllegalStateException( "No implementation for interface " + methodClass.getName() + " found in composite " + compositeModel.getCompositeClass().getName() );
-                }
+                throw new IllegalStateException( "No implementation for interface " + methodClass.getName() + " found in composite " + compositeModel.getCompositeClass().getName() );
             }
         }
 
@@ -81,8 +79,10 @@ public final class CompositeObject
             {
                 for( Method method : mixinInterface.getMethods() )
                 {
-                    if (getModifiers( method ) == null)
+                    if( getModifiers( method ) == null )
+                    {
                         findModifiers( method );
+                    }
                 }
             }
         }
@@ -167,7 +167,7 @@ public final class CompositeObject
 
     public boolean isAssignableFrom( Class anInterface )
     {
-        return getMixin( anInterface ) != null || anInterface.isAssignableFrom( compositeInterface) || (wrappedComposite != null && wrappedComposite.isAssignableFrom( anInterface ));
+        return getMixin( anInterface ) != null || anInterface.isAssignableFrom( compositeInterface ) || ( wrappedComposite != null && wrappedComposite.isAssignableFrom( anInterface ) );
     }
 
     public List<ModifierModel> getModifiers( Method aMethod )
@@ -307,7 +307,10 @@ public final class CompositeObject
                     }
                     else
                     {
-                        if( !appliesTo.isAssignableFrom( getMixin( method.getDeclaringClass() ).getFragmentClass() ) && !appliesTo.isAssignableFrom( method.getDeclaringClass() ) )
+                        Class<?> methodDeclaringClass = method.getDeclaringClass();
+                        MixinModel mixin = getMixin( methodDeclaringClass );
+                        Class fragmentClass = mixin.getFragmentClass();
+                        if( !appliesTo.isAssignableFrom( fragmentClass ) && !appliesTo.isAssignableFrom( methodDeclaringClass ) )
                         {
                             continue; // Skip this modifierModel
                         }
