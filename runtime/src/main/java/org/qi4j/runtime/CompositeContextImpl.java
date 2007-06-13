@@ -25,21 +25,24 @@ import org.qi4j.api.CompositeFactory;
 import org.qi4j.api.CompositeInstantiationException;
 import org.qi4j.api.FragmentFactory;
 import org.qi4j.api.InvocationContext;
+import org.qi4j.api.DependencyResolver;
 import org.qi4j.api.model.CompositeObject;
 import org.qi4j.api.model.ModifierModel;
+import org.qi4j.api.model.CompositeContext;
 
 /**
  * TODO
  */
-public final class CompositeContext
+public final class CompositeContextImpl
+    implements CompositeContext
 {
     private CompositeObject compositeObject;
-    private CompositeFactory compositeFactory;
+    private CompositeFactoryImpl compositeFactory;
     private FragmentFactory fragmentFactory;
     private ConcurrentHashMap<Method, List<InvocationInstance>> invocationInstancePool;
 
 
-    public CompositeContext( CompositeObject aComposite, CompositeFactory aCompositeFactory, FragmentFactory aFragmentFactory )
+    public CompositeContextImpl( CompositeObject aComposite, CompositeFactoryImpl aCompositeFactory, FragmentFactory aFragmentFactory )
     {
         compositeObject = aComposite;
         compositeFactory = aCompositeFactory;
@@ -52,7 +55,7 @@ public final class CompositeContext
         return compositeObject;
     }
 
-    public CompositeFactory getObjectFactory()
+    public CompositeFactory getCompositeFactory()
     {
         return compositeFactory;
     }
@@ -212,4 +215,8 @@ public final class CompositeContext
         }
     }
 
+    public List<? extends DependencyResolver> getDependencyResolvers()
+    {
+        return compositeFactory.getDependencyResolvers();
+    }
 }

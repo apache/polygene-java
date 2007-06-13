@@ -22,11 +22,11 @@ import java.lang.reflect.Proxy;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
-import org.qi4j.api.CompositeFactory;
 import org.qi4j.api.CompositeInstantiationException;
-import org.qi4j.api.FragmentFactory;
+import org.qi4j.api.DependencyResolver;
 import org.qi4j.api.model.CompositeObject;
 import org.qi4j.api.model.MixinModel;
+import org.qi4j.api.model.CompositeContext;
 import org.qi4j.api.persistence.Identity;
 
 /**
@@ -35,10 +35,10 @@ import org.qi4j.api.persistence.Identity;
 public class CompositeInvocationHandler
     implements InvocationHandler
 {
-    private CompositeContext context;
+    private CompositeContextImpl context;
     private Map<Class, Object> mixins;
 
-    public CompositeInvocationHandler( CompositeContext aContext )
+    public CompositeInvocationHandler( CompositeContextImpl aContext )
     {
         this.context = aContext;
         mixins = new IdentityHashMap<Class, Object>();
@@ -138,13 +138,13 @@ public class CompositeInvocationHandler
                 // The wrapped object is of the required type
                 usesField.set( instance, wrappedInstance );
             }
-            else if( context.getObjectFactory().isInstance( usesField.getType(), proxy ) )
+            else if( context.getCompositeFactory().isInstance( usesField.getType(), proxy ) )
             {
-                usesField.set( instance, context.getObjectFactory().cast( usesField.getType(), proxy ) );
+                usesField.set( instance, context.getCompositeFactory().cast( usesField.getType(), proxy ) );
             }
-            else if( context.getObjectFactory().isInstance( usesField.getType(), wrappedInstance ) )
+            else if( context.getCompositeFactory().isInstance( usesField.getType(), wrappedInstance ) )
             {
-                usesField.set( instance, context.getObjectFactory().cast( usesField.getType(), wrappedInstance ) );
+                usesField.set( instance, context.getCompositeFactory().cast( usesField.getType(), wrappedInstance ) );
             }
             else
             {
@@ -152,21 +152,25 @@ public class CompositeInvocationHandler
             }
         }
 
+
+        List<? extends DependencyResolver> resolvers = context.getDependencyResolvers();
         List<Field> dependencyFields = mixinModel.getDependencyFields();
         for( Field dependencyField : dependencyFields )
         {
-            if( dependencyField.getType().equals( CompositeFactory.class ) )
+            Object dependency = null;
+            for( DependencyResolver resolver : resolvers )
             {
-                dependencyField.set( instance, context.getObjectFactory() );
+                dependency = resolver.resolveField( dependencyField, context );
+                if( dependency != null )
+                {
+                    break;
+                }
             }
-            else if( dependencyField.getType().equals( FragmentFactory.class ) )
-            {
-                dependencyField.set( instance, context.getFragmentFactory() );
-            }
-            else
+            if( dependency == null )
             {
                 throw new CompositeInstantiationException( "@Dependency field " + dependencyField.getName() + " in class " + mixinModel.getFragmentClass().getName() + " could not be resolved." );
             }
+            dependencyField.set( instance, dependency );
         }
 
         // Successfully instantiated
@@ -211,7 +215,7 @@ public class CompositeInvocationHandler
         {
             if( context.getCompositeObject().isAssignableFrom( Identity.class ) )
             {
-                String id = context.getObjectFactory().cast( Identity.class, proxy ).getIdentity();
+                String id = context.getCompositeFactory().cast( Identity.class, proxy ).getIdentity();
                 return id != null ? id : "";
             }
             else

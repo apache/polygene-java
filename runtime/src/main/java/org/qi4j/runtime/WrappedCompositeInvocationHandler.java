@@ -18,7 +18,7 @@ public final class WrappedCompositeInvocationHandler
 {
     private Object wrappedInstance;
 
-    public WrappedCompositeInvocationHandler( Object wrappedInstance, CompositeContext aContext )
+    public WrappedCompositeInvocationHandler( Object wrappedInstance, CompositeContextImpl aContext )
     {
         super( aContext );
         this.wrappedInstance = wrappedInstance;

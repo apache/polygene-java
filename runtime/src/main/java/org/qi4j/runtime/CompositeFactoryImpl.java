@@ -17,13 +17,17 @@ package org.qi4j.runtime;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 import org.qi4j.api.Composite;
 import org.qi4j.api.CompositeFactory;
 import org.qi4j.api.CompositeInstantiationException;
 import org.qi4j.api.FragmentFactory;
+import org.qi4j.api.DependencyResolver;
 import org.qi4j.api.model.CompositeModel;
 import org.qi4j.api.model.CompositeObject;
+import org.qi4j.spi.DefaultDependencyResolver;
 
 /**
  * Default implementation of CompositeFactory
@@ -33,18 +37,26 @@ public final class CompositeFactoryImpl
 {
     private FragmentFactory fragmentFactory;
     private Map<Class, CompositeModel> composites;
-    private Map<CompositeObject, CompositeContext> objectContexts;
+    private Map<CompositeObject, CompositeContextImpl> objectContexts;
+    private List<DependencyResolver> resolvers;
 
     public CompositeFactoryImpl()
     {
-        this( new FragmentFactoryImpl() );
+        this( new FragmentFactoryImpl(), null );
     }
 
-    public CompositeFactoryImpl( FragmentFactory aFragmentFactory )
+    public CompositeFactoryImpl( FragmentFactory aFragmentFactory, List<DependencyResolver> resolvers )
     {
         fragmentFactory = aFragmentFactory;
-        objectContexts = new ConcurrentHashMap<CompositeObject, CompositeContext>();
-        composites = new ConcurrentHashMap();
+        if( resolvers == null )
+        {
+            DefaultDependencyResolver defaultResolver = new DefaultDependencyResolver();
+            resolvers= new ArrayList<DependencyResolver>();
+            resolvers.add( defaultResolver );
+        }
+        this.resolvers = resolvers;
+        objectContexts = new ConcurrentHashMap<CompositeObject, CompositeContextImpl>();
+        composites = new ConcurrentHashMap<Class, CompositeModel>();
     }
 
     public <T extends Composite> T newInstance( Class<T> aCompositeClass )
@@ -59,7 +71,7 @@ public final class CompositeFactoryImpl
         {
             CompositeModel compositeModel = getCompositeModel( aCompositeClass );
             CompositeObject compositeObject = new CompositeObject( compositeModel, aCompositeClass );
-            CompositeContext context = getObjectContext( compositeObject );
+            CompositeContextImpl context = getCompositeContext( compositeObject );
 
             CompositeInvocationHandler handler = new CompositeInvocationHandler( context );
             ClassLoader proxyClassloader = aCompositeClass.getClassLoader();
@@ -68,6 +80,8 @@ public final class CompositeFactoryImpl
         }
         catch( Exception e )
         {
+            System.out.println( e );
+            e.printStackTrace();
             throw new CompositeInstantiationException( e );
         }
     }
@@ -123,7 +137,7 @@ public final class CompositeFactoryImpl
         CompositeModel compositeModel = getCompositeModel( aCompositeClass );
         Class wrappedInterface = anObject.getClass().getInterfaces()[ 0 ];
         CompositeObject compositeObject = new CompositeObject( compositeModel, aCompositeClass, wrappedCompositeObject, wrappedInterface );
-        CompositeContext context = getObjectContext( compositeObject );
+        CompositeContextImpl context = getCompositeContext( compositeObject );
         CompositeInvocationHandler handler = new WrappedCompositeInvocationHandler( anObject, context );
         ClassLoader proxyClassLoader = aCompositeClass.getClassLoader();
 
@@ -193,13 +207,18 @@ public final class CompositeFactoryImpl
         return CompositeInvocationHandler.getInvocationHandler( aComposite ).getContext().getCompositeObject();
     }
 
-    // Private ------------------------------------------------------
-    private CompositeContext getObjectContext( CompositeObject aComposite )
+    public List<DependencyResolver> getDependencyResolvers()
     {
-        CompositeContext context = objectContexts.get( aComposite );
+        return resolvers;
+    }
+
+    // Private ------------------------------------------------------
+    private CompositeContextImpl getCompositeContext( CompositeObject aComposite )
+    {
+        CompositeContextImpl context = objectContexts.get( aComposite );
         if( context == null )
         {
-            context = new CompositeContext( aComposite, this, fragmentFactory );
+            context = new CompositeContextImpl( aComposite, this, fragmentFactory );
             objectContexts.put( aComposite, context );
         }
         return context;
