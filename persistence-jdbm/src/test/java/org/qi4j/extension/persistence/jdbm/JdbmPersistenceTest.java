@@ -65,8 +65,7 @@ public class JdbmPersistenceTest extends TestCase
         p.put( RecordManagerOptions.THREAD_SAFE, "false" );
         p.store( fos, "" );
         fos.close();
-        FragmentFactory fragmentFactory = new FragmentFactoryImpl();
-        CompositeFactory compositeFactory = new CompositeFactoryImpl( fragmentFactory );
+        CompositeFactory compositeFactory = new CompositeFactoryImpl();
         Jotm jotm = new Jotm( true, false );
         TransactionManager transactionManager = jotm.getTransactionManager();
         underTest = new JdbmStorage( compositeFactory, testDir, transactionManager );
