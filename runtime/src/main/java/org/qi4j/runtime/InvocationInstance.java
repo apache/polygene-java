@@ -69,7 +69,10 @@ public final class InvocationInstance
         }
         finally
         {
-            pool.add( this );
+            synchronized( pool)
+            {
+                pool.add( this );
+            }
         }
     }
 }

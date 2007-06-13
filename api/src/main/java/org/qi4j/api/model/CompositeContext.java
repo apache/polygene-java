@@ -18,7 +18,6 @@ package org.qi4j.api.model;
 
 import org.qi4j.api.CompositeFactory;
 import org.qi4j.api.FragmentFactory;
-import java.lang.reflect.Method;
 
 public interface CompositeContext
 {

@@ -16,16 +16,16 @@
  */
 package org.qi4j.spi;
 
-import org.qi4j.api.DependencyResolver;
+import java.lang.reflect.Field;
 import org.qi4j.api.CompositeFactory;
+import org.qi4j.api.DependencyResolver;
 import org.qi4j.api.FragmentFactory;
 import org.qi4j.api.model.CompositeContext;
-import java.lang.reflect.Field;
 
 public class DefaultDependencyResolver
     implements DependencyResolver
 {
-    public Object resolveField( Field field, CompositeContext context )
+    public Object resolveDependency( Field field, CompositeContext context )
     {
         Class<?> type = field.getType();
         if( type.equals( CompositeFactory.class ) )

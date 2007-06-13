@@ -34,15 +34,24 @@ public interface Composite
     <T extends Composite> T newInstance( Class<T> anObjectType );
 
     /**
-     * Create a new object that implements the given interface.
+     * Cast the current object to the given interface.
      * <p/>
-     * The new object wraps the current object which provides mixin mixins
+     * The returned object uses the current object which provides mixin mixins
      * that should be reused for this new object.
      *
      * @param anObjectType an interface that describes the object to be created
      * @return a new proxy object implementing the interface
      */
     <T> T cast( Class<T> anObjectType );
+
+    /**
+     * Wrap the current object in a new one. Calling methods on the given composite class
+     * will create mixins in the wrapper, leaving the underlying object untouched.
+     *  
+     * @param aCompositeClass
+     * @return
+     */
+    <T extends Composite> T wrapInstance( Class<T> aCompositeClass);
 
     /**
      * Checks if the object can be cast() to the provided object type.

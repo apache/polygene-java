@@ -16,15 +16,15 @@ package org.qi4j.runtime;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
-import java.util.Map;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.qi4j.api.Composite;
 import org.qi4j.api.CompositeFactory;
 import org.qi4j.api.CompositeInstantiationException;
-import org.qi4j.api.FragmentFactory;
 import org.qi4j.api.DependencyResolver;
+import org.qi4j.api.FragmentFactory;
 import org.qi4j.api.model.CompositeModel;
 import org.qi4j.api.model.CompositeObject;
 import org.qi4j.spi.DefaultDependencyResolver;
@@ -76,7 +76,7 @@ public final class CompositeFactoryImpl
             CompositeInvocationHandler handler = new CompositeInvocationHandler( context );
             ClassLoader proxyClassloader = aCompositeClass.getClassLoader();
             Class[] interfaces = new Class[]{ aCompositeClass };
-            return (T) Proxy.newProxyInstance( proxyClassloader, interfaces, handler );
+            return aCompositeClass.cast( Proxy.newProxyInstance( proxyClassloader, interfaces, handler ));
         }
         catch( Exception e )
         {
@@ -88,6 +88,9 @@ public final class CompositeFactoryImpl
 
     public <T> T cast( Class<T> aCompositeClass, Object anObject )
     {
+        if (aCompositeClass.isInstance( anObject))
+            return aCompositeClass.cast( anObject);
+
         if( anObject instanceof Proxy)
         {
             InvocationHandler handler = Proxy.getInvocationHandler( anObject );
@@ -101,7 +104,7 @@ public final class CompositeFactoryImpl
             try
             {
                 Class[] interfaces = new Class[]{ aCompositeClass };
-                return (T) Proxy.newProxyInstance( proxyClassLoader, interfaces, handler );
+                return aCompositeClass.cast(Proxy.newProxyInstance( proxyClassLoader, interfaces, handler ));
             }
             catch( Exception e )
             {
@@ -144,7 +147,7 @@ public final class CompositeFactoryImpl
         try
         {
             Class[] interfaces = new Class[]{ aCompositeClass };
-            return (T) Proxy.newProxyInstance( proxyClassLoader, interfaces, handler );
+            return aCompositeClass.cast(Proxy.newProxyInstance( proxyClassLoader, interfaces, handler ));
         }
         catch( Exception e )
         {

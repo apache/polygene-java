@@ -36,6 +36,11 @@ public final class CompositeImpl
         return delegate.cast( anObjectType, delegate.getThat( meAsComposite ) );
     }
 
+    public <T extends Composite> T wrapInstance( Class<T> aCompositeClass )
+    {
+        return delegate.wrapInstance( aCompositeClass, delegate.getThat( meAsComposite ) );
+    }
+
     public boolean isInstance( Class anObjectType )
     {
         return delegate.isInstance( anObjectType, delegate.getThat( meAsComposite ) );

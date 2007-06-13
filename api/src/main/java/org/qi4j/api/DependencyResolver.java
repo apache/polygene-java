@@ -17,10 +17,9 @@
 package org.qi4j.api;
 
 import java.lang.reflect.Field;
-import org.qi4j.api.model.FragmentModel;
 import org.qi4j.api.model.CompositeContext;
 
 public interface DependencyResolver
 {
-    Object resolveField( Field dependencyField, CompositeContext context );
+    Object resolveDependency( Field dependencyField, CompositeContext context );
 }

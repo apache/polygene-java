@@ -19,14 +19,14 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import org.qi4j.api.CompositeInstantiationException;
-import org.qi4j.api.DependencyResolver;
+import org.qi4j.api.annotation.Uses;
+import org.qi4j.api.model.CompositeContext;
 import org.qi4j.api.model.CompositeObject;
 import org.qi4j.api.model.MixinModel;
-import org.qi4j.api.model.CompositeContext;
 import org.qi4j.api.persistence.Identity;
 
 /**
@@ -36,12 +36,12 @@ public class CompositeInvocationHandler
     implements InvocationHandler
 {
     private CompositeContextImpl context;
-    private Map<Class, Object> mixins;
+    private ConcurrentHashMap<Class, Object> mixins;
 
     public CompositeInvocationHandler( CompositeContextImpl aContext )
     {
         this.context = aContext;
-        mixins = new IdentityHashMap<Class, Object>();
+        mixins = new ConcurrentHashMap<Class, Object>();
     }
 
     public static CompositeInvocationHandler getInvocationHandler( Object aProxy )
@@ -52,9 +52,9 @@ public class CompositeInvocationHandler
     // InvocationHandler implementation ------------------------------
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
     {
-        Class proxyInterface = method.getDeclaringClass();
 
-        Object mixin = mixins.get( proxyInterface );
+        Class proxyInterface = method.getDeclaringClass();
+        Object mixin = getMixin(proxyInterface, proxy);
 
         if( mixin == null )
         {
@@ -62,14 +62,17 @@ public class CompositeInvocationHandler
             {
                 return invokeObject( proxy, method, args );
             }
-            else
-            {
-                mixin = initializeMixin( proxyInterface, proxy, getWrappedInstance() );
-            }
         }
-
         // Invoke
         return context.getInvocationInstance( method ).invoke( proxy, method, args, mixin );
+    }
+
+    private Object getMixin(Class aProxyInterface, Object aProxy)
+    {
+        Object mixin = mixins.get( aProxyInterface.getName() );
+        if (mixin == null)
+            mixin = initializeMixin( aProxyInterface, aProxy);
+        return mixin;
     }
 
     public Map<Class, Object> getMixins()
@@ -83,30 +86,19 @@ public class CompositeInvocationHandler
     }
 
     // Private -------------------------------------------------------
-    protected synchronized Object initializeMixin( Class aProxyInterface, Object proxy, Object wrappedInstance )
-        throws IllegalAccessException
+    private Object initializeMixin( Class aProxyInterface, Object proxy)
     {
-        MixinModel mixinModel = context.getCompositeObject().getMixin( aProxyInterface );
-
-        // Check if implementation is latent in decorated object
-        if( mixinModel == null && wrappedInstance != null )
-        {
-            // Check if wrapped instance can handle the call directly
-            if( aProxyInterface.isInstance( wrappedInstance ) )
-            {
-                return wrappedInstance;
-            }
-
-            CompositeObject wrappedComposite = context.getCompositeObject().getWrappedCompositeModel();
-            if( wrappedComposite != null )
-            {
-                mixinModel = wrappedComposite.getMixin( aProxyInterface );
-            }
-        }
+        MixinModel mixinModel = findMixinModel(aProxyInterface);
 
         Object instance = null;
         if( mixinModel == null )
         {
+            // Check if wrapped instance can handle the call directly
+            if( getWrappedInstance() != null && aProxyInterface.isInstance( getWrappedInstance() ) )
+            {
+                return null;
+            }
+            
             // Try the interface itself
             try
             {
@@ -125,57 +117,82 @@ public class CompositeInvocationHandler
             instance = context.getFragmentFactory().newFragment( mixinModel, context.getCompositeObject() );
         }
 
-        List<Field> usesFields = mixinModel.getUsesFields();
-        for( Field usesField : usesFields )
-        {
-            if( usesField.getType().isInstance( proxy ) )
-            {
-                // Current proxy
-                usesField.set( instance, proxy );
-            }
-            else if( usesField.getType().isInstance( wrappedInstance ) )
-            {
-                // The wrapped object is of the required type
-                usesField.set( instance, wrappedInstance );
-            }
-            else if( context.getCompositeFactory().isInstance( usesField.getType(), proxy ) )
-            {
-                usesField.set( instance, context.getCompositeFactory().cast( usesField.getType(), proxy ) );
-            }
-            else if( context.getCompositeFactory().isInstance( usesField.getType(), wrappedInstance ) )
-            {
-                usesField.set( instance, context.getCompositeFactory().cast( usesField.getType(), wrappedInstance ) );
-            }
-            else
-            {
-                throw new CompositeInstantiationException( "@Uses field " + usesField.getName() + " in class " + mixinModel.getFragmentClass().getName() + " could not be resolved for composite " + context.getCompositeObject().getCompositeInterface().getName() + "." );
-            }
-        }
+        resolveUsesFields( mixinModel, proxy, instance );
 
-
-        List<? extends DependencyResolver> resolvers = context.getDependencyResolvers();
         List<Field> dependencyFields = mixinModel.getDependencyFields();
         for( Field dependencyField : dependencyFields )
         {
-            Object dependency = null;
-            for( DependencyResolver resolver : resolvers )
-            {
-                dependency = resolver.resolveField( dependencyField, context );
-                if( dependency != null )
-                {
-                    break;
-                }
-            }
-            if( dependency == null )
-            {
-                throw new CompositeInstantiationException( "@Dependency field " + dependencyField.getName() + " in class " + mixinModel.getFragmentClass().getName() + " could not be resolved." );
-            }
-            dependencyField.set( instance, dependency );
+            context.resolveDependency( dependencyField, instance);
         }
 
         // Successfully instantiated
         mixins.put( aProxyInterface, instance );
         return instance;
+    }
+
+    private void resolveUsesFields( MixinModel mixinModel, Object proxy, Object instance )
+    {
+        Object wrappedInstance = getWrappedInstance();
+        List<Field> usesFields = mixinModel.getUsesFields();
+        for( Field usesField : usesFields )
+        {
+            try
+            {
+                if( usesField.getType().isInstance( proxy ) )
+                {
+                    // Current proxy
+                    usesField.set( instance, proxy );
+                }
+                else if( usesField.getType().isInstance( wrappedInstance ) )
+                {
+                    // The wrapped object is of the required type
+                    usesField.set( instance, wrappedInstance );
+                }
+                else if( context.getCompositeFactory().isInstance( usesField.getType(), proxy ) )
+                {
+                    usesField.set( instance, context.getCompositeFactory().cast( usesField.getType(), proxy ) );
+                }
+                else if( context.getCompositeFactory().isInstance( usesField.getType(), wrappedInstance ) )
+                {
+                    usesField.set( instance, context.getCompositeFactory().cast( usesField.getType(), wrappedInstance ) );
+                }
+                else
+                {
+                    // If the @Uses field is not optional, throw exception
+                    if (!usesField.getAnnotation( Uses.class).optional())
+                        throw new CompositeInstantiationException( "@Uses field " + usesField.getName() + " in class " + mixinModel.getFragmentClass().getName() + " could not be resolved for composite " + context.getCompositeObject().getCompositeInterface().getName() + "." );
+                }
+            }
+            catch( IllegalAccessException e )
+            {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private MixinModel findMixinModel(Class aProxyInterface)
+    {
+        Object wrappedInstance = getWrappedInstance();
+
+        MixinModel mixinModel = context.getCompositeObject().getMixin( aProxyInterface );
+
+        // Check if implementation is latent in decorated object
+        if( mixinModel == null && wrappedInstance != null )
+        {
+            // Check if wrapped instance can handle the call directly
+            if( aProxyInterface.isInstance( wrappedInstance ) )
+            {
+                return null;
+            }
+
+            CompositeObject wrappedComposite = context.getCompositeObject().getWrappedCompositeModel();
+            if( wrappedComposite != null )
+            {
+                mixinModel = wrappedComposite.getMixin( aProxyInterface );
+            }
+        }
+
+        return mixinModel;
     }
 
     private Object invokeObject( Object proxy, Method method, Object[] args )

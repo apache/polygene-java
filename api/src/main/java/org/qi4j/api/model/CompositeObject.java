@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.qi4j.api.annotation.Uses;
 
 /**
  * The CompositeObject is the runtime resolution of how a compile-time CompositeModel
@@ -74,14 +75,18 @@ public final class CompositeObject
         // Add additional latent mixins
         for( MixinModel mixinModel : compositeModel.getImplementations() )
         {
-            Class[] interfaces = mixinModel.getFragmentClass().getInterfaces();
-            for( Class mixinInterface : interfaces )
+            if (!mixinModel.isGeneric())
             {
-                for( Method method : mixinInterface.getMethods() )
+                Class fragmentClass = mixinModel.getFragmentClass();
+                Class[] interfaces = fragmentClass.getInterfaces();
+                for( Class mixinInterface : interfaces )
                 {
-                    if( getModifiers( method ) == null )
+                    for( Method method : mixinInterface.getMethods() )
                     {
-                        findModifiers( method );
+                        if( getModifiers( method ) == null )
+                        {
+                            findModifiers( method );
+                        }
                     }
                 }
             }
@@ -153,6 +158,8 @@ public final class CompositeObject
         List<Field> uses = possibleMixinModel.getUsesFields();
         for( Field use : uses )
         {
+            if (use.getAnnotation( Uses.class).optional())
+                continue; // Don't bothing checking this - it's either there or not and in both cases the mixin is valid
             Class<?> useInterface = use.getType();
             if( !useInterface.equals( anInterface ) &&
                 getMixin( useInterface ) != null &&
@@ -330,9 +337,13 @@ public final class CompositeObject
                 List<Field> uses = modifierModel.getUsesFields();
                 for( Field use : uses )
                 {
-                    if( getMixin( use.getType() ) != null && wrappedComposite != null && !wrappedComposite.isAssignableFrom( use.getType() ) )
+                    if (!use.getAnnotation( Uses.class).optional())
                     {
-                        continue nextmodifier;
+                        // The field is not optional - verify that it can be resolved
+                        if( getMixin( use.getType() ) != null && wrappedComposite != null && !wrappedComposite.isAssignableFrom( use.getType() ) )
+                        {
+                            continue nextmodifier;
+                        }
                     }
                 }
 

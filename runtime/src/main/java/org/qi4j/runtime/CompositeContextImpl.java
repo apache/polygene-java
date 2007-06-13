@@ -23,12 +23,14 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import org.qi4j.api.CompositeFactory;
 import org.qi4j.api.CompositeInstantiationException;
+import org.qi4j.api.DependencyResolver;
 import org.qi4j.api.FragmentFactory;
 import org.qi4j.api.InvocationContext;
-import org.qi4j.api.DependencyResolver;
+import org.qi4j.api.annotation.Dependency;
+import org.qi4j.api.annotation.Uses;
+import org.qi4j.api.model.CompositeContext;
 import org.qi4j.api.model.CompositeObject;
 import org.qi4j.api.model.ModifierModel;
-import org.qi4j.api.model.CompositeContext;
 
 /**
  * TODO
@@ -67,7 +69,7 @@ public final class CompositeContextImpl
 
     public InvocationInstance getInvocationInstance( Method method )
     {
-        List<InvocationInstance> instances = invocationInstancePool.get( method );
+        List<InvocationInstance> instances = invocationInstancePool.get( method.getName() );
 
         if( instances == null )
         {
@@ -75,18 +77,21 @@ public final class CompositeContextImpl
             invocationInstancePool.put( method, instances );
         }
 
-        InvocationInstance invocationInstance;
-        int size = instances.size();
-        if( size > 0 )
+        synchronized( instances)
         {
-            invocationInstance = instances.remove( size - 1 );
-        }
-        else
-        {
-            invocationInstance = newInstance( method );
-        }
+            InvocationInstance invocationInstance;
+            int size = instances.size();
+            if( size > 0 )
+            {
+                invocationInstance = instances.remove( size - 1 );
+            }
+            else
+            {
+                invocationInstance = newInstance( method );
+            }
 
-        return invocationInstance;
+            return invocationInstance;
+        }
     }
 
     public InvocationInstance newInstance( Method method )
@@ -111,22 +116,21 @@ public final class CompositeContextImpl
                 // @Uses
                 for( Field usesField : modifierModel.getUsesFields() )
                 {
-                    Object usesProxy = Proxy.newProxyInstance( usesField.getType().getClassLoader(), new Class[]{ usesField.getType() }, proxyHandler );
-                    usesField.set( modifierInstance, usesProxy );
+                    if (compositeObject.isAssignableFrom( usesField.getType()))
+                    {
+                        Object usesProxy = Proxy.newProxyInstance( usesField.getType().getClassLoader(), new Class[]{ usesField.getType() }, proxyHandler );
+                        usesField.set( modifierInstance, usesProxy );
+                    } else
+                    {
+                        if (!usesField.getAnnotation( Uses.class).optional())
+                            throw new CompositeInstantiationException( "Could not resolve @Uses field in mixin " + modifierModel.getFragmentClass().getName() + " for composite " + compositeObject.getCompositeInterface().getName());
+                    }
                 }
 
                 // @Dependency
                 for( Field dependencyField : modifierModel.getDependencyFields() )
                 {
-                    if( dependencyField.getType().equals( CompositeFactory.class ) )
-                    {
-                        dependencyField.set( modifierInstance, compositeFactory );
-                    }
-                    else if( dependencyField.getType().equals( FragmentFactory.class ) )
-                    {
-                        dependencyField.set( modifierInstance, fragmentFactory );
-                    }
-                    else if( dependencyField.getType().equals( InvocationContext.class ) )
+                    if( dependencyField.getType().equals( InvocationContext.class ) )
                     {
                         dependencyField.set( modifierInstance, proxyHandler );
                     }
@@ -150,6 +154,9 @@ public final class CompositeContextImpl
                             }
                         }
                         dependencyField.set( modifierInstance, dependencyMethod );
+                    } else
+                    {
+                        resolveDependency( dependencyField, modifierInstance);
                     }
                 }
 
@@ -215,8 +222,34 @@ public final class CompositeContextImpl
         }
     }
 
-    public List<? extends DependencyResolver> getDependencyResolvers()
+    public void resolveDependency( Field dependencyField, Object instance)
+        throws CompositeInstantiationException
     {
-        return compositeFactory.getDependencyResolvers();
+        Object currentDependency = null;
+        for( DependencyResolver resolver : compositeFactory.getDependencyResolvers() )
+        {
+            Object dependency = resolver.resolveDependency( dependencyField, this );
+            if (currentDependency != null)
+                throw new CompositeInstantiationException("Dependency "+dependencyField.getName()+" in mixin "+dependencyField.getDeclaringClass().getName() + " for composite "+compositeObject.getCompositeInterface()+" has ambiguous resolutions");
+            currentDependency = dependency;
+        }
+
+        if (currentDependency == null)
+        {
+            // No object found, check if it's optional
+            if (!dependencyField.getAnnotation( Dependency.class).optional())
+                throw new CompositeInstantiationException("Dependency "+dependencyField.getName()+" in mixin "+dependencyField.getDeclaringClass().getName() + " for composite "+compositeObject.getCompositeInterface()+" could not be resolved");
+        } else
+        {
+            // Set dependency
+            try
+            {
+                dependencyField.set( instance, currentDependency);
+            }
+            catch( IllegalAccessException e )
+            {
+                throw new CompositeInstantiationException("Dependency "+dependencyField.getName()+" in mixin "+dependencyField.getDeclaringClass().getName() + " for composite "+compositeObject.getCompositeInterface()+" could not be set", e);
+            }
+        }
     }
 }

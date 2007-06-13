@@ -30,4 +30,6 @@ import java.lang.annotation.Target;
 @Inherited
 public @interface Dependency
 {
+    String value() default ""; // This name can be used for lookups
+    boolean optional() default false; // If the dependency cannot be resolved, only fail if this is false
 }

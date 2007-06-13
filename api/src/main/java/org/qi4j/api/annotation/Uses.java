@@ -32,4 +32,5 @@ import java.lang.annotation.Target;
 @Inherited
 public @interface Uses
 {
+    boolean optional() default false; // If the usage cannot be resolved, only fail if this is false
 }
