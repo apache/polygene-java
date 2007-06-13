@@ -2,7 +2,7 @@ package org.qi4j.library.framework.scripting;
 
 import org.qi4j.api.Composite;
 import org.qi4j.api.annotation.ImplementedBy;
-import org.qi4j.test.model.Mixin1;
+import org.qi4j.test.model1.Mixin1;
 /*
  * Copyright 2007 Rickard Öberg
  * Licensed under the Apache License, Version 2.0 (the "License"); 
