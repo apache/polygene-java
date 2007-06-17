@@ -37,8 +37,6 @@ public class RMIMixinTest
         Registry registry = LocateRegistry.createRegistry( 1099 );
         registry.rebind( RemoteInterface.class.getSimpleName(), stub );
 
-        CompositeModel comp = new CompositeModel( RemoteInterfaceComposite.class );
-
         CompositeFactory factory = new CompositeFactoryImpl();
         RemoteInterface remote = factory.newInstance( RemoteInterfaceComposite.class );
 

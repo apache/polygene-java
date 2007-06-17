@@ -25,9 +25,8 @@ import org.qi4j.api.annotation.Uses;
  * Cache for remote calls. Cache values
  * of remote invocations and if an IOException
  * occurs, try to reuse a previous result.
- *
  */
-@AppliesTo( Remote.class)
+@AppliesTo( Remote.class )
 public class RemoteInvocationCacheModifier
     implements InvocationHandler
 {
@@ -42,17 +41,21 @@ public class RemoteInvocationCacheModifier
         String cacheName = method.getName() + Arrays.asList( args );
         try
         {
-            Object result = next.invoke( proxy, method, args);
-            cache.set( cacheName, result);
+            Object result = next.invoke( proxy, method, args );
+            cache.set( cacheName, result );
             return result;
-        } catch ( IOException e)
+        }
+        catch( IOException e )
         {
-            Object result = cache.get(cacheName);
-            if (result != null)
+            Object result = cache.get( cacheName );
+            if( result != null )
+            {
                 return result;
+            }
 
             throw e;
-        } catch (Throwable e)
+        }
+        catch( Throwable e )
         {
             throw e;
         }
