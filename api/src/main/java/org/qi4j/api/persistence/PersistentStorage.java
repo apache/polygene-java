@@ -25,10 +25,12 @@ public interface PersistentStorage
     void create( PersistentComposite aProxy )
         throws PersistenceException;
 
-    void read( PersistentComposite aProxy )
+    // TODO: Add MixinModel to allow for call from CompositeInvocationHandler
+    void update( PersistentComposite aProxy, Serializable aMixin )
         throws PersistenceException;
 
-    void update( PersistentComposite aProxy, Serializable aMixin )
+    // TODO: Add MixinModel to allow for call from CompositeInvocationHandler
+    void read( PersistentComposite aProxy )
         throws PersistenceException;
 
     void delete( PersistentComposite aProxy )

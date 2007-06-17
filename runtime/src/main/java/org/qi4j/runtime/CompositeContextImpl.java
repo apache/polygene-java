@@ -73,7 +73,7 @@ public final class CompositeContextImpl
 
         if( instances == null )
         {
-            instances = new ArrayList<InvocationInstance>();
+            instances = new ArrayList<InvocationInstance>(1);
             invocationInstancePool.put( method, instances );
         }
 
@@ -136,7 +136,7 @@ public final class CompositeContextImpl
                     }
                     else if( dependencyField.getType().equals( Method.class ) )
                     {
-                        Class<? extends Object> fragmentClass = compositeObject.getMixin( method.getDeclaringClass() ).getFragmentClass();
+                        Class<? extends Object> fragmentClass = compositeObject.locateMixin( method.getDeclaringClass() ).getFragmentClass();
                         Method dependencyMethod;
                         if( InvocationHandler.class.isAssignableFrom( fragmentClass ) )
                         {

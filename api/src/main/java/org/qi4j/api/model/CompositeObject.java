@@ -1,5 +1,5 @@
 /*
- * Copyright 2007 Rickard Ã–berg
+ * Copyright 2007 Rickard Öberg
  * Licensed under the Apache License, Version 2.0 (the "License"); 
  * you may not use this file except in compliance with the License. 
  * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 
@@ -59,7 +59,7 @@ public final class CompositeObject
         {
             // Find mixin
             Class<?> methodClass = method.getDeclaringClass();
-            MixinModel mixinModel = getMixin( methodClass );
+            MixinModel mixinModel = locateMixin( methodClass );
             if( mixinModel == null && ( aWrappedComposite == null || !aWrappedComposite.isAssignableFrom( methodClass ) ) && ( aWrappedInterface == null || !methodClass.isAssignableFrom( aWrappedInterface ) ) )
             {
                 throw new IllegalStateException( "No implementation for interface " + methodClass.getName() + " found in composite " + compositeModel.getCompositeClass().getName() );
@@ -114,7 +114,7 @@ public final class CompositeObject
         return wrappedInterface;
     }
 
-    public MixinModel getMixin( Class anInterface )
+    public MixinModel locateMixin( Class anInterface )
     {
         MixinModel mixinModel = mixins.get( anInterface );
 
@@ -162,7 +162,7 @@ public final class CompositeObject
                 continue; // Don't bothing checking this - it's either there or not and in both cases the mixin is valid
             Class<?> useInterface = use.getType();
             if( !useInterface.equals( anInterface ) &&
-                getMixin( useInterface ) != null &&
+                locateMixin( useInterface ) != null &&
                 wrappedComposite != null &&
                 !wrappedComposite.isAssignableFrom( useInterface ) )
             {
@@ -174,7 +174,7 @@ public final class CompositeObject
 
     public boolean isAssignableFrom( Class anInterface )
     {
-        return getMixin( anInterface ) != null || anInterface.isAssignableFrom( compositeInterface ) || ( wrappedComposite != null && wrappedComposite.isAssignableFrom( anInterface ) );
+        return locateMixin( anInterface ) != null || anInterface.isAssignableFrom( compositeInterface ) || ( wrappedComposite != null && wrappedComposite.isAssignableFrom( anInterface ) );
     }
 
     public List<ModifierModel> getModifiers( Method aMethod )
@@ -254,7 +254,7 @@ public final class CompositeObject
 
         // 2) MixinModel modifiers
         Class<?> methodClass = method.getDeclaringClass();
-        MixinModel mixinModel = getMixin( methodClass );
+        MixinModel mixinModel = locateMixin( methodClass );
         if( mixinModel != null )
         {
             addModifiers( method, mixinModel.getModifiers(), modifierClassModels );
@@ -286,7 +286,7 @@ public final class CompositeObject
                     // Check AppliesTo
                     if( appliesTo.isAnnotation() )
                     {
-                        MixinModel mixinModel = getMixin( method.getDeclaringClass() );
+                        MixinModel mixinModel = locateMixin( method.getDeclaringClass() );
 
                         if( mixinModel.getFragmentClass().getAnnotation( appliesTo ) == null )
                         {
@@ -315,7 +315,7 @@ public final class CompositeObject
                     else
                     {
                         Class<?> methodDeclaringClass = method.getDeclaringClass();
-                        MixinModel mixin = getMixin( methodDeclaringClass );
+                        MixinModel mixin = locateMixin( methodDeclaringClass );
                         Class fragmentClass = mixin.getFragmentClass();
                         if( !appliesTo.isAssignableFrom( fragmentClass ) && !appliesTo.isAssignableFrom( methodDeclaringClass ) )
                         {
@@ -340,7 +340,7 @@ public final class CompositeObject
                     if (!use.getAnnotation( Uses.class).optional())
                     {
                         // The field is not optional - verify that it can be resolved
-                        if( getMixin( use.getType() ) != null && wrappedComposite != null && !wrappedComposite.isAssignableFrom( use.getType() ) )
+                        if( locateMixin( use.getType() ) != null && wrappedComposite != null && !wrappedComposite.isAssignableFrom( use.getType() ) )
                         {
                             continue nextmodifier;
                         }

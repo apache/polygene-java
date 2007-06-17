@@ -21,6 +21,8 @@ import org.qi4j.api.model.FragmentModel;
 /**
  * This factory is responsible for instantiating fragments. This is where
  * you would put DI integrations.
+ *
+ * TODO Split into MixinFactory and ModifierFactory, and add proxy to newMixin()
  */
 public interface FragmentFactory
 {

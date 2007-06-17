@@ -17,7 +17,6 @@ import java.lang.reflect.InvocationTargetException;
 
 /**
  * TODO
- *
  */
 public class FragmentInvocationHandler
     implements InvocationHandler
@@ -32,7 +31,7 @@ public class FragmentInvocationHandler
 
     public FragmentInvocationHandler( Object aFragment )
     {
-        this.fragment= aFragment;
+        this.fragment = aFragment;
     }
 
     public void setFragment( Object fragment )
@@ -43,13 +42,15 @@ public class FragmentInvocationHandler
     // InvocationHandler implementation ------------------------------
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
     {
-        if (fragment instanceof InvocationHandler)
-            return ((InvocationHandler)fragment).invoke( proxy, method, args);
+        if( fragment instanceof InvocationHandler )
+        {
+            return ( (InvocationHandler) fragment ).invoke( proxy, method, args );
+        }
         else
         {
             try
             {
-                return method.invoke( fragment, args);
+                return method.invoke( fragment, args );
             }
             catch( InvocationTargetException e )
             {

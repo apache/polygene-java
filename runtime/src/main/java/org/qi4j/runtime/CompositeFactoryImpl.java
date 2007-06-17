@@ -51,7 +51,7 @@ public final class CompositeFactoryImpl
         if( resolvers == null )
         {
             DefaultDependencyResolver defaultResolver = new DefaultDependencyResolver();
-            resolvers= new ArrayList<DependencyResolver>();
+            resolvers = new ArrayList<DependencyResolver>();
             resolvers.add( defaultResolver );
         }
         this.resolvers = resolvers;
@@ -63,8 +63,10 @@ public final class CompositeFactoryImpl
         throws CompositeInstantiationException
     {
         // Ensure that given class extends Composite
-        if (!Composite.class.isAssignableFrom(aCompositeClass))
-            throw new CompositeInstantiationException( "Class "+aCompositeClass.getName()+" does not extend "+ Composite.class.getName());
+        if( !Composite.class.isAssignableFrom( aCompositeClass ) )
+        {
+            throw new CompositeInstantiationException( "Class " + aCompositeClass.getName() + " does not extend " + Composite.class.getName() );
+        }
 
         // Instantiate proxy for given composite interface
         try
@@ -76,7 +78,7 @@ public final class CompositeFactoryImpl
             CompositeInvocationHandler handler = new CompositeInvocationHandler( context );
             ClassLoader proxyClassloader = aCompositeClass.getClassLoader();
             Class[] interfaces = new Class[]{ aCompositeClass };
-            return aCompositeClass.cast( Proxy.newProxyInstance( proxyClassloader, interfaces, handler ));
+            return aCompositeClass.cast( Proxy.newProxyInstance( proxyClassloader, interfaces, handler ) );
         }
         catch( Exception e )
         {
@@ -88,37 +90,40 @@ public final class CompositeFactoryImpl
 
     public <T> T cast( Class<T> aCompositeClass, Object anObject )
     {
-        if (aCompositeClass.isInstance( anObject))
-            return aCompositeClass.cast( anObject);
+        if( aCompositeClass.isInstance( anObject ) )
+        {
+            return aCompositeClass.cast( anObject );
+        }
 
-        if( anObject instanceof Proxy)
+        if( anObject instanceof Proxy )
         {
             InvocationHandler handler = Proxy.getInvocationHandler( anObject );
-            if (handler instanceof ProxyReferenceInvocationHandler)
+            if( handler instanceof ProxyReferenceInvocationHandler )
             {
                 // Get real handler
-                handler = Proxy.getInvocationHandler(((ProxyReferenceInvocationHandler)handler).getProxy());
+                handler = Proxy.getInvocationHandler( ( (ProxyReferenceInvocationHandler) handler ).getProxy() );
             }
             ClassLoader proxyClassLoader = aCompositeClass.getClassLoader();
 
             try
             {
                 Class[] interfaces = new Class[]{ aCompositeClass };
-                return aCompositeClass.cast(Proxy.newProxyInstance( proxyClassLoader, interfaces, handler ));
+                return aCompositeClass.cast( Proxy.newProxyInstance( proxyClassLoader, interfaces, handler ) );
             }
             catch( Exception e )
             {
                 throw new CompositeInstantiationException( e );
             }
-        } else
+        }
+        else
         {
-            throw new CompositeInstantiationException( "Not a composite object:"+anObject);
+            throw new CompositeInstantiationException( "Not a composite object:" + anObject );
         }
     }
 
     public <T extends Composite> T wrapInstance( Class<T> aCompositeClass, Object anObject )
     {
-        if( anObject instanceof Proxy && anObject instanceof Composite)
+        if( anObject instanceof Proxy && anObject instanceof Composite )
         {
             InvocationHandler wrappedHandler = Proxy.getInvocationHandler( anObject );
             if( wrappedHandler instanceof WrappedCompositeInvocationHandler )
@@ -147,7 +152,7 @@ public final class CompositeFactoryImpl
         try
         {
             Class[] interfaces = new Class[]{ aCompositeClass };
-            return aCompositeClass.cast(Proxy.newProxyInstance( proxyClassLoader, interfaces, handler ));
+            return aCompositeClass.cast( Proxy.newProxyInstance( proxyClassLoader, interfaces, handler ) );
         }
         catch( Exception e )
         {
@@ -168,10 +173,11 @@ public final class CompositeFactoryImpl
             {
                 WrappedCompositeInvocationHandler wrapperHandler = (WrappedCompositeInvocationHandler) handler;
                 return isInstance( anObjectType, wrapperHandler.getWrappedInstance() );
-            } else if( handler instanceof CompositeInvocationHandler )
+            }
+            else if( handler instanceof CompositeInvocationHandler )
             {
                 CompositeInvocationHandler oih = (CompositeInvocationHandler) handler;
-                return oih.getContext().getCompositeObject().isAssignableFrom( anObjectType);
+                return oih.getContext().getCompositeObject().isAssignableFrom( anObjectType );
             }
         }
         return false;
@@ -205,7 +211,7 @@ public final class CompositeFactoryImpl
         return compositeModel;
     }
 
-    public CompositeObject getCompositeObject( Composite aComposite)
+    public CompositeObject getCompositeObject( Composite aComposite )
     {
         return CompositeInvocationHandler.getInvocationHandler( aComposite ).getContext().getCompositeObject();
     }
