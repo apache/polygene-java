@@ -69,7 +69,7 @@ public final class CompositeContextImpl
 
     public InvocationInstance getInvocationInstance( Method method )
     {
-        List<InvocationInstance> instances = invocationInstancePool.get( method.getName() );
+        List<InvocationInstance> instances = invocationInstancePool.get( method );
 
         if( instances == null )
         {
