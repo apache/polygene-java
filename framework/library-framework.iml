@@ -14,7 +14,6 @@
     <orderEntry type="module" module-name="core-runtime" />
     <orderEntry type="library" name="jta-1_1-classes" level="project" />
     <orderEntry type="module" module-name="core-testsupport" />
-    <orderEntry type="module" module-name="core-tests" />
     <orderEntry type="library" name="js-1.6R5" level="project" />
     <orderEntryProperties />
   </component>
