@@ -9,8 +9,9 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="core-api" />
-    <orderEntry type="library" name="junit-4.1" level="project" />
     <orderEntry type="module" module-name="core-runtime" />
+    <orderEntry type="module" module-name="library-framework" />
+    <orderEntry type="library" name="junit-4.1" level="project" />
     <orderEntryProperties />
   </component>
 </module>
