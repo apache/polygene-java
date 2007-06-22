@@ -138,7 +138,7 @@ public class PropertiesMixinTest
     {
         m_proxy.setFoo( "aValue" );
         m_proxy.removeFoo( "aValue" );
-        assertEquals( "aValue", m_proxy.get() );
+        assertEquals( "aValue", m_proxy.getFoo() );
     }
 
     @Test
