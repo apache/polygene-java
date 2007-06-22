@@ -1,5 +1,7 @@
 /*
- * Copyright 2007 Rickard Öberg
+ * Copyright 2007 Rickard Öberg. All Rights Reserved.
+ * Copyright 2007 Alin Dreghiciu. All Rights Reserved.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); 
  * you may not use this file except in compliance with the License. 
  * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 
@@ -11,14 +13,14 @@
 */
 package org.qi4j.library.framework;
 
-import org.qi4j.api.annotation.AppliesTo;
-import org.qi4j.api.annotation.Modifies;
-import org.qi4j.api.annotation.Dependency;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import javax.transaction.TransactionManager;
 import javax.transaction.Transaction;
 import javax.transaction.Status;
+import org.qi4j.api.annotation.AppliesTo;
+import org.qi4j.api.annotation.Modifies;
+import org.qi4j.api.annotation.Dependency;
 
 /**
  * Transactional modifier. Implementation methods
@@ -27,8 +29,9 @@ import javax.transaction.Status;
  * and commit transactions.
  *
  * @see Transactional
+ * @see Propagation
  */
-@AppliesTo(Transactional.class)
+@AppliesTo( Transactional.class )
 public class TransactionalModifier
     implements InvocationHandler
 {
@@ -39,26 +42,68 @@ public class TransactionalModifier
     @Dependency Method method;
 
     // Constructors --------------------------------------------------
-    public TransactionalModifier( TransactionManager tm)
+    public TransactionalModifier( TransactionManager tm )
     {
         this.tm = tm;
     }
 
     // InvocationHandler implementation ------------------------------
-    public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
+    public Object invoke( Object proxy, Method method, Object[] args )
+        throws Throwable
     {
-        int tx = method.getAnnotation( Transactional.class ).value();
 
-        switch (tx)
+        switch ( method.getAnnotation( Transactional.class ).value() )
         {
-            case Transactional.NEVER:
+
+            case REQUIRED:
             {
-                if (tm.getStatus() == Status.STATUS_ACTIVE)
+                if ( tm.getStatus() != Status.STATUS_ACTIVE )
                 {
-                    Transaction current = tm.suspend();
+                    tm.begin();
                     try
                     {
-                        return next.invoke( proxy, method, args);
+                        Object result = next.invoke( proxy, method, args );
+                        tm.commit();
+                        return result;
+                    }
+                    catch( Throwable throwable )
+                    {
+                        tm.rollback();
+                        throw throwable;
+                    }
+                }
+            }
+
+            case SUPPORTS:
+            {
+                // nothing to do; should proceed regardles if there is an active transaction
+            }
+
+            case MANDATORY:
+            {
+                if ( tm.getStatus() != Status.STATUS_ACTIVE )
+                {
+                    throw new IllegalStateException( "Transaction was required but there is no available transaction.");
+                    // TODO other execption? what about the message?
+                }
+            }
+
+            case REQUIRES_NEW:
+            {
+                if ( tm.getStatus() == Status.STATUS_ACTIVE )
+                {
+                    Transaction current = tm.suspend();
+                    tm.begin();
+                    try
+                    {
+                        Object result = next.invoke( proxy, method, args );
+                        tm.commit();
+                        return result;
+                    }
+                    catch( Throwable throwable )
+                    {
+                        tm.rollback();
+                        throw throwable;
                     }
                     finally
                     {
@@ -68,48 +113,16 @@ public class TransactionalModifier
                 break;
             }
 
-            case Transactional.NOT_SUPPORTED:
+            case NOT_SUPPORTED:
             {
-                // ?
-                break;
-            }
-
-            case Transactional.REQUIRED:
-            {
-                if (tm.getStatus() != Status.STATUS_ACTIVE)
-                {
-                    tm.begin();
-                    try
-                    {
-                        Object result = next.invoke( proxy, method, args);
-                        tm.commit();
-                        return result;
-                    }
-                    catch( Throwable throwable )
-                    {
-                        tm.rollback();
-                        throw throwable;
-                    }
-                }
-            }
-
-            case Transactional.REQUIRES_NEW:
-            {
-                if (tm.getStatus() == Status.STATUS_ACTIVE)
+                if ( tm.getStatus() == Status.STATUS_ACTIVE )
                 {
                     Transaction current = tm.suspend();
-                    tm.begin();
                     try
                     {
-                        Object result = next.invoke( proxy, method, args);
-                        tm.commit();
-                        return result;
+                        return next.invoke( proxy, method, args );
                     }
-                    catch( Throwable throwable )
-                    {
-                        tm.rollback();
-                        throw throwable;
-                    } finally
+                    finally
                     {
                         tm.resume( current );
                     }
@@ -117,12 +130,19 @@ public class TransactionalModifier
                 break;
             }
 
-            case Transactional.SUPPORTS:
+            case NEVER:
             {
-                // ?
+                if ( tm.getStatus() == Status.STATUS_ACTIVE )
+                {
+                    throw new IllegalStateException( " Transaction is not supported but there is an active transaction.");
+                    // TODO other execption? what about the message?
+                }
+                break;
             }
+
         }
 
         return next.invoke( proxy, method, args);
     }
+    
 }

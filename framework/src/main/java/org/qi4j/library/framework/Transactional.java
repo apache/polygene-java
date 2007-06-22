@@ -1,5 +1,7 @@
 /*
- * Copyright 2007 Rickard Öberg
+ * Copyright 2007 Rickard Öberg. All Rights Reserved.
+ * Copyright 2007 Alin Dreghiciu. All Rights Reserved. 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); 
  * you may not use this file except in compliance with the License. 
  * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 
@@ -11,6 +13,13 @@
 */
 package org.qi4j.library.framework;
 
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 /**
  * Example transaction attribute.
  *
@@ -18,13 +27,11 @@ package org.qi4j.library.framework;
  * This is just as a sample of how tx support could work.
  *
  */
+@Retention( RetentionPolicy.RUNTIME )
+@Target( ElementType.METHOD )
+@Inherited
+@Documented
 public @interface Transactional
 {
-    public static final int NEVER = 0;
-    public static final int NOT_SUPPORTED = 1;
-    public static final int REQUIRED = 2;
-    public static final int REQUIRES_NEW = 3;
-    public static final int SUPPORTS = 4;
-
-    int value();
+    Propagation value() default Propagation.REQUIRED;
 }
