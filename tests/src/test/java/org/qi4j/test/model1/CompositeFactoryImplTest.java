@@ -49,7 +49,7 @@ public class CompositeFactoryImplTest extends TestCase
         try
         {
             Composition10 composition10 = compositeFactory.newInstance( Composition10.class );
-//            composition10.setFoo( "test value" );
+//            composition10.setValue( "test value" );
         }
         catch( Exception e )
         {
