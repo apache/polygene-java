@@ -78,7 +78,8 @@ public final class CompositeModel
         {
             if( !implementation.isGeneric() )
             {
-                if( aType.isAssignableFrom( implementation.getFragmentClass() ) )
+                Class fragmentClass = implementation.getFragmentClass();
+                if( aType.isAssignableFrom( fragmentClass ) )
                 {
                     impls.add( implementation );
                 }

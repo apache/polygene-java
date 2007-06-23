@@ -23,6 +23,6 @@ import org.qi4j.api.CompositeRepository;
  * <p/>
  * The cache is a Decorator for the CompositeRepository.
  */
-public interface CachedCompositeRepositoryComposite extends CompositeRepository, ObjectRepositoryCache, Composite
+public interface CachedCompositeRepositoryComposite extends CompositeRepository, CompositeRepositoryCache, Composite
 {
 }

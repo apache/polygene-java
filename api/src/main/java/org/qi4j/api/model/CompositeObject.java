@@ -1,5 +1,5 @@
 /*
- * Copyright 2007 Rickard Öberg
+ * Copyright 2007 Rickard ï¿½berg
  * Licensed under the Apache License, Version 2.0 (the "License"); 
  * you may not use this file except in compliance with the License. 
  * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 
@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.qi4j.api.Composite;
 import org.qi4j.api.annotation.Uses;
 
 /**

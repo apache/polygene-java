@@ -25,7 +25,7 @@ import org.qi4j.api.persistence.composite.PersistentComposite;
 public final class CompositeRepositoryCacheModifier
     implements CompositeRepository
 {
-    @Uses private ObjectRepositoryCache cache;
+    @Uses private CompositeRepositoryCache cache;
     @Modifies private CompositeRepository repository;
 
     public <T extends PersistentComposite> T getInstance( String anIdentity, Class<T> aType )

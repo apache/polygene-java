@@ -22,8 +22,8 @@ import org.qi4j.api.persistence.composite.PersistentComposite;
  * Proxy caches should implement this.
  */
 @ModifiedBy( CompositeRepositoryCacheModifier.class )
-@ImplementedBy( ObjectRepositoryCacheImpl.class )
-public interface ObjectRepositoryCache
+@ImplementedBy( CompositeRepositoryCacheImpl.class )
+public interface CompositeRepositoryCache
 {
     <T extends PersistentComposite> T getObject( String anIdentity );
 

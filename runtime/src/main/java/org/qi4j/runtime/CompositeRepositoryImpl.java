@@ -20,22 +20,21 @@ import org.qi4j.api.persistence.composite.PersistentComposite;
 
 /**
  * TODO
- *
  */
 public final class CompositeRepositoryImpl
     implements CompositeRepository
 {
-   private CompositeFactory factory;
+    private CompositeFactory factory;
 
-   public CompositeRepositoryImpl( CompositeFactory aFactory)
-   {
-      factory = aFactory;
-   }
+    public CompositeRepositoryImpl( CompositeFactory aFactory )
+    {
+        factory = aFactory;
+    }
 
-   public <T extends PersistentComposite> T getInstance(String anIdentity, Class<T> aType)
-   {
-      T object = factory.newInstance(aType);
-      object.setIdentity(anIdentity);
-      return object;
-   }
+    public <T extends PersistentComposite> T getInstance( String anIdentity, Class<T> aType )
+    {
+        T object = factory.newInstance( aType );
+        object.setIdentity( anIdentity );
+        return object;
+    }
 }

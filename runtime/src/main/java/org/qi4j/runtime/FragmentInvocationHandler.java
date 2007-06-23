@@ -21,10 +21,8 @@ import java.lang.reflect.InvocationTargetException;
 public class FragmentInvocationHandler
     implements InvocationHandler
 {
-    // Attributes ----------------------------------------------------
-    Object fragment;
+    private Object fragment;
 
-    // Constructors --------------------------------------------------
     public FragmentInvocationHandler()
     {
     }
@@ -51,6 +49,11 @@ public class FragmentInvocationHandler
             try
             {
                 return method.invoke( fragment, args );
+            }
+            catch( NullPointerException e )
+            {
+                e.printStackTrace();
+                throw e;
             }
             catch( InvocationTargetException e )
             {

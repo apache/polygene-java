@@ -21,8 +21,8 @@ import org.qi4j.api.persistence.composite.PersistentComposite;
 /**
  * Implementation of a proxy cache.
  */
-public final class ObjectRepositoryCacheImpl
-    implements ObjectRepositoryCache
+public final class CompositeRepositoryCacheImpl
+    implements CompositeRepositoryCache
 {
     private static Map<String, Object> cache = new HashMap<String, Object>();
 
