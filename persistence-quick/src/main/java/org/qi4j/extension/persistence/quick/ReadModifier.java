@@ -40,7 +40,7 @@ public final class ReadModifier
         Object result = method.invoke( proxy, args );
 
         // Store mixin
-        PersistentStorage storage = persistent.getPersistentRepository();
+        PersistentStorage storage = persistent.getPersistentStorage();
         if( storage != null && !method.getName().startsWith( "get" ) )
         {
             Object object = CompositeInvocationHandler.getInvocationHandler( proxy );

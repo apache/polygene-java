@@ -31,7 +31,7 @@ public final class PeristentCloneableModifier<T extends PersistentComposite>
     {
         T cloned = cloneable.clone();
         cloned.setIdentity( persistent.getIdentity() + "cloned" );
-        persistent.getPersistentRepository().create( factory.getThat( cloned ) );
+        persistent.getPersistentStorage().create( factory.getThat( cloned ) );
         return cloned;
     }
 }
