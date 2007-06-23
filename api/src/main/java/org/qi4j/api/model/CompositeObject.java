@@ -61,7 +61,9 @@ public final class CompositeObject
             // Find mixin
             Class<?> methodClass = method.getDeclaringClass();
             MixinModel mixinModel = locateMixin( methodClass );
-            if( mixinModel == null && ( aWrappedComposite == null || !aWrappedComposite.isAssignableFrom( methodClass ) ) && ( aWrappedInterface == null || !methodClass.isAssignableFrom( aWrappedInterface ) ) )
+            if( mixinModel == null
+                && ( aWrappedComposite == null || !aWrappedComposite.isAssignableFrom( methodClass ) ) 
+                && ( aWrappedInterface == null || !methodClass.isAssignableFrom( aWrappedInterface ) ) )
             {
                 throw new IllegalStateException( "No implementation for interface " + methodClass.getName() + " found in composite " + compositeModel.getCompositeClass().getName() );
             }

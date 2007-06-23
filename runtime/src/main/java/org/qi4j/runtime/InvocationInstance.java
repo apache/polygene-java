@@ -34,7 +34,8 @@ public final class InvocationInstance
         pool = aPool;
     }
 
-    public Object invoke( Object proxy, Method method, Object[] args, Object mixin ) throws Throwable
+    public Object invoke( Object proxy, Method method, Object[] args, Object mixin, Class mixinType )
+        throws Throwable
     {
         try
         {
@@ -51,7 +52,7 @@ public final class InvocationInstance
             }
             else
             {
-                proxyHandler.setContext( proxy, mixin );
+                proxyHandler.setContext( proxy, mixin, mixinType );
                 mixinInvocationHandler.setFragment( mixin );
                 if( firstModifier instanceof InvocationHandler )
                 {

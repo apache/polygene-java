@@ -35,7 +35,7 @@ import org.qi4j.api.persistence.Identity;
 public class CompositeInvocationHandler
     implements InvocationHandler
 {
-    private CompositeContextImpl context;
+    protected CompositeContextImpl context;
     private ConcurrentHashMap<Class, Object> mixins;
 
     public CompositeInvocationHandler( CompositeContextImpl aContext )
@@ -52,22 +52,20 @@ public class CompositeInvocationHandler
     // InvocationHandler implementation ------------------------------
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
     {
-
-        Class proxyInterface = method.getDeclaringClass();
-        Object mixin = getMixin( proxyInterface, proxy );
-
+        Class mixinType = method.getDeclaringClass();
+        Object mixin = getMixin( mixinType, proxy );
         if( mixin == null )
         {
-            if( proxyInterface.equals( Object.class ) )
+            if( mixinType.equals( Object.class ) )
             {
                 return invokeObject( proxy, method, args );
             }
         }
         // Invoke
-        return context.getInvocationInstance( method ).invoke( proxy, method, args, mixin );
+        return context.getInvocationInstance( method ).invoke( proxy, method, args, mixin, mixinType );
     }
 
-    private Object getMixin( Class aProxyInterface, Object aProxy )
+    protected Object getMixin( Class aProxyInterface, Object aProxy )
     {
         Object mixin = mixins.get( aProxyInterface );
         if( mixin == null && !aProxyInterface.equals( Object.class ))
@@ -199,7 +197,7 @@ public class CompositeInvocationHandler
         return mixinModel;
     }
 
-    private Object invokeObject( Object proxy, Method method, Object[] args )
+    protected Object invokeObject( Object proxy, Method method, Object[] args )
     {
         if( method.getName().equals( "hashCode" ) )
         {

@@ -44,11 +44,12 @@ public final class ProxyReferenceInvocationHandler
 
     public Class getMixinType()
     {
-        return mixin.getClass();
+        return mixinType;
     }
 
-    public void setContext( Object aProxy, Object aMixin )
+    public void setContext( Object aProxy, Object aMixin, Class mixinType )
     {
+        this.mixinType = mixinType;
         proxy = aProxy;
         mixin = aMixin;
     }

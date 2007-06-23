@@ -143,12 +143,12 @@ public final class CompositeFactoryImpl
 //
 
         CompositeObject wrappedCompositeObject = null;
-//        if( anObject instanceof Proxy )
-//        {
-//            CompositeInvocationHandler compositeInvocationHandler = CompositeInvocationHandler.getInvocationHandler( anObject );
-//            CompositeContext compositeContext = compositeInvocationHandler.getContext();
-//            wrappedCompositeObject = compositeContext.getCompositeObject();
-//        }
+        if( anObject instanceof Proxy )
+        {
+            CompositeInvocationHandler compositeInvocationHandler = CompositeInvocationHandler.getInvocationHandler( anObject );
+            CompositeContext compositeContext = compositeInvocationHandler.getContext();
+            wrappedCompositeObject = compositeContext.getCompositeObject();
+        }
 
         CompositeModel compositeModel = getCompositeModel( aCompositeClass );
         Class wrappedInterface = anObject.getClass().getInterfaces()[ 0 ]; // Returns the top Composite interface

@@ -33,11 +33,20 @@ public final class WrappedCompositeInvocationHandler
     // InvocationHandler implementation ------------------------------
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
     {
-        if( Object.class.equals( method.getDeclaringClass() ) )
+        Class mixinType = method.getDeclaringClass();
+        Object mixin = getMixin( mixinType, proxy );
+        if( mixin == null )
         {
-            return method.invoke( wrappedInstance, args );
+            if( mixinType.equals( Object.class ) )
+            {
+                return invokeObject( proxy, method, args );
+            }
+            if( mixinType.isInstance( wrappedInstance) )
+            {
+                mixin = wrappedInstance;
+            }
         }
-
-        return super.invoke( proxy, method, args );
+        // Invoke
+        return context.getInvocationInstance( method ).invoke( proxy, method, args, mixin, mixinType );
     }
 }

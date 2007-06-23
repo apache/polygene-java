@@ -22,6 +22,7 @@ import org.qi4j.api.CompositeRepository;
 import org.qi4j.api.persistence.PersistentStorage;
 import org.qi4j.cache.CachedCompositeRepositoryComposite;
 import org.qi4j.runtime.CompositeFactoryImpl;
+import org.qi4j.runtime.CompositeRepositoryImpl;
 import org.qi4j.test.model3.State1;
 import org.qi4j.test.model3.State1SerializableImpl;
 import org.qi4j.test.model3.TestComposite;
@@ -43,13 +44,22 @@ public class ReferenceTest extends TestCase
         State1 state = new State1SerializableImpl();
         state.setState1( "niclas" );
         subject.create();
+
+        TestComposite testComposite = repository.getInstance( "1234", TestComposite.class );
+        assertNotNull( testComposite );
+        State1 state1 = testComposite.getState();
+//        assertNotNull( state1 );
+//        assertEquals( State1SerializableImpl.class , state1.getClass() );
+//        assertEquals( "niclas", state1.getState1() );
     }
 
     protected void setUp() throws Exception
     {
         factory = new CompositeFactoryImpl();
-        CachedCompositeRepositoryComposite repo = factory.newInstance( CachedCompositeRepositoryComposite.class );
+        CompositeRepository lowRepo = new CompositeRepositoryImpl( factory );
+        CachedCompositeRepositoryComposite repo = factory.wrapInstance( CachedCompositeRepositoryComposite.class, lowRepo );
         SerializablePersistenceSpi subsystem = new MapPersistenceProvider();
         storage = new SerializablePersistence( subsystem, factory, repo );
+        repository = repo;
     }
 }
