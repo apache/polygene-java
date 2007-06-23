@@ -14,14 +14,14 @@
  */
 package org.qi4j.extension.persistence.quick;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import org.qi4j.api.annotation.ModifiedBy;
 import org.qi4j.api.persistence.modifier.PersistentStorageReferenceModifier;
 import org.qi4j.api.persistence.modifier.PersistentStorageTraceModifier;
 import org.qi4j.spi.persistence.SerializablePersistenceSpi;
-import java.rmi.MarshalledObject;
-import java.util.HashMap;
-import java.util.Map;
-import java.io.IOException;
+import org.qi4j.spi.persistence.SerializedObject;
 
 
 /**
@@ -31,7 +31,12 @@ import java.io.IOException;
 public final class MapPersistenceProvider
     implements SerializablePersistenceSpi
 {
-    Map<String, Map<Class, MarshalledObject>> repository = new HashMap<String, Map<Class, MarshalledObject>>();
+    private Map<String, Map<Class, SerializedObject>> repository;
+
+    public MapPersistenceProvider()
+    {
+        repository = new HashMap<String, Map<Class, SerializedObject>>();
+    }
 
     public void removeInstance( String aId )
     {
@@ -43,12 +48,12 @@ public final class MapPersistenceProvider
         repository = null;
     }
 
-    public Map<Class, MarshalledObject> getInstance( String aId )
+    public Map<Class, SerializedObject> getInstance( String aId )
     {
         return repository.get( aId );
     }
 
-    public void putInstance( String aId, Map<Class, MarshalledObject> aPersistentMixins )
+    public void putInstance( String aId, Map<Class, SerializedObject> aPersistentMixins )
     {
         repository.put( aId, aPersistentMixins );
     }

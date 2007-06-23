@@ -23,11 +23,11 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
-import java.rmi.MarshalledObject;
 import java.util.HashMap;
 import java.util.Map;
 import org.qi4j.api.CompositeInstantiationException;
 import org.qi4j.spi.persistence.SerializablePersistenceSpi;
+import org.qi4j.spi.persistence.SerializedObject;
 
 public class RandomAccessFileProvider
     implements SerializablePersistenceSpi
@@ -71,7 +71,7 @@ public class RandomAccessFileProvider
         initializeStore( storageDir );
     }
 
-    public void putInstance( String identity, Map<Class, MarshalledObject> mixins )
+    public void putInstance( String identity, Map<Class, SerializedObject> mixins )
     {
         try
         {
@@ -130,14 +130,14 @@ public class RandomAccessFileProvider
         }
     }
 
-    public Map<Class, MarshalledObject> getInstance( String identity )
+    public Map<Class, SerializedObject> getInstance( String identity )
     {
         RandomAccessRecord record = index.get( identity );
         if( record == null )
         {
             return null;
         }
-        Map<Class, MarshalledObject> mixins = null;
+        Map<Class, SerializedObject> mixins = null;
         try
         {
             if( validatingStructure )
@@ -270,7 +270,7 @@ public class RandomAccessFileProvider
         writeIndexRecord( lastIndexPosition, record );
     }
 
-    private Map<Class, MarshalledObject> deserializeData( byte[] data )
+    private Map<Class, SerializedObject> deserializeData( byte[] data )
         throws IOException, ClassNotFoundException
     {
         ByteArrayInputStream bais = null;
@@ -279,7 +279,7 @@ public class RandomAccessFileProvider
         {
             bais = new ByteArrayInputStream( data );
             ois = new ObjectInputStream( bais );
-            Map<Class, MarshalledObject> mixinsmixins = (Map<Class, MarshalledObject>) ois.readObject();
+            Map<Class, SerializedObject> mixinsmixins = (Map<Class, SerializedObject>) ois.readObject();
             return mixinsmixins;
         }
         finally
@@ -289,7 +289,7 @@ public class RandomAccessFileProvider
         }
     }
 
-    private byte[] serializeData( Map<Class, MarshalledObject> mixins )
+    private byte[] serializeData( Map<Class, SerializedObject> mixins )
         throws IOException
     {
         ByteArrayOutputStream baos = null;

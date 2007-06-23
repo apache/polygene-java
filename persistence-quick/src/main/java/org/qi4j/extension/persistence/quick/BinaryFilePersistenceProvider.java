@@ -32,6 +32,7 @@ import java.util.Random;
 import org.qi4j.api.CompositeInstantiationException;
 import org.qi4j.api.persistence.ObjectNotFoundException;
 import org.qi4j.spi.persistence.SerializablePersistenceSpi;
+import org.qi4j.spi.persistence.SerializedObject;
 
 public final class BinaryFilePersistenceProvider
     implements SerializablePersistenceSpi
@@ -48,7 +49,7 @@ public final class BinaryFilePersistenceProvider
         loadIndexFile();
     }
 
-    public void putInstance( String anId, Map<Class, MarshalledObject> mixins )
+    public void putInstance( String anId, Map<Class, SerializedObject> mixins )
     {
         synchronized( this )
         {
@@ -76,7 +77,7 @@ public final class BinaryFilePersistenceProvider
         }
     }
 
-    public Map<Class, MarshalledObject> getInstance( String anId )
+    public Map<Class, SerializedObject> getInstance( String anId )
     {
         FileInputStream fis = null;
         BufferedInputStream bis = null;
@@ -93,7 +94,7 @@ public final class BinaryFilePersistenceProvider
             {
                 throw new IllegalStateException( "The object retrieved for [" + anId + "] contained another ID: " + idOnFile );
             }
-            return (Map<Class, MarshalledObject>) ois.readObject();
+            return (Map<Class, SerializedObject>) ois.readObject();
         }
         catch( FileNotFoundException e )
         {

@@ -14,13 +14,12 @@
  */
 package org.qi4j.extension.persistence.quick;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.Proxy;
-import java.rmi.MarshalledObject;
 import java.util.HashMap;
 import java.util.Map;
 import org.qi4j.api.CompositeFactory;
+import org.qi4j.api.CompositeRepository;
 import org.qi4j.api.annotation.ModifiedBy;
 import org.qi4j.api.persistence.ObjectNotFoundException;
 import org.qi4j.api.persistence.PersistenceException;
@@ -31,6 +30,7 @@ import org.qi4j.api.persistence.modifier.PersistentStorageTraceModifier;
 import org.qi4j.runtime.CompositeInvocationHandler;
 import org.qi4j.runtime.ProxyReferenceInvocationHandler;
 import org.qi4j.spi.persistence.SerializablePersistenceSpi;
+import org.qi4j.spi.persistence.SerializedObject;
 
 @ModifiedBy( { PersistentStorageTraceModifier.class, PersistentStorageReferenceModifier.class } )
 public final class SerializablePersistence
@@ -38,11 +38,13 @@ public final class SerializablePersistence
 {
     SerializablePersistenceSpi delegate;
     private CompositeFactory compositeFactory;
+    private CompositeRepository compositeRepository;
 
-    public SerializablePersistence( SerializablePersistenceSpi aDelegate, CompositeFactory compositeFactory )
+    public SerializablePersistence( SerializablePersistenceSpi aDelegate, CompositeFactory compositeFactory, CompositeRepository compositeRepository )
     {
         delegate = aDelegate;
         this.compositeFactory = compositeFactory;
+        this.compositeRepository = compositeRepository;
     }
 
     public void create( PersistentComposite aProxy )
@@ -51,20 +53,12 @@ public final class SerializablePersistence
         CompositeInvocationHandler handler = CompositeInvocationHandler.getInvocationHandler( aProxy );
         Map<Class, Object> mixins = handler.getMixins();
 
-        Map<Class, MarshalledObject> persistentMixins = new HashMap<Class, MarshalledObject>();
+        Map<Class, SerializedObject> persistentMixins = new HashMap<Class, SerializedObject>();
         for( Map.Entry<Class, Object> entry : mixins.entrySet() )
         {
             if( entry.getValue() instanceof Serializable )
             {
-                try
-                {
-                    persistentMixins.put( entry.getKey(), new MarshalledObject( entry.getValue() ) );
-                }
-                catch( IOException e )
-                {
-                    // TODO Better message
-                    throw new PersistenceException( e );
-                }
+                persistentMixins.put( entry.getKey(), new SerializedObject( entry.getValue() ) );
             }
         }
 
@@ -76,7 +70,7 @@ public final class SerializablePersistence
         throws PersistenceException
     {
         String id = aProxy.getIdentity();
-        Map<Class, MarshalledObject> mixins = delegate.getInstance( id );
+        Map<Class, SerializedObject> mixins = delegate.getInstance( id );
         if( mixins == null )
         {
             throw new ObjectNotFoundException( "Object with identity " + id + " does not exist" );
@@ -85,20 +79,19 @@ public final class SerializablePersistence
         ProxyReferenceInvocationHandler proxyHandler = (ProxyReferenceInvocationHandler) Proxy.getInvocationHandler( aProxy );
         CompositeInvocationHandler handler = CompositeInvocationHandler.getInvocationHandler( compositeFactory.getThat( aProxy ) );
         Map<Class, Object> deserializedMixins = handler.getMixins();
-        for( Map.Entry<Class, MarshalledObject> entry : mixins.entrySet() )
+        for( Map.Entry<Class, SerializedObject> entry : mixins.entrySet() )
         {
-            MarshalledObject value = entry.getValue();
-
+            SerializedObject value = entry.getValue();
+            Object deserializedMixin = null;
             try
             {
-                Object deserializedMixin = value.get();
-                deserializedMixins.put( entry.getKey(), deserializedMixin );
+                deserializedMixin = value.getObject( compositeRepository );
             }
-            catch( Exception e )
+            catch( ClassNotFoundException e )
             {
-                // TODO Better message
                 throw new PersistenceException( e );
             }
+            deserializedMixins.put( entry.getKey(), deserializedMixin );
         }
 
         try
@@ -117,26 +110,18 @@ public final class SerializablePersistence
         ProxyReferenceInvocationHandler handler = (ProxyReferenceInvocationHandler) Proxy.getInvocationHandler( aProxy );
 
         String identity = aProxy.getIdentity();
-        Map<Class, MarshalledObject> mixins = delegate.getInstance( identity );
+        Map<Class, SerializedObject> mixins = delegate.getInstance( identity );
         if( mixins != null )
         {
-            try
-            {
-                Class mixinType = handler.getMixinType();
-                MarshalledObject oldValueObject = mixins.get( mixinType );
+            Class mixinType = handler.getMixinType();
+            SerializedObject oldValueObject = mixins.get( mixinType );
 
-                // Only update if there already were a value object. Otherwise ignore.
-                if( oldValueObject != null )
-                {
-                    MarshalledObject newValueObject = new MarshalledObject( aMixin );
-                    mixins.put( mixinType, newValueObject );
-                    delegate.putInstance( identity, mixins );
-                }
-            }
-            catch( IOException e )
+            // Only update if there already were a value object. Otherwise ignore.
+            if( oldValueObject != null )
             {
-                // TODO Better message
-                throw new PersistenceException( e );
+                SerializedObject newValueObject = new SerializedObject( aMixin );
+                mixins.put( mixinType, newValueObject );
+                delegate.putInstance( identity, mixins );
             }
         }
     }

@@ -13,8 +13,6 @@
 
 package org.qi4j.extension.persistence.quick;
 
-import java.io.IOException;
-
 public class ObjectDeletionException extends RuntimeException
 {
     public ObjectDeletionException( String message, Throwable cause )

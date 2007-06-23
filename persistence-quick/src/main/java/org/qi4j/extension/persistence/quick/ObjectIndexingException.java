@@ -13,12 +13,10 @@
 
 package org.qi4j.extension.persistence.quick;
 
-import java.io.IOException;
-
 public class ObjectIndexingException extends RuntimeException
 {
     public ObjectIndexingException( String message, Throwable cause )
     {
-        super( message, cause);
+        super( message, cause );
     }
 }
