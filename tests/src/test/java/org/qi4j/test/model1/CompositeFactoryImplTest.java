@@ -7,15 +7,17 @@ import org.qi4j.runtime.CompositeFactoryImpl;
 
 public class CompositeFactoryImplTest extends TestCase
 {
-    CompositeFactory compositeFactory;
+    private CompositeFactory compositeFactory;
 
-    protected void setUp() throws Exception
+    protected void setUp()
+        throws Exception
     {
         super.setUp();
         compositeFactory = new CompositeFactoryImpl();
     }
 
-    public void testNewInstanceNotExtendingComposite() throws Exception
+    public void testNewInstanceNotExtendingComposite()
+        throws Exception
     {
 
         try
@@ -30,7 +32,8 @@ public class CompositeFactoryImplTest extends TestCase
         }
     }
 
-    public void testNewComposition9() throws Exception
+    public void testNewComposition9()
+        throws Exception
     {
         try
         {
@@ -44,7 +47,8 @@ public class CompositeFactoryImplTest extends TestCase
         }
     }
 
-    public void testNewComposition10() throws Exception
+    public void testNewComposition10()
+        throws Exception
     {
         try
         {
