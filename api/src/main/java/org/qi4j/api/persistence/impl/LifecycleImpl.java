@@ -28,7 +28,7 @@ public final class LifecycleImpl
 
     public void create() throws PersistenceException
     {
-        PersistentStorage storage = meAsPersistent.getPersistentRepository();
+        PersistentStorage storage = meAsPersistent.getPersistentStorage();
         if( storage == null )
         {
             throw new PersistenceException( "No storage set for object" );
@@ -38,7 +38,7 @@ public final class LifecycleImpl
 
     public void delete() throws PersistenceException
     {
-        PersistentStorage storage = meAsPersistent.getPersistentRepository();
+        PersistentStorage storage = meAsPersistent.getPersistentStorage();
         if( storage == null )
         {
             throw new PersistenceException( "No storage set for object" );

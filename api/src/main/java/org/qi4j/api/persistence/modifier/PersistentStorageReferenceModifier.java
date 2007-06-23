@@ -34,14 +34,14 @@ public final class PersistentStorageReferenceModifier
     public void create( PersistentComposite aProxy )
     {
         storage.create( aProxy );
-        aProxy.setPersistentRepository( repo );
+        aProxy.setPersistentStorage( repo );
     }
 
     public void read( PersistentComposite aProxy )
         throws ObjectNotFoundException
     {
         storage.read( aProxy );
-        aProxy.setPersistentRepository( repo );
+        aProxy.setPersistentStorage( repo );
     }
 
     public void update( PersistentComposite aProxy, Serializable aMixin )
@@ -52,6 +52,6 @@ public final class PersistentStorageReferenceModifier
     public void delete( PersistentComposite aProxy )
     {
         storage.delete( aProxy );
-        aProxy.setPersistentRepository( null );
+        aProxy.setPersistentStorage( null );
     }
 }

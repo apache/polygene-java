@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module version="4" relativePaths="true" type="JAVA_MODULE">
-  <component name="ModuleRootManager" />
+<module relativePaths="true" type="JAVA_MODULE" version="4">
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
     <content url="file://$MODULE_DIR$">
@@ -14,6 +13,8 @@
     <orderEntry type="module" module-name="library-framework" />
     <orderEntry type="library" name="junit-4.1" level="project" />
     <orderEntry type="module" module-name="core-cache" />
+    <orderEntry type="module" module-name="extension-persistence-quick" />
+    <orderEntry type="module" module-name="core-spi" />
     <orderEntryProperties />
   </component>
 </module>

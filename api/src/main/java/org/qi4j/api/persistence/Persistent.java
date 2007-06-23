@@ -27,7 +27,7 @@ import org.qi4j.api.persistence.impl.PersistentImpl;
 @ImplementedBy( PersistentImpl.class )
 public interface Persistent
 {
-    void setPersistentRepository( PersistentStorage aStorage );
+    void setPersistentStorage( PersistentStorage aStorage );
 
-    PersistentStorage getPersistentRepository();
+    PersistentStorage getPersistentStorage();
 }

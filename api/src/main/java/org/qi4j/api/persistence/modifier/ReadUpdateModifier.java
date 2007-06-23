@@ -40,7 +40,7 @@ public final class ReadUpdateModifier
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
     {
         // Load mixin
-        PersistentStorage storage = persistent.getPersistentRepository();
+        PersistentStorage storage = persistent.getPersistentStorage();
         if( storage != null && isReadMethod( method ) )
         {
             storage.read( persistent );
