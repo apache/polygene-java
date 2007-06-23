@@ -27,6 +27,7 @@ import org.qi4j.api.DependencyResolver;
 import org.qi4j.api.FragmentFactory;
 import org.qi4j.api.model.CompositeModel;
 import org.qi4j.api.model.CompositeObject;
+import org.qi4j.api.model.CompositeContext;
 import org.qi4j.spi.DefaultDependencyResolver;
 
 /**
@@ -123,27 +124,34 @@ public final class CompositeFactoryImpl
 
     public <T extends Composite> T wrapInstance( Class<T> aCompositeClass, Object anObject )
     {
-        if( anObject instanceof Proxy && anObject instanceof Composite )
-        {
-            InvocationHandler wrappedHandler = Proxy.getInvocationHandler( anObject );
-            if( wrappedHandler instanceof WrappedCompositeInvocationHandler )
-            {
-                Object wrappedObject = ( (WrappedCompositeInvocationHandler) wrappedHandler ).getWrappedInstance();
-                if( aCompositeClass.isInstance( wrappedObject ) )
-                {
-                    anObject = wrappedObject;
-                }
-            }
-        }
+// TODO: After discussing with Rickard, this should not happen anymore. And therefor uncommented. Rickard; Confirm, then remove!
+//        // If we are wrapping a Composite...
+//        if( anObject instanceof Proxy && anObject instanceof Composite )
+//        {
+//            InvocationHandler wrappedHandler = Proxy.getInvocationHandler( anObject );
+//            // ... and that Composite is already a wrapped instance....
+//            if( wrappedHandler instanceof WrappedCompositeInvocationHandler )
+//            {
+//                // ... then unwrap it.
+//                Object wrappedObject = ( (WrappedCompositeInvocationHandler) wrappedHandler ).getWrappedInstance();
+//                if( aCompositeClass.isInstance( wrappedObject ) )
+//                {
+//                    anObject = wrappedObject;
+//                }
+//            }
+//        }
+//
 
         CompositeObject wrappedCompositeObject = null;
-        if( anObject instanceof Proxy )
-        {
-            wrappedCompositeObject = CompositeInvocationHandler.getInvocationHandler( anObject ).getContext().getCompositeObject();
-        }
+//        if( anObject instanceof Proxy )
+//        {
+//            CompositeInvocationHandler compositeInvocationHandler = CompositeInvocationHandler.getInvocationHandler( anObject );
+//            CompositeContext compositeContext = compositeInvocationHandler.getContext();
+//            wrappedCompositeObject = compositeContext.getCompositeObject();
+//        }
 
         CompositeModel compositeModel = getCompositeModel( aCompositeClass );
-        Class wrappedInterface = anObject.getClass().getInterfaces()[ 0 ];
+        Class wrappedInterface = anObject.getClass().getInterfaces()[ 0 ]; // Returns the top Composite interface
         CompositeObject compositeObject = new CompositeObject( compositeModel, aCompositeClass, wrappedCompositeObject, wrappedInterface );
         CompositeContextImpl context = getCompositeContext( compositeObject );
         CompositeInvocationHandler handler = new WrappedCompositeInvocationHandler( anObject, context );
