@@ -85,7 +85,7 @@ public final class SerializablePersistence
             Object deserializedMixin = null;
             try
             {
-                deserializedMixin = value.getObject( compositeRepository );
+                deserializedMixin = value.getObject( compositeRepository, compositeFactory );
             }
             catch( ClassNotFoundException e )
             {
