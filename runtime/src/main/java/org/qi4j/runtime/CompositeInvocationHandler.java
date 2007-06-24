@@ -93,15 +93,15 @@ public class CompositeInvocationHandler
     }
 
     // Private -------------------------------------------------------
-    private Object initializeMixin( Class aProxyInterface, Object proxy )
+    private Object initializeMixin( Class mixinType, Object proxy )
     {
-        MixinModel mixinModel = findMixinModel( aProxyInterface );
+        MixinModel mixinModel = findMixinModel( mixinType );
 
         Object instance = null;
         if( mixinModel == null )
         {
             // Check if wrapped instance can handle the call directly
-            if( getWrappedInstance() != null && aProxyInterface.isInstance( getWrappedInstance() ) )
+            if( getWrappedInstance() != null && mixinType.isInstance( getWrappedInstance() ) )
             {
                 return null;
             }
@@ -109,12 +109,12 @@ public class CompositeInvocationHandler
             // Try the interface itself
             try
             {
-                instance = context.getFragmentFactory().newFragment( new MixinModel( aProxyInterface ), context.getCompositeObject() );
+                instance = context.getFragmentFactory().newFragment( new MixinModel( mixinType ), context.getCompositeObject() );
             }
             catch( CompositeInstantiationException e )
             {
                 // Didn't work
-                throw new CompositeInstantiationException( "Could not find implementation for " + aProxyInterface.getName() + " in composite " + context.getCompositeObject().getCompositeInterface().getName() );
+                throw new CompositeInstantiationException( "Could not find implementation for " + mixinType.getName() + " in composite " + context.getCompositeObject().getCompositeInterface().getName() );
             }
 
         }
@@ -133,7 +133,7 @@ public class CompositeInvocationHandler
         }
 
         // Successfully instantiated
-        mixins.put( aProxyInterface, instance );
+        mixins.put( mixinType, instance );
         return instance;
     }
 

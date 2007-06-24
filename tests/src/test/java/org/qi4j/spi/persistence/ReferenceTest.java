@@ -42,15 +42,16 @@ public class ReferenceTest extends TestCase
         subject.setPersistentStorage( storage );
         subject.setIdentity( "1234" );
         State1 state = new State1SerializableImpl();
+        subject.setState( state );
         state.setState1( "niclas" );
         subject.create();
 
         TestComposite testComposite = repository.getInstance( "1234", TestComposite.class );
         assertNotNull( testComposite );
         State1 state1 = testComposite.getState();
-//        assertNotNull( state1 );
-//        assertEquals( State1SerializableImpl.class , state1.getClass() );
-//        assertEquals( "niclas", state1.getState1() );
+        assertNotNull( state1 );
+        assertEquals( State1SerializableImpl.class , state1.getClass() );
+        assertEquals( "niclas", state1.getState1() );
     }
 
     protected void setUp() throws Exception

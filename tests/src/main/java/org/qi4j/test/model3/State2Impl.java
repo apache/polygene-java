@@ -16,8 +16,10 @@
  */
 package org.qi4j.test.model3;
 
+import java.io.Serializable;
+
 public class State2Impl
-    implements State2
+    implements State2, Serializable
 {
     private State1 state;
 
