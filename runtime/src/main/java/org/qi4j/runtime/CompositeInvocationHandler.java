@@ -27,13 +27,14 @@ import org.qi4j.api.annotation.Uses;
 import org.qi4j.api.model.CompositeContext;
 import org.qi4j.api.model.CompositeObject;
 import org.qi4j.api.model.MixinModel;
+import org.qi4j.api.model.MixinsArbitrator;
 import org.qi4j.api.persistence.Identity;
 
 /**
  * InvocationHandler for proxy objects.
  */
 public class CompositeInvocationHandler
-    implements InvocationHandler
+    implements InvocationHandler, MixinsArbitrator
 {
     protected CompositeContextImpl context;
     private ConcurrentHashMap<Class, Object> mixins;
@@ -78,6 +79,12 @@ public class CompositeInvocationHandler
     public Map<Class, Object> getMixins()
     {
         return mixins;
+    }
+
+    public void setMixins( Map<Class, Object> mixins )
+    {
+        this.mixins = new ConcurrentHashMap<Class, Object>();
+        this.mixins.putAll( mixins );
     }
 
     public CompositeContext getContext()

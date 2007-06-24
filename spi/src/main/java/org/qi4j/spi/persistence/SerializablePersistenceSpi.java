@@ -14,13 +14,16 @@
  */
 package org.qi4j.spi.persistence;
 
-import java.util.Map;
 import java.io.IOException;
+import java.util.Map;
 
 public interface SerializablePersistenceSpi
 {
     void putInstance( String anId, Map<Class, SerializedObject> mixins );
+
     Map<Class, SerializedObject> getInstance( String identity );
+
     void removeInstance( String identity );
+
     void close() throws IOException;
 }

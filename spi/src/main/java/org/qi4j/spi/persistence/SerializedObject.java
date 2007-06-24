@@ -24,11 +24,16 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
+import java.lang.reflect.Proxy;
 import java.util.HashMap;
+import java.util.Map;
 import org.qi4j.api.Composite;
+import org.qi4j.api.CompositeFactory;
 import org.qi4j.api.CompositeRepository;
 import org.qi4j.api.model.CompositeObject;
+import org.qi4j.api.model.MixinsArbitrator;
 import org.qi4j.api.persistence.composite.PersistentComposite;
+
 
 public class SerializedObject
     implements Serializable
@@ -50,23 +55,24 @@ public class SerializedObject
         catch( IOException e )
         {
             // can not happen, as there is no underlying I/O to go wrong!
+            throw new IllegalStateException( "This exception should not be possible.", e );
         }
 
     }
 
-    public Object getObject( CompositeRepository repository )
+    public Object getObject( CompositeRepository repository, CompositeFactory factory )
         throws ClassNotFoundException
     {
         try
         {
             ByteArrayInputStream in = new ByteArrayInputStream( data );
-            CompositeInputStream stream = new CompositeInputStream( in, repository );
+            CompositeInputStream stream = new CompositeInputStream( in, repository, factory );
             return stream.readObject();
         }
         catch( IOException e )
         {
             // can not happen, as there is no underlying I/O to go wrong!
-            return null;
+            throw new IllegalStateException( "This exception should not be possible.", e );
         }
     }
 
@@ -81,13 +87,30 @@ public class SerializedObject
 
         protected Object replaceObject( Object obj ) throws IOException
         {
-            if( obj instanceof PersistentComposite )
+            if( obj instanceof Composite )
             {
-                PersistentComposite composite = (PersistentComposite) obj;
-                String id = composite.getIdentity();
+                Composite composite = (Composite) obj;
                 CompositeObject compositeObject = composite.getCompositeObject();
                 Class compositeInterface = compositeObject.getCompositeInterface();
-                return new IdentityHolder( id, compositeInterface );
+                if( obj instanceof PersistentComposite )
+                {
+                    String id = ( (PersistentComposite) composite ).getIdentity();
+                    return new IdentityHolder( id, compositeInterface );
+                }
+                else
+                {
+                    Map<Class, Object> mixinsToSave = new HashMap<Class, Object>();
+                    MixinsArbitrator mixinsHolder = (MixinsArbitrator) Proxy.getInvocationHandler( obj );
+                    Map<Class, Object> existingMixins = mixinsHolder.getMixins();
+                    for( Map.Entry<Class, Object> entry : existingMixins.entrySet() )
+                    {
+                        if( entry.getValue() instanceof Serializable )
+                        {
+                            mixinsToSave.put( entry.getKey(), entry.getValue() );
+                        }
+                    }
+                    return new CompositeHolder( mixinsToSave, compositeInterface );
+                }
             }
             return obj;
         }
@@ -97,11 +120,13 @@ public class SerializedObject
     private final class CompositeInputStream extends ObjectInputStream
     {
         private CompositeRepository repository;
+        private CompositeFactory factory;
 
-        public CompositeInputStream( InputStream in, CompositeRepository repository )
+        public CompositeInputStream( InputStream in, CompositeRepository repository, CompositeFactory factory )
             throws IOException
         {
             super( in );
+            this.factory = factory;
             this.repository = repository;
             enableResolveObject( true );
         }
@@ -116,11 +141,21 @@ public class SerializedObject
                 Object instance = repository.getInstance( id, clazz );
                 return instance;
             }
+            if( obj instanceof CompositeHolder )
+            {
+                CompositeHolder holder = (CompositeHolder) obj;
+                Class<Composite> compositeInterface = holder.getCompositeInterface();
+                Map<Class, Object> mixins = holder.getMixins();
+                Composite composite = factory.newInstance( compositeInterface );
+                MixinsArbitrator mixinHandler = (MixinsArbitrator) Proxy.getInvocationHandler( composite );
+                mixinHandler.setMixins( mixins );
+            }
             return obj;
         }
     }
 
     private final class IdentityHolder
+        implements Serializable
     {
         private String identity;
         private Class<PersistentComposite> clazz;
@@ -139,6 +174,29 @@ public class SerializedObject
         public Class<PersistentComposite> getPersistentCompositeClass()
         {
             return clazz;
+        }
+    }
+
+    private class CompositeHolder
+        implements Serializable
+    {
+        private Map<Class, Object> mixins;
+        private Class<Composite> compositeInterface;
+
+        public CompositeHolder( Map<Class, Object> mixins, Class<Composite> compositeInterface )
+        {
+            this.mixins = mixins;
+            this.compositeInterface = compositeInterface;
+        }
+
+        public Map<Class, Object> getMixins()
+        {
+            return mixins;
+        }
+
+        public Class<Composite> getCompositeInterface()
+        {
+            return compositeInterface;
         }
     }
 }
