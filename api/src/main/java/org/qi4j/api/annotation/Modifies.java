@@ -22,8 +22,38 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * This annotation is used in modifier fields to get a reference
- * to the mixin whose methods the modifier adapts.
+ * This annotation is required once in each modifier, to mark the
+ * field where the next element in the call sequence should be
+ * written.
+ * <p/>
+ * The type of the field must be of the same type as the modifier
+ * itself, or an InvocationHandler.
+ * <p/>
+ * If the modifier is an InvocationHandler and the field marked
+ * by this annotation is not an InvocationHandler, then TODO:??? WHAT ???
+ * <p/>
+ *
+ * Example;
+ * <pre><code>
+ * public interface MyStuff
+ * {
+ *     void doSomething();
+ * }
+ *
+ * public class MyStuffModifier
+ *     implements MyStuff
+ * {
+ *     @Modifier MyStuff next;
+ *
+ *     public void doSomething()
+ *     {
+ *         // HERE DO THE MODIFIER STUFF.
+ *
+ *         // Delegate to the underlying mixin/modifier.
+ *         next.doSomething();
+ *     }
+ * }
+ * </code></pre>
  */
 @Retention( RetentionPolicy.RUNTIME )
 @Target( ElementType.FIELD )

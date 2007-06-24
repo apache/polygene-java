@@ -23,8 +23,65 @@ import java.lang.annotation.Target;
 
 
 /**
- * This annotation should be used by modifiers and mixins which
- * needs to access other mixins.
+ * This annotation is to inject a type-safe reference back to other
+ * MixinTypes of the current composite.
+ * <p/>
+ * Example;
+ * <pre><code>
+ * public class MyFunkyMixin
+ *     implements Funky
+ * {
+ *     @Uses Music meAsMusic;
+  *    :
+ * }
+ * </code></pre>
+ * This mixin requires access to a Music mixin in the same composite. So, if
+ * the composite that this mixin belongs to doesn't also includes a Music
+ * mixin, there will be an error.
+ * <p/>
+ * Optionality is also possiple;
+ * <pre><code>
+ * public class MyFunkyMixin
+ *     implements Funky
+ * {
+ *     @Uses(optional=true) Music meAsMusic;
+  *    :
+ * }
+ * </code></pre>
+ * Here the <code>meAsMusic</code> reference will be null if the mixin does not belong to
+ * a composite which contains a Music mixin. It is expected that the mixin code will
+ * know how to handle such sitution.
+ * <p/>
+ * It is important to understand that the reference marked by the @Uses annotation is
+ * fully type-safe and can not be cast to other types of the same composite. In fact,
+ * the object assigned in the reference will not necessarily be the same proxy, although
+ * the same <code>InvocationHandler</code> is used under the hood.
+ * <p/>
+ * This is illegal;
+ * <pre><code>
+ *
+ * @ImplementedBy( MyStateMixin.class )
+ * public interface MyComposite extends Composite, SessionState, SomeStuff, AnotherStuff
+ * {}
+ *
+ * public class MyStateMixin
+ *     implements SessionState
+ * {
+ *     @Uses SomeStuff meAsSomeStuff;
+ *
+ *     public void doSomething()
+ *     {
+ *         AnotherStuff another = (AnotherStuff) meAsSomeStuff;  // <--- Runtime Exception.
+ *     }
+ * }
+ * </code></pre>
+ *
+ * @Uses can be used all <i>fragments</i>, both mixins and modifiers.
+ *
+ * <p/>
+ * It is a recommended naming convention to use the <code>"meAs" + type</code> style, to
+ * clearly indicate what it means.
+ * 
  */
 @Retention( RetentionPolicy.RUNTIME )
 @Target( ElementType.FIELD )

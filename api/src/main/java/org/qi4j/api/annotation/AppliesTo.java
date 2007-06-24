@@ -25,11 +25,72 @@ import java.lang.annotation.Target;
 
 /**
  * Modifiers that implement InvocationHandler and which should only
- * be applied to methods that have a particular annotation should use
- * this.
+ * be applied to methods that have a particular annotation or implements
+ * a known interface should use this annotation.
  * <p/>
- * Example: a transaction modifier would use @AppliesTo(Transaction.class) to
- * denote that it only applies to methods which are marked as transactional.
+ * Example:
+ * <pre><code>
+ * @AppliesTo( Sessional.class )
+ * public class SessionModifier
+ *     implements InvocationHandler
+ * {
+ *     public Object invoke( Object proxy, Method method, Object[] args )
+ *         throws Throwable
+ *     {
+ *         ... do session stuff ...
+ *     }
+ * }
+ *
+ * @Retention( RetentionPolicy.RUNTIME )
+ * @Target( ElementType.METHOD )
+ * @Documented
+ * @Inherited
+ * public @interface Sessional
+ * {
+ * }
+ *
+ * public class MyStateMixin
+ *     implements SessionState
+ * {
+ *     private State state;
+ *
+ *     @Sessional
+ *     public void setSomeState( State state )
+ *     {
+ *         this.state = state;
+ *     }
+ *
+ *     @Sessional
+ *     public State getSomeState()
+ *     {
+ *         return this.state;
+ *     }
+ *
+ *     public void setStateService( StateService service )
+ *     {
+ *         this.service = service;
+ *     }
+ *
+ *     public StateService getStateService()
+ *     {
+ *         return this.service;
+ *     }
+ * }
+ *
+ * public interface SessionState
+ * {
+ *     State getSomeState();
+ *     void setSomeState( State state );
+ * }
+ *
+ * @ModifiedBy( SessionModifier.class )
+ * @ImplementedBy( MyStateMixin.class )
+ * public interface MyComposite extends Composite, SessionState
+ * {}
+ * </code></pre>
+ * The setStateService and getStateService methods does not have the @Sessional annotation,
+ * and will therefor the SessionModifier will not be placed into the call sequence of these
+ * methods, and the other way around.
  */
 @Retention( RetentionPolicy.RUNTIME )
 @Target( ElementType.TYPE )
