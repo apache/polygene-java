@@ -14,22 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.library.general;
+package org.qi4j.library.general.model;
+
+import java.io.Serializable;
 
 /**
- * TODO
+ * This is a stateful mixin for Name.
+ *
+ * Name is a reusable value object. 
  */
-public interface NameMixin
+public interface Name extends Serializable
 {
-    /**
-     * TODO
-     * @param name
-     */
     void setName( String name );
 
-    /**
-     *
-     * @return TODO:
-     */
     String getName();
 }
