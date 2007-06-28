@@ -1,9 +1,11 @@
 package org.qi4j.library.general.test;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
 import org.qi4j.api.CompositeFactory;
 import org.qi4j.library.general.model.composites.AddressComposite;
+import org.qi4j.library.general.model.composites.CityComposite;
+import org.qi4j.library.general.model.composites.CountryComposite;
+import org.qi4j.library.general.model.composites.StateComposite;
 import org.qi4j.runtime.CompositeFactoryImpl;
 
 public class AddressCompositeTest extends TestCase
@@ -33,16 +35,36 @@ public class AddressCompositeTest extends TestCase
         addressComposite.setSecondLine( secondLineAdd );
         addressComposite.setThirdLine( thirdLineAdd );
         addressComposite.setZipCode( zipcode );
-        addressComposite.setCityName( cityName );
-        addressComposite.setStateName( stateName );
-        addressComposite.setCountryName( countryName );
 
-        Assert.assertEquals( firstLineAdd, addressComposite.getFirstLine() );
-        Assert.assertEquals( secondLineAdd, addressComposite.getSecondLine() );
+        CityComposite city = compositeFactory.newInstance( CityComposite.class );
+        city.setName( cityName );
+        addressComposite.setCity( city );
+
+        StateComposite state = compositeFactory.newInstance( StateComposite.class );
+        state.setName( "Victoria" );
+        addressComposite.setState( state );
+
+        CountryComposite country = compositeFactory.newInstance( CountryComposite.class );
+        country.setIsoCode( "AU" );
+        country.setName( "Australia" );
+        addressComposite.setCountry( country );
+
+        assertEquals( firstLineAdd, addressComposite.getFirstLine() );
+        assertEquals( secondLineAdd, addressComposite.getSecondLine() );
         assertNull( addressComposite.getThirdLine() );
-        Assert.assertEquals( zipcode, addressComposite.getZipCode() );
-        Assert.assertEquals( cityName, addressComposite.getCityName() );
-        Assert.assertEquals( stateName, addressComposite.getStateName() );
-        Assert.assertEquals( countryName, addressComposite.getCountryName() );
+        assertEquals( zipcode, addressComposite.getZipCode() );
+
+        CityComposite otherCity = addressComposite.getCity();
+
+        assertEquals( city.getCompositeObject(), otherCity.getCompositeObject() );
+        assertEquals( cityName, otherCity.getName() );
+
+        StateComposite otherState = addressComposite.getState();
+        assertEquals( state.getCompositeObject(), otherState.getCompositeObject() );
+        assertEquals( stateName, otherState.getName() );
+
+        CountryComposite otherCountry = addressComposite.getCountry();
+        assertEquals( country.getCompositeObject(), otherCountry.getCompositeObject() );
+        assertEquals( countryName, otherCountry.getName() );
     }
 }
