@@ -19,9 +19,7 @@ package org.qi4j.library.general.model;
 import java.io.Serializable;
 
 /**
- * This is a stateful mixin for Name.
- *
- * Name is a reusable value object. 
+ * Generic interface for Name.
  */
 public interface Name extends Serializable
 {

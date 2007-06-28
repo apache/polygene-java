@@ -1,15 +1,12 @@
 package org.qi4j.library.general.test;
 
-import junit.framework.TestCase;
 import junit.framework.Assert;
+import junit.framework.TestCase;
 import org.qi4j.api.CompositeFactory;
-import org.qi4j.api.Composite;
-import org.qi4j.api.annotation.ImplementedBy;
+import org.qi4j.library.general.model.composites.AddressComposite;
 import org.qi4j.runtime.CompositeFactoryImpl;
-import org.qi4j.library.framework.properties.PropertiesMixin;
-import org.qi4j.library.general.model.entities.AddressEntity;
 
-public class AddressEntityTest extends TestCase
+public class AddressCompositeTest extends TestCase
 {
     private CompositeFactory compositeFactory;
 
@@ -19,12 +16,11 @@ public class AddressEntityTest extends TestCase
         compositeFactory = new CompositeFactoryImpl();
     }
 
-    public void testNewAddressEntitySuccessful() throws Exception
+    public void testNewAddressCompositeSuccessful() throws Exception
     {
         AddressComposite addressComposite;
         addressComposite = compositeFactory.newInstance( AddressComposite.class );
 
-        String identity = "Address Identity";
         String firstLineAdd = "IOI Tower";
         String secondLineAdd = "101 Collins St.";
         String thirdLineAdd = null;
@@ -33,7 +29,6 @@ public class AddressEntityTest extends TestCase
         String stateName = "Victoria";
         String countryName = "Australia";
 
-        addressComposite.setIdentity( identity );
         addressComposite.setFirstLine( firstLineAdd );
         addressComposite.setSecondLine( secondLineAdd );
         addressComposite.setThirdLine( thirdLineAdd );
@@ -42,7 +37,6 @@ public class AddressEntityTest extends TestCase
         addressComposite.setStateName( stateName );
         addressComposite.setCountryName( countryName );
 
-        Assert.assertEquals( identity, addressComposite.getIdentity() );
         Assert.assertEquals( firstLineAdd, addressComposite.getFirstLine() );
         Assert.assertEquals( secondLineAdd, addressComposite.getSecondLine() );
         assertNull( addressComposite.getThirdLine() );
@@ -50,26 +44,5 @@ public class AddressEntityTest extends TestCase
         Assert.assertEquals( cityName, addressComposite.getCityName() );
         Assert.assertEquals( stateName, addressComposite.getStateName() );
         Assert.assertEquals( countryName, addressComposite.getCountryName() );
-    }
-
-    public void testNewAddressEntityWithNullIdentity() throws Exception
-    {
-        AddressComposite addressComposite;
-        addressComposite = compositeFactory.newInstance( AddressComposite.class );
-
-        try
-        {
-            addressComposite.setIdentity( null );
-            fail( "Identity should not be null." );
-        }
-        catch( NullPointerException e )
-        {
-            // Correct
-        }
-    }
-    
-    @ImplementedBy( { PropertiesMixin.class } )
-    private interface AddressComposite extends Composite, AddressEntity
-    {
     }
 }

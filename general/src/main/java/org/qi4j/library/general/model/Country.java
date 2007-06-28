@@ -3,9 +3,7 @@ package org.qi4j.library.general.model;
 import java.io.Serializable;
 
 /**
- * This is a stateful mixin for Country.
- *
- * Country is a value object that stores ISO-CODE and the country name
+ * Generic interface for Country that stores ISO-CODE and country's name
  */
 public interface Country extends Serializable
 {

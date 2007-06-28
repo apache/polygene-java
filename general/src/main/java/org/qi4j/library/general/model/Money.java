@@ -5,9 +5,7 @@ import java.util.Currency;
 import java.io.Serializable;
 
 /**
- * This is a stateful mixin for Money.
- *
- * Money in this case is a value object which stores an amount and currency.
+ * Generic interface for Money which stores an amount and currency.
  * Both amount and currency must be immutable.
  */
 public interface Money extends Serializable

@@ -3,9 +3,7 @@ package org.qi4j.library.general.model;
 import java.io.Serializable;
 
 /**
- * This is a stateful mixin for Address lines.
- *
- * Address is a value object that stores address line 1, 2 and 3.
+ * Generic interface for Address lines.
  */
 public interface AddressLine extends Serializable
 {
