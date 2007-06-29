@@ -10,17 +10,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.library.general.model;
+package org.qi4j.library.general.test;
 
-import org.qi4j.library.general.model.composites.StateComposite;
-import java.io.Serializable;
+import junit.framework.TestCase;
+import org.qi4j.api.CompositeFactory;
+import org.qi4j.runtime.CompositeFactoryImpl;
 
-/**
- * Represents one-to-one relationship with {@link org.qi4j.library.general.model.composites.StateComposite}
- */
-public interface HasState extends Serializable
+public class AbstractTest extends TestCase
 {
-    void setState( StateComposite state );
+    protected CompositeFactory compositeFactory;
 
-    StateComposite getState();
+    protected void setUp() throws Exception
+    {
+        super.setUp();
+        compositeFactory = new CompositeFactoryImpl();
+    }
 }
