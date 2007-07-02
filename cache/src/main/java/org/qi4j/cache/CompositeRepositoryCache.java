@@ -16,18 +16,18 @@ package org.qi4j.cache;
 
 import org.qi4j.api.annotation.ImplementedBy;
 import org.qi4j.api.annotation.ModifiedBy;
-import org.qi4j.api.persistence.composite.PersistentComposite;
+import org.qi4j.api.persistence.composite.EntityComposite;
 
 /**
  * Proxy caches should implement this.
  */
-@ModifiedBy( CompositeRepositoryCacheModifier.class )
+@ModifiedBy( EntityRepositoryCacheModifier.class )
 @ImplementedBy( CompositeRepositoryCacheImpl.class )
 public interface CompositeRepositoryCache
 {
-    <T extends PersistentComposite> T getObject( String anIdentity );
+    <T extends EntityComposite> T getObject( String anIdentity );
 
-    <T extends PersistentComposite> void addObject( String anIdentity, T anObject );
+    <T extends EntityComposite> void addObject( String anIdentity, T anObject );
 
     void removeObject( String anIdentity );
 

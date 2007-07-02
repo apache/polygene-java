@@ -16,10 +16,10 @@
  */
 package org.qi4j.test.model3;
 
-import org.qi4j.api.persistence.composite.PersistentComposite;
+import org.qi4j.api.persistence.composite.EntityComposite;
 import org.qi4j.api.annotation.ImplementedBy;
 
 @ImplementedBy( State2Impl.class )
-public interface TestComposite extends PersistentComposite, State2
+public interface TestComposite extends EntityComposite, State2
 {
 }

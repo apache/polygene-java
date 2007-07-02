@@ -14,12 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.test.model3;
+package org.qi4j.api;
 
-import org.qi4j.api.Composite;
-import org.qi4j.api.annotation.ImplementedBy;
-
-@ImplementedBy( State1NonSerializableImpl.class )
-public interface NonPersistedComposite extends State1, Composite
+public class AbstractCompositeException extends RuntimeException
 {
+    public AbstractCompositeException( String message )
+    {
+        super( message );
+    }
 }

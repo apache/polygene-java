@@ -14,14 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.test.model1;
+package org.qi4j.api.model;
 
-import org.qi4j.api.annotation.ModifiedBy;
-import org.qi4j.api.annotation.ImplementedBy;
-import org.qi4j.api.Composite;
+import java.util.Map;
 
-@ModifiedBy( { Modifier1.class } )
-@ImplementedBy( { Mixin1Impl.class } )
-public interface Composition6 extends Mixin1, Composite
+public interface CompositeState
 {
+    /**
+     *
+     * @return The Composite state mixins. This returns the actual Map in the Composite.
+     */
+    Map<Class, Object> getMixins();
+
+    /**
+     * Sets the Composite state.
+     * 
+     * @param mixins The states of the composite mixins.
+     * @param keep if false, the mixin map must not be used/kept and cloned internally. If true,
+     * the mixin Map must be used as-is.
+     */
+    void setMixins( Map<Class, Object> mixins, boolean keep );
 }

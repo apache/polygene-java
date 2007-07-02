@@ -14,12 +14,12 @@
  */
 package org.qi4j.api;
 
-import org.qi4j.api.persistence.composite.PersistentComposite;
+import org.qi4j.api.persistence.composite.EntityComposite;
 
 /**
  * This repository is used to get proxies representing persistent objects.
  */
-public interface CompositeRepository
+public interface EntityRepository
 {
     /**
      * Get a proxy to a persistent object. This proxy may have been cached
@@ -29,5 +29,9 @@ public interface CompositeRepository
      * @param type The type of the object to retrieve from the repository.
      * @return Returns the instance of the given identity of the given type. 
      */
-    <T extends PersistentComposite> T getInstance( String identity, Class<T> type );
+    <T extends EntityComposite> T getInstance( String identity, Class<T> type );
+
+    <T extends EntityComposite> T getInstance( String identity, Class<T> type, boolean autoCreate );
+
+    <T extends EntityComposite> T newInstance( String identity, Class<T> type );
 }

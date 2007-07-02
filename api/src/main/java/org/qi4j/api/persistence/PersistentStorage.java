@@ -15,24 +15,24 @@
 package org.qi4j.api.persistence;
 
 import java.io.Serializable;
-import org.qi4j.api.persistence.composite.PersistentComposite;
+import org.qi4j.api.persistence.composite.EntityComposite;
 
 /**
  * Persistent repositories must implement this.
  */
 public interface PersistentStorage
 {
-    void create( PersistentComposite aProxy )
+    void create( EntityComposite aProxy )
         throws PersistenceException;
 
     // TODO: Add MixinModel to allow for call from CompositeInvocationHandler
-    void update( PersistentComposite aProxy, Serializable aMixin )
+    void update( EntityComposite aProxy, Serializable aMixin )
         throws PersistenceException;
 
     // TODO: Add MixinModel to allow for call from CompositeInvocationHandler
-    void read( PersistentComposite aProxy )
+    void read( EntityComposite aProxy )
         throws PersistenceException;
 
-    void delete( PersistentComposite aProxy )
+    void delete( EntityComposite aProxy )
         throws PersistenceException;
 }

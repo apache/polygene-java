@@ -21,7 +21,7 @@ import org.qi4j.api.FragmentFactory;
 
 public interface CompositeContext
 {
-    CompositeObject getCompositeObject();
+    CompositeModel getCompositeModel();
 
     CompositeFactory getCompositeFactory();
 

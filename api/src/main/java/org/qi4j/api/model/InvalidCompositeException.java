@@ -30,4 +30,9 @@ public class InvalidCompositeException extends RuntimeException
     {
         return composite;
     }
+
+    public String toString()
+    {
+        return super.toString() + " for " + composite.getName();
+    }
 }

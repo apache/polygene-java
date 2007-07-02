@@ -14,35 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.test.model1;
+package org.qi4j.test.model3;
 
 import org.qi4j.api.Composite;
-import org.qi4j.api.model.CompositeModel;
 import org.qi4j.api.annotation.ImplementedBy;
-import org.qi4j.api.annotation.ModifiedBy;
 
-@ModifiedBy( { Modifier1.class } )
-@ImplementedBy( { Mixin1Impl.class } )
-public class Composition7
-    implements Composite
+@ImplementedBy( State1TransientImpl.class )
+public interface TheValueObjectComposite extends State1, Composite
 {
-    public <T extends Composite> T newInstance( Class<T> anObjectType )
-    {
-        return null;
-    }
-
-    public <T extends Composite> T cast( Class<T> anObjectType )
-    {
-        return null;
-    }
-
-    public boolean isInstance( Class anObjectType )
-    {
-        return false;
-    }
-
-    public CompositeModel getCompositeModel()
-    {
-        return null;
-    }
 }

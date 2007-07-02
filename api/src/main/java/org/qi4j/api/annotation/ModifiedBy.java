@@ -26,6 +26,8 @@ import java.lang.annotation.Target;
 /**
  * This annotation is used by composites and mixins to declare what modifiers
  * should be used.
+ * <p/>
+ * The ModifiedBy
  */
 @Retention( RetentionPolicy.RUNTIME )
 @Target( ElementType.TYPE )

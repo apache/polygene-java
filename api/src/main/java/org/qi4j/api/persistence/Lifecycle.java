@@ -22,7 +22,16 @@ public interface Lifecycle
 {
     void create()
         throws PersistenceException;
+    
+    void initialize()
+        throws PersistenceException;
 
     void delete()
         throws PersistenceException;
+
+    boolean isDirty();
+    boolean isNew();
+    boolean isTransactional();
+    boolean isDeleted();
+    boolean isDetached();
 }

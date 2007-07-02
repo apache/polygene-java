@@ -19,8 +19,10 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import org.qi4j.api.Composite;
 import org.qi4j.api.CompositeFactory;
 import org.qi4j.api.CompositeInstantiationException;
 import org.qi4j.api.DependencyResolver;
@@ -29,7 +31,7 @@ import org.qi4j.api.InvocationContext;
 import org.qi4j.api.annotation.Dependency;
 import org.qi4j.api.annotation.Uses;
 import org.qi4j.api.model.CompositeContext;
-import org.qi4j.api.model.CompositeObject;
+import org.qi4j.api.model.CompositeModel;
 import org.qi4j.api.model.ModifierModel;
 
 /**
@@ -38,23 +40,23 @@ import org.qi4j.api.model.ModifierModel;
 public final class CompositeContextImpl
     implements CompositeContext
 {
-    private CompositeObject compositeObject;
+    private CompositeModel compositeModel;
     private CompositeFactoryImpl compositeFactory;
     private FragmentFactory fragmentFactory;
     private ConcurrentHashMap<Method, List<InvocationInstance>> invocationInstancePool;
 
 
-    public CompositeContextImpl( CompositeObject aComposite, CompositeFactoryImpl aCompositeFactory, FragmentFactory aFragmentFactory )
+    public CompositeContextImpl( CompositeModel compositeModel, CompositeFactoryImpl aCompositeFactory, FragmentFactory aFragmentFactory )
     {
-        compositeObject = aComposite;
+        this.compositeModel = compositeModel;
         compositeFactory = aCompositeFactory;
         fragmentFactory = aFragmentFactory;
         invocationInstancePool = new ConcurrentHashMap<Method, List<InvocationInstance>>();
     }
 
-    public CompositeObject getCompositeObject()
+    public CompositeModel getCompositeModel()
     {
-        return compositeObject;
+        return compositeModel;
     }
 
     public CompositeFactory getCompositeFactory()
@@ -73,11 +75,11 @@ public final class CompositeContextImpl
 
         if( instances == null )
         {
-            instances = new ArrayList<InvocationInstance>(1);
+            instances = new ArrayList<InvocationInstance>( 1 );
             invocationInstancePool.put( method, instances );
         }
 
-        synchronized( instances)
+        synchronized( instances )
         {
             InvocationInstance invocationInstance;
             int size = instances.size();
@@ -98,15 +100,17 @@ public final class CompositeContextImpl
     {
         try
         {
+            HashMap usesResolution = new HashMap();
+
             ProxyReferenceInvocationHandler proxyHandler = new ProxyReferenceInvocationHandler();
 
-            List<ModifierModel> modifierModels = compositeObject.getModifiers( method );
+            List<ModifierModel> modifierModels = compositeModel.getModifiers( method );
             Object firstModifier = null;
             Object lastModifier = null;
             Field previousModifies = null;
             for( ModifierModel modifierModel : modifierModels )
             {
-                Object modifierInstance = fragmentFactory.newFragment( modifierModel, compositeObject );
+                Object modifierInstance = fragmentFactory.newFragment( modifierModel, compositeModel );
 
                 if( firstModifier == null )
                 {
@@ -116,14 +120,23 @@ public final class CompositeContextImpl
                 // @Uses
                 for( Field usesField : modifierModel.getUsesFields() )
                 {
-                    if (compositeObject.isAssignableFrom( usesField.getType()))
+                    if( compositeModel.isAssignableFrom( usesField.getType() ) )
                     {
-                        Object usesProxy = Proxy.newProxyInstance( usesField.getType().getClassLoader(), new Class[]{ usesField.getType() }, proxyHandler );
-                        usesField.set( modifierInstance, usesProxy );
-                    } else
+                        // The Proxy of ProxyReferenceInvocationHandler is settable to the field.
+//                        Object usesProxy = Proxy.newProxyInstance( usesField.getType().getClassLoader(), new Class[]{ usesField.getType() }, proxyHandler );
+                        Class compositeClass = compositeModel.getCompositeClass();
+                        ClassLoader classloader = compositeClass.getClassLoader();
+                        Class[] intfaces = new Class[]{ compositeClass };
+                        Composite thisCompositeProxy = (Composite) Proxy.newProxyInstance( classloader, intfaces, proxyHandler );
+
+                        usesField.set( modifierInstance, thisCompositeProxy );
+                    }
+                    else
                     {
-                        if (!usesField.getAnnotation( Uses.class).optional())
-                            throw new CompositeInstantiationException( "Could not resolve @Uses field in mixin " + modifierModel.getFragmentClass().getName() + " for composite " + compositeObject.getCompositeInterface().getName());
+                        if( !usesField.getAnnotation( Uses.class ).optional() )
+                        {
+                            throw new CompositeInstantiationException( "Could not resolve @Uses field in mixin " + modifierModel.getFragmentClass().getName() + " for composite " + compositeModel.getCompositeClass().getName() );
+                        }
                     }
                 }
 
@@ -136,7 +149,7 @@ public final class CompositeContextImpl
                     }
                     else if( dependencyField.getType().equals( Method.class ) )
                     {
-                        Class<? extends Object> fragmentClass = compositeObject.locateMixin( method.getDeclaringClass() ).getFragmentClass();
+                        Class<? extends Object> fragmentClass = compositeModel.locateMixin( method.getDeclaringClass() ).getFragmentClass();
                         Method dependencyMethod;
                         if( InvocationHandler.class.isAssignableFrom( fragmentClass ) )
                         {
@@ -150,13 +163,14 @@ public final class CompositeContextImpl
                             }
                             catch( NoSuchMethodException e )
                             {
-                                throw new CompositeInstantiationException( "Could not resolve @Dependency to method in mixin " + fragmentClass.getName() + " for composite " + compositeObject.getCompositeInterface().getName(), e );
+                                throw new CompositeInstantiationException( "Could not resolve @Dependency to method in mixin " + fragmentClass.getName() + " for composite " + compositeModel.getCompositeClass().getName(), e );
                             }
                         }
                         dependencyField.set( modifierInstance, dependencyMethod );
-                    } else
+                    }
+                    else
                     {
-                        resolveDependency( dependencyField, modifierInstance);
+                        resolveDependency( dependencyField, modifierInstance );
                     }
                 }
 
@@ -222,33 +236,38 @@ public final class CompositeContextImpl
         }
     }
 
-    public void resolveDependency( Field dependencyField, Object instance)
+    public void resolveDependency( Field dependencyField, Object instance )
         throws CompositeInstantiationException
     {
         Object currentDependency = null;
         for( DependencyResolver resolver : compositeFactory.getDependencyResolvers() )
         {
             Object dependency = resolver.resolveDependency( dependencyField, this );
-            if (currentDependency != null)
-                throw new CompositeInstantiationException("Dependency "+dependencyField.getName()+" in mixin "+dependencyField.getDeclaringClass().getName() + " for composite "+compositeObject.getCompositeInterface()+" has ambiguous resolutions");
+            if( currentDependency != null )
+            {
+                throw new CompositeInstantiationException( "Dependency " + dependencyField.getName() + " in mixin " + dependencyField.getDeclaringClass().getName() + " for composite " + compositeModel.getCompositeClass() + " has ambiguous resolutions" );
+            }
             currentDependency = dependency;
         }
 
-        if (currentDependency == null)
+        if( currentDependency == null )
         {
             // No object found, check if it's optional
-            if (!dependencyField.getAnnotation( Dependency.class).optional())
-                throw new CompositeInstantiationException("Dependency "+dependencyField.getName()+" in mixin "+dependencyField.getDeclaringClass().getName() + " for composite "+compositeObject.getCompositeInterface()+" could not be resolved");
-        } else
+            if( !dependencyField.getAnnotation( Dependency.class ).optional() )
+            {
+                throw new CompositeInstantiationException( "Dependency " + dependencyField.getName() + " in mixin " + dependencyField.getDeclaringClass().getName() + " for composite " + compositeModel.getCompositeClass() + " could not be resolved" );
+            }
+        }
+        else
         {
             // Set dependency
             try
             {
-                dependencyField.set( instance, currentDependency);
+                dependencyField.set( instance, currentDependency );
             }
             catch( IllegalAccessException e )
             {
-                throw new CompositeInstantiationException("Dependency "+dependencyField.getName()+" in mixin "+dependencyField.getDeclaringClass().getName() + " for composite "+compositeObject.getCompositeInterface()+" could not be set", e);
+                throw new CompositeInstantiationException( "Dependency " + dependencyField.getName() + " in mixin " + dependencyField.getDeclaringClass().getName() + " for composite " + compositeModel.getCompositeClass() + " could not be set", e );
             }
         }
     }

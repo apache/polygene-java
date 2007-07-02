@@ -19,7 +19,7 @@ import org.qi4j.api.annotation.Modifies;
 import org.qi4j.api.annotation.Uses;
 import org.qi4j.api.persistence.ObjectNotFoundException;
 import org.qi4j.api.persistence.PersistentStorage;
-import org.qi4j.api.persistence.composite.PersistentComposite;
+import org.qi4j.api.persistence.composite.EntityComposite;
 
 /**
  * This modifier ensures that objects have a proper reference
@@ -31,27 +31,27 @@ public final class PersistentStorageReferenceModifier
     @Uses private PersistentStorage repo;
     @Modifies private PersistentStorage storage;
 
-    public void create( PersistentComposite aProxy )
+    public void create( EntityComposite aProxy )
     {
         storage.create( aProxy );
-        aProxy.setPersistentStorage( repo );
+        aProxy.setEntityRepository( repo );
     }
 
-    public void read( PersistentComposite aProxy )
+    public void read( EntityComposite aProxy )
         throws ObjectNotFoundException
     {
         storage.read( aProxy );
-        aProxy.setPersistentStorage( repo );
+        aProxy.setEntityRepository( repo );
     }
 
-    public void update( PersistentComposite aProxy, Serializable aMixin )
+    public void update( EntityComposite aProxy, Serializable aMixin )
     {
         storage.update( aProxy, aMixin );
     }
 
-    public void delete( PersistentComposite aProxy )
+    public void delete( EntityComposite aProxy )
     {
         storage.delete( aProxy );
-        aProxy.setPersistentStorage( null );
+        aProxy.setEntityRepository( null );
     }
 }

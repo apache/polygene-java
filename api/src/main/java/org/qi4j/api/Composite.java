@@ -15,7 +15,7 @@
 package org.qi4j.api;
 
 import org.qi4j.api.annotation.ImplementedBy;
-import org.qi4j.api.model.CompositeObject;
+import org.qi4j.api.model.CompositeModel;
 import org.qi4j.api.strategy.CompositeImpl;
 
 /**
@@ -26,14 +26,6 @@ import org.qi4j.api.strategy.CompositeImpl;
 public interface Composite
 {
     /**
-     * Create a new object that implements the given interface.
-     *
-     * @param anObjectType an interface that describes the object to be created
-     * @return a new proxy object implementing the interface
-     */
-    <T extends Composite> T newInstance( Class<T> anObjectType );
-
-    /**
      * Cast the current object to the given interface.
      * <p/>
      * The returned object uses the current object which provides mixin mixins
@@ -42,16 +34,7 @@ public interface Composite
      * @param anObjectType an interface that describes the object to be created
      * @return a new proxy object implementing the interface
      */
-    <T> T cast( Class<T> anObjectType );
-
-    /**
-     * Wrap the current object in a new one. Calling methods on the given composite class
-     * will create mixins in the wrapper, leaving the underlying object untouched.
-     *  
-     * @param aCompositeClass
-     * @return
-     */
-    <T extends Composite> T wrapInstance( Class<T> aCompositeClass);
+    <T extends Composite> T cast( Class<T> anObjectType );
 
     /**
      * Checks if the object can be cast() to the provided object type.
@@ -63,7 +46,7 @@ public interface Composite
 
     /**
      * Get the composite object
-     * @return the CompositeObject that describes this composite
+     * @return the CompositeModel that describes this composite
      */
-    CompositeObject getCompositeObject();
+    CompositeModel getCompositeModel();
 }

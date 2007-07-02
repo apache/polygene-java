@@ -26,12 +26,12 @@ public final class PersistentImpl
 {
     private PersistentStorage persistentStorage;
 
-    public void setPersistentStorage( PersistentStorage aStorage )
+    public void setEntityRepository( PersistentStorage aStorage )
     {
         persistentStorage = aStorage;
     }
 
-    public PersistentStorage getPersistentStorage()
+    public PersistentStorage getEntityRepository()
     {
         return persistentStorage;
     }

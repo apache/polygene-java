@@ -18,7 +18,7 @@ import org.qi4j.api.Composite;
 import org.qi4j.api.CompositeFactory;
 import org.qi4j.api.annotation.Dependency;
 import org.qi4j.api.annotation.Uses;
-import org.qi4j.api.model.CompositeObject;
+import org.qi4j.api.model.CompositeModel;
 
 public final class CompositeImpl
     implements Composite
@@ -26,28 +26,18 @@ public final class CompositeImpl
     @Dependency private CompositeFactory delegate;
     @Uses private Composite meAsComposite;
 
-    public <T extends Composite> T newInstance( Class<T> anObjectType )
+    public <T extends Composite> T cast( Class<T> anObjectType )
     {
-        return delegate.newInstance( anObjectType );
-    }
-
-    public <T> T cast( Class<T> anObjectType )
-    {
-        return delegate.cast( anObjectType, delegate.getThat( meAsComposite ) );
-    }
-
-    public <T extends Composite> T wrapInstance( Class<T> aCompositeClass )
-    {
-        return delegate.wrapInstance( aCompositeClass, delegate.getThat( meAsComposite ) );
+        return delegate.cast( anObjectType, delegate.dereference( meAsComposite ) );
     }
 
     public boolean isInstance( Class anObjectType )
     {
-        return delegate.isInstance( anObjectType, delegate.getThat( meAsComposite ) );
+        return delegate.isInstance( anObjectType, delegate.dereference( meAsComposite ) );
     }
 
-    public CompositeObject getCompositeObject()
+    public CompositeModel getCompositeModel()
     {
-        return delegate.getCompositeObject( meAsComposite );
+        return delegate.getCompositeModel( meAsComposite );
     }
 }

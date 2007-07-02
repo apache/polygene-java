@@ -14,24 +14,24 @@
  */
 package org.qi4j.cache;
 
-import org.qi4j.api.CompositeRepository;
+import org.qi4j.api.EntityRepository;
 import org.qi4j.api.annotation.Modifies;
 import org.qi4j.api.annotation.Uses;
-import org.qi4j.api.persistence.composite.PersistentComposite;
+import org.qi4j.api.persistence.composite.EntityComposite;
 
 /**
  * Implement caching of created proxies to persistent objects.
  */
-public final class CompositeRepositoryCacheModifier
-    implements CompositeRepository
+public final class EntityRepositoryCacheModifier
+    implements EntityRepository
 {
     @Uses private CompositeRepositoryCache cache;
-    @Modifies private CompositeRepository repository;
+    @Modifies private EntityRepository repository;
 
-    public <T extends PersistentComposite> T getInstance( String anIdentity, Class<T> aType )
+    public <T extends EntityComposite> T getInstance( String anIdentity, Class<T> aType )
     {
         // Check cache
-        PersistentComposite cachedObj = cache.getObject( anIdentity );
+        EntityComposite cachedObj = cache.getObject( anIdentity );
         if( cachedObj != null )
         {
             return (T) cachedObj;
@@ -44,5 +44,15 @@ public final class CompositeRepositoryCacheModifier
         cache.addObject( anIdentity, cachedObj );
 
         return (T) cachedObj;
+    }
+
+    public <T extends EntityComposite> T getInstance( String identity, Class<T> type, boolean autoCreate )
+    {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public <T extends EntityComposite> T newInstance( String identity, Class<T> type )
+    {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }

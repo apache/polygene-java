@@ -26,6 +26,6 @@ import org.qi4j.api.persistence.modifier.ReadUpdateModifier;
  * which provides an identity and a reference to a repository
  */
 @ModifiedBy( ReadUpdateModifier.class )
-public interface PersistentComposite extends Identity, Persistent, Lifecycle, Composite
+public interface EntityComposite extends Identity, Persistent, Lifecycle, Composite
 {
 }

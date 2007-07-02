@@ -23,7 +23,7 @@ import org.qi4j.api.annotation.Dependency;
 import org.qi4j.api.annotation.Modifies;
 import org.qi4j.api.annotation.Uses;
 import org.qi4j.api.persistence.PersistentStorage;
-import org.qi4j.api.persistence.composite.PersistentComposite;
+import org.qi4j.api.persistence.composite.EntityComposite;
 
 /**
  * When methods in stateful mixins that modify state have been called
@@ -33,17 +33,17 @@ import org.qi4j.api.persistence.composite.PersistentComposite;
 public final class ReadUpdateModifier
     implements InvocationHandler
 {
-    @Uses private PersistentComposite persistent;
+    @Uses private EntityComposite entity;
     @Dependency private InvocationContext context;
     @Modifies private InvocationHandler next;
 
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
     {
         // Load mixin
-        PersistentStorage storage = persistent.getPersistentStorage();
+        PersistentStorage storage = entity.getEntityRepository();
         if( storage != null && isReadMethod( method ) )
         {
-            storage.read( persistent );
+            storage.read( entity );
         }
 
         Object result = next.invoke( proxy, method, args );
@@ -51,7 +51,7 @@ public final class ReadUpdateModifier
         // Store mixin
         if( storage != null && isWriteMethod( method ) )
         {
-            storage.update( persistent, (Serializable) context.getMixin() );
+            storage.update( entity, (Serializable) context.getMixin() );
         }
 
         return result;

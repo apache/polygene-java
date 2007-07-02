@@ -29,10 +29,10 @@ import java.util.HashMap;
 import java.util.Map;
 import org.qi4j.api.Composite;
 import org.qi4j.api.CompositeFactory;
-import org.qi4j.api.CompositeRepository;
-import org.qi4j.api.model.CompositeObject;
-import org.qi4j.api.model.MixinsArbitrator;
-import org.qi4j.api.persistence.composite.PersistentComposite;
+import org.qi4j.api.EntityRepository;
+import org.qi4j.api.model.CompositeModel;
+import org.qi4j.api.model.CompositeState;
+import org.qi4j.api.persistence.composite.EntityComposite;
 
 
 public class SerializedObject
@@ -60,7 +60,7 @@ public class SerializedObject
 
     }
 
-    public Object getObject( CompositeRepository repository, CompositeFactory factory )
+    public Object getObject( EntityRepository repository, CompositeFactory factory )
         throws ClassNotFoundException
     {
         try
@@ -90,17 +90,17 @@ public class SerializedObject
             if( obj instanceof Composite )
             {
                 Composite composite = (Composite) obj;
-                CompositeObject compositeObject = composite.getCompositeObject();
-                Class compositeInterface = compositeObject.getCompositeInterface();
-                if( obj instanceof PersistentComposite )
+                CompositeModel compositeObject = composite.getCompositeModel();
+                Class compositeInterface = compositeObject.getCompositeClass();
+                if( obj instanceof EntityComposite )
                 {
-                    String id = ( (PersistentComposite) composite ).getIdentity();
+                    String id = ( (EntityComposite) composite ).getIdentity();
                     return new IdentityHolder( id, compositeInterface );
                 }
                 else
                 {
                     Map<Class, Object> mixinsToSave = new HashMap<Class, Object>();
-                    MixinsArbitrator mixinsHolder = (MixinsArbitrator) Proxy.getInvocationHandler( obj );
+                    CompositeState mixinsHolder = (CompositeState) Proxy.getInvocationHandler( obj );
                     Map<Class, Object> existingMixins = mixinsHolder.getMixins();
                     for( Map.Entry<Class, Object> entry : existingMixins.entrySet() )
                     {
@@ -119,10 +119,10 @@ public class SerializedObject
 
     private final class CompositeInputStream extends ObjectInputStream
     {
-        private CompositeRepository repository;
+        private EntityRepository repository;
         private CompositeFactory factory;
 
-        public CompositeInputStream( InputStream in, CompositeRepository repository, CompositeFactory factory )
+        public CompositeInputStream( InputStream in, EntityRepository repository, CompositeFactory factory )
             throws IOException
         {
             super( in );
@@ -136,7 +136,7 @@ public class SerializedObject
             if( obj instanceof IdentityHolder )
             {
                 IdentityHolder holder = (IdentityHolder) obj;
-                Class<PersistentComposite> clazz = holder.getPersistentCompositeClass();
+                Class<EntityComposite> clazz = holder.getPersistentCompositeClass();
                 String id = holder.getIdentity();
                 Object instance = repository.getInstance( id, clazz );
                 return instance;
@@ -147,8 +147,8 @@ public class SerializedObject
                 Class<Composite> compositeInterface = holder.getCompositeInterface();
                 Map<Class, Object> mixins = holder.getMixins();
                 Composite composite = factory.newInstance( compositeInterface );
-                MixinsArbitrator mixinHandler = (MixinsArbitrator) Proxy.getInvocationHandler( composite );
-                mixinHandler.setMixins( mixins );
+                CompositeState mixinHandler = (CompositeState) Proxy.getInvocationHandler( composite );
+                mixinHandler.setMixins( mixins, false );
             }
             return obj;
         }
@@ -158,9 +158,9 @@ public class SerializedObject
         implements Serializable
     {
         private String identity;
-        private Class<PersistentComposite> clazz;
+        private Class<EntityComposite> clazz;
 
-        public IdentityHolder( String identity, Class<PersistentComposite> clazz )
+        public IdentityHolder( String identity, Class<EntityComposite> clazz )
         {
             this.identity = identity;
             this.clazz = clazz;
@@ -171,7 +171,7 @@ public class SerializedObject
             return identity;
         }
 
-        public Class<PersistentComposite> getPersistentCompositeClass()
+        public Class<EntityComposite> getPersistentCompositeClass()
         {
             return clazz;
         }

@@ -42,8 +42,8 @@ public class CompositeFactoryImplTest extends TestCase
         }
         catch( Exception e )
         {
-            fail( "Fail to instantiate composite: " + Composition9.class );
             e.printStackTrace();
+            fail( "Fail to instantiate composite: " + Composition9.class );
         }
     }
 

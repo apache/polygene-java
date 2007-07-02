@@ -59,7 +59,7 @@ public class Composite2Test extends TestCase
             TestComposite object = factory.newInstance( CustomTestComposite.class );
 
             object.setFoo( "xyz" );
-            System.out.println( object.getCompositeObject());
+            System.out.println( object.getCompositeModel());
             assertEquals( "FOO:foo:xyz", object.getFoo() );
             object.setFoo( null );
         }

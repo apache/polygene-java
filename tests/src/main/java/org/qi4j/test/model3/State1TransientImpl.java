@@ -14,14 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.test.model1;
+package org.qi4j.test.model3;
 
-import org.qi4j.api.annotation.ModifiedBy;
-import org.qi4j.api.annotation.ImplementedBy;
-import org.qi4j.api.Composite;
-
-@ModifiedBy( { Modifier1.class } )
-@ImplementedBy( { Mixin1Impl.class } )
-public interface Composition6 extends Mixin1, Composite
+public class State1TransientImpl
+    implements State1
 {
+    private String state;
+
+    public String getState1()
+    {
+        return state;
+    }
+
+    public void setState1( String state )
+    {
+        this.state = state;
+    }
 }

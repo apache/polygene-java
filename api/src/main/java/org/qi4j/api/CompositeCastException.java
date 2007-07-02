@@ -14,13 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.api.model;
+package org.qi4j.api;
 
-import java.util.Map;
-
-public interface MixinsArbitrator
+public class CompositeCastException extends RuntimeException
 {
-    Map<Class, Object> getMixins();
-
-    void setMixins( Map<Class, Object> mixins );
+    public CompositeCastException( String message )
+    {
+        super( message );
+    }
 }

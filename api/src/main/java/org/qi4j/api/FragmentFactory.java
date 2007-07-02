@@ -14,8 +14,8 @@
  */
 package org.qi4j.api;
 
-import org.qi4j.api.model.CompositeObject;
 import org.qi4j.api.model.FragmentModel;
+import org.qi4j.api.model.CompositeModel;
 
 
 /**
@@ -31,12 +31,12 @@ public interface FragmentFactory
      * The composite for which this modifier is instantiated is provided as extra context.
      *
      * @param aFragmentModel           the mixin or modifier to be instantiated
-     * @param aCompositeObject the composite for which the fragment will be used
+     * @param compositeModel
      * @return a fragment instance
      * @throws CompositeInstantiationException if the fragment could not be instantiated for any reason
      * @see org.qi4j.api.model.ModifierModel
      * @see org.qi4j.api.model.MixinModel
      */
-    Object newFragment( FragmentModel aFragmentModel, CompositeObject aCompositeObject )
+    Object newFragment( FragmentModel aFragmentModel, CompositeModel compositeModel )
         throws CompositeInstantiationException;
 }

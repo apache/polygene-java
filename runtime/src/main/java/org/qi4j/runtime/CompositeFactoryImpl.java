@@ -25,9 +25,9 @@ import org.qi4j.api.CompositeFactory;
 import org.qi4j.api.CompositeInstantiationException;
 import org.qi4j.api.DependencyResolver;
 import org.qi4j.api.FragmentFactory;
+import org.qi4j.api.CompositeBuilder;
+import org.qi4j.api.CompositeCastException;
 import org.qi4j.api.model.CompositeModel;
-import org.qi4j.api.model.CompositeObject;
-import org.qi4j.api.model.CompositeContext;
 import org.qi4j.spi.DefaultDependencyResolver;
 
 /**
@@ -38,7 +38,7 @@ public final class CompositeFactoryImpl
 {
     private FragmentFactory fragmentFactory;
     private Map<Class, CompositeModel> composites;
-    private Map<CompositeObject, CompositeContextImpl> objectContexts;
+    private Map<CompositeModel, CompositeContextImpl> objectContexts;
     private List<DependencyResolver> resolvers;
 
     public CompositeFactoryImpl()
@@ -56,7 +56,7 @@ public final class CompositeFactoryImpl
             resolvers.add( defaultResolver );
         }
         this.resolvers = resolvers;
-        objectContexts = new ConcurrentHashMap<CompositeObject, CompositeContextImpl>();
+        objectContexts = new ConcurrentHashMap<CompositeModel, CompositeContextImpl>();
         composites = new ConcurrentHashMap<Class, CompositeModel>();
     }
 
@@ -73,8 +73,7 @@ public final class CompositeFactoryImpl
         try
         {
             CompositeModel compositeModel = getCompositeModel( aCompositeClass );
-            CompositeObject compositeObject = new CompositeObject( compositeModel, aCompositeClass );
-            CompositeContextImpl context = getCompositeContext( compositeObject );
+            CompositeContextImpl context = getCompositeContext( compositeModel );
 
             CompositeInvocationHandler handler = new CompositeInvocationHandler( context );
             ClassLoader proxyClassloader = aCompositeClass.getClassLoader();
@@ -89,13 +88,19 @@ public final class CompositeFactoryImpl
         }
     }
 
-    public <T> T cast( Class<T> aCompositeClass, Object anObject )
+    public <T extends Composite> T cast( Class<T> aCompositeClass, Composite anObject )
     {
         if( aCompositeClass.isInstance( anObject ) )
         {
             return aCompositeClass.cast( anObject );
         }
-
+        CompositeModel model = getCompositeModel( anObject );
+        Class existingCompositeClass = model.getCompositeClass();
+        if( ! existingCompositeClass.isAssignableFrom( aCompositeClass ) )
+        {
+            throw new CompositeCastException(existingCompositeClass.getName() + " is not a super-type of " + aCompositeClass.getName() );
+        }
+        
         if( anObject instanceof Proxy )
         {
             InvocationHandler handler = Proxy.getInvocationHandler( anObject );
@@ -104,68 +109,16 @@ public final class CompositeFactoryImpl
                 // Get real handler
                 handler = Proxy.getInvocationHandler( ( (ProxyReferenceInvocationHandler) handler ).getProxy() );
             }
-            ClassLoader proxyClassLoader = aCompositeClass.getClassLoader();
-
-            try
+            if( handler instanceof CompositeInvocationHandler )
             {
-                Class[] interfaces = new Class[]{ aCompositeClass };
-                return aCompositeClass.cast( Proxy.newProxyInstance( proxyClassLoader, interfaces, handler ) );
-            }
-            catch( Exception e )
-            {
-                throw new CompositeInstantiationException( e );
+                T newComposite = newInstance( aCompositeClass );
+                Map<Class, Object> oldMixins = ( (CompositeInvocationHandler) handler ).getMixins();
+                CompositeInvocationHandler newHandler = CompositeInvocationHandler.getInvocationHandler( newComposite );
+                newHandler.setMixins( oldMixins, true );
+                return newComposite;
             }
         }
-        else
-        {
-            throw new CompositeInstantiationException( "Not a composite object:" + anObject );
-        }
-    }
-
-    public <T extends Composite> T wrapInstance( Class<T> aCompositeClass, Object anObject )
-    {
-// TODO: After discussing with Rickard, this should not happen anymore. And therefor uncommented. Rickard; Confirm, then remove!
-//        // If we are wrapping a Composite...
-//        if( anObject instanceof Proxy && anObject instanceof Composite )
-//        {
-//            InvocationHandler wrappedHandler = Proxy.getInvocationHandler( anObject );
-//            // ... and that Composite is already a wrapped instance....
-//            if( wrappedHandler instanceof WrappedCompositeInvocationHandler )
-//            {
-//                // ... then unwrap it.
-//                Object wrappedObject = ( (WrappedCompositeInvocationHandler) wrappedHandler ).getWrappedInstance();
-//                if( aCompositeClass.isInstance( wrappedObject ) )
-//                {
-//                    anObject = wrappedObject;
-//                }
-//            }
-//        }
-//
-
-        CompositeObject wrappedCompositeObject = null;
-        if( anObject instanceof Proxy )
-        {
-            CompositeInvocationHandler compositeInvocationHandler = CompositeInvocationHandler.getInvocationHandler( anObject );
-            CompositeContext compositeContext = compositeInvocationHandler.getContext();
-            wrappedCompositeObject = compositeContext.getCompositeObject();
-        }
-
-        CompositeModel compositeModel = getCompositeModel( aCompositeClass );
-        Class wrappedInterface = anObject.getClass().getInterfaces()[ 0 ]; // Returns the top Composite interface
-        CompositeObject compositeObject = new CompositeObject( compositeModel, aCompositeClass, wrappedCompositeObject, wrappedInterface );
-        CompositeContextImpl context = getCompositeContext( compositeObject );
-        CompositeInvocationHandler handler = new WrappedCompositeInvocationHandler( anObject, context );
-        ClassLoader proxyClassLoader = aCompositeClass.getClassLoader();
-
-        try
-        {
-            Class[] interfaces = new Class[]{ aCompositeClass };
-            return aCompositeClass.cast( Proxy.newProxyInstance( proxyClassLoader, interfaces, handler ) );
-        }
-        catch( Exception e )
-        {
-            throw new CompositeInstantiationException( e );
-        }
+        throw new CompositeInstantiationException( "Not a composite object:" + anObject );
     }
 
     public boolean isInstance( Class anObjectType, Object anObject )
@@ -177,21 +130,16 @@ public final class CompositeFactoryImpl
         if( anObject instanceof Proxy )
         {
             InvocationHandler handler = Proxy.getInvocationHandler( anObject );
-            if( handler instanceof WrappedCompositeInvocationHandler )
-            {
-                WrappedCompositeInvocationHandler wrapperHandler = (WrappedCompositeInvocationHandler) handler;
-                return isInstance( anObjectType, wrapperHandler.getWrappedInstance() );
-            }
-            else if( handler instanceof CompositeInvocationHandler )
+            if( handler instanceof CompositeInvocationHandler )
             {
                 CompositeInvocationHandler oih = (CompositeInvocationHandler) handler;
-                return oih.getContext().getCompositeObject().isAssignableFrom( anObjectType );
+                return oih.getContext().getCompositeModel().isAssignableFrom( anObjectType );
             }
         }
         return false;
     }
 
-    public <T> T getThat( T proxy )
+    public <T> T dereference( T proxy )
     {
         InvocationHandler handler = Proxy.getInvocationHandler( proxy );
         if( handler instanceof ProxyReferenceInvocationHandler )
@@ -219,9 +167,15 @@ public final class CompositeFactoryImpl
         return compositeModel;
     }
 
-    public CompositeObject getCompositeObject( Composite aComposite )
+    public CompositeModel getCompositeModel( Composite aComposite )
     {
-        return CompositeInvocationHandler.getInvocationHandler( aComposite ).getContext().getCompositeObject();
+        return CompositeInvocationHandler.getInvocationHandler( aComposite ).getContext().getCompositeModel();
+    }
+
+    public <T extends Composite> CompositeBuilder<T> newCompositeBuilder( Class<T> compositeType )
+    {
+        CompositeBuilder<T> builder = new CompositeBuilderImpl<T>( this, compositeType );
+        return builder;
     }
 
     public List<DependencyResolver> getDependencyResolvers()
@@ -230,13 +184,13 @@ public final class CompositeFactoryImpl
     }
 
     // Private ------------------------------------------------------
-    private CompositeContextImpl getCompositeContext( CompositeObject aComposite )
+    private CompositeContextImpl getCompositeContext( CompositeModel compositeModel )
     {
-        CompositeContextImpl context = objectContexts.get( aComposite );
+        CompositeContextImpl context = objectContexts.get( compositeModel );
         if( context == null )
         {
-            context = new CompositeContextImpl( aComposite, this, fragmentFactory );
-            objectContexts.put( aComposite, context );
+            context = new CompositeContextImpl( compositeModel, this, fragmentFactory );
+            objectContexts.put( compositeModel, context );
         }
         return context;
     }

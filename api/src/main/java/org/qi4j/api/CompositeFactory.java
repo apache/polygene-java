@@ -15,7 +15,6 @@
 package org.qi4j.api;
 
 import org.qi4j.api.model.CompositeModel;
-import org.qi4j.api.model.CompositeObject;
 
 /**
  * This factory creates proxies that implement the given
@@ -37,16 +36,12 @@ public interface CompositeFactory
     /**
      * Create a new object that implements the given interface.
      * <p/>
-     * The new object wraps another object which provides mixin mixins
-     * that should be reused for this new object.
      *
      * @param aCompositeClass an interface that describes the object to be created
      * @param anObject        an existing object whose mixins should be reused
      * @return a new proxy object implementing the interface
      */
-    <T> T cast( Class<T> aCompositeClass, Object anObject );
-
-    <T extends Composite> T wrapInstance( Class<T> aCompositeClass, Object anObject );
+    <T extends Composite> T cast( Class<T> aCompositeClass, Composite anObject );
 
     /**
      * Check if an object can implement a given composite class.
@@ -60,9 +55,24 @@ public interface CompositeFactory
      */
     boolean isInstance( Class aCompositeClass, Object anObject );
 
-    <T> T getThat( T proxy );
+    /**
+     * Dereference the Proxy Reference to the Composite.
+     * <p/>
+     * <ul>
+     * <li>If the the compositeReference is the Composite itself, it will be returned.</li>
+     * <li>If the compositeReference was obtained from a @Uses demarced field, this method will return the
+     * full composite object.</li>
+     * <li>Otherwise, it returns null.</li>
+     * </ul>
+     *
+     * @param compositeReference
+     * @return See above.
+     */
+    <T> T dereference( T compositeReference );
 
     CompositeModel getCompositeModel( Class<? extends Composite> aCompositeClass );
 
-    CompositeObject getCompositeObject( Composite aComposite );
+    CompositeModel getCompositeModel( Composite aComposite );
+
+    <T extends Composite> CompositeBuilder<T> newCompositeBuilder( Class<T> compositeType );
 }
