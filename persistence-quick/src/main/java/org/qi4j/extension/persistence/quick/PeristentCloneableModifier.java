@@ -18,20 +18,20 @@ import org.qi4j.api.CompositeFactory;
 import org.qi4j.api.annotation.Dependency;
 import org.qi4j.api.annotation.Modifies;
 import org.qi4j.api.annotation.Uses;
-import org.qi4j.api.persistence.composite.PersistentComposite;
+import org.qi4j.api.persistence.composite.EntityComposite;
 
-public final class PeristentCloneableModifier<T extends PersistentComposite>
+public final class PeristentCloneableModifier<T extends EntityComposite>
     implements org.qi4j.api.persistence.Cloneable<T>
 {
     @Modifies org.qi4j.api.persistence.Cloneable<T> cloneable;
-    @Uses PersistentComposite persistent;
+    @Uses EntityComposite entity;
     @Dependency CompositeFactory factory;
 
     public T clone()
     {
         T cloned = cloneable.clone();
-        cloned.setIdentity( persistent.getIdentity() + "cloned" );
-        persistent.getPersistentStorage().create( factory.getThat( cloned ) );
+        cloned.setIdentity( entity.getIdentity() + "cloned" );
+        entity.getEntityRepository().create( factory.dereference( cloned ) );
         return cloned;
     }
 }

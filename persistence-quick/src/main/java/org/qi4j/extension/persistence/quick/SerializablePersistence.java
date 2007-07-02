@@ -19,12 +19,12 @@ import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 import org.qi4j.api.CompositeFactory;
-import org.qi4j.api.CompositeRepository;
+import org.qi4j.api.EntityRepository;
 import org.qi4j.api.annotation.ModifiedBy;
 import org.qi4j.api.persistence.ObjectNotFoundException;
 import org.qi4j.api.persistence.PersistenceException;
 import org.qi4j.api.persistence.PersistentStorage;
-import org.qi4j.api.persistence.composite.PersistentComposite;
+import org.qi4j.api.persistence.composite.EntityComposite;
 import org.qi4j.api.persistence.modifier.PersistentStorageReferenceModifier;
 import org.qi4j.api.persistence.modifier.PersistentStorageTraceModifier;
 import org.qi4j.runtime.CompositeInvocationHandler;
@@ -38,19 +38,19 @@ public final class SerializablePersistence
 {
     SerializablePersistenceSpi delegate;
     private CompositeFactory compositeFactory;
-    private CompositeRepository compositeRepository;
+    private EntityRepository entityRepository;
 
-    public SerializablePersistence( SerializablePersistenceSpi aDelegate, CompositeFactory compositeFactory, CompositeRepository compositeRepository )
+    public SerializablePersistence( SerializablePersistenceSpi aDelegate, CompositeFactory compositeFactory, EntityRepository entityRepository )
     {
         delegate = aDelegate;
         this.compositeFactory = compositeFactory;
-        this.compositeRepository = compositeRepository;
+        this.entityRepository = entityRepository;
     }
 
-    public void create( PersistentComposite aProxy )
+    public void create( EntityComposite entity )
         throws PersistenceException
     {
-        CompositeInvocationHandler handler = CompositeInvocationHandler.getInvocationHandler( aProxy );
+        CompositeInvocationHandler handler = CompositeInvocationHandler.getInvocationHandler( entity );
         Map<Class, Object> mixins = handler.getMixins();
 
         Map<Class, SerializedObject> persistentMixins = new HashMap<Class, SerializedObject>();
@@ -62,22 +62,22 @@ public final class SerializablePersistence
             }
         }
 
-        String id = aProxy.getIdentity();
+        String id = entity.getIdentity();
         delegate.putInstance( id, persistentMixins );
     }
 
-    public void read( PersistentComposite aProxy )
+    public void read( EntityComposite entity )
         throws PersistenceException
     {
-        String id = aProxy.getIdentity();
+        String id = entity.getIdentity();
         Map<Class, SerializedObject> mixins = delegate.getInstance( id );
         if( mixins == null )
         {
             throw new ObjectNotFoundException( "Object with identity " + id + " does not exist" );
         }
 
-        ProxyReferenceInvocationHandler proxyHandler = (ProxyReferenceInvocationHandler) Proxy.getInvocationHandler( aProxy );
-        CompositeInvocationHandler handler = CompositeInvocationHandler.getInvocationHandler( compositeFactory.getThat( aProxy ) );
+        ProxyReferenceInvocationHandler proxyHandler = (ProxyReferenceInvocationHandler) Proxy.getInvocationHandler( entity );
+        CompositeInvocationHandler handler = CompositeInvocationHandler.getInvocationHandler( compositeFactory.dereference( entity ) );
         Map<Class, Object> deserializedMixins = handler.getMixins();
         for( Map.Entry<Class, SerializedObject> entry : mixins.entrySet() )
         {
@@ -85,7 +85,7 @@ public final class SerializablePersistence
             Object deserializedMixin = null;
             try
             {
-                deserializedMixin = value.getObject( compositeRepository, compositeFactory );
+                deserializedMixin = value.getObject( entityRepository, compositeFactory );
             }
             catch( ClassNotFoundException e )
             {
@@ -104,12 +104,12 @@ public final class SerializablePersistence
         }
     }
 
-    public void update( PersistentComposite aProxy, Serializable aMixin )
+    public void update( EntityComposite entity, Serializable aMixin )
         throws PersistenceException
     {
-        ProxyReferenceInvocationHandler handler = (ProxyReferenceInvocationHandler) Proxy.getInvocationHandler( aProxy );
+        ProxyReferenceInvocationHandler handler = (ProxyReferenceInvocationHandler) Proxy.getInvocationHandler( entity );
 
-        String identity = aProxy.getIdentity();
+        String identity = entity.getIdentity();
         Map<Class, SerializedObject> mixins = delegate.getInstance( identity );
         if( mixins != null )
         {
@@ -126,10 +126,10 @@ public final class SerializablePersistence
         }
     }
 
-    public void delete( PersistentComposite aProxy )
+    public void delete( EntityComposite entity )
         throws PersistenceException
     {
-        String id = aProxy.getIdentity();
+        String id = entity.getIdentity();
         delegate.removeInstance( id );
     }
 

@@ -21,16 +21,16 @@ import java.io.Serializable;
 import java.lang.reflect.Proxy;
 import java.util.Map;
 import jdbm.RecordManager;
-import org.qi4j.api.persistence.composite.PersistentComposite;
+import org.qi4j.api.persistence.composite.EntityComposite;
 import org.qi4j.runtime.ProxyReferenceInvocationHandler;
 
 class UpdateOperation
     implements Operation
 {
-    private PersistentComposite composite;
+    private EntityComposite composite;
     private Serializable mixin;
 
-    public UpdateOperation( PersistentComposite composite, Serializable mixin )
+    public UpdateOperation( EntityComposite composite, Serializable mixin )
     {
         this.composite = composite;
         this.mixin = mixin;

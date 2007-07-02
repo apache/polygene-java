@@ -21,7 +21,7 @@ import org.qi4j.api.annotation.AppliesTo;
 import org.qi4j.api.annotation.Dependency;
 import org.qi4j.api.annotation.Uses;
 import org.qi4j.api.persistence.PersistentStorage;
-import org.qi4j.api.persistence.composite.PersistentComposite;
+import org.qi4j.api.persistence.composite.EntityComposite;
 import org.qi4j.runtime.CompositeInvocationHandler;
 
 /**
@@ -32,7 +32,7 @@ import org.qi4j.runtime.CompositeInvocationHandler;
 public final class ReadModifier
     implements InvocationHandler
 {
-    @Uses PersistentComposite persistent;
+    @Uses EntityComposite entity;
     @Dependency CompositeInvocationHandler handler;
 
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
@@ -40,11 +40,11 @@ public final class ReadModifier
         Object result = method.invoke( proxy, args );
 
         // Store mixin
-        PersistentStorage storage = persistent.getPersistentStorage();
+        PersistentStorage storage = entity.getEntityRepository();
         if( storage != null && !method.getName().startsWith( "get" ) )
         {
             Object object = CompositeInvocationHandler.getInvocationHandler( proxy );
-            storage.update( persistent, (Serializable) object );
+            storage.update( entity, (Serializable) object );
         }
 
         return result;

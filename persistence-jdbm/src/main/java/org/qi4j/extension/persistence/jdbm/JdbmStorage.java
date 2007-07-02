@@ -32,7 +32,7 @@ import jdbm.RecordManagerFactory;
 import org.qi4j.api.CompositeFactory;
 import org.qi4j.api.persistence.PersistenceException;
 import org.qi4j.api.persistence.PersistentStorage;
-import org.qi4j.api.persistence.composite.PersistentComposite;
+import org.qi4j.api.persistence.composite.EntityComposite;
 
 
 public class JdbmStorage
@@ -63,7 +63,7 @@ public class JdbmStorage
         recordManager = RecordManagerFactory.createRecordManager( name, properties );
     }
 
-    public void create( PersistentComposite aProxy )
+    public void create( EntityComposite aProxy )
         throws PersistenceException
     {
         try
@@ -81,7 +81,7 @@ public class JdbmStorage
         }
     }
 
-    public void read( PersistentComposite aProxy )
+    public void read( EntityComposite aProxy )
         throws PersistenceException
     {
         try
@@ -100,7 +100,7 @@ public class JdbmStorage
 
     }
 
-    public void update( PersistentComposite aProxy, Serializable aMixin )
+    public void update( EntityComposite aProxy, Serializable aMixin )
         throws PersistenceException
     {
         try
@@ -118,7 +118,7 @@ public class JdbmStorage
         }
     }
 
-    public void delete( PersistentComposite aProxy )
+    public void delete( EntityComposite aProxy )
         throws PersistenceException
     {
         try

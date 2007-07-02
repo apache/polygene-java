@@ -21,15 +21,15 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import jdbm.RecordManager;
-import org.qi4j.api.persistence.composite.PersistentComposite;
+import org.qi4j.api.persistence.composite.EntityComposite;
 import org.qi4j.runtime.CompositeInvocationHandler;
 
 class CreateOperation
     implements Operation
 {
-    private PersistentComposite composite;
+    private EntityComposite composite;
 
-    public CreateOperation( PersistentComposite composite )
+    public CreateOperation( EntityComposite composite )
     {
         this.composite = composite;
     }
