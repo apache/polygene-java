@@ -25,6 +25,8 @@ import org.mozilla.javascript.Function;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.Undefined;
 import org.mozilla.javascript.Wrapper;
+import org.qi4j.api.CompositeFactory;
+import org.qi4j.api.annotation.Dependency;
 
 /**
  * Generic mixin that implements interfaces by delegating to JavaScript functions
@@ -39,6 +41,8 @@ import org.mozilla.javascript.Wrapper;
 public class JavaScriptMixin
     implements Serializable, InvocationHandler
 {
+    @Dependency CompositeFactory factory;
+
     // Static --------------------------------------------------------
     static Scriptable standardScope;
 
@@ -68,13 +72,11 @@ public class JavaScriptMixin
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
     {
         Context cx = Context.enter();
-
-
         try
         {
             Scriptable proxyScope = Context.toObject( proxy, instanceScope );
             proxyScope.setPrototype( instanceScope );
-
+            proxyScope.put( "factory", proxyScope, factory);
             Function fn = getFunction( cx, proxyScope, method );
             Object result = fn.call( cx, instanceScope, proxyScope, args );
 

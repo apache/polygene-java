@@ -14,7 +14,7 @@ package org.qi4j.library.general.test;
 
 import org.qi4j.api.annotation.ImplementedBy;
 import org.qi4j.api.annotation.ModifiedBy;
-import org.qi4j.api.persistence.composite.PersistentComposite;
+import org.qi4j.api.persistence.composite.EntityComposite;
 import org.qi4j.library.framework.properties.PropertiesMixin;
 import org.qi4j.library.general.model.DummyPersistentStorage;
 import org.qi4j.library.general.model.DummyValidationModifier;
@@ -27,7 +27,7 @@ public class ValidatableTest extends AbstractTest
     public void testValidatableSuccessful() throws Exception
     {
         DummyComposite composite = compositeFactory.newInstance( DummyComposite.class );
-        composite.setPersistentStorage( new DummyPersistentStorage() );
+        composite.setEntityRepository( new DummyPersistentStorage() );
         composite.create();
 
         assertTrue(DummyValidationModifier.validateIsCalled);
@@ -35,7 +35,7 @@ public class ValidatableTest extends AbstractTest
 
     @ModifiedBy( { LifecycleValidationModifier.class, DummyValidationModifier.class } )
     @ImplementedBy( { PropertiesMixin.class } )
-    private interface DummyComposite extends Name, Validatable, PersistentComposite
+    private interface DummyComposite extends Name, Validatable, EntityComposite
     {
     }
 }

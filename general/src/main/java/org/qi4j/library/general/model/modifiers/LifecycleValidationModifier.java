@@ -15,6 +15,7 @@ package org.qi4j.library.general.model.modifiers;
 import org.qi4j.api.annotation.Modifies;
 import org.qi4j.api.annotation.Uses;
 import org.qi4j.api.persistence.Lifecycle;
+import org.qi4j.api.persistence.PersistenceException;
 import org.qi4j.library.general.model.Validatable;
 
 public class LifecycleValidationModifier
@@ -30,9 +31,39 @@ public class LifecycleValidationModifier
         next.create();
     }
 
+    public void initialize() throws PersistenceException
+    {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
     public void delete()
     {
 
+    }
+
+    public boolean isDirty()
+    {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public boolean isNew()
+    {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public boolean isTransactional()
+    {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public boolean isDeleted()
+    {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public boolean isDetached()
+    {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }
 

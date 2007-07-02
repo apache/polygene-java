@@ -57,15 +57,15 @@ public class AddressCompositeTest extends AbstractTest
 
         CityComposite otherCity = addressComposite.getCity();
 
-        assertEquals( city.getCompositeObject(), otherCity.getCompositeObject() );
+        assertEquals( city.getCompositeModel(), otherCity.getCompositeModel() );
         assertEquals( cityName, otherCity.getName() );
 
         StateComposite otherState = addressComposite.getState();
-        assertEquals( state.getCompositeObject(), otherState.getCompositeObject() );
+        assertEquals( state.getCompositeModel(), otherState.getCompositeModel() );
         assertEquals( stateName, otherState.getName() );
 
         CountryComposite otherCountry = addressComposite.getCountry();
-        assertEquals( country.getCompositeObject(), otherCountry.getCompositeObject() );
+        assertEquals( country.getCompositeModel(), otherCountry.getCompositeModel() );
         assertEquals( countryName, otherCountry.getName() );
     }
 }
