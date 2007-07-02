@@ -20,7 +20,7 @@ import org.qi4j.api.annotation.Modifies;
 import org.qi4j.api.annotation.Uses;
 import org.qi4j.api.persistence.composite.EntityComposite;
 
-public final class PeristentCloneableModifier<T extends EntityComposite>
+public final class PersitentCloneableModifier<T extends EntityComposite>
     implements org.qi4j.api.persistence.Cloneable<T>
 {
     @Modifies org.qi4j.api.persistence.Cloneable<T> cloneable;
