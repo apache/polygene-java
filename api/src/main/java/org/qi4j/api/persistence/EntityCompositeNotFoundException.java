@@ -1,6 +1,7 @@
 /*
  * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
  * Copyright (c) 2007, Niclas Hedhman. All Rights Reserved.
+ * Copyright (c) 2007, Alin Dreghiciu. All Rights Reserved. 
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,26 +16,27 @@
 package org.qi4j.api.persistence;
 
 /**
- * TODO
+ * Runtime exception to be thrown in case that an entity composite
+ * was not found during a lookup call.
  */
-public class ObjectNotFoundException
+public class EntityCompositeNotFoundException
     extends PersistenceException
 {
-    public ObjectNotFoundException()
+    public EntityCompositeNotFoundException()
     {
     }
 
-    public ObjectNotFoundException( String message )
+    public EntityCompositeNotFoundException( String message )
     {
         super( message );
     }
 
-    public ObjectNotFoundException( String message, Throwable cause )
+    public EntityCompositeNotFoundException( String message, Throwable cause )
     {
         super( message, cause );
     }
 
-    public ObjectNotFoundException( Throwable cause )
+    public EntityCompositeNotFoundException( Throwable cause )
     {
         super( cause );
     }
