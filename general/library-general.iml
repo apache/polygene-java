@@ -20,6 +20,19 @@
     </orderEntry>
     <orderEntry type="module" module-name="core-runtime" />
     <orderEntry type="module" module-name="library-framework" />
+    <orderEntry type="library" name="jmock-2.1.0" level="project" />
+    <orderEntry type="library" name="jmock-junit4-2.1.0" level="project" />
+    <orderEntry type="library" name="hamcrest-api-1.0" level="project" />
+    <orderEntry type="library" name="hamcrest-library" level="project" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$APPLICATION_HOME_DIR$/lib/junit-4.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
     <orderEntryProperties />
   </component>
 </module>

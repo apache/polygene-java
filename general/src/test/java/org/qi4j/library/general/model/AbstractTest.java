@@ -12,14 +12,17 @@
  */
 package org.qi4j.library.general.model;
 
-import org.qi4j.api.annotation.Uses;
+import junit.framework.TestCase;
+import org.qi4j.api.CompositeFactory;
+import org.qi4j.runtime.CompositeFactoryImpl;
 
-public final class DescriptorMixin implements Descriptor
+public abstract class AbstractTest extends TestCase
 {
-    @Uses private Name name;
+    protected CompositeFactory compositeFactory;
 
-    public String getDisplayValue()
+    protected void setUp() throws Exception
     {
-        return name.getName();
+        super.setUp();
+        compositeFactory = new CompositeFactoryImpl();
     }
 }
