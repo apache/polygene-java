@@ -1,6 +1,7 @@
 /*
  * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
  * Copyright (c) 2007, Niclas Hedhman. All Rights Reserved.
+ * Copyright (c) 2007, Alin Dreghiciu. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,13 +24,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.qi4j.api.CompositeInstantiationException;
-import org.qi4j.api.FragmentFactory;
-import org.qi4j.api.AbstractCompositeException;
 import org.qi4j.api.annotation.Uses;
 import org.qi4j.api.model.CompositeContext;
 import org.qi4j.api.model.CompositeState;
 import org.qi4j.api.model.MixinModel;
-import org.qi4j.api.model.CompositeModel;
+import org.qi4j.api.model.InvalidCompositeException;
 import org.qi4j.api.persistence.Identity;
 
 /**
@@ -78,7 +77,9 @@ public class CompositeInvocationHandler
             }
             else
             {
-                throw new AbstractCompositeException( "Implementation missing for " + mixinType.getName() + " in " + context.getCompositeModel().getCompositeClass().getName() );
+                throw new InvalidCompositeException("Implementation missing for " + mixinType.getName() + " in "
+                                                    + context.getCompositeModel().getCompositeClass().getName(),
+                                                    context.getCompositeModel().getCompositeClass() );
             }
         }
         // Invoke
