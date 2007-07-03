@@ -34,7 +34,7 @@ public final class ModifierModel
         super( modifierClass );
         if( modifierClass.isInterface() )
         {
-            throw new IllegalModifierException( modifierClass );
+            throw new InvalidModifierException( "Interfaces can not be modifiers: " + modifierClass.getName(), modifierClass );
         }
         this.modifiesField = findModifies( modifierClass );
     }
@@ -75,7 +75,7 @@ public final class ModifierModel
             {
                 if( modifiesField != null )
                 {
-                    throw new MultipleModifiesFieldException( "Modifier " + aModifierClass + " has more than one @Modifies field: " + modifiesField.getName() + ", " + field.getName(), aModifierClass );
+                    throw new InvalidModifierException( "Modifier " + aModifierClass + " has more than one @Modifies field: " + modifiesField.getName() + ", " + field.getName(), aModifierClass );
                 }
                 field.setAccessible( true );
                 modifiesField = field;
@@ -94,7 +94,7 @@ public final class ModifierModel
         }
         else
         {
-            throw new MissingModifiesFieldException( aModifierClass.getName() + " does not specify a @Modifies field.", aModifierClass );
+            throw new InvalidModifierException( aModifierClass.getName() + " does not specify a @Modifies field.", aModifierClass );
         }
     }
 

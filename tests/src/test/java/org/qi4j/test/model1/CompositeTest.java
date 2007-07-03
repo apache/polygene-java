@@ -20,12 +20,10 @@ import java.util.ArrayList;
 import java.util.List;
 import junit.framework.TestCase;
 import org.qi4j.api.model.CompositeModel;
-import org.qi4j.api.model.IllegalModifierException;
 import org.qi4j.api.model.InvalidCompositeException;
-import org.qi4j.api.model.MissingModifiesFieldException;
+import org.qi4j.api.model.InvalidModifierException;
 import org.qi4j.api.model.MixinModel;
 import org.qi4j.api.model.ModifierModel;
-import org.qi4j.api.model.MultipleModifiesFieldException;
 import org.qi4j.api.model.NullArgumentException;
 import org.qi4j.api.strategy.CompositeImpl;
 
@@ -97,9 +95,9 @@ public class CompositeTest extends TestCase
         try
         {
             CompositeModel composite = new CompositeModel( Composition3.class );
-            fail( "Should throw an MissingModifiesFieldException." );
+            fail( "Should throw an InvalidModifierException." );
         }
-        catch( MissingModifiesFieldException e )
+        catch( InvalidModifierException e )
         {
             // Expected
         }
@@ -112,9 +110,9 @@ public class CompositeTest extends TestCase
         try
         {
             CompositeModel composite = new CompositeModel( Composition4.class );
-            fail( "Should throw an IllegalModifierException." );
+            fail( "Should throw an InvalidModifierException." );
         }
-        catch( IllegalModifierException e )
+        catch( InvalidModifierException e )
         {
             // Expected
         }
@@ -140,9 +138,9 @@ public class CompositeTest extends TestCase
         try
         {
             CompositeModel composite = new CompositeModel( Composition5.class );
-            fail( "Should throw MultipleModifiesFieldException." );
+            fail( "Should throw InvalidModifierException." );
         }
-        catch( MultipleModifiesFieldException e )
+        catch( InvalidModifierException e )
         {
             //Expected
         }
