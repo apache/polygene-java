@@ -21,7 +21,7 @@ import java.util.Map;
 import org.qi4j.api.CompositeFactory;
 import org.qi4j.api.EntityRepository;
 import org.qi4j.api.annotation.ModifiedBy;
-import org.qi4j.api.persistence.ObjectNotFoundException;
+import org.qi4j.api.persistence.EntityCompositeNotFoundException;
 import org.qi4j.api.persistence.PersistenceException;
 import org.qi4j.api.persistence.PersistentStorage;
 import org.qi4j.api.persistence.composite.EntityComposite;
@@ -73,7 +73,7 @@ public final class SerializablePersistence
         Map<Class, SerializedObject> mixins = delegate.getInstance( id );
         if( mixins == null )
         {
-            throw new ObjectNotFoundException( "Object with identity " + id + " does not exist" );
+            throw new EntityCompositeNotFoundException( "Object with identity " + id + " does not exist" );
         }
 
         ProxyReferenceInvocationHandler proxyHandler = (ProxyReferenceInvocationHandler) Proxy.getInvocationHandler( entity );

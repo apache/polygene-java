@@ -30,7 +30,7 @@ import javax.transaction.xa.XAResource;
 import javax.transaction.xa.Xid;
 import jdbm.RecordManager;
 import org.qi4j.api.CompositeFactory;
-import org.qi4j.api.persistence.ObjectNotFoundException;
+import org.qi4j.api.persistence.EntityCompositeNotFoundException;
 import org.qi4j.api.persistence.PersistenceException;
 import org.qi4j.api.persistence.composite.EntityComposite;
 import org.qi4j.runtime.CompositeInvocationHandler;
@@ -76,7 +76,7 @@ public class TransactionResource
                 }
                 if( mixins.size() == 0 )
                 {
-                    throw new ObjectNotFoundException( "Object with identity " + objectId + " does not exist" );
+                    throw new EntityCompositeNotFoundException( "Object with identity " + objectId + " does not exist" );
                 }
             }
             else
@@ -84,7 +84,7 @@ public class TransactionResource
                 Map<Class, Serializable> mixins = (Map<Class, Serializable>) recordManager.fetch( recordId );
                 if( mixins == null )
                 {
-                    throw new ObjectNotFoundException( "Object with identity " + objectId + " does not exist" );
+                    throw new EntityCompositeNotFoundException( "Object with identity " + objectId + " does not exist" );
                 }
 
                 ProxyReferenceInvocationHandler proxyHandler = (ProxyReferenceInvocationHandler) Proxy.getInvocationHandler( aProxy );
@@ -96,7 +96,7 @@ public class TransactionResource
         }
         catch( EOFException e )
         {
-            throw new ObjectNotFoundException( "Object with identity " + objectId + " does not exist" );
+            throw new EntityCompositeNotFoundException( "Object with identity " + objectId + " does not exist" );
         }
         catch( IOException e )
         {

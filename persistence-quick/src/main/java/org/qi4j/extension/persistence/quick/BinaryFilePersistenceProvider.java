@@ -25,12 +25,11 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.rmi.MarshalledObject;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
 import org.qi4j.api.CompositeInstantiationException;
-import org.qi4j.api.persistence.ObjectNotFoundException;
+import org.qi4j.api.persistence.EntityCompositeNotFoundException;
 import org.qi4j.spi.persistence.SerializablePersistenceSpi;
 import org.qi4j.spi.persistence.SerializedObject;
 
@@ -98,7 +97,7 @@ public final class BinaryFilePersistenceProvider
         }
         catch( FileNotFoundException e )
         {
-            throw new ObjectNotFoundException( anId );
+            throw new EntityCompositeNotFoundException( anId );
         }
         catch( IOException e )
         {
