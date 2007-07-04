@@ -17,7 +17,7 @@ package org.qi4j.api.persistence.modifier;
 import java.io.Serializable;
 import org.qi4j.api.annotation.Modifies;
 import org.qi4j.api.annotation.Uses;
-import org.qi4j.api.persistence.ObjectNotFoundException;
+import org.qi4j.api.persistence.EntityCompositeNotFoundException;
 import org.qi4j.api.persistence.PersistentStorage;
 import org.qi4j.api.persistence.composite.EntityComposite;
 
@@ -38,7 +38,7 @@ public final class PersistentStorageReferenceModifier
     }
 
     public void read( EntityComposite aProxy )
-        throws ObjectNotFoundException
+        throws EntityCompositeNotFoundException
     {
         storage.read( aProxy );
         aProxy.setEntityRepository( repo );
