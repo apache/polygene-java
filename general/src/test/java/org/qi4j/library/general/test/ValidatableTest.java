@@ -16,11 +16,11 @@ import org.qi4j.api.annotation.ImplementedBy;
 import org.qi4j.api.annotation.ModifiedBy;
 import org.qi4j.api.persistence.composite.EntityComposite;
 import org.qi4j.library.framework.properties.PropertiesMixin;
-import org.qi4j.library.general.model.DummyPersistentStorage;
-import org.qi4j.library.general.model.DummyValidationModifier;
 import org.qi4j.library.general.model.Name;
 import org.qi4j.library.general.model.Validatable;
 import org.qi4j.library.general.model.modifiers.LifecycleValidationModifier;
+import org.qi4j.library.general.test.model.DummyPersistentStorage;
+import org.qi4j.library.general.test.model.DummyValidationModifier;
 
 public class ValidatableTest extends AbstractTest
 {
@@ -30,7 +30,7 @@ public class ValidatableTest extends AbstractTest
         composite.setEntityRepository( new DummyPersistentStorage() );
         composite.create();
 
-        assertTrue(DummyValidationModifier.validateIsCalled);
+        assertTrue( DummyValidationModifier.validateIsCalled);
     }
 
     @ModifiedBy( { LifecycleValidationModifier.class, DummyValidationModifier.class } )

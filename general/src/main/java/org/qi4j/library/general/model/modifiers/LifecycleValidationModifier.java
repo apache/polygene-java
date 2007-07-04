@@ -33,37 +33,37 @@ public class LifecycleValidationModifier
 
     public void initialize() throws PersistenceException
     {
-        //To change body of implemented methods use File | Settings | File Templates.
+        next.initialize();
     }
 
     public void delete()
     {
-
+        next.delete();
     }
 
     public boolean isDirty()
     {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return next.isDirty();
     }
 
     public boolean isNew()
     {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return next.isNew();
     }
 
     public boolean isTransactional()
     {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return next.isTransactional();
     }
 
     public boolean isDeleted()
     {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return next.isDeleted();
     }
 
     public boolean isDetached()
     {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return next.isDeleted();
     }
 }
 

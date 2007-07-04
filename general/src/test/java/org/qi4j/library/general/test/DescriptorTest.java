@@ -17,9 +17,9 @@ import org.qi4j.api.annotation.ImplementedBy;
 import org.qi4j.api.annotation.ModifiedBy;
 import org.qi4j.library.framework.properties.PropertiesMixin;
 import org.qi4j.library.general.model.Descriptor;
-import org.qi4j.library.general.model.DescriptorMixin;
-import org.qi4j.library.general.model.DescriptorModifier;
 import org.qi4j.library.general.model.Name;
+import org.qi4j.library.general.test.model.DescriptorMixin;
+import org.qi4j.library.general.test.model.DescriptorModifier;
 
 public class DescriptorTest extends AbstractTest
 {
