@@ -26,4 +26,9 @@ public class ValidationException extends RuntimeException
     {
         super( message, cause );
     }
+
+    public ValidationException( Throwable cause )
+    {
+        super( cause );
+    }
 }
