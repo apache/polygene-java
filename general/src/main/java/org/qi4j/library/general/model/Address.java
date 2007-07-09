@@ -15,6 +15,6 @@ package org.qi4j.library.general.model;
 /**
  * Generic interface for Address
  */
-public interface Address extends AddressLine, ZipCode, HasCity, HasState, HasCountry
+public interface Address extends AddressLine, ZipCode, HasCity
 {
 }

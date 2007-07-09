@@ -40,12 +40,12 @@ public class AddressEntityCompositeTest extends AbstractTest
 
         StateEntityComposite state = compositeFactory.newInstance( StateEntityComposite.class );
         state.setName( "Victoria" );
-        addressEntityComposite.setState( state );
+        city.setState( state );
 
         CountryEntityComposite country = compositeFactory.newInstance( CountryEntityComposite.class );
         country.setIsoCode( "AU" );
         country.setName( "Australia" );
-        addressEntityComposite.setCountry( country );
+        city.setCountry( country );
 
         assertEquals( firstLineAdd, addressEntityComposite.getFirstLine() );
         assertEquals( secondLineAdd, addressEntityComposite.getSecondLine() );
@@ -57,11 +57,11 @@ public class AddressEntityCompositeTest extends AbstractTest
         assertEquals( city.getCompositeModel(), otherCity.getCompositeModel() );
         assertEquals( cityName, otherCity.getName() );
 
-        StateEntityComposite otherState = (StateEntityComposite) addressEntityComposite.getState();
+        StateEntityComposite otherState = (StateEntityComposite) city.getState();
         assertEquals( state.getCompositeModel(), otherState.getCompositeModel() );
         assertEquals( stateName, otherState.getName() );
 
-        CountryEntityComposite otherCountry = (CountryEntityComposite) addressEntityComposite.getCountry();
+        CountryEntityComposite otherCountry = (CountryEntityComposite) city.getCountry();
         assertEquals( country.getCompositeModel(), otherCountry.getCompositeModel() );
         assertEquals( countryName, otherCountry.getName() );
     }
