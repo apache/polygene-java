@@ -12,15 +12,9 @@
  */
 package org.qi4j.library.general.model;
 
-import org.qi4j.library.general.model.composites.CountryEntityComposite;
-import java.io.Serializable;
-
 /**
- * Represents one-to-one relationship with {@link Country}
+ * Generic interface of a state
  */
-public interface HasCountry extends Serializable
+public interface State extends Name
 {
-    void setCountry( Country country );
-
-    Country getCountry();
 }

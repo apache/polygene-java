@@ -13,14 +13,14 @@
 package org.qi4j.library.general.model;
 
 import java.io.Serializable;
-import org.qi4j.library.general.model.composites.CityComposite;
+import org.qi4j.library.general.model.composites.CityEntityComposite;
 
 /**
- * Represents one-to-one relationship with {@link org.qi4j.library.general.model.composites.CityComposite}
+ * Represents one-to-one relationship with {@link org.qi4j.library.general.model.composites.CityEntityComposite}
  */
 public interface HasCity extends Serializable
 {
-    void setCity( CityComposite city );
+    void setCity( City city );
 
-    CityComposite getCity();
+    City getCity();
 }

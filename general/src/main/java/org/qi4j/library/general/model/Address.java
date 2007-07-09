@@ -10,19 +10,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.library.general.model.composites;
-
-import org.qi4j.api.Composite;
-import org.qi4j.api.annotation.ImplementedBy;
-import org.qi4j.api.persistence.Identity;
-import org.qi4j.library.framework.properties.PropertiesMixin;
-import org.qi4j.library.general.model.IsoCode;
-import org.qi4j.library.general.model.Name;
+package org.qi4j.library.general.model;
 
 /**
- * This interface represents Entity of Country
+ * Generic interface for Address
  */
-@ImplementedBy( { PropertiesMixin.class } )
-public interface CountryComposite extends Name, IsoCode, Identity, Composite
+public interface Address extends AddressLine, ZipCode, HasCity, HasState, HasCountry
 {
 }

@@ -10,17 +10,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.library.general.model;
+package org.qi4j.library.general.model.composites;
 
-import org.qi4j.library.general.model.composites.CountryEntityComposite;
-import java.io.Serializable;
+import org.qi4j.api.Composite;
+import org.qi4j.api.annotation.ImplementedBy;
+import org.qi4j.api.persistence.Identity;
+import org.qi4j.api.persistence.composite.EntityComposite;
+import org.qi4j.library.framework.properties.PropertiesMixin;
+import org.qi4j.library.general.model.IsoCode;
+import org.qi4j.library.general.model.Name;
+import org.qi4j.library.general.model.Country;
 
 /**
- * Represents one-to-one relationship with {@link Country}
+ * Persistable Country entity
  */
-public interface HasCountry extends Serializable
+@ImplementedBy( { PropertiesMixin.class } )
+public interface CountryEntityComposite extends Country, EntityComposite
 {
-    void setCountry( Country country );
-
-    Country getCountry();
 }

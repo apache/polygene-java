@@ -14,12 +14,12 @@ package org.qi4j.library.general.model.composites;
 
 import org.qi4j.library.general.model.AbstractTest;
 
-public class AddressCompositeTest extends AbstractTest
+public class AddressEntityCompositeTest extends AbstractTest
 {
     public void testNewAddressCompositeSuccessful() throws Exception
     {
-        AddressComposite addressComposite;
-        addressComposite = compositeFactory.newInstance( AddressComposite.class );
+        AddressEntityComposite addressEntityComposite;
+        addressEntityComposite = compositeFactory.newInstance( AddressEntityComposite.class );
 
         String firstLineAdd = "IOI Tower";
         String secondLineAdd = "101 Collins St.";
@@ -29,39 +29,39 @@ public class AddressCompositeTest extends AbstractTest
         String stateName = "Victoria";
         String countryName = "Australia";
 
-        addressComposite.setFirstLine( firstLineAdd );
-        addressComposite.setSecondLine( secondLineAdd );
-        addressComposite.setThirdLine( thirdLineAdd );
-        addressComposite.setZipCode( zipcode );
+        addressEntityComposite.setFirstLine( firstLineAdd );
+        addressEntityComposite.setSecondLine( secondLineAdd );
+        addressEntityComposite.setThirdLine( thirdLineAdd );
+        addressEntityComposite.setZipCode( zipcode );
 
-        CityComposite city = compositeFactory.newInstance( CityComposite.class );
+        CityEntityComposite city = compositeFactory.newInstance( CityEntityComposite.class );
         city.setName( cityName );
-        addressComposite.setCity( city );
+        addressEntityComposite.setCity( city );
 
-        StateComposite state = compositeFactory.newInstance( StateComposite.class );
+        StateEntityComposite state = compositeFactory.newInstance( StateEntityComposite.class );
         state.setName( "Victoria" );
-        addressComposite.setState( state );
+        addressEntityComposite.setState( state );
 
-        CountryComposite country = compositeFactory.newInstance( CountryComposite.class );
+        CountryEntityComposite country = compositeFactory.newInstance( CountryEntityComposite.class );
         country.setIsoCode( "AU" );
         country.setName( "Australia" );
-        addressComposite.setCountry( country );
+        addressEntityComposite.setCountry( country );
 
-        assertEquals( firstLineAdd, addressComposite.getFirstLine() );
-        assertEquals( secondLineAdd, addressComposite.getSecondLine() );
-        assertNull( addressComposite.getThirdLine() );
-        assertEquals( zipcode, addressComposite.getZipCode() );
+        assertEquals( firstLineAdd, addressEntityComposite.getFirstLine() );
+        assertEquals( secondLineAdd, addressEntityComposite.getSecondLine() );
+        assertNull( addressEntityComposite.getThirdLine() );
+        assertEquals( zipcode, addressEntityComposite.getZipCode() );
 
-        CityComposite otherCity = addressComposite.getCity();
+        CityEntityComposite otherCity = (CityEntityComposite) addressEntityComposite.getCity();
 
         assertEquals( city.getCompositeModel(), otherCity.getCompositeModel() );
         assertEquals( cityName, otherCity.getName() );
 
-        StateComposite otherState = addressComposite.getState();
+        StateEntityComposite otherState = (StateEntityComposite) addressEntityComposite.getState();
         assertEquals( state.getCompositeModel(), otherState.getCompositeModel() );
         assertEquals( stateName, otherState.getName() );
 
-        CountryComposite otherCountry = addressComposite.getCountry();
+        CountryEntityComposite otherCountry = (CountryEntityComposite) addressEntityComposite.getCountry();
         assertEquals( country.getCompositeModel(), otherCountry.getCompositeModel() );
         assertEquals( countryName, otherCountry.getName() );
     }

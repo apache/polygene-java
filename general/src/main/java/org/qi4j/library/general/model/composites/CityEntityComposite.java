@@ -15,13 +15,15 @@ package org.qi4j.library.general.model.composites;
 import org.qi4j.api.Composite;
 import org.qi4j.api.annotation.ImplementedBy;
 import org.qi4j.api.persistence.Identity;
+import org.qi4j.api.persistence.composite.EntityComposite;
 import org.qi4j.library.framework.properties.PropertiesMixin;
 import org.qi4j.library.general.model.Name;
+import org.qi4j.library.general.model.City;
 
 /**
- * This interface represents Entity of a City
+ * Persistable City entity
  */
 @ImplementedBy( { PropertiesMixin.class } )
-public interface CityComposite extends Name, Identity, Composite
+public interface CityEntityComposite extends City, EntityComposite
 {
 }
