@@ -10,13 +10,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.library.general.model;
+package org.qi4j.library.general.model.associations;
 
-import org.qi4j.library.general.model.associations.HasCity;
+import java.io.Serializable;
+import org.qi4j.library.general.model.City;
 
 /**
- * Generic interface for Address
+ * Represents one-to-one relationship with {@link org.qi4j.library.general.model.composites.CityEntityComposite}
  */
-public interface Address extends AddressLine, ZipCode, HasCity
+public interface HasCity extends Serializable
 {
+    void setCity( City city );
+
+    City getCity();
 }

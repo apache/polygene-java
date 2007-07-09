@@ -10,13 +10,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.library.general.model;
+package org.qi4j.library.general.model.associations;
 
-import org.qi4j.library.general.model.composites.CountryEntityComposite;
 import java.io.Serializable;
+import org.qi4j.library.general.model.Country;
 
 /**
- * Represents one-to-one relationship with {@link Country}
+ * Represents one-to-one relationship with {@link org.qi4j.library.general.model.Country}
  */
 public interface HasCountry extends Serializable
 {

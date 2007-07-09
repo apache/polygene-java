@@ -15,11 +15,11 @@ package org.qi4j.library.general.model;
 import java.io.Serializable;
 
 /**
- * Represents one-to-one relationship with {@link State}
+ * Generic interface for a regular expression
  */
-public interface HasState extends Serializable
+public interface RegularExpression extends Serializable
 {
-    void setState( State state );
+    void setRegex( String regex );
 
-    State getState();
+    String getRegex();
 }

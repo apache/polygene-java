@@ -10,17 +10,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.library.general.model;
+package org.qi4j.library.general.model.associations;
 
 import java.io.Serializable;
-import org.qi4j.library.general.model.composites.CityEntityComposite;
+import org.qi4j.library.general.model.ContactType;
 
 /**
- * Represents one-to-one relationship with {@link org.qi4j.library.general.model.composites.CityEntityComposite}
+ * Interface to describe association with {@link org.qi4j.chronos.model.composites.ContactTypeEntityComposite}
  */
-public interface HasCity extends Serializable
+public interface HasContactType<T extends ContactType> extends Serializable
 {
-    void setCity( City city );
+    void setContactType( T contactType );
 
-    City getCity();
+    T getContactType();
 }

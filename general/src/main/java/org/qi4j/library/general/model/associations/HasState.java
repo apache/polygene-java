@@ -10,17 +10,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.library.general.model.composites;
+package org.qi4j.library.general.model.associations;
 
-import org.qi4j.api.persistence.composite.EntityComposite;
-import org.qi4j.api.annotation.ImplementedBy;
-import org.qi4j.library.framework.properties.PropertiesMixin;
-import org.qi4j.library.general.model.Address;
+import java.io.Serializable;
+import org.qi4j.library.general.model.State;
 
 /**
- * Persistable Address entity
+ * Represents one-to-one relationship with {@link org.qi4j.library.general.model.State}
  */
-@ImplementedBy( { PropertiesMixin.class } )
-public interface AddressEntityComposite extends Address, EntityComposite
+public interface HasState extends Serializable
 {
+    void setState( State state );
+
+    State getState();
 }
