@@ -13,10 +13,13 @@
 package org.qi4j.library.general.model;
 
 import java.io.Serializable;
+import org.qi4j.api.annotation.ImplementedBy;
+import org.qi4j.library.general.model.mixins.ZipCodeMixin;
 
 /**
  * Generic interface for Zipcode that stores the zip-code value itself.
  */
+@ImplementedBy( { ZipCodeMixin.class } )
 public interface ZipCode extends Serializable
 {
     String getZipCode();

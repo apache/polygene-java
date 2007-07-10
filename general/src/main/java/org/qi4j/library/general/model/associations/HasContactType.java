@@ -13,14 +13,17 @@
 package org.qi4j.library.general.model.associations;
 
 import java.io.Serializable;
+import org.qi4j.api.annotation.ImplementedBy;
 import org.qi4j.library.general.model.ContactType;
+import org.qi4j.library.general.model.mixins.HasContactTypeMixin;
 
 /**
- * Interface to describe association with {@link org.qi4j.chronos.model.composites.ContactTypeEntityComposite}
+ * Interface to describe association with {@link org.qi4j.library.general.model.ContactType}
  */
+@ImplementedBy( { HasContactTypeMixin.class } )
 public interface HasContactType<T extends ContactType> extends Serializable
 {
-    void setContactType( T contactType );
+    void setContactType( T aContactType );
 
     T getContactType();
 }

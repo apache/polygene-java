@@ -13,10 +13,7 @@
 package org.qi4j.library.general.model;
 
 import org.qi4j.api.Composite;
-import org.qi4j.api.annotation.ImplementedBy;
 import org.qi4j.api.annotation.ModifiedBy;
-import org.qi4j.library.framework.properties.PropertiesMixin;
-import org.qi4j.library.general.test.model.DescriptorMixin;
 import org.qi4j.library.general.test.model.DescriptorModifier;
 
 public class DescriptorTest extends AbstractTest
@@ -24,25 +21,23 @@ public class DescriptorTest extends AbstractTest
     public void testDescriptorAsMixin() throws Exception
     {
         DummyComposite composite = compositeFactory.newInstance( DummyComposite.class );
-        composite.setName( "Sianny" );
+        composite.setDisplayValue( "Sianny" );
         String displayValue = composite.getDisplayValue();
-        assertEquals( displayValue, composite.getName() );
+        assertEquals( displayValue, composite.getDisplayValue() );
     }
 
     public void testDescriptorWithModifier() throws Exception {
         DummyComposite2 composite = compositeFactory.newInstance( DummyComposite2.class );
-        composite.setName( "Sianny" );
+        composite.setDisplayValue( "Sianny" );
         String displayValue = composite.getDisplayValue();
-        assertEquals( displayValue, "My name is " + composite.getName() );
+        assertEquals( displayValue, "My name is Sianny" );
     }
 
-    @ImplementedBy( { DescriptorMixin.class, PropertiesMixin.class } )
     private interface DummyComposite extends Descriptor, Name, Composite
     {
     }
 
     @ModifiedBy( { DescriptorModifier.class } )
-    @ImplementedBy( { DescriptorMixin.class, PropertiesMixin.class } )
     private interface DummyComposite2 extends Descriptor, Name, Composite
     {
     }

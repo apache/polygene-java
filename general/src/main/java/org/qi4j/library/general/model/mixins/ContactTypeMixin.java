@@ -10,19 +10,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.library.general.model;
+package org.qi4j.library.general.model.mixins;
 
-import java.io.Serializable;
-import org.qi4j.api.annotation.ImplementedBy;
-import org.qi4j.library.general.model.mixins.RegularExpressionMixin;
+import org.qi4j.library.general.model.ContactType;
 
 /**
- * Generic interface for a regular expression
+ * Default mixin implemenation for {@link org.qi4j.library.general.model.ContactType}.
  */
-@ImplementedBy( { RegularExpressionMixin.class } )
-public interface RegularExpression extends Serializable
+public final class ContactTypeMixin implements ContactType
 {
-    void setRegex( String aRegex );
+    private String contactType;
 
-    String getRegex();
+    public void setContactType( String aContactType )
+    {
+        contactType = aContactType;
+    }
+
+    public String getContactType()
+    {
+        return contactType;
+    }
 }

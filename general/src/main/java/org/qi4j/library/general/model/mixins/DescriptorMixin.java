@@ -10,19 +10,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.library.general.model;
+package org.qi4j.library.general.model.mixins;
 
-import java.io.Serializable;
-import org.qi4j.api.annotation.ImplementedBy;
-import org.qi4j.library.general.model.mixins.RegularExpressionMixin;
+import org.qi4j.library.general.model.Descriptor;
 
 /**
- * Generic interface for a regular expression
+ * Default mixin implementation of {@link org.qi4j.library.general.model.Descriptor}.
  */
-@ImplementedBy( { RegularExpressionMixin.class } )
-public interface RegularExpression extends Serializable
+public final class DescriptorMixin implements Descriptor
 {
-    void setRegex( String aRegex );
+    private String displayValue;
 
-    String getRegex();
+    public String getDisplayValue()
+    {
+        return displayValue;
+    }
+
+    public void setDisplayValue( String aDisplayValue )
+    {
+        displayValue = aDisplayValue;
+    }
 }

@@ -14,15 +14,15 @@ package org.qi4j.library.general.model;
 
 import java.io.Serializable;
 import org.qi4j.api.annotation.ImplementedBy;
-import org.qi4j.library.general.model.mixins.RegularExpressionMixin;
+import org.qi4j.library.general.model.mixins.CurrencyMixin;
 
 /**
- * Generic interface for a regular expression
+ * Generic interface for Currency
  */
-@ImplementedBy( { RegularExpressionMixin.class } )
-public interface RegularExpression extends Serializable
+@ImplementedBy( { CurrencyMixin.class } )
+public interface Currency extends Serializable
 {
-    void setRegex( String aRegex );
+    void setCurrency( java.util.Currency aCurrency );
 
-    String getRegex();
+    java.util.Currency getCurrency();
 }

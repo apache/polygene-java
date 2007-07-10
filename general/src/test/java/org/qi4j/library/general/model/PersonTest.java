@@ -14,8 +14,6 @@ package org.qi4j.library.general.model;
 
 import junit.framework.Assert;
 import org.qi4j.api.Composite;
-import org.qi4j.api.annotation.ImplementedBy;
-import org.qi4j.library.framework.properties.PropertiesMixin;
 
 public class PersonTest extends AbstractTest
 {
@@ -35,9 +33,7 @@ public class PersonTest extends AbstractTest
         Assert.assertEquals( GenderType.female, person.getGender() );
     }
 
-    @ImplementedBy( { PropertiesMixin.class } )
     private interface PersonComposite extends Person, Composite
     {
     }
-
 }

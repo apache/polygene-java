@@ -13,9 +13,14 @@
  */
 package org.qi4j.library.general.model;
 
-public interface Description
+import java.io.Serializable;
+import org.qi4j.api.annotation.ImplementedBy;
+import org.qi4j.library.general.model.mixins.DescriptionMixin;
+
+@ImplementedBy( { DescriptionMixin.class } )
+public interface Description extends Serializable
 {
     String getDescription();
 
-    void setDescription(String description);
+    void setDescription( String aDescription );
 }

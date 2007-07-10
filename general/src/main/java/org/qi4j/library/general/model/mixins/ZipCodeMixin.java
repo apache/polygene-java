@@ -10,19 +10,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.library.general.model;
+package org.qi4j.library.general.model.mixins;
 
-import java.io.Serializable;
-import org.qi4j.api.annotation.ImplementedBy;
-import org.qi4j.library.general.model.mixins.RegularExpressionMixin;
+import org.qi4j.library.general.model.ZipCode;
 
 /**
- * Generic interface for a regular expression
+ * Default mixin implementation for {@link ZipCode}
  */
-@ImplementedBy( { RegularExpressionMixin.class } )
-public interface RegularExpression extends Serializable
+public final class ZipCodeMixin implements ZipCode
 {
-    void setRegex( String aRegex );
+    private String zipCode;
 
-    String getRegex();
+    public String getZipCode()
+    {
+        return zipCode;
+    }
+
+    public void setZipCode( String aZipCode )
+    {
+        zipCode = aZipCode;
+    }
 }

@@ -18,13 +18,16 @@
 package org.qi4j.library.general.model;
 
 import java.io.Serializable;
+import org.qi4j.api.annotation.ImplementedBy;
+import org.qi4j.library.general.model.mixins.NameMixin;
 
 /**
  * Generic interface for Name.
  */
+@ImplementedBy( { NameMixin.class } )
 public interface Name extends Serializable
 {
-    void setName( String name );
+    void setName( String aName );
 
     String getName();
 }

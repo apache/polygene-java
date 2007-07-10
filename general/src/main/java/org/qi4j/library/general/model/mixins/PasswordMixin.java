@@ -10,19 +10,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.library.general.model;
+package org.qi4j.library.general.model.mixins;
 
-import java.io.Serializable;
-import org.qi4j.api.annotation.ImplementedBy;
-import org.qi4j.library.general.model.mixins.RegularExpressionMixin;
+import org.qi4j.library.general.model.Password;
 
 /**
- * Generic interface for a regular expression
+ * Default mixin implementation for {@link org.qi4j.library.general.model.Password}
  */
-@ImplementedBy( { RegularExpressionMixin.class } )
-public interface RegularExpression extends Serializable
+public final class PasswordMixin implements Password
 {
-    void setRegex( String aRegex );
+    private String password;
 
-    String getRegex();
+    public void setPassword( String aPassword )
+    {
+        password = aPassword;
+    }
+
+    public String getPassword()
+    {
+        return password;
+    }
 }

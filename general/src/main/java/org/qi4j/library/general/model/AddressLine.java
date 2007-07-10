@@ -13,21 +13,24 @@
 package org.qi4j.library.general.model;
 
 import java.io.Serializable;
+import org.qi4j.api.annotation.ImplementedBy;
+import org.qi4j.library.general.model.mixins.AddressLineMixin;
 
 /**
  * Generic interface for Address lines.
  */
+@ImplementedBy( { AddressLineMixin.class } )
 public interface AddressLine extends Serializable
 {
-    void setFirstLine( String firstLine );
+    void setFirstLine( String aFirstLine );
 
     String getFirstLine();
 
-    void setSecondLine( String secondLine );
+    void setSecondLine( String aSecondLine );
 
     String getSecondLine();
 
-    void setThirdLine( String thirdLine );
+    void setThirdLine( String aThirdLine );
 
     String getThirdLine();
 }

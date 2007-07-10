@@ -24,4 +24,9 @@ public final class DescriptorMixin implements Descriptor
     {
         return name.getName();
     }
+
+    public void setDisplayValue( String aDisplayValue )
+    {
+        // Do nothing
+    }
 }

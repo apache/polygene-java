@@ -13,17 +13,20 @@
 package org.qi4j.library.general.model;
 
 import java.io.Serializable;
+import org.qi4j.api.annotation.ImplementedBy;
+import org.qi4j.library.general.model.mixins.PersonNameMixin;
 
 /**
  * Generic interface of PersonName that stores first and last name.
  */
+@ImplementedBy( { PersonNameMixin.class } )
 public interface PersonName extends Serializable
 {
     String getFirstName();
 
-    void setFirstName( String aName );
+    void setFirstName( String aFirstName );
 
     String getLastName();
 
-    void setLastName( String aName );
+    void setLastName( String aLastName );
 }

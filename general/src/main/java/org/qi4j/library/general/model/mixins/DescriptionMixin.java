@@ -10,19 +10,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.library.general.model;
+package org.qi4j.library.general.model.mixins;
 
-import java.io.Serializable;
-import org.qi4j.api.annotation.ImplementedBy;
-import org.qi4j.library.general.model.mixins.RegularExpressionMixin;
+import org.qi4j.library.general.model.Description;
 
 /**
- * Generic interface for a regular expression
+ * Default mixin implementation for {@link org.qi4j.library.general.model.Description}
  */
-@ImplementedBy( { RegularExpressionMixin.class } )
-public interface RegularExpression extends Serializable
+public final class DescriptionMixin implements Description
 {
-    void setRegex( String aRegex );
+    private String description;
 
-    String getRegex();
+    public String getDescription()
+    {
+        return description;
+    }
+
+    public void setDescription( String aDescription )
+    {
+        description = aDescription;
+    }
 }

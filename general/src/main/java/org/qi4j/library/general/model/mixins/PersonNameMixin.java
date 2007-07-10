@@ -10,22 +10,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.library.general.test.model;
+package org.qi4j.library.general.model.mixins;
 
-import org.qi4j.api.annotation.Modifies;
-import org.qi4j.library.general.model.Descriptor;
+import org.qi4j.library.general.model.PersonName;
 
-public class DescriptorModifier implements Descriptor
+/**
+ * Default mixin implementation for {@link org.qi4j.library.general.model.PersonName}
+ */
+public final class PersonNameMixin implements PersonName
 {
-    @Modifies private Descriptor next;
+    private String lastName;
+    private String firstName;
 
-    public String getDisplayValue()
+    public String getFirstName()
     {
-        return "My name is " + next.getDisplayValue();
+        return firstName;
     }
 
-    public void setDisplayValue( String aDisplayValue )
+    public void setFirstName( String aFirstName )
     {
-        next.setDisplayValue( aDisplayValue );
+        firstName = aFirstName;
+    }
+
+    public String getLastName()
+    {
+        return lastName;
+    }
+
+    public void setLastName( String aLastName )
+    {
+        lastName = aLastName;
     }
 }

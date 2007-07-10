@@ -10,19 +10,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.library.general.model;
+package org.qi4j.library.general.model.mixins;
 
-import java.io.Serializable;
-import org.qi4j.api.annotation.ImplementedBy;
-import org.qi4j.library.general.model.mixins.RegularExpressionMixin;
+import org.qi4j.library.general.model.associations.HasCity;
+import org.qi4j.library.general.model.City;
 
 /**
- * Generic interface for a regular expression
+ * Default mixin implementation for {@link HasCity}
  */
-@ImplementedBy( { RegularExpressionMixin.class } )
-public interface RegularExpression extends Serializable
+public final class HasCityMixin implements HasCity
 {
-    void setRegex( String aRegex );
+    private City city;
 
-    String getRegex();
+    public void setCity( City aCity )
+    {
+        city = aCity;
+    }
+
+    public City getCity()
+    {
+        return city;
+    }
 }

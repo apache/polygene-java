@@ -13,14 +13,16 @@
 package org.qi4j.library.general.model;
 
 import java.io.Serializable;
+import org.qi4j.api.annotation.ImplementedBy;
+import org.qi4j.library.general.model.mixins.EnabledMixin;
 
 /**
  * Generic interface for enabling/disabling service.
  */
+@ImplementedBy( { EnabledMixin.class } )
 public interface Enabled extends Serializable
 {
-    void setEnabled( boolean enabled );
+    void setEnabled( boolean anEnabled );
 
-    // TODO: rename to isEnabled
-    boolean getEnabled();
+    boolean isEnabled();
 }

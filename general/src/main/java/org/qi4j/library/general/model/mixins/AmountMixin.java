@@ -10,19 +10,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.library.general.model;
+package org.qi4j.library.general.model.mixins;
 
-import java.io.Serializable;
-import org.qi4j.api.annotation.ImplementedBy;
-import org.qi4j.library.general.model.mixins.RegularExpressionMixin;
+import org.qi4j.library.general.model.Amount;
 
 /**
- * Generic interface for a regular expression
+ * Default mixin implementation for {@link org.qi4j.library.general.model.Amount}
  */
-@ImplementedBy( { RegularExpressionMixin.class } )
-public interface RegularExpression extends Serializable
+public final class AmountMixin<T extends Number> implements Amount<T>
 {
-    void setRegex( String aRegex );
+    private T amount;
 
-    String getRegex();
+    public T getAmount()
+    {
+        return amount;
+    }
+
+    public void setAmount( T anAmount )
+    {
+        amount = anAmount;
+    }
 }

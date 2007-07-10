@@ -10,19 +10,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.library.general.model;
+package org.qi4j.library.general.model.mixins;
 
-import java.io.Serializable;
-import org.qi4j.api.annotation.ImplementedBy;
-import org.qi4j.library.general.model.mixins.RegularExpressionMixin;
+import org.qi4j.library.general.model.Enabled;
 
-/**
- * Generic interface for a regular expression
- */
-@ImplementedBy( { RegularExpressionMixin.class } )
-public interface RegularExpression extends Serializable
+public final class EnabledMixin implements Enabled
 {
-    void setRegex( String aRegex );
+    private boolean enabled;
 
-    String getRegex();
+    public void setEnabled( boolean anEnabled )
+    {
+        enabled = anEnabled;
+    }
+
+    public boolean isEnabled()
+    {
+        return enabled;
+    }
 }

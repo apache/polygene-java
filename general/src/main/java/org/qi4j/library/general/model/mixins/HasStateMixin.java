@@ -10,19 +10,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.library.general.model;
+package org.qi4j.library.general.model.mixins;
 
-import java.io.Serializable;
-import org.qi4j.api.annotation.ImplementedBy;
-import org.qi4j.library.general.model.mixins.RegularExpressionMixin;
+import org.qi4j.library.general.model.associations.HasState;
+import org.qi4j.library.general.model.State;
 
 /**
- * Generic interface for a regular expression
+ * Default mixin implementation for {@link org.qi4j.library.general.model.associations.HasState}.
  */
-@ImplementedBy( { RegularExpressionMixin.class } )
-public interface RegularExpression extends Serializable
+public final class HasStateMixin implements HasState
 {
-    void setRegex( String aRegex );
+    private State state;
 
-    String getRegex();
+    public void setState( State aState )
+    {
+        state = aState;
+    }
+
+    public State getState()
+    {
+        return state;
+    }
 }

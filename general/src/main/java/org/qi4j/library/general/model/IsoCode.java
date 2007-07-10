@@ -13,13 +13,16 @@
 package org.qi4j.library.general.model;
 
 import java.io.Serializable;
+import org.qi4j.api.annotation.ImplementedBy;
+import org.qi4j.library.general.model.mixins.IsoCodeMixin;
 
 /**
  * Generic interface for ISO-CODE.
  */
+@ImplementedBy( { IsoCodeMixin.class } )
 public interface IsoCode extends Serializable
 {
-    void setIsoCode( String isoCode );
+    void setIsoCode( String aIsoCode );
 
     String getIsoCode();
 }
