@@ -12,6 +12,9 @@
  */
 package org.qi4j.library.general.model;
 
+/**
+ * Contact type that contains regular expression for the purpose of contact pattern matching validation.
+ */
 public interface RegexContactType extends ContactType, RegularExpression
 {
 }
