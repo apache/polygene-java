@@ -13,15 +13,11 @@
  */
 package org.qi4j.library.general.model;
 
-import java.io.Serializable;
 import org.qi4j.library.general.model.associations.HasContactType;
 
 /**
  * Generic interface for a contact such as phone number, fax-number, email, msn, etc.
  */
-public interface Contact<T extends ContactType> extends HasContactType<T>, Serializable
+public interface Contact<T extends ContactType> extends ContactValue, HasContactType<T>
 {
-    String getContact();
-
-    void setContact(String aContact);
 }
