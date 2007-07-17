@@ -23,14 +23,14 @@ import org.qi4j.api.EntityRepository;
 import org.qi4j.api.annotation.ModifiedBy;
 import org.qi4j.api.persistence.EntityCompositeNotFoundException;
 import org.qi4j.api.persistence.PersistenceException;
-import org.qi4j.api.persistence.PersistentStorage;
 import org.qi4j.api.persistence.composite.EntityComposite;
+import org.qi4j.api.persistence.composite.PersistentStorage;
 import org.qi4j.api.persistence.modifier.PersistentStorageReferenceModifier;
 import org.qi4j.api.persistence.modifier.PersistentStorageTraceModifier;
 import org.qi4j.runtime.CompositeInvocationHandler;
 import org.qi4j.runtime.ProxyReferenceInvocationHandler;
-import org.qi4j.spi.persistence.SerializablePersistenceSpi;
-import org.qi4j.spi.persistence.SerializedObject;
+import org.qi4j.spi.serialization.SerializablePersistenceSpi;
+import org.qi4j.spi.serialization.SerializedObject;
 
 @ModifiedBy( { PersistentStorageTraceModifier.class, PersistentStorageReferenceModifier.class } )
 public final class SerializablePersistence
@@ -131,6 +131,18 @@ public final class SerializablePersistence
     {
         String id = entity.getIdentity();
         delegate.removeInstance( id );
+    }
+
+    // TODO: Re-thinking
+    public <T extends EntityComposite> EntityComposite getEntity( String anIdentity, Class<T> aType )
+    {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    // TODO: Re-thinking
+    public <T extends EntityComposite> void putEntity( EntityComposite composite )
+    {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 
 }

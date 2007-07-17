@@ -31,7 +31,7 @@ import jdbm.RecordManager;
 import jdbm.RecordManagerFactory;
 import org.qi4j.api.CompositeFactory;
 import org.qi4j.api.persistence.PersistenceException;
-import org.qi4j.api.persistence.PersistentStorage;
+import org.qi4j.api.persistence.composite.PersistentStorage;
 import org.qi4j.api.persistence.composite.EntityComposite;
 
 
@@ -134,6 +134,18 @@ public class JdbmStorage
         {
             throw new TransactionSystemException( "TransactionManager failure.", e );
         }
+    }
+
+    // TODO: Re-thinking
+    public <T extends EntityComposite> EntityComposite getEntity( String anIdentity, Class<T> aType )
+    {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    // TODO: Re-thinking
+    public <T extends EntityComposite> void putEntity( EntityComposite composite )
+    {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     private TransactionResource getTransactionResource()

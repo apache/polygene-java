@@ -30,8 +30,8 @@ import java.util.Properties;
 import java.util.Random;
 import org.qi4j.api.CompositeInstantiationException;
 import org.qi4j.api.persistence.EntityCompositeNotFoundException;
-import org.qi4j.spi.persistence.SerializablePersistenceSpi;
-import org.qi4j.spi.persistence.SerializedObject;
+import org.qi4j.spi.serialization.SerializablePersistenceSpi;
+import org.qi4j.spi.serialization.SerializedObject;
 
 public final class BinaryFilePersistenceProvider
     implements SerializablePersistenceSpi

@@ -26,8 +26,8 @@ import java.io.RandomAccessFile;
 import java.util.HashMap;
 import java.util.Map;
 import org.qi4j.api.CompositeInstantiationException;
-import org.qi4j.spi.persistence.SerializablePersistenceSpi;
-import org.qi4j.spi.persistence.SerializedObject;
+import org.qi4j.spi.serialization.SerializablePersistenceSpi;
+import org.qi4j.spi.serialization.SerializedObject;
 
 public class RandomAccessFileProvider
     implements SerializablePersistenceSpi

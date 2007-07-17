@@ -20,8 +20,8 @@ import java.util.Map;
 import org.qi4j.api.annotation.ModifiedBy;
 import org.qi4j.api.persistence.modifier.PersistentStorageReferenceModifier;
 import org.qi4j.api.persistence.modifier.PersistentStorageTraceModifier;
-import org.qi4j.spi.persistence.SerializablePersistenceSpi;
-import org.qi4j.spi.persistence.SerializedObject;
+import org.qi4j.spi.serialization.SerializablePersistenceSpi;
+import org.qi4j.spi.serialization.SerializedObject;
 
 
 /**
