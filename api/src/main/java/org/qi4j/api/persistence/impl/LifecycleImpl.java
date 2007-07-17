@@ -17,7 +17,6 @@ package org.qi4j.api.persistence.impl;
 import org.qi4j.api.annotation.Uses;
 import org.qi4j.api.persistence.Lifecycle;
 import org.qi4j.api.persistence.PersistenceException;
-import org.qi4j.api.persistence.PersistentStorage;
 import org.qi4j.api.persistence.composite.EntityComposite;
 
 
@@ -41,12 +40,7 @@ public final class LifecycleImpl
     public void create()
         throws PersistenceException
     {
-        PersistentStorage storage = meAsEntity.getEntityRepository();
-        if( storage == null )
-        {
-            throw new PersistenceException( "No storage set for object" );
-        }
-        storage.create( meAsEntity );
+        // TODO
         state = state & ~STATE_NEW;
     }
 
@@ -59,12 +53,7 @@ public final class LifecycleImpl
     public void delete()
         throws PersistenceException
     {
-        PersistentStorage storage = meAsEntity.getEntityRepository();
-        if( storage == null )
-        {
-            throw new PersistenceException( "No storage set for object" );
-        }
-        storage.delete( meAsEntity );
+        // TODO
         state = state | STATE_DELETED;
     }
 

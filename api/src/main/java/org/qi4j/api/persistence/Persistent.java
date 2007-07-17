@@ -16,6 +16,7 @@ package org.qi4j.api.persistence;
 
 import org.qi4j.api.annotation.ImplementedBy;
 import org.qi4j.api.persistence.impl.PersistentImpl;
+import org.qi4j.api.EntityRepository;
 
 /**
  * Objects which are persistent implement this interface which
@@ -27,7 +28,7 @@ import org.qi4j.api.persistence.impl.PersistentImpl;
 @ImplementedBy( PersistentImpl.class )
 public interface Persistent
 {
-    void setEntityRepository( PersistentStorage aStorage );
+    void setEntityRepository( EntityRepository aStorage );
 
-    PersistentStorage getEntityRepository();
+    EntityRepository getEntityRepository();
 }

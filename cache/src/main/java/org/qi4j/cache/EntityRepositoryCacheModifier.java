@@ -55,4 +55,9 @@ public final class EntityRepositoryCacheModifier
     {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
+
+    public <T extends EntityComposite> void create( T t )
+    {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
 }

@@ -17,7 +17,7 @@ package org.qi4j.runtime;
 import java.util.HashMap;
 import org.qi4j.api.CompositeFactory;
 import org.qi4j.api.EntityRepository;
-import org.qi4j.api.persistence.PersistentStorage;
+import org.qi4j.api.persistence.composite.PersistentStorage;
 import org.qi4j.api.persistence.composite.EntityComposite;
 
 /**
@@ -34,27 +34,28 @@ public final class EntityRepositoryImpl
 
     public EntityRepositoryImpl( CompositeFactory aFactory )
     {
-        // TODO: Circular dependency in the setup between the Repo and Storage.
-//        this.storage = storage;
         factory = aFactory;
         cache = new HashMap<String, EntityComposite>();
     }
 
+    public void setStorage( PersistentStorage storage )
+    {
+        this.storage = storage;
+    }
+
     public <T extends EntityComposite> T getInstance( String anIdentity, Class<T> aType )
     {
-//        EntityComposite entity = cache.get( anIdentity );
-//        if( entity == null )
-//        {
-//            entity = storage.getEntity( anIdentity, aType );
-//            if( entity != null )
-//            {
-//                cache.put( anIdentity, entity );
-//            }
-//            return aType.cast( entity );
-//        }
-//        return aType.cast( entity );
-        // TODO: Removed to fix compile errors first.
-        return null;
+        EntityComposite entity = cache.get( anIdentity );
+        if( entity == null )
+        {
+            entity = storage.getEntity( anIdentity, aType );
+            if( entity != null )
+            {
+                cache.put( anIdentity, entity );
+            }
+            return aType.cast( entity );
+        }
+        return aType.cast( entity );
     }
 
     public <T extends EntityComposite> T getInstance( String identity, Class<T> type, boolean autoCreate )
@@ -64,7 +65,7 @@ public final class EntityRepositoryImpl
         {
             object = factory.newInstance( type );
             object.setIdentity( identity );
-            object.setEntityRepository( storage );
+            object.setEntityRepository( this );
             object.initialize();
         }
         return object;
@@ -73,5 +74,10 @@ public final class EntityRepositoryImpl
     public <T extends EntityComposite> T newInstance( String identity, Class<T> type )
     {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public <T extends EntityComposite> void create( T t )
+    {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 }

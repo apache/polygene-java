@@ -12,19 +12,17 @@
  * limitations under the License.
  *
  */
-package org.qi4j.api.persistence;
+package org.qi4j.api.persistence.composite;
 
 import java.io.Serializable;
 import org.qi4j.api.persistence.composite.EntityComposite;
+import org.qi4j.api.persistence.PersistenceException;
 
 /**
  * Persistent repositories must implement this.
  */
 public interface PersistentStorage
 {
-    void create( EntityComposite aProxy )
-        throws PersistenceException;
-
     // TODO: Add MixinModel to allow for call from CompositeInvocationHandler
     void update( EntityComposite aProxy, Serializable aMixin )
         throws PersistenceException;
@@ -32,6 +30,10 @@ public interface PersistentStorage
     // TODO: Add MixinModel to allow for call from CompositeInvocationHandler
     void read( EntityComposite aProxy )
         throws PersistenceException;
+
+    <T extends EntityComposite> EntityComposite getEntity( String anIdentity, Class<T> aType );
+
+    <T extends EntityComposite> void putEntity( EntityComposite composite );
 
     void delete( EntityComposite aProxy )
         throws PersistenceException;

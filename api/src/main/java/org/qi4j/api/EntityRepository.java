@@ -34,4 +34,6 @@ public interface EntityRepository
     <T extends EntityComposite> T getInstance( String identity, Class<T> type, boolean autoCreate );
 
     <T extends EntityComposite> T newInstance( String identity, Class<T> type );
+
+    <T extends EntityComposite> void create( T t );
 }

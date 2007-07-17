@@ -22,7 +22,6 @@ import org.qi4j.api.annotation.AppliesTo;
 import org.qi4j.api.annotation.Dependency;
 import org.qi4j.api.annotation.Modifies;
 import org.qi4j.api.annotation.Uses;
-import org.qi4j.api.persistence.PersistentStorage;
 import org.qi4j.api.persistence.composite.EntityComposite;
 
 /**
@@ -39,22 +38,24 @@ public final class ReadUpdateModifier
 
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
     {
-        // Load mixin
-        PersistentStorage storage = entity.getEntityRepository();
-        if( storage != null && isReadMethod( method ) )
-        {
-            storage.read( entity );
-        }
-
-        Object result = next.invoke( proxy, method, args );
-
-        // Store mixin
-        if( storage != null && isWriteMethod( method ) )
-        {
-            storage.update( entity, (Serializable) context.getMixin() );
-        }
-
-        return result;
+//        // Load mixin
+//        PersistentStorage storage = entity.getEntityRepository();
+//        if( storage != null && isReadMethod( method ) )
+//        {
+//            storage.read( entity );
+//        }
+//
+//        Object result = next.invoke( proxy, method, args );
+//
+//        // Store mixin
+//        if( storage != null && isWriteMethod( method ) )
+//        {
+//            storage.update( entity, (Serializable) context.getMixin() );
+//        }
+//
+//        return result;
+        // TODO: Under re-thinking....
+        return null;
     }
 
     protected boolean isReadMethod( Method aMethod )
