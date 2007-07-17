@@ -15,7 +15,7 @@ package org.qi4j.library.general.model;
 import org.qi4j.api.annotation.ModifiedBy;
 import org.qi4j.api.persistence.composite.EntityComposite;
 import org.qi4j.library.general.model.modifiers.LifecycleValidationModifier;
-import org.qi4j.library.general.test.model.DummyPersistentStorage;
+import org.qi4j.library.general.test.model.DummyEntityRepository;
 import org.qi4j.library.general.test.model.DummyValidationModifier;
 
 public class ValidatableTest extends AbstractTest
@@ -23,7 +23,7 @@ public class ValidatableTest extends AbstractTest
     public void testValidatableSuccessful() throws Exception
     {
         DummyComposite composite = compositeFactory.newInstance( DummyComposite.class );
-        composite.setEntityRepository( new DummyPersistentStorage() );
+        composite.setEntityRepository( new DummyEntityRepository() );
         composite.create();
 
         assertTrue( DummyValidationModifier.validateIsCalled );
