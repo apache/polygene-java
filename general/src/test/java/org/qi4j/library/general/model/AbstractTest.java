@@ -13,16 +13,16 @@
 package org.qi4j.library.general.model;
 
 import junit.framework.TestCase;
-import org.qi4j.api.CompositeFactory;
-import org.qi4j.runtime.CompositeFactoryImpl;
+import org.qi4j.api.CompositeBuilderFactory;
+import org.qi4j.runtime.CompositeBuilderFactoryImpl;
 
 public abstract class AbstractTest extends TestCase
 {
-    protected CompositeFactory compositeFactory;
+    protected CompositeBuilderFactory builderFactory;
 
     protected void setUp() throws Exception
     {
         super.setUp();
-        compositeFactory = new CompositeFactoryImpl();
+        builderFactory = new CompositeBuilderFactoryImpl();
     }
 }

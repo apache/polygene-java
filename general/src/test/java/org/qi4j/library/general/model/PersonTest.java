@@ -19,7 +19,7 @@ public class PersonTest extends AbstractTest
 {
     public void testNewPerson() throws Exception
     {
-        PersonComposite person = compositeFactory.newInstance( PersonComposite.class );
+        PersonComposite person = builderFactory.newCompositeBuilder( PersonComposite.class ).newInstance();
 
         String firstName = "Sianny";
         String lastName = "Halim";

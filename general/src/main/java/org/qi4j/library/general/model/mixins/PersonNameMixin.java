@@ -22,6 +22,17 @@ public final class PersonNameMixin implements PersonName
     private String lastName;
     private String firstName;
 
+
+    public PersonNameMixin( String lastName, String firstName )
+    {
+        this.lastName = lastName;
+        this.firstName = firstName;
+    }
+
+    public PersonNameMixin()
+    {
+    }
+
     public String getFirstName()
     {
         return firstName;

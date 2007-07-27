@@ -25,7 +25,7 @@ import org.mozilla.javascript.Function;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.Undefined;
 import org.mozilla.javascript.Wrapper;
-import org.qi4j.api.CompositeFactory;
+import org.qi4j.api.CompositeBuilderFactory;
 import org.qi4j.api.annotation.Dependency;
 
 /**
@@ -41,7 +41,7 @@ import org.qi4j.api.annotation.Dependency;
 public class JavaScriptMixin
     implements Serializable, InvocationHandler
 {
-    @Dependency CompositeFactory factory;
+    @Dependency CompositeBuilderFactory factory;
 
     // Static --------------------------------------------------------
     static Scriptable standardScope;

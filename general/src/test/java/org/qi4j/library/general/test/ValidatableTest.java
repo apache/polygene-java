@@ -26,10 +26,10 @@ public class ValidatableTest extends AbstractTest
 {
     public void testValidatableSuccessful() throws Exception
     {
-        DummyComposite composite = compositeFactory.newInstance( DummyComposite.class );
+        DummyComposite composite = builderFactory.newCompositeBuilder( DummyComposite.class ).newInstance();
 //        composite.setEntityRepository( new DummyEntityRepository() );
-        composite.setEntityRepository( null );
-        composite.create();
+//        composite.setEntityRepository( null );
+//        composite.create();
 
         assertTrue( DummyValidationModifier.validateIsCalled);
     }

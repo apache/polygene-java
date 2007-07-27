@@ -12,8 +12,8 @@ package org.qi4j.library.framework.scripting;
 */
 
 import junit.framework.TestCase;
-import org.qi4j.api.CompositeFactory;
-import org.qi4j.runtime.CompositeFactoryImpl;
+import org.qi4j.api.CompositeBuilderFactory;
+import org.qi4j.runtime.CompositeBuilderFactoryImpl;
 
 public class JavaScriptMixinTest extends TestCase
 {
@@ -21,9 +21,9 @@ public class JavaScriptMixinTest extends TestCase
 
     public void testInvoke() throws Throwable
     {
-        CompositeFactory factory = new CompositeFactoryImpl();
+        CompositeBuilderFactory factory = new CompositeBuilderFactoryImpl();
 
-        ScriptComposite domain = factory.newInstance( ScriptComposite.class);
+        ScriptComposite domain = factory.newCompositeBuilder( ScriptComposite.class).newInstance();
         
         System.out.println(domain.do1());
     }

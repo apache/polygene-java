@@ -38,39 +38,9 @@ public class LifecycleValidationModifier
         next.create();
     }
 
-    public void initialize() throws PersistenceException
-    {
-        next.initialize();
-    }
-
     public void delete()
     {
         next.delete();
-    }
-
-    public boolean isDirty()
-    {
-        return next.isDirty();
-    }
-
-    public boolean isNew()
-    {
-        return next.isNew();
-    }
-
-    public boolean isTransactional()
-    {
-        return next.isTransactional();
-    }
-
-    public boolean isDeleted()
-    {
-        return next.isDeleted();
-    }
-
-    public boolean isDetached()
-    {
-        return next.isDeleted();
     }
 }
 

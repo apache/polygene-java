@@ -16,13 +16,11 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import junit.framework.TestCase;
-import org.qi4j.api.CompositeFactory;
-import org.qi4j.api.model.CompositeModel;
-import org.qi4j.runtime.CompositeFactoryImpl;
+import org.qi4j.api.CompositeBuilderFactory;
+import org.qi4j.runtime.CompositeBuilderFactoryImpl;
 
 /**
  * TODO
- *
  */
 public class RMIMixinTest
     extends TestCase
@@ -37,8 +35,8 @@ public class RMIMixinTest
         Registry registry = LocateRegistry.createRegistry( 1099 );
         registry.rebind( RemoteInterface.class.getSimpleName(), stub );
 
-        CompositeFactory factory = new CompositeFactoryImpl();
-        RemoteInterface remote = factory.newInstance( RemoteInterfaceComposite.class );
+        CompositeBuilderFactory factory = new CompositeBuilderFactoryImpl();
+        RemoteInterface remote = factory.newCompositeBuilder( RemoteInterfaceComposite.class ).newInstance();
 
         // Call remote interface
         System.out.println( remote.foo( "Bar" ) );

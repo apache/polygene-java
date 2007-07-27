@@ -1,5 +1,5 @@
 /*
- * Copyright 2007 Rickard Öberg. All Rights Reserved.
+ * Copyright 2007 Rickard Ã–berg. All Rights Reserved.
  * Copyright 2007 Alin Dreghiciu. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");

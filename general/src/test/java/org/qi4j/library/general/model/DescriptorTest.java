@@ -20,14 +20,14 @@ public class DescriptorTest extends AbstractTest
 {
     public void testDescriptorAsMixin() throws Exception
     {
-        DummyComposite composite = compositeFactory.newInstance( DummyComposite.class );
+        DummyComposite composite = builderFactory.newCompositeBuilder( DummyComposite.class ).newInstance();
         composite.setDisplayValue( "Sianny" );
         String displayValue = composite.getDisplayValue();
         assertEquals( displayValue, composite.getDisplayValue() );
     }
 
     public void testDescriptorWithModifier() throws Exception {
-        DummyComposite2 composite = compositeFactory.newInstance( DummyComposite2.class );
+        DummyComposite2 composite = builderFactory.newCompositeBuilder( DummyComposite2.class ).newInstance();
         composite.setDisplayValue( "Sianny" );
         String displayValue = composite.getDisplayValue();
         assertEquals( displayValue, "My name is Sianny" );
