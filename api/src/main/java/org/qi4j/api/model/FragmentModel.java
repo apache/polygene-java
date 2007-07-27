@@ -17,6 +17,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Collections;
 import org.qi4j.api.annotation.AppliesTo;
 import org.qi4j.api.annotation.Dependency;
 import org.qi4j.api.annotation.Uses;
@@ -50,6 +51,8 @@ public abstract class FragmentModel
         this.dependencyFields = new ArrayList<Field>();
         findDependency( fragmentClass, dependencyFields );
         appliesTo = findAppliesTo( fragmentClass );
+        usesFields = Collections.unmodifiableList( usesFields );
+        dependencyFields = Collections.unmodifiableList( dependencyFields );
     }
 
     // Public -------------------------------------------------------

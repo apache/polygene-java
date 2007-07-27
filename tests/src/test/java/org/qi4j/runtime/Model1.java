@@ -14,19 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.api.model;
+package org.qi4j.runtime;
 
-import org.qi4j.api.CompositeBuilderFactory;
-import org.qi4j.api.FragmentFactory;
-import org.qi4j.api.CompositeModelFactory;
+import org.qi4j.api.Composite;
+import org.qi4j.api.annotation.ModifiedBy;
 
-public interface CompositeContext
+@ModifiedBy( Model1LifecycleModifier.class )
+public interface Model1 extends Composite
 {
-    CompositeModel getCompositeModel();
-
-    CompositeModelFactory getCompositeModelFactory();
-
-    CompositeBuilderFactory getCompositeBuilderFactory();
-
-    FragmentFactory getFragmentFactory();
 }

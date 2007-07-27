@@ -14,27 +14,37 @@
  */
 package org.qi4j.api.persistence.impl;
 
-import org.qi4j.api.annotation.ModifiedBy;
 import org.qi4j.api.persistence.Identity;
-import org.qi4j.api.persistence.modifier.IdentityValidatorModifier;
+import org.qi4j.api.persistence.Persistent;
+import org.qi4j.api.annotation.Dependency;
+import org.qi4j.api.annotation.Uses;
+import java.net.URL;
 
 
 /**
  * This mixin contains the identity of an object.
  */
-@ModifiedBy( IdentityValidatorModifier.class )
 public final class IdentityImpl
     implements Identity
 {
     private String identity;
+    @Uses(optional=true) private Persistent persistence;
 
-    public void setIdentity( String anIdentity )
+    public IdentityImpl( String identity )
     {
-        identity = anIdentity;
+        this.identity = identity;
     }
 
+    /** Returns the client view of the identity.
+     *
+     * It is unique within the owning repository, but potentially not unique globally and between
+     * types.
+     *
+     * @return The Identity of 'this' composite.
+     */
     public String getIdentity()
     {
         return identity;
     }
+
 }

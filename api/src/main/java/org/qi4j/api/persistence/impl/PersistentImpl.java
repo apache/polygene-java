@@ -15,7 +15,10 @@
 package org.qi4j.api.persistence.impl;
 
 import org.qi4j.api.persistence.Persistent;
+import org.qi4j.api.persistence.Identity;
 import org.qi4j.api.EntityRepository;
+import org.qi4j.api.annotation.Uses;
+import java.net.URL;
 
 
 /**
@@ -25,8 +28,9 @@ public final class PersistentImpl
     implements Persistent
 {
     private EntityRepository persistentStorage;
+    private @Uses Identity meAsIdentity;
 
-    public void setEntityRepository( EntityRepository aStorage )
+    public PersistentImpl( EntityRepository aStorage )
     {
         persistentStorage = aStorage;
     }
@@ -35,4 +39,22 @@ public final class PersistentImpl
     {
         return persistentStorage;
     }
+
+    /**
+     * The full absolute external form of the composite reference.
+     * <p/>
+     * The composite reference will be converted to a URL with the following
+     * format;
+     * <code><pre>
+     * &lt;transport-protocol&gt;://&lt;repository-host&gt;/&lt;identity&gt;?type=&lt;type&gt;
+     * </pre></code>
+     *
+     * @return A URL pointing to the potenitally globally accessible location where the composite
+     *         can be retrieved.
+     */
+    public URL toURL()
+    {
+        return persistentStorage.toURL( meAsIdentity );
+    }
+
 }

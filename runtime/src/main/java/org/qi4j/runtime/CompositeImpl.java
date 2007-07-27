@@ -12,32 +12,28 @@
  * limitations under the License.
  *
  */
-package org.qi4j.api.strategy;
+package org.qi4j.runtime;
 
 import org.qi4j.api.Composite;
-import org.qi4j.api.CompositeFactory;
-import org.qi4j.api.annotation.Dependency;
-import org.qi4j.api.annotation.Uses;
 import org.qi4j.api.model.CompositeModel;
+import org.qi4j.api.annotation.ModifiedBy;
 
+@ModifiedBy( CompositeServicesModifier.class )
 public final class CompositeImpl
     implements Composite
 {
-    @Dependency private CompositeFactory delegate;
-    @Uses private Composite meAsComposite;
-
-    public <T extends Composite> T cast( Class<T> anObjectType )
+    public <T extends Composite> T cast( Class<T> compositeType )
     {
-        return delegate.cast( anObjectType, delegate.dereference( meAsComposite ) );
+        return null;
     }
 
     public boolean isInstance( Class anObjectType )
     {
-        return delegate.isInstance( anObjectType, delegate.dereference( meAsComposite ) );
+        return false;
     }
 
     public CompositeModel getCompositeModel()
     {
-        return delegate.getCompositeModel( meAsComposite );
+        return null;
     }
 }

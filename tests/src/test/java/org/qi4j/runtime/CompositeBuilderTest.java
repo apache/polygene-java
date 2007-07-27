@@ -14,19 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.api.model;
+package org.qi4j.runtime;
 
+import junit.framework.TestCase;
 import org.qi4j.api.CompositeBuilderFactory;
-import org.qi4j.api.FragmentFactory;
-import org.qi4j.api.CompositeModelFactory;
+import org.qi4j.api.CompositeBuilder;
 
-public interface CompositeContext
+public class CompositeBuilderTest extends TestCase
 {
-    CompositeModel getCompositeModel();
 
-    CompositeModelFactory getCompositeModelFactory();
-
-    CompositeBuilderFactory getCompositeBuilderFactory();
-
-    FragmentFactory getFragmentFactory();
+    public void testNewInstance()
+        throws Exception
+    {
+        CompositeBuilderFactory factory = new CompositeBuilderFactoryImpl();
+        CompositeBuilder<Model1> impl = factory.newCompositeBuilder( Model1.class );
+        Model1 instance = impl.newInstance();
+        assertEquals( true, Model1LifecycleModifier.createMethod );
+    }
 }

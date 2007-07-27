@@ -14,19 +14,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.api.model;
+package org.qi4j.api.transaction;
 
-import org.qi4j.api.CompositeBuilderFactory;
-import org.qi4j.api.FragmentFactory;
-import org.qi4j.api.CompositeModelFactory;
+import java.lang.annotation.Target;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Inherited;
 
-public interface CompositeContext
+@Retention( RetentionPolicy.RUNTIME )
+@Target( ElementType.METHOD )
+@Documented
+@Inherited
+public @interface Transactional
 {
-    CompositeModel getCompositeModel();
+    enum Type { READ, WRITE }
 
-    CompositeModelFactory getCompositeModelFactory();
-
-    CompositeBuilderFactory getCompositeBuilderFactory();
-
-    FragmentFactory getFragmentFactory();
+    Type value() default Type.WRITE;
 }

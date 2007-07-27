@@ -15,6 +15,8 @@
 package org.qi4j.api;
 
 import org.qi4j.api.persistence.composite.EntityComposite;
+import org.qi4j.api.persistence.Identity;
+import java.net.URL;
 
 /**
  * This repository is used to get proxies representing persistent objects.
@@ -33,7 +35,20 @@ public interface EntityRepository
 
     <T extends EntityComposite> T getInstance( String identity, Class<T> type, boolean autoCreate );
 
-    <T extends EntityComposite> T newInstance( String identity, Class<T> type );
+    /** Create a URL for the composite of the given identity.
+     *
+     * @param identity The identity of the object to convert into a URL.
+     * @return The URL to the composite of the given identity.
+     */
+    URL toURL( Identity identity );
 
-    <T extends EntityComposite> void create( T t );
+    /** Deletes the given object from the repository.
+     *
+     * After this method call, the entity must be considered invalid.
+     *
+     * @param entity The entity to be permanently deleted from the repository.
+     */
+    <T extends EntityComposite> void deleteInstance( T entity );
+
+    <T extends EntityComposite> CompositeBuilder<T> newEntityBuilder( String identity, Class<T> compositeType );
 }

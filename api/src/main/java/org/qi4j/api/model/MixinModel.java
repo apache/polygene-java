@@ -12,13 +12,13 @@
 package org.qi4j.api.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.qi4j.api.annotation.ModifiedBy;
 
 /**
  * A mixin is an implementation of a particular interface,
  * and is used as a fragment in a composite.
- *
  */
 public final class MixinModel
     extends FragmentModel
@@ -33,6 +33,7 @@ public final class MixinModel
 
         modifierModels = new ArrayList<ModifierModel>();
         findModifiers( mixinClass );
+        modifierModels = Collections.unmodifiableList( modifierModels );
     }
 
     public List<ModifierModel> getModifiers()

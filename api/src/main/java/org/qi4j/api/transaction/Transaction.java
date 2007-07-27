@@ -14,19 +14,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.api.model;
+package org.qi4j.api.transaction;
 
-import org.qi4j.api.CompositeBuilderFactory;
-import org.qi4j.api.FragmentFactory;
-import org.qi4j.api.CompositeModelFactory;
-
-public interface CompositeContext
+public interface Transaction
 {
-    CompositeModel getCompositeModel();
+    void begin();
 
-    CompositeModelFactory getCompositeModelFactory();
+    void commit();
 
-    CompositeBuilderFactory getCompositeBuilderFactory();
+    void rollback();
 
-    FragmentFactory getFragmentFactory();
+    /**
+     * urn:<repo>:<identity>
+     * urn:<repo>:<type-identifier>:<identity>
+     *
+     * public class AbcMixin
+     * {
+     *   private Def def;
+     *   private Rst def;
+     *   private Xyz def;
+     * }
+     * @param identity
+     * @param compositeType
+     * @return
+     */
+    TransactionComposite getInstance( String identity, Class compositeType );
+
+    TransactionComposite getInstance( String identity, Class compositeType, boolean autoCreate );
 }

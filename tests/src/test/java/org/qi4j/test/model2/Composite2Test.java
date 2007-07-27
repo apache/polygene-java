@@ -13,17 +13,22 @@
 package org.qi4j.test.model2;
 
 import junit.framework.TestCase;
-import org.qi4j.api.CompositeFactory;
+import org.qi4j.api.CompositeBuilderFactory;
+import org.qi4j.api.CompositeModelFactory;
 import org.qi4j.api.model.CompositeModel;
-import org.qi4j.runtime.CompositeFactoryImpl;
+import org.qi4j.runtime.CompositeModelImpl;
+import org.qi4j.runtime.CompositeBuilderFactoryImpl;
+import org.qi4j.runtime.CompositeModelFactoryImpl;
 
 public class Composite2Test extends TestCase
 {
+    CompositeModelFactory modelFactory;
     CompositeModel composite;
 
     protected void setUp() throws Exception
     {
-        composite = new CompositeModel( TestComposite.class );
+        modelFactory = new CompositeModelFactoryImpl();
+        composite = modelFactory.getCompositeModel( TestComposite.class );
     }
 
     public void testGetImplementation() throws Exception
@@ -36,10 +41,10 @@ public class Composite2Test extends TestCase
         assertEquals( StandardThisImpl.class, composite.getImplementations( StandardThis.class ).get( 0 ).getFragmentClass() );
         assertEquals( StandardThatImpl.class, composite.getImplementations( StandardThat.class ).get( 0 ).getFragmentClass() );
 
-        CompositeFactory factory = new CompositeFactoryImpl();
+        CompositeBuilderFactory factory = new CompositeBuilderFactoryImpl();
 
         {
-            TestComposite object = factory.newInstance( TestComposite.class );
+            TestComposite object = factory.newCompositeBuilder( TestComposite.class ).newInstance();
 
             assertEquals( "bar=foo:FOO Hello World", object.foo( "FOO " ) );
 
@@ -56,7 +61,7 @@ public class Composite2Test extends TestCase
         }
 
         {
-            TestComposite object = factory.newInstance( CustomTestComposite.class );
+            TestComposite object = factory.newCompositeBuilder( CustomTestComposite.class ).newInstance();
 
             object.setFoo( "xyz" );
             System.out.println( object.getCompositeModel());

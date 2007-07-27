@@ -10,22 +10,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
-package org.qi4j.api.model;
+package org.qi4j.runtime;
 
-import static org.junit.Assert.*;
+import java.io.Serializable;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.util.LinkedList;
+import java.util.List;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import org.junit.Test;
 import org.qi4j.api.Composite;
-import org.qi4j.api.strategy.CompositeImpl;
 import org.qi4j.api.annotation.ImplementedBy;
 import org.qi4j.api.annotation.ModifiedBy;
 import org.qi4j.api.annotation.Modifies;
-import java.lang.reflect.Proxy;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.io.Serializable;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.List;
+import org.qi4j.api.model.CompositeModel;
+import org.qi4j.api.model.InvalidCompositeException;
+import org.qi4j.api.model.MixinModel;
+import org.qi4j.api.model.ModifierModel;
+import org.qi4j.api.model.NullArgumentException;
 
 public class CompositeModelTest
 {
@@ -33,42 +38,44 @@ public class CompositeModelTest
     @Test( expected = NullArgumentException.class )
     public void constructorWithNullComposite()
     {
-       new CompositeModel( null );
+        new CompositeModelImpl( null );
     }
 
     @Test( expected = InvalidCompositeException.class )
     public void constructorWithNonInterfaceComposite()
     {
-        new CompositeModel( ((Composite) Proxy.newProxyInstance(
+        new CompositeModelImpl( ( (Composite) Proxy.newProxyInstance(
             Thread.currentThread().getContextClassLoader(),
-            new Class<?>[] { Composite.class },
-            new InvocationHandler() {
+            new Class<?>[]{ Composite.class },
+            new InvocationHandler()
+            {
                 public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
                 {
                     return null;
                 }
-            })).getClass() );
+            } ) ).getClass() );
     }
 
     @Test( expected = InvalidCompositeException.class )
     public void constructorWithNonComposite()
     {
-        new CompositeModel( (Class) Serializable.class );
+        new CompositeModelImpl( (Class) Serializable.class );
     }
 
     @Test
     public void getCompositeClass()
     {
-        assertEquals( TestComposite.class, new CompositeModel( TestComposite.class ).getCompositeClass() );
+        assertEquals( TestComposite.class, new CompositeModelImpl( TestComposite.class ).getCompositeClass() );
     }
 
     @Test
     public void getImplementations()
     {
-        CompositeModel model = new CompositeModel( TestComposite.class );
-        Set<Class> expected = new HashSet<Class>( 3 );
-        expected.add( TestComposite1.class );
-        expected.add( TestComposite2.class );
+        CompositeModel model = new CompositeModelImpl( TestComposite.class );
+        List<Class> expected = new LinkedList<Class>();
+        expected.add( TestMixin1.class );
+        expected.add( TestMixin2.class );
+        expected.add( TestMixin1.class );
         expected.add( CompositeImpl.class ); // from Composite itself
         for( MixinModel mixinModel : model.getImplementations() )
         {
@@ -81,28 +88,36 @@ public class CompositeModelTest
     public void getImplementationsForSubclasses()
     {
         assertTrue( "subclasses should inherit mixins",
-                    new CompositeModel( ExtendedTestComposite.class ).getImplementations().size() > 0);
+                    new CompositeModelImpl( ExtendedTestComposite.class ).getImplementations().size() > 0 );
     }
 
     // we should not be able to alter the mixins list from outside
     @Test
     public void alterImplementationsFromOutside()
     {
-        CompositeModel model = new CompositeModel( TestComposite.class );
+        CompositeModel model = new CompositeModelImpl( TestComposite.class );
         List<MixinModel> mixinsModels = model.getImplementations();
         int nrOfMixins = mixinsModels.size();
-        mixinsModels.clear();
-        mixinsModels = model.getImplementations();
-        assertTrue( "mixins list should be unmodifiable", nrOfMixins == mixinsModels.size() );
+        try
+        {
+            mixinsModels.clear();
+            fail( "mixins list should be unmodifiable" );
+        }
+        catch( UnsupportedOperationException e )
+        {
+            // Expected !!
+        }
     }
 
     @Test
-    public void getModifiers( )
+    public void getModifiers()
     {
-        CompositeModel model = new CompositeModel( TestComposite.class );
-        Set<Class> expected = new HashSet<Class>( 3 );
-        expected.add( TestComposite1.class );
-        expected.add( TestComposite2.class );
+        CompositeModel model = new CompositeModelImpl( TestComposite.class );
+        List<Class> expected = new LinkedList<Class>();
+        expected.add( TestModifier1.class );
+        expected.add( TestModifier2.class );
+        expected.add( TestModifier1.class );
+        expected.add( CompositeServicesModifier.class );
         for( ModifierModel modifierModel : model.getModifiers() )
         {
             assertTrue( "unexpected modifier model: " + modifierModel, expected.remove( modifierModel.getFragmentClass() ) );
@@ -114,27 +129,33 @@ public class CompositeModelTest
     public void getModifiersForSubclasses()
     {
         assertTrue( "subclasses should inherit modifiers",
-                    new CompositeModel( ExtendedTestComposite.class ).getImplementations().size() > 0);
+                    new CompositeModelImpl( ExtendedTestComposite.class ).getImplementations().size() > 0 );
     }
 
     // we should not be able to alter the mixins list from outside
     @Test
     public void alterModifiersFromOutside()
     {
-        CompositeModel model = new CompositeModel( TestComposite.class );
+        CompositeModel model = new CompositeModelImpl( TestComposite.class );
         List<ModifierModel> modifierModels = model.getModifiers();
         int nrOfMixins = modifierModels.size();
-        modifierModels.clear();
-        modifierModels = model.getModifiers();
-        assertTrue( "modifiers list should be unmodifiable", nrOfMixins == modifierModels.size() );
+        try
+        {
+            modifierModels.clear();
+            fail( "modifiers list should be unmodifiable" );
+        }
+        catch( UnsupportedOperationException e )
+        {
+            // Expected!!
+        }
     }
 
 
-    @ImplementedBy ( { TestComposite1.class, TestComposite2.class, TestComposite1.class } )
-    @ModifiedBy( { TestComposite1.class, TestComposite2.class, TestComposite1.class } )
+    @ImplementedBy( { TestMixin1.class, TestMixin2.class, TestMixin1.class } )
+    @ModifiedBy( { TestModifier1.class, TestModifier2.class, TestModifier1.class } )
     private interface TestComposite extends Composite
     {
-        
+
     }
 
     private interface ExtendedTestComposite extends TestComposite
@@ -142,13 +163,21 @@ public class CompositeModelTest
 
     }
 
-    private class TestComposite1
+    private class TestModifier1
     {
         @Modifies InvocationHandler handler;
     }
 
-    private class TestComposite2
+    private class TestModifier2
     {
         @Modifies InvocationHandler handler;
+    }
+
+    private class TestMixin1
+    {
+    }
+
+    private class TestMixin2
+    {
     }
 }

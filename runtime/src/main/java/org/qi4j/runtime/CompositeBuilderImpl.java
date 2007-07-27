@@ -16,64 +16,71 @@
  */
 package org.qi4j.runtime;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.UndeclaredThrowableException;
+import java.lang.reflect.Method;
 import org.qi4j.api.Composite;
 import org.qi4j.api.CompositeBuilder;
-import org.qi4j.api.CompositeFactory;
-import org.qi4j.api.model.CompositeModel;
+import org.qi4j.api.CompositeInstantiationException;
+import org.qi4j.api.CompositeModelFactory;
+import org.qi4j.api.FragmentFactory;
 import org.qi4j.api.model.CompositeState;
+import org.qi4j.api.persistence.Lifecycle;
+import org.qi4j.api.persistence.impl.LifecycleImpl;
 
 /**
  *
  */
-public class CompositeBuilderImpl<T extends Composite>
+public class CompositeBuilderImpl<T extends Composite> extends MixinBuilderImpl<T>
     implements CompositeBuilder<T>
 {
-    private Map<Class, Object> states;
-    private CompositeFactory factory;
-    private Class<T> compositeInterface;
+    private static final Method CREATE_METHOD;
 
-    public CompositeBuilderImpl( CompositeFactory factory, Class<T> compositeInterface )
+    static
     {
-        this.factory = factory;
-        this.compositeInterface = compositeInterface;
-        states = new HashMap<Class, Object>();
+        try
+        {
+            CREATE_METHOD = Lifecycle.class.getMethod( "create" );
+        }
+        catch( NoSuchMethodException e )
+        {
+            throw new InternalError( "Lifecycle class is corrupt." );
+        }
+    }
+
+    CompositeBuilderImpl( FragmentFactory fragmentFactory, CompositeModelFactory modelFactory, CompositeBuilderFactoryImpl builderFactory, Class<T> compositeInterface )
+    {
+        super( fragmentFactory, modelFactory, builderFactory, compositeInterface );
+        states.put( Lifecycle.class, new LifecycleImpl() );
     }
 
     public T newInstance()
     {
-        T composite = factory.newInstance( compositeInterface );
-        CompositeState state = CompositeInvocationHandler.getInvocationHandler( composite );
+        T composite = builderFactory.newInstance( compositeInterface );
+        CompositeState state = RegularCompositeInvocationHandler.getInvocationHandler( composite );
         state.setMixins( states, false );
-        return composite;
-    }
-
-    public <M> CompositeBuilder<T> set( Class<M> mixinType, M mixin )
-    {
-        states.put( mixinType, mixin );
-
-        return this;
-    }
-
-    public <M> M get( Class<M> mixinType )
-    {
-        return mixinType.cast( states.get( mixinType ) );
-    }
-
-    public CompositeBuilder<T> adapt( Object mixin )
-    {
-        CompositeModel model = factory.getCompositeModel( compositeInterface );
-        Set<Class> unresolved = model.getUnresolved();
-        for( Class needed : unresolved )
+        try
         {
-            if( needed.isInstance( mixin ) )
-            {
-                set( needed, needed.cast( mixin ) );
-            }
+            ( (RegularCompositeInvocationHandler) state ).invoke( composite, CREATE_METHOD, null );
         }
-
-        return this;
+        catch( InvocationTargetException e )
+        {
+            Throwable t = e.getTargetException();
+            throw new CompositeInstantiationException( t );
+        }
+        catch( UndeclaredThrowableException e )
+        {
+            Throwable t = e.getUndeclaredThrowable();
+            throw new CompositeInstantiationException( t );
+        }
+        catch( RuntimeException e )
+        {
+            throw e;
+        }
+        catch( Throwable e )
+        {
+            throw new CompositeInstantiationException( e );
+        }
+        return composite;
     }
 }

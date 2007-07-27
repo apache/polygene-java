@@ -23,16 +23,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import org.qi4j.api.Composite;
-import org.qi4j.api.CompositeFactory;
+import org.qi4j.api.CompositeBuilderFactory;
 import org.qi4j.api.CompositeInstantiationException;
+import org.qi4j.api.CompositeModelFactory;
 import org.qi4j.api.DependencyResolver;
 import org.qi4j.api.FragmentFactory;
 import org.qi4j.api.InvocationContext;
 import org.qi4j.api.annotation.Dependency;
 import org.qi4j.api.annotation.Uses;
 import org.qi4j.api.model.CompositeContext;
-import org.qi4j.api.model.CompositeModel;
 import org.qi4j.api.model.ModifierModel;
+import org.qi4j.api.model.CompositeModel;
 
 /**
  * TODO
@@ -41,15 +42,17 @@ public final class CompositeContextImpl
     implements CompositeContext
 {
     private CompositeModel compositeModel;
-    private CompositeFactoryImpl compositeFactory;
+    private CompositeBuilderFactoryImpl builderFactory;
     private FragmentFactory fragmentFactory;
     private ConcurrentHashMap<Method, List<InvocationInstance>> invocationInstancePool;
+    private CompositeModelFactory modelFactory;
 
 
-    public CompositeContextImpl( CompositeModel compositeModel, CompositeFactoryImpl aCompositeFactory, FragmentFactory aFragmentFactory )
+    public CompositeContextImpl( CompositeModel compositeModel, CompositeModelFactory modelFactory, CompositeBuilderFactoryImpl builderFactory, FragmentFactory aFragmentFactory )
     {
+        this.modelFactory = modelFactory;
         this.compositeModel = compositeModel;
-        compositeFactory = aCompositeFactory;
+        this.builderFactory = builderFactory;
         fragmentFactory = aFragmentFactory;
         invocationInstancePool = new ConcurrentHashMap<Method, List<InvocationInstance>>();
     }
@@ -59,9 +62,14 @@ public final class CompositeContextImpl
         return compositeModel;
     }
 
-    public CompositeFactory getCompositeFactory()
+    public CompositeModelFactory getCompositeModelFactory()
     {
-        return compositeFactory;
+        return modelFactory;
+    }
+
+    public CompositeBuilderFactory getCompositeBuilderFactory()
+    {
+        return builderFactory;
     }
 
     public FragmentFactory getFragmentFactory()
@@ -240,14 +248,17 @@ public final class CompositeContextImpl
         throws CompositeInstantiationException
     {
         Object currentDependency = null;
-        for( DependencyResolver resolver : compositeFactory.getDependencyResolvers() )
+        for( DependencyResolver resolver : builderFactory.getDependencyResolvers() )
         {
             Object dependency = resolver.resolveDependency( dependencyField, this );
-            if( currentDependency != null )
+            if( dependency != null )
             {
-                throw new CompositeInstantiationException( "Dependency " + dependencyField.getName() + " in mixin " + dependencyField.getDeclaringClass().getName() + " for composite " + compositeModel.getCompositeClass() + " has ambiguous resolutions" );
+                if( currentDependency != null )
+                {
+                    throw new CompositeInstantiationException( "Dependency " + dependencyField.getName() + " in mixin " + dependencyField.getDeclaringClass().getName() + " for composite " + compositeModel.getCompositeClass() + " has ambiguous resolutions." );
+                }
+                currentDependency = dependency;
             }
-            currentDependency = dependency;
         }
 
         if( currentDependency == null )
@@ -255,7 +266,7 @@ public final class CompositeContextImpl
             // No object found, check if it's optional
             if( !dependencyField.getAnnotation( Dependency.class ).optional() )
             {
-                throw new CompositeInstantiationException( "Dependency " + dependencyField.getName() + " in mixin " + dependencyField.getDeclaringClass().getName() + " for composite " + compositeModel.getCompositeClass() + " could not be resolved" );
+                throw new CompositeInstantiationException( "Dependency " + dependencyField.getName() + " in mixin " + dependencyField.getDeclaringClass().getName() + " for composite " + compositeModel.getCompositeClass() + " could not be resolved." );
             }
         }
         else
@@ -267,7 +278,7 @@ public final class CompositeContextImpl
             }
             catch( IllegalAccessException e )
             {
-                throw new CompositeInstantiationException( "Dependency " + dependencyField.getName() + " in mixin " + dependencyField.getDeclaringClass().getName() + " for composite " + compositeModel.getCompositeClass() + " could not be set", e );
+                throw new CompositeInstantiationException( "Dependency " + dependencyField.getName() + " in mixin " + dependencyField.getDeclaringClass().getName() + " for composite " + compositeModel.getCompositeClass() + " could not be set.", e );
             }
         }
     }

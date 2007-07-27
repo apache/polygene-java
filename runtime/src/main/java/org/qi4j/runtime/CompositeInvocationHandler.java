@@ -1,51 +1,44 @@
-/*
- * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
- * Copyright (c) 2007, Niclas Hedhman. All Rights Reserved.
- * Copyright (c) 2007, Alin Dreghiciu. All Rights Reserved.
+/*  Copyright 2007 Niclas Hedhman.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * You may obtain a copy of the License at
+ *  
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+ * implied.
+ * 
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
-
 package org.qi4j.runtime;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.lang.reflect.Method;
+import java.lang.reflect.Field;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import org.qi4j.api.CompositeInstantiationException;
-import org.qi4j.api.annotation.Uses;
 import org.qi4j.api.model.CompositeContext;
-import org.qi4j.api.model.CompositeState;
 import org.qi4j.api.model.MixinModel;
-import org.qi4j.api.model.InvalidCompositeException;
+import org.qi4j.api.model.CompositeState;
 import org.qi4j.api.persistence.Identity;
+import org.qi4j.api.annotation.Uses;
+import org.qi4j.api.CompositeInstantiationException;
 
-/**
- * InvocationHandler for proxy objects.
- */
-public class CompositeInvocationHandler
+public abstract class CompositeInvocationHandler
     implements InvocationHandler, CompositeState
 {
     protected CompositeContextImpl context;
-    private ConcurrentHashMap<Class, Object> mixins;
-    private static final Method METHOD_GETIDENTITY;
+    protected static final Method METHOD_GETIDENTITY;
 
     static
     {
         try
         {
-            METHOD_GETIDENTITY = Identity.class.getMethod( "getIdentity", null );
+            METHOD_GETIDENTITY = Identity.class.getMethod( "getIdentity" );
         }
         catch( NoSuchMethodException e )
         {
@@ -55,63 +48,12 @@ public class CompositeInvocationHandler
 
     public CompositeInvocationHandler( CompositeContextImpl aContext )
     {
-        this.context = aContext;
-        mixins = new ConcurrentHashMap<Class, Object>();
+        context = aContext;
     }
 
-    public static CompositeInvocationHandler getInvocationHandler( Object aProxy )
+    public static RegularCompositeInvocationHandler getInvocationHandler( Object aProxy )
     {
-        return (CompositeInvocationHandler) Proxy.getInvocationHandler( aProxy );
-    }
-
-    // InvocationHandler implementation ------------------------------
-    public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
-    {
-        Class mixinType = method.getDeclaringClass();
-        Object mixin = getMixin( mixinType, proxy );
-        if( mixin == null )
-        {
-            if( mixinType.equals( Object.class ) )
-            {
-                return invokeObject( proxy, method, args );
-            }
-            else
-            {
-                throw new InvalidCompositeException("Implementation missing for " + mixinType.getName() + " in "
-                                                    + context.getCompositeModel().getCompositeClass().getName(),
-                                                    context.getCompositeModel().getCompositeClass() );
-            }
-        }
-        // Invoke
-        return context.getInvocationInstance( method ).invoke( proxy, method, args, mixin, mixinType );
-    }
-
-    protected Object getMixin( Class aProxyInterface, Object aProxy )
-    {
-        Object mixin = mixins.get( aProxyInterface );
-        if( mixin == null && !aProxyInterface.equals( Object.class ) )
-        {
-            mixin = initializeMixin( aProxyInterface, aProxy );
-        }
-        return mixin;
-    }
-
-    public Map<Class, Object> getMixins()
-    {
-        return mixins;
-    }
-
-    public void setMixins( Map<Class, Object> mixins, boolean keep )
-    {
-        if( keep && mixins instanceof ConcurrentHashMap )
-        {
-            this.mixins = (ConcurrentHashMap) mixins;
-        }
-        else
-        {
-            this.mixins = new ConcurrentHashMap<Class, Object>();
-            this.mixins.putAll( mixins );
-        }
+        return (RegularCompositeInvocationHandler) Proxy.getInvocationHandler( aProxy );
     }
 
     public CompositeContext getContext()
@@ -119,30 +61,12 @@ public class CompositeInvocationHandler
         return context;
     }
 
-    // Private -------------------------------------------------------
-    private Object initializeMixin( Class mixinType, Object proxy )
+    protected MixinModel findMixinModel( Class mixinType )
     {
-        MixinModel mixinModel = findMixinModel( mixinType );
-        if( mixinModel == null )
-        {
-            return null;
-        }
-
-        Object instance = context.getFragmentFactory().newFragment( mixinModel, context.getCompositeModel() );
-        resolveUsesFields( mixinModel, proxy, instance );
-
-        List<Field> dependencyFields = mixinModel.getDependencyFields();
-        for( Field dependencyField : dependencyFields )
-        {
-            context.resolveDependency( dependencyField, instance );
-        }
-
-        // Successfully instantiated
-        mixins.put( mixinType, instance );
-        return instance;
+        return context.getCompositeModel().locateMixin( mixinType );
     }
 
-    private void resolveUsesFields( MixinModel mixinModel, Object proxy, Object instance )
+    protected void resolveUsesFields( MixinModel mixinModel, Object proxy, Object instance )
     {
         // Resolution of @Uses in Mixins (only!).
         List<Field> usesFields = mixinModel.getUsesFields();
@@ -178,10 +102,26 @@ public class CompositeInvocationHandler
         }
     }
 
-    private MixinModel findMixinModel( Class aProxyInterface )
+    protected Object initializeMixin( Class mixinType, Object proxy )
     {
-        MixinModel mixinModel = context.getCompositeModel().locateMixin( aProxyInterface );
-        return mixinModel;
+        MixinModel mixinModel = findMixinModel( mixinType );
+        if( mixinModel == null )
+        {
+            return null;
+        }
+
+        Object instance = context.getFragmentFactory().newFragment( mixinModel, context.getCompositeModel() );
+        resolveUsesFields( mixinModel, proxy, instance );
+
+        List<Field> dependencyFields = mixinModel.getDependencyFields();
+        for( Field dependencyField : dependencyFields )
+        {
+            context.resolveDependency( dependencyField, instance );
+        }
+
+        // Successfully instantiated
+        putMixin( mixinType, instance );
+        return instance;
     }
 
     protected Object invokeObject( Object proxy, Method method, Object[] args )
@@ -208,10 +148,15 @@ public class CompositeInvocationHandler
         }
         if( method.getName().equals( "equals" ) )
         {
+            if( args[0] == null )
+            {
+                return false;
+            }
             if( context.getCompositeModel().isAssignableFrom( Identity.class ) )
             {
                 String id = ( (Identity) proxy ).getIdentity();
-                return id != null && id.equals( ( (Identity) args[ 0 ] ).getIdentity() );
+                Identity other = ( (Identity) args[ 0 ] );
+                return id != null && id.equals( other.getIdentity() );
             }
             else
             {
@@ -233,4 +178,8 @@ public class CompositeInvocationHandler
 
         return null;
     }
+
+    protected abstract Object getMixin( Class mixinType, Object value );
+
+    protected abstract void putMixin( Class mixinType, Object value );
 }

@@ -12,15 +12,21 @@
  * limitations under the License.
  *
  */
-package org.qi4j.api.persistence.composite;
-
-import org.qi4j.api.transaction.TransactionComposite;
-import org.qi4j.api.persistence.Persistent;
+package org.qi4j.api;
 
 /**
- * Persistent domain objects should implement this composite
- * which provides an identity and a reference to a repository
+ * This factory creates proxies that implement the given
+ * composite interfaces.
  */
-public interface EntityComposite extends Persistent, TransactionComposite
+public interface CompositeBuilderFactory
 {
+    /**
+     * Create a builder for creating new objects that implements the given interface.
+     *
+     * @param compositeType an interface that describes the object to be created
+     * @return a CompositeBuilder for cretaion of objects implementing the interface
+     * @throws CompositeInstantiationException thrown if instantiation fails
+     */
+    <T extends Composite> CompositeBuilder<T> newCompositeBuilder( Class<T> compositeType );
+
 }

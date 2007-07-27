@@ -14,15 +14,12 @@
  */
 package org.qi4j.api;
 
-import org.qi4j.api.annotation.ImplementedBy;
 import org.qi4j.api.model.CompositeModel;
-import org.qi4j.api.strategy.CompositeImpl;
 
 /**
  * This factory creates proxies that implement the given
  * composite interfaces.
  */
-@ImplementedBy( CompositeImpl.class )
 public interface Composite
 {
     /**

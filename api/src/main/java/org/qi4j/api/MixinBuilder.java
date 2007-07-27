@@ -14,19 +14,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.api.model;
+package org.qi4j.api;
 
-import org.qi4j.api.CompositeBuilderFactory;
-import org.qi4j.api.FragmentFactory;
-import org.qi4j.api.CompositeModelFactory;
-
-public interface CompositeContext
+/** API for creation of Mixins within Modifiers.
+ *
+ */
+public interface MixinBuilder<T extends Composite>
 {
-    CompositeModel getCompositeModel();
+    /**
+     * TODO: Docs.
+     *
+     * @param mixinType
+     * @param mixin
+     */
+    <M> void setMixin( Class<M> mixinType, M mixin );
 
-    CompositeModelFactory getCompositeModelFactory();
+    <M> M getMixin( Class<M> mixinType );
 
-    CompositeBuilderFactory getCompositeBuilderFactory();
-
-    FragmentFactory getFragmentFactory();
+    /**
+     * Adapts the mixin object to be used for any mixin references missing in the builder, and can
+     * be provided by the mixin object.
+     *
+     * @param mixin The object to use as a mixin.
+     */
+    void adapt( Object mixin );
 }

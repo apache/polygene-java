@@ -14,19 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.api.model;
+package org.qi4j.api;
 
-import org.qi4j.api.CompositeBuilderFactory;
-import org.qi4j.api.FragmentFactory;
-import org.qi4j.api.CompositeModelFactory;
+import org.qi4j.api.model.CompositeModel;
 
-public interface CompositeContext
+public interface CompositeModelFactory
 {
-    CompositeModel getCompositeModel();
+    CompositeModel getCompositeModel( Class<? extends Composite> aCompositeClass );
 
-    CompositeModelFactory getCompositeModelFactory();
+    CompositeModel getCompositeModel( Composite aComposite );
 
-    CompositeBuilderFactory getCompositeBuilderFactory();
+    <T> T dereference( T proxy );
 
-    FragmentFactory getFragmentFactory();
 }

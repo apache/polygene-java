@@ -28,10 +28,10 @@ import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 import org.qi4j.api.Composite;
-import org.qi4j.api.CompositeFactory;
+import org.qi4j.api.CompositeBuilderFactory;
 import org.qi4j.api.EntityRepository;
-import org.qi4j.api.model.CompositeModel;
 import org.qi4j.api.model.CompositeState;
+import org.qi4j.api.model.CompositeModel;
 import org.qi4j.api.persistence.composite.EntityComposite;
 
 
@@ -60,7 +60,7 @@ public class SerializedObject
 
     }
 
-    public Object getObject( EntityRepository repository, CompositeFactory factory )
+    public Object getObject( EntityRepository repository, CompositeBuilderFactory factory )
         throws ClassNotFoundException
     {
         try
@@ -120,9 +120,9 @@ public class SerializedObject
     private final class CompositeInputStream extends ObjectInputStream
     {
         private EntityRepository repository;
-        private CompositeFactory factory;
+        private CompositeBuilderFactory factory;
 
-        public CompositeInputStream( InputStream in, EntityRepository repository, CompositeFactory factory )
+        public CompositeInputStream( InputStream in, EntityRepository repository, CompositeBuilderFactory factory )
             throws IOException
         {
             super( in );
@@ -146,7 +146,7 @@ public class SerializedObject
                 CompositeHolder holder = (CompositeHolder) obj;
                 Class<Composite> compositeInterface = holder.getCompositeInterface();
                 Map<Class, Object> mixins = holder.getMixins();
-                Composite composite = factory.newInstance( compositeInterface );
+                Composite composite = factory.newCompositeBuilder( compositeInterface ).newInstance();
                 CompositeState mixinHandler = (CompositeState) Proxy.getInvocationHandler( composite );
                 mixinHandler.setMixins( mixins, false );
             }

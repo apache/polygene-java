@@ -18,21 +18,11 @@ package org.qi4j.api;
 
 /**
  * TODO for Rickard; Explanation needed on how to use for Templating, Strategy and Builder patterns.
+ *
  */
-public interface CompositeBuilder<T extends Composite>
+public interface CompositeBuilder<T extends Composite> extends MixinBuilder<T>
 {
     T newInstance();
-
-    /**
-     * TODO: Docs.
-     * 
-     * @param mixinType
-     * @param mixin
-     * @return Chaining pattern and returning the builder itself.
-     */
-    <M> CompositeBuilder<T> set( Class<M> mixinType, M mixin );
-
-    <M> M get( Class<M> mixinType );
 
 //    /**
 //     * Clones the values in the <code>from</code> object into this builder.
@@ -45,12 +35,4 @@ public interface CompositeBuilder<T extends Composite>
 //     */
 //    void clone( Composite from );
 
-    /**
-     * Adapts the mixin object to be used for any mixin references missing in the builder, and can
-     * be provided by the mixin object.
-     *
-     * @param mixin The object to use as a mixin.
-     * @return Chaining pattern and returning the builder itself.
-     */
-    CompositeBuilder<T> adapt( Object mixin );
 }

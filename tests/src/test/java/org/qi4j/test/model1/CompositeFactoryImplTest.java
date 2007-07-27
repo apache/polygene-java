@@ -13,19 +13,19 @@
 package org.qi4j.test.model1;
 
 import junit.framework.TestCase;
-import org.qi4j.api.CompositeFactory;
+import org.qi4j.api.CompositeBuilderFactory;
 import org.qi4j.api.CompositeInstantiationException;
-import org.qi4j.runtime.CompositeFactoryImpl;
+import org.qi4j.runtime.CompositeBuilderFactoryImpl;
 
 public class CompositeFactoryImplTest extends TestCase
 {
-    private CompositeFactory compositeFactory;
+    private CompositeBuilderFactory builderFactory;
 
     protected void setUp()
         throws Exception
     {
         super.setUp();
-        compositeFactory = new CompositeFactoryImpl();
+        builderFactory = new CompositeBuilderFactoryImpl();
     }
 
     public void testNewInstanceNotExtendingComposite()
@@ -35,8 +35,8 @@ public class CompositeFactoryImplTest extends TestCase
         try
         {
             Class aClass = Composition8.class;
-            Composition8 composition8 = (Composition8) compositeFactory.newInstance( aClass );
-            fail( "CompositeFactory.newInstance() should return CompositeInstantiationException when creating a new instance for " + aClass.getName() );
+            Composition8 composition8 = (Composition8) builderFactory.newCompositeBuilder( aClass ).newInstance();
+            fail( "CompositeBuilderFactory.newInstance() should return CompositeInstantiationException when creating a new instance for " + aClass.getName() );
         }
         catch( CompositeInstantiationException e )
         {
@@ -49,7 +49,7 @@ public class CompositeFactoryImplTest extends TestCase
     {
         try
         {
-            Composition9 composition9 = compositeFactory.newInstance( Composition9.class );
+            Composition9 composition9 = builderFactory.newCompositeBuilder( Composition9.class ).newInstance();
             composition9.setValue( "test value" );
         }
         catch( Exception e )
@@ -64,7 +64,7 @@ public class CompositeFactoryImplTest extends TestCase
     {
         try
         {
-            Composition10 composition10 = compositeFactory.newInstance( Composition10.class );
+            Composition10 composition10 = builderFactory.newCompositeBuilder( Composition10.class ).newInstance();
 //            composition10.setValue( "test value" );
         }
         catch( Exception e )

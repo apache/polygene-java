@@ -15,9 +15,12 @@
 package org.qi4j.cache;
 
 import org.qi4j.api.EntityRepository;
+import org.qi4j.api.CompositeBuilder;
 import org.qi4j.api.annotation.Modifies;
 import org.qi4j.api.annotation.Uses;
 import org.qi4j.api.persistence.composite.EntityComposite;
+import org.qi4j.api.persistence.Identity;
+import java.net.URL;
 
 /**
  * Implement caching of created proxies to persistent objects.
@@ -48,16 +51,43 @@ public final class EntityRepositoryCacheModifier
 
     public <T extends EntityComposite> T getInstance( String identity, Class<T> type, boolean autoCreate )
     {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return repository.getInstance( identity, type, autoCreate );
     }
 
-    public <T extends EntityComposite> T newInstance( String identity, Class<T> type )
+//    public <T extends EntityComposite> T newInstance( String identity, Class<T> type )
+//    {
+//        T instance = repository.newInstance( identity, type );
+//        cache.addObject( identity, instance );
+//        return instance;
+//    }
+//
+    /**
+     * Create a URL for the composite of the given identity.
+     *
+     * @param identity The identity of the object to convert into a URL.
+     * @return The URL to the composite of the given identity.
+     */
+    public URL toURL( Identity identity )
     {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public <T extends EntityComposite> void create( T t )
+    /**
+     * Deletes the given object from the repository.
+     * <p/>
+     * After this method call, the entity must be considered invalid.
+     *
+     * @param entity The entity to be permanently deleted from the repository.
+     */
+    public <T extends EntityComposite> void deleteInstance( T entity )
     {
-        //To change body of implemented methods use File | Settings | File Templates.
+        repository.deleteInstance( entity );
+        cache.removeObject( entity.getIdentity() );
     }
+
+    public <T extends EntityComposite> CompositeBuilder<T> newEntityBuilder( String identity, Class<T> compositeType )
+    {
+        return repository.newEntityBuilder( identity, compositeType );
+    }
+
 }

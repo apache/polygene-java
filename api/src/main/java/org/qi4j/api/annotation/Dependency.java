@@ -25,7 +25,7 @@ import java.lang.annotation.Target;
  * Annotation to denote the injection of a dependency into a Fragment (a Modifier or Mixin).
  * <p/>
  * Dependency resolution is handled through the DependencyResolver, which allows any kind
- * of injection. The org.qi4j.spi.DefaultDependencyResolver handles CompositeFactory and
+ * of injection. The org.qi4j.spi.DefaultDependencyResolver handles CompositeBuilderFactory and
  * FragmentFactory. The @Dependency annotation tells the runtime to find an provider for
  * the type of that field.
  * <p/>
@@ -34,7 +34,7 @@ import java.lang.annotation.Target;
  * public class MyBeerOrderMixin
  *     implements BeerOrder
  * {
- *     @Dependency CompositeFactory factory;
+ *     @Dependency CompositeBuilderFactory factory;
  *
  *     public Beer moreBeer()
  *     {

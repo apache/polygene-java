@@ -14,11 +14,17 @@
  */
 package org.qi4j.runtime;
 
-import java.util.HashMap;
-import org.qi4j.api.CompositeFactory;
+import java.net.URL;
+import org.qi4j.api.CompositeBuilder;
+import org.qi4j.api.CompositeBuilderFactory;
 import org.qi4j.api.EntityRepository;
-import org.qi4j.api.persistence.composite.PersistentStorage;
+import org.qi4j.api.IdentityGenerator;
+import org.qi4j.api.persistence.Identity;
+import org.qi4j.api.persistence.Persistent;
 import org.qi4j.api.persistence.composite.EntityComposite;
+import org.qi4j.api.persistence.composite.PersistentStorage;
+import org.qi4j.api.persistence.impl.IdentityImpl;
+import org.qi4j.api.persistence.impl.PersistentImpl;
 
 /**
  * TODO
@@ -26,16 +32,14 @@ import org.qi4j.api.persistence.composite.EntityComposite;
 public final class EntityRepositoryImpl
     implements EntityRepository
 {
-    private CompositeFactory factory;
+    private CompositeBuilderFactory factory;
     private PersistentStorage storage;
+    private IdentityGenerator identityGenerator;
 
-    //TODo: Use softreference and GC queueing
-    private HashMap<String, EntityComposite> cache;
-
-    public EntityRepositoryImpl( CompositeFactory aFactory )
+    public EntityRepositoryImpl( CompositeBuilderFactory aBuilderFactory, IdentityGenerator identityGenerator )
     {
-        factory = aFactory;
-        cache = new HashMap<String, EntityComposite>();
+        this.identityGenerator = identityGenerator;
+        factory = aBuilderFactory;
     }
 
     public void setStorage( PersistentStorage storage )
@@ -45,16 +49,7 @@ public final class EntityRepositoryImpl
 
     public <T extends EntityComposite> T getInstance( String anIdentity, Class<T> aType )
     {
-        EntityComposite entity = cache.get( anIdentity );
-        if( entity == null )
-        {
-            entity = storage.getEntity( anIdentity, aType );
-            if( entity != null )
-            {
-                cache.put( anIdentity, entity );
-            }
-            return aType.cast( entity );
-        }
+        EntityComposite entity = storage.getEntity( anIdentity, aType );
         return aType.cast( entity );
     }
 
@@ -63,21 +58,42 @@ public final class EntityRepositoryImpl
         T object = getInstance( identity, type );
         if( autoCreate && object == null )
         {
-            object = factory.newInstance( type );
-            object.setIdentity( identity );
-            object.setEntityRepository( this );
-            object.initialize();
+            object = newEntityBuilder( identity, type ).newInstance();
         }
         return object;
     }
 
-    public <T extends EntityComposite> T newInstance( String identity, Class<T> type )
+    /**
+     * Create a URL for the composite of the given identity.
+     *
+     * @param identity The identity of the object to convert into a URL.
+     * @return The URL to the composite of the given identity.
+     */
+    public URL toURL( Identity identity )
     {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public <T extends EntityComposite> void create( T t )
+    /**
+     * Deletes the given object from the repository.
+     * <p/>
+     * After this method call, the entity must be considered invalid.
+     *
+     * @param entity The entity to be permanently deleted from the repository.
+     */
+    public <T extends EntityComposite> void deleteInstance( T entity )
     {
-        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public <T extends EntityComposite> CompositeBuilder<T> newEntityBuilder( String identity, Class<T> compositeType )
+    {
+        CompositeBuilder<T> builder = factory.newCompositeBuilder( compositeType );
+        if( identity == null )
+        {
+            identity = identityGenerator.generate( compositeType );
+        }
+        builder.setMixin( Identity.class, new IdentityImpl( identity ) );
+        builder.setMixin( Persistent.class, new PersistentImpl( this ) );
+        return builder;
     }
 }

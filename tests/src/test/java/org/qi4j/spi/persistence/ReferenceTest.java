@@ -18,19 +18,23 @@ package org.qi4j.spi.persistence;
 
 import junit.framework.TestCase;
 import org.qi4j.api.CompositeBuilder;
-import org.qi4j.api.CompositeFactory;
+import org.qi4j.api.CompositeBuilderFactory;
 import org.qi4j.api.EntityRepository;
+import org.qi4j.api.CompositeModelFactory;
+import org.qi4j.api.IdentityGenerator;
 import org.qi4j.api.persistence.composite.PersistentStorage;
 import org.qi4j.cache.CachedCompositeRepositoryComposite;
 import org.qi4j.extension.persistence.quick.MapPersistenceProvider;
 import org.qi4j.extension.persistence.quick.SerializablePersistence;
-import org.qi4j.runtime.CompositeFactoryImpl;
+import org.qi4j.runtime.CompositeBuilderFactoryImpl;
 import org.qi4j.runtime.EntityRepositoryImpl;
+import org.qi4j.runtime.CompositeModelFactoryImpl;
+import org.qi4j.runtime.UuidIdentityGenerator;
 import org.qi4j.spi.serialization.SerializablePersistenceSpi;
 
 public class ReferenceTest extends TestCase
 {
-    private CompositeFactory factory;
+    private CompositeBuilderFactory builderFactory;
     private EntityRepository repository;
     private PersistentStorage storage;
 
@@ -38,7 +42,7 @@ public class ReferenceTest extends TestCase
     public void test1()
         throws Exception
     {
-//        TestComposite subject = factory.newInstance( TestComposite.class );
+//        TestComposite subject = builderFactory.newInstance( TestComposite.class );
 //        subject.setEntityRepository( storage );
 //        subject.setIdentity( "1234" );
 //        State1 state = new State1SerializableImpl();
@@ -58,12 +62,16 @@ public class ReferenceTest extends TestCase
     {
 
         // TODO: Re-Think the whole Persistence setup. Circular Deps at the moment.
-        factory = new CompositeFactoryImpl();
-        CompositeBuilder<CachedCompositeRepositoryComposite> builder = factory.newCompositeBuilder( CachedCompositeRepositoryComposite.class );
-        builder.set( EntityRepository.class, new EntityRepositoryImpl( factory ) );
+        builderFactory = new CompositeBuilderFactoryImpl();
+        IdentityGenerator identityGenerator = new UuidIdentityGenerator();
+        EntityRepositoryImpl entityRepository = new EntityRepositoryImpl( builderFactory, identityGenerator );
+        CompositeBuilder<CachedCompositeRepositoryComposite> builder = builderFactory.newCompositeBuilder( CachedCompositeRepositoryComposite.class );
+        builder.setMixin( EntityRepository.class, entityRepository );
         CachedCompositeRepositoryComposite repo = builder.newInstance();
         SerializablePersistenceSpi subsystem = new MapPersistenceProvider();
-        storage = new SerializablePersistence( subsystem, factory, repo );
+        CompositeModelFactory modelFactory = new CompositeModelFactoryImpl();
+        storage = new SerializablePersistence( subsystem, modelFactory, builderFactory, repo );
+        entityRepository.setStorage( storage );
         repository = repo;
     }
 }

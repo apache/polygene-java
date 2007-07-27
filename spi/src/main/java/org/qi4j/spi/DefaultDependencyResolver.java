@@ -17,9 +17,10 @@
 package org.qi4j.spi;
 
 import java.lang.reflect.Field;
-import org.qi4j.api.CompositeFactory;
+import org.qi4j.api.CompositeBuilderFactory;
 import org.qi4j.api.DependencyResolver;
 import org.qi4j.api.FragmentFactory;
+import org.qi4j.api.CompositeModelFactory;
 import org.qi4j.api.model.CompositeContext;
 
 public class DefaultDependencyResolver
@@ -28,9 +29,13 @@ public class DefaultDependencyResolver
     public Object resolveDependency( Field field, CompositeContext context )
     {
         Class<?> type = field.getType();
-        if( type.equals( CompositeFactory.class ) )
+        if( type.equals( CompositeBuilderFactory.class ) )
         {
-            return context.getCompositeFactory();
+            return context.getCompositeBuilderFactory();
+        }
+        else if( type.equals( CompositeModelFactory.class ) )
+        {
+            return context.getCompositeModelFactory();
         }
         else if( type.equals( FragmentFactory.class ) )
         {
