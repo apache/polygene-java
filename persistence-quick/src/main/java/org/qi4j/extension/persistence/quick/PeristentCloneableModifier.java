@@ -14,7 +14,7 @@
  */
 package org.qi4j.extension.persistence.quick;
 
-import org.qi4j.api.CompositeFactory;
+import org.qi4j.api.CompositeBuilderFactory;
 import org.qi4j.api.annotation.Dependency;
 import org.qi4j.api.annotation.Modifies;
 import org.qi4j.api.annotation.Uses;
@@ -25,13 +25,13 @@ public final class PeristentCloneableModifier<T extends EntityComposite>
 {
     @Modifies org.qi4j.api.persistence.Cloneable<T> cloneable;
     @Uses EntityComposite entity;
-    @Dependency CompositeFactory factory;
+    @Dependency CompositeBuilderFactory factory;
 
     // TODO: Re-thinking
     public T clone()
     {
         T cloned = cloneable.clone();
-        cloned.setIdentity( entity.getIdentity() + "cloned" );
+//        cloned.setIdentity( entity.getIdentity() + "cloned" );
 //        entity.getEntityRepository().create( factory.dereference( cloned ) );
         return cloned;
     }

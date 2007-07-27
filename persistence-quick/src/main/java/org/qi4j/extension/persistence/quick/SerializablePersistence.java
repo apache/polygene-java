@@ -18,39 +18,38 @@ import java.io.Serializable;
 import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
-import org.qi4j.api.CompositeFactory;
+import org.qi4j.api.CompositeBuilderFactory;
 import org.qi4j.api.EntityRepository;
-import org.qi4j.api.annotation.ModifiedBy;
+import org.qi4j.api.CompositeModelFactory;
 import org.qi4j.api.persistence.EntityCompositeNotFoundException;
 import org.qi4j.api.persistence.PersistenceException;
 import org.qi4j.api.persistence.composite.EntityComposite;
 import org.qi4j.api.persistence.composite.PersistentStorage;
-import org.qi4j.api.persistence.modifier.PersistentStorageReferenceModifier;
-import org.qi4j.api.persistence.modifier.PersistentStorageTraceModifier;
-import org.qi4j.runtime.CompositeInvocationHandler;
+import org.qi4j.runtime.RegularCompositeInvocationHandler;
 import org.qi4j.runtime.ProxyReferenceInvocationHandler;
 import org.qi4j.spi.serialization.SerializablePersistenceSpi;
 import org.qi4j.spi.serialization.SerializedObject;
 
-@ModifiedBy( { PersistentStorageTraceModifier.class, PersistentStorageReferenceModifier.class } )
 public final class SerializablePersistence
     implements PersistentStorage
 {
     SerializablePersistenceSpi delegate;
-    private CompositeFactory compositeFactory;
+    private CompositeBuilderFactory builderFactory;
     private EntityRepository entityRepository;
+    private CompositeModelFactory modelFactory;
 
-    public SerializablePersistence( SerializablePersistenceSpi aDelegate, CompositeFactory compositeFactory, EntityRepository entityRepository )
+    public SerializablePersistence( SerializablePersistenceSpi aDelegate, CompositeModelFactory modelFactory, CompositeBuilderFactory compositeBuilderFactory, EntityRepository entityRepository )
     {
+        this.modelFactory = modelFactory;
         delegate = aDelegate;
-        this.compositeFactory = compositeFactory;
+        this.builderFactory = compositeBuilderFactory;
         this.entityRepository = entityRepository;
     }
 
     public void create( EntityComposite entity )
         throws PersistenceException
     {
-        CompositeInvocationHandler handler = CompositeInvocationHandler.getInvocationHandler( entity );
+        RegularCompositeInvocationHandler handler = RegularCompositeInvocationHandler.getInvocationHandler( entity );
         Map<Class, Object> mixins = handler.getMixins();
 
         Map<Class, SerializedObject> persistentMixins = new HashMap<Class, SerializedObject>();
@@ -77,7 +76,7 @@ public final class SerializablePersistence
         }
 
         ProxyReferenceInvocationHandler proxyHandler = (ProxyReferenceInvocationHandler) Proxy.getInvocationHandler( entity );
-        CompositeInvocationHandler handler = CompositeInvocationHandler.getInvocationHandler( compositeFactory.dereference( entity ) );
+        RegularCompositeInvocationHandler handler = RegularCompositeInvocationHandler.getInvocationHandler( modelFactory.dereference( entity ) );
         Map<Class, Object> deserializedMixins = handler.getMixins();
         for( Map.Entry<Class, SerializedObject> entry : mixins.entrySet() )
         {
@@ -85,7 +84,7 @@ public final class SerializablePersistence
             Object deserializedMixin = null;
             try
             {
-                deserializedMixin = value.getObject( entityRepository, compositeFactory );
+                deserializedMixin = value.getObject( entityRepository, builderFactory );
             }
             catch( ClassNotFoundException e )
             {

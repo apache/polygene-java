@@ -17,9 +17,6 @@ package org.qi4j.extension.persistence.quick;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import org.qi4j.api.annotation.ModifiedBy;
-import org.qi4j.api.persistence.modifier.PersistentStorageReferenceModifier;
-import org.qi4j.api.persistence.modifier.PersistentStorageTraceModifier;
 import org.qi4j.spi.serialization.SerializablePersistenceSpi;
 import org.qi4j.spi.serialization.SerializedObject;
 
@@ -27,7 +24,6 @@ import org.qi4j.spi.serialization.SerializedObject;
 /**
  * In-memory repository which stores objects in a hashmap.
  */
-@ModifiedBy( { PersistentStorageTraceModifier.class, PersistentStorageReferenceModifier.class } )
 public final class MapPersistenceProvider
     implements SerializablePersistenceSpi
 {

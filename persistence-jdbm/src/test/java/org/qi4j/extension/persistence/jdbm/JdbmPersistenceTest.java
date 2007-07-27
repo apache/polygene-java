@@ -24,10 +24,10 @@ import jdbm.RecordManagerOptions;
 import junit.framework.TestCase;
 import org.objectweb.jotm.Jotm;
 import org.objectweb.transaction.jta.TransactionManager;
-import org.qi4j.api.CompositeFactory;
-import org.qi4j.api.FragmentFactory;
-import org.qi4j.runtime.CompositeFactoryImpl;
-import org.qi4j.runtime.FragmentFactoryImpl;
+import org.qi4j.api.CompositeBuilderFactory;
+import org.qi4j.api.CompositeModelFactory;
+import org.qi4j.runtime.CompositeBuilderFactoryImpl;
+import org.qi4j.runtime.CompositeModelFactoryImpl;
 
 public class JdbmPersistenceTest extends TestCase
 {
@@ -65,9 +65,10 @@ public class JdbmPersistenceTest extends TestCase
         p.put( RecordManagerOptions.THREAD_SAFE, "false" );
         p.store( fos, "" );
         fos.close();
-        CompositeFactory compositeFactory = new CompositeFactoryImpl();
+        CompositeModelFactory modelFactory = new CompositeModelFactoryImpl();
+        CompositeBuilderFactory builderFactory = new CompositeBuilderFactoryImpl();
         Jotm jotm = new Jotm( true, false );
         TransactionManager transactionManager = jotm.getTransactionManager();
-        underTest = new JdbmStorage( compositeFactory, testDir, transactionManager );
+        underTest = new JdbmStorage( modelFactory, builderFactory, testDir, transactionManager );
     }
 }

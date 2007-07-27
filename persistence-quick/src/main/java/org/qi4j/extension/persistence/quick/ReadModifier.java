@@ -20,9 +20,9 @@ import java.lang.reflect.Method;
 import org.qi4j.api.annotation.AppliesTo;
 import org.qi4j.api.annotation.Dependency;
 import org.qi4j.api.annotation.Uses;
-import org.qi4j.api.persistence.composite.PersistentStorage;
 import org.qi4j.api.persistence.composite.EntityComposite;
 import org.qi4j.api.EntityRepository;
+import org.qi4j.runtime.RegularCompositeInvocationHandler;
 import org.qi4j.runtime.CompositeInvocationHandler;
 
 /**
@@ -45,7 +45,7 @@ public final class ReadModifier
         EntityRepository repository = entity.getEntityRepository();
         if( repository != null && !method.getName().startsWith( "get" ) )
         {
-            Object object = CompositeInvocationHandler.getInvocationHandler( proxy );
+            Object object = RegularCompositeInvocationHandler.getInvocationHandler( proxy );
 //            repository.update( entity, (Serializable) object );
         }
 

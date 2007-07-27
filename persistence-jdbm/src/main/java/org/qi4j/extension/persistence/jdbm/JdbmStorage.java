@@ -29,7 +29,8 @@ import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
 import jdbm.RecordManager;
 import jdbm.RecordManagerFactory;
-import org.qi4j.api.CompositeFactory;
+import org.qi4j.api.CompositeBuilderFactory;
+import org.qi4j.api.CompositeModelFactory;
 import org.qi4j.api.persistence.PersistenceException;
 import org.qi4j.api.persistence.composite.PersistentStorage;
 import org.qi4j.api.persistence.composite.EntityComposite;
@@ -38,15 +39,17 @@ import org.qi4j.api.persistence.composite.EntityComposite;
 public class JdbmStorage
     implements PersistentStorage
 {
-    private CompositeFactory compositeFactory;
+    private CompositeBuilderFactory builderFactory;
     private TransactionManager transactionManager;
     private RecordManager recordManager;
     private HashMap<Transaction, TransactionResource> transactions;
+    private CompositeModelFactory modelFactory;
 
-    public JdbmStorage( CompositeFactory factory, File directory, TransactionManager theTransactionManager )
+    public JdbmStorage( CompositeModelFactory modelFactory, CompositeBuilderFactory builderFactory, File directory, TransactionManager theTransactionManager )
         throws IOException
     {
-        compositeFactory = factory;
+        this.modelFactory = modelFactory;
+        this.builderFactory = builderFactory;
         transactionManager = theTransactionManager;
         transactions = new HashMap<Transaction, TransactionResource>();
 
@@ -155,7 +158,7 @@ public class JdbmStorage
         TransactionResource transactionResource = transactions.get( transaction );
         if( transactionResource == null )
         {
-            transactionResource = new TransactionResource( recordManager, compositeFactory );
+            transactionResource = new TransactionResource( recordManager, modelFactory, builderFactory );
             transaction.enlistResource( transactionResource );
             transactions.put( transaction, transactionResource );
         }

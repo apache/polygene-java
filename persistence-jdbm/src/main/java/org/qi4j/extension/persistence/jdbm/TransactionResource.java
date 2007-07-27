@@ -29,11 +29,12 @@ import javax.transaction.xa.XAException;
 import javax.transaction.xa.XAResource;
 import javax.transaction.xa.Xid;
 import jdbm.RecordManager;
-import org.qi4j.api.CompositeFactory;
+import org.qi4j.api.CompositeBuilderFactory;
+import org.qi4j.api.CompositeModelFactory;
 import org.qi4j.api.persistence.EntityCompositeNotFoundException;
 import org.qi4j.api.persistence.PersistenceException;
 import org.qi4j.api.persistence.composite.EntityComposite;
-import org.qi4j.runtime.CompositeInvocationHandler;
+import org.qi4j.runtime.RegularCompositeInvocationHandler;
 import org.qi4j.runtime.ProxyReferenceInvocationHandler;
 
 
@@ -43,12 +44,14 @@ public class TransactionResource
     private List<Operation> operations;
     private Xid xid;
     private RecordManager recordManager;
-    private CompositeFactory compositeFactory;
+    private CompositeModelFactory modelFactory;
+    private CompositeBuilderFactory builderFactory;
 
-    TransactionResource( RecordManager recordManager, CompositeFactory compositeFactory )
+    TransactionResource( RecordManager recordManager, CompositeModelFactory modelFactory, CompositeBuilderFactory builderFactory )
     {
         this.recordManager = recordManager;
-        this.compositeFactory = compositeFactory;
+        this.modelFactory = modelFactory;
+        this.builderFactory = builderFactory;
         operations = new LinkedList<Operation>();
     }
 
@@ -67,7 +70,7 @@ public class TransactionResource
             {
                 // Here we need to check the "last value" in the Transaction log. Should this be built on the calls instead?
                 String identity = aProxy.getIdentity();
-                CompositeInvocationHandler handler = CompositeInvocationHandler.getInvocationHandler( compositeFactory.dereference( aProxy ) );
+                RegularCompositeInvocationHandler handler = RegularCompositeInvocationHandler.getInvocationHandler( modelFactory.dereference( aProxy ) );
                 Map<Class, Object> mixins = handler.getMixins();
 
                 for( Operation op : operations )
@@ -88,7 +91,7 @@ public class TransactionResource
                 }
 
                 ProxyReferenceInvocationHandler proxyHandler = (ProxyReferenceInvocationHandler) Proxy.getInvocationHandler( aProxy );
-                CompositeInvocationHandler handler = CompositeInvocationHandler.getInvocationHandler( compositeFactory.dereference( aProxy ) );
+                RegularCompositeInvocationHandler handler = RegularCompositeInvocationHandler.getInvocationHandler( modelFactory.dereference( aProxy ) );
                 Map<Class, Object> existingMixins = handler.getMixins();
                 existingMixins.putAll( mixins );
                 proxyHandler.initializeMixins( existingMixins );
