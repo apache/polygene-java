@@ -18,15 +18,16 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
+import org.qi4j.api.Composite;
 
-public final class InvocationInstance
+public final class InvocationInstance<T extends Composite>
 {
     private Object firstModifier;
     private FragmentInvocationHandler mixinInvocationHandler;
-    private ProxyReferenceInvocationHandler proxyHandler;
+    private ProxyReferenceInvocationHandler<T> proxyHandler;
     private List<InvocationInstance> pool;
 
-    public InvocationInstance( Object aFirstModifier, FragmentInvocationHandler aMixinInvocationHandler, ProxyReferenceInvocationHandler aProxyHandler, List<InvocationInstance> aPool )
+    public InvocationInstance( Object aFirstModifier, FragmentInvocationHandler aMixinInvocationHandler, ProxyReferenceInvocationHandler<T> aProxyHandler, List<InvocationInstance> aPool )
     {
         firstModifier = aFirstModifier;
         proxyHandler = aProxyHandler;
@@ -34,7 +35,7 @@ public final class InvocationInstance
         pool = aPool;
     }
 
-    public Object invoke( Object proxy, Method method, Object[] args, Object mixin, Class mixinType )
+    public Object invoke( T proxy, Method method, Object[] args, Object mixin, Class mixinType )
         throws Throwable
     {
         try

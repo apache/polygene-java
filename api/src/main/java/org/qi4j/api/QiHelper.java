@@ -16,11 +16,29 @@
  */
 package org.qi4j.api;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.AnnotatedElement;
-import org.qi4j.api.model.CompositeContext;
+import java.lang.reflect.Field;
+import org.qi4j.api.annotation.Dependency;
 
-public interface DependencyResolver
+public class QiHelper
 {
-    Object resolveDependency( AnnotatedElement dependentElement, CompositeContext context );
+
+    public static Object getDependencyKey( AnnotatedElement dependentElement )
+    {
+        Dependency depAnnot = dependentElement.getAnnotation( Dependency.class );
+        String value = depAnnot.value();
+        if( value == null )
+        {
+            if( dependentElement instanceof Field )
+            {
+                return ( (Field) dependentElement ).getType();
+            }
+            else
+            {
+                return dependentElement;
+            }
+        }
+        return value;
+
+    }
 }

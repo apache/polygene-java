@@ -16,19 +16,19 @@
  */
 package org.qi4j.spi;
 
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import org.qi4j.api.CompositeBuilderFactory;
 import org.qi4j.api.DependencyResolver;
-import org.qi4j.api.FragmentFactory;
 import org.qi4j.api.CompositeModelFactory;
 import org.qi4j.api.model.CompositeContext;
 
-public class DefaultDependencyResolver
+public class MixinDependencyResolver
     implements DependencyResolver
 {
-    public Object resolveDependency( Field field, CompositeContext context )
+    public Object resolveDependency( AnnotatedElement annotatedElement, CompositeContext context )
     {
-        Class<?> type = field.getType();
+        Class<?> type = getElementType( annotatedElement);
         if( type.equals( CompositeBuilderFactory.class ) )
         {
             return context.getCompositeBuilderFactory();
@@ -37,13 +37,24 @@ public class DefaultDependencyResolver
         {
             return context.getCompositeModelFactory();
         }
-        else if( type.equals( FragmentFactory.class ) )
-        {
-            return context.getFragmentFactory();
-        }
         else
         {
             return null;
         }
     }
+
+    private Class getElementType( AnnotatedElement annotatedElement )
+    {
+        Class clazz;
+        if( annotatedElement instanceof Class )
+        {
+            clazz = (Class) annotatedElement;
+        }
+        else
+        {
+            clazz = ( (Field) annotatedElement ).getType();
+        }
+        return clazz;
+    }
+
 }

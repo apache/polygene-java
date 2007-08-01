@@ -14,16 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.api;
+package org.qi4j.test.model4;
 
-import org.qi4j.api.model.CompositeModel;
-
-public interface CompositeModelFactory
+public class CounterImpl implements Counter
 {
-    <T extends Composite> CompositeModel<T> getCompositeModel( Class<T> compositeType );
+    private int value;
 
-    <T extends Composite> CompositeModel<T> getCompositeModel( T composite );
+    public void increment()
+    {
+        value++;
+    }
 
-    <T extends Composite> T dereference( T proxy );
+    public void clear()
+    {
+        value =0;
+    }
 
+    public int getValue()
+    {
+        return value;
+    }
 }

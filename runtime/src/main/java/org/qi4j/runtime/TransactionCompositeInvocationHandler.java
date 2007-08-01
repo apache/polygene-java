@@ -21,15 +21,13 @@ import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import org.qi4j.api.model.InvalidCompositeException;
-import javax.transaction.xa.XAResource;
-import javax.transaction.TransactionManager;
-import javax.transaction.Transaction;
+import org.qi4j.api.Composite;
 
-public class TransactionCompositeInvocationHandler extends CompositeInvocationHandler
+public class TransactionCompositeInvocationHandler<T extends Composite> extends CompositeInvocationHandler<T>
 {
     private WeakHashMap<Thread, ConcurrentHashMap<Class, Object>> mixins;
 
-    public TransactionCompositeInvocationHandler( CompositeContextImpl aContext )
+    public TransactionCompositeInvocationHandler( CompositeContextImpl<T> aContext )
     {
         super( aContext );
     }
@@ -38,12 +36,12 @@ public class TransactionCompositeInvocationHandler extends CompositeInvocationHa
         throws Throwable
     {
         Class mixinType = method.getDeclaringClass();
-        Object mixin = getMixin( mixinType, proxy );
+        Object mixin = getMixin( mixinType, (T) proxy );
         if( mixin == null )
         {
             if( mixinType.equals( Object.class ) )
             {
-                return invokeObject( proxy, method, args );
+                return invokeObject( (T) proxy, method, args );
             }
             else
             {
@@ -53,10 +51,10 @@ public class TransactionCompositeInvocationHandler extends CompositeInvocationHa
             }
         }
         // Invoke
-        return context.getInvocationInstance( method ).invoke( proxy, method, args, mixin, mixinType );
+        return context.getInvocationInstance( method ).invoke( (T) proxy, method, args, mixin, mixinType );
     }
 
-    protected Object getMixin( Class mixinType, Object aProxy )
+    protected Object getMixin( Class mixinType, T aProxy )
     {
         Thread currentThread = Thread.currentThread();
         ConcurrentHashMap<Class, Object> transactionBranch = mixins.get( currentThread );

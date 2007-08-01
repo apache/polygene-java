@@ -23,7 +23,7 @@ import org.qi4j.runtime.CompositeModelFactoryImpl;
 public class Composite2Test extends TestCase
 {
     CompositeModelFactory modelFactory;
-    CompositeModel composite;
+    CompositeModel<TestComposite> composite;
 
     protected void setUp() throws Exception
     {

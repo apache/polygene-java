@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
  * <p/>
  * Dependency resolution is handled through the DependencyResolver, which allows any kind
  * of injection. The org.qi4j.spi.DefaultDependencyResolver handles CompositeBuilderFactory and
- * FragmentFactory. The @Dependency annotation tells the runtime to find an provider for
+ * CompositeModelFactory. The @Dependency annotation tells the runtime to find an provider for
  * the type of that field.
  * <p/>
  * Example;
@@ -79,9 +79,8 @@ import java.lang.annotation.Target;
  * @see org.qi4j.api.DependencyResolver
  */
 @Retention( RetentionPolicy.RUNTIME )
-@Target( ElementType.FIELD )
+@Target( {ElementType.FIELD, ElementType.PARAMETER } )
 @Documented
-@Inherited
 public @interface Dependency
 {
     String value() default ""; // This name can be used for lookups

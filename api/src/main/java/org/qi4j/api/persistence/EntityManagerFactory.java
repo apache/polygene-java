@@ -12,27 +12,9 @@
  * limitations under the License.
  *
  */
+package org.qi4j.api.persistence;
 
-package org.qi4j.api.annotation;
-
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
-
-/**
- * This annotation is used by composites and mixins to declare what modifiers
- * should be used.
- * <p/>
- * The ModifiedBy
- */
-@Retention( RetentionPolicy.RUNTIME )
-@Target( ElementType.TYPE )
-@Documented
-public @interface ModifiedBy
+public interface EntityManagerFactory
 {
-    Class[] value();
+    EntityManager newEntityManager();
 }

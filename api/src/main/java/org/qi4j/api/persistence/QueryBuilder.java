@@ -14,16 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.api;
+package org.qi4j.api.persistence;
 
-import org.qi4j.api.model.CompositeModel;
+import org.qi4j.api.persistence.composite.EntityComposite;
 
-public interface CompositeModelFactory
+public interface QueryBuilder<T extends EntityComposite>
 {
-    <T extends Composite> CompositeModel<T> getCompositeModel( Class<T> compositeType );
+    <K> K where( Class<K> mixinType );
 
-    <T extends Composite> CompositeModel<T> getCompositeModel( T composite );
+    <K> K where( Class<K> mixinType, Is comparisonOperator );
 
-    <T extends Composite> T dereference( T proxy );
+    <K> K orderBy( Class<K> mixinType );
+
+    <K> K orderBy( Class<K> mixinType, boolean descend );
+
+    Query<T> newQuery();
+
+    public enum Is
+    {
+        EQUAL, LESS_THAN, LESS_THAN_EQUAL, GREATER_THAN, GREATER_THAN_EQUAL, NOT_EQUAL
+    }
 
 }

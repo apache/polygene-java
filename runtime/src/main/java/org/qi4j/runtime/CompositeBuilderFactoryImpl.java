@@ -18,17 +18,17 @@ import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Collections;
+import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 import org.qi4j.api.Composite;
 import org.qi4j.api.CompositeBuilderFactory;
 import org.qi4j.api.CompositeInstantiationException;
 import org.qi4j.api.DependencyResolver;
-import org.qi4j.api.FragmentFactory;
 import org.qi4j.api.CompositeBuilder;
 import org.qi4j.api.CompositeModelFactory;
 import org.qi4j.api.model.CompositeModel;
-import org.qi4j.runtime.CompositeModelImpl;
-import org.qi4j.spi.DefaultDependencyResolver;
+import org.qi4j.spi.MixinDependencyResolver;
 
 /**
  * Default implementation of CompositeBuilderFactory
@@ -36,25 +36,37 @@ import org.qi4j.spi.DefaultDependencyResolver;
 public final class CompositeBuilderFactoryImpl
     implements CompositeBuilderFactory
 {
-    private FragmentFactory fragmentFactory;
     private Map<CompositeModel, CompositeContextImpl> objectContexts;
     private List<DependencyResolver> resolvers;
     private CompositeModelFactory modelFactory;
 
     public CompositeBuilderFactoryImpl()
     {
-        this( new CompositeModelFactoryImpl(), new FragmentFactoryImpl(), null );
+        this( null, null );
     }
 
-    public CompositeBuilderFactoryImpl( CompositeModelFactory compositeModelFactory, FragmentFactory aFragmentFactory, List<DependencyResolver> resolvers )
+    public CompositeBuilderFactoryImpl( List<DependencyResolver> resolvers )
     {
+        this( null, resolvers );
+    }
+
+    public CompositeBuilderFactoryImpl( DependencyResolver resolver )
+    {
+        this( null, Arrays.asList( resolver, new MixinDependencyResolver()));
+    }
+
+    public CompositeBuilderFactoryImpl( CompositeModelFactory compositeModelFactory, List<DependencyResolver> resolvers )
+    {
+        if( compositeModelFactory == null )
+        {
+            compositeModelFactory = new CompositeModelFactoryImpl();
+        }
         this.modelFactory = compositeModelFactory;
-        fragmentFactory = aFragmentFactory;
         if( resolvers == null )
         {
-            DefaultDependencyResolver defaultResolver = new DefaultDependencyResolver();
+            MixinDependencyResolver mixinResolver = new MixinDependencyResolver();
             resolvers = new ArrayList<DependencyResolver>();
-            resolvers.add( defaultResolver );
+            resolvers.add( mixinResolver );
         }
         this.resolvers = resolvers;
         objectContexts = new ConcurrentHashMap<CompositeModel, CompositeContextImpl>();
@@ -90,7 +102,9 @@ public final class CompositeBuilderFactoryImpl
 
     public <T extends Composite> CompositeBuilder<T> newCompositeBuilder( Class<T> compositeType )
     {
-        CompositeBuilder<T> builder = new CompositeBuilderImpl<T>( fragmentFactory, modelFactory, this, compositeType );
+        CompositeModel compositeModel = modelFactory.getCompositeModel( compositeType );
+        CompositeContextImpl context = getCompositeContext( compositeModel );
+        CompositeBuilder<T> builder = new CompositeBuilderImpl<T>( context );
         return builder;
     }
 
@@ -100,12 +114,12 @@ public final class CompositeBuilderFactoryImpl
     }
 
     // Private ------------------------------------------------------
-    private CompositeContextImpl getCompositeContext( CompositeModel compositeModel )
+    private <T extends Composite> CompositeContextImpl getCompositeContext( CompositeModel<T> compositeModel )
     {
-        CompositeContextImpl context = objectContexts.get( compositeModel );
+        CompositeContextImpl<T> context = objectContexts.get( compositeModel );
         if( context == null )
         {
-            context = new CompositeContextImpl( compositeModel, modelFactory, this, fragmentFactory );
+            context = new CompositeContextImpl<T>( compositeModel, modelFactory, this );
             objectContexts.put( compositeModel, context );
         }
         return context;

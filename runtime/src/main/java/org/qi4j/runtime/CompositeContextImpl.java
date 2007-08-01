@@ -14,50 +14,54 @@
  */
 package org.qi4j.runtime;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
+import java.io.ObjectInputStream;
 import org.qi4j.api.Composite;
 import org.qi4j.api.CompositeBuilderFactory;
 import org.qi4j.api.CompositeInstantiationException;
 import org.qi4j.api.CompositeModelFactory;
 import org.qi4j.api.DependencyResolver;
-import org.qi4j.api.FragmentFactory;
 import org.qi4j.api.InvocationContext;
 import org.qi4j.api.annotation.Dependency;
 import org.qi4j.api.annotation.Uses;
 import org.qi4j.api.model.CompositeContext;
-import org.qi4j.api.model.ModifierModel;
 import org.qi4j.api.model.CompositeModel;
+import org.qi4j.api.model.FragmentModel;
+import org.qi4j.api.model.ModifierModel;
 
 /**
  * TODO
  */
-public final class CompositeContextImpl
-    implements CompositeContext
+public final class CompositeContextImpl<T extends Composite>
+    implements CompositeContext<T>
 {
-    private CompositeModel compositeModel;
+    private CompositeModel<T> compositeModel;
     private CompositeBuilderFactoryImpl builderFactory;
-    private FragmentFactory fragmentFactory;
     private ConcurrentHashMap<Method, List<InvocationInstance>> invocationInstancePool;
     private CompositeModelFactory modelFactory;
 
 
-    public CompositeContextImpl( CompositeModel compositeModel, CompositeModelFactory modelFactory, CompositeBuilderFactoryImpl builderFactory, FragmentFactory aFragmentFactory )
+    public CompositeContextImpl( CompositeModel<T> compositeModel, CompositeModelFactory modelFactory, CompositeBuilderFactoryImpl builderFactory )
     {
         this.modelFactory = modelFactory;
         this.compositeModel = compositeModel;
         this.builderFactory = builderFactory;
-        fragmentFactory = aFragmentFactory;
         invocationInstancePool = new ConcurrentHashMap<Method, List<InvocationInstance>>();
     }
 
-    public CompositeModel getCompositeModel()
+    public CompositeModel<T> getCompositeModel()
     {
         return compositeModel;
     }
@@ -72,12 +76,7 @@ public final class CompositeContextImpl
         return builderFactory;
     }
 
-    public FragmentFactory getFragmentFactory()
-    {
-        return fragmentFactory;
-    }
-
-    public InvocationInstance getInvocationInstance( Method method )
+    public InvocationInstance<T> getInvocationInstance( Method method )
     {
         List<InvocationInstance> instances = invocationInstancePool.get( method );
 
@@ -108,9 +107,11 @@ public final class CompositeContextImpl
     {
         try
         {
-            HashMap usesResolution = new HashMap();
-
             ProxyReferenceInvocationHandler proxyHandler = new ProxyReferenceInvocationHandler();
+            Class compositeClass = compositeModel.getCompositeClass();
+            ClassLoader classloader = compositeClass.getClassLoader();
+            Class[] intfaces = new Class[]{ compositeClass };
+            T thisCompositeProxy = (T) Proxy.newProxyInstance( classloader, intfaces, proxyHandler );
 
             List<ModifierModel> modifierModels = compositeModel.getModifiers( method );
             Object firstModifier = null;
@@ -118,67 +119,18 @@ public final class CompositeContextImpl
             Field previousModifies = null;
             for( ModifierModel modifierModel : modifierModels )
             {
-                Object modifierInstance = fragmentFactory.newFragment( modifierModel, compositeModel );
-
+                Object modifierInstance = newFragment( modifierModel, thisCompositeProxy, method );
                 if( firstModifier == null )
                 {
                     firstModifier = modifierInstance;
                 }
-
-                // @Uses
-                for( Field usesField : modifierModel.getUsesFields() )
+                List<Field> list = modifierModel.getDependencyFields();
+                for( Field dependencyField : list )
                 {
-                    if( compositeModel.isAssignableFrom( usesField.getType() ) )
+                    Object dependency = resolveModifierDependency( dependencyField, proxyHandler, method );
+                    if( dependency != null )
                     {
-                        // The Proxy of ProxyReferenceInvocationHandler is settable to the field.
-//                        Object usesProxy = Proxy.newProxyInstance( usesField.getType().getClassLoader(), new Class[]{ usesField.getType() }, proxyHandler );
-                        Class compositeClass = compositeModel.getCompositeClass();
-                        ClassLoader classloader = compositeClass.getClassLoader();
-                        Class[] intfaces = new Class[]{ compositeClass };
-                        Composite thisCompositeProxy = (Composite) Proxy.newProxyInstance( classloader, intfaces, proxyHandler );
-
-                        usesField.set( modifierInstance, thisCompositeProxy );
-                    }
-                    else
-                    {
-                        if( !usesField.getAnnotation( Uses.class ).optional() )
-                        {
-                            throw new CompositeInstantiationException( "Could not resolve @Uses field in mixin " + modifierModel.getFragmentClass().getName() + " for composite " + compositeModel.getCompositeClass().getName() );
-                        }
-                    }
-                }
-
-                // @Dependency
-                for( Field dependencyField : modifierModel.getDependencyFields() )
-                {
-                    if( dependencyField.getType().equals( InvocationContext.class ) )
-                    {
-                        dependencyField.set( modifierInstance, proxyHandler );
-                    }
-                    else if( dependencyField.getType().equals( Method.class ) )
-                    {
-                        Class<? extends Object> fragmentClass = compositeModel.locateMixin( method.getDeclaringClass() ).getFragmentClass();
-                        Method dependencyMethod;
-                        if( InvocationHandler.class.isAssignableFrom( fragmentClass ) )
-                        {
-                            dependencyMethod = method;
-                        }
-                        else
-                        {
-                            try
-                            {
-                                dependencyMethod = fragmentClass.getMethod( method.getName(), method.getParameterTypes() );
-                            }
-                            catch( NoSuchMethodException e )
-                            {
-                                throw new CompositeInstantiationException( "Could not resolve @Dependency to method in mixin " + fragmentClass.getName() + " for composite " + compositeModel.getCompositeClass().getName(), e );
-                            }
-                        }
-                        dependencyField.set( modifierInstance, dependencyMethod );
-                    }
-                    else
-                    {
-                        resolveDependency( dependencyField, modifierInstance );
+                        dependencyField.set( modifierInstance, dependency );
                     }
                 }
 
@@ -235,7 +187,6 @@ public final class CompositeContextImpl
                     previousModifies.set( lastModifier, mixinProxy );
                 }
             }
-
             return new InvocationInstance( firstModifier, mixinInvocationHandler, proxyHandler, invocationInstancePool.get( method ) );
         }
         catch( IllegalAccessException e )
@@ -244,18 +195,53 @@ public final class CompositeContextImpl
         }
     }
 
-    public void resolveDependency( Field dependencyField, Object instance )
+    private Object resolveModifierDependency( AnnotatedElement annotatedElement, InvocationContext invocationContext, Method method )
+    {
+        // @Dependency
+        Class elementType = getElementType( annotatedElement );
+        if( elementType.equals( InvocationContext.class ) )
+        {
+            return invocationContext;
+        }
+        else if( elementType.equals( AnnotatedElement.class ) )
+        {
+            Class<? extends Object> fragmentClass = compositeModel.getMixin( method.getDeclaringClass() ).getFragmentClass();
+            Method dependencyMethod;
+            if( InvocationHandler.class.isAssignableFrom( fragmentClass ) )
+            {
+                dependencyMethod = method;
+            }
+            else
+            {
+                try
+                {
+                    dependencyMethod = fragmentClass.getMethod( method.getName(), method.getParameterTypes() );
+                }
+                catch( NoSuchMethodException e )
+                {
+                    throw new CompositeInstantiationException( "Could not resolve @Dependency to method in modifier " + fragmentClass.getName() + " for composite " + compositeModel.getCompositeClass().getName(), e );
+                }
+            }
+            return dependencyMethod;
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    private Object resolveFragmentDependency( AnnotatedElement annotatedElement, String dependentName, String location )
         throws CompositeInstantiationException
     {
         Object currentDependency = null;
         for( DependencyResolver resolver : builderFactory.getDependencyResolvers() )
         {
-            Object dependency = resolver.resolveDependency( dependencyField, this );
+            Object dependency = resolver.resolveDependency( annotatedElement, this );
             if( dependency != null )
             {
                 if( currentDependency != null )
                 {
-                    throw new CompositeInstantiationException( "Dependency " + dependencyField.getName() + " in mixin " + dependencyField.getDeclaringClass().getName() + " for composite " + compositeModel.getCompositeClass() + " has ambiguous resolutions." );
+                    throw new CompositeInstantiationException( "Dependency " + dependentName + " in fragment " + location + " for composite " + compositeModel.getCompositeClass() + " has ambiguous resolutions." );
                 }
                 currentDependency = dependency;
             }
@@ -264,22 +250,236 @@ public final class CompositeContextImpl
         if( currentDependency == null )
         {
             // No object found, check if it's optional
-            if( !dependencyField.getAnnotation( Dependency.class ).optional() )
-            {
-                throw new CompositeInstantiationException( "Dependency " + dependencyField.getName() + " in mixin " + dependencyField.getDeclaringClass().getName() + " for composite " + compositeModel.getCompositeClass() + " could not be resolved." );
-            }
         }
         else
         {
-            // Set dependency
-            try
+            return currentDependency;
+        }
+        return null;
+    }
+
+    public <K> K newFragment( FragmentModel<K> aFragmentModel, T proxy, Method method )
+    {
+        K instance;
+        try
+        {
+            Class<K> fragmentClass = aFragmentModel.getFragmentClass();
+            //noinspection unchecked
+            Constructor<K>[] constructors = fragmentClass.getConstructors();
+            Constructor<K> useConstructor = choose( constructors, aFragmentModel instanceof ModifierModel );
+            if( useConstructor == null )
             {
-                dependencyField.set( instance, currentDependency );
+                throw new CompositeInstantiationException( "No usable constructor in " + fragmentClass.getName() );
             }
-            catch( IllegalAccessException e )
+            Object[] parameters = getConstructorParameters( useConstructor, proxy, method );
+            instance = useConstructor.newInstance( parameters );
+        }
+        catch( Exception e )
+        {
+            throw new CompositeInstantiationException( "Could not instantiate class " + aFragmentModel.getFragmentClass().getName(), e );
+        }
+
+        resolveUsesFields( aFragmentModel, proxy, instance );
+
+        List<Field> dependencyFields = aFragmentModel.getDependencyFields();
+        for( Field dependencyField : dependencyFields )
+        {
+            Object dependency = resolveFragmentDependency( dependencyField, dependencyField.getName(), dependencyField.getDeclaringClass().getName() );
+            if( dependency == null )
             {
-                throw new CompositeInstantiationException( "Dependency " + dependencyField.getName() + " in mixin " + dependencyField.getDeclaringClass().getName() + " for composite " + compositeModel.getCompositeClass() + " could not be set.", e );
+                if( !dependencyField.getAnnotation( Dependency.class ).optional() )
+                {
+                    throw new CompositeInstantiationException( "Dependency " + dependencyField.getName() + " in fragment " + dependencyField.getDeclaringClass().getName() + " for composite " + compositeModel.getCompositeClass() + " could not be resolved." );
+                }
             }
+            else
+            {
+                try
+                {
+                    dependencyField.set( instance, dependency );
+                }
+                catch( IllegalAccessException e )
+                {
+                    throw new CompositeInstantiationException( "Dependency " + dependencyField.getName() + " in fragment " + dependencyField.getDeclaringClass().getName() + " for composite " + compositeModel.getCompositeClass() + " could not be set.", e );
+                }
+            }
+        }
+        return instance;
+    }
+
+    private Object[] getConstructorParameters( Constructor<? extends Object> useConstructor, T proxy, Method method )
+    {
+        Class<? extends Object>[] parameterTypes = useConstructor.getParameterTypes();
+        Annotation[][] annotations = useConstructor.getParameterAnnotations();
+        Object[] parameters = new Object[parameterTypes.length];
+        for( int i = 0; i < parameterTypes.length; i++ )
+        {
+            Class<? extends Object> parameterType = parameterTypes[ i ];
+
+            Dependency depAnnotation = getDependencyAnnotation( annotations[ i ] );
+            String dependentName = getDependencyName( depAnnotation, parameterType.getName() );
+            Object dependency = null;
+            if( method != null ) // In Modifier creation.
+            {
+                dependency = resolveModifierDependency( parameterType, (InvocationContext) Proxy.getInvocationHandler( proxy ), method );
+            }
+            if( dependency == null )
+            {
+                dependency = resolveFragmentDependency( parameterType, dependentName, useConstructor.getName() );
+            }
+            if( dependency == null && !depAnnotation.optional() )
+            {
+                throw new CompositeInstantiationException( "Dependency " + parameterType.getName() + " in fragment " + useConstructor.getName() + " for composite " + compositeModel.getCompositeClass() + " could not be resolved." );
+            }
+            parameters[ i ] = dependency;
+        }
+        return parameters;
+    }
+
+    private <K> Constructor<K> choose( Constructor<K>[] constructors, boolean isModifier )
+    {
+        SortedSet<Constructor<K>> available = new TreeSet<Constructor<K>>( new SizeComparator() );
+        for( Constructor<K> constructor : constructors )
+        {
+            if( canUse( constructor, isModifier ) )
+            {
+                available.add( constructor );
+            }
+        }
+        if( available.size() > 0 )
+        {
+            return available.last();
+        }
+        return null;
+    }
+
+    private boolean canUse( Constructor<? extends Object> constructor, boolean isModifier )
+    {
+        Class<? extends Object>[] parameterTypes = constructor.getParameterTypes();
+        Annotation[][] annotations = constructor.getParameterAnnotations();
+        for( int i = 0; i < parameterTypes.length; i++ )
+        {
+            Class<? extends Object> parameterType = parameterTypes[ i ];
+
+            Dependency depAnnotation = getDependencyAnnotation( annotations[ i ] );
+            if( depAnnotation != null )
+            {
+                String dependentName = getDependencyName( depAnnotation, parameterType.getName() );
+                Object dependency = null;
+                if( isModifier )
+                {
+                    if( canResolveModifierDependency( parameterType ) )
+                    {
+                        continue;
+                    }
+                }
+                if( dependency == null )
+                {
+                    dependency = resolveFragmentDependency( parameterType, dependentName, constructor.getName() );
+                }
+                if( dependency != null || depAnnotation.optional() )
+                {
+                    continue;
+                }
+            }
+            return false;
+        }
+        return true;
+    }
+
+    private boolean canResolveModifierDependency( Class<? extends Object> parameterType )
+    {
+        return parameterType.equals( InvocationContext.class ) ||
+               parameterType.equals( AnnotatedElement.class );
+    }
+
+    private Dependency getDependencyAnnotation( Annotation[] annotations )
+    {
+        for( Annotation annotation : annotations )
+        {
+            if( annotation instanceof Dependency )
+            {
+                return (Dependency) annotation;
+            }
+        }
+        return null;
+    }
+
+    private String getDependencyName( Dependency annotation, String defaultName )
+    {
+        String dependentName;
+        String value = annotation.value();
+        if( value.length() > 0 )
+        {
+            dependentName = value;
+        }
+        else
+        {
+            dependentName = defaultName;
+        }
+        return dependentName;
+    }
+
+    protected <K> void resolveUsesFields( FragmentModel<K> fragmentModel, Object proxy, Object fragment )
+    {
+        for( Field usesField : fragmentModel.getUsesFields() )
+        {
+            Tristate tristate = canResolveUses( usesField );
+            if( tristate == Tristate.TRUE )
+            {
+                try
+                {
+                    usesField.set( fragment, proxy );
+                }
+                catch( IllegalArgumentException e )
+                {
+                    throw new CompositeInstantiationException( "The @Uses field " + usesField.getName() + " in fragment " + fragmentModel.getFragmentClass().getName() + " is of type " + usesField.getType().getName() + " which is not type compatible with " + compositeModel.getCompositeClass().getName(), e );
+                }
+                catch( IllegalAccessException e )
+                {
+                    throw new CompositeInstantiationException( "The @Uses field " + usesField.getName() + " in fragment " + fragmentModel.getFragmentClass().getName() + " is not accessible.", e );
+                }
+            }
+            if( tristate == Tristate.FALSE )
+            {
+                throw new CompositeInstantiationException( "Could not resolve @Uses field in fragment " + fragmentModel.getFragmentClass().getName() + " for composite " + compositeModel.getCompositeClass().getName() );
+            }
+        }
+    }
+
+    private Tristate canResolveUses( AnnotatedElement annotatedElement )
+    {
+        if( compositeModel.isAssignableFrom( getElementType( annotatedElement ) ) )
+        {
+            return Tristate.TRUE;
+        }
+        if( annotatedElement.getAnnotation( Uses.class ).optional() )
+        {
+            return Tristate.OPTIONAL;
+        }
+        return Tristate.FALSE;
+    }
+
+    private Class getElementType( AnnotatedElement annotatedElement )
+    {
+        Class clazz;
+        if( annotatedElement instanceof Class )
+        {
+            clazz = (Class) annotatedElement;
+        }
+        else
+        {
+            clazz = ( (Field) annotatedElement ).getType();
+        }
+        return clazz;
+    }
+
+    private class SizeComparator
+        implements Comparator<Constructor>
+    {
+        public int compare( Constructor cons1, Constructor cons2 )
+        {
+            return cons1.getParameterTypes().length - cons2.getParameterTypes().length;
         }
     }
 }

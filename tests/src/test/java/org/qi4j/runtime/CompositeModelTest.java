@@ -77,7 +77,8 @@ public class CompositeModelTest
         expected.add( TestMixin2.class );
         expected.add( TestMixin1.class );
         expected.add( CompositeImpl.class ); // from Composite itself
-        for( MixinModel mixinModel : model.getImplementations() )
+        List<MixinModel> list = model.getImplementations();
+        for( MixinModel mixinModel : list )
         {
             assertTrue( "unexpected mixin model: " + mixinModel, expected.remove( mixinModel.getFragmentClass() ) );
         }
@@ -118,7 +119,8 @@ public class CompositeModelTest
         expected.add( TestModifier2.class );
         expected.add( TestModifier1.class );
         expected.add( CompositeServicesModifier.class );
-        for( ModifierModel modifierModel : model.getModifiers() )
+        List<ModifierModel> list = model.getModifiers();
+        for( ModifierModel modifierModel : list )
         {
             assertTrue( "unexpected modifier model: " + modifierModel, expected.remove( modifierModel.getFragmentClass() ) );
         }

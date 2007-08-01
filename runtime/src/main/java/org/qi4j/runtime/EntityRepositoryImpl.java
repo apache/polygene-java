@@ -32,14 +32,14 @@ import org.qi4j.api.persistence.impl.PersistentImpl;
 public final class EntityRepositoryImpl
     implements EntityRepository
 {
-    private CompositeBuilderFactory factory;
+    private CompositeBuilderFactory builderFactory;
     private PersistentStorage storage;
     private IdentityGenerator identityGenerator;
 
     public EntityRepositoryImpl( CompositeBuilderFactory aBuilderFactory, IdentityGenerator identityGenerator )
     {
         this.identityGenerator = identityGenerator;
-        factory = aBuilderFactory;
+        builderFactory = aBuilderFactory;
     }
 
     public void setStorage( PersistentStorage storage )
@@ -87,7 +87,7 @@ public final class EntityRepositoryImpl
 
     public <T extends EntityComposite> CompositeBuilder<T> newEntityBuilder( String identity, Class<T> compositeType )
     {
-        CompositeBuilder<T> builder = factory.newCompositeBuilder( compositeType );
+        CompositeBuilder<T> builder = builderFactory.newCompositeBuilder( compositeType );
         if( identity == null )
         {
             identity = identityGenerator.generate( compositeType );

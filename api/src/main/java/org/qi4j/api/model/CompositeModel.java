@@ -22,10 +22,9 @@ import java.util.Set;
 import java.lang.reflect.Method;
 import java.lang.reflect.Field;
 
-public interface CompositeModel
+public interface CompositeModel<T extends Composite>
 {
-    // Public --------------------------------------------------------
-    Class<? extends Composite> getCompositeClass();
+    Class<T> getCompositeClass();
 
     List<MixinModel> getImplementations();
 
@@ -35,7 +34,7 @@ public interface CompositeModel
 
     List<MixinModel> getImplementations( Class aType );
 
-    MixinModel locateMixin( Class anInterface );
+    MixinModel getMixin( Class anInterface );
 
     boolean isAssignableFrom( Class anInterface );
 

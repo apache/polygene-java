@@ -56,9 +56,8 @@ import java.lang.annotation.Target;
  * </code></pre>
  */
 @Retention( RetentionPolicy.RUNTIME )
-@Target( ElementType.FIELD )
+@Target( {ElementType.FIELD, ElementType.PARAMETER } )
 @Documented
-@Inherited
 public @interface Modifies
 {
 }

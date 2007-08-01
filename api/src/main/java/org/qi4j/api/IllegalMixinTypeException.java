@@ -16,14 +16,10 @@
  */
 package org.qi4j.api;
 
-import org.qi4j.api.model.CompositeModel;
-
-public interface CompositeModelFactory
+public class IllegalMixinTypeException extends RuntimeException
 {
-    <T extends Composite> CompositeModel<T> getCompositeModel( Class<T> compositeType );
-
-    <T extends Composite> CompositeModel<T> getCompositeModel( T composite );
-
-    <T extends Composite> T dereference( T proxy );
-
+    public IllegalMixinTypeException( String message )
+    {
+        super( message );
+    }
 }

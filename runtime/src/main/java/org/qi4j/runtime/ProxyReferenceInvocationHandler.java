@@ -24,15 +24,16 @@ import java.lang.reflect.Method;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Map;
 import org.qi4j.api.InvocationContext;
+import org.qi4j.api.Composite;
 
-public final class ProxyReferenceInvocationHandler
+public final class ProxyReferenceInvocationHandler<T extends Composite>
     implements InvocationHandler, InvocationContext
 {
-    private Object proxy;
+    private T proxy;
     private Object mixin;
     private Class mixinType;
 
-    public Object getProxy()
+    public T getProxy()
     {
         return proxy;
     }
@@ -47,7 +48,7 @@ public final class ProxyReferenceInvocationHandler
         return mixinType;
     }
 
-    public void setContext( Object aProxy, Object aMixin, Class mixinType )
+    public void setContext( T aProxy, Object aMixin, Class mixinType )
     {
         this.mixinType = mixinType;
         proxy = aProxy;

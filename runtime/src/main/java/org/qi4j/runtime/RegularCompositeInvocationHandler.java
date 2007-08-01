@@ -20,32 +20,31 @@ import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.qi4j.api.model.InvalidCompositeException;
-import org.qi4j.api.persistence.Lifecycle;
-import org.qi4j.api.persistence.impl.LifecycleImpl;
+import org.qi4j.api.Composite;
 
 /**
  * InvocationHandler for proxy objects.
  */
-public class RegularCompositeInvocationHandler extends CompositeInvocationHandler
+public class RegularCompositeInvocationHandler<T extends Composite> extends CompositeInvocationHandler<T>
 {
     private ConcurrentHashMap<Class, Object> mixins;
 
-    public RegularCompositeInvocationHandler( CompositeContextImpl aContext )
+    public RegularCompositeInvocationHandler( CompositeContextImpl<T> aContext )
     {
         super( aContext );
         mixins = new ConcurrentHashMap<Class, Object>();
     }
 
     // InvocationHandler implementation ------------------------------
-    public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
+    public Object invoke( Object composite, Method method, Object[] args ) throws Throwable
     {
         Class mixinType = method.getDeclaringClass();
-        Object mixin = getMixin( mixinType, proxy );
+        Object mixin = getMixin( mixinType, (T) composite );
         if( mixin == null )
         {
             if( mixinType.equals( Object.class ) )
             {
-                return invokeObject( proxy, method, args );
+                return invokeObject( (T) composite, method, args );
             }
             else
             {
@@ -55,15 +54,15 @@ public class RegularCompositeInvocationHandler extends CompositeInvocationHandle
             }
         }
         // Invoke
-        return context.getInvocationInstance( method ).invoke( proxy, method, args, mixin, mixinType );
+        return context.getInvocationInstance( method ).invoke( (T) composite, method, args, mixin, mixinType );
     }
 
-    protected Object getMixin( Class aProxyInterface, Object aProxy )
+    protected Object getMixin( Class mixinType, T aProxy )
     {
-        Object mixin = mixins.get( aProxyInterface );
-        if( mixin == null && !aProxyInterface.equals( Object.class ) )
+        Object mixin = mixins.get( mixinType );
+        if( mixin == null && !mixinType.equals( Object.class ) )
         {
-            mixin = initializeMixin( aProxyInterface, aProxy );
+            mixin = initializeMixin( mixinType, aProxy );
         }
         return mixin;
     }

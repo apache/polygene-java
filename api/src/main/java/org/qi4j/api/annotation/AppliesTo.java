@@ -93,9 +93,8 @@ import java.lang.annotation.Target;
  * methods, and the other way around.
  */
 @Retention( RetentionPolicy.RUNTIME )
-@Target( ElementType.TYPE )
+@Target( {ElementType.TYPE, ElementType.METHOD} )
 @Documented
-@Inherited
 public @interface AppliesTo
 {
     Class value();

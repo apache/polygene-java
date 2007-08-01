@@ -14,28 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.api;
+package org.qi4j.test.model4;
 
-/** API for creation of Mixins within Modifiers.
- *
- */
-public interface MixinBuilder<T extends Composite>
+import java.lang.annotation.Target;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Inherited;
+
+@Retention( RetentionPolicy.RUNTIME )
+@Target( ElementType.METHOD )
+@Documented
+@Inherited
+public @interface CountCalls
 {
-    /**
-     * TODO: Docs.
-     *
-     * @param mixinType
-     * @param mixin
-     */
-    <M> void setMixin( Class<M> mixinType, M mixin );
-
-    <M> M getMixin( Class<M> mixinType );
-
-    /**
-     * Adapts the mixin object to be used for any mixin references missing in the builder, and can
-     * be provided by the mixin object.
-     *
-     * @param mixin The object to use as a mixin.
-     */
-    void adapt( Object mixin );
 }

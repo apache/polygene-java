@@ -53,7 +53,7 @@ import org.qi4j.api.persistence.impl.LifecycleImpl;
  *     implements Lifecyle
  * {
  *      @Modifies private Lifecycle next;
- *      @Dependency private MixinBuilder<System> builder;
+ *      @Dependency private CompositeBuilder<System> builder;
  *      @Dependency private EntityRepository repository;
  *      @Uses private Identity meAsIdentity;
  *      @Uses private System meAsSystem;
@@ -79,7 +79,6 @@ import org.qi4j.api.persistence.impl.LifecycleImpl;
  *
  * </pre></code>
  */
-@ImplementedBy( LifecycleImpl.class )
 public interface Lifecycle
 {
     /** Creation callback method.

@@ -14,16 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.api;
+package org.qi4j.test.model4;
 
-import org.qi4j.api.model.CompositeModel;
-
-public interface CompositeModelFactory
+public class Mixin2Impl
+    implements Mixin2
 {
-    <T extends Composite> CompositeModel<T> getCompositeModel( Class<T> compositeType );
-
-    <T extends Composite> CompositeModel<T> getCompositeModel( T composite );
-
-    <T extends Composite> T dereference( T proxy );
-
 }

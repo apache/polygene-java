@@ -28,16 +28,16 @@ import org.qi4j.api.annotation.Uses;
  * @see MixinModel
  * @see ModifierModel
  */
-public abstract class FragmentModel
+public abstract class FragmentModel<T>
 {
     // Attributes ----------------------------------------------------
-    private Class fragmentClass;
+    private Class<T> fragmentClass;
     private List<Field> usesFields;
     private List<Field> dependencyFields;
     protected Class appliesTo;
 
     // Constructors --------------------------------------------------
-    public FragmentModel( Class fragmentClass )
+    public FragmentModel( Class<T> fragmentClass )
     {
         if( fragmentClass == null )
         {
@@ -56,7 +56,7 @@ public abstract class FragmentModel
     }
 
     // Public -------------------------------------------------------
-    public Class getFragmentClass()
+    public Class<T> getFragmentClass()
     {
         return fragmentClass;
     }
@@ -173,9 +173,9 @@ public abstract class FragmentModel
         }
     }
 
-    private Class findAppliesTo( Class aModifierClass )
+    private Class findAppliesTo( Class<? extends Object> aModifierClass )
     {
-        AppliesTo appliesTo = (AppliesTo) aModifierClass.getAnnotation( AppliesTo.class );
+        AppliesTo appliesTo = aModifierClass.getAnnotation( AppliesTo.class );
         if( appliesTo != null )
         {
             return appliesTo.value();

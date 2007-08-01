@@ -20,14 +20,14 @@ import org.qi4j.api.annotation.ModifiedBy;
  * A mixin is an implementation of a particular interface,
  * and is used as a fragment in a composite.
  */
-public final class MixinModel
-    extends FragmentModel
+public final class MixinModel<T>
+    extends FragmentModel<T>
 {
     // Attribute -----------------------------------------------------
     private List<ModifierModel> modifierModels;
 
     // Constructors --------------------------------------------------
-    public MixinModel( Class mixinClass )
+    public MixinModel( Class<T> mixinClass )
     {
         super( mixinClass );
 
@@ -42,9 +42,9 @@ public final class MixinModel
     }
 
     // Private ------------------------------------------------------
-    private void findModifiers( Class aClass )
+    private void findModifiers( Class<?> aClass )
     {
-        ModifiedBy modifiedBy = (ModifiedBy) aClass.getAnnotation( ModifiedBy.class );
+        ModifiedBy modifiedBy = aClass.getAnnotation( ModifiedBy.class );
         if( modifiedBy != null )
         {
             for( Class modifier : modifiedBy.value() )

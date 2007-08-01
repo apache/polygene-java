@@ -84,9 +84,8 @@ import java.lang.annotation.Target;
  * 
  */
 @Retention( RetentionPolicy.RUNTIME )
-@Target( ElementType.FIELD )
+@Target( {ElementType.FIELD, ElementType.PARAMETER } )
 @Documented
-@Inherited
 public @interface Uses
 {
     boolean optional() default false; // If the usage cannot be resolved, only fail if this is false

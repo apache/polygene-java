@@ -14,16 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.api;
+package org.qi4j.api.persistence;
 
-import org.qi4j.api.model.CompositeModel;
-
-public interface CompositeModelFactory
+public enum Is
 {
-    <T extends Composite> CompositeModel<T> getCompositeModel( Class<T> compositeType );
-
-    <T extends Composite> CompositeModel<T> getCompositeModel( T composite );
-
-    <T extends Composite> T dereference( T proxy );
-
+    EQUAL, LESS_THAN, LESS_THAN_EQUAL, GREATER_THAN, GREATER_THAN_EQUAL, NOT_EQUAL
 }

@@ -17,32 +17,32 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Collections;
 import org.qi4j.api.Composite;
-import org.qi4j.api.model.CompositeModel;
-import org.qi4j.api.model.MixinModel;
-import org.qi4j.api.model.ModifierModel;
-import org.qi4j.api.model.NullArgumentException;
-import org.qi4j.api.model.InvalidCompositeException;
 import org.qi4j.api.annotation.ImplementedBy;
 import org.qi4j.api.annotation.ModifiedBy;
 import org.qi4j.api.annotation.Uses;
+import org.qi4j.api.model.CompositeModel;
+import org.qi4j.api.model.InvalidCompositeException;
+import org.qi4j.api.model.MixinModel;
+import org.qi4j.api.model.ModifierModel;
+import org.qi4j.api.model.NullArgumentException;
 import org.qi4j.api.persistence.Lifecycle;
 import org.qi4j.api.persistence.impl.LifecycleImpl;
 
 /**
  * Composites are descriptors of what an interface represent. <TODO better docs needed here>
  */
-public final class CompositeModelImpl
-    implements CompositeModel
+public final class CompositeModelImpl<T extends Composite>
+    implements CompositeModel<T>
 {
     // Attributes ----------------------------------------------------
-    private Class<? extends Composite> compositeClass;
+    private Class<T> compositeClass;
     private List<MixinModel> mixinModels;
     private Map<Class, MixinModel> mixins;
     private List<ModifierModel> modifierModels;
@@ -52,7 +52,7 @@ public final class CompositeModelImpl
     private Set<Class> allUnresolved;
 
     // Constructors --------------------------------------------------
-    CompositeModelImpl( Class<? extends Composite> compositeClass )
+    CompositeModelImpl( Class<T> compositeClass )
     {
         if( compositeClass == null )
         {
@@ -74,7 +74,7 @@ public final class CompositeModelImpl
         mixinModels.add( new MixinModel( CompositeImpl.class ) );
         mixins = new HashMap<Class, MixinModel>();
         modifierModels = new ArrayList<ModifierModel>();
-        modifierModels.add( new ModifierModel( CompositeServicesModifier.class ));
+        modifierModels.add( new ModifierModel( CompositeServicesModifier.class ) );
         modifiers = new HashMap<Method, List<ModifierModel>>();
 
         findImplementations( this.compositeClass );
@@ -84,11 +84,10 @@ public final class CompositeModelImpl
         for( Method method : methods )
         {
             // Find mixin
-            Class<?> methodClass = method.getDeclaringClass();
-            MixinModel mixinModel = locateMixin( methodClass );
-            if( mixinModel == null )
+            Class<?> mixinType = method.getDeclaringClass();
+            if( getMixin( mixinType ) == null )
             {
-                unresolvedImplementations.add( methodClass );
+                findMixin( mixinType );
             }
         }
 
@@ -99,6 +98,7 @@ public final class CompositeModelImpl
         }
 
         // Special care needed for the Lifecycle interface, since it is not exposed in the Composite.
+        findMixin( Lifecycle.class );
         for( Method method : Lifecycle.class.getMethods() )
         {
             // Find modifiers for method
@@ -118,13 +118,13 @@ public final class CompositeModelImpl
         mixins = Collections.unmodifiableMap( mixins );
         modifierModels = Collections.unmodifiableList( modifierModels );
         modifiers = Collections.unmodifiableMap( modifiers );
-        unresolvedImplementations= Collections.unmodifiableSet( unresolvedImplementations );
+        unresolvedImplementations = Collections.unmodifiableSet( unresolvedImplementations );
         unresolvedUses = Collections.unmodifiableSet( unresolvedUses );
         allUnresolved = Collections.unmodifiableSet( allUnresolved );
     }
 
     // Public --------------------------------------------------------
-    public Class<? extends Composite> getCompositeClass()
+    public Class<T> getCompositeClass()
     {
         return compositeClass;
     }
@@ -190,45 +190,49 @@ public final class CompositeModelImpl
         return impls;
     }
 
-    public MixinModel locateMixin( Class anInterface )
+    public MixinModel getMixin( Class mixinType )
     {
-        MixinModel mixinModel = mixins.get( anInterface );
+        return mixins.get( mixinType );
+    }
 
-        if( mixinModel == null )
+    private void findMixin( Class mixinType )
+    {
+        MixinModel mixinModel = null;
+
+        List<MixinModel> possibleMixinModels = getImplementations( mixinType );
+
+        for( MixinModel possibleMixinModel : possibleMixinModels )
         {
-            List<MixinModel> possibleMixinModels = getImplementations( anInterface );
-
-            for( MixinModel possibleMixinModel : possibleMixinModels )
+            // Check if this mixinModel is valid
+            Class fragmentClass = possibleMixinModel.getFragmentClass();
+            if( mixinType.isAssignableFrom( fragmentClass )
+                || InvocationHandler.class.isAssignableFrom( fragmentClass ) )
             {
-                // Check if this mixinModel is valid
-                Class fragmentClass = possibleMixinModel.getFragmentClass();
-                if( anInterface.isAssignableFrom( fragmentClass )
-                    || InvocationHandler.class.isAssignableFrom( fragmentClass ) )
-                {
-                    mixinModel = possibleMixinModel;
-                    break;
-                }
-            }
-
-            if( mixinModel != null )
-            {
-                mixins.put( anInterface, mixinModel );
-            }
-            else
-            {
-                if( anInterface.equals( Lifecycle.class ) )
-                {
-                    return new MixinModel( LifecycleImpl.class );
-                }
+                mixinModel = possibleMixinModel;
+                break;
             }
         }
 
-        return mixinModel;
+        if( mixinModel == null )
+        {
+            if( mixinType.equals( Lifecycle.class ) )
+            {
+                mixinModel = new MixinModel<LifecycleImpl>( LifecycleImpl.class );
+            }
+        }
+        if( mixinModel == null )
+        {
+            unresolvedImplementations.add( mixinType );
+        }
+        else
+        {
+            mixins.put( mixinType, mixinModel );
+        }
     }
 
     public boolean isAssignableFrom( Class anInterface )
     {
-        boolean hasMixin = locateMixin( anInterface ) != null;
+        boolean hasMixin = getMixin( anInterface ) != null;
         boolean canAssignComposite = anInterface.isAssignableFrom( compositeClass );
         return hasMixin || canAssignComposite;
     }
@@ -237,7 +241,6 @@ public final class CompositeModelImpl
     {
         return modifiers.get( aMethod );
     }
-
 
     // Object overrides ---------------------------------------------
     public String toString()
@@ -392,7 +395,7 @@ public final class CompositeModelImpl
 
         // 2) MixinModel modifiers
         Class<?> methodClass = method.getDeclaringClass();
-        MixinModel mixinModel = locateMixin( methodClass );
+        MixinModel mixinModel = getMixin( methodClass );
         if( mixinModel != null )
         {
             addModifiers( method, mixinModel.getModifiers(), modifierClassModels );
@@ -424,7 +427,7 @@ public final class CompositeModelImpl
                     // Check AppliesTo
                     if( appliesTo.isAnnotation() )
                     {
-                        MixinModel mixinModel = locateMixin( method.getDeclaringClass() );
+                        MixinModel mixinModel = getMixin( method.getDeclaringClass() );
 
 
                         if( mixinModel.getFragmentClass().getAnnotation( appliesTo ) == null )
@@ -454,7 +457,7 @@ public final class CompositeModelImpl
                     else
                     {
                         Class<?> methodDeclaringClass = method.getDeclaringClass();
-                        MixinModel mixin = locateMixin( methodDeclaringClass );
+                        MixinModel mixin = getMixin( methodDeclaringClass );
                         if( mixin == null )
                         {
                             throw new InvalidCompositeException( methodDeclaringClass + " has no implementation.", compositeClass );

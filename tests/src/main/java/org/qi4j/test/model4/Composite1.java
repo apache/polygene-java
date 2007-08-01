@@ -14,16 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.api;
+package org.qi4j.test.model4;
 
-import org.qi4j.api.model.CompositeModel;
+import org.qi4j.api.Composite;
+import org.qi4j.api.annotation.ImplementedBy;
 
-public interface CompositeModelFactory
+@ImplementedBy( { Mixin1Impl.class, Mixin2Impl.class, CounterImpl.class } )
+public interface Composite1 extends Composite, Mixin1, Mixin2, Counter
 {
-    <T extends Composite> CompositeModel<T> getCompositeModel( Class<T> compositeType );
-
-    <T extends Composite> CompositeModel<T> getCompositeModel( T composite );
-
-    <T extends Composite> T dereference( T proxy );
-
 }

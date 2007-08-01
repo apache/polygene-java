@@ -12,27 +12,33 @@
  * limitations under the License.
  *
  */
+package org.qi4j.api.persistence;
 
-package org.qi4j.api.annotation;
-
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
+import java.util.List;
+import org.qi4j.api.persistence.composite.EntityComposite;
 
 /**
- * This annotation is used by composites and mixins to declare what modifiers
- * should be used.
- * <p/>
- * The ModifiedBy
+ * Query of objects from underlying stores.
+ *
+ * Example;
+ * <code><pre>
+ * Query q = em.createQuery(PersonComposite.class);
+ * q.where(Name.class).setName("foo");
+ * q.where(Age.class, Is.LESS_THAN).setAge(30);
+ * q.orderBy(Name.class).getName();
+ * List<PersonComposite> result = q.find();
+ * </pre></code>
  */
-@Retention( RetentionPolicy.RUNTIME )
-@Target( ElementType.TYPE )
-@Documented
-public @interface ModifiedBy
+public interface Query<T extends EntityComposite>
 {
-    Class[] value();
+    List<T> find();
+
+    T findSingle();
+
+    void setMaxResults( int maxResult );
+
+    void setFirstResult( int startPosition );
+
+    void setParameter( String name, Object value );
+
 }

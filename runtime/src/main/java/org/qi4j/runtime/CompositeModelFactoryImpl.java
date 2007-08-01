@@ -20,7 +20,6 @@ import org.qi4j.api.CompositeModelFactory;
 import org.qi4j.api.Composite;
 import org.qi4j.api.model.CompositeModel;
 import org.qi4j.api.model.NullArgumentException;
-import org.qi4j.runtime.CompositeModelImpl;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.InvocationHandler;
 import java.util.Map;
@@ -36,12 +35,12 @@ public class CompositeModelFactoryImpl
         composites = new ConcurrentHashMap<Class, CompositeModelImpl>();
     }
 
-    public <T> T dereference( T proxy )
+    public <T extends Composite> T dereference( T proxy )
     {
         InvocationHandler handler = Proxy.getInvocationHandler( proxy );
         if( handler instanceof ProxyReferenceInvocationHandler )
         {
-            return (T) ( (ProxyReferenceInvocationHandler) handler ).getProxy();
+            return ( (ProxyReferenceInvocationHandler<T>) handler ).getProxy();
         }
         if( handler instanceof CompositeInvocationHandler )
         {
@@ -52,26 +51,26 @@ public class CompositeModelFactoryImpl
     }
 
 
-    public CompositeModel getCompositeModel( Class compositeType )
+    public <T extends Composite> CompositeModel<T> getCompositeModel( Class<T> compositeType )
     {
         if( compositeType == null )
         {
             throw new NullArgumentException( "compositeType" );
         }
-        CompositeModelImpl compositeModel = composites.get( compositeType );
+        CompositeModelImpl<T> compositeModel = composites.get( compositeType );
         if( compositeModel == null )
         {
-            compositeModel = new CompositeModelImpl( compositeType );
+            compositeModel = new CompositeModelImpl<T>( compositeType );
             composites.put( compositeType, compositeModel );
         }
 
         return compositeModel;
     }
 
-    public CompositeModel getCompositeModel( Composite aComposite )
+    public <T extends Composite> CompositeModel<T> getCompositeModel( T composite )
     {
-        aComposite = dereference( aComposite );
-        return RegularCompositeInvocationHandler.getInvocationHandler( aComposite ).getContext().getCompositeModel();
+        composite = dereference( composite );
+        return RegularCompositeInvocationHandler.getInvocationHandler( composite ).getContext().getCompositeModel();
     }
 
 }

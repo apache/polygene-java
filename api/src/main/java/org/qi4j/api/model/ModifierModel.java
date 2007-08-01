@@ -23,8 +23,8 @@ import org.qi4j.api.annotation.Modifies;
  * methods, or they can be generic InvocationHandler mixins.
  *
  */
-public final class ModifierModel
-    extends FragmentModel
+public final class ModifierModel<T>
+    extends FragmentModel<T>
 {
     private Field modifiesField;
 
