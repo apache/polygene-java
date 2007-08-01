@@ -22,6 +22,7 @@ import org.qi4j.api.annotation.Dependency;
 import org.qi4j.api.annotation.Uses;
 import org.qi4j.api.persistence.composite.EntityComposite;
 import org.qi4j.api.EntityRepository;
+import org.qi4j.api.Composite;
 import org.qi4j.runtime.RegularCompositeInvocationHandler;
 import org.qi4j.runtime.CompositeInvocationHandler;
 
@@ -45,7 +46,7 @@ public final class ReadModifier
         EntityRepository repository = entity.getEntityRepository();
         if( repository != null && !method.getName().startsWith( "get" ) )
         {
-            Object object = RegularCompositeInvocationHandler.getInvocationHandler( proxy );
+            Object object = RegularCompositeInvocationHandler.getInvocationHandler( (Composite) proxy );
 //            repository.update( entity, (Serializable) object );
         }
 
