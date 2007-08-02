@@ -16,7 +16,7 @@
  */
 package org.qi4j.test.model3;
 
-import org.qi4j.api.persistence.composite.EntityComposite;
+import org.qi4j.api.persistence.EntityComposite;
 import org.qi4j.api.annotation.ImplementedBy;
 
 @ImplementedBy( State2Impl.class )

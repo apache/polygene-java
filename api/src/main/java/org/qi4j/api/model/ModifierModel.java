@@ -21,7 +21,6 @@ import org.qi4j.api.annotation.Modifies;
  * <p/>
  * Modifiers can either be classes implementing the interfaces of the modified
  * methods, or they can be generic InvocationHandler mixins.
- *
  */
 public final class ModifierModel<T>
     extends FragmentModel<T>
@@ -81,7 +80,7 @@ public final class ModifierModel<T>
                 modifiesField = field;
             }
         }
-        
+
         if( modifiesField != null )
         {
             return modifiesField;

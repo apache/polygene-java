@@ -16,10 +16,11 @@
  */
 package org.qi4j.test.model3;
 
-import java.io.Serializable;
+import org.qi4j.api.annotation.instance.PerEntityInstance;
 
+@PerEntityInstance
 public class State1SerializableImpl
-    implements Serializable, State1
+    implements State1
 {
     private String state;
 

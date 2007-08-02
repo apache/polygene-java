@@ -27,12 +27,12 @@ public final class MixinModel<T>
     private List<ModifierModel> modifierModels;
 
     // Constructors --------------------------------------------------
-    public MixinModel( Class<T> mixinClass )
+    public MixinModel( Class<T> mixinImplementationClass )
     {
-        super( mixinClass );
+        super( mixinImplementationClass );
 
         modifierModels = new ArrayList<ModifierModel>();
-        findModifiers( mixinClass );
+        findModifiers( mixinImplementationClass );
         modifierModels = Collections.unmodifiableList( modifierModels );
     }
 

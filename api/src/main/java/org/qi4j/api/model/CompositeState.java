@@ -21,17 +21,16 @@ import java.util.Map;
 public interface CompositeState
 {
     /**
-     *
      * @return The Composite state mixins. This returns the actual Map in the Composite.
      */
     Map<Class, Object> getMixins();
 
     /**
      * Sets the Composite state.
-     * 
+     *
      * @param mixins The states of the composite mixins.
-     * @param keep if false, the mixin map must not be used/kept and cloned internally. If true,
-     * the mixin Map must be used as-is.
+     * @param keep   if false, the mixin map must not be used/kept and cloned internally. If true,
+     *               the mixin Map must be used as-is.
      */
     void setMixins( Map<Class, Object> mixins, boolean keep );
 }

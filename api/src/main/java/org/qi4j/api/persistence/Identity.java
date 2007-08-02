@@ -14,26 +14,20 @@
  */
 package org.qi4j.api.persistence;
 
-import org.qi4j.api.annotation.ImplementedBy;
-import org.qi4j.api.persistence.impl.IdentityImpl;
-import java.net.URL;
-import java.net.URI;
-import java.net.ContentHandler;
-
 /**
  * This interface provides the identity of the object which may be used
  * to store the state in a database. It is not the responsibility of the
  * framework to come up with a good identity string.
  */
-@ImplementedBy( IdentityImpl.class )
 public interface Identity
 {
-    /** Returns the client view of the identity.
-     *
+    /**
+     * Returns the client view of the identity.
+     * <p/>
      * It is unique within the owning repository, but potentially not unique globally and between
      * types.
      *
-     * @return The Identity of 'this' composite. 
+     * @return The Identity of 'this' composite.
      */
     String getIdentity();
 

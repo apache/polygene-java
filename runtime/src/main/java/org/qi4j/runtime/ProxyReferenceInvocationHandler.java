@@ -33,7 +33,7 @@ public final class ProxyReferenceInvocationHandler<T extends Composite>
     private Object mixin;
     private Class mixinType;
 
-    public T getProxy()
+    public T getComposite()
     {
         return proxy;
     }

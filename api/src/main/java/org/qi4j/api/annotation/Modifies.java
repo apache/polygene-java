@@ -16,7 +16,6 @@ package org.qi4j.api.annotation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
@@ -32,23 +31,23 @@ import java.lang.annotation.Target;
  * If the modifier is an InvocationHandler and the field marked
  * by this annotation is not an InvocationHandler, then TODO:??? WHAT ???
  * <p/>
- *
+ * <p/>
  * Example;
  * <pre><code>
  * public interface MyStuff
  * {
  *     void doSomething();
  * }
- *
+ * <p/>
  * public class MyStuffModifier
  *     implements MyStuff
  * {
  *     @Modifier MyStuff next;
- *
+ * <p/>
  *     public void doSomething()
  *     {
  *         // HERE DO THE MODIFIER STUFF.
- *
+ * <p/>
  *         // Delegate to the underlying mixin/modifier.
  *         next.doSomething();
  *     }
@@ -56,7 +55,7 @@ import java.lang.annotation.Target;
  * </code></pre>
  */
 @Retention( RetentionPolicy.RUNTIME )
-@Target( {ElementType.FIELD, ElementType.PARAMETER } )
+@Target( { ElementType.FIELD, ElementType.PARAMETER } )
 @Documented
 public @interface Modifies
 {

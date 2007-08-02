@@ -17,7 +17,6 @@ package org.qi4j.api.annotation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
@@ -30,59 +29,57 @@ import java.lang.annotation.Target;
  * <p/>
  * Example:
  * <pre><code>
+ *
  * @AppliesTo( Sessional.class )
  * public class SessionModifier
- *     implements InvocationHandler
+ * implements InvocationHandler
  * {
- *     public Object invoke( Object proxy, Method method, Object[] args )
- *         throws Throwable
- *     {
- *         ... do session stuff ...
- *     }
+ * public Object invoke( Object proxy, Method method, Object[] args )
+ * throws Throwable
+ * {
+ * ... do session stuff ...
  * }
- *
+ * }
  * @Retention( RetentionPolicy.RUNTIME )
  * @Target( ElementType.METHOD )
  * @Documented
- * @Inherited
- * public @interface Sessional
+ * @Inherited public @interface Sessional
  * {
  * }
- *
+ * <p/>
  * public class MyStateMixin
- *     implements SessionState
+ * implements SessionState
  * {
- *     private State state;
- *
- *     @Sessional
- *     public void setSomeState( State state )
- *     {
- *         this.state = state;
- *     }
- *
- *     @Sessional
- *     public State getSomeState()
- *     {
- *         return this.state;
- *     }
- *
- *     public void setStateService( StateService service )
- *     {
- *         this.service = service;
- *     }
- *
- *     public StateService getStateService()
- *     {
- *         return this.service;
- *     }
+ * private State state;
+ * <p/>
+ * @Sessional
+ * public void setSomeState( State state )
+ * {
+ * this.state = state;
  * }
- *
+ * <p/>
+ * @Sessional
+ * public State getSomeState()
+ * {
+ * return this.state;
+ * }
+ * <p/>
+ * public void setStateService( StateService service )
+ * {
+ * this.service = service;
+ * }
+ * <p/>
+ * public StateService getStateService()
+ * {
+ * return this.service;
+ * }
+ * }
+ * <p/>
  * public interface SessionState
  * {
- *     State getSomeState();
- *     void setSomeState( State state );
+ * State getSomeState();
+ * void setSomeState( State state );
  * }
- *
  * @ModifiedBy( SessionModifier.class )
  * @ImplementedBy( MyStateMixin.class )
  * public interface MyComposite extends Composite, SessionState
@@ -93,7 +90,7 @@ import java.lang.annotation.Target;
  * methods, and the other way around.
  */
 @Retention( RetentionPolicy.RUNTIME )
-@Target( {ElementType.TYPE, ElementType.METHOD} )
+@Target( { ElementType.TYPE, ElementType.METHOD } )
 @Documented
 public @interface AppliesTo
 {

@@ -16,7 +16,6 @@
  */
 package org.qi4j.api;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.AnnotatedElement;
 import org.qi4j.api.model.CompositeContext;
 

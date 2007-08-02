@@ -16,11 +16,11 @@
  */
 package org.qi4j.api.model;
 
-import org.qi4j.api.Composite;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Set;
-import java.lang.reflect.Method;
-import java.lang.reflect.Field;
+import org.qi4j.api.Composite;
 
 public interface CompositeModel<T extends Composite>
 {

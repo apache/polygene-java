@@ -17,8 +17,8 @@
 package org.qi4j.runtime;
 
 import java.util.UUID;
-import org.qi4j.api.IdentityGenerator;
-import org.qi4j.api.transaction.TransactionComposite;
+import org.qi4j.api.persistence.IdentityGenerator;
+import org.qi4j.api.persistence.Identity;
 
 public class UuidIdentityGenerator
     implements IdentityGenerator
@@ -31,28 +31,8 @@ public class UuidIdentityGenerator
         uuid = UUID.randomUUID().toString() + "-";
     }
 
-    public String generate( Class<? extends TransactionComposite> compositeType )
+    public String generate( Class<? extends Identity> compositeType )
     {
         return uuid+Integer.toHexString( count++ );
-    }
-
-    public static void main( String[] args )
-    {
-        int NUMBER = 1000000;
-        String value = null;
-        UuidIdentityGenerator identityGenerator = new UuidIdentityGenerator();
-
-        for( int j = 0; j < 10; j++ )
-        {
-            long t0 = System.currentTimeMillis();
-
-            for( int i = 0 ; i < NUMBER ; i++ )
-            {
-                value = identityGenerator.generate( TransactionComposite.class );
-            }
-            long t1= System.currentTimeMillis();
-            System.out.println( "Time: " + ( t1-t0 ) + " nanosec per call." );
-        }
-        System.out.println( value );
     }
 }

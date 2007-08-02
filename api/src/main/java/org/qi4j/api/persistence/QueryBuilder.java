@@ -16,8 +16,6 @@
  */
 package org.qi4j.api.persistence;
 
-import org.qi4j.api.persistence.composite.EntityComposite;
-
 public interface QueryBuilder<T extends EntityComposite>
 {
     <K> K where( Class<K> mixinType );

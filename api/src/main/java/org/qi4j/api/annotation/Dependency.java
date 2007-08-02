@@ -16,7 +16,6 @@ package org.qi4j.api.annotation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
@@ -35,14 +34,14 @@ import java.lang.annotation.Target;
  *     implements BeerOrder
  * {
  *     @Dependency CompositeBuilderFactory factory;
- *
+ * <p/>
  *     public Beer moreBeer()
  *     {
  *         return factory.newInstance( BeerComposite.class );
  *     }
  * }
  * </code></pre>
- *
+ * <p/>
  * <p/>
  * Dependencies can also be optional;
  * <pre><code>
@@ -51,7 +50,7 @@ import java.lang.annotation.Target;
  * {
  *     @Dependency( optional=true ) Auditor auditor;
  *     @Modifier BeerOrder next;
- *
+ * <p/>
  *     public Beer moreBeer()
  *     {
  *         Beer beer = next.moreBeer();
@@ -62,7 +61,7 @@ import java.lang.annotation.Target;
  *     }
  * }
  * </code></pre>
- *
+ * <p/>
  * If the @Dependency needs to be more specific than the type of the field,
  * it is possible to provide a value that is DependencyResolver implementation
  * specific. For instance;
@@ -71,18 +70,19 @@ import java.lang.annotation.Target;
  *     implements BeerOrder
  * {
  *     @Dependency( "id=1123" ) Fridge fridge;
- *
+ * <p/>
  *    :
  * }
  * </code></pre>
- * 
+ *
  * @see org.qi4j.api.DependencyResolver
  */
 @Retention( RetentionPolicy.RUNTIME )
-@Target( {ElementType.FIELD, ElementType.PARAMETER } )
+@Target( { ElementType.FIELD, ElementType.PARAMETER } )
 @Documented
 public @interface Dependency
 {
     String value() default ""; // This name can be used for lookups
+
     boolean optional() default false; // If the dependency cannot be resolved, only fail if this is false
 }

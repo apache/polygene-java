@@ -50,10 +50,10 @@ public class CompositeServicesModifier
         }
 
         InvocationHandler handler = Proxy.getInvocationHandler( meAsComposite );
-        handler = Proxy.getInvocationHandler( ( (ProxyReferenceInvocationHandler) handler ).getProxy() );
+        handler = Proxy.getInvocationHandler( ( (ProxyReferenceInvocationHandler) handler ).getComposite() );
         T newComposite = builderFactory.newCompositeBuilder( compositeType ).newInstance();
-        Map<Class, Object> oldMixins = ( (RegularCompositeInvocationHandler) handler ).getMixins();
-        RegularCompositeInvocationHandler newHandler = RegularCompositeInvocationHandler.getInvocationHandler( newComposite );
+        Map<Class, Object> oldMixins = ( (CompositeInvocationHandler) handler ).getMixins();
+        CompositeInvocationHandler newHandler = CompositeInvocationHandler.getInvocationHandler( newComposite );
         newHandler.setMixins( oldMixins, true );
         return newComposite;
     }
@@ -61,13 +61,13 @@ public class CompositeServicesModifier
     public boolean isInstance( Class anObjectType )
     {
         InvocationHandler handler = Proxy.getInvocationHandler( meAsComposite );
-        Object anObject = ( (ProxyReferenceInvocationHandler) handler ).getProxy();
+        Object anObject = ( (ProxyReferenceInvocationHandler) handler ).getComposite();
         if( anObjectType.isInstance( anObject ) )
         {
             return true;
         }
         handler = Proxy.getInvocationHandler( anObject );
-        CompositeInvocationHandler oih = (CompositeInvocationHandler) handler;
+        AbstractCompositeInvocationHandler oih = (AbstractCompositeInvocationHandler) handler;
         return oih.getContext().getCompositeModel().isAssignableFrom( anObjectType );
     }
 

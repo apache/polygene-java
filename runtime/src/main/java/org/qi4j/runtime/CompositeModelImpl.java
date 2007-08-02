@@ -33,7 +33,10 @@ import org.qi4j.api.model.MixinModel;
 import org.qi4j.api.model.ModifierModel;
 import org.qi4j.api.model.NullArgumentException;
 import org.qi4j.api.persistence.Lifecycle;
-import org.qi4j.api.persistence.impl.LifecycleImpl;
+import org.qi4j.api.persistence.EntityComposite;
+import org.qi4j.api.persistence.Identity;
+import org.qi4j.runtime.LifecycleImpl;
+import org.qi4j.runtime.persistence.EntityImpl;
 
 /**
  * Composites are descriptors of what an interface represent. <TODO better docs needed here>
@@ -71,7 +74,16 @@ public final class CompositeModelImpl<T extends Composite>
         this.compositeClass = compositeClass;
         unresolvedImplementations = new HashSet<Class>();
         mixinModels = new ArrayList<MixinModel>();
-        mixinModels.add( new MixinModel( CompositeImpl.class ) );
+        mixinModels.add( new MixinModel<CompositeImpl>( CompositeImpl.class ) );
+
+        if( Identity.class.isAssignableFrom( compositeClass ) )
+        {
+            mixinModels.add( new MixinModel<IdentityImpl>( IdentityImpl.class ) );
+        }
+        if( EntityComposite.class.isAssignableFrom( compositeClass )  )
+        {
+            mixinModels.add( new MixinModel<EntityImpl>( EntityImpl.class ) );
+        }
         mixins = new HashMap<Class, MixinModel>();
         modifierModels = new ArrayList<ModifierModel>();
         modifierModels.add( new ModifierModel( CompositeServicesModifier.class ) );

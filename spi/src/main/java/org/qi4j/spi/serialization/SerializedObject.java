@@ -29,10 +29,10 @@ import java.util.HashMap;
 import java.util.Map;
 import org.qi4j.api.Composite;
 import org.qi4j.api.CompositeBuilderFactory;
-import org.qi4j.api.EntityRepository;
 import org.qi4j.api.model.CompositeState;
 import org.qi4j.api.model.CompositeModel;
-import org.qi4j.api.persistence.composite.EntityComposite;
+import org.qi4j.api.persistence.EntityComposite;
+import org.qi4j.api.persistence.EntitySession;
 
 
 public class SerializedObject
@@ -60,13 +60,13 @@ public class SerializedObject
 
     }
 
-    public Object getObject( EntityRepository repository, CompositeBuilderFactory factory )
+    public Object getObject( EntitySession session, CompositeBuilderFactory factory )
         throws ClassNotFoundException
     {
         try
         {
             ByteArrayInputStream in = new ByteArrayInputStream( data );
-            CompositeInputStream stream = new CompositeInputStream( in, repository, factory );
+            CompositeInputStream stream = new CompositeInputStream( in, session, factory );
             return stream.readObject();
         }
         catch( IOException e )
@@ -119,15 +119,15 @@ public class SerializedObject
 
     private final class CompositeInputStream extends ObjectInputStream
     {
-        private EntityRepository repository;
+        private EntitySession session;
         private CompositeBuilderFactory factory;
 
-        public CompositeInputStream( InputStream in, EntityRepository repository, CompositeBuilderFactory factory )
+        public CompositeInputStream( InputStream in, EntitySession session, CompositeBuilderFactory factory )
             throws IOException
         {
             super( in );
             this.factory = factory;
-            this.repository = repository;
+            this.session = session;
             enableResolveObject( true );
         }
 
@@ -138,7 +138,7 @@ public class SerializedObject
                 IdentityHolder holder = (IdentityHolder) obj;
                 Class<EntityComposite> clazz = holder.getPersistentCompositeClass();
                 String id = holder.getIdentity();
-                Object instance = repository.getInstance( id, clazz );
+                Object instance = session.find( id, clazz );
                 return instance;
             }
             if( obj instanceof CompositeHolder )

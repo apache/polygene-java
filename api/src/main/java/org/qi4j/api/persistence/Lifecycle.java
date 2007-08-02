@@ -14,58 +14,56 @@
  */
 package org.qi4j.api.persistence;
 
-import org.qi4j.api.annotation.ImplementedBy;
-import org.qi4j.api.persistence.impl.LifecycleImpl;
-
-/** Lifecycle interface for all Composites.
- *
+/**
+ * Lifecycle interface for all Composites.
+ * <p/>
  * This Lifecycle interface is a built-in feature of the Qi4J runtime, which will establish
  * any Modifier stack against Lifecycle.class, but the Composite interface should never expose
  * it to client code.
- *
+ * <p/>
  * Example;
  * <code><pre>
  * public interface System
  * {
  *     User getAdmin();
- *
+ * <p/>
  *     void setAdmin( User admin );
- *
+ * <p/>
  * }
- *
+ * <p/>
  * public class SystemImpl
  *     implements System
  * {
  *     private User admin;
- *
- *     public SystemImpl( User admin )
- *     {
- *         this.admin = admin;
- *     }
- *
+ * <p/>
  *     public User getAdmin()
  *     {
  *         return admin;
  *     }
+ * <p/>
+ *     public void setAdmin( User admin )
+ *     {
+ *         this.admin = admin;
+ *     }
  * }
- *
+ * <p/>
  * public class SystemAdminLifecycleModifier
  *     implements Lifecyle
  * {
  *      @Modifies private Lifecycle next;
- *      @Dependency private CompositeBuilder<System> builder;
- *      @Dependency private EntityRepository repository;
+ *      @Dependency private EntitySession session;
  *      @Uses private Identity meAsIdentity;
  *      @Uses private System meAsSystem;
- *
+ * <p/>
  *      public void create()
  *      {
  *          String thisId = meAsIdentity.getIdentity();
- *          User admin = repository.newInstance( thisId + ":1", UserComposite.class );
- *          builder.adapt( new SystemImpl( admin ) );
+ *          CompositeBuilder builder = session.newEntityBuilder( thisId + ":1", UserComposite.class );
+ *          User admin = builder.newInstance();
+ *          meAsSystem.setAdmin( admin );
  *          next.create();
  *      }
- *
+ * <p/>
  *      public void delete()
  *      {
  *          next.delete();
@@ -76,20 +74,23 @@ import org.qi4j.api.persistence.impl.LifecycleImpl;
  * @ModifedBy( SystemAdminLifecycleModifier.class )
  * public interface SystemComposite extends System, Composite
  * {}
- *
+ * <p/>
  * </pre></code>
  */
 public interface Lifecycle
 {
-    /** Creation callback method.
-     *
+
+    /**
+     * Creation callback method.
+     * <p/>
      * Called by the Qi4J runtime before the newInstance of the composite completes, allowing
      * for additional initialization.
      */
     void create();
 
-    /** Deletion callback method.
-     *
+    /**
+     * Deletion callback method.
+     * <p/>
      * Called by the Qi4J runtime before the composite is deleted from the system, allowing
      * for clean-up operations.
      */

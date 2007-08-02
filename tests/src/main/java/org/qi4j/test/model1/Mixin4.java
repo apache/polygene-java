@@ -1,8 +1,9 @@
 package org.qi4j.test.model1;
 
-import java.io.Serializable;
+import org.qi4j.api.annotation.instance.PerEntityInstance;
 
-public interface Mixin4 extends Serializable
+@PerEntityInstance
+public interface Mixin4
 {
     void setValue( String value );
 

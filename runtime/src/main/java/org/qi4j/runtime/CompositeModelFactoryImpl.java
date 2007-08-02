@@ -40,9 +40,9 @@ public class CompositeModelFactoryImpl
         InvocationHandler handler = Proxy.getInvocationHandler( proxy );
         if( handler instanceof ProxyReferenceInvocationHandler )
         {
-            return ( (ProxyReferenceInvocationHandler<T>) handler ).getProxy();
+            return ( (ProxyReferenceInvocationHandler<T>) handler ).getComposite();
         }
-        if( handler instanceof CompositeInvocationHandler )
+        if( handler instanceof AbstractCompositeInvocationHandler )
         {
             return proxy;
         }
@@ -70,7 +70,7 @@ public class CompositeModelFactoryImpl
     public <T extends Composite> CompositeModel<T> getCompositeModel( T composite )
     {
         composite = dereference( composite );
-        return RegularCompositeInvocationHandler.getInvocationHandler( composite ).getContext().getCompositeModel();
+        return CompositeInvocationHandler.getInvocationHandler( composite ).getContext().getCompositeModel();
     }
 
 }

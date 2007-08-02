@@ -20,6 +20,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.UndeclaredThrowableException;
+import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +33,7 @@ import org.qi4j.api.IllegalMixinTypeException;
 import org.qi4j.api.model.CompositeModel;
 import org.qi4j.api.model.MixinModel;
 import org.qi4j.api.persistence.Lifecycle;
-import org.qi4j.api.persistence.impl.LifecycleImpl;
+import org.qi4j.runtime.LifecycleImpl;
 import org.qi4j.spi.TypeLookupResolver;
 
 /**
@@ -47,7 +48,7 @@ public class CompositeBuilderImpl<T extends Composite>
     protected CompositeBuilderFactoryImpl builderFactory;
     protected Class<T> compositeInterface;
     private CompositeContextImpl context;
-    private RegularCompositeInvocationHandler state;
+    private CompositeInvocationHandler state;
     private T composite;
     private TypeLookupResolver resolver;
 
@@ -70,7 +71,7 @@ public class CompositeBuilderImpl<T extends Composite>
         this.builderFactory = (CompositeBuilderFactoryImpl) context.getCompositeBuilderFactory();
         this.compositeInterface = context.getCompositeModel().getCompositeClass();
         composite = builderFactory.newInstance( compositeInterface );
-        state = RegularCompositeInvocationHandler.getInvocationHandler( composite );
+        state = CompositeInvocationHandler.getInvocationHandler( composite );
         states = new HashMap<Class, Object>();
         states.put( Lifecycle.class, new LifecycleImpl() );
     }
@@ -103,12 +104,11 @@ public class CompositeBuilderImpl<T extends Composite>
         return composite;
     }
 
-    public <M> void setMixin( Class<M> mixinType, M mixin )
+    public <K> void setMixin( Class<K> mixinType, K mixin )
     {
         if( mixinType.isAssignableFrom( compositeInterface ) )
         {
-            if( mixinType.isInstance( mixin ) ||
-                mixin instanceof InvocationHandler )
+            if( mixinType.isInstance( mixin ) )
             {
                 states.put( mixinType, mixin );
             }
@@ -124,7 +124,12 @@ public class CompositeBuilderImpl<T extends Composite>
 
     }
 
-    public <M> M getMixin( Class<M> mixinType )
+    public void setMixin( Class mixinType, InvocationHandler mixin )
+    {
+        states.put( mixinType, mixin );
+    }
+
+    public <K> K getMixin( Class<K> mixinType )
     {
         Object mixin = states.get( mixinType );
         if( mixin == null )
@@ -138,6 +143,10 @@ public class CompositeBuilderImpl<T extends Composite>
             MixinModel mixinModel = mixinModels.get( 0 );
             mixin = context.newFragment( mixinModel, composite, null );
             states.put( mixinType, mixin );
+        }
+        if( mixin instanceof InvocationHandler )
+        {
+            mixin = Proxy.newProxyInstance( mixinType.getClassLoader(), new Class[] { mixinType }, (InvocationHandler) mixin );
         }
         return mixinType.cast( mixin );
     }

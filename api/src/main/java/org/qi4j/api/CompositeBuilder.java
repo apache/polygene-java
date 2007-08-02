@@ -16,9 +16,10 @@
  */
 package org.qi4j.api;
 
+import java.lang.reflect.InvocationHandler;
+
 /**
  * TODO for Rickard; Explanation needed on how to use for Templating, Strategy and Builder patterns.
- *
  */
 public interface CompositeBuilder<T extends Composite>
 {
@@ -41,9 +42,11 @@ public interface CompositeBuilder<T extends Composite>
      * @param mixinType
      * @param mixin
      */
-    <M> void setMixin( Class<M> mixinType, M mixin );
+    <K> void setMixin( Class<K> mixinType, K mixin );
 
-    <M> M getMixin( Class<M> mixinType );
+    void setMixin( Class mixinType, InvocationHandler mixin );
+
+    <K> K getMixin( Class<K> mixinType );
 
     /**
      * Adapts the mixin object to be used for any mixin references missing in the builder, and can
@@ -53,14 +56,16 @@ public interface CompositeBuilder<T extends Composite>
      */
     void adapt( Object mixin );
 
-    /** Provide a dependency instance for a type in this CompositeBuilder.
+    /**
+     * Provide a dependency instance for a type in this CompositeBuilder.
      *
-     * @param dependencyType The Field/Parameter type that the dependency object will be injected to.
+     * @param dependencyType     The Field/Parameter type that the dependency object will be injected to.
      * @param dependencyInstance The dependency instance to be injected.
      */
     <K> void provideDependency( Class<K> dependencyType, K dependencyInstance );
 
-    /** Provides a dependency instance for all types that the dependency instance implements.
+    /**
+     * Provides a dependency instance for all types that the dependency instance implements.
      *
      * @param dependencyInstance The dependency instance to be injected to fields and as constructor parameters.
      */

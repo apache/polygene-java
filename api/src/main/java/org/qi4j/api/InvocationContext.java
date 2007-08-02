@@ -16,7 +16,7 @@ package org.qi4j.api;
 
 public interface InvocationContext
 {
-    Object getProxy();
+    Object getComposite();
 
     Object getMixin();
 

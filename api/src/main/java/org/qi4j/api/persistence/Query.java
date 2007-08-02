@@ -15,11 +15,10 @@
 package org.qi4j.api.persistence;
 
 import java.util.List;
-import org.qi4j.api.persistence.composite.EntityComposite;
 
 /**
  * Query of objects from underlying stores.
- *
+ * <p/>
  * Example;
  * <code><pre>
  * Query q = em.createQuery(PersonComposite.class);

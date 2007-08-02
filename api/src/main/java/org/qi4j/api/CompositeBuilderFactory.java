@@ -25,7 +25,8 @@ public interface CompositeBuilderFactory
      *
      * @param compositeType an interface that describes the object to be created
      * @return a CompositeBuilder for cretaion of objects implementing the interface
-     * @throws CompositeInstantiationException thrown if instantiation fails
+     * @throws CompositeInstantiationException
+     *          thrown if instantiation fails
      */
     <T extends Composite> CompositeBuilder<T> newCompositeBuilder( Class<T> compositeType );
 

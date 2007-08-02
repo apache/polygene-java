@@ -18,7 +18,6 @@ import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Collections;
 import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 import org.qi4j.api.Composite;
@@ -87,7 +86,7 @@ public final class CompositeBuilderFactoryImpl
             CompositeModel compositeModel = modelFactory.getCompositeModel( aCompositeClass );
             CompositeContextImpl context = getCompositeContext( compositeModel );
 
-            CompositeInvocationHandler handler = new RegularCompositeInvocationHandler( context );
+            AbstractCompositeInvocationHandler handler = new CompositeInvocationHandler( context );
             ClassLoader proxyClassloader = aCompositeClass.getClassLoader();
             Class[] interfaces = new Class[]{ aCompositeClass };
             return aCompositeClass.cast( Proxy.newProxyInstance( proxyClassloader, interfaces, handler ) );

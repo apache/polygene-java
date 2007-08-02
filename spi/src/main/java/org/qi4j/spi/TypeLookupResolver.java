@@ -17,7 +17,7 @@
 package org.qi4j.spi;
 
 import org.qi4j.api.DependencyResolver;
-import org.qi4j.api.QiHelper;
+import org.qi4j.spi.QiHelper;
 import org.qi4j.api.model.CompositeContext;
 import java.lang.reflect.AnnotatedElement;
 import java.util.HashMap;

@@ -43,6 +43,7 @@ public interface Composite
 
     /**
      * Get the composite object
+     *
      * @return the CompositeModel that describes this composite
      */
     CompositeModel getCompositeModel();

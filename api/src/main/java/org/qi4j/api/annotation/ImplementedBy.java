@@ -17,7 +17,6 @@ package org.qi4j.api.annotation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
@@ -34,18 +33,19 @@ import java.lang.annotation.Target;
  * <p/>
  * Example;
  * <pre><code>
+ *
  * @ImplementedBy( MyBeerOrder.class )
  * public interface BeerOrderComposite extends BeerOrder, Composite
  * {
  * }
- *
+ * <p/>
  * public class MyBeerOrder
- *     implements BeerOrder
+ * implements BeerOrder
  * {
- *     :
+ * :
  * }
  * </code></pre>
- *
+ * <p/>
  * Many implementations can be listed,
  * <pre><code>
  * @ImplementedBy( { MyBeerOrder.class, DescriptionImpl.class } )
@@ -53,17 +53,16 @@ import java.lang.annotation.Target;
  * {
  * }
  * </code></pre>
- *
+ * <p/>
  * If the ImplementedBy is a class that implements InvocationHandler, it will be
  * used for all mixins. To avoid that a invocation handler based implementations
  * are not servicing all mixin, use the AppliesTo annotation.
- *
+ * <p/>
  * <p/>
  * It is valid to have multiple ImplementedBy for a mixin. The first one found
  * will be used. The search order is in the order they are written in the ImplementedBy
  * annotation left-to-right, and depth-first recursive search of the super-interfaces again
  * left-to-right.
- *
  * @see org.qi4j.api.annotation.AppliesTo
  */
 @Retention( RetentionPolicy.RUNTIME )

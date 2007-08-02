@@ -16,9 +16,9 @@
  */
 package org.qi4j.api.model;
 
+import org.qi4j.api.Composite;
 import org.qi4j.api.CompositeBuilderFactory;
 import org.qi4j.api.CompositeModelFactory;
-import org.qi4j.api.Composite;
 
 public interface CompositeContext<T extends Composite>
 {

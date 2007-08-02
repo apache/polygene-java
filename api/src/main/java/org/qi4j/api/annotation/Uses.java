@@ -16,7 +16,6 @@ package org.qi4j.api.annotation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
@@ -32,7 +31,7 @@ import java.lang.annotation.Target;
  *     implements Funky
  * {
  *     @Uses Music meAsMusic;
-  *    :
+ *    :
  * }
  * </code></pre>
  * This mixin requires access to a Music mixin in the same composite. So, if
@@ -45,7 +44,7 @@ import java.lang.annotation.Target;
  *     implements Funky
  * {
  *     @Uses(optional=true) Music meAsMusic;
-  *    :
+ *    :
  * }
  * </code></pre>
  * Here the <code>meAsMusic</code> reference will be null if the mixin does not belong to
@@ -63,28 +62,26 @@ import java.lang.annotation.Target;
  * @ImplementedBy( MyStateMixin.class )
  * public interface MyComposite extends Composite, SessionState, SomeStuff, AnotherStuff
  * {}
- *
+ * <p/>
  * public class MyStateMixin
- *     implements SessionState
+ * implements SessionState
  * {
- *     @Uses SomeStuff meAsSomeStuff;
- *
- *     public void doSomething()
- *     {
- *         AnotherStuff another = (AnotherStuff) meAsSomeStuff;  // <--- Runtime Exception.
- *     }
+ * @Uses SomeStuff meAsSomeStuff;
+ * <p/>
+ * public void doSomething()
+ * {
+ * AnotherStuff another = (AnotherStuff) meAsSomeStuff;  // <--- Runtime Exception.
+ * }
  * }
  * </code></pre>
- *
  * @Uses can be used all <i>fragments</i>, both mixins and modifiers.
- *
+ * <p/>
  * <p/>
  * It is a recommended naming convention to use the <code>"meAs" + type</code> style, to
  * clearly indicate what it means.
- * 
  */
 @Retention( RetentionPolicy.RUNTIME )
-@Target( {ElementType.FIELD, ElementType.PARAMETER } )
+@Target( { ElementType.FIELD, ElementType.PARAMETER } )
 @Documented
 public @interface Uses
 {

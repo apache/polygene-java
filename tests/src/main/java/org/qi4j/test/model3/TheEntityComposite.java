@@ -17,7 +17,7 @@
 package org.qi4j.test.model3;
 
 import org.qi4j.api.annotation.ImplementedBy;
-import org.qi4j.api.persistence.composite.EntityComposite;
+import org.qi4j.api.persistence.EntityComposite;
 
 @ImplementedBy( State1TransientImpl.class )
 public interface TheEntityComposite extends State1, EntityComposite
