@@ -21,8 +21,8 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import jdbm.RecordManager;
-import org.qi4j.api.persistence.composite.EntityComposite;
-import org.qi4j.runtime.RegularCompositeInvocationHandler;
+import org.qi4j.api.persistence.EntityComposite;
+import org.qi4j.runtime.CompositeInvocationHandler;
 
 class CreateOperation
     implements Operation
@@ -36,7 +36,7 @@ class CreateOperation
 
     public void perform( RecordManager recordManager )
     {
-        RegularCompositeInvocationHandler handler = RegularCompositeInvocationHandler.getInvocationHandler( composite );
+        CompositeInvocationHandler handler = CompositeInvocationHandler.getInvocationHandler( composite );
         Map<Class, Object> mixins = handler.getMixins();
 
         Map<Class, Serializable> persistentMixins = new HashMap<Class, Serializable>();
@@ -69,7 +69,7 @@ class CreateOperation
     {
         if( identity.equals( composite.getIdentity() ) && newMixinsToPopulate != null )
         {
-            RegularCompositeInvocationHandler handler = RegularCompositeInvocationHandler.getInvocationHandler( composite );
+            CompositeInvocationHandler handler = CompositeInvocationHandler.getInvocationHandler( composite );
             Map<Class, Object> mixins = handler.getMixins();
 
             for( Map.Entry<Class, Object> entry : mixins.entrySet() )

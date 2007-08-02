@@ -18,38 +18,41 @@ import java.io.Serializable;
 import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
 import org.qi4j.api.CompositeBuilderFactory;
-import org.qi4j.api.EntityRepository;
 import org.qi4j.api.CompositeModelFactory;
+import org.qi4j.api.model.CompositeModel;
 import org.qi4j.api.persistence.EntityCompositeNotFoundException;
 import org.qi4j.api.persistence.PersistenceException;
-import org.qi4j.api.persistence.composite.EntityComposite;
-import org.qi4j.api.persistence.composite.PersistentStorage;
-import org.qi4j.runtime.RegularCompositeInvocationHandler;
+import org.qi4j.api.persistence.EntityComposite;
+import org.qi4j.api.persistence.EntitySession;
+import org.qi4j.runtime.CompositeInvocationHandler;
 import org.qi4j.runtime.ProxyReferenceInvocationHandler;
 import org.qi4j.spi.serialization.SerializablePersistenceSpi;
 import org.qi4j.spi.serialization.SerializedObject;
+import org.qi4j.spi.persistence.PersistentStore;
+import org.qi4j.spi.persistence.EntityStateHolder;
 
 public final class SerializablePersistence
-    implements PersistentStorage
+    implements PersistentStore
 {
     SerializablePersistenceSpi delegate;
     private CompositeBuilderFactory builderFactory;
-    private EntityRepository entityRepository;
+    private EntitySession entitySession;
     private CompositeModelFactory modelFactory;
 
-    public SerializablePersistence( SerializablePersistenceSpi aDelegate, CompositeModelFactory modelFactory, CompositeBuilderFactory compositeBuilderFactory, EntityRepository entityRepository )
+    public SerializablePersistence( SerializablePersistenceSpi aDelegate, CompositeModelFactory modelFactory, CompositeBuilderFactory compositeBuilderFactory, EntitySession session )
     {
         this.modelFactory = modelFactory;
         delegate = aDelegate;
         this.builderFactory = compositeBuilderFactory;
-        this.entityRepository = entityRepository;
+        this.entitySession = session;
     }
 
     public void create( EntityComposite entity )
         throws PersistenceException
     {
-        RegularCompositeInvocationHandler handler = RegularCompositeInvocationHandler.getInvocationHandler( entity );
+        CompositeInvocationHandler handler = CompositeInvocationHandler.getInvocationHandler( entity );
         Map<Class, Object> mixins = handler.getMixins();
 
         Map<Class, SerializedObject> persistentMixins = new HashMap<Class, SerializedObject>();
@@ -76,7 +79,7 @@ public final class SerializablePersistence
         }
 
         ProxyReferenceInvocationHandler proxyHandler = (ProxyReferenceInvocationHandler) Proxy.getInvocationHandler( entity );
-        RegularCompositeInvocationHandler handler = RegularCompositeInvocationHandler.getInvocationHandler( modelFactory.dereference( entity ) );
+        CompositeInvocationHandler handler = CompositeInvocationHandler.getInvocationHandler( modelFactory.dereference( entity ) );
         Map<Class, Object> deserializedMixins = handler.getMixins();
         for( Map.Entry<Class, SerializedObject> entry : mixins.entrySet() )
         {
@@ -84,7 +87,7 @@ public final class SerializablePersistence
             Object deserializedMixin = null;
             try
             {
-                deserializedMixin = value.getObject( entityRepository, builderFactory );
+                deserializedMixin = value.getObject( entitySession, builderFactory );
             }
             catch( ClassNotFoundException e )
             {
@@ -144,4 +147,33 @@ public final class SerializablePersistence
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
+    public String getName()
+    {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public boolean exists( String identity ) throws org.qi4j.spi.persistence.PersistenceException
+    {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public <T extends EntityComposite> EntityStateHolder<T> newEntityInstance( String identity, CompositeModel<T> compositeModel ) throws org.qi4j.spi.persistence.PersistenceException
+    {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public <T extends EntityComposite> EntityStateHolder<T> getEntityInstance( String identity, CompositeModel<T> compositeModel ) throws org.qi4j.spi.persistence.PersistenceException
+    {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public <T extends EntityComposite> List<EntityStateHolder<T>> getEntityInstances( List<String> identities, CompositeModel<T> compositeModel ) throws org.qi4j.spi.persistence.PersistenceException
+    {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public boolean delete( String identity ) throws org.qi4j.spi.persistence.PersistenceException
+    {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
 }
