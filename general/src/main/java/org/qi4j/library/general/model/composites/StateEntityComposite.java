@@ -12,7 +12,7 @@
  */
 package org.qi4j.library.general.model.composites;
 
-import org.qi4j.api.persistence.composite.EntityComposite;
+import org.qi4j.api.persistence.EntityComposite;
 import org.qi4j.library.general.model.State;
 
 /**

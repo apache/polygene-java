@@ -13,7 +13,7 @@
 package org.qi4j.library.general.model;
 
 import org.qi4j.api.annotation.ModifiedBy;
-import org.qi4j.api.persistence.composite.EntityComposite;
+import org.qi4j.api.persistence.EntityComposite;
 import org.qi4j.library.general.model.modifiers.LifecycleValidationModifier;
 import org.qi4j.library.general.test.model.DummyValidationModifier;
 

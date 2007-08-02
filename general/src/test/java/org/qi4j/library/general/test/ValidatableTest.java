@@ -14,7 +14,7 @@ package org.qi4j.library.general.test;
 
 import org.qi4j.api.annotation.ImplementedBy;
 import org.qi4j.api.annotation.ModifiedBy;
-import org.qi4j.api.persistence.composite.EntityComposite;
+import org.qi4j.api.persistence.EntityComposite;
 import org.qi4j.library.framework.properties.PropertiesMixin;
 import org.qi4j.library.general.model.AbstractTest;
 import org.qi4j.library.general.model.Name;

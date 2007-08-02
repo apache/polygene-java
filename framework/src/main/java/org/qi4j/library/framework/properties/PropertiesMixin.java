@@ -14,7 +14,6 @@
 package org.qi4j.library.framework.properties;
 
 import java.beans.Introspector;
-import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -30,7 +29,6 @@ import org.qi4j.api.annotation.AppliesTo;
  * addFoo = add object to list named foo
  * removeFoo = remove object from list named foo
  */
-@AppliesTo( Serializable.class )
 public class PropertiesMixin
     implements InvocationHandler
 {

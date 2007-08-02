@@ -16,7 +16,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -27,6 +26,8 @@ import org.mozilla.javascript.Undefined;
 import org.mozilla.javascript.Wrapper;
 import org.qi4j.api.CompositeBuilderFactory;
 import org.qi4j.api.annotation.Dependency;
+import org.qi4j.api.annotation.AppliesTo;
+import org.qi4j.api.annotation.instance.TransientPerVm;
 
 /**
  * Generic mixin that implements interfaces by delegating to JavaScript functions
@@ -38,8 +39,10 @@ import org.qi4j.api.annotation.Dependency;
  * org/qi4j/samples/hello/domain/HelloWorldSpeaker.say.js
  *
  */
+@AppliesTo( Scripted.class )
+@TransientPerVm
 public class JavaScriptMixin
-    implements Serializable, InvocationHandler
+    implements InvocationHandler
 {
     @Dependency CompositeBuilderFactory factory;
 
