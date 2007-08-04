@@ -19,7 +19,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import org.qi4j.api.annotation.AppliesTo;
 
 /**
  * Generic property mixin. Methods in interface
@@ -28,6 +27,7 @@ import org.qi4j.api.annotation.AppliesTo;
  * getFoo = get property named foo
  * addFoo = add object to list named foo
  * removeFoo = remove object from list named foo
+ * fooIterator - return an iterator over the list of Foos
  */
 public class PropertiesMixin
     implements InvocationHandler
