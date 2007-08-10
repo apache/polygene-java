@@ -15,6 +15,6 @@ package org.qi4j.library.general.model;
 /**
  * Generic interface of a state
  */
-public interface State extends Name
+public interface State extends HasName
 {
 }

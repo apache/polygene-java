@@ -13,13 +13,14 @@
 package org.qi4j.library.general.model;
 
 import java.io.Serializable;
+
 import org.qi4j.api.annotation.ImplementedBy;
-import org.qi4j.library.general.model.mixins.PasswordMixin;
+import org.qi4j.library.framework.properties.PropertiesMixin;
 
 /**
  * Generic interface for password
  */
-@ImplementedBy( { PasswordMixin.class } )
+@ImplementedBy( { PropertiesMixin.class } )
 public interface Password extends Serializable
 {
     void setPassword(String aPassword);

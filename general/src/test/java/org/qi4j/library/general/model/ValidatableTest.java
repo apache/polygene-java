@@ -29,7 +29,7 @@ public class ValidatableTest extends AbstractTest
     }
 
     @ModifiedBy( { LifecycleValidationModifier.class, DummyValidationModifier.class } )
-    private interface DummyComposite extends Name, Validatable, EntityComposite
+    private interface DummyComposite extends HasName, Validatable, EntityComposite
     {
     }
 }

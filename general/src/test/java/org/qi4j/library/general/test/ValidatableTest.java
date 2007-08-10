@@ -17,7 +17,7 @@ import org.qi4j.api.annotation.ModifiedBy;
 import org.qi4j.api.persistence.EntityComposite;
 import org.qi4j.library.framework.properties.PropertiesMixin;
 import org.qi4j.library.general.model.AbstractTest;
-import org.qi4j.library.general.model.Name;
+import org.qi4j.library.general.model.HasName;
 import org.qi4j.library.general.model.Validatable;
 import org.qi4j.library.general.model.modifiers.LifecycleValidationModifier;
 import org.qi4j.library.general.test.model.DummyValidationModifier;
@@ -36,7 +36,7 @@ public class ValidatableTest extends AbstractTest
 
     @ModifiedBy( { LifecycleValidationModifier.class, DummyValidationModifier.class } )
     @ImplementedBy( { PropertiesMixin.class } )
-    private interface DummyComposite extends Name, Validatable, EntityComposite
+    private interface DummyComposite extends HasName, Validatable, EntityComposite
     {
     }
 }

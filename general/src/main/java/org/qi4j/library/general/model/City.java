@@ -18,6 +18,6 @@ import org.qi4j.library.general.model.associations.HasCountry;
 /**
  * Generic interface of a city
  */
-public interface City extends Name, HasState, HasCountry
+public interface City extends HasName, HasState, HasCountry
 {
 }

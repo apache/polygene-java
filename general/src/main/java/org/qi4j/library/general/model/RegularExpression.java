@@ -13,13 +13,14 @@
 package org.qi4j.library.general.model;
 
 import java.io.Serializable;
+
 import org.qi4j.api.annotation.ImplementedBy;
-import org.qi4j.library.general.model.mixins.RegularExpressionMixin;
+import org.qi4j.library.framework.properties.PropertiesMixin;
 
 /**
  * Generic interface for a regular expression
  */
-@ImplementedBy( { RegularExpressionMixin.class } )
+@ImplementedBy( { PropertiesMixin.class } )
 public interface RegularExpression extends Serializable
 {
     void setRegex( String aRegex );

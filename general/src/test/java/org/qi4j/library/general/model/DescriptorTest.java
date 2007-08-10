@@ -33,12 +33,12 @@ public class DescriptorTest extends AbstractTest
         assertEquals( displayValue, "My name is Sianny" );
     }
 
-    private interface DummyComposite extends Descriptor, Name, Composite
+    private interface DummyComposite extends Descriptor, HasName, Composite
     {
     }
 
     @ModifiedBy( { DescriptorModifier.class } )
-    private interface DummyComposite2 extends Descriptor, Name, Composite
+    private interface DummyComposite2 extends Descriptor, HasName, Composite
     {
     }
 }
