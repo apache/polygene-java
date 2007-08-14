@@ -22,20 +22,17 @@ import org.qi4j.api.annotation.Modifies;
 import org.qi4j.api.annotation.Uses;
 
 /**
- * Cache for remote calls. Cache values
- * of remote invocations and if an IOException
- * occurs, try to reuse a previous result.
+ * Cache for remote calls.
+ * Cache values of remote invocations and if an IOException occurs, try to reuse a previous result.
  */
 @AppliesTo( Remote.class )
 public class RemoteInvocationCacheModifier
     implements InvocationHandler
 {
-    // Attributes ----------------------------------------------------
-    @Uses InvocationCache cache;
-    @Dependency Method method;
-    @Modifies InvocationHandler next;
+    @Uses private InvocationCache cache;
+    @Dependency private Method method;
+    @Modifies private InvocationHandler next;
 
-    // InvocationHandler implementation ------------------------------
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
     {
         String cacheName = method.getName() + Arrays.asList( args );

@@ -27,11 +27,10 @@ import java.lang.reflect.InvocationTargetException;
 public class RMIMixin
     implements InvocationHandler
 {
-    // Attributes ----------------------------------------------------
-    Object remote;
+    private Object remote;
 
-    // InvocationHandler implementation ------------------------------
-    public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
+    public Object invoke( Object proxy, Method method, Object[] args )
+        throws Throwable
     {
         if (remote == null)
         {
