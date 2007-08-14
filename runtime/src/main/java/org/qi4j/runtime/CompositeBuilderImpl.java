@@ -30,6 +30,7 @@ import org.qi4j.api.CompositeBuilder;
 import org.qi4j.api.CompositeInstantiationException;
 import org.qi4j.api.CompositeModelFactory;
 import org.qi4j.api.IllegalMixinTypeException;
+import org.qi4j.api.CompositeBuilderFactory;
 import org.qi4j.api.model.CompositeModel;
 import org.qi4j.api.model.MixinModel;
 import org.qi4j.api.persistence.Lifecycle;
@@ -169,6 +170,8 @@ public class CompositeBuilderImpl<T extends Composite>
         if( resolver == null )
         {
             resolver = new TypeLookupResolver();
+            resolver.put( CompositeModelFactory.class,  modelFactory );
+            resolver.put( CompositeBuilderFactory.class, builderFactory );
         }
         resolver.put( dependencyType, dependencyInstance );
     }

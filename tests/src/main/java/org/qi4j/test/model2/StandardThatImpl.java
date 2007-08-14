@@ -18,7 +18,6 @@ package org.qi4j.test.model2;
 public class StandardThatImpl
     implements StandardThat
 {
-    // Z implementation ----------------------------------------------
     @FooAnnotation( "Hello World" )
     public String foo( String aString )
     {

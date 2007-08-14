@@ -13,6 +13,7 @@ package org.qi4j.test.model2;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.lang.reflect.AnnotatedElement;
 import org.qi4j.api.annotation.AppliesTo;
 import org.qi4j.api.annotation.Dependency;
 import org.qi4j.api.annotation.Modifies;
@@ -28,12 +29,14 @@ public class FooModifier
 {
     // Attributes ----------------------------------------------------
     @Modifies InvocationHandler next;
-    @Dependency Method foo;
+    @Dependency AnnotatedElement foo;
 
     // InvocationHandler implementation -----------------------------
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
     {
-        args[ 0 ] = args[ 0 ] + foo.getAnnotation( FooAnnotation.class ).value();
+        FooAnnotation annotation = foo.getAnnotation( FooAnnotation.class );
+        String value = annotation.value();
+        args[ 0 ] = args[ 0 ] + value;
         return next.invoke( proxy, method, args );
     }
 }

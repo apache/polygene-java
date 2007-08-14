@@ -44,7 +44,6 @@ import org.qi4j.runtime.persistence.EntityImpl;
 public final class CompositeModelImpl<T extends Composite>
     implements CompositeModel<T>
 {
-    // Attributes ----------------------------------------------------
     private Class<T> compositeClass;
     private List<MixinModel> mixinModels;
     private Map<Class, MixinModel> mixins;
@@ -54,7 +53,6 @@ public final class CompositeModelImpl<T extends Composite>
     private Set<Field> unresolvedUses;
     private Set<Class> allUnresolved;
 
-    // Constructors --------------------------------------------------
     CompositeModelImpl( Class<T> compositeClass )
     {
         if( compositeClass == null )
@@ -135,7 +133,6 @@ public final class CompositeModelImpl<T extends Composite>
         allUnresolved = Collections.unmodifiableSet( allUnresolved );
     }
 
-    // Public --------------------------------------------------------
     public Class<T> getCompositeClass()
     {
         return compositeClass;
@@ -254,7 +251,6 @@ public final class CompositeModelImpl<T extends Composite>
         return modifiers.get( aMethod );
     }
 
-    // Object overrides ---------------------------------------------
     public String toString()
     {
         StringWriter str = new StringWriter();
@@ -441,9 +437,11 @@ public final class CompositeModelImpl<T extends Composite>
                     {
                         MixinModel mixinModel = getMixin( method.getDeclaringClass() );
 
-
+                        // Check the Mixin implementation class to see if it is annotated.
                         if( mixinModel.getFragmentClass().getAnnotation( appliesTo ) == null )
                         {
+                            // The Mixin Implementation class was not annotated with the @AppliesTo.
+
                             // Check method
                             if( !mixinModel.isGeneric() )
                             {

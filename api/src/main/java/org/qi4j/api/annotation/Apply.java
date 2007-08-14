@@ -28,6 +28,9 @@ import java.lang.annotation.Target;
 @Documented
 @Inherited
 /**
+ * Applies a virtual annotation to a method or a mixin.
+ *
+ * <pre><code>
  * @Apply( toMethods =
  *   {
  *       @ToMethod( methods = "set*,add*,remove*", annotation = Write.class),
@@ -39,7 +42,7 @@ import java.lang.annotation.Target;
  *       @ToMixin( target= HelloWorldSpeaker.class, annotation = Scripted.class )
  *   }
  *)
- *
+ *</code></pre>
  */
 public @interface Apply
 {

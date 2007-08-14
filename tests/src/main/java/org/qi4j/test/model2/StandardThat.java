@@ -22,7 +22,6 @@ import org.qi4j.api.annotation.ModifiedBy;
 @ModifiedBy( StandardThatModifier.class )
 public interface StandardThat
 {
-    // Public --------------------------------------------------------
     String foo( String aString );
 
     String test( String aString );

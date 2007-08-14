@@ -19,7 +19,4 @@ package org.qi4j.test.model2;
 public interface TestComposite
     extends Standard, DomainInterface
 {
-    // Static --------------------------------------------------------
-
-    // Public --------------------------------------------------------
 }

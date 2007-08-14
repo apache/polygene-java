@@ -17,6 +17,5 @@ package org.qi4j.test.model2;
  */
 public interface StandardThis
 {
-    // Public --------------------------------------------------------
     String bar();
 }

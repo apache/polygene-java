@@ -199,13 +199,13 @@ public final class CompositeContextImpl<T extends Composite>
     {
         // @Dependency
         Class elementType = getElementType( annotatedElement );
+        Class<? extends Object> fragmentClass = compositeModel.getMixin( method.getDeclaringClass() ).getFragmentClass();
         if( elementType.equals( InvocationContext.class ) )
         {
             return invocationContext;
         }
         else if( elementType.equals( AnnotatedElement.class ) )
         {
-            Class<? extends Object> fragmentClass = compositeModel.getMixin( method.getDeclaringClass() ).getFragmentClass();
             Method dependencyMethod;
             if( InvocationHandler.class.isAssignableFrom( fragmentClass ) )
             {
@@ -226,7 +226,8 @@ public final class CompositeContextImpl<T extends Composite>
         }
         else
         {
-            return null;
+            String dependentName = getDependencyName( annotatedElement.getAnnotation( Dependency.class ), elementType.getName() );
+            return resolveFragmentDependency( annotatedElement, dependentName, fragmentClass.getName() );
         }
     }
 
@@ -258,7 +259,7 @@ public final class CompositeContextImpl<T extends Composite>
         return null;
     }
 
-    public <K> K newFragment( FragmentModel<K> aFragmentModel, T proxy, Method method )
+    <K> K newFragment( FragmentModel<K> aFragmentModel, T proxy, Method method )
     {
         K instance;
         try
@@ -281,29 +282,29 @@ public final class CompositeContextImpl<T extends Composite>
 
         resolveUsesFields( aFragmentModel, proxy, instance );
 
-        List<Field> dependencyFields = aFragmentModel.getDependencyFields();
-        for( Field dependencyField : dependencyFields )
-        {
-            Object dependency = resolveFragmentDependency( dependencyField, dependencyField.getName(), dependencyField.getDeclaringClass().getName() );
-            if( dependency == null )
-            {
-                if( !dependencyField.getAnnotation( Dependency.class ).optional() )
-                {
-                    throw new CompositeInstantiationException( "Dependency " + dependencyField.getName() + " in fragment " + dependencyField.getDeclaringClass().getName() + " for composite " + compositeModel.getCompositeClass() + " could not be resolved." );
-                }
-            }
-            else
-            {
-                try
-                {
-                    dependencyField.set( instance, dependency );
-                }
-                catch( IllegalAccessException e )
-                {
-                    throw new CompositeInstantiationException( "Dependency " + dependencyField.getName() + " in fragment " + dependencyField.getDeclaringClass().getName() + " for composite " + compositeModel.getCompositeClass() + " could not be set.", e );
-                }
-            }
-        }
+//        List<Field> dependencyFields = aFragmentModel.getDependencyFields();
+//        for( Field dependencyField : dependencyFields )
+//        {
+//            Object dependency = resolveFragmentDependency( dependencyField, dependencyField.getName(), dependencyField.getDeclaringClass().getName() );
+//            if( dependency == null )
+//            {
+//                if( !dependencyField.getAnnotation( Dependency.class ).optional() )
+//                {
+//                    throw new CompositeInstantiationException( "Dependency '" + dependencyField.getName() + "' in fragment " + dependencyField.getDeclaringClass().getName() + " for composite " + compositeModel.getCompositeClass() + " could not be resolved." );
+//                }
+//            }
+//            else
+//            {
+//                try
+//                {
+//                    dependencyField.set( instance, dependency );
+//                }
+//                catch( IllegalAccessException e )
+//                {
+//                    throw new CompositeInstantiationException( "Dependency " + dependencyField.getName() + " in fragment " + dependencyField.getDeclaringClass().getName() + " for composite " + compositeModel.getCompositeClass() + " could not be set.", e );
+//                }
+//            }
+//        }
         return instance;
     }
 
@@ -365,7 +366,6 @@ public final class CompositeContextImpl<T extends Composite>
             if( depAnnotation != null )
             {
                 String dependentName = getDependencyName( depAnnotation, parameterType.getName() );
-                Object dependency = null;
                 if( isModifier )
                 {
                     if( canResolveModifierDependency( parameterType ) )
@@ -373,10 +373,7 @@ public final class CompositeContextImpl<T extends Composite>
                         continue;
                     }
                 }
-                if( dependency == null )
-                {
-                    dependency = resolveFragmentDependency( parameterType, dependentName, constructor.getName() );
-                }
+                Object dependency = resolveFragmentDependency( parameterType, dependentName, constructor.getName() );
                 if( dependency != null || depAnnotation.optional() )
                 {
                     continue;

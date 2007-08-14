@@ -20,10 +20,8 @@ import org.qi4j.api.annotation.Modifies;
 public class StandardThisModifier
     implements StandardThis
 {
-    // Attributes ----------------------------------------------------
     @Modifies StandardThis next;
 
-    // Z implementation ----------------------------------------------
     public String bar()
     {
         return next.bar();
