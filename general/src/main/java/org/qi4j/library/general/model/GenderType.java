@@ -17,5 +17,21 @@ package org.qi4j.library.general.model;
  */
 public enum GenderType
 {
-    female, male
+    male, female;
+
+    public static GenderType getGenderType( String genderType )
+    {
+        if( male.toString().equals( genderType ) )
+        {
+            return male;
+        }
+        else if( female.toString().equals( genderType ) )
+        {
+            return female;
+        }
+        else
+        {
+            throw new IllegalArgumentException( "Unknown genderType " + genderType );
+        }
+    }
 }

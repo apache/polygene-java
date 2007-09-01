@@ -18,6 +18,6 @@ import java.math.BigDecimal;
  * Generic interface for Money which stores an amount and currency.
  * Both amount and currency must be immutable.
  */
-public interface Money extends Amount<BigDecimal>, Currency
+public interface Money extends Amount<Long>, Currency
 {
 }

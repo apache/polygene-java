@@ -19,4 +19,10 @@ import org.qi4j.library.general.model.associations.HasCity;
  */
 public interface Address extends AddressLine, ZipCode, HasCity
 {
+    public final static int ADDRESS1_LEN = 120;
+    public final static int ADDRESS2_LEN = 120;
+    public final static int ZIPCODE_LEN = 20;
+    public final static int COUNTRY_NAME_LEN = 80;
+    public final static int CITY_NAME_LEN = 80;
+    public final static int STATE_NAME_LEN = 80;
 }
