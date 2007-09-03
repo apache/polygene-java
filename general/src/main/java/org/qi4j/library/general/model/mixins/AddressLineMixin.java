@@ -21,7 +21,6 @@ public final class AddressLineMixin implements AddressLine
 {
     private String firstLine;
     private String secondLine;
-    private String thirdLine;
 
     public void setFirstLine( String aFirstLine )
     {
@@ -41,15 +40,5 @@ public final class AddressLineMixin implements AddressLine
     public String getSecondLine()
     {
         return secondLine;
-    }
-
-    public void setThirdLine( String aThirdLine )
-    {
-        thirdLine = aThirdLine;
-    }
-
-    public String getThirdLine()
-    {
-        return thirdLine;
     }
 }

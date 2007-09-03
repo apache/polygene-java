@@ -15,6 +15,6 @@ package org.qi4j.library.general.model;
 /**
  * Generic interface of Country
  */
-public interface Country extends HasName, IsoCode
+public interface Country extends HasName
 {
 }

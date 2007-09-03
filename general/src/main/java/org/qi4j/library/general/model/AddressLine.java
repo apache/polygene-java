@@ -29,8 +29,4 @@ public interface AddressLine extends Serializable
     void setSecondLine( String aSecondLine );
 
     String getSecondLine();
-
-    void setThirdLine( String aThirdLine );
-
-    String getThirdLine();
 }
