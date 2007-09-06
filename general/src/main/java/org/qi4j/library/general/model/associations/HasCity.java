@@ -18,7 +18,7 @@ import org.qi4j.library.general.model.City;
 import org.qi4j.library.general.model.mixins.HasCityMixin;
 
 /**
- * Represents one-to-one relationship with {@link org.qi4j.library.general.model.composites.CityEntityComposite}
+ * Represents one-to-one relationship with {@link org.qi4j.library.general.model.composites.CityComposite}
  */
 @ImplementedBy( { HasCityMixin.class } )
 public interface HasCity extends Serializable
