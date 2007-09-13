@@ -25,8 +25,8 @@ import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.Undefined;
 import org.mozilla.javascript.Wrapper;
 import org.qi4j.api.CompositeBuilderFactory;
-import org.qi4j.api.annotation.Dependency;
 import org.qi4j.api.annotation.AppliesTo;
+import org.qi4j.api.annotation.DependencyOld;
 import org.qi4j.api.annotation.instance.TransientPerVm;
 
 /**
@@ -44,7 +44,7 @@ import org.qi4j.api.annotation.instance.TransientPerVm;
 public class JavaScriptMixin
     implements InvocationHandler
 {
-    @Dependency CompositeBuilderFactory factory;
+    @DependencyOld CompositeBuilderFactory factory;
 
     // Static --------------------------------------------------------
     static Scriptable standardScope;

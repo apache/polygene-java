@@ -12,8 +12,8 @@
  */
 package org.qi4j.library.general.model.mixins;
 
-import org.qi4j.library.general.model.associations.HasCountry;
 import org.qi4j.library.general.model.Country;
+import org.qi4j.library.general.model.associations.HasCountry;
 
 /**
  * Default mixin implementation for {@link org.qi4j.library.general.model.associations.HasCountry}

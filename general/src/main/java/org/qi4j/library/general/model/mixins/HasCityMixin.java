@@ -12,8 +12,8 @@
  */
 package org.qi4j.library.general.model.mixins;
 
-import org.qi4j.library.general.model.associations.HasCity;
 import org.qi4j.library.general.model.City;
+import org.qi4j.library.general.model.associations.HasCity;
 
 /**
  * Default mixin implementation for {@link HasCity}

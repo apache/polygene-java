@@ -12,9 +12,9 @@
 */
 package org.qi4j.library.framework;
 
-import org.junit.Test;
-import static org.junit.Assert.assertEquals;
 import java.lang.reflect.Method;
+import static org.junit.Assert.assertEquals;
+import org.junit.Test;
 
 public class TransactionalTest
 {

@@ -14,12 +14,16 @@ package org.qi4j.library.general.model;
 
 import junit.framework.Assert;
 import org.qi4j.api.Composite;
+import org.qi4j.api.CompositeBuilder;
+import static org.qi4j.api.annotation.ParameterValue.parameter;
 
 public class PersonTest extends AbstractTest
 {
     public void testNewPerson() throws Exception
     {
-        PersonComposite person = builderFactory.newCompositeBuilder( PersonComposite.class ).newInstance();
+        CompositeBuilder<PersonComposite> builder = builderFactory.newCompositeBuilder( PersonComposite.class );
+        builder.newMixin( Person.class, parameter( "firstName", "Sianny"), parameter("lastName", "Halim"));
+        PersonComposite person = builder.newInstance();
 
         String firstName = "Sianny";
         String lastName = "Halim";

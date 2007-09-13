@@ -11,8 +11,8 @@
 */
 package org.qi4j.library.framework.remote;
 
-import java.rmi.Remote;
 import java.io.IOException;
+import java.rmi.Remote;
 
 /**
  * TODO

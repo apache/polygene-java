@@ -15,12 +15,12 @@ package org.qi4j.library.framework;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import javax.transaction.TransactionManager;
-import javax.transaction.Transaction;
 import javax.transaction.Status;
+import javax.transaction.Transaction;
+import javax.transaction.TransactionManager;
 import org.qi4j.api.annotation.AppliesTo;
+import org.qi4j.api.annotation.DependencyOld;
 import org.qi4j.api.annotation.Modifies;
-import org.qi4j.api.annotation.Dependency;
 
 /**
  * Transactional modifier. Implementation methods
@@ -39,7 +39,7 @@ public class TransactionalModifier
     TransactionManager tm;
 
     @Modifies InvocationHandler next;
-    @Dependency Method method;
+    @DependencyOld Method method;
 
     // Constructors --------------------------------------------------
     public TransactionalModifier( TransactionManager tm )

@@ -12,6 +12,7 @@
  */
 package org.qi4j.library.general.model.mixins;
 
+import org.qi4j.api.annotation.Property;
 import org.qi4j.library.general.model.PersonName;
 
 /**
@@ -23,7 +24,7 @@ public final class PersonNameMixin implements PersonName
     private String firstName;
 
 
-    public PersonNameMixin( String lastName, String firstName )
+    public PersonNameMixin( @Property("lastname") String lastName, @Property("firstname") String firstName )
     {
         this.lastName = lastName;
         this.firstName = firstName;

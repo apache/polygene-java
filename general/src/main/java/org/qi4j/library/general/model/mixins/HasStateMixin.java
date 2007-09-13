@@ -12,8 +12,8 @@
  */
 package org.qi4j.library.general.model.mixins;
 
-import org.qi4j.library.general.model.associations.HasState;
 import org.qi4j.library.general.model.State;
+import org.qi4j.library.general.model.associations.HasState;
 
 /**
  * Default mixin implementation for {@link org.qi4j.library.general.model.associations.HasState}.

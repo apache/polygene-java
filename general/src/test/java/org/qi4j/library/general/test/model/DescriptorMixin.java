@@ -12,13 +12,13 @@
  */
 package org.qi4j.library.general.test.model;
 
-import org.qi4j.api.annotation.Uses;
+import org.qi4j.api.annotation.ThisAs;
 import org.qi4j.library.general.model.Descriptor;
 import org.qi4j.library.general.model.HasName;
 
 public final class DescriptorMixin implements Descriptor
 {
-    @Uses private HasName name;
+    @ThisAs private HasName name;
 
     public String getDisplayValue()
     {

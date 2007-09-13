@@ -12,8 +12,8 @@
  */
 package org.qi4j.library.general.model.mixins;
 
-import org.qi4j.library.general.model.associations.HasContactType;
 import org.qi4j.library.general.model.ContactType;
+import org.qi4j.library.general.model.associations.HasContactType;
 
 /**
  * Default mixin implementation for {@link org.qi4j.library.general.model.associations.HasContactType}
