@@ -23,8 +23,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Map;
-import org.qi4j.api.InvocationContext;
 import org.qi4j.api.Composite;
+import org.qi4j.api.InvocationContext;
 
 public final class ProxyReferenceInvocationHandler<T extends Composite>
     implements InvocationHandler, InvocationContext

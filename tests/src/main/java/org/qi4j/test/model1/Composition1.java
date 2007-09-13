@@ -19,9 +19,6 @@ package org.qi4j.test.model1;
 import org.qi4j.api.Composite;
 import org.qi4j.api.annotation.ImplementedBy;
 import org.qi4j.api.annotation.ModifiedBy;
-import org.qi4j.test.model1.Modifier1;
-import org.qi4j.test.model1.Mixin1;
-import org.qi4j.test.model1.Mixin1Impl;
 
 @ModifiedBy( { Modifier1.class } )
 @ImplementedBy( { Mixin1Impl.class } )

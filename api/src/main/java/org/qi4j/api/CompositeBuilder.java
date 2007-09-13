@@ -16,38 +16,11 @@
  */
 package org.qi4j.api;
 
-import java.lang.reflect.InvocationHandler;
-
 /**
  * TODO for Rickard; Explanation needed on how to use for Templating, Strategy and Builder patterns.
  */
 public interface CompositeBuilder<T extends Composite>
 {
-    T newInstance();
-
-//    /**
-//     * Clones the values in the <code>from</code> object into this builder.
-//     * <p/>
-//     * This method will clone all the mixin objects via the clone() method (if <code>Cloneable</code>),
-//     * and otherwise try to instantiate the mixin implementation class (if no argument
-//     * constructor) and copy the member fields across.
-//     *
-//     * @param from The object that is to be cloned.
-//     */
-//    void clone( Composite from );
-
-    /**
-     * TODO: Docs.
-     *
-     * @param mixinType
-     * @param mixin
-     */
-    <K> void setMixin( Class<K> mixinType, K mixin );
-
-    void setMixin( Class mixinType, InvocationHandler mixin );
-
-    <K> K getMixin( Class<K> mixinType );
-
     /**
      * Adapts the mixin object to be used for any mixin references missing in the builder, and can
      * be provided by the mixin object.
@@ -56,18 +29,9 @@ public interface CompositeBuilder<T extends Composite>
      */
     void adapt( Object mixin );
 
-    /**
-     * Provide a dependency instance for a type in this CompositeBuilder.
-     *
-     * @param dependencyType     The Field/Parameter type that the dependency object will be injected to.
-     * @param dependencyInstance The dependency instance to be injected.
-     */
-    <K> void provideDependency( Class<K> dependencyType, K dependencyInstance );
+    <K, T extends K> void decorate (K object);
 
-    /**
-     * Provides a dependency instance for all types that the dependency instance implements.
-     *
-     * @param dependencyInstance The dependency instance to be injected to fields and as constructor parameters.
-     */
-    void provideDependency( Object dependencyInstance );
+    public <K> void properties( Class<K> mixinType, Object... properties );
+
+    T newInstance();
 }

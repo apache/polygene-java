@@ -16,7 +16,6 @@ import junit.framework.TestCase;
 import org.qi4j.api.CompositeBuilderFactory;
 import org.qi4j.api.CompositeModelFactory;
 import org.qi4j.api.model.CompositeModel;
-import org.qi4j.runtime.CompositeModelImpl;
 import org.qi4j.runtime.CompositeBuilderFactoryImpl;
 import org.qi4j.runtime.CompositeModelFactoryImpl;
 
@@ -28,7 +27,7 @@ public class Composite2Test extends TestCase
     protected void setUp() throws Exception
     {
         modelFactory = new CompositeModelFactoryImpl();
-        composite = modelFactory.getCompositeModel( TestComposite.class );
+        composite = modelFactory.newCompositeModel( TestComposite.class );
     }
 
     public void testGetImplementation() throws Exception

@@ -16,21 +16,7 @@
  */
 package org.qi4j.api.persistence;
 
-public interface QueryBuilder<T extends EntityComposite>
+public interface QueryFactory
 {
-    <K> K where( Class<K> mixinType );
-
-    <K> K where( Class<K> mixinType, Is comparisonOperator );
-
-    <K> K orderBy( Class<K> mixinType );
-
-    <K> K orderBy( Class<K> mixinType, boolean descend );
-
-    Query<T> newQuery();
-
-    public enum Is
-    {
-        EQUAL, LESS_THAN, LESS_THAN_EQUAL, GREATER_THAN, GREATER_THAN_EQUAL, NOT_EQUAL
-    }
-
+    <R> Query<R> newQuery(Class<R> resultType);
 }

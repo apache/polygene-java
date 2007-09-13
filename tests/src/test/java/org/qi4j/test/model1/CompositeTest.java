@@ -19,13 +19,12 @@ package org.qi4j.test.model1;
 import java.util.ArrayList;
 import java.util.List;
 import junit.framework.TestCase;
-import org.qi4j.runtime.CompositeModelImpl;
+import org.qi4j.api.model.CompositeModel;
 import org.qi4j.api.model.InvalidCompositeException;
 import org.qi4j.api.model.InvalidModifierException;
 import org.qi4j.api.model.MixinModel;
 import org.qi4j.api.model.ModifierModel;
 import org.qi4j.api.model.NullArgumentException;
-import org.qi4j.api.model.CompositeModel;
 import org.qi4j.runtime.CompositeImpl;
 import org.qi4j.runtime.CompositeModelFactoryImpl;
 
@@ -41,15 +40,15 @@ public class CompositeTest extends TestCase
     public void testComposition1()
         throws Exception
     {
-        CompositeModel composite1 = modelFactory.getCompositeModel( Composition1.class );
+        CompositeModel composite1 = modelFactory.newCompositeModel( Composition1.class );
         assertEquals( Composition1.class, composite1.getCompositeClass() );
-        List<MixinModel> lists = composite1.getImplementations();
+        List<MixinModel> lists = composite1.getMixinModels();
         assertEquals( 2, lists.size() );
         MixinModel mixinModel = lists.get( 1 );
         assertEquals( Mixin1Impl.class, mixinModel.getFragmentClass() );
         mixinModel = lists.get( 0 );
         assertEquals( CompositeImpl.class, mixinModel.getFragmentClass() );
-        List<ModifierModel> modifiers1 = composite1.getModifiers();
+        List<ModifierModel> modifiers1 = composite1.getModifierModels();
         assertEquals( 2, modifiers1.size() );
         ModifierModel modifierModel = modifiers1.get( 1 );
         assertEquals( Modifier1.class, modifierModel.getFragmentClass() );
@@ -57,7 +56,7 @@ public class CompositeTest extends TestCase
         List<MixinModel> mixinModifiers = new ArrayList<MixinModel>();
         mixinModifiers.add( lists.get( 1 ) );
         assertEquals( mixinModifiers, composite1.getImplementations( Mixin1.class ) );
-        CompositeModel composite2 =modelFactory.getCompositeModel( Composition1.class );
+        CompositeModel composite2 =modelFactory.newCompositeModel( Composition1.class );
         assertEquals( composite1, composite2 );
         assertEquals( composite1.hashCode(), composite2.hashCode() );
 
@@ -65,25 +64,25 @@ public class CompositeTest extends TestCase
         assertEquals( 1, modifiers2.size() );
         ModifierModel modifier4 = modifiers2.get( 0 );
         assertEquals( Modifier4.class, modifier4.getFragmentClass() );
-        assertEquals( Modifier4.class.getDeclaredField( "next" ), modifier4.getModifiesField() );
+        assertEquals( Modifier4.class.getDeclaredField( "next" ), modifier4.getModifiesDependency() );
     }
 
     public void testComposition2()
         throws Exception
     {
-        CompositeModel composite1 = modelFactory.getCompositeModel( Composition2.class );
+        CompositeModel composite1 = modelFactory.newCompositeModel( Composition2.class );
         assertEquals( Composition2.class, composite1.getCompositeClass() );
-        List<MixinModel> lists = composite1.getImplementations();
+        List<MixinModel> lists = composite1.getMixinModels();
         assertEquals( 3, lists.size() );
 
         MixinModel mixin1 = lists.get( 1 );
         assertEquals( Mixin1Impl.class, mixin1.getFragmentClass() );
         MixinModel mixin2 = lists.get( 2 );
         assertEquals( Mixin2Impl.class, mixin2.getFragmentClass() );
-        List<ModifierModel> modifiers1 = composite1.getModifiers();
+        List<ModifierModel> modifiers1 = composite1.getModifierModels();
         assertEquals( 2, modifiers1.size() );
         assertEquals( lists.get( 1 ), composite1.getImplementations( Mixin1.class ).get( 0 ) );
-        CompositeModel composite2 =modelFactory.getCompositeModel( Composition2.class );
+        CompositeModel composite2 =modelFactory.newCompositeModel( Composition2.class );
         assertEquals( composite1, composite2 );
         assertEquals( composite1.hashCode(), composite2.hashCode() );
 
@@ -94,7 +93,7 @@ public class CompositeTest extends TestCase
         assertEquals( 1, modifiers2.size() );
         ModifierModel modifier4 = modifiers2.get( 0 );
         assertEquals( Modifier4.class, modifier4.getFragmentClass() );
-        assertEquals( Modifier4.class.getDeclaredField( "next" ), modifier4.getModifiesField() );
+        assertEquals( Modifier4.class.getDeclaredField( "next" ), modifier4.getModifiesDependency() );
     }
 
     // Testing that system check that at least one @Modifies field exist.
@@ -103,7 +102,7 @@ public class CompositeTest extends TestCase
     {
         try
         {
-            CompositeModel composite = modelFactory.getCompositeModel( Composition3.class );
+            CompositeModel composite = modelFactory.newCompositeModel( Composition3.class );
             fail( "Should throw an InvalidModifierException." );
         }
         catch( InvalidModifierException e )
@@ -118,7 +117,7 @@ public class CompositeTest extends TestCase
     {
         try
         {
-            CompositeModel composite =modelFactory.getCompositeModel( Composition4.class );
+            CompositeModel composite =modelFactory.newCompositeModel( Composition4.class );
             fail( "Should throw an InvalidModifierException." );
         }
         catch( InvalidModifierException e )
@@ -132,7 +131,7 @@ public class CompositeTest extends TestCase
     {
         try
         {
-            CompositeModel composite = modelFactory.getCompositeModel( (Class) null );
+            CompositeModel composite = modelFactory.newCompositeModel( (Class) null );
             fail( "Should throw an NullArgumentException." );
         }
         catch( NullArgumentException e )
@@ -146,7 +145,7 @@ public class CompositeTest extends TestCase
     {
         try
         {
-            CompositeModel composite =modelFactory.getCompositeModel( Composition5.class );
+            CompositeModel composite =modelFactory.newCompositeModel( Composition5.class );
             fail( "Should throw InvalidModifierException." );
         }
         catch( InvalidModifierException e )
@@ -160,7 +159,7 @@ public class CompositeTest extends TestCase
     {
         try
         {
-            CompositeModel composite = modelFactory.getCompositeModel( Composition7.class );
+            CompositeModel composite = modelFactory.newCompositeModel( Composition7.class );
             assertNotNull( composite );
             fail( "Should throw InvalidCompositeException." );
         }

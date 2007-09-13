@@ -14,11 +14,14 @@
  */
 package org.qi4j.api.persistence;
 
+import org.qi4j.api.annotation.ImplementedBy;
+
 /**
  * This interface provides the identity of the object which may be used
  * to store the state in a database. It is not the responsibility of the
  * framework to come up with a good identity string.
  */
+@ImplementedBy( Identity.IdentityMixin.class)
 public interface Identity
 {
     /**
@@ -31,4 +34,21 @@ public interface Identity
      */
     String getIdentity();
 
+    // Default implementation
+    public final class IdentityMixin
+        implements Identity
+    {
+        private String identity;
+
+        public IdentityMixin( String identity )
+        {
+            this.identity = identity;
+        }
+
+        public String getIdentity()
+        {
+            return identity;
+        }
+
+    }
 }

@@ -18,7 +18,7 @@ import org.qi4j.api.model.CompositeModel;
 
 /**
  * This factory creates proxies that implement the given
- * composite interfaces.
+ * thisAs interfaces.
  */
 public interface Composite
 {
@@ -42,9 +42,11 @@ public interface Composite
     boolean isInstance( Class anObjectType );
 
     /**
-     * Get the composite object
+     * Get the thisAs object
      *
-     * @return the CompositeModel that describes this composite
+     * @return the CompositeModel that describes this thisAs
      */
     CompositeModel getCompositeModel();
+
+    Composite dereference();
 }

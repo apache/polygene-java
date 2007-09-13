@@ -12,7 +12,7 @@
 package org.qi4j.test.model2;
 
 import org.qi4j.api.annotation.Modifies;
-import org.qi4j.api.annotation.Uses;
+import org.qi4j.api.annotation.ThisAs;
 
 /**
  * TODO
@@ -22,7 +22,7 @@ public class StandardThisThatModifier
     implements StandardThat
 {
     // Attributes ----------------------------------------------------
-    @Uses StandardThis meAsThis;
+    @ThisAs StandardThis meAsThis;
     @Modifies StandardThat next;
 
     // Z implementation ----------------------------------------------

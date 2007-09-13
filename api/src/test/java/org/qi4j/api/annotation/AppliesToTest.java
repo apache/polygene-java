@@ -13,7 +13,8 @@
 package org.qi4j.api.annotation;
 
 import java.lang.annotation.Annotation;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 
 /**

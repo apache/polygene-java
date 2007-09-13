@@ -16,24 +16,24 @@
  */
 package org.qi4j.runtime;
 
-import org.qi4j.api.Composite;
-import org.qi4j.api.CompositeModelFactory;
-import org.qi4j.api.CompositeBuilderFactory;
-import org.qi4j.api.CompositeCastException;
-import org.qi4j.api.model.CompositeModel;
-import org.qi4j.api.annotation.Dependency;
-import org.qi4j.api.annotation.Uses;
-import org.qi4j.api.annotation.Modifies;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 import java.util.Map;
+import org.qi4j.api.Composite;
+import org.qi4j.api.CompositeBuilderFactory;
+import org.qi4j.api.CompositeCastException;
+import org.qi4j.api.CompositeModelFactory;
+import org.qi4j.api.annotation.DependencyOld;
+import org.qi4j.api.annotation.Modifies;
+import org.qi4j.api.annotation.ThisAs;
+import org.qi4j.api.model.CompositeModel;
 
 public class CompositeServicesModifier
     implements Composite
 {
-    @Dependency private CompositeModelFactory modelFactory;
-    @Dependency private CompositeBuilderFactory builderFactory;
-    @Uses private Composite meAsComposite;
+    @DependencyOld private CompositeModelFactory modelFactory;
+    @DependencyOld private CompositeBuilderFactory builderFactory;
+    @ThisAs private Composite meAsComposite;
     @Modifies Composite next; //ignore
 
     public <T extends Composite> T cast( Class<T> compositeType )
@@ -54,7 +54,7 @@ public class CompositeServicesModifier
         T newComposite = builderFactory.newCompositeBuilder( compositeType ).newInstance();
         Map<Class, Object> oldMixins = ( (CompositeInvocationHandler) handler ).getMixins();
         CompositeInvocationHandler newHandler = CompositeInvocationHandler.getInvocationHandler( newComposite );
-        newHandler.setMixins( oldMixins, true );
+// TODO        newHandler.setMixins( oldMixins, true );
         return newComposite;
     }
 
@@ -68,11 +68,27 @@ public class CompositeServicesModifier
         }
         handler = Proxy.getInvocationHandler( anObject );
         AbstractCompositeInvocationHandler oih = (AbstractCompositeInvocationHandler) handler;
-        return oih.getContext().getCompositeModel().isAssignableFrom( anObjectType );
+        return oih.getContext().getCompositeModel().getCompositeClass().isAssignableFrom( anObjectType );
     }
 
     public CompositeModel getCompositeModel()
     {
-        return modelFactory.getCompositeModel( meAsComposite );
+        Composite composite = dereference( );
+        return CompositeInvocationHandler.getInvocationHandler( composite ).getContext().getCompositeModel();
+    }
+
+    public Composite dereference()
+    {
+        InvocationHandler handler = Proxy.getInvocationHandler( meAsComposite );
+        if( handler instanceof ProxyReferenceInvocationHandler )
+        {
+            return ( (ProxyReferenceInvocationHandler) handler ).getComposite();
+        }
+        if( handler instanceof AbstractCompositeInvocationHandler )
+        {
+            return meAsComposite;
+        }
+
+        return null;
     }
 }

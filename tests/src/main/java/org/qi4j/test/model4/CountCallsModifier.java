@@ -16,23 +16,22 @@
  */
 package org.qi4j.test.model4;
 
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.lang.reflect.AnnotatedElement;
-import org.qi4j.api.InvocationContext;
-import org.qi4j.api.annotation.Dependency;
+import org.qi4j.api.annotation.DependencyOld;
 import org.qi4j.api.annotation.Modifies;
-import org.qi4j.api.annotation.Uses;
+import org.qi4j.api.annotation.ThisAs;
 
 public class CountCallsModifier
     implements InvocationHandler
 {
     private @Modifies InvocationHandler next;
-    private @Uses Counter meAsCounter;
+    private @ThisAs Counter meAsCounter;
 
     private CountCalls annotation;
 
-    public CountCallsModifier( @Dependency AnnotatedElement method )
+    public CountCallsModifier( @DependencyOld AnnotatedElement method )
     {
         annotation = method.getAnnotation( CountCalls.class );
     }

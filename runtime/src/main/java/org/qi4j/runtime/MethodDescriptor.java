@@ -1,0 +1,43 @@
+package org.qi4j.runtime;
+
+import java.lang.reflect.Method;
+import java.util.Queue;
+
+/**
+ * TODO
+ */
+public class MethodDescriptor
+{
+    private Method method;
+    private int invocationInstanceIndex;
+    private int mixinIndex;
+    private InvocationInstancePool invocationInstances;
+
+    public MethodDescriptor( Method method, int invocationInstanceIndex, int mixinIndex, InvocationInstancePool invocationInstances )
+    {
+        this.method = method;
+        this.invocationInstanceIndex = invocationInstanceIndex;
+        this.mixinIndex = mixinIndex;
+        this.invocationInstances = invocationInstances;
+    }
+
+    public Method getMethod()
+    {
+        return method;
+    }
+
+    public int getInvocationInstanceIndex()
+    {
+        return invocationInstanceIndex;
+    }
+
+    public int getMixinIndex()
+    {
+        return mixinIndex;
+    }
+
+    public InvocationInstancePool getInvocationInstances()
+    {
+        return invocationInstances;
+    }
+}

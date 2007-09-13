@@ -16,21 +16,27 @@
  */
 package org.qi4j.runtime;
 
-import org.qi4j.api.model.InvalidCompositeException;
-import org.qi4j.api.persistence.EntityComposite;
-import org.qi4j.spi.persistence.EntityStateHolder;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.HashMap;
+import org.qi4j.api.persistence.EntityComposite;
+import org.qi4j.api.model.MixinResolution;
+import org.qi4j.api.CompositeInstantiationException;
+import org.qi4j.spi.persistence.EntityStateHolder;
 
 public class EntityCompositeInvocationHandler<T extends EntityComposite> extends AbstractCompositeInvocationHandler<T>
 {
+    protected Object[] mixins;
+
     private EntityStateHolder<T> holder;
 
     public EntityCompositeInvocationHandler( CompositeContextImpl<T> aContext )
     {
         super( aContext );
-        mixins = new ConcurrentHashMap<Class, Object>();
+
+        mixins = new Object[aContext.getCompositeResolution().getUsedMixinModels().size()];
     }
 
     public static <T extends EntityComposite> EntityCompositeInvocationHandler<T> getInvocationHandler( T aProxy )
@@ -41,34 +47,64 @@ public class EntityCompositeInvocationHandler<T extends EntityComposite> extends
     // InvocationHandler implementation ------------------------------
     public Object invoke( Object composite, Method method, Object[] args ) throws Throwable
     {
-        Class mixinType = method.getDeclaringClass();
-        Object mixin = getMixin( mixinType, (T) composite );
+        MethodDescriptor descriptor = context.getMethodDescriptor( method );
+        Object mixin = mixins[descriptor.getMixinIndex()];
+
         if( mixin == null )
         {
+            Class mixinType = method.getDeclaringClass();
             if( mixinType.equals( Object.class ) )
             {
                 return invokeObject( (T) composite, method, args );
             }
             else
             {
-                throw new InvalidCompositeException("Implementation missing for " + mixinType.getName() + " in "
-                                                    + context.getCompositeModel().getCompositeClass().getName(),
-                                                    context.getCompositeModel().getCompositeClass() );
+                mixin = holder.getMixin( mixinType );
             }
         }
         // Invoke
-        return context.getInvocationInstance( method ).invoke( (T) composite, method, args, mixin, mixinType );
+        return context.getInvocationInstance( descriptor ).invoke( (T) composite,  args, mixin);
     }
 
+    public void setMixins(Object[] mixins)
+    {
+        Set<MixinResolution> mixinResolutions = context.getCompositeResolution().getUsedMixinModels();
+        int i = 0;
+        for( MixinResolution mixinResolution : mixinResolutions )
+        {
+            Object mixin = mixins[i];
+            // Verify type
+            if (!mixinResolution.getFragmentModel().getFragmentClass().isInstance( mixin))
+            {
+                throw new CompositeInstantiationException("Mixin "+mixin.getClass().getName()+" is not of the expected type "+mixinResolution.getFragmentModel().getFragmentClass().getName());
+            }
+            // Copy reference
+            this.mixins[i] = mixin;
+            i++;
+        }
+    }
+
+    public Map<MixinResolution, Object> getMixins()
+    {
+        Map<MixinResolution, Object> mixinMap = new HashMap<MixinResolution, Object>( );
+        Set<MixinResolution> mixinResolutions = context.getCompositeResolution().getUsedMixinModels();
+        int i = 0;
+        for( MixinResolution mixinResolution : mixinResolutions )
+        {
+            Object mixin = mixins[i++];
+            if (mixin == null)
+            {
+                mixin = holder.getMixin( mixinResolution.getFragmentModel().getFragmentClass());
+                mixins[i] = mixin;
+            }
+            mixinMap.put( mixinResolution, mixin);
+        }
+        return mixinMap;
+    }
 
     public void setEntityStateHolder( EntityStateHolder<T> holder )
     {
         this.holder = holder;
-    }
-
-    protected Object initializeMixin( Class mixinType, T proxy )
-    {
-        return holder.getMixin( mixinType );
     }
 
     public boolean isReference()

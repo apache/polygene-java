@@ -16,61 +16,32 @@
  */
 package org.qi4j.runtime;
 
-import org.qi4j.api.CompositeModelFactory;
-import org.qi4j.api.Composite;
-import org.qi4j.api.model.CompositeModel;
-import org.qi4j.api.model.NullArgumentException;
-import java.lang.reflect.Proxy;
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import org.qi4j.api.Composite;
+import org.qi4j.api.CompositeModelFactory;
+import org.qi4j.api.model.CompositeModel;
+import org.qi4j.api.model.NullArgumentException;
 
 public class CompositeModelFactoryImpl
     implements CompositeModelFactory
 {
-    private Map<Class, CompositeModelImpl> composites;
+    private CompositeModelBuilder compositeModelBuilder;
 
-    public CompositeModelFactoryImpl()
+    public CompositeModelFactoryImpl( CompositeModelBuilder compositeModelBuilder )
     {
-        composites = new ConcurrentHashMap<Class, CompositeModelImpl>();
+        this.compositeModelBuilder = compositeModelBuilder;
     }
 
-    public <T extends Composite> T dereference( T proxy )
-    {
-        InvocationHandler handler = Proxy.getInvocationHandler( proxy );
-        if( handler instanceof ProxyReferenceInvocationHandler )
-        {
-            return ( (ProxyReferenceInvocationHandler<T>) handler ).getComposite();
-        }
-        if( handler instanceof AbstractCompositeInvocationHandler )
-        {
-            return proxy;
-        }
-
-        return null;
-    }
-
-
-    public <T extends Composite> CompositeModel<T> getCompositeModel( Class<T> compositeType )
+    public <T extends Composite> CompositeModel<T> newCompositeModel( Class<T> compositeType )
     {
         if( compositeType == null )
         {
             throw new NullArgumentException( "compositeType" );
         }
-        CompositeModelImpl<T> compositeModel = composites.get( compositeType );
-        if( compositeModel == null )
-        {
-            compositeModel = new CompositeModelImpl<T>( compositeType );
-            composites.put( compositeType, compositeModel );
-        }
 
-        return compositeModel;
+        return compositeModelBuilder.getCompositeModel( compositeType);
     }
-
-    public <T extends Composite> CompositeModel<T> getCompositeModel( T composite )
-    {
-        composite = dereference( composite );
-        return CompositeInvocationHandler.getInvocationHandler( composite ).getContext().getCompositeModel();
-    }
-
 }

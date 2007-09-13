@@ -13,14 +13,15 @@
 package org.qi4j.api.annotation;
 
 import java.lang.annotation.Annotation;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 
 /**
  * Tests public api exposed by Modifies annotation.
  * This will ensure that the public api does not get changed by mistake.
  */
-public class UsesTest
+public class ThisAsTest
 {
 
     @Test
@@ -29,22 +30,22 @@ public class UsesTest
         Annotation[] annotations = Annotated.class.getDeclaredField( "uses" ).getDeclaredAnnotations();
         assertNotNull( "annotations should not be null", annotations );
         assertEquals( "number of annotations", 1, annotations.length );
-        assertEquals( "annotation type", Uses.class, annotations[0].annotationType() );
+        assertEquals( "annotation type", ThisAs.class, annotations[0].annotationType() );
     }
 
     @Test
     public void defaultOptionalIsFalse() throws NoSuchFieldException
     {
         Annotation[] annotations = Annotated.class.getDeclaredField( "uses" ).getDeclaredAnnotations();
-        if ( annotations != null && annotations.length > 0 && Uses.class.equals( annotations[0].annotationType() ) )
+        if ( annotations != null && annotations.length > 0 && ThisAs.class.equals( annotations[0].annotationType() ) )
         {
-            assertEquals( "default optional value", false, ((Uses) annotations[0]).optional() );
+            assertEquals( "default optional value", false, ((ThisAs) annotations[0]).value() );
         }
     }
 
     private static class Annotated
     {
-        @Uses String uses;
-        @Uses( optional = true ) String usesOptional;
+        @ThisAs String uses;
+        @ThisAs( true ) String usesOptional;
     }
 }

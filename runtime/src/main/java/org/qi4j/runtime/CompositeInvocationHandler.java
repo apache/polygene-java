@@ -18,29 +18,36 @@ package org.qi4j.runtime;
 
 import java.lang.reflect.Method;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import org.qi4j.api.model.InvalidCompositeException;
-import org.qi4j.api.model.MixinModel;
+import java.util.Set;
+import java.util.HashMap;
 import org.qi4j.api.Composite;
+import org.qi4j.api.CompositeInstantiationException;
+import org.qi4j.api.model.InvalidCompositeException;
+import org.qi4j.api.model.MixinResolution;
 
 /**
  * InvocationHandler for proxy objects.
  */
 public class CompositeInvocationHandler<T extends Composite> extends AbstractCompositeInvocationHandler<T>
 {
-    public CompositeInvocationHandler( CompositeContextImpl<T> aContext )
+    final private Object[] mixins;
+
+    public CompositeInvocationHandler( CompositeContextImpl<T> aContext)
     {
         super( aContext );
-        mixins = new ConcurrentHashMap<Class, Object>();
+
+        mixins = new Object[aContext.getCompositeResolution().getUsedMixinModels().size()];
     }
 
     // InvocationHandler implementation ------------------------------
     public Object invoke( Object composite, Method method, Object[] args ) throws Throwable
     {
-        Class mixinType = method.getDeclaringClass();
-        Object mixin = getMixin( mixinType, (T) composite );
+        MethodDescriptor descriptor = context.getMethodDescriptor( method );
+        Object mixin = mixins[descriptor.getMixinIndex()];
+
         if( mixin == null )
         {
+            Class mixinType = method.getDeclaringClass();
             if( mixinType.equals( Object.class ) )
             {
                 return invokeObject( (T) composite, method, args );
@@ -53,12 +60,38 @@ public class CompositeInvocationHandler<T extends Composite> extends AbstractCom
             }
         }
         // Invoke
-        return context.getInvocationInstance( method ).invoke( (T) composite, method, args, mixin, mixinType );
+        return context.getInvocationInstance( descriptor).invoke( (T) composite, args, mixin);
     }
 
-    protected Object initializeMixin( Class mixinType, T proxy )
+    public void setMixins(Object[] mixins)
     {
-        MixinModel mixinModel = context.getCompositeModel().getMixin( mixinType );
-        return context.newFragment( mixinModel, proxy, null );
+        Set<MixinResolution> mixinResolutions = context.getCompositeResolution().getUsedMixinModels();
+        int i = 0;
+        for( MixinResolution mixinResolution : mixinResolutions )
+        {
+            Object mixin = mixins[i];
+            // Verify type
+            if (!mixinResolution.getFragmentModel().getFragmentClass().isInstance( mixin))
+            {
+                throw new CompositeInstantiationException("Mixin "+mixin.getClass().getName()+" is not of the expected type "+mixinResolution.getFragmentModel().getFragmentClass().getName());
+            }
+            // Copy reference
+            this.mixins[i] = mixin;
+            i++;
+        }
     }
+
+    public Map<MixinResolution, Object> getMixins()
+    {
+        Map<MixinResolution, Object> mixinMap = new HashMap<MixinResolution, Object>( );
+        Set<MixinResolution> mixinResolutions = context.getCompositeResolution().getUsedMixinModels();
+        int i = 0;
+        for( MixinResolution mixinResolution : mixinResolutions )
+        {
+            Object mixin = mixins[i++];
+            mixinMap.put( mixinResolution, mixin);
+        }
+        return mixinMap;
+    }
+
 }

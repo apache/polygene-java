@@ -16,12 +16,10 @@
  */
 package org.qi4j.api;
 
-import org.qi4j.api.model.FragmentModel;
-import org.qi4j.api.model.CompositeContext;
-import java.lang.reflect.Method;
-import java.rmi.server.RMIClassLoaderSpi;
+import org.qi4j.api.model.FragmentResolution;
 
 public interface FragmentFactory
 {
-    <T extends Composite, K> K newFragment( CompositeContext context, FragmentModel<K> fragmentModel, T proxy, Method method ); // Something like that
+    <K> K newFragment( FragmentResolution<K> fragmentResolution, DependencyInjectionContext context)
+        throws CompositeInstantiationException;
 }

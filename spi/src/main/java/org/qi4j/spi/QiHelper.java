@@ -18,27 +18,8 @@ package org.qi4j.spi;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
-import org.qi4j.api.annotation.Dependency;
+import org.qi4j.api.annotation.DependencyOld;
 
 public class QiHelper
 {
-
-    public static Object getDependencyKey( AnnotatedElement dependentElement )
-    {
-        Dependency depAnnot = dependentElement.getAnnotation( Dependency.class );
-        String value = depAnnot.value();
-        if( value == null )
-        {
-            if( dependentElement instanceof Field )
-            {
-                return ( (Field) dependentElement ).getType();
-            }
-            else
-            {
-                return dependentElement;
-            }
-        }
-        return value;
-
-    }
 }

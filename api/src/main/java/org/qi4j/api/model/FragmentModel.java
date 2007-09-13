@@ -13,14 +13,15 @@ package org.qi4j.api.model;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.lang.reflect.Field;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import org.qi4j.api.annotation.AppliesTo;
-import org.qi4j.api.annotation.Dependency;
-import org.qi4j.api.annotation.Uses;
+import org.qi4j.api.ConstructorDependencyResolution;
+import org.qi4j.api.DependencyResolution;
+import org.qi4j.api.FieldDependencyResolution;
+import org.qi4j.api.MethodDependencyResolution;
 
 /**
  * Base class for fragments. Fragments are composed into objects.
@@ -32,27 +33,26 @@ public abstract class FragmentModel<T>
 {
     // Attributes ----------------------------------------------------
     private Class<T> fragmentClass;
-    private List<Field> usesFields;
-    private List<Field> dependencyFields;
+
+    // Dependencies
+    private Iterable<ConstructorDependency> constructorDependencies;
+    private Iterable<FieldDependency> fieldDependencies;
+    private Iterable<MethodDependency> methodDependencies;
     protected Class appliesTo;
 
     // Constructors --------------------------------------------------
-    public FragmentModel( Class<T> fragmentClass )
+    public FragmentModel( Class<T> fragmentClass, Iterable<ConstructorDependency> constructorDependencies, Iterable<FieldDependency> fieldDependencies, Iterable<MethodDependency> methodDependencies, Class appliesTo )
     {
         if( fragmentClass == null )
         {
             throw new NullArgumentException( "fragmentClass is null" );
         }
+
+        this.constructorDependencies = constructorDependencies;
+        this.fieldDependencies = fieldDependencies;
+        this.methodDependencies = methodDependencies;
         this.fragmentClass = fragmentClass;
-
-        this.usesFields = new ArrayList<Field>();
-        findUses( fragmentClass, usesFields );
-
-        this.dependencyFields = new ArrayList<Field>();
-        findDependency( fragmentClass, dependencyFields );
-        appliesTo = findAppliesTo( fragmentClass );
-        usesFields = Collections.unmodifiableList( usesFields );
-        dependencyFields = Collections.unmodifiableList( dependencyFields );
+        this.appliesTo = appliesTo;
     }
 
     // Public -------------------------------------------------------
@@ -61,14 +61,19 @@ public abstract class FragmentModel<T>
         return fragmentClass;
     }
 
-    public List<Field> getUsesFields()
+    public Iterable<ConstructorDependency> getConstructorDependencies()
     {
-        return usesFields;
+        return constructorDependencies;
     }
 
-    public List<Field> getDependencyFields()
+    public Iterable<FieldDependency> getFieldDependencies()
     {
-        return dependencyFields;
+        return fieldDependencies;
+    }
+
+    public Iterable<MethodDependency> getMethodDependencies()
+    {
+        return methodDependencies;
     }
 
     public Class getAppliesTo()
@@ -78,13 +83,36 @@ public abstract class FragmentModel<T>
 
     public boolean isAbstract()
     {
-        return fragmentClass.isInterface();
+        return Modifier.isAbstract( fragmentClass.getModifiers());
     }
 
     public boolean isGeneric()
     {
         return InvocationHandler.class.isAssignableFrom( fragmentClass );
     }
+
+    public Iterable<Dependency> getDependenciesByScope( Class<? extends Annotation> annotationScopeClass )
+    {
+        List<Dependency> scopeDependencies = new ArrayList<Dependency>( );
+
+        for( ConstructorDependency constructorDependency : constructorDependencies )
+        {
+            for( ParameterDependency parameterDependency : constructorDependency.getParameterDependencies() )
+            {
+                if (parameterDependency.getKey().getAnnotationType().equals(annotationScopeClass))
+                    scopeDependencies.add( parameterDependency);
+            }
+        }
+
+        for( FieldDependency fieldDependency : fieldDependencies )
+        {
+            if (fieldDependency.getKey().getAnnotationType().equals(annotationScopeClass))
+                scopeDependencies.add( fieldDependency );
+        }
+
+        return scopeDependencies;
+    }
+
 
     // Object overrides ---------------------------------------------
     public boolean equals( Object o )
@@ -108,87 +136,16 @@ public abstract class FragmentModel<T>
         return fragmentClass.hashCode();
     }
 
-
     public String toString()
     {
         StringWriter str = new StringWriter();
         PrintWriter out = new PrintWriter( str );
         out.println( fragmentClass.getName() );
-        if( usesFields.size() > 0 )
+        for( FieldDependency fieldDependency : fieldDependencies )
         {
-            out.println( "  @Uses" );
-            for( Field usesField : usesFields )
-            {
-                out.println( "    " + usesField.getType().getName() );
-            }
-        }
-
-        if( dependencyFields.size() > 0 )
-        {
-            out.println( "  @Dependency" );
-            for( Field dependencyField : dependencyFields )
-            {
-                out.println( "    " + dependencyField.getType().getName() );
-            }
+            out.println( "    @" + fieldDependency.getKey().getAnnotationType().getSimpleName()+" "+fieldDependency.getField().getName());
         }
         out.close();
         return str.toString();
-    }
-
-    // Private ------------------------------------------------------
-    private void findUses( Class aModifierClass, List<Field> aUsesFields )
-    {
-        Field[] fields = aModifierClass.getDeclaredFields();
-        for( Field field : fields )
-        {
-            if( field.getAnnotation( Uses.class ) != null )
-            {
-                field.setAccessible( true );
-                aUsesFields.add( field );
-            }
-        }
-        Class<?> parent = aModifierClass.getSuperclass();
-        if( parent != null && parent != Object.class )
-        {
-            findUses( parent, aUsesFields );
-        }
-    }
-
-    private void findDependency( Class aModifierClass, List<Field> aDependencyFields )
-    {
-        Field[] fields = aModifierClass.getDeclaredFields();
-        for( Field field : fields )
-        {
-            if( field.getAnnotation( Dependency.class ) != null )
-            {
-                field.setAccessible( true );
-                aDependencyFields.add( field );
-            }
-        }
-
-        Class<?> parent = aModifierClass.getSuperclass();
-        if( parent != null && parent != Object.class )
-        {
-            findDependency( parent, aDependencyFields );
-        }
-    }
-
-    private Class findAppliesTo( Class<? extends Object> aModifierClass )
-    {
-        AppliesTo appliesTo = aModifierClass.getAnnotation( AppliesTo.class );
-        if( appliesTo != null )
-        {
-            return appliesTo.value();
-        }
-
-        Class<?> parent = aModifierClass.getSuperclass();
-        if( parent != null && parent != Object.class )
-        {
-            return findAppliesTo( parent );
-        }
-        else
-        {
-            return null;
-        }
     }
 }

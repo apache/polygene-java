@@ -29,8 +29,9 @@ import java.util.HashMap;
 import java.util.Map;
 import org.qi4j.api.Composite;
 import org.qi4j.api.CompositeBuilderFactory;
-import org.qi4j.api.model.CompositeState;
 import org.qi4j.api.model.CompositeModel;
+import org.qi4j.api.model.CompositeState;
+import org.qi4j.api.model.MixinResolution;
 import org.qi4j.api.persistence.EntityComposite;
 import org.qi4j.api.persistence.EntitySession;
 
@@ -101,12 +102,12 @@ public class SerializedObject
                 {
                     Map<Class, Object> mixinsToSave = new HashMap<Class, Object>();
                     CompositeState mixinsHolder = (CompositeState) Proxy.getInvocationHandler( obj );
-                    Map<Class, Object> existingMixins = mixinsHolder.getMixins();
-                    for( Map.Entry<Class, Object> entry : existingMixins.entrySet() )
+                    Map<MixinResolution, Object> existingMixins = mixinsHolder.getMixins();
+                    for( Map.Entry<MixinResolution, Object> entry : existingMixins.entrySet() )
                     {
                         if( entry.getValue() instanceof Serializable )
                         {
-                            mixinsToSave.put( entry.getKey(), entry.getValue() );
+                            mixinsToSave.put( entry.getKey().getFragmentModel().getFragmentClass(), entry.getValue() );
                         }
                     }
                     return new CompositeHolder( mixinsToSave, compositeInterface );
@@ -148,7 +149,7 @@ public class SerializedObject
                 Map<Class, Object> mixins = holder.getMixins();
                 Composite composite = factory.newCompositeBuilder( compositeInterface ).newInstance();
                 CompositeState mixinHandler = (CompositeState) Proxy.getInvocationHandler( composite );
-                mixinHandler.setMixins( mixins, false );
+// TODO                mixinHandler.setMixins( mixins, false );
             }
             return obj;
         }

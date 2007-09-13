@@ -1,6 +1,5 @@
 package org.qi4j.test.model1;
 
-import java.io.Serializable;
 import org.qi4j.api.annotation.ImplementedBy;
 import org.qi4j.library.framework.properties.PropertiesMixin;
 

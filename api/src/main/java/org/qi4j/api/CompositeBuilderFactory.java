@@ -16,7 +16,7 @@ package org.qi4j.api;
 
 /**
  * This factory creates proxies that implement the given
- * composite interfaces.
+ * thisAs interfaces.
  */
 public interface CompositeBuilderFactory
 {

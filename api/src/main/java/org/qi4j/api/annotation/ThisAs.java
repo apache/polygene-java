@@ -23,9 +23,9 @@ import java.lang.annotation.Target;
 /**
  * Annotation to denote the injection of a dependency into a Fragment (a Modifier or Mixin).
  * <p/>
- * Dependency resolution is handled through the DependencyResolver, which allows any kind
+ * DependencyOld resolution is handled through the DependencyResolver, which allows any kind
  * of injection. The org.qi4j.spi.DefaultDependencyResolver handles CompositeBuilderFactory and
- * CompositeModelFactory. The @Dependency annotation tells the runtime to find an provider for
+ * CompositeModelFactory. The @DependencyOld annotation tells the runtime to find an provider for
  * the type of that field.
  * <p/>
  * Example;
@@ -62,7 +62,7 @@ import java.lang.annotation.Target;
  * }
  * </code></pre>
  * <p/>
- * If the @Dependency needs to be more specific than the type of the field,
+ * If the @DependencyOld needs to be more specific than the type of the field,
  * it is possible to provide a value that is DependencyResolver implementation
  * specific. For instance;
  * <pre><code>
@@ -80,9 +80,8 @@ import java.lang.annotation.Target;
 @Retention( RetentionPolicy.RUNTIME )
 @Target( { ElementType.FIELD, ElementType.PARAMETER } )
 @Documented
-public @interface Dependency
+@DependencyScope
+public @interface ThisAs
 {
-    String value() default ""; // This name can be used for lookups
-
-    boolean optional() default false; // If the dependency cannot be resolved, only fail if this is false
+    @Optional boolean value() default false; // True if the dependency is optional, only fail if this is false
 }

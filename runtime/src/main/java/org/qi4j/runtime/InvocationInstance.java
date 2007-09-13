@@ -17,27 +17,34 @@ package org.qi4j.runtime;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.List;
+import java.util.Queue;
 import org.qi4j.api.Composite;
 
 public final class InvocationInstance<T extends Composite>
 {
     private Object firstModifier;
+    private Method method;
+    private Class mixinType;
     private FragmentInvocationHandler mixinInvocationHandler;
     private ProxyReferenceInvocationHandler<T> proxyHandler;
-    private List<InvocationInstance> pool;
+    private InvocationInstancePool pool;
+    private InvocationInstance next;
 
-    public InvocationInstance( Object aFirstModifier, FragmentInvocationHandler aMixinInvocationHandler, ProxyReferenceInvocationHandler<T> aProxyHandler, List<InvocationInstance> aPool )
+    public InvocationInstance( Object aFirstModifier, FragmentInvocationHandler aMixinInvocationHandler, ProxyReferenceInvocationHandler aProxyHandler, InvocationInstancePool aPool, Method method, Class mixinType )
     {
+        this.mixinType = mixinType;
+        this.method = method;
         firstModifier = aFirstModifier;
         proxyHandler = aProxyHandler;
         mixinInvocationHandler = aMixinInvocationHandler;
         pool = aPool;
     }
 
-    public Object invoke( T proxy, Method method, Object[] args, Object mixin, Class mixinType )
+    public Object invoke( T proxy, Object[] args, Object mixin)
         throws Throwable
     {
+        pool.returnInstance( this );
+        
         try
         {
             if( firstModifier == null )
@@ -71,10 +78,17 @@ public final class InvocationInstance<T extends Composite>
         }
         finally
         {
-            synchronized( pool )
-            {
-                pool.add( this );
-            }
+            pool.returnInstance( this );
         }
+    }
+
+    public InvocationInstance getNext()
+    {
+        return next;
+    }
+
+    public void setNext( InvocationInstance next )
+    {
+        this.next = next;
     }
 }

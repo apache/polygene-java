@@ -35,12 +35,6 @@ public interface EntitySession
 
     boolean contains( EntityComposite entity );
 
-    <T extends EntityComposite> QueryBuilder<T> newQueryBuilder( Class<T> queryCompositeType );
-
-    <T extends EntityComposite> Query<T> getNamedQuery( String name );
-
-    <T extends EntityComposite> Query<T> newQuery( String expression, Class<T> compositeType );
-
     void close();
 
     boolean isOpen();
@@ -52,4 +46,6 @@ public interface EntitySession
      * @return The URL to the composite of the given identity.
      */
     URL toURL( Identity identity );
+
+    QueryFactory getQueryFactory();
 }

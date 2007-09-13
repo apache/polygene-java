@@ -14,6 +14,8 @@
  */
 package org.qi4j.api.persistence;
 
+import org.qi4j.api.annotation.ImplementedBy;
+
 /**
  * Lifecycle interface for all Composites.
  * <p/>
@@ -77,6 +79,7 @@ package org.qi4j.api.persistence;
  * <p/>
  * </pre></code>
  */
+@ImplementedBy( Lifecycle.LifecycleMixin.class)
 public interface Lifecycle
 {
 
@@ -95,4 +98,21 @@ public interface Lifecycle
      * for clean-up operations.
      */
     void delete();
+
+    // Default implementation
+    public final class LifecycleMixin
+        implements Lifecycle
+    {
+        public static final Lifecycle INSTANCE = new LifecycleMixin();
+
+        public void create()
+            throws PersistenceException
+        {
+        }
+
+        public void delete()
+            throws PersistenceException
+        {
+        }
+    }
 }

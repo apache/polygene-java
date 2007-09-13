@@ -13,7 +13,11 @@ package org.qi4j.api.model;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.lang.reflect.Field;
+import java.util.Iterator;
+import org.qi4j.api.ConstructorDependencyResolution;
+import org.qi4j.api.DependencyResolution;
+import org.qi4j.api.FieldDependencyResolution;
+import org.qi4j.api.MethodDependencyResolution;
 import org.qi4j.api.annotation.Modifies;
 
 /**
@@ -25,22 +29,21 @@ import org.qi4j.api.annotation.Modifies;
 public final class ModifierModel<T>
     extends FragmentModel<T>
 {
-    private Field modifiesField;
+    private Dependency modifiesDependency;
 
     // Constructors --------------------------------------------------
-    public ModifierModel( Class modifierClass )
+    public ModifierModel( Class<T> fragmentClass, Iterable<ConstructorDependency> constructorDependencies, Iterable<FieldDependency> fieldDependencies, Iterable<MethodDependency> methodDependencies, Class appliesTo)
     {
-        super( modifierClass );
-        if( modifierClass.isInterface() )
-        {
-            throw new InvalidModifierException( "Interfaces can not be modifiers: " + modifierClass.getName(), modifierClass );
-        }
-        this.modifiesField = findModifies( modifierClass );
+        super( fragmentClass, constructorDependencies, fieldDependencies, methodDependencies, appliesTo );
+
+        Iterator<Dependency> modifies = getDependenciesByScope( Modifies.class).iterator();
+        if (modifies.hasNext())
+            this.modifiesDependency = modifies.next();
     }
 
-    public Field getModifiesField()
+    public Dependency getModifiesDependency()
     {
-        return modifiesField;
+        return modifiesDependency;
     }
 
     // Object overrides ---------------------------------------------
@@ -52,7 +55,7 @@ public final class ModifierModel<T>
         StringWriter str = new StringWriter();
         PrintWriter out = new PrintWriter( str );
         out.println( "  @Modifies" );
-        out.println( "    " + modifiesField.getType().getName() );
+        out.println( "    " + modifiesDependency.getKey().getRawClass().getSimpleName());
 
         if( appliesTo != null )
         {
@@ -64,37 +67,5 @@ public final class ModifierModel<T>
     }
 
     // Private ------------------------------------------------------
-    private Field findModifies( Class<? extends Object> aModifierClass )
-    {
-        Field[] fields = aModifierClass.getDeclaredFields();
-        Field modifiesField = null;
-        for( Field field : fields )
-        {
-            if( field.getAnnotation( Modifies.class ) != null )
-            {
-                if( modifiesField != null )
-                {
-                    throw new InvalidModifierException( "Modifier " + aModifierClass + " has more than one @Modifies field: " + modifiesField.getName() + ", " + field.getName(), aModifierClass );
-                }
-                field.setAccessible( true );
-                modifiesField = field;
-            }
-        }
-
-        if( modifiesField != null )
-        {
-            return modifiesField;
-        }
-
-        Class<?> parent = aModifierClass.getSuperclass();
-        if( parent != Object.class )
-        {
-            return findModifies( parent );
-        }
-        else
-        {
-            throw new InvalidModifierException( aModifierClass.getName() + " does not specify a @Modifies field.", aModifierClass );
-        }
-    }
 
 }

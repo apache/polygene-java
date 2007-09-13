@@ -17,8 +17,8 @@
 package org.qi4j.test.model4;
 
 import junit.framework.TestCase;
-import org.qi4j.api.CompositeBuilderFactory;
 import org.qi4j.api.CompositeBuilder;
+import org.qi4j.api.CompositeBuilderFactory;
 import org.qi4j.runtime.CompositeBuilderFactoryImpl;
 
 public class ConstructorInjectionTest extends TestCase
@@ -31,8 +31,8 @@ public class ConstructorInjectionTest extends TestCase
         CompositeBuilder<Composite1> builder = factory.newCompositeBuilder( Composite1.class );
 
         Composite1 instance = builder.newInstance();
-        assertNotNull( "Dependency not injected.", instance.getBuilderFactory() );
-        assertNotNull( "Uses not injected.", instance.getMeAsMixin2() );
+        assertNotNull( "DependencyOld not injected.", instance.getBuilderFactory() );
+        assertNotNull( "ThisAs not injected.", instance.getMeAsMixin2() );
         assertEquals( 1, instance.getValue() );
         instance.getBuilderFactory();
         instance.getBuilderFactory();

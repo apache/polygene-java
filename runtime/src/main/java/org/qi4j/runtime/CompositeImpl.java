@@ -15,8 +15,8 @@
 package org.qi4j.runtime;
 
 import org.qi4j.api.Composite;
-import org.qi4j.api.model.CompositeModel;
 import org.qi4j.api.annotation.ModifiedBy;
+import org.qi4j.api.model.CompositeModel;
 
 @ModifiedBy( CompositeServicesModifier.class )
 public final class CompositeImpl
@@ -33,6 +33,11 @@ public final class CompositeImpl
     }
 
     public CompositeModel getCompositeModel()
+    {
+        return null;
+    }
+
+    public Composite dereference()
     {
         return null;
     }

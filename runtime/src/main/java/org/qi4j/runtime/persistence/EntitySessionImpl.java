@@ -21,14 +21,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.qi4j.api.CompositeBuilder;
 import org.qi4j.api.CompositeBuilderFactory;
 import org.qi4j.api.CompositeModelFactory;
-import org.qi4j.api.persistence.IdentityGenerator;
 import org.qi4j.api.model.CompositeModel;
+import org.qi4j.api.persistence.EntityComposite;
 import org.qi4j.api.persistence.EntitySession;
 import org.qi4j.api.persistence.Identity;
+import org.qi4j.api.persistence.IdentityGenerator;
 import org.qi4j.api.persistence.Query;
-import org.qi4j.api.persistence.QueryBuilder;
-import org.qi4j.api.persistence.EntityComposite;
-import org.qi4j.runtime.IdentityImpl;
+import org.qi4j.api.persistence.QueryFactory;
 import org.qi4j.runtime.EntityCompositeInvocationHandler;
 import org.qi4j.spi.persistence.EntityStateHolder;
 import org.qi4j.spi.persistence.PersistenceException;
@@ -82,11 +81,11 @@ public class EntitySessionImpl
         try
         {
             T entity = compositeType.cast( cache.get( identity ) );
-            CompositeModel<T> model = compositeModelFactory.getCompositeModel( compositeType );
+            CompositeModel<T> model = compositeModelFactory.newCompositeModel( compositeType );
             if( entity == null )
             {
                 CompositeBuilder<T> builder = builderFactory.newCompositeBuilder( compositeType );
-                builder.setMixin( Identity.class, new IdentityImpl( identity ) );
+                builder.properties( Identity.class, identity);
                 entity = builder.newInstance();
                 EntityStateHolder<T> holder = store.getEntityInstance( identity, model );
                 EntityCompositeInvocationHandler<T> handler = EntityCompositeInvocationHandler.getInvocationHandler( entity );
@@ -127,17 +126,17 @@ public class EntitySessionImpl
         return false;
     }
 
-    public <T extends EntityComposite> QueryBuilder<T> newQueryBuilder( Class<T> queryCompositeType )
+    public QueryFactory getQueryFactory()
     {
         return null;
     }
 
-    public <T extends EntityComposite> Query<T> getNamedQuery( String name )
+    public Query getNamedQuery( String name )
     {
         return null;
     }
 
-    public <T extends EntityComposite> Query<T> newQuery( String expression, Class<T> compositeType )
+    public Query newQuery( String expression, Class compositeType )
     {
         return null;
     }

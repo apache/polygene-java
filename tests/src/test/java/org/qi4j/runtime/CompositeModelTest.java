@@ -38,13 +38,13 @@ public class CompositeModelTest
     @Test( expected = NullArgumentException.class )
     public void constructorWithNullComposite()
     {
-        new CompositeModelImpl( null );
+        new CompositeModel( null );
     }
 
     @Test( expected = InvalidCompositeException.class )
     public void constructorWithNonInterfaceComposite()
     {
-        new CompositeModelImpl( ( (Composite) Proxy.newProxyInstance(
+        new CompositeModel( ( (Composite) Proxy.newProxyInstance(
             Thread.currentThread().getContextClassLoader(),
             new Class<?>[]{ Composite.class },
             new InvocationHandler()
@@ -59,25 +59,25 @@ public class CompositeModelTest
     @Test( expected = InvalidCompositeException.class )
     public void constructorWithNonComposite()
     {
-        new CompositeModelImpl( (Class) Serializable.class );
+        new CompositeModel( (Class) Serializable.class );
     }
 
     @Test
     public void getCompositeClass()
     {
-        assertEquals( TestComposite.class, new CompositeModelImpl( TestComposite.class ).getCompositeClass() );
+        assertEquals( TestComposite.class, new CompositeModel( TestComposite.class ).getCompositeClass() );
     }
 
     @Test
     public void getImplementations()
     {
-        CompositeModel model = new CompositeModelImpl( TestComposite.class );
+        CompositeModel model = new CompositeModel( TestComposite.class );
         List<Class> expected = new LinkedList<Class>();
         expected.add( TestMixin1.class );
         expected.add( TestMixin2.class );
         expected.add( TestMixin1.class );
         expected.add( CompositeImpl.class ); // from Composite itself
-        List<MixinModel> list = model.getImplementations();
+        List<MixinModel> list = model.getMixinModels();
         for( MixinModel mixinModel : list )
         {
             assertTrue( "unexpected mixin model: " + mixinModel, expected.remove( mixinModel.getFragmentClass() ) );
@@ -89,15 +89,15 @@ public class CompositeModelTest
     public void getImplementationsForSubclasses()
     {
         assertTrue( "subclasses should inherit mixins",
-                    new CompositeModelImpl( ExtendedTestComposite.class ).getImplementations().size() > 0 );
+                    new CompositeModel( ExtendedTestComposite.class ).getMixinModels().size() > 0 );
     }
 
     // we should not be able to alter the mixins list from outside
     @Test
     public void alterImplementationsFromOutside()
     {
-        CompositeModel model = new CompositeModelImpl( TestComposite.class );
-        List<MixinModel> mixinsModels = model.getImplementations();
+        CompositeModel model = new CompositeModel( TestComposite.class );
+        List<MixinModel> mixinsModels = model.getMixinModels();
         int nrOfMixins = mixinsModels.size();
         try
         {
@@ -113,13 +113,13 @@ public class CompositeModelTest
     @Test
     public void getModifiers()
     {
-        CompositeModel model = new CompositeModelImpl( TestComposite.class );
+        CompositeModel model = new CompositeModel( TestComposite.class );
         List<Class> expected = new LinkedList<Class>();
         expected.add( TestModifier1.class );
         expected.add( TestModifier2.class );
         expected.add( TestModifier1.class );
         expected.add( CompositeServicesModifier.class );
-        List<ModifierModel> list = model.getModifiers();
+        List<ModifierModel> list = model.getModifierModels();
         for( ModifierModel modifierModel : list )
         {
             assertTrue( "unexpected modifier model: " + modifierModel, expected.remove( modifierModel.getFragmentClass() ) );
@@ -131,15 +131,15 @@ public class CompositeModelTest
     public void getModifiersForSubclasses()
     {
         assertTrue( "subclasses should inherit modifiers",
-                    new CompositeModelImpl( ExtendedTestComposite.class ).getImplementations().size() > 0 );
+                    new CompositeModel( ExtendedTestComposite.class ).getMixinModels().size() > 0 );
     }
 
     // we should not be able to alter the mixins list from outside
     @Test
     public void alterModifiersFromOutside()
     {
-        CompositeModel model = new CompositeModelImpl( TestComposite.class );
-        List<ModifierModel> modifierModels = model.getModifiers();
+        CompositeModel model = new CompositeModel( TestComposite.class );
+        List<ModifierModel> modifierModels = model.getModifierModels();
         int nrOfMixins = modifierModels.size();
         try
         {

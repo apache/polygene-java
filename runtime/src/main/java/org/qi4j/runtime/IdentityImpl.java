@@ -15,7 +15,6 @@
 package org.qi4j.runtime;
 
 import org.qi4j.api.persistence.Identity;
-import org.qi4j.api.annotation.Uses;
 
 
 /**

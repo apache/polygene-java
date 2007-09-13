@@ -16,10 +16,16 @@
  */
 package org.qi4j.api;
 
-import java.lang.reflect.AnnotatedElement;
-import org.qi4j.api.model.CompositeContext;
-
 public interface DependencyResolver
 {
-    Object resolveDependency( AnnotatedElement dependentElement, CompositeContext context );
+    /**
+     * Find a dependency resolution given a dependency key and a thisAs model. If no resolution
+     * can be found, return null. If the dependency is optional the dependency will
+     * then be explicitly set to null.
+     *
+     * @param key
+     * @return
+     */
+    DependencyResolution resolveDependency( DependencyKey key )
+        throws InvalidDependencyException;
 }

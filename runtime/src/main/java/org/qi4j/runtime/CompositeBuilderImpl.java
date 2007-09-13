@@ -16,11 +16,11 @@
  */
 package org.qi4j.runtime;
 
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.lang.reflect.Proxy;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,14 +28,10 @@ import java.util.Set;
 import org.qi4j.api.Composite;
 import org.qi4j.api.CompositeBuilder;
 import org.qi4j.api.CompositeInstantiationException;
-import org.qi4j.api.CompositeModelFactory;
-import org.qi4j.api.IllegalMixinTypeException;
-import org.qi4j.api.CompositeBuilderFactory;
-import org.qi4j.api.model.CompositeModel;
-import org.qi4j.api.model.MixinModel;
+import org.qi4j.api.FragmentFactory;
+import org.qi4j.api.MixinDependencyInjectionContext;
+import org.qi4j.api.model.MixinResolution;
 import org.qi4j.api.persistence.Lifecycle;
-import org.qi4j.runtime.LifecycleImpl;
-import org.qi4j.spi.TypeLookupResolver;
 
 /**
  *
@@ -44,14 +40,14 @@ public class CompositeBuilderImpl<T extends Composite>
     implements CompositeBuilder<T>
 {
     private static final Method CREATE_METHOD;
-    protected Map<Class, Object> states;
-    private CompositeModelFactory modelFactory;
-    protected CompositeBuilderFactoryImpl builderFactory;
-    protected Class<T> compositeInterface;
+
+    private Class<T> compositeInterface;
     private CompositeContextImpl context;
-    private CompositeInvocationHandler state;
-    private T composite;
-    private TypeLookupResolver resolver;
+    private FragmentFactory fragmentFactory;
+
+    private List adaptContext;
+    private List decorateContext;
+    private Map<MixinResolution, Object[]> properties;
 
     static
     {
@@ -65,21 +61,87 @@ public class CompositeBuilderImpl<T extends Composite>
         }
     }
 
-    CompositeBuilderImpl( CompositeContextImpl<T> context )
+    CompositeBuilderImpl( CompositeContextImpl<T> context, FragmentFactory fragmentFactory )
     {
+        this.fragmentFactory = fragmentFactory;
         this.context = context;
-        this.modelFactory = context.getCompositeModelFactory();
-        this.builderFactory = (CompositeBuilderFactoryImpl) context.getCompositeBuilderFactory();
         this.compositeInterface = context.getCompositeModel().getCompositeClass();
-        composite = builderFactory.newInstance( compositeInterface );
-        state = CompositeInvocationHandler.getInvocationHandler( composite );
-        states = new HashMap<Class, Object>();
-        states.put( Lifecycle.class, new LifecycleImpl() );
+
+        properties = new HashMap<MixinResolution, Object[]>();
+    }
+
+    public void adapt( Object adaptedObject )
+    {
+        getAdaptContext().add(adaptedObject);
+    }
+
+    public <K, T extends K> void decorate( K decoratedObject )
+    {
+        getDecorateContext().add(decoratedObject);
+    }
+
+    public <K> void properties( Class<K> mixinType, Object... properties )
+    {
+        this.properties.put(context.getCompositeResolution().getMixinForInterface( mixinType), properties);
     }
 
     public T newInstance()
     {
-        state.setMixins( states, false );
+        // Instantiate composite proxy
+        T composite = newInstance(compositeInterface );
+
+        // Instantiate all mixins
+        CompositeInvocationHandler state = newMixins( composite );
+
+        // Invoke lifecycle create() method
+//        invokeCreate( composite, state );
+
+        // Return
+        return composite;
+    }
+
+    private <T extends Composite> T newInstance(Class<T> compositeType)
+        throws CompositeInstantiationException
+    {
+        // Instantiate proxy for given composite interface
+        try
+        {
+            AbstractCompositeInvocationHandler handler = new CompositeInvocationHandler( context );
+            ClassLoader proxyClassloader = compositeType.getClassLoader();
+            Class[] interfaces = new Class[]{ compositeType };
+            return compositeType.cast( Proxy.newProxyInstance( proxyClassloader, interfaces, handler ) );
+        }
+        catch( Exception e )
+        {
+            throw new CompositeInstantiationException( e );
+        }
+    }
+
+
+
+    private CompositeInvocationHandler newMixins( T composite )
+    {
+        CompositeInvocationHandler state = CompositeInvocationHandler.getInvocationHandler( composite );
+        Map states = new HashMap<Class, Object>();
+        states.put( Lifecycle.class, LifecycleImpl.INSTANCE );
+
+        Set<MixinResolution> usedMixins = context.getCompositeResolution().getUsedMixinModels();
+        Object[] mixins = new Object[usedMixins.size()];
+        int i = 0;
+        for( MixinResolution resolution : usedMixins)
+        {
+            Object[] params = properties.get( resolution);
+            MixinDependencyInjectionContext injectionContext = new MixinDependencyInjectionContext(context, composite, params, adaptContext, decorateContext);
+            Object mixin = fragmentFactory.newFragment( resolution, injectionContext);
+            mixins[i++] = mixin;
+        }
+
+        state.setMixins( mixins );
+        return state;
+    }
+
+    private void invokeCreate( T composite, CompositeInvocationHandler state )
+    {
         try
         {
             state.invoke( composite, CREATE_METHOD, null );
@@ -102,93 +164,20 @@ public class CompositeBuilderImpl<T extends Composite>
         {
             throw new CompositeInstantiationException( e );
         }
-        return composite;
     }
 
-    public <K> void setMixin( Class<K> mixinType, K mixin )
+    // Private ------------------------------------------------------
+    private List getAdaptContext()
     {
-        if( mixinType.isAssignableFrom( compositeInterface ) )
-        {
-            if( mixinType.isInstance( mixin ) )
-            {
-                states.put( mixinType, mixin );
-            }
-            else
-            {
-                throw new IllegalMixinTypeException( mixin.getClass().getName() + " is not an implementation of " + mixinType.getName() );
-            }
-        }
-        else
-        {
-            throw new IllegalMixinTypeException( mixinType.getName() + " is not a superinterface of " + compositeInterface.getName() );
-        }
-
+        if ( adaptContext == null)
+            adaptContext = new ArrayList();
+        return adaptContext;
     }
 
-    public void setMixin( Class mixinType, InvocationHandler mixin )
+    private List getDecorateContext()
     {
-        states.put( mixinType, mixin );
-    }
-
-    public <K> K getMixin( Class<K> mixinType )
-    {
-        Object mixin = states.get( mixinType );
-        if( mixin == null )
-        {
-            CompositeModel model = modelFactory.getCompositeModel( compositeInterface );
-            List<MixinModel> mixinModels = model.getImplementations( mixinType );
-            if( mixinModels.size() == 0 )
-            {
-                return null;
-            }
-            MixinModel mixinModel = mixinModels.get( 0 );
-            mixin = context.newFragment( mixinModel, composite, null );
-            states.put( mixinType, mixin );
-        }
-        if( mixin instanceof InvocationHandler )
-        {
-            mixin = Proxy.newProxyInstance( mixinType.getClassLoader(), new Class[] { mixinType }, (InvocationHandler) mixin );
-        }
-        return mixinType.cast( mixin );
-    }
-
-    public void adapt( Object mixin )
-    {
-        CompositeModel model = modelFactory.getCompositeModel( compositeInterface );
-        Set<Class> unresolved = model.getUnresolved();
-        for( Class needed : unresolved )
-        {
-            if( needed.isInstance( mixin ) )
-            {
-                setMixin( needed, needed.cast( mixin ) );
-            }
-        }
-    }
-
-    public <K> void provideDependency( Class<K> dependencyType, K dependencyInstance )
-    {
-        if( resolver == null )
-        {
-            resolver = new TypeLookupResolver();
-            resolver.put( CompositeModelFactory.class,  modelFactory );
-            resolver.put( CompositeBuilderFactory.class, builderFactory );
-        }
-        resolver.put( dependencyType, dependencyInstance );
-    }
-
-    public void provideDependency( Object dependencyInstance )
-    {
-        Class[] intfaces = dependencyInstance.getClass().getInterfaces();
-        provideDependencyRecursion( intfaces, dependencyInstance );
-
-    }
-
-    private void provideDependencyRecursion( Class[] intfaces, Object dependencyInstance )
-    {
-        for( Class intface : intfaces )
-        {
-            provideDependency( intface, dependencyInstance );
-            provideDependencyRecursion( intface.getInterfaces(), dependencyInstance );
-        }
+        if ( decorateContext == null)
+            decorateContext = new ArrayList( );
+        return decorateContext;
     }
 }

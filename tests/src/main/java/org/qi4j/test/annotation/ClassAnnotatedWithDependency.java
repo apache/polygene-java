@@ -16,9 +16,9 @@
  */
 package org.qi4j.test.annotation;
 
-import org.qi4j.api.annotation.Dependency;
+import org.qi4j.api.annotation.DependencyOld;
 
 public class ClassAnnotatedWithDependency
 {
-    @Dependency public String abc;
+    @DependencyOld public String abc;
 }

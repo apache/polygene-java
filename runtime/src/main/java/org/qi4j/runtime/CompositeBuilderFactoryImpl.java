@@ -14,20 +14,19 @@
  */
 package org.qi4j.runtime;
 
-import java.lang.reflect.Proxy;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 import org.qi4j.api.Composite;
-import org.qi4j.api.CompositeBuilderFactory;
-import org.qi4j.api.CompositeInstantiationException;
-import org.qi4j.api.DependencyResolver;
 import org.qi4j.api.CompositeBuilder;
+import org.qi4j.api.CompositeBuilderFactory;
 import org.qi4j.api.CompositeModelFactory;
+import org.qi4j.api.FragmentFactory;
+import org.qi4j.api.annotation.Adapt;
+import org.qi4j.api.annotation.Decorate;
+import org.qi4j.api.annotation.Modifies;
+import org.qi4j.api.annotation.ThisAs;
 import org.qi4j.api.model.CompositeModel;
-import org.qi4j.spi.MixinDependencyResolver;
+import org.qi4j.api.model.CompositeResolution;
 
 /**
  * Default implementation of CompositeBuilderFactory
@@ -35,91 +34,51 @@ import org.qi4j.spi.MixinDependencyResolver;
 public final class CompositeBuilderFactoryImpl
     implements CompositeBuilderFactory
 {
-    private Map<CompositeModel, CompositeContextImpl> objectContexts;
-    private List<DependencyResolver> resolvers;
+    private Map<Class<? extends Composite>, CompositeContextImpl> objectContexts;
     private CompositeModelFactory modelFactory;
+    private FragmentFactory fragmentFactory;
+    private CompositeModelResolver compositeModelResolver;
+    private CompositeModelBuilder compositeModelBuilder;
 
     public CompositeBuilderFactoryImpl()
     {
-        this( null, null );
-    }
+        DependencyResolverDelegator dependencyResolverDelegator = new DependencyResolverDelegator();
 
-    public CompositeBuilderFactoryImpl( List<DependencyResolver> resolvers )
-    {
-        this( null, resolvers );
-    }
+        dependencyResolverDelegator.setDependencyResolver( ThisAs.class, new ThisAsDependencyResolver());
+        dependencyResolverDelegator.setDependencyResolver( Modifies.class, new ModifiesDependencyResolver());
+        dependencyResolverDelegator.setDependencyResolver( Adapt.class, new AdaptDependencyResolver());
+        dependencyResolverDelegator.setDependencyResolver( Decorate.class, new DecorateDependencyResolver());
 
-    public CompositeBuilderFactoryImpl( DependencyResolver resolver )
-    {
-        this( null, Arrays.asList( resolver, new MixinDependencyResolver()));
-    }
+        ModifierModelBuilder modifierModelBuilder = new ModifierModelBuilder();
+        MixinModelBuilder mixinModelBuilder = new MixinModelBuilder(modifierModelBuilder);
+        compositeModelBuilder = new CompositeModelBuilder( modifierModelBuilder, mixinModelBuilder );
 
-    public CompositeBuilderFactoryImpl( CompositeModelFactory compositeModelFactory, List<DependencyResolver> resolvers )
-    {
-        if( compositeModelFactory == null )
-        {
-            compositeModelFactory = new CompositeModelFactoryImpl();
-        }
-        this.modelFactory = compositeModelFactory;
-        if( resolvers == null )
-        {
-            MixinDependencyResolver mixinResolver = new MixinDependencyResolver();
-            resolvers = new ArrayList<DependencyResolver>();
-            resolvers.add( mixinResolver );
-        }
-        this.resolvers = resolvers;
-        objectContexts = new ConcurrentHashMap<CompositeModel, CompositeContextImpl>();
-    }
+        ModifierModelResolver modifierModelResolver = new ModifierModelResolver( dependencyResolverDelegator);
+        MixinModelResolver mixinModelResolver = new MixinModelResolver( dependencyResolverDelegator);
+        compositeModelResolver = new CompositeModelResolver( modifierModelResolver, mixinModelResolver);
 
-    public <T extends Composite> T newInstance( Class<T> aCompositeClass )
-        throws CompositeInstantiationException
-    {
-        // Ensure that given class extends Composite
-        if( !Composite.class.isAssignableFrom( aCompositeClass ) )
-        {
-            throw new CompositeInstantiationException( "Class " + aCompositeClass.getName() + " does not extend " + Composite.class.getName() );
-        }
-
-        // Instantiate proxy for given composite interface
-        try
-        {
-            CompositeModel compositeModel = modelFactory.getCompositeModel( aCompositeClass );
-            CompositeContextImpl context = getCompositeContext( compositeModel );
-
-            AbstractCompositeInvocationHandler handler = new CompositeInvocationHandler( context );
-            ClassLoader proxyClassloader = aCompositeClass.getClassLoader();
-            Class[] interfaces = new Class[]{ aCompositeClass };
-            return aCompositeClass.cast( Proxy.newProxyInstance( proxyClassloader, interfaces, handler ) );
-        }
-        catch( Exception e )
-        {
-            System.out.println( e );
-            e.printStackTrace();
-            throw new CompositeInstantiationException( e );
-        }
-    }
+        modelFactory = new CompositeModelFactoryImpl(compositeModelBuilder);
+        objectContexts = new ConcurrentHashMap<Class<? extends Composite>, CompositeContextImpl>();
+        fragmentFactory = new FragmentFactoryImpl();
+   }
 
     public <T extends Composite> CompositeBuilder<T> newCompositeBuilder( Class<T> compositeType )
     {
-        CompositeModel compositeModel = modelFactory.getCompositeModel( compositeType );
-        CompositeContextImpl context = getCompositeContext( compositeModel );
-        CompositeBuilder<T> builder = new CompositeBuilderImpl<T>( context );
+        CompositeContextImpl<T> context = getCompositeContext( compositeType);
+        CompositeBuilder<T> builder = new CompositeBuilderImpl<T>( context, fragmentFactory );
         return builder;
     }
 
-    public List<DependencyResolver> getDependencyResolvers()
-    {
-        return resolvers;
-    }
-
     // Private ------------------------------------------------------
-    private <T extends Composite> CompositeContextImpl getCompositeContext( CompositeModel<T> compositeModel )
+    private <T extends Composite> CompositeContextImpl<T> getCompositeContext( Class<T> compositeType )
     {
-        CompositeContextImpl<T> context = objectContexts.get( compositeModel );
+        CompositeContextImpl<T> context = objectContexts.get( compositeType );
         if( context == null )
         {
-            context = new CompositeContextImpl<T>( compositeModel, modelFactory, this );
-            objectContexts.put( compositeModel, context );
+            CompositeModel<T> model = modelFactory.newCompositeModel( compositeType);
+            CompositeResolution<T> resolution = compositeModelResolver.resolveCompositeModel( model );
+            context = new CompositeContextImpl<T>( resolution, modelFactory, this, fragmentFactory );
+            objectContexts.put( compositeType, context );
         }
         return context;
     }

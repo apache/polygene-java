@@ -11,10 +11,9 @@
 */
 package org.qi4j.api.model;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import org.qi4j.api.annotation.ModifiedBy;
+import org.qi4j.api.ConstructorDependencyResolution;
+import org.qi4j.api.FieldDependencyResolution;
+import org.qi4j.api.MethodDependencyResolution;
 
 /**
  * A mixin is an implementation of a particular interface,
@@ -24,39 +23,18 @@ public final class MixinModel<T>
     extends FragmentModel<T>
 {
     // Attribute -----------------------------------------------------
-    private List<ModifierModel> modifierModels;
+    private Iterable<ModifierModel> modifierModels;
 
     // Constructors --------------------------------------------------
-    public MixinModel( Class<T> mixinImplementationClass )
-    {
-        super( mixinImplementationClass );
 
-        modifierModels = new ArrayList<ModifierModel>();
-        findModifiers( mixinImplementationClass );
-        modifierModels = Collections.unmodifiableList( modifierModels );
+    public MixinModel( Class<T> fragmentClass, Iterable<ConstructorDependency> constructorDependencies, Iterable<FieldDependency> fieldDependencies,Iterable<MethodDependency> methodDependencies, Class appliesTo, Iterable<ModifierModel> modifierModels )
+    {
+        super( fragmentClass, constructorDependencies, fieldDependencies, methodDependencies, appliesTo );
+        this.modifierModels = modifierModels;
     }
 
-    public List<ModifierModel> getModifiers()
+    public Iterable<ModifierModel> getModifiers()
     {
         return modifierModels;
-    }
-
-    // Private ------------------------------------------------------
-    private void findModifiers( Class<?> aClass )
-    {
-        ModifiedBy modifiedBy = aClass.getAnnotation( ModifiedBy.class );
-        if( modifiedBy != null )
-        {
-            for( Class modifier : modifiedBy.value() )
-            {
-                modifierModels.add( new ModifierModel( modifier ) );
-            }
-        }
-
-        // Check superclass
-        if( !aClass.isInterface() && aClass != Object.class )
-        {
-            findModifiers( aClass.getSuperclass() );
-        }
     }
 }

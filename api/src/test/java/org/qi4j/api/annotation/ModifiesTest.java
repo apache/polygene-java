@@ -13,11 +13,12 @@
 package org.qi4j.api.annotation;
 
 import java.lang.annotation.Annotation;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 
 /**
- * Tests public api exposed by Uses annotation.
+ * Tests public api exposed by Modified annotation.
  * This will ensure that the public api does not get changed by mistake.
  */
 public class ModifiesTest

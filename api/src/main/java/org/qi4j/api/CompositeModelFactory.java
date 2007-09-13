@@ -20,10 +20,5 @@ import org.qi4j.api.model.CompositeModel;
 
 public interface CompositeModelFactory
 {
-    <T extends Composite> CompositeModel<T> getCompositeModel( Class<T> compositeType );
-
-    <T extends Composite> CompositeModel<T> getCompositeModel( T composite );
-
-    <T extends Composite> T dereference( T proxy );
-
+    <T extends Composite> CompositeModel<T> newCompositeModel( Class<T> compositeType );
 }

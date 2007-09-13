@@ -16,45 +16,38 @@
  */
 package org.qi4j.spi;
 
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Field;
 import org.qi4j.api.CompositeBuilderFactory;
-import org.qi4j.api.DependencyResolver;
 import org.qi4j.api.CompositeModelFactory;
+import org.qi4j.api.DependencyKey;
+import org.qi4j.api.DependencyResolution;
+import org.qi4j.api.DependencyResolver;
+import org.qi4j.api.StaticDependencyResolution;
 import org.qi4j.api.model.CompositeContext;
 
-public class MixinDependencyResolver
+public class CompositeContextDependencyResolver
     implements DependencyResolver
 {
-    public Object resolveDependency( AnnotatedElement annotatedElement, CompositeContext context )
+    CompositeContext context;
+
+    public CompositeContextDependencyResolver( CompositeContext context )
     {
-        Class<?> type = getElementType( annotatedElement);
+        this.context = context;
+    }
+
+    public DependencyResolution resolveDependency( DependencyKey key )
+    {
+        Class type = key.getDependencyType();
         if( type.equals( CompositeBuilderFactory.class ) )
         {
-            return context.getCompositeBuilderFactory();
+            return new StaticDependencyResolution(type.cast(context.getCompositeBuilderFactory()));
         }
         else if( type.equals( CompositeModelFactory.class ) )
         {
-            return context.getCompositeModelFactory();
+            return new StaticDependencyResolution(type.cast(context.getCompositeModelFactory()));
         }
         else
         {
             return null;
         }
     }
-
-    private Class getElementType( AnnotatedElement annotatedElement )
-    {
-        Class clazz;
-        if( annotatedElement instanceof Class )
-        {
-            clazz = (Class) annotatedElement;
-        }
-        else
-        {
-            clazz = ( (Field) annotatedElement ).getType();
-        }
-        return clazz;
-    }
-
 }

@@ -16,9 +16,9 @@
  */
 package org.qi4j.test.annotation;
 
-import org.qi4j.api.annotation.Uses;
+import org.qi4j.api.annotation.ThisAs;
 
 public class ClassAnnotatedWithUses
 {
-    @Uses public String abc;
+    @ThisAs public String abc;
 }

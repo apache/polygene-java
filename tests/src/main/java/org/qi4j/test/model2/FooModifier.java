@@ -11,11 +11,11 @@
  */
 package org.qi4j.test.model2;
 
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.lang.reflect.AnnotatedElement;
 import org.qi4j.api.annotation.AppliesTo;
-import org.qi4j.api.annotation.Dependency;
+import org.qi4j.api.annotation.DependencyOld;
 import org.qi4j.api.annotation.Modifies;
 
 /**
@@ -29,7 +29,7 @@ public class FooModifier
 {
     // Attributes ----------------------------------------------------
     @Modifies InvocationHandler next;
-    @Dependency AnnotatedElement foo;
+    @DependencyOld AnnotatedElement foo;
 
     // InvocationHandler implementation -----------------------------
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable

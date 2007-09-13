@@ -16,19 +16,19 @@
  */
 package org.qi4j.test.model4;
 
-import org.qi4j.api.annotation.Uses;
-import org.qi4j.api.annotation.Dependency;
-import org.qi4j.api.annotation.ModifiedBy;
 import org.qi4j.api.CompositeBuilderFactory;
+import org.qi4j.api.annotation.DependencyOld;
+import org.qi4j.api.annotation.ModifiedBy;
+import org.qi4j.api.annotation.ThisAs;
 
 @ModifiedBy( CountCallsModifier.class )
 public class Mixin1Impl
     implements Mixin1
 {
     private CompositeBuilderFactory builderFactory;
-    private @Uses Mixin2 meAsMixin2;
+    private @ThisAs Mixin2 meAsMixin2;
 
-    public Mixin1Impl( @Dependency CompositeBuilderFactory builderFactory )
+    public Mixin1Impl( @DependencyOld CompositeBuilderFactory builderFactory )
     {
         this.builderFactory = builderFactory;
     }

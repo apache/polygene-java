@@ -17,22 +17,21 @@
 package org.qi4j.runtime;
 
 import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Proxy;
 import java.lang.reflect.Method;
-import java.util.concurrent.ConcurrentHashMap;
+import java.lang.reflect.Proxy;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import org.qi4j.api.Composite;
 import org.qi4j.api.model.CompositeContext;
-import org.qi4j.api.model.MixinModel;
 import org.qi4j.api.model.CompositeState;
 import org.qi4j.api.persistence.Identity;
-import org.qi4j.api.Composite;
 
 public abstract class AbstractCompositeInvocationHandler<T extends Composite>
     implements InvocationHandler, CompositeState
 {
     protected CompositeContextImpl<T> context;
     protected static final Method METHOD_GETIDENTITY;
-    protected ConcurrentHashMap<Class, Object> mixins;
 
     static
     {
@@ -46,14 +45,14 @@ public abstract class AbstractCompositeInvocationHandler<T extends Composite>
         }
     }
 
-    public AbstractCompositeInvocationHandler( CompositeContextImpl<T> aContext )
-    {
-        context = aContext;
-    }
-
     public static <T extends Composite> CompositeInvocationHandler<T> getInvocationHandler( T aProxy )
     {
         return (CompositeInvocationHandler<T>) Proxy.getInvocationHandler( aProxy );
+    }
+
+    public AbstractCompositeInvocationHandler( CompositeContextImpl<T> aContext )
+    {
+        context = aContext;
     }
 
     public CompositeContext<T> getContext()
@@ -66,7 +65,7 @@ public abstract class AbstractCompositeInvocationHandler<T extends Composite>
     {
         if( method.getName().equals( "hashCode" ) )
         {
-            if( context.getCompositeModel().isAssignableFrom( Identity.class ) )
+            if( context.getCompositeModel().getCompositeClass().isAssignableFrom( Identity.class ) )
             {
                 String id = ( (Identity) proxy ).getIdentity();
                 if( id != null )
@@ -89,7 +88,7 @@ public abstract class AbstractCompositeInvocationHandler<T extends Composite>
             {
                 return false;
             }
-            if( context.getCompositeModel().isAssignableFrom( Identity.class ) )
+            if( context.getCompositeModel().getCompositeClass().isAssignableFrom( Identity.class ) )
             {
                 String id = ( (Identity) proxy ).getIdentity();
                 Identity other = ( (Identity) args[ 0 ] );
@@ -102,7 +101,7 @@ public abstract class AbstractCompositeInvocationHandler<T extends Composite>
         }
         if( method.getName().equals( "toString" ) )
         {
-            if( context.getCompositeModel().isAssignableFrom( Identity.class ) )
+            if( context.getCompositeModel().getCompositeClass().isAssignableFrom( Identity.class ) )
             {
                 String id = (String) invoke( proxy, METHOD_GETIDENTITY, null );
                 return id != null ? id : "";
@@ -114,42 +113,5 @@ public abstract class AbstractCompositeInvocationHandler<T extends Composite>
         }
 
         return null;
-    }
-
-
-    protected void putMixin( Class mixinType, Object value )
-    {
-        mixins.put( mixinType, value );
-    }
-
-    protected Object getMixin( Class mixinType, T composite )
-    {
-        Object mixin = mixins.get( mixinType );
-        if( mixin == null && !mixinType.equals( Object.class ) )
-        {
-            mixin = initializeMixin( mixinType, composite );
-            putMixin( mixinType, mixin );
-        }
-        return mixin;
-    }
-
-    protected abstract Object initializeMixin( Class mixinType, T composite );
-
-    public Map<Class, Object> getMixins()
-    {
-        return mixins;
-    }
-
-    public void setMixins( Map<Class, Object> mixins, boolean keep )
-    {
-        if( keep && mixins instanceof ConcurrentHashMap )
-        {
-            this.mixins = (ConcurrentHashMap<Class, Object>) mixins;
-        }
-        else
-        {
-            this.mixins = new ConcurrentHashMap<Class, Object>();
-            this.mixins.putAll( mixins );
-        }
     }
 }

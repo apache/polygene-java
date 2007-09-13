@@ -14,8 +14,6 @@
  */
 package org.qi4j.api.persistence;
 
-import java.util.List;
-
 /**
  * Query of objects from underlying stores.
  * <p/>
@@ -28,16 +26,36 @@ import java.util.List;
  * List<PersonComposite> result = q.find();
  * </pre></code>
  */
-public interface Query<T extends EntityComposite>
+public interface Query<R>
+    extends Iterable<R>
 {
-    List<T> find();
+    void resultType(Class mixinType);
 
-    T findSingle();
+    <K> K where( Class<K> mixinType );
 
-    void setMaxResults( int maxResult );
+    <K> K where( Class<K> mixinType, Is comparisonOperator );
 
-    void setFirstResult( int startPosition );
+    <K> K orderBy( Class<K> mixinType );
 
-    void setParameter( String name, Object value );
+    <K> K orderBy( Class<K> mixinType, OrderBy order );
 
+    void setFirstResult(int firstResult);
+
+    void setMaxResults(int maxResults);
+
+    Iterable<R> prepare();
+
+    R find();
+
+    public enum Is
+    {
+        EQUAL, NOT_EQUAL, // Boolean
+        LESS_THAN, LESS_THAN_OR_EQUAL, GREATER_THAN, GREATER_THAN_OR_EQUAL, // Numerical
+        CONTAINS, STARTS_WITH, ENDS_WITH, MATCHES // String
+    }
+
+    public enum OrderBy
+    {
+        ASCENDING, DESCENDING
+    }
 }

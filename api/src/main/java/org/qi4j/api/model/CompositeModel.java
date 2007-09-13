@@ -1,48 +1,155 @@
-/*  Copyright 2007 Niclas Hedhman.
- *
+/*
+ * Copyright 2007 Rickard Öberg
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *  
- * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
- * implied.
- * 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.qi4j.api.model;
 
-import java.lang.reflect.Field;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
+import java.util.ListIterator;
+import java.util.Map;
 import org.qi4j.api.Composite;
 
-public interface CompositeModel<T extends Composite>
+/**
+ * Composites are descriptors of what an interface represent. <TODO better docs needed here>
+ */
+public final class CompositeModel<T extends Composite>
 {
-    Class<T> getCompositeClass();
+    private Class<T> compositeClass;
+    private Iterable<MixinModel> mixinModels;
+    private Iterable<ModifierModel> modifierModels;
 
-    List<MixinModel> getImplementations();
+    public CompositeModel( Class<T> compositeClass, Iterable<MixinModel> mixinModels, Iterable<ModifierModel> modifierModels)
+    {
+        this.compositeClass = compositeClass;
+        this.mixinModels = mixinModels;
+        this.modifierModels = modifierModels;
+    }
 
-    List<ModifierModel> getModifiers();
+    public Class<T> getCompositeClass()
+    {
+        return compositeClass;
+    }
 
-    boolean isAbstract();
+    public Iterable<MixinModel> getMixinModels()
+    {
+        return mixinModels;
+    }
 
-    List<MixinModel> getImplementations( Class aType );
+    public Iterable<ModifierModel> getModifierModels()
+    {
+        return modifierModels;
+    }
 
-    MixinModel getMixin( Class anInterface );
+    public List<MixinModel> getImplementations( Class aType )
+    {
+        List<MixinModel> impls = new ArrayList<MixinModel>();
 
-    boolean isAssignableFrom( Class anInterface );
+        // Check non-generic impls first
+        for( MixinModel implementation : mixinModels )
+        {
+            if( !implementation.isGeneric() )
+            {
+                Class fragmentClass = implementation.getFragmentClass();
+                if( aType.isAssignableFrom( fragmentClass ) )
+                {
+                    impls.add( implementation );
+                }
+            }
+        }
 
-    List<ModifierModel> getModifiers( Method aMethod );
+        // Check generic impls
+        for( MixinModel implementation : mixinModels )
+        {
+            if( implementation.isGeneric() )
+            {
+                // Check AppliesTo
+                Class appliesTo = implementation.getAppliesTo();
+                if( appliesTo == null || appliesTo.isAssignableFrom( aType ) )
+                {
+                    impls.add( implementation ); // This generic mixin can handle the given type
+                }
+            }
+        }
 
-    Set<Field> getUnresolvedUses();
+        return impls;
+    }
 
-    Set<Class> getUnresolvedImplementations();
+    public String toString()
+    {
+        StringWriter str = new StringWriter();
+        PrintWriter out = new PrintWriter( str );
+        out.println( compositeClass.getName() );
 
-    Set<Class> getUnresolved();
+        out.println( "  implementations available" );
+        for( MixinModel implementation : mixinModels )
+        {
+            out.println( "    " + implementation.getFragmentClass().getName() );
+        }
+
+        out.println( "  modifiers available" );
+        for( ModifierModel modifierModel : modifierModels )
+        {
+            out.println( "    " + modifierModel.getFragmentClass().getName() );
+        }
+        out.close();
+        return str.toString();
+    }
+
+
+    public boolean equals( Object o )
+    {
+        if( this == o )
+        {
+            return true;
+        }
+        if( o == null || getClass() != o.getClass() )
+        {
+            return false;
+        }
+
+        CompositeModel composite1 = (CompositeModel) o;
+
+        return compositeClass.equals( composite1.compositeClass );
+
+    }
+
+    public int hashCode()
+    {
+        return compositeClass.hashCode();
+    }
+
+    public Iterable<Dependency> getDependenciesByScope( Class<? extends Annotation> aClass )
+    {
+        List<Dependency> dependencies = new ArrayList<Dependency>( );
+        for( MixinModel mixinModel : mixinModels )
+        {
+            Iterable<Dependency> scope = mixinModel.getDependenciesByScope( aClass );
+            for( Dependency dependency : scope )
+            {
+                dependencies.add( dependency );
+            }
+        }
+        for( ModifierModel modifierModel : modifierModels )
+        {
+            Iterable<Dependency> scope = modifierModel.getDependenciesByScope( aClass );
+            for( Dependency dependency : scope )
+            {
+                dependencies.add( dependency );
+            }
+        }
+
+        return dependencies;
+    }
 }

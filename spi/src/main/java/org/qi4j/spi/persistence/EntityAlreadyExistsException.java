@@ -16,9 +16,6 @@
  */
 package org.qi4j.spi.persistence;
 
-import org.qi4j.spi.persistence.PersistentStore;
-import org.qi4j.spi.persistence.PersistenceException;
-
 public class EntityAlreadyExistsException extends PersistenceException
 {
     private String storeName;

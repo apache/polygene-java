@@ -17,9 +17,9 @@
 package org.qi4j.test.model1;
 
 import org.qi4j.api.Composite;
-import org.qi4j.api.model.CompositeModel;
 import org.qi4j.api.annotation.ImplementedBy;
 import org.qi4j.api.annotation.ModifiedBy;
+import org.qi4j.api.model.CompositeModel;
 
 @ModifiedBy( { Modifier1.class } )
 @ImplementedBy( { Mixin1Impl.class } )
@@ -42,6 +42,11 @@ public class Composition7
     }
 
     public CompositeModel getCompositeModel()
+    {
+        return null;
+    }
+
+    public Composite dereference()
     {
         return null;
     }

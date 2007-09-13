@@ -21,6 +21,8 @@ import org.qi4j.api.persistence.PersistenceException;
 public final class LifecycleImpl
     implements Lifecycle
 {
+    public static final Lifecycle INSTANCE = new LifecycleImpl();
+
     public void create()
         throws PersistenceException
     {
