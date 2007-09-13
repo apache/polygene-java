@@ -16,10 +16,10 @@
  */
 package org.qi4j.persistence.memory;
 
-import org.qi4j.spi.persistence.EntityStateHolder;
+import java.util.concurrent.ConcurrentHashMap;
 import org.qi4j.api.model.CompositeModel;
 import org.qi4j.api.persistence.EntityComposite;
-import java.util.concurrent.ConcurrentHashMap;
+import org.qi4j.spi.persistence.EntityStateHolder;
 
 public class MemoryEntityStateHolder<T extends EntityComposite>
     implements EntityStateHolder<T>

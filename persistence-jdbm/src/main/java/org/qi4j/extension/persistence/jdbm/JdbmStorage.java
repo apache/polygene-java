@@ -22,8 +22,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.Properties;
 import java.util.List;
+import java.util.Properties;
 import javax.transaction.RollbackException;
 import javax.transaction.SystemException;
 import javax.transaction.Transaction;
@@ -33,10 +33,10 @@ import jdbm.RecordManagerFactory;
 import org.qi4j.api.CompositeBuilderFactory;
 import org.qi4j.api.CompositeModelFactory;
 import org.qi4j.api.model.CompositeModel;
-import org.qi4j.api.persistence.PersistenceException;
 import org.qi4j.api.persistence.EntityComposite;
-import org.qi4j.spi.persistence.PersistentStore;
+import org.qi4j.api.persistence.PersistenceException;
 import org.qi4j.spi.persistence.EntityStateHolder;
+import org.qi4j.spi.persistence.PersistentStore;
 
 
 public class JdbmStorage
@@ -46,12 +46,10 @@ public class JdbmStorage
     private TransactionManager transactionManager;
     private RecordManager recordManager;
     private HashMap<Transaction, TransactionResource> transactions;
-    private CompositeModelFactory modelFactory;
 
-    public JdbmStorage( CompositeModelFactory modelFactory, CompositeBuilderFactory builderFactory, File directory, TransactionManager theTransactionManager )
+    public JdbmStorage( CompositeBuilderFactory builderFactory, File directory, TransactionManager theTransactionManager )
         throws IOException
     {
-        this.modelFactory = modelFactory;
         this.builderFactory = builderFactory;
         transactionManager = theTransactionManager;
         transactions = new HashMap<Transaction, TransactionResource>();
@@ -161,7 +159,7 @@ public class JdbmStorage
         TransactionResource transactionResource = transactions.get( transaction );
         if( transactionResource == null )
         {
-            transactionResource = new TransactionResource( recordManager, modelFactory, builderFactory );
+            transactionResource = new TransactionResource( recordManager, builderFactory );
             transaction.enlistResource( transactionResource );
             transactions.put( transaction, transactionResource );
         }

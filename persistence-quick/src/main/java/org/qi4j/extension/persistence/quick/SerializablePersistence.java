@@ -17,21 +17,21 @@ package org.qi4j.extension.persistence.quick;
 import java.io.Serializable;
 import java.lang.reflect.Proxy;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 import org.qi4j.api.CompositeBuilderFactory;
 import org.qi4j.api.CompositeModelFactory;
 import org.qi4j.api.model.CompositeModel;
-import org.qi4j.api.persistence.EntityCompositeNotFoundException;
-import org.qi4j.api.persistence.PersistenceException;
 import org.qi4j.api.persistence.EntityComposite;
+import org.qi4j.api.persistence.EntityCompositeNotFoundException;
 import org.qi4j.api.persistence.EntitySession;
+import org.qi4j.api.persistence.PersistenceException;
 import org.qi4j.runtime.CompositeInvocationHandler;
 import org.qi4j.runtime.ProxyReferenceInvocationHandler;
+import org.qi4j.spi.persistence.EntityStateHolder;
+import org.qi4j.spi.persistence.PersistentStore;
 import org.qi4j.spi.serialization.SerializablePersistenceSpi;
 import org.qi4j.spi.serialization.SerializedObject;
-import org.qi4j.spi.persistence.PersistentStore;
-import org.qi4j.spi.persistence.EntityStateHolder;
 
 public final class SerializablePersistence
     implements PersistentStore
@@ -79,7 +79,7 @@ public final class SerializablePersistence
         }
 
         ProxyReferenceInvocationHandler proxyHandler = (ProxyReferenceInvocationHandler) Proxy.getInvocationHandler( entity );
-        CompositeInvocationHandler handler = CompositeInvocationHandler.getInvocationHandler( modelFactory.dereference( entity ) );
+        CompositeInvocationHandler handler = CompositeInvocationHandler.getInvocationHandler( entity.dereference() );
         Map<Class, Object> deserializedMixins = handler.getMixins();
         for( Map.Entry<Class, SerializedObject> entry : mixins.entrySet() )
         {

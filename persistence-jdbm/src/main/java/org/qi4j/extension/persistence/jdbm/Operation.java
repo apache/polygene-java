@@ -16,8 +16,8 @@
  */
 package org.qi4j.extension.persistence.jdbm;
 
-import jdbm.RecordManager;
 import java.util.Map;
+import jdbm.RecordManager;
 
 interface Operation
 {
