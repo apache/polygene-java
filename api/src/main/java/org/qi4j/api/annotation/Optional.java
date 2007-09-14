@@ -22,6 +22,7 @@ import java.lang.annotation.Target;
 
 /**
  * Annotation to denote that an annotation defines whether the result is optional or not
+ *
  * @see org.qi4j.api.DependencyResolver
  */
 @Retention( RetentionPolicy.RUNTIME )

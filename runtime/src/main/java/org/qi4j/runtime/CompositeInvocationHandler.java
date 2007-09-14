@@ -17,9 +17,9 @@
 package org.qi4j.runtime;
 
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.HashMap;
 import org.qi4j.api.Composite;
 import org.qi4j.api.CompositeInstantiationException;
 import org.qi4j.api.model.InvalidCompositeException;
@@ -28,11 +28,11 @@ import org.qi4j.api.model.MixinResolution;
 /**
  * InvocationHandler for proxy objects.
  */
-public class CompositeInvocationHandler<T extends Composite> extends AbstractCompositeInvocationHandler<T>
+public final class CompositeInvocationHandler<T extends Composite> extends AbstractCompositeInvocationHandler<T>
 {
     final private Object[] mixins;
 
-    public CompositeInvocationHandler( CompositeContextImpl<T> aContext)
+    public CompositeInvocationHandler( CompositeContextImpl<T> aContext )
     {
         super( aContext );
 
@@ -43,7 +43,7 @@ public class CompositeInvocationHandler<T extends Composite> extends AbstractCom
     public Object invoke( Object composite, Method method, Object[] args ) throws Throwable
     {
         MethodDescriptor descriptor = context.getMethodDescriptor( method );
-        Object mixin = mixins[descriptor.getMixinIndex()];
+        Object mixin = mixins[ descriptor.getMixinIndex() ];
 
         if( mixin == null )
         {
@@ -54,42 +54,42 @@ public class CompositeInvocationHandler<T extends Composite> extends AbstractCom
             }
             else
             {
-                throw new InvalidCompositeException("Implementation missing for " + mixinType.getName() + " in "
-                                                    + context.getCompositeModel().getCompositeClass().getName(),
-                                                    context.getCompositeModel().getCompositeClass() );
+                throw new InvalidCompositeException( "Implementation missing for " + mixinType.getName() + " in "
+                                                     + context.getCompositeModel().getCompositeClass().getName(),
+                                                     context.getCompositeModel().getCompositeClass() );
             }
         }
         // Invoke
-        return context.getInvocationInstance( descriptor).invoke( (T) composite, args, mixin);
+        return context.getInvocationInstance( descriptor ).invoke( (T) composite, args, mixin );
     }
 
-    public void setMixins(Object[] mixins)
+    public void setMixins( Object[] mixins )
     {
         Set<MixinResolution> mixinResolutions = context.getCompositeResolution().getUsedMixinModels();
         int i = 0;
         for( MixinResolution mixinResolution : mixinResolutions )
         {
-            Object mixin = mixins[i];
+            Object mixin = mixins[ i ];
             // Verify type
-            if (!mixinResolution.getFragmentModel().getFragmentClass().isInstance( mixin))
+            if( !mixinResolution.getFragmentModel().getFragmentClass().isInstance( mixin ) )
             {
-                throw new CompositeInstantiationException("Mixin "+mixin.getClass().getName()+" is not of the expected type "+mixinResolution.getFragmentModel().getFragmentClass().getName());
+                throw new CompositeInstantiationException( "Mixin " + mixin.getClass().getName() + " is not of the expected type " + mixinResolution.getFragmentModel().getFragmentClass().getName() );
             }
             // Copy reference
-            this.mixins[i] = mixin;
+            this.mixins[ i ] = mixin;
             i++;
         }
     }
 
     public Map<MixinResolution, Object> getMixins()
     {
-        Map<MixinResolution, Object> mixinMap = new HashMap<MixinResolution, Object>( );
+        Map<MixinResolution, Object> mixinMap = new HashMap<MixinResolution, Object>();
         Set<MixinResolution> mixinResolutions = context.getCompositeResolution().getUsedMixinModels();
         int i = 0;
         for( MixinResolution mixinResolution : mixinResolutions )
         {
-            Object mixin = mixins[i++];
-            mixinMap.put( mixinResolution, mixin);
+            Object mixin = mixins[ i++ ];
+            mixinMap.put( mixinResolution, mixin );
         }
         return mixinMap;
     }

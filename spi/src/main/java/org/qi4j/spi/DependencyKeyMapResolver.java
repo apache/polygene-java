@@ -26,7 +26,7 @@ import org.qi4j.api.InvalidDependencyException;
 import org.qi4j.api.StaticDependencyResolution;
 import org.qi4j.api.annotation.Service;
 
-public class DependencyKeyMapResolver
+public final class DependencyKeyMapResolver
     implements DependencyResolver, Iterable
 {
     private Map<DependencyKey, DependencyResolution> dependencies;

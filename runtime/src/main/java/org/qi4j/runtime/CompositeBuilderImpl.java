@@ -18,8 +18,8 @@ package org.qi4j.runtime;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.UndeclaredThrowableException;
 import java.lang.reflect.Proxy;
+import java.lang.reflect.UndeclaredThrowableException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -72,23 +72,23 @@ public class CompositeBuilderImpl<T extends Composite>
 
     public void adapt( Object adaptedObject )
     {
-        getAdaptContext().add(adaptedObject);
+        getAdaptContext().add( adaptedObject );
     }
 
     public <K, T extends K> void decorate( K decoratedObject )
     {
-        getDecorateContext().add(decoratedObject);
+        getDecorateContext().add( decoratedObject );
     }
 
     public <K> void properties( Class<K> mixinType, Object... properties )
     {
-        this.properties.put(context.getCompositeResolution().getMixinForInterface( mixinType), properties);
+        this.properties.put( context.getCompositeResolution().getMixinForInterface( mixinType ), properties );
     }
 
     public T newInstance()
     {
         // Instantiate composite proxy
-        T composite = newInstance(compositeInterface );
+        T composite = newInstance( compositeInterface );
 
         // Instantiate all mixins
         CompositeInvocationHandler state = newMixins( composite );
@@ -100,7 +100,7 @@ public class CompositeBuilderImpl<T extends Composite>
         return composite;
     }
 
-    private <T extends Composite> T newInstance(Class<T> compositeType)
+    private <T extends Composite> T newInstance( Class<T> compositeType )
         throws CompositeInstantiationException
     {
         // Instantiate proxy for given composite interface
@@ -118,7 +118,6 @@ public class CompositeBuilderImpl<T extends Composite>
     }
 
 
-
     private CompositeInvocationHandler newMixins( T composite )
     {
         CompositeInvocationHandler state = CompositeInvocationHandler.getInvocationHandler( composite );
@@ -128,12 +127,12 @@ public class CompositeBuilderImpl<T extends Composite>
         Set<MixinResolution> usedMixins = context.getCompositeResolution().getUsedMixinModels();
         Object[] mixins = new Object[usedMixins.size()];
         int i = 0;
-        for( MixinResolution resolution : usedMixins)
+        for( MixinResolution resolution : usedMixins )
         {
-            Object[] params = properties.get( resolution);
-            MixinDependencyInjectionContext injectionContext = new MixinDependencyInjectionContext(context, composite, params, adaptContext, decorateContext);
-            Object mixin = fragmentFactory.newFragment( resolution, injectionContext);
-            mixins[i++] = mixin;
+            Object[] params = properties.get( resolution );
+            MixinDependencyInjectionContext injectionContext = new MixinDependencyInjectionContext( context, composite, params, adaptContext, decorateContext );
+            Object mixin = fragmentFactory.newFragment( resolution, injectionContext );
+            mixins[ i++ ] = mixin;
         }
 
         state.setMixins( mixins );
@@ -169,15 +168,19 @@ public class CompositeBuilderImpl<T extends Composite>
     // Private ------------------------------------------------------
     private List getAdaptContext()
     {
-        if ( adaptContext == null)
+        if( adaptContext == null )
+        {
             adaptContext = new ArrayList();
+        }
         return adaptContext;
     }
 
     private List getDecorateContext()
     {
-        if ( decorateContext == null)
-            decorateContext = new ArrayList( );
+        if( decorateContext == null )
+        {
+            decorateContext = new ArrayList();
+        }
         return decorateContext;
     }
 }

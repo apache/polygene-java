@@ -27,8 +27,8 @@ public final class MixinResolution<T>
 
     // Constructors --------------------------------------------------
 
-    public MixinResolution( MixinModel<T> mixinModel, Iterable<ConstructorDependencyResolution> constructorDependencies, Iterable<FieldDependencyResolution> fieldDependencies,Iterable<MethodDependencyResolution> methodDependencies)
+    public MixinResolution( MixinModel<T> mixinModel, Iterable<ConstructorDependencyResolution> constructorDependencies, Iterable<FieldDependencyResolution> fieldDependencies, Iterable<MethodDependencyResolution> methodDependencies )
     {
-        super( mixinModel, constructorDependencies, fieldDependencies, methodDependencies);
+        super( mixinModel, constructorDependencies, fieldDependencies, methodDependencies );
     }
 }

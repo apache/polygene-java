@@ -7,7 +7,7 @@ import org.qi4j.api.DependencyResolution;
 /**
  * TODO
  */
-public class EmptyResolution
+public final class EmptyResolution
     implements DependencyResolution
 {
     public Iterable getDependencyInjection( DependencyInjectionContext context )

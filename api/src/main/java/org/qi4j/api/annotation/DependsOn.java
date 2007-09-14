@@ -20,62 +20,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/**
- * Annotation to denote the injection of a dependency into a Fragment (a Modifier or Mixin).
- * <p/>
- * DependencyOld resolution is handled through the DependencyResolver, which allows any kind
- * of injection. The org.qi4j.spi.DefaultDependencyResolver handles CompositeBuilderFactory and
- * CompositeModelFactory. The @DependencyOld annotation tells the runtime to find an provider for
- * the type of that field.
- * <p/>
- * Example;
- * <pre><code>
- * public class MyBeerOrderMixin
- *     implements BeerOrder
- * {
- *     @Dependency CompositeBuilderFactory factory;
- * <p/>
- *     public Beer moreBeer()
- *     {
- *         return factory.newInstance( BeerComposite.class );
- *     }
- * }
- * </code></pre>
- * <p/>
- * <p/>
- * Dependencies can also be optional;
- * <pre><code>
- * public class MyBeerOrderModifier
- *     implements BeerOrder
- * {
- *     @Dependency( optional=true ) Auditor auditor;
- *     @Modifier BeerOrder next;
- * <p/>
- *     public Beer moreBeer()
- *     {
- *         Beer beer = next.moreBeer();
- *         if( auditor != null )
- *         {
- *             auditor.purchased( beer.getDescription(), beer.getPrice() );
- *         }
- *     }
- * }
- * </code></pre>
- * <p/>
- * If the @DependencyOld needs to be more specific than the type of the field,
- * it is possible to provide a value that is DependencyResolver implementation
- * specific. For instance;
- * <pre><code>
- * public class MyBeerOrder
- *     implements BeerOrder
- * {
- *     @Dependency( "id=1123" ) Fridge fridge;
- * <p/>
- *    :
- * }
- * </code></pre>
- *
- * @see org.qi4j.api.DependencyResolver
+/** TODO
+ * 
  */
 @Retention( RetentionPolicy.RUNTIME )
 @Target( { ElementType.FIELD, ElementType.PARAMETER } )

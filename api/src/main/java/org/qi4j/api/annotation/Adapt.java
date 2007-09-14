@@ -22,6 +22,7 @@ import java.lang.annotation.Target;
 
 /**
  * Annotation to denote the injection of a dependency to be adapted into a Mixin.
+ *
  * @see org.qi4j.api.DependencyResolver
  */
 @Retention( RetentionPolicy.RUNTIME )

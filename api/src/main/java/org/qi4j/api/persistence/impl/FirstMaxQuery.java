@@ -28,18 +28,26 @@ public class FirstMaxQuery<T> extends QueryDecorator<T>
 
     public Iterable<T> prepare()
     {
-        if (begin == 0 && end == -1)
+        if( begin == 0 && end == -1 )
+        {
             return query.prepare();
+        }
         else
-            return new FirstMaxIterable<T>(query.prepare(), begin, end);
+        {
+            return new FirstMaxIterable<T>( query.prepare(), begin, end );
+        }
     }
 
     public T find()
     {
         Iterator<T> iterator = prepare().iterator();
-        if (iterator.hasNext())
+        if( iterator.hasNext() )
+        {
             return iterator.next();
+        }
         else
+        {
             return null;
+        }
     }
 }

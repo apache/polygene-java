@@ -17,7 +17,7 @@ import org.qi4j.api.model.FragmentResolution;
 /**
  * TODO
  */
-public class FragmentFactoryImpl
+public final class FragmentFactoryImpl
     implements FragmentFactory
 {
     public <K> K newFragment( FragmentResolution<K> fragmentResolution, DependencyInjectionContext context )
@@ -33,10 +33,11 @@ public class FragmentFactoryImpl
             injectFields( fragmentResolution, context, instance );
 
             // Method injection
-            injectMethods(fragmentResolution, context, instance );
+            injectMethods( fragmentResolution, context, instance );
 
             return instance;
-        } catch (CompositeInstantiationException e)
+        }
+        catch( CompositeInstantiationException e )
         {
             throw e;
         }
@@ -60,14 +61,14 @@ public class FragmentFactoryImpl
         int i = 0;
         for( ParameterDependencyResolution dependencyResolution : dr )
         {
-            Iterable parameter = dependencyResolution.getDepedencyResolution().getDependencyInjection(context);
+            Iterable parameter = dependencyResolution.getDepedencyResolution().getDependencyInjection( context );
             Class parameterType = constructor.getParameterTypes()[ i ];
-            parameters[i] = getInjectedValue( parameter, parameterType);
+            parameters[ i ] = getInjectedValue( parameter, parameterType );
             i++;
         }
 
         // Invoke constructor
-        instance = fragmentResolution.getFragmentModel().getFragmentClass().cast( constructor.newInstance(parameters ));
+        instance = fragmentResolution.getFragmentModel().getFragmentClass().cast( constructor.newInstance( parameters ) );
         return instance;
     }
 
@@ -81,7 +82,7 @@ public class FragmentFactoryImpl
             Object value;
             Field field = fieldResolution.getFieldDependency().getField();
             value = getInjectedValue( iterable, field.getType() );
-            field.set(instance, value );
+            field.set( instance, value );
         }
     }
 
@@ -92,51 +93,59 @@ public class FragmentFactoryImpl
         for( MethodDependencyResolution methodResolution : methodResolutions )
         {
             Method method = methodResolution.getMethodDependency().getMethod();
-            Object[] parameters = new Object[] { method.getParameterTypes().length };
+            Object[] parameters = new Object[]{ method.getParameterTypes().length };
 
             // Resolve parameter dependencies
             Iterable<ParameterDependencyResolution> dr = methodResolution.getParameterDependencyResolutions();
             int i = 0;
             for( ParameterDependencyResolution dependencyResolution : dr )
             {
-                Iterable parameter = dependencyResolution.getDepedencyResolution().getDependencyInjection(context);
+                Iterable parameter = dependencyResolution.getDepedencyResolution().getDependencyInjection( context );
                 Class parameterType = method.getParameterTypes()[ i ];
-                parameters[i] = getInjectedValue( parameter, parameterType);
-                if (!Iterable.class.isAssignableFrom( parameterType ))
+                parameters[ i ] = getInjectedValue( parameter, parameterType );
+                if( !Iterable.class.isAssignableFrom( parameterType ) )
                 {
                     // Single value
-                    parameters[i] = getSingleValue( parameter );
-                } else
-                    parameters[i] = parameter;
+                    parameters[ i ] = getSingleValue( parameter );
+                }
+                else
+                {
+                    parameters[ i ] = parameter;
+                }
 
                 i++;
             }
 
             // Invoke method
-            method.invoke( instance, parameters);
+            method.invoke( instance, parameters );
         }
     }
 
-    private <K> Object getInjectedValue( Iterable iterable, Class type )
+    private Object getInjectedValue( Iterable iterable, Class type )
     {
         Object value;
-        if (!Iterable.class.isAssignableFrom( type))
+        if( !Iterable.class.isAssignableFrom( type ) )
         {
             // Single value
             value = getSingleValue( iterable );
-
-
-        } else
+        }
+        else
+        {
             value = iterable;
+        }
         return value;
     }
 
-    private <K> Object getSingleValue( Iterable parameter )
+    private Object getSingleValue( Iterable parameter )
     {
         Iterator iterator = parameter.iterator();
-        if (iterator.hasNext())
+        if( iterator.hasNext() )
+        {
             return iterator.next();
+        }
         else
+        {
             return null;
+        }
     }
 }

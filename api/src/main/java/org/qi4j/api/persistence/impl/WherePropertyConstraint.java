@@ -7,7 +7,8 @@ import org.qi4j.api.persistence.Query;
 /**
  * TODO
  */
-public class WherePropertyConstraint implements WhereConstraint
+public class WherePropertyConstraint
+    implements WhereConstraint
 {
     private Method readMethod;
     private Object value;
@@ -20,70 +21,72 @@ public class WherePropertyConstraint implements WhereConstraint
         this.value = value;
         this.comparisonOperator = comparisonOperator;
 
-        if (comparisonOperator == Query.Is.MATCHES)
-            matcher = Pattern.compile( value.toString());
+        if( comparisonOperator == Query.Is.MATCHES )
+        {
+            matcher = Pattern.compile( value.toString() );
+        }
     }
 
     public boolean accepts( Object anObject )
     {
         try
         {
-            Object objectValue = getValue(anObject);
+            Object objectValue = getValue( anObject );
 
-            switch (comparisonOperator)
+            switch( comparisonOperator )
             {
-                // Boolean
-                case EQUAL:
-                {
-                    return objectValue.equals(value);
-                }
+            // Boolean
+            case EQUAL:
+            {
+                return objectValue.equals( value );
+            }
 
-                case NOT_EQUAL:
-                {
-                    return !objectValue.equals(value);
-                }
+            case NOT_EQUAL:
+            {
+                return !objectValue.equals( value );
+            }
 
-                // Numerical
-                case LESS_THAN:
-                {
-                    return ((Comparable)objectValue).compareTo( value) < 0;
-                }
+            // Numerical
+            case LESS_THAN:
+            {
+                return ( (Comparable) objectValue ).compareTo( value ) < 0;
+            }
 
-                case LESS_THAN_OR_EQUAL:
-                {
-                    return ((Comparable)objectValue).compareTo( value) <= 0;
-                }
+            case LESS_THAN_OR_EQUAL:
+            {
+                return ( (Comparable) objectValue ).compareTo( value ) <= 0;
+            }
 
-                case GREATER_THAN:
-                {
-                    return ((Comparable)objectValue).compareTo( value) > 0;
-                }
+            case GREATER_THAN:
+            {
+                return ( (Comparable) objectValue ).compareTo( value ) > 0;
+            }
 
-                case GREATER_THAN_OR_EQUAL:
-                {
-                    return ((Comparable)objectValue).compareTo( value) >= 0;
-                }
+            case GREATER_THAN_OR_EQUAL:
+            {
+                return ( (Comparable) objectValue ).compareTo( value ) >= 0;
+            }
 
-                // String
-                case CONTAINS:
-                {
-                    return objectValue.toString().contains( value.toString());
-                }
+            // String
+            case CONTAINS:
+            {
+                return objectValue.toString().contains( value.toString() );
+            }
 
-                case STARTS_WITH:
-                {
-                    return objectValue.toString().startsWith( value.toString());
-                }
+            case STARTS_WITH:
+            {
+                return objectValue.toString().startsWith( value.toString() );
+            }
 
-                case ENDS_WITH:
-                {
-                    return objectValue.toString().endsWith( value.toString());
-                }
+            case ENDS_WITH:
+            {
+                return objectValue.toString().endsWith( value.toString() );
+            }
 
-                case MATCHES:
-                {
-                    return matcher.matcher( objectValue.toString()).matches();
-                }
+            case MATCHES:
+            {
+                return matcher.matcher( objectValue.toString() ).matches();
+            }
 
             }
 

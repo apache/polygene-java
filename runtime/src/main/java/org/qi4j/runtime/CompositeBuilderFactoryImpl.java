@@ -38,44 +38,43 @@ public final class CompositeBuilderFactoryImpl
     private CompositeModelFactory modelFactory;
     private FragmentFactory fragmentFactory;
     private CompositeModelResolver compositeModelResolver;
-    private CompositeModelBuilder compositeModelBuilder;
 
     public CompositeBuilderFactoryImpl()
     {
         DependencyResolverDelegator dependencyResolverDelegator = new DependencyResolverDelegator();
 
-        dependencyResolverDelegator.setDependencyResolver( ThisAs.class, new ThisAsDependencyResolver());
-        dependencyResolverDelegator.setDependencyResolver( Modifies.class, new ModifiesDependencyResolver());
-        dependencyResolverDelegator.setDependencyResolver( Adapt.class, new AdaptDependencyResolver());
-        dependencyResolverDelegator.setDependencyResolver( Decorate.class, new DecorateDependencyResolver());
+        dependencyResolverDelegator.setDependencyResolver( ThisAs.class, new ThisAsDependencyResolver() );
+        dependencyResolverDelegator.setDependencyResolver( Modifies.class, new ModifiesDependencyResolver() );
+        dependencyResolverDelegator.setDependencyResolver( Adapt.class, new AdaptDependencyResolver() );
+        dependencyResolverDelegator.setDependencyResolver( Decorate.class, new DecorateDependencyResolver() );
 
         ModifierModelBuilder modifierModelBuilder = new ModifierModelBuilder();
-        MixinModelBuilder mixinModelBuilder = new MixinModelBuilder(modifierModelBuilder);
-        compositeModelBuilder = new CompositeModelBuilder( modifierModelBuilder, mixinModelBuilder );
+        MixinModelBuilder mixinModelBuilder = new MixinModelBuilder( modifierModelBuilder );
+        CompositeModelBuilder compositeModelBuilder = new CompositeModelBuilder( modifierModelBuilder, mixinModelBuilder );
 
-        ModifierModelResolver modifierModelResolver = new ModifierModelResolver( dependencyResolverDelegator);
-        MixinModelResolver mixinModelResolver = new MixinModelResolver( dependencyResolverDelegator);
-        compositeModelResolver = new CompositeModelResolver( modifierModelResolver, mixinModelResolver);
+        ModifierModelResolver modifierModelResolver = new ModifierModelResolver( dependencyResolverDelegator );
+        MixinModelResolver mixinModelResolver = new MixinModelResolver( dependencyResolverDelegator );
+        compositeModelResolver = new CompositeModelResolver( modifierModelResolver, mixinModelResolver );
 
-        modelFactory = new CompositeModelFactoryImpl(compositeModelBuilder);
+        modelFactory = new CompositeModelFactoryImpl( compositeModelBuilder );
         objectContexts = new ConcurrentHashMap<Class<? extends Composite>, CompositeContextImpl>();
         fragmentFactory = new FragmentFactoryImpl();
-   }
+    }
 
     public <T extends Composite> CompositeBuilder<T> newCompositeBuilder( Class<T> compositeType )
     {
-        CompositeContextImpl<T> context = getCompositeContext( compositeType);
-        CompositeBuilder<T> builder = new CompositeBuilderImpl<T>( context, fragmentFactory );
-        return builder;
+        CompositeContextImpl<T> context = getCompositeContext( compositeType );
+        return new CompositeBuilderImpl<T>( context, fragmentFactory );
     }
 
     // Private ------------------------------------------------------
     private <T extends Composite> CompositeContextImpl<T> getCompositeContext( Class<T> compositeType )
     {
+        //noinspection unchecked
         CompositeContextImpl<T> context = objectContexts.get( compositeType );
         if( context == null )
         {
-            CompositeModel<T> model = modelFactory.newCompositeModel( compositeType);
+            CompositeModel<T> model = modelFactory.newCompositeModel( compositeType );
             CompositeResolution<T> resolution = compositeModelResolver.resolveCompositeModel( model );
             context = new CompositeContextImpl<T>( resolution, modelFactory, this, fragmentFactory );
             objectContexts.put( compositeType, context );

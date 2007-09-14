@@ -20,7 +20,7 @@ import java.util.UUID;
 import org.qi4j.api.persistence.Identity;
 import org.qi4j.api.persistence.IdentityGenerator;
 
-public class UuidIdentityGenerator
+public final class UuidIdentityGenerator
     implements IdentityGenerator
 {
     protected String uuid;
@@ -33,6 +33,6 @@ public class UuidIdentityGenerator
 
     public String generate( Class<? extends Identity> compositeType )
     {
-        return uuid+Integer.toHexString( count++ );
+        return uuid + Integer.toHexString( count++ );
     }
 }

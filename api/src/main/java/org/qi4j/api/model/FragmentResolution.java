@@ -13,11 +13,6 @@ package org.qi4j.api.model;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.List;
 import org.qi4j.api.ConstructorDependencyResolution;
 import org.qi4j.api.FieldDependencyResolution;
 import org.qi4j.api.MethodDependencyResolution;
@@ -39,13 +34,9 @@ public abstract class FragmentResolution<T>
     private Iterable<MethodDependencyResolution> methodDependencies;
 
     // Constructors --------------------------------------------------
-    public FragmentResolution( FragmentModel<T> fragmentModel, Iterable<ConstructorDependencyResolution> constructorDependencies, Iterable<FieldDependencyResolution> fieldDependencies, Iterable<MethodDependencyResolution> methodDependencies)
+    public FragmentResolution( FragmentModel<T> fragmentModel, Iterable<ConstructorDependencyResolution> constructorDependencies, Iterable<FieldDependencyResolution> fieldDependencies, Iterable<MethodDependencyResolution> methodDependencies )
     {
-        if( fragmentModel == null )
-        {
-            throw new NullArgumentException( "fragmentModel is null" );
-        }
-
+        NullArgumentException.validateNotNull( "fragmentModel", fragmentModel );
         this.constructorDependencies = constructorDependencies;
         this.fieldDependencies = fieldDependencies;
         this.methodDependencies = methodDependencies;
@@ -102,7 +93,7 @@ public abstract class FragmentResolution<T>
         out.println( fragmentModel.getFragmentClass().getName() );
         for( FieldDependencyResolution fieldDependency : fieldDependencies )
         {
-            out.println( "    @" + fieldDependency.getFieldDependency().getKey().getAnnotationType().getSimpleName()+" "+fieldDependency.getFieldDependency().getField().getName());
+            out.println( "    @" + fieldDependency.getFieldDependency().getKey().getAnnotationType().getSimpleName() + " " + fieldDependency.getFieldDependency().getField().getName() );
         }
         out.close();
         return str.toString();

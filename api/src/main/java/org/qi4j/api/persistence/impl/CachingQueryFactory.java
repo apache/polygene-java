@@ -16,8 +16,8 @@ public class CachingQueryFactory
         this.delegate = delegate;
     }
 
-    public <T> Query<T> newQuery(Class<T> resultType)
+    public <T> Query<T> newQuery( Class<T> resultType )
     {
-        return new CachingQuery<T>(delegate.newQuery(resultType));
+        return new CachingQuery<T>( delegate.newQuery( resultType ) );
     }
 }

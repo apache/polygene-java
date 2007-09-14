@@ -8,13 +8,13 @@ import org.qi4j.api.InvalidDependencyException;
 public class CompositeResolutionException
     extends RuntimeException
 {
-    public CompositeResolutionException( String s)
+    public CompositeResolutionException( String s )
     {
-        super(s);
+        super( s );
     }
 
     public CompositeResolutionException( String s, InvalidDependencyException ex )
     {
-        super(s, ex);
+        super( s, ex );
     }
 }

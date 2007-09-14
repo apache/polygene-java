@@ -1,6 +1,5 @@
 package org.qi4j.api;
 
-import java.lang.reflect.Field;
 import org.qi4j.api.model.FieldDependency;
 
 /**

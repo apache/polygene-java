@@ -1,14 +1,13 @@
 package org.qi4j.api.persistence.impl;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Iterator;
 import org.qi4j.api.persistence.Query;
 
 /**
  * TODO
  */
-public class QueryDecorator<T> implements Query<T>
+public class QueryDecorator<T>
+    implements Query<T>
 {
     protected Query<T> query;
 
@@ -24,22 +23,22 @@ public class QueryDecorator<T> implements Query<T>
 
     public <K> K where( Class<K> mixinType )
     {
-        return query.where( mixinType);
+        return query.where( mixinType );
     }
 
     public <K> K where( Class<K> mixinType, Is comparisonOperator )
     {
-        return query.where( mixinType, comparisonOperator);
+        return query.where( mixinType, comparisonOperator );
     }
 
     public <K> K orderBy( Class<K> mixinType )
     {
-        return query.orderBy( mixinType);
+        return query.orderBy( mixinType );
     }
 
     public <K> K orderBy( Class<K> mixinType, OrderBy order )
     {
-        return query.orderBy( mixinType, order);
+        return query.orderBy( mixinType, order );
     }
 
 

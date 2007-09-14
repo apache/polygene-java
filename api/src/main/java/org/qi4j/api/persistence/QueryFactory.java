@@ -18,5 +18,5 @@ package org.qi4j.api.persistence;
 
 public interface QueryFactory
 {
-    <R> Query<R> newQuery(Class<R> resultType);
+    <R> Query<R> newQuery( Class<R> resultType );
 }

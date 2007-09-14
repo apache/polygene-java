@@ -5,7 +5,8 @@ import java.util.Iterator;
 /**
  * TODO
  */
-public class FirstMaxIterable<T> implements Iterable<T>
+public class FirstMaxIterable<T>
+    implements Iterable<T>
 {
     private Iterable<T> iterable;
     private int first;
@@ -23,13 +24,17 @@ public class FirstMaxIterable<T> implements Iterable<T>
         Iterator<T> iterator = iterable.iterator();
 
         // Remove first nr of objects
-        for (int i = 0; i < first && iterator.hasNext(); i++)
+        for( int i = 0; i < first && iterator.hasNext(); i++ )
+        {
             iterator.next();
+        }
 
-        if ( max == -1)
+        if( max == -1 )
+        {
             return iterator();
+        }
 
-        return new CountIterator(iterator, max);
+        return new CountIterator( iterator, max );
     }
 
     private class CountIterator<T>

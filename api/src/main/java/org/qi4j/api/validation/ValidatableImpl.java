@@ -19,7 +19,8 @@ package org.qi4j.api.validation;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ValidatableImpl implements Validatable
+public class ValidatableImpl
+    implements Validatable
 {
     public List<ValidationMessage> isValid()
     {

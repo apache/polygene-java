@@ -5,12 +5,13 @@ import java.util.Iterator;
 /**
  * TODO
  */
-public class WhereIterable<T> implements Iterable<T>
+public class WhereIterable<T> 
+    implements Iterable<T>
 {
     private Iterable<T> iterable;
     private Iterable<WhereConstraint> constraints;
 
-    public WhereIterable( Iterable<T> iterable, Iterable<WhereConstraint> constraints)
+    public WhereIterable( Iterable<T> iterable, Iterable<WhereConstraint> constraints )
     {
         this.iterable = iterable;
         this.constraints = constraints;
@@ -18,7 +19,7 @@ public class WhereIterable<T> implements Iterable<T>
 
     public Iterator<T> iterator()
     {
-        return new WhereIterator<T>(iterable.iterator());
+        return new WhereIterator<T>( iterable.iterator() );
     }
 
     private class WhereIterator<K>
@@ -35,13 +36,16 @@ public class WhereIterable<T> implements Iterable<T>
 
         public boolean hasNext()
         {
-            nextLoop : while (next == null && iterator.hasNext())
+            nextLoop:
+            while( next == null && iterator.hasNext() )
             {
                 K nextTest = iterator.next();
                 for( WhereConstraint constraint : constraints )
                 {
-                    if (!constraint.accepts( nextTest))
+                    if( !constraint.accepts( nextTest ) )
+                    {
                         continue nextLoop;
+                    }
                 }
                 next = nextTest;
             }

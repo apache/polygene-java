@@ -85,7 +85,7 @@ public final class ProxyReferenceInvocationHandler<T extends Composite>
             Method write = property.getWriteMethod();
             if( read != null && write != null )
             {
-                Object value = property.getReadMethod().invoke( currentMixin, new Object[0] );
+                Object value = property.getReadMethod().invoke( currentMixin );
                 Method writeMethod = property.getWriteMethod();
                 writeMethod.invoke( invokedMixin, value );
             }

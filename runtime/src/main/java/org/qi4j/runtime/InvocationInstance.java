@@ -17,7 +17,6 @@ package org.qi4j.runtime;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Queue;
 import org.qi4j.api.Composite;
 
 public final class InvocationInstance<T extends Composite>
@@ -40,11 +39,11 @@ public final class InvocationInstance<T extends Composite>
         pool = aPool;
     }
 
-    public Object invoke( T proxy, Object[] args, Object mixin)
+    public Object invoke( T proxy, Object[] args, Object mixin )
         throws Throwable
     {
         pool.returnInstance( this );
-        
+
         try
         {
             if( firstModifier == null )

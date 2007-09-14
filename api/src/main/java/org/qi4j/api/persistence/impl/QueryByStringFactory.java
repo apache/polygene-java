@@ -10,5 +10,5 @@ public interface QueryByStringFactory
     extends QueryFactory
 
 {
-    <T> Query<T> newQuery(Class<T> resultType, String query);
+    <T> Query<T> newQuery( Class<T> resultType, String query );
 }

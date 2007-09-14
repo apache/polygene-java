@@ -5,5 +5,5 @@ package org.qi4j.api.persistence.impl;
  */
 public interface WhereConstraint
 {
-    boolean accepts(Object anObject);
+    boolean accepts( Object anObject );
 }

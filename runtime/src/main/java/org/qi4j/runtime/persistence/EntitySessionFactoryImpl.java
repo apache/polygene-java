@@ -19,7 +19,7 @@ package org.qi4j.runtime.persistence;
 import org.qi4j.api.persistence.EntitySession;
 import org.qi4j.api.persistence.EntitySessionFactory;
 
-public class EntitySessionFactoryImpl
+public final class EntitySessionFactoryImpl
     implements EntitySessionFactory
 {
     private EntitySession session;

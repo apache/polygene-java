@@ -30,8 +30,9 @@ public final class IdentityImpl
         this.identity = identity;
     }
 
-    /** Returns the client view of the identity.
-     *
+    /**
+     * Returns the client view of the identity.
+     * <p/>
      * It is unique within the owning repository, but potentially not unique globally and between
      * types.
      *

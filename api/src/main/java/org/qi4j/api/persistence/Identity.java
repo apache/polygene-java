@@ -21,7 +21,7 @@ import org.qi4j.api.annotation.ImplementedBy;
  * to store the state in a database. It is not the responsibility of the
  * framework to come up with a good identity string.
  */
-@ImplementedBy( Identity.IdentityMixin.class)
+@ImplementedBy( Identity.IdentityMixin.class )
 public interface Identity
 {
     /**

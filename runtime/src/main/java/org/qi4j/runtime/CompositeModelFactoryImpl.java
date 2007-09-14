@@ -16,16 +16,12 @@
  */
 package org.qi4j.runtime;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Proxy;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import org.qi4j.api.Composite;
 import org.qi4j.api.CompositeModelFactory;
 import org.qi4j.api.model.CompositeModel;
 import org.qi4j.api.model.NullArgumentException;
 
-public class CompositeModelFactoryImpl
+public final class CompositeModelFactoryImpl
     implements CompositeModelFactory
 {
     private CompositeModelBuilder compositeModelBuilder;
@@ -37,11 +33,7 @@ public class CompositeModelFactoryImpl
 
     public <T extends Composite> CompositeModel<T> newCompositeModel( Class<T> compositeType )
     {
-        if( compositeType == null )
-        {
-            throw new NullArgumentException( "compositeType" );
-        }
-
-        return compositeModelBuilder.getCompositeModel( compositeType);
+        NullArgumentException.validateNotNull( "compositeType", compositeType );
+        return compositeModelBuilder.getCompositeModel( compositeType );
     }
 }

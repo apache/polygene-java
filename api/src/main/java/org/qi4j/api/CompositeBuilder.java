@@ -29,7 +29,7 @@ public interface CompositeBuilder<T extends Composite>
      */
     void adapt( Object mixin );
 
-    <K, T extends K> void decorate (K object);
+    <K, T extends K> void decorate( K object );
 
     public <K> void properties( Class<K> mixinType, Object... properties );
 

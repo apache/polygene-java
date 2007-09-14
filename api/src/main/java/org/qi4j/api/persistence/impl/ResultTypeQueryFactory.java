@@ -16,8 +16,8 @@ public class ResultTypeQueryFactory
         this.delegate = delegate;
     }
 
-    public <T> Query<T> newQuery(Class<T> resultType)
+    public <T> Query<T> newQuery( Class<T> resultType )
     {
-        return new ResultTypeQuery<T>(delegate.newQuery(resultType), resultType);
+        return new ResultTypeQuery<T>( delegate.newQuery( resultType ), resultType );
     }
 }

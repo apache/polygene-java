@@ -7,7 +7,6 @@ import java.lang.reflect.Type;
 /**
  * Dependency key used for dependency resolutions. The key is comprised
  * of the thisAs type, the fragment type, the annotation type, the generic dependency type, and an optional name.
- *
  */
 public class DependencyKey
 {
@@ -38,20 +37,30 @@ public class DependencyKey
 
     public Class getRawClass()
     {
-        if (genericType instanceof Class)
-            return ( Class ) genericType;
-        else if (genericType instanceof ParameterizedType )
-            return (Class) (( ParameterizedType )genericType).getRawType();
+        if( genericType instanceof Class )
+        {
+            return (Class) genericType;
+        }
+        else if( genericType instanceof ParameterizedType )
+        {
+            return (Class) ( (ParameterizedType) genericType ).getRawType();
+        }
         else
+        {
             return null; // TODO can this happen?
+        }
     }
 
     public Class getDependencyType()
     {
-        if (genericType instanceof ParameterizedType )
-            return (Class) (( ParameterizedType )genericType).getActualTypeArguments()[0];
+        if( genericType instanceof ParameterizedType )
+        {
+            return (Class) ( (ParameterizedType) genericType ).getActualTypeArguments()[ 0 ];
+        }
         else
+        {
             return (Class) genericType;
+        }
     }
 
     public String getName()
@@ -86,7 +95,7 @@ public class DependencyKey
         {
             return false;
         }
-        if( !annotationType.equals(( that.annotationType ) ))
+        if( !annotationType.equals( ( that.annotationType ) ) )
         {
             return false;
         }
@@ -108,6 +117,6 @@ public class DependencyKey
 
     @Override public String toString()
     {
-        return compositeType.getSimpleName()+":"+fragmentType.getSimpleName()+":"+annotationType.getName()+":"+ genericType+(name == null? "" : ":"+name);
+        return compositeType.getSimpleName() + ":" + fragmentType.getSimpleName() + ":" + annotationType.getName() + ":" + genericType + ( name == null ? "" : ":" + name );
     }
 }

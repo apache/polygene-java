@@ -18,8 +18,32 @@ package org.qi4j.api.model;
 
 public class NullArgumentException extends IllegalArgumentException
 {
-    public NullArgumentException( String message )
+    private NullArgumentException( String message )
     {
         super( message );
+    }
+
+    public static void validateNotNull( String parameterName, Object value )
+    {
+        if( value != null )
+        {
+            return;
+        }
+        String message = parameterName + " was null.";
+        throw new NullArgumentException( message );
+    }
+
+    public static void validateNotEmpty( String parameterName, String value )
+    {
+        if( value == null )
+        {
+            String message = parameterName + " was null.";
+            throw new NullArgumentException( message );
+        }
+        if( value.length() == 0 )
+        {
+            String message = parameterName + " was empty.";
+            throw new NullArgumentException( message );
+        }
     }
 }

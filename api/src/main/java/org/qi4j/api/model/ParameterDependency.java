@@ -1,12 +1,11 @@
 package org.qi4j.api.model;
 
-import java.lang.reflect.Field;
 import org.qi4j.api.DependencyKey;
 
 /**
  * TODO
  */
-public class ParameterDependency
+public final class ParameterDependency
     extends Dependency
 {
     private String name;

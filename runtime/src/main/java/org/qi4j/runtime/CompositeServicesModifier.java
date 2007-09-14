@@ -28,7 +28,7 @@ import org.qi4j.api.annotation.Modifies;
 import org.qi4j.api.annotation.ThisAs;
 import org.qi4j.api.model.CompositeModel;
 
-public class CompositeServicesModifier
+public final class CompositeServicesModifier
     implements Composite
 {
     @DependencyOld private CompositeModelFactory modelFactory;
@@ -73,7 +73,7 @@ public class CompositeServicesModifier
 
     public CompositeModel getCompositeModel()
     {
-        Composite composite = dereference( );
+        Composite composite = dereference();
         return CompositeInvocationHandler.getInvocationHandler( composite ).getContext().getCompositeModel();
     }
 

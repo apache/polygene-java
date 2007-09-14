@@ -22,6 +22,6 @@ public class EntityStorageException extends EntitySessionException
 {
     public EntityStorageException( String message, PersistenceException e )
     {
-        super(message, e);
+        super( message, e );
     }
 }

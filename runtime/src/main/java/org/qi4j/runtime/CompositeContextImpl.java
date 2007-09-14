@@ -18,11 +18,8 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.HashMap;
-import java.util.IdentityHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import org.qi4j.api.Composite;
 import org.qi4j.api.CompositeBuilderFactory;
 import org.qi4j.api.CompositeInstantiationException;
@@ -49,8 +46,8 @@ public final class CompositeContextImpl<T extends Composite>
     private InvocationInstancePool[] invocationInstancePool;
     private CompositeModelFactory modelFactory;
     private HashMap<Integer, MethodDescriptor> methodDescriptors;
-    private Method oldMethod;
-    private MethodDescriptor oldDescriptor;
+//    private Method oldMethod;
+//    private MethodDescriptor oldDescriptor;
 
     public CompositeContextImpl( CompositeResolution<T> compositeResolution, CompositeModelFactory modelFactory, CompositeBuilderFactoryImpl builderFactory, FragmentFactory fragmentFactory )
     {
@@ -61,7 +58,7 @@ public final class CompositeContextImpl<T extends Composite>
         this.builderFactory = builderFactory;
 
         // Create index of method to mixin and invocation instance pools
-        methodDescriptors = new HashMap<Integer, MethodDescriptor>(127);
+        methodDescriptors = new HashMap<Integer, MethodDescriptor>( 127 );
         Map<MixinResolution, Integer> mixinIndices = new HashMap<MixinResolution, Integer>();
         Method[] methods = compositeModel.getCompositeClass().getMethods();
         invocationInstancePool = new InvocationInstancePool[methods.length];
@@ -71,21 +68,23 @@ public final class CompositeContextImpl<T extends Composite>
         Iterable<MixinResolution> mixinResolutions = compositeResolution.getUsedMixinModels();
         for( MixinResolution mixinResolution : mixinResolutions )
         {
-            mixinIndices.put( mixinResolution, new Integer(currentMixinIndex++));
+            mixinIndices.put( mixinResolution, currentMixinIndex++ );
         }
 
         int methodIndex = 0;
         for( Method method : methods )
         {
-            MixinResolution mixinResolution = compositeResolution.getMixinForInterface( method.getDeclaringClass());
+            MixinResolution mixinResolution = compositeResolution.getMixinForInterface( method.getDeclaringClass() );
             int index = mixinIndices.get( mixinResolution );
-            invocationInstancePool[methodIndex] = new InvocationInstancePool();
+            invocationInstancePool[ methodIndex ] = new InvocationInstancePool();
 
-            MethodDescriptor mi = new MethodDescriptor(method, methodIndex, index, invocationInstancePool[methodIndex]);
+            MethodDescriptor mi = new MethodDescriptor( method, methodIndex, index, invocationInstancePool[ methodIndex ] );
             int hashCode = method.hashCode();
-            if (methodDescriptors.get( hashCode) != null)
-                System.out.println("COLLISSION!");
-            methodDescriptors.put( hashCode, mi);
+            if( methodDescriptors.get( hashCode ) != null )
+            {
+                System.out.println( "COLLISSION!" );
+            }
+            methodDescriptors.put( hashCode, mi );
             methodIndex++;
         }
 
@@ -111,29 +110,29 @@ public final class CompositeContextImpl<T extends Composite>
         return builderFactory;
     }
 
-    public MethodDescriptor getMethodDescriptor(Method method)
+    public MethodDescriptor getMethodDescriptor( Method method )
     {
 //        if (method == oldMethod)
 //            return oldDescriptor;
 
         MethodDescriptor descriptor = methodDescriptors.get( method.hashCode() );
 
-        if (descriptor == null)
+        if( descriptor == null )
         {
-            oldMethod = null;
+//            oldMethod = null;
             for( MethodDescriptor method1 : methodDescriptors.values() )
             {
-                if (method1.getMethod().toGenericString().equals(method.toGenericString()))
+                if( method1.getMethod().toGenericString().equals( method.toGenericString() ) )
                 {
-                    descriptor = methodDescriptors.remove( method1.hashCode());
-                    descriptor = new MethodDescriptor(method, descriptor.getInvocationInstanceIndex(), descriptor.getMixinIndex(), descriptor.getInvocationInstances());
+                    descriptor = methodDescriptors.remove( method1.hashCode() );
+                    descriptor = new MethodDescriptor( method, descriptor.getInvocationInstanceIndex(), descriptor.getMixinIndex(), descriptor.getInvocationInstances() );
                 }
             }
-            methodDescriptors.put(method.hashCode(), descriptor);
+            methodDescriptors.put( method.hashCode(), descriptor );
         }
 
-        oldDescriptor = descriptor;
-        oldMethod = method;
+//        oldDescriptor = descriptor;
+//        oldMethod = method;
         return descriptor;
     }
 
@@ -143,11 +142,12 @@ public final class CompositeContextImpl<T extends Composite>
 
         InvocationInstance instance = instances.getInstance();
 
-        if (instance == null)
+        if( instance == null )
         {
-            instance = newInstance( methodDescriptor);
+            instance = newInstance( methodDescriptor );
         }
 
+        //noinspection unchecked
         return instance;
     }
 
@@ -158,6 +158,7 @@ public final class CompositeContextImpl<T extends Composite>
         Class compositeClass = compositeModel.getCompositeClass();
         ClassLoader classloader = compositeClass.getClassLoader();
         Class[] intfaces = new Class[]{ compositeClass };
+        //noinspection unchecked
         T thisCompositeProxy = (T) Proxy.newProxyInstance( classloader, intfaces, proxyHandler );
 
         List<ModifierResolution> modifierResolutions = compositeResolution.getModifiersForMethod( method.getMethod() );
@@ -165,38 +166,39 @@ public final class CompositeContextImpl<T extends Composite>
         Object previous = mixinInvocationHandler;
 
         // Instantiate and link modifiers
-        for (int i = modifierResolutions.size()-1; i >= 0; i--)
+        for( int i = modifierResolutions.size() - 1; i >= 0; i-- )
         {
             ModifierResolution modifier = modifierResolutions.get( i );
-
             Object modifies = getModifies( method.getMethod(), classloader, previous, (ModifierModel) modifier.getFragmentModel() );
-
-            ModifierDependencyInjectionContext modifierContext = new ModifierDependencyInjectionContext(this, thisCompositeProxy, modifies, method.getMethod());
-            previous = fragmentFactory.newFragment( modifier, modifierContext);
+            ModifierDependencyInjectionContext modifierContext = new ModifierDependencyInjectionContext( this, thisCompositeProxy, modifies, method.getMethod() );
+            previous = fragmentFactory.newFragment( modifier, modifierContext );
         }
 
-        return new InvocationInstance( previous, mixinInvocationHandler, proxyHandler, invocationInstancePool[method.getInvocationInstanceIndex()], method.getMethod(), method.getMethod().getDeclaringClass() );
+        return new InvocationInstance( previous, mixinInvocationHandler, proxyHandler, invocationInstancePool[ method.getInvocationInstanceIndex() ], method.getMethod(), method.getMethod().getDeclaringClass() );
     }
 
     private Object getModifies( Method method, ClassLoader classloader, Object previous, ModifierModel modifier )
     {
         Object modifies;
-        if (modifier.isGeneric())
+        if( modifier.isGeneric() )
         {
-            if (previous instanceof InvocationHandler )
+            if( previous instanceof InvocationHandler )
             {
                 modifies = previous;
-            } else
+            }
+            else
             {
                 InvocationHandler modifiesHandler = new FragmentInvocationHandler( previous );
                 modifies = Proxy.newProxyInstance( classloader, new Class[]{ method.getDeclaringClass() }, modifiesHandler );
             }
-        } else
+        }
+        else
         {
-            if (previous instanceof InvocationHandler)
+            if( previous instanceof InvocationHandler )
             {
                 modifies = Proxy.newProxyInstance( classloader, new Class[]{ method.getDeclaringClass() }, (InvocationHandler) previous );
-            } else
+            }
+            else
             {
                 modifies = previous;
             }

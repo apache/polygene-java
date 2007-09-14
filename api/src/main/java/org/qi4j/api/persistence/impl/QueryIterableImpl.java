@@ -6,7 +6,8 @@ import org.qi4j.api.persistence.Query;
 /**
  * TODO
  */
-public class QueryIterableImpl<R> implements Query<R>
+public class QueryIterableImpl<R>
+    implements Query<R>
 {
     private Iterable<R> objects;
 
@@ -58,10 +59,14 @@ public class QueryIterableImpl<R> implements Query<R>
     public R find()
     {
         Iterator<R> iterator = prepare().iterator();
-        if (iterator.hasNext())
+        if( iterator.hasNext() )
+        {
             return iterator.next();
+        }
         else
+        {
             return null;
+        }
     }
 
     public Iterator<R> iterator()

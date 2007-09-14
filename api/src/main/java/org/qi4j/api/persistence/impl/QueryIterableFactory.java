@@ -16,8 +16,8 @@ public class QueryIterableFactory
         this.objects = objects;
     }
 
-    public <T> Query<T> newQuery(Class<T> resultType)
+    public <T> Query<T> newQuery( Class<T> resultType )
     {
-        return new QueryIterableImpl<T>((Iterable<T>) objects);
+        return new QueryIterableImpl<T>( (Iterable<T>) objects );
     }
 }

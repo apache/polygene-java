@@ -1,7 +1,6 @@
 package org.qi4j.api;
 
 import java.util.List;
-import java.util.Map;
 import org.qi4j.api.model.CompositeContext;
 
 /**

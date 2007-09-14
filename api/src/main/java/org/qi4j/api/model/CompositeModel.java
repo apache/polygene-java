@@ -14,11 +14,8 @@ package org.qi4j.api.model;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
 import org.qi4j.api.Composite;
 
 /**
@@ -30,7 +27,7 @@ public final class CompositeModel<T extends Composite>
     private Iterable<MixinModel> mixinModels;
     private Iterable<ModifierModel> modifierModels;
 
-    public CompositeModel( Class<T> compositeClass, Iterable<MixinModel> mixinModels, Iterable<ModifierModel> modifierModels)
+    public CompositeModel( Class<T> compositeClass, Iterable<MixinModel> mixinModels, Iterable<ModifierModel> modifierModels )
     {
         this.compositeClass = compositeClass;
         this.mixinModels = mixinModels;
@@ -132,7 +129,7 @@ public final class CompositeModel<T extends Composite>
 
     public Iterable<Dependency> getDependenciesByScope( Class<? extends Annotation> aClass )
     {
-        List<Dependency> dependencies = new ArrayList<Dependency>( );
+        List<Dependency> dependencies = new ArrayList<Dependency>();
         for( MixinModel mixinModel : mixinModels )
         {
             Iterable<Dependency> scope = mixinModel.getDependenciesByScope( aClass );

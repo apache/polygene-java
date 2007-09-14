@@ -52,14 +52,12 @@ import java.lang.annotation.Target;
  * {
  * private State state;
  * <p/>
- * @Sessional
- * public void setSomeState( State state )
+ * @Sessional public void setSomeState( State state )
  * {
  * this.state = state;
  * }
  * <p/>
- * @Sessional
- * public State getSomeState()
+ * @Sessional public State getSomeState()
  * {
  * return this.state;
  * }

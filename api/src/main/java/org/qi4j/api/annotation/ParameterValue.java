@@ -12,28 +12,32 @@ public class ParameterValue
 {
     private static ThreadLocal<String> currentName = new ThreadLocal<String>();
 
-    public static ParameterValue parameter(String name, Object value)
+    public static ParameterValue parameter( String name, Object value )
     {
-        if (name == null)
-            return parameter((Object)null, value);
-        
-        return new ParameterValue( name, value);
+        if( name == null )
+        {
+            return parameter( (Object) null, value );
+        }
+
+        return new ParameterValue( name, value );
     }
 
-    public static ParameterValue parameter(Object nullName, Object value)
+    public static ParameterValue parameter( Object nullName, Object value )
     {
         String name = currentName.get();
-        if (name == null)
-            throw new IllegalStateException("You must set a name by calling name() first");
+        if( name == null )
+        {
+            throw new IllegalStateException( "You must set a name by calling name() first" );
+        }
         currentName.remove();
 
-        return new ParameterValue( name, value);
+        return new ParameterValue( name, value );
     }
 
     public static <T> T name( Class<? extends T> mixinType )
     {
         InvocationHandler ih = new ParameterNameInvocationHandler();
-        return mixinType.cast( Proxy.newProxyInstance( mixinType.getClassLoader(), new Class[] {mixinType}, ih));
+        return mixinType.cast( Proxy.newProxyInstance( mixinType.getClassLoader(), new Class[]{ mixinType }, ih ) );
     }
 
     String name;
@@ -87,7 +91,7 @@ public class ParameterValue
 
     @Override public String toString()
     {
-        return name+"="+value;
+        return name + "=" + value;
     }
 
     static class ParameterNameInvocationHandler

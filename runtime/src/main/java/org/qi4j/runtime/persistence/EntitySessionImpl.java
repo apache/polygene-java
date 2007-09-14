@@ -33,7 +33,7 @@ import org.qi4j.spi.persistence.EntityStateHolder;
 import org.qi4j.spi.persistence.PersistenceException;
 import org.qi4j.spi.persistence.PersistentStore;
 
-public class EntitySessionImpl
+public final class EntitySessionImpl
     implements EntitySession
 {
     private boolean open;
@@ -85,7 +85,7 @@ public class EntitySessionImpl
             if( entity == null )
             {
                 CompositeBuilder<T> builder = builderFactory.newCompositeBuilder( compositeType );
-                builder.properties( Identity.class, identity);
+                builder.properties( Identity.class, identity );
                 entity = builder.newInstance();
                 EntityStateHolder<T> holder = store.getEntityInstance( identity, model );
                 EntityCompositeInvocationHandler<T> handler = EntityCompositeInvocationHandler.getInvocationHandler( entity );

@@ -7,13 +7,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import org.qi4j.api.ConstructorDependencyResolution;
 import org.qi4j.api.DependencyKey;
-import org.qi4j.api.DependencyResolution;
-import org.qi4j.api.DependencyResolver;
-import org.qi4j.api.FieldDependencyResolution;
-import org.qi4j.api.MethodDependencyResolution;
-import org.qi4j.api.ParameterDependencyResolution;
 import org.qi4j.api.annotation.AppliesTo;
 import org.qi4j.api.annotation.DependencyScope;
 import org.qi4j.api.annotation.Name;
@@ -41,7 +35,7 @@ public abstract class FragmentModelBuilder
             getParameterDependencies( mixinClass, compositeType, parameterTypes, parameterAnnotations, constructorParameters );
 
             ConstructorDependency dependency = new ConstructorDependency( constructor, constructorParameters );
-            dependentConstructors.add( dependency ) ;
+            dependentConstructors.add( dependency );
         }
     }
 
@@ -52,14 +46,14 @@ public abstract class FragmentModelBuilder
         {
             Type[] parameterTypes = method.getGenericParameterTypes();
             Annotation[][] parameterAnnotations = method.getParameterAnnotations();
-            if (hasDependencyAnnotation(parameterAnnotations))
+            if( hasDependencyAnnotation( parameterAnnotations ) )
             {
                 List<ParameterDependency> methodParameters = new ArrayList<ParameterDependency>();
                 getParameterDependencies( mixinClass, compositeType, parameterTypes, parameterAnnotations, methodParameters );
 
                 MethodDependency dependency = new MethodDependency( method, methodParameters );
 
-                dependentMethods.add( dependency ) ;
+                dependentMethods.add( dependency );
             }
         }
     }
@@ -71,8 +65,8 @@ public abstract class FragmentModelBuilder
         {
             // Find annotation that is a DependencyAnnotation
             Annotation[] annotations = field.getAnnotations();
-            Annotation annotation = getDependencyAnnotation( annotations);
-            if( annotation != null)
+            Annotation annotation = getDependencyAnnotation( annotations );
+            if( annotation != null )
             {
                 field.setAccessible( true );
                 String name = null;
@@ -109,7 +103,7 @@ public abstract class FragmentModelBuilder
                     }
                 }
 
-                DependencyKey key = new DependencyKey( annotation.annotationType(), field.getType(), name , fragmentClass, compositeType);
+                DependencyKey key = new DependencyKey( annotation.annotationType(), field.getType(), name, fragmentClass, compositeType );
 
                 FieldDependency dependency = new FieldDependency( key, optional, field );
 
@@ -121,7 +115,7 @@ public abstract class FragmentModelBuilder
         Class<?> parent = fragmentClass.getSuperclass();
         if( parent != null && parent != Object.class )
         {
-             getFieldDependencies( parent, compositeType, dependentFields );
+            getFieldDependencies( parent, compositeType, dependentFields );
         }
     }
 
@@ -162,14 +156,16 @@ public abstract class FragmentModelBuilder
         }
     }
 
-    private boolean hasDependencyAnnotation(Annotation[][] parameterAnnotation)
+    private boolean hasDependencyAnnotation( Annotation[][] parameterAnnotation )
     {
         for( Annotation[] annotations : parameterAnnotation )
         {
             for( Annotation annotation : annotations )
             {
-                if (isDependencyAnnotation( annotation))
+                if( isDependencyAnnotation( annotation ) )
+                {
                     return true;
+                }
             }
         }
         return false;
@@ -186,7 +182,7 @@ public abstract class FragmentModelBuilder
             if( annotation != null )
             {
                 String name = null;
-                boolean optional = isOptional(annotation);
+                boolean optional = isOptional( annotation );
 
                 Method nameMethod = getAnnotationMethod( Name.class, annotation.getClass() );
                 if( nameMethod != null )
@@ -209,7 +205,8 @@ public abstract class FragmentModelBuilder
                 DependencyKey key = new DependencyKey( annotation.annotationType(), parameterType, name, mixinClass, compositeType );
                 dependency = new ParameterDependency( key, optional, name );
                 parameterDependencies.add( dependency );
-            } else
+            }
+            else
             {
                 // Fake a Property annotation
                 DependencyKey key = new DependencyKey( Property.class, parameterType, null, mixinClass, compositeType );

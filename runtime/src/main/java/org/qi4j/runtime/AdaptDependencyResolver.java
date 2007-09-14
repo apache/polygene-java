@@ -1,7 +1,6 @@
 package org.qi4j.runtime;
 
 import java.util.Collections;
-import java.util.List;
 import org.qi4j.api.DependencyInjectionContext;
 import org.qi4j.api.DependencyKey;
 import org.qi4j.api.DependencyResolution;
@@ -11,12 +10,12 @@ import org.qi4j.api.MixinDependencyInjectionContext;
 /**
  * TODO
  */
-public class AdaptDependencyResolver
+public final class AdaptDependencyResolver
     implements DependencyResolver
 {
     public DependencyResolution resolveDependency( DependencyKey key )
     {
-        return new AdaptDependencyResolution(key);
+        return new AdaptDependencyResolution( key );
     }
 
     private class AdaptDependencyResolution implements DependencyResolution
@@ -30,14 +29,16 @@ public class AdaptDependencyResolver
 
         public Iterable getDependencyInjection( DependencyInjectionContext context )
         {
-            if (context instanceof MixinDependencyInjectionContext )
+            if( context instanceof MixinDependencyInjectionContext )
             {
-                MixinDependencyInjectionContext mixinContext = ( MixinDependencyInjectionContext ) context;
+                MixinDependencyInjectionContext mixinContext = (MixinDependencyInjectionContext) context;
                 Iterable adapt = mixinContext.getAdapt();
                 for( Object adaptable : adapt )
                 {
-                    if (key.getDependencyType().isInstance( adaptable))
-                        return Collections.singletonList( adaptable);
+                    if( key.getDependencyType().isInstance( adaptable ) )
+                    {
+                        return Collections.singletonList( adaptable );
+                    }
                 }
 
                 return Collections.EMPTY_LIST;

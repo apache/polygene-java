@@ -19,9 +19,6 @@ package org.qi4j.runtime;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import org.qi4j.api.Composite;
 import org.qi4j.api.model.CompositeContext;
 import org.qi4j.api.model.CompositeState;
@@ -47,6 +44,7 @@ public abstract class AbstractCompositeInvocationHandler<T extends Composite>
 
     public static <T extends Composite> CompositeInvocationHandler<T> getInvocationHandler( T aProxy )
     {
+        //noinspection unchecked
         return (CompositeInvocationHandler<T>) Proxy.getInvocationHandler( aProxy );
     }
 
@@ -84,7 +82,7 @@ public abstract class AbstractCompositeInvocationHandler<T extends Composite>
         }
         if( method.getName().equals( "equals" ) )
         {
-            if( args[0] == null )
+            if( args[ 0 ] == null )
             {
                 return false;
             }

@@ -30,31 +30,39 @@ public class WhereQuery<T> extends QueryDecorator<T>
 
     public <K> K where( Class<K> mixinType )
     {
-        InvocationHandler ih = new WhereInvocationHandler(Is.EQUAL);
-        return mixinType.cast(Proxy.newProxyInstance( mixinType.getClassLoader(), new Class[] {mixinType}, ih));
+        InvocationHandler ih = new WhereInvocationHandler( Is.EQUAL );
+        return mixinType.cast( Proxy.newProxyInstance( mixinType.getClassLoader(), new Class[]{ mixinType }, ih ) );
     }
 
     public <K> K where( Class<K> mixinType, Is comparisonOperator )
     {
-        InvocationHandler ih = new WhereInvocationHandler(comparisonOperator);
-        return mixinType.cast(Proxy.newProxyInstance( mixinType.getClassLoader(), new Class[] {mixinType}, ih));
+        InvocationHandler ih = new WhereInvocationHandler( comparisonOperator );
+        return mixinType.cast( Proxy.newProxyInstance( mixinType.getClassLoader(), new Class[]{ mixinType }, ih ) );
     }
 
     public Iterable<T> prepare()
     {
-        if (constraints.isEmpty())
+        if( constraints.isEmpty() )
+        {
             return query.prepare();
+        }
         else
-            return new WhereIterable<T>(query.prepare(), constraints);
+        {
+            return new WhereIterable<T>( query.prepare(), constraints );
+        }
     }
 
     public T find()
     {
         Iterator<T> iterator = prepare().iterator();
-        if (iterator.hasNext())
+        if( iterator.hasNext() )
+        {
             return iterator.next();
+        }
         else
+        {
             return null;
+        }
     }
 
     public List<WhereConstraint> getConstraints()
@@ -62,28 +70,29 @@ public class WhereQuery<T> extends QueryDecorator<T>
         return constraints;
     }
 
-    private class WhereInvocationHandler implements InvocationHandler
+    private class WhereInvocationHandler
+        implements InvocationHandler
     {
-        Is comparisonOperator;
+        private Is comparisonOperator;
 
-        public WhereInvocationHandler( Is comparisonOperator )
+        private WhereInvocationHandler( Is comparisonOperator )
         {
             this.comparisonOperator = comparisonOperator;
         }
 
         public Object invoke( Object o, Method method, Object[] objects ) throws Throwable
         {
-            if (method.getName().startsWith("set"))
+            if( method.getName().startsWith( "set" ) )
             {
                 // Find get method
-                BeanInfo info = Introspector.getBeanInfo( method.getDeclaringClass());
+                BeanInfo info = Introspector.getBeanInfo( method.getDeclaringClass() );
                 PropertyDescriptor[] descriptors = info.getPropertyDescriptors();
                 for( PropertyDescriptor descriptor : descriptors )
                 {
                     Method writeMethod = descriptor.getWriteMethod();
-                    if ( writeMethod != null && writeMethod.equals(method))
+                    if( writeMethod != null && writeMethod.equals( method ) )
                     {
-                        constraints.add( new WherePropertyConstraint(descriptor.getReadMethod(), objects[0], comparisonOperator));
+                        constraints.add( new WherePropertyConstraint( descriptor.getReadMethod(), objects[ 0 ], comparisonOperator ) );
                         break;
                     }
                 }

@@ -12,19 +12,20 @@ import org.qi4j.api.ModifierDependencyInjectionContext;
 /**
  * TODO
  */
-public class ModifiesDependencyResolver
+public final class ModifiesDependencyResolver
     implements DependencyResolver
 {
     public DependencyResolution resolveDependency( DependencyKey key )
         throws InvalidDependencyException
     {
-        if (key.getDependencyType().isAssignableFrom(key.getCompositeType() ) ||
-            (key.getFragmentType().equals(InvocationHandler.class) && key.getDependencyType().equals( InvocationHandler.class)))
+        if( key.getDependencyType().isAssignableFrom( key.getCompositeType() ) ||
+            ( key.getFragmentType().equals( InvocationHandler.class ) && key.getDependencyType().equals( InvocationHandler.class ) ) )
         {
             return new ModifiesDependencyResolution();
-        } else
+        }
+        else
         {
-            throw new InvalidDependencyException("Composite "+key.getCompositeType()+" does not implement @Modifies type "+key.getDependencyType()+" in modifier "+key.getFragmentType());
+            throw new InvalidDependencyException( "Composite " + key.getCompositeType() + " does not implement @Modifies type " + key.getDependencyType() + " in modifier " + key.getFragmentType() );
         }
     }
 
@@ -32,7 +33,7 @@ public class ModifiesDependencyResolver
     {
         public Iterable getDependencyInjection( DependencyInjectionContext context )
         {
-            return Collections.singleton(((ModifierDependencyInjectionContext)context).getModifies());
+            return Collections.singleton( ( (ModifierDependencyInjectionContext) context ).getModifies() );
         }
     }
 }

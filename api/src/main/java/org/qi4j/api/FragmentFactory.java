@@ -20,6 +20,6 @@ import org.qi4j.api.model.FragmentResolution;
 
 public interface FragmentFactory
 {
-    <K> K newFragment( FragmentResolution<K> fragmentResolution, DependencyInjectionContext context)
+    <K> K newFragment( FragmentResolution<K> fragmentResolution, DependencyInjectionContext context )
         throws CompositeInstantiationException;
 }

@@ -16,7 +16,7 @@ public class StaticDependencyResolution
         this.iterable = iterable;
     }
 
-    public StaticDependencyResolution(Object object)
+    public StaticDependencyResolution( Object object )
     {
         this.iterable = Collections.singleton( object );
     }

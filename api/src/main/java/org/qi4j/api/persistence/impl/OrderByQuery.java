@@ -22,7 +22,7 @@ public class OrderByQuery<T> extends QueryDecorator<T>
     {
         InvocationHandler ih = new OrderByInvocationHandler();
 
-        return mixinType.cast(Proxy.newProxyInstance( mixinType.getClassLoader(), new Class[] {mixinType}, ih));
+        return mixinType.cast( Proxy.newProxyInstance( mixinType.getClassLoader(), new Class[]{ mixinType }, ih ) );
     }
 
     public <K> K orderBy( Class<K> mixinType, OrderBy ascending )
@@ -31,15 +31,19 @@ public class OrderByQuery<T> extends QueryDecorator<T>
 
         InvocationHandler ih = new OrderByInvocationHandler();
 
-        return mixinType.cast(Proxy.newProxyInstance( mixinType.getClassLoader(), new Class[] {mixinType}, ih));
+        return mixinType.cast( Proxy.newProxyInstance( mixinType.getClassLoader(), new Class[]{ mixinType }, ih ) );
     }
 
     public Iterable<T> prepare()
     {
-        if (orderBy != null)
-            return new OrderedIterable<T>(query.prepare(), orderBy, order );
+        if( orderBy != null )
+        {
+            return new OrderedIterable<T>( query.prepare(), orderBy, order );
+        }
         else
+        {
             return query.prepare();
+        }
     }
 
     public T find()

@@ -11,10 +11,6 @@
 */
 package org.qi4j.api.model;
 
-import org.qi4j.api.ConstructorDependencyResolution;
-import org.qi4j.api.FieldDependencyResolution;
-import org.qi4j.api.MethodDependencyResolution;
-
 /**
  * A mixin is an implementation of a particular interface,
  * and is used as a fragment in a composite.
@@ -27,7 +23,7 @@ public final class MixinModel<T>
 
     // Constructors --------------------------------------------------
 
-    public MixinModel( Class<T> fragmentClass, Iterable<ConstructorDependency> constructorDependencies, Iterable<FieldDependency> fieldDependencies,Iterable<MethodDependency> methodDependencies, Class appliesTo, Iterable<ModifierModel> modifierModels )
+    public MixinModel( Class<T> fragmentClass, Iterable<ConstructorDependency> constructorDependencies, Iterable<FieldDependency> fieldDependencies, Iterable<MethodDependency> methodDependencies, Class appliesTo, Iterable<ModifierModel> modifierModels )
     {
         super( fragmentClass, constructorDependencies, fieldDependencies, methodDependencies, appliesTo );
         this.modifierModels = modifierModels;

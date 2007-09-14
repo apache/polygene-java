@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
  * @see org.qi4j.api.DependencyResolver
  */
 @Retention( RetentionPolicy.RUNTIME )
-@Target( { ElementType.FIELD, ElementType.PARAMETER} )
+@Target( { ElementType.FIELD, ElementType.PARAMETER } )
 @Documented
 @DependencyScope
 public @interface Property

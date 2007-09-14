@@ -12,7 +12,8 @@ public class ParameterValueTest extends TestCase
 {
     ParameterValue parameterValue;
 
-    public void testParameter() throws Exception
+    public void testParameter()
+        throws Exception
     {
         // Just create a parameter
         ParameterValue value1 = parameter( "bar", "foo");

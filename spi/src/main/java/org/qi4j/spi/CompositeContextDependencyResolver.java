@@ -24,7 +24,7 @@ import org.qi4j.api.DependencyResolver;
 import org.qi4j.api.StaticDependencyResolution;
 import org.qi4j.api.model.CompositeContext;
 
-public class CompositeContextDependencyResolver
+public final class CompositeContextDependencyResolver
     implements DependencyResolver
 {
     CompositeContext context;

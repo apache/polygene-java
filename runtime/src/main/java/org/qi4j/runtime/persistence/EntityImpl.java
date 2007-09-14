@@ -22,7 +22,7 @@ import org.qi4j.api.persistence.Entity;
 import org.qi4j.api.persistence.EntityComposite;
 import org.qi4j.runtime.EntityCompositeInvocationHandler;
 
-public class EntityImpl
+public final class EntityImpl
     implements Entity
 {
     @ThisAs EntityComposite meAsEntity;

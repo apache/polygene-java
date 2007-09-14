@@ -14,33 +14,45 @@ public class ResultTypeQuery<T> extends QueryDecorator<T>
 
     public ResultTypeQuery( Query<T> query, Class<T> resultType )
     {
-        super(query);
-        resultType(resultType);
+        super( query );
+        resultType( resultType );
     }
 
     public void resultType( Class mixinType )
     {
-        if (!mixinType.equals(Object.class))
-            resultTypes.add(mixinType);
+        if( !mixinType.equals( Object.class ) )
+        {
+            resultTypes.add( mixinType );
+        }
     }
 
     public Iterable<T> prepare()
     {
-        if ( resultTypes.isEmpty())
+        if( resultTypes.isEmpty() )
+        {
             return query.prepare();
+        }
         else
-            return new ResultTypeIterable<T>(query.prepare(), resultTypes );
+        {
+            return new ResultTypeIterable<T>( query.prepare(), resultTypes );
+        }
     }
 
     public T find()
     {
-        if ( resultTypes.isEmpty())
+        if( resultTypes.isEmpty() )
+        {
             return query.find();
+        }
 
         Iterator<T> iterator = prepare().iterator();
-        if (iterator.hasNext())
+        if( iterator.hasNext() )
+        {
             return iterator.next();
+        }
         else
+        {
             return null;
+        }
     }
 }

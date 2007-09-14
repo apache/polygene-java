@@ -11,17 +11,17 @@ public class DefaultQueryFactory
 {
     QueryFactory factory;
 
-    public DefaultQueryFactory(Iterable iterable)
+    public DefaultQueryFactory( Iterable iterable )
     {
-        factory = new QueryIterableFactory(iterable);
+        factory = new QueryIterableFactory( iterable );
         factory = new ResultTypeQueryFactory( factory );
         factory = new WhereQueryFactory( factory );
         factory = new OrderByQueryFactory( factory );
         factory = new FirstMaxQueryFactory( factory );
     }
 
-    public <T> Query<T> newQuery(Class<T> resultType)
+    public <T> Query<T> newQuery( Class<T> resultType )
     {
-        return factory.newQuery(resultType);
+        return factory.newQuery( resultType );
     }
 }

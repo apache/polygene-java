@@ -5,7 +5,8 @@ import java.util.Iterator;
 /**
  * TODO
  */
-public class ResultTypeIterable<T> implements Iterable<T>
+public class ResultTypeIterable<T>
+    implements Iterable<T>
 {
     private Iterable<T> iterable;
     private Iterable<Class> resultTypes;
@@ -18,7 +19,7 @@ public class ResultTypeIterable<T> implements Iterable<T>
 
     public Iterator<T> iterator()
     {
-        return new ResultTypeIterator<T>(iterable.iterator());
+        return new ResultTypeIterator<T>( iterable.iterator() );
     }
 
     private class ResultTypeIterator<K>
@@ -35,13 +36,16 @@ public class ResultTypeIterable<T> implements Iterable<T>
 
         public boolean hasNext()
         {
-            nextLoop : while (next == null && iterator.hasNext())
+            nextLoop:
+            while( next == null && iterator.hasNext() )
             {
                 K nextTest = iterator.next();
                 for( Class resultType : resultTypes )
                 {
-                    if (!resultType.isInstance( nextTest))
+                    if( !resultType.isInstance( nextTest ) )
+                    {
                         continue nextLoop;
+                    }
                 }
                 next = nextTest;
             }

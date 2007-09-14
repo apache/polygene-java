@@ -53,9 +53,9 @@ import org.qi4j.api.annotation.ImplementedBy;
  *     implements Lifecyle
  * {
  *      @Modifies private Lifecycle next;
- *      @Dependency private EntitySession session;
- *      @Uses private Identity meAsIdentity;
- *      @Uses private System meAsSystem;
+ *      @DependsOn private EntitySession session;
+ *      @ThisAs private Identity meAsIdentity;
+ *      @ThisAs private System meAsSystem;
  * <p/>
  *      public void create()
  *      {
@@ -79,7 +79,7 @@ import org.qi4j.api.annotation.ImplementedBy;
  * <p/>
  * </pre></code>
  */
-@ImplementedBy( Lifecycle.LifecycleMixin.class)
+@ImplementedBy( Lifecycle.LifecycleMixin.class )
 public interface Lifecycle
 {
 

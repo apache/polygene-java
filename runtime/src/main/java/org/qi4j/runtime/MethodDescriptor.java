@@ -1,12 +1,11 @@
 package org.qi4j.runtime;
 
 import java.lang.reflect.Method;
-import java.util.Queue;
 
 /**
  * TODO
  */
-public class MethodDescriptor
+public final class MethodDescriptor
 {
     private Method method;
     private int invocationInstanceIndex;

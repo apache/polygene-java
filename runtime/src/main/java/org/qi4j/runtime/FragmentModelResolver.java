@@ -1,28 +1,16 @@
 package org.qi4j.runtime;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import org.qi4j.api.ConstructorDependencyResolution;
-import org.qi4j.api.DependencyKey;
 import org.qi4j.api.DependencyResolution;
 import org.qi4j.api.DependencyResolver;
 import org.qi4j.api.FieldDependencyResolution;
 import org.qi4j.api.InvalidDependencyException;
 import org.qi4j.api.MethodDependencyResolution;
 import org.qi4j.api.ParameterDependencyResolution;
-import org.qi4j.api.annotation.AppliesTo;
-import org.qi4j.api.annotation.DependencyScope;
-import org.qi4j.api.annotation.Name;
-import org.qi4j.api.annotation.Optional;
-import org.qi4j.api.annotation.Property;
 import org.qi4j.api.model.ConstructorDependency;
 import org.qi4j.api.model.FieldDependency;
-import org.qi4j.api.model.InvalidCompositeException;
 import org.qi4j.api.model.MethodDependency;
 import org.qi4j.api.model.ParameterDependency;
 
@@ -41,15 +29,15 @@ public abstract class FragmentModelResolver
     protected void resolveConstructorDependencies( Iterable<ConstructorDependency> dependencies, List<ConstructorDependencyResolution> dependentConstructors )
         throws InvalidDependencyException
     {
-        for( ConstructorDependency dependency : dependencies)
+        for( ConstructorDependency dependency : dependencies )
         {
 
-            List<ParameterDependencyResolution> parameterResolutions = new ArrayList<ParameterDependencyResolution>( );
+            List<ParameterDependencyResolution> parameterResolutions = new ArrayList<ParameterDependencyResolution>();
             Iterable<ParameterDependency> parameterDependencies = dependency.getParameterDependencies();
-            resolveParameterDependencies( parameterDependencies, parameterResolutions);
-            ConstructorDependencyResolution constructorDependencyResolution = new ConstructorDependencyResolution(dependency, parameterResolutions);
+            resolveParameterDependencies( parameterDependencies, parameterResolutions );
+            ConstructorDependencyResolution constructorDependencyResolution = new ConstructorDependencyResolution( dependency, parameterResolutions );
 
-            dependentConstructors.add( constructorDependencyResolution ) ;
+            dependentConstructors.add( constructorDependencyResolution );
         }
     }
 
@@ -58,31 +46,32 @@ public abstract class FragmentModelResolver
     {
         for( MethodDependency dependency : dependencies )
         {
-            List<ParameterDependencyResolution> parameterResolutions = new ArrayList<ParameterDependencyResolution>( );
+            List<ParameterDependencyResolution> parameterResolutions = new ArrayList<ParameterDependencyResolution>();
             Iterable<ParameterDependency> parameterDependencies = dependency.getParameterDependencies();
-            resolveParameterDependencies( parameterDependencies, parameterResolutions);
-            MethodDependencyResolution constructorDependencyResolution = new MethodDependencyResolution(dependency, parameterResolutions);
+            resolveParameterDependencies( parameterDependencies, parameterResolutions );
+            MethodDependencyResolution constructorDependencyResolution = new MethodDependencyResolution( dependency, parameterResolutions );
 
-            dependentMethods.add( constructorDependencyResolution ) ;
+            dependentMethods.add( constructorDependencyResolution );
         }
     }
 
     protected void resolveFieldDependencies( Iterable<FieldDependency> dependencies, List<FieldDependencyResolution> dependentFields )
         throws InvalidDependencyException
     {
-        for( FieldDependency dependency : dependencies)
+        for( FieldDependency dependency : dependencies )
         {
             DependencyResolution resolution = dependencyResolver.resolveDependency( dependency.getKey() );
 
-            if (resolution == null)
+            if( resolution == null )
             {
                 // Check if this is optional
-                if (dependency.isOptional())
+                if( dependency.isOptional() )
                 {
                     resolution = new EmptyResolution();
-                } else
+                }
+                else
                 {
-                    throw new InvalidDependencyException("Non-optional field dependency "+dependency.getField().getName()+" for type "+dependency.getKey().getDependencyType().getName()+" in fragment "+dependency.getKey().getFragmentType().getName()+" could not be resolved");
+                    throw new InvalidDependencyException( "Non-optional field dependency " + dependency.getField().getName() + " for type " + dependency.getKey().getDependencyType().getName() + " in fragment " + dependency.getKey().getFragmentType().getName() + " could not be resolved" );
                 }
             }
 
@@ -96,16 +85,17 @@ public abstract class FragmentModelResolver
     {
         for( ParameterDependency parameterDependency : parameterDependencies )
         {
-            DependencyResolution resolution = dependencyResolver.resolveDependency( parameterDependency.getKey());
-            if (resolution == null)
+            DependencyResolution resolution = dependencyResolver.resolveDependency( parameterDependency.getKey() );
+            if( resolution == null )
             {
                 // Check if this is optional
-                if (parameterDependency.isOptional())
+                if( parameterDependency.isOptional() )
                 {
                     resolution = new EmptyResolution();
-                } else
+                }
+                else
                 {
-                    throw new InvalidDependencyException("Non-optional parameter dependency "+parameterDependency.getKey().getDependencyType().getName()+" in fragment "+parameterDependency.getKey().getFragmentType().getName()+" could not be resolved");
+                    throw new InvalidDependencyException( "Non-optional parameter dependency " + parameterDependency.getKey().getDependencyType().getName() + " in fragment " + parameterDependency.getKey().getFragmentType().getName() + " could not be resolved" );
                 }
             }
 

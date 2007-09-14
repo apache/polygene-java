@@ -27,8 +27,6 @@ public interface CompositeState
 
     /**
      * Sets the Composite state.
-     *
-     *
      */
-    void setMixins(Object[] mixin);
+    void setMixins( Object[] mixin );
 }

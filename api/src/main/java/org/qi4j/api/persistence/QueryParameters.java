@@ -5,6 +5,6 @@ package org.qi4j.api.persistence;
  */
 public interface QueryParameters
 {
-    void setParameter(String aName, Object aValue)
+    void setParameter( String aName, Object aValue )
         throws IllegalArgumentException;
 }

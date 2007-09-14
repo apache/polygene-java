@@ -11,14 +11,9 @@
 */
 package org.qi4j.api.model;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.Iterator;
 import org.qi4j.api.ConstructorDependencyResolution;
-import org.qi4j.api.DependencyResolution;
 import org.qi4j.api.FieldDependencyResolution;
 import org.qi4j.api.MethodDependencyResolution;
-import org.qi4j.api.annotation.Modifies;
 
 /**
  * Modifiers provide stateless modifications of method invocation behaviour.
@@ -30,8 +25,8 @@ public final class ModifierResolution<T>
     extends FragmentResolution<T>
 {
     // Constructors --------------------------------------------------
-    public ModifierResolution( ModifierModel<T> modifierModel, Iterable<ConstructorDependencyResolution> constructorDependencies, Iterable<FieldDependencyResolution> fieldDependencies, Iterable<MethodDependencyResolution> methodDependencies)
+    public ModifierResolution( ModifierModel<T> modifierModel, Iterable<ConstructorDependencyResolution> constructorDependencies, Iterable<FieldDependencyResolution> fieldDependencies, Iterable<MethodDependencyResolution> methodDependencies )
     {
-        super( modifierModel, constructorDependencies, fieldDependencies, methodDependencies);
+        super( modifierModel, constructorDependencies, fieldDependencies, methodDependencies );
     }
 }

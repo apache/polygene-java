@@ -6,7 +6,7 @@ import org.qi4j.api.DependencyKey;
 /**
  * TODO
  */
-public class FieldDependency
+public final class FieldDependency
     extends Dependency
 {
     private Field field;

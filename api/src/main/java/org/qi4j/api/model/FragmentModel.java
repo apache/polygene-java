@@ -18,10 +18,6 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
-import org.qi4j.api.ConstructorDependencyResolution;
-import org.qi4j.api.DependencyResolution;
-import org.qi4j.api.FieldDependencyResolution;
-import org.qi4j.api.MethodDependencyResolution;
 
 /**
  * Base class for fragments. Fragments are composed into objects.
@@ -43,11 +39,7 @@ public abstract class FragmentModel<T>
     // Constructors --------------------------------------------------
     public FragmentModel( Class<T> fragmentClass, Iterable<ConstructorDependency> constructorDependencies, Iterable<FieldDependency> fieldDependencies, Iterable<MethodDependency> methodDependencies, Class appliesTo )
     {
-        if( fragmentClass == null )
-        {
-            throw new NullArgumentException( "fragmentClass is null" );
-        }
-
+        NullArgumentException.validateNotNull( "fragmentClass", fragmentClass );
         this.constructorDependencies = constructorDependencies;
         this.fieldDependencies = fieldDependencies;
         this.methodDependencies = methodDependencies;
@@ -83,7 +75,7 @@ public abstract class FragmentModel<T>
 
     public boolean isAbstract()
     {
-        return Modifier.isAbstract( fragmentClass.getModifiers());
+        return Modifier.isAbstract( fragmentClass.getModifiers() );
     }
 
     public boolean isGeneric()
@@ -93,21 +85,25 @@ public abstract class FragmentModel<T>
 
     public Iterable<Dependency> getDependenciesByScope( Class<? extends Annotation> annotationScopeClass )
     {
-        List<Dependency> scopeDependencies = new ArrayList<Dependency>( );
+        List<Dependency> scopeDependencies = new ArrayList<Dependency>();
 
         for( ConstructorDependency constructorDependency : constructorDependencies )
         {
             for( ParameterDependency parameterDependency : constructorDependency.getParameterDependencies() )
             {
-                if (parameterDependency.getKey().getAnnotationType().equals(annotationScopeClass))
-                    scopeDependencies.add( parameterDependency);
+                if( parameterDependency.getKey().getAnnotationType().equals( annotationScopeClass ) )
+                {
+                    scopeDependencies.add( parameterDependency );
+                }
             }
         }
 
         for( FieldDependency fieldDependency : fieldDependencies )
         {
-            if (fieldDependency.getKey().getAnnotationType().equals(annotationScopeClass))
+            if( fieldDependency.getKey().getAnnotationType().equals( annotationScopeClass ) )
+            {
                 scopeDependencies.add( fieldDependency );
+            }
         }
 
         return scopeDependencies;
@@ -143,7 +139,7 @@ public abstract class FragmentModel<T>
         out.println( fragmentClass.getName() );
         for( FieldDependency fieldDependency : fieldDependencies )
         {
-            out.println( "    @" + fieldDependency.getKey().getAnnotationType().getSimpleName()+" "+fieldDependency.getField().getName());
+            out.println( "    @" + fieldDependency.getKey().getAnnotationType().getSimpleName() + " " + fieldDependency.getField().getName() );
         }
         out.close();
         return str.toString();

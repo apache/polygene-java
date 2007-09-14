@@ -29,7 +29,7 @@ package org.qi4j.api.persistence;
 public interface Query<R>
     extends Iterable<R>
 {
-    void resultType(Class mixinType);
+    void resultType( Class mixinType );
 
     <K> K where( Class<K> mixinType );
 
@@ -39,9 +39,9 @@ public interface Query<R>
 
     <K> K orderBy( Class<K> mixinType, OrderBy order );
 
-    void setFirstResult(int firstResult);
+    void setFirstResult( int firstResult );
 
-    void setMaxResults(int maxResults);
+    void setMaxResults( int maxResults );
 
     Iterable<R> prepare();
 

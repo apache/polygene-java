@@ -1,12 +1,7 @@
 package org.qi4j.runtime;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import org.qi4j.api.Composite;
 import org.qi4j.api.annotation.ImplementedBy;
 import org.qi4j.api.annotation.ModifiedBy;
@@ -17,13 +12,12 @@ import org.qi4j.api.model.ModifierModel;
 import org.qi4j.api.model.NullArgumentException;
 import org.qi4j.api.persistence.EntityComposite;
 import org.qi4j.api.persistence.Identity;
-import org.qi4j.api.persistence.Lifecycle;
 import org.qi4j.runtime.persistence.EntityImpl;
 
 /**
  * TODO
  */
-public class CompositeModelBuilder
+public final class CompositeModelBuilder
 {
     ModifierModelBuilder modifierModelBuilder;
     MixinModelBuilder mixinModelBuilder;
@@ -59,8 +53,7 @@ public class CompositeModelBuilder
         List<ModifierModel> modifiers = findModifiers( compositeClass, compositeClass );
         modifiers.add( getModifierModel( CompositeServicesModifier.class, compositeClass ) );
 
-        CompositeModel model = new CompositeModel<T>( compositeClass, mixins, modifiers);
-        return model;
+        return new CompositeModel<T>( compositeClass, mixins, modifiers );
     }
 
     private void validateClass( Class compositeClass )
@@ -96,7 +89,7 @@ public class CompositeModelBuilder
         Class[] subTypes = aType.getInterfaces();
         for( Class subType : subTypes )
         {
-            mixinModels.addAll( findMixins( subType, compositeType ));
+            mixinModels.addAll( findMixins( subType, compositeType ) );
         }
 
         return mixinModels;
@@ -111,7 +104,7 @@ public class CompositeModelBuilder
         {
             for( Class<? extends Object> modifier : modifiedBy.value() )
             {
-                modifierModels.add( modifierModelBuilder.getModifierModel( modifier, compositeType) );
+                modifierModels.add( modifierModelBuilder.getModifierModel( modifier, compositeType ) );
             }
         }
 
@@ -119,7 +112,7 @@ public class CompositeModelBuilder
         Class[] subTypes = aClass.getInterfaces();
         for( Class subType : subTypes )
         {
-            modifierModels.addAll( findModifiers( subType, compositeType));
+            modifierModels.addAll( findModifiers( subType, compositeType ) );
         }
 
         return modifierModels;
@@ -127,11 +120,11 @@ public class CompositeModelBuilder
 
     private <T> MixinModel<T> getMixinModel( Class<T> aClass, Class compositeType )
     {
-        return mixinModelBuilder.getMixinModel(aClass, compositeType);
+        return mixinModelBuilder.getMixinModel( aClass, compositeType );
     }
 
     private <T> ModifierModel<T> getModifierModel( Class<T> aClass, Class compositeType )
     {
-        return modifierModelBuilder.getModifierModel(aClass, compositeType);
+        return modifierModelBuilder.getModifierModel( aClass, compositeType );
     }
 }

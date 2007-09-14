@@ -14,10 +14,6 @@ package org.qi4j.api.model;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Iterator;
-import org.qi4j.api.ConstructorDependencyResolution;
-import org.qi4j.api.DependencyResolution;
-import org.qi4j.api.FieldDependencyResolution;
-import org.qi4j.api.MethodDependencyResolution;
 import org.qi4j.api.annotation.Modifies;
 
 /**
@@ -32,13 +28,15 @@ public final class ModifierModel<T>
     private Dependency modifiesDependency;
 
     // Constructors --------------------------------------------------
-    public ModifierModel( Class<T> fragmentClass, Iterable<ConstructorDependency> constructorDependencies, Iterable<FieldDependency> fieldDependencies, Iterable<MethodDependency> methodDependencies, Class appliesTo)
+    public ModifierModel( Class<T> fragmentClass, Iterable<ConstructorDependency> constructorDependencies, Iterable<FieldDependency> fieldDependencies, Iterable<MethodDependency> methodDependencies, Class appliesTo )
     {
         super( fragmentClass, constructorDependencies, fieldDependencies, methodDependencies, appliesTo );
 
-        Iterator<Dependency> modifies = getDependenciesByScope( Modifies.class).iterator();
-        if (modifies.hasNext())
+        Iterator<Dependency> modifies = getDependenciesByScope( Modifies.class ).iterator();
+        if( modifies.hasNext() )
+        {
             this.modifiesDependency = modifies.next();
+        }
     }
 
     public Dependency getModifiesDependency()
@@ -55,7 +53,7 @@ public final class ModifierModel<T>
         StringWriter str = new StringWriter();
         PrintWriter out = new PrintWriter( str );
         out.println( "  @Modifies" );
-        out.println( "    " + modifiesDependency.getKey().getRawClass().getSimpleName());
+        out.println( "    " + modifiesDependency.getKey().getRawClass().getSimpleName() );
 
         if( appliesTo != null )
         {

@@ -49,7 +49,7 @@ public final class CompositeResolution<T extends Composite>
         return usedMixinModels;
     }
 
-    public MixinResolution getMixinForInterface(Class interfaceType)
+    public MixinResolution getMixinForInterface( Class interfaceType )
     {
         return mixinsForInterfaces.get( interfaceType );
     }
@@ -59,7 +59,7 @@ public final class CompositeResolution<T extends Composite>
         return mixinsForInterfaces;
     }
 
-    public List<ModifierResolution> getModifiersForMethod(Method method)
+    public List<ModifierResolution> getModifiersForMethod( Method method )
     {
         return modifiersForMethod.get( method );
     }
@@ -81,7 +81,7 @@ public final class CompositeResolution<T extends Composite>
             {
                 out.println( "      " + method.toGenericString() );
                 ListIterator<ModifierResolution> methodModifierModels = getModifiersForMethod( method ).listIterator();
-                while (methodModifierModels.hasNext())
+                while( methodModifierModels.hasNext() )
                 {
                     ModifierResolution methodModifierModel = methodModifierModels.next();
                     out.println( "        " + methodModifierModel.getFragmentModel().getFragmentClass().getName() );

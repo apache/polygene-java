@@ -27,7 +27,7 @@ import java.lang.annotation.Target;
  * @see Entity
  */
 @Retention( RetentionPolicy.RUNTIME )
-@Target( { ElementType.FIELD, ElementType.PARAMETER} )
+@Target( { ElementType.FIELD, ElementType.PARAMETER } )
 @Documented
 @DependencyScope
 public @interface Entity

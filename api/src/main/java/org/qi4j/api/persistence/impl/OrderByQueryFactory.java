@@ -16,8 +16,8 @@ public class OrderByQueryFactory
         this.delegate = delegate;
     }
 
-    public <T> Query<T> newQuery(Class<T> resultType)
+    public <T> Query<T> newQuery( Class<T> resultType )
     {
-        return new OrderByQuery<T>(delegate.newQuery(resultType));
+        return new OrderByQuery<T>( delegate.newQuery( resultType ) );
     }
 }

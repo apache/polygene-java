@@ -2,8 +2,6 @@ package org.qi4j.runtime;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.qi4j.api.FieldDependencyResolution;
-import org.qi4j.api.MethodDependencyResolution;
 import org.qi4j.api.annotation.ModifiedBy;
 import org.qi4j.api.model.ConstructorDependency;
 import org.qi4j.api.model.FieldDependency;
@@ -16,12 +14,12 @@ import org.qi4j.api.model.NullArgumentException;
 /**
  * TODO
  */
-public class MixinModelBuilder
+public final class MixinModelBuilder
     extends FragmentModelBuilder
 {
     private ModifierModelBuilder modifierModelBuilder;
 
-    public MixinModelBuilder(ModifierModelBuilder modifierModelBuilder )
+    public MixinModelBuilder( ModifierModelBuilder modifierModelBuilder )
     {
         this.modifierModelBuilder = modifierModelBuilder;
     }
@@ -29,11 +27,11 @@ public class MixinModelBuilder
     public <T> MixinModel<T> getMixinModel( Class<T> mixinClass, Class compositeType )
         throws NullArgumentException, InvalidCompositeException
     {
-        List<ConstructorDependency> constructorDependencies = new ArrayList<ConstructorDependency>( );
+        List<ConstructorDependency> constructorDependencies = new ArrayList<ConstructorDependency>();
         getConstructorDependencies( mixinClass, compositeType, constructorDependencies );
-        List<FieldDependency> fieldDependencies = new ArrayList<FieldDependency>( );
+        List<FieldDependency> fieldDependencies = new ArrayList<FieldDependency>();
         getFieldDependencies( mixinClass, compositeType, fieldDependencies );
-        List<MethodDependency> methodDependencies = new ArrayList<MethodDependency>( );
+        List<MethodDependency> methodDependencies = new ArrayList<MethodDependency>();
         getMethodDependencies( mixinClass, compositeType, methodDependencies );
 
         Class appliesTo = getAppliesTo( mixinClass );
@@ -44,9 +42,9 @@ public class MixinModelBuilder
         return model;
     }
 
-    private List<ModifierModel> getModifiers( Class<?> aClass, Class compositeType)
+    private List<ModifierModel> getModifiers( Class<?> aClass, Class compositeType )
     {
-        List<ModifierModel> modifiers = new ArrayList<ModifierModel>( );
+        List<ModifierModel> modifiers = new ArrayList<ModifierModel>();
         ModifiedBy modifiedBy = aClass.getAnnotation( ModifiedBy.class );
         if( modifiedBy != null )
         {
@@ -59,7 +57,7 @@ public class MixinModelBuilder
         // Check superclass
         if( !aClass.isInterface() && aClass != Object.class )
         {
-            List<ModifierModel> superModifiers = getModifiers( aClass.getSuperclass(), compositeType);
+            List<ModifierModel> superModifiers = getModifiers( aClass.getSuperclass(), compositeType );
             modifiers.addAll( superModifiers );
         }
 

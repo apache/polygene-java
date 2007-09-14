@@ -13,7 +13,8 @@ import org.qi4j.api.persistence.Query.OrderBy;
 /**
  * TODO
  */
-public class OrderedIterable<T> implements Iterable<T>
+public class OrderedIterable<T>
+    implements Iterable<T>
 {
     private Iterable<T> iterable;
     private Method orderByMethod;
@@ -31,10 +32,10 @@ public class OrderedIterable<T> implements Iterable<T>
         List<T> objects = new ArrayList<T>();
         for( T t : iterable )
         {
-            objects.add( t);
+            objects.add( t );
         }
 
-        Collections.sort( objects, new OrderingComparator<T>());
+        Collections.sort( objects, new OrderingComparator<T>() );
 
         return objects.iterator();
     }
@@ -42,35 +43,41 @@ public class OrderedIterable<T> implements Iterable<T>
     class OrderingComparator<T>
         implements Comparator<T>
     {
-        IdentityHashMap comparisonValues = new IdentityHashMap( );
+        IdentityHashMap comparisonValues = new IdentityHashMap();
 
         public int compare( T t1, T t2 )
         {
-            Object v1 = getValue(t1);
-            Object v2 = getValue(t2);
+            Object v1 = getValue( t1 );
+            Object v2 = getValue( t2 );
 
             int comparisonValue;
 
-            if (v1 != null)
-                comparisonValue = ((Comparable)v1).compareTo( v2);
+            if( v1 != null )
+            {
+                comparisonValue = ( (Comparable) v1 ).compareTo( v2 );
+            }
             else
+            {
                 comparisonValue = 1;
+            }
 
-            if ( order == OrderBy.DESCENDING)
+            if( order == OrderBy.DESCENDING )
+            {
                 comparisonValue = -comparisonValue;
+            }
 
             return comparisonValue;
         }
 
-        Object getValue(Object anObject)
+        Object getValue( Object anObject )
         {
-            Object value = comparisonValues.get( anObject);
-            if (value == null)
+            Object value = comparisonValues.get( anObject );
+            if( value == null )
             {
                 try
                 {
-                    value = orderByMethod.invoke( anObject);
-                    comparisonValues.put( anObject, value);
+                    value = orderByMethod.invoke( anObject );
+                    comparisonValues.put( anObject, value );
                 }
                 catch( IllegalAccessException e )
                 {

@@ -10,25 +10,28 @@ import org.qi4j.api.InvalidDependencyException;
 /**
  * TODO
  */
-public class ThisAsDependencyResolver
+public final class ThisAsDependencyResolver
     implements DependencyResolver
 {
     public DependencyResolution resolveDependency( DependencyKey key )
         throws InvalidDependencyException
     {
         // Check if the composite implements the desired type
-        if (key.getRawClass().isAssignableFrom( key.getCompositeType()))
+        if( key.getRawClass().isAssignableFrom( key.getCompositeType() ) )
         {
             return new ThisAsDependencyResolution();
-        } else
-            throw new InvalidDependencyException("Composite "+key.getCompositeType()+" does not implement @ThisAs type "+key.getDependencyType()+" in fragment "+key.getFragmentType());
+        }
+        else
+        {
+            throw new InvalidDependencyException( "Composite " + key.getCompositeType() + " does not implement @ThisAs type " + key.getDependencyType() + " in fragment " + key.getFragmentType() );
+        }
     }
 
     private class ThisAsDependencyResolution implements DependencyResolution
     {
         public Iterable getDependencyInjection( DependencyInjectionContext context )
         {
-            return Collections.singleton( context.getThisAs());
+            return Collections.singleton( context.getThisAs() );
         }
     }
 }

@@ -1,8 +1,6 @@
 package org.qi4j.api.model;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import org.qi4j.api.DependencyKey;
 
 /**
  * TODO
