@@ -12,10 +12,9 @@
 */
 package org.qi4j.runtime;
 
-import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import static org.junit.Assert.assertEquals;
@@ -30,54 +29,45 @@ import org.qi4j.api.model.CompositeModel;
 import org.qi4j.api.model.InvalidCompositeException;
 import org.qi4j.api.model.MixinModel;
 import org.qi4j.api.model.ModifierModel;
-import org.qi4j.api.model.NullArgumentException;
 
 public class CompositeModelTest
 {
+    private MixinModelBuilder mixinModelBuilder;
+    private CompositeModelBuilder compositeModelBuilder;
+    private ModifierModelBuilder modifierModelBuilder;
 
-    @Test( expected = NullArgumentException.class )
-    public void constructorWithNullComposite()
+
+    public CompositeModelTest()
     {
-        new CompositeModel( null );
+        modifierModelBuilder = new ModifierModelBuilder();
+        mixinModelBuilder = new MixinModelBuilder( modifierModelBuilder );
+        compositeModelBuilder = new CompositeModelBuilder( modifierModelBuilder, mixinModelBuilder );
     }
 
     @Test( expected = InvalidCompositeException.class )
     public void constructorWithNonInterfaceComposite()
     {
-        new CompositeModel( ( (Composite) Proxy.newProxyInstance(
-            Thread.currentThread().getContextClassLoader(),
-            new Class<?>[]{ Composite.class },
-            new InvocationHandler()
-            {
-                public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
-                {
-                    return null;
-                }
-            } ) ).getClass() );
-    }
-
-    @Test( expected = InvalidCompositeException.class )
-    public void constructorWithNonComposite()
-    {
-        new CompositeModel( (Class) Serializable.class );
+        compositeModelBuilder.getCompositeModel( Composite.class );
     }
 
     @Test
     public void getCompositeClass()
     {
-        assertEquals( TestComposite.class, new CompositeModel( TestComposite.class ).getCompositeClass() );
+        CompositeModel model = compositeModelBuilder.getCompositeModel( TestComposite.class );
+        Class compositeClass = model.getCompositeClass();
+        assertEquals( TestComposite.class, compositeClass );
     }
 
     @Test
     public void getImplementations()
     {
-        CompositeModel model = new CompositeModel( TestComposite.class );
+        CompositeModel model = compositeModelBuilder.getCompositeModel( TestComposite.class );
         List<Class> expected = new LinkedList<Class>();
         expected.add( TestMixin1.class );
         expected.add( TestMixin2.class );
         expected.add( TestMixin1.class );
         expected.add( CompositeImpl.class ); // from Composite itself
-        List<MixinModel> list = model.getMixinModels();
+        Iterable<MixinModel> list = model.getMixinModels();
         for( MixinModel mixinModel : list )
         {
             assertTrue( "unexpected mixin model: " + mixinModel, expected.remove( mixinModel.getFragmentClass() ) );
@@ -88,20 +78,20 @@ public class CompositeModelTest
     @Test
     public void getImplementationsForSubclasses()
     {
-        assertTrue( "subclasses should inherit mixins",
-                    new CompositeModel( ExtendedTestComposite.class ).getMixinModels().size() > 0 );
+        CompositeModel model = compositeModelBuilder.getCompositeModel( ExtendedTestComposite.class );
+        Iterable mixinModels = model.getMixinModels();
+        assertTrue( "subclasses should inherit mixins", mixinModels.iterator().hasNext() );
     }
 
     // we should not be able to alter the mixins list from outside
     @Test
     public void alterImplementationsFromOutside()
     {
-        CompositeModel model = new CompositeModel( TestComposite.class );
-        List<MixinModel> mixinsModels = model.getMixinModels();
-        int nrOfMixins = mixinsModels.size();
+        CompositeModel model = compositeModelBuilder.getCompositeModel( TestComposite.class );
+        Iterable<MixinModel> mixinsModels = model.getMixinModels();
         try
         {
-            mixinsModels.clear();
+            mixinsModels.iterator().remove();
             fail( "mixins list should be unmodifiable" );
         }
         catch( UnsupportedOperationException e )
@@ -113,13 +103,13 @@ public class CompositeModelTest
     @Test
     public void getModifiers()
     {
-        CompositeModel model = new CompositeModel( TestComposite.class );
+        CompositeModel model = compositeModelBuilder.getCompositeModel( TestComposite.class );
         List<Class> expected = new LinkedList<Class>();
         expected.add( TestModifier1.class );
         expected.add( TestModifier2.class );
         expected.add( TestModifier1.class );
         expected.add( CompositeServicesModifier.class );
-        List<ModifierModel> list = model.getModifierModels();
+        Iterable<ModifierModel> list = model.getModifierModels();
         for( ModifierModel modifierModel : list )
         {
             assertTrue( "unexpected modifier model: " + modifierModel, expected.remove( modifierModel.getFragmentClass() ) );
@@ -130,20 +120,20 @@ public class CompositeModelTest
     @Test
     public void getModifiersForSubclasses()
     {
-        assertTrue( "subclasses should inherit modifiers",
-                    new CompositeModel( ExtendedTestComposite.class ).getMixinModels().size() > 0 );
+        CompositeModel model = compositeModelBuilder.getCompositeModel( ExtendedTestComposite.class );
+        Iterable modifierModels = model.getModifierModels();
+        assertTrue( "subclasses should inherit modifiers", modifierModels.iterator().hasNext() );
     }
 
     // we should not be able to alter the mixins list from outside
     @Test
     public void alterModifiersFromOutside()
     {
-        CompositeModel model = new CompositeModel( TestComposite.class );
-        List<ModifierModel> modifierModels = model.getModifierModels();
-        int nrOfMixins = modifierModels.size();
+        CompositeModel model = compositeModelBuilder.getCompositeModel( TestComposite.class );
+        Iterable<ModifierModel> modifierModels = model.getModifierModels();
         try
         {
-            modifierModels.clear();
+            modifierModels.iterator().remove();
             fail( "modifiers list should be unmodifiable" );
         }
         catch( UnsupportedOperationException e )
@@ -181,5 +171,13 @@ public class CompositeModelTest
 
     private class TestMixin2
     {
+    }
+
+    private static class TestInvocationHandler implements InvocationHandler
+    {
+        public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
+        {
+            return null;
+        }
     }
 }

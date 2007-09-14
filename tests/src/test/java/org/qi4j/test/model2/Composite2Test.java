@@ -17,16 +17,25 @@ import org.qi4j.api.CompositeBuilderFactory;
 import org.qi4j.api.CompositeModelFactory;
 import org.qi4j.api.model.CompositeModel;
 import org.qi4j.runtime.CompositeBuilderFactoryImpl;
+import org.qi4j.runtime.CompositeModelBuilder;
 import org.qi4j.runtime.CompositeModelFactoryImpl;
+import org.qi4j.runtime.MixinModelBuilder;
+import org.qi4j.runtime.ModifierModelBuilder;
 
 public class Composite2Test extends TestCase
 {
-    CompositeModelFactory modelFactory;
-    CompositeModel<TestComposite> composite;
+    private CompositeModelFactory modelFactory;
+    private CompositeModel<TestComposite> composite;
+    private CompositeModelBuilder compositeModelBuilder;
+    private MixinModelBuilder mixinModelBuilder;
+    private ModifierModelBuilder modifierModelBuilder;
 
     protected void setUp() throws Exception
     {
-        modelFactory = new CompositeModelFactoryImpl();
+        modifierModelBuilder = new ModifierModelBuilder();
+        mixinModelBuilder = new MixinModelBuilder( modifierModelBuilder );
+        compositeModelBuilder = new CompositeModelBuilder( modifierModelBuilder, mixinModelBuilder );
+        modelFactory = new CompositeModelFactoryImpl( compositeModelBuilder );
         composite = modelFactory.newCompositeModel( TestComposite.class );
     }
 
@@ -63,7 +72,7 @@ public class Composite2Test extends TestCase
             TestComposite object = factory.newCompositeBuilder( CustomTestComposite.class ).newInstance();
 
             object.setFoo( "xyz" );
-            System.out.println( object.getCompositeModel());
+            System.out.println( object.getCompositeModel() );
             assertEquals( "FOO:foo:xyz", object.getFoo() );
             object.setFoo( null );
         }

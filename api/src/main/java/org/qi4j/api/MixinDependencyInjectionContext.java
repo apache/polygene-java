@@ -9,9 +9,9 @@ import org.qi4j.api.model.CompositeContext;
 public class MixinDependencyInjectionContext
     extends DependencyInjectionContext
 {
-    Object[] properties;
-    List adapt;
-    List decorate;
+    private Object[] properties;
+    private List adapt;
+    private List decorate;
 
     public MixinDependencyInjectionContext( CompositeContext context, Object thisAs, Object[] properties, List adapt, List decorate )
     {

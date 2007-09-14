@@ -31,6 +31,7 @@ import org.qi4j.api.CompositeInstantiationException;
 import org.qi4j.api.FragmentFactory;
 import org.qi4j.api.MixinDependencyInjectionContext;
 import org.qi4j.api.model.MixinResolution;
+import org.qi4j.api.model.CompositeResolution;
 import org.qi4j.api.persistence.Lifecycle;
 
 /**
@@ -82,7 +83,9 @@ public class CompositeBuilderImpl<T extends Composite>
 
     public <K> void properties( Class<K> mixinType, Object... properties )
     {
-        this.properties.put( context.getCompositeResolution().getMixinForInterface( mixinType ), properties );
+        CompositeResolution compositeResolution = context.getCompositeResolution();
+        MixinResolution mixin = compositeResolution.getMixinForInterface( mixinType );
+        this.properties.put( mixin, properties );
     }
 
     public T newInstance()
