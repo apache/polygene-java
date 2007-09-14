@@ -22,7 +22,7 @@ public class PersonTest extends AbstractTest
     public void testNewPerson() throws Exception
     {
         CompositeBuilder<PersonComposite> builder = builderFactory.newCompositeBuilder( PersonComposite.class );
-        builder.newMixin( Person.class, parameter( "firstName", "Sianny"), parameter("lastName", "Halim"));
+        builder.properties( Person.class, parameter( "firstName", "Sianny"), parameter("lastName", "Halim"));
         PersonComposite person = builder.newInstance();
 
         String firstName = "Sianny";
