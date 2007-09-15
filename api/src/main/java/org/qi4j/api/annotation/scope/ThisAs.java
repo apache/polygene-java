@@ -12,7 +12,7 @@
  * limitations under the License.
  *
  */
-package org.qi4j.api.annotation;
+package org.qi4j.api.annotation.scope;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -21,43 +21,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * This annotation is required once in each modifier, to mark the
- * field where the next element in the call sequence should be
- * written.
- * <p/>
- * The type of the field must be of the same type as the modifier
- * itself, or an InvocationHandler.
- * <p/>
- * If the modifier is an InvocationHandler and the field marked
- * by this annotation is not an InvocationHandler, then TODO:??? WHAT ???
- * <p/>
- * <p/>
- * Example;
- * <pre><code>
- * public interface MyStuff
- * {
- *     void doSomething();
- * }
- * <p/>
- * public class MyStuffModifier
- *     implements MyStuff
- * {
- *     @Modifier MyStuff next;
- * <p/>
- *     public void doSomething()
- *     {
- *         // HERE DO THE MODIFIER STUFF.
- * <p/>
- *         // Delegate to the underlying mixin/modifier.
- *         next.doSomething();
- *     }
- * }
- * </code></pre>
+ * TODO
  */
 @Retention( RetentionPolicy.RUNTIME )
 @Target( { ElementType.FIELD, ElementType.PARAMETER } )
 @Documented
 @DependencyScope
-public @interface Modifies
+public @interface ThisAs
 {
+    @Optional public abstract boolean value() default false; // True if the dependency is optional, only fail if this is false
 }

@@ -12,7 +12,7 @@
  * limitations under the License.
  *
  */
-package org.qi4j.api.annotation;
+package org.qi4j.api.annotation.scope;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -21,14 +21,21 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation to denote the injection of decorated object into a Mixin.
+ * Annotation to denote the injection of a modifier specific resource. These include:
+ * The Method being modified
+ * An AnnotationElement with annotations from both interface, mixin, and any Apply statement
+ * InvocationContext with information about the current call
+ * <p/>
+ * Examples:
  *
- * @see org.qi4j.api.DependencyResolver
+ * @Modifier Method theModifiedMethod
+ * @Modifier AnnotationElement annotations
+ * @Modifier InvocationContext context
  */
 @Retention( RetentionPolicy.RUNTIME )
-@Target( { ElementType.PARAMETER, ElementType.FIELD } )
+@Target( { ElementType.FIELD, ElementType.PARAMETER } )
 @Documented
 @DependencyScope
-public @interface Decorate
+public @interface Modifier
 {
 }

@@ -12,7 +12,7 @@
  * limitations under the License.
  *
  */
-package org.qi4j.api.annotation;
+package org.qi4j.api.annotation.scope;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -21,16 +21,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation to denote the injection of a Query dependency into a Fragment (a Modifier or Mixin).
- *
- * @see org.qi4j.api.DependencyResolver
- * @see Entity
+ * Annotation to denote that an annotation defines whether the result is optional or not
  */
 @Retention( RetentionPolicy.RUNTIME )
-@Target( { ElementType.FIELD, ElementType.PARAMETER } )
+@Target( { ElementType.METHOD } )
 @Documented
-@DependencyScope
-public @interface Entity
+public @interface Name
 {
-    @Name String value() default ""; // This name can be used for lookups of named queries
 }

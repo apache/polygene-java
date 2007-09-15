@@ -12,7 +12,7 @@
  * limitations under the License.
  *
  */
-package org.qi4j.api.annotation;
+package org.qi4j.api.annotation.scope;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -21,15 +21,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation to denote the injection of a dependency to be adapted into a Mixin.
- *
- * @see org.qi4j.api.DependencyResolver
+ * Annotation to denote that an annotation defines whether the result is optional or not
  */
 @Retention( RetentionPolicy.RUNTIME )
-@Target( { ElementType.PARAMETER, ElementType.FIELD } )
+@Target( { ElementType.METHOD } )
 @Documented
-@DependencyScope
-public @interface Adapt
+public @interface Optional
 {
-    @Optional boolean value() default true; // True if adaptation is required, only fail if true
 }

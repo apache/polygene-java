@@ -12,7 +12,7 @@
  * limitations under the License.
  *
  */
-package org.qi4j.api.annotation;
+package org.qi4j.api.annotation.scope;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -21,17 +21,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation to denote the injection of a service dependency into a Fragment (a Modifier or Mixin).
- *
- * @see org.qi4j.api.DependencyResolver
+ * Annotation to denote the injection of decorated object into a Mixin.
  */
 @Retention( RetentionPolicy.RUNTIME )
-@Target( { ElementType.FIELD, ElementType.PARAMETER } )
+@Target( { ElementType.PARAMETER, ElementType.FIELD } )
 @Documented
 @DependencyScope
-public @interface Service
+public @interface Decorate
 {
-    @Optional boolean value() default false; // True if the dependency is optional, only fail if this is false
-
-    @Name String name() default ""; // This name can be used for lookups
 }

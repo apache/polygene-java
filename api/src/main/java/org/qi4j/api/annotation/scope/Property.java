@@ -12,7 +12,7 @@
  * limitations under the License.
  *
  */
-package org.qi4j.api.annotation;
+package org.qi4j.api.annotation.scope;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -22,8 +22,6 @@ import java.lang.annotation.Target;
 
 /**
  * Annotation to denote the injection of a property into a Fragment (a Modifier or Mixin).
- *
- * @see org.qi4j.api.DependencyResolver
  */
 @Retention( RetentionPolicy.RUNTIME )
 @Target( { ElementType.FIELD, ElementType.PARAMETER } )

@@ -12,7 +12,7 @@
  * limitations under the License.
  *
  */
-package org.qi4j.api.annotation;
+package org.qi4j.api.annotation.scope;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -21,13 +21,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation to denote that an annotation defines whether the result is optional or not
- *
- * @see org.qi4j.api.DependencyResolver
+ * This is used to annotate annotation types which are used for dependency injection.
+ * Each scope signifies a particular scope from which the dependecy should be taken.
  */
 @Retention( RetentionPolicy.RUNTIME )
-@Target( { ElementType.METHOD } )
+@Target( { ElementType.ANNOTATION_TYPE } )
 @Documented
-public @interface Name
+public @interface DependencyScope
 {
 }
