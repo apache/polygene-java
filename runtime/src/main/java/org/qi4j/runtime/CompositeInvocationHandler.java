@@ -17,18 +17,16 @@
 package org.qi4j.runtime;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 import org.qi4j.api.Composite;
 import org.qi4j.api.CompositeInstantiationException;
 import org.qi4j.api.model.InvalidCompositeException;
-import org.qi4j.api.model.MixinResolution;
+import org.qi4j.runtime.resolution.MixinResolution;
 
 /**
  * InvocationHandler for proxy objects.
  */
-public final class CompositeInvocationHandler<T extends Composite> extends AbstractCompositeInvocationHandler<T>
+public class CompositeInvocationHandler<T extends Composite> extends AbstractCompositeInvocationHandler<T>
 {
     final private Object[] mixins;
 
@@ -71,9 +69,9 @@ public final class CompositeInvocationHandler<T extends Composite> extends Abstr
         {
             Object mixin = mixins[ i ];
             // Verify type
-            if( !mixinResolution.getFragmentModel().getFragmentClass().isInstance( mixin ) )
+            if( !mixinResolution.getFragmentModel().getModelClass().isInstance( mixin ) )
             {
-                throw new CompositeInstantiationException( "Mixin " + mixin.getClass().getName() + " is not of the expected type " + mixinResolution.getFragmentModel().getFragmentClass().getName() );
+                throw new CompositeInstantiationException( "Mixin " + mixin.getClass().getName() + " is not of the expected type " + mixinResolution.getFragmentModel().getModelClass().getName() );
             }
             // Copy reference
             this.mixins[ i ] = mixin;
@@ -81,17 +79,9 @@ public final class CompositeInvocationHandler<T extends Composite> extends Abstr
         }
     }
 
-    public Map<MixinResolution, Object> getMixins()
+    public Object[] getMixins()
     {
-        Map<MixinResolution, Object> mixinMap = new HashMap<MixinResolution, Object>();
-        Set<MixinResolution> mixinResolutions = context.getCompositeResolution().getUsedMixinModels();
-        int i = 0;
-        for( MixinResolution mixinResolution : mixinResolutions )
-        {
-            Object mixin = mixins[ i++ ];
-            mixinMap.put( mixinResolution, mixin );
-        }
-        return mixinMap;
+        return mixins;
     }
 
 }

@@ -18,15 +18,13 @@ package org.qi4j.runtime;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 import org.qi4j.api.CompositeInstantiationException;
-import org.qi4j.api.model.MixinResolution;
 import org.qi4j.api.persistence.EntityComposite;
+import org.qi4j.runtime.resolution.MixinResolution;
 import org.qi4j.spi.persistence.EntityStateHolder;
 
-public final class EntityCompositeInvocationHandler<T extends EntityComposite> extends AbstractCompositeInvocationHandler<T>
+public class EntityCompositeInvocationHandler<T extends EntityComposite> extends AbstractCompositeInvocationHandler<T>
 {
     protected Object[] mixins;
 
@@ -74,9 +72,9 @@ public final class EntityCompositeInvocationHandler<T extends EntityComposite> e
         {
             Object mixin = mixins[ i ];
             // Verify type
-            if( !mixinResolution.getFragmentModel().getFragmentClass().isInstance( mixin ) )
+            if( !mixinResolution.getFragmentModel().getModelClass().isInstance( mixin ) )
             {
-                throw new CompositeInstantiationException( "Mixin " + mixin.getClass().getName() + " is not of the expected type " + mixinResolution.getFragmentModel().getFragmentClass().getName() );
+                throw new CompositeInstantiationException( "Mixin " + mixin.getClass().getName() + " is not of the expected type " + mixinResolution.getFragmentModel().getModelClass().getName() );
             }
             // Copy reference
             this.mixins[ i ] = mixin;
@@ -84,22 +82,9 @@ public final class EntityCompositeInvocationHandler<T extends EntityComposite> e
         }
     }
 
-    public Map<MixinResolution, Object> getMixins()
+    public Object[] getMixins()
     {
-        Map<MixinResolution, Object> mixinMap = new HashMap<MixinResolution, Object>();
-        Set<MixinResolution> mixinResolutions = context.getCompositeResolution().getUsedMixinModels();
-        int i = 0;
-        for( MixinResolution mixinResolution : mixinResolutions )
-        {
-            Object mixin = mixins[ i++ ];
-            if( mixin == null )
-            {
-                mixin = holder.getMixin( mixinResolution.getFragmentModel().getFragmentClass() );
-                mixins[ i ] = mixin;
-            }
-            mixinMap.put( mixinResolution, mixin );
-        }
-        return mixinMap;
+        return mixins;
     }
 
     public void setEntityStateHolder( EntityStateHolder<T> holder )

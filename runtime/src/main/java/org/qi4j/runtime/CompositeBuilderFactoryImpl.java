@@ -19,14 +19,24 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.qi4j.api.Composite;
 import org.qi4j.api.CompositeBuilder;
 import org.qi4j.api.CompositeBuilderFactory;
-import org.qi4j.api.CompositeModelFactory;
-import org.qi4j.api.FragmentFactory;
-import org.qi4j.api.annotation.Adapt;
-import org.qi4j.api.annotation.Decorate;
-import org.qi4j.api.annotation.Modifies;
-import org.qi4j.api.annotation.ThisAs;
+import org.qi4j.api.annotation.scope.Adapt;
+import org.qi4j.api.annotation.scope.Decorate;
+import org.qi4j.api.annotation.scope.Modifier;
+import org.qi4j.api.annotation.scope.Modifies;
+import org.qi4j.api.annotation.scope.Property;
+import org.qi4j.api.annotation.scope.ThisAs;
 import org.qi4j.api.model.CompositeModel;
-import org.qi4j.api.model.CompositeResolution;
+import org.qi4j.runtime.resolution.AdaptDependencyResolver;
+import org.qi4j.runtime.resolution.CompositeModelResolver;
+import org.qi4j.runtime.resolution.CompositeResolution;
+import org.qi4j.runtime.resolution.DecorateDependencyResolver;
+import org.qi4j.runtime.resolution.DependencyResolverDelegator;
+import org.qi4j.runtime.resolution.MixinModelResolver;
+import org.qi4j.runtime.resolution.ModifierDependencyResolver;
+import org.qi4j.runtime.resolution.ModifierModelResolver;
+import org.qi4j.runtime.resolution.ModifiesDependencyResolver;
+import org.qi4j.runtime.resolution.PropertyDependencyResolver;
+import org.qi4j.runtime.resolution.ThisAsDependencyResolver;
 
 /**
  * Default implementation of CompositeBuilderFactory
@@ -36,7 +46,7 @@ public final class CompositeBuilderFactoryImpl
 {
     private Map<Class<? extends Composite>, CompositeContextImpl> objectContexts;
     private CompositeModelFactory modelFactory;
-    private FragmentFactory fragmentFactory;
+    private InstanceFactory fragmentFactory;
     private CompositeModelResolver compositeModelResolver;
 
     public CompositeBuilderFactoryImpl()
@@ -45,38 +55,35 @@ public final class CompositeBuilderFactoryImpl
 
         dependencyResolverDelegator.setDependencyResolver( ThisAs.class, new ThisAsDependencyResolver() );
         dependencyResolverDelegator.setDependencyResolver( Modifies.class, new ModifiesDependencyResolver() );
+        dependencyResolverDelegator.setDependencyResolver( Modifier.class, new ModifierDependencyResolver() );
         dependencyResolverDelegator.setDependencyResolver( Adapt.class, new AdaptDependencyResolver() );
         dependencyResolverDelegator.setDependencyResolver( Decorate.class, new DecorateDependencyResolver() );
-
-        ModifierModelBuilder modifierModelBuilder = new ModifierModelBuilder();
-        MixinModelBuilder mixinModelBuilder = new MixinModelBuilder( modifierModelBuilder );
-        CompositeModelBuilder compositeModelBuilder = new CompositeModelBuilder( modifierModelBuilder, mixinModelBuilder );
+        dependencyResolverDelegator.setDependencyResolver( Property.class, new PropertyDependencyResolver() );
 
         ModifierModelResolver modifierModelResolver = new ModifierModelResolver( dependencyResolverDelegator );
         MixinModelResolver mixinModelResolver = new MixinModelResolver( dependencyResolverDelegator );
         compositeModelResolver = new CompositeModelResolver( modifierModelResolver, mixinModelResolver );
 
-        modelFactory = new CompositeModelFactoryImpl( compositeModelBuilder );
+        modelFactory = new CompositeModelFactory();
         objectContexts = new ConcurrentHashMap<Class<? extends Composite>, CompositeContextImpl>();
-        fragmentFactory = new FragmentFactoryImpl();
+        fragmentFactory = new InstanceFactoryImpl();
     }
 
     public <T extends Composite> CompositeBuilder<T> newCompositeBuilder( Class<T> compositeType )
     {
         CompositeContextImpl<T> context = getCompositeContext( compositeType );
-        return new CompositeBuilderImpl<T>( context, fragmentFactory );
+        CompositeBuilder<T> builder = new CompositeBuilderImpl<T>( context, fragmentFactory );
+        return builder;
     }
 
-    // Private ------------------------------------------------------
     private <T extends Composite> CompositeContextImpl<T> getCompositeContext( Class<T> compositeType )
     {
-        //noinspection unchecked
         CompositeContextImpl<T> context = objectContexts.get( compositeType );
         if( context == null )
         {
             CompositeModel<T> model = modelFactory.newCompositeModel( compositeType );
             CompositeResolution<T> resolution = compositeModelResolver.resolveCompositeModel( model );
-            context = new CompositeContextImpl<T>( resolution, modelFactory, this, fragmentFactory );
+            context = new CompositeContextImpl<T>( resolution, this, fragmentFactory );
             objectContexts.put( compositeType, context );
         }
         return context;

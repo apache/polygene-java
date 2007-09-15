@@ -17,7 +17,7 @@
 package org.qi4j.runtime.persistence;
 
 import java.net.URL;
-import org.qi4j.api.annotation.ThisAs;
+import org.qi4j.api.annotation.scope.ThisAs;
 import org.qi4j.api.persistence.Entity;
 import org.qi4j.api.persistence.EntityComposite;
 import org.qi4j.runtime.EntityCompositeInvocationHandler;

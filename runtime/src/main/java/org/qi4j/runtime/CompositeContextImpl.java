@@ -23,15 +23,13 @@ import java.util.Map;
 import org.qi4j.api.Composite;
 import org.qi4j.api.CompositeBuilderFactory;
 import org.qi4j.api.CompositeInstantiationException;
-import org.qi4j.api.CompositeModelFactory;
-import org.qi4j.api.FragmentFactory;
-import org.qi4j.api.ModifierDependencyInjectionContext;
 import org.qi4j.api.model.CompositeContext;
 import org.qi4j.api.model.CompositeModel;
-import org.qi4j.api.model.CompositeResolution;
-import org.qi4j.api.model.MixinResolution;
 import org.qi4j.api.model.ModifierModel;
-import org.qi4j.api.model.ModifierResolution;
+import org.qi4j.runtime.resolution.CompositeResolution;
+import org.qi4j.runtime.resolution.MixinResolution;
+import org.qi4j.runtime.resolution.ModifierResolution;
+import org.qi4j.spi.dependency.ModifierDependencyInjectionContext;
 
 /**
  * TODO
@@ -41,18 +39,14 @@ public final class CompositeContextImpl<T extends Composite>
 {
     private CompositeModel<T> compositeModel;
     private CompositeResolution<T> compositeResolution;
-    private FragmentFactory fragmentFactory;
+    private InstanceFactory fragmentFactory;
     private CompositeBuilderFactoryImpl builderFactory;
     private InvocationInstancePool[] invocationInstancePool;
-    private CompositeModelFactory modelFactory;
     private HashMap<Integer, MethodDescriptor> methodDescriptors;
-//    private Method oldMethod;
-//    private MethodDescriptor oldDescriptor;
 
-    public CompositeContextImpl( CompositeResolution<T> compositeResolution, CompositeModelFactory modelFactory, CompositeBuilderFactoryImpl builderFactory, FragmentFactory fragmentFactory )
+    public CompositeContextImpl( CompositeResolution<T> compositeResolution, CompositeBuilderFactoryImpl builderFactory, InstanceFactory instanceFactory )
     {
-        this.fragmentFactory = fragmentFactory;
-        this.modelFactory = modelFactory;
+        this.fragmentFactory = instanceFactory;
         this.compositeResolution = compositeResolution;
         this.compositeModel = compositeResolution.getCompositeModel();
         this.builderFactory = builderFactory;
@@ -68,7 +62,7 @@ public final class CompositeContextImpl<T extends Composite>
         Iterable<MixinResolution> mixinResolutions = compositeResolution.getUsedMixinModels();
         for( MixinResolution mixinResolution : mixinResolutions )
         {
-            mixinIndices.put( mixinResolution, currentMixinIndex++ );
+            mixinIndices.put( mixinResolution, new Integer( currentMixinIndex++ ) );
         }
 
         int methodIndex = 0;
@@ -82,7 +76,7 @@ public final class CompositeContextImpl<T extends Composite>
             int hashCode = method.hashCode();
             if( methodDescriptors.get( hashCode ) != null )
             {
-                System.out.println( "COLLISSION!" );
+                System.out.println( "COLLISION!" );
             }
             methodDescriptors.put( hashCode, mi );
             methodIndex++;
@@ -100,11 +94,6 @@ public final class CompositeContextImpl<T extends Composite>
         return compositeResolution;
     }
 
-    public CompositeModelFactory getCompositeModelFactory()
-    {
-        return modelFactory;
-    }
-
     public CompositeBuilderFactory getCompositeBuilderFactory()
     {
         return builderFactory;
@@ -112,14 +101,10 @@ public final class CompositeContextImpl<T extends Composite>
 
     public MethodDescriptor getMethodDescriptor( Method method )
     {
-//        if (method == oldMethod)
-//            return oldDescriptor;
-
         MethodDescriptor descriptor = methodDescriptors.get( method.hashCode() );
 
         if( descriptor == null )
         {
-//            oldMethod = null;
             for( MethodDescriptor method1 : methodDescriptors.values() )
             {
                 if( method1.getMethod().toGenericString().equals( method.toGenericString() ) )
@@ -131,8 +116,6 @@ public final class CompositeContextImpl<T extends Composite>
             methodDescriptors.put( method.hashCode(), descriptor );
         }
 
-//        oldDescriptor = descriptor;
-//        oldMethod = method;
         return descriptor;
     }
 
@@ -147,7 +130,6 @@ public final class CompositeContextImpl<T extends Composite>
             instance = newInstance( methodDescriptor );
         }
 
-        //noinspection unchecked
         return instance;
     }
 
@@ -158,7 +140,6 @@ public final class CompositeContextImpl<T extends Composite>
         Class compositeClass = compositeModel.getCompositeClass();
         ClassLoader classloader = compositeClass.getClassLoader();
         Class[] intfaces = new Class[]{ compositeClass };
-        //noinspection unchecked
         T thisCompositeProxy = (T) Proxy.newProxyInstance( classloader, intfaces, proxyHandler );
 
         List<ModifierResolution> modifierResolutions = compositeResolution.getModifiersForMethod( method.getMethod() );
@@ -169,9 +150,11 @@ public final class CompositeContextImpl<T extends Composite>
         for( int i = modifierResolutions.size() - 1; i >= 0; i-- )
         {
             ModifierResolution modifier = modifierResolutions.get( i );
+
             Object modifies = getModifies( method.getMethod(), classloader, previous, (ModifierModel) modifier.getFragmentModel() );
-            ModifierDependencyInjectionContext modifierContext = new ModifierDependencyInjectionContext( this, thisCompositeProxy, modifies, method.getMethod() );
-            previous = fragmentFactory.newFragment( modifier, modifierContext );
+
+            ModifierDependencyInjectionContext modifierContext = new ModifierDependencyInjectionContext( this, thisCompositeProxy, modifies, method.getMethod(), proxyHandler );
+            previous = fragmentFactory.newInstance( modifier, modifierContext );
         }
 
         return new InvocationInstance( previous, mixinInvocationHandler, proxyHandler, invocationInstancePool[ method.getInvocationInstanceIndex() ], method.getMethod(), method.getMethod().getDeclaringClass() );

@@ -18,21 +18,18 @@ package org.qi4j.runtime;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
-import java.util.Map;
 import org.qi4j.api.Composite;
 import org.qi4j.api.CompositeBuilderFactory;
 import org.qi4j.api.CompositeCastException;
-import org.qi4j.api.CompositeModelFactory;
-import org.qi4j.api.annotation.DependencyOld;
-import org.qi4j.api.annotation.Modifies;
-import org.qi4j.api.annotation.ThisAs;
+import org.qi4j.api.annotation.scope.Fragment;
+import org.qi4j.api.annotation.scope.Modifies;
+import org.qi4j.api.annotation.scope.ThisAs;
 import org.qi4j.api.model.CompositeModel;
 
 public final class CompositeServicesModifier
     implements Composite
 {
-    @DependencyOld private CompositeModelFactory modelFactory;
-    @DependencyOld private CompositeBuilderFactory builderFactory;
+    @Fragment private CompositeBuilderFactory builderFactory;
     @ThisAs private Composite meAsComposite;
     @Modifies Composite next; //ignore
 
@@ -52,9 +49,9 @@ public final class CompositeServicesModifier
         InvocationHandler handler = Proxy.getInvocationHandler( meAsComposite );
         handler = Proxy.getInvocationHandler( ( (ProxyReferenceInvocationHandler) handler ).getComposite() );
         T newComposite = builderFactory.newCompositeBuilder( compositeType ).newInstance();
-        Map<Class, Object> oldMixins = ( (CompositeInvocationHandler) handler ).getMixins();
+        Object[] oldMixins = ( (CompositeInvocationHandler) handler ).getMixins();
         CompositeInvocationHandler newHandler = CompositeInvocationHandler.getInvocationHandler( newComposite );
-// TODO        newHandler.setMixins( oldMixins, true );
+        newHandler.setMixins( oldMixins );
         return newComposite;
     }
 

@@ -20,20 +20,20 @@ import java.net.URL;
 import java.util.concurrent.ConcurrentHashMap;
 import org.qi4j.api.CompositeBuilder;
 import org.qi4j.api.CompositeBuilderFactory;
-import org.qi4j.api.CompositeModelFactory;
 import org.qi4j.api.model.CompositeModel;
 import org.qi4j.api.persistence.EntityComposite;
 import org.qi4j.api.persistence.EntitySession;
 import org.qi4j.api.persistence.Identity;
 import org.qi4j.api.persistence.IdentityGenerator;
-import org.qi4j.api.persistence.Query;
-import org.qi4j.api.persistence.QueryFactory;
+import org.qi4j.api.query.Query;
+import org.qi4j.api.query.QueryFactory;
+import org.qi4j.runtime.CompositeModelFactory;
 import org.qi4j.runtime.EntityCompositeInvocationHandler;
 import org.qi4j.spi.persistence.EntityStateHolder;
 import org.qi4j.spi.persistence.PersistenceException;
 import org.qi4j.spi.persistence.PersistentStore;
 
-public final class EntitySessionImpl
+public class EntitySessionImpl
     implements EntitySession
 {
     private boolean open;
@@ -81,10 +81,10 @@ public final class EntitySessionImpl
         try
         {
             T entity = compositeType.cast( cache.get( identity ) );
-            CompositeModel<T> model = compositeModelFactory.newCompositeModel( compositeType );
             if( entity == null )
             {
                 CompositeBuilder<T> builder = builderFactory.newCompositeBuilder( compositeType );
+                CompositeModel<T> model = builder.getContext().getCompositeModel();
                 builder.properties( Identity.class, identity );
                 entity = builder.newInstance();
                 EntityStateHolder<T> holder = store.getEntityInstance( identity, model );
@@ -95,6 +95,8 @@ public final class EntitySessionImpl
             {
                 if( entity.isReference() )
                 {
+                    CompositeBuilder<T> builder = builderFactory.newCompositeBuilder( compositeType );
+                    CompositeModel<T> model = builder.getContext().getCompositeModel();
                     EntityStateHolder<T> holder = store.getEntityInstance( identity, model );
                     EntityCompositeInvocationHandler<T> handler = EntityCompositeInvocationHandler.getInvocationHandler( entity );
                     handler.setEntityStateHolder( holder );

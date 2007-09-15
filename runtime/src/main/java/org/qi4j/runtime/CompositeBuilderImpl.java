@@ -20,19 +20,21 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.UndeclaredThrowableException;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import org.qi4j.api.Composite;
 import org.qi4j.api.CompositeBuilder;
 import org.qi4j.api.CompositeInstantiationException;
-import org.qi4j.api.FragmentFactory;
-import org.qi4j.api.MixinDependencyInjectionContext;
-import org.qi4j.api.model.MixinResolution;
-import org.qi4j.api.model.CompositeResolution;
+import org.qi4j.api.PropertyValue;
+import org.qi4j.api.model.Binding;
+import org.qi4j.api.model.CompositeContext;
+import org.qi4j.api.model.InjectionKey;
 import org.qi4j.api.persistence.Lifecycle;
+import org.qi4j.runtime.resolution.MixinResolution;
+import org.qi4j.spi.dependency.MixinDependencyInjectionContext;
 
 /**
  *
@@ -43,12 +45,12 @@ public class CompositeBuilderImpl<T extends Composite>
     private static final Method CREATE_METHOD;
 
     private Class<T> compositeInterface;
-    private CompositeContextImpl context;
-    private FragmentFactory fragmentFactory;
+    private CompositeContextImpl<T> context;
+    private InstanceFactory fragmentFactory;
 
-    private List adaptContext;
-    private List decorateContext;
-    private Map<MixinResolution, Object[]> properties;
+    private Map<InjectionKey, Object> adaptContext;
+    private Map<InjectionKey, Object> decorateContext;
+    private Map<MixinResolution, Map<InjectionKey, Object>> propertyContext;
 
     static
     {
@@ -62,31 +64,79 @@ public class CompositeBuilderImpl<T extends Composite>
         }
     }
 
-    CompositeBuilderImpl( CompositeContextImpl<T> context, FragmentFactory fragmentFactory )
+    CompositeBuilderImpl( CompositeContextImpl<T> context, InstanceFactory fragmentFactory )
     {
         this.fragmentFactory = fragmentFactory;
         this.context = context;
         this.compositeInterface = context.getCompositeModel().getCompositeClass();
+    }
 
-        properties = new HashMap<MixinResolution, Object[]>();
+    public CompositeContext<T> getContext()
+    {
+        return context;
     }
 
     public void adapt( Object adaptedObject )
     {
-        getAdaptContext().add( adaptedObject );
+        if( adaptedObject instanceof Binding )
+        {
+            Binding binding = (Binding) adaptedObject;
+            getAdaptContext().put( binding.getKey(), binding.getValue() );
+        }
+        else
+        {
+            InjectionKey key = new InjectionKey( adaptedObject.getClass(), null, null );
+            getAdaptContext().put( key, adaptedObject );
+        }
     }
 
-    public <K, T extends K> void decorate( K decoratedObject )
+    public void decorate( Object decoratedObject )
     {
-        getDecorateContext().add( decoratedObject );
+        if( decoratedObject instanceof Binding )
+        {
+            Binding binding = (Binding) decoratedObject;
+            getDecorateContext().put( binding.getKey(), binding.getValue() );
+        }
+        else
+        {
+            InjectionKey key = new InjectionKey( decoratedObject.getClass(), null, null );
+            getDecorateContext().put( key, decoratedObject );
+        }
     }
 
-    public <K> void properties( Class<K> mixinType, Object... properties )
+    public <K, T extends K> void properties( Class<K> mixinType, Object... properties )
     {
-        CompositeResolution compositeResolution = context.getCompositeResolution();
-        MixinResolution mixin = compositeResolution.getMixinForInterface( mixinType );
-        this.properties.put( mixin, properties );
+        MixinResolution resolution = context.getCompositeResolution().getMixinForInterface( mixinType );
+
+        Map<MixinResolution, Map<InjectionKey, Object>> context = getPropertyContext();
+        Map<InjectionKey, Object> mixinContext = new LinkedHashMap<InjectionKey, Object>();
+        for( Object property : properties )
+        {
+            InjectionKey key = null;
+            if( property instanceof Binding )
+            {
+                Binding binding = (Binding) property;
+                key = binding.getKey();
+                property = binding.getValue();
+            }
+
+            String name = null;
+            if( property instanceof PropertyValue )
+            {
+                PropertyValue value = (PropertyValue) property;
+                name = value.getName();
+                property = value.getValue();
+            }
+
+            if( key == null )
+            {
+                key = new InjectionKey( property.getClass(), name, resolution.getMixinModel().getModelClass() );
+            }
+            mixinContext.put( key, property );
+        }
+        context.put( resolution, mixinContext );
     }
+
 
     public T newInstance()
     {
@@ -127,14 +177,21 @@ public class CompositeBuilderImpl<T extends Composite>
         Map states = new HashMap<Class, Object>();
         states.put( Lifecycle.class, LifecycleImpl.INSTANCE );
 
+        Map<InjectionKey, Object> adapt = adaptContext == null ? Collections.EMPTY_MAP : adaptContext;
+        Map<InjectionKey, Object> decorate = decorateContext == null ? Collections.EMPTY_MAP : decorateContext;
+
         Set<MixinResolution> usedMixins = context.getCompositeResolution().getUsedMixinModels();
         Object[] mixins = new Object[usedMixins.size()];
         int i = 0;
         for( MixinResolution resolution : usedMixins )
         {
-            Object[] params = properties.get( resolution );
-            MixinDependencyInjectionContext injectionContext = new MixinDependencyInjectionContext( context, composite, params, adaptContext, decorateContext );
-            Object mixin = fragmentFactory.newFragment( resolution, injectionContext );
+            Map<InjectionKey, Object> props = propertyContext == null ? Collections.EMPTY_MAP : propertyContext.get( resolution );
+            if( props == null )
+            {
+                props = Collections.EMPTY_MAP;
+            }
+            MixinDependencyInjectionContext injectionContext = new MixinDependencyInjectionContext( context, composite, props, adapt, decorate );
+            Object mixin = fragmentFactory.newInstance( resolution, injectionContext );
             mixins[ i++ ] = mixin;
         }
 
@@ -169,21 +226,30 @@ public class CompositeBuilderImpl<T extends Composite>
     }
 
     // Private ------------------------------------------------------
-    private List getAdaptContext()
+    private Map<InjectionKey, Object> getAdaptContext()
     {
         if( adaptContext == null )
         {
-            adaptContext = new ArrayList();
+            adaptContext = new LinkedHashMap<InjectionKey, Object>();
         }
         return adaptContext;
     }
 
-    private List getDecorateContext()
+    private Map<InjectionKey, Object> getDecorateContext()
     {
         if( decorateContext == null )
         {
-            decorateContext = new ArrayList();
+            decorateContext = new LinkedHashMap<InjectionKey, Object>();
         }
         return decorateContext;
+    }
+
+    private Map<MixinResolution, Map<InjectionKey, Object>> getPropertyContext()
+    {
+        if( propertyContext == null )
+        {
+            propertyContext = new LinkedHashMap<MixinResolution, Map<InjectionKey, Object>>();
+        }
+        return propertyContext;
     }
 }
