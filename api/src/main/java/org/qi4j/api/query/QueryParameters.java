@@ -1,4 +1,4 @@
-package org.qi4j.api.persistence;
+package org.qi4j.api.query;
 
 /**
  * TODO

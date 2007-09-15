@@ -12,21 +12,26 @@
  * limitations under the License.
  *
  */
-package org.qi4j.api;
+package org.qi4j.api.annotation.scope;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * This factory creates proxies that implement the given
- * thisAs interfaces.
+ * Annotation to denote the injection of fragment specific resource. These include:
+ * The CompositeBuilderFactory
+ * <p/>
+ * Examples:
+ *
+ * @Fragment CompositeBuilderFactory cbf
  */
-public interface CompositeBuilderFactory
+@Retention( RetentionPolicy.RUNTIME )
+@Target( { ElementType.FIELD, ElementType.PARAMETER } )
+@Documented
+@DependencyScope
+public @interface Fragment
 {
-    /**
-     * Create a builder for creating new objects that implements the given interface.
-     *
-     * @param compositeType an interface that describes the object to be created
-     * @return a CompositeBuilder for cretaion of objects implementing the interface
-     * @throws CompositeInstantiationException
-     *          thrown if instantiation fails
-     */
-    <T extends Composite> CompositeBuilder<T> newCompositeBuilder( Class<T> compositeType );
 }

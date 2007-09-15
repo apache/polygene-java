@@ -16,26 +16,23 @@
  */
 package org.qi4j.api;
 
-import org.qi4j.api.model.CompositeContext;
-
 /**
  * TODO for Rickard; Explanation needed on how to use for Templating, Strategy and Builder patterns.
  */
-public interface CompositeBuilder<T extends Composite>
+public interface ObjectBuilder<T>
 {
-    CompositeContext<T> getContext();
-
     /**
-     * Adapts the mixin object to be used for any mixin references missing in the builder, and can
-     * be provided by the mixin object.
+     * Make the given object available for @Adapt injection
      *
-     * @param mixin The object to use as a mixin.
+     * @param object the object to be adapted
      */
-    void adapt( Object mixin );
+    void adapt( Object object );
 
-    <K, T extends K> void decorate( K object );
+    void decorate( Object object );
 
-    <K, T extends K> void properties( Class<K> mixinType, Object... properties );
+    void properties( Object... properties );
 
     T newInstance();
+
+    void inject( T instance );
 }

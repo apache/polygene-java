@@ -12,14 +12,14 @@
  * limitations under the License.
  *
  */
-package org.qi4j.api.persistence;
+package org.qi4j.api.query;
 
 /**
  * Query of objects from underlying stores.
  * <p/>
  * Example;
  * <code><pre>
- * Query q = em.createQuery(PersonComposite.class);
+ * Query q = qf.newQuery(PersonComposite.class);
  * q.where(Name.class).setName("foo");
  * q.where(Age.class, Is.LESS_THAN).setAge(30);
  * q.orderBy(Name.class).getName();

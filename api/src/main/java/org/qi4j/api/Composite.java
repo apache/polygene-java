@@ -17,19 +17,20 @@ package org.qi4j.api;
 import org.qi4j.api.model.CompositeModel;
 
 /**
- * This factory creates proxies that implement the given
- * thisAs interfaces.
+ * All Composite objects must implement this interface. Let the
+ * Composite interface extend this one. An implementation will be provided
+ * by the framework.
  */
 public interface Composite
 {
     /**
      * Cast the current object to the given interface.
      * <p/>
-     * The returned object uses the current object which provides mixin mixins
+     * The returned object uses the current object which provides mixins
      * that should be reused for this new object.
      *
      * @param anObjectType an interface that describes the object to be created
-     * @return a new proxy object implementing the interface
+     * @return a new composite object implementing the interface
      */
     <T extends Composite> T cast( Class<T> anObjectType );
 
@@ -42,7 +43,7 @@ public interface Composite
     boolean isInstance( Class anObjectType );
 
     /**
-     * Get the thisAs object
+     * Get the model for this object
      *
      * @return the CompositeModel that describes this thisAs
      */

@@ -15,18 +15,17 @@
 package org.qi4j.api;
 
 /**
- * This factory creates proxies that implement the given
- * thisAs interfaces.
+ * This factory creates builders for POJO's.
  */
-public interface CompositeBuilderFactory
+public interface ObjectBuilderFactory
 {
     /**
-     * Create a builder for creating new objects that implements the given interface.
+     * Create a builder for creating new objects of the given type.
      *
-     * @param compositeType an interface that describes the object to be created
-     * @return a CompositeBuilder for cretaion of objects implementing the interface
-     * @throws CompositeInstantiationException
+     * @param type an object class which will be instantiated
+     * @return a ObjectBuilder for creation of objects of the given type
+     * @throws org.qi4j.api.CompositeInstantiationException
      *          thrown if instantiation fails
      */
-    <T extends Composite> CompositeBuilder<T> newCompositeBuilder( Class<T> compositeType );
+    <T> ObjectBuilder<T> newObjectBuilder( Class<T> type );
 }
