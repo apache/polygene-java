@@ -1,6 +1,7 @@
-package org.qi4j.api;
+package org.qi4j.runtime.resolution;
 
 import org.qi4j.api.model.FieldDependency;
+import org.qi4j.spi.dependency.DependencyResolution;
 
 /**
  * TODO
@@ -21,7 +22,7 @@ public class FieldDependencyResolution
         return field;
     }
 
-    public DependencyResolution getDepedencyResolution()
+    public DependencyResolution getDependencyResolution()
     {
         return depedencyResolution;
     }

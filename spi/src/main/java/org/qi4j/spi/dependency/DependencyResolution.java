@@ -1,4 +1,4 @@
-package org.qi4j.api;
+package org.qi4j.spi.dependency;
 
 /**
  * Implemenatations of this interface represents a resolved depedency, where a
@@ -19,5 +19,5 @@ public interface DependencyResolution
      * @param context
      * @return iterable of result. May not be null.
      */
-    Iterable getDependencyInjection( DependencyInjectionContext context );
+    Object getDependencyInjection( DependencyInjectionContext context );
 }
