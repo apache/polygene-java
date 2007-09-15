@@ -16,7 +16,7 @@
  */
 package org.qi4j.test.annotation;
 
-import org.qi4j.api.annotation.Modifies;
+import org.qi4j.api.annotation.scope.Modifies;
 
 public class ClassAnnotatedWithModifies
 {
