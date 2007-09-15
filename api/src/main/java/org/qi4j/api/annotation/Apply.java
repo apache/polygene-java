@@ -28,7 +28,7 @@ import java.lang.annotation.Target;
 @Documented
 @Inherited
 /**
- * Applies a virtual annotation to a method or a mixin.
+ * Applies a virtual annotation to a method or a mixin. Add this to the Composite type.
  *
  * <pre><code>
  * @Apply( toMethods =
