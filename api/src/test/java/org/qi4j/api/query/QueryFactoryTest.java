@@ -8,6 +8,7 @@ import java.util.List;
 import junit.framework.TestCase;
 import org.qi4j.api.model.Mixin1;
 import org.qi4j.api.model.Mixin1Impl;
+import static org.qi4j.api.query.Query.OrderBy.DESCENDING;
 import org.qi4j.api.query.decorator.CachingQueryFactory;
 import org.qi4j.api.query.decorator.DefaultQueryFactory;
 import org.qi4j.api.query.decorator.OrderByQueryFactory;
@@ -31,7 +32,7 @@ public abstract class QueryFactoryTest extends TestCase
 
         // Set parameters
         query.where( Mixin1.class ).setBar( "B" );
-        query.orderBy( Mixin1.class, Query.OrderBy.DESCENDING ).getFoo();
+        query.orderBy( Mixin1.class, DESCENDING ).getName();
 
         // Perform query
         Iterable<Mixin1> result = query.prepare();
@@ -64,7 +65,7 @@ public abstract class QueryFactoryTest extends TestCase
         // Print results
         for( Mixin1 mixin1 : results2 )
         {
-            System.out.println( mixin1.getFoo() );
+            System.out.println( mixin1.getBar() );
         }
     }
 

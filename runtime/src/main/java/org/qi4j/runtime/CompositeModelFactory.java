@@ -32,8 +32,8 @@ import org.qi4j.runtime.persistence.EntityImpl;
 
 public class CompositeModelFactory
 {
-    ModifierModelFactory modifierModelFactory;
-    MixinModelFactory mixinModelFactory;
+    private ModifierModelFactory modifierModelFactory;
+    private MixinModelFactory mixinModelFactory;
 
     public CompositeModelFactory()
     {

@@ -36,10 +36,7 @@ public class ObjectModel<T>
     // Constructors --------------------------------------------------
     public ObjectModel( Class<T> modelClass, Iterable<ConstructorDependency> constructorDependencies, Iterable<FieldDependency> fieldDependencies, Iterable<MethodDependency> methodDependencies )
     {
-        if( modelClass == null )
-        {
-            throw new NullArgumentException( "Model class is null" );
-        }
+        NullArgumentException.validateNotNull( "Model class", modelClass );
 
         this.constructorDependencies = constructorDependencies;
         this.fieldDependencies = fieldDependencies;

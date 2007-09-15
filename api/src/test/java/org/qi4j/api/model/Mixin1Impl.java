@@ -49,5 +49,14 @@ public class Mixin1Impl implements Mixin1
     {
         this.bar = bar;
     }
-    
+
+    public String getDescription()
+    {
+        return description;
+    }
+
+    public void setDescription( String description )
+    {
+        this.description = description;
+    }
 }

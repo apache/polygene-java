@@ -32,10 +32,7 @@ public class ObjectResolution<T>
     // Constructors --------------------------------------------------
     public ObjectResolution( ObjectModel<T> objectModel, Iterable<ConstructorDependencyResolution> constructorDependencies, Iterable<FieldDependencyResolution> fieldDependencies, Iterable<MethodDependencyResolution> methodDependencies )
     {
-        if( objectModel == null )
-        {
-            throw new NullArgumentException( "objectModel is null" );
-        }
+        NullArgumentException.validateNotNull( "objectModel", objectModel );
 
         this.constructorDependencies = constructorDependencies;
         this.fieldDependencies = fieldDependencies;
