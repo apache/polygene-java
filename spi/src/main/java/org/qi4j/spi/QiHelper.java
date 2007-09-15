@@ -16,10 +16,6 @@
  */
 package org.qi4j.spi;
 
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Field;
-import org.qi4j.api.annotation.DependencyOld;
-
 public class QiHelper
 {
 }
