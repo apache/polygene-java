@@ -15,21 +15,23 @@ package org.qi4j.library.general.model;
 import junit.framework.Assert;
 import org.qi4j.api.Composite;
 import org.qi4j.api.CompositeBuilder;
-import static org.qi4j.api.annotation.ParameterValue.parameter;
+import static org.qi4j.api.PropertyValue.name;
+import static org.qi4j.api.PropertyValue.property;
 
 public class PersonTest extends AbstractTest
 {
     public void testNewPerson() throws Exception
     {
-        CompositeBuilder<PersonComposite> builder = builderFactory.newCompositeBuilder( PersonComposite.class );
-        builder.properties( Person.class, parameter( "firstName", "Sianny"), parameter("lastName", "Halim"));
-        PersonComposite person = builder.newInstance();
-
         String firstName = "Sianny";
         String lastName = "Halim";
 
-        person.setFirstName( firstName );
-        person.setLastName( lastName );
+        CompositeBuilder<PersonComposite> builder = builderFactory.newCompositeBuilder( PersonComposite.class );
+        Person propName = name( Person.class );
+        builder.properties( Person.class,
+                            property( propName.getFirstName(), firstName ),
+                            property( propName.getLastName(), lastName ) );
+        PersonComposite person = builder.newInstance();
+
         person.setGender( GenderType.female );
 
         Assert.assertEquals( firstName, person.getFirstName() );

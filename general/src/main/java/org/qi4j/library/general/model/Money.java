@@ -12,8 +12,6 @@
  */
 package org.qi4j.library.general.model;
 
-import java.math.BigDecimal;
-
 /**
  * Generic interface for Money which stores an amount and currency.
  * Both amount and currency must be immutable.

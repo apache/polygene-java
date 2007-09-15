@@ -12,8 +12,8 @@
  */
 package org.qi4j.library.general.model.modifiers;
 
-import org.qi4j.api.annotation.Modifies;
-import org.qi4j.api.annotation.ThisAs;
+import org.qi4j.api.annotation.scope.Modifies;
+import org.qi4j.api.annotation.scope.ThisAs;
 import org.qi4j.api.persistence.Lifecycle;
 import org.qi4j.library.general.model.Validatable;
 
@@ -21,7 +21,7 @@ import org.qi4j.library.general.model.Validatable;
  * This modifier is invoked on Lifecycle mixin invocation.
  * Before the next target invocation, this modifier invokes
  * {@link org.qi4j.library.general.model.Validatable#validate()}.
- *
+ * <p/>
  * TODO: We need to distinguish between Validatable on create, delete and update.
  */
 public class LifecycleValidationModifier

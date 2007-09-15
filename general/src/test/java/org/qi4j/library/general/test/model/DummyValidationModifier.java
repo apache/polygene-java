@@ -12,7 +12,7 @@
  */
 package org.qi4j.library.general.test.model;
 
-import org.qi4j.api.annotation.Modifies;
+import org.qi4j.api.annotation.scope.Modifies;
 import org.qi4j.library.general.model.Validatable;
 import org.qi4j.library.general.model.ValidationException;
 

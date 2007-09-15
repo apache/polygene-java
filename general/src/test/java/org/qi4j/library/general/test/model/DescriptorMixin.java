@@ -12,7 +12,7 @@
  */
 package org.qi4j.library.general.test.model;
 
-import org.qi4j.api.annotation.ThisAs;
+import org.qi4j.api.annotation.scope.ThisAs;
 import org.qi4j.library.general.model.Descriptor;
 import org.qi4j.library.general.model.HasName;
 

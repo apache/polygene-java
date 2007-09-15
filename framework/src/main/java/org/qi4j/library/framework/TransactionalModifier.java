@@ -19,8 +19,9 @@ import javax.transaction.Status;
 import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
 import org.qi4j.api.annotation.AppliesTo;
-import org.qi4j.api.annotation.DependencyOld;
-import org.qi4j.api.annotation.Modifies;
+import org.qi4j.api.annotation.scope.Modifier;
+import org.qi4j.api.annotation.scope.Modifies;
+import org.qi4j.api.annotation.scope.Service;
 
 /**
  * Transactional modifier. Implementation methods
@@ -36,113 +37,106 @@ public class TransactionalModifier
     implements InvocationHandler
 {
     // Attributes ----------------------------------------------------
-    TransactionManager tm;
-
+    @Service TransactionManager tm;
+    @Modifier Transactional transactional;
     @Modifies InvocationHandler next;
-    @DependencyOld Method method;
-
-    // Constructors --------------------------------------------------
-    public TransactionalModifier( TransactionManager tm )
-    {
-        this.tm = tm;
-    }
 
     // InvocationHandler implementation ------------------------------
     public Object invoke( Object proxy, Method method, Object[] args )
         throws Throwable
     {
 
-        switch ( method.getAnnotation( Transactional.class ).value() )
+        switch( transactional.value() )
         {
 
-            case REQUIRED:
+        case REQUIRED:
+        {
+            if( tm.getStatus() != Status.STATUS_ACTIVE )
             {
-                if ( tm.getStatus() != Status.STATUS_ACTIVE )
+                tm.begin();
+                try
                 {
-                    tm.begin();
-                    try
-                    {
-                        Object result = next.invoke( proxy, method, args );
-                        tm.commit();
-                        return result;
-                    }
-                    catch( Throwable throwable )
-                    {
-                        tm.rollback();
-                        throw throwable;
-                    }
+                    Object result = next.invoke( proxy, method, args );
+                    tm.commit();
+                    return result;
+                }
+                catch( Throwable throwable )
+                {
+                    tm.rollback();
+                    throw throwable;
                 }
             }
+        }
 
-            case SUPPORTS:
+        case SUPPORTS:
+        {
+            // nothing to do; should proceed regardles if there is an active transaction
+        }
+
+        case MANDATORY:
+        {
+            if( tm.getStatus() != Status.STATUS_ACTIVE )
             {
-                // nothing to do; should proceed regardles if there is an active transaction
+                throw new IllegalStateException( "Transaction was required but there is no available transaction." );
+                // TODO other execption? what about the message?
             }
+        }
 
-            case MANDATORY:
+        case REQUIRES_NEW:
+        {
+            if( tm.getStatus() == Status.STATUS_ACTIVE )
             {
-                if ( tm.getStatus() != Status.STATUS_ACTIVE )
+                Transaction current = tm.suspend();
+                tm.begin();
+                try
                 {
-                    throw new IllegalStateException( "Transaction was required but there is no available transaction.");
-                    // TODO other execption? what about the message?
+                    Object result = next.invoke( proxy, method, args );
+                    tm.commit();
+                    return result;
+                }
+                catch( Throwable throwable )
+                {
+                    tm.rollback();
+                    throw throwable;
+                }
+                finally
+                {
+                    tm.resume( current );
                 }
             }
+            break;
+        }
 
-            case REQUIRES_NEW:
+        case NOT_SUPPORTED:
+        {
+            if( tm.getStatus() == Status.STATUS_ACTIVE )
             {
-                if ( tm.getStatus() == Status.STATUS_ACTIVE )
+                Transaction current = tm.suspend();
+                try
                 {
-                    Transaction current = tm.suspend();
-                    tm.begin();
-                    try
-                    {
-                        Object result = next.invoke( proxy, method, args );
-                        tm.commit();
-                        return result;
-                    }
-                    catch( Throwable throwable )
-                    {
-                        tm.rollback();
-                        throw throwable;
-                    }
-                    finally
-                    {
-                        tm.resume( current );
-                    }
+                    return next.invoke( proxy, method, args );
                 }
-                break;
+                finally
+                {
+                    tm.resume( current );
+                }
             }
+            break;
+        }
 
-            case NOT_SUPPORTED:
+        case NEVER:
+        {
+            if( tm.getStatus() == Status.STATUS_ACTIVE )
             {
-                if ( tm.getStatus() == Status.STATUS_ACTIVE )
-                {
-                    Transaction current = tm.suspend();
-                    try
-                    {
-                        return next.invoke( proxy, method, args );
-                    }
-                    finally
-                    {
-                        tm.resume( current );
-                    }
-                }
-                break;
+                throw new IllegalStateException( " Transaction is not supported but there is an active transaction." );
+                // TODO other execption? what about the message?
             }
-
-            case NEVER:
-            {
-                if ( tm.getStatus() == Status.STATUS_ACTIVE )
-                {
-                    throw new IllegalStateException( " Transaction is not supported but there is an active transaction.");
-                    // TODO other execption? what about the message?
-                }
-                break;
-            }
+            break;
+        }
 
         }
 
-        return next.invoke( proxy, method, args);
+        return next.invoke( proxy, method, args );
     }
-    
+
 }

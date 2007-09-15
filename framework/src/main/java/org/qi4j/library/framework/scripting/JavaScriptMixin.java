@@ -26,8 +26,8 @@ import org.mozilla.javascript.Undefined;
 import org.mozilla.javascript.Wrapper;
 import org.qi4j.api.CompositeBuilderFactory;
 import org.qi4j.api.annotation.AppliesTo;
-import org.qi4j.api.annotation.DependencyOld;
 import org.qi4j.api.annotation.instance.TransientPerVm;
+import org.qi4j.api.annotation.scope.Fragment;
 
 /**
  * Generic mixin that implements interfaces by delegating to JavaScript functions
@@ -37,14 +37,13 @@ import org.qi4j.api.annotation.instance.TransientPerVm;
  * <p/>
  * Example:
  * org/qi4j/samples/hello/domain/HelloWorldSpeaker.say.js
- *
  */
 @AppliesTo( Scripted.class )
 @TransientPerVm
 public class JavaScriptMixin
     implements InvocationHandler
 {
-    @DependencyOld CompositeBuilderFactory factory;
+    @Fragment CompositeBuilderFactory factory;
 
     // Static --------------------------------------------------------
     static Scriptable standardScope;
@@ -79,7 +78,7 @@ public class JavaScriptMixin
         {
             Scriptable proxyScope = Context.toObject( proxy, instanceScope );
             proxyScope.setPrototype( instanceScope );
-            proxyScope.put( "factory", proxyScope, factory);
+            proxyScope.put( "factory", proxyScope, factory );
             Function fn = getFunction( cx, proxyScope, method );
             Object result = fn.call( cx, instanceScope, proxyScope, args );
 
