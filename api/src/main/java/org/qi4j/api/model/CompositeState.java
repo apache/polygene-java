@@ -16,14 +16,12 @@
  */
 package org.qi4j.api.model;
 
-import java.util.Map;
-
 public interface CompositeState
 {
     /**
      * @return The Composite state mixins mapped with their respective resolutions
      */
-    Map<MixinResolution, Object> getMixins();
+    Object[] getMixins();
 
     /**
      * Sets the Composite state.

@@ -14,7 +14,7 @@ package org.qi4j.api.model;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Iterator;
-import org.qi4j.api.annotation.Modifies;
+import org.qi4j.api.annotation.scope.Modifies;
 
 /**
  * Modifiers provide stateless modifications of method invocation behaviour.
@@ -53,7 +53,7 @@ public final class ModifierModel<T>
         StringWriter str = new StringWriter();
         PrintWriter out = new PrintWriter( str );
         out.println( "  @Modifies" );
-        out.println( "    " + modifiesDependency.getKey().getRawClass().getSimpleName() );
+        out.println( "    " + modifiesDependency.getKey().getRawType().getSimpleName() );
 
         if( appliesTo != null )
         {

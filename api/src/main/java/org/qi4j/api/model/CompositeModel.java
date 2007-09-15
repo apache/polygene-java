@@ -58,7 +58,7 @@ public final class CompositeModel<T extends Composite>
         {
             if( !implementation.isGeneric() )
             {
-                Class fragmentClass = implementation.getFragmentClass();
+                Class fragmentClass = implementation.getModelClass();
                 if( aType.isAssignableFrom( fragmentClass ) )
                 {
                     impls.add( implementation );
@@ -92,13 +92,13 @@ public final class CompositeModel<T extends Composite>
         out.println( "  implementations available" );
         for( MixinModel implementation : mixinModels )
         {
-            out.println( "    " + implementation.getFragmentClass().getName() );
+            out.println( "    " + implementation.getModelClass().getName() );
         }
 
         out.println( "  modifiers available" );
         for( ModifierModel modifierModel : modifierModels )
         {
-            out.println( "    " + modifierModel.getFragmentClass().getName() );
+            out.println( "    " + modifierModel.getModelClass().getName() );
         }
         out.close();
         return str.toString();

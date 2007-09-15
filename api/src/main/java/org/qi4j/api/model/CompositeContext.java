@@ -18,13 +18,10 @@ package org.qi4j.api.model;
 
 import org.qi4j.api.Composite;
 import org.qi4j.api.CompositeBuilderFactory;
-import org.qi4j.api.CompositeModelFactory;
 
 public interface CompositeContext<T extends Composite>
 {
-    CompositeModel getCompositeModel();
-
-    CompositeModelFactory getCompositeModelFactory();
+    CompositeModel<T> getCompositeModel();
 
     CompositeBuilderFactory getCompositeBuilderFactory();
 

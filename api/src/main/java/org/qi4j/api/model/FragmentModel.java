@@ -11,13 +11,8 @@
 */
 package org.qi4j.api.model;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Base class for fragments. Fragments are composed into objects.
@@ -26,48 +21,20 @@ import java.util.List;
  * @see ModifierModel
  */
 public abstract class FragmentModel<T>
+    extends ObjectModel<T>
 {
     // Attributes ----------------------------------------------------
-    private Class<T> fragmentClass;
-
-    // Dependencies
-    private Iterable<ConstructorDependency> constructorDependencies;
-    private Iterable<FieldDependency> fieldDependencies;
-    private Iterable<MethodDependency> methodDependencies;
     protected Class appliesTo;
 
     // Constructors --------------------------------------------------
     public FragmentModel( Class<T> fragmentClass, Iterable<ConstructorDependency> constructorDependencies, Iterable<FieldDependency> fieldDependencies, Iterable<MethodDependency> methodDependencies, Class appliesTo )
     {
-        NullArgumentException.validateNotNull( "fragmentClass", fragmentClass );
-        this.constructorDependencies = constructorDependencies;
-        this.fieldDependencies = fieldDependencies;
-        this.methodDependencies = methodDependencies;
-        this.fragmentClass = fragmentClass;
+        super( fragmentClass, constructorDependencies, fieldDependencies, methodDependencies );
+
         this.appliesTo = appliesTo;
     }
 
     // Public -------------------------------------------------------
-    public Class<T> getFragmentClass()
-    {
-        return fragmentClass;
-    }
-
-    public Iterable<ConstructorDependency> getConstructorDependencies()
-    {
-        return constructorDependencies;
-    }
-
-    public Iterable<FieldDependency> getFieldDependencies()
-    {
-        return fieldDependencies;
-    }
-
-    public Iterable<MethodDependency> getMethodDependencies()
-    {
-        return methodDependencies;
-    }
-
     public Class getAppliesTo()
     {
         return appliesTo;
@@ -75,73 +42,11 @@ public abstract class FragmentModel<T>
 
     public boolean isAbstract()
     {
-        return Modifier.isAbstract( fragmentClass.getModifiers() );
+        return Modifier.isAbstract( getModelClass().getModifiers() );
     }
 
     public boolean isGeneric()
     {
-        return InvocationHandler.class.isAssignableFrom( fragmentClass );
-    }
-
-    public Iterable<Dependency> getDependenciesByScope( Class<? extends Annotation> annotationScopeClass )
-    {
-        List<Dependency> scopeDependencies = new ArrayList<Dependency>();
-
-        for( ConstructorDependency constructorDependency : constructorDependencies )
-        {
-            for( ParameterDependency parameterDependency : constructorDependency.getParameterDependencies() )
-            {
-                if( parameterDependency.getKey().getAnnotationType().equals( annotationScopeClass ) )
-                {
-                    scopeDependencies.add( parameterDependency );
-                }
-            }
-        }
-
-        for( FieldDependency fieldDependency : fieldDependencies )
-        {
-            if( fieldDependency.getKey().getAnnotationType().equals( annotationScopeClass ) )
-            {
-                scopeDependencies.add( fieldDependency );
-            }
-        }
-
-        return scopeDependencies;
-    }
-
-
-    // Object overrides ---------------------------------------------
-    public boolean equals( Object o )
-    {
-        if( this == o )
-        {
-            return true;
-        }
-        if( o == null || getClass() != o.getClass() )
-        {
-            return false;
-        }
-
-        FragmentModel fragmentModel = (FragmentModel) o;
-
-        return fragmentClass.equals( fragmentModel.fragmentClass );
-    }
-
-    public int hashCode()
-    {
-        return fragmentClass.hashCode();
-    }
-
-    public String toString()
-    {
-        StringWriter str = new StringWriter();
-        PrintWriter out = new PrintWriter( str );
-        out.println( fragmentClass.getName() );
-        for( FieldDependency fieldDependency : fieldDependencies )
-        {
-            out.println( "    @" + fieldDependency.getKey().getAnnotationType().getSimpleName() + " " + fieldDependency.getField().getName() );
-        }
-        out.close();
-        return str.toString();
+        return InvocationHandler.class.isAssignableFrom( getModelClass() );
     }
 }

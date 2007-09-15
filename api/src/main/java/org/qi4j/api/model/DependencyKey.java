@@ -1,4 +1,4 @@
-package org.qi4j.api;
+package org.qi4j.api.model;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
@@ -13,13 +13,11 @@ public class DependencyKey
     private Class<? extends Annotation> annotationType;
     private Type genericType;
     private String name;
-    private Class fragmentType;
-    private Class compositeType;
+    private Class dependentType;
 
-    public DependencyKey( Class<? extends Annotation> annotationType, Type genericType, String name, Class fragmentType, Class compositeType )
+    public DependencyKey( Class<? extends Annotation> annotationType, Type genericType, String name, Class dependentType )
     {
-        this.compositeType = compositeType;
-        this.fragmentType = fragmentType;
+        this.dependentType = dependentType;
         this.annotationType = annotationType;
         this.genericType = genericType;
         this.name = name;
@@ -35,7 +33,16 @@ public class DependencyKey
         return genericType;
     }
 
-    public Class getRawClass()
+    /**
+     * Get the raw dependency type. If the dependency uses generics this is the raw type,
+     * and otherwise it is the type of the field. Examples:
+     *
+     * @return
+     * @Service MyService service -> MyService
+     * @Entity Iterable<Foo> fooList -> Iterable
+     * @Entity Query<Foo> fooQuery -> Query
+     */
+    public Class getRawType()
     {
         if( genericType instanceof Class )
         {
@@ -51,6 +58,15 @@ public class DependencyKey
         }
     }
 
+    /**
+     * Get the dependency type. If the dependency uses generics this is the parameter type,
+     * and otherwise it is the raw type. Examples:
+     *
+     * @return
+     * @Service MyService service -> MyService
+     * @Entity Iterable<Foo> fooList -> Foo
+     * @Entity Query<Foo> fooQuery -> Foo
+     */
     public Class getDependencyType()
     {
         if( genericType instanceof ParameterizedType )
@@ -68,14 +84,9 @@ public class DependencyKey
         return name;
     }
 
-    public Class getFragmentType()
+    public Class getDependentType()
     {
-        return fragmentType;
-    }
-
-    public Class getCompositeType()
-    {
-        return compositeType;
+        return dependentType;
     }
 
     @Override public boolean equals( Object o )
@@ -117,6 +128,6 @@ public class DependencyKey
 
     @Override public String toString()
     {
-        return compositeType.getSimpleName() + ":" + fragmentType.getSimpleName() + ":" + annotationType.getName() + ":" + genericType + ( name == null ? "" : ":" + name );
+        return ( dependentType == null ? "" : dependentType.getSimpleName() + ":" ) + annotationType.getName() + ":" + genericType + ( name == null ? "" : ":" + name );
     }
 }

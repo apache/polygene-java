@@ -1,7 +1,5 @@
 package org.qi4j.api.model;
 
-import org.qi4j.api.DependencyKey;
-
 /**
  * TODO
  */
