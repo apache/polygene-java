@@ -1,6 +1,6 @@
-package org.qi4j.runtime;
+package org.qi4j.runtime.resolution;
 
-import org.qi4j.api.InvalidDependencyException;
+import org.qi4j.spi.dependency.InvalidDependencyException;
 
 /**
  * TODO

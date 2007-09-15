@@ -1,17 +1,17 @@
-package org.qi4j.runtime;
+package org.qi4j.runtime.resolution;
 
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
-import org.qi4j.api.DependencyKey;
-import org.qi4j.api.DependencyResolution;
-import org.qi4j.api.DependencyResolver;
-import org.qi4j.api.InvalidDependencyException;
+import org.qi4j.api.model.DependencyKey;
+import org.qi4j.spi.dependency.DependencyResolution;
+import org.qi4j.spi.dependency.DependencyResolver;
+import org.qi4j.spi.dependency.InvalidDependencyException;
 
 /**
  * TODO
  */
-public final class DependencyResolverDelegator
+public class DependencyResolverDelegator
     implements DependencyResolver
 {
     Map<Class<? extends Annotation>, DependencyResolver> resolvers = new HashMap<Class<? extends Annotation>, DependencyResolver>();

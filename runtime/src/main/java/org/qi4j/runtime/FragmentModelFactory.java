@@ -7,14 +7,15 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import org.qi4j.api.DependencyKey;
 import org.qi4j.api.annotation.AppliesTo;
-import org.qi4j.api.annotation.DependencyScope;
-import org.qi4j.api.annotation.Name;
-import org.qi4j.api.annotation.Optional;
-import org.qi4j.api.annotation.Property;
+import org.qi4j.api.annotation.scope.DependencyScope;
+import org.qi4j.api.annotation.scope.Name;
+import org.qi4j.api.annotation.scope.Optional;
+import org.qi4j.api.annotation.scope.Property;
 import org.qi4j.api.model.ConstructorDependency;
+import org.qi4j.api.model.DependencyKey;
 import org.qi4j.api.model.FieldDependency;
+import org.qi4j.api.model.FragmentDependencyKey;
 import org.qi4j.api.model.InvalidCompositeException;
 import org.qi4j.api.model.MethodDependency;
 import org.qi4j.api.model.ParameterDependency;
@@ -22,7 +23,7 @@ import org.qi4j.api.model.ParameterDependency;
 /**
  * TODO
  */
-public abstract class FragmentModelBuilder
+public abstract class FragmentModelFactory
 {
     protected void getConstructorDependencies( Class mixinClass, Class compositeType, List<ConstructorDependency> dependentConstructors )
     {
@@ -66,9 +67,9 @@ public abstract class FragmentModelBuilder
             // Find annotation that is a DependencyAnnotation
             Annotation[] annotations = field.getAnnotations();
             Annotation annotation = getDependencyAnnotation( annotations );
+            field.setAccessible( true );
             if( annotation != null )
             {
-                field.setAccessible( true );
                 String name = null;
                 boolean optional = false;
 
@@ -97,13 +98,26 @@ public abstract class FragmentModelBuilder
                     {
                         throw new InvalidCompositeException( "Could not get name flag from annotation", fragmentClass );
                     }
-                    if( specifiedName.equals( "" ) )
+                    if( !specifiedName.equals( "" ) )
                     {
                         name = specifiedName;
                     }
+                    else
+                    {
+                        // Use name of field
+                        name = field.getName();
+                    }
                 }
 
-                DependencyKey key = new DependencyKey( annotation.annotationType(), field.getType(), name, fragmentClass, compositeType );
+                DependencyKey key;
+                if( compositeType == null )
+                {
+                    key = new DependencyKey( annotation.annotationType(), field.getGenericType(), name, fragmentClass );
+                }
+                else
+                {
+                    key = new FragmentDependencyKey( annotation.annotationType(), field.getGenericType(), name, fragmentClass, compositeType );
+                }
 
                 FieldDependency dependency = new FieldDependency( key, optional, field );
 
@@ -202,14 +216,32 @@ public abstract class FragmentModelBuilder
                     }
                 }
 
-                DependencyKey key = new DependencyKey( annotation.annotationType(), parameterType, name, mixinClass, compositeType );
+                DependencyKey key;
+                if( compositeType == null )
+                {
+                    key = new DependencyKey( annotation.annotationType(), parameterType, name, mixinClass );
+                }
+                else
+                {
+                    key = new FragmentDependencyKey( annotation.annotationType(), parameterType, name, mixinClass, compositeType );
+                }
+
                 dependency = new ParameterDependency( key, optional, name );
                 parameterDependencies.add( dependency );
             }
             else
             {
                 // Fake a Property annotation
-                DependencyKey key = new DependencyKey( Property.class, parameterType, null, mixinClass, compositeType );
+                DependencyKey key;
+                if( compositeType == null )
+                {
+                    key = new DependencyKey( Property.class, parameterType, null, mixinClass );
+                }
+                else
+                {
+                    key = new FragmentDependencyKey( Property.class, parameterType, null, mixinClass, compositeType );
+                }
+
                 dependency = new ParameterDependency( key, false, null );
                 parameterDependencies.add( dependency );
             }

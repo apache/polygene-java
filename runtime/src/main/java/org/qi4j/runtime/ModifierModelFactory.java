@@ -12,14 +12,14 @@ import org.qi4j.api.model.NullArgumentException;
 /**
  * TODO
  */
-public final class ModifierModelBuilder
-    extends FragmentModelBuilder
+public class ModifierModelFactory
+    extends FragmentModelFactory
 {
-    public ModifierModelBuilder()
+    public ModifierModelFactory()
     {
     }
 
-    public <T> ModifierModel<T> getModifierModel( Class<T> modifierClass, Class compositeType )
+    public <T> ModifierModel<T> newModifierModel( Class<T> modifierClass, Class compositeType )
         throws NullArgumentException, InvalidCompositeException
     {
         List<ConstructorDependency> constructorDependencies = new ArrayList<ConstructorDependency>();

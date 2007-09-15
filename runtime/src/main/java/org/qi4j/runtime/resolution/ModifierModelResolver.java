@@ -1,18 +1,14 @@
-package org.qi4j.runtime;
+package org.qi4j.runtime.resolution;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.qi4j.api.ConstructorDependencyResolution;
-import org.qi4j.api.FieldDependencyResolution;
-import org.qi4j.api.InvalidDependencyException;
-import org.qi4j.api.MethodDependencyResolution;
 import org.qi4j.api.model.ModifierModel;
-import org.qi4j.api.model.ModifierResolution;
+import org.qi4j.spi.dependency.InvalidDependencyException;
 
 /**
  * TODO
  */
-public final class ModifierModelResolver
+public class ModifierModelResolver
     extends FragmentModelResolver
 {
     public ModifierModelResolver( DependencyResolverDelegator dependencyResolverDelegator )

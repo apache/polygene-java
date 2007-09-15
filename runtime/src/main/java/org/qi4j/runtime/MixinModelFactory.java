@@ -14,14 +14,14 @@ import org.qi4j.api.model.NullArgumentException;
 /**
  * TODO
  */
-public final class MixinModelBuilder
-    extends FragmentModelBuilder
+public class MixinModelFactory
+    extends FragmentModelFactory
 {
-    private ModifierModelBuilder modifierModelBuilder;
+    private ModifierModelFactory modifierModelFactory;
 
-    public MixinModelBuilder( ModifierModelBuilder modifierModelBuilder )
+    public MixinModelFactory( ModifierModelFactory modifierModelFactory )
     {
-        this.modifierModelBuilder = modifierModelBuilder;
+        this.modifierModelFactory = modifierModelFactory;
     }
 
     public <T> MixinModel<T> getMixinModel( Class<T> mixinClass, Class compositeType )
@@ -50,7 +50,7 @@ public final class MixinModelBuilder
         {
             for( Class modifier : modifiedBy.value() )
             {
-                modifiers.add( modifierModelBuilder.getModifierModel( modifier, compositeType ) );
+                modifiers.add( modifierModelFactory.newModifierModel( modifier, compositeType ) );
             }
         }
 

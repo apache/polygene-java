@@ -1,18 +1,14 @@
-package org.qi4j.runtime;
+package org.qi4j.runtime.resolution;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.qi4j.api.ConstructorDependencyResolution;
-import org.qi4j.api.FieldDependencyResolution;
-import org.qi4j.api.InvalidDependencyException;
-import org.qi4j.api.MethodDependencyResolution;
 import org.qi4j.api.model.MixinModel;
-import org.qi4j.api.model.MixinResolution;
+import org.qi4j.spi.dependency.InvalidDependencyException;
 
 /**
  * TODO
  */
-public final class MixinModelResolver
+public class MixinModelResolver
     extends FragmentModelResolver
 {
     public MixinModelResolver( DependencyResolverDelegator dependencyResolverDelegator )

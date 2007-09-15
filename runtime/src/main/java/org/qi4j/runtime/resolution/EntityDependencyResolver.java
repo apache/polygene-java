@@ -1,19 +1,18 @@
-package org.qi4j.runtime;
+package org.qi4j.runtime.resolution;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.Collections;
-import org.qi4j.api.DependencyInjectionContext;
-import org.qi4j.api.DependencyKey;
-import org.qi4j.api.DependencyResolution;
-import org.qi4j.api.DependencyResolver;
+import org.qi4j.api.model.DependencyKey;
 import org.qi4j.api.persistence.EntitySession;
-import org.qi4j.api.persistence.Query;
+import org.qi4j.api.query.Query;
+import org.qi4j.spi.dependency.DependencyInjectionContext;
+import org.qi4j.spi.dependency.DependencyResolution;
+import org.qi4j.spi.dependency.DependencyResolver;
 
 /**
  * TODO
  */
-public final class EntityDependencyResolver
+public class EntityDependencyResolver
     implements DependencyResolver
 {
     EntitySession session;
@@ -37,10 +36,10 @@ public final class EntityDependencyResolver
             this.key = key;
         }
 
-        public Iterable getDependencyInjection( DependencyInjectionContext context )
+        public Object getDependencyInjection( DependencyInjectionContext context )
         {
             // Is it a Query?
-            if( key.getRawClass().equals( Query.class ) || key.getRawClass().equals( Iterable.class ) )
+            if( key.getRawType().equals( Query.class ) || key.getRawType().equals( Iterable.class ) )
             {
                 Type type = key.getGenericType();
                 if( type instanceof ParameterizedType )
@@ -52,7 +51,7 @@ public final class EntityDependencyResolver
                     {
                         Query query = session.getQueryFactory().newQuery( (Class) resultType );
 
-                        if( key.getRawClass().equals( Query.class ) )
+                        if( key.getRawType().equals( Query.class ) )
                         {
                             return query;
                         }
@@ -65,11 +64,11 @@ public final class EntityDependencyResolver
             }
             else if( key.getName() != null )
             {
-                Class dependencyType = key.getRawClass();
-                session.getReference( key.getName(), dependencyType );
+                Class dependencyType = key.getRawType();
+                return session.getReference( key.getName(), dependencyType );
             }
 
-            return Collections.EMPTY_LIST;
+            return null;
         }
     }
 }
