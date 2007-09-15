@@ -16,7 +16,6 @@
  */
 package org.qi4j.extension.persistence.jdbm;
 
-import javax.transaction.SystemException;
 import org.qi4j.api.persistence.PersistenceException;
 
 public class TransactionSystemException extends PersistenceException

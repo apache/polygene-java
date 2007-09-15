@@ -25,9 +25,7 @@ import junit.framework.TestCase;
 import org.objectweb.jotm.Jotm;
 import org.objectweb.transaction.jta.TransactionManager;
 import org.qi4j.api.CompositeBuilderFactory;
-import org.qi4j.api.CompositeModelFactory;
 import org.qi4j.runtime.CompositeBuilderFactoryImpl;
-import org.qi4j.runtime.CompositeModelFactoryImpl;
 
 public class JdbmPersistenceTest extends TestCase
 {
@@ -40,9 +38,9 @@ public class JdbmPersistenceTest extends TestCase
         Method method = JdbmStorage.class.getDeclaredMethod( "getProperties", new Class[]{ File.class } );
         method.setAccessible( true );
         Properties p = (Properties) method.invoke( underTest, testDir );
-        assertEquals( "false", p.getProperty( RecordManagerOptions.AUTO_COMMIT) );
-        assertEquals( "1000", p.getProperty( RecordManagerOptions.CACHE_SIZE ));
-        assertEquals( "false", p.getProperty( RecordManagerOptions.DISABLE_TRANSACTIONS) );
+        assertEquals( "false", p.getProperty( RecordManagerOptions.AUTO_COMMIT ) );
+        assertEquals( "1000", p.getProperty( RecordManagerOptions.CACHE_SIZE ) );
+        assertEquals( "false", p.getProperty( RecordManagerOptions.DISABLE_TRANSACTIONS ) );
         assertEquals( RecordManagerOptions.NORMAL_CACHE, p.getProperty( RecordManagerOptions.CACHE_TYPE ) );
         assertEquals( "false", p.getProperty( RecordManagerOptions.THREAD_SAFE ) );
 
@@ -68,6 +66,6 @@ public class JdbmPersistenceTest extends TestCase
         CompositeBuilderFactory builderFactory = new CompositeBuilderFactoryImpl();
         Jotm jotm = new Jotm( true, false );
         TransactionManager transactionManager = jotm.getTransactionManager();
-        underTest = new JdbmStorage( builderFactory, testDir, transactionManager );
+        underTest = new JdbmStorage( testDir, transactionManager );
     }
 }

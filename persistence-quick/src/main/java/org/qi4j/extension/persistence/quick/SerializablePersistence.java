@@ -20,13 +20,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.qi4j.api.CompositeBuilderFactory;
-import org.qi4j.api.CompositeModelFactory;
 import org.qi4j.api.model.CompositeModel;
 import org.qi4j.api.persistence.EntityComposite;
 import org.qi4j.api.persistence.EntityCompositeNotFoundException;
 import org.qi4j.api.persistence.EntitySession;
 import org.qi4j.api.persistence.PersistenceException;
 import org.qi4j.runtime.CompositeInvocationHandler;
+import org.qi4j.runtime.CompositeModelFactory;
 import org.qi4j.runtime.ProxyReferenceInvocationHandler;
 import org.qi4j.spi.persistence.EntityStateHolder;
 import org.qi4j.spi.persistence.PersistentStore;
@@ -53,14 +53,14 @@ public final class SerializablePersistence
         throws PersistenceException
     {
         CompositeInvocationHandler handler = CompositeInvocationHandler.getInvocationHandler( entity );
-        Map<Class, Object> mixins = handler.getMixins();
+        Object[] mixins = handler.getMixins();
 
         Map<Class, SerializedObject> persistentMixins = new HashMap<Class, SerializedObject>();
-        for( Map.Entry<Class, Object> entry : mixins.entrySet() )
+        for( Object mixin : mixins )
         {
-            if( entry.getValue() instanceof Serializable )
+            if( mixin instanceof Serializable )
             {
-                persistentMixins.put( entry.getKey(), new SerializedObject( entry.getValue() ) );
+                persistentMixins.put( mixin.getClass(), new SerializedObject( mixin ) );
             }
         }
 
@@ -80,7 +80,8 @@ public final class SerializablePersistence
 
         ProxyReferenceInvocationHandler proxyHandler = (ProxyReferenceInvocationHandler) Proxy.getInvocationHandler( entity );
         CompositeInvocationHandler handler = CompositeInvocationHandler.getInvocationHandler( entity.dereference() );
-        Map<Class, Object> deserializedMixins = handler.getMixins();
+/* TODO Fix this code!
+        Object[] deserializedMixins = handler.getMixins();
         for( Map.Entry<Class, SerializedObject> entry : mixins.entrySet() )
         {
             SerializedObject value = entry.getValue();
@@ -104,6 +105,7 @@ public final class SerializablePersistence
         {
             throw new PersistenceException( e );
         }
+*/
     }
 
     public void update( EntityComposite entity, Serializable aMixin )

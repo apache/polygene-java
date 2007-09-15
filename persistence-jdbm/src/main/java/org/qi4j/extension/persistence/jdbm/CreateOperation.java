@@ -37,15 +37,14 @@ class CreateOperation
     public void perform( RecordManager recordManager )
     {
         CompositeInvocationHandler handler = CompositeInvocationHandler.getInvocationHandler( composite );
-        Map<Class, Object> mixins = handler.getMixins();
+        Object[] mixins = handler.getMixins();
 
         Map<Class, Serializable> persistentMixins = new HashMap<Class, Serializable>();
-        for( Map.Entry<Class, Object> entry : mixins.entrySet() )
+        for( Object mixin : mixins )
         {
-            Object value = entry.getValue();
-            if( value instanceof Serializable )
+            if( mixin instanceof Serializable )
             {
-                persistentMixins.put( entry.getKey(), (Serializable) value );
+                persistentMixins.put( mixin.getClass(), (Serializable) mixin );
             }
         }
         String objectId = composite.getIdentity();
@@ -65,20 +64,22 @@ class CreateOperation
         return composite.getIdentity();
     }
 
-    public void playback( String identity, Map<Class, Object> newMixinsToPopulate )
+    public void playback( String identity, Object[] newMixinsToPopulate )
     {
         if( identity.equals( composite.getIdentity() ) && newMixinsToPopulate != null )
         {
             CompositeInvocationHandler handler = CompositeInvocationHandler.getInvocationHandler( composite );
-            Map<Class, Object> mixins = handler.getMixins();
+            Object[] mixins = handler.getMixins();
 
-            for( Map.Entry<Class, Object> entry : mixins.entrySet() )
+            // TODO Needs to be fixed
+            int i = 0;
+            for( Object mixin : mixins )
             {
-                Object value = entry.getValue();
-                if( value instanceof Serializable )
+                if( mixin instanceof Serializable )
                 {
-                    newMixinsToPopulate.put( entry.getKey(), (Serializable) value );
+                    newMixinsToPopulate[ i ] = mixin;
                 }
+                i++;
             }
         }
     }

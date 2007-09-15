@@ -16,11 +16,9 @@
  */
 package org.qi4j.extension.persistence.jdbm;
 
-import java.beans.IntrospectionException;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Proxy;
 import java.util.LinkedList;
 import java.util.List;
@@ -29,8 +27,6 @@ import javax.transaction.xa.XAException;
 import javax.transaction.xa.XAResource;
 import javax.transaction.xa.Xid;
 import jdbm.RecordManager;
-import org.qi4j.api.CompositeBuilderFactory;
-import org.qi4j.api.CompositeModelFactory;
 import org.qi4j.api.persistence.EntityComposite;
 import org.qi4j.api.persistence.EntityCompositeNotFoundException;
 import org.qi4j.api.persistence.PersistenceException;
@@ -44,12 +40,10 @@ public class TransactionResource
     private List<Operation> operations;
     private Xid xid;
     private RecordManager recordManager;
-    private CompositeBuilderFactory builderFactory;
 
-    TransactionResource( RecordManager recordManager, CompositeBuilderFactory builderFactory )
+    TransactionResource( RecordManager recordManager )
     {
         this.recordManager = recordManager;
-        this.builderFactory = builderFactory;
         operations = new LinkedList<Operation>();
     }
 
@@ -68,14 +62,14 @@ public class TransactionResource
             {
                 // Here we need to check the "last value" in the Transaction log. Should this be built on the calls instead?
                 String identity = aProxy.getIdentity();
-                CompositeInvocationHandler handler = CompositeInvocationHandler.getInvocationHandler( aProxy.dereference( ));
-                Map<Class, Object> mixins = handler.getMixins();
+                CompositeInvocationHandler handler = CompositeInvocationHandler.getInvocationHandler( aProxy.dereference() );
+                Object[] mixins = handler.getMixins();
 
                 for( Operation op : operations )
                 {
                     op.playback( identity, mixins );
                 }
-                if( mixins.size() == 0 )
+                if( mixins.length == 0 )
                 {
                     throw new EntityCompositeNotFoundException( "Object with identity " + objectId + " does not exist" );
                 }
@@ -90,28 +84,19 @@ public class TransactionResource
 
                 ProxyReferenceInvocationHandler proxyHandler = (ProxyReferenceInvocationHandler) Proxy.getInvocationHandler( aProxy );
                 CompositeInvocationHandler handler = CompositeInvocationHandler.getInvocationHandler( aProxy.dereference() );
-                Map<Class, Object> existingMixins = handler.getMixins();
-                existingMixins.putAll( mixins );
-                proxyHandler.initializeMixins( existingMixins );
+//                Object[] existingMixins = handler.getMixins();
+//                for( Object existingMixin : existingMixins )
+//                {
+//                    existingMixins.put( existingMixin.getClass(), existingMixin );
+//                }
+//                proxyHandler.initializeMixins( existingMixins );
             }
         }
         catch( EOFException e )
         {
             throw new EntityCompositeNotFoundException( "Object with identity " + objectId + " does not exist" );
         }
-        catch( IOException e )
-        {
-            throw new PersistenceException( e );
-        }
-        catch( IllegalAccessException e )
-        {
-            throw new PersistenceException( e );
-        }
-        catch( InvocationTargetException e )
-        {
-            throw new PersistenceException( e );
-        }
-        catch( IntrospectionException e )
+        catch( Exception e )
         {
             throw new PersistenceException( e );
         }

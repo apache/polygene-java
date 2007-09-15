@@ -16,7 +16,6 @@
  */
 package org.qi4j.extension.persistence.jdbm;
 
-import java.util.Map;
 import jdbm.RecordManager;
 
 interface Operation
@@ -25,5 +24,5 @@ interface Operation
 
     String getIdentity();
 
-    void playback( String identity, Map<Class, Object> mixins );
+    void playback( String identity, Object[] mixins );
 }

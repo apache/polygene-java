@@ -69,13 +69,14 @@ class UpdateOperation
         return composite.getIdentity();
     }
 
-    public void playback( String identity, Map<Class, Object> mixins )
+    public void playback( String identity, Object[] mixins )
     {
         if( mixins == null )
         {
             return;
         }
         ProxyReferenceInvocationHandler handler = (ProxyReferenceInvocationHandler) Proxy.getInvocationHandler( composite );
+/* TODO What to do here?
         if( identity.equals( composite.getIdentity() ) )
         {
             Class mixinType = handler.getMixinType();
@@ -87,5 +88,6 @@ class UpdateOperation
                 mixins.put( mixinType, mixin );
             }
         }
+*/
     }
 }

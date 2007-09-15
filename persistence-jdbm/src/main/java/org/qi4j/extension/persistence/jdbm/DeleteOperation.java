@@ -17,7 +17,6 @@
 package org.qi4j.extension.persistence.jdbm;
 
 import java.io.IOException;
-import java.util.Map;
 import jdbm.RecordManager;
 import org.qi4j.api.persistence.EntityComposite;
 
@@ -50,12 +49,9 @@ class DeleteOperation
         return composite.getIdentity();
     }
 
-    public void playback( String identity, Map<Class, Object> mixins )
+    public void playback( String identity, Object[] mixins )
     {
-        if( identity.equals( composite.getIdentity() ) )
-        {
-            mixins.clear();
-        }
+        // TODO What to do here?
     }
 
 }
