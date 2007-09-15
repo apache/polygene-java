@@ -16,7 +16,7 @@
  */
 package org.qi4j.test.model1;
 
-import org.qi4j.api.annotation.Modifies;
+import org.qi4j.api.annotation.scope.Modifies;
 
 public class Modifier3
     implements Mixin1, Mixin2

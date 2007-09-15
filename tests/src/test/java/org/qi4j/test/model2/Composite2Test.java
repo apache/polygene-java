@@ -14,28 +14,18 @@ package org.qi4j.test.model2;
 
 import junit.framework.TestCase;
 import org.qi4j.api.CompositeBuilderFactory;
-import org.qi4j.api.CompositeModelFactory;
 import org.qi4j.api.model.CompositeModel;
 import org.qi4j.runtime.CompositeBuilderFactoryImpl;
-import org.qi4j.runtime.CompositeModelBuilder;
-import org.qi4j.runtime.CompositeModelFactoryImpl;
-import org.qi4j.runtime.MixinModelBuilder;
-import org.qi4j.runtime.ModifierModelBuilder;
+import org.qi4j.runtime.CompositeModelFactory;
 
 public class Composite2Test extends TestCase
 {
-    private CompositeModelFactory modelFactory;
-    private CompositeModel<TestComposite> composite;
-    private CompositeModelBuilder compositeModelBuilder;
-    private MixinModelBuilder mixinModelBuilder;
-    private ModifierModelBuilder modifierModelBuilder;
+    CompositeModelFactory modelFactory;
+    CompositeModel<TestComposite> composite;
 
     protected void setUp() throws Exception
     {
-        modifierModelBuilder = new ModifierModelBuilder();
-        mixinModelBuilder = new MixinModelBuilder( modifierModelBuilder );
-        compositeModelBuilder = new CompositeModelBuilder( modifierModelBuilder, mixinModelBuilder );
-        modelFactory = new CompositeModelFactoryImpl( compositeModelBuilder );
+        modelFactory = new CompositeModelFactory();
         composite = modelFactory.newCompositeModel( TestComposite.class );
     }
 
@@ -45,9 +35,9 @@ public class Composite2Test extends TestCase
 
         System.out.println( composite );
 
-        assertEquals( DomainInterfaceImpl.class, composite.getImplementations( DomainInterface.class ).get( 0 ).getFragmentClass() );
-        assertEquals( StandardThisImpl.class, composite.getImplementations( StandardThis.class ).get( 0 ).getFragmentClass() );
-        assertEquals( StandardThatImpl.class, composite.getImplementations( StandardThat.class ).get( 0 ).getFragmentClass() );
+        assertEquals( DomainInterfaceImpl.class, composite.getImplementations( DomainInterface.class ).get( 0 ).getModelClass() );
+        assertEquals( StandardThisImpl.class, composite.getImplementations( StandardThis.class ).get( 0 ).getModelClass() );
+        assertEquals( StandardThatImpl.class, composite.getImplementations( StandardThat.class ).get( 0 ).getModelClass() );
 
         CompositeBuilderFactory factory = new CompositeBuilderFactoryImpl();
 

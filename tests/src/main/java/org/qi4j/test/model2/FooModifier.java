@@ -11,17 +11,15 @@
  */
 package org.qi4j.test.model2;
 
-import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import org.qi4j.api.annotation.AppliesTo;
-import org.qi4j.api.annotation.DependencyOld;
-import org.qi4j.api.annotation.Modifies;
+import org.qi4j.api.annotation.scope.Modifier;
+import org.qi4j.api.annotation.scope.Modifies;
 
 /**
  * Override only the methods that have the FooAnnotation, and print out the value of
  * the annotation on the mixin method.
- *
  */
 @AppliesTo( FooAnnotation.class )
 public class FooModifier
@@ -29,13 +27,12 @@ public class FooModifier
 {
     // Attributes ----------------------------------------------------
     @Modifies InvocationHandler next;
-    @DependencyOld AnnotatedElement foo;
+    @Modifier FooAnnotation fooAnnotation;
 
     // InvocationHandler implementation -----------------------------
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
     {
-        FooAnnotation annotation = foo.getAnnotation( FooAnnotation.class );
-        String value = annotation.value();
+        String value = fooAnnotation.value();
         args[ 0 ] = args[ 0 ] + value;
         return next.invoke( proxy, method, args );
     }

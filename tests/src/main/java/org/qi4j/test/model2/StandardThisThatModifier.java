@@ -11,12 +11,11 @@
  */
 package org.qi4j.test.model2;
 
-import org.qi4j.api.annotation.Modifies;
-import org.qi4j.api.annotation.ThisAs;
+import org.qi4j.api.annotation.scope.Modifies;
+import org.qi4j.api.annotation.scope.ThisAs;
 
 /**
  * TODO
- *
  */
 public class StandardThisThatModifier
     implements StandardThat
