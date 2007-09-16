@@ -34,6 +34,8 @@ public class ObjectBuilderImplTest extends TestCase
         numbers.add( 5 );
         builder.adapt( bind( key( Set.class, Integer.class ), numbers ) );
 
+        builder.adapt( bind( key( String.class, "str2" ), "myValue" ) );
+
         builder.decorate( new Guard()
         {
             public void checkGuard( Object o ) throws SecurityException
@@ -46,6 +48,8 @@ public class ObjectBuilderImplTest extends TestCase
         TestClass test = builder.newInstance();
 
         assertEquals( strings, test.strings );
+        assertNull( test.str1 );
+        assertEquals( "myValue", test.str2 );
     }
 
     public static class TestClass
@@ -57,9 +61,13 @@ public class ObjectBuilderImplTest extends TestCase
         String c;
 
         @Adapt List<String> strings;
+        @Adapt List<String> strings3;
         @Adapt Iterable<Number> numbers;
         @Adapt Collection<Comparable> strings2;
         @Adapt Set<Comparable> numbers2;
+
+        @Adapt String str1;
+        @Adapt String str2;
 
         @Decorate Guard guard;
 

@@ -23,11 +23,12 @@ public class KeyMatcher
         }
 
         // Match names, if set
-        if( dependency.getName() != null )
+        if( injectedObject.getName() != null )
         {
-            if( injectedObject.getName() != null && !dependency.getName().equals( injectedObject.getName() ) )
+            // if injection key has a name, the name must match dependency key
+            if( dependency.getName() == null || !dependency.getName().equals( injectedObject.getName() ) )
             {
-                return true; // If names match, skip the other checks
+                return false;
             }
         }
 

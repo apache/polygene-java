@@ -70,7 +70,7 @@ public abstract class FragmentModelFactory
             field.setAccessible( true );
             if( annotation != null )
             {
-                String name = null;
+                String name =field.getName();
                 boolean optional = false;
 
                 Method optionalMethod = getAnnotationMethod( Optional.class, annotation.annotationType() );
@@ -101,11 +101,6 @@ public abstract class FragmentModelFactory
                     if( !specifiedName.equals( "" ) )
                     {
                         name = specifiedName;
-                    }
-                    else
-                    {
-                        // Use name of field
-                        name = field.getName();
                     }
                 }
 
