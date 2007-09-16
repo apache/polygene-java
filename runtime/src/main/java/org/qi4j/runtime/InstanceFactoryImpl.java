@@ -41,7 +41,7 @@ public class InstanceFactoryImpl
 
                 if( parameter == null && !dependencyResolution.getParameter().isOptional() )
                 {
-                    throw new CompositeInstantiationException( "Non-optional parameter " + i + " in class " + objectResolution.getObjectModel().getModelClass().getName() + " was null" );
+                    throw new CompositeInstantiationException( "Non-optional parameter " + (i + 1) + " in class " + objectResolution.getObjectModel().getModelClass().getName() + " was null" );
                 }
 
                 Class parameterType = constructor.getParameterTypes()[ i ];
