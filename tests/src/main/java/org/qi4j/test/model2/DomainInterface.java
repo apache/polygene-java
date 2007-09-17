@@ -20,7 +20,6 @@ import org.qi4j.api.annotation.ImplementedBy;
 @ImplementedBy( DomainInterfaceImpl.class )
 public interface DomainInterface
 {
-    // Public --------------------------------------------------------
     String getFoo();
 
     void setFoo( String foo );

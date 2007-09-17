@@ -22,7 +22,7 @@ public class ModifiesDependencyResolver
         {
             FragmentDependencyKey fragmentKey = (FragmentDependencyKey) key;
             if( key.getDependencyType().isAssignableFrom( fragmentKey.getCompositeType() ) ||
-                ( key.getDependentType().equals( InvocationHandler.class ) && key.getDependencyType().equals( InvocationHandler.class ) ) )
+                ( InvocationHandler.class.isAssignableFrom( key.getDependentType() ) && key.getDependencyType().equals( InvocationHandler.class ) ) )
             {
                 return new ModifiesDependencyResolution();
             }

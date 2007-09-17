@@ -80,7 +80,7 @@ public class CompositeModelResolver
                 }
                 catch( InvalidDependencyException e )
                 {
-                    throw new CompositeResolutionException( "Could not resolve modifier " + modifier.getModelClass() + "in composite " + compositeModel.getCompositeClass().getName(), e );
+                    throw new CompositeResolutionException( "Could not resolve modifier " + modifier.getModelClass() + " in composite " + compositeModel.getCompositeClass().getName(), e );
                 }
             }
 
