@@ -6,6 +6,7 @@ import org.qi4j.api.model.ConstructorDependency;
 import org.qi4j.api.model.FieldDependency;
 import org.qi4j.api.model.MethodDependency;
 import org.qi4j.api.model.ParameterDependency;
+import org.qi4j.api.model.DependencyKey;
 import org.qi4j.spi.dependency.DependencyResolution;
 import org.qi4j.spi.dependency.DependencyResolver;
 import org.qi4j.spi.dependency.InvalidDependencyException;
@@ -56,7 +57,8 @@ public abstract class FragmentModelResolver
     {
         for( FieldDependency dependency : dependencies )
         {
-            DependencyResolution resolution = dependencyResolver.resolveDependency( dependency.getKey() );
+            DependencyKey key = dependency.getKey();
+            DependencyResolution resolution = dependencyResolver.resolveDependency( key );
 
             if( resolution == null )
             {

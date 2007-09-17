@@ -14,7 +14,12 @@ import org.qi4j.spi.dependency.InvalidDependencyException;
 public class DependencyResolverDelegator
     implements DependencyResolver
 {
-    Map<Class<? extends Annotation>, DependencyResolver> resolvers = new HashMap<Class<? extends Annotation>, DependencyResolver>();
+    Map<Class<? extends Annotation>, DependencyResolver> resolvers;
+
+    public DependencyResolverDelegator()
+    {
+        resolvers = new HashMap<Class<? extends Annotation>, DependencyResolver>();
+    }
 
     public DependencyResolution resolveDependency( DependencyKey key )
         throws InvalidDependencyException

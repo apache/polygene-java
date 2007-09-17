@@ -25,6 +25,7 @@ import org.qi4j.api.annotation.scope.Modifier;
 import org.qi4j.api.annotation.scope.Modifies;
 import org.qi4j.api.annotation.scope.Property;
 import org.qi4j.api.annotation.scope.ThisAs;
+import org.qi4j.api.annotation.scope.Fragment;
 import org.qi4j.api.model.CompositeModel;
 import org.qi4j.runtime.resolution.AdaptDependencyResolver;
 import org.qi4j.runtime.resolution.CompositeModelResolver;
@@ -37,6 +38,7 @@ import org.qi4j.runtime.resolution.ModifierModelResolver;
 import org.qi4j.runtime.resolution.ModifiesDependencyResolver;
 import org.qi4j.runtime.resolution.PropertyDependencyResolver;
 import org.qi4j.runtime.resolution.ThisAsDependencyResolver;
+import org.qi4j.runtime.resolution.FragmentDependencyResolver;
 
 /**
  * Default implementation of CompositeBuilderFactory
@@ -46,7 +48,7 @@ public final class CompositeBuilderFactoryImpl
 {
     private Map<Class<? extends Composite>, CompositeContextImpl> objectContexts;
     private CompositeModelFactory modelFactory;
-    private InstanceFactory fragmentFactory;
+    private InstanceFactory instanceFactory;
     private CompositeModelResolver compositeModelResolver;
 
     public CompositeBuilderFactoryImpl()
@@ -59,6 +61,7 @@ public final class CompositeBuilderFactoryImpl
         dependencyResolverDelegator.setDependencyResolver( Adapt.class, new AdaptDependencyResolver() );
         dependencyResolverDelegator.setDependencyResolver( Decorate.class, new DecorateDependencyResolver() );
         dependencyResolverDelegator.setDependencyResolver( Property.class, new PropertyDependencyResolver() );
+        dependencyResolverDelegator.setDependencyResolver( Fragment.class, new FragmentDependencyResolver(this) );
 
         ModifierModelResolver modifierModelResolver = new ModifierModelResolver( dependencyResolverDelegator );
         MixinModelResolver mixinModelResolver = new MixinModelResolver( dependencyResolverDelegator );
@@ -66,13 +69,13 @@ public final class CompositeBuilderFactoryImpl
 
         modelFactory = new CompositeModelFactory();
         objectContexts = new ConcurrentHashMap<Class<? extends Composite>, CompositeContextImpl>();
-        fragmentFactory = new InstanceFactoryImpl();
+        instanceFactory = new InstanceFactoryImpl();
     }
 
     public <T extends Composite> CompositeBuilder<T> newCompositeBuilder( Class<T> compositeType )
     {
         CompositeContextImpl<T> context = getCompositeContext( compositeType );
-        CompositeBuilder<T> builder = new CompositeBuilderImpl<T>( context, fragmentFactory );
+        CompositeBuilder<T> builder = new CompositeBuilderImpl<T>( context, instanceFactory );
         return builder;
     }
 
@@ -83,7 +86,7 @@ public final class CompositeBuilderFactoryImpl
         {
             CompositeModel<T> model = modelFactory.newCompositeModel( compositeType );
             CompositeResolution<T> resolution = compositeModelResolver.resolveCompositeModel( model );
-            context = new CompositeContextImpl<T>( resolution, this, fragmentFactory );
+            context = new CompositeContextImpl<T>( resolution, this, instanceFactory );
             objectContexts.put( compositeType, context );
         }
         return context;
