@@ -27,7 +27,6 @@ public final class ModifierModel<T>
 {
     private Dependency modifiesDependency;
 
-    // Constructors --------------------------------------------------
     public ModifierModel( Class<T> fragmentClass, Iterable<ConstructorDependency> constructorDependencies, Iterable<FieldDependency> fieldDependencies, Iterable<MethodDependency> methodDependencies, Class appliesTo )
     {
         super( fragmentClass, constructorDependencies, fieldDependencies, methodDependencies, appliesTo );
@@ -37,14 +36,20 @@ public final class ModifierModel<T>
         {
             this.modifiesDependency = modifies.next();
         }
+        else
+        {
+            throw new InvalidModifierException( "Modifier " + fragmentClass + " does not have any member fields marked with @Modifies.", fragmentClass );
+        }
+        if( modifies.hasNext() )
+        {
+            throw new InvalidModifierException( "Modifier " + fragmentClass + " has many member fields marked with @Modifies.", fragmentClass );
+        }
     }
 
     public Dependency getModifiesDependency()
     {
         return modifiesDependency;
     }
-
-    // Object overrides ---------------------------------------------
 
     public String toString()
     {
@@ -63,7 +68,4 @@ public final class ModifierModel<T>
         out.close();
         return string + str.toString();
     }
-
-    // Private ------------------------------------------------------
-
 }

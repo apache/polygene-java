@@ -79,6 +79,7 @@ public class CompositeModelFactory
     private void validateClass( Class compositeClass )
         throws NullArgumentException, InvalidCompositeException
     {
+        NullArgumentException.validateNotNull( "compositeClass", compositeClass );
         if( !compositeClass.isInterface() )
         {
             String message = compositeClass.getName() + " is not an interface.";

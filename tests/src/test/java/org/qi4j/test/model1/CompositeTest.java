@@ -25,9 +25,14 @@ import org.qi4j.api.model.InvalidModifierException;
 import org.qi4j.api.model.MixinModel;
 import org.qi4j.api.model.ModifierModel;
 import org.qi4j.api.model.NullArgumentException;
+import org.qi4j.api.persistence.Lifecycle;
+import org.qi4j.api.Composite;
 import org.qi4j.runtime.CompositeModelFactory;
 import org.qi4j.runtime.MixinModelFactory;
 import org.qi4j.runtime.ModifierModelFactory;
+import org.qi4j.runtime.LifecycleImpl;
+import org.qi4j.runtime.CompositeImpl;
+import org.qi4j.runtime.CompositeServicesModifier;
 
 public class CompositeTest extends TestCase
 {
@@ -42,9 +47,12 @@ public class CompositeTest extends TestCase
         throws Exception
     {
         List<MixinModel> reference = new ArrayList<MixinModel>();
+
         ModifierModelFactory modifierBuilder = new ModifierModelFactory();
         MixinModelFactory mmb = new MixinModelFactory( modifierBuilder );
-        reference.add( mmb.getMixinModel( Mixin1.class, Composition1.class ) );
+        reference.add( mmb.getMixinModel( Mixin1Impl.class, Composition1.class ) );
+        reference.add( mmb.getMixinModel( CompositeImpl.class, Composition1.class ) );
+        reference.add( mmb.getMixinModel( LifecycleImpl.class, Composition1.class ) );
 
         CompositeModel composite1 = modelFactory.newCompositeModel( Composition1.class );
         assertEquals( Composition1.class, composite1.getCompositeClass() );
@@ -54,6 +62,7 @@ public class CompositeTest extends TestCase
 
         List<ModifierModel> referenceModifiers = new ArrayList<ModifierModel>();
         referenceModifiers.add( modifierBuilder.newModifierModel( Modifier1.class, Composition1.class ) );
+        referenceModifiers.add( modifierBuilder.newModifierModel( CompositeServicesModifier.class, Composition1.class ) );
 
         assertEquals( referenceModifiers, composite1.getModifierModels() );
     }
