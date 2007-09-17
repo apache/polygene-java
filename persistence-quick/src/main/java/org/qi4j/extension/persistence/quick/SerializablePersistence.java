@@ -38,15 +38,13 @@ public final class SerializablePersistence
 {
     SerializablePersistenceSpi delegate;
     private CompositeBuilderFactory builderFactory;
-    private EntitySession entitySession;
     private CompositeModelFactory modelFactory;
 
-    public SerializablePersistence( SerializablePersistenceSpi aDelegate, CompositeModelFactory modelFactory, CompositeBuilderFactory compositeBuilderFactory, EntitySession session )
+    public SerializablePersistence( SerializablePersistenceSpi aDelegate, CompositeModelFactory modelFactory, CompositeBuilderFactory compositeBuilderFactory )
     {
         this.modelFactory = modelFactory;
         delegate = aDelegate;
         this.builderFactory = compositeBuilderFactory;
-        this.entitySession = session;
     }
 
     public void create( EntityComposite entity )
