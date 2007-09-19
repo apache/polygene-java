@@ -41,7 +41,7 @@ public interface Identity
     {
         private String identity;
 
-        public IdentityMixin( @Property String identity )
+        public IdentityMixin( @Property("identity") String identity )
         {
             this.identity = identity;
         }
