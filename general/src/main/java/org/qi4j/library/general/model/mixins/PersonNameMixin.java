@@ -12,7 +12,7 @@
  */
 package org.qi4j.library.general.model.mixins;
 
-import org.qi4j.api.annotation.scope.Property;
+import org.qi4j.api.annotation.scope.PropertyField;
 import org.qi4j.library.general.model.PersonName;
 
 /**
@@ -20,12 +20,8 @@ import org.qi4j.library.general.model.PersonName;
  */
 public final class PersonNameMixin implements PersonName
 {
-    @Property( "lastName" ) private String lastName;
-    @Property( "firstName" ) private String firstName;
-
-    public PersonNameMixin()
-    {
-    }
+    @PropertyField private String lastName;
+    @PropertyField private String firstName;
 
     public String getFirstName()
     {

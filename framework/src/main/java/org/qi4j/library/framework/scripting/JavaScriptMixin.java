@@ -27,7 +27,7 @@ import org.mozilla.javascript.Wrapper;
 import org.qi4j.api.CompositeBuilderFactory;
 import org.qi4j.api.annotation.AppliesTo;
 import org.qi4j.api.annotation.instance.TransientPerVm;
-import org.qi4j.api.annotation.scope.Fragment;
+import org.qi4j.api.annotation.scope.Qi4j;
 
 /**
  * Generic mixin that implements interfaces by delegating to JavaScript functions
@@ -43,7 +43,7 @@ import org.qi4j.api.annotation.scope.Fragment;
 public class JavaScriptMixin
     implements InvocationHandler
 {
-    @Fragment CompositeBuilderFactory factory;
+    @Qi4j CompositeBuilderFactory factory;
 
     // Static --------------------------------------------------------
     static Scriptable standardScope;
