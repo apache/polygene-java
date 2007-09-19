@@ -16,6 +16,7 @@
  */
 package org.qi4j.runtime;
 
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
 import org.qi4j.api.Composite;
@@ -72,7 +73,13 @@ public class CompositeModelFactory
         List<ModifierModel> modifiers = findModifiers( compositeClass, compositeClass );
         modifiers.add( getModifierModel( CompositeServicesModifier.class, compositeClass ) );
 
-        CompositeModel model = new CompositeModel<T>( compositeClass, mixins, modifiers );
+        // Create proxy class
+        ClassLoader proxyClassloader = compositeClass.getClassLoader();
+        Class[] interfaces = new Class[]{ compositeClass };
+        Class<? extends T> proxyClass = (Class<? extends T>) Proxy.getProxyClass( proxyClassloader, interfaces );
+
+
+        CompositeModel model = new CompositeModel<T>( compositeClass, proxyClass, mixins, modifiers );
         return model;
     }
 

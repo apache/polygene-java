@@ -24,12 +24,14 @@ import org.qi4j.api.Composite;
 public final class CompositeModel<T extends Composite>
 {
     private Class<T> compositeClass;
+    private Class<? extends T> proxyClass;
     private Iterable<MixinModel> mixinModels;
     private Iterable<ModifierModel> modifierModels;
 
-    public CompositeModel( Class<T> compositeClass, Iterable<MixinModel> mixinModels, Iterable<ModifierModel> modifierModels )
+    public CompositeModel( Class<T> compositeClass, Class<? extends T> proxyClass, Iterable<MixinModel> mixinModels, Iterable<ModifierModel> modifierModels )
     {
         this.compositeClass = compositeClass;
+        this.proxyClass = proxyClass;
         this.mixinModels = mixinModels;
         this.modifierModels = modifierModels;
     }
@@ -37,6 +39,11 @@ public final class CompositeModel<T extends Composite>
     public Class<T> getCompositeClass()
     {
         return compositeClass;
+    }
+
+    public Class<? extends T> getProxyClass()
+    {
+        return proxyClass;
     }
 
     public Iterable<MixinModel> getMixinModels()

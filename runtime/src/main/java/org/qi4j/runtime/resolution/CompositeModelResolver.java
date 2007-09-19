@@ -58,6 +58,7 @@ public class CompositeModelResolver
 
         // If a mixin A uses mixin B as a @ThisAs parameter dependency, then ensure that the order is correct.
         Set<MixinResolution> orderedUsedMixins = new LinkedHashSet<MixinResolution>();
+        dependencyCheck:
         while( !usedMixins.isEmpty() )
         {
             Iterator<MixinResolution> iterator = usedMixins.iterator();
@@ -74,12 +75,23 @@ public class CompositeModelResolver
                     {
                         throw new InvalidCompositeException( "Cyclic dependency between mixins " + resolution.getMixinModel().getModelClass().getName() + " and " + otherResolution.getMixinModel().getModelClass().getName(), compositeModel.getCompositeClass() );
                     }
+                    else
+                    {
+                        // Move to last
+                        usedMixins.remove( resolution );
+                        usedMixins.add( resolution );
+                        continue dependencyCheck;
+                    }
                 }
             }
+
+            // No dependencies from this resolution to the remaining resolutions
+            usedMixins.remove( resolution );
+            orderedUsedMixins.add( resolution );
         }
 
 
-        return usedMixins;
+        return orderedUsedMixins;
     }
 
     private boolean dependsOn( MixinResolution resolution, MixinResolution otherResolution, Map<Class, MixinResolution> mixinsForInterfaces )

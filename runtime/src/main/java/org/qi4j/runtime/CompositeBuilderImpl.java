@@ -35,6 +35,8 @@ import org.qi4j.api.CompositeInstantiationException;
 import org.qi4j.api.PropertyValue;
 import org.qi4j.api.model.Binding;
 import org.qi4j.api.model.CompositeContext;
+import org.qi4j.api.model.CompositeModel;
+import org.qi4j.api.model.CompositeState;
 import org.qi4j.api.model.InjectionKey;
 import org.qi4j.api.persistence.Lifecycle;
 import org.qi4j.runtime.resolution.MixinResolution;
@@ -159,11 +161,13 @@ public class CompositeBuilderImpl<T extends Composite>
 
     public T newInstance()
     {
+        CompositeInvocationHandler compositeInvocationHandler = new CompositeInvocationHandler( context );
+
         // Instantiate composite proxy
-        T composite = newInstance( compositeInterface );
+        T composite = newInstance( compositeInvocationHandler );
 
         // Instantiate all mixins
-        CompositeInvocationHandler state = newMixins( composite );
+        newMixins( composite, compositeInvocationHandler );
 
         // Invoke lifecycle create() method
 //        invokeCreate( composite, state );
@@ -172,16 +176,15 @@ public class CompositeBuilderImpl<T extends Composite>
         return composite;
     }
 
-    private <T extends Composite> T newInstance( Class<T> compositeType )
+    private T newInstance( CompositeInvocationHandler handler )
         throws CompositeInstantiationException
     {
         // Instantiate proxy for given composite interface
         try
         {
-            AbstractCompositeInvocationHandler handler = new CompositeInvocationHandler( context );
-            ClassLoader proxyClassloader = compositeType.getClassLoader();
-            Class[] interfaces = new Class[]{ compositeType };
-            return compositeType.cast( Proxy.newProxyInstance( proxyClassloader, interfaces, handler ) );
+            CompositeModel compositeModel = handler.getContext().getCompositeModel();
+            Class<? extends T> proxyClass = compositeModel.getProxyClass();
+            return proxyClass.getConstructor( InvocationHandler.class ).newInstance( handler );
         }
         catch( Exception e )
         {
@@ -190,9 +193,8 @@ public class CompositeBuilderImpl<T extends Composite>
     }
 
 
-    private CompositeInvocationHandler newMixins( T composite )
+    private void newMixins( T composite, CompositeState state )
     {
-        CompositeInvocationHandler state = CompositeInvocationHandler.getInvocationHandler( composite );
         Map states = new HashMap<Class, Object>();
         states.put( Lifecycle.class, LifecycleImpl.INSTANCE );
 
@@ -200,7 +202,7 @@ public class CompositeBuilderImpl<T extends Composite>
         Map<InjectionKey, Object> decorate = decorateContext == null ? Collections.EMPTY_MAP : decorateContext;
 
         Set<MixinResolution> usedMixins = context.getCompositeResolution().getUsedMixinModels();
-        Object[] mixins = new Object[usedMixins.size()];
+        Object[] mixins = state.getMixins();
         int i = 0;
         for( MixinResolution resolution : usedMixins )
         {
@@ -213,9 +215,6 @@ public class CompositeBuilderImpl<T extends Composite>
             Object mixin = fragmentFactory.newInstance( resolution, injectionContext );
             mixins[ i++ ] = mixin;
         }
-
-        state.setMixins( mixins );
-        return state;
     }
 
     private void invokeCreate( T composite, CompositeInvocationHandler state )

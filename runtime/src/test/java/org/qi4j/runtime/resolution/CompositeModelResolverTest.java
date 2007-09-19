@@ -4,34 +4,41 @@ package org.qi4j.runtime.resolution;
  */
 
 import junit.framework.TestCase;
-import org.junit.Test;
 import org.qi4j.api.Composite;
 import org.qi4j.api.CompositeBuilderFactory;
 import org.qi4j.api.annotation.ImplementedBy;
 import org.qi4j.api.annotation.scope.ThisAs;
+import org.qi4j.api.model.InvalidCompositeException;
 import org.qi4j.runtime.CompositeBuilderFactoryImpl;
 
 public class CompositeModelResolverTest extends TestCase
 {
     CompositeModelResolver compositeModelResolver;
 
-    @Test
-    public void whenCyclicDependencyThenThrowException()
+    public void testWhenCyclicDependencyThenThrowException()
     {
-
+        try
+        {
+            CompositeBuilderFactory cbf = new CompositeBuilderFactoryImpl();
+            cbf.newCompositeBuilder( TestComposite2.class ).newInstance().testC();
+            fail( "Should have thrown exception" );
+        }
+        catch( InvalidCompositeException e )
+        {
+            // Ok!
+        }
     }
 
-    @Test
-    public void whenDependentMixinsThenOrderMixins()
+    public void testWhenDependentMixinsThenOrderMixins()
     {
         CompositeBuilderFactory cbf = new CompositeBuilderFactoryImpl();
-        cbf.newCompositeBuilder( TestComposite1.class );
+        assertEquals( "ok", cbf.newCompositeBuilder( TestComposite1.class ).newInstance().testB() );
     }
 
     @ImplementedBy( TestA.TestAMixin.class )
-    private static interface TestA
+    public static interface TestA
     {
-        String test();
+        public String test();
 
         class TestAMixin
             implements TestA
@@ -44,20 +51,84 @@ public class CompositeModelResolverTest extends TestCase
     }
 
     @ImplementedBy( TestB.TestBMixin.class )
-    private static interface TestB
+    public static interface TestB
     {
+        public String testB();
+
         class TestBMixin
             implements TestB
         {
+            private TestA testA;
+
             public TestBMixin( @ThisAs TestA testA )
             {
+                this.testA = testA;
                 testA.test();
+            }
+
+
+            public String testB()
+            {
+                return testA.test();
+            }
+        }
+    }
+
+    @ImplementedBy( TestC.TestCMixin.class )
+    public static interface TestC
+    {
+        public String testC();
+
+        class TestCMixin
+            implements TestC
+        {
+            private TestD testD;
+
+            public TestCMixin( @ThisAs TestD testD )
+            {
+                this.testD = testD;
+                testD.testD();
+            }
+
+
+            public String testC()
+            {
+                return testD.testD();
+            }
+        }
+    }
+
+    @ImplementedBy( TestD.TestDMixin.class )
+    public static interface TestD
+    {
+        public String testD();
+
+        class TestDMixin
+            implements TestD
+        {
+            private TestC testC;
+
+            public TestDMixin( @ThisAs TestC testC )
+            {
+                this.testC = testC;
+                testC.testC();
+            }
+
+
+            public String testD()
+            {
+                return testC.testC();
             }
         }
     }
 
     private static interface TestComposite1
         extends Composite, TestA, TestB
+    {
+    }
+
+    private static interface TestComposite2
+        extends Composite, TestC, TestD
     {
     }
 }
