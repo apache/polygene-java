@@ -198,7 +198,7 @@ public abstract class FragmentModelFactory
                 String name = null;
                 boolean optional = isOptional( annotation );
 
-                Method nameMethod = getAnnotationMethod( Name.class, annotation.getClass() );
+                Method nameMethod = getAnnotationMethod( Name.class, annotation.annotationType() );
                 if( nameMethod != null )
                 {
                     String specifiedName;
@@ -210,7 +210,7 @@ public abstract class FragmentModelFactory
                     {
                         throw new InvalidCompositeException( "Could not get optional flag from annotation", mixinClass );
                     }
-                    if( specifiedName.equals( "" ) )
+                    if( !specifiedName.equals( "" ) )
                     {
                         name = specifiedName;
                     }
