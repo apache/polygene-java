@@ -15,8 +15,6 @@ package org.qi4j.library.general.model;
 import junit.framework.Assert;
 import org.qi4j.api.Composite;
 import org.qi4j.api.CompositeBuilder;
-import static org.qi4j.api.PropertyValue.name;
-import static org.qi4j.api.PropertyValue.property;
 
 public class PersonTest extends AbstractTest
 {
@@ -26,11 +24,10 @@ public class PersonTest extends AbstractTest
         String lastName = "Halim";
 
         CompositeBuilder<PersonComposite> builder = builderFactory.newCompositeBuilder( PersonComposite.class );
-        Person propName = name( Person.class );
 
-        builder.properties( PersonName.class,
-                            property( propName.getFirstName(), firstName ),
-                            property( propName.getLastName(), lastName ) );
+        PersonName props = builder.properties();
+        props.setFirstName( firstName );
+        props.setLastName( lastName );
         PersonComposite person = builder.newInstance();
 
         person.setGender( GenderType.female );
