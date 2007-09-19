@@ -11,7 +11,6 @@ import org.qi4j.api.annotation.AppliesTo;
 import org.qi4j.api.annotation.scope.DependencyScope;
 import org.qi4j.api.annotation.scope.Name;
 import org.qi4j.api.annotation.scope.Optional;
-import org.qi4j.api.annotation.scope.Property;
 import org.qi4j.api.model.ConstructorDependency;
 import org.qi4j.api.model.DependencyKey;
 import org.qi4j.api.model.FieldDependency;
@@ -229,23 +228,6 @@ public abstract class FragmentModelFactory
                 dependency = new ParameterDependency( key, optional, name );
                 parameterDependencies.add( dependency );
             }
-            else
-            {
-                // Fake a Property annotation
-                DependencyKey key;
-                if( compositeType == null )
-                {
-                    key = new DependencyKey( Property.class, parameterType, null, mixinClass );
-                }
-                else
-                {
-                    key = new FragmentDependencyKey( Property.class, parameterType, null, mixinClass, compositeType );
-                }
-
-                dependency = new ParameterDependency( key, false, null );
-                parameterDependencies.add( dependency );
-            }
-
             i++;
         }
     }

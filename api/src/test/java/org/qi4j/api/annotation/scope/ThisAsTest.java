@@ -48,4 +48,5 @@ public class ThisAsTest
         @ThisAs String uses;
         @ThisAs( true ) String usesOptional;
     }
+
 }

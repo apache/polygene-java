@@ -11,6 +11,8 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="junit-4.1" level="project" />
     <orderEntry type="module" module-name="core-testsupport" />
+    <orderEntry type="library" name="Clover" level="application" />
+    <orderEntry type="library" name="clover" level="project" />
     <orderEntryProperties />
   </component>
 </module>

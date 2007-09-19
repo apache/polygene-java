@@ -16,6 +16,10 @@
  */
 package org.qi4j.runtime;
 
+import java.beans.BeanInfo;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -137,6 +141,21 @@ public class CompositeBuilderImpl<T extends Composite>
         context.put( resolution, mixinContext );
     }
 
+    public T properties()
+    {
+        // Instantiate proxy for given composite interface
+        try
+        {
+            PropertiesInvocationHandler handler = new PropertiesInvocationHandler();
+            ClassLoader proxyClassloader = compositeInterface.getClassLoader();
+            Class[] interfaces = new Class[]{ compositeInterface };
+            return compositeInterface.cast( Proxy.newProxyInstance( proxyClassloader, interfaces, handler ) );
+        }
+        catch( Exception e )
+        {
+            throw new CompositeInstantiationException( e );
+        }
+    }
 
     public T newInstance()
     {
@@ -251,5 +270,46 @@ public class CompositeBuilderImpl<T extends Composite>
             propertyContext = new LinkedHashMap<MixinResolution, Map<InjectionKey, Object>>();
         }
         return propertyContext;
+    }
+
+    private class PropertiesInvocationHandler implements InvocationHandler
+    {
+        public PropertiesInvocationHandler()
+        {
+        }
+
+        public Object invoke( Object o, Method method, Object[] objects ) throws Throwable
+        {
+            if( method.getName().startsWith( "set" ) )
+            {
+                Object propertyValue = objects[ 0 ];
+
+                // Find get method
+                BeanInfo info = Introspector.getBeanInfo( method.getDeclaringClass() );
+                PropertyDescriptor[] descriptors = info.getPropertyDescriptors();
+                for( PropertyDescriptor descriptor : descriptors )
+                {
+                    Method writeMethod = descriptor.getWriteMethod();
+                    if( writeMethod != null && writeMethod.equals( method ) )
+                    {
+                        MixinResolution resolution = context.getCompositeResolution().getMixinForInterface( method.getDeclaringClass() );
+
+                        Map<MixinResolution, Map<InjectionKey, Object>> context = getPropertyContext();
+                        Map<InjectionKey, Object> mixinContext = context.get( resolution );
+                        if( mixinContext == null )
+                        {
+                            mixinContext = new LinkedHashMap<InjectionKey, Object>();
+                            context.put( resolution, mixinContext );
+                        }
+
+                        InjectionKey key = new InjectionKey( propertyValue.getClass(), descriptor.getName(), resolution.getMixinModel().getModelClass() );
+                        mixinContext.put( key, propertyValue );
+                        break;
+                    }
+                }
+            }
+
+            return method.getDefaultValue();
+        }
     }
 }

@@ -15,7 +15,7 @@
 package org.qi4j.api.persistence;
 
 import org.qi4j.api.annotation.ImplementedBy;
-import org.qi4j.api.annotation.scope.Property;
+import org.qi4j.api.annotation.scope.PropertyParameter;
 
 /**
  * This interface provides the identity of the object which may be used
@@ -41,7 +41,7 @@ public interface Identity
     {
         private String identity;
 
-        public IdentityMixin( @Property("identity") String identity )
+        public IdentityMixin( @PropertyParameter( "identity" )String identity )
         {
             this.identity = identity;
         }

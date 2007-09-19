@@ -21,15 +21,15 @@ import java.lang.reflect.Proxy;
 import org.qi4j.api.Composite;
 import org.qi4j.api.CompositeBuilderFactory;
 import org.qi4j.api.CompositeCastException;
-import org.qi4j.api.annotation.scope.Fragment;
 import org.qi4j.api.annotation.scope.Modifies;
+import org.qi4j.api.annotation.scope.Qi4j;
 import org.qi4j.api.annotation.scope.ThisAs;
 import org.qi4j.api.model.CompositeModel;
 
 public final class CompositeServicesModifier
     implements Composite
 {
-    @Fragment private CompositeBuilderFactory builderFactory;
+    @Qi4j private CompositeBuilderFactory builderFactory;
     @ThisAs private Composite meAsComposite;
     @Modifies Composite next; //ignore
 

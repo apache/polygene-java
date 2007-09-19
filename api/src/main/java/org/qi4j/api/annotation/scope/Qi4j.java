@@ -21,13 +21,17 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation to denote the injection of a property into a Fragment (a Modifier or Mixin).
+ * Annotation to denote the injection of fragment specific resource. These include:
+ * The CompositeBuilderFactory
+ * <p/>
+ * Examples:
+ *
+ * @Fragment CompositeBuilderFactory cbf
  */
 @Retention( RetentionPolicy.RUNTIME )
 @Target( { ElementType.FIELD, ElementType.PARAMETER } )
 @Documented
 @DependencyScope
-public @interface Property
+public @interface Qi4j
 {
-    @Name String value() default ""; // Name of the property
 }

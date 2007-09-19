@@ -25,6 +25,6 @@ public class FragmentDependencyKey
 
     @Override public String toString()
     {
-        return compositeType.getSimpleName() + super.toString();
+        return compositeType.getSimpleName() + ":" + super.toString();
     }
 }

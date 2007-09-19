@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
- * Copyright (c) 2007, Niclas Hedhman. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,17 +20,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation to denote the injection of fragment specific resource. These include:
- * The CompositeBuilderFactory
- * <p/>
- * Examples:
- *
- * @Fragment CompositeBuilderFactory cbf
+ * Annotation to denote the injection of a property into a Fragment field (a Modifier or Mixin).
  */
 @Retention( RetentionPolicy.RUNTIME )
-@Target( { ElementType.FIELD, ElementType.PARAMETER } )
+@Target( { ElementType.FIELD } )
 @Documented
 @DependencyScope
-public @interface Fragment
+public @interface PropertyField
 {
+    @Name String value() default ""; // Name of the property. If not set then name will be name of field
 }

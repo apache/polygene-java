@@ -23,9 +23,10 @@ import org.qi4j.api.annotation.scope.Adapt;
 import org.qi4j.api.annotation.scope.Decorate;
 import org.qi4j.api.annotation.scope.Modifier;
 import org.qi4j.api.annotation.scope.Modifies;
-import org.qi4j.api.annotation.scope.Property;
+import org.qi4j.api.annotation.scope.PropertyField;
+import org.qi4j.api.annotation.scope.PropertyParameter;
+import org.qi4j.api.annotation.scope.Qi4j;
 import org.qi4j.api.annotation.scope.ThisAs;
-import org.qi4j.api.annotation.scope.Fragment;
 import org.qi4j.api.model.CompositeModel;
 import org.qi4j.runtime.resolution.AdaptDependencyResolver;
 import org.qi4j.runtime.resolution.CompositeModelResolver;
@@ -37,8 +38,8 @@ import org.qi4j.runtime.resolution.ModifierDependencyResolver;
 import org.qi4j.runtime.resolution.ModifierModelResolver;
 import org.qi4j.runtime.resolution.ModifiesDependencyResolver;
 import org.qi4j.runtime.resolution.PropertyDependencyResolver;
+import org.qi4j.runtime.resolution.Qi4jDependencyResolver;
 import org.qi4j.runtime.resolution.ThisAsDependencyResolver;
-import org.qi4j.runtime.resolution.FragmentDependencyResolver;
 
 /**
  * Default implementation of CompositeBuilderFactory
@@ -60,8 +61,10 @@ public final class CompositeBuilderFactoryImpl
         dependencyResolverDelegator.setDependencyResolver( Modifier.class, new ModifierDependencyResolver() );
         dependencyResolverDelegator.setDependencyResolver( Adapt.class, new AdaptDependencyResolver() );
         dependencyResolverDelegator.setDependencyResolver( Decorate.class, new DecorateDependencyResolver() );
-        dependencyResolverDelegator.setDependencyResolver( Property.class, new PropertyDependencyResolver() );
-        dependencyResolverDelegator.setDependencyResolver( Fragment.class, new FragmentDependencyResolver(this) );
+        PropertyDependencyResolver dependencyResolver = new PropertyDependencyResolver();
+        dependencyResolverDelegator.setDependencyResolver( PropertyField.class, dependencyResolver );
+        dependencyResolverDelegator.setDependencyResolver( PropertyParameter.class, dependencyResolver );
+        dependencyResolverDelegator.setDependencyResolver( Qi4j.class, new Qi4jDependencyResolver( this ) );
 
         ModifierModelResolver modifierModelResolver = new ModifierModelResolver( dependencyResolverDelegator );
         MixinModelResolver mixinModelResolver = new MixinModelResolver( dependencyResolverDelegator );

@@ -21,7 +21,7 @@ import org.qi4j.api.ObjectBuilder;
 import org.qi4j.api.ObjectBuilderFactory;
 import org.qi4j.api.annotation.scope.Adapt;
 import org.qi4j.api.annotation.scope.Decorate;
-import org.qi4j.api.annotation.scope.Property;
+import org.qi4j.api.annotation.scope.PropertyField;
 import org.qi4j.api.model.ObjectModel;
 import org.qi4j.runtime.resolution.AdaptDependencyResolver;
 import org.qi4j.runtime.resolution.DecorateDependencyResolver;
@@ -49,7 +49,7 @@ public final class ObjectBuilderFactoryImpl
 
         dependencyResolverDelegator.setDependencyResolver( Adapt.class, new AdaptDependencyResolver() );
         dependencyResolverDelegator.setDependencyResolver( Decorate.class, new DecorateDependencyResolver() );
-        dependencyResolverDelegator.setDependencyResolver( Property.class, new PropertyDependencyResolver() );
+        dependencyResolverDelegator.setDependencyResolver( PropertyField.class, new PropertyDependencyResolver() );
 
         init( dependencyResolverDelegator );
     }

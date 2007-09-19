@@ -18,7 +18,7 @@ package org.qi4j.test.model4;
 
 import org.qi4j.api.CompositeBuilderFactory;
 import org.qi4j.api.annotation.ModifiedBy;
-import org.qi4j.api.annotation.scope.Fragment;
+import org.qi4j.api.annotation.scope.Qi4j;
 import org.qi4j.api.annotation.scope.ThisAs;
 
 @ModifiedBy( CountCallsModifier.class )
@@ -28,7 +28,7 @@ public class Mixin1Impl
     private CompositeBuilderFactory builderFactory;
     private @ThisAs Mixin2 meAsMixin2;
 
-    public Mixin1Impl( @Fragment CompositeBuilderFactory builderFactory )
+    public Mixin1Impl( @Qi4j CompositeBuilderFactory builderFactory )
     {
         this.builderFactory = builderFactory;
     }

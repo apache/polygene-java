@@ -3,15 +3,20 @@ package org.qi4j.runtime.resolution;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.qi4j.api.Composite;
+import org.qi4j.api.annotation.scope.ThisAs;
 import org.qi4j.api.model.CompositeModel;
+import org.qi4j.api.model.ConstructorDependency;
+import org.qi4j.api.model.DependencyKey;
 import org.qi4j.api.model.InvalidCompositeException;
 import org.qi4j.api.model.MixinModel;
 import org.qi4j.api.model.ModifierModel;
+import org.qi4j.api.model.ParameterDependency;
 import org.qi4j.spi.dependency.InvalidDependencyException;
 
 /**
@@ -35,7 +40,7 @@ public class CompositeModelResolver
         Map<Class, MixinResolution> mixinsForInterfaces = mapInterfacesToMixins( compositeModel );
 
         // Determine list of mixin resolutions. Remove all duplicates
-        Set<MixinResolution> usedMixinModels = getUsedMixins( mixinsForInterfaces );
+        Set<MixinResolution> usedMixinModels = getUsedMixins( mixinsForInterfaces, compositeModel );
 
         // Map modifiers to methods
         Map<Method, List<ModifierResolution>> modifiersForMethod = mapModifiersToMethods( compositeModel, mixinsForInterfaces );
@@ -44,19 +49,59 @@ public class CompositeModelResolver
         return resolution;
     }
 
-    private Set<MixinResolution> getUsedMixins( Map<Class, MixinResolution> mixinsForInterfaces )
+    private <T extends Composite> Set<MixinResolution> getUsedMixins( Map<Class, MixinResolution> mixinsForInterfaces, CompositeModel<T> compositeModel )
     {
         Set<MixinResolution> usedMixins = new LinkedHashSet<MixinResolution>();
 
-        for( MixinResolution mixinResolution : mixinsForInterfaces.values() )
+        // Build set of used mixins
+        usedMixins.addAll( mixinsForInterfaces.values() );
+
+        // If a mixin A uses mixin B as a @ThisAs parameter dependency, then ensure that the order is correct.
+        Set<MixinResolution> orderedUsedMixins = new LinkedHashSet<MixinResolution>();
+        while( !usedMixins.isEmpty() )
         {
-            if( !usedMixins.contains( mixinResolution ) )
+            Iterator<MixinResolution> iterator = usedMixins.iterator();
+            MixinResolution resolution = iterator.next();
+
+            // Check if any of the other resolutions depends on this one
+            while( iterator.hasNext() )
             {
-                usedMixins.add( mixinResolution );
+                MixinResolution otherResolution = iterator.next();
+                if( dependsOn( resolution, otherResolution, mixinsForInterfaces ) )
+                {
+                    // Check cyclic dependency
+                    if( dependsOn( otherResolution, resolution, mixinsForInterfaces ) )
+                    {
+                        throw new InvalidCompositeException( "Cyclic dependency between mixins " + resolution.getMixinModel().getModelClass().getName() + " and " + otherResolution.getMixinModel().getModelClass().getName(), compositeModel.getCompositeClass() );
+                    }
+                }
             }
         }
 
+
         return usedMixins;
+    }
+
+    private boolean dependsOn( MixinResolution resolution, MixinResolution otherResolution, Map<Class, MixinResolution> mixinsForInterfaces )
+    {
+        Iterable<ConstructorDependency> constructorDependencies = resolution.getMixinModel().getConstructorDependencies();
+
+        for( ConstructorDependency constructorDependency : constructorDependencies )
+        {
+            for( ParameterDependency parameterDependency : constructorDependency.getParameterDependencies() )
+            {
+                DependencyKey key = parameterDependency.getKey();
+                if( key.getAnnotationType().equals( ThisAs.class ) )
+                {
+                    MixinResolution dependencyResolution = mixinsForInterfaces.get( key.getDependencyType() );
+                    if( dependencyResolution == otherResolution )
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     private Map<Method, List<ModifierResolution>> mapModifiersToMethods( CompositeModel compositeModel, Map<Class, MixinResolution> mixinMappings )
@@ -130,15 +175,14 @@ public class CompositeModelResolver
             try
             {
                 mixinResolution = mixinModelResolver.resolveMixinModel( possibleMixinModel );
+                mixinResolutions.put( possibleMixinModel, mixinResolution );
+
+                return mixinResolution;
             }
             catch( InvalidDependencyException e )
             {
                 ex = e;
             }
-
-            mixinResolutions.put( possibleMixinModel, mixinResolution );
-
-            return mixinResolution;
         }
 
         if( ex != null )

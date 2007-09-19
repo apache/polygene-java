@@ -37,5 +37,7 @@ public interface CompositeBuilder<T extends Composite>
 
     <K, T extends K> void properties( Class<K> mixinType, Object... properties );
 
+    T properties();
+
     T newInstance();
 }

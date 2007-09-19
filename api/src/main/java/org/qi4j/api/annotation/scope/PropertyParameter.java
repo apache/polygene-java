@@ -21,13 +21,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * TODO
+ * Annotation to denote the injection of a property into a parameter (either constructor or method)
  */
 @Retention( RetentionPolicy.RUNTIME )
-@Target( { ElementType.FIELD, ElementType.PARAMETER } )
+@Target( ElementType.PARAMETER )
 @Documented
 @DependencyScope
-public @interface ThisAs
+public @interface PropertyParameter
 {
-    @Optional boolean value() default false; // True if the dependency is optional, only fail if this is false
+    @Name String value(); // Name of the property
 }
