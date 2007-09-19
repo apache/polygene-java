@@ -16,13 +16,12 @@
  */
 package org.qi4j.test.model3;
 
-import org.qi4j.api.annotation.instance.PerEntityInstance;
+import org.qi4j.api.annotation.scope.PropertyField;
 
-@PerEntityInstance
 public class State2Impl
     implements State2
 {
-    private State1 state;
+    private @PropertyField State1 state;
 
     public void setState( State1 state )
     {

@@ -58,19 +58,4 @@ public class CompositeFactoryImplTest extends TestCase
             fail( "Fail to instantiate composite: " + Composition9.class );
         }
     }
-
-    public void testNewComposition10()
-        throws Exception
-    {
-        try
-        {
-            Composition10 composition10 = builderFactory.newCompositeBuilder( Composition10.class ).newInstance();
-//            composition10.setValue( "test value" );
-        }
-        catch( Exception e )
-        {
-            fail( "Fail to instantiate composite: " + Composition10.class );
-            e.printStackTrace();
-        }
-    }
 }

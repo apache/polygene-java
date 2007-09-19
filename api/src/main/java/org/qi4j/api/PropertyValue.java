@@ -17,7 +17,12 @@ public class PropertyValue
 
     public static PropertyValue property( String name, Object value )
     {
-        NullArgumentException.validateNotNull( "name", name );
+        if( name == null )
+        {
+            name = currentName.get();
+            NullArgumentException.validateNotNull( "name", name );
+            currentName.remove();
+        }
 
         return new PropertyValue( name, value );
     }
