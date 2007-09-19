@@ -27,7 +27,8 @@ public class PersonTest extends AbstractTest
 
         CompositeBuilder<PersonComposite> builder = builderFactory.newCompositeBuilder( PersonComposite.class );
         Person propName = name( Person.class );
-        builder.properties( Person.class,
+
+        builder.properties( PersonName.class,
                             property( propName.getFirstName(), firstName ),
                             property( propName.getLastName(), lastName ) );
         PersonComposite person = builder.newInstance();

@@ -20,15 +20,8 @@ import org.qi4j.library.general.model.PersonName;
  */
 public final class PersonNameMixin implements PersonName
 {
-    private String lastName;
-    private String firstName;
-
-
-    public PersonNameMixin( @Property( "lastname" )String lastName, @Property( "firstname" )String firstName )
-    {
-        this.lastName = lastName;
-        this.firstName = firstName;
-    }
+    @Property( "lastName" ) private String lastName;
+    @Property( "firstName" ) private String firstName;
 
     public PersonNameMixin()
     {
