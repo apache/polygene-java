@@ -14,6 +14,8 @@ import org.qi4j.api.ObjectBuilder;
 import static org.qi4j.api.PropertyValue.property;
 import org.qi4j.api.annotation.scope.Adapt;
 import org.qi4j.api.annotation.scope.Decorate;
+import org.qi4j.api.annotation.scope.PropertyField;
+import org.qi4j.api.annotation.scope.PropertyParameter;
 import static org.qi4j.api.model.Binding.bind;
 import static org.qi4j.api.model.InjectionKey.key;
 
@@ -41,7 +43,7 @@ public class ObjectBuilderImplTest extends TestCase
 
             }
         } );
-        builder.properties( 3, 4.5f, "c", property( "foo", "foo" ) );
+        builder.properties( property( "A", 3 ), property( "B", 4.5f ), property( "C", "c" ), property( "foo", "foo" ) );
 
         TestClass test = builder.newInstance();
 
@@ -51,7 +53,7 @@ public class ObjectBuilderImplTest extends TestCase
     public static class TestClass
         implements Guard
     {
-        String foo;
+        @PropertyField String foo;
         int a;
         float b;
         String c;
@@ -63,7 +65,7 @@ public class ObjectBuilderImplTest extends TestCase
 
         @Decorate Guard guard;
 
-        public TestClass( Integer a, Float b, String c )
+        public TestClass( @PropertyParameter( "A" )Integer a, @PropertyParameter( "B" )Float b, @PropertyParameter( "C" )String c )
         {
             this.a = a;
             this.b = b;

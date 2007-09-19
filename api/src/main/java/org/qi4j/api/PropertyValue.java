@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import org.qi4j.api.model.NullArgumentException;
 
 /**
  * TODO
@@ -16,10 +17,7 @@ public class PropertyValue
 
     public static PropertyValue property( String name, Object value )
     {
-        if( name == null )
-        {
-            return property( (Object) null, value );
-        }
+        NullArgumentException.validateNotNull( "name", name );
 
         return new PropertyValue( name, value );
     }

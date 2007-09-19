@@ -56,7 +56,7 @@ public class ObjectBuilderImpl<T>
         }
         else
         {
-            InjectionKey key = new InjectionKey( adaptedObject.getClass(), null, null );
+            InjectionKey key = new InjectionKey( adaptedObject.getClass(), null, objectResolution.getObjectModel().getModelClass() );
             getAdaptContext().put( key, adaptedObject );
         }
     }
@@ -70,37 +70,20 @@ public class ObjectBuilderImpl<T>
         }
         else
         {
-            InjectionKey key = new InjectionKey( decoratedObject.getClass(), null, null );
+            InjectionKey key = new InjectionKey( decoratedObject.getClass(), null, objectResolution.getObjectModel().getModelClass() );
             getDecorateContext().put( key, decoratedObject );
         }
     }
 
-    public void properties( Object... properties )
+    public void properties( PropertyValue... properties )
     {
         Map<InjectionKey, Object> context = getPropertyContext();
-        for( Object property : properties )
+        for( PropertyValue property : properties )
         {
-            InjectionKey key = null;
-            if( property instanceof Binding )
-            {
-                Binding binding = (Binding) property;
-                key = binding.getKey();
-                property = binding.getValue();
-            }
-
-            String name = null;
-            if( property instanceof PropertyValue )
-            {
-                PropertyValue value = (PropertyValue) property;
-                name = value.getName();
-                property = value.getValue();
-            }
-
-            if( key == null )
-            {
-                key = new InjectionKey( property.getClass(), name, null );
-            }
-            context.put( key, property );
+            String name = property.getName();
+            Object value = property.getValue();
+            InjectionKey key = new InjectionKey( value.getClass(), name, objectResolution.getObjectModel().getModelClass() );
+            context.put( key, value );
         }
     }
 

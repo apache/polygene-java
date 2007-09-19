@@ -20,6 +20,7 @@ import java.net.URL;
 import java.util.concurrent.ConcurrentHashMap;
 import org.qi4j.api.CompositeBuilder;
 import org.qi4j.api.CompositeBuilderFactory;
+import org.qi4j.api.PropertyValue;
 import org.qi4j.api.model.CompositeModel;
 import org.qi4j.api.persistence.EntityComposite;
 import org.qi4j.api.persistence.EntitySession;
@@ -85,7 +86,7 @@ public class EntitySessionImpl
             {
                 CompositeBuilder<T> builder = builderFactory.newCompositeBuilder( compositeType );
                 CompositeModel<T> model = builder.getContext().getCompositeModel();
-                builder.properties( Identity.class, identity );
+                builder.properties( Identity.class, PropertyValue.property( "identity", identity ) );
                 entity = builder.newInstance();
                 EntityStateHolder<T> holder = store.getEntityInstance( identity, model );
                 EntityCompositeInvocationHandler<T> handler = EntityCompositeInvocationHandler.getInvocationHandler( entity );

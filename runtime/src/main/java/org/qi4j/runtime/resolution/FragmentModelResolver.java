@@ -3,10 +3,10 @@ package org.qi4j.runtime.resolution;
 import java.util.ArrayList;
 import java.util.List;
 import org.qi4j.api.model.ConstructorDependency;
+import org.qi4j.api.model.DependencyKey;
 import org.qi4j.api.model.FieldDependency;
 import org.qi4j.api.model.MethodDependency;
 import org.qi4j.api.model.ParameterDependency;
-import org.qi4j.api.model.DependencyKey;
 import org.qi4j.spi.dependency.DependencyResolution;
 import org.qi4j.spi.dependency.DependencyResolver;
 import org.qi4j.spi.dependency.InvalidDependencyException;
@@ -93,7 +93,7 @@ public abstract class FragmentModelResolver
                 }
                 else
                 {
-                    throw new InvalidDependencyException( "Non-optional parameter dependency " + parameterDependency.getKey().getDependencyType().getName() + " in fragment " + parameterDependency.getKey().getDependentType().getName() + " could not be resolved" );
+                    throw new InvalidDependencyException( "Non-optional parameter dependency " + parameterDependency.getKey() + " in fragment " + parameterDependency.getKey().getDependentType().getName() + " could not be resolved" );
                 }
             }
 

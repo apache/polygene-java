@@ -110,34 +110,17 @@ public class CompositeBuilderImpl<T extends Composite>
         }
     }
 
-    public <K, T extends K> void properties( Class<K> mixinType, Object... properties )
+    public <K, T extends K> void properties( Class<K> mixinType, PropertyValue... properties )
     {
         MixinResolution resolution = context.getCompositeResolution().getMixinForInterface( mixinType );
 
         Map<MixinResolution, Map<InjectionKey, Object>> context = getPropertyContext();
         Map<InjectionKey, Object> mixinContext = new LinkedHashMap<InjectionKey, Object>();
-        for( Object property : properties )
+        for( PropertyValue property : properties )
         {
-            InjectionKey key = null;
-            if( property instanceof Binding )
-            {
-                Binding binding = (Binding) property;
-                key = binding.getKey();
-                property = binding.getValue();
-            }
-
-            String name = null;
-            if( property instanceof PropertyValue )
-            {
-                PropertyValue value = (PropertyValue) property;
-                name = value.getName();
-                property = value.getValue();
-            }
-
-            if( key == null )
-            {
-                key = new InjectionKey( property.getClass(), name, resolution.getMixinModel().getModelClass() );
-            }
+            String name = property.getName();
+            Object value = property.getValue();
+            InjectionKey key = new InjectionKey( value.getClass(), name, resolution.getMixinModel().getModelClass() );
             mixinContext.put( key, property );
         }
         context.put( resolution, mixinContext );

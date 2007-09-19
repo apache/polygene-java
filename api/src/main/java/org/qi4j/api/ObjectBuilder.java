@@ -30,7 +30,7 @@ public interface ObjectBuilder<T>
 
     void decorate( Object object );
 
-    void properties( Object... properties );
+    void properties( PropertyValue... properties );
 
     T newInstance();
 
