@@ -11,7 +11,6 @@ import java.util.Set;
 import org.qi4j.api.Composite;
 import org.qi4j.api.annotation.scope.ThisAs;
 import org.qi4j.api.model.CompositeModel;
-import org.qi4j.api.model.ConstructorDependency;
 import org.qi4j.api.model.DependencyKey;
 import org.qi4j.api.model.InvalidCompositeException;
 import org.qi4j.api.model.MixinModel;
@@ -96,11 +95,10 @@ public class CompositeModelResolver
 
     private boolean dependsOn( MixinResolution resolution, MixinResolution otherResolution, Map<Class, MixinResolution> mixinsForInterfaces )
     {
-        Iterable<ConstructorDependency> constructorDependencies = resolution.getMixinModel().getConstructorDependencies();
-
-        for( ConstructorDependency constructorDependency : constructorDependencies )
+        Iterable<ConstructorDependencyResolution> constructorDependencies = resolution.getConstructorResolutions();
+        for( ConstructorDependencyResolution constructorDependency : constructorDependencies )
         {
-            for( ParameterDependency parameterDependency : constructorDependency.getParameterDependencies() )
+            for( ParameterDependency parameterDependency : constructorDependency.getConstructorDependency().getParameterDependencies() )
             {
                 DependencyKey key = parameterDependency.getKey();
                 if( key.getAnnotationType().equals( ThisAs.class ) )
@@ -113,6 +111,24 @@ public class CompositeModelResolver
                 }
             }
         }
+
+        Iterable<MethodDependencyResolution> methodDependencies = resolution.getMethodResolutions();
+        for( MethodDependencyResolution methodDependency : methodDependencies )
+        {
+            for( ParameterDependency parameterDependency : methodDependency.getMethodDependency().getParameterDependencies() )
+            {
+                DependencyKey key = parameterDependency.getKey();
+                if( key.getAnnotationType().equals( ThisAs.class ) )
+                {
+                    MixinResolution dependencyResolution = mixinsForInterfaces.get( key.getDependencyType() );
+                    if( dependencyResolution == otherResolution )
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+
         return false;
     }
 
