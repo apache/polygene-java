@@ -25,8 +25,6 @@ import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.Undefined;
 import org.mozilla.javascript.Wrapper;
 import org.qi4j.api.CompositeBuilderFactory;
-import org.qi4j.api.annotation.AppliesTo;
-import org.qi4j.api.annotation.instance.TransientPerVm;
 import org.qi4j.api.annotation.scope.Qi4j;
 
 /**
@@ -38,8 +36,6 @@ import org.qi4j.api.annotation.scope.Qi4j;
  * Example:
  * org/qi4j/samples/hello/domain/HelloWorldSpeaker.say.js
  */
-@AppliesTo( Scripted.class )
-@TransientPerVm
 public class JavaScriptMixin
     implements InvocationHandler
 {
@@ -67,10 +63,7 @@ public class JavaScriptMixin
         Context.exit();
     }
 
-    // Public --------------------------------------------------------
-
     // InvocationHandler implementation ------------------------------
-
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
     {
         Context cx = Context.enter();
