@@ -121,7 +121,7 @@ public class CompositeBuilderImpl<T extends Composite>
             String name = property.getName();
             Object value = property.getValue();
             InjectionKey key = new InjectionKey( value.getClass(), name, resolution.getMixinModel().getModelClass() );
-            mixinContext.put( key, property );
+            mixinContext.put( key, value );
         }
         context.put( resolution, mixinContext );
     }
