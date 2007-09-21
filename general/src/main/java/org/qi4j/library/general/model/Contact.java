@@ -13,11 +13,24 @@
  */
 package org.qi4j.library.general.model;
 
-import org.qi4j.library.general.model.associations.HasContactType;
+import org.qi4j.api.annotation.ImplementedBy;
+import org.qi4j.library.general.model.mixins.ContactMixin;
 
 /**
  * Generic interface for a contact such as phone number, fax-number, email, msn, etc.
  */
-public interface Contact<T extends ContactType> extends ContactValue, HasContactType<T>
+@ImplementedBy( ContactMixin.class )
+public interface Contact
 {
+    public final static int VALUE_LEN = 250;
+
+    public final static int CONTACT_TYPE_LEN = 120;
+
+    public void setContactValue( String contactValue );
+
+    public String getContactValue();
+
+    public void setContactType( String contactType );
+
+    public String getContactType();
 }

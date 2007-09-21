@@ -24,7 +24,7 @@ import org.qi4j.library.framework.properties.PropertiesMixin;
 
 
 /**
- * Generic interface for a contact type such as home_office, phone_home, mobile_office, 
+ * Generic interface for a contact type such as home_office, phone_home, mobile_office,
  * mobile_private, icq, jabber, msn, yahoo, email.
  */
 @ImplementedBy( { PropertiesMixin.class } )
