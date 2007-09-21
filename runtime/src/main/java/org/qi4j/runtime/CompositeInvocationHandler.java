@@ -41,24 +41,34 @@ public class CompositeInvocationHandler<T extends Composite> extends AbstractCom
     public Object invoke( Object composite, Method method, Object[] args ) throws Throwable
     {
         MethodDescriptor descriptor = context.getMethodDescriptor( method );
-        Object mixin = mixins[ descriptor.getMixinIndex() ];
 
-        if( mixin == null )
+        if( descriptor != null )
         {
-            Class mixinType = method.getDeclaringClass();
-            if( mixinType.equals( Object.class ) )
+            Object mixin = mixins[ descriptor.getMixinIndex() ];
+
+            if( mixin == null )
             {
-                return invokeObject( (T) composite, method, args );
+                Class mixinType = method.getDeclaringClass();
+                if( mixinType.equals( Object.class ) )
+                {
+                    return invokeObject( (T) composite, method, args );
+                }
+                else
+                {
+                    throw new InvalidCompositeException( "Implementation missing for " + mixinType.getName() + " in "
+                                                         + context.getCompositeModel().getCompositeClass().getName(),
+                                                         context.getCompositeModel().getCompositeClass() );
+                }
             }
             else
             {
-                throw new InvalidCompositeException( "Implementation missing for " + mixinType.getName() + " in "
-                                                     + context.getCompositeModel().getCompositeClass().getName(),
-                                                     context.getCompositeModel().getCompositeClass() );
+                return context.getInvocationInstance( descriptor ).invoke( (T) composite, args, mixin );
             }
         }
-        // Invoke
-        return context.getInvocationInstance( descriptor ).invoke( (T) composite, args, mixin );
+        else
+        {
+            return invokeObject( (T) composite, method, args );
+        }
     }
 
     public void setMixins( Object[] mixins )

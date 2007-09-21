@@ -111,9 +111,13 @@ public final class CompositeContextImpl<T extends Composite>
                 {
                     descriptor = methodDescriptors.remove( method1.hashCode() );
                     descriptor = new MethodDescriptor( method, descriptor.getInvocationInstanceIndex(), descriptor.getMixinIndex(), descriptor.getInvocationInstances() );
+
+                    methodDescriptors.put( method.hashCode(), descriptor );
+
+                    break;
                 }
             }
-            methodDescriptors.put( method.hashCode(), descriptor );
+
         }
 
         return descriptor;
