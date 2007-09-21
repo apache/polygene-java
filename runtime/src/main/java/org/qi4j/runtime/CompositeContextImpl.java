@@ -42,7 +42,7 @@ public final class CompositeContextImpl<T extends Composite>
     private InstanceFactory fragmentFactory;
     private CompositeBuilderFactoryImpl builderFactory;
     private InvocationInstancePool[] invocationInstancePool;
-    private HashMap<Integer, MethodDescriptor> methodDescriptors;
+    private HashMap<Method, MethodDescriptor> methodDescriptors;
 
     public CompositeContextImpl( CompositeResolution<T> compositeResolution, CompositeBuilderFactoryImpl builderFactory, InstanceFactory instanceFactory )
     {
@@ -52,7 +52,7 @@ public final class CompositeContextImpl<T extends Composite>
         this.builderFactory = builderFactory;
 
         // Create index of method to mixin and invocation instance pools
-        methodDescriptors = new HashMap<Integer, MethodDescriptor>( 127 );
+        methodDescriptors = new HashMap<Method, MethodDescriptor>( 127 );
         Map<MixinResolution, Integer> mixinIndices = new HashMap<MixinResolution, Integer>();
         Method[] methods = compositeModel.getCompositeClass().getMethods();
         invocationInstancePool = new InvocationInstancePool[methods.length];
@@ -73,12 +73,11 @@ public final class CompositeContextImpl<T extends Composite>
             invocationInstancePool[ methodIndex ] = new InvocationInstancePool();
 
             MethodDescriptor mi = new MethodDescriptor( method, methodIndex, index, invocationInstancePool[ methodIndex ] );
-            int hashCode = method.hashCode();
-            if( methodDescriptors.get( hashCode ) != null )
+            if( methodDescriptors.get( method ) != null )
             {
                 System.out.println( "COLLISION!" );
             }
-            methodDescriptors.put( hashCode, mi );
+            methodDescriptors.put( method, mi );
             methodIndex++;
         }
 
@@ -101,7 +100,7 @@ public final class CompositeContextImpl<T extends Composite>
 
     public MethodDescriptor getMethodDescriptor( Method method )
     {
-        MethodDescriptor descriptor = methodDescriptors.get( method.hashCode() );
+        MethodDescriptor descriptor = methodDescriptors.get( method );
 
         if( descriptor == null )
         {
@@ -109,10 +108,10 @@ public final class CompositeContextImpl<T extends Composite>
             {
                 if( method1.getMethod().toGenericString().equals( method.toGenericString() ) )
                 {
-                    descriptor = methodDescriptors.remove( method1.hashCode() );
+                    descriptor = methodDescriptors.remove( method1 );
                     descriptor = new MethodDescriptor( method, descriptor.getInvocationInstanceIndex(), descriptor.getMixinIndex(), descriptor.getInvocationInstances() );
 
-                    methodDescriptors.put( method.hashCode(), descriptor );
+                    methodDescriptors.put( method, descriptor );
 
                     break;
                 }
