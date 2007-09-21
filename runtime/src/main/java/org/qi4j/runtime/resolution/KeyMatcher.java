@@ -19,7 +19,10 @@ public class KeyMatcher
         // Match dependent types, if set
         if( injectedObject.getDependentType() != null && !dependency.getDependentType().equals( injectedObject.getDependentType() ) )
         {
-            return false;
+            if( !dependency.getDependentType().isAssignableFrom( injectedObject.getDependentType() ) )
+            {
+                return false;
+            }
         }
 
         // Match names, if set
