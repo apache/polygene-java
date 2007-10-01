@@ -88,6 +88,12 @@ public class CachingQuery<T> extends QueryDecorator<T>
         return find;
     }
 
+
+    public Query<T> copy()
+    {
+        return new CachingQuery<T>( query.copy() );
+    }
+
     public T find()
     {
         if( findSingle != null )

@@ -56,6 +56,12 @@ public class QueryDecorator<T> implements Query<T>
         return query.prepare();
     }
 
+
+    public Query<T> copy()
+    {
+        return query.copy();
+    }
+
     public T find()
     {
         return query.find();

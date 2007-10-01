@@ -16,7 +16,7 @@ package org.qi4j.api.persistence;
 
 import java.net.URL;
 import org.qi4j.api.CompositeBuilder;
-import org.qi4j.api.query.QueryFactory;
+import org.qi4j.api.query.QueryBuilderFactory;
 
 public interface EntitySession
 {
@@ -48,5 +48,5 @@ public interface EntitySession
      */
     URL toURL( Identity identity );
 
-    QueryFactory getQueryFactory();
+    QueryBuilderFactory getQueryFactory();
 }

@@ -16,7 +16,7 @@
  */
 package org.qi4j.api.query;
 
-public interface QueryFactory
+public interface QueryBuilderFactory
 {
-    <R> Query<R> newQuery( Class<R> resultType );
+    QueryBuilder newQueryBuilder();
 }

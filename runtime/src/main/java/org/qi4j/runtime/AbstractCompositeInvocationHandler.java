@@ -94,7 +94,7 @@ public abstract class AbstractCompositeInvocationHandler<T extends Composite>
             }
             else
             {
-                return false;
+                return CompositeInvocationHandler.getInvocationHandler( proxy ) == this;
             }
         }
         if( method.getName().equals( "toString" ) )

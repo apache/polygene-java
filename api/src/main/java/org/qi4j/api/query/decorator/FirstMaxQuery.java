@@ -16,6 +16,14 @@ public class FirstMaxQuery<T> extends QueryDecorator<T>
         super( query );
     }
 
+    private FirstMaxQuery( FirstMaxQuery<T> copy )
+    {
+        super( copy.query.copy() );
+
+        begin = copy.begin;
+        end = copy.end;
+    }
+
     public void setFirstResult( int beginIndex )
     {
         begin = beginIndex;
@@ -36,6 +44,12 @@ public class FirstMaxQuery<T> extends QueryDecorator<T>
         {
             return new FirstMaxIterable<T>( query.prepare(), begin, end );
         }
+    }
+
+
+    public Query<T> copy()
+    {
+        return new FirstMaxQuery<T>( this );
     }
 
     public T find()

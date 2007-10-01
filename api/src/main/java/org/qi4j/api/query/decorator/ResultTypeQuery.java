@@ -2,6 +2,7 @@ package org.qi4j.api.query.decorator;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import org.qi4j.api.query.Query;
 
@@ -11,12 +12,19 @@ import org.qi4j.api.query.Query;
  */
 public class ResultTypeQuery<T> extends QueryDecorator<T>
 {
-    private Collection<Class> resultTypes = new ArrayList<Class>();
+    private Collection<Class> resultTypes = new HashSet<Class>();
 
     public ResultTypeQuery( Query<T> query, Class<T> resultType )
     {
         super( query );
         resultType( resultType );
+    }
+
+    private ResultTypeQuery( ResultTypeQuery<T> copy )
+    {
+        super( copy.query.copy() );
+
+        resultTypes = new ArrayList<Class>( copy.resultTypes );
     }
 
     public void resultType( Class mixinType )
@@ -37,6 +45,11 @@ public class ResultTypeQuery<T> extends QueryDecorator<T>
         {
             return new ResultTypeIterable<T>( query.prepare(), resultTypes );
         }
+    }
+
+    public Query<T> copy()
+    {
+        return new ResultTypeQuery<T>( this );
     }
 
     public T find()

@@ -41,34 +41,21 @@ public class CompositeInvocationHandler<T extends Composite> extends AbstractCom
     public Object invoke( Object composite, Method method, Object[] args ) throws Throwable
     {
         MethodDescriptor descriptor = context.getMethodDescriptor( method );
-
-        if( descriptor != null )
-        {
-            Object mixin = mixins[ descriptor.getMixinIndex() ];
-
-            if( mixin == null )
-            {
-                Class mixinType = method.getDeclaringClass();
-                if( mixinType.equals( Object.class ) )
-                {
-                    return invokeObject( (T) composite, method, args );
-                }
-                else
-                {
-                    throw new InvalidCompositeException( "Implementation missing for " + mixinType.getName() + " in "
-                                                         + context.getCompositeModel().getCompositeClass().getName(),
-                                                         context.getCompositeModel().getCompositeClass() );
-                }
-            }
-            else
-            {
-                return context.getInvocationInstance( descriptor ).invoke( (T) composite, args, mixin );
-            }
-        }
-        else
+        if( descriptor == null )
         {
             return invokeObject( (T) composite, method, args );
         }
+
+        Object mixin = mixins[ descriptor.getMixinIndex() ];
+
+        if( mixin == null )
+        {
+            throw new InvalidCompositeException( "Implementation missing for method " + method.getName() + " in "
+                                                 + context.getCompositeModel().getCompositeClass().getName(),
+                                                 context.getCompositeModel().getCompositeClass() );
+        }
+        // Invoke
+        return context.getInvocationInstance( descriptor ).invoke( (T) composite, args, mixin );
     }
 
     public void setMixins( Object[] mixins )

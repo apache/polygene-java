@@ -9,14 +9,15 @@ import junit.framework.TestCase;
 import org.qi4j.api.model.Mixin1;
 import org.qi4j.api.model.Mixin1Impl;
 import static org.qi4j.api.query.Query.OrderBy.DESCENDING;
+import static org.qi4j.api.query.QueryExpression.eq;
 import org.qi4j.api.query.decorator.CachingQueryFactory;
 import org.qi4j.api.query.decorator.DefaultQueryFactory;
 import org.qi4j.api.query.decorator.OrderByQueryFactory;
 import org.qi4j.api.query.decorator.QueryIterableFactory;
 
-public abstract class QueryFactoryTest extends TestCase
+public abstract class QueryBuilderFactoryTest extends TestCase
 {
-    QueryFactory qb;
+    QueryBuilderFactory qf;
 
     public void testComposedQueries() throws Exception
     {
@@ -24,11 +25,11 @@ public abstract class QueryFactoryTest extends TestCase
         List objects = createObjects();
 
         // Create builder and connect it to set
-        qb = new QueryIterableFactory( objects );
-        qb = new CachingQueryFactory( qb );
-        qb = new OrderByQueryFactory( qb );
+        qf = new QueryIterableFactory( objects );
+        qf = new CachingQueryFactory( qf );
+        qf = new OrderByQueryFactory( qf );
 
-        Query<Mixin1> query = qb.newQuery( Mixin1.class );
+        Query<Mixin1> query = qf.newQueryBuilder( Mixin1.class );
 
         // Set parameters
         query.where( Mixin1.class ).setBar( "B" );
@@ -37,6 +38,12 @@ public abstract class QueryFactoryTest extends TestCase
         // Perform query
         Iterable<Mixin1> result = query.prepare();
 
+        // New API
+        QueryBuilder<Mixin1> qb;
+        Mixin1 m1 = qb.parameter( Mixin1.class );
+        result = (Iterable<Mixin1>) qb.from( Mixin1.class )
+            .where( eq( m1.getBar(), "foo" ) )
+            .orderBy( m1.getName(), DESCENDING ).newQuery();
         // Iterate results
         for( Mixin1 object : result )
         {
@@ -49,16 +56,16 @@ public abstract class QueryFactoryTest extends TestCase
         List objects = createObjects();
 
         // Create builder and connect it to the set
-        qb = new DefaultQueryFactory( objects );
+        qf = new DefaultQueryFactory( objects );
 
-        Query<Mixin1> query = qb.newQuery( Mixin1.class );
+        Query<Mixin1> query = qf.newQueryBuilder( Mixin1.class );
         query.orderBy( Mixin1.class, Query.OrderBy.ASCENDING ).getName();
 
         Iterable<Mixin1> results = query.prepare();
 
         // Take results into new query
-        QueryFactory qb2 = new DefaultQueryFactory( results );
-        Query<Mixin1> query2 = qb2.newQuery( Mixin1.class );
+        QueryBuilderFactory qb2 = new DefaultQueryFactory( results );
+        Query<Mixin1> query2 = qb2.newQueryBuilder( Mixin1.class );
         query2.where( Mixin1.class ).setBar( "B" );
         Iterable<Mixin1> results2 = query2.prepare();
 

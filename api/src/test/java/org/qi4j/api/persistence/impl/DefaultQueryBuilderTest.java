@@ -16,6 +16,6 @@ public class DefaultQueryBuilderTest extends QueryTest
         super.setUp();
 
         defaultQueryFactory = new DefaultQueryFactory( createObjects() );
-        query = defaultQueryFactory.newQuery( Mixin1.class );
+        query = defaultQueryFactory.newQueryBuilder( Mixin1.class );
     }
 }

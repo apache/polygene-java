@@ -2,23 +2,23 @@ package org.qi4j.api.query.decorator;
 
 
 import org.qi4j.api.query.Query;
-import org.qi4j.api.query.QueryFactory;
+import org.qi4j.api.query.QueryBuilderFactory;
 
 /**
  * TODO
  */
 public class WhereQueryFactory
-    implements QueryFactory
+    implements QueryBuilderFactory
 {
-    QueryFactory delegate;
+    QueryBuilderFactory delegate;
 
-    public WhereQueryFactory( QueryFactory delegate )
+    public WhereQueryFactory( QueryBuilderFactory delegate )
     {
         this.delegate = delegate;
     }
 
-    public <T> Query<T> newQuery( Class<T> resultType )
+    public <T> Query<T> newQueryBuilder( Class<T> resultType )
     {
-        return new WhereQuery<T>( delegate.newQuery( resultType ) );
+        return new WhereQuery<T>( delegate.newQueryBuilder( resultType ) );
     }
 }

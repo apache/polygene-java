@@ -45,6 +45,8 @@ public interface Query<R>
 
     Iterable<R> prepare();
 
+    Query<R> copy();
+
     R find();
 
     public enum Is

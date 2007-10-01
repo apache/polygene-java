@@ -24,6 +24,13 @@ public class WhereQuery<T> extends QueryDecorator<T>
         super( query );
     }
 
+    private WhereQuery( WhereQuery<T> copy )
+    {
+        super( copy.query.copy() );
+
+        constraints = new ArrayList<WhereConstraint>( copy.constraints );
+    }
+
     public void resultType( Class mixinType )
     {
         query.resultType( mixinType );
@@ -51,6 +58,11 @@ public class WhereQuery<T> extends QueryDecorator<T>
         {
             return new WhereIterable<T>( query.prepare(), constraints );
         }
+    }
+
+    public Query<T> copy()
+    {
+        return new WhereQuery<T>( this );
     }
 
     public T find()
@@ -93,6 +105,8 @@ public class WhereQuery<T> extends QueryDecorator<T>
                     if( writeMethod != null && writeMethod.equals( method ) )
                     {
                         constraints.add( new WherePropertyConstraint( descriptor.getReadMethod(), objects[ 0 ], comparisonOperator ) );
+                        // Also add method interface as result type constraint
+                        query.resultType( method.getDeclaringClass() );
                         break;
                     }
                 }

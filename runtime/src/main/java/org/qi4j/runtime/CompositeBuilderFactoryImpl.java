@@ -51,10 +51,11 @@ public final class CompositeBuilderFactoryImpl
     private CompositeModelFactory modelFactory;
     private InstanceFactory instanceFactory;
     private CompositeModelResolver compositeModelResolver;
+    private DependencyResolverDelegator dependencyResolverDelegator;
 
     public CompositeBuilderFactoryImpl()
     {
-        DependencyResolverDelegator dependencyResolverDelegator = new DependencyResolverDelegator();
+        dependencyResolverDelegator = new DependencyResolverDelegator();
 
         dependencyResolverDelegator.setDependencyResolver( ThisAs.class, new ThisAsDependencyResolver() );
         dependencyResolverDelegator.setDependencyResolver( Modifies.class, new ModifiesDependencyResolver() );
@@ -80,6 +81,11 @@ public final class CompositeBuilderFactoryImpl
         CompositeContextImpl<T> context = getCompositeContext( compositeType );
         CompositeBuilder<T> builder = new CompositeBuilderImpl<T>( context, instanceFactory );
         return builder;
+    }
+
+    public DependencyResolverDelegator getDependencyResolverDelegator()
+    {
+        return dependencyResolverDelegator;
     }
 
     private <T extends Composite> CompositeContextImpl<T> getCompositeContext( Class<T> compositeType )

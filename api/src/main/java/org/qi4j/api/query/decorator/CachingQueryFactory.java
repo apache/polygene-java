@@ -1,23 +1,23 @@
 package org.qi4j.api.query.decorator;
 
 import org.qi4j.api.query.Query;
-import org.qi4j.api.query.QueryFactory;
+import org.qi4j.api.query.QueryBuilderFactory;
 
 /**
  * TODO
  */
 public class CachingQueryFactory
-    implements QueryFactory
+    implements QueryBuilderFactory
 {
-    QueryFactory delegate;
+    QueryBuilderFactory delegate;
 
-    public CachingQueryFactory( QueryFactory delegate )
+    public CachingQueryFactory( QueryBuilderFactory delegate )
     {
         this.delegate = delegate;
     }
 
-    public <T> Query<T> newQuery( Class<T> resultType )
+    public <T> Query<T> newQueryBuilder( Class<T> resultType )
     {
-        return new CachingQuery<T>( delegate.newQuery( resultType ) );
+        return new CachingQuery<T>( delegate.newQueryBuilder( resultType ) );
     }
 }

@@ -102,7 +102,7 @@ public final class CompositeContextImpl<T extends Composite>
     {
         MethodDescriptor descriptor = methodDescriptors.get( method );
 
-        if( descriptor == null )
+        if( descriptor == null && !method.getDeclaringClass().equals( Object.class ) )
         {
             for( MethodDescriptor method1 : methodDescriptors.values() )
             {

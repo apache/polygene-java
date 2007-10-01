@@ -18,6 +18,14 @@ public class OrderByQuery<T> extends QueryDecorator<T>
         super( query );
     }
 
+    private OrderByQuery( OrderByQuery<T> copy )
+    {
+        super( copy.query.copy() );
+
+        order = copy.order;
+        orderBy = copy.orderBy;
+    }
+
     public <K> K orderBy( Class<K> mixinType )
     {
         InvocationHandler ih = new OrderByInvocationHandler();
@@ -44,6 +52,12 @@ public class OrderByQuery<T> extends QueryDecorator<T>
         {
             return query.prepare();
         }
+    }
+
+
+    public Query<T> copy()
+    {
+        return new OrderByQuery<T>( this );
     }
 
     public T find()

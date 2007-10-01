@@ -1,27 +1,27 @@
 package org.qi4j.api.query.decorator;
 
 import org.qi4j.api.query.Query;
-import org.qi4j.api.query.QueryFactory;
+import org.qi4j.api.query.QueryBuilderFactory;
 
 /**
  * TODO
  */
 public class DefaultQueryFactory
-    implements QueryFactory
+    implements QueryBuilderFactory
 {
-    QueryFactory factory;
+    QueryBuilderFactory builderFactory;
 
     public DefaultQueryFactory( Iterable iterable )
     {
-        factory = new QueryIterableFactory( iterable );
-        factory = new ResultTypeQueryFactory( factory );
-        factory = new WhereQueryFactory( factory );
-        factory = new OrderByQueryFactory( factory );
-        factory = new FirstMaxQueryFactory( factory );
+        builderFactory = new QueryIterableFactory( iterable );
+        builderFactory = new ResultTypeQueryFactory( builderFactory );
+        builderFactory = new WhereQueryFactory( builderFactory );
+        builderFactory = new OrderByQueryFactory( builderFactory );
+        builderFactory = new FirstMaxQueryFactory( builderFactory );
     }
 
-    public <T> Query<T> newQuery( Class<T> resultType )
+    public <T> Query<T> newQueryBuilder( Class<T> resultType )
     {
-        return factory.newQuery( resultType );
+        return builderFactory.newQueryBuilder( resultType );
     }
 }

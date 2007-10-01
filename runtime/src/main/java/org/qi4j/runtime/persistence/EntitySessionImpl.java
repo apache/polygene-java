@@ -27,8 +27,7 @@ import org.qi4j.api.persistence.EntitySession;
 import org.qi4j.api.persistence.Identity;
 import org.qi4j.api.persistence.IdentityGenerator;
 import org.qi4j.api.query.Query;
-import org.qi4j.api.query.QueryFactory;
-import org.qi4j.runtime.CompositeModelFactory;
+import org.qi4j.api.query.QueryBuilderFactory;
 import org.qi4j.runtime.EntityCompositeInvocationHandler;
 import org.qi4j.spi.persistence.EntityStateHolder;
 import org.qi4j.spi.persistence.PersistenceException;
@@ -39,15 +38,13 @@ public class EntitySessionImpl
 {
     private boolean open;
     private PersistentStore store;
-    private CompositeModelFactory compositeModelFactory;
     private CompositeBuilderFactory builderFactory;
     private ConcurrentHashMap<String, ? extends EntityComposite> cache;
     private IdentityGenerator identityGenerator;
 
-    public EntitySessionImpl( PersistentStore store, CompositeModelFactory compositeModelFactory, CompositeBuilderFactory builderFactory, IdentityGenerator identityGenerator )
+    public EntitySessionImpl( PersistentStore store, CompositeBuilderFactory builderFactory, IdentityGenerator identityGenerator )
     {
         this.identityGenerator = identityGenerator;
-        this.compositeModelFactory = compositeModelFactory;
         this.builderFactory = builderFactory;
         this.open = true;
         this.store = store;
@@ -129,7 +126,7 @@ public class EntitySessionImpl
         return false;
     }
 
-    public QueryFactory getQueryFactory()
+    public QueryBuilderFactory getQueryFactory()
     {
         return null;
     }

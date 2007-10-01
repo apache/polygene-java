@@ -16,14 +16,33 @@
  */
 package org.qi4j.runtime.persistence;
 
+import org.qi4j.api.CompositeBuilderFactory;
 import org.qi4j.api.persistence.EntitySession;
 import org.qi4j.api.persistence.EntitySessionFactory;
+import org.qi4j.api.persistence.IdentityGenerator;
+import org.qi4j.runtime.UuidIdentityGenerator;
+import org.qi4j.spi.persistence.PersistentStore;
 
 public final class EntitySessionFactoryImpl
     implements EntitySessionFactory
 {
     private EntitySession session;
 
+
+    public EntitySessionFactoryImpl( CompositeBuilderFactory cbf )
+    {
+        this( cbf, null, null );
+    }
+
+    public EntitySessionFactoryImpl( CompositeBuilderFactory cbf, PersistentStore store, IdentityGenerator idGenerator )
+    {
+        if( idGenerator == null )
+        {
+            idGenerator = new UuidIdentityGenerator();
+        }
+
+        this.session = new EntitySessionImpl( store, cbf, idGenerator );
+    }
 
     public EntitySessionFactoryImpl( EntitySession session )
     {

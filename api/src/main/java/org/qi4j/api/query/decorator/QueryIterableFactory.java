@@ -2,13 +2,13 @@ package org.qi4j.api.query.decorator;
 
 
 import org.qi4j.api.query.Query;
-import org.qi4j.api.query.QueryFactory;
+import org.qi4j.api.query.QueryBuilderFactory;
 
 /**
  * TODO
  */
 public class QueryIterableFactory
-    implements QueryFactory
+    implements QueryBuilderFactory
 {
     Iterable objects;
 
@@ -17,7 +17,7 @@ public class QueryIterableFactory
         this.objects = objects;
     }
 
-    public <T> Query<T> newQuery( Class<T> resultType )
+    public <T> Query<T> newQueryBuilder( Class<T> resultType )
     {
         return new QueryIterable<T>( (Iterable<T>) objects );
     }
