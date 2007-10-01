@@ -23,7 +23,6 @@ import org.qi4j.api.CompositeBuilderFactory;
 import org.qi4j.api.model.CompositeModel;
 import org.qi4j.api.persistence.EntityComposite;
 import org.qi4j.api.persistence.EntityCompositeNotFoundException;
-import org.qi4j.api.persistence.EntitySession;
 import org.qi4j.api.persistence.PersistenceException;
 import org.qi4j.runtime.CompositeInvocationHandler;
 import org.qi4j.runtime.CompositeModelFactory;
@@ -54,6 +53,7 @@ public final class SerializablePersistence
         Object[] mixins = handler.getMixins();
 
         Map<Class, SerializedObject> persistentMixins = new HashMap<Class, SerializedObject>();
+        handler.getContext().getCompositeModel().getMixinModels();
         for( Object mixin : mixins )
         {
             if( mixin instanceof Serializable )
