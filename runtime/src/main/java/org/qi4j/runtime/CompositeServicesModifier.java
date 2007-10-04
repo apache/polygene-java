@@ -35,7 +35,7 @@ public final class CompositeServicesModifier
 
     public <T extends Composite> T cast( Class<T> compositeType )
     {
-        if( isInstance( compositeType ) )
+        if( compositeType.isInstance( compositeType ) )
         {
             return compositeType.cast( meAsComposite );
         }
@@ -85,7 +85,6 @@ public final class CompositeServicesModifier
         {
             return meAsComposite;
         }
-
         return null;
     }
 }

@@ -17,47 +17,10 @@ package org.qi4j.api.query;
 /**
  * Query of objects from underlying stores.
  * <p/>
- * Example;
- * <code><pre>
- * Query q = qf.newQuery(PersonComposite.class);
- * q.where(Name.class).setName("foo");
- * q.where(Age.class, Is.LESS_THAN).setAge(30);
- * q.orderBy(Name.class).getName();
- * List<PersonComposite> result = q.find();
  * </pre></code>
  */
 public interface Query<R>
     extends Iterable<R>
 {
-    void resultType( Class mixinType );
-
-    <K> K where( Class<K> mixinType );
-
-    <K> K where( Class<K> mixinType, Is comparisonOperator );
-
-    <K> K orderBy( Class<K> mixinType );
-
-    <K> K orderBy( Class<K> mixinType, OrderBy order );
-
-    void setFirstResult( int firstResult );
-
-    void setMaxResults( int maxResults );
-
-    Iterable<R> prepare();
-
-    Query<R> copy();
-
     R find();
-
-    public enum Is
-    {
-        EQUAL, NOT_EQUAL, // Boolean
-        LESS_THAN, LESS_THAN_OR_EQUAL, GREATER_THAN, GREATER_THAN_OR_EQUAL, // Numerical
-        CONTAINS, STARTS_WITH, ENDS_WITH, MATCHES // String
-    }
-
-    public enum OrderBy
-    {
-        ASCENDING, DESCENDING
-    }
 }

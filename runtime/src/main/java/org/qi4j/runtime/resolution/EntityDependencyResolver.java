@@ -6,6 +6,7 @@ import org.qi4j.api.model.DependencyKey;
 import org.qi4j.api.persistence.EntitySession;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryBuilderFactory;
+import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.spi.dependency.DependencyInjectionContext;
 import org.qi4j.spi.dependency.DependencyResolution;
 import org.qi4j.spi.dependency.DependencyResolver;
@@ -64,11 +65,14 @@ public class EntityDependencyResolver
                         }
                         else if( key.getRawType().equals( Iterable.class ) )
                         {
-                            return builderFactory.newQueryBuilder( key.getDependencyType() ).prepare();
+                            QueryBuilder queryBuilder = builderFactory.newQueryBuilder( key.getDependencyType() );
+                            Query query = queryBuilder.newQuery();
+                            return query.iterator();
                         }
                         else
                         {
-                            return builderFactory.newQueryBuilder( key.getDependencyType() );
+                            QueryBuilder queryBuilder = builderFactory.newQueryBuilder( key.getDependencyType() );
+                            return queryBuilder.newQuery();
                         }
                     }
                 }
@@ -80,15 +84,15 @@ public class EntityDependencyResolver
                     return builderFactory;
                 }
 
-                Query query = builderFactory.newQueryBuilder( key.getDependencyType() );
-
+                QueryBuilder queryBuilder = builderFactory.newQueryBuilder( key.getDependencyType() );
+                Query query = queryBuilder.newQuery();
                 if( key.getRawType().equals( Query.class ) )
                 {
                     return query;
                 }
                 else
                 {
-                    return query.prepare();
+                    return query.iterator();
                 }
             }
             else if( key.getName() != null )

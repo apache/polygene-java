@@ -48,7 +48,7 @@ public final class FragmentInvocationHandler
         {
             try
             {
-                return targetMethod.invoke( fragment, args );
+                return method.invoke( fragment, args );
             }
             catch( NullPointerException e )
             {

@@ -22,16 +22,12 @@ import org.qi4j.api.model.FragmentModel;
 public abstract class FragmentResolution<T>
     extends ObjectResolution
 {
-    // Attributes ----------------------------------------------------
-
-    // Constructors --------------------------------------------------
 
     public FragmentResolution( FragmentModel<T> fragmentModel, Iterable<ConstructorDependencyResolution> constructorDependencies, Iterable<FieldDependencyResolution> fieldDependencies, Iterable<MethodDependencyResolution> methodDependencies )
     {
         super( fragmentModel, constructorDependencies, fieldDependencies, methodDependencies );
     }
 
-    // Public -------------------------------------------------------
     public FragmentModel<T> getFragmentModel()
     {
         return (FragmentModel<T>) getObjectModel();

@@ -3,21 +3,19 @@ package org.qi4j.api.query;
 /**
  * TODO
  */
-public interface QueryBuilder
+public interface QueryBuilder<T>
 {
-    <K> K parameter( Class mixinType );
+    <K> K parameter( Class<K> mixinType );
 
-    QueryBuilder from( Class compositeType );
+    QueryBuilder<T> where( BinaryExpression... expression );
 
-    QueryBuilder where( QueryExpression... expression );
+    QueryBuilder<T> orderBy( Object property );
 
-    QueryBuilder orderBy( Object property );
+    QueryBuilder<T> orderBy( Object property, OrderBy.Order order );
 
-    QueryBuilder orderBy( Object property, Query.OrderBy orderBy );
+    QueryBuilder<T> setFirstResult( int firstResult );
 
-    QueryBuilder firstResult( int firstResult );
+    QueryBuilder<T> setMaxResults( int maxResults );
 
-    QueryBuilder maxResults( int maxResults );
-
-    Query newQuery();
+    Query<T> newQuery();
 }

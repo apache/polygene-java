@@ -11,7 +11,6 @@ import org.qi4j.api.annotation.scope.PropertyField;
 import org.qi4j.api.persistence.EntitySession;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryBuilderFactory;
-import org.qi4j.api.query.decorator.DefaultQueryFactory;
 import org.qi4j.runtime.persistence.EntitySessionFactoryImpl;
 import org.qi4j.runtime.resolution.EntityDependencyResolver;
 
@@ -37,7 +36,7 @@ public class EntityTest
         EntitySession session = new EntitySessionFactoryImpl( cbf ).newEntitySession();
         EntityDependencyResolver entityDependencyResolver = new EntityDependencyResolver( session );
 
-        entityDependencyResolver.addQueryFactory( "someQuery", new DefaultQueryFactory( results ) );
+//        entityDependencyResolver.addQueryFactory( "someQuery", new DefaultQueryFactory( results ) );
         cbf.getDependencyResolverDelegator().setDependencyResolver( Entity.class, entityDependencyResolver );
 
         CompositeBuilder<Composite1> cb = cbf.newCompositeBuilder( Composite1.class );
@@ -95,12 +94,14 @@ public class EntityTest
 
         public Iterable<Test2> testFactory()
         {
-            return someBuilderFactory.newQueryBuilder( Test2.class ).prepare();
+//            return someBuilderFactory.newQueryBuilder( Test2.class ).prepare();
+            return null;
         }
 
         public Iterable<Test2> testQuery()
         {
-            return someQuery.prepare();
+//            return someQuery.prepare();
+            return null;
         }
 
         public Iterable<Test2> testIterable()

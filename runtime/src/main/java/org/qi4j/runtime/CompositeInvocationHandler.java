@@ -37,7 +37,6 @@ public class CompositeInvocationHandler<T extends Composite> extends AbstractCom
         mixins = new Object[aContext.getCompositeResolution().getUsedMixinModels().size()];
     }
 
-    // InvocationHandler implementation ------------------------------
     public Object invoke( Object composite, Method method, Object[] args ) throws Throwable
     {
         MethodDescriptor descriptor = context.getMethodDescriptor( method );
@@ -66,7 +65,8 @@ public class CompositeInvocationHandler<T extends Composite> extends AbstractCom
         {
             Object mixin = mixins[ i ];
             // Verify type
-            if( !mixinResolution.getFragmentModel().getModelClass().isInstance( mixin ) )
+            if( !( mixinResolution.getFragmentModel().getModelClass().isInstance( mixin ) ||
+                   mixin instanceof CompositeImpl || mixin instanceof LifecycleImpl ) )
             {
                 throw new CompositeInstantiationException( "Mixin " + mixin.getClass().getName() + " is not of the expected type " + mixinResolution.getFragmentModel().getModelClass().getName() );
             }
