@@ -13,12 +13,8 @@ import org.qi4j.api.model.ObjectModel;
  * TODO
  */
 public class ObjectModelFactory
-    extends FragmentModelFactory
+    extends AbstractModelFactory
 {
-    public ObjectModelFactory()
-    {
-    }
-
     public <T> ObjectModel<T> newObjectModel( Class<T> objectClass )
         throws NullArgumentException, InvalidCompositeException
     {

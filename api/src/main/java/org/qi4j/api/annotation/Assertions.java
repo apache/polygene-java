@@ -12,35 +12,24 @@
  * limitations under the License.
  *
  */
-package org.qi4j.runtime;
 
-import org.qi4j.api.persistence.Identity;
+package org.qi4j.api.annotation;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 
 /**
- * This mixin contains the identity of an object.
+ * This annotation is used by composites and mixins to declare what Assertions
+ * should be applied to the type or specific method.
  */
-public final class IdentityImpl
-    implements Identity
+@Retention( RetentionPolicy.RUNTIME )
+@Target( { ElementType.TYPE, ElementType.METHOD } )
+@Documented
+public @interface Assertions
 {
-    private String identity;
-
-    public IdentityImpl( String identity )
-    {
-        this.identity = identity;
-    }
-
-    /**
-     * Returns the client view of the identity.
-     * <p/>
-     * It is unique within the owning repository, but potentially not unique globally and between
-     * types.
-     *
-     * @return The Identity of 'this' composite.
-     */
-    public String getIdentity()
-    {
-        return identity;
-    }
-
+    Class[] value();
 }

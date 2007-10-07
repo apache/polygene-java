@@ -11,13 +11,12 @@
  */
 package org.qi4j.test.model2;
 
-import org.qi4j.api.annotation.ImplementedBy;
+import org.qi4j.api.annotation.Mixins;
 
 /**
  * TODO
- *
  */
-@ImplementedBy( CustomDomainInterfaceImpl.class )
+@Mixins( CustomDomainInterfaceImpl.class )
 public interface CustomTestComposite
     extends TestComposite
 {

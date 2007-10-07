@@ -12,15 +12,14 @@
 package org.qi4j.test.model2;
 
 import org.qi4j.api.Composite;
-import org.qi4j.api.annotation.ImplementedBy;
-import org.qi4j.api.annotation.ModifiedBy;
+import org.qi4j.api.annotation.Assertions;
+import org.qi4j.api.annotation.Mixins;
 
 /**
  * TODO
- *
  */
-@ImplementedBy( StandardThisImpl.class )
-@ModifiedBy( { StandardThisModifier.class, FooModifier.class } )
+@Mixins( StandardThisImpl.class )
+@Assertions( { StandardThisModifier.class, FooModifier.class } )
 public interface Standard
     extends StandardThis, StandardThat, Composite
 {

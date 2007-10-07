@@ -25,15 +25,19 @@ public final class CompositeModel<T extends Composite>
 {
     private Class<T> compositeClass;
     private Class<? extends T> proxyClass;
+    private Iterable<MethodModel> methodModels;
     private Iterable<MixinModel> mixinModels;
-    private Iterable<ModifierModel> modifierModels;
+    private Iterable<AssertionModel> assertionModels;
+    private Iterable<SideEffectModel> sideEffectModels;
 
-    public CompositeModel( Class<T> compositeClass, Class<? extends T> proxyClass, Iterable<MixinModel> mixinModels, Iterable<ModifierModel> modifierModels )
+    public CompositeModel( Class<T> compositeClass, Class<? extends T> proxyClass, Iterable<MethodModel> methodModels, Iterable<MixinModel> mixinModels, Iterable<AssertionModel> assertionModels, Iterable<SideEffectModel> sideEffectModels )
     {
+        this.methodModels = methodModels;
         this.compositeClass = compositeClass;
         this.proxyClass = proxyClass;
         this.mixinModels = mixinModels;
-        this.modifierModels = modifierModels;
+        this.assertionModels = assertionModels;
+        this.sideEffectModels = sideEffectModels;
     }
 
     public Class<T> getCompositeClass()
@@ -46,14 +50,24 @@ public final class CompositeModel<T extends Composite>
         return proxyClass;
     }
 
+    public Iterable<MethodModel> getMethodModels()
+    {
+        return methodModels;
+    }
+
     public Iterable<MixinModel> getMixinModels()
     {
         return mixinModels;
     }
 
-    public Iterable<ModifierModel> getModifierModels()
+    public Iterable<AssertionModel> getAssertionModels()
     {
-        return modifierModels;
+        return assertionModels;
+    }
+
+    public Iterable<SideEffectModel> getSideEffectModels()
+    {
+        return sideEffectModels;
     }
 
     public List<MixinModel> getImplementations( Class aType )
@@ -102,10 +116,16 @@ public final class CompositeModel<T extends Composite>
             out.println( "    " + implementation.getModelClass().getName() );
         }
 
-        out.println( "  modifiers available" );
-        for( ModifierModel modifierModel : modifierModels )
+        out.println( "  assertions available" );
+        for( AssertionModel assertionModel : assertionModels )
         {
-            out.println( "    " + modifierModel.getModelClass().getName() );
+            out.println( "    " + assertionModel.getModelClass().getName() );
+        }
+
+        out.println( "  side-effects available" );
+        for( SideEffectModel sideEffectModel : sideEffectModels )
+        {
+            out.println( "    " + sideEffectModel.getModelClass().getName() );
         }
         out.close();
         return str.toString();
@@ -145,9 +165,17 @@ public final class CompositeModel<T extends Composite>
                 dependencies.add( dependency );
             }
         }
-        for( ModifierModel modifierModel : modifierModels )
+        for( AssertionModel assertionModel : assertionModels )
         {
-            Iterable<Dependency> scope = modifierModel.getDependenciesByScope( aClass );
+            Iterable<Dependency> scope = assertionModel.getDependenciesByScope( aClass );
+            for( Dependency dependency : scope )
+            {
+                dependencies.add( dependency );
+            }
+        }
+        for( SideEffectModel sideEffectModel : sideEffectModels )
+        {
+            Iterable<Dependency> scope = sideEffectModel.getDependenciesByScope( aClass );
             for( Dependency dependency : scope )
             {
                 dependencies.add( dependency );

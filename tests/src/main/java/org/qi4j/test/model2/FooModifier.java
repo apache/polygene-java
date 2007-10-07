@@ -14,8 +14,8 @@ package org.qi4j.test.model2;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import org.qi4j.api.annotation.AppliesTo;
-import org.qi4j.api.annotation.scope.Modifier;
-import org.qi4j.api.annotation.scope.Modifies;
+import org.qi4j.api.annotation.scope.AssertionFor;
+import org.qi4j.api.annotation.scope.Invocation;
 
 /**
  * Override only the methods that have the FooAnnotation, and print out the value of
@@ -26,8 +26,8 @@ public class FooModifier
     implements InvocationHandler
 {
     // Attributes ----------------------------------------------------
-    @Modifies InvocationHandler next;
-    @Modifier FooAnnotation fooAnnotation;
+    @AssertionFor InvocationHandler next;
+    @Invocation FooAnnotation fooAnnotation;
 
     // InvocationHandler implementation -----------------------------
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable

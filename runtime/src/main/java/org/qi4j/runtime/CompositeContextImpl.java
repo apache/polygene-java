@@ -23,12 +23,16 @@ import java.util.Map;
 import org.qi4j.api.Composite;
 import org.qi4j.api.CompositeBuilderFactory;
 import org.qi4j.api.CompositeInstantiationException;
+import org.qi4j.api.model.AssertionModel;
 import org.qi4j.api.model.CompositeContext;
 import org.qi4j.api.model.CompositeModel;
 import org.qi4j.api.model.ModifierModel;
+import org.qi4j.api.model.SideEffectModel;
+import org.qi4j.runtime.resolution.AssertionResolution;
 import org.qi4j.runtime.resolution.CompositeResolution;
+import org.qi4j.runtime.resolution.MethodResolution;
 import org.qi4j.runtime.resolution.MixinResolution;
-import org.qi4j.runtime.resolution.ModifierResolution;
+import org.qi4j.runtime.resolution.SideEffectResolution;
 import org.qi4j.spi.dependency.ModifierDependencyInjectionContext;
 
 /**
@@ -66,18 +70,18 @@ public final class CompositeContextImpl<T extends Composite>
         }
 
         int methodIndex = 0;
-        for( Method method : methods )
+        for( MethodResolution method : compositeResolution.getMethodResolutions() )
         {
-            MixinResolution mixinResolution = compositeResolution.getMixinForInterface( method.getDeclaringClass() );
+            MixinResolution mixinResolution = method.getMixin();
             int index = mixinIndices.get( mixinResolution );
             invocationInstancePool[ methodIndex ] = new InvocationInstancePool();
 
-            MethodDescriptor mi = new MethodDescriptor( method, methodIndex, index, invocationInstancePool[ methodIndex ] );
+            MethodDescriptor mi = new MethodDescriptor( method.getMethodModel().getMethod(), methodIndex, index, invocationInstancePool[ methodIndex ] );
             if( methodDescriptors.get( method ) != null )
             {
                 System.out.println( "COLLISION!" );
             }
-            methodDescriptors.put( method, mi );
+            methodDescriptors.put( method.getMethodModel().getMethod(), mi );
             methodIndex++;
         }
 
@@ -145,48 +149,66 @@ public final class CompositeContextImpl<T extends Composite>
         Class[] intfaces = new Class[]{ compositeClass };
         T thisCompositeProxy = (T) Proxy.newProxyInstance( classloader, intfaces, proxyHandler );
 
-        List<ModifierResolution> modifierResolutions = compositeResolution.getModifiersForMethod( method.getMethod() );
+        MethodResolution methodResolution = compositeResolution.getMethodResolution( method.getMethod() );
+
         FragmentInvocationHandler mixinInvocationHandler = new FragmentInvocationHandler();
-        Object previous = mixinInvocationHandler;
 
-        // Instantiate and link modifiers
-        for( int i = modifierResolutions.size() - 1; i >= 0; i-- )
+        Object previousAssertion = mixinInvocationHandler;
         {
-            ModifierResolution modifier = modifierResolutions.get( i );
+            List<AssertionResolution> assertionResolutions = methodResolution.getAssertions();
+            // Instantiate and link assertions
+            for( int i = assertionResolutions.size() - 1; i >= 0; i-- )
+            {
+                AssertionResolution assertion = assertionResolutions.get( i );
 
-            Object modifies = getModifies( method.getMethod(), classloader, previous, (ModifierModel) modifier.getFragmentModel() );
+                Object modifies = getModifies( method.getMethod(), classloader, previousAssertion, (AssertionModel) assertion.getFragmentModel() );
 
-            ModifierDependencyInjectionContext modifierContext = new ModifierDependencyInjectionContext( this, thisCompositeProxy, modifies, method.getMethod(), proxyHandler );
-            previous = fragmentFactory.newInstance( modifier, modifierContext );
+                ModifierDependencyInjectionContext modifierContext = new ModifierDependencyInjectionContext( this, thisCompositeProxy, modifies, method.getMethod(), proxyHandler );
+                previousAssertion = fragmentFactory.newInstance( assertion, modifierContext );
+            }
         }
 
-        return new InvocationInstance( previous, mixinInvocationHandler, proxyHandler, invocationInstancePool[ method.getInvocationInstanceIndex() ], method.getMethod(), method.getMethod().getDeclaringClass() );
+        SideEffectInvocationHandlerResult sideEffectResult = new SideEffectInvocationHandlerResult();
+        List<SideEffectResolution> sideEffectResolutions = methodResolution.getSideEffects();
+
+        // Instantiate and link side-effects
+        Object[] sideEffects = new Object[sideEffectResolutions.size()];
+        int i = 0;
+        for( SideEffectResolution sideEffectResolution : sideEffectResolutions )
+        {
+            Object modifies = getModifies( method.getMethod(), classloader, sideEffectResult, (SideEffectModel) sideEffectResolution.getFragmentModel() );
+
+            ModifierDependencyInjectionContext modifierContext = new ModifierDependencyInjectionContext( this, thisCompositeProxy, modifies, method.getMethod(), proxyHandler );
+            sideEffects[ i++ ] = fragmentFactory.newInstance( sideEffectResolution, modifierContext );
+        }
+
+        return new InvocationInstance( previousAssertion, sideEffects, sideEffectResult, mixinInvocationHandler, proxyHandler, invocationInstancePool[ method.getInvocationInstanceIndex() ], method.getMethod(), method.getMethod().getDeclaringClass() );
     }
 
-    private Object getModifies( Method method, ClassLoader classloader, Object previous, ModifierModel modifier )
+    private Object getModifies( Method method, ClassLoader classloader, Object next, ModifierModel assertion )
     {
         Object modifies;
-        if( modifier.isGeneric() )
+        if( assertion.isGeneric() )
         {
-            if( previous instanceof InvocationHandler )
+            if( next instanceof InvocationHandler )
             {
-                modifies = previous;
+                modifies = next;
             }
             else
             {
-                InvocationHandler modifiesHandler = new FragmentInvocationHandler( previous );
+                InvocationHandler modifiesHandler = new FragmentInvocationHandler( next );
                 modifies = Proxy.newProxyInstance( classloader, new Class[]{ method.getDeclaringClass() }, modifiesHandler );
             }
         }
         else
         {
-            if( previous instanceof InvocationHandler )
+            if( next instanceof InvocationHandler )
             {
-                modifies = Proxy.newProxyInstance( classloader, new Class[]{ method.getDeclaringClass() }, (InvocationHandler) previous );
+                modifies = Proxy.newProxyInstance( classloader, new Class[]{ method.getDeclaringClass() }, (InvocationHandler) next );
             }
             else
             {
-                modifies = previous;
+                modifies = next;
             }
         }
         return modifies;

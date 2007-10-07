@@ -5,7 +5,7 @@ import java.util.List;
 import junit.framework.TestCase;
 import org.qi4j.api.Composite;
 import org.qi4j.api.CompositeBuilder;
-import org.qi4j.api.annotation.ImplementedBy;
+import org.qi4j.api.annotation.Mixins;
 import org.qi4j.api.annotation.scope.Entity;
 import org.qi4j.api.annotation.scope.PropertyField;
 import org.qi4j.api.persistence.EntitySession;
@@ -64,7 +64,7 @@ public class EntityTest
     {
     }
 
-    @ImplementedBy( Test1Mixin.class )
+    @Mixins( Test1Mixin.class )
     interface Test1
     {
         public Test2 getFooInstance();
@@ -116,7 +116,7 @@ public class EntityTest
     }
 
 
-    @ImplementedBy( Test2Mixin.class )
+    @Mixins( Test2Mixin.class )
     interface Test2
     {
         String getFoo();

@@ -16,7 +16,7 @@ import junit.framework.TestCase;
 import org.qi4j.api.Composite;
 import org.qi4j.api.CompositeBuilder;
 import org.qi4j.api.PropertyValue;
-import org.qi4j.api.annotation.ImplementedBy;
+import org.qi4j.api.annotation.Mixins;
 import org.qi4j.api.annotation.scope.PropertyField;
 import org.qi4j.api.annotation.scope.PropertyParameter;
 import org.qi4j.runtime.CompositeBuilderFactoryImpl;
@@ -36,7 +36,7 @@ public class PropertyInjectionTest extends TestCase
         assertEquals( "Hello World", sampleInterface.say() );
     }
 
-    @ImplementedBy( SampleInterfaceMixin.class )
+    @Mixins( SampleInterfaceMixin.class )
     public static interface SampleInterface
     {
         public String say();

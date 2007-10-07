@@ -16,35 +16,43 @@
  */
 package org.qi4j.runtime;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
 import org.qi4j.api.Composite;
-import org.qi4j.api.annotation.ImplementedBy;
-import org.qi4j.api.annotation.ModifiedBy;
+import org.qi4j.api.annotation.Assertions;
+import org.qi4j.api.annotation.Mixins;
+import org.qi4j.api.annotation.SideEffects;
+import org.qi4j.api.model.AssertionModel;
 import org.qi4j.api.model.CompositeModel;
+import org.qi4j.api.model.FragmentModel;
 import org.qi4j.api.model.InvalidCompositeException;
+import org.qi4j.api.model.MethodModel;
 import org.qi4j.api.model.MixinModel;
-import org.qi4j.api.model.ModifierModel;
 import org.qi4j.api.model.NullArgumentException;
+import org.qi4j.api.model.SideEffectModel;
 import org.qi4j.api.persistence.EntityComposite;
-import org.qi4j.api.persistence.Identity;
 import org.qi4j.runtime.persistence.EntityImpl;
 
 public class CompositeModelFactory
 {
-    private ModifierModelFactory modifierModelFactory;
+    private AssertionModelFactory assertionModelFactory;
+    private SideEffectModelFactory sideEffectModelFactory;
     private MixinModelFactory mixinModelFactory;
 
     public CompositeModelFactory()
     {
-        modifierModelFactory = new ModifierModelFactory();
-        mixinModelFactory = new MixinModelFactory( modifierModelFactory );
+        assertionModelFactory = new AssertionModelFactory();
+        sideEffectModelFactory = new SideEffectModelFactory();
+        mixinModelFactory = new MixinModelFactory( assertionModelFactory, sideEffectModelFactory );
     }
 
-    public CompositeModelFactory( ModifierModelFactory modifierModelFactory, MixinModelFactory mixinModelFactory )
+    public CompositeModelFactory( AssertionModelFactory assertionModelFactory, SideEffectModelFactory sideEffectModelFactory, MixinModelFactory mixinModelFactory )
     {
-        this.modifierModelFactory = modifierModelFactory;
+        this.assertionModelFactory = assertionModelFactory;
+        this.sideEffectModelFactory = sideEffectModelFactory;
         this.mixinModelFactory = mixinModelFactory;
     }
 
@@ -53,34 +61,45 @@ public class CompositeModelFactory
     {
         validateClass( compositeClass );
 
+        // Method models
+        Iterable<MethodModel> methods = findMethods( compositeClass );
+
         // Find mixins
         List<MixinModel> mixins = findMixins( compositeClass, compositeClass );
 
         // Standard mixins
-        mixins.add( getMixinModel( CompositeImpl.class, compositeClass ) );
-        mixins.add( getMixinModel( LifecycleImpl.class, compositeClass ) );
+        mixins.add( mixinModelFactory.newFragmentModel( CompositeMixin.class, compositeClass ) );
+        mixins.add( mixinModelFactory.newFragmentModel( LifecycleImpl.class, compositeClass ) );
 
-        if( Identity.class.isAssignableFrom( compositeClass ) )
-        {
-            mixins.add( getMixinModel( IdentityImpl.class, compositeClass ) );
-        }
         if( EntityComposite.class.isAssignableFrom( compositeClass ) )
         {
-            mixins.add( getMixinModel( EntityImpl.class, compositeClass ) );
+            mixins.add( mixinModelFactory.newFragmentModel( EntityImpl.class, compositeClass ) );
         }
 
-        // Find modifiers
-        List<ModifierModel> modifiers = findModifiers( compositeClass, compositeClass );
-        modifiers.add( getModifierModel( CompositeServicesModifier.class, compositeClass ) );
+        // Find assertions
+        List<AssertionModel> assertions = getModifiers( compositeClass, compositeClass, Assertions.class, assertionModelFactory );
+
+        // Find side-effects
+        List<SideEffectModel> sideEffects = getModifiers( compositeClass, compositeClass, SideEffects.class, sideEffectModelFactory );
 
         // Create proxy class
         ClassLoader proxyClassloader = compositeClass.getClassLoader();
         Class[] interfaces = new Class[]{ compositeClass };
         Class<? extends T> proxyClass = (Class<? extends T>) Proxy.getProxyClass( proxyClassloader, interfaces );
 
-
-        CompositeModel model = new CompositeModel<T>( compositeClass, proxyClass, mixins, modifiers );
+        CompositeModel model = new CompositeModel<T>( compositeClass, proxyClass, methods, mixins, assertions, sideEffects );
         return model;
+    }
+
+    private <T extends Composite> Iterable<MethodModel> findMethods( Class<T> compositeClass )
+    {
+        List<MethodModel> models = new ArrayList<MethodModel>();
+        Method[] methods = compositeClass.getMethods();
+        for( Method method : methods )
+        {
+            models.add( new MethodModel( method ) );
+        }
+        return models;
     }
 
     private void validateClass( Class compositeClass )
@@ -104,12 +123,12 @@ public class CompositeModelFactory
     {
         List<MixinModel> mixinModels = new ArrayList<MixinModel>();
 
-        ImplementedBy impls = (ImplementedBy) aType.getAnnotation( ImplementedBy.class );
+        Mixins impls = (Mixins) aType.getAnnotation( Mixins.class );
         if( impls != null )
         {
             for( Class impl : impls.value() )
             {
-                mixinModels.add( getMixinModel( impl, compositeType ) );
+                mixinModels.add( mixinModelFactory.newFragmentModel( impl, compositeType ) );
             }
         }
 
@@ -123,16 +142,26 @@ public class CompositeModelFactory
         return mixinModels;
     }
 
-    private List<ModifierModel> findModifiers( Class aClass, Class compositeType )
+    private <K extends FragmentModel> List<K> getModifiers( Class<?> aClass, Class compositeType, Class annotationClass, FragmentModelFactory<K> modelFactory )
     {
-        List<ModifierModel> modifierModels = new ArrayList<ModifierModel>();
-
-        ModifiedBy modifiedBy = (ModifiedBy) aClass.getAnnotation( ModifiedBy.class );
-        if( modifiedBy != null )
+        List<K> modifiers = new ArrayList<K>();
+        Annotation modifierAnnotation = aClass.getAnnotation( annotationClass );
+        if( modifierAnnotation != null )
         {
-            for( Class<? extends Object> modifier : modifiedBy.value() )
+            Class[] modifierClasses = null;
+            try
             {
-                modifierModels.add( modifierModelFactory.newModifierModel( modifier, compositeType ) );
+                modifierClasses = (Class[]) annotationClass.getMethod( "value" ).invoke( modifierAnnotation );
+            }
+            catch( Exception e )
+            {
+                // Should not happen
+                e.printStackTrace();
+            }
+            for( Class modifier : modifierClasses )
+            {
+                K assertionModel = (K) modelFactory.newFragmentModel( modifier, compositeType );
+                modifiers.add( assertionModel );
             }
         }
 
@@ -140,19 +169,9 @@ public class CompositeModelFactory
         Class[] subTypes = aClass.getInterfaces();
         for( Class subType : subTypes )
         {
-            modifierModels.addAll( findModifiers( subType, compositeType ) );
+            modifiers.addAll( getModifiers( subType, compositeType, annotationClass, modelFactory ) );
         }
 
-        return modifierModels;
-    }
-
-    private <T> MixinModel<T> getMixinModel( Class<T> aClass, Class compositeType )
-    {
-        return mixinModelFactory.getMixinModel( aClass, compositeType );
-    }
-
-    private <T> ModifierModel<T> getModifierModel( Class<T> aClass, Class compositeType )
-    {
-        return modifierModelFactory.newModifierModel( aClass, compositeType );
+        return modifiers;
     }
 }

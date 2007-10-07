@@ -14,7 +14,7 @@ package org.qi4j.runtime.resolution;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.Method;
-import java.util.List;
+import java.util.HashMap;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
@@ -30,14 +30,19 @@ public final class CompositeResolution<T extends Composite>
     private Set<MixinResolution> usedMixinModels; // List of used mixin models
 
     private Map<Class, MixinResolution> mixinsForInterfaces; // Interface -> mixin model
-    private Map<Method, List<ModifierResolution>> modifiersForMethod; // Method -> modifier list
+    private Map<Method, MethodResolution> methodResolutions; // Method -> method resolution
 
-    public CompositeResolution( CompositeModel<T> compositeModel, Set<MixinResolution> usedMixinModels, Map<Class, MixinResolution> mixinsForInterfaces, Map<Method, List<ModifierResolution>> modifiersForMethod )
+    public CompositeResolution( CompositeModel<T> compositeModel, Set<MixinResolution> usedMixinModels, Map<Class, MixinResolution> mixinsForInterfaces, Iterable<MethodResolution> methods )
     {
         this.compositeModel = compositeModel;
         this.usedMixinModels = usedMixinModels;
         this.mixinsForInterfaces = mixinsForInterfaces;
-        this.modifiersForMethod = modifiersForMethod;
+
+        methodResolutions = new HashMap<Method, MethodResolution>();
+        for( MethodResolution methodResolution : methods )
+        {
+            methodResolutions.put( methodResolution.getMethodModel().getMethod(), methodResolution );
+        }
     }
 
     public CompositeModel<T> getCompositeModel()
@@ -55,14 +60,14 @@ public final class CompositeResolution<T extends Composite>
         return mixinsForInterfaces.get( interfaceType );
     }
 
-    public Map<Class, MixinResolution> getInterfaceToMixinMappings()
+    public MethodResolution getMethodResolution( Method method )
     {
-        return mixinsForInterfaces;
+        return methodResolutions.get( method );
     }
 
-    public List<ModifierResolution> getModifiersForMethod( Method method )
+    public Iterable<MethodResolution> getMethodResolutions()
     {
-        return modifiersForMethod.get( method );
+        return methodResolutions.values();
     }
 
     public String toString()
@@ -81,11 +86,11 @@ public final class CompositeResolution<T extends Composite>
             for( Method method : methods )
             {
                 out.println( "      " + method.toGenericString() );
-                ListIterator<ModifierResolution> methodModifierModels = getModifiersForMethod( method ).listIterator();
+                ListIterator<AssertionResolution> methodModifierModels = getMethodResolution( method ).getAssertions().listIterator();
                 while( methodModifierModels.hasNext() )
                 {
-                    ModifierResolution methodModifierModel = methodModifierModels.next();
-                    out.println( "        " + methodModifierModel.getFragmentModel().getModelClass().getName() );
+                    AssertionResolution methodAssertionModel = methodModifierModels.next();
+                    out.println( "        " + methodAssertionModel.getFragmentModel().getModelClass().getName() );
                 }
             }
         }

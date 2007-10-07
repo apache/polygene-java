@@ -1,18 +1,16 @@
-/*  Copyright 2007 Niclas Hedhman.
+/*
+ * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2007, Niclas Hedhman. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *  
- * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
- * implied.
- * 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
  */
 package org.qi4j.runtime;
 
@@ -21,17 +19,15 @@ import java.lang.reflect.Proxy;
 import org.qi4j.api.Composite;
 import org.qi4j.api.CompositeBuilderFactory;
 import org.qi4j.api.CompositeCastException;
-import org.qi4j.api.annotation.scope.Modifies;
 import org.qi4j.api.annotation.scope.Qi4j;
 import org.qi4j.api.annotation.scope.ThisAs;
 import org.qi4j.api.model.CompositeModel;
 
-public final class CompositeServicesModifier
+public final class CompositeMixin
     implements Composite
 {
     @Qi4j private CompositeBuilderFactory builderFactory;
     @ThisAs private Composite meAsComposite;
-    @Modifies Composite next; //ignore
 
     public <T extends Composite> T cast( Class<T> compositeType )
     {
@@ -47,7 +43,6 @@ public final class CompositeServicesModifier
         }
 
         InvocationHandler handler = Proxy.getInvocationHandler( meAsComposite );
-        handler = Proxy.getInvocationHandler( ( (ProxyReferenceInvocationHandler) handler ).getComposite() );
         T newComposite = builderFactory.newCompositeBuilder( compositeType ).newInstance();
         Object[] oldMixins = ( (CompositeInvocationHandler) handler ).getMixins();
         CompositeInvocationHandler newHandler = CompositeInvocationHandler.getInvocationHandler( newComposite );

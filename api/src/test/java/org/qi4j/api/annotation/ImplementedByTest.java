@@ -18,7 +18,7 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 
 /**
- * Tests public api exposed by ImplementedBy annotation.
+ * Tests public api exposed by Mixins annotation.
  * This will ensure that the public api does not get changed by mistake.
  */
 public class ImplementedByTest
@@ -30,10 +30,10 @@ public class ImplementedByTest
         Annotation[] annotations = Annotated.class.getDeclaredAnnotations();
         assertNotNull( "annotations should not be null", annotations );
         assertEquals( "number of annotations", 1, annotations.length );
-        assertEquals( "annotation type", ImplementedBy.class, annotations[0].annotationType() );
+        assertEquals( "annotation type", Mixins.class, annotations[ 0 ].annotationType() );
     }
 
-    @ImplementedBy( Object.class )
+    @Mixins( Object.class )
     private static class Annotated
     {
 

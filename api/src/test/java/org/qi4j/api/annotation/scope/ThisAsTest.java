@@ -18,7 +18,7 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 
 /**
- * Tests public api exposed by Modifies annotation.
+ * Tests public api exposed by AssertionFor annotation.
  * This will ensure that the public api does not get changed by mistake.
  */
 public class ThisAsTest
@@ -39,14 +39,14 @@ public class ThisAsTest
         Annotation[] annotations = Annotated.class.getDeclaredField( "uses" ).getDeclaredAnnotations();
         if( annotations != null && annotations.length > 0 && ThisAs.class.equals( annotations[ 0 ].annotationType() ) )
         {
-            assertEquals( "default optional value", false, ( (ThisAs) annotations[ 0 ] ).value() );
+            assertEquals( "default optional value", false, ( (ThisAs) annotations[ 0 ] ).optional() );
         }
     }
 
     private static class Annotated
     {
         @ThisAs String uses;
-        @ThisAs( true ) String usesOptional;
+        @ThisAs( optional = true ) String usesOptional;
     }
 
 }

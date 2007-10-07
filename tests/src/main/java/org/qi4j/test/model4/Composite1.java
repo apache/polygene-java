@@ -17,9 +17,9 @@
 package org.qi4j.test.model4;
 
 import org.qi4j.api.Composite;
-import org.qi4j.api.annotation.ImplementedBy;
+import org.qi4j.api.annotation.Mixins;
 
-@ImplementedBy( { Mixin1Impl.class, Mixin2Impl.class, CounterImpl.class } )
+@Mixins( { Mixin1Impl.class, Mixin2Impl.class, CounterImpl.class } )
 public interface Composite1 extends Composite, Mixin1, Mixin2, Counter
 {
 }

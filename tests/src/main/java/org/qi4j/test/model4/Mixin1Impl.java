@@ -17,11 +17,11 @@
 package org.qi4j.test.model4;
 
 import org.qi4j.api.CompositeBuilderFactory;
-import org.qi4j.api.annotation.ModifiedBy;
+import org.qi4j.api.annotation.Assertions;
 import org.qi4j.api.annotation.scope.Qi4j;
 import org.qi4j.api.annotation.scope.ThisAs;
 
-@ModifiedBy( CountCallsModifier.class )
+@Assertions( CountCallsModifier.class )
 public class Mixin1Impl
     implements Mixin1
 {

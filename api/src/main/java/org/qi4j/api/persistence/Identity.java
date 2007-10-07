@@ -14,7 +14,7 @@
  */
 package org.qi4j.api.persistence;
 
-import org.qi4j.api.annotation.ImplementedBy;
+import org.qi4j.api.annotation.Mixins;
 import org.qi4j.api.annotation.scope.PropertyParameter;
 
 /**
@@ -22,7 +22,7 @@ import org.qi4j.api.annotation.scope.PropertyParameter;
  * to store the state in a database. It is not the responsibility of the
  * framework to come up with a good identity string.
  */
-@ImplementedBy( Identity.IdentityMixin.class )
+@Mixins( Identity.IdentityMixin.class )
 public interface Identity
 {
     /**

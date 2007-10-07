@@ -20,19 +20,26 @@ import java.util.List;
 public final class MixinModel<T>
     extends FragmentModel<T>
 {
-    private Iterable<ModifierModel> modifierModels;
+    private Iterable<AssertionModel> assertionModels;
+    private Iterable<SideEffectModel> sideEffectModels;
     private Iterable<PropertyModel> propertyModels;
 
-    public MixinModel( Class<T> fragmentClass, Iterable<ConstructorDependency> constructorDependencies, Iterable<FieldDependency> fieldDependencies, Iterable<MethodDependency> methodDependencies, List<PropertyModel> properties, Class appliesTo, Iterable<ModifierModel> modifierModels )
+    public MixinModel( Class<T> fragmentClass, Iterable<ConstructorDependency> constructorDependencies, Iterable<FieldDependency> fieldDependencies, Iterable<MethodDependency> methodDependencies, List<PropertyModel> properties, Class appliesTo, Iterable<AssertionModel> assertionModels, Iterable<SideEffectModel> sideEffectModels )
     {
         super( fragmentClass, constructorDependencies, fieldDependencies, methodDependencies, appliesTo );
+        this.sideEffectModels = sideEffectModels;
         this.propertyModels = properties;
-        this.modifierModels = modifierModels;
+        this.assertionModels = assertionModels;
     }
 
-    public Iterable<ModifierModel> getModifiers()
+    public Iterable<AssertionModel> getAssertions()
     {
-        return modifierModels;
+        return assertionModels;
+    }
+
+    public Iterable<SideEffectModel> getSideEffects()
+    {
+        return sideEffectModels;
     }
 
     public Iterable<PropertyModel> getProperties()

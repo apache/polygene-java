@@ -21,7 +21,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation to denote the injection of a Query dependency into a Fragment (a Modifier or Mixin).
+ * Annotation to denote the injection of a Query dependency into a Fragment (a Invocation or Mixin).
  */
 @Retention( RetentionPolicy.RUNTIME )
 @Target( { ElementType.FIELD, ElementType.PARAMETER } )

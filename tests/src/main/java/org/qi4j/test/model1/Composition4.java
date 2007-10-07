@@ -17,9 +17,9 @@
 package org.qi4j.test.model1;
 
 import org.qi4j.api.Composite;
-import org.qi4j.api.annotation.ModifiedBy;
+import org.qi4j.api.annotation.Assertions;
 
-@ModifiedBy( Modifier6.class )
+@Assertions( Modifier6.class )
 public interface Composition4
     extends Composite
 {

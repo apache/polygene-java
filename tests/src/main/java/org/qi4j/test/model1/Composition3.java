@@ -17,12 +17,12 @@
 package org.qi4j.test.model1;
 
 import org.qi4j.api.Composite;
-import org.qi4j.api.annotation.ModifiedBy;
+import org.qi4j.api.annotation.Assertions;
 
-/** This will be to test some error case.
- *
+/**
+ * This will be to test some error case.
  */
-@ModifiedBy( Modifier5.class )
+@Assertions( Modifier5.class )
 public interface Composition3
     extends Composite
 {

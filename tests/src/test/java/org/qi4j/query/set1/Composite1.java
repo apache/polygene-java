@@ -17,11 +17,11 @@
  */
 package org.qi4j.query.set1;
 
-import org.qi4j.api.annotation.ImplementedBy;
 import org.qi4j.api.Composite;
+import org.qi4j.api.annotation.Mixins;
 
 
-@ImplementedBy( { Mixin1Impl.class, Mixin2Impl.class } )
+@Mixins( { Mixin1Impl.class, Mixin2Impl.class } )
 public interface Composite1 extends Mixin2, Mixin1, Composite
 {
 }

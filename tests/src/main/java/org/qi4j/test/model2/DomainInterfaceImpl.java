@@ -11,13 +11,12 @@
  */
 package org.qi4j.test.model2;
 
-import org.qi4j.api.annotation.ModifiedBy;
+import org.qi4j.api.annotation.Assertions;
 
 /**
  * TODO
- *
  */
-@ModifiedBy( DomainValidationModifier.class )
+@Assertions( DomainValidationModifier.class )
 public class DomainInterfaceImpl
     implements DomainInterface
 {

@@ -21,14 +21,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation to denote the injection of a modifier specific resource. These include:
- * The Method being modified
+ * Annotation to denote the injection of a invocation specific resource. These include:
+ * The Method being invoked
  * An AnnotationElement with annotations from both interface, mixin, and any Apply statement
- * InvocationContext with information about the current call
+ * InvocationContext with information about the current invocation
  * <p/>
  * Examples:
  *
- * @Modifier Method theModifiedMethod
+ * @Modifier Method theInvokedMethod
  * @Modifier AnnotationElement annotations
  * @Modifier InvocationContext context
  */
@@ -36,6 +36,6 @@ import java.lang.annotation.Target;
 @Target( { ElementType.FIELD, ElementType.PARAMETER } )
 @Documented
 @DependencyScope
-public @interface Modifier
+public @interface Invocation
 {
 }

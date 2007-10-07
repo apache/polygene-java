@@ -11,15 +11,14 @@
  */
 package org.qi4j.test.model2;
 
-import org.qi4j.api.annotation.ImplementedBy;
-import org.qi4j.api.annotation.ModifiedBy;
+import org.qi4j.api.annotation.Assertions;
+import org.qi4j.api.annotation.Mixins;
 
 /**
  * TODO
- *
  */
-@ImplementedBy( StandardThatImpl.class )
-@ModifiedBy( StandardThatModifier.class )
+@Mixins( StandardThatImpl.class )
+@Assertions( StandardThatModifier.class )
 public interface StandardThat
 {
     String foo( String aString );

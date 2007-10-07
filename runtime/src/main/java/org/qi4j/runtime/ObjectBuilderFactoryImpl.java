@@ -94,7 +94,7 @@ public final class ObjectBuilderFactoryImpl
         if( objectResolution == null )
         {
             ObjectModel<T> model = modelFactory.newObjectModel( type );
-            objectResolution = objectModelResolver.resolveObjectModel( model );
+            objectResolution = objectModelResolver.resolveModel( model );
             objectResolutions.put( type, objectResolution );
         }
         return objectResolution;

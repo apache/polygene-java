@@ -66,7 +66,7 @@ public class CompositeInvocationHandler<T extends Composite> extends AbstractCom
             Object mixin = mixins[ i ];
             // Verify type
             if( !( mixinResolution.getFragmentModel().getModelClass().isInstance( mixin ) ||
-                   mixin instanceof CompositeImpl || mixin instanceof LifecycleImpl ) )
+                   mixin instanceof CompositeMixin || mixin instanceof LifecycleImpl ) )
             {
                 throw new CompositeInstantiationException( "Mixin " + mixin.getClass().getName() + " is not of the expected type " + mixinResolution.getFragmentModel().getModelClass().getName() );
             }

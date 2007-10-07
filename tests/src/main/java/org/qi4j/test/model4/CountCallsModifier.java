@@ -19,19 +19,19 @@ package org.qi4j.test.model4;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import org.qi4j.api.annotation.scope.Modifier;
-import org.qi4j.api.annotation.scope.Modifies;
+import org.qi4j.api.annotation.scope.AssertionFor;
+import org.qi4j.api.annotation.scope.Invocation;
 import org.qi4j.api.annotation.scope.ThisAs;
 
 public class CountCallsModifier
     implements InvocationHandler
 {
-    private @Modifies InvocationHandler next;
+    private @AssertionFor InvocationHandler next;
     private @ThisAs Counter meAsCounter;
 
     private CountCalls annotation;
 
-    public CountCallsModifier( @Modifier AnnotatedElement method )
+    public CountCallsModifier( @Invocation AnnotatedElement method )
     {
         annotation = method.getAnnotation( CountCalls.class );
     }

@@ -21,7 +21,7 @@ import java.util.List;
  * Base class for fragments. Fragments are composed into objects.
  *
  * @see org.qi4j.api.model.MixinModel
- * @see org.qi4j.api.model.ModifierModel
+ * @see org.qi4j.api.model.AssertionModel
  */
 public class ObjectModel<T>
 {

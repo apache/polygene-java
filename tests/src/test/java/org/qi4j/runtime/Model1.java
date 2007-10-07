@@ -17,9 +17,9 @@
 package org.qi4j.runtime;
 
 import org.qi4j.api.Composite;
-import org.qi4j.api.annotation.ModifiedBy;
+import org.qi4j.api.annotation.Assertions;
 
-@ModifiedBy( Model1LifecycleModifier.class )
+@Assertions( Model1LifecycleModifier.class )
 public interface Model1 extends Composite
 {
 }

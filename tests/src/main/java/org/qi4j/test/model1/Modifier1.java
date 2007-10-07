@@ -16,12 +16,12 @@
  */
 package org.qi4j.test.model1;
 
-import org.qi4j.api.annotation.scope.Modifies;
+import org.qi4j.api.annotation.scope.AssertionFor;
 
 public class Modifier1
     implements Mixin1
 {
-    @Modifies Mixin1 next;
+    @AssertionFor Mixin1 next;
 
     public String do1()
     {

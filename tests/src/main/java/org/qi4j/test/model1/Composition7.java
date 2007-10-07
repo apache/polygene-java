@@ -17,12 +17,12 @@
 package org.qi4j.test.model1;
 
 import org.qi4j.api.Composite;
-import org.qi4j.api.annotation.ImplementedBy;
-import org.qi4j.api.annotation.ModifiedBy;
+import org.qi4j.api.annotation.Assertions;
+import org.qi4j.api.annotation.Mixins;
 import org.qi4j.api.model.CompositeModel;
 
-@ModifiedBy( { Modifier1.class } )
-@ImplementedBy( { Mixin1Impl.class } )
+@Assertions( { Modifier1.class } )
+@Mixins( { Mixin1Impl.class } )
 public class Composition7
     implements Composite
 {

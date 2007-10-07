@@ -21,7 +21,9 @@ import org.qi4j.api.Composite;
 
 public final class InvocationInstance<T extends Composite>
 {
-    private Object firstModifier;
+    private Object firstAssertion;
+    private Object[] sideEffects;
+    private SideEffectInvocationHandlerResult sideEffectResult;
     private Method method;
     private Class mixinType;
     private FragmentInvocationHandler mixinInvocationHandler;
@@ -29,11 +31,13 @@ public final class InvocationInstance<T extends Composite>
     private InvocationInstancePool pool;
     private InvocationInstance next;
 
-    public InvocationInstance( Object aFirstModifier, FragmentInvocationHandler aMixinInvocationHandler, ProxyReferenceInvocationHandler aProxyHandler, InvocationInstancePool aPool, Method method, Class mixinType )
+    public InvocationInstance( Object aFirstAssertion, Object[] sideEffects, SideEffectInvocationHandlerResult sideEffectResult, FragmentInvocationHandler aMixinInvocationHandler, ProxyReferenceInvocationHandler aProxyHandler, InvocationInstancePool aPool, Method method, Class mixinType )
     {
+        this.sideEffectResult = sideEffectResult;
+        this.sideEffects = sideEffects;
         this.mixinType = mixinType;
         this.method = method;
-        firstModifier = aFirstModifier;
+        firstAssertion = aFirstAssertion;
         proxyHandler = aProxyHandler;
         mixinInvocationHandler = aMixinInvocationHandler;
         pool = aPool;
@@ -42,42 +46,81 @@ public final class InvocationInstance<T extends Composite>
     public Object invoke( T proxy, Object[] args, Object mixin )
         throws Throwable
     {
-        pool.returnInstance( this );
-
         try
         {
-            if( firstModifier == null )
+            Object result;
+            if( firstAssertion == null )
             {
                 if( mixin instanceof InvocationHandler )
                 {
-                    return ( (InvocationHandler) mixin ).invoke( proxy, method, args );
+                    result = ( (InvocationHandler) mixin ).invoke( proxy, method, args );
                 }
                 else
                 {
-                    return method.invoke( mixin, args );
+                    result = method.invoke( mixin, args );
                 }
             }
             else
             {
                 proxyHandler.setContext( proxy, mixin, mixinType );
                 mixinInvocationHandler.setFragment( mixin );
-                if( firstModifier instanceof InvocationHandler )
+                if( firstAssertion instanceof InvocationHandler )
                 {
-                    return ( (InvocationHandler) firstModifier ).invoke( proxy, method, args );
+                    result = ( (InvocationHandler) firstAssertion ).invoke( proxy, method, args );
                 }
                 else
                 {
-                    return method.invoke( firstModifier, args );
+                    result = method.invoke( firstAssertion, args );
                 }
             }
+
+            // Check for side-effects
+            invokeSideEffects( result, null, proxy, args );
+
+            return result;
         }
         catch( InvocationTargetException e )
         {
-            throw e.getTargetException();
+            Throwable throwable = e.getTargetException();
+            invokeSideEffects( null, throwable, proxy, args );
+
+            throw throwable;
         }
         finally
         {
             pool.returnInstance( this );
+        }
+    }
+
+    private void invokeSideEffects( Object result, Throwable throwable, T proxy, Object[] args )
+    {
+        sideEffectResult.setResult( result, throwable );
+        for( Object sideEffect : sideEffects )
+        {
+            if( sideEffect instanceof InvocationHandler )
+            {
+                InvocationHandler handler = (InvocationHandler) sideEffect;
+                try
+                {
+                    handler.invoke( proxy, method, args );
+                }
+                catch( Throwable e )
+                {
+                    // Ignore (?)
+                }
+            }
+            else
+            {
+                try
+                {
+                    method.invoke( sideEffect, args );
+                }
+                catch( Throwable e )
+                {
+                    // Ignore (?)
+                    e.printStackTrace();
+                }
+            }
         }
     }
 

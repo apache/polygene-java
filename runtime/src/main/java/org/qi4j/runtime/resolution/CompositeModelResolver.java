@@ -10,12 +10,15 @@ import java.util.Map;
 import java.util.Set;
 import org.qi4j.api.Composite;
 import org.qi4j.api.annotation.scope.ThisAs;
+import org.qi4j.api.model.AssertionModel;
 import org.qi4j.api.model.CompositeModel;
 import org.qi4j.api.model.DependencyKey;
 import org.qi4j.api.model.InvalidCompositeException;
+import org.qi4j.api.model.MethodModel;
 import org.qi4j.api.model.MixinModel;
 import org.qi4j.api.model.ModifierModel;
 import org.qi4j.api.model.ParameterDependency;
+import org.qi4j.api.model.SideEffectModel;
 import org.qi4j.spi.dependency.InvalidDependencyException;
 
 /**
@@ -23,12 +26,14 @@ import org.qi4j.spi.dependency.InvalidDependencyException;
  */
 public class CompositeModelResolver
 {
-    ModifierModelResolver modifierModelResolver;
+    AssertionModelResolver assertionModelResolver;
+    SideEffectModelResolver sideEffectModelResolver;
     MixinModelResolver mixinModelResolver;
 
-    public CompositeModelResolver( ModifierModelResolver modifierModelResolver, MixinModelResolver mixinModelResolver )
+    public CompositeModelResolver( AssertionModelResolver assertionModelResolver, SideEffectModelResolver sideEffectModelResolver, MixinModelResolver mixinModelResolver )
     {
-        this.modifierModelResolver = modifierModelResolver;
+        this.assertionModelResolver = assertionModelResolver;
+        this.sideEffectModelResolver = sideEffectModelResolver;
         this.mixinModelResolver = mixinModelResolver;
     }
 
@@ -41,10 +46,10 @@ public class CompositeModelResolver
         // Determine list of mixin resolutions. Remove all duplicates
         Set<MixinResolution> usedMixinModels = getUsedMixins( mixinsForInterfaces, compositeModel );
 
-        // Map modifiers to methods
-        Map<Method, List<ModifierResolution>> modifiersForMethod = mapModifiersToMethods( compositeModel, mixinsForInterfaces );
+        // Map assertions to methods
+        List<MethodResolution> methodResolutions = getMethodResolutions( compositeModel, mixinsForInterfaces, usedMixinModels );
 
-        CompositeResolution resolution = new CompositeResolution<T>( compositeModel, usedMixinModels, mixinsForInterfaces, modifiersForMethod );
+        CompositeResolution resolution = new CompositeResolution<T>( compositeModel, usedMixinModels, mixinsForInterfaces, methodResolutions );
         return resolution;
     }
 
@@ -132,24 +137,45 @@ public class CompositeModelResolver
         return false;
     }
 
-    private Map<Method, List<ModifierResolution>> mapModifiersToMethods( CompositeModel compositeModel, Map<Class, MixinResolution> mixinMappings )
+    private List<MethodResolution> getMethodResolutions( CompositeModel compositeModel, Map<Class, MixinResolution> mixinMappings, Iterable<MixinResolution> usedMixins )
         throws CompositeResolutionException
     {
-        Map<Method, List<ModifierResolution>> methodModifiers = new HashMap<Method, List<ModifierResolution>>();
-        Method[] methods = compositeModel.getCompositeClass().getMethods();
-        for( Method method : methods )
-        {
-            // Find modifiers for method
-            Iterable<ModifierModel> modifiers = mapModifiersToMethod( compositeModel, method, mixinMappings );
+        List<MethodResolution> methodResolutions = new ArrayList<MethodResolution>();
 
-            // Resolve modifiers
-            List<ModifierResolution> resolutions = new ArrayList<ModifierResolution>();
-            for( ModifierModel modifier : modifiers )
+        Iterable<MethodModel> methodModels = compositeModel.getMethodModels();
+        for( MethodModel methodModel : methodModels )
+        {
+            MixinResolution mixinResolution = mixinMappings.get( methodModel.getMethod().getDeclaringClass() );
+
+            // Find assertions for method
+            Iterable<AssertionModel> assertions = getAssertionsForMethod( compositeModel, methodModel.getMethod(), mixinResolution, usedMixins );
+
+            // Resolve assertions
+            List<AssertionResolution> assertionResolutions = new ArrayList<AssertionResolution>();
+            for( AssertionModel assertion : assertions )
             {
                 try
                 {
-                    ModifierResolution resolution = modifierModelResolver.resolveModifierModel( modifier );
-                    resolutions.add( resolution );
+                    AssertionResolution resolution = assertionModelResolver.resolveModel( assertion );
+                    assertionResolutions.add( resolution );
+                }
+                catch( InvalidDependencyException e )
+                {
+                    throw new CompositeResolutionException( "Could not resolve assertion " + assertion.getModelClass() + " in composite " + compositeModel.getCompositeClass().getName(), e );
+                }
+            }
+
+            // Find side-effects for method
+            Iterable<SideEffectModel> sideEffects = getSideEffectsForMethod( compositeModel, methodModel.getMethod(), mixinResolution, usedMixins );
+
+            // Resolve assertions
+            List<SideEffectResolution> sideEffectResolutions = new ArrayList<SideEffectResolution>();
+            for( SideEffectModel modifier : sideEffects )
+            {
+                try
+                {
+                    SideEffectResolution resolution = sideEffectModelResolver.resolveModel( modifier );
+                    sideEffectResolutions.add( resolution );
                 }
                 catch( InvalidDependencyException e )
                 {
@@ -157,10 +183,11 @@ public class CompositeModelResolver
                 }
             }
 
-            methodModifiers.put( method, resolutions );
+            MethodResolution methodResolution = new MethodResolution( methodModel, assertionResolutions, sideEffectResolutions, mixinResolution );
+            methodResolutions.add( methodResolution );
         }
 
-        return methodModifiers;
+        return methodResolutions;
     }
 
     private Map<Class, MixinResolution> mapInterfacesToMixins( CompositeModel compositeModel )
@@ -202,7 +229,7 @@ public class CompositeModelResolver
             // Check if this mixinModel can be resolved
             try
             {
-                mixinResolution = mixinModelResolver.resolveMixinModel( possibleMixinModel );
+                mixinResolution = mixinModelResolver.resolveModel( possibleMixinModel );
                 mixinResolutions.put( possibleMixinModel, mixinResolution );
 
                 return mixinResolution;
@@ -257,101 +284,65 @@ public class CompositeModelResolver
         return impls;
     }
 
-    private Iterable<ModifierModel> mapModifiersToMethod( CompositeModel compositeModel, Method method, Map<Class, MixinResolution> mixinMappings )
+    private Iterable<AssertionModel> getAssertionsForMethod( CompositeModel compositeModel, Method method, MixinResolution mixinResolution, Iterable<MixinResolution> usedMixins )
     {
         Class compositeClass = compositeModel.getCompositeClass();
-        Iterable<ModifierModel> modifierModels = compositeModel.getModifierModels();
 
-        List<ModifierModel> methodModifiers = new ArrayList<ModifierModel>();
+        List<AssertionModel> methodModifierModels = new ArrayList<AssertionModel>();
 
-        // 1) Interface modifiers
-        addModifiers( compositeClass, method, modifierModels, methodModifiers, mixinMappings );
+        // 1) Interface assertions
+        addModifiers( compositeClass, method, compositeModel.getAssertionModels(), methodModifierModels, mixinResolution );
 
-        // 2) MixinModel modifiers
-        Class<?> methodClass = method.getDeclaringClass();
-        MixinResolution mixinResolution = mixinMappings.get( methodClass );
+        // 2) MixinModel assertions
+        MixinModel mixinModel = (MixinModel) mixinResolution.getFragmentModel();
+        addModifiers( compositeClass, method, mixinModel.getAssertions(), methodModifierModels, mixinResolution );
 
-        if( mixinResolution != null )
+        // 3) Assertions from other mixins
+        for( MixinResolution usedMixin : usedMixins )
         {
-            MixinModel mixinModel = (MixinModel) mixinResolution.getFragmentModel();
-            addModifiers( compositeClass, method, mixinModel.getModifiers(), methodModifiers, mixinMappings );
-        }
-
-        // 3) Modifiers from other mixins
-        for( Map.Entry<Class, MixinResolution> mapping : mixinMappings.entrySet() )
-        {
-            // TODO What about AppliesTo?
-            if( !methodClass.equals( mapping.getKey() ) )
+            if( usedMixin != mixinResolution )
             {
-                MixinModel model = (MixinModel) mapping.getValue().getFragmentModel();
-                addModifiers( compositeClass, method, model.getModifiers(), methodModifiers, mixinMappings );
+                MixinModel model = (MixinModel) usedMixin.getFragmentModel();
+                addModifiers( compositeClass, method, model.getAssertions(), methodModifierModels, usedMixin );
             }
         }
 
-        return methodModifiers;
+        return methodModifierModels;
     }
 
-    private void addModifiers( Class compositeClass, Method method, Iterable<ModifierModel> aModifierList, List<ModifierModel> aMethodModifierList, Map<Class, MixinResolution> mixinMappings )
+    private Iterable<SideEffectModel> getSideEffectsForMethod( CompositeModel compositeModel, Method method, MixinResolution mixinResolution, Iterable<MixinResolution> usedMixins )
     {
-        // TODO This needs to be refactored to be easier to read
+        Class compositeClass = compositeModel.getCompositeClass();
 
-        nextmodifier:
-        for( ModifierModel modifierModel : aModifierList )
+        List<SideEffectModel> methodModifierModels = new ArrayList<SideEffectModel>();
+
+        // 1) Interface side-effects
+        addModifiers( compositeClass, method, compositeModel.getSideEffectModels(), methodModifierModels, mixinResolution );
+
+        // 2) MixinModel side-effects
+        MixinModel mixinModel = (MixinModel) mixinResolution.getFragmentModel();
+        addModifiers( compositeClass, method, mixinModel.getSideEffects(), methodModifierModels, mixinResolution );
+
+        // 3) Side-effects from other mixins
+        for( MixinResolution usedMixin : usedMixins )
         {
-            if( !aMethodModifierList.contains( modifierModel ) )
+            if( usedMixin != mixinResolution )
             {
-                // Check AppliesTo
-                Class appliesTo = modifierModel.getAppliesTo();
-                if( appliesTo != null )
-                {
-                    // Check AppliesTo
-                    if( appliesTo.isAnnotation() )
-                    {
-                        MixinModel mixinModel = (MixinModel) mixinMappings.get( method.getDeclaringClass() ).getFragmentModel();
+                MixinModel model = (MixinModel) usedMixin.getFragmentModel();
+                addModifiers( compositeClass, method, model.getSideEffects(), methodModifierModels, usedMixin );
+            }
+        }
 
-                        // Check the Mixin implementation class to see if it is annotated.
-                        if( mixinModel.getModelClass().getAnnotation( appliesTo ) == null )
-                        {
-                            // The Mixin Implementation class was not annotated with the @AppliesTo.
+        return methodModifierModels;
+    }
 
-                            // Check method
-                            if( !mixinModel.isGeneric() )
-                            {
-                                try
-                                {
-                                    Method implMethod = mixinModel.getModelClass().getMethod( method.getName(), method.getParameterTypes() );
-                                    if( implMethod.getAnnotation( appliesTo ) == null )
-                                    {
-                                        continue; // Skip this modifierModel
-                                    }
-                                }
-                                catch( NoSuchMethodException e )
-                                {
-                                    continue; // Skip this modifierModel
-                                }
-                            }
-                            else
-                            {
-                                continue; // Skip this modifierModel
-                            }
-                        }
-                    }
-                    else
-                    {
-                        Class<?> methodDeclaringClass = method.getDeclaringClass();
-                        MixinModel mixin = (MixinModel) mixinMappings.get( methodDeclaringClass ).getFragmentModel();
-                        if( mixin == null )
-                        {
-                            throw new InvalidCompositeException( methodDeclaringClass + " has no implementation.", compositeClass );
-                        }
-                        Class fragmentClass = mixin.getModelClass();
-                        if( !appliesTo.isAssignableFrom( fragmentClass ) && !appliesTo.isAssignableFrom( methodDeclaringClass ) )
-                        {
-                            continue; // Skip this modifierModel
-                        }
-                    }
-                }
-
+    private <K extends ModifierModel> void addModifiers( Class compositeClass, Method method, Iterable<K> aModifierList, List<K> aMethodModifierList, MixinResolution mixinResolution )
+    {
+        nextmodifier:
+        for( K modifierModel : aModifierList )
+        {
+            if( !aMethodModifierList.contains( modifierModel ) && appliesTo( modifierModel, mixinResolution, method, compositeClass ) )
+            {
                 // Check interface
                 if( !modifierModel.isGeneric() )
                 {
@@ -360,9 +351,66 @@ public class CompositeModelResolver
                         continue; // ModifierModel does not implement interface of this method
                     }
                 }
+
                 // ModifierModel is ok!
                 aMethodModifierList.add( modifierModel );
             }
         }
+    }
+
+    private boolean appliesTo( ModifierModel modifierModel, MixinResolution mixinResolution, Method method, Class compositeClass )
+    {
+        // Check AppliesTo
+        Class appliesTo = modifierModel.getAppliesTo();
+        if( appliesTo != null )
+        {
+            // Check AppliesTo
+            if( appliesTo.isAnnotation() )
+            {
+                MixinModel mixinModel = (MixinModel) mixinResolution.getFragmentModel();
+
+                // Check the Mixin implementation class to see if it is annotated.
+                if( mixinModel.getModelClass().getAnnotation( appliesTo ) == null )
+                {
+                    // The Mixin Implementation class was not annotated with the @AppliesTo.
+
+                    // Check method
+                    if( !mixinModel.isGeneric() )
+                    {
+                        try
+                        {
+                            Method implMethod = mixinModel.getModelClass().getMethod( method.getName(), method.getParameterTypes() );
+                            if( implMethod.getAnnotation( appliesTo ) == null )
+                            {
+                                return false;
+                            }
+                        }
+                        catch( NoSuchMethodException e )
+                        {
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+            }
+            else
+            {
+                Class<?> methodDeclaringClass = method.getDeclaringClass();
+                MixinModel mixin = (MixinModel) mixinResolution.getFragmentModel();
+                if( mixin == null )
+                {
+                    throw new InvalidCompositeException( methodDeclaringClass + " has no implementation.", compositeClass );
+                }
+                Class fragmentClass = mixin.getModelClass();
+                if( !appliesTo.isAssignableFrom( fragmentClass ) && !appliesTo.isAssignableFrom( methodDeclaringClass ) )
+                {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }

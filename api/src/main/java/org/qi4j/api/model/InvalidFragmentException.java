@@ -18,20 +18,20 @@
 package org.qi4j.api.model;
 
 /**
- * Thrown in case of a misconfigured modifier.
+ * Thrown in case of a misconfigured fragment.
  */
-public class InvalidModifierException extends RuntimeException
+public class InvalidFragmentException extends RuntimeException
 {
-    private Class modifierClass;
+    private Class fragmentClass;
 
-    public InvalidModifierException( String message, Class modifierClass )
+    public InvalidFragmentException( String message, Class modifierClass )
     {
         super( message );
-        this.modifierClass = modifierClass;
+        this.fragmentClass = modifierClass;
     }
 
-    public Class getModifierClass()
+    public Class getFragmentClass()
     {
-        return modifierClass;
+        return fragmentClass;
     }
 }

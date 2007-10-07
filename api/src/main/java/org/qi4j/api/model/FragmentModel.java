@@ -18,7 +18,7 @@ import java.lang.reflect.Modifier;
  * Base class for fragments. Fragments are composed into objects.
  *
  * @see MixinModel
- * @see ModifierModel
+ * @see AssertionModel
  */
 public abstract class FragmentModel<T>
     extends ObjectModel<T>

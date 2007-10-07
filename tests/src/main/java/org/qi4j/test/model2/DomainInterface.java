@@ -11,13 +11,12 @@
  */
 package org.qi4j.test.model2;
 
-import org.qi4j.api.annotation.ImplementedBy;
+import org.qi4j.api.annotation.Mixins;
 
 /**
  * TODO
- *
  */
-@ImplementedBy( DomainInterfaceImpl.class )
+@Mixins( DomainInterfaceImpl.class )
 public interface DomainInterface
 {
     String getFoo();

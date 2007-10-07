@@ -19,20 +19,18 @@ package org.qi4j.test.model1;
 import java.util.ArrayList;
 import java.util.List;
 import junit.framework.TestCase;
+import org.qi4j.api.model.AssertionModel;
 import org.qi4j.api.model.CompositeModel;
 import org.qi4j.api.model.InvalidCompositeException;
-import org.qi4j.api.model.InvalidModifierException;
+import org.qi4j.api.model.InvalidFragmentException;
 import org.qi4j.api.model.MixinModel;
-import org.qi4j.api.model.ModifierModel;
 import org.qi4j.api.model.NullArgumentException;
-import org.qi4j.api.persistence.Lifecycle;
-import org.qi4j.api.Composite;
+import org.qi4j.runtime.AssertionModelFactory;
+import org.qi4j.runtime.CompositeMixin;
 import org.qi4j.runtime.CompositeModelFactory;
-import org.qi4j.runtime.MixinModelFactory;
-import org.qi4j.runtime.ModifierModelFactory;
 import org.qi4j.runtime.LifecycleImpl;
-import org.qi4j.runtime.CompositeImpl;
-import org.qi4j.runtime.CompositeServicesModifier;
+import org.qi4j.runtime.MixinModelFactory;
+import org.qi4j.runtime.SideEffectModelFactory;
 
 public class CompositeTest extends TestCase
 {
@@ -48,11 +46,12 @@ public class CompositeTest extends TestCase
     {
         List<MixinModel> reference = new ArrayList<MixinModel>();
 
-        ModifierModelFactory modifierBuilder = new ModifierModelFactory();
-        MixinModelFactory mmb = new MixinModelFactory( modifierBuilder );
-        reference.add( mmb.getMixinModel( Mixin1Impl.class, Composition1.class ) );
-        reference.add( mmb.getMixinModel( CompositeImpl.class, Composition1.class ) );
-        reference.add( mmb.getMixinModel( LifecycleImpl.class, Composition1.class ) );
+        AssertionModelFactory assertionBuilder = new AssertionModelFactory();
+        SideEffectModelFactory sideEffectBuilder = new SideEffectModelFactory();
+        MixinModelFactory mmb = new MixinModelFactory( assertionBuilder, sideEffectBuilder );
+        reference.add( mmb.newFragmentModel( Mixin1Impl.class, Composition1.class ) );
+        reference.add( mmb.newFragmentModel( CompositeMixin.class, Composition1.class ) );
+        reference.add( mmb.newFragmentModel( LifecycleImpl.class, Composition1.class ) );
 
         CompositeModel composite1 = modelFactory.newCompositeModel( Composition1.class );
         assertEquals( Composition1.class, composite1.getCompositeClass() );
@@ -60,11 +59,10 @@ public class CompositeTest extends TestCase
 
         assertEquals( reference, modelMixins );
 
-        List<ModifierModel> referenceModifiers = new ArrayList<ModifierModel>();
-        referenceModifiers.add( modifierBuilder.newModifierModel( Modifier1.class, Composition1.class ) );
-        referenceModifiers.add( modifierBuilder.newModifierModel( CompositeServicesModifier.class, Composition1.class ) );
+        List<AssertionModel> referenceAssertions = new ArrayList<AssertionModel>();
+        referenceAssertions.add( assertionBuilder.newFragmentModel( Modifier1.class, Composition1.class ) );
 
-        assertEquals( referenceModifiers, composite1.getModifierModels() );
+        assertEquals( referenceAssertions, composite1.getAssertionModels() );
     }
 
     public void testComposition2()
@@ -80,34 +78,34 @@ public class CompositeTest extends TestCase
         assertEquals( Mixin1Impl.class, mixin1.getFragmentClass() );
         MixinModel mixin2 = lists.get( 2 );
         assertEquals( Mixin2Impl.class, mixin2.getFragmentClass() );
-        List<ModifierModel> modifiers1 = composite1.getModifierModels();
+        List<AssertionModel> modifiers1 = composite1.getAssertionModels();
         assertEquals( 2, modifiers1.size() );
         assertEquals( lists.get( 1 ), composite1.getImplementations( Mixin1.class ).get( 0 ) );
         CompositeModel composite2 =modelFactory.newCompositeModel( Composition2.class );
         assertEquals( composite1, composite2 );
         assertEquals( composite1.hashCode(), composite2.hashCode() );
 
-        List<ModifierModel> modifiers3 = mixin2.getModifiers();
+        List<AssertionModel> modifiers3 = mixin2.getModifiers();
         assertEquals( 0, modifiers3.size() );
 
-        List<ModifierModel> modifiers2 = mixin1.getModifiers();
+        List<AssertionModel> modifiers2 = mixin1.getModifiers();
         assertEquals( 1, modifiers2.size() );
-        ModifierModel modifier4 = modifiers2.get( 0 );
+        AssertionModel modifier4 = modifiers2.get( 0 );
         assertEquals( Modifier4.class, modifier4.getFragmentClass() );
-        assertEquals( Modifier4.class.getDeclaredField( "next" ), modifier4.getModifiesDependency() );
+        assertEquals( Modifier4.class.getDeclaredField( "next" ), modifier4.getSideEffectForDependency() );
 */
     }
 
-    // Testing that system check that at least one @Modifies field exist.
+    // Testing that system check that at least one @AssertionFor field exist.
     public void testComposition3()
         throws Exception
     {
         try
         {
             CompositeModel composite = modelFactory.newCompositeModel( Composition3.class );
-            fail( "Should throw an InvalidModifierException." );
+            fail( "Should throw an InvalidFragmentException." );
         }
-        catch( InvalidModifierException e )
+        catch( InvalidFragmentException e )
         {
             // Expected
         }
@@ -120,9 +118,9 @@ public class CompositeTest extends TestCase
         try
         {
             CompositeModel composite = modelFactory.newCompositeModel( Composition4.class );
-            fail( "Should throw an InvalidModifierException." );
+            fail( "Should throw an InvalidFragmentException." );
         }
-        catch( InvalidModifierException e )
+        catch( InvalidFragmentException e )
         {
             // Expected
         }
@@ -148,9 +146,9 @@ public class CompositeTest extends TestCase
         try
         {
             CompositeModel composite = modelFactory.newCompositeModel( Composition5.class );
-            fail( "Should throw InvalidModifierException." );
+            fail( "Should throw InvalidFragmentException." );
         }
-        catch( InvalidModifierException e )
+        catch( InvalidFragmentException e )
         {
             //Expected
         }

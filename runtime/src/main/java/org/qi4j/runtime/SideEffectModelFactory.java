@@ -6,21 +6,20 @@ import org.qi4j.api.model.ConstructorDependency;
 import org.qi4j.api.model.FieldDependency;
 import org.qi4j.api.model.InvalidCompositeException;
 import org.qi4j.api.model.MethodDependency;
-import org.qi4j.api.model.ModifierModel;
 import org.qi4j.api.model.NullArgumentException;
+import org.qi4j.api.model.SideEffectModel;
 
 /**
  * TODO
  */
-public class ModifierModelFactory
-    extends FragmentModelFactory
+public class SideEffectModelFactory
+    extends FragmentModelFactory<SideEffectModel>
 {
-    public ModifierModelFactory()
+    public SideEffectModelFactory()
     {
     }
 
-    public <T> ModifierModel<T> newModifierModel( Class<T> modifierClass, Class compositeType )
-        throws NullArgumentException, InvalidCompositeException
+    public <T> SideEffectModel newFragmentModel( Class<T> modifierClass, Class compositeType ) throws NullArgumentException, InvalidCompositeException
     {
         List<ConstructorDependency> constructorDependencies = new ArrayList<ConstructorDependency>();
         getConstructorDependencies( modifierClass, compositeType, constructorDependencies );
@@ -31,7 +30,7 @@ public class ModifierModelFactory
 
         Class appliesTo = getAppliesTo( modifierClass );
 
-        ModifierModel<T> model = new ModifierModel<T>( modifierClass, constructorDependencies, fieldDependencies, methodDependencies, appliesTo );
+        SideEffectModel<T> model = new SideEffectModel<T>( modifierClass, constructorDependencies, fieldDependencies, methodDependencies, appliesTo );
         return model;
 
     }

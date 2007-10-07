@@ -14,13 +14,13 @@
  */
 package org.qi4j.api.persistence;
 
-import org.qi4j.api.annotation.ImplementedBy;
+import org.qi4j.api.annotation.Mixins;
 
 /**
  * Lifecycle interface for all Composites.
  * <p/>
  * This Lifecycle interface is a built-in feature of the Qi4J runtime, which will establish
- * any Modifier stack against Lifecycle.class, but the Composite interface should never expose
+ * any Invocation stack against Lifecycle.class, but the Composite interface should never expose
  * it to client code.
  * <p/>
  * Example;
@@ -79,7 +79,7 @@ import org.qi4j.api.annotation.ImplementedBy;
  * <p/>
  * </pre></code>
  */
-@ImplementedBy( Lifecycle.LifecycleMixin.class )
+@Mixins( Lifecycle.LifecycleMixin.class )
 public interface Lifecycle
 {
 

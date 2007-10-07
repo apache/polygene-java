@@ -6,7 +6,7 @@ package org.qi4j.runtime.resolution;
 import junit.framework.TestCase;
 import org.qi4j.api.Composite;
 import org.qi4j.api.CompositeBuilderFactory;
-import org.qi4j.api.annotation.ImplementedBy;
+import org.qi4j.api.annotation.Mixins;
 import org.qi4j.api.annotation.scope.ThisAs;
 import org.qi4j.api.model.InvalidCompositeException;
 import org.qi4j.runtime.CompositeBuilderFactoryImpl;
@@ -35,7 +35,7 @@ public class CompositeModelResolverTest extends TestCase
         assertEquals( "ok", cbf.newCompositeBuilder( TestComposite1.class ).newInstance().testB() );
     }
 
-    @ImplementedBy( TestA.TestAMixin.class )
+    @Mixins( TestA.TestAMixin.class )
     public static interface TestA
     {
         public String test();
@@ -50,7 +50,7 @@ public class CompositeModelResolverTest extends TestCase
         }
     }
 
-    @ImplementedBy( TestB.TestBMixin.class )
+    @Mixins( TestB.TestBMixin.class )
     public static interface TestB
     {
         public String testB();
@@ -74,7 +74,7 @@ public class CompositeModelResolverTest extends TestCase
         }
     }
 
-    @ImplementedBy( TestC.TestCMixin.class )
+    @Mixins( TestC.TestCMixin.class )
     public static interface TestC
     {
         public String testC();
@@ -98,7 +98,7 @@ public class CompositeModelResolverTest extends TestCase
         }
     }
 
-    @ImplementedBy( TestD.TestDMixin.class )
+    @Mixins( TestD.TestDMixin.class )
     public static interface TestD
     {
         public String testD();

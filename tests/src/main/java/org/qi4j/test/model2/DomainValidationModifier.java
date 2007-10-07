@@ -11,7 +11,7 @@
  */
 package org.qi4j.test.model2;
 
-import org.qi4j.api.annotation.scope.Modifies;
+import org.qi4j.api.annotation.scope.AssertionFor;
 
 /**
  * TODO
@@ -20,7 +20,7 @@ public class DomainValidationModifier
     implements DomainInterface
 {
     // Attributes ----------------------------------------------------
-    @Modifies DomainInterface next;
+    @AssertionFor DomainInterface next;
 
     // DomainInterface implementation --------------------------------
     public String getFoo()

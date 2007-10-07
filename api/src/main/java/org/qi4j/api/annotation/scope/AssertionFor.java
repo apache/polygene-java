@@ -12,8 +12,7 @@
  * limitations under the License.
  *
  */
-
-package org.qi4j.api.annotation;
+package org.qi4j.api.annotation.scope;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -21,17 +20,41 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-
 /**
- * This annotation is used by composites and mixins to declare what modifiers
- * should be used.
+ * This annotation is required once in each Assertion, to mark the
+ * field where the next element in the call sequence should be
+ * injected.
  * <p/>
- * The ModifiedBy
+ * The type of the field must be of the same type as the Assertion
+ * itself, or an InvocationHandler.
+ * <p/>
+ * <p/>
+ * Example;
+ * <pre><code>
+ * public interface MyStuff
+ * {
+ *     void doSomething();
+ * }
+ * <p/>
+ * public class MyStuffAssertion
+ *     implements MyStuff
+ * {
+ *     @AssertionFor MyStuff next;
+ * <p/>
+ *     public void doSomething()
+ *     {
+ *         // HERE DO THE MODIFIER STUFF.
+ * <p/>
+ *         // Delegate to the underlying mixin/modifier.
+ *         next.doSomething();
+ *     }
+ * }
+ * </code></pre>
  */
 @Retention( RetentionPolicy.RUNTIME )
-@Target( ElementType.TYPE )
+@Target( { ElementType.FIELD, ElementType.PARAMETER } )
 @Documented
-public @interface ModifiedBy
+@DependencyScope
+public @interface AssertionFor
 {
-    Class[] value();
 }

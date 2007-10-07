@@ -11,7 +11,7 @@
  */
 package org.qi4j.test.model2;
 
-import org.qi4j.api.annotation.scope.Modifies;
+import org.qi4j.api.annotation.scope.AssertionFor;
 import org.qi4j.api.annotation.scope.ThisAs;
 
 /**
@@ -22,7 +22,7 @@ public class StandardThisThatModifier
 {
     // Attributes ----------------------------------------------------
     @ThisAs StandardThis meAsThis;
-    @Modifies StandardThat next;
+    @AssertionFor StandardThat next;
 
     // Z implementation ----------------------------------------------
     public String foo( String aString )

@@ -16,9 +16,9 @@
  */
 package org.qi4j.test.annotation;
 
-import org.qi4j.api.annotation.scope.Modifies;
+import org.qi4j.api.annotation.scope.AssertionFor;
 
 public class ClassAnnotatedWithModifies
 {
-    @Modifies public String abc;
+    @AssertionFor public String abc;
 }

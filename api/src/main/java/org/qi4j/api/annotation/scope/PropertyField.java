@@ -20,7 +20,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation to denote the injection of a property into a Fragment field (a Modifier or Mixin).
+ * Annotation to denote the injection of a property into a Fragment field (a Invocation or Mixin).
  */
 @Retention( RetentionPolicy.RUNTIME )
 @Target( { ElementType.FIELD } )
