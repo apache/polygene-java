@@ -13,13 +13,13 @@
 package org.qi4j.library.general.model;
 
 import java.io.Serializable;
-import org.qi4j.api.annotation.ImplementedBy;
+import org.qi4j.api.annotation.Mixins;
 import org.qi4j.library.general.model.mixins.GenderMixin;
 
 /**
  * Generic interface for Gender that stores {@link GenderType}.
  */
-@ImplementedBy( { GenderMixin.class } )
+@Mixins( { GenderMixin.class } )
 public interface Gender extends Serializable
 {
     GenderType getGender();

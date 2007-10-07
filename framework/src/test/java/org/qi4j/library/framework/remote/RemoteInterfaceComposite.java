@@ -12,7 +12,7 @@
 package org.qi4j.library.framework.remote;
 
 import org.qi4j.api.Composite;
-import org.qi4j.api.annotation.ImplementedBy;
+import org.qi4j.api.annotation.Mixins;
 import org.qi4j.library.framework.caching.InvocationCache;
 
 /**
@@ -20,9 +20,8 @@ import org.qi4j.library.framework.caching.InvocationCache;
  * Results of RMI calls are cached, so if an
  * IOException occurs we can reuse a previous result
  * if possible.
- *
  */
-@ImplementedBy(RMIMixin.class)
+@Mixins( RMIMixin.class )
 public interface RemoteInterfaceComposite
     extends RemoteInterface, InvocationCache, Composite
 {

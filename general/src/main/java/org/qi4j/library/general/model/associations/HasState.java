@@ -13,14 +13,14 @@
 package org.qi4j.library.general.model.associations;
 
 import java.io.Serializable;
-import org.qi4j.api.annotation.ImplementedBy;
+import org.qi4j.api.annotation.Mixins;
 import org.qi4j.library.general.model.State;
 import org.qi4j.library.general.model.mixins.HasStateMixin;
 
 /**
  * Represents one-to-one relationship with {@link org.qi4j.library.general.model.State}
  */
-@ImplementedBy( { HasStateMixin.class } )
+@Mixins( { HasStateMixin.class } )
 public interface HasState extends Serializable
 {
     void setState( State aState );

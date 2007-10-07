@@ -13,13 +13,13 @@
  */
 package org.qi4j.library.general.model;
 
-import org.qi4j.api.annotation.ImplementedBy;
+import org.qi4j.api.annotation.Mixins;
 import org.qi4j.library.general.model.mixins.ContactMixin;
 
 /**
  * Generic interface for a contact such as phone number, fax-number, email, msn, etc.
  */
-@ImplementedBy( ContactMixin.class )
+@Mixins( ContactMixin.class )
 public interface Contact
 {
     public final static int VALUE_LEN = 250;

@@ -13,13 +13,12 @@ package org.qi4j.library.framework.caching;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.qi4j.api.annotation.ModifiedBy;
+import org.qi4j.api.annotation.Assertions;
 
 /**
  * TODO
- *
  */
-@ModifiedBy( RemoteInvocationCacheModifier.class)
+@Assertions( RemoteInvocationCacheModifier.class )
 public class InvocationCacheImpl
     implements InvocationCache
 {
@@ -34,6 +33,6 @@ public class InvocationCacheImpl
 
     public Object get( String aName )
     {
-        return cachedValues.get( aName);
+        return cachedValues.get( aName );
     }
 }

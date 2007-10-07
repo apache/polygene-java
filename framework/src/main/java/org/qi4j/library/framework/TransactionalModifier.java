@@ -19,8 +19,8 @@ import javax.transaction.Status;
 import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
 import org.qi4j.api.annotation.AppliesTo;
-import org.qi4j.api.annotation.scope.Modifier;
-import org.qi4j.api.annotation.scope.Modifies;
+import org.qi4j.api.annotation.scope.AssertionFor;
+import org.qi4j.api.annotation.scope.Invocation;
 import org.qi4j.api.annotation.scope.Service;
 
 /**
@@ -38,8 +38,8 @@ public class TransactionalModifier
 {
     // Attributes ----------------------------------------------------
     @Service TransactionManager tm;
-    @Modifier Transactional transactional;
-    @Modifies InvocationHandler next;
+    @Invocation Transactional transactional;
+    @AssertionFor InvocationHandler next;
 
     // InvocationHandler implementation ------------------------------
     public Object invoke( Object proxy, Method method, Object[] args )

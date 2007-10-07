@@ -13,7 +13,7 @@
 package org.qi4j.library.general.model;
 
 import org.qi4j.api.Composite;
-import org.qi4j.api.annotation.ModifiedBy;
+import org.qi4j.api.annotation.Assertions;
 import org.qi4j.library.general.test.model.DescriptorModifier;
 
 public class DescriptorTest extends AbstractTest
@@ -26,7 +26,8 @@ public class DescriptorTest extends AbstractTest
         assertEquals( displayValue, composite.getDisplayValue() );
     }
 
-    public void testDescriptorWithModifier() throws Exception {
+    public void testDescriptorWithModifier() throws Exception
+    {
         DummyComposite2 composite = builderFactory.newCompositeBuilder( DummyComposite2.class ).newInstance();
         composite.setDisplayValue( "Sianny" );
         String displayValue = composite.getDisplayValue();
@@ -37,7 +38,7 @@ public class DescriptorTest extends AbstractTest
     {
     }
 
-    @ModifiedBy( { DescriptorModifier.class } )
+    @Assertions( { DescriptorModifier.class } )
     private interface DummyComposite2 extends Descriptor, HasName, Composite
     {
     }

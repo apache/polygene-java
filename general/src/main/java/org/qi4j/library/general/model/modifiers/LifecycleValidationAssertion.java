@@ -12,7 +12,7 @@
  */
 package org.qi4j.library.general.model.modifiers;
 
-import org.qi4j.api.annotation.scope.Modifies;
+import org.qi4j.api.annotation.scope.AssertionFor;
 import org.qi4j.api.annotation.scope.ThisAs;
 import org.qi4j.api.persistence.Lifecycle;
 import org.qi4j.library.general.model.Validatable;
@@ -20,19 +20,19 @@ import org.qi4j.library.general.model.Validatable;
 /**
  * This modifier is invoked on Lifecycle mixin invocation.
  * Before the next target invocation, this modifier invokes
- * {@link org.qi4j.library.general.model.Validatable#validate()}.
+ * {@link org.qi4j.library.general.model.Validatable#isValid()}.
  * <p/>
  * TODO: We need to distinguish between Validatable on create, delete and update.
  */
-public class LifecycleValidationModifier
+public class LifecycleValidationAssertion
     implements Lifecycle
 {
     @ThisAs Validatable validation;
-    @Modifies Lifecycle next;
+    @AssertionFor Lifecycle next;
 
     public void create()
     {
-        validation.validate();
+        validation.isValid();
 
         next.create();
     }

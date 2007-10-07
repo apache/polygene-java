@@ -12,23 +12,31 @@
  */
 package org.qi4j.library.general.model;
 
+import java.util.ArrayList;
+import java.util.List;
+import org.qi4j.library.general.model.mixins.ValidationMessage;
+
 /**
  * Default exception for validation error
  */
-public class ValidationException extends RuntimeException
+public class ValidationException
+    extends RuntimeException
 {
-    public ValidationException( String message )
+    List<ValidationMessage> messages;
+
+    public ValidationException( String string )
     {
-        super( message );
+        messages = new ArrayList<ValidationMessage>();
+        messages.add( new ValidationMessage( string, ValidationMessage.Severity.ERROR ) );
     }
 
-    public ValidationException( String message, Throwable cause )
+    public ValidationException( List<ValidationMessage> messages )
     {
-        super( message, cause );
+        this.messages = messages;
     }
 
-    public ValidationException( Throwable cause )
+    public List<ValidationMessage> getMessages()
     {
-        super( cause );
+        return messages;
     }
 }

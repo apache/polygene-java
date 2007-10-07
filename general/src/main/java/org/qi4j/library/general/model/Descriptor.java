@@ -13,13 +13,13 @@
 package org.qi4j.library.general.model;
 
 import java.io.Serializable;
-import org.qi4j.api.annotation.ImplementedBy;
+import org.qi4j.api.annotation.Mixins;
 import org.qi4j.library.general.model.mixins.DescriptorMixin;
 
 /**
  * Generic service interface to obtain the formatted or decorated value
  */
-@ImplementedBy( DescriptorMixin.class )
+@Mixins( DescriptorMixin.class )
 public interface Descriptor extends Serializable
 {
     String getDisplayValue();

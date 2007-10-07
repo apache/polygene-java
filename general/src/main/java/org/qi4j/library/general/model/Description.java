@@ -14,10 +14,10 @@
 package org.qi4j.library.general.model;
 
 import java.io.Serializable;
-import org.qi4j.api.annotation.ImplementedBy;
+import org.qi4j.api.annotation.Mixins;
 import org.qi4j.library.framework.properties.PropertiesMixin;
 
-@ImplementedBy( { PropertiesMixin.class } )
+@Mixins( { PropertiesMixin.class } )
 public interface Description extends Serializable
 {
     String getDescription();

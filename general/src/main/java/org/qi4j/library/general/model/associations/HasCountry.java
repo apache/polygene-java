@@ -13,14 +13,14 @@
 package org.qi4j.library.general.model.associations;
 
 import java.io.Serializable;
-import org.qi4j.api.annotation.ImplementedBy;
+import org.qi4j.api.annotation.Mixins;
 import org.qi4j.library.general.model.Country;
 import org.qi4j.library.general.model.mixins.HasCountryMixin;
 
 /**
  * Represents one-to-one relationship with {@link org.qi4j.library.general.model.Country}
  */
-@ImplementedBy( { HasCountryMixin.class } )
+@Mixins( { HasCountryMixin.class } )
 public interface HasCountry extends Serializable
 {
     void setCountry( Country aCountry );

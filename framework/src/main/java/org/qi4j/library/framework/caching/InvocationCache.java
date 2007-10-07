@@ -1,6 +1,6 @@
 package org.qi4j.library.framework.caching;
 
-import org.qi4j.api.annotation.ImplementedBy;
+import org.qi4j.api.annotation.Mixins;
 /*
  * Copyright 2007 Rickard Öberg
  * Licensed under the Apache License, Version 2.0 (the "License"); 
@@ -15,12 +15,12 @@ import org.qi4j.api.annotation.ImplementedBy;
 
 /**
  * TODO
- *
  */
-@ImplementedBy(InvocationCacheImpl.class)
+@Mixins( InvocationCacheImpl.class )
 public interface InvocationCache
 {
     // Public --------------------------------------------------------
-    void set(String aName, Object aResult);
-    Object get(String aName);
+    void set( String aName, Object aResult );
+
+    Object get( String aName );
 }

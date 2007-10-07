@@ -19,7 +19,7 @@
 package org.qi4j.library.general.model;
 
 import java.io.Serializable;
-import org.qi4j.api.annotation.ImplementedBy;
+import org.qi4j.api.annotation.Mixins;
 import org.qi4j.library.framework.properties.PropertiesMixin;
 
 
@@ -27,7 +27,7 @@ import org.qi4j.library.framework.properties.PropertiesMixin;
  * Generic interface for a contact type such as home_office, phone_home, mobile_office,
  * mobile_private, icq, jabber, msn, yahoo, email.
  */
-@ImplementedBy( { PropertiesMixin.class } )
+@Mixins( { PropertiesMixin.class } )
 public interface ContactType extends Serializable
 {
     void setContactType( String aContactType );

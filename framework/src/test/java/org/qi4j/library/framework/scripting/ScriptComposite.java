@@ -1,7 +1,7 @@
 package org.qi4j.library.framework.scripting;
 
 import org.qi4j.api.Composite;
-import org.qi4j.api.annotation.ImplementedBy;
+import org.qi4j.api.annotation.Mixins;
 /*
  * Copyright 2007 Rickard Öberg
  * Licensed under the Apache License, Version 2.0 (the "License"); 
@@ -17,7 +17,7 @@ import org.qi4j.api.annotation.ImplementedBy;
 /**
  * TODO
  */
-@ImplementedBy( JavaScriptMixin.class )
+@Mixins( JavaScriptMixin.class )
 public interface ScriptComposite
     extends Mixin1, Composite
 {

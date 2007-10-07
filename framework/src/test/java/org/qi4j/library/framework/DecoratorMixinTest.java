@@ -9,7 +9,7 @@ import junit.framework.TestCase;
 import org.qi4j.api.Composite;
 import org.qi4j.api.CompositeBuilder;
 import org.qi4j.api.CompositeBuilderFactory;
-import org.qi4j.api.annotation.ImplementedBy;
+import org.qi4j.api.annotation.Mixins;
 import org.qi4j.runtime.CompositeBuilderFactoryImpl;
 
 public class DecoratorMixinTest extends TestCase
@@ -56,7 +56,7 @@ public class DecoratorMixinTest extends TestCase
         }
     }
 
-    @ImplementedBy( DecoratorMixin.class )
+    @Mixins( DecoratorMixin.class )
     interface Composite1 extends Composite, Test1
     {
     }

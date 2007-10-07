@@ -1,7 +1,7 @@
 package org.qi4j.library.framework.scripting;
 
 import java.io.PrintStream;
-import org.qi4j.api.annotation.ImplementedBy;
+import org.qi4j.api.annotation.Mixins;
 /*
  * Copyright 2007 Rickard Öberg
  * Licensed under the Apache License, Version 2.0 (the "License"); 
@@ -16,9 +16,8 @@ import org.qi4j.api.annotation.ImplementedBy;
 
 /**
  * TODO
- *
  */
-@ImplementedBy(ScriptUtilImpl.class)
+@Mixins( ScriptUtilImpl.class )
 public interface ScriptUtil
 {
     // Public --------------------------------------------------------

@@ -17,8 +17,8 @@ import java.lang.reflect.Method;
 import java.rmi.Remote;
 import java.util.Arrays;
 import org.qi4j.api.annotation.AppliesTo;
-import org.qi4j.api.annotation.scope.Modifier;
-import org.qi4j.api.annotation.scope.Modifies;
+import org.qi4j.api.annotation.scope.AssertionFor;
+import org.qi4j.api.annotation.scope.Invocation;
 import org.qi4j.api.annotation.scope.ThisAs;
 
 /**
@@ -30,8 +30,8 @@ public class RemoteInvocationCacheModifier
     implements InvocationHandler
 {
     @ThisAs private InvocationCache cache;
-    @Modifier private Method method;
-    @Modifies private InvocationHandler next;
+    @Invocation private Method method;
+    @AssertionFor private InvocationHandler next;
 
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
     {
