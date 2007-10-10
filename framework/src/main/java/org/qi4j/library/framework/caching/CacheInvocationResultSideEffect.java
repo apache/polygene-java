@@ -29,7 +29,11 @@ public class CacheInvocationResultSideEffect
             result = Void.TYPE;
         }
 
-        String cacheName = method.getName() + Arrays.asList( args );
+        String cacheName = method.getName();
+        if( args != null )
+        {
+            cacheName += Arrays.asList( args );
+        }
         Object oldResult = cache.getCachedValue( cacheName );
         if( oldResult == null || !oldResult.equals( result ) )
         {

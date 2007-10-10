@@ -25,4 +25,6 @@ public interface InvocationCache
     Object getCachedValue( String aName );
 
     Object removeCachedValue( String aName );
+
+    void clear();
 }

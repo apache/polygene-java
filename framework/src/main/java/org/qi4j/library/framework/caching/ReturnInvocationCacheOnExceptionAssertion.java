@@ -31,7 +31,11 @@ public class ReturnInvocationCacheOnExceptionAssertion
         catch( Exception e )
         {
             // Try cache
-            String cacheName = method.getName() + Arrays.asList( args );
+            String cacheName = method.getName();
+            if( args != null )
+            {
+                cacheName += Arrays.asList( args );
+            }
             Object result = cache.getCachedValue( cacheName );
             if( result != null )
             {

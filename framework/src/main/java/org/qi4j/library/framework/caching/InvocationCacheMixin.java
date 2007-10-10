@@ -42,4 +42,9 @@ public class InvocationCacheMixin
     {
         return cachedValues.remove( aName );
     }
+
+    public void clear()
+    {
+        cachedValues.clear();
+    }
 }

@@ -11,7 +11,7 @@
  * See the License for the specific language governing permissions and 
  * limitations under the License.
 */
-package org.qi4j.library.framework;
+package org.qi4j.library.framework.properties;
 
 import java.beans.Introspector;
 import java.lang.reflect.InvocationHandler;
@@ -19,9 +19,10 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import org.qi4j.api.PropertyValue;
 import org.qi4j.api.annotation.AppliesTo;
-import org.qi4j.api.annotation.AppliesToFilter;
 import org.qi4j.api.annotation.scope.Property;
+import org.qi4j.api.annotation.scope.PropertyParameter;
 
 /**
  * Generic property mixin. Methods in interface
@@ -32,30 +33,21 @@ import org.qi4j.api.annotation.scope.Property;
  * removeFoo = remove object from list named foo
  * fooIterator - return an iterator over the list of Foos
  */
-@AppliesTo( PropertiesMixin.AppliesTo.class )
+@AppliesTo( { Getters.class, Setters.class, Property.class } )
 public class PropertiesMixin
     implements InvocationHandler
 {
-    public static class AppliesTo
-        implements AppliesToFilter
-    {
-        public boolean appliesTo( Method method, Class compositeType, Class mixin )
-        {
-            String name = method.getName();
-            if( name.startsWith( "get" ) ||
-                name.startsWith( "set" ) ||
-                name.startsWith( "add" ) ||
-                name.startsWith( "remove" ) )
-            {
-                return true;
-            }
-
-            return method.getAnnotation( Property.class ) != null;
-        }
-    }
-
     // Attributes ----------------------------------------------------
     Map<String, Object> properties = new HashMap<String, Object>();
+
+
+    public PropertiesMixin( @PropertyParameter( "properties" )Iterable<PropertyValue> props )
+    {
+        for( PropertyValue propertyValue : props )
+        {
+            properties.put( "v:" + propertyValue.getName(), propertyValue.getValue() );
+        }
+    }
 
     // InvocationHandler implementation ------------------------------
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable

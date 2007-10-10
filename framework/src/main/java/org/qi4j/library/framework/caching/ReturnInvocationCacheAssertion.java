@@ -33,7 +33,11 @@ public class ReturnInvocationCacheAssertion
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
     {
         // Try cache
-        String cacheName = method.getName() + Arrays.asList( args );
+        String cacheName = method.getName();
+        if( args != null )
+        {
+            cacheName += Arrays.asList( args );
+        }
         Object result = cache.getCachedValue( cacheName );
         if( result != null )
         {
