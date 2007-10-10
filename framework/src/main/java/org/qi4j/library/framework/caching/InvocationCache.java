@@ -16,11 +16,13 @@ import org.qi4j.api.annotation.Mixins;
 /**
  * TODO
  */
-@Mixins( InvocationCacheImpl.class )
+@Mixins( InvocationCacheMixin.class )
 public interface InvocationCache
 {
     // Public --------------------------------------------------------
-    void set( String aName, Object aResult );
+    void setCachedValue( String aName, Object aResult );
 
-    Object get( String aName );
+    Object getCachedValue( String aName );
+
+    Object removeCachedValue( String aName );
 }

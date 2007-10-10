@@ -19,7 +19,6 @@ package org.qi4j.library.general.model;
 import java.util.List;
 import org.qi4j.api.annotation.Mixins;
 import org.qi4j.library.general.model.mixins.ValidatableMixin;
-import org.qi4j.library.general.model.mixins.ValidationMessage;
 
 @Mixins( ValidatableMixin.class )
 public interface Validatable

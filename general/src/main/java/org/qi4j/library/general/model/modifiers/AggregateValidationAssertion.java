@@ -1,21 +1,18 @@
 package org.qi4j.library.general.model.modifiers;
 
 import java.util.List;
-import org.qi4j.api.annotation.scope.AssertionFor;
 import org.qi4j.api.annotation.scope.ThisAs;
 import org.qi4j.library.general.model.Aggregated;
 import org.qi4j.library.general.model.Validatable;
-import org.qi4j.library.general.model.ValidationException;
-import org.qi4j.library.general.model.mixins.ValidationMessage;
+import org.qi4j.library.general.model.ValidationMessage;
 
 /**
  * Ensure that validation rules of aggregator are enforced.
  */
 public class AggregateValidationAssertion
-    implements Validatable
+    extends AbstractValidatableAssertion
 {
     @ThisAs Aggregated aggregated;
-    @AssertionFor Validatable next;
 
     public List<ValidationMessage> isValid()
     {
@@ -29,11 +26,5 @@ public class AggregateValidationAssertion
 
         }
         return messages;
-    }
-
-
-    public void checkValid() throws ValidationException
-    {
-        next.checkValid();
     }
 }

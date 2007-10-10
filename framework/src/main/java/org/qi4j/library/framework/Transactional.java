@@ -22,10 +22,9 @@ import java.lang.annotation.Target;
 
 /**
  * Example transaction attribute.
- *
+ * <p/>
  * Note: preferably one should use the Spring tx annotations instead!
  * This is just as a sample of how tx support could work.
- *
  */
 @Retention( RetentionPolicy.RUNTIME )
 @Target( ElementType.METHOD )
@@ -34,4 +33,55 @@ import java.lang.annotation.Target;
 public @interface Transactional
 {
     Propagation value() default Propagation.REQUIRED;
+
+    /**
+     * Defines how to deal with propagation of existing transaction or creation of a new transaction.
+     * Similar to EJB CMT propagation.
+     */
+    public enum Propagation
+    {
+
+        /**
+         * Default propagation behavior.
+         * Behavior: <br>
+         * If no current transaction: creates a new transaction <br>
+         * If there is a current transaction: use the current transaction.
+         */
+        REQUIRED,
+
+        /**
+         * Behavior: <br>
+         * If no current transaction: executes non transactionaly <br>
+         * If there is a current transaction: use the current transaction.
+         */
+        SUPPORTS,
+
+        /**
+         * Behavior: <br>
+         * If no current transaction: throw an exception <br>
+         * If there is a current transaction: use the current transaction.
+         */
+        MANDATORY,
+
+        /**
+         * Behavior: <br>
+         * If no current transaction: creates a new transaction <br>
+         * If there is a current transaction: suspend the current transaction and create a new transaction.
+         */
+        REQUIRES_NEW,
+
+        /**
+         * Behavior: <br>
+         * If no current transaction: executes non transactionaly <br>
+         * If there is a current transaction: suspend the current transaction and executes non transactionaly.
+         */
+        NOT_SUPPORTED,
+
+        /**
+         * Behavior: <br>
+         * If no current transaction: executes non transactionaly <br>
+         * If there is a current transaction: throw an exception.
+         */
+        NEVER
+    }
 }

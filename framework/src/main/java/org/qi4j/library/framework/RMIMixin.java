@@ -9,7 +9,7 @@
  * See the License for the specific language governing permissions and 
  * limitations under the License.
 */
-package org.qi4j.library.framework.remote;
+package org.qi4j.library.framework;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
@@ -21,9 +21,8 @@ import org.qi4j.api.annotation.AppliesTo;
 
 /**
  * Generic mixin that looks up and invokes an object through RMI
- *
  */
-@AppliesTo( Remote.class)
+@AppliesTo( Remote.class )
 public class RMIMixin
     implements InvocationHandler
 {
@@ -32,15 +31,15 @@ public class RMIMixin
     public Object invoke( Object proxy, Method method, Object[] args )
         throws Throwable
     {
-        if (remote == null)
+        if( remote == null )
         {
-            Registry registry = LocateRegistry.getRegistry("localhost");
-            remote = registry.lookup(method.getDeclaringClass().getSimpleName());
+            Registry registry = LocateRegistry.getRegistry( "localhost" );
+            remote = registry.lookup( method.getDeclaringClass().getSimpleName() );
         }
 
         try
         {
-            return method.invoke( remote, args);
+            return method.invoke( remote, args );
         }
         catch( InvocationTargetException e )
         {

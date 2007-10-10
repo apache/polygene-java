@@ -23,23 +23,23 @@ public class PropagationTest
     {
         // if an enum value is changed or removed the test wont compile
         // if a value is added will fail
-        for( Propagation propagation : Propagation.values() )
+        for( Transactional.Propagation propagation : Transactional.Propagation.values() )
         {
-            switch ( propagation )
+            switch( propagation )
             {
-                case MANDATORY:
-                case NEVER:
-                case NOT_SUPPORTED:
-                case REQUIRED:
-                case REQUIRES_NEW:
-                case SUPPORTS:
-                {
-                    break;
-                }
-                default:
-                {
-                    fail( "unsupported type: " + propagation);
-                }
+            case MANDATORY:
+            case NEVER:
+            case NOT_SUPPORTED:
+            case REQUIRED:
+            case REQUIRES_NEW:
+            case SUPPORTS:
+            {
+                break;
+            }
+            default:
+            {
+                fail( "unsupported type: " + propagation );
+            }
 
             }
         }

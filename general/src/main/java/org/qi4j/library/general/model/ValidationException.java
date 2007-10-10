@@ -14,7 +14,6 @@ package org.qi4j.library.general.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.qi4j.library.general.model.mixins.ValidationMessage;
 
 /**
  * Default exception for validation error
@@ -38,5 +37,26 @@ public class ValidationException
     public List<ValidationMessage> getMessages()
     {
         return messages;
+    }
+
+    @Override public String getMessage()
+    {
+        return getLocalizedMessage();
+    }
+
+
+    @Override public String getLocalizedMessage()
+    {
+        StringBuffer buf = new StringBuffer();
+        for( ValidationMessage message : messages )
+        {
+            if( buf.length() != 0 )
+            {
+                buf.append( "\n" );
+            }
+            buf.append( message.getMessage() );
+        }
+
+        return buf.toString();
     }
 }

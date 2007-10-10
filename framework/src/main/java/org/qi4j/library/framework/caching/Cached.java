@@ -19,11 +19,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * TODO
- *
+ * Mark interfaces or methods whose results should be cached with this annotation.
  */
 @Retention( RetentionPolicy.RUNTIME )
-@Target( ElementType.METHOD )
+@Target( { ElementType.METHOD, ElementType.TYPE } )
 @Documented
 @Inherited
 public @interface Cached

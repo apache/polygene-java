@@ -13,6 +13,7 @@ package org.qi4j.library.framework.remote;
 
 import org.qi4j.api.Composite;
 import org.qi4j.api.annotation.Mixins;
+import org.qi4j.library.framework.RMIMixin;
 import org.qi4j.library.framework.caching.InvocationCache;
 
 /**

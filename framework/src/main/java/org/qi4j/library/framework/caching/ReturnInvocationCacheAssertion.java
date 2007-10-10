@@ -11,10 +11,8 @@
 */
 package org.qi4j.library.framework.caching;
 
-import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.rmi.Remote;
 import java.util.Arrays;
 import org.qi4j.api.annotation.AppliesTo;
 import org.qi4j.api.annotation.scope.AssertionFor;
@@ -22,11 +20,10 @@ import org.qi4j.api.annotation.scope.Invocation;
 import org.qi4j.api.annotation.scope.ThisAs;
 
 /**
- * Cache for remote calls.
- * Cache values of remote invocations and if an IOException occurs, try to reuse a previous result.
+ * Return value of @Cached calls if possible.
  */
-@AppliesTo( Remote.class )
-public class RemoteInvocationCacheModifier
+@AppliesTo( Cached.class )
+public class ReturnInvocationCacheAssertion
     implements InvocationHandler
 {
     @ThisAs private InvocationCache cache;
@@ -35,26 +32,22 @@ public class RemoteInvocationCacheModifier
 
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
     {
+        // Try cache
         String cacheName = method.getName() + Arrays.asList( args );
-        try
+        Object result = cache.getCachedValue( cacheName );
+        if( result != null )
         {
-            Object result = next.invoke( proxy, method, args );
-            cache.set( cacheName, result );
-            return result;
-        }
-        catch( IOException e )
-        {
-            Object result = cache.get( cacheName );
-            if( result != null )
+            if( result == Void.TYPE )
+            {
+                return null;
+            }
+            else
             {
                 return result;
             }
+        }
 
-            throw e;
-        }
-        catch( Throwable e )
-        {
-            throw e;
-        }
+        // No cached value found - call method
+        return next.invoke( proxy, method, args );
     }
 }

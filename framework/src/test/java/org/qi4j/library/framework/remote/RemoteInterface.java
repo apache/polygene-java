@@ -13,15 +13,16 @@ package org.qi4j.library.framework.remote;
 
 import java.io.IOException;
 import java.rmi.Remote;
+import org.qi4j.library.framework.caching.Cached;
 
 /**
  * TODO
- *
  */
+@Cached
 public interface RemoteInterface
     extends Remote
 {
     // Public --------------------------------------------------------
-    String foo(String aBar)
+    String foo( String aBar )
         throws IOException;
 }

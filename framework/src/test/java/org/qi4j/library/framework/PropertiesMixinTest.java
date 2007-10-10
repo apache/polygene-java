@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
-package org.qi4j.library.framework.properties;
+package org.qi4j.library.framework;
 
 import java.lang.reflect.Proxy;
 import java.util.Iterator;
@@ -29,7 +29,7 @@ public class PropertiesMixinTest
     public void setUp() throws NoSuchMethodException
     {
         m_underTest = new PropertiesMixin();
-        m_proxy = (Value) Proxy.newProxyInstance( Value.class.getClassLoader(), new Class[] { Value.class }, m_underTest );
+        m_proxy = (Value) Proxy.newProxyInstance( Value.class.getClassLoader(), new Class[]{ Value.class }, m_underTest );
     }
 
     @Test
@@ -107,7 +107,7 @@ public class PropertiesMixinTest
     {
         assertNull( "iterator supposed to be null", m_proxy.barIterator() );
     }
-    
+
     @Test
     public void iterateWithoutAdd()
     {
@@ -153,22 +153,30 @@ public class PropertiesMixinTest
     public static interface Value
     {
         public String getFoo();
+
         public void setFoo( String value );
 
         public String get();
-        public void set( String value );        
+
+        public void set( String value );
 
         public void addFoo( String value );
+
         public void removeFoo( String value );
+
         public Iterator<String> fooIterator();
 
         public void addBar( String value );
+
         public void removeBar( String value );
+
         public Iterator<String> barIterator();
 
         public void add( String value );
+
         public void remove( String value );
-        public Iterator<String> iterator();        
+
+        public Iterator<String> iterator();
     }
-    
+
 }

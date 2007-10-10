@@ -25,6 +25,8 @@ import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.Undefined;
 import org.mozilla.javascript.Wrapper;
 import org.qi4j.api.CompositeBuilderFactory;
+import org.qi4j.api.annotation.AppliesTo;
+import org.qi4j.api.annotation.AppliesToFilter;
 import org.qi4j.api.annotation.scope.Qi4j;
 
 /**
@@ -36,12 +38,19 @@ import org.qi4j.api.annotation.scope.Qi4j;
  * Example:
  * org/qi4j/samples/hello/domain/HelloWorldSpeaker.say.js
  */
+@AppliesTo( JavaScriptMixin.AppliesTo.class )
 public class JavaScriptMixin
     implements InvocationHandler
 {
-    @Qi4j CompositeBuilderFactory factory;
+    public static class AppliesTo
+        implements AppliesToFilter
+    {
+        public boolean appliesTo( Method method, Class compositeType, Class mixin )
+        {
+            return getFunctionResoure( method ) != null;
+        }
+    }
 
-    // Static --------------------------------------------------------
     static Scriptable standardScope;
 
     static
@@ -51,10 +60,9 @@ public class JavaScriptMixin
         Context.exit();
     }
 
-    // Attributes ----------------------------------------------------
+    @Qi4j CompositeBuilderFactory factory;
     Scriptable instanceScope;
 
-    // Constructors --------------------------------------------------
     public JavaScriptMixin()
     {
         Context cx = Context.enter();
@@ -63,7 +71,6 @@ public class JavaScriptMixin
         Context.exit();
     }
 
-    // InvocationHandler implementation ------------------------------
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
     {
         Context cx = Context.enter();
@@ -94,18 +101,10 @@ public class JavaScriptMixin
         }
     }
 
-    // Protected -----------------------------------------------------
     protected Function getFunction( Context cx, Scriptable scope, Method aMethod )
         throws IOException
     {
-        String scriptFile = aMethod.getDeclaringClass().getSimpleName() + "." + aMethod.getName() + ".js";
-
-        URL scriptUrl = getClass().getResource( scriptFile );
-        if( scriptUrl == null )
-        {
-            scriptFile = aMethod.getDeclaringClass().getName().replace( '.', File.separatorChar ) + "." + aMethod.getName() + ".js";
-            scriptUrl = aMethod.getDeclaringClass().getClassLoader().getResource( scriptFile );
-        }
+        URL scriptUrl = getFunctionResoure( aMethod );
 
         if( scriptUrl == null )
         {
@@ -121,6 +120,14 @@ public class JavaScriptMixin
             script += line + "\n";
         }
 
-        return cx.compileFunction( scope, script, "<" + scriptFile + ">", 0, null );
+        return cx.compileFunction( scope, script, "<" + scriptUrl.getFile() + ">", 0, null );
+    }
+
+    protected static URL getFunctionResoure( Method method )
+    {
+        String scriptFile = method.getDeclaringClass().getName().replace( '.', File.separatorChar ) + "." + method.getName() + ".js";
+        URL scriptUrl = method.getDeclaringClass().getClassLoader().getResource( scriptFile );
+
+        return scriptUrl;
     }
 }

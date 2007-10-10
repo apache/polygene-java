@@ -30,10 +30,10 @@ import org.qi4j.api.annotation.scope.Service;
  * and commit transactions.
  *
  * @see Transactional
- * @see Propagation
+ * @see org.qi4j.library.framework.Transactional.Propagation
  */
 @AppliesTo( Transactional.class )
-public class TransactionalModifier
+public class TransactionAssertion
     implements InvocationHandler
 {
     // Attributes ----------------------------------------------------

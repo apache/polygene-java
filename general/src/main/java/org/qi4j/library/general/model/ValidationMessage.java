@@ -14,31 +14,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.library.general.model.mixins;
+package org.qi4j.library.general.model;
+
+import java.io.Serializable;
+import java.text.MessageFormat;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 public class ValidationMessage
+    implements Serializable
 {
     private String resourceKey;
     private Object[] arguments;
 
-    private String source;
+    private String resourceBundle;
     private Severity severity;
 
     public ValidationMessage( String resourceKey, Severity severity )
     {
-        this( resourceKey, null, null, severity );
+        this( resourceKey, null, severity );
     }
 
-    public ValidationMessage( String resourceKey, String source, Severity severity )
-    {
-        this( resourceKey, null, source, severity );
-    }
-
-    public ValidationMessage( String resourceKey, Object[] arguments, String source, Severity severity )
+    public ValidationMessage( String resourceKey, String resourceBundle, Severity severity, Object... arguments )
     {
         this.resourceKey = resourceKey;
         this.arguments = arguments;
-        this.source = source;
+        this.resourceBundle = resourceBundle;
         this.severity = severity;
     }
 
@@ -52,14 +53,44 @@ public class ValidationMessage
         return arguments;
     }
 
-    public String getSource()
+    public String getResourceBundle()
     {
-        return source;
+        return resourceBundle;
     }
 
     public Severity getSeverity()
     {
         return severity;
+    }
+
+    public String getMessage()
+    {
+        return getMessage( Locale.getDefault() );
+    }
+
+    public String getMessage( Locale aLocale )
+    {
+        String resource;
+        if( resourceBundle != null )
+        {
+            // Look up the message from a bundle
+            ResourceBundle bundle = ResourceBundle.getBundle( resourceBundle, aLocale );
+            resource = bundle.getString( resourceKey );
+        }
+        else
+        {
+            // Don't use i18n
+            resource = resourceKey;
+        }
+
+        if( arguments == null )
+        {
+            return resource;
+        }
+        else
+        {
+            return MessageFormat.format( resource, arguments );
+        }
     }
 
     public enum Severity

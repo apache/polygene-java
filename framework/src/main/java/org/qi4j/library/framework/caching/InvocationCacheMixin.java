@@ -11,28 +11,35 @@
 */
 package org.qi4j.library.framework.caching;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import org.qi4j.api.annotation.Assertions;
+import org.qi4j.api.annotation.SideEffects;
 
 /**
  * TODO
  */
-@Assertions( RemoteInvocationCacheModifier.class )
-public class InvocationCacheImpl
+@Assertions( ReturnInvocationCacheOnExceptionAssertion.class )
+@SideEffects( CacheInvocationResultSideEffect.class )
+public class InvocationCacheMixin
     implements InvocationCache
 {
     // Attributes ----------------------------------------------------
-    Map cachedValues = new HashMap();
+    Map<String, Object> cachedValues = new ConcurrentHashMap<String, Object>();
 
     // InvocationCache implementation --------------------------------
-    public void set( String aName, Object aResult )
+    public void setCachedValue( String aName, Object aResult )
     {
         cachedValues.put( aName, aResult );
     }
 
-    public Object get( String aName )
+    public Object getCachedValue( String aName )
     {
         return cachedValues.get( aName );
+    }
+
+    public Object removeCachedValue( String aName )
+    {
+        return cachedValues.remove( aName );
     }
 }

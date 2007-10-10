@@ -11,7 +11,7 @@
  * See the License for the specific language governing permissions and 
  * limitations under the License.
 */
-package org.qi4j.library.framework.properties;
+package org.qi4j.library.framework;
 
 import java.beans.Introspector;
 import java.lang.reflect.InvocationHandler;
@@ -19,6 +19,9 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import org.qi4j.api.annotation.AppliesTo;
+import org.qi4j.api.annotation.AppliesToFilter;
+import org.qi4j.api.annotation.scope.Property;
 
 /**
  * Generic property mixin. Methods in interface
@@ -29,9 +32,28 @@ import java.util.Map;
  * removeFoo = remove object from list named foo
  * fooIterator - return an iterator over the list of Foos
  */
+@AppliesTo( PropertiesMixin.AppliesTo.class )
 public class PropertiesMixin
     implements InvocationHandler
 {
+    public static class AppliesTo
+        implements AppliesToFilter
+    {
+        public boolean appliesTo( Method method, Class compositeType, Class mixin )
+        {
+            String name = method.getName();
+            if( name.startsWith( "get" ) ||
+                name.startsWith( "set" ) ||
+                name.startsWith( "add" ) ||
+                name.startsWith( "remove" ) )
+            {
+                return true;
+            }
+
+            return method.getAnnotation( Property.class ) != null;
+        }
+    }
+
     // Attributes ----------------------------------------------------
     Map<String, Object> properties = new HashMap<String, Object>();
 
@@ -39,7 +61,7 @@ public class PropertiesMixin
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
     {
         String methodName = method.getName();
-        if ( methodName.startsWith( "set" ) )
+        if( methodName.startsWith( "set" ) )
         {
             // Setter
             String name = "v:" + Introspector.decapitalize( methodName.substring( 3 ) );
@@ -54,13 +76,13 @@ public class PropertiesMixin
             }
             return null;
         }
-        else if ( methodName.startsWith( "get" ) )
+        else if( methodName.startsWith( "get" ) )
         {
             // Getter
             String name = "v:" + Introspector.decapitalize( methodName.substring( 3 ) );
             return properties.get( name );
         }
-        else if ( methodName.startsWith( "add" ) )
+        else if( methodName.startsWith( "add" ) )
         {
             // Add to list
             String name = "l:" + Introspector.decapitalize( methodName.substring( 3 ) );
@@ -72,7 +94,7 @@ public class PropertiesMixin
             }
             list.add( args[ 0 ] );
         }
-        else if ( methodName.startsWith( "remove" ) )
+        else if( methodName.startsWith( "remove" ) )
         {
             // Remove from list
             String name = "l:" + Introspector.decapitalize( methodName.substring( 6 ) );
@@ -83,10 +105,10 @@ public class PropertiesMixin
                 if( list.size() == 0 )
                 {
                     properties.remove( name );
-                }                
+                }
             }
         }
-        else if ( methodName.endsWith( "Iterator" ) || "iterator".equals( methodName) )
+        else if( methodName.endsWith( "Iterator" ) || "iterator".equals( methodName ) )
         {
             String name = "l:" + Introspector.decapitalize( methodName.substring( 0, methodName.length() - 8 ) );
             ArrayList<Object> list = (ArrayList<Object>) properties.get( name );

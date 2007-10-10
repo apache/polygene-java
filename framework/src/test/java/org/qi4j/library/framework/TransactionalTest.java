@@ -24,7 +24,7 @@ public class TransactionalTest
     {
         Method method = TransactionalTest.class.getMethod( "transactionalMethod" );
         assertEquals( "default value",
-                      Propagation.REQUIRED,
+                      Transactional.Propagation.REQUIRED,
                       method.getAnnotation( Transactional.class ).value() );
     }
 
