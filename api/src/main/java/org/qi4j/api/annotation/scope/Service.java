@@ -29,7 +29,7 @@ import java.lang.annotation.Target;
 @DependencyScope
 public @interface Service
 {
-    @Optional boolean value() default false; // True if the dependency is optional, only fail if this is false
+    @Optional boolean optional() default false; // True if the dependency is optional, only fail if this is false
 
     @Name String name() default ""; // This name can be used for lookups
 }

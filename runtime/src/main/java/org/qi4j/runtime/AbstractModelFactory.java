@@ -234,7 +234,7 @@ public abstract class AbstractModelFactory
 
     private boolean isOptional( Annotation annotation )
     {
-        Method optionalMethod = getAnnotationMethod( Optional.class, annotation.getClass() );
+        Method optionalMethod = getAnnotationMethod( Optional.class, annotation.annotationType() );
         if( optionalMethod != null )
         {
             try

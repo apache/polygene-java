@@ -1,5 +1,6 @@
 package org.qi4j.spi.dependency;
 
+import java.lang.reflect.InvocationHandler;
 import java.util.Map;
 import org.qi4j.api.model.CompositeContext;
 import org.qi4j.api.model.InjectionKey;
@@ -12,9 +13,9 @@ public class MixinDependencyInjectionContext
     implements FragmentDependencyInjectionContext
 {
     private CompositeContext context;
-    private Object thisAs;
+    private InvocationHandler thisAs;
 
-    public MixinDependencyInjectionContext( CompositeContext context, Object thisAs, Map<InjectionKey, Object> properties, Map<InjectionKey, Object> adapt, Map<InjectionKey, Object> decorate )
+    public MixinDependencyInjectionContext( CompositeContext context, InvocationHandler thisAs, Map<InjectionKey, Object> properties, Map<InjectionKey, Object> adapt, Map<InjectionKey, Object> decorate )
     {
         super( properties, adapt, decorate );
         this.thisAs = thisAs;
@@ -26,7 +27,7 @@ public class MixinDependencyInjectionContext
         return context;
     }
 
-    public Object getThisAs()
+    public InvocationHandler getThisAs()
     {
         return thisAs;
     }

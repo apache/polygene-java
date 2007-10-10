@@ -1,7 +1,7 @@
 package org.qi4j.test.model1;
 
 import org.qi4j.api.annotation.Mixins;
-import org.qi4j.library.framework.properties.PropertiesMixin;
+import org.qi4j.library.framework.PropertiesMixin;
 
 @Mixins( { PropertiesMixin.class } )
 public interface Mixin3

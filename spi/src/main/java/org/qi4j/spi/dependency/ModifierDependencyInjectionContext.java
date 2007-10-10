@@ -1,8 +1,10 @@
 package org.qi4j.spi.dependency;
 
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import org.qi4j.api.InvocationContext;
 import org.qi4j.api.model.CompositeContext;
+import org.qi4j.api.model.MixinModel;
 
 /**
  * TODO
@@ -12,17 +14,19 @@ public class ModifierDependencyInjectionContext
     implements FragmentDependencyInjectionContext
 {
     private CompositeContext context;
-    private Object thisAs;
+    private InvocationHandler thisAs;
     private Object modifies;
     private Method method;
+    private MixinModel model;
     private InvocationContext invocationContext;
 
-    public ModifierDependencyInjectionContext( CompositeContext context, Object thisAs, Object modifies, Method method, InvocationContext invocationContext )
+    public ModifierDependencyInjectionContext( CompositeContext context, InvocationHandler thisAs, Object modifies, Method method, MixinModel model, InvocationContext invocationContext )
     {
         this.thisAs = thisAs;
         this.context = context;
         this.modifies = modifies;
         this.method = method;
+        this.model = model;
         this.invocationContext = invocationContext;
     }
 
@@ -36,6 +40,11 @@ public class ModifierDependencyInjectionContext
         return method;
     }
 
+    public MixinModel getModel()
+    {
+        return model;
+    }
+
     public InvocationContext getInvocationContext()
     {
         return invocationContext;
@@ -46,7 +55,7 @@ public class ModifierDependencyInjectionContext
         return context;
     }
 
-    public Object getThisAs()
+    public InvocationHandler getThisAs()
     {
         return thisAs;
     }

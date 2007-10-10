@@ -20,8 +20,15 @@ package org.qi4j.api.query;
 public class QueryBuilderFactoryImpl
     implements QueryBuilderFactory
 {
+    Queryable queryable;
+
+    public QueryBuilderFactoryImpl( Queryable queryable )
+    {
+        this.queryable = queryable;
+    }
+
     public <K> QueryBuilder<K> newQueryBuilder( Class<K> compositeType )
     {
-        return new QueryBuilderImpl<K>( compositeType );
+        return new QueryBuilderImpl<K>( compositeType, queryable );
     }
 }

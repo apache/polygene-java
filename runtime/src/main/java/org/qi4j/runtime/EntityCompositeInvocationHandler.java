@@ -34,7 +34,7 @@ public class EntityCompositeInvocationHandler<T extends EntityComposite> extends
     {
         super( aContext );
 
-        mixins = new Object[aContext.getCompositeResolution().getUsedMixinModels().size()];
+        mixins = new Object[aContext.getCompositeResolution().getResolvedMixinModels().size()];
     }
 
     public static <T extends EntityComposite> EntityCompositeInvocationHandler<T> getInvocationHandler( T aProxy )
@@ -66,7 +66,7 @@ public class EntityCompositeInvocationHandler<T extends EntityComposite> extends
 
     public void setMixins( Object[] mixins )
     {
-        Set<MixinResolution> mixinResolutions = context.getCompositeResolution().getUsedMixinModels();
+        Set<MixinResolution> mixinResolutions = context.getCompositeResolution().getResolvedMixinModels();
         int i = 0;
         for( MixinResolution mixinResolution : mixinResolutions )
         {

@@ -20,6 +20,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import org.qi4j.api.Composite;
 import org.qi4j.api.annotation.Assertions;
@@ -62,14 +63,13 @@ public class CompositeModelFactory
         validateClass( compositeClass );
 
         // Method models
-        Iterable<MethodModel> methods = findMethods( compositeClass );
+        Collection<MethodModel> methods = findMethods( compositeClass );
 
         // Find mixins
         List<MixinModel> mixins = findMixins( compositeClass, compositeClass );
 
         // Standard mixins
         mixins.add( mixinModelFactory.newFragmentModel( CompositeMixin.class, compositeClass ) );
-        mixins.add( mixinModelFactory.newFragmentModel( LifecycleImpl.class, compositeClass ) );
 
         if( EntityComposite.class.isAssignableFrom( compositeClass ) )
         {
@@ -91,7 +91,7 @@ public class CompositeModelFactory
         return model;
     }
 
-    private <T extends Composite> Iterable<MethodModel> findMethods( Class<T> compositeClass )
+    private <T extends Composite> Collection<MethodModel> findMethods( Class<T> compositeClass )
     {
         List<MethodModel> models = new ArrayList<MethodModel>();
         Method[] methods = compositeClass.getMethods();
@@ -99,6 +99,7 @@ public class CompositeModelFactory
         {
             models.add( new MethodModel( method ) );
         }
+
         return models;
     }
 

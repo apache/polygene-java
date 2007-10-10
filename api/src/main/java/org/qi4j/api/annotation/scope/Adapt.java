@@ -29,5 +29,5 @@ import java.lang.annotation.Target;
 @DependencyScope
 public @interface Adapt
 {
-    @Optional boolean value() default true; // True if adaptation is required, only fail if true
+    @Optional boolean optional() default false; // True if adaptation is optional, only fail if false
 }

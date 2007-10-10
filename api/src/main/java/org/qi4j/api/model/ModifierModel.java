@@ -54,10 +54,10 @@ public abstract class ModifierModel<T>
         out.println( "  @" + getModifiesAnnotationType().getSimpleName() );
         out.println( "    " + modifiesDependency.getKey().getRawType().getSimpleName() );
 
-        if( appliesTo != null )
+        if( getAppliesTo() != null )
         {
             out.println( "  @AppliesTo" );
-            out.println( "    " + appliesTo.getName() );
+            out.println( "    " + getAppliesTo().getName() );
         }
         out.close();
         return string + str.toString();

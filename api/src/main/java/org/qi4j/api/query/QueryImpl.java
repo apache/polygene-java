@@ -19,22 +19,47 @@ package org.qi4j.api.query;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 public class QueryImpl<R>
     implements Query<R>
 {
-    public QueryImpl( Class resultType, ArrayList<BinaryExpression> where, ArrayList<OrderBy> orderBy )
+    private Class resultType;
+    private List<BinaryExpression> where;
+    private List<OrderBy> orderBy;
+    private Queryable queryable;
+
+    public QueryImpl( Class resultType, ArrayList<BinaryExpression> where, ArrayList<OrderBy> orderBy, Queryable queryable )
     {
+        this.resultType = resultType;
+        this.where = where;
+        this.orderBy = orderBy;
+        this.queryable = queryable;
     }
 
     public R find()
     {
-        return iterator().next();
+        return queryable.find( this );
     }
 
     public Iterator<R> iterator()
     {
         //TODO: Auto-generated, need attention.
-        return null;
+        return queryable.iterable( this ).iterator();
+    }
+
+    public Class getResultType()
+    {
+        return resultType;
+    }
+
+    public List<BinaryExpression> getWhere()
+    {
+        return where;
+    }
+
+    public List<OrderBy> getOrderBy()
+    {
+        return orderBy;
     }
 }

@@ -15,7 +15,10 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.qi4j.api.Composite;
 
 /**
@@ -25,12 +28,12 @@ public final class CompositeModel<T extends Composite>
 {
     private Class<T> compositeClass;
     private Class<? extends T> proxyClass;
-    private Iterable<MethodModel> methodModels;
+    private Collection<MethodModel> methodModels;
     private Iterable<MixinModel> mixinModels;
     private Iterable<AssertionModel> assertionModels;
     private Iterable<SideEffectModel> sideEffectModels;
 
-    public CompositeModel( Class<T> compositeClass, Class<? extends T> proxyClass, Iterable<MethodModel> methodModels, Iterable<MixinModel> mixinModels, Iterable<AssertionModel> assertionModels, Iterable<SideEffectModel> sideEffectModels )
+    public CompositeModel( Class<T> compositeClass, Class<? extends T> proxyClass, Collection<MethodModel> methodModels, Iterable<MixinModel> mixinModels, Iterable<AssertionModel> assertionModels, Iterable<SideEffectModel> sideEffectModels )
     {
         this.methodModels = methodModels;
         this.compositeClass = compositeClass;
@@ -50,7 +53,7 @@ public final class CompositeModel<T extends Composite>
         return proxyClass;
     }
 
-    public Iterable<MethodModel> getMethodModels()
+    public Collection<MethodModel> getMethodModels()
     {
         return methodModels;
     }
@@ -68,6 +71,34 @@ public final class CompositeModel<T extends Composite>
     public Iterable<SideEffectModel> getSideEffectModels()
     {
         return sideEffectModels;
+    }
+
+    public Iterable<MethodModel> getThisAsModels()
+    {
+        Set<MethodModel> methodModels = new HashSet<MethodModel>();
+        for( MixinModel mixinModel : mixinModels )
+        {
+            methodModels.addAll( mixinModel.getThisAsMethods() );
+            Iterable<AssertionModel> assertions = mixinModel.getAssertions();
+            for( AssertionModel assertionModel : assertions )
+            {
+                methodModels.addAll( assertionModel.getThisAsMethods() );
+            }
+            Iterable<SideEffectModel> iterable = mixinModel.getSideEffects();
+            for( SideEffectModel sideEffectModel : iterable )
+            {
+                methodModels.addAll( sideEffectModel.getThisAsMethods() );
+            }
+        }
+        for( AssertionModel assertionModel : assertionModels )
+        {
+            methodModels.addAll( assertionModel.getThisAsMethods() );
+        }
+        for( SideEffectModel sideEffectModel : sideEffectModels )
+        {
+            methodModels.addAll( sideEffectModel.getThisAsMethods() );
+        }
+        return methodModels;
     }
 
     public List<MixinModel> getImplementations( Class aType )

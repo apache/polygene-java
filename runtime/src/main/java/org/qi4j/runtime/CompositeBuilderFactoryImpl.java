@@ -35,8 +35,8 @@ import org.qi4j.runtime.resolution.CompositeModelResolver;
 import org.qi4j.runtime.resolution.CompositeResolution;
 import org.qi4j.runtime.resolution.DecorateDependencyResolver;
 import org.qi4j.runtime.resolution.DependencyResolverDelegator;
+import org.qi4j.runtime.resolution.InvocationDependencyResolver;
 import org.qi4j.runtime.resolution.MixinModelResolver;
-import org.qi4j.runtime.resolution.ModifierDependencyResolver;
 import org.qi4j.runtime.resolution.ModifiesDependencyResolver;
 import org.qi4j.runtime.resolution.PropertyDependencyResolver;
 import org.qi4j.runtime.resolution.Qi4jDependencyResolver;
@@ -62,7 +62,7 @@ public final class CompositeBuilderFactoryImpl
         dependencyResolverDelegator.setDependencyResolver( ThisAs.class, new ThisAsDependencyResolver() );
         dependencyResolverDelegator.setDependencyResolver( AssertionFor.class, new ModifiesDependencyResolver() );
         dependencyResolverDelegator.setDependencyResolver( SideEffectFor.class, new ModifiesDependencyResolver() );
-        dependencyResolverDelegator.setDependencyResolver( Invocation.class, new ModifierDependencyResolver() );
+        dependencyResolverDelegator.setDependencyResolver( Invocation.class, new InvocationDependencyResolver() );
         dependencyResolverDelegator.setDependencyResolver( Adapt.class, new AdaptDependencyResolver() );
         dependencyResolverDelegator.setDependencyResolver( Decorate.class, new DecorateDependencyResolver() );
         PropertyDependencyResolver dependencyResolver = new PropertyDependencyResolver();

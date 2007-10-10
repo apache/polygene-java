@@ -18,4 +18,37 @@ public class MethodModel
     {
         return method;
     }
+
+
+    public boolean equals( Object o )
+    {
+        if( this == o )
+        {
+            return true;
+        }
+        if( o == null || getClass() != o.getClass() )
+        {
+            return false;
+        }
+
+        MethodModel that = (MethodModel) o;
+
+        if( !method.equals( that.method ) )
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    public int hashCode()
+    {
+        return method.hashCode();
+    }
+
+
+    @Override public String toString()
+    {
+        return method.toGenericString();
+    }
 }

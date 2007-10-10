@@ -25,15 +25,16 @@ public class QueryBuilderImpl<R>
     implements QueryBuilder<R>
 {
     private Class resultType;
+    private Queryable queryable;
     private ArrayList<BinaryExpression> where;
     private ArrayList<OrderBy> orderBy;
 
-    public QueryBuilderImpl( Class<R> resultType )
+    public QueryBuilderImpl( Class<R> resultType, Queryable queryable )
     {
         this.resultType = resultType;
+        this.queryable = queryable;
         where = new ArrayList<BinaryExpression>();
         orderBy = new ArrayList<OrderBy>();
-
     }
 
     public <K> K parameter( Class<K> mixinType )
@@ -83,7 +84,7 @@ public class QueryBuilderImpl<R>
 
     public Query<R> newQuery()
     {
-        return new QueryImpl<R>( resultType, where, orderBy );
+        return new QueryImpl<R>( resultType, where, orderBy, queryable );
     }
 
 }

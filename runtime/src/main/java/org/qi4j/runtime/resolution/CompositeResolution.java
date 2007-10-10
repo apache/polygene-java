@@ -14,8 +14,13 @@ package org.qi4j.runtime.resolution;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
-import java.util.ListIterator;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.qi4j.api.Composite;
@@ -27,22 +32,34 @@ import org.qi4j.api.model.CompositeModel;
 public final class CompositeResolution<T extends Composite>
 {
     private CompositeModel<T> compositeModel;
-    private Set<MixinResolution> usedMixinModels; // List of used mixin models
+    private Set<MixinResolution> resolvedMixinModels; // List of used mixin models
 
-    private Map<Class, MixinResolution> mixinsForInterfaces; // Interface -> mixin model
+    private Map<Class, Set<MixinResolution>> mixinsForInterfaces; // Interface -> mixin resolutions
     private Map<Method, MethodResolution> methodResolutions; // Method -> method resolution
+    private List<MethodResolution> methodResolutionList;
 
-    public CompositeResolution( CompositeModel<T> compositeModel, Set<MixinResolution> usedMixinModels, Map<Class, MixinResolution> mixinsForInterfaces, Iterable<MethodResolution> methods )
+    public CompositeResolution( CompositeModel<T> compositeModel, Iterable<MethodResolution> methods )
     {
         this.compositeModel = compositeModel;
-        this.usedMixinModels = usedMixinModels;
-        this.mixinsForInterfaces = mixinsForInterfaces;
+        this.mixinsForInterfaces = new HashMap<Class, Set<MixinResolution>>();
 
         methodResolutions = new HashMap<Method, MethodResolution>();
+        resolvedMixinModels = new HashSet<MixinResolution>();
+        methodResolutionList = new ArrayList<MethodResolution>();
         for( MethodResolution methodResolution : methods )
         {
             methodResolutions.put( methodResolution.getMethodModel().getMethod(), methodResolution );
+            resolvedMixinModels.add( methodResolution.getMixinResolution() );
+
+            Set<MixinResolution> mixinResolutions = mixinsForInterfaces.get( methodResolution.getMethodModel().getMethod().getDeclaringClass() );
+            if( mixinResolutions == null )
+            {
+                mixinsForInterfaces.put( methodResolution.getMethodModel().getMethod().getDeclaringClass(), mixinResolutions = new HashSet<MixinResolution>() );
+            }
+            mixinResolutions.add( methodResolution.getMixinResolution() );
+            methodResolutionList.add( methodResolution );
         }
+        Collections.sort( methodResolutionList, new MethodResolutionComparator() );
     }
 
     public CompositeModel<T> getCompositeModel()
@@ -50,12 +67,12 @@ public final class CompositeResolution<T extends Composite>
         return compositeModel;
     }
 
-    public Set<MixinResolution> getUsedMixinModels()
+    public Set<MixinResolution> getResolvedMixinModels()
     {
-        return usedMixinModels;
+        return resolvedMixinModels;
     }
 
-    public MixinResolution getMixinForInterface( Class interfaceType )
+    public Set<MixinResolution> getMixinsForInterface( Class interfaceType )
     {
         return mixinsForInterfaces.get( interfaceType );
     }
@@ -65,7 +82,7 @@ public final class CompositeResolution<T extends Composite>
         return methodResolutions.get( method );
     }
 
-    public Iterable<MethodResolution> getMethodResolutions()
+    public Collection<MethodResolution> getMethodResolutions()
     {
         return methodResolutions.values();
     }
@@ -76,22 +93,45 @@ public final class CompositeResolution<T extends Composite>
         PrintWriter out = new PrintWriter( str );
         out.println( compositeModel.getCompositeClass().getName() );
 
-        for( Map.Entry<Class, MixinResolution> entry : mixinsForInterfaces.entrySet() )
+        for( MethodResolution methodResolution : methodResolutionList )
         {
-            Class interfaceClass = entry.getKey();
-            MixinResolution mixinModel = entry.getValue();
-            out.println( "    " + interfaceClass.getName() );
-            out.println( "    implemented by " + mixinModel.getFragmentModel().getModelClass().getName() );
-            Method[] methods = interfaceClass.getMethods();
-            for( Method method : methods )
+            out.println( "      " + methodResolution );
+            out.println( "        implemented by " + methodResolution.getMixinResolution().getMixinModel().getModelClass().getName() );
+
+            List<AssertionResolution> methodAssertions = methodResolution.getAssertions();
+            if( methodAssertions.size() > 0 )
             {
-                out.println( "      " + method.toGenericString() );
-                ListIterator<AssertionResolution> methodModifierModels = getMethodResolution( method ).getAssertions().listIterator();
-                while( methodModifierModels.hasNext() )
+                out.println( "        assertions" );
+            }
+            for( AssertionResolution methodAssertion : methodAssertions )
+            {
+                out.print( "          " + methodAssertion.getFragmentModel().getModelClass().getName() );
+                if( methodAssertion.getFragmentModel() != null )
                 {
-                    AssertionResolution methodAssertionModel = methodModifierModels.next();
-                    out.println( "        " + methodAssertionModel.getFragmentModel().getModelClass().getName() );
+                    if( methodAssertion.getAssertionModel().getAppliesTo() != null )
+                    {
+                        out.print( " applies to " + methodAssertion.getAssertionModel().getAppliesTo().getSimpleName() );
+                    }
                 }
+                out.println();
+            }
+
+            List<SideEffectResolution> methodSideEffects = methodResolution.getSideEffects();
+            if( methodSideEffects.size() > 0 )
+            {
+                out.println( "        side-effects" );
+            }
+            for( SideEffectResolution methodSideEffect : methodSideEffects )
+            {
+                out.print( "          " + methodSideEffect.getFragmentModel().getModelClass().getName() );
+                if( methodSideEffect.getFragmentModel() != null )
+                {
+                    if( methodSideEffect.getSideEffectModel().getAppliesTo() != null )
+                    {
+                        out.print( " applies to " + methodSideEffect.getSideEffectModel().getAppliesTo().getSimpleName() );
+                    }
+                }
+                out.println();
             }
         }
         out.close();
@@ -119,5 +159,23 @@ public final class CompositeResolution<T extends Composite>
     public int hashCode()
     {
         return compositeModel.hashCode();
+    }
+
+    public static class MethodResolutionComparator
+        implements Comparator<MethodResolution>
+    {
+        public int compare( MethodResolution methodResolution, MethodResolution methodResolution1 )
+        {
+            if( methodResolution.getMethodModel().getMethod().getDeclaringClass() != methodResolution1.getMethodModel().getMethod().getDeclaringClass() )
+            {
+                String name = methodResolution.getMethodModel().getMethod().getDeclaringClass().getName();
+                String name1 = methodResolution1.getMethodModel().getMethod().getDeclaringClass().getName();
+                return name.compareTo( name1 );
+            }
+
+            String method = methodResolution.getMethodModel().getMethod().getName();
+            String method1 = methodResolution1.getMethodModel().getMethod().getName();
+            return method.compareTo( method1 );
+        }
     }
 }

@@ -21,19 +21,19 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Map;
-import org.qi4j.api.Composite;
 import org.qi4j.api.InvocationContext;
 
-public final class ProxyReferenceInvocationHandler<T extends Composite>
+public final class ProxyReferenceInvocationHandler
     implements InvocationHandler, InvocationContext
 {
-    private T proxy;
+    private Object proxy;
     private Object mixin;
     private Class mixinType;
 
-    public T getComposite()
+    public Object getComposite()
     {
         return proxy;
     }
@@ -48,7 +48,7 @@ public final class ProxyReferenceInvocationHandler<T extends Composite>
         return mixinType;
     }
 
-    public void setContext( T aProxy, Object aMixin, Class mixinType )
+    public void setContext( Object aProxy, Object aMixin, Class mixinType )
     {
         this.mixinType = mixinType;
         proxy = aProxy;
@@ -59,7 +59,8 @@ public final class ProxyReferenceInvocationHandler<T extends Composite>
     {
         try
         {
-            return method.invoke( this.proxy, args );
+            InvocationHandler invocationHandler = Proxy.getInvocationHandler( this.proxy );
+            return invocationHandler.invoke( this.proxy, method, args );
         }
         catch( InvocationTargetException e )
         {

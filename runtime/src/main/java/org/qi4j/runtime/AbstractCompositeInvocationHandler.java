@@ -58,7 +58,7 @@ public abstract class AbstractCompositeInvocationHandler<T extends Composite>
         return context;
     }
 
-    protected Object invokeObject( T proxy, Method method, Object[] args )
+    protected Object invokeObject( Object proxy, Method method, Object[] args )
         throws Throwable
     {
         if( method.getName().equals( "hashCode" ) )
@@ -94,7 +94,7 @@ public abstract class AbstractCompositeInvocationHandler<T extends Composite>
             }
             else
             {
-                return CompositeInvocationHandler.getInvocationHandler( proxy ) == this;
+                return CompositeInvocationHandler.getInvocationHandler( (Composite) proxy ) == this;
             }
         }
         if( method.getName().equals( "toString" ) )

@@ -10,9 +10,10 @@ public class KeyMatcher
 {
     public boolean matches( DependencyKey dependency, InjectionKey injectedObject )
     {
-        // Match raw types (e.g. Iterable<Foo> matches List<Foo> and Iterable<Foo>)
+
         if( !dependency.getRawType().isAssignableFrom( injectedObject.getRawType() ) )
         {
+            // Match raw types (e.g. Iterable<Foo> matches List<Foo> and Iterable<Foo>)
             return false;
         }
 

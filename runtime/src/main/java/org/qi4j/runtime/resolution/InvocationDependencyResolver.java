@@ -1,5 +1,7 @@
 package org.qi4j.runtime.resolution;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import org.qi4j.api.InvocationContext;
 import org.qi4j.api.model.DependencyKey;
@@ -12,15 +14,18 @@ import org.qi4j.spi.dependency.ModifierDependencyInjectionContext;
 /**
  * TODO
  */
-public class ModifierDependencyResolver
+public class InvocationDependencyResolver
     implements DependencyResolver
 {
     public DependencyResolution resolveDependency( DependencyKey key )
         throws InvalidDependencyException
     {
-        if( key.getDependencyType().equals( Method.class ) || key.getDependencyType().equals( InvocationContext.class ) )
+        if( key.getDependencyType().equals( Method.class ) ||
+            key.getDependencyType().equals( AnnotatedElement.class ) ||
+            key.getDependencyType().equals( InvocationContext.class ) ||
+            Annotation.class.isAssignableFrom( key.getDependencyType() ) )
         {
-            return new ModifierDependencyResolution( key );
+            return new InvocationDependencyResolution( key );
         }
         else
         {
@@ -28,11 +33,11 @@ public class ModifierDependencyResolver
         }
     }
 
-    private class ModifierDependencyResolution implements DependencyResolution
+    private class InvocationDependencyResolution implements DependencyResolution
     {
         private DependencyKey key;
 
-        public ModifierDependencyResolution( DependencyKey key )
+        public InvocationDependencyResolution( DependencyKey key )
         {
             this.key = key;
         }
@@ -46,13 +51,17 @@ public class ModifierDependencyResolver
                 // This needs to be updated to handle Apply and annotation aggregation correctly
                 return modifierContext.getMethod();
             }
+            else if( key.getDependencyType().equals( AnnotatedElement.class ) )
+            {
+                return modifierContext.getMethod();
+            }
             else if( key.getDependencyType().equals( InvocationContext.class ) )
             {
                 return modifierContext.getInvocationContext();
             }
             else
             {
-                return null;
+                return modifierContext.getModel().getAnnotation( key.getDependencyType(), modifierContext.getMethod() );
             }
         }
     }

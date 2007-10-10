@@ -41,7 +41,7 @@ public class InstanceFactoryImpl
 
                 if( parameter == null && !dependencyResolution.getParameter().isOptional() )
                 {
-                    throw new CompositeInstantiationException( "Non-optional parameter " + (i + 1) + " in class " + objectResolution.getObjectModel().getModelClass().getName() + " was null" );
+                    throw new CompositeInstantiationException( "Non-optional @" + dependencyResolution.getParameter().getKey().getAnnotationType().getSimpleName() + " parameter " + ( i + 1 ) + " of type " + dependencyResolution.getParameter().getKey().getDependencyType() + " in class " + objectResolution.getObjectModel().getModelClass().getName() + " was null" );
                 }
 
                 Class parameterType = constructor.getParameterTypes()[ i ];
@@ -107,6 +107,13 @@ public class InstanceFactoryImpl
                 catch( IllegalAccessException e )
                 {
                     e.printStackTrace();
+                }
+            }
+            else
+            {
+                if( !fieldResolution.getFieldDependency().isOptional() )
+                {
+                    throw new CompositeInstantiationException( "Non-optional @" + fieldResolution.getFieldDependency().getKey().getAnnotationType().getSimpleName() + " field " + fieldResolution.getFieldDependency().getField().getName() + " of type " + fieldResolution.getFieldDependency().getKey().getDependencyType() + " in class " + fragmentResolution.getObjectModel().getModelClass().getName() + " was null" );
                 }
             }
         }

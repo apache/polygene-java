@@ -16,12 +16,13 @@
  */
 package org.qi4j.test.model4;
 
+import java.util.List;
 import org.qi4j.api.CompositeBuilderFactory;
-import org.qi4j.api.annotation.Assertions;
+import org.qi4j.api.annotation.SideEffects;
 import org.qi4j.api.annotation.scope.Qi4j;
 import org.qi4j.api.annotation.scope.ThisAs;
 
-@Assertions( CountCallsModifier.class )
+@SideEffects( CountCallsSideEffect.class )
 public class Mixin1Impl
     implements Mixin1
 {
@@ -42,4 +43,20 @@ public class Mixin1Impl
     {
         return meAsMixin2;
     }
+}
+
+interface Service<T>
+{
+    int countAll();
+
+    List<T> findAll( int first, int count );
+}
+
+interface FooService extends Service<Mixin1>, FooMiscService
+{
+}
+
+interface FooMiscService
+{
+    public List<Mixin1> findAllByFooGroup( String fooGroupName );
 }

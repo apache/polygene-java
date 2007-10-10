@@ -12,5 +12,4 @@ public abstract class FragmentModelFactory<K extends FragmentModel>
 {
     public abstract <T> K newFragmentModel( Class<T> fragmentClass, Class compositeType )
         throws NullArgumentException, InvalidCompositeException;
-
 }

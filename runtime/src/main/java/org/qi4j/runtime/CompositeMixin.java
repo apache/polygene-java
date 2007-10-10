@@ -42,10 +42,11 @@ public final class CompositeMixin
             throw new CompositeCastException( existingCompositeClass.getName() + " is not a super-type of " + compositeType.getName() );
         }
 
-        InvocationHandler handler = Proxy.getInvocationHandler( meAsComposite );
+        CompositeInvocationHandler handler = CompositeInvocationHandler.getInvocationHandler( meAsComposite );
         T newComposite = builderFactory.newCompositeBuilder( compositeType ).newInstance();
-        Object[] oldMixins = ( (CompositeInvocationHandler) handler ).getMixins();
+        Object[] oldMixins = handler.getMixins();
         CompositeInvocationHandler newHandler = CompositeInvocationHandler.getInvocationHandler( newComposite );
+
         newHandler.setMixins( oldMixins );
         return newComposite;
     }
@@ -74,7 +75,7 @@ public final class CompositeMixin
         InvocationHandler handler = Proxy.getInvocationHandler( meAsComposite );
         if( handler instanceof ProxyReferenceInvocationHandler )
         {
-            return ( (ProxyReferenceInvocationHandler) handler ).getComposite();
+            return (Composite) ( (ProxyReferenceInvocationHandler) handler ).getComposite();
         }
         if( handler instanceof AbstractCompositeInvocationHandler )
         {

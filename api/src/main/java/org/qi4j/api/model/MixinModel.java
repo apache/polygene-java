@@ -11,6 +11,8 @@
 */
 package org.qi4j.api.model;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.util.List;
 
 /**
@@ -45,5 +47,51 @@ public final class MixinModel<T>
     public Iterable<PropertyModel> getProperties()
     {
         return propertyModels;
+    }
+
+    public Annotation getAnnotation( Class<? extends Annotation> annotationType, Method method )
+    {
+        Annotation annotation = null;
+        // Check method
+        annotation = method.getAnnotation( annotationType );
+        if( annotation != null )
+        {
+            return annotation;
+        }
+
+        // Check method interface
+        annotation = method.getDeclaringClass().getAnnotation( annotationType );
+        if( annotation != null )
+        {
+            return annotation;
+        }
+
+        // Check mixin class
+        annotation = getModelClass().getAnnotation( annotationType );
+        if( annotation != null )
+        {
+            return annotation;
+        }
+
+        // Check mixin method
+        try
+        {
+            Method mixinMethod = getModelClass().getMethod( method.getName(), method.getParameterTypes() );
+            annotation = mixinMethod.getAnnotation( annotationType );
+            if( annotation != null )
+            {
+                return annotation;
+            }
+        }
+        catch( NoSuchMethodException e )
+        {
+            if( !isGeneric() )
+            {
+                throw new InvalidFragmentException( "Mixin " + getModelClass().getName() + " does not contain the method " + method.toGenericString(), getModelClass() );
+            }
+        }
+
+        // No annotation of given type found
+        return null;
     }
 }

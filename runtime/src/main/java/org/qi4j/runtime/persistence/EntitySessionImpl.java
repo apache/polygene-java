@@ -17,10 +17,11 @@
 package org.qi4j.runtime.persistence;
 
 import java.net.URL;
+import java.util.Collections;
 import java.util.concurrent.ConcurrentHashMap;
 import org.qi4j.api.CompositeBuilder;
 import org.qi4j.api.CompositeBuilderFactory;
-import org.qi4j.api.PropertyValue;
+import static org.qi4j.api.PropertyValue.property;
 import org.qi4j.api.model.CompositeModel;
 import org.qi4j.api.persistence.EntityComposite;
 import org.qi4j.api.persistence.EntitySession;
@@ -28,6 +29,8 @@ import org.qi4j.api.persistence.Identity;
 import org.qi4j.api.persistence.IdentityGenerator;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryBuilderFactory;
+import org.qi4j.api.query.QueryBuilderFactoryImpl;
+import org.qi4j.api.query.QueryableIterable;
 import org.qi4j.runtime.EntityCompositeInvocationHandler;
 import org.qi4j.spi.persistence.EntityStateHolder;
 import org.qi4j.spi.persistence.PersistenceException;
@@ -48,11 +51,20 @@ public class EntitySessionImpl
         this.builderFactory = builderFactory;
         this.open = true;
         this.store = store;
+        cache = new ConcurrentHashMap<String, EntityComposite>();
     }
 
     public <T extends EntityComposite> CompositeBuilder<T> newEntityBuilder( String identity, Class<T> compositeType )
     {
-        return null;
+        CompositeBuilder<T> builder = builderFactory.newCompositeBuilder( compositeType );
+
+        if( identity == null )
+        {
+            identity = identityGenerator.generate( compositeType );
+        }
+
+        builder.properties( Identity.class, property( "identity", identity ) );
+        return builder;
     }
 
     public <T> T attach( T entity )
@@ -83,7 +95,7 @@ public class EntitySessionImpl
             {
                 CompositeBuilder<T> builder = builderFactory.newCompositeBuilder( compositeType );
                 CompositeModel<T> model = builder.getContext().getCompositeModel();
-                builder.properties( Identity.class, PropertyValue.property( "identity", identity ) );
+                builder.properties( Identity.class, property( "identity", identity ) );
                 entity = builder.newInstance();
                 EntityStateHolder<T> holder = store.getEntityInstance( identity, model );
                 EntityCompositeInvocationHandler<T> handler = EntityCompositeInvocationHandler.getInvocationHandler( entity );
@@ -128,7 +140,7 @@ public class EntitySessionImpl
 
     public QueryBuilderFactory getQueryFactory()
     {
-        return null;
+        return new QueryBuilderFactoryImpl( new QueryableIterable( Collections.emptyList() ) );
     }
 
     public Query getNamedQuery( String name )

@@ -14,7 +14,7 @@ package org.qi4j.test.model1;
 
 import junit.framework.TestCase;
 import org.qi4j.api.CompositeBuilderFactory;
-import org.qi4j.api.CompositeInstantiationException;
+import org.qi4j.api.model.InvalidCompositeException;
 import org.qi4j.runtime.CompositeBuilderFactoryImpl;
 
 public class CompositeFactoryImplTest extends TestCase
@@ -38,7 +38,7 @@ public class CompositeFactoryImplTest extends TestCase
             Composition8 composition8 = (Composition8) builderFactory.newCompositeBuilder( aClass ).newInstance();
             fail( "CompositeBuilderFactory.newInstance() should return CompositeInstantiationException when creating a new instance for " + aClass.getName() );
         }
-        catch( CompositeInstantiationException e )
+        catch( InvalidCompositeException e )
         {
             // Correct
         }

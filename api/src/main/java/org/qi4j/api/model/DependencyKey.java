@@ -3,6 +3,8 @@ package org.qi4j.api.model;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Dependency key used for dependency resolutions. The key is comprised
@@ -10,6 +12,20 @@ import java.lang.reflect.Type;
  */
 public class DependencyKey
 {
+    static private Map<Class, Class> wrapperClasses = new HashMap<Class, Class>();
+
+    static
+    {
+        wrapperClasses.put( Integer.TYPE, Integer.class );
+        wrapperClasses.put( Short.TYPE, Short.class );
+        wrapperClasses.put( Long.TYPE, Long.class );
+        wrapperClasses.put( Float.TYPE, Float.class );
+        wrapperClasses.put( Double.TYPE, Double.class );
+        wrapperClasses.put( Byte.TYPE, Byte.class );
+        wrapperClasses.put( Boolean.TYPE, Boolean.class );
+        wrapperClasses.put( Character.TYPE, Character.class );
+    }
+
     private Class<? extends Annotation> annotationType;
     private Type genericType;
     private String name;
@@ -21,6 +37,13 @@ public class DependencyKey
         this.annotationType = annotationType;
         this.genericType = genericType;
         this.name = name;
+
+        Class rawType = getRawType();
+        if( rawType.isPrimitive() )
+        {
+            // Map primitive types to the wrapper classes
+            this.genericType = wrapperClasses.get( rawType );
+        }
     }
 
     public Class<? extends Annotation> getAnnotationType()

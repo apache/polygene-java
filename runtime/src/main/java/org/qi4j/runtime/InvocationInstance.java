@@ -17,9 +17,8 @@ package org.qi4j.runtime;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import org.qi4j.api.Composite;
 
-public final class InvocationInstance<T extends Composite>
+public final class InvocationInstance
 {
     private Object firstAssertion;
     private Object[] sideEffects;
@@ -27,7 +26,7 @@ public final class InvocationInstance<T extends Composite>
     private Method method;
     private Class mixinType;
     private FragmentInvocationHandler mixinInvocationHandler;
-    private ProxyReferenceInvocationHandler<T> proxyHandler;
+    private ProxyReferenceInvocationHandler proxyHandler;
     private InvocationInstancePool pool;
     private InvocationInstance next;
 
@@ -43,7 +42,7 @@ public final class InvocationInstance<T extends Composite>
         pool = aPool;
     }
 
-    public Object invoke( T proxy, Object[] args, Object mixin )
+    public Object invoke( Object proxy, Object[] args, Object mixin )
         throws Throwable
     {
         try
@@ -92,7 +91,7 @@ public final class InvocationInstance<T extends Composite>
         }
     }
 
-    private void invokeSideEffects( Object result, Throwable throwable, T proxy, Object[] args )
+    private void invokeSideEffects( Object result, Throwable throwable, Object proxy, Object[] args )
     {
         sideEffectResult.setResult( result, throwable );
         for( Object sideEffect : sideEffects )

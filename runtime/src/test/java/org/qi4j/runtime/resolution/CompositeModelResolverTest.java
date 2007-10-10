@@ -30,6 +30,7 @@ public class CompositeModelResolverTest extends TestCase
     }
 
     public void testWhenDependentMixinsThenOrderMixins()
+        throws Exception
     {
         CompositeBuilderFactory cbf = new CompositeBuilderFactoryImpl();
         assertEquals( "ok", cbf.newCompositeBuilder( TestComposite1.class ).newInstance().testB() );

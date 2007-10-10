@@ -36,8 +36,14 @@ public class MethodResolution
         return sideEffects;
     }
 
-    public MixinResolution getMixin()
+    public MixinResolution getMixinResolution()
     {
         return mixin;
+    }
+
+
+    @Override public String toString()
+    {
+        return method.getMethod().toGenericString();
     }
 }

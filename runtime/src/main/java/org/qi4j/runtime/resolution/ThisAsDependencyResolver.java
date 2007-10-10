@@ -1,5 +1,7 @@
 package org.qi4j.runtime.resolution;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
 import org.qi4j.api.model.DependencyKey;
 import org.qi4j.api.model.FragmentDependencyKey;
 import org.qi4j.spi.dependency.DependencyInjectionContext;
@@ -20,15 +22,19 @@ public class ThisAsDependencyResolver
         if( key instanceof FragmentDependencyKey )
         {
             FragmentDependencyKey fragmentKey = (FragmentDependencyKey) key;
+            return new ThisAsDependencyResolution( key.getRawType() );
+
+/* TODO Needs to be fixed to support internal mixins
             // Check if the composite implements the desired type
             if( key.getRawType().isAssignableFrom( fragmentKey.getCompositeType() ) )
             {
-                return new ThisAsDependencyResolution();
+                return new ThisAsDependencyResolution(key.getRawType());
             }
             else
             {
                 throw new InvalidDependencyException( "Composite " + fragmentKey.getCompositeType() + " does not implement @ThisAs type " + key.getDependencyType() + " in fragment " + key.getDependentType() );
             }
+*/
         }
         else
         {
@@ -38,10 +44,18 @@ public class ThisAsDependencyResolver
 
     private class ThisAsDependencyResolution implements DependencyResolution
     {
+        Class type;
+
+        public ThisAsDependencyResolution( Class type )
+        {
+            this.type = type;
+        }
+
         public Object getDependencyInjection( DependencyInjectionContext context )
         {
             FragmentDependencyInjectionContext fragmentContext = (FragmentDependencyInjectionContext) context;
-            return fragmentContext.getThisAs();
+            InvocationHandler handler = fragmentContext.getThisAs();
+            return Proxy.newProxyInstance( type.getClassLoader(), new Class[]{ type }, handler );
         }
     }
 }

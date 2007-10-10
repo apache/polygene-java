@@ -28,7 +28,6 @@ import org.qi4j.api.model.NullArgumentException;
 import org.qi4j.runtime.AssertionModelFactory;
 import org.qi4j.runtime.CompositeMixin;
 import org.qi4j.runtime.CompositeModelFactory;
-import org.qi4j.runtime.LifecycleImpl;
 import org.qi4j.runtime.MixinModelFactory;
 import org.qi4j.runtime.SideEffectModelFactory;
 
@@ -51,7 +50,6 @@ public class CompositeTest extends TestCase
         MixinModelFactory mmb = new MixinModelFactory( assertionBuilder, sideEffectBuilder );
         reference.add( mmb.newFragmentModel( Mixin1Impl.class, Composition1.class ) );
         reference.add( mmb.newFragmentModel( CompositeMixin.class, Composition1.class ) );
-        reference.add( mmb.newFragmentModel( LifecycleImpl.class, Composition1.class ) );
 
         CompositeModel composite1 = modelFactory.newCompositeModel( Composition1.class );
         assertEquals( Composition1.class, composite1.getCompositeClass() );

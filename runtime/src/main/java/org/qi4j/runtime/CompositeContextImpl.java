@@ -56,23 +56,22 @@ public final class CompositeContextImpl<T extends Composite>
         this.builderFactory = builderFactory;
 
         // Create index of method to mixin and invocation instance pools
-        methodDescriptors = new HashMap<Method, MethodDescriptor>( 127 );
+        methodDescriptors = new HashMap<Method, MethodDescriptor>( compositeModel.getMethodModels().size() );
         Map<MixinResolution, Integer> mixinIndices = new HashMap<MixinResolution, Integer>();
-        Method[] methods = compositeModel.getCompositeClass().getMethods();
-        invocationInstancePool = new InvocationInstancePool[methods.length];
+        invocationInstancePool = new InvocationInstancePool[compositeResolution.getMethodResolutions().size()];
 
         // Assign index to each mixin resolution
         int currentMixinIndex = 0;
-        Iterable<MixinResolution> mixinResolutions = compositeResolution.getUsedMixinModels();
+        Iterable<MixinResolution> mixinResolutions = compositeResolution.getResolvedMixinModels();
         for( MixinResolution mixinResolution : mixinResolutions )
         {
-            mixinIndices.put( mixinResolution, new Integer( currentMixinIndex++ ) );
+            mixinIndices.put( mixinResolution, currentMixinIndex++ );
         }
 
         int methodIndex = 0;
         for( MethodResolution method : compositeResolution.getMethodResolutions() )
         {
-            MixinResolution mixinResolution = method.getMixin();
+            MixinResolution mixinResolution = method.getMixinResolution();
             int index = mixinIndices.get( mixinResolution );
             invocationInstancePool[ methodIndex ] = new InvocationInstancePool();
 
@@ -126,7 +125,7 @@ public final class CompositeContextImpl<T extends Composite>
         return descriptor;
     }
 
-    public InvocationInstance<T> getInvocationInstance( MethodDescriptor methodDescriptor )
+    public InvocationInstance getInvocationInstance( MethodDescriptor methodDescriptor )
     {
         InvocationInstancePool instances = methodDescriptor.getInvocationInstances();
 
@@ -147,7 +146,7 @@ public final class CompositeContextImpl<T extends Composite>
         Class compositeClass = compositeModel.getCompositeClass();
         ClassLoader classloader = compositeClass.getClassLoader();
         Class[] intfaces = new Class[]{ compositeClass };
-        T thisCompositeProxy = (T) Proxy.newProxyInstance( classloader, intfaces, proxyHandler );
+//        T thisCompositeProxy = (T) Proxy.newProxyInstance( classloader, intfaces, proxyHandler );
 
         MethodResolution methodResolution = compositeResolution.getMethodResolution( method.getMethod() );
 
@@ -163,7 +162,7 @@ public final class CompositeContextImpl<T extends Composite>
 
                 Object modifies = getModifies( method.getMethod(), classloader, previousAssertion, (AssertionModel) assertion.getFragmentModel() );
 
-                ModifierDependencyInjectionContext modifierContext = new ModifierDependencyInjectionContext( this, thisCompositeProxy, modifies, method.getMethod(), proxyHandler );
+                ModifierDependencyInjectionContext modifierContext = new ModifierDependencyInjectionContext( this, proxyHandler, modifies, method.getMethod(), methodResolution.getMixinResolution().getMixinModel(), proxyHandler );
                 previousAssertion = fragmentFactory.newInstance( assertion, modifierContext );
             }
         }
@@ -178,17 +177,17 @@ public final class CompositeContextImpl<T extends Composite>
         {
             Object modifies = getModifies( method.getMethod(), classloader, sideEffectResult, (SideEffectModel) sideEffectResolution.getFragmentModel() );
 
-            ModifierDependencyInjectionContext modifierContext = new ModifierDependencyInjectionContext( this, thisCompositeProxy, modifies, method.getMethod(), proxyHandler );
+            ModifierDependencyInjectionContext modifierContext = new ModifierDependencyInjectionContext( this, proxyHandler, modifies, method.getMethod(), methodResolution.getMixinResolution().getMixinModel(), proxyHandler );
             sideEffects[ i++ ] = fragmentFactory.newInstance( sideEffectResolution, modifierContext );
         }
 
         return new InvocationInstance( previousAssertion, sideEffects, sideEffectResult, mixinInvocationHandler, proxyHandler, invocationInstancePool[ method.getInvocationInstanceIndex() ], method.getMethod(), method.getMethod().getDeclaringClass() );
     }
 
-    private Object getModifies( Method method, ClassLoader classloader, Object next, ModifierModel assertion )
+    private Object getModifies( Method method, ClassLoader classloader, Object next, ModifierModel modifierModel )
     {
         Object modifies;
-        if( assertion.isGeneric() )
+        if( modifierModel.isGeneric() )
         {
             if( next instanceof InvocationHandler )
             {
@@ -196,8 +195,7 @@ public final class CompositeContextImpl<T extends Composite>
             }
             else
             {
-                InvocationHandler modifiesHandler = new FragmentInvocationHandler( next );
-                modifies = Proxy.newProxyInstance( classloader, new Class[]{ method.getDeclaringClass() }, modifiesHandler );
+                modifies = new FragmentInvocationHandler( next );
             }
         }
         else

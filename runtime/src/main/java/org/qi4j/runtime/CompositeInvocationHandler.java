@@ -17,11 +17,8 @@
 package org.qi4j.runtime;
 
 import java.lang.reflect.Method;
-import java.util.Set;
 import org.qi4j.api.Composite;
-import org.qi4j.api.CompositeInstantiationException;
 import org.qi4j.api.model.InvalidCompositeException;
-import org.qi4j.runtime.resolution.MixinResolution;
 
 /**
  * InvocationHandler for proxy objects.
@@ -34,7 +31,7 @@ public class CompositeInvocationHandler<T extends Composite> extends AbstractCom
     {
         super( aContext );
 
-        mixins = new Object[aContext.getCompositeResolution().getUsedMixinModels().size()];
+        mixins = new Object[aContext.getCompositeResolution().getResolvedMixinModels().size()];
     }
 
     public Object invoke( Object composite, Method method, Object[] args ) throws Throwable
@@ -42,7 +39,7 @@ public class CompositeInvocationHandler<T extends Composite> extends AbstractCom
         MethodDescriptor descriptor = context.getMethodDescriptor( method );
         if( descriptor == null )
         {
-            return invokeObject( (T) composite, method, args );
+            return invokeObject( composite, method, args );
         }
 
         Object mixin = mixins[ descriptor.getMixinIndex() ];
@@ -54,25 +51,23 @@ public class CompositeInvocationHandler<T extends Composite> extends AbstractCom
                                                  context.getCompositeModel().getCompositeClass() );
         }
         // Invoke
-        return context.getInvocationInstance( descriptor ).invoke( (T) composite, args, mixin );
+        return context.getInvocationInstance( descriptor ).invoke( composite, args, mixin );
     }
 
-    public void setMixins( Object[] mixins )
+    public void setMixins( Object[] newMixins )
     {
-        Set<MixinResolution> mixinResolutions = context.getCompositeResolution().getUsedMixinModels();
-        int i = 0;
-        for( MixinResolution mixinResolution : mixinResolutions )
+        // Use any mixins that match the ones we already have
+        for( int i = 0; i < mixins.length; i++ )
         {
             Object mixin = mixins[ i ];
-            // Verify type
-            if( !( mixinResolution.getFragmentModel().getModelClass().isInstance( mixin ) ||
-                   mixin instanceof CompositeMixin || mixin instanceof LifecycleImpl ) )
+            for( Object newMixin : newMixins )
             {
-                throw new CompositeInstantiationException( "Mixin " + mixin.getClass().getName() + " is not of the expected type " + mixinResolution.getFragmentModel().getModelClass().getName() );
+                if( mixin.getClass().equals( newMixin.getClass() ) )
+                {
+                    mixins[ i ] = newMixin;
+                    break;
+                }
             }
-            // Copy reference
-            this.mixins[ i ] = mixin;
-            i++;
         }
     }
 
@@ -81,4 +76,9 @@ public class CompositeInvocationHandler<T extends Composite> extends AbstractCom
         return mixins;
     }
 
+
+    @Override public String toString()
+    {
+        return context.getCompositeResolution().toString();
+    }
 }

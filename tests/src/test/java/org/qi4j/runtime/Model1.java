@@ -18,8 +18,9 @@ package org.qi4j.runtime;
 
 import org.qi4j.api.Composite;
 import org.qi4j.api.annotation.Assertions;
+import org.qi4j.api.persistence.Lifecycle;
 
 @Assertions( Model1LifecycleModifier.class )
-public interface Model1 extends Composite
+public interface Model1 extends Composite, Lifecycle
 {
 }

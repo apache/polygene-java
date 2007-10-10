@@ -12,7 +12,12 @@
 package org.qi4j.api.model;
 
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+import org.qi4j.api.annotation.scope.ThisAs;
 
 /**
  * Base class for fragments. Fragments are composed into objects.
@@ -23,18 +28,20 @@ import java.lang.reflect.Modifier;
 public abstract class FragmentModel<T>
     extends ObjectModel<T>
 {
-    // Attributes ----------------------------------------------------
-    protected Class appliesTo;
+    private Class appliesTo;
+    private boolean isAbstract;
+    private boolean isGeneric;
+    private Set<MethodModel> thisAsMethods;
 
-    // Constructors --------------------------------------------------
     public FragmentModel( Class<T> fragmentClass, Iterable<ConstructorDependency> constructorDependencies, Iterable<FieldDependency> fieldDependencies, Iterable<MethodDependency> methodDependencies, Class appliesTo )
     {
         super( fragmentClass, constructorDependencies, fieldDependencies, methodDependencies );
-
+        this.thisAsMethods = getThisAsMethods( getDependenciesByScope( ThisAs.class ) );
         this.appliesTo = appliesTo;
+        isAbstract = Modifier.isAbstract( getModelClass().getModifiers() );
+        isGeneric = InvocationHandler.class.isAssignableFrom( getModelClass() );
     }
 
-    // Public -------------------------------------------------------
     public Class getAppliesTo()
     {
         return appliesTo;
@@ -42,11 +49,34 @@ public abstract class FragmentModel<T>
 
     public boolean isAbstract()
     {
-        return Modifier.isAbstract( getModelClass().getModifiers() );
+        return isAbstract;
     }
 
     public boolean isGeneric()
     {
-        return InvocationHandler.class.isAssignableFrom( getModelClass() );
+        return isGeneric;
+    }
+
+    public Set<MethodModel> getThisAsMethods()
+    {
+        return thisAsMethods;
+    }
+
+    private Set<MethodModel> getThisAsMethods( Iterable<Dependency> aClass )
+    {
+        Set<Method> methods = new HashSet<Method>();
+        for( Dependency dependency : aClass )
+        {
+            Class thisAsType = dependency.getKey().getRawType();
+            Method[] typeMethods = thisAsType.getMethods();
+            methods.addAll( Arrays.asList( typeMethods ) );
+        }
+
+        Set<MethodModel> methodModels = new HashSet<MethodModel>();
+        for( Method method : methods )
+        {
+            methodModels.add( new MethodModel( method ) );
+        }
+        return methodModels;
     }
 }

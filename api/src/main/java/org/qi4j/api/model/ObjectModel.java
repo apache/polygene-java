@@ -14,8 +14,11 @@ package org.qi4j.api.model;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Base class for fragments. Fragments are composed into objects.
@@ -25,26 +28,25 @@ import java.util.List;
  */
 public class ObjectModel<T>
 {
-    // Attributes ----------------------------------------------------
     private Class<T> modelClass;
 
     // Dependencies
     private Iterable<ConstructorDependency> constructorDependencies;
     private Iterable<FieldDependency> fieldDependencies;
     private Iterable<MethodDependency> methodDependencies;
+    private Map<Class<? extends Annotation>, Set<Dependency>> dependenciesByScope;
 
-    // Constructors --------------------------------------------------
     public ObjectModel( Class<T> modelClass, Iterable<ConstructorDependency> constructorDependencies, Iterable<FieldDependency> fieldDependencies, Iterable<MethodDependency> methodDependencies )
     {
         NullArgumentException.validateNotNull( "Model class", modelClass );
 
+        this.modelClass = modelClass;
         this.constructorDependencies = constructorDependencies;
         this.fieldDependencies = fieldDependencies;
         this.methodDependencies = methodDependencies;
-        this.modelClass = modelClass;
+        this.dependenciesByScope = getDependenciesByScope( constructorDependencies, methodDependencies, fieldDependencies );
     }
 
-    // Public -------------------------------------------------------
     public Class<T> getModelClass()
     {
         return modelClass;
@@ -67,28 +69,15 @@ public class ObjectModel<T>
 
     public Iterable<Dependency> getDependenciesByScope( Class<? extends Annotation> annotationScopeClass )
     {
-        List<Dependency> scopeDependencies = new ArrayList<Dependency>();
-
-        for( ConstructorDependency constructorDependency : constructorDependencies )
+        Iterable<Dependency> dependencies = dependenciesByScope.get( annotationScopeClass );
+        if( dependencies == null )
         {
-            for( ParameterDependency parameterDependency : constructorDependency.getParameterDependencies() )
-            {
-                if( parameterDependency.getKey().getAnnotationType().equals( annotationScopeClass ) )
-                {
-                    scopeDependencies.add( parameterDependency );
-                }
-            }
+            return Collections.emptySet();
         }
-
-        for( FieldDependency fieldDependency : fieldDependencies )
+        else
         {
-            if( fieldDependency.getKey().getAnnotationType().equals( annotationScopeClass ) )
-            {
-                scopeDependencies.add( fieldDependency );
-            }
+            return dependencies;
         }
-
-        return scopeDependencies;
     }
 
 
@@ -126,4 +115,54 @@ public class ObjectModel<T>
         out.close();
         return str.toString();
     }
+
+    protected Map<Class<? extends Annotation>, Set<Dependency>> getDependenciesByScope( Iterable<ConstructorDependency> constructorDependencies, Iterable<MethodDependency> methodDependencies, Iterable<FieldDependency> fieldDependencies )
+    {
+        Map<Class<? extends Annotation>, Set<Dependency>> dependenciesByScope = new HashMap<Class<? extends Annotation>, Set<Dependency>>();
+        for( ConstructorDependency constructorDependency : constructorDependencies )
+        {
+            for( ParameterDependency parameterDependency : constructorDependency.getParameterDependencies() )
+            {
+                Class annotationType = parameterDependency.getKey().getAnnotationType();
+                Set<Dependency> scopeDependencies = dependenciesByScope.get( annotationType );
+                if( scopeDependencies == null )
+                {
+                    dependenciesByScope.put( annotationType, scopeDependencies = new HashSet<Dependency>() );
+                }
+
+                scopeDependencies.add( parameterDependency );
+            }
+        }
+
+        for( MethodDependency constructorDependency : methodDependencies )
+        {
+            for( ParameterDependency parameterDependency : constructorDependency.getParameterDependencies() )
+            {
+                Class annotationType = parameterDependency.getKey().getAnnotationType();
+                Set<Dependency> scopeDependencies = dependenciesByScope.get( annotationType );
+                if( scopeDependencies == null )
+                {
+                    dependenciesByScope.put( annotationType, scopeDependencies = new HashSet<Dependency>() );
+                }
+
+                scopeDependencies.add( parameterDependency );
+            }
+        }
+
+        for( FieldDependency fieldDependency : fieldDependencies )
+        {
+            Class annotationType = fieldDependency.getKey().getAnnotationType();
+            Set<Dependency> scopeDependencies = dependenciesByScope.get( annotationType );
+            if( scopeDependencies == null )
+            {
+                dependenciesByScope.put( annotationType, scopeDependencies = new HashSet<Dependency>() );
+            }
+
+            scopeDependencies.add( fieldDependency );
+        }
+
+        return dependenciesByScope;
+    }
+
+
 }

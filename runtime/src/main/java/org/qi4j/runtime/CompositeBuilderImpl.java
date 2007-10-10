@@ -36,7 +36,6 @@ import org.qi4j.api.PropertyValue;
 import org.qi4j.api.model.Binding;
 import org.qi4j.api.model.CompositeContext;
 import org.qi4j.api.model.CompositeModel;
-import org.qi4j.api.model.CompositeState;
 import org.qi4j.api.model.InjectionKey;
 import org.qi4j.api.persistence.Lifecycle;
 import org.qi4j.runtime.resolution.MixinResolution;
@@ -112,18 +111,25 @@ public class CompositeBuilderImpl<T extends Composite>
 
     public <K, T extends K> void properties( Class<K> mixinType, PropertyValue... properties )
     {
-        MixinResolution resolution = context.getCompositeResolution().getMixinForInterface( mixinType );
+        Set<MixinResolution> resolutions = context.getCompositeResolution().getMixinsForInterface( mixinType );
 
-        Map<MixinResolution, Map<InjectionKey, Object>> context = getPropertyContext();
-        Map<InjectionKey, Object> mixinContext = new LinkedHashMap<InjectionKey, Object>();
-        for( PropertyValue property : properties )
+        for( MixinResolution mixinResolution : resolutions )
         {
-            String name = property.getName();
-            Object value = property.getValue();
-            InjectionKey key = new InjectionKey( value.getClass(), name, resolution.getMixinModel().getModelClass() );
-            mixinContext.put( key, value );
+            Map<MixinResolution, Map<InjectionKey, Object>> context = getPropertyContext();
+            Map<InjectionKey, Object> mixinContext = context.get( mixinResolution );
+            if( mixinContext == null )
+            {
+                context.put( mixinResolution, mixinContext = new LinkedHashMap<InjectionKey, Object>() );
+            }
+
+            for( PropertyValue property : properties )
+            {
+                String name = property.getName();
+                Object value = property.getValue();
+                InjectionKey key = new InjectionKey( value.getClass(), name, mixinResolution.getMixinModel().getModelClass() );
+                mixinContext.put( key, value );
+            }
         }
-        context.put( resolution, mixinContext );
     }
 
     public T properties()
@@ -153,7 +159,10 @@ public class CompositeBuilderImpl<T extends Composite>
         newMixins( composite, compositeInvocationHandler );
 
         // Invoke lifecycle create() method
-//        invokeCreate( composite, state );
+        if( composite instanceof Lifecycle )
+        {
+            invokeCreate( composite, compositeInvocationHandler );
+        }
 
         // Return
         return composite;
@@ -176,7 +185,7 @@ public class CompositeBuilderImpl<T extends Composite>
     }
 
 
-    private void newMixins( T composite, CompositeState state )
+    private void newMixins( T composite, CompositeInvocationHandler handler )
     {
         Map states = new HashMap<Class, Object>();
         states.put( Lifecycle.class, LifecycleImpl.INSTANCE );
@@ -184,8 +193,8 @@ public class CompositeBuilderImpl<T extends Composite>
         Map<InjectionKey, Object> adapt = adaptContext == null ? Collections.EMPTY_MAP : adaptContext;
         Map<InjectionKey, Object> decorate = decorateContext == null ? Collections.EMPTY_MAP : decorateContext;
 
-        Set<MixinResolution> usedMixins = context.getCompositeResolution().getUsedMixinModels();
-        Object[] mixins = state.getMixins();
+        Set<MixinResolution> usedMixins = context.getCompositeResolution().getResolvedMixinModels();
+        Object[] mixins = handler.getMixins();
         int i = 0;
         for( MixinResolution resolution : usedMixins )
         {
@@ -194,7 +203,7 @@ public class CompositeBuilderImpl<T extends Composite>
             {
                 props = Collections.EMPTY_MAP;
             }
-            MixinDependencyInjectionContext injectionContext = new MixinDependencyInjectionContext( context, composite, props, adapt, decorate );
+            MixinDependencyInjectionContext injectionContext = new MixinDependencyInjectionContext( context, handler, props, adapt, decorate );
             Object mixin = fragmentFactory.newInstance( resolution, injectionContext );
             mixins[ i++ ] = mixin;
         }
@@ -274,17 +283,16 @@ public class CompositeBuilderImpl<T extends Composite>
                     Method writeMethod = descriptor.getWriteMethod();
                     if( writeMethod != null && writeMethod.equals( method ) )
                     {
-                        MixinResolution resolution = context.getCompositeResolution().getMixinForInterface( method.getDeclaringClass() );
+                        MixinResolution mixinResolution = context.getCompositeResolution().getMethodResolution( method ).getMixinResolution();
 
                         Map<MixinResolution, Map<InjectionKey, Object>> context = getPropertyContext();
-                        Map<InjectionKey, Object> mixinContext = context.get( resolution );
+                        Map<InjectionKey, Object> mixinContext = context.get( mixinResolution );
                         if( mixinContext == null )
                         {
-                            mixinContext = new LinkedHashMap<InjectionKey, Object>();
-                            context.put( resolution, mixinContext );
+                            context.put( mixinResolution, mixinContext = new LinkedHashMap<InjectionKey, Object>() );
                         }
 
-                        InjectionKey key = new InjectionKey( propertyValue.getClass(), descriptor.getName(), resolution.getMixinModel().getModelClass() );
+                        InjectionKey key = new InjectionKey( propertyValue.getClass(), descriptor.getName(), mixinResolution.getMixinModel().getModelClass() );
                         mixinContext.put( key, propertyValue );
                         break;
                     }
