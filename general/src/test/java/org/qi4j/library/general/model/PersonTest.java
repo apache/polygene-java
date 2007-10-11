@@ -25,12 +25,11 @@ public class PersonTest extends AbstractTest
 
         CompositeBuilder<PersonComposite> builder = builderFactory.newCompositeBuilder( PersonComposite.class );
 
-        PersonName props = builder.propertiesOfComposite();
+        Person props = builder.propertiesOfComposite();
         props.setFirstName( firstName );
         props.setLastName( lastName );
+        props.setGender( GenderType.female );
         PersonComposite person = builder.newInstance();
-
-        person.setGender( GenderType.female );
 
         Assert.assertEquals( firstName, person.getFirstName() );
         Assert.assertEquals( lastName, person.getLastName() );

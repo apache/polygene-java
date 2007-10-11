@@ -12,6 +12,7 @@
  */
 package org.qi4j.library.general.model.mixins;
 
+import org.qi4j.api.annotation.scope.PropertyField;
 import org.qi4j.library.general.model.Gender;
 import org.qi4j.library.general.model.GenderType;
 
@@ -20,15 +21,15 @@ import org.qi4j.library.general.model.GenderType;
  */
 public final class GenderMixin implements Gender
 {
-    private GenderType genderType;
+    @PropertyField private GenderType gender;
 
     public GenderType getGender()
     {
-        return genderType;
+        return gender;
     }
 
     public void setGender( GenderType aGenderType )
     {
-        genderType = aGenderType;
+        gender = aGenderType;
     }
 }
