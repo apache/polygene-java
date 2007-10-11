@@ -45,7 +45,7 @@ public class MixinModelFactory
 
         List<PropertyModel> properties = getPropertyModels( constructorDependencies, fieldDependencies, methodDependencies );
 
-        Class appliesTo = getAppliesTo( mixinClass );
+        Class[] appliesTo = getAppliesTo( mixinClass );
 
         List<AssertionModel> assertions = getModifiers( mixinClass, compositeType, Assertions.class, assertionModelFactory );
         List<SideEffectModel> sideEffects = getModifiers( mixinClass, compositeType, SideEffects.class, sideEffectModelFactory );

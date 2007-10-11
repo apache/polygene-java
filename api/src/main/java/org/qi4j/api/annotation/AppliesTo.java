@@ -92,5 +92,9 @@ import java.lang.annotation.Target;
 @Documented
 public @interface AppliesTo
 {
-    Class value();
+    // List of interfaces, annotations or AppliesToFilter implementation classes
+    // If one of them matches the current element it will be accepted,
+    // so this list can be considered an "or"
+
+    Class[] value();
 }

@@ -15,6 +15,8 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import org.qi4j.api.annotation.scope.ThisAs;
@@ -28,21 +30,30 @@ import org.qi4j.api.annotation.scope.ThisAs;
 public abstract class FragmentModel<T>
     extends ObjectModel<T>
 {
-    private Class appliesTo;
+    private Collection<Class> appliesTo;
     private boolean isAbstract;
     private boolean isGeneric;
     private Set<MethodModel> thisAsMethods;
 
-    public FragmentModel( Class<T> fragmentClass, Iterable<ConstructorDependency> constructorDependencies, Iterable<FieldDependency> fieldDependencies, Iterable<MethodDependency> methodDependencies, Class appliesTo )
+    public FragmentModel( Class<T> fragmentClass, Iterable<ConstructorDependency> constructorDependencies, Iterable<FieldDependency> fieldDependencies, Iterable<MethodDependency> methodDependencies, Class[] appliesTo )
     {
         super( fragmentClass, constructorDependencies, fieldDependencies, methodDependencies );
         this.thisAsMethods = getThisAsMethods( getDependenciesByScope( ThisAs.class ) );
-        this.appliesTo = appliesTo;
+
+        if( appliesTo == null )
+        {
+            this.appliesTo = Collections.emptyList();
+        }
+        else
+        {
+            this.appliesTo = Arrays.asList( appliesTo );
+        }
+
         isAbstract = Modifier.isAbstract( getModelClass().getModifiers() );
         isGeneric = InvocationHandler.class.isAssignableFrom( getModelClass() );
     }
 
-    public Class getAppliesTo()
+    public Collection<Class> getAppliesTo()
     {
         return appliesTo;
     }

@@ -38,7 +38,7 @@ public class ObjectBuilderImpl<T>
 
     private Map<InjectionKey, Object> adaptContext;
     private Map<InjectionKey, Object> decorateContext;
-    private Map<InjectionKey, Object> propertyContext;
+    private Map<InjectionKey, PropertyValue> propertyContext;
 
 
     ObjectBuilderImpl( ObjectResolution<T> objectResolution, InstanceFactory instanceFactory )
@@ -77,13 +77,13 @@ public class ObjectBuilderImpl<T>
 
     public void properties( PropertyValue... properties )
     {
-        Map<InjectionKey, Object> context = getPropertyContext();
+        Map<InjectionKey, PropertyValue> context = getPropertyContext();
         for( PropertyValue property : properties )
         {
             String name = property.getName();
             Object value = property.getValue();
             InjectionKey key = new InjectionKey( value.getClass(), name, objectResolution.getObjectModel().getModelClass() );
-            context.put( key, value );
+            context.put( key, property );
         }
     }
 
@@ -92,7 +92,7 @@ public class ObjectBuilderImpl<T>
         // Instantiate object
         Map<InjectionKey, Object> adapt = adaptContext == null ? Collections.EMPTY_MAP : adaptContext;
         Map<InjectionKey, Object> decorate = decorateContext == null ? Collections.EMPTY_MAP : decorateContext;
-        Map<InjectionKey, Object> props = propertyContext == null ? Collections.EMPTY_MAP : propertyContext;
+        Map<InjectionKey, PropertyValue> props = propertyContext == null ? Collections.EMPTY_MAP : propertyContext;
 
         DependencyInjectionContext context = new ObjectDependencyInjectionContext( props, adapt, decorate );
         T instance = instanceFactory.newInstance( objectResolution, context );
@@ -104,7 +104,7 @@ public class ObjectBuilderImpl<T>
         // Inject existing object
         Map<InjectionKey, Object> adapt = adaptContext == null ? Collections.EMPTY_MAP : adaptContext;
         Map<InjectionKey, Object> decorate = decorateContext == null ? Collections.EMPTY_MAP : decorateContext;
-        Map<InjectionKey, Object> props = propertyContext == null ? Collections.EMPTY_MAP : propertyContext;
+        Map<InjectionKey, PropertyValue> props = propertyContext == null ? Collections.EMPTY_MAP : propertyContext;
 
         DependencyInjectionContext context = new ObjectDependencyInjectionContext( props, adapt, decorate );
         instanceFactory.inject( instance, objectResolution, context );
@@ -129,11 +129,11 @@ public class ObjectBuilderImpl<T>
         return decorateContext;
     }
 
-    private Map<InjectionKey, Object> getPropertyContext()
+    private Map<InjectionKey, PropertyValue> getPropertyContext()
     {
         if( propertyContext == null )
         {
-            propertyContext = new LinkedHashMap<InjectionKey, Object>();
+            propertyContext = new LinkedHashMap<InjectionKey, PropertyValue>();
         }
         return propertyContext;
     }

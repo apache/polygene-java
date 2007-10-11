@@ -150,7 +150,7 @@ public abstract class AbstractModelFactory
         return annotation.annotationType().getAnnotation( DependencyScope.class ) != null;
     }
 
-    protected Class getAppliesTo( Class<? extends Object> aModifierClass )
+    protected Class[] getAppliesTo( Class<? extends Object> aModifierClass )
     {
         AppliesTo appliesTo = aModifierClass.getAnnotation( AppliesTo.class );
         if( appliesTo != null )

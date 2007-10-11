@@ -28,7 +28,7 @@ public class AssertionModelFactory
         List<MethodDependency> methodDependencies = new ArrayList<MethodDependency>();
         getMethodDependencies( modifierClass, compositeType, methodDependencies );
 
-        Class appliesTo = getAppliesTo( modifierClass );
+        Class[] appliesTo = getAppliesTo( modifierClass );
 
         AssertionModel<T> model = new AssertionModel<T>( modifierClass, constructorDependencies, fieldDependencies, methodDependencies, appliesTo );
         return model;

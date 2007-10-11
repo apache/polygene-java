@@ -336,69 +336,79 @@ public class CompositeModelResolver
 
     private boolean appliesTo( FragmentModel fragmentModel, Method method, MixinModel mixinModel, Class compositeClass )
     {
-        Class appliesTo = fragmentModel.getAppliesTo();
+        Collection<Class> appliesToClasses = fragmentModel.getAppliesTo();
 
-        // Check AppliesTo
-        if( appliesTo != null )
+        boolean ok = appliesToClasses.isEmpty();
+        for( Class appliesTo : appliesToClasses )
         {
-            // Check AppliesTo
-            if( appliesTo.isAnnotation() )
+            if( appliesToClass( appliesTo, mixinModel, method, compositeClass, fragmentModel ) )
             {
-                // Check if the mixin model somehow has this annotation (method, mixin method, mixin class, method class)
-                if( mixinModel.getAnnotation( appliesTo, method ) == null )
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                if( AppliesToFilter.class.isAssignableFrom( appliesTo ) )
-                {
-                    // Instantiate filter
-                    try
-                    {
-                        AppliesToFilter filter = (AppliesToFilter) appliesTo.newInstance();
-
-                        // Must apply to this method
-                        if( !filter.appliesTo( method, mixinModel.getModelClass(), compositeClass ) )
-                        {
-                            return false;
-                        }
-                    }
-                    catch( InstantiationException e )
-                    {
-                        throw new CompositeResolutionException( "Could not instantiate AppliesToFilter " + appliesTo.getName() );
-                    }
-                    catch( IllegalAccessException e )
-                    {
-                        throw new CompositeResolutionException( "Could not instantiate AppliesToFilter " + appliesTo.getName() );
-                    }
-
-                }
-                else
-                {
-                    if( fragmentModel instanceof MixinModel )
-                    {
-                        // Check if method interface is assignable from the AppliesTo class
-                        if( !appliesTo.isAssignableFrom( method.getDeclaringClass() ) )
-                        {
-                            return false;
-                        }
-                    }
-                    else
-                    {
-                        // Check if the mixin or method interface is assignable from the AppliesTo class
-                        if( !appliesTo.isAssignableFrom( method.getDeclaringClass() ) &&
-                            !( mixinModel.isGeneric() || appliesTo.isAssignableFrom( mixinModel.getModelClass() ) ) )
-                        {
-                            return false;
-                        }
-                    }
-                }
+                ok = true;
+                break;
             }
         }
 
         // The fragment must implement the interface of the method or be generic
-        return ( method.getDeclaringClass().isAssignableFrom( fragmentModel.getModelClass() ) || fragmentModel.isGeneric() );
+        return ok && ( method.getDeclaringClass().isAssignableFrom( fragmentModel.getModelClass() ) || fragmentModel.isGeneric() );
+    }
+
+    private boolean appliesToClass( Class appliesTo, MixinModel mixinModel, Method method, Class compositeClass, FragmentModel fragmentModel )
+    {
+        // Check AppliesTo
+        if( appliesTo.isAnnotation() )
+        {
+            // Check if the mixin model somehow has this annotation (method, mixin method, mixin class, method class)
+            if( mixinModel.getAnnotation( appliesTo, method ) == null )
+            {
+                return false;
+            }
+        }
+        else
+        {
+            if( AppliesToFilter.class.isAssignableFrom( appliesTo ) )
+            {
+                // Instantiate filter
+                try
+                {
+                    AppliesToFilter filter = (AppliesToFilter) appliesTo.newInstance();
+
+                    // Must apply to this method
+                    if( !filter.appliesTo( method, mixinModel.getModelClass(), compositeClass ) )
+                    {
+                        return false;
+                    }
+                }
+                catch( InstantiationException e )
+                {
+                    throw new CompositeResolutionException( "Could not instantiate AppliesToFilter " + appliesTo.getName() );
+                }
+                catch( IllegalAccessException e )
+                {
+                    throw new CompositeResolutionException( "Could not instantiate AppliesToFilter " + appliesTo.getName() );
+                }
+
+            }
+            else
+            {
+                if( fragmentModel instanceof MixinModel )
+                {
+                    // Check if method interface is assignable from the AppliesTo class
+                    if( !appliesTo.isAssignableFrom( method.getDeclaringClass() ) )
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    // Check if the mixin or method interface is assignable from the AppliesTo class
+                    if( !appliesTo.isAssignableFrom( method.getDeclaringClass() ) &&
+                        !( mixinModel.isGeneric() || appliesTo.isAssignableFrom( mixinModel.getModelClass() ) ) )
+                    {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
     }
 }

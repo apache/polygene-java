@@ -108,9 +108,9 @@ public final class CompositeResolution<T extends Composite>
                 out.print( "          " + methodAssertion.getFragmentModel().getModelClass().getName() );
                 if( methodAssertion.getFragmentModel() != null )
                 {
-                    if( methodAssertion.getAssertionModel().getAppliesTo() != null )
+                    if( !methodAssertion.getAssertionModel().getAppliesTo().isEmpty() )
                     {
-                        out.print( " applies to " + methodAssertion.getAssertionModel().getAppliesTo().getSimpleName() );
+                        out.print( " applies to " + methodAssertion.getAssertionModel().getAppliesTo() );
                     }
                 }
                 out.println();
@@ -126,9 +126,9 @@ public final class CompositeResolution<T extends Composite>
                 out.print( "          " + methodSideEffect.getFragmentModel().getModelClass().getName() );
                 if( methodSideEffect.getFragmentModel() != null )
                 {
-                    if( methodSideEffect.getSideEffectModel().getAppliesTo() != null )
+                    if( !methodSideEffect.getSideEffectModel().getAppliesTo().isEmpty() )
                     {
-                        out.print( " applies to " + methodSideEffect.getSideEffectModel().getAppliesTo().getSimpleName() );
+                        out.print( " applies to " + methodSideEffect.getSideEffectModel().getAppliesTo() );
                     }
                 }
                 out.println();

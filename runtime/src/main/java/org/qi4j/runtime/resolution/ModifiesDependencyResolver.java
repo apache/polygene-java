@@ -21,7 +21,7 @@ public class ModifiesDependencyResolver
         if( key instanceof FragmentDependencyKey )
         {
             FragmentDependencyKey fragmentKey = (FragmentDependencyKey) key;
-            if( key.getDependencyType().isAssignableFrom( fragmentKey.getCompositeType() ) ||
+            if( key.getDependencyType().isAssignableFrom( fragmentKey.getDependentType() ) ||
                 ( InvocationHandler.class.isAssignableFrom( key.getDependentType() ) && key.getDependencyType().equals( InvocationHandler.class ) ) )
             {
                 return new ModifiesDependencyResolution();

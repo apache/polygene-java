@@ -17,7 +17,7 @@ public abstract class ModifierModel<T>
 {
     private Dependency modifiesDependency;
 
-    public ModifierModel( Class<T> fragmentClass, Iterable<ConstructorDependency> constructorDependencies, Iterable<FieldDependency> fieldDependencies, Iterable<MethodDependency> methodDependencies, Class appliesTo )
+    public ModifierModel( Class<T> fragmentClass, Iterable<ConstructorDependency> constructorDependencies, Iterable<FieldDependency> fieldDependencies, Iterable<MethodDependency> methodDependencies, Class[] appliesTo )
     {
         super( fragmentClass, constructorDependencies, fieldDependencies, methodDependencies, appliesTo );
 
@@ -57,7 +57,10 @@ public abstract class ModifierModel<T>
         if( getAppliesTo() != null )
         {
             out.println( "  @AppliesTo" );
-            out.println( "    " + getAppliesTo().getName() );
+            for( Class aClass : getAppliesTo() )
+            {
+                out.println( "    " + aClass.getName() );
+            }
         }
         out.close();
         return string + str.toString();

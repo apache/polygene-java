@@ -124,10 +124,20 @@ public final class CompositeModel<T extends Composite>
             if( implementation.isGeneric() )
             {
                 // Check AppliesTo
-                Class appliesTo = implementation.getAppliesTo();
-                if( appliesTo == null || appliesTo.isAssignableFrom( aType ) )
+                Collection<Class> appliesTo = implementation.getAppliesTo();
+                if( appliesTo == null )
                 {
                     impls.add( implementation ); // This generic mixin can handle the given type
+                }
+                else
+                {
+                    for( Class appliesToClass : appliesTo )
+                    {
+                        if( appliesToClass.isAssignableFrom( aType ) )
+                        {
+                            impls.add( implementation );
+                        }
+                    }
                 }
             }
         }

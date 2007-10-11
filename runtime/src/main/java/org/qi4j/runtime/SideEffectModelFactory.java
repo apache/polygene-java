@@ -28,7 +28,7 @@ public class SideEffectModelFactory
         List<MethodDependency> methodDependencies = new ArrayList<MethodDependency>();
         getMethodDependencies( modifierClass, compositeType, methodDependencies );
 
-        Class appliesTo = getAppliesTo( modifierClass );
+        Class[] appliesTo = getAppliesTo( modifierClass );
 
         SideEffectModel<T> model = new SideEffectModel<T>( modifierClass, constructorDependencies, fieldDependencies, methodDependencies, appliesTo );
         return model;
