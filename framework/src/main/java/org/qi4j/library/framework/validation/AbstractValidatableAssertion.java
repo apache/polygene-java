@@ -1,11 +1,7 @@
-package org.qi4j.library.general.model.modifiers;
+package org.qi4j.library.framework.validation;
 
 import java.util.List;
 import org.qi4j.api.annotation.scope.AssertionFor;
-import org.qi4j.library.general.model.Validatable;
-import org.qi4j.library.general.model.ValidationException;
-import org.qi4j.library.general.model.ValidationMessage;
-import org.qi4j.library.general.model.Validator;
 
 /**
  * Base class for validation assertions.
@@ -15,9 +11,9 @@ public class AbstractValidatableAssertion
 {
     protected @AssertionFor Validatable next;
 
-    public List<ValidationMessage> isValid()
+    public List<ValidationMessage> validate()
     {
-        List<ValidationMessage> messages = next.isValid();
+        List<ValidationMessage> messages = next.validate();
         Validator validator = new Validator( messages, getResourceBundle() );
         isValid( validator );
         return messages;

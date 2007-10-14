@@ -1,4 +1,4 @@
-package org.qi4j.library.general.model;
+package org.qi4j.library.framework.validation;
 
 import java.util.List;
 

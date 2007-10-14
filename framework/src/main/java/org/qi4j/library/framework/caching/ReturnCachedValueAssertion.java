@@ -23,7 +23,7 @@ import org.qi4j.api.annotation.scope.ThisAs;
  * Return value of @Cached calls if possible.
  */
 @AppliesTo( Cached.class )
-public class ReturnInvocationCacheAssertion
+public class ReturnCachedValueAssertion
     implements InvocationHandler
 {
     @ThisAs private InvocationCache cache;

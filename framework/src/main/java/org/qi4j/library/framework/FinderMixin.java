@@ -23,7 +23,7 @@ public class FinderMixin
     public static class AppliesTo
         implements AppliesToFilter
     {
-        public boolean appliesTo( Method method, Class compositeType, Class mixin )
+        public boolean appliesTo( Method method, Class compositeType, Class mixin, Class modelClass )
         {
             String name = method.getName();
             if( name.startsWith( "findBy" ) )

@@ -1,4 +1,4 @@
-package org.qi4j.library.general.model.modifiers;
+package org.qi4j.library.framework.validation;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -6,10 +6,11 @@ import org.qi4j.api.annotation.AppliesTo;
 import org.qi4j.api.annotation.AppliesToFilter;
 import org.qi4j.api.annotation.scope.AssertionFor;
 import org.qi4j.api.annotation.scope.ThisAs;
-import org.qi4j.library.general.model.Validatable;
 
 /**
  * After invocation, ensure that the validation rules pass.
+ * <p/>
+ * This applies to all methods which throws ValidationException
  */
 @AppliesTo( ChangeValidationAssertion.AppliesTo.class )
 public class ChangeValidationAssertion
@@ -32,14 +33,23 @@ public class ChangeValidationAssertion
             }
         }
 
-        public boolean appliesTo( Method method, Class mixin, Class compositeType )
+        public boolean appliesTo( Method method, Class mixin, Class compositeType, Class modelClass )
         {
-            if( !method.getReturnType().equals( Void.TYPE ) )
+            if( method.equals( checkValidMethod ) )
             {
                 return false;
             }
 
-            return !this.checkValidMethod.equals( method );
+            Class[] exceptionClasses = method.getExceptionTypes();
+            for( Class exceptionClass : exceptionClasses )
+            {
+                if( ValidationException.class.isAssignableFrom( exceptionClass ) )
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 
@@ -54,11 +64,8 @@ public class ChangeValidationAssertion
         }
         finally
         {
-            if( method.getReturnType().equals( Void.TYPE ) )
-            {
-                // Ensure that object is still in a valid state
-                validatable.checkValid();
-            }
+            // Ensure that object is still in a valid state
+            validatable.checkValid();
         }
     }
 }

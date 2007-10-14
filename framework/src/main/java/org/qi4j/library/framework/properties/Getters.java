@@ -9,7 +9,7 @@ import org.qi4j.api.annotation.AppliesToFilter;
 public class Getters
     implements AppliesToFilter
 {
-    public boolean appliesTo( Method method, Class mixin, Class compositeType )
+    public boolean appliesTo( Method method, Class mixin, Class compositeType, Class modelClass )
     {
         String methodName = method.getName();
         return methodName.startsWith( "get" ) || methodName.startsWith( "is" ) || methodName.startsWith( "has" );

@@ -14,7 +14,7 @@ import org.qi4j.api.annotation.scope.ThisAs;
  * If an Exception occurs, try to reuse a previous result. Don't do anything on Throwables.
  */
 @AppliesTo( Cached.class )
-public class ReturnInvocationCacheOnExceptionAssertion
+public class ReturnCachedValueOnExceptionAssertion
     implements InvocationHandler
 {
     @ThisAs private InvocationCache cache;

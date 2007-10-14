@@ -14,16 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.library.general.model;
+package org.qi4j.library.framework.validation;
 
 import java.util.List;
-import org.qi4j.api.annotation.Mixins;
-import org.qi4j.library.general.model.mixins.ValidatableMixin;
 
-@Mixins( ValidatableMixin.class )
 public interface Validatable
 {
-    List<ValidationMessage> isValid();
+    List<ValidationMessage> validate();
 
     void checkValid()
         throws ValidationException;

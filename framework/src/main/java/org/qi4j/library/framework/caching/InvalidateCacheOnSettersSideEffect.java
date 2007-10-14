@@ -19,7 +19,7 @@ public class InvalidateCacheOnSettersSideEffect
 
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
     {
-        cache.clear();
+        cache.clearCachedValues();
         return null;
     }
 }

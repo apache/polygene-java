@@ -14,28 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.library.general.model.mixins;
+package org.qi4j.library.framework.validation;
 
 import java.util.ArrayList;
 import java.util.List;
 import org.qi4j.api.annotation.scope.ThisAs;
-import org.qi4j.library.general.model.Validatable;
-import org.qi4j.library.general.model.ValidationException;
-import org.qi4j.library.general.model.ValidationMessage;
 
 public class ValidatableMixin
     implements Validatable
 {
     @ThisAs Validatable validatable;
 
-    public List<ValidationMessage> isValid()
+    public List<ValidationMessage> validate()
     {
         return new ArrayList<ValidationMessage>();
     }
 
     public void checkValid() throws ValidationException
     {
-        List<ValidationMessage> messages = validatable.isValid();
+        List<ValidationMessage> messages = validatable.validate();
         if( messages.size() > 0 )
         {
             throw new ValidationException( messages );

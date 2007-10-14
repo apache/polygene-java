@@ -13,14 +13,10 @@ package org.qi4j.library.framework.caching;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import org.qi4j.api.annotation.Assertions;
-import org.qi4j.api.annotation.SideEffects;
 
 /**
  * TODO
  */
-@Assertions( ReturnInvocationCacheOnExceptionAssertion.class )
-@SideEffects( { CacheInvocationResultSideEffect.class, InvalidateCacheOnSettersSideEffect.class } )
 public class InvocationCacheMixin
     implements InvocationCache
 {
@@ -28,9 +24,9 @@ public class InvocationCacheMixin
     Map<String, Object> cachedValues = new ConcurrentHashMap<String, Object>();
 
     // InvocationCache implementation --------------------------------
-    public void setCachedValue( String aName, Object aResult )
+    public Object setCachedValue( String aName, Object aResult )
     {
-        cachedValues.put( aName, aResult );
+        return cachedValues.put( aName, aResult );
     }
 
     public Object getCachedValue( String aName )
@@ -43,8 +39,13 @@ public class InvocationCacheMixin
         return cachedValues.remove( aName );
     }
 
-    public void clear()
+    public void clearCachedValues()
     {
         cachedValues.clear();
+    }
+
+    public int getCacheSize()
+    {
+        return cachedValues.size();
     }
 }

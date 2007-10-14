@@ -9,7 +9,7 @@ import org.qi4j.api.annotation.AppliesToFilter;
 public class Setters
     implements AppliesToFilter
 {
-    public boolean appliesTo( Method method, Class mixin, Class compositeType )
+    public boolean appliesTo( Method method, Class mixin, Class compositeType, Class modelClass )
     {
         String name = method.getName();
         return name.startsWith( "set" ) ||

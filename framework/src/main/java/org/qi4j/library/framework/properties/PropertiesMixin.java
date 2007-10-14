@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.qi4j.api.PropertyValue;
 import org.qi4j.api.annotation.AppliesTo;
-import org.qi4j.api.annotation.scope.Property;
+import org.qi4j.api.annotation.Property;
 import org.qi4j.api.annotation.scope.PropertyParameter;
 
 /**

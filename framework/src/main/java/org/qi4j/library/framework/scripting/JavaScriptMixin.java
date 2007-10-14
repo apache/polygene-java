@@ -45,7 +45,7 @@ public class JavaScriptMixin
     public static class AppliesTo
         implements AppliesToFilter
     {
-        public boolean appliesTo( Method method, Class compositeType, Class mixin )
+        public boolean appliesTo( Method method, Class compositeType, Class mixin, Class modelClass )
         {
             return getFunctionResoure( method ) != null;
         }

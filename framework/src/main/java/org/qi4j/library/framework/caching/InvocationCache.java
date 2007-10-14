@@ -1,6 +1,5 @@
 package org.qi4j.library.framework.caching;
 
-import org.qi4j.api.annotation.Mixins;
 /*
  * Copyright 2007 Rickard Öberg
  * Licensed under the Apache License, Version 2.0 (the "License"); 
@@ -16,15 +15,16 @@ import org.qi4j.api.annotation.Mixins;
 /**
  * TODO
  */
-@Mixins( InvocationCacheMixin.class )
 public interface InvocationCache
 {
     // Public --------------------------------------------------------
-    void setCachedValue( String aName, Object aResult );
+    Object setCachedValue( String aName, Object aResult );
 
     Object getCachedValue( String aName );
 
     Object removeCachedValue( String aName );
 
-    void clear();
+    void clearCachedValues();
+
+    int getCacheSize();
 }

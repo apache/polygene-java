@@ -10,17 +10,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.library.general.model.modifiers;
+package org.qi4j.library.framework.validation;
 
 import org.qi4j.api.annotation.scope.AssertionFor;
 import org.qi4j.api.annotation.scope.ThisAs;
 import org.qi4j.api.persistence.Lifecycle;
-import org.qi4j.library.general.model.Validatable;
 
 /**
  * This modifier is invoked on Lifecycle mixin invocation.
  * Before the next target invocation, this modifier invokes
- * {@link org.qi4j.library.general.model.Validatable#isValid()}.
+ * {@link Validatable#validate()}.
  * <p/>
  * TODO: We need to distinguish between Validatable on create, delete and update.
  */
@@ -32,7 +31,7 @@ public class LifecycleValidationAssertion
 
     public void create()
     {
-        validation.isValid();
+        validation.validate();
 
         next.create();
     }
