@@ -23,9 +23,9 @@ import org.qi4j.api.annotation.scope.AssertionFor;
 public final class AssertionModel<T>
     extends ModifierModel<T>
 {
-    public AssertionModel( Class<T> fragmentClass, Iterable<ConstructorDependency> constructorDependencies, Iterable<FieldDependency> fieldDependencies, Iterable<MethodDependency> methodDependencies, Class[] appliesTo )
+    public AssertionModel( Class<T> fragmentClass, Iterable<ConstructorDependency> constructorDependencies, Iterable<FieldDependency> fieldDependencies, Iterable<MethodDependency> methodDependencies, Class[] appliesTo, Class declaredBy )
     {
-        super( fragmentClass, constructorDependencies, fieldDependencies, methodDependencies, appliesTo );
+        super( fragmentClass, constructorDependencies, fieldDependencies, methodDependencies, appliesTo, declaredBy );
     }
 
     public Class<? extends Annotation> getModifiesAnnotationType()

@@ -19,8 +19,10 @@ public class AssertionModelFactory
     {
     }
 
-    public <T> AssertionModel newFragmentModel( Class<T> modifierClass, Class compositeType ) throws NullArgumentException, InvalidCompositeException
+    public <T> AssertionModel newFragmentModel( Class<T> modifierClass, Class compositeType, Class declaredBy ) throws NullArgumentException, InvalidCompositeException
     {
+        modifierClass = getFragmentClass( modifierClass );
+
         List<ConstructorDependency> constructorDependencies = new ArrayList<ConstructorDependency>();
         getConstructorDependencies( modifierClass, compositeType, constructorDependencies );
         List<FieldDependency> fieldDependencies = new ArrayList<FieldDependency>();
@@ -30,7 +32,7 @@ public class AssertionModelFactory
 
         Class[] appliesTo = getAppliesTo( modifierClass );
 
-        AssertionModel<T> model = new AssertionModel<T>( modifierClass, constructorDependencies, fieldDependencies, methodDependencies, appliesTo );
+        AssertionModel<T> model = new AssertionModel<T>( modifierClass, constructorDependencies, fieldDependencies, methodDependencies, appliesTo, declaredBy );
         return model;
     }
 }

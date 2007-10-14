@@ -13,7 +13,6 @@ package org.qi4j.api.model;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -34,10 +33,12 @@ public abstract class FragmentModel<T>
     private boolean isAbstract;
     private boolean isGeneric;
     private Set<MethodModel> thisAsMethods;
+    private Class declaredBy;
 
-    public FragmentModel( Class<T> fragmentClass, Iterable<ConstructorDependency> constructorDependencies, Iterable<FieldDependency> fieldDependencies, Iterable<MethodDependency> methodDependencies, Class[] appliesTo )
+    public FragmentModel( Class<T> fragmentClass, Iterable<ConstructorDependency> constructorDependencies, Iterable<FieldDependency> fieldDependencies, Iterable<MethodDependency> methodDependencies, Class[] appliesTo, Class declaredBy )
     {
         super( fragmentClass, constructorDependencies, fieldDependencies, methodDependencies );
+        this.declaredBy = declaredBy;
         this.thisAsMethods = getThisAsMethods( getDependenciesByScope( ThisAs.class ) );
 
         if( appliesTo == null )
@@ -49,7 +50,7 @@ public abstract class FragmentModel<T>
             this.appliesTo = Arrays.asList( appliesTo );
         }
 
-        isAbstract = Modifier.isAbstract( getModelClass().getModifiers() );
+        isAbstract = getModelClass().getName().indexOf( "EnhancerByCGLIB" ) != -1;
         isGeneric = InvocationHandler.class.isAssignableFrom( getModelClass() );
     }
 
@@ -89,5 +90,10 @@ public abstract class FragmentModel<T>
             methodModels.add( new MethodModel( method ) );
         }
         return methodModels;
+    }
+
+    public Class getDeclaredBy()
+    {
+        return declaredBy;
     }
 }

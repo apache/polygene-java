@@ -19,8 +19,10 @@ public class SideEffectModelFactory
     {
     }
 
-    public <T> SideEffectModel newFragmentModel( Class<T> modifierClass, Class compositeType ) throws NullArgumentException, InvalidCompositeException
+    public <T> SideEffectModel newFragmentModel( Class<T> modifierClass, Class compositeType, Class declaredBy ) throws NullArgumentException, InvalidCompositeException
     {
+        modifierClass = getFragmentClass( modifierClass );
+
         List<ConstructorDependency> constructorDependencies = new ArrayList<ConstructorDependency>();
         getConstructorDependencies( modifierClass, compositeType, constructorDependencies );
         List<FieldDependency> fieldDependencies = new ArrayList<FieldDependency>();
@@ -30,7 +32,7 @@ public class SideEffectModelFactory
 
         Class[] appliesTo = getAppliesTo( modifierClass );
 
-        SideEffectModel<T> model = new SideEffectModel<T>( modifierClass, constructorDependencies, fieldDependencies, methodDependencies, appliesTo );
+        SideEffectModel<T> model = new SideEffectModel<T>( modifierClass, constructorDependencies, fieldDependencies, methodDependencies, appliesTo, declaredBy );
         return model;
 
     }

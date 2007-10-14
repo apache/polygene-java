@@ -48,8 +48,8 @@ public class CompositeTest extends TestCase
         AssertionModelFactory assertionBuilder = new AssertionModelFactory();
         SideEffectModelFactory sideEffectBuilder = new SideEffectModelFactory();
         MixinModelFactory mmb = new MixinModelFactory( assertionBuilder, sideEffectBuilder );
-        reference.add( mmb.newFragmentModel( Mixin1Impl.class, Composition1.class ) );
-        reference.add( mmb.newFragmentModel( CompositeMixin.class, Composition1.class ) );
+        reference.add( mmb.newFragmentModel( Mixin1Impl.class, Composition1.class, Composition1.class ) );
+        reference.add( mmb.newFragmentModel( CompositeMixin.class, Composition1.class, Composition1.class ) );
 
         CompositeModel composite1 = modelFactory.newCompositeModel( Composition1.class );
         assertEquals( Composition1.class, composite1.getCompositeClass() );
@@ -58,7 +58,7 @@ public class CompositeTest extends TestCase
         assertEquals( reference, modelMixins );
 
         List<AssertionModel> referenceAssertions = new ArrayList<AssertionModel>();
-        referenceAssertions.add( assertionBuilder.newFragmentModel( Modifier1.class, Composition1.class ) );
+        referenceAssertions.add( assertionBuilder.newFragmentModel( Modifier1.class, Composition1.class, Composition1.class ) );
 
         assertEquals( referenceAssertions, composite1.getAssertionModels() );
     }

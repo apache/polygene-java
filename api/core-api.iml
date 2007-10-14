@@ -14,6 +14,7 @@
     <orderEntry type="library" name="Clover" level="application" />
     <orderEntry type="library" name="clover" level="project" />
     <orderEntry type="module" module-name="library-framework" />
+    <orderEntry type="library" name="javassist-3.0" level="project" />
     <orderEntryProperties />
   </component>
   <component name="copyright">

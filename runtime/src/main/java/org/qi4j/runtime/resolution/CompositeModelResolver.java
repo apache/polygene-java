@@ -1,6 +1,7 @@
 package org.qi4j.runtime.resolution;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -221,29 +222,6 @@ public class CompositeModelResolver
         return methodMixinMappings;
     }
 
-    private void resolveMethodMixin( MethodModel methodModel, CompositeModel compositeModel, Map<MixinModel, MixinResolution> mixinResolutions, Map<MethodModel, MixinResolution> methodMixinMappings )
-    {
-        // Find mixin for method
-        MixinModel mixinModel = getMixinForMethod( methodModel, compositeModel );
-
-        // Resolve it
-        MixinResolution mixinResolution = mixinResolutions.get( mixinModel );
-        if( mixinResolution == null )
-        {
-            try
-            {
-                mixinResolution = mixinModelResolver.resolveModel( mixinModel );
-                mixinResolutions.put( mixinModel, mixinResolution );
-            }
-            catch( InvalidDependencyException e )
-            {
-                throw new CompositeResolutionException( "Could not resolve mixin " + mixinModel.getModelClass().getName() + " for method " + methodModel.getMethod().toGenericString(), e );
-            }
-        }
-
-        methodMixinMappings.put( methodModel, mixinResolution );
-    }
-
     private MixinModel getMixinForMethod( MethodModel methodModel, CompositeModel compositeModel )
         throws CompositeResolutionException
     {
@@ -349,7 +327,27 @@ public class CompositeModelResolver
         }
 
         // The fragment must implement the interface of the method or be generic
-        return ok && ( method.getDeclaringClass().isAssignableFrom( fragmentModel.getModelClass() ) || fragmentModel.isGeneric() );
+        if( !ok )
+        {
+            return false;
+        }
+
+        if( fragmentModel.isAbstract() )
+        {
+            try
+            {
+                boolean methodNotAbstract = !Modifier.isAbstract( fragmentModel.getModelClass().getSuperclass().getMethod( method.getName(), method.getParameterTypes() ).getModifiers() );
+                return methodNotAbstract;
+            }
+            catch( NoSuchMethodException e )
+            {
+                return false;
+            }
+        }
+        else
+        {
+            return method.getDeclaringClass().isAssignableFrom( fragmentModel.getModelClass() ) || fragmentModel.isGeneric();
+        }
     }
 
     private boolean appliesToClass( Class appliesTo, MixinModel mixinModel, Method method, Class compositeClass, FragmentModel fragmentModel )

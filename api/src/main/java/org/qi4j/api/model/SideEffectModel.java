@@ -12,9 +12,9 @@ import org.qi4j.api.annotation.scope.SideEffectFor;
 public final class SideEffectModel<T>
     extends ModifierModel<T>
 {
-    public SideEffectModel( Class<T> fragmentClass, Iterable<ConstructorDependency> constructorDependencies, Iterable<FieldDependency> fieldDependencies, Iterable<MethodDependency> methodDependencies, Class[] appliesTo )
+    public SideEffectModel( Class<T> fragmentClass, Iterable<ConstructorDependency> constructorDependencies, Iterable<FieldDependency> fieldDependencies, Iterable<MethodDependency> methodDependencies, Class[] appliesTo, Class declaredBy )
     {
-        super( fragmentClass, constructorDependencies, fieldDependencies, methodDependencies, appliesTo );
+        super( fragmentClass, constructorDependencies, fieldDependencies, methodDependencies, appliesTo, declaredBy );
     }
 
     public Class<? extends Annotation> getModifiesAnnotationType()

@@ -17,9 +17,9 @@ public abstract class ModifierModel<T>
 {
     private Dependency modifiesDependency;
 
-    public ModifierModel( Class<T> fragmentClass, Iterable<ConstructorDependency> constructorDependencies, Iterable<FieldDependency> fieldDependencies, Iterable<MethodDependency> methodDependencies, Class[] appliesTo )
+    public ModifierModel( Class<T> fragmentClass, Iterable<ConstructorDependency> constructorDependencies, Iterable<FieldDependency> fieldDependencies, Iterable<MethodDependency> methodDependencies, Class[] appliesTo, Class declaredBy )
     {
-        super( fragmentClass, constructorDependencies, fieldDependencies, methodDependencies, appliesTo );
+        super( fragmentClass, constructorDependencies, fieldDependencies, methodDependencies, appliesTo, declaredBy );
 
         Iterator<Dependency> modifies = getDependenciesByScope( getModifiesAnnotationType() ).iterator();
         if( modifies.hasNext() )

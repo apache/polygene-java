@@ -34,6 +34,7 @@ import org.qi4j.api.model.MethodModel;
 import org.qi4j.api.model.MixinModel;
 import org.qi4j.api.model.NullArgumentException;
 import org.qi4j.api.model.SideEffectModel;
+import org.qi4j.api.persistence.Entity;
 import org.qi4j.api.persistence.EntityComposite;
 import org.qi4j.runtime.persistence.EntityImpl;
 
@@ -69,11 +70,11 @@ public class CompositeModelFactory
         List<MixinModel> mixins = findMixins( compositeClass, compositeClass );
 
         // Standard mixins
-        mixins.add( mixinModelFactory.newFragmentModel( CompositeMixin.class, compositeClass ) );
+        mixins.add( mixinModelFactory.newFragmentModel( CompositeMixin.class, compositeClass, Composite.class ) );
 
         if( EntityComposite.class.isAssignableFrom( compositeClass ) )
         {
-            mixins.add( mixinModelFactory.newFragmentModel( EntityImpl.class, compositeClass ) );
+            mixins.add( mixinModelFactory.newFragmentModel( EntityImpl.class, compositeClass, Entity.class ) );
         }
 
         // Find assertions
@@ -129,7 +130,7 @@ public class CompositeModelFactory
         {
             for( Class impl : impls.value() )
             {
-                mixinModels.add( mixinModelFactory.newFragmentModel( impl, compositeType ) );
+                mixinModels.add( mixinModelFactory.newFragmentModel( impl, compositeType, aType ) );
             }
         }
 
@@ -161,7 +162,7 @@ public class CompositeModelFactory
             }
             for( Class modifier : modifierClasses )
             {
-                K assertionModel = (K) modelFactory.newFragmentModel( modifier, compositeType );
+                K assertionModel = (K) modelFactory.newFragmentModel( modifier, compositeType, aClass );
                 modifiers.add( assertionModel );
             }
         }

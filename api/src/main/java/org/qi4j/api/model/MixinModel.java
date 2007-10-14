@@ -26,9 +26,9 @@ public final class MixinModel<T>
     private Iterable<SideEffectModel> sideEffectModels;
     private Iterable<PropertyModel> propertyModels;
 
-    public MixinModel( Class<T> fragmentClass, Iterable<ConstructorDependency> constructorDependencies, Iterable<FieldDependency> fieldDependencies, Iterable<MethodDependency> methodDependencies, List<PropertyModel> properties, Class[] appliesTo, Iterable<AssertionModel> assertionModels, Iterable<SideEffectModel> sideEffectModels )
+    public MixinModel( Class<T> fragmentClass, Iterable<ConstructorDependency> constructorDependencies, Iterable<FieldDependency> fieldDependencies, Iterable<MethodDependency> methodDependencies, List<PropertyModel> properties, Class[] appliesTo, Class declaredBy, Iterable<AssertionModel> assertionModels, Iterable<SideEffectModel> sideEffectModels )
     {
-        super( fragmentClass, constructorDependencies, fieldDependencies, methodDependencies, appliesTo );
+        super( fragmentClass, constructorDependencies, fieldDependencies, methodDependencies, appliesTo, declaredBy );
         this.sideEffectModels = sideEffectModels;
         this.propertyModels = properties;
         this.assertionModels = assertionModels;

@@ -34,8 +34,10 @@ public class MixinModelFactory
         this.sideEffectModelFactory = sideEffectModelFactory;
     }
 
-    public <T> MixinModel newFragmentModel( Class<T> mixinClass, Class compositeType ) throws NullArgumentException, InvalidCompositeException
+    public <T> MixinModel newFragmentModel( Class<T> mixinClass, Class compositeType, Class declaredBy ) throws NullArgumentException, InvalidCompositeException
     {
+        mixinClass = getFragmentClass( mixinClass );
+
         List<ConstructorDependency> constructorDependencies = new ArrayList<ConstructorDependency>();
         getConstructorDependencies( mixinClass, compositeType, constructorDependencies );
         List<FieldDependency> fieldDependencies = new ArrayList<FieldDependency>();
@@ -50,7 +52,7 @@ public class MixinModelFactory
         List<AssertionModel> assertions = getModifiers( mixinClass, compositeType, Assertions.class, assertionModelFactory );
         List<SideEffectModel> sideEffects = getModifiers( mixinClass, compositeType, SideEffects.class, sideEffectModelFactory );
 
-        MixinModel<T> model = new MixinModel<T>( mixinClass, constructorDependencies, fieldDependencies, methodDependencies, properties, appliesTo, assertions, sideEffects );
+        MixinModel<T> model = new MixinModel<T>( mixinClass, constructorDependencies, fieldDependencies, methodDependencies, properties, appliesTo, declaredBy, assertions, sideEffects );
         return model;
     }
 
@@ -108,7 +110,7 @@ public class MixinModelFactory
             }
             for( Class modifier : modifierClasses )
             {
-                K assertionModel = (K) modelFactory.newFragmentModel( modifier, compositeType );
+                K assertionModel = (K) modelFactory.newFragmentModel( modifier, compositeType, aClass );
                 modifiers.add( assertionModel );
             }
         }

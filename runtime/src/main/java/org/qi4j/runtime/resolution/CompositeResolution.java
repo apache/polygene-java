@@ -96,7 +96,7 @@ public final class CompositeResolution<T extends Composite>
         for( MethodResolution methodResolution : methodResolutionList )
         {
             out.println( "      " + methodResolution );
-            out.println( "        implemented by " + methodResolution.getMixinResolution().getMixinModel().getModelClass().getName() );
+            out.println( "        implemented by " + methodResolution.getMixinResolution().getMixinModel().getModelClass().getName() + " (declared by " + methodResolution.getMixinResolution().getMixinModel().getDeclaredBy().getName() + ")" );
 
             List<AssertionResolution> methodAssertions = methodResolution.getAssertions();
             if( methodAssertions.size() > 0 )
@@ -105,7 +105,7 @@ public final class CompositeResolution<T extends Composite>
             }
             for( AssertionResolution methodAssertion : methodAssertions )
             {
-                out.print( "          " + methodAssertion.getFragmentModel().getModelClass().getName() );
+                out.print( "          " + methodAssertion.getFragmentModel().getModelClass().getName() + " (declared by " + methodAssertion.getAssertionModel().getDeclaredBy().getName() + ")" );
                 if( methodAssertion.getFragmentModel() != null )
                 {
                     if( !methodAssertion.getAssertionModel().getAppliesTo().isEmpty() )
@@ -123,7 +123,7 @@ public final class CompositeResolution<T extends Composite>
             }
             for( SideEffectResolution methodSideEffect : methodSideEffects )
             {
-                out.print( "          " + methodSideEffect.getFragmentModel().getModelClass().getName() );
+                out.print( "          " + methodSideEffect.getFragmentModel().getModelClass().getName() + " (declared by " + methodSideEffect.getSideEffectModel().getDeclaredBy().getName() + ")" );
                 if( methodSideEffect.getFragmentModel() != null )
                 {
                     if( !methodSideEffect.getSideEffectModel().getAppliesTo().isEmpty() )
