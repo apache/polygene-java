@@ -20,7 +20,7 @@ import org.qi4j.api.annotation.SideEffects;
  * TODO
  */
 @Assertions( ReturnInvocationCacheOnExceptionAssertion.class )
-@SideEffects( CacheInvocationResultSideEffect.class )
+@SideEffects( { CacheInvocationResultSideEffect.class, InvalidateCacheOnSettersSideEffect.class } )
 public class InvocationCacheMixin
     implements InvocationCache
 {
