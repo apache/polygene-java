@@ -66,7 +66,7 @@ public class MixinModelFactory
             {
                 if( parameterDependency.getKey().getAnnotationType().equals( PropertyParameter.class ) )
                 {
-                    properties.add( new PropertyModel( parameterDependency.getKey().getName(), parameterDependency.getKey().getGenericType() ) );
+                    properties.add( new PropertyModel( parameterDependency.getKey().getName(), parameterDependency.getKey().getGenericType(), true, false, false ) );
                 }
             }
         }
@@ -77,7 +77,7 @@ public class MixinModelFactory
             {
                 if( parameterDependency.getKey().getAnnotationType().equals( PropertyParameter.class ) )
                 {
-                    properties.add( new PropertyModel( parameterDependency.getKey().getName(), parameterDependency.getKey().getGenericType() ) );
+                    properties.add( new PropertyModel( parameterDependency.getKey().getName(), parameterDependency.getKey().getGenericType(), true, true, false ) );
                 }
             }
         }
@@ -86,7 +86,7 @@ public class MixinModelFactory
         {
             if( fieldDependency.getKey().getAnnotationType().equals( PropertyField.class ) )
             {
-                properties.add( new PropertyModel( fieldDependency.getKey().getName(), fieldDependency.getKey().getGenericType() ) );
+                properties.add( new PropertyModel( fieldDependency.getKey().getName(), fieldDependency.getKey().getGenericType(), true, true, true ) );
             }
         }
         return properties;

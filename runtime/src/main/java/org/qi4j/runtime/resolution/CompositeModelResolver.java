@@ -231,7 +231,7 @@ public class CompositeModelResolver
         // NOTE: a generic mixin may also be non-generic and implement a particular interface at the same time
         for( MixinModel implementation : mixinModels )
         {
-            if( appliesTo( implementation, methodModel.getMethod(), implementation, compositeModel.getCompositeClass() ) )
+            if( ( !implementation.isGeneric() || methodModel.getMethod().getDeclaringClass().isAssignableFrom( implementation.getModelClass() ) ) && appliesTo( implementation, methodModel.getMethod(), implementation, compositeModel.getCompositeClass() ) )
             {
                 return implementation;
             }
@@ -240,7 +240,7 @@ public class CompositeModelResolver
         // Check generic impls
         for( MixinModel implementation : mixinModels )
         {
-            if( appliesTo( implementation, methodModel.getMethod(), implementation, compositeModel.getCompositeClass() ) )
+            if( implementation.isGeneric() && appliesTo( implementation, methodModel.getMethod(), implementation, compositeModel.getCompositeClass() ) )
             {
                 return implementation;
             }
@@ -371,7 +371,7 @@ public class CompositeModelResolver
                     AppliesToFilter filter = (AppliesToFilter) appliesTo.newInstance();
 
                     // Must apply to this method
-                    if( !filter.appliesTo( method, mixinModel.getModelClass(), compositeClass ) )
+                    if( !filter.appliesTo( method, mixinModel.getModelClass(), compositeClass, fragmentModel.getModelClass() ) )
                     {
                         return false;
                     }
