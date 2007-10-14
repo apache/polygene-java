@@ -129,21 +129,29 @@ public abstract class AbstractAnnotationValidatableAssertion<R extends Annotatio
                 if( annotationType.isInstance( annotation1 ) )
                 {
                     T arg = (T) objects[ i ];
-                    boolean valid = isValid( (R) annotation1, arg );
-                    if( !valid )
+                    boolean valid = false;
+                    try
                     {
-                        Object[] paramValues = new Object[annotationMethods.size() + 1];
-                        paramValues[ 0 ] = objects[ i ];
-                        for( int j = 0; j < annotationMethods.size(); j++ )
+                        valid = isValid( (R) annotation1, arg );
+                        if( !valid )
                         {
-                            Object paramValue = annotationMethods.get( j ).invoke( annotation1 );
-                            paramValues[ i + 1 ] = paramValue;
+                            Object[] paramValues = new Object[annotationMethods.size() + 1];
+                            paramValues[ 0 ] = objects[ i ];
+                            for( int j = 0; j < annotationMethods.size(); j++ )
+                            {
+                                Object paramValue = annotationMethods.get( j ).invoke( annotation1 );
+                                paramValues[ i + 1 ] = paramValue;
+                            }
+                            messages.addValidationMessage( newMessage( paramValues ) );
                         }
-                        messages.addValidationMessage( newMessage( paramValues ) );
+                        else
+                        {
+                            messages.removeValidationMessage( message );
+                        }
                     }
-                    else
+                    catch( NullPointerException e )
                     {
-                        messages.removeValidationMessage( message );
+                        // Ignore
                     }
                 }
             }
