@@ -3,6 +3,7 @@ package org.qi4j.library.framework.validation;
 import java.beans.Introspector;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import org.qi4j.api.annotation.AppliesToFilter;
 import org.qi4j.api.annotation.scope.AssertionFor;
 import org.qi4j.api.annotation.scope.Invocation;
 import org.qi4j.api.annotation.scope.ThisAs;
+import org.qi4j.library.framework.validation.annotation.Constraint;
 
 /**
  * TODO
@@ -22,6 +24,33 @@ import org.qi4j.api.annotation.scope.ThisAs;
 public abstract class AbstractAnnotationValidatableAssertion<R extends Annotation, T>
     implements InvocationHandler
 {
+    private static Annotation getAnnotation( Class annotationClass, Annotation annotation1 )
+    {
+        if( annotation1.annotationType().getAnnotation( Constraint.class ) == null )
+        {
+            return null;
+        }
+
+        if( annotationClass.isInstance( annotation1 ) )
+        {
+            return annotation1;
+        }
+        else
+        {
+            // Check recursively
+            Annotation[] annotationAnnotations = annotation1.annotationType().getAnnotations();
+            for( Annotation annotationAnnotation : annotationAnnotations )
+            {
+                Annotation ann = getAnnotation( annotationClass, annotationAnnotation );
+                if( ann != null )
+                {
+                    return ann;
+                }
+            }
+        }
+        return null;
+    }
+
     private Class annotationType;
 
     public static class AppliesTo
@@ -35,7 +64,7 @@ public abstract class AbstractAnnotationValidatableAssertion<R extends Annotatio
             {
                 for( Annotation annotation1 : annotation )
                 {
-                    if( annotationClass.isInstance( annotation1 ) )
+                    if( getAnnotation( annotationClass, annotation1 ) != null )
                     {
                         return true;
                     }
@@ -122,43 +151,57 @@ public abstract class AbstractAnnotationValidatableAssertion<R extends Annotatio
     {
         Annotation[][] annotations = method.getParameterAnnotations();
         int i = 0;
+        // Clear it first
+        messages.removeValidationMessage( message );
         for( Annotation[] annotation : annotations )
         {
             for( Annotation annotation1 : annotation )
             {
-                if( annotationType.isInstance( annotation1 ) )
-                {
-                    T arg = (T) objects[ i ];
-                    boolean valid = false;
-                    try
-                    {
-                        valid = isValid( (R) annotation1, arg );
-                        if( !valid )
-                        {
-                            Object[] paramValues = new Object[annotationMethods.size() + 1];
-                            paramValues[ 0 ] = objects[ i ];
-                            for( int j = 0; j < annotationMethods.size(); j++ )
-                            {
-                                Object paramValue = annotationMethods.get( j ).invoke( annotation1 );
-                                paramValues[ i + 1 ] = paramValue;
-                            }
-                            messages.addValidationMessage( newMessage( paramValues ) );
-                        }
-                        else
-                        {
-                            messages.removeValidationMessage( message );
-                        }
-                    }
-                    catch( NullPointerException e )
-                    {
-                        // Ignore
-                    }
-                }
+                Object arg = objects[ i ];
+                checkValid( annotation1, arg );
             }
             i++;
         }
 
         return next.invoke( object, method, objects );
+    }
+
+    private void checkValid( Annotation annotation1, Object arg )
+        throws IllegalAccessException, InvocationTargetException
+    {
+        if( annotationType.isInstance( annotation1 ) )
+        {
+            boolean valid;
+            try
+            {
+                valid = isValid( (R) annotation1, (T) arg );
+                if( !valid )
+                {
+                    Object[] paramValues = new Object[annotationMethods.size() + 1];
+                    paramValues[ 0 ] = arg;
+                    for( int j = 0; j < annotationMethods.size(); j++ )
+                    {
+                        Object paramValue = annotationMethods.get( j ).invoke( annotation1 );
+                        paramValues[ j + 1 ] = paramValue;
+                    }
+                    messages.addValidationMessage( newMessage( paramValues ) );
+                }
+            }
+            catch( NullPointerException e )
+            {
+                // Ignore
+            }
+        }
+
+        // Recursive check
+        Annotation[] annotationAnnotations = annotation1.annotationType().getAnnotations();
+        for( Annotation annotationAnnotation : annotationAnnotations )
+        {
+            if( annotationAnnotation.annotationType().getAnnotation( Constraint.class ) != null )
+            {
+                checkValid( annotationAnnotation, arg );
+            }
+        }
     }
 
     protected abstract boolean isValid( R annotation, T argument );

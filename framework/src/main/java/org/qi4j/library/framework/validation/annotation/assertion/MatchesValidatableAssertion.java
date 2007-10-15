@@ -1,6 +1,7 @@
-package org.qi4j.library.framework.validation;
+package org.qi4j.library.framework.validation.annotation.assertion;
 
 import java.util.regex.Pattern;
+import org.qi4j.library.framework.validation.AbstractAnnotationValidatableAssertion;
 import org.qi4j.library.framework.validation.annotation.Matches;
 
 /**

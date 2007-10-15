@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 @Constraint
 @Retention( RetentionPolicy.RUNTIME )
 @Target( { ElementType.PARAMETER, ElementType.ANNOTATION_TYPE } )
-public @interface Contains
+public @interface LessThan
 {
-    String value();
+    double value();
 }
