@@ -48,40 +48,33 @@ public final class InvocationInstance
         try
         {
             Object result;
-            try
+            if( firstAssertion == null )
             {
-                if( firstAssertion == null )
+                if( mixin instanceof InvocationHandler )
                 {
-                    if( mixin instanceof InvocationHandler )
-                    {
-                        result = ( (InvocationHandler) mixin ).invoke( proxy, method, args );
-                    }
-                    else
-                    {
-                        result = method.invoke( mixin, args );
-                    }
+                    result = ( (InvocationHandler) mixin ).invoke( proxy, method, args );
                 }
                 else
                 {
-                    proxyHandler.setContext( proxy, mixin, mixinType );
-                    mixinInvocationHandler.setFragment( mixin );
-                    if( firstAssertion instanceof InvocationHandler )
-                    {
-                        result = ( (InvocationHandler) firstAssertion ).invoke( proxy, method, args );
-                    }
-                    else
-                    {
-                        result = method.invoke( firstAssertion, args );
-                    }
+                    result = method.invoke( mixin, args );
                 }
-
-                // Check for side-effects
-                invokeSideEffects( result, null, proxy, args );
             }
-            finally
+            else
             {
-                proxyHandler.clearContext();
+                proxyHandler.setContext( proxy, mixin, mixinType );
+                mixinInvocationHandler.setFragment( mixin );
+                if( firstAssertion instanceof InvocationHandler )
+                {
+                    result = ( (InvocationHandler) firstAssertion ).invoke( proxy, method, args );
+                }
+                else
+                {
+                    result = method.invoke( firstAssertion, args );
+                }
             }
+
+            // Check for side-effects
+            invokeSideEffects( result, null, proxy, args );
 
             return result;
         }
@@ -94,6 +87,7 @@ public final class InvocationInstance
         }
         finally
         {
+            proxyHandler.clearContext();
             pool.returnInstance( this );
         }
     }
