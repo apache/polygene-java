@@ -14,7 +14,7 @@ package org.qi4j.library.framework.remote;
 import org.qi4j.api.Composite;
 import org.qi4j.api.annotation.Mixins;
 import org.qi4j.library.framework.RMIMixin;
-import org.qi4j.library.framework.caching.InvocationCache;
+import org.qi4j.library.framework.caching.InvocationCacheAbstractComposite;
 
 /**
  * Implement the RemoteInterface by using RMI.
@@ -24,6 +24,6 @@ import org.qi4j.library.framework.caching.InvocationCache;
  */
 @Mixins( RMIMixin.class )
 public interface RemoteInterfaceComposite
-    extends RemoteInterface, InvocationCache, Composite
+    extends RemoteInterface, InvocationCacheAbstractComposite, Composite
 {
 }

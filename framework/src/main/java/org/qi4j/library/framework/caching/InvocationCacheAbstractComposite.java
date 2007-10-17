@@ -9,7 +9,7 @@ import org.qi4j.api.annotation.SideEffects;
  * TODO
  */
 @Mixins( InvocationCacheMixin.class )
-@Assertions( ReturnCachedValueAssertion.class )
+@Assertions( ReturnCachedValueOnExceptionAssertion.class )
 @SideEffects( { CacheInvocationResultSideEffect.class, InvalidateCacheOnSettersSideEffect.class } )
 public interface InvocationCacheAbstractComposite
     extends Composite
