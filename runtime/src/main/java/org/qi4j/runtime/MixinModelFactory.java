@@ -2,12 +2,14 @@ package org.qi4j.runtime;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.qi4j.api.annotation.Assertions;
 import org.qi4j.api.annotation.SideEffects;
 import org.qi4j.api.annotation.scope.PropertyField;
 import org.qi4j.api.annotation.scope.PropertyParameter;
 import org.qi4j.api.model.AssertionModel;
+import org.qi4j.api.model.ConstraintDeclarationModel;
 import org.qi4j.api.model.ConstructorDependency;
 import org.qi4j.api.model.FieldDependency;
 import org.qi4j.api.model.FragmentModel;
@@ -49,10 +51,11 @@ public class MixinModelFactory
 
         Class[] appliesTo = getAppliesTo( mixinClass );
 
+        List<ConstraintDeclarationModel> constraints = Collections.emptyList(); // TODO
         List<AssertionModel> assertions = getModifiers( mixinClass, compositeType, Assertions.class, assertionModelFactory );
         List<SideEffectModel> sideEffects = getModifiers( mixinClass, compositeType, SideEffects.class, sideEffectModelFactory );
 
-        MixinModel<T> model = new MixinModel<T>( mixinClass, constructorDependencies, fieldDependencies, methodDependencies, properties, appliesTo, declaredBy, assertions, sideEffects );
+        MixinModel<T> model = new MixinModel<T>( mixinClass, constructorDependencies, fieldDependencies, methodDependencies, properties, appliesTo, declaredBy, assertions, sideEffects, constraints );
         return model;
     }
 

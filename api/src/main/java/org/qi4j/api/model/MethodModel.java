@@ -7,10 +7,12 @@ import java.lang.reflect.Method;
  */
 public class MethodModel
 {
-    Method method;
+    private Method method;
+    private MethodConstraint methodConstraint;
 
-    public MethodModel( Method method )
+    public MethodModel( Method method, MethodConstraint methodConstraint )
     {
+        this.methodConstraint = methodConstraint;
         this.method = method;
     }
 
@@ -19,6 +21,10 @@ public class MethodModel
         return method;
     }
 
+    public MethodConstraint getMethodConstraint()
+    {
+        return methodConstraint;
+    }
 
     public boolean equals( Object o )
     {

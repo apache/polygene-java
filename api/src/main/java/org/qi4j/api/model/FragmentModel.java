@@ -32,7 +32,7 @@ public abstract class FragmentModel<T>
     private Collection<Class> appliesTo;
     private boolean isAbstract;
     private boolean isGeneric;
-    private Set<MethodModel> thisAsMethods;
+    private Set<Method> thisAsMethods;
     private Class declaredBy;
 
     public FragmentModel( Class<T> fragmentClass, Iterable<ConstructorDependency> constructorDependencies, Iterable<FieldDependency> fieldDependencies, Iterable<MethodDependency> methodDependencies, Class[] appliesTo, Class declaredBy )
@@ -69,12 +69,12 @@ public abstract class FragmentModel<T>
         return isGeneric;
     }
 
-    public Set<MethodModel> getThisAsMethods()
+    public Set<Method> getThisAsMethods()
     {
         return thisAsMethods;
     }
 
-    private Set<MethodModel> getThisAsMethods( Iterable<Dependency> aClass )
+    private Set<Method> getThisAsMethods( Iterable<Dependency> aClass )
     {
         Set<Method> methods = new HashSet<Method>();
         for( Dependency dependency : aClass )
@@ -84,12 +84,7 @@ public abstract class FragmentModel<T>
             methods.addAll( Arrays.asList( typeMethods ) );
         }
 
-        Set<MethodModel> methodModels = new HashSet<MethodModel>();
-        for( Method method : methods )
-        {
-            methodModels.add( new MethodModel( method ) );
-        }
-        return methodModels;
+        return methods;
     }
 
     public Class getDeclaredBy()

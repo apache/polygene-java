@@ -18,18 +18,26 @@ package org.qi4j.runtime;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import org.qi4j.api.Composite;
+import org.qi4j.api.Constraint;
 import org.qi4j.api.annotation.Assertions;
+import org.qi4j.api.annotation.Constraints;
 import org.qi4j.api.annotation.Mixins;
 import org.qi4j.api.annotation.SideEffects;
 import org.qi4j.api.model.AssertionModel;
 import org.qi4j.api.model.CompositeModel;
+import org.qi4j.api.model.ConstraintDeclarationModel;
 import org.qi4j.api.model.FragmentModel;
 import org.qi4j.api.model.InvalidCompositeException;
+import org.qi4j.api.model.MethodConstraint;
 import org.qi4j.api.model.MethodModel;
 import org.qi4j.api.model.MixinModel;
 import org.qi4j.api.model.NullArgumentException;
@@ -43,16 +51,19 @@ public class CompositeModelFactory
     private AssertionModelFactory assertionModelFactory;
     private SideEffectModelFactory sideEffectModelFactory;
     private MixinModelFactory mixinModelFactory;
+    private ConstraintModelFactory constraintModelFactory;
 
     public CompositeModelFactory()
     {
+        constraintModelFactory = new ConstraintModelFactory();
         assertionModelFactory = new AssertionModelFactory();
         sideEffectModelFactory = new SideEffectModelFactory();
         mixinModelFactory = new MixinModelFactory( assertionModelFactory, sideEffectModelFactory );
     }
 
-    public CompositeModelFactory( AssertionModelFactory assertionModelFactory, SideEffectModelFactory sideEffectModelFactory, MixinModelFactory mixinModelFactory )
+    public CompositeModelFactory( ConstraintModelFactory constraintModelFactory, AssertionModelFactory assertionModelFactory, SideEffectModelFactory sideEffectModelFactory, MixinModelFactory mixinModelFactory )
     {
+        this.constraintModelFactory = constraintModelFactory;
         this.assertionModelFactory = assertionModelFactory;
         this.sideEffectModelFactory = sideEffectModelFactory;
         this.mixinModelFactory = mixinModelFactory;
@@ -88,8 +99,48 @@ public class CompositeModelFactory
         Class[] interfaces = new Class[]{ compositeClass };
         Class<? extends T> proxyClass = (Class<? extends T>) Proxy.getProxyClass( proxyClassloader, interfaces );
 
-        CompositeModel model = new CompositeModel<T>( compositeClass, proxyClass, methods, mixins, assertions, sideEffects );
+        List<FragmentModel> fragmentModels = new ArrayList<FragmentModel>();
+        fragmentModels.addAll( mixins );
+        fragmentModels.addAll( assertions );
+        fragmentModels.addAll( sideEffects );
+        Iterable<MethodModel> thisAsModels = getThisAsModels( fragmentModels );
+
+        Iterable<ConstraintDeclarationModel> constraintModels = getConstraintDeclarations( compositeClass );
+        CompositeModel model = new CompositeModel<T>( compositeClass, proxyClass, methods, mixins, constraintModels, assertions, sideEffects, thisAsModels );
         return model;
+    }
+
+    private Iterable<ConstraintDeclarationModel> getConstraintDeclarations( Class compositeClass )
+    {
+        Constraints constraintsAnnotation = (Constraints) compositeClass.getAnnotation( Constraints.class );
+
+        List<ConstraintDeclarationModel> constraintDeclarationModels = new ArrayList<ConstraintDeclarationModel>();
+
+        if( constraintsAnnotation != null )
+        {
+            Class<? extends Constraint>[] constraintImplementations = constraintsAnnotation.value();
+            for( Class<? extends Constraint> constraintImplementation : constraintImplementations )
+            {
+                Class annotationType = (Class) ( (ParameterizedType) constraintImplementation.getGenericInterfaces()[ 0 ] ).getActualTypeArguments()[ 0 ];
+                Class parameterType = (Class) ( (ParameterizedType) constraintImplementation.getGenericInterfaces()[ 0 ] ).getActualTypeArguments()[ 1 ];
+
+                constraintDeclarationModels.add( new ConstraintDeclarationModel( constraintImplementation, annotationType, parameterType, compositeClass ) );
+            }
+
+        }
+
+        // Check superinterfaces
+        Class[] classes = compositeClass.getInterfaces();
+        for( Class superInterface : classes )
+        {
+            Iterable<ConstraintDeclarationModel> iterable = getConstraintDeclarations( superInterface );
+            for( ConstraintDeclarationModel constraintDeclarationModel : iterable )
+            {
+                constraintDeclarationModels.add( constraintDeclarationModel );
+            }
+        }
+
+        return constraintDeclarationModels;
     }
 
     private <T extends Composite> Collection<MethodModel> findMethods( Class<T> compositeClass )
@@ -98,7 +149,8 @@ public class CompositeModelFactory
         Method[] methods = compositeClass.getMethods();
         for( Method method : methods )
         {
-            models.add( new MethodModel( method ) );
+            MethodConstraint methodConstraint = constraintModelFactory.newMethodConstraint( method );
+            models.add( new MethodModel( method, methodConstraint ) );
         }
 
         return models;
@@ -175,5 +227,26 @@ public class CompositeModelFactory
         }
 
         return modifiers;
+    }
+
+    private Iterable<MethodModel> getThisAsModels( Iterable<FragmentModel> fragmentModels )
+    {
+        Map<Method, MethodModel> methodModels = new HashMap<Method, MethodModel>();
+        for( FragmentModel fragmentModel : fragmentModels )
+        {
+            Set<Method> thisAsmethods = fragmentModel.getThisAsMethods();
+            for( Method thisAsMethod : thisAsmethods )
+            {
+                MethodModel methodModel = methodModels.get( thisAsMethod );
+                if( methodModel == null )
+                {
+                    MethodConstraint methodConstraint = constraintModelFactory.newMethodConstraint( thisAsMethod );
+                    methodModel = new MethodModel( thisAsMethod, methodConstraint );
+                    methodModels.put( thisAsMethod, methodModel );
+                }
+            }
+        }
+
+        return methodModels.values();
     }
 }

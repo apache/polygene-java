@@ -18,7 +18,7 @@ import java.lang.reflect.Method;
 /**
  * TODO
  */
-public final class FragmentInvocationHandler
+public class FragmentInvocationHandler
     implements InvocationHandler
 {
     private Object fragment;

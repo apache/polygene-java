@@ -9,13 +9,15 @@ import org.qi4j.api.model.MethodModel;
 public class MethodResolution
 {
     MethodModel method;
+    MethodConstraintResolution methodConstraintResolution;
     List<AssertionResolution> assertions;
     List<SideEffectResolution> sideEffects;
     MixinResolution mixin;
 
-    public MethodResolution( MethodModel method, List<AssertionResolution> assertions, List<SideEffectResolution> sideEffects, MixinResolution mixin )
+    public MethodResolution( MethodModel method, MethodConstraintResolution methodConstraintResolutions, List<AssertionResolution> assertions, List<SideEffectResolution> sideEffects, MixinResolution mixin )
     {
         this.method = method;
+        this.methodConstraintResolution = methodConstraintResolutions;
         this.assertions = assertions;
         this.sideEffects = sideEffects;
         this.mixin = mixin;
@@ -24,6 +26,11 @@ public class MethodResolution
     public MethodModel getMethodModel()
     {
         return method;
+    }
+
+    public MethodConstraintResolution getMethodConstraintResolution()
+    {
+        return methodConstraintResolution;
     }
 
     public List<AssertionResolution> getAssertions()
@@ -40,7 +47,6 @@ public class MethodResolution
     {
         return mixin;
     }
-
 
     @Override public String toString()
     {

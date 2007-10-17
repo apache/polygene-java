@@ -17,21 +17,26 @@ package org.qi4j.runtime;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.qi4j.api.Composite;
 import org.qi4j.api.CompositeBuilderFactory;
 import org.qi4j.api.CompositeInstantiationException;
+import org.qi4j.api.Constraint;
 import org.qi4j.api.model.AssertionModel;
 import org.qi4j.api.model.CompositeContext;
 import org.qi4j.api.model.CompositeModel;
+import org.qi4j.api.model.ConstraintDeclarationModel;
 import org.qi4j.api.model.ModifierModel;
 import org.qi4j.api.model.SideEffectModel;
 import org.qi4j.runtime.resolution.AssertionResolution;
 import org.qi4j.runtime.resolution.CompositeResolution;
+import org.qi4j.runtime.resolution.ConstraintResolution;
 import org.qi4j.runtime.resolution.MethodResolution;
 import org.qi4j.runtime.resolution.MixinResolution;
+import org.qi4j.runtime.resolution.ParameterConstraintResolution;
 import org.qi4j.runtime.resolution.SideEffectResolution;
 import org.qi4j.spi.dependency.ModifierDependencyInjectionContext;
 
@@ -145,17 +150,15 @@ public final class CompositeContextImpl<T extends Composite>
         ProxyReferenceInvocationHandler proxyHandler = new ProxyReferenceInvocationHandler();
         Class compositeClass = compositeModel.getCompositeClass();
         ClassLoader classloader = compositeClass.getClassLoader();
-        Class[] intfaces = new Class[]{ compositeClass };
-//        T thisCompositeProxy = (T) Proxy.newProxyInstance( classloader, intfaces, proxyHandler );
 
         MethodResolution methodResolution = compositeResolution.getMethodResolution( method.getMethod() );
 
         FragmentInvocationHandler mixinInvocationHandler = new FragmentInvocationHandler();
 
+        // Instantiate and link assertions
         Object previousAssertion = mixinInvocationHandler;
         {
             List<AssertionResolution> assertionResolutions = methodResolution.getAssertions();
-            // Instantiate and link assertions
             for( int i = assertionResolutions.size() - 1; i >= 0; i-- )
             {
                 AssertionResolution assertion = assertionResolutions.get( i );
@@ -165,6 +168,37 @@ public final class CompositeContextImpl<T extends Composite>
                 ModifierDependencyInjectionContext modifierContext = new ModifierDependencyInjectionContext( this, proxyHandler, modifies, method.getMethod(), methodResolution.getMixinResolution().getMixinModel(), proxyHandler );
                 previousAssertion = fragmentFactory.newInstance( assertion, modifierContext );
             }
+        }
+
+        // Instantiate constraints for parameters
+        Iterable<ParameterConstraintResolution> paramConstraintResolutions = methodResolution.getMethodConstraintResolution().getParameterConstraintResolutions();
+        List<List<ConstraintInstance>> parameterConstraintInstances = new ArrayList<List<ConstraintInstance>>();
+        boolean hasConstraints = false;
+        for( ParameterConstraintResolution paramConstraintResolution : paramConstraintResolutions )
+        {
+            List<ConstraintInstance> constraintInstances = new ArrayList<ConstraintInstance>();
+            Iterable<ConstraintResolution> constraints = paramConstraintResolution.getConstraints();
+            for( ConstraintResolution constraintResolution : constraints )
+            {
+                ConstraintDeclarationModel model = constraintResolution.getConstraintDeclarationModel();
+                Class aClass = model.getConstraintType();
+                Class<? extends Constraint> constraintType = aClass;
+                try
+                {
+                    Constraint constraintInstance = constraintType.newInstance();
+                    constraintInstances.add( new ConstraintInstance( constraintInstance, constraintResolution.getConstraintAnnotation() ) );
+                    hasConstraints = true;
+                }
+                catch( Exception e )
+                {
+                    throw new CompositeInstantiationException( "Could not instantiate constraint " + constraintType.getName(), e );
+                }
+            }
+            parameterConstraintInstances.add( constraintInstances );
+        }
+        if( hasConstraints )
+        {
+            previousAssertion = new ConstraintInvocationHandler( proxyHandler, parameterConstraintInstances, previousAssertion );
         }
 
         SideEffectInvocationHandlerResult sideEffectResult = new SideEffectInvocationHandlerResult();

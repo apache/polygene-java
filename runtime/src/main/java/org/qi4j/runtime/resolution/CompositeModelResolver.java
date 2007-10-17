@@ -1,8 +1,10 @@
 package org.qi4j.runtime.resolution;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -12,13 +14,17 @@ import java.util.Map;
 import java.util.Set;
 import org.qi4j.api.Composite;
 import org.qi4j.api.annotation.AppliesToFilter;
+import org.qi4j.api.annotation.ConstraintDeclaration;
 import org.qi4j.api.model.AssertionModel;
 import org.qi4j.api.model.CompositeModel;
+import org.qi4j.api.model.ConstraintDeclarationModel;
 import org.qi4j.api.model.FragmentModel;
 import org.qi4j.api.model.InvalidCompositeException;
+import org.qi4j.api.model.MethodConstraint;
 import org.qi4j.api.model.MethodModel;
 import org.qi4j.api.model.MixinModel;
 import org.qi4j.api.model.ModifierModel;
+import org.qi4j.api.model.ParameterConstraint;
 import org.qi4j.api.model.SideEffectModel;
 import org.qi4j.spi.dependency.InvalidDependencyException;
 
@@ -27,6 +33,7 @@ import org.qi4j.spi.dependency.InvalidDependencyException;
  */
 public class CompositeModelResolver
 {
+    ConstraintModelResolver ConstraintModelResolver;
     AssertionModelResolver assertionModelResolver;
     SideEffectModelResolver sideEffectModelResolver;
     MixinModelResolver mixinModelResolver;
@@ -42,13 +49,13 @@ public class CompositeModelResolver
         throws CompositeResolutionException
     {
         // First figure out which interfaces map to which methods
-        Map<MethodModel, MixinModel> mixinsForMethods = getMixinsForMethods( compositeModel );
+        Map<Method, MixinModel> mixinsForMethods = getMixinsForMethods( compositeModel );
 
         // Determine list of mixin resolutions. Remove all duplicates
         Map<MixinModel, MixinResolution> resolvedMixins = getResolvedMixins( mixinsForMethods, compositeModel );
 
         // Get mixin resolutions for all methods
-        Map<MethodModel, MixinResolution> mixinResolutionsForMethods = getResolvedMethodMixins( mixinsForMethods, resolvedMixins );
+        Map<Method, MixinResolution> mixinResolutionsForMethods = getResolvedMethodMixins( mixinsForMethods, resolvedMixins );
 
         // Map assertions and side-effects to methods
         List<MethodResolution> methodResolutions = getMethodResolutions( compositeModel, mixinResolutionsForMethods, resolvedMixins.values() );
@@ -57,17 +64,17 @@ public class CompositeModelResolver
         return resolution;
     }
 
-    private Map<MethodModel, MixinResolution> getResolvedMethodMixins( Map<MethodModel, MixinModel> mixinsForMethods, Map<MixinModel, MixinResolution> resolvedMixins )
+    private Map<Method, MixinResolution> getResolvedMethodMixins( Map<Method, MixinModel> mixinsForMethods, Map<MixinModel, MixinResolution> resolvedMixins )
     {
-        Map<MethodModel, MixinResolution> resolvedMethodMixins = new HashMap<MethodModel, MixinResolution>();
-        for( Map.Entry<MethodModel, MixinModel> entry : mixinsForMethods.entrySet() )
+        Map<Method, MixinResolution> resolvedMethodMixins = new HashMap<Method, MixinResolution>();
+        for( Map.Entry<Method, MixinModel> entry : mixinsForMethods.entrySet() )
         {
             resolvedMethodMixins.put( entry.getKey(), resolvedMixins.get( entry.getValue() ) );
         }
         return resolvedMethodMixins;
     }
 
-    private <T extends Composite> Map<MixinModel, MixinResolution> getResolvedMixins( Map<MethodModel, MixinModel> mixinsForMethods, CompositeModel<T> compositeModel )
+    private <T extends Composite> Map<MixinModel, MixinResolution> getResolvedMixins( Map<Method, MixinModel> mixinsForMethods, CompositeModel<T> compositeModel )
     {
         // Build set of used mixins
         Set<MixinModel> usedMixins = new LinkedHashSet<MixinModel>();
@@ -124,10 +131,10 @@ public class CompositeModelResolver
         return mixinResolutions;
     }
 
-    private boolean dependsOn( MixinModel model, MixinModel otherModel, Map<MethodModel, MixinModel> mixinsForMethods )
+    private boolean dependsOn( MixinModel model, MixinModel otherModel, Map<Method, MixinModel> mixinsForMethods )
     {
-        Set<MethodModel> methods = model.getThisAsMethods();
-        for( MethodModel methodModel : methods )
+        Set<Method> methods = model.getThisAsMethods();
+        for( Method methodModel : methods )
         {
             if( mixinsForMethods.get( methodModel ).equals( otherModel ) )
             {
@@ -138,17 +145,37 @@ public class CompositeModelResolver
         return false;
     }
 
-    private List<MethodResolution> getMethodResolutions( CompositeModel compositeModel, Map<MethodModel, MixinResolution> methodMixins, Collection<MixinResolution> mixinResolutions )
+    private List<MethodResolution> getMethodResolutions( CompositeModel compositeModel, Map<Method, MixinResolution> methodMixins, Collection<MixinResolution> mixinResolutions )
         throws CompositeResolutionException
     {
         List<MethodResolution> methodResolutions = new ArrayList<MethodResolution>();
         Map<AssertionModel, AssertionResolution> assertionResolutions = new HashMap<AssertionModel, AssertionResolution>();
         Map<SideEffectModel, SideEffectResolution> sideEffectResolutions = new HashMap<SideEffectModel, SideEffectResolution>();
 
-        for( Map.Entry<MethodModel, MixinResolution> entry : methodMixins.entrySet() )
+        // Set up annotation -> constraint model mappings
+        Iterable<ConstraintDeclarationModel> constraintModels = compositeModel.getConstraintModels();
+        Map<Class<? extends Annotation>, ConstraintDeclarationModel> constraintModelMappings = new HashMap<Class<? extends Annotation>, ConstraintDeclarationModel>();
+        for( ConstraintDeclarationModel constraintModel : constraintModels )
+        {
+            constraintModelMappings.put( constraintModel.getAnnotationType(), constraintModel );
+        }
+
+        Collection<MethodModel> methodModels = compositeModel.getMethodModels();
+        resolveMethods( methodModels, methodMixins, compositeModel, mixinResolutions, assertionResolutions, sideEffectResolutions, constraintModelMappings, methodResolutions );
+
+        Iterable<MethodModel> thisAsMethodModels = compositeModel.getThisAsModels();
+        resolveMethods( thisAsMethodModels, methodMixins, compositeModel, mixinResolutions, assertionResolutions, sideEffectResolutions, constraintModelMappings, methodResolutions );
+
+        return methodResolutions;
+    }
+
+    private void resolveMethods( Iterable<MethodModel> methodModels, Map<Method, MixinResolution> methodMixins, CompositeModel compositeModel, Collection<MixinResolution> mixinResolutions, Map<AssertionModel, AssertionResolution> assertionResolutions, Map<SideEffectModel, SideEffectResolution> sideEffectResolutions, Map<Class<? extends Annotation>, ConstraintDeclarationModel> constraintModelMappings, List<MethodResolution> methodResolutions )
+    {
+        for( MethodModel methodModel : methodModels )
         {
             // Find assertions for method
-            Iterable<AssertionModel> assertions = getAssertionsForMethod( compositeModel, entry.getKey().getMethod(), entry.getValue().getMixinModel(), mixinResolutions );
+            MixinResolution mixinResolution = methodMixins.get( methodModel.getMethod() );
+            Iterable<AssertionModel> assertions = getAssertionsForMethod( compositeModel, methodModel.getMethod(), mixinResolution.getMixinModel(), mixinResolutions );
 
             // Resolve assertions
             List<AssertionResolution> methodAssertionResolutions = new ArrayList<AssertionResolution>();
@@ -171,7 +198,7 @@ public class CompositeModelResolver
             }
 
             // Find side-effects for method
-            Iterable<SideEffectModel> sideEffects = getSideEffectsForMethod( compositeModel, entry.getKey().getMethod(), entry.getValue().getMixinModel(), mixinResolutions );
+            Iterable<SideEffectModel> sideEffects = getSideEffectsForMethod( compositeModel, methodModel.getMethod(), mixinResolution.getMixinModel(), mixinResolutions );
 
             // Resolve side-effects
             List<SideEffectResolution> methodSideEffectResolutions = new ArrayList<SideEffectResolution>();
@@ -193,36 +220,94 @@ public class CompositeModelResolver
                 methodSideEffectResolutions.add( resolution );
             }
 
-            MethodResolution methodResolution = new MethodResolution( entry.getKey(), methodAssertionResolutions, methodSideEffectResolutions, methodMixins.get( entry.getKey() ) );
+            MethodConstraintResolution methodConstraintResolution = resolveMethodConstraints( compositeModel.getCompositeClass(), methodModel.getMethodConstraint(), constraintModelMappings );
+
+            MethodResolution methodResolution = new MethodResolution( methodModel, methodConstraintResolution, methodAssertionResolutions, methodSideEffectResolutions, mixinResolution );
             methodResolutions.add( methodResolution );
         }
-
-        return methodResolutions;
     }
 
-    private Map<MethodModel, MixinModel> getMixinsForMethods( CompositeModel compositeModel )
+    private MethodConstraintResolution resolveMethodConstraints( Class compositeClass, MethodConstraint methodConstraint, Map<Class<? extends Annotation>, ConstraintDeclarationModel> constraintModelMappings )
+    {
+        Iterable<ParameterConstraint> parameterConstraints = methodConstraint.getParameterConstraints();
+        List<ParameterConstraintResolution> parameterConstraintResolutions = new ArrayList<ParameterConstraintResolution>();
+        for( ParameterConstraint parameterConstraint : parameterConstraints )
+        {
+            Iterable<Annotation> constraints = parameterConstraint.getConstraints();
+            Set<ConstraintResolution> declarationModels = new LinkedHashSet<ConstraintResolution>();
+            addConstraintDeclarations( constraints, constraintModelMappings, compositeClass, declarationModels );
+            parameterConstraintResolutions.add( new ParameterConstraintResolution( parameterConstraint, declarationModels ) );
+        }
+        return new MethodConstraintResolution( methodConstraint, parameterConstraintResolutions );
+    }
+
+    private void addConstraintDeclarations( Iterable<Annotation> constraints, Map<Class<? extends Annotation>, ConstraintDeclarationModel> constraintModelMappings, Class compositeClass, Set<ConstraintResolution> constraintResolutions )
+    {
+        for( Annotation constraint : constraints )
+        {
+            Class annotationType = constraint.annotationType();
+            if( isConstraintDeclaration( annotationType ) )
+            {
+                // Match annotation with constraint declarations
+                ConstraintDeclarationModel constraintDeclaration = constraintModelMappings.get( constraint.annotationType() );
+                if( constraintDeclaration == null )
+                {
+                    // No declaration found, but it's a composite constraint so try subconstraints
+                    Annotation[] annotations = annotationType.getAnnotations();
+                    List<Annotation> constraintAnnotations = new ArrayList<Annotation>();
+                    for( Annotation annotation : annotations )
+                    {
+                        if( isConstraintDeclaration( annotation.annotationType() ) )
+                        {
+                            constraintAnnotations.add( annotation );
+                        }
+                    }
+
+                    if( constraintAnnotations.size() > 0 )
+                    {
+                        addConstraintDeclarations( Arrays.asList( annotations ), constraintModelMappings, compositeClass, constraintResolutions );
+                    }
+                    else
+                    {
+                        throw new InvalidCompositeException( "No constraint implementation found for constraint annotation " + constraint.annotationType().getName(), compositeClass );
+                    }
+                }
+                else
+                {
+                    constraintResolutions.add( new ConstraintResolution( constraintDeclaration, constraint ) );
+                }
+            }
+        }
+    }
+
+    private boolean isConstraintDeclaration( Class annotationType )
+    {
+        return annotationType.getAnnotation( ConstraintDeclaration.class ) != null;
+    }
+
+    private Map<Method, MixinModel> getMixinsForMethods( CompositeModel compositeModel )
         throws CompositeResolutionException
     {
         Iterable<MethodModel> methodModels = compositeModel.getMethodModels();
-        Map<MethodModel, MixinModel> methodMixinMappings = new HashMap<MethodModel, MixinModel>();
+        Map<Method, MixinModel> methodMixinMappings = new HashMap<Method, MixinModel>();
 
         // Map methods in composite type to mixins
         for( MethodModel methodModel : methodModels )
         {
-            methodMixinMappings.put( methodModel, getMixinForMethod( methodModel, compositeModel ) );
+            methodMixinMappings.put( methodModel.getMethod(), getMixinForMethod( methodModel.getMethod(), compositeModel ) );
         }
 
         // Map methods in internal @ThisAs dependencies to mixins
         Iterable<MethodModel> thisAsMethodModels = compositeModel.getThisAsModels();
         for( MethodModel methodModel : thisAsMethodModels )
         {
-            methodMixinMappings.put( methodModel, getMixinForMethod( methodModel, compositeModel ) );
+            methodMixinMappings.put( methodModel.getMethod(), getMixinForMethod( methodModel.getMethod(), compositeModel ) );
         }
 
         return methodMixinMappings;
     }
 
-    private MixinModel getMixinForMethod( MethodModel methodModel, CompositeModel compositeModel )
+    private MixinModel getMixinForMethod( Method methodModel, CompositeModel compositeModel )
         throws CompositeResolutionException
     {
         Iterable<MixinModel> mixinModels = compositeModel.getMixinModels();
@@ -231,7 +316,7 @@ public class CompositeModelResolver
         // NOTE: a generic mixin may also be non-generic and implement a particular interface at the same time
         for( MixinModel implementation : mixinModels )
         {
-            if( ( !implementation.isGeneric() || methodModel.getMethod().getDeclaringClass().isAssignableFrom( implementation.getModelClass() ) ) && appliesTo( implementation, methodModel.getMethod(), implementation, compositeModel.getCompositeClass() ) )
+            if( ( !implementation.isGeneric() || methodModel.getDeclaringClass().isAssignableFrom( implementation.getModelClass() ) ) && appliesTo( implementation, methodModel, implementation, compositeModel.getCompositeClass() ) )
             {
                 return implementation;
             }
@@ -240,13 +325,13 @@ public class CompositeModelResolver
         // Check generic impls
         for( MixinModel implementation : mixinModels )
         {
-            if( implementation.isGeneric() && appliesTo( implementation, methodModel.getMethod(), implementation, compositeModel.getCompositeClass() ) )
+            if( implementation.isGeneric() && appliesTo( implementation, methodModel, implementation, compositeModel.getCompositeClass() ) )
             {
                 return implementation;
             }
         }
 
-        throw new CompositeResolutionException( "Could not find mixin for method " + methodModel.getMethod().toGenericString() );
+        throw new CompositeResolutionException( "Could not find mixin for method " + methodModel.toGenericString() );
     }
 
     private Iterable<AssertionModel> getAssertionsForMethod( CompositeModel compositeModel, Method method, MixinModel mixinModel, Iterable<MixinResolution> usedMixins )

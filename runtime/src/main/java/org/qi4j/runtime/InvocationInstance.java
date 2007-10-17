@@ -48,33 +48,40 @@ public final class InvocationInstance
         try
         {
             Object result;
-            if( firstAssertion == null )
+            try
             {
-                if( mixin instanceof InvocationHandler )
+                if( firstAssertion == null )
                 {
-                    result = ( (InvocationHandler) mixin ).invoke( proxy, method, args );
+                    if( mixin instanceof InvocationHandler )
+                    {
+                        result = ( (InvocationHandler) mixin ).invoke( proxy, method, args );
+                    }
+                    else
+                    {
+                        result = method.invoke( mixin, args );
+                    }
                 }
                 else
                 {
-                    result = method.invoke( mixin, args );
+                    proxyHandler.setContext( proxy, mixin, mixinType );
+                    mixinInvocationHandler.setFragment( mixin );
+                    if( firstAssertion instanceof InvocationHandler )
+                    {
+                        result = ( (InvocationHandler) firstAssertion ).invoke( proxy, method, args );
+                    }
+                    else
+                    {
+                        result = method.invoke( firstAssertion, args );
+                    }
                 }
-            }
-            else
-            {
-                proxyHandler.setContext( proxy, mixin, mixinType );
-                mixinInvocationHandler.setFragment( mixin );
-                if( firstAssertion instanceof InvocationHandler )
-                {
-                    result = ( (InvocationHandler) firstAssertion ).invoke( proxy, method, args );
-                }
-                else
-                {
-                    result = method.invoke( firstAssertion, args );
-                }
-            }
 
-            // Check for side-effects
-            invokeSideEffects( result, null, proxy, args );
+                // Check for side-effects
+                invokeSideEffects( result, null, proxy, args );
+            }
+            finally
+            {
+                proxyHandler.clearContext();
+            }
 
             return result;
         }

@@ -14,6 +14,8 @@
  */
 package org.qi4j.api;
 
+import java.util.Collection;
+
 public interface InvocationContext
 {
     Object getComposite();
@@ -21,4 +23,6 @@ public interface InvocationContext
     Object getMixin();
 
     Class getMixinType();
+
+    Collection<ConstraintViolation> getConstraintViolations();
 }
