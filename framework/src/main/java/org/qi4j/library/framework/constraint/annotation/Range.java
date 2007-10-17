@@ -1,14 +1,17 @@
-package org.qi4j.library.framework.validation.annotation;
+package org.qi4j.library.framework.constraint.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import org.qi4j.api.annotation.ConstraintDeclaration;
 
-@Constraint
+@ConstraintDeclaration
 @Retention( RetentionPolicy.RUNTIME )
 @Target( { ElementType.PARAMETER, ElementType.ANNOTATION_TYPE } )
-public @interface MaxLength
+public @interface Range
 {
-    int value();
+    double min();
+
+    double max();
 }

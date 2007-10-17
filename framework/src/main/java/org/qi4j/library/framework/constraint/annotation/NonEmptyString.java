@@ -1,0 +1,16 @@
+package org.qi4j.library.framework.constraint.annotation;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import org.qi4j.api.annotation.ConstraintDeclaration;
+
+@ConstraintDeclaration
+@Retention( RetentionPolicy.RUNTIME )
+@Target( { ElementType.PARAMETER, ElementType.ANNOTATION_TYPE } )
+@NotNull
+@MinLength( 1 )
+public @interface NonEmptyString
+{
+}

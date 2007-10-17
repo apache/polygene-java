@@ -7,9 +7,9 @@ import org.qi4j.api.annotation.Mixins;
 /**
  * TODO
  */
-@Assertions( { ValidatableMessagesAssertion.class, ChangeValidationAssertion.class } )
+@Assertions( { ValidatableMessagesAssertion.class, ConstraintValidationAssertion.class, ChangeValidationAssertion.class } )
 @Mixins( { ValidatableMixin.class, ValidationMessagesMixin.class } )
-public interface ValidatableComposite
+public interface ValidatableAbstractComposite
     extends Validatable, Composite
 {
 }

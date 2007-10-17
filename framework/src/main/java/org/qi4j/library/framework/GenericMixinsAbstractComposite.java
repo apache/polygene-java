@@ -9,6 +9,6 @@ import org.qi4j.library.framework.scripting.JavaScriptMixin;
  * Composite methods.
  */
 @Mixins( { PropertiesMixin.class, JavaScriptMixin.class, FinderMixin.class, RMIMixin.class, NoopMixin.class } )
-public interface GenericMixinsComposite
+public interface GenericMixinsAbstractComposite
 {
 }

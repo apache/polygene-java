@@ -11,7 +11,7 @@ import org.qi4j.api.annotation.SideEffects;
 @Mixins( InvocationCacheMixin.class )
 @Assertions( ReturnCachedValueAssertion.class )
 @SideEffects( { CacheInvocationResultSideEffect.class, InvalidateCacheOnSettersSideEffect.class } )
-public interface InvocationCacheComposite
+public interface InvocationCacheAbstractComposite
     extends Composite
 {
 }
