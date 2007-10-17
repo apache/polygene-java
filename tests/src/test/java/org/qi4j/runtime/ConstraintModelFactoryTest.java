@@ -30,7 +30,7 @@ public class ConstraintModelFactoryTest extends TestCase
 
     public void testNewMethodConstraint() throws Exception
     {
-        Method method = TestClass.class.getMethod( "doStuff" );
+        Method method = TestClass.class.getMethod( "doStuff", String.class, String.class, Integer.TYPE );
         MethodConstraint constraint = constraintModelFactory.newMethodConstraint( method );
         assertEquals( method, constraint.getMethod() );
         Iterator<ParameterConstraint> params = constraint.getParameterConstraints().iterator();
@@ -47,7 +47,7 @@ public class ConstraintModelFactoryTest extends TestCase
     {
     }
 
-    static class TestClass
+    public static class TestClass
     {
         public void doStuff( @NotAConstraint @MinLength( 5 ) @MaxLength( 10 )String foo, @Email String email, @Range( min = 3, max = 5 )int value )
         {
