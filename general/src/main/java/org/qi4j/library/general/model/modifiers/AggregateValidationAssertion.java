@@ -1,8 +1,8 @@
 package org.qi4j.library.general.model.modifiers;
 
 import java.util.List;
+import org.qi4j.api.annotation.scope.AssertionFor;
 import org.qi4j.api.annotation.scope.ThisAs;
-import org.qi4j.library.framework.validation.AbstractValidatableAssertion;
 import org.qi4j.library.framework.validation.Validatable;
 import org.qi4j.library.framework.validation.ValidationMessage;
 import org.qi4j.library.general.model.Aggregated;
@@ -10,10 +10,11 @@ import org.qi4j.library.general.model.Aggregated;
 /**
  * Ensure that validation rules of aggregator are enforced.
  */
-public class AggregateValidationAssertion
-    extends AbstractValidatableAssertion
+public abstract class AggregateValidationAssertion
+    implements Validatable
 {
     @ThisAs Aggregated aggregated;
+    @AssertionFor Validatable next;
 
     public List<ValidationMessage> validate()
     {
