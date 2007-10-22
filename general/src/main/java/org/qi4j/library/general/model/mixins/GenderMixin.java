@@ -21,7 +21,7 @@ import org.qi4j.library.general.model.GenderType;
  */
 public final class GenderMixin implements Gender
 {
-    @PropertyField private GenderType gender;
+    private GenderType gender;
 
     public GenderType getGender()
     {
