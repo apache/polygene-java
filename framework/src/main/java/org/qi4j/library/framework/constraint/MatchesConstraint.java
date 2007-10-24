@@ -12,7 +12,12 @@ public class MatchesConstraint
 {
     public boolean isValid( Matches annotation, String argument )
     {
-        Pattern pattern = Pattern.compile( annotation.value() );
-        return pattern.matcher( argument ).matches();
+        if( argument != null )
+        {
+            Pattern pattern = Pattern.compile( annotation.value() );
+            return pattern.matcher( argument ).matches();
+        }
+
+        return false;
     }
 }

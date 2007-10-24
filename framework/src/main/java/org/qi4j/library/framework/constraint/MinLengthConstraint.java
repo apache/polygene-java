@@ -11,6 +11,11 @@ public class MinLengthConstraint
 {
     public boolean isValid( MinLength annotation, String parameter ) throws NullPointerException
     {
-        return parameter.length() >= annotation.value();
+        if( parameter != null )
+        {
+            return parameter.length() >= annotation.value();
+        }
+
+        return false;
     }
 }

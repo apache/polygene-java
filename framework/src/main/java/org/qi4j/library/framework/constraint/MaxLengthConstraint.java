@@ -11,6 +11,11 @@ public class MaxLengthConstraint
 {
     public boolean isValid( MaxLength annotation, String argument )
     {
-        return argument.length() <= annotation.value();
+        if( argument != null )
+        {
+            return argument.length() <= annotation.value();
+        }
+
+        return false;
     }
 }
