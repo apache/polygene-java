@@ -14,12 +14,12 @@ package org.qi4j.library.general.model;
 
 import java.io.Serializable;
 import org.qi4j.api.annotation.Mixins;
-import org.qi4j.library.general.model.mixins.CurrencyMixin;
+import org.qi4j.library.framework.properties.PropertiesMixin;
 
 /**
  * Generic interface for Currency
  */
-@Mixins( { CurrencyMixin.class } )
+@Mixins( { PropertiesMixin.class } )
 public interface Currency extends Serializable
 {
     void setCurrency( java.util.Currency aCurrency );

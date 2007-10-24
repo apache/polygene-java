@@ -14,12 +14,12 @@
 package org.qi4j.library.general.model;
 
 import org.qi4j.api.annotation.Mixins;
-import org.qi4j.library.general.model.mixins.ContactMixin;
+import org.qi4j.library.framework.properties.PropertiesMixin;
 
 /**
  * Generic interface for a contact such as phone number, fax-number, email, msn, etc.
  */
-@Mixins( ContactMixin.class )
+@Mixins( PropertiesMixin.class )
 public interface Contact
 {
     public final static int VALUE_LEN = 250;

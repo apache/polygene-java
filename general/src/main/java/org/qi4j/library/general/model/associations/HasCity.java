@@ -14,13 +14,13 @@ package org.qi4j.library.general.model.associations;
 
 import java.io.Serializable;
 import org.qi4j.api.annotation.Mixins;
+import org.qi4j.library.framework.properties.PropertiesMixin;
 import org.qi4j.library.general.model.City;
-import org.qi4j.library.general.model.mixins.HasCityMixin;
 
 /**
  * Represents one-to-one relationship with {@link org.qi4j.library.general.model.composites.CityComposite}
  */
-@Mixins( { HasCityMixin.class } )
+@Mixins( { PropertiesMixin.class } )
 public interface HasCity extends Serializable
 {
     void setCity( City aCity );

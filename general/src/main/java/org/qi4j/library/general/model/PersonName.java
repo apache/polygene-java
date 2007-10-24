@@ -14,12 +14,13 @@ package org.qi4j.library.general.model;
 
 import java.io.Serializable;
 import org.qi4j.api.annotation.Mixins;
-import org.qi4j.library.general.model.mixins.PersonNameMixin;
+import org.qi4j.library.framework.properties.PropertiesMixin;
+import org.qi4j.library.general.model.mixins.PersonFullnameMixin;
 
 /**
  * Generic interface of PersonName that stores first and last name.
  */
-@Mixins( { PersonNameMixin.class } )
+@Mixins( { PropertiesMixin.class, PersonFullnameMixin.class } )
 public interface PersonName extends Serializable
 {
     String getFirstName();
@@ -29,4 +30,6 @@ public interface PersonName extends Serializable
     String getLastName();
 
     void setLastName( String aLastName );
+
+    String getFullname();
 }

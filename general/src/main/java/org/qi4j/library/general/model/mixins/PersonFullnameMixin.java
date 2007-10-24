@@ -12,30 +12,21 @@
  */
 package org.qi4j.library.general.model.mixins;
 
-import org.qi4j.library.general.model.Contact;
+import org.qi4j.api.annotation.scope.ThisAs;
+import org.qi4j.library.general.model.PersonName;
 
-public class ContactMixin implements Contact
+public abstract class PersonFullnameMixin implements PersonName
 {
-    private String contactValue;
-    private String contactType;
+    @ThisAs PersonName personName;
 
-    public void setContactValue( String contactValue )
+    public String getFullname()
     {
-        this.contactValue = contactValue;
-    }
+        StringBuilder builder = new StringBuilder( 100 );
 
-    public String getContactValue()
-    {
-        return contactValue;
-    }
+        builder.append( personName.getFirstName() );
+        builder.append( " " );
+        builder.append( personName.getLastName() );
 
-    public void setContactType( String contactType )
-    {
-        this.contactType = contactType;
-    }
-
-    public String getContactType()
-    {
-        return contactType;
+        return builder.toString().trim();
     }
 }

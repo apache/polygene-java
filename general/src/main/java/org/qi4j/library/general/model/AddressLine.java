@@ -14,12 +14,12 @@ package org.qi4j.library.general.model;
 
 import java.io.Serializable;
 import org.qi4j.api.annotation.Mixins;
-import org.qi4j.library.general.model.mixins.AddressLineMixin;
+import org.qi4j.library.framework.properties.PropertiesMixin;
 
 /**
  * Generic interface for Address lines.
  */
-@Mixins( { AddressLineMixin.class } )
+@Mixins( { PropertiesMixin.class } )
 public interface AddressLine extends Serializable
 {
     void setFirstLine( String aFirstLine );

@@ -14,12 +14,12 @@ package org.qi4j.library.general.model;
 
 import java.io.Serializable;
 import org.qi4j.api.annotation.Mixins;
-import org.qi4j.library.general.model.mixins.AmountMixin;
+import org.qi4j.library.framework.properties.PropertiesMixin;
 
 /**
  * Generic interface for Amount
  */
-@Mixins( { AmountMixin.class } )
+@Mixins( { PropertiesMixin.class } )
 public interface Amount<T extends Number> extends Serializable
 {
     T getAmount();
