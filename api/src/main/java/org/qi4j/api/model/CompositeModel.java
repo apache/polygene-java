@@ -29,11 +29,11 @@ public final class CompositeModel<T extends Composite>
     private Collection<MethodModel> methodModels;
     private Iterable<ConstraintDeclarationModel> constraintModels;
     private Iterable<MixinModel> mixinModels;
-    private Iterable<ConcernModel> assertionModels;
+    private Iterable<ConcernModel> concernModels;
     private Iterable<SideEffectModel> sideEffectModels;
     private Iterable<MethodModel> thisAsModels;
 
-    public CompositeModel( Class<T> compositeClass, Class<? extends T> proxyClass, Collection<MethodModel> methodModels, Iterable<MixinModel> mixinModels, Iterable<ConstraintDeclarationModel> constraintModels, Iterable<ConcernModel> assertionModels, Iterable<SideEffectModel> sideEffectModels, Iterable<MethodModel> thisAsModels )
+    public CompositeModel( Class<T> compositeClass, Class<? extends T> proxyClass, Collection<MethodModel> methodModels, Iterable<MixinModel> mixinModels, Iterable<ConstraintDeclarationModel> constraintModels, Iterable<ConcernModel> concernModels, Iterable<SideEffectModel> sideEffectModels, Iterable<MethodModel> thisAsModels )
     {
         this.constraintModels = constraintModels;
         this.thisAsModels = thisAsModels;
@@ -41,7 +41,7 @@ public final class CompositeModel<T extends Composite>
         this.compositeClass = compositeClass;
         this.proxyClass = proxyClass;
         this.mixinModels = mixinModels;
-        this.assertionModels = assertionModels;
+        this.concernModels = concernModels;
         this.sideEffectModels = sideEffectModels;
     }
 
@@ -72,7 +72,7 @@ public final class CompositeModel<T extends Composite>
 
     public Iterable<ConcernModel> getConcernModels()
     {
-        return assertionModels;
+        return concernModels;
     }
 
     public Iterable<SideEffectModel> getSideEffectModels()
@@ -141,8 +141,8 @@ public final class CompositeModel<T extends Composite>
             out.println( "    " + implementation.getModelClass().getName() );
         }
 
-        out.println( "  assertions available" );
-        for( ConcernModel concernModel : assertionModels )
+        out.println( "  concerns available" );
+        for( ConcernModel concernModel : concernModels )
         {
             out.println( "    " + concernModel.getModelClass().getName() );
         }
@@ -190,7 +190,7 @@ public final class CompositeModel<T extends Composite>
                 dependencies.add( dependency );
             }
         }
-        for( ConcernModel concernModel : assertionModels )
+        for( ConcernModel concernModel : concernModels )
         {
             Iterable<Dependency> scope = concernModel.getDependenciesByScope( aClass );
             for( Dependency dependency : scope )

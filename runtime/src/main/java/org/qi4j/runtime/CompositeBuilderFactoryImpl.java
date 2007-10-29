@@ -70,10 +70,10 @@ public final class CompositeBuilderFactoryImpl
         dependencyResolverDelegator.setDependencyResolver( PropertyParameter.class, dependencyResolver );
         dependencyResolverDelegator.setDependencyResolver( Qi4j.class, new Qi4jDependencyResolver( this ) );
 
-        ConcernModelResolver assertionModelResolver = new ConcernModelResolver( dependencyResolverDelegator );
+        ConcernModelResolver concernModelResolver = new ConcernModelResolver( dependencyResolverDelegator );
         SideEffectModelResolver sideEffectModelResolver = new SideEffectModelResolver( dependencyResolverDelegator );
         MixinModelResolver mixinModelResolver = new MixinModelResolver( dependencyResolverDelegator );
-        compositeModelResolver = new CompositeModelResolver( assertionModelResolver, sideEffectModelResolver, mixinModelResolver );
+        compositeModelResolver = new CompositeModelResolver( concernModelResolver, sideEffectModelResolver, mixinModelResolver );
 
         modelFactory = new CompositeModelFactory();
         objectContexts = new ConcurrentHashMap<Class<? extends Composite>, CompositeContextImpl>();

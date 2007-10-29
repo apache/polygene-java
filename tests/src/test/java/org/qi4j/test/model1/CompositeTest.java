@@ -45,9 +45,9 @@ public class CompositeTest extends TestCase
     {
         List<MixinModel> reference = new ArrayList<MixinModel>();
 
-        ConcernModelFactory assertionBuilder = new ConcernModelFactory();
+        ConcernModelFactory concernBuilder = new ConcernModelFactory();
         SideEffectModelFactory sideEffectBuilder = new SideEffectModelFactory();
-        MixinModelFactory mmb = new MixinModelFactory( assertionBuilder, sideEffectBuilder );
+        MixinModelFactory mmb = new MixinModelFactory( concernBuilder, sideEffectBuilder );
         reference.add( mmb.newFragmentModel( Mixin1Impl.class, Composition1.class, Composition1.class ) );
         reference.add( mmb.newFragmentModel( CompositeMixin.class, Composition1.class, Composition1.class ) );
 
@@ -58,7 +58,7 @@ public class CompositeTest extends TestCase
         assertEquals( reference, modelMixins );
 
         List<ConcernModel> referenceConcerns = new ArrayList<ConcernModel>();
-        referenceConcerns.add( assertionBuilder.newFragmentModel( Modifier1.class, Composition1.class, Composition1.class ) );
+        referenceConcerns.add( concernBuilder.newFragmentModel( Modifier1.class, Composition1.class, Composition1.class ) );
 
         assertEquals( referenceConcerns, composite1.getConcernModels() );
     }

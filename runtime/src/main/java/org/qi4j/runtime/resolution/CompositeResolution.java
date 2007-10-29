@@ -101,7 +101,7 @@ public final class CompositeResolution<T extends Composite>
             List<ConcernResolution> methodConcerns = methodResolution.getConcerns();
             if( methodConcerns.size() > 0 )
             {
-                out.println( "        assertions" );
+                out.println( "        concerns" );
             }
             for( ConcernResolution methodConcern : methodConcerns )
             {

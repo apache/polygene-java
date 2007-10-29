@@ -48,7 +48,7 @@ import org.qi4j.runtime.persistence.EntityImpl;
 
 public class CompositeModelFactory
 {
-    private ConcernModelFactory assertionModelFactory;
+    private ConcernModelFactory concernModelFactory;
     private SideEffectModelFactory sideEffectModelFactory;
     private MixinModelFactory mixinModelFactory;
     private ConstraintModelFactory constraintModelFactory;
@@ -56,15 +56,15 @@ public class CompositeModelFactory
     public CompositeModelFactory()
     {
         constraintModelFactory = new ConstraintModelFactory();
-        assertionModelFactory = new ConcernModelFactory();
+        concernModelFactory = new ConcernModelFactory();
         sideEffectModelFactory = new SideEffectModelFactory();
-        mixinModelFactory = new MixinModelFactory( assertionModelFactory, sideEffectModelFactory );
+        mixinModelFactory = new MixinModelFactory( concernModelFactory, sideEffectModelFactory );
     }
 
-    public CompositeModelFactory( ConstraintModelFactory constraintModelFactory, ConcernModelFactory assertionModelFactory, SideEffectModelFactory sideEffectModelFactory, MixinModelFactory mixinModelFactory )
+    public CompositeModelFactory( ConstraintModelFactory constraintModelFactory, ConcernModelFactory concernModelFactory, SideEffectModelFactory sideEffectModelFactory, MixinModelFactory mixinModelFactory )
     {
         this.constraintModelFactory = constraintModelFactory;
-        this.assertionModelFactory = assertionModelFactory;
+        this.concernModelFactory = concernModelFactory;
         this.sideEffectModelFactory = sideEffectModelFactory;
         this.mixinModelFactory = mixinModelFactory;
     }
@@ -89,7 +89,7 @@ public class CompositeModelFactory
         }
 
         // Find concerns
-        List<ConcernModel> concerns = getModifiers( compositeClass, compositeClass, Concerns.class, assertionModelFactory );
+        List<ConcernModel> concerns = getModifiers( compositeClass, compositeClass, Concerns.class, concernModelFactory );
 
         // Find side-effects
         List<SideEffectModel> sideEffects = getModifiers( compositeClass, compositeClass, SideEffects.class, sideEffectModelFactory );
@@ -214,8 +214,8 @@ public class CompositeModelFactory
             }
             for( Class modifier : modifierClasses )
             {
-                K assertionModel = (K) modelFactory.newFragmentModel( modifier, compositeType, aClass );
-                modifiers.add( assertionModel );
+                K concernModel = (K) modelFactory.newFragmentModel( modifier, compositeType, aClass );
+                modifiers.add( concernModel );
             }
         }
 

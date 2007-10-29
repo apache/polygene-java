@@ -17,16 +17,16 @@ public class ConcernModelResolver
         super( dependencyResolverDelegator );
     }
 
-    @Override public <T extends ObjectModel> ConcernResolution resolveModel( ObjectModel<T> assertionModel ) throws InvalidDependencyException
+    @Override public <T extends ObjectModel> ConcernResolution resolveModel( ObjectModel<T> concernModel ) throws InvalidDependencyException
     {
         List<ConstructorDependencyResolution> constructorDependencies = new ArrayList<ConstructorDependencyResolution>();
-        resolveConstructorDependencies( assertionModel.getConstructorDependencies(), constructorDependencies );
+        resolveConstructorDependencies( concernModel.getConstructorDependencies(), constructorDependencies );
         List<FieldDependencyResolution> fieldDependencies = new ArrayList<FieldDependencyResolution>();
-        resolveFieldDependencies( assertionModel.getFieldDependencies(), fieldDependencies );
+        resolveFieldDependencies( concernModel.getFieldDependencies(), fieldDependencies );
         List<MethodDependencyResolution> methodDependencies = new ArrayList<MethodDependencyResolution>();
-        resolveMethodDependencies( assertionModel.getMethodDependencies(), methodDependencies );
+        resolveMethodDependencies( concernModel.getMethodDependencies(), methodDependencies );
 
-        ConcernResolution<T> model = new ConcernResolution<T>( (ConcernModel<T>) assertionModel, constructorDependencies, fieldDependencies, methodDependencies );
+        ConcernResolution<T> model = new ConcernResolution<T>( (ConcernModel<T>) concernModel, constructorDependencies, fieldDependencies, methodDependencies );
         return model;
     }
 }

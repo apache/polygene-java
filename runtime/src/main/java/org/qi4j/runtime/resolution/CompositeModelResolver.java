@@ -34,13 +34,13 @@ import org.qi4j.spi.dependency.InvalidDependencyException;
 public class CompositeModelResolver
 {
     ConstraintModelResolver ConstraintModelResolver;
-    ConcernModelResolver assertionModelResolver;
+    ConcernModelResolver concernModelResolver;
     SideEffectModelResolver sideEffectModelResolver;
     MixinModelResolver mixinModelResolver;
 
-    public CompositeModelResolver( ConcernModelResolver assertionModelResolver, SideEffectModelResolver sideEffectModelResolver, MixinModelResolver mixinModelResolver )
+    public CompositeModelResolver( ConcernModelResolver concernModelResolver, SideEffectModelResolver sideEffectModelResolver, MixinModelResolver mixinModelResolver )
     {
-        this.assertionModelResolver = assertionModelResolver;
+        this.concernModelResolver = concernModelResolver;
         this.sideEffectModelResolver = sideEffectModelResolver;
         this.mixinModelResolver = mixinModelResolver;
     }
@@ -57,7 +57,7 @@ public class CompositeModelResolver
         // Get mixin resolutions for all methods
         Map<Method, MixinResolution> mixinResolutionsForMethods = getResolvedMethodMixins( mixinsForMethods, resolvedMixins );
 
-        // Map assertions and side-effects to methods
+        // Map concerns and side-effects to methods
         List<MethodResolution> methodResolutions = getMethodResolutions( compositeModel, mixinResolutionsForMethods, resolvedMixins.values() );
 
         CompositeResolution resolution = new CompositeResolution<T>( compositeModel, methodResolutions );
@@ -149,7 +149,7 @@ public class CompositeModelResolver
         throws CompositeResolutionException
     {
         List<MethodResolution> methodResolutions = new ArrayList<MethodResolution>();
-        Map<ConcernModel, ConcernResolution> assertionResolutions = new HashMap<ConcernModel, ConcernResolution>();
+        Map<ConcernModel, ConcernResolution> concernResolutions = new HashMap<ConcernModel, ConcernResolution>();
         Map<SideEffectModel, SideEffectResolution> sideEffectResolutions = new HashMap<SideEffectModel, SideEffectResolution>();
 
         // Set up annotation -> constraint model mappings
@@ -161,33 +161,33 @@ public class CompositeModelResolver
         }
 
         Collection<MethodModel> methodModels = compositeModel.getMethodModels();
-        resolveMethods( methodModels, methodMixins, compositeModel, mixinResolutions, assertionResolutions, sideEffectResolutions, constraintModelMappings, methodResolutions );
+        resolveMethods( methodModels, methodMixins, compositeModel, mixinResolutions, concernResolutions, sideEffectResolutions, constraintModelMappings, methodResolutions );
 
         Iterable<MethodModel> thisAsMethodModels = compositeModel.getThisAsModels();
-        resolveMethods( thisAsMethodModels, methodMixins, compositeModel, mixinResolutions, assertionResolutions, sideEffectResolutions, constraintModelMappings, methodResolutions );
+        resolveMethods( thisAsMethodModels, methodMixins, compositeModel, mixinResolutions, concernResolutions, sideEffectResolutions, constraintModelMappings, methodResolutions );
 
         return methodResolutions;
     }
 
-    private void resolveMethods( Iterable<MethodModel> methodModels, Map<Method, MixinResolution> methodMixins, CompositeModel compositeModel, Collection<MixinResolution> mixinResolutions, Map<ConcernModel, ConcernResolution> assertionResolutions, Map<SideEffectModel, SideEffectResolution> sideEffectResolutions, Map<Class<? extends Annotation>, ConstraintDeclarationModel> constraintModelMappings, List<MethodResolution> methodResolutions )
+    private void resolveMethods( Iterable<MethodModel> methodModels, Map<Method, MixinResolution> methodMixins, CompositeModel compositeModel, Collection<MixinResolution> mixinResolutions, Map<ConcernModel, ConcernResolution> concernResolutions, Map<SideEffectModel, SideEffectResolution> sideEffectResolutions, Map<Class<? extends Annotation>, ConstraintDeclarationModel> constraintModelMappings, List<MethodResolution> methodResolutions )
     {
         for( MethodModel methodModel : methodModels )
         {
-            // Find assertions for method
+            // Find concerns for method
             MixinResolution mixinResolution = methodMixins.get( methodModel.getMethod() );
-            Iterable<ConcernModel> assertions = getConcernsForMethod( compositeModel, methodModel.getMethod(), mixinResolution.getMixinModel(), mixinResolutions );
+            Iterable<ConcernModel> concerns = getConcernsForMethod( compositeModel, methodModel.getMethod(), mixinResolution.getMixinModel(), mixinResolutions );
 
-            // Resolve assertions
+            // Resolve concerns
             List<ConcernResolution> methodConcernResolutions = new ArrayList<ConcernResolution>();
-            for( ConcernModel concern : assertions )
+            for( ConcernModel concern : concerns )
             {
-                ConcernResolution resolution = assertionResolutions.get( concern );
+                ConcernResolution resolution = concernResolutions.get( concern );
                 if( resolution == null )
                 {
                     try
                     {
-                        resolution = assertionModelResolver.resolveModel( concern );
-                        assertionResolutions.put( concern, resolution );
+                        resolution = concernModelResolver.resolveModel( concern );
+                        concernResolutions.put( concern, resolution );
                     }
                     catch( InvalidDependencyException e )
                     {
@@ -340,10 +340,10 @@ public class CompositeModelResolver
 
         List<ConcernModel> methodModifierModels = new ArrayList<ConcernModel>();
 
-        // 1) Interface assertions
+        // 1) Interface concerns
         addModifiers( compositeClass, method, compositeModel.getConcernModels(), methodModifierModels, mixinModel );
 
-        // 2) MixinModel assertions
+        // 2) MixinModel concerns
         addModifiers( compositeClass, method, mixinModel.getConcerns(), methodModifierModels, mixinModel );
 
         // 3) Concerns from other mixins

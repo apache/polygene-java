@@ -10,15 +10,15 @@ public class MethodResolution
 {
     MethodModel method;
     MethodConstraintResolution methodConstraintResolution;
-    List<ConcernResolution> assertions;
+    List<ConcernResolution> concerns;
     List<SideEffectResolution> sideEffects;
     MixinResolution mixin;
 
-    public MethodResolution( MethodModel method, MethodConstraintResolution methodConstraintResolutions, List<ConcernResolution> assertions, List<SideEffectResolution> sideEffects, MixinResolution mixin )
+    public MethodResolution( MethodModel method, MethodConstraintResolution methodConstraintResolutions, List<ConcernResolution> concerns, List<SideEffectResolution> sideEffects, MixinResolution mixin )
     {
         this.method = method;
         this.methodConstraintResolution = methodConstraintResolutions;
-        this.assertions = assertions;
+        this.concerns = concerns;
         this.sideEffects = sideEffects;
         this.mixin = mixin;
     }
@@ -35,7 +35,7 @@ public class MethodResolution
 
     public List<ConcernResolution> getConcerns()
     {
-        return assertions;
+        return concerns;
     }
 
     public List<SideEffectResolution> getSideEffects()

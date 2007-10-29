@@ -27,12 +27,12 @@ import org.qi4j.api.model.SideEffectModel;
 public class MixinModelFactory
     extends FragmentModelFactory<MixinModel>
 {
-    private ConcernModelFactory assertionModelFactory;
+    private ConcernModelFactory concernModelFactory;
     private SideEffectModelFactory sideEffectModelFactory;
 
-    public MixinModelFactory( ConcernModelFactory assertionModelFactory, SideEffectModelFactory sideEffectModelFactory )
+    public MixinModelFactory( ConcernModelFactory concernModelFactory, SideEffectModelFactory sideEffectModelFactory )
     {
-        this.assertionModelFactory = assertionModelFactory;
+        this.concernModelFactory = concernModelFactory;
         this.sideEffectModelFactory = sideEffectModelFactory;
     }
 
@@ -52,7 +52,7 @@ public class MixinModelFactory
         Class[] appliesTo = getAppliesTo( mixinClass );
 
         List<ConstraintDeclarationModel> constraints = Collections.emptyList(); // TODO
-        List<ConcernModel> concerns = getModifiers( mixinClass, compositeType, Concerns.class, assertionModelFactory );
+        List<ConcernModel> concerns = getModifiers( mixinClass, compositeType, Concerns.class, concernModelFactory );
         List<SideEffectModel> sideEffects = getModifiers( mixinClass, compositeType, SideEffects.class, sideEffectModelFactory );
 
         MixinModel<T> model = new MixinModel<T>( mixinClass, constructorDependencies, fieldDependencies, methodDependencies, properties, appliesTo, declaredBy, concerns, sideEffects, constraints );
@@ -113,8 +113,8 @@ public class MixinModelFactory
             }
             for( Class modifier : modifierClasses )
             {
-                K assertionModel = (K) modelFactory.newFragmentModel( modifier, compositeType, aClass );
-                modifiers.add( assertionModel );
+                K concernModel = (K) modelFactory.newFragmentModel( modifier, compositeType, aClass );
+                modifiers.add( concernModel );
             }
         }
 

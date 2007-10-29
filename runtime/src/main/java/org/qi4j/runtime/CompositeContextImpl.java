@@ -155,18 +155,18 @@ public final class CompositeContextImpl<T extends Composite>
 
         FragmentInvocationHandler mixinInvocationHandler = new FragmentInvocationHandler();
 
-        // Instantiate and link assertions
+        // Instantiate and link concerns
         Object previousConcern = mixinInvocationHandler;
         {
-            List<ConcernResolution> assertionResolutions = methodResolution.getConcerns();
-            for( int i = assertionResolutions.size() - 1; i >= 0; i-- )
+            List<ConcernResolution> concernResolutions = methodResolution.getConcerns();
+            for( int i = concernResolutions.size() - 1; i >= 0; i-- )
             {
-                ConcernResolution assertion = assertionResolutions.get( i );
+                ConcernResolution concern = concernResolutions.get( i );
 
-                Object modifies = getModifies( method.getMethod(), classloader, previousConcern, (ConcernModel) assertion.getFragmentModel() );
+                Object modifies = getModifies( method.getMethod(), classloader, previousConcern, (ConcernModel) concern.getFragmentModel() );
 
                 ModifierDependencyInjectionContext modifierContext = new ModifierDependencyInjectionContext( this, proxyHandler, modifies, method.getMethod(), methodResolution.getMixinResolution().getMixinModel(), proxyHandler );
-                previousConcern = fragmentFactory.newInstance( assertion, modifierContext );
+                previousConcern = fragmentFactory.newInstance( concern, modifierContext );
             }
         }
 
