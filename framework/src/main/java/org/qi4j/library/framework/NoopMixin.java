@@ -5,7 +5,7 @@ import java.lang.reflect.Method;
 
 /**
  * Generic mixin that is a no-op. Can be useful if the functionality
- * of a method is mainly provided by assertions and side-effects.
+ * of a method is mainly provided by concerns and side-effects.
  */
 public class NoopMixin
     implements InvocationHandler

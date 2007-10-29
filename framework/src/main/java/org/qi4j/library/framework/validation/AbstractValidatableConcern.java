@@ -4,7 +4,7 @@ import java.util.List;
 import org.qi4j.api.annotation.scope.ConcernFor;
 
 /**
- * Base class for validation assertions.
+ * Base class for validation concerns.
  */
 public class AbstractValidatableConcern
     implements Validatable
