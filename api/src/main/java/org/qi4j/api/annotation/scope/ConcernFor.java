@@ -21,11 +21,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * This annotation is required once in each Assertion, to mark the
+ * This annotation is required once in each Concern, to mark the
  * field where the next element in the call sequence should be
  * injected.
  * <p/>
- * The type of the field must be of the same type as the Assertion
+ * The type of the field must be of the same type as the Concern
  * itself, or an InvocationHandler.
  * <p/>
  * <p/>
@@ -36,10 +36,10 @@ import java.lang.annotation.Target;
  *     void doSomething();
  * }
  * <p/>
- * public class MyStuffAssertion
+ * public class MyStuffConcern
  *     implements MyStuff
  * {
- *     @AssertionFor MyStuff next;
+ *     @ConcernFor MyStuff next;
  * <p/>
  *     public void doSomething()
  *     {
@@ -55,6 +55,6 @@ import java.lang.annotation.Target;
 @Target( { ElementType.FIELD, ElementType.PARAMETER } )
 @Documented
 @DependencyScope
-public @interface AssertionFor
+public @interface ConcernFor
 {
 }

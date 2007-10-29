@@ -14,7 +14,7 @@ package org.qi4j.test.model2;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import org.qi4j.api.annotation.AppliesTo;
-import org.qi4j.api.annotation.scope.AssertionFor;
+import org.qi4j.api.annotation.scope.ConcernFor;
 import org.qi4j.api.annotation.scope.Invocation;
 
 /**
@@ -26,7 +26,7 @@ public class FooModifier
     implements InvocationHandler
 {
     // Attributes ----------------------------------------------------
-    @AssertionFor InvocationHandler next;
+    @ConcernFor InvocationHandler next;
     @Invocation FooAnnotation fooAnnotation;
 
     // InvocationHandler implementation -----------------------------

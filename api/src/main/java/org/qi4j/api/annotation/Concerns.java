@@ -23,13 +23,13 @@ import java.lang.annotation.Target;
 
 
 /**
- * This annotation is used by composites and mixins to declare what Assertions
+ * This annotation is used by composites and mixins to declare what Concerns
  * should be applied to the type or specific method.
  */
 @Retention( RetentionPolicy.RUNTIME )
 @Target( { ElementType.TYPE, ElementType.METHOD } )
 @Documented
-public @interface Assertions
+public @interface Concerns
 {
     Class[] value();
 }

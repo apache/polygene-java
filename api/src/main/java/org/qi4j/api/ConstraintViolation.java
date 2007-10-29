@@ -4,7 +4,7 @@ import java.lang.annotation.Annotation;
 
 /**
  * When a constraint violation has occurred it is registered as a ConstraintViolation
- * and exposed through the InvocationContext for assertions and mixins to use.
+ * and exposed through the InvocationContext for concerns and mixins to use.
  */
 public class ConstraintViolation
 {

@@ -28,12 +28,12 @@ import java.util.Map;
 import java.util.Set;
 import org.qi4j.api.Composite;
 import org.qi4j.api.Constraint;
-import org.qi4j.api.annotation.Assertions;
+import org.qi4j.api.annotation.Concerns;
 import org.qi4j.api.annotation.Constraints;
 import org.qi4j.api.annotation.Mixins;
 import org.qi4j.api.annotation.SideEffects;
-import org.qi4j.api.model.AssertionModel;
 import org.qi4j.api.model.CompositeModel;
+import org.qi4j.api.model.ConcernModel;
 import org.qi4j.api.model.ConstraintDeclarationModel;
 import org.qi4j.api.model.FragmentModel;
 import org.qi4j.api.model.InvalidCompositeException;
@@ -48,7 +48,7 @@ import org.qi4j.runtime.persistence.EntityImpl;
 
 public class CompositeModelFactory
 {
-    private AssertionModelFactory assertionModelFactory;
+    private ConcernModelFactory assertionModelFactory;
     private SideEffectModelFactory sideEffectModelFactory;
     private MixinModelFactory mixinModelFactory;
     private ConstraintModelFactory constraintModelFactory;
@@ -56,12 +56,12 @@ public class CompositeModelFactory
     public CompositeModelFactory()
     {
         constraintModelFactory = new ConstraintModelFactory();
-        assertionModelFactory = new AssertionModelFactory();
+        assertionModelFactory = new ConcernModelFactory();
         sideEffectModelFactory = new SideEffectModelFactory();
         mixinModelFactory = new MixinModelFactory( assertionModelFactory, sideEffectModelFactory );
     }
 
-    public CompositeModelFactory( ConstraintModelFactory constraintModelFactory, AssertionModelFactory assertionModelFactory, SideEffectModelFactory sideEffectModelFactory, MixinModelFactory mixinModelFactory )
+    public CompositeModelFactory( ConstraintModelFactory constraintModelFactory, ConcernModelFactory assertionModelFactory, SideEffectModelFactory sideEffectModelFactory, MixinModelFactory mixinModelFactory )
     {
         this.constraintModelFactory = constraintModelFactory;
         this.assertionModelFactory = assertionModelFactory;
@@ -88,8 +88,8 @@ public class CompositeModelFactory
             mixins.add( mixinModelFactory.newFragmentModel( EntityImpl.class, compositeClass, Entity.class ) );
         }
 
-        // Find assertions
-        List<AssertionModel> assertions = getModifiers( compositeClass, compositeClass, Assertions.class, assertionModelFactory );
+        // Find concerns
+        List<ConcernModel> concerns = getModifiers( compositeClass, compositeClass, Concerns.class, assertionModelFactory );
 
         // Find side-effects
         List<SideEffectModel> sideEffects = getModifiers( compositeClass, compositeClass, SideEffects.class, sideEffectModelFactory );
@@ -101,12 +101,12 @@ public class CompositeModelFactory
 
         List<FragmentModel> fragmentModels = new ArrayList<FragmentModel>();
         fragmentModels.addAll( mixins );
-        fragmentModels.addAll( assertions );
+        fragmentModels.addAll( concerns );
         fragmentModels.addAll( sideEffects );
         Iterable<MethodModel> thisAsModels = getThisAsModels( fragmentModels );
 
         Iterable<ConstraintDeclarationModel> constraintModels = getConstraintDeclarations( compositeClass );
-        CompositeModel model = new CompositeModel<T>( compositeClass, proxyClass, methods, mixins, constraintModels, assertions, sideEffects, thisAsModels );
+        CompositeModel model = new CompositeModel<T>( compositeClass, proxyClass, methods, mixins, constraintModels, concerns, sideEffects, thisAsModels );
         return model;
     }
 

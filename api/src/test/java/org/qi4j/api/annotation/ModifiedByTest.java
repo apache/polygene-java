@@ -18,7 +18,7 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 
 /**
- * Tests public api exposed by Assertions annotation.
+ * Tests public api exposed by Concerns annotation.
  * This will ensure that the public api does not get changed by mistake.
  */
 public class ModifiedByTest
@@ -30,10 +30,10 @@ public class ModifiedByTest
         Annotation[] annotations = Annotated.class.getDeclaredAnnotations();
         assertNotNull( "annotations should not be null", annotations );
         assertEquals( "number of annotations", 1, annotations.length );
-        assertEquals( "annotation type", Assertions.class, annotations[ 0 ].annotationType() );
+        assertEquals( "annotation type", Concerns.class, annotations[ 0 ].annotationType() );
     }
 
-    @Assertions( Object.class )
+    @Concerns( Object.class )
     private static class Annotated
     {
 

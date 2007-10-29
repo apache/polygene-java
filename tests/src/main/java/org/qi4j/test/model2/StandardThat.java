@@ -11,14 +11,14 @@
  */
 package org.qi4j.test.model2;
 
-import org.qi4j.api.annotation.Assertions;
+import org.qi4j.api.annotation.Concerns;
 import org.qi4j.api.annotation.Mixins;
 
 /**
  * TODO
  */
 @Mixins( StandardThatImpl.class )
-@Assertions( StandardThatModifier.class )
+@Concerns( StandardThatModifier.class )
 public interface StandardThat
 {
     String foo( String aString );

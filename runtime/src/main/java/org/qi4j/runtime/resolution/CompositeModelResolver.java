@@ -15,8 +15,8 @@ import java.util.Set;
 import org.qi4j.api.Composite;
 import org.qi4j.api.annotation.AppliesToFilter;
 import org.qi4j.api.annotation.ConstraintDeclaration;
-import org.qi4j.api.model.AssertionModel;
 import org.qi4j.api.model.CompositeModel;
+import org.qi4j.api.model.ConcernModel;
 import org.qi4j.api.model.ConstraintDeclarationModel;
 import org.qi4j.api.model.FragmentModel;
 import org.qi4j.api.model.InvalidCompositeException;
@@ -34,11 +34,11 @@ import org.qi4j.spi.dependency.InvalidDependencyException;
 public class CompositeModelResolver
 {
     ConstraintModelResolver ConstraintModelResolver;
-    AssertionModelResolver assertionModelResolver;
+    ConcernModelResolver assertionModelResolver;
     SideEffectModelResolver sideEffectModelResolver;
     MixinModelResolver mixinModelResolver;
 
-    public CompositeModelResolver( AssertionModelResolver assertionModelResolver, SideEffectModelResolver sideEffectModelResolver, MixinModelResolver mixinModelResolver )
+    public CompositeModelResolver( ConcernModelResolver assertionModelResolver, SideEffectModelResolver sideEffectModelResolver, MixinModelResolver mixinModelResolver )
     {
         this.assertionModelResolver = assertionModelResolver;
         this.sideEffectModelResolver = sideEffectModelResolver;
@@ -149,7 +149,7 @@ public class CompositeModelResolver
         throws CompositeResolutionException
     {
         List<MethodResolution> methodResolutions = new ArrayList<MethodResolution>();
-        Map<AssertionModel, AssertionResolution> assertionResolutions = new HashMap<AssertionModel, AssertionResolution>();
+        Map<ConcernModel, ConcernResolution> assertionResolutions = new HashMap<ConcernModel, ConcernResolution>();
         Map<SideEffectModel, SideEffectResolution> sideEffectResolutions = new HashMap<SideEffectModel, SideEffectResolution>();
 
         // Set up annotation -> constraint model mappings
@@ -169,32 +169,32 @@ public class CompositeModelResolver
         return methodResolutions;
     }
 
-    private void resolveMethods( Iterable<MethodModel> methodModels, Map<Method, MixinResolution> methodMixins, CompositeModel compositeModel, Collection<MixinResolution> mixinResolutions, Map<AssertionModel, AssertionResolution> assertionResolutions, Map<SideEffectModel, SideEffectResolution> sideEffectResolutions, Map<Class<? extends Annotation>, ConstraintDeclarationModel> constraintModelMappings, List<MethodResolution> methodResolutions )
+    private void resolveMethods( Iterable<MethodModel> methodModels, Map<Method, MixinResolution> methodMixins, CompositeModel compositeModel, Collection<MixinResolution> mixinResolutions, Map<ConcernModel, ConcernResolution> assertionResolutions, Map<SideEffectModel, SideEffectResolution> sideEffectResolutions, Map<Class<? extends Annotation>, ConstraintDeclarationModel> constraintModelMappings, List<MethodResolution> methodResolutions )
     {
         for( MethodModel methodModel : methodModels )
         {
             // Find assertions for method
             MixinResolution mixinResolution = methodMixins.get( methodModel.getMethod() );
-            Iterable<AssertionModel> assertions = getAssertionsForMethod( compositeModel, methodModel.getMethod(), mixinResolution.getMixinModel(), mixinResolutions );
+            Iterable<ConcernModel> assertions = getConcernsForMethod( compositeModel, methodModel.getMethod(), mixinResolution.getMixinModel(), mixinResolutions );
 
             // Resolve assertions
-            List<AssertionResolution> methodAssertionResolutions = new ArrayList<AssertionResolution>();
-            for( AssertionModel assertion : assertions )
+            List<ConcernResolution> methodConcernResolutions = new ArrayList<ConcernResolution>();
+            for( ConcernModel concern : assertions )
             {
-                AssertionResolution resolution = assertionResolutions.get( assertion );
+                ConcernResolution resolution = assertionResolutions.get( concern );
                 if( resolution == null )
                 {
                     try
                     {
-                        resolution = assertionModelResolver.resolveModel( assertion );
-                        assertionResolutions.put( assertion, resolution );
+                        resolution = assertionModelResolver.resolveModel( concern );
+                        assertionResolutions.put( concern, resolution );
                     }
                     catch( InvalidDependencyException e )
                     {
-                        throw new CompositeResolutionException( "Could not resolve assertion " + assertion.getModelClass() + " in composite " + compositeModel.getCompositeClass().getName(), e );
+                        throw new CompositeResolutionException( "Could not resolve concern " + concern.getModelClass() + " in composite " + compositeModel.getCompositeClass().getName(), e );
                     }
                 }
-                methodAssertionResolutions.add( resolution );
+                methodConcernResolutions.add( resolution );
             }
 
             // Find side-effects for method
@@ -222,7 +222,7 @@ public class CompositeModelResolver
 
             MethodConstraintResolution methodConstraintResolution = resolveMethodConstraints( compositeModel.getCompositeClass(), methodModel.getMethodConstraint(), constraintModelMappings );
 
-            MethodResolution methodResolution = new MethodResolution( methodModel, methodConstraintResolution, methodAssertionResolutions, methodSideEffectResolutions, mixinResolution );
+            MethodResolution methodResolution = new MethodResolution( methodModel, methodConstraintResolution, methodConcernResolutions, methodSideEffectResolutions, mixinResolution );
             methodResolutions.add( methodResolution );
         }
     }
@@ -334,25 +334,25 @@ public class CompositeModelResolver
         throw new CompositeResolutionException( "Could not find mixin for method " + methodModel.toGenericString() );
     }
 
-    private Iterable<AssertionModel> getAssertionsForMethod( CompositeModel compositeModel, Method method, MixinModel mixinModel, Iterable<MixinResolution> usedMixins )
+    private Iterable<ConcernModel> getConcernsForMethod( CompositeModel compositeModel, Method method, MixinModel mixinModel, Iterable<MixinResolution> usedMixins )
     {
         Class compositeClass = compositeModel.getCompositeClass();
 
-        List<AssertionModel> methodModifierModels = new ArrayList<AssertionModel>();
+        List<ConcernModel> methodModifierModels = new ArrayList<ConcernModel>();
 
         // 1) Interface assertions
-        addModifiers( compositeClass, method, compositeModel.getAssertionModels(), methodModifierModels, mixinModel );
+        addModifiers( compositeClass, method, compositeModel.getConcernModels(), methodModifierModels, mixinModel );
 
         // 2) MixinModel assertions
-        addModifiers( compositeClass, method, mixinModel.getAssertions(), methodModifierModels, mixinModel );
+        addModifiers( compositeClass, method, mixinModel.getConcerns(), methodModifierModels, mixinModel );
 
-        // 3) Assertions from other mixins
+        // 3) Concerns from other mixins
         for( MixinResolution usedMixin : usedMixins )
         {
             if( usedMixin.getMixinModel() != mixinModel )
             {
                 MixinModel model = (MixinModel) usedMixin.getFragmentModel();
-                addModifiers( compositeClass, method, model.getAssertions(), methodModifierModels, mixinModel );
+                addModifiers( compositeClass, method, model.getConcerns(), methodModifierModels, mixinModel );
             }
         }
 

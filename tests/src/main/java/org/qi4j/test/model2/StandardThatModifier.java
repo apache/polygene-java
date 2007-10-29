@@ -11,7 +11,7 @@
  */
 package org.qi4j.test.model2;
 
-import org.qi4j.api.annotation.scope.AssertionFor;
+import org.qi4j.api.annotation.scope.ConcernFor;
 
 /**
  * TODO
@@ -20,7 +20,7 @@ public class StandardThatModifier
     implements StandardThat
 {
     // Attributes ----------------------------------------------------
-    @AssertionFor StandardThat next;
+    @ConcernFor StandardThat next;
 
     // Z implementation ----------------------------------------------
     public String foo( String aString )

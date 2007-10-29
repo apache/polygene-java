@@ -24,7 +24,7 @@ import org.qi4j.api.annotation.scope.ThisAs;
  * Base class for fragments. Fragments are composed into objects.
  *
  * @see MixinModel
- * @see AssertionModel
+ * @see ConcernModel
  */
 public abstract class FragmentModel<T>
     extends ObjectModel<T>

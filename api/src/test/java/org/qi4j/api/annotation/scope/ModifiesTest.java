@@ -30,11 +30,11 @@ public class ModifiesTest
         Annotation[] annotations = Annotated.class.getDeclaredField( "modified" ).getDeclaredAnnotations();
         assertNotNull( "annotations should not be null", annotations );
         assertEquals( "number of annotations", 1, annotations.length );
-        assertEquals( "annotation type", AssertionFor.class, annotations[ 0 ].annotationType() );
+        assertEquals( "annotation type", ConcernFor.class, annotations[ 0 ].annotationType() );
     }
 
     private static class Annotated
     {
-        @AssertionFor String modified;
+        @ConcernFor String modified;
     }
 }

@@ -11,7 +11,7 @@
  */
 package org.qi4j.test.model2;
 
-import org.qi4j.api.annotation.scope.AssertionFor;
+import org.qi4j.api.annotation.scope.ConcernFor;
 
 /**
  * TODO
@@ -19,7 +19,7 @@ import org.qi4j.api.annotation.scope.AssertionFor;
 public class StandardThisModifier
     implements StandardThis
 {
-    @AssertionFor StandardThis next;
+    @ConcernFor StandardThis next;
 
     public String bar()
     {

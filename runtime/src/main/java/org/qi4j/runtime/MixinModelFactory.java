@@ -4,11 +4,11 @@ import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import org.qi4j.api.annotation.Assertions;
+import org.qi4j.api.annotation.Concerns;
 import org.qi4j.api.annotation.SideEffects;
 import org.qi4j.api.annotation.scope.PropertyField;
 import org.qi4j.api.annotation.scope.PropertyParameter;
-import org.qi4j.api.model.AssertionModel;
+import org.qi4j.api.model.ConcernModel;
 import org.qi4j.api.model.ConstraintDeclarationModel;
 import org.qi4j.api.model.ConstructorDependency;
 import org.qi4j.api.model.FieldDependency;
@@ -27,10 +27,10 @@ import org.qi4j.api.model.SideEffectModel;
 public class MixinModelFactory
     extends FragmentModelFactory<MixinModel>
 {
-    private AssertionModelFactory assertionModelFactory;
+    private ConcernModelFactory assertionModelFactory;
     private SideEffectModelFactory sideEffectModelFactory;
 
-    public MixinModelFactory( AssertionModelFactory assertionModelFactory, SideEffectModelFactory sideEffectModelFactory )
+    public MixinModelFactory( ConcernModelFactory assertionModelFactory, SideEffectModelFactory sideEffectModelFactory )
     {
         this.assertionModelFactory = assertionModelFactory;
         this.sideEffectModelFactory = sideEffectModelFactory;
@@ -52,10 +52,10 @@ public class MixinModelFactory
         Class[] appliesTo = getAppliesTo( mixinClass );
 
         List<ConstraintDeclarationModel> constraints = Collections.emptyList(); // TODO
-        List<AssertionModel> assertions = getModifiers( mixinClass, compositeType, Assertions.class, assertionModelFactory );
+        List<ConcernModel> concerns = getModifiers( mixinClass, compositeType, Concerns.class, assertionModelFactory );
         List<SideEffectModel> sideEffects = getModifiers( mixinClass, compositeType, SideEffects.class, sideEffectModelFactory );
 
-        MixinModel<T> model = new MixinModel<T>( mixinClass, constructorDependencies, fieldDependencies, methodDependencies, properties, appliesTo, declaredBy, assertions, sideEffects, constraints );
+        MixinModel<T> model = new MixinModel<T>( mixinClass, constructorDependencies, fieldDependencies, methodDependencies, properties, appliesTo, declaredBy, concerns, sideEffects, constraints );
         return model;
     }
 
@@ -121,8 +121,8 @@ public class MixinModelFactory
         // Check superclass
         if( !aClass.isInterface() && aClass != Object.class )
         {
-            List<K> superAssertions = getModifiers( aClass.getSuperclass(), compositeType, annotationClass, modelFactory );
-            modifiers.addAll( superAssertions );
+            List<K> superConcerns = getModifiers( aClass.getSuperclass(), compositeType, annotationClass, modelFactory );
+            modifiers.addAll( superConcerns );
         }
 
         return modifiers;

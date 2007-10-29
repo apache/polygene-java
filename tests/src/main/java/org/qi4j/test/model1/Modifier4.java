@@ -18,12 +18,12 @@ package org.qi4j.test.model1;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import org.qi4j.api.annotation.scope.AssertionFor;
+import org.qi4j.api.annotation.scope.ConcernFor;
 
 public class Modifier4
     implements InvocationHandler
 {
-    @AssertionFor InvocationHandler next;
+    @ConcernFor InvocationHandler next;
 
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
     {

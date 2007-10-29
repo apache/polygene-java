@@ -25,14 +25,14 @@ import org.qi4j.api.Composite;
 import org.qi4j.api.CompositeBuilderFactory;
 import org.qi4j.api.CompositeInstantiationException;
 import org.qi4j.api.Constraint;
-import org.qi4j.api.model.AssertionModel;
 import org.qi4j.api.model.CompositeContext;
 import org.qi4j.api.model.CompositeModel;
+import org.qi4j.api.model.ConcernModel;
 import org.qi4j.api.model.ConstraintDeclarationModel;
 import org.qi4j.api.model.ModifierModel;
 import org.qi4j.api.model.SideEffectModel;
-import org.qi4j.runtime.resolution.AssertionResolution;
 import org.qi4j.runtime.resolution.CompositeResolution;
+import org.qi4j.runtime.resolution.ConcernResolution;
 import org.qi4j.runtime.resolution.ConstraintResolution;
 import org.qi4j.runtime.resolution.MethodResolution;
 import org.qi4j.runtime.resolution.MixinResolution;
@@ -156,17 +156,17 @@ public final class CompositeContextImpl<T extends Composite>
         FragmentInvocationHandler mixinInvocationHandler = new FragmentInvocationHandler();
 
         // Instantiate and link assertions
-        Object previousAssertion = mixinInvocationHandler;
+        Object previousConcern = mixinInvocationHandler;
         {
-            List<AssertionResolution> assertionResolutions = methodResolution.getAssertions();
+            List<ConcernResolution> assertionResolutions = methodResolution.getConcerns();
             for( int i = assertionResolutions.size() - 1; i >= 0; i-- )
             {
-                AssertionResolution assertion = assertionResolutions.get( i );
+                ConcernResolution assertion = assertionResolutions.get( i );
 
-                Object modifies = getModifies( method.getMethod(), classloader, previousAssertion, (AssertionModel) assertion.getFragmentModel() );
+                Object modifies = getModifies( method.getMethod(), classloader, previousConcern, (ConcernModel) assertion.getFragmentModel() );
 
                 ModifierDependencyInjectionContext modifierContext = new ModifierDependencyInjectionContext( this, proxyHandler, modifies, method.getMethod(), methodResolution.getMixinResolution().getMixinModel(), proxyHandler );
-                previousAssertion = fragmentFactory.newInstance( assertion, modifierContext );
+                previousConcern = fragmentFactory.newInstance( assertion, modifierContext );
             }
         }
 
@@ -198,7 +198,7 @@ public final class CompositeContextImpl<T extends Composite>
         }
         if( hasConstraints )
         {
-            previousAssertion = new ConstraintInvocationHandler( proxyHandler, parameterConstraintInstances, previousAssertion );
+            previousConcern = new ConstraintInvocationHandler( proxyHandler, parameterConstraintInstances, previousConcern );
         }
 
         SideEffectInvocationHandlerResult sideEffectResult = new SideEffectInvocationHandlerResult();
@@ -215,7 +215,7 @@ public final class CompositeContextImpl<T extends Composite>
             sideEffects[ i++ ] = fragmentFactory.newInstance( sideEffectResolution, modifierContext );
         }
 
-        return new InvocationInstance( previousAssertion, sideEffects, sideEffectResult, mixinInvocationHandler, proxyHandler, invocationInstancePool[ method.getInvocationInstanceIndex() ], method.getMethod(), method.getMethod().getDeclaringClass() );
+        return new InvocationInstance( previousConcern, sideEffects, sideEffectResult, mixinInvocationHandler, proxyHandler, invocationInstancePool[ method.getInvocationInstanceIndex() ], method.getMethod(), method.getMethod().getDeclaringClass() );
     }
 
     private Object getModifies( Method method, ClassLoader classloader, Object next, ModifierModel modifierModel )

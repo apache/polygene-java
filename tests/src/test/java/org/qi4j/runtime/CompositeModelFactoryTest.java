@@ -22,11 +22,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.qi4j.api.Composite;
-import org.qi4j.api.annotation.Assertions;
+import org.qi4j.api.annotation.Concerns;
 import org.qi4j.api.annotation.Mixins;
-import org.qi4j.api.annotation.scope.AssertionFor;
-import org.qi4j.api.model.AssertionModel;
+import org.qi4j.api.annotation.scope.ConcernFor;
 import org.qi4j.api.model.CompositeModel;
+import org.qi4j.api.model.ConcernModel;
 import org.qi4j.api.model.InvalidCompositeException;
 import org.qi4j.api.model.MixinModel;
 import org.qi4j.api.model.NullArgumentException;
@@ -100,10 +100,10 @@ public class CompositeModelFactoryTest
         expected.add( TestModifier1.class );
         expected.add( TestModifier2.class );
         expected.add( TestModifier1.class );
-        Iterable<AssertionModel> list = model.getAssertionModels();
-        for( AssertionModel assertionModel : list )
+        Iterable<ConcernModel> list = model.getConcernModels();
+        for( ConcernModel concernModel : list )
         {
-            assertTrue( "unexpected modifier model: " + assertionModel, expected.remove( assertionModel.getModelClass() ) );
+            assertTrue( "unexpected modifier model: " + concernModel, expected.remove( concernModel.getModelClass() ) );
         }
         assertTrue( "unexpected modifier modles: ", expected.size() == 0 );
     }
@@ -116,7 +116,7 @@ public class CompositeModelFactoryTest
     }
 
     @Mixins( { TestMixin1.class, TestMixin2.class, TestMixin1.class } )
-    @Assertions( { TestModifier1.class, TestModifier2.class, TestModifier1.class } )
+    @Concerns( { TestModifier1.class, TestModifier2.class, TestModifier1.class } )
     private interface TestComposite extends Composite
     {
 
@@ -129,12 +129,12 @@ public class CompositeModelFactoryTest
 
     private class TestModifier1
     {
-        @AssertionFor InvocationHandler handler;
+        @ConcernFor InvocationHandler handler;
     }
 
     private class TestModifier2
     {
-        @AssertionFor InvocationHandler handler;
+        @ConcernFor InvocationHandler handler;
     }
 
     private class TestMixin1

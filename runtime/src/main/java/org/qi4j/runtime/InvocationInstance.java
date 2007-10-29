@@ -20,7 +20,7 @@ import java.lang.reflect.Method;
 
 public final class InvocationInstance
 {
-    private Object firstAssertion;
+    private Object firstConcern;
     private Object[] sideEffects;
     private SideEffectInvocationHandlerResult sideEffectResult;
     private Method method;
@@ -30,13 +30,13 @@ public final class InvocationInstance
     private InvocationInstancePool pool;
     private InvocationInstance next;
 
-    public InvocationInstance( Object aFirstAssertion, Object[] sideEffects, SideEffectInvocationHandlerResult sideEffectResult, FragmentInvocationHandler aMixinInvocationHandler, ProxyReferenceInvocationHandler aProxyHandler, InvocationInstancePool aPool, Method method, Class mixinType )
+    public InvocationInstance( Object aFirstConcern, Object[] sideEffects, SideEffectInvocationHandlerResult sideEffectResult, FragmentInvocationHandler aMixinInvocationHandler, ProxyReferenceInvocationHandler aProxyHandler, InvocationInstancePool aPool, Method method, Class mixinType )
     {
         this.sideEffectResult = sideEffectResult;
         this.sideEffects = sideEffects;
         this.mixinType = mixinType;
         this.method = method;
-        firstAssertion = aFirstAssertion;
+        firstConcern = aFirstConcern;
         proxyHandler = aProxyHandler;
         mixinInvocationHandler = aMixinInvocationHandler;
         pool = aPool;
@@ -48,7 +48,7 @@ public final class InvocationInstance
         try
         {
             Object result;
-            if( firstAssertion == null )
+            if( firstConcern == null )
             {
                 if( mixin instanceof InvocationHandler )
                 {
@@ -63,13 +63,13 @@ public final class InvocationInstance
             {
                 proxyHandler.setContext( proxy, mixin, mixinType );
                 mixinInvocationHandler.setFragment( mixin );
-                if( firstAssertion instanceof InvocationHandler )
+                if( firstConcern instanceof InvocationHandler )
                 {
-                    result = ( (InvocationHandler) firstAssertion ).invoke( proxy, method, args );
+                    result = ( (InvocationHandler) firstConcern ).invoke( proxy, method, args );
                 }
                 else
                 {
-                    result = method.invoke( firstAssertion, args );
+                    result = method.invoke( firstConcern, args );
                 }
             }
 

@@ -98,19 +98,19 @@ public final class CompositeResolution<T extends Composite>
             out.println( "      " + methodResolution );
             out.println( "        implemented by " + methodResolution.getMixinResolution().getMixinModel().getModelClass().getName() + " (declared by " + methodResolution.getMixinResolution().getMixinModel().getDeclaredBy().getName() + ")" );
 
-            List<AssertionResolution> methodAssertions = methodResolution.getAssertions();
-            if( methodAssertions.size() > 0 )
+            List<ConcernResolution> methodConcerns = methodResolution.getConcerns();
+            if( methodConcerns.size() > 0 )
             {
                 out.println( "        assertions" );
             }
-            for( AssertionResolution methodAssertion : methodAssertions )
+            for( ConcernResolution methodConcern : methodConcerns )
             {
-                out.print( "          " + methodAssertion.getFragmentModel().getModelClass().getName() + " (declared by " + methodAssertion.getAssertionModel().getDeclaredBy().getName() + ")" );
-                if( methodAssertion.getFragmentModel() != null )
+                out.print( "          " + methodConcern.getFragmentModel().getModelClass().getName() + " (declared by " + methodConcern.getConcernModel().getDeclaredBy().getName() + ")" );
+                if( methodConcern.getFragmentModel() != null )
                 {
-                    if( !methodAssertion.getAssertionModel().getAppliesTo().isEmpty() )
+                    if( !methodConcern.getConcernModel().getAppliesTo().isEmpty() )
                     {
-                        out.print( " applies to " + methodAssertion.getAssertionModel().getAppliesTo() );
+                        out.print( " applies to " + methodConcern.getConcernModel().getAppliesTo() );
                     }
                 }
                 out.println();

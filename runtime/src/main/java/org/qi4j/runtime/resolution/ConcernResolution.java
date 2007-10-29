@@ -9,10 +9,9 @@
  * See the License for the specific language governing permissions and 
  * limitations under the License.
 */
-package org.qi4j.api.model;
+package org.qi4j.runtime.resolution;
 
-import java.lang.annotation.Annotation;
-import org.qi4j.api.annotation.scope.AssertionFor;
+import org.qi4j.api.model.ConcernModel;
 
 /**
  * Modifiers provide stateless modifications of method invocation behaviour.
@@ -20,16 +19,17 @@ import org.qi4j.api.annotation.scope.AssertionFor;
  * Modifiers can either be classes implementing the interfaces of the modified
  * methods, or they can be generic InvocationHandler mixins.
  */
-public final class AssertionModel<T>
-    extends ModifierModel<T>
+public final class ConcernResolution<T>
+    extends ModifierResolution<T>
 {
-    public AssertionModel( Class<T> fragmentClass, Iterable<ConstructorDependency> constructorDependencies, Iterable<FieldDependency> fieldDependencies, Iterable<MethodDependency> methodDependencies, Class[] appliesTo, Class declaredBy )
+    // Constructors --------------------------------------------------
+    public ConcernResolution( ConcernModel<T> concernModel, Iterable<ConstructorDependencyResolution> constructorDependencies, Iterable<FieldDependencyResolution> fieldDependencies, Iterable<MethodDependencyResolution> methodDependencies )
     {
-        super( fragmentClass, constructorDependencies, fieldDependencies, methodDependencies, appliesTo, declaredBy );
+        super( concernModel, constructorDependencies, fieldDependencies, methodDependencies );
     }
 
-    public Class<? extends Annotation> getModifiesAnnotationType()
+    public ConcernModel<T> getConcernModel()
     {
-        return AssertionFor.class;
+        return (ConcernModel<T>) getObjectModel();
     }
 }

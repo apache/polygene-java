@@ -14,9 +14,9 @@ public class ConstraintInvocationHandler
     private ProxyReferenceInvocationHandler proxyHandler;
     private List<List<ConstraintInstance>> parameterConstraintInstances;
 
-    public ConstraintInvocationHandler( ProxyReferenceInvocationHandler proxyHandler, List<List<ConstraintInstance>> parameterConstraintInstances, Object previousAssertion )
+    public ConstraintInvocationHandler( ProxyReferenceInvocationHandler proxyHandler, List<List<ConstraintInstance>> parameterConstraintInstances, Object previousConcern )
     {
-        super( previousAssertion );
+        super( previousConcern );
         this.proxyHandler = proxyHandler;
         this.parameterConstraintInstances = parameterConstraintInstances;
     }
@@ -32,15 +32,22 @@ public class ConstraintInvocationHandler
             Object arg = objects[ idx ];
             for( ConstraintInstance constraint : parameterConstraintInstance )
             {
-                if( !constraint.getConstraint().isValid( constraint.getAnnotation(), arg ) )
+                try
                 {
-                    // Register constraint violation
-                    ConstraintViolation violation = new ConstraintViolation( constraint.getAnnotation(), arg );
-                    if( constraintViolations == null )
+                    if( !constraint.getConstraint().isValid( constraint.getAnnotation(), arg ) )
                     {
-                        constraintViolations = new ArrayList<ConstraintViolation>();
+                        // Register constraint violation
+                        ConstraintViolation violation = new ConstraintViolation( constraint.getAnnotation(), arg );
+                        if( constraintViolations == null )
+                        {
+                            constraintViolations = new ArrayList<ConstraintViolation>();
+                        }
+                        constraintViolations.add( violation );
                     }
-                    constraintViolations.add( violation );
+                }
+                catch( NullPointerException e )
+                {
+                    // Ignore
                 }
             }
             idx++;

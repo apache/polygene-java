@@ -17,10 +17,10 @@
 package org.qi4j.test.model1;
 
 import org.qi4j.api.Composite;
-import org.qi4j.api.annotation.Assertions;
+import org.qi4j.api.annotation.Concerns;
 import org.qi4j.api.annotation.Mixins;
 
-@Assertions( { Modifier2.class } )
+@Concerns( { Modifier2.class } )
 @Mixins( { Mixin1Impl.class, Mixin2Impl.class } )
 public interface Composition2 extends Mixin2, Mixin1, Composite
 {

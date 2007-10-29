@@ -28,12 +28,12 @@ public class ModifiesDependencyResolver
             }
             else
             {
-                throw new InvalidDependencyException( "Composite " + fragmentKey.getCompositeType() + " does not implement @AssertionFor type " + key.getDependencyType() + " in modifier " + key.getDependentType() );
+                throw new InvalidDependencyException( "Composite " + fragmentKey.getCompositeType() + " does not implement @ConcernFor type " + key.getDependencyType() + " in modifier " + key.getDependentType() );
             }
         }
         else
         {
-            throw new InvalidDependencyException( "Object " + key.getDependentType() + " may not use @AssertionFor" );
+            throw new InvalidDependencyException( "Object " + key.getDependentType() + " may not use @ConcernFor" );
         }
     }
 

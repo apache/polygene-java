@@ -17,7 +17,7 @@ import org.qi4j.api.model.FragmentModel;
  * Base class for fragment model instances. Instances are models resolved in a runtime environment
  *
  * @see MixinResolution
- * @see AssertionResolution
+ * @see ConcernResolution
  */
 public abstract class FragmentResolution<T>
     extends ObjectResolution

@@ -18,7 +18,7 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 
 /**
- * Tests public api exposed by AssertionFor annotation.
+ * Tests public api exposed by ConcernFor annotation.
  * This will ensure that the public api does not get changed by mistake.
  */
 public class ThisAsTest

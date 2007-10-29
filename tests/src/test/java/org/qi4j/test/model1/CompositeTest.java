@@ -19,15 +19,15 @@ package org.qi4j.test.model1;
 import java.util.ArrayList;
 import java.util.List;
 import junit.framework.TestCase;
-import org.qi4j.api.model.AssertionModel;
 import org.qi4j.api.model.CompositeModel;
+import org.qi4j.api.model.ConcernModel;
 import org.qi4j.api.model.InvalidCompositeException;
 import org.qi4j.api.model.InvalidFragmentException;
 import org.qi4j.api.model.MixinModel;
 import org.qi4j.api.model.NullArgumentException;
-import org.qi4j.runtime.AssertionModelFactory;
 import org.qi4j.runtime.CompositeMixin;
 import org.qi4j.runtime.CompositeModelFactory;
+import org.qi4j.runtime.ConcernModelFactory;
 import org.qi4j.runtime.MixinModelFactory;
 import org.qi4j.runtime.SideEffectModelFactory;
 
@@ -45,7 +45,7 @@ public class CompositeTest extends TestCase
     {
         List<MixinModel> reference = new ArrayList<MixinModel>();
 
-        AssertionModelFactory assertionBuilder = new AssertionModelFactory();
+        ConcernModelFactory assertionBuilder = new ConcernModelFactory();
         SideEffectModelFactory sideEffectBuilder = new SideEffectModelFactory();
         MixinModelFactory mmb = new MixinModelFactory( assertionBuilder, sideEffectBuilder );
         reference.add( mmb.newFragmentModel( Mixin1Impl.class, Composition1.class, Composition1.class ) );
@@ -57,10 +57,10 @@ public class CompositeTest extends TestCase
 
         assertEquals( reference, modelMixins );
 
-        List<AssertionModel> referenceAssertions = new ArrayList<AssertionModel>();
-        referenceAssertions.add( assertionBuilder.newFragmentModel( Modifier1.class, Composition1.class, Composition1.class ) );
+        List<ConcernModel> referenceConcerns = new ArrayList<ConcernModel>();
+        referenceConcerns.add( assertionBuilder.newFragmentModel( Modifier1.class, Composition1.class, Composition1.class ) );
 
-        assertEquals( referenceAssertions, composite1.getAssertionModels() );
+        assertEquals( referenceConcerns, composite1.getConcernModels() );
     }
 
     public void testComposition2()
@@ -76,25 +76,25 @@ public class CompositeTest extends TestCase
         assertEquals( Mixin1Impl.class, mixin1.getFragmentClass() );
         MixinModel mixin2 = lists.get( 2 );
         assertEquals( Mixin2Impl.class, mixin2.getFragmentClass() );
-        List<AssertionModel> modifiers1 = composite1.getAssertionModels();
+        List<ConcernModel> modifiers1 = composite1.getConcernModels();
         assertEquals( 2, modifiers1.size() );
         assertEquals( lists.get( 1 ), composite1.getImplementations( Mixin1.class ).get( 0 ) );
         CompositeModel composite2 =modelFactory.newCompositeModel( Composition2.class );
         assertEquals( composite1, composite2 );
         assertEquals( composite1.hashCode(), composite2.hashCode() );
 
-        List<AssertionModel> modifiers3 = mixin2.getModifiers();
+        List<ConcernModel> modifiers3 = mixin2.getModifiers();
         assertEquals( 0, modifiers3.size() );
 
-        List<AssertionModel> modifiers2 = mixin1.getModifiers();
+        List<ConcernModel> modifiers2 = mixin1.getModifiers();
         assertEquals( 1, modifiers2.size() );
-        AssertionModel modifier4 = modifiers2.get( 0 );
+        ConcernModel modifier4 = modifiers2.get( 0 );
         assertEquals( Modifier4.class, modifier4.getFragmentClass() );
         assertEquals( Modifier4.class.getDeclaredField( "next" ), modifier4.getSideEffectForDependency() );
 */
     }
 
-    // Testing that system check that at least one @AssertionFor field exist.
+    // Testing that system check that at least one @ConcernFor field exist.
     public void testComposition3()
         throws Exception
     {

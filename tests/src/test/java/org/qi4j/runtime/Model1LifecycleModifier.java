@@ -16,7 +16,7 @@
  */
 package org.qi4j.runtime;
 
-import org.qi4j.api.annotation.scope.AssertionFor;
+import org.qi4j.api.annotation.scope.ConcernFor;
 import org.qi4j.api.persistence.Lifecycle;
 
 public class Model1LifecycleModifier
@@ -25,7 +25,7 @@ public class Model1LifecycleModifier
     static boolean deleteMethod;
     static boolean createMethod;
 
-    @AssertionFor Lifecycle next;
+    @ConcernFor Lifecycle next;
 
     /**
      * Creation callback method.

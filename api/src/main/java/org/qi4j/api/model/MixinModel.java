@@ -23,11 +23,11 @@ public final class MixinModel<T>
     extends FragmentModel<T>
 {
     private Iterable<ConstraintDeclarationModel> constraintModels;
-    private Iterable<AssertionModel> assertionModels;
+    private Iterable<ConcernModel> assertionModels;
     private Iterable<SideEffectModel> sideEffectModels;
     private Iterable<PropertyModel> propertyModels;
 
-    public MixinModel( Class<T> fragmentClass, Iterable<ConstructorDependency> constructorDependencies, Iterable<FieldDependency> fieldDependencies, Iterable<MethodDependency> methodDependencies, List<PropertyModel> properties, Class[] appliesTo, Class declaredBy, Iterable<AssertionModel> assertionModels, Iterable<SideEffectModel> sideEffectModels, Iterable<ConstraintDeclarationModel> constraintModels )
+    public MixinModel( Class<T> fragmentClass, Iterable<ConstructorDependency> constructorDependencies, Iterable<FieldDependency> fieldDependencies, Iterable<MethodDependency> methodDependencies, List<PropertyModel> properties, Class[] appliesTo, Class declaredBy, Iterable<ConcernModel> assertionModels, Iterable<SideEffectModel> sideEffectModels, Iterable<ConstraintDeclarationModel> constraintModels )
     {
         super( fragmentClass, constructorDependencies, fieldDependencies, methodDependencies, appliesTo, declaredBy );
         this.constraintModels = constraintModels;
@@ -41,7 +41,7 @@ public final class MixinModel<T>
         return constraintModels;
     }
 
-    public Iterable<AssertionModel> getAssertions()
+    public Iterable<ConcernModel> getConcerns()
     {
         return assertionModels;
     }

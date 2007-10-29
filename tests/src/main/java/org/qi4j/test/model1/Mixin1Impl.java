@@ -16,9 +16,9 @@
  */
 package org.qi4j.test.model1;
 
-import org.qi4j.api.annotation.Assertions;
+import org.qi4j.api.annotation.Concerns;
 
-@Assertions( Modifier4.class )
+@Concerns( Modifier4.class )
 public class Mixin1Impl
     implements Mixin1
 {
