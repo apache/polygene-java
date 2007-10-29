@@ -17,15 +17,15 @@
 package org.qi4j.runtime.persistence;
 
 import java.net.URL;
-import org.qi4j.api.annotation.scope.ThisAs;
-import org.qi4j.api.persistence.Entity;
-import org.qi4j.api.persistence.EntityComposite;
+import org.qi4j.annotation.scope.ThisCompositeAs;
+import org.qi4j.persistence.Entity;
+import org.qi4j.persistence.EntityComposite;
 import org.qi4j.runtime.EntityCompositeInvocationHandler;
 
 public final class EntityImpl
     implements Entity
 {
-    @ThisAs EntityComposite meAsEntity;
+    @ThisCompositeAs EntityComposite meAsEntity;
 
     public boolean isReference()
     {

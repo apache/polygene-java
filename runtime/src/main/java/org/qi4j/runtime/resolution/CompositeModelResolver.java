@@ -12,20 +12,20 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.qi4j.api.Composite;
-import org.qi4j.api.annotation.AppliesToFilter;
-import org.qi4j.api.annotation.ConstraintDeclaration;
-import org.qi4j.api.model.CompositeModel;
-import org.qi4j.api.model.ConcernModel;
-import org.qi4j.api.model.ConstraintDeclarationModel;
-import org.qi4j.api.model.FragmentModel;
-import org.qi4j.api.model.InvalidCompositeException;
-import org.qi4j.api.model.MethodConstraint;
-import org.qi4j.api.model.MethodModel;
-import org.qi4j.api.model.MixinModel;
-import org.qi4j.api.model.ModifierModel;
-import org.qi4j.api.model.ParameterConstraint;
-import org.qi4j.api.model.SideEffectModel;
+import org.qi4j.Composite;
+import org.qi4j.annotation.AppliesToFilter;
+import org.qi4j.annotation.ConstraintDeclaration;
+import org.qi4j.model.CompositeModel;
+import org.qi4j.model.ConcernModel;
+import org.qi4j.model.ConstraintDeclarationModel;
+import org.qi4j.model.FragmentModel;
+import org.qi4j.model.InvalidCompositeException;
+import org.qi4j.model.MethodConstraint;
+import org.qi4j.model.MethodModel;
+import org.qi4j.model.MixinModel;
+import org.qi4j.model.ModifierModel;
+import org.qi4j.model.ParameterConstraint;
+import org.qi4j.model.SideEffectModel;
 import org.qi4j.spi.dependency.InvalidDependencyException;
 
 /**
@@ -80,7 +80,7 @@ public class CompositeModelResolver
         Set<MixinModel> usedMixins = new LinkedHashSet<MixinModel>();
         usedMixins.addAll( mixinsForMethods.values() );
 
-        // If a mixin A uses mixin B as a @ThisAs parameter dependency, then ensure that the order is correct.
+        // If a mixin A uses mixin B as a @ThisCompositeAs parameter dependency, then ensure that the order is correct.
         Set<MixinModel> orderedUsedMixins = new LinkedHashSet<MixinModel>();
         dependencyCheck:
         while( !usedMixins.isEmpty() )
@@ -133,7 +133,7 @@ public class CompositeModelResolver
 
     private boolean dependsOn( MixinModel model, MixinModel otherModel, Map<Method, MixinModel> mixinsForMethods )
     {
-        Set<Method> methods = model.getThisAsMethods();
+        Set<Method> methods = model.getThisCompositeAsMethods();
         for( Method methodModel : methods )
         {
             if( mixinsForMethods.get( methodModel ).equals( otherModel ) )
@@ -163,7 +163,7 @@ public class CompositeModelResolver
         Collection<MethodModel> methodModels = compositeModel.getMethodModels();
         resolveMethods( methodModels, methodMixins, compositeModel, mixinResolutions, concernResolutions, sideEffectResolutions, constraintModelMappings, methodResolutions );
 
-        Iterable<MethodModel> thisAsMethodModels = compositeModel.getThisAsModels();
+        Iterable<MethodModel> thisAsMethodModels = compositeModel.getThisCompositeAsModels();
         resolveMethods( thisAsMethodModels, methodMixins, compositeModel, mixinResolutions, concernResolutions, sideEffectResolutions, constraintModelMappings, methodResolutions );
 
         return methodResolutions;
@@ -297,8 +297,8 @@ public class CompositeModelResolver
             methodMixinMappings.put( methodModel.getMethod(), getMixinForMethod( methodModel.getMethod(), compositeModel ) );
         }
 
-        // Map methods in internal @ThisAs dependencies to mixins
-        Iterable<MethodModel> thisAsMethodModels = compositeModel.getThisAsModels();
+        // Map methods in internal @ThisCompositeAs dependencies to mixins
+        Iterable<MethodModel> thisAsMethodModels = compositeModel.getThisCompositeAsModels();
         for( MethodModel methodModel : thisAsMethodModels )
         {
             methodMixinMappings.put( methodModel.getMethod(), getMixinForMethod( methodModel.getMethod(), compositeModel ) );

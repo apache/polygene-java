@@ -7,17 +7,17 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import org.qi4j.api.annotation.AppliesTo;
-import org.qi4j.api.annotation.scope.DependencyScope;
-import org.qi4j.api.annotation.scope.Name;
-import org.qi4j.api.annotation.scope.Optional;
-import org.qi4j.api.model.ConstructorDependency;
-import org.qi4j.api.model.DependencyKey;
-import org.qi4j.api.model.FieldDependency;
-import org.qi4j.api.model.FragmentDependencyKey;
-import org.qi4j.api.model.InvalidCompositeException;
-import org.qi4j.api.model.MethodDependency;
-import org.qi4j.api.model.ParameterDependency;
+import org.qi4j.annotation.AppliesTo;
+import org.qi4j.annotation.scope.DependencyScope;
+import org.qi4j.annotation.scope.Name;
+import org.qi4j.annotation.scope.Optional;
+import org.qi4j.model.ConstructorDependency;
+import org.qi4j.model.DependencyKey;
+import org.qi4j.model.FieldDependency;
+import org.qi4j.model.FragmentDependencyKey;
+import org.qi4j.model.InvalidCompositeException;
+import org.qi4j.model.MethodDependency;
+import org.qi4j.model.ParameterDependency;
 
 /**
  * TODO

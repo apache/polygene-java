@@ -5,7 +5,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collections;
-import org.qi4j.api.CompositeInstantiationException;
+import org.qi4j.CompositeInstantiationException;
 import org.qi4j.runtime.resolution.ConstructorDependencyResolution;
 import org.qi4j.runtime.resolution.FieldDependencyResolution;
 import org.qi4j.runtime.resolution.MethodDependencyResolution;

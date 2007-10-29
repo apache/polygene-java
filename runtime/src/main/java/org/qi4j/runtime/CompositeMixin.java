@@ -16,18 +16,18 @@ package org.qi4j.runtime;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
-import org.qi4j.api.Composite;
-import org.qi4j.api.CompositeBuilderFactory;
-import org.qi4j.api.CompositeCastException;
-import org.qi4j.api.annotation.scope.Qi4j;
-import org.qi4j.api.annotation.scope.ThisAs;
-import org.qi4j.api.model.CompositeModel;
+import org.qi4j.Composite;
+import org.qi4j.CompositeBuilderFactory;
+import org.qi4j.CompositeCastException;
+import org.qi4j.annotation.scope.Qi4j;
+import org.qi4j.annotation.scope.ThisCompositeAs;
+import org.qi4j.model.CompositeModel;
 
 public final class CompositeMixin
     implements Composite
 {
     @Qi4j private CompositeBuilderFactory builderFactory;
-    @ThisAs private Composite meAsComposite;
+    @ThisCompositeAs private Composite meAsComposite;
 
     public <T extends Composite> T cast( Class<T> compositeType )
     {

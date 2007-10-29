@@ -11,8 +11,8 @@
  */
 package org.qi4j.test.model2;
 
-import org.qi4j.api.annotation.scope.ConcernFor;
-import org.qi4j.api.annotation.scope.ThisAs;
+import org.qi4j.annotation.scope.ConcernFor;
+import org.qi4j.annotation.scope.ThisCompositeAs;
 
 /**
  * TODO
@@ -21,7 +21,7 @@ public class StandardThisThatModifier
     implements StandardThat
 {
     // Attributes ----------------------------------------------------
-    @ThisAs StandardThis meAsThis;
+    @ThisCompositeAs StandardThis meAsThis;
     @ConcernFor StandardThat next;
 
     // Z implementation ----------------------------------------------

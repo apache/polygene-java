@@ -1,7 +1,7 @@
 package org.qi4j.runtime.resolution;
 
 import java.util.List;
-import org.qi4j.api.model.MethodModel;
+import org.qi4j.model.MethodModel;
 
 /**
  * TODO

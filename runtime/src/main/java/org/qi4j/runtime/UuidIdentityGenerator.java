@@ -17,8 +17,8 @@
 package org.qi4j.runtime;
 
 import java.util.UUID;
-import org.qi4j.api.persistence.Identity;
-import org.qi4j.api.persistence.IdentityGenerator;
+import org.qi4j.persistence.Identity;
+import org.qi4j.persistence.IdentityGenerator;
 
 public final class UuidIdentityGenerator
     implements IdentityGenerator

@@ -17,8 +17,8 @@
  */
 package org.qi4j.query.set1;
 
-import org.qi4j.api.Composite;
-import org.qi4j.api.annotation.Mixins;
+import org.qi4j.Composite;
+import org.qi4j.annotation.Mixins;
 
 
 @Mixins( { Mixin1Impl.class, Mixin2Impl.class } )

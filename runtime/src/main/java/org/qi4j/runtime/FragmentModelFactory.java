@@ -6,9 +6,9 @@ import net.sf.cglib.proxy.Callback;
 import net.sf.cglib.proxy.CallbackFilter;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.NoOp;
-import org.qi4j.api.model.FragmentModel;
-import org.qi4j.api.model.InvalidCompositeException;
-import org.qi4j.api.model.NullArgumentException;
+import org.qi4j.model.FragmentModel;
+import org.qi4j.model.InvalidCompositeException;
+import org.qi4j.model.NullArgumentException;
 
 /**
  * TODO

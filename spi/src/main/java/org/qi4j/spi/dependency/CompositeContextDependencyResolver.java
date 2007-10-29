@@ -16,9 +16,9 @@
  */
 package org.qi4j.spi.dependency;
 
-import org.qi4j.api.CompositeBuilderFactory;
-import org.qi4j.api.model.CompositeContext;
-import org.qi4j.api.model.DependencyKey;
+import org.qi4j.CompositeBuilderFactory;
+import org.qi4j.model.CompositeContext;
+import org.qi4j.model.DependencyKey;
 
 public class CompositeContextDependencyResolver
     implements DependencyResolver

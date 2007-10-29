@@ -26,8 +26,8 @@ import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
-import org.qi4j.api.ConstraintViolation;
-import org.qi4j.api.InvocationContext;
+import org.qi4j.ConstraintViolation;
+import org.qi4j.InvocationContext;
 
 public final class ProxyReferenceInvocationHandler
     implements InvocationHandler, InvocationContext

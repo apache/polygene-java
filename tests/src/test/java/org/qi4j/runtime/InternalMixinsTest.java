@@ -1,8 +1,8 @@
 package org.qi4j.runtime;
 
-import org.qi4j.api.Composite;
-import org.qi4j.api.annotation.Mixins;
-import org.qi4j.api.annotation.scope.ThisAs;
+import org.qi4j.Composite;
+import org.qi4j.annotation.Mixins;
+import org.qi4j.annotation.scope.ThisCompositeAs;
 
 /**
  * TODO
@@ -25,7 +25,7 @@ public class InternalMixinsTest
     public static class AMixin
         implements A
     {
-        @ThisAs B bRef;
+        @ThisCompositeAs B bRef;
 
         public String doStuff()
         {

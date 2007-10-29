@@ -4,11 +4,11 @@ package org.qi4j.runtime.resolution;
  */
 
 import junit.framework.TestCase;
-import org.qi4j.api.Composite;
-import org.qi4j.api.CompositeBuilderFactory;
-import org.qi4j.api.annotation.Mixins;
-import org.qi4j.api.annotation.scope.ThisAs;
-import org.qi4j.api.model.InvalidCompositeException;
+import org.qi4j.Composite;
+import org.qi4j.CompositeBuilderFactory;
+import org.qi4j.annotation.Mixins;
+import org.qi4j.annotation.scope.ThisCompositeAs;
+import org.qi4j.model.InvalidCompositeException;
 import org.qi4j.runtime.CompositeBuilderFactoryImpl;
 
 public class CompositeModelResolverTest extends TestCase
@@ -61,7 +61,7 @@ public class CompositeModelResolverTest extends TestCase
         {
             private TestA testA;
 
-            public TestBMixin( @ThisAs TestA testA )
+            public TestBMixin( @ThisCompositeAs TestA testA )
             {
                 this.testA = testA;
                 testA.test();
@@ -85,7 +85,7 @@ public class CompositeModelResolverTest extends TestCase
         {
             private TestD testD;
 
-            public TestCMixin( @ThisAs TestD testD )
+            public TestCMixin( @ThisCompositeAs TestD testD )
             {
                 this.testD = testD;
                 testD.testD();
@@ -109,7 +109,7 @@ public class CompositeModelResolverTest extends TestCase
         {
             private TestC testC;
 
-            public TestDMixin( @ThisAs TestC testC )
+            public TestDMixin( @ThisCompositeAs TestC testC )
             {
                 this.testC = testC;
                 testC.testC();

@@ -11,12 +11,12 @@ import java.lang.annotation.Target;
 import java.lang.reflect.Method;
 import java.util.Iterator;
 import junit.framework.TestCase;
-import org.qi4j.api.model.MethodConstraint;
-import org.qi4j.api.model.ParameterConstraint;
 import org.qi4j.library.framework.constraint.annotation.Email;
 import org.qi4j.library.framework.constraint.annotation.MaxLength;
 import org.qi4j.library.framework.constraint.annotation.MinLength;
 import org.qi4j.library.framework.constraint.annotation.Range;
+import org.qi4j.model.MethodConstraint;
+import org.qi4j.model.ParameterConstraint;
 
 public class ConstraintModelFactoryTest extends TestCase
 {

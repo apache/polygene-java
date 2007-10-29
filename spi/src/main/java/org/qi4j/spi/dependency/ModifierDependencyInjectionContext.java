@@ -2,9 +2,9 @@ package org.qi4j.spi.dependency;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import org.qi4j.api.InvocationContext;
-import org.qi4j.api.model.CompositeContext;
-import org.qi4j.api.model.MixinModel;
+import org.qi4j.InvocationContext;
+import org.qi4j.model.CompositeContext;
+import org.qi4j.model.MixinModel;
 
 /**
  * TODO
@@ -55,7 +55,7 @@ public class ModifierDependencyInjectionContext
         return context;
     }
 
-    public InvocationHandler getThisAs()
+    public InvocationHandler getThisCompositeAs()
     {
         return thisAs;
     }

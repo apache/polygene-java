@@ -16,8 +16,8 @@
  */
 package org.qi4j.spi.persistence;
 
-import org.qi4j.api.model.CompositeModel;
-import org.qi4j.api.persistence.EntityComposite;
+import org.qi4j.model.CompositeModel;
+import org.qi4j.persistence.EntityComposite;
 
 /**
  * The EntityStateHolder is a shared "second-level cache" mixin state container for a particular
@@ -35,30 +35,32 @@ import org.qi4j.api.persistence.EntityComposite;
  */
 public interface EntityStateHolder<T extends EntityComposite>
 {
-    /** Returns the identity of the entity that this EntityStateHolder represents.
+    /**
+     * Returns the identity of the entity that this EntityStateHolder represents.
      *
      * @return the identity of the entity that this EntityStateHolder represents.
      */
     String getIdentity();
 
-    /** Returns the composite type of the entity represented by this EntityStateHolder.
+    /**
+     * Returns the composite type of the entity represented by this EntityStateHolder.
      *
      * @return the composite type of the entity represented by this EntityStateHolder.
      */
     CompositeModel<T> getCompositeModel();
 
-    /** Returns the mixin state of the mixin type.
-     *
+    /**
+     * Returns the mixin state of the mixin type.
      *
      * @param mixinType the mixin type of the mixin to be returned.
-     *
      * @return the mixin state.
      */
     Object getMixin( Class mixinType );
 
     void putMixin( Class mixinType, Object object );
 
-    /** Instruct the EntityStateHolder to retrieve the data from the backing store.
+    /**
+     * Instruct the EntityStateHolder to retrieve the data from the backing store.
      * This is called to force new data to be read from physical storage and in effect
      * invalidates any caches for this entity.
      */

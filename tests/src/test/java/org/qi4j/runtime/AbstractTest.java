@@ -1,7 +1,7 @@
 package org.qi4j.runtime;
 
 import junit.framework.TestCase;
-import org.qi4j.api.CompositeBuilderFactory;
+import org.qi4j.CompositeBuilderFactory;
 
 public abstract class AbstractTest extends TestCase
 {

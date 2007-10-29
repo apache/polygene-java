@@ -2,12 +2,12 @@ package org.qi4j.runtime;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.qi4j.api.model.ConstructorDependency;
-import org.qi4j.api.model.FieldDependency;
-import org.qi4j.api.model.InvalidCompositeException;
-import org.qi4j.api.model.MethodDependency;
-import org.qi4j.api.model.NullArgumentException;
-import org.qi4j.api.model.ObjectModel;
+import org.qi4j.model.ConstructorDependency;
+import org.qi4j.model.FieldDependency;
+import org.qi4j.model.InvalidCompositeException;
+import org.qi4j.model.MethodDependency;
+import org.qi4j.model.NullArgumentException;
+import org.qi4j.model.ObjectModel;
 
 /**
  * TODO

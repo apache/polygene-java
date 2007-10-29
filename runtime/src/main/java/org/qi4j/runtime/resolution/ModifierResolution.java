@@ -1,6 +1,6 @@
 package org.qi4j.runtime.resolution;
 
-import org.qi4j.api.model.ModifierModel;
+import org.qi4j.model.ModifierModel;
 
 /**
  * Modifiers provide stateless modifications of method invocation behaviour.

@@ -23,8 +23,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.qi4j.api.Composite;
-import org.qi4j.api.model.CompositeModel;
+import org.qi4j.Composite;
+import org.qi4j.model.CompositeModel;
 
 /**
  * Composite model instances are resolutions in a runtime environment what a composite model will look like.

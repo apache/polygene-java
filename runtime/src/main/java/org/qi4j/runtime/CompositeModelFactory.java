@@ -26,24 +26,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.qi4j.api.Composite;
-import org.qi4j.api.Constraint;
-import org.qi4j.api.annotation.Concerns;
-import org.qi4j.api.annotation.Constraints;
-import org.qi4j.api.annotation.Mixins;
-import org.qi4j.api.annotation.SideEffects;
-import org.qi4j.api.model.CompositeModel;
-import org.qi4j.api.model.ConcernModel;
-import org.qi4j.api.model.ConstraintDeclarationModel;
-import org.qi4j.api.model.FragmentModel;
-import org.qi4j.api.model.InvalidCompositeException;
-import org.qi4j.api.model.MethodConstraint;
-import org.qi4j.api.model.MethodModel;
-import org.qi4j.api.model.MixinModel;
-import org.qi4j.api.model.NullArgumentException;
-import org.qi4j.api.model.SideEffectModel;
-import org.qi4j.api.persistence.Entity;
-import org.qi4j.api.persistence.EntityComposite;
+import org.qi4j.Composite;
+import org.qi4j.Constraint;
+import org.qi4j.annotation.Concerns;
+import org.qi4j.annotation.Constraints;
+import org.qi4j.annotation.Mixins;
+import org.qi4j.annotation.SideEffects;
+import org.qi4j.model.CompositeModel;
+import org.qi4j.model.ConcernModel;
+import org.qi4j.model.ConstraintDeclarationModel;
+import org.qi4j.model.FragmentModel;
+import org.qi4j.model.InvalidCompositeException;
+import org.qi4j.model.MethodConstraint;
+import org.qi4j.model.MethodModel;
+import org.qi4j.model.MixinModel;
+import org.qi4j.model.NullArgumentException;
+import org.qi4j.model.SideEffectModel;
+import org.qi4j.persistence.Entity;
+import org.qi4j.persistence.EntityComposite;
 import org.qi4j.runtime.persistence.EntityImpl;
 
 public class CompositeModelFactory
@@ -103,10 +103,10 @@ public class CompositeModelFactory
         fragmentModels.addAll( mixins );
         fragmentModels.addAll( concerns );
         fragmentModels.addAll( sideEffects );
-        Iterable<MethodModel> thisAsModels = getThisAsModels( fragmentModels );
+        Iterable<MethodModel> thisCompositeAsModels = getThisCompositeAsModels( fragmentModels );
 
         Iterable<ConstraintDeclarationModel> constraintModels = getConstraintDeclarations( compositeClass );
-        CompositeModel model = new CompositeModel<T>( compositeClass, proxyClass, methods, mixins, constraintModels, concerns, sideEffects, thisAsModels );
+        CompositeModel model = new CompositeModel<T>( compositeClass, proxyClass, methods, mixins, constraintModels, concerns, sideEffects, thisCompositeAsModels );
         return model;
     }
 
@@ -229,12 +229,12 @@ public class CompositeModelFactory
         return modifiers;
     }
 
-    private Iterable<MethodModel> getThisAsModels( Iterable<FragmentModel> fragmentModels )
+    private Iterable<MethodModel> getThisCompositeAsModels( Iterable<FragmentModel> fragmentModels )
     {
         Map<Method, MethodModel> methodModels = new HashMap<Method, MethodModel>();
         for( FragmentModel fragmentModel : fragmentModels )
         {
-            Set<Method> thisAsmethods = fragmentModel.getThisAsMethods();
+            Set<Method> thisAsmethods = fragmentModel.getThisCompositeAsMethods();
             for( Method thisAsMethod : thisAsmethods )
             {
                 MethodModel methodModel = methodModels.get( thisAsMethod );

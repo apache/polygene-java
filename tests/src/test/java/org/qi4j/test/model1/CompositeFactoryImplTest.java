@@ -13,8 +13,8 @@
 package org.qi4j.test.model1;
 
 import junit.framework.TestCase;
-import org.qi4j.api.CompositeBuilderFactory;
-import org.qi4j.api.model.InvalidCompositeException;
+import org.qi4j.CompositeBuilderFactory;
+import org.qi4j.model.InvalidCompositeException;
 import org.qi4j.runtime.CompositeBuilderFactoryImpl;
 
 public class CompositeFactoryImplTest extends TestCase

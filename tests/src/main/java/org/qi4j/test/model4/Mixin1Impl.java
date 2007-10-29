@@ -17,17 +17,17 @@
 package org.qi4j.test.model4;
 
 import java.util.List;
-import org.qi4j.api.CompositeBuilderFactory;
-import org.qi4j.api.annotation.SideEffects;
-import org.qi4j.api.annotation.scope.Qi4j;
-import org.qi4j.api.annotation.scope.ThisAs;
+import org.qi4j.CompositeBuilderFactory;
+import org.qi4j.annotation.SideEffects;
+import org.qi4j.annotation.scope.Qi4j;
+import org.qi4j.annotation.scope.ThisCompositeAs;
 
 @SideEffects( CountCallsSideEffect.class )
 public class Mixin1Impl
     implements Mixin1
 {
     private CompositeBuilderFactory builderFactory;
-    private @ThisAs Mixin2 meAsMixin2;
+    private @ThisCompositeAs Mixin2 meAsMixin2;
 
     public Mixin1Impl( @Qi4j CompositeBuilderFactory builderFactory )
     {

@@ -19,8 +19,8 @@ package org.qi4j.runtime;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Set;
-import org.qi4j.api.CompositeInstantiationException;
-import org.qi4j.api.persistence.EntityComposite;
+import org.qi4j.CompositeInstantiationException;
+import org.qi4j.persistence.EntityComposite;
 import org.qi4j.runtime.resolution.MixinResolution;
 import org.qi4j.spi.persistence.EntityStateHolder;
 

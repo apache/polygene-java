@@ -2,8 +2,8 @@ package org.qi4j.runtime.resolution;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.qi4j.api.model.ConcernModel;
-import org.qi4j.api.model.ObjectModel;
+import org.qi4j.model.ConcernModel;
+import org.qi4j.model.ObjectModel;
 import org.qi4j.spi.dependency.InvalidDependencyException;
 
 /**

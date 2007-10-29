@@ -2,11 +2,11 @@ package org.qi4j.runtime.resolution;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.qi4j.api.model.DependencyKey;
-import org.qi4j.api.persistence.EntitySession;
-import org.qi4j.api.query.Query;
-import org.qi4j.api.query.QueryBuilderFactory;
-import org.qi4j.api.query.QueryBuilder;
+import org.qi4j.model.DependencyKey;
+import org.qi4j.persistence.EntitySession;
+import org.qi4j.query.Query;
+import org.qi4j.query.QueryBuilder;
+import org.qi4j.query.QueryBuilderFactory;
 import org.qi4j.spi.dependency.DependencyInjectionContext;
 import org.qi4j.spi.dependency.DependencyResolution;
 import org.qi4j.spi.dependency.DependencyResolver;

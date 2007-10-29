@@ -10,14 +10,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import junit.framework.TestCase;
-import org.qi4j.api.ObjectBuilder;
-import static org.qi4j.api.PropertyValue.property;
-import org.qi4j.api.annotation.scope.Adapt;
-import org.qi4j.api.annotation.scope.Decorate;
-import org.qi4j.api.annotation.scope.PropertyField;
-import org.qi4j.api.annotation.scope.PropertyParameter;
-import static org.qi4j.api.model.Binding.bind;
-import static org.qi4j.api.model.InjectionKey.key;
+import org.qi4j.ObjectBuilder;
+import static org.qi4j.PropertyValue.property;
+import org.qi4j.annotation.scope.Adapt;
+import org.qi4j.annotation.scope.Decorate;
+import org.qi4j.annotation.scope.PropertyField;
+import org.qi4j.annotation.scope.PropertyParameter;
+import static org.qi4j.model.Binding.bind;
+import static org.qi4j.model.InjectionKey.key;
 
 public class ObjectBuilderImplTest extends TestCase
 {

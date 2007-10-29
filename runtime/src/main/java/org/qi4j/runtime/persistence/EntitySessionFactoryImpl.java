@@ -16,10 +16,10 @@
  */
 package org.qi4j.runtime.persistence;
 
-import org.qi4j.api.CompositeBuilderFactory;
-import org.qi4j.api.persistence.EntitySession;
-import org.qi4j.api.persistence.EntitySessionFactory;
-import org.qi4j.api.persistence.IdentityGenerator;
+import org.qi4j.CompositeBuilderFactory;
+import org.qi4j.persistence.EntitySession;
+import org.qi4j.persistence.EntitySessionFactory;
+import org.qi4j.persistence.IdentityGenerator;
 import org.qi4j.runtime.UuidIdentityGenerator;
 import org.qi4j.spi.persistence.PersistentStore;
 

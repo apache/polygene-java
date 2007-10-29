@@ -13,12 +13,12 @@
 package org.qi4j.test.injection;
 
 import junit.framework.TestCase;
-import org.qi4j.api.Composite;
-import org.qi4j.api.CompositeBuilder;
-import org.qi4j.api.PropertyValue;
-import org.qi4j.api.annotation.Mixins;
-import org.qi4j.api.annotation.scope.PropertyField;
-import org.qi4j.api.annotation.scope.PropertyParameter;
+import org.qi4j.Composite;
+import org.qi4j.CompositeBuilder;
+import org.qi4j.PropertyValue;
+import org.qi4j.annotation.Mixins;
+import org.qi4j.annotation.scope.PropertyField;
+import org.qi4j.annotation.scope.PropertyParameter;
 import org.qi4j.runtime.CompositeBuilderFactoryImpl;
 
 public class PropertyInjectionTest extends TestCase

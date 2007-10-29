@@ -1,6 +1,6 @@
 package org.qi4j.runtime.resolution;
 
-import org.qi4j.api.model.ParameterConstraint;
+import org.qi4j.model.ParameterConstraint;
 
 /**
  * TODO

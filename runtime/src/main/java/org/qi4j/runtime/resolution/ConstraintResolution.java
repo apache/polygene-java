@@ -1,7 +1,7 @@
 package org.qi4j.runtime.resolution;
 
 import java.lang.annotation.Annotation;
-import org.qi4j.api.model.ConstraintDeclarationModel;
+import org.qi4j.model.ConstraintDeclarationModel;
 
 /**
  * TODO

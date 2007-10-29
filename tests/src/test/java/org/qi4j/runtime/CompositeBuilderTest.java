@@ -17,8 +17,8 @@
 package org.qi4j.runtime;
 
 import junit.framework.TestCase;
-import org.qi4j.api.CompositeBuilder;
-import org.qi4j.api.CompositeBuilderFactory;
+import org.qi4j.CompositeBuilder;
+import org.qi4j.CompositeBuilderFactory;
 
 public class CompositeBuilderTest extends TestCase
 {

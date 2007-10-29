@@ -27,12 +27,12 @@ import java.io.Serializable;
 import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
-import org.qi4j.api.Composite;
-import org.qi4j.api.CompositeBuilderFactory;
-import org.qi4j.api.model.CompositeModel;
-import org.qi4j.api.model.CompositeState;
-import org.qi4j.api.persistence.EntityComposite;
-import org.qi4j.api.persistence.EntitySession;
+import org.qi4j.Composite;
+import org.qi4j.CompositeBuilderFactory;
+import org.qi4j.model.CompositeModel;
+import org.qi4j.model.CompositeState;
+import org.qi4j.persistence.EntityComposite;
+import org.qi4j.persistence.EntitySession;
 
 
 public class SerializedObject

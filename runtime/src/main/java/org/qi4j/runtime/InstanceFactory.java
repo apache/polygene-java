@@ -16,7 +16,7 @@
  */
 package org.qi4j.runtime;
 
-import org.qi4j.api.CompositeInstantiationException;
+import org.qi4j.CompositeInstantiationException;
 import org.qi4j.runtime.resolution.ObjectResolution;
 import org.qi4j.spi.dependency.DependencyInjectionContext;
 

@@ -1,6 +1,6 @@
 package org.qi4j.runtime.resolution;
 
-import org.qi4j.api.model.ConstructorDependency;
+import org.qi4j.model.ConstructorDependency;
 
 /**
  * TODO

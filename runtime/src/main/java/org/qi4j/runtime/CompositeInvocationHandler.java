@@ -17,8 +17,8 @@
 package org.qi4j.runtime;
 
 import java.lang.reflect.Method;
-import org.qi4j.api.Composite;
-import org.qi4j.api.model.InvalidCompositeException;
+import org.qi4j.Composite;
+import org.qi4j.model.InvalidCompositeException;
 
 /**
  * InvocationHandler for proxy objects.

@@ -16,7 +16,7 @@
  */
 package org.qi4j.spi.dependency;
 
-import org.qi4j.api.model.DependencyKey;
+import org.qi4j.model.DependencyKey;
 
 public interface DependencyResolver
 {

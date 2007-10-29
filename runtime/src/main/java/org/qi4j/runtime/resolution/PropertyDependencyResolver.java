@@ -1,9 +1,9 @@
 package org.qi4j.runtime.resolution;
 
 import java.util.Map;
-import org.qi4j.api.PropertyValue;
-import org.qi4j.api.model.DependencyKey;
-import org.qi4j.api.model.InjectionKey;
+import org.qi4j.PropertyValue;
+import org.qi4j.model.DependencyKey;
+import org.qi4j.model.InjectionKey;
 import org.qi4j.spi.dependency.DependencyInjectionContext;
 import org.qi4j.spi.dependency.DependencyResolution;
 import org.qi4j.spi.dependency.DependencyResolver;

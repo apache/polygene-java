@@ -4,9 +4,9 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-import org.qi4j.api.annotation.ConstraintDeclaration;
-import org.qi4j.api.model.MethodConstraint;
-import org.qi4j.api.model.ParameterConstraint;
+import org.qi4j.annotation.ConstraintDeclaration;
+import org.qi4j.model.MethodConstraint;
+import org.qi4j.model.ParameterConstraint;
 
 /**
  * TODO

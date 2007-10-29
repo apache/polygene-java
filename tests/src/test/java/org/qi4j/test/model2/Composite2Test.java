@@ -13,8 +13,8 @@
 package org.qi4j.test.model2;
 
 import junit.framework.TestCase;
-import org.qi4j.api.CompositeBuilderFactory;
-import org.qi4j.api.model.CompositeModel;
+import org.qi4j.CompositeBuilderFactory;
+import org.qi4j.model.CompositeModel;
 import org.qi4j.runtime.CompositeBuilderFactoryImpl;
 import org.qi4j.runtime.CompositeModelFactory;
 

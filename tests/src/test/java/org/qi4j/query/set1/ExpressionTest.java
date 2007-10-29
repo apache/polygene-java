@@ -19,11 +19,11 @@ package org.qi4j.query.set1;
 
 import java.util.ArrayList;
 import junit.framework.TestCase;
-import org.qi4j.api.CompositeBuilder;
-import org.qi4j.api.CompositeBuilderFactory;
-import org.qi4j.api.query.QueryBuilderFactory;
-import org.qi4j.api.query.QueryBuilderFactoryImpl;
-import org.qi4j.api.query.QueryableIterable;
+import org.qi4j.CompositeBuilder;
+import org.qi4j.CompositeBuilderFactory;
+import org.qi4j.query.QueryBuilderFactory;
+import org.qi4j.query.QueryBuilderFactoryImpl;
+import org.qi4j.query.QueryableIterable;
 import org.qi4j.runtime.CompositeBuilderFactoryImpl;
 
 public class ExpressionTest extends TestCase

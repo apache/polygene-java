@@ -14,8 +14,8 @@
  */
 package org.qi4j.runtime;
 
-import org.qi4j.api.persistence.Lifecycle;
-import org.qi4j.api.persistence.PersistenceException;
+import org.qi4j.persistence.Lifecycle;
+import org.qi4j.persistence.PersistenceException;
 
 
 public final class LifecycleImpl

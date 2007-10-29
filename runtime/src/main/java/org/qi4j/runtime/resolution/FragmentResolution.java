@@ -11,7 +11,7 @@
 */
 package org.qi4j.runtime.resolution;
 
-import org.qi4j.api.model.FragmentModel;
+import org.qi4j.model.FragmentModel;
 
 /**
  * Base class for fragment model instances. Instances are models resolved in a runtime environment

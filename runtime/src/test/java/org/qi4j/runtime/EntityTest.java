@@ -2,12 +2,12 @@ package org.qi4j.runtime;
 
 import java.util.List;
 import junit.framework.TestCase;
-import org.qi4j.api.Composite;
-import org.qi4j.api.annotation.Mixins;
-import org.qi4j.api.annotation.scope.Entity;
-import org.qi4j.api.annotation.scope.PropertyField;
-import org.qi4j.api.query.Query;
-import org.qi4j.api.query.QueryBuilderFactory;
+import org.qi4j.Composite;
+import org.qi4j.annotation.Mixins;
+import org.qi4j.annotation.scope.Entity;
+import org.qi4j.annotation.scope.PropertyField;
+import org.qi4j.query.Query;
+import org.qi4j.query.QueryBuilderFactory;
 
 /**
  * TODO

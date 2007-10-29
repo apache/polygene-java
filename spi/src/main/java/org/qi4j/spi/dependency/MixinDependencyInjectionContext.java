@@ -2,9 +2,9 @@ package org.qi4j.spi.dependency;
 
 import java.lang.reflect.InvocationHandler;
 import java.util.Map;
-import org.qi4j.api.PropertyValue;
-import org.qi4j.api.model.CompositeContext;
-import org.qi4j.api.model.InjectionKey;
+import org.qi4j.PropertyValue;
+import org.qi4j.model.CompositeContext;
+import org.qi4j.model.InjectionKey;
 
 /**
  * TODO
@@ -28,7 +28,7 @@ public class MixinDependencyInjectionContext
         return context;
     }
 
-    public InvocationHandler getThisAs()
+    public InvocationHandler getThisCompositeAs()
     {
         return thisAs;
     }

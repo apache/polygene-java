@@ -18,8 +18,8 @@
 package org.qi4j.runtime.resolution;
 
 import java.lang.reflect.Type;
-import org.qi4j.api.CompositeBuilderFactory;
-import org.qi4j.api.model.DependencyKey;
+import org.qi4j.CompositeBuilderFactory;
+import org.qi4j.model.DependencyKey;
 import org.qi4j.runtime.CompositeBuilderFactoryImpl;
 import org.qi4j.spi.dependency.DependencyInjectionContext;
 import org.qi4j.spi.dependency.DependencyResolution;

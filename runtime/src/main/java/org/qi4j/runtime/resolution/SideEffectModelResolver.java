@@ -2,7 +2,7 @@ package org.qi4j.runtime.resolution;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.qi4j.api.model.SideEffectModel;
+import org.qi4j.model.SideEffectModel;
 import org.qi4j.spi.dependency.InvalidDependencyException;
 
 /**

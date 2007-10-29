@@ -13,8 +13,8 @@ package org.qi4j.runtime.resolution;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import org.qi4j.api.model.NullArgumentException;
-import org.qi4j.api.model.ObjectModel;
+import org.qi4j.model.NullArgumentException;
+import org.qi4j.model.ObjectModel;
 
 /**
  * Base class for object model resolutions. Resolutions are models resolved in a runtime environment

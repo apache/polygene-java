@@ -16,19 +16,19 @@ package org.qi4j.runtime;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import org.qi4j.api.Composite;
-import org.qi4j.api.CompositeBuilder;
-import org.qi4j.api.CompositeBuilderFactory;
-import org.qi4j.api.annotation.scope.Adapt;
-import org.qi4j.api.annotation.scope.ConcernFor;
-import org.qi4j.api.annotation.scope.Decorate;
-import org.qi4j.api.annotation.scope.Invocation;
-import org.qi4j.api.annotation.scope.PropertyField;
-import org.qi4j.api.annotation.scope.PropertyParameter;
-import org.qi4j.api.annotation.scope.Qi4j;
-import org.qi4j.api.annotation.scope.SideEffectFor;
-import org.qi4j.api.annotation.scope.ThisAs;
-import org.qi4j.api.model.CompositeModel;
+import org.qi4j.Composite;
+import org.qi4j.CompositeBuilder;
+import org.qi4j.CompositeBuilderFactory;
+import org.qi4j.annotation.scope.Adapt;
+import org.qi4j.annotation.scope.ConcernFor;
+import org.qi4j.annotation.scope.Decorate;
+import org.qi4j.annotation.scope.Invocation;
+import org.qi4j.annotation.scope.PropertyField;
+import org.qi4j.annotation.scope.PropertyParameter;
+import org.qi4j.annotation.scope.Qi4j;
+import org.qi4j.annotation.scope.SideEffectFor;
+import org.qi4j.annotation.scope.ThisCompositeAs;
+import org.qi4j.model.CompositeModel;
 import org.qi4j.runtime.resolution.AdaptDependencyResolver;
 import org.qi4j.runtime.resolution.CompositeModelResolver;
 import org.qi4j.runtime.resolution.CompositeResolution;
@@ -41,7 +41,7 @@ import org.qi4j.runtime.resolution.ModifiesDependencyResolver;
 import org.qi4j.runtime.resolution.PropertyDependencyResolver;
 import org.qi4j.runtime.resolution.Qi4jDependencyResolver;
 import org.qi4j.runtime.resolution.SideEffectModelResolver;
-import org.qi4j.runtime.resolution.ThisAsDependencyResolver;
+import org.qi4j.runtime.resolution.ThisCompositeAsDependencyResolver;
 
 /**
  * Default implementation of CompositeBuilderFactory
@@ -59,7 +59,7 @@ public final class CompositeBuilderFactoryImpl
     {
         dependencyResolverDelegator = new DependencyResolverDelegator();
 
-        dependencyResolverDelegator.setDependencyResolver( ThisAs.class, new ThisAsDependencyResolver() );
+        dependencyResolverDelegator.setDependencyResolver( ThisCompositeAs.class, new ThisCompositeAsDependencyResolver() );
         dependencyResolverDelegator.setDependencyResolver( ConcernFor.class, new ModifiesDependencyResolver() );
         dependencyResolverDelegator.setDependencyResolver( SideEffectFor.class, new ModifiesDependencyResolver() );
         dependencyResolverDelegator.setDependencyResolver( Invocation.class, new InvocationDependencyResolver() );

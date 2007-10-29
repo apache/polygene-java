@@ -11,7 +11,7 @@
 */
 package org.qi4j.runtime.resolution;
 
-import org.qi4j.api.model.MixinModel;
+import org.qi4j.model.MixinModel;
 
 /**
  * A mixin is an implementation of a particular interface,

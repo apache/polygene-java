@@ -3,7 +3,7 @@ package org.qi4j.runtime.resolution;
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
-import org.qi4j.api.model.DependencyKey;
+import org.qi4j.model.DependencyKey;
 import org.qi4j.spi.dependency.DependencyResolution;
 import org.qi4j.spi.dependency.DependencyResolver;
 import org.qi4j.spi.dependency.InvalidDependencyException;

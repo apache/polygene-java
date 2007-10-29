@@ -17,22 +17,23 @@
 package org.qi4j.spi.persistence;
 
 import java.util.List;
-import org.qi4j.api.model.CompositeModel;
-import org.qi4j.api.persistence.EntityComposite;
+import org.qi4j.model.CompositeModel;
+import org.qi4j.persistence.EntityComposite;
 
 public interface PersistentStore
 {
     String getName();
 
     boolean exists( String identity ) throws PersistenceException;
-    
+
     <T extends EntityComposite> EntityStateHolder<T> newEntityInstance( String identity, CompositeModel<T> compositeModel ) throws PersistenceException;
 
     <T extends EntityComposite> EntityStateHolder<T> getEntityInstance( String identity, CompositeModel<T> compositeModel ) throws PersistenceException;
 
     <T extends EntityComposite> List<EntityStateHolder<T>> getEntityInstances( List<String> identities, CompositeModel<T> compositeModel ) throws PersistenceException;
 
-    /** Delete the entity with the given identity from the store.
+    /**
+     * Delete the entity with the given identity from the store.
      *
      * @param identity The identity of the entity to be deleted from the store.
      * @return true if an entity was removed, otherwise false.
