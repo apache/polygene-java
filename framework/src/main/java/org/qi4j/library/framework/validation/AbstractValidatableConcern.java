@@ -1,15 +1,15 @@
 package org.qi4j.library.framework.validation;
 
 import java.util.List;
-import org.qi4j.api.annotation.scope.AssertionFor;
+import org.qi4j.api.annotation.scope.ConcernFor;
 
 /**
  * Base class for validation assertions.
  */
-public class AbstractValidatableAssertion
+public class AbstractValidatableConcern
     implements Validatable
 {
-    protected @AssertionFor Validatable next;
+    protected @ConcernFor Validatable next;
 
     public List<ValidationMessage> validate()
     {

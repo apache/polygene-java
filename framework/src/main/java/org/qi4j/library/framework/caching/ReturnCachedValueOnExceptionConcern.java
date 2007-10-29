@@ -4,7 +4,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import org.qi4j.api.annotation.AppliesTo;
-import org.qi4j.api.annotation.scope.AssertionFor;
+import org.qi4j.api.annotation.scope.ConcernFor;
 import org.qi4j.api.annotation.scope.Invocation;
 import org.qi4j.api.annotation.scope.ThisAs;
 
@@ -14,12 +14,12 @@ import org.qi4j.api.annotation.scope.ThisAs;
  * If an Exception occurs, try to reuse a previous result. Don't do anything on Throwables.
  */
 @AppliesTo( Cached.class )
-public class ReturnCachedValueOnExceptionAssertion
+public class ReturnCachedValueOnExceptionConcern
     implements InvocationHandler
 {
     @ThisAs private InvocationCache cache;
     @Invocation private Method method;
-    @AssertionFor private InvocationHandler next;
+    @ConcernFor private InvocationHandler next;
 
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
     {

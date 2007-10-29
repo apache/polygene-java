@@ -19,7 +19,7 @@ import javax.transaction.Status;
 import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
 import org.qi4j.api.annotation.AppliesTo;
-import org.qi4j.api.annotation.scope.AssertionFor;
+import org.qi4j.api.annotation.scope.ConcernFor;
 import org.qi4j.api.annotation.scope.Invocation;
 import org.qi4j.api.annotation.scope.Service;
 
@@ -33,13 +33,13 @@ import org.qi4j.api.annotation.scope.Service;
  * @see org.qi4j.library.framework.Transactional.Propagation
  */
 @AppliesTo( Transactional.class )
-public class TransactionAssertion
+public class TransactionalConcern
     implements InvocationHandler
 {
     // Attributes ----------------------------------------------------
     @Service TransactionManager tm;
     @Invocation Transactional transactional;
-    @AssertionFor InvocationHandler next;
+    @ConcernFor InvocationHandler next;
 
     // InvocationHandler implementation ------------------------------
     public Object invoke( Object proxy, Method method, Object[] args )

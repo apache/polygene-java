@@ -15,7 +15,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import org.qi4j.api.annotation.AppliesTo;
-import org.qi4j.api.annotation.scope.AssertionFor;
+import org.qi4j.api.annotation.scope.ConcernFor;
 import org.qi4j.api.annotation.scope.Invocation;
 import org.qi4j.api.annotation.scope.ThisAs;
 
@@ -23,12 +23,12 @@ import org.qi4j.api.annotation.scope.ThisAs;
  * Return value of @Cached calls if possible.
  */
 @AppliesTo( Cached.class )
-public class ReturnCachedValueAssertion
+public class ReturnCachedValueConcern
     implements InvocationHandler
 {
     @ThisAs private InvocationCache cache;
     @Invocation private Method method;
-    @AssertionFor private InvocationHandler next;
+    @ConcernFor private InvocationHandler next;
 
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
     {

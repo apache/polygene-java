@@ -12,7 +12,7 @@
  */
 package org.qi4j.library.framework.validation;
 
-import org.qi4j.api.annotation.scope.AssertionFor;
+import org.qi4j.api.annotation.scope.ConcernFor;
 import org.qi4j.api.annotation.scope.ThisAs;
 import org.qi4j.api.persistence.Lifecycle;
 
@@ -23,11 +23,11 @@ import org.qi4j.api.persistence.Lifecycle;
  * <p/>
  * TODO: We need to distinguish between Validatable on create, delete and update.
  */
-public class LifecycleValidationAssertion
+public class LifecycleValidationConcern
     implements Lifecycle
 {
     @ThisAs Validatable validation;
-    @AssertionFor Lifecycle next;
+    @ConcernFor Lifecycle next;
 
     public void create()
     {

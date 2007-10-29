@@ -4,7 +4,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import org.qi4j.api.annotation.AppliesTo;
 import org.qi4j.api.annotation.AppliesToFilter;
-import org.qi4j.api.annotation.scope.AssertionFor;
+import org.qi4j.api.annotation.scope.ConcernFor;
 import org.qi4j.api.annotation.scope.ThisAs;
 
 /**
@@ -12,8 +12,8 @@ import org.qi4j.api.annotation.scope.ThisAs;
  * <p/>
  * This applies to all methods which throws ValidationException
  */
-@AppliesTo( ChangeValidationAssertion.AppliesTo.class )
-public class ChangeValidationAssertion
+@AppliesTo( ChangeValidationConcern.AppliesTo.class )
+public class ChangeValidationConcern
     implements InvocationHandler
 {
     public static class AppliesTo
@@ -54,7 +54,7 @@ public class ChangeValidationAssertion
     }
 
     @ThisAs Validatable validatable;
-    @AssertionFor InvocationHandler next;
+    @ConcernFor InvocationHandler next;
 
     public Object invoke( Object object, Method method, Object[] objects ) throws Throwable
     {

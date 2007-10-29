@@ -13,8 +13,8 @@
 package org.qi4j.library.general.model;
 
 import org.qi4j.api.Composite;
-import org.qi4j.api.annotation.Assertions;
-import org.qi4j.library.general.test.model.DescriptorModifier;
+import org.qi4j.api.annotation.Concerns;
+import org.qi4j.library.general.test.model.DescriptorConcern;
 
 public class DescriptorTest extends AbstractTest
 {
@@ -38,7 +38,7 @@ public class DescriptorTest extends AbstractTest
     {
     }
 
-    @Assertions( { DescriptorModifier.class } )
+    @Concerns( { DescriptorConcern.class } )
     private interface DummyComposite2 extends Descriptor, HasName, Composite
     {
     }

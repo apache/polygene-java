@@ -13,7 +13,7 @@ import org.qi4j.api.ConstraintViolation;
 import org.qi4j.api.InvocationContext;
 import org.qi4j.api.annotation.AppliesTo;
 import org.qi4j.api.annotation.AppliesToFilter;
-import org.qi4j.api.annotation.scope.AssertionFor;
+import org.qi4j.api.annotation.scope.ConcernFor;
 import org.qi4j.api.annotation.scope.Invocation;
 import org.qi4j.api.annotation.scope.ThisAs;
 
@@ -22,8 +22,8 @@ import org.qi4j.api.annotation.scope.ThisAs;
  * <p/>
  * This applies to all methods which throws ValidationException
  */
-@AppliesTo( ConstraintValidationAssertion.AppliesTo.class )
-public class ConstraintValidationAssertion
+@AppliesTo( ConstraintValidationConcern.AppliesTo.class )
+public class ConstraintValidationConcern
     implements InvocationHandler
 {
     public static class AppliesTo
@@ -65,7 +65,7 @@ public class ConstraintValidationAssertion
 
     @Invocation InvocationContext context;
     @ThisAs Validatable validatable;
-    @AssertionFor InvocationHandler next;
+    @ConcernFor InvocationHandler next;
 
     String name;
     String resourceBundle;
