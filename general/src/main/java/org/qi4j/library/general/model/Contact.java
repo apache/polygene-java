@@ -22,7 +22,7 @@ import org.qi4j.library.framework.properties.PropertiesMixin;
 @Mixins( PropertiesMixin.class )
 public interface Contact
 {
-    public final static int VALUE_LEN = 250;
+    public final static int CONTACT_VALUE_LEN = 250;
 
     public final static int CONTACT_TYPE_LEN = 120;
 
