@@ -2,13 +2,13 @@ package org.qi4j.library.framework;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import org.qi4j.api.annotation.AppliesTo;
-import org.qi4j.api.annotation.AppliesToFilter;
-import org.qi4j.api.annotation.scope.Entity;
-import org.qi4j.api.query.QueryBuilder;
-import org.qi4j.api.query.QueryBuilderFactory;
-import static org.qi4j.api.query.QueryExpression.arg;
-import static org.qi4j.api.query.QueryExpression.eq;
+import org.qi4j.annotation.AppliesTo;
+import org.qi4j.annotation.AppliesToFilter;
+import org.qi4j.annotation.scope.Entity;
+import org.qi4j.query.QueryBuilder;
+import org.qi4j.query.QueryBuilderFactory;
+import static org.qi4j.query.QueryExpression.arg;
+import static org.qi4j.query.QueryExpression.eq;
 
 /**
  * Generic finder mixin.

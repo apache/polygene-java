@@ -16,7 +16,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import junit.framework.TestCase;
-import org.qi4j.api.CompositeBuilderFactory;
+import org.qi4j.CompositeBuilderFactory;
 import org.qi4j.library.framework.remote.RemoteInterface;
 import org.qi4j.library.framework.remote.RemoteInterfaceComposite;
 import org.qi4j.library.framework.remote.RemoteInterfaceImpl;

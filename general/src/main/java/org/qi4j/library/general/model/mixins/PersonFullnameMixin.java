@@ -12,12 +12,12 @@
  */
 package org.qi4j.library.general.model.mixins;
 
-import org.qi4j.api.annotation.scope.ThisAs;
+import org.qi4j.annotation.scope.ThisCompositeAs;
 import org.qi4j.library.general.model.PersonName;
 
 public abstract class PersonFullnameMixin implements PersonName
 {
-    @ThisAs PersonName personName;
+    @ThisCompositeAs PersonName personName;
 
     public String getFullname()
     {

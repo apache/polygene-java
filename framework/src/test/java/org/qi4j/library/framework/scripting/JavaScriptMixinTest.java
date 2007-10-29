@@ -12,7 +12,7 @@ package org.qi4j.library.framework.scripting;
 */
 
 import junit.framework.TestCase;
-import org.qi4j.api.CompositeBuilderFactory;
+import org.qi4j.CompositeBuilderFactory;
 import org.qi4j.runtime.CompositeBuilderFactoryImpl;
 
 public class JavaScriptMixinTest extends TestCase
@@ -23,8 +23,8 @@ public class JavaScriptMixinTest extends TestCase
     {
         CompositeBuilderFactory factory = new CompositeBuilderFactoryImpl();
 
-        ScriptComposite domain = factory.newCompositeBuilder( ScriptComposite.class).newInstance();
-        
-        System.out.println(domain.do1());
+        ScriptComposite domain = factory.newCompositeBuilder( ScriptComposite.class ).newInstance();
+
+        System.out.println( domain.do1() );
     }
 }

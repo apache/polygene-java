@@ -18,12 +18,12 @@ package org.qi4j.library.framework.validation;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.qi4j.api.annotation.scope.ThisAs;
+import org.qi4j.annotation.scope.ThisCompositeAs;
 
 public class ValidatableMixin
     implements Validatable
 {
-    @ThisAs Validatable validatable;
+    @ThisCompositeAs Validatable validatable;
 
     public List<ValidationMessage> validate()
     {

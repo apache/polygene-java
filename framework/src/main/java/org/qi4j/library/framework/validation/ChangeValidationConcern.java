@@ -2,10 +2,10 @@ package org.qi4j.library.framework.validation;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import org.qi4j.api.annotation.AppliesTo;
-import org.qi4j.api.annotation.AppliesToFilter;
-import org.qi4j.api.annotation.scope.ConcernFor;
-import org.qi4j.api.annotation.scope.ThisAs;
+import org.qi4j.annotation.AppliesTo;
+import org.qi4j.annotation.AppliesToFilter;
+import org.qi4j.annotation.scope.ConcernFor;
+import org.qi4j.annotation.scope.ThisCompositeAs;
 
 /**
  * After invocation, ensure that the validation rules pass.
@@ -53,7 +53,7 @@ public class ChangeValidationConcern
         }
     }
 
-    @ThisAs Validatable validatable;
+    @ThisCompositeAs Validatable validatable;
     @ConcernFor InvocationHandler next;
 
     public Object invoke( Object object, Method method, Object[] objects ) throws Throwable

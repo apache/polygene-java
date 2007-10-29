@@ -6,10 +6,10 @@ package org.qi4j.library.framework;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import junit.framework.TestCase;
-import org.qi4j.api.Composite;
-import org.qi4j.api.CompositeBuilder;
-import org.qi4j.api.CompositeBuilderFactory;
-import org.qi4j.api.annotation.Mixins;
+import org.qi4j.Composite;
+import org.qi4j.CompositeBuilder;
+import org.qi4j.CompositeBuilderFactory;
+import org.qi4j.annotation.Mixins;
 import org.qi4j.runtime.CompositeBuilderFactoryImpl;
 
 public class DecoratorMixinTest extends TestCase

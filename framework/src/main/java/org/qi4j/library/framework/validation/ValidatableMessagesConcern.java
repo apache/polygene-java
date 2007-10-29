@@ -1,9 +1,9 @@
 package org.qi4j.library.framework.validation;
 
 import java.util.List;
-import org.qi4j.api.annotation.AppliesTo;
-import org.qi4j.api.annotation.scope.ConcernFor;
-import org.qi4j.api.annotation.scope.ThisAs;
+import org.qi4j.annotation.AppliesTo;
+import org.qi4j.annotation.scope.ConcernFor;
+import org.qi4j.annotation.scope.ThisCompositeAs;
 
 /**
  * TODO
@@ -12,7 +12,7 @@ import org.qi4j.api.annotation.scope.ThisAs;
 public abstract class ValidatableMessagesConcern
     implements Validatable
 {
-    @ThisAs ValidationMessages messages;
+    @ThisCompositeAs ValidationMessages messages;
     @ConcernFor Validatable next;
 
     public List<ValidationMessage> validate()

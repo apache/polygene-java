@@ -13,7 +13,7 @@
 package org.qi4j.library.general.model;
 
 import junit.framework.TestCase;
-import org.qi4j.api.CompositeBuilderFactory;
+import org.qi4j.CompositeBuilderFactory;
 import org.qi4j.runtime.CompositeBuilderFactoryImpl;
 
 public abstract class AbstractTest extends TestCase

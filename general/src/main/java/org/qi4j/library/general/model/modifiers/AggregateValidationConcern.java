@@ -1,8 +1,8 @@
 package org.qi4j.library.general.model.modifiers;
 
 import java.util.List;
-import org.qi4j.api.annotation.scope.ConcernFor;
-import org.qi4j.api.annotation.scope.ThisAs;
+import org.qi4j.annotation.scope.ConcernFor;
+import org.qi4j.annotation.scope.ThisCompositeAs;
 import org.qi4j.library.framework.validation.Validatable;
 import org.qi4j.library.framework.validation.ValidationMessage;
 import org.qi4j.library.general.model.Aggregated;
@@ -13,7 +13,7 @@ import org.qi4j.library.general.model.Aggregated;
 public abstract class AggregateValidationConcern
     implements Validatable
 {
-    @ThisAs Aggregated aggregated;
+    @ThisCompositeAs Aggregated aggregated;
     @ConcernFor Validatable next;
 
     public List<ValidationMessage> validate()

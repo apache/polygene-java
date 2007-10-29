@@ -3,10 +3,10 @@ package org.qi4j.library.framework.caching;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import org.qi4j.api.annotation.AppliesTo;
-import org.qi4j.api.annotation.scope.Invocation;
-import org.qi4j.api.annotation.scope.SideEffectFor;
-import org.qi4j.api.annotation.scope.ThisAs;
+import org.qi4j.annotation.AppliesTo;
+import org.qi4j.annotation.scope.Invocation;
+import org.qi4j.annotation.scope.SideEffectFor;
+import org.qi4j.annotation.scope.ThisCompositeAs;
 
 /**
  * Cache result of @Cached method calls.
@@ -15,7 +15,7 @@ import org.qi4j.api.annotation.scope.ThisAs;
 public class CacheInvocationResultSideEffect
     implements InvocationHandler
 {
-    @ThisAs private InvocationCache cache;
+    @ThisCompositeAs private InvocationCache cache;
     @Invocation private Method method;
     @SideEffectFor private InvocationHandler next;
 

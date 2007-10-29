@@ -3,14 +3,14 @@ package org.qi4j.library.framework;
 import java.util.ArrayList;
 import java.util.List;
 import junit.framework.TestCase;
-import org.qi4j.api.Composite;
-import org.qi4j.api.CompositeBuilder;
-import org.qi4j.api.annotation.Mixins;
-import org.qi4j.api.annotation.scope.Entity;
-import org.qi4j.api.annotation.scope.ThisAs;
-import org.qi4j.api.persistence.EntitySession;
-import org.qi4j.api.query.QueryBuilderFactoryImpl;
-import org.qi4j.api.query.QueryableIterable;
+import org.qi4j.Composite;
+import org.qi4j.CompositeBuilder;
+import org.qi4j.annotation.Mixins;
+import org.qi4j.annotation.scope.Entity;
+import org.qi4j.annotation.scope.ThisCompositeAs;
+import org.qi4j.persistence.EntitySession;
+import org.qi4j.query.QueryBuilderFactoryImpl;
+import org.qi4j.query.QueryableIterable;
 import org.qi4j.runtime.CompositeBuilderFactoryImpl;
 import org.qi4j.runtime.persistence.EntitySessionFactoryImpl;
 import org.qi4j.runtime.resolution.EntityDependencyResolver;
@@ -45,7 +45,7 @@ public class FinderMixinTest
         public class Test1Mixin
             implements FinderMixinTest.Test1
         {
-            @ThisAs Finder finder;
+            @ThisCompositeAs Finder finder;
 
             public String getName()
             {

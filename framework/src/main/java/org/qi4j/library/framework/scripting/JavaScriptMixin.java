@@ -24,10 +24,10 @@ import org.mozilla.javascript.Function;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.Undefined;
 import org.mozilla.javascript.Wrapper;
-import org.qi4j.api.CompositeBuilderFactory;
-import org.qi4j.api.annotation.AppliesTo;
-import org.qi4j.api.annotation.AppliesToFilter;
-import org.qi4j.api.annotation.scope.Qi4j;
+import org.qi4j.CompositeBuilderFactory;
+import org.qi4j.annotation.AppliesTo;
+import org.qi4j.annotation.AppliesToFilter;
+import org.qi4j.annotation.scope.Qi4j;
 
 /**
  * Generic mixin that implements interfaces by delegating to JavaScript functions

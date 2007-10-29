@@ -9,13 +9,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
-import org.qi4j.api.ConstraintViolation;
-import org.qi4j.api.InvocationContext;
-import org.qi4j.api.annotation.AppliesTo;
-import org.qi4j.api.annotation.AppliesToFilter;
-import org.qi4j.api.annotation.scope.ConcernFor;
-import org.qi4j.api.annotation.scope.Invocation;
-import org.qi4j.api.annotation.scope.ThisAs;
+import org.qi4j.ConstraintViolation;
+import org.qi4j.InvocationContext;
+import org.qi4j.annotation.AppliesTo;
+import org.qi4j.annotation.AppliesToFilter;
+import org.qi4j.annotation.scope.ConcernFor;
+import org.qi4j.annotation.scope.Invocation;
+import org.qi4j.annotation.scope.ThisCompositeAs;
 
 /**
  * After invocation, ensure that the validation rules pass.
@@ -64,7 +64,7 @@ public class ConstraintValidationConcern
     }
 
     @Invocation InvocationContext context;
-    @ThisAs Validatable validatable;
+    @ThisCompositeAs Validatable validatable;
     @ConcernFor InvocationHandler next;
 
     String name;

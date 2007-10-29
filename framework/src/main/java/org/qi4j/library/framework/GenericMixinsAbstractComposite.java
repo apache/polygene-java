@@ -1,6 +1,6 @@
 package org.qi4j.library.framework;
 
-import org.qi4j.api.annotation.Mixins;
+import org.qi4j.annotation.Mixins;
 import org.qi4j.library.framework.properties.PropertiesMixin;
 import org.qi4j.library.framework.scripting.JavaScriptMixin;
 

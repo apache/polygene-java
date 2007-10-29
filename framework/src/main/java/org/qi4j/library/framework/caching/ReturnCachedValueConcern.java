@@ -14,10 +14,10 @@ package org.qi4j.library.framework.caching;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import org.qi4j.api.annotation.AppliesTo;
-import org.qi4j.api.annotation.scope.ConcernFor;
-import org.qi4j.api.annotation.scope.Invocation;
-import org.qi4j.api.annotation.scope.ThisAs;
+import org.qi4j.annotation.AppliesTo;
+import org.qi4j.annotation.scope.ConcernFor;
+import org.qi4j.annotation.scope.Invocation;
+import org.qi4j.annotation.scope.ThisCompositeAs;
 
 /**
  * Return value of @Cached calls if possible.
@@ -26,7 +26,7 @@ import org.qi4j.api.annotation.scope.ThisAs;
 public class ReturnCachedValueConcern
     implements InvocationHandler
 {
-    @ThisAs private InvocationCache cache;
+    @ThisCompositeAs private InvocationCache cache;
     @Invocation private Method method;
     @ConcernFor private InvocationHandler next;
 

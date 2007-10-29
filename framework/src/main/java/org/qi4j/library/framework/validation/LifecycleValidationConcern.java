@@ -12,9 +12,9 @@
  */
 package org.qi4j.library.framework.validation;
 
-import org.qi4j.api.annotation.scope.ConcernFor;
-import org.qi4j.api.annotation.scope.ThisAs;
-import org.qi4j.api.persistence.Lifecycle;
+import org.qi4j.annotation.scope.ConcernFor;
+import org.qi4j.annotation.scope.ThisCompositeAs;
+import org.qi4j.persistence.Lifecycle;
 
 /**
  * This modifier is invoked on Lifecycle mixin invocation.
@@ -26,7 +26,7 @@ import org.qi4j.api.persistence.Lifecycle;
 public class LifecycleValidationConcern
     implements Lifecycle
 {
-    @ThisAs Validatable validation;
+    @ThisCompositeAs Validatable validation;
     @ConcernFor Lifecycle next;
 
     public void create()

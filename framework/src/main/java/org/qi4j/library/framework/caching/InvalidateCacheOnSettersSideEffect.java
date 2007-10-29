@@ -2,10 +2,10 @@ package org.qi4j.library.framework.caching;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import org.qi4j.api.annotation.AppliesTo;
-import org.qi4j.api.annotation.AppliesToFilter;
-import org.qi4j.api.annotation.scope.SideEffectFor;
-import org.qi4j.api.annotation.scope.ThisAs;
+import org.qi4j.annotation.AppliesTo;
+import org.qi4j.annotation.AppliesToFilter;
+import org.qi4j.annotation.scope.SideEffectFor;
+import org.qi4j.annotation.scope.ThisCompositeAs;
 import org.qi4j.library.framework.properties.Setters;
 
 /**
@@ -30,7 +30,7 @@ public class InvalidateCacheOnSettersSideEffect
     }
 
     @SideEffectFor InvocationHandler next;
-    @ThisAs private InvocationCache cache;
+    @ThisCompositeAs private InvocationCache cache;
 
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
     {

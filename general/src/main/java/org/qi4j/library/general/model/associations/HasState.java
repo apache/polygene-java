@@ -13,9 +13,9 @@
 package org.qi4j.library.general.model.associations;
 
 import java.io.Serializable;
-import org.qi4j.api.annotation.Mixins;
-import org.qi4j.library.general.model.State;
+import org.qi4j.annotation.Mixins;
 import org.qi4j.library.framework.properties.PropertiesMixin;
+import org.qi4j.library.general.model.State;
 
 /**
  * Represents one-to-one relationship with {@link org.qi4j.library.general.model.State}

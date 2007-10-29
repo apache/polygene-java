@@ -1,8 +1,8 @@
 package org.qi4j.library.framework.validation;
 
-import org.qi4j.api.Composite;
-import org.qi4j.api.annotation.Concerns;
-import org.qi4j.api.annotation.Mixins;
+import org.qi4j.Composite;
+import org.qi4j.annotation.Concerns;
+import org.qi4j.annotation.Mixins;
 
 /**
  * TODO
