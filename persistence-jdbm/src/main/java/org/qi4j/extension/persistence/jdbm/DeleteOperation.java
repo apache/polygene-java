@@ -18,7 +18,7 @@ package org.qi4j.extension.persistence.jdbm;
 
 import java.io.IOException;
 import jdbm.RecordManager;
-import org.qi4j.api.persistence.EntityComposite;
+import org.qi4j.persistence.EntityComposite;
 
 class DeleteOperation
     implements Operation

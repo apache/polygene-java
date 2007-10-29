@@ -24,7 +24,7 @@ import jdbm.RecordManagerOptions;
 import junit.framework.TestCase;
 import org.objectweb.jotm.Jotm;
 import org.objectweb.transaction.jta.TransactionManager;
-import org.qi4j.api.CompositeBuilderFactory;
+import org.qi4j.CompositeBuilderFactory;
 import org.qi4j.runtime.CompositeBuilderFactoryImpl;
 
 public class JdbmPersistenceTest extends TestCase

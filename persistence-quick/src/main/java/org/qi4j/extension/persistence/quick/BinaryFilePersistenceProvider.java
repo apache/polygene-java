@@ -28,8 +28,8 @@ import java.io.OutputStream;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
-import org.qi4j.api.CompositeInstantiationException;
-import org.qi4j.api.persistence.EntityCompositeNotFoundException;
+import org.qi4j.CompositeInstantiationException;
+import org.qi4j.persistence.EntityCompositeNotFoundException;
 import org.qi4j.spi.serialization.SerializablePersistenceSpi;
 import org.qi4j.spi.serialization.SerializedObject;
 

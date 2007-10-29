@@ -27,9 +27,9 @@ import javax.transaction.xa.XAException;
 import javax.transaction.xa.XAResource;
 import javax.transaction.xa.Xid;
 import jdbm.RecordManager;
-import org.qi4j.api.persistence.EntityComposite;
-import org.qi4j.api.persistence.EntityCompositeNotFoundException;
-import org.qi4j.api.persistence.PersistenceException;
+import org.qi4j.persistence.EntityComposite;
+import org.qi4j.persistence.EntityCompositeNotFoundException;
+import org.qi4j.persistence.PersistenceException;
 import org.qi4j.runtime.CompositeInvocationHandler;
 import org.qi4j.runtime.ProxyReferenceInvocationHandler;
 

@@ -30,9 +30,9 @@ import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
 import jdbm.RecordManager;
 import jdbm.RecordManagerFactory;
-import org.qi4j.api.model.CompositeModel;
-import org.qi4j.api.persistence.EntityComposite;
-import org.qi4j.api.persistence.PersistenceException;
+import org.qi4j.model.CompositeModel;
+import org.qi4j.persistence.EntityComposite;
+import org.qi4j.persistence.PersistenceException;
 import org.qi4j.spi.persistence.EntityStateHolder;
 import org.qi4j.spi.persistence.PersistentStore;
 

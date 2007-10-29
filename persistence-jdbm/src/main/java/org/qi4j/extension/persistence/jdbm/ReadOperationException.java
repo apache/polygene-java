@@ -16,7 +16,7 @@
  */
 package org.qi4j.extension.persistence.jdbm;
 
-import org.qi4j.api.persistence.PersistenceException;
+import org.qi4j.persistence.PersistenceException;
 
 public class ReadOperationException extends PersistenceException
 {
