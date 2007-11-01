@@ -46,8 +46,7 @@ public class CompositeInvocationHandler<T extends Composite> extends AbstractCom
 
         if( mixin == null )
         {
-            throw new InvalidCompositeException( "Implementation missing for method " + method.getName() + " in "
-                                                 + context.getCompositeModel().getCompositeClass().getName(),
+            throw new InvalidCompositeException( "Implementation missing for method " + method.getName() + "() ",
                                                  context.getCompositeModel().getCompositeClass() );
         }
         // Invoke

@@ -46,7 +46,7 @@ import org.qi4j.persistence.Entity;
 import org.qi4j.persistence.EntityComposite;
 import org.qi4j.runtime.persistence.EntityImpl;
 
-public class CompositeModelFactory
+public final class CompositeModelFactory
 {
     private ConcernModelFactory concernModelFactory;
     private SideEffectModelFactory sideEffectModelFactory;

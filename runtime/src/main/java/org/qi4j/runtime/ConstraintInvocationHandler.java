@@ -4,12 +4,12 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import org.qi4j.ConstraintViolation;
+import org.qi4j.Constraint;
 
 /**
  * TODO
  */
-public class ConstraintInvocationHandler
-    extends FragmentInvocationHandler
+public final class ConstraintInvocationHandler extends FragmentInvocationHandler
 {
     private ProxyReferenceInvocationHandler proxyHandler;
     private List<List<ConstraintInstance>> parameterConstraintInstances;
@@ -21,7 +21,7 @@ public class ConstraintInvocationHandler
         this.parameterConstraintInstances = parameterConstraintInstances;
     }
 
-    public Object invoke( Object object, Method method, Object[] objects ) throws Throwable
+    public Object invoke( Object object, Method method, Object[] args ) throws Throwable
     {
         // Check constraints
         int idx = 0;
@@ -29,12 +29,13 @@ public class ConstraintInvocationHandler
         List<ConstraintViolation> constraintViolations = null;
         for( List<ConstraintInstance> parameterConstraintInstance : parameterConstraintInstances )
         {
-            Object arg = objects[ idx ];
+            Object arg = args[ idx ];
             for( ConstraintInstance constraint : parameterConstraintInstance )
             {
                 try
                 {
-                    if( !constraint.getConstraint().isValid( constraint.getAnnotation(), arg ) )
+                    Constraint constraint1 = constraint.getConstraint();
+                    if( !constraint1.isValid( constraint.getAnnotation(), arg ) )
                     {
                         // Register constraint violation
                         ConstraintViolation violation = new ConstraintViolation( constraint.getAnnotation(), arg );
@@ -47,7 +48,8 @@ public class ConstraintInvocationHandler
                 }
                 catch( NullPointerException e )
                 {
-                    // Ignore
+                    // Ignore...
+                    // TODO Question from Niclas: Why??
                 }
             }
             idx++;
@@ -58,6 +60,6 @@ public class ConstraintInvocationHandler
             proxyHandler.setConstraintViolations( constraintViolations );
         }
 
-        return super.invoke( object, method, objects );
+        return super.invoke( object, method, args );
     }
 }

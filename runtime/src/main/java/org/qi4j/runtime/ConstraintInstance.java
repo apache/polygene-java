@@ -6,10 +6,10 @@ import org.qi4j.Constraint;
 /**
  * TODO
  */
-public class ConstraintInstance
+public final class ConstraintInstance
 {
-    Constraint constraint;
-    Annotation annotation;
+    private Constraint constraint;
+    private Annotation annotation;
 
     public ConstraintInstance( Constraint constraint, Annotation annotation )
     {

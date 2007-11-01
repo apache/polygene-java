@@ -12,8 +12,7 @@ import org.qi4j.model.NullArgumentException;
 /**
  * TODO
  */
-public class ConcernModelFactory
-    extends FragmentModelFactory<ConcernModel>
+public final class ConcernModelFactory extends FragmentModelFactory<ConcernModel>
 {
     public ConcernModelFactory()
     {

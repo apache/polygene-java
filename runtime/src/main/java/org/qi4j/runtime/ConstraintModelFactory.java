@@ -11,7 +11,7 @@ import org.qi4j.model.ParameterConstraint;
 /**
  * TODO
  */
-public class ConstraintModelFactory
+public final class ConstraintModelFactory
 {
     public ConstraintModelFactory()
     {
