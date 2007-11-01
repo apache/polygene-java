@@ -164,18 +164,22 @@ public final class CompositeResolution<T extends Composite>
     public static class MethodResolutionComparator
         implements Comparator<MethodResolution>
     {
-        public int compare( MethodResolution methodResolution, MethodResolution methodResolution1 )
+        public int compare( MethodResolution methodResolution1, MethodResolution methodResolution2 )
         {
-            if( methodResolution.getMethodModel().getMethod().getDeclaringClass() != methodResolution1.getMethodModel().getMethod().getDeclaringClass() )
+            Method method1 = methodResolution1.getMethodModel().getMethod();
+            Method method2 = methodResolution2.getMethodModel().getMethod();
+            Class<?> declaringClass1 = method1.getDeclaringClass();
+            Class<?> declaringClass2 = method2.getDeclaringClass();
+            if( declaringClass1 != declaringClass2 )
             {
-                String name = methodResolution.getMethodModel().getMethod().getDeclaringClass().getName();
-                String name1 = methodResolution1.getMethodModel().getMethod().getDeclaringClass().getName();
+                String name = declaringClass1.getName();
+                String name1 = declaringClass2.getName();
                 return name.compareTo( name1 );
             }
 
-            String method = methodResolution.getMethodModel().getMethod().getName();
-            String method1 = methodResolution1.getMethodModel().getMethod().getName();
-            return method.compareTo( method1 );
+            String methodName1 = method1.getName();
+            String methodName2 = method2.getName();
+            return methodName1.compareTo( methodName2 );
         }
     }
 }
