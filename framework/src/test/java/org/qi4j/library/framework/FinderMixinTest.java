@@ -7,7 +7,7 @@ import org.qi4j.CompositeBuilder;
 import org.qi4j.annotation.Mixins;
 import org.qi4j.annotation.scope.Entity;
 import org.qi4j.annotation.scope.ThisCompositeAs;
-import org.qi4j.persistence.EntitySession;
+import org.qi4j.entity.EntitySession;
 import org.qi4j.query.QueryBuilderFactoryImpl;
 import org.qi4j.query.QueryableIterable;
 import org.qi4j.runtime.persistence.EntitySessionFactoryImpl;

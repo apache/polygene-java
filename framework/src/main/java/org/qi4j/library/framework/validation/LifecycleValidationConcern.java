@@ -14,7 +14,7 @@ package org.qi4j.library.framework.validation;
 
 import org.qi4j.annotation.scope.ConcernFor;
 import org.qi4j.annotation.scope.ThisCompositeAs;
-import org.qi4j.persistence.Lifecycle;
+import org.qi4j.entity.Lifecycle;
 
 /**
  * This modifier is invoked on Lifecycle mixin invocation.
