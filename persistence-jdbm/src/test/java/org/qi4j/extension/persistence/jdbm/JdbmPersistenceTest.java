@@ -21,13 +21,11 @@ import java.io.FileOutputStream;
 import java.lang.reflect.Method;
 import java.util.Properties;
 import jdbm.RecordManagerOptions;
-import junit.framework.TestCase;
 import org.objectweb.jotm.Jotm;
 import org.objectweb.transaction.jta.TransactionManager;
-import org.qi4j.CompositeBuilderFactory;
-import org.qi4j.runtime.CompositeBuilderFactoryImpl;
+import org.qi4j.test.AbstractQi4jTest;
 
-public class JdbmPersistenceTest extends TestCase
+public class JdbmPersistenceTest extends AbstractQi4jTest
 {
     private JdbmStorage underTest;
     private File testDir;
@@ -63,7 +61,6 @@ public class JdbmPersistenceTest extends TestCase
         p.put( RecordManagerOptions.THREAD_SAFE, "false" );
         p.store( fos, "" );
         fos.close();
-        CompositeBuilderFactory builderFactory = new CompositeBuilderFactoryImpl();
         Jotm jotm = new Jotm( true, false );
         TransactionManager transactionManager = jotm.getTransactionManager();
         underTest = new JdbmStorage( testDir, transactionManager );
