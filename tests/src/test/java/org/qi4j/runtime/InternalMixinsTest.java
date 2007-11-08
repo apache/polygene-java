@@ -3,16 +3,17 @@ package org.qi4j.runtime;
 import org.qi4j.Composite;
 import org.qi4j.annotation.Mixins;
 import org.qi4j.annotation.scope.ThisCompositeAs;
+import org.qi4j.test.AbstractQi4jTest;
 
 /**
  * TODO
  */
 public class InternalMixinsTest
-    extends AbstractTest
+    extends AbstractQi4jTest
 {
     public void testInternalMixins()
     {
-        TestComposite test = builderFactory.newCompositeBuilder( TestComposite.class ).newInstance();
+        TestComposite test = factory.newCompositeBuilder( TestComposite.class ).newInstance();
         assertEquals( "XYZ123", test.doStuff() );
     }
 

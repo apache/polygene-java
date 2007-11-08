@@ -21,7 +21,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation to denote the injection of a Query dependency into a Fragment (a Invocation or Mixin).
+ * Annotation to denote the injection of a Query, QueryBuilder, or Entity prototype dependency into a Fragment (a Invocation or Mixin).
+ * <p/>
+ * Examples:
+ *
+ * @Entity Query<Person> findPeople; // call findPeople.iterator() to execute query
+ * @Entity QueryBuilder<Person> findByName;
+ * @Entity Iterable<Person> personPrototype; // call personPrototype.iterator().next() to create new Person
  */
 @Retention( RetentionPolicy.RUNTIME )
 @Target( { ElementType.FIELD, ElementType.PARAMETER } )

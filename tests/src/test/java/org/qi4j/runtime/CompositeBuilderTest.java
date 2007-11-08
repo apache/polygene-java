@@ -16,17 +16,14 @@
  */
 package org.qi4j.runtime;
 
-import junit.framework.TestCase;
 import org.qi4j.CompositeBuilder;
-import org.qi4j.CompositeBuilderFactory;
+import org.qi4j.test.AbstractQi4jTest;
 
-public class CompositeBuilderTest extends TestCase
+public class CompositeBuilderTest extends AbstractQi4jTest
 {
-
     public void testNewInstance()
         throws Exception
     {
-        CompositeBuilderFactory factory = new CompositeBuilderFactoryImpl();
         CompositeBuilder<Model1> impl = factory.newCompositeBuilder( Model1.class );
         Model1 instance = impl.newInstance();
         assertEquals( true, Model1LifecycleModifier.createMethod );

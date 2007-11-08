@@ -17,52 +17,13 @@ package org.qi4j.runtime;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 import org.qi4j.Composite;
-import org.qi4j.CompositeBuilderFactory;
-import org.qi4j.CompositeCastException;
-import org.qi4j.annotation.scope.Qi4j;
 import org.qi4j.annotation.scope.ThisCompositeAs;
 import org.qi4j.model.CompositeModel;
 
 public final class CompositeMixin
     implements Composite
 {
-    @Qi4j private CompositeBuilderFactory builderFactory;
     @ThisCompositeAs private Composite meAsComposite;
-
-    public <T extends Composite> T cast( Class<T> compositeType )
-    {
-        if( compositeType.isInstance( compositeType ) )
-        {
-            return compositeType.cast( meAsComposite );
-        }
-        CompositeModel model = getCompositeModel();
-        Class existingCompositeClass = model.getCompositeClass();
-        if( !existingCompositeClass.isAssignableFrom( compositeType ) )
-        {
-            throw new CompositeCastException( existingCompositeClass.getName() + " is not a super-type of " + compositeType.getName() );
-        }
-
-        CompositeInvocationHandler handler = CompositeInvocationHandler.getInvocationHandler( meAsComposite );
-        T newComposite = builderFactory.newCompositeBuilder( compositeType ).newInstance();
-        Object[] oldMixins = handler.getMixins();
-        CompositeInvocationHandler newHandler = CompositeInvocationHandler.getInvocationHandler( newComposite );
-
-        newHandler.setMixins( oldMixins );
-        return newComposite;
-    }
-
-    public boolean isInstance( Class anObjectType )
-    {
-        InvocationHandler handler = Proxy.getInvocationHandler( meAsComposite );
-        Object anObject = ( (ProxyReferenceInvocationHandler) handler ).getComposite();
-        if( anObjectType.isInstance( anObject ) )
-        {
-            return true;
-        }
-        handler = Proxy.getInvocationHandler( anObject );
-        AbstractCompositeInvocationHandler oih = (AbstractCompositeInvocationHandler) handler;
-        return oih.getContext().getCompositeModel().getCompositeClass().isAssignableFrom( anObjectType );
-    }
 
     public CompositeModel getCompositeModel()
     {

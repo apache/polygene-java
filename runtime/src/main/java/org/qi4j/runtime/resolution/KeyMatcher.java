@@ -1,7 +1,7 @@
 package org.qi4j.runtime.resolution;
 
+import org.qi4j.dependency.InjectionKey;
 import org.qi4j.model.DependencyKey;
-import org.qi4j.model.InjectionKey;
 
 /**
  * TODO

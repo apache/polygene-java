@@ -1,7 +1,7 @@
 package org.qi4j.runtime.resolution;
 
-import org.qi4j.spi.dependency.DependencyInjectionContext;
-import org.qi4j.spi.dependency.DependencyResolution;
+import org.qi4j.dependency.DependencyInjectionContext;
+import org.qi4j.dependency.DependencyResolution;
 
 /**
  * TODO

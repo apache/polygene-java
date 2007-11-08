@@ -25,6 +25,7 @@ import org.qi4j.Composite;
 import org.qi4j.CompositeBuilderFactory;
 import org.qi4j.CompositeInstantiationException;
 import org.qi4j.Constraint;
+import org.qi4j.dependency.ModifierDependencyInjectionContext;
 import org.qi4j.model.CompositeContext;
 import org.qi4j.model.CompositeModel;
 import org.qi4j.model.ConcernModel;
@@ -38,7 +39,6 @@ import org.qi4j.runtime.resolution.MethodResolution;
 import org.qi4j.runtime.resolution.MixinResolution;
 import org.qi4j.runtime.resolution.ParameterConstraintResolution;
 import org.qi4j.runtime.resolution.SideEffectResolution;
-import org.qi4j.spi.dependency.ModifierDependencyInjectionContext;
 
 /**
  * TODO

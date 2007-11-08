@@ -19,29 +19,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.qi4j.Composite;
 import org.qi4j.CompositeBuilder;
 import org.qi4j.CompositeBuilderFactory;
-import org.qi4j.annotation.scope.Adapt;
-import org.qi4j.annotation.scope.ConcernFor;
-import org.qi4j.annotation.scope.Decorate;
-import org.qi4j.annotation.scope.Invocation;
-import org.qi4j.annotation.scope.PropertyField;
-import org.qi4j.annotation.scope.PropertyParameter;
-import org.qi4j.annotation.scope.Qi4j;
-import org.qi4j.annotation.scope.SideEffectFor;
-import org.qi4j.annotation.scope.ThisCompositeAs;
 import org.qi4j.model.CompositeModel;
-import org.qi4j.runtime.resolution.AdaptDependencyResolver;
 import org.qi4j.runtime.resolution.CompositeModelResolver;
 import org.qi4j.runtime.resolution.CompositeResolution;
-import org.qi4j.runtime.resolution.ConcernModelResolver;
-import org.qi4j.runtime.resolution.DecorateDependencyResolver;
-import org.qi4j.runtime.resolution.DependencyResolverDelegator;
-import org.qi4j.runtime.resolution.InvocationDependencyResolver;
-import org.qi4j.runtime.resolution.MixinModelResolver;
-import org.qi4j.runtime.resolution.ModifiesDependencyResolver;
-import org.qi4j.runtime.resolution.PropertyDependencyResolver;
-import org.qi4j.runtime.resolution.Qi4jDependencyResolver;
-import org.qi4j.runtime.resolution.SideEffectModelResolver;
-import org.qi4j.runtime.resolution.ThisCompositeAsDependencyResolver;
 
 /**
  * Default implementation of CompositeBuilderFactory
@@ -50,34 +30,17 @@ public final class CompositeBuilderFactoryImpl
     implements CompositeBuilderFactory
 {
     private Map<Class<? extends Composite>, CompositeContextImpl> objectContexts;
-    private CompositeModelFactory modelFactory;
+    private CompositeModelFactory compositeModelFactory;
     private InstanceFactory instanceFactory;
     private CompositeModelResolver compositeModelResolver;
-    private DependencyResolverDelegator dependencyResolverDelegator;
 
-    public CompositeBuilderFactoryImpl()
+    public CompositeBuilderFactoryImpl( InstanceFactory instanceFactory, CompositeModelFactory compositeModelFactory, CompositeModelResolver compositeModelResolver )
     {
-        dependencyResolverDelegator = new DependencyResolverDelegator();
+        this.instanceFactory = instanceFactory;
+        this.compositeModelFactory = compositeModelFactory;
+        this.compositeModelResolver = compositeModelResolver;
 
-        dependencyResolverDelegator.setDependencyResolver( ThisCompositeAs.class, new ThisCompositeAsDependencyResolver() );
-        dependencyResolverDelegator.setDependencyResolver( ConcernFor.class, new ModifiesDependencyResolver() );
-        dependencyResolverDelegator.setDependencyResolver( SideEffectFor.class, new ModifiesDependencyResolver() );
-        dependencyResolverDelegator.setDependencyResolver( Invocation.class, new InvocationDependencyResolver() );
-        dependencyResolverDelegator.setDependencyResolver( Adapt.class, new AdaptDependencyResolver() );
-        dependencyResolverDelegator.setDependencyResolver( Decorate.class, new DecorateDependencyResolver() );
-        PropertyDependencyResolver dependencyResolver = new PropertyDependencyResolver();
-        dependencyResolverDelegator.setDependencyResolver( PropertyField.class, dependencyResolver );
-        dependencyResolverDelegator.setDependencyResolver( PropertyParameter.class, dependencyResolver );
-        dependencyResolverDelegator.setDependencyResolver( Qi4j.class, new Qi4jDependencyResolver( this ) );
-
-        ConcernModelResolver concernModelResolver = new ConcernModelResolver( dependencyResolverDelegator );
-        SideEffectModelResolver sideEffectModelResolver = new SideEffectModelResolver( dependencyResolverDelegator );
-        MixinModelResolver mixinModelResolver = new MixinModelResolver( dependencyResolverDelegator );
-        compositeModelResolver = new CompositeModelResolver( concernModelResolver, sideEffectModelResolver, mixinModelResolver );
-
-        modelFactory = new CompositeModelFactory();
         objectContexts = new ConcurrentHashMap<Class<? extends Composite>, CompositeContextImpl>();
-        instanceFactory = new InstanceFactoryImpl();
     }
 
     public <T extends Composite> CompositeBuilder<T> newCompositeBuilder( Class<T> compositeType )
@@ -87,17 +50,12 @@ public final class CompositeBuilderFactoryImpl
         return builder;
     }
 
-    public DependencyResolverDelegator getDependencyResolverDelegator()
-    {
-        return dependencyResolverDelegator;
-    }
-
     private <T extends Composite> CompositeContextImpl<T> getCompositeContext( Class<T> compositeType )
     {
         CompositeContextImpl<T> context = objectContexts.get( compositeType );
         if( context == null )
         {
-            CompositeModel<T> model = modelFactory.newCompositeModel( compositeType );
+            CompositeModel<T> model = compositeModelFactory.newCompositeModel( compositeType );
             CompositeResolution<T> resolution = compositeModelResolver.resolveCompositeModel( model );
             context = new CompositeContextImpl<T>( resolution, this, instanceFactory );
             objectContexts.put( compositeType, context );

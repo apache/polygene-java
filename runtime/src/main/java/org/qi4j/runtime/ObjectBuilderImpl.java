@@ -17,15 +17,15 @@
 package org.qi4j.runtime;
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import org.qi4j.ObjectBuilder;
 import org.qi4j.PropertyValue;
-import org.qi4j.model.Binding;
-import org.qi4j.model.InjectionKey;
+import org.qi4j.dependency.DependencyInjectionContext;
+import org.qi4j.dependency.InjectionKey;
+import org.qi4j.dependency.ObjectDependencyInjectionContext;
 import org.qi4j.runtime.resolution.ObjectResolution;
-import org.qi4j.spi.dependency.DependencyInjectionContext;
-import org.qi4j.spi.dependency.ObjectDependencyInjectionContext;
 
 /**
  *
@@ -49,30 +49,14 @@ public class ObjectBuilderImpl<T>
 
     public void adapt( Object adaptedObject )
     {
-        if( adaptedObject instanceof Binding )
-        {
-            Binding binding = (Binding) adaptedObject;
-            getAdaptContext().put( binding.getKey(), binding.getValue() );
-        }
-        else
-        {
-            InjectionKey key = new InjectionKey( adaptedObject.getClass(), null, objectResolution.getObjectModel().getModelClass() );
-            getAdaptContext().put( key, adaptedObject );
-        }
+        InjectionKey key = new InjectionKey( adaptedObject.getClass(), null, objectResolution.getObjectModel().getModelClass() );
+        getAdaptContext().put( key, adaptedObject );
     }
 
     public void decorate( Object decoratedObject )
     {
-        if( decoratedObject instanceof Binding )
-        {
-            Binding binding = (Binding) decoratedObject;
-            getDecorateContext().put( binding.getKey(), binding.getValue() );
-        }
-        else
-        {
-            InjectionKey key = new InjectionKey( decoratedObject.getClass(), null, objectResolution.getObjectModel().getModelClass() );
-            getDecorateContext().put( key, decoratedObject );
-        }
+        InjectionKey key = new InjectionKey( decoratedObject.getClass(), null, objectResolution.getObjectModel().getModelClass() );
+        getDecorateContext().put( key, decoratedObject );
     }
 
     public void properties( PropertyValue... properties )
@@ -97,6 +81,28 @@ public class ObjectBuilderImpl<T>
         DependencyInjectionContext context = new ObjectDependencyInjectionContext( props, adapt, decorate );
         T instance = instanceFactory.newInstance( objectResolution, context );
         return instance;
+    }
+
+
+    public Iterator<T> iterator()
+    {
+        return new Iterator<T>()
+        {
+
+            public boolean hasNext()
+            {
+                return true;
+            }
+
+            public T next()
+            {
+                return newInstance();
+            }
+
+            public void remove()
+            {
+            }
+        };
     }
 
     public void inject( T instance )

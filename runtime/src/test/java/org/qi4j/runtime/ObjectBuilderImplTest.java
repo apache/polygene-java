@@ -9,21 +9,21 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import junit.framework.TestCase;
 import org.qi4j.ObjectBuilder;
 import static org.qi4j.PropertyValue.property;
 import org.qi4j.annotation.scope.Adapt;
 import org.qi4j.annotation.scope.Decorate;
 import org.qi4j.annotation.scope.PropertyField;
 import org.qi4j.annotation.scope.PropertyParameter;
-import static org.qi4j.model.Binding.bind;
-import static org.qi4j.model.InjectionKey.key;
+import static org.qi4j.dependency.Binding.bind;
+import static org.qi4j.dependency.InjectionKey.key;
+import org.qi4j.test.AbstractQi4jTest;
 
-public class ObjectBuilderImplTest extends TestCase
+public class ObjectBuilderImplTest extends AbstractQi4jTest
 {
     public void testNewInstance() throws Exception
     {
-        ObjectBuilder<TestClass> builder = new ObjectBuilderFactoryImpl().newObjectBuilder( TestClass.class );
+        ObjectBuilder<TestClass> builder = api.newObjectBuilderFactory().newObjectBuilder( TestClass.class );
 
         List<String> strings = new ArrayList<String>();
         strings.add( "Foo" );

@@ -2,9 +2,9 @@ package org.qi4j.runtime.resolution;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.qi4j.dependency.InvalidDependencyException;
 import org.qi4j.model.MixinModel;
 import org.qi4j.model.ObjectModel;
-import org.qi4j.spi.dependency.InvalidDependencyException;
 
 /**
  * TODO
@@ -12,9 +12,9 @@ import org.qi4j.spi.dependency.InvalidDependencyException;
 public class MixinModelResolver
     extends FragmentModelResolver<MixinResolution>
 {
-    public MixinModelResolver( DependencyResolverDelegator dependencyResolverDelegator )
+    public MixinModelResolver( DependencyResolverRegistryImpl dependencyResolverRegistry )
     {
-        super( dependencyResolverDelegator );
+        super( dependencyResolverRegistry );
     }
 
 

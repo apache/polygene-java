@@ -1,6 +1,6 @@
 package org.qi4j.runtime.resolution;
 
-import org.qi4j.spi.dependency.DependencyResolver;
+import org.qi4j.dependency.DependencyResolver;
 
 /**
  * TODO

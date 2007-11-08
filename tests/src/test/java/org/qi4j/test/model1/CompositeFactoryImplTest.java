@@ -12,20 +12,15 @@
  */
 package org.qi4j.test.model1;
 
-import junit.framework.TestCase;
-import org.qi4j.CompositeBuilderFactory;
 import org.qi4j.model.InvalidCompositeException;
-import org.qi4j.runtime.CompositeBuilderFactoryImpl;
+import org.qi4j.test.AbstractQi4jTest;
 
-public class CompositeFactoryImplTest extends TestCase
+public class CompositeFactoryImplTest extends AbstractQi4jTest
 {
-    private CompositeBuilderFactory builderFactory;
-
     protected void setUp()
         throws Exception
     {
         super.setUp();
-        builderFactory = new CompositeBuilderFactoryImpl();
     }
 
     public void testNewInstanceNotExtendingComposite()
@@ -35,7 +30,7 @@ public class CompositeFactoryImplTest extends TestCase
         try
         {
             Class aClass = Composition8.class;
-            Composition8 composition8 = (Composition8) builderFactory.newCompositeBuilder( aClass ).newInstance();
+            Composition8 composition8 = (Composition8) factory.newCompositeBuilder( aClass ).newInstance();
             fail( "CompositeBuilderFactory.newInstance() should return CompositeInstantiationException when creating a new instance for " + aClass.getName() );
         }
         catch( InvalidCompositeException e )
@@ -49,7 +44,7 @@ public class CompositeFactoryImplTest extends TestCase
     {
         try
         {
-            Composition9 composition9 = builderFactory.newCompositeBuilder( Composition9.class ).newInstance();
+            Composition9 composition9 = factory.newCompositeBuilder( Composition9.class ).newInstance();
             composition9.setValue( "test value" );
         }
         catch( Exception e )

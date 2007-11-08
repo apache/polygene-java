@@ -17,9 +17,30 @@
 package org.qi4j.persistence;
 
 import java.net.URL;
+import org.qi4j.Composite;
 
 public interface Entity
 {
+    /**
+     * Cast the current object to the given interface.
+     * <p/>
+     * The returned object uses the current object which provides mixins
+     * that should be reused for this new object.
+     *
+     * @param anObjectType an interface that describes the object to be created
+     * @return a new composite object implementing the interface
+     */
+    <T extends Composite> T cast( Class<T> anObjectType )
+        throws CompositeCastException;
+
+    /**
+     * Checks if the object can be cast() to the provided object type.
+     *
+     * @param anObjectType The object type we want to check the assignability to for this object.
+     * @return true if a cast() is possible of this object to the provided object type.
+     */
+    boolean isInstance( Class anObjectType );
+
     boolean isReference();
 
     /**

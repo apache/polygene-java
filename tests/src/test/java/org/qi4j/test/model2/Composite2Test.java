@@ -12,13 +12,11 @@
 
 package org.qi4j.test.model2;
 
-import junit.framework.TestCase;
-import org.qi4j.CompositeBuilderFactory;
 import org.qi4j.model.CompositeModel;
-import org.qi4j.runtime.CompositeBuilderFactoryImpl;
 import org.qi4j.runtime.CompositeModelFactory;
+import org.qi4j.test.AbstractQi4jTest;
 
-public class Composite2Test extends TestCase
+public class Composite2Test extends AbstractQi4jTest
 {
     CompositeModelFactory modelFactory;
     CompositeModel<TestComposite> composite;
@@ -38,8 +36,6 @@ public class Composite2Test extends TestCase
         assertEquals( DomainInterfaceImpl.class, composite.getImplementations( DomainInterface.class ).get( 0 ).getModelClass() );
         assertEquals( StandardThisImpl.class, composite.getImplementations( StandardThis.class ).get( 0 ).getModelClass() );
         assertEquals( StandardThatImpl.class, composite.getImplementations( StandardThat.class ).get( 0 ).getModelClass() );
-
-        CompositeBuilderFactory factory = new CompositeBuilderFactoryImpl();
 
         {
             TestComposite object = factory.newCompositeBuilder( TestComposite.class ).newInstance();

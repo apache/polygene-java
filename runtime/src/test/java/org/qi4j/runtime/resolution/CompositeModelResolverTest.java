@@ -3,15 +3,13 @@ package org.qi4j.runtime.resolution;
  *  TODO
  */
 
-import junit.framework.TestCase;
 import org.qi4j.Composite;
-import org.qi4j.CompositeBuilderFactory;
 import org.qi4j.annotation.Mixins;
 import org.qi4j.annotation.scope.ThisCompositeAs;
 import org.qi4j.model.InvalidCompositeException;
-import org.qi4j.runtime.CompositeBuilderFactoryImpl;
+import org.qi4j.test.AbstractQi4jTest;
 
-public class CompositeModelResolverTest extends TestCase
+public class CompositeModelResolverTest extends AbstractQi4jTest
 {
     CompositeModelResolver compositeModelResolver;
 
@@ -19,8 +17,7 @@ public class CompositeModelResolverTest extends TestCase
     {
         try
         {
-            CompositeBuilderFactory cbf = new CompositeBuilderFactoryImpl();
-            cbf.newCompositeBuilder( TestComposite2.class ).newInstance().testC();
+            factory.newCompositeBuilder( TestComposite2.class ).newInstance().testC();
             fail( "Should have thrown exception" );
         }
         catch( InvalidCompositeException e )
@@ -32,8 +29,7 @@ public class CompositeModelResolverTest extends TestCase
     public void testWhenDependentMixinsThenOrderMixins()
         throws Exception
     {
-        CompositeBuilderFactory cbf = new CompositeBuilderFactoryImpl();
-        assertEquals( "ok", cbf.newCompositeBuilder( TestComposite1.class ).newInstance().testB() );
+        assertEquals( "ok", factory.newCompositeBuilder( TestComposite1.class ).newInstance().testB() );
     }
 
     @Mixins( TestA.TestAMixin.class )

@@ -1,12 +1,12 @@
 package org.qi4j.runtime.resolution;
 
 import java.util.Map;
+import org.qi4j.dependency.DependencyInjectionContext;
+import org.qi4j.dependency.DependencyResolution;
+import org.qi4j.dependency.DependencyResolver;
+import org.qi4j.dependency.InjectionKey;
+import org.qi4j.dependency.ObjectDependencyInjectionContext;
 import org.qi4j.model.DependencyKey;
-import org.qi4j.model.InjectionKey;
-import org.qi4j.spi.dependency.DependencyInjectionContext;
-import org.qi4j.spi.dependency.DependencyResolution;
-import org.qi4j.spi.dependency.DependencyResolver;
-import org.qi4j.spi.dependency.ObjectDependencyInjectionContext;
 
 /**
  * TODO

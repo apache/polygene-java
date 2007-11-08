@@ -19,19 +19,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.qi4j.CompositeInstantiationException;
 import org.qi4j.ObjectBuilder;
 import org.qi4j.ObjectBuilderFactory;
-import org.qi4j.annotation.scope.Adapt;
-import org.qi4j.annotation.scope.Decorate;
-import org.qi4j.annotation.scope.PropertyField;
-import org.qi4j.annotation.scope.PropertyParameter;
+import org.qi4j.dependency.InvalidDependencyException;
 import org.qi4j.model.ObjectModel;
-import org.qi4j.runtime.resolution.AdaptDependencyResolver;
-import org.qi4j.runtime.resolution.DecorateDependencyResolver;
-import org.qi4j.runtime.resolution.DependencyResolverDelegator;
 import org.qi4j.runtime.resolution.ObjectModelResolver;
 import org.qi4j.runtime.resolution.ObjectResolution;
-import org.qi4j.runtime.resolution.PropertyDependencyResolver;
-import org.qi4j.spi.dependency.DependencyResolver;
-import org.qi4j.spi.dependency.InvalidDependencyException;
 
 /**
  * Default implementation of ObjectBuilderFactory
@@ -40,26 +31,17 @@ public final class ObjectBuilderFactoryImpl
     implements ObjectBuilderFactory
 {
     private Map<Class, ObjectResolution> objectResolutions;
-    private ObjectModelFactory modelFactory;
+    private ObjectModelFactory objectModelFactory;
     private InstanceFactory instanceFactory;
     private ObjectModelResolver objectModelResolver;
 
-    public ObjectBuilderFactoryImpl()
+    public ObjectBuilderFactoryImpl( InstanceFactory instanceFactory, ObjectModelFactory objectModelFactory, ObjectModelResolver objectModelResolver )
     {
-        DependencyResolverDelegator dependencyResolverDelegator = new DependencyResolverDelegator();
+        this.objectModelFactory = objectModelFactory;
+        this.instanceFactory = instanceFactory;
+        this.objectModelResolver = objectModelResolver;
 
-        dependencyResolverDelegator.setDependencyResolver( Adapt.class, new AdaptDependencyResolver() );
-        dependencyResolverDelegator.setDependencyResolver( Decorate.class, new DecorateDependencyResolver() );
-        PropertyDependencyResolver dependencyResolver = new PropertyDependencyResolver();
-        dependencyResolverDelegator.setDependencyResolver( PropertyField.class, dependencyResolver );
-        dependencyResolverDelegator.setDependencyResolver( PropertyParameter.class, dependencyResolver );
-
-        init( dependencyResolverDelegator );
-    }
-
-    public ObjectBuilderFactoryImpl( DependencyResolver resolver )
-    {
-        init( resolver );
+        objectResolutions = new ConcurrentHashMap<Class, ObjectResolution>();
     }
 
     public <T> ObjectBuilder<T> newObjectBuilder( Class<T> type )
@@ -77,23 +59,13 @@ public final class ObjectBuilderFactoryImpl
     }
 
     // Private ------------------------------------------------------
-    private void init( DependencyResolver resolver )
-    {
-        modelFactory = new ObjectModelFactory();
-
-        objectModelResolver = new ObjectModelResolver( resolver );
-
-        objectResolutions = new ConcurrentHashMap<Class, ObjectResolution>();
-        instanceFactory = new InstanceFactoryImpl();
-    }
-
     private <T> ObjectResolution<T> getObjectResolution( Class<T> type )
         throws InvalidDependencyException
     {
         ObjectResolution<T> objectResolution = objectResolutions.get( type );
         if( objectResolution == null )
         {
-            ObjectModel<T> model = modelFactory.newObjectModel( type );
+            ObjectModel<T> model = objectModelFactory.newObjectModel( type );
             objectResolution = objectModelResolver.resolveModel( model );
             objectResolutions.put( type, objectResolution );
         }

@@ -2,9 +2,9 @@ package org.qi4j.runtime.resolution;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.qi4j.dependency.InvalidDependencyException;
 import org.qi4j.model.ConcernModel;
 import org.qi4j.model.ObjectModel;
-import org.qi4j.spi.dependency.InvalidDependencyException;
 
 /**
  * TODO
@@ -12,9 +12,9 @@ import org.qi4j.spi.dependency.InvalidDependencyException;
 public class ConcernModelResolver
     extends ModifierModelResolver<ConcernResolution>
 {
-    public ConcernModelResolver( DependencyResolverDelegator dependencyResolverDelegator )
+    public ConcernModelResolver( DependencyResolverRegistryImpl dependencyResolverRegistry )
     {
-        super( dependencyResolverDelegator );
+        super( dependencyResolverRegistry );
     }
 
     @Override public <T extends ObjectModel> ConcernResolution resolveModel( ObjectModel<T> concernModel ) throws InvalidDependencyException

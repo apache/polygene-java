@@ -20,6 +20,7 @@ package org.qi4j;
  * TODO for Rickard; Explanation needed on how to use for Templating, Strategy and Builder patterns.
  */
 public interface ObjectBuilder<T>
+    extends Iterable<T>
 {
     /**
      * Make the given object available for @Adapt injection

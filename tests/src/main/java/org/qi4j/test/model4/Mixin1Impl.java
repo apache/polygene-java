@@ -19,7 +19,7 @@ package org.qi4j.test.model4;
 import java.util.List;
 import org.qi4j.CompositeBuilderFactory;
 import org.qi4j.annotation.SideEffects;
-import org.qi4j.annotation.scope.Qi4j;
+import org.qi4j.annotation.scope.Structure;
 import org.qi4j.annotation.scope.ThisCompositeAs;
 
 @SideEffects( CountCallsSideEffect.class )
@@ -29,7 +29,7 @@ public class Mixin1Impl
     private CompositeBuilderFactory builderFactory;
     private @ThisCompositeAs Mixin2 meAsMixin2;
 
-    public Mixin1Impl( @Qi4j CompositeBuilderFactory builderFactory )
+    public Mixin1Impl( @Structure CompositeBuilderFactory builderFactory )
     {
         this.builderFactory = builderFactory;
     }

@@ -26,6 +26,7 @@ import java.lang.reflect.Proxy;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -33,13 +34,12 @@ import org.qi4j.Composite;
 import org.qi4j.CompositeBuilder;
 import org.qi4j.CompositeInstantiationException;
 import org.qi4j.PropertyValue;
-import org.qi4j.model.Binding;
+import org.qi4j.dependency.InjectionKey;
+import org.qi4j.dependency.MixinDependencyInjectionContext;
 import org.qi4j.model.CompositeContext;
 import org.qi4j.model.CompositeModel;
-import org.qi4j.model.InjectionKey;
 import org.qi4j.persistence.Lifecycle;
 import org.qi4j.runtime.resolution.MixinResolution;
-import org.qi4j.spi.dependency.MixinDependencyInjectionContext;
 
 /**
  *
@@ -83,30 +83,14 @@ public class CompositeBuilderImpl<T extends Composite>
 
     public void adapt( Object adaptedObject )
     {
-        if( adaptedObject instanceof Binding )
-        {
-            Binding binding = (Binding) adaptedObject;
-            getAdaptContext().put( binding.getKey(), binding.getValue() );
-        }
-        else
-        {
-            InjectionKey key = new InjectionKey( adaptedObject.getClass(), null, null );
-            getAdaptContext().put( key, adaptedObject );
-        }
+        InjectionKey key = new InjectionKey( adaptedObject.getClass(), null, null );
+        getAdaptContext().put( key, adaptedObject );
     }
 
     public void decorate( Object decoratedObject )
     {
-        if( decoratedObject instanceof Binding )
-        {
-            Binding binding = (Binding) decoratedObject;
-            getDecorateContext().put( binding.getKey(), binding.getValue() );
-        }
-        else
-        {
-            InjectionKey key = new InjectionKey( decoratedObject.getClass(), null, null );
-            getDecorateContext().put( key, decoratedObject );
-        }
+        InjectionKey key = new InjectionKey( decoratedObject.getClass(), null, null );
+        getDecorateContext().put( key, decoratedObject );
     }
 
     public <K> void properties( Class<K> mixinType, PropertyValue... properties )
@@ -182,6 +166,27 @@ public class CompositeBuilderImpl<T extends Composite>
 
         // Return
         return composite;
+    }
+
+
+    public Iterator<T> iterator()
+    {
+        return new Iterator<T>()
+        {
+            public boolean hasNext()
+            {
+                return true;
+            }
+
+            public T next()
+            {
+                return newInstance();
+            }
+
+            public void remove()
+            {
+            }
+        };
     }
 
     private T newInstance( CompositeInvocationHandler handler )

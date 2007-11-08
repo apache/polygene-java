@@ -15,6 +15,7 @@ import java.util.Set;
 import org.qi4j.Composite;
 import org.qi4j.annotation.AppliesToFilter;
 import org.qi4j.annotation.ConstraintDeclaration;
+import org.qi4j.dependency.InvalidDependencyException;
 import org.qi4j.model.CompositeModel;
 import org.qi4j.model.ConcernModel;
 import org.qi4j.model.ConstraintDeclarationModel;
@@ -26,7 +27,6 @@ import org.qi4j.model.MixinModel;
 import org.qi4j.model.ModifierModel;
 import org.qi4j.model.ParameterConstraint;
 import org.qi4j.model.SideEffectModel;
-import org.qi4j.spi.dependency.InvalidDependencyException;
 
 /**
  * TODO

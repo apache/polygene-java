@@ -16,7 +16,7 @@
 package org.qi4j.persistence;
 
 /**
- * Runtime exception to be thrown in case that an entity composite
+ * Qi4j exception to be thrown in case that an entity composite
  * was not found during a lookup call.
  */
 public class EntityCompositeNotFoundException

@@ -5,13 +5,14 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collections;
+import java.util.Iterator;
 import org.qi4j.CompositeInstantiationException;
+import org.qi4j.dependency.DependencyInjectionContext;
 import org.qi4j.runtime.resolution.ConstructorDependencyResolution;
 import org.qi4j.runtime.resolution.FieldDependencyResolution;
 import org.qi4j.runtime.resolution.MethodDependencyResolution;
 import org.qi4j.runtime.resolution.ObjectResolution;
 import org.qi4j.runtime.resolution.ParameterDependencyResolution;
-import org.qi4j.spi.dependency.DependencyInjectionContext;
 
 /**
  * TODO
@@ -27,6 +28,7 @@ public class InstanceFactoryImpl
         try
         {
             // Constructor injection
+            // TODO: more clever constructor selection
             ConstructorDependencyResolution cdr = objectResolution.getConstructorResolutions().iterator().next();
 
             Constructor constructor = cdr.getConstructorDependency().getConstructor();
@@ -155,6 +157,19 @@ public class InstanceFactoryImpl
         if( Iterable.class.equals( type ) && !Iterable.class.isAssignableFrom( injectionResult.getClass() ) )
         {
             return Collections.singleton( injectionResult );
+        }
+
+        if( injectionResult instanceof Iterable && !Iterable.class.isAssignableFrom( type ) )
+        {
+            Iterator iterator = ( (Iterable) injectionResult ).iterator();
+            if( iterator.hasNext() )
+            {
+                return iterator.next();
+            }
+            else
+            {
+                return null;
+            }
         }
 
         return injectionResult;

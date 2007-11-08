@@ -2,8 +2,8 @@ package org.qi4j.runtime.resolution;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.qi4j.dependency.InvalidDependencyException;
 import org.qi4j.model.SideEffectModel;
-import org.qi4j.spi.dependency.InvalidDependencyException;
 
 /**
  * TODO
@@ -11,9 +11,9 @@ import org.qi4j.spi.dependency.InvalidDependencyException;
 public class SideEffectModelResolver
     extends ModifierModelResolver
 {
-    public SideEffectModelResolver( DependencyResolverDelegator dependencyResolverDelegator )
+    public SideEffectModelResolver( DependencyResolverRegistryImpl dependencyResolverRegistry )
     {
-        super( dependencyResolverDelegator );
+        super( dependencyResolverRegistry );
     }
 
     public <T> SideEffectResolution<T> resolveModel( SideEffectModel<T> sideEffectModel )

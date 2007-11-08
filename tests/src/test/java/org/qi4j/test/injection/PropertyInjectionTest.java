@@ -12,20 +12,19 @@
  */
 package org.qi4j.test.injection;
 
-import junit.framework.TestCase;
 import org.qi4j.Composite;
 import org.qi4j.CompositeBuilder;
 import org.qi4j.PropertyValue;
 import org.qi4j.annotation.Mixins;
 import org.qi4j.annotation.scope.PropertyField;
 import org.qi4j.annotation.scope.PropertyParameter;
-import org.qi4j.runtime.CompositeBuilderFactoryImpl;
+import org.qi4j.test.AbstractQi4jTest;
 
-public class PropertyInjectionTest extends TestCase
+public class PropertyInjectionTest extends AbstractQi4jTest
 {
     public void testPropertyFieldInjection()
     {
-        CompositeBuilder<SayHelloComposite> builder = new CompositeBuilderFactoryImpl().newCompositeBuilder( SayHelloComposite.class );
+        CompositeBuilder<SayHelloComposite> builder = factory.newCompositeBuilder( SayHelloComposite.class );
 
         builder.properties( SampleInterface.class,
                             PropertyValue.property( "sampleOne", "Hello" ),

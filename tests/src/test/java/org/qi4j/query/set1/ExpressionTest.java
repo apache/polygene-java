@@ -18,24 +18,20 @@
 package org.qi4j.query.set1;
 
 import java.util.ArrayList;
-import junit.framework.TestCase;
 import org.qi4j.CompositeBuilder;
-import org.qi4j.CompositeBuilderFactory;
 import org.qi4j.query.QueryBuilderFactory;
 import org.qi4j.query.QueryBuilderFactoryImpl;
 import org.qi4j.query.QueryableIterable;
-import org.qi4j.runtime.CompositeBuilderFactoryImpl;
+import org.qi4j.test.AbstractQi4jTest;
 
-public class ExpressionTest extends TestCase
+public class ExpressionTest extends AbstractQi4jTest
 {
     private QueryBuilderFactory queryBuilderFactory;
-    private CompositeBuilderFactory compositeBuilderFactory;
     private ArrayList<Composite1> data;
 
     public void setUp()
     {
-        compositeBuilderFactory = new CompositeBuilderFactoryImpl();
-        CompositeBuilder<Composite1> compositeBuilder = compositeBuilderFactory.newCompositeBuilder( Composite1.class );
+        CompositeBuilder<Composite1> compositeBuilder = factory.newCompositeBuilder( Composite1.class );
         data = new ArrayList<Composite1>();
         for( int i = 0; i < 100; i++ )
         {

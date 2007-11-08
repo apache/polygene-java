@@ -44,7 +44,7 @@ import org.qi4j.model.NullArgumentException;
 import org.qi4j.model.SideEffectModel;
 import org.qi4j.persistence.Entity;
 import org.qi4j.persistence.EntityComposite;
-import org.qi4j.runtime.persistence.EntityImpl;
+import org.qi4j.runtime.persistence.EntityMixin;
 
 public final class CompositeModelFactory
 {
@@ -85,7 +85,7 @@ public final class CompositeModelFactory
 
         if( EntityComposite.class.isAssignableFrom( compositeClass ) )
         {
-            mixins.add( mixinModelFactory.newFragmentModel( EntityImpl.class, compositeClass, Entity.class ) );
+            mixins.add( mixinModelFactory.newFragmentModel( EntityMixin.class, compositeClass, Entity.class ) );
         }
 
         // Find concerns

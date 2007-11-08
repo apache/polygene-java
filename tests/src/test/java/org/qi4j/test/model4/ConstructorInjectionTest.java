@@ -16,18 +16,15 @@
  */
 package org.qi4j.test.model4;
 
-import junit.framework.TestCase;
 import org.qi4j.CompositeBuilder;
-import org.qi4j.CompositeBuilderFactory;
-import org.qi4j.runtime.CompositeBuilderFactoryImpl;
+import org.qi4j.test.AbstractQi4jTest;
 
-public class ConstructorInjectionTest extends TestCase
+public class ConstructorInjectionTest extends AbstractQi4jTest
 {
 
     public void testMixin()
         throws Exception
     {
-        CompositeBuilderFactory factory = new CompositeBuilderFactoryImpl();
         CompositeBuilder<Composite1> builder = factory.newCompositeBuilder( Composite1.class );
 
         Composite1 instance = builder.newInstance();
