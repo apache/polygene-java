@@ -14,7 +14,7 @@
 
 package org.qi4j.service;
 
-import org.qi4j.persistence.EntityComposite;
+import org.qi4j.entity.EntityComposite;
 
 /**
  * TODO

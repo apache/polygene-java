@@ -17,7 +17,7 @@
 package org.qi4j.runtime;
 
 import org.qi4j.annotation.scope.ConcernFor;
-import org.qi4j.persistence.Lifecycle;
+import org.qi4j.entity.Lifecycle;
 
 public class Model1LifecycleModifier
     implements Lifecycle

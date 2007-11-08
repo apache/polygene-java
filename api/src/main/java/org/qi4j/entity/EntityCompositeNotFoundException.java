@@ -1,6 +1,7 @@
 /*
  * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
  * Copyright (c) 2007, Niclas Hedhman. All Rights Reserved.
+ * Copyright (c) 2007, Alin Dreghiciu. All Rights Reserved. 
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,9 +13,33 @@
  * limitations under the License.
  *
  */
-package org.qi4j.persistence;
+package org.qi4j.entity;
 
-public interface EntitySessionFactory
+/**
+ * Qi4j exception to be thrown in case that an entity composite
+ * was not found during a lookup call.
+ */
+public class EntityCompositeNotFoundException
+    extends PersistenceException
 {
-    EntitySession newEntitySession();
+    public EntityCompositeNotFoundException()
+    {
+    }
+
+    public EntityCompositeNotFoundException( String message )
+    {
+        super( message );
+    }
+
+    public EntityCompositeNotFoundException( String message, Throwable cause )
+    {
+        super( message, cause );
+    }
+
+    public EntityCompositeNotFoundException( Throwable cause )
+    {
+        super( cause );
+    }
+
+
 }

@@ -20,8 +20,8 @@ import org.qi4j.dependency.DependencyResolution;
 import org.qi4j.dependency.DependencyResolver;
 import org.qi4j.dependency.DependencyResolverRegistry;
 import org.qi4j.dependency.InjectionKey;
+import org.qi4j.entity.EntityComposite;
 import org.qi4j.model.DependencyKey;
-import org.qi4j.persistence.EntityComposite;
 import org.qi4j.query.Query;
 import org.qi4j.structure.DependencyBinder;
 

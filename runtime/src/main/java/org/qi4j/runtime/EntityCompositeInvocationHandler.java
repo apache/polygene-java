@@ -20,7 +20,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Set;
 import org.qi4j.CompositeInstantiationException;
-import org.qi4j.persistence.EntityComposite;
+import org.qi4j.entity.EntityComposite;
 import org.qi4j.runtime.resolution.MixinResolution;
 import org.qi4j.spi.persistence.EntityStateHolder;
 

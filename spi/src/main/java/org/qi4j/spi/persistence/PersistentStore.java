@@ -17,8 +17,8 @@
 package org.qi4j.spi.persistence;
 
 import java.util.List;
+import org.qi4j.entity.EntityComposite;
 import org.qi4j.model.CompositeModel;
-import org.qi4j.persistence.EntityComposite;
 
 public interface PersistentStore
 {

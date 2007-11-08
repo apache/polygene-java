@@ -16,8 +16,8 @@
  */
 package org.qi4j.spi.persistence;
 
+import org.qi4j.entity.EntityComposite;
 import org.qi4j.model.CompositeModel;
-import org.qi4j.persistence.EntityComposite;
 
 /**
  * The EntityStateHolder is a shared "second-level cache" mixin state container for a particular

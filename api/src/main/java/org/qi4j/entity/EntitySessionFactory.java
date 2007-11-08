@@ -12,14 +12,9 @@
  * limitations under the License.
  *
  */
-package org.qi4j.persistence;
+package org.qi4j.entity;
 
-import org.qi4j.Composite;
-
-/**
- * Persistent domain objects should implement this composite
- * which provides an identity and a reference to a repository
- */
-public interface EntityComposite extends Identity, Lifecycle, Entity, Composite
+public interface EntitySessionFactory
 {
+    EntitySession newEntitySession();
 }

@@ -12,27 +12,14 @@
  * limitations under the License.
  *
  */
-package org.qi4j.persistence;
+package org.qi4j.entity;
 
-public class PersistenceException
-    extends RuntimeException
+import org.qi4j.Composite;
+
+/**
+ * Persistent domain objects should implement this composite
+ * which provides an identity and a reference to a repository
+ */
+public interface EntityComposite extends Identity, Lifecycle, Entity, Composite
 {
-    public PersistenceException()
-    {
-    }
-
-    public PersistenceException( String message )
-    {
-        super( message );
-    }
-
-    public PersistenceException( String message, Throwable cause )
-    {
-        super( message, cause );
-    }
-
-    public PersistenceException( Throwable cause )
-    {
-        super( cause );
-    }
 }

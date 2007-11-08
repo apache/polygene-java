@@ -36,9 +36,9 @@ import org.qi4j.CompositeInstantiationException;
 import org.qi4j.PropertyValue;
 import org.qi4j.dependency.InjectionKey;
 import org.qi4j.dependency.MixinDependencyInjectionContext;
+import org.qi4j.entity.Lifecycle;
 import org.qi4j.model.CompositeContext;
 import org.qi4j.model.CompositeModel;
-import org.qi4j.persistence.Lifecycle;
 import org.qi4j.runtime.resolution.MixinResolution;
 
 /**

@@ -20,9 +20,9 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import org.qi4j.Composite;
+import org.qi4j.entity.Identity;
 import org.qi4j.model.CompositeContext;
 import org.qi4j.model.CompositeState;
-import org.qi4j.persistence.Identity;
 
 public abstract class AbstractCompositeInvocationHandler<T extends Composite>
     implements InvocationHandler, CompositeState

@@ -32,6 +32,8 @@ import org.qi4j.annotation.Concerns;
 import org.qi4j.annotation.Constraints;
 import org.qi4j.annotation.Mixins;
 import org.qi4j.annotation.SideEffects;
+import org.qi4j.entity.Entity;
+import org.qi4j.entity.EntityComposite;
 import org.qi4j.model.CompositeModel;
 import org.qi4j.model.ConcernModel;
 import org.qi4j.model.ConstraintDeclarationModel;
@@ -42,8 +44,6 @@ import org.qi4j.model.MethodModel;
 import org.qi4j.model.MixinModel;
 import org.qi4j.model.NullArgumentException;
 import org.qi4j.model.SideEffectModel;
-import org.qi4j.persistence.Entity;
-import org.qi4j.persistence.EntityComposite;
 import org.qi4j.runtime.persistence.EntityMixin;
 
 public final class CompositeModelFactory

@@ -29,10 +29,10 @@ import java.util.HashMap;
 import java.util.Map;
 import org.qi4j.Composite;
 import org.qi4j.CompositeBuilderFactory;
+import org.qi4j.entity.EntityComposite;
+import org.qi4j.entity.EntitySession;
 import org.qi4j.model.CompositeModel;
 import org.qi4j.model.CompositeState;
-import org.qi4j.persistence.EntityComposite;
-import org.qi4j.persistence.EntitySession;
 
 
 public class SerializedObject

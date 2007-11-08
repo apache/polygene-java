@@ -18,7 +18,7 @@ package org.qi4j.runtime;
 
 import org.qi4j.Composite;
 import org.qi4j.annotation.Concerns;
-import org.qi4j.persistence.Lifecycle;
+import org.qi4j.entity.Lifecycle;
 
 @Concerns( Model1LifecycleModifier.class )
 public interface Model1 extends Composite, Lifecycle

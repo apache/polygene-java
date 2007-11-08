@@ -12,7 +12,7 @@
  * limitations under the License.
  *
  */
-package org.qi4j.persistence;
+package org.qi4j.entity;
 
 import org.qi4j.annotation.Mixins;
 

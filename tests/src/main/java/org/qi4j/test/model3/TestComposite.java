@@ -17,7 +17,7 @@
 package org.qi4j.test.model3;
 
 import org.qi4j.annotation.Mixins;
-import org.qi4j.persistence.EntityComposite;
+import org.qi4j.entity.EntityComposite;
 
 @Mixins( State2Impl.class )
 public interface TestComposite extends EntityComposite, State2
