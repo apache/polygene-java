@@ -14,15 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.persistence.memory;
+package org.qi4j.entity.memory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import org.qi4j.entity.EntityComposite;
 import org.qi4j.model.CompositeModel;
-import org.qi4j.persistence.EntityComposite;
 import org.qi4j.spi.persistence.EntityAlreadyExistsException;
 import org.qi4j.spi.persistence.EntityNotFoundException;
 import org.qi4j.spi.persistence.EntityStateHolder;

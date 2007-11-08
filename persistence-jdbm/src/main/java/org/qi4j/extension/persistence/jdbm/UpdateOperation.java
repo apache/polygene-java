@@ -21,7 +21,7 @@ import java.io.Serializable;
 import java.lang.reflect.Proxy;
 import java.util.Map;
 import jdbm.RecordManager;
-import org.qi4j.persistence.EntityComposite;
+import org.qi4j.entity.EntityComposite;
 import org.qi4j.runtime.ProxyReferenceInvocationHandler;
 
 class UpdateOperation
