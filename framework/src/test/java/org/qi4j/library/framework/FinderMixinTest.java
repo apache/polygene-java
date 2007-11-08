@@ -2,7 +2,6 @@ package org.qi4j.library.framework;
 
 import java.util.ArrayList;
 import java.util.List;
-import junit.framework.TestCase;
 import org.qi4j.Composite;
 import org.qi4j.CompositeBuilder;
 import org.qi4j.annotation.Mixins;
@@ -11,25 +10,23 @@ import org.qi4j.annotation.scope.ThisCompositeAs;
 import org.qi4j.persistence.EntitySession;
 import org.qi4j.query.QueryBuilderFactoryImpl;
 import org.qi4j.query.QueryableIterable;
-import org.qi4j.runtime.CompositeBuilderFactoryImpl;
 import org.qi4j.runtime.persistence.EntitySessionFactoryImpl;
 import org.qi4j.runtime.resolution.EntityDependencyResolver;
+import org.qi4j.test.AbstractQi4jTest;
 
 public class FinderMixinTest
-    extends TestCase
+    extends AbstractQi4jTest
 {
     public void testFinderMixin() throws Exception
     {
-        CompositeBuilderFactoryImpl cbf = new CompositeBuilderFactoryImpl();
-
-        EntitySession session = new EntitySessionFactoryImpl( cbf ).newEntitySession();
+        EntitySession session = new EntitySessionFactoryImpl( factory ).newEntitySession();
         EntityDependencyResolver entityDependencyResolver = new EntityDependencyResolver( session );
 
         List objects = new ArrayList();
         entityDependencyResolver.addQueryFactory( "someQuery", new QueryBuilderFactoryImpl( new QueryableIterable( objects ) ) );
-        cbf.getDependencyResolverDelegator().setDependencyResolver( Entity.class, entityDependencyResolver );
+        spi.getDependencyResolverRegistry().setDependencyResolver( Entity.class, entityDependencyResolver );
 
-        CompositeBuilder<Composite1> cb = cbf.newCompositeBuilder( FinderMixinTest.Composite1.class );
+        CompositeBuilder<Composite1> cb = factory.newCompositeBuilder( FinderMixinTest.Composite1.class );
         FinderMixinTest.Test1 test = cb.newInstance();
         objects.add( test );
         assertEquals( "Foo", test.getFoo() );

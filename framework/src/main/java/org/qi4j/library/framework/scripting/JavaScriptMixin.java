@@ -27,7 +27,7 @@ import org.mozilla.javascript.Wrapper;
 import org.qi4j.CompositeBuilderFactory;
 import org.qi4j.annotation.AppliesTo;
 import org.qi4j.annotation.AppliesToFilter;
-import org.qi4j.annotation.scope.Qi4j;
+import org.qi4j.annotation.scope.Structure;
 
 /**
  * Generic mixin that implements interfaces by delegating to JavaScript functions
@@ -60,7 +60,7 @@ public class JavaScriptMixin
         Context.exit();
     }
 
-    @Qi4j CompositeBuilderFactory factory;
+    @Structure CompositeBuilderFactory factory;
     Scriptable instanceScope;
 
     public JavaScriptMixin()

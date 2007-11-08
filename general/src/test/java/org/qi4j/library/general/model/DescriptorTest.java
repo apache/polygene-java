@@ -15,12 +15,13 @@ package org.qi4j.library.general.model;
 import org.qi4j.Composite;
 import org.qi4j.annotation.Concerns;
 import org.qi4j.library.general.test.model.DescriptorConcern;
+import org.qi4j.test.AbstractQi4jTest;
 
-public class DescriptorTest extends AbstractTest
+public class DescriptorTest extends AbstractQi4jTest
 {
     public void testDescriptorAsMixin() throws Exception
     {
-        DummyComposite composite = builderFactory.newCompositeBuilder( DummyComposite.class ).newInstance();
+        DummyComposite composite = factory.newCompositeBuilder( DummyComposite.class ).newInstance();
         composite.setDisplayValue( "Sianny" );
         String displayValue = composite.getDisplayValue();
         assertEquals( displayValue, composite.getDisplayValue() );
@@ -28,7 +29,7 @@ public class DescriptorTest extends AbstractTest
 
     public void testDescriptorWithModifier() throws Exception
     {
-        DummyComposite2 composite = builderFactory.newCompositeBuilder( DummyComposite2.class ).newInstance();
+        DummyComposite2 composite = factory.newCompositeBuilder( DummyComposite2.class ).newInstance();
         composite.setDisplayValue( "Sianny" );
         String displayValue = composite.getDisplayValue();
         assertEquals( displayValue, "My name is Sianny" );

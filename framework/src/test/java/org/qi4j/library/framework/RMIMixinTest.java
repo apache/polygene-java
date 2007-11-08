@@ -15,18 +15,16 @@ import java.io.IOException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import junit.framework.TestCase;
-import org.qi4j.CompositeBuilderFactory;
 import org.qi4j.library.framework.remote.RemoteInterface;
 import org.qi4j.library.framework.remote.RemoteInterfaceComposite;
 import org.qi4j.library.framework.remote.RemoteInterfaceImpl;
-import org.qi4j.runtime.CompositeBuilderFactoryImpl;
+import org.qi4j.test.AbstractQi4jTest;
 
 /**
  * TODO
  */
 public class RMIMixinTest
-    extends TestCase
+    extends AbstractQi4jTest
 {
     // Public --------------------------------------------------------
     public void testRMIMixin()
@@ -38,7 +36,6 @@ public class RMIMixinTest
         Registry registry = LocateRegistry.createRegistry( 1099 );
         registry.rebind( RemoteInterface.class.getSimpleName(), stub );
 
-        CompositeBuilderFactory factory = new CompositeBuilderFactoryImpl();
         RemoteInterface remote = factory.newCompositeBuilder( RemoteInterfaceComposite.class ).newInstance();
 
         // MethodCallEntry remote interface

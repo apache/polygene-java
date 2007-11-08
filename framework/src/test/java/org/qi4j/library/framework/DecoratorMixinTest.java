@@ -5,19 +5,16 @@ package org.qi4j.library.framework;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import junit.framework.TestCase;
 import org.qi4j.Composite;
 import org.qi4j.CompositeBuilder;
-import org.qi4j.CompositeBuilderFactory;
 import org.qi4j.annotation.Mixins;
-import org.qi4j.runtime.CompositeBuilderFactoryImpl;
+import org.qi4j.test.AbstractQi4jTest;
 
-public class DecoratorMixinTest extends TestCase
+public class DecoratorMixinTest extends AbstractQi4jTest
 {
     public void testGenericDecoratorOfDomainobject() throws Exception
     {
-        CompositeBuilderFactory cbf = new CompositeBuilderFactoryImpl();
-        CompositeBuilder<Composite1> cb = cbf.newCompositeBuilder( Composite1.class );
+        CompositeBuilder<Composite1> cb = factory.newCompositeBuilder( Composite1.class );
         cb.decorate( new Test1.Test1Mixin() );
         Test1 test = cb.newInstance();
 
@@ -26,8 +23,7 @@ public class DecoratorMixinTest extends TestCase
 
     public void testGenericDecoratorOfInvocationHandler() throws Exception
     {
-        CompositeBuilderFactory cbf = new CompositeBuilderFactoryImpl();
-        CompositeBuilder<Composite1> cb = cbf.newCompositeBuilder( Composite1.class );
+        CompositeBuilder<Composite1> cb = factory.newCompositeBuilder( Composite1.class );
         cb.decorate( new InvocationHandler()
         {
 

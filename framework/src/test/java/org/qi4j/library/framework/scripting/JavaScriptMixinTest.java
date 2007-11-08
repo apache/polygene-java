@@ -11,18 +11,14 @@ package org.qi4j.library.framework.scripting;
  * limitations under the License.
 */
 
-import junit.framework.TestCase;
-import org.qi4j.CompositeBuilderFactory;
-import org.qi4j.runtime.CompositeBuilderFactoryImpl;
+import org.qi4j.test.AbstractQi4jTest;
 
-public class JavaScriptMixinTest extends TestCase
+public class JavaScriptMixinTest extends AbstractQi4jTest
 {
     JavaScriptMixin scriptMixin;
 
     public void testInvoke() throws Throwable
     {
-        CompositeBuilderFactory factory = new CompositeBuilderFactoryImpl();
-
         ScriptComposite domain = factory.newCompositeBuilder( ScriptComposite.class ).newInstance();
 
         System.out.println( domain.do1() );
