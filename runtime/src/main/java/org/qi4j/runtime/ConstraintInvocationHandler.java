@@ -4,7 +4,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import org.qi4j.ConstraintViolation;
-import org.qi4j.Constraint;
+import org.qi4j.ParameterConstraint;
 
 /**
  * TODO
@@ -34,7 +34,7 @@ public final class ConstraintInvocationHandler extends FragmentInvocationHandler
             {
                 try
                 {
-                    Constraint constraint1 = constraint.getConstraint();
+                    ParameterConstraint constraint1 = constraint.getConstraint();
                     if( !constraint1.isValid( constraint.getAnnotation(), arg ) )
                     {
                         // Register constraint violation

@@ -24,7 +24,7 @@ import java.util.Map;
 import org.qi4j.Composite;
 import org.qi4j.CompositeBuilderFactory;
 import org.qi4j.CompositeInstantiationException;
-import org.qi4j.Constraint;
+import org.qi4j.ParameterConstraint;
 import org.qi4j.dependency.ModifierDependencyInjectionContext;
 import org.qi4j.model.CompositeContext;
 import org.qi4j.model.CompositeModel;
@@ -182,10 +182,10 @@ public final class CompositeContextImpl<T extends Composite>
             {
                 ConstraintDeclarationModel model = constraintResolution.getConstraintDeclarationModel();
                 Class aClass = model.getConstraintType();
-                Class<? extends Constraint> constraintType = aClass;
+                Class<? extends ParameterConstraint> constraintType = aClass;
                 try
                 {
-                    Constraint constraintInstance = constraintType.newInstance();
+                    ParameterConstraint constraintInstance = constraintType.newInstance();
                     constraintInstances.add( new ConstraintInstance( constraintInstance, constraintResolution.getConstraintAnnotation() ) );
                     hasConstraints = true;
                 }

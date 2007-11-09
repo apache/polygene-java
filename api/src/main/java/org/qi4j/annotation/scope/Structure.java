@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
  * <p/>
  * Examples:
  *
- * @Qi4j CompositeBuilderFactory cbf
+ * @Structure CompositeBuilderFactory cbf
  */
 @Retention( RetentionPolicy.RUNTIME )
 @Target( { ElementType.FIELD, ElementType.PARAMETER } )

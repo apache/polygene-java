@@ -14,7 +14,7 @@
 
 package org.qi4j.model;
 
-import org.qi4j.Constraint;
+import org.qi4j.ParameterConstraint;
 
 /**
  * A ConstraintDeclarationModel matches each use
@@ -23,12 +23,12 @@ import org.qi4j.Constraint;
  */
 public class ConstraintDeclarationModel<T>
 {
-    private Class<? extends Constraint> constraintType;
+    private Class<? extends ParameterConstraint> constraintType;
     private Class annotationType;
     private Class<T> parameterType;
     private Class declaredBy;
 
-    public ConstraintDeclarationModel( Class<? extends Constraint> constraintType, Class annotationType, Class<T> parameterType, Class declaredBy )
+    public ConstraintDeclarationModel( Class<? extends ParameterConstraint> constraintType, Class annotationType, Class<T> parameterType, Class declaredBy )
     {
         this.declaredBy = declaredBy;
         this.constraintType = constraintType;
@@ -36,7 +36,7 @@ public class ConstraintDeclarationModel<T>
         this.parameterType = parameterType;
     }
 
-    public Class<? extends Constraint> getConstraintType()
+    public Class<? extends ParameterConstraint> getConstraintType()
     {
         return constraintType;
     }

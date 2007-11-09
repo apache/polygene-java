@@ -19,7 +19,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import org.qi4j.Constraint;
+import org.qi4j.ParameterConstraint;
 
 /**
  * This annotation is used by composites and mixins to declare what Constraints
@@ -32,5 +32,5 @@ import org.qi4j.Constraint;
 @Documented
 public @interface Constraints
 {
-    Class<? extends Constraint>[] value();
+    Class<? extends ParameterConstraint>[] value();
 }

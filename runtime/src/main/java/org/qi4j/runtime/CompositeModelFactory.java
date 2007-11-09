@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.qi4j.Composite;
-import org.qi4j.Constraint;
+import org.qi4j.ParameterConstraint;
 import org.qi4j.annotation.Concerns;
 import org.qi4j.annotation.Constraints;
 import org.qi4j.annotation.Mixins;
@@ -118,8 +118,8 @@ public final class CompositeModelFactory
 
         if( constraintsAnnotation != null )
         {
-            Class<? extends Constraint>[] constraintImplementations = constraintsAnnotation.value();
-            for( Class<? extends Constraint> constraintImplementation : constraintImplementations )
+            Class<? extends ParameterConstraint>[] constraintImplementations = constraintsAnnotation.value();
+            for( Class<? extends ParameterConstraint> constraintImplementation : constraintImplementations )
             {
                 Class annotationType = (Class) ( (ParameterizedType) constraintImplementation.getGenericInterfaces()[ 0 ] ).getActualTypeArguments()[ 0 ];
                 Class parameterType = (Class) ( (ParameterizedType) constraintImplementation.getGenericInterfaces()[ 0 ] ).getActualTypeArguments()[ 1 ];
