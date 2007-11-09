@@ -1,13 +1,13 @@
 package org.qi4j.library.framework.constraint;
 
-import org.qi4j.Constraint;
+import org.qi4j.ParameterConstraint;
 import org.qi4j.library.framework.constraint.annotation.Contains;
 
 /**
  * TODO
  */
 public class ContainsConstraint
-    implements Constraint<Contains, String>
+    implements ParameterConstraint<Contains, String>
 {
     public boolean isValid( Contains annotation, String argument )
     {

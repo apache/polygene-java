@@ -1,13 +1,13 @@
 package org.qi4j.library.framework.constraint;
 
-import org.qi4j.Constraint;
+import org.qi4j.ParameterConstraint;
 import org.qi4j.library.framework.constraint.annotation.LessThan;
 
 /**
  * TODO
  */
 public class LessThanConstraint
-    implements Constraint<LessThan, Number>
+    implements ParameterConstraint<LessThan, Number>
 {
     public boolean isValid( LessThan annotation, Number argument )
     {

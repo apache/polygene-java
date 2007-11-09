@@ -1,13 +1,13 @@
 package org.qi4j.library.framework.constraint;
 
-import org.qi4j.Constraint;
+import org.qi4j.ParameterConstraint;
 import org.qi4j.library.framework.constraint.annotation.MaxLength;
 
 /**
  * TODO
  */
 public class MaxLengthConstraint
-    implements Constraint<MaxLength, String>
+    implements ParameterConstraint<MaxLength, String>
 {
     public boolean isValid( MaxLength annotation, String argument )
     {
