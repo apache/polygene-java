@@ -23,8 +23,7 @@ import org.qi4j.test.AbstractQi4jTest;
 /**
  * TODO
  */
-public class AssemblyTest
-    extends AbstractQi4jTest
+public class AssemblyTest extends AbstractQi4jTest
 {
     public void testAssembly()
     {
