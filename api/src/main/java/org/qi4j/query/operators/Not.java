@@ -17,21 +17,27 @@
  */
 package org.qi4j.query.operators;
 
-import org.qi4j.query.BinaryExpression;
+import org.qi4j.query.BooleanExpression;
 import org.qi4j.query.Operator;
+import org.qi4j.query.UnaryOperator;
 
 public class Not
-    implements Operator, BinaryExpression
+    implements UnaryOperator, BooleanExpression
 {
-    private BinaryExpression expression;
+    private BooleanExpression expression;
 
-    public Not( BinaryExpression expression )
+    public Not( BooleanExpression expression )
     {
         this.expression = expression;
     }
 
-    public BinaryExpression getExpression()
+    public BooleanExpression getArgument()
     {
         return expression;
+    }
+
+    public String toString()
+    {
+        return "(NOT(" + expression + "))";
     }
 }

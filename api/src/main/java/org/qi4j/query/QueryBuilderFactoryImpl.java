@@ -20,7 +20,7 @@ package org.qi4j.query;
 public class QueryBuilderFactoryImpl
     implements QueryBuilderFactory
 {
-    Queryable queryable;
+    private Queryable queryable;
 
     public QueryBuilderFactoryImpl( Queryable queryable )
     {

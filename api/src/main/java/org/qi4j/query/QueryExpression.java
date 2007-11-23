@@ -28,42 +28,19 @@ import org.qi4j.query.operators.Not;
 import org.qi4j.query.operators.NotEquals;
 import org.qi4j.query.operators.Or;
 import org.qi4j.query.operators.StringContains;
+import org.qi4j.query.literals.BooleanLiteral;
+import org.qi4j.query.literals.NumberLiteral;
+import org.qi4j.query.literals.DateLiteral;
+import org.qi4j.query.literals.StringLiteral;
+import java.util.Date;
+import java.lang.reflect.Proxy;
+import java.lang.reflect.InvocationHandler;
 
 /**
  * TODO
  */
 public class QueryExpression
 {
-    public static <K> ComparableExpression<K> arg( Comparable<K> data )
-    {
-        return new Argument<K>( data );
-    }
-
-    public static BinaryExpression eq( Expression left, Object right )
-    {
-        if( notOnStack( 1 ) )
-        {
-            throw new IllegalQueryFormatException( "eq() requires two arguments." );
-        }
-        Expression op = QueryStack.popExpression();
-        return new Equals( left, op );
-    }
-
-    private static boolean notOnStack( int expected )
-    {
-        return QueryStack.getSize() < 1;
-    }
-
-    public static BinaryExpression eq( Object left, Expression right )
-    {
-        if( notOnStack( 1 ) )
-        {
-            throw new IllegalQueryFormatException( "eq() requires two arguments." );
-        }
-        Expression op = QueryStack.popExpression();
-        return new Equals( op, right );
-    }
-
     /**
      * Operator for equals() checks on two return values of parameters.
      * <p/>
@@ -79,297 +56,270 @@ public class QueryExpression
      * @param right
      * @return
      */
-    public static BinaryExpression eq( Object left, Object right )
+    public static BooleanExpression eq( Object left, Object right )
     {
+        process( left );
+        process( right );
         if( notOnStack( 2 ) )
         {
             throw new IllegalQueryFormatException( "eq() requires two arguments." );
         }
+        Expression op1 = QueryStack.popExpression();  // Right
+        Expression op2 = QueryStack.popExpression();  // Left
+        Equals result = new Equals( op2, op1 );
+        QueryStack.pushExpression( result );
+        return result;
+    }
+
+    public static BooleanExpression ne( Object left, Object right )
+    {
+        process( left );
+        process( right );
+        if( notOnStack( 2 ) )
+        {
+            throw new IllegalQueryFormatException( "ne() requires two arguments." );
+        }
+        Expression op1 = QueryStack.popExpression();  // Right
+        Expression op2 = QueryStack.popExpression();  // Left
+        NotEquals result = new NotEquals( op2, op1 );
+        QueryStack.pushExpression( result );
+        return result;
+    }
+
+    public static BooleanExpression lt( Object left, Object right )
+    {
+        process( left );
+        process( right );
+        if( notOnStack( 2 ) )
+        {
+            throw new IllegalQueryFormatException( "lt() requires two arguments." );
+        }
+        Expression op1 = QueryStack.popExpression();  // Right
+        Expression op2 = QueryStack.popExpression();  // Left
+        LessThan result = new LessThan( op2, op1 );
+        QueryStack.pushExpression( result );
+        return result;
+    }
+
+    public static BooleanExpression le( Object left, Object right )
+    {
+        process( left );
+        process( right );
+        if( notOnStack( 2 ) )
+        {
+            throw new IllegalQueryFormatException( "le() requires two arguments." );
+        }
         Expression op1 = QueryStack.popExpression();
         Expression op2 = QueryStack.popExpression();
-        return new Equals( op1, op2 );
+        LessThanEquals result = new LessThanEquals( op2, op1 );
+        QueryStack.pushExpression( result );
+        return result;
     }
 
-    public static BinaryExpression ne( Object left, Expression right )
+    public static BooleanExpression gt( Object left, Object right )
     {
-        if( notOnStack( 1 ) )
-        {
-            throw new IllegalQueryFormatException( "ne() requires two arguments." );
-        }
-        Expression op1 = QueryStack.popExpression();
-        return new NotEquals( op1, right );
-    }
-
-    public static BinaryExpression ne( Expression left, Object right )
-    {
-        if( notOnStack( 1 ) )
-        {
-            throw new IllegalQueryFormatException( "ne() requires two arguments." );
-        }
-        Expression op1 = QueryStack.popExpression();
-        return new NotEquals( left, op1 );
-    }
-
-    public static BinaryExpression ne( Object left, Object right )
-    {
+        process( left );
+        process( right );
         if( notOnStack( 2 ) )
         {
-            throw new IllegalQueryFormatException( "ne() requires two arguments." );
+            throw new IllegalQueryFormatException( "gt() requires two arguments." );
         }
         Expression op1 = QueryStack.popExpression();
         Expression op2 = QueryStack.popExpression();
-        return new NotEquals( op1, op2 );
+        GreaterThan result = new GreaterThan( op2, op1 );
+        QueryStack.pushExpression( result );
+        return result;
     }
 
-    public static BinaryExpression lt( ComparableExpression left, Comparable right )
+    public static BooleanExpression ge( Object left, Object right )
     {
-        if( notOnStack( 1 ) )
-        {
-            throw new IllegalQueryFormatException( "lt() requires two arguments." );
-        }
-        ComparableExpression op1 = (ComparableExpression) QueryStack.popExpression();
-        return new LessThan( left, op1 );
-    }
-
-    public static BinaryExpression lt( Comparable left, ComparableExpression right )
-    {
-        if( notOnStack( 1 ) )
-        {
-            throw new IllegalQueryFormatException( "lt() requires two arguments." );
-        }
-        ComparableExpression op1 = (ComparableExpression) QueryStack.popExpression();
-        return new LessThan( op1, right );
-    }
-
-    public static BinaryExpression lt( Comparable left, Comparable right )
-    {
-        if( notOnStack( 2 ) )
-        {
-            throw new IllegalQueryFormatException( "lt() requires two arguments." );
-        }
-        ComparableExpression op1 = (ComparableExpression) QueryStack.popExpression();
-        ComparableExpression op2 = (ComparableExpression) QueryStack.popExpression();
-        return new LessThan( op1, op2 );
-    }
-
-    public static BinaryExpression le( ComparableExpression left, Comparable right )
-    {
-        if( notOnStack( 1 ) )
-        {
-            throw new IllegalQueryFormatException( "le() requires two arguments." );
-        }
-        ComparableExpression op1 = (ComparableExpression) QueryStack.popExpression();
-        return new LessThanEquals( left, op1 );
-    }
-
-    public static BinaryExpression le( Comparable left, ComparableExpression right )
-    {
-        if( notOnStack( 1 ) )
-        {
-            throw new IllegalQueryFormatException( "le() requires two arguments." );
-        }
-        ComparableExpression op1 = (ComparableExpression) QueryStack.popExpression();
-        return new LessThanEquals( op1, right );
-    }
-
-    public static BinaryExpression le( Comparable left, Comparable right )
-    {
-        if( notOnStack( 2 ) )
-        {
-            throw new IllegalQueryFormatException( "le() requires two arguments." );
-        }
-        ComparableExpression op1 = (ComparableExpression) QueryStack.popExpression();
-        ComparableExpression op2 = (ComparableExpression) QueryStack.popExpression();
-        return new LessThanEquals( op1, op2 );
-    }
-
-    public static BinaryExpression gt( ComparableExpression left, Comparable right )
-    {
-        if( notOnStack( 1 ) )
-        {
-            throw new IllegalQueryFormatException( "gt() requires two arguments." );
-        }
-        ComparableExpression op1 = (ComparableExpression) QueryStack.popExpression();
-        return new GreaterThan( left, op1 );
-    }
-
-    public static BinaryExpression gt( Comparable left, ComparableExpression right )
-    {
-        if( notOnStack( 1 ) )
-        {
-            throw new IllegalQueryFormatException( "gt() requires two arguments." );
-        }
-        ComparableExpression op1 = (ComparableExpression) QueryStack.popExpression();
-        return new GreaterThan( op1, right );
-    }
-
-    public static BinaryExpression gt( Comparable left, Comparable right )
-    {
-        if( notOnStack( 2 ) )
-        {
-            throw new IllegalQueryFormatException( "gt() requires two arguments." );
-        }
-        ComparableExpression op1 = (ComparableExpression) QueryStack.popExpression();
-        ComparableExpression op2 = (ComparableExpression) QueryStack.popExpression();
-        return new GreaterThan( op1, op2 );
-    }
-
-    public static BinaryExpression ge( ComparableExpression left, Comparable right )
-    {
-        if( notOnStack( 1 ) )
-        {
-            throw new IllegalQueryFormatException( "ge() requires two arguments." );
-        }
-        ComparableExpression op1 = (ComparableExpression) QueryStack.popExpression();
-        return new GreaterThanEquals( left, op1 );
-    }
-
-    public static BinaryExpression ge( Comparable left, ComparableExpression right )
-    {
-        if( notOnStack( 1 ) )
-        {
-            throw new IllegalQueryFormatException( "ge() requires two arguments." );
-        }
-        ComparableExpression op1 = (ComparableExpression) QueryStack.popExpression();
-        return new GreaterThanEquals( op1, right );
-    }
-
-    public static BinaryExpression ge( Comparable left, Comparable right )
-    {
+        process( left );
+        process( right );
         if( notOnStack( 2 ) )
         {
             throw new IllegalQueryFormatException( "ge() requires two arguments." );
         }
-        ComparableExpression op1 = (ComparableExpression) QueryStack.popExpression();
-        ComparableExpression op2 = (ComparableExpression) QueryStack.popExpression();
-        return new GreaterThanEquals( op1, op2 );
+        Expression op1 = QueryStack.popExpression();
+        Expression op2 = QueryStack.popExpression();
+        GreaterThanEquals result = new GreaterThanEquals( op2, op1 );
+        QueryStack.pushExpression( result );
+        return result;
     }
 
-    public static BinaryExpression matches( String source, String expression )
+    public static BooleanExpression matches( String source, String expression )
     {
-        if( notOnStack( 1 ) )
+        process( source );
+        process( expression );
+        if( notOnStack( 2 ) )
         {
             throw new IllegalQueryFormatException( "matches() requires two arguments. The first argument was not derived from a parameter." );
         }
-        Expression op1 = QueryStack.popExpression(); // The parameter value.
-        return new Matches( op1, expression );
+        Expression op1 = QueryStack.popExpression(); // The expression.
+        Expression op2 = QueryStack.popExpression(); // The source.
+        Matches result = new Matches( op2, op1 );
+        QueryStack.pushExpression( result );
+        return result;
     }
 
-    public static <K> BinaryExpression contains( Iterable<K> left, K right )
+    public static <K> BooleanExpression contains( Iterable<K> left, K right )
     {
-        if( notOnStack( 1 ) )
+        process( left );
+        process( right );
+        if( notOnStack( 2 ) )
         {
             throw new IllegalQueryFormatException( "contains() requires two arguments. The first argument was not derived from a parameter." );
         }
-        Expression op1 = QueryStack.popExpression(); // The parameter value.
-        return new IterableContains( op1, right );
+        Expression op1 = QueryStack.popExpression(); // The expression.
+        Expression op2 = QueryStack.popExpression(); // The source.
+        IterableContains result = new IterableContains( op2, op1 );
+        QueryStack.pushExpression( result );
+        return result;
     }
 
-    public static BinaryExpression contains( String value, String substring )
+    public static BooleanExpression contains( Object source, Object substring )
     {
-        if( notOnStack( 1 ) )
+        process( source );
+        process( substring );
+        if( notOnStack( 2 ) )
         {
             throw new IllegalQueryFormatException( "contains() requires two arguments. The first argument was not derived from a parameter." );
         }
-        Expression op1 = QueryStack.popExpression(); // The parameter value.
-        return new StringContains( op1, substring );
+        Expression op1 = QueryStack.popExpression(); // The substring value.
+        Expression op2 = QueryStack.popExpression(); // The source value.
+        StringContains result = new StringContains( op2, op1 );
+        QueryStack.pushExpression( result );
+        return result;
     }
 
-    public static BinaryExpression isNull( Object value )
+    public static BooleanExpression isNull( Object value )
     {
+        process( value );
         if( notOnStack( 1 ) )
         {
             throw new IllegalQueryFormatException( "isNull() require an argument derived from a parameter." );
         }
         Expression op1 = QueryStack.popExpression();
-        return new IsNull( op1 );
+        IsNull result = new IsNull( op1 );
+        QueryStack.pushExpression( result );
+        return result;
     }
 
-    public static BinaryExpression isNotNull( Object value )
+    public static BooleanExpression isNotNull( Object value )
     {
+        process( value );
         if( notOnStack( 1 ) )
         {
             throw new IllegalQueryFormatException( "isNotNull() require an argument derived from a parameter." );
         }
         Expression op1 = QueryStack.popExpression();
-        return new IsNotNull( op1 );
+        IsNotNull result = new IsNotNull( op1 );
+        QueryStack.pushExpression( result );
+        return result;
     }
 
-    public static BinaryExpression and( Object left, Object right )
+    public static BooleanExpression and( Object left, Object right )
     {
+        process( left );
+        process( right );
         if( notOnStack( 2 ) )
         {
             throw new IllegalQueryFormatException( "and() requires two arguments." );
         }
-        BinaryExpression op1 = (BinaryExpression) QueryStack.popExpression();
-        BinaryExpression op2 = (BinaryExpression) QueryStack.popExpression();
-        return new And( op1, op2 );
+        BooleanExpression op1 = (BooleanExpression) QueryStack.popExpression();
+        BooleanExpression op2 = (BooleanExpression) QueryStack.popExpression();
+        And result = new And( op2, op1 );
+        QueryStack.pushExpression( result );
+        return result;
     }
 
-    public static BinaryExpression and( Object left, BinaryExpression right )
+    public static BooleanExpression or( Object left, Object right )
     {
-        if( notOnStack( 1 ) )
-        {
-            throw new IllegalQueryFormatException( "and() requires two arguments." );
-        }
-        BinaryExpression op1 = (BinaryExpression) QueryStack.popExpression();
-        return new And( op1, right );
-    }
-
-    public static BinaryExpression and( BinaryExpression left, Object right )
-    {
-        if( notOnStack( 1 ) )
-        {
-            throw new IllegalQueryFormatException( "and() requires two arguments." );
-        }
-        BinaryExpression op1 = (BinaryExpression) QueryStack.popExpression();
-        return new And( left, op1 );
-    }
-
-    public static BinaryExpression and( BinaryExpression left, BinaryExpression right )
-    {
-        return new And( left, right );
-    }
-
-    public static BinaryExpression or( Object left, Object right )
-    {
+        process( left );
+        process( right );
         if( notOnStack( 2 ) )
         {
             throw new IllegalQueryFormatException( "or() requires two arguments." );
         }
-        BinaryExpression op1 = (BinaryExpression) QueryStack.popExpression();
-        BinaryExpression op2 = (BinaryExpression) QueryStack.popExpression();
-        return new Or( op1, op2 );
+        BooleanExpression op1 = (BooleanExpression) QueryStack.popExpression();
+        BooleanExpression op2 = (BooleanExpression) QueryStack.popExpression();
+        Or result = new Or( op2, op1 );
+        QueryStack.pushExpression( result );
+        return result;
     }
 
-    public static BinaryExpression or( Object left, BinaryExpression right )
+    public static BooleanExpression not( Object expression )
     {
+        process( expression );
         if( notOnStack( 1 ) )
         {
-            throw new IllegalQueryFormatException( "or() requires two arguments." );
+            throw new IllegalQueryFormatException( "not() requires one argument." );
         }
-        BinaryExpression op1 = (BinaryExpression) QueryStack.popExpression();
-        return new Or( op1, right );
-    }
-
-    public static BinaryExpression or( BinaryExpression left, Object right )
-    {
-        if( notOnStack( 1 ) )
+        if( expression instanceof BooleanExpression )
         {
-            throw new IllegalQueryFormatException( "or() requires two arguments." );
+            BooleanExpression op1 = (BooleanExpression) QueryStack.popExpression();
+            Not result = new Not( op1 );
+            QueryStack.pushExpression( result );
+            return result;
         }
-        BinaryExpression op1 = (BinaryExpression) QueryStack.popExpression();
-        return new Or( left, op1 );
+        else
+        {
+            throw new IllegalQueryFormatException( "not() only operates on BooleanExpression." );
+        }
     }
 
-    public static BinaryExpression or( BinaryExpression left, BinaryExpression right )
+    private static void process( Object operand )
     {
-        return new Or( left, right );
+        if( operand instanceof Expression )
+        {
+            return;
+        }
+        if( operand == null )
+        {
+            return;
+        }
+        if( operand instanceof String )
+        {
+            StringLiteral expr = new StringLiteral( (String) operand );
+            QueryStack.pushExpression( expr );
+            return;
+        }
+        if( operand instanceof Boolean )
+        {
+            BooleanLiteral expr = new BooleanLiteral( (Boolean) operand );
+            QueryStack.pushExpression( expr );
+            return;
+        }
+        if( operand instanceof Date )
+        {
+            DateLiteral expr = new DateLiteral( (Date) operand );
+            QueryStack.pushExpression( expr );
+            return;
+        }
+        if( operand instanceof Number )
+        {
+            NumberLiteral expr = new NumberLiteral( (Number) operand );
+            QueryStack.pushExpression( expr );
+            return;
+        }
+        if( Proxy.isProxyClass( operand.getClass() ) )
+        {
+            InvocationHandler handler = Proxy.getInvocationHandler( operand );
+            if( handler instanceof InterfaceInvocationHandler )
+            {
+                return;
+            }
+            else
+            {
+                throw new IllegalArgumentException( "Proxy handled by " + handler + " is not allowed as operands." );
+            }
+        }
+
+        throw new IllegalArgumentException( "Type " + operand.getClass().getName() + " is not allowed as operands." );
     }
 
-    public static BinaryExpression not( BinaryExpression expression )
+    private static boolean notOnStack( int expected )
     {
-        return new Not( expression );
+        return QueryStack.getSize() < expected;
     }
 
 }

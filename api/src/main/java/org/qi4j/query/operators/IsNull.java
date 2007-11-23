@@ -17,12 +17,13 @@
  */
 package org.qi4j.query.operators;
 
-import org.qi4j.query.BinaryExpression;
+import org.qi4j.query.BooleanExpression;
 import org.qi4j.query.Expression;
 import org.qi4j.query.Operator;
+import org.qi4j.query.UnaryOperator;
 
 public class IsNull
-    implements Operator, BinaryExpression
+    implements UnaryOperator, BooleanExpression
 {
     private Expression expression;
 
@@ -31,9 +32,14 @@ public class IsNull
         this.expression = expression;
     }
 
-    public Expression getExpression()
+    public Expression getArgument()
     {
         return expression;
+    }
+
+    public String toString()
+    {
+        return "( isNull(" + expression + "))";
     }
 
 }

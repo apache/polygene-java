@@ -20,7 +20,7 @@ package org.qi4j.query;
 public class QueryableIterable
     implements Queryable
 {
-    Iterable source;
+    private Iterable source;
 
     public QueryableIterable( Iterable source )
     {
@@ -29,13 +29,10 @@ public class QueryableIterable
 
     public <T> T find( Query<T> query )
     {
-        QueryImpl<T> impl = (QueryImpl<T>) query;
-
         for( Object o : source )
         {
             return (T) o;
         }
-
         return null;
     }
 

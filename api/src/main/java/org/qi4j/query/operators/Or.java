@@ -17,28 +17,34 @@
  */
 package org.qi4j.query.operators;
 
-import org.qi4j.query.BinaryExpression;
+import org.qi4j.query.BooleanExpression;
 import org.qi4j.query.Operator;
+import org.qi4j.query.BinaryOperator;
 
 public class Or
-    implements Operator, BinaryExpression
+    implements BinaryOperator, BooleanExpression
 {
-    private BinaryExpression left;
-    private BinaryExpression right;
+    private BooleanExpression left;
+    private BooleanExpression right;
 
-    public Or( BinaryExpression left, BinaryExpression right )
+    public Or( BooleanExpression left, BooleanExpression right )
     {
         this.left = left;
         this.right = right;
     }
 
-    public BinaryExpression getLeft()
+    public BooleanExpression getLeftArgument()
     {
         return left;
     }
 
-    public BinaryExpression getRight()
+    public BooleanExpression getRightArgument()
     {
         return right;
+    }
+
+    public String toString()
+    {
+        return "(" + left + " OR " + right + ")";
     }
 }

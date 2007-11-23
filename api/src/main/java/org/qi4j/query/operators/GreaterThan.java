@@ -17,30 +17,34 @@
  */
 package org.qi4j.query.operators;
 
-import org.qi4j.query.BinaryExpression;
-import org.qi4j.query.ComparableExpression;
-import org.qi4j.query.Operator;
+import org.qi4j.query.BooleanExpression;
+import org.qi4j.query.BinaryOperator;
+import org.qi4j.query.Expression;
 
 public class GreaterThan
-    implements Operator, BinaryExpression
+    implements BooleanExpression, BinaryOperator
 {
-    private ComparableExpression left;
-    private ComparableExpression right;
+    private Expression left;
+    private Expression right;
 
-    public GreaterThan( ComparableExpression left, ComparableExpression right )
+    public GreaterThan( Expression left, Expression right )
     {
         this.left = left;
         this.right = right;
     }
 
-    public ComparableExpression getLeft()
+    public Expression getLeftArgument()
     {
         return left;
     }
 
-    public ComparableExpression getRight()
+    public Expression getRightArgument()
     {
         return right;
     }
 
+    public String toString()
+    {
+        return "(" + left + " > " + right + ")";
+    }
 }

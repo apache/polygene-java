@@ -17,30 +17,36 @@
  */
 package org.qi4j.query.operators;
 
-import org.qi4j.query.BinaryExpression;
+import org.qi4j.query.BooleanExpression;
 import org.qi4j.query.Expression;
 import org.qi4j.query.Operator;
+import org.qi4j.query.BinaryOperator;
 
 public class Matches
-    implements Operator, BinaryExpression
+    implements BinaryOperator, BooleanExpression
 {
     private Expression left;
-    private Comparable right;
+    private Expression right;
 
-    public Matches( Expression left, String right )
+    public Matches( Expression left, Expression right )
     {
         this.left = left;
         this.right = right;
     }
 
-    public Expression getLeft()
+    public Expression getLeftArgument()
     {
         return left;
     }
 
-    public Comparable getRight()
+    public Expression getRightArgument()
     {
         return right;
+    }
+
+    public String toString()
+    {
+        return "(" + left + ".matches(" + right + "))";
     }
 
 }

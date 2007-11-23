@@ -47,11 +47,11 @@ public class ExpressionTest extends AbstractQi4jTest
         throws Exception
     {
 /*
-        QueryBuilder<Composite1> builder = queryBuilderFactory.newQueryBuilder( Composite1.class );
+        QueryBuilder<AbcComposite> builder = queryBuilderFactory.newQueryBuilder( AbcComposite.class );
         Mixin1 m1 = builder.parameter( Mixin1.class );
         builder.where( eq( m1.getName(), arg( "i=5" ) ) );
-        Query<Composite1> q = builder.newQuery();
-        Composite1 result = q.find();
+        Query<AbcComposite> q = builder.newQuery();
+        AbcComposite result = q.find();
         assertNotNull( result );
         assertEquals( "i=5", result.getName() );
         assertEquals( "bar=1", result.getBar() );

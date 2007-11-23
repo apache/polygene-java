@@ -17,12 +17,13 @@
  */
 package org.qi4j.query.operators;
 
-import org.qi4j.query.BinaryExpression;
+import org.qi4j.query.BooleanExpression;
 import org.qi4j.query.Expression;
 import org.qi4j.query.Operator;
+import org.qi4j.query.BinaryOperator;
 
 public class NotEquals
-    implements Operator, BinaryExpression
+    implements BinaryOperator, BooleanExpression
 {
     private Expression left;
     private Expression right;
@@ -33,13 +34,18 @@ public class NotEquals
         this.right = right;
     }
 
-    public Expression getLeft()
+    public Expression getLeftArgument()
     {
         return left;
     }
 
-    public Expression getRight()
+    public Expression getRightArgument()
     {
         return right;
+    }
+
+    public String toString()
+    {
+        return "(" + left + " != " + right + ")";
     }
 }

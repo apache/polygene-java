@@ -25,11 +25,11 @@ public class QueryImpl<R>
     implements Query<R>
 {
     private Class resultType;
-    private List<BinaryExpression> where;
+    private List<BooleanExpression> where;
     private List<OrderBy> orderBy;
     private Queryable queryable;
 
-    public QueryImpl( Class resultType, ArrayList<BinaryExpression> where, ArrayList<OrderBy> orderBy, Queryable queryable )
+    public QueryImpl( Class resultType, ArrayList<BooleanExpression> where, ArrayList<OrderBy> orderBy, Queryable queryable )
     {
         this.resultType = resultType;
         this.where = where;
@@ -44,7 +44,6 @@ public class QueryImpl<R>
 
     public Iterator<R> iterator()
     {
-        //TODO: Auto-generated, need attention.
         return queryable.iterable( this ).iterator();
     }
 
@@ -53,7 +52,7 @@ public class QueryImpl<R>
         return resultType;
     }
 
-    public List<BinaryExpression> getWhere()
+    public List<BooleanExpression> getWhere()
     {
         return where;
     }

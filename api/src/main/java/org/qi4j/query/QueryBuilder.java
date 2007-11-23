@@ -21,7 +21,7 @@ public interface QueryBuilder<T>
 {
     <K> K parameter( Class<K> mixinType );
 
-    QueryBuilder<T> where( BinaryExpression... expression );
+    QueryBuilder<T> where( BooleanExpression... expression );
 
     QueryBuilder<T> orderBy( Object property );
 
@@ -30,6 +30,10 @@ public interface QueryBuilder<T>
     QueryBuilder<T> setFirstResult( int firstResult );
 
     QueryBuilder<T> setMaxResults( int maxResults );
+
+    <K> QueryBuilder<K> resultSet( K property );
+
+    <K> QueryBuilder<K> resultList( K property );
 
     Query<T> newQuery();
 }

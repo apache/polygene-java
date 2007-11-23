@@ -17,28 +17,34 @@
  */
 package org.qi4j.query.operators;
 
-import org.qi4j.query.BinaryExpression;
+import org.qi4j.query.BooleanExpression;
 import org.qi4j.query.Expression;
+import org.qi4j.query.BinaryOperator;
 
-public class StringContains implements BinaryExpression
+public class StringContains
+    implements BinaryOperator, BooleanExpression
 {
-    private Expression left;
-    private String right;
+    private Expression source;
+    private Expression substring;
 
-    public StringContains( Expression left, String right )
+    public StringContains( Expression source, Expression substring )
     {
-        this.left = left;
-        this.right = right;
+        this.source = source;
+        this.substring = substring;
     }
 
-
-    public Expression getLeft()
+    public Expression getLeftArgument()
     {
-        return left;
+        return source;
     }
 
-    public String getRight()
+    public Expression getRightArgument()
     {
-        return right;
+        return substring;
+    }
+
+    public String toString()
+    {
+        return "(" + source + ".contains(" + substring + "))";
     }
 }

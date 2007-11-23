@@ -35,8 +35,8 @@ public class EntityTest
 //        entityDependencyResolver.addQueryFactory( "someQuery", new DefaultQueryFactory( results ) );
         cbf.getDependencyResolverDelegator().setDependencyResolver( Entity.class, entityDependencyResolver );
 
-        CompositeBuilder<Composite1> cb = cbf.newCompositeBuilder( Composite1.class );
-        Composite1 composite = cb.newInstance();
+        CompositeBuilder<AbcComposite> cb = cbf.newCompositeBuilder( AbcComposite.class );
+        AbcComposite composite = cb.newInstance();
 */
 
         // TODO These don't work right now

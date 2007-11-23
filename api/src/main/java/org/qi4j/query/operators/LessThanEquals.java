@@ -17,30 +17,34 @@
  */
 package org.qi4j.query.operators;
 
-import org.qi4j.query.BinaryExpression;
-import org.qi4j.query.ComparableExpression;
-import org.qi4j.query.Operator;
+import org.qi4j.query.BooleanExpression;
+import org.qi4j.query.Expression;
+import org.qi4j.query.BinaryOperator;
 
 public class LessThanEquals
-    implements Operator, BinaryExpression
+    implements BinaryOperator, BooleanExpression
 {
-    private ComparableExpression left;
-    private ComparableExpression right;
+    private Expression left;
+    private Expression right;
 
-    public LessThanEquals( ComparableExpression left, ComparableExpression right )
+    public LessThanEquals( Expression left, Expression right )
     {
         this.left = left;
         this.right = right;
     }
 
-    public ComparableExpression getLeft()
+    public Expression getLeftArgument()
     {
         return left;
     }
 
-    public ComparableExpression getRight()
+    public Expression getRightArgument()
     {
         return right;
     }
 
+    public String toString()
+    {
+        return "(" + left + " <= " + right + ")";
+    }
 }
