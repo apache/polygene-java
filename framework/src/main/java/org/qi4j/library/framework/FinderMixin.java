@@ -7,7 +7,6 @@ import org.qi4j.annotation.AppliesToFilter;
 import org.qi4j.annotation.scope.Entity;
 import org.qi4j.query.QueryBuilder;
 import org.qi4j.query.QueryBuilderFactory;
-import static org.qi4j.query.QueryExpression.arg;
 import static org.qi4j.query.QueryExpression.eq;
 
 /**
@@ -55,7 +54,7 @@ public class FinderMixin
 
         Method getter = param.getClass().getMethod( "get" + methodName );
 
-        builder = builder.where( eq( getter.invoke( param ), arg( (Comparable) args[ 0 ] ) ) );
+        builder = builder.where( eq( getter.invoke( param ), args[ 0 ] ) );
 
         // Execute query
         return builder.newQuery().find();
