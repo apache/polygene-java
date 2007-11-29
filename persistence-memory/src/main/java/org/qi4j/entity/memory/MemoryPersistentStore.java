@@ -21,8 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import org.qi4j.entity.EntityComposite;
-import org.qi4j.model.CompositeModel;
+import org.qi4j.spi.composite.CompositeModel;
 import org.qi4j.spi.persistence.EntityAlreadyExistsException;
 import org.qi4j.spi.persistence.EntityNotFoundException;
 import org.qi4j.spi.persistence.EntityStateHolder;
@@ -44,7 +43,7 @@ public class MemoryPersistentStore
         entityStore = new ConcurrentHashMap<String, Map<Class, SerializedObject>>();
     }
 
-    public <T extends EntityComposite> EntityStateHolder<T> newEntityInstance( String identity, CompositeModel<T> compositeModel )
+    public EntityStateHolder newEntityInstance( String identity, CompositeModel compositeModel )
         throws PersistenceException
     {
         if( entityStore.contains( identity ) )
@@ -52,31 +51,31 @@ public class MemoryPersistentStore
             throw new EntityAlreadyExistsException( getName(), identity );
         }
         entityStore.put( identity, new HashMap<Class, SerializedObject>() );
-        MemoryEntityStateHolder<T> stateHolder = new MemoryEntityStateHolder<T>( identity, compositeModel, this );
+        MemoryEntityStateHolder stateHolder = new MemoryEntityStateHolder( identity, compositeModel, this );
         cache.put( identity, stateHolder );
         return stateHolder;
     }
 
-    public <T extends EntityComposite> EntityStateHolder<T> getEntityInstance( String identity, CompositeModel<T> compositeModel )
+    public EntityStateHolder getEntityInstance( String identity, CompositeModel compositeModel )
         throws PersistenceException
     {
-        EntityStateHolder<T> stateHolder = cache.get( identity );
+        EntityStateHolder stateHolder = cache.get( identity );
         if( stateHolder == null )
         {
             if( !exists( identity ) )
             {
                 throw new EntityNotFoundException( getName(), identity );
             }
-            stateHolder = new MemoryEntityStateHolder<T>( identity, compositeModel, this );
+            stateHolder = new MemoryEntityStateHolder( identity, compositeModel, this );
             cache.put( identity, stateHolder );
         }
         return stateHolder;
     }
 
-    public <T extends EntityComposite> List<EntityStateHolder<T>> getEntityInstances( List<String> identities, CompositeModel<T> compositeModel )
+    public List<EntityStateHolder> getEntityInstances( List<String> identities, CompositeModel compositeModel )
         throws PersistenceException
     {
-        List<EntityStateHolder<T>> result = new ArrayList<EntityStateHolder<T>>( identities.size() );
+        List<EntityStateHolder> result = new ArrayList<EntityStateHolder>( identities.size() );
         for( String id : identities )
         {
             result.add( getEntityInstance( id, compositeModel ) );
@@ -101,7 +100,7 @@ public class MemoryPersistentStore
         return cache.contains( identity ) || entityStore.contains( identity );
     }
 
-    public <T extends EntityComposite> Object getMixin( MemoryEntityStateHolder<T> memoryEntityStateHolder, Class mixinType )
+    public Object getMixin( MemoryEntityStateHolder memoryEntityStateHolder, Class mixinType )
     {
         return null;
     }

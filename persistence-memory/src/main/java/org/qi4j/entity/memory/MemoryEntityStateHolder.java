@@ -17,20 +17,19 @@
 package org.qi4j.entity.memory;
 
 import java.util.concurrent.ConcurrentHashMap;
-import org.qi4j.entity.EntityComposite;
-import org.qi4j.model.CompositeModel;
+import org.qi4j.spi.composite.CompositeModel;
 import org.qi4j.spi.persistence.EntityStateHolder;
 
-public class MemoryEntityStateHolder<T extends EntityComposite>
-    implements EntityStateHolder<T>
+public class MemoryEntityStateHolder
+    implements EntityStateHolder
 {
     private String identity;
-    private CompositeModel<T> model;
+    private CompositeModel model;
     private MemoryPersistentStore memoryPersistentStore;
 
     private ConcurrentHashMap<Class<?>, Object> mixinStates; // shared
 
-    public MemoryEntityStateHolder( String identity, CompositeModel<T> model, MemoryPersistentStore memoryPersistentStore )
+    public MemoryEntityStateHolder( String identity, CompositeModel model, MemoryPersistentStore memoryPersistentStore )
     {
         this.identity = identity;
         this.model = model;
@@ -42,7 +41,7 @@ public class MemoryEntityStateHolder<T extends EntityComposite>
         return identity;
     }
 
-    public CompositeModel<T> getCompositeModel()
+    public CompositeModel getCompositeModel()
     {
         return model;
     }

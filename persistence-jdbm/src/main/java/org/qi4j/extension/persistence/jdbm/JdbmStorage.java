@@ -32,7 +32,7 @@ import jdbm.RecordManager;
 import jdbm.RecordManagerFactory;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.PersistenceException;
-import org.qi4j.model.CompositeModel;
+import org.qi4j.spi.composite.CompositeModel;
 import org.qi4j.spi.persistence.EntityStateHolder;
 import org.qi4j.spi.persistence.PersistentStore;
 
@@ -137,13 +137,13 @@ public class JdbmStorage
     }
 
     // TODO: Re-thinking
-    public <T extends EntityComposite> EntityComposite getEntity( String anIdentity, Class<T> aType )
+    public EntityComposite getEntity( String anIdentity, Class aType )
     {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     // TODO: Re-thinking
-    public <T extends EntityComposite> void putEntity( EntityComposite composite )
+    public void putEntity( EntityComposite composite )
     {
         //To change body of implemented methods use File | Settings | File Templates.
     }
@@ -197,17 +197,17 @@ public class JdbmStorage
         return false;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public <T extends EntityComposite> EntityStateHolder<T> newEntityInstance( String identity, CompositeModel<T> compositeModel ) throws org.qi4j.spi.persistence.PersistenceException
+    public EntityStateHolder newEntityInstance( String identity, CompositeModel compositeModel ) throws org.qi4j.spi.persistence.PersistenceException
     {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public <T extends EntityComposite> EntityStateHolder<T> getEntityInstance( String identity, CompositeModel<T> compositeModel ) throws org.qi4j.spi.persistence.PersistenceException
+    public EntityStateHolder getEntityInstance( String identity, CompositeModel compositeModel ) throws org.qi4j.spi.persistence.PersistenceException
     {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public <T extends EntityComposite> List<EntityStateHolder<T>> getEntityInstances( List<String> identities, CompositeModel<T> compositeModel ) throws org.qi4j.spi.persistence.PersistenceException
+    public List<EntityStateHolder> getEntityInstances( List<String> identities, CompositeModel compositeModel ) throws org.qi4j.spi.persistence.PersistenceException
     {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }

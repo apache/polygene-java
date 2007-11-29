@@ -30,8 +30,8 @@ import jdbm.RecordManager;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.EntityCompositeNotFoundException;
 import org.qi4j.entity.PersistenceException;
-import org.qi4j.runtime.CompositeInvocationHandler;
 import org.qi4j.runtime.ProxyReferenceInvocationHandler;
+import org.qi4j.runtime.composite.CompositeInstance;
 
 
 public class TransactionResource
@@ -62,7 +62,7 @@ public class TransactionResource
             {
                 // Here we need to check the "last value" in the Transaction log. Should this be built on the calls instead?
                 String identity = aProxy.getIdentity();
-                CompositeInvocationHandler handler = CompositeInvocationHandler.getInvocationHandler( aProxy.dereference() );
+                CompositeInstance handler = CompositeInstance.getCompositeInstance( aProxy.dereference() );
                 Object[] mixins = handler.getMixins();
 
                 for( Operation op : operations )
@@ -83,7 +83,7 @@ public class TransactionResource
                 }
 
                 ProxyReferenceInvocationHandler proxyHandler = (ProxyReferenceInvocationHandler) Proxy.getInvocationHandler( aProxy );
-                CompositeInvocationHandler handler = CompositeInvocationHandler.getInvocationHandler( aProxy.dereference() );
+                CompositeInstance handler = CompositeInstance.getCompositeInstance( aProxy.dereference() );
 //                Object[] existingMixins = handler.getMixins();
 //                for( Object existingMixin : existingMixins )
 //                {
