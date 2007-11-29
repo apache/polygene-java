@@ -36,7 +36,7 @@ public class RMIMixinTest
         Registry registry = LocateRegistry.createRegistry( 1099 );
         registry.rebind( RemoteInterface.class.getSimpleName(), stub );
 
-        RemoteInterface remote = factory.newCompositeBuilder( RemoteInterfaceComposite.class ).newInstance();
+        RemoteInterface remote = compositeBuilderFactory.newCompositeBuilder( RemoteInterfaceComposite.class ).newInstance();
 
         // MethodCallEntry remote interface
         System.out.println( remote.foo( "Bar" ) );

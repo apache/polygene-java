@@ -9,6 +9,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/resources" isTestSource="true" />
+      <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
@@ -19,6 +20,7 @@
     <orderEntry type="module" module-name="core-testsupport" />
     <orderEntry type="library" name="js-1.6R5" level="project" />
     <orderEntry type="module" module-name="core-spi" />
+    <orderEntry type="module" module-name="core-bootstrap" />
     <orderEntryProperties />
   </component>
   <component name="copyright">

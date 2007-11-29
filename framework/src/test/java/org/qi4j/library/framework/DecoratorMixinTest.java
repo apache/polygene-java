@@ -14,7 +14,7 @@ public class DecoratorMixinTest extends AbstractQi4jTest
 {
     public void testGenericDecoratorOfDomainobject() throws Exception
     {
-        CompositeBuilder<Composite1> cb = factory.newCompositeBuilder( Composite1.class );
+        CompositeBuilder<Composite1> cb = compositeBuilderFactory.newCompositeBuilder( Composite1.class );
         cb.decorate( new Test1.Test1Mixin() );
         Test1 test = cb.newInstance();
 
@@ -23,7 +23,7 @@ public class DecoratorMixinTest extends AbstractQi4jTest
 
     public void testGenericDecoratorOfInvocationHandler() throws Exception
     {
-        CompositeBuilder<Composite1> cb = factory.newCompositeBuilder( Composite1.class );
+        CompositeBuilder<Composite1> cb = compositeBuilderFactory.newCompositeBuilder( Composite1.class );
         cb.decorate( new InvocationHandler()
         {
 

@@ -19,7 +19,7 @@ public class JavaScriptMixinTest extends AbstractQi4jTest
 
     public void testInvoke() throws Throwable
     {
-        ScriptComposite domain = factory.newCompositeBuilder( ScriptComposite.class ).newInstance();
+        ScriptComposite domain = compositeBuilderFactory.newCompositeBuilder( ScriptComposite.class ).newInstance();
 
         System.out.println( domain.do1() );
     }

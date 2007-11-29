@@ -78,7 +78,7 @@ public class JavaScriptMixin
         {
             Scriptable proxyScope = Context.toObject( proxy, instanceScope );
             proxyScope.setPrototype( instanceScope );
-            proxyScope.put( "factory", proxyScope, factory );
+            proxyScope.put( "compositeBuilderFactory", proxyScope, factory );
             Function fn = getFunction( cx, proxyScope, method );
             Object result = fn.call( cx, instanceScope, proxyScope, args );
 

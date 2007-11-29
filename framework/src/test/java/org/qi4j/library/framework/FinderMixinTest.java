@@ -5,13 +5,12 @@ import java.util.List;
 import org.qi4j.Composite;
 import org.qi4j.CompositeBuilder;
 import org.qi4j.annotation.Mixins;
-import org.qi4j.annotation.scope.Entity;
 import org.qi4j.annotation.scope.ThisCompositeAs;
 import org.qi4j.entity.EntitySession;
 import org.qi4j.query.QueryBuilderFactoryImpl;
 import org.qi4j.query.QueryableIterable;
+import org.qi4j.runtime.injection.EntityInjectionProviderFactory;
 import org.qi4j.runtime.persistence.EntitySessionFactoryImpl;
-import org.qi4j.runtime.resolution.EntityDependencyResolver;
 import org.qi4j.test.AbstractQi4jTest;
 
 public class FinderMixinTest
@@ -19,14 +18,13 @@ public class FinderMixinTest
 {
     public void testFinderMixin() throws Exception
     {
-        EntitySession session = new EntitySessionFactoryImpl( factory ).newEntitySession();
-        EntityDependencyResolver entityDependencyResolver = new EntityDependencyResolver( session );
+        EntitySession session = new EntitySessionFactoryImpl( compositeBuilderFactory ).newEntitySession();
+        EntityInjectionProviderFactory entityInjectionResolver = new EntityInjectionProviderFactory( session );
 
         List objects = new ArrayList();
-        entityDependencyResolver.addQueryFactory( "someQuery", new QueryBuilderFactoryImpl( new QueryableIterable( objects ) ) );
-        spi.getDependencyResolverRegistry().setDependencyResolver( Entity.class, entityDependencyResolver );
+        entityInjectionResolver.addQueryFactory( "someQuery", new QueryBuilderFactoryImpl( new QueryableIterable( objects ) ) );
 
-        CompositeBuilder<Composite1> cb = factory.newCompositeBuilder( FinderMixinTest.Composite1.class );
+        CompositeBuilder<Composite1> cb = compositeBuilderFactory.newCompositeBuilder( FinderMixinTest.Composite1.class );
         FinderMixinTest.Test1 test = cb.newInstance();
         objects.add( test );
         assertEquals( "Foo", test.getFoo() );

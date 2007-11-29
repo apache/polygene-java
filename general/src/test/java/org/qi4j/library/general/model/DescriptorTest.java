@@ -21,7 +21,7 @@ public class DescriptorTest extends AbstractQi4jTest
 {
     public void testDescriptorAsMixin() throws Exception
     {
-        DummyComposite composite = factory.newCompositeBuilder( DummyComposite.class ).newInstance();
+        DummyComposite composite = compositeBuilderFactory.newCompositeBuilder( DummyComposite.class ).newInstance();
         composite.setDisplayValue( "Sianny" );
         String displayValue = composite.getDisplayValue();
         assertEquals( displayValue, composite.getDisplayValue() );
@@ -29,7 +29,7 @@ public class DescriptorTest extends AbstractQi4jTest
 
     public void testDescriptorWithModifier() throws Exception
     {
-        DummyComposite2 composite = factory.newCompositeBuilder( DummyComposite2.class ).newInstance();
+        DummyComposite2 composite = compositeBuilderFactory.newCompositeBuilder( DummyComposite2.class ).newInstance();
         composite.setDisplayValue( "Sianny" );
         String displayValue = composite.getDisplayValue();
         assertEquals( displayValue, "My name is Sianny" );
