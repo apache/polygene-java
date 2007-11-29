@@ -16,33 +16,53 @@ package org.qi4j.test;
 
 import junit.framework.TestCase;
 import org.qi4j.CompositeBuilderFactory;
-import org.qi4j.CompositeRegistry;
+import org.qi4j.ObjectBuilderFactory;
 import org.qi4j.Qi4j;
+import org.qi4j.bootstrap.ApplicationAssemblyFactory;
+import org.qi4j.bootstrap.ApplicationFactory;
+import org.qi4j.bootstrap.Assembly;
+import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.runtime.Energy4Java;
 import org.qi4j.runtime.Qi4jRuntime;
+import org.qi4j.runtime.structure.ApplicationInstance;
 import org.qi4j.spi.Qi4jSPI;
-import org.qi4j.structure.ApplicationBuilderHelper;
 
 /**
  * Base class for Composite tests
  */
 public abstract class AbstractQi4jTest
     extends TestCase
+    implements Assembly
 {
     protected Qi4j api;
     protected Qi4jSPI spi;
     protected Qi4jRuntime runtime;
 
-    protected ApplicationBuilderHelper applicationBuilderHelper;
+    protected ApplicationFactory applicationFactory;
+    protected ApplicationInstance application;
 
-    protected CompositeBuilderFactory factory;
-    protected CompositeRegistry registry;
+    protected CompositeBuilderFactory compositeBuilderFactory;
+    protected ObjectBuilderFactory objectBuilderFactory;
 
     @Override protected void setUp() throws Exception
     {
         api = spi = runtime = new Energy4Java();
-        factory = runtime.newCompositeBuilderFactory();
-        registry = runtime.getCompositeRegistry();
-        applicationBuilderHelper = new ApplicationBuilderHelper( api.getApplicationBuilderFactory() );
+        applicationFactory = new ApplicationFactory( runtime, new ApplicationAssemblyFactory() );
+        application = newApplication();
+
+        // Assume only one module
+        compositeBuilderFactory = application.getLayerInstances().iterator().next().getModuleInstances().iterator().next().getModuleContext().getCompositeBuilderFactory();
+        objectBuilderFactory = application.getLayerInstances().iterator().next().getModuleInstances().iterator().next().getModuleContext().getObjectBuilderFactory();
+    }
+
+    protected ApplicationInstance newApplication()
+        throws AssemblyException
+    {
+        return applicationFactory.newApplication( this ).newApplicationInstance( "Test application" );
+    }
+
+    public void configure( ModuleAssembly module )
+    {
     }
 }

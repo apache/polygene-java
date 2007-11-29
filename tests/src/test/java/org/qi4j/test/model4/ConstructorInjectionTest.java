@@ -25,7 +25,7 @@ public class ConstructorInjectionTest extends AbstractQi4jTest
     public void testMixin()
         throws Exception
     {
-        CompositeBuilder<Composite1> builder = factory.newCompositeBuilder( Composite1.class );
+        CompositeBuilder<Composite1> builder = compositeBuilderFactory.newCompositeBuilder( Composite1.class );
 
         Composite1 instance = builder.newInstance();
         assertNotNull( "DependencyOld not injected.", instance.getBuilderFactory() );

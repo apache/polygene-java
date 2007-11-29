@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
 @Retention( RetentionPolicy.RUNTIME )
 @Target( { ElementType.FIELD, ElementType.PARAMETER } )
 @Documented
-@DependencyScope
+@InjectionScope
 public @interface Service
 {
     @Optional boolean optional() default false; // True if the dependency is optional, only fail if this is false

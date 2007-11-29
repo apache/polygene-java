@@ -14,14 +14,15 @@
 
 package org.qi4j.test.structure;
 
-import org.qi4j.structure.AbstractAssembly;
-import org.qi4j.structure.Application;
-import org.qi4j.structure.ApplicationBuilder;
-import org.qi4j.structure.ApplicationBuilderFactory;
-import org.qi4j.structure.ApplicationBuilderHelper;
-import org.qi4j.structure.Assembly;
-import org.qi4j.structure.LayerBuilder;
-import org.qi4j.structure.ModuleBuilder;
+import org.qi4j.bootstrap.AbstractAssembly;
+import org.qi4j.bootstrap.ApplicationAssembly;
+import org.qi4j.bootstrap.ApplicationAssemblyFactory;
+import org.qi4j.bootstrap.ApplicationFactory;
+import org.qi4j.bootstrap.Assembly;
+import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.LayerAssembly;
+import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.runtime.structure.ApplicationContext;
 import org.qi4j.test.AbstractQi4jTest;
 
 /**
@@ -32,27 +33,35 @@ public class StructureTest
 {
     public void testStructure()
     {
-        ApplicationBuilderFactory sbf = api.getApplicationBuilderFactory();
-        ApplicationBuilder ab = sbf.newApplicationBuilder();
+        ApplicationAssemblyFactory aaf = new ApplicationAssemblyFactory();
+        ApplicationFactory af = new ApplicationFactory( runtime, aaf );
+        try
         {
-            LayerBuilder applicationLayer = ab.newLayerBuilder();
+            ApplicationAssembly ab = aaf.newApplicationAssembly();
             {
+                LayerAssembly applicationLayer = ab.newLayerBuilder();
                 {
-                    ModuleBuilder mb = applicationLayer.newModuleBuilder();
-                    mb.addAssembly( new ApplicationAssembly() );
+                    {
+                        ModuleAssembly mb = applicationLayer.newModuleAssembly();
+                        mb.addAssembly( new DomainApplicationAssembly() );
+                    }
                 }
-            }
 
-            LayerBuilder viewLayer = ab.newLayerBuilder();
-            {
+                LayerAssembly viewLayer = ab.newLayerBuilder();
                 {
-                    ModuleBuilder mb = viewLayer.newModuleBuilder();
-                    mb.addAssembly( new ViewAssembly() );
+                    {
+                        ModuleAssembly mb = viewLayer.newModuleAssembly();
+                        mb.addAssembly( new ViewAssembly() );
+                    }
+                    viewLayer.uses( applicationLayer );
                 }
-                viewLayer.uses( applicationLayer );
             }
+            ApplicationContext applicationContext = af.newApplication( ab );
         }
-        Application application = ab.newApplication();
+        catch( AssemblyException e )
+        {
+            e.printStackTrace();
+        }
 
         Assembly[][][] assemblies = new Assembly[][][]
             {
@@ -63,12 +72,12 @@ public class StructureTest
                 },
                 { // Application layer
                   {
-                      new ApplicationAssembly()
+                      new DomainApplicationAssembly()
                   }
                 },
                 { // Domain layer
                   {
-                      new DomainAssembly()
+                      new DomainModelAssembly()
                   }
                 },
                 { // Infrastructure layer
@@ -78,7 +87,14 @@ public class StructureTest
                 }
             };
 
-        Application app = new ApplicationBuilderHelper( api.getApplicationBuilderFactory() ).newApplication( assemblies );
+        try
+        {
+            ApplicationContext appContext = af.newApplication( assemblies );
+        }
+        catch( AssemblyException e )
+        {
+            e.printStackTrace();
+        }
     }
 
     static class ViewAssembly
@@ -87,13 +103,13 @@ public class StructureTest
 
     }
 
-    static class ApplicationAssembly
+    static class DomainApplicationAssembly
         extends AbstractAssembly
     {
 
     }
 
-    static class DomainAssembly
+    static class DomainModelAssembly
         extends AbstractAssembly
     {
 

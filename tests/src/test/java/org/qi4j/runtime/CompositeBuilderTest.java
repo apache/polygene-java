@@ -17,14 +17,20 @@
 package org.qi4j.runtime;
 
 import org.qi4j.CompositeBuilder;
+import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
 
 public class CompositeBuilderTest extends AbstractQi4jTest
 {
+    @Override public void configure( ModuleAssembly module )
+    {
+        module.addComposite( Model1.class );
+    }
+
     public void testNewInstance()
         throws Exception
     {
-        CompositeBuilder<Model1> impl = factory.newCompositeBuilder( Model1.class );
+        CompositeBuilder<Model1> impl = compositeBuilderFactory.newCompositeBuilder( Model1.class );
         Model1 instance = impl.newInstance();
         assertEquals( true, Model1LifecycleModifier.createMethod );
     }

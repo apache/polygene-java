@@ -30,8 +30,11 @@ public class ExpressionTest extends AbstractQi4jTest
     private ArrayList<Composite1> data;
 
     public void setUp()
+        throws Exception
     {
-        CompositeBuilder<Composite1> compositeBuilder = factory.newCompositeBuilder( Composite1.class );
+        super.setUp();
+
+        CompositeBuilder<Composite1> compositeBuilder = compositeBuilderFactory.newCompositeBuilder( Composite1.class );
         data = new ArrayList<Composite1>();
         for( int i = 0; i < 100; i++ )
         {

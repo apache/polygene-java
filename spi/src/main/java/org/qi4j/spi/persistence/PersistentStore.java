@@ -17,8 +17,7 @@
 package org.qi4j.spi.persistence;
 
 import java.util.List;
-import org.qi4j.entity.EntityComposite;
-import org.qi4j.model.CompositeModel;
+import org.qi4j.spi.composite.CompositeModel;
 
 public interface PersistentStore
 {
@@ -26,11 +25,11 @@ public interface PersistentStore
 
     boolean exists( String identity ) throws PersistenceException;
 
-    <T extends EntityComposite> EntityStateHolder<T> newEntityInstance( String identity, CompositeModel<T> compositeModel ) throws PersistenceException;
+    EntityStateHolder newEntityInstance( String identity, CompositeModel compositeModel ) throws PersistenceException;
 
-    <T extends EntityComposite> EntityStateHolder<T> getEntityInstance( String identity, CompositeModel<T> compositeModel ) throws PersistenceException;
+    EntityStateHolder getEntityInstance( String identity, CompositeModel compositeModel ) throws PersistenceException;
 
-    <T extends EntityComposite> List<EntityStateHolder<T>> getEntityInstances( List<String> identities, CompositeModel<T> compositeModel ) throws PersistenceException;
+    List<EntityStateHolder> getEntityInstances( List<String> identities, CompositeModel compositeModel ) throws PersistenceException;
 
     /**
      * Delete the entity with the given identity from the store.

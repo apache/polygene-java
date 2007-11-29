@@ -25,8 +25,10 @@ import java.lang.annotation.Target;
 @Retention( RetentionPolicy.RUNTIME )
 @Target( { ElementType.FIELD } )
 @Documented
-@DependencyScope
+@InjectionScope
 public @interface PropertyField
 {
     @Name String value() default ""; // Name of the property. If not set then name will be name of field
+
+    @Optional boolean optional() default true; // Whether or not the property is optional. If optional then the default value will be used
 }

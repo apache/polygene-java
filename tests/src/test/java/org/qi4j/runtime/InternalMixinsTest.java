@@ -13,7 +13,7 @@ public class InternalMixinsTest
 {
     public void testInternalMixins()
     {
-        TestComposite test = factory.newCompositeBuilder( TestComposite.class ).newInstance();
+        TestComposite test = compositeBuilderFactory.newCompositeBuilder( TestComposite.class ).newInstance();
         assertEquals( "XYZ123", test.doStuff() );
     }
 

@@ -31,8 +31,6 @@ public interface ObjectBuilder<T>
 
     void decorate( Object object );
 
-    void properties( PropertyValue... properties );
-
     T newInstance();
 
     void inject( T instance );

@@ -18,7 +18,7 @@ package org.qi4j.runtime.persistence;
 
 import java.net.URL;
 import java.util.Collections;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.HashMap;
 import org.qi4j.CompositeBuilder;
 import org.qi4j.CompositeBuilderFactory;
 import static org.qi4j.PropertyValue.property;
@@ -26,12 +26,12 @@ import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.EntitySession;
 import org.qi4j.entity.Identity;
 import org.qi4j.entity.IdentityGenerator;
-import org.qi4j.model.CompositeModel;
 import org.qi4j.query.Query;
 import org.qi4j.query.QueryBuilderFactory;
 import org.qi4j.query.QueryBuilderFactoryImpl;
 import org.qi4j.query.QueryableIterable;
-import org.qi4j.runtime.EntityCompositeInvocationHandler;
+import org.qi4j.runtime.composite.EntityCompositeInstance;
+import org.qi4j.spi.composite.CompositeModel;
 import org.qi4j.spi.persistence.EntityStateHolder;
 import org.qi4j.spi.persistence.PersistenceException;
 import org.qi4j.spi.persistence.PersistentStore;
@@ -39,10 +39,11 @@ import org.qi4j.spi.persistence.PersistentStore;
 public class EntitySessionImpl
     implements EntitySession
 {
+    private HashMap<String, ? extends EntityComposite> cache;
+
     private boolean open;
     private PersistentStore store;
     private CompositeBuilderFactory builderFactory;
-    private ConcurrentHashMap<String, ? extends EntityComposite> cache;
     private IdentityGenerator identityGenerator;
 
     public EntitySessionImpl( PersistentStore store, CompositeBuilderFactory builderFactory, IdentityGenerator identityGenerator )
@@ -51,7 +52,7 @@ public class EntitySessionImpl
         this.builderFactory = builderFactory;
         this.open = true;
         this.store = store;
-        cache = new ConcurrentHashMap<String, EntityComposite>();
+        cache = new HashMap<String, EntityComposite>();
     }
 
     public <T extends EntityComposite> CompositeBuilder<T> newEntityBuilder( String identity, Class<T> compositeType )
@@ -94,11 +95,11 @@ public class EntitySessionImpl
             if( entity == null )
             {
                 CompositeBuilder<T> builder = builderFactory.newCompositeBuilder( compositeType );
-                CompositeModel<T> model = builder.getContext().getCompositeModel();
+                CompositeModel model = null; // TODO builder.getCompositeModel();
                 builder.properties( Identity.class, property( "identity", identity ) );
                 entity = builder.newInstance();
-                EntityStateHolder<T> holder = store.getEntityInstance( identity, model );
-                EntityCompositeInvocationHandler<T> handler = EntityCompositeInvocationHandler.getInvocationHandler( entity );
+                EntityStateHolder holder = store.getEntityInstance( identity, model );
+                EntityCompositeInstance handler = EntityCompositeInstance.getEntityCompositeInstance( entity );
                 handler.setEntityStateHolder( holder );
             }
             else
@@ -106,9 +107,9 @@ public class EntitySessionImpl
                 if( entity.isReference() )
                 {
                     CompositeBuilder<T> builder = builderFactory.newCompositeBuilder( compositeType );
-                    CompositeModel<T> model = builder.getContext().getCompositeModel();
-                    EntityStateHolder<T> holder = store.getEntityInstance( identity, model );
-                    EntityCompositeInvocationHandler<T> handler = EntityCompositeInvocationHandler.getInvocationHandler( entity );
+                    CompositeModel model = null; // TODO builder.getCompositeModel();
+                    EntityStateHolder holder = store.getEntityInstance( identity, model );
+                    EntityCompositeInstance handler = EntityCompositeInstance.getEntityCompositeInstance( entity );
                     handler.setEntityStateHolder( holder );
                 }
             }

@@ -14,8 +14,6 @@
  */
 package org.qi4j;
 
-import org.qi4j.model.CompositeModel;
-
 /**
  * All Composite objects must implement this interface. Let the
  * Composite interface extend this one. An implementation will be provided
@@ -23,12 +21,5 @@ import org.qi4j.model.CompositeModel;
  */
 public interface Composite
 {
-    /**
-     * Get the model for this object
-     *
-     * @return the CompositeModel that describes this Composite
-     */
-    CompositeModel getCompositeModel();
-
     Composite dereference();
 }

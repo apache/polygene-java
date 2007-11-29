@@ -17,14 +17,14 @@
 package org.qi4j.runtime;
 
 import org.qi4j.CompositeInstantiationException;
-import org.qi4j.dependency.DependencyInjectionContext;
-import org.qi4j.runtime.resolution.ObjectResolution;
+import org.qi4j.spi.composite.ObjectBinding;
+import org.qi4j.spi.dependency.InjectionContext;
 
 public interface InstanceFactory
 {
-    <K> K newInstance( ObjectResolution<K> fragmentResolution, DependencyInjectionContext context )
+    Object newInstance( ObjectBinding objectBinding, InjectionContext context )
         throws CompositeInstantiationException;
 
-    public <K> void inject( K instance, ObjectResolution<K> objectResolution, DependencyInjectionContext context )
+    void inject( Object instance, ObjectBinding objectBinding, InjectionContext context )
         throws CompositeInstantiationException;
 }

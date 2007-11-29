@@ -16,20 +16,12 @@
  */
 package org.qi4j.test.model1;
 
-import java.util.ArrayList;
-import java.util.List;
 import junit.framework.TestCase;
-import org.qi4j.model.CompositeModel;
-import org.qi4j.model.ConcernModel;
-import org.qi4j.model.InvalidCompositeException;
-import org.qi4j.model.InvalidFragmentException;
-import org.qi4j.model.MixinModel;
-import org.qi4j.model.NullArgumentException;
-import org.qi4j.runtime.CompositeMixin;
+import org.qi4j.composite.NullArgumentException;
 import org.qi4j.runtime.CompositeModelFactory;
-import org.qi4j.runtime.ConcernModelFactory;
-import org.qi4j.runtime.MixinModelFactory;
-import org.qi4j.runtime.SideEffectModelFactory;
+import org.qi4j.spi.composite.CompositeModel;
+import org.qi4j.spi.composite.InvalidCompositeException;
+import org.qi4j.spi.composite.InvalidFragmentException;
 
 public class CompositeTest extends TestCase
 {
@@ -38,29 +30,6 @@ public class CompositeTest extends TestCase
     protected void setUp() throws Exception
     {
         modelFactory = new CompositeModelFactory();
-    }
-
-    public void testComposition1()
-        throws Exception
-    {
-        List<MixinModel> reference = new ArrayList<MixinModel>();
-
-        ConcernModelFactory concernBuilder = new ConcernModelFactory();
-        SideEffectModelFactory sideEffectBuilder = new SideEffectModelFactory();
-        MixinModelFactory mmb = new MixinModelFactory( concernBuilder, sideEffectBuilder );
-        reference.add( mmb.newFragmentModel( Mixin1Impl.class, Composition1.class, Composition1.class ) );
-        reference.add( mmb.newFragmentModel( CompositeMixin.class, Composition1.class, Composition1.class ) );
-
-        CompositeModel composite1 = modelFactory.newCompositeModel( Composition1.class );
-        assertEquals( Composition1.class, composite1.getCompositeClass() );
-        Iterable<MixinModel> modelMixins = composite1.getMixinModels();
-
-        assertEquals( reference, modelMixins );
-
-        List<ConcernModel> referenceConcerns = new ArrayList<ConcernModel>();
-        referenceConcerns.add( concernBuilder.newFragmentModel( Modifier1.class, Composition1.class, Composition1.class ) );
-
-        assertEquals( referenceConcerns, composite1.getConcernModels() );
     }
 
     public void testComposition2()

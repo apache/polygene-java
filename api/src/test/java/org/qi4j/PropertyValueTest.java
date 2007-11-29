@@ -6,7 +6,7 @@ package org.qi4j;
 import junit.framework.TestCase;
 import static org.qi4j.PropertyValue.name;
 import static org.qi4j.PropertyValue.property;
-import org.qi4j.model.Mixin1;
+import org.qi4j.composite.Mixin1;
 
 public class PropertyValueTest extends TestCase
 {

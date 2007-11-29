@@ -18,14 +18,13 @@ package org.qi4j.runtime;
 
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import org.qi4j.ObjectBuilder;
-import org.qi4j.PropertyValue;
-import org.qi4j.dependency.DependencyInjectionContext;
-import org.qi4j.dependency.InjectionKey;
-import org.qi4j.dependency.ObjectDependencyInjectionContext;
-import org.qi4j.runtime.resolution.ObjectResolution;
+import org.qi4j.runtime.structure.ModuleContext;
+import org.qi4j.spi.composite.ObjectBinding;
+import org.qi4j.spi.dependency.InjectionContext;
+import org.qi4j.spi.dependency.ObjectInjectionContext;
 
 /**
  *
@@ -33,53 +32,39 @@ import org.qi4j.runtime.resolution.ObjectResolution;
 public class ObjectBuilderImpl<T>
     implements ObjectBuilder<T>
 {
-    private ObjectResolution<T> objectResolution;
+    private ObjectBinding objectBinding;
+    private ModuleContext moduleContext;
     private InstanceFactory instanceFactory;
 
-    private Map<InjectionKey, Object> adaptContext;
-    private Map<InjectionKey, Object> decorateContext;
-    private Map<InjectionKey, PropertyValue> propertyContext;
+    private Set adaptContext;
+    private Object decoratedObject;
 
 
-    ObjectBuilderImpl( ObjectResolution<T> objectResolution, InstanceFactory instanceFactory )
+    ObjectBuilderImpl( ObjectBinding objectBinding, ModuleContext moduleContext, InstanceFactory instanceFactory )
     {
-        this.objectResolution = objectResolution;
+        this.objectBinding = objectBinding;
+        this.moduleContext = moduleContext;
         this.instanceFactory = instanceFactory;
     }
 
     public void adapt( Object adaptedObject )
     {
-        InjectionKey key = new InjectionKey( adaptedObject.getClass(), null, objectResolution.getObjectModel().getModelClass() );
-        getAdaptContext().put( key, adaptedObject );
+        getAdaptContext().add( adaptedObject );
     }
 
     public void decorate( Object decoratedObject )
     {
-        InjectionKey key = new InjectionKey( decoratedObject.getClass(), null, objectResolution.getObjectModel().getModelClass() );
-        getDecorateContext().put( key, decoratedObject );
-    }
-
-    public void properties( PropertyValue... properties )
-    {
-        Map<InjectionKey, PropertyValue> context = getPropertyContext();
-        for( PropertyValue property : properties )
-        {
-            String name = property.getName();
-            Object value = property.getValue();
-            InjectionKey key = new InjectionKey( value.getClass(), name, objectResolution.getObjectModel().getModelClass() );
-            context.put( key, property );
-        }
+        this.decoratedObject = decoratedObject;
     }
 
     public T newInstance()
     {
         // Instantiate object
-        Map<InjectionKey, Object> adapt = adaptContext == null ? Collections.EMPTY_MAP : adaptContext;
-        Map<InjectionKey, Object> decorate = decorateContext == null ? Collections.EMPTY_MAP : decorateContext;
-        Map<InjectionKey, PropertyValue> props = propertyContext == null ? Collections.EMPTY_MAP : propertyContext;
+        Set adapt = adaptContext == null ? Collections.EMPTY_SET : adaptContext;
 
-        DependencyInjectionContext context = new ObjectDependencyInjectionContext( props, adapt, decorate );
-        T instance = instanceFactory.newInstance( objectResolution, context );
+        // TODO Fix refs to app and module!!
+        InjectionContext context = new ObjectInjectionContext( null, null, moduleContext.getModuleBinding(), adapt, decoratedObject );
+        T instance = (T) instanceFactory.newInstance( objectBinding, context );
         return instance;
     }
 
@@ -108,39 +93,19 @@ public class ObjectBuilderImpl<T>
     public void inject( T instance )
     {
         // Inject existing object
-        Map<InjectionKey, Object> adapt = adaptContext == null ? Collections.EMPTY_MAP : adaptContext;
-        Map<InjectionKey, Object> decorate = decorateContext == null ? Collections.EMPTY_MAP : decorateContext;
-        Map<InjectionKey, PropertyValue> props = propertyContext == null ? Collections.EMPTY_MAP : propertyContext;
+        Set adapt = adaptContext == null ? Collections.EMPTY_SET : adaptContext;
 
-        DependencyInjectionContext context = new ObjectDependencyInjectionContext( props, adapt, decorate );
-        instanceFactory.inject( instance, objectResolution, context );
+        InjectionContext context = new ObjectInjectionContext( null, null, moduleContext.getModuleBinding(), adapt, decoratedObject );
+        instanceFactory.inject( instance, objectBinding, context );
     }
 
     // Private ------------------------------------------------------
-    private Map<InjectionKey, Object> getAdaptContext()
+    private Set getAdaptContext()
     {
         if( adaptContext == null )
         {
-            adaptContext = new LinkedHashMap<InjectionKey, Object>();
+            adaptContext = new LinkedHashSet();
         }
         return adaptContext;
-    }
-
-    private Map<InjectionKey, Object> getDecorateContext()
-    {
-        if( decorateContext == null )
-        {
-            decorateContext = new LinkedHashMap<InjectionKey, Object>();
-        }
-        return decorateContext;
-    }
-
-    private Map<InjectionKey, PropertyValue> getPropertyContext()
-    {
-        if( propertyContext == null )
-        {
-            propertyContext = new LinkedHashMap<InjectionKey, PropertyValue>();
-        }
-        return propertyContext;
     }
 }

@@ -14,25 +14,10 @@
 
 package org.qi4j;
 
-import org.qi4j.structure.ApplicationBuilderFactory;
-import org.qi4j.structure.AssemblyRegistry;
-import org.qi4j.structure.CompositeMapper;
-
 /**
  * Encapsulation of the Qi4j API. The Qi4j holds references
  * to all the API objects in a Qi4j runtime.
  */
 public interface Qi4j
 {
-    ApplicationBuilderFactory getApplicationBuilderFactory();
-
-    CompositeBuilderFactory newCompositeBuilderFactory();
-
-    CompositeRegistry getCompositeRegistry();
-
-    ObjectBuilderFactory newObjectBuilderFactory();
-
-    CompositeMapper getCompositeMapper();
-
-    AssemblyRegistry getAssemblyRegistry();
 }

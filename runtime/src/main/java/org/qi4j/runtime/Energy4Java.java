@@ -14,9 +14,9 @@
 
 package org.qi4j.runtime;
 
-import org.qi4j.CompositeBuilderFactory;
-import org.qi4j.CompositeRegistry;
-import org.qi4j.ObjectBuilderFactory;
+import java.lang.annotation.Annotation;
+import java.util.HashMap;
+import java.util.Map;
 import org.qi4j.annotation.scope.Adapt;
 import org.qi4j.annotation.scope.ConcernFor;
 import org.qi4j.annotation.scope.Decorate;
@@ -27,26 +27,20 @@ import org.qi4j.annotation.scope.Service;
 import org.qi4j.annotation.scope.SideEffectFor;
 import org.qi4j.annotation.scope.Structure;
 import org.qi4j.annotation.scope.ThisCompositeAs;
-import org.qi4j.dependency.DependencyResolverRegistry;
-import org.qi4j.runtime.resolution.AdaptDependencyResolver;
-import org.qi4j.runtime.resolution.CompositeModelResolver;
-import org.qi4j.runtime.resolution.ConcernModelResolver;
-import org.qi4j.runtime.resolution.DecorateDependencyResolver;
-import org.qi4j.runtime.resolution.DependencyResolverRegistryImpl;
-import org.qi4j.runtime.resolution.InvocationDependencyResolver;
-import org.qi4j.runtime.resolution.MixinModelResolver;
-import org.qi4j.runtime.resolution.ModifiesDependencyResolver;
-import org.qi4j.runtime.resolution.ObjectModelResolver;
-import org.qi4j.runtime.resolution.PropertyDependencyResolver;
-import org.qi4j.runtime.resolution.ServiceDependencyResolver;
-import org.qi4j.runtime.resolution.SideEffectModelResolver;
-import org.qi4j.runtime.resolution.StructureDependencyResolver;
-import org.qi4j.runtime.resolution.ThisCompositeAsDependencyResolver;
-import org.qi4j.runtime.structure.ApplicationBuilderFactoryImpl;
-import org.qi4j.runtime.structure.AssemblyRegistryImpl;
-import org.qi4j.structure.ApplicationBuilderFactory;
-import org.qi4j.structure.AssemblyRegistry;
-import org.qi4j.structure.CompositeMapper;
+import org.qi4j.runtime.composite.CompositeBinder;
+import org.qi4j.runtime.composite.CompositeResolver;
+import org.qi4j.runtime.composite.InjectionProviderFactoryStrategy;
+import org.qi4j.runtime.composite.ObjectBinder;
+import org.qi4j.runtime.composite.ObjectResolver;
+import org.qi4j.runtime.injection.AdaptInjectionProviderFactory;
+import org.qi4j.runtime.injection.DecorateInjectionProviderFactory;
+import org.qi4j.runtime.injection.InvocationInjectionProviderFactory;
+import org.qi4j.runtime.injection.ModifiesInjectionProviderFactory;
+import org.qi4j.runtime.injection.PropertyInjectionProviderFactory;
+import org.qi4j.runtime.injection.ServiceInjectionProviderFactory;
+import org.qi4j.runtime.injection.StructureInjectionProviderFactory;
+import org.qi4j.runtime.injection.ThisCompositeAsInjectionProviderFactory;
+import org.qi4j.spi.dependency.InjectionProviderFactory;
 
 /**
  * Incarnation of Qi4j.
@@ -56,175 +50,81 @@ public class Energy4Java
 {
     Qi4jRuntime delegate;
 
-    // API
-    private ApplicationBuilderFactory applicationBuilderFactory;
-    private CompositeBuilderFactory compositeBuilderFactory;
-    private CompositeRegistry compositeRegistry;
-    private ObjectBuilderFactory objectBuilderFactory;
-    private AssemblyRegistry assemblyRegistry;
+    InstanceFactory instanceFactory;
+    CompositeModelFactory compositeModelFactory;
+    CompositeResolver compositeResolver;
+    CompositeBinder compositeBinder;
 
-    // SPI
-    private DependencyResolverRegistryImpl dependencyResolverRegistry;
-
-    // Runtime
-    private InstanceFactory instanceFactory;
-    private CompositeModelFactory compositeModelFactory;
-    private ObjectModelFactory objectModelFactory;
-    private ServiceDependencyResolver serviceDependencyResolver;
+    ObjectModelFactory objectModelFactory;
+    ObjectResolver objectResolver;
+    ObjectBinder objectBinder;
 
     public Energy4Java()
     {
-        this( null, null, null, null, null, null, null, null );
+        this( null );
     }
 
-    public Energy4Java( InstanceFactory instanceFactory, // Runtime
-                        CompositeModelFactory compositeModelFactory,
-                        ObjectModelFactory objectModelFactory,
-                        DependencyResolverRegistryImpl dependencyResolverRegistry, // SPI
-                        CompositeBuilderFactory compositeBuilderFactory, // API
-                        CompositeRegistry compositeRegistry,
-                        ObjectBuilderFactory objectBuilderFactory,
-                        AssemblyRegistry assemblyRegistry )
+    public Energy4Java( Qi4jRuntime delegate )
     {
-        // Runtime
-        if( instanceFactory == null )
-        {
-            instanceFactory = new InstanceFactoryImpl();
-        }
+        this.delegate = delegate;
 
-        if( compositeModelFactory == null )
-        {
-            compositeModelFactory = new CompositeModelFactory();
-        }
+        Map<Class<? extends Annotation>, InjectionProviderFactory> providerFactories = new HashMap<Class<? extends Annotation>, InjectionProviderFactory>();
+        providerFactories.put( ThisCompositeAs.class, new ThisCompositeAsInjectionProviderFactory() );
+        ModifiesInjectionProviderFactory modifiesInjectionProviderFactory = new ModifiesInjectionProviderFactory();
+        providerFactories.put( ConcernFor.class, modifiesInjectionProviderFactory );
+        providerFactories.put( SideEffectFor.class, modifiesInjectionProviderFactory );
+        providerFactories.put( Invocation.class, new InvocationInjectionProviderFactory() );
+        providerFactories.put( Adapt.class, new AdaptInjectionProviderFactory() );
+        providerFactories.put( Decorate.class, new DecorateInjectionProviderFactory() );
+        PropertyInjectionProviderFactory dependencyResolver = new PropertyInjectionProviderFactory();
+        providerFactories.put( PropertyField.class, dependencyResolver );
+        providerFactories.put( PropertyParameter.class, dependencyResolver );
+        providerFactories.put( Structure.class, new StructureInjectionProviderFactory() );
+        providerFactories.put( Service.class, new ServiceInjectionProviderFactory() );
+        InjectionProviderFactory ipf = new InjectionProviderFactoryStrategy( providerFactories );
 
-        if( objectModelFactory == null )
-        {
-            objectModelFactory = new ObjectModelFactory();
-        }
+        instanceFactory = delegate == null ? new InstanceFactoryImpl() : delegate.getInstanceFactory();
+        compositeModelFactory = delegate == null ? new CompositeModelFactory() : delegate.getCompositeModelFactory();
+        compositeResolver = delegate == null ? new CompositeResolver() : delegate.getCompositeResolver();
+        compositeBinder = delegate == null ? new CompositeBinder( ipf ) : delegate.getCompositeBinder();
 
-        // SPI
-        if( dependencyResolverRegistry == null )
-        {
-            dependencyResolverRegistry = new DependencyResolverRegistryImpl();
-            dependencyResolverRegistry.setDependencyResolver( ThisCompositeAs.class, new ThisCompositeAsDependencyResolver() );
-            dependencyResolverRegistry.setDependencyResolver( ConcernFor.class, new ModifiesDependencyResolver() );
-            dependencyResolverRegistry.setDependencyResolver( SideEffectFor.class, new ModifiesDependencyResolver() );
-            dependencyResolverRegistry.setDependencyResolver( Invocation.class, new InvocationDependencyResolver() );
-            dependencyResolverRegistry.setDependencyResolver( Adapt.class, new AdaptDependencyResolver() );
-            dependencyResolverRegistry.setDependencyResolver( Decorate.class, new DecorateDependencyResolver() );
-            PropertyDependencyResolver dependencyResolver = new PropertyDependencyResolver();
-            dependencyResolverRegistry.setDependencyResolver( PropertyField.class, dependencyResolver );
-            dependencyResolverRegistry.setDependencyResolver( PropertyParameter.class, dependencyResolver );
-            dependencyResolverRegistry.setDependencyResolver( Structure.class, new StructureDependencyResolver( this ) );
-            serviceDependencyResolver = new ServiceDependencyResolver( this );
-            dependencyResolverRegistry.setDependencyResolver( Service.class, serviceDependencyResolver );
-        }
-
-        // API
-        if( compositeRegistry == null )
-        {
-            compositeRegistry = new CompositeRegistryImpl();
-        }
-
-        if( compositeBuilderFactory == null )
-        {
-            ConcernModelResolver concernModelResolver = new ConcernModelResolver( dependencyResolverRegistry );
-            SideEffectModelResolver sideEffectModelResolver = new SideEffectModelResolver( dependencyResolverRegistry );
-            MixinModelResolver mixinModelResolver = new MixinModelResolver( dependencyResolverRegistry );
-            CompositeModelResolver compositeModelResolver = new CompositeModelResolver( concernModelResolver, sideEffectModelResolver, mixinModelResolver );
-            compositeBuilderFactory = new CompositeBuilderFactoryImpl( instanceFactory, compositeModelFactory, compositeModelResolver );
-        }
-
-        if( objectBuilderFactory == null )
-        {
-            ObjectModelResolver modelResolver = new ObjectModelResolver( dependencyResolverRegistry );
-            objectBuilderFactory = new ObjectBuilderFactoryImpl( instanceFactory, objectModelFactory, modelResolver );
-        }
-
-        if( assemblyRegistry == null )
-        {
-            assemblyRegistry = new AssemblyRegistryImpl( this );
-        }
-
-        if( applicationBuilderFactory == null )
-        {
-            applicationBuilderFactory = new ApplicationBuilderFactoryImpl( this );
-        }
-
-        // Runtime
-        this.instanceFactory = instanceFactory;
-        this.compositeModelFactory = compositeModelFactory;
-
-        // SPI
-        this.dependencyResolverRegistry = dependencyResolverRegistry;
-
-        // API
-        this.compositeBuilderFactory = compositeBuilderFactory;
-        this.compositeRegistry = compositeRegistry;
-        this.objectBuilderFactory = objectBuilderFactory;
-        this.assemblyRegistry = assemblyRegistry;
+        objectModelFactory = delegate == null ? new ObjectModelFactory() : delegate.getObjectModelFactory();
+        objectResolver = delegate == null ? new ObjectResolver() : delegate.getObjectResolver();
+        objectBinder = delegate == null ? new ObjectBinder( ipf ) : delegate.getObjectBinder();
     }
 
-    // API
-    public ApplicationBuilderFactory getApplicationBuilderFactory()
+    public InstanceFactory getInstanceFactory()
     {
-        return applicationBuilderFactory;
+        return instanceFactory;
     }
 
-    public CompositeBuilderFactory newCompositeBuilderFactory()
+    public CompositeModelFactory getCompositeModelFactory()
     {
-        ConcernModelResolver concernModelResolver = new ConcernModelResolver( dependencyResolverRegistry );
-        SideEffectModelResolver sideEffectModelResolver = new SideEffectModelResolver( dependencyResolverRegistry );
-        MixinModelResolver mixinModelResolver = new MixinModelResolver( dependencyResolverRegistry );
-        CompositeModelResolver compositeModelResolver = new CompositeModelResolver( concernModelResolver, sideEffectModelResolver, mixinModelResolver );
-        return new CompositeBuilderFactoryImpl( instanceFactory, compositeModelFactory, compositeModelResolver );
+        return compositeModelFactory;
     }
 
-    public ObjectBuilderFactory newObjectBuilderFactory()
+    public CompositeResolver getCompositeResolver()
     {
-        ObjectModelResolver modelResolver = new ObjectModelResolver( dependencyResolverRegistry );
-        return new ObjectBuilderFactoryImpl( instanceFactory, objectModelFactory, modelResolver );
+        return compositeResolver;
     }
 
-    public CompositeRegistry getCompositeRegistry()
+    public CompositeBinder getCompositeBinder()
     {
-        return compositeRegistry;
+        return compositeBinder;
     }
 
-    public CompositeMapper getCompositeMapper()
+    public ObjectModelFactory getObjectModelFactory()
     {
-        return compositeRegistry;
+        return objectModelFactory;
     }
 
-    public AssemblyRegistry getAssemblyRegistry()
+    public ObjectResolver getObjectResolver()
     {
-        return assemblyRegistry;
+        return objectResolver;
     }
 
-    // SPI
-    public DependencyResolverRegistry getDependencyResolverRegistry()
+    public ObjectBinder getObjectBinder()
     {
-        return dependencyResolverRegistry;
-    }
-
-    // Runtime
-    public InstanceFactory newInstanceFactory()
-    {
-        return new InstanceFactoryImpl();
-    }
-
-    public CompositeModelFactory newCompositeModelFactory()
-    {
-        return new CompositeModelFactory();
-    }
-
-    public ObjectModelFactory newObjectModelFactory()
-    {
-        return new ObjectModelFactory();
-    }
-
-    public ServiceDependencyResolver getServiceDependencyResolver()
-    {
-        return serviceDependencyResolver;
+        return objectBinder;
     }
 }

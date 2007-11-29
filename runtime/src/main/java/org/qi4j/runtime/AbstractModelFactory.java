@@ -6,231 +6,185 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import org.qi4j.annotation.AppliesTo;
-import org.qi4j.annotation.scope.DependencyScope;
-import org.qi4j.annotation.scope.Name;
+import org.qi4j.annotation.ConstraintDeclaration;
+import org.qi4j.annotation.scope.InjectionScope;
 import org.qi4j.annotation.scope.Optional;
-import org.qi4j.model.ConstructorDependency;
-import org.qi4j.model.DependencyKey;
-import org.qi4j.model.FieldDependency;
-import org.qi4j.model.FragmentDependencyKey;
-import org.qi4j.model.InvalidCompositeException;
-import org.qi4j.model.MethodDependency;
-import org.qi4j.model.ParameterDependency;
+import org.qi4j.annotation.scope.PropertyField;
+import org.qi4j.annotation.scope.PropertyParameter;
+import org.qi4j.spi.composite.ConstructorModel;
+import org.qi4j.spi.composite.FieldModel;
+import org.qi4j.spi.composite.InvalidCompositeException;
+import org.qi4j.spi.composite.MethodModel;
+import org.qi4j.spi.composite.ParameterConstraintsModel;
+import org.qi4j.spi.composite.ParameterModel;
+import org.qi4j.spi.dependency.DependencyInjectionModel;
+import org.qi4j.spi.dependency.InjectionModel;
+import org.qi4j.spi.dependency.PropertyInjectionModel;
 
 /**
  * TODO
  */
 public abstract class AbstractModelFactory
 {
-    protected void getConstructorDependencies( Class mixinClass, Class compositeType, List<ConstructorDependency> dependentConstructors )
+    protected void getConstructorModels( Class mixinClass, List<ConstructorModel> constructorModels )
     {
         Constructor[] constructors = mixinClass.getConstructors();
         for( Constructor constructor : constructors )
         {
             Type[] parameterTypes = constructor.getGenericParameterTypes();
             Annotation[][] parameterAnnotations = constructor.getParameterAnnotations();
-            List<ParameterDependency> constructorParameters = new ArrayList<ParameterDependency>();
-            getParameterDependencies( mixinClass, compositeType, parameterTypes, parameterAnnotations, constructorParameters );
-
-            ConstructorDependency dependency = new ConstructorDependency( constructor, constructorParameters );
-            dependentConstructors.add( dependency );
-        }
-    }
-
-    protected void getMethodDependencies( Class mixinClass, Class compositeType, List<MethodDependency> dependentMethods )
-    {
-        Method[] methods = mixinClass.getMethods();
-        for( Method method : methods )
-        {
-            Type[] parameterTypes = method.getGenericParameterTypes();
-            Annotation[][] parameterAnnotations = method.getParameterAnnotations();
-            if( hasDependencyAnnotation( parameterAnnotations ) )
+            List<ParameterModel> parameterModels = new ArrayList<ParameterModel>();
+            int idx = 0;
+            for( Type parameterType : parameterTypes )
             {
-                List<ParameterDependency> methodParameters = new ArrayList<ParameterDependency>();
-                getParameterDependencies( mixinClass, compositeType, parameterTypes, parameterAnnotations, methodParameters );
-
-                MethodDependency dependency = new MethodDependency( method, methodParameters );
-
-                dependentMethods.add( dependency );
+                Annotation[] annotations = parameterAnnotations[ idx++ ];
+                ParameterModel parameterModel = getParameterModel( annotations, mixinClass, parameterType );
+                parameterModels.add( parameterModel );
             }
+            ConstructorModel constructorModel = new ConstructorModel( constructor, parameterModels );
+            constructorModels.add( constructorModel );
         }
     }
 
-    protected void getFieldDependencies( Class fragmentClass, Class compositeType, List<FieldDependency> dependentFields )
+    protected void getFieldModels( Class fragmentClass, List<FieldModel> fieldModels )
     {
         Field[] fields = fragmentClass.getDeclaredFields();
         for( Field field : fields )
         {
-            // Find annotation that is a DependencyAnnotation
-            Annotation[] annotations = field.getAnnotations();
-            Annotation annotation = getDependencyAnnotation( annotations );
             field.setAccessible( true );
+
+            Annotation[] annotations = field.getAnnotations();
+            InjectionModel injectionModel = null;
+            Annotation annotation = getInjectionAnnotation( annotations );
             if( annotation != null )
             {
-                String name = null;
-                boolean optional = false;
-
-                Method optionalMethod = getAnnotationMethod( Optional.class, annotation.annotationType() );
-                if( optionalMethod != null )
-                {
-                    try
-                    {
-                        optional = Boolean.class.cast( optionalMethod.invoke( annotation ) );
-                    }
-                    catch( Exception e )
-                    {
-                        throw new InvalidCompositeException( "Could not get optional flag from annotation", fragmentClass );
-                    }
-                }
-
-                Method nameMethod = getAnnotationMethod( Name.class, annotation.annotationType() );
-                if( nameMethod != null )
-                {
-                    String specifiedName;
-                    try
-                    {
-                        specifiedName = String.class.cast( nameMethod.invoke( annotation ) );
-                    }
-                    catch( Exception e )
-                    {
-                        throw new InvalidCompositeException( "Could not get name flag from annotation", fragmentClass );
-                    }
-                    if( !specifiedName.equals( "" ) )
-                    {
-                        name = specifiedName;
-                    }
-                    else
-                    {
-                        // Use name of field
-                        name = field.getName();
-                    }
-                }
-
-                DependencyKey key;
-                if( compositeType == null )
-                {
-                    key = new DependencyKey( annotation.annotationType(), field.getGenericType(), name, fragmentClass );
-                }
-                else
-                {
-                    key = new FragmentDependencyKey( annotation.annotationType(), field.getGenericType(), name, fragmentClass, compositeType );
-                }
-
-                FieldDependency dependency = new FieldDependency( key, optional, field );
-
-                dependentFields.add( dependency );
+                injectionModel = newInjectionModel( annotation, field.getGenericType(), fragmentClass );
             }
+            FieldModel dependencyModel = new FieldModel( field, injectionModel );
+            fieldModels.add( dependencyModel );
         }
 
         // Add fields in superclass
         Class<?> parent = fragmentClass.getSuperclass();
         if( parent != null && parent != Object.class )
         {
-            getFieldDependencies( parent, compositeType, dependentFields );
+            getFieldModels( parent, fieldModels );
         }
     }
 
-    protected Method getAnnotationMethod( Class<? extends Annotation> anAnnotationClass, Class<? extends Annotation> aClass )
+
+    protected void getConstructorModels( Class mixinClass, Class compositeType, List<ConstructorModel> constructorModels )
     {
-        Method[] methods = aClass.getMethods();
+        Constructor[] constructors = mixinClass.getConstructors();
+        for( Constructor constructor : constructors )
+        {
+            Type[] parameterTypes = constructor.getGenericParameterTypes();
+            Annotation[][] parameterAnnotations = constructor.getParameterAnnotations();
+            List<ParameterModel> parameterModels = new ArrayList<ParameterModel>();
+            int idx = 0;
+            for( Type parameterType : parameterTypes )
+            {
+                Annotation[] parameterAnnotation = parameterAnnotations[ idx ];
+                ParameterModel parameterModel = getParameterModel( parameterAnnotation, compositeType, parameterType );
+                parameterModels.add( parameterModel );
+            }
+            ConstructorModel constructorModel = new ConstructorModel( constructor, parameterModels );
+            constructorModels.add( constructorModel );
+        }
+    }
+
+    protected Collection<MethodModel> getMethodModels( Class compositeClass )
+    {
+        List<MethodModel> models = new ArrayList<MethodModel>();
+        Method[] methods = compositeClass.getMethods();
         for( Method method : methods )
         {
-            if( method.getAnnotation( anAnnotationClass ) != null )
+            MethodModel methodModel = newMethodModel( method, compositeClass );
+            models.add( methodModel );
+        }
+
+        return models;
+    }
+
+    private MethodModel newMethodModel( Method method, Class compositeType )
+    {
+        Type[] parameterTypes = method.getGenericParameterTypes();
+        Annotation[][] parameterAnnotations = method.getParameterAnnotations();
+        List<ParameterModel> parameterModels = new ArrayList<ParameterModel>();
+        int idx = 0;
+        boolean hasInjections = false;
+        for( Type parameterType : parameterTypes )
+        {
+            Annotation[] parameterAnnotation = parameterAnnotations[ idx ];
+            ParameterModel parameterModel = getParameterModel( parameterAnnotation, compositeType, parameterType );
+            if( parameterModel.getInjectionModel() != null )
             {
-                return method;
+                hasInjections = true;
+            }
+            parameterModels.add( parameterModel );
+        }
+        MethodModel methodModel = new MethodModel( method, parameterModels, hasInjections );
+        return methodModel;
+    }
+
+    protected ParameterModel getParameterModel( Annotation[] parameterAnnotation, Class methodClass, Type parameterType )
+    {
+        InjectionModel injectionModel = null;
+        List<Annotation> parameterConstraints = new ArrayList<Annotation>();
+        for( Annotation annotation : parameterAnnotation )
+        {
+            if( annotation.annotationType().getAnnotation( ConstraintDeclaration.class ) != null )
+            {
+                parameterConstraints.add( annotation );
+            }
+            else if( annotation.annotationType().getAnnotation( InjectionScope.class ) != null )
+            {
+                if( methodClass.isInterface() )
+                {
+                    throw new InvalidCompositeException( "Not allowed to have injection annotations on interface parameters", methodClass );
+                }
+
+                if( injectionModel != null )
+                {
+                    throw new InvalidCompositeException( "Not allowed to have multiple injection annotations on a single parameter", methodClass );
+                }
+
+                injectionModel = newInjectionModel( annotation, parameterType, methodClass );
             }
         }
-        return null;
-    }
-
-    protected boolean isDependencyAnnotation( Annotation annotation )
-    {
-        return annotation.annotationType().getAnnotation( DependencyScope.class ) != null;
-    }
-
-    protected Class[] getAppliesTo( Class<? extends Object> aModifierClass )
-    {
-        AppliesTo appliesTo = aModifierClass.getAnnotation( AppliesTo.class );
-        if( appliesTo != null )
+        ParameterConstraintsModel parameterConstraintsModel = null;
+        if( parameterConstraints.size() > 0 )
         {
-            return appliesTo.value();
+            parameterConstraintsModel = new ParameterConstraintsModel( parameterConstraints );
         }
+        ParameterModel parameterModel = new ParameterModel( parameterType, parameterConstraintsModel, injectionModel );
+        return parameterModel;
+    }
 
-        Class<?> parent = aModifierClass.getSuperclass();
-        if( parent != null && parent != Object.class )
+    private InjectionModel newInjectionModel( Annotation annotation, Type injectionType, Class injectedType )
+    {
+        InjectionModel model;
+        if( annotation.annotationType().equals( PropertyParameter.class ) )
         {
-            return getAppliesTo( parent );
+            String name = ( (PropertyParameter) annotation ).value();
+            model = new PropertyInjectionModel( annotation.annotationType(), injectionType, injectedType, false, name );
+        }
+        else if( annotation.annotationType().equals( PropertyField.class ) )
+        {
+            String name = ( (PropertyField) annotation ).value();
+            boolean optional = ( (PropertyField) annotation ).optional();
+            model = new PropertyInjectionModel( annotation.annotationType(), injectionType, injectedType, optional, name );
         }
         else
         {
-            return null;
+            boolean optional = isOptional( annotation );
+            model = new DependencyInjectionModel( annotation.annotationType(), injectionType, injectedType, optional );
         }
+        return model;
     }
 
-    private boolean hasDependencyAnnotation( Annotation[][] parameterAnnotation )
-    {
-        for( Annotation[] annotations : parameterAnnotation )
-        {
-            for( Annotation annotation : annotations )
-            {
-                if( isDependencyAnnotation( annotation ) )
-                {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    private void getParameterDependencies( Class mixinClass, Class compositeType, Type[] parameterTypes, Annotation[][] parameterAnnotations, List<ParameterDependency> parameterDependencies )
-    {
-        int i = 0;
-        for( Type parameterType : parameterTypes )
-        {
-            // Find annotation that is a DependencyAnnotation
-            Annotation annotation = getDependencyAnnotation( parameterAnnotations[ i ] );
-            ParameterDependency dependency = null;
-            if( annotation != null )
-            {
-                String name = null;
-                boolean optional = isOptional( annotation );
-
-                Method nameMethod = getAnnotationMethod( Name.class, annotation.annotationType() );
-                if( nameMethod != null )
-                {
-                    String specifiedName;
-                    try
-                    {
-                        specifiedName = String.class.cast( nameMethod.invoke( annotation ) );
-                    }
-                    catch( Exception e )
-                    {
-                        throw new InvalidCompositeException( "Could not get optional flag from annotation", mixinClass );
-                    }
-                    if( !specifiedName.equals( "" ) )
-                    {
-                        name = specifiedName;
-                    }
-                }
-
-                DependencyKey key;
-                if( compositeType == null )
-                {
-                    key = new DependencyKey( annotation.annotationType(), parameterType, name, mixinClass );
-                }
-                else
-                {
-                    key = new FragmentDependencyKey( annotation.annotationType(), parameterType, name, mixinClass, compositeType );
-                }
-
-                dependency = new ParameterDependency( key, optional, name );
-                parameterDependencies.add( dependency );
-            }
-            i++;
-        }
-    }
 
     private boolean isOptional( Annotation annotation )
     {
@@ -249,7 +203,20 @@ public abstract class AbstractModelFactory
         return false;
     }
 
-    private Annotation getDependencyAnnotation( Annotation[] parameterAnnotation )
+    private Method getAnnotationMethod( Class<? extends Annotation> anAnnotationClass, Class<? extends Annotation> aClass )
+    {
+        Method[] methods = aClass.getMethods();
+        for( Method method : methods )
+        {
+            if( method.getAnnotation( anAnnotationClass ) != null )
+            {
+                return method;
+            }
+        }
+        return null;
+    }
+
+    private Annotation getInjectionAnnotation( Annotation[] parameterAnnotation )
     {
         for( Annotation annotation : parameterAnnotation )
         {
@@ -261,5 +228,9 @@ public abstract class AbstractModelFactory
         return null;
     }
 
+    private boolean isDependencyAnnotation( Annotation annotation )
+    {
+        return annotation.annotationType().getAnnotation( InjectionScope.class ) != null;
+    }
 
 }

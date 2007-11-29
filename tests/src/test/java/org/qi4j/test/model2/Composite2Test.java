@@ -12,14 +12,14 @@
 
 package org.qi4j.test.model2;
 
-import org.qi4j.model.CompositeModel;
 import org.qi4j.runtime.CompositeModelFactory;
+import org.qi4j.spi.composite.CompositeModel;
 import org.qi4j.test.AbstractQi4jTest;
 
 public class Composite2Test extends AbstractQi4jTest
 {
     CompositeModelFactory modelFactory;
-    CompositeModel<TestComposite> composite;
+    CompositeModel composite;
 
     protected void setUp() throws Exception
     {
@@ -38,7 +38,7 @@ public class Composite2Test extends AbstractQi4jTest
         assertEquals( StandardThatImpl.class, composite.getImplementations( StandardThat.class ).get( 0 ).getModelClass() );
 
         {
-            TestComposite object = factory.newCompositeBuilder( TestComposite.class ).newInstance();
+            TestComposite object = compositeBuilderFactory.newCompositeBuilder( TestComposite.class ).newInstance();
 
             assertEquals( "bar=foo:FOO Hello World", object.foo( "FOO " ) );
 
@@ -55,10 +55,10 @@ public class Composite2Test extends AbstractQi4jTest
         }
 
         {
-            TestComposite object = factory.newCompositeBuilder( CustomTestComposite.class ).newInstance();
+            TestComposite object = compositeBuilderFactory.newCompositeBuilder( CustomTestComposite.class ).newInstance();
 
             object.setFoo( "xyz" );
-            System.out.println( object.getCompositeModel() );
+            System.out.println( object );
             assertEquals( "FOO:foo:xyz", object.getFoo() );
             object.setFoo( null );
         }

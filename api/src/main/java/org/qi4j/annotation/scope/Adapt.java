@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
 @Retention( RetentionPolicy.RUNTIME )
 @Target( { ElementType.PARAMETER, ElementType.FIELD } )
 @Documented
-@DependencyScope
+@InjectionScope
 public @interface Adapt
 {
     @Optional boolean optional() default false; // True if adaptation is optional, only fail if false

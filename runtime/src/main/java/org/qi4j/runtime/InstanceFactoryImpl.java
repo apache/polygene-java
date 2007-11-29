@@ -7,12 +7,14 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Iterator;
 import org.qi4j.CompositeInstantiationException;
-import org.qi4j.dependency.DependencyInjectionContext;
-import org.qi4j.runtime.resolution.ConstructorDependencyResolution;
-import org.qi4j.runtime.resolution.FieldDependencyResolution;
-import org.qi4j.runtime.resolution.MethodDependencyResolution;
-import org.qi4j.runtime.resolution.ObjectResolution;
-import org.qi4j.runtime.resolution.ParameterDependencyResolution;
+import org.qi4j.spi.composite.ConstructorBinding;
+import org.qi4j.spi.composite.FieldBinding;
+import org.qi4j.spi.composite.MethodBinding;
+import org.qi4j.spi.composite.ObjectBinding;
+import org.qi4j.spi.composite.ParameterBinding;
+import org.qi4j.spi.dependency.InjectionBinding;
+import org.qi4j.spi.dependency.InjectionContext;
+import org.qi4j.spi.dependency.InjectionProvider;
 
 /**
  * TODO
@@ -20,30 +22,30 @@ import org.qi4j.runtime.resolution.ParameterDependencyResolution;
 public class InstanceFactoryImpl
     implements InstanceFactory
 {
-    public <K> K newInstance( ObjectResolution<K> objectResolution, DependencyInjectionContext context )
+    public Object newInstance( ObjectBinding objectBinding, InjectionContext context )
         throws CompositeInstantiationException
     {
         // New instance
-        K instance;
+        Object instance;
         try
         {
             // Constructor injection
-            // TODO: more clever constructor selection
-            ConstructorDependencyResolution cdr = objectResolution.getConstructorResolutions().iterator().next();
+            ConstructorBinding constructorBinding = objectBinding.getConstructorBinding();
 
-            Constructor constructor = cdr.getConstructorDependency().getConstructor();
+            Constructor constructor = constructorBinding.getConstructorResolution().getConstructorModel().getConstructor();
             Object[] parameters = new Object[constructor.getParameterTypes().length];
 
-            // Resolve constructor dependencies
-            Iterable<ParameterDependencyResolution> dr = cdr.getParameterDependencyResolutions();
+            // Inject constructor parameters
+            Iterable<ParameterBinding> parameterBindings = constructorBinding.getParameterBindings();
             int i = 0;
-            for( ParameterDependencyResolution dependencyResolution : dr )
+            for( ParameterBinding parameterBinding : parameterBindings )
             {
-                Object parameter = dependencyResolution.getDependencyResolution().getDependencyInjection( context );
+                InjectionProvider injectionProvider = parameterBinding.getInjectionBinding().getInjectionProvider();
+                Object parameter = injectionProvider.provideInjection( context );
 
-                if( parameter == null && !dependencyResolution.getParameter().isOptional() )
+                if( parameter == null && !parameterBinding.getInjectionBinding().getInjectionResolution().getInjectionModel().isOptional() )
                 {
-                    throw new CompositeInstantiationException( "Non-optional @" + dependencyResolution.getParameter().getKey().getAnnotationType().getSimpleName() + " parameter " + ( i + 1 ) + " of type " + dependencyResolution.getParameter().getKey().getDependencyType() + " in class " + objectResolution.getObjectModel().getModelClass().getName() + " was null" );
+                    throw new CompositeInstantiationException( "Non-optional @" + parameterBinding.getInjectionBinding().getInjectionResolution().getInjectionModel().getInjectionAnnotationType().getSimpleName() + " parameter " + ( i + 1 ) + " of type " + parameterBinding.getInjectionBinding().getInjectionResolution().getInjectionModel().getInjectionType() + " in class " + objectBinding.getObjectResolution().getObjectModel().getModelClass().getName() + " was null" );
                 }
 
                 Class parameterType = constructor.getParameterTypes()[ i ];
@@ -52,8 +54,7 @@ public class InstanceFactoryImpl
             }
 
             // Invoke constructor
-            instance = objectResolution.getObjectModel().getModelClass().cast( constructor.newInstance( parameters ) );
-
+            instance = constructor.newInstance( parameters );
         }
         catch( CompositeInstantiationException e )
         {
@@ -61,84 +62,89 @@ public class InstanceFactoryImpl
         }
         catch( Exception e )
         {
-            throw new CompositeInstantiationException( "Could not instantiate class " + objectResolution.getObjectModel().getModelClass().getName(), e );
+            throw new CompositeInstantiationException( "Could not instantiate class " + objectBinding.getObjectResolution().getObjectModel().getModelClass().getName(), e );
         }
 
         // Inject fields and methods
-        inject( instance, objectResolution, context );
+        inject( instance, objectBinding, context );
 
         return instance;
     }
 
-    public <K> void inject( K instance, ObjectResolution<K> objectResolution, DependencyInjectionContext context )
+    public void inject( Object instance, ObjectBinding objectBinding, InjectionContext context )
         throws CompositeInstantiationException
     {
         try
         {
             // Field injection
-            injectFields( objectResolution, context, instance );
+            injectFields( objectBinding, context, instance );
 
             // Method injection
-            injectMethods( objectResolution, context, instance );
+            injectMethods( objectBinding, context, instance );
         }
         catch( Exception e )
         {
-            throw new CompositeInstantiationException( "Could not inject object of class " + objectResolution.getObjectModel().getModelClass().getName(), e );
+            throw new CompositeInstantiationException( "Could not inject object of class " + instance.getClass().getName(), e );
         }
     }
 
-    private <K> void injectFields( ObjectResolution<K> fragmentResolution, DependencyInjectionContext context, K instance )
+    private void injectFields( ObjectBinding binding, InjectionContext context, Object instance )
         throws IllegalAccessException
     {
-        Iterable<FieldDependencyResolution> fieldResolutions = fragmentResolution.getFieldResolutions();
-        for( FieldDependencyResolution fieldResolution : fieldResolutions )
+        Iterable<FieldBinding> fieldBindings = binding.getFieldBindings();
+        for( FieldBinding fieldBinding : fieldBindings )
         {
-            Object value = fieldResolution.getDependencyResolution().getDependencyInjection( context );
-            Field field = fieldResolution.getFieldDependency().getField();
-            value = getInjectedValue( value, field.getType() );
-            if( value != null )
+            InjectionBinding injectionBinding = fieldBinding.getInjectionBinding();
+            if( injectionBinding != null )
             {
-                try
+                InjectionProvider injectionProvider = injectionBinding.getInjectionProvider();
+                Object value = injectionProvider.provideInjection( context );
+                Field field = fieldBinding.getFieldResolution().getFieldModel().getField();
+                value = getInjectedValue( value, field.getType() );
+                if( value != null )
                 {
-                    field.set( instance, value );
+                    try
+                    {
+                        field.set( instance, value );
+                    }
+                    catch( IllegalArgumentException e )
+                    {
+                        throw new CompositeInstantiationException( "Could not set field " + field.getName() + " in " + field.getDeclaringClass().getName() + " to value of type " + value.getClass().getName() );
+                    }
+                    catch( IllegalAccessException e )
+                    {
+                        e.printStackTrace();
+                    }
                 }
-                catch( IllegalArgumentException e )
+                else
                 {
-                    throw new CompositeInstantiationException( "Could not set field " + field.getName() + " in " + field.getDeclaringClass().getName() + " to value of type " + value.getClass().getName() );
-                }
-                catch( IllegalAccessException e )
-                {
-                    e.printStackTrace();
-                }
-            }
-            else
-            {
-                if( !fieldResolution.getFieldDependency().isOptional() )
-                {
-                    throw new CompositeInstantiationException( "Non-optional @" + fieldResolution.getFieldDependency().getKey().getAnnotationType().getSimpleName() + " field " + fieldResolution.getFieldDependency().getField().getName() + " of type " + fieldResolution.getFieldDependency().getKey().getDependencyType() + " in class " + fragmentResolution.getObjectModel().getModelClass().getName() + " was null" );
+                    if( !injectionBinding.getInjectionResolution().getInjectionModel().isOptional() )
+                    {
+                        throw new CompositeInstantiationException( "Non-optional @" + injectionBinding.getInjectionResolution().getInjectionModel().getInjectionAnnotationType().getSimpleName() + " field " + fieldBinding.getFieldResolution().getFieldModel().getField().getName() + " of type " + fieldBinding.getFieldResolution().getFieldModel().getField().getGenericType() + " in class " + instance.getClass().getName() + " was null" );
+                    }
                 }
             }
         }
     }
 
-    private <K> void injectMethods( ObjectResolution<K> fragmentResolution, DependencyInjectionContext context, K instance )
+    private void injectMethods( ObjectBinding objectBinding, InjectionContext context, Object instance )
         throws InstantiationException, IllegalAccessException, InvocationTargetException
     {
-        Iterable<MethodDependencyResolution> methodResolutions = fragmentResolution.getMethodResolutions();
-        for( MethodDependencyResolution methodResolution : methodResolutions )
+        Iterable<MethodBinding> methodBindings = objectBinding.getInjectedMethodsBindings();
+        for( MethodBinding methodBinding : methodBindings )
         {
-            Method method = methodResolution.getMethodDependency().getMethod();
+            Method method = methodBinding.getMethodResolution().getMethodModel().getMethod();
             Object[] parameters = new Object[]{ method.getParameterTypes().length };
 
             // Resolve parameter dependencies
-            Iterable<ParameterDependencyResolution> dr = methodResolution.getParameterDependencyResolutions();
+            Iterable<ParameterBinding> parameterBindings = methodBinding.getParameterBindings();
             int i = 0;
-            for( ParameterDependencyResolution dependencyResolution : dr )
+            for( ParameterBinding parameterBinding : parameterBindings )
             {
-                Object parameter = dependencyResolution.getDependencyResolution().getDependencyInjection( context );
+                InjectionProvider injectionProvider = parameterBinding.getInjectionBinding().getInjectionProvider();
+                Object parameter = injectionProvider.provideInjection( context );
                 Class parameterType = method.getParameterTypes()[ i ];
                 parameters[ i ] = getInjectedValue( parameter, parameterType );
-
                 i++;
             }
 

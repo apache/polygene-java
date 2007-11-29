@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
 @Retention( RetentionPolicy.RUNTIME )
 @Target( ElementType.PARAMETER )
 @Documented
-@DependencyScope
+@InjectionScope
 public @interface PropertyParameter
 {
     @Name String value(); // Name of the property

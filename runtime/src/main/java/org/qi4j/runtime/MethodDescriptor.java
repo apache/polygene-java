@@ -1,28 +1,28 @@
 package org.qi4j.runtime;
 
-import java.lang.reflect.Method;
+import org.qi4j.runtime.composite.CompositeMethodContext;
 
 /**
  * TODO
  */
 public final class MethodDescriptor
 {
-    private Method method;
+    private CompositeMethodContext compositeMethodContext;
     private int invocationInstanceIndex;
     private int mixinIndex;
-    private InvocationInstancePool invocationInstances;
+    private CompositeMethodInstancePool compositeMethodInstances;
 
-    public MethodDescriptor( Method method, int invocationInstanceIndex, int mixinIndex, InvocationInstancePool invocationInstances )
+    public MethodDescriptor( CompositeMethodContext compositeMethodBinding, int invocationInstanceIndex, int mixinIndex, CompositeMethodInstancePool compositeMethodInstances )
     {
-        this.method = method;
+        this.compositeMethodContext = compositeMethodBinding;
         this.invocationInstanceIndex = invocationInstanceIndex;
         this.mixinIndex = mixinIndex;
-        this.invocationInstances = invocationInstances;
+        this.compositeMethodInstances = compositeMethodInstances;
     }
 
-    public Method getMethod()
+    public CompositeMethodContext getCompositeMethodContext()
     {
-        return method;
+        return compositeMethodContext;
     }
 
     public int getInvocationInstanceIndex()
@@ -35,8 +35,8 @@ public final class MethodDescriptor
         return mixinIndex;
     }
 
-    public InvocationInstancePool getInvocationInstances()
+    public CompositeMethodInstancePool getMethodInstances()
     {
-        return invocationInstances;
+        return compositeMethodInstances;
     }
 }

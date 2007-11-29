@@ -26,11 +26,11 @@ import org.qi4j.annotation.scope.ThisCompositeAs;
 import org.qi4j.entity.CompositeCastException;
 import org.qi4j.entity.Entity;
 import org.qi4j.entity.EntityComposite;
-import org.qi4j.model.CompositeModel;
-import org.qi4j.runtime.AbstractCompositeInvocationHandler;
-import org.qi4j.runtime.CompositeInvocationHandler;
-import org.qi4j.runtime.EntityCompositeInvocationHandler;
 import org.qi4j.runtime.ProxyReferenceInvocationHandler;
+import org.qi4j.runtime.composite.AbstractCompositeInstance;
+import org.qi4j.runtime.composite.CompositeInstance;
+import org.qi4j.runtime.composite.EntityCompositeInstance;
+import org.qi4j.spi.composite.CompositeModel;
 
 public final class EntityMixin
     implements Entity
@@ -44,17 +44,18 @@ public final class EntityMixin
         {
             return compositeType.cast( meAsEntity );
         }
-        CompositeModel model = meAsEntity.getCompositeModel();
+        CompositeInstance handler = CompositeInstance.getCompositeInstance( meAsEntity );
+        CompositeModel model = handler.getContext().getCompositeModel();
         Class existingCompositeClass = model.getCompositeClass();
         if( !existingCompositeClass.isAssignableFrom( compositeType ) )
         {
             throw new CompositeCastException( existingCompositeClass.getName() + " is not a super-type of " + compositeType.getName() );
         }
 
-        CompositeInvocationHandler handler = CompositeInvocationHandler.getInvocationHandler( meAsEntity );
+
         T newComposite = builderFactory.newCompositeBuilder( compositeType ).newInstance();
         Object[] oldMixins = handler.getMixins();
-        CompositeInvocationHandler newHandler = CompositeInvocationHandler.getInvocationHandler( newComposite );
+        CompositeInstance newHandler = CompositeInstance.getCompositeInstance( newComposite );
 
         newHandler.setMixins( oldMixins );
         return newComposite;
@@ -69,13 +70,13 @@ public final class EntityMixin
             return true;
         }
         handler = Proxy.getInvocationHandler( anObject );
-        AbstractCompositeInvocationHandler oih = (AbstractCompositeInvocationHandler) handler;
+        AbstractCompositeInstance oih = (AbstractCompositeInstance) handler;
         return oih.getContext().getCompositeModel().getCompositeClass().isAssignableFrom( anObjectType );
     }
 
     public boolean isReference()
     {
-        EntityCompositeInvocationHandler handler = EntityCompositeInvocationHandler.getInvocationHandler( meAsEntity );
+        EntityCompositeInstance handler = EntityCompositeInstance.getEntityCompositeInstance( meAsEntity );
         return handler.isReference();
     }
 

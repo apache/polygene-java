@@ -18,7 +18,7 @@ public class EntityTest
     public void testEntity()
     {
 /*
-        CompositeBuilderFactoryImpl cbf = new CompositeBuilderFactoryImpl();
+        ModuleCompositeBuilderFactory cbf = new ModuleCompositeBuilderFactory();
 
         List results = new ArrayList();
         for( int i = 0; i < 10; i++ )
@@ -30,7 +30,7 @@ public class EntityTest
         }
 
         EntitySession session = new EntitySessionFactoryImpl( cbf ).newEntitySession();
-        EntityDependencyResolver entityDependencyResolver = new EntityDependencyResolver( session );
+        EntityInjectionProviderFactory entityDependencyResolver = new EntityInjectionProviderFactory( session );
 
 //        entityDependencyResolver.addQueryFactory( "someQuery", new DefaultQueryFactory( results ) );
         cbf.getDependencyResolverDelegator().setDependencyResolver( Entity.class, entityDependencyResolver );

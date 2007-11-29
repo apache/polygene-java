@@ -25,11 +25,11 @@ import org.qi4j.Composite;
 import org.qi4j.annotation.Concerns;
 import org.qi4j.annotation.Mixins;
 import org.qi4j.annotation.scope.ConcernFor;
-import org.qi4j.model.CompositeModel;
-import org.qi4j.model.ConcernModel;
-import org.qi4j.model.InvalidCompositeException;
-import org.qi4j.model.MixinModel;
-import org.qi4j.model.NullArgumentException;
+import org.qi4j.composite.NullArgumentException;
+import org.qi4j.spi.composite.CompositeModel;
+import org.qi4j.spi.composite.ConcernModel;
+import org.qi4j.spi.composite.InvalidCompositeException;
+import org.qi4j.spi.composite.MixinModel;
 
 public class CompositeModelFactoryTest
 {

@@ -18,7 +18,9 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 import org.qi4j.Composite;
 import org.qi4j.annotation.scope.ThisCompositeAs;
-import org.qi4j.model.CompositeModel;
+import org.qi4j.runtime.composite.AbstractCompositeInstance;
+import org.qi4j.runtime.composite.CompositeInstance;
+import org.qi4j.spi.composite.CompositeModel;
 
 public final class CompositeMixin
     implements Composite
@@ -28,7 +30,7 @@ public final class CompositeMixin
     public CompositeModel getCompositeModel()
     {
         Composite composite = dereference();
-        return CompositeInvocationHandler.getInvocationHandler( composite ).getContext().getCompositeModel();
+        return CompositeInstance.getCompositeInstance( composite ).getContext().getCompositeModel();
     }
 
     public Composite dereference()
@@ -38,7 +40,7 @@ public final class CompositeMixin
         {
             return (Composite) ( (ProxyReferenceInvocationHandler) handler ).getComposite();
         }
-        if( handler instanceof AbstractCompositeInvocationHandler )
+        if( handler instanceof AbstractCompositeInstance )
         {
             return meAsComposite;
         }

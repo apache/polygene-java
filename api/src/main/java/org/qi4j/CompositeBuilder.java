@@ -16,16 +16,12 @@
  */
 package org.qi4j;
 
-import org.qi4j.model.CompositeContext;
-
 /**
  * TODO for Rickard; Explanation needed on how to use for Templating, Strategy and Builder patterns.
  */
 public interface CompositeBuilder<T extends Composite>
     extends Iterable<T>
 {
-    CompositeContext<T> getContext();
-
     /**
      * Adapts the mixin object to be used for any mixin references missing in the builder, and can
      * be provided by the mixin object.

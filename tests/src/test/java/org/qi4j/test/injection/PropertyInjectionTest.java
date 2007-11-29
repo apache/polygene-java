@@ -24,7 +24,7 @@ public class PropertyInjectionTest extends AbstractQi4jTest
 {
     public void testPropertyFieldInjection()
     {
-        CompositeBuilder<SayHelloComposite> builder = factory.newCompositeBuilder( SayHelloComposite.class );
+        CompositeBuilder<SayHelloComposite> builder = compositeBuilderFactory.newCompositeBuilder( SayHelloComposite.class );
 
         builder.properties( SampleInterface.class,
                             PropertyValue.property( "sampleOne", "Hello" ),

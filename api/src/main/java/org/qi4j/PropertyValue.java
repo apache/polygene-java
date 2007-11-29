@@ -19,7 +19,7 @@ import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import org.qi4j.model.NullArgumentException;
+import org.qi4j.composite.NullArgumentException;
 
 /**
  * TODO

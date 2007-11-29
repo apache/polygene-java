@@ -12,7 +12,7 @@
  */
 package org.qi4j.test.model1;
 
-import org.qi4j.model.InvalidCompositeException;
+import org.qi4j.spi.composite.InvalidCompositeException;
 import org.qi4j.test.AbstractQi4jTest;
 
 public class CompositeFactoryImplTest extends AbstractQi4jTest
@@ -30,7 +30,7 @@ public class CompositeFactoryImplTest extends AbstractQi4jTest
         try
         {
             Class aClass = Composition8.class;
-            Composition8 composition8 = (Composition8) factory.newCompositeBuilder( aClass ).newInstance();
+            Composition8 composition8 = (Composition8) compositeBuilderFactory.newCompositeBuilder( aClass ).newInstance();
             fail( "CompositeBuilderFactory.newInstance() should return CompositeInstantiationException when creating a new instance for " + aClass.getName() );
         }
         catch( InvalidCompositeException e )
@@ -44,7 +44,7 @@ public class CompositeFactoryImplTest extends AbstractQi4jTest
     {
         try
         {
-            Composition9 composition9 = factory.newCompositeBuilder( Composition9.class ).newInstance();
+            Composition9 composition9 = compositeBuilderFactory.newCompositeBuilder( Composition9.class ).newInstance();
             composition9.setValue( "test value" );
         }
         catch( Exception e )
