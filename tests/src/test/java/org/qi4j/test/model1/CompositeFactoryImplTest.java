@@ -12,17 +12,20 @@
  */
 package org.qi4j.test.model1;
 
+import org.qi4j.CompositeBuilder;
+import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.spi.composite.InvalidCompositeException;
 import org.qi4j.test.AbstractQi4jTest;
 
 public class CompositeFactoryImplTest extends AbstractQi4jTest
 {
-    protected void setUp()
-        throws Exception
+    public void configure( ModuleAssembly module )
     {
-        super.setUp();
+        // This is required to instantiate [Composition9] composite in [testNewComposition9]
+        module.addComposite( Composition9.class, false );
     }
 
+    @SuppressWarnings( "unchecked" )
     public void testNewInstanceNotExtendingComposite()
         throws Exception
     {
@@ -30,7 +33,8 @@ public class CompositeFactoryImplTest extends AbstractQi4jTest
         try
         {
             Class aClass = Composition8.class;
-            Composition8 composition8 = (Composition8) compositeBuilderFactory.newCompositeBuilder( aClass ).newInstance();
+            CompositeBuilder builder = compositeBuilderFactory.newCompositeBuilder( aClass );
+            builder.newInstance();
             fail( "CompositeBuilderFactory.newInstance() should return CompositeInstantiationException when creating a new instance for " + aClass.getName() );
         }
         catch( InvalidCompositeException e )
@@ -44,7 +48,8 @@ public class CompositeFactoryImplTest extends AbstractQi4jTest
     {
         try
         {
-            Composition9 composition9 = compositeBuilderFactory.newCompositeBuilder( Composition9.class ).newInstance();
+            CompositeBuilder<Composition9> builder = compositeBuilderFactory.newCompositeBuilder( Composition9.class );
+            Composition9 composition9 = builder.newInstance();
             composition9.setValue( "test value" );
         }
         catch( Exception e )

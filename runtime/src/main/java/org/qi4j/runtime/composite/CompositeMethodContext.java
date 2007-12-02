@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Rickard …berg. All Rights Reserved.
+ * Copyright (c) 2007, Rickard ï¿½berg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,6 +35,8 @@ import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.composite.CompositeMethodBinding;
 import org.qi4j.spi.composite.ConcernBinding;
 import org.qi4j.spi.composite.ConstraintBinding;
+import org.qi4j.spi.composite.ConstraintModel;
+import org.qi4j.spi.composite.ConstraintResolution;
 import org.qi4j.spi.composite.ModifierModel;
 import org.qi4j.spi.composite.ParameterBinding;
 import org.qi4j.spi.composite.ParameterConstraintsBinding;
@@ -84,15 +86,16 @@ public class CompositeMethodContext
 
                 Object modifies = getModifies( method, classloader, previousConcern, concernBinding.getConcernResolution().getConcernModel() );
 
-                ModifierInjectionContext modifierContext = new ModifierInjectionContext( moduleContext.getCompositeBuilderFactory(),
-                                                                                         moduleContext.getObjectBuilderFactory(),
-                                                                                         moduleContext.getModuleBinding(),
-                                                                                         compositeBinding,
-                                                                                         proxyHandler,
-                                                                                         modifies,
-                                                                                         compositeMethodBinding.getCompositeMethodResolution().getCompositeMethodModel().getMethod(),
-                                                                                         compositeMethodBinding.getMixinBinding(),
-                                                                                         proxyHandler );
+                ModifierInjectionContext modifierContext = new ModifierInjectionContext(
+                    moduleContext.getCompositeBuilderFactory(),
+                    moduleContext.getObjectBuilderFactory(),
+                    moduleContext.getModuleBinding(),
+                    compositeBinding,
+                    proxyHandler,
+                    modifies,
+                    compositeMethodBinding.getCompositeMethodResolution().getCompositeMethodModel().getMethod(),
+                    compositeMethodBinding.getMixinBinding(),
+                    proxyHandler );
                 previousConcern = runtime.getInstanceFactory().newInstance( concernBinding, modifierContext );
             }
         }
@@ -105,10 +108,19 @@ public class CompositeMethodContext
         {
             List<ConstraintInstance> constraintInstances = new ArrayList<ConstraintInstance>();
             ParameterConstraintsBinding parameterConstraintsBinding = parameterBinding.getParameterConstraintsBinding();
+
+            if( parameterConstraintsBinding == null )
+            {
+                continue;
+            }
+
             Map<Annotation, ConstraintBinding> constraintBindings = parameterConstraintsBinding.getConstraintBindings();
             for( Map.Entry<Annotation, ConstraintBinding> entry : constraintBindings.entrySet() )
             {
-                Class<? extends ParameterConstraint> constraintType = entry.getValue().getConstraintResolution().getConstraintModel().getConstraintType();
+                ConstraintBinding constraintBinding = entry.getValue();
+                ConstraintResolution constraintResolution = constraintBinding.getConstraintResolution();
+                ConstraintModel constraintModel = constraintResolution.getConstraintModel();
+                Class<? extends ParameterConstraint> constraintType = constraintModel.getConstraintType();
                 try
                 {
                     ParameterConstraint constraintInstance = constraintType.newInstance();

@@ -53,6 +53,9 @@ public class InstanceFactoryImpl
                 i++;
             }
 
+            // EFY: This is required to be able to instantiate package protected class
+            constructor.setAccessible( true );
+
             // Invoke constructor
             instance = constructor.newInstance( parameters );
         }

@@ -1,4 +1,4 @@
-/*  Copyright 2007 Rickard …berg.
+/*  Copyright 2007 Rickard ï¿½berg.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,14 @@
  */
 package org.qi4j.runtime;
 
-import java.util.Collections;
+import static java.util.Collections.emptySet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import org.qi4j.CompositeBuilderFactory;
 import org.qi4j.ObjectBuilder;
+import org.qi4j.ObjectBuilderFactory;
+import static org.qi4j.composite.NullArgumentException.validateNotNull;
 import org.qi4j.runtime.structure.ModuleContext;
 import org.qi4j.spi.composite.ObjectBinding;
 import org.qi4j.spi.dependency.InjectionContext;
@@ -39,31 +42,41 @@ public class ObjectBuilderImpl<T>
     private Set adaptContext;
     private Object decoratedObject;
 
-
-    ObjectBuilderImpl( ObjectBinding objectBinding, ModuleContext moduleContext, InstanceFactory instanceFactory )
+    ObjectBuilderImpl( ObjectBinding anObjectBinding, ModuleContext aModuleContext, InstanceFactory anInstanceFactory )
+        throws IllegalArgumentException
     {
-        this.objectBinding = objectBinding;
-        this.moduleContext = moduleContext;
-        this.instanceFactory = instanceFactory;
+        validateNotNull( "anObjectBinding", anObjectBinding );
+        validateNotNull( "aModuleContext", aModuleContext );
+        validateNotNull( "anInstanceFactory", anInstanceFactory );
+
+        objectBinding = anObjectBinding;
+        moduleContext = aModuleContext;
+        instanceFactory = anInstanceFactory;
+
+        adaptContext = emptySet();
     }
 
-    public void adapt( Object adaptedObject )
+    @SuppressWarnings( "unchecked" )
+    public void adapt( Object anAdaptedObject )
     {
-        getAdaptContext().add( adaptedObject );
+        Set context = getAdaptContext();
+        context.add( anAdaptedObject );
     }
 
-    public void decorate( Object decoratedObject )
+    public void decorate( Object aDecoratedObject )
     {
-        this.decoratedObject = decoratedObject;
+        decoratedObject = aDecoratedObject;
     }
 
+    @SuppressWarnings( "unchecked" )
     public T newInstance()
     {
         // Instantiate object
-        Set adapt = adaptContext == null ? Collections.EMPTY_SET : adaptContext;
+        CompositeBuilderFactory compBuilderFactory = moduleContext.getCompositeBuilderFactory();
+        ObjectBuilderFactory objBuilderFactory = moduleContext.getObjectBuilderFactory();
 
-        // TODO Fix refs to app and module!!
-        InjectionContext context = new ObjectInjectionContext( null, null, moduleContext.getModuleBinding(), adapt, decoratedObject );
+        InjectionContext context = new ObjectInjectionContext(
+            compBuilderFactory, objBuilderFactory, moduleContext.getModuleBinding(), adaptContext, decoratedObject );
         T instance = (T) instanceFactory.newInstance( objectBinding, context );
         return instance;
     }
@@ -93,7 +106,7 @@ public class ObjectBuilderImpl<T>
     public void inject( T instance )
     {
         // Inject existing object
-        Set adapt = adaptContext == null ? Collections.EMPTY_SET : adaptContext;
+        Set adapt = adaptContext == null ? emptySet() : adaptContext;
 
         InjectionContext context = new ObjectInjectionContext( null, null, moduleContext.getModuleBinding(), adapt, decoratedObject );
         instanceFactory.inject( instance, objectBinding, context );
@@ -102,10 +115,11 @@ public class ObjectBuilderImpl<T>
     // Private ------------------------------------------------------
     private Set getAdaptContext()
     {
-        if( adaptContext == null )
+        if( adaptContext == emptySet() )
         {
             adaptContext = new LinkedHashSet();
         }
+
         return adaptContext;
     }
 }
