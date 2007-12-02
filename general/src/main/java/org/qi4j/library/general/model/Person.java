@@ -12,9 +12,11 @@
  */
 package org.qi4j.library.general.model;
 
+import org.qi4j.entity.EntityComposite;
+
 /**
  * Generic interface of a person that consists of a name and a gender
  */
-public interface Person extends PersonName, Gender
+public interface Person extends EntityComposite, PersonName, Gender
 {
 }

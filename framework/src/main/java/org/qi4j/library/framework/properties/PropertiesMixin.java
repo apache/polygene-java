@@ -1,6 +1,7 @@
 /*
  * Copyright 2007 Rickard Öberg. All Rights Reserved.
  * Copyright 2007 Alin Dreghiciu. All Rights Reserved.
+ * Copyright 2007 Edward Yakop. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); 
  * you may not use this file except in compliance with the License. 
@@ -37,19 +38,42 @@ import org.qi4j.annotation.scope.PropertyParameter;
 public class PropertiesMixin
     implements InvocationHandler
 {
+    private static final String PROPERTY_VALUE_PROPERTIES = "properties";
+
     // Attributes ----------------------------------------------------
-    Map<String, Object> properties = new HashMap<String, Object>();
+    Map<String, Object> properties;
 
-
-    public PropertiesMixin( @PropertyParameter( "properties" )Iterable<PropertyValue> props )
+    /**
+     * Construct and empty properties mixins.
+     *
+     * @since 0.1.0
+     */
+    public PropertiesMixin()
     {
+        properties = new HashMap<String, Object>();
+    }
+
+    /**
+     * Construct an instance of {@code PropertiesMixins} with initial values.
+     *
+     * @param props The initial values. This argument must not be {@code null}.
+     * @since 0.1.0
+     */
+    public PropertiesMixin( @PropertyParameter( PROPERTY_VALUE_PROPERTIES )Iterable<PropertyValue> props )
+    {
+        this();
+
         for( PropertyValue propertyValue : props )
         {
-            properties.put( "v:" + propertyValue.getName(), propertyValue.getValue() );
+            String name = propertyValue.getName();
+            Object value = propertyValue.getValue();
+
+            properties.put( "v:" + name, value );
         }
     }
 
     // InvocationHandler implementation ------------------------------
+    @SuppressWarnings( "unchecked" )
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
     {
         String methodName = method.getName();
@@ -111,5 +135,4 @@ public class PropertiesMixin
         }
         return null;
     }
-
 }
