@@ -53,6 +53,7 @@ public class ApplicationBuilder
     private ApplicationResolution applicationResolution;
     private Map<LayerModel, LayerAssembly> layerModelAssemblyMap = new HashMap<LayerModel, LayerAssembly>();
     private Map<LayerAssembly, LayerModel> layerAssemblyModelMap = new HashMap<LayerAssembly, LayerModel>();
+    private Map<LayerModel, LayerResolution> layerResolutionMap = new HashMap<LayerModel, LayerResolution>();
 
     public ApplicationBuilder( Qi4jRuntime runtime )
     {
@@ -89,7 +90,6 @@ public class ApplicationBuilder
 
     private ApplicationResolution newApplicationResolution( ApplicationModel applicationModel )
     {
-        Map<LayerAssembly, LayerResolution> layerResolutionMap = new HashMap<LayerAssembly, LayerResolution>();
         List<LayerResolution> layerResolutions = new ArrayList<LayerResolution>();
 
         // Resolve Layers
@@ -97,7 +97,7 @@ public class ApplicationBuilder
         {
             LayerResolution layerResolution = newLayerResolution( applicationModel, layerModel );
             layerResolutions.add( layerResolution );
-//            layerResolutionMap.put( layerAssembly, layerResolution );
+            layerResolutionMap.put( layerModel, layerResolution );
         }
 
         // Create ApplicationResolution
@@ -170,14 +170,15 @@ public class ApplicationBuilder
         }
 
         LayerAssembly layerAssembly = layerModelAssemblyMap.get( layerModel );
-        List<LayerModel> usedLayers = new ArrayList<LayerModel>();
+        List<LayerResolution> usedLayers = new ArrayList<LayerResolution>();
         for( LayerAssembly assembly : layerAssembly.getUses() )
         {
             LayerModel usedLayer = layerAssemblyModelMap.get( assembly );
-            usedLayers.add( usedLayer );
+            LayerResolution usedLayerResolution = layerResolutionMap.get( usedLayer );
+            usedLayers.add( usedLayerResolution );
         }
 
-        LayerResolution layerResolution = new LayerResolution( layerModel, moduleResolutions, usedLayers );
+        LayerResolution layerResolution = new LayerResolution( layerModel, applicationModel, moduleResolutions, usedLayers );
         return layerResolution;
     }
 
@@ -279,7 +280,7 @@ public class ApplicationBuilder
         resolveComposites( moduleModel.getPrivateComposites(), applicationModel, layerModel, moduleModel, compositeResolutions );
         resolveComposites( moduleModel.getPublicComposites(), applicationModel, layerModel, moduleModel, compositeResolutions );
 
-        ModuleResolution moduleResolution = new ModuleResolution( moduleModel, instantiableComposites, compositeResolutions );
+        ModuleResolution moduleResolution = new ModuleResolution( moduleModel, applicationModel, layerModel, instantiableComposites, compositeResolutions );
         return moduleResolution;
     }
 

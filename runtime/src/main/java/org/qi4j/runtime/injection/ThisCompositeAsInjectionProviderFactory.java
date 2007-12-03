@@ -21,13 +21,13 @@ public class ThisCompositeAsInjectionProviderFactory
     {
         if( resolution.getCompositeModel() != null )
         {
-            return new ThisCompositeAsDependencyResolution( resolution.getInjectionModel().getInjectionClass() );
+            return new ThisCompositeAsInjectionProvider( resolution.getInjectionModel().getInjectionClass() );
 
 /* TODO Needs to be fixed to support internal mixins
             // Check if the composite implements the desired type
             if( resolution.getRawType().isAssignableFrom( fragmentKey.getCompositeType() ) )
             {
-                return new ThisCompositeAsDependencyResolution(resolution.getRawType());
+                return new ThisCompositeAsInjectionProvider(resolution.getRawType());
             }
             else
             {
@@ -41,11 +41,11 @@ public class ThisCompositeAsInjectionProviderFactory
         }
     }
 
-    private class ThisCompositeAsDependencyResolution implements InjectionProvider
+    private class ThisCompositeAsInjectionProvider implements InjectionProvider
     {
         Constructor proxyConstructor;
 
-        public ThisCompositeAsDependencyResolution( Class type )
+        public ThisCompositeAsInjectionProvider( Class type )
         {
             try
             {

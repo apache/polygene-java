@@ -97,12 +97,13 @@ public class CompositeResolver
 
     private MixinResolution resolveMixin( MixinModel mixinModel, ResolutionContext resolutionContext ) throws InvalidInjectionException
     {
+        ResolutionContext mixinResolutionContext = new ResolutionContext( mixinModel, resolutionContext.getCompositeModel(), resolutionContext.getModule(), resolutionContext.getLayer(), resolutionContext.getApplication() );
         List<ConstructorResolution> constructors = new ArrayList<ConstructorResolution>();
-        resolveConstructorModel( mixinModel.getConstructorModels(), constructors, resolutionContext );
+        resolveConstructorModel( mixinModel.getConstructorModels(), constructors, mixinResolutionContext );
         List<FieldResolution> fields = new ArrayList<FieldResolution>();
-        resolveFieldModels( mixinModel.getFieldModels(), fields, resolutionContext );
+        resolveFieldModels( mixinModel.getFieldModels(), fields, mixinResolutionContext );
         List<MethodResolution> methods = new ArrayList<MethodResolution>();
-        resolveMethodModels( mixinModel.getMethodModels(), methods, resolutionContext );
+        resolveMethodModels( mixinModel.getMethodModels(), methods, mixinResolutionContext );
 
         MixinResolution resolution = new MixinResolution( mixinModel, constructors, fields, methods );
         return resolution;

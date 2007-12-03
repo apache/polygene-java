@@ -16,6 +16,7 @@ package org.qi4j.spi.structure;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * TODO
@@ -24,12 +25,14 @@ public class LayerResolution
     implements Serializable
 {
     private LayerModel layerModel;
+    private ApplicationModel applicationModel;
     private Iterable<ModuleResolution> moduleResolutions;
-    private Iterable<LayerModel> uses = new ArrayList<LayerModel>();
+    private List<LayerResolution> uses = new ArrayList<LayerResolution>();
 
-    public LayerResolution( LayerModel layerModel, Iterable<ModuleResolution> modules, Iterable<LayerModel> uses )
+    public LayerResolution( LayerModel layerModel, ApplicationModel applicationModel, Iterable<ModuleResolution> modules, List<LayerResolution> uses )
     {
         this.layerModel = layerModel;
+        this.applicationModel = applicationModel;
         this.moduleResolutions = modules;
         this.uses = uses;
     }
@@ -39,12 +42,17 @@ public class LayerResolution
         return layerModel;
     }
 
+    public ApplicationModel getApplicationModel()
+    {
+        return applicationModel;
+    }
+
     public Iterable<ModuleResolution> getModuleResolutions()
     {
         return moduleResolutions;
     }
 
-    public Iterable<LayerModel> getUses()
+    public List<LayerResolution> getUses()
     {
         return uses;
     }

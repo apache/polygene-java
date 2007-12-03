@@ -60,10 +60,11 @@ public abstract class AbstractModelFactory
             Annotation annotation = getInjectionAnnotation( annotations );
             if( annotation != null )
             {
+                // Only add fields which have injections
                 injectionModel = newInjectionModel( annotation, field.getGenericType(), fragmentClass );
+                FieldModel dependencyModel = new FieldModel( field, injectionModel );
+                fieldModels.add( dependencyModel );
             }
-            FieldModel dependencyModel = new FieldModel( field, injectionModel );
-            fieldModels.add( dependencyModel );
         }
 
         // Add fields in superclass

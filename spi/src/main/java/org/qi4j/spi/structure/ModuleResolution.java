@@ -27,10 +27,14 @@ public class ModuleResolution
 {
     private ModuleModel moduleModel;
     private Map<Class<? extends Composite>, ModuleModel> instantiableComposites;
+    private ApplicationModel applicationModel;
+    private LayerModel layerModel;
     private Iterable<CompositeResolution> compositeResolutions;
 
-    public ModuleResolution( ModuleModel moduleModel, Map<Class<? extends Composite>, ModuleModel> instantiableComposites, Iterable<CompositeResolution> compositeResolutions )
+    public ModuleResolution( ModuleModel moduleModel, ApplicationModel applicationModel, LayerModel layerModel, Map<Class<? extends Composite>, ModuleModel> instantiableComposites, Iterable<CompositeResolution> compositeResolutions )
     {
+        this.applicationModel = applicationModel;
+        this.layerModel = layerModel;
         this.compositeResolutions = compositeResolutions;
         this.instantiableComposites = instantiableComposites;
         this.moduleModel = moduleModel;
@@ -39,6 +43,16 @@ public class ModuleResolution
     public ModuleModel getModuleModel()
     {
         return moduleModel;
+    }
+
+    public ApplicationModel getApplicationModel()
+    {
+        return applicationModel;
+    }
+
+    public LayerModel getLayerModel()
+    {
+        return layerModel;
     }
 
     public Map<Class<? extends Composite>, ModuleModel> getInstantiableComposites()
