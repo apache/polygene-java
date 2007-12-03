@@ -14,13 +14,21 @@
 
 package org.qi4j.library.framework.xml;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import org.qi4j.Composite;
+import org.qi4j.annotation.Concerns;
 import org.qi4j.annotation.Mixins;
+import org.qi4j.annotation.SideEffects;
+import org.qi4j.annotation.scope.ConcernFor;
+import org.qi4j.annotation.scope.SideEffectFor;
 import org.qi4j.annotation.scope.ThisCompositeAs;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
@@ -48,11 +56,16 @@ public class ApplicationXmlTest
 
         Document doc = applicationXml.toXml( application.getApplicationContext() );
 
+        File file = new File( "application.rdf" );
+        doc.setDocumentURI( file.getAbsolutePath() + "/" );
+        FileWriter fileWriter = new FileWriter( file );
         DOMSource source = new DOMSource( doc );
-        StreamResult result = new StreamResult( System.out );
+        StreamResult result = new StreamResult( fileWriter );
         Transformer transformer = TransformerFactory.newInstance().newTransformer();
         transformer.setOutputProperty( OutputKeys.INDENT, "yes" );
         transformer.transform( source, result );
+        fileWriter.close();
+        System.out.println( "RDF/XML written to " + file.getAbsolutePath() );
     }
 
     @Mixins( AMixin.class )
@@ -86,6 +99,31 @@ public class ApplicationXmlTest
         }
     }
 
+    public static class OtherStuffConcern
+        implements B
+    {
+        @ConcernFor B next;
+
+        public String otherStuff()
+        {
+            return next.otherStuff() + "!";
+        }
+    }
+
+    public static class LogSideEffect
+        implements InvocationHandler
+    {
+        @SideEffectFor InvocationHandler next;
+
+        public Object invoke( Object object, Method method, Object[] objects ) throws Throwable
+        {
+            System.out.println( "Called " + method.getName() );
+            return null;
+        }
+    }
+
+    @SideEffects( LogSideEffect.class )
+    @Concerns( OtherStuffConcern.class )
     @Mixins( { BMixin.class } )
     public interface TestComposite
         extends A, Composite

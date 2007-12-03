@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <application xmlns:ns0="http://www.w3.org/1999/02/22-rdf-syntax-ns#" ns0:about="testapp"
+               xmlns="http://www.qi4j.org/rdf/1.0#">
+    <title xmlns="http://purl.org/dc/elements/1.1/">testapp</title>
+    <layers ns0:parseType="Collection">
+      <layer ns0:about="testapp/testlayer">
+        <title xmlns="http://purl.org/dc/elements/1.1/">testlayer</title>
+        <modules ns0:parseType="Collection">
+          <module ns0:about="testapp/testlayer/testmodule">
+            <title xmlns="http://purl.org/dc/elements/1.1/">testmodule</title>
+            <publiccomposites ns0:parseType="Collection"/>
+            <privatecomposites ns0:parseType="Collection">
+              <composite ns0:about="org_qi_j_library_framework_xml_ApplicationXmlTest_TestComposite">
+                <title xmlns="http://purl.org/dc/elements/1.1/">TestComposite</title>
+                <methods ns0:parseType="Collection">
+                  <method ns0:about="org_qi_j_library_framework_xml_ApplicationXmlTest_A_doStuff__">
+                    <title xmlns="http://purl.org/dc/elements/1.1/">public abstract java.lang.String
+                      org.qi4j.library.framework.xml.ApplicationXmlTest$A.doStuff()
+                    </title>
+                    <concerns ns0:parseType="Collection"/>
+                    <implementedby
+                      ns0:resource="org_qi_j_library_framework_xml_ApplicationXmlTest_TestComposite/org_qi_j_library_framework_xml_ApplicationXmlTest_AMixin"/>
+                  </method>
+                  <method ns0:about="org_qi_j_Composite_dereference__">
+                    <title xmlns="http://purl.org/dc/elements/1.1/">public abstract org.qi4j.Composite
+                      org.qi4j.Composite.dereference()
+                    </title>
+                    <concerns ns0:parseType="Collection"/>
+                    <implementedby
+                      ns0:resource="org_qi_j_library_framework_xml_ApplicationXmlTest_TestComposite/org_qi_j_runtime_CompositeMixin"/>
+                  </method>
+                  <method ns0:about="org_qi_j_Composite_dereference__">
+                    <title xmlns="http://purl.org/dc/elements/1.1/">public abstract org.qi4j.Composite
+                      org.qi4j.Composite.dereference()
+                    </title>
+                    <concerns ns0:parseType="Collection"/>
+                    <implementedby
+                      ns0:resource="org_qi_j_library_framework_xml_ApplicationXmlTest_TestComposite/org_qi_j_runtime_CompositeMixin"/>
+                  </method>
+                  <method ns0:about="org_qi_j_library_framework_xml_ApplicationXmlTest_B_otherStuff__">
+                    <title xmlns="http://purl.org/dc/elements/1.1/">public abstract java.lang.String
+                      org.qi4j.library.framework.xml.ApplicationXmlTest$B.otherStuff()
+                    </title>
+                    <concerns ns0:parseType="Collection"/>
+                    <implementedby
+                      ns0:resource="org_qi_j_library_framework_xml_ApplicationXmlTest_TestComposite/org_qi_j_library_framework_xml_ApplicationXmlTest_BMixin"/>
+                  </method>
+                  <mixins ns0:parseType="Collection">
+                    <mixin ns0:about="org_qi_j_library_framework_xml_ApplicationXmlTest_AMixin"/>
+                    <title xmlns="http://purl.org/dc/elements/1.1/">AMixin</title>
+                    <class>org.qi4j.library.framework.xml.ApplicationXmlTest$AMixin</class>
+                    <mixin ns0:about="org_qi_j_library_framework_xml_ApplicationXmlTest_BMixin"/>
+                    <title xmlns="http://purl.org/dc/elements/1.1/">BMixin</title>
+                    <class>org.qi4j.library.framework.xml.ApplicationXmlTest$BMixin</class>
+                    <mixin ns0:about="org_qi_j_runtime_CompositeMixin"/>
+                    <title xmlns="http://purl.org/dc/elements/1.1/">CompositeMixin</title>
+                    <class>org.qi4j.runtime.CompositeMixin</class>
+                  </mixins>
+                </methods>
+              </composite>
+            </privatecomposites>
+          </module>
+        </modules>
+      </layer>
+    </layers>
+  </application>
+</RDF>

@@ -14,76 +14,95 @@
 
 package org.qi4j.library.framework.xml;
 
-import java.util.Map;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import org.qi4j.Composite;
+import static org.qi4j.library.framework.xml.RDFVocabulary.APPLICATION;
+import static org.qi4j.library.framework.xml.RDFVocabulary.CLASS;
+import static org.qi4j.library.framework.xml.RDFVocabulary.COMPOSITE;
+import static org.qi4j.library.framework.xml.RDFVocabulary.CONCERN;
+import static org.qi4j.library.framework.xml.RDFVocabulary.CONCERNS;
+import static org.qi4j.library.framework.xml.RDFVocabulary.FIELD;
+import static org.qi4j.library.framework.xml.RDFVocabulary.FIELDS;
+import static org.qi4j.library.framework.xml.RDFVocabulary.IMPLEMENTED_BY;
+import static org.qi4j.library.framework.xml.RDFVocabulary.INJECTION_SCOPE;
+import static org.qi4j.library.framework.xml.RDFVocabulary.INJECTION_TYPE;
+import static org.qi4j.library.framework.xml.RDFVocabulary.LAYER;
+import static org.qi4j.library.framework.xml.RDFVocabulary.LAYERS;
+import static org.qi4j.library.framework.xml.RDFVocabulary.METHOD;
+import static org.qi4j.library.framework.xml.RDFVocabulary.METHODS;
+import static org.qi4j.library.framework.xml.RDFVocabulary.MIXIN;
+import static org.qi4j.library.framework.xml.RDFVocabulary.MIXINS;
+import static org.qi4j.library.framework.xml.RDFVocabulary.MODULE;
+import static org.qi4j.library.framework.xml.RDFVocabulary.MODULES;
+import static org.qi4j.library.framework.xml.RDFVocabulary.PRIVATE_COMPOSITES;
+import static org.qi4j.library.framework.xml.RDFVocabulary.PUBLIC_COMPOSITES;
+import static org.qi4j.library.framework.xml.RDFVocabulary.QI4JNS;
+import static org.qi4j.library.framework.xml.RDFVocabulary.SIDE_EFFECT;
+import static org.qi4j.library.framework.xml.RDFVocabulary.SIDE_EFFECTS;
+import static org.qi4j.library.framework.xml.RDFVocabulary.USES;
 import org.qi4j.runtime.structure.ApplicationContext;
 import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.composite.CompositeMethodBinding;
 import org.qi4j.spi.composite.CompositeModel;
 import org.qi4j.spi.composite.ConcernBinding;
+import org.qi4j.spi.composite.FieldBinding;
+import org.qi4j.spi.composite.MixinBinding;
+import org.qi4j.spi.composite.SideEffectBinding;
+import org.qi4j.spi.dependency.InjectionResolution;
 import org.qi4j.spi.structure.LayerBinding;
-import org.qi4j.spi.structure.LayerModel;
+import org.qi4j.spi.structure.LayerResolution;
 import org.qi4j.spi.structure.ModuleBinding;
-import org.qi4j.spi.structure.ModuleModel;
+import org.qi4j.spi.structure.ModuleResolution;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+/*
+<?xml version="1.0"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:dc="http://purl.org/dc/elements/1.1/"
+         xmlns:ex="http://example.org/stuff/1.0/">
+  <rdf:Description rdf:about="http://www.w3.org/TR/rdf-syntax-grammar"
+		   dc:title="RDF/XML Syntax Specification (Revised)">
+    <ex:editor>
+      <rdf:Description ex:fullName="Dave Beckett">
+	<ex:homePage rdf:resource="http://purl.org/net/dajobe/" />
+      </rdf:Description>
+    </ex:editor>
+  </rdf:Description>
+</rdf:RDF>
+*/
+
 /**
- * TODO
+ * Generate RDF/XML data given an ApplicationContext.
  */
 public class ApplicationXml
 {
+    // Namespaces
+    public static final String RDFNS = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
+    public static final String RDFSNS = "http://www.w3.org/2000/01/rdf-schema#";
+    public static final String DCNS = "http://purl.org/dc/elements/1.1/";
+
+    // RDF attributes
+    public static final String ABOUT = "about";
+    public static final String ID = "ID";
+    public static final String RESOURCE = "resource";
+    public static final String PARSE_TYPE = "parseType";
+
+
     Document toXml( ApplicationContext context )
     {
         try
         {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            dbf.setNamespaceAware( true );
             DocumentBuilder db = dbf.newDocumentBuilder();
             Document doc = db.newDocument();
 
-            Element app = (Element) doc.appendChild( doc.createElement( "application" ) );
-            addAttribute( doc, app, "id", context.getApplicationBinding().getApplicationResolution().getApplicationModel().getName() );
+            Element rdf = (Element) doc.appendChild( doc.createElementNS( RDFNS, "RDF" ) );
 
-            Iterable<LayerBinding> layers = context.getApplicationBinding().getLayerBindings();
-            for( LayerBinding layerBinding : layers )
-            {
-                Element layer = (Element) app.appendChild( doc.createElement( "layer" ) );
-                addAttribute( doc, layer, "id", layerBinding.getLayerResolution().getLayerModel().getName() );
-
-                Iterable<LayerModel> uses = layerBinding.getLayerResolution().getUses();
-                for( LayerModel useModel : uses )
-                {
-                    Element use = (Element) layer.appendChild( doc.createElement( "uses" ) );
-                    addAttribute( doc, use, "idref", useModel.getName() );
-                }
-
-                Iterable<ModuleBinding> moduleBindings = layerBinding.getModuleBindings();
-                for( ModuleBinding moduleBinding : moduleBindings )
-                {
-                    Element module = (Element) layer.appendChild( doc.createElement( "module" ) );
-                    addAttribute( doc, module, "idref", moduleBinding.getModuleResolution().getModuleModel().getName() );
-
-                    Element instantiableComposites = (Element) module.appendChild( doc.createElement( "instantiablecomposites" ) );
-                    for( Map.Entry<Class<? extends Composite>, ModuleModel> entry : moduleBinding.getModuleResolution().getInstantiableComposites().entrySet() )
-                    {
-                        Element instantiableComposite = (Element) instantiableComposites.appendChild( doc.createElement( "instantiablecomposite" ) );
-                        addAttribute( doc, instantiableComposite, "type", entry.getKey().getName() );
-                        addAttribute( doc, instantiableComposite, "idref", entry.getValue().getName() );
-                    }
-
-                    Element publicComposites = (Element) module.appendChild( doc.createElement( "publiccomposites" ) );
-                    Iterable<CompositeModel> composites = moduleBinding.getModuleResolution().getModuleModel().getPublicComposites();
-                    addComposites( composites, moduleBinding, publicComposites, doc );
-
-                    Element privateComposites = (Element) module.appendChild( doc.createElement( "privatecomposites" ) );
-                    Iterable<CompositeModel> privateCompositeModels = moduleBinding.getModuleResolution().getModuleModel().getPrivateComposites();
-                    addComposites( privateCompositeModels, moduleBinding, privateComposites, doc );
-                }
-            }
+            addApplication( context, doc, rdf );
 
             return doc;
         }
@@ -93,41 +112,208 @@ public class ApplicationXml
         }
     }
 
-    private void addComposites( Iterable<CompositeModel> composites, ModuleBinding moduleBinding, Element compositesElement, Document doc )
+    private void addApplication( ApplicationContext context, Document doc, Element rdf )
     {
-        for( CompositeModel compositeModel : composites )
+        String appId = getApplicationId( context );
+        Element application = addResource( doc, rdf, APPLICATION, appId );
+        addTitle( doc, application, appId );
+
+        Element layers = addCollection( doc, application, LAYERS );
+        Iterable<LayerBinding> layerBindings = context.getApplicationBinding().getLayerBindings();
+        for( LayerBinding layerBinding : layerBindings )
         {
-            CompositeBinding compositeBinding = moduleBinding.getCompositeBindings().get( compositeModel.getCompositeClass() );
-            Element composite = (Element) compositesElement.appendChild( doc.createElement( "composite" ) );
-            addTextElement( doc, composite, "type", compositeModel.getCompositeClass().getName() );
-
-            for( CompositeMethodBinding compositeMethodBinding : compositeBinding.getCompositeMethodBindings() )
-            {
-                Element compositeMethod = (Element) composite.appendChild( doc.createElement( "method" ) );
-                addAttribute( doc, compositeMethod, "signature", compositeMethodBinding.getCompositeMethodResolution().getCompositeMethodModel().getMethod().toGenericString() );
-                Element concerns = (Element) compositeMethod.appendChild( doc.createElement( "concerns" ) );
-                for( ConcernBinding concernBinding : compositeMethodBinding.getConcernBindings() )
-                {
-                    Element concern = (Element) concerns.appendChild( doc.createElement( "method" ) );
-                    addAttribute( doc, concern, "type", concernBinding.getConcernResolution().getConcernModel().getModelClass().getName() );
-                }
-
-                Element methodMixin = (Element) compositeMethod.appendChild( doc.createElement( "mixin" ) );
-                addAttribute( doc, methodMixin, "type", compositeMethodBinding.getMixinBinding().getMixinResolution().getMixinModel().getModelClass().getName() );
-            }
-
+            addLayer( layerBinding, doc, layers, appId );
         }
     }
 
-    private void addTextElement( Document doc, Element composite, String name, String value )
+    private void addLayer( LayerBinding layerBinding, Document doc, Element layers, String appId )
     {
-        Element type = (Element) composite.appendChild( doc.createElement( name ) );
+        String layerId = getLayerId( layerBinding.getLayerResolution() );
+        Element layer = addResource( doc, layers, LAYER, layerId );
+        addTitle( doc, layer, layerBinding.getLayerResolution().getLayerModel().getName() );
+
+        Iterable<LayerResolution> uses = layerBinding.getLayerResolution().getUses();
+        for( LayerResolution usesLayer : uses )
+        {
+            addResourceProperty( doc, layer, USES, appId + "/" + getLayerId( usesLayer ) );
+        }
+
+        Element modules = addCollection( doc, layer, MODULES );
+        Iterable<ModuleBinding> moduleBindings = layerBinding.getModuleBindings();
+        for( ModuleBinding moduleBinding : moduleBindings )
+        {
+            addModule( moduleBinding, doc, modules );
+        }
+    }
+
+    private void addModule( ModuleBinding moduleBinding, Document doc, Element modules )
+    {
+        String moduleId = getModuleId( moduleBinding.getModuleResolution() );
+        Element module = addResource( doc, modules, MODULE, moduleId );
+        addTitle( doc, module, moduleBinding.getModuleResolution().getModuleModel().getName() );
+
+//                    for( Map.Entry<Class<? extends Composite>, ModuleModel> entry : moduleBinding.getModuleResolution().getInstantiableComposites().entrySet() )
+//                    {
+//                        String instantiableComposite = moduleBinding.getModuleResolution().
+//                        addResourceProperty(doc, module, INSTANTIABLE_COMPOSITES, entry.getKey().getName());
+//                    }
+
+        Element publicComposites = addCollection( doc, module, PUBLIC_COMPOSITES );
+        Iterable<CompositeModel> composites = moduleBinding.getModuleResolution().getModuleModel().getPublicComposites();
+        for( CompositeModel composite : composites )
+        {
+            addComposite( composite, moduleBinding, publicComposites, doc );
+        }
+
+        Element privateComposites = addCollection( doc, module, PRIVATE_COMPOSITES );
+        Iterable<CompositeModel> privateCompositeModels = moduleBinding.getModuleResolution().getModuleModel().getPrivateComposites();
+        for( CompositeModel privateCompositeModel : privateCompositeModels )
+        {
+            addComposite( privateCompositeModel, moduleBinding, privateComposites, doc );
+        }
+    }
+
+    private void addComposite( CompositeModel compositeModel, ModuleBinding moduleBinding, Element compositeCollection, Document doc )
+    {
+        CompositeBinding compositeBinding = moduleBinding.getCompositeBindings().get( compositeModel.getCompositeClass() );
+        Element composite = addResource( doc, compositeCollection, COMPOSITE, getCompositeId( compositeBinding ) );
+        addTitle( doc, composite, compositeModel.getCompositeClass().getSimpleName() );
+
+        Element compositeMethods = addCollection( doc, composite, METHODS );
+        for( CompositeMethodBinding compositeMethodBinding : compositeBinding.getCompositeMethodBindings() )
+        {
+            Element compositeMethod = addResource( doc, compositeMethods, METHOD, getMethodId( compositeMethodBinding ) );
+            addTitle( doc, compositeMethod, compositeMethodBinding.getCompositeMethodResolution().getCompositeMethodModel().getMethod().toGenericString() );
+            Element concerns = addCollection( doc, compositeMethod, CONCERNS );
+            for( ConcernBinding concernBinding : compositeMethodBinding.getConcernBindings() )
+            {
+                Element concern = addResource( doc, concerns, CONCERN, getCompositeId( compositeBinding ) + "/" + getConcernId( concernBinding ) );
+                addTitle( doc, concern, concernBinding.getConcernResolution().getConcernModel().getModelClass().getSimpleName() );
+                addProperty( doc, concern, QI4JNS, CLASS, concernBinding.getConcernResolution().getConcernModel().getModelClass().getName() );
+            }
+            Element sideEffects = addCollection( doc, compositeMethod, SIDE_EFFECTS );
+            for( SideEffectBinding sideEffectBinding : compositeMethodBinding.getSideEffectBindings() )
+            {
+                Element sideEffect = addResource( doc, sideEffects, SIDE_EFFECT, getCompositeId( compositeBinding ) + "/" + getSideEffectId( sideEffectBinding ) );
+                addTitle( doc, sideEffect, sideEffectBinding.getSideEffectResolution().getSideEffectModel().getModelClass().getName() );
+                addProperty( doc, sideEffect, QI4JNS, CLASS, sideEffectBinding.getSideEffectResolution().getSideEffectModel().getModelClass().getName() );
+            }
+            addResourceProperty( doc, compositeMethod, IMPLEMENTED_BY, getCompositeId( compositeBinding ) + "/" + getMixinId( compositeMethodBinding.getMixinBinding() ) );
+        }
+
+        Element mixins = addCollection( doc, composite, MIXINS );
+        for( MixinBinding mixinBinding : compositeBinding.getMixinBindings() )
+        {
+            Element mixin = addResource( doc, mixins, MIXIN, getMixinId( mixinBinding ) );
+            addTitle( doc, mixin, mixinBinding.getMixinResolution().getMixinModel().getModelClass().getSimpleName() );
+            addProperty( doc, mixin, QI4JNS, CLASS, mixinBinding.getMixinResolution().getMixinModel().getModelClass().getName() );
+
+            Iterable<FieldBinding> fieldBindings = mixinBinding.getFieldBindings();
+            Element fields = addCollection( doc, mixin, FIELDS );
+            for( FieldBinding fieldBinding : fieldBindings )
+            {
+                Element field = addResource( doc, fields, FIELD, getFieldId( fieldBinding ) );
+                addTitle( doc, field, fieldBinding.getFieldResolution().getFieldModel().getField().getName() );
+                addProperty( doc, field, QI4JNS, INJECTION_SCOPE, fieldBinding.getInjectionBinding().getInjectionResolution().getInjectionModel().getInjectionAnnotationType().getSimpleName() );
+                addProperty( doc, field, QI4JNS, INJECTION_TYPE, fieldBinding.getInjectionBinding().getInjectionResolution().getInjectionModel().getInjectionType().toString() );
+            }
+        }
+    }
+
+    private void addTitle( Document doc, Element resource, String title )
+    {
+//        addProperty(doc, resource, DCNS, "title", title);
+        addProperty( doc, resource, RDFSNS, "label", title );
+    }
+
+    private void addProperty( Document doc, Element resource, String namespace, String name, String value )
+    {
+        Element type = (Element) resource.appendChild( doc.createElementNS( namespace, name ) );
         type.appendChild( doc.createTextNode( value ) );
+    }
+
+    private Element addResource( Document doc, Element owner, String type, String resourceId )
+    {
+        Element resource = (Element) owner.appendChild( doc.createElementNS( RDFVocabulary.QI4JNS, type ) );
+        addAttribute( doc, resource, ID, resourceId );
+        return resource;
+    }
+
+    private Element addCollection( Document doc, Element resource, String collectionName )
+    {
+        Element collection = (Element) resource.appendChild( doc.createElementNS( RDFVocabulary.QI4JNS, collectionName ) );
+        addAttribute( doc, collection, PARSE_TYPE, "Collection" );
+        return collection;
+    }
+
+    private void addResourceProperty( Document doc, Element subject, String predicate, String resource )
+    {
+        Element use = (Element) subject.appendChild( doc.createElementNS( RDFVocabulary.QI4JNS, predicate ) );
+        addAttribute( doc, use, RESOURCE, resource );
+    }
+
+    private String getApplicationId( ApplicationContext context )
+    {
+        return context.getApplicationBinding().getApplicationResolution().getApplicationModel().getName();
+    }
+
+    private String getLayerId( LayerResolution layerResolution )
+    {
+        return layerResolution.getApplicationModel().getName() + "/" + layerResolution.getLayerModel().getName();
+    }
+
+    private String getModuleId( ModuleResolution moduleResolution )
+    {
+        return moduleResolution.getApplicationModel().getName() + "/" + moduleResolution.getLayerModel().getName() + "/" + moduleResolution.getModuleModel().getName();
+    }
+
+    private String getCompositeId( CompositeBinding compositeBinding )
+    {
+        return escape( compositeBinding.getCompositeResolution().getCompositeModel().getCompositeClass().getName() );
+    }
+
+    private String getMethodId( CompositeMethodBinding compositeMethodBinding )
+    {
+        String name = compositeMethodBinding.getCompositeMethodResolution().getCompositeMethodModel().getMethod().toString().split( " " )[ 3 ];
+        name = escape( name );
+        return name;
+    }
+
+    private String getMixinId( MixinBinding mixinBinding )
+    {
+        return escape( mixinBinding.getMixinResolution().getMixinModel().getModelClass().getName() );
+    }
+
+    private String getConcernId( ConcernBinding concernBinding )
+    {
+        return escape( concernBinding.getConcernResolution().getConcernModel().getModelClass().getName() );
+    }
+
+    private String getSideEffectId( SideEffectBinding sideEffectBinding )
+    {
+        return escape( sideEffectBinding.getSideEffectResolution().getSideEffectModel().getModelClass().getName() );
+    }
+
+    private String getFieldId( FieldBinding fieldBinding )
+    {
+        InjectionResolution injectionResolution = fieldBinding.getInjectionBinding().getInjectionResolution();
+        return injectionResolution.getApplication().getName() + "/" +
+               injectionResolution.getLayer().getName() + "/" +
+               injectionResolution.getModule().getName() + "/" +
+               escape( injectionResolution.getCompositeModel().getCompositeClass().getName() ) + "/" +
+               escape( injectionResolution.getObjectModel().getModelClass().getName() ) + "/" +
+               fieldBinding.getFieldResolution().getFieldModel().getField().getName();
+    }
+
+    private String escape( String name )
+    {
+        name = name.replaceAll( "[^A-Za-z]", "_" );
+        return name;
     }
 
     private void addAttribute( Document doc, Element element, String name, String value )
     {
-        Attr attr = doc.createAttribute( name );
+        Attr attr = doc.createAttributeNS( RDFNS, name );
         attr.setValue( value );
         element.getAttributes().setNamedItem( attr );
     }
