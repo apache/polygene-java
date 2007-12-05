@@ -16,8 +16,8 @@
  */
 package org.qi4j.test.model3;
 
-import org.qi4j.Composite;
 import org.qi4j.annotation.Mixins;
+import org.qi4j.composite.Composite;
 
 @Mixins( State1TransientImpl.class )
 public interface TheValueObjectComposite extends State1, Composite

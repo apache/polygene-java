@@ -16,8 +16,8 @@
  */
 package org.qi4j.test.model1;
 
-import org.qi4j.Composite;
 import org.qi4j.annotation.Concerns;
+import org.qi4j.composite.Composite;
 
 /**
  * This will be to test some error case.

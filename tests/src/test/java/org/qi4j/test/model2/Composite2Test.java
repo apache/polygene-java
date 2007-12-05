@@ -12,23 +12,22 @@
 
 package org.qi4j.test.model2;
 
-import org.qi4j.runtime.CompositeModelFactory;
+import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.spi.composite.CompositeModel;
 import org.qi4j.test.AbstractQi4jTest;
 
 public class Composite2Test extends AbstractQi4jTest
 {
-    CompositeModelFactory modelFactory;
-    CompositeModel composite;
-
-    protected void setUp() throws Exception
+    @Override public void configure( ModuleAssembly module )
     {
-        modelFactory = new CompositeModelFactory();
-        composite = modelFactory.newCompositeModel( TestComposite.class );
+        module.addComposite( TestComposite.class );
+        module.addComposite( CustomTestComposite.class );
     }
 
     public void testGetImplementation() throws Exception
     {
+        CompositeModel composite = moduleInstance.getModuleContext().getCompositeContext( TestComposite.class ).getCompositeBinding().getCompositeResolution().getCompositeModel();
+
         assertEquals( 0, composite.getImplementations( Standard.class ).size() );
 
         System.out.println( composite );

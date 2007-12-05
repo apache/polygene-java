@@ -8,6 +8,7 @@ import org.qi4j.spi.composite.FieldModel;
 import org.qi4j.spi.composite.InvalidCompositeException;
 import org.qi4j.spi.composite.MethodModel;
 import org.qi4j.spi.composite.ObjectModel;
+import org.qi4j.spi.composite.PropertyModel;
 
 /**
  * TODO
@@ -24,7 +25,10 @@ public class ObjectModelFactory
         getFieldModels( objectClass, fieldModels );
         Iterable<MethodModel> methodModels = getMethodModels( objectClass );
 
-        ObjectModel model = new ObjectModel( objectClass, constructorModels, fieldModels, methodModels );
+        // Find properties
+        List<PropertyModel> propertyModels = new ArrayList<PropertyModel>(); // TODO
+
+        ObjectModel model = new ObjectModel( objectClass, constructorModels, fieldModels, methodModels, propertyModels );
         return model;
     }
 }

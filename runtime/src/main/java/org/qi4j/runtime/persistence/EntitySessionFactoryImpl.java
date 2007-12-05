@@ -16,7 +16,7 @@
  */
 package org.qi4j.runtime.persistence;
 
-import org.qi4j.CompositeBuilderFactory;
+import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.entity.EntitySession;
 import org.qi4j.entity.EntitySessionFactory;
 import org.qi4j.entity.IdentityGenerator;

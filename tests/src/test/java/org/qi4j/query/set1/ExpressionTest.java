@@ -18,7 +18,8 @@
 package org.qi4j.query.set1;
 
 import java.util.ArrayList;
-import org.qi4j.CompositeBuilder;
+import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.query.QueryBuilderFactory;
 import org.qi4j.query.QueryBuilderFactoryImpl;
 import org.qi4j.query.QueryableIterable;
@@ -26,6 +27,11 @@ import org.qi4j.test.AbstractQi4jTest;
 
 public class ExpressionTest extends AbstractQi4jTest
 {
+    @Override public void configure( ModuleAssembly module )
+    {
+        module.addComposite( Composite1.class );
+    }
+
     private QueryBuilderFactory queryBuilderFactory;
     private ArrayList<Composite1> data;
 
@@ -38,9 +44,9 @@ public class ExpressionTest extends AbstractQi4jTest
         data = new ArrayList<Composite1>();
         for( int i = 0; i < 100; i++ )
         {
+            compositeBuilder.propertiesOfComposite().setName( "i=" + i );
+            compositeBuilder.propertiesOfComposite().setBar( "bar=" + i % 4 );
             Composite1 instance = compositeBuilder.newInstance();
-            instance.setName( "i=" + i );
-            instance.setBar( "bar=" + i % 4 );
             data.add( instance );
         }
         queryBuilderFactory = new QueryBuilderFactoryImpl( new QueryableIterable( data ) );

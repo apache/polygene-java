@@ -26,6 +26,6 @@ public final class MixinResolution
 
     public MixinModel getMixinModel()
     {
-        return (MixinModel) getObjectModel();
+        return (MixinModel) getAbstractModel();
     }
 }

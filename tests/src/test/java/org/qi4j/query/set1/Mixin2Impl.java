@@ -20,7 +20,7 @@ package org.qi4j.query.set1;
 public class Mixin2Impl
     implements Mixin2
 {
-    public Mixin2Impl( String str )
+    public Mixin2Impl()
     {
         //TODO: Auto-generated, need attention.
 

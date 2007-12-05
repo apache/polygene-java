@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -33,14 +34,14 @@ import net.sf.cglib.proxy.Callback;
 import net.sf.cglib.proxy.CallbackFilter;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.NoOp;
-import org.qi4j.Composite;
-import org.qi4j.ParameterConstraint;
 import org.qi4j.annotation.AppliesTo;
 import org.qi4j.annotation.Concerns;
 import org.qi4j.annotation.Constraints;
 import org.qi4j.annotation.Mixins;
 import org.qi4j.annotation.SideEffects;
+import org.qi4j.composite.Composite;
 import org.qi4j.composite.NullArgumentException;
+import org.qi4j.composite.ParameterConstraint;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.runtime.persistence.EntityMixin;
 import org.qi4j.spi.composite.CompositeMethodModel;
@@ -84,7 +85,7 @@ public final class CompositeModelFactory
         }
 
         // Find concerns
-        List<Class> concernClasses = getModifiers( compositeClass, Concerns.class );
+        Set<Class> concernClasses = getModifiers( compositeClass, Concerns.class );
         List<ConcernModel> concerns = new ArrayList<ConcernModel>();
         for( Class concernClass : concernClasses )
         {
@@ -92,7 +93,7 @@ public final class CompositeModelFactory
         }
 
         // Find side-effects
-        List<Class> sideEffectClasses = getModifiers( compositeClass, SideEffects.class );
+        Set<Class> sideEffectClasses = getModifiers( compositeClass, SideEffects.class );
         List<SideEffectModel> sideEffects = new ArrayList<SideEffectModel>();
         for( Class sideEffectClass : sideEffectClasses )
         {
@@ -164,7 +165,7 @@ public final class CompositeModelFactory
         Iterable<ConstraintModel> constraints = getConstraintDeclarations( mixinClass );
 
         // Find concerns
-        List<Class> concernClasses = getModifiers( mixinClass, Concerns.class );
+        Set<Class> concernClasses = getModifiers( mixinClass, Concerns.class );
         List<ConcernModel> concerns = new ArrayList<ConcernModel>();
         for( Class concernClass : concernClasses )
         {
@@ -172,7 +173,7 @@ public final class CompositeModelFactory
         }
 
         // Find side-effects
-        List<Class> sideEffectClasses = getModifiers( mixinClass, SideEffects.class );
+        Set<Class> sideEffectClasses = getModifiers( mixinClass, SideEffects.class );
         List<SideEffectModel> sideEffects = new ArrayList<SideEffectModel>();
         for( Class sideEffectClass : sideEffectClasses )
         {
@@ -255,9 +256,9 @@ public final class CompositeModelFactory
     }
 */
 
-    private List<Class> getModifiers( Class<?> aClass, Class annotationClass )
+    private Set<Class> getModifiers( Class<?> aClass, Class annotationClass )
     {
-        List<Class> modifiers = new ArrayList<Class>();
+        Set<Class> modifiers = new LinkedHashSet<Class>();
         Annotation modifierAnnotation = aClass.getAnnotation( annotationClass );
         if( modifierAnnotation != null )
         {
@@ -274,11 +275,23 @@ public final class CompositeModelFactory
             modifiers.addAll( Arrays.asList( modifierClasses ) );
         }
 
-        // Check superclass
-        if( !aClass.isInterface() && aClass != Object.class )
+        if( !aClass.isInterface() )
         {
-            List<Class> superConcerns = getModifiers( aClass.getSuperclass(), annotationClass );
-            modifiers.addAll( superConcerns );
+            if( aClass != Object.class )
+            {
+                // Check superclass
+                Set<Class> superModifiers = getModifiers( aClass.getSuperclass(), annotationClass );
+                modifiers.addAll( superModifiers );
+            }
+        }
+        else
+        {
+            // Check superinterfaces
+            for( Class superInterface : aClass.getInterfaces() )
+            {
+                Set<Class> superModifiers = getModifiers( superInterface, annotationClass );
+                modifiers.addAll( superModifiers );
+            }
         }
 
         return modifiers;

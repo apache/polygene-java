@@ -21,15 +21,15 @@ package org.qi4j.spi.composite;
  * @see ConcernResolution
  */
 public abstract class FragmentBinding
-    extends ObjectBinding
+    extends AbstractBinding
 {
-    public FragmentBinding( ObjectResolution objectResolution, ConstructorBinding constructorBinding, Iterable<FieldBinding> fieldBindings, Iterable<MethodBinding> methodBindings )
+    public FragmentBinding( FragmentResolution fragmentResolution, ConstructorBinding constructorBinding, Iterable<FieldBinding> fieldBindings, Iterable<MethodBinding> methodBindings )
     {
-        super( objectResolution, constructorBinding, fieldBindings, methodBindings );
+        super( fragmentResolution, constructorBinding, fieldBindings, methodBindings );
     }
 
     public FragmentResolution getFragmentResolution()
     {
-        return (FragmentResolution) getObjectResolution();
+        return (FragmentResolution) getAbstractResolution();
     }
 }

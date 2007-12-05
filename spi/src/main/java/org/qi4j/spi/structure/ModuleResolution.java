@@ -15,9 +15,11 @@
 package org.qi4j.spi.structure;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
-import org.qi4j.Composite;
+import org.qi4j.composite.Composite;
 import org.qi4j.spi.composite.CompositeResolution;
+import org.qi4j.spi.composite.ObjectResolution;
 
 /**
  * TODO
@@ -26,18 +28,20 @@ public class ModuleResolution
     implements Serializable
 {
     private ModuleModel moduleModel;
+    private List<ObjectResolution> objectResolutions;
     private Map<Class<? extends Composite>, ModuleModel> instantiableComposites;
     private ApplicationModel applicationModel;
     private LayerModel layerModel;
     private Iterable<CompositeResolution> compositeResolutions;
 
-    public ModuleResolution( ModuleModel moduleModel, ApplicationModel applicationModel, LayerModel layerModel, Map<Class<? extends Composite>, ModuleModel> instantiableComposites, Iterable<CompositeResolution> compositeResolutions )
+    public ModuleResolution( ModuleModel moduleModel, ApplicationModel applicationModel, LayerModel layerModel, Map<Class<? extends Composite>, ModuleModel> instantiableComposites, Iterable<CompositeResolution> compositeResolutions, List<ObjectResolution> objectResolutions )
     {
         this.applicationModel = applicationModel;
         this.layerModel = layerModel;
         this.compositeResolutions = compositeResolutions;
         this.instantiableComposites = instantiableComposites;
         this.moduleModel = moduleModel;
+        this.objectResolutions = objectResolutions;
     }
 
     public ModuleModel getModuleModel()
@@ -63,5 +67,10 @@ public class ModuleResolution
     public Iterable<CompositeResolution> getCompositeResolutions()
     {
         return compositeResolutions;
+    }
+
+    public List<ObjectResolution> getObjectResolutions()
+    {
+        return objectResolutions;
     }
 }

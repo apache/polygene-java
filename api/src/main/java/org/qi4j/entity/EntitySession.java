@@ -15,7 +15,7 @@
 package org.qi4j.entity;
 
 import java.net.URL;
-import org.qi4j.CompositeBuilder;
+import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.query.QueryBuilderFactory;
 
 public interface EntitySession

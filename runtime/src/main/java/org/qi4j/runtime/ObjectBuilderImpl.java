@@ -16,18 +16,17 @@
  */
 package org.qi4j.runtime;
 
+import static java.util.Collections.emptyMap;
 import static java.util.Collections.emptySet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
-import org.qi4j.CompositeBuilderFactory;
-import org.qi4j.ObjectBuilder;
-import org.qi4j.ObjectBuilderFactory;
-import static org.qi4j.composite.NullArgumentException.validateNotNull;
+import org.qi4j.composite.ObjectBuilder;
+import org.qi4j.composite.PropertyValue;
+import org.qi4j.runtime.composite.ObjectContext;
 import org.qi4j.runtime.structure.ModuleContext;
-import org.qi4j.spi.composite.ObjectBinding;
-import org.qi4j.spi.dependency.InjectionContext;
-import org.qi4j.spi.dependency.ObjectInjectionContext;
 
 /**
  *
@@ -35,31 +34,25 @@ import org.qi4j.spi.dependency.ObjectInjectionContext;
 public class ObjectBuilderImpl<T>
     implements ObjectBuilder<T>
 {
-    private ObjectBinding objectBinding;
+    private ObjectContext objectContext;
     private ModuleContext moduleContext;
-    private InstanceFactory instanceFactory;
 
-    private Set adaptContext;
+    private Set<Object> adaptContext;
     private Object decoratedObject;
+    private Map<String, PropertyValue> propertyContext;
 
-    ObjectBuilderImpl( ObjectBinding anObjectBinding, ModuleContext aModuleContext, InstanceFactory anInstanceFactory )
-        throws IllegalArgumentException
+    ObjectBuilderImpl( ModuleContext moduleContext, ObjectContext objectBinding )
     {
-        validateNotNull( "anObjectBinding", anObjectBinding );
-        validateNotNull( "aModuleContext", aModuleContext );
-        validateNotNull( "anInstanceFactory", anInstanceFactory );
-
-        objectBinding = anObjectBinding;
-        moduleContext = aModuleContext;
-        instanceFactory = anInstanceFactory;
+        this.objectContext = objectBinding;
+        this.moduleContext = moduleContext;
 
         adaptContext = emptySet();
+        propertyContext = emptyMap();
     }
 
-    @SuppressWarnings( "unchecked" )
     public void adapt( Object anAdaptedObject )
     {
-        Set context = getAdaptContext();
+        Set<Object> context = getAdaptContext();
         context.add( anAdaptedObject );
     }
 
@@ -68,19 +61,19 @@ public class ObjectBuilderImpl<T>
         decoratedObject = aDecoratedObject;
     }
 
-    @SuppressWarnings( "unchecked" )
-    public T newInstance()
+    public void properties( PropertyValue... properties )
     {
-        // Instantiate object
-        CompositeBuilderFactory compBuilderFactory = moduleContext.getCompositeBuilderFactory();
-        ObjectBuilderFactory objBuilderFactory = moduleContext.getObjectBuilderFactory();
-
-        InjectionContext context = new ObjectInjectionContext(
-            compBuilderFactory, objBuilderFactory, moduleContext.getModuleBinding(), adaptContext, decoratedObject );
-        T instance = (T) instanceFactory.newInstance( objectBinding, context );
-        return instance;
+        Map<String, PropertyValue> props = getPropertyContext();
+        for( PropertyValue property : properties )
+        {
+            props.put( property.getName(), property );
+        }
     }
 
+    public T newInstance()
+    {
+        return (T) objectContext.newObjectInstance( moduleContext, adaptContext, decoratedObject, propertyContext );
+    }
 
     public Iterator<T> iterator()
     {
@@ -106,20 +99,27 @@ public class ObjectBuilderImpl<T>
     public void inject( T instance )
     {
         // Inject existing object
-        Set adapt = adaptContext == null ? emptySet() : adaptContext;
-
-        InjectionContext context = new ObjectInjectionContext( null, null, moduleContext.getModuleBinding(), adapt, decoratedObject );
-        instanceFactory.inject( instance, objectBinding, context );
+        objectContext.inject( instance, moduleContext, adaptContext, decoratedObject, propertyContext );
     }
 
     // Private ------------------------------------------------------
-    private Set getAdaptContext()
+    private Set<Object> getAdaptContext()
     {
         if( adaptContext == emptySet() )
         {
-            adaptContext = new LinkedHashSet();
+            adaptContext = new LinkedHashSet<Object>();
         }
 
         return adaptContext;
+    }
+
+    private Map<String, PropertyValue> getPropertyContext()
+    {
+        if( !( propertyContext instanceof LinkedHashMap ) )
+        {
+            propertyContext = new LinkedHashMap<String, PropertyValue>();
+        }
+
+        return propertyContext;
     }
 }

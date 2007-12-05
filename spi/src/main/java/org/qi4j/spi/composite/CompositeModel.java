@@ -144,6 +144,12 @@ public final class CompositeModel
     public ConstraintModel getConstraintModel( Class<? extends Annotation> annotationType, Type parameterType )
     {
         Iterable<ConstraintModel> possibleConstraintModels = constraintModelMappings.get( annotationType );
+
+        if( possibleConstraintModels == null )
+        {
+            return null;
+        }
+
         while( true )
         {
             for( ConstraintModel possibleConstraintModel : possibleConstraintModels )

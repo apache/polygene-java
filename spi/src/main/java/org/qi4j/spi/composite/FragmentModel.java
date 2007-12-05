@@ -28,7 +28,7 @@ import org.qi4j.spi.dependency.InjectionModel;
  * @see ConcernModel
  */
 public abstract class FragmentModel
-    extends ObjectModel
+    extends AbstractModel
 {
     private Collection<Class> appliesTo;
     private boolean isAbstract;

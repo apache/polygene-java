@@ -25,10 +25,10 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
-import org.qi4j.Composite;
-import org.qi4j.CompositeBuilder;
-import org.qi4j.CompositeInstantiationException;
-import org.qi4j.PropertyValue;
+import org.qi4j.composite.Composite;
+import org.qi4j.composite.CompositeBuilder;
+import org.qi4j.composite.CompositeInstantiationException;
+import org.qi4j.composite.PropertyValue;
 import org.qi4j.runtime.composite.CompositeContext;
 import org.qi4j.runtime.structure.ModuleContext;
 import org.qi4j.spi.composite.MixinResolution;
@@ -70,6 +70,10 @@ public class CompositeBuilderImpl<T extends Composite>
         for( PropertyValue property : properties )
         {
             PropertyResolution resolution = context.getCompositeResolution().getPropertyResolution( mixinType, property.getName() );
+            if( resolution == null )
+            {
+                throw new CompositeInstantiationException( "No property named " + property.getName() + " found in mixin for type " + mixinType.getName() );
+            }
             setProperty( resolution, property );
         }
     }

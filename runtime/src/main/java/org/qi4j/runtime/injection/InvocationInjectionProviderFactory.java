@@ -3,7 +3,7 @@ package org.qi4j.runtime.injection;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
-import org.qi4j.InvocationContext;
+import org.qi4j.composite.InvocationContext;
 import org.qi4j.spi.dependency.InjectionContext;
 import org.qi4j.spi.dependency.InjectionProvider;
 import org.qi4j.spi.dependency.InjectionProviderFactory;
@@ -45,16 +45,15 @@ public class InvocationInjectionProviderFactory
         public Object provideInjection( InjectionContext context )
         {
             ModifierInjectionContext modifierContext = (ModifierInjectionContext) context;
-            Class injectedClass = resolution.getInjectionModel().getInjectedClass();
+            Class injectedClass = resolution.getInjectionModel().getInjectionClass();
             if( injectedClass.equals( Method.class ) )
             {
                 // This needs to be updated to handle Apply and annotation aggregation correctly
-                return modifierContext.getMethod();
+                return modifierContext.getMethod().getCompositeMethodResolution().getCompositeMethodModel().getMethod();
             }
             else if( injectedClass.equals( AnnotatedElement.class ) )
             {
-                // TODO This needs to be updated to handle annotation aggregation correctly
-                return modifierContext.getMethod();
+                return modifierContext.getMethod().getCompositeMethodResolution().getAnnotatedElement();
             }
             else if( injectedClass.equals( InvocationContext.class ) )
             {
@@ -62,8 +61,7 @@ public class InvocationInjectionProviderFactory
             }
             else
             {
-                // TODO This needs to be updated to handle annotation aggregation correctly
-                return modifierContext.getMethod().getAnnotation( injectedClass );
+                return modifierContext.getMethod().getCompositeMethodResolution().getAnnotatedElement().getAnnotation( injectedClass );
             }
         }
     }

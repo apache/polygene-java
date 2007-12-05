@@ -3,33 +3,50 @@ package org.qi4j.runtime.composite;
  *  TODO
  */
 
-import org.qi4j.Composite;
 import org.qi4j.annotation.Mixins;
 import org.qi4j.annotation.scope.ThisCompositeAs;
+import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.bootstrap.SingletonAssembly;
+import org.qi4j.composite.Composite;
+import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.spi.composite.InvalidCompositeException;
 import org.qi4j.test.AbstractQi4jTest;
 
 public class CompositeModelResolverTest extends AbstractQi4jTest
 {
-    CompositeResolver compositeResolver;
-
     public void testWhenCyclicDependencyThenThrowException()
     {
         try
         {
-            compositeBuilderFactory.newCompositeBuilder( TestComposite2.class ).newInstance().testC();
-            fail( "Should have thrown exception" );
+            new SingletonAssembly()
+            {
+                public void configure( ModuleAssembly module ) throws AssemblyException
+                {
+                    module.addComposite( TestComposite2.class, false );
+                }
+            };
+            fail( "Should have thrown exception due to cyclic dependency" );
         }
         catch( InvalidCompositeException e )
         {
-            // Ok!
+            // Ok
         }
     }
 
     public void testWhenDependentMixinsThenOrderMixins()
         throws Exception
     {
-        assertEquals( "ok", compositeBuilderFactory.newCompositeBuilder( TestComposite1.class ).newInstance().testB() );
+        CompositeBuilderFactory cbf = new SingletonAssembly()
+        {
+            public void configure( ModuleAssembly module ) throws AssemblyException
+            {
+                module.addComposite( TestComposite1.class, false );
+            }
+        }.getCompositeBuilderFactory();
+
+
+        assertEquals( "ok", cbf.newCompositeBuilder( TestComposite1.class ).newInstance().testB() );
     }
 
     @Mixins( TestA.TestAMixin.class )

@@ -16,9 +16,9 @@
  */
 package org.qi4j.test.model1;
 
-import org.qi4j.Composite;
 import org.qi4j.annotation.Concerns;
 import org.qi4j.annotation.Mixins;
+import org.qi4j.composite.Composite;
 
 @Concerns( { Modifier2.class } )
 @Mixins( { Mixin1Impl.class, Mixin2Impl.class } )

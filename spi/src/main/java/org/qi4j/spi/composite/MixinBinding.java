@@ -28,6 +28,6 @@ public final class MixinBinding
 
     public MixinResolution getMixinResolution()
     {
-        return (MixinResolution) getObjectResolution();
+        return (MixinResolution) getAbstractResolution();
     }
 }

@@ -15,8 +15,10 @@
 package org.qi4j.spi.structure;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
 import org.qi4j.spi.composite.CompositeModel;
+import org.qi4j.spi.composite.ObjectModel;
 import org.qi4j.spi.dependency.ServiceProvider;
 
 /**
@@ -28,15 +30,17 @@ public class ModuleModel
     private Iterable<CompositeModel> publicComposites;
     private Iterable<CompositeModel> privateComposites;
     private Map<Class, ServiceProvider> serviceProviders;
+    private List<ObjectModel> objectModels;
 
     private String name;
 
-    public ModuleModel( Map<Class, ServiceProvider> serviceProviders, String name, Iterable<CompositeModel> publicComposites, Iterable<CompositeModel> privateComposites )
+    public ModuleModel( Map<Class, ServiceProvider> serviceProviders, String name, Iterable<CompositeModel> publicComposites, Iterable<CompositeModel> privateComposites, List<ObjectModel> objectModels )
     {
         this.privateComposites = privateComposites;
         this.publicComposites = publicComposites;
         this.name = name;
         this.serviceProviders = serviceProviders;
+        this.objectModels = objectModels;
     }
 
     public Iterable<CompositeModel> getPublicComposites()
@@ -52,6 +56,11 @@ public class ModuleModel
     public Map<Class, ServiceProvider> getServiceProviders()
     {
         return serviceProviders;
+    }
+
+    public List<ObjectModel> getObjectModels()
+    {
+        return objectModels;
     }
 
     public String getName()

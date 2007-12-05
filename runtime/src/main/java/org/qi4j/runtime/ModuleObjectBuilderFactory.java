@@ -14,19 +14,11 @@
  */
 package org.qi4j.runtime;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import org.qi4j.CompositeInstantiationException;
-import org.qi4j.ObjectBuilder;
-import org.qi4j.ObjectBuilderFactory;
-import org.qi4j.runtime.composite.ObjectBinder;
-import org.qi4j.runtime.composite.ObjectResolver;
+import org.qi4j.composite.InvalidApplicationException;
+import org.qi4j.composite.ObjectBuilder;
+import org.qi4j.composite.ObjectBuilderFactory;
+import org.qi4j.runtime.composite.ObjectContext;
 import org.qi4j.runtime.structure.ModuleContext;
-import org.qi4j.spi.composite.ObjectBinding;
-import org.qi4j.spi.composite.ObjectModel;
-import org.qi4j.spi.composite.ObjectResolution;
-import org.qi4j.spi.dependency.InvalidInjectionException;
-import org.qi4j.spi.dependency.ResolutionContext;
 
 /**
  * Default implementation of ObjectBuilderFactory
@@ -34,51 +26,26 @@ import org.qi4j.spi.dependency.ResolutionContext;
 public final class ModuleObjectBuilderFactory
     implements ObjectBuilderFactory
 {
-    private Map<Class, ObjectBinding> objectBindings;
-    private ObjectModelFactory objectModelFactory;
-    private InstanceFactory instanceFactory;
-    private ObjectResolver objectResolver;
-    private ObjectBinder objectBinder;
     private ModuleContext moduleContext;
 
-    public ModuleObjectBuilderFactory( ModuleContext moduleContext, Qi4jRuntime runtime )
+    public ModuleObjectBuilderFactory( ModuleContext moduleContext )
     {
         this.moduleContext = moduleContext;
-        this.objectModelFactory = runtime.getObjectModelFactory();
-        this.instanceFactory = runtime.getInstanceFactory();
-        this.objectResolver = runtime.getObjectResolver();
-        this.objectBinder = runtime.getObjectBinder();
-
-        objectBindings = new ConcurrentHashMap<Class, ObjectBinding>();
     }
 
-    public <T> ObjectBuilder<T> newObjectBuilder( Class<T> type )
+    public ObjectBuilder newObjectBuilder( Class objectType )
     {
-        try
-        {
-            ObjectBinding objectBinding = getObjectBinding( type );
-            ObjectBuilder<T> builder = new ObjectBuilderImpl<T>( objectBinding, moduleContext, instanceFactory );
-            return builder;
-        }
-        catch( InvalidInjectionException e )
-        {
-            throw new CompositeInstantiationException( "Could not resolve dependencies", e );
-        }
-    }
+        // Get the Object context
+        ObjectContext objectContext = moduleContext.getObjectContext( objectType );
 
-    // Private ------------------------------------------------------
-    private ObjectBinding getObjectBinding( Class type )
-        throws InvalidInjectionException
-    {
-        ObjectBinding objectBinding = objectBindings.get( type );
-        if( objectBinding == null )
+        // Check if this Composite has been registered properly
+        if( objectContext == null )
         {
-            ObjectModel objectModel = objectModelFactory.newObjectModel( type );
-            ResolutionContext resolutionContext = new ResolutionContext( objectModel, null, moduleContext.getModuleBinding().getModuleResolution().getModuleModel(), null, null );
-            ObjectResolution objectResolution = objectResolver.resolveObjectModel( resolutionContext );
-            objectBinding = objectBinder.bindObject( objectResolution );
-            objectBindings.put( type, objectBinding );
+            throw new InvalidApplicationException( "Trying to create unregistered object of type " + objectType.getName() + " in module " + moduleContext.getModuleBinding().getModuleResolution().getModuleModel().getName() );
         }
-        return objectBinding;
+
+        // Create a builder
+        ObjectBuilder builder = new ObjectBuilderImpl( moduleContext, objectContext );
+        return builder;
     }
 }

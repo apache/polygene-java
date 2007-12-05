@@ -12,30 +12,20 @@
  * limitations under the License.
  *
  */
-package org.qi4j;
+package org.qi4j.composite;
 
 /**
- * TODO
+ * This factory creates builders for POJO's.
  */
-public class CompositeInstantiationException
-    extends RuntimeException
+public interface ObjectBuilderFactory
 {
-    public CompositeInstantiationException()
-    {
-    }
-
-    public CompositeInstantiationException( String message )
-    {
-        super( message );
-    }
-
-    public CompositeInstantiationException( String message, Throwable cause )
-    {
-        super( message, cause );
-    }
-
-    public CompositeInstantiationException( Throwable cause )
-    {
-        super( cause );
-    }
+    /**
+     * Create a builder for creating new objects of the given type.
+     *
+     * @param type an object class which will be instantiated
+     * @return a ObjectBuilder for creation of objects of the given type
+     * @throws CompositeInstantiationException
+     *          thrown if instantiation fails
+     */
+    <T> ObjectBuilder<T> newObjectBuilder( Class<T> type );
 }

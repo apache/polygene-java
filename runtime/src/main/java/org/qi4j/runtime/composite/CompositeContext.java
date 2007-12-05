@@ -23,8 +23,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.qi4j.CompositeInstantiationException;
-import org.qi4j.PropertyValue;
+import org.qi4j.composite.CompositeInstantiationException;
+import org.qi4j.composite.PropertyValue;
 import org.qi4j.entity.Lifecycle;
 import org.qi4j.runtime.CompositeMethodInstancePool;
 import org.qi4j.runtime.InstanceFactory;
@@ -36,7 +36,6 @@ import org.qi4j.spi.composite.CompositeModel;
 import org.qi4j.spi.composite.CompositeResolution;
 import org.qi4j.spi.composite.MixinBinding;
 import org.qi4j.spi.composite.MixinResolution;
-import org.qi4j.spi.composite.PropertyResolution;
 import org.qi4j.spi.dependency.MixinInjectionContext;
 import org.qi4j.spi.structure.ModuleBinding;
 
@@ -189,7 +188,7 @@ public final class CompositeContext
         int i = 0;
         for( MixinBinding mixinBinding : usedMixins )
         {
-            Map<PropertyResolution, PropertyValue> props = compositeProperties == null ? Collections.EMPTY_MAP : compositeProperties.get( mixinBinding.getMixinResolution() );
+            Map<String, PropertyValue> props = compositeProperties == null ? Collections.EMPTY_MAP : compositeProperties.get( mixinBinding.getMixinResolution() );
             if( props == null )
             {
                 props = Collections.EMPTY_MAP;

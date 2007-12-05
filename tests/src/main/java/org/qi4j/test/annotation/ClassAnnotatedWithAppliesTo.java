@@ -16,8 +16,8 @@
  */
 package org.qi4j.test.annotation;
 
-import org.qi4j.Composite;
 import org.qi4j.annotation.AppliesTo;
+import org.qi4j.composite.Composite;
 
 @AppliesTo( Composite.class )
 public class ClassAnnotatedWithAppliesTo

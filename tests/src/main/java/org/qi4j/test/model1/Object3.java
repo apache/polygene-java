@@ -1,6 +1,5 @@
 /*
- * Copyright (c) 2007, Rickard Ã–berg. All Rights Reserved.
- * Copyright (c) 2007, Niclas Hedhman. All Rights Reserved.
+ * Copyright (c) 2007, Rickard …berg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,14 +11,23 @@
  * limitations under the License.
  *
  */
-package org.qi4j;
+
+package org.qi4j.test.model1;
 
 /**
- * All Composite objects must implement this interface. Let the
- * Composite interface extend this one. An implementation will be provided
- * by the framework.
+ * Dummy object used by Object2
  */
-public interface Composite
+public class Object3
 {
-    Composite dereference();
+    String name;
+
+    public Object3( String name )
+    {
+        this.name = name;
+    }
+
+    public String getName()
+    {
+        return name;
+    }
 }

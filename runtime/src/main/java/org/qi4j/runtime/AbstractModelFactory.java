@@ -61,7 +61,7 @@ public abstract class AbstractModelFactory
             if( annotation != null )
             {
                 // Only add fields which have injections
-                injectionModel = newInjectionModel( annotation, field.getGenericType(), fragmentClass );
+                injectionModel = newInjectionModel( annotation, field.getGenericType(), fragmentClass, field );
                 FieldModel dependencyModel = new FieldModel( field, injectionModel );
                 fieldModels.add( dependencyModel );
             }
@@ -152,7 +152,7 @@ public abstract class AbstractModelFactory
                     throw new InvalidCompositeException( "Not allowed to have multiple injection annotations on a single parameter", methodClass );
                 }
 
-                injectionModel = newInjectionModel( annotation, parameterType, methodClass );
+                injectionModel = newInjectionModel( annotation, parameterType, methodClass, null );
             }
         }
         ParameterConstraintsModel parameterConstraintsModel = null;
@@ -164,7 +164,7 @@ public abstract class AbstractModelFactory
         return parameterModel;
     }
 
-    private InjectionModel newInjectionModel( Annotation annotation, Type injectionType, Class injectedType )
+    private InjectionModel newInjectionModel( Annotation annotation, Type injectionType, Class injectedType, Field field )
     {
         InjectionModel model;
         if( annotation.annotationType().equals( PropertyParameter.class ) )
@@ -175,6 +175,10 @@ public abstract class AbstractModelFactory
         else if( annotation.annotationType().equals( PropertyField.class ) )
         {
             String name = ( (PropertyField) annotation ).value();
+            if( name.equals( "" ) )
+            {
+                name = field.getName();
+            }
             boolean optional = ( (PropertyField) annotation ).optional();
             model = new PropertyInjectionModel( annotation.annotationType(), injectionType, injectedType, optional, name );
         }

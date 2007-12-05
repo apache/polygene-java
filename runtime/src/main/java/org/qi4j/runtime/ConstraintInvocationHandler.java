@@ -3,8 +3,8 @@ package org.qi4j.runtime;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-import org.qi4j.ConstraintViolation;
-import org.qi4j.ParameterConstraint;
+import org.qi4j.composite.ConstraintViolation;
+import org.qi4j.composite.ParameterConstraint;
 
 /**
  * TODO

@@ -14,6 +14,13 @@
 
 package org.qi4j.query;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
+import java.util.Date;
+import org.qi4j.query.literals.BooleanLiteral;
+import org.qi4j.query.literals.DateLiteral;
+import org.qi4j.query.literals.NumberLiteral;
+import org.qi4j.query.literals.StringLiteral;
 import org.qi4j.query.operators.And;
 import org.qi4j.query.operators.Equals;
 import org.qi4j.query.operators.GreaterThan;
@@ -28,13 +35,6 @@ import org.qi4j.query.operators.Not;
 import org.qi4j.query.operators.NotEquals;
 import org.qi4j.query.operators.Or;
 import org.qi4j.query.operators.StringContains;
-import org.qi4j.query.literals.BooleanLiteral;
-import org.qi4j.query.literals.NumberLiteral;
-import org.qi4j.query.literals.DateLiteral;
-import org.qi4j.query.literals.StringLiteral;
-import java.util.Date;
-import java.lang.reflect.Proxy;
-import java.lang.reflect.InvocationHandler;
 
 /**
  * TODO

@@ -6,11 +6,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Iterator;
-import org.qi4j.CompositeInstantiationException;
+import org.qi4j.composite.CompositeInstantiationException;
+import org.qi4j.spi.composite.AbstractBinding;
 import org.qi4j.spi.composite.ConstructorBinding;
 import org.qi4j.spi.composite.FieldBinding;
 import org.qi4j.spi.composite.MethodBinding;
-import org.qi4j.spi.composite.ObjectBinding;
 import org.qi4j.spi.composite.ParameterBinding;
 import org.qi4j.spi.dependency.InjectionBinding;
 import org.qi4j.spi.dependency.InjectionContext;
@@ -22,7 +22,7 @@ import org.qi4j.spi.dependency.InjectionProvider;
 public class InstanceFactoryImpl
     implements InstanceFactory
 {
-    public Object newInstance( ObjectBinding objectBinding, InjectionContext context )
+    public Object newInstance( AbstractBinding abstractBinding, InjectionContext context )
         throws CompositeInstantiationException
     {
         // New instance
@@ -30,7 +30,7 @@ public class InstanceFactoryImpl
         try
         {
             // Constructor injection
-            ConstructorBinding constructorBinding = objectBinding.getConstructorBinding();
+            ConstructorBinding constructorBinding = abstractBinding.getConstructorBinding();
 
             Constructor constructor = constructorBinding.getConstructorResolution().getConstructorModel().getConstructor();
             Object[] parameters = new Object[constructor.getParameterTypes().length];
@@ -45,7 +45,7 @@ public class InstanceFactoryImpl
 
                 if( parameter == null && !parameterBinding.getInjectionBinding().getInjectionResolution().getInjectionModel().isOptional() )
                 {
-                    throw new CompositeInstantiationException( "Non-optional @" + parameterBinding.getInjectionBinding().getInjectionResolution().getInjectionModel().getInjectionAnnotationType().getSimpleName() + " parameter " + ( i + 1 ) + " of type " + parameterBinding.getInjectionBinding().getInjectionResolution().getInjectionModel().getInjectionType() + " in class " + objectBinding.getObjectResolution().getObjectModel().getModelClass().getName() + " was null" );
+                    throw new CompositeInstantiationException( "Non-optional @" + parameterBinding.getInjectionBinding().getInjectionResolution().getInjectionModel().getInjectionAnnotationType().getSimpleName() + " parameter " + ( i + 1 ) + " of type " + parameterBinding.getInjectionBinding().getInjectionResolution().getInjectionModel().getInjectionType() + " in class " + abstractBinding.getAbstractResolution().getAbstractModel().getModelClass().getName() + " was null" );
                 }
 
                 Class parameterType = constructor.getParameterTypes()[ i ];
@@ -63,27 +63,31 @@ public class InstanceFactoryImpl
         {
             throw e;
         }
+        catch( InvocationTargetException e )
+        {
+            throw new CompositeInstantiationException( "Could not instantiate class " + abstractBinding.getAbstractResolution().getAbstractModel().getModelClass().getName(), e.getTargetException() );
+        }
         catch( Exception e )
         {
-            throw new CompositeInstantiationException( "Could not instantiate class " + objectBinding.getObjectResolution().getObjectModel().getModelClass().getName(), e );
+            throw new CompositeInstantiationException( "Could not instantiate class " + abstractBinding.getAbstractResolution().getAbstractModel().getModelClass().getName(), e );
         }
 
         // Inject fields and methods
-        inject( instance, objectBinding, context );
+        inject( instance, abstractBinding, context );
 
         return instance;
     }
 
-    public void inject( Object instance, ObjectBinding objectBinding, InjectionContext context )
+    public void inject( Object instance, AbstractBinding abstractBinding, InjectionContext context )
         throws CompositeInstantiationException
     {
         try
         {
             // Field injection
-            injectFields( objectBinding, context, instance );
+            injectFields( abstractBinding, context, instance );
 
             // Method injection
-            injectMethods( objectBinding, context, instance );
+            injectMethods( abstractBinding, context, instance );
         }
         catch( Exception e )
         {
@@ -91,7 +95,7 @@ public class InstanceFactoryImpl
         }
     }
 
-    private void injectFields( ObjectBinding binding, InjectionContext context, Object instance )
+    private void injectFields( AbstractBinding binding, InjectionContext context, Object instance )
         throws IllegalAccessException
     {
         Iterable<FieldBinding> fieldBindings = binding.getFieldBindings();
@@ -130,10 +134,10 @@ public class InstanceFactoryImpl
         }
     }
 
-    private void injectMethods( ObjectBinding objectBinding, InjectionContext context, Object instance )
+    private void injectMethods( AbstractBinding abstractBinding, InjectionContext context, Object instance )
         throws InstantiationException, IllegalAccessException, InvocationTargetException
     {
-        Iterable<MethodBinding> methodBindings = objectBinding.getInjectedMethodsBindings();
+        Iterable<MethodBinding> methodBindings = abstractBinding.getInjectedMethodsBindings();
         for( MethodBinding methodBinding : methodBindings )
         {
             Method method = methodBinding.getMethodResolution().getMethodModel().getMethod();

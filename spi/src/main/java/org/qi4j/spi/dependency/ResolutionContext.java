@@ -14,8 +14,8 @@
 
 package org.qi4j.spi.dependency;
 
+import org.qi4j.spi.composite.AbstractModel;
 import org.qi4j.spi.composite.CompositeModel;
-import org.qi4j.spi.composite.ObjectModel;
 import org.qi4j.spi.structure.ApplicationModel;
 import org.qi4j.spi.structure.LayerModel;
 import org.qi4j.spi.structure.ModuleModel;
@@ -25,24 +25,24 @@ import org.qi4j.spi.structure.ModuleModel;
  */
 public class ResolutionContext
 {
-    private ObjectModel objectModel;
+    private AbstractModel abstractModel;
     private CompositeModel compositeModel;
     private ModuleModel module;
     private LayerModel layer;
     private ApplicationModel application;
 
-    public ResolutionContext( ObjectModel objectModel, CompositeModel compositeModel, ModuleModel module, LayerModel layer, ApplicationModel application )
+    public ResolutionContext( AbstractModel objectModel, CompositeModel compositeModel, ModuleModel module, LayerModel layer, ApplicationModel application )
     {
-        this.objectModel = objectModel;
+        this.abstractModel = objectModel;
         this.compositeModel = compositeModel;
         this.module = module;
         this.layer = layer;
         this.application = application;
     }
 
-    public ObjectModel getObjectModel()
+    public AbstractModel getAbstractModel()
     {
-        return objectModel;
+        return abstractModel;
     }
 
     public CompositeModel getCompositeModel()

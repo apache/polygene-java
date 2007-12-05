@@ -11,9 +11,6 @@
 */
 package org.qi4j.spi.composite;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-
 /**
  * A mixin is an implementation of a particular interface,
  * and is used as a fragment in a composite.
@@ -46,51 +43,5 @@ public final class MixinModel
     public Iterable<SideEffectModel> getSideEffectModels()
     {
         return sideEffectModels;
-    }
-
-    public Annotation getAnnotation( Class<? extends Annotation> annotationType, Method method )
-    {
-        Annotation annotation = null;
-        // Check method
-        annotation = method.getAnnotation( annotationType );
-        if( annotation != null )
-        {
-            return annotation;
-        }
-
-        // Check method interface
-        annotation = method.getDeclaringClass().getAnnotation( annotationType );
-        if( annotation != null )
-        {
-            return annotation;
-        }
-
-        // Check mixin class
-        annotation = getModelClass().getAnnotation( annotationType );
-        if( annotation != null )
-        {
-            return annotation;
-        }
-
-        // Check mixin method
-        try
-        {
-            Method mixinMethod = getModelClass().getMethod( method.getName(), method.getParameterTypes() );
-            annotation = mixinMethod.getAnnotation( annotationType );
-            if( annotation != null )
-            {
-                return annotation;
-            }
-        }
-        catch( NoSuchMethodException e )
-        {
-            if( !isGeneric() )
-            {
-                throw new InvalidFragmentException( "Mixin " + getModelClass().getName() + " does not contain the method " + method.toGenericString(), getModelClass() );
-            }
-        }
-
-        // No annotation of given type found
-        return null;
     }
 }

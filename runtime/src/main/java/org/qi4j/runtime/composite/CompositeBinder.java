@@ -43,7 +43,6 @@ import org.qi4j.spi.composite.ParameterBinding;
 import org.qi4j.spi.composite.ParameterConstraintsBinding;
 import org.qi4j.spi.composite.ParameterConstraintsResolution;
 import org.qi4j.spi.composite.ParameterResolution;
-import org.qi4j.spi.composite.ResolutionException;
 import org.qi4j.spi.composite.SideEffectBinding;
 import org.qi4j.spi.composite.SideEffectResolution;
 import org.qi4j.spi.dependency.InjectionBinding;
@@ -64,7 +63,7 @@ public class CompositeBinder
     }
 
     public CompositeBinding bindCompositeResolution( CompositeResolution compositeResolution )
-        throws ResolutionException
+        throws BindingException
     {
         Set<MixinBinding> mixinBindings = new LinkedHashSet<MixinBinding>();
         Iterable<MixinResolution> mixinResolutions = compositeResolution.getMixinResolutions();

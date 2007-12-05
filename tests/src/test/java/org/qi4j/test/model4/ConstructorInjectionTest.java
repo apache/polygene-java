@@ -16,11 +16,16 @@
  */
 package org.qi4j.test.model4;
 
-import org.qi4j.CompositeBuilder;
+import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.test.AbstractQi4jTest;
 
 public class ConstructorInjectionTest extends AbstractQi4jTest
 {
+    @Override public void configure( ModuleAssembly module )
+    {
+        module.addComposite( Composite1.class );
+    }
 
     public void testMixin()
         throws Exception

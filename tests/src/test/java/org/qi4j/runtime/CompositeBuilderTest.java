@@ -16,8 +16,8 @@
  */
 package org.qi4j.runtime;
 
-import org.qi4j.CompositeBuilder;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.test.AbstractQi4jTest;
 
 public class CompositeBuilderTest extends AbstractQi4jTest

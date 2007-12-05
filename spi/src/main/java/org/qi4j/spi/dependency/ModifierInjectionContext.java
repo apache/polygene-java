@@ -1,11 +1,11 @@
 package org.qi4j.spi.dependency;
 
 import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import org.qi4j.CompositeBuilderFactory;
-import org.qi4j.InvocationContext;
-import org.qi4j.ObjectBuilderFactory;
+import org.qi4j.composite.CompositeBuilderFactory;
+import org.qi4j.composite.InvocationContext;
+import org.qi4j.composite.ObjectBuilderFactory;
 import org.qi4j.spi.composite.CompositeBinding;
+import org.qi4j.spi.composite.CompositeMethodBinding;
 import org.qi4j.spi.composite.MixinBinding;
 import org.qi4j.spi.structure.ModuleBinding;
 
@@ -16,11 +16,11 @@ public class ModifierInjectionContext
     extends FragmentInjectionContext
 {
     private Object modifies;
-    private Method method;
+    private CompositeMethodBinding method;
     private MixinBinding mixinBinding;
     private InvocationContext invocationContext;
 
-    public ModifierInjectionContext( CompositeBuilderFactory compositeBuilderFactory, ObjectBuilderFactory objectBuilderFactory, ModuleBinding moduleBinding, CompositeBinding compositeBinding, InvocationHandler thisCompositeAs, Object modifies, Method method, MixinBinding mixinBinding, InvocationContext invocationContext )
+    public ModifierInjectionContext( CompositeBuilderFactory compositeBuilderFactory, ObjectBuilderFactory objectBuilderFactory, ModuleBinding moduleBinding, CompositeBinding compositeBinding, InvocationHandler thisCompositeAs, Object modifies, CompositeMethodBinding method, MixinBinding mixinBinding, InvocationContext invocationContext )
     {
         super( compositeBuilderFactory, objectBuilderFactory, moduleBinding, compositeBinding, thisCompositeAs );
         this.modifies = modifies;
@@ -34,7 +34,7 @@ public class ModifierInjectionContext
         return modifies;
     }
 
-    public Method getMethod()
+    public CompositeMethodBinding getMethod()
     {
         return method;
     }

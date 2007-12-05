@@ -12,20 +12,14 @@
  * limitations under the License.
  *
  */
-package org.qi4j;
+package org.qi4j.composite;
 
 /**
- * This factory creates builders for POJO's.
+ * All Composite objects must implement this interface. Let the
+ * Composite interface extend this one. An implementation will be provided
+ * by the framework.
  */
-public interface ObjectBuilderFactory
+public interface Composite
 {
-    /**
-     * Create a builder for creating new objects of the given type.
-     *
-     * @param type an object class which will be instantiated
-     * @return a ObjectBuilder for creation of objects of the given type
-     * @throws CompositeInstantiationException
-     *          thrown if instantiation fails
-     */
-    <T> ObjectBuilder<T> newObjectBuilder( Class<T> type );
+    Composite dereference();
 }

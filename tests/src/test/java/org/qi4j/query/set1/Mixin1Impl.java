@@ -17,6 +17,8 @@
  */
 package org.qi4j.query.set1;
 
+import org.qi4j.annotation.scope.PropertyParameter;
+
 public class Mixin1Impl
     implements Mixin1
 {
@@ -24,7 +26,7 @@ public class Mixin1Impl
     private String description;
     private String bar;
 
-    public Mixin1Impl( String name, String bar, String str )
+    public Mixin1Impl( @PropertyParameter( "name" )String name, @PropertyParameter( "description" )String bar, @PropertyParameter( "bar" )String str )
     {
         this.bar = bar;
         this.name = name;

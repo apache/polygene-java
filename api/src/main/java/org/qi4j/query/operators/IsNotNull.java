@@ -19,7 +19,6 @@ package org.qi4j.query.operators;
 
 import org.qi4j.query.BooleanExpression;
 import org.qi4j.query.Expression;
-import org.qi4j.query.Operator;
 import org.qi4j.query.UnaryOperator;
 
 public class IsNotNull

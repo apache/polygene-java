@@ -29,7 +29,6 @@ import org.qi4j.spi.composite.ParameterModel;
 import org.qi4j.spi.composite.ParameterResolution;
 import org.qi4j.spi.dependency.InjectionModel;
 import org.qi4j.spi.dependency.InjectionResolution;
-import org.qi4j.spi.dependency.InvalidInjectionException;
 import org.qi4j.spi.dependency.ResolutionContext;
 
 /**
@@ -38,7 +37,6 @@ import org.qi4j.spi.dependency.ResolutionContext;
 public abstract class AbstractResolver
 {
     protected void resolveConstructorModel( Iterable<ConstructorModel> constructorModels, List<ConstructorResolution> constructorResolutions, ResolutionContext resolutionContext )
-        throws InvalidInjectionException
     {
         for( ConstructorModel constructorModel : constructorModels )
         {
@@ -52,7 +50,6 @@ public abstract class AbstractResolver
     }
 
     protected void resolveMethodModels( Iterable<MethodModel> methodModels, List<MethodResolution> methodResolutions, ResolutionContext resolutionContext )
-        throws InvalidInjectionException
     {
         for( MethodModel methodModel : methodModels )
         {
@@ -66,7 +63,6 @@ public abstract class AbstractResolver
     }
 
     protected void resolveFieldModels( Iterable<FieldModel> fieldModels, List<FieldResolution> fieldResolutions, ResolutionContext resolutionContext )
-        throws InvalidInjectionException
     {
         for( FieldModel fieldModel : fieldModels )
         {
@@ -75,7 +71,7 @@ public abstract class AbstractResolver
             InjectionModel injectionModel = fieldModel.getInjectionModel();
             if( injectionModel != null )
             {
-                injectionResolution = new InjectionResolution( injectionModel, resolutionContext.getObjectModel(), resolutionContext.getCompositeModel(), resolutionContext.getModule(), resolutionContext.getLayer(), resolutionContext.getApplication() );
+                injectionResolution = new InjectionResolution( injectionModel, resolutionContext.getAbstractModel(), resolutionContext.getCompositeModel(), resolutionContext.getModule(), resolutionContext.getLayer(), resolutionContext.getApplication() );
             }
             FieldResolution fieldResolution = new FieldResolution( fieldModel, injectionResolution );
             fieldResolutions.add( fieldResolution );
@@ -83,7 +79,6 @@ public abstract class AbstractResolver
     }
 
     private void resolveParameterModels( Iterable<ParameterModel> parameterModels, List<ParameterResolution> parameterResolutions, ResolutionContext resolutionContext )
-        throws InvalidInjectionException
     {
         for( ParameterModel parameterModel : parameterModels )
         {
@@ -99,7 +94,7 @@ public abstract class AbstractResolver
             InjectionResolution injectionResolution = null;
             if( parameterModel.getInjectionModel() != null )
             {
-                injectionResolution = new InjectionResolution( parameterModel.getInjectionModel(), resolutionContext.getObjectModel(), resolutionContext.getCompositeModel(), resolutionContext.getModule(), resolutionContext.getLayer(), resolutionContext.getApplication() );
+                injectionResolution = new InjectionResolution( parameterModel.getInjectionModel(), resolutionContext.getAbstractModel(), resolutionContext.getCompositeModel(), resolutionContext.getModule(), resolutionContext.getLayer(), resolutionContext.getApplication() );
             }
             ParameterResolution parameterResolution = new ParameterResolution( parameterModel, parameterConstraintsResolution, injectionResolution );
             parameterResolutions.add( parameterResolution );

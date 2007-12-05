@@ -17,7 +17,7 @@
 package org.qi4j.entity;
 
 import java.net.URL;
-import org.qi4j.Composite;
+import org.qi4j.composite.Composite;
 
 public interface Entity
 {

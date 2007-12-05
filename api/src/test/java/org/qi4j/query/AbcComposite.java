@@ -17,7 +17,7 @@
  */
 package org.qi4j.query;
 
-import org.qi4j.Composite;
+import org.qi4j.composite.Composite;
 
 public interface AbcComposite extends Abc, Composite
 {

@@ -1,6 +1,5 @@
 /*
- * Copyright (c) 2007, Rickard Ã–berg. All Rights Reserved.
- * Copyright (c) 2007, Niclas Hedhman. All Rights Reserved.
+ * Copyright (c) 2007, Rickard …berg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,17 +11,17 @@
  * limitations under the License.
  *
  */
-package org.qi4j;
 
-import java.util.Collection;
+package org.qi4j.composite;
 
-public interface InvocationContext
+import java.lang.annotation.Annotation;
+
+/**
+ * All constraints must implement this interface, which is used for each
+ * parameter validation.
+ */
+public interface ParameterConstraint<A extends Annotation, P>
 {
-    Object getComposite();
-
-    Object getMixin();
-
-    Class getMixinType();
-
-    Collection<ConstraintViolation> getConstraintViolations();
+    boolean isValid( A annotation, P parameter )
+        throws NullPointerException;
 }

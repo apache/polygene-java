@@ -19,10 +19,11 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import org.qi4j.Composite;
+import org.qi4j.composite.Composite;
 import org.qi4j.runtime.Qi4jRuntime;
 import org.qi4j.runtime.composite.CompositeContext;
 import org.qi4j.runtime.composite.CompositeMethodContext;
+import org.qi4j.runtime.composite.ObjectContext;
 import org.qi4j.runtime.structure.ApplicationContext;
 import org.qi4j.runtime.structure.LayerContext;
 import org.qi4j.runtime.structure.ModuleContext;
@@ -30,6 +31,9 @@ import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.composite.CompositeMethodBinding;
 import org.qi4j.spi.composite.CompositeModel;
 import org.qi4j.spi.composite.CompositeResolution;
+import org.qi4j.spi.composite.ObjectBinding;
+import org.qi4j.spi.composite.ObjectModel;
+import org.qi4j.spi.composite.ObjectResolution;
 import org.qi4j.spi.dependency.ResolutionContext;
 import org.qi4j.spi.structure.ApplicationBinding;
 import org.qi4j.spi.structure.ApplicationModel;
@@ -251,7 +255,14 @@ public class ApplicationBuilder
             publicCompositeModels.add( compositeModel );
         }
 
-        ModuleModel moduleModel = new ModuleModel( moduleAssembly.getServiceProviders(), moduleAssembly.getName(), publicCompositeModels, privateCompositeModels );
+        List<ObjectModel> objectModels = new ArrayList<ObjectModel>();
+        for( Class objectType : moduleAssembly.getObjects() )
+        {
+            ObjectModel objectModel = runtime.getObjectModelFactory().newObjectModel( objectType );
+            objectModels.add( objectModel );
+        }
+
+        ModuleModel moduleModel = new ModuleModel( moduleAssembly.getServiceProviders(), moduleAssembly.getName(), publicCompositeModels, privateCompositeModels, objectModels );
         return moduleModel;
     }
 
@@ -280,15 +291,18 @@ public class ApplicationBuilder
         resolveComposites( moduleModel.getPrivateComposites(), applicationModel, layerModel, moduleModel, compositeResolutions );
         resolveComposites( moduleModel.getPublicComposites(), applicationModel, layerModel, moduleModel, compositeResolutions );
 
-        ModuleResolution moduleResolution = new ModuleResolution( moduleModel, applicationModel, layerModel, instantiableComposites, compositeResolutions );
+        // Resolve objects in this Module
+        List<ObjectResolution> objectResolutions = new ArrayList<ObjectResolution>();
+        resolveObjects( moduleModel.getObjectModels(), applicationModel, layerModel, moduleModel, objectResolutions );
+
+        ModuleResolution moduleResolution = new ModuleResolution( moduleModel, applicationModel, layerModel, instantiableComposites, compositeResolutions, objectResolutions );
         return moduleResolution;
     }
 
     private ModuleBinding newModuleBinding( ModuleResolution moduleResolution )
     {
-        Map<Class<? extends Composite>, CompositeBinding> compositeBindings = new LinkedHashMap<Class<? extends Composite>, CompositeBinding>();
-
         // Bind Composites in this Module
+        Map<Class<? extends Composite>, CompositeBinding> compositeBindings = new LinkedHashMap<Class<? extends Composite>, CompositeBinding>();
         Iterable<CompositeResolution> compositeResolutions = moduleResolution.getCompositeResolutions();
         for( CompositeResolution compositeResolution : compositeResolutions )
         {
@@ -297,7 +311,15 @@ public class ApplicationBuilder
             compositeBindings.put( compositeResolution.getCompositeModel().getCompositeClass(), compositeBinding );
         }
 
-        ModuleBinding moduleBinding = new ModuleBinding( moduleResolution, compositeBindings );
+        // Bind Objects in this Module
+        Map<Class, ObjectBinding> objectBindings = new LinkedHashMap<Class, ObjectBinding>();
+        for( ObjectResolution objectResolution : moduleResolution.getObjectResolutions() )
+        {
+            ObjectBinding objectBinding = runtime.getObjectBinder().bindObject( objectResolution );
+            objectBindings.put( objectResolution.getObjectModel().getModelClass(), objectBinding );
+        }
+
+        ModuleBinding moduleBinding = new ModuleBinding( moduleResolution, compositeBindings, objectBindings );
         return moduleBinding;
     }
 
@@ -313,7 +335,14 @@ public class ApplicationBuilder
             instantiableModuleContexts.put( entry.getKey(), moduleModelContextMap.get( entry.getValue() ) );
         }
 
-        ModuleContext moduleContext = new ModuleContext( moduleBinding, instantiableCompositeContexts, runtime, instantiableModuleContexts );
+        Map<Class, ObjectContext> instantiableObjectContexts = new LinkedHashMap<Class, ObjectContext>();
+        for( Map.Entry<Class, ObjectBinding> entry : moduleBinding.getObjectBindings().entrySet() )
+        {
+            ObjectContext objectContext = new ObjectContext( entry.getValue(), moduleBinding, runtime.getInstanceFactory() );
+            instantiableObjectContexts.put( entry.getKey(), objectContext );
+        }
+
+        ModuleContext moduleContext = new ModuleContext( moduleBinding, instantiableCompositeContexts, instantiableObjectContexts, instantiableModuleContexts );
         return moduleContext;
     }
 
@@ -324,6 +353,16 @@ public class ApplicationBuilder
             ResolutionContext resolutionContext = new ResolutionContext( null, privateComposite, moduleModel, layerModel, applicationModel );
             CompositeResolution compositeResolution = runtime.getCompositeResolver().resolveCompositeModel( resolutionContext );
             compositeResolutions.add( compositeResolution );
+        }
+    }
+
+    private void resolveObjects( Iterable<ObjectModel> objectModels, ApplicationModel applicationModel, LayerModel layerModel, ModuleModel moduleModel, List<ObjectResolution> objectResolutions )
+    {
+        for( ObjectModel objectModel : objectModels )
+        {
+            ResolutionContext resolutionContext = new ResolutionContext( objectModel, null, moduleModel, layerModel, applicationModel );
+            ObjectResolution objectResolution = runtime.getObjectResolver().resolveObjectModel( resolutionContext );
+            objectResolutions.add( objectResolution );
         }
     }
 

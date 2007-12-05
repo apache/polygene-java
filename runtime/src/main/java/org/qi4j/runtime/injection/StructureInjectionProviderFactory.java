@@ -18,8 +18,8 @@
 package org.qi4j.runtime.injection;
 
 import java.lang.reflect.Type;
-import org.qi4j.CompositeBuilderFactory;
-import org.qi4j.ObjectBuilderFactory;
+import org.qi4j.composite.CompositeBuilderFactory;
+import org.qi4j.composite.ObjectBuilderFactory;
 import org.qi4j.spi.dependency.InjectionContext;
 import org.qi4j.spi.dependency.InjectionProvider;
 import org.qi4j.spi.dependency.InjectionProviderFactory;

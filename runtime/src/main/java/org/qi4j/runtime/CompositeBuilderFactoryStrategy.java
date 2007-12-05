@@ -15,9 +15,9 @@
 package org.qi4j.runtime;
 
 import java.util.Map;
-import org.qi4j.Composite;
-import org.qi4j.CompositeBuilder;
-import org.qi4j.CompositeBuilderFactory;
+import org.qi4j.composite.Composite;
+import org.qi4j.composite.CompositeBuilder;
+import org.qi4j.composite.CompositeBuilderFactory;
 
 /**
  * CBF that delegates to a number of other factories. This is used to implement

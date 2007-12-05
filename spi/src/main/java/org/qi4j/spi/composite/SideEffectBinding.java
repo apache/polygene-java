@@ -23,13 +23,13 @@ package org.qi4j.spi.composite;
 public final class SideEffectBinding
     extends ModifierBinding
 {
-    public SideEffectBinding( ObjectResolution objectResolution, ConstructorBinding constructorBinding, Iterable<FieldBinding> fieldBindings, Iterable<MethodBinding> methodBindings )
+    public SideEffectBinding( SideEffectResolution sideEffectResolution, ConstructorBinding constructorBinding, Iterable<FieldBinding> fieldBindings, Iterable<MethodBinding> methodBindings )
     {
-        super( objectResolution, constructorBinding, fieldBindings, methodBindings );
+        super( sideEffectResolution, constructorBinding, fieldBindings, methodBindings );
     }
 
     public SideEffectResolution getSideEffectResolution()
     {
-        return (SideEffectResolution) getObjectResolution();
+        return (SideEffectResolution) getAbstractResolution();
     }
 }

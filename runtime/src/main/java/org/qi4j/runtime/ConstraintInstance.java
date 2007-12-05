@@ -1,7 +1,7 @@
 package org.qi4j.runtime;
 
 import java.lang.annotation.Annotation;
-import org.qi4j.ParameterConstraint;
+import org.qi4j.composite.ParameterConstraint;
 
 /**
  * TODO

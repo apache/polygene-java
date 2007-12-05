@@ -17,6 +17,6 @@ public final class SideEffectResolution
 
     public SideEffectModel getSideEffectModel()
     {
-        return (SideEffectModel) getObjectModel();
+        return (SideEffectModel) getAbstractModel();
     }
 }

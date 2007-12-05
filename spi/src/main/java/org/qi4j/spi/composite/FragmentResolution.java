@@ -18,7 +18,7 @@ package org.qi4j.spi.composite;
  * @see ConcernResolution
  */
 public abstract class FragmentResolution
-    extends ObjectResolution
+    extends AbstractResolution
 {
     public FragmentResolution( FragmentModel fragmentModel, Iterable<ConstructorResolution> constructorResolutions, Iterable<FieldResolution> fieldResolutions, Iterable<MethodResolution> methodResolutions )
     {
@@ -27,6 +27,6 @@ public abstract class FragmentResolution
 
     public FragmentModel getFragmentModel()
     {
-        return (FragmentModel) getObjectModel();
+        return (FragmentModel) getAbstractModel();
     }
 }

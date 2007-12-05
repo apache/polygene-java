@@ -19,7 +19,7 @@ package org.qi4j.runtime.composite;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import org.qi4j.Composite;
+import org.qi4j.composite.Composite;
 import org.qi4j.entity.Identity;
 import org.qi4j.runtime.structure.ModuleContext;
 import org.qi4j.spi.composite.CompositeState;

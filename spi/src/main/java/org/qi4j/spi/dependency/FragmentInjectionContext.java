@@ -1,8 +1,8 @@
 package org.qi4j.spi.dependency;
 
 import java.lang.reflect.InvocationHandler;
-import org.qi4j.CompositeBuilderFactory;
-import org.qi4j.ObjectBuilderFactory;
+import org.qi4j.composite.CompositeBuilderFactory;
+import org.qi4j.composite.ObjectBuilderFactory;
 import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.structure.ModuleBinding;
 

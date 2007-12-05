@@ -16,7 +16,7 @@ package org.qi4j.spi.serialization;
 
 import java.io.Serializable;
 import java.util.Map;
-import org.qi4j.Composite;
+import org.qi4j.composite.Composite;
 
 /**
  * TODO

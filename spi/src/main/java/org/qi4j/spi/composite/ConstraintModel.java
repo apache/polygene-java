@@ -15,7 +15,7 @@
 package org.qi4j.spi.composite;
 
 import java.lang.annotation.Annotation;
-import org.qi4j.ParameterConstraint;
+import org.qi4j.composite.ParameterConstraint;
 
 /**
  * A ConstraintModel matches each use

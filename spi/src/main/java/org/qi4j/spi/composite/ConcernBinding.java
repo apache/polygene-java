@@ -30,6 +30,6 @@ public final class ConcernBinding
 
     public ConcernResolution getConcernResolution()
     {
-        return (ConcernResolution) getObjectResolution();
+        return (ConcernResolution) getAbstractResolution();
     }
 }

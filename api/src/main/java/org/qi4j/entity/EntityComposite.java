@@ -14,7 +14,7 @@
  */
 package org.qi4j.entity;
 
-import org.qi4j.Composite;
+import org.qi4j.composite.Composite;
 
 /**
  * Persistent domain objects should implement this composite

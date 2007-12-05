@@ -23,8 +23,8 @@ package org.qi4j.spi.composite;
 public abstract class ModifierBinding
     extends FragmentBinding
 {
-    public ModifierBinding( ObjectResolution objectResolution, ConstructorBinding constructorBinding, Iterable<FieldBinding> fieldBindings, Iterable<MethodBinding> methodBindings )
+    public ModifierBinding( ModifierResolution modifierResolution, ConstructorBinding constructorBinding, Iterable<FieldBinding> fieldBindings, Iterable<MethodBinding> methodBindings )
     {
-        super( objectResolution, constructorBinding, fieldBindings, methodBindings );
+        super( modifierResolution, constructorBinding, fieldBindings, methodBindings );
     }
 }

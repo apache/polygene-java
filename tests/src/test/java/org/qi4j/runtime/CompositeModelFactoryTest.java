@@ -21,10 +21,10 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
-import org.qi4j.Composite;
 import org.qi4j.annotation.Concerns;
 import org.qi4j.annotation.Mixins;
 import org.qi4j.annotation.scope.ConcernFor;
+import org.qi4j.composite.Composite;
 import org.qi4j.composite.NullArgumentException;
 import org.qi4j.spi.composite.CompositeModel;
 import org.qi4j.spi.composite.ConcernModel;
@@ -99,13 +99,12 @@ public class CompositeModelFactoryTest
         List<Class> expected = new LinkedList<Class>();
         expected.add( TestModifier1.class );
         expected.add( TestModifier2.class );
-        expected.add( TestModifier1.class );
         Iterable<ConcernModel> list = model.getConcernModels();
         for( ConcernModel concernModel : list )
         {
             assertTrue( "unexpected modifier model: " + concernModel, expected.remove( concernModel.getModelClass() ) );
         }
-        assertTrue( "unexpected modifier modles: ", expected.size() == 0 );
+        assertTrue( "unexpected modifier models: ", expected.size() == 0 );
     }
 
     @Test

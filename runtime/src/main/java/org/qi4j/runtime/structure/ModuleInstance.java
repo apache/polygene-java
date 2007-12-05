@@ -14,11 +14,10 @@
 
 package org.qi4j.runtime.structure;
 
-import org.qi4j.CompositeBuilderFactory;
-import org.qi4j.ObjectBuilderFactory;
+import org.qi4j.composite.CompositeBuilderFactory;
+import org.qi4j.composite.ObjectBuilderFactory;
 import org.qi4j.runtime.ModuleCompositeBuilderFactory;
 import org.qi4j.runtime.ModuleObjectBuilderFactory;
-import org.qi4j.runtime.Qi4jRuntime;
 
 /**
  * TODO
@@ -29,11 +28,11 @@ public class ModuleInstance
     private CompositeBuilderFactory compositeBuilderFactory;
     private ObjectBuilderFactory objectBuilderFactory;
 
-    public ModuleInstance( ModuleContext moduleContext, Qi4jRuntime runtime )
+    public ModuleInstance( ModuleContext moduleContext )
     {
         this.moduleContext = moduleContext;
         compositeBuilderFactory = new ModuleCompositeBuilderFactory( moduleContext );
-        objectBuilderFactory = new ModuleObjectBuilderFactory( moduleContext, runtime );
+        objectBuilderFactory = new ModuleObjectBuilderFactory( moduleContext );
     }
 
     public ModuleContext getModuleContext()

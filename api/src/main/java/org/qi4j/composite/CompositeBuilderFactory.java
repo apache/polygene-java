@@ -12,7 +12,7 @@
  * limitations under the License.
  *
  */
-package org.qi4j;
+package org.qi4j.composite;
 
 /**
  * This factory creates proxies that implement the given

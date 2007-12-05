@@ -28,6 +28,6 @@ public final class ConcernResolution
 
     public ConcernModel getConcernModel()
     {
-        return (ConcernModel) getObjectModel();
+        return (ConcernModel) getAbstractModel();
     }
 }

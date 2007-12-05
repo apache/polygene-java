@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2007, Rickard …berg. All Rights Reserved.
+ * Copyright (c) 2007, Rickard Ã–berg. All Rights Reserved.
+ * Copyright (c) 2007, Niclas Hedhman. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -11,18 +12,17 @@
  * limitations under the License.
  *
  */
+package org.qi4j.composite;
 
-package org.qi4j;
+import java.util.Collection;
 
-/**
- * TODO
- */
-public class InvalidApplicationException
-    extends RuntimeException
+public interface InvocationContext
 {
+    Object getComposite();
 
-    public InvalidApplicationException( String string )
-    {
-        super( string );
-    }
+    Object getMixin();
+
+    Class getMixinType();
+
+    Collection<ConstraintViolation> getConstraintViolations();
 }

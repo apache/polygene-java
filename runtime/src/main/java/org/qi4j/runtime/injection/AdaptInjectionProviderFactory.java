@@ -52,7 +52,7 @@ public class AdaptInjectionProviderFactory
 
             for( Object adaptedObject : adapt )
             {
-                if( adaptedObject.getClass().isAssignableFrom( resolution.getInjectionModel().getInjectionClass() ) )
+                if( resolution.getInjectionModel().getInjectionClass().isAssignableFrom( adaptedObject.getClass() ) )
                 {
                     return adaptedObject;
                 }

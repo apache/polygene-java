@@ -12,32 +12,42 @@
  *
  */
 
-package org.qi4j;
+package org.qi4j.test.model1;
 
-import java.lang.annotation.Annotation;
+import org.qi4j.annotation.scope.PropertyField;
+import org.qi4j.annotation.scope.PropertyParameter;
 
 /**
- * When a constraint violation has occurred it is registered as a ConstraintViolation
- * and exposed through the InvocationContext for concerns and mixins to use.
+ * Object with property injections
  */
-public class ConstraintViolation
+public class Object1
 {
-    Annotation constraint;
-    Object value;
+    @PropertyField
+    String foo;
 
-    public ConstraintViolation( Annotation constraint, Object value )
+    @PropertyField( optional = true )
+    String bar;
+
+    int xyzzy;
+
+    public Object1( @PropertyParameter( "xyzzy" )int xyzzy )
     {
-        this.constraint = constraint;
-        this.value = value;
+        this.xyzzy = xyzzy;
     }
 
-    public Annotation getConstraint()
+
+    public String getFoo()
     {
-        return constraint;
+        return foo;
     }
 
-    public Object getValue()
+    public String getBar()
     {
-        return value;
+        return bar;
+    }
+
+    public int getXyzzy()
+    {
+        return xyzzy;
     }
 }

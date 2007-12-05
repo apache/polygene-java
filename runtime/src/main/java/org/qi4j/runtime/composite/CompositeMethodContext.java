@@ -21,8 +21,8 @@ import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import org.qi4j.CompositeInstantiationException;
-import org.qi4j.ParameterConstraint;
+import org.qi4j.composite.CompositeInstantiationException;
+import org.qi4j.composite.ParameterConstraint;
 import org.qi4j.runtime.CompositeMethodInstancePool;
 import org.qi4j.runtime.ConstraintInstance;
 import org.qi4j.runtime.ConstraintInvocationHandler;
@@ -93,7 +93,7 @@ public class CompositeMethodContext
                     compositeBinding,
                     proxyHandler,
                     modifies,
-                    compositeMethodBinding.getCompositeMethodResolution().getCompositeMethodModel().getMethod(),
+                    compositeMethodBinding,
                     compositeMethodBinding.getMixinBinding(),
                     proxyHandler );
                 previousConcern = runtime.getInstanceFactory().newInstance( concernBinding, modifierContext );
@@ -155,7 +155,7 @@ public class CompositeMethodContext
                                                                                      compositeBinding,
                                                                                      proxyHandler,
                                                                                      modifies,
-                                                                                     method,
+                                                                                     compositeMethodBinding,
                                                                                      compositeMethodBinding.getMixinBinding(),
                                                                                      proxyHandler );
             sideEffects[ i++ ] = runtime.getInstanceFactory().newInstance( sideEffectBinding, modifierContext );

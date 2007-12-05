@@ -12,16 +12,15 @@
  *
  */
 
-package org.qi4j;
+package org.qi4j.spi.dependency;
 
-import java.lang.annotation.Annotation;
+import java.util.Map;
+import org.qi4j.composite.PropertyValue;
 
 /**
- * All constraints must implement this interface, which is used for each
- * parameter validation.
+ * TODO
  */
-public interface ParameterConstraint<A extends Annotation, P>
+public interface PropertyInjectionContext
 {
-    boolean isValid( A annotation, P parameter )
-        throws NullPointerException;
+    Map<String, PropertyValue> getProperties();
 }

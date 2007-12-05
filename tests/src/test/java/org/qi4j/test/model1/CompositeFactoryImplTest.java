@@ -12,9 +12,9 @@
  */
 package org.qi4j.test.model1;
 
-import org.qi4j.CompositeBuilder;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.spi.composite.InvalidCompositeException;
+import org.qi4j.composite.CompositeBuilder;
+import org.qi4j.composite.InvalidApplicationException;
 import org.qi4j.test.AbstractQi4jTest;
 
 public class CompositeFactoryImplTest extends AbstractQi4jTest
@@ -35,9 +35,9 @@ public class CompositeFactoryImplTest extends AbstractQi4jTest
             Class aClass = Composition8.class;
             CompositeBuilder builder = compositeBuilderFactory.newCompositeBuilder( aClass );
             builder.newInstance();
-            fail( "CompositeBuilderFactory.newInstance() should return CompositeInstantiationException when creating a new instance for " + aClass.getName() );
+            fail( "CompositeBuilderFactory.newInstance() should return InvalidApplicationException when creating a new instance for " + aClass.getName() );
         }
-        catch( InvalidCompositeException e )
+        catch( InvalidApplicationException e )
         {
             // Correct
         }

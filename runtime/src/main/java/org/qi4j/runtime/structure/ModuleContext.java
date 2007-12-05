@@ -16,13 +16,13 @@ package org.qi4j.runtime.structure;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.qi4j.Composite;
-import org.qi4j.CompositeBuilderFactory;
-import org.qi4j.ObjectBuilderFactory;
+import org.qi4j.composite.Composite;
+import org.qi4j.composite.CompositeBuilderFactory;
+import org.qi4j.composite.ObjectBuilderFactory;
 import org.qi4j.runtime.ModuleCompositeBuilderFactory;
 import org.qi4j.runtime.ModuleObjectBuilderFactory;
-import org.qi4j.runtime.Qi4jRuntime;
 import org.qi4j.runtime.composite.CompositeContext;
+import org.qi4j.runtime.composite.ObjectContext;
 import org.qi4j.spi.structure.ModuleBinding;
 
 /**
@@ -31,17 +31,17 @@ import org.qi4j.spi.structure.ModuleBinding;
 public class ModuleContext
 {
     private ModuleBinding moduleBinding;
+    private Map<Class, ObjectContext> objectContexts;
     private Map<Class<? extends Composite>, CompositeContext> compositeContexts;
-    private Qi4jRuntime runtime;
     private Map<Class<? extends Composite>, ModuleContext> moduleContexts;
 
     private CompositeBuilderFactory compositeBuilderFactory;
     private ObjectBuilderFactory objectBuilderFactory;
 
-    public ModuleContext( ModuleBinding moduleBinding, Map<Class<? extends Composite>, CompositeContext> compositeContexts, Qi4jRuntime runtime, Map<Class<? extends Composite>, ModuleContext> moduleContexts )
+    public ModuleContext( ModuleBinding moduleBinding, Map<Class<? extends Composite>, CompositeContext> compositeContexts, Map<Class, ObjectContext> instantiableObjectContexts, Map<Class<? extends Composite>, ModuleContext> moduleContexts )
     {
         this.moduleBinding = moduleBinding;
-        this.runtime = runtime;
+        objectContexts = instantiableObjectContexts;
 
         Map<Class<? extends Composite>, ModuleContext> boundContexts = new HashMap<Class<? extends Composite>, ModuleContext>();
         for( Map.Entry<Class<? extends Composite>, ModuleContext> entry : moduleContexts.entrySet() )
@@ -60,7 +60,7 @@ public class ModuleContext
         this.compositeContexts = compositeContexts;
 
         compositeBuilderFactory = new ModuleCompositeBuilderFactory( this );
-        objectBuilderFactory = new ModuleObjectBuilderFactory( this, runtime );
+        objectBuilderFactory = new ModuleObjectBuilderFactory( this );
     }
 
     public ModuleBinding getModuleBinding()
@@ -81,7 +81,7 @@ public class ModuleContext
     public ModuleInstance newModuleInstance()
     {
 
-        ModuleInstance moduleInstance = new ModuleInstance( this, runtime );
+        ModuleInstance moduleInstance = new ModuleInstance( this );
         return moduleInstance;
     }
 
@@ -93,5 +93,10 @@ public class ModuleContext
     public CompositeContext getCompositeContext( Class<? extends Composite> compositeType )
     {
         return compositeContexts.get( compositeType );
+    }
+
+    public ObjectContext getObjectContext( Class objectType )
+    {
+        return objectContexts.get( objectType );
     }
 }

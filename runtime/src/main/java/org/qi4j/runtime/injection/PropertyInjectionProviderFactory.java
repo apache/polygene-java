@@ -1,14 +1,13 @@
 package org.qi4j.runtime.injection;
 
-import java.util.Map;
-import org.qi4j.PropertyValue;
-import org.qi4j.spi.composite.PropertyResolution;
+import org.qi4j.composite.PropertyValue;
 import org.qi4j.spi.dependency.InjectionContext;
 import org.qi4j.spi.dependency.InjectionProvider;
+import org.qi4j.spi.dependency.InjectionProviderException;
 import org.qi4j.spi.dependency.InjectionProviderFactory;
 import org.qi4j.spi.dependency.InjectionResolution;
 import org.qi4j.spi.dependency.InvalidInjectionException;
-import org.qi4j.spi.dependency.MixinInjectionContext;
+import org.qi4j.spi.dependency.PropertyInjectionContext;
 import org.qi4j.spi.dependency.PropertyInjectionModel;
 
 /**
@@ -19,45 +18,62 @@ public class PropertyInjectionProviderFactory
 {
     public InjectionProvider newInjectionProvider( InjectionResolution resolution ) throws InvalidInjectionException
     {
-        return new PropertyInjectionProvider( resolution );
+        if( resolution.getInjectionModel().getInjectedClass().equals( PropertyValue.class ) && resolution.getInjectionModel().getRawInjectionType().equals( Iterable.class ) )
+        {
+            return new PropertySetInjectionProvider();
+        }
+        else
+        {
+            return new PropertyInjectionProvider( resolution );
+        }
     }
 
     private class PropertyInjectionProvider implements InjectionProvider
     {
-        private InjectionResolution resolution;
+        private InjectionResolution property;
+        private String name;
 
-        public PropertyInjectionProvider( InjectionResolution resolution )
+        public PropertyInjectionProvider( InjectionResolution property )
         {
-            this.resolution = resolution;
+            this.property = property;
+            name = ( (PropertyInjectionModel) property.getInjectionModel() ).getName();
         }
 
         public Object provideInjection( InjectionContext context )
         {
-            if( context instanceof MixinInjectionContext )
+            if( context instanceof PropertyInjectionContext )
             {
-                MixinInjectionContext mixinContext = (MixinInjectionContext) context;
-
-                // Check whether one or more properties should be injected
-                if( resolution.getInjectionModel().getInjectedClass().equals( PropertyValue.class ) && resolution.getInjectionModel().getRawInjectionType().equals( Iterable.class ) )
+                PropertyInjectionContext propertyInjectionContext = (PropertyInjectionContext) context;
+                PropertyValue value = propertyInjectionContext.getProperties().get( name );
+                if( value != null )
                 {
-                    return mixinContext.getProperties().values();
+                    return value.getValue();
                 }
                 else
                 {
-                    // TODO This needs to be muuuuch better. The injection point should be matched to a specific property model at this point
-                    PropertyInjectionModel propertyModel = (PropertyInjectionModel) resolution.getInjectionModel();
-                    String name = propertyModel.getName();
-                    for( Map.Entry<PropertyResolution, PropertyValue> entry : mixinContext.getProperties().entrySet() )
+                    if( property.getInjectionModel().isOptional() )
                     {
-                        if( entry.getKey().getPropertyModel().getName().equals( name ) )
-                        {
-                            return entry.getValue().getValue();
-                        }
-
+                        return null;
+                    }
+                    else
+                    {
+                        throw new InjectionProviderException( "Non-optional property " + name + " had no value when injecting " + property.getAbstractModel().getModelClass().getName() );
                     }
                 }
+            }
 
-                return null;
+            return null;
+        }
+    }
+
+    private class PropertySetInjectionProvider implements InjectionProvider
+    {
+        public Object provideInjection( InjectionContext context )
+        {
+            if( context instanceof PropertyInjectionContext )
+            {
+                PropertyInjectionContext propertyInjectionContext = (PropertyInjectionContext) context;
+                return propertyInjectionContext.getProperties().values();
             }
 
             return null;

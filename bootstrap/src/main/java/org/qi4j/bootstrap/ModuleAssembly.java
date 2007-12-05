@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
-import org.qi4j.Composite;
+import org.qi4j.composite.Composite;
 import org.qi4j.spi.dependency.ServiceProvider;
 
 /**
@@ -29,6 +29,7 @@ public class ModuleAssembly
     private LayerAssembly layerAssembly;
     private Set<Class<? extends Composite>> publicComposites = new LinkedHashSet<Class<? extends Composite>>();
     private Set<Class<? extends Composite>> privateComposites = new LinkedHashSet<Class<? extends Composite>>();
+    private Set<Class> objects = new LinkedHashSet<Class>();
     private Map<Class, ServiceProvider> serviceProviders = new HashMap<Class, ServiceProvider>();
     private String name;
 
@@ -88,6 +89,11 @@ public class ModuleAssembly
         }
     }
 
+    public void addObject( Class objectType )
+    {
+        objects.add( objectType );
+    }
+
     public void addService( Class serviceType, ServiceProvider serviceProvider )
     {
         serviceProviders.put( serviceType, serviceProvider );
@@ -101,6 +107,11 @@ public class ModuleAssembly
     Set<Class<? extends Composite>> getPrivateComposites()
     {
         return privateComposites;
+    }
+
+    public Set<Class> getObjects()
+    {
+        return objects;
     }
 
     Map<Class, ServiceProvider> getServiceProviders()

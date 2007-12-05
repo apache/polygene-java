@@ -2,11 +2,10 @@ package org.qi4j.spi.dependency;
 
 import java.lang.reflect.InvocationHandler;
 import java.util.Map;
-import org.qi4j.CompositeBuilderFactory;
-import org.qi4j.ObjectBuilderFactory;
-import org.qi4j.PropertyValue;
+import org.qi4j.composite.CompositeBuilderFactory;
+import org.qi4j.composite.ObjectBuilderFactory;
+import org.qi4j.composite.PropertyValue;
 import org.qi4j.spi.composite.CompositeBinding;
-import org.qi4j.spi.composite.PropertyResolution;
 import org.qi4j.spi.structure.ModuleBinding;
 
 /**
@@ -14,12 +13,13 @@ import org.qi4j.spi.structure.ModuleBinding;
  */
 public class MixinInjectionContext
     extends FragmentInjectionContext
+    implements PropertyInjectionContext
 {
-    private Map<PropertyResolution, PropertyValue> properties;
+    private Map<String, PropertyValue> properties;
     private Iterable<Object> adapt;
     private Object decorated;
 
-    public MixinInjectionContext( CompositeBuilderFactory compositeBuilderFactory, ObjectBuilderFactory objectBuilderFactory, ModuleBinding moduleBinding, CompositeBinding compositeBinding, InvocationHandler thisCompositeAs, Map<PropertyResolution, PropertyValue> properties, Iterable<Object> adapt, Object decorated )
+    public MixinInjectionContext( CompositeBuilderFactory compositeBuilderFactory, ObjectBuilderFactory objectBuilderFactory, ModuleBinding moduleBinding, CompositeBinding compositeBinding, InvocationHandler thisCompositeAs, Map<String, PropertyValue> properties, Iterable<Object> adapt, Object decorated )
     {
         super( compositeBuilderFactory, objectBuilderFactory, moduleBinding, compositeBinding, thisCompositeAs );
         this.properties = properties;
@@ -27,7 +27,7 @@ public class MixinInjectionContext
         this.decorated = decorated;
     }
 
-    public Map<PropertyResolution, PropertyValue> getProperties()
+    public Map<String, PropertyValue> getProperties()
     {
         return properties;
     }

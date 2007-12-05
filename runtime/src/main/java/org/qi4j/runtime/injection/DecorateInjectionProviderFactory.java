@@ -50,7 +50,7 @@ public class DecorateInjectionProviderFactory
                 return null;
             }
 
-            if( decoratedObject.getClass().isAssignableFrom( resolution.getInjectionModel().getInjectionClass() ) )
+            if( resolution.getInjectionModel().getInjectionClass().isAssignableFrom( decoratedObject.getClass() ) )
             {
                 return decoratedObject;
             }

@@ -16,7 +16,7 @@
  */
 package org.qi4j.test.model4;
 
-import org.qi4j.CompositeBuilderFactory;
+import org.qi4j.composite.CompositeBuilderFactory;
 
 public interface Mixin1
 {

@@ -11,81 +11,27 @@
 */
 package org.qi4j.spi.composite;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
 /**
  * Base class for object model resolutions. Resolutions are models resolved in a runtime environment
  */
 public class ObjectResolution
+    extends AbstractResolution
 {
-    private ObjectModel objectModel;
+    private Iterable<PropertyResolution> propertyResolutions;
 
-    private Iterable<ConstructorResolution> constructorResolutions;
-    private Iterable<FieldResolution> fieldResolutions;
-    private Iterable<MethodResolution> methodResolutions;
-
-    public ObjectResolution( ObjectModel objectModel, Iterable<ConstructorResolution> constructorResolutions, Iterable<FieldResolution> fieldResolutions, Iterable<MethodResolution> methodResolutions )
+    public ObjectResolution( AbstractModel abstractModel, Iterable<ConstructorResolution> constructorResolutions, Iterable<FieldResolution> fieldResolutions, Iterable<MethodResolution> methodResolutions, Iterable<PropertyResolution> propertyResolutions )
     {
-        this.constructorResolutions = constructorResolutions;
-        this.fieldResolutions = fieldResolutions;
-        this.methodResolutions = methodResolutions;
-        this.objectModel = objectModel;
+        super( abstractModel, constructorResolutions, fieldResolutions, methodResolutions );
+        this.propertyResolutions = propertyResolutions;
     }
 
-    // Public -------------------------------------------------------
     public ObjectModel getObjectModel()
     {
-        return objectModel;
+        return (ObjectModel) getAbstractModel();
     }
 
-    public Iterable<ConstructorResolution> getConstructorResolutions()
+    public Iterable<PropertyResolution> getPropertyResolutions()
     {
-        return constructorResolutions;
-    }
-
-    public Iterable<FieldResolution> getFieldResolutions()
-    {
-        return fieldResolutions;
-    }
-
-    public Iterable<MethodResolution> getMethodResolutions()
-    {
-        return methodResolutions;
-    }
-
-    // Object overrides ---------------------------------------------
-    public boolean equals( Object o )
-    {
-        if( this == o )
-        {
-            return true;
-        }
-        if( o == null || getClass() != o.getClass() )
-        {
-            return false;
-        }
-
-        ObjectResolution objectModel = (ObjectResolution) o;
-
-        return this.objectModel.equals( objectModel.objectModel );
-    }
-
-    public int hashCode()
-    {
-        return objectModel.hashCode();
-    }
-
-    public String toString()
-    {
-        StringWriter str = new StringWriter();
-        PrintWriter out = new PrintWriter( str );
-        out.println( objectModel.getModelClass().getName() );
-        for( FieldResolution fieldResolution : fieldResolutions )
-        {
-            out.println( "    @" + fieldResolution.getInjectionResolution().getInjectionModel().getInjectionAnnotationType().getSimpleName() );
-        }
-        out.close();
-        return str.toString();
+        return propertyResolutions;
     }
 }

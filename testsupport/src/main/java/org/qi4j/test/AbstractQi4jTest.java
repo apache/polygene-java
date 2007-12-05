@@ -15,17 +15,19 @@
 package org.qi4j.test;
 
 import junit.framework.TestCase;
-import org.qi4j.CompositeBuilderFactory;
-import org.qi4j.ObjectBuilderFactory;
 import org.qi4j.Qi4j;
 import org.qi4j.bootstrap.ApplicationAssemblyFactory;
 import org.qi4j.bootstrap.ApplicationFactory;
 import org.qi4j.bootstrap.Assembly;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.composite.CompositeBuilderFactory;
+import org.qi4j.composite.ObjectBuilderFactory;
 import org.qi4j.runtime.Energy4Java;
 import org.qi4j.runtime.Qi4jRuntime;
 import org.qi4j.runtime.structure.ApplicationInstance;
+import org.qi4j.runtime.structure.LayerInstance;
+import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.Qi4jSPI;
 
 /**
@@ -44,6 +46,8 @@ public abstract class AbstractQi4jTest
 
     protected CompositeBuilderFactory compositeBuilderFactory;
     protected ObjectBuilderFactory objectBuilderFactory;
+    protected ModuleInstance moduleInstance;
+    protected LayerInstance layerInstance;
 
     @Override protected void setUp() throws Exception
     {
@@ -52,8 +56,10 @@ public abstract class AbstractQi4jTest
         application = newApplication();
 
         // Assume only one module
-        compositeBuilderFactory = application.getLayerInstances().iterator().next().getModuleInstances().iterator().next().getModuleContext().getCompositeBuilderFactory();
-        objectBuilderFactory = application.getLayerInstances().iterator().next().getModuleInstances().iterator().next().getModuleContext().getObjectBuilderFactory();
+        layerInstance = application.getLayerInstances().iterator().next();
+        moduleInstance = layerInstance.getModuleInstances().iterator().next();
+        compositeBuilderFactory = moduleInstance.getModuleContext().getCompositeBuilderFactory();
+        objectBuilderFactory = moduleInstance.getModuleContext().getObjectBuilderFactory();
     }
 
     protected ApplicationInstance newApplication()

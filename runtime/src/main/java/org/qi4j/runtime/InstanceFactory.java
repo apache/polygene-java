@@ -16,15 +16,15 @@
  */
 package org.qi4j.runtime;
 
-import org.qi4j.CompositeInstantiationException;
-import org.qi4j.spi.composite.ObjectBinding;
+import org.qi4j.composite.CompositeInstantiationException;
+import org.qi4j.spi.composite.AbstractBinding;
 import org.qi4j.spi.dependency.InjectionContext;
 
 public interface InstanceFactory
 {
-    Object newInstance( ObjectBinding objectBinding, InjectionContext context )
+    Object newInstance( AbstractBinding abstractBinding, InjectionContext context )
         throws CompositeInstantiationException;
 
-    void inject( Object instance, ObjectBinding objectBinding, InjectionContext context )
+    void inject( Object instance, AbstractBinding abstractBinding, InjectionContext context )
         throws CompositeInstantiationException;
 }

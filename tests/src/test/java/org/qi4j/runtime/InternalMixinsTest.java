@@ -1,8 +1,9 @@
 package org.qi4j.runtime;
 
-import org.qi4j.Composite;
 import org.qi4j.annotation.Mixins;
 import org.qi4j.annotation.scope.ThisCompositeAs;
+import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.composite.Composite;
 import org.qi4j.test.AbstractQi4jTest;
 
 /**
@@ -11,6 +12,11 @@ import org.qi4j.test.AbstractQi4jTest;
 public class InternalMixinsTest
     extends AbstractQi4jTest
 {
+    @Override public void configure( ModuleAssembly module )
+    {
+        module.addComposite( TestComposite.class );
+    }
+
     public void testInternalMixins()
     {
         TestComposite test = compositeBuilderFactory.newCompositeBuilder( TestComposite.class ).newInstance();

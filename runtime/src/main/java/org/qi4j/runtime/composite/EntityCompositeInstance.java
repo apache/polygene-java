@@ -18,7 +18,7 @@ package org.qi4j.runtime.composite;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import org.qi4j.CompositeInstantiationException;
+import org.qi4j.composite.CompositeInstantiationException;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.runtime.MethodDescriptor;
 import org.qi4j.runtime.structure.ModuleContext;

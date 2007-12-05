@@ -19,11 +19,11 @@ package org.qi4j.query;
 
 import java.util.ArrayList;
 import junit.framework.TestCase;
+import static org.qi4j.query.QueryExpression.and;
+import static org.qi4j.query.QueryExpression.contains;
 import static org.qi4j.query.QueryExpression.eq;
 import static org.qi4j.query.QueryExpression.ne;
-import static org.qi4j.query.QueryExpression.contains;
 import static org.qi4j.query.QueryExpression.not;
-import static org.qi4j.query.QueryExpression.and;
 
 public class ExpressionTest extends TestCase
 {

@@ -17,9 +17,8 @@
  */
 package org.qi4j.query.operators;
 
-import org.qi4j.query.BooleanExpression;
-import org.qi4j.query.Operator;
 import org.qi4j.query.BinaryOperator;
+import org.qi4j.query.BooleanExpression;
 
 public class Or
     implements BinaryOperator, BooleanExpression

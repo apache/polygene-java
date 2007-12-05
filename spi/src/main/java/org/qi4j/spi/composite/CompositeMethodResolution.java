@@ -14,6 +14,8 @@
 
 package org.qi4j.spi.composite;
 
+import java.lang.reflect.AnnotatedElement;
+
 /**
  * TODO
  */
@@ -24,9 +26,11 @@ public class CompositeMethodResolution
     private Iterable<ConcernResolution> concernResolutions;
     private Iterable<SideEffectResolution> sideEffectResolutions;
     private MixinResolution mixinResolution;
+    private AnnotatedElement annotatedElement;
 
-    public CompositeMethodResolution( CompositeMethodModel methodModel, Iterable<ParameterResolution> parameterResolutions, Iterable<ConcernResolution> concerns, Iterable<SideEffectResolution> sideEffects, MixinResolution mixin )
+    public CompositeMethodResolution( CompositeMethodModel methodModel, Iterable<ParameterResolution> parameterResolutions, Iterable<ConcernResolution> concerns, Iterable<SideEffectResolution> sideEffects, MixinResolution mixin, AnnotatedElement annotatedElement )
     {
+        this.annotatedElement = annotatedElement;
         this.compositeMethodModel = methodModel;
         this.parameterResolutions = parameterResolutions;
         this.concernResolutions = concerns;
@@ -57,5 +61,10 @@ public class CompositeMethodResolution
     public MixinResolution getMixinResolution()
     {
         return mixinResolution;
+    }
+
+    public AnnotatedElement getAnnotatedElement()
+    {
+        return annotatedElement;
     }
 }
