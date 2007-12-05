@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Rickard …berg. All Rights Reserved.
+ * Copyright (c) 2007, Rickard ï¿½berg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
  *
  */
 
-package org.qi4j.library.framework.xml;
+package org.qi4j.library.framework.rdf;
 
 /**
  * This is the RDF vocabulary for Qi4j.

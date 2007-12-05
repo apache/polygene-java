@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Rickard …berg. All Rights Reserved.
+ * Copyright (c) 2007, Rickard ï¿½berg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
  *
  */
 
-package org.qi4j.library.framework.xml;
+package org.qi4j.library.framework.rdf;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -52,9 +52,9 @@ public class ApplicationXmlTest
     public void testApplicationXml()
         throws Exception
     {
-        ApplicationXml applicationXml = new ApplicationXml();
+        ApplicationRdfXml applicationRdfXml = new ApplicationRdfXml();
 
-        Document doc = applicationXml.toXml( application.getApplicationContext() );
+        Document doc = applicationRdfXml.toXml( application.getApplicationContext() );
 
         File file = new File( "application.rdf" );
         doc.setDocumentURI( file.getAbsolutePath() + "/" );

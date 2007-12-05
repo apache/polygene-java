@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Rickard …berg. All Rights Reserved.
+ * Copyright (c) 2007, Rickard ï¿½berg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,35 +12,48 @@
  *
  */
 
-package org.qi4j.library.framework.xml;
+package org.qi4j.library.framework.rdf;
 
+import java.io.BufferedWriter;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.nio.charset.Charset;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import static org.qi4j.library.framework.xml.RDFVocabulary.APPLICATION;
-import static org.qi4j.library.framework.xml.RDFVocabulary.CLASS;
-import static org.qi4j.library.framework.xml.RDFVocabulary.COMPOSITE;
-import static org.qi4j.library.framework.xml.RDFVocabulary.CONCERN;
-import static org.qi4j.library.framework.xml.RDFVocabulary.CONCERNS;
-import static org.qi4j.library.framework.xml.RDFVocabulary.FIELD;
-import static org.qi4j.library.framework.xml.RDFVocabulary.FIELDS;
-import static org.qi4j.library.framework.xml.RDFVocabulary.IMPLEMENTED_BY;
-import static org.qi4j.library.framework.xml.RDFVocabulary.INJECTION_SCOPE;
-import static org.qi4j.library.framework.xml.RDFVocabulary.INJECTION_TYPE;
-import static org.qi4j.library.framework.xml.RDFVocabulary.LAYER;
-import static org.qi4j.library.framework.xml.RDFVocabulary.LAYERS;
-import static org.qi4j.library.framework.xml.RDFVocabulary.METHOD;
-import static org.qi4j.library.framework.xml.RDFVocabulary.METHODS;
-import static org.qi4j.library.framework.xml.RDFVocabulary.MIXIN;
-import static org.qi4j.library.framework.xml.RDFVocabulary.MIXINS;
-import static org.qi4j.library.framework.xml.RDFVocabulary.MODULE;
-import static org.qi4j.library.framework.xml.RDFVocabulary.MODULES;
-import static org.qi4j.library.framework.xml.RDFVocabulary.PRIVATE_COMPOSITES;
-import static org.qi4j.library.framework.xml.RDFVocabulary.PUBLIC_COMPOSITES;
-import static org.qi4j.library.framework.xml.RDFVocabulary.QI4JNS;
-import static org.qi4j.library.framework.xml.RDFVocabulary.SIDE_EFFECT;
-import static org.qi4j.library.framework.xml.RDFVocabulary.SIDE_EFFECTS;
-import static org.qi4j.library.framework.xml.RDFVocabulary.USES;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import static org.qi4j.library.framework.rdf.RDFVocabulary.APPLICATION;
+import static org.qi4j.library.framework.rdf.RDFVocabulary.CLASS;
+import static org.qi4j.library.framework.rdf.RDFVocabulary.COMPOSITE;
+import static org.qi4j.library.framework.rdf.RDFVocabulary.CONCERN;
+import static org.qi4j.library.framework.rdf.RDFVocabulary.CONCERNS;
+import static org.qi4j.library.framework.rdf.RDFVocabulary.FIELD;
+import static org.qi4j.library.framework.rdf.RDFVocabulary.FIELDS;
+import static org.qi4j.library.framework.rdf.RDFVocabulary.IMPLEMENTED_BY;
+import static org.qi4j.library.framework.rdf.RDFVocabulary.INJECTION_SCOPE;
+import static org.qi4j.library.framework.rdf.RDFVocabulary.INJECTION_TYPE;
+import static org.qi4j.library.framework.rdf.RDFVocabulary.LAYER;
+import static org.qi4j.library.framework.rdf.RDFVocabulary.LAYERS;
+import static org.qi4j.library.framework.rdf.RDFVocabulary.METHOD;
+import static org.qi4j.library.framework.rdf.RDFVocabulary.METHODS;
+import static org.qi4j.library.framework.rdf.RDFVocabulary.MIXIN;
+import static org.qi4j.library.framework.rdf.RDFVocabulary.MIXINS;
+import static org.qi4j.library.framework.rdf.RDFVocabulary.MODULE;
+import static org.qi4j.library.framework.rdf.RDFVocabulary.MODULES;
+import static org.qi4j.library.framework.rdf.RDFVocabulary.PRIVATE_COMPOSITES;
+import static org.qi4j.library.framework.rdf.RDFVocabulary.PUBLIC_COMPOSITES;
+import static org.qi4j.library.framework.rdf.RDFVocabulary.QI4JNS;
+import static org.qi4j.library.framework.rdf.RDFVocabulary.SIDE_EFFECT;
+import static org.qi4j.library.framework.rdf.RDFVocabulary.SIDE_EFFECTS;
+import static org.qi4j.library.framework.rdf.RDFVocabulary.USES;
 import org.qi4j.runtime.structure.ApplicationContext;
 import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.composite.CompositeMethodBinding;
@@ -77,7 +90,7 @@ import org.w3c.dom.Element;
 /**
  * Generate RDF/XML data given an ApplicationContext.
  */
-public class ApplicationXml
+public class ApplicationRdfXml
 {
     // Namespaces
     public static final String RDFNS = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
@@ -90,6 +103,52 @@ public class ApplicationXml
     public static final String RESOURCE = "resource";
     public static final String PARSE_TYPE = "parseType";
 
+    private Document m_doc;
+
+
+    public ApplicationRdfXml( ApplicationContext context )
+    {
+        m_doc = toXml( context );
+    }
+
+    /**
+     * @param stream  the OutputStream to write to.
+     * @param charset The character set to use, or null if UTF-8.
+     */
+    public void print( OutputStream stream, Charset charset )
+    {
+        if( charset == null )
+        {
+            charset = Charset.forName( "UTF-8" );
+        }
+        OutputStreamWriter osw = new OutputStreamWriter( stream, charset );
+        BufferedWriter bw = new BufferedWriter( osw );
+        PrintWriter writer = new PrintWriter( bw );
+        print( writer );
+    }
+
+    /**
+     * @param writer The PrintWriter to write the result to.
+     */
+    public void print( PrintWriter writer )
+    {
+        TransformerFactory factory = TransformerFactory.newInstance();
+        Source source = new DOMSource( m_doc );
+        Result result = new StreamResult( writer );
+        try
+        {
+            Transformer transformer = factory.newTransformer();
+            transformer.transform( source, result );
+        }
+        catch( TransformerConfigurationException e )
+        {
+            e.printStackTrace( writer );
+        }
+        catch( TransformerException e )
+        {
+            e.printStackTrace( writer );
+        }
+    }
 
     Document toXml( ApplicationContext context )
     {
