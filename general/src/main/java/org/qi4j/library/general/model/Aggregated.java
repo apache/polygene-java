@@ -1,6 +1,6 @@
 package org.qi4j.library.general.model;
 
-import org.qi4j.Composite;
+import org.qi4j.composite.Composite;
 
 /**
  * TODO

@@ -20,7 +20,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import org.junit.Before;
 import org.junit.Test;
-import org.qi4j.PropertyValue;
+import org.qi4j.composite.PropertyValue;
 
 public class PropertiesMixinTest
 {

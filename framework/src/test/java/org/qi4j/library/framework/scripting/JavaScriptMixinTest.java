@@ -11,11 +11,15 @@ package org.qi4j.library.framework.scripting;
  * limitations under the License.
 */
 
+import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
 
 public class JavaScriptMixinTest extends AbstractQi4jTest
 {
-    JavaScriptMixin scriptMixin;
+    @Override public void configure( ModuleAssembly module )
+    {
+        module.addComposite( ScriptComposite.class );
+    }
 
     public void testInvoke() throws Throwable
     {

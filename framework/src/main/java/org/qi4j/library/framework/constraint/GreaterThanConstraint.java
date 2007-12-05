@@ -1,6 +1,6 @@
 package org.qi4j.library.framework.constraint;
 
-import org.qi4j.ParameterConstraint;
+import org.qi4j.composite.ParameterConstraint;
 import org.qi4j.library.framework.constraint.annotation.GreaterThan;
 
 /**

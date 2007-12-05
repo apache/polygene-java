@@ -12,13 +12,20 @@
  */
 package org.qi4j.library.general.model;
 
-import org.qi4j.Composite;
 import org.qi4j.annotation.Concerns;
+import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.composite.Composite;
 import org.qi4j.library.general.test.model.DescriptorConcern;
 import org.qi4j.test.AbstractQi4jTest;
 
 public class DescriptorTest extends AbstractQi4jTest
 {
+    @Override public void configure( ModuleAssembly module )
+    {
+        module.addComposite( DummyComposite.class );
+        module.addComposite( DummyComposite2.class );
+    }
+
     public void testDescriptorAsMixin() throws Exception
     {
         DummyComposite composite = compositeBuilderFactory.newCompositeBuilder( DummyComposite.class ).newInstance();

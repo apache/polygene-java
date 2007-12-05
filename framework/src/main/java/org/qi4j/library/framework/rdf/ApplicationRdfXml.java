@@ -360,7 +360,7 @@ public class ApplicationRdfXml
                injectionResolution.getLayer().getName() + "/" +
                injectionResolution.getModule().getName() + "/" +
                escape( injectionResolution.getCompositeModel().getCompositeClass().getName() ) + "/" +
-               escape( injectionResolution.getObjectModel().getModelClass().getName() ) + "/" +
+               escape( injectionResolution.getAbstractModel().getModelClass().getName() ) + "/" +
                fieldBinding.getFieldResolution().getFieldModel().getField().getName();
     }
 

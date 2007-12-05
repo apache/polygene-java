@@ -9,13 +9,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
-import org.qi4j.ConstraintViolation;
-import org.qi4j.InvocationContext;
 import org.qi4j.annotation.AppliesTo;
 import org.qi4j.annotation.AppliesToFilter;
 import org.qi4j.annotation.scope.ConcernFor;
 import org.qi4j.annotation.scope.Invocation;
 import org.qi4j.annotation.scope.ThisCompositeAs;
+import org.qi4j.composite.ConstraintViolation;
+import org.qi4j.composite.InvocationContext;
 
 /**
  * After invocation, ensure that the validation rules pass.

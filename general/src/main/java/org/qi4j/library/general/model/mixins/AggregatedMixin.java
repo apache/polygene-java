@@ -1,7 +1,7 @@
 package org.qi4j.library.general.model.mixins;
 
-import org.qi4j.Composite;
 import org.qi4j.annotation.scope.PropertyField;
+import org.qi4j.composite.Composite;
 import org.qi4j.library.general.model.Aggregated;
 
 /**

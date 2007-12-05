@@ -2,10 +2,11 @@ package org.qi4j.library.framework;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.qi4j.Composite;
-import org.qi4j.CompositeBuilder;
 import org.qi4j.annotation.Mixins;
 import org.qi4j.annotation.scope.ThisCompositeAs;
+import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.composite.Composite;
+import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.entity.EntitySession;
 import org.qi4j.query.QueryBuilderFactoryImpl;
 import org.qi4j.query.QueryableIterable;
@@ -16,6 +17,11 @@ import org.qi4j.test.AbstractQi4jTest;
 public class FinderMixinTest
     extends AbstractQi4jTest
 {
+    @Override public void configure( ModuleAssembly module )
+    {
+        module.addComposite( Composite1.class );
+    }
+
     public void testFinderMixin() throws Exception
     {
         EntitySession session = new EntitySessionFactoryImpl( compositeBuilderFactory ).newEntitySession();

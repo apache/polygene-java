@@ -12,7 +12,7 @@
  */
 package org.qi4j.library.general.model.composites;
 
-import org.qi4j.Composite;
+import org.qi4j.composite.Composite;
 import org.qi4j.library.general.model.City;
 
 /**

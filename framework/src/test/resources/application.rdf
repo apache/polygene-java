@@ -23,16 +23,16 @@
                       ns0:resource="org_qi_j_library_framework_xml_ApplicationXmlTest_TestComposite/org_qi_j_library_framework_xml_ApplicationXmlTest_AMixin"/>
                   </method>
                   <method ns0:about="org_qi_j_Composite_dereference__">
-                    <title xmlns="http://purl.org/dc/elements/1.1/">public abstract org.qi4j.Composite
-                      org.qi4j.Composite.dereference()
+                    <title xmlns="http://purl.org/dc/elements/1.1/">public abstract org.qi4j.composite.Composite
+                      org.qi4j.composite.Composite.dereference()
                     </title>
                     <concerns ns0:parseType="Collection"/>
                     <implementedby
                       ns0:resource="org_qi_j_library_framework_xml_ApplicationXmlTest_TestComposite/org_qi_j_runtime_CompositeMixin"/>
                   </method>
                   <method ns0:about="org_qi_j_Composite_dereference__">
-                    <title xmlns="http://purl.org/dc/elements/1.1/">public abstract org.qi4j.Composite
-                      org.qi4j.Composite.dereference()
+                    <title xmlns="http://purl.org/dc/elements/1.1/">public abstract org.qi4j.composite.Composite
+                      org.qi4j.composite.Composite.dereference()
                     </title>
                     <concerns ns0:parseType="Collection"/>
                     <implementedby

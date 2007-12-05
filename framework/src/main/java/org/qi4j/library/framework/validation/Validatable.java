@@ -17,7 +17,9 @@
 package org.qi4j.library.framework.validation;
 
 import java.util.List;
+import org.qi4j.annotation.Mixins;
 
+@Mixins( ValidatableMixin.class )
 public interface Validatable
 {
     List<ValidationMessage> validate();

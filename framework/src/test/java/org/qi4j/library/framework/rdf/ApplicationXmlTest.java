@@ -23,7 +23,6 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import org.qi4j.Composite;
 import org.qi4j.annotation.Concerns;
 import org.qi4j.annotation.Mixins;
 import org.qi4j.annotation.SideEffects;
@@ -31,6 +30,7 @@ import org.qi4j.annotation.scope.ConcernFor;
 import org.qi4j.annotation.scope.SideEffectFor;
 import org.qi4j.annotation.scope.ThisCompositeAs;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.composite.Composite;
 import org.qi4j.test.AbstractQi4jTest;
 import org.w3c.dom.Document;
 
@@ -52,7 +52,7 @@ public class ApplicationXmlTest
     public void testApplicationXml()
         throws Exception
     {
-        ApplicationRdfXml applicationRdfXml = new ApplicationRdfXml();
+        ApplicationRdfXml applicationRdfXml = new ApplicationRdfXml( application.getApplicationContext() );
 
         Document doc = applicationRdfXml.toXml( application.getApplicationContext() );
 

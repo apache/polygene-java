@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.library.framework.remote.RemoteInterface;
 import org.qi4j.library.framework.remote.RemoteInterfaceComposite;
 import org.qi4j.library.framework.remote.RemoteInterfaceImpl;
@@ -26,6 +27,11 @@ import org.qi4j.test.AbstractQi4jTest;
 public class RMIMixinTest
     extends AbstractQi4jTest
 {
+    @Override public void configure( ModuleAssembly module )
+    {
+        module.addComposite( RemoteInterfaceComposite.class );
+    }
+
     // Public --------------------------------------------------------
     public void testRMIMixin()
         throws Exception

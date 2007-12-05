@@ -1,9 +1,9 @@
 package org.qi4j.library.framework.caching;
 
-import org.qi4j.Composite;
 import org.qi4j.annotation.Concerns;
 import org.qi4j.annotation.Mixins;
 import org.qi4j.annotation.SideEffects;
+import org.qi4j.composite.Composite;
 
 /**
  * TODO
