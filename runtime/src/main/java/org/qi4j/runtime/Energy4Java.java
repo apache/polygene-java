@@ -27,7 +27,9 @@ import org.qi4j.annotation.scope.Service;
 import org.qi4j.annotation.scope.SideEffectFor;
 import org.qi4j.annotation.scope.Structure;
 import org.qi4j.annotation.scope.ThisCompositeAs;
+import org.qi4j.composite.Composite;
 import org.qi4j.runtime.composite.CompositeBinder;
+import org.qi4j.runtime.composite.CompositeInstance;
 import org.qi4j.runtime.composite.CompositeResolver;
 import org.qi4j.runtime.composite.InjectionProviderFactoryStrategy;
 import org.qi4j.runtime.composite.ObjectBinder;
@@ -40,6 +42,7 @@ import org.qi4j.runtime.injection.PropertyInjectionProviderFactory;
 import org.qi4j.runtime.injection.ServiceInjectionProviderFactory;
 import org.qi4j.runtime.injection.StructureInjectionProviderFactory;
 import org.qi4j.runtime.injection.ThisCompositeAsInjectionProviderFactory;
+import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.dependency.InjectionProviderFactory;
 
 /**
@@ -79,7 +82,7 @@ public class Energy4Java
         PropertyInjectionProviderFactory dependencyResolver = new PropertyInjectionProviderFactory();
         providerFactories.put( PropertyField.class, dependencyResolver );
         providerFactories.put( PropertyParameter.class, dependencyResolver );
-        providerFactories.put( Structure.class, new StructureInjectionProviderFactory() );
+        providerFactories.put( Structure.class, new StructureInjectionProviderFactory( this ) );
         providerFactories.put( Service.class, new ServiceInjectionProviderFactory() );
         InjectionProviderFactory ipf = new InjectionProviderFactoryStrategy( providerFactories );
 
@@ -93,6 +96,28 @@ public class Energy4Java
         objectBinder = delegate == null ? new ObjectBinder( ipf ) : delegate.getObjectBinder();
     }
 
+    // API
+
+    public <S extends Composite, T extends S> Class<S> getSuperComposite( Class<T> compositeClass )
+    {
+        Class[] extendedInterfaces = compositeClass.getInterfaces();
+        for( Class extendedInterface : extendedInterfaces )
+        {
+            if( Composite.class.isAssignableFrom( extendedInterface ) && !Composite.class.equals( extendedInterface ) )
+            {
+                return extendedInterface;
+            }
+        }
+        return null; // No super Composite type found
+    }
+
+    // SPI
+    public CompositeBinding getCompositeBinding( Composite composite )
+    {
+        return CompositeInstance.getCompositeInstance( composite ).getContext().getCompositeBinding();
+    }
+
+    // Runtime
     public InstanceFactory getInstanceFactory()
     {
         return instanceFactory;
