@@ -22,6 +22,7 @@ import java.nio.charset.Charset;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
@@ -138,6 +139,9 @@ public class ApplicationRdfXml
         try
         {
             Transformer transformer = factory.newTransformer();
+            transformer.setOutputProperty( OutputKeys.DOCTYPE_SYSTEM, "http://www.w3.org/1999/02/22-rdf-syntax-ns#RDF" );
+            transformer.setOutputProperty( OutputKeys.STANDALONE, "yes" );
+            transformer.setOutputProperty( OutputKeys.INDENT, "yes" );
             transformer.transform( source, result );
         }
         catch( TransformerConfigurationException e )
@@ -154,10 +158,12 @@ public class ApplicationRdfXml
     {
         try
         {
+            String xsltUrl = "application.xsl";
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             dbf.setNamespaceAware( true );
             DocumentBuilder db = dbf.newDocumentBuilder();
             Document doc = db.newDocument();
+            doc.appendChild( doc.createProcessingInstruction( "xml-stylesheet", "type=\"text/xsl\" href=\"" + xsltUrl + "\"" ) );
 
             Element rdf = (Element) doc.appendChild( doc.createElementNS( RDFNS, "RDF" ) );
 
@@ -242,7 +248,9 @@ public class ApplicationRdfXml
         for( CompositeMethodBinding compositeMethodBinding : compositeBinding.getCompositeMethodBindings() )
         {
             Element compositeMethod = addResource( doc, compositeMethods, METHOD, getMethodId( compositeMethodBinding ) );
-            addTitle( doc, compositeMethod, compositeMethodBinding.getCompositeMethodResolution().getCompositeMethodModel().getMethod().toGenericString() );
+            String title = compositeMethodBinding.getCompositeMethodResolution().getCompositeMethodModel().getMethod().toGenericString();
+            title = title.split( " ", 3 )[ 2 ];
+            addTitle( doc, compositeMethod, title );
             Element concerns = addCollection( doc, compositeMethod, CONCERNS );
             for( ConcernBinding concernBinding : compositeMethodBinding.getConcernBindings() )
             {
