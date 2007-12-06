@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 import org.qi4j.spi.composite.CompositeModel;
 import org.qi4j.spi.composite.ObjectModel;
-import org.qi4j.spi.dependency.ServiceProvider;
+import org.qi4j.spi.injection.ServiceProvider;
 
 /**
  * TODO

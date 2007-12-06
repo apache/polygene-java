@@ -43,7 +43,7 @@ import org.qi4j.runtime.injection.ServiceInjectionProviderFactory;
 import org.qi4j.runtime.injection.StructureInjectionProviderFactory;
 import org.qi4j.runtime.injection.ThisCompositeAsInjectionProviderFactory;
 import org.qi4j.spi.composite.CompositeBinding;
-import org.qi4j.spi.dependency.InjectionProviderFactory;
+import org.qi4j.spi.injection.InjectionProviderFactory;
 
 /**
  * Incarnation of Qi4j.

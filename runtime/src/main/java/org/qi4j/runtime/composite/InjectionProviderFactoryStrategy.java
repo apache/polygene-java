@@ -17,10 +17,10 @@ package org.qi4j.runtime.composite;
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
-import org.qi4j.spi.dependency.InjectionProvider;
-import org.qi4j.spi.dependency.InjectionProviderFactory;
-import org.qi4j.spi.dependency.InjectionResolution;
-import org.qi4j.spi.dependency.InvalidInjectionException;
+import org.qi4j.spi.injection.InjectionProvider;
+import org.qi4j.spi.injection.InjectionProviderFactory;
+import org.qi4j.spi.injection.InjectionResolution;
+import org.qi4j.spi.injection.InvalidInjectionException;
 
 /**
  * TODO

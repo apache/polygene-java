@@ -22,7 +22,7 @@ import org.qi4j.runtime.structure.ModuleContext;
 import org.qi4j.spi.composite.ObjectBinding;
 import org.qi4j.spi.composite.ObjectModel;
 import org.qi4j.spi.composite.ObjectResolution;
-import org.qi4j.spi.dependency.ObjectInjectionContext;
+import org.qi4j.spi.injection.ObjectInjectionContext;
 import org.qi4j.spi.structure.ModuleBinding;
 
 /**

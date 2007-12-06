@@ -16,7 +16,7 @@ package org.qi4j.spi.composite;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
-import org.qi4j.spi.dependency.InjectionModel;
+import org.qi4j.spi.injection.InjectionModel;
 
 /**
  * TODO

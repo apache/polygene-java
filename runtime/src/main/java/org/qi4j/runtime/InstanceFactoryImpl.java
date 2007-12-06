@@ -12,9 +12,9 @@ import org.qi4j.spi.composite.ConstructorBinding;
 import org.qi4j.spi.composite.FieldBinding;
 import org.qi4j.spi.composite.MethodBinding;
 import org.qi4j.spi.composite.ParameterBinding;
-import org.qi4j.spi.dependency.InjectionBinding;
-import org.qi4j.spi.dependency.InjectionContext;
-import org.qi4j.spi.dependency.InjectionProvider;
+import org.qi4j.spi.injection.InjectionBinding;
+import org.qi4j.spi.injection.InjectionContext;
+import org.qi4j.spi.injection.InjectionProvider;
 
 /**
  * TODO

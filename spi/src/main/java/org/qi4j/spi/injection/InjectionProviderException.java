@@ -12,14 +12,20 @@
  *
  */
 
-package org.qi4j.spi.dependency;
+package org.qi4j.spi.injection;
 
 /**
  * TODO
  */
-public interface ServiceProvider
+public class InjectionProviderException extends RuntimeException
 {
-    Object getService( InjectionResolution injectionResolution, InjectionContext injectionContext );
+    public InjectionProviderException( String string )
+    {
+        super( string );
+    }
 
-    void releaseService( Object service );
+    public InjectionProviderException( String string, Throwable throwable )
+    {
+        super( string, throwable );
+    }
 }

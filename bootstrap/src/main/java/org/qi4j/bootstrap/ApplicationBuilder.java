@@ -34,7 +34,7 @@ import org.qi4j.spi.composite.CompositeResolution;
 import org.qi4j.spi.composite.ObjectBinding;
 import org.qi4j.spi.composite.ObjectModel;
 import org.qi4j.spi.composite.ObjectResolution;
-import org.qi4j.spi.dependency.ResolutionContext;
+import org.qi4j.spi.injection.ResolutionContext;
 import org.qi4j.spi.structure.ApplicationBinding;
 import org.qi4j.spi.structure.ApplicationModel;
 import org.qi4j.spi.structure.ApplicationResolution;

@@ -1,14 +1,14 @@
 package org.qi4j.runtime.injection;
 
 import org.qi4j.composite.PropertyValue;
-import org.qi4j.spi.dependency.InjectionContext;
-import org.qi4j.spi.dependency.InjectionProvider;
-import org.qi4j.spi.dependency.InjectionProviderException;
-import org.qi4j.spi.dependency.InjectionProviderFactory;
-import org.qi4j.spi.dependency.InjectionResolution;
-import org.qi4j.spi.dependency.InvalidInjectionException;
-import org.qi4j.spi.dependency.PropertyInjectionContext;
-import org.qi4j.spi.dependency.PropertyInjectionModel;
+import org.qi4j.spi.injection.InjectionContext;
+import org.qi4j.spi.injection.InjectionProvider;
+import org.qi4j.spi.injection.InjectionProviderException;
+import org.qi4j.spi.injection.InjectionProviderFactory;
+import org.qi4j.spi.injection.InjectionResolution;
+import org.qi4j.spi.injection.InvalidInjectionException;
+import org.qi4j.spi.injection.PropertyInjectionContext;
+import org.qi4j.spi.injection.PropertyInjectionModel;
 
 /**
  * TODO

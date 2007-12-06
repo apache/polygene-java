@@ -3,13 +3,13 @@ package org.qi4j.runtime.injection;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
-import org.qi4j.spi.dependency.FragmentInjectionContext;
-import org.qi4j.spi.dependency.InjectionContext;
-import org.qi4j.spi.dependency.InjectionProvider;
-import org.qi4j.spi.dependency.InjectionProviderException;
-import org.qi4j.spi.dependency.InjectionProviderFactory;
-import org.qi4j.spi.dependency.InjectionResolution;
-import org.qi4j.spi.dependency.InvalidInjectionException;
+import org.qi4j.spi.injection.FragmentInjectionContext;
+import org.qi4j.spi.injection.InjectionContext;
+import org.qi4j.spi.injection.InjectionProvider;
+import org.qi4j.spi.injection.InjectionProviderException;
+import org.qi4j.spi.injection.InjectionProviderFactory;
+import org.qi4j.spi.injection.InjectionResolution;
+import org.qi4j.spi.injection.InvalidInjectionException;
 
 /**
  * TODO

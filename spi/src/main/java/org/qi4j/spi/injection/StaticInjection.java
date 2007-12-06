@@ -1,4 +1,4 @@
-package org.qi4j.spi.dependency;
+package org.qi4j.spi.injection;
 
 /**
  * If a dependency injection is static, use this class as a simple holder

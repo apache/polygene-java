@@ -18,7 +18,7 @@ package org.qi4j.runtime;
 
 import org.qi4j.composite.CompositeInstantiationException;
 import org.qi4j.spi.composite.AbstractBinding;
-import org.qi4j.spi.dependency.InjectionContext;
+import org.qi4j.spi.injection.InjectionContext;
 
 public interface InstanceFactory
 {

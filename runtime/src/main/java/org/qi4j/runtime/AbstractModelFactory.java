@@ -19,9 +19,9 @@ import org.qi4j.spi.composite.InvalidCompositeException;
 import org.qi4j.spi.composite.MethodModel;
 import org.qi4j.spi.composite.ParameterConstraintsModel;
 import org.qi4j.spi.composite.ParameterModel;
-import org.qi4j.spi.dependency.DependencyInjectionModel;
-import org.qi4j.spi.dependency.InjectionModel;
-import org.qi4j.spi.dependency.PropertyInjectionModel;
+import org.qi4j.spi.injection.DependencyInjectionModel;
+import org.qi4j.spi.injection.InjectionModel;
+import org.qi4j.spi.injection.PropertyInjectionModel;
 
 /**
  * TODO

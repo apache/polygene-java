@@ -12,19 +12,13 @@
  *
  */
 
-package org.qi4j.spi.dependency;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
+package org.qi4j.spi.injection;
 
 /**
  * TODO
  */
-public class DependencyInjectionModel
-    extends InjectionModel
+public interface InjectionProvider
 {
-    public DependencyInjectionModel( Class<? extends Annotation> injectionAnnotation, Type genericType, Class dependentType, boolean optional )
-    {
-        super( injectionAnnotation, genericType, dependentType, optional );
-    }
+    Object provideInjection( InjectionContext context )
+        throws InjectionProviderException;
 }

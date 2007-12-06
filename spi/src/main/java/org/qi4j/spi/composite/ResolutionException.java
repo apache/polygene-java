@@ -1,6 +1,6 @@
 package org.qi4j.spi.composite;
 
-import org.qi4j.spi.dependency.InvalidInjectionException;
+import org.qi4j.spi.injection.InvalidInjectionException;
 
 /**
  * TODO

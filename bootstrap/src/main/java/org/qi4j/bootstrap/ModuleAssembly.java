@@ -19,7 +19,7 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import org.qi4j.composite.Composite;
-import org.qi4j.spi.dependency.ServiceProvider;
+import org.qi4j.spi.injection.ServiceProvider;
 
 /**
  * TODO

@@ -1,4 +1,4 @@
-package org.qi4j.spi.dependency;
+package org.qi4j.spi.injection;
 
 import java.lang.reflect.InvocationHandler;
 import org.qi4j.composite.CompositeBuilderFactory;

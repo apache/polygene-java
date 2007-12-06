@@ -12,7 +12,7 @@
  *
  */
 
-package org.qi4j.spi.dependency;
+package org.qi4j.spi.injection;
 
 /**
  * If a dependency resolution should be a singleton, wrap it with this

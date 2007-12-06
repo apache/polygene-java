@@ -14,7 +14,7 @@
 
 package org.qi4j.spi.composite;
 
-import org.qi4j.spi.dependency.InjectionBinding;
+import org.qi4j.spi.injection.InjectionBinding;
 
 /**
  * TODO

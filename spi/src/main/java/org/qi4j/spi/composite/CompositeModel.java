@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import org.qi4j.spi.dependency.InjectionModel;
+import org.qi4j.spi.injection.InjectionModel;
 
 /**
  * Composite Models define what a particular Composite type declares through annotations and method declarations.

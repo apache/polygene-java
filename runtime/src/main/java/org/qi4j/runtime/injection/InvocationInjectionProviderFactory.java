@@ -4,12 +4,12 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import org.qi4j.composite.InvocationContext;
-import org.qi4j.spi.dependency.InjectionContext;
-import org.qi4j.spi.dependency.InjectionProvider;
-import org.qi4j.spi.dependency.InjectionProviderFactory;
-import org.qi4j.spi.dependency.InjectionResolution;
-import org.qi4j.spi.dependency.InvalidInjectionException;
-import org.qi4j.spi.dependency.ModifierInjectionContext;
+import org.qi4j.spi.injection.InjectionContext;
+import org.qi4j.spi.injection.InjectionProvider;
+import org.qi4j.spi.injection.InjectionProviderFactory;
+import org.qi4j.spi.injection.InjectionResolution;
+import org.qi4j.spi.injection.InvalidInjectionException;
+import org.qi4j.spi.injection.ModifierInjectionContext;
 
 /**
  * TODO

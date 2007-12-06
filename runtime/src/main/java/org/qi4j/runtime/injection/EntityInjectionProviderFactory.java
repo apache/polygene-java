@@ -6,11 +6,11 @@ import org.qi4j.entity.EntitySession;
 import org.qi4j.query.Query;
 import org.qi4j.query.QueryBuilder;
 import org.qi4j.query.QueryBuilderFactory;
-import org.qi4j.spi.dependency.InjectionContext;
-import org.qi4j.spi.dependency.InjectionProvider;
-import org.qi4j.spi.dependency.InjectionProviderFactory;
-import org.qi4j.spi.dependency.InjectionResolution;
-import org.qi4j.spi.dependency.InvalidInjectionException;
+import org.qi4j.spi.injection.InjectionContext;
+import org.qi4j.spi.injection.InjectionProvider;
+import org.qi4j.spi.injection.InjectionProviderFactory;
+import org.qi4j.spi.injection.InjectionResolution;
+import org.qi4j.spi.injection.InvalidInjectionException;
 
 /**
  * TODO

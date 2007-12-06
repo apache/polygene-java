@@ -36,7 +36,7 @@ import org.qi4j.spi.composite.CompositeModel;
 import org.qi4j.spi.composite.CompositeResolution;
 import org.qi4j.spi.composite.MixinBinding;
 import org.qi4j.spi.composite.MixinResolution;
-import org.qi4j.spi.dependency.MixinInjectionContext;
+import org.qi4j.spi.injection.MixinInjectionContext;
 import org.qi4j.spi.structure.ModuleBinding;
 
 /**

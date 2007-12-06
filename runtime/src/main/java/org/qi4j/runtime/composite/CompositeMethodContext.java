@@ -41,7 +41,7 @@ import org.qi4j.spi.composite.ModifierModel;
 import org.qi4j.spi.composite.ParameterBinding;
 import org.qi4j.spi.composite.ParameterConstraintsBinding;
 import org.qi4j.spi.composite.SideEffectBinding;
-import org.qi4j.spi.dependency.ModifierInjectionContext;
+import org.qi4j.spi.injection.ModifierInjectionContext;
 import org.qi4j.spi.structure.ApplicationBinding;
 
 /**

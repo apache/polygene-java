@@ -8,7 +8,7 @@ import org.qi4j.spi.composite.MethodResolution;
 import org.qi4j.spi.composite.ObjectModel;
 import org.qi4j.spi.composite.ObjectResolution;
 import org.qi4j.spi.composite.PropertyResolution;
-import org.qi4j.spi.dependency.ResolutionContext;
+import org.qi4j.spi.injection.ResolutionContext;
 
 /**
  * TODO

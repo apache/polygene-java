@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import org.qi4j.spi.dependency.InjectionModel;
+import org.qi4j.spi.injection.InjectionModel;
 
 /**
  * Base class for fragments. Fragments are composed into objects.

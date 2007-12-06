@@ -1,6 +1,6 @@
 package org.qi4j.spi.composite;
 
-import org.qi4j.spi.dependency.InjectionResolution;
+import org.qi4j.spi.injection.InjectionResolution;
 
 /**
  * TODO

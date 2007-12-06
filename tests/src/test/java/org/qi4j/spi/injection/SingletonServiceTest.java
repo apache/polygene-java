@@ -12,7 +12,7 @@
  *
  */
 
-package org.qi4j.spi.dependency;
+package org.qi4j.spi.injection;
 
 import org.qi4j.annotation.Mixins;
 import org.qi4j.annotation.scope.Service;

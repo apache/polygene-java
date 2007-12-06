@@ -21,8 +21,8 @@ import org.qi4j.spi.composite.FieldBinding;
 import org.qi4j.spi.composite.MethodBinding;
 import org.qi4j.spi.composite.ObjectBinding;
 import org.qi4j.spi.composite.ObjectResolution;
-import org.qi4j.spi.dependency.InjectionProviderFactory;
-import org.qi4j.spi.dependency.InvalidInjectionException;
+import org.qi4j.spi.injection.InjectionProviderFactory;
+import org.qi4j.spi.injection.InvalidInjectionException;
 
 /**
  * TODO

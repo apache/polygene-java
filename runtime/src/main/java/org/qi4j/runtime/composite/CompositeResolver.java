@@ -39,8 +39,8 @@ import org.qi4j.spi.composite.PropertyResolution;
 import org.qi4j.spi.composite.ResolutionException;
 import org.qi4j.spi.composite.SideEffectModel;
 import org.qi4j.spi.composite.SideEffectResolution;
-import org.qi4j.spi.dependency.InvalidInjectionException;
-import org.qi4j.spi.dependency.ResolutionContext;
+import org.qi4j.spi.injection.InvalidInjectionException;
+import org.qi4j.spi.injection.ResolutionContext;
 
 /**
  * TODO

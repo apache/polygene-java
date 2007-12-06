@@ -12,27 +12,19 @@
  *
  */
 
-package org.qi4j.spi.dependency;
+package org.qi4j.spi.injection;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 
 /**
  * TODO
  */
-public class Singleton
-    implements ServiceProvider
+public class DependencyInjectionModel
+    extends InjectionModel
 {
-    Object instance;
-
-    public Object getService( InjectionResolution injectionResolution, InjectionContext injectionContext )
+    public DependencyInjectionModel( Class<? extends Annotation> injectionAnnotation, Type genericType, Class dependentType, boolean optional )
     {
-        if( instance == null )
-        {
-            instance = injectionContext.getCompositeBuilderFactory().newCompositeBuilder( injectionResolution.getInjectionModel().getInjectionClass() ).newInstance();
-        }
-        return instance;
-    }
-
-    public void releaseService( Object service )
-    {
-        // Ignore for now
+        super( injectionAnnotation, genericType, dependentType, optional );
     }
 }

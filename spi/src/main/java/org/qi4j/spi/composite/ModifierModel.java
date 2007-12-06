@@ -19,7 +19,7 @@ import java.io.StringWriter;
 import java.lang.annotation.Annotation;
 import java.text.MessageFormat;
 import java.util.Iterator;
-import org.qi4j.spi.dependency.InjectionModel;
+import org.qi4j.spi.injection.InjectionModel;
 
 /**
  * Modifiers provide stateless modifications of method invocation behaviour.

@@ -27,9 +27,9 @@ import org.qi4j.spi.composite.ParameterConstraintsModel;
 import org.qi4j.spi.composite.ParameterConstraintsResolution;
 import org.qi4j.spi.composite.ParameterModel;
 import org.qi4j.spi.composite.ParameterResolution;
-import org.qi4j.spi.dependency.InjectionModel;
-import org.qi4j.spi.dependency.InjectionResolution;
-import org.qi4j.spi.dependency.ResolutionContext;
+import org.qi4j.spi.injection.InjectionModel;
+import org.qi4j.spi.injection.InjectionResolution;
+import org.qi4j.spi.injection.ResolutionContext;
 
 /**
  * TODO

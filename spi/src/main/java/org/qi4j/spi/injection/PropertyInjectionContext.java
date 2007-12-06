@@ -12,29 +12,15 @@
  *
  */
 
-package org.qi4j.spi.dependency;
+package org.qi4j.spi.injection;
+
+import java.util.Map;
+import org.qi4j.composite.PropertyValue;
 
 /**
  * TODO
  */
-public class InjectionBinding
+public interface PropertyInjectionContext
 {
-    private InjectionResolution injectionResolution;
-    private InjectionProvider injectionProvider;
-
-    public InjectionBinding( InjectionResolution injectionResolution, InjectionProvider injectionProvider )
-    {
-        this.injectionResolution = injectionResolution;
-        this.injectionProvider = injectionProvider;
-    }
-
-    public InjectionResolution getInjectionResolution()
-    {
-        return injectionResolution;
-    }
-
-    public InjectionProvider getInjectionProvider()
-    {
-        return injectionProvider;
-    }
+    Map<String, PropertyValue> getProperties();
 }

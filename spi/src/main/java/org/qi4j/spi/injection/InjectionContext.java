@@ -1,4 +1,4 @@
-package org.qi4j.spi.dependency;
+package org.qi4j.spi.injection;
 
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.ObjectBuilderFactory;

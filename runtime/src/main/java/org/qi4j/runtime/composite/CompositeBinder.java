@@ -45,10 +45,10 @@ import org.qi4j.spi.composite.ParameterConstraintsResolution;
 import org.qi4j.spi.composite.ParameterResolution;
 import org.qi4j.spi.composite.SideEffectBinding;
 import org.qi4j.spi.composite.SideEffectResolution;
-import org.qi4j.spi.dependency.InjectionBinding;
-import org.qi4j.spi.dependency.InjectionProviderFactory;
-import org.qi4j.spi.dependency.InjectionResolution;
-import org.qi4j.spi.dependency.InvalidInjectionException;
+import org.qi4j.spi.injection.InjectionBinding;
+import org.qi4j.spi.injection.InjectionProviderFactory;
+import org.qi4j.spi.injection.InjectionResolution;
+import org.qi4j.spi.injection.InvalidInjectionException;
 
 /**
  * TODO
