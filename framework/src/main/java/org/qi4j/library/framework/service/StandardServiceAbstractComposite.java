@@ -14,7 +14,6 @@
 
 package org.qi4j.library.framework.service;
 
-import org.qi4j.service.ServiceComposite;
 import org.qi4j.service.ServiceStatusNotification;
 
 /**
@@ -22,6 +21,6 @@ import org.qi4j.service.ServiceStatusNotification;
  */
 
 public interface StandardServiceAbstractComposite
-    extends ServiceComposite, ServiceStatusNotification
+    extends ServiceStatusNotification
 {
 }
