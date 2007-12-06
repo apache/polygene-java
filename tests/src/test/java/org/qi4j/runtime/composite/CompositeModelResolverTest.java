@@ -9,7 +9,7 @@ import org.qi4j.bootstrap.SingletonAssembly;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.Mixins;
-import org.qi4j.composite.ThisCompositeAs;
+import org.qi4j.composite.scope.ThisCompositeAs;
 import org.qi4j.spi.composite.InvalidCompositeException;
 import org.qi4j.test.AbstractQi4jTest;
 

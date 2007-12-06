@@ -16,7 +16,7 @@
  */
 package org.qi4j.runtime;
 
-import org.qi4j.composite.ConcernFor;
+import org.qi4j.composite.scope.ConcernFor;
 import org.qi4j.entity.Lifecycle;
 
 public class Model1LifecycleModifier

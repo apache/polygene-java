@@ -19,8 +19,8 @@ package org.qi4j.test.model4;
 import java.util.List;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.SideEffects;
-import org.qi4j.composite.Structure;
-import org.qi4j.composite.ThisCompositeAs;
+import org.qi4j.composite.scope.Structure;
+import org.qi4j.composite.scope.ThisCompositeAs;
 
 @SideEffects( CountCallsSideEffect.class )
 public class Mixin1Impl

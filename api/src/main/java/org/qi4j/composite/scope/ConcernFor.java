@@ -12,7 +12,7 @@
  * limitations under the License.
  *
  */
-package org.qi4j.composite;
+package org.qi4j.composite.scope;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -20,22 +20,42 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import org.qi4j.injection.InjectionScope;
-import org.qi4j.injection.Name;
 
 /**
- * Annotation to denote the injection of a Query, QueryBuilder, or Entity prototype dependency into a Fragment (a Invocation or Mixin).
+ * This annotation is required once in each Concern, to mark the
+ * field where the next element in the call sequence should be
+ * injected.
  * <p/>
- * Examples:
- *
- * @Entity Query<Person> findPeople; // call findPeople.iterator() to execute query
- * @Entity QueryBuilder<Person> findByName;
- * @Entity Iterable<Person> personPrototype; // call personPrototype.iterator().next() to create new Person
+ * The type of the field must be of the same type as the Concern
+ * itself, or an InvocationHandler.
+ * <p/>
+ * <p/>
+ * Example;
+ * <pre><code>
+ * public interface MyStuff
+ * {
+ *     void doSomething();
+ * }
+ * <p/>
+ * public class MyStuffConcern
+ *     implements MyStuff
+ * {
+ *     @ConcernFor MyStuff next;
+ * <p/>
+ *     public void doSomething()
+ *     {
+ *         // HERE DO THE MODIFIER STUFF.
+ * <p/>
+ *         // Delegate to the underlying mixin/modifier.
+ *         next.doSomething();
+ *     }
+ * }
+ * </code></pre>
  */
 @Retention( RetentionPolicy.RUNTIME )
 @Target( { ElementType.FIELD, ElementType.PARAMETER } )
 @Documented
 @InjectionScope
-public @interface Entity
+public @interface ConcernFor
 {
-    @Name String value() default ""; // This name can be used for lookups of named queries
 }

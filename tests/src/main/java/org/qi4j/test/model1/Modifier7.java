@@ -1,6 +1,6 @@
 package org.qi4j.test.model1;
 
-import org.qi4j.composite.ConcernFor;
+import org.qi4j.composite.scope.ConcernFor;
 
 public final class Modifier7 implements Mixin3
 {

@@ -14,8 +14,8 @@
 
 package org.qi4j.test.model1;
 
-import org.qi4j.composite.Adapt;
-import org.qi4j.composite.Decorate;
+import org.qi4j.composite.scope.Adapt;
+import org.qi4j.composite.scope.Decorate;
 
 /**
  * Object with adapt and decorate injections

@@ -16,7 +16,7 @@
  */
 package org.qi4j.test.model3;
 
-import org.qi4j.composite.PropertyField;
+import org.qi4j.composite.scope.PropertyField;
 
 public class State2Impl
     implements State2

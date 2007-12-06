@@ -12,7 +12,7 @@
  * limitations under the License.
  *
  */
-package org.qi4j.composite;
+package org.qi4j.composite.scope;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -20,16 +20,16 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import org.qi4j.injection.InjectionScope;
-import org.qi4j.injection.Optional;
+import org.qi4j.injection.Name;
 
 /**
- * Annotation to denote the injection of a dependency to be adapted into a Mixin.
+ * Annotation to denote the injection of a property into a parameter (either constructor or method)
  */
 @Retention( RetentionPolicy.RUNTIME )
-@Target( { ElementType.PARAMETER, ElementType.FIELD } )
+@Target( ElementType.PARAMETER )
 @Documented
 @InjectionScope
-public @interface Adapt
+public @interface PropertyParameter
 {
-    @Optional boolean optional() default false; // True if adaptation is optional, only fail if false
+    @Name String value(); // Name of the property
 }

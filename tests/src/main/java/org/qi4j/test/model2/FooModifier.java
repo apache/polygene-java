@@ -14,8 +14,8 @@ package org.qi4j.test.model2;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import org.qi4j.composite.AppliesTo;
-import org.qi4j.composite.ConcernFor;
-import org.qi4j.composite.Invocation;
+import org.qi4j.composite.scope.ConcernFor;
+import org.qi4j.composite.scope.Invocation;
 
 /**
  * Override only the methods that have the FooAnnotation, and print out the value of

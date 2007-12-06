@@ -12,7 +12,7 @@
 package org.qi4j.spi.composite;
 
 import java.lang.annotation.Annotation;
-import org.qi4j.composite.ConcernFor;
+import org.qi4j.composite.scope.ConcernFor;
 
 /**
  * Concerns provide stateless modifications of method invocation behaviour.

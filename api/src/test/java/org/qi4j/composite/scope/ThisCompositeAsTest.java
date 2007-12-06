@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
-package org.qi4j.composite;
+package org.qi4j.composite.scope;
 
 import java.lang.annotation.Annotation;
 import static org.junit.Assert.assertEquals;

@@ -18,7 +18,7 @@ package org.qi4j.test.model1;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import org.qi4j.composite.ConcernFor;
+import org.qi4j.composite.scope.ConcernFor;
 
 public class Modifier4
     implements InvocationHandler

@@ -14,8 +14,8 @@
 
 package org.qi4j.test.model1;
 
-import org.qi4j.composite.PropertyField;
-import org.qi4j.composite.PropertyParameter;
+import org.qi4j.composite.scope.PropertyField;
+import org.qi4j.composite.scope.PropertyParameter;
 
 /**
  * Object with property injections

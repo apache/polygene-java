@@ -3,9 +3,9 @@ package org.qi4j.runtime;
 import java.util.List;
 import junit.framework.TestCase;
 import org.qi4j.composite.Composite;
-import org.qi4j.composite.Entity;
 import org.qi4j.composite.Mixins;
-import org.qi4j.composite.PropertyField;
+import org.qi4j.composite.scope.Entity;
+import org.qi4j.composite.scope.PropertyField;
 import org.qi4j.query.Query;
 import org.qi4j.query.QueryBuilderFactory;
 

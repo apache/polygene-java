@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
- * Copyright (c) 2007, Niclas Hedhman. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +11,7 @@
  * limitations under the License.
  *
  */
-package org.qi4j.composite;
+package org.qi4j.composite.scope;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -24,15 +23,15 @@ import org.qi4j.injection.Name;
 import org.qi4j.injection.Optional;
 
 /**
- * Annotation to denote the injection of a service dependency into a Fragment (a Invocation or Mixin).
+ * Annotation to denote the injection of a property into a Fragment field (a Invocation or Mixin).
  */
 @Retention( RetentionPolicy.RUNTIME )
-@Target( { ElementType.FIELD, ElementType.PARAMETER } )
+@Target( { ElementType.FIELD } )
 @Documented
 @InjectionScope
-public @interface Service
+public @interface PropertyField
 {
-    @Optional boolean optional() default false; // True if the dependency is optional, only fail if this is false
+    @Name String value() default ""; // Name of the property. If not set then name will be name of field
 
-    @Name String name() default ""; // This name can be used for lookups
+    @Optional boolean optional() default true; // Whether or not the property is optional. If optional then the default value will be used
 }

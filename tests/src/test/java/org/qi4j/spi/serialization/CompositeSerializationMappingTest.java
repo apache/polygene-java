@@ -22,9 +22,9 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembly;
 import org.qi4j.composite.Composite;
-import org.qi4j.composite.ConcernFor;
 import org.qi4j.composite.Concerns;
 import org.qi4j.composite.Mixins;
+import org.qi4j.composite.scope.ConcernFor;
 
 /**
  * TODO

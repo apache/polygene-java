@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2007, Rickard …berg. All Rights Reserved.
+ * Copyright (c) 2007, Rickard Ã–berg. All Rights Reserved.
+ * Copyright (c) 2007, Niclas Hedhman. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -11,8 +12,7 @@
  * limitations under the License.
  *
  */
-
-package org.qi4j.composite;
+package org.qi4j.composite.scope;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -22,41 +22,21 @@ import java.lang.annotation.Target;
 import org.qi4j.injection.InjectionScope;
 
 /**
- * This annotation is required once in each SideEffect, to mark the
- * field where the element providing the invocation result should be
- * injected.
+ * Annotation to denote the injection of a invocation specific resource. These include:
+ * The Method being invoked
+ * An AnnotationElement with annotations from both interface, mixin, and any Apply statement
+ * InvocationContext with information about the current invocation
  * <p/>
- * The type of the field must be of the same type as the SideEffect
- * itself, or an InvocationHandler.
- * <p/>
- * <p/>
- * Example;
- * <pre><code>
- * public interface MyStuff
- * {
- *     SomeResult doSomething();
- * }
- * <p/>
- * public class MyStuffSideEffect
- *     implements MyStuff
- * {
- *     @SideEffectFor MyStuff next;
- * <p/>
- *     public SomeResult doSomething()
- *     {
- *          SomeResult result = next.doSomething();
- * <p/>
- *         // HERE DO THE SIDEEFFECT STUFF.
- * <p/>
- *          return result; // Result value is ignored, null would work too.
- *     }
- * }
- * </code></pre>
+ * Examples:
+ *
+ * @Modifier Method theInvokedMethod
+ * @Modifier AnnotationElement annotations
+ * @Modifier InvocationContext context
  */
 @Retention( RetentionPolicy.RUNTIME )
 @Target( { ElementType.FIELD, ElementType.PARAMETER } )
 @Documented
 @InjectionScope
-public @interface SideEffectFor
+public @interface Invocation
 {
 }

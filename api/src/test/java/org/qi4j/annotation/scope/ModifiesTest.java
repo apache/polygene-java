@@ -16,7 +16,7 @@ import java.lang.annotation.Annotation;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
-import org.qi4j.composite.ConcernFor;
+import org.qi4j.composite.scope.ConcernFor;
 
 /**
  * Tests public api exposed by Modified annotation.

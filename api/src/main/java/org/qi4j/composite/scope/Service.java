@@ -12,7 +12,7 @@
  * limitations under the License.
  *
  */
-package org.qi4j.composite;
+package org.qi4j.composite.scope;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -20,14 +20,19 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import org.qi4j.injection.InjectionScope;
+import org.qi4j.injection.Name;
+import org.qi4j.injection.Optional;
 
 /**
- * Annotation to denote the injection of decorated object into a Mixin.
+ * Annotation to denote the injection of a service dependency into a Fragment (a Invocation or Mixin).
  */
 @Retention( RetentionPolicy.RUNTIME )
-@Target( { ElementType.PARAMETER, ElementType.FIELD } )
+@Target( { ElementType.FIELD, ElementType.PARAMETER } )
 @Documented
 @InjectionScope
-public @interface Decorate
+public @interface Service
 {
+    @Optional boolean optional() default false; // True if the dependency is optional, only fail if this is false
+
+    @Name String name() default ""; // This name can be used for lookups
 }

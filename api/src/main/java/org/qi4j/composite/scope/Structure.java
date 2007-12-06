@@ -12,7 +12,7 @@
  * limitations under the License.
  *
  */
-package org.qi4j.composite;
+package org.qi4j.composite.scope;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -20,16 +20,19 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import org.qi4j.injection.InjectionScope;
-import org.qi4j.injection.Optional;
 
 /**
- * TODO
+ * Annotation to denote the injection of fragment specific resource. These include:
+ * The CompositeBuilderFactory
+ * <p/>
+ * Examples:
+ *
+ * @Structure CompositeBuilderFactory cbf
  */
 @Retention( RetentionPolicy.RUNTIME )
 @Target( { ElementType.FIELD, ElementType.PARAMETER } )
 @Documented
 @InjectionScope
-public @interface ThisCompositeAs
+public @interface Structure
 {
-    @Optional boolean optional() default false; // True if the dependency is optional, only fail if this is false
 }
