@@ -12,7 +12,7 @@
  */
 package org.qi4j.library.general.test.model;
 
-import org.qi4j.composite.ThisCompositeAs;
+import org.qi4j.composite.scope.ThisCompositeAs;
 import org.qi4j.library.general.model.Descriptor;
 import org.qi4j.library.general.model.HasName;
 

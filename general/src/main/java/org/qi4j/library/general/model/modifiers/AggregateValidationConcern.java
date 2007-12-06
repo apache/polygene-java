@@ -1,8 +1,8 @@
 package org.qi4j.library.general.model.modifiers;
 
 import java.util.List;
-import org.qi4j.composite.ConcernFor;
-import org.qi4j.composite.ThisCompositeAs;
+import org.qi4j.composite.scope.ConcernFor;
+import org.qi4j.composite.scope.ThisCompositeAs;
 import org.qi4j.library.framework.validation.Validatable;
 import org.qi4j.library.framework.validation.ValidationMessage;
 import org.qi4j.library.general.model.Aggregated;

@@ -22,8 +22,8 @@ import java.util.HashMap;
 import java.util.Map;
 import org.qi4j.composite.AppliesTo;
 import org.qi4j.composite.Property;
-import org.qi4j.composite.PropertyParameter;
 import org.qi4j.composite.PropertyValue;
+import org.qi4j.composite.scope.PropertyParameter;
 
 /**
  * Generic property mixin. Methods in interface

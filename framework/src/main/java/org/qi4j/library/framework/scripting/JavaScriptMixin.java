@@ -27,7 +27,7 @@ import org.mozilla.javascript.Wrapper;
 import org.qi4j.composite.AppliesTo;
 import org.qi4j.composite.AppliesToFilter;
 import org.qi4j.composite.CompositeBuilderFactory;
-import org.qi4j.composite.Structure;
+import org.qi4j.composite.scope.Structure;
 
 /**
  * Generic mixin that implements interfaces by delegating to JavaScript functions

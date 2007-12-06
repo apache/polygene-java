@@ -6,7 +6,7 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.Mixins;
-import org.qi4j.composite.ThisCompositeAs;
+import org.qi4j.composite.scope.ThisCompositeAs;
 import org.qi4j.entity.EntitySession;
 import org.qi4j.query.QueryBuilderFactoryImpl;
 import org.qi4j.query.QueryableIterable;

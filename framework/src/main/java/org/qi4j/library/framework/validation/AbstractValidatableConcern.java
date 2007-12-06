@@ -1,7 +1,7 @@
 package org.qi4j.library.framework.validation;
 
 import java.util.List;
-import org.qi4j.composite.ConcernFor;
+import org.qi4j.composite.scope.ConcernFor;
 
 /**
  * Base class for validation concerns.

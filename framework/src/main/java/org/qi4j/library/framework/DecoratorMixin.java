@@ -3,7 +3,7 @@ package org.qi4j.library.framework;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import org.qi4j.composite.Decorate;
+import org.qi4j.composite.scope.Decorate;
 
 /**
  * Generic decorator mixin that allows a Composite to wrap

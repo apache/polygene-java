@@ -18,7 +18,7 @@ package org.qi4j.library.framework.validation;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.qi4j.composite.ThisCompositeAs;
+import org.qi4j.composite.scope.ThisCompositeAs;
 
 public class ValidatableMixin
     implements Validatable

@@ -4,9 +4,9 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import org.qi4j.composite.AppliesTo;
-import org.qi4j.composite.ConcernFor;
-import org.qi4j.composite.Invocation;
-import org.qi4j.composite.ThisCompositeAs;
+import org.qi4j.composite.scope.ConcernFor;
+import org.qi4j.composite.scope.Invocation;
+import org.qi4j.composite.scope.ThisCompositeAs;
 
 /**
  * Return value of @Cached calls on exceptions.

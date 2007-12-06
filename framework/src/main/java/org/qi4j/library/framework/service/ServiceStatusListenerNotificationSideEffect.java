@@ -14,8 +14,8 @@
 
 package org.qi4j.library.framework.service;
 
-import org.qi4j.composite.SideEffectFor;
-import org.qi4j.composite.ThisCompositeAs;
+import org.qi4j.composite.scope.SideEffectFor;
+import org.qi4j.composite.scope.ThisCompositeAs;
 import org.qi4j.service.ActivationStatus;
 import org.qi4j.service.MutableServiceStatus;
 import org.qi4j.service.ServiceActivationEvent;

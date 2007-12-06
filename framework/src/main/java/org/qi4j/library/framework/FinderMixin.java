@@ -4,7 +4,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import org.qi4j.composite.AppliesTo;
 import org.qi4j.composite.AppliesToFilter;
-import org.qi4j.composite.Entity;
+import org.qi4j.composite.scope.Entity;
 import org.qi4j.query.QueryBuilder;
 import org.qi4j.query.QueryBuilderFactory;
 import static org.qi4j.query.QueryExpression.eq;

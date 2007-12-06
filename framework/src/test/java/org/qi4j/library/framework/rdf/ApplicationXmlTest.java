@@ -21,12 +21,12 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
-import org.qi4j.composite.ConcernFor;
 import org.qi4j.composite.Concerns;
 import org.qi4j.composite.Mixins;
-import org.qi4j.composite.SideEffectFor;
 import org.qi4j.composite.SideEffects;
-import org.qi4j.composite.ThisCompositeAs;
+import org.qi4j.composite.scope.ConcernFor;
+import org.qi4j.composite.scope.SideEffectFor;
+import org.qi4j.composite.scope.ThisCompositeAs;
 import org.qi4j.test.AbstractQi4jTest;
 
 /**

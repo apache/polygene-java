@@ -11,11 +11,11 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import org.qi4j.composite.AppliesTo;
 import org.qi4j.composite.AppliesToFilter;
-import org.qi4j.composite.ConcernFor;
 import org.qi4j.composite.ConstraintViolation;
-import org.qi4j.composite.Invocation;
 import org.qi4j.composite.InvocationContext;
-import org.qi4j.composite.ThisCompositeAs;
+import org.qi4j.composite.scope.ConcernFor;
+import org.qi4j.composite.scope.Invocation;
+import org.qi4j.composite.scope.ThisCompositeAs;
 
 /**
  * After invocation, ensure that the validation rules pass.

@@ -12,8 +12,8 @@
  */
 package org.qi4j.library.framework.validation;
 
-import org.qi4j.composite.ConcernFor;
-import org.qi4j.composite.ThisCompositeAs;
+import org.qi4j.composite.scope.ConcernFor;
+import org.qi4j.composite.scope.ThisCompositeAs;
 import org.qi4j.entity.Lifecycle;
 
 /**
