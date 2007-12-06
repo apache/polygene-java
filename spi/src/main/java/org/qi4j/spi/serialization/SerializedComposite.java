@@ -14,6 +14,7 @@
 
 package org.qi4j.spi.serialization;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Map;
 import org.qi4j.composite.Composite;
@@ -29,8 +30,8 @@ class SerializedComposite
 
     public SerializedComposite( Map<Class, Object> mixins, Class<Composite> compositeInterface )
     {
-        this.mixins = mixins;
         this.compositeInterface = compositeInterface;
+        this.mixins = mixins;
     }
 
     public Map<Class, Object> getMixins()
@@ -41,5 +42,52 @@ class SerializedComposite
     public Class<Composite> getCompositeInterface()
     {
         return compositeInterface;
+    }
+
+    private void writeObject( java.io.ObjectOutputStream out )
+        throws IOException
+    {
+        out.writeObject( mixins );
+
+        String serializedClassNames = addClassNames( compositeInterface );
+        out.writeUTF( serializedClassNames );
+    }
+
+    private String addClassNames( Class compositeInterface )
+    {
+        String className = compositeInterface.getName();
+
+        Class[] extendedInterfaces = compositeInterface.getInterfaces();
+        for( Class extendedInterface : extendedInterfaces )
+        {
+            if( Composite.class.isAssignableFrom( extendedInterface ) && !Composite.class.equals( extendedInterface ) )
+            {
+                className += ":" + addClassNames( extendedInterface );
+            }
+        }
+
+        return className;
+    }
+
+    private void readObject( java.io.ObjectInputStream in )
+        throws IOException, ClassNotFoundException
+    {
+        mixins = (Map<Class, Object>) in.readObject();
+
+        String serializedClassNames = in.readUTF();
+        String[] classNames = serializedClassNames.split( ":" );
+        for( String className : classNames )
+        {
+            try
+            {
+                compositeInterface = (Class<Composite>) Class.forName( className );
+                break;
+            }
+            catch( ClassNotFoundException e )
+            {
+                // Keep looking!
+            }
+        }
+
     }
 }

@@ -14,9 +14,12 @@
 
 package org.qi4j.service;
 
+import org.qi4j.annotation.Mixins;
+
 /**
  * TODO
  */
+@Mixins( MutableServiceStatusMixin.class )
 public interface ServiceStatus
 {
     ActivationStatus getActivationStatus();

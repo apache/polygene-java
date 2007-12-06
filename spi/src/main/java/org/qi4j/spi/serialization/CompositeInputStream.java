@@ -19,8 +19,11 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.lang.reflect.Proxy;
 import java.util.Map;
+import org.qi4j.Qi4j;
 import org.qi4j.composite.Composite;
+import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.CompositeBuilderFactory;
+import org.qi4j.composite.InvalidApplicationException;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.EntitySession;
 import org.qi4j.spi.composite.CompositeState;
@@ -31,14 +34,16 @@ import org.qi4j.spi.composite.CompositeState;
 final class CompositeInputStream extends ObjectInputStream
 {
     private EntitySession session;
+    private Qi4j is;
     private CompositeBuilderFactory factory;
 
-    public CompositeInputStream( InputStream in, EntitySession session, CompositeBuilderFactory factory )
+    public CompositeInputStream( InputStream in, EntitySession session, CompositeBuilderFactory factory, Qi4j is )
         throws IOException
     {
         super( in );
         this.factory = factory;
         this.session = session;
+        this.is = is;
         enableResolveObject( true );
     }
 
@@ -59,9 +64,30 @@ final class CompositeInputStream extends ObjectInputStream
             SerializedComposite holder = (SerializedComposite) obj;
             Class<Composite> compositeInterface = holder.getCompositeInterface();
             Map<Class, Object> mixins = holder.getMixins();
-            Composite composite = factory.newCompositeBuilder( compositeInterface ).newInstance();
+
+            CompositeBuilder<Composite> builder = null;
+            do
+            {
+                try
+                {
+                    builder = factory.newCompositeBuilder( compositeInterface );
+                }
+                catch( InvalidApplicationException e )
+                {
+                    // Could not find this Composite - try superinterfaces
+                    compositeInterface = is.getSuperComposite( compositeInterface );
+                    if( compositeInterface == null )
+                    {
+                        throw e;
+                    }
+                }
+            }
+            while( builder == null );
+
+            Composite composite = builder.newInstance();
             CompositeState mixinHandler = (CompositeState) Proxy.getInvocationHandler( composite );
 // TODO                mixinHandler.setMixins( mixins, false );
+            return composite;
         }
         return obj;
     }

@@ -14,16 +14,39 @@
 
 package org.qi4j.runtime.injection;
 
+import java.util.Map;
+import org.qi4j.spi.dependency.InjectionContext;
 import org.qi4j.spi.dependency.InjectionProvider;
+import org.qi4j.spi.dependency.InjectionProviderException;
 import org.qi4j.spi.dependency.InjectionProviderFactory;
 import org.qi4j.spi.dependency.InjectionResolution;
 import org.qi4j.spi.dependency.InvalidInjectionException;
+import org.qi4j.spi.dependency.ServiceProvider;
 
 public class ServiceInjectionProviderFactory
     implements InjectionProviderFactory
 {
     public InjectionProvider newInjectionProvider( InjectionResolution resolution ) throws InvalidInjectionException
     {
-        return null; // TODO :-)
+        return new ServiceInjectionProvider( resolution );
+    }
+
+    static class ServiceInjectionProvider
+        implements InjectionProvider
+    {
+        private InjectionResolution injectionResolution;
+
+        public ServiceInjectionProvider( InjectionResolution injectionResolution )
+        {
+            this.injectionResolution = injectionResolution;
+        }
+
+        public Object provideInjection( InjectionContext context ) throws InjectionProviderException
+        {
+            Map<Class, ServiceProvider> serviceProviders = context.getModuleBinding().getModuleResolution().getModuleModel().getServiceProviders();
+            ServiceProvider provider = serviceProviders.get( injectionResolution.getInjectionModel().getInjectionClass() );
+            Object service = provider.getService( injectionResolution, context );
+            return service;
+        }
     }
 }

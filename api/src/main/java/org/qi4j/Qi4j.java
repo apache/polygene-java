@@ -14,10 +14,24 @@
 
 package org.qi4j;
 
+import org.qi4j.composite.Composite;
+
 /**
  * Encapsulation of the Qi4j API. The Qi4j holds references
  * to all the API objects in a Qi4j runtime.
  */
 public interface Qi4j
 {
+    /**
+     * Get the super Composite of the given Composite. If one Composite
+     * type MyComposite is extended by CustomMyComposite interface,
+     * the CustomMyComposite is considered to be the super Composite
+     * of MyComposite. A Composite may only extend one other Composite,
+     * but may extend any number of other interfaces which do not in turn
+     * extend Composite.
+     *
+     * @param compositeClass the Composite type whose super Composite should be returned
+     * @return the super Composite of the given Composite, or null if it does not have one
+     */
+    <S extends Composite, T extends S> Class<S> getSuperComposite( Class<T> compositeClass );
 }

@@ -17,9 +17,22 @@ package org.qi4j.spi.dependency;
 /**
  * TODO
  */
-public interface ServiceProvider
+public class Singleton
+    implements ServiceProvider
 {
-    Object getService( InjectionResolution injectionResolution, InjectionContext injectionContext );
+    Object instance;
 
-    void releaseService( Object service );
+    public Object getService( InjectionResolution injectionResolution, InjectionContext injectionContext )
+    {
+        if( instance == null )
+        {
+            instance = injectionContext.getCompositeBuilderFactory().newCompositeBuilder( injectionResolution.getInjectionModel().getInjectionClass() ).newInstance();
+        }
+        return instance;
+    }
+
+    public void releaseService( Object service )
+    {
+        // Ignore for now
+    }
 }

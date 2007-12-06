@@ -331,8 +331,11 @@ public class ApplicationBuilder
         for( Map.Entry<Class<? extends Composite>, ModuleModel> entry : instantiableComposites.entrySet() )
         {
             CompositeContext context = compositeContexts.get( entry.getValue() ).get( entry.getKey() );
-            instantiableCompositeContexts.put( entry.getKey(), context );
-            instantiableModuleContexts.put( entry.getKey(), moduleModelContextMap.get( entry.getValue() ) );
+            if( context != null )
+            {
+                addCompositeContext( instantiableCompositeContexts, entry.getKey(), context );
+                addModuleContext( entry.getKey(), moduleModelContextMap.get( entry.getValue() ), instantiableModuleContexts );
+            }
         }
 
         Map<Class, ObjectContext> instantiableObjectContexts = new LinkedHashMap<Class, ObjectContext>();
@@ -380,12 +383,32 @@ public class ApplicationBuilder
     {
         resolvableComposites.put( compositeClass, moduleModel );
 
-        for( Class extendedClass : compositeClass.getInterfaces() )
+        Class<? extends Composite> superComposite = runtime.getSuperComposite( compositeClass );
+        if( superComposite != null )
         {
-            if( Composite.class.isAssignableFrom( extendedClass ) && !Composite.class.equals( extendedClass ) )
-            {
-                addResolvableComposite( resolvableComposites, extendedClass, moduleModel );
-            }
+            addResolvableComposite( resolvableComposites, superComposite, moduleModel );
+        }
+    }
+
+    private void addCompositeContext( Map<Class<? extends Composite>, CompositeContext> compositeContexts, Class compositeClass, CompositeContext compositeContext )
+    {
+        compositeContexts.put( compositeClass, compositeContext );
+
+        Class<? extends Composite> superComposite = runtime.getSuperComposite( compositeClass );
+        if( superComposite != null )
+        {
+            addCompositeContext( compositeContexts, superComposite, compositeContext );
+        }
+    }
+
+    private <S extends Composite, T extends S> void addModuleContext( Class<T> compositeClass, ModuleContext moduleContext, Map<Class<? extends Composite>, ModuleContext> instantiableModuleContexts )
+    {
+        instantiableModuleContexts.put( compositeClass, moduleContext );
+
+        Class<? extends S> superComposite = runtime.getSuperComposite( compositeClass );
+        if( superComposite != null )
+        {
+            addModuleContext( superComposite, moduleContext, instantiableModuleContexts );
         }
     }
 

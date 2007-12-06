@@ -12,10 +12,7 @@
  *
  */
 
-package org.qi4j.runtime.service;
-
-import org.qi4j.service.ActivationStatus;
-import org.qi4j.service.MutableServiceStatus;
+package org.qi4j.service;
 
 /**
  * Mixin that manages the activation and availablity status of a Service.
