@@ -21,7 +21,7 @@ import org.qi4j.entity.EntitySession;
 import org.qi4j.entity.EntitySessionFactory;
 import org.qi4j.entity.IdentityGenerator;
 import org.qi4j.runtime.UuidIdentityGenerator;
-import org.qi4j.spi.persistence.PersistentStore;
+import org.qi4j.spi.entity.PersistentStore;
 
 public final class EntitySessionFactoryImpl
     implements EntitySessionFactory

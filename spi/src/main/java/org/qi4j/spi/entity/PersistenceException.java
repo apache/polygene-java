@@ -14,32 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.spi.persistence;
+package org.qi4j.spi.entity;
 
-public class EntityAlreadyExistsException extends PersistenceException
+public class PersistenceException extends Exception
 {
-    private String storeName;
-    private String identity;
-
-    public EntityAlreadyExistsException( String storeName, String identity )
+    public PersistenceException()
     {
-        this.storeName = storeName;
-        this.identity = identity;
     }
 
-    public String getStoreName()
+    public PersistenceException( String message )
     {
-        return storeName;
+        super( message );
     }
 
-    public String getIdentity()
+    public PersistenceException( String message, Throwable cause )
     {
-        return identity;
+        super( message, cause );
     }
 
-
-    public String getMessage()
+    public PersistenceException( Throwable cause )
     {
-        return "Entity " + identity + " already existed in the '" + storeName + "' store.";
+        super( cause );
     }
 }

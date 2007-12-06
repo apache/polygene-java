@@ -23,7 +23,7 @@ import org.qi4j.entity.EntityComposite;
 import org.qi4j.runtime.MethodDescriptor;
 import org.qi4j.runtime.structure.ModuleContext;
 import org.qi4j.spi.composite.MixinResolution;
-import org.qi4j.spi.persistence.EntityStateHolder;
+import org.qi4j.spi.entity.EntityStateHolder;
 
 public class EntityCompositeInstance extends AbstractCompositeInstance
 {

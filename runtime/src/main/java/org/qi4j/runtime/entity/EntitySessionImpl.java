@@ -32,9 +32,9 @@ import org.qi4j.query.QueryBuilderFactoryImpl;
 import org.qi4j.query.QueryableIterable;
 import org.qi4j.runtime.composite.EntityCompositeInstance;
 import org.qi4j.spi.composite.CompositeModel;
-import org.qi4j.spi.persistence.EntityStateHolder;
-import org.qi4j.spi.persistence.PersistenceException;
-import org.qi4j.spi.persistence.PersistentStore;
+import org.qi4j.spi.entity.EntityStateHolder;
+import org.qi4j.spi.entity.PersistenceException;
+import org.qi4j.spi.entity.PersistentStore;
 
 public class EntitySessionImpl
     implements EntitySession

@@ -14,26 +14,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.spi.persistence;
+package org.qi4j.spi.entity;
 
-public class PersistenceException extends Exception
+public class EntityNotFoundException extends PersistenceException
 {
-    public PersistenceException()
+    private String storeName;
+    private String identity;
+
+    public EntityNotFoundException( String storeName, String identity )
     {
+        this.storeName = storeName;
+        this.identity = identity;
     }
 
-    public PersistenceException( String message )
+    public String getStoreName()
     {
-        super( message );
+        return storeName;
     }
 
-    public PersistenceException( String message, Throwable cause )
+    public String getIdentity()
     {
-        super( message, cause );
+        return identity;
     }
 
-    public PersistenceException( Throwable cause )
+    public String getMessage()
     {
-        super( cause );
+        return "Entity " + identity + " not found in the '" + storeName + "' store.";
     }
 }

@@ -14,14 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.spi.persistence;
+package org.qi4j.spi.entity;
 
-public class EntityNotFoundException extends PersistenceException
+public class EntityAlreadyExistsException extends PersistenceException
 {
     private String storeName;
     private String identity;
 
-    public EntityNotFoundException( String storeName, String identity )
+    public EntityAlreadyExistsException( String storeName, String identity )
     {
         this.storeName = storeName;
         this.identity = identity;
@@ -37,8 +37,9 @@ public class EntityNotFoundException extends PersistenceException
         return identity;
     }
 
+
     public String getMessage()
     {
-        return "Entity " + identity + " not found in the '" + storeName + "' store.";
+        return "Entity " + identity + " already existed in the '" + storeName + "' store.";
     }
 }

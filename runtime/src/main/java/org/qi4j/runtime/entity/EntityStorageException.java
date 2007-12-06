@@ -16,7 +16,7 @@
  */
 package org.qi4j.runtime.entity;
 
-import org.qi4j.spi.persistence.PersistenceException;
+import org.qi4j.spi.entity.PersistenceException;
 
 public class EntityStorageException extends EntitySessionException
 {
