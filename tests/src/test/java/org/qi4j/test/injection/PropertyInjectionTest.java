@@ -12,12 +12,12 @@
  */
 package org.qi4j.test.injection;
 
-import org.qi4j.annotation.Mixins;
-import org.qi4j.annotation.scope.PropertyField;
-import org.qi4j.annotation.scope.PropertyParameter;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
+import org.qi4j.composite.Mixins;
+import org.qi4j.composite.PropertyField;
+import org.qi4j.composite.PropertyParameter;
 import org.qi4j.composite.PropertyValue;
 import org.qi4j.test.AbstractQi4jTest;
 

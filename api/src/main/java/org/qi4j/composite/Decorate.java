@@ -12,28 +12,22 @@
  * limitations under the License.
  *
  */
-package org.qi4j.annotation.scope;
+package org.qi4j.composite;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import org.qi4j.injection.InjectionScope;
 
 /**
- * Annotation to denote the injection of a Query, QueryBuilder, or Entity prototype dependency into a Fragment (a Invocation or Mixin).
- * <p/>
- * Examples:
- *
- * @Entity Query<Person> findPeople; // call findPeople.iterator() to execute query
- * @Entity QueryBuilder<Person> findByName;
- * @Entity Iterable<Person> personPrototype; // call personPrototype.iterator().next() to create new Person
+ * Annotation to denote the injection of decorated object into a Mixin.
  */
 @Retention( RetentionPolicy.RUNTIME )
-@Target( { ElementType.FIELD, ElementType.PARAMETER } )
+@Target( { ElementType.PARAMETER, ElementType.FIELD } )
 @Documented
 @InjectionScope
-public @interface Entity
+public @interface Decorate
 {
-    @Name String value() default ""; // This name can be used for lookups of named queries
 }

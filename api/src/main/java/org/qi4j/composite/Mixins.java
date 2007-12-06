@@ -13,7 +13,7 @@
  *
  */
 
-package org.qi4j.annotation;
+package org.qi4j.composite;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -63,7 +63,7 @@ import java.lang.annotation.Target;
  * will be used. The search order is in the order they are written in the Mixins
  * annotation left-to-right, and depth-first recursive search of the super-interfaces again
  * left-to-right.
- * @see org.qi4j.annotation.AppliesTo
+ * @see AppliesTo
  */
 @Retention( RetentionPolicy.RUNTIME )
 @Target( ElementType.TYPE )

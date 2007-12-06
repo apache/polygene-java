@@ -12,26 +12,24 @@
  * limitations under the License.
  *
  */
-package org.qi4j.annotation.scope;
+package org.qi4j.composite;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import org.qi4j.injection.InjectionScope;
+import org.qi4j.injection.Name;
 
 /**
- * Annotation to denote the injection of fragment specific resource. These include:
- * The CompositeBuilderFactory
- * <p/>
- * Examples:
- *
- * @Structure CompositeBuilderFactory cbf
+ * Annotation to denote the injection of a property into a parameter (either constructor or method)
  */
 @Retention( RetentionPolicy.RUNTIME )
-@Target( { ElementType.FIELD, ElementType.PARAMETER } )
+@Target( ElementType.PARAMETER )
 @Documented
 @InjectionScope
-public @interface Structure
+public @interface PropertyParameter
 {
+    @Name String value(); // Name of the property
 }

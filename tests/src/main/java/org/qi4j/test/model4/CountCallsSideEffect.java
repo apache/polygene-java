@@ -18,9 +18,9 @@ package org.qi4j.test.model4;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import org.qi4j.annotation.AppliesTo;
-import org.qi4j.annotation.scope.SideEffectFor;
-import org.qi4j.annotation.scope.ThisCompositeAs;
+import org.qi4j.composite.AppliesTo;
+import org.qi4j.composite.SideEffectFor;
+import org.qi4j.composite.ThisCompositeAs;
 
 @AppliesTo( CountCalls.class )
 public class CountCallsSideEffect

@@ -12,30 +12,24 @@
  * limitations under the License.
  *
  */
-package org.qi4j.annotation.scope;
+package org.qi4j.composite;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import org.qi4j.injection.InjectionScope;
+import org.qi4j.injection.Optional;
 
 /**
- * Annotation to denote the injection of a invocation specific resource. These include:
- * The Method being invoked
- * An AnnotationElement with annotations from both interface, mixin, and any Apply statement
- * InvocationContext with information about the current invocation
- * <p/>
- * Examples:
- *
- * @Modifier Method theInvokedMethod
- * @Modifier AnnotationElement annotations
- * @Modifier InvocationContext context
+ * TODO
  */
 @Retention( RetentionPolicy.RUNTIME )
 @Target( { ElementType.FIELD, ElementType.PARAMETER } )
 @Documented
 @InjectionScope
-public @interface Invocation
+public @interface ThisCompositeAs
 {
+    @Optional boolean optional() default false; // True if the dependency is optional, only fail if this is false
 }

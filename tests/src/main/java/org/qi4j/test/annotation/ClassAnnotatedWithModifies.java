@@ -16,7 +16,7 @@
  */
 package org.qi4j.test.annotation;
 
-import org.qi4j.annotation.scope.ConcernFor;
+import org.qi4j.composite.ConcernFor;
 
 public class ClassAnnotatedWithModifies
 {

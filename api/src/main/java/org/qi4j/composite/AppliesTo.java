@@ -13,7 +13,7 @@
  *
  */
 
-package org.qi4j.annotation;
+package org.qi4j.composite;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

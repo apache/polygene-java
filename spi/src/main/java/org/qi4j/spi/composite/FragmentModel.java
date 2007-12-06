@@ -18,7 +18,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import org.qi4j.annotation.scope.ThisCompositeAs;
+import org.qi4j.composite.ThisCompositeAs;
 import org.qi4j.spi.injection.InjectionModel;
 
 /**

@@ -3,13 +3,13 @@ package org.qi4j.runtime.composite;
  *  TODO
  */
 
-import org.qi4j.annotation.Mixins;
-import org.qi4j.annotation.scope.ThisCompositeAs;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembly;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilderFactory;
+import org.qi4j.composite.Mixins;
+import org.qi4j.composite.ThisCompositeAs;
 import org.qi4j.spi.composite.InvalidCompositeException;
 import org.qi4j.test.AbstractQi4jTest;
 

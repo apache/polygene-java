@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2007, Rickard …berg. All Rights Reserved.
+ * Copyright (c) 2007, Rickard Ã–berg. All Rights Reserved.
+ * Copyright (c) 2007, Niclas Hedhman. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -11,26 +12,31 @@
  * limitations under the License.
  *
  */
-
-package org.qi4j.annotation;
+package org.qi4j.composite;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import org.qi4j.composite.ParameterConstraint;
+import org.qi4j.injection.InjectionScope;
 
 /**
- * This annotation is used by composites and mixins to declare what Constraints
- * can be applied in the Composite.
+ * Annotation to denote the injection of a invocation specific resource. These include:
+ * The Method being invoked
+ * An AnnotationElement with annotations from both interface, mixin, and any Apply statement
+ * InvocationContext with information about the current invocation
  * <p/>
- * Constraints implement the {@see ConstraintDeclaration} interface
+ * Examples:
+ *
+ * @Modifier Method theInvokedMethod
+ * @Modifier AnnotationElement annotations
+ * @Modifier InvocationContext context
  */
 @Retention( RetentionPolicy.RUNTIME )
-@Target( { ElementType.TYPE } )
+@Target( { ElementType.FIELD, ElementType.PARAMETER } )
 @Documented
-public @interface Constraints
+@InjectionScope
+public @interface Invocation
 {
-    Class<? extends ParameterConstraint>[] value();
 }

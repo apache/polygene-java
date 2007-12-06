@@ -16,8 +16,8 @@
  */
 package org.qi4j.runtime;
 
-import org.qi4j.annotation.Concerns;
 import org.qi4j.composite.Composite;
+import org.qi4j.composite.Concerns;
 import org.qi4j.entity.Lifecycle;
 
 @Concerns( Model1LifecycleModifier.class )

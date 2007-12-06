@@ -12,13 +12,15 @@
  * limitations under the License.
  *
  */
-package org.qi4j.annotation.scope;
+package org.qi4j.composite;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import org.qi4j.injection.InjectionScope;
+import org.qi4j.injection.Optional;
 
 /**
  * Annotation to denote the injection of a dependency to be adapted into a Mixin.

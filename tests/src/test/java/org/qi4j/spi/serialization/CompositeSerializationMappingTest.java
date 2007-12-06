@@ -18,13 +18,13 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
 import junit.framework.TestCase;
-import org.qi4j.annotation.Concerns;
-import org.qi4j.annotation.Mixins;
-import org.qi4j.annotation.scope.ConcernFor;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembly;
 import org.qi4j.composite.Composite;
+import org.qi4j.composite.ConcernFor;
+import org.qi4j.composite.Concerns;
+import org.qi4j.composite.Mixins;
 
 /**
  * TODO

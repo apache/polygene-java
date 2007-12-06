@@ -14,8 +14,8 @@
  */
 package org.qi4j.entity;
 
-import org.qi4j.annotation.Mixins;
-import org.qi4j.annotation.scope.PropertyParameter;
+import org.qi4j.composite.Mixins;
+import org.qi4j.composite.PropertyParameter;
 
 /**
  * This interface provides the identity of the object which may be used

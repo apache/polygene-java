@@ -16,8 +16,8 @@
  */
 package org.qi4j.test.annotation;
 
-import org.qi4j.annotation.Concerns;
 import org.qi4j.composite.Composite;
+import org.qi4j.composite.Concerns;
 
 @Concerns( Composite.class )
 public class ClassAnnotatedWithModifiedBy

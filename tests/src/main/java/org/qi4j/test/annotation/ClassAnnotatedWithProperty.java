@@ -16,7 +16,7 @@
  */
 package org.qi4j.test.annotation;
 
-import org.qi4j.annotation.scope.PropertyField;
+import org.qi4j.composite.PropertyField;
 
 public class ClassAnnotatedWithProperty
 {

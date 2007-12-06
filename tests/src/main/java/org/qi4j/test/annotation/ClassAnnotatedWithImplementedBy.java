@@ -16,8 +16,8 @@
  */
 package org.qi4j.test.annotation;
 
-import org.qi4j.annotation.Mixins;
 import org.qi4j.composite.Composite;
+import org.qi4j.composite.Mixins;
 
 @Mixins( Composite.class )
 public class ClassAnnotatedWithImplementedBy

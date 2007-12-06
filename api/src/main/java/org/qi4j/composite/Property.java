@@ -1,6 +1,5 @@
 /*
- * Copyright (c) 2007, Rickard Ã–berg. All Rights Reserved.
- * Copyright (c) 2007, Niclas Hedhman. All Rights Reserved.
+ * Copyright (c) 2007, Rickard …berg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,22 +11,23 @@
  * limitations under the License.
  *
  */
-package org.qi4j.annotation.scope;
+
+package org.qi4j.composite;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import org.qi4j.injection.Name;
 
 /**
- * Annotation to denote the injection of a property into a parameter (either constructor or method)
+ * Annotation to denote that a method returns or sets a property for the object
  */
 @Retention( RetentionPolicy.RUNTIME )
-@Target( ElementType.PARAMETER )
+@Target( { ElementType.METHOD } )
 @Documented
-@InjectionScope
-public @interface PropertyParameter
+public @interface Property
 {
-    @Name String value(); // Name of the property
+    @Name String value() default ""; // Name of the property. If not set then name will be JavaBean name of getter/setter method
 }

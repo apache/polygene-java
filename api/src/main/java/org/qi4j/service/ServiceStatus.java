@@ -14,7 +14,7 @@
 
 package org.qi4j.service;
 
-import org.qi4j.annotation.Mixins;
+import org.qi4j.composite.Mixins;
 
 /**
  * TODO

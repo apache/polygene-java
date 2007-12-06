@@ -14,10 +14,10 @@
 
 package org.qi4j.spi.injection;
 
-import org.qi4j.annotation.Mixins;
-import org.qi4j.annotation.scope.Service;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
+import org.qi4j.composite.Mixins;
+import org.qi4j.composite.Service;
 import org.qi4j.service.ServiceComposite;
 import org.qi4j.test.AbstractQi4jTest;
 

@@ -12,13 +12,14 @@
  *
  */
 
-package org.qi4j.annotation.scope;
+package org.qi4j.composite;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import org.qi4j.injection.InjectionScope;
 
 /**
  * This annotation is required once in each SideEffect, to mark the

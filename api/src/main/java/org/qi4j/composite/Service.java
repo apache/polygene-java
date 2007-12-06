@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2007, Rickard …berg. All Rights Reserved.
+ * Copyright (c) 2007, Rickard Ã–berg. All Rights Reserved.
+ * Copyright (c) 2007, Niclas Hedhman. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -11,21 +12,27 @@
  * limitations under the License.
  *
  */
-
-package org.qi4j.annotation;
+package org.qi4j.composite;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import org.qi4j.injection.InjectionScope;
+import org.qi4j.injection.Name;
+import org.qi4j.injection.Optional;
 
 /**
- * TODO
+ * Annotation to denote the injection of a service dependency into a Fragment (a Invocation or Mixin).
  */
 @Retention( RetentionPolicy.RUNTIME )
-@Target( { ElementType.TYPE, ElementType.METHOD } )
+@Target( { ElementType.FIELD, ElementType.PARAMETER } )
 @Documented
-public @interface Asynchronous
+@InjectionScope
+public @interface Service
 {
+    @Optional boolean optional() default false; // True if the dependency is optional, only fail if this is false
+
+    @Name String name() default ""; // This name can be used for lookups
 }

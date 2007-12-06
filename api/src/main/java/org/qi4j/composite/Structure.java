@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2007, Niclas Hedhman. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -11,24 +12,27 @@
  * limitations under the License.
  *
  */
-package org.qi4j.annotation.scope;
+package org.qi4j.composite;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import org.qi4j.injection.InjectionScope;
 
 /**
- * Annotation to denote the injection of a property into a Fragment field (a Invocation or Mixin).
+ * Annotation to denote the injection of fragment specific resource. These include:
+ * The CompositeBuilderFactory
+ * <p/>
+ * Examples:
+ *
+ * @Structure CompositeBuilderFactory cbf
  */
 @Retention( RetentionPolicy.RUNTIME )
-@Target( { ElementType.FIELD } )
+@Target( { ElementType.FIELD, ElementType.PARAMETER } )
 @Documented
 @InjectionScope
-public @interface PropertyField
+public @interface Structure
 {
-    @Name String value() default ""; // Name of the property. If not set then name will be name of field
-
-    @Optional boolean optional() default true; // Whether or not the property is optional. If optional then the default value will be used
 }

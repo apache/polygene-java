@@ -11,8 +11,8 @@
  */
 package org.qi4j.test.model2;
 
-import org.qi4j.annotation.scope.ConcernFor;
-import org.qi4j.annotation.scope.ThisCompositeAs;
+import org.qi4j.composite.ConcernFor;
+import org.qi4j.composite.ThisCompositeAs;
 
 /**
  * TODO

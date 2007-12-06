@@ -12,7 +12,7 @@
  * limitations under the License.
  *
  */
-package org.qi4j.annotation.scope;
+package org.qi4j.injection;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -21,13 +21,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * TODO
+ * Annotation to denote that an annotation defines whether the result is optional or not
  */
 @Retention( RetentionPolicy.RUNTIME )
-@Target( { ElementType.FIELD, ElementType.PARAMETER } )
+@Target( { ElementType.METHOD } )
 @Documented
-@InjectionScope
-public @interface ThisCompositeAs
+public @interface Name
 {
-    @Optional boolean optional() default false; // True if the dependency is optional, only fail if this is false
 }

@@ -16,8 +16,8 @@ package org.qi4j.runtime;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
-import org.qi4j.annotation.scope.ThisCompositeAs;
 import org.qi4j.composite.Composite;
+import org.qi4j.composite.ThisCompositeAs;
 import org.qi4j.runtime.composite.AbstractCompositeInstance;
 import org.qi4j.runtime.composite.CompositeInstance;
 import org.qi4j.spi.composite.CompositeModel;

@@ -17,7 +17,7 @@
  */
 package org.qi4j.query.set1;
 
-import org.qi4j.annotation.scope.PropertyParameter;
+import org.qi4j.composite.PropertyParameter;
 
 public class Mixin1Impl
     implements Mixin1

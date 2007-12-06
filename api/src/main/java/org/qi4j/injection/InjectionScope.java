@@ -12,7 +12,7 @@
  * limitations under the License.
  *
  */
-package org.qi4j.annotation.scope;
+package org.qi4j.injection;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

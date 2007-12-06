@@ -12,7 +12,7 @@
  * limitations under the License.
  *
  */
-package org.qi4j.annotation.scope;
+package org.qi4j.injection;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -21,40 +21,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * This annotation is required once in each Concern, to mark the
- * field where the next element in the call sequence should be
- * injected.
- * <p/>
- * The type of the field must be of the same type as the Concern
- * itself, or an InvocationHandler.
- * <p/>
- * <p/>
- * Example;
- * <pre><code>
- * public interface MyStuff
- * {
- *     void doSomething();
- * }
- * <p/>
- * public class MyStuffConcern
- *     implements MyStuff
- * {
- *     @ConcernFor MyStuff next;
- * <p/>
- *     public void doSomething()
- *     {
- *         // HERE DO THE MODIFIER STUFF.
- * <p/>
- *         // Delegate to the underlying mixin/modifier.
- *         next.doSomething();
- *     }
- * }
- * </code></pre>
+ * Annotation to denote that an annotation defines whether the result is optional or not
  */
 @Retention( RetentionPolicy.RUNTIME )
-@Target( { ElementType.FIELD, ElementType.PARAMETER } )
+@Target( { ElementType.METHOD } )
 @Documented
-@InjectionScope
-public @interface ConcernFor
+public @interface Optional
 {
 }

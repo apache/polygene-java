@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2007, Rickard …berg. All Rights Reserved.
+ * Copyright (c) 2007, Rickard Ã–berg. All Rights Reserved.
+ * Copyright (c) 2007, Niclas Hedhman. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -11,23 +12,30 @@
  * limitations under the License.
  *
  */
-
-package org.qi4j.annotation;
+package org.qi4j.composite;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import org.qi4j.annotation.scope.Name;
+import org.qi4j.injection.InjectionScope;
+import org.qi4j.injection.Name;
 
 /**
- * Annotation to denote that a method returns or sets a property for the object
+ * Annotation to denote the injection of a Query, QueryBuilder, or Entity prototype dependency into a Fragment (a Invocation or Mixin).
+ * <p/>
+ * Examples:
+ *
+ * @Entity Query<Person> findPeople; // call findPeople.iterator() to execute query
+ * @Entity QueryBuilder<Person> findByName;
+ * @Entity Iterable<Person> personPrototype; // call personPrototype.iterator().next() to create new Person
  */
 @Retention( RetentionPolicy.RUNTIME )
-@Target( { ElementType.METHOD } )
+@Target( { ElementType.FIELD, ElementType.PARAMETER } )
 @Documented
-public @interface Property
+@InjectionScope
+public @interface Entity
 {
-    @Name String value() default ""; // Name of the property. If not set then name will be JavaBean name of getter/setter method
+    @Name String value() default ""; // This name can be used for lookups of named queries
 }

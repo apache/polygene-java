@@ -11,7 +11,7 @@
  */
 package org.qi4j.test.model2;
 
-import org.qi4j.annotation.Mixins;
+import org.qi4j.composite.Mixins;
 
 /**
  * TODO

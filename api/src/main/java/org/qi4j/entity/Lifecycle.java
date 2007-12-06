@@ -14,7 +14,7 @@
  */
 package org.qi4j.entity;
 
-import org.qi4j.annotation.Mixins;
+import org.qi4j.composite.Mixins;
 
 /**
  * Lifecycle interface for all Composites.

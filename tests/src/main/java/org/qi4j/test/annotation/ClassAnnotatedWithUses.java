@@ -16,7 +16,7 @@
  */
 package org.qi4j.test.annotation;
 
-import org.qi4j.annotation.scope.ThisCompositeAs;
+import org.qi4j.composite.ThisCompositeAs;
 
 public class ClassAnnotatedWithUses
 {

@@ -16,7 +16,7 @@
  */
 package org.qi4j.test.model1;
 
-import org.qi4j.annotation.Concerns;
+import org.qi4j.composite.Concerns;
 
 @Concerns( Modifier4.class )
 public class Mixin1Impl

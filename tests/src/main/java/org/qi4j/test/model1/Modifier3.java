@@ -16,7 +16,7 @@
  */
 package org.qi4j.test.model1;
 
-import org.qi4j.annotation.scope.ConcernFor;
+import org.qi4j.composite.ConcernFor;
 
 public class Modifier3
     implements Mixin1, Mixin2

@@ -12,15 +12,16 @@
  *
  */
 
-package org.qi4j.annotation;
+package org.qi4j.composite;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.reflect.Method;
 
-@Retention( RetentionPolicy.RUNTIME )
-@Target( ElementType.ANNOTATION_TYPE )
-public @interface ConstraintDeclaration
+/**
+ * Implementations of this interface can be specified in the AppliesTo.
+ * An instance of the provided class will be used to test if the modifier or mixin
+ * should be applied to the method or not.
+ */
+public interface AppliesToFilter
 {
+    boolean appliesTo( Method method, Class mixin, Class compositeType, Class modifierClass );
 }
