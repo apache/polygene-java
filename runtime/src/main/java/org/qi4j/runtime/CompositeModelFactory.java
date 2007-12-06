@@ -43,7 +43,7 @@ import org.qi4j.composite.Composite;
 import org.qi4j.composite.NullArgumentException;
 import org.qi4j.composite.ParameterConstraint;
 import org.qi4j.entity.EntityComposite;
-import org.qi4j.runtime.persistence.EntityMixin;
+import org.qi4j.runtime.entity.EntityMixin;
 import org.qi4j.spi.composite.CompositeMethodModel;
 import org.qi4j.spi.composite.CompositeModel;
 import org.qi4j.spi.composite.ConcernModel;
