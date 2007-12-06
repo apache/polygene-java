@@ -19,12 +19,12 @@ import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.qi4j.CompositeBuilderFactory;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.EntityCompositeNotFoundException;
 import org.qi4j.entity.PersistenceException;
 import org.qi4j.runtime.ProxyReferenceInvocationHandler;
 import org.qi4j.runtime.composite.CompositeInstance;
+import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.composite.CompositeModel;
 import org.qi4j.spi.persistence.EntityStateHolder;
 import org.qi4j.spi.persistence.PersistentStore;
@@ -34,13 +34,13 @@ import org.qi4j.spi.serialization.SerializedObject;
 public final class SerializablePersistence
     implements PersistentStore
 {
-    SerializablePersistenceSpi delegate;
-    private CompositeBuilderFactory builderFactory;
+    private SerializablePersistenceSpi delegate;
+    private Qi4jSPI spi;
 
-    public SerializablePersistence( SerializablePersistenceSpi aDelegate, CompositeBuilderFactory compositeBuilderFactory )
+    public SerializablePersistence( SerializablePersistenceSpi aDelegate, Qi4jSPI spi )
     {
+        this.spi = spi;
         delegate = aDelegate;
-        this.builderFactory = compositeBuilderFactory;
     }
 
     public void create( EntityComposite entity )
@@ -55,7 +55,7 @@ public final class SerializablePersistence
         {
             if( mixin instanceof Serializable )
             {
-                persistentMixins.put( mixin.getClass(), new SerializedObject( mixin ) );
+                persistentMixins.put( mixin.getClass(), new SerializedObject( mixin, spi ) );
             }
         }
 
@@ -83,7 +83,7 @@ public final class SerializablePersistence
             Object deserializedMixin = null;
             try
             {
-                deserializedMixin = value.getObject( entitySession, builderFactory );
+                deserializedMixin = value.getObject( entitySession, compositeBuilderFactory );
             }
             catch( ClassNotFoundException e )
             {
@@ -118,7 +118,7 @@ public final class SerializablePersistence
             // Only update if there already were a value object. Otherwise ignore.
             if( oldValueObject != null )
             {
-                SerializedObject newValueObject = new SerializedObject( aMixin );
+                SerializedObject newValueObject = new SerializedObject( aMixin, spi );
                 mixins.put( mixinType, newValueObject );
                 delegate.putInstance( identity, mixins );
             }
