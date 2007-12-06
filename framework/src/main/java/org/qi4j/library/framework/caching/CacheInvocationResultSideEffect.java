@@ -3,10 +3,10 @@ package org.qi4j.library.framework.caching;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import org.qi4j.annotation.AppliesTo;
-import org.qi4j.annotation.scope.Invocation;
-import org.qi4j.annotation.scope.SideEffectFor;
-import org.qi4j.annotation.scope.ThisCompositeAs;
+import org.qi4j.composite.AppliesTo;
+import org.qi4j.composite.Invocation;
+import org.qi4j.composite.SideEffectFor;
+import org.qi4j.composite.ThisCompositeAs;
 
 /**
  * Cache result of @Cached method calls.

@@ -20,9 +20,9 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import org.qi4j.annotation.AppliesTo;
-import org.qi4j.annotation.Property;
-import org.qi4j.annotation.scope.PropertyParameter;
+import org.qi4j.composite.AppliesTo;
+import org.qi4j.composite.Property;
+import org.qi4j.composite.PropertyParameter;
 import org.qi4j.composite.PropertyValue;
 
 /**

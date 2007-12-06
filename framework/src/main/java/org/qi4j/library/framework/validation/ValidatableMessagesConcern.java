@@ -1,9 +1,9 @@
 package org.qi4j.library.framework.validation;
 
 import java.util.List;
-import org.qi4j.annotation.AppliesTo;
-import org.qi4j.annotation.scope.ConcernFor;
-import org.qi4j.annotation.scope.ThisCompositeAs;
+import org.qi4j.composite.AppliesTo;
+import org.qi4j.composite.ConcernFor;
+import org.qi4j.composite.ThisCompositeAs;
 
 /**
  * TODO

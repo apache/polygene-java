@@ -1,7 +1,7 @@
 package org.qi4j.library.framework.properties;
 
 import java.lang.reflect.Method;
-import org.qi4j.annotation.AppliesToFilter;
+import org.qi4j.composite.AppliesToFilter;
 
 /**
  * Filter for getter methods. Method name must match "get*" or "is*" or "has*".

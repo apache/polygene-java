@@ -1,6 +1,6 @@
 package org.qi4j.library.framework.constraint;
 
-import org.qi4j.annotation.Constraints;
+import org.qi4j.composite.Constraints;
 
 /**
  * TODO

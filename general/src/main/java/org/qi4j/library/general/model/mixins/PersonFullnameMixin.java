@@ -12,7 +12,7 @@
  */
 package org.qi4j.library.general.model.mixins;
 
-import org.qi4j.annotation.scope.ThisCompositeAs;
+import org.qi4j.composite.ThisCompositeAs;
 import org.qi4j.library.general.model.PersonName;
 
 public abstract class PersonFullnameMixin implements PersonName

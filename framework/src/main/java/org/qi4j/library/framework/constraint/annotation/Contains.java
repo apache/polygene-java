@@ -4,7 +4,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import org.qi4j.annotation.ConstraintDeclaration;
+import org.qi4j.composite.ConstraintDeclaration;
 
 @ConstraintDeclaration
 @Retention( RetentionPolicy.RUNTIME )

@@ -19,7 +19,7 @@
 package org.qi4j.library.general.model;
 
 import java.io.Serializable;
-import org.qi4j.annotation.Mixins;
+import org.qi4j.composite.Mixins;
 import org.qi4j.library.framework.properties.PropertiesMixin;
 
 

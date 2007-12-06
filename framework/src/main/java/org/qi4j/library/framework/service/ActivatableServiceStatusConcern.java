@@ -14,8 +14,8 @@
 
 package org.qi4j.library.framework.service;
 
-import org.qi4j.annotation.scope.ConcernFor;
-import org.qi4j.annotation.scope.ThisCompositeAs;
+import org.qi4j.composite.ConcernFor;
+import org.qi4j.composite.ThisCompositeAs;
 import org.qi4j.service.Activatable;
 import org.qi4j.service.ActivationStatus;
 import org.qi4j.service.MutableServiceStatus;

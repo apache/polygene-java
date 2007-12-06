@@ -12,7 +12,7 @@
  */
 package org.qi4j.library.general.test.model;
 
-import org.qi4j.annotation.scope.ConcernFor;
+import org.qi4j.composite.ConcernFor;
 import org.qi4j.library.general.model.Descriptor;
 
 public class DescriptorConcern implements Descriptor

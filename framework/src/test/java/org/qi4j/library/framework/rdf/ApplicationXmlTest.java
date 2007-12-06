@@ -19,14 +19,14 @@ import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import org.qi4j.annotation.Concerns;
-import org.qi4j.annotation.Mixins;
-import org.qi4j.annotation.SideEffects;
-import org.qi4j.annotation.scope.ConcernFor;
-import org.qi4j.annotation.scope.SideEffectFor;
-import org.qi4j.annotation.scope.ThisCompositeAs;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
+import org.qi4j.composite.ConcernFor;
+import org.qi4j.composite.Concerns;
+import org.qi4j.composite.Mixins;
+import org.qi4j.composite.SideEffectFor;
+import org.qi4j.composite.SideEffects;
+import org.qi4j.composite.ThisCompositeAs;
 import org.qi4j.test.AbstractQi4jTest;
 
 /**

@@ -13,7 +13,7 @@
  */
 package org.qi4j.library.general.model;
 
-import org.qi4j.annotation.Mixins;
+import org.qi4j.composite.Mixins;
 import org.qi4j.library.framework.properties.PropertiesMixin;
 
 /**

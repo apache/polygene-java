@@ -1,7 +1,7 @@
 package org.qi4j.library.framework.scripting;
 
 import java.io.PrintStream;
-import org.qi4j.annotation.Mixins;
+import org.qi4j.composite.Mixins;
 /*
  * Copyright 2007 Rickard Öberg
  * Licensed under the Apache License, Version 2.0 (the "License"); 

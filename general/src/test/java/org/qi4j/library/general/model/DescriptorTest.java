@@ -12,9 +12,9 @@
  */
 package org.qi4j.library.general.model;
 
-import org.qi4j.annotation.Concerns;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
+import org.qi4j.composite.Concerns;
 import org.qi4j.library.general.test.model.DescriptorConcern;
 import org.qi4j.test.AbstractQi4jTest;
 
