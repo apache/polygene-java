@@ -18,8 +18,11 @@
 package org.qi4j.runtime.injection;
 
 import java.lang.reflect.Type;
+import org.qi4j.Qi4j;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.ObjectBuilderFactory;
+import org.qi4j.runtime.Qi4jRuntime;
+import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.dependency.InjectionContext;
 import org.qi4j.spi.dependency.InjectionProvider;
 import org.qi4j.spi.dependency.InjectionProviderFactory;
@@ -30,6 +33,13 @@ import org.qi4j.spi.structure.ModuleBinding;
 public class StructureInjectionProviderFactory
     implements InjectionProviderFactory
 {
+    private Qi4jRuntime runtime;
+
+    public StructureInjectionProviderFactory( Qi4jRuntime runtime )
+    {
+        this.runtime = runtime;
+    }
+
     public InjectionProvider newInjectionProvider( InjectionResolution resolution ) throws InvalidInjectionException
     {
         return new StructureInjectionProvider( resolution );
@@ -60,6 +70,10 @@ public class StructureInjectionProviderFactory
             else if( type.equals( ModuleBinding.class ) )
             {
                 return context.getModuleBinding();
+            }
+            else if( type.equals( Qi4j.class ) || type.equals( Qi4jSPI.class ) || type.equals( Qi4jRuntime.class ) )
+            {
+                return runtime;
             }
 
             return null;
