@@ -62,7 +62,7 @@ import org.qi4j.spi.composite.ConcernBinding;
 import org.qi4j.spi.composite.FieldBinding;
 import org.qi4j.spi.composite.MixinBinding;
 import org.qi4j.spi.composite.SideEffectBinding;
-import org.qi4j.spi.dependency.InjectionResolution;
+import org.qi4j.spi.injection.InjectionResolution;
 import org.qi4j.spi.structure.LayerBinding;
 import org.qi4j.spi.structure.LayerResolution;
 import org.qi4j.spi.structure.ModuleBinding;
