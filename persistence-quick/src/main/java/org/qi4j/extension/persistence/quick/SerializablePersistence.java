@@ -26,8 +26,8 @@ import org.qi4j.runtime.ProxyReferenceInvocationHandler;
 import org.qi4j.runtime.composite.CompositeInstance;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.composite.CompositeModel;
-import org.qi4j.spi.persistence.EntityStateHolder;
-import org.qi4j.spi.persistence.PersistentStore;
+import org.qi4j.spi.entity.EntityStateHolder;
+import org.qi4j.spi.entity.PersistentStore;
 import org.qi4j.spi.serialization.SerializablePersistenceSpi;
 import org.qi4j.spi.serialization.SerializedObject;
 
@@ -149,27 +149,27 @@ public final class SerializablePersistence
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public boolean exists( String identity ) throws org.qi4j.spi.persistence.PersistenceException
+    public boolean exists( String identity ) throws org.qi4j.spi.entity.PersistenceException
     {
         return false;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public EntityStateHolder newEntityInstance( String identity, CompositeModel compositeModel ) throws org.qi4j.spi.persistence.PersistenceException
+    public EntityStateHolder newEntityInstance( String identity, CompositeModel compositeModel ) throws org.qi4j.spi.entity.PersistenceException
     {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public EntityStateHolder getEntityInstance( String identity, CompositeModel compositeModel ) throws org.qi4j.spi.persistence.PersistenceException
+    public EntityStateHolder getEntityInstance( String identity, CompositeModel compositeModel ) throws org.qi4j.spi.entity.PersistenceException
     {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public List<EntityStateHolder> getEntityInstances( List<String> identities, CompositeModel compositeModel ) throws org.qi4j.spi.persistence.PersistenceException
+    public List<EntityStateHolder> getEntityInstances( List<String> identities, CompositeModel compositeModel ) throws org.qi4j.spi.entity.PersistenceException
     {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public boolean delete( String identity ) throws org.qi4j.spi.persistence.PersistenceException
+    public boolean delete( String identity ) throws org.qi4j.spi.entity.PersistenceException
     {
         return false;  //To change body of implemented methods use File | Settings | File Templates.
     }

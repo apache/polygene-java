@@ -22,11 +22,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.qi4j.spi.composite.CompositeModel;
-import org.qi4j.spi.persistence.EntityAlreadyExistsException;
-import org.qi4j.spi.persistence.EntityNotFoundException;
-import org.qi4j.spi.persistence.EntityStateHolder;
-import org.qi4j.spi.persistence.PersistenceException;
-import org.qi4j.spi.persistence.PersistentStore;
+import org.qi4j.spi.entity.EntityAlreadyExistsException;
+import org.qi4j.spi.entity.EntityNotFoundException;
+import org.qi4j.spi.entity.EntityStateHolder;
+import org.qi4j.spi.entity.PersistenceException;
+import org.qi4j.spi.entity.PersistentStore;
 import org.qi4j.spi.serialization.SerializedObject;
 
 public class MemoryPersistentStore

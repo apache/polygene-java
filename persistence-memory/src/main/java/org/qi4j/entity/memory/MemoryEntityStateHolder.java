@@ -18,7 +18,7 @@ package org.qi4j.entity.memory;
 
 import java.util.concurrent.ConcurrentHashMap;
 import org.qi4j.spi.composite.CompositeModel;
-import org.qi4j.spi.persistence.EntityStateHolder;
+import org.qi4j.spi.entity.EntityStateHolder;
 
 public class MemoryEntityStateHolder
     implements EntityStateHolder
