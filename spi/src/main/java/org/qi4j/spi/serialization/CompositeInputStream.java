@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.lang.reflect.Proxy;
-import java.util.Map;
 import org.qi4j.Qi4j;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
@@ -63,7 +62,7 @@ final class CompositeInputStream extends ObjectInputStream
             // TODO Fix this!!
             SerializedComposite holder = (SerializedComposite) obj;
             Class<Composite> compositeInterface = holder.getCompositeInterface();
-            Map<Class, Object> mixins = holder.getMixins();
+            Object[] mixins = holder.getMixins();
 
             CompositeBuilder<Composite> builder = null;
             do
@@ -84,9 +83,10 @@ final class CompositeInputStream extends ObjectInputStream
             }
             while( builder == null );
 
+            // CompositeBuilder found
             Composite composite = builder.newInstance();
             CompositeState mixinHandler = (CompositeState) Proxy.getInvocationHandler( composite );
-// TODO                mixinHandler.setMixins( mixins, false );
+            mixinHandler.setMixins( mixins );
             return composite;
         }
         return obj;

@@ -16,7 +16,6 @@ package org.qi4j.spi.serialization;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.Map;
 import org.qi4j.composite.Composite;
 
 /**
@@ -25,16 +24,16 @@ import org.qi4j.composite.Composite;
 class SerializedComposite
     implements Serializable
 {
-    private Map<Class, Object> mixins;
+    private Object[] mixins;
     private Class<Composite> compositeInterface;
 
-    public SerializedComposite( Map<Class, Object> mixins, Class<Composite> compositeInterface )
+    public SerializedComposite( Object[] mixins, Class<Composite> compositeInterface )
     {
         this.compositeInterface = compositeInterface;
         this.mixins = mixins;
     }
 
-    public Map<Class, Object> getMixins()
+    public Object[] getMixins()
     {
         return mixins;
     }
@@ -72,7 +71,7 @@ class SerializedComposite
     private void readObject( java.io.ObjectInputStream in )
         throws IOException, ClassNotFoundException
     {
-        mixins = (Map<Class, Object>) in.readObject();
+        mixins = (Object[]) in.readObject();
 
         String serializedClassNames = in.readUTF();
         String[] classNames = serializedClassNames.split( ":" );

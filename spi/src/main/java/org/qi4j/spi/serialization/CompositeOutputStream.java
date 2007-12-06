@@ -19,8 +19,8 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Proxy;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import org.qi4j.composite.Composite;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.spi.Qi4jSPI;
@@ -44,7 +44,7 @@ final class CompositeOutputStream extends ObjectOutputStream
 
     protected Object replaceObject( Object obj ) throws IOException
     {
-        if( obj instanceof Composite )
+        if( obj instanceof Composite && obj instanceof Proxy )
         {
             Composite composite = (Composite) obj;
             CompositeModel compositeObject = spi.getCompositeBinding( composite ).getCompositeResolution().getCompositeModel();
@@ -56,17 +56,18 @@ final class CompositeOutputStream extends ObjectOutputStream
             }
             else
             {
-                Map<Class, Object> mixinsToSave = new HashMap<Class, Object>();
+                List mixinsToSave = new ArrayList();
                 CompositeState mixinsHolder = (CompositeState) Proxy.getInvocationHandler( obj );
                 Object[] existingMixins = mixinsHolder.getMixins();
                 for( Object existingMixin : existingMixins )
                 {
                     if( existingMixin instanceof Serializable )
                     {
-                        mixinsToSave.put( existingMixin.getClass(), existingMixin );
+                        mixinsToSave.add( existingMixin );
                     }
                 }
-                return new SerializedComposite( mixinsToSave, compositeInterface );
+                Object[] mixinArray = mixinsToSave.toArray( new Object[mixinsToSave.size()] );
+                return new SerializedComposite( mixinArray, compositeInterface );
             }
         }
         return obj;

@@ -16,6 +16,7 @@ package org.qi4j.spi.serialization;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.Serializable;
 import junit.framework.TestCase;
 import org.qi4j.annotation.Concerns;
 import org.qi4j.annotation.Mixins;
@@ -68,14 +69,21 @@ public class CompositeSerializationMappingTest
         ClientChairComposite clientChair = (ClientChairComposite) cin.readObject();
 
         assertEquals( "Sitting on the client", clientChair.sit() );
+        assertEquals( 2, clientChair.getSitCount() ); // Ensure that serialized state is ok
     }
 
 
     @Mixins( ChairMixin.class )
     public interface ChairComposite
-        extends Composite
+        extends Chair, Composite
+    {
+    }
+
+    public interface Chair
     {
         String sit();
+
+        int getSitCount();
     }
 
     @Concerns( ServerSitting.class )
@@ -85,9 +93,9 @@ public class CompositeSerializationMappingTest
     }
 
     public static abstract class ServerSitting
-        implements ChairComposite
+        implements Chair
     {
-        @ConcernFor ChairComposite next;
+        @ConcernFor Chair next;
 
         public String sit()
         {
@@ -96,9 +104,9 @@ public class CompositeSerializationMappingTest
     }
 
     public static abstract class ClientSitting
-        implements ChairComposite
+        implements Chair
     {
-        @ConcernFor ChairComposite next;
+        @ConcernFor Chair next;
 
         public String sit()
         {
@@ -112,12 +120,20 @@ public class CompositeSerializationMappingTest
     {
     }
 
-    public static abstract class ChairMixin
-        implements ChairComposite
+    public static class ChairMixin
+        implements Chair, Serializable
     {
+        int sitCount;
+
         public String sit()
         {
+            sitCount++;
             return "Sitting";
+        }
+
+        public int getSitCount()
+        {
+            return sitCount;
         }
     }
 }
