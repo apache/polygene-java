@@ -10,8 +10,8 @@ import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.entity.EntitySession;
 import org.qi4j.query.QueryBuilderFactoryImpl;
 import org.qi4j.query.QueryableIterable;
+import org.qi4j.runtime.entity.EntitySessionFactoryImpl;
 import org.qi4j.runtime.injection.EntityInjectionProviderFactory;
-import org.qi4j.runtime.persistence.EntitySessionFactoryImpl;
 import org.qi4j.test.AbstractQi4jTest;
 
 public class FinderMixinTest
