@@ -99,7 +99,7 @@
                   <mixin ns0:ID="org_qi_j_runtime_CompositeMixin">
 
                     <label xmlns="http://www.w3.org/2000/01/rdf-schema#">CompositeMixin</label>
-                    <class>org.qi4j.runtime.CompositeMixin</class>
+                    <class>org.qi4j.runtime.composite.CompositeMixin</class>
                     <fields ns0:parseType="Collection">
                       <field
                         ns0:ID="testapp/testlayer/testmodule/org_qi_j_library_framework_rdf_ApplicationXmlTest_TestComposite/org_qi_j_runtime_CompositeMixin/meAsComposite">
