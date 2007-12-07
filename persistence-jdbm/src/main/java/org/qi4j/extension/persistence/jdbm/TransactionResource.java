@@ -30,8 +30,8 @@ import jdbm.RecordManager;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.EntityCompositeNotFoundException;
 import org.qi4j.entity.PersistenceException;
-import org.qi4j.runtime.ProxyReferenceInvocationHandler;
 import org.qi4j.runtime.composite.CompositeInstance;
+import org.qi4j.runtime.composite.ProxyReferenceInvocationHandler;
 
 
 public class TransactionResource
