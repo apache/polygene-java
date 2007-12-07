@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.runtime;
+package org.qi4j.runtime.structure;
 
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.emptySet;
@@ -26,7 +26,6 @@ import java.util.Set;
 import org.qi4j.composite.ObjectBuilder;
 import org.qi4j.composite.PropertyValue;
 import org.qi4j.runtime.composite.ObjectContext;
-import org.qi4j.runtime.structure.ModuleContext;
 
 /**
  *

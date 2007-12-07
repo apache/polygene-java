@@ -12,13 +12,12 @@
  * limitations under the License.
  *
  */
-package org.qi4j.runtime;
+package org.qi4j.runtime.structure;
 
 import org.qi4j.composite.InvalidApplicationException;
 import org.qi4j.composite.ObjectBuilder;
 import org.qi4j.composite.ObjectBuilderFactory;
 import org.qi4j.runtime.composite.ObjectContext;
-import org.qi4j.runtime.structure.ModuleContext;
 
 /**
  * Default implementation of ObjectBuilderFactory

@@ -1,4 +1,4 @@
-package org.qi4j.runtime;
+package org.qi4j.runtime.composite;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;

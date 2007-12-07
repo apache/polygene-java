@@ -16,8 +16,6 @@ package org.qi4j.runtime.structure;
 
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.ObjectBuilderFactory;
-import org.qi4j.runtime.ModuleCompositeBuilderFactory;
-import org.qi4j.runtime.ModuleObjectBuilderFactory;
 
 /**
  * TODO

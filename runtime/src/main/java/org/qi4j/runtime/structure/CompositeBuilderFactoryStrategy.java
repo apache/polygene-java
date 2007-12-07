@@ -12,7 +12,7 @@
  *
  */
 
-package org.qi4j.runtime;
+package org.qi4j.runtime.structure;
 
 import java.util.Map;
 import org.qi4j.composite.Composite;

@@ -14,25 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.runtime;
+package org.qi4j.runtime.composite;
 
-import java.util.UUID;
-import org.qi4j.entity.Identity;
-import org.qi4j.entity.IdentityGenerator;
+import org.qi4j.composite.CompositeInstantiationException;
+import org.qi4j.spi.composite.AbstractBinding;
+import org.qi4j.spi.injection.InjectionContext;
 
-public final class UuidIdentityGenerator
-    implements IdentityGenerator
+public interface InstanceFactory
 {
-    protected String uuid;
-    private int count;
+    Object newInstance( AbstractBinding abstractBinding, InjectionContext context )
+        throws CompositeInstantiationException;
 
-    public UuidIdentityGenerator()
-    {
-        uuid = UUID.randomUUID().toString() + "-";
-    }
-
-    public String generate( Class<? extends Identity> compositeType )
-    {
-        return uuid + Integer.toHexString( count++ );
-    }
+    void inject( Object instance, AbstractBinding abstractBinding, InjectionContext context )
+        throws CompositeInstantiationException;
 }

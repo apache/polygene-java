@@ -1,7 +1,6 @@
-package org.qi4j.runtime;
+package org.qi4j.runtime.composite;
 
 import java.util.concurrent.atomic.AtomicReference;
-import org.qi4j.runtime.composite.CompositeMethodInstance;
 
 /**
  * TODO

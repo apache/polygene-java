@@ -12,14 +12,13 @@
  * limitations under the License.
  *
  */
-package org.qi4j.runtime;
+package org.qi4j.runtime.structure;
 
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.InvalidApplicationException;
 import org.qi4j.runtime.composite.CompositeContext;
-import org.qi4j.runtime.structure.ModuleContext;
 
 /**
  * Default implementation of CompositeBuilderFactory

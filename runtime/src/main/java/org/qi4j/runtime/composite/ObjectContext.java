@@ -17,7 +17,6 @@ package org.qi4j.runtime.composite;
 import java.util.Map;
 import java.util.Set;
 import org.qi4j.composite.PropertyValue;
-import org.qi4j.runtime.InstanceFactory;
 import org.qi4j.runtime.structure.ModuleContext;
 import org.qi4j.spi.composite.ObjectBinding;
 import org.qi4j.spi.composite.ObjectModel;

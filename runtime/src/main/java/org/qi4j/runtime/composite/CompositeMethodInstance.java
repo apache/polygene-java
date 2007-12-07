@@ -17,10 +17,6 @@ package org.qi4j.runtime.composite;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import org.qi4j.runtime.CompositeMethodInstancePool;
-import org.qi4j.runtime.FragmentInvocationHandler;
-import org.qi4j.runtime.ProxyReferenceInvocationHandler;
-import org.qi4j.runtime.SideEffectInvocationHandlerResult;
 
 public final class CompositeMethodInstance
 {

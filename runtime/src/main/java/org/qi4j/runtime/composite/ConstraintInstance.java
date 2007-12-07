@@ -1,4 +1,4 @@
-package org.qi4j.runtime;
+package org.qi4j.runtime.composite;
 
 import java.lang.annotation.Annotation;
 import org.qi4j.composite.ParameterConstraint;

@@ -19,8 +19,6 @@ import java.util.Map;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.ObjectBuilderFactory;
-import org.qi4j.runtime.ModuleCompositeBuilderFactory;
-import org.qi4j.runtime.ModuleObjectBuilderFactory;
 import org.qi4j.runtime.composite.CompositeContext;
 import org.qi4j.runtime.composite.ObjectContext;
 import org.qi4j.spi.structure.ModuleBinding;

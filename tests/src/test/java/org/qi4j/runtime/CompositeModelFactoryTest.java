@@ -26,6 +26,8 @@ import org.qi4j.composite.Concerns;
 import org.qi4j.composite.Mixins;
 import org.qi4j.composite.NullArgumentException;
 import org.qi4j.composite.scope.ConcernFor;
+import org.qi4j.runtime.composite.CompositeMixin;
+import org.qi4j.runtime.composite.CompositeModelFactory;
 import org.qi4j.spi.composite.CompositeModel;
 import org.qi4j.spi.composite.ConcernModel;
 import org.qi4j.spi.composite.InvalidCompositeException;

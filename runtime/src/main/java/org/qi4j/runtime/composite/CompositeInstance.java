@@ -17,7 +17,6 @@
 package org.qi4j.runtime.composite;
 
 import java.lang.reflect.Method;
-import org.qi4j.runtime.MethodDescriptor;
 import org.qi4j.runtime.structure.ModuleContext;
 import org.qi4j.spi.composite.InvalidCompositeException;
 

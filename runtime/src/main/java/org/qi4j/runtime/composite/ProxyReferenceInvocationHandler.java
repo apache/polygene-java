@@ -12,7 +12,7 @@
  * limitations under the License.
  *
  */
-package org.qi4j.runtime;
+package org.qi4j.runtime.composite;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;

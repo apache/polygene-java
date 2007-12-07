@@ -12,14 +12,12 @@
  * limitations under the License.
  *
  */
-package org.qi4j.runtime;
+package org.qi4j.runtime.composite;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.scope.ThisCompositeAs;
-import org.qi4j.runtime.composite.AbstractCompositeInstance;
-import org.qi4j.runtime.composite.CompositeInstance;
 import org.qi4j.spi.composite.CompositeModel;
 
 public final class CompositeMixin

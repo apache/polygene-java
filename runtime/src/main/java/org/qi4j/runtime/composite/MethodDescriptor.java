@@ -1,6 +1,4 @@
-package org.qi4j.runtime;
-
-import org.qi4j.runtime.composite.CompositeMethodContext;
+package org.qi4j.runtime.composite;
 
 /**
  * TODO

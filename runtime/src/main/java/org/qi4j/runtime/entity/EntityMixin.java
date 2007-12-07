@@ -26,10 +26,10 @@ import org.qi4j.composite.scope.ThisCompositeAs;
 import org.qi4j.entity.CompositeCastException;
 import org.qi4j.entity.Entity;
 import org.qi4j.entity.EntityComposite;
-import org.qi4j.runtime.ProxyReferenceInvocationHandler;
 import org.qi4j.runtime.composite.AbstractCompositeInstance;
 import org.qi4j.runtime.composite.CompositeInstance;
 import org.qi4j.runtime.composite.EntityCompositeInstance;
+import org.qi4j.runtime.composite.ProxyReferenceInvocationHandler;
 import org.qi4j.spi.composite.CompositeModel;
 
 public final class EntityMixin

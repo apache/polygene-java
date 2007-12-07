@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.runtime;
+package org.qi4j.runtime.structure;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -30,7 +30,6 @@ import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.CompositeInstantiationException;
 import org.qi4j.composite.PropertyValue;
 import org.qi4j.runtime.composite.CompositeContext;
-import org.qi4j.runtime.structure.ModuleContext;
 import org.qi4j.spi.composite.MixinResolution;
 import org.qi4j.spi.composite.PropertyResolution;
 
