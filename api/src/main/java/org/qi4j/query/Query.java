@@ -14,6 +14,8 @@
  */
 package org.qi4j.query;
 
+import java.util.Map;
+
 /**
  * Query of objects from underlying stores.
  * <p/>
@@ -22,5 +24,9 @@ package org.qi4j.query;
 public interface Query<R>
     extends Iterable<R>
 {
+    void setVariable( String name, Object value );
+
+    Map<String, Object> getVariables();
+
     R find();
 }

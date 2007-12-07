@@ -31,7 +31,7 @@ public class SingletonServiceTest
     {
         module.addComposite( TestComposite1.class );
         module.addComposite( TestComposite2.class );
-        module.addService( TestComposite2.class, new Singleton() );
+        module.addServiceProvider( TestComposite2.class, new Singleton() );
     }
 
     public void testServiceInjection()

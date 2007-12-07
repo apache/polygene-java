@@ -17,6 +17,7 @@
  */
 package org.qi4j.query.operators;
 
+import java.util.Map;
 import org.qi4j.query.BooleanExpression;
 import org.qi4j.query.UnaryOperator;
 
@@ -33,6 +34,11 @@ public class Not
     public BooleanExpression getArgument()
     {
         return expression;
+    }
+
+    public boolean evaluate( Object candidate, Map<String, Object> variables )
+    {
+        return !expression.evaluate( candidate, variables );
     }
 
     public String toString()

@@ -17,6 +17,7 @@
  */
 package org.qi4j.query.operators;
 
+import java.util.Map;
 import org.qi4j.query.BinaryOperator;
 import org.qi4j.query.BooleanExpression;
 import org.qi4j.query.Expression;
@@ -41,6 +42,20 @@ public class And
     public Expression getRightArgument()
     {
         return right;
+    }
+
+    public boolean evaluate( Object candidate, Map<String, Object> variables )
+    {
+        boolean leftValue = left.evaluate( candidate, null );
+
+        if( !leftValue )
+        {
+            return false;
+        }
+
+        boolean rightValue = right.evaluate( candidate, variables );
+
+        return rightValue;
     }
 
     public String toString()

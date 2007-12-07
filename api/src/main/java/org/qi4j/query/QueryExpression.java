@@ -17,10 +17,6 @@ package org.qi4j.query;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 import java.util.Date;
-import org.qi4j.query.literals.BooleanLiteral;
-import org.qi4j.query.literals.DateLiteral;
-import org.qi4j.query.literals.NumberLiteral;
-import org.qi4j.query.literals.StringLiteral;
 import org.qi4j.query.operators.And;
 import org.qi4j.query.operators.Equals;
 import org.qi4j.query.operators.GreaterThan;
@@ -35,6 +31,12 @@ import org.qi4j.query.operators.Not;
 import org.qi4j.query.operators.NotEquals;
 import org.qi4j.query.operators.Or;
 import org.qi4j.query.operators.StringContains;
+import org.qi4j.query.value.BooleanValueExpression;
+import org.qi4j.query.value.DateValueExpression;
+import org.qi4j.query.value.NumberValueExpression;
+import org.qi4j.query.value.StringValueExpression;
+import org.qi4j.query.value.ValueExpression;
+import org.qi4j.query.value.VariableExpression;
 
 /**
  * TODO
@@ -56,7 +58,7 @@ public class QueryExpression
      * @param right
      * @return
      */
-    public static BooleanExpression eq( Object left, Object right )
+    public static Equals eq( Object left, Object right )
     {
         process( left );
         process( right );
@@ -66,12 +68,11 @@ public class QueryExpression
         }
         Expression op1 = QueryStack.popExpression();  // Right
         Expression op2 = QueryStack.popExpression();  // Left
-        Equals result = new Equals( op2, op1 );
-        QueryStack.pushExpression( result );
+        Equals result = new Equals( (ValueExpression) op2, (ValueExpression) op1 );
         return result;
     }
 
-    public static BooleanExpression ne( Object left, Object right )
+    public static NotEquals ne( Object left, Object right )
     {
         process( left );
         process( right );
@@ -81,12 +82,11 @@ public class QueryExpression
         }
         Expression op1 = QueryStack.popExpression();  // Right
         Expression op2 = QueryStack.popExpression();  // Left
-        NotEquals result = new NotEquals( op2, op1 );
-        QueryStack.pushExpression( result );
+        NotEquals result = new NotEquals( (ValueExpression) op2, (ValueExpression) op1 );
         return result;
     }
 
-    public static BooleanExpression lt( Object left, Object right )
+    public static LessThan lt( Object left, Object right )
     {
         process( left );
         process( right );
@@ -96,12 +96,11 @@ public class QueryExpression
         }
         Expression op1 = QueryStack.popExpression();  // Right
         Expression op2 = QueryStack.popExpression();  // Left
-        LessThan result = new LessThan( op2, op1 );
-        QueryStack.pushExpression( result );
+        LessThan result = new LessThan( (ValueExpression) op2, (ValueExpression) op1 );
         return result;
     }
 
-    public static BooleanExpression le( Object left, Object right )
+    public static LessThanEquals le( Object left, Object right )
     {
         process( left );
         process( right );
@@ -111,12 +110,11 @@ public class QueryExpression
         }
         Expression op1 = QueryStack.popExpression();
         Expression op2 = QueryStack.popExpression();
-        LessThanEquals result = new LessThanEquals( op2, op1 );
-        QueryStack.pushExpression( result );
+        LessThanEquals result = new LessThanEquals( (ValueExpression) op2, (ValueExpression) op1 );
         return result;
     }
 
-    public static BooleanExpression gt( Object left, Object right )
+    public static GreaterThan gt( Object left, Object right )
     {
         process( left );
         process( right );
@@ -126,12 +124,11 @@ public class QueryExpression
         }
         Expression op1 = QueryStack.popExpression();
         Expression op2 = QueryStack.popExpression();
-        GreaterThan result = new GreaterThan( op2, op1 );
-        QueryStack.pushExpression( result );
+        GreaterThan result = new GreaterThan( (ValueExpression) op2, (ValueExpression) op1 );
         return result;
     }
 
-    public static BooleanExpression ge( Object left, Object right )
+    public static GreaterThanEquals ge( Object left, Object right )
     {
         process( left );
         process( right );
@@ -141,12 +138,11 @@ public class QueryExpression
         }
         Expression op1 = QueryStack.popExpression();
         Expression op2 = QueryStack.popExpression();
-        GreaterThanEquals result = new GreaterThanEquals( op2, op1 );
-        QueryStack.pushExpression( result );
+        GreaterThanEquals result = new GreaterThanEquals( (ValueExpression) op2, (ValueExpression) op1 );
         return result;
     }
 
-    public static BooleanExpression matches( String source, String expression )
+    public static Matches matches( String source, String expression )
     {
         process( source );
         process( expression );
@@ -156,12 +152,11 @@ public class QueryExpression
         }
         Expression op1 = QueryStack.popExpression(); // The expression.
         Expression op2 = QueryStack.popExpression(); // The source.
-        Matches result = new Matches( op2, op1 );
-        QueryStack.pushExpression( result );
+        Matches result = new Matches( (ValueExpression) op2, (ValueExpression) op1 );
         return result;
     }
 
-    public static <K> BooleanExpression contains( Iterable<K> left, K right )
+    public static <K> IterableContains contains( Iterable<K> left, K right )
     {
         process( left );
         process( right );
@@ -171,12 +166,11 @@ public class QueryExpression
         }
         Expression op1 = QueryStack.popExpression(); // The expression.
         Expression op2 = QueryStack.popExpression(); // The source.
-        IterableContains result = new IterableContains( op2, op1 );
-        QueryStack.pushExpression( result );
+        IterableContains result = new IterableContains( (ValueExpression) op2, (ValueExpression) op1 );
         return result;
     }
 
-    public static BooleanExpression contains( Object source, Object substring )
+    public static StringContains contains( Object source, Object substring )
     {
         process( source );
         process( substring );
@@ -186,12 +180,11 @@ public class QueryExpression
         }
         Expression op1 = QueryStack.popExpression(); // The substring value.
         Expression op2 = QueryStack.popExpression(); // The source value.
-        StringContains result = new StringContains( op2, op1 );
-        QueryStack.pushExpression( result );
+        StringContains result = new StringContains( (ValueExpression) op2, (ValueExpression) op1 );
         return result;
     }
 
-    public static BooleanExpression isNull( Object value )
+    public static IsNull isNull( Object value )
     {
         process( value );
         if( notOnStack( 1 ) )
@@ -199,12 +192,11 @@ public class QueryExpression
             throw new IllegalQueryFormatException( "isNull() require an argument derived from a parameter." );
         }
         Expression op1 = QueryStack.popExpression();
-        IsNull result = new IsNull( op1 );
-        QueryStack.pushExpression( result );
+        IsNull result = new IsNull( (ValueExpression) op1 );
         return result;
     }
 
-    public static BooleanExpression isNotNull( Object value )
+    public static IsNotNull isNotNull( Object value )
     {
         process( value );
         if( notOnStack( 1 ) )
@@ -212,59 +204,33 @@ public class QueryExpression
             throw new IllegalQueryFormatException( "isNotNull() require an argument derived from a parameter." );
         }
         Expression op1 = QueryStack.popExpression();
-        IsNotNull result = new IsNotNull( op1 );
-        QueryStack.pushExpression( result );
+        IsNotNull result = new IsNotNull( (ValueExpression) op1 );
         return result;
     }
 
-    public static BooleanExpression and( Object left, Object right )
+    public static And and( BooleanExpression left, BooleanExpression right )
     {
-        process( left );
-        process( right );
-        if( notOnStack( 2 ) )
-        {
-            throw new IllegalQueryFormatException( "and() requires two arguments." );
-        }
-        BooleanExpression op1 = (BooleanExpression) QueryStack.popExpression();
-        BooleanExpression op2 = (BooleanExpression) QueryStack.popExpression();
-        And result = new And( op2, op1 );
-        QueryStack.pushExpression( result );
+        And result = new And( left, right );
         return result;
     }
 
-    public static BooleanExpression or( Object left, Object right )
+    public static Or or( BooleanExpression left, BooleanExpression right )
     {
-        process( left );
-        process( right );
-        if( notOnStack( 2 ) )
-        {
-            throw new IllegalQueryFormatException( "or() requires two arguments." );
-        }
-        BooleanExpression op1 = (BooleanExpression) QueryStack.popExpression();
-        BooleanExpression op2 = (BooleanExpression) QueryStack.popExpression();
-        Or result = new Or( op2, op1 );
-        QueryStack.pushExpression( result );
+        Or result = new Or( left, right );
         return result;
     }
 
-    public static BooleanExpression not( Object expression )
+    public static Not not( BooleanExpression expression )
     {
-        process( expression );
-        if( notOnStack( 1 ) )
-        {
-            throw new IllegalQueryFormatException( "not() requires one argument." );
-        }
-        if( expression instanceof BooleanExpression )
-        {
-            BooleanExpression op1 = (BooleanExpression) QueryStack.popExpression();
-            Not result = new Not( op1 );
-            QueryStack.pushExpression( result );
-            return result;
-        }
-        else
-        {
-            throw new IllegalQueryFormatException( "not() only operates on BooleanExpression." );
-        }
+        Not result = new Not( expression );
+        return result;
+    }
+
+    public static VariableExpression var( String name, Object defaultValue )
+    {
+        VariableExpression variable = new VariableExpression( name, defaultValue );
+        QueryStack.pushExpression( variable );
+        return variable;
     }
 
     private static void process( Object operand )
@@ -277,31 +243,14 @@ public class QueryExpression
         {
             return;
         }
-        if( operand instanceof String )
+
+        ValueExpression expr = getValueExpression( operand );
+        if( expr != null )
         {
-            StringLiteral expr = new StringLiteral( (String) operand );
             QueryStack.pushExpression( expr );
             return;
         }
-        if( operand instanceof Boolean )
-        {
-            BooleanLiteral expr = new BooleanLiteral( (Boolean) operand );
-            QueryStack.pushExpression( expr );
-            return;
-        }
-        if( operand instanceof Date )
-        {
-            DateLiteral expr = new DateLiteral( (Date) operand );
-            QueryStack.pushExpression( expr );
-            return;
-        }
-        if( operand instanceof Number )
-        {
-            NumberLiteral expr = new NumberLiteral( (Number) operand );
-            QueryStack.pushExpression( expr );
-            return;
-        }
-        if( Proxy.isProxyClass( operand.getClass() ) )
+        else if( Proxy.isProxyClass( operand.getClass() ) )
         {
             InvocationHandler handler = Proxy.getInvocationHandler( operand );
             if( handler instanceof InterfaceInvocationHandler )
@@ -315,6 +264,31 @@ public class QueryExpression
         }
 
         throw new IllegalArgumentException( "Type " + operand.getClass().getName() + " is not allowed as operands." );
+    }
+
+    static ValueExpression getValueExpression( Object operand )
+    {
+        if( operand instanceof String )
+        {
+            StringValueExpression expr = new StringValueExpression( (String) operand );
+            return expr;
+        }
+        if( operand instanceof Boolean )
+        {
+            BooleanValueExpression expr = new BooleanValueExpression( (Boolean) operand );
+            return expr;
+        }
+        if( operand instanceof Date )
+        {
+            DateValueExpression expr = new DateValueExpression( (Date) operand );
+            return expr;
+        }
+        if( operand instanceof Number )
+        {
+            NumberValueExpression expr = new NumberValueExpression( (Number) operand );
+            return expr;
+        }
+        return null;
     }
 
     private static boolean notOnStack( int expected )

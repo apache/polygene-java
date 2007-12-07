@@ -14,12 +14,27 @@
 
 package org.qi4j.query;
 
-import java.util.Map;
-
 /**
  * TODO
  */
-public interface BooleanExpression extends Expression
+public class QueryEvaluationException extends RuntimeException
 {
-    boolean evaluate( Object candidate, Map<String, Object> variables );
+    public QueryEvaluationException()
+    {
+    }
+
+    public QueryEvaluationException( String string )
+    {
+        super( string );
+    }
+
+    public QueryEvaluationException( String string, Throwable throwable )
+    {
+        super( string, throwable );
+    }
+
+    public QueryEvaluationException( Throwable throwable )
+    {
+        super( throwable );
+    }
 }

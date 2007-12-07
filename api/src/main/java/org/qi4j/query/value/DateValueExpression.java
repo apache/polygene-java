@@ -15,22 +15,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.query.literals;
+package org.qi4j.query.value;
 
 import java.util.Date;
+import java.util.Map;
 import org.qi4j.query.Expression;
 
-public class DateLiteral
-    implements Expression
+public class DateValueExpression
+    implements Expression, ValueExpression
 {
     private Date value;
 
-    public DateLiteral( Date value )
+    public DateValueExpression( Date value )
     {
         this.value = value;
     }
 
-    public Date getValue()
+    public Date getValue( Object candidate, Map<String, Object> variables )
     {
         return value;
     }

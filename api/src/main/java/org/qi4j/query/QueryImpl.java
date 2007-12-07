@@ -18,13 +18,18 @@
 package org.qi4j.query;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import org.qi4j.query.value.VariableExpression;
 
 public class QueryImpl<R>
     implements Query<R>
 {
     private Class resultType;
+    private Map<String, Object> variables = Collections.EMPTY_MAP;
     private List<BooleanExpression> where;
     private List<OrderBy> orderBy;
     private Queryable queryable;
@@ -35,6 +40,29 @@ public class QueryImpl<R>
         this.where = where;
         this.orderBy = orderBy;
         this.queryable = queryable;
+    }
+
+    public void setVariable( String name, Object value )
+    {
+        if( variables == Collections.EMPTY_MAP )
+        {
+            variables = new HashMap<String, Object>();
+        }
+        variables.put( name, value );
+    }
+
+    public Map<String, Object> getVariables()
+    {
+        // Get defaults
+        Map<String, Object> variableTmp = new HashMap<String, Object>();
+        for( BooleanExpression booleanExpression : where )
+        {
+            getVariableMap( booleanExpression, variableTmp );
+        }
+
+        variableTmp.putAll( variables );
+
+        return variableTmp;
     }
 
     public R find()
@@ -60,5 +88,33 @@ public class QueryImpl<R>
     public List<OrderBy> getOrderBy()
     {
         return orderBy;
+    }
+
+    public Map<String, Object> getSetVariables()
+    {
+        return variables;
+    }
+
+    private void getVariableMap( Expression expression, Map<String, Object> variableTmp )
+    {
+        if( expression instanceof BinaryOperator )
+        {
+            BinaryOperator binExpr = (BinaryOperator) expression;
+            Expression left = binExpr.getLeftArgument();
+            getVariableMap( left, variableTmp );
+            Expression right = binExpr.getRightArgument();
+            getVariableMap( right, variableTmp );
+        }
+        else if( expression instanceof UnaryOperator )
+        {
+            UnaryOperator unaryExpr = (UnaryOperator) expression;
+            Expression expr = unaryExpr.getArgument();
+            getVariableMap( expr, variableTmp );
+        }
+        else if( expression instanceof VariableExpression )
+        {
+            VariableExpression varExpr = (VariableExpression) expression;
+            variableTmp.put( varExpr.getName(), varExpr.getDefaultValue() );
+        }
     }
 }

@@ -17,17 +17,19 @@
  */
 package org.qi4j.query.operators;
 
+import java.util.Map;
 import org.qi4j.query.BinaryOperator;
 import org.qi4j.query.BooleanExpression;
 import org.qi4j.query.Expression;
+import org.qi4j.query.value.ValueExpression;
 
 public class GreaterThan
     implements BooleanExpression, BinaryOperator
 {
-    private Expression left;
-    private Expression right;
+    private ValueExpression left;
+    private ValueExpression right;
 
-    public GreaterThan( Expression left, Expression right )
+    public GreaterThan( ValueExpression left, ValueExpression right )
     {
         this.left = left;
         this.right = right;
@@ -42,6 +44,14 @@ public class GreaterThan
     {
         return right;
     }
+
+    public boolean evaluate( Object candidate, Map<String, Object> variables )
+    {
+        Comparable leftValue = (Comparable) left.getValue( candidate, variables );
+        Comparable rightValue = (Comparable) right.getValue( candidate, variables );
+        return leftValue.compareTo( rightValue ) > 0;
+    }
+
 
     public String toString()
     {

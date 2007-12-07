@@ -17,16 +17,18 @@
  */
 package org.qi4j.query.operators;
 
+import java.util.Map;
 import org.qi4j.query.BooleanExpression;
 import org.qi4j.query.Expression;
 import org.qi4j.query.UnaryOperator;
+import org.qi4j.query.value.ValueExpression;
 
 public class IsNotNull
     implements UnaryOperator, BooleanExpression
 {
-    private Expression expression;
+    private ValueExpression expression;
 
-    public IsNotNull( Expression expression )
+    public IsNotNull( ValueExpression expression )
     {
         this.expression = expression;
     }
@@ -34,6 +36,12 @@ public class IsNotNull
     public Expression getArgument()
     {
         return expression;
+    }
+
+    public boolean evaluate( Object candidate, Map<String, Object> variables )
+    {
+        Object value = expression.getValue( candidate, variables );
+        return value != null;
     }
 
     public String toString()

@@ -17,17 +17,19 @@
  */
 package org.qi4j.query.operators;
 
+import java.util.Map;
 import org.qi4j.query.BinaryOperator;
 import org.qi4j.query.BooleanExpression;
 import org.qi4j.query.Expression;
+import org.qi4j.query.value.ValueExpression;
 
 public class IterableContains
     implements BooleanExpression, BinaryOperator
 {
-    private Expression left;
-    private Expression right;
+    private ValueExpression left;
+    private ValueExpression right;
 
-    public IterableContains( Expression left, Expression right )
+    public IterableContains( ValueExpression left, ValueExpression right )
     {
         this.left = left;
         this.right = right;
@@ -41,6 +43,20 @@ public class IterableContains
     public Expression getRightArgument()
     {
         return right;
+    }
+
+    public boolean evaluate( Object candidate, Map<String, Object> variables )
+    {
+        Object value = right.getValue( candidate, variables );
+        Iterable iterable = (Iterable) left.getValue( candidate, variables );
+        for( Object object : iterable )
+        {
+            if( object.equals( value ) )
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     public String toString()

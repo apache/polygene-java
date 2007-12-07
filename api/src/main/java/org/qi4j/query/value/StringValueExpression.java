@@ -15,21 +15,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.query.literals;
+package org.qi4j.query.value;
 
+import java.util.Map;
 import org.qi4j.query.Expression;
 
-public class StringLiteral
-    implements Expression
+public class StringValueExpression
+    implements Expression, ValueExpression
 {
     private String value;
 
-    public StringLiteral( String value )
+    public StringValueExpression( String value )
     {
         this.value = value;
     }
 
-    public String getValue()
+    public String getValue( Object candidate, Map<String, Object> variables )
     {
         return value;
     }

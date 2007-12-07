@@ -12,14 +12,16 @@
  *
  */
 
-package org.qi4j.query;
+package org.qi4j.query.value;
 
 import java.util.Map;
+import org.qi4j.query.Expression;
 
 /**
  * TODO
  */
-public interface BooleanExpression extends Expression
+public interface ValueExpression
+    extends Expression
 {
-    boolean evaluate( Object candidate, Map<String, Object> variables );
+    Object getValue( Object candidate, Map<String, Object> variables );
 }

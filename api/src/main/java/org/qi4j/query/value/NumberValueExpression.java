@@ -15,26 +15,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.query.literals;
+package org.qi4j.query.value;
 
-import org.qi4j.query.BooleanExpression;
+import java.util.Map;
+import org.qi4j.query.Expression;
 
-public class BooleanLiteral
-    implements BooleanExpression
+public class NumberValueExpression
+    implements Expression, ValueExpression
 {
-    private Boolean value;
+    private Number value;
 
-    public BooleanLiteral( Boolean value )
+    public NumberValueExpression( Number value )
     {
         this.value = value;
     }
 
-    public Boolean getValue()
+    public Number getValue( Object candidate, Map<String, Object> variables )
     {
         return value;
     }
+
     public String toString()
     {
-        return value.toString().toUpperCase();
+        return value.toString();
     }
 }

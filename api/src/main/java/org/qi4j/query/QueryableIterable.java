@@ -14,6 +14,9 @@
 
 package org.qi4j.query;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * TODO
  */
@@ -29,15 +32,48 @@ public class QueryableIterable
 
     public <T> T find( Query<T> query )
     {
-        for( Object o : source )
+        QueryImpl<T> queryImpl = (QueryImpl<T>) query;
+
+        next:
+        for( Object candidate : source )
         {
-            return (T) o;
+            List<BooleanExpression> expressions = queryImpl.getWhere();
+            for( BooleanExpression expression : expressions )
+            {
+                boolean result = expression.evaluate( candidate, null );
+                if( !result )
+                {
+                    continue next;
+                }
+            }
+
+            // Candidate matches all expressions
+            return (T) candidate;
         }
         return null;
     }
 
     public <T> Iterable<T> iterable( Query<T> query )
     {
-        return source;
+        QueryImpl<T> queryImpl = (QueryImpl<T>) query;
+        List<T> resultList = new ArrayList<T>();
+
+        next:
+        for( Object candidate : source )
+        {
+            List<BooleanExpression> expressions = queryImpl.getWhere();
+            for( BooleanExpression expression : expressions )
+            {
+                boolean result = expression.evaluate( candidate, queryImpl.getSetVariables() );
+                if( !result )
+                {
+                    continue next;
+                }
+            }
+
+            // Candidate matches all expressions
+            resultList.add( (T) candidate );
+        }
+        return resultList;
     }
 }

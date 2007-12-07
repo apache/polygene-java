@@ -94,7 +94,7 @@ public class ModuleAssembly
         objects.add( objectType );
     }
 
-    public void addService( Class serviceType, ServiceProvider serviceProvider )
+    public void addServiceProvider( Class serviceType, ServiceProvider serviceProvider )
     {
         serviceProviders.put( serviceType, serviceProvider );
     }

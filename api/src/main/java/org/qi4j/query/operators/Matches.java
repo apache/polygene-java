@@ -17,17 +17,23 @@
  */
 package org.qi4j.query.operators;
 
+import java.util.Map;
+import java.util.regex.Pattern;
 import org.qi4j.query.BinaryOperator;
 import org.qi4j.query.BooleanExpression;
 import org.qi4j.query.Expression;
+import org.qi4j.query.value.ValueExpression;
 
 public class Matches
     implements BinaryOperator, BooleanExpression
 {
-    private Expression left;
-    private Expression right;
+    private ValueExpression left;
+    private ValueExpression right;
 
-    public Matches( Expression left, Expression right )
+    private String lastExpression;
+    private Pattern lastPattern;
+
+    public Matches( ValueExpression left, ValueExpression right )
     {
         this.left = left;
         this.right = right;
@@ -41,6 +47,21 @@ public class Matches
     public Expression getRightArgument()
     {
         return right;
+    }
+
+    public synchronized boolean evaluate( Object candidate, Map<String, Object> variables )
+    {
+        String str = right.getValue( candidate, variables ).toString();
+
+        if( lastExpression == null || !lastExpression.equals( str ) )
+        {
+            lastExpression = str;
+            lastPattern = Pattern.compile( str );
+        }
+
+        String value = left.getValue( candidate, variables ).toString();
+
+        return lastPattern.matcher( value ).matches();
     }
 
     public String toString()

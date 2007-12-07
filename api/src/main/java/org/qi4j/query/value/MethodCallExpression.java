@@ -15,23 +15,49 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.query;
+package org.qi4j.query.value;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Map;
+import org.qi4j.query.QueryEvaluationException;
 
-public class MethodCallEntry
-    implements Expression
+public class MethodCallExpression
+    implements ValueExpression
 {
     private Method method;
+    private Object[] arguments;
 
-    public MethodCallEntry( Method method )
+    public MethodCallExpression( Method method, Object[] args )
     {
         this.method = method;
+        this.arguments = args;
     }
 
     public Method getMethod()
     {
         return method;
+    }
+
+    public Object[] getArguments()
+    {
+        return arguments;
+    }
+
+    public Object getValue( Object candidate, Map<String, Object> variables )
+    {
+        try
+        {
+            return method.invoke( candidate, arguments );
+        }
+        catch( IllegalAccessException e )
+        {
+            throw new QueryEvaluationException( e );
+        }
+        catch( InvocationTargetException e )
+        {
+            throw new QueryEvaluationException( e.getTargetException() );
+        }
     }
 
     public String toString()

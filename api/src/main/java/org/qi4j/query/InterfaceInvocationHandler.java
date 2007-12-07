@@ -21,6 +21,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Date;
+import org.qi4j.query.value.MethodCallExpression;
 
 public class InterfaceInvocationHandler
     implements InvocationHandler
@@ -37,8 +38,8 @@ public class InterfaceInvocationHandler
 
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
     {
-        MethodCallEntry methodCallEntry = new MethodCallEntry( method );
-        QueryStack.pushExpression( methodCallEntry );
+        MethodCallExpression methodCallExpression = new MethodCallExpression( method, args );
+        QueryStack.pushExpression( methodCallExpression );
         Class retType = method.getReturnType();
         return computeReturnValue( retType, method );
     }
