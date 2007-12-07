@@ -44,7 +44,7 @@ public class RMIMixinTest
 
         RemoteInterface remote = compositeBuilderFactory.newCompositeBuilder( RemoteInterfaceComposite.class ).newInstance();
 
-        // MethodCallEntry remote interface
+        // MethodCallExpression remote interface
         System.out.println( remote.foo( "Bar" ) );
         System.out.println( remote.foo( "Bar" ) );
         System.out.println( remote.foo( "Xyz" ) );
