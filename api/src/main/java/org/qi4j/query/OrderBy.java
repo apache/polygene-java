@@ -17,19 +17,21 @@
  */
 package org.qi4j.query;
 
+import org.qi4j.query.value.MethodCallExpression;
+
 class OrderBy
 {
-    private Expression expression;
+    private MethodCallExpression expression;
     private Order order;
 
-    public OrderBy( Expression expression, Order order )
+    public OrderBy( MethodCallExpression expression, Order order )
     {
         this.expression = expression;
         this.order = order;
     }
 
 
-    public Expression getExpression()
+    public MethodCallExpression getExpression()
     {
         return expression;
     }

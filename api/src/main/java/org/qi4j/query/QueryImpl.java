@@ -32,13 +32,17 @@ public class QueryImpl<R>
     private Map<String, Object> variables = Collections.EMPTY_MAP;
     private List<BooleanExpression> where;
     private List<OrderBy> orderBy;
+    private int firstResult;
+    private int maxResults;
     private Queryable queryable;
 
-    public QueryImpl( Class resultType, ArrayList<BooleanExpression> where, ArrayList<OrderBy> orderBy, Queryable queryable )
+    public QueryImpl( Class resultType, ArrayList<BooleanExpression> where, ArrayList<OrderBy> orderBy, int firstResult, int maxResults , Queryable queryable)
     {
         this.resultType = resultType;
         this.where = where;
         this.orderBy = orderBy;
+        this.firstResult = firstResult;
+        this.maxResults = maxResults;
         this.queryable = queryable;
     }
 
@@ -88,6 +92,16 @@ public class QueryImpl<R>
     public List<OrderBy> getOrderBy()
     {
         return orderBy;
+    }
+
+    public int getFirstResult()
+    {
+        return firstResult;
+    }
+
+    public int getMaxResults()
+    {
+        return maxResults;
     }
 
     public Map<String, Object> getSetVariables()

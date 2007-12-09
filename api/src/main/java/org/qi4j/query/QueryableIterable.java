@@ -16,6 +16,7 @@ package org.qi4j.query;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Collections;
 
 /**
  * TODO
@@ -74,6 +75,27 @@ public class QueryableIterable
             // Candidate matches all expressions
             resultList.add( (T) candidate );
         }
+
+        // Order results
+        List<OrderBy> orderByList = queryImpl.getOrderBy();
+        OrderByComparator comparator = new OrderByComparator(orderByList);
+        Collections.sort( resultList, comparator);
+
+        // Cut results
+        int firstResult = queryImpl.getFirstResult();
+        int maxResults = queryImpl.getFirstResult();
+        if (firstResult != -1 || maxResults != -1)
+        {
+            int firstIdx = 0;
+            int lastIdx = resultList.size();
+            if (firstResult != -1)
+                firstIdx = firstResult;
+            if (maxResults != -1)
+                lastIdx = Math.min(firstIdx+maxResults, resultList.size());
+
+            resultList = resultList.subList(firstIdx, lastIdx);
+        }
+
         return resultList;
     }
 }
