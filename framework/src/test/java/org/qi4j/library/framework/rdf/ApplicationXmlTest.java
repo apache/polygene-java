@@ -49,7 +49,7 @@ public class ApplicationXmlTest
     {
         ApplicationRdfXml applicationRdfXml = new ApplicationRdfXml( application.getApplicationContext() );
 
-        File file = new File( "libraries/framework/target/classes/application.xml" );
+        File file = new File( "application.xml" );
         FileWriter fileWriter = new FileWriter( file );
         PrintWriter out = new PrintWriter( fileWriter );
         applicationRdfXml.print( out );
