@@ -20,6 +20,7 @@ import org.qi4j.composite.ObjectBuilderFactory;
 import org.qi4j.runtime.Energy4Java;
 import org.qi4j.runtime.Qi4jRuntime;
 import org.qi4j.runtime.structure.ApplicationInstance;
+import org.qi4j.runtime.structure.LayerInstance;
 import org.qi4j.runtime.structure.ModuleInstance;
 
 /**
@@ -72,6 +73,16 @@ public abstract class SingletonAssembly
     public ApplicationInstance getApplicationInstance()
     {
         return applicationInstance;
+    }
+
+    public LayerInstance getLayerInstance()
+    {
+        return applicationInstance.getLayerInstances().get( 0 );
+    }
+
+    public ModuleInstance getModuleInstance()
+    {
+        return getLayerInstance().getModuleInstances().get( 0 );
     }
 
     public CompositeBuilderFactory getCompositeBuilderFactory()

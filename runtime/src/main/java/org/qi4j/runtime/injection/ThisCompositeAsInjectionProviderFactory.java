@@ -3,6 +3,7 @@ package org.qi4j.runtime.injection;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
+import org.qi4j.spi.injection.BindingContext;
 import org.qi4j.spi.injection.FragmentInjectionContext;
 import org.qi4j.spi.injection.InjectionContext;
 import org.qi4j.spi.injection.InjectionProvider;
@@ -17,8 +18,9 @@ import org.qi4j.spi.injection.InvalidInjectionException;
 public class ThisCompositeAsInjectionProviderFactory
     implements InjectionProviderFactory
 {
-    public InjectionProvider newInjectionProvider( InjectionResolution resolution ) throws InvalidInjectionException
+    public InjectionProvider newInjectionProvider( BindingContext bindingContext ) throws InvalidInjectionException
     {
+        InjectionResolution resolution = bindingContext.getInjectionResolution();
         if( resolution.getCompositeModel() != null )
         {
             return new ThisCompositeAsInjectionProvider( resolution.getInjectionModel().getInjectionClass() );

@@ -23,9 +23,8 @@ public interface InjectionProviderFactory
      * can be found, return null. If the dependency is optional the dependency will
      * then be explicitly set to null.
      *
-     * @param resolution
-     * @return
+     * @param bindingContext
      */
-    InjectionProvider newInjectionProvider( InjectionResolution resolution )
+    InjectionProvider newInjectionProvider( BindingContext bindingContext )
         throws InvalidInjectionException;
 }

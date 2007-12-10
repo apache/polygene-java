@@ -1,5 +1,6 @@
 package org.qi4j.runtime.injection;
 
+import org.qi4j.spi.injection.BindingContext;
 import org.qi4j.spi.injection.InjectionContext;
 import org.qi4j.spi.injection.InjectionProvider;
 import org.qi4j.spi.injection.InjectionProviderFactory;
@@ -18,8 +19,9 @@ public class DecorateInjectionProviderFactory
     {
     }
 
-    public InjectionProvider newInjectionProvider( InjectionResolution resolution ) throws InvalidInjectionException
+    public InjectionProvider newInjectionProvider( BindingContext bindingContext ) throws InvalidInjectionException
     {
+        InjectionResolution resolution = bindingContext.getInjectionResolution();
         return new DecorateInjectionProvider( resolution );
     }
 

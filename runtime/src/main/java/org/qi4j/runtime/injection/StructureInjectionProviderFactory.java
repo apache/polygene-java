@@ -23,6 +23,7 @@ import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.ObjectBuilderFactory;
 import org.qi4j.runtime.Qi4jRuntime;
 import org.qi4j.spi.Qi4jSPI;
+import org.qi4j.spi.injection.BindingContext;
 import org.qi4j.spi.injection.InjectionContext;
 import org.qi4j.spi.injection.InjectionProvider;
 import org.qi4j.spi.injection.InjectionProviderFactory;
@@ -40,8 +41,9 @@ public class StructureInjectionProviderFactory
         this.runtime = runtime;
     }
 
-    public InjectionProvider newInjectionProvider( InjectionResolution resolution ) throws InvalidInjectionException
+    public InjectionProvider newInjectionProvider( BindingContext bindingContext ) throws InvalidInjectionException
     {
+        InjectionResolution resolution = bindingContext.getInjectionResolution();
         return new StructureInjectionProvider( resolution );
     }
 

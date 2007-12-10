@@ -20,6 +20,7 @@ import java.util.Map;
 import org.qi4j.composite.Composite;
 import org.qi4j.spi.composite.CompositeResolution;
 import org.qi4j.spi.composite.ObjectResolution;
+import org.qi4j.spi.service.ServiceProvider;
 
 /**
  * TODO
@@ -30,12 +31,14 @@ public class ModuleResolution
     private ModuleModel moduleModel;
     private List<ObjectResolution> objectResolutions;
     private Map<Class<? extends Composite>, ModuleModel> instantiableComposites;
+    private Map<Class, ServiceProvider> availableServices;
     private ApplicationModel applicationModel;
     private LayerModel layerModel;
     private Iterable<CompositeResolution> compositeResolutions;
 
-    public ModuleResolution( ModuleModel moduleModel, ApplicationModel applicationModel, LayerModel layerModel, Map<Class<? extends Composite>, ModuleModel> instantiableComposites, Iterable<CompositeResolution> compositeResolutions, List<ObjectResolution> objectResolutions )
+    public ModuleResolution( ModuleModel moduleModel, ApplicationModel applicationModel, LayerModel layerModel, Map<Class<? extends Composite>, ModuleModel> instantiableComposites, Iterable<CompositeResolution> compositeResolutions, List<ObjectResolution> objectResolutions, Map<Class, ServiceProvider> availableServices )
     {
+        this.availableServices = availableServices;
         this.applicationModel = applicationModel;
         this.layerModel = layerModel;
         this.compositeResolutions = compositeResolutions;
@@ -72,5 +75,27 @@ public class ModuleResolution
     public List<ObjectResolution> getObjectResolutions()
     {
         return objectResolutions;
+    }
+
+    public Map<Class, ServiceProvider> getAvailableServices()
+    {
+        return availableServices;
+    }
+
+    public ServiceProvider getServiceProvider( Class serviceType )
+    {
+        do
+        {
+            ServiceProvider serviceProvider = availableServices.get( serviceType );
+            if( serviceProvider != null )
+            {
+                return serviceProvider;
+            }
+
+            serviceType = serviceType.getSuperclass();
+        }
+        while( !serviceType.equals( Object.class ) );
+
+        return null;
     }
 }

@@ -26,15 +26,13 @@ public class PropertyModel
 {
     private String name;
     private Type type;
-    private Class declaredBy;
     private Method writeMethod;
     private Method readMethod;
 
-    public PropertyModel( String name, Type type, Class declaredBy, Method writeMethod, Method readMethod )
+    public PropertyModel( String name, Type type, Method writeMethod, Method readMethod )
     {
         this.name = name;
         this.type = type;
-        this.declaredBy = declaredBy;
         this.writeMethod = writeMethod;
         this.readMethod = readMethod;
     }
@@ -47,11 +45,6 @@ public class PropertyModel
     public Type getType()
     {
         return type;
-    }
-
-    public Class getDeclaredBy()
-    {
-        return declaredBy;
     }
 
     public Method getWriteMethod()

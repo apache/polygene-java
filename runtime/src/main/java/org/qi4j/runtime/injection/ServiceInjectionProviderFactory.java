@@ -14,39 +14,60 @@
 
 package org.qi4j.runtime.injection;
 
-import java.util.Map;
+import org.qi4j.spi.injection.BindingContext;
 import org.qi4j.spi.injection.InjectionContext;
 import org.qi4j.spi.injection.InjectionProvider;
 import org.qi4j.spi.injection.InjectionProviderException;
 import org.qi4j.spi.injection.InjectionProviderFactory;
 import org.qi4j.spi.injection.InjectionResolution;
 import org.qi4j.spi.injection.InvalidInjectionException;
-import org.qi4j.spi.injection.ServiceProvider;
+import org.qi4j.spi.service.ServiceProvider;
+import org.qi4j.spi.service.ServiceProviderException;
 
 public class ServiceInjectionProviderFactory
     implements InjectionProviderFactory
 {
-    public InjectionProvider newInjectionProvider( InjectionResolution resolution ) throws InvalidInjectionException
+    public InjectionProvider newInjectionProvider( BindingContext bindingContext ) throws InvalidInjectionException
     {
-        return new ServiceInjectionProvider( resolution );
+        InjectionResolution resolution = bindingContext.getInjectionResolution();
+        Class serviceType = resolution.getInjectionModel().getInjectionClass();
+        ServiceProvider provider = bindingContext.getModuleResolution().getServiceProvider( serviceType );
+        if( provider == null )
+        {
+            provider = bindingContext.getLayerResolution().getServiceProvider( serviceType );
+        }
+
+        if( provider == null )
+        {
+            throw new InvalidInjectionException( "No service provider found for type " + serviceType.getName() );
+        }
+
+        return new ServiceInjectionProvider( provider, resolution );
     }
 
     static class ServiceInjectionProvider
         implements InjectionProvider
     {
+        private ServiceProvider serviceProvider;
         private InjectionResolution injectionResolution;
 
-        public ServiceInjectionProvider( InjectionResolution injectionResolution )
+        public ServiceInjectionProvider( ServiceProvider serviceProvider, InjectionResolution injectionResolution )
         {
+            this.serviceProvider = serviceProvider;
             this.injectionResolution = injectionResolution;
         }
 
         public Object provideInjection( InjectionContext context ) throws InjectionProviderException
         {
-            Map<Class, ServiceProvider> serviceProviders = context.getModuleBinding().getModuleResolution().getModuleModel().getServiceProviders();
-            ServiceProvider provider = serviceProviders.get( injectionResolution.getInjectionModel().getInjectionClass() );
-            Object service = provider.getService( injectionResolution, context );
-            return service;
+            try
+            {
+                Object service = serviceProvider.getService( injectionResolution, context );
+                return service;
+            }
+            catch( ServiceProviderException e )
+            {
+                throw new InjectionProviderException( "Could not provide injected value", e );
+            }
         }
     }
 }

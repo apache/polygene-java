@@ -74,14 +74,14 @@ public final class CompositeModelFactory
         Collection<CompositeMethodModel> methods = getCompositeMethodModels( compositeClass );
 
         // Find mixins
-        List<MixinModel> mixins = getMixinModels( compositeClass );
+        List<MixinModel> mixins = getMixinModels( compositeClass, compositeClass );
 
         // Standard mixins
-        mixins.add( newMixinModel( CompositeMixin.class ) );
+        mixins.add( newMixinModel( compositeClass, CompositeMixin.class ) );
 
         if( EntityComposite.class.isAssignableFrom( compositeClass ) )
         {
-            mixins.add( newMixinModel( EntityMixin.class ) );
+            mixins.add( newMixinModel( compositeClass, EntityMixin.class ) );
         }
 
         // Find concerns
@@ -89,7 +89,7 @@ public final class CompositeModelFactory
         List<ConcernModel> concerns = new ArrayList<ConcernModel>();
         for( Class concernClass : concernClasses )
         {
-            concerns.add( newConcernModel( concernClass ) );
+            concerns.add( newConcernModel( compositeClass, concernClass ) );
         }
 
         // Find side-effects
@@ -97,7 +97,7 @@ public final class CompositeModelFactory
         List<SideEffectModel> sideEffects = new ArrayList<SideEffectModel>();
         for( Class sideEffectClass : sideEffectClasses )
         {
-            sideEffects.add( newSideEffectModel( sideEffectClass ) );
+            sideEffects.add( newSideEffectModel( compositeClass, sideEffectClass ) );
         }
 
         // Create proxy class
@@ -150,14 +150,14 @@ public final class CompositeModelFactory
         }
     }
 
-    private MixinModel newMixinModel( Class mixinClass ) throws NullArgumentException, InvalidCompositeException
+    private MixinModel newMixinModel( Class compositeType, Class mixinClass ) throws NullArgumentException, InvalidCompositeException
     {
         mixinClass = getFragmentClass( mixinClass );
 
         List<ConstructorModel> constructorModels = new ArrayList<ConstructorModel>();
-        getConstructorModels( mixinClass, constructorModels );
+        getConstructorModels( mixinClass, compositeType, constructorModels );
         List<FieldModel> fieldModels = new ArrayList<FieldModel>();
-        getFieldModels( mixinClass, fieldModels );
+        getFieldModels( mixinClass, compositeType, fieldModels );
         Iterable<MethodModel> methodModels = getMethodModels( mixinClass );
 
         Class[] appliesTo = getAppliesTo( mixinClass );
@@ -169,7 +169,7 @@ public final class CompositeModelFactory
         List<ConcernModel> concerns = new ArrayList<ConcernModel>();
         for( Class concernClass : concernClasses )
         {
-            concerns.add( newConcernModel( concernClass ) );
+            concerns.add( newConcernModel( compositeType, concernClass ) );
         }
 
         // Find side-effects
@@ -177,21 +177,21 @@ public final class CompositeModelFactory
         List<SideEffectModel> sideEffects = new ArrayList<SideEffectModel>();
         for( Class sideEffectClass : sideEffectClasses )
         {
-            sideEffects.add( newSideEffectModel( sideEffectClass ) );
+            sideEffects.add( newSideEffectModel( compositeType, sideEffectClass ) );
         }
 
         MixinModel model = new MixinModel( mixinClass, constructorModels, fieldModels, methodModels, appliesTo, constraints, concerns, sideEffects );
         return model;
     }
 
-    private ConcernModel newConcernModel( Class modifierClass ) throws NullArgumentException, InvalidCompositeException
+    private ConcernModel newConcernModel( Class compositeType, Class modifierClass ) throws NullArgumentException, InvalidCompositeException
     {
         modifierClass = getFragmentClass( modifierClass );
 
         List<ConstructorModel> constructorModels = new ArrayList<ConstructorModel>();
-        getConstructorModels( modifierClass, constructorModels );
+        getConstructorModels( modifierClass, compositeType, constructorModels );
         List<FieldModel> fieldModels = new ArrayList<FieldModel>();
-        getFieldModels( modifierClass, fieldModels );
+        getFieldModels( modifierClass, compositeType, fieldModels );
         Iterable<MethodModel> methodModels = getMethodModels( modifierClass );
 
         Class[] appliesTo = getAppliesTo( modifierClass );
@@ -201,14 +201,14 @@ public final class CompositeModelFactory
     }
 
 
-    private SideEffectModel newSideEffectModel( Class modifierClass ) throws NullArgumentException, InvalidCompositeException
+    private SideEffectModel newSideEffectModel( Class compositeType, Class modifierClass ) throws NullArgumentException, InvalidCompositeException
     {
         modifierClass = getFragmentClass( modifierClass );
 
         List<ConstructorModel> constructorModels = new ArrayList<ConstructorModel>();
-        getConstructorModels( modifierClass, constructorModels );
+        getConstructorModels( modifierClass, compositeType, constructorModels );
         List<FieldModel> fieldModels = new ArrayList<FieldModel>();
-        getFieldModels( modifierClass, fieldModels );
+        getFieldModels( modifierClass, compositeType, fieldModels );
         Iterable<MethodModel> methodModels = getMethodModels( modifierClass );
 
         Class[] appliesTo = getAppliesTo( modifierClass );
@@ -359,7 +359,7 @@ public final class CompositeModelFactory
         return methodModel;
     }
 
-    private List<MixinModel> getMixinModels( Class aType )
+    private List<MixinModel> getMixinModels( Class compositeType, Class aType )
     {
         List<MixinModel> mixinModels = new ArrayList<MixinModel>();
 
@@ -368,7 +368,7 @@ public final class CompositeModelFactory
         {
             for( Class mixinClass : mixinClasses.value() )
             {
-                mixinModels.add( newMixinModel( mixinClass ) );
+                mixinModels.add( newMixinModel( compositeType, mixinClass ) );
             }
         }
 
@@ -376,7 +376,7 @@ public final class CompositeModelFactory
         Class[] subTypes = aType.getInterfaces();
         for( Class subType : subTypes )
         {
-            mixinModels.addAll( getMixinModels( subType ) );
+            mixinModels.addAll( getMixinModels( compositeType, subType ) );
         }
 
         return mixinModels;
@@ -440,5 +440,6 @@ public final class CompositeModelFactory
         {
             return null;
         }
+
     }
 }

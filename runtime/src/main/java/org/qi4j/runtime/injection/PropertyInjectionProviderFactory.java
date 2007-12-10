@@ -1,6 +1,7 @@
 package org.qi4j.runtime.injection;
 
 import org.qi4j.composite.PropertyValue;
+import org.qi4j.spi.injection.BindingContext;
 import org.qi4j.spi.injection.InjectionContext;
 import org.qi4j.spi.injection.InjectionProvider;
 import org.qi4j.spi.injection.InjectionProviderException;
@@ -16,8 +17,9 @@ import org.qi4j.spi.injection.PropertyInjectionModel;
 public class PropertyInjectionProviderFactory
     implements InjectionProviderFactory
 {
-    public InjectionProvider newInjectionProvider( InjectionResolution resolution ) throws InvalidInjectionException
+    public InjectionProvider newInjectionProvider( BindingContext bindingContext ) throws InvalidInjectionException
     {
+        InjectionResolution resolution = bindingContext.getInjectionResolution();
         if( resolution.getInjectionModel().getInjectedClass().equals( PropertyValue.class ) && resolution.getInjectionModel().getRawInjectionType().equals( Iterable.class ) )
         {
             return new PropertySetInjectionProvider();

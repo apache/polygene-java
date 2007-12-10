@@ -19,7 +19,7 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import org.qi4j.composite.Composite;
-import org.qi4j.spi.injection.ServiceProvider;
+import org.qi4j.spi.service.ServiceProvider;
 
 /**
  * TODO
@@ -97,6 +97,13 @@ public class ModuleAssembly
     public void addServiceProvider( Class serviceType, ServiceProvider serviceProvider )
     {
         serviceProviders.put( serviceType, serviceProvider );
+
+        if( Composite.class.isAssignableFrom( serviceType ) )
+        {
+            addComposite( (Class<? extends Composite>) serviceType );
+        }
+
+        addObject( serviceProvider.getClass() );
     }
 
     Set<Class<? extends Composite>> getPublicComposites()

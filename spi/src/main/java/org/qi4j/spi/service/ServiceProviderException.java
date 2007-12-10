@@ -12,38 +12,30 @@
  *
  */
 
-package org.qi4j.spi.composite;
-
-import java.lang.reflect.Constructor;
+package org.qi4j.spi.service;
 
 /**
  * TODO
  */
-public class ConstructorModel
+public class ServiceProviderException
+    extends Exception
 {
-    private Constructor constructor;
-    private Iterable<ParameterModel> parameters;
-    private boolean hasInjections;
-
-    public ConstructorModel( Constructor constructor, Iterable<ParameterModel> parameters, boolean hasInjections )
+    public ServiceProviderException()
     {
-        this.constructor = constructor;
-        this.parameters = parameters;
-        this.hasInjections = hasInjections;
     }
 
-    public Constructor getConstructor()
+    public ServiceProviderException( String string )
     {
-        return constructor;
+        super( string );
     }
 
-    public Iterable<ParameterModel> getParameters()
+    public ServiceProviderException( String string, Throwable throwable )
     {
-        return parameters;
+        super( string, throwable );
     }
 
-    public boolean hasInjections()
+    public ServiceProviderException( Throwable throwable )
     {
-        return hasInjections;
+        super( throwable );
     }
 }

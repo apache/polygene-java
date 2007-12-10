@@ -62,7 +62,7 @@ public final class CompositeBinding
 
     public String toString()
     {
-        return "";
+        return compositeResolution.toString();
 /*
         StringWriter str = new StringWriter();
         PrintWriter out = new PrintWriter( str );

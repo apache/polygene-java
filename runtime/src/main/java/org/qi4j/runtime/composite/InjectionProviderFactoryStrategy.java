@@ -17,6 +17,7 @@ package org.qi4j.runtime.composite;
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
+import org.qi4j.spi.injection.BindingContext;
 import org.qi4j.spi.injection.InjectionProvider;
 import org.qi4j.spi.injection.InjectionProviderFactory;
 import org.qi4j.spi.injection.InjectionResolution;
@@ -35,8 +36,9 @@ public class InjectionProviderFactoryStrategy
         this.injectionBinders = injectionBinders;
     }
 
-    public InjectionProvider newInjectionProvider( InjectionResolution resolution ) throws InvalidInjectionException
+    public InjectionProvider newInjectionProvider( BindingContext bindingContext ) throws InvalidInjectionException
     {
+        InjectionResolution resolution = bindingContext.getInjectionResolution();
         Class<? extends Annotation> annotationType = resolution.getInjectionModel().getInjectionAnnotationType();
         InjectionProviderFactory injectionProviderFactory = injectionBinders.get( annotationType );
         if( injectionProviderFactory == null )
@@ -44,6 +46,6 @@ public class InjectionProviderFactoryStrategy
             throw new InvalidInjectionException( "Unknown injection annotation @" + annotationType.getSimpleName() );
         }
 
-        return injectionProviderFactory.newInjectionProvider( resolution );
+        return injectionProviderFactory.newInjectionProvider( bindingContext );
     }
 }

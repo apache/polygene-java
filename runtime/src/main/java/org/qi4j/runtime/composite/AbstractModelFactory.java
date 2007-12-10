@@ -28,27 +28,7 @@ import org.qi4j.spi.injection.PropertyInjectionModel;
  */
 public abstract class AbstractModelFactory
 {
-    protected void getConstructorModels( Class mixinClass, List<ConstructorModel> constructorModels )
-    {
-        Constructor[] constructors = mixinClass.getConstructors();
-        for( Constructor constructor : constructors )
-        {
-            Type[] parameterTypes = constructor.getGenericParameterTypes();
-            Annotation[][] parameterAnnotations = constructor.getParameterAnnotations();
-            List<ParameterModel> parameterModels = new ArrayList<ParameterModel>();
-            int idx = 0;
-            for( Type parameterType : parameterTypes )
-            {
-                Annotation[] annotations = parameterAnnotations[ idx++ ];
-                ParameterModel parameterModel = getParameterModel( annotations, mixinClass, parameterType );
-                parameterModels.add( parameterModel );
-            }
-            ConstructorModel constructorModel = new ConstructorModel( constructor, parameterModels );
-            constructorModels.add( constructorModel );
-        }
-    }
-
-    protected void getFieldModels( Class fragmentClass, List<FieldModel> fieldModels )
+    protected void getFieldModels( Class fragmentClass, Class compositeType, List<FieldModel> fieldModels )
     {
         Field[] fields = fragmentClass.getDeclaredFields();
         for( Field field : fields )
@@ -71,7 +51,7 @@ public abstract class AbstractModelFactory
         Class<?> parent = fragmentClass.getSuperclass();
         if( parent != null && parent != Object.class )
         {
-            getFieldModels( parent, fieldModels );
+            getFieldModels( parent, compositeType, fieldModels );
         }
     }
 
@@ -85,13 +65,25 @@ public abstract class AbstractModelFactory
             Annotation[][] parameterAnnotations = constructor.getParameterAnnotations();
             List<ParameterModel> parameterModels = new ArrayList<ParameterModel>();
             int idx = 0;
+            boolean hasInjections = false;
             for( Type parameterType : parameterTypes )
             {
                 Annotation[] parameterAnnotation = parameterAnnotations[ idx ];
                 ParameterModel parameterModel = getParameterModel( parameterAnnotation, compositeType, parameterType );
+                if( parameterModel.getInjectionModel() == null )
+                {
+                    if( compositeType != null )
+                    {
+                        throw new InvalidCompositeException( "All parameters in constructor for " + mixinClass.getName() + " must be injected", compositeType );
+                    }
+                }
+                else
+                {
+                    hasInjections = true;
+                }
                 parameterModels.add( parameterModel );
             }
-            ConstructorModel constructorModel = new ConstructorModel( constructor, parameterModels );
+            ConstructorModel constructorModel = new ConstructorModel( constructor, parameterModels, hasInjections );
             constructorModels.add( constructorModel );
         }
     }

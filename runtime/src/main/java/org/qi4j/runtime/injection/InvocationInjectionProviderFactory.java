@@ -4,6 +4,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import org.qi4j.composite.InvocationContext;
+import org.qi4j.spi.injection.BindingContext;
 import org.qi4j.spi.injection.InjectionContext;
 import org.qi4j.spi.injection.InjectionProvider;
 import org.qi4j.spi.injection.InjectionProviderFactory;
@@ -17,8 +18,9 @@ import org.qi4j.spi.injection.ModifierInjectionContext;
 public class InvocationInjectionProviderFactory
     implements InjectionProviderFactory
 {
-    public InjectionProvider newInjectionProvider( InjectionResolution resolution ) throws InvalidInjectionException
+    public InjectionProvider newInjectionProvider( BindingContext bindingContext ) throws InvalidInjectionException
     {
+        InjectionResolution resolution = bindingContext.getInjectionResolution();
         Class injectionClass = resolution.getInjectionModel().getInjectionClass();
         if( injectionClass.equals( Method.class ) ||
             injectionClass.equals( AnnotatedElement.class ) ||

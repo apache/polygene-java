@@ -47,7 +47,7 @@ public class AbstractModel
         this.constructorModels = constructorModels;
         this.fieldModels = fieldModels;
         this.methodModels = methodModels;
-        this.dependenciesByScope = getDependenciesByScope( constructorModels, methodModels, fieldModels );
+        this.dependenciesByScope = getInjectionsByScope( constructorModels, methodModels, fieldModels );
     }
 
     public Class getModelClass()
@@ -122,35 +122,38 @@ public class AbstractModel
         return str.toString();
     }
 
-    protected Map<Class<? extends Annotation>, Set<InjectionModel>> getDependenciesByScope( Iterable<ConstructorModel> constructorDependencies, Iterable<MethodModel> methodDependencies, Iterable<FieldModel> fieldDependencies )
+    protected Map<Class<? extends Annotation>, Set<InjectionModel>> getInjectionsByScope( Iterable<ConstructorModel> constructorModels, Iterable<MethodModel> methodModels, Iterable<FieldModel> fieldModels )
     {
-        Map<Class<? extends Annotation>, Set<InjectionModel>> dependenciesByScope = new HashMap<Class<? extends Annotation>, Set<InjectionModel>>();
-        for( ConstructorModel constructorDependencyModel : constructorDependencies )
+        Map<Class<? extends Annotation>, Set<InjectionModel>> injectionsByScope = new HashMap<Class<? extends Annotation>, Set<InjectionModel>>();
+        for( ConstructorModel constructorModel : constructorModels )
         {
-            for( ParameterModel parameterDependencyModel : constructorDependencyModel.getParameters() )
+            if( constructorModel.hasInjections() )
             {
-                Class annotationType = parameterDependencyModel.getInjectionModel().getInjectionAnnotationType();
-                Set<InjectionModel> scopeDependencyModels = dependenciesByScope.get( annotationType );
-                if( scopeDependencyModels == null )
+                for( ParameterModel parameterModel : constructorModel.getParameters() )
                 {
-                    dependenciesByScope.put( annotationType, scopeDependencyModels = new HashSet<InjectionModel>() );
-                }
+                    Class annotationType = parameterModel.getInjectionModel().getInjectionAnnotationType();
+                    Set<InjectionModel> dependencyModels = injectionsByScope.get( annotationType );
+                    if( dependencyModels == null )
+                    {
+                        injectionsByScope.put( annotationType, dependencyModels = new HashSet<InjectionModel>() );
+                    }
 
-                scopeDependencyModels.add( parameterDependencyModel.getInjectionModel() );
+                    dependencyModels.add( parameterModel.getInjectionModel() );
+                }
             }
         }
 
-        for( MethodModel dependencyModel : methodDependencies )
+        for( MethodModel dependencyModel : methodModels )
         {
             if( dependencyModel.hasInjections() )
             {
                 for( ParameterModel parameterDependencyModel : dependencyModel.getParameterModels() )
                 {
                     Class annotationType = parameterDependencyModel.getInjectionModel().getInjectionAnnotationType();
-                    Set<InjectionModel> scopeDependencyModels = dependenciesByScope.get( annotationType );
+                    Set<InjectionModel> scopeDependencyModels = injectionsByScope.get( annotationType );
                     if( scopeDependencyModels == null )
                     {
-                        dependenciesByScope.put( annotationType, scopeDependencyModels = new HashSet<InjectionModel>() );
+                        injectionsByScope.put( annotationType, scopeDependencyModels = new HashSet<InjectionModel>() );
                     }
 
                     scopeDependencyModels.add( parameterDependencyModel.getInjectionModel() );
@@ -158,22 +161,22 @@ public class AbstractModel
             }
         }
 
-        for( FieldModel fieldDependencyModel : fieldDependencies )
+        for( FieldModel fieldDependencyModel : fieldModels )
         {
             if( fieldDependencyModel.getInjectionModel() != null )
             {
                 Class annotationType = fieldDependencyModel.getInjectionModel().getInjectionAnnotationType();
-                Set<InjectionModel> scopeDependencyModels = dependenciesByScope.get( annotationType );
+                Set<InjectionModel> scopeDependencyModels = injectionsByScope.get( annotationType );
                 if( scopeDependencyModels == null )
                 {
-                    dependenciesByScope.put( annotationType, scopeDependencyModels = new HashSet<InjectionModel>() );
+                    injectionsByScope.put( annotationType, scopeDependencyModels = new HashSet<InjectionModel>() );
                 }
 
                 scopeDependencyModels.add( fieldDependencyModel.getInjectionModel() );
             }
         }
 
-        return dependenciesByScope;
+        return injectionsByScope;
     }
 
 

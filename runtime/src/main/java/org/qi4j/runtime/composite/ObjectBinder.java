@@ -21,6 +21,7 @@ import org.qi4j.spi.composite.FieldBinding;
 import org.qi4j.spi.composite.MethodBinding;
 import org.qi4j.spi.composite.ObjectBinding;
 import org.qi4j.spi.composite.ObjectResolution;
+import org.qi4j.spi.injection.BindingContext;
 import org.qi4j.spi.injection.InjectionProviderFactory;
 import org.qi4j.spi.injection.InvalidInjectionException;
 
@@ -35,14 +36,15 @@ public class ObjectBinder
         super( injectionProviderFactory );
     }
 
-    public ObjectBinding bindObject( ObjectResolution objectResolution )
+    public ObjectBinding bindObject( BindingContext bindingContext )
     {
         try
         {
+            ObjectResolution objectResolution = (ObjectResolution) bindingContext.getAbstractResolution();
             ConstructorResolution constructorResolution = objectResolution.getConstructorResolutions().iterator().next(); // TODO Pick the best one
-            ConstructorBinding constructorBinding = bindConstructor( constructorResolution );
-            Iterable<FieldBinding> fieldBindings = bindFields( objectResolution.getFieldResolutions() );
-            Iterable<MethodBinding> methodBindings = bindMethods( objectResolution.getMethodResolutions() );
+            ConstructorBinding constructorBinding = bindConstructor( bindingContext, constructorResolution );
+            Iterable<FieldBinding> fieldBindings = bindFields( bindingContext, objectResolution.getFieldResolutions() );
+            Iterable<MethodBinding> methodBindings = bindMethods( bindingContext, objectResolution.getMethodResolutions() );
             ObjectBinding objectBinding = new ObjectBinding( objectResolution, constructorBinding, fieldBindings, methodBindings );
             return objectBinding;
         }

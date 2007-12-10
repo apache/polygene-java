@@ -72,6 +72,7 @@ public final class CompositeResolution
 
     public String toString()
     {
+        return compositeModel.toString();
 /*
         StringWriter str = new StringWriter();
         PrintWriter out = new PrintWriter( str );
@@ -121,7 +122,6 @@ public final class CompositeResolution
         out.close();
         return str.toString();
 */
-        return "";
     }
 
     public int getMixinCount()

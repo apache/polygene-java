@@ -19,6 +19,7 @@ import org.qi4j.composite.Composite;
 import org.qi4j.composite.Mixins;
 import org.qi4j.composite.scope.Service;
 import org.qi4j.service.ServiceComposite;
+import org.qi4j.spi.service.Singleton;
 import org.qi4j.test.AbstractQi4jTest;
 
 /**

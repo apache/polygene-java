@@ -48,6 +48,19 @@ public class ModuleBinding
         return compositeBindings;
     }
 
+    public CompositeBinding getCompositeBinding( Class type )
+    {
+        for( Map.Entry<Class<? extends Composite>, CompositeBinding> entry : compositeBindings.entrySet() )
+        {
+            if( type.isAssignableFrom( entry.getKey() ) )
+            {
+                return entry.getValue();
+            }
+        }
+
+        return null; // No Composite bound which matches this type
+    }
+
     public Map<Class, ObjectBinding> getObjectBindings()
     {
         return objectBindings;

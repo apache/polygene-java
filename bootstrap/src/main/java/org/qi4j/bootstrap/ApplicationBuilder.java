@@ -34,7 +34,9 @@ import org.qi4j.spi.composite.CompositeResolution;
 import org.qi4j.spi.composite.ObjectBinding;
 import org.qi4j.spi.composite.ObjectModel;
 import org.qi4j.spi.composite.ObjectResolution;
+import org.qi4j.spi.injection.BindingContext;
 import org.qi4j.spi.injection.ResolutionContext;
+import org.qi4j.spi.service.ServiceProvider;
 import org.qi4j.spi.structure.ApplicationBinding;
 import org.qi4j.spi.structure.ApplicationModel;
 import org.qi4j.spi.structure.ApplicationResolution;
@@ -191,7 +193,7 @@ public class ApplicationBuilder
         List<ModuleBinding> moduleBindings = new ArrayList<ModuleBinding>();
         for( ModuleResolution moduleResolution : layerResolution.getModuleResolutions() )
         {
-            ModuleBinding moduleBinding = newModuleBinding( moduleResolution );
+            ModuleBinding moduleBinding = newModuleBinding( layerResolution, moduleResolution );
             moduleBindings.add( moduleBinding );
         }
 
@@ -295,18 +297,30 @@ public class ApplicationBuilder
         List<ObjectResolution> objectResolutions = new ArrayList<ObjectResolution>();
         resolveObjects( moduleModel.getObjectModels(), applicationModel, layerModel, moduleModel, objectResolutions );
 
-        ModuleResolution moduleResolution = new ModuleResolution( moduleModel, applicationModel, layerModel, instantiableComposites, compositeResolutions, objectResolutions );
+        // Figure out what service types are available from this module
+        Map<Class, ServiceProvider> availableServices = new HashMap<Class, ServiceProvider>();
+        availableServices.putAll( moduleModel.getServiceProviders() );
+
+        // Add extended interfaces, unless they have been specifically registered already
+        for( Map.Entry<Class, ServiceProvider> entry : moduleModel.getServiceProviders().entrySet() )
+        {
+            Class serviceType = entry.getKey();
+            addSuperTypeProviders( serviceType, entry.getValue(), availableServices );
+        }
+
+        ModuleResolution moduleResolution = new ModuleResolution( moduleModel, applicationModel, layerModel, instantiableComposites, compositeResolutions, objectResolutions, availableServices );
         return moduleResolution;
     }
 
-    private ModuleBinding newModuleBinding( ModuleResolution moduleResolution )
+    private ModuleBinding newModuleBinding( LayerResolution layerResolution, ModuleResolution moduleResolution )
     {
         // Bind Composites in this Module
         Map<Class<? extends Composite>, CompositeBinding> compositeBindings = new LinkedHashMap<Class<? extends Composite>, CompositeBinding>();
         Iterable<CompositeResolution> compositeResolutions = moduleResolution.getCompositeResolutions();
         for( CompositeResolution compositeResolution : compositeResolutions )
         {
-            CompositeBinding compositeBinding = runtime.getCompositeBinder().bindCompositeResolution( compositeResolution );
+            BindingContext bindingContext = new BindingContext( null, null, compositeResolution, moduleResolution, layerResolution, applicationResolution );
+            CompositeBinding compositeBinding = runtime.getCompositeBinder().bindCompositeResolution( bindingContext );
 
             compositeBindings.put( compositeResolution.getCompositeModel().getCompositeClass(), compositeBinding );
         }
@@ -315,7 +329,8 @@ public class ApplicationBuilder
         Map<Class, ObjectBinding> objectBindings = new LinkedHashMap<Class, ObjectBinding>();
         for( ObjectResolution objectResolution : moduleResolution.getObjectResolutions() )
         {
-            ObjectBinding objectBinding = runtime.getObjectBinder().bindObject( objectResolution );
+            BindingContext bindingContext = new BindingContext( null, objectResolution, null, moduleResolution, layerResolution, applicationResolution );
+            ObjectBinding objectBinding = runtime.getObjectBinder().bindObject( bindingContext );
             objectBindings.put( objectResolution.getObjectModel().getModelClass(), objectBinding );
         }
 
@@ -347,6 +362,23 @@ public class ApplicationBuilder
 
         ModuleContext moduleContext = new ModuleContext( moduleBinding, instantiableCompositeContexts, instantiableObjectContexts, instantiableModuleContexts );
         return moduleContext;
+    }
+
+    private void addSuperTypeProviders( Class serviceType, ServiceProvider provider, Map<Class, ServiceProvider> availableServices )
+    {
+        Class[] extendedInterfaces = serviceType.getInterfaces();
+        for( Class extendedInterface : extendedInterfaces )
+        {
+            if( extendedInterface.getMethods().length > 0 )
+            {
+                ServiceProvider specificProvider = availableServices.get( extendedInterface );
+                if( specificProvider == null )
+                {
+                    availableServices.put( extendedInterface, provider );
+                }
+                addSuperTypeProviders( extendedInterface, provider, availableServices );
+            }
+        }
     }
 
     private void resolveComposites( Iterable<CompositeModel> compositeModels, ApplicationModel applicationModel, LayerModel layerModel, ModuleModel moduleModel, List<CompositeResolution> compositeResolutions )

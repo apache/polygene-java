@@ -12,21 +12,25 @@
 
 package org.qi4j.test.model2;
 
+import junit.framework.TestCase;
+import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.bootstrap.SingletonAssembly;
 import org.qi4j.spi.composite.CompositeModel;
-import org.qi4j.test.AbstractQi4jTest;
 
-public class Composite2Test extends AbstractQi4jTest
+public class Composite2Test extends TestCase
 {
-    @Override public void configure( ModuleAssembly module )
-    {
-        module.addComposite( TestComposite.class );
-        module.addComposite( CustomTestComposite.class );
-    }
-
     public void testGetImplementation() throws Exception
     {
-        CompositeModel composite = moduleInstance.getModuleContext().getCompositeContext( TestComposite.class ).getCompositeBinding().getCompositeResolution().getCompositeModel();
+        SingletonAssembly assembly = new SingletonAssembly()
+        {
+            public void configure( ModuleAssembly module ) throws AssemblyException
+            {
+                module.addComposite( TestComposite.class );
+            }
+        };
+
+        CompositeModel composite = assembly.getModuleInstance().getModuleContext().getCompositeContext( TestComposite.class ).getCompositeBinding().getCompositeResolution().getCompositeModel();
 
         assertEquals( 0, composite.getImplementations( Standard.class ).size() );
 
@@ -37,7 +41,7 @@ public class Composite2Test extends AbstractQi4jTest
         assertEquals( StandardThatImpl.class, composite.getImplementations( StandardThat.class ).get( 0 ).getModelClass() );
 
         {
-            TestComposite object = compositeBuilderFactory.newCompositeBuilder( TestComposite.class ).newInstance();
+            TestComposite object = assembly.getCompositeBuilderFactory().newCompositeBuilder( TestComposite.class ).newInstance();
 
             assertEquals( "bar=foo:FOO Hello World", object.foo( "FOO " ) );
 
@@ -52,9 +56,20 @@ public class Composite2Test extends AbstractQi4jTest
                 // Ok
             }
         }
+    }
+
+    public void testCustomizedImplementation() throws Exception
+    {
+        SingletonAssembly assembly = new SingletonAssembly()
+        {
+            public void configure( ModuleAssembly module ) throws AssemblyException
+            {
+                module.addComposite( CustomTestComposite.class );
+            }
+        };
 
         {
-            TestComposite object = compositeBuilderFactory.newCompositeBuilder( CustomTestComposite.class ).newInstance();
+            TestComposite object = assembly.getCompositeBuilderFactory().newCompositeBuilder( TestComposite.class ).newInstance();
 
             object.setFoo( "xyz" );
             System.out.println( object );

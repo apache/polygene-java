@@ -45,6 +45,7 @@ import org.qi4j.spi.composite.ParameterConstraintsResolution;
 import org.qi4j.spi.composite.ParameterResolution;
 import org.qi4j.spi.composite.SideEffectBinding;
 import org.qi4j.spi.composite.SideEffectResolution;
+import org.qi4j.spi.injection.BindingContext;
 import org.qi4j.spi.injection.InjectionBinding;
 import org.qi4j.spi.injection.InjectionProviderFactory;
 import org.qi4j.spi.injection.InjectionResolution;
@@ -62,28 +63,31 @@ public class CompositeBinder
         this.injectionProviderFactory = injectionProviderFactory;
     }
 
-    public CompositeBinding bindCompositeResolution( CompositeResolution compositeResolution )
+    public CompositeBinding bindCompositeResolution( BindingContext bindingContext )
         throws BindingException
     {
         Set<MixinBinding> mixinBindings = new LinkedHashSet<MixinBinding>();
+        CompositeResolution compositeResolution = bindingContext.getCompositeResolution();
         Iterable<MixinResolution> mixinResolutions = compositeResolution.getMixinResolutions();
         Map<MixinResolution, MixinBinding> mixinMappings = new HashMap<MixinResolution, MixinBinding>();
         try
         {
             for( MixinResolution mixinResolution : mixinResolutions )
             {
+                BindingContext mixinContext = new BindingContext( null, mixinResolution, compositeResolution, bindingContext.getModuleResolution(), bindingContext.getLayerResolution(), bindingContext.getApplicationResolution() );
+
                 // Constructor
                 Iterable<ConstructorResolution> constructorResolutions = mixinResolution.getConstructorResolutions();
                 ConstructorResolution constructorResolution = constructorResolutions.iterator().next(); // TODO Pick the best constructor!
-                ConstructorBinding constructorBinding = bindConstructor( constructorResolution );
+                ConstructorBinding constructorBinding = bindConstructor( mixinContext, constructorResolution );
 
                 // Fields
                 Iterable<FieldResolution> fieldResolutions = mixinResolution.getFieldResolutions();
-                List<FieldBinding> fieldBindings = bindFields( fieldResolutions );
+                List<FieldBinding> fieldBindings = bindFields( mixinContext, fieldResolutions );
 
                 // Methods
                 Iterable<MethodResolution> methodResolutions = mixinResolution.getMethodResolutions();
-                List<MethodBinding> methodBindings = bindMethods( methodResolutions );
+                List<MethodBinding> methodBindings = bindMethods( mixinContext, methodResolutions );
 
                 MixinBinding mixinBinding = new MixinBinding( mixinResolution, constructorBinding, fieldBindings, methodBindings );
                 mixinBindings.add( mixinBinding );
@@ -96,16 +100,18 @@ public class CompositeBinder
             for( CompositeMethodResolution methodResolution : compositeMethodResolutions )
             {
                 Iterable<ParameterResolution> parameterResolutions = methodResolution.getParameterResolutions();
-                List<ParameterBinding> parameterBindings = bindParameters( parameterResolutions );
+                List<ParameterBinding> parameterBindings = bindParameters( bindingContext, parameterResolutions );
 
                 List<ConcernBinding> concernBindings = new ArrayList<ConcernBinding>();
                 Iterable<ConcernResolution> concernResolutions = methodResolution.getConcernResolutions();
                 for( ConcernResolution concernResolution : concernResolutions )
                 {
+                    BindingContext concernContext = new BindingContext( concernResolution, bindingContext );
+
                     ConstructorResolution constructorResolution = concernResolution.getConstructorResolutions().iterator().next(); // TODO Pick the best one
-                    ConstructorBinding constructorBinding = bindConstructor( constructorResolution );
-                    Iterable<FieldBinding> fieldBindings = bindFields( concernResolution.getFieldResolutions() );
-                    Iterable<MethodBinding> methodBindings = bindMethods( concernResolution.getMethodResolutions() );
+                    ConstructorBinding constructorBinding = bindConstructor( concernContext, constructorResolution );
+                    Iterable<FieldBinding> fieldBindings = bindFields( concernContext, concernResolution.getFieldResolutions() );
+                    Iterable<MethodBinding> methodBindings = bindMethods( concernContext, concernResolution.getMethodResolutions() );
                     ConcernBinding concernBinding = new ConcernBinding( concernResolution, constructorBinding, fieldBindings, methodBindings );
                     concernBindings.add( concernBinding );
                 }
@@ -114,10 +120,12 @@ public class CompositeBinder
                 Iterable<SideEffectResolution> sideEffectResolutions = methodResolution.getSideEffectResolutions();
                 for( SideEffectResolution sideEffectResolution : sideEffectResolutions )
                 {
+                    BindingContext sideEffectContext = new BindingContext( null, sideEffectResolution, compositeResolution, bindingContext.getModuleResolution(), bindingContext.getLayerResolution(), bindingContext.getApplicationResolution() );
+
                     ConstructorResolution constructorResolution = sideEffectResolution.getConstructorResolutions().iterator().next(); // TODO Pick the best one
-                    ConstructorBinding constructorBinding = bindConstructor( constructorResolution );
-                    Iterable<FieldBinding> fieldBindings = bindFields( sideEffectResolution.getFieldResolutions() );
-                    Iterable<MethodBinding> methodBindings = bindMethods( sideEffectResolution.getMethodResolutions() );
+                    ConstructorBinding constructorBinding = bindConstructor( sideEffectContext, constructorResolution );
+                    Iterable<FieldBinding> fieldBindings = bindFields( sideEffectContext, sideEffectResolution.getFieldResolutions() );
+                    Iterable<MethodBinding> methodBindings = bindMethods( sideEffectContext, sideEffectResolution.getMethodResolutions() );
                     SideEffectBinding concernBinding = new SideEffectBinding( sideEffectResolution, constructorBinding, fieldBindings, methodBindings );
                     sideEffectBindings.add( concernBinding );
                 }
@@ -137,26 +145,26 @@ public class CompositeBinder
         }
     }
 
-    protected ConstructorBinding bindConstructor( ConstructorResolution constructorResolution )
+    protected ConstructorBinding bindConstructor( BindingContext bindingContext, ConstructorResolution constructorResolution )
         throws InvalidInjectionException
     {
         ConstructorBinding constructorBinding;
         {
             Iterable<ParameterResolution> parameterResolutions = constructorResolution.getParameterResolutions();
-            List<ParameterBinding> parameterBindings = bindParameters( parameterResolutions );
+            List<ParameterBinding> parameterBindings = bindParameters( bindingContext, parameterResolutions );
             constructorBinding = new ConstructorBinding( constructorResolution, parameterBindings );
         }
         return constructorBinding;
     }
 
-    protected List<MethodBinding> bindMethods( Iterable<MethodResolution> methodResolutions )
+    protected List<MethodBinding> bindMethods( BindingContext bindingContext, Iterable<MethodResolution> methodResolutions )
         throws InvalidInjectionException
     {
         List<MethodBinding> methodBindings = new ArrayList<MethodBinding>();
         for( MethodResolution methodResolution : methodResolutions )
         {
             Iterable<ParameterResolution> parameterResolutions = methodResolution.getParameterResolutions();
-            List<ParameterBinding> parameterBindings = bindParameters( parameterResolutions );
+            List<ParameterBinding> parameterBindings = bindParameters( bindingContext, parameterResolutions );
 
             MethodBinding methodBinding = new MethodBinding( methodResolution, parameterBindings );
             methodBindings.add( methodBinding );
@@ -164,32 +172,33 @@ public class CompositeBinder
         return methodBindings;
     }
 
-    protected List<FieldBinding> bindFields( Iterable<FieldResolution> fieldResolutions )
+    protected List<FieldBinding> bindFields( BindingContext bindingContext, Iterable<FieldResolution> fieldResolutions )
         throws InvalidInjectionException
     {
         List<FieldBinding> fieldBindings = new ArrayList<FieldBinding>();
         for( FieldResolution fieldResolution : fieldResolutions )
         {
-            FieldBinding fieldBinding = bindField( fieldResolution );
+            FieldBinding fieldBinding = bindField( bindingContext, fieldResolution );
             fieldBindings.add( fieldBinding );
         }
         return fieldBindings;
     }
 
-    private FieldBinding bindField( FieldResolution fieldResolution )
+    private FieldBinding bindField( BindingContext bindingContext, FieldResolution fieldResolution )
         throws InvalidInjectionException
     {
         InjectionResolution injectionResolution = fieldResolution.getInjectionResolution();
         InjectionBinding injectionBinding = null;
         if( injectionResolution != null )
         {
-            injectionBinding = new InjectionBinding( injectionResolution, injectionProviderFactory.newInjectionProvider( injectionResolution ) );
+            BindingContext injectionContext = new BindingContext( injectionResolution, bindingContext );
+            injectionBinding = new InjectionBinding( injectionResolution, injectionProviderFactory.newInjectionProvider( injectionContext ) );
         }
         FieldBinding fieldBinding = new FieldBinding( fieldResolution, injectionBinding );
         return fieldBinding;
     }
 
-    private List<ParameterBinding> bindParameters( Iterable<ParameterResolution> parameterResolutions )
+    private List<ParameterBinding> bindParameters( BindingContext bindingContext, Iterable<ParameterResolution> parameterResolutions )
         throws InvalidInjectionException
     {
         List<ParameterBinding> parameterBindings = new ArrayList<ParameterBinding>();
@@ -212,7 +221,8 @@ public class CompositeBinder
             InjectionBinding injectionBinding = null;
             if( injectionResolution != null )
             {
-                injectionBinding = new InjectionBinding( injectionResolution, injectionProviderFactory.newInjectionProvider( injectionResolution ) );
+                BindingContext injectionContext = new BindingContext( injectionResolution, bindingContext );
+                injectionBinding = new InjectionBinding( injectionResolution, injectionProviderFactory.newInjectionProvider( injectionContext ) );
             }
 
             ParameterBinding parameterBinding = new ParameterBinding( parameterResolution, parameterConstraintsBinding, injectionBinding );

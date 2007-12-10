@@ -1,5 +1,6 @@
 package org.qi4j.runtime.injection;
 
+import org.qi4j.spi.injection.BindingContext;
 import org.qi4j.spi.injection.InjectionContext;
 import org.qi4j.spi.injection.InjectionModel;
 import org.qi4j.spi.injection.InjectionProvider;
@@ -15,8 +16,9 @@ public class ModifiesInjectionProviderFactory
     implements InjectionProviderFactory
 {
 
-    public InjectionProvider newInjectionProvider( InjectionResolution resolution ) throws InvalidInjectionException
+    public InjectionProvider newInjectionProvider( BindingContext bindingContext ) throws InvalidInjectionException
     {
+        InjectionResolution resolution = bindingContext.getInjectionResolution();
         InjectionModel injectionModel = resolution.getInjectionModel();
         if( resolution.getCompositeModel() != null )
         {

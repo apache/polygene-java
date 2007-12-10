@@ -20,9 +20,9 @@ public class ObjectModelFactory
         throws NullArgumentException, InvalidCompositeException
     {
         List<ConstructorModel> constructorModels = new ArrayList<ConstructorModel>();
-        getConstructorModels( objectClass, constructorModels );
+        getConstructorModels( objectClass, null, constructorModels );
         List<FieldModel> fieldModels = new ArrayList<FieldModel>();
-        getFieldModels( objectClass, fieldModels );
+        getFieldModels( objectClass, null, fieldModels );
         Iterable<MethodModel> methodModels = getMethodModels( objectClass );
 
         // Find properties

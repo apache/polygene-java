@@ -12,14 +12,18 @@
  *
  */
 
-package org.qi4j.spi.injection;
+package org.qi4j.spi.service;
+
+import org.qi4j.spi.injection.InjectionContext;
+import org.qi4j.spi.injection.InjectionResolution;
 
 /**
  * TODO
  */
 public interface ServiceProvider
 {
-    Object getService( InjectionResolution injectionResolution, InjectionContext injectionContext );
+    Object getService( InjectionResolution injectionResolution, InjectionContext injectionContext )
+        throws ServiceProviderException;
 
     void releaseService( Object service );
 }
