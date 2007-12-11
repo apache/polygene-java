@@ -26,7 +26,7 @@ public class ObjectPropertyTest
 {
     @Override public void configure( ModuleAssembly module )
     {
-        module.addObject( Object1.class );
+        module.addObjects( Object1.class );
     }
 
     public void testPropertyInjection()

@@ -27,7 +27,7 @@ public class ObjectAdaptAndDecorateTest
 {
     @Override public void configure( ModuleAssembly module )
     {
-        module.addObject( Object2.class );
+        module.addObjects( Object2.class );
     }
 
     public void testAdaptInjection()

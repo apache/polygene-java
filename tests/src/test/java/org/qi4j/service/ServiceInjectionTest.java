@@ -38,8 +38,8 @@ public class ServiceInjectionTest
         {
             public void configure( ModuleAssembly module ) throws AssemblyException
             {
-                module.addServiceProvider( MyServiceComposite.class, new Singleton() );
-                module.addObject( ServiceUser.class );
+                module.addServiceProvider( new Singleton(), MyServiceComposite.class );
+                module.addObjects( ServiceUser.class );
             }
         };
 
@@ -55,8 +55,8 @@ public class ServiceInjectionTest
         {
             public void configure( ModuleAssembly module ) throws AssemblyException
             {
-                module.addServiceProvider( MyService.class, new Instance( new MyServiceMixin() ) );
-                module.addObject( ServiceUser.class );
+                module.addServiceProvider( new Instance( new MyServiceMixin() ), MyService.class );
+                module.addObjects( ServiceUser.class );
             }
         };
 

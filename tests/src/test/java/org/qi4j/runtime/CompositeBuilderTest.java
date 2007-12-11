@@ -24,7 +24,7 @@ public class CompositeBuilderTest extends AbstractQi4jTest
 {
     @Override public void configure( ModuleAssembly module )
     {
-        module.addComposite( Model1.class );
+        module.addComposites( Model1.class );
     }
 
     public void testNewInstance()

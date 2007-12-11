@@ -14,7 +14,7 @@ public class InternalMixinsTest
 {
     @Override public void configure( ModuleAssembly module )
     {
-        module.addComposite( TestComposite.class );
+        module.addComposites( TestComposite.class );
     }
 
     public void testInternalMixins()

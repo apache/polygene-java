@@ -25,7 +25,7 @@ public class PropertyInjectionTest extends AbstractQi4jTest
 {
     @Override public void configure( ModuleAssembly module )
     {
-        module.addComposite( SayHelloComposite.class );
+        module.addComposites( SayHelloComposite.class );
     }
 
     public void testPropertyFieldInjection()

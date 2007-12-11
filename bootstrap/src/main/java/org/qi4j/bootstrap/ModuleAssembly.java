@@ -55,55 +55,60 @@ public class ModuleAssembly
         this.name = name;
     }
 
-    public void addComposite( Class<? extends Composite> compositeType )
+    public void addComposites( Class<? extends Composite>... compositeTypes )
     {
-        addComposite( compositeType, false );
+        addComposites( false, compositeTypes );
     }
 
-    public void addComposite( Class<? extends Composite> compositeType, boolean isModulePublic )
+    public void addComposites( boolean isModulePublic, Class<? extends Composite>... compositeTypes )
     {
-        if( isModulePublic )
+        for( Class<? extends Composite> compositeType : compositeTypes )
         {
-            publicComposites.add( compositeType );
-        }
-        else
-        {
-            privateComposites.add( compositeType );
+            if( isModulePublic )
+            {
+                publicComposites.add( compositeType );
+            }
+            else
+            {
+                privateComposites.add( compositeType );
+            }
         }
     }
 
-    public void addComposite( Class<? extends Composite> compositeType, boolean isModulePublic, boolean isLayerPublic )
+    public void addComposites( boolean isModulePublic, boolean isLayerPublic, Class<? extends Composite>... compositeTypes )
     {
-        if( isModulePublic )
-        {
-            publicComposites.add( compositeType );
-        }
-        else
-        {
-            privateComposites.add( compositeType );
-        }
+        addComposites( isModulePublic, compositeTypes );
 
         if( isLayerPublic )
         {
-            layerAssembly.addPublicComposite( compositeType );
+            for( Class<? extends Composite> compositeType : compositeTypes )
+            {
+                layerAssembly.addPublicComposite( compositeType );
+            }
         }
     }
 
-    public void addObject( Class objectType )
+    public void addObjects( Class... objectTypes )
     {
-        objects.add( objectType );
-    }
-
-    public void addServiceProvider( Class serviceType, ServiceProvider serviceProvider )
-    {
-        serviceProviders.put( serviceType, serviceProvider );
-
-        if( Composite.class.isAssignableFrom( serviceType ) )
+        for( Class objectType : objectTypes )
         {
-            addComposite( (Class<? extends Composite>) serviceType );
+            objects.add( objectType );
+        }
+    }
+
+    public void addServiceProvider( ServiceProvider serviceProvider, Class... serviceTypes )
+    {
+        for( Class serviceType : serviceTypes )
+        {
+            serviceProviders.put( serviceType, serviceProvider );
+
+            if( Composite.class.isAssignableFrom( serviceType ) )
+            {
+                addComposites( (Class<? extends Composite>) serviceType );
+            }
         }
 
-        addObject( serviceProvider.getClass() );
+        addObjects( serviceProvider.getClass() );
     }
 
     Set<Class<? extends Composite>> getPublicComposites()

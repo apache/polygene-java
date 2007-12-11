@@ -22,7 +22,7 @@ public class CompositeFactoryImplTest extends AbstractQi4jTest
     public void configure( ModuleAssembly module )
     {
         // This is required to instantiate [Composition9] composite in [testNewComposition9]
-        module.addComposite( Composition9.class, false );
+        module.addComposites( false );
     }
 
     @SuppressWarnings( "unchecked" )

@@ -40,7 +40,7 @@ public class CompositeSerializationMappingTest
         {
             public void configure( ModuleAssembly module ) throws AssemblyException
             {
-                module.addComposite( ServerChairComposite.class );
+                module.addComposites( ServerChairComposite.class );
             }
         };
 
@@ -49,7 +49,7 @@ public class CompositeSerializationMappingTest
         {
             public void configure( ModuleAssembly module ) throws AssemblyException
             {
-                module.addComposite( ClientChairComposite.class );
+                module.addComposites( ClientChairComposite.class );
             }
         };
 

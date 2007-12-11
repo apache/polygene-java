@@ -26,7 +26,7 @@ public class Composite2Test extends TestCase
         {
             public void configure( ModuleAssembly module ) throws AssemblyException
             {
-                module.addComposite( TestComposite.class );
+                module.addComposites( TestComposite.class );
             }
         };
 
@@ -64,7 +64,7 @@ public class Composite2Test extends TestCase
         {
             public void configure( ModuleAssembly module ) throws AssemblyException
             {
-                module.addComposite( CustomTestComposite.class );
+                module.addComposites( CustomTestComposite.class );
             }
         };
 

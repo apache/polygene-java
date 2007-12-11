@@ -30,9 +30,9 @@ public class SingletonServiceTest
 {
     @Override public void configure( ModuleAssembly module )
     {
-        module.addComposite( TestComposite1.class );
-        module.addComposite( TestComposite2.class );
-        module.addServiceProvider( TestComposite2.class, new Singleton() );
+        module.addComposites( TestComposite1.class );
+        module.addComposites( TestComposite2.class );
+        module.addServiceProvider( new Singleton(), TestComposite2.class );
     }
 
     public void testServiceInjection()
