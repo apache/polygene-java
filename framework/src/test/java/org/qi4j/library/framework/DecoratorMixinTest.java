@@ -15,7 +15,7 @@ public class DecoratorMixinTest extends AbstractQi4jTest
 {
     @Override public void configure( ModuleAssembly module )
     {
-        module.addComposite( Composite1.class );
+        module.addComposites( Composite1.class );
     }
 
     public void testGenericDecoratorOfDomainobject() throws Exception

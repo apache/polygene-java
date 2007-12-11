@@ -22,8 +22,8 @@ public class DescriptorTest extends AbstractQi4jTest
 {
     @Override public void configure( ModuleAssembly module )
     {
-        module.addComposite( DummyComposite.class );
-        module.addComposite( DummyComposite2.class );
+        module.addComposites( DummyComposite.class );
+        module.addComposites( DummyComposite2.class );
     }
 
     public void testDescriptorAsMixin() throws Exception

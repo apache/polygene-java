@@ -29,7 +29,7 @@ public class RMIMixinTest
 {
     @Override public void configure( ModuleAssembly module )
     {
-        module.addComposite( RemoteInterfaceComposite.class );
+        module.addComposites( RemoteInterfaceComposite.class );
     }
 
     // Public --------------------------------------------------------

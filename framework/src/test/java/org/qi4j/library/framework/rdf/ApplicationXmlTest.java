@@ -41,7 +41,7 @@ public class ApplicationXmlTest
         module.getLayerAssembly().getApplicationAssembly().setName( "testapp" );
         module.getLayerAssembly().setName( "testlayer" );
         module.setName( "testmodule" );
-        module.addComposite( TestComposite.class );
+        module.addComposites( TestComposite.class );
     }
 
     public void testApplicationXml()

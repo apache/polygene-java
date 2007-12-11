@@ -18,7 +18,7 @@ public class JavaScriptMixinTest extends AbstractQi4jTest
 {
     @Override public void configure( ModuleAssembly module )
     {
-        module.addComposite( ScriptComposite.class );
+        module.addComposites( ScriptComposite.class );
     }
 
     public void testInvoke() throws Throwable
