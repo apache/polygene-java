@@ -16,7 +16,7 @@
  */
 package org.qi4j.spi.entity;
 
-public class EntityNotFoundException extends PersistenceException
+public class EntityNotFoundException extends StoreException
 {
     private String storeName;
     private String identity;

@@ -14,9 +14,10 @@
 
 package org.qi4j.runtime.composite;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import org.qi4j.composite.PropertyValue;
+import org.qi4j.entity.property.AbstractProperty;
 import org.qi4j.runtime.structure.ModuleContext;
 import org.qi4j.spi.composite.ObjectBinding;
 import org.qi4j.spi.composite.ObjectModel;
@@ -60,18 +61,22 @@ public final class ObjectContext
         return moduleBinding;
     }
 
-    public Object newObjectInstance( ModuleContext moduleContext, Set adapt, Object decoratedObject, Map<String, PropertyValue> objectProperties )
+    public Object newObjectInstance( ModuleContext moduleContext, Set adapt, Object decoratedObject, Map<String, Object> objectProperties )
     {
-        ObjectInjectionContext objectInjectionContext = new ObjectInjectionContext( moduleContext.getCompositeBuilderFactory(), moduleContext.getObjectBuilderFactory(), moduleBinding, adapt, decoratedObject, objectProperties );
+        Map<String, AbstractProperty> properties = new HashMap<String, AbstractProperty>(); // TODO
+
+        ObjectInjectionContext objectInjectionContext = new ObjectInjectionContext( moduleContext.getCompositeBuilderFactory(), moduleContext.getObjectBuilderFactory(), moduleBinding, adapt, decoratedObject, properties );
         Object objectInstance = instanceFactory.newInstance( objectBinding, objectInjectionContext );
 
         // Return
         return objectInstance;
     }
 
-    public void inject( Object instance, ModuleContext moduleContext, Set<Object> adaptContext, Object decoratedObject, Map<String, PropertyValue> objectProperties )
+    public void inject( Object instance, ModuleContext moduleContext, Set<Object> adaptContext, Object decoratedObject, Map<String, Object> objectProperties )
     {
-        ObjectInjectionContext objectInjectionContext = new ObjectInjectionContext( moduleContext.getCompositeBuilderFactory(), moduleContext.getObjectBuilderFactory(), moduleBinding, adaptContext, decoratedObject, objectProperties );
+        Map<String, AbstractProperty> properties = new HashMap<String, AbstractProperty>(); // TODO
+
+        ObjectInjectionContext objectInjectionContext = new ObjectInjectionContext( moduleContext.getCompositeBuilderFactory(), moduleContext.getObjectBuilderFactory(), moduleBinding, adaptContext, decoratedObject, properties );
         instanceFactory.inject( instance, objectBinding, objectInjectionContext );
     }
 }

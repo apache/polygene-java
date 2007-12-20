@@ -16,6 +16,7 @@ package org.qi4j.spi.composite;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
+import org.qi4j.spi.entity.property.PropertyModel;
 
 /**
  * TODO
@@ -25,11 +26,15 @@ public class CompositeMethodModel
 {
     private Method method;
     private Iterable<ParameterModel> parameterModels;
+    private PropertyModel propertyModel;
+    private AssociationModel associationModel;
 
-    public CompositeMethodModel( Method method, Iterable<ParameterModel> parameters )
+    public CompositeMethodModel( Method method, Iterable<ParameterModel> parameters, PropertyModel propertyModel, AssociationModel associationModel )
     {
         this.method = method;
         this.parameterModels = parameters;
+        this.propertyModel = propertyModel;
+        this.associationModel = associationModel;
     }
 
     public Method getMethod()
@@ -40,6 +45,16 @@ public class CompositeMethodModel
     public Iterable<ParameterModel> getParameterModels()
     {
         return parameterModels;
+    }
+
+    public PropertyModel getPropertyModel()
+    {
+        return propertyModel;
+    }
+
+    public AssociationModel getAssociationModel()
+    {
+        return associationModel;
     }
 
     public boolean equals( Object o )

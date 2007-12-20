@@ -23,16 +23,19 @@ import org.qi4j.entity.EntityComposite;
 import org.qi4j.runtime.structure.ModuleContext;
 import org.qi4j.spi.composite.MixinResolution;
 import org.qi4j.spi.entity.EntityStateHolder;
+import org.qi4j.spi.entity.EntityStore;
 
 public class EntityCompositeInstance extends AbstractCompositeInstance
 {
     protected Object[] mixins;
 
     private EntityStateHolder holder;
+    private EntityStore store;
 
-    public EntityCompositeInstance( CompositeContext aContext, ModuleContext moduleContext )
+    public EntityCompositeInstance( CompositeContext aContext, ModuleContext moduleContext, EntityStore store )
     {
         super( aContext, moduleContext );
+        this.store = store;
 
         mixins = new Object[aContext.getCompositeResolution().getMixinCount()];
     }
@@ -57,6 +60,12 @@ public class EntityCompositeInstance extends AbstractCompositeInstance
             }
             else
             {
+                if( holder == null )
+                {
+
+                }
+
+
                 mixin = holder.getMixin( mixinType );
             }
         }
@@ -90,6 +99,11 @@ public class EntityCompositeInstance extends AbstractCompositeInstance
     public void setEntityStateHolder( EntityStateHolder holder )
     {
         this.holder = holder;
+    }
+
+    public EntityStateHolder getHolder()
+    {
+        return holder;
     }
 
     public boolean isReference()

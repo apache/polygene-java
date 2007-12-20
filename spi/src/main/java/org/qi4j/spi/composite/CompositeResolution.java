@@ -22,13 +22,11 @@ public final class CompositeResolution
 {
     private CompositeModel compositeModel;
     private Iterable<CompositeMethodResolution> compositeMethodResolutions;
-    private Iterable<PropertyResolution> propertyResolutions;
     private Iterable<MixinResolution> mixinResolutions;
     private int mixinCount;
 
-    public CompositeResolution( CompositeModel compositeModel, Iterable<CompositeMethodResolution> compositeMethodResolutions, Iterable<PropertyResolution> propertyResolutions, Collection<MixinResolution> mixinResolutions )
+    public CompositeResolution( CompositeModel compositeModel, Iterable<CompositeMethodResolution> compositeMethodResolutions, Collection<MixinResolution> mixinResolutions )
     {
-        this.propertyResolutions = propertyResolutions;
         this.mixinResolutions = mixinResolutions;
         this.compositeModel = compositeModel;
         this.compositeMethodResolutions = compositeMethodResolutions;
@@ -45,24 +43,9 @@ public final class CompositeResolution
         return compositeMethodResolutions;
     }
 
-    public Iterable<PropertyResolution> getPropertyResolutions()
-    {
-        return propertyResolutions;
-    }
-
     public Iterable<MixinResolution> getMixinResolutions()
     {
         return mixinResolutions;
-    }
-
-    public PropertyResolution getPropertyResolution( Method method )
-    {
-        return null; // TODO
-    }
-
-    public PropertyResolution getPropertyResolution( Class mixinType, String name )
-    {
-        return null; // TODO
     }
 
     @Override public int hashCode()

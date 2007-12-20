@@ -15,6 +15,7 @@
 package org.qi4j.spi.composite;
 
 import java.io.Serializable;
+import org.qi4j.spi.entity.property.PropertyModel;
 
 /**
  * TODO

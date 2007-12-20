@@ -15,6 +15,7 @@
 package org.qi4j.spi.composite;
 
 import java.util.List;
+import org.qi4j.spi.entity.property.PropertyBinding;
 
 /**
  * TODO
@@ -26,9 +27,11 @@ public class CompositeMethodBinding
     private List<ConcernBinding> concernBindings;
     private List<SideEffectBinding> sideEffectBindings;
     private MixinBinding mixinBinding;
+    private PropertyBinding propertyBinding;
 
-    public CompositeMethodBinding( CompositeMethodResolution method, Iterable<ParameterBinding> parameterBindings, List<ConcernBinding> concerns, List<SideEffectBinding> sideEffects, MixinBinding mixin )
+    public CompositeMethodBinding( CompositeMethodResolution method, Iterable<ParameterBinding> parameterBindings, List<ConcernBinding> concerns, List<SideEffectBinding> sideEffects, MixinBinding mixin, PropertyBinding propertyBinding )
     {
+        this.propertyBinding = propertyBinding;
         this.parameterBindings = parameterBindings;
         this.compositeMethodResolution = method;
         this.concernBindings = concerns;
@@ -59,6 +62,11 @@ public class CompositeMethodBinding
     public MixinBinding getMixinBinding()
     {
         return mixinBinding;
+    }
+
+    public PropertyBinding getPropertyBinding()
+    {
+        return propertyBinding;
     }
 
     @Override public String toString()

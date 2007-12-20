@@ -39,6 +39,7 @@ import org.qi4j.spi.composite.PropertyResolution;
 import org.qi4j.spi.composite.ResolutionException;
 import org.qi4j.spi.composite.SideEffectModel;
 import org.qi4j.spi.composite.SideEffectResolution;
+import org.qi4j.spi.entity.property.PropertyModel;
 import org.qi4j.spi.injection.InvalidInjectionException;
 import org.qi4j.spi.injection.ResolutionContext;
 
@@ -63,11 +64,8 @@ public class CompositeResolver
         // Map concerns and side-effects to methods
         List<CompositeMethodResolution> methodResolutions = getMethodResolutions( resolutionContext, mixinResolutionsForMethods, resolvedMixins.values() );
 
-        // Resolve properties
-        List<PropertyResolution> propertyResolutions = new ArrayList<PropertyResolution>(); // TODO
-
         CompositeModel compositeModel = resolutionContext.getCompositeModel();
-        CompositeResolution resolution = new CompositeResolution( compositeModel, methodResolutions, propertyResolutions, resolvedMixins.values() );
+        CompositeResolution resolution = new CompositeResolution( compositeModel, methodResolutions, resolvedMixins.values() );
         return resolution;
     }
 
@@ -98,7 +96,7 @@ public class CompositeResolver
         return resolution;
     }
 
-    private MixinResolution resolveMixin( MixinModel mixinModel, ResolutionContext resolutionContext ) throws InvalidInjectionException
+    private MixinResolution resolveMixin( MixinModel mixinModel, ResolutionContext resolutionContext, Map<Method, MixinModel> mixinsForMethods ) throws InvalidInjectionException
     {
         ResolutionContext mixinResolutionContext = new ResolutionContext( mixinModel, resolutionContext.getCompositeModel(), resolutionContext.getModule(), resolutionContext.getLayer(), resolutionContext.getApplication() );
         List<ConstructorResolution> constructors = new ArrayList<ConstructorResolution>();
@@ -108,7 +106,23 @@ public class CompositeResolver
         List<MethodResolution> methods = new ArrayList<MethodResolution>();
         resolveMethodModels( mixinModel.getMethodModels(), methods, mixinResolutionContext );
 
-        MixinResolution resolution = new MixinResolution( mixinModel, constructors, fields, methods );
+        // Compute set of implemented properties in this mixin
+        Map<String, PropertyModel> propertyModels = new HashMap<String, PropertyModel>();
+        for( Map.Entry<Method, MixinModel> entry : mixinsForMethods.entrySet() )
+        {
+            if( entry.getValue().equals( mixinModel ) )
+            {
+                CompositeMethodModel cmm = resolutionContext.getCompositeModel().getCompositeMethodModel( entry.getKey() );
+                PropertyModel pm = cmm.getPropertyModel();
+                if( pm != null )
+                {
+                    propertyModels.put( pm.getName(), pm );
+                }
+
+            }
+        }
+
+        MixinResolution resolution = new MixinResolution( mixinModel, constructors, fields, methods, propertyModels );
         return resolution;
     }
 
@@ -168,7 +182,7 @@ public class CompositeResolver
         {
             try
             {
-                MixinResolution mixinResolution = resolveMixin( orderedUsedMixin, resolutionContext );
+                MixinResolution mixinResolution = resolveMixin( orderedUsedMixin, resolutionContext, mixinsForMethods );
                 mixinResolutions.put( orderedUsedMixin, mixinResolution );
             }
             catch( InvalidInjectionException e )
@@ -331,8 +345,14 @@ public class CompositeResolver
                     parameterResolutions.add( parameterResolution );
                 }
 
+                PropertyResolution propertyResolution = null;
+                if( methodModel.getPropertyModel() != null )
+                {
+                    propertyResolution = new PropertyResolution( methodModel.getPropertyModel(), mixinResolution );
+                }
+
                 // Create aggregation of annotations (interface+mixin, mixin takes precedence)
-                CompositeMethodResolution methodResolution = new CompositeMethodResolution( methodModel, parameterResolutions, methodConcernResolutions, methodSideEffectResolutions, mixinResolution, annotatedElement );
+                CompositeMethodResolution methodResolution = new CompositeMethodResolution( methodModel, parameterResolutions, methodConcernResolutions, methodSideEffectResolutions, mixinResolution, propertyResolution, annotatedElement );
                 methodResolutions.add( methodResolution );
             }
             catch( NoSuchMethodException e )

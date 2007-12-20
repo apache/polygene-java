@@ -84,7 +84,7 @@ public class EntityInjectionProviderFactory
                 }
 */
 
-                QueryBuilderFactory builderFactory = session.getQueryFactory();
+                QueryBuilderFactory builderFactory = session.getQueryBuilderFactory();
 
                 if( rawType.equals( QueryBuilderFactory.class ) )
                 {

@@ -38,7 +38,7 @@ public class ObjectBuilderImpl<T>
 
     private Set<Object> adaptContext;
     private Object decoratedObject;
-    private Map<String, PropertyValue> propertyContext;
+    private Map<String, Object> propertyContext;
 
     ObjectBuilderImpl( ModuleContext moduleContext, ObjectContext objectBinding )
     {
@@ -62,7 +62,7 @@ public class ObjectBuilderImpl<T>
 
     public void properties( PropertyValue... properties )
     {
-        Map<String, PropertyValue> props = getPropertyContext();
+        Map<String, Object> props = getPropertyContext();
         for( PropertyValue property : properties )
         {
             props.put( property.getName(), property );
@@ -112,11 +112,11 @@ public class ObjectBuilderImpl<T>
         return adaptContext;
     }
 
-    private Map<String, PropertyValue> getPropertyContext()
+    private Map<String, Object> getPropertyContext()
     {
         if( !( propertyContext instanceof LinkedHashMap ) )
         {
-            propertyContext = new LinkedHashMap<String, PropertyValue>();
+            propertyContext = new LinkedHashMap<String, Object>();
         }
 
         return propertyContext;

@@ -24,6 +24,7 @@ import java.util.Map;
 import org.qi4j.composite.CompositeInstantiationException;
 import org.qi4j.composite.ParameterConstraint;
 import org.qi4j.runtime.Qi4jRuntime;
+import org.qi4j.runtime.entity.property.PropertyContext;
 import org.qi4j.runtime.structure.ModuleContext;
 import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.composite.CompositeMethodBinding;
@@ -47,9 +48,11 @@ public class CompositeMethodContext
     private ApplicationBinding applicationBinding;
     private CompositeBinding compositeBinding;
     private Qi4jRuntime runtime;
+    private PropertyContext propertyContext;
 
-    public CompositeMethodContext( CompositeMethodBinding compositeMethodBinding, ApplicationBinding applicationBinding, CompositeBinding compositeBinding, Qi4jRuntime runtime )
+    public CompositeMethodContext( CompositeMethodBinding compositeMethodBinding, ApplicationBinding applicationBinding, CompositeBinding compositeBinding, Qi4jRuntime runtime, PropertyContext propertyContext )
     {
+        this.propertyContext = propertyContext;
         this.compositeMethodBinding = compositeMethodBinding;
         this.applicationBinding = applicationBinding;
         this.compositeBinding = compositeBinding;
@@ -59,6 +62,11 @@ public class CompositeMethodContext
     public CompositeMethodBinding getCompositeMethodBinding()
     {
         return compositeMethodBinding;
+    }
+
+    public PropertyContext getPropertyContext()
+    {
+        return propertyContext;
     }
 
     CompositeMethodInstance newCompositeMethodInstance( ModuleContext moduleContext, CompositeMethodInstancePool compositeMethodInstancePool )

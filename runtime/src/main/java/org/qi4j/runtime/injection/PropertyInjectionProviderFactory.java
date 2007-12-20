@@ -1,6 +1,10 @@
 package org.qi4j.runtime.injection;
 
-import org.qi4j.composite.PropertyValue;
+import java.util.Map;
+import org.qi4j.entity.property.AbstractProperty;
+import org.qi4j.entity.property.ReadableProperty;
+import org.qi4j.spi.composite.MixinResolution;
+import org.qi4j.spi.entity.property.PropertyModel;
 import org.qi4j.spi.injection.BindingContext;
 import org.qi4j.spi.injection.InjectionContext;
 import org.qi4j.spi.injection.InjectionProvider;
@@ -20,25 +24,35 @@ public class PropertyInjectionProviderFactory
     public InjectionProvider newInjectionProvider( BindingContext bindingContext ) throws InvalidInjectionException
     {
         InjectionResolution resolution = bindingContext.getInjectionResolution();
-        if( resolution.getInjectionModel().getInjectedClass().equals( PropertyValue.class ) && resolution.getInjectionModel().getRawInjectionType().equals( Iterable.class ) )
+        if( resolution.getInjectionModel().getInjectionClass().equals( String.class ) && resolution.getInjectionModel().getRawInjectionType().equals( Map.class ) )
         {
-            return new PropertySetInjectionProvider();
+            return new PropertyMapInjectionProvider();
+        }
+        else if( AbstractProperty.class.isAssignableFrom( resolution.getInjectionModel().getRawInjectionType() ) )
+        {
+            MixinResolution mixinResolution = (MixinResolution) bindingContext.getAbstractResolution();
+            PropertyInjectionModel pim = (PropertyInjectionModel) resolution.getInjectionModel();
+            PropertyModel propertyModel = mixinResolution.getPropertyModel( pim.getName() );
+
+            return new PropertyInjectionProvider( propertyModel.getQualifiedName() );
         }
         else
         {
-            return new PropertyInjectionProvider( resolution );
+            MixinResolution mixinResolution = (MixinResolution) bindingContext.getAbstractResolution();
+            PropertyInjectionModel pim = (PropertyInjectionModel) resolution.getInjectionModel();
+            PropertyModel propertyModel = mixinResolution.getPropertyModel( pim.getName() );
+
+            return new PropertyValueInjectionProvider( propertyModel.getQualifiedName() );
         }
     }
 
-    private class PropertyInjectionProvider implements InjectionProvider
+    private class PropertyValueInjectionProvider implements InjectionProvider
     {
-        private InjectionResolution property;
-        private String name;
+        private String qualifiedName;
 
-        public PropertyInjectionProvider( InjectionResolution property )
+        public PropertyValueInjectionProvider( String qualifiedName )
         {
-            this.property = property;
-            name = ( (PropertyInjectionModel) property.getInjectionModel() ).getName();
+            this.qualifiedName = qualifiedName;
         }
 
         public Object provideInjection( InjectionContext context )
@@ -46,21 +60,14 @@ public class PropertyInjectionProviderFactory
             if( context instanceof PropertyInjectionContext )
             {
                 PropertyInjectionContext propertyInjectionContext = (PropertyInjectionContext) context;
-                PropertyValue value = propertyInjectionContext.getProperties().get( name );
+                ReadableProperty value = (ReadableProperty) propertyInjectionContext.getProperties().get( qualifiedName );
                 if( value != null )
                 {
-                    return value.getValue();
+                    return value.get();
                 }
                 else
                 {
-                    if( property.getInjectionModel().isOptional() )
-                    {
-                        return null;
-                    }
-                    else
-                    {
-                        throw new InjectionProviderException( "Non-optional property " + name + " had no value when injecting " + property.getAbstractModel().getModelClass().getName() );
-                    }
+                    throw new InjectionProviderException( "Non-optional property " + qualifiedName + " had no value when" );
                 }
             }
 
@@ -68,14 +75,43 @@ public class PropertyInjectionProviderFactory
         }
     }
 
-    private class PropertySetInjectionProvider implements InjectionProvider
+    private class PropertyInjectionProvider implements InjectionProvider
+    {
+        private String qualifiedName;
+
+        public PropertyInjectionProvider( String qualifiedName )
+        {
+            this.qualifiedName = qualifiedName;
+        }
+
+        public Object provideInjection( InjectionContext context )
+        {
+            if( context instanceof PropertyInjectionContext )
+            {
+                PropertyInjectionContext propertyInjectionContext = (PropertyInjectionContext) context;
+                AbstractProperty value = propertyInjectionContext.getProperties().get( qualifiedName );
+                if( value != null )
+                {
+                    return value;
+                }
+                else
+                {
+                    throw new InjectionProviderException( "Non-optional property " + qualifiedName + " had no value when" );
+                }
+            }
+
+            return null;
+        }
+    }
+
+    private class PropertyMapInjectionProvider implements InjectionProvider
     {
         public Object provideInjection( InjectionContext context )
         {
             if( context instanceof PropertyInjectionContext )
             {
                 PropertyInjectionContext propertyInjectionContext = (PropertyInjectionContext) context;
-                return propertyInjectionContext.getProperties().values();
+                return propertyInjectionContext.getProperties();
             }
 
             return null;

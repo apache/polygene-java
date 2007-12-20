@@ -15,8 +15,8 @@
 package org.qi4j.query;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * TODO
@@ -31,9 +31,8 @@ public class QueryableIterable
         this.source = source;
     }
 
-    public <T> T find( Query<T> query )
+    public <T> T find( QueryImpl<T> queryImpl )
     {
-        QueryImpl<T> queryImpl = (QueryImpl<T>) query;
 
         next:
         for( Object candidate : source )
@@ -54,9 +53,8 @@ public class QueryableIterable
         return null;
     }
 
-    public <T> Iterable<T> iterable( Query<T> query )
+    public <T> Iterable<T> iterable( QueryImpl<T> queryImpl )
     {
-        QueryImpl<T> queryImpl = (QueryImpl<T>) query;
         List<T> resultList = new ArrayList<T>();
 
         next:
@@ -78,22 +76,26 @@ public class QueryableIterable
 
         // Order results
         List<OrderBy> orderByList = queryImpl.getOrderBy();
-        OrderByComparator comparator = new OrderByComparator(orderByList);
-        Collections.sort( resultList, comparator);
+        OrderByComparator comparator = new OrderByComparator( orderByList );
+        Collections.sort( resultList, comparator );
 
         // Cut results
         int firstResult = queryImpl.getFirstResult();
         int maxResults = queryImpl.getFirstResult();
-        if (firstResult != -1 || maxResults != -1)
+        if( firstResult != -1 || maxResults != -1 )
         {
             int firstIdx = 0;
             int lastIdx = resultList.size();
-            if (firstResult != -1)
+            if( firstResult != -1 )
+            {
                 firstIdx = firstResult;
-            if (maxResults != -1)
-                lastIdx = Math.min(firstIdx+maxResults, resultList.size());
+            }
+            if( maxResults != -1 )
+            {
+                lastIdx = Math.min( firstIdx + maxResults, resultList.size() );
+            }
 
-            resultList = resultList.subList(firstIdx, lastIdx);
+            resultList = resultList.subList( firstIdx, lastIdx );
         }
 
         return resultList;

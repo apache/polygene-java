@@ -14,8 +14,10 @@
 
 package org.qi4j.bootstrap;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.qi4j.composite.Composite;
@@ -32,6 +34,8 @@ public class ModuleAssembly
     private Set<Class> objects = new LinkedHashSet<Class>();
     private Map<Class, ServiceProvider> serviceProviders = new HashMap<Class, ServiceProvider>();
     private String name;
+    private List<PropertyBuilder> propertyBuilders = new ArrayList<PropertyBuilder>();
+    private List<AssociationBuilder> associationBuilders = new ArrayList<AssociationBuilder>();
 
     public ModuleAssembly( LayerAssembly layerAssembly )
     {
@@ -111,6 +115,20 @@ public class ModuleAssembly
         addObjects( serviceProvider.getClass() );
     }
 
+    public PropertyBuilder addProperty()
+    {
+        PropertyBuilder builder = new PropertyBuilder();
+        propertyBuilders.add( builder );
+        return builder;
+    }
+
+    public AssociationBuilder addAssociation()
+    {
+        AssociationBuilder builder = new AssociationBuilder();
+        associationBuilders.add( builder );
+        return builder;
+    }
+
     Set<Class<? extends Composite>> getPublicComposites()
     {
         return publicComposites;
@@ -129,6 +147,16 @@ public class ModuleAssembly
     Map<Class, ServiceProvider> getServiceProviders()
     {
         return serviceProviders;
+    }
+
+    List<PropertyBuilder> getPropertyBuilders()
+    {
+        return propertyBuilders;
+    }
+
+    public List<AssociationBuilder> getAssociationBuilders()
+    {
+        return associationBuilders;
     }
 
     String getName()

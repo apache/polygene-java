@@ -17,27 +17,26 @@
 package org.qi4j.spi.entity;
 
 import java.util.List;
-import org.qi4j.spi.composite.CompositeModel;
 
-public interface PersistentStore
+public interface EntityStore
 {
     String getName();
 
-    boolean exists( String identity ) throws PersistenceException;
+    boolean exists( String identity ) throws StoreException;
 
-    EntityStateHolder newEntityInstance( String identity, CompositeModel compositeModel ) throws PersistenceException;
+    EntityStateHolder newEntityInstance( String identity, Class compositeType ) throws StoreException;
 
-    EntityStateHolder getEntityInstance( String identity, CompositeModel compositeModel ) throws PersistenceException;
+    EntityStateHolder getEntityInstance( String identity, Class compositeType ) throws StoreException;
 
-    List<EntityStateHolder> getEntityInstances( List<String> identities, CompositeModel compositeModel ) throws PersistenceException;
+    List<EntityStateHolder> getEntityInstances( List<String> identities, Class compositeType ) throws StoreException;
 
     /**
      * Delete the entity with the given identity from the store.
      *
      * @param identity The identity of the entity to be deleted from the store.
      * @return true if an entity was removed, otherwise false.
-     * @throws PersistenceException if there is a physical problem with the connection to the backing store.
+     * @throws StoreException if there is a physical problem with the connection to the backing store.
      */
     boolean delete( String identity )
-        throws PersistenceException;
+        throws StoreException;
 }

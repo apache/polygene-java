@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.qi4j.composite.ConstraintDeclaration;
+import org.qi4j.composite.scope.AssociationField;
+import org.qi4j.composite.scope.AssociationParameter;
 import org.qi4j.composite.scope.PropertyField;
 import org.qi4j.composite.scope.PropertyParameter;
 import org.qi4j.injection.InjectionScope;
@@ -19,6 +21,7 @@ import org.qi4j.spi.composite.InvalidCompositeException;
 import org.qi4j.spi.composite.MethodModel;
 import org.qi4j.spi.composite.ParameterConstraintsModel;
 import org.qi4j.spi.composite.ParameterModel;
+import org.qi4j.spi.injection.AssociationInjectionModel;
 import org.qi4j.spi.injection.DependencyInjectionModel;
 import org.qi4j.spi.injection.InjectionModel;
 import org.qi4j.spi.injection.PropertyInjectionModel;
@@ -159,12 +162,7 @@ public abstract class AbstractModelFactory
     private InjectionModel newInjectionModel( Annotation annotation, Type injectionType, Class injectedType, Field field )
     {
         InjectionModel model;
-        if( annotation.annotationType().equals( PropertyParameter.class ) )
-        {
-            String name = ( (PropertyParameter) annotation ).value();
-            model = new PropertyInjectionModel( annotation.annotationType(), injectionType, injectedType, false, name );
-        }
-        else if( annotation.annotationType().equals( PropertyField.class ) )
+        if( annotation.annotationType().equals( PropertyField.class ) )
         {
             String name = ( (PropertyField) annotation ).value();
             if( name.equals( "" ) )
@@ -173,6 +171,26 @@ public abstract class AbstractModelFactory
             }
             boolean optional = ( (PropertyField) annotation ).optional();
             model = new PropertyInjectionModel( annotation.annotationType(), injectionType, injectedType, optional, name );
+        }
+        else if( annotation.annotationType().equals( AssociationField.class ) )
+        {
+            String name = ( (AssociationField) annotation ).value();
+            if( name.equals( "" ) )
+            {
+                name = field.getName();
+            }
+            boolean optional = ( (AssociationField) annotation ).optional();
+            model = new AssociationInjectionModel( annotation.annotationType(), injectionType, injectedType, optional, name );
+        }
+        else if( annotation.annotationType().equals( PropertyParameter.class ) )
+        {
+            String name = ( (PropertyParameter) annotation ).value();
+            model = new PropertyInjectionModel( annotation.annotationType(), injectionType, injectedType, false, name );
+        }
+        else if( annotation.annotationType().equals( AssociationParameter.class ) )
+        {
+            String name = ( (AssociationParameter) annotation ).value();
+            model = new AssociationInjectionModel( annotation.annotationType(), injectionType, injectedType, false, name );
         }
         else
         {

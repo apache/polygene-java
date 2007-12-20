@@ -19,7 +19,7 @@ package org.qi4j.query;
  */
 public interface Queryable
 {
-    <T> T find( Query<T> query );
+    <T> T find( QueryImpl<T> query );
 
-    <T> Iterable<T> iterable( Query<T> query );
+    <T> Iterable<T> iterable( QueryImpl<T> query );
 }

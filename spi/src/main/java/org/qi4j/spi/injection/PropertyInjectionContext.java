@@ -15,12 +15,12 @@
 package org.qi4j.spi.injection;
 
 import java.util.Map;
-import org.qi4j.composite.PropertyValue;
+import org.qi4j.entity.property.AbstractProperty;
 
 /**
  * TODO
  */
 public interface PropertyInjectionContext
 {
-    Map<String, PropertyValue> getProperties();
+    Map<String, AbstractProperty> getProperties();
 }

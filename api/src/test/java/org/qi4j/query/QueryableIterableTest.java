@@ -22,6 +22,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import junit.framework.TestCase;
+import static org.qi4j.query.OrderBy.Order.DESCENDING;
 import static org.qi4j.query.QueryExpression.eq;
 import static org.qi4j.query.QueryExpression.var;
 
@@ -37,7 +38,7 @@ public class QueryableIterableTest extends TestCase
         objects.add( new MyObjectImpl( "Foo", 3, new Date() ) );
         Calendar tomorrow = Calendar.getInstance();
         tomorrow.roll( Calendar.DAY_OF_WEEK, 1 );
-        objects.add( new MyObjectImpl( "Bar", 3, tomorrow.getTime() ) );
+        objects.add( new MyObjectImpl( "Bar", 5, tomorrow.getTime() ) );
 
         queryableIterable = new QueryableIterable( objects );
 
@@ -82,6 +83,20 @@ public class QueryableIterableTest extends TestCase
         {
             System.out.println( myObject );
         }
+    }
+
+    public void testOrderBy() throws Exception
+    {
+        MyObject param = queryBuilder.parameter( MyObject.class );
+        Query<MyObject> query = queryBuilder.orderBy( param.getValue() ).newQuery();
+        assertEquals( getDesiredResults( "Foo", "Bar" ), getResults( query ) );
+    }
+
+    public void testOrderByDescending() throws Exception
+    {
+        MyObject param = queryBuilder.parameter( MyObject.class );
+        Query<MyObject> query = queryBuilder.orderBy( param.getValue(), DESCENDING ).newQuery();
+        assertEquals( getDesiredResults( "Bar", "Foo" ), getResults( query ) );
     }
 
     private List<MyObject> getDesiredResults( String... names )

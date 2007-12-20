@@ -14,6 +14,8 @@
 
 package org.qi4j.spi.composite;
 
+import org.qi4j.spi.entity.property.PropertyBinding;
+
 /**
  * A mixin is an implementation of a particular interface,
  * and is used as a fragment in a composite.
@@ -21,13 +23,21 @@ package org.qi4j.spi.composite;
 public final class MixinBinding
     extends FragmentBinding
 {
-    public MixinBinding( MixinResolution mixinResolution, ConstructorBinding constructorBinding, Iterable<FieldBinding> fieldBindings, Iterable<MethodBinding> methodBindings )
+    private Iterable<PropertyBinding> propertyBindings;
+
+    public MixinBinding( MixinResolution mixinResolution, ConstructorBinding constructorBinding, Iterable<FieldBinding> fieldBindings, Iterable<MethodBinding> methodBindings, Iterable<PropertyBinding> propertyBindings )
     {
         super( mixinResolution, constructorBinding, fieldBindings, methodBindings );
+        this.propertyBindings = propertyBindings;
     }
 
     public MixinResolution getMixinResolution()
     {
         return (MixinResolution) getAbstractResolution();
+    }
+
+    public Iterable<PropertyBinding> getPropertyBindings()
+    {
+        return propertyBindings;
     }
 }

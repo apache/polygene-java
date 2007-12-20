@@ -29,9 +29,14 @@ import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.CompositeInstantiationException;
 import org.qi4j.composite.PropertyValue;
+import org.qi4j.entity.EntitySession;
+import org.qi4j.entity.property.PropertyChange;
+import org.qi4j.entity.property.PropertyChangeObserver;
 import org.qi4j.runtime.composite.CompositeContext;
+import org.qi4j.runtime.entity.property.NullPropertyContainer;
+import org.qi4j.runtime.entity.property.PropertyContext;
+import org.qi4j.runtime.entity.property.PropertyInstance;
 import org.qi4j.spi.composite.MixinResolution;
-import org.qi4j.spi.composite.PropertyResolution;
 
 /**
  *
@@ -43,9 +48,11 @@ public class CompositeBuilderImpl<T extends Composite>
     private ModuleContext moduleContext;
     private CompositeContext context;
 
+    private EntitySession entitySession;
+
     private Set adaptContext;
     private Object decoratedObject;
-    private Map<MixinResolution, Map<String, PropertyValue>> propertyContext;
+    private Map<MixinResolution, Map<PropertyContext, Object>> propertyContext;
 
     CompositeBuilderImpl( ModuleContext moduleContext, CompositeContext context )
     {
@@ -68,12 +75,12 @@ public class CompositeBuilderImpl<T extends Composite>
     {
         for( PropertyValue property : properties )
         {
-            PropertyResolution resolution = context.getCompositeResolution().getPropertyResolution( mixinType, property.getName() );
-            if( resolution == null )
+            PropertyContext propertyContext = context.getPropertyContext( mixinType, property.getName() );
+            if( propertyContext == null )
             {
                 throw new CompositeInstantiationException( "No property named " + property.getName() + " found in mixin for type " + mixinType.getName() );
             }
-            setProperty( resolution, property );
+            setProperty( propertyContext, property.getValue() );
         }
     }
 
@@ -111,7 +118,7 @@ public class CompositeBuilderImpl<T extends Composite>
 
     public T newInstance()
     {
-        return (T) context.newCompositeInstance( moduleContext, adaptContext, decoratedObject, propertyContext ).getProxy();
+        return compositeInterface.cast( context.newCompositeInstance( moduleContext, adaptContext, decoratedObject, propertyContext, entitySession ).getProxy() );
     }
 
 
@@ -135,6 +142,11 @@ public class CompositeBuilderImpl<T extends Composite>
         };
     }
 
+    void attach( EntitySession entitySession )
+    {
+        this.entitySession = entitySession;
+    }
+
     // Private ------------------------------------------------------
     private Set getAdaptContext()
     {
@@ -145,25 +157,27 @@ public class CompositeBuilderImpl<T extends Composite>
         return adaptContext;
     }
 
-    private Map<MixinResolution, Map<String, PropertyValue>> getPropertyContext()
+    private Map<MixinResolution, Map<PropertyContext, Object>> getPropertyContext()
     {
         if( propertyContext == null )
         {
-            propertyContext = new LinkedHashMap<MixinResolution, Map<String, PropertyValue>>();
+            propertyContext = new LinkedHashMap<MixinResolution, Map<PropertyContext, Object>>();
         }
         return propertyContext;
     }
 
-    private <K> void setProperty( PropertyResolution resolution, PropertyValue property )
+    private void setProperty( PropertyContext propertyContext, Object property )
     {
-        Map<MixinResolution, Map<String, PropertyValue>> compositeProperties = getPropertyContext();
-        Map<String, PropertyValue> mixinProperties = compositeProperties.get( resolution.getMixinResolution() );
+        Map<MixinResolution, Map<PropertyContext, Object>> compositeProperties = getPropertyContext();
+        MixinResolution mixinResolution = propertyContext.getPropertyBinding().getPropertyResolution().getMixinResolution();
+        Map<PropertyContext, Object> mixinProperties = compositeProperties.get( mixinResolution );
         if( mixinProperties == null )
         {
-            mixinProperties = new HashMap<String, PropertyValue>();
-            compositeProperties.put( resolution.getMixinResolution(), mixinProperties );
+            mixinProperties = new HashMap<PropertyContext, Object>();
+            compositeProperties.put( mixinResolution, mixinProperties );
         }
-        mixinProperties.put( property.getName(), property );
+
+        mixinProperties.put( propertyContext, property );
     }
 
     private class PropertiesInvocationHandler implements InvocationHandler
@@ -174,11 +188,28 @@ public class CompositeBuilderImpl<T extends Composite>
 
         public Object invoke( Object o, Method method, Object[] objects ) throws Throwable
         {
-            PropertyResolution propertyResolution = context.getCompositeResolution().getPropertyResolution( method );
-            if( propertyResolution != null )
             {
-                PropertyValue propertyValue = PropertyValue.property( propertyResolution.getPropertyModel().getName(), objects[ 0 ] );
-                setProperty( propertyResolution, propertyValue );
+                final PropertyContext propertyContext = context.getMethodDescriptor( method ).getCompositeMethodContext().getPropertyContext();
+                if( propertyContext != null )
+                {
+                    PropertyInstance<Object> mutableProperty = new PropertyInstance<Object>( new NullPropertyContainer<Object>(), propertyContext.getPropertyBinding().getDefaultValue() );
+                    mutableProperty.addChangeObserver( new PropertyChangeObserver<Object>()
+                    {
+                        public void onChange( PropertyChange<Object> propertyChange )
+                        {
+                            setProperty( propertyContext, propertyChange.getNewValue() );
+                        }
+                    } );
+                    return mutableProperty;
+                }
+            }
+
+            // TODO: This is for getters. Should it be deprecated?
+            PropertyContext propertyContext = context.getPropertyContext( method.getDeclaringClass(), method.getName().substring( 3 ) );
+            if( propertyContext != null )
+            {
+                PropertyValue propertyValue = PropertyValue.property( propertyContext.getPropertyBinding().getPropertyResolution().getPropertyModel().getName(), objects[ 0 ] );
+                setProperty( propertyContext, propertyValue );
             }
             else
             {

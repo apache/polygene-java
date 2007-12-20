@@ -11,6 +11,8 @@
 */
 package org.qi4j.spi.composite;
 
+import org.qi4j.spi.entity.property.PropertyModel;
+
 /**
  * Base class for fragments. Fragments are composed into objects.
  *

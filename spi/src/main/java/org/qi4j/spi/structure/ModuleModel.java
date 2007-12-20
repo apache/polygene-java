@@ -15,6 +15,7 @@
 package org.qi4j.spi.structure;
 
 import java.io.Serializable;
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 import org.qi4j.spi.composite.CompositeModel;
@@ -31,16 +32,18 @@ public class ModuleModel
     private Iterable<CompositeModel> privateComposites;
     private Map<Class, ServiceProvider> serviceProviders;
     private List<ObjectModel> objectModels;
+    private Map<Method, PropertyDescriptor> propertyDescriptors;
 
     private String name;
 
-    public ModuleModel( Map<Class, ServiceProvider> serviceProviders, String name, Iterable<CompositeModel> publicComposites, Iterable<CompositeModel> privateComposites, List<ObjectModel> objectModels )
+    public ModuleModel( Map<Class, ServiceProvider> serviceProviders, String name, Iterable<CompositeModel> publicComposites, Iterable<CompositeModel> privateComposites, List<ObjectModel> objectModels, Map<Method, PropertyDescriptor> propertyDescriptors )
     {
         this.privateComposites = privateComposites;
         this.publicComposites = publicComposites;
         this.name = name;
         this.serviceProviders = serviceProviders;
         this.objectModels = objectModels;
+        this.propertyDescriptors = propertyDescriptors;
     }
 
     public Iterable<CompositeModel> getPublicComposites()
@@ -66,5 +69,10 @@ public class ModuleModel
     public String getName()
     {
         return name;
+    }
+
+    public PropertyDescriptor getPropertyDescriptor( Method propertyMethod )
+    {
+        return propertyDescriptors.get( propertyMethod );
     }
 }

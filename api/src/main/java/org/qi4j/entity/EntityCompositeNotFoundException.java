@@ -20,26 +20,30 @@ package org.qi4j.entity;
  * was not found during a lookup call.
  */
 public class EntityCompositeNotFoundException
-    extends PersistenceException
+    extends EntitySessionException
 {
-    public EntityCompositeNotFoundException()
-    {
-    }
+    private String identity;
+    private Class compositeType;
 
-    public EntityCompositeNotFoundException( String message )
+    public EntityCompositeNotFoundException( String message, String identity, Class compositeType )
     {
         super( message );
+        this.identity = identity;
+        this.compositeType = compositeType;
     }
 
-    public EntityCompositeNotFoundException( String message, Throwable cause )
+    public String getIdentity()
     {
-        super( message, cause );
+        return identity;
     }
 
-    public EntityCompositeNotFoundException( Throwable cause )
+    public Class getCompositeType()
     {
-        super( cause );
+        return compositeType;
     }
 
-
+    @Override public String getMessage()
+    {
+        return super.getMessage() + "(" + getIdentity() + " of type " + compositeType.getName() + ")";
+    }
 }

@@ -21,20 +21,18 @@ import java.lang.reflect.Type;
 /**
  * TODO
  */
-public class PropertyModel
+public class AssociationModel
     implements Serializable
 {
     private String name;
     private Type type;
-    private Method writeMethod;
-    private Method readMethod;
+    private Method accessor; // Interface accessor
 
-    public PropertyModel( String name, Type type, Method writeMethod, Method readMethod )
+    public AssociationModel( String name, Type type, Method accessor )
     {
         this.name = name;
         this.type = type;
-        this.writeMethod = writeMethod;
-        this.readMethod = readMethod;
+        this.accessor = accessor;
     }
 
     public String getName()
@@ -47,23 +45,8 @@ public class PropertyModel
         return type;
     }
 
-    public Method getWriteMethod()
+    public Method getAccessor()
     {
-        return writeMethod;
-    }
-
-    public Method getReadMethod()
-    {
-        return readMethod;
-    }
-
-    public boolean isWriteable()
-    {
-        return writeMethod != null;
-    }
-
-    public boolean isReadable()
-    {
-        return readMethod != null;
+        return accessor;
     }
 }

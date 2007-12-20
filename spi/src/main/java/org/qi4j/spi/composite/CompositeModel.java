@@ -14,9 +14,11 @@ package org.qi4j.spi.composite;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.qi4j.spi.injection.InjectionModel;
@@ -34,13 +36,12 @@ public final class CompositeModel
     private Iterable<ConcernModel> concernModels;
     private Iterable<SideEffectModel> sideEffectModels;
     private Iterable<CompositeMethodModel> thisAsModels;
-    private Iterable<PropertyModel> propertyModels;
 
     private Map<Class<? extends Annotation>, List<ConstraintModel>> constraintModelMappings;
+    private Map<Method, CompositeMethodModel> compositeMethodModelMap;
 
-    public CompositeModel( Class compositeClass, Class proxyClass, Collection<CompositeMethodModel> methodModels, Iterable<MixinModel> mixinModels, Iterable<ConstraintModel> constraintModels, Iterable<ConcernModel> concernModels, Iterable<SideEffectModel> sideEffectModels, Iterable<CompositeMethodModel> thisAsModels, Map<Class<? extends Annotation>, List<ConstraintModel>> constraintModelMappings, Iterable<PropertyModel> propertyModels )
+    public CompositeModel( Class compositeClass, Class proxyClass, Collection<CompositeMethodModel> methodModels, Iterable<MixinModel> mixinModels, Iterable<ConstraintModel> constraintModels, Iterable<ConcernModel> concernModels, Iterable<SideEffectModel> sideEffectModels, Iterable<CompositeMethodModel> thisAsModels, Map<Class<? extends Annotation>, List<ConstraintModel>> constraintModelMappings )
     {
-        this.propertyModels = propertyModels;
         this.proxyClass = proxyClass;
         this.constraintModelMappings = constraintModelMappings;
         this.constraintModels = constraintModels;
@@ -50,6 +51,12 @@ public final class CompositeModel
         this.mixinModels = mixinModels;
         this.concernModels = concernModels;
         this.sideEffectModels = sideEffectModels;
+
+        compositeMethodModelMap = new HashMap<Method, CompositeMethodModel>();
+        for( CompositeMethodModel methodModel : methodModels )
+        {
+            compositeMethodModelMap.put( methodModel.getMethod(), methodModel );
+        }
     }
 
     public Class getCompositeClass()
@@ -90,11 +97,6 @@ public final class CompositeModel
     public Iterable<CompositeMethodModel> getThisCompositeAsModels()
     {
         return thisAsModels;
-    }
-
-    public Iterable<PropertyModel> getPropertyModels()
-    {
-        return propertyModels;
     }
 
     public List<MixinModel> getImplementations( Class aType )
@@ -255,5 +257,10 @@ public final class CompositeModel
         }
 
         return injectionModels;
+    }
+
+    public CompositeMethodModel getCompositeMethodModel( Method key )
+    {
+        return compositeMethodModelMap.get( key );
     }
 }

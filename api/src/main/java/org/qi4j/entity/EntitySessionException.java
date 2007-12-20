@@ -14,25 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.spi.entity;
+package org.qi4j.entity;
 
-public class PersistenceException extends Exception
+public class EntitySessionException extends RuntimeException
 {
-    public PersistenceException()
+
+    public EntitySessionException()
     {
     }
 
-    public PersistenceException( String message )
+    public EntitySessionException( String message )
     {
         super( message );
     }
 
-    public PersistenceException( String message, Throwable cause )
+    public EntitySessionException( String message, Throwable cause )
     {
         super( message, cause );
     }
 
-    public PersistenceException( Throwable cause )
+    public EntitySessionException( Throwable cause )
     {
         super( cause );
     }

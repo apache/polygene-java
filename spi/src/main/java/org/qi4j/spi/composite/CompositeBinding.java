@@ -30,7 +30,7 @@ public final class CompositeBinding
 
     private Set<MixinBinding> mixinBindings; // List of used mixin bindings
 
-    private Map<Method, CompositeMethodBinding> methodMappings; // Method -> methodModel resolution
+    private Map<Method, CompositeMethodBinding> methodMappings; // Method -> method resolution
 
     public CompositeBinding( CompositeResolution compositeResolution, Collection<CompositeMethodBinding> methodBindings, Set<MixinBinding> mixinBindings, Map<Method, CompositeMethodBinding> methodMappings )
     {

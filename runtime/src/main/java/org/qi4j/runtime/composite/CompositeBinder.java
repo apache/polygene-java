@@ -15,13 +15,18 @@
 package org.qi4j.runtime.composite;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.qi4j.entity.property.AbstractProperty;
+import org.qi4j.entity.property.PropertyContainer;
+import org.qi4j.runtime.entity.property.PropertyInstance;
 import org.qi4j.spi.composite.BindingException;
 import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.composite.CompositeMethodBinding;
@@ -45,11 +50,14 @@ import org.qi4j.spi.composite.ParameterConstraintsResolution;
 import org.qi4j.spi.composite.ParameterResolution;
 import org.qi4j.spi.composite.SideEffectBinding;
 import org.qi4j.spi.composite.SideEffectResolution;
+import org.qi4j.spi.entity.property.PropertyBinding;
+import org.qi4j.spi.entity.property.PropertyModel;
 import org.qi4j.spi.injection.BindingContext;
 import org.qi4j.spi.injection.InjectionBinding;
 import org.qi4j.spi.injection.InjectionProviderFactory;
 import org.qi4j.spi.injection.InjectionResolution;
 import org.qi4j.spi.injection.InvalidInjectionException;
+import org.qi4j.spi.structure.PropertyDescriptor;
 
 /**
  * TODO
@@ -57,6 +65,7 @@ import org.qi4j.spi.injection.InvalidInjectionException;
 public class CompositeBinder
 {
     private InjectionProviderFactory injectionProviderFactory;
+
 
     public CompositeBinder( InjectionProviderFactory injectionProviderFactory )
     {
@@ -70,8 +79,47 @@ public class CompositeBinder
         CompositeResolution compositeResolution = bindingContext.getCompositeResolution();
         Iterable<MixinResolution> mixinResolutions = compositeResolution.getMixinResolutions();
         Map<MixinResolution, MixinBinding> mixinMappings = new HashMap<MixinResolution, MixinBinding>();
+        Map<MixinResolution, Map<PropertyModel, PropertyBinding>> mixinProperties = new HashMap<MixinResolution, Map<PropertyModel, PropertyBinding>>();
         try
         {
+            Iterable<CompositeMethodResolution> compositeMethodResolutions = compositeResolution.getCompositeMethodResolutions();
+            for( CompositeMethodResolution compositeMethodResolution : compositeMethodResolutions )
+            {
+                PropertyModel propertyModel = compositeMethodResolution.getCompositeMethodModel().getPropertyModel();
+                if( propertyModel != null )
+                {
+                    Class<? extends AbstractProperty> propertyImplementation = PropertyInstance.class;
+                    Constructor<? extends AbstractProperty> propertyConstructor = null;
+                    try
+                    {
+                        propertyConstructor = propertyImplementation.getConstructor( PropertyContainer.class, Object.class );
+                    }
+                    catch( NoSuchMethodException e )
+                    {
+                        throw new BindingException( "Could not get constructor of PropertyInstance" );
+                    }
+                    PropertyDescriptor propertyDescriptor = bindingContext.getModuleResolution().getModuleModel().getPropertyDescriptor( propertyModel.getAccessor() );
+                    Map<Class, Object> propertyInfos;
+                    if( propertyDescriptor != null )
+                    {
+                        propertyInfos = propertyDescriptor.getPropertyInfos();
+                    }
+                    else
+                    {
+                        propertyInfos = Collections.emptyMap();
+                    }
+
+                    PropertyBinding propertyBinding = new PropertyBinding( compositeMethodResolution.getPropertyResolution(), propertyImplementation, propertyConstructor, propertyInfos, propertyDescriptor != null ? propertyDescriptor.getDefaultValue() : null );
+                    Map<PropertyModel, PropertyBinding> propertyBindings = mixinProperties.get( compositeMethodResolution.getMixinResolution() );
+                    if( propertyBindings == null )
+                    {
+                        propertyBindings = new HashMap<PropertyModel, PropertyBinding>();
+                        mixinProperties.put( compositeMethodResolution.getMixinResolution(), propertyBindings );
+                    }
+                    propertyBindings.put( propertyModel, propertyBinding );
+                }
+            }
+
             for( MixinResolution mixinResolution : mixinResolutions )
             {
                 BindingContext mixinContext = new BindingContext( null, mixinResolution, compositeResolution, bindingContext.getModuleResolution(), bindingContext.getLayerResolution(), bindingContext.getApplicationResolution() );
@@ -89,14 +137,19 @@ public class CompositeBinder
                 Iterable<MethodResolution> methodResolutions = mixinResolution.getMethodResolutions();
                 List<MethodBinding> methodBindings = bindMethods( mixinContext, methodResolutions );
 
-                MixinBinding mixinBinding = new MixinBinding( mixinResolution, constructorBinding, fieldBindings, methodBindings );
+                Map<PropertyModel, PropertyBinding> mixinPropertyMap = mixinProperties.get( mixinResolution );
+                if( mixinPropertyMap == null )
+                {
+                    mixinPropertyMap = Collections.emptyMap();
+                }
+                MixinBinding mixinBinding = new MixinBinding( mixinResolution, constructorBinding, fieldBindings, methodBindings, mixinPropertyMap.values() );
                 mixinBindings.add( mixinBinding );
                 mixinMappings.put( mixinResolution, mixinBinding );
             }
 
-            Iterable<CompositeMethodResolution> compositeMethodResolutions = compositeResolution.getCompositeMethodResolutions();
             List<CompositeMethodBinding> compositeMethodBindings = new ArrayList<CompositeMethodBinding>();
             Map<Method, CompositeMethodBinding> methodMappings = new HashMap<Method, CompositeMethodBinding>();
+
             for( CompositeMethodResolution methodResolution : compositeMethodResolutions )
             {
                 Iterable<ParameterResolution> parameterResolutions = methodResolution.getParameterResolutions();
@@ -131,7 +184,14 @@ public class CompositeBinder
                 }
 
                 MixinBinding mixinBinding = mixinMappings.get( methodResolution.getMixinResolution() );
-                CompositeMethodBinding methodBinding = new CompositeMethodBinding( methodResolution, parameterBindings, concernBindings, sideEffectBindings, mixinBinding );
+                PropertyBinding propertyBinding = null;
+                PropertyModel propertyModel = methodResolution.getCompositeMethodModel().getPropertyModel();
+                if( propertyModel != null )
+                {
+                    Map<PropertyModel, PropertyBinding> propertyBindings = mixinProperties.get( methodResolution.getMixinResolution() );
+                    propertyBinding = propertyBindings.get( propertyModel );
+                }
+                CompositeMethodBinding methodBinding = new CompositeMethodBinding( methodResolution, parameterBindings, concernBindings, sideEffectBindings, mixinBinding, propertyBinding );
                 compositeMethodBindings.add( methodBinding );
                 methodMappings.put( methodResolution.getCompositeMethodModel().getMethod(), methodBinding );
             }

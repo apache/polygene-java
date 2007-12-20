@@ -43,7 +43,10 @@ import org.qi4j.composite.NullArgumentException;
 import org.qi4j.composite.ParameterConstraint;
 import org.qi4j.composite.SideEffects;
 import org.qi4j.entity.EntityComposite;
+import org.qi4j.entity.association.AbstractAssociation;
+import org.qi4j.entity.property.AbstractProperty;
 import org.qi4j.runtime.entity.EntityMixin;
+import org.qi4j.spi.composite.AssociationModel;
 import org.qi4j.spi.composite.CompositeMethodModel;
 import org.qi4j.spi.composite.CompositeModel;
 import org.qi4j.spi.composite.ConcernModel;
@@ -55,8 +58,8 @@ import org.qi4j.spi.composite.InvalidCompositeException;
 import org.qi4j.spi.composite.MethodModel;
 import org.qi4j.spi.composite.MixinModel;
 import org.qi4j.spi.composite.ParameterModel;
-import org.qi4j.spi.composite.PropertyModel;
 import org.qi4j.spi.composite.SideEffectModel;
+import org.qi4j.spi.entity.property.PropertyModel;
 
 public final class CompositeModelFactory
     extends AbstractModelFactory
@@ -126,10 +129,7 @@ public final class CompositeModelFactory
             constraintModelList.add( constraintModel );
         }
 
-        // Find properties
-        List<PropertyModel> propertyModels = new ArrayList<PropertyModel>(); // TODO
-
-        CompositeModel model = new CompositeModel( compositeClass, proxyClass, methods, mixins, constraintModels, concerns, sideEffects, thisCompositeAsModels, constraintModelMappings, propertyModels );
+        CompositeModel model = new CompositeModel( compositeClass, proxyClass, methods, mixins, constraintModels, concerns, sideEffects, thisCompositeAsModels, constraintModelMappings );
         return model;
     }
 
@@ -355,7 +355,26 @@ public final class CompositeModelFactory
             ParameterModel parameterModel = getParameterModel( parameterAnnotation, compositeClass, parameterType );
             parameterModels.add( parameterModel );
         }
-        CompositeMethodModel methodModel = new CompositeMethodModel( method, parameterModels );
+
+        // AbstractProperty model, if any
+        PropertyModel propertyModel = null;
+        if( AbstractProperty.class.isAssignableFrom( method.getReturnType() ) )
+        {
+            Type returnType = method.getGenericReturnType();
+            Type propertyType = ( (ParameterizedType) returnType ).getActualTypeArguments()[ 0 ];
+            propertyModel = new PropertyModel( method.getName(), propertyType, method );
+        }
+
+        // AbstractAssociation model, if any
+        AssociationModel associationModel = null;
+        if( AbstractAssociation.class.isAssignableFrom( method.getReturnType() ) )
+        {
+            Type returnType = method.getGenericReturnType();
+            Type associationType = ( (ParameterizedType) returnType ).getActualTypeArguments()[ 0 ];
+            associationModel = new AssociationModel( method.getName(), associationType, method );
+        }
+
+        CompositeMethodModel methodModel = new CompositeMethodModel( method, parameterModels, propertyModel, associationModel );
         return methodModel;
     }
 
@@ -400,6 +419,34 @@ public final class CompositeModelFactory
         }
 
         return methodModels.values();
+    }
+
+    private void addProperties( Iterable<CompositeMethodModel> methods, List<PropertyModel> propertyModels )
+    {
+        for( CompositeMethodModel method : methods )
+        {
+            if( AbstractProperty.class.isAssignableFrom( method.getMethod().getReturnType() ) )
+            {
+                Type returnType = method.getMethod().getGenericReturnType();
+                Type propertyType = ( (ParameterizedType) returnType ).getActualTypeArguments()[ 0 ];
+                PropertyModel propertyModel = new PropertyModel( method.getMethod().getName(), propertyType, method.getMethod() );
+                propertyModels.add( propertyModel );
+            }
+        }
+    }
+
+    private void addAssociations( Iterable<CompositeMethodModel> methods, List<AssociationModel> associationModels )
+    {
+        for( CompositeMethodModel method : methods )
+        {
+            if( AbstractAssociation.class.isAssignableFrom( method.getMethod().getReturnType() ) )
+            {
+                Type returnType = method.getMethod().getGenericReturnType();
+                Type associationType = ( (ParameterizedType) returnType ).getActualTypeArguments()[ 0 ];
+                AssociationModel associationModel = new AssociationModel( method.getMethod().getName(), associationType, method.getMethod() );
+                associationModels.add( associationModel );
+            }
+        }
     }
 
     private Class getFragmentClass( Class mixinClass )

@@ -3,7 +3,7 @@ package org.qi4j.spi.injection;
 import java.util.Map;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.ObjectBuilderFactory;
-import org.qi4j.composite.PropertyValue;
+import org.qi4j.entity.property.AbstractProperty;
 import org.qi4j.spi.structure.ModuleBinding;
 
 /**
@@ -15,9 +15,9 @@ public class ObjectInjectionContext
 {
     private Iterable<Object> adapt;
     private Object decorated;
-    private Map<String, PropertyValue> properties;
+    private Map<String, AbstractProperty> properties;
 
-    public ObjectInjectionContext( CompositeBuilderFactory compositeBuilderFactory, ObjectBuilderFactory objectBuilderFactory, ModuleBinding moduleBinding, Iterable<Object> adapt, Object decorated, Map<String, PropertyValue> properties )
+    public ObjectInjectionContext( CompositeBuilderFactory compositeBuilderFactory, ObjectBuilderFactory objectBuilderFactory, ModuleBinding moduleBinding, Iterable<Object> adapt, Object decorated, Map<String, AbstractProperty> properties )
     {
         super( compositeBuilderFactory, objectBuilderFactory, moduleBinding );
         this.properties = properties;
@@ -35,7 +35,7 @@ public class ObjectInjectionContext
         return decorated;
     }
 
-    public Map<String, PropertyValue> getProperties()
+    public Map<String, AbstractProperty> getProperties()
     {
         return properties;
     }

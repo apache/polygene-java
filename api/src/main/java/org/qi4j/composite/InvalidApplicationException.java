@@ -20,7 +20,6 @@ package org.qi4j.composite;
 public class InvalidApplicationException
     extends RuntimeException
 {
-
     public InvalidApplicationException( String string )
     {
         super( string );

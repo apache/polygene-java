@@ -11,6 +11,9 @@
 */
 package org.qi4j.spi.composite;
 
+import java.util.Map;
+import org.qi4j.spi.entity.property.PropertyModel;
+
 /**
  * A mixin is an implementation of a particular interface,
  * and is used as a fragment in a composite.
@@ -18,14 +21,22 @@ package org.qi4j.spi.composite;
 public final class MixinResolution
     extends FragmentResolution
 {
+    private Map<String, PropertyModel> propertyModels;
+
     // Constructors --------------------------------------------------
-    public MixinResolution( MixinModel mixinModel, Iterable<ConstructorResolution> constructorResolutions, Iterable<FieldResolution> fieldResolutions, Iterable<MethodResolution> methodResolutions )
+    public MixinResolution( MixinModel mixinModel, Iterable<ConstructorResolution> constructorResolutions, Iterable<FieldResolution> fieldResolutions, Iterable<MethodResolution> methodResolutions, Map<String, PropertyModel> propertyModels )
     {
         super( mixinModel, constructorResolutions, fieldResolutions, methodResolutions );
+        this.propertyModels = propertyModels;
     }
 
     public MixinModel getMixinModel()
     {
         return (MixinModel) getAbstractModel();
+    }
+
+    public PropertyModel getPropertyModel( String name )
+    {
+        return propertyModels.get( name );
     }
 }

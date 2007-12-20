@@ -19,8 +19,10 @@ import java.util.Map;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.ObjectBuilderFactory;
+import org.qi4j.entity.EntitySessionFactory;
 import org.qi4j.runtime.composite.CompositeContext;
 import org.qi4j.runtime.composite.ObjectContext;
+import org.qi4j.runtime.entity.EntitySessionFactoryImpl;
 import org.qi4j.spi.structure.ModuleBinding;
 
 /**
@@ -35,6 +37,7 @@ public class ModuleContext
 
     private CompositeBuilderFactory compositeBuilderFactory;
     private ObjectBuilderFactory objectBuilderFactory;
+    private EntitySessionFactory entitySessionFactory;
 
     public ModuleContext( ModuleBinding moduleBinding, Map<Class<? extends Composite>, CompositeContext> compositeContexts, Map<Class, ObjectContext> instantiableObjectContexts, Map<Class<? extends Composite>, ModuleContext> moduleContexts )
     {
@@ -59,6 +62,8 @@ public class ModuleContext
 
         compositeBuilderFactory = new ModuleCompositeBuilderFactory( this );
         objectBuilderFactory = new ModuleObjectBuilderFactory( this );
+
+        entitySessionFactory = new EntitySessionFactoryImpl( compositeBuilderFactory, null, null );
     }
 
     public ModuleBinding getModuleBinding()
@@ -74,6 +79,11 @@ public class ModuleContext
     public ObjectBuilderFactory getObjectBuilderFactory()
     {
         return objectBuilderFactory;
+    }
+
+    public EntitySessionFactory getEntitySessionFactory()
+    {
+        return entitySessionFactory;
     }
 
     public ModuleInstance newModuleInstance()

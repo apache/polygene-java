@@ -21,36 +21,34 @@ import org.qi4j.entity.EntitySession;
 import org.qi4j.entity.EntitySessionFactory;
 import org.qi4j.entity.IdentityGenerator;
 import org.qi4j.runtime.composite.UuidIdentityGenerator;
-import org.qi4j.spi.entity.PersistentStore;
+import org.qi4j.spi.entity.EntityStore;
 
 public final class EntitySessionFactoryImpl
     implements EntitySessionFactory
 {
-    private EntitySession session;
-
+    private CompositeBuilderFactory cbf;
+    private EntityStore store;
+    private IdentityGenerator idGenerator;
 
     public EntitySessionFactoryImpl( CompositeBuilderFactory cbf )
     {
         this( cbf, null, null );
     }
 
-    public EntitySessionFactoryImpl( CompositeBuilderFactory cbf, PersistentStore store, IdentityGenerator idGenerator )
+    public EntitySessionFactoryImpl( CompositeBuilderFactory cbf, EntityStore store, IdentityGenerator idGenerator )
     {
         if( idGenerator == null )
         {
             idGenerator = new UuidIdentityGenerator();
         }
 
-        this.session = new EntitySessionImpl( store, cbf, idGenerator );
-    }
-
-    public EntitySessionFactoryImpl( EntitySession session )
-    {
-        this.session = session;
+        this.cbf = cbf;
+        this.store = store;
+        this.idGenerator = idGenerator;
     }
 
     public EntitySession newEntitySession()
     {
-        return session;  //TODO: Brain-dead implemention for now
+        return new EntitySessionImpl( cbf, idGenerator, store );
     }
 }

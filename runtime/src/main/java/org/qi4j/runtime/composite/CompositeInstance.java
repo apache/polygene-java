@@ -17,6 +17,9 @@
 package org.qi4j.runtime.composite;
 
 import java.lang.reflect.Method;
+import org.qi4j.composite.Composite;
+import org.qi4j.entity.property.PropertyContainer;
+import org.qi4j.runtime.entity.property.CompositePropertyContainer;
 import org.qi4j.runtime.structure.ModuleContext;
 import org.qi4j.spi.composite.InvalidCompositeException;
 
@@ -27,10 +30,12 @@ public class CompositeInstance extends AbstractCompositeInstance
 {
     final private Object[] mixins;
     private Object proxy;
+    private PropertyContainer<Object> propertyContainer;
 
-    public CompositeInstance( CompositeContext aContext, ModuleContext moduleContext )
+    public CompositeInstance( CompositeContext aContext, ModuleContext moduleContext, PropertyContainer<Object> propertyContainer )
     {
         super( aContext, moduleContext );
+        this.propertyContainer = propertyContainer;
 
         mixins = new Object[aContext.getCompositeResolution().getMixinCount()];
     }
@@ -87,8 +92,14 @@ public class CompositeInstance extends AbstractCompositeInstance
         return proxy;
     }
 
-    public void setProxy( Object proxy )
+    public void setProxy( Composite proxy )
     {
         this.proxy = proxy;
+        propertyContainer = new CompositePropertyContainer<Object>( propertyContainer, proxy );
+    }
+
+    public PropertyContainer<Object> getPropertyContainer()
+    {
+        return propertyContainer;
     }
 }

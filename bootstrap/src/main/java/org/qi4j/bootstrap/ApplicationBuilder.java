@@ -14,16 +14,21 @@
 
 package org.qi4j.bootstrap;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.qi4j.composite.Composite;
 import org.qi4j.runtime.Qi4jRuntime;
 import org.qi4j.runtime.composite.CompositeContext;
 import org.qi4j.runtime.composite.CompositeMethodContext;
+import org.qi4j.runtime.composite.MixinContext;
 import org.qi4j.runtime.composite.ObjectContext;
+import org.qi4j.runtime.entity.property.PropertyContext;
 import org.qi4j.runtime.structure.ApplicationContext;
 import org.qi4j.runtime.structure.LayerContext;
 import org.qi4j.runtime.structure.ModuleContext;
@@ -31,9 +36,12 @@ import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.composite.CompositeMethodBinding;
 import org.qi4j.spi.composite.CompositeModel;
 import org.qi4j.spi.composite.CompositeResolution;
+import org.qi4j.spi.composite.MixinBinding;
 import org.qi4j.spi.composite.ObjectBinding;
 import org.qi4j.spi.composite.ObjectModel;
 import org.qi4j.spi.composite.ObjectResolution;
+import org.qi4j.spi.entity.property.PropertyBinding;
+import org.qi4j.spi.entity.property.PropertyModel;
 import org.qi4j.spi.injection.BindingContext;
 import org.qi4j.spi.injection.ResolutionContext;
 import org.qi4j.spi.service.ServiceProvider;
@@ -46,6 +54,7 @@ import org.qi4j.spi.structure.LayerResolution;
 import org.qi4j.spi.structure.ModuleBinding;
 import org.qi4j.spi.structure.ModuleModel;
 import org.qi4j.spi.structure.ModuleResolution;
+import org.qi4j.spi.structure.PropertyDescriptor;
 
 /**
  * TODO
@@ -60,6 +69,7 @@ public class ApplicationBuilder
     private Map<LayerModel, LayerAssembly> layerModelAssemblyMap = new HashMap<LayerModel, LayerAssembly>();
     private Map<LayerAssembly, LayerModel> layerAssemblyModelMap = new HashMap<LayerAssembly, LayerModel>();
     private Map<LayerModel, LayerResolution> layerResolutionMap = new HashMap<LayerModel, LayerResolution>();
+    private Map<ModuleModel, ModuleAssembly> moduleModelAssemblyMap = new HashMap<ModuleModel, ModuleAssembly>();
 
     public ApplicationBuilder( Qi4jRuntime runtime )
     {
@@ -149,6 +159,7 @@ public class ApplicationBuilder
         {
             ModuleModel moduleModel = newModuleModel( moduleAssembly );
             modules.add( moduleModel );
+            moduleModelAssemblyMap.put( moduleModel, moduleAssembly );
 
             // Add public Composites in Module to Layer
             // Must be explicitly marked as public in the Layer to be added!
@@ -211,6 +222,7 @@ public class ApplicationBuilder
         for( ModuleBinding moduleBinding : moduleBindings )
         {
             Map<Class<? extends Composite>, CompositeContext> moduleCompositeContexts = new HashMap<Class<? extends Composite>, CompositeContext>();
+            Map<String, PropertyContext> propertyContexts = new HashMap<String, PropertyContext>();
             for( Map.Entry<Class<? extends Composite>, CompositeBinding> entry : moduleBinding.getCompositeBindings().entrySet() )
             {
                 CompositeBinding binding = entry.getValue();
@@ -218,11 +230,33 @@ public class ApplicationBuilder
                 Iterable<CompositeMethodBinding> compositeMethodBindings = binding.getCompositeMethodBindings();
                 for( CompositeMethodBinding compositeMethodBinding : compositeMethodBindings )
                 {
-                    CompositeMethodContext compositeMethodContext = new CompositeMethodContext( compositeMethodBinding, applicationBinding, entry.getValue(), runtime );
+                    PropertyContext propertyContext = null;
+
+                    if( compositeMethodBinding.getPropertyBinding() != null )
+                    {
+                        propertyContext = new PropertyContext( compositeMethodBinding.getPropertyBinding() );
+                        PropertyModel propertyModel = propertyContext.getPropertyBinding().getPropertyResolution().getPropertyModel();
+                        propertyContexts.put( propertyModel.getQualifiedName(), propertyContext );
+                    }
+
+                    CompositeMethodContext compositeMethodContext = new CompositeMethodContext( compositeMethodBinding, applicationBinding, entry.getValue(), runtime, propertyContext );
                     compositeMethodContexts.add( compositeMethodContext );
                 }
 
-                CompositeContext compositeContext = new CompositeContext( binding, compositeMethodContexts, moduleBinding, runtime.getInstanceFactory() );
+                Set<MixinContext> mixinContexts = new HashSet<MixinContext>();
+                for( MixinBinding mixinBinding : entry.getValue().getMixinBindings() )
+                {
+                    Set<PropertyContext> mixinProperties = new HashSet<PropertyContext>();
+                    for( PropertyBinding propertyBinding : mixinBinding.getPropertyBindings() )
+                    {
+                        String propertyKey = propertyBinding.getPropertyResolution().getPropertyModel().getQualifiedName();
+                        mixinProperties.add( propertyContexts.get( propertyKey ) );
+                    }
+                    MixinContext mixinContext = new MixinContext( mixinBinding, mixinProperties );
+                    mixinContexts.add( mixinContext );
+                }
+
+                CompositeContext compositeContext = new CompositeContext( binding, compositeMethodContexts, moduleBinding, runtime.getInstanceFactory(), propertyContexts, mixinContexts );
                 moduleCompositeContexts.put( entry.getKey(), compositeContext );
             }
             compositeContexts.put( moduleBinding.getModuleResolution().getModuleModel(), moduleCompositeContexts );
@@ -264,7 +298,15 @@ public class ApplicationBuilder
             objectModels.add( objectModel );
         }
 
-        ModuleModel moduleModel = new ModuleModel( moduleAssembly.getServiceProviders(), moduleAssembly.getName(), publicCompositeModels, privateCompositeModels, objectModels );
+        List<PropertyBuilder> propertyBuilders = moduleAssembly.getPropertyBuilders();
+        Map<Method, PropertyDescriptor> propertyDescriptors = new HashMap<Method, PropertyDescriptor>();
+        for( PropertyBuilder propertyBuilder : propertyBuilders )
+        {
+            Method accessor = propertyBuilder.getPropertyDescriptor().getAccessor();
+            propertyDescriptors.put( accessor, propertyBuilder.getPropertyDescriptor() );
+        }
+
+        ModuleModel moduleModel = new ModuleModel( moduleAssembly.getServiceProviders(), moduleAssembly.getName(), publicCompositeModels, privateCompositeModels, objectModels, propertyDescriptors );
         return moduleModel;
     }
 

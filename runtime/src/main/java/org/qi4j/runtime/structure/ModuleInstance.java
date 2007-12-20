@@ -15,8 +15,6 @@
 package org.qi4j.runtime.structure;
 
 import java.util.Map;
-import org.qi4j.composite.CompositeBuilderFactory;
-import org.qi4j.composite.ObjectBuilderFactory;
 import org.qi4j.spi.service.ServiceProvider;
 
 /**
@@ -25,36 +23,22 @@ import org.qi4j.spi.service.ServiceProvider;
 public class ModuleInstance
 {
     private ModuleContext moduleContext;
-    private CompositeBuilderFactory compositeBuilderFactory;
-    private ObjectBuilderFactory objectBuilderFactory;
 
     public ModuleInstance( ModuleContext moduleContext )
     {
         this.moduleContext = moduleContext;
-        compositeBuilderFactory = new ModuleCompositeBuilderFactory( moduleContext );
-        objectBuilderFactory = new ModuleObjectBuilderFactory( moduleContext );
 
         // Inject service providers
         Map<Class, ServiceProvider> providers = moduleContext.getModuleBinding().getModuleResolution().getModuleModel().getServiceProviders();
         for( ServiceProvider serviceProvider : providers.values() )
         {
             Class serviceProviderType = serviceProvider.getClass();
-            objectBuilderFactory.newObjectBuilder( serviceProviderType ).inject( serviceProvider );
+            moduleContext.getObjectBuilderFactory().newObjectBuilder( serviceProviderType ).inject( serviceProvider );
         }
     }
 
     public ModuleContext getModuleContext()
     {
         return moduleContext;
-    }
-
-    public CompositeBuilderFactory getCompositeBuilderFactory()
-    {
-        return compositeBuilderFactory;
-    }
-
-    public ObjectBuilderFactory getObjectBuilderFactory()
-    {
-        return objectBuilderFactory;
     }
 }
