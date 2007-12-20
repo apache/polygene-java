@@ -34,11 +34,12 @@ import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.PersistenceException;
 import org.qi4j.spi.composite.CompositeModel;
 import org.qi4j.spi.entity.EntityStateHolder;
-import org.qi4j.spi.entity.PersistentStore;
+import org.qi4j.spi.entity.EntityStore;
+import org.qi4j.spi.entity.StoreException;
 
 
 public class JdbmStorage
-    implements PersistentStore
+    implements EntityStore
 {
     private TransactionManager transactionManager;
     private RecordManager recordManager;
@@ -192,27 +193,38 @@ public class JdbmStorage
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public boolean exists( String identity ) throws org.qi4j.spi.entity.PersistenceException
+    public boolean exists( String identity ) throws org.qi4j.spi.entity.StoreException
     {
         return false;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public EntityStateHolder newEntityInstance( String identity, CompositeModel compositeModel ) throws org.qi4j.spi.entity.PersistenceException
+    public EntityStateHolder newEntityInstance( String identity, CompositeModel compositeModel ) throws org.qi4j.spi.entity.StoreException
     {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public EntityStateHolder getEntityInstance( String identity, CompositeModel compositeModel ) throws org.qi4j.spi.entity.PersistenceException
+    public EntityStateHolder getEntityInstance( String identity, Class compositeType ) throws org.qi4j.spi.entity.StoreException
     {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public List<EntityStateHolder> getEntityInstances( List<String> identities, CompositeModel compositeModel ) throws org.qi4j.spi.entity.PersistenceException
+    public List<EntityStateHolder> getEntityInstances( List<String> identities, CompositeModel compositeModel ) throws org.qi4j.spi.entity.StoreException
     {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public boolean delete( String identity ) throws org.qi4j.spi.entity.PersistenceException
+
+    public EntityStateHolder newEntityInstance( String identity, Class compositeType ) throws StoreException
+    {
+        return null;
+    }
+
+    public List<EntityStateHolder> getEntityInstances( List<String> identities, Class compositeType ) throws StoreException
+    {
+        return null;
+    }
+
+    public boolean delete( String identity ) throws org.qi4j.spi.entity.StoreException
     {
         return false;  //To change body of implemented methods use File | Settings | File Templates.
     }

@@ -27,12 +27,13 @@ import org.qi4j.runtime.composite.ProxyReferenceInvocationHandler;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.composite.CompositeModel;
 import org.qi4j.spi.entity.EntityStateHolder;
-import org.qi4j.spi.entity.PersistentStore;
+import org.qi4j.spi.entity.EntityStore;
+import org.qi4j.spi.entity.StoreException;
 import org.qi4j.spi.serialization.SerializablePersistenceSpi;
 import org.qi4j.spi.serialization.SerializedObject;
 
 public final class SerializablePersistence
-    implements PersistentStore
+    implements EntityStore
 {
     private SerializablePersistenceSpi delegate;
     private Qi4jSPI spi;
@@ -68,13 +69,13 @@ public final class SerializablePersistence
     {
         String id = entity.getIdentity();
         Map<Class, SerializedObject> mixins = delegate.getInstance( id );
+        CompositeInstance handler = CompositeInstance.getCompositeInstance( entity.dereference() );
         if( mixins == null )
         {
-            throw new EntityCompositeNotFoundException( "Object with identity " + id + " does not exist" );
+            throw new EntityCompositeNotFoundException( "Object not found", id, handler.getContext().getCompositeModel().getCompositeClass() );
         }
 
         ProxyReferenceInvocationHandler proxyHandler = (ProxyReferenceInvocationHandler) Proxy.getInvocationHandler( entity );
-        CompositeInstance handler = CompositeInstance.getCompositeInstance( entity.dereference() );
 /* TODO Fix this code!
         Object[] deserializedMixins = handler.getMixins();
         for( Map.Entry<Class, SerializedObject> entry : mixins.entrySet() )
@@ -87,7 +88,7 @@ public final class SerializablePersistence
             }
             catch( ClassNotFoundException e )
             {
-                throw new PersistenceException( e );
+                throw new StoreException( e );
             }
             deserializedMixins.put( entry.getKey(), deserializedMixin );
         }
@@ -98,7 +99,7 @@ public final class SerializablePersistence
         }
         catch( Exception e )
         {
-            throw new PersistenceException( e );
+            throw new StoreException( e );
         }
 */
     }
@@ -149,27 +150,37 @@ public final class SerializablePersistence
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public boolean exists( String identity ) throws org.qi4j.spi.entity.PersistenceException
+    public boolean exists( String identity ) throws org.qi4j.spi.entity.StoreException
     {
         return false;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public EntityStateHolder newEntityInstance( String identity, CompositeModel compositeModel ) throws org.qi4j.spi.entity.PersistenceException
+    public EntityStateHolder newEntityInstance( String identity, CompositeModel compositeModel ) throws org.qi4j.spi.entity.StoreException
     {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public EntityStateHolder getEntityInstance( String identity, CompositeModel compositeModel ) throws org.qi4j.spi.entity.PersistenceException
+    public EntityStateHolder getEntityInstance( String identity, Class compositeType ) throws org.qi4j.spi.entity.StoreException
     {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public List<EntityStateHolder> getEntityInstances( List<String> identities, CompositeModel compositeModel ) throws org.qi4j.spi.entity.PersistenceException
+    public List<EntityStateHolder> getEntityInstances( List<String> identities, CompositeModel compositeModel ) throws org.qi4j.spi.entity.StoreException
     {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public boolean delete( String identity ) throws org.qi4j.spi.entity.PersistenceException
+    public EntityStateHolder newEntityInstance( String identity, Class compositeType ) throws StoreException
+    {
+        return null;
+    }
+
+    public List<EntityStateHolder> getEntityInstances( List<String> identities, Class compositeType ) throws StoreException
+    {
+        return null;
+    }
+
+    public boolean delete( String identity ) throws org.qi4j.spi.entity.StoreException
     {
         return false;  //To change body of implemented methods use File | Settings | File Templates.
     }

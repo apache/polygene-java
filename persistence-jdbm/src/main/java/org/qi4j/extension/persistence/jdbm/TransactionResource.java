@@ -55,6 +55,7 @@ public class TransactionResource
     public void read( EntityComposite aProxy )
     {
         String objectId = aProxy.getIdentity();
+        CompositeInstance instance = CompositeInstance.getCompositeInstance( aProxy.dereference() );
         try
         {
             long recordId = recordManager.getNamedObject( objectId );
@@ -62,8 +63,7 @@ public class TransactionResource
             {
                 // Here we need to check the "last value" in the Transaction log. Should this be built on the calls instead?
                 String identity = aProxy.getIdentity();
-                CompositeInstance handler = CompositeInstance.getCompositeInstance( aProxy.dereference() );
-                Object[] mixins = handler.getMixins();
+                Object[] mixins = instance.getMixins();
 
                 for( Operation op : operations )
                 {
@@ -71,7 +71,7 @@ public class TransactionResource
                 }
                 if( mixins.length == 0 )
                 {
-                    throw new EntityCompositeNotFoundException( "Object with identity " + objectId + " does not exist" );
+                    throw new EntityCompositeNotFoundException( "Object not found", objectId, instance.getContext().getCompositeModel().getCompositeClass() );
                 }
             }
             else
@@ -79,11 +79,10 @@ public class TransactionResource
                 Map<Class, Serializable> mixins = (Map<Class, Serializable>) recordManager.fetch( recordId );
                 if( mixins == null )
                 {
-                    throw new EntityCompositeNotFoundException( "Object with identity " + objectId + " does not exist" );
+                    throw new EntityCompositeNotFoundException( "Object not found", objectId, instance.getContext().getCompositeModel().getCompositeClass() );
                 }
 
                 ProxyReferenceInvocationHandler proxyHandler = (ProxyReferenceInvocationHandler) Proxy.getInvocationHandler( aProxy );
-                CompositeInstance handler = CompositeInstance.getCompositeInstance( aProxy.dereference() );
 //                Object[] existingMixins = handler.getMixins();
 //                for( Object existingMixin : existingMixins )
 //                {
@@ -94,7 +93,7 @@ public class TransactionResource
         }
         catch( EOFException e )
         {
-            throw new EntityCompositeNotFoundException( "Object with identity " + objectId + " does not exist" );
+            throw new EntityCompositeNotFoundException( "Object not found", objectId, instance.getContext().getCompositeModel().getCompositeClass() );
         }
         catch( Exception e )
         {

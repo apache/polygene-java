@@ -97,7 +97,7 @@ public final class BinaryFilePersistenceProvider
         }
         catch( FileNotFoundException e )
         {
-            throw new EntityCompositeNotFoundException( anId );
+            throw new EntityCompositeNotFoundException( "Object not found", anId, null );
         }
         catch( IOException e )
         {

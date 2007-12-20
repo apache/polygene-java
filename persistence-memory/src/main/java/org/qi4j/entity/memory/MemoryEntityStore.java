@@ -25,26 +25,26 @@ import org.qi4j.spi.composite.CompositeModel;
 import org.qi4j.spi.entity.EntityAlreadyExistsException;
 import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityStateHolder;
-import org.qi4j.spi.entity.PersistenceException;
-import org.qi4j.spi.entity.PersistentStore;
+import org.qi4j.spi.entity.EntityStore;
+import org.qi4j.spi.entity.StoreException;
 import org.qi4j.spi.serialization.SerializedObject;
 
-public class MemoryPersistentStore
-    implements PersistentStore
+public class MemoryEntityStore
+    implements EntityStore
 {
     private ConcurrentHashMap<String, Map<Class, SerializedObject>> entityStore;
     private ConcurrentHashMap<String, EntityStateHolder> cache;
 
     private String name;
 
-    public MemoryPersistentStore( String name )
+    public MemoryEntityStore( String name )
     {
         this.name = name;
         entityStore = new ConcurrentHashMap<String, Map<Class, SerializedObject>>();
     }
 
     public EntityStateHolder newEntityInstance( String identity, CompositeModel compositeModel )
-        throws PersistenceException
+        throws StoreException
     {
         if( entityStore.contains( identity ) )
         {
@@ -56,8 +56,8 @@ public class MemoryPersistentStore
         return stateHolder;
     }
 
-    public EntityStateHolder getEntityInstance( String identity, CompositeModel compositeModel )
-        throws PersistenceException
+    public EntityStateHolder getEntityInstance( String identity, Class compositeType )
+        throws StoreException
     {
         EntityStateHolder stateHolder = cache.get( identity );
         if( stateHolder == null )
@@ -66,25 +66,35 @@ public class MemoryPersistentStore
             {
                 throw new EntityNotFoundException( getName(), identity );
             }
-            stateHolder = new MemoryEntityStateHolder( identity, compositeModel, this );
+            stateHolder = new MemoryEntityStateHolder( identity, null, this );
             cache.put( identity, stateHolder );
         }
         return stateHolder;
     }
 
+    public EntityStateHolder newEntityInstance( String identity, Class compositeType ) throws StoreException
+    {
+        return null;
+    }
+
+    public List<EntityStateHolder> getEntityInstances( List<String> identities, Class compositeType ) throws StoreException
+    {
+        return null;
+    }
+
     public List<EntityStateHolder> getEntityInstances( List<String> identities, CompositeModel compositeModel )
-        throws PersistenceException
+        throws StoreException
     {
         List<EntityStateHolder> result = new ArrayList<EntityStateHolder>( identities.size() );
         for( String id : identities )
         {
-            result.add( getEntityInstance( id, compositeModel ) );
+            result.add( getEntityInstance( id, compositeModel.getCompositeClass() ) );
         }
         return result;
     }
 
     public boolean delete( String identity )
-        throws PersistenceException
+        throws StoreException
     {
         cache.remove( identity );
         return entityStore.remove( identity ) != null;

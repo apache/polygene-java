@@ -25,11 +25,11 @@ public class MemoryEntityStateHolder
 {
     private String identity;
     private CompositeModel model;
-    private MemoryPersistentStore memoryPersistentStore;
+    private MemoryEntityStore memoryPersistentStore;
 
     private ConcurrentHashMap<Class<?>, Object> mixinStates; // shared
 
-    public MemoryEntityStateHolder( String identity, CompositeModel model, MemoryPersistentStore memoryPersistentStore )
+    public MemoryEntityStateHolder( String identity, CompositeModel model, MemoryEntityStore memoryPersistentStore )
     {
         this.identity = identity;
         this.model = model;
