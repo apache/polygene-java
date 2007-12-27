@@ -16,10 +16,11 @@ package org.qi4j.library.framework.rdf;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.io.PrintWriter;
+import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.bootstrap.LayerAssembly;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.Concerns;
 import org.qi4j.composite.Mixins;
@@ -28,6 +29,14 @@ import org.qi4j.composite.scope.ConcernFor;
 import org.qi4j.composite.scope.SideEffectFor;
 import org.qi4j.composite.scope.ThisCompositeAs;
 import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.library.framework.rdf.parse.StructureParser;
+import org.openrdf.model.Graph;
+import org.openrdf.model.Statement;
+import org.openrdf.rio.n3.N3WriterFactory;
+import org.openrdf.rio.RDFWriter;
+import org.openrdf.rio.RDFHandlerException;
+import org.openrdf.rio.RDFWriterFactory;
+import org.openrdf.rio.rdfxml.RDFXMLWriterFactory;
 
 /**
  * TODO
@@ -38,8 +47,9 @@ public class ApplicationXmlTest
 
     @Override public void configure( ModuleAssembly module )
     {
-        module.getLayerAssembly().getApplicationAssembly().setName( "testapp" );
-        module.getLayerAssembly().setName( "testlayer" );
+        LayerAssembly layerAssembly = module.getLayerAssembly();
+        layerAssembly.getApplicationAssembly().setName( "testapp" );
+        layerAssembly.setName( "testlayer" );
         module.setName( "testmodule" );
         module.addComposites( TestComposite.class );
     }
@@ -47,14 +57,49 @@ public class ApplicationXmlTest
     public void testApplicationXml()
         throws Exception
     {
-        ApplicationRdfXml applicationRdfXml = new ApplicationRdfXml( application.getApplicationContext() );
+        String name = "application";
+        StructureParser parser = new StructureParser();
+        Graph graph = parser.parse( application.getApplicationContext(), "urn:qi4j:dev/tests/application" );
+        writeN3( graph, name );
+        writeXml( graph, name );
+    }
 
-        File file = new File( "application.xml" );
+    private void writeN3( Graph graph, String name )
+        throws RDFHandlerException, IOException
+    {
+        File file = new File( name + ".rdfn3" );
         FileWriter fileWriter = new FileWriter( file );
-        PrintWriter out = new PrintWriter( fileWriter );
-        applicationRdfXml.print( out );
+        RDFWriterFactory writerFactory = new N3WriterFactory();
+        RDFWriter writer = writerFactory.getWriter( fileWriter );
+        writeOutput( writer, graph );
+        fileWriter.close();
+        System.out.println( "RDF/N3 written to " + file.getAbsolutePath() );
+    }
+
+    private void writeXml( Graph graph, String name )
+        throws RDFHandlerException, IOException
+    {
+        File file = new File( name + ".rdfxml" );
+        FileWriter fileWriter = new FileWriter( file );
+        RDFWriterFactory writerFactory = new RDFXMLWriterFactory();
+        RDFWriter writer = writerFactory.getWriter( fileWriter );
+        writeOutput( writer, graph );
         fileWriter.close();
         System.out.println( "RDF/XML written to " + file.getAbsolutePath() );
+    }
+
+    private void writeOutput( RDFWriter writer, Graph graph )
+        throws RDFHandlerException
+    {
+        writer.startRDF();
+        writer.handleNamespace( "qi4j", Qi4jRdf.QI4J );
+        writer.handleNamespace( "rdf", Rdfs.RDF );
+        writer.handleNamespace( "rdfs", Rdfs.RDFS );
+        for( Statement st : graph )
+        {
+            writer.handleStatement( st );
+        }
+        writer.endRDF();
     }
 
     @Mixins( AMixin.class )

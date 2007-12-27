@@ -43,5 +43,26 @@
 	    <artifactId>js</artifactId>
 	    <version>1.6R5</version>
     </dependency>
+    <dependency>
+	    <groupId>org.openrdf</groupId>
+	    <artifactId>openrdf-model</artifactId>
+	    <version>2.0-rc2</version>
+    </dependency>
+    <dependency>
+	    <groupId>org.openrdf</groupId>
+	    <artifactId>openrdf-rio-n3</artifactId>
+	    <version>2.0-rc2</version>
+    </dependency>
+    <dependency>
+	    <groupId>org.openrdf</groupId>
+	    <artifactId>openrdf-rio-rdfxml</artifactId>
+	    <version>2.0-rc2</version>
+    </dependency>
   </dependencies>
+  <repositories>
+    <repository>
+      <id>aduna-repository</id>
+      <url>http://repository.aduna-software.org/maven2</url>
+    </repository>
+  </repositories>
 </project>

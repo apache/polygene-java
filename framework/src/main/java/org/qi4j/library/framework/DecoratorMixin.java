@@ -16,18 +16,7 @@ import org.qi4j.composite.scope.Decorate;
 public class DecoratorMixin
     implements InvocationHandler
 {
-    Object delegate;
-
-    /**
-     * If you want the decorated object to be of a specific type,
-     * then subclass this mixin and change the type of the constructor parameter.
-     *
-     * @param delegate the object to be decorated
-     */
-    public DecoratorMixin( @Decorate Object delegate )
-    {
-        this.delegate = delegate;
-    }
+    @Decorate Object delegate;
 
     public Object invoke( Object object, Method method, Object[] args ) throws Throwable
     {
