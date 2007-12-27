@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Rickard …berg. All Rights Reserved.
+ * Copyright (c) 2007, Rickard ï¿½berg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,8 +33,7 @@ import org.qi4j.spi.Qi4jSPI;
 /**
  * Base class for Composite tests
  */
-public abstract class AbstractQi4jTest
-    extends TestCase
+public abstract class AbstractQi4jTest extends TestCase
     implements Assembly
 {
     protected Qi4j api;
