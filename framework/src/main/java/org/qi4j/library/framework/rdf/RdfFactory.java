@@ -17,16 +17,12 @@
  */
 package org.qi4j.library.framework.rdf;
 
-import org.qi4j.library.framework.rdf.parse.ApplicationParser;
+import org.openrdf.rio.RDFHandlerException;
+import org.openrdf.rio.UnsupportedRDFormatException;
 import org.qi4j.library.framework.rdf.parse.StructureParser;
 import org.qi4j.library.framework.rdf.serializer.N3Serializer;
 import org.qi4j.library.framework.rdf.serializer.RdfXmlSerializer;
 import org.qi4j.library.framework.rdf.serializer.TurtleSerializer;
-import org.qi4j.runtime.structure.ApplicationContext;
-import org.openrdf.model.Graph;
-import org.openrdf.rio.UnsupportedRDFormatException;
-import org.openrdf.rio.RDFHandlerException;
-import java.io.OutputStream;
 
 public class RdfFactory
 {
@@ -51,7 +47,7 @@ public class RdfFactory
         return new StructureParser();
     }
 
-    public  Serializer newSerializer( RdfFormat format )
+    public Serializer newSerializer( RdfFormat format )
         throws RDFHandlerException
     {
         Serializer serializer;

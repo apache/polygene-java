@@ -17,17 +17,17 @@
  */
 package org.qi4j.library.framework.rdf.parse;
 
+import org.openrdf.model.Graph;
+import org.openrdf.model.Literal;
+import org.openrdf.model.Resource;
+import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
-import org.openrdf.model.Statement;
-import org.openrdf.model.Literal;
-import org.openrdf.model.Graph;
 import org.openrdf.model.ValueFactory;
-import org.openrdf.model.Resource;
-import org.qi4j.library.framework.rdf.Rdfs;
 import org.qi4j.library.framework.rdf.Qi4jRdf;
-import org.qi4j.spi.structure.ModuleModel;
+import org.qi4j.library.framework.rdf.Rdfs;
 import org.qi4j.spi.structure.LayerModel;
+import org.qi4j.spi.structure.ModuleModel;
 
 public final class ParseContext
 {

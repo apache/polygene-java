@@ -17,10 +17,9 @@
  */
 package org.qi4j.library.framework.rdf;
 
+import java.io.OutputStream;
 import org.openrdf.model.Graph;
 import org.openrdf.rio.RDFHandlerException;
-import java.io.OutputStream;
-import java.io.IOException;
 
 public interface Serializer
 {

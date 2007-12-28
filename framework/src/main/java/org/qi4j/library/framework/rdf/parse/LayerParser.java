@@ -17,13 +17,13 @@
  */
 package org.qi4j.library.framework.rdf.parse;
 
+import java.util.Map;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
+import org.qi4j.composite.Composite;
 import org.qi4j.library.framework.rdf.Qi4jRdf;
 import org.qi4j.spi.structure.LayerModel;
 import org.qi4j.spi.structure.ModuleModel;
-import org.qi4j.composite.Composite;
-import java.util.Map;
 
 public final class LayerParser
 {
@@ -46,7 +46,7 @@ public final class LayerParser
         }
 
         Map<Class<? extends Composite>, ModuleModel> publicComposites = layerModel.getPublicCompositeMap();
-        for( Map.Entry<Class<? extends Composite>,ModuleModel> entry : publicComposites.entrySet() )
+        for( Map.Entry<Class<? extends Composite>, ModuleModel> entry : publicComposites.entrySet() )
         {
             Class publicComposite = entry.getKey();
             ModuleModel moduleModel = entry.getValue();

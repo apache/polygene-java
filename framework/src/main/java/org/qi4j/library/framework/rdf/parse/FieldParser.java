@@ -19,9 +19,9 @@ package org.qi4j.library.framework.rdf.parse;
 
 import org.openrdf.model.BNode;
 import org.openrdf.model.Value;
+import org.qi4j.library.framework.rdf.Qi4jRdf;
 import org.qi4j.spi.composite.FieldModel;
 import org.qi4j.spi.injection.InjectionModel;
-import org.qi4j.library.framework.rdf.Qi4jRdf;
 
 public class FieldParser
 {

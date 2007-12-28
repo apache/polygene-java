@@ -19,10 +19,9 @@ package org.qi4j.library.framework.rdf.parse;
 
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
-import org.qi4j.spi.structure.LayerModel;
-import org.qi4j.spi.structure.ApplicationModel;
 import org.qi4j.library.framework.rdf.Qi4jRdf;
-import org.qi4j.runtime.structure.ApplicationContext;
+import org.qi4j.spi.structure.ApplicationModel;
+import org.qi4j.spi.structure.LayerModel;
 
 public final class ApplicationParser
 {

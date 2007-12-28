@@ -19,9 +19,8 @@ package org.qi4j.library.framework.rdf.parse;
 
 import org.openrdf.model.BNode;
 import org.openrdf.model.Value;
-import org.openrdf.model.Resource;
-import org.qi4j.spi.composite.ConstructorModel;
 import org.qi4j.library.framework.rdf.Qi4jRdf;
+import org.qi4j.spi.composite.ConstructorModel;
 
 public class ConstructorParser
 {

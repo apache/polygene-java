@@ -18,14 +18,12 @@
 package org.qi4j.library.framework.rdf.parse;
 
 import org.openrdf.model.Graph;
-import org.openrdf.model.ValueFactory;
 import org.openrdf.model.impl.GraphImpl;
-import org.openrdf.model.impl.ValueFactoryImpl;
+import org.qi4j.library.framework.rdf.Parser;
 import org.qi4j.runtime.structure.ApplicationContext;
 import org.qi4j.spi.structure.ApplicationBinding;
 import org.qi4j.spi.structure.ApplicationModel;
 import org.qi4j.spi.structure.ApplicationResolution;
-import org.qi4j.library.framework.rdf.Parser;
 
 public final class StructureParser
     implements Parser

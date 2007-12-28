@@ -17,16 +17,16 @@
  */
 package org.qi4j.library.framework.rdf.parse;
 
-import org.openrdf.model.Value;
 import org.openrdf.model.BNode;
-import org.qi4j.spi.composite.ParameterModel;
+import org.openrdf.model.Value;
 import org.qi4j.library.framework.rdf.Qi4jRdf;
+import org.qi4j.spi.composite.ParameterModel;
 
 public class ParameterParser
 {
     private final ParseContext context;
 
-    public ParameterParser(ParseContext context)
+    public ParameterParser( ParseContext context )
     {
         this.context = context;
     }

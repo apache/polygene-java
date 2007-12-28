@@ -19,6 +19,7 @@ package org.qi4j.library.framework.rdf.parse;
 
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
+import org.qi4j.entity.Entity;
 import org.qi4j.library.framework.rdf.Qi4jRdf;
 import org.qi4j.spi.composite.CompositeMethodModel;
 import org.qi4j.spi.composite.CompositeModel;
@@ -28,7 +29,6 @@ import org.qi4j.spi.composite.MixinModel;
 import org.qi4j.spi.composite.SideEffectModel;
 import org.qi4j.spi.structure.LayerModel;
 import org.qi4j.spi.structure.ModuleModel;
-import org.qi4j.entity.Entity;
 
 public final class CompositeParser
 {

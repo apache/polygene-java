@@ -17,15 +17,15 @@
  */
 package org.qi4j.library.framework.rdf.serializer;
 
+import java.io.OutputStream;
 import org.openrdf.model.Graph;
 import org.openrdf.model.Statement;
-import org.openrdf.rio.n3.N3WriterFactory;
-import org.openrdf.rio.RDFWriter;
 import org.openrdf.rio.RDFHandlerException;
-import org.qi4j.library.framework.rdf.Serializer;
+import org.openrdf.rio.RDFWriter;
+import org.openrdf.rio.n3.N3WriterFactory;
 import org.qi4j.library.framework.rdf.Qi4jRdf;
 import org.qi4j.library.framework.rdf.Rdfs;
-import java.io.OutputStream;
+import org.qi4j.library.framework.rdf.Serializer;
 
 public final class N3Serializer
     implements Serializer

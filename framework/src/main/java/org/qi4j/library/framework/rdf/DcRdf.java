@@ -23,6 +23,6 @@ import org.openrdf.model.impl.URIImpl;
 public interface DcRdf
 {
     String DC = "http://purl.org/dc/elements/1.1/";
-    URI ABOUT = new URIImpl(DC + "about" );
-    URI TITLE = new URIImpl(DC + "title" );
+    URI ABOUT = new URIImpl( DC + "about" );
+    URI TITLE = new URIImpl( DC + "title" );
 }
