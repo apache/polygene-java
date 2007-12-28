@@ -56,7 +56,8 @@ public class CompositeInstance extends AbstractCompositeInstance
                                                  context.getCompositeModel().getCompositeClass() );
         }
         // Invoke
-        return context.getMethodInstance( descriptor, moduleContext ).invoke( composite, args, mixin );
+        CompositeMethodInstance compositeMethodInstance = context.getMethodInstance( descriptor, moduleContext );
+        return compositeMethodInstance.invoke( composite, args, mixin );
     }
 
     public void setMixins( Object[] newMixins )

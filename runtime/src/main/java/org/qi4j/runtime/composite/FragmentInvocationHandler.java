@@ -27,9 +27,9 @@ public class FragmentInvocationHandler
     {
     }
 
-    public FragmentInvocationHandler( Object aFragment )
+    public FragmentInvocationHandler( Object fragment )
     {
-        this.fragment = aFragment;
+        this.fragment = fragment;
     }
 
     public void setFragment( Object fragment )

@@ -118,7 +118,7 @@ public class CompositeBuilderImpl<T extends Composite>
 
     public T newInstance()
     {
-        return compositeInterface.cast( context.newCompositeInstance( moduleContext, adaptContext, decoratedObject, propertyContext, entitySession ).getProxy() );
+        return compositeInterface.cast( context.newCompositeInstance( moduleContext, adaptContext, decoratedObject, getPropertyContext(), entitySession ).getProxy() );
     }
 
 

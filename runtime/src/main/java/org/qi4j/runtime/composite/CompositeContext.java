@@ -38,8 +38,11 @@ import org.qi4j.spi.composite.CompositeModel;
 import org.qi4j.spi.composite.CompositeResolution;
 import org.qi4j.spi.composite.MixinBinding;
 import org.qi4j.spi.composite.MixinResolution;
+import org.qi4j.spi.composite.PropertyResolution;
 import org.qi4j.spi.injection.MixinInjectionContext;
 import org.qi4j.spi.structure.ModuleBinding;
+import org.qi4j.spi.entity.property.PropertyBinding;
+import org.qi4j.spi.entity.property.PropertyModel;
 
 /**
  * TODO
@@ -95,10 +98,10 @@ public final class CompositeContext
             MixinBinding mixinBinding = compositeMethodContext.getCompositeMethodBinding().getMixinBinding();
             int index = mixinIndices.get( mixinBinding );
             compositeMethodInstancePools[ methodIndex ] = new CompositeMethodInstancePool();
-
             MethodDescriptor methodDescriptor = new MethodDescriptor( compositeMethodContext, methodIndex, index, compositeMethodInstancePools[ methodIndex ] );
             Method method = compositeMethodContext.getCompositeMethodBinding().getCompositeMethodResolution().getCompositeMethodModel().getMethod();
             methodDescriptors.put( method, methodDescriptor );
+//            System.out.println( this + " : [" + index + "] : [" +methodIndex+"]  -> " + methodDescriptor.getCompositeMethodContext().getCompositeMethodBinding() );
             methodIndex++;
         }
 
@@ -159,7 +162,8 @@ public final class CompositeContext
 
         if( instance == null )
         {
-            instance = methodDescriptor.getCompositeMethodContext().newCompositeMethodInstance( moduleContext, instances );
+            CompositeMethodContext compositeMethodContext = methodDescriptor.getCompositeMethodContext();
+            instance = compositeMethodContext.newCompositeMethodInstance( moduleContext, instances );
         }
 
         return instance;
@@ -197,7 +201,9 @@ public final class CompositeContext
         {
             Iterable<PropertyContext> mixinProperties = mixinContext.getPropertyContexts();
 
-            Map<PropertyContext, Object> propertyValues = compositeProperties.get( mixinContext.getMixinBinding().getMixinResolution() );
+            MixinBinding mixinBinding = mixinContext.getMixinBinding();
+            MixinResolution resolution = mixinBinding.getMixinResolution();
+            Map<PropertyContext, Object> propertyValues = compositeProperties.get( resolution );
             PropertyContainer<Object> container = compositeInstance.getPropertyContainer();
             for( PropertyContext mixinProperty : mixinProperties )
             {
@@ -212,7 +218,11 @@ public final class CompositeContext
                 }
 
                 AbstractProperty property = mixinProperty.newInstance( container, value );
-                properties.put( mixinProperty.getPropertyBinding().getPropertyResolution().getPropertyModel().getQualifiedName(), property );
+                PropertyBinding binding = mixinProperty.getPropertyBinding();
+                PropertyResolution propertyResolution = binding.getPropertyResolution();
+                PropertyModel propertyModel = propertyResolution.getPropertyModel();
+                String qualifiedName = propertyModel.getQualifiedName();
+                properties.put( qualifiedName, property );
             }
         }
 

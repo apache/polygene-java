@@ -30,16 +30,17 @@ public final class CompositeMethodInstance
     private CompositeMethodInstancePool poolComposite;
     private CompositeMethodInstance next;
 
-    public CompositeMethodInstance( Object aFirstConcern, Object[] sideEffects, SideEffectInvocationHandlerResult sideEffectResult, FragmentInvocationHandler aMixinInvocationHandler, ProxyReferenceInvocationHandler aProxyHandler, CompositeMethodInstancePool aPoolComposite, Method method, Class mixinType )
+    public CompositeMethodInstance( Object firstConcern, Object[] sideEffects, SideEffectInvocationHandlerResult sideEffectResult, FragmentInvocationHandler aMixinInvocationHandler, ProxyReferenceInvocationHandler aProxyHandler, CompositeMethodInstancePool poolComposite, Method method, Class mixinType )
     {
         this.sideEffectResult = sideEffectResult;
         this.sideEffects = sideEffects;
         this.mixinType = mixinType;
         this.method = method;
-        firstConcern = aFirstConcern;
+        method.setAccessible( true );
+        this.firstConcern = firstConcern;
         proxyHandler = aProxyHandler;
         mixinInvocationHandler = aMixinInvocationHandler;
-        poolComposite = aPoolComposite;
+        this.poolComposite = poolComposite;
     }
 
     public Object invoke( Object proxy, Object[] args, Object mixin )
