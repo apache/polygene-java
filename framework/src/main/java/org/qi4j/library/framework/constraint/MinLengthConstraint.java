@@ -1,13 +1,13 @@
 package org.qi4j.library.framework.constraint;
 
-import org.qi4j.composite.ParameterConstraint;
+import org.qi4j.composite.Constraint;
 import org.qi4j.library.framework.constraint.annotation.MinLength;
 
 /**
  * TODO
  */
 public class MinLengthConstraint
-    implements ParameterConstraint<MinLength, String>
+    implements Constraint<MinLength, String>
 {
     public boolean isValid( MinLength annotation, String parameter ) throws NullPointerException
     {

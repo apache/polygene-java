@@ -1,13 +1,13 @@
 package org.qi4j.library.framework.constraint;
 
-import org.qi4j.composite.ParameterConstraint;
+import org.qi4j.composite.Constraint;
 import org.qi4j.library.framework.constraint.annotation.NotNull;
 
 /**
  * TODO
  */
 public class NotNullConstraint
-    implements ParameterConstraint<NotNull, Object>
+    implements Constraint<NotNull, Object>
 {
     public boolean isValid( NotNull annotation, Object object )
     {
