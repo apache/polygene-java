@@ -15,7 +15,8 @@
 package org.qi4j.entity;
 
 import org.qi4j.composite.Mixins;
-import org.qi4j.composite.scope.PropertyParameter;
+import org.qi4j.composite.scope.PropertyField;
+import org.qi4j.entity.property.ReadableProperty;
 
 /**
  * This interface provides the identity of the object which may be used
@@ -33,23 +34,18 @@ public interface Identity
      *
      * @return The Identity of 'this' composite.
      */
-    String getIdentity();
+    ReadableProperty<String> identity();
 
     // Default implementation
     public final class IdentityMixin
         implements Identity
     {
-        private String identity;
+        @PropertyField
+        private ReadableProperty<String> identity;
 
-        public IdentityMixin( @PropertyParameter( "identity" )String identity )
-        {
-            this.identity = identity;
-        }
-
-        public String getIdentity()
+        public ReadableProperty<String> identity()
         {
             return identity;
         }
-
     }
 }

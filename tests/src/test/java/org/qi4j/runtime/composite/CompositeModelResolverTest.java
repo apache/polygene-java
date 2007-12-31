@@ -23,7 +23,7 @@ public class CompositeModelResolverTest extends AbstractQi4jTest
             {
                 public void configure( ModuleAssembly module ) throws AssemblyException
                 {
-                    module.addComposites( false );
+                    module.addComposites( TestComposite1.class );
                 }
             };
             fail( "Should have thrown exception due to cyclic dependency" );
@@ -41,7 +41,7 @@ public class CompositeModelResolverTest extends AbstractQi4jTest
         {
             public void configure( ModuleAssembly module ) throws AssemblyException
             {
-                module.addComposites( false );
+                module.addComposites( TestComposite2.class );
             }
         }.getCompositeBuilderFactory();
 

@@ -14,8 +14,11 @@
 
 package org.qi4j.runtime.entity.property;
 
+import org.qi4j.composite.scope.ConcernFor;
 import org.qi4j.entity.property.AbstractProperty;
 import org.qi4j.entity.property.PropertyContainer;
+import org.qi4j.entity.property.ReadableProperty;
+import org.qi4j.entity.property.WritableProperty;
 import org.qi4j.spi.entity.property.PropertyBinding;
 
 /**
@@ -24,6 +27,7 @@ import org.qi4j.spi.entity.property.PropertyBinding;
 public class PropertyContext
 {
     PropertyBinding propertyBinding;
+
 
     public PropertyContext( PropertyBinding propertyBinding )
     {
@@ -39,7 +43,7 @@ public class PropertyContext
     {
         try
         {
-            AbstractProperty instance = propertyBinding.getConstructor().newInstance( container, value );
+            AbstractProperty instance = propertyBinding.getConstructor().newInstance( container, this, value );
 
             return instance;
         }
@@ -47,5 +51,34 @@ public class PropertyContext
         {
             throw new InvalidPropertyException( "Could not instantiate property of type " + propertyBinding.getImplementationClass().getName(), e );
         }
+    }
+
+    public <T> ReadableProperty<T> getReadableProperty( PropertyInstance<T> propertyInstance )
+    {
+        PropertyInstanceValue<T> piv = new PropertyInstanceValue<T>();
+
+        ReadableProperty<T> read;
+        WritableProperty<T> write;
+
+        read = new ReadableProperty<T>()
+        {
+            @ConcernFor ReadableProperty<T> next;
+
+            public T get()
+            {
+                System.out.println( "Accessed property" );
+                return next.get();
+            }
+        };
+        read.getClass().getField( "next" ).set( read, piv );
+
+        PropertyInvocation<T> pi = new PropertyInvocation<T>( read, piv, piv );
+        pi.setPropertyInstance( propertyInstance );
+        return pi;
+    }
+
+    public <T> WritableProperty<T> getWritableProperty( PropertyInstance<T> propertyInstance )
+    {
+        return null;
     }
 }

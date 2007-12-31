@@ -15,6 +15,7 @@
 package org.qi4j.bootstrap;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -76,6 +77,20 @@ public class LayerAssembly
 
     Set<Class<? extends Composite>> getPublicComposites()
     {
+        Set<Class<? extends Composite>> publicComposites = new HashSet<Class<? extends Composite>>();
+        for( ModuleAssembly moduleAssembly : moduleAssemblies )
+        {
+            for( CompositeDeclaration compositeDeclaration : moduleAssembly.getCompositeDeclarations() )
+            {
+                if( compositeDeclaration.getLayerPublic() )
+                {
+                    for( Class<? extends Composite> compositeType : compositeDeclaration.getCompositeTypes() )
+                    {
+                        publicComposites.add( compositeType );
+                    }
+                }
+            }
+        }
         return publicComposites;
     }
 

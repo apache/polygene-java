@@ -39,9 +39,9 @@ public class AssemblyHelper
                 if( ReadableProperty.class.isAssignableFrom( method.getReturnType() ) )
                 {
                     // Register property
-                    PropertyBuilder builder = module.addProperty();
-                    method.invoke( builder.withAccessor( interfaceClass ) );
-                    addProperty( builder, method );
+                    PropertyDeclaration declaration = module.addProperty();
+                    method.invoke( declaration.withAccessor( interfaceClass ) );
+                    addProperty( declaration, method );
                 }
                 else if( method.getReturnType().equals( AbstractAssociation.class ) )
                 {
@@ -62,7 +62,7 @@ public class AssemblyHelper
         return this;
     }
 
-    protected void addProperty( PropertyBuilder builder, Method accessor )
+    protected void addProperty( PropertyDeclaration declaration, Method accessor )
     {
         // Override this method if you want to add custom initialization
     }

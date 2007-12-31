@@ -20,4 +20,8 @@ package org.qi4j.entity.property;
 public interface PropertyInfo
 {
     <T> T getPropertyInfo( Class<T> infoType );
+
+    String getName();
+
+    String getQualifiedName();
 }

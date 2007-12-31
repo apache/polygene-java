@@ -18,10 +18,13 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Proxy;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.qi4j.entity.property.PropertyChange;
 import org.qi4j.entity.property.PropertyChangeObserver;
+import org.qi4j.entity.property.PropertyChangeVeto;
 import org.qi4j.runtime.entity.property.NullPropertyContainer;
 import org.qi4j.runtime.entity.property.PropertyInstance;
 import org.qi4j.spi.structure.PropertyDescriptor;
@@ -29,14 +32,15 @@ import org.qi4j.spi.structure.PropertyDescriptor;
 /**
  * TODO
  */
-public class PropertyBuilder
+public class PropertyDeclaration
 {
     private Class propertyType;
     private Map<Class, Object> propertyInfos = new HashMap<Class, Object>();
     private Object defaultValue;
     private Method accessor;
+    private List<PropertyChangeVeto<?>> changeVetos = new ArrayList<PropertyChangeVeto<?>>();
 
-    public PropertyBuilder()
+    public PropertyDeclaration()
     {
     }
 
@@ -45,15 +49,21 @@ public class PropertyBuilder
         return interfaceClass.cast( Proxy.newProxyInstance( interfaceClass.getClassLoader(), new Class[]{ interfaceClass }, new AccessorInvocationHandler() ) );
     }
 
-    public PropertyBuilder addPropertyInfo( Object propertyInfo )
+    public PropertyDeclaration addPropertyInfo( Object propertyInfo )
     {
         this.propertyInfos.put( propertyInfo.getClass(), propertyInfo );
         return this;
     }
 
+    public PropertyDeclaration addChangeVeto( PropertyChangeVeto<?> propertyChangeVeto )
+    {
+        this.changeVetos.add( propertyChangeVeto );
+        return this;
+    }
+
     public PropertyDescriptor getPropertyDescriptor()
     {
-        return new PropertyDescriptor( propertyType, propertyInfos, accessor, defaultValue );
+        return new PropertyDescriptor( propertyType, propertyInfos, changeVetos, accessor, defaultValue );
     }
 
     class AccessorInvocationHandler

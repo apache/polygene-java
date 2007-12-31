@@ -1,23 +1,23 @@
 package org.qi4j.runtime.composite;
 
 import java.lang.annotation.Annotation;
-import org.qi4j.composite.ParameterConstraint;
+import org.qi4j.composite.Constraint;
 
 /**
  * TODO
  */
 public final class ConstraintInstance
 {
-    private ParameterConstraint constraint;
+    private Constraint constraint;
     private Annotation annotation;
 
-    public ConstraintInstance( ParameterConstraint constraint, Annotation annotation )
+    public ConstraintInstance( Constraint constraint, Annotation annotation )
     {
         this.constraint = constraint;
         this.annotation = annotation;
     }
 
-    public ParameterConstraint getConstraint()
+    public Constraint getConstraint()
     {
         return constraint;
     }

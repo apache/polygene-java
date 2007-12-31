@@ -14,7 +14,6 @@
  */
 package org.qi4j.entity;
 
-import java.net.URL;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.entity.property.PropertyContainer;
 import org.qi4j.query.QueryBuilderFactory;
@@ -25,8 +24,6 @@ public interface EntitySession
 
     <T extends EntityComposite> T attach( T entity );
 
-    void remove( EntityComposite entity );
-
     <T extends EntityComposite> T find( String identity, Class<T> compositeType )
         throws EntityCompositeNotFoundException;
 
@@ -34,6 +31,8 @@ public interface EntitySession
         throws EntityCompositeNotFoundException;
 
     void refresh( EntityComposite entity );
+
+    void remove( EntityComposite entity );
 
     void refresh();
 
@@ -47,14 +46,6 @@ public interface EntitySession
     void discard();
 
     boolean isOpen();
-
-    /**
-     * Create a URL for the composite of the given identity.
-     *
-     * @param identity The identity of the object to convert into a URL.
-     * @return The URL to the composite of the given identity.
-     */
-    URL toURL( Identity identity );
 
     QueryBuilderFactory getQueryBuilderFactory();
 

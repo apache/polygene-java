@@ -3,8 +3,8 @@ package org.qi4j.runtime.composite;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import org.qi4j.composite.Constraint;
 import org.qi4j.composite.ConstraintViolation;
-import org.qi4j.composite.ParameterConstraint;
 
 /**
  * TODO
@@ -34,7 +34,7 @@ public final class ConstraintInvocationHandler extends FragmentInvocationHandler
             {
                 try
                 {
-                    ParameterConstraint constraint1 = constraint.getConstraint();
+                    Constraint constraint1 = constraint.getConstraint();
                     if( !constraint1.isValid( constraint.getAnnotation(), arg ) )
                     {
                         // Register constraint violation

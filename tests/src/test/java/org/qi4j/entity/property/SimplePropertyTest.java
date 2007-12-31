@@ -14,11 +14,21 @@
 
 package org.qi4j.entity.property;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import javax.swing.Icon;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.composite.AppliesTo;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
+import org.qi4j.composite.Concerns;
+import org.qi4j.composite.ConstraintDeclaration;
 import org.qi4j.composite.Mixins;
+import org.qi4j.composite.scope.ConcernFor;
+import org.qi4j.composite.scope.SideEffectFor;
+import org.qi4j.composite.scope.ThisCompositeAs;
 import org.qi4j.library.framework.entity.AssociationMixin;
 import org.qi4j.library.framework.entity.PropertyMixin;
 import org.qi4j.test.AbstractQi4jTest;
@@ -83,9 +93,56 @@ public class SimplePropertyTest
     {
     }
 
+    @Concerns( CapitalizeConcern.class )
     public interface Nameable
     {
-        Property<String> name();
+        @Capitalized Property<String> name();
+    }
+
+    @ConstraintDeclaration
+    @Retention( RetentionPolicy.RUNTIME )
+    @Target( { ElementType.METHOD } )
+    public @interface Capitalized
+    {
+    }
+
+    @AppliesTo( Capitalized.class )
+    public static class CapitalizeConcern
+        implements WritableProperty<String>
+    {
+        @ConcernFor WritableProperty<String> next;
+
+        public void set( String newValue ) throws PropertyVetoException
+        {
+            newValue = newValue.toUpperCase();
+            next.set( newValue );
+        }
+    }
+
+    public static class LogPropertyAccess
+        implements ReadableProperty<String>
+    {
+        @SideEffectFor ReadableProperty<String> next;
+        @ThisCompositeAs PropertyInfo info;
+
+        public String get()
+        {
+            System.out.println( "Property " + info.getName() + " accessed with value " + next.get() );
+            return null;
+        }
+    }
+
+    public static class LogPropertyChanges
+        implements WritableProperty<Object>
+    {
+        @SideEffectFor WritableProperty<Object> next;
+        @ThisCompositeAs ReadableProperty current;
+        @ThisCompositeAs PropertyInfo info;
+
+        public void set( Object newValue ) throws PropertyVetoException
+        {
+            System.out.println( "Property " + info.getName() + " changed from " + current.get() + " to " + newValue );
+        }
     }
 
     public static class DisplayInfo

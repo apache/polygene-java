@@ -18,6 +18,5 @@ package org.qi4j.entity.property;
  * TODO
  */
 public interface AbstractProperty
-    extends PropertyInfo
 {
 }

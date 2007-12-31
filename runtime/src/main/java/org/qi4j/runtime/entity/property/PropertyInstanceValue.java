@@ -12,15 +12,32 @@
  *
  */
 
-package org.qi4j.entity.property;
+package org.qi4j.runtime.entity.property;
+
+import org.qi4j.entity.property.PropertyVetoException;
+import org.qi4j.entity.property.ReadableProperty;
+import org.qi4j.entity.property.WritableProperty;
 
 /**
  * TODO
  */
-public interface ObservableProperty<T>
-    extends AbstractProperty
+public class PropertyInstanceValue<T>
+    implements ReadableProperty<T>, WritableProperty<T>
 {
-    void addChangeObserver( PropertyChangeObserver<T> changeObserver );
+    PropertyInstance<T> instance;
 
-    void addAccessObserver( PropertyAccessObserver<T> accessObserver );
+    public void setInstance( PropertyInstance<T> instance )
+    {
+        this.instance = instance;
+    }
+
+    public T get()
+    {
+        return instance.read();
+    }
+
+    public void set( T newValue ) throws PropertyVetoException
+    {
+        instance.write( newValue );
+    }
 }

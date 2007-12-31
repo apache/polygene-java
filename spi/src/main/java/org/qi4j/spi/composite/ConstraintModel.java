@@ -15,7 +15,7 @@
 package org.qi4j.spi.composite;
 
 import java.lang.annotation.Annotation;
-import org.qi4j.composite.ParameterConstraint;
+import org.qi4j.composite.Constraint;
 
 /**
  * A ConstraintModel matches each use
@@ -24,12 +24,12 @@ import org.qi4j.composite.ParameterConstraint;
  */
 public class ConstraintModel<T>
 {
-    private Class<? extends ParameterConstraint> constraintType;
+    private Class<? extends Constraint> constraintType;
     private Class<? extends Annotation> annotationType;
     private Class<T> parameterType;
     private Class declaredBy;
 
-    public ConstraintModel( Class<? extends ParameterConstraint> constraintType, Class<? extends Annotation> annotationType, Class<T> parameterType, Class declaredBy )
+    public ConstraintModel( Class<? extends Constraint> constraintType, Class<? extends Annotation> annotationType, Class<T> parameterType, Class declaredBy )
     {
         this.declaredBy = declaredBy;
         this.constraintType = constraintType;
@@ -37,7 +37,7 @@ public class ConstraintModel<T>
         this.parameterType = parameterType;
     }
 
-    public Class<? extends ParameterConstraint> getConstraintType()
+    public Class<? extends Constraint> getConstraintType()
     {
         return constraintType;
     }

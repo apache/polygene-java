@@ -37,10 +37,10 @@ import net.sf.cglib.proxy.NoOp;
 import org.qi4j.composite.AppliesTo;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.Concerns;
+import org.qi4j.composite.Constraint;
 import org.qi4j.composite.Constraints;
 import org.qi4j.composite.Mixins;
 import org.qi4j.composite.NullArgumentException;
-import org.qi4j.composite.ParameterConstraint;
 import org.qi4j.composite.SideEffects;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.association.AbstractAssociation;
@@ -305,8 +305,8 @@ public final class CompositeModelFactory
 
         if( constraintsAnnotation != null )
         {
-            Class<? extends ParameterConstraint>[] constraintImplementations = constraintsAnnotation.value();
-            for( Class<? extends ParameterConstraint> constraintImplementation : constraintImplementations )
+            Class<? extends Constraint>[] constraintImplementations = constraintsAnnotation.value();
+            for( Class<? extends Constraint> constraintImplementation : constraintImplementations )
             {
                 Class annotationType = (Class) ( (ParameterizedType) constraintImplementation.getGenericInterfaces()[ 0 ] ).getActualTypeArguments()[ 0 ];
                 Class parameterType = (Class) ( (ParameterizedType) constraintImplementation.getGenericInterfaces()[ 0 ] ).getActualTypeArguments()[ 1 ];

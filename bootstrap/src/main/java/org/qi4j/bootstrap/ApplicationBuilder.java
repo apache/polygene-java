@@ -298,12 +298,12 @@ public class ApplicationBuilder
             objectModels.add( objectModel );
         }
 
-        List<PropertyBuilder> propertyBuilders = moduleAssembly.getPropertyBuilders();
+        List<PropertyDeclaration> propertyDeclarations = moduleAssembly.getPropertyBuilders();
         Map<Method, PropertyDescriptor> propertyDescriptors = new HashMap<Method, PropertyDescriptor>();
-        for( PropertyBuilder propertyBuilder : propertyBuilders )
+        for( PropertyDeclaration propertyDeclaration : propertyDeclarations )
         {
-            Method accessor = propertyBuilder.getPropertyDescriptor().getAccessor();
-            propertyDescriptors.put( accessor, propertyBuilder.getPropertyDescriptor() );
+            Method accessor = propertyDeclaration.getPropertyDescriptor().getAccessor();
+            propertyDescriptors.put( accessor, propertyDeclaration.getPropertyDescriptor() );
         }
 
         ModuleModel moduleModel = new ModuleModel( moduleAssembly.getServiceProviders(), moduleAssembly.getName(), publicCompositeModels, privateCompositeModels, objectModels, propertyDescriptors );

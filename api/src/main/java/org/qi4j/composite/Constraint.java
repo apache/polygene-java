@@ -18,10 +18,10 @@ import java.lang.annotation.Annotation;
 
 /**
  * All constraints must implement this interface, which is used for each
- * parameter validation.
+ * value validation.
  */
-public interface ParameterConstraint<A extends Annotation, P>
+public interface Constraint<A extends Annotation, P>
 {
-    boolean isValid( A annotation, P parameter )
+    boolean isValid( A annotation, P value )
         throws NullPointerException;
 }

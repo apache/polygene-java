@@ -39,10 +39,10 @@ import org.qi4j.spi.composite.CompositeResolution;
 import org.qi4j.spi.composite.MixinBinding;
 import org.qi4j.spi.composite.MixinResolution;
 import org.qi4j.spi.composite.PropertyResolution;
-import org.qi4j.spi.injection.MixinInjectionContext;
-import org.qi4j.spi.structure.ModuleBinding;
 import org.qi4j.spi.entity.property.PropertyBinding;
 import org.qi4j.spi.entity.property.PropertyModel;
+import org.qi4j.spi.injection.MixinInjectionContext;
+import org.qi4j.spi.structure.ModuleBinding;
 
 /**
  * TODO
@@ -195,6 +195,11 @@ public final class CompositeContext
     {
         Set<Object> adapt = adaptContext == null ? Collections.EMPTY_SET : adaptContext;
 
+        if( compositeProperties == null )
+        {
+            compositeProperties = Collections.emptyMap();
+        }
+
         // Calculate total set of Properties for this Composite
         Map<String, AbstractProperty> properties = new HashMap<String, AbstractProperty>();
         for( MixinContext mixinContext : mixinContexts )
@@ -208,7 +213,7 @@ public final class CompositeContext
             for( PropertyContext mixinProperty : mixinProperties )
             {
                 Object value;
-                if( propertyValues.containsKey( mixinProperty ) )
+                if( propertyValues != null && propertyValues.containsKey( mixinProperty ) )
                 {
                     value = propertyValues.get( mixinProperty );
                 }

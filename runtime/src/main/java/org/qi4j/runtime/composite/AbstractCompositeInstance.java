@@ -21,6 +21,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import org.qi4j.composite.Composite;
 import org.qi4j.entity.Identity;
+import org.qi4j.entity.property.Property;
 import org.qi4j.runtime.structure.ModuleContext;
 import org.qi4j.spi.composite.CompositeState;
 
@@ -33,7 +34,7 @@ public abstract class AbstractCompositeInstance
     {
         try
         {
-            METHOD_GETIDENTITY = Identity.class.getMethod( "getIdentity" );
+            METHOD_GETIDENTITY = Identity.class.getMethod( "identity" );
         }
         catch( NoSuchMethodException e )
         {
@@ -67,7 +68,7 @@ public abstract class AbstractCompositeInstance
         {
             if( context.getCompositeModel().getCompositeClass().isAssignableFrom( Identity.class ) )
             {
-                String id = ( (Identity) proxy ).getIdentity();
+                String id = ( (Identity) proxy ).identity().get();
                 if( id != null )
                 {
                     return id.hashCode();
@@ -90,9 +91,9 @@ public abstract class AbstractCompositeInstance
             }
             if( context.getCompositeModel().getCompositeClass().isAssignableFrom( Identity.class ) )
             {
-                String id = ( (Identity) proxy ).getIdentity();
+                String id = ( (Identity) proxy ).identity().get();
                 Identity other = ( (Identity) args[ 0 ] );
-                return id != null && id.equals( other.getIdentity() );
+                return id != null && id.equals( other.identity().get() );
             }
             else
             {
@@ -103,8 +104,8 @@ public abstract class AbstractCompositeInstance
         {
             if( context.getCompositeModel().getCompositeClass().isAssignableFrom( Identity.class ) )
             {
-                String id = (String) invoke( proxy, METHOD_GETIDENTITY, null );
-                return id != null ? id : "";
+                Property<String> id = (Property<String>) invoke( proxy, METHOD_GETIDENTITY, null );
+                return id != null ? id.get() : "";
             }
             else
             {

@@ -92,7 +92,7 @@ public class EntitySessionImpl
         EntityEntry entry = new EntityEntry( EntityStatus.REMOVED, entity );
         Class compositeType = entry.getClass().getInterfaces()[ 0 ];
         Map<String, EntityEntry> entityCache = getEntityCache( compositeType );
-        entityCache.put( entity.getIdentity(), entry );
+        entityCache.put( entity.identity().get(), entry );
     }
 
     public <T extends EntityComposite> T find( String identity, Class<T> compositeType )
@@ -196,7 +196,7 @@ public class EntitySessionImpl
     {
         checkOpen();
 
-        return getCachedEntity( entity.getIdentity(), getCompositeType( entity ) ) != null;
+        return getCachedEntity( entity.identity().get(), getCompositeType( entity ) ) != null;
     }
 
     public QueryBuilderFactory getQueryBuilderFactory()
@@ -266,7 +266,7 @@ public class EntitySessionImpl
             cache.put( compositeType, entityCache );
         }
 
-        entityCache.put( instance.getIdentity(), new EntityEntry( EntityStatus.CREATED, instance ) );
+        entityCache.put( instance.identity().get(), new EntityEntry( EntityStatus.CREATED, instance ) );
     }
 
     Map<String, EntityEntry> getEntityCache( Class<? extends EntityComposite> compositeType )

@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Set;
 import org.qi4j.entity.property.AbstractProperty;
 import org.qi4j.entity.property.PropertyContainer;
+import org.qi4j.runtime.entity.property.PropertyContext;
 import org.qi4j.runtime.entity.property.PropertyInstance;
 import org.qi4j.spi.composite.BindingException;
 import org.qi4j.spi.composite.CompositeBinding;
@@ -92,7 +93,7 @@ public class CompositeBinder
                     Constructor<? extends AbstractProperty> propertyConstructor = null;
                     try
                     {
-                        propertyConstructor = propertyImplementation.getConstructor( PropertyContainer.class, Object.class );
+                        propertyConstructor = propertyImplementation.getConstructor( PropertyContainer.class, PropertyContext.class, Object.class );
                     }
                     catch( NoSuchMethodException e )
                     {

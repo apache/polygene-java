@@ -51,7 +51,7 @@ final class CompositeOutputStream extends ObjectOutputStream
             Class compositeInterface = compositeObject.getCompositeClass();
             if( obj instanceof EntityComposite )
             {
-                String id = ( (EntityComposite) composite ).getIdentity();
+                String id = ( (EntityComposite) composite ).identity().get();
                 return new SerializedEntity( id, compositeInterface );
             }
             else

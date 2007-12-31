@@ -15,7 +15,9 @@
 package org.qi4j.bootstrap;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -29,12 +31,12 @@ import org.qi4j.spi.service.ServiceProvider;
 public class ModuleAssembly
 {
     private LayerAssembly layerAssembly;
-    private Set<Class<? extends Composite>> publicComposites = new LinkedHashSet<Class<? extends Composite>>();
-    private Set<Class<? extends Composite>> privateComposites = new LinkedHashSet<Class<? extends Composite>>();
     private Set<Class> objects = new LinkedHashSet<Class>();
     private Map<Class, ServiceProvider> serviceProviders = new HashMap<Class, ServiceProvider>();
     private String name;
-    private List<PropertyBuilder> propertyBuilders = new ArrayList<PropertyBuilder>();
+    private List<CompositeDeclaration> compositeDeclarations = new ArrayList<CompositeDeclaration>();
+    private List<ObjectDeclaration> objectDeclarations = new ArrayList<ObjectDeclaration>();
+    private List<PropertyDeclaration> propertyDeclarations = new ArrayList<PropertyDeclaration>();
     private List<AssociationBuilder> associationBuilders = new ArrayList<AssociationBuilder>();
 
     public ModuleAssembly( LayerAssembly layerAssembly )
@@ -59,45 +61,18 @@ public class ModuleAssembly
         this.name = name;
     }
 
-    public void addComposites( Class<? extends Composite>... compositeTypes )
+    public CompositeDeclaration addComposites( Class<? extends Composite>... compositeTypes )
     {
-        addComposites( false, compositeTypes );
+        CompositeDeclaration compositeDeclaration = new CompositeDeclaration( Arrays.asList( compositeTypes ) );
+        compositeDeclarations.add( compositeDeclaration );
+        return compositeDeclaration;
     }
 
-    public void addComposites( boolean isModulePublic, Class<? extends Composite>... compositeTypes )
+    public ObjectDeclaration addObjects( Class... objectTypes )
     {
-        for( Class<? extends Composite> compositeType : compositeTypes )
-        {
-            if( isModulePublic )
-            {
-                publicComposites.add( compositeType );
-            }
-            else
-            {
-                privateComposites.add( compositeType );
-            }
-        }
-    }
-
-    public void addComposites( boolean isModulePublic, boolean isLayerPublic, Class<? extends Composite>... compositeTypes )
-    {
-        addComposites( isModulePublic, compositeTypes );
-
-        if( isLayerPublic )
-        {
-            for( Class<? extends Composite> compositeType : compositeTypes )
-            {
-                layerAssembly.addPublicComposite( compositeType );
-            }
-        }
-    }
-
-    public void addObjects( Class... objectTypes )
-    {
-        for( Class objectType : objectTypes )
-        {
-            objects.add( objectType );
-        }
+        ObjectDeclaration objectDeclaration = new ObjectDeclaration( Arrays.asList( objectTypes ) );
+        objectDeclarations.add( objectDeclaration );
+        return objectDeclaration;
     }
 
     public void addServiceProvider( ServiceProvider serviceProvider, Class... serviceTypes )
@@ -115,11 +90,11 @@ public class ModuleAssembly
         addObjects( serviceProvider.getClass() );
     }
 
-    public PropertyBuilder addProperty()
+    public PropertyDeclaration addProperty()
     {
-        PropertyBuilder builder = new PropertyBuilder();
-        propertyBuilders.add( builder );
-        return builder;
+        PropertyDeclaration declaration = new PropertyDeclaration();
+        propertyDeclarations.add( declaration );
+        return declaration;
     }
 
     public AssociationBuilder addAssociation()
@@ -129,13 +104,45 @@ public class ModuleAssembly
         return builder;
     }
 
+    List<CompositeDeclaration> getCompositeDeclarations()
+    {
+        return compositeDeclarations;
+    }
+
+    List<ObjectDeclaration> getObjectDeclarations()
+    {
+        return objectDeclarations;
+    }
+
     Set<Class<? extends Composite>> getPublicComposites()
     {
+        Set<Class<? extends Composite>> publicComposites = new HashSet<Class<? extends Composite>>();
+        for( CompositeDeclaration compositeDeclaration : compositeDeclarations )
+        {
+            if( compositeDeclaration.getModulePublic() )
+            {
+                for( Class<? extends Composite> compositeType : compositeDeclaration.getCompositeTypes() )
+                {
+                    publicComposites.add( compositeType );
+                }
+            }
+        }
         return publicComposites;
     }
 
     Set<Class<? extends Composite>> getPrivateComposites()
     {
+        Set<Class<? extends Composite>> privateComposites = new HashSet<Class<? extends Composite>>();
+        for( CompositeDeclaration compositeDeclaration : compositeDeclarations )
+        {
+            if( !compositeDeclaration.getModulePublic() )
+            {
+                for( Class<? extends Composite> compositeType : compositeDeclaration.getCompositeTypes() )
+                {
+                    privateComposites.add( compositeType );
+                }
+            }
+        }
         return privateComposites;
     }
 
@@ -149,9 +156,9 @@ public class ModuleAssembly
         return serviceProviders;
     }
 
-    List<PropertyBuilder> getPropertyBuilders()
+    List<PropertyDeclaration> getPropertyBuilders()
     {
-        return propertyBuilders;
+        return propertyDeclarations;
     }
 
     public List<AssociationBuilder> getAssociationBuilders()

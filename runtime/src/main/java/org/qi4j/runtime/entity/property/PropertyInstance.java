@@ -28,32 +28,48 @@ public class PropertyInstance<T>
     implements Property<T>
 {
     private PropertyContainer<T> container;
+    private PropertyContext propertyContext;
     private T value;
 
-    public PropertyInstance( PropertyContainer<T> container, T value )
+    public PropertyInstance( PropertyContainer<T> container, PropertyContext propertyContext, T value )
     {
         this.container = container;
+        this.propertyContext = propertyContext;
         this.value = value;
     }
 
+    // ReadableProperty
     public T get()
     {
         container.newAccess( this, null, null );
-        return value;
+        return propertyContext.getReadableProperty( this ).get();
     }
 
+    // WritableProperty
     public void set( T newValue )
         throws PropertyVetoException
     {
         container.newChange( this, newValue, null, null );
-        value = newValue;
+        propertyContext.getWritableProperty( this ).set( newValue );
     }
 
+    // PropertyInfo
     public <T> T getPropertyInfo( Class<T> infoType )
     {
         return container.getPropertyInfo( infoType );
     }
 
+    public String getName()
+    {
+        return propertyContext.getPropertyBinding().getPropertyResolution().getPropertyModel().getName();
+    }
+
+    public String getQualifiedName()
+    {
+        return propertyContext.getPropertyBinding().getPropertyResolution().getPropertyModel().getQualifiedName();
+    }
+
+    // ObservableProperty
     public void addChangeObserver( PropertyChangeObserver<T> changeObserver )
     {
         if( !( container instanceof InstancePropertyContainer ) )
@@ -81,9 +97,14 @@ public class PropertyInstance<T>
         container.addChangeVeto( propertyChangeVeto );
     }
 
-    public void update( T value )
+    public void write( T value )
     {
         this.value = value;
+    }
+
+    public T read()
+    {
+        return value;
     }
 
     @Override public String toString()

@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.qi4j.composite.CompositeInstantiationException;
-import org.qi4j.composite.ParameterConstraint;
+import org.qi4j.composite.Constraint;
 import org.qi4j.runtime.Qi4jRuntime;
 import org.qi4j.runtime.entity.property.PropertyContext;
 import org.qi4j.runtime.structure.ModuleContext;
@@ -122,10 +122,10 @@ public class CompositeMethodContext
                 ConstraintBinding constraintBinding = entry.getValue();
                 ConstraintResolution constraintResolution = constraintBinding.getConstraintResolution();
                 ConstraintModel constraintModel = constraintResolution.getConstraintModel();
-                Class<? extends ParameterConstraint> constraintType = constraintModel.getConstraintType();
+                Class<? extends Constraint> constraintType = constraintModel.getConstraintType();
                 try
                 {
-                    ParameterConstraint constraintInstance = constraintType.newInstance();
+                    Constraint constraintInstance = constraintType.newInstance();
                     constraintInstances.add( new ConstraintInstance( constraintInstance, entry.getKey() ) );
                     hasConstraints = true;
                 }

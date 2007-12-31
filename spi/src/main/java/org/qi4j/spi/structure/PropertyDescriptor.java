@@ -15,7 +15,9 @@
 package org.qi4j.spi.structure;
 
 import java.lang.reflect.Method;
+import java.util.List;
 import java.util.Map;
+import org.qi4j.entity.property.PropertyChangeVeto;
 
 /**
  * TODO
@@ -27,7 +29,7 @@ public class PropertyDescriptor
     private Method accessor;
     private Object defaultValue;
 
-    public PropertyDescriptor( Class propertyType, Map<Class, Object> propertyInfos, Method accessor, Object defaultValue )
+    public PropertyDescriptor( Class propertyType, Map<Class, Object> propertyInfos, List<PropertyChangeVeto<?>> changeVetos, Method accessor, Object defaultValue )
     {
         this.propertyType = propertyType;
         this.propertyInfos = propertyInfos;
