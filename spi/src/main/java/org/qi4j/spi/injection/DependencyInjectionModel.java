@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Rickard …berg. All Rights Reserved.
+ * Copyright (c) 2007, Rickard Ã–berg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,8 +20,7 @@ import java.lang.reflect.Type;
 /**
  * TODO
  */
-public class DependencyInjectionModel
-    extends InjectionModel
+public final class DependencyInjectionModel extends InjectionModel
 {
     public DependencyInjectionModel( Class<? extends Annotation> injectionAnnotation, Type genericType, Class dependentType, boolean optional )
     {

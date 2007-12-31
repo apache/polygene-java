@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Rickard …berg. All Rights Reserved.
+ * Copyright (c) 2007, Rickard Ã–berg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import java.io.StringWriter;
 /**
  * Base class for object model resolutions. Resolutions are models resolved in a runtime environment
  */
-public class AbstractResolution
+public abstract class AbstractResolution
 {
     private AbstractModel abstractModel;
 
@@ -28,7 +28,7 @@ public class AbstractResolution
     private Iterable<FieldResolution> fieldResolutions;
     private Iterable<MethodResolution> methodResolutions;
 
-    public AbstractResolution( AbstractModel abstractModel, Iterable<ConstructorResolution> constructorResolutions, Iterable<FieldResolution> fieldResolutions, Iterable<MethodResolution> methodResolutions )
+    protected AbstractResolution( AbstractModel abstractModel, Iterable<ConstructorResolution> constructorResolutions, Iterable<FieldResolution> fieldResolutions, Iterable<MethodResolution> methodResolutions )
     {
         this.constructorResolutions = constructorResolutions;
         this.fieldResolutions = fieldResolutions;

@@ -31,7 +31,7 @@ import org.qi4j.spi.injection.InjectionResolution;
 import org.qi4j.spi.injection.InvalidInjectionException;
 import org.qi4j.spi.structure.ModuleBinding;
 
-public class StructureInjectionProviderFactory
+public final class StructureInjectionProviderFactory
     implements InjectionProviderFactory
 {
     private Qi4jRuntime runtime;

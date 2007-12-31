@@ -17,7 +17,7 @@
  */
 package org.qi4j.query;
 
-public class QueryBuilderFactoryImpl
+public final class QueryBuilderFactoryImpl
     implements QueryBuilderFactory
 {
     private Queryable queryable;

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Rickard …berg. All Rights Reserved.
+ * Copyright (c) 2007, Rickard Ã–berg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,10 +25,9 @@ import org.qi4j.test.AbstractQi4jTest;
 /**
  * TODO
  */
-public class SingletonServiceTest
-    extends AbstractQi4jTest
+public class SingletonServiceTest extends AbstractQi4jTest
 {
-    @Override public void configure( ModuleAssembly module )
+    public void configure( ModuleAssembly module )
     {
         module.addComposites( TestComposite1.class );
         module.addComposites( TestComposite2.class );

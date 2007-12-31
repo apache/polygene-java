@@ -9,8 +9,7 @@ import org.qi4j.spi.structure.ModuleModel;
 /**
  * TODO
  */
-public class InjectionResolution
-    extends ResolutionContext
+public final class InjectionResolution extends ResolutionContext
 {
     private InjectionModel injectionModel;
 

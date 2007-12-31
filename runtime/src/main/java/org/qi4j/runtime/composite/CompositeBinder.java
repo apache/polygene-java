@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Rickard …berg. All Rights Reserved.
+ * Copyright (c) 2007, Rickard Ã–berg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,10 +24,10 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.qi4j.entity.property.AbstractProperty;
-import org.qi4j.entity.property.PropertyContainer;
-import org.qi4j.runtime.entity.property.PropertyContext;
-import org.qi4j.runtime.entity.property.PropertyInstance;
+import org.qi4j.property.AbstractProperty;
+import org.qi4j.property.PropertyContainer;
+import org.qi4j.runtime.property.PropertyContext;
+import org.qi4j.runtime.property.PropertyInstance;
 import org.qi4j.spi.composite.BindingException;
 import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.composite.CompositeMethodBinding;
@@ -51,8 +51,8 @@ import org.qi4j.spi.composite.ParameterConstraintsResolution;
 import org.qi4j.spi.composite.ParameterResolution;
 import org.qi4j.spi.composite.SideEffectBinding;
 import org.qi4j.spi.composite.SideEffectResolution;
-import org.qi4j.spi.entity.property.PropertyBinding;
-import org.qi4j.spi.entity.property.PropertyModel;
+import org.qi4j.spi.property.PropertyBinding;
+import org.qi4j.spi.property.PropertyModel;
 import org.qi4j.spi.injection.BindingContext;
 import org.qi4j.spi.injection.InjectionBinding;
 import org.qi4j.spi.injection.InjectionProviderFactory;

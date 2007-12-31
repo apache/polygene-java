@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 import org.qi4j.query.value.VariableExpression;
 
-public class QueryImpl<R>
+public final class QueryImpl<R>
     implements Query<R>
 {
     private Class resultType;
@@ -36,7 +36,7 @@ public class QueryImpl<R>
     private int maxResults;
     private Queryable queryable;
 
-    public QueryImpl( Class resultType, ArrayList<BooleanExpression> where, ArrayList<OrderBy> orderBy, int firstResult, int maxResults , Queryable queryable)
+    public QueryImpl( Class resultType, ArrayList<BooleanExpression> where, ArrayList<OrderBy> orderBy, int firstResult, int maxResults, Queryable queryable )
     {
         this.resultType = resultType;
         this.where = where;

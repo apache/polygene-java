@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Rickard …berg. All Rights Reserved.
+ * Copyright (c) 2007, Rickard Ã–berg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,12 +17,12 @@ package org.qi4j.spi.structure;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
-import org.qi4j.entity.property.PropertyChangeVeto;
+import org.qi4j.property.PropertyChangeVeto;
 
 /**
  * TODO
  */
-public class PropertyDescriptor
+public final class PropertyDescriptor
 {
     private Class propertyType;
     private Map<Class, Object> propertyInfos;

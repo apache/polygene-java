@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Rickard …berg. All Rights Reserved.
+ * Copyright (c) 2007, Rickard Ã–berg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ import org.qi4j.runtime.composite.CompositeContext;
 import org.qi4j.runtime.composite.CompositeMethodContext;
 import org.qi4j.runtime.composite.MixinContext;
 import org.qi4j.runtime.composite.ObjectContext;
-import org.qi4j.runtime.entity.property.PropertyContext;
+import org.qi4j.runtime.property.PropertyContext;
 import org.qi4j.runtime.structure.ApplicationContext;
 import org.qi4j.runtime.structure.LayerContext;
 import org.qi4j.runtime.structure.ModuleContext;
@@ -40,8 +40,8 @@ import org.qi4j.spi.composite.MixinBinding;
 import org.qi4j.spi.composite.ObjectBinding;
 import org.qi4j.spi.composite.ObjectModel;
 import org.qi4j.spi.composite.ObjectResolution;
-import org.qi4j.spi.entity.property.PropertyBinding;
-import org.qi4j.spi.entity.property.PropertyModel;
+import org.qi4j.spi.property.PropertyBinding;
+import org.qi4j.spi.property.PropertyModel;
 import org.qi4j.spi.injection.BindingContext;
 import org.qi4j.spi.injection.ResolutionContext;
 import org.qi4j.spi.service.ServiceProvider;
@@ -59,7 +59,7 @@ import org.qi4j.spi.structure.PropertyDescriptor;
 /**
  * TODO
  */
-public class ApplicationBuilder
+public final class ApplicationBuilder
 {
     private Qi4jRuntime runtime;
 

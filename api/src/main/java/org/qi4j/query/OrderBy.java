@@ -19,7 +19,7 @@ package org.qi4j.query;
 
 import org.qi4j.query.value.MethodCallExpression;
 
-class OrderBy
+final class OrderBy
 {
     private MethodCallExpression expression;
     private Order order;

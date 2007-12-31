@@ -3,7 +3,7 @@ package org.qi4j.spi.composite;
 /**
  * TODO
  */
-public class ConstructorResolution
+public final class ConstructorResolution
 {
     private ConstructorModel constructorModel;
     private Iterable<ParameterResolution> parameterResolutions;

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Rickard …berg. All Rights Reserved.
+ * Copyright (c) 2007, Rickard Ã–berg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,8 +20,7 @@ package org.qi4j.spi.composite;
  * Modifiers can either be classes implementing the interfaces of the modified
  * methods, or they can be generic InvocationHandler mixins.
  */
-public final class SideEffectBinding
-    extends ModifierBinding
+public final class SideEffectBinding extends ModifierBinding
 {
     public SideEffectBinding( SideEffectResolution sideEffectResolution, ConstructorBinding constructorBinding, Iterable<FieldBinding> fieldBindings, Iterable<MethodBinding> methodBindings )
     {

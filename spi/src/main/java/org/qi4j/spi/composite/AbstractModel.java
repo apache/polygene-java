@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Rickard …berg. All Rights Reserved.
+ * Copyright (c) 2007, Rickard Ã–berg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ import org.qi4j.spi.injection.InjectionModel;
  * @see org.qi4j.spi.composite.MixinModel
  * @see org.qi4j.spi.composite.ConcernModel
  */
-public class AbstractModel
+public abstract class AbstractModel
     implements Serializable
 {
     private Class modelClass;
@@ -41,7 +41,7 @@ public class AbstractModel
     private Iterable<MethodModel> methodModels;
     private Map<Class<? extends Annotation>, Set<InjectionModel>> dependenciesByScope;
 
-    public AbstractModel( Class modelClass, Iterable<ConstructorModel> constructorModels, Iterable<FieldModel> fieldModels, Iterable<MethodModel> methodModels )
+    protected AbstractModel( Class modelClass, Iterable<ConstructorModel> constructorModels, Iterable<FieldModel> fieldModels, Iterable<MethodModel> methodModels )
     {
         this.modelClass = modelClass;
         this.constructorModels = constructorModels;

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Rickard …berg. All Rights Reserved.
+ * Copyright (c) 2007, Rickard Ã–berg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,12 @@
 package org.qi4j.spi.composite;
 
 import java.io.Serializable;
-import org.qi4j.spi.entity.property.PropertyModel;
+import org.qi4j.spi.property.PropertyModel;
 
 /**
  * TODO
  */
-public class PropertyResolution
+public final class PropertyResolution
     implements Serializable
 {
     private PropertyModel propertyModel;

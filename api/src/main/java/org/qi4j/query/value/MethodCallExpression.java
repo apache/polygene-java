@@ -22,7 +22,7 @@ import java.lang.reflect.Method;
 import java.util.Map;
 import org.qi4j.query.QueryEvaluationException;
 
-public class MethodCallExpression
+public final class MethodCallExpression
     implements ValueExpression
 {
     private Method method;

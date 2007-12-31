@@ -22,7 +22,7 @@ import org.qi4j.query.BinaryOperator;
 import org.qi4j.query.BooleanExpression;
 import org.qi4j.query.Expression;
 
-public class And
+public final class And
     implements BooleanExpression, BinaryOperator
 {
     private BooleanExpression left;

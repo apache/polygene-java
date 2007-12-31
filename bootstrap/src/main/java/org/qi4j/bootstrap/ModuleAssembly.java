@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Rickard …berg. All Rights Reserved.
+ * Copyright (c) 2007, Rickard Ã–berg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ import org.qi4j.spi.service.ServiceProvider;
 /**
  * TODO
  */
-public class ModuleAssembly
+public final class ModuleAssembly
 {
     private LayerAssembly layerAssembly;
     private Set<Class> objects = new LinkedHashSet<Class>();
@@ -63,7 +63,7 @@ public class ModuleAssembly
 
     public CompositeDeclaration addComposites( Class<? extends Composite>... compositeTypes )
     {
-        CompositeDeclaration compositeDeclaration = new CompositeDeclaration( Arrays.asList( compositeTypes ) );
+        CompositeDeclaration compositeDeclaration = new CompositeDeclaration( compositeTypes );
         compositeDeclarations.add( compositeDeclaration );
         return compositeDeclaration;
     }

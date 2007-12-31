@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Rickard …berg. All Rights Reserved.
+ * Copyright (c) 2007, Rickard Ã–berg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@ package org.qi4j.runtime.injection;
 
 import java.lang.reflect.Method;
 import java.util.Map;
-import org.qi4j.entity.association.AbstractAssociation;
+import org.qi4j.association.AbstractAssociation;
 import org.qi4j.spi.injection.AssociationInjectionContext;
 import org.qi4j.spi.injection.AssociationInjectionModel;
 import org.qi4j.spi.injection.BindingContext;
@@ -30,7 +30,7 @@ import org.qi4j.spi.injection.InvalidInjectionException;
 /**
  * TODO
  */
-public class AssociationInjectionProviderFactory
+public final class AssociationInjectionProviderFactory
     implements InjectionProviderFactory
 {
     public InjectionProvider newInjectionProvider( BindingContext bindingContext ) throws InvalidInjectionException

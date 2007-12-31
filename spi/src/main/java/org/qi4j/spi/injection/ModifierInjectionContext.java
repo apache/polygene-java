@@ -12,8 +12,7 @@ import org.qi4j.spi.structure.ModuleBinding;
 /**
  * TODO
  */
-public class ModifierInjectionContext
-    extends FragmentInjectionContext
+public final class ModifierInjectionContext extends FragmentInjectionContext
 {
     private Object modifies;
     private CompositeMethodBinding method;

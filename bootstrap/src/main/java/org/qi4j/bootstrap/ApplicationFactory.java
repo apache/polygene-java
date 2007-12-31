@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Rickard …berg. All Rights Reserved.
+ * Copyright (c) 2007, Rickard Ã–berg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,10 +20,10 @@ import org.qi4j.runtime.structure.ApplicationContext;
 /**
  * TODO
  */
-public class ApplicationFactory
+public final class ApplicationFactory
 {
     private Qi4jRuntime runtime;
-    ApplicationAssemblyFactory applicationAssemblyFactory;
+    private ApplicationAssemblyFactory applicationAssemblyFactory;
 
     public ApplicationFactory( Qi4jRuntime runtime, ApplicationAssemblyFactory applicationAssembly )
     {

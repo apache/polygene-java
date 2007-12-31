@@ -23,7 +23,7 @@ import java.lang.reflect.Proxy;
 import java.util.Date;
 import org.qi4j.query.value.MethodCallExpression;
 
-public class InterfaceInvocationHandler
+public final class InterfaceInvocationHandler
     implements InvocationHandler
 {
     private static final Boolean BOOLEAN_FIXED = Boolean.FALSE;

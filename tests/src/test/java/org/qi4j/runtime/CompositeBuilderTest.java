@@ -22,7 +22,7 @@ import org.qi4j.test.AbstractQi4jTest;
 
 public class CompositeBuilderTest extends AbstractQi4jTest
 {
-    @Override public void configure( ModuleAssembly module )
+    public void configure( ModuleAssembly module )
     {
         module.addComposites( Model1.class );
     }

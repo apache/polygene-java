@@ -27,15 +27,14 @@ import org.qi4j.spi.injection.InjectionModel;
  * @see MixinModel
  * @see ConcernModel
  */
-public abstract class FragmentModel
-    extends AbstractModel
+public abstract class FragmentModel extends AbstractModel
 {
     private Collection<Class> appliesTo;
     private boolean isAbstract;
     private boolean isGeneric;
     private Set<Method> thisAsMethods;
 
-    public FragmentModel( Class fragmentClass, Iterable<ConstructorModel> constructorModels, Iterable<FieldModel> fieldModels, Iterable<MethodModel> methodDependencies, Class[] appliesTo )
+    protected FragmentModel( Class fragmentClass, Iterable<ConstructorModel> constructorModels, Iterable<FieldModel> fieldModels, Iterable<MethodModel> methodDependencies, Class[] appliesTo )
     {
         super( fragmentClass, constructorModels, fieldModels, methodDependencies );
         this.thisAsMethods = getThisCompositeAsMethods( getInjectionsByScope( ThisCompositeAs.class ) );

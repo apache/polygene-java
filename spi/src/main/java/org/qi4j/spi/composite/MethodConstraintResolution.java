@@ -3,7 +3,7 @@ package org.qi4j.spi.composite;
 /**
  * TODO
  */
-public class MethodConstraintResolution
+public final class MethodConstraintResolution
 {
     MethodConstraintModel constraintModel;
     Iterable<ParameterConstraintsResolution> parameterConstraintResolutions;

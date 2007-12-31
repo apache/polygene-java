@@ -30,18 +30,18 @@ import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.CompositeInstantiationException;
 import org.qi4j.composite.PropertyValue;
 import org.qi4j.entity.EntitySession;
-import org.qi4j.entity.property.PropertyChange;
-import org.qi4j.entity.property.PropertyChangeObserver;
+import org.qi4j.property.PropertyChange;
+import org.qi4j.property.PropertyChangeObserver;
 import org.qi4j.runtime.composite.CompositeContext;
-import org.qi4j.runtime.entity.property.NullPropertyContainer;
-import org.qi4j.runtime.entity.property.PropertyContext;
-import org.qi4j.runtime.entity.property.PropertyInstance;
+import org.qi4j.runtime.property.NullPropertyContainer;
+import org.qi4j.runtime.property.PropertyContext;
+import org.qi4j.runtime.property.PropertyInstance;
 import org.qi4j.spi.composite.MixinResolution;
 
 /**
  *
  */
-public class CompositeBuilderImpl<T extends Composite>
+public final class CompositeBuilderImpl<T extends Composite>
     implements CompositeBuilder<T>
 {
     private Class<? extends T> compositeInterface;
@@ -192,7 +192,7 @@ public class CompositeBuilderImpl<T extends Composite>
                 final PropertyContext propertyContext = context.getMethodDescriptor( method ).getCompositeMethodContext().getPropertyContext();
                 if( propertyContext != null )
                 {
-                    PropertyInstance<Object> mutableProperty = new PropertyInstance<Object>( new NullPropertyContainer<Object>(), propertyContext.getPropertyBinding().getDefaultValue() );
+                    PropertyInstance<Object> mutableProperty = new PropertyInstance<Object>( new NullPropertyContainer<Object>(), propertyContext, propertyContext.getPropertyBinding().getDefaultValue() );
                     mutableProperty.addChangeObserver( new PropertyChangeObserver<Object>()
                     {
                         public void onChange( PropertyChange<Object> propertyChange )

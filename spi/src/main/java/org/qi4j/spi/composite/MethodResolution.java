@@ -3,7 +3,7 @@ package org.qi4j.spi.composite;
 /**
  * TODO
  */
-public class MethodResolution
+public final class MethodResolution
 {
     private MethodModel methodModel;
     private Iterable<ParameterResolution> parameterResolutions;

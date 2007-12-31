@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Rickard …berg. All Rights Reserved.
+ * Copyright (c) 2007, Rickard Ã–berg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import org.qi4j.query.value.MethodCallExpression;
 /**
  * TODO
  */
-class OrderByComparator
+final class OrderByComparator
     implements Comparator
 {
     List<OrderBy> orderBy;
@@ -36,11 +36,13 @@ class OrderByComparator
         for( OrderBy by : orderBy )
         {
             MethodCallExpression mce = by.getExpression();
-            Comparable v1 = (Comparable) mce.getValue( o1, null);
-            Comparable v2 = (Comparable) mce.getValue( o2, null);
+            Comparable v1 = (Comparable) mce.getValue( o1, null );
+            Comparable v2 = (Comparable) mce.getValue( o2, null );
             int comparison = v1.compareTo( v2 );
-            if ( comparison != 0)
+            if( comparison != 0 )
+            {
                 return by.getOrder() == OrderBy.Order.ASCENDING ? comparison : -comparison; // Consider sort direction
+            }
 
             // If objects are equal, continue with next OrderBy rule
         }

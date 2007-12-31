@@ -24,7 +24,7 @@ import org.qi4j.query.BooleanExpression;
 import org.qi4j.query.Expression;
 import org.qi4j.query.value.ValueExpression;
 
-public class Matches
+public final class Matches
     implements BinaryOperator, BooleanExpression
 {
     private ValueExpression left;

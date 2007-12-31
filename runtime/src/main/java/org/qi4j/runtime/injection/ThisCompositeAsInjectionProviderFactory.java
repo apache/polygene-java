@@ -15,7 +15,7 @@ import org.qi4j.spi.injection.InvalidInjectionException;
 /**
  * TODO
  */
-public class ThisCompositeAsInjectionProviderFactory
+public final class ThisCompositeAsInjectionProviderFactory
     implements InjectionProviderFactory
 {
     public InjectionProvider newInjectionProvider( BindingContext bindingContext ) throws InvalidInjectionException

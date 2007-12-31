@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Rickard …berg. All Rights Reserved.
+ * Copyright (c) 2007, Rickard Ã–berg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,10 +20,9 @@ package org.qi4j.spi.composite;
  * @see MixinResolution
  * @see ConcernResolution
  */
-public abstract class FragmentBinding
-    extends AbstractBinding
+public abstract class FragmentBinding extends AbstractBinding
 {
-    public FragmentBinding( FragmentResolution fragmentResolution, ConstructorBinding constructorBinding, Iterable<FieldBinding> fieldBindings, Iterable<MethodBinding> methodBindings )
+    protected FragmentBinding( FragmentResolution fragmentResolution, ConstructorBinding constructorBinding, Iterable<FieldBinding> fieldBindings, Iterable<MethodBinding> methodBindings )
     {
         super( fragmentResolution, constructorBinding, fieldBindings, methodBindings );
     }

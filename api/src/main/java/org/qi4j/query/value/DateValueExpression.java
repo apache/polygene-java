@@ -21,7 +21,7 @@ import java.util.Date;
 import java.util.Map;
 import org.qi4j.query.Expression;
 
-public class DateValueExpression
+public final class DateValueExpression
     implements Expression, ValueExpression
 {
     private Date value;

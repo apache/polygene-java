@@ -22,7 +22,7 @@ import org.qi4j.test.AbstractQi4jTest;
 
 public class ConstructorInjectionTest extends AbstractQi4jTest
 {
-    @Override public void configure( ModuleAssembly module )
+    public void configure( ModuleAssembly module )
     {
         module.addComposites( Composite1.class );
     }

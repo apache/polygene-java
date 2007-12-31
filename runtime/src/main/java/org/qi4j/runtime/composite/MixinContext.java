@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Rickard …berg. All Rights Reserved.
+ * Copyright (c) 2007, Rickard Ã–berg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +14,13 @@
 
 package org.qi4j.runtime.composite;
 
-import org.qi4j.runtime.entity.property.PropertyContext;
+import org.qi4j.runtime.property.PropertyContext;
 import org.qi4j.spi.composite.MixinBinding;
 
 /**
  * TODO
  */
-public class MixinContext
+public final class MixinContext
 {
     private MixinBinding mixinBinding;
     private Iterable<PropertyContext> propertyContext;

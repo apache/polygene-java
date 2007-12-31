@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Rickard …berg. All Rights Reserved.
+ * Copyright (c) 2007, Rickard Ã–berg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,10 +21,9 @@ import org.qi4j.test.model1.Object2;
 /**
  * TODO
  */
-public class ObjectNotRegisteredTest
-    extends AbstractQi4jTest
+public class ObjectNotRegisteredTest extends AbstractQi4jTest
 {
-    @Override public void configure( ModuleAssembly module )
+    public void configure( ModuleAssembly module )
     {
 //        module.addObject( Object2.class);
     }

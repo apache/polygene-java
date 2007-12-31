@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Rickard �berg. All Rights Reserved.
+ * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import java.util.Map;
 import org.qi4j.composite.CompositeInstantiationException;
 import org.qi4j.composite.Constraint;
 import org.qi4j.runtime.Qi4jRuntime;
-import org.qi4j.runtime.entity.property.PropertyContext;
+import org.qi4j.runtime.property.PropertyContext;
 import org.qi4j.runtime.structure.ModuleContext;
 import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.composite.CompositeMethodBinding;
@@ -42,7 +42,7 @@ import org.qi4j.spi.structure.ApplicationBinding;
 /**
  * TODO
  */
-public class CompositeMethodContext
+public final class CompositeMethodContext
 {
     private CompositeMethodBinding compositeMethodBinding;
     private ApplicationBinding applicationBinding;

@@ -19,7 +19,7 @@ import org.qi4j.spi.injection.InjectionProvider;
 /**
  * TODO
  */
-public class InstanceFactoryImpl
+public final class InstanceFactoryImpl
     implements InstanceFactory
 {
     public Object newInstance( AbstractBinding abstractBinding, InjectionContext context )

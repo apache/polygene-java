@@ -22,7 +22,7 @@ import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import org.qi4j.query.value.MethodCallExpression;
 
-public class QueryBuilderImpl<R>
+public final class QueryBuilderImpl<R>
     implements QueryBuilder<R>
 {
     private Class resultType;
@@ -92,7 +92,7 @@ public class QueryBuilderImpl<R>
 
     public <K> QueryBuilder<K> resultList( K property )
     {
-        return new QueryBuilderImpl<K>((Class<K>) property.getClass(), new QueryableIterable(newQuery()));
+        return new QueryBuilderImpl<K>( (Class<K>) property.getClass(), new QueryableIterable( newQuery() ) );
     }
 
     public Query<R> newQuery()

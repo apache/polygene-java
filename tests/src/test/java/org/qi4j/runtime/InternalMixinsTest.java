@@ -9,10 +9,9 @@ import org.qi4j.test.AbstractQi4jTest;
 /**
  * TODO
  */
-public class InternalMixinsTest
-    extends AbstractQi4jTest
+public class InternalMixinsTest extends AbstractQi4jTest
 {
-    @Override public void configure( ModuleAssembly module )
+    public void configure( ModuleAssembly module )
     {
         module.addComposites( TestComposite.class );
     }

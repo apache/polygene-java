@@ -5,7 +5,7 @@ import org.qi4j.spi.injection.InjectionResolution;
 /**
  * TODO
  */
-public class ParameterResolution
+public final class ParameterResolution
 {
     private ParameterModel parameterModel;
     private ParameterConstraintsResolution parameterConstraintsResolution;

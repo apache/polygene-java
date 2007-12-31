@@ -16,7 +16,7 @@ import org.qi4j.spi.injection.InvalidInjectionException;
 /**
  * TODO
  */
-public class EntityInjectionProviderFactory
+public final class EntityInjectionProviderFactory
     implements InjectionProviderFactory
 {
     Map<String, QueryBuilderFactory> queries = new HashMap<String, QueryBuilderFactory>();

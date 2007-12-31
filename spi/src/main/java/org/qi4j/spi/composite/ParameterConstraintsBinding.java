@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Rickard …berg. All Rights Reserved.
+ * Copyright (c) 2007, Rickard Ã–berg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import java.util.Map;
 /**
  * TODO
  */
-public class ParameterConstraintsBinding
+public final class ParameterConstraintsBinding
 {
     private ParameterConstraintsResolution parameterConstraintsResolution;
     private Map<Annotation, ConstraintBinding> constraintBindings;

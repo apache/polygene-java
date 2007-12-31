@@ -21,7 +21,7 @@ import java.util.Map;
 import org.qi4j.query.BooleanExpression;
 import org.qi4j.query.UnaryOperator;
 
-public class Not
+public final class Not
     implements UnaryOperator, BooleanExpression
 {
     private BooleanExpression expression;

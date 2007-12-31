@@ -49,6 +49,10 @@ public class CompositeModelResolverTest extends AbstractQi4jTest
         assertEquals( "ok", cbf.newCompositeBuilder( TestComposite1.class ).newInstance().testB() );
     }
 
+    public void configure( ModuleAssembly module ) throws AssemblyException
+    {
+    }
+
     @Mixins( TestA.TestAMixin.class )
     public static interface TestA
     {

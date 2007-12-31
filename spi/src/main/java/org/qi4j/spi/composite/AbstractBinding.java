@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Rickard …berg. All Rights Reserved.
+ * Copyright (c) 2007, Rickard Ã–berg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import java.util.List;
 /**
  * Base class for object model bindings. Bindings are resolutions whose injections have been bound to injection providers.
  */
-public class AbstractBinding
+public abstract class AbstractBinding
 {
     private AbstractResolution abstractResolution;
 
@@ -31,7 +31,7 @@ public class AbstractBinding
     private Iterable<MethodBinding> methodBindings;
     private Iterable<MethodBinding> injectedMethodBindings;
 
-    public AbstractBinding( AbstractResolution abstractResolution, ConstructorBinding constructorBinding, Iterable<FieldBinding> fieldBindings, Iterable<MethodBinding> methodBindings )
+    protected AbstractBinding( AbstractResolution abstractResolution, ConstructorBinding constructorBinding, Iterable<FieldBinding> fieldBindings, Iterable<MethodBinding> methodBindings )
     {
         this.abstractResolution = abstractResolution;
         this.constructorBinding = constructorBinding;

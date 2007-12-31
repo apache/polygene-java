@@ -8,13 +8,12 @@ import org.qi4j.spi.composite.FieldModel;
 import org.qi4j.spi.composite.InvalidCompositeException;
 import org.qi4j.spi.composite.MethodModel;
 import org.qi4j.spi.composite.ObjectModel;
-import org.qi4j.spi.entity.property.PropertyModel;
+import org.qi4j.spi.property.PropertyModel;
 
 /**
  * TODO
  */
-public class ObjectModelFactory
-    extends AbstractModelFactory
+public final class ObjectModelFactory extends AbstractModelFactory
 {
     public ObjectModel newObjectModel( Class objectClass )
         throws NullArgumentException, InvalidCompositeException

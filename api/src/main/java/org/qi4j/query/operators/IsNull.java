@@ -23,7 +23,7 @@ import org.qi4j.query.Expression;
 import org.qi4j.query.UnaryOperator;
 import org.qi4j.query.value.ValueExpression;
 
-public class IsNull
+public final class IsNull
     implements UnaryOperator, BooleanExpression
 {
     private ValueExpression expression;

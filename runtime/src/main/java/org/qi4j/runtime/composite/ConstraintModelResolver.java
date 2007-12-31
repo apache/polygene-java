@@ -6,7 +6,7 @@ import org.qi4j.spi.composite.MethodConstraintResolution;
 /**
  * TODO
  */
-public class ConstraintModelResolver
+public final class ConstraintModelResolver
 {
     public ConstraintModelResolver()
     {

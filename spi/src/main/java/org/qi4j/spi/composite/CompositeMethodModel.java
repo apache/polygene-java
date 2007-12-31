@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Rickard …berg. All Rights Reserved.
+ * Copyright (c) 2007, Rickard Ã–berg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,12 @@ package org.qi4j.spi.composite;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
-import org.qi4j.spi.entity.property.PropertyModel;
+import org.qi4j.spi.property.PropertyModel;
 
 /**
  * TODO
  */
-public class CompositeMethodModel
+public final class CompositeMethodModel
     implements Serializable
 {
     private Method method;
@@ -70,12 +70,7 @@ public class CompositeMethodModel
 
         CompositeMethodModel that = (CompositeMethodModel) o;
 
-        if( !method.equals( that.method ) )
-        {
-            return false;
-        }
-
-        return true;
+        return method.equals( that.method );
     }
 
     public int hashCode()

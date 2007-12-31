@@ -3,14 +3,13 @@ package org.qi4j.spi.injection;
 import java.util.Map;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.ObjectBuilderFactory;
-import org.qi4j.entity.property.AbstractProperty;
+import org.qi4j.property.AbstractProperty;
 import org.qi4j.spi.structure.ModuleBinding;
 
 /**
  * TODO
  */
-public class ObjectInjectionContext
-    extends InjectionContext
+public final class ObjectInjectionContext extends InjectionContext
     implements PropertyInjectionContext
 {
     private Iterable<Object> adapt;

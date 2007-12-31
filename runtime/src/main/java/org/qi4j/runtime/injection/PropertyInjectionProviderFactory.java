@@ -1,10 +1,10 @@
 package org.qi4j.runtime.injection;
 
 import java.util.Map;
-import org.qi4j.entity.property.AbstractProperty;
-import org.qi4j.entity.property.ReadableProperty;
+import org.qi4j.property.AbstractProperty;
+import org.qi4j.property.ReadableProperty;
 import org.qi4j.spi.composite.MixinResolution;
-import org.qi4j.spi.entity.property.PropertyModel;
+import org.qi4j.spi.property.PropertyModel;
 import org.qi4j.spi.injection.BindingContext;
 import org.qi4j.spi.injection.InjectionContext;
 import org.qi4j.spi.injection.InjectionProvider;
@@ -18,7 +18,7 @@ import org.qi4j.spi.injection.PropertyInjectionModel;
 /**
  * TODO
  */
-public class PropertyInjectionProviderFactory
+public final class PropertyInjectionProviderFactory
     implements InjectionProviderFactory
 {
     public InjectionProvider newInjectionProvider( BindingContext bindingContext ) throws InvalidInjectionException

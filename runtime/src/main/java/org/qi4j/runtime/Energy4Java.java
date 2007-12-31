@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Rickard …berg. All Rights Reserved.
+ * Copyright (c) 2007, Rickard Ã–berg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,19 +55,17 @@ import org.qi4j.spi.injection.InjectionProviderFactory;
 /**
  * Incarnation of Qi4j.
  */
-public class Energy4Java
+public final class Energy4Java
     implements Qi4jRuntime
 {
-    Qi4jRuntime delegate;
+    private InstanceFactory instanceFactory;
+    private CompositeModelFactory compositeModelFactory;
+    private CompositeResolver compositeResolver;
+    private CompositeBinder compositeBinder;
 
-    InstanceFactory instanceFactory;
-    CompositeModelFactory compositeModelFactory;
-    CompositeResolver compositeResolver;
-    CompositeBinder compositeBinder;
-
-    ObjectModelFactory objectModelFactory;
-    ObjectResolver objectResolver;
-    ObjectBinder objectBinder;
+    private ObjectModelFactory objectModelFactory;
+    private ObjectResolver objectResolver;
+    private ObjectBinder objectBinder;
 
     public Energy4Java()
     {
@@ -76,8 +74,6 @@ public class Energy4Java
 
     public Energy4Java( Qi4jRuntime delegate )
     {
-        this.delegate = delegate;
-
         Map<Class<? extends Annotation>, InjectionProviderFactory> providerFactories = new HashMap<Class<? extends Annotation>, InjectionProviderFactory>();
         providerFactories.put( ThisCompositeAs.class, new ThisCompositeAsInjectionProviderFactory() );
         ModifiesInjectionProviderFactory modifiesInjectionProviderFactory = new ModifiesInjectionProviderFactory();

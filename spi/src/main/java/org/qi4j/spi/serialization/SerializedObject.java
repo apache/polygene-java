@@ -26,7 +26,7 @@ import org.qi4j.entity.EntitySession;
 import org.qi4j.spi.Qi4jSPI;
 
 
-public class SerializedObject
+public final class SerializedObject
     implements Serializable
 {
     private byte[] data;

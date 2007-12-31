@@ -13,7 +13,7 @@ import org.qi4j.spi.injection.ResolutionContext;
 /**
  * TODO
  */
-public class ObjectResolver
+public final class ObjectResolver
     extends AbstractResolver
 {
     public ObjectResolution resolveObjectModel( ResolutionContext resolutionContext )

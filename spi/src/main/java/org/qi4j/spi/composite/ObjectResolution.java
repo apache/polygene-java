@@ -14,8 +14,7 @@ package org.qi4j.spi.composite;
 /**
  * Base class for object model resolutions. Resolutions are models resolved in a runtime environment
  */
-public class ObjectResolution
-    extends AbstractResolution
+public final class ObjectResolution extends AbstractResolution
 {
     private Iterable<PropertyResolution> propertyResolutions;
 

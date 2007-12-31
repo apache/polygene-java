@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Rickard …berg. All Rights Reserved.
+ * Copyright (c) 2007, Rickard Ã–berg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import org.qi4j.composite.Constraint;
  * of the @Constraints annotation. One model is created
  * for each class in the @Constraints annotation.
  */
-public class ConstraintModel<T>
+public final class ConstraintModel<T>
 {
     private Class<? extends Constraint> constraintType;
     private Class<? extends Annotation> annotationType;

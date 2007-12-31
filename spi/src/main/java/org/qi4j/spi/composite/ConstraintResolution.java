@@ -5,10 +5,10 @@ import java.lang.annotation.Annotation;
 /**
  * TODO
  */
-public class ConstraintResolution
+public final class ConstraintResolution
 {
-    ConstraintModel constraintModel;
-    Annotation constraintAnnotation;
+    private ConstraintModel constraintModel;
+    private Annotation constraintAnnotation;
 
     public ConstraintResolution( ConstraintModel constraintModel, Annotation constraintAnnotation )
     {

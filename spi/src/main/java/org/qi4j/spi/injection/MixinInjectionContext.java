@@ -4,16 +4,15 @@ import java.lang.reflect.InvocationHandler;
 import java.util.Map;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.ObjectBuilderFactory;
-import org.qi4j.entity.association.AbstractAssociation;
-import org.qi4j.entity.property.AbstractProperty;
+import org.qi4j.association.AbstractAssociation;
+import org.qi4j.property.AbstractProperty;
 import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.structure.ModuleBinding;
 
 /**
  * TODO
  */
-public class MixinInjectionContext
-    extends FragmentInjectionContext
+public final class MixinInjectionContext extends FragmentInjectionContext
     implements PropertyInjectionContext, AssociationInjectionContext
 {
     private Map<String, AbstractProperty> properties;

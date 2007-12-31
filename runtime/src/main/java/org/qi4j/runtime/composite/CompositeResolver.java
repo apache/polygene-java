@@ -39,14 +39,14 @@ import org.qi4j.spi.composite.PropertyResolution;
 import org.qi4j.spi.composite.ResolutionException;
 import org.qi4j.spi.composite.SideEffectModel;
 import org.qi4j.spi.composite.SideEffectResolution;
-import org.qi4j.spi.entity.property.PropertyModel;
+import org.qi4j.spi.property.PropertyModel;
 import org.qi4j.spi.injection.InvalidInjectionException;
 import org.qi4j.spi.injection.ResolutionContext;
 
 /**
  * TODO
  */
-public class CompositeResolver
+public final class CompositeResolver
     extends AbstractResolver
 {
     public CompositeResolution resolveCompositeModel( ResolutionContext resolutionContext )

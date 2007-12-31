@@ -16,7 +16,7 @@ package org.qi4j.entity;
 
 import org.qi4j.composite.Mixins;
 import org.qi4j.composite.scope.PropertyField;
-import org.qi4j.entity.property.ReadableProperty;
+import org.qi4j.property.ReadableProperty;
 
 /**
  * This interface provides the identity of the object which may be used

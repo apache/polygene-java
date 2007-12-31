@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Rickard …berg. All Rights Reserved.
+ * Copyright (c) 2007, Rickard Ã–berg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,12 +22,12 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.qi4j.entity.association.AssociationChangeObserver;
+import org.qi4j.association.AssociationChangeObserver;
 
 /**
  * TODO
  */
-public class AssociationBuilder
+public final class AssociationBuilder
 {
     private boolean aggregate = false;
     private Method accessor;

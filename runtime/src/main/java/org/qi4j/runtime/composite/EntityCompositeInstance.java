@@ -25,7 +25,7 @@ import org.qi4j.spi.composite.MixinResolution;
 import org.qi4j.spi.entity.EntityStateHolder;
 import org.qi4j.spi.entity.EntityStore;
 
-public class EntityCompositeInstance extends AbstractCompositeInstance
+public final class EntityCompositeInstance extends AbstractCompositeInstance
 {
     protected Object[] mixins;
 

@@ -9,8 +9,7 @@ import org.qi4j.spi.structure.ModuleBinding;
 /**
  * TODO
  */
-public class FragmentInjectionContext
-    extends InjectionContext
+public class FragmentInjectionContext extends InjectionContext
 {
     private CompositeBinding compositeBinding;
     private InvocationHandler thisCompositeAs;

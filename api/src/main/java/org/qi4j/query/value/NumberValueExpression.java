@@ -20,7 +20,7 @@ package org.qi4j.query.value;
 import java.util.Map;
 import org.qi4j.query.Expression;
 
-public class NumberValueExpression
+public final class NumberValueExpression
     implements Expression, ValueExpression
 {
     private Number value;

@@ -1,4 +1,4 @@
-/*  Copyright 2007 Rickard �berg.
+/*  Copyright 2007 Rickard Öberg.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ import org.qi4j.runtime.composite.ObjectContext;
 /**
  *
  */
-public class ObjectBuilderImpl<T>
+public final class ObjectBuilderImpl<T>
     implements ObjectBuilder<T>
 {
     private ObjectContext objectContext;

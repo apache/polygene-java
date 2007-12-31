@@ -20,7 +20,6 @@ package org.qi4j.spi.composite;
 public final class ConcernResolution
     extends ModifierResolution
 {
-    // Constructors --------------------------------------------------
     public ConcernResolution( ConcernModel concernModel, Iterable<ConstructorResolution> constructorResolutions, Iterable<FieldResolution> fieldResolutions, Iterable<MethodResolution> methodResolutions )
     {
         super( concernModel, constructorResolutions, fieldResolutions, methodResolutions );

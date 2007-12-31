@@ -12,7 +12,7 @@
 package org.qi4j.spi.composite;
 
 import java.util.Map;
-import org.qi4j.spi.entity.property.PropertyModel;
+import org.qi4j.spi.property.PropertyModel;
 
 /**
  * A mixin is an implementation of a particular interface,

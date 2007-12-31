@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Rickard …berg. All Rights Reserved.
+ * Copyright (c) 2007, Rickard Ã–berg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,14 +23,14 @@ import org.qi4j.spi.structure.ModuleResolution;
 /**
  * TODO
  */
-public class BindingContext
+public final class BindingContext
 {
-    InjectionResolution injectionResolution;
-    AbstractResolution abstractResolution;
-    CompositeResolution compositeResolution;
-    ModuleResolution moduleResolution;
-    LayerResolution layerResolution;
-    ApplicationResolution applicationResolution;
+    private InjectionResolution injectionResolution;
+    private AbstractResolution abstractResolution;
+    private CompositeResolution compositeResolution;
+    private ModuleResolution moduleResolution;
+    private LayerResolution layerResolution;
+    private ApplicationResolution applicationResolution;
 
     public BindingContext( InjectionResolution injectionResolution, AbstractResolution abstractResolution, CompositeResolution compositeResolution, ModuleResolution moduleResolution, LayerResolution layerResolution, ApplicationResolution applicationResolution )
     {

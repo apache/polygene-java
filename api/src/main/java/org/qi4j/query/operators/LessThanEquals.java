@@ -23,7 +23,7 @@ import org.qi4j.query.BooleanExpression;
 import org.qi4j.query.Expression;
 import org.qi4j.query.value.ValueExpression;
 
-public class LessThanEquals
+public final class LessThanEquals
     implements BinaryOperator, BooleanExpression
 {
     private ValueExpression left;

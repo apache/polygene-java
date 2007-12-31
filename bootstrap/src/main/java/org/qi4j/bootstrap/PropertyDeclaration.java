@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Rickard …berg. All Rights Reserved.
+ * Copyright (c) 2007, Rickard Ã–berg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,11 +22,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.qi4j.entity.property.PropertyChange;
-import org.qi4j.entity.property.PropertyChangeObserver;
-import org.qi4j.entity.property.PropertyChangeVeto;
-import org.qi4j.runtime.entity.property.NullPropertyContainer;
-import org.qi4j.runtime.entity.property.PropertyInstance;
+import org.qi4j.property.PropertyChange;
+import org.qi4j.property.PropertyChangeObserver;
+import org.qi4j.property.PropertyChangeVeto;
+import org.qi4j.runtime.property.NullPropertyContainer;
+import org.qi4j.runtime.property.PropertyInstance;
+import org.qi4j.runtime.property.PropertyContext;
 import org.qi4j.spi.structure.PropertyDescriptor;
 
 /**
@@ -74,7 +75,9 @@ public class PropertyDeclaration
             accessor = method;
             propertyType = (Class) ( (ParameterizedType) method.getGenericReturnType() ).getActualTypeArguments()[ 0 ];
 
-            PropertyInstance<Object> property = new PropertyInstance<Object>( new NullPropertyContainer<Object>(), null );
+            // TODO: What is propertyContext here?
+            PropertyContext propertyContext = null;
+            PropertyInstance<Object> property = new PropertyInstance<Object>( new NullPropertyContainer<Object>(), propertyContext, null );
             property.addChangeObserver( this );
             return property;
         }

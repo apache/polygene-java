@@ -12,7 +12,7 @@ import org.qi4j.spi.injection.ModifierInjectionContext;
 /**
  * TODO
  */
-public class ModifiesInjectionProviderFactory
+public final class ModifiesInjectionProviderFactory
     implements InjectionProviderFactory
 {
 

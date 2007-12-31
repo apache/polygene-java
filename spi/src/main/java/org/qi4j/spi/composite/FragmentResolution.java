@@ -17,10 +17,9 @@ package org.qi4j.spi.composite;
  * @see MixinResolution
  * @see ConcernResolution
  */
-public abstract class FragmentResolution
-    extends AbstractResolution
+public abstract class FragmentResolution extends AbstractResolution
 {
-    public FragmentResolution( FragmentModel fragmentModel, Iterable<ConstructorResolution> constructorResolutions, Iterable<FieldResolution> fieldResolutions, Iterable<MethodResolution> methodResolutions )
+    protected FragmentResolution( FragmentModel fragmentModel, Iterable<ConstructorResolution> constructorResolutions, Iterable<FieldResolution> fieldResolutions, Iterable<MethodResolution> methodResolutions )
     {
         super( fragmentModel, constructorResolutions, fieldResolutions, methodResolutions );
     }

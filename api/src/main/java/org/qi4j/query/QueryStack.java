@@ -19,7 +19,7 @@ package org.qi4j.query;
 
 import java.util.Stack;
 
-public class QueryStack<T> extends Stack<T>
+public final class QueryStack<T> extends Stack<T>
 {
     private static ThreadLocal<Stack<Expression>> stack;
     private static int counter;

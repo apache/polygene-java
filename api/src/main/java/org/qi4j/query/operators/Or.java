@@ -21,7 +21,7 @@ import java.util.Map;
 import org.qi4j.query.BinaryOperator;
 import org.qi4j.query.BooleanExpression;
 
-public class Or
+public final class Or
     implements BinaryOperator, BooleanExpression
 {
     private BooleanExpression left;

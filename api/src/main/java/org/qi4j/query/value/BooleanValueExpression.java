@@ -19,7 +19,7 @@ package org.qi4j.query.value;
 
 import java.util.Map;
 
-public class BooleanValueExpression
+public final class BooleanValueExpression
     implements ValueExpression
 {
     private Boolean value;

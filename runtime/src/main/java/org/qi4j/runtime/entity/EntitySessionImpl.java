@@ -28,17 +28,17 @@ import org.qi4j.entity.EntitySession;
 import org.qi4j.entity.EntitySessionException;
 import org.qi4j.entity.Identity;
 import org.qi4j.entity.IdentityGenerator;
-import org.qi4j.entity.property.PropertyContainer;
+import org.qi4j.property.PropertyContainer;
 import org.qi4j.query.Query;
 import org.qi4j.query.QueryBuilderFactory;
 import org.qi4j.query.QueryBuilderFactoryImpl;
 import org.qi4j.runtime.composite.EntityCompositeInstance;
-import org.qi4j.runtime.entity.property.EntitySessionPropertyContainer;
+import org.qi4j.runtime.property.EntitySessionPropertyContainer;
 import org.qi4j.spi.entity.EntityStateHolder;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.StoreException;
 
-public class EntitySessionImpl
+public final class EntitySessionImpl
     implements EntitySession
 {
     private HashMap<Class<? extends EntityComposite>, Map<String, EntityEntry>> cache;

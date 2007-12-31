@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Rickard …berg. All Rights Reserved.
+ * Copyright (c) 2007, Rickard Ã–berg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import java.util.Map;
  * Custom implementation of AnnotatedElement. This is primarily used
  * to aggregate annotations in interface and mixin methods.
  */
-public class MapAnnotatedElement
+public final class MapAnnotatedElement
     implements AnnotatedElement
 {
     Map<Class<? extends Annotation>, Annotation> annotations;

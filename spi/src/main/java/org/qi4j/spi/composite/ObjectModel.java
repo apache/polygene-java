@@ -11,7 +11,7 @@
 */
 package org.qi4j.spi.composite;
 
-import org.qi4j.spi.entity.property.PropertyModel;
+import org.qi4j.spi.property.PropertyModel;
 
 /**
  * Base class for fragments. Fragments are composed into objects.
@@ -19,8 +19,7 @@ import org.qi4j.spi.entity.property.PropertyModel;
  * @see MixinModel
  * @see ConcernModel
  */
-public class ObjectModel
-    extends AbstractModel
+public final class ObjectModel extends AbstractModel
 {
     private Iterable<PropertyModel> propertyModels;
 

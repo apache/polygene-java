@@ -18,15 +18,15 @@ package org.qi4j.runtime.composite;
 
 import java.lang.reflect.Method;
 import org.qi4j.composite.Composite;
-import org.qi4j.entity.property.PropertyContainer;
-import org.qi4j.runtime.entity.property.CompositePropertyContainer;
+import org.qi4j.property.PropertyContainer;
+import org.qi4j.runtime.property.CompositePropertyContainer;
 import org.qi4j.runtime.structure.ModuleContext;
 import org.qi4j.spi.composite.InvalidCompositeException;
 
 /**
  * InvocationHandler for proxy objects.
  */
-public class CompositeInstance extends AbstractCompositeInstance
+public final class CompositeInstance extends AbstractCompositeInstance
 {
     final private Object[] mixins;
     private Object proxy;

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Rickard …berg. All Rights Reserved.
+ * Copyright (c) 2007, Rickard Ã–berg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,15 +15,15 @@
 package org.qi4j.bootstrap;
 
 import java.lang.reflect.Method;
-import org.qi4j.entity.association.AbstractAssociation;
-import org.qi4j.entity.property.ReadableProperty;
+import org.qi4j.association.AbstractAssociation;
+import org.qi4j.property.ReadableProperty;
 
 /**
  * TODO
  */
-public class AssemblyHelper
+public final class AssemblyHelper
 {
-    ModuleAssembly module;
+    private ModuleAssembly module;
 
     public AssemblyHelper( ModuleAssembly module )
     {
