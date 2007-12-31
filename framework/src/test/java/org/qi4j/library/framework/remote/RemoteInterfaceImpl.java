@@ -15,7 +15,6 @@ import java.io.IOException;
 
 /**
  * Implementation of RemoteInterface.
- *
  */
 public class RemoteInterfaceImpl
     implements RemoteInterface

@@ -16,7 +16,7 @@ import org.qi4j.test.AbstractQi4jTest;
 
 public class JavaScriptMixinTest extends AbstractQi4jTest
 {
-    @Override public void configure( ModuleAssembly module )
+    public void configure( ModuleAssembly module )
     {
         module.addComposites( ScriptComposite.class );
     }

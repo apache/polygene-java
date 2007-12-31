@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Rickard �berg. All Rights Reserved.
+ * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,8 +19,15 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import org.qi4j.bootstrap.ModuleAssembly;
+import org.openrdf.model.Graph;
+import org.openrdf.model.Statement;
+import org.openrdf.rio.RDFHandlerException;
+import org.openrdf.rio.RDFWriter;
+import org.openrdf.rio.RDFWriterFactory;
+import org.openrdf.rio.n3.N3WriterFactory;
+import org.openrdf.rio.rdfxml.RDFXMLWriterFactory;
 import org.qi4j.bootstrap.LayerAssembly;
+import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.Concerns;
 import org.qi4j.composite.Mixins;
@@ -28,15 +35,8 @@ import org.qi4j.composite.SideEffects;
 import org.qi4j.composite.scope.ConcernFor;
 import org.qi4j.composite.scope.SideEffectFor;
 import org.qi4j.composite.scope.ThisCompositeAs;
-import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.library.framework.rdf.parse.StructureParser;
-import org.openrdf.model.Graph;
-import org.openrdf.model.Statement;
-import org.openrdf.rio.n3.N3WriterFactory;
-import org.openrdf.rio.RDFWriter;
-import org.openrdf.rio.RDFHandlerException;
-import org.openrdf.rio.RDFWriterFactory;
-import org.openrdf.rio.rdfxml.RDFXMLWriterFactory;
+import org.qi4j.test.AbstractQi4jTest;
 
 /**
  * TODO
@@ -45,7 +45,7 @@ public class ApplicationXmlTest
     extends AbstractQi4jTest
 {
 
-    @Override public void configure( ModuleAssembly module )
+    public void configure( ModuleAssembly module )
     {
         LayerAssembly layerAssembly = module.getLayerAssembly();
         layerAssembly.getApplicationAssembly().setName( "testapp" );

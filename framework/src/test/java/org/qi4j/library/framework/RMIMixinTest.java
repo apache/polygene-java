@@ -27,7 +27,7 @@ import org.qi4j.test.AbstractQi4jTest;
 public class RMIMixinTest
     extends AbstractQi4jTest
 {
-    @Override public void configure( ModuleAssembly module )
+    public void configure( ModuleAssembly module )
     {
         module.addComposites( RemoteInterfaceComposite.class );
     }

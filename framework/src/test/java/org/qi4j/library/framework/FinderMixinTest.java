@@ -1,24 +1,15 @@
 package org.qi4j.library.framework;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
-import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.Mixins;
 import org.qi4j.composite.scope.ThisCompositeAs;
-import org.qi4j.entity.EntitySession;
-import org.qi4j.query.QueryBuilderFactoryImpl;
-import org.qi4j.query.QueryableIterable;
-import org.qi4j.runtime.entity.EntitySessionFactoryImpl;
-import org.qi4j.runtime.injection.EntityInjectionProviderFactory;
 import org.qi4j.test.AbstractQi4jTest;
-import org.junit.Ignore;
 
 public class FinderMixinTest
     extends AbstractQi4jTest
 {
-    @Override public void configure( ModuleAssembly module )
+    public void configure( ModuleAssembly module )
     {
 //        module.addComposite( Composite1.class );
     }

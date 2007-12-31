@@ -20,7 +20,7 @@ import org.qi4j.test.AbstractQi4jTest;
 
 public class DescriptorTest extends AbstractQi4jTest
 {
-    @Override public void configure( ModuleAssembly module )
+    public void configure( ModuleAssembly module )
     {
         module.addComposites( DummyComposite.class );
         module.addComposites( DummyComposite2.class );
