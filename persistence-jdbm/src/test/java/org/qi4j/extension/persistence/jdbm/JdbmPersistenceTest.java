@@ -24,6 +24,8 @@ import jdbm.RecordManagerOptions;
 import org.objectweb.jotm.Jotm;
 import org.objectweb.transaction.jta.TransactionManager;
 import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.bootstrap.AssemblyException;
 
 public class JdbmPersistenceTest extends AbstractQi4jTest
 {
@@ -64,5 +66,10 @@ public class JdbmPersistenceTest extends AbstractQi4jTest
         Jotm jotm = new Jotm( true, false );
         TransactionManager transactionManager = jotm.getTransactionManager();
         underTest = new JdbmStorage( testDir, transactionManager );
+    }
+
+    public void configure( ModuleAssembly module ) throws AssemblyException
+    {
+
     }
 }
