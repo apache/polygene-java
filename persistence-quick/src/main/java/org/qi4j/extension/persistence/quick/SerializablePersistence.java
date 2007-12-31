@@ -60,14 +60,14 @@ public final class SerializablePersistence
             }
         }
 
-        String id = entity.getIdentity();
+        String id = entity.identity().get();
         delegate.putInstance( id, persistentMixins );
     }
 
     public void read( EntityComposite entity )
         throws PersistenceException
     {
-        String id = entity.getIdentity();
+        String id = entity.identity().get();
         Map<Class, SerializedObject> mixins = delegate.getInstance( id );
         CompositeInstance handler = CompositeInstance.getCompositeInstance( entity.dereference() );
         if( mixins == null )
@@ -109,7 +109,7 @@ public final class SerializablePersistence
     {
         ProxyReferenceInvocationHandler handler = (ProxyReferenceInvocationHandler) Proxy.getInvocationHandler( entity );
 
-        String identity = entity.getIdentity();
+        String identity = entity.identity().get();
         Map<Class, SerializedObject> mixins = delegate.getInstance( identity );
         if( mixins != null )
         {
@@ -129,7 +129,7 @@ public final class SerializablePersistence
     public void delete( EntityComposite entity )
         throws PersistenceException
     {
-        String id = entity.getIdentity();
+        String id = entity.identity().get();
         delegate.removeInstance( id );
     }
 

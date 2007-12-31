@@ -39,7 +39,7 @@ class UpdateOperation
     public void perform( RecordManager recordManager )
     {
         ProxyReferenceInvocationHandler handler = (ProxyReferenceInvocationHandler) Proxy.getInvocationHandler( composite );
-        String identity = composite.getIdentity();
+        String identity = composite.identity().get();
         try
         {
             long recordId = recordManager.getNamedObject( identity );
@@ -66,7 +66,7 @@ class UpdateOperation
 
     public String getIdentity()
     {
-        return composite.getIdentity();
+        return composite.identity().get();
     }
 
     public void playback( String identity, Object[] mixins )

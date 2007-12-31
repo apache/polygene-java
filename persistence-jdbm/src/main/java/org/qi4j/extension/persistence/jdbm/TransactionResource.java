@@ -54,7 +54,7 @@ public class TransactionResource
 
     public void read( EntityComposite aProxy )
     {
-        String objectId = aProxy.getIdentity();
+        String objectId = aProxy.identity().get();
         CompositeInstance instance = CompositeInstance.getCompositeInstance( aProxy.dereference() );
         try
         {
@@ -62,7 +62,7 @@ public class TransactionResource
             if( recordId == 0 )
             {
                 // Here we need to check the "last value" in the Transaction log. Should this be built on the calls instead?
-                String identity = aProxy.getIdentity();
+                String identity = aProxy.identity().get();
                 Object[] mixins = instance.getMixins();
 
                 for( Operation op : operations )

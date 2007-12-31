@@ -47,7 +47,7 @@ class CreateOperation
                 persistentMixins.put( mixin.getClass(), (Serializable) mixin );
             }
         }
-        String objectId = composite.getIdentity();
+        String objectId = composite.identity().get();
         try
         {
             long recordId = recordManager.insert( persistentMixins );
@@ -61,12 +61,12 @@ class CreateOperation
 
     public String getIdentity()
     {
-        return composite.getIdentity();
+        return composite.identity().get();
     }
 
     public void playback( String identity, Object[] newMixinsToPopulate )
     {
-        if( identity.equals( composite.getIdentity() ) && newMixinsToPopulate != null )
+        if( identity.equals( composite.identity().get() ) && newMixinsToPopulate != null )
         {
             CompositeInstance handler = CompositeInstance.getCompositeInstance( composite );
             Object[] mixins = handler.getMixins();

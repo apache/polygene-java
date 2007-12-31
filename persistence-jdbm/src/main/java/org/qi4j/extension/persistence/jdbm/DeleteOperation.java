@@ -32,7 +32,7 @@ class DeleteOperation
 
     public void perform( RecordManager recordManager )
     {
-        String identity = composite.getIdentity();
+        String identity = composite.identity().get();
         try
         {
             long recordId = recordManager.getNamedObject( identity );
@@ -46,7 +46,7 @@ class DeleteOperation
 
     public String getIdentity()
     {
-        return composite.getIdentity();
+        return composite.identity().get();
     }
 
     public void playback( String identity, Object[] mixins )
