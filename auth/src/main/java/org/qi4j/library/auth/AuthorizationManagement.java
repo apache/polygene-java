@@ -19,5 +19,10 @@ package org.qi4j.library.auth;
 
 public interface AuthorizationManagement
 {
-    
+    /** Sets the authorization context to this user.
+     *
+     * @param user The user that is now owning the current thread, or null if no User should be
+     *             associcated with current thread.
+     */
+    void establishCurrentUser( User user );
 }

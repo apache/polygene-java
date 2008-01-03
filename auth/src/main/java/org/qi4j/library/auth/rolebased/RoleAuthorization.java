@@ -36,7 +36,11 @@ public class RoleAuthorization
     public void authorize( CompositeBinding compositeType, Method method, Object[] args )
         throws SecurityException
     {
-
+        if( currentUser == null ) // TODO: If no User, should the call be allowed or not?
+        {
+            return;
+        }
+        
         if( methodToRoles.containsKey( method ) )
         {
             ManyAssociation<Role> roles = methodToRoles.get( method );
@@ -50,5 +54,10 @@ public class RoleAuthorization
             }
         }
         throw new SecurityException( "Unauthorized Access: " + compositeType.getCompositeResolution().getCompositeModel().getCompositeClass().getName() + "." + method.getName() );
+    }
+
+    public void establishCurrentUser( User user )
+    {
+        currentUser = user;
     }
 }
