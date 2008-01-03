@@ -24,7 +24,7 @@ import org.qi4j.spi.composite.CompositeBinding;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 
-public class Authorization
+public class RoleAuthorization
     implements AuthorizationService, AuthorizationManagement
 {
     private HashMap<Method, Role[]> methodToRoles;
