@@ -22,6 +22,8 @@ import java.util.Map;
 public interface MapAssociation<K, V>
     extends Iterable<Map.Entry<K, V>>
 {
+    V get( K key );
+    
     void put( K key, V value );
 
     V remove( K key );
