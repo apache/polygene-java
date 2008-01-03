@@ -19,6 +19,6 @@ package org.qi4j.library.auth;
 
 import org.qi4j.composite.Composite;
 
-public interface UserComposite extends Composite, User, RoleAggregate
+public interface UserComposite extends Composite, User
 {
 }
