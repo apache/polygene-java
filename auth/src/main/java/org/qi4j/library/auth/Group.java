@@ -18,13 +18,9 @@
 package org.qi4j.library.auth;
 
 import java.util.List;
+import org.qi4j.association.ManyAssociation;
 
 public interface Group extends User
 {
-    List<User> getUsers();
-
-    void addUser( User user );
-    void removeUser( User user );
-
-    boolean containsUser( User user );
+    ManyAssociation<User> users();
 }

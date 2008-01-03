@@ -18,10 +18,9 @@
 package org.qi4j.library.auth;
 
 import java.util.List;
+import org.qi4j.association.ManyAssociation;
 
 public interface RoleAggregate
 {
-    List<Role> getRoles();
-
-    boolean hasRole( Role role );
+    ManyAssociation<Role> roles();
 }
