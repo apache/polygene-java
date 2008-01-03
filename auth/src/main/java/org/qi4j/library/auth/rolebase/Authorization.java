@@ -32,6 +32,13 @@ public class Authorization
     public void authorize( CompositeBinding compositeType, Method method, Object[] args )
         throws SecurityException
     {
+        if( methodToRoles.containsKey( method ) )
+        {
 
+        }
+        else
+        {
+            throw new SecurityException( "Unauthorized Access: " + compositeType.getCompositeResolution().getCompositeModel().getCompositeClass().getName() + "." + method.getName() );
+        }
     }
 }

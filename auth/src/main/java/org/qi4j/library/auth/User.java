@@ -17,6 +17,6 @@
  */
 package org.qi4j.library.auth;
 
-public interface User extends RoleAggregate
+public interface User extends HasRoles
 {
 }
