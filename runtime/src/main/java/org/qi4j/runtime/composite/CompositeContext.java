@@ -23,11 +23,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.qi4j.association.AbstractAssociation;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeInstantiationException;
 import org.qi4j.entity.EntitySession;
 import org.qi4j.entity.Lifecycle;
-import org.qi4j.association.AbstractAssociation;
 import org.qi4j.property.AbstractProperty;
 import org.qi4j.property.PropertyContainer;
 import org.qi4j.runtime.property.NullPropertyContainer;
@@ -39,9 +39,9 @@ import org.qi4j.spi.composite.CompositeResolution;
 import org.qi4j.spi.composite.MixinBinding;
 import org.qi4j.spi.composite.MixinResolution;
 import org.qi4j.spi.composite.PropertyResolution;
+import org.qi4j.spi.injection.MixinInjectionContext;
 import org.qi4j.spi.property.PropertyBinding;
 import org.qi4j.spi.property.PropertyModel;
-import org.qi4j.spi.injection.MixinInjectionContext;
 import org.qi4j.spi.structure.ModuleBinding;
 
 /**
@@ -86,10 +86,9 @@ public final class CompositeContext
 
         // Assign index to each mixin binding
         int currentMixinIndex = 0;
-        Iterable<MixinBinding> mixinBindinghs = compositeBinding.getMixinBindings();
-        for( MixinBinding mixinBinding : mixinBindinghs )
+        for( MixinContext mixinContext : mixinContexts )
         {
-            mixinIndices.put( mixinBinding, currentMixinIndex++ );
+            mixinIndices.put( mixinContext.getMixinBinding(), currentMixinIndex++ );
         }
 
         int methodIndex = 0;

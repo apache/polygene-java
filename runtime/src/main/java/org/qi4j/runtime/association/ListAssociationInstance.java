@@ -27,20 +27,33 @@ public final class ListAssociationInstance<T> extends AbstractList<T>
     implements ListAssociation<T>
 {
     List<T> associated;
+    AssociationChangeObserver<?, T> changeObserver;
 
     public ListAssociationInstance( List<T> associated )
     {
         this.associated = associated;
     }
 
-    public T get( int i )
+    @Override public T get( int i )
     {
         return associated.get( i );
     }
 
-    public int size()
+    @Override public int size()
     {
         return associated.size();
+    }
+
+
+    @Override public boolean add( T t )
+    {
+        try
+        {
+            return super.add( t );
+        }
+        finally
+        {
+        }
     }
 
     public <T> T getAssociationInfo( Class<T> infoType )
@@ -51,7 +64,7 @@ public final class ListAssociationInstance<T> extends AbstractList<T>
 
     public void addChangeObserver( AssociationChangeObserver<?, T> associationChangeObserver )
     {
-        // TODO
+        changeObserver = associationChangeObserver;
     }
 
     public void addAccessObserver( AssociationAccessObserver<?, T> associationAccessObserver )

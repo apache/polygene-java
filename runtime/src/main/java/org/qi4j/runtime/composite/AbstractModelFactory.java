@@ -94,11 +94,16 @@ public abstract class AbstractModelFactory
     protected Collection<MethodModel> getMethodModels( Class compositeClass )
     {
         List<MethodModel> models = new ArrayList<MethodModel>();
-        Method[] methods = compositeClass.getMethods();
-        for( Method method : methods )
+        Class methodClass = compositeClass;
+        while( !methodClass.equals( Object.class ) )
         {
-            MethodModel methodModel = newMethodModel( method, compositeClass );
-            models.add( methodModel );
+            Method[] methods = methodClass.getDeclaredMethods();
+            for( Method method : methods )
+            {
+                MethodModel methodModel = newMethodModel( method, compositeClass );
+                models.add( methodModel );
+            }
+            methodClass = methodClass.getSuperclass();
         }
 
         return models;
@@ -120,6 +125,10 @@ public abstract class AbstractModelFactory
                 hasInjections = true;
             }
             parameterModels.add( parameterModel );
+        }
+        if( hasInjections )
+        {
+            method.setAccessible( true );
         }
         MethodModel methodModel = new MethodModel( method, parameterModels, hasInjections );
         return methodModel;

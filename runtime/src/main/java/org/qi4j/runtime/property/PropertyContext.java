@@ -17,6 +17,7 @@ package org.qi4j.runtime.property;
 import org.qi4j.composite.scope.ConcernFor;
 import org.qi4j.property.AbstractProperty;
 import org.qi4j.property.PropertyContainer;
+import org.qi4j.property.PropertyVetoException;
 import org.qi4j.property.ReadableProperty;
 import org.qi4j.property.WritableProperty;
 import org.qi4j.spi.property.PropertyBinding;
@@ -57,7 +58,6 @@ public final class PropertyContext
         PropertyInstanceValue<T> piv = new PropertyInstanceValue<T>();
 
         ReadableProperty<T> read;
-        WritableProperty<T> write;
 
         read = new ReadableProperty<T>()
         {
@@ -71,7 +71,7 @@ public final class PropertyContext
         };
         try
         {
-            read.getClass().getField( "next" ).set( read, piv );
+            read.getClass().getDeclaredField( "next" ).set( read, piv );
         }
         catch( IllegalAccessException e )
         {
@@ -89,6 +89,35 @@ public final class PropertyContext
 
     public <T> WritableProperty<T> getWritableProperty( PropertyInstance<T> propertyInstance )
     {
-        return null;
+        PropertyInstanceValue<T> piv = new PropertyInstanceValue<T>();
+
+        WritableProperty<T> writableProperty;
+
+        writableProperty = new WritableProperty<T>()
+        {
+            @ConcernFor WritableProperty<T> next;
+
+            public void set( T newValue ) throws PropertyVetoException
+            {
+                System.out.println( "Wrote property" );
+                next.set( newValue );
+            }
+        };
+        try
+        {
+            writableProperty.getClass().getDeclaredField( "next" ).set( writableProperty, piv );
+        }
+        catch( IllegalAccessException e )
+        {
+            e.printStackTrace();  //TODO: Auto-generated, need attention.
+        }
+        catch( NoSuchFieldException e )
+        {
+            e.printStackTrace();  //TODO: Auto-generated, need attention.
+        }
+
+        PropertyInvocation<T> pi = new PropertyInvocation<T>( piv, writableProperty, piv );
+        pi.setPropertyInstance( propertyInstance );
+        return pi;
     }
 }
