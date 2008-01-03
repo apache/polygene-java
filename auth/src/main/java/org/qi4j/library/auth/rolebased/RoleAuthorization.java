@@ -20,25 +20,35 @@ package org.qi4j.library.auth.rolebased;
 import org.qi4j.library.auth.AuthorizationService;
 import org.qi4j.library.auth.AuthorizationManagement;
 import org.qi4j.library.auth.Role;
+import org.qi4j.library.auth.User;
 import org.qi4j.spi.composite.CompositeBinding;
+import org.qi4j.association.ManyAssociation;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.List;
 
 public class RoleAuthorization
     implements AuthorizationService, AuthorizationManagement
 {
-    private HashMap<Method, Role[]> methodToRoles;
+    private User currentUser;
+    private HashMap<Method, ManyAssociation<Role>> methodToRoles;
 
     public void authorize( CompositeBinding compositeType, Method method, Object[] args )
         throws SecurityException
     {
+
         if( methodToRoles.containsKey( method ) )
         {
-
+            ManyAssociation<Role> roles = methodToRoles.get( method );
+            for( Role role : currentUser.roles() )
+            {
+                if( roles.contains( role ) )
+                {
+                    // authorized?
+                    return;
+                }
+            }
         }
-        else
-        {
-            throw new SecurityException( "Unauthorized Access: " + compositeType.getCompositeResolution().getCompositeModel().getCompositeClass().getName() + "." + method.getName() );
-        }
+        throw new SecurityException( "Unauthorized Access: " + compositeType.getCompositeResolution().getCompositeModel().getCompositeClass().getName() + "." + method.getName() );
     }
 }
