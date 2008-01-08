@@ -67,11 +67,18 @@ public final class ParseContext
 
     public URI createCompositeUri( LayerModel layer, ModuleModel module, Class composite )
     {
-        String moduleName = module.getName();
-        String compositeName = composite.getClass().getName();
-        String layerName = layer.getName();
-        URI uri = valueFactory.createURI( applicationURI.getLocalName() + "/" + layerName + "/" + moduleName + "/" + compositeName );
+        String compositeName = composite.getName();
+        compositeName = compositeName.replace( '.', '_' ).replace( '$', '-' ); // TODO: Is this a good algorithm?
+        URI uri = valueFactory.createURI( createModuleUri( layer, module ) + "/" + compositeName );
         setNameAndType( uri, compositeName, Qi4jRdf.TYPE_COMPOSITE );
+        return uri;
+    }
+
+    public URI createModuleUri( LayerModel layer, ModuleModel module )
+    {
+        String moduleName = module.getName();
+        URI uri = valueFactory.createURI( createLayerUri( layer ).toString() + "/" + moduleName );
+        setNameAndType( uri, moduleName, Qi4jRdf.TYPE_MODULE );
         return uri;
     }
 
@@ -82,16 +89,6 @@ public final class ParseContext
         setNameAndType( uri, layerName, Qi4jRdf.TYPE_LAYER );
         return uri;
     }
-
-    public URI createModuleUri( LayerModel layer, ModuleModel module )
-    {
-        String layerName = layer.getName();
-        String moduleName = module.getName();
-        URI uri = valueFactory.createURI( applicationURI.toString() + "/" + layerName + "/" + moduleName );
-        setNameAndType( uri, moduleName, Qi4jRdf.TYPE_MODULE );
-        return uri;
-    }
-
 
     public void setNameAndType( URI node, String name, URI type )
     {

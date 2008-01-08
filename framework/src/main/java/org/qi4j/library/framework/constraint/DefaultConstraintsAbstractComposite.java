@@ -12,6 +12,7 @@ import org.qi4j.composite.Constraints;
     GreaterThanConstraint.class,
     LessThanConstraint.class,
     ContainsConstraint.class,
+    InstanceOfConstraint.class,
     MatchesConstraint.class } )
 public interface DefaultConstraintsAbstractComposite
 {

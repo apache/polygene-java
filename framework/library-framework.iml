@@ -21,78 +21,15 @@
     <orderEntry type="library" name="js-1.6R5" level="project" />
     <orderEntry type="module" module-name="core-spi" />
     <orderEntry type="module" module-name="core-bootstrap" />
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar:///var/lib/maven-repo/repository/org/openrdf/openrdf-rio-turtle/2.0-rc2/openrdf-rio-turtle-2.0-rc2.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar:///var/lib/maven-repo/repository/org/openrdf/openrdf-rio-rdfxml/2.0-rc2/openrdf-rio-rdfxml-2.0-rc2.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar:///var/lib/maven-repo/repository/org/openrdf/openrdf-rio-n3/2.0-rc2/openrdf-rio-n3-2.0-rc2.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar:///var/lib/maven-repo/repository/org/openrdf/openrdf-model/2.0-rc2/openrdf-model-2.0-rc2.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar:///var/lib/maven-repo/repository/info/aduna/aduna-io/1.3/aduna-io-1.3.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar:///var/lib/maven-repo/repository/info/aduna/aduna-text/1.3/aduna-text-1.3.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar:///var/lib/maven-repo/repository/org/openrdf/openrdf-rio-api/2.0-rc2/openrdf-rio-api-2.0-rc2.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar:///var/lib/maven-repo/repository/info/aduna/aduna-xml/1.5/aduna-xml-1.5.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
+    <orderEntry type="library" name="openrdf-model-2.0-rc2" level="project" />
+    <orderEntry type="library" name="openrdf-rio-api-2.0-rc2" level="project" />
+    <orderEntry type="library" name="openrdf-rio-n3-2.0-rc2" level="project" />
+    <orderEntry type="library" name="openrdf-rio-rdfxml-2.0-rc2" level="project" />
+    <orderEntry type="library" name="openrdf-rio-turtle-2.0-rc2" level="project" />
+    <orderEntry type="library" name="aduna-collections-1.4" level="project" />
+    <orderEntry type="library" name="aduna-io-1.3" level="project" />
+    <orderEntry type="library" name="aduna-text-1.3" level="project" />
+    <orderEntry type="library" name="aduna-xml-1.5" level="project" />
     <orderEntryProperties />
   </component>
   <component name="copyright">

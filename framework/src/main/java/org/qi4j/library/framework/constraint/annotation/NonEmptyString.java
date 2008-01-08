@@ -10,6 +10,7 @@ import org.qi4j.composite.ConstraintDeclaration;
 @Retention( RetentionPolicy.RUNTIME )
 @Target( { ElementType.PARAMETER, ElementType.ANNOTATION_TYPE } )
 @NotNull
+@InstanceOf( String.class )
 @MinLength( 1 )
 public @interface NonEmptyString
 {
