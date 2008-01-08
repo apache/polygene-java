@@ -14,12 +14,10 @@
 
 package org.qi4j.runtime.property;
 
-import org.qi4j.composite.scope.ConcernFor;
+import org.qi4j.composite.Composite;
+import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.property.AbstractProperty;
-import org.qi4j.property.PropertyContainer;
-import org.qi4j.property.PropertyVetoException;
-import org.qi4j.property.ReadableProperty;
-import org.qi4j.property.WritableProperty;
+import org.qi4j.runtime.structure.ModuleContext;
 import org.qi4j.spi.property.PropertyBinding;
 
 /**
@@ -39,85 +37,30 @@ public final class PropertyContext
         return propertyBinding;
     }
 
-    public <T> AbstractProperty newInstance( PropertyContainer<T> container, Object value )
+    public <T> AbstractProperty newInstance( ModuleContext moduleContext, Composite composite, Object value )
     {
         try
         {
-            AbstractProperty instance = propertyBinding.getConstructor().newInstance( container, this, value );
+            Class propertyType = propertyBinding.getPropertyResolution().getPropertyModel().getAccessor().getReturnType();
 
-            return instance;
+            if( Composite.class.isAssignableFrom( propertyType ) )
+            {
+                Class<? extends Composite> propertyCompositeType = (Class<? extends Composite>) propertyType;
+                CompositeBuilder<? extends Composite> cb = moduleContext.getCompositeBuilderFactory().newCompositeBuilder( propertyCompositeType );
+                cb.adapt( composite );
+                cb.adapt( propertyBinding );
+                cb.decorate( value );
+                return AbstractProperty.class.cast( cb.newInstance() );
+            }
+            else
+            {
+                AbstractProperty instance = new PropertyInstance<Object>( propertyBinding, value );
+                return instance;
+            }
         }
         catch( Exception e )
         {
-            throw new InvalidPropertyException( "Could not instantiate property of type " + propertyBinding.getImplementationClass().getName(), e );
+            throw new InvalidPropertyException( "Could not instantiate property", e );
         }
-    }
-
-    public <T> ReadableProperty<T> getReadableProperty( PropertyInstance<T> propertyInstance )
-    {
-        PropertyInstanceValue<T> piv = new PropertyInstanceValue<T>();
-
-        ReadableProperty<T> read;
-
-        read = new ReadableProperty<T>()
-        {
-            @ConcernFor ReadableProperty<T> next;
-
-            public T get()
-            {
-                System.out.println( "Accessed property" );
-                return next.get();
-            }
-        };
-        try
-        {
-            read.getClass().getDeclaredField( "next" ).set( read, piv );
-        }
-        catch( IllegalAccessException e )
-        {
-            e.printStackTrace();  //TODO: Auto-generated, need attention.
-        }
-        catch( NoSuchFieldException e )
-        {
-            e.printStackTrace();  //TODO: Auto-generated, need attention.
-        }
-
-        PropertyInvocation<T> pi = new PropertyInvocation<T>( read, piv, piv );
-        pi.setPropertyInstance( propertyInstance );
-        return pi;
-    }
-
-    public <T> WritableProperty<T> getWritableProperty( PropertyInstance<T> propertyInstance )
-    {
-        PropertyInstanceValue<T> piv = new PropertyInstanceValue<T>();
-
-        WritableProperty<T> writableProperty;
-
-        writableProperty = new WritableProperty<T>()
-        {
-            @ConcernFor WritableProperty<T> next;
-
-            public void set( T newValue ) throws PropertyVetoException
-            {
-                System.out.println( "Wrote property" );
-                next.set( newValue );
-            }
-        };
-        try
-        {
-            writableProperty.getClass().getDeclaredField( "next" ).set( writableProperty, piv );
-        }
-        catch( IllegalAccessException e )
-        {
-            e.printStackTrace();  //TODO: Auto-generated, need attention.
-        }
-        catch( NoSuchFieldException e )
-        {
-            e.printStackTrace();  //TODO: Auto-generated, need attention.
-        }
-
-        PropertyInvocation<T> pi = new PropertyInvocation<T>( piv, writableProperty, piv );
-        pi.setPropertyInstance( propertyInstance );
-        return pi;
     }
 }

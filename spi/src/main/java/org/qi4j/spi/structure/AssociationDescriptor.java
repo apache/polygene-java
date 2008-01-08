@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Rickard Ã–berg. All Rights Reserved.
+ * Copyright (c) 2007, Rickard …berg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,38 +20,38 @@ import java.util.Map;
 /**
  * TODO
  */
-public final class PropertyDescriptor
+public final class AssociationDescriptor
 {
-    private Class valueType;
-    private Map<Class, Object> propertyInfos;
+    private Class associationType;
+    private Class associatedType;
+    private Map<Class, Object> associationInfos;
     private Method accessor;
-    private Object defaultValue;
 
-    public PropertyDescriptor( Class valueType, Map<Class, Object> propertyInfos, Method accessor, Object defaultValue )
+    public AssociationDescriptor( Class associationType, Class associatedType, Map<Class, Object> associationInfos, Method accessor )
     {
-        this.valueType = valueType;
-        this.propertyInfos = propertyInfos;
+        this.associationType = associationType;
+        this.associatedType = associatedType;
+        this.associationInfos = associationInfos;
         this.accessor = accessor;
-        this.defaultValue = defaultValue;
     }
 
-    public Class getValueType()
+    public Class getAssociationType()
     {
-        return valueType;
+        return associationType;
     }
 
-    public Map<Class, Object> getPropertyInfos()
+    public Class getAssociatedType()
     {
-        return propertyInfos;
+        return associatedType;
+    }
+
+    public Map<Class, Object> getAssociationInfos()
+    {
+        return associationInfos;
     }
 
     public Method getAccessor()
     {
         return accessor;
-    }
-
-    public Object getDefaultValue()
-    {
-        return defaultValue;
     }
 }

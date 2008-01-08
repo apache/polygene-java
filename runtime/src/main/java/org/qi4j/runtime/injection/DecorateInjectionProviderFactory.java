@@ -52,6 +52,11 @@ public final class DecorateInjectionProviderFactory
                 return null;
             }
 
+            if( decoratedObject == null )
+            {
+                return null;
+            }
+
             if( resolution.getInjectionModel().getInjectionClass().isAssignableFrom( decoratedObject.getClass() ) )
             {
                 return decoratedObject;

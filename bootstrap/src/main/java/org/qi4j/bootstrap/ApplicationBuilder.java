@@ -28,10 +28,12 @@ import org.qi4j.runtime.composite.CompositeContext;
 import org.qi4j.runtime.composite.CompositeMethodContext;
 import org.qi4j.runtime.composite.MixinContext;
 import org.qi4j.runtime.composite.ObjectContext;
+import org.qi4j.runtime.property.AssociationContext;
 import org.qi4j.runtime.property.PropertyContext;
 import org.qi4j.runtime.structure.ApplicationContext;
 import org.qi4j.runtime.structure.LayerContext;
 import org.qi4j.runtime.structure.ModuleContext;
+import org.qi4j.spi.composite.AssociationModel;
 import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.composite.CompositeMethodBinding;
 import org.qi4j.spi.composite.CompositeModel;
@@ -40,14 +42,16 @@ import org.qi4j.spi.composite.MixinBinding;
 import org.qi4j.spi.composite.ObjectBinding;
 import org.qi4j.spi.composite.ObjectModel;
 import org.qi4j.spi.composite.ObjectResolution;
-import org.qi4j.spi.property.PropertyBinding;
-import org.qi4j.spi.property.PropertyModel;
 import org.qi4j.spi.injection.BindingContext;
 import org.qi4j.spi.injection.ResolutionContext;
+import org.qi4j.spi.property.AssociationBinding;
+import org.qi4j.spi.property.PropertyBinding;
+import org.qi4j.spi.property.PropertyModel;
 import org.qi4j.spi.service.ServiceProvider;
 import org.qi4j.spi.structure.ApplicationBinding;
 import org.qi4j.spi.structure.ApplicationModel;
 import org.qi4j.spi.structure.ApplicationResolution;
+import org.qi4j.spi.structure.AssociationDescriptor;
 import org.qi4j.spi.structure.LayerBinding;
 import org.qi4j.spi.structure.LayerModel;
 import org.qi4j.spi.structure.LayerResolution;
@@ -223,6 +227,7 @@ public final class ApplicationBuilder
         {
             Map<Class<? extends Composite>, CompositeContext> moduleCompositeContexts = new HashMap<Class<? extends Composite>, CompositeContext>();
             Map<String, PropertyContext> propertyContexts = new HashMap<String, PropertyContext>();
+            Map<String, AssociationContext> associationContexts = new HashMap<String, AssociationContext>();
             for( Map.Entry<Class<? extends Composite>, CompositeBinding> entry : moduleBinding.getCompositeBindings().entrySet() )
             {
                 CompositeBinding binding = entry.getValue();
@@ -231,12 +236,19 @@ public final class ApplicationBuilder
                 for( CompositeMethodBinding compositeMethodBinding : compositeMethodBindings )
                 {
                     PropertyContext propertyContext = null;
-
                     if( compositeMethodBinding.getPropertyBinding() != null )
                     {
                         propertyContext = new PropertyContext( compositeMethodBinding.getPropertyBinding() );
                         PropertyModel propertyModel = propertyContext.getPropertyBinding().getPropertyResolution().getPropertyModel();
                         propertyContexts.put( propertyModel.getQualifiedName(), propertyContext );
+                    }
+
+                    AssociationContext associationContext = null;
+                    if( compositeMethodBinding.getAssociationBinding() != null )
+                    {
+                        associationContext = new AssociationContext( compositeMethodBinding.getAssociationBinding() );
+                        AssociationModel associationModel = associationContext.getAssociationBinding().getAssociationResolution().getAssociationModel();
+                        associationContexts.put( associationModel.getQualifiedName(), associationContext );
                     }
 
                     CompositeMethodContext compositeMethodContext = new CompositeMethodContext( compositeMethodBinding, applicationBinding, entry.getValue(), runtime, propertyContext );
@@ -252,7 +264,13 @@ public final class ApplicationBuilder
                         String propertyKey = propertyBinding.getPropertyResolution().getPropertyModel().getQualifiedName();
                         mixinProperties.add( propertyContexts.get( propertyKey ) );
                     }
-                    MixinContext mixinContext = new MixinContext( mixinBinding, mixinProperties );
+                    Set<AssociationContext> mixinAssociations = new HashSet<AssociationContext>();
+                    for( AssociationBinding associationBinding : mixinBinding.getAssociationBindings() )
+                    {
+                        String associationKey = associationBinding.getAssociationResolution().getAssociationModel().getQualifiedName();
+                        mixinAssociations.add( associationContexts.get( associationKey ) );
+                    }
+                    MixinContext mixinContext = new MixinContext( mixinBinding, mixinProperties, mixinAssociations );
                     mixinContexts.add( mixinContext );
                 }
 
@@ -277,6 +295,44 @@ public final class ApplicationBuilder
     // Module
     private ModuleModel newModuleModel( ModuleAssembly moduleAssembly )
     {
+        Set<Class<? extends Composite>> privateComposites = moduleAssembly.getPrivateComposites();
+
+        List<PropertyDeclaration> propertyDeclarations = moduleAssembly.getPropertyDeclarations();
+        Map<Method, PropertyDescriptor> propertyDescriptors = new HashMap<Method, PropertyDescriptor>();
+        for( PropertyDeclaration propertyDeclaration : propertyDeclarations )
+        {
+            Method accessor = propertyDeclaration.getPropertyDescriptor().getAccessor();
+
+            if( Composite.class.isAssignableFrom( accessor.getReturnType() ) )
+            {
+                if( !privateComposites.contains( accessor.getReturnType() ) )
+                {
+                    Class<? extends Composite> returnType = (Class<? extends Composite>) accessor.getReturnType();
+                    moduleAssembly.addComposites( returnType );
+                }
+            }
+
+            propertyDescriptors.put( accessor, propertyDeclaration.getPropertyDescriptor() );
+        }
+
+        List<AssociationDeclaration> associationDeclarations = moduleAssembly.getAssociationDeclarations();
+        Map<Method, AssociationDescriptor> associationDescriptors = new HashMap<Method, AssociationDescriptor>();
+        for( AssociationDeclaration associationDeclaration : associationDeclarations )
+        {
+            Method accessor = associationDeclaration.getAssociationDescriptor().getAccessor();
+
+            if( Composite.class.isAssignableFrom( accessor.getReturnType() ) )
+            {
+                if( !privateComposites.contains( accessor.getReturnType() ) )
+                {
+                    Class<? extends Composite> returnType = (Class<? extends Composite>) accessor.getReturnType();
+                    moduleAssembly.addComposites( returnType );
+                }
+            }
+
+            associationDescriptors.put( accessor, associationDeclaration.getAssociationDescriptor() );
+        }
+
         List<CompositeModel> privateCompositeModels = new ArrayList<CompositeModel>();
         for( Class<? extends Composite> compositeType : moduleAssembly.getPrivateComposites() )
         {
@@ -298,15 +354,7 @@ public final class ApplicationBuilder
             objectModels.add( objectModel );
         }
 
-        List<PropertyDeclaration> propertyDeclarations = moduleAssembly.getPropertyBuilders();
-        Map<Method, PropertyDescriptor> propertyDescriptors = new HashMap<Method, PropertyDescriptor>();
-        for( PropertyDeclaration propertyDeclaration : propertyDeclarations )
-        {
-            Method accessor = propertyDeclaration.getPropertyDescriptor().getAccessor();
-            propertyDescriptors.put( accessor, propertyDeclaration.getPropertyDescriptor() );
-        }
-
-        ModuleModel moduleModel = new ModuleModel( moduleAssembly.getServiceProviders(), moduleAssembly.getName(), publicCompositeModels, privateCompositeModels, objectModels, propertyDescriptors );
+        ModuleModel moduleModel = new ModuleModel( moduleAssembly.getServiceProviders(), moduleAssembly.getName(), publicCompositeModels, privateCompositeModels, objectModels, propertyDescriptors, associationDescriptors );
         return moduleModel;
     }
 

@@ -14,29 +14,25 @@
 
 package org.qi4j.spi.property;
 
-import java.lang.reflect.Constructor;
 import java.util.Map;
-import org.qi4j.property.AbstractProperty;
+import org.qi4j.property.PropertyInfo;
 import org.qi4j.spi.composite.PropertyResolution;
 
 /**
  * TODO
  */
 public final class PropertyBinding
+    implements PropertyInfo
 {
     private PropertyResolution propertyResolution;
-    private Class<? extends AbstractProperty> implementationClass;
-    private Constructor<? extends AbstractProperty> constructor;
     private Map<Class, Object> propertyInfo;
     private Object defaultValue;
 
-    public PropertyBinding( PropertyResolution propertyResolution, Class<? extends AbstractProperty> implementationClass, Constructor<? extends AbstractProperty> constructor, Map<Class, Object> propertyInfo, Object defaultValue )
+    public PropertyBinding( PropertyResolution propertyResolution, Map<Class, Object> propertyInfo, Object defaultValue )
     {
         this.defaultValue = defaultValue;
         this.propertyInfo = propertyInfo;
-        this.constructor = constructor;
         this.propertyResolution = propertyResolution;
-        this.implementationClass = implementationClass;
     }
 
     public PropertyResolution getPropertyResolution()
@@ -44,19 +40,19 @@ public final class PropertyBinding
         return propertyResolution;
     }
 
-    public Class<? extends AbstractProperty> getImplementationClass()
-    {
-        return implementationClass;
-    }
-
-    public Constructor<? extends AbstractProperty> getConstructor()
-    {
-        return constructor;
-    }
-
     public <T> T getPropertyInfo( Class<T> infoClass )
     {
         return infoClass.cast( propertyInfo.get( infoClass ) );
+    }
+
+    public String getName()
+    {
+        return propertyResolution.getPropertyModel().getName();
+    }
+
+    public String getQualifiedName()
+    {
+        return propertyResolution.getPropertyModel().getQualifiedName();
     }
 
     public Object getDefaultValue()

@@ -22,6 +22,7 @@ import java.lang.reflect.Proxy;
 import org.qi4j.composite.Composite;
 import org.qi4j.entity.Identity;
 import org.qi4j.property.Property;
+import org.qi4j.property.ReadableProperty;
 import org.qi4j.runtime.structure.ModuleContext;
 import org.qi4j.spi.composite.CompositeState;
 
@@ -29,6 +30,7 @@ public abstract class AbstractCompositeInstance
     implements InvocationHandler, CompositeState
 {
     protected static final Method METHOD_GETIDENTITY;
+    protected static final Method METHOD_GET;
 
     static
     {
@@ -39,6 +41,14 @@ public abstract class AbstractCompositeInstance
         catch( NoSuchMethodException e )
         {
             throw new InternalError( Identity.class + " is corrupt." );
+        }
+        try
+        {
+            METHOD_GET = ReadableProperty.class.getMethod( "get" );
+        }
+        catch( NoSuchMethodException e )
+        {
+            throw new InternalError( ReadableProperty.class + " is corrupt." );
         }
     }
 
@@ -106,6 +116,11 @@ public abstract class AbstractCompositeInstance
             {
                 Property<String> id = (Property<String>) invoke( proxy, METHOD_GETIDENTITY, null );
                 return id != null ? id.get() : "";
+            }
+            else if( ReadableProperty.class.isAssignableFrom( context.getCompositeModel().getCompositeClass() ) )
+            {
+                Object value = invoke( proxy, METHOD_GET, null );
+                return value != null ? value.toString() : "";
             }
             else
             {

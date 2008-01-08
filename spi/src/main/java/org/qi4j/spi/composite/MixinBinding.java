@@ -14,6 +14,7 @@
 
 package org.qi4j.spi.composite;
 
+import org.qi4j.spi.property.AssociationBinding;
 import org.qi4j.spi.property.PropertyBinding;
 
 /**
@@ -24,10 +25,12 @@ public final class MixinBinding
     extends FragmentBinding
 {
     private Iterable<PropertyBinding> propertyBindings;
+    private Iterable<AssociationBinding> associationBindings;
 
-    public MixinBinding( MixinResolution mixinResolution, ConstructorBinding constructorBinding, Iterable<FieldBinding> fieldBindings, Iterable<MethodBinding> methodBindings, Iterable<PropertyBinding> propertyBindings )
+    public MixinBinding( MixinResolution mixinResolution, ConstructorBinding constructorBinding, Iterable<FieldBinding> fieldBindings, Iterable<MethodBinding> methodBindings, Iterable<PropertyBinding> propertyBindings, Iterable<AssociationBinding> associationBindings )
     {
         super( mixinResolution, constructorBinding, fieldBindings, methodBindings );
+        this.associationBindings = associationBindings;
         this.propertyBindings = propertyBindings;
     }
 
@@ -39,5 +42,10 @@ public final class MixinBinding
     public Iterable<PropertyBinding> getPropertyBindings()
     {
         return propertyBindings;
+    }
+
+    public Iterable<AssociationBinding> getAssociationBindings()
+    {
+        return associationBindings;
     }
 }

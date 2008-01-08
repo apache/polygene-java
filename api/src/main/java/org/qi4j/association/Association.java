@@ -18,9 +18,10 @@ package org.qi4j.association;
  * TODO
  */
 public interface Association<T>
-    extends AbstractAssociation, ObservableAssociation<T>
+    extends AbstractAssociation
 {
     T get();
 
-    void set( T associated );
+    void set( T associated )
+        throws AssociationVetoException;
 }

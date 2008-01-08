@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Rickard Ã–berg. All Rights Reserved.
+ * Copyright (c) 2007, Rickard …berg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,54 +12,54 @@
  *
  */
 
-package org.qi4j.runtime.property;
+package org.qi4j.runtime.association;
 
-import org.qi4j.property.Property;
-import org.qi4j.property.PropertyVetoException;
-import org.qi4j.spi.property.PropertyBinding;
+import org.qi4j.association.Association;
+import org.qi4j.association.AssociationVetoException;
+import org.qi4j.spi.property.AssociationBinding;
 
 /**
  * TODO
  */
-public class PropertyInstance<T>
-    implements Property<T>
+public class AssociationInstance<T>
+    implements Association<T>
 {
-    private PropertyBinding propertyBinding;
+    private AssociationBinding associationBinding;
     private T value;
 
-    public PropertyInstance( PropertyBinding propertyBinding, T value )
+    public AssociationInstance( AssociationBinding associationBinding, T value )
     {
-        this.propertyBinding = propertyBinding;
+        this.associationBinding = associationBinding;
         this.value = value;
     }
 
-    // ReadableProperty
+    // ReadableAssociation
     public T get()
     {
         return value;
     }
 
-    // WritableProperty
+    // WritableAssociation
     public void set( T newValue )
-        throws PropertyVetoException
+        throws AssociationVetoException
     {
         this.value = newValue;
     }
 
-    // PropertyInfo
-    public <T> T getPropertyInfo( Class<T> infoType )
+    // AssociationInfo
+    public <T> T getAssociationInfo( Class<T> infoType )
     {
-        return propertyBinding.getPropertyInfo( infoType );
+        return associationBinding.getAssociationInfo( infoType );
     }
 
     public String getName()
     {
-        return propertyBinding.getPropertyResolution().getPropertyModel().getName();
+        return associationBinding.getAssociationResolution().getAssociationModel().getName();
     }
 
     public String getQualifiedName()
     {
-        return propertyBinding.getPropertyResolution().getPropertyModel().getQualifiedName();
+        return associationBinding.getAssociationResolution().getAssociationModel().getQualifiedName();
     }
 
     public void write( T value )

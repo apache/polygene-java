@@ -57,6 +57,10 @@ public final class CompositeModel
         {
             compositeMethodModelMap.put( methodModel.getMethod(), methodModel );
         }
+        for( CompositeMethodModel thisAsModel : thisAsModels )
+        {
+            compositeMethodModelMap.put( thisAsModel.getMethod(), thisAsModel );
+        }
     }
 
     public Class getCompositeClass()

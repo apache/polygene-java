@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Rickard Ã–berg. All Rights Reserved.
+ * Copyright (c) 2007, Rickard …berg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,19 +12,19 @@
  *
  */
 
-package org.qi4j.property;
-
-import org.qi4j.composite.Composite;
-import org.qi4j.entity.EntitySession;
+package org.qi4j.association;
 
 /**
  * TODO
  */
-public interface PropertyContainer<T>
-    extends ObservableProperty<T>, VetoableProperty<T>, PropertyInfo
+public class AssociationVetoException extends RuntimeException
 {
-    PropertyChange<T> newChange( Property<T> property, T newValue, Composite composite, EntitySession entitySession )
-        throws PropertyVetoException;
+    public AssociationVetoException( String string )
+    {
+        super( string );
+    }
 
-    PropertyAccess<T> newAccess( ReadableProperty<T> property, Composite composite, EntitySession entitySession );
+    public AssociationVetoException()
+    {
+    }
 }

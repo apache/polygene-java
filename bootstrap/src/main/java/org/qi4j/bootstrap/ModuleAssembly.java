@@ -37,7 +37,7 @@ public final class ModuleAssembly
     private List<CompositeDeclaration> compositeDeclarations = new ArrayList<CompositeDeclaration>();
     private List<ObjectDeclaration> objectDeclarations = new ArrayList<ObjectDeclaration>();
     private List<PropertyDeclaration> propertyDeclarations = new ArrayList<PropertyDeclaration>();
-    private List<AssociationBuilder> associationBuilders = new ArrayList<AssociationBuilder>();
+    private List<AssociationDeclaration> associationDeclarations = new ArrayList<AssociationDeclaration>();
 
     public ModuleAssembly( LayerAssembly layerAssembly )
     {
@@ -97,11 +97,11 @@ public final class ModuleAssembly
         return declaration;
     }
 
-    public AssociationBuilder addAssociation()
+    public AssociationDeclaration addAssociation()
     {
-        AssociationBuilder builder = new AssociationBuilder();
-        associationBuilders.add( builder );
-        return builder;
+        AssociationDeclaration declaration = new AssociationDeclaration();
+        associationDeclarations.add( declaration );
+        return declaration;
     }
 
     List<CompositeDeclaration> getCompositeDeclarations()
@@ -156,14 +156,14 @@ public final class ModuleAssembly
         return serviceProviders;
     }
 
-    List<PropertyDeclaration> getPropertyBuilders()
+    List<PropertyDeclaration> getPropertyDeclarations()
     {
         return propertyDeclarations;
     }
 
-    public List<AssociationBuilder> getAssociationBuilders()
+    List<AssociationDeclaration> getAssociationDeclarations()
     {
-        return associationBuilders;
+        return associationDeclarations;
     }
 
     String getName()

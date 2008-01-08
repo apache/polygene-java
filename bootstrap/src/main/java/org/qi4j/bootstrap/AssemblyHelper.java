@@ -46,9 +46,9 @@ public final class AssemblyHelper
                 else if( method.getReturnType().equals( AbstractAssociation.class ) )
                 {
                     // Register association
-                    AssociationBuilder builder = module.addAssociation();
-                    method.invoke( builder.withAccessor( interfaceClass ) );
-                    addAssociation( builder, method );
+                    AssociationDeclaration declaration = module.addAssociation();
+                    method.invoke( declaration.withAccessor( interfaceClass ) );
+                    addAssociation( declaration, method );
                 }
 
             }
@@ -67,7 +67,7 @@ public final class AssemblyHelper
         // Override this method if you want to add custom initialization
     }
 
-    protected void addAssociation( AssociationBuilder builder, Method accessor )
+    protected void addAssociation( AssociationDeclaration declaration, Method accessor )
     {
         // Override this method if you want to add custom initialization
     }

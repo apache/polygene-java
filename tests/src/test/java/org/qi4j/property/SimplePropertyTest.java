@@ -58,23 +58,6 @@ public class SimplePropertyTest extends AbstractQi4jTest
             company = builder.newInstance();
         }
 
-        company.name().addChangeObserver( new PropertyChangeObserver<String>()
-        {
-            public void onChange( PropertyChange<String> propertyChange )
-            {
-                System.out.println( "Name changed from " + propertyChange.getProperty().get() + " to " + propertyChange.getNewValue() );
-            }
-        } );
-
-        company.name().addAccessObserver( new PropertyAccessObserver<String>()
-        {
-            public void onAccess( PropertyAccess<String> propertyAccess )
-            {
-                System.out.println( "Name " + propertyAccess.getProperty().get() + " accessed from:" );
-                new Exception().printStackTrace();
-            }
-        } );
-
         company.name().set( "Jayway" );
 
         System.out.println( "Name is:" + company.name().get() );

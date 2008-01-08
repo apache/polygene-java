@@ -14,6 +14,7 @@
 
 package org.qi4j.runtime.composite;
 
+import org.qi4j.runtime.property.AssociationContext;
 import org.qi4j.runtime.property.PropertyContext;
 import org.qi4j.spi.composite.MixinBinding;
 
@@ -23,12 +24,14 @@ import org.qi4j.spi.composite.MixinBinding;
 public final class MixinContext
 {
     private MixinBinding mixinBinding;
-    private Iterable<PropertyContext> propertyContext;
+    private Iterable<PropertyContext> propertyContexts;
+    private Iterable<AssociationContext> associationContexts;
 
-    public MixinContext( MixinBinding mixinBinding, Iterable<PropertyContext> propertyContext )
+    public MixinContext( MixinBinding mixinBinding, Iterable<PropertyContext> propertyContext, Iterable<AssociationContext> associationContext )
     {
+        this.associationContexts = associationContext;
         this.mixinBinding = mixinBinding;
-        this.propertyContext = propertyContext;
+        this.propertyContexts = propertyContext;
     }
 
     public MixinBinding getMixinBinding()
@@ -38,6 +41,11 @@ public final class MixinContext
 
     public Iterable<PropertyContext> getPropertyContexts()
     {
-        return propertyContext;
+        return propertyContexts;
+    }
+
+    public Iterable<AssociationContext> getAssociationContexts()
+    {
+        return associationContexts;
     }
 }

@@ -15,12 +15,12 @@
 package org.qi4j.property;
 
 import javax.swing.Icon;
+import org.qi4j.association.ManyAssociation;
 import org.qi4j.bootstrap.AssemblyHelper;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.Mixins;
-import org.qi4j.association.ManyAssociation;
 import org.qi4j.library.framework.entity.AssociationMixin;
 import org.qi4j.library.framework.entity.PropertyMixin;
 import org.qi4j.test.AbstractQi4jTest;
@@ -49,23 +49,6 @@ public class SimpleAssociationTest extends AbstractQi4jTest
             builder.propertiesOfComposite().name().set( "JayWay" );
             company = builder.newInstance();
         }
-
-        company.name().addChangeObserver( new PropertyChangeObserver<String>()
-        {
-            public void onChange( PropertyChange<String> propertyChange )
-            {
-                System.out.println( "Name changed from " + propertyChange.getProperty().get() + " to " + propertyChange.getNewValue() );
-            }
-        } );
-
-        company.name().addAccessObserver( new PropertyAccessObserver<String>()
-        {
-            public void onAccess( PropertyAccess<String> propertyAccess )
-            {
-                System.out.println( "Name " + propertyAccess.getProperty().get() + " accessed from:" );
-                new Exception().printStackTrace();
-            }
-        } );
 
         company.name().set( "Jayway" );
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Rickard Ã–berg. All Rights Reserved.
+ * Copyright (c) 2007, Rickard …berg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,12 +12,30 @@
  *
  */
 
-package org.qi4j.association;
+package org.qi4j.runtime.association;
 
 /**
  * TODO
  */
-public enum ChangeType
+public class InvalidAssociationException
+    extends RuntimeException
 {
-    SET, ADDED, REMOVED
+    public InvalidAssociationException()
+    {
+    }
+
+    public InvalidAssociationException( String string )
+    {
+        super( string );
+    }
+
+    public InvalidAssociationException( String string, Throwable throwable )
+    {
+        super( string, throwable );
+    }
+
+    public InvalidAssociationException( Throwable throwable )
+    {
+        super( throwable );
+    }
 }

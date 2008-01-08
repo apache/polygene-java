@@ -33,10 +33,11 @@ public final class ModuleModel
     private Map<Class, ServiceProvider> serviceProviders;
     private List<ObjectModel> objectModels;
     private Map<Method, PropertyDescriptor> propertyDescriptors;
+    private Map<Method, AssociationDescriptor> associationDescriptors;
 
     private String name;
 
-    public ModuleModel( Map<Class, ServiceProvider> serviceProviders, String name, Iterable<CompositeModel> publicComposites, Iterable<CompositeModel> privateComposites, List<ObjectModel> objectModels, Map<Method, PropertyDescriptor> propertyDescriptors )
+    public ModuleModel( Map<Class, ServiceProvider> serviceProviders, String name, Iterable<CompositeModel> publicComposites, Iterable<CompositeModel> privateComposites, List<ObjectModel> objectModels, Map<Method, PropertyDescriptor> propertyDescriptors, Map<Method, AssociationDescriptor> associationDescriptors )
     {
         this.privateComposites = privateComposites;
         this.publicComposites = publicComposites;
@@ -44,6 +45,7 @@ public final class ModuleModel
         this.serviceProviders = serviceProviders;
         this.objectModels = objectModels;
         this.propertyDescriptors = propertyDescriptors;
+        this.associationDescriptors = associationDescriptors;
     }
 
     public Iterable<CompositeModel> getPublicComposites()
@@ -74,5 +76,10 @@ public final class ModuleModel
     public PropertyDescriptor getPropertyDescriptor( Method propertyMethod )
     {
         return propertyDescriptors.get( propertyMethod );
+    }
+
+    public AssociationDescriptor getAssociationDescriptor( Method associationMethod )
+    {
+        return associationDescriptors.get( associationMethod );
     }
 }

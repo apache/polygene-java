@@ -28,12 +28,10 @@ import org.qi4j.entity.EntitySession;
 import org.qi4j.entity.EntitySessionException;
 import org.qi4j.entity.Identity;
 import org.qi4j.entity.IdentityGenerator;
-import org.qi4j.property.PropertyContainer;
 import org.qi4j.query.Query;
 import org.qi4j.query.QueryBuilderFactory;
 import org.qi4j.query.QueryBuilderFactoryImpl;
 import org.qi4j.runtime.composite.EntityCompositeInstance;
-import org.qi4j.runtime.property.EntitySessionPropertyContainer;
 import org.qi4j.spi.entity.EntityStateHolder;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.StoreException;
@@ -47,7 +45,6 @@ public final class EntitySessionImpl
     private EntityStore store;
     private CompositeBuilderFactory builderFactory;
     private IdentityGenerator identityGenerator;
-    private PropertyContainer<Object> propertyContainer;
 
     public EntitySessionImpl( CompositeBuilderFactory builderFactory, IdentityGenerator identityGenerator, EntityStore store )
     {
@@ -56,7 +53,6 @@ public final class EntitySessionImpl
         this.open = true;
         this.store = store;
         cache = new HashMap<Class<? extends EntityComposite>, Map<String, EntityEntry>>();
-        propertyContainer = new EntitySessionPropertyContainer<Object>( null, this );
     }
 
     public <T extends EntityComposite> CompositeBuilder<T> newEntityBuilder( String identity, Class<T> compositeType )
@@ -248,11 +244,6 @@ public final class EntitySessionImpl
         checkOpen();
 
         return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public PropertyContainer getPropertyContainer()
-    {
-        return propertyContainer;
     }
 
     void createEntity( EntityComposite instance )

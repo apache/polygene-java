@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import org.qi4j.composite.AppliesToFilter;
 import org.qi4j.composite.ConstraintDeclaration;
+import org.qi4j.spi.composite.AssociationResolution;
 import org.qi4j.spi.composite.CompositeMethodModel;
 import org.qi4j.spi.composite.CompositeMethodResolution;
 import org.qi4j.spi.composite.CompositeModel;
@@ -39,9 +40,9 @@ import org.qi4j.spi.composite.PropertyResolution;
 import org.qi4j.spi.composite.ResolutionException;
 import org.qi4j.spi.composite.SideEffectModel;
 import org.qi4j.spi.composite.SideEffectResolution;
-import org.qi4j.spi.property.PropertyModel;
 import org.qi4j.spi.injection.InvalidInjectionException;
 import org.qi4j.spi.injection.ResolutionContext;
+import org.qi4j.spi.property.PropertyModel;
 
 /**
  * TODO
@@ -351,8 +352,14 @@ public final class CompositeResolver
                     propertyResolution = new PropertyResolution( methodModel.getPropertyModel(), mixinResolution );
                 }
 
+                AssociationResolution associationResolution = null;
+                if( methodModel.getAssociationModel() != null )
+                {
+                    associationResolution = new AssociationResolution( methodModel.getAssociationModel(), mixinResolution );
+                }
+
                 // Create aggregation of annotations (interface+mixin, mixin takes precedence)
-                CompositeMethodResolution methodResolution = new CompositeMethodResolution( methodModel, parameterResolutions, methodConcernResolutions, methodSideEffectResolutions, mixinResolution, propertyResolution, annotatedElement );
+                CompositeMethodResolution methodResolution = new CompositeMethodResolution( methodModel, parameterResolutions, methodConcernResolutions, methodSideEffectResolutions, mixinResolution, propertyResolution, annotatedElement, associationResolution );
                 methodResolutions.add( methodResolution );
             }
             catch( NoSuchMethodException e )

@@ -24,20 +24,48 @@ import java.lang.reflect.Type;
 public final class AssociationModel
     implements Serializable
 {
+    public static String getName( String qualifiedName )
+    {
+        int idx = qualifiedName.lastIndexOf( ":" );
+        return qualifiedName.substring( idx + 1 );
+    }
+
+    public static String getDeclaringClassName( String qualifiedName )
+    {
+        int idx = qualifiedName.lastIndexOf( ":" );
+        return qualifiedName.substring( 0, idx + 1 );
+    }
+
     private String name;
     private Type type;
     private Method accessor; // Interface accessor
+    private String qualifiedName;
 
     public AssociationModel( String name, Type type, Method accessor )
     {
         this.name = name;
         this.type = type;
         this.accessor = accessor;
+        qualifiedName = accessor.getDeclaringClass().getName() + ":" + name;
     }
 
     public String getName()
     {
         return name;
+    }
+
+    /**
+     * The qualified name of an Association is constructed as follows:
+     * <name of declaring class>:<name of association>
+     * <p/>
+     * Example:
+     * com.mycompany.Person:father
+     *
+     * @return the qualified name of the association
+     */
+    public String getQualifiedName()
+    {
+        return qualifiedName;
     }
 
     public Type getType()

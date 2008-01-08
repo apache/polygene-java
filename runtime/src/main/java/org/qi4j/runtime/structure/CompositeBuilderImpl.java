@@ -30,10 +30,9 @@ import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.CompositeInstantiationException;
 import org.qi4j.composite.PropertyValue;
 import org.qi4j.entity.EntitySession;
-import org.qi4j.property.PropertyChange;
-import org.qi4j.property.PropertyChangeObserver;
+import org.qi4j.property.PropertyVetoException;
 import org.qi4j.runtime.composite.CompositeContext;
-import org.qi4j.runtime.property.NullPropertyContainer;
+import org.qi4j.runtime.property.AssociationContext;
 import org.qi4j.runtime.property.PropertyContext;
 import org.qi4j.runtime.property.PropertyInstance;
 import org.qi4j.spi.composite.MixinResolution;
@@ -53,6 +52,7 @@ public final class CompositeBuilderImpl<T extends Composite>
     private Set adaptContext;
     private Object decoratedObject;
     private Map<MixinResolution, Map<PropertyContext, Object>> propertyContext;
+    private Map<MixinResolution, Map<AssociationContext, Object>> associationContext;
 
     CompositeBuilderImpl( ModuleContext moduleContext, CompositeContext context )
     {
@@ -118,7 +118,7 @@ public final class CompositeBuilderImpl<T extends Composite>
 
     public T newInstance()
     {
-        return compositeInterface.cast( context.newCompositeInstance( moduleContext, adaptContext, decoratedObject, getPropertyContext(), entitySession ).getProxy() );
+        return compositeInterface.cast( context.newCompositeInstance( moduleContext, adaptContext, decoratedObject, getPropertyContext(), getAssociationContext(), entitySession ).getProxy() );
     }
 
 
@@ -166,6 +166,15 @@ public final class CompositeBuilderImpl<T extends Composite>
         return propertyContext;
     }
 
+    private Map<MixinResolution, Map<AssociationContext, Object>> getAssociationContext()
+    {
+        if( associationContext == null )
+        {
+            associationContext = new LinkedHashMap<MixinResolution, Map<AssociationContext, Object>>();
+        }
+        return associationContext;
+    }
+
     private void setProperty( PropertyContext propertyContext, Object property )
     {
         Map<MixinResolution, Map<PropertyContext, Object>> compositeProperties = getPropertyContext();
@@ -188,35 +197,23 @@ public final class CompositeBuilderImpl<T extends Composite>
 
         public Object invoke( Object o, Method method, Object[] objects ) throws Throwable
         {
-            {
-                final PropertyContext propertyContext = context.getMethodDescriptor( method ).getCompositeMethodContext().getPropertyContext();
-                if( propertyContext != null )
-                {
-                    PropertyInstance<Object> mutableProperty = new PropertyInstance<Object>( new NullPropertyContainer<Object>(), propertyContext, propertyContext.getPropertyBinding().getDefaultValue() );
-                    mutableProperty.addChangeObserver( new PropertyChangeObserver<Object>()
-                    {
-                        public void onChange( PropertyChange<Object> propertyChange )
-                        {
-                            setProperty( propertyContext, propertyChange.getNewValue() );
-                        }
-                    } );
-                    return mutableProperty;
-                }
-            }
-
-            // TODO: This is for getters. Should it be deprecated?
-            PropertyContext propertyContext = context.getPropertyContext( method.getDeclaringClass(), method.getName().substring( 3 ) );
+            final PropertyContext propertyContext = context.getMethodDescriptor( method ).getCompositeMethodContext().getPropertyContext();
             if( propertyContext != null )
             {
-                PropertyValue propertyValue = PropertyValue.property( propertyContext.getPropertyBinding().getPropertyResolution().getPropertyModel().getName(), objects[ 0 ] );
-                setProperty( propertyContext, propertyValue );
+                PropertyInstance<Object> mutableProperty = new PropertyInstance<Object>( propertyContext.getPropertyBinding(), propertyContext.getPropertyBinding().getDefaultValue() )
+                {
+                    @Override public void set( Object newValue ) throws PropertyVetoException
+                    {
+                        super.set( newValue );
+                        setProperty( propertyContext, newValue );
+                    }
+                };
+                return mutableProperty;
             }
             else
             {
                 throw new IllegalArgumentException( "Method is not a property" );
             }
-
-            return method.getDefaultValue();
         }
     }
 }

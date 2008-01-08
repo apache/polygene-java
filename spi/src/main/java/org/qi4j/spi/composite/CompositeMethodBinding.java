@@ -15,6 +15,7 @@
 package org.qi4j.spi.composite;
 
 import java.util.List;
+import org.qi4j.spi.property.AssociationBinding;
 import org.qi4j.spi.property.PropertyBinding;
 
 /**
@@ -28,9 +29,11 @@ public final class CompositeMethodBinding
     private List<SideEffectBinding> sideEffectBindings;
     private MixinBinding mixinBinding;
     private PropertyBinding propertyBinding;
+    private AssociationBinding associationBinding;
 
-    public CompositeMethodBinding( CompositeMethodResolution method, Iterable<ParameterBinding> parameterBindings, List<ConcernBinding> concerns, List<SideEffectBinding> sideEffects, MixinBinding mixin, PropertyBinding propertyBinding )
+    public CompositeMethodBinding( CompositeMethodResolution method, Iterable<ParameterBinding> parameterBindings, List<ConcernBinding> concerns, List<SideEffectBinding> sideEffects, MixinBinding mixin, PropertyBinding propertyBinding, AssociationBinding associationBinding )
     {
+        this.associationBinding = associationBinding;
         this.propertyBinding = propertyBinding;
         this.parameterBindings = parameterBindings;
         this.compositeMethodResolution = method;
@@ -67,6 +70,11 @@ public final class CompositeMethodBinding
     public PropertyBinding getPropertyBinding()
     {
         return propertyBinding;
+    }
+
+    public AssociationBinding getAssociationBinding()
+    {
+        return associationBinding;
     }
 
     @Override public String toString()

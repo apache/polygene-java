@@ -27,11 +27,13 @@ public final class CompositeMethodResolution
     private Iterable<SideEffectResolution> sideEffectResolutions;
     private MixinResolution mixinResolution;
     private PropertyResolution propertyResolution;
+    private AssociationResolution associationResolution;
     private AnnotatedElement annotatedElement;
 
-    public CompositeMethodResolution( CompositeMethodModel methodModel, Iterable<ParameterResolution> parameterResolutions, Iterable<ConcernResolution> concerns, Iterable<SideEffectResolution> sideEffects, MixinResolution mixin, PropertyResolution propertyResolution, AnnotatedElement annotatedElement )
+    public CompositeMethodResolution( CompositeMethodModel methodModel, Iterable<ParameterResolution> parameterResolutions, Iterable<ConcernResolution> concerns, Iterable<SideEffectResolution> sideEffects, MixinResolution mixin, PropertyResolution propertyResolution, AnnotatedElement annotatedElement, AssociationResolution associationResolution )
     {
         this.propertyResolution = propertyResolution;
+        this.associationResolution = associationResolution;
         this.annotatedElement = annotatedElement;
         this.compositeMethodModel = methodModel;
         this.parameterResolutions = parameterResolutions;
@@ -68,6 +70,11 @@ public final class CompositeMethodResolution
     public PropertyResolution getPropertyResolution()
     {
         return propertyResolution;
+    }
+
+    public AssociationResolution getAssociationResolution()
+    {
+        return associationResolution;
     }
 
     public AnnotatedElement getAnnotatedElement()

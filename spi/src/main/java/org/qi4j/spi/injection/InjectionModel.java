@@ -17,6 +17,7 @@ package org.qi4j.spi.injection;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 
 /**
  * Injection model used as base for all types of injections. The model is comprised
@@ -86,6 +87,10 @@ public class InjectionModel
         if( injectedType instanceof ParameterizedType )
         {
             return (Class) ( (ParameterizedType) injectedType ).getActualTypeArguments()[ 0 ];
+        }
+        else if( injectedType instanceof TypeVariable )
+        {
+            return (Class) ( (TypeVariable) injectedType ).getBounds()[ 0 ];
         }
         else
         {

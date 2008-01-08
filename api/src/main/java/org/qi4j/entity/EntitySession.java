@@ -15,7 +15,6 @@
 package org.qi4j.entity;
 
 import org.qi4j.composite.CompositeBuilder;
-import org.qi4j.property.PropertyContainer;
 import org.qi4j.query.QueryBuilderFactory;
 
 public interface EntitySession
@@ -48,6 +47,4 @@ public interface EntitySession
     boolean isOpen();
 
     QueryBuilderFactory getQueryBuilderFactory();
-
-    PropertyContainer getPropertyContainer();
 }

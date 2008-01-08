@@ -53,7 +53,7 @@ public final class ThisCompositeAsInjectionProviderFactory
             {
                 proxyConstructor = Proxy.getProxyClass( type.getClassLoader(), new Class[]{ type } ).getConstructor( InvocationHandler.class );
             }
-            catch( NoSuchMethodException e )
+            catch( Exception e )
             {
                 // Ignore
                 e.printStackTrace();

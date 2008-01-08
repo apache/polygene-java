@@ -34,6 +34,7 @@ import net.sf.cglib.proxy.Callback;
 import net.sf.cglib.proxy.CallbackFilter;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.NoOp;
+import org.qi4j.association.AbstractAssociation;
 import org.qi4j.composite.AppliesTo;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.Concerns;
@@ -43,7 +44,6 @@ import org.qi4j.composite.Mixins;
 import org.qi4j.composite.NullArgumentException;
 import org.qi4j.composite.SideEffects;
 import org.qi4j.entity.EntityComposite;
-import org.qi4j.association.AbstractAssociation;
 import org.qi4j.property.AbstractProperty;
 import org.qi4j.runtime.entity.EntityMixin;
 import org.qi4j.spi.composite.AssociationModel;
@@ -218,44 +218,6 @@ public final class CompositeModelFactory
 
     }
 
-/*
-    private List<PropertyModel> getPropertyModels( List<ConstructorModel> constructorDependencyModels, List<FieldModel> fieldDependencyModels, List<MethodModel> methodDependencyModels )
-    {
-        List<PropertyModel> properties = new ArrayList<PropertyModel>();
-
-        for( ConstructorModel constructorDependencyModel : constructorDependencyModels )
-        {
-            for( ParameterModel parameterDependencyModel : constructorDependencyModel.getParameters() )
-            {
-                if( parameterDependencyModel.getInjectionModel() instanceof PropertyInjectionModel)
-                {
-                    properties.add( new PropertyModel( parameterDependencyModel.getKey().getName(), parameterDependencyModel.getKey().getGenericType(), true, false, false ) );
-                }
-            }
-        }
-
-        for( MethodDependencyModel methodDependencyModel : methodDependencyModels )
-        {
-            for( ParameterDependencyModel parameterDependencyModel : methodDependencyModel.getParameterDependencies() )
-            {
-                if( parameterDependencyModel.getKey().getAnnotationType().equals( PropertyParameter.class ) )
-                {
-                    properties.add( new PropertyModel( parameterDependencyModel.getKey().getName(), parameterDependencyModel.getKey().getGenericType(), true, true, false ) );
-                }
-            }
-        }
-
-        for( FieldDependencyModel fieldDependencyModel : fieldDependencyModels )
-        {
-            if( fieldDependencyModel.getKey().getAnnotationType().equals( PropertyField.class ) )
-            {
-                properties.add( new PropertyModel( fieldDependencyModel.getKey().getName(), fieldDependencyModel.getKey().getGenericType(), true, true, true ) );
-            }
-        }
-        return properties;
-    }
-*/
-
     private Set<Class> getModifiers( Class<?> aClass, Class annotationClass )
     {
         Set<Class> modifiers = new LinkedHashSet<Class>();
@@ -361,7 +323,7 @@ public final class CompositeModelFactory
         if( AbstractProperty.class.isAssignableFrom( method.getReturnType() ) )
         {
             Type returnType = method.getGenericReturnType();
-            Type propertyType = ( (ParameterizedType) returnType ).getActualTypeArguments()[ 0 ];
+            Type propertyType = getPropertyType( returnType );
             propertyModel = new PropertyModel( method.getName(), propertyType, method );
         }
 
@@ -447,6 +409,29 @@ public final class CompositeModelFactory
                 associationModels.add( associationModel );
             }
         }
+    }
+
+    private Type getPropertyType( Type methodReturnType )
+    {
+        if( methodReturnType instanceof ParameterizedType )
+        {
+            ParameterizedType parameterizedType = (ParameterizedType) methodReturnType;
+            if( AbstractProperty.class.isAssignableFrom( (Class<?>) parameterizedType.getRawType() ) )
+            {
+                return parameterizedType.getActualTypeArguments()[ 0 ];
+            }
+        }
+
+        Type[] interfaces = ( (Class) methodReturnType ).getInterfaces();
+        for( Type anInterface : interfaces )
+        {
+            Type propertyType = getPropertyType( anInterface );
+            if( propertyType != null )
+            {
+                return propertyType;
+            }
+        }
+        return null;
     }
 
     private Class getFragmentClass( Class mixinClass )

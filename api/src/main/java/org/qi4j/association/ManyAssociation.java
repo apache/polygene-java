@@ -20,6 +20,6 @@ import java.util.Collection;
  * TODO
  */
 public interface ManyAssociation<T>
-    extends Collection<T>, AbstractAssociation, ObservableAssociation<T>
+    extends Collection<T>, AbstractAssociation
 {
 }

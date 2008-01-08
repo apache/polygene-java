@@ -18,16 +18,12 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Proxy;
-import java.util.ArrayList;
+import java.lang.reflect.Type;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import org.qi4j.property.PropertyChange;
-import org.qi4j.property.PropertyChangeObserver;
-import org.qi4j.property.PropertyChangeVeto;
-import org.qi4j.runtime.property.NullPropertyContainer;
-import org.qi4j.runtime.property.PropertyInstance;
-import org.qi4j.runtime.property.PropertyContext;
+import org.qi4j.property.AbstractProperty;
+import org.qi4j.property.PropertyVetoException;
+import org.qi4j.property.WritableProperty;
 import org.qi4j.spi.structure.PropertyDescriptor;
 
 /**
@@ -35,11 +31,10 @@ import org.qi4j.spi.structure.PropertyDescriptor;
  */
 public class PropertyDeclaration
 {
-    private Class propertyType;
+    private Class valueType;
     private Map<Class, Object> propertyInfos = new HashMap<Class, Object>();
     private Object defaultValue;
     private Method accessor;
-    private List<PropertyChangeVeto<?>> changeVetos = new ArrayList<PropertyChangeVeto<?>>();
 
     public PropertyDeclaration()
     {
@@ -56,35 +51,58 @@ public class PropertyDeclaration
         return this;
     }
 
-    public PropertyDeclaration addChangeVeto( PropertyChangeVeto<?> propertyChangeVeto )
-    {
-        this.changeVetos.add( propertyChangeVeto );
-        return this;
-    }
-
     public PropertyDescriptor getPropertyDescriptor()
     {
-        return new PropertyDescriptor( propertyType, propertyInfos, changeVetos, accessor, defaultValue );
+        return new PropertyDescriptor( valueType, propertyInfos, accessor, defaultValue );
     }
 
     class AccessorInvocationHandler
-        implements InvocationHandler, PropertyChangeObserver<Object>
+        implements InvocationHandler
     {
         public Object invoke( Object object, Method method, Object[] objects ) throws Throwable
         {
             accessor = method;
-            propertyType = (Class) ( (ParameterizedType) method.getGenericReturnType() ).getActualTypeArguments()[ 0 ];
+            Type methodReturnType = method.getGenericReturnType();
+            valueType = getPropertyType( methodReturnType );
 
-            // TODO: What is propertyContext here?
-            PropertyContext propertyContext = null;
-            PropertyInstance<Object> property = new PropertyInstance<Object>( new NullPropertyContainer<Object>(), propertyContext, null );
-            property.addChangeObserver( this );
-            return property;
+            return Proxy.newProxyInstance( method.getReturnType().getClassLoader(), new Class[]{ method.getReturnType() }, new PropertyInvocationHandler() );
         }
 
-        public void onChange( PropertyChange<Object> propertyChange )
+        private Class getPropertyType( Type methodReturnType )
         {
-            defaultValue = propertyChange.getNewValue();
+            if( methodReturnType instanceof ParameterizedType )
+            {
+                ParameterizedType parameterizedType = (ParameterizedType) methodReturnType;
+                if( AbstractProperty.class.isAssignableFrom( (Class<?>) parameterizedType.getRawType() ) )
+                {
+                    return (Class) parameterizedType.getActualTypeArguments()[ 0 ];
+                }
+            }
+
+            Type[] interfaces = ( (Class) methodReturnType ).getInterfaces();
+            for( Type anInterface : interfaces )
+            {
+                Class propertyType = getPropertyType( anInterface );
+                if( propertyType != null )
+                {
+                    return propertyType;
+                }
+            }
+            return null;
+        }
+    }
+
+    class PropertyInvocationHandler
+        implements InvocationHandler, WritableProperty<Object>
+    {
+        public Object invoke( Object object, Method method, Object[] objects ) throws Throwable
+        {
+            return null;
+        }
+
+        public void set( Object newValue ) throws PropertyVetoException
+        {
+            defaultValue = newValue;
         }
     }
 }

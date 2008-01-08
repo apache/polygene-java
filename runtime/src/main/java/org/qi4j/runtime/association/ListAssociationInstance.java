@@ -16,8 +16,6 @@ package org.qi4j.runtime.association;
 
 import java.util.AbstractList;
 import java.util.List;
-import org.qi4j.association.AssociationAccessObserver;
-import org.qi4j.association.AssociationChangeObserver;
 import org.qi4j.association.ListAssociation;
 
 /**
@@ -27,7 +25,6 @@ public final class ListAssociationInstance<T> extends AbstractList<T>
     implements ListAssociation<T>
 {
     List<T> associated;
-    AssociationChangeObserver<?, T> changeObserver;
 
     public ListAssociationInstance( List<T> associated )
     {
@@ -60,15 +57,5 @@ public final class ListAssociationInstance<T> extends AbstractList<T>
     {
         // TODO
         return null;
-    }
-
-    public void addChangeObserver( AssociationChangeObserver<?, T> associationChangeObserver )
-    {
-        changeObserver = associationChangeObserver;
-    }
-
-    public void addAccessObserver( AssociationAccessObserver<?, T> associationAccessObserver )
-    {
-        // TODO
     }
 }

@@ -18,6 +18,6 @@ package org.qi4j.property;
  * TODO
  */
 public interface Property<T>
-    extends ReadableProperty<T>, WritableProperty<T>, ObservableProperty<T>, VetoableProperty<T>, PropertyInfo
+    extends ReadableProperty<T>, WritableProperty<T>, PropertyInfo
 {
 }
