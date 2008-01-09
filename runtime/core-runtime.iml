@@ -17,7 +17,7 @@
     <orderEntry type="library" name="jta-1_1-classes" level="project" />
     <orderEntry type="library" name="jotm-2.0.10" level="project" />
     <orderEntry type="library" name="junit-4.1" level="project" />
-    <orderEntry type="library" name="cglib_nodep-2.1.3" level="project" />
+    <orderEntry type="library" name="cglib-nodep-2.1_3" level="project" />
     <orderEntryProperties />
   </component>
   <component name="copyright">
