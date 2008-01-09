@@ -18,7 +18,7 @@
     <orderEntry type="library" name="jmock-2.1.0" level="project" />
     <orderEntry type="library" name="jmock-junit4-2.1.0" level="project" />
     <orderEntry type="library" name="hamcrest-api-1.0" level="project" />
-    <orderEntry type="library" name="hamcrest-library" level="project" />
+    <orderEntry type="library" name="hamcrest-library-1.0" level="project" />
     <orderEntry type="library" name="junit-4.1" level="project" />
     <orderEntry type="module" module-name="core-testsupport" />
     <orderEntry type="module" module-name="core-bootstrap" />
