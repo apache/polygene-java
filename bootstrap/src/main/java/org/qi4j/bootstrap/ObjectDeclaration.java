@@ -14,36 +14,25 @@
 
 package org.qi4j.bootstrap;
 
+import org.qi4j.spi.structure.Visibility;
+
 /**
  * TODO
  */
 public class ObjectDeclaration
 {
     private Iterable<Class> classes;
-
-    private boolean modulePublic;
-    private boolean layerPublic;
+    private Visibility visibility = Visibility.none;
 
     public ObjectDeclaration( Iterable<Class> classes )
     {
         this.classes = classes;
     }
 
-    public ObjectDeclaration makeModulePublic()
-    {
-        modulePublic = true;
-        return this;
-    }
-
-    public ObjectDeclaration makeLayerPublic()
+    public ObjectDeclaration publicIn( Visibility visibility )
         throws IllegalStateException
     {
-        if( modulePublic == false )
-        {
-            throw new IllegalStateException( "Object must be declared as public in Module first" );
-        }
-
-        layerPublic = true;
+        this.visibility = visibility;
         return this;
     }
 
@@ -52,13 +41,8 @@ public class ObjectDeclaration
         return classes;
     }
 
-    boolean getModulePublic()
+    Visibility getVisibility()
     {
-        return modulePublic;
-    }
-
-    boolean getLayerPublic()
-    {
-        return layerPublic;
+        return visibility;
     }
 }

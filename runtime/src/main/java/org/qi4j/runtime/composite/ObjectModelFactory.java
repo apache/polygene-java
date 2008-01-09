@@ -9,6 +9,7 @@ import org.qi4j.spi.composite.InvalidCompositeException;
 import org.qi4j.spi.composite.MethodModel;
 import org.qi4j.spi.composite.ObjectModel;
 import org.qi4j.spi.property.PropertyModel;
+import org.qi4j.spi.structure.Visibility;
 
 /**
  * TODO

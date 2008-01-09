@@ -17,6 +17,7 @@ package org.qi4j.bootstrap;
 import java.util.ArrayList;
 import java.util.List;
 import org.qi4j.composite.Composite;
+import org.qi4j.spi.structure.Visibility;
 
 /**
  * TODO
@@ -24,9 +25,7 @@ import org.qi4j.composite.Composite;
 public class CompositeDeclaration
 {
     private Iterable<Class<? extends Composite>> compositeTypes;
-
-    private boolean modulePublic;
-    private boolean layerPublic;
+    private Visibility visibility = Visibility.none;
 
     public CompositeDeclaration( List<Class<? extends Composite>> compositeTypes )
     {
@@ -43,21 +42,9 @@ public class CompositeDeclaration
         this.compositeTypes = list;
     }
 
-    public CompositeDeclaration makeModulePublic()
+    public CompositeDeclaration publicIn( Visibility visibility )
     {
-        modulePublic = true;
-        return this;
-    }
-
-    public CompositeDeclaration makeLayerPublic()
-        throws IllegalStateException
-    {
-        if( modulePublic == false )
-        {
-            throw new IllegalStateException( "Composites must be declared as public in Module first" );
-        }
-
-        layerPublic = true;
+        this.visibility = visibility;
         return this;
     }
 
@@ -66,13 +53,8 @@ public class CompositeDeclaration
         return compositeTypes;
     }
 
-    boolean getModulePublic()
+    public Visibility getVisibility()
     {
-        return modulePublic;
-    }
-
-    boolean getLayerPublic()
-    {
-        return layerPublic;
+        return visibility;
     }
 }

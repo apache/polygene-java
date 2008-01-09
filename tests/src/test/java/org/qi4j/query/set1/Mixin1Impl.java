@@ -17,49 +17,27 @@
  */
 package org.qi4j.query.set1;
 
-import org.qi4j.composite.scope.PropertyParameter;
+import org.qi4j.property.Property;
 
 public class Mixin1Impl
     implements Mixin1
 {
-    private String name;
-    private String description;
-    private String bar;
+    private Property<String> name;
+    private Property<String> description;
+    private Property<String> bar;
 
-    public Mixin1Impl( @PropertyParameter( "name" )String name, @PropertyParameter( "description" )String bar, @PropertyParameter( "bar" )String str )
-    {
-        this.bar = bar;
-        this.name = name;
-        this.description = str;
-    }
-
-    public String getName()
+    public Property<String> name()
     {
         return name;
     }
 
-    public void setName( String name )
-    {
-        this.name = name;
-    }
-
-    public String getBar()
+    public Property<String> bar()
     {
         return bar;
     }
 
-    public void setBar( String bar )
-    {
-        this.bar = bar;
-    }
-
-    public String getDescription()
+    public Property<String> description()
     {
         return description;
-    }
-
-    public void setDescription( String description )
-    {
-        this.description = description;
     }
 }

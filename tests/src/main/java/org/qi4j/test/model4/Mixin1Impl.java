@@ -26,13 +26,8 @@ import org.qi4j.composite.scope.ThisCompositeAs;
 public class Mixin1Impl
     implements Mixin1
 {
-    private CompositeBuilderFactory builderFactory;
+    private  @Structure CompositeBuilderFactory builderFactory;
     private @ThisCompositeAs Mixin2 meAsMixin2;
-
-    public Mixin1Impl( @Structure CompositeBuilderFactory builderFactory )
-    {
-        this.builderFactory = builderFactory;
-    }
 
     @CountCalls public CompositeBuilderFactory getBuilderFactory()
     {

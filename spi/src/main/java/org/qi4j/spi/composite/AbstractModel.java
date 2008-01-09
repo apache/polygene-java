@@ -24,6 +24,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import org.qi4j.spi.injection.InjectionModel;
+import org.qi4j.spi.structure.Visibility;
 
 /**
  * Base class for fragments. Fragments are composed into objects.
@@ -82,7 +83,6 @@ public abstract class AbstractModel
             return dependencies;
         }
     }
-
 
     // Object overrides ---------------------------------------------
     public boolean equals( Object o )

@@ -18,12 +18,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.qi4j.composite.Composite;
 import org.qi4j.spi.service.ServiceProvider;
+import org.qi4j.spi.structure.Visibility;
 
 /**
  * TODO
@@ -31,17 +31,21 @@ import org.qi4j.spi.service.ServiceProvider;
 public final class ModuleAssembly
 {
     private LayerAssembly layerAssembly;
-    private Set<Class> objects = new LinkedHashSet<Class>();
-    private Map<Class, ServiceProvider> serviceProviders = new HashMap<Class, ServiceProvider>();
+    private Map<Class, ServiceProvider> serviceProviders;
     private String name;
-    private List<CompositeDeclaration> compositeDeclarations = new ArrayList<CompositeDeclaration>();
-    private List<ObjectDeclaration> objectDeclarations = new ArrayList<ObjectDeclaration>();
-    private List<PropertyDeclaration> propertyDeclarations = new ArrayList<PropertyDeclaration>();
-    private List<AssociationDeclaration> associationDeclarations = new ArrayList<AssociationDeclaration>();
+    private List<CompositeDeclaration> compositeDeclarations;
+    private List<ObjectDeclaration> objectDeclarations;
+    private List<PropertyDeclaration> propertyDeclarations;
+    private List<AssociationDeclaration> associationDeclarations;
 
     public ModuleAssembly( LayerAssembly layerAssembly )
     {
         this.layerAssembly = layerAssembly;
+        compositeDeclarations = new ArrayList<CompositeDeclaration>();
+        objectDeclarations = new ArrayList<ObjectDeclaration>();
+        propertyDeclarations = new ArrayList<PropertyDeclaration>();
+        associationDeclarations = new ArrayList<AssociationDeclaration>();
+        serviceProviders = new HashMap<Class, ServiceProvider>();
     }
 
     public void addAssembly( Assembly assembly )
@@ -119,7 +123,7 @@ public final class ModuleAssembly
         Set<Class<? extends Composite>> publicComposites = new HashSet<Class<? extends Composite>>();
         for( CompositeDeclaration compositeDeclaration : compositeDeclarations )
         {
-            if( compositeDeclaration.getModulePublic() )
+            if( compositeDeclaration.getVisibility() == Visibility.module )
             {
                 for( Class<? extends Composite> compositeType : compositeDeclaration.getCompositeTypes() )
                 {
@@ -135,7 +139,7 @@ public final class ModuleAssembly
         Set<Class<? extends Composite>> privateComposites = new HashSet<Class<? extends Composite>>();
         for( CompositeDeclaration compositeDeclaration : compositeDeclarations )
         {
-            if( !compositeDeclaration.getModulePublic() )
+            if( compositeDeclaration.getVisibility() == Visibility.none )
             {
                 for( Class<? extends Composite> compositeType : compositeDeclaration.getCompositeTypes() )
                 {
@@ -146,9 +150,36 @@ public final class ModuleAssembly
         return privateComposites;
     }
 
-    public Set<Class> getObjects()
+    Set<Class<?>> getPublicObjects()
     {
-        return objects;
+        Set<Class<?>> publicObjects = new HashSet<Class<?>>();
+        for( ObjectDeclaration objectDeclaration : objectDeclarations )
+        {
+            if( objectDeclaration.getVisibility() == Visibility.module )
+            {
+                for( Class<? extends Composite> objectType : objectDeclaration.getObjectClasses() )
+                {
+                    publicObjects.add( objectType );
+                }
+            }
+        }
+        return publicObjects;
+    }
+
+    Set<Class<?>> getPrivateObjects()
+    {
+        Set<Class<?>> publicObjects = new HashSet<Class<?>>();
+        for( ObjectDeclaration objectDeclaration : objectDeclarations )
+        {
+            if( objectDeclaration.getVisibility() == Visibility.none )
+            {
+                for( Class<? extends Composite> objectType : objectDeclaration.getObjectClasses() )
+                {
+                    publicObjects.add( objectType );
+                }
+            }
+        }
+        return publicObjects;
     }
 
     Map<Class, ServiceProvider> getServiceProviders()

@@ -16,7 +16,8 @@
  */
 package org.qi4j.test.model4;
 
-public class CounterImpl implements Counter
+public class CounterImpl
+    implements Counter
 {
     private int value;
 

@@ -59,6 +59,7 @@ import org.qi4j.spi.structure.ModuleBinding;
 import org.qi4j.spi.structure.ModuleModel;
 import org.qi4j.spi.structure.ModuleResolution;
 import org.qi4j.spi.structure.PropertyDescriptor;
+import org.qi4j.spi.structure.Visibility;
 
 /**
  * TODO
@@ -347,14 +348,21 @@ public final class ApplicationBuilder
             publicCompositeModels.add( compositeModel );
         }
 
-        List<ObjectModel> objectModels = new ArrayList<ObjectModel>();
-        for( Class objectType : moduleAssembly.getObjects() )
+        List<ObjectModel> publicObjects = new ArrayList<ObjectModel>();
+        for( Class<?> objectType : moduleAssembly.getPublicObjects() )
         {
             ObjectModel objectModel = runtime.getObjectModelFactory().newObjectModel( objectType );
-            objectModels.add( objectModel );
+            publicObjects.add( objectModel );
         }
 
-        ModuleModel moduleModel = new ModuleModel( moduleAssembly.getServiceProviders(), moduleAssembly.getName(), publicCompositeModels, privateCompositeModels, objectModels, propertyDescriptors, associationDescriptors );
+        List<ObjectModel> privateObjects = new ArrayList<ObjectModel>();
+        for( Class<?> objectType : moduleAssembly.getPrivateObjects() )
+        {
+            ObjectModel objectModel = runtime.getObjectModelFactory().newObjectModel( objectType );
+            privateObjects.add( objectModel );
+        }
+
+        ModuleModel moduleModel = new ModuleModel( moduleAssembly.getServiceProviders(), moduleAssembly.getName(), publicCompositeModels, privateCompositeModels, publicObjects, privateObjects, propertyDescriptors, associationDescriptors );
         return moduleModel;
     }
 
@@ -385,7 +393,8 @@ public final class ApplicationBuilder
 
         // Resolve objects in this Module
         List<ObjectResolution> objectResolutions = new ArrayList<ObjectResolution>();
-        resolveObjects( moduleModel.getObjectModels(), applicationModel, layerModel, moduleModel, objectResolutions );
+        resolveObjects( moduleModel.getPublicObjects(), applicationModel, layerModel, moduleModel, objectResolutions );
+        resolveObjects( moduleModel.getPrivateObjects(), applicationModel, layerModel, moduleModel, objectResolutions );
 
         // Figure out what service types are available from this module
         Map<Class, ServiceProvider> availableServices = new HashMap<Class, ServiceProvider>();

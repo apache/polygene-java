@@ -44,8 +44,8 @@ public class ExpressionTest extends AbstractQi4jTest
         data = new ArrayList<Composite1>();
         for( int i = 0; i < 100; i++ )
         {
-            compositeBuilder.propertiesOfComposite().setName( "i=" + i );
-            compositeBuilder.propertiesOfComposite().setBar( "bar=" + i % 4 );
+            compositeBuilder.propertiesOfComposite().name().set( "i=" + i );
+            compositeBuilder.propertiesOfComposite().bar().set( "bar=" + i % 4 );
             Composite1 instance = compositeBuilder.newInstance();
             data.add( instance );
         }

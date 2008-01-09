@@ -31,21 +31,27 @@ public final class ModuleModel
     private Iterable<CompositeModel> publicComposites;
     private Iterable<CompositeModel> privateComposites;
     private Map<Class, ServiceProvider> serviceProviders;
-    private List<ObjectModel> objectModels;
+    private List<ObjectModel> publicObjects;
+    private List<ObjectModel> privateObjects;
     private Map<Method, PropertyDescriptor> propertyDescriptors;
     private Map<Method, AssociationDescriptor> associationDescriptors;
 
     private String name;
 
-    public ModuleModel( Map<Class, ServiceProvider> serviceProviders, String name, Iterable<CompositeModel> publicComposites, Iterable<CompositeModel> privateComposites, List<ObjectModel> objectModels, Map<Method, PropertyDescriptor> propertyDescriptors, Map<Method, AssociationDescriptor> associationDescriptors )
+    public ModuleModel( Map<Class, ServiceProvider> serviceProviders, String name,
+                        Iterable<CompositeModel> publicComposites, Iterable<CompositeModel> privateComposites,
+                        List<ObjectModel> publicObjects, List<ObjectModel> privateObjects, 
+                        Map<Method, PropertyDescriptor> propertyDescriptors,
+                        Map<Method, AssociationDescriptor> associationDescriptors )
     {
         this.privateComposites = privateComposites;
         this.publicComposites = publicComposites;
         this.name = name;
         this.serviceProviders = serviceProviders;
-        this.objectModels = objectModels;
         this.propertyDescriptors = propertyDescriptors;
         this.associationDescriptors = associationDescriptors;
+        this.privateObjects = privateObjects;
+        this.publicObjects = publicObjects;
     }
 
     public Iterable<CompositeModel> getPublicComposites()
@@ -63,9 +69,14 @@ public final class ModuleModel
         return serviceProviders;
     }
 
-    public List<ObjectModel> getObjectModels()
+    public List<ObjectModel> getPrivateObjects()
     {
-        return objectModels;
+        return privateObjects;
+    }
+
+    public List<ObjectModel> getPublicObjects()
+    {
+        return publicObjects;
     }
 
     public String getName()

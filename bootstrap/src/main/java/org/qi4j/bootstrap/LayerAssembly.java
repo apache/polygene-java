@@ -20,6 +20,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import org.qi4j.composite.Composite;
+import org.qi4j.spi.structure.Visibility;
 
 /**
  * TODO
@@ -82,7 +83,7 @@ public final class LayerAssembly
         {
             for( CompositeDeclaration compositeDeclaration : moduleAssembly.getCompositeDeclarations() )
             {
-                if( compositeDeclaration.getLayerPublic() )
+                if( compositeDeclaration.getVisibility() == Visibility.layer )
                 {
                     for( Class<? extends Composite> compositeType : compositeDeclaration.getCompositeTypes() )
                     {

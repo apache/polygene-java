@@ -12,6 +12,7 @@
 package org.qi4j.spi.composite;
 
 import org.qi4j.spi.property.PropertyModel;
+import org.qi4j.spi.structure.Visibility;
 
 /**
  * Base class for fragments. Fragments are composed into objects.
@@ -21,7 +22,7 @@ import org.qi4j.spi.property.PropertyModel;
  */
 public final class ObjectModel extends AbstractModel
 {
-    private Iterable<PropertyModel> propertyModels;
+    private final Iterable<PropertyModel> propertyModels;
 
     public ObjectModel( Class modelClass, Iterable<ConstructorModel> constructorModels, Iterable<FieldModel> fieldModels, Iterable<MethodModel> methodModels, Iterable<PropertyModel> propertyModels )
     {

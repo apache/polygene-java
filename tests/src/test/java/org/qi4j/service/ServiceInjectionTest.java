@@ -56,7 +56,7 @@ public class ServiceInjectionTest
             public void configure( ModuleAssembly module ) throws AssemblyException
             {
                 module.addServiceProvider( new Instance( new MyServiceMixin() ), MyService.class );
-                module.addObjects( ServiceUser.class );
+                module.addObjects( ServiceUser.class, Instance.class );
             }
         };
 

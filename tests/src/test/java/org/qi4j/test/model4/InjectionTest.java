@@ -20,7 +20,7 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.test.AbstractQi4jTest;
 
-public class ConstructorInjectionTest extends AbstractQi4jTest
+public class InjectionTest extends AbstractQi4jTest
 {
     public void configure( ModuleAssembly module )
     {

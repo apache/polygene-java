@@ -15,13 +15,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.query.set1;
+package org.qi4j.association;
 
-import org.qi4j.property.Property;
+import java.util.Map;
 
-public interface Mixin1
+public interface MapAssociation<K,V> extends Map<K,V>, AbstractAssociation
 {
-    Property<String> name();
-
-    Property<String> bar();
 }
