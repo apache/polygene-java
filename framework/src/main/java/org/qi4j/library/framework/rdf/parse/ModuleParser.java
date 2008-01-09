@@ -39,7 +39,8 @@ public final class ModuleParser
         URI module = context.createModuleUri( layerModel, moduleModel );
         parsePublicComposites( module, layerModel, moduleModel );
         parsePrivateComposites( module, layerModel, moduleModel );
-        parseObjectModels( module, moduleModel );
+        parsePublicObjects( module, moduleModel );
+        parsePrivateObjects( module, moduleModel );
         return module;
     }
 
@@ -65,10 +66,20 @@ public final class ModuleParser
         }
     }
 
-    private void parseObjectModels( URI module, ModuleModel model )
+    private void parsePublicObjects( URI module, ModuleModel model )
     {
         ObjectParser parser = context.getParserFactory().newObjectParser();
-        for( ObjectModel objectModel : model.getObjectModels() )
+        for( ObjectModel objectModel : model.getPublicObjects() )
+        {
+            Value object = parser.parseModel( objectModel );
+            context.addRelationship( module, Qi4jRdf.TYPE_OBJECT, object );
+        }
+    }
+
+    private void parsePrivateObjects( URI module, ModuleModel model )
+    {
+        ObjectParser parser = context.getParserFactory().newObjectParser();
+        for( ObjectModel objectModel : model.getPrivateObjects() )
         {
             Value object = parser.parseModel( objectModel );
             context.addRelationship( module, Qi4jRdf.TYPE_OBJECT, object );

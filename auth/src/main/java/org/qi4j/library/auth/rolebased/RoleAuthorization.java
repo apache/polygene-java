@@ -23,15 +23,56 @@ import org.qi4j.library.auth.Role;
 import org.qi4j.library.auth.User;
 import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.association.ManyAssociation;
+import org.qi4j.association.MapAssociation;
+//import org.qi4j.association.AssociationChangeObserver;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Iterator;                     
 
 public class RoleAuthorization
     implements AuthorizationService, AuthorizationManagement
 {
     private User currentUser;
-    private HashMap<Method, ManyAssociation<Role>> methodToRoles;
+    private MapAssociation<Method, ManyAssociation<Role>> methodToRoles;
+
+
+    public RoleAuthorization()
+    {
+//        methodToRoles = new MapAssociation<Method, ManyAssociation<Role>>()
+//        {
+//            public ManyAssociation<Role> get( Method key )
+//            {
+//                //TODO: Auto-generated, need attention.
+//                return null;
+//            }
+//
+//            public void put( Method key, ManyAssociation<Role> value )
+//            {
+//                //TODO: Auto-generated, need attention.
+//
+//            }
+//
+//            public ManyAssociation<Role> remove( Method key )
+//            {
+//                //TODO: Auto-generated, need attention.
+//                return null;
+//            }
+//
+//            public void addChangeObserver( AssociationChangeObserver associationChangeObserver )
+//            {
+//                //TODO: Auto-generated, need attention.
+//
+//            }
+//
+//            public Iterator<Map.Entry<Method, ManyAssociation<Role>>> iterator()
+//            {
+//                //TODO: Auto-generated, need attention.
+//                return null;
+//            }
+//        };
+    }
 
     public void authorize( CompositeBinding compositeType, Method method, Object[] args )
         throws SecurityException
@@ -41,9 +82,9 @@ public class RoleAuthorization
             return;
         }
         
-        if( methodToRoles.containsKey( method ) )
+        ManyAssociation<Role> roles = methodToRoles.get( method );
+        if( roles != null )
         {
-            ManyAssociation<Role> roles = methodToRoles.get( method );
             for( Role role : currentUser.roles() )
             {
                 if( roles.contains( role ) )
