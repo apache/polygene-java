@@ -14,9 +14,9 @@
 
 package org.qi4j.bootstrap;
 
-import org.qi4j.composite.Composite;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
+import org.qi4j.composite.Composite;
 
 /**
  * TODO
@@ -43,13 +43,13 @@ public class CompositeDeclaration
         this.compositeTypes = list;
     }
 
-    public CompositeDeclaration isModulePublic()
+    public CompositeDeclaration makeModulePublic()
     {
         modulePublic = true;
         return this;
     }
 
-    public CompositeDeclaration isLayerPublic()
+    public CompositeDeclaration makeLayerPublic()
         throws IllegalStateException
     {
         if( modulePublic == false )

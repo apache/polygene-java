@@ -29,13 +29,13 @@ public class ObjectDeclaration
         this.classes = classes;
     }
 
-    public ObjectDeclaration isModulePublic()
+    public ObjectDeclaration makeModulePublic()
     {
         modulePublic = true;
         return this;
     }
 
-    public ObjectDeclaration isLayerPublic()
+    public ObjectDeclaration makeLayerPublic()
         throws IllegalStateException
     {
         if( modulePublic == false )
