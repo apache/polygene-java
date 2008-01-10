@@ -14,25 +14,32 @@
 
 package org.qi4j.library.auth;
 
+import org.qi4j.association.ManyAssociation;
+import org.qi4j.association.Association;
+
 /**
  * TODO
  */
-public class AuthorizationServiceMixin implements AuthorizationService
+public class AuthorizationServiceMixin
+    implements AuthorizationService
 {
-    public boolean hasPermission( Permission requiredPermission, HasRoleAssignments resource, AuthorizationContext context )
+    public boolean hasPermission( Permission requiredPermission, ProtectedResource resource, AuthorizationContext context )
     {
+        UserComposite user = context.user().get();
+        ManyAssociation<Members> members = user.groups();
         for( RoleAssignment roleAssignment : resource.roleAssignments() )
         {
-            if( roleAssignment.assignee().get() instanceof HasMembers )
+            RoleAssignee assignee = roleAssignment.assignee().get();
+            if( assignee instanceof Members )
             {
                 // Check if user is a member of this group or not
-                if( !context.user().get().groups().contains( roleAssignment.assignee().get() ) )
+                if( ! members.contains( assignee ) )
                 {
                     continue; // Not a member - check next assignment
                 }
 
             }
-            else if( !roleAssignment.assignee().equals( context.user() ) )
+            else if( !assignee.equals( user ) )
             {
                 continue; // Wrong user - check next assignment
             }

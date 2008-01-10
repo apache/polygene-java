@@ -23,7 +23,6 @@ import org.qi4j.library.framework.entity.PropertyMixin;
  * TODO
  */
 @Mixins( { PropertyMixin.class, AssociationMixin.class } )
-public interface AuthorizationContextComposite
-    extends Composite, AuthorizationContext
+public interface AuthorizationContextComposite extends Composite, AuthorizationContext
 {
 }

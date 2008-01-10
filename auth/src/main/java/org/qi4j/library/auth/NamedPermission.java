@@ -17,9 +17,9 @@
  */
 package org.qi4j.library.auth;
 
-import org.qi4j.association.ManyAssociation;
+import org.qi4j.property.Property;
 
-public interface HasMembers
+public interface NamedPermission extends Permission
 {
-    ManyAssociation<HasGroups> members();
+    Property<String> name();
 }

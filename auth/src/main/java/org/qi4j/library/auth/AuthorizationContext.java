@@ -18,7 +18,7 @@ import java.util.Date;
 import org.qi4j.property.ReadableProperty;
 
 /**
- * TODO
+ *
  */
 public interface AuthorizationContext
 {

@@ -24,7 +24,6 @@ import org.qi4j.library.framework.entity.AssociationMixin;
 import org.qi4j.library.framework.entity.PropertyMixin;
 
 @Mixins( { PropertyMixin.class, AssociationMixin.class } )
-public interface UserComposite
-    extends Composite, Principal, HasGroups, RoleAssignee
+public interface UserComposite extends Composite, Principal, Groups, RoleAssignee
 {
 }

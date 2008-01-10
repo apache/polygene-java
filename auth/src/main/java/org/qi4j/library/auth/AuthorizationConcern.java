@@ -40,7 +40,7 @@ public class AuthorizationConcern
     @Invocation RequiresPermission requiresPermission;
 
     @Service AuthorizationService authorizor;
-    @ThisCompositeAs HasRoleAssignments roleAssignments;
+    @ThisCompositeAs ProtectedResource roleAssignments;
     @Structure CompositeBuilderFactory cbf;
     @ConcernFor InvocationHandler next;
 

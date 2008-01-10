@@ -14,11 +14,12 @@
 
 package org.qi4j.library.auth;
 
-import org.qi4j.composite.Composite;
+import org.qi4j.association.ListAssociation;
 
 /**
  * TODO
  */
-public interface RoleComposite extends Composite, Role
+public interface ProtectedResource
 {
+    ListAssociation<RoleAssignment> roleAssignments();
 }

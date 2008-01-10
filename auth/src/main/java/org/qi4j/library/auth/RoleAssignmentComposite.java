@@ -19,7 +19,6 @@ import org.qi4j.composite.Composite;
 /**
  * TODO
  */
-public interface RoleAssignmentComposite
-    extends Composite, RoleAssignment
+public interface RoleAssignmentComposite extends Composite, RoleAssignment
 {
 }

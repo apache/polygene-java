@@ -17,7 +17,9 @@
  */
 package org.qi4j.library.auth;
 
-public interface AuthorizationService
+import org.qi4j.association.ManyAssociation;
+
+public interface Groups
 {
-    boolean hasPermission( Permission requiredPermission, ProtectedResource resource, AuthorizationContext context );
+    ManyAssociation<Members> groups();
 }

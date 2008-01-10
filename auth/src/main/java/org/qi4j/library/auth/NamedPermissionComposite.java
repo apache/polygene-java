@@ -24,8 +24,6 @@ import org.qi4j.property.Property;
  * TODO
  */
 @Mixins( { PropertyMixin.class, AssociationMixin.class } )
-public interface NamedPermissionComposite
-    extends Composite, Permission
+public interface NamedPermissionComposite extends Composite, NamedPermission
 {
-    Property<String> name();
 }
