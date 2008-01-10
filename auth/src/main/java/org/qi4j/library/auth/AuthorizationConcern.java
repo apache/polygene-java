@@ -51,7 +51,7 @@ public class AuthorizationConcern
         Permission permission = cb.newInstance();
 
         Subject subject = Subject.getSubject( AccessController.getContext() );
-        UserComposite user = subject.getPrincipals( UserComposite.class ).iterator().next();
+        UserComposite user = subject.getPrincipals( UserPrincipal.class ).iterator().next().getUser();
 
         CompositeBuilder<AuthorizationContextComposite> authBuilder = cbf.newCompositeBuilder( AuthorizationContextComposite.class );
         AuthorizationContext context = PropertyValue.name( AuthorizationContext.class );

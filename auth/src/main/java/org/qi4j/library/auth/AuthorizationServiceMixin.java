@@ -15,7 +15,6 @@
 package org.qi4j.library.auth;
 
 import org.qi4j.association.ManyAssociation;
-import org.qi4j.association.Association;
 
 /**
  * TODO
@@ -33,7 +32,7 @@ public class AuthorizationServiceMixin
             if( assignee instanceof Members )
             {
                 // Check if user is a member of this group or not
-                if( ! members.contains( assignee ) )
+                if( !members.contains( assignee ) )
                 {
                     continue; // Not a member - check next assignment
                 }
@@ -57,7 +56,7 @@ public class AuthorizationServiceMixin
             {
                 if( permission.equals( requiredPermission ) )
                 {
-                    if( roleAssignment.type().equals( RoleAssignment.Type.ALLOW ) )
+                    if( roleAssignment.type().get().equals( RoleAssignment.Type.ALLOW ) )
                     {
                         return true;
                     }

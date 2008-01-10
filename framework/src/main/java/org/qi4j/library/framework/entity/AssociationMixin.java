@@ -17,10 +17,10 @@ package org.qi4j.library.framework.entity;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Map;
+import org.qi4j.association.AbstractAssociation;
 import org.qi4j.composite.AppliesTo;
 import org.qi4j.composite.AppliesToFilter;
 import org.qi4j.composite.scope.AssociationField;
-import org.qi4j.association.AbstractAssociation;
 
 /**
  * Generic mixin for properties.
@@ -45,6 +45,6 @@ public class AssociationMixin
     @SuppressWarnings( "unchecked" )
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
     {
-        return associations.get( method.getName() );
+        return associations.get( method.getDeclaringClass().getName() + ":" + method.getName() );
     }
 }

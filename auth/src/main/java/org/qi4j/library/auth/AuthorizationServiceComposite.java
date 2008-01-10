@@ -14,12 +14,13 @@
 
 package org.qi4j.library.auth;
 
-import org.qi4j.association.ListAssociation;
+import org.qi4j.composite.Composite;
+import org.qi4j.composite.Mixins;
 
 /**
  * TODO
  */
-public interface HasRoleAssignments
+@Mixins( { AuthorizationServiceMixin.class } )
+public interface AuthorizationServiceComposite extends Composite, AuthorizationService
 {
-    ListAssociation<RoleAssignment> roleAssignments();
 }

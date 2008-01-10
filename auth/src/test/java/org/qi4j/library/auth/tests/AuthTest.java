@@ -17,14 +17,79 @@
  */
 package org.qi4j.library.auth.tests;
 
+import java.util.Date;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.composite.Composite;
+import org.qi4j.composite.Mixins;
+import org.qi4j.library.auth.AuthorizationContext;
+import org.qi4j.library.auth.AuthorizationContextComposite;
+import org.qi4j.library.auth.AuthorizationService;
+import org.qi4j.library.auth.AuthorizationServiceComposite;
+import org.qi4j.library.auth.NamedPermissionComposite;
+import org.qi4j.library.auth.ProtectedResource;
+import org.qi4j.library.auth.RoleAssignment;
+import org.qi4j.library.auth.RoleAssignmentComposite;
+import org.qi4j.library.auth.RoleComposite;
+import org.qi4j.library.auth.UserComposite;
+import org.qi4j.library.framework.entity.AssociationMixin;
+import org.qi4j.library.framework.entity.PropertyMixin;
+import org.qi4j.property.WritableProperty;
 import org.qi4j.test.AbstractQi4jTest;
 
 public class AuthTest extends AbstractQi4jTest
 {
 
     public void configure( ModuleAssembly module ) throws AssemblyException
+    {
+        module.addComposites( UserComposite.class,
+                              RoleComposite.class,
+                              AuthorizationContextComposite.class,
+                              NamedPermissionComposite.class,
+                              RoleAssignmentComposite.class,
+                              AuthorizationServiceComposite.class,
+                              SecuredRoom.class );
+    }
+
+    public void testAuth()
+        throws Exception
+    {
+        // Create resource
+        SecuredRoom room = compositeBuilderFactory.newCompositeBuilder( SecuredRoom.class ).newInstance();
+
+        // Create user
+        UserComposite user = compositeBuilderFactory.newCompositeBuilder( UserComposite.class ).newInstance();
+
+        // Create permission
+        NamedPermissionComposite permission = compositeBuilderFactory.newCompositeBuilder( NamedPermissionComposite.class ).newInstance();
+
+        // Create role
+        RoleComposite role = compositeBuilderFactory.newCompositeBuilder( RoleComposite.class ).newInstance();
+
+        role.permissions().add( permission );
+
+        // Create role assignment
+        RoleAssignmentComposite roleAssignment = compositeBuilderFactory.newCompositeBuilder( RoleAssignmentComposite.class ).newInstance();
+        roleAssignment.assignee().set( user );
+        roleAssignment.role().set( role );
+        roleAssignment.type().set( RoleAssignment.Type.ALLOW );
+        room.roleAssignments().add( roleAssignment );
+
+        // Create authorization service
+        AuthorizationService authorization = compositeBuilderFactory.newCompositeBuilder( AuthorizationServiceComposite.class ).newInstance();
+
+        // Create authorization context
+        AuthorizationContext context = compositeBuilderFactory.newCompositeBuilder( AuthorizationContextComposite.class ).newInstance();
+        ( (WritableProperty<UserComposite>) context.user() ).set( user );
+        ( (WritableProperty<Date>) context.time() ).set( new Date() );
+
+        // Check permission
+        assertTrue( authorization.hasPermission( permission, room, context ) );
+    }
+
+    @Mixins( { PropertyMixin.class, AssociationMixin.class } )
+    public interface SecuredRoom
+        extends Composite, ProtectedResource
     {
     }
 }
