@@ -26,6 +26,7 @@ import org.qi4j.library.auth.AuthorizationContext;
 import org.qi4j.library.auth.AuthorizationContextComposite;
 import org.qi4j.library.auth.AuthorizationService;
 import org.qi4j.library.auth.AuthorizationServiceComposite;
+import org.qi4j.library.auth.GroupComposite;
 import org.qi4j.library.auth.NamedPermissionComposite;
 import org.qi4j.library.auth.ProtectedResource;
 import org.qi4j.library.auth.RoleAssignment;
@@ -43,6 +44,7 @@ public class AuthTest extends AbstractQi4jTest
     public void configure( ModuleAssembly module ) throws AssemblyException
     {
         module.addComposites( UserComposite.class,
+                              GroupComposite.class,
                               RoleComposite.class,
                               AuthorizationContextComposite.class,
                               NamedPermissionComposite.class,
@@ -62,18 +64,12 @@ public class AuthTest extends AbstractQi4jTest
 
         // Create permission
         NamedPermissionComposite permission = compositeBuilderFactory.newCompositeBuilder( NamedPermissionComposite.class ).newInstance();
+        permission.name().set( "Enter room" );
 
         // Create role
         RoleComposite role = compositeBuilderFactory.newCompositeBuilder( RoleComposite.class ).newInstance();
 
         role.permissions().add( permission );
-
-        // Create role assignment
-        RoleAssignmentComposite roleAssignment = compositeBuilderFactory.newCompositeBuilder( RoleAssignmentComposite.class ).newInstance();
-        roleAssignment.assignee().set( user );
-        roleAssignment.role().set( role );
-        roleAssignment.type().set( RoleAssignment.Type.ALLOW );
-        room.roleAssignments().add( roleAssignment );
 
         // Create authorization service
         AuthorizationService authorization = compositeBuilderFactory.newCompositeBuilder( AuthorizationServiceComposite.class ).newInstance();
@@ -84,6 +80,34 @@ public class AuthTest extends AbstractQi4jTest
         ( (WritableProperty<Date>) context.time() ).set( new Date() );
 
         // Check permission
+        assertFalse( authorization.hasPermission( permission, room, context ) );
+
+        // Create role assignment
+        RoleAssignmentComposite roleAssignment = compositeBuilderFactory.newCompositeBuilder( RoleAssignmentComposite.class ).newInstance();
+        roleAssignment.assignee().set( user );
+        roleAssignment.role().set( role );
+        roleAssignment.type().set( RoleAssignment.Type.ALLOW );
+        room.roleAssignments().add( roleAssignment );
+
+        // Check permission
+        assertTrue( authorization.hasPermission( permission, room, context ) );
+
+        // Create group
+        GroupComposite group = compositeBuilderFactory.newCompositeBuilder( GroupComposite.class ).newInstance();
+        group.members().add( user );
+        user.groups().add( group );
+
+        // Create role assignment
+        RoleAssignmentComposite groupRoleAssignment = compositeBuilderFactory.newCompositeBuilder( RoleAssignmentComposite.class ).newInstance();
+        groupRoleAssignment.assignee().set( group );
+        groupRoleAssignment.role().set( role );
+        groupRoleAssignment.type().set( RoleAssignment.Type.ALLOW );
+        room.roleAssignments().add( groupRoleAssignment );
+
+        room.roleAssignments().add( groupRoleAssignment );
+        room.roleAssignments().remove( roleAssignment );
+
+        // Check permission - user should still be allowed
         assertTrue( authorization.hasPermission( permission, room, context ) );
     }
 
