@@ -17,6 +17,9 @@
  */
 package org.qi4j.library.auth;
 
-public interface User extends HasRoles
+import org.qi4j.association.ManyAssociation;
+
+public interface HasGroups
 {
+    ManyAssociation<HasMembers> groups();
 }
