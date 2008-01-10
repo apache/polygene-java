@@ -95,4 +95,25 @@ public class AssociationInstance<T>
             return value.hashCode();
         }
     }
+
+    @Override public boolean equals( Object o )
+    {
+        if( this == o )
+        {
+            return true;
+        }
+        if( o == null || getClass() != o.getClass() )
+        {
+            return false;
+        }
+
+        AssociationInstance that = (AssociationInstance) o;
+
+        if( value != null ? !value.equals( that.value ) : that.value != null )
+        {
+            return false;
+        }
+
+        return true;
+    }
 }
