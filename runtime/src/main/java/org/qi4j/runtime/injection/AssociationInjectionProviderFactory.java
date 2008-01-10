@@ -14,7 +14,6 @@
 
 package org.qi4j.runtime.injection;
 
-import java.lang.reflect.Method;
 import java.util.Map;
 import org.qi4j.association.AbstractAssociation;
 import org.qi4j.spi.injection.AssociationInjectionContext;
@@ -36,7 +35,7 @@ public final class AssociationInjectionProviderFactory
     public InjectionProvider newInjectionProvider( BindingContext bindingContext ) throws InvalidInjectionException
     {
         InjectionResolution resolution = bindingContext.getInjectionResolution();
-        if( resolution.getInjectionModel().getInjectedClass().equals( Method.class ) && resolution.getInjectionModel().getRawInjectionType().equals( Map.class ) )
+        if( resolution.getInjectionModel().getInjectionClass().equals( String.class ) && resolution.getInjectionModel().getRawInjectionType().equals( Map.class ) )
         {
             return new AssociationInjectionProviderFactory.AssociationMapInjectionProvider();
         }

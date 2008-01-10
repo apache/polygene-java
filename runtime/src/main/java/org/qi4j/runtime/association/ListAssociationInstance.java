@@ -15,7 +15,10 @@
 package org.qi4j.runtime.association;
 
 import java.util.AbstractList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import org.qi4j.association.ListAssociation;
 
 /**
@@ -44,13 +47,123 @@ public final class ListAssociationInstance<T> extends AbstractList<T>
 
     @Override public boolean add( T t )
     {
-        try
-        {
-            return super.add( t );
-        }
-        finally
-        {
-        }
+        return associated.add( t );
+    }
+
+
+    @Override public T set( int i, T t )
+    {
+        return associated.set( i, t );
+    }
+
+    @Override public void add( int i, T t )
+    {
+        associated.add( i, t );
+    }
+
+    @Override public T remove( int i )
+    {
+        return associated.remove( i );
+    }
+
+    @Override public int indexOf( Object o )
+    {
+        return associated.indexOf( o );
+    }
+
+    @Override public int lastIndexOf( Object o )
+    {
+        return associated.lastIndexOf( o );
+    }
+
+    @Override public void clear()
+    {
+        associated.clear();
+    }
+
+    @Override public boolean addAll( int i, Collection<? extends T> ts )
+    {
+        return associated.addAll( i, ts );
+    }
+
+    @Override public Iterator<T> iterator()
+    {
+        return associated.iterator();
+    }
+
+    @Override public ListIterator<T> listIterator()
+    {
+        return associated.listIterator();
+    }
+
+    @Override public ListIterator<T> listIterator( int i )
+    {
+        return associated.listIterator( i );
+    }
+
+    @Override public List<T> subList( int i, int i1 )
+    {
+        return associated.subList( i, i1 );
+    }
+
+    @Override public boolean equals( Object o )
+    {
+        return associated.equals( o );
+    }
+
+    @Override public int hashCode()
+    {
+        return associated.hashCode();
+    }
+
+    @Override public boolean isEmpty()
+    {
+        return associated.isEmpty();
+    }
+
+    @Override public boolean contains( Object o )
+    {
+        return associated.contains( o );
+    }
+
+    @Override public Object[] toArray()
+    {
+        return associated.toArray();
+    }
+
+    @Override public <T> T[] toArray( T[] ts )
+    {
+        return associated.toArray( ts );
+    }
+
+    @Override public boolean remove( Object o )
+    {
+        return associated.remove( o );
+    }
+
+    @Override public boolean containsAll( Collection<?> objects )
+    {
+        return associated.containsAll( objects );
+    }
+
+    @Override public boolean addAll( Collection<? extends T> ts )
+    {
+        return associated.addAll( ts );
+    }
+
+    @Override public boolean removeAll( Collection<?> objects )
+    {
+        return associated.removeAll( objects );
+    }
+
+    @Override public boolean retainAll( Collection<?> objects )
+    {
+        return associated.retainAll( objects );
+    }
+
+    @Override public String toString()
+    {
+        return associated.toString();
     }
 
     public <T> T getAssociationInfo( Class<T> infoType )

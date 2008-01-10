@@ -36,6 +36,11 @@ public final class AssociationModel
         return qualifiedName.substring( 0, idx + 1 );
     }
 
+    public static String getQualifiedName( Method accessor )
+    {
+        return accessor.getDeclaringClass().getName() + ":" + accessor.getName();
+    }
+
     private String name;
     private Type type;
     private Method accessor; // Interface accessor
@@ -46,7 +51,7 @@ public final class AssociationModel
         this.name = name;
         this.type = type;
         this.accessor = accessor;
-        qualifiedName = accessor.getDeclaringClass().getName() + ":" + name;
+        qualifiedName = getQualifiedName( accessor );
     }
 
     public String getName()
