@@ -17,6 +17,9 @@
  */
 package org.qi4j.library.auth;
 
+import org.qi4j.association.ListAssociation;
+
 public interface Role
 {
+    ListAssociation<Permission> permissions();
 }

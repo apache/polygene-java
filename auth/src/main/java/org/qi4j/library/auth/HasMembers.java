@@ -19,7 +19,7 @@ package org.qi4j.library.auth;
 
 import org.qi4j.association.ManyAssociation;
 
-public interface HasRoles
+public interface HasMembers
 {
-    ManyAssociation<Role> roles();
+    ManyAssociation<HasGroups> members();
 }

@@ -17,11 +17,7 @@
  */
 package org.qi4j.library.auth;
 
-import java.lang.reflect.Method;
-import org.qi4j.spi.composite.CompositeBinding;
-
 public interface AuthorizationService
 {
-    void authorize( CompositeBinding compositeType, Method method, Object[] args )
-        throws SecurityException;
+    boolean hasPermission( Permission requiredPermission, HasRoleAssignments resource, AuthorizationContext context );
 }

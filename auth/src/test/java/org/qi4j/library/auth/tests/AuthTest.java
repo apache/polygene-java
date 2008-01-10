@@ -17,13 +17,8 @@
  */
 package org.qi4j.library.auth.tests;
 
-import junit.framework.TestCase;
-import org.qi4j.composite.Composite;
-import org.qi4j.library.auth.User;
-import org.qi4j.library.auth.Group;
+import org.qi4j.test.AbstractQi4jTest;
 
-public class AuthTest extends TestCase
+public class AuthTest extends AbstractQi4jTest
 {
-
-
 }

@@ -17,8 +17,14 @@
  */
 package org.qi4j.library.auth;
 
+import java.security.Principal;
 import org.qi4j.composite.Composite;
+import org.qi4j.composite.Mixins;
+import org.qi4j.library.framework.entity.AssociationMixin;
+import org.qi4j.library.framework.entity.PropertyMixin;
 
-public interface UserComposite extends Composite, User
+@Mixins( { PropertyMixin.class, AssociationMixin.class } )
+public interface UserComposite
+    extends Composite, Principal, HasGroups, RoleAssignee
 {
 }
