@@ -10,8 +10,53 @@ import java.lang.reflect.Method;
 public class NoopMixin
     implements InvocationHandler
 {
-    public Object invoke( Object object, Method method, Object[] args ) throws Throwable
+    private static final Boolean BOOLEAN_DEFAULT = Boolean.FALSE;
+    private static final Short SHORT_DEFAULT = 0;
+    private static final Character CHARACTER_DEFAULT = 0;
+    private static final Integer INTEGER_DEFAULT = 0;
+    private static final Long LONG_DEFAULT = 0L;
+    private static final Float FLOAT_DEFAULT = 0f;
+    private static final Double DOUBLE_DEFAULT = 0.0;
+
+    public Object invoke( Object object, Method method, Object[] args )
+        throws Throwable
     {
-        return method.getDefaultValue();
+        Class retType = method.getReturnType();
+        if( retType.isPrimitive() )
+        {
+            if( Void.TYPE == retType )
+            {
+                return null;
+            }
+            if( Boolean.TYPE == retType )
+            {
+                return BOOLEAN_DEFAULT;
+            }
+            if( Short.TYPE == retType )
+            {
+                return SHORT_DEFAULT;
+            }
+            if( Character.TYPE == retType )
+            {
+                return CHARACTER_DEFAULT;
+            }
+            if( Integer.TYPE == retType )
+            {
+                return INTEGER_DEFAULT;
+            }
+            if( Long.TYPE == retType )
+            {
+                return LONG_DEFAULT;
+            }
+            if( Float.TYPE == retType )
+            {
+                return FLOAT_DEFAULT;
+            }
+            if( Double.TYPE == retType )
+            {
+                return DOUBLE_DEFAULT;
+            }
+        }
+        return null;
     }
 }
