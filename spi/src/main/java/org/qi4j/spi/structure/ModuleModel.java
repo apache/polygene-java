@@ -40,7 +40,7 @@ public final class ModuleModel
 
     public ModuleModel( Map<Class, ServiceProvider> serviceProviders, String name,
                         Iterable<CompositeModel> publicComposites, Iterable<CompositeModel> privateComposites,
-                        List<ObjectModel> publicObjects, List<ObjectModel> privateObjects, 
+                        List<ObjectModel> publicObjects, List<ObjectModel> privateObjects,
                         Map<Method, PropertyDescriptor> propertyDescriptors,
                         Map<Method, AssociationDescriptor> associationDescriptors )
     {

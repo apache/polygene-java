@@ -27,9 +27,9 @@ public final class EntitySessionCompositeBuilder<T extends EntityComposite>
     implements CompositeBuilder<T>
 {
     private CompositeBuilder<T> compositeBuilder;
-    private EntitySessionImpl entitySession;
+    private EntitySessionInstance entitySession;
 
-    public EntitySessionCompositeBuilder( CompositeBuilder compositeBuilder, EntitySessionImpl entitySession )
+    public EntitySessionCompositeBuilder( CompositeBuilder compositeBuilder, EntitySessionInstance entitySession )
     {
         this.compositeBuilder = compositeBuilder;
         this.entitySession = entitySession;

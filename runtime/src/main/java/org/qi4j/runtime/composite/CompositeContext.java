@@ -31,7 +31,7 @@ import org.qi4j.entity.Lifecycle;
 import org.qi4j.property.AbstractProperty;
 import org.qi4j.runtime.property.AssociationContext;
 import org.qi4j.runtime.property.PropertyContext;
-import org.qi4j.runtime.structure.ModuleContext;
+import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.AssociationModel;
 import org.qi4j.spi.composite.AssociationResolution;
 import org.qi4j.spi.composite.CompositeBinding;
@@ -128,16 +128,16 @@ public final class CompositeContext
         return moduleBinding;
     }
 
-    public CompositeInstance newCompositeInstance( ModuleContext moduleContext, Set adapt, Object decoratedObject, Map<MixinResolution, Map<PropertyContext, Object>> compositeProperties, Map<MixinResolution, Map<AssociationContext, Object>> compositeAssociations, EntitySession entitySession )
+    public CompositeInstance newCompositeInstance( ModuleInstance moduleInstance, Set adapt, Object decoratedObject, Map<MixinResolution, Map<PropertyContext, Object>> compositeProperties, Map<MixinResolution, Map<AssociationContext, Object>> compositeAssociations, EntitySession entitySession )
     {
-        CompositeInstance compositeInstance = new CompositeInstance( this, moduleContext );
+        CompositeInstance compositeInstance = new CompositeInstance( this, moduleInstance );
 
         // Instantiate composite proxy
         Composite proxy = newProxy( compositeInstance );
         compositeInstance.setProxy( proxy );
 
         // Instantiate all mixins
-        newMixins( moduleContext, compositeInstance, adapt, decoratedObject, compositeProperties, compositeAssociations );
+        newMixins( moduleInstance, compositeInstance, adapt, decoratedObject, compositeProperties, compositeAssociations );
 
         // Invoke lifecycle create() method
         if( proxy instanceof Lifecycle )
@@ -154,7 +154,7 @@ public final class CompositeContext
         return methodDescriptors.get( method );
     }
 
-    public CompositeMethodInstance getMethodInstance( MethodDescriptor methodDescriptor, ModuleContext moduleContext )
+    public CompositeMethodInstance getMethodInstance( MethodDescriptor methodDescriptor, ModuleInstance moduleInstance )
     {
         CompositeMethodInstancePool instances = methodDescriptor.getMethodInstances();
 
@@ -163,7 +163,7 @@ public final class CompositeContext
         if( instance == null )
         {
             CompositeMethodContext compositeMethodContext = methodDescriptor.getCompositeMethodContext();
-            instance = compositeMethodContext.newCompositeMethodInstance( moduleContext, instances );
+            instance = compositeMethodContext.newCompositeMethodInstance( moduleInstance, instances );
         }
 
         return instance;
@@ -191,7 +191,7 @@ public final class CompositeContext
     }
 
 
-    private void newMixins( ModuleContext moduleContext, CompositeInstance compositeInstance, Set adaptContext, Object decoratedObject, Map<MixinResolution, Map<PropertyContext, Object>> compositeProperties, Map<MixinResolution, Map<AssociationContext, Object>> compositeAssociations )
+    private void newMixins( ModuleInstance moduleInstance, CompositeInstance compositeInstance, Set adaptContext, Object decoratedObject, Map<MixinResolution, Map<PropertyContext, Object>> compositeProperties, Map<MixinResolution, Map<AssociationContext, Object>> compositeAssociations )
     {
         Set<Object> adapt = adaptContext == null ? Collections.EMPTY_SET : adaptContext;
 
@@ -226,7 +226,7 @@ public final class CompositeContext
                     value = mixinProperty.getPropertyBinding().getDefaultValue();
                 }
 
-                AbstractProperty property = mixinProperty.newInstance( moduleContext, compositeInstance.getProxy(), value );
+                AbstractProperty property = mixinProperty.newInstance( moduleInstance, compositeInstance.getProxy(), value );
                 PropertyBinding binding = mixinProperty.getPropertyBinding();
                 PropertyResolution propertyResolution = binding.getPropertyResolution();
                 PropertyModel propertyModel = propertyResolution.getPropertyModel();
@@ -252,7 +252,7 @@ public final class CompositeContext
                     value = associationValues.get( mixinAssociation );
                 }
 
-                AbstractAssociation association = mixinAssociation.newInstance( moduleContext, compositeInstance.getProxy(), value );
+                AbstractAssociation association = mixinAssociation.newInstance( moduleInstance, compositeInstance.getProxy(), value );
                 AssociationBinding binding = mixinAssociation.getAssociationBinding();
                 AssociationResolution associationResolution = binding.getAssociationResolution();
                 AssociationModel associationModel = associationResolution.getAssociationModel();
@@ -265,9 +265,9 @@ public final class CompositeContext
         int i = 0;
         for( MixinContext mixinContext : mixinContexts )
         {
-            MixinInjectionContext injectionContext = new MixinInjectionContext( moduleContext.getCompositeBuilderFactory(),
-                                                                                moduleContext.getObjectBuilderFactory(),
-                                                                                moduleContext.getModuleBinding(),
+            MixinInjectionContext injectionContext = new MixinInjectionContext( moduleInstance.getCompositeBuilderFactory(),
+                                                                                moduleInstance.getObjectBuilderFactory(),
+                                                                                moduleInstance.getModuleContext().getModuleBinding(),
                                                                                 compositeBinding,
                                                                                 compositeInstance,
                                                                                 adapt,

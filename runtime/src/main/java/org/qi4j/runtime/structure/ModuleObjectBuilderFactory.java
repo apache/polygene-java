@@ -25,26 +25,35 @@ import org.qi4j.runtime.composite.ObjectContext;
 public final class ModuleObjectBuilderFactory
     implements ObjectBuilderFactory
 {
-    private ModuleContext moduleContext;
+    private ModuleInstance moduleInstance;
 
-    public ModuleObjectBuilderFactory( ModuleContext moduleContext )
+    public ModuleObjectBuilderFactory( ModuleInstance moduleInstance )
     {
-        this.moduleContext = moduleContext;
+        this.moduleInstance = moduleInstance;
     }
 
     public ObjectBuilder newObjectBuilder( Class objectType )
     {
+        // Find which Module handles this Composite type
+        ModuleInstance moduleInstance = this.moduleInstance.getModuleForPublicObject( objectType );
+
+        // If no module handles this, then it could be a private Composite
+        if( moduleInstance == null )
+        {
+            moduleInstance = this.moduleInstance;
+        }
+
         // Get the Object context
-        ObjectContext objectContext = moduleContext.getObjectContext( objectType );
+        ObjectContext objectContext = moduleInstance.getModuleContext().getObjectContext( objectType );
 
         // Check if this Composite has been registered properly
         if( objectContext == null )
         {
-            throw new InvalidApplicationException( "Trying to create unregistered object of type " + objectType.getName() + " in module " + moduleContext.getModuleBinding().getModuleResolution().getModuleModel().getName() );
+            throw new InvalidApplicationException( "Trying to create unregistered object of type " + objectType.getName() + " in module " + moduleInstance.getModuleContext().getModuleBinding().getModuleResolution().getModuleModel().getName() );
         }
 
         // Create a builder
-        ObjectBuilder builder = new ObjectBuilderImpl( moduleContext, objectContext );
+        ObjectBuilder builder = new ObjectBuilderImpl( moduleInstance, objectContext );
         return builder;
     }
 }

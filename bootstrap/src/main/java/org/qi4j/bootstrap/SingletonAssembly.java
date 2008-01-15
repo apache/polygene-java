@@ -51,8 +51,8 @@ public abstract class SingletonAssembly
         }
 
         ModuleInstance moduleInstance = applicationInstance.getLayerInstances().iterator().next().getModuleInstances().iterator().next();
-        compositeBuilderFactory = moduleInstance.getModuleContext().getCompositeBuilderFactory();
-        objectBuilderFactory = moduleInstance.getModuleContext().getObjectBuilderFactory();
+        compositeBuilderFactory = moduleInstance.getCompositeBuilderFactory();
+        objectBuilderFactory = moduleInstance.getObjectBuilderFactory();
     }
 
     public Qi4jRuntime getRuntime()

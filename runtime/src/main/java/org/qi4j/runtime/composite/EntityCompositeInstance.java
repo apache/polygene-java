@@ -20,7 +20,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import org.qi4j.composite.CompositeInstantiationException;
 import org.qi4j.entity.EntityComposite;
-import org.qi4j.runtime.structure.ModuleContext;
+import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.MixinResolution;
 import org.qi4j.spi.entity.EntityStateHolder;
 import org.qi4j.spi.entity.EntityStore;
@@ -32,9 +32,9 @@ public final class EntityCompositeInstance extends AbstractCompositeInstance
     private EntityStateHolder holder;
     private EntityStore store;
 
-    public EntityCompositeInstance( CompositeContext aContext, ModuleContext moduleContext, EntityStore store )
+    public EntityCompositeInstance( CompositeContext aContext, ModuleInstance moduleInstance, EntityStore store )
     {
-        super( aContext, moduleContext );
+        super( aContext, moduleInstance );
         this.store = store;
 
         mixins = new Object[aContext.getCompositeResolution().getMixinCount()];
@@ -70,7 +70,7 @@ public final class EntityCompositeInstance extends AbstractCompositeInstance
             }
         }
         // Invoke
-        return context.getMethodInstance( descriptor, moduleContext ).invoke( composite, args, mixin );
+        return context.getMethodInstance( descriptor, moduleInstance ).invoke( composite, args, mixin );
     }
 
     public void setMixins( Object[] mixins )

@@ -23,7 +23,7 @@ import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.runtime.association.AssociationInstance;
 import org.qi4j.runtime.association.InvalidAssociationException;
 import org.qi4j.runtime.association.ListAssociationInstance;
-import org.qi4j.runtime.structure.ModuleContext;
+import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.property.AssociationBinding;
 
 /**
@@ -43,7 +43,7 @@ public final class AssociationContext
         return associationBinding;
     }
 
-    public <T> AbstractAssociation newInstance( ModuleContext moduleContext, Composite composite, Object value )
+    public <T> AbstractAssociation newInstance( ModuleInstance moduleInstance, Composite composite, Object value )
     {
         try
         {
@@ -52,7 +52,7 @@ public final class AssociationContext
             if( Composite.class.isAssignableFrom( associationType ) )
             {
                 Class<? extends Composite> associationCompositeType = (Class<? extends Composite>) associationType;
-                CompositeBuilder<? extends Composite> cb = moduleContext.getCompositeBuilderFactory().newCompositeBuilder( associationCompositeType );
+                CompositeBuilder<? extends Composite> cb = moduleInstance.getCompositeBuilderFactory().newCompositeBuilder( associationCompositeType );
                 cb.adapt( composite );
                 cb.adapt( associationBinding );
                 cb.decorate( value );

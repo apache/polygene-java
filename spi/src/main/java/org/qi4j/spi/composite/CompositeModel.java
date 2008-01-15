@@ -21,15 +21,15 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.qi4j.composite.Composite;
 import org.qi4j.spi.injection.InjectionModel;
-import org.qi4j.spi.structure.Visibility;
 
 /**
  * Composite Models define what a particular Composite type declares through annotations and method declarations.
  */
 public final class CompositeModel
 {
-    private Class compositeClass;
+    private Class<? extends Composite> compositeClass;
     private Class proxyClass;
     private Collection<CompositeMethodModel> compositeMethodModels;
     private Iterable<ConstraintModel> constraintModels;
@@ -41,7 +41,7 @@ public final class CompositeModel
     private Map<Class<? extends Annotation>, List<ConstraintModel>> constraintModelMappings;
     private Map<Method, CompositeMethodModel> compositeMethodModelMap;
 
-    public CompositeModel( Class compositeClass, Class proxyClass, Collection<CompositeMethodModel> methodModels, Iterable<MixinModel> mixinModels, Iterable<ConstraintModel> constraintModels, Iterable<ConcernModel> concernModels, Iterable<SideEffectModel> sideEffectModels, Iterable<CompositeMethodModel> thisAsModels, Map<Class<? extends Annotation>, List<ConstraintModel>> constraintModelMappings )
+    public CompositeModel( Class<? extends Composite> compositeClass, Class proxyClass, Collection<CompositeMethodModel> methodModels, Iterable<MixinModel> mixinModels, Iterable<ConstraintModel> constraintModels, Iterable<ConcernModel> concernModels, Iterable<SideEffectModel> sideEffectModels, Iterable<CompositeMethodModel> thisAsModels, Map<Class<? extends Annotation>, List<ConstraintModel>> constraintModelMappings )
     {
         this.proxyClass = proxyClass;
         this.constraintModelMappings = constraintModelMappings;
@@ -64,7 +64,7 @@ public final class CompositeModel
         }
     }
 
-    public Class getCompositeClass()
+    public Class<? extends Composite> getCompositeClass()
     {
         return compositeClass;
     }

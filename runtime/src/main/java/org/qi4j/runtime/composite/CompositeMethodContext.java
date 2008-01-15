@@ -25,7 +25,7 @@ import org.qi4j.composite.CompositeInstantiationException;
 import org.qi4j.composite.Constraint;
 import org.qi4j.runtime.Qi4jRuntime;
 import org.qi4j.runtime.property.PropertyContext;
-import org.qi4j.runtime.structure.ModuleContext;
+import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.composite.CompositeMethodBinding;
 import org.qi4j.spi.composite.ConcernBinding;
@@ -69,7 +69,7 @@ public final class CompositeMethodContext
         return propertyContext;
     }
 
-    CompositeMethodInstance newCompositeMethodInstance( ModuleContext moduleContext, CompositeMethodInstancePool compositeMethodInstancePool )
+    CompositeMethodInstance newCompositeMethodInstance( ModuleInstance moduleInstance, CompositeMethodInstancePool compositeMethodInstancePool )
         throws CompositeInstantiationException
     {
         ProxyReferenceInvocationHandler proxyHandler = new ProxyReferenceInvocationHandler();
@@ -89,9 +89,9 @@ public final class CompositeMethodContext
                 Object modifies = getModifies( method, classloader, previousConcern, concernBinding.getConcernResolution().getConcernModel() );
 
                 ModifierInjectionContext modifierContext = new ModifierInjectionContext(
-                    moduleContext.getCompositeBuilderFactory(),
-                    moduleContext.getObjectBuilderFactory(),
-                    moduleContext.getModuleBinding(),
+                    moduleInstance.getCompositeBuilderFactory(),
+                    moduleInstance.getObjectBuilderFactory(),
+                    moduleInstance.getModuleContext().getModuleBinding(),
                     compositeBinding,
                     proxyHandler,
                     modifies,
@@ -151,9 +151,9 @@ public final class CompositeMethodContext
         {
             Object modifies = getModifies( method, classloader, sideEffectResult, sideEffectBinding.getSideEffectResolution().getSideEffectModel() );
 
-            ModifierInjectionContext modifierContext = new ModifierInjectionContext( moduleContext.getCompositeBuilderFactory(),
-                                                                                     moduleContext.getObjectBuilderFactory(),
-                                                                                     moduleContext.getModuleBinding(),
+            ModifierInjectionContext modifierContext = new ModifierInjectionContext( moduleInstance.getCompositeBuilderFactory(),
+                                                                                     moduleInstance.getObjectBuilderFactory(),
+                                                                                     moduleInstance.getModuleContext().getModuleBinding(),
                                                                                      compositeBinding,
                                                                                      proxyHandler,
                                                                                      modifies,

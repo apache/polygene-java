@@ -68,7 +68,7 @@ public final class CompositeModelFactory
     {
     }
 
-    public CompositeModel newCompositeModel( Class compositeClass )
+    public CompositeModel newCompositeModel( Class<? extends Composite> compositeClass )
         throws NullArgumentException, InvalidCompositeException
     {
         validateClass( compositeClass );

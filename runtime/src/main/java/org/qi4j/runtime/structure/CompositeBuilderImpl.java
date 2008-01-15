@@ -44,7 +44,7 @@ public final class CompositeBuilderImpl<T extends Composite>
     implements CompositeBuilder<T>
 {
     private Class<? extends T> compositeInterface;
-    private ModuleContext moduleContext;
+    private ModuleInstance moduleInstance;
     private CompositeContext context;
 
     private EntitySession entitySession;
@@ -54,11 +54,11 @@ public final class CompositeBuilderImpl<T extends Composite>
     private Map<MixinResolution, Map<PropertyContext, Object>> propertyContext;
     private Map<MixinResolution, Map<AssociationContext, Object>> associationContext;
 
-    CompositeBuilderImpl( ModuleContext moduleContext, CompositeContext context )
+    CompositeBuilderImpl( ModuleInstance moduleInstance, CompositeContext context )
     {
-        this.moduleContext = moduleContext;
+        this.moduleInstance = moduleInstance;
         this.context = context;
-        this.compositeInterface = context.getCompositeBinding().getCompositeResolution().getCompositeModel().getCompositeClass();
+        this.compositeInterface = (Class<? extends T>) context.getCompositeBinding().getCompositeResolution().getCompositeModel().getCompositeClass();
     }
 
     public void adapt( Object adaptedObject )
@@ -118,7 +118,7 @@ public final class CompositeBuilderImpl<T extends Composite>
 
     public T newInstance()
     {
-        return compositeInterface.cast( context.newCompositeInstance( moduleContext, adaptContext, decoratedObject, getPropertyContext(), getAssociationContext(), entitySession ).getProxy() );
+        return compositeInterface.cast( context.newCompositeInstance( moduleInstance, adaptContext, decoratedObject, getPropertyContext(), getAssociationContext(), entitySession ).getProxy() );
     }
 
 

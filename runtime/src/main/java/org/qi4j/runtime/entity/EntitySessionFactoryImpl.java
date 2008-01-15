@@ -49,6 +49,6 @@ public final class EntitySessionFactoryImpl
 
     public EntitySession newEntitySession()
     {
-        return new EntitySessionImpl( cbf, idGenerator, store );
+        return new EntitySessionInstance( cbf, idGenerator, store );
     }
 }

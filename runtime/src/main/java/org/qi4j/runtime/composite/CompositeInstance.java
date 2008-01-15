@@ -18,7 +18,7 @@ package org.qi4j.runtime.composite;
 
 import java.lang.reflect.Method;
 import org.qi4j.composite.Composite;
-import org.qi4j.runtime.structure.ModuleContext;
+import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.InvalidCompositeException;
 
 /**
@@ -29,9 +29,9 @@ public final class CompositeInstance extends AbstractCompositeInstance
     final private Object[] mixins;
     private Composite proxy;
 
-    public CompositeInstance( CompositeContext aContext, ModuleContext moduleContext )
+    public CompositeInstance( CompositeContext aContext, ModuleInstance moduleInstance )
     {
-        super( aContext, moduleContext );
+        super( aContext, moduleInstance );
 
         mixins = new Object[aContext.getCompositeResolution().getMixinCount()];
     }
@@ -52,7 +52,7 @@ public final class CompositeInstance extends AbstractCompositeInstance
                                                  context.getCompositeModel().getCompositeClass() );
         }
         // Invoke
-        CompositeMethodInstance compositeMethodInstance = context.getMethodInstance( descriptor, moduleContext );
+        CompositeMethodInstance compositeMethodInstance = context.getMethodInstance( descriptor, moduleInstance );
         return compositeMethodInstance.invoke( composite, args, mixin );
     }
 

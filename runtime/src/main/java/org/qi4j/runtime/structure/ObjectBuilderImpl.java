@@ -34,16 +34,16 @@ public final class ObjectBuilderImpl<T>
     implements ObjectBuilder<T>
 {
     private ObjectContext objectContext;
-    private ModuleContext moduleContext;
+    private ModuleInstance moduleInstance;
 
     private Set<Object> adaptContext;
     private Object decoratedObject;
     private Map<String, Object> propertyContext;
 
-    ObjectBuilderImpl( ModuleContext moduleContext, ObjectContext objectBinding )
+    ObjectBuilderImpl( ModuleInstance moduleInstance, ObjectContext objectBinding )
     {
         this.objectContext = objectBinding;
-        this.moduleContext = moduleContext;
+        this.moduleInstance = moduleInstance;
 
         adaptContext = emptySet();
         propertyContext = emptyMap();
@@ -71,7 +71,7 @@ public final class ObjectBuilderImpl<T>
 
     public T newInstance()
     {
-        return (T) objectContext.newObjectInstance( moduleContext, adaptContext, decoratedObject, propertyContext );
+        return (T) objectContext.newObjectInstance( moduleInstance, adaptContext, decoratedObject, propertyContext );
     }
 
     public Iterator<T> iterator()
@@ -98,7 +98,7 @@ public final class ObjectBuilderImpl<T>
     public void inject( T instance )
     {
         // Inject existing object
-        objectContext.inject( instance, moduleContext, adaptContext, decoratedObject, propertyContext );
+        objectContext.inject( instance, moduleInstance, adaptContext, decoratedObject, propertyContext );
     }
 
     // Private ------------------------------------------------------

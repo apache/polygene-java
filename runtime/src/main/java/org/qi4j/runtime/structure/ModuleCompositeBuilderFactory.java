@@ -26,29 +26,34 @@ import org.qi4j.runtime.composite.CompositeContext;
 public final class ModuleCompositeBuilderFactory
     implements CompositeBuilderFactory
 {
-    private ModuleContext moduleContext;
+    private ModuleInstance moduleInstance;
 
-    public ModuleCompositeBuilderFactory( ModuleContext moduleContext )
+    public ModuleCompositeBuilderFactory( ModuleInstance moduleInstance )
     {
-        this.moduleContext = moduleContext;
+        this.moduleInstance = moduleInstance;
     }
 
     public <T extends Composite> CompositeBuilder<T> newCompositeBuilder( Class<T> compositeType )
     {
         // Find which Module handles this Composite type
-        ModuleContext context = moduleContext.getModuleContext( compositeType );
+        ModuleInstance moduleInstance = this.moduleInstance.getModuleForPublicComposite( compositeType );
 
-        // Check if this Composite has been registered properly
-        if( context == null )
+        // If no module handles this, then it could be a private Composite
+        if( moduleInstance == null )
         {
-            throw new InvalidApplicationException( "Trying to create unregistered composite of type " + compositeType.getName() + " in module " + moduleContext.getModuleBinding().getModuleResolution().getModuleModel().getName() );
+            moduleInstance = this.moduleInstance;
         }
 
         // Get the Composite context
-        CompositeContext compositeContext = context.getCompositeContext( compositeType );
+        CompositeContext compositeContext = moduleInstance.getModuleContext().getCompositeContext( compositeType );
+
+        if( compositeContext == null )
+        {
+            throw new InvalidApplicationException( "Trying to create unregistered composite of type " + compositeType.getName() + " in module " + this.moduleInstance.getModuleContext().getModuleBinding().getModuleResolution().getModuleModel().getName() );
+        }
 
         // Create a builder
-        CompositeBuilder<T> builder = new CompositeBuilderImpl<T>( context, compositeContext );
+        CompositeBuilder<T> builder = new CompositeBuilderImpl<T>( moduleInstance, compositeContext );
         return builder;
     }
 }

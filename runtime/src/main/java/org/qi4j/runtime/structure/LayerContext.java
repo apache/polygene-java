@@ -15,7 +15,12 @@
 package org.qi4j.runtime.structure;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import org.qi4j.composite.Composite;
+import org.qi4j.spi.composite.CompositeModel;
+import org.qi4j.spi.composite.ObjectModel;
 import org.qi4j.spi.structure.LayerBinding;
 
 /**
@@ -40,10 +45,23 @@ public final class LayerContext
     LayerInstance newLayerInstance()
     {
         List<ModuleInstance> moduleInstances = new ArrayList<ModuleInstance>();
+        Map<Class<? extends Composite>, ModuleInstance> modulesForPublicComposites = new HashMap<Class<? extends Composite>, ModuleInstance>();
+        Map<Class, ModuleInstance> modulesForPublicObjects = new HashMap<Class, ModuleInstance>();
         for( ModuleContext moduleContext : moduleContexts )
         {
-            ModuleInstance moduleInstance = moduleContext.newModuleInstance();
+            ModuleInstance moduleInstance = moduleContext.newModuleInstance( modulesForPublicComposites, modulesForPublicObjects );
             moduleInstances.add( moduleInstance );
+
+            Iterable<CompositeModel> publicComposites = moduleContext.getModuleBinding().getModuleResolution().getModuleModel().getPublicComposites();
+            for( CompositeModel publicComposite : publicComposites )
+            {
+                modulesForPublicComposites.put( publicComposite.getCompositeClass(), moduleInstance );
+            }
+            Iterable<ObjectModel> publicObjects = moduleContext.getModuleBinding().getModuleResolution().getModuleModel().getPublicObjects();
+            for( ObjectModel publicObject : publicObjects )
+            {
+                modulesForPublicObjects.put( publicObject.getModelClass(), moduleInstance );
+            }
         }
 
         return new LayerInstance( this, moduleInstances );

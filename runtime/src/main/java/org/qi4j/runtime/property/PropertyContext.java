@@ -17,7 +17,7 @@ package org.qi4j.runtime.property;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.property.AbstractProperty;
-import org.qi4j.runtime.structure.ModuleContext;
+import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.property.PropertyBinding;
 
 /**
@@ -37,7 +37,7 @@ public final class PropertyContext
         return propertyBinding;
     }
 
-    public <T> AbstractProperty newInstance( ModuleContext moduleContext, Composite composite, Object value )
+    public <T> AbstractProperty newInstance( ModuleInstance moduleInstance, Composite composite, Object value )
     {
         try
         {
@@ -46,7 +46,7 @@ public final class PropertyContext
             if( Composite.class.isAssignableFrom( propertyType ) )
             {
                 Class<? extends Composite> propertyCompositeType = (Class<? extends Composite>) propertyType;
-                CompositeBuilder<? extends Composite> cb = moduleContext.getCompositeBuilderFactory().newCompositeBuilder( propertyCompositeType );
+                CompositeBuilder<? extends Composite> cb = moduleInstance.getCompositeBuilderFactory().newCompositeBuilder( propertyCompositeType );
                 cb.adapt( composite );
                 cb.adapt( propertyBinding );
                 cb.decorate( value );

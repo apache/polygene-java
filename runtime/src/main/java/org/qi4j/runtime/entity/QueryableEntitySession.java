@@ -25,9 +25,9 @@ import org.qi4j.query.QueryableIterable;
 public final class QueryableEntitySession
     implements Queryable
 {
-    EntitySessionImpl entitySession;
+    EntitySessionInstance entitySession;
 
-    public QueryableEntitySession( EntitySessionImpl entitySession )
+    public QueryableEntitySession( EntitySessionInstance entitySession )
     {
         this.entitySession = entitySession;
     }
@@ -35,7 +35,7 @@ public final class QueryableEntitySession
     public <T> T find( QueryImpl<T> query )
     {
         Class resultType = query.getResultType();
-        Map<String, EntitySessionImpl.EntityEntry> cache = entitySession.getEntityCache( resultType );
+        Map<String, EntitySessionInstance.EntityEntry> cache = entitySession.getEntityCache( resultType );
 
         QueryableIterable queryableCache = new QueryableIterable( cache.values() );
 
@@ -45,7 +45,7 @@ public final class QueryableEntitySession
     public <T> Iterable<T> iterable( QueryImpl<T> query )
     {
         Class resultType = query.getResultType();
-        Map<String, EntitySessionImpl.EntityEntry> cache = entitySession.getEntityCache( resultType );
+        Map<String, EntitySessionInstance.EntityEntry> cache = entitySession.getEntityCache( resultType );
 
         QueryableIterable queryableCache = new QueryableIterable( cache.values() );
 

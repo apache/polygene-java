@@ -23,7 +23,7 @@ import org.qi4j.composite.Composite;
 import org.qi4j.entity.Identity;
 import org.qi4j.property.Property;
 import org.qi4j.property.ReadableProperty;
-import org.qi4j.runtime.structure.ModuleContext;
+import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.CompositeState;
 
 public abstract class AbstractCompositeInstance
@@ -58,12 +58,12 @@ public abstract class AbstractCompositeInstance
     }
 
     protected CompositeContext context;
-    protected ModuleContext moduleContext;
+    protected ModuleInstance moduleInstance;
 
-    public AbstractCompositeInstance( CompositeContext aContext, ModuleContext moduleContext )
+    public AbstractCompositeInstance( CompositeContext aContext, ModuleInstance moduleInstance )
     {
         context = aContext;
-        this.moduleContext = moduleContext;
+        this.moduleInstance = moduleInstance;
     }
 
     public CompositeContext getContext()

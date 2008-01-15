@@ -72,7 +72,7 @@ public abstract class AbstractModelFactory
             for( Type parameterType : parameterTypes )
             {
                 Annotation[] parameterAnnotation = parameterAnnotations[ idx ];
-                ParameterModel parameterModel = getParameterModel( parameterAnnotation, compositeType, parameterType );
+                ParameterModel parameterModel = getParameterModel( parameterAnnotation, mixinClass, parameterType );
                 if( parameterModel.getInjectionModel() == null )
                 {
                     if( compositeType != null )
@@ -91,16 +91,16 @@ public abstract class AbstractModelFactory
         }
     }
 
-    protected Collection<MethodModel> getMethodModels( Class compositeClass )
+    protected Collection<MethodModel> getMethodModels( Class fragmentClass )
     {
         List<MethodModel> models = new ArrayList<MethodModel>();
-        Class methodClass = compositeClass;
+        Class methodClass = fragmentClass;
         while( !methodClass.equals( Object.class ) )
         {
             Method[] methods = methodClass.getDeclaredMethods();
             for( Method method : methods )
             {
-                MethodModel methodModel = newMethodModel( method, compositeClass );
+                MethodModel methodModel = newMethodModel( method, fragmentClass );
                 models.add( methodModel );
             }
             methodClass = methodClass.getSuperclass();
@@ -109,7 +109,7 @@ public abstract class AbstractModelFactory
         return models;
     }
 
-    private MethodModel newMethodModel( Method method, Class compositeType )
+    private MethodModel newMethodModel( Method method, Class fragmentClass )
     {
         Type[] parameterTypes = method.getGenericParameterTypes();
         Annotation[][] parameterAnnotations = method.getParameterAnnotations();
@@ -119,7 +119,7 @@ public abstract class AbstractModelFactory
         for( Type parameterType : parameterTypes )
         {
             Annotation[] parameterAnnotation = parameterAnnotations[ idx ];
-            ParameterModel parameterModel = getParameterModel( parameterAnnotation, compositeType, parameterType );
+            ParameterModel parameterModel = getParameterModel( parameterAnnotation, fragmentClass, parameterType );
             if( parameterModel.getInjectionModel() != null )
             {
                 hasInjections = true;

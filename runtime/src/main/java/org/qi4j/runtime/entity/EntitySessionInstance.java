@@ -36,7 +36,7 @@ import org.qi4j.spi.entity.EntityStateHolder;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.StoreException;
 
-public final class EntitySessionImpl
+public final class EntitySessionInstance
     implements EntitySession
 {
     private HashMap<Class<? extends EntityComposite>, Map<String, EntityEntry>> cache;
@@ -46,7 +46,7 @@ public final class EntitySessionImpl
     private CompositeBuilderFactory builderFactory;
     private IdentityGenerator identityGenerator;
 
-    public EntitySessionImpl( CompositeBuilderFactory builderFactory, IdentityGenerator identityGenerator, EntityStore store )
+    public EntitySessionInstance( CompositeBuilderFactory builderFactory, IdentityGenerator identityGenerator, EntityStore store )
     {
         this.identityGenerator = identityGenerator;
         this.builderFactory = builderFactory;
