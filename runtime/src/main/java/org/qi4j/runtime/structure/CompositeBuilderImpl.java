@@ -212,7 +212,7 @@ public final class CompositeBuilderImpl<T extends Composite>
             }
             else
             {
-                throw new IllegalArgumentException( "Method is not a property" );
+                throw new IllegalArgumentException( "Method is not a property: " + method );
             }
         }
     }
