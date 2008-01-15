@@ -21,6 +21,7 @@
     <orderEntry type="library" name="connector-1.5" level="project" />
     <orderEntry type="module" module-name="core-testsupport" />
     <orderEntry type="module" module-name="core-bootstrap" />
+    <orderEntry type="library" name="commons-logging-api-1.1" level="project" />
     <orderEntryProperties />
   </component>
   <component name="copyright">
