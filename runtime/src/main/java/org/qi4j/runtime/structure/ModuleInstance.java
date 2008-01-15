@@ -14,11 +14,15 @@
 
 package org.qi4j.runtime.structure;
 
+import java.util.HashMap;
 import java.util.Map;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.ObjectBuilderFactory;
+import org.qi4j.context.Context;
 import org.qi4j.entity.EntitySessionFactory;
+import org.qi4j.runtime.composite.CompositeContext;
+import org.qi4j.runtime.composite.CompositeInstance;
 import org.qi4j.runtime.entity.EntitySessionFactoryImpl;
 import org.qi4j.spi.service.ServiceProvider;
 
@@ -35,6 +39,7 @@ public final class ModuleInstance
     private CompositeBuilderFactory compositeBuilderFactory;
     private ObjectBuilderFactory objectBuilderFactory;
     private EntitySessionFactory entitySessionFactory;
+    private HashMap<Class<? extends Composite>, CompositeInstance> contextCompositeInstances;
 
     public ModuleInstance( ModuleContext moduleContext, Map<Class<? extends Composite>, ModuleInstance> moduleInstances, Map<Class, ModuleInstance> moduleForPublicObjects )
     {
@@ -45,7 +50,27 @@ public final class ModuleInstance
         compositeBuilderFactory = new ModuleCompositeBuilderFactory( this );
         objectBuilderFactory = new ModuleObjectBuilderFactory( this );
         entitySessionFactory = new EntitySessionFactoryImpl( compositeBuilderFactory, null, null );
+        injectServiceProvidersIntoObjectBuilders( moduleContext );
+        instantiateDeclaredContextComposites( moduleContext );
+    }
 
+    private void instantiateDeclaredContextComposites( ModuleContext moduleContext )
+    {
+        contextCompositeInstances = new HashMap<Class<? extends Composite>, CompositeInstance>();
+        Map<Class<? extends Composite>, CompositeContext> composites = moduleContext.getCompositeContexts();
+        for( Map.Entry<Class<? extends Composite>, CompositeContext> entry : composites.entrySet() )
+        {
+            Class<? extends Composite> compositeType = entry.getKey();
+            if( Context.class.isAssignableFrom( compositeType ) )
+            {
+                CompositeInstance contextCompositeInstance = new CompositeInstance( entry.getValue(), this );
+                contextCompositeInstances.put( compositeType, contextCompositeInstance );
+            }
+        }
+    }
+
+    private void injectServiceProvidersIntoObjectBuilders( ModuleContext moduleContext )
+    {
         // Inject service providers
         Map<Class, ServiceProvider> providers = moduleContext.getModuleBinding().getModuleResolution().getModuleModel().getServiceProviders();
         for( ServiceProvider serviceProvider : providers.values() )
@@ -83,5 +108,16 @@ public final class ModuleInstance
     public ModuleInstance getModuleForPublicObject( Class objectType )
     {
         return moduleForPublicObjects.get( objectType );
+    }
+
+    /**
+     * This method is used by the CompositeContext only, and should typically not be used for anything.
+     *
+     * @param compositeType The type of ContextComposite in this Module to be retrieved.
+     * @return The CompositeInstance of the ContextComposite of the given compositeType.
+     */
+    public CompositeInstance getContextCompositeInstance( Class<? extends Composite> compositeType )
+    {
+        return contextCompositeInstances.get( compositeType );
     }
 }

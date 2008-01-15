@@ -59,4 +59,9 @@ public final class ModuleContext
     {
         return objectContexts.get( objectType );
     }
+
+    public Map<Class<? extends Composite>, CompositeContext> getCompositeContexts()
+    {
+        return compositeContexts;
+    }
 }

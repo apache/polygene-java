@@ -20,10 +20,10 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import org.qi4j.composite.CompositeInstantiationException;
 import org.qi4j.entity.EntityComposite;
-import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.MixinResolution;
 import org.qi4j.spi.entity.EntityStateHolder;
 import org.qi4j.spi.entity.EntityStore;
+import org.qi4j.runtime.structure.ModuleInstance;
 
 public final class EntityCompositeInstance extends AbstractCompositeInstance
 {

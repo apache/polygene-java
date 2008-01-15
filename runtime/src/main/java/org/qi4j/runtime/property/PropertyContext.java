@@ -17,8 +17,8 @@ package org.qi4j.runtime.property;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.property.AbstractProperty;
-import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.property.PropertyBinding;
+import org.qi4j.runtime.structure.ModuleInstance;
 
 /**
  * TODO

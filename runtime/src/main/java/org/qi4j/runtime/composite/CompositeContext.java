@@ -45,6 +45,7 @@ import org.qi4j.spi.property.AssociationBinding;
 import org.qi4j.spi.property.PropertyBinding;
 import org.qi4j.spi.property.PropertyModel;
 import org.qi4j.spi.structure.ModuleBinding;
+import org.qi4j.context.Context;
 
 /**
  * TODO
@@ -130,7 +131,13 @@ public final class CompositeContext
 
     public CompositeInstance newCompositeInstance( ModuleInstance moduleInstance, Set adapt, Object decoratedObject, Map<MixinResolution, Map<PropertyContext, Object>> compositeProperties, Map<MixinResolution, Map<AssociationContext, Object>> compositeAssociations, EntitySession entitySession )
     {
-        CompositeInstance compositeInstance = new CompositeInstance( this, moduleInstance );
+        Class<? extends Composite> compositeType = getCompositeModel().getCompositeClass();
+        CompositeInstance compositeInstance;
+        if( Context.class.isAssignableFrom( compositeType ) )
+        {
+            compositeInstance = moduleInstance.getContextCompositeInstance( compositeType );
+        }
+        compositeInstance = new CompositeInstance( this, moduleInstance );
 
         // Instantiate composite proxy
         Composite proxy = newProxy( compositeInstance );

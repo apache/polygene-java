@@ -18,12 +18,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import org.qi4j.property.AbstractProperty;
-import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.ObjectBinding;
 import org.qi4j.spi.composite.ObjectModel;
 import org.qi4j.spi.composite.ObjectResolution;
 import org.qi4j.spi.injection.ObjectInjectionContext;
 import org.qi4j.spi.structure.ModuleBinding;
+import org.qi4j.runtime.structure.ModuleInstance;
 
 /**
  * TODO
