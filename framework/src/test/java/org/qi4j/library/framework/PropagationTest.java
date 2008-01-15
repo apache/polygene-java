@@ -33,14 +33,9 @@ public class PropagationTest
             case REQUIRED:
             case REQUIRES_NEW:
             case SUPPORTS:
-            {
                 break;
-            }
             default:
-            {
                 fail( "unsupported type: " + propagation );
-            }
-
             }
         }
     }
