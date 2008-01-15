@@ -29,6 +29,14 @@ import org.qi4j.composite.scope.AssociationField;
 public class AssociationMixin
     implements InvocationHandler
 {
+    @AssociationField Map<String, AbstractAssociation> associations;
+
+    @SuppressWarnings( "unchecked" )
+    public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
+    {
+        return associations.get( method.getDeclaringClass().getName() + ":" + method.getName() );
+    }
+
     public static class AssocationFilter
         implements AppliesToFilter
     {
@@ -36,15 +44,5 @@ public class AssociationMixin
         {
             return AbstractAssociation.class.isAssignableFrom( method.getReturnType() );
         }
-    }
-
-    // Attributes ----------------------------------------------------
-    @AssociationField Map<String, AbstractAssociation> associations;
-
-    // InvocationHandler implementation ------------------------------
-    @SuppressWarnings( "unchecked" )
-    public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
-    {
-        return associations.get( method.getDeclaringClass().getName() + ":" + method.getName() );
     }
 }

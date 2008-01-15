@@ -29,6 +29,15 @@ import org.qi4j.property.AbstractProperty;
 public class PropertyMixin
     implements InvocationHandler
 {
+    @PropertyField Map<String, AbstractProperty> properties;
+
+    @SuppressWarnings( "unchecked" )
+    public Object invoke( Object proxy, Method method, Object[] args )
+        throws Throwable
+    {
+        return properties.get( method.getDeclaringClass().getName() + ":" + method.getName() );
+    }
+
     public static class PropertyFilter
         implements AppliesToFilter
     {
@@ -36,15 +45,5 @@ public class PropertyMixin
         {
             return AbstractProperty.class.isAssignableFrom( method.getReturnType() );
         }
-    }
-
-    // Attributes ----------------------------------------------------
-    @PropertyField Map<String, AbstractProperty> properties;
-
-    // InvocationHandler implementation ------------------------------
-    @SuppressWarnings( "unchecked" )
-    public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
-    {
-        return properties.get( method.getDeclaringClass().getName() + ":" + method.getName() );
     }
 }
