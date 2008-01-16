@@ -18,6 +18,7 @@
 package org.qi4j.library.auth.tests;
 
 import java.util.Date;
+import java.security.acl.Group;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
