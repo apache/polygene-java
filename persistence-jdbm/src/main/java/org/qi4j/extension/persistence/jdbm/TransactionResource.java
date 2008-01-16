@@ -30,8 +30,9 @@ import jdbm.RecordManager;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.EntityCompositeNotFoundException;
 import org.qi4j.entity.PersistenceException;
-import org.qi4j.runtime.composite.CompositeInstance;
 import org.qi4j.runtime.composite.ProxyReferenceInvocationHandler;
+import org.qi4j.runtime.composite.CompositeInstance;
+import org.qi4j.runtime.composite.AbstractCompositeInstance;
 
 
 public class TransactionResource
@@ -55,7 +56,7 @@ public class TransactionResource
     public void read( EntityComposite aProxy )
     {
         String objectId = aProxy.identity().get();
-        CompositeInstance instance = CompositeInstance.getCompositeInstance( aProxy.dereference() );
+        CompositeInstance instance = AbstractCompositeInstance.getCompositeInstance( aProxy.dereference() );
         try
         {
             long recordId = recordManager.getNamedObject( objectId );

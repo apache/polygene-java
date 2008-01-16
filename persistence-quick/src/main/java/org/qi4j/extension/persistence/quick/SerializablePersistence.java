@@ -22,8 +22,9 @@ import java.util.Map;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.EntityCompositeNotFoundException;
 import org.qi4j.entity.PersistenceException;
-import org.qi4j.runtime.composite.CompositeInstance;
 import org.qi4j.runtime.composite.ProxyReferenceInvocationHandler;
+import org.qi4j.runtime.composite.CompositeInstance;
+import org.qi4j.runtime.composite.AbstractCompositeInstance;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.composite.CompositeModel;
 import org.qi4j.spi.entity.EntityStateHolder;
@@ -47,7 +48,7 @@ public final class SerializablePersistence
     public void create( EntityComposite entity )
         throws PersistenceException
     {
-        CompositeInstance handler = CompositeInstance.getCompositeInstance( entity );
+        CompositeInstance handler = AbstractCompositeInstance.getCompositeInstance( entity );
         Object[] mixins = handler.getMixins();
 
         Map<Class, SerializedObject> persistentMixins = new HashMap<Class, SerializedObject>();
@@ -69,7 +70,7 @@ public final class SerializablePersistence
     {
         String id = entity.identity().get();
         Map<Class, SerializedObject> mixins = delegate.getInstance( id );
-        CompositeInstance handler = CompositeInstance.getCompositeInstance( entity.dereference() );
+        CompositeInstance handler = AbstractCompositeInstance.getCompositeInstance( entity.dereference() );
         if( mixins == null )
         {
             throw new EntityCompositeNotFoundException( "Object not found", id, handler.getContext().getCompositeModel().getCompositeClass() );
