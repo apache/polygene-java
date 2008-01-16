@@ -20,7 +20,11 @@ public final class MixinInjectionContext extends FragmentInjectionContext
     private Iterable<Object> adapt;
     private Object decorated;
 
-    public MixinInjectionContext( CompositeBuilderFactory compositeBuilderFactory, ObjectBuilderFactory objectBuilderFactory, ModuleBinding moduleBinding, CompositeBinding compositeBinding, InvocationHandler thisCompositeAs, Iterable<Object> adapt, Object decorated, Map<String, AbstractProperty> properties, Map<String, AbstractAssociation> associations )
+    public MixinInjectionContext(
+        CompositeBuilderFactory compositeBuilderFactory, ObjectBuilderFactory objectBuilderFactory,
+        ModuleBinding moduleBinding, CompositeBinding compositeBinding, InvocationHandler thisCompositeAs,
+        Iterable<Object> adapt, Object decorated, Map<String, AbstractProperty> properties,
+        Map<String, AbstractAssociation> associations )
     {
         super( compositeBuilderFactory, objectBuilderFactory, moduleBinding, compositeBinding, thisCompositeAs );
         this.associations = associations;

@@ -20,16 +20,19 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembly;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.Mixins;
+import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.scope.Service;
 import org.qi4j.spi.service.Instance;
 import org.qi4j.spi.service.Singleton;
+import org.qi4j.test.AbstractQi4jTest;
 
 /**
  * TODO
  */
 public class ServiceInjectionTest
-    extends TestCase
+    extends AbstractQi4jTest
 {
+    private ServiceComposite myCustomService;
 
     public void testInjectSingleton()
         throws Exception
@@ -55,7 +58,7 @@ public class ServiceInjectionTest
         {
             public void configure( ModuleAssembly module ) throws AssemblyException
             {
-                module.addServiceProvider( new Instance( new MyServiceMixin() ), MyService.class );
+                module.addServiceProvider( new Instance( myCustomService ), MyService.class );
                 module.addObjects( ServiceUser.class, Instance.class );
             }
         };
@@ -65,10 +68,20 @@ public class ServiceInjectionTest
         assertEquals( "Hello World!", user.doStuff() );
     }
 
+    public void configure( ModuleAssembly module )
+        throws AssemblyException
+    {
+        module.addComposites( MyServiceComposite.class );
+        CompositeBuilder<MyServiceComposite> builder = compositeBuilderFactory.newCompositeBuilder( MyServiceComposite.class );
+        MyServiceMixin serviceInstance = new MyServiceMixin();
+        builder.decorate( serviceInstance );
+        myCustomService = builder.newInstance();
+    }
+
 
     @Mixins( MyServiceMixin.class )
     public static interface MyServiceComposite
-        extends MyService, Composite
+        extends MyService, ServiceComposite
     {
     }
 

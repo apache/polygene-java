@@ -16,6 +16,10 @@ package org.qi4j.spi.service;
 
 import org.qi4j.spi.injection.InjectionContext;
 import org.qi4j.spi.injection.InjectionResolution;
+import org.qi4j.service.ServiceComposite;
+import org.qi4j.composite.scope.Structure;
+import org.qi4j.composite.CompositeBuilderFactory;
+import org.qi4j.composite.CompositeBuilder;
 
 /**
  * TODO
@@ -23,19 +27,21 @@ import org.qi4j.spi.injection.InjectionResolution;
 public final class Instance
     implements ServiceProvider
 {
-    Object instance;
+    @Structure CompositeBuilderFactory factory;
+    private ServiceComposite instance;
 
-    public Instance( Object instance )
+    public Instance( ServiceComposite instance )
     {
         this.instance = instance;
     }
 
-    public Object getService( InjectionResolution injectionResolution, InjectionContext injectionContext )
+    public synchronized <T extends ServiceComposite> T  getService( InjectionResolution injectionResolution,
+                                                                    InjectionContext injectionContext )
     {
-        return instance;
+        return (T) instance;
     }
 
-    public void releaseService( Object service )
+    public void releaseService( ServiceComposite service )
     {
         // Ignore for now
     }

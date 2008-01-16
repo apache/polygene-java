@@ -29,4 +29,6 @@ public interface CompositeBuilderFactory
      *          thrown if instantiation fails
      */
     <T extends Composite> CompositeBuilder<T> newCompositeBuilder( Class<T> compositeType );
+
+    <T> T newComposite( Class<T> pojoType );
 }

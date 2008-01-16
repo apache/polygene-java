@@ -32,6 +32,9 @@ public abstract class AbstractCompositeInstance
     protected static final Method METHOD_GETIDENTITY;
     protected static final Method METHOD_GET;
 
+    protected CompositeContext context;
+    protected ModuleInstance moduleInstance;
+
     static
     {
         try
@@ -56,9 +59,6 @@ public abstract class AbstractCompositeInstance
     {
         return (CompositeInstance) Proxy.getInvocationHandler( aProxy );
     }
-
-    protected CompositeContext context;
-    protected ModuleInstance moduleInstance;
 
     public AbstractCompositeInstance( CompositeContext aContext, ModuleInstance moduleInstance )
     {

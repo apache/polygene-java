@@ -22,8 +22,8 @@ import org.qi4j.composite.ObjectBuilderFactory;
 import org.qi4j.context.Context;
 import org.qi4j.entity.EntitySessionFactory;
 import org.qi4j.runtime.composite.CompositeContext;
-import org.qi4j.runtime.composite.CompositeInstance;
 import org.qi4j.runtime.entity.EntitySessionFactoryImpl;
+import org.qi4j.runtime.context.ContextCompositeInstance;
 import org.qi4j.spi.service.ServiceProvider;
 
 /**
@@ -39,7 +39,7 @@ public final class ModuleInstance
     private CompositeBuilderFactory compositeBuilderFactory;
     private ObjectBuilderFactory objectBuilderFactory;
     private EntitySessionFactory entitySessionFactory;
-    private HashMap<Class<? extends Composite>, CompositeInstance> contextCompositeInstances;
+    private HashMap<Class<? extends Composite>, ContextCompositeInstance> contextCompositeInstances;
 
     public ModuleInstance( ModuleContext moduleContext, Map<Class<? extends Composite>, ModuleInstance> moduleInstances, Map<Class, ModuleInstance> moduleForPublicObjects )
     {
@@ -56,14 +56,14 @@ public final class ModuleInstance
 
     private void instantiateDeclaredContextComposites( ModuleContext moduleContext )
     {
-        contextCompositeInstances = new HashMap<Class<? extends Composite>, CompositeInstance>();
+        contextCompositeInstances = new HashMap<Class<? extends Composite>, ContextCompositeInstance>();
         Map<Class<? extends Composite>, CompositeContext> composites = moduleContext.getCompositeContexts();
         for( Map.Entry<Class<? extends Composite>, CompositeContext> entry : composites.entrySet() )
         {
             Class<? extends Composite> compositeType = entry.getKey();
             if( Context.class.isAssignableFrom( compositeType ) )
             {
-                CompositeInstance contextCompositeInstance = new CompositeInstance( entry.getValue(), this );
+                ContextCompositeInstance contextCompositeInstance = new ContextCompositeInstance( entry.getValue(), this );
                 contextCompositeInstances.put( compositeType, contextCompositeInstance );
             }
         }
@@ -116,7 +116,7 @@ public final class ModuleInstance
      * @param compositeType The type of ContextComposite in this Module to be retrieved.
      * @return The CompositeInstance of the ContextComposite of the given compositeType.
      */
-    public CompositeInstance getContextCompositeInstance( Class<? extends Composite> compositeType )
+    public ContextCompositeInstance getContextCompositeInstance( Class<? extends Composite> compositeType )
     {
         return contextCompositeInstances.get( compositeType );
     }

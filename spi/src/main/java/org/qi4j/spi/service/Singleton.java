@@ -15,11 +15,15 @@
 package org.qi4j.spi.service;
 
 import org.qi4j.composite.CompositeBuilderFactory;
+import org.qi4j.composite.Composite;
 import org.qi4j.composite.scope.Structure;
 import org.qi4j.spi.composite.CompositeBinding;
+import org.qi4j.spi.composite.CompositeResolution;
+import org.qi4j.spi.composite.CompositeModel;
 import org.qi4j.spi.injection.InjectionContext;
 import org.qi4j.spi.injection.InjectionResolution;
 import org.qi4j.spi.structure.ModuleBinding;
+import org.qi4j.service.ServiceComposite;
 
 /**
  * TODO
@@ -30,9 +34,10 @@ public final class Singleton
     private @Structure CompositeBuilderFactory cbf;
     private @Structure ModuleBinding module;
 
-    private Object instance;
+    private ServiceComposite instance;
 
-    public synchronized Object getService( InjectionResolution injectionResolution, InjectionContext injectionContext )
+    public synchronized <T extends ServiceComposite> T  getService( InjectionResolution injectionResolution,
+                                                                    InjectionContext injectionContext )
         throws ServiceProviderException
     {
         if( instance == null )
@@ -42,17 +47,20 @@ public final class Singleton
             CompositeBinding compositeBinding = module.getCompositeBinding( injectionClass );
             if( compositeBinding != null )
             {
-                instance = cbf.newCompositeBuilder( compositeBinding.getCompositeResolution().getCompositeModel().getCompositeClass() ).newInstance();
+                CompositeResolution compositeResolution = compositeBinding.getCompositeResolution();
+                CompositeModel model = compositeResolution.getCompositeModel();
+                Class<? extends ServiceComposite> compositeType = (Class<? extends ServiceComposite>) model.getCompositeClass();
+                instance = cbf.newCompositeBuilder( compositeType ).newInstance();
             }
             else
             {
                 throw new ServiceProviderException( "No Composite type registered which extends the desired service type " + injectionClass.getName() );
             }
         }
-        return instance;
+        return (T) instance;
     }
 
-    public void releaseService( Object service )
+    public void releaseService( ServiceComposite service )
     {
         // Ignore for now
     }

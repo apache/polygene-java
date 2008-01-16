@@ -28,7 +28,7 @@ public final class CompositeMixin
     public CompositeModel getCompositeModel()
     {
         Composite composite = dereference();
-        return CompositeInstance.getCompositeInstance( composite ).getContext().getCompositeModel();
+        return AbstractCompositeInstance.getCompositeInstance( composite ).getContext().getCompositeModel();
     }
 
     public Composite dereference()

@@ -15,21 +15,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.runtime.composite;
+package org.qi4j.runtime.structure;
 
 import org.qi4j.composite.Composite;
-import java.lang.reflect.Method;
-import java.lang.reflect.InvocationHandler;
 
-public interface CompositeInstance extends InvocationHandler
+public interface TypeMapper
 {
-    Object[] getMixins();
+    void registerComposite( Class<? extends Composite> compositeType );
 
-    void setMixins( Object[] newMixins );
-
-    Composite getProxy();
-
-    void setProxy( Composite proxy );
-
-    CompositeContext getContext();
+    void unregisterComposite( Class<? extends Composite> compositeType );
 }

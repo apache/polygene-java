@@ -54,6 +54,14 @@ public final class CompositeContext
 {
     private static final Method CREATE_METHOD;
 
+    private CompositeBinding compositeBinding;
+    private InstanceFactory instanceFactory;
+    private ModuleBinding moduleBinding;
+    private CompositeMethodInstancePool[] compositeMethodInstancePools;
+    private HashMap<Method, MethodDescriptor> methodDescriptors;
+    private Set<MixinContext> mixinContexts;
+    private Map<String, PropertyContext> propertyContexts;
+
     static
     {
         try
@@ -65,14 +73,6 @@ public final class CompositeContext
             throw new InternalError( "Lifecycle class is corrupt." );
         }
     }
-
-    private CompositeBinding compositeBinding;
-    private InstanceFactory instanceFactory;
-    private ModuleBinding moduleBinding;
-    private CompositeMethodInstancePool[] compositeMethodInstancePools;
-    private HashMap<Method, MethodDescriptor> methodDescriptors;
-    private Set<MixinContext> mixinContexts;
-    private Map<String, PropertyContext> propertyContexts;
 
     public CompositeContext( CompositeBinding compositeBinding, List<CompositeMethodContext> compositeMethodContexts, ModuleBinding moduleBinding, InstanceFactory instanceFactory, Map<String, PropertyContext> propertyContexts, Set<MixinContext> mixinContexts )
     {
@@ -137,7 +137,7 @@ public final class CompositeContext
         {
             compositeInstance = moduleInstance.getContextCompositeInstance( compositeType );
         }
-        compositeInstance = new CompositeInstance( this, moduleInstance );
+        compositeInstance = new StandardCompositeInstance( this, moduleInstance );
 
         // Instantiate composite proxy
         Composite proxy = newProxy( compositeInstance );

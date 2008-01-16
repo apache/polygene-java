@@ -31,7 +31,6 @@ import org.qi4j.composite.scope.SideEffectFor;
 import org.qi4j.composite.scope.Structure;
 import org.qi4j.composite.scope.ThisCompositeAs;
 import org.qi4j.runtime.composite.CompositeBinder;
-import org.qi4j.runtime.composite.CompositeInstance;
 import org.qi4j.runtime.composite.CompositeModelFactory;
 import org.qi4j.runtime.composite.CompositeResolver;
 import org.qi4j.runtime.composite.InjectionProviderFactoryStrategy;
@@ -40,6 +39,7 @@ import org.qi4j.runtime.composite.InstanceFactoryImpl;
 import org.qi4j.runtime.composite.ObjectBinder;
 import org.qi4j.runtime.composite.ObjectModelFactory;
 import org.qi4j.runtime.composite.ObjectResolver;
+import org.qi4j.runtime.composite.AbstractCompositeInstance;
 import org.qi4j.runtime.injection.AdaptInjectionProviderFactory;
 import org.qi4j.runtime.injection.AssociationInjectionProviderFactory;
 import org.qi4j.runtime.injection.DecorateInjectionProviderFactory;
@@ -120,7 +120,7 @@ public final class Energy4Java
     // SPI
     public CompositeBinding getCompositeBinding( Composite composite )
     {
-        return CompositeInstance.getCompositeInstance( composite ).getContext().getCompositeBinding();
+        return AbstractCompositeInstance.getCompositeInstance( composite ).getContext().getCompositeBinding();
     }
 
     // Runtime
