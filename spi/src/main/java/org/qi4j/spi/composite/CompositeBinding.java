@@ -25,12 +25,12 @@ import java.util.Set;
  */
 public final class CompositeBinding
 {
-    private CompositeResolution compositeResolution;
-    private Collection<CompositeMethodBinding> compositeMethodBindings;
+    private final CompositeResolution compositeResolution;
+    private final Collection<CompositeMethodBinding> compositeMethodBindings;
 
-    private Set<MixinBinding> mixinBindings; // List of used mixin bindings
+    private final Set<MixinBinding> mixinBindings; // List of used mixin bindings
 
-    private Map<Method, CompositeMethodBinding> methodMappings; // Method -> method resolution
+    private final Map<Method, CompositeMethodBinding> methodMappings; // Method -> method resolution
 
     public CompositeBinding( CompositeResolution compositeResolution, Collection<CompositeMethodBinding> methodBindings, Set<MixinBinding> mixinBindings, Map<Method, CompositeMethodBinding> methodMappings )
     {

@@ -25,23 +25,48 @@ import org.qi4j.runtime.composite.CompositeContext;
 import org.qi4j.runtime.composite.MethodDescriptor;
 import org.qi4j.runtime.composite.CompositeMethodInstance;
 import org.qi4j.runtime.composite.CompositeInstance;
+import org.qi4j.runtime.property.PropertyContext;
+import org.qi4j.runtime.property.AssociationContext;
 import org.qi4j.spi.composite.InvalidCompositeException;
+import org.qi4j.spi.composite.MixinResolution;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.util.Set;
+import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Vector;
 
 /**
- * InvocationHandler for proxy objects.
+ * InvocationHandler for ContextComposite types.
+ *
+ * The implementation is keeping one set of mixin instances per thread.
  */
 public final class ContextCompositeInstance extends AbstractCompositeInstance
     implements CompositeInstance
 {
-    final private ThreadLocal<Object[]> mixins;
+    private final ThreadLocal<Object[]> mixins;
+    private final ModuleInstance moduleInstance;
+    private final Set<Object> adapt;
+    private final Object decoratedObject;
+    private final Map<MixinResolution, Map<PropertyContext, Object>> compositeProperties;
+    private final Map<MixinResolution, Map<AssociationContext, Object>> compositeAssociations;
     private Composite proxy;
 
-    public ContextCompositeInstance( CompositeContext context, ModuleInstance moduleInstance )
+    public ContextCompositeInstance( CompositeContext context,
+                                     ModuleInstance moduleInstance,
+                                     Set<Object> adapt,
+                                     Object decoratedObject,
+                                     Map<MixinResolution, Map<PropertyContext, Object>> compositeProperties,
+                                     Map<MixinResolution, Map<AssociationContext, Object>> compositeAssociations )
     {
         super( context, moduleInstance );
+        this.moduleInstance = moduleInstance;
+        this.adapt = adapt;
+        this.decoratedObject = decoratedObject;
+        this.compositeProperties = compositeProperties;
+        this.compositeAssociations = compositeAssociations;
         mixins = new ThreadLocal<Object[]>();
-        mixins.set( new Object[context.getCompositeResolution().getMixinCount()] );
     }
 
     public Object invoke( Object composite, Method method, Object[] args ) throws Throwable
@@ -52,7 +77,8 @@ public final class ContextCompositeInstance extends AbstractCompositeInstance
             return invokeObject( composite, method, args );
         }
 
-        Object mixin = mixins.get()[ descriptor.getMixinIndex() ];
+        Object[] data = getMixins();
+        Object mixin = data[ descriptor.getMixinIndex() ];
 
         if( mixin == null )
         {
@@ -83,9 +109,15 @@ public final class ContextCompositeInstance extends AbstractCompositeInstance
 
     public Object[] getMixins()
     {
-        return mixins.get();
+        Object[] data = mixins.get();
+        if( data == null ) // New thread.
+        {
+            data = new Object[context.getCompositeResolution().getMixinCount()];
+            mixins.set( data );
+            context.newMixins( moduleInstance, this, adapt, decoratedObject, compositeProperties, compositeAssociations );
+        }
+        return data;
     }
-
 
     @Override public String toString()
     {

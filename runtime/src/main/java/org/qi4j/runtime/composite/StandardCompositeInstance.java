@@ -27,13 +27,13 @@ import org.qi4j.runtime.structure.ModuleInstance;
 public final class StandardCompositeInstance extends AbstractCompositeInstance
     implements CompositeInstance
 {
-    final private Object[] mixins;
+    private final Object[] mixins;
     private Composite proxy;
 
     public StandardCompositeInstance( CompositeContext aContext, ModuleInstance moduleInstance )
     {
         super( aContext, moduleInstance );
-        mixins = new Object[aContext.getCompositeResolution().getMixinCount()];
+        mixins = new Object[context.getCompositeResolution().getMixinCount()];
     }
 
     public Object invoke( Object composite, Method method, Object[] args )
@@ -78,7 +78,6 @@ public final class StandardCompositeInstance extends AbstractCompositeInstance
     {
         return mixins;
     }
-
 
     @Override public String toString()
     {

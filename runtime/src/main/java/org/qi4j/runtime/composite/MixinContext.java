@@ -27,7 +27,8 @@ public final class MixinContext
     private Iterable<PropertyContext> propertyContexts;
     private Iterable<AssociationContext> associationContexts;
 
-    public MixinContext( MixinBinding mixinBinding, Iterable<PropertyContext> propertyContext, Iterable<AssociationContext> associationContext )
+    public MixinContext( MixinBinding mixinBinding, Iterable<PropertyContext> propertyContext,
+                         Iterable<AssociationContext> associationContext )
     {
         this.associationContexts = associationContext;
         this.mixinBinding = mixinBinding;

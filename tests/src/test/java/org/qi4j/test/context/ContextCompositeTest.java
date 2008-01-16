@@ -38,18 +38,27 @@ public class ContextCompositeTest extends AbstractQi4jTest
     public void testThreadScope()
         throws InterruptedException
     {
-        CompositeBuilder<MyContextComposite> builder = compositeBuilderFactory.newCompositeBuilder( MyContextComposite.class );
-        builder.propertiesFor( MyData.class ).data().set( 0 );
-        MyContextComposite c1 = builder.newInstance();
-        Worker w1 = new Worker( c1, 100 );
-        Worker w2 = new Worker( c1, 200 );
-        w1.start();
-        w2.start();
-        w1.join();
-        w2.join();
-        Thread.sleep( 200 );
-        assertEquals( 100, w1.getData() );
-        assertEquals( 200, w2.getData() );
+        for( int i = 0; i < 100; i++ )
+        {
+            CompositeBuilder<MyContextComposite> builder = compositeBuilderFactory.newCompositeBuilder( MyContextComposite.class );
+            builder.propertiesFor( MyData.class ).data().set( 0 );
+            Worker w1;
+            Worker w2;
+            MyContextComposite c1 = builder.newInstance();
+            {
+                w1 = new Worker( "w1", c1, 100, 0 );
+                w2 = new Worker( "w2", c1, 400, 20 );
+                w2.start();
+                w1.start();
+            }
+            w1.join();
+            w2.join();
+            System.out.println( "W1: " + w1.getData() );
+            System.out.println( "W2: " + w2.getData() );
+            assertEquals( 0, (int) c1.data().get() );
+            assertEquals( 100, w1.getData() );
+            assertEquals( 400, w2.getData() );
+        }
     }
 
     public void configure( ModuleAssembly module )
@@ -72,25 +81,49 @@ public class ContextCompositeTest extends AbstractQi4jTest
     {
         private MyContextComposite composite;
         private int loops;
+        private final String spaces;
         private int data;
 
 
-        public Worker( MyContextComposite composite, int loops )
+        public Worker( String name, MyContextComposite composite, int loops, int spaces )
         {
+            super( name );
             this.composite = composite;
             this.loops = loops;
+            StringBuilder builder = new StringBuilder();
+            for( int i = 0; i < spaces; i++ )
+            {
+                builder.append( " " );
+            }
+            this.spaces = builder.toString();
+            synchronized( composite )
+            {
+                composite.data();
+            }
         }
 
         public void run()
         {
+            int counter = 0;
+            int mismatchCounter = 0;
+            Property<Integer> readProperty = composite.data();
+            Property<Integer> writeProperty = composite.data();
             try
             {
+                int oldValue = 0;
                 for( int i = 0; i < loops; i++ )
                 {
-                    int value = composite.data().get();
+                    int value;
+                    value = readProperty.get();
+                    if( oldValue != value )
+                    {
+                        mismatchCounter++;
+                    }
                     value = value + 1;
-                    composite.data().set( value );
-                    Thread.sleep( 1 );
+                    oldValue = value;
+                    Thread.sleep( Math.round( Math.random() * 3 ) );
+                    writeProperty.set( value );
+                    counter++;
                 }
             }
             catch( InterruptedException e )
@@ -98,6 +131,7 @@ public class ContextCompositeTest extends AbstractQi4jTest
                 e.printStackTrace();
             }
             data = composite.data().get();
+            System.out.println( counter + "/" + loops + "    " + data + ", " + mismatchCounter );
         }
 
         public int getData()
