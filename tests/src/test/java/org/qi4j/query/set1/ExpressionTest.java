@@ -20,10 +20,13 @@ package org.qi4j.query.set1;
 import java.util.ArrayList;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.CompositeBuilder;
+import org.qi4j.composite.Mixins;
+import org.qi4j.composite.Composite;
 import org.qi4j.query.QueryBuilderFactory;
 import org.qi4j.query.QueryBuilderFactoryImpl;
 import org.qi4j.query.QueryableIterable;
 import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.property.Property;
 
 public class ExpressionTest extends AbstractQi4jTest
 {
@@ -67,4 +70,53 @@ public class ExpressionTest extends AbstractQi4jTest
 */
     }
 
+
+    @Mixins( { Mixin1Impl.class, Mixin2Impl.class } )
+    static interface Composite1 extends Mixin2, Mixin1, Composite
+    {
+    }
+    
+    static interface Mixin1
+    {
+        Property<String> name();
+
+        Property<String> bar();
+    }
+
+    static interface Mixin2
+    {
+    }
+
+    static class Mixin1Impl
+        implements Mixin1
+    {
+        private Property<String> name;
+        private Property<String> description;
+        private Property<String> bar;
+
+        public Property<String> name()
+        {
+            return name;
+        }
+
+        public Property<String> bar()
+        {
+            return bar;
+        }
+
+        public Property<String> description()
+        {
+            return description;
+        }
+    }
+
+    static class Mixin2Impl
+        implements Mixin2
+    {
+        public Mixin2Impl()
+        {
+            //TODO: Auto-generated, need attention.
+
+        }
+    }
 }
