@@ -19,23 +19,21 @@ import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.InvalidApplicationException;
 import org.qi4j.runtime.composite.CompositeContext;
-import org.qi4j.runtime.structure.TypeMapper;
-import java.util.HashMap;
-import java.io.Serializable;
+import java.util.Map;
 
 /**
  * Default implementation of CompositeBuilderFactory
  */
 public final class ModuleCompositeBuilderFactory
-    implements CompositeBuilderFactory, TypeMapper
+    implements CompositeBuilderFactory
 {
     private ModuleInstance moduleInstance;
-    private HashMap<Class, Class<? extends Composite>> pojoMap;
+    private final Map<Class, Class<? extends Composite>> mapping;
 
-    public ModuleCompositeBuilderFactory( ModuleInstance moduleInstance )
+    public ModuleCompositeBuilderFactory( ModuleInstance moduleInstance, Map<Class, Class<? extends Composite>> mapping )
     {
         this.moduleInstance = moduleInstance;
-        pojoMap = new HashMap<Class, Class<? extends Composite>>();
+        this.mapping = mapping;
     }
 
     public <T extends Composite> CompositeBuilder<T> newCompositeBuilder( Class<T> compositeType )
@@ -64,34 +62,8 @@ public final class ModuleCompositeBuilderFactory
 
     public <T> T newComposite( Class<T> pojoType )
     {
-        Class<? extends Composite> compositeType = pojoMap.get( pojoType );
+        Class<? extends Composite> compositeType = mapping.get( pojoType );
         return pojoType.cast( newCompositeBuilder( compositeType ).newInstance() );
     }
 
-    public void registerComposite( Class<? extends Composite> compositeType )
-    {
-        for( Class type : compositeType.getInterfaces())
-        {
-            if( type.equals( Serializable.class ) )
-            {
-            }
-            else if( pojoMap.containsKey( type ) )
-            {
-                pojoMap.remove( type );
-            }
-            else
-            {
-                pojoMap.put( type, compositeType );
-            }
-        }
-    }
-
-    public void unregisterComposite( Class<? extends Composite> compositeType )
-    {
-        for( Class type : compositeType.getInterfaces())
-        {
-            pojoMap.remove( type );
-        }
-    }
-    
 }
