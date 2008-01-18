@@ -20,7 +20,7 @@ import java.util.Map;
 import org.qi4j.composite.AppliesTo;
 import org.qi4j.composite.AppliesToFilter;
 import org.qi4j.composite.scope.PropertyField;
-import org.qi4j.property.AbstractProperty;
+import org.qi4j.property.Property;
 
 /**
  * Generic mixin for properties.
@@ -29,7 +29,7 @@ import org.qi4j.property.AbstractProperty;
 public class PropertyMixin
     implements InvocationHandler
 {
-    @PropertyField Map<String, AbstractProperty> properties;
+    @PropertyField Map<String, Property> properties;
 
     @SuppressWarnings( "unchecked" )
     public Object invoke( Object proxy, Method method, Object[] args )
@@ -43,7 +43,7 @@ public class PropertyMixin
     {
         public boolean appliesTo( Method method, Class mixin, Class compositeType, Class modifierClass )
         {
-            return AbstractProperty.class.isAssignableFrom( method.getReturnType() );
+            return Property.class.isAssignableFrom( method.getReturnType() );
         }
     }
 }

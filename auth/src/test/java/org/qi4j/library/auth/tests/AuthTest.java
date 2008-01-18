@@ -18,7 +18,6 @@
 package org.qi4j.library.auth.tests;
 
 import java.util.Date;
-import java.security.acl.Group;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
@@ -36,7 +35,6 @@ import org.qi4j.library.auth.RoleComposite;
 import org.qi4j.library.auth.UserComposite;
 import org.qi4j.library.framework.entity.AssociationMixin;
 import org.qi4j.library.framework.entity.PropertyMixin;
-import org.qi4j.property.WritableProperty;
 import org.qi4j.test.AbstractQi4jTest;
 
 public class AuthTest extends AbstractQi4jTest
@@ -77,8 +75,8 @@ public class AuthTest extends AbstractQi4jTest
 
         // Create authorization context
         AuthorizationContext context = compositeBuilderFactory.newCompositeBuilder( AuthorizationContextComposite.class ).newInstance();
-        ( (WritableProperty<UserComposite>) context.user() ).set( user );
-        ( (WritableProperty<Date>) context.time() ).set( new Date() );
+        context.user().set( user );
+        context.time().set( new Date() );
 
         // Check permission
         assertFalse( authorization.hasPermission( permission, room, context ) );
