@@ -18,100 +18,108 @@ package org.qi4j.entity.memory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import org.qi4j.spi.composite.CompositeModel;
+import org.qi4j.association.AbstractAssociation;
+import org.qi4j.association.ManyAssociation;
+import org.qi4j.association.SetAssociation;
+import org.qi4j.entity.EntityComposite;
+import org.qi4j.entity.EntitySession;
+import org.qi4j.property.Property;
+import org.qi4j.property.ReadableProperty;
+import org.qi4j.property.WritableProperty;
+import org.qi4j.runtime.association.AssociationInstance;
+import org.qi4j.runtime.association.ListAssociationInstance;
 import org.qi4j.spi.entity.EntityAlreadyExistsException;
-import org.qi4j.spi.entity.EntityNotFoundException;
-import org.qi4j.spi.entity.EntityStateHolder;
+import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.StoreException;
-import org.qi4j.spi.serialization.SerializedObject;
+import org.qi4j.spi.property.AssociationBinding;
+import org.qi4j.spi.property.PropertyBinding;
+import org.qi4j.spi.property.PropertyInstance;
+import org.qi4j.spi.property.ReadablePropertyInstance;
+import org.qi4j.spi.property.WritablePropertyInstance;
+import org.qi4j.spi.serialization.SerializedEntity;
+import org.qi4j.spi.serialization.SerializedState;
 
 public class MemoryEntityStore
     implements EntityStore
 {
-    private ConcurrentHashMap<String, Map<Class, SerializedObject>> entityStore;
-    private ConcurrentHashMap<String, EntityStateHolder> cache;
+    private Map<SerializedEntity, SerializedState> entityState;
 
-    private String name;
-
-    public MemoryEntityStore( String name )
+    public MemoryEntityStore()
     {
-        this.name = name;
-        entityStore = new ConcurrentHashMap<String, Map<Class, SerializedObject>>();
+        entityState = new ConcurrentHashMap<SerializedEntity, SerializedState>();
     }
 
-    public EntityStateHolder newEntityInstance( String identity, CompositeModel compositeModel )
-        throws StoreException
+    public boolean exists( String identity, Class<? extends EntityComposite> compositeType ) throws StoreException
     {
-        if( entityStore.contains( identity ) )
+        return entityState.containsKey( new SerializedEntity( identity, compositeType ) );
+    }
+
+    public EntityState newEntityInstance( EntitySession session, String identity, Class compositeType, Iterable<PropertyBinding> propertyBindings, Iterable<AssociationBinding> associationBindings, Map<String, Object> propertyValues ) throws StoreException
+    {
+        SerializedEntity id = new SerializedEntity( identity, compositeType );
+        if( entityState.containsKey( id ) )
         {
-            throw new EntityAlreadyExistsException( getName(), identity );
+            throw new EntityAlreadyExistsException( "Memory store", identity );
         }
-        entityStore.put( identity, new HashMap<Class, SerializedObject>() );
-        MemoryEntityStateHolder stateHolder = new MemoryEntityStateHolder( identity, compositeModel, this );
-        cache.put( identity, stateHolder );
-        return stateHolder;
-    }
 
-    public EntityStateHolder getEntityInstance( String identity, Class compositeType )
-        throws StoreException
-    {
-        EntityStateHolder stateHolder = cache.get( identity );
-        if( stateHolder == null )
+        Map<String, Property> properties = new HashMap<String, Property>();
+        for( PropertyBinding propertyBinding : propertyBindings )
         {
-            if( !exists( identity ) )
+            // Either use default value or the one that was set through the builder
+            Object value = propertyBinding.getDefaultValue();
+            if( propertyValues.containsKey( propertyBinding.getQualifiedName() ) )
             {
-                throw new EntityNotFoundException( getName(), identity );
+                value = propertyValues.get( propertyBinding.getQualifiedName() );
             }
-            stateHolder = new MemoryEntityStateHolder( identity, null, this );
-            cache.put( identity, stateHolder );
+
+            if( ReadableProperty.class.isAssignableFrom( propertyBinding.getPropertyResolution().getPropertyModel().getAccessor().getReturnType() ) )
+            {
+                properties.put( propertyBinding.getQualifiedName(), new ReadablePropertyInstance<Object>( propertyBinding, value ) );
+            }
+            else
+            if( WritableProperty.class.isAssignableFrom( propertyBinding.getPropertyResolution().getPropertyModel().getAccessor().getReturnType() ) )
+            {
+                properties.put( propertyBinding.getQualifiedName(), new WritablePropertyInstance<Object>( propertyBinding, value ) );
+            }
+            else
+            {
+                properties.put( propertyBinding.getQualifiedName(), new PropertyInstance<Object>( propertyBinding, value ) );
+            }
         }
-        return stateHolder;
-    }
 
-    public EntityStateHolder newEntityInstance( String identity, Class compositeType ) throws StoreException
-    {
-        return null;
-    }
-
-    public List<EntityStateHolder> getEntityInstances( List<String> identities, Class compositeType ) throws StoreException
-    {
-        return null;
-    }
-
-    public List<EntityStateHolder> getEntityInstances( List<String> identities, CompositeModel compositeModel )
-        throws StoreException
-    {
-        List<EntityStateHolder> result = new ArrayList<EntityStateHolder>( identities.size() );
-        for( String id : identities )
+        Map<String, AbstractAssociation> associations = new HashMap<String, AbstractAssociation>();
+        for( AssociationBinding associationBinding : associationBindings )
         {
-            result.add( getEntityInstance( id, compositeModel.getCompositeClass() ) );
+            if( SetAssociation.class.isAssignableFrom( associationBinding.getAssociationResolution().getAssociationModel().getAccessor().getReturnType() ) )
+            {
+//                associations.put( associationBinding.getQualifiedName(), new SetAssociationInstance())
+            }
+            else
+            if( ManyAssociation.class.isAssignableFrom( associationBinding.getAssociationResolution().getAssociationModel().getAccessor().getReturnType() ) )
+            {
+                associations.put( associationBinding.getQualifiedName(), new ListAssociationInstance<Object>( new ArrayList<Object>(), associationBinding ) );
+            }
+            else
+            {
+                associations.put( associationBinding.getQualifiedName(), new AssociationInstance<Object>( associationBinding, null ) );
+            }
         }
-        return result;
+
+        MemoryEntityState entityState = new MemoryEntityState( identity, compositeType, properties, associations );
+
+        return entityState;
     }
 
-    public boolean delete( String identity )
-        throws StoreException
-    {
-        cache.remove( identity );
-        return entityStore.remove( identity ) != null;
-    }
-
-    public String getName()
-    {
-        return name;
-    }
-
-    public boolean exists( String identity )
-    {
-        return cache.contains( identity ) || entityStore.contains( identity );
-    }
-
-    public Object getMixin( MemoryEntityStateHolder memoryEntityStateHolder, Class mixinType )
+    public EntityState getEntityInstance( EntitySession session, String identity, Class compositeType, Iterable<PropertyBinding> propertyBindings, Iterable<AssociationBinding> associationBindings ) throws StoreException
     {
         return null;
+    }
+
+    public boolean delete( String identity, Class compositeType ) throws StoreException
+    {
+        return entityState.remove( new SerializedEntity( identity, compositeType ) ) != null;
     }
 }

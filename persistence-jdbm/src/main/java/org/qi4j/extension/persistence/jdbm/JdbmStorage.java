@@ -33,13 +33,12 @@ import jdbm.RecordManagerFactory;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.PersistenceException;
 import org.qi4j.spi.composite.CompositeModel;
-import org.qi4j.spi.entity.EntityStateHolder;
-import org.qi4j.spi.entity.EntityStore;
+import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.StoreException;
 
 
 public class JdbmStorage
-    implements EntityStore
+    // implements EntityStore
 {
     private TransactionManager transactionManager;
     private RecordManager recordManager;
@@ -198,28 +197,28 @@ public class JdbmStorage
         return false;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public EntityStateHolder newEntityInstance( String identity, CompositeModel compositeModel ) throws org.qi4j.spi.entity.StoreException
+    public EntityState newEntityInstance( String identity, CompositeModel compositeModel ) throws org.qi4j.spi.entity.StoreException
     {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public EntityStateHolder getEntityInstance( String identity, Class compositeType ) throws org.qi4j.spi.entity.StoreException
+    public EntityState getEntityInstance( String identity, Class compositeType ) throws org.qi4j.spi.entity.StoreException
     {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public List<EntityStateHolder> getEntityInstances( List<String> identities, CompositeModel compositeModel ) throws org.qi4j.spi.entity.StoreException
+    public List<EntityState> getEntityInstances( List<String> identities, CompositeModel compositeModel ) throws org.qi4j.spi.entity.StoreException
     {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
 
-    public EntityStateHolder newEntityInstance( String identity, Class compositeType ) throws StoreException
+    public EntityState newEntityInstance( String identity, Class compositeType ) throws StoreException
     {
         return null;
     }
 
-    public List<EntityStateHolder> getEntityInstances( List<String> identities, Class compositeType ) throws StoreException
+    public List<EntityState> getEntityInstances( List<String> identities, Class compositeType ) throws StoreException
     {
         return null;
     }

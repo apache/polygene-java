@@ -22,19 +22,18 @@ import java.util.Map;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.EntityCompositeNotFoundException;
 import org.qi4j.entity.PersistenceException;
-import org.qi4j.runtime.composite.ProxyReferenceInvocationHandler;
-import org.qi4j.runtime.composite.CompositeInstance;
 import org.qi4j.runtime.composite.AbstractCompositeInstance;
+import org.qi4j.runtime.composite.CompositeInstance;
+import org.qi4j.runtime.composite.ProxyReferenceInvocationHandler;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.composite.CompositeModel;
-import org.qi4j.spi.entity.EntityStateHolder;
-import org.qi4j.spi.entity.EntityStore;
+import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.StoreException;
 import org.qi4j.spi.serialization.SerializablePersistenceSpi;
 import org.qi4j.spi.serialization.SerializedObject;
 
 public final class SerializablePersistence
-    implements EntityStore
+    //   implements EntityStore
 {
     private SerializablePersistenceSpi delegate;
     private Qi4jSPI spi;
@@ -156,27 +155,27 @@ public final class SerializablePersistence
         return false;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public EntityStateHolder newEntityInstance( String identity, CompositeModel compositeModel ) throws org.qi4j.spi.entity.StoreException
+    public EntityState newEntityInstance( String identity, CompositeModel compositeModel ) throws org.qi4j.spi.entity.StoreException
     {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public EntityStateHolder getEntityInstance( String identity, Class compositeType ) throws org.qi4j.spi.entity.StoreException
+    public EntityState getEntityInstance( String identity, Class compositeType ) throws org.qi4j.spi.entity.StoreException
     {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public List<EntityStateHolder> getEntityInstances( List<String> identities, CompositeModel compositeModel ) throws org.qi4j.spi.entity.StoreException
+    public List<EntityState> getEntityInstances( List<String> identities, CompositeModel compositeModel ) throws org.qi4j.spi.entity.StoreException
     {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public EntityStateHolder newEntityInstance( String identity, Class compositeType ) throws StoreException
+    public EntityState newEntityInstance( String identity, Class compositeType ) throws StoreException
     {
         return null;
     }
 
-    public List<EntityStateHolder> getEntityInstances( List<String> identities, Class compositeType ) throws StoreException
+    public List<EntityState> getEntityInstances( List<String> identities, Class compositeType ) throws StoreException
     {
         return null;
     }
