@@ -59,7 +59,6 @@ import org.qi4j.spi.structure.ModuleBinding;
 import org.qi4j.spi.structure.ModuleModel;
 import org.qi4j.spi.structure.ModuleResolution;
 import org.qi4j.spi.structure.PropertyDescriptor;
-import org.qi4j.spi.structure.Visibility;
 
 /**
  * TODO
@@ -252,7 +251,7 @@ public final class ApplicationBuilder
                         associationContexts.put( associationModel.getQualifiedName(), associationContext );
                     }
 
-                    CompositeMethodContext compositeMethodContext = new CompositeMethodContext( compositeMethodBinding, applicationBinding, entry.getValue(), runtime, propertyContext );
+                    CompositeMethodContext compositeMethodContext = new CompositeMethodContext( compositeMethodBinding, applicationBinding, entry.getValue(), runtime, propertyContext, associationContext );
                     compositeMethodContexts.add( compositeMethodContext );
                 }
 
@@ -275,7 +274,7 @@ public final class ApplicationBuilder
                     mixinContexts.add( mixinContext );
                 }
 
-                CompositeContext compositeContext = new CompositeContext( binding, compositeMethodContexts, moduleBinding, runtime.getInstanceFactory(), propertyContexts, mixinContexts );
+                CompositeContext compositeContext = new CompositeContext( binding, compositeMethodContexts, moduleBinding, runtime.getInstanceFactory(), propertyContexts, mixinContexts, associationContexts );
                 moduleCompositeContexts.put( entry.getKey(), compositeContext );
             }
             compositeContexts.put( moduleBinding.getModuleResolution().getModuleModel(), moduleCompositeContexts );

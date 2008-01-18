@@ -65,8 +65,16 @@ public final class CompositeResolver
         // Map concerns and side-effects to methods
         List<CompositeMethodResolution> methodResolutions = getMethodResolutions( resolutionContext, mixinResolutionsForMethods, resolvedMixins.values() );
 
+        List<PropertyResolution> propertyResolutions = new ArrayList<PropertyResolution>();
+        List<AssociationResolution> associationResolutions = new ArrayList<AssociationResolution>();
+        for( CompositeMethodResolution methodResolution : methodResolutions )
+        {
+            propertyResolutions.add( methodResolution.getPropertyResolution() );
+            associationResolutions.add( methodResolution.getAssociationResolution() );
+        }
+
         CompositeModel compositeModel = resolutionContext.getCompositeModel();
-        CompositeResolution resolution = new CompositeResolution( compositeModel, methodResolutions, resolvedMixins.values() );
+        CompositeResolution resolution = new CompositeResolution( compositeModel, methodResolutions, resolvedMixins.values(), propertyResolutions, associationResolutions );
         return resolution;
     }
 

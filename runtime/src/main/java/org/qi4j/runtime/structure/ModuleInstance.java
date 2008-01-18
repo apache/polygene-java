@@ -16,24 +16,22 @@
 package org.qi4j.runtime.structure;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.ObjectBuilder;
 import org.qi4j.composite.ObjectBuilderFactory;
 import org.qi4j.entity.EntitySessionFactory;
-import org.qi4j.runtime.composite.CompositeContext;
+import org.qi4j.runtime.context.ContextCompositeInstance;
 import org.qi4j.runtime.entity.EntitySessionFactoryImpl;
 import org.qi4j.spi.service.ServiceProvider;
+import org.qi4j.spi.service.ServiceProviderException;
 
 /**
  * TODO
  */
 public final class ModuleInstance
 {
-    private static final Class<? extends Composite> DUMMY = Dummy.class;
-
     private ModuleContext moduleContext;
 
     private Map<Class<? extends Composite>, ModuleInstance> moduleForPublicComposites;
@@ -42,6 +40,7 @@ public final class ModuleInstance
     private CompositeBuilderFactory compositeBuilderFactory;
     private ObjectBuilderFactory objectBuilderFactory;
     private EntitySessionFactory entitySessionFactory;
+    private HashMap<Class<? extends Composite>, ContextCompositeInstance> contextCompositeInstances;
 
     public ModuleInstance( ModuleContext moduleContext, Map<Class<? extends Composite>, ModuleInstance> moduleInstances, Map<Class, ModuleInstance> moduleForPublicObjects )
     {
@@ -49,10 +48,9 @@ public final class ModuleInstance
         this.moduleForPublicComposites = moduleInstances;
         this.moduleContext = moduleContext;
 
-        Map<Class, Class<? extends Composite>> mapping = createMapping( moduleContext );
-        compositeBuilderFactory = new ModuleCompositeBuilderFactory( this, mapping );
+        compositeBuilderFactory = new ModuleCompositeBuilderFactory( this );
         objectBuilderFactory = new ModuleObjectBuilderFactory( this );
-        entitySessionFactory = new EntitySessionFactoryImpl( compositeBuilderFactory, null, null );
+        entitySessionFactory = new EntitySessionFactoryImpl( this );
         injectServiceProvidersIntoObjectBuilders( moduleContext );
     }
 
@@ -86,54 +84,44 @@ public final class ModuleInstance
         return moduleForPublicObjects.get( objectType );
     }
 
-    private Map<Class, Class<? extends Composite>> createMapping( ModuleContext moduleContext )
+    public ModuleInstance getModuleForComposite( Class<? extends Composite> compositeType )
     {
-        Map<Class, Class<? extends Composite>> mapping = new HashMap<Class, Class<? extends Composite>>();
-        Map<Class<? extends Composite>, CompositeContext> composites = moduleContext.getCompositeContexts();
-        for( Class<? extends Composite> compositeType : composites.keySet() )
+        ModuleInstance realInstance = getModuleForPublicComposite( compositeType );
+        if( realInstance == null )
         {
-            mapComposite( compositeType, mapping );
+            realInstance = this;
         }
-        cleanupDummies( mapping );
-        return mapping;
+        return realInstance;
     }
 
-    private void mapComposite( Class<? extends Composite> compositeType, Map<Class, Class<? extends Composite>> mapping )
+    public ModuleInstance getModuleForObject( Class objectType )
     {
-        for( Class type : compositeType.getInterfaces() )
+        ModuleInstance realInstance = getModuleForPublicObject( objectType );
+        if( realInstance == null )
         {
-            mapType( type, compositeType, mapping );
+            realInstance = this;
         }
+        return realInstance;
     }
 
-    private void mapType( Class type, Class<? extends Composite> compositeType, Map<Class, Class<? extends Composite>> mapping )
+    /**
+     * This method is used by the CompositeContext only, and should typically not be used for anything.
+     *
+     * @param compositeType The type of ContextComposite in this Module to be retrieved.
+     * @return The CompositeInstance of the ContextComposite of the given compositeType.
+     */
+    public ContextCompositeInstance getContextCompositeInstance( Class<? extends Composite> compositeType )
     {
-        if( mapping.containsKey( type ) )
-        {
-            mapping.put( type, DUMMY );
-        }
-        else
-        {
-            mapping.put( type, compositeType );
-        }
-
-        for( Class subtype : type.getInterfaces() )
-        {
-            mapType( subtype, compositeType, mapping );
-        }
+        return contextCompositeInstances.get( compositeType );
     }
 
-    private void cleanupDummies( Map<Class, Class<? extends Composite>> mapping )
+    public <T> ServiceRef<T> getService( Class<T> serviceType )
+        throws ServiceProviderException
     {
-        Iterator<Class<? extends Composite>> it = mapping.values().iterator();
-        while( it.hasNext() )
-        {
-            Class<? extends Composite> isDummy = it.next();
-            if( isDummy == DUMMY )
-            {
-                it.remove();
-            }
-        }
+        ServiceProvider provider = moduleContext.getModuleBinding().getModuleResolution().getServiceProvider( serviceType );
+
+        T instance = provider.getService( serviceType );
+        return new ServiceRef<T>( instance, provider );
     }
 
     private void injectServiceProvidersIntoObjectBuilders( ModuleContext moduleContext )
@@ -146,12 +134,5 @@ public final class ModuleInstance
             ObjectBuilder builder = objectBuilderFactory.newObjectBuilder( serviceProviderType );
             builder.inject( serviceProvider );
         }
-    }
-
-    /**
-     * Interface to mark unusable pojo types.
-     */
-    private static interface Dummy extends Composite
-    {
     }
 }

@@ -18,6 +18,10 @@ package org.qi4j.property;
  * TODO
  */
 public interface Property<T>
-    extends ReadableProperty<T>, WritableProperty<T>, PropertyInfo
+    extends PropertyInfo
 {
+    T get();
+
+    void set( T newValue )
+        throws PropertyVetoException;
 }

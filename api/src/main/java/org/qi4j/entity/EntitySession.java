@@ -21,8 +21,6 @@ public interface EntitySession
 {
     <T extends EntityComposite> CompositeBuilder<T> newEntityBuilder( String identity, Class<T> compositeType );
 
-    <T extends EntityComposite> T attach( T entity );
-
     <T extends EntityComposite> T find( String identity, Class<T> compositeType )
         throws EntityCompositeNotFoundException;
 

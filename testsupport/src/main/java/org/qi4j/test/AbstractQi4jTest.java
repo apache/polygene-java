@@ -22,6 +22,7 @@ import org.qi4j.bootstrap.Assembly;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.ObjectBuilderFactory;
+import org.qi4j.entity.EntitySessionFactory;
 import org.qi4j.runtime.Energy4Java;
 import org.qi4j.runtime.Qi4jRuntime;
 import org.qi4j.runtime.structure.ApplicationInstance;
@@ -44,6 +45,7 @@ public abstract class AbstractQi4jTest extends TestCase
 
     protected CompositeBuilderFactory compositeBuilderFactory;
     protected ObjectBuilderFactory objectBuilderFactory;
+    protected EntitySessionFactory entitySessionFactory;
     protected ModuleInstance moduleInstance;
     protected LayerInstance layerInstance;
 
@@ -58,6 +60,7 @@ public abstract class AbstractQi4jTest extends TestCase
         moduleInstance = layerInstance.getModuleInstances().iterator().next();
         compositeBuilderFactory = moduleInstance.getCompositeBuilderFactory();
         objectBuilderFactory = moduleInstance.getObjectBuilderFactory();
+        entitySessionFactory = moduleInstance.getEntitySessionFactory();
     }
 
     protected ApplicationInstance newApplication()

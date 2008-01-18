@@ -17,9 +17,8 @@
 package org.qi4j.runtime.composite;
 
 import java.lang.reflect.Method;
-import org.qi4j.composite.Composite;
-import org.qi4j.spi.composite.InvalidCompositeException;
 import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.spi.composite.InvalidCompositeException;
 
 /**
  * InvocationHandler for proxy objects.
@@ -27,13 +26,11 @@ import org.qi4j.runtime.structure.ModuleInstance;
 public final class StandardCompositeInstance extends AbstractCompositeInstance
     implements CompositeInstance
 {
-    private final Object[] mixins;
-    private Composite proxy;
+    private Object[] mixins;
 
     public StandardCompositeInstance( CompositeContext aContext, ModuleInstance moduleInstance )
     {
         super( aContext, moduleInstance );
-        mixins = new Object[context.getCompositeResolution().getMixinCount()];
     }
 
     public Object invoke( Object composite, Method method, Object[] args )
@@ -59,19 +56,7 @@ public final class StandardCompositeInstance extends AbstractCompositeInstance
 
     public void setMixins( Object[] newMixins )
     {
-        // Use any mixins that match the ones we already have
-        for( int i = 0; i < mixins.length; i++ )
-        {
-            Object mixin = mixins[ i ];
-            for( Object newMixin : newMixins )
-            {
-                if( mixin.getClass().equals( newMixin.getClass() ) )
-                {
-                    mixins[ i ] = newMixin;
-                    break;
-                }
-            }
-        }
+        this.mixins = newMixins;
     }
 
     public Object[] getMixins()
@@ -79,18 +64,9 @@ public final class StandardCompositeInstance extends AbstractCompositeInstance
         return mixins;
     }
 
+
     @Override public String toString()
     {
         return context.getCompositeResolution().toString();
-    }
-
-    public Composite getProxy()
-    {
-        return proxy;
-    }
-
-    public void setProxy( Composite proxy )
-    {
-        this.proxy = proxy;
     }
 }

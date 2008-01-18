@@ -16,9 +16,14 @@ package org.qi4j.runtime.property;
 
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
-import org.qi4j.property.AbstractProperty;
-import org.qi4j.spi.property.PropertyBinding;
+import org.qi4j.property.Property;
+import org.qi4j.property.ReadableProperty;
+import org.qi4j.property.WritableProperty;
 import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.spi.property.PropertyBinding;
+import org.qi4j.spi.property.PropertyInstance;
+import org.qi4j.spi.property.ReadablePropertyInstance;
+import org.qi4j.spi.property.WritablePropertyInstance;
 
 /**
  * TODO
@@ -37,7 +42,7 @@ public final class PropertyContext
         return propertyBinding;
     }
 
-    public <T> AbstractProperty newInstance( ModuleInstance moduleInstance, Composite composite, Object value )
+    public <T> Property newInstance( ModuleInstance moduleInstance, Object value )
     {
         try
         {
@@ -47,14 +52,26 @@ public final class PropertyContext
             {
                 Class<? extends Composite> propertyCompositeType = (Class<? extends Composite>) propertyType;
                 CompositeBuilder<? extends Composite> cb = moduleInstance.getCompositeBuilderFactory().newCompositeBuilder( propertyCompositeType );
-                cb.adapt( composite );
                 cb.adapt( propertyBinding );
                 cb.decorate( value );
-                return AbstractProperty.class.cast( cb.newInstance() );
+                return Property.class.cast( cb.newInstance() );
             }
             else
             {
-                AbstractProperty instance = new PropertyInstance<Object>( propertyBinding, value );
+                Property instance;
+                if( ReadableProperty.class.isAssignableFrom( propertyType ) )
+                {
+                    instance = new ReadablePropertyInstance<Object>( propertyBinding, value );
+                }
+                else if( WritableProperty.class.isAssignableFrom( propertyType ) )
+                {
+                    instance = new WritablePropertyInstance<Object>( propertyBinding, value );
+                }
+                else
+                {
+                    instance = new PropertyInstance<Object>( propertyBinding, value );
+                }
+
                 return instance;
             }
         }

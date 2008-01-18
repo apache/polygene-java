@@ -51,7 +51,7 @@ final class CompositeInputStream extends ObjectInputStream
         if( obj instanceof SerializedEntity )
         {
             SerializedEntity holder = (SerializedEntity) obj;
-            Class<EntityComposite> clazz = holder.getPersistentCompositeClass();
+            Class<? extends EntityComposite> clazz = holder.getCompositeType();
             String id = holder.getIdentity();
             Object instance = session.find( id, clazz );
             return instance;

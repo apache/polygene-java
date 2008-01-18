@@ -14,7 +14,6 @@
 
 package org.qi4j.composite;
 
-import java.beans.Introspector;
 import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -119,12 +118,10 @@ public class PropertyValue
         {
         }
 
-        public Object invoke( Object o, Method method, Object[] objects ) throws Throwable
+        public Object invoke( Object o, Method accessor, Object[] objects ) throws Throwable
         {
-            String name = Introspector.decapitalize( method.getName().substring( 3 ) );
-            currentName.set( name );
-
-            return method.getDefaultValue();
+            currentName.set( accessor.getDeclaringClass().getName() + ":" + accessor.getName() );
+            return null;
         }
     }
 }

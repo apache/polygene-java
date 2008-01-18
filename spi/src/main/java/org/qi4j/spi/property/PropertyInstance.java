@@ -12,11 +12,10 @@
  *
  */
 
-package org.qi4j.runtime.property;
+package org.qi4j.spi.property;
 
 import org.qi4j.property.Property;
 import org.qi4j.property.PropertyVetoException;
-import org.qi4j.spi.property.PropertyBinding;
 
 /**
  * TODO

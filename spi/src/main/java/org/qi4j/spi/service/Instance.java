@@ -14,12 +14,9 @@
 
 package org.qi4j.spi.service;
 
-import org.qi4j.spi.injection.InjectionContext;
-import org.qi4j.spi.injection.InjectionResolution;
-import org.qi4j.service.ServiceComposite;
-import org.qi4j.composite.scope.Structure;
 import org.qi4j.composite.CompositeBuilderFactory;
-import org.qi4j.composite.CompositeBuilder;
+import org.qi4j.composite.scope.Structure;
+import org.qi4j.service.ServiceComposite;
 
 /**
  * TODO
@@ -35,10 +32,9 @@ public final class Instance
         this.instance = instance;
     }
 
-    public synchronized <T extends ServiceComposite> T  getService( InjectionResolution injectionResolution,
-                                                                    InjectionContext injectionContext )
+    public <T> T getService( Class<T> serviceType ) throws ServiceProviderException
     {
-        return (T) instance;
+        return serviceType.cast( instance );
     }
 
     public void releaseService( ServiceComposite service )

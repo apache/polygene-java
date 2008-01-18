@@ -14,8 +14,6 @@
 
 package org.qi4j.spi.service;
 
-import org.qi4j.spi.injection.InjectionContext;
-import org.qi4j.spi.injection.InjectionResolution;
 import org.qi4j.service.ServiceComposite;
 
 /**
@@ -23,7 +21,7 @@ import org.qi4j.service.ServiceComposite;
  */
 public interface ServiceProvider
 {
-    <T extends ServiceComposite> T getService( InjectionResolution injectionResolution, InjectionContext injectionContext )
+    <T> T getService( Class<T> serviceType )
         throws ServiceProviderException;
 
     void releaseService( ServiceComposite service );

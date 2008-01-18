@@ -80,6 +80,8 @@ public class CompositeBinder
         Map<MixinResolution, MixinBinding> mixinMappings = new HashMap<MixinResolution, MixinBinding>();
         Map<MixinResolution, Map<PropertyModel, PropertyBinding>> mixinProperties = new HashMap<MixinResolution, Map<PropertyModel, PropertyBinding>>();
         Map<MixinResolution, Map<AssociationModel, AssociationBinding>> mixinAssociations = new HashMap<MixinResolution, Map<AssociationModel, AssociationBinding>>();
+        List<PropertyBinding> propertyBindingList = new ArrayList<PropertyBinding>();
+        List<AssociationBinding> associationBindingList = new ArrayList<AssociationBinding>();
         try
         {
             Iterable<CompositeMethodResolution> compositeMethodResolutions = compositeResolution.getCompositeMethodResolutions();
@@ -107,6 +109,7 @@ public class CompositeBinder
                         mixinProperties.put( compositeMethodResolution.getMixinResolution(), propertyBindings );
                     }
                     propertyBindings.put( propertyModel, propertyBinding );
+                    propertyBindingList.add( propertyBinding );
                 }
 
                 AssociationModel associationModel = compositeMethodResolution.getCompositeMethodModel().getAssociationModel();
@@ -131,6 +134,7 @@ public class CompositeBinder
                         mixinAssociations.put( compositeMethodResolution.getMixinResolution(), associationBindings );
                     }
                     associationBindings.put( associationModel, associationBinding );
+                    associationBindingList.add( associationBinding );
                 }
             }
 
@@ -168,7 +172,6 @@ public class CompositeBinder
 
             List<CompositeMethodBinding> compositeMethodBindings = new ArrayList<CompositeMethodBinding>();
             Map<Method, CompositeMethodBinding> methodMappings = new HashMap<Method, CompositeMethodBinding>();
-
             for( CompositeMethodResolution methodResolution : compositeMethodResolutions )
             {
                 Iterable<ParameterResolution> parameterResolutions = methodResolution.getParameterResolutions();
@@ -222,7 +225,7 @@ public class CompositeBinder
                 methodMappings.put( methodResolution.getCompositeMethodModel().getMethod(), methodBinding );
             }
 
-            CompositeBinding compositeBinding = new CompositeBinding( compositeResolution, compositeMethodBindings, mixinBindings, methodMappings );
+            CompositeBinding compositeBinding = new CompositeBinding( compositeResolution, compositeMethodBindings, mixinBindings, methodMappings, propertyBindingList, associationBindingList );
             return compositeBinding;
         }
         catch( InvalidInjectionException e )

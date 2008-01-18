@@ -1,10 +1,9 @@
 package org.qi4j.runtime.injection;
 
 import java.util.Map;
-import org.qi4j.property.AbstractProperty;
+import org.qi4j.property.Property;
 import org.qi4j.property.ReadableProperty;
 import org.qi4j.spi.composite.MixinResolution;
-import org.qi4j.spi.property.PropertyModel;
 import org.qi4j.spi.injection.BindingContext;
 import org.qi4j.spi.injection.InjectionContext;
 import org.qi4j.spi.injection.InjectionProvider;
@@ -14,6 +13,7 @@ import org.qi4j.spi.injection.InjectionResolution;
 import org.qi4j.spi.injection.InvalidInjectionException;
 import org.qi4j.spi.injection.PropertyInjectionContext;
 import org.qi4j.spi.injection.PropertyInjectionModel;
+import org.qi4j.spi.property.PropertyModel;
 
 /**
  * TODO
@@ -28,7 +28,7 @@ public final class PropertyInjectionProviderFactory
         {
             return new PropertyMapInjectionProvider();
         }
-        else if( AbstractProperty.class.isAssignableFrom( resolution.getInjectionModel().getRawInjectionType() ) )
+        else if( Property.class.isAssignableFrom( resolution.getInjectionModel().getRawInjectionType() ) )
         {
             MixinResolution mixinResolution = (MixinResolution) bindingContext.getAbstractResolution();
             PropertyInjectionModel pim = (PropertyInjectionModel) resolution.getInjectionModel();
@@ -89,7 +89,7 @@ public final class PropertyInjectionProviderFactory
             if( context instanceof PropertyInjectionContext )
             {
                 PropertyInjectionContext propertyInjectionContext = (PropertyInjectionContext) context;
-                AbstractProperty value = propertyInjectionContext.getProperties().get( qualifiedName );
+                Property value = propertyInjectionContext.getProperties().get( qualifiedName );
                 if( value != null )
                 {
                     return value;

@@ -17,11 +17,10 @@
 package org.qi4j.runtime.entity;
 
 import org.qi4j.entity.EntitySessionException;
-import org.qi4j.spi.entity.StoreException;
 
 public class EntityStorageException extends EntitySessionException
 {
-    public EntityStorageException( String message, StoreException e )
+    public EntityStorageException( String message, Exception e )
     {
         super( message, e );
     }

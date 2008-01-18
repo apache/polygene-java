@@ -18,23 +18,31 @@ package org.qi4j.runtime.composite;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import org.qi4j.composite.CompositeInstantiationException;
+import java.util.Collections;
 import org.qi4j.entity.EntityComposite;
-import org.qi4j.spi.composite.MixinResolution;
-import org.qi4j.spi.entity.EntityStateHolder;
-import org.qi4j.spi.entity.EntityStore;
+import org.qi4j.entity.EntitySession;
 import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.spi.composite.CompositeBinding;
+import org.qi4j.spi.composite.InvalidCompositeException;
+import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.EntityStore;
 
-public final class EntityCompositeInstance extends AbstractCompositeInstance
+public final class EntityCompositeInstance
+    extends AbstractCompositeInstance
+    implements CompositeInstance
 {
-    protected Object[] mixins;
+    private Object[] mixins;
 
-    private EntityStateHolder holder;
+    private EntitySession session;
+    private EntityState state;
     private EntityStore store;
+    private String identity;
 
-    public EntityCompositeInstance( CompositeContext aContext, ModuleInstance moduleInstance, EntityStore store )
+    public EntityCompositeInstance( EntitySession session, CompositeContext aContext, ModuleInstance moduleInstance, EntityStore store, String identity )
     {
         super( aContext, moduleInstance );
+        this.identity = identity;
+        this.session = session;
         this.store = store;
 
         mixins = new Object[aContext.getCompositeResolution().getMixinCount()];
@@ -48,47 +56,41 @@ public final class EntityCompositeInstance extends AbstractCompositeInstance
     // InvocationHandler implementation ------------------------------
     public Object invoke( Object composite, Method method, Object[] args ) throws Throwable
     {
+        if( mixins == null ) // Check if this is a lazy-loaded reference
+        {
+            // Check if removed from session
+            // TODO
+
+            // Load state
+            CompositeBinding binding = context.getCompositeBinding();
+            if( state == null )
+            {
+                state = store.getEntityInstance( session, identity, binding.getCompositeResolution().getCompositeModel().getCompositeClass(), binding.getPropertyBindings(), binding.getAssociationBindings() );
+            }
+            mixins = context.newMixins( moduleInstance, this, Collections.emptySet(), null, state.getProperties(), state.getAssociations() );
+        }
+
         MethodDescriptor descriptor = context.getMethodDescriptor( method );
+        if( descriptor == null )
+        {
+            return invokeObject( composite, method, args );
+        }
+
         Object mixin = mixins[ descriptor.getMixinIndex() ];
 
         if( mixin == null )
         {
-            Class mixinType = method.getDeclaringClass();
-            if( mixinType.equals( Object.class ) )
-            {
-                return invokeObject( composite, method, args );
-            }
-            else
-            {
-                if( holder == null )
-                {
-
-                }
-
-
-                mixin = holder.getMixin( mixinType );
-            }
+            throw new InvalidCompositeException( "Implementation missing for method " + method.getName() + "() ",
+                                                 context.getCompositeModel().getCompositeClass() );
         }
         // Invoke
-        return context.getMethodInstance( descriptor, moduleInstance ).invoke( composite, args, mixin );
+        CompositeMethodInstance compositeMethodInstance = context.getMethodInstance( descriptor, moduleInstance );
+        return compositeMethodInstance.invoke( composite, args, mixin );
     }
 
     public void setMixins( Object[] mixins )
     {
-        Iterable<MixinResolution> mixinResolutions = context.getCompositeResolution().getMixinResolutions();
-        int i = 0;
-        for( MixinResolution mixinResolution : mixinResolutions )
-        {
-            Object mixin = mixins[ i ];
-            // Verify type
-            if( !mixinResolution.getFragmentModel().getModelClass().isInstance( mixin ) )
-            {
-                throw new CompositeInstantiationException( "Mixin " + mixin.getClass().getName() + " is not of the expected type " + mixinResolution.getFragmentModel().getModelClass().getName() );
-            }
-            // Copy reference
-            this.mixins[ i ] = mixin;
-            i++;
-        }
+        this.mixins = mixins;
     }
 
     public Object[] getMixins()
@@ -96,18 +98,33 @@ public final class EntityCompositeInstance extends AbstractCompositeInstance
         return mixins;
     }
 
-    public void setEntityStateHolder( EntityStateHolder holder )
+    public void setState( EntityState state )
     {
-        this.holder = holder;
+        this.state = state;
     }
 
-    public EntityStateHolder getHolder()
+    public EntityState getState()
     {
-        return holder;
+        return state;
+    }
+
+    public EntitySession getSession()
+    {
+        return session;
+    }
+
+    public EntityStore getStore()
+    {
+        return store;
+    }
+
+    public String getIdentity()
+    {
+        return identity;
     }
 
     public boolean isReference()
     {
-        return holder == null;
+        return mixins == null;
     }
 }

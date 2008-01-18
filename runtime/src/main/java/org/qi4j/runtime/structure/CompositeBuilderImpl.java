@@ -21,40 +21,44 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
+import org.qi4j.association.AbstractAssociation;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.CompositeInstantiationException;
 import org.qi4j.composite.PropertyValue;
-import org.qi4j.entity.EntitySession;
+import org.qi4j.property.Property;
 import org.qi4j.property.PropertyVetoException;
 import org.qi4j.runtime.composite.CompositeContext;
+import org.qi4j.runtime.composite.CompositeInstance;
 import org.qi4j.runtime.property.AssociationContext;
 import org.qi4j.runtime.property.PropertyContext;
-import org.qi4j.runtime.property.PropertyInstance;
-import org.qi4j.spi.composite.MixinResolution;
+import org.qi4j.spi.composite.AssociationModel;
+import org.qi4j.spi.composite.AssociationResolution;
+import org.qi4j.spi.composite.PropertyResolution;
+import org.qi4j.spi.property.AssociationBinding;
+import org.qi4j.spi.property.MutablePropertyInstance;
+import org.qi4j.spi.property.PropertyBinding;
+import org.qi4j.spi.property.PropertyModel;
 
 /**
  *
  */
-public final class CompositeBuilderImpl<T extends Composite>
+public class CompositeBuilderImpl<T extends Composite>
     implements CompositeBuilder<T>
 {
-    private Class<? extends T> compositeInterface;
-    private ModuleInstance moduleInstance;
-    private CompositeContext context;
+    protected Class<? extends T> compositeInterface;
+    protected ModuleInstance moduleInstance;
+    protected CompositeContext context;
 
-    private EntitySession entitySession;
+    protected Set adaptContext;
+    protected Object decoratedObject;
+    protected Map<String, Object> propertyValues;
+    protected Map<String, AbstractAssociation> associationValues;
 
-    private Set adaptContext;
-    private Object decoratedObject;
-    private Map<MixinResolution, Map<PropertyContext, Object>> propertyContext;
-    private Map<MixinResolution, Map<AssociationContext, Object>> associationContext;
-
-    CompositeBuilderImpl( ModuleInstance moduleInstance, CompositeContext context )
+    public CompositeBuilderImpl( ModuleInstance moduleInstance, CompositeContext context )
     {
         this.moduleInstance = moduleInstance;
         this.context = context;
@@ -66,7 +70,7 @@ public final class CompositeBuilderImpl<T extends Composite>
         getAdaptContext().add( adaptedObject );
     }
 
-    public void decorate( Object decoratedObject )
+    public <K, T extends K> void decorate( K decoratedObject )
     {
         this.decoratedObject = decoratedObject;
     }
@@ -118,7 +122,49 @@ public final class CompositeBuilderImpl<T extends Composite>
 
     public T newInstance()
     {
-        return compositeInterface.cast( context.newCompositeInstance( moduleInstance, adaptContext, decoratedObject, getPropertyContext(), getAssociationContext(), entitySession ).getProxy() );
+        // Calculate total set of Properties for this Composite
+        Map<String, Property> properties = new HashMap<String, Property>();
+        for( PropertyContext propertyContext : context.getPropertyContexts() )
+        {
+            Object value;
+            String propertyName = propertyContext.getPropertyBinding().getQualifiedName();
+            if( propertyValues != null && propertyValues.containsKey( propertyName ) )
+            {
+                value = propertyValues.get( propertyName );
+            }
+            else
+            {
+                value = propertyContext.getPropertyBinding().getDefaultValue();
+            }
+
+            Property property = propertyContext.newInstance( moduleInstance, value );
+            PropertyBinding binding = propertyContext.getPropertyBinding();
+            PropertyResolution propertyResolution = binding.getPropertyResolution();
+            PropertyModel propertyModel = propertyResolution.getPropertyModel();
+            String qualifiedName = propertyModel.getQualifiedName();
+            properties.put( qualifiedName, property );
+        }
+
+        // Calculate total set of Associations for this Composite
+        Map<String, AbstractAssociation> associations = new HashMap<String, AbstractAssociation>();
+        for( AssociationContext mixinAssociation : context.getAssociationContexts() )
+        {
+            Object value = null;
+            if( associationValues != null && associationValues.containsKey( mixinAssociation ) )
+            {
+                value = associationValues.get( mixinAssociation );
+            }
+
+            AbstractAssociation association = mixinAssociation.newInstance( moduleInstance, value );
+            AssociationBinding binding = mixinAssociation.getAssociationBinding();
+            AssociationResolution associationResolution = binding.getAssociationResolution();
+            AssociationModel associationModel = associationResolution.getAssociationModel();
+            String qualifiedName = associationModel.getQualifiedName();
+            associations.put( qualifiedName, association );
+        }
+
+        CompositeInstance compositeInstance = context.newCompositeInstance( moduleInstance, adaptContext, decoratedObject, properties, associations );
+        return compositeInterface.cast( compositeInstance.getProxy() );
     }
 
 
@@ -142,11 +188,6 @@ public final class CompositeBuilderImpl<T extends Composite>
         };
     }
 
-    void attach( EntitySession entitySession )
-    {
-        this.entitySession = entitySession;
-    }
-
     // Private ------------------------------------------------------
     private Set getAdaptContext()
     {
@@ -157,36 +198,28 @@ public final class CompositeBuilderImpl<T extends Composite>
         return adaptContext;
     }
 
-    private Map<MixinResolution, Map<PropertyContext, Object>> getPropertyContext()
+    protected Map<String, Object> getPropertyValues()
     {
-        if( propertyContext == null )
+        if( propertyValues == null )
         {
-            propertyContext = new LinkedHashMap<MixinResolution, Map<PropertyContext, Object>>();
+            propertyValues = new HashMap<String, Object>();
         }
-        return propertyContext;
+        return propertyValues;
     }
 
-    private Map<MixinResolution, Map<AssociationContext, Object>> getAssociationContext()
+    protected Map<String, AbstractAssociation> getAssociationValues()
     {
-        if( associationContext == null )
+        if( associationValues == null )
         {
-            associationContext = new LinkedHashMap<MixinResolution, Map<AssociationContext, Object>>();
+            associationValues = new HashMap<String, AbstractAssociation>();
         }
-        return associationContext;
+        return associationValues;
     }
 
     private void setProperty( PropertyContext propertyContext, Object property )
     {
-        Map<MixinResolution, Map<PropertyContext, Object>> compositeProperties = getPropertyContext();
-        MixinResolution mixinResolution = propertyContext.getPropertyBinding().getPropertyResolution().getMixinResolution();
-        Map<PropertyContext, Object> mixinProperties = compositeProperties.get( mixinResolution );
-        if( mixinProperties == null )
-        {
-            mixinProperties = new HashMap<PropertyContext, Object>();
-            compositeProperties.put( mixinResolution, mixinProperties );
-        }
-
-        mixinProperties.put( propertyContext, property );
+        Map<String, Object> compositeProperties = getPropertyValues();
+        compositeProperties.put( propertyContext.getPropertyBinding().getQualifiedName(), property );
     }
 
     private class PropertiesInvocationHandler implements InvocationHandler
@@ -200,7 +233,7 @@ public final class CompositeBuilderImpl<T extends Composite>
             final PropertyContext propertyContext = context.getMethodDescriptor( method ).getCompositeMethodContext().getPropertyContext();
             if( propertyContext != null )
             {
-                PropertyInstance<Object> mutableProperty = new PropertyInstance<Object>( propertyContext.getPropertyBinding(), propertyContext.getPropertyBinding().getDefaultValue() )
+                MutablePropertyInstance<Object> mutableProperty = new MutablePropertyInstance<Object>( propertyContext.getPropertyBinding(), propertyContext.getPropertyBinding().getDefaultValue() )
                 {
                     @Override public void set( Object newValue ) throws PropertyVetoException
                     {

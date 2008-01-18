@@ -15,14 +15,7 @@
 package org.qi4j.spi.service;
 
 import org.qi4j.composite.CompositeBuilderFactory;
-import org.qi4j.composite.Composite;
 import org.qi4j.composite.scope.Structure;
-import org.qi4j.spi.composite.CompositeBinding;
-import org.qi4j.spi.composite.CompositeResolution;
-import org.qi4j.spi.composite.CompositeModel;
-import org.qi4j.spi.injection.InjectionContext;
-import org.qi4j.spi.injection.InjectionResolution;
-import org.qi4j.spi.structure.ModuleBinding;
 import org.qi4j.service.ServiceComposite;
 
 /**
@@ -32,32 +25,16 @@ public final class Singleton
     implements ServiceProvider
 {
     private @Structure CompositeBuilderFactory cbf;
-    private @Structure ModuleBinding module;
 
-    private ServiceComposite instance;
+    private Object instance;
 
-    public synchronized <T extends ServiceComposite> T  getService( InjectionResolution injectionResolution,
-                                                                    InjectionContext injectionContext )
-        throws ServiceProviderException
+    public synchronized <T> T getService( Class<T> serviceType ) throws ServiceProviderException
     {
         if( instance == null )
         {
-            Class injectionClass = injectionResolution.getInjectionModel().getInjectionClass();
-
-            CompositeBinding compositeBinding = module.getCompositeBinding( injectionClass );
-            if( compositeBinding != null )
-            {
-                CompositeResolution compositeResolution = compositeBinding.getCompositeResolution();
-                CompositeModel model = compositeResolution.getCompositeModel();
-                Class<? extends ServiceComposite> compositeType = (Class<? extends ServiceComposite>) model.getCompositeClass();
-                instance = cbf.newCompositeBuilder( compositeType ).newInstance();
-            }
-            else
-            {
-                throw new ServiceProviderException( "No Composite type registered which extends the desired service type " + injectionClass.getName() );
-            }
+            instance = cbf.newComposite( serviceType );
         }
-        return (T) instance;
+        return serviceType.cast( instance );
     }
 
     public void releaseService( ServiceComposite service )

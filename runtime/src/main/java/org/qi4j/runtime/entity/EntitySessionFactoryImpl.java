@@ -16,39 +16,22 @@
  */
 package org.qi4j.runtime.entity;
 
-import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.entity.EntitySession;
 import org.qi4j.entity.EntitySessionFactory;
-import org.qi4j.entity.IdentityGenerator;
-import org.qi4j.runtime.composite.UuidIdentityGenerator;
-import org.qi4j.spi.entity.EntityStore;
+import org.qi4j.runtime.structure.ModuleInstance;
 
 public final class EntitySessionFactoryImpl
     implements EntitySessionFactory
 {
-    private CompositeBuilderFactory cbf;
-    private EntityStore store;
-    private IdentityGenerator idGenerator;
+    private ModuleInstance moduleInstance;
 
-    public EntitySessionFactoryImpl( CompositeBuilderFactory cbf )
+    public EntitySessionFactoryImpl( ModuleInstance moduleInstance )
     {
-        this( cbf, null, null );
-    }
-
-    public EntitySessionFactoryImpl( CompositeBuilderFactory cbf, EntityStore store, IdentityGenerator idGenerator )
-    {
-        if( idGenerator == null )
-        {
-            idGenerator = new UuidIdentityGenerator();
-        }
-
-        this.cbf = cbf;
-        this.store = store;
-        this.idGenerator = idGenerator;
+        this.moduleInstance = moduleInstance;
     }
 
     public EntitySession newEntitySession()
     {
-        return new EntitySessionInstance( cbf, idGenerator, store );
+        return new EntitySessionInstance( moduleInstance );
     }
 }

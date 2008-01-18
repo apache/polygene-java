@@ -30,5 +30,5 @@ public interface CompositeBuilderFactory
      */
     <T extends Composite> CompositeBuilder<T> newCompositeBuilder( Class<T> compositeType );
 
-    <T> T newComposite( Class<T> pojoType );
+    <T> T newComposite( Class<T> compositeInterface );
 }

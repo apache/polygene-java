@@ -21,7 +21,7 @@ import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
-import org.qi4j.property.AbstractProperty;
+import org.qi4j.property.Property;
 import org.qi4j.property.PropertyVetoException;
 import org.qi4j.property.WritableProperty;
 import org.qi4j.spi.structure.PropertyDescriptor;
@@ -73,7 +73,7 @@ public class PropertyDeclaration
             if( methodReturnType instanceof ParameterizedType )
             {
                 ParameterizedType parameterizedType = (ParameterizedType) methodReturnType;
-                if( AbstractProperty.class.isAssignableFrom( (Class<?>) parameterizedType.getRawType() ) )
+                if( Property.class.isAssignableFrom( (Class<?>) parameterizedType.getRawType() ) )
                 {
                     return (Class) parameterizedType.getActualTypeArguments()[ 0 ];
                 }
@@ -96,6 +96,26 @@ public class PropertyDeclaration
         implements InvocationHandler, WritableProperty<Object>
     {
         public Object invoke( Object object, Method method, Object[] objects ) throws Throwable
+        {
+            return method.invoke( this, objects );
+        }
+
+        public Object get()
+        {
+            return null;
+        }
+
+        public <T> T getPropertyInfo( Class<T> infoType )
+        {
+            return null;
+        }
+
+        public String getName()
+        {
+            return null;
+        }
+
+        public String getQualifiedName()
         {
             return null;
         }

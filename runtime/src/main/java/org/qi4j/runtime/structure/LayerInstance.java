@@ -15,6 +15,8 @@
 package org.qi4j.runtime.structure;
 
 import java.util.List;
+import java.util.Map;
+import org.qi4j.composite.Composite;
 
 /**
  * TODO
@@ -23,9 +25,13 @@ public final class LayerInstance
 {
     private LayerContext layerContext;
     private List<ModuleInstance> moduleInstances;
+    private Map<Class<? extends Composite>, ModuleInstance> publicCompositeModules;
+    private Map<Class, ModuleInstance> publicObjectModules;
 
-    public LayerInstance( LayerContext layerContext, List<ModuleInstance> moduleInstances )
+    public LayerInstance( LayerContext layerContext, List<ModuleInstance> moduleInstances, Map<Class<? extends Composite>, ModuleInstance> publicCompositeModules, Map<Class, ModuleInstance> publicObjectModules )
     {
+        this.publicObjectModules = publicObjectModules;
+        this.publicCompositeModules = publicCompositeModules;
         this.layerContext = layerContext;
         this.moduleInstances = moduleInstances;
     }
@@ -38,5 +44,15 @@ public final class LayerInstance
     public List<ModuleInstance> getModuleInstances()
     {
         return moduleInstances;
+    }
+
+    public Map<Class<? extends Composite>, ModuleInstance> getPublicCompositeModules()
+    {
+        return publicCompositeModules;
+    }
+
+    public Map<Class, ModuleInstance> getPublicObjectModules()
+    {
+        return publicObjectModules;
     }
 }

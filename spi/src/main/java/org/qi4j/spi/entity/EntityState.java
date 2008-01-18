@@ -16,13 +16,16 @@
  */
 package org.qi4j.spi.entity;
 
-import org.qi4j.spi.composite.CompositeModel;
+import java.util.Map;
+import org.qi4j.association.AbstractAssociation;
+import org.qi4j.entity.EntityComposite;
+import org.qi4j.property.Property;
 
 /**
- * The EntityStateHolder is a shared "second-level cache" mixin state container for a particular
+ * The EntityState is a shared "second-level cache" mixin state container for a particular
  * entity. All mixins are shared across transactions, and therefor there is a "copy-on-write" pattern
  * expected from the higher-level systems. This means that when a EntitySession in a transaction wants
- * to modify the mixin state, it must first retrieve a non-shared copy from the EntityStateHolder by
+ * to modify the mixin state, it must first retrieve a non-shared copy from the EntityState by
  * calling <code><K> K getMixinResolution( Class<K> mixinType );</code>. For instance;
  * <code><pre>
  *     CompositeState cs = ...;
@@ -32,34 +35,28 @@ import org.qi4j.spi.composite.CompositeModel;
  *     mixins.put( Name.class, name );
  * </pre></code>
  */
-public interface EntityStateHolder
+public interface EntityState
 {
     /**
-     * Returns the identity of the entity that this EntityStateHolder represents.
+     * Returns the identity of the entity that this EntityState represents.
      *
-     * @return the identity of the entity that this EntityStateHolder represents.
+     * @return the identity of the entity that this EntityState represents.
      */
     String getIdentity();
 
     /**
-     * Returns the composite type of the entity represented by this EntityStateHolder.
+     * Returns the composite type of the entity represented by this EntityState.
      *
-     * @return the composite type of the entity represented by this EntityStateHolder.
+     * @return the composite type of the entity represented by this EntityState.
      */
-    CompositeModel getCompositeModel();
+    Class<? extends EntityComposite> getCompositeType();
+
+    Map<String, Property> getProperties();
+
+    Map<String, AbstractAssociation> getAssociations();
 
     /**
-     * Returns the mixin state of the mixin type.
-     *
-     * @param mixinType the mixin type of the mixin to be returned.
-     * @return the mixin state.
-     */
-    Object getMixin( Class mixinType );
-
-    void putMixin( Class mixinType, Object object );
-
-    /**
-     * Instruct the EntityStateHolder to retrieve the data from the backing store.
+     * Instruct the EntityState to retrieve the data from the backing store.
      * This is called to force new data to be read from physical storage and in effect
      * invalidates any caches for this entity.
      */

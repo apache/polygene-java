@@ -18,7 +18,6 @@ package org.qi4j.property;
  * TODO
  */
 public interface ReadableProperty<T>
-    extends AbstractProperty
+    extends Property<T>
 {
-    T get();
 }

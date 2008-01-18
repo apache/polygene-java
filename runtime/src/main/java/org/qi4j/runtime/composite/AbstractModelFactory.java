@@ -8,6 +8,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import net.sf.cglib.proxy.Factory;
 import org.qi4j.composite.ConstraintDeclaration;
 import org.qi4j.composite.scope.AssociationField;
 import org.qi4j.composite.scope.AssociationParameter;
@@ -65,7 +66,26 @@ public abstract class AbstractModelFactory
         for( Constructor constructor : constructors )
         {
             Type[] parameterTypes = constructor.getGenericParameterTypes();
-            Annotation[][] parameterAnnotations = constructor.getParameterAnnotations();
+
+            Constructor realConstructor;
+            if( Factory.class.isAssignableFrom( mixinClass ) )
+            {
+                // Abstract mixin - get annotations from superclass
+                try
+                {
+                    realConstructor = mixinClass.getSuperclass().getConstructor( constructor.getParameterTypes() );
+                }
+                catch( NoSuchMethodException e )
+                {
+                    throw new InvalidCompositeException( "Could not get constructor from abstract fragment of type" + mixinClass.getSuperclass(), compositeType );
+                }
+            }
+            else
+            {
+                realConstructor = constructor;
+            }
+
+            Annotation[][] parameterAnnotations = realConstructor.getParameterAnnotations();
             List<ParameterModel> parameterModels = new ArrayList<ParameterModel>();
             int idx = 0;
             boolean hasInjections = false;

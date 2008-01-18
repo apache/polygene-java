@@ -61,7 +61,7 @@ public final class ServiceInjectionProviderFactory
         {
             try
             {
-                Object service = serviceProvider.getService( injectionResolution, context );
+                Object service = serviceProvider.getService( injectionResolution.getInjectionModel().getInjectionClass() );
                 return service;
             }
             catch( ServiceProviderException e )

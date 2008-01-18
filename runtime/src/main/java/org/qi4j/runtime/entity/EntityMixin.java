@@ -27,9 +27,9 @@ import org.qi4j.entity.CompositeCastException;
 import org.qi4j.entity.Entity;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.runtime.composite.AbstractCompositeInstance;
+import org.qi4j.runtime.composite.CompositeInstance;
 import org.qi4j.runtime.composite.EntityCompositeInstance;
 import org.qi4j.runtime.composite.ProxyReferenceInvocationHandler;
-import org.qi4j.runtime.composite.CompositeInstance;
 import org.qi4j.spi.composite.CompositeModel;
 
 public final class EntityMixin
@@ -57,7 +57,22 @@ public final class EntityMixin
         Object[] oldMixins = handler.getMixins();
         CompositeInstance newHandler = AbstractCompositeInstance.getCompositeInstance( newComposite );
 
-        newHandler.setMixins( oldMixins );
+        Object[] newMixins = newHandler.getMixins();
+
+        // Use any mixins that match the ones we already have
+        for( int i = 0; i < oldMixins.length; i++ )
+        {
+            Object oldMixin = oldMixins[ i ];
+            for( Object newMixin : newMixins )
+            {
+                if( oldMixin.getClass().equals( newMixin.getClass() ) )
+                {
+                    newMixins[ i ] = oldMixin;
+                    break;
+                }
+            }
+        }
+
         return newComposite;
     }
 

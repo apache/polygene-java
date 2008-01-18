@@ -94,7 +94,7 @@ public final class ModuleResolution
 
             serviceType = serviceType.getSuperclass();
         }
-        while( !serviceType.equals( Object.class ) );
+        while( serviceType != null );
 
         return null;
     }

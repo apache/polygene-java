@@ -19,33 +19,24 @@ import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.InvalidApplicationException;
 import org.qi4j.runtime.composite.CompositeContext;
-import java.util.Map;
 
 /**
  * Default implementation of CompositeBuilderFactory
  */
-public final class ModuleCompositeBuilderFactory
+public class ModuleCompositeBuilderFactory
     implements CompositeBuilderFactory
 {
     private ModuleInstance moduleInstance;
-    private final Map<Class, Class<? extends Composite>> mapping;
 
-    public ModuleCompositeBuilderFactory( ModuleInstance moduleInstance, Map<Class, Class<? extends Composite>> mapping )
+    public ModuleCompositeBuilderFactory( ModuleInstance moduleInstance )
     {
         this.moduleInstance = moduleInstance;
-        this.mapping = mapping;
     }
 
     public <T extends Composite> CompositeBuilder<T> newCompositeBuilder( Class<T> compositeType )
     {
         // Find which Module handles this Composite type
-        ModuleInstance moduleInstance = this.moduleInstance.getModuleForPublicComposite( compositeType );
-
-        // If no module handles this, then it could be a private Composite
-        if( moduleInstance == null )
-        {
-            moduleInstance = this.moduleInstance;
-        }
+        ModuleInstance moduleInstance = this.moduleInstance.getModuleForComposite( compositeType );
 
         // Get the Composite context
         CompositeContext compositeContext = moduleInstance.getModuleContext().getCompositeContext( compositeType );
@@ -55,15 +46,23 @@ public final class ModuleCompositeBuilderFactory
             throw new InvalidApplicationException( "Trying to create unregistered composite of type " + compositeType.getName() + " in module " + this.moduleInstance.getModuleContext().getModuleBinding().getModuleResolution().getModuleModel().getName() );
         }
 
+        CompositeBuilder<T> builder = createBuilder( moduleInstance, compositeContext );
+
+
+        return builder;
+    }
+
+    public <T> T newComposite( Class<T> compositeInterface )
+    {
+        Class<? extends Composite> compositeType = moduleInstance.getModuleContext().getCompositeForInterface( compositeInterface );
+        Composite composite = newCompositeBuilder( compositeType ).newInstance();
+        return compositeInterface.cast( composite );
+    }
+
+    protected <T extends Composite> CompositeBuilder<T> createBuilder( ModuleInstance moduleInstance, CompositeContext compositeContext )
+    {
         // Create a builder
         CompositeBuilder<T> builder = new CompositeBuilderImpl<T>( moduleInstance, compositeContext );
         return builder;
     }
-
-    public <T> T newComposite( Class<T> pojoType )
-    {
-        Class<? extends Composite> compositeType = mapping.get( pojoType );
-        return pojoType.cast( newCompositeBuilder( compositeType ).newInstance() );
-    }
-
 }

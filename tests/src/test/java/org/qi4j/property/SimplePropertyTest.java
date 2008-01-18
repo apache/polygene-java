@@ -89,7 +89,7 @@ public class SimplePropertyTest extends AbstractQi4jTest
     }
 
     @AppliesTo( Capitalized.class )
-    public static class CapitalizeConcern
+    public static abstract class CapitalizeConcern
         implements WritableProperty<String>
     {
         @ConcernFor WritableProperty<String> next;
@@ -101,7 +101,7 @@ public class SimplePropertyTest extends AbstractQi4jTest
         }
     }
 
-    public static class LogPropertyAccess
+    public static abstract class LogPropertyAccess
         implements ReadableProperty<String>
     {
         @SideEffectFor ReadableProperty<String> next;
@@ -114,7 +114,7 @@ public class SimplePropertyTest extends AbstractQi4jTest
         }
     }
 
-    public static class LogPropertyChanges
+    public static abstract class LogPropertyChanges
         implements WritableProperty<Object>
     {
         @SideEffectFor WritableProperty<Object> next;

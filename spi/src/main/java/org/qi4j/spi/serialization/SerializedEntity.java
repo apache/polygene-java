@@ -20,16 +20,16 @@ import org.qi4j.entity.EntityComposite;
 /**
  * TODO
  */
-final class SerializedEntity
+public final class SerializedEntity
     implements Serializable
 {
     private String identity;
-    private Class<EntityComposite> clazz;
+    private Class<? extends EntityComposite> compositeType;
 
-    public SerializedEntity( String identity, Class<EntityComposite> clazz )
+    public SerializedEntity( String identity, Class<? extends EntityComposite> clazz )
     {
         this.identity = identity;
-        this.clazz = clazz;
+        this.compositeType = clazz;
     }
 
     public String getIdentity()
@@ -37,8 +37,41 @@ final class SerializedEntity
         return identity;
     }
 
-    public Class<EntityComposite> getPersistentCompositeClass()
+    public Class<? extends EntityComposite> getCompositeType()
     {
-        return clazz;
+        return compositeType;
+    }
+
+    public boolean equals( Object o )
+    {
+        if( this == o )
+        {
+            return true;
+        }
+        if( o == null || getClass() != o.getClass() )
+        {
+            return false;
+        }
+
+        SerializedEntity that = (SerializedEntity) o;
+
+        if( !compositeType.equals( that.compositeType ) )
+        {
+            return false;
+        }
+        if( !identity.equals( that.identity ) )
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    public int hashCode()
+    {
+        int result;
+        result = identity.hashCode();
+        result = 31 * result + compositeType.hashCode();
+        return result;
     }
 }

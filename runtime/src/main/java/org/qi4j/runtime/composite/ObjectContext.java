@@ -17,13 +17,13 @@ package org.qi4j.runtime.composite;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import org.qi4j.property.AbstractProperty;
+import org.qi4j.property.Property;
+import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.ObjectBinding;
 import org.qi4j.spi.composite.ObjectModel;
 import org.qi4j.spi.composite.ObjectResolution;
 import org.qi4j.spi.injection.ObjectInjectionContext;
 import org.qi4j.spi.structure.ModuleBinding;
-import org.qi4j.runtime.structure.ModuleInstance;
 
 /**
  * TODO
@@ -63,7 +63,7 @@ public final class ObjectContext
 
     public Object newObjectInstance( ModuleInstance moduleInstance, Set adapt, Object decoratedObject, Map<String, Object> objectProperties )
     {
-        Map<String, AbstractProperty> properties = new HashMap<String, AbstractProperty>(); // TODO
+        Map<String, Property> properties = new HashMap<String, Property>(); // TODO
 
         ObjectInjectionContext objectInjectionContext = new ObjectInjectionContext( moduleInstance.getCompositeBuilderFactory(), moduleInstance.getObjectBuilderFactory(), moduleBinding, adapt, decoratedObject, properties );
         Object objectInstance = instanceFactory.newInstance( objectBinding, objectInjectionContext );
@@ -74,7 +74,7 @@ public final class ObjectContext
 
     public void inject( Object instance, ModuleInstance moduleInstance, Set<Object> adaptContext, Object decoratedObject, Map<String, Object> objectProperties )
     {
-        Map<String, AbstractProperty> properties = new HashMap<String, AbstractProperty>(); // TODO
+        Map<String, Property> properties = new HashMap<String, Property>(); // TODO
 
         ObjectInjectionContext objectInjectionContext = new ObjectInjectionContext( moduleInstance.getCompositeBuilderFactory(), moduleInstance.getObjectBuilderFactory(), moduleBinding, adaptContext, decoratedObject, properties );
         instanceFactory.inject( instance, objectBinding, objectInjectionContext );

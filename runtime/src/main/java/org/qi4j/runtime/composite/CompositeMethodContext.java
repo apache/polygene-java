@@ -24,8 +24,9 @@ import java.util.Map;
 import org.qi4j.composite.CompositeInstantiationException;
 import org.qi4j.composite.Constraint;
 import org.qi4j.runtime.Qi4jRuntime;
-import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.runtime.property.AssociationContext;
 import org.qi4j.runtime.property.PropertyContext;
+import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.composite.CompositeMethodBinding;
 import org.qi4j.spi.composite.ConcernBinding;
@@ -49,9 +50,11 @@ public final class CompositeMethodContext
     private CompositeBinding compositeBinding;
     private Qi4jRuntime runtime;
     private PropertyContext propertyContext;
+    private AssociationContext associationContext;
 
-    public CompositeMethodContext( CompositeMethodBinding compositeMethodBinding, ApplicationBinding applicationBinding, CompositeBinding compositeBinding, Qi4jRuntime runtime, PropertyContext propertyContext )
+    public CompositeMethodContext( CompositeMethodBinding compositeMethodBinding, ApplicationBinding applicationBinding, CompositeBinding compositeBinding, Qi4jRuntime runtime, PropertyContext propertyContext, AssociationContext associationContext )
     {
+        this.associationContext = associationContext;
         this.propertyContext = propertyContext;
         this.compositeMethodBinding = compositeMethodBinding;
         this.applicationBinding = applicationBinding;
@@ -67,6 +70,11 @@ public final class CompositeMethodContext
     public PropertyContext getPropertyContext()
     {
         return propertyContext;
+    }
+
+    public AssociationContext getAssociationContext()
+    {
+        return associationContext;
     }
 
     CompositeMethodInstance newCompositeMethodInstance( ModuleInstance moduleInstance, CompositeMethodInstancePool compositeMethodInstancePool )

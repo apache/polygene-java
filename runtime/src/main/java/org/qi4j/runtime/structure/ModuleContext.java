@@ -14,6 +14,8 @@
 
 package org.qi4j.runtime.structure;
 
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import org.qi4j.composite.Composite;
 import org.qi4j.runtime.composite.CompositeContext;
@@ -28,6 +30,7 @@ public final class ModuleContext
     private ModuleBinding moduleBinding;
     private Map<Class, ObjectContext> objectContexts;
     private Map<Class<? extends Composite>, CompositeContext> compositeContexts;
+    private Map<Class, Class<? extends Composite>> interfaceCompositeMapping;
 
     public ModuleContext( ModuleBinding moduleBinding, Map<Class<? extends Composite>, CompositeContext> compositeContexts, Map<Class, ObjectContext> instantiableObjectContexts, Map<Class<? extends Composite>, ModuleContext> moduleContexts )
     {
@@ -36,6 +39,7 @@ public final class ModuleContext
 
         this.compositeContexts = compositeContexts;
 
+        interfaceCompositeMapping = createMapping();
     }
 
     public ModuleBinding getModuleBinding()
@@ -64,4 +68,60 @@ public final class ModuleContext
     {
         return compositeContexts;
     }
+
+    public Class<? extends Composite> getCompositeForInterface( Class interfaceClass )
+    {
+        return interfaceCompositeMapping.get( interfaceClass );
+    }
+
+    private Map<Class, Class<? extends Composite>> createMapping()
+    {
+        Map<Class, Class<? extends Composite>> mapping = new HashMap<Class, Class<? extends Composite>>();
+        Map<Class<? extends Composite>, CompositeContext> composites = getCompositeContexts();
+        for( Class<? extends Composite> compositeType : composites.keySet() )
+        {
+            mapComposite( compositeType, mapping );
+        }
+        cleanupDummies( mapping );
+        return mapping;
+    }
+
+    private void mapComposite( Class<? extends Composite> compositeType, Map<Class, Class<? extends Composite>> mapping )
+    {
+        for( Class type : compositeType.getInterfaces() )
+        {
+            mapType( type, compositeType, mapping );
+        }
+    }
+
+    private void mapType( Class type, Class<? extends Composite> compositeType, Map<Class, Class<? extends Composite>> mapping )
+    {
+        if( mapping.containsKey( type ) )
+        {
+            mapping.put( type, Composite.class );
+        }
+        else
+        {
+            mapping.put( type, compositeType );
+        }
+
+        for( Class subtype : type.getInterfaces() )
+        {
+            mapType( subtype, compositeType, mapping );
+        }
+    }
+
+    private void cleanupDummies( Map<Class, Class<? extends Composite>> mapping )
+    {
+        Iterator<Class<? extends Composite>> it = mapping.values().iterator();
+        while( it.hasNext() )
+        {
+            Class<? extends Composite> isDummy = it.next();
+            if( isDummy == Composite.class )
+            {
+                it.remove();
+            }
+        }
+    }
+
 }

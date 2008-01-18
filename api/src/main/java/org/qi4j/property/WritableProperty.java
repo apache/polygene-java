@@ -18,8 +18,6 @@ package org.qi4j.property;
  * TODO
  */
 public interface WritableProperty<T>
-    extends AbstractProperty
+    extends Property<T>
 {
-    void set( T newValue )
-        throws PropertyVetoException;
 }

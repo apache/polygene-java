@@ -38,5 +38,6 @@ public interface CompositeBuilder<T extends Composite>
 
     <K> K propertiesFor( Class<K> mixinType );
 
-    T newInstance();
+    T newInstance()
+        throws CompositeInstantiationException;
 }

@@ -23,8 +23,8 @@ import org.qi4j.composite.Composite;
 import org.qi4j.entity.Identity;
 import org.qi4j.property.Property;
 import org.qi4j.property.ReadableProperty;
-import org.qi4j.spi.composite.CompositeState;
 import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.spi.composite.CompositeState;
 
 public abstract class AbstractCompositeInstance
     implements InvocationHandler, CompositeState
@@ -34,6 +34,7 @@ public abstract class AbstractCompositeInstance
 
     protected CompositeContext context;
     protected ModuleInstance moduleInstance;
+    protected Composite proxy;
 
     static
     {
@@ -62,13 +63,23 @@ public abstract class AbstractCompositeInstance
 
     public AbstractCompositeInstance( CompositeContext aContext, ModuleInstance moduleInstance )
     {
-        context = aContext;
+        this.context = aContext;
         this.moduleInstance = moduleInstance;
     }
 
     public CompositeContext getContext()
     {
         return context;
+    }
+
+    public Composite getProxy()
+    {
+        return proxy;
+    }
+
+    public void setProxy( Composite proxy )
+    {
+        this.proxy = proxy;
     }
 
     protected Object invokeObject( Object proxy, Method method, Object[] args )

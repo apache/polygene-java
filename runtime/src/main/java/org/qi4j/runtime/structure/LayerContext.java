@@ -42,11 +42,13 @@ public final class LayerContext
         return layerBinding;
     }
 
-    LayerInstance newLayerInstance()
+    LayerInstance newLayerInstance( Map<Class<? extends Composite>, ModuleInstance> availableCompositeModules, Map<Class, ModuleInstance> availableObjectModules )
     {
         List<ModuleInstance> moduleInstances = new ArrayList<ModuleInstance>();
         Map<Class<? extends Composite>, ModuleInstance> modulesForPublicComposites = new HashMap<Class<? extends Composite>, ModuleInstance>();
+        modulesForPublicComposites.putAll( availableCompositeModules );
         Map<Class, ModuleInstance> modulesForPublicObjects = new HashMap<Class, ModuleInstance>();
+        modulesForPublicObjects.putAll( availableObjectModules );
         for( ModuleContext moduleContext : moduleContexts )
         {
             ModuleInstance moduleInstance = moduleContext.newModuleInstance( modulesForPublicComposites, modulesForPublicObjects );
@@ -64,7 +66,7 @@ public final class LayerContext
             }
         }
 
-        return new LayerInstance( this, moduleInstances );
+        return new LayerInstance( this, moduleInstances, modulesForPublicComposites, modulesForPublicObjects );
     }
 
 }

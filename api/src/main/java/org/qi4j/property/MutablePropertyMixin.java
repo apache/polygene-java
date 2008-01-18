@@ -19,8 +19,8 @@ import org.qi4j.composite.scope.Decorate;
 /**
  * TODO
  */
-public class MutablePropertyMixin<Object>
-    implements ReadableProperty<Object>, WritableProperty<Object>
+public abstract class MutablePropertyMixin<Object>
+    implements Property<Object>
 {
     private Object value;
 
@@ -43,4 +43,5 @@ public class MutablePropertyMixin<Object>
     {
         value = newValue;
     }
+
 }

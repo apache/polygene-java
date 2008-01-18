@@ -15,8 +15,12 @@
 package org.qi4j.runtime.structure;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import org.qi4j.composite.Composite;
 import org.qi4j.spi.structure.ApplicationBinding;
+import org.qi4j.spi.structure.LayerResolution;
 
 /**
  * TODO
@@ -46,10 +50,24 @@ public final class ApplicationContext
         }
 
         List<LayerInstance> layerInstances = new ArrayList<LayerInstance>();
+        Map<LayerResolution, LayerInstance> usedLayers = new HashMap<LayerResolution, LayerInstance>();
         for( LayerContext layerContext : layerContexts )
         {
-            LayerInstance layerInstance = layerContext.newLayerInstance();
+            Iterable<LayerResolution> uses = layerContext.getLayerBinding().getLayerResolution().getUses();
+            Map<Class<? extends Composite>, ModuleInstance> availableCompositeModules = new HashMap<Class<? extends Composite>, ModuleInstance>();
+            Map<Class, ModuleInstance> availableObjectModules = new HashMap<Class, ModuleInstance>();
+            for( LayerResolution use : uses )
+            {
+                LayerInstance usedLayer = usedLayers.get( use );
+                Map<Class<? extends Composite>, ModuleInstance> publicCompositeModules = usedLayer.getPublicCompositeModules();
+                availableCompositeModules.putAll( publicCompositeModules );
+                Map<Class, ModuleInstance> publicObjectModules = usedLayer.getPublicObjectModules();
+                availableObjectModules.putAll( publicObjectModules );
+            }
+
+            LayerInstance layerInstance = layerContext.newLayerInstance( availableCompositeModules, availableObjectModules );
             layerInstances.add( layerInstance );
+            usedLayers.put( layerContext.getLayerBinding().getLayerResolution(), layerInstance );
         }
 
         ApplicationInstance applicationInstance = new ApplicationInstance( this, layerInstances, name );

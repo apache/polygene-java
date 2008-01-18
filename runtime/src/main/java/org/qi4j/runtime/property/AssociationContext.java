@@ -43,7 +43,7 @@ public final class AssociationContext
         return associationBinding;
     }
 
-    public <T> AbstractAssociation newInstance( ModuleInstance moduleInstance, Composite composite, Object value )
+    public <T> AbstractAssociation newInstance( ModuleInstance moduleInstance, Object value )
     {
         try
         {
@@ -53,7 +53,6 @@ public final class AssociationContext
             {
                 Class<? extends Composite> associationCompositeType = (Class<? extends Composite>) associationType;
                 CompositeBuilder<? extends Composite> cb = moduleInstance.getCompositeBuilderFactory().newCompositeBuilder( associationCompositeType );
-                cb.adapt( composite );
                 cb.adapt( associationBinding );
                 cb.decorate( value );
                 return AbstractAssociation.class.cast( cb.newInstance() );
@@ -67,7 +66,7 @@ public final class AssociationContext
                 }
                 else if( ManyAssociation.class.isAssignableFrom( associationType ) )
                 {
-                    instance = new ListAssociationInstance<Object>( new ArrayList<Object>() );
+                    instance = new ListAssociationInstance<Object>( new ArrayList<Object>(), associationBinding );
                 }
                 else
                 {

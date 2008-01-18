@@ -14,25 +14,40 @@
 
 package org.qi4j.runtime.entity;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
-import org.qi4j.composite.CompositeBuilder;
+import java.util.Map;
+import org.qi4j.association.AbstractAssociation;
+import org.qi4j.association.Association;
+import org.qi4j.association.ManyAssociation;
+import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeInstantiationException;
-import org.qi4j.composite.PropertyValue;
 import org.qi4j.entity.EntityComposite;
+import org.qi4j.entity.Identity;
+import org.qi4j.entity.Lifecycle;
+import org.qi4j.runtime.composite.CompositeContext;
+import org.qi4j.runtime.composite.EntityCompositeInstance;
+import org.qi4j.runtime.structure.CompositeBuilderImpl;
+import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.EntityStore;
+import org.qi4j.spi.entity.StoreException;
 
 /**
  * TODO
  */
-public final class EntitySessionCompositeBuilder<T extends EntityComposite>
-    implements CompositeBuilder<T>
+public final class EntitySessionCompositeBuilder<T extends Composite>
+    extends CompositeBuilderImpl<T>
 {
-    private CompositeBuilder<T> compositeBuilder;
     private EntitySessionInstance entitySession;
+    private EntityStore store;
 
-    public EntitySessionCompositeBuilder( CompositeBuilder compositeBuilder, EntitySessionInstance entitySession )
+    public EntitySessionCompositeBuilder( ModuleInstance moduleInstance, CompositeContext compositeContext, EntitySessionInstance entitySession, EntityStore store )
     {
-        this.compositeBuilder = compositeBuilder;
+        super( moduleInstance, compositeContext );
         this.entitySession = entitySession;
+        this.store = store;
     }
 
     public void adapt( Object mixin )
@@ -45,31 +60,62 @@ public final class EntitySessionCompositeBuilder<T extends EntityComposite>
         throw new CompositeInstantiationException( "Entities may not decorate other objects" );
     }
 
-    public <K> void properties( Class<K> mixinType, PropertyValue... properties )
-    {
-        compositeBuilder.properties( mixinType, properties );
-    }
-
-    public T propertiesOfComposite()
-    {
-        return compositeBuilder.propertiesOfComposite();
-    }
-
-    public <K> K propertiesFor( Class<K> mixinType )
-    {
-        return compositeBuilder.propertiesFor( mixinType );
-    }
-
     public T newInstance()
     {
-        T instance = compositeBuilder.newInstance();
-        entitySession.createEntity( instance );
+        EntityState state = null;
+        String identity = getPropertyValues().get( Identity.class.getName() + ":identity" ).toString();
+        Map<String, Object> propertyValues = getPropertyValues();
+        try
+        {
+            state = store.newEntityInstance( entitySession, identity, compositeInterface, context.getCompositeBinding().getPropertyBindings(), context.getCompositeBinding().getAssociationBindings(), propertyValues );
+        }
+        catch( StoreException e )
+        {
+            throw new CompositeInstantiationException( "Could not create new entity in store", e );
+        }
+
+        Iterable<AbstractAssociation> associations = state.getAssociations().values();
+        Map<String, AbstractAssociation> associationMap = new HashMap<String, AbstractAssociation>();
+        Map<String, AbstractAssociation> associationValues = getAssociationValues();
+        for( AbstractAssociation association : associations )
+        {
+            if( associationValues.containsKey( association.getQualifiedName() ) )
+            {
+                AbstractAssociation associationValue = associationValues.get( association.getQualifiedName() );
+                if( associationValue instanceof ManyAssociation )
+                {
+                    ManyAssociation manyAssociation = (ManyAssociation) associationValue;
+                    ManyAssociation newAssociation = (ManyAssociation) association;
+                    newAssociation.addAll( manyAssociation );
+                }
+                else
+                {
+                    Association singleAssociation = (Association) associationValue;
+                    Association newAssociation = (Association) association;
+                    newAssociation.set( singleAssociation.get() );
+                }
+            }
+            associationMap.put( association.getQualifiedName(), association );
+        }
+
+        EntityCompositeInstance compositeInstance = context.newEntityCompositeInstance( moduleInstance, entitySession, store, identity );
+        Object[] mixins = context.newMixins( moduleInstance, compositeInstance, Collections.emptySet(), null, state.getProperties(), associationMap );
+        compositeInstance.setMixins( mixins );
+        T instance = compositeInterface.cast( compositeInstance.getProxy() );
+        entitySession.createEntity( (EntityComposite) instance );
+
+        // Invoke lifecycle create() method
+        if( instance instanceof Lifecycle )
+        {
+            context.invokeCreate( instance, compositeInstance );
+        }
+
         return instance;
     }
 
     public Iterator<T> iterator()
     {
-        final Iterator<T> decoratedIterator = compositeBuilder.iterator();
+        final Iterator<T> decoratedIterator = super.iterator();
 
         return new Iterator<T>()
         {
@@ -81,7 +127,7 @@ public final class EntitySessionCompositeBuilder<T extends EntityComposite>
             public T next()
             {
                 T instance = decoratedIterator.next();
-                entitySession.createEntity( instance );
+                entitySession.createEntity( (EntityComposite) instance );
                 return instance;
             }
 
@@ -90,4 +136,6 @@ public final class EntitySessionCompositeBuilder<T extends EntityComposite>
             }
         };
     }
+
+
 }

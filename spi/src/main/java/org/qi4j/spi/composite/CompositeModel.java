@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import org.qi4j.composite.Composite;
 import org.qi4j.spi.injection.InjectionModel;
+import org.qi4j.spi.property.PropertyModel;
 
 /**
  * Composite Models define what a particular Composite type declares through annotations and method declarations.
@@ -37,12 +38,16 @@ public final class CompositeModel
     private Iterable<ConcernModel> concernModels;
     private Iterable<SideEffectModel> sideEffectModels;
     private Iterable<CompositeMethodModel> thisAsModels;
+    private Iterable<PropertyModel> properties;
+    private Iterable<AssociationModel> associations;
 
     private Map<Class<? extends Annotation>, List<ConstraintModel>> constraintModelMappings;
     private Map<Method, CompositeMethodModel> compositeMethodModelMap;
 
-    public CompositeModel( Class<? extends Composite> compositeClass, Class proxyClass, Collection<CompositeMethodModel> methodModels, Iterable<MixinModel> mixinModels, Iterable<ConstraintModel> constraintModels, Iterable<ConcernModel> concernModels, Iterable<SideEffectModel> sideEffectModels, Iterable<CompositeMethodModel> thisAsModels, Map<Class<? extends Annotation>, List<ConstraintModel>> constraintModelMappings )
+    public CompositeModel( Class<? extends Composite> compositeClass, Class proxyClass, Collection<CompositeMethodModel> methodModels, Iterable<MixinModel> mixinModels, Iterable<ConstraintModel> constraintModels, Iterable<ConcernModel> concernModels, Iterable<SideEffectModel> sideEffectModels, Iterable<CompositeMethodModel> thisAsModels, Map<Class<? extends Annotation>, List<ConstraintModel>> constraintModelMappings, Iterable<PropertyModel> properties, Iterable<AssociationModel> associations )
     {
+        this.associations = associations;
+        this.properties = properties;
         this.proxyClass = proxyClass;
         this.constraintModelMappings = constraintModelMappings;
         this.constraintModels = constraintModels;
@@ -181,6 +186,16 @@ public final class CompositeModel
                 return null;
             }
         }
+    }
+
+    public Iterable<PropertyModel> getPropertyModels()
+    {
+        return properties;
+    }
+
+    public Iterable<AssociationModel> getAssociationModels()
+    {
+        return associations;
     }
 
     public String toString()

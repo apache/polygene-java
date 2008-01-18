@@ -18,6 +18,8 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
+import org.qi4j.spi.property.AssociationBinding;
+import org.qi4j.spi.property.PropertyBinding;
 
 /**
  * A Composite Binding is the result of taking a Composite Resolution and performing
@@ -32,8 +34,13 @@ public final class CompositeBinding
 
     private final Map<Method, CompositeMethodBinding> methodMappings; // Method -> method resolution
 
-    public CompositeBinding( CompositeResolution compositeResolution, Collection<CompositeMethodBinding> methodBindings, Set<MixinBinding> mixinBindings, Map<Method, CompositeMethodBinding> methodMappings )
+    private Iterable<PropertyBinding> propertyBindings;
+    private Iterable<AssociationBinding> associationBindings;
+
+    public CompositeBinding( CompositeResolution compositeResolution, Collection<CompositeMethodBinding> methodBindings, Set<MixinBinding> mixinBindings, Map<Method, CompositeMethodBinding> methodMappings, Iterable<PropertyBinding> propertyBindings, Iterable<AssociationBinding> associationBindings )
     {
+        this.associationBindings = associationBindings;
+        this.propertyBindings = propertyBindings;
         this.methodMappings = methodMappings;
         this.mixinBindings = mixinBindings;
         this.compositeResolution = compositeResolution;
@@ -58,6 +65,16 @@ public final class CompositeBinding
     public CompositeMethodBinding getCompositeMethodBinding( Method method )
     {
         return methodMappings.get( method );
+    }
+
+    public Iterable<PropertyBinding> getPropertyBindings()
+    {
+        return propertyBindings;
+    }
+
+    public Iterable<AssociationBinding> getAssociationBindings()
+    {
+        return associationBindings;
     }
 
     public String toString()

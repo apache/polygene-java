@@ -14,19 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.runtime.composite;
+package org.qi4j.spi.entity;
 
 import java.util.UUID;
 import org.qi4j.entity.Identity;
 import org.qi4j.entity.IdentityGenerator;
 
-public final class UuidIdentityGenerator
+public final class UuidIdentityGeneratorMixin
     implements IdentityGenerator
 {
     protected String uuid;
     private int count;
 
-    public UuidIdentityGenerator()
+    public UuidIdentityGeneratorMixin()
     {
         uuid = UUID.randomUUID().toString() + "-";
     }

@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import org.qi4j.association.ListAssociation;
+import org.qi4j.spi.property.AssociationBinding;
 
 /**
  * TODO
@@ -27,11 +28,29 @@ import org.qi4j.association.ListAssociation;
 public final class ListAssociationInstance<T> extends AbstractList<T>
     implements ListAssociation<T>
 {
-    List<T> associated;
+    private AssociationBinding associationBinding;
+    private List<T> associated;
 
-    public ListAssociationInstance( List<T> associated )
+    public ListAssociationInstance( List<T> associated, AssociationBinding associationBinding )
     {
+        this.associationBinding = associationBinding;
         this.associated = associated;
+    }
+
+    public <T> T getAssociationInfo( Class<T> infoType )
+    {
+        // TODO
+        return associationBinding.getAssociationInfo( infoType );
+    }
+
+    public String getName()
+    {
+        return associationBinding.getName();
+    }
+
+    public String getQualifiedName()
+    {
+        return associationBinding.getQualifiedName();
     }
 
     @Override public T get( int i )
@@ -164,11 +183,5 @@ public final class ListAssociationInstance<T> extends AbstractList<T>
     @Override public String toString()
     {
         return associated.toString();
-    }
-
-    public <T> T getAssociationInfo( Class<T> infoType )
-    {
-        // TODO
-        return null;
     }
 }

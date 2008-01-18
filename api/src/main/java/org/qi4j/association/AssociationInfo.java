@@ -20,4 +20,8 @@ package org.qi4j.association;
 public interface AssociationInfo
 {
     <T> T getAssociationInfo( Class<T> infoType );
+
+    String getName();
+
+    String getQualifiedName();
 }

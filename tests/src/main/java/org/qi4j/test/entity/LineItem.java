@@ -12,11 +12,14 @@
  *
  */
 
-package org.qi4j.property;
+package org.qi4j.test.entity;
+
+import org.qi4j.association.Association;
 
 /**
  * TODO
  */
-public interface AbstractProperty
+public interface LineItem
 {
+    Association<Product> product();
 }

@@ -44,7 +44,7 @@ import org.qi4j.composite.Mixins;
 import org.qi4j.composite.NullArgumentException;
 import org.qi4j.composite.SideEffects;
 import org.qi4j.entity.EntityComposite;
-import org.qi4j.property.AbstractProperty;
+import org.qi4j.property.Property;
 import org.qi4j.runtime.entity.EntityMixin;
 import org.qi4j.spi.composite.AssociationModel;
 import org.qi4j.spi.composite.CompositeMethodModel;
@@ -129,7 +129,32 @@ public final class CompositeModelFactory
             constraintModelList.add( constraintModel );
         }
 
-        CompositeModel model = new CompositeModel( compositeClass, proxyClass, methods, mixins, constraintModels, concerns, sideEffects, thisCompositeAsModels, constraintModelMappings );
+        List<PropertyModel> properties = new ArrayList<PropertyModel>();
+        List<AssociationModel> associations = new ArrayList<AssociationModel>();
+        for( CompositeMethodModel method : methods )
+        {
+            if( method.getPropertyModel() != null )
+            {
+                properties.add( method.getPropertyModel() );
+            }
+            if( method.getAssociationModel() != null )
+            {
+                associations.add( method.getAssociationModel() );
+            }
+        }
+        for( CompositeMethodModel thisCompositeAsModel : thisCompositeAsModels )
+        {
+            if( thisCompositeAsModel.getPropertyModel() != null )
+            {
+                properties.add( thisCompositeAsModel.getPropertyModel() );
+            }
+            if( thisCompositeAsModel.getAssociationModel() != null )
+            {
+                associations.add( thisCompositeAsModel.getAssociationModel() );
+            }
+        }
+
+        CompositeModel model = new CompositeModel( compositeClass, proxyClass, methods, mixins, constraintModels, concerns, sideEffects, thisCompositeAsModels, constraintModelMappings, properties, associations );
         return model;
     }
 
@@ -320,7 +345,7 @@ public final class CompositeModelFactory
 
         // AbstractProperty model, if any
         PropertyModel propertyModel = null;
-        if( AbstractProperty.class.isAssignableFrom( method.getReturnType() ) )
+        if( Property.class.isAssignableFrom( method.getReturnType() ) )
         {
             Type returnType = method.getGenericReturnType();
             Type propertyType = getPropertyType( returnType );
@@ -387,7 +412,7 @@ public final class CompositeModelFactory
     {
         for( CompositeMethodModel method : methods )
         {
-            if( AbstractProperty.class.isAssignableFrom( method.getMethod().getReturnType() ) )
+            if( Property.class.isAssignableFrom( method.getMethod().getReturnType() ) )
             {
                 Type returnType = method.getMethod().getGenericReturnType();
                 Type propertyType = ( (ParameterizedType) returnType ).getActualTypeArguments()[ 0 ];
@@ -416,7 +441,7 @@ public final class CompositeModelFactory
         if( methodReturnType instanceof ParameterizedType )
         {
             ParameterizedType parameterizedType = (ParameterizedType) methodReturnType;
-            if( AbstractProperty.class.isAssignableFrom( (Class<?>) parameterizedType.getRawType() ) )
+            if( Property.class.isAssignableFrom( (Class<?>) parameterizedType.getRawType() ) )
             {
                 return parameterizedType.getActualTypeArguments()[ 0 ];
             }
