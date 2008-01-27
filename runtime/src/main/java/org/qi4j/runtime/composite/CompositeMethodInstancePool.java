@@ -7,24 +7,22 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public final class CompositeMethodInstancePool
 {
-    AtomicReference<CompositeMethodInstance> first = new AtomicReference<CompositeMethodInstance>();
-
-    public CompositeMethodInstance getInstance()
+    private CompositeMethodInstance first = null;
+    
+    public synchronized CompositeMethodInstance getInstance()
     {
-        CompositeMethodInstance instance = first.get();
+        CompositeMethodInstance instance = first;
         if( instance != null )
         {
-            first.set( instance.getNext() );
+            first = instance.getNext();
 
         }
         return instance;
     }
 
-    public void returnInstance( CompositeMethodInstance instance )
+    public synchronized void returnInstance( CompositeMethodInstance instance )
     {
-        if( !first.compareAndSet( instance.getNext(), instance ) )
-        {
-            instance.setNext( first.getAndSet( instance ) );
-        }
+        instance.setNext( first );
+        first = instance;
     }
 }
