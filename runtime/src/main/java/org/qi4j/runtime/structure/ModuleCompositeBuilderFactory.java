@@ -18,7 +18,11 @@ import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.InvalidApplicationException;
+import static org.qi4j.composite.NullArgumentException.validateNotNull;
 import org.qi4j.runtime.composite.CompositeContext;
+import org.qi4j.spi.structure.ModuleBinding;
+import org.qi4j.spi.structure.ModuleModel;
+import org.qi4j.spi.structure.ModuleResolution;
 
 /**
  * Default implementation of CompositeBuilderFactory
@@ -36,27 +40,53 @@ public class ModuleCompositeBuilderFactory
     public <T extends Composite> CompositeBuilder<T> newCompositeBuilder( Class<T> compositeType )
     {
         // Find which Module handles this Composite type
-        ModuleInstance moduleInstance = this.moduleInstance.getModuleForComposite( compositeType );
+        ModuleInstance compositeModuleInstance = moduleInstance.getModuleForComposite( compositeType );
 
         // Get the Composite context
-        CompositeContext compositeContext = moduleInstance.getModuleContext().getCompositeContext( compositeType );
+        ModuleContext context = compositeModuleInstance.getModuleContext();
+        CompositeContext compositeContext = context.getCompositeContext( compositeType );
 
         if( compositeContext == null )
         {
-            throw new InvalidApplicationException( "Trying to create unregistered composite of type " + compositeType.getName() + " in module " + this.moduleInstance.getModuleContext().getModuleBinding().getModuleResolution().getModuleModel().getName() );
+            String compositeTypeName = compositeType.getName();
+
+            ModuleContext moduleContext = moduleInstance.getModuleContext();
+            ModuleBinding moduleBinding = moduleContext.getModuleBinding();
+            ModuleResolution moduleResolution = moduleBinding.getModuleResolution();
+            ModuleModel moduleModel = moduleResolution.getModuleModel();
+            String moduleModelName = moduleModel.getName();
+
+            throw new InvalidApplicationException(
+                "Trying to create unregistered composite of type [" + compositeTypeName + "] in module [" +
+                moduleModelName + "]."
+            );
         }
 
-        CompositeBuilder<T> builder = createBuilder( moduleInstance, compositeContext );
-
-
-        return builder;
+        return createBuilder( compositeModuleInstance, compositeContext );
     }
 
-    public <T> T newComposite( Class<T> compositeInterface )
+    public <T> T newComposite( Class<T> aCompositeInterface )
     {
-        Class<? extends Composite> compositeType = moduleInstance.getModuleContext().getCompositeForInterface( compositeInterface );
+        validateNotNull( "aCompositeInterface", aCompositeInterface );
+        ModuleContext moduleContext = moduleInstance.getModuleContext();
+        Class<? extends Composite> compositeType = moduleContext.getCompositeForInterface( aCompositeInterface );
+
+        if( compositeType == null )
+        {
+            ModuleBinding moduleBinding = moduleContext.getModuleBinding();
+            ModuleResolution moduleResolution = moduleBinding.getModuleResolution();
+            ModuleModel moduleModel = moduleResolution.getModuleModel();
+            String moduleModelName = moduleModel.getName();
+
+            String compositeInterfaceClassName = aCompositeInterface.getName();
+            throw new InvalidApplicationException(
+                "Trying to create unregistered composite interface [" + compositeInterfaceClassName + "] in module [" +
+                moduleModelName + "]."
+            );
+        }
+
         Composite composite = newCompositeBuilder( compositeType ).newInstance();
-        return compositeInterface.cast( composite );
+        return aCompositeInterface.cast( composite );
     }
 
     protected <T extends Composite> CompositeBuilder<T> createBuilder( ModuleInstance moduleInstance, CompositeContext compositeContext )

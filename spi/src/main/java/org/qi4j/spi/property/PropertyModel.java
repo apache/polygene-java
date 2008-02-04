@@ -24,6 +24,8 @@ import java.lang.reflect.Type;
 public final class PropertyModel
     implements Serializable
 {
+    private static final long serialVersionUID = 1L;
+
     public static String getName( String qualifiedName )
     {
         int idx = qualifiedName.lastIndexOf( ":" );
@@ -46,12 +48,12 @@ public final class PropertyModel
     private Method accessor; // Interface accessor
     private String qualifiedName;
 
-    public PropertyModel( String name, Type type, Method accessor )
+    public PropertyModel( String aName, Type aType, Method anAccessor )
     {
-        this.name = name;
-        this.type = type;
-        this.accessor = accessor;
-        qualifiedName = getQualifiedName( accessor );
+        name = aName;
+        type = aType;
+        accessor = anAccessor;
+        qualifiedName = getQualifiedName( anAccessor );
     }
 
     public String getName()

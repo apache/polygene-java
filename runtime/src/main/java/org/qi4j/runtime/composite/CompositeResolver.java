@@ -24,10 +24,13 @@ import org.qi4j.spi.composite.ConcernModel;
 import org.qi4j.spi.composite.ConcernResolution;
 import org.qi4j.spi.composite.ConstraintModel;
 import org.qi4j.spi.composite.ConstraintResolution;
+import org.qi4j.spi.composite.ConstructorModel;
 import org.qi4j.spi.composite.ConstructorResolution;
+import org.qi4j.spi.composite.FieldModel;
 import org.qi4j.spi.composite.FieldResolution;
 import org.qi4j.spi.composite.FragmentModel;
 import org.qi4j.spi.composite.InvalidCompositeException;
+import org.qi4j.spi.composite.MethodModel;
 import org.qi4j.spi.composite.MethodResolution;
 import org.qi4j.spi.composite.MixinModel;
 import org.qi4j.spi.composite.MixinResolution;
@@ -43,6 +46,9 @@ import org.qi4j.spi.composite.SideEffectResolution;
 import org.qi4j.spi.injection.InvalidInjectionException;
 import org.qi4j.spi.injection.ResolutionContext;
 import org.qi4j.spi.property.PropertyModel;
+import org.qi4j.spi.structure.ApplicationModel;
+import org.qi4j.spi.structure.LayerModel;
+import org.qi4j.spi.structure.ModuleModel;
 
 /**
  * TODO
@@ -105,34 +111,50 @@ public final class CompositeResolver
         return resolution;
     }
 
-    private MixinResolution resolveMixin( MixinModel mixinModel, ResolutionContext resolutionContext, Map<Method, MixinModel> mixinsForMethods ) throws InvalidInjectionException
+    private MixinResolution resolveMixin(
+        MixinModel mixinModelToResolve, ResolutionContext resolutionContext, Map<Method, MixinModel> mixinsForMethods )
+        throws InvalidInjectionException
     {
-        ResolutionContext mixinResolutionContext = new ResolutionContext( mixinModel, resolutionContext.getCompositeModel(), resolutionContext.getModule(), resolutionContext.getLayer(), resolutionContext.getApplication() );
+        CompositeModel compositeModel = resolutionContext.getCompositeModel();
+        ModuleModel moduleModel = resolutionContext.getModule();
+        LayerModel layerModel = resolutionContext.getLayer();
+        ApplicationModel application = resolutionContext.getApplication();
+        ResolutionContext mixinResolutionContext =
+            new ResolutionContext( mixinModelToResolve, compositeModel, moduleModel, layerModel, application );
+
         List<ConstructorResolution> constructors = new ArrayList<ConstructorResolution>();
-        resolveConstructorModel( mixinModel.getConstructorModels(), constructors, mixinResolutionContext );
+
+        Iterable<ConstructorModel> constructorModels = mixinModelToResolve.getConstructorModels();
+        resolveConstructorModel( constructorModels, constructors, mixinResolutionContext );
+
         List<FieldResolution> fields = new ArrayList<FieldResolution>();
-        resolveFieldModels( mixinModel.getFieldModels(), fields, mixinResolutionContext );
+        Iterable<FieldModel> fieldModels = mixinModelToResolve.getFieldModels();
+        resolveFieldModels( fieldModels, fields, mixinResolutionContext );
+
         List<MethodResolution> methods = new ArrayList<MethodResolution>();
-        resolveMethodModels( mixinModel.getMethodModels(), methods, mixinResolutionContext );
+        Iterable<MethodModel> methodModels = mixinModelToResolve.getMethodModels();
+        resolveMethodModels( methodModels, methods, mixinResolutionContext );
 
         // Compute set of implemented properties in this mixin
         Map<String, PropertyModel> propertyModels = new HashMap<String, PropertyModel>();
-        for( Map.Entry<Method, MixinModel> entry : mixinsForMethods.entrySet() )
+        for( Map.Entry<Method, MixinModel> mixinMethodEntry : mixinsForMethods.entrySet() )
         {
-            if( entry.getValue().equals( mixinModel ) )
+            MixinModel mixinModel = mixinMethodEntry.getValue();
+            if( mixinModel.equals( mixinModelToResolve ) )
             {
-                CompositeMethodModel cmm = resolutionContext.getCompositeModel().getCompositeMethodModel( entry.getKey() );
+                Method mixinMethod = mixinMethodEntry.getKey();
+                CompositeMethodModel cmm = compositeModel.getCompositeMethodModel( mixinMethod );
+
                 PropertyModel pm = cmm.getPropertyModel();
                 if( pm != null )
                 {
-                    propertyModels.put( pm.getName(), pm );
+                    String propertyModelName = pm.getName();
+                    propertyModels.put( propertyModelName, pm );
                 }
-
             }
         }
 
-        MixinResolution resolution = new MixinResolution( mixinModel, constructors, fields, methods, propertyModels );
-        return resolution;
+        return new MixinResolution( mixinModelToResolve, constructors, fields, methods, propertyModels );
     }
 
     private Map<Method, MixinResolution> getResolvedMethodMixins( Map<Method, MixinModel> mixinsForMethods, Map<MixinModel, MixinResolution> resolvedMixins )

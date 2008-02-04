@@ -19,7 +19,6 @@ public class PropertyValueTest extends TestCase
         // Create a property using the refactoring-safe method
         PropertyValue value2 = property( name( Mixin1.class ).getBar(), "foo" );
 
-
         assertEquals( value1, value2 );
     }
 
