@@ -20,17 +20,30 @@ package org.qi4j.library.general.model;
 
 import java.io.Serializable;
 import org.qi4j.composite.Mixins;
-import org.qi4j.library.framework.properties.PropertiesMixin;
+import org.qi4j.composite.scope.PropertyField;
+import org.qi4j.property.Property;
 
 
 /**
  * Generic interface for a contact type such as home_office, phone_home, mobile_office,
  * mobile_private, icq, jabber, msn, yahoo, email.
  */
-@Mixins( { PropertiesMixin.class } )
-public interface ContactType extends Serializable
+@Mixins( ContactType.ContactTypeMixin.class )
+public interface ContactType
 {
-    void setContactType( String aContactType );
+    Property<String> contactType();
 
-    String getContactType();
+    final class ContactTypeMixin
+        implements ContactType, Serializable
+    {
+        private static final long serialVersionUID = 1L;
+
+        @PropertyField
+        private Property<String> contactType;
+
+        public final Property<String> contactType()
+        {
+            return contactType;
+        }
+    }
 }

@@ -12,20 +12,38 @@
  */
 package org.qi4j.library.general.test.model;
 
+import static java.lang.Thread.currentThread;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import static java.lang.reflect.Proxy.newProxyInstance;
 import org.qi4j.composite.scope.ConcernFor;
 import org.qi4j.library.general.model.Descriptor;
+import org.qi4j.property.Property;
 
-public class DescriptorConcern implements Descriptor
+public class DescriptorConcern
+    implements Descriptor
 {
-    @ConcernFor private Descriptor next;
+    private static final Class[] INTERFACES = { Property.class };
 
-    public String getDisplayValue()
-    {
-        return "My name is " + next.getDisplayValue();
-    }
+    @ConcernFor
+    private Descriptor next;
 
-    public void setDisplayValue( String aDisplayValue )
+    @SuppressWarnings( "unchecked" )
+    public Property<String> displayValue()
     {
-        next.setDisplayValue( aDisplayValue );
+        final Property<String> displayValueProperty = next.displayValue();
+        ClassLoader currentThreadClassLoader = currentThread().getContextClassLoader();
+        return (Property<String>) newProxyInstance( currentThreadClassLoader, INTERFACES, new InvocationHandler()
+        {
+            public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
+            {
+                String methodName = method.getName();
+                if( "get".equals( methodName ) )
+                {
+                    return "My name is " + displayValueProperty.get();
+                }
+                return method.invoke( displayValueProperty, args );
+            }
+        } );
     }
 }

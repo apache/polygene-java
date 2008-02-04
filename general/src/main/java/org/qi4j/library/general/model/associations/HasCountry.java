@@ -13,17 +13,30 @@
 package org.qi4j.library.general.model.associations;
 
 import java.io.Serializable;
+import org.qi4j.association.Association;
 import org.qi4j.composite.Mixins;
-import org.qi4j.library.framework.properties.PropertiesMixin;
+import org.qi4j.composite.scope.PropertyField;
 import org.qi4j.library.general.model.Country;
 
 /**
  * Represents one-to-one relationship with {@link org.qi4j.library.general.model.Country}
  */
-@Mixins( { PropertiesMixin.class } )
-public interface HasCountry extends Serializable
+@Mixins( HasCountry.HasCountryMixin.class )
+public interface HasCountry
 {
-    void setCountry( Country aCountry );
+    Association<Country> country();
 
-    Country getCountry();
+    final class HasCountryMixin
+        implements HasCountry, Serializable
+    {
+        private static final long serialVersionUID = 1L;
+
+        @PropertyField
+        private Association<Country> country;
+
+        public final Association<Country> country()
+        {
+            return country;
+        }
+    }
 }

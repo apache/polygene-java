@@ -14,15 +14,28 @@ package org.qi4j.library.general.model;
 
 import java.io.Serializable;
 import org.qi4j.composite.Mixins;
-import org.qi4j.library.framework.properties.PropertiesMixin;
+import org.qi4j.composite.scope.PropertyField;
+import org.qi4j.property.Property;
 
 /**
  * Generic interface for ISO-CODE.
  */
-@Mixins( { PropertiesMixin.class } )
+@Mixins( IsoCode.IsoCodeMixin.class )
 public interface IsoCode extends Serializable
 {
-    void setIsoCode( String aIsoCode );
+    Property<String> isoCode();
 
-    String getIsoCode();
+    final class IsoCodeMixin
+        implements IsoCode, Serializable
+    {
+        private static final long serialVersionUID = 1L;
+
+        @PropertyField
+        private Property<String> isoCode;
+
+        public Property<String> isoCode()
+        {
+            return isoCode;
+        }
+    }
 }

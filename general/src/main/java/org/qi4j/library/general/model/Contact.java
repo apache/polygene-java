@@ -13,24 +13,44 @@
  */
 package org.qi4j.library.general.model;
 
+import java.io.Serializable;
 import org.qi4j.composite.Mixins;
-import org.qi4j.library.framework.properties.PropertiesMixin;
+import org.qi4j.composite.scope.PropertyField;
+import org.qi4j.property.Property;
 
 /**
  * Generic interface for a contact such as phone number, fax-number, email, msn, etc.
  */
-@Mixins( PropertiesMixin.class )
+@Mixins( Contact.ContactMixin.class )
 public interface Contact
 {
-    public final static int CONTACT_VALUE_LEN = 250;
+    int CONTACT_VALUE_LEN = 250;
 
-    public final static int CONTACT_TYPE_LEN = 120;
+    int CONTACT_TYPE_LEN = 120;
 
-    public void setContactValue( String contactValue );
+    Property<String> contactValue();
 
-    public String getContactValue();
+    Property<String> contactType();
 
-    public void setContactType( String contactType );
+    final class ContactMixin
+        implements Contact, Serializable
+    {
+        private static final long serialVersionUID = 1L;
 
-    public String getContactType();
+        @PropertyField
+        private Property<String> contactType;
+
+        @PropertyField
+        private Property<String> contactValue;
+
+        public final Property<String> contactType()
+        {
+            return contactType;
+        }
+
+        public final Property<String> contactValue()
+        {
+            return contactValue;
+        }
+    }
 }

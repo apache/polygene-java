@@ -14,19 +14,39 @@ package org.qi4j.library.general.model;
 
 import java.io.Serializable;
 import org.qi4j.composite.Mixins;
-import org.qi4j.library.framework.properties.PropertiesMixin;
+import org.qi4j.composite.scope.PropertyField;
+import org.qi4j.property.Property;
 
 /**
  * Generic interface for Address lines.
  */
-@Mixins( { PropertiesMixin.class } )
-public interface AddressLine extends Serializable
+@Mixins( AddressLine.AddressLineMixin.class )
+public interface AddressLine
 {
-    void setFirstLine( String aFirstLine );
+    Property<String> firstLine();
 
-    String getFirstLine();
+    Property<String> secondLine();
 
-    void setSecondLine( String aSecondLine );
+    /**
+     * @since 0.1.0
+     */
+    final class AddressLineMixin
+        implements AddressLine, Serializable
+    {
+        @PropertyField
+        private Property<String> firstLine;
 
-    String getSecondLine();
+        @PropertyField
+        private Property<String> secondLine;
+
+        public final Property<String> firstLine()
+        {
+            return firstLine;
+        }
+
+        public final Property<String> secondLine()
+        {
+            return secondLine;
+        }
+    }
 }

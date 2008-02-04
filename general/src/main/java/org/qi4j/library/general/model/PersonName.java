@@ -14,22 +14,51 @@ package org.qi4j.library.general.model;
 
 import java.io.Serializable;
 import org.qi4j.composite.Mixins;
-import org.qi4j.library.framework.properties.PropertiesMixin;
-import org.qi4j.library.general.model.mixins.PersonFullnameMixin;
+import org.qi4j.composite.scope.PropertyField;
+import org.qi4j.property.Property;
 
 /**
  * Generic interface of PersonName that stores first and last name.
  */
-@Mixins( { PropertiesMixin.class, PersonFullnameMixin.class } )
+@Mixins( PersonName.PersonNameMixin.class )
 public interface PersonName extends Serializable
 {
-    String getFirstName();
-
-    void setFirstName( String aFirstName );
-
-    String getLastName();
-
-    void setLastName( String aLastName );
-
     String getFullname();
+
+    Property<String> firstName();
+
+    Property<String> lastName();
+
+    final class PersonNameMixin
+        implements PersonName, Serializable
+    {
+        private static final long serialVersionUID = 1L;
+
+        @PropertyField
+        private Property<String> firstName;
+
+        @PropertyField
+        private Property<String> lastName;
+
+        public final Property<String> firstName()
+        {
+            return firstName;
+        }
+
+        public final Property<String> lastName()
+        {
+            return lastName;
+        }
+
+        public final String getFullname()
+        {
+            StringBuilder builder = new StringBuilder( 100 );
+
+            builder.append( firstName().get() );
+            builder.append( " " );
+            builder.append( lastName().get() );
+
+            return builder.toString().trim();
+        }
+    }
 }

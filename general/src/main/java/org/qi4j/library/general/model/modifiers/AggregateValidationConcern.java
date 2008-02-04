@@ -20,7 +20,7 @@ public abstract class AggregateValidationConcern
     {
         List<ValidationMessage> messages = next.validate();
 
-        Object aggregator = aggregated.getAggregate();
+        Object aggregator = aggregated.aggregate().get();
         if( aggregator instanceof Validatable )
         {
             Validatable aggregatorValidation = (Validatable) aggregator;

@@ -19,15 +19,28 @@ package org.qi4j.library.general.model;
 
 import java.io.Serializable;
 import org.qi4j.composite.Mixins;
-import org.qi4j.library.framework.properties.PropertiesMixin;
+import org.qi4j.composite.scope.PropertyField;
+import org.qi4j.property.Property;
 
 /**
  * Generic interface for Name.
  */
-@Mixins( { PropertiesMixin.class } )
-public interface HasName extends Serializable
+@Mixins( HasName.HasNameMixin.class )
+public interface HasName
 {
-    void setName( String aName );
+    Property<String> name();
 
-    String getName();
+    final class HasNameMixin
+        implements HasName, Serializable
+    {
+        private static final long serialVersionUID = 1L;
+
+        @PropertyField
+        private Property<String> name;
+
+        public final Property<String> name()
+        {
+            return name;
+        }
+    }
 }

@@ -17,17 +17,17 @@ package org.qi4j.library.general.model;
  */
 public enum GenderType
 {
-    male, female;
+    MALE, FEMALE;
 
     public static GenderType getGenderType( String genderType )
     {
-        if( male.toString().equals( genderType ) )
+        if( MALE.toString().equals( genderType ) )
         {
-            return male;
+            return MALE;
         }
-        else if( female.toString().equals( genderType ) )
+        else if( FEMALE.toString().equals( genderType ) )
         {
-            return female;
+            return FEMALE;
         }
         else
         {

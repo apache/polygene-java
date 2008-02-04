@@ -20,5 +20,4 @@ import org.qi4j.library.general.model.City;
  */
 public interface CityComposite extends City, Composite
 {
-
 }

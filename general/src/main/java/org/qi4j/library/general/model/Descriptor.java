@@ -14,15 +14,28 @@ package org.qi4j.library.general.model;
 
 import java.io.Serializable;
 import org.qi4j.composite.Mixins;
-import org.qi4j.library.framework.properties.PropertiesMixin;
+import org.qi4j.composite.scope.PropertyField;
+import org.qi4j.property.Property;
 
 /**
  * Generic service interface to obtain the formatted or decorated value
  */
-@Mixins( PropertiesMixin.class )
-public interface Descriptor extends Serializable
+@Mixins( Descriptor.DescriptorMixin.class )
+public interface Descriptor
 {
-    String getDisplayValue();
+    Property<String> displayValue();
 
-    void setDisplayValue( String aDisplayValue );
+    final class DescriptorMixin
+        implements Descriptor, Serializable
+    {
+        private static final long serialVersionUID = 1L;
+
+        @PropertyField
+        private Property<String> displayValue;
+
+        public final Property<String> displayValue()
+        {
+            return displayValue;
+        }
+    }
 }

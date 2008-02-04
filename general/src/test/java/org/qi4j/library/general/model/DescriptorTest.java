@@ -14,31 +14,38 @@ package org.qi4j.library.general.model;
 
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
+import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.Concerns;
 import org.qi4j.library.general.test.model.DescriptorConcern;
+import org.qi4j.property.Property;
 import org.qi4j.test.AbstractQi4jTest;
 
 public class DescriptorTest extends AbstractQi4jTest
 {
     public void configure( ModuleAssembly module )
     {
-        module.addComposites( DummyComposite.class );
-        module.addComposites( DummyComposite2.class );
+        module.addComposites( DummyComposite.class, DummyComposite2.class );
     }
 
-    public void testDescriptorAsMixin() throws Exception
+    public void testDescriptorAsMixin()
+        throws Exception
     {
-        DummyComposite composite = compositeBuilderFactory.newCompositeBuilder( DummyComposite.class ).newInstance();
-        composite.setDisplayValue( "Sianny" );
-        String displayValue = composite.getDisplayValue();
-        assertEquals( displayValue, composite.getDisplayValue() );
+        CompositeBuilder<DummyComposite> builder = compositeBuilderFactory.newCompositeBuilder( DummyComposite.class );
+        DummyComposite composite = builder.newInstance();
+
+        Property<String> displayValueProperty = composite.displayValue();
+        String value = "Sianny";
+        displayValueProperty.set( value );
+
+        String displayValue = displayValueProperty.get();
+        assertEquals( value, displayValue );
     }
 
     public void testDescriptorWithModifier() throws Exception
     {
         DummyComposite2 composite = compositeBuilderFactory.newCompositeBuilder( DummyComposite2.class ).newInstance();
-        composite.setDisplayValue( "Sianny" );
-        String displayValue = composite.getDisplayValue();
+        composite.displayValue().set( "Sianny" );
+        String displayValue = composite.displayValue().get();
         assertEquals( displayValue, "My name is Sianny" );
     }
 
@@ -46,7 +53,7 @@ public class DescriptorTest extends AbstractQi4jTest
     {
     }
 
-    @Concerns( { DescriptorConcern.class } )
+    @Concerns( DescriptorConcern.class )
     private interface DummyComposite2 extends Descriptor, HasName, Composite
     {
     }

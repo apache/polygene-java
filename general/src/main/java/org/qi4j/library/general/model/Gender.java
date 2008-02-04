@@ -14,15 +14,26 @@ package org.qi4j.library.general.model;
 
 import java.io.Serializable;
 import org.qi4j.composite.Mixins;
-import org.qi4j.library.framework.properties.PropertiesMixin;
+import org.qi4j.composite.scope.PropertyField;
+import org.qi4j.property.Property;
 
 /**
  * Generic interface for Gender that stores {@link GenderType}.
  */
-@Mixins( { PropertiesMixin.class } )
+@Mixins( Gender.GenderMixin.class )
 public interface Gender extends Serializable
 {
-    GenderType getGender();
+    Property<GenderType> gender();
 
-    void setGender( GenderType aGenderType );
+    final class GenderMixin
+        implements Gender, Serializable
+    {
+        @PropertyField
+        private Property<GenderType> gender;
+
+        public final Property<GenderType> gender()
+        {
+            return gender;
+        }
+    }
 }

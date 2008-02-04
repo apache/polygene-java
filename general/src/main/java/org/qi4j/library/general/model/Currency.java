@@ -14,15 +14,28 @@ package org.qi4j.library.general.model;
 
 import java.io.Serializable;
 import org.qi4j.composite.Mixins;
-import org.qi4j.library.framework.properties.PropertiesMixin;
+import org.qi4j.composite.scope.PropertyField;
+import org.qi4j.property.Property;
 
 /**
  * Generic interface for Currency
  */
-@Mixins( { PropertiesMixin.class } )
-public interface Currency extends Serializable
+@Mixins( Currency.CurrencyMixin.class )
+public interface Currency
 {
-    void setCurrency( java.util.Currency aCurrency );
+    Property<java.util.Currency> currency();
 
-    java.util.Currency getCurrency();
+    final class CurrencyMixin
+        implements Currency, Serializable
+    {
+        private static final long serialVersionUID = 1L;
+
+        @PropertyField
+        private Property<java.util.Currency> currency;
+
+        public final Property<java.util.Currency> currency()
+        {
+            return currency;
+        }
+    }
 }
