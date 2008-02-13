@@ -17,5 +17,6 @@
   <modules>
     <module>persistence-quick</module>
     <module>persistence-jdbm</module>
+    <module>persistence-memory</module>
   </modules>
 </project>
