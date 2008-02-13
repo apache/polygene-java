@@ -20,7 +20,7 @@ public final class ModifiesInjectionProviderFactory
     {
         InjectionResolution resolution = bindingContext.getInjectionResolution();
         InjectionModel injectionModel = resolution.getInjectionModel();
-        if( resolution.getCompositeModel() != null )
+        if( bindingContext.getCompositeResolution() != null )
         {
             if( injectionModel.getInjectionClass().isAssignableFrom( injectionModel.getInjectedClass() ) )
             {
@@ -28,7 +28,7 @@ public final class ModifiesInjectionProviderFactory
             }
             else
             {
-                throw new InvalidInjectionException( "Composite " + resolution.getCompositeModel().getCompositeClass() + " does not implement @ConcernFor type " + injectionModel.getInjectionClass() + " in modifier " + injectionModel.getInjectedClass() );
+                throw new InvalidInjectionException( "Composite " + bindingContext.getCompositeResolution().getCompositeModel().getCompositeClass() + " does not implement @ConcernFor type " + injectionModel.getInjectionClass() + " in modifier " + injectionModel.getInjectedClass() );
             }
         }
         else

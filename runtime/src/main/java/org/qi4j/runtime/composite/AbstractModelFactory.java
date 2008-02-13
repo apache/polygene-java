@@ -4,6 +4,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,6 +17,7 @@ import org.qi4j.composite.scope.PropertyField;
 import org.qi4j.composite.scope.PropertyParameter;
 import org.qi4j.injection.InjectionScope;
 import org.qi4j.injection.Optional;
+import org.qi4j.property.Property;
 import org.qi4j.spi.composite.ConstructorModel;
 import org.qi4j.spi.composite.FieldModel;
 import org.qi4j.spi.composite.InvalidCompositeException;
@@ -187,6 +189,30 @@ public abstract class AbstractModelFactory
         ParameterModel parameterModel = new ParameterModel( parameterType, parameterConstraintsModel, injectionModel );
         return parameterModel;
     }
+
+    protected Type getPropertyType( Type methodReturnType )
+    {
+        if( methodReturnType instanceof ParameterizedType )
+        {
+            ParameterizedType parameterizedType = (ParameterizedType) methodReturnType;
+            if( Property.class.isAssignableFrom( (Class<?>) parameterizedType.getRawType() ) )
+            {
+                return parameterizedType.getActualTypeArguments()[ 0 ];
+            }
+        }
+
+        Type[] interfaces = ( (Class) methodReturnType ).getInterfaces();
+        for( Type anInterface : interfaces )
+        {
+            Type propertyType = getPropertyType( anInterface );
+            if( propertyType != null )
+            {
+                return propertyType;
+            }
+        }
+        return null;
+    }
+
 
     private InjectionModel newInjectionModel( Annotation annotation, Type injectionType, Class injectedType, Field field )
     {

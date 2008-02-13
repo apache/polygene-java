@@ -14,10 +14,12 @@
 
 package org.qi4j.runtime.composite;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import org.qi4j.association.AbstractAssociation;
 import org.qi4j.property.Property;
+import org.qi4j.runtime.property.AssociationContext;
+import org.qi4j.runtime.property.PropertyContext;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.ObjectBinding;
 import org.qi4j.spi.composite.ObjectModel;
@@ -34,8 +36,13 @@ public final class ObjectContext
     private InstanceFactory instanceFactory;
     private ModuleBinding moduleBinding;
 
-    public ObjectContext( ObjectBinding objectBinding, ModuleBinding moduleBinding, InstanceFactory instanceFactory )
+    private Map<String, PropertyContext> propertyContexts;
+    private Map<String, AssociationContext> associationContexts;
+
+    public ObjectContext( ObjectBinding objectBinding, ModuleBinding moduleBinding, InstanceFactory instanceFactory, Map<String, PropertyContext> propertyContexts, Map<String, AssociationContext> associationContexts )
     {
+        this.associationContexts = associationContexts;
+        this.propertyContexts = propertyContexts;
         this.moduleBinding = moduleBinding;
         this.objectBinding = objectBinding;
         this.instanceFactory = instanceFactory;
@@ -61,22 +68,29 @@ public final class ObjectContext
         return moduleBinding;
     }
 
-    public Object newObjectInstance( ModuleInstance moduleInstance, Set adapt, Object decoratedObject, Map<String, Object> objectProperties )
+    public Iterable<PropertyContext> getPropertyContexts()
     {
-        Map<String, Property> properties = new HashMap<String, Property>(); // TODO
+        return propertyContexts.values();
+    }
 
-        ObjectInjectionContext objectInjectionContext = new ObjectInjectionContext( moduleInstance.getCompositeBuilderFactory(), moduleInstance.getObjectBuilderFactory(), moduleBinding, adapt, decoratedObject, properties );
+    public Iterable<AssociationContext> getAssociationContexts()
+    {
+        return associationContexts.values();
+    }
+
+
+    public Object newObjectInstance( ModuleInstance moduleInstance, Set adapt, Object decoratedObject, Map<String, Property> objectProperties, Map<String, AbstractAssociation> objectAssociations )
+    {
+        ObjectInjectionContext objectInjectionContext = new ObjectInjectionContext( moduleInstance.getCompositeBuilderFactory(), moduleInstance.getObjectBuilderFactory(), moduleInstance.getServiceRegistry(), moduleBinding, adapt, decoratedObject, objectProperties, objectAssociations );
         Object objectInstance = instanceFactory.newInstance( objectBinding, objectInjectionContext );
 
         // Return
         return objectInstance;
     }
 
-    public void inject( Object instance, ModuleInstance moduleInstance, Set<Object> adaptContext, Object decoratedObject, Map<String, Object> objectProperties )
+    public void inject( Object instance, ModuleInstance moduleInstance, Set<Object> adaptContext, Object decoratedObject, Map<String, Property> objectProperties, Map<String, AbstractAssociation> objectAssociations )
     {
-        Map<String, Property> properties = new HashMap<String, Property>(); // TODO
-
-        ObjectInjectionContext objectInjectionContext = new ObjectInjectionContext( moduleInstance.getCompositeBuilderFactory(), moduleInstance.getObjectBuilderFactory(), moduleBinding, adaptContext, decoratedObject, properties );
+        ObjectInjectionContext objectInjectionContext = new ObjectInjectionContext( moduleInstance.getCompositeBuilderFactory(), moduleInstance.getObjectBuilderFactory(), moduleInstance.getServiceRegistry(), moduleBinding, adaptContext, decoratedObject, objectProperties, objectAssociations );
         instanceFactory.inject( instance, objectBinding, objectInjectionContext );
     }
 }

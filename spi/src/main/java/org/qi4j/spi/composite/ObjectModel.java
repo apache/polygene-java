@@ -11,27 +11,38 @@
 */
 package org.qi4j.spi.composite;
 
+import java.util.List;
 import org.qi4j.spi.property.PropertyModel;
-import org.qi4j.spi.structure.Visibility;
 
 /**
- * Base class for fragments. Fragments are composed into objects.
- *
- * @see MixinModel
- * @see ConcernModel
+ * Model for regular object classes.
  */
 public final class ObjectModel extends AbstractModel
 {
+    private final Iterable<ObjectMethodModel> objectMethodModels;
     private final Iterable<PropertyModel> propertyModels;
+    private final Iterable<AssociationModel> associationModels;
 
-    public ObjectModel( Class modelClass, Iterable<ConstructorModel> constructorModels, Iterable<FieldModel> fieldModels, Iterable<MethodModel> methodModels, Iterable<PropertyModel> propertyModels )
+    public ObjectModel( Class modelClass, Iterable<ConstructorModel> constructorModels, Iterable<FieldModel> fieldModels, Iterable<MethodModel> methodModels, Iterable<ObjectMethodModel> objectMethodModels, Iterable<PropertyModel> propertyModels, List<AssociationModel> associationModels )
     {
         super( modelClass, constructorModels, fieldModels, methodModels );
+        this.objectMethodModels = objectMethodModels;
         this.propertyModels = propertyModels;
+        this.associationModels = associationModels;
+    }
+
+    public Iterable<ObjectMethodModel> getObjectMethodModels()
+    {
+        return objectMethodModels;
     }
 
     public Iterable<PropertyModel> getPropertyModels()
     {
         return propertyModels;
+    }
+
+    public Iterable<AssociationModel> getAssociationModels()
+    {
+        return associationModels;
     }
 }

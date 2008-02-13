@@ -15,12 +15,9 @@
 package org.qi4j.bootstrap;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import org.qi4j.composite.Composite;
-import org.qi4j.spi.structure.Visibility;
 
 /**
  * TODO
@@ -30,7 +27,6 @@ public final class LayerAssembly
     private ApplicationAssembly applicationAssembly;
     private List<ModuleAssembly> moduleAssemblies = new ArrayList<ModuleAssembly>();
     private Set<LayerAssembly> uses = new LinkedHashSet<LayerAssembly>();
-    private Set<Class<? extends Composite>> publicComposites = new LinkedHashSet<Class<? extends Composite>>();
 
     private String name;
 
@@ -61,11 +57,6 @@ public final class LayerAssembly
         uses.add( layerAssembly );
     }
 
-    public void addPublicComposite( Class<? extends Composite> compositeType )
-    {
-        publicComposites.add( compositeType );
-    }
-
     List<ModuleAssembly> getModuleAssemblies()
     {
         return moduleAssemblies;
@@ -74,25 +65,6 @@ public final class LayerAssembly
     Set<LayerAssembly> getUses()
     {
         return uses;
-    }
-
-    Set<Class<? extends Composite>> getPublicComposites()
-    {
-        Set<Class<? extends Composite>> publicComposites = new HashSet<Class<? extends Composite>>();
-        for( ModuleAssembly moduleAssembly : moduleAssemblies )
-        {
-            for( CompositeDeclaration compositeDeclaration : moduleAssembly.getCompositeDeclarations() )
-            {
-                if( compositeDeclaration.getVisibility() == Visibility.layer )
-                {
-                    for( Class<? extends Composite> compositeType : compositeDeclaration.getCompositeTypes() )
-                    {
-                        publicComposites.add( compositeType );
-                    }
-                }
-            }
-        }
-        return publicComposites;
     }
 
     String getName()

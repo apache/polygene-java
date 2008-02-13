@@ -14,32 +14,38 @@ package org.qi4j.spi.composite;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Comparator;
+import org.qi4j.spi.structure.CompositeDescriptor;
 
 /**
  * Composite Resolutions are Composite Models that are resolved in a particular Module.
  */
 public final class CompositeResolution
 {
-    private CompositeModel compositeModel;
+    private CompositeDescriptor compositeDescriptor;
     private Iterable<CompositeMethodResolution> compositeMethodResolutions;
     private Iterable<MixinResolution> mixinResolutions;
     private int mixinCount;
     private Iterable<PropertyResolution> propertyResolutions;
     private Iterable<AssociationResolution> associationResolutions;
 
-    public CompositeResolution( CompositeModel compositeModel, Iterable<CompositeMethodResolution> compositeMethodResolutions, Collection<MixinResolution> mixinResolutions, Iterable<PropertyResolution> propertyResolutions, Iterable<AssociationResolution> associationResolutions )
+    public CompositeResolution( CompositeDescriptor compositeDescriptor, Iterable<CompositeMethodResolution> compositeMethodResolutions, Collection<MixinResolution> mixinResolutions, Iterable<PropertyResolution> propertyResolutions, Iterable<AssociationResolution> associationResolutions )
     {
         this.associationResolutions = associationResolutions;
         this.propertyResolutions = propertyResolutions;
         this.mixinResolutions = mixinResolutions;
-        this.compositeModel = compositeModel;
+        this.compositeDescriptor = compositeDescriptor;
         this.compositeMethodResolutions = compositeMethodResolutions;
         mixinCount = mixinResolutions.size();
     }
 
+    public CompositeDescriptor getCompositeDescriptor()
+    {
+        return compositeDescriptor;
+    }
+
     public CompositeModel getCompositeModel()
     {
-        return compositeModel;
+        return compositeDescriptor.getCompositeModel();
     }
 
     public Iterable<CompositeMethodResolution> getCompositeMethodResolutions()
@@ -64,12 +70,12 @@ public final class CompositeResolution
 
     @Override public int hashCode()
     {
-        return compositeModel.hashCode();
+        return compositeDescriptor.getCompositeModel().hashCode();
     }
 
     public String toString()
     {
-        return compositeModel.toString();
+        return compositeDescriptor.getCompositeModel().toString();
 /*
         StringWriter str = new StringWriter();
         PrintWriter out = new PrintWriter( str );

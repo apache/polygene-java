@@ -21,7 +21,7 @@ public final class ThisCompositeAsInjectionProviderFactory
     public InjectionProvider newInjectionProvider( BindingContext bindingContext ) throws InvalidInjectionException
     {
         InjectionResolution resolution = bindingContext.getInjectionResolution();
-        if( resolution.getCompositeModel() != null )
+        if( bindingContext.getCompositeResolution() != null )
         {
             return new ThisCompositeAsInjectionProvider( resolution.getInjectionModel().getInjectionClass() );
 

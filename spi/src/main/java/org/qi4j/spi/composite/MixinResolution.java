@@ -12,7 +12,6 @@
 package org.qi4j.spi.composite;
 
 import java.util.Map;
-import org.qi4j.spi.property.PropertyModel;
 
 /**
  * A mixin is an implementation of a particular interface,
@@ -20,14 +19,22 @@ import org.qi4j.spi.property.PropertyModel;
  */
 public final class MixinResolution
     extends FragmentResolution
+    implements StateResolution
 {
-    private Map<String, PropertyModel> propertyModels;
+    private Map<String, PropertyResolution> propertyResolutions;
+    private Map<String, AssociationResolution> associationResolutions;
 
     // Constructors --------------------------------------------------
-    public MixinResolution( MixinModel mixinModel, Iterable<ConstructorResolution> constructorResolutions, Iterable<FieldResolution> fieldResolutions, Iterable<MethodResolution> methodResolutions, Map<String, PropertyModel> propertyModels )
+    public MixinResolution( MixinModel mixinModel,
+                            Iterable<ConstructorResolution> constructorResolutions,
+                            Iterable<FieldResolution> fieldResolutions,
+                            Iterable<MethodResolution> methodResolutions,
+                            Map<String, PropertyResolution> propertyResolutions,
+                            Map<String, AssociationResolution> associationResolutions )
     {
         super( mixinModel, constructorResolutions, fieldResolutions, methodResolutions );
-        this.propertyModels = propertyModels;
+        this.propertyResolutions = propertyResolutions;
+        this.associationResolutions = associationResolutions;
     }
 
     public MixinModel getMixinModel()
@@ -35,8 +42,13 @@ public final class MixinResolution
         return (MixinModel) getAbstractModel();
     }
 
-    public PropertyModel getPropertyModel( String name )
+    public PropertyResolution getPropertyResolution( String qualifiedName )
     {
-        return propertyModels.get( name );
+        return propertyResolutions.get( qualifiedName );
+    }
+
+    public AssociationResolution getAssociationResolution( String qualifiedName )
+    {
+        return associationResolutions.get( qualifiedName );
     }
 }

@@ -19,6 +19,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -144,7 +145,12 @@ public class CompositeBinder
 
                 // Constructor
                 Iterable<ConstructorResolution> constructorResolutions = mixinResolution.getConstructorResolutions();
-                ConstructorResolution constructorResolution = constructorResolutions.iterator().next(); // TODO Pick the best constructor!
+                Iterator<ConstructorResolution> iterator = constructorResolutions.iterator();
+                if( !iterator.hasNext() )
+                {
+                    throw new BindingException( "No public constructors found in mixin " + mixinResolution.getMixinModel().getModelClass().getName() );
+                }
+                ConstructorResolution constructorResolution = iterator.next(); // TODO Pick the best constructor!
                 ConstructorBinding constructorBinding = bindConstructor( mixinContext, constructorResolution );
 
                 // Fields

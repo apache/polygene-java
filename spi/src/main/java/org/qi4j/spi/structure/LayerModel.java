@@ -26,10 +26,15 @@ public final class LayerModel
 {
     private Iterable<ModuleModel> moduleModels;
     private Map<Class<? extends Composite>, ModuleModel> publicCompositeMap;
+    private Map<Class, ModuleModel> publicObjectMap;
     private String name;
 
-    public LayerModel( Iterable<ModuleModel> modules, Map<Class<? extends Composite>, ModuleModel> publicCompositeMap, String name )
+    public LayerModel( Iterable<ModuleModel> modules,
+                       Map<Class<? extends Composite>, ModuleModel> publicCompositeMap,
+                       Map<Class, ModuleModel> publicObjectMap,
+                       String name )
     {
+        this.publicObjectMap = publicObjectMap;
         this.publicCompositeMap = publicCompositeMap;
         this.name = name;
         this.moduleModels = modules;
@@ -43,6 +48,11 @@ public final class LayerModel
     public Map<Class<? extends Composite>, ModuleModel> getPublicCompositeMap()
     {
         return publicCompositeMap;
+    }
+
+    public Map<Class, ModuleModel> getPublicObjectMap()
+    {
+        return publicObjectMap;
     }
 
     public String getName()

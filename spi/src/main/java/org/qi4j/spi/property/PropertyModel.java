@@ -43,14 +43,19 @@ public final class PropertyModel
         return accessor.getDeclaringClass().getName() + ":" + accessor.getName();
     }
 
+    public static String getQualifiedName( Class declaringClass, String name )
+    {
+        return declaringClass.getName() + ":" + name;
+    }
+
     private String name;
     private Type type;
     private Method accessor; // Interface accessor
     private String qualifiedName;
 
-    public PropertyModel( String aName, Type aType, Method anAccessor )
+    public PropertyModel( Type aType, Method anAccessor )
     {
-        name = aName;
+        name = anAccessor.getName();
         type = aType;
         accessor = anAccessor;
         qualifiedName = getQualifiedName( anAccessor );

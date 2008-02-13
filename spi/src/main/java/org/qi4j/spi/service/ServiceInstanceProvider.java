@@ -14,26 +14,20 @@
 
 package org.qi4j.spi.service;
 
-import org.qi4j.composite.CompositeBuilderFactory;
-import org.qi4j.composite.scope.Structure;
-import org.qi4j.service.ServiceComposite;
+import org.qi4j.composite.scope.Adapt;
+import org.qi4j.service.ActivationListener;
+import org.qi4j.spi.structure.ServiceDescriptor;
 
 /**
  * TODO
  */
-public final class Session
-    implements ServiceProvider
+public interface ServiceInstanceProvider
+    extends ActivationListener
 {
-    @Structure CompositeBuilderFactory factory;
+    void init( @Adapt ServiceDescriptor serviceDescriptor );
 
-    public <T> T getService( Class<T> serviceType ) throws ServiceProviderException
-    {
-        T instance = factory.newComposite( serviceType );
-        return serviceType.cast( instance );
-    }
+    ServiceInstance getInstance()
+        throws ServiceProviderException;
 
-    public void releaseService( ServiceComposite service )
-    {
-        service.delete();
-    }
+    void releaseInstance( ServiceInstance instance );
 }

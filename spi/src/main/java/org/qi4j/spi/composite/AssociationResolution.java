@@ -23,21 +23,14 @@ public final class AssociationResolution
     implements Serializable
 {
     private AssociationModel associationModel;
-    private MixinResolution mixinResolution;
 
-    public AssociationResolution( AssociationModel associationModel, MixinResolution mixinResolution )
+    public AssociationResolution( AssociationModel associationModel )
     {
         this.associationModel = associationModel;
-        this.mixinResolution = mixinResolution;
     }
 
     public AssociationModel getAssociationModel()
     {
         return associationModel;
-    }
-
-    public MixinResolution getMixinResolution()
-    {
-        return mixinResolution;
     }
 }

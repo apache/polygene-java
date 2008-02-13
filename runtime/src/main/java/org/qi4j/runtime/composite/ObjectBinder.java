@@ -14,6 +14,11 @@
 
 package org.qi4j.runtime.composite;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import org.qi4j.spi.composite.AssociationModel;
 import org.qi4j.spi.composite.BindingException;
 import org.qi4j.spi.composite.ConstructorBinding;
 import org.qi4j.spi.composite.ConstructorResolution;
@@ -24,6 +29,11 @@ import org.qi4j.spi.composite.ObjectResolution;
 import org.qi4j.spi.injection.BindingContext;
 import org.qi4j.spi.injection.InjectionProviderFactory;
 import org.qi4j.spi.injection.InvalidInjectionException;
+import org.qi4j.spi.property.AssociationBinding;
+import org.qi4j.spi.property.PropertyBinding;
+import org.qi4j.spi.property.PropertyModel;
+import org.qi4j.spi.structure.AssociationDescriptor;
+import org.qi4j.spi.structure.PropertyDescriptor;
 
 /**
  * TODO
@@ -44,7 +54,47 @@ public final class ObjectBinder extends CompositeBinder
             ConstructorBinding constructorBinding = bindConstructor( bindingContext, constructorResolution );
             Iterable<FieldBinding> fieldBindings = bindFields( bindingContext, objectResolution.getFieldResolutions() );
             Iterable<MethodBinding> methodBindings = bindMethods( bindingContext, objectResolution.getMethodResolutions() );
-            ObjectBinding objectBinding = new ObjectBinding( objectResolution, constructorBinding, fieldBindings, methodBindings );
+
+            List<PropertyBinding> propertyBindings = new ArrayList<PropertyBinding>();
+            Iterable<PropertyModel> propertyModels = objectResolution.getObjectModel().getPropertyModels();
+            for( PropertyModel propertyModel : propertyModels )
+            {
+                PropertyDescriptor propertyDescriptor = bindingContext.getModuleResolution().getModuleModel().getPropertyDescriptor( propertyModel.getAccessor() );
+                Map<Class, Object> propertyInfos;
+                if( propertyDescriptor != null )
+                {
+                    propertyInfos = propertyDescriptor.getPropertyInfos();
+                }
+                else
+                {
+                    propertyInfos = Collections.emptyMap();
+                }
+
+                PropertyBinding propertyBinding = new PropertyBinding( objectResolution.getPropertyResolution( propertyModel.getName() ), propertyInfos, propertyDescriptor != null ? propertyDescriptor.getDefaultValue() : null );
+                propertyBindings.add( propertyBinding );
+            }
+
+            List<AssociationBinding> associationBindings = new ArrayList<AssociationBinding>();
+            Iterable<AssociationModel> associationModels = objectResolution.getObjectModel().getAssociationModels();
+            for( AssociationModel associationModel : associationModels )
+            {
+                AssociationDescriptor associationDescriptor = bindingContext.getModuleResolution().getModuleModel().getAssociationDescriptor( associationModel.getAccessor() );
+                Map<Class, Object> associationInfos;
+                if( associationDescriptor != null )
+                {
+                    associationInfos = associationDescriptor.getAssociationInfos();
+                }
+                else
+                {
+                    associationInfos = Collections.emptyMap();
+                }
+
+                AssociationBinding associationBinding = new AssociationBinding( objectResolution.getAssociationResolution( associationModel.getQualifiedName() ), associationInfos );
+                associationBindings.add( associationBinding );
+            }
+
+
+            ObjectBinding objectBinding = new ObjectBinding( objectResolution, constructorBinding, fieldBindings, methodBindings, propertyBindings, associationBindings );
             return objectBinding;
         }
         catch( InvalidInjectionException e )

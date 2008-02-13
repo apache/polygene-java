@@ -349,7 +349,7 @@ public final class CompositeModelFactory
         {
             Type returnType = method.getGenericReturnType();
             Type propertyType = getPropertyType( returnType );
-            propertyModel = new PropertyModel( method.getName(), propertyType, method );
+            propertyModel = new PropertyModel( propertyType, method );
         }
 
         // AbstractAssociation model, if any
@@ -358,7 +358,7 @@ public final class CompositeModelFactory
         {
             Type returnType = method.getGenericReturnType();
             Type associationType = ( (ParameterizedType) returnType ).getActualTypeArguments()[ 0 ];
-            associationModel = new AssociationModel( method.getName(), associationType, method );
+            associationModel = new AssociationModel( associationType, method );
         }
 
         CompositeMethodModel methodModel = new CompositeMethodModel( method, parameterModels, propertyModel, associationModel );
@@ -406,57 +406,6 @@ public final class CompositeModelFactory
         }
 
         return methodModels.values();
-    }
-
-    private void addProperties( Iterable<CompositeMethodModel> methods, List<PropertyModel> propertyModels )
-    {
-        for( CompositeMethodModel method : methods )
-        {
-            if( Property.class.isAssignableFrom( method.getMethod().getReturnType() ) )
-            {
-                Type returnType = method.getMethod().getGenericReturnType();
-                Type propertyType = ( (ParameterizedType) returnType ).getActualTypeArguments()[ 0 ];
-                PropertyModel propertyModel = new PropertyModel( method.getMethod().getName(), propertyType, method.getMethod() );
-                propertyModels.add( propertyModel );
-            }
-        }
-    }
-
-    private void addAssociations( Iterable<CompositeMethodModel> methods, List<AssociationModel> associationModels )
-    {
-        for( CompositeMethodModel method : methods )
-        {
-            if( AbstractAssociation.class.isAssignableFrom( method.getMethod().getReturnType() ) )
-            {
-                Type returnType = method.getMethod().getGenericReturnType();
-                Type associationType = ( (ParameterizedType) returnType ).getActualTypeArguments()[ 0 ];
-                AssociationModel associationModel = new AssociationModel( method.getMethod().getName(), associationType, method.getMethod() );
-                associationModels.add( associationModel );
-            }
-        }
-    }
-
-    private Type getPropertyType( Type methodReturnType )
-    {
-        if( methodReturnType instanceof ParameterizedType )
-        {
-            ParameterizedType parameterizedType = (ParameterizedType) methodReturnType;
-            if( Property.class.isAssignableFrom( (Class<?>) parameterizedType.getRawType() ) )
-            {
-                return parameterizedType.getActualTypeArguments()[ 0 ];
-            }
-        }
-
-        Type[] interfaces = ( (Class) methodReturnType ).getInterfaces();
-        for( Type anInterface : interfaces )
-        {
-            Type propertyType = getPropertyType( anInterface );
-            if( propertyType != null )
-            {
-                return propertyType;
-            }
-        }
-        return null;
     }
 
     private Class getFragmentClass( Class mixinClass )

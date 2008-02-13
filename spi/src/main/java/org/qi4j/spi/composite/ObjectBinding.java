@@ -14,18 +14,38 @@
 
 package org.qi4j.spi.composite;
 
+import org.qi4j.spi.property.AssociationBinding;
+import org.qi4j.spi.property.PropertyBinding;
+
 /**
  * Base class for object model bindings. Bindings are resolutions whose injections have been bound to injection providers.
  */
-public final class ObjectBinding extends AbstractBinding
+public final class ObjectBinding
+    extends AbstractBinding
+    implements StateBinding
 {
-    public ObjectBinding( AbstractResolution abstractResolution, ConstructorBinding constructorBinding, Iterable<FieldBinding> fieldBindings, Iterable<MethodBinding> methodBindings )
+    private Iterable<PropertyBinding> propertyBindings;
+    private Iterable<AssociationBinding> associationBindings;
+
+    public ObjectBinding( AbstractResolution abstractResolution, ConstructorBinding constructorBinding, Iterable<FieldBinding> fieldBindings, Iterable<MethodBinding> methodBindings, Iterable<PropertyBinding> propertyBindings, Iterable<AssociationBinding> associationBindings )
     {
         super( abstractResolution, constructorBinding, fieldBindings, methodBindings );
+        this.associationBindings = associationBindings;
+        this.propertyBindings = propertyBindings;
     }
 
     public ObjectResolution getObjectResolution()
     {
         return (ObjectResolution) getAbstractResolution();
+    }
+
+    public Iterable<PropertyBinding> getPropertyBindings()
+    {
+        return propertyBindings;
+    }
+
+    public Iterable<AssociationBinding> getAssociationBindings()
+    {
+        return associationBindings;
     }
 }

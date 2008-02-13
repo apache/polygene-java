@@ -23,6 +23,7 @@ import org.qi4j.spi.property.PropertyBinding;
  */
 public final class MixinBinding
     extends FragmentBinding
+    implements StateBinding
 {
     private Iterable<PropertyBinding> propertyBindings;
     private Iterable<AssociationBinding> associationBindings;

@@ -15,12 +15,12 @@
 package org.qi4j.spi.structure;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.qi4j.composite.Composite;
 import org.qi4j.spi.composite.CompositeResolution;
 import org.qi4j.spi.composite.ObjectResolution;
-import org.qi4j.spi.service.ServiceProvider;
 
 /**
  * TODO
@@ -31,12 +31,17 @@ public final class ModuleResolution
     private ModuleModel moduleModel;
     private List<ObjectResolution> objectResolutions;
     private Map<Class<? extends Composite>, ModuleModel> instantiableComposites;
-    private Map<Class, ServiceProvider> availableServices;
+    private Map<Class, ServiceDescriptor> availableServices;
     private ApplicationModel applicationModel;
     private LayerModel layerModel;
     private Iterable<CompositeResolution> compositeResolutions;
 
-    public ModuleResolution( ModuleModel moduleModel, ApplicationModel applicationModel, LayerModel layerModel, Map<Class<? extends Composite>, ModuleModel> instantiableComposites, Iterable<CompositeResolution> compositeResolutions, List<ObjectResolution> objectResolutions, Map<Class, ServiceProvider> availableServices )
+    public ModuleResolution( ModuleModel moduleModel,
+                             ApplicationModel applicationModel,
+                             LayerModel layerModel,
+                             Map<Class<? extends Composite>, ModuleModel> instantiableComposites,
+                             Iterable<CompositeResolution> compositeResolutions,
+                             List<ObjectResolution> objectResolutions )
     {
         this.availableServices = availableServices;
         this.applicationModel = applicationModel;
@@ -45,6 +50,17 @@ public final class ModuleResolution
         this.instantiableComposites = instantiableComposites;
         this.moduleModel = moduleModel;
         this.objectResolutions = objectResolutions;
+
+        // Figure out what service types are available from this module
+        this.availableServices = new HashMap<Class, ServiceDescriptor>();
+
+        // Add extended interfaces, unless they have been specifically registered already
+        for( ServiceDescriptor serviceDescriptor : moduleModel.getServiceDescriptors() )
+        {
+            Class serviceType = serviceDescriptor.getServiceType();
+            availableServices.put( serviceType, serviceDescriptor );
+            addSuperTypeProviders( serviceType, serviceDescriptor, availableServices );
+        }
     }
 
     public ModuleModel getModuleModel()
@@ -77,19 +93,14 @@ public final class ModuleResolution
         return objectResolutions;
     }
 
-    public Map<Class, ServiceProvider> getAvailableServices()
-    {
-        return availableServices;
-    }
-
-    public ServiceProvider getServiceProvider( Class serviceType )
+    public ServiceDescriptor getServiceDescriptor( Class serviceType )
     {
         do
         {
-            ServiceProvider serviceProvider = availableServices.get( serviceType );
-            if( serviceProvider != null )
+            ServiceDescriptor serviceDescriptor = availableServices.get( serviceType );
+            if( serviceDescriptor != null )
             {
-                return serviceProvider;
+                return serviceDescriptor;
             }
 
             serviceType = serviceType.getSuperclass();
@@ -97,5 +108,22 @@ public final class ModuleResolution
         while( serviceType != null );
 
         return null;
+    }
+
+    private void addSuperTypeProviders( Class serviceType, ServiceDescriptor serviceDescriptor, Map<Class, ServiceDescriptor> availableServices )
+    {
+        Class[] extendedInterfaces = serviceType.getInterfaces();
+        for( Class extendedInterface : extendedInterfaces )
+        {
+            if( extendedInterface.getMethods().length > 0 )
+            {
+                ServiceDescriptor specificDescriptor = availableServices.get( extendedInterface );
+                if( specificDescriptor == null )
+                {
+                    availableServices.put( extendedInterface, serviceDescriptor );
+                }
+                addSuperTypeProviders( extendedInterface, serviceDescriptor, availableServices );
+            }
+        }
     }
 }

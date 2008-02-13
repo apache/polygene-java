@@ -14,6 +14,12 @@
 
 package org.qi4j.bootstrap;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import org.qi4j.runtime.composite.ObjectModelFactory;
+import org.qi4j.spi.structure.ObjectDescriptor;
 import org.qi4j.spi.structure.Visibility;
 
 /**
@@ -21,28 +27,36 @@ import org.qi4j.spi.structure.Visibility;
  */
 public class ObjectDeclaration
 {
-    private Iterable<Class> classes;
-    private Visibility visibility = Visibility.none;
+    private Iterable<Class> objectTypes;
+    private Set<Object> objectInfos = new HashSet<Object>();
+    private Visibility visibility = Visibility.module;
 
     public ObjectDeclaration( Iterable<Class> classes )
     {
-        this.classes = classes;
+        this.objectTypes = classes;
     }
 
-    public ObjectDeclaration publicIn( Visibility visibility )
+    public ObjectDeclaration addObjectInfo( Object info )
+    {
+        objectInfos.add( info );
+        return this;
+    }
+
+    public ObjectDeclaration visibleIn( Visibility visibility )
         throws IllegalStateException
     {
         this.visibility = visibility;
         return this;
     }
 
-    Iterable<Class> getObjectClasses()
+    List<ObjectDescriptor> getObjectDescriptors( ObjectModelFactory objectModelFactory )
     {
-        return classes;
-    }
-
-    Visibility getVisibility()
-    {
-        return visibility;
+        List<ObjectDescriptor> objectDescriptors = new ArrayList<ObjectDescriptor>();
+        for( Class objectType : objectTypes )
+        {
+            ObjectDescriptor objectDescriptor = new ObjectDescriptor( objectModelFactory.newObjectModel( objectType ), objectInfos, visibility );
+            objectDescriptors.add( objectDescriptor );
+        }
+        return objectDescriptors;
     }
 }

@@ -18,27 +18,20 @@ import java.io.Serializable;
 import org.qi4j.spi.property.PropertyModel;
 
 /**
- * TODO
+ * Property resolution. Mostly a placeholder for the moment.
  */
 public final class PropertyResolution
     implements Serializable
 {
     private PropertyModel propertyModel;
-    private MixinResolution mixinResolution;
 
-    public PropertyResolution( PropertyModel propertyModel, MixinResolution mixinResolution )
+    public PropertyResolution( PropertyModel propertyModel )
     {
         this.propertyModel = propertyModel;
-        this.mixinResolution = mixinResolution;
     }
 
     public PropertyModel getPropertyModel()
     {
         return propertyModel;
-    }
-
-    public MixinResolution getMixinResolution()
-    {
-        return mixinResolution;
     }
 }

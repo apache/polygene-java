@@ -28,6 +28,11 @@ public final class ParameterModel
     private ParameterConstraintsModel parameterConstraintsModel; // May be null
     private InjectionModel injectionModel; // May be null
 
+    public ParameterModel( Type type )
+    {
+        this.type = type;
+    }
+
     public ParameterModel( Type type, ParameterConstraintsModel parameterConstraintsModel, InjectionModel injectionModel )
     {
         this.type = type;

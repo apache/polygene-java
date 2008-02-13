@@ -22,12 +22,17 @@ import java.lang.annotation.Target;
 import org.qi4j.injection.InjectionScope;
 
 /**
- * Annotation to denote the injection of fragment specific resource. These include:
- * The CompositeBuilderFactory
+ * Annotation to denote the injection of a resource specific for the module which the injected object/fragment is instantiated in.
  * <p/>
  * Examples:
  *
  * @Structure CompositeBuilderFactory cbf
+ * @Structure ObjectBuilderFactory obf
+ * @Structure ServiceRegistry serviceRegistry
+ * @Structure ModuleBinding moduleBinding
+ * @Structure Qi4j qi4j
+ * @Structure Qi4jSPI qi4jSpi
+ * @Structure Qi4jRuntime qi4jRuntime
  */
 @Retention( RetentionPolicy.RUNTIME )
 @Target( { ElementType.FIELD, ElementType.PARAMETER } )

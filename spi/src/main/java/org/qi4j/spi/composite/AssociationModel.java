@@ -46,9 +46,9 @@ public final class AssociationModel
     private Method accessor; // Interface accessor
     private String qualifiedName;
 
-    public AssociationModel( String name, Type type, Method accessor )
+    public AssociationModel( Type type, Method accessor )
     {
-        this.name = name;
+        this.name = accessor.getName();
         this.type = type;
         this.accessor = accessor;
         qualifiedName = getQualifiedName( accessor );

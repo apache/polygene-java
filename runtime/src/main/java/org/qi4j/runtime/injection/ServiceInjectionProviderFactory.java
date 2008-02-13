@@ -21,8 +21,9 @@ import org.qi4j.spi.injection.InjectionProviderException;
 import org.qi4j.spi.injection.InjectionProviderFactory;
 import org.qi4j.spi.injection.InjectionResolution;
 import org.qi4j.spi.injection.InvalidInjectionException;
-import org.qi4j.spi.service.ServiceProvider;
+import org.qi4j.spi.service.ServiceInstanceProvider;
 import org.qi4j.spi.service.ServiceProviderException;
+import org.qi4j.spi.structure.ServiceDescriptor;
 
 public final class ServiceInjectionProviderFactory
     implements InjectionProviderFactory
@@ -31,29 +32,27 @@ public final class ServiceInjectionProviderFactory
     {
         InjectionResolution resolution = bindingContext.getInjectionResolution();
         Class serviceType = resolution.getInjectionModel().getInjectionClass();
-        ServiceProvider provider = bindingContext.getModuleResolution().getServiceProvider( serviceType );
-        if( provider == null )
+        ServiceDescriptor serviceDescriptor = bindingContext.getModuleResolution().getServiceDescriptor( serviceType );
+        if( serviceDescriptor == null )
         {
-            provider = bindingContext.getLayerResolution().getServiceProvider( serviceType );
+            serviceDescriptor = bindingContext.getLayerResolution().getServiceDescriptor( serviceType );
         }
 
-        if( provider == null )
+        if( serviceDescriptor == null )
         {
-            throw new InvalidInjectionException( "No service provider found for type " + serviceType.getName() );
+            throw new InvalidInjectionException( "No service found for type " + serviceType.getName() );
         }
 
-        return new ServiceInjectionProvider( provider, resolution );
+        return new ServiceInjectionProvider( resolution );
     }
 
     static class ServiceInjectionProvider
         implements InjectionProvider
     {
-        private ServiceProvider serviceProvider;
         private InjectionResolution injectionResolution;
 
-        public ServiceInjectionProvider( ServiceProvider serviceProvider, InjectionResolution injectionResolution )
+        public ServiceInjectionProvider( InjectionResolution injectionResolution )
         {
-            this.serviceProvider = serviceProvider;
             this.injectionResolution = injectionResolution;
         }
 
@@ -61,7 +60,8 @@ public final class ServiceInjectionProviderFactory
         {
             try
             {
-                Object service = serviceProvider.getService( injectionResolution.getInjectionModel().getInjectionClass() );
+                ServiceInstanceProvider serviceInstanceProvider = context.getServiceRegistry().getServiceProvider( injectionResolution.getInjectionModel().getInjectionClass() );
+                Object service = serviceInstanceProvider.getInstance().getInstance();
                 return service;
             }
             catch( ServiceProviderException e )

@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import org.qi4j.composite.AppliesToFilter;
 import org.qi4j.composite.ConstraintDeclaration;
+import org.qi4j.spi.composite.AssociationModel;
 import org.qi4j.spi.composite.AssociationResolution;
 import org.qi4j.spi.composite.CompositeMethodModel;
 import org.qi4j.spi.composite.CompositeMethodResolution;
@@ -47,6 +48,7 @@ import org.qi4j.spi.injection.InvalidInjectionException;
 import org.qi4j.spi.injection.ResolutionContext;
 import org.qi4j.spi.property.PropertyModel;
 import org.qi4j.spi.structure.ApplicationModel;
+import org.qi4j.spi.structure.CompositeDescriptor;
 import org.qi4j.spi.structure.LayerModel;
 import org.qi4j.spi.structure.ModuleModel;
 
@@ -56,20 +58,20 @@ import org.qi4j.spi.structure.ModuleModel;
 public final class CompositeResolver
     extends AbstractResolver
 {
-    public CompositeResolution resolveCompositeModel( ResolutionContext resolutionContext )
+    public CompositeResolution resolveCompositeModel( CompositeDescriptor compositeDescriptor, ResolutionContext resolutionContext )
         throws ResolutionException
     {
         // First figure out which interfaces map to which methods
-        Map<Method, MixinModel> mixinsForMethods = getMixinsForMethods( resolutionContext );
+        Map<Method, MixinModel> mixinsForMethods = getMixinsForMethods( compositeDescriptor.getCompositeModel() );
 
         // Determine list of mixin resolutions. Remove all duplicates
-        Map<MixinModel, MixinResolution> resolvedMixins = getResolvedMixins( mixinsForMethods, resolutionContext );
+        Map<MixinModel, MixinResolution> resolvedMixins = getResolvedMixins( mixinsForMethods, compositeDescriptor.getCompositeModel(), resolutionContext );
 
         // Get mixin resolutions for all methods
         Map<Method, MixinResolution> mixinResolutionsForMethods = getResolvedMethodMixins( mixinsForMethods, resolvedMixins );
 
         // Map concerns and side-effects to methods
-        List<CompositeMethodResolution> methodResolutions = getMethodResolutions( resolutionContext, mixinResolutionsForMethods, resolvedMixins.values() );
+        List<CompositeMethodResolution> methodResolutions = getMethodResolutions( compositeDescriptor.getCompositeModel(), resolutionContext, mixinResolutionsForMethods, resolvedMixins.values() );
 
         List<PropertyResolution> propertyResolutions = new ArrayList<PropertyResolution>();
         List<AssociationResolution> associationResolutions = new ArrayList<AssociationResolution>();
@@ -79,8 +81,7 @@ public final class CompositeResolver
             associationResolutions.add( methodResolution.getAssociationResolution() );
         }
 
-        CompositeModel compositeModel = resolutionContext.getCompositeModel();
-        CompositeResolution resolution = new CompositeResolution( compositeModel, methodResolutions, resolvedMixins.values(), propertyResolutions, associationResolutions );
+        CompositeResolution resolution = new CompositeResolution( compositeDescriptor, methodResolutions, resolvedMixins.values(), propertyResolutions, associationResolutions );
         return resolution;
     }
 
@@ -112,31 +113,29 @@ public final class CompositeResolver
     }
 
     private MixinResolution resolveMixin(
-        MixinModel mixinModelToResolve, ResolutionContext resolutionContext, Map<Method, MixinModel> mixinsForMethods )
+        MixinModel mixinModelToResolve, CompositeModel compositeModel, ResolutionContext resolutionContext, Map<Method, MixinModel> mixinsForMethods )
         throws InvalidInjectionException
     {
-        CompositeModel compositeModel = resolutionContext.getCompositeModel();
         ModuleModel moduleModel = resolutionContext.getModule();
         LayerModel layerModel = resolutionContext.getLayer();
         ApplicationModel application = resolutionContext.getApplication();
-        ResolutionContext mixinResolutionContext =
-            new ResolutionContext( mixinModelToResolve, compositeModel, moduleModel, layerModel, application );
 
         List<ConstructorResolution> constructors = new ArrayList<ConstructorResolution>();
 
         Iterable<ConstructorModel> constructorModels = mixinModelToResolve.getConstructorModels();
-        resolveConstructorModel( constructorModels, constructors, mixinResolutionContext );
+        resolveConstructorModel( constructorModels, constructors, resolutionContext );
 
         List<FieldResolution> fields = new ArrayList<FieldResolution>();
         Iterable<FieldModel> fieldModels = mixinModelToResolve.getFieldModels();
-        resolveFieldModels( fieldModels, fields, mixinResolutionContext );
+        resolveFieldModels( fieldModels, fields, resolutionContext );
 
         List<MethodResolution> methods = new ArrayList<MethodResolution>();
         Iterable<MethodModel> methodModels = mixinModelToResolve.getMethodModels();
-        resolveMethodModels( methodModels, methods, mixinResolutionContext );
+        resolveMethodModels( methodModels, methods, resolutionContext );
 
-        // Compute set of implemented properties in this mixin
-        Map<String, PropertyModel> propertyModels = new HashMap<String, PropertyModel>();
+        // Compute set of implemented properties and associations in this mixin
+        Map<String, PropertyResolution> propertyResolutions = new HashMap<String, PropertyResolution>();
+        Map<String, AssociationResolution> associationResolutions = new HashMap<String, AssociationResolution>();
         for( Map.Entry<Method, MixinModel> mixinMethodEntry : mixinsForMethods.entrySet() )
         {
             MixinModel mixinModel = mixinMethodEntry.getValue();
@@ -149,12 +148,19 @@ public final class CompositeResolver
                 if( pm != null )
                 {
                     String propertyModelName = pm.getName();
-                    propertyModels.put( propertyModelName, pm );
+                    propertyResolutions.put( propertyModelName, new PropertyResolution( pm ) );
+                }
+
+                AssociationModel am = cmm.getAssociationModel();
+                if( am != null )
+                {
+                    String associationModelName = am.getName();
+                    associationResolutions.put( associationModelName, new AssociationResolution( am ) );
                 }
             }
         }
 
-        return new MixinResolution( mixinModelToResolve, constructors, fields, methods, propertyModels );
+        return new MixinResolution( mixinModelToResolve, constructors, fields, methods, propertyResolutions, associationResolutions );
     }
 
     private Map<Method, MixinResolution> getResolvedMethodMixins( Map<Method, MixinModel> mixinsForMethods, Map<MixinModel, MixinResolution> resolvedMixins )
@@ -167,7 +173,7 @@ public final class CompositeResolver
         return resolvedMethodMixins;
     }
 
-    private Map<MixinModel, MixinResolution> getResolvedMixins( Map<Method, MixinModel> mixinsForMethods, ResolutionContext resolutionContext )
+    private Map<MixinModel, MixinResolution> getResolvedMixins( Map<Method, MixinModel> mixinsForMethods, CompositeModel compositeModel, ResolutionContext resolutionContext )
     {
         // Build set of used mixins
         Set<MixinModel> usedMixins = new LinkedHashSet<MixinModel>();
@@ -190,7 +196,7 @@ public final class CompositeResolver
                     // Check cyclic dependency
                     if( dependsOn( otherMixinModel, model, mixinsForMethods ) )
                     {
-                        throw new InvalidCompositeException( "Cyclic dependency between mixins " + model.getModelClass().getName() + " and " + otherMixinModel.getModelClass().getName(), resolutionContext.getCompositeModel().getCompositeClass() );
+                        throw new InvalidCompositeException( "Cyclic dependency between mixins " + model.getModelClass().getName() + " and " + otherMixinModel.getModelClass().getName(), compositeModel.getCompositeClass() );
                     }
                     else
                     {
@@ -213,7 +219,7 @@ public final class CompositeResolver
         {
             try
             {
-                MixinResolution mixinResolution = resolveMixin( orderedUsedMixin, resolutionContext, mixinsForMethods );
+                MixinResolution mixinResolution = resolveMixin( orderedUsedMixin, compositeModel, resolutionContext, mixinsForMethods );
                 mixinResolutions.put( orderedUsedMixin, mixinResolution );
             }
             catch( InvalidInjectionException e )
@@ -238,7 +244,7 @@ public final class CompositeResolver
         return false;
     }
 
-    private List<CompositeMethodResolution> getMethodResolutions( ResolutionContext resolutionContext, Map<Method, MixinResolution> methodMixins, Collection<MixinResolution> mixinResolutions )
+    private List<CompositeMethodResolution> getMethodResolutions( CompositeModel compositeModel, ResolutionContext resolutionContext, Map<Method, MixinResolution> methodMixins, Collection<MixinResolution> mixinResolutions )
         throws ResolutionException
     {
         List<CompositeMethodResolution> methodResolutions = new ArrayList<CompositeMethodResolution>();
@@ -246,7 +252,6 @@ public final class CompositeResolver
         Map<SideEffectModel, SideEffectResolution> sideEffectResolutions = new HashMap<SideEffectModel, SideEffectResolution>();
 
         // Set up annotation -> constraintModel model mappings
-        CompositeModel compositeModel = resolutionContext.getCompositeModel();
         Iterable<ConstraintModel> constraintModels = compositeModel.getConstraintModels();
         Map<Class<? extends Annotation>, ConstraintModel> constraintModelMappings = new HashMap<Class<? extends Annotation>, ConstraintModel>();
         for( ConstraintModel constraintModel : constraintModels )
@@ -255,18 +260,16 @@ public final class CompositeResolver
         }
 
         Collection<CompositeMethodModel> methodModels = compositeModel.getCompositeMethodModels();
-        resolveMethods( methodModels, methodMixins, resolutionContext, mixinResolutions, concernResolutions, sideEffectResolutions, constraintModelMappings, methodResolutions );
+        resolveMethods( compositeModel, methodModels, methodMixins, resolutionContext, mixinResolutions, concernResolutions, sideEffectResolutions, constraintModelMappings, methodResolutions );
 
         Iterable<CompositeMethodModel> thisAsMethodModels = compositeModel.getThisCompositeAsModels();
-        resolveMethods( thisAsMethodModels, methodMixins, resolutionContext, mixinResolutions, concernResolutions, sideEffectResolutions, constraintModelMappings, methodResolutions );
+        resolveMethods( compositeModel, thisAsMethodModels, methodMixins, resolutionContext, mixinResolutions, concernResolutions, sideEffectResolutions, constraintModelMappings, methodResolutions );
 
         return methodResolutions;
     }
 
-    private void resolveMethods( Iterable<CompositeMethodModel> methodModels, Map<Method, MixinResolution> methodMixins, ResolutionContext resolutionContext, Collection<MixinResolution> mixinResolutions, Map<ConcernModel, ConcernResolution> concernResolutions, Map<SideEffectModel, SideEffectResolution> sideEffectResolutions, Map<Class<? extends Annotation>, ConstraintModel> constraintModelMappings, List<CompositeMethodResolution> methodResolutions )
+    private void resolveMethods( CompositeModel compositeModel, Iterable<CompositeMethodModel> methodModels, Map<Method, MixinResolution> methodMixins, ResolutionContext resolutionContext, Collection<MixinResolution> mixinResolutions, Map<ConcernModel, ConcernResolution> concernResolutions, Map<SideEffectModel, SideEffectResolution> sideEffectResolutions, Map<Class<? extends Annotation>, ConstraintModel> constraintModelMappings, List<CompositeMethodResolution> methodResolutions )
     {
-        CompositeModel compositeModel = resolutionContext.getCompositeModel();
-
         for( CompositeMethodModel methodModel : methodModels )
         {
             MixinResolution mixinResolution = methodMixins.get( methodModel.getMethod() );
@@ -379,13 +382,13 @@ public final class CompositeResolver
                 PropertyResolution propertyResolution = null;
                 if( methodModel.getPropertyModel() != null )
                 {
-                    propertyResolution = new PropertyResolution( methodModel.getPropertyModel(), mixinResolution );
+                    propertyResolution = new PropertyResolution( methodModel.getPropertyModel() );
                 }
 
                 AssociationResolution associationResolution = null;
                 if( methodModel.getAssociationModel() != null )
                 {
-                    associationResolution = new AssociationResolution( methodModel.getAssociationModel(), mixinResolution );
+                    associationResolution = new AssociationResolution( methodModel.getAssociationModel() );
                 }
 
                 // Create aggregation of annotations (interface+mixin, mixin takes precedence)
@@ -428,23 +431,23 @@ public final class CompositeResolver
         }
     }
 
-    private Map<Method, MixinModel> getMixinsForMethods( ResolutionContext resolutionContext )
+    private Map<Method, MixinModel> getMixinsForMethods( CompositeModel compositeModel )
         throws ResolutionException
     {
-        Iterable<CompositeMethodModel> methodModels = resolutionContext.getCompositeModel().getCompositeMethodModels();
+        Iterable<CompositeMethodModel> methodModels = compositeModel.getCompositeMethodModels();
         Map<Method, MixinModel> methodMixinMappings = new HashMap<Method, MixinModel>();
 
         // Map methods in composite type to mixins
         for( CompositeMethodModel methodModel : methodModels )
         {
-            methodMixinMappings.put( methodModel.getMethod(), getMixinForMethod( methodModel.getMethod(), resolutionContext.getCompositeModel(), methodModel.getMethod() ) );
+            methodMixinMappings.put( methodModel.getMethod(), getMixinForMethod( methodModel.getMethod(), compositeModel, methodModel.getMethod() ) );
         }
 
         // Map methods in internal @ThisCompositeAs dependencies to mixins
-        Iterable<CompositeMethodModel> thisAsMethodModels = resolutionContext.getCompositeModel().getThisCompositeAsModels();
+        Iterable<CompositeMethodModel> thisAsMethodModels = compositeModel.getThisCompositeAsModels();
         for( CompositeMethodModel methodModel : thisAsMethodModels )
         {
-            methodMixinMappings.put( methodModel.getMethod(), getMixinForMethod( methodModel.getMethod(), resolutionContext.getCompositeModel(), methodModel.getMethod() ) );
+            methodMixinMappings.put( methodModel.getMethod(), getMixinForMethod( methodModel.getMethod(), compositeModel, methodModel.getMethod() ) );
         }
 
         return methodMixinMappings;

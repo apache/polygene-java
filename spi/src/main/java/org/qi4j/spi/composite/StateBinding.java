@@ -12,39 +12,17 @@
  *
  */
 
-package org.qi4j.runtime.structure;
+package org.qi4j.spi.composite;
 
-import org.qi4j.service.ServiceComposite;
-import org.qi4j.spi.service.ServiceProvider;
+import org.qi4j.spi.property.AssociationBinding;
+import org.qi4j.spi.property.PropertyBinding;
 
 /**
  * TODO
  */
-public class ServiceRef<T>
+public interface StateBinding
 {
-    T service;
-    ServiceProvider provider;
+    public Iterable<PropertyBinding> getPropertyBindings();
 
-    public ServiceRef( T service, ServiceProvider provider )
-    {
-        this.service = service;
-        this.provider = provider;
-    }
-
-    public T getService()
-    {
-        return service;
-    }
-
-    public ServiceProvider getProvider()
-    {
-        return provider;
-    }
-
-    public void release()
-    {
-        provider.releaseService( (ServiceComposite) service );
-        service = null;
-        provider = null;
-    }
+    public Iterable<AssociationBinding> getAssociationBindings();
 }

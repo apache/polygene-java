@@ -14,7 +14,6 @@
 
 package org.qi4j.spi.composite;
 
-import java.io.Serializable;
 import java.lang.reflect.Method;
 import org.qi4j.spi.property.PropertyModel;
 
@@ -22,65 +21,10 @@ import org.qi4j.spi.property.PropertyModel;
  * TODO
  */
 public final class CompositeMethodModel
-    implements Serializable
+    extends AbstractMethodModel
 {
-    private Method method;
-    private Iterable<ParameterModel> parameterModels;
-    private PropertyModel propertyModel;
-    private AssociationModel associationModel;
-
     public CompositeMethodModel( Method method, Iterable<ParameterModel> parameters, PropertyModel propertyModel, AssociationModel associationModel )
     {
-        this.method = method;
-        this.parameterModels = parameters;
-        this.propertyModel = propertyModel;
-        this.associationModel = associationModel;
-    }
-
-    public Method getMethod()
-    {
-        return method;
-    }
-
-    public Iterable<ParameterModel> getParameterModels()
-    {
-        return parameterModels;
-    }
-
-    public PropertyModel getPropertyModel()
-    {
-        return propertyModel;
-    }
-
-    public AssociationModel getAssociationModel()
-    {
-        return associationModel;
-    }
-
-    public boolean equals( Object o )
-    {
-        if( this == o )
-        {
-            return true;
-        }
-        if( o == null || getClass() != o.getClass() )
-        {
-            return false;
-        }
-
-        CompositeMethodModel that = (CompositeMethodModel) o;
-
-        return method.equals( that.method );
-    }
-
-    public int hashCode()
-    {
-        return method.hashCode();
-    }
-
-
-    @Override public String toString()
-    {
-        return method.toGenericString();
+        super( method, parameters, propertyModel, associationModel );
     }
 }

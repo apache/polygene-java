@@ -74,7 +74,7 @@ public final class AssociationInjectionProviderFactory
                     }
                     else
                     {
-                        throw new InjectionProviderException( "Non-optional association " + name + " had no association when injecting " + this.association.getAbstractModel().getModelClass().getName() );
+                        throw new InjectionProviderException( "Non-optional association " + name + " had no association when injecting " + this.association.getInjectionModel().getInjectedClass().getName() );
                     }
                 }
             }

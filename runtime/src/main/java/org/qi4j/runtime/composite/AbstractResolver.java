@@ -71,7 +71,7 @@ public abstract class AbstractResolver
             InjectionModel injectionModel = fieldModel.getInjectionModel();
             if( injectionModel != null )
             {
-                injectionResolution = new InjectionResolution( injectionModel, resolutionContext.getAbstractModel(), resolutionContext.getCompositeModel(), resolutionContext.getModule(), resolutionContext.getLayer(), resolutionContext.getApplication() );
+                injectionResolution = new InjectionResolution( injectionModel, resolutionContext.getModule(), resolutionContext.getLayer(), resolutionContext.getApplication() );
             }
             FieldResolution fieldResolution = new FieldResolution( fieldModel, injectionResolution );
             fieldResolutions.add( fieldResolution );
@@ -94,7 +94,7 @@ public abstract class AbstractResolver
             InjectionResolution injectionResolution = null;
             if( parameterModel.getInjectionModel() != null )
             {
-                injectionResolution = new InjectionResolution( parameterModel.getInjectionModel(), resolutionContext.getAbstractModel(), resolutionContext.getCompositeModel(), resolutionContext.getModule(), resolutionContext.getLayer(), resolutionContext.getApplication() );
+                injectionResolution = new InjectionResolution( parameterModel.getInjectionModel(), resolutionContext.getModule(), resolutionContext.getLayer(), resolutionContext.getApplication() );
             }
             ParameterResolution parameterResolution = new ParameterResolution( parameterModel, parameterConstraintsResolution, injectionResolution );
             parameterResolutions.add( parameterResolution );

@@ -14,31 +14,41 @@
 
 package org.qi4j.spi.service;
 
-import org.qi4j.composite.CompositeBuilderFactory;
-import org.qi4j.composite.scope.Structure;
-import org.qi4j.service.ServiceComposite;
+import java.util.Map;
 
 /**
  * TODO
  */
-public final class Instance
-    implements ServiceProvider
+public class ServiceInstance
 {
-    @Structure CompositeBuilderFactory factory;
-    private ServiceComposite instance;
+    Object instance;
+    ServiceInstanceProvider serviceInstanceProvider;
+    Map<Class, Object> serviceInfo;
 
-    public Instance( ServiceComposite instance )
+    public ServiceInstance( Object instance, ServiceInstanceProvider serviceInstanceProvider, Map<Class, Object> serviceInfo )
     {
         this.instance = instance;
+        this.serviceInstanceProvider = serviceInstanceProvider;
+        this.serviceInfo = serviceInfo;
     }
 
-    public <T> T getService( Class<T> serviceType ) throws ServiceProviderException
+    public Object getInstance()
     {
-        return serviceType.cast( instance );
+        return instance;
     }
 
-    public void releaseService( ServiceComposite service )
+    public ServiceInstanceProvider getServiceInstanceProvider()
     {
-        // Ignore for now
+        return serviceInstanceProvider;
+    }
+
+    public Map<Class, Object> getServiceInfo()
+    {
+        return serviceInfo;
+    }
+
+    public void release()
+    {
+        serviceInstanceProvider.releaseInstance( this );
     }
 }

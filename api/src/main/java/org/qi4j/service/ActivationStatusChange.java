@@ -12,33 +12,29 @@
  *
  */
 
-package org.qi4j.spi.service;
-
-import org.qi4j.composite.CompositeBuilderFactory;
-import org.qi4j.composite.scope.Structure;
-import org.qi4j.service.ServiceComposite;
+package org.qi4j.service;
 
 /**
  * TODO
  */
-public final class Singleton
-    implements ServiceProvider
+public class ActivationStatusChange
 {
-    private @Structure CompositeBuilderFactory cbf;
+    private Activatable activatable;
+    private ActivationStatus newStatus;
 
-    private Object instance;
-
-    public synchronized <T> T getService( Class<T> serviceType ) throws ServiceProviderException
+    public ActivationStatusChange( Activatable activatable, ActivationStatus newStatus )
     {
-        if( instance == null )
-        {
-            instance = cbf.newComposite( serviceType );
-        }
-        return serviceType.cast( instance );
+        this.activatable = activatable;
+        this.newStatus = newStatus;
     }
 
-    public void releaseService( ServiceComposite service )
+    public Activatable getActivatable()
     {
-        // Ignore for now
+        return activatable;
+    }
+
+    public ActivationStatus getNewStatus()
+    {
+        return newStatus;
     }
 }

@@ -7,6 +7,7 @@ import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.ObjectBuilderFactory;
 import org.qi4j.property.Property;
 import org.qi4j.spi.composite.CompositeBinding;
+import org.qi4j.spi.service.ServiceRegistry;
 import org.qi4j.spi.structure.ModuleBinding;
 
 /**
@@ -21,12 +22,12 @@ public final class MixinInjectionContext extends FragmentInjectionContext
     private Object decorated;
 
     public MixinInjectionContext(
-        CompositeBuilderFactory compositeBuilderFactory, ObjectBuilderFactory objectBuilderFactory,
+        CompositeBuilderFactory compositeBuilderFactory, ObjectBuilderFactory objectBuilderFactory, ServiceRegistry serviceRegistry,
         ModuleBinding moduleBinding, CompositeBinding compositeBinding, InvocationHandler thisCompositeAs,
         Iterable<Object> adapt, Object decorated, Map<String, Property> properties,
         Map<String, AbstractAssociation> associations )
     {
-        super( compositeBuilderFactory, objectBuilderFactory, moduleBinding, compositeBinding, thisCompositeAs );
+        super( compositeBuilderFactory, objectBuilderFactory, serviceRegistry, moduleBinding, compositeBinding, thisCompositeAs );
         this.associations = associations;
         this.properties = properties;
         this.adapt = adapt;

@@ -11,16 +11,27 @@
 */
 package org.qi4j.spi.composite;
 
+import java.util.Map;
+
 /**
  * Base class for object model resolutions. Resolutions are models resolved in a runtime environment
  */
-public final class ObjectResolution extends AbstractResolution
+public final class ObjectResolution
+    extends AbstractResolution
+    implements StateResolution
 {
-    private Iterable<PropertyResolution> propertyResolutions;
+    private Map<String, PropertyResolution> propertyResolutions;
+    private Map<String, AssociationResolution> associationResolutions;
 
-    public ObjectResolution( AbstractModel abstractModel, Iterable<ConstructorResolution> constructorResolutions, Iterable<FieldResolution> fieldResolutions, Iterable<MethodResolution> methodResolutions, Iterable<PropertyResolution> propertyResolutions )
+    public ObjectResolution( AbstractModel abstractModel,
+                             Iterable<ConstructorResolution> constructorResolutions,
+                             Iterable<FieldResolution> fieldResolutions,
+                             Iterable<MethodResolution> methodResolutions,
+                             Map<String, PropertyResolution> propertyResolutions,
+                             Map<String, AssociationResolution> associationResolutions )
     {
         super( abstractModel, constructorResolutions, fieldResolutions, methodResolutions );
+        this.associationResolutions = associationResolutions;
         this.propertyResolutions = propertyResolutions;
     }
 
@@ -29,8 +40,13 @@ public final class ObjectResolution extends AbstractResolution
         return (ObjectModel) getAbstractModel();
     }
 
-    public Iterable<PropertyResolution> getPropertyResolutions()
+    public PropertyResolution getPropertyResolution( String qualifiedName )
     {
-        return propertyResolutions;
+        return propertyResolutions.get( qualifiedName );
+    }
+
+    public AssociationResolution getAssociationResolution( String qualifiedName )
+    {
+        return associationResolutions.get( qualifiedName );
     }
 }

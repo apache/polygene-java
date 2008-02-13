@@ -21,8 +21,8 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
+import org.qi4j.composite.ContextComposite;
 import org.qi4j.composite.Mixins;
-import org.qi4j.context.Context;
 import org.qi4j.library.framework.entity.PropertyMixin;
 import org.qi4j.property.Property;
 import org.qi4j.test.AbstractQi4jTest;
@@ -33,21 +33,24 @@ public class ContextCompositeTest extends AbstractQi4jTest
     protected void setUp() throws Exception
     {
         super.setUp();
+
     }
 
     public void testThreadScope()
         throws InterruptedException
     {
-        for( int i = 0; i < 100; i++ )
+        for( int i = 0; i < 10; i++ )
         {
             CompositeBuilder<MyContextComposite> builder = compositeBuilderFactory.newCompositeBuilder( MyContextComposite.class );
             builder.propertiesFor( MyData.class ).data().set( 0 );
+            MyContextComposite context = new ContextComposite<MyContextComposite>( builder ).getProxy();
+
             Worker w1;
             Worker w2;
             MyContextComposite c1 = builder.newInstance();
             {
-                w1 = new Worker( "w1", c1, 100, 0 );
-                w2 = new Worker( "w2", c1, 400, 20 );
+                w1 = new Worker( "w1", context, 100, 0 );
+                w2 = new Worker( "w2", context, 400, 20 );
                 w2.start();
                 w1.start();
             }
@@ -67,12 +70,12 @@ public class ContextCompositeTest extends AbstractQi4jTest
         module.addComposites( MyContextComposite.class );
     }
 
-    static interface MyContextComposite extends Context, Composite, MyData
+    public static interface MyContextComposite extends Composite, MyData
     {
     }
 
     @Mixins( PropertyMixin.class )
-    static interface MyData
+    public static interface MyData
     {
         Property<Integer> data();
     }
@@ -96,10 +99,6 @@ public class ContextCompositeTest extends AbstractQi4jTest
                 builder.append( " " );
             }
             this.spaces = builder.toString();
-            synchronized( composite )
-            {
-                composite.data();
-            }
         }
 
         public void run()
@@ -131,7 +130,7 @@ public class ContextCompositeTest extends AbstractQi4jTest
                 e.printStackTrace();
             }
             data = composite.data().get();
-            System.out.println( counter + "/" + loops + "    " + data + ", " + mismatchCounter );
+            System.out.println( counter + "/" + loops + "    " + data + ", " + mismatchCounter + ", " + System.identityHashCode( readProperty ) + ", " + System.identityHashCode( writeProperty ) );
         }
 
         public int getData()

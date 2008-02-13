@@ -56,21 +56,28 @@ public final class ApplicationContext
             Iterable<LayerResolution> uses = layerContext.getLayerBinding().getLayerResolution().getUses();
             Map<Class<? extends Composite>, ModuleInstance> availableCompositeModules = new HashMap<Class<? extends Composite>, ModuleInstance>();
             Map<Class, ModuleInstance> availableObjectModules = new HashMap<Class, ModuleInstance>();
+            Map<Class, ModuleInstance> availableServiceModules = new HashMap<Class, ModuleInstance>();
             for( LayerResolution use : uses )
             {
                 LayerInstance usedLayer = usedLayers.get( use );
+
                 Map<Class<? extends Composite>, ModuleInstance> publicCompositeModules = usedLayer.getPublicCompositeModules();
                 availableCompositeModules.putAll( publicCompositeModules );
+
                 Map<Class, ModuleInstance> publicObjectModules = usedLayer.getPublicObjectModules();
                 availableObjectModules.putAll( publicObjectModules );
+
+                Map<Class, ModuleInstance> publicServiceModules = usedLayer.getPublicServiceModules();
+                availableServiceModules.putAll( publicServiceModules );
             }
 
-            LayerInstance layerInstance = layerContext.newLayerInstance( availableCompositeModules, availableObjectModules );
+            LayerInstance layerInstance = layerContext.newLayerInstance( availableCompositeModules, availableObjectModules, availableServiceModules );
             layerInstances.add( layerInstance );
             usedLayers.put( layerContext.getLayerBinding().getLayerResolution(), layerInstance );
         }
 
         ApplicationInstance applicationInstance = new ApplicationInstance( this, layerInstances, name );
+
         return applicationInstance;
     }
 }

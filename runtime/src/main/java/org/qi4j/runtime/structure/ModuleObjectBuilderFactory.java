@@ -32,7 +32,7 @@ public final class ModuleObjectBuilderFactory
         this.moduleInstance = moduleInstance;
     }
 
-    public ObjectBuilder newObjectBuilder( Class objectType )
+    public <T> ObjectBuilder<T> newObjectBuilder( Class<T> objectType )
     {
         // Find which Module handles this Composite type
         ModuleInstance moduleInstance = this.moduleInstance.getModuleForPublicObject( objectType );
@@ -55,5 +55,10 @@ public final class ModuleObjectBuilderFactory
         // Create a builder
         ObjectBuilder builder = new ObjectBuilderImpl( moduleInstance, objectContext );
         return builder;
+    }
+
+    public <T> T newObject( Class<T> type )
+    {
+        return newObjectBuilder( type ).newInstance();
     }
 }

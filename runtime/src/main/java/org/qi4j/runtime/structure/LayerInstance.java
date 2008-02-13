@@ -17,19 +17,30 @@ package org.qi4j.runtime.structure;
 import java.util.List;
 import java.util.Map;
 import org.qi4j.composite.Composite;
+import org.qi4j.service.Activatable;
+import org.qi4j.spi.service.ServiceRegistry;
 
 /**
  * TODO
  */
 public final class LayerInstance
+    implements Activatable
 {
     private LayerContext layerContext;
     private List<ModuleInstance> moduleInstances;
     private Map<Class<? extends Composite>, ModuleInstance> publicCompositeModules;
     private Map<Class, ModuleInstance> publicObjectModules;
+    private Map<Class, ModuleInstance> publicServiceModules;
+    private ServiceRegistry serviceRegistry;
 
-    public LayerInstance( LayerContext layerContext, List<ModuleInstance> moduleInstances, Map<Class<? extends Composite>, ModuleInstance> publicCompositeModules, Map<Class, ModuleInstance> publicObjectModules )
+
+    public LayerInstance( LayerContext layerContext, List<ModuleInstance> moduleInstances,
+                          Map<Class<? extends Composite>, ModuleInstance> publicCompositeModules,
+                          Map<Class, ModuleInstance> publicObjectModules,
+                          Map<Class, ModuleInstance> publicServiceModules, ServiceRegistry serviceRegistry )
     {
+        this.serviceRegistry = serviceRegistry;
+        this.publicServiceModules = publicServiceModules;
         this.publicObjectModules = publicObjectModules;
         this.publicCompositeModules = publicCompositeModules;
         this.layerContext = layerContext;
@@ -55,4 +66,31 @@ public final class LayerInstance
     {
         return publicObjectModules;
     }
+
+    public Map<Class, ModuleInstance> getPublicServiceModules()
+    {
+        return publicServiceModules;
+    }
+
+    public ServiceRegistry getServiceRegistry()
+    {
+        return serviceRegistry;
+    }
+
+    public void activate() throws Exception
+    {
+        for( ModuleInstance moduleInstance : moduleInstances )
+        {
+            moduleInstance.activate();
+        }
+    }
+
+    public void passivate() throws Exception
+    {
+        for( int i = moduleInstances.size() - 1; i >= 0; i-- )
+        {
+            moduleInstances.get( i ).passivate();
+        }
+    }
 }
+

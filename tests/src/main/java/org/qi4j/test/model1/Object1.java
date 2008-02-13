@@ -16,6 +16,7 @@ package org.qi4j.test.model1;
 
 import org.qi4j.composite.scope.PropertyField;
 import org.qi4j.composite.scope.PropertyParameter;
+import org.qi4j.property.Property;
 
 /**
  * Object with property injections
@@ -23,30 +24,29 @@ import org.qi4j.composite.scope.PropertyParameter;
 public class Object1
 {
     @PropertyField
-    String foo;
+    Property<String> foo;
 
     @PropertyField( optional = true )
-    String bar;
+    Property<String> bar;
 
-    int xyzzy;
+    Property<Integer> xyzzy;
 
-    public Object1( @PropertyParameter( "xyzzy" )int xyzzy )
+    public Object1( @PropertyParameter( "xyzzy" )Property<Integer> xyzzy )
     {
         this.xyzzy = xyzzy;
     }
 
-
-    public String getFoo()
+    public Property<String> foo()
     {
         return foo;
     }
 
-    public String getBar()
+    public Property<String> bar()
     {
         return bar;
     }
 
-    public int getXyzzy()
+    public Property<Integer> xyzzy()
     {
         return xyzzy;
     }

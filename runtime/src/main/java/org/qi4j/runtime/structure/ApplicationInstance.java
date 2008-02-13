@@ -15,11 +15,13 @@
 package org.qi4j.runtime.structure;
 
 import java.util.List;
+import org.qi4j.service.Activatable;
 
 /**
  * TODO
  */
 public final class ApplicationInstance
+    implements Activatable
 {
     private ApplicationContext applicationContext;
     private List<LayerInstance> layerInstances;
@@ -45,5 +47,21 @@ public final class ApplicationInstance
     public String getName()
     {
         return name;
+    }
+
+    public void activate() throws Exception
+    {
+        for( LayerInstance layerInstance : layerInstances )
+        {
+            layerInstance.activate();
+        }
+    }
+
+    public void passivate() throws Exception
+    {
+        for( int i = layerInstances.size() - 1; i >= 0; i-- )
+        {
+            layerInstances.get( i ).passivate();
+        }
     }
 }

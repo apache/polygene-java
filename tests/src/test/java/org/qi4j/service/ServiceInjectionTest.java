@@ -14,16 +14,12 @@
 
 package org.qi4j.service;
 
-import junit.framework.TestCase;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembly;
-import org.qi4j.composite.Composite;
 import org.qi4j.composite.Mixins;
-import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.scope.Service;
-import org.qi4j.spi.service.Instance;
-import org.qi4j.spi.service.Singleton;
+import org.qi4j.spi.service.provider.Singleton;
 import org.qi4j.test.AbstractQi4jTest;
 
 /**
@@ -32,8 +28,6 @@ import org.qi4j.test.AbstractQi4jTest;
 public class ServiceInjectionTest
     extends AbstractQi4jTest
 {
-    private ServiceComposite myCustomService;
-
     public void testInjectSingleton()
         throws Exception
     {
@@ -41,25 +35,9 @@ public class ServiceInjectionTest
         {
             public void configure( ModuleAssembly module ) throws AssemblyException
             {
-                module.addServiceProvider( new Singleton(), MyServiceComposite.class );
+                module.addComposites( MyServiceComposite.class );
+                module.addServices( Singleton.class, MyServiceComposite.class );
                 module.addObjects( ServiceUser.class );
-            }
-        };
-
-        ServiceUser user = assembly.getObjectBuilderFactory().newObjectBuilder( ServiceUser.class ).newInstance();
-
-        assertEquals( "Hello World!", user.doStuff() );
-    }
-
-    public void testInjectInstance()
-        throws Exception
-    {
-        SingletonAssembly assembly = new SingletonAssembly()
-        {
-            public void configure( ModuleAssembly module ) throws AssemblyException
-            {
-                module.addServiceProvider( new Instance( myCustomService ), MyService.class );
-                module.addObjects( ServiceUser.class, Instance.class );
             }
         };
 
@@ -72,10 +50,6 @@ public class ServiceInjectionTest
         throws AssemblyException
     {
         module.addComposites( MyServiceComposite.class );
-        CompositeBuilder<MyServiceComposite> builder = compositeBuilderFactory.newCompositeBuilder( MyServiceComposite.class );
-        MyServiceMixin serviceInstance = new MyServiceMixin();
-        builder.decorate( serviceInstance );
-        myCustomService = builder.newInstance();
     }
 
 

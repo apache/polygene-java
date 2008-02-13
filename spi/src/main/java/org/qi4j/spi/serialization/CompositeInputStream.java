@@ -86,7 +86,20 @@ final class CompositeInputStream extends ObjectInputStream
             // CompositeBuilder found
             Composite composite = builder.newInstance();
             CompositeState mixinHandler = (CompositeState) Proxy.getInvocationHandler( composite );
-            mixinHandler.setMixins( mixins );
+            Object[] newMixins = mixinHandler.getMixins();
+            for( int i = 0; i < newMixins.length; i++ )
+            {
+                Object newMixin = newMixins[ i ];
+
+                for( Object mixin : mixins )
+                {
+                    if( newMixin.getClass().equals( mixin.getClass() ) )
+                    {
+                        newMixins[ i ] = mixin; // Replace mixin
+                        break;
+                    }
+                }
+            }
             return composite;
         }
         return obj;

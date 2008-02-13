@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -36,29 +37,29 @@ import org.qi4j.runtime.structure.ModuleContext;
 import org.qi4j.spi.composite.AssociationModel;
 import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.composite.CompositeMethodBinding;
-import org.qi4j.spi.composite.CompositeModel;
 import org.qi4j.spi.composite.CompositeResolution;
 import org.qi4j.spi.composite.MixinBinding;
 import org.qi4j.spi.composite.ObjectBinding;
-import org.qi4j.spi.composite.ObjectModel;
 import org.qi4j.spi.composite.ObjectResolution;
 import org.qi4j.spi.injection.BindingContext;
 import org.qi4j.spi.injection.ResolutionContext;
 import org.qi4j.spi.property.AssociationBinding;
 import org.qi4j.spi.property.PropertyBinding;
 import org.qi4j.spi.property.PropertyModel;
-import org.qi4j.spi.service.ServiceProvider;
 import org.qi4j.spi.structure.ApplicationBinding;
 import org.qi4j.spi.structure.ApplicationModel;
 import org.qi4j.spi.structure.ApplicationResolution;
 import org.qi4j.spi.structure.AssociationDescriptor;
+import org.qi4j.spi.structure.CompositeDescriptor;
 import org.qi4j.spi.structure.LayerBinding;
 import org.qi4j.spi.structure.LayerModel;
 import org.qi4j.spi.structure.LayerResolution;
 import org.qi4j.spi.structure.ModuleBinding;
 import org.qi4j.spi.structure.ModuleModel;
 import org.qi4j.spi.structure.ModuleResolution;
+import org.qi4j.spi.structure.ObjectDescriptor;
 import org.qi4j.spi.structure.PropertyDescriptor;
+import org.qi4j.spi.structure.Visibility;
 
 /**
  * TODO
@@ -159,6 +160,7 @@ public final class ApplicationBuilder
     {
         List<ModuleModel> modules = new ArrayList<ModuleModel>();
         Map<Class<? extends Composite>, ModuleModel> publicCompositeMap = new HashMap<Class<? extends Composite>, ModuleModel>();
+        Map<Class, ModuleModel> publicObjectMap = new HashMap<Class, ModuleModel>();
         for( ModuleAssembly moduleAssembly : layerAssembly.getModuleAssemblies() )
         {
             ModuleModel moduleModel = newModuleModel( moduleAssembly );
@@ -167,17 +169,28 @@ public final class ApplicationBuilder
 
             // Add public Composites in Module to Layer
             // Must be explicitly marked as public in the Layer to be added!
-            Iterable<CompositeModel> publicModuleComposites = moduleModel.getPublicComposites();
-            for( CompositeModel publicModuleComposite : publicModuleComposites )
+            Iterable<CompositeDescriptor> moduleComposites = moduleModel.getCompositeDescriptors();
+            for( CompositeDescriptor moduleComposite : moduleComposites )
             {
-                if( layerAssembly.getPublicComposites().contains( publicModuleComposite.getCompositeClass() ) )
+                if( moduleComposite.getVisibility() == Visibility.layer || moduleComposite.getVisibility() == Visibility.application )
                 {
-                    publicCompositeMap.put( publicModuleComposite.getCompositeClass(), moduleModel );
+                    publicCompositeMap.put( moduleComposite.getCompositeModel().getCompositeClass(), moduleModel );
+                }
+            }
+
+            // Add public Objects in Module to Layer
+            // Must be explicitly marked as public in the Layer to be added!
+            Iterable<ObjectDescriptor> moduleObjects = moduleModel.getObjectDescriptors();
+            for( ObjectDescriptor moduleObject : moduleObjects )
+            {
+                if( moduleObject.getVisibility() == Visibility.layer || moduleObject.getVisibility() == Visibility.application )
+                {
+                    publicObjectMap.put( moduleObject.getObjectModel().getModelClass(), moduleModel );
                 }
             }
         }
 
-        LayerModel layerModel = new LayerModel( modules, publicCompositeMap, layerAssembly.getName() );
+        LayerModel layerModel = new LayerModel( modules, publicCompositeMap, publicObjectMap, layerAssembly.getName() );
         return layerModel;
     }
 
@@ -255,7 +268,7 @@ public final class ApplicationBuilder
                     compositeMethodContexts.add( compositeMethodContext );
                 }
 
-                Set<MixinContext> mixinContexts = new HashSet<MixinContext>();
+                Set<MixinContext> mixinContexts = new LinkedHashSet<MixinContext>();
                 for( MixinBinding mixinBinding : entry.getValue().getMixinBindings() )
                 {
                     Set<PropertyContext> mixinProperties = new HashSet<PropertyContext>();
@@ -295,23 +308,11 @@ public final class ApplicationBuilder
     // Module
     private ModuleModel newModuleModel( ModuleAssembly moduleAssembly )
     {
-        Set<Class<? extends Composite>> privateComposites = moduleAssembly.getPrivateComposites();
-
         List<PropertyDeclaration> propertyDeclarations = moduleAssembly.getPropertyDeclarations();
         Map<Method, PropertyDescriptor> propertyDescriptors = new HashMap<Method, PropertyDescriptor>();
         for( PropertyDeclaration propertyDeclaration : propertyDeclarations )
         {
             Method accessor = propertyDeclaration.getPropertyDescriptor().getAccessor();
-
-            if( Composite.class.isAssignableFrom( accessor.getReturnType() ) )
-            {
-                if( !privateComposites.contains( accessor.getReturnType() ) )
-                {
-                    Class<? extends Composite> returnType = (Class<? extends Composite>) accessor.getReturnType();
-                    moduleAssembly.addComposites( returnType );
-                }
-            }
-
             propertyDescriptors.put( accessor, propertyDeclaration.getPropertyDescriptor() );
         }
 
@@ -320,48 +321,19 @@ public final class ApplicationBuilder
         for( AssociationDeclaration associationDeclaration : associationDeclarations )
         {
             Method accessor = associationDeclaration.getAssociationDescriptor().getAccessor();
-
-            if( Composite.class.isAssignableFrom( accessor.getReturnType() ) )
-            {
-                if( !privateComposites.contains( accessor.getReturnType() ) )
-                {
-                    Class<? extends Composite> returnType = (Class<? extends Composite>) accessor.getReturnType();
-                    moduleAssembly.addComposites( returnType );
-                }
-            }
-
             associationDescriptors.put( accessor, associationDeclaration.getAssociationDescriptor() );
         }
 
-        List<CompositeModel> privateCompositeModels = new ArrayList<CompositeModel>();
-        for( Class<? extends Composite> compositeType : moduleAssembly.getPrivateComposites() )
-        {
-            CompositeModel compositeModel = runtime.getCompositeModelFactory().newCompositeModel( compositeType );
-            privateCompositeModels.add( compositeModel );
-        }
+        List<CompositeDescriptor> compositeDescriptors = moduleAssembly.getCompositeDescriptors( runtime.getCompositeModelFactory() );
 
-        List<CompositeModel> publicCompositeModels = new ArrayList<CompositeModel>();
-        for( Class<? extends Composite> compositeType : moduleAssembly.getPublicComposites() )
-        {
-            CompositeModel compositeModel = runtime.getCompositeModelFactory().newCompositeModel( compositeType );
-            publicCompositeModels.add( compositeModel );
-        }
+        Iterable<ObjectDescriptor> objectDescriptors = moduleAssembly.getObjectDescriptors( runtime.getObjectModelFactory() );
 
-        List<ObjectModel> publicObjects = new ArrayList<ObjectModel>();
-        for( Class<?> objectType : moduleAssembly.getPublicObjects() )
-        {
-            ObjectModel objectModel = runtime.getObjectModelFactory().newObjectModel( objectType );
-            publicObjects.add( objectModel );
-        }
-
-        List<ObjectModel> privateObjects = new ArrayList<ObjectModel>();
-        for( Class<?> objectType : moduleAssembly.getPrivateObjects() )
-        {
-            ObjectModel objectModel = runtime.getObjectModelFactory().newObjectModel( objectType );
-            privateObjects.add( objectModel );
-        }
-
-        ModuleModel moduleModel = new ModuleModel( moduleAssembly.getServiceProviders(), moduleAssembly.getName(), publicCompositeModels, privateCompositeModels, publicObjects, privateObjects, propertyDescriptors, associationDescriptors );
+        ModuleModel moduleModel = new ModuleModel( moduleAssembly.getName(),
+                                                   compositeDescriptors,
+                                                   objectDescriptors,
+                                                   moduleAssembly.getServiceDescriptors(),
+                                                   propertyDescriptors,
+                                                   associationDescriptors );
         return moduleModel;
     }
 
@@ -387,26 +359,13 @@ public final class ApplicationBuilder
 
         // Resolve Composites in this Module
         List<CompositeResolution> compositeResolutions = new ArrayList<CompositeResolution>();
-        resolveComposites( moduleModel.getPrivateComposites(), applicationModel, layerModel, moduleModel, compositeResolutions );
-        resolveComposites( moduleModel.getPublicComposites(), applicationModel, layerModel, moduleModel, compositeResolutions );
+        resolveComposites( moduleModel.getCompositeDescriptors(), applicationModel, layerModel, moduleModel, compositeResolutions );
 
         // Resolve objects in this Module
         List<ObjectResolution> objectResolutions = new ArrayList<ObjectResolution>();
-        resolveObjects( moduleModel.getPublicObjects(), applicationModel, layerModel, moduleModel, objectResolutions );
-        resolveObjects( moduleModel.getPrivateObjects(), applicationModel, layerModel, moduleModel, objectResolutions );
+        resolveObjects( moduleModel.getObjectDescriptors(), applicationModel, layerModel, moduleModel, objectResolutions );
 
-        // Figure out what service types are available from this module
-        Map<Class, ServiceProvider> availableServices = new HashMap<Class, ServiceProvider>();
-        availableServices.putAll( moduleModel.getServiceProviders() );
-
-        // Add extended interfaces, unless they have been specifically registered already
-        for( Map.Entry<Class, ServiceProvider> entry : moduleModel.getServiceProviders().entrySet() )
-        {
-            Class serviceType = entry.getKey();
-            addSuperTypeProviders( serviceType, entry.getValue(), availableServices );
-        }
-
-        ModuleResolution moduleResolution = new ModuleResolution( moduleModel, applicationModel, layerModel, instantiableComposites, compositeResolutions, objectResolutions, availableServices );
+        ModuleResolution moduleResolution = new ModuleResolution( moduleModel, applicationModel, layerModel, instantiableComposites, compositeResolutions, objectResolutions );
         return moduleResolution;
     }
 
@@ -454,7 +413,26 @@ public final class ApplicationBuilder
         Map<Class, ObjectContext> instantiableObjectContexts = new LinkedHashMap<Class, ObjectContext>();
         for( Map.Entry<Class, ObjectBinding> entry : moduleBinding.getObjectBindings().entrySet() )
         {
-            ObjectContext objectContext = new ObjectContext( entry.getValue(), moduleBinding, runtime.getInstanceFactory() );
+            Map<String, PropertyContext> propertyContexts = new HashMap<String, PropertyContext>();
+            Map<String, AssociationContext> associationContexts = new HashMap<String, AssociationContext>();
+
+            Iterable<PropertyBinding> propertyBindings = entry.getValue().getPropertyBindings();
+            for( PropertyBinding propertyBinding : propertyBindings )
+            {
+                PropertyContext propertyContext = new PropertyContext( propertyBinding );
+                PropertyModel propertyModel = propertyContext.getPropertyBinding().getPropertyResolution().getPropertyModel();
+                propertyContexts.put( propertyModel.getQualifiedName(), propertyContext );
+            }
+
+            Iterable<AssociationBinding> associationBindings = entry.getValue().getAssociationBindings();
+            for( AssociationBinding associationBinding : associationBindings )
+            {
+                AssociationContext associationContext = new AssociationContext( associationBinding );
+                AssociationModel associationModel = associationContext.getAssociationBinding().getAssociationResolution().getAssociationModel();
+                associationContexts.put( associationModel.getQualifiedName(), associationContext );
+            }
+
+            ObjectContext objectContext = new ObjectContext( entry.getValue(), moduleBinding, runtime.getInstanceFactory(), propertyContexts, associationContexts );
             instantiableObjectContexts.put( entry.getKey(), objectContext );
         }
 
@@ -462,39 +440,22 @@ public final class ApplicationBuilder
         return moduleContext;
     }
 
-    private void addSuperTypeProviders( Class serviceType, ServiceProvider provider, Map<Class, ServiceProvider> availableServices )
+    private void resolveComposites( Iterable<CompositeDescriptor> compositeDescriptors, ApplicationModel applicationModel, LayerModel layerModel, ModuleModel moduleModel, List<CompositeResolution> compositeResolutions )
     {
-        Class[] extendedInterfaces = serviceType.getInterfaces();
-        for( Class extendedInterface : extendedInterfaces )
+        for( CompositeDescriptor compositeDescriptor : compositeDescriptors )
         {
-            if( extendedInterface.getMethods().length > 0 )
-            {
-                ServiceProvider specificProvider = availableServices.get( extendedInterface );
-                if( specificProvider == null )
-                {
-                    availableServices.put( extendedInterface, provider );
-                }
-                addSuperTypeProviders( extendedInterface, provider, availableServices );
-            }
-        }
-    }
-
-    private void resolveComposites( Iterable<CompositeModel> compositeModels, ApplicationModel applicationModel, LayerModel layerModel, ModuleModel moduleModel, List<CompositeResolution> compositeResolutions )
-    {
-        for( CompositeModel privateComposite : compositeModels )
-        {
-            ResolutionContext resolutionContext = new ResolutionContext( null, privateComposite, moduleModel, layerModel, applicationModel );
-            CompositeResolution compositeResolution = runtime.getCompositeResolver().resolveCompositeModel( resolutionContext );
+            ResolutionContext resolutionContext = new ResolutionContext( moduleModel, layerModel, applicationModel );
+            CompositeResolution compositeResolution = runtime.getCompositeResolver().resolveCompositeModel( compositeDescriptor, resolutionContext );
             compositeResolutions.add( compositeResolution );
         }
     }
 
-    private void resolveObjects( Iterable<ObjectModel> objectModels, ApplicationModel applicationModel, LayerModel layerModel, ModuleModel moduleModel, List<ObjectResolution> objectResolutions )
+    private void resolveObjects( Iterable<ObjectDescriptor> objectDescriptors, ApplicationModel applicationModel, LayerModel layerModel, ModuleModel moduleModel, List<ObjectResolution> objectResolutions )
     {
-        for( ObjectModel objectModel : objectModels )
+        for( ObjectDescriptor objectDescriptor : objectDescriptors )
         {
-            ResolutionContext resolutionContext = new ResolutionContext( objectModel, null, moduleModel, layerModel, applicationModel );
-            ObjectResolution objectResolution = runtime.getObjectResolver().resolveObjectModel( resolutionContext );
+            ResolutionContext resolutionContext = new ResolutionContext( moduleModel, layerModel, applicationModel );
+            ObjectResolution objectResolution = runtime.getObjectResolver().resolveObjectModel( objectDescriptor, resolutionContext );
             objectResolutions.add( objectResolution );
         }
     }
@@ -545,10 +506,14 @@ public final class ApplicationBuilder
     private Map<Class<? extends Composite>, ModuleModel> getPrivateModuleComposites( ModuleModel moduleModel )
     {
         Map<Class<? extends Composite>, ModuleModel> privateModuleComposites = new LinkedHashMap<Class<? extends Composite>, ModuleModel>();
-        Iterable<CompositeModel> privateComposites = moduleModel.getPrivateComposites();
-        for( CompositeModel privateComposite : privateComposites )
+        Iterable<CompositeDescriptor> privateComposites = moduleModel.getCompositeDescriptors();
+        for( CompositeDescriptor privateComposite : privateComposites )
         {
-            privateModuleComposites.put( privateComposite.getCompositeClass(), moduleModel );
+            if( privateComposite.getVisibility() == Visibility.module )
+            {
+                ;
+            }
+            privateModuleComposites.put( privateComposite.getCompositeModel().getCompositeClass(), moduleModel );
         }
         return privateModuleComposites;
     }

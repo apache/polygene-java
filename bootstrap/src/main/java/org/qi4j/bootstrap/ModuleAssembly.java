@@ -16,13 +16,15 @@ package org.qi4j.bootstrap;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import org.qi4j.composite.Composite;
-import org.qi4j.spi.service.ServiceProvider;
+import org.qi4j.runtime.composite.CompositeModelFactory;
+import org.qi4j.runtime.composite.ObjectModelFactory;
+import org.qi4j.spi.service.ServiceInstanceProvider;
+import org.qi4j.spi.structure.CompositeDescriptor;
+import org.qi4j.spi.structure.ObjectDescriptor;
+import org.qi4j.spi.structure.ServiceDescriptor;
 import org.qi4j.spi.structure.Visibility;
 
 /**
@@ -31,10 +33,10 @@ import org.qi4j.spi.structure.Visibility;
 public final class ModuleAssembly
 {
     private LayerAssembly layerAssembly;
-    private Map<Class, ServiceProvider> serviceProviders;
     private String name;
     private List<CompositeDeclaration> compositeDeclarations;
     private List<ObjectDeclaration> objectDeclarations;
+    private List<ServiceDeclaration> serviceDeclarations;
     private List<PropertyDeclaration> propertyDeclarations;
     private List<AssociationDeclaration> associationDeclarations;
 
@@ -43,15 +45,15 @@ public final class ModuleAssembly
         this.layerAssembly = layerAssembly;
         compositeDeclarations = new ArrayList<CompositeDeclaration>();
         objectDeclarations = new ArrayList<ObjectDeclaration>();
+        serviceDeclarations = new ArrayList<ServiceDeclaration>();
         propertyDeclarations = new ArrayList<PropertyDeclaration>();
         associationDeclarations = new ArrayList<AssociationDeclaration>();
-        serviceProviders = new HashMap<Class, ServiceProvider>();
     }
 
     public void addAssembly( Assembly assembly )
         throws AssemblyException
     {
-        // Invoke Assembly callbacks
+        // Invoke Assembly callback
         assembly.configure( this );
     }
 
@@ -79,19 +81,11 @@ public final class ModuleAssembly
         return objectDeclaration;
     }
 
-    public void addServiceProvider( ServiceProvider serviceProvider, Class... serviceTypes )
+    public ServiceDeclaration addServices( Class<? extends ServiceInstanceProvider> serviceProvider, Class... serviceTypes )
     {
-        for( Class serviceType : serviceTypes )
-        {
-            serviceProviders.put( serviceType, serviceProvider );
-
-            if( Composite.class.isAssignableFrom( serviceType ) )
-            {
-                addComposites( (Class<? extends Composite>) serviceType );
-            }
-        }
-
-        addObjects( serviceProvider.getClass() );
+        ServiceDeclaration serviceDeclaration = new ServiceDeclaration( serviceProvider, Arrays.asList( serviceTypes ) );
+        serviceDeclarations.add( serviceDeclaration );
+        return serviceDeclaration;
     }
 
     public PropertyDeclaration addProperty()
@@ -108,83 +102,39 @@ public final class ModuleAssembly
         return declaration;
     }
 
-    List<CompositeDeclaration> getCompositeDeclarations()
+    List<CompositeDescriptor> getCompositeDescriptors( CompositeModelFactory compositeModelFactory )
     {
-        return compositeDeclarations;
-    }
-
-    List<ObjectDeclaration> getObjectDeclarations()
-    {
-        return objectDeclarations;
-    }
-
-    Set<Class<? extends Composite>> getPublicComposites()
-    {
-        Set<Class<? extends Composite>> publicComposites = new HashSet<Class<? extends Composite>>();
+        List<CompositeDescriptor> compositeDescriptors = new ArrayList<CompositeDescriptor>();
         for( CompositeDeclaration compositeDeclaration : compositeDeclarations )
         {
-            if( compositeDeclaration.getVisibility() == Visibility.module )
-            {
-                for( Class<? extends Composite> compositeType : compositeDeclaration.getCompositeTypes() )
-                {
-                    publicComposites.add( compositeType );
-                }
-            }
+            compositeDescriptors.addAll( compositeDeclaration.getCompositeDescriptors( compositeModelFactory ) );
         }
-        return publicComposites;
+        return compositeDescriptors;
     }
 
-    Set<Class<? extends Composite>> getPrivateComposites()
+    Iterable<ObjectDescriptor> getObjectDescriptors( ObjectModelFactory objectModelFactory )
     {
-        Set<Class<? extends Composite>> privateComposites = new HashSet<Class<? extends Composite>>();
-        for( CompositeDeclaration compositeDeclaration : compositeDeclarations )
-        {
-            if( compositeDeclaration.getVisibility() == Visibility.none )
-            {
-                for( Class<? extends Composite> compositeType : compositeDeclaration.getCompositeTypes() )
-                {
-                    privateComposites.add( compositeType );
-                }
-            }
-        }
-        return privateComposites;
-    }
-
-    Set<Class<?>> getPublicObjects()
-    {
-        Set<Class<?>> publicObjects = new HashSet<Class<?>>();
+        List<ObjectDescriptor> objectDescriptors = new ArrayList<ObjectDescriptor>();
         for( ObjectDeclaration objectDeclaration : objectDeclarations )
         {
-            if( objectDeclaration.getVisibility() == Visibility.module )
-            {
-                for( Class<? extends Composite> objectType : objectDeclaration.getObjectClasses() )
-                {
-                    publicObjects.add( objectType );
-                }
-            }
+            objectDescriptors.addAll( objectDeclaration.getObjectDescriptors( objectModelFactory ) );
         }
-        return publicObjects;
-    }
 
-    Set<Class<?>> getPrivateObjects()
-    {
-        Set<Class<?>> publicObjects = new HashSet<Class<?>>();
-        for( ObjectDeclaration objectDeclaration : objectDeclarations )
+        for( ServiceDescriptor serviceDescriptor : getServiceDescriptors() )
         {
-            if( objectDeclaration.getVisibility() == Visibility.none )
-            {
-                for( Class<? extends Composite> objectType : objectDeclaration.getObjectClasses() )
-                {
-                    publicObjects.add( objectType );
-                }
-            }
+            objectDescriptors.add( new ObjectDescriptor( objectModelFactory.newObjectModel( serviceDescriptor.getServiceProvider() ), Collections.emptySet(), Visibility.module ) );
         }
-        return publicObjects;
+        return objectDescriptors;
     }
 
-    Map<Class, ServiceProvider> getServiceProviders()
+    Iterable<ServiceDescriptor> getServiceDescriptors()
     {
-        return serviceProviders;
+        List<ServiceDescriptor> serviceDescriptors = new ArrayList<ServiceDescriptor>();
+        for( ServiceDeclaration serviceDeclaration : serviceDeclarations )
+        {
+            serviceDescriptors.addAll( serviceDeclaration.getServiceDescriptors() );
+        }
+        return serviceDescriptors;
     }
 
     List<PropertyDeclaration> getPropertyDeclarations()

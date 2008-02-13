@@ -17,7 +17,6 @@
 package org.qi4j.runtime.entity;
 
 import java.net.URL;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import org.qi4j.composite.CompositeBuilder;
@@ -119,7 +118,7 @@ public final class EntitySessionInstance
                 CompositeBinding compositeBinding = compositeContext.getCompositeBinding();
                 EntityState state = store.getEntityInstance( this, identity, compositeType, compositeBinding.getPropertyBindings(), compositeBinding.getAssociationBindings() );
                 EntityCompositeInstance compositeInstance = EntityCompositeInstance.getEntityCompositeInstance( entity.getInstance() );
-                compositeContext.newMixins( moduleInstance, compositeInstance, Collections.emptySet(), null, state.getProperties(), state.getAssociations() );
+                compositeContext.newEntityMixins( moduleInstance, compositeInstance, state );
                 compositeInstance.setState( state );
                 Map<String, EntityEntry> entityCache = getEntityCache( compositeType );
                 entityCache.put( identity, entity );

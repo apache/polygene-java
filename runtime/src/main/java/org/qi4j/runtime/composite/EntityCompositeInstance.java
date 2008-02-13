@@ -18,7 +18,6 @@ package org.qi4j.runtime.composite;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.Collections;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.EntitySession;
 import org.qi4j.runtime.structure.ModuleInstance;
@@ -67,7 +66,7 @@ public final class EntityCompositeInstance
             {
                 state = store.getEntityInstance( session, identity, binding.getCompositeResolution().getCompositeModel().getCompositeClass(), binding.getPropertyBindings(), binding.getAssociationBindings() );
             }
-            mixins = context.newMixins( moduleInstance, this, Collections.emptySet(), null, state.getProperties(), state.getAssociations() );
+            context.newEntityMixins( moduleInstance, this, state );
         }
 
         MethodDescriptor descriptor = context.getMethodDescriptor( method );

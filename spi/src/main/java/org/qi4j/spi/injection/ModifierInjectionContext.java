@@ -7,6 +7,7 @@ import org.qi4j.composite.ObjectBuilderFactory;
 import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.composite.CompositeMethodBinding;
 import org.qi4j.spi.composite.MixinBinding;
+import org.qi4j.spi.service.ServiceRegistry;
 import org.qi4j.spi.structure.ModuleBinding;
 
 /**
@@ -19,9 +20,18 @@ public final class ModifierInjectionContext extends FragmentInjectionContext
     private MixinBinding mixinBinding;
     private InvocationContext invocationContext;
 
-    public ModifierInjectionContext( CompositeBuilderFactory compositeBuilderFactory, ObjectBuilderFactory objectBuilderFactory, ModuleBinding moduleBinding, CompositeBinding compositeBinding, InvocationHandler thisCompositeAs, Object modifies, CompositeMethodBinding method, MixinBinding mixinBinding, InvocationContext invocationContext )
+    public ModifierInjectionContext( CompositeBuilderFactory compositeBuilderFactory,
+                                     ObjectBuilderFactory objectBuilderFactory,
+                                     ServiceRegistry serviceRegistry,
+                                     ModuleBinding moduleBinding,
+                                     CompositeBinding compositeBinding,
+                                     InvocationHandler thisCompositeAs,
+                                     Object modifies,
+                                     CompositeMethodBinding method,
+                                     MixinBinding mixinBinding,
+                                     InvocationContext invocationContext )
     {
-        super( compositeBuilderFactory, objectBuilderFactory, moduleBinding, compositeBinding, thisCompositeAs );
+        super( compositeBuilderFactory, objectBuilderFactory, serviceRegistry, moduleBinding, compositeBinding, thisCompositeAs );
         this.modifies = modifies;
         this.method = method;
         this.mixinBinding = mixinBinding;

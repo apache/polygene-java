@@ -17,7 +17,6 @@ package org.qi4j.spi.structure;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import org.qi4j.spi.service.ServiceProvider;
 
 /**
  * TODO
@@ -58,15 +57,15 @@ public final class LayerResolution
         return uses;
     }
 
-    public ServiceProvider getServiceProvider( Class serviceType )
+    public ServiceDescriptor getServiceDescriptor( Class serviceType )
     {
         // Check all Modules
         for( ModuleResolution moduleResolution : moduleResolutions )
         {
-            ServiceProvider provider = moduleResolution.getServiceProvider( serviceType );
-            if( provider != null )
+            ServiceDescriptor instanceProvider = moduleResolution.getServiceDescriptor( serviceType );
+            if( instanceProvider != null )
             {
-                return provider;
+                return instanceProvider;
             }
         }
 

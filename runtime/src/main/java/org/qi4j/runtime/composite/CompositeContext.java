@@ -26,7 +26,6 @@ import java.util.Set;
 import org.qi4j.association.AbstractAssociation;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeInstantiationException;
-import org.qi4j.context.Context;
 import org.qi4j.entity.EntitySession;
 import org.qi4j.entity.Lifecycle;
 import org.qi4j.property.Property;
@@ -37,6 +36,7 @@ import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.composite.CompositeModel;
 import org.qi4j.spi.composite.CompositeResolution;
 import org.qi4j.spi.composite.MixinBinding;
+import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.injection.MixinInjectionContext;
 import org.qi4j.spi.structure.ModuleBinding;
@@ -125,26 +125,18 @@ public final class CompositeContext
         return moduleBinding;
     }
 
-    public CompositeInstance newCompositeInstance( ModuleInstance moduleInstance, Set adapt, Object decoratedObject, Map<String, Property> compositeProperties, Map<String, AbstractAssociation> compositeAssociations )
+    public CompositeInstance newCompositeInstance( ModuleInstance moduleInstance, Set<Object> adapt, Object decoratedObject, Map<String, Property> compositeProperties, Map<String, AbstractAssociation> compositeAssociations )
     {
-        Class<? extends Composite> compositeType = getCompositeModel().getCompositeClass();
-        CompositeInstance compositeInstance;
-        if( Context.class.isAssignableFrom( compositeType ) )
-        {
-            compositeInstance = moduleInstance.getContextCompositeInstance( compositeType );
-        }
-        else
-        {
-            compositeInstance = new StandardCompositeInstance( this, moduleInstance );
-        }
+        CompositeInstance compositeInstance = new StandardCompositeInstance( this, moduleInstance );
 
         // Instantiate composite proxy
         Composite proxy = newProxy( compositeInstance );
         compositeInstance.setProxy( proxy );
 
         // Instantiate all mixins
-        Object[] mixins = newMixins( moduleInstance, compositeInstance, adapt, decoratedObject, compositeProperties, compositeAssociations );
+        Object[] mixins = new Object[mixinContexts.size()];
         compositeInstance.setMixins( mixins );
+        newMixins( moduleInstance, compositeInstance, adapt, decoratedObject, compositeProperties, compositeAssociations, mixins );
 
         // Invoke lifecycle create() method
         if( proxy instanceof Lifecycle )
@@ -219,17 +211,23 @@ public final class CompositeContext
         }
     }
 
+    public void newEntityMixins( ModuleInstance moduleInstance, EntityCompositeInstance compositeInstance, EntityState state )
+    {
+        Object[] mixins = new Object[mixinContexts.size()];
+        compositeInstance.setMixins( mixins );
+        newMixins( moduleInstance, compositeInstance, Collections.emptySet(), null, state.getProperties(), state.getAssociations(), mixins );
+    }
 
-    public Object[] newMixins( ModuleInstance moduleInstance, CompositeInstance compositeInstance, Set adaptContext, Object decoratedObject, Map<String, Property> compositeProperties, Map<String, AbstractAssociation> compositeAssociations )
+    public void newMixins( ModuleInstance moduleInstance, CompositeInstance compositeInstance, Set adaptContext, Object decoratedObject, Map<String, Property> compositeProperties, Map<String, AbstractAssociation> compositeAssociations, Object[] mixins )
     {
         Set<Object> adapt = adaptContext == null ? Collections.EMPTY_SET : adaptContext;
 
-        Object[] mixins = new Object[mixinContexts.size()];
         int i = 0;
         for( MixinContext mixinContext : mixinContexts )
         {
             MixinInjectionContext injectionContext = new MixinInjectionContext( moduleInstance.getCompositeBuilderFactory(),
                                                                                 moduleInstance.getObjectBuilderFactory(),
+                                                                                moduleInstance.getServiceRegistry(),
                                                                                 moduleInstance.getModuleContext().getModuleBinding(),
                                                                                 compositeBinding,
                                                                                 compositeInstance,
@@ -240,7 +238,6 @@ public final class CompositeContext
             Object mixin = instanceFactory.newInstance( mixinContext.getMixinBinding(), injectionContext );
             mixins[ i++ ] = mixin;
         }
-        return mixins;
     }
 
     public void invokeCreate( Object composite, CompositeInstance state )

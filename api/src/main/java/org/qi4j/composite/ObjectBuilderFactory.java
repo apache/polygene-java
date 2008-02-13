@@ -28,4 +28,6 @@ public interface ObjectBuilderFactory
      *          thrown if instantiation fails
      */
     <T> ObjectBuilder<T> newObjectBuilder( Class<T> type );
+
+    <T> T newObject( Class<T> type );
 }

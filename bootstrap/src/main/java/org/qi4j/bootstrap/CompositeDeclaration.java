@@ -15,8 +15,13 @@
 package org.qi4j.bootstrap;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.qi4j.composite.Composite;
+import org.qi4j.runtime.composite.CompositeModelFactory;
+import org.qi4j.spi.composite.CompositeModel;
+import org.qi4j.spi.structure.CompositeDescriptor;
 import org.qi4j.spi.structure.Visibility;
 
 /**
@@ -24,37 +29,36 @@ import org.qi4j.spi.structure.Visibility;
  */
 public class CompositeDeclaration
 {
-    private Iterable<Class<? extends Composite>> compositeTypes;
-    private Visibility visibility = Visibility.none;
+    private Class<? extends Composite>[] compositeTypes;
+    private Map<Class, Object> compositeInfos = new HashMap<Class, Object>();
+    private Visibility visibility = Visibility.module;
 
-    public CompositeDeclaration( List<Class<? extends Composite>> compositeTypes )
+    public CompositeDeclaration( Class<? extends Composite>[] compositeTypes )
     {
         this.compositeTypes = compositeTypes;
     }
 
-    public CompositeDeclaration( Class<? extends Composite>[] compositeTypes )
+    public CompositeDeclaration addCompositeInfo( Object info )
     {
-        List<Class<? extends Composite>> list = new ArrayList<Class<? extends Composite>>();
-        for( Class<? extends Composite> clazz : compositeTypes )
-        {
-            list.add( clazz );
-        }
-        this.compositeTypes = list;
+        compositeInfos.put( info.getClass(), info );
+        return this;
     }
 
-    public CompositeDeclaration publicIn( Visibility visibility )
+    public CompositeDeclaration visibleIn( Visibility visibility )
     {
         this.visibility = visibility;
         return this;
     }
 
-    Iterable<Class<? extends Composite>> getCompositeTypes()
+    List<CompositeDescriptor> getCompositeDescriptors( CompositeModelFactory compositeModelFactory )
     {
-        return compositeTypes;
-    }
-
-    public Visibility getVisibility()
-    {
-        return visibility;
+        List<CompositeDescriptor> compositeDescriptors = new ArrayList<CompositeDescriptor>();
+        for( Class<? extends Composite> compositeType : compositeTypes )
+        {
+            CompositeModel compositeModel = compositeModelFactory.newCompositeModel( compositeType );
+            CompositeDescriptor compositeDescriptor = new CompositeDescriptor( compositeModel, compositeInfos, visibility );
+            compositeDescriptors.add( compositeDescriptor );
+        }
+        return compositeDescriptors;
     }
 }

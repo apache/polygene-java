@@ -16,16 +16,25 @@
  */
 package org.qi4j.runtime.structure;
 
-import static java.util.Collections.emptyMap;
-import static java.util.Collections.emptySet;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
+import org.qi4j.association.AbstractAssociation;
 import org.qi4j.composite.ObjectBuilder;
 import org.qi4j.composite.PropertyValue;
+import org.qi4j.property.Property;
 import org.qi4j.runtime.composite.ObjectContext;
+import org.qi4j.runtime.property.AssociationContext;
+import org.qi4j.runtime.property.PropertyContext;
+import org.qi4j.spi.composite.AssociationModel;
+import org.qi4j.spi.composite.AssociationResolution;
+import org.qi4j.spi.composite.PropertyResolution;
+import org.qi4j.spi.property.AssociationBinding;
+import org.qi4j.spi.property.PropertyBinding;
+import org.qi4j.spi.property.PropertyModel;
 
 /**
  *
@@ -38,15 +47,14 @@ public final class ObjectBuilderImpl<T>
 
     private Set<Object> adaptContext;
     private Object decoratedObject;
-    private Map<String, Object> propertyContext;
+    private Map<String, Object> propertyValues;
+    private Map<String, AbstractAssociation> associationValues;
 
     ObjectBuilderImpl( ModuleInstance moduleInstance, ObjectContext objectBinding )
     {
         this.objectContext = objectBinding;
         this.moduleInstance = moduleInstance;
 
-        adaptContext = emptySet();
-        propertyContext = emptyMap();
     }
 
     public void adapt( Object anAdaptedObject )
@@ -62,7 +70,7 @@ public final class ObjectBuilderImpl<T>
 
     public void properties( PropertyValue... properties )
     {
-        Map<String, Object> props = getPropertyContext();
+        Map<String, Object> props = getPropertyValues();
         for( PropertyValue property : properties )
         {
             props.put( property.getName(), property );
@@ -71,7 +79,50 @@ public final class ObjectBuilderImpl<T>
 
     public T newInstance()
     {
-        return (T) objectContext.newObjectInstance( moduleInstance, adaptContext, decoratedObject, propertyContext );
+        Map<String, Property> properties = new HashMap<String, Property>();
+        Map<String, AbstractAssociation> associations = new HashMap<String, AbstractAssociation>();
+
+        // Calculate total set of Properties for this Composite
+        for( PropertyContext propertyContext : objectContext.getPropertyContexts() )
+        {
+            Object value;
+            String propertyName = propertyContext.getPropertyBinding().getQualifiedName();
+            if( propertyValues != null && propertyValues.containsKey( propertyName ) )
+            {
+                value = propertyValues.get( propertyName );
+            }
+            else
+            {
+                value = propertyContext.getPropertyBinding().getDefaultValue();
+            }
+
+            Property property = propertyContext.newInstance( moduleInstance, value );
+            PropertyBinding binding = propertyContext.getPropertyBinding();
+            PropertyResolution propertyResolution = binding.getPropertyResolution();
+            PropertyModel propertyModel = propertyResolution.getPropertyModel();
+            String qualifiedName = propertyModel.getQualifiedName();
+            properties.put( qualifiedName, property );
+        }
+
+        // Calculate total set of Associations for this Composite
+        for( AssociationContext mixinAssociation : objectContext.getAssociationContexts() )
+        {
+            Object value = null;
+            if( associationValues != null && associationValues.containsKey( mixinAssociation ) )
+            {
+                value = associationValues.get( mixinAssociation );
+            }
+
+            AbstractAssociation association = mixinAssociation.newInstance( moduleInstance, value );
+            AssociationBinding binding = mixinAssociation.getAssociationBinding();
+            AssociationResolution associationResolution = binding.getAssociationResolution();
+            AssociationModel associationModel = associationResolution.getAssociationModel();
+            String qualifiedName = associationModel.getQualifiedName();
+            associations.put( qualifiedName, association );
+        }
+
+
+        return (T) objectContext.newObjectInstance( moduleInstance, adaptContext, decoratedObject, properties, associations );
     }
 
     public Iterator<T> iterator()
@@ -97,14 +148,17 @@ public final class ObjectBuilderImpl<T>
 
     public void inject( T instance )
     {
+        Map<String, Property> properties = new HashMap<String, Property>();
+        Map<String, AbstractAssociation> associations = new HashMap<String, AbstractAssociation>();
+
         // Inject existing object
-        objectContext.inject( instance, moduleInstance, adaptContext, decoratedObject, propertyContext );
+        objectContext.inject( instance, moduleInstance, adaptContext, decoratedObject, properties, associations );
     }
 
     // Private ------------------------------------------------------
     private Set<Object> getAdaptContext()
     {
-        if( adaptContext == emptySet() )
+        if( adaptContext == null )
         {
             adaptContext = new LinkedHashSet<Object>();
         }
@@ -112,13 +166,23 @@ public final class ObjectBuilderImpl<T>
         return adaptContext;
     }
 
-    private Map<String, Object> getPropertyContext()
+    private Map<String, Object> getPropertyValues()
     {
-        if( !( propertyContext instanceof LinkedHashMap ) )
+        if( propertyValues == null )
         {
-            propertyContext = new LinkedHashMap<String, Object>();
+            propertyValues = new LinkedHashMap<String, Object>();
         }
 
-        return propertyContext;
+        return propertyValues;
     }
+
+    protected Map<String, AbstractAssociation> getAssociationValues()
+    {
+        if( associationValues == null )
+        {
+            associationValues = new HashMap<String, AbstractAssociation>();
+        }
+        return associationValues;
+    }
+
 }

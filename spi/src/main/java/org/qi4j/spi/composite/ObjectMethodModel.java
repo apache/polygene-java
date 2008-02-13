@@ -12,17 +12,19 @@
  *
  */
 
-package org.qi4j.spi.service;
+package org.qi4j.spi.composite;
 
-import org.qi4j.service.ServiceComposite;
+import java.lang.reflect.Method;
+import org.qi4j.spi.property.PropertyModel;
 
 /**
  * TODO
  */
-public interface ServiceProvider
+public final class ObjectMethodModel
+    extends AbstractMethodModel
 {
-    <T> T getService( Class<T> serviceType )
-        throws ServiceProviderException;
-
-    void releaseService( ServiceComposite service );
+    public ObjectMethodModel( Method method, Iterable<ParameterModel> parameters, PropertyModel propertyModel, AssociationModel associationModel )
+    {
+        super( method, parameters, propertyModel, associationModel );
+    }
 }

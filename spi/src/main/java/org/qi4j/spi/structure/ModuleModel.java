@@ -16,11 +16,7 @@ package org.qi4j.spi.structure;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
-import java.util.List;
 import java.util.Map;
-import org.qi4j.spi.composite.CompositeModel;
-import org.qi4j.spi.composite.ObjectModel;
-import org.qi4j.spi.service.ServiceProvider;
 
 /**
  * TODO
@@ -28,60 +24,46 @@ import org.qi4j.spi.service.ServiceProvider;
 public final class ModuleModel
     implements Serializable
 {
-    private Iterable<CompositeModel> publicComposites;
-    private Iterable<CompositeModel> privateComposites;
-    private Map<Class, ServiceProvider> serviceProviders;
-    private List<ObjectModel> publicObjects;
-    private List<ObjectModel> privateObjects;
+    private String name;
+
+    private Iterable<CompositeDescriptor> compositeDescriptors;
+    private Iterable<ObjectDescriptor> objectDescriptors;
+    private Iterable<ServiceDescriptor> serviceDescriptors;
     private Map<Method, PropertyDescriptor> propertyDescriptors;
     private Map<Method, AssociationDescriptor> associationDescriptors;
 
-    private String name;
-
-    public ModuleModel( Map<Class, ServiceProvider> serviceProviders, String name,
-                        Iterable<CompositeModel> publicComposites, Iterable<CompositeModel> privateComposites,
-                        List<ObjectModel> publicObjects, List<ObjectModel> privateObjects,
+    public ModuleModel( String name, Iterable<CompositeDescriptor> compositeDescriptors,
+                        Iterable<ObjectDescriptor> objectDescriptors,
+                        Iterable<ServiceDescriptor> serviceDescriptors,
                         Map<Method, PropertyDescriptor> propertyDescriptors,
                         Map<Method, AssociationDescriptor> associationDescriptors )
     {
-        this.privateComposites = privateComposites;
-        this.publicComposites = publicComposites;
         this.name = name;
-        this.serviceProviders = serviceProviders;
+        this.compositeDescriptors = compositeDescriptors;
+        this.objectDescriptors = objectDescriptors;
+        this.serviceDescriptors = serviceDescriptors;
         this.propertyDescriptors = propertyDescriptors;
         this.associationDescriptors = associationDescriptors;
-        this.privateObjects = privateObjects;
-        this.publicObjects = publicObjects;
-    }
-
-    public Iterable<CompositeModel> getPublicComposites()
-    {
-        return publicComposites;
-    }
-
-    public Iterable<CompositeModel> getPrivateComposites()
-    {
-        return privateComposites;
-    }
-
-    public Map<Class, ServiceProvider> getServiceProviders()
-    {
-        return serviceProviders;
-    }
-
-    public List<ObjectModel> getPrivateObjects()
-    {
-        return privateObjects;
-    }
-
-    public List<ObjectModel> getPublicObjects()
-    {
-        return publicObjects;
     }
 
     public String getName()
     {
         return name;
+    }
+
+    public Iterable<CompositeDescriptor> getCompositeDescriptors()
+    {
+        return compositeDescriptors;
+    }
+
+    public Iterable<ObjectDescriptor> getObjectDescriptors()
+    {
+        return objectDescriptors;
+    }
+
+    public Iterable<ServiceDescriptor> getServiceDescriptors()
+    {
+        return serviceDescriptors;
     }
 
     public PropertyDescriptor getPropertyDescriptor( Method propertyMethod )

@@ -19,5 +19,5 @@ package org.qi4j.spi.service;
  */
 public interface ServiceRegistry
 {
-    ServiceProvider getServiceProvider( Class type );
+    ServiceInstanceProvider getServiceProvider( Class type );
 }

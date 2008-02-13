@@ -19,12 +19,10 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.entity.EntitySession;
 import org.qi4j.entity.EntitySessionFactory;
-import org.qi4j.entity.IdentityGenerator;
 import org.qi4j.entity.SessionCompletionException;
 import org.qi4j.entity.memory.MemoryEntityStoreComposite;
-import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.UuidIdentityGeneratorComposite;
-import org.qi4j.spi.service.Singleton;
+import org.qi4j.spi.service.provider.Singleton;
 import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.entity.AccountComposite;
 import org.qi4j.test.entity.CustomerComposite;
@@ -44,8 +42,8 @@ public class EntitySessionFactoryTest
         module.addComposites( MemoryEntityStoreComposite.class );
         module.addComposites( UuidIdentityGeneratorComposite.class );
         module.addComposites( AccountComposite.class, OrderComposite.class, ProductComposite.class, CustomerComposite.class );
-        module.addServiceProvider( new Singleton(), EntityStore.class );
-        module.addServiceProvider( new Singleton(), IdentityGenerator.class );
+        module.addServices( Singleton.class, MemoryEntityStoreComposite.class );
+        module.addServices( Singleton.class, UuidIdentityGeneratorComposite.class );
     }
 
     public void testEntitySession()

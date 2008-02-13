@@ -20,6 +20,7 @@ import java.util.Map;
 import org.qi4j.composite.Composite;
 import org.qi4j.runtime.composite.CompositeContext;
 import org.qi4j.runtime.composite.ObjectContext;
+import org.qi4j.spi.service.ServiceRegistry;
 import org.qi4j.spi.structure.ModuleBinding;
 
 /**
@@ -47,10 +48,12 @@ public final class ModuleContext
         return moduleBinding;
     }
 
-    public ModuleInstance newModuleInstance( Map<Class<? extends Composite>, ModuleInstance> modulesForPublicComposites, Map<Class, ModuleInstance> modulesForPublicObjects )
+    public ModuleInstance newModuleInstance( Map<Class<? extends Composite>, ModuleInstance> modulesForPublicComposites,
+                                             Map<Class, ModuleInstance> modulesForPublicObjects,
+                                             ServiceRegistry serviceRegistry )
     {
 
-        ModuleInstance moduleInstance = new ModuleInstance( this, modulesForPublicComposites, modulesForPublicObjects );
+        ModuleInstance moduleInstance = new ModuleInstance( this, modulesForPublicComposites, modulesForPublicObjects, serviceRegistry );
         return moduleInstance;
     }
 
@@ -88,10 +91,7 @@ public final class ModuleContext
 
     private void mapComposite( Class<? extends Composite> compositeType, Map<Class, Class<? extends Composite>> mapping )
     {
-        for( Class type : compositeType.getInterfaces() )
-        {
-            mapType( type, compositeType, mapping );
-        }
+        mapType( compositeType, compositeType, mapping );
     }
 
     private void mapType( Class type, Class<? extends Composite> compositeType, Map<Class, Class<? extends Composite>> mapping )

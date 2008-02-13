@@ -54,6 +54,7 @@ public abstract class AbstractQi4jTest extends TestCase
         api = spi = runtime = new Energy4Java();
         applicationFactory = new ApplicationFactory( runtime, new ApplicationAssemblyFactory() );
         application = newApplication();
+        application.activate();
 
         // Assume only one module
         layerInstance = application.getLayerInstances().iterator().next();

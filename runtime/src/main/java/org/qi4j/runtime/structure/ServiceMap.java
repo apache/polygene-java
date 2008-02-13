@@ -17,6 +17,7 @@ package org.qi4j.runtime.structure;
 import java.util.HashMap;
 import java.util.Map;
 import org.qi4j.composite.Composite;
+import org.qi4j.spi.service.ServiceInstance;
 import org.qi4j.spi.service.ServiceProviderException;
 
 /**
@@ -26,7 +27,7 @@ public class ServiceMap<T>
 {
     private ModuleInstance moduleInstance;
     private Class<T> serviceClass;
-    private Map<Class<? extends Composite>, ServiceRef<T>> instances = new HashMap<Class<? extends Composite>, ServiceRef<T>>();
+    private Map<Class<? extends Composite>, ServiceInstance> instances = new HashMap<Class<? extends Composite>, ServiceInstance>();
 
     public ServiceMap( ModuleInstance moduleInstance, Class<T> serviceClass )
     {
@@ -37,21 +38,21 @@ public class ServiceMap<T>
     public T getService( Class<? extends Composite> compositeType )
         throws ServiceProviderException
     {
-        ServiceRef<T> instance = instances.get( compositeType );
+        ServiceInstance instance = instances.get( compositeType );
         if( instance == null )
         {
             ModuleInstance realModule = moduleInstance.getModuleForComposite( compositeType );
-            instance = realModule.getService( serviceClass );
+            instance = realModule.getServiceRegistry().getServiceProvider( serviceClass ).getInstance();
             instances.put( compositeType, instance );
         }
-        return instance.getService();
+        return (T) instance.getInstance();
     }
 
     public void release()
     {
-        for( ServiceRef<T> serviceRef : instances.values() )
+        for( ServiceInstance serviceInstance : instances.values() )
         {
-            serviceRef.release();
+            serviceInstance.release();
         }
     }
 }

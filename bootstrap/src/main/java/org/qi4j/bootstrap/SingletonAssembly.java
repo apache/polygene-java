@@ -50,6 +50,15 @@ public abstract class SingletonAssembly
             throw new IllegalStateException( "Could not instantiate application", e );
         }
 
+        try
+        {
+            applicationInstance.activate();
+        }
+        catch( Exception e )
+        {
+            throw new IllegalStateException( "Could not activate application", e );
+        }
+
         ModuleInstance moduleInstance = applicationInstance.getLayerInstances().iterator().next().getModuleInstances().iterator().next();
         compositeBuilderFactory = moduleInstance.getCompositeBuilderFactory();
         objectBuilderFactory = moduleInstance.getObjectBuilderFactory();

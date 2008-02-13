@@ -19,9 +19,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.qi4j.composite.Composite;
-import org.qi4j.spi.composite.CompositeModel;
-import org.qi4j.spi.composite.ObjectModel;
+import org.qi4j.spi.service.ServiceRegistry;
+import org.qi4j.spi.structure.CompositeDescriptor;
 import org.qi4j.spi.structure.LayerBinding;
+import org.qi4j.spi.structure.ObjectDescriptor;
+import org.qi4j.spi.structure.ServiceDescriptor;
+import org.qi4j.spi.structure.Visibility;
 
 /**
  * TODO
@@ -42,31 +45,52 @@ public final class LayerContext
         return layerBinding;
     }
 
-    LayerInstance newLayerInstance( Map<Class<? extends Composite>, ModuleInstance> availableCompositeModules, Map<Class, ModuleInstance> availableObjectModules )
+    LayerInstance newLayerInstance( Map<Class<? extends Composite>, ModuleInstance> availableCompositeModules, Map<Class, ModuleInstance> availableObjectModules, Map<Class, ModuleInstance> availableServiceModules )
     {
         List<ModuleInstance> moduleInstances = new ArrayList<ModuleInstance>();
         Map<Class<? extends Composite>, ModuleInstance> modulesForPublicComposites = new HashMap<Class<? extends Composite>, ModuleInstance>();
         modulesForPublicComposites.putAll( availableCompositeModules );
+
         Map<Class, ModuleInstance> modulesForPublicObjects = new HashMap<Class, ModuleInstance>();
         modulesForPublicObjects.putAll( availableObjectModules );
+
+        Map<Class, ModuleInstance> modulesForPublicServices = new HashMap<Class, ModuleInstance>();
+        modulesForPublicServices.putAll( availableServiceModules );
+
+        ServiceRegistry serviceRegistry = new LayerServiceRegistry( modulesForPublicServices );
+
         for( ModuleContext moduleContext : moduleContexts )
         {
-            ModuleInstance moduleInstance = moduleContext.newModuleInstance( modulesForPublicComposites, modulesForPublicObjects );
+            ModuleInstance moduleInstance = moduleContext.newModuleInstance( modulesForPublicComposites, modulesForPublicObjects, serviceRegistry );
             moduleInstances.add( moduleInstance );
 
-            Iterable<CompositeModel> publicComposites = moduleContext.getModuleBinding().getModuleResolution().getModuleModel().getPublicComposites();
-            for( CompositeModel publicComposite : publicComposites )
+            Iterable<CompositeDescriptor> publicComposites = moduleContext.getModuleBinding().getModuleResolution().getModuleModel().getCompositeDescriptors();
+            for( CompositeDescriptor publicComposite : publicComposites )
             {
-                modulesForPublicComposites.put( publicComposite.getCompositeClass(), moduleInstance );
+                if( publicComposite.getVisibility() != Visibility.module )
+                {
+                    modulesForPublicComposites.put( publicComposite.getCompositeModel().getCompositeClass(), moduleInstance );
+                }
             }
-            Iterable<ObjectModel> publicObjects = moduleContext.getModuleBinding().getModuleResolution().getModuleModel().getPublicObjects();
-            for( ObjectModel publicObject : publicObjects )
+            Iterable<ObjectDescriptor> publicObjects = moduleContext.getModuleBinding().getModuleResolution().getModuleModel().getObjectDescriptors();
+            for( ObjectDescriptor publicObject : publicObjects )
             {
-                modulesForPublicObjects.put( publicObject.getModelClass(), moduleInstance );
+                if( publicObject.getVisibility() != Visibility.module )
+                {
+                    modulesForPublicObjects.put( publicObject.getObjectModel().getModelClass(), moduleInstance );
+                }
+            }
+            Iterable<ServiceDescriptor> publicServices = moduleContext.getModuleBinding().getModuleResolution().getModuleModel().getServiceDescriptors();
+            for( ServiceDescriptor publicService : publicServices )
+            {
+                if( publicService.getVisibility() != Visibility.module )
+                {
+                    modulesForPublicServices.put( publicService.getServiceType(), moduleInstance );
+                }
             }
         }
 
-        return new LayerInstance( this, moduleInstances, modulesForPublicComposites, modulesForPublicObjects );
+        return new LayerInstance( this, moduleInstances, modulesForPublicComposites, modulesForPublicObjects, modulesForPublicServices, serviceRegistry );
     }
 
 }

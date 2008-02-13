@@ -19,6 +19,8 @@ import org.qi4j.composite.Mixins;
 import org.qi4j.composite.PropertyValue;
 import org.qi4j.composite.scope.PropertyField;
 import org.qi4j.composite.scope.PropertyParameter;
+import org.qi4j.library.framework.entity.PropertyMixin;
+import org.qi4j.property.Property;
 import org.qi4j.test.AbstractQi4jTest;
 
 public class PropertyInjectionTest extends AbstractQi4jTest
@@ -41,22 +43,26 @@ public class PropertyInjectionTest extends AbstractQi4jTest
         assertEquals( "Hello World", sampleInterface.say() );
     }
 
-    @Mixins( SampleInterfaceMixin.class )
+    @Mixins( { SampleInterfaceMixin.class, PropertyMixin.class } )
     public static interface SampleInterface
     {
-        public String say();
+        String say();
+
+        Property<String> sampleOne();
+
+        Property<String> sampleTwo();
     }
 
     public static abstract class AbstractSimpleInteface implements SampleInterface
     {
-        @PropertyField protected String sampleOne;
+        @PropertyField protected Property<String> sampleOne;
     }
 
     public static class SampleInterfaceMixin extends AbstractSimpleInteface
     {
-        private String sampleTwo;
+        private Property<String> sampleTwo;
 
-        public SampleInterfaceMixin( @PropertyParameter( "sampleTwo" )String sampleTwo )
+        public SampleInterfaceMixin( @PropertyParameter( "sampleTwo" )Property<String> sampleTwo )
         {
             this.sampleTwo = sampleTwo;
         }
@@ -64,6 +70,17 @@ public class PropertyInjectionTest extends AbstractQi4jTest
         public String say()
         {
             return sampleOne + " " + sampleTwo;
+        }
+
+
+        public Property<String> sampleOne()
+        {
+            return sampleOne;
+        }
+
+        public Property<String> sampleTwo()
+        {
+            return sampleTwo;
         }
     }
 

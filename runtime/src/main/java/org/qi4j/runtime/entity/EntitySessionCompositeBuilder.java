@@ -14,7 +14,6 @@
 
 package org.qi4j.runtime.entity;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -99,8 +98,7 @@ public final class EntitySessionCompositeBuilder<T extends Composite>
         }
 
         EntityCompositeInstance compositeInstance = context.newEntityCompositeInstance( moduleInstance, entitySession, store, identity );
-        Object[] mixins = context.newMixins( moduleInstance, compositeInstance, Collections.emptySet(), null, state.getProperties(), associationMap );
-        compositeInstance.setMixins( mixins );
+        context.newEntityMixins( moduleInstance, compositeInstance, state );
         T instance = compositeInterface.cast( compositeInstance.getProxy() );
         entitySession.createEntity( (EntityComposite) instance );
 
