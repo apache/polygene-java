@@ -20,10 +20,11 @@ package org.qi4j.library.framework.rdf.parse;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.qi4j.library.framework.rdf.Qi4jRdf;
-import org.qi4j.spi.composite.CompositeModel;
-import org.qi4j.spi.composite.ObjectModel;
+import org.qi4j.spi.structure.CompositeDescriptor;
 import org.qi4j.spi.structure.LayerModel;
 import org.qi4j.spi.structure.ModuleModel;
+import org.qi4j.spi.structure.ObjectDescriptor;
+import org.qi4j.spi.structure.Visibility;
 
 public final class ModuleParser
 {
@@ -47,42 +48,54 @@ public final class ModuleParser
     private void parsePublicComposites( URI module, LayerModel layerModel, ModuleModel moduleModel )
     {
         CompositeParser parser = context.getParserFactory().newCompositeParser();
-        for( CompositeModel compositeModel : moduleModel.getPublicComposites() )
+        for( CompositeDescriptor compositeDescriptor : moduleModel.getCompositeDescriptors() )
         {
-            URI composite = parser.parseModel( layerModel, moduleModel, compositeModel );
-            context.addRelationship( module, Qi4jRdf.RELATIONSHIP_PUBLIC_COMPOSITE, composite );
-            context.addRelationship( module, Qi4jRdf.TYPE_COMPOSITE, composite );
+            if( compositeDescriptor.getVisibility() != Visibility.module )
+            {
+                URI composite = parser.parseModel( layerModel, moduleModel, compositeDescriptor.getCompositeModel() );
+                context.addRelationship( module, Qi4jRdf.RELATIONSHIP_PUBLIC_COMPOSITE, composite );
+                context.addRelationship( module, Qi4jRdf.TYPE_COMPOSITE, composite );
+            }
         }
     }
 
     private void parsePrivateComposites( URI module, LayerModel layerModel, ModuleModel moduleModel )
     {
         CompositeParser parser = context.getParserFactory().newCompositeParser();
-        for( CompositeModel compositeModel : moduleModel.getPrivateComposites() )
+        for( CompositeDescriptor compositeDescriptor : moduleModel.getCompositeDescriptors() )
         {
-            URI composite = parser.parseModel( layerModel, moduleModel, compositeModel );
-            context.addRelationship( module, Qi4jRdf.RELATIONSHIP_PRIVATE_COMPOSITE, composite );
-            context.addRelationship( module, Qi4jRdf.TYPE_COMPOSITE, composite );
+            if( compositeDescriptor.getVisibility() != Visibility.module )
+            {
+                URI composite = parser.parseModel( layerModel, moduleModel, compositeDescriptor.getCompositeModel() );
+                context.addRelationship( module, Qi4jRdf.RELATIONSHIP_PRIVATE_COMPOSITE, composite );
+                context.addRelationship( module, Qi4jRdf.TYPE_COMPOSITE, composite );
+            }
         }
     }
 
     private void parsePublicObjects( URI module, ModuleModel model )
     {
         ObjectParser parser = context.getParserFactory().newObjectParser();
-        for( ObjectModel objectModel : model.getPublicObjects() )
+        for( ObjectDescriptor objectDescriptor : model.getObjectDescriptors() )
         {
-            Value object = parser.parseModel( objectModel );
-            context.addRelationship( module, Qi4jRdf.TYPE_OBJECT, object );
+            if( objectDescriptor.getVisibility() != Visibility.module )
+            {
+                Value object = parser.parseModel( objectDescriptor.getObjectModel() );
+                context.addRelationship( module, Qi4jRdf.TYPE_OBJECT, object );
+            }
         }
     }
 
     private void parsePrivateObjects( URI module, ModuleModel model )
     {
         ObjectParser parser = context.getParserFactory().newObjectParser();
-        for( ObjectModel objectModel : model.getPrivateObjects() )
+        for( ObjectDescriptor objectDescriptor : model.getObjectDescriptors() )
         {
-            Value object = parser.parseModel( objectModel );
-            context.addRelationship( module, Qi4jRdf.TYPE_OBJECT, object );
+            if( objectDescriptor.getVisibility() != Visibility.module )
+            {
+                Value object = parser.parseModel( objectDescriptor.getObjectModel() );
+                context.addRelationship( module, Qi4jRdf.TYPE_OBJECT, object );
+            }
         }
     }
 }
