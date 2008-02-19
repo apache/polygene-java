@@ -25,14 +25,15 @@ import org.qi4j.injection.InjectionScope;
  * Annotation to denote the injection of a resource specific for the module which the injected object/fragment is instantiated in.
  * <p/>
  * Examples:
- *
- * @Structure CompositeBuilderFactory cbf
- * @Structure ObjectBuilderFactory obf
- * @Structure ServiceRegistry serviceRegistry
- * @Structure ModuleBinding moduleBinding
- * @Structure Qi4j qi4j
- * @Structure Qi4jSPI qi4jSpi
- * @Structure Qi4jRuntime qi4jRuntime
+ * <code><pre>
+ * &#64;Structure CompositeBuilderFactory cbf
+ * &#64;Structure ObjectBuilderFactory obf
+ * &#64;Structure ServiceRegistry serviceRegistry
+ * &#64;Structure ModuleBinding moduleBinding
+ * &#64;Structure Qi4j qi4j
+ * &#64;Structure Qi4jSPI qi4jSpi
+ * &#64;Structure Qi4jRuntime qi4jRuntime
+ * </pre></code>
  */
 @Retention( RetentionPolicy.RUNTIME )
 @Target( { ElementType.FIELD, ElementType.PARAMETER } )

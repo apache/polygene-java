@@ -40,7 +40,7 @@ import org.qi4j.injection.InjectionScope;
  * public class MyStuffSideEffect
  *     implements MyStuff
  * {
- *     @SideEffectFor MyStuff next;
+ *     &#64;SideEffectFor MyStuff next;
  * <p/>
  *     public SomeResult doSomething()
  *     {

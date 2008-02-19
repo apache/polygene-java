@@ -28,10 +28,11 @@ import org.qi4j.injection.InjectionScope;
  * InvocationContext with information about the current invocation
  * <p/>
  * Examples:
- *
- * @Modifier Method theInvokedMethod
- * @Modifier AnnotationElement annotations
- * @Modifier InvocationContext context
+ * <code><pre>
+ * &#64;Modifier Method theInvokedMethod
+ * &#64;Modifier AnnotationElement annotations
+ * &#64;Modifier InvocationContext context
+ * </pre></code>
  */
 @Retention( RetentionPolicy.RUNTIME )
 @Target( { ElementType.FIELD, ElementType.PARAMETER } )

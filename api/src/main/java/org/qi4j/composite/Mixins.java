@@ -34,7 +34,7 @@ import java.lang.annotation.Target;
  * Example;
  * <pre><code>
  *
- * @Mixins( MyBeerOrder.class )
+ * &#64;Mixins( MyBeerOrder.class )
  * public interface BeerOrderComposite extends BeerOrder, Composite
  * {
  * }
@@ -48,7 +48,7 @@ import java.lang.annotation.Target;
  * <p/>
  * Many implementations can be listed,
  * <pre><code>
- * @Mixins( { MyBeerOrder.class, DescriptionImpl.class } )
+ * &#64;Mixins( { MyBeerOrder.class, DescriptionImpl.class } )
  * public interface BeerOrderComposite extends BeerOrder, Description, Composite
  * {
  * }

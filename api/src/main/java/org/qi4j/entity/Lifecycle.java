@@ -52,10 +52,10 @@ import org.qi4j.composite.Mixins;
  * public class SystemAdminLifecycleModifier
  *     implements Lifecyle
  * {
- *      @Modifies private Lifecycle next;
- *      @DependsOn private EntitySession session;
- *      @ThisCompositeAs private Identity meAsIdentity;
- *      @ThisCompositeAs private System meAsSystem;
+ *      &#64;Modifies private Lifecycle next;
+ *      &#64;Structure private EntitySession session;
+ *      &#64;ThisCompositeAs private Identity meAsIdentity;
+ *      &#64;ThisCompositeAs private System meAsSystem;
  * <p/>
  *      public void create()
  *      {
@@ -73,7 +73,7 @@ import org.qi4j.composite.Mixins;
  *      }
  * }
  *
- * @ModifedBy( SystemAdminLifecycleModifier.class )
+ * &#64;ModifedBy( SystemAdminLifecycleModifier.class )
  * public interface SystemComposite extends System, Composite
  * {}
  * <p/>

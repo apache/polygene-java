@@ -40,7 +40,7 @@ import org.qi4j.injection.InjectionScope;
  * public class MyStuffConcern
  *     implements MyStuff
  * {
- *     @ConcernFor MyStuff next;
+ *     &#64;ConcernFor MyStuff next;
  * <p/>
  *     public void doSomething()
  *     {

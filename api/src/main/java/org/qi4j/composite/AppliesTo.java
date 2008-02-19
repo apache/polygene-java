@@ -29,7 +29,7 @@ import java.lang.annotation.Target;
  * Example:
  * <pre><code>
  *
- * @AppliesTo( Sessional.class )
+ * &#64;AppliesTo( Sessional.class )
  * public class SessionModifier
  * implements InvocationHandler
  * {
@@ -39,10 +39,10 @@ import java.lang.annotation.Target;
  * ... do session stuff ...
  * }
  * }
- * @Retention( RetentionPolicy.RUNTIME )
- * @Target( ElementType.METHOD )
- * @Documented
- * @Inherited public @interface Sessional
+ * &#64;Retention( RetentionPolicy.RUNTIME )
+ * &#64;Target( ElementType.METHOD )
+ * &#64;Documented
+ * &#64;Inherited public @interface Sessional
  * {
  * }
  * <p/>
@@ -77,8 +77,8 @@ import java.lang.annotation.Target;
  * State getSomeState();
  * void setSomeState( State state );
  * }
- * @ModifiedBy( SessionModifier.class )
- * @ImplementedBy( MyStateMixin.class )
+ * &#64;ModifiedBy( SessionModifier.class )
+ * &#64;ImplementedBy( MyStateMixin.class )
  * public interface MyComposite extends Composite, SessionState
  * {}
  * </code></pre>

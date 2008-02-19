@@ -26,10 +26,11 @@ import org.qi4j.injection.Name;
  * Annotation to denote the injection of a Query, QueryBuilder, or Entity prototype dependency into a Fragment (a Invocation or Mixin).
  * <p/>
  * Examples:
- *
- * @Entity Query<Person> findPeople; // call findPeople.iterator() to execute query
- * @Entity QueryBuilder<Person> findByName;
- * @Entity Iterable<Person> personPrototype; // call personPrototype.iterator().next() to create new Person
+ * <code><pre>
+ * &#64;Entity Query<Person> findPeople; // call findPeople.iterator() to execute query
+ * &#64;Entity QueryBuilder<Person> findByName;
+ * &#64;Entity Iterable<Person> personPrototype; // call personPrototype.iterator().next() to create new Person
+ * </pre></code>
  */
 @Retention( RetentionPolicy.RUNTIME )
 @Target( { ElementType.FIELD, ElementType.PARAMETER } )
