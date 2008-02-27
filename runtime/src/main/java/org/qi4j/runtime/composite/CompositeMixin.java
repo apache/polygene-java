@@ -26,7 +26,7 @@ public final class CompositeMixin
 
     public Class<? extends Composite> getCompositeType()
     {
-        return (Class<? extends Composite>) meAsComposite.getClass().getInterfaces()[ 0 ];
+        return AbstractCompositeInstance.getCompositeInstance( meAsComposite ).getContext().getCompositeModel().getCompositeClass();
     }
 
     public Composite dereference()

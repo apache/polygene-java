@@ -16,14 +16,16 @@
  */
 package org.qi4j.test.model1;
 
+import java.util.List;
 import junit.framework.TestCase;
+import org.qi4j.composite.Composite;
 import org.qi4j.composite.NullArgumentException;
 import org.qi4j.runtime.composite.CompositeModelFactory;
 import org.qi4j.spi.composite.CompositeModel;
 import org.qi4j.spi.composite.InvalidCompositeException;
 import org.qi4j.spi.composite.InvalidFragmentException;
 
-public class CompositeTest extends TestCase
+public class CompositeModelFactoryTest extends TestCase
 {
     private CompositeModelFactory modelFactory;
 
@@ -126,7 +128,9 @@ public class CompositeTest extends TestCase
     {
         try
         {
-            CompositeModel composite = modelFactory.newCompositeModel( Composition7.class );
+            Class error = List.class;
+
+            CompositeModel composite = modelFactory.newCompositeModel( (Class<? extends Composite>) error );
             assertNotNull( composite );
             fail( "Should throw InvalidCompositeException." );
         }
