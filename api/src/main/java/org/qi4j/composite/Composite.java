@@ -21,5 +21,7 @@ package org.qi4j.composite;
  */
 public interface Composite
 {
+    Class<? extends Composite> getCompositeType();
+
     Composite dereference();
 }

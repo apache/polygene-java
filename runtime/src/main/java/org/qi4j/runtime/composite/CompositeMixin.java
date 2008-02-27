@@ -18,17 +18,15 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.scope.ThisCompositeAs;
-import org.qi4j.spi.composite.CompositeModel;
 
 public final class CompositeMixin
     implements Composite
 {
     @ThisCompositeAs private Composite meAsComposite;
 
-    public CompositeModel getCompositeModel()
+    public Class<? extends Composite> getCompositeType()
     {
-        Composite composite = dereference();
-        return AbstractCompositeInstance.getCompositeInstance( composite ).getContext().getCompositeModel();
+        return (Class<? extends Composite>) meAsComposite.getClass().getInterfaces()[ 0 ];
     }
 
     public Composite dereference()

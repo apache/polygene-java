@@ -20,7 +20,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import org.qi4j.injection.InjectionScope;
-import org.qi4j.injection.Name;
 import org.qi4j.injection.Optional;
 
 /**
@@ -33,6 +32,4 @@ import org.qi4j.injection.Optional;
 public @interface Service
 {
     @Optional boolean optional() default false; // True if the dependency is optional, only fail if this is false
-
-    @Name String name() default ""; // This name can be used for lookups
 }

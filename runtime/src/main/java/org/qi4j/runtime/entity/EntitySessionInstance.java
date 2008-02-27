@@ -91,7 +91,7 @@ public final class EntitySessionInstance
         checkOpen();
 
         EntityEntry entry = new EntityEntry( EntityStatus.REMOVED, entity );
-        Class compositeType = entity.getClass().getInterfaces()[ 0 ];
+        Class compositeType = entity.getCompositeType();
         Map<String, EntityEntry> entityCache = getEntityCache( compositeType );
         entityCache.put( entity.identity().get(), entry );
         EntityCompositeInstance.getEntityCompositeInstance( entity ).setMixins( null );
@@ -205,7 +205,7 @@ public final class EntitySessionInstance
     {
         checkOpen();
 
-        return getCachedEntity( entity.identity().get(), getCompositeType( entity ) ) != null;
+        return getCachedEntity( entity.identity().get(), entity.getCompositeType() ) != null;
     }
 
     public QueryBuilderFactory getQueryBuilderFactory()
@@ -249,7 +249,7 @@ public final class EntitySessionInstance
                     }
                     else if( entityEntry.getStatus() == EntityStatus.REMOVED )
                     {
-                        store.delete( entityEntry.getInstance().identity().get(), entityEntry.getInstance().getClass().getInterfaces()[ 0 ] );
+                        store.delete( entityEntry.getInstance().identity().get(), entityEntry.getInstance().getCompositeType() );
                     }
                 }
             }
@@ -295,7 +295,7 @@ public final class EntitySessionInstance
 
     void createEntity( EntityComposite instance )
     {
-        Class compositeType = getCompositeType( instance );
+        Class<? extends EntityComposite> compositeType = (Class<? extends EntityComposite>) instance.getCompositeType();
         Map<String, EntityEntry> entityCache = cache.get( compositeType );
 
         if( entityCache == null )
@@ -318,11 +318,6 @@ public final class EntitySessionInstance
         }
 
         return entityCache;
-    }
-
-    private Class getCompositeType( EntityComposite entity )
-    {
-        return entity.getClass().getInterfaces()[ 0 ];
     }
 
     private EntityEntry getCachedEntity( String identity, Class compositeType )
