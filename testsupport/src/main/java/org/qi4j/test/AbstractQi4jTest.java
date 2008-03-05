@@ -28,6 +28,7 @@ import org.qi4j.runtime.Qi4jRuntime;
 import org.qi4j.runtime.structure.ApplicationInstance;
 import org.qi4j.runtime.structure.LayerInstance;
 import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.runtime.structure.ApplicationContext;
 import org.qi4j.spi.Qi4jSPI;
 
 /**
@@ -62,12 +63,20 @@ public abstract class AbstractQi4jTest extends TestCase
         compositeBuilderFactory = moduleInstance.getCompositeBuilderFactory();
         objectBuilderFactory = moduleInstance.getObjectBuilderFactory();
         entitySessionFactory = moduleInstance.getEntitySessionFactory();
+        super.setUp();
     }
 
     protected ApplicationInstance newApplication()
         throws AssemblyException
     {
-        return applicationFactory.newApplication( this ).newApplicationInstance( "Test application" );
+        ApplicationContext applicationContext = applicationFactory.newApplication( this );
+        return applicationContext.newApplicationInstance( "Test application" );
+    }
+
+    @Override protected void tearDown() throws Exception
+    {
+        application.passivate();
+        super.tearDown();
     }
 
 }
