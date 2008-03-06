@@ -29,5 +29,11 @@ public interface ServiceInstanceProvider
     ServiceInstance getInstance()
         throws ServiceProviderException;
 
-    void releaseInstance( ServiceInstance instance );
+    /** Called for each client releasing the instance from use.
+     *
+     * @param instance The
+     * @throws Exception
+     */
+    void releaseInstance( ServiceInstance instance )
+        throws Exception;
 }

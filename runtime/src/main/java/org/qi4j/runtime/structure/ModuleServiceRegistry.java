@@ -23,7 +23,7 @@ import org.qi4j.spi.service.ServiceRegistry;
  * 1) Check the local Module for a provider for the given type
  * 2) Check the same Layer for a provider for the given type
  */
-public class ModuleServiceRegistry
+public final class ModuleServiceRegistry
     implements ServiceRegistry
 {
     private ModuleInstance moduleInstance;

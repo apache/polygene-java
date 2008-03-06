@@ -29,9 +29,9 @@ import org.qi4j.injection.InjectionScope;
  * <p/>
  * Examples:
  * <code><pre>
- * &#64;Modifier Method theInvokedMethod
- * &#64;Modifier AnnotationElement annotations
- * &#64;Modifier InvocationContext context
+ * &#64;Invocation Method theInvokedMethod
+ * &#64;Invocation AnnotationElement annotations
+ * &#64;Invocation InvocationContext context
  * </pre></code>
  */
 @Retention( RetentionPolicy.RUNTIME )

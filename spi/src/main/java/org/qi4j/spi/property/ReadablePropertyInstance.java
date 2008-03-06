@@ -20,8 +20,7 @@ import org.qi4j.property.ReadableProperty;
 /**
  * TODO
  */
-public class ReadablePropertyInstance<T>
-    extends PropertyInstance<T>
+public class ReadablePropertyInstance<T> extends PropertyInstance<T>
     implements ReadableProperty<T>
 {
     public ReadablePropertyInstance( PropertyBinding propertyBinding, T value )

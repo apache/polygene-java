@@ -40,7 +40,8 @@ public final class InstanceFactoryImpl
             int i = 0;
             for( ParameterBinding parameterBinding : parameterBindings )
             {
-                InjectionProvider injectionProvider = parameterBinding.getInjectionBinding().getInjectionProvider();
+                InjectionBinding binding = parameterBinding.getInjectionBinding();
+                InjectionProvider injectionProvider = binding.getInjectionProvider();
                 Object parameter = injectionProvider.provideInjection( context );
 
                 if( parameter == null && !parameterBinding.getInjectionBinding().getInjectionResolution().getInjectionModel().isOptional() )

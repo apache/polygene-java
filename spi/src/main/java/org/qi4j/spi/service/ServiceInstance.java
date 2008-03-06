@@ -47,7 +47,8 @@ public class ServiceInstance
         return serviceInfo;
     }
 
-    public void release()
+    public void release() 
+        throws Exception
     {
         serviceInstanceProvider.releaseInstance( this );
     }

@@ -44,12 +44,14 @@ public final class Singleton
         this.descriptor = descriptor;
     }
 
-    public ServiceInstance getInstance() throws ServiceProviderException
+    public ServiceInstance getInstance()
+        throws ServiceProviderException
     {
         return instance;
     }
 
     public void releaseInstance( ServiceInstance instance )
+        throws Exception
     {
     }
 

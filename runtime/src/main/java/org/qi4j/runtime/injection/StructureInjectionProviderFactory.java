@@ -19,6 +19,7 @@ package org.qi4j.runtime.injection;
 
 import java.lang.reflect.Type;
 import org.qi4j.Qi4j;
+import org.qi4j.entity.EntitySessionFactory;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.ObjectBuilderFactory;
 import org.qi4j.runtime.Qi4jRuntime;

@@ -24,7 +24,7 @@ import org.qi4j.spi.service.ServiceRegistry;
  * 1) Check the local Layer for a provider for the given type
  * 2) Check the extended Layers for a provider for the given type
  */
-public class LayerServiceRegistry
+public final class LayerServiceRegistry
     implements ServiceRegistry
 {
     private Map<Class, ModuleInstance> serviceMappings;

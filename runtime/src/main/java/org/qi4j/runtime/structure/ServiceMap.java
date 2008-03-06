@@ -23,7 +23,7 @@ import org.qi4j.spi.service.ServiceProviderException;
 /**
  * TODO
  */
-public class ServiceMap<T>
+public final class ServiceMap<T>
 {
     private ModuleInstance moduleInstance;
     private Class<T> serviceClass;
@@ -52,7 +52,16 @@ public class ServiceMap<T>
     {
         for( ServiceInstance serviceInstance : instances.values() )
         {
-            serviceInstance.release();
+            try
+            {
+                serviceInstance.release();
+            }
+            catch( Exception e )
+            {
+                // TODO: I think we should accumulate Exceptions and aggregate into a single Exception
+                //       thrown out of this method.
+                e.printStackTrace();
+            }
         }
     }
 }

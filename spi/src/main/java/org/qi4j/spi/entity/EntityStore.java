@@ -24,16 +24,29 @@ import org.qi4j.spi.property.PropertyBinding;
 
 public interface EntityStore
 {
-    boolean exists( String identity, Class<? extends EntityComposite> compositeType ) throws StoreException;
+    boolean exists( String identity, Class<? extends EntityComposite> compositeType )
+        throws StoreException;
 
-    EntityState newEntityInstance( EntitySession session, String identity, Class compositeType, Iterable<PropertyBinding> propertyBindings, Iterable<AssociationBinding> associationBindings, Map<String, Object> propertyValues ) throws StoreException;
+    EntityState newEntityInstance( EntitySession session,
+                                   String identity,
+                                   Class compositeType,
+                                   Iterable<PropertyBinding> propertyBindings,
+                                   Iterable<AssociationBinding> associationBindings,
+                                   Map<String, Object> propertyValues )
+        throws StoreException;
 
-    EntityState getEntityInstance( EntitySession session, String identity, Class compositeType, Iterable<PropertyBinding> propertyBindings, Iterable<AssociationBinding> associationBindings ) throws StoreException;
+    EntityState getEntityInstance( EntitySession session,
+                                   String identity,
+                                   Class compositeType,
+                                   Iterable<PropertyBinding> propertyBindings,
+                                   Iterable<AssociationBinding> associationBindings )
+        throws StoreException;
 
     /**
      * Delete the entity with the given identity from the store.
      *
      * @param identity The identity of the entity to be deleted from the store.
+     * @param compositeType
      * @return true if an entity was removed, otherwise false.
      * @throws StoreException if there is a physical problem with the connection to the backing store.
      */
