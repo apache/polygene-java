@@ -14,9 +14,20 @@
 
 package org.qi4j.library.auth;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Documented;
+import org.qi4j.injection.InjectionScope;
+
 /**
  * TODO
  */
+@Retention( RetentionPolicy.RUNTIME )
+@Target( { ElementType.METHOD } )
+@Documented
+@InjectionScope
 public @interface RequiresPermission
 {
     String value();

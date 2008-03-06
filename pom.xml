@@ -18,6 +18,7 @@
     <module>general</module>
     <module>business</module>
     <module>framework</module>
+    <module>logging</module>
   </modules>
 </project>
 
