@@ -16,49 +16,52 @@ package org.qi4j.spi.property;
 
 import org.qi4j.property.Property;
 import org.qi4j.property.PropertyVetoException;
+import org.qi4j.property.PropertyInfo;
+import org.qi4j.property.ReadableProperty;
 
 /**
  * TODO
  */
 public class PropertyInstance<T>
-    implements Property<T>
+    implements ReadableProperty<T>
 {
-    private PropertyBinding propertyBinding;
-    private T value;
+    private PropertyInfo propertyInfo;
+    protected T value;
+    protected boolean readonly;
 
-    public PropertyInstance( PropertyBinding propertyBinding, T value )
+    public PropertyInstance( PropertyInfo propertyInfo, T value )
     {
-        this.propertyBinding = propertyBinding;
+        this.propertyInfo = propertyInfo;
         this.value = value;
+        readonly = false;
     }
 
-    // ReadableProperty
     public T get()
     {
         return value;
     }
 
-    // WritableProperty
     public void set( T newValue )
         throws PropertyVetoException
     {
-        this.value = newValue;
+        String message = "Immutable Property. Unable to set Property '" + getName() + "' to value " + newValue;
+        throw new PropertyVetoException( message );
     }
 
     // PropertyInfo
     public <T> T getPropertyInfo( Class<T> infoType )
     {
-        return propertyBinding.getPropertyInfo( infoType );
+        return propertyInfo.getPropertyInfo( infoType );
     }
 
     public String getName()
     {
-        return propertyBinding.getPropertyResolution().getPropertyModel().getName();
+        return propertyInfo.getName();
     }
 
     public String getQualifiedName()
     {
-        return propertyBinding.getPropertyResolution().getPropertyModel().getQualifiedName();
+        return propertyInfo.getQualifiedName();
     }
 
     public void write( T value )

@@ -16,16 +16,25 @@ package org.qi4j.spi.property;
 
 import org.qi4j.property.ReadableProperty;
 import org.qi4j.property.WritableProperty;
+import org.qi4j.property.PropertyInfo;
+import org.qi4j.property.PropertyVetoException;
 
 /**
  * TODO
  */
-public class MutablePropertyInstance<T>
-    extends PropertyInstance<T>
-    implements ReadableProperty<T>, WritableProperty<T>
+public class MutablePropertyInstance<T> extends PropertyInstance<T>
+    implements WritableProperty<T>
 {
-    public MutablePropertyInstance( PropertyBinding propertyBinding, T value )
+    public MutablePropertyInstance( PropertyInfo info, T value )
     {
-        super( propertyBinding, value );
+        super( info, value );
     }
+
+    // WritableProperty
+    @Override public void set( T newValue )
+        throws PropertyVetoException
+    {
+        this.value = newValue;
+    }
+
 }
