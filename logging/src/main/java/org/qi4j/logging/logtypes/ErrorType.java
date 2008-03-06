@@ -18,16 +18,22 @@
 package org.qi4j.logging.logtypes;
 
 import org.qi4j.logging.LogType;
-import org.qi4j.property.GenericImmutableProperty;
 import org.qi4j.property.Property;
+import org.qi4j.spi.property.GenericPropertyInfo;
+import org.qi4j.spi.property.PropertyInstance;
 
 public final class ErrorType
     implements LogType
 {
     public static final LogType INSTANCE = new ErrorType();
 
-    private static final GenericImmutableProperty PROPERTY = new GenericImmutableProperty( "logTypeName", "WARN", "logTypeName" );
+    private static final Property PROPERTY;
 
+    static
+    {
+        GenericPropertyInfo info = new GenericPropertyInfo( "logTypeName", "logTypeName" );
+        PROPERTY = new PropertyInstance( info, "WARN" );
+    }
 
     private ErrorType()
     {
