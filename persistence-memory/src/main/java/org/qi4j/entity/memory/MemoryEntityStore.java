@@ -26,8 +26,7 @@ import org.qi4j.association.SetAssociation;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.EntitySession;
 import org.qi4j.property.Property;
-import org.qi4j.property.ReadableProperty;
-import org.qi4j.property.WritableProperty;
+import org.qi4j.property.ImmutableProperty;
 import org.qi4j.runtime.association.AssociationInstance;
 import org.qi4j.runtime.association.ListAssociationInstance;
 import org.qi4j.spi.entity.EntityAlreadyExistsException;
@@ -36,9 +35,8 @@ import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.StoreException;
 import org.qi4j.spi.property.AssociationBinding;
 import org.qi4j.spi.property.PropertyBinding;
+import org.qi4j.spi.property.ImmutablePropertyInstance;
 import org.qi4j.spi.property.PropertyInstance;
-import org.qi4j.spi.property.ReadablePropertyInstance;
-import org.qi4j.spi.property.WritablePropertyInstance;
 import org.qi4j.spi.serialization.SerializedEntity;
 import org.qi4j.spi.serialization.SerializedState;
 
@@ -75,14 +73,9 @@ public class MemoryEntityStore
                 value = propertyValues.get( propertyBinding.getQualifiedName() );
             }
 
-            if( ReadableProperty.class.isAssignableFrom( propertyBinding.getPropertyResolution().getPropertyModel().getAccessor().getReturnType() ) )
+            if( ImmutableProperty.class.isAssignableFrom( propertyBinding.getPropertyResolution().getPropertyModel().getAccessor().getReturnType() ) )
             {
-                properties.put( propertyBinding.getQualifiedName(), new ReadablePropertyInstance<Object>( propertyBinding, value ) );
-            }
-            else
-            if( WritableProperty.class.isAssignableFrom( propertyBinding.getPropertyResolution().getPropertyModel().getAccessor().getReturnType() ) )
-            {
-                properties.put( propertyBinding.getQualifiedName(), new WritablePropertyInstance<Object>( propertyBinding, value ) );
+                properties.put( propertyBinding.getQualifiedName(), new ImmutablePropertyInstance<Object>( propertyBinding, value ) );
             }
             else
             {
