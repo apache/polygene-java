@@ -17,33 +17,26 @@
  */
 package org.qi4j.logging;
 
-import org.qi4j.test.AbstractQi4jTest;
-import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
+import org.qi4j.composite.CompositeBuilder;
+import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.Concerns;
 import org.qi4j.composite.Mixins;
-import org.qi4j.composite.CompositeBuilderFactory;
-import org.qi4j.composite.CompositeBuilder;
-import org.qi4j.composite.scope.ConcernFor;
 import org.qi4j.composite.scope.Adapt;
+import org.qi4j.composite.scope.ConcernFor;
 import org.qi4j.composite.scope.Structure;
-import org.qi4j.spi.service.provider.Singleton;
-import org.qi4j.spi.service.ServiceInstanceProvider;
-import org.qi4j.spi.service.ServiceInstance;
-import org.qi4j.spi.service.ServiceProviderException;
-import org.qi4j.spi.structure.ServiceDescriptor;
 import org.qi4j.logging.service.LogServiceComposite;
 import org.qi4j.service.ActivationStatusChange;
-import org.qi4j.entity.EntitySession;
-import org.qi4j.entity.EntitySessionFactory;
-import org.qi4j.entity.memory.MemoryEntityStoreComposite;
+import org.qi4j.spi.service.ServiceInstance;
+import org.qi4j.spi.service.ServiceInstanceProvider;
+import org.qi4j.spi.service.ServiceProviderException;
+import org.qi4j.spi.structure.ServiceDescriptor;
+import org.qi4j.test.AbstractQi4jTest;
 
 public class TracingTest extends AbstractQi4jTest
 {
-
-
-
     public void configure( ModuleAssembly module )
         throws AssemblyException
     {
