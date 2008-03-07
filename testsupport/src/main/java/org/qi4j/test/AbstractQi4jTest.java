@@ -25,10 +25,10 @@ import org.qi4j.composite.ObjectBuilderFactory;
 import org.qi4j.entity.EntitySessionFactory;
 import org.qi4j.runtime.Energy4Java;
 import org.qi4j.runtime.Qi4jRuntime;
+import org.qi4j.runtime.structure.ApplicationContext;
 import org.qi4j.runtime.structure.ApplicationInstance;
 import org.qi4j.runtime.structure.LayerInstance;
 import org.qi4j.runtime.structure.ModuleInstance;
-import org.qi4j.runtime.structure.ApplicationContext;
 import org.qi4j.spi.Qi4jSPI;
 
 /**
@@ -75,7 +75,10 @@ public abstract class AbstractQi4jTest extends TestCase
 
     @Override protected void tearDown() throws Exception
     {
-        application.passivate();
+        if( application != null )
+        {
+            application.passivate();
+        }
         super.tearDown();
     }
 
