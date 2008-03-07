@@ -64,7 +64,7 @@ public final class EntityCompositeInstance
             CompositeBinding binding = context.getCompositeBinding();
             if( state == null )
             {
-                state = store.getEntityInstance( session, identity, binding.getCompositeResolution().getCompositeModel().getCompositeClass(), binding.getPropertyBindings(), binding.getAssociationBindings() );
+                state = store.getEntityInstance( session, identity, binding );
             }
             context.newEntityMixins( moduleInstance, this, state );
         }

@@ -17,9 +17,11 @@
 package org.qi4j.spi.entity;
 
 import java.util.Map;
+import java.util.List;
 import org.qi4j.association.AbstractAssociation;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.property.Property;
+import org.qi4j.spi.composite.CompositeBinding;
 
 /**
  * The EntityState is a shared "second-level cache" mixin state container for a particular
@@ -45,11 +47,11 @@ public interface EntityState
     String getIdentity();
 
     /**
-     * Returns the composite type of the entity represented by this EntityState.
+     * Returns the composite binding of the entity represented by this EntityState.
      *
-     * @return the composite type of the entity represented by this EntityState.
+     * @return the composite binding of the entity represented by this EntityState.
      */
-    Class<? extends EntityComposite> getCompositeType();
+    CompositeBinding getCompositeBinding();
 
     Map<String, Property> getProperties();
 
@@ -61,6 +63,13 @@ public interface EntityState
      * invalidates any caches for this entity.
      */
     void refresh();
+
+    /**
+     * Delete the entity represented by this EntityState.
+     *
+     * @return true if an entity was removed, otherwise false.
+     * @throws StoreException if there is a physical problem with the connection to the backing store.
+     */
+    boolean delete()
+        throws StoreException;
 }
-
-

@@ -17,39 +17,29 @@
 package org.qi4j.spi.entity;
 
 import java.util.Map;
+import java.util.List;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.EntitySession;
 import org.qi4j.spi.property.AssociationBinding;
 import org.qi4j.spi.property.PropertyBinding;
+import org.qi4j.spi.composite.CompositeBinding;
 
 public interface EntityStore
 {
-    boolean exists( String identity, Class<? extends EntityComposite> compositeType )
+    boolean exists( String identity, CompositeBinding compositeBinding )
         throws StoreException;
 
     EntityState newEntityInstance( EntitySession session,
                                    String identity,
-                                   Class compositeType,
-                                   Iterable<PropertyBinding> propertyBindings,
-                                   Iterable<AssociationBinding> associationBindings,
+                                   CompositeBinding compositeBinding,
                                    Map<String, Object> propertyValues )
         throws StoreException;
 
     EntityState getEntityInstance( EntitySession session,
                                    String identity,
-                                   Class compositeType,
-                                   Iterable<PropertyBinding> propertyBindings,
-                                   Iterable<AssociationBinding> associationBindings )
+                                   CompositeBinding compositeBinding )
         throws StoreException;
 
-    /**
-     * Delete the entity with the given identity from the store.
-     *
-     * @param identity The identity of the entity to be deleted from the store.
-     * @param compositeType
-     * @return true if an entity was removed, otherwise false.
-     * @throws StoreException if there is a physical problem with the connection to the backing store.
-     */
-    boolean delete( String identity, Class compositeType )
+    void complete( EntitySession session, List<EntityState> states )
         throws StoreException;
 }

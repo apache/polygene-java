@@ -66,7 +66,7 @@ public final class EntitySessionCompositeBuilder<T extends Composite>
         Map<String, Object> propertyValues = getPropertyValues();
         try
         {
-            state = store.newEntityInstance( entitySession, identity, compositeInterface, context.getCompositeBinding().getPropertyBindings(), context.getCompositeBinding().getAssociationBindings(), propertyValues );
+            state = store.newEntityInstance( entitySession, identity, context.getCompositeBinding(), propertyValues );
         }
         catch( StoreException e )
         {

@@ -38,7 +38,6 @@ import org.qi4j.runtime.structure.ServiceMap;
 import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
-import org.qi4j.spi.entity.StoreException;
 import org.qi4j.spi.service.ServiceProviderException;
 
 public final class EntitySessionInstance
@@ -116,7 +115,7 @@ public final class EntitySessionInstance
                 EntityStore store = entityStores.getService( compositeType );
                 CompositeContext compositeContext = moduleInstance.getModuleContext().getCompositeContext( compositeType );
                 CompositeBinding compositeBinding = compositeContext.getCompositeBinding();
-                EntityState state = store.getEntityInstance( this, identity, compositeType, compositeBinding.getPropertyBindings(), compositeBinding.getAssociationBindings() );
+                EntityState state = store.getEntityInstance( this, identity, compositeBinding );
                 EntityCompositeInstance compositeInstance = EntityCompositeInstance.getEntityCompositeInstance( entity.getInstance() );
                 compositeContext.newEntityMixins( moduleInstance, compositeInstance, state );
                 compositeInstance.setState( state );
@@ -129,7 +128,7 @@ public final class EntitySessionInstance
                 {
                     EntityStore store = entityStores.getService( compositeType );
                     CompositeBinding compositeBinding = moduleInstance.getModuleContext().getCompositeContext( compositeType ).getCompositeBinding();
-                    EntityState holder = store.getEntityInstance( this, identity, compositeType, compositeBinding.getPropertyBindings(), compositeBinding.getAssociationBindings() );
+                    EntityState holder = store.getEntityInstance( this, identity, compositeBinding );
                     EntityCompositeInstance handler = EntityCompositeInstance.getEntityCompositeInstance( entity.getInstance() );
                     handler.setState( holder );
                 }
@@ -249,7 +248,8 @@ public final class EntitySessionInstance
                     }
                     else if( entityEntry.getStatus() == EntityStatus.REMOVED )
                     {
-                        store.delete( entityEntry.getInstance().identity().get(), entityEntry.getInstance().getCompositeType() );
+                        // TODO
+//                        store.delete( entityEntry.getInstance().identity().get(), entityEntry.getInstance().getCompositeType() );
                     }
                 }
             }
@@ -258,10 +258,10 @@ public final class EntitySessionInstance
         {
             throw new SessionCompletionException( "Could not get store", e );
         }
-        catch( StoreException e )
-        {
-            throw new SessionCompletionException( "Could not complete session", e );
-        }
+//        catch( StoreException e )
+//        {
+//            throw new SessionCompletionException( "Could not complete session", e );
+//        }
 
         cache.clear();
         entityStores.release();

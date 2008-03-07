@@ -59,7 +59,8 @@ public final class Singleton
         throws Exception
     {
         // When module starts, create instance eagerly
-        if( change.getNewStatus() == ActivationStatus.STARTING )
+        ActivationStatus newStatus = change.getNewStatus();
+        if( newStatus == ActivationStatus.STARTING )
         {
             Object serviceInstance;
             if( Composite.class.isAssignableFrom( descriptor.getServiceType() ) )
@@ -79,7 +80,7 @@ public final class Singleton
             instance = new ServiceInstance( serviceInstance, this, descriptor.getServiceInfos() );
         }
         // When module stops, discard reference to object
-        else if( change.getNewStatus() == ActivationStatus.STOPPING )
+        else if( newStatus == ActivationStatus.STOPPING )
         {
             if( instance instanceof Activatable )
             {
