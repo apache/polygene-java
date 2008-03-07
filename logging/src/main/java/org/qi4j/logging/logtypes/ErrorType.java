@@ -20,7 +20,7 @@ package org.qi4j.logging.logtypes;
 import org.qi4j.logging.LogType;
 import org.qi4j.property.Property;
 import org.qi4j.spi.property.GenericPropertyInfo;
-import org.qi4j.spi.property.PropertyInstance;
+import org.qi4j.spi.property.ImmutablePropertyInstance;
 
 public final class ErrorType
     implements LogType
@@ -32,7 +32,7 @@ public final class ErrorType
     static
     {
         GenericPropertyInfo info = new GenericPropertyInfo( "logTypeName", "logTypeName" );
-        PROPERTY = new PropertyInstance( info, "WARN" );
+        PROPERTY = new ImmutablePropertyInstance( info, "WARN" );
     }
 
     private ErrorType()
