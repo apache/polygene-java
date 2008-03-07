@@ -21,21 +21,29 @@ import org.qi4j.association.AbstractAssociation;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.property.Property;
 import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.StoreException;
+import org.qi4j.spi.entity.EntityStore;
+import org.qi4j.spi.serialization.SerializedEntity;
+import org.qi4j.spi.composite.CompositeBinding;
+import org.qi4j.spi.composite.CompositeResolution;
+import org.qi4j.spi.composite.CompositeModel;
 
 public class MemoryEntityState
     implements EntityState
 {
     private String identity;
-    private Class<? extends EntityComposite> compositeType;
+    private final CompositeBinding compositeBinding;
     private Map<String, Property> properties;
     private Map<String, AbstractAssociation> associations;
+    private MemoryEntityStore owningStore;
 
-    public MemoryEntityState( String identity, Class<? extends EntityComposite> compositeType, Map<String, Property> properties, Map<String, AbstractAssociation> associations )
+    public MemoryEntityState( String identity, CompositeBinding compositeBinding, Map<String, Property> properties, Map<String, AbstractAssociation> associations, MemoryEntityStore owningStore )
     {
         this.identity = identity;
-        this.compositeType = compositeType;
+        this.compositeBinding = compositeBinding;
         this.properties = properties;
         this.associations = associations;
+        this.owningStore = owningStore;
     }
 
     public String getIdentity()
@@ -43,9 +51,9 @@ public class MemoryEntityState
         return identity;
     }
 
-    public Class<? extends EntityComposite> getCompositeType()
+    public CompositeBinding getCompositeBinding()
     {
-        return compositeType;
+        return compositeBinding;
     }
 
     public Map<String, Property> getProperties()
@@ -60,5 +68,14 @@ public class MemoryEntityState
 
     public void refresh()
     {
+    }
+
+    public boolean delete()
+        throws StoreException
+    {
+        CompositeResolution compositeResolution = compositeBinding.getCompositeResolution();
+        CompositeModel compositeModel = compositeResolution.getCompositeModel();
+        Class<? extends EntityComposite> compositeType = (Class<? extends EntityComposite>) compositeModel.getCompositeClass();
+        return owningStore.remove( new SerializedEntity( identity, compositeType ) );
     }
 }
