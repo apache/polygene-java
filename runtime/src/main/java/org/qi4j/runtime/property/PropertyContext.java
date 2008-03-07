@@ -17,13 +17,11 @@ package org.qi4j.runtime.property;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.property.Property;
-import org.qi4j.property.ReadableProperty;
-import org.qi4j.property.WritableProperty;
+import org.qi4j.property.ImmutableProperty;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.property.PropertyBinding;
+import org.qi4j.spi.property.ImmutablePropertyInstance;
 import org.qi4j.spi.property.PropertyInstance;
-import org.qi4j.spi.property.ReadablePropertyInstance;
-import org.qi4j.spi.property.WritablePropertyInstance;
 
 /**
  * TODO
@@ -59,13 +57,9 @@ public final class PropertyContext
             else
             {
                 Property instance;
-                if( ReadableProperty.class.isAssignableFrom( propertyType ) )
+                if( ImmutableProperty.class.isAssignableFrom( propertyType ) )
                 {
-                    instance = new ReadablePropertyInstance<Object>( propertyBinding, value );
-                }
-                else if( WritableProperty.class.isAssignableFrom( propertyType ) )
-                {
-                    instance = new WritablePropertyInstance<Object>( propertyBinding, value );
+                    instance = new ImmutablePropertyInstance<Object>( propertyBinding, value );
                 }
                 else
                 {

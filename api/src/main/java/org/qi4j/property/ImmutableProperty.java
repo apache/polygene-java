@@ -17,7 +17,7 @@ package org.qi4j.property;
 /**
  * TODO
  */
-public interface ReadableProperty<T>
+public interface ImmutableProperty<T>
     extends Property<T>
 {
 }

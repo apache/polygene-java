@@ -28,7 +28,7 @@ import java.lang.annotation.Target;
  * <p/>
  * Example:
  * <pre><code>
- *
+ * <p/>
  * &#64;AppliesTo( Sessional.class )
  * public class SessionModifier
  * implements InvocationHandler
@@ -51,6 +51,7 @@ import java.lang.annotation.Target;
  * {
  * private State state;
  * <p/>
+ *
  * @Sessional public void setSomeState( State state )
  * {
  * this.state = state;

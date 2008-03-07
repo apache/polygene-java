@@ -72,7 +72,7 @@ import org.qi4j.composite.Mixins;
  *          repository.deleteInstance( meAsSystem.getAdmin() );
  *      }
  * }
- *
+ * <p/>
  * &#64;ModifedBy( SystemAdminLifecycleModifier.class )
  * public interface SystemComposite extends System, Composite
  * {}

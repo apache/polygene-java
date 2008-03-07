@@ -16,7 +16,7 @@ package org.qi4j.bootstrap;
 
 import java.lang.reflect.Method;
 import org.qi4j.association.AbstractAssociation;
-import org.qi4j.property.ReadableProperty;
+import org.qi4j.property.ImmutableProperty;
 
 /**
  * TODO
@@ -36,7 +36,7 @@ public final class AssemblyHelper
         {
             for( Method method : interfaceClass.getMethods() )
             {
-                if( ReadableProperty.class.isAssignableFrom( method.getReturnType() ) )
+                if( ImmutableProperty.class.isAssignableFrom( method.getReturnType() ) )
                 {
                     // Register property
                     PropertyDeclaration declaration = module.addProperty();

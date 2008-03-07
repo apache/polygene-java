@@ -19,6 +19,6 @@ package org.qi4j.association;
 
 import java.util.Map;
 
-public interface MapAssociation<K,V> extends Map<K,V>, AbstractAssociation
+public interface MapAssociation<K, V> extends Map<K, V>, AbstractAssociation
 {
 }

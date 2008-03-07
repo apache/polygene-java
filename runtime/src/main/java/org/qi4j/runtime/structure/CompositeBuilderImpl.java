@@ -39,9 +39,11 @@ import org.qi4j.spi.composite.AssociationModel;
 import org.qi4j.spi.composite.AssociationResolution;
 import org.qi4j.spi.composite.PropertyResolution;
 import org.qi4j.spi.property.AssociationBinding;
-import org.qi4j.spi.property.MutablePropertyInstance;
 import org.qi4j.spi.property.PropertyBinding;
+import org.qi4j.spi.property.PropertyInstance;
 import org.qi4j.spi.property.PropertyModel;
+import org.qi4j.spi.property.ComputedPropertyInstance;
+import org.qi4j.spi.property.ImmutablePropertyInstance;
 
 /**
  *
@@ -233,7 +235,7 @@ public class CompositeBuilderImpl<T extends Composite>
             final PropertyContext propertyContext = context.getMethodDescriptor( method ).getCompositeMethodContext().getPropertyContext();
             if( propertyContext != null )
             {
-                MutablePropertyInstance<Object> mutableProperty = new MutablePropertyInstance<Object>( propertyContext.getPropertyBinding(), propertyContext.getPropertyBinding().getDefaultValue() )
+                return new PropertyInstance<Object>( propertyContext.getPropertyBinding(), propertyContext.getPropertyBinding().getDefaultValue() )
                 {
                     @Override public void set( Object newValue ) throws PropertyVetoException
                     {
@@ -241,7 +243,6 @@ public class CompositeBuilderImpl<T extends Composite>
                         setProperty( propertyContext, newValue );
                     }
                 };
-                return mutableProperty;
             }
             else
             {

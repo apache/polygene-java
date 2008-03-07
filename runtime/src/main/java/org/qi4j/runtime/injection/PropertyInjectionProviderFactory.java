@@ -2,7 +2,7 @@ package org.qi4j.runtime.injection;
 
 import java.util.Map;
 import org.qi4j.property.Property;
-import org.qi4j.property.ReadableProperty;
+import org.qi4j.property.ImmutableProperty;
 import org.qi4j.spi.composite.PropertyResolution;
 import org.qi4j.spi.composite.StateResolution;
 import org.qi4j.spi.injection.BindingContext;
@@ -62,7 +62,7 @@ public final class PropertyInjectionProviderFactory
             if( context instanceof PropertyInjectionContext )
             {
                 PropertyInjectionContext propertyInjectionContext = (PropertyInjectionContext) context;
-                ReadableProperty value = (ReadableProperty) propertyInjectionContext.getProperties().get( qualifiedName );
+                ImmutableProperty value = (ImmutableProperty) propertyInjectionContext.getProperties().get( qualifiedName );
                 if( value != null )
                 {
                     return value.get();

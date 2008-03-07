@@ -17,13 +17,13 @@
  */
 package org.qi4j.spi.property;
 
-import org.qi4j.property.PropertyInfo;
 import java.util.HashMap;
+import org.qi4j.property.PropertyInfo;
 
 public class GenericPropertyInfo
     implements PropertyInfo
 {
-    private HashMap<Class,Object> infos;
+    private HashMap<Class, Object> infos;
     private final String qualifiedName;
     private final String name;
 
@@ -54,7 +54,7 @@ public class GenericPropertyInfo
     {
         synchronized( infos )
         {
-            HashMap<Class, Object> clone = (HashMap<Class,Object>) infos.clone();
+            HashMap<Class, Object> clone = (HashMap<Class, Object>) infos.clone();
             clone.remove( infoType );
             infos = clone;
         }
@@ -64,7 +64,7 @@ public class GenericPropertyInfo
     {
         synchronized( infos )
         {
-            HashMap<Class, Object> clone = (HashMap<Class,Object>) infos.clone();
+            HashMap<Class, Object> clone = (HashMap<Class, Object>) infos.clone();
             clone.remove( infoType );
             infos = clone;
         }

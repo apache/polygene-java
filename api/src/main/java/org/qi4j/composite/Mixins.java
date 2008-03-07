@@ -33,7 +33,7 @@ import java.lang.annotation.Target;
  * <p/>
  * Example;
  * <pre><code>
- *
+ * <p/>
  * &#64;Mixins( MyBeerOrder.class )
  * public interface BeerOrderComposite extends BeerOrder, Composite
  * {
@@ -63,6 +63,7 @@ import java.lang.annotation.Target;
  * will be used. The search order is in the order they are written in the Mixins
  * annotation left-to-right, and depth-first recursive search of the super-interfaces again
  * left-to-right.
+ *
  * @see AppliesTo
  */
 @Retention( RetentionPolicy.RUNTIME )

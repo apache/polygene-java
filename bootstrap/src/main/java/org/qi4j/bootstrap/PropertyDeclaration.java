@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.Map;
 import org.qi4j.property.Property;
 import org.qi4j.property.PropertyVetoException;
-import org.qi4j.property.WritableProperty;
 import org.qi4j.spi.structure.PropertyDescriptor;
 
 /**
@@ -40,14 +39,14 @@ public class PropertyDeclaration
     {
     }
 
-    public <T> T withAccessor( Class<T> interfaceClass )
+    public <T> T withAccessor( Class<T> mixinType )
     {
-        return interfaceClass.cast( Proxy.newProxyInstance( interfaceClass.getClassLoader(), new Class[]{ interfaceClass }, new AccessorInvocationHandler() ) );
+        return mixinType.cast( Proxy.newProxyInstance( mixinType.getClassLoader(), new Class[]{ mixinType }, new AccessorInvocationHandler() ) );
     }
 
-    public PropertyDeclaration addPropertyInfo( Object propertyInfo )
+    public <T> PropertyDeclaration setPropertyInfo( Class<T> infoType, Object propertyInfo )
     {
-        this.propertyInfos.put( propertyInfo.getClass(), propertyInfo );
+        this.propertyInfos.put( infoType, propertyInfo );
         return this;
     }
 
@@ -59,7 +58,8 @@ public class PropertyDeclaration
     class AccessorInvocationHandler
         implements InvocationHandler
     {
-        public Object invoke( Object object, Method method, Object[] objects ) throws Throwable
+        public Object invoke( Object object, Method method, Object[] objects )
+            throws Throwable
         {
             accessor = method;
             Type methodReturnType = method.getGenericReturnType();
@@ -93,7 +93,7 @@ public class PropertyDeclaration
     }
 
     class PropertyInvocationHandler
-        implements InvocationHandler, WritableProperty<Object>
+        implements InvocationHandler, Property<Object>
     {
         public Object invoke( Object object, Method method, Object[] objects ) throws Throwable
         {

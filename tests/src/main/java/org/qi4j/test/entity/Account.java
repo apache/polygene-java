@@ -14,14 +14,14 @@
 
 package org.qi4j.test.entity;
 
-import org.qi4j.property.ReadableProperty;
+import org.qi4j.property.ImmutableProperty;
 
 /**
  * TODO
  */
 public interface Account
 {
-    ReadableProperty<Integer> balance();
+    ImmutableProperty<Integer> balance();
 
     void add( int amount );
 

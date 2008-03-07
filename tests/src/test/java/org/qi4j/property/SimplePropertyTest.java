@@ -43,8 +43,8 @@ public class SimplePropertyTest extends AbstractQi4jTest
     {
         module.addComposites( Company.class );
         module.addProperty().
-            addPropertyInfo( new DisplayInfo( "Name", "Name of something", "The name" ) ). // Add UI info
-            addPropertyInfo( new RdfInfo( "label", "http://www.w3.org/1999/02/22-rdf-syntax-ns#" ) ). // Add persistence info
+            setPropertyInfo( DisplayInfo.class, new DisplayInfo( "Name", "Name of something", "The name" ) ). // Add UI info
+            setPropertyInfo( RdfInfo.class, new RdfInfo( "label", "http://www.w3.org/1999/02/22-rdf-syntax-ns#" ) ). // Add persistence info
             withAccessor( Nameable.class ).name(). // Select accessor
             set( "Hello World" ); // Set default value
     }
@@ -90,9 +90,9 @@ public class SimplePropertyTest extends AbstractQi4jTest
 
     @AppliesTo( Capitalized.class )
     public static abstract class CapitalizeConcern
-        implements WritableProperty<String>
+        implements Property<String>
     {
-        @ConcernFor WritableProperty<String> next;
+        @ConcernFor Property<String> next;
 
         public void set( String newValue ) throws PropertyVetoException
         {
@@ -102,9 +102,9 @@ public class SimplePropertyTest extends AbstractQi4jTest
     }
 
     public static abstract class LogPropertyAccess
-        implements ReadableProperty<String>
+        implements ImmutableProperty<String>
     {
-        @SideEffectFor ReadableProperty<String> next;
+        @SideEffectFor ImmutableProperty<String> next;
         @ThisCompositeAs PropertyInfo info;
 
         public String get()
@@ -115,10 +115,10 @@ public class SimplePropertyTest extends AbstractQi4jTest
     }
 
     public static abstract class LogPropertyChanges
-        implements WritableProperty<Object>
+        implements Property<Object>
     {
-        @SideEffectFor WritableProperty<Object> next;
-        @ThisCompositeAs ReadableProperty current;
+        @SideEffectFor Property<Object> next;
+        @ThisCompositeAs ImmutableProperty current;
         @ThisCompositeAs PropertyInfo info;
 
         public void set( Object newValue ) throws PropertyVetoException

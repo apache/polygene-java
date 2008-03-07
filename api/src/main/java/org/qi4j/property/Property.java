@@ -24,4 +24,5 @@ public interface Property<T>
 
     void set( T newValue )
         throws PropertyVetoException;
+
 }

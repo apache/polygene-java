@@ -14,32 +14,27 @@
 
 package org.qi4j.spi.property;
 
-import org.qi4j.property.PropertyInfo;
 import org.qi4j.property.PropertyVetoException;
-import org.qi4j.property.Property;
+import org.qi4j.property.ImmutableProperty;
+import org.qi4j.property.PropertyInfo;
 
 /**
  * TODO
  */
-public class PropertyInstance<T> extends ComputedPropertyInstance<T>
+public final class ImmutablePropertyInstance<T> extends ComputedPropertyInstance<T>
+    implements ImmutableProperty<T>
 {
     protected T value;
 
-    public PropertyInstance( PropertyInfo propertyInfo, T value )
+    public ImmutablePropertyInstance( PropertyInfo info, T value )
     {
-        super( propertyInfo );
+        super( info );
         this.value = value;
     }
 
     public T get()
     {
         return value;
-    }
-
-    public void set( T newValue )
-        throws PropertyVetoException
-    {
-        value = newValue;
     }
 
     @Override public String toString()
@@ -50,19 +45,39 @@ public class PropertyInstance<T> extends ComputedPropertyInstance<T>
         }
         else
         {
-            return value.toString();
+            return "[" + value.toString() + "]";
         }
+    }
+
+    @Override public boolean equals( Object o )
+    {
+        if( this == o )
+        {
+            return true;
+        }
+        if( o == null || getClass() != o.getClass() )
+        {
+            return false;
+        }
+        if( !super.equals( o ) )
+        {
+            return false;
+        }
+
+        ImmutablePropertyInstance that = (ImmutablePropertyInstance) o;
+
+        if( value != null ? !value.equals( that.value ) : that.value != null )
+        {
+            return false;
+        }
+
+        return true;
     }
 
     @Override public int hashCode()
     {
-        if( value == null )
-        {
-            return 0;
-        }
-        else
-        {
-            return value.hashCode();
-        }
+        int result = super.hashCode();
+        result = 31 * result + ( value != null ? value.hashCode() : 0 );
+        return result;
     }
 }
