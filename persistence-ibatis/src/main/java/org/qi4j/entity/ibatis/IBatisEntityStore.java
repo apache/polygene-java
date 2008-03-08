@@ -40,6 +40,8 @@ import org.qi4j.spi.entity.StoreException;
 import org.qi4j.spi.structure.ServiceDescriptor;
 
 /**
+ * TODO: Figure out how does transaction supposed for all EntityStore methods.
+ *
  * @author edward.yakop@gmail.com
  */
 final class IBatisEntityStore
@@ -77,21 +79,30 @@ final class IBatisEntityStore
     public boolean exists( final String anIdentity, CompositeBinding aCompositeBinding )
         throws StoreException
     {
+        validateNotNull( "anIdentity", anIdentity );
+
+        // TODO: Deactivated to test hardcoded value.
+//        validateNotNull( "aCompositeBinding", aCompositeBinding );
+
         throwIfNotActive();
 
-        // TODO: Figure out how to retrieve the query name
-        final String statementId = "existStatentId";
+        // TODO uncomment the next 4 lines, once this is done.
+//        CompositeResolution compositeResolution = aCompositeBinding.getCompositeResolution();
+//        CompositeModel compositeModel = compositeResolution.getCompositeModel();
+//        Class<? extends Composite> compositeClass = compositeModel.getCompositeClass();
+//        final String statementId = compositeClass.getName() + ".getById";
 
-        IBatisTemplate<Boolean> template = new IBatisTemplate<Boolean>( client )
+        final String statementId = "org.qi4j.entity.ibatis.PersonComposite.getById";
+
+        try
         {
-            protected Boolean onExecute( SqlMapClient aClient )
-                throws SQLException
-            {
-                return aClient.queryForObject( statementId, anIdentity ) != null;
-            }
-        };
-
-        return template.execute();
+            Object isRowExists = client.queryForObject( statementId, anIdentity );
+            return isRowExists != null;
+        }
+        catch( SQLException e )
+        {
+            throw new StoreException( e );
+        }
     }
 
     private void throwIfNotActive()
@@ -134,7 +145,7 @@ final class IBatisEntityStore
     /**
      * Activate this service.
      *
-     * @throws IOException   If reading sql map configuration failed.
+     * @throws IOException  If reading sql map configuration failed.
      * @throws SQLException Thrown if database initialization failed.
      * @since 0.1.0
      */

@@ -3,9 +3,9 @@
   PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
   "http://ibatis.apache.org/dtd/sql-map-2.dtd">
 <sqlMap namespace="Person">
-  <select id="personById" resultClass="java.util.Map">
-    SELECT ID as id, FIRST_NAME as firstName, LAST_NAME as lastName,
+  <select id="org.qi4j.entity.ibatis.PersonComposite.getById" resultClass="java.util.HashMap">
+    SELECT ID as id, FIRST_NAME as firstName, LAST_NAME as lastName
     FROM PERSON
-    WHERE PER_ID = #value#
+    WHERE ID = #value#
   </select>
 </sqlMap>

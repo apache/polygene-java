@@ -39,11 +39,18 @@ public abstract class AbstractTestCase extends TestCase
 {
     protected static final String JDBC_URL = "jdbc:derby://localhost/testdb;create=true";
     protected static final String DERBY_DRIVER_CLASS_NAME = "org.apache.derby.jdbc.ClientDriver";
+    protected static final String DERBY_USER = "sa";
+    protected static final String DERBY_PASSWORD = "derbypass";
 
     protected static final String SCHEMA_URL = "testDbSchema.sql";
     protected static final String DATA_URL = "testDbData.sql";
 
     private NetworkServerControl nsc;
+
+    protected AbstractTestCase()
+    {
+        nsc = null;
+    }
 
     /**
      * Construct a new db initializer info.
@@ -62,7 +69,10 @@ public abstract class AbstractTestCase extends TestCase
         assertNotNull( "If run inside ide, make sure sql files are part of project resources.", dataURL );
         String dataURLString = dataURL.toString();
 
-        return new DBInitializerInfo( JDBC_URL, new Properties(), schemaURLString, dataURLString );
+        Properties dbProperties = new Properties();
+        dbProperties.setProperty( "username", DERBY_USER );
+        dbProperties.setProperty( "password", DERBY_PASSWORD );
+        return new DBInitializerInfo( JDBC_URL, dbProperties, schemaURLString, dataURLString );
     }
 
     /**
@@ -84,31 +94,35 @@ public abstract class AbstractTestCase extends TestCase
             fail( "Derby client artifact must be included to run this test." );
         }
 
-        // Ensure that the all test tables are removed.
-        Connection connection = null;
+        Connection connection = getConnection( JDBC_URL, DERBY_USER, DERBY_PASSWORD );
         try
         {
-            connection = getConnection( JDBC_URL, new Properties() );
+            Statement statement = connection.createStatement();
+            try
+            {
+                statement.execute( "CREATE SCHEMA SA" );
+            }
+            catch( SQLException e )
+            {
+                // Ignore
+            }
+
+            // Ensure that the all test tables are removed.
+
             DatabaseMetaData data = connection.getMetaData();
             ResultSet tables = data.getTables( null, null, null, new String[]{ "TABLE" } );
-            StringBuilder sqlBuidler = new StringBuilder( 0 );
             while( tables.next() )
             {
                 String tableName = tables.getString( "TABLE_NAME" );
-                sqlBuidler.append( "DROP TABLE " ).append( tableName ).append( "\n" );
+                try
+                {
+                    statement.execute( "DROP TABLE " + tableName );
+                }
+                catch( SQLException e )
+                {
+                    // Ignore
+                }
             }
-
-            String sqlStatement = sqlBuidler.toString();
-            if( sqlStatement.length() > 0 )
-            {
-                Statement statement = connection.createStatement();
-                statement.execute( sqlStatement );
-            }
-        }
-        catch( SQLException e )
-        {
-            e.printStackTrace();
-            fail( "Removing table fails." );
         }
         finally
         {
@@ -132,7 +146,7 @@ public abstract class AbstractTestCase extends TestCase
         Connection connection = null;
         try
         {
-            connection = getConnection( JDBC_URL, new Properties() );
+            connection = getConnection( JDBC_URL, DERBY_USER, DERBY_PASSWORD );
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery( "SELECT COUNT(*) FROM PERSON" );
             resultSet.next();
@@ -172,6 +186,9 @@ public abstract class AbstractTestCase extends TestCase
 
         if( isDerbyServerShouldBeStarted() )
         {
+            Properties systemProperties = System.getProperties();
+            systemProperties.setProperty( "derby.drda.securityMechanism", "CLEAR_TEXT_PASSWORD_SECURITY" );
+
             nsc = new NetworkServerControl();
             PrintWriter logOuput = new PrintWriter( out );
             nsc.start( logOuput );

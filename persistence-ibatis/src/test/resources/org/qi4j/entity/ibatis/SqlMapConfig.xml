@@ -21,8 +21,8 @@
     <dataSource type="SIMPLE">
       <property name="JDBC.Driver" value="org.apache.derby.jdbc.ClientDriver"/>
       <property name="JDBC.ConnectionURL" value="jdbc:derby://localhost/testdb;create=true"/>
-      <property name="JDBC.Username" value=""/>
-      <property name="JDBC.Password" value=""/>
+      <property name="JDBC.Username" value="sa"/>
+      <property name="JDBC.Password" value="derbypass"/>
     </dataSource>
   </transactionManager>
 

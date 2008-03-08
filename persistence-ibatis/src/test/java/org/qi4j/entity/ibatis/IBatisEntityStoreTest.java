@@ -31,6 +31,8 @@ import static org.qi4j.spi.structure.Visibility.module;
  */
 public final class IBatisEntityStoreTest extends AbstractTestCase
 {
+    private static final String SQL_MAP_CONFIG_XML = "SqlMapConfig.xml";
+
     /**
      * Test constructor.
      *
@@ -73,7 +75,14 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
         throws SQLException
     {
         initializeDerby();
+        newAndActivateEntityStore();
 
+        // Make sure there's default data in database
+        checkDataInitialization();
+    }
+
+    private IBatisEntityStore newAndActivateEntityStore()
+    {
         // Test activation with valid descriptor
         ServiceDescriptor descriptor = newValidServiceDescriptor();
         IBatisEntityStore iBatisEntityStore = new IBatisEntityStore( descriptor );
@@ -87,8 +96,42 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
             fail( "Activation with valid configuration must succeed." );
         }
 
-        // Make sure there's default data in database
-        checkDataInitialization();
+        return iBatisEntityStore;
+    }
+
+    /**
+     * Test {@link IBatisEntityStore#exists(String, org.qi4j.spi.composite.CompositeBinding)}.
+     *
+     * @throws SQLException Thrown if failed.
+     */
+    public final void testExists()
+        throws SQLException
+    {
+        // Initialize the derby and entity store
+        initializeDerby();
+        IBatisEntityStore iBatisEntityStore = newAndActivateEntityStore();
+
+        try
+        {
+            boolean isExist = iBatisEntityStore.exists( "1", null );
+            assertTrue( isExist );
+        }
+        catch( Exception e )
+        {
+            e.printStackTrace();
+            fail( "Check must exists must throw any exception." );
+        }
+
+        try
+        {
+            boolean isExist = iBatisEntityStore.exists( "3", null );
+            assertFalse( isExist );
+        }
+        catch( Exception e )
+        {
+            e.printStackTrace();
+            fail( "Check must exists must throw any exception." );
+        }
     }
 
     private ServiceDescriptor newValidServiceDescriptor()
@@ -96,7 +139,7 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
         HashMap<Class, Object> infos = new HashMap<Class, Object>();
 
         Class<? extends IBatisEntityStoreTest> aClass = getClass();
-        URL sqlMapConfigURL = aClass.getResource( "SqlMapConfig.xml" );
+        URL sqlMapConfigURL = aClass.getResource( SQL_MAP_CONFIG_XML );
         String sqlMapConfigURLAsString = sqlMapConfigURL.toString();
 
         IBatisEntityStoreServiceInfo batisEntityStoreServiceInfo =
@@ -110,6 +153,6 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
     protected final boolean isDerbyServerShouldBeStarted()
     {
         String testName = getName();
-        return "testActivate".equals( testName );
+        return "testActivate".equals( testName ) || "testExists".equals( testName );
     }
 }
