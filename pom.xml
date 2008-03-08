@@ -16,6 +16,7 @@
   <!-- This POM is ONLY to initiate the modules to be built. -->
   <modules>
     <module>persistence-quick</module>
+    <module>persistence-ibatis</module>
     <module>persistence-jdbm</module>
     <module>persistence-memory</module>
   </modules>
