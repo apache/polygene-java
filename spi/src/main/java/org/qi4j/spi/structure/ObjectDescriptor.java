@@ -14,7 +14,7 @@
 
 package org.qi4j.spi.structure;
 
-import java.util.Set;
+import java.util.Map;
 import org.qi4j.spi.composite.ObjectModel;
 
 /**
@@ -23,10 +23,10 @@ import org.qi4j.spi.composite.ObjectModel;
 public final class ObjectDescriptor
 {
     private ObjectModel objectModel;
-    private Set<Object> objectInfos;
+    private Map<Class, Object> objectInfos;
     private Visibility visibility;
 
-    public ObjectDescriptor( ObjectModel objectModel, Set<Object> objectInfos, Visibility visibility )
+    public ObjectDescriptor( ObjectModel objectModel, Map<Class, Object> objectInfos, Visibility visibility )
     {
         this.objectModel = objectModel;
         this.objectInfos = objectInfos;
@@ -38,7 +38,7 @@ public final class ObjectDescriptor
         return objectModel;
     }
 
-    public Set<Object> getObjectInfos()
+    public Map<Class, Object> getObjectInfos()
     {
         return objectInfos;
     }

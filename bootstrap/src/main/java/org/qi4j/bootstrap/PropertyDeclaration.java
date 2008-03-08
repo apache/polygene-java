@@ -28,7 +28,7 @@ import org.qi4j.spi.structure.PropertyDescriptor;
 /**
  * TODO
  */
-public class PropertyDeclaration
+public final class PropertyDeclaration
 {
     private Class valueType;
     private Map<Class, Object> propertyInfos = new HashMap<Class, Object>();

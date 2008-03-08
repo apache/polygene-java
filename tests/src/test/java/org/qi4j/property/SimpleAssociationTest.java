@@ -35,7 +35,7 @@ public class SimpleAssociationTest extends AbstractQi4jTest
         module.addComposites( SimpleAssociationTest.Person.class );
         module.addComposites( SimpleAssociationTest.Company.class );
         module.addAssociation().
-            addAssociationInfo( new SimpleAssociationTest.DisplayInfo( "Employees", "Employees in the company", "Employees", null ) ).
+            setAssociationInfo( DisplayInfo.class, new DisplayInfo( "Employees", "Employees in the company", "Employees", null ) ).
             withAccessor( SimpleAssociationTest.Employer.class ).employees();
 
         new AssemblyHelper( module ).add( SimpleAssociationTest.Employee.class );

@@ -25,7 +25,7 @@ import org.qi4j.spi.structure.Visibility;
 /**
  * TODO
  */
-public class ServiceDeclaration
+public final class ServiceDeclaration
 {
     private Class<? extends ServiceInstanceProvider> serviceProvider;
     private Iterable<Class> serviceTypes;
@@ -44,9 +44,9 @@ public class ServiceDeclaration
         return this;
     }
 
-    public ServiceDeclaration addServiceInfo( Object serviceInfo )
+    public <T> ServiceDeclaration setServiceInfo( Class<T> infoType, T serviceInfo )
     {
-        serviceInfos.put( serviceInfo.getClass(), serviceInfo );
+        serviceInfos.put( infoType, serviceInfo );
         return this;
     }
 

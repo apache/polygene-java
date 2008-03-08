@@ -38,9 +38,9 @@ public final class AssociationDeclaration
     {
     }
 
-    public AssociationDeclaration addAssociationInfo( Object info )
+    public <T> AssociationDeclaration setAssociationInfo( Class<T> infoType, T info )
     {
-        associationInfos.put( info.getClass(), info );
+        associationInfos.put( infoType, info );
         return this;
     }
 

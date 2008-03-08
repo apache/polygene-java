@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 import org.qi4j.composite.Composite;
 import org.qi4j.runtime.composite.CompositeModelFactory;
 import org.qi4j.runtime.composite.ObjectModelFactory;
@@ -32,6 +34,8 @@ import org.qi4j.spi.structure.Visibility;
  */
 public final class ModuleAssembly
 {
+    private static final Map<Class, Object> EMPTY_MAP = new HashMap<Class, Object>();
+    
     private LayerAssembly layerAssembly;
     private String name;
     private List<CompositeDeclaration> compositeDeclarations;
@@ -122,7 +126,7 @@ public final class ModuleAssembly
 
         for( ServiceDescriptor serviceDescriptor : getServiceDescriptors() )
         {
-            objectDescriptors.add( new ObjectDescriptor( objectModelFactory.newObjectModel( serviceDescriptor.getServiceProvider() ), Collections.emptySet(), Visibility.module ) );
+            objectDescriptors.add( new ObjectDescriptor( objectModelFactory.newObjectModel( serviceDescriptor.getServiceProvider() ), EMPTY_MAP, Visibility.module ) );
         }
         return objectDescriptors;
     }

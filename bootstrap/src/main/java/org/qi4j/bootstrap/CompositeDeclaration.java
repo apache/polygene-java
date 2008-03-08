@@ -28,7 +28,7 @@ import org.qi4j.spi.structure.Visibility;
 /**
  * TODO
  */
-public class CompositeDeclaration
+public final class CompositeDeclaration
 {
     private Class<? extends Composite>[] compositeTypes;
     private Map<Class, Object> compositeInfos = new HashMap<Class, Object>();
@@ -39,9 +39,9 @@ public class CompositeDeclaration
         this.compositeTypes = compositeTypes;
     }
 
-    public CompositeDeclaration addCompositeInfo( Object info )
+    public <T> CompositeDeclaration setCompositeInfo( Class<T> infoType, T info )
     {
-        compositeInfos.put( info.getClass(), info );
+        compositeInfos.put( infoType, info );
         return this;
     }
 

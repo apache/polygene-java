@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.Map;
+import java.util.HashMap;
 import org.qi4j.runtime.composite.ObjectModelFactory;
 import org.qi4j.spi.structure.ObjectDescriptor;
 import org.qi4j.spi.structure.Visibility;
@@ -25,10 +27,10 @@ import org.qi4j.spi.structure.Visibility;
 /**
  * TODO
  */
-public class ObjectDeclaration
+public final class ObjectDeclaration
 {
     private Iterable<Class> objectTypes;
-    private Set<Object> objectInfos = new HashSet<Object>();
+    private Map<Class, Object> objectInfos = new HashMap<Class, Object>();
     private Visibility visibility = Visibility.module;
 
     public ObjectDeclaration( Iterable<Class> classes )
@@ -36,9 +38,9 @@ public class ObjectDeclaration
         this.objectTypes = classes;
     }
 
-    public ObjectDeclaration addObjectInfo( Object info )
+    public <T> ObjectDeclaration addObjectInfo( Class<T> infoType, T info )
     {
-        objectInfos.add( info );
+        objectInfos.put( infoType, info );
         return this;
     }
 
