@@ -87,6 +87,9 @@ abstract class IBatisTemplate<T>
      *
      * @param aClient The sql map client. This argumetn must not be {@code null}.
      * @return an object that should be returned by {@link #execute()}
+     * @throws java.sql.SQLException Thrown if there is any problem during execution.
+     * @since 0.1.0
      */
-    protected abstract T onExecute( SqlMapClient aClient ) throws SQLException;
+    protected abstract T onExecute( SqlMapClient aClient )
+        throws SQLException;
 }

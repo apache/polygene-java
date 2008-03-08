@@ -61,10 +61,10 @@ public final class IBatisServiceInstanceProvider
 
         // Perform validation of service infos to ensure that on later stage it's possible to instantiate service.
         Map<Class, Object> serviceInfos = aDescriptor.getServiceInfos();
-        Object serviceInfo = serviceInfos.get( IBatisServiceInfo.class );
+        Object serviceInfo = serviceInfos.get( IBatisEntityStoreServiceInfo.class );
         if( serviceInfo == null )
         {
-            String infoClassName = IBatisServiceInfo.class.getName();
+            String infoClassName = IBatisEntityStoreServiceInfo.class.getName();
             String message = "[aDescriptor] must have service info of type [" + infoClassName + "]";
             throw new IllegalArgumentException( message );
         }

@@ -1,0 +1,7 @@
+CREATE TABLE PERSON
+(
+  ID                 VARCHAR  (5)    NOT NULL,
+  FIRST_NAME         VARCHAR  (40)   NOT NULL,
+  LAST_NAME          VARCHAR  (40)   NOT NULL,
+  PRIMARY KEY (ID)
+);

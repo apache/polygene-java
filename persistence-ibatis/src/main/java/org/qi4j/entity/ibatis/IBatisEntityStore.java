@@ -17,11 +17,21 @@
 package org.qi4j.entity.ibatis;
 
 import com.ibatis.sqlmap.client.SqlMapClient;
+import static com.ibatis.sqlmap.client.SqlMapClientBuilder.buildSqlMapClient;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.net.URL;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
 import org.qi4j.entity.EntitySession;
+import org.qi4j.entity.ibatis.dbInitializer.DBInitializer;
+import org.qi4j.entity.ibatis.dbInitializer.DBInitializerInfo;
 import org.qi4j.service.Activatable;
 import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.entity.EntityState;
@@ -121,12 +131,52 @@ final class IBatisEntityStore
         // TODO
     }
 
+    /**
+     * Activate this service.
+     *
+     * @throws IOException   If reading sql map configuration failed.
+     * @throws SQLException Thrown if database initialization failed.
+     * @since 0.1.0
+     */
     public final void activate()
-        throws Exception
+        throws IOException, SQLException
     {
+        Map<Class, Object> serviceInfos = serviceDescriptor.getServiceInfos();
+
+        // Initialize database if required.
+        DBInitializerInfo dbInitializerInfo = (DBInitializerInfo) serviceInfos.get( DBInitializerInfo.class );
+        if( dbInitializerInfo != null )
+        {
+            DBInitializer dbInitializer = new DBInitializer( dbInitializerInfo );
+            dbInitializer.initialize();
+        }
+
         // Initialize client
+        IBatisEntityStoreServiceInfo entityStoreServiceInfo =
+            (IBatisEntityStoreServiceInfo) serviceInfos.get( IBatisEntityStoreServiceInfo.class );
+
+        String configURL = entityStoreServiceInfo.getSQLMapConfigURL();
+        InputStream configStream = new URL( configURL ).openStream();
+        InputStreamReader streamReader = new InputStreamReader( configStream );
+        Reader bufferedReader = new BufferedReader( streamReader );
+
+        Properties properties = entityStoreServiceInfo.getConfigProperties();
+        if( properties == null )
+        {
+            client = buildSqlMapClient( bufferedReader );
+        }
+        else
+        {
+            client = buildSqlMapClient( bufferedReader, properties );
+        }
     }
 
+    /**
+     * Passivate this service.
+     *
+     * @throws Exception Thrown if there is any passivation problem.
+     * @since 0.1.0
+     */
     public final void passivate()
         throws Exception
     {
