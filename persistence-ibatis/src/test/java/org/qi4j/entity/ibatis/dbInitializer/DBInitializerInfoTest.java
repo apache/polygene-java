@@ -32,7 +32,7 @@ public final class DBInitializerInfoTest extends TestCase
      *
      * @since 0.1.0
      */
-    public final void testValidityConstructorArguments()
+    public final void testConstructor()
     {
         try
         {
