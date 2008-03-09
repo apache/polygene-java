@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module version="4" relativePaths="true" type="JAVA_MODULE">
-  <component name="ModuleRootManager" />
+<module relativePaths="true" type="JAVA_MODULE" version="4">
   <component name="NewModuleRootManager" inherit-compiler-output="false">
     <output url="file://$MODULE_DIR$/target/classes" />
     <exclude-output />
@@ -15,13 +14,12 @@
     <orderEntry type="module" module-name="core-api" />
     <orderEntry type="module" module-name="core-runtime" />
     <orderEntry type="module" module-name="library-framework" />
-    <orderEntry type="library" name="jmock-2.1.0" level="project" />
-    <orderEntry type="library" name="jmock-junit4-2.1.0" level="project" />
-    <orderEntry type="library" name="hamcrest-api-1.0" level="project" />
-    <orderEntry type="library" name="hamcrest-library-1.0" level="project" />
+    <orderEntry type="library" name="jmock-2.4.0" level="project" />
     <orderEntry type="library" name="junit-4.1" level="project" />
     <orderEntry type="module" module-name="core-testsupport" />
     <orderEntry type="module" module-name="core-bootstrap" />
+    <orderEntry type="library" name="hamcrest-library-1.1" level="project" />
+    <orderEntry type="library" name="hamcrest-core-1.1" level="project" />
     <orderEntryProperties />
   </component>
   <component name="copyright">
