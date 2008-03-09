@@ -28,6 +28,6 @@ import org.qi4j.spi.entity.EntityStore;
  */
 @Mixins( IBatisEntityStore.class )
 public interface IBatisEntityStoreComposite
-    extends EntityStore, ServiceComposite
+    extends EntityStore<IBatisEntityState>, ServiceComposite
 {
 }

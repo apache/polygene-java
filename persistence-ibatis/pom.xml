@@ -26,6 +26,10 @@
   <name>Qi4J Extension - Persistence IBatis</name>
   <version>0.1.0-SNAPSHOT</version>
 
+  <properties>
+    <dependency.version.derby>10.3.2.1</dependency.version.derby>
+  </properties>
+
   <build>
     <plugins>
       <plugin>
@@ -73,20 +77,24 @@
     <dependency>
       <groupId>org.apache.derby</groupId>
       <artifactId>derby</artifactId>
-      <version>10.3.2.1</version>
+      <version>${dependency.version.derby}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.derby</groupId>
       <artifactId>derbyclient</artifactId>
-      <version>10.3.2.1</version>
+      <version>${dependency.version.derby}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.derby</groupId>
       <artifactId>derbynet</artifactId>
-      <version>10.3.2.1</version>
+      <version>${dependency.version.derby}</version>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jmock</groupId>
+      <artifactId>jmock</artifactId>
     </dependency>
   </dependencies>
 </project>

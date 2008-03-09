@@ -22,9 +22,12 @@ import java.util.HashMap;
 import java.util.Map;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.PropertyDeclaration;
+import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.entity.ibatis.dbInitializer.DBInitializerInfo;
+import org.qi4j.property.Property;
 import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.entity.StoreException;
+import org.qi4j.spi.property.ImmutablePropertyInstance;
 import org.qi4j.spi.property.PropertyBinding;
 import org.qi4j.spi.service.ServiceInstanceProvider;
 import org.qi4j.spi.structure.ServiceDescriptor;
@@ -210,6 +213,7 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
         return new ServiceDescriptor( IBatisEntityStoreTest.class, ServiceInstanceProvider.class, module, infos );
     }
 
+
     /**
      * Tests {@link IBatisEntityStore#computePropertyValue(PropertyBinding, Map, boolean)}.
      *
@@ -221,20 +225,11 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
         IBatisEntityStore entityStore = new IBatisEntityStore( descriptor );
 
         // Set up test arguments
-        PersonComposite composite = moduleInstance.getCompositeBuilderFactory().newComposite( PersonComposite.class );
-        CompositeBinding personBinding = runtime.getCompositeBinding( composite );
-        Iterable<PropertyBinding> propertyBindings = personBinding.getPropertyBindings();
-        PropertyBinding binding = null;
-        String propertyName = "firstName";
-        for( PropertyBinding aBinding : propertyBindings )
-        {
-            String tempPropertyName = aBinding.getName();
-            if( propertyName.equals( tempPropertyName ) )
-            {
-                binding = aBinding;
-                break;
-            }
-        }
+        Map<String, PropertyBinding> personPropertyBindings = getPersonCompositePropertyBindings();
+        String firstNamePropertyName = "firstName";
+        PropertyBinding binding = personPropertyBindings.get( firstNamePropertyName );
+        assertNotNull( "Property [firstName] must exists.", binding );
+
         Map<String, Object> propertyValues = new HashMap<String, Object>();
 
         // ****************************
@@ -251,7 +246,7 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
         // Test to return assigned value
         // *****************************
         String expectedValue3 = "value3";
-        propertyValues.put( propertyName, expectedValue3 );
+        propertyValues.put( firstNamePropertyName, expectedValue3 );
         Object testValue3 = entityStore.computePropertyValue( binding, propertyValues, true );
         assertEquals( expectedValue3, testValue3 );
 
@@ -269,7 +264,7 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
         ServiceDescriptor descriptor2 = new ServiceDescriptor(
             IBatisEntityStoreTest.class, ServiceInstanceProvider.class, module, infos );
         IBatisEntityStore entityStore2 = new IBatisEntityStore( descriptor2 );
-        propertyValues.put( propertyName, 2 );
+        propertyValues.put( firstNamePropertyName, 2 );
 
         String failMsg = "Must [fail]. Mismatch between expected (String) and actual (Integer) property value type.";
         try
@@ -287,24 +282,83 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
         }
     }
 
+    /**
+     * Returns all person composite property bindings.
+     *
+     * @return All person composite property bindings.
+     * @since 0.1.0
+     */
+    private Map<String, PropertyBinding> getPersonCompositePropertyBindings()
+    {
+        CompositeBuilderFactory builderFactory = moduleInstance.getCompositeBuilderFactory();
+        PersonComposite composite = builderFactory.newComposite( PersonComposite.class );
+        CompositeBinding personBinding = runtime.getCompositeBinding( composite );
+        Iterable<PropertyBinding> propertyBindings = personBinding.getPropertyBindings();
+        Map<String, PropertyBinding> properties = new HashMap<String, PropertyBinding>();
+        for( PropertyBinding aBinding : propertyBindings )
+        {
+            String propertyName = aBinding.getName();
+            properties.put( propertyName, aBinding );
+        }
+        assertFalse( "Properties must not be empty.", properties.isEmpty() );
+        return properties;
+    }
+
+    /**
+     * Tests new property instance.
+     *
+     * @since 0.1.0
+     */
+    public final void testNewPropertyInstance()
+    {
+        ServiceDescriptor descriptor = newValidServiceDescriptor();
+        IBatisEntityStore entityStore = new IBatisEntityStore( descriptor );
+
+        // Set up test arguments
+        Map<String, PropertyBinding> properties = getPersonCompositePropertyBindings();
+
+        // ***********************
+        // Test immutable property
+        // ***********************
+        PropertyBinding identityBinding = properties.get( "identity" );
+        assertNotNull( "Property binding [identity] must exists.", identityBinding );
+        String expectedValue1 = "anIdentityValue";
+        Property<Object> identityProperty = entityStore.newPropertyInstance( identityBinding, expectedValue1 );
+        assertNotNull( identityProperty );
+        assertTrue( ImmutablePropertyInstance.class.equals( identityProperty.getClass() ) );
+        assertEquals( expectedValue1, identityProperty.get() );
+
+        // *********************
+        // Test mutable property
+        // *********************
+        PropertyBinding firstNameBinding = properties.get( "firstName" );
+        assertNotNull( "Property binding [firstName] must exists.", firstNameBinding );
+        String expectedValue2 = "Edward";
+        Property<Object> firstNameProperty = entityStore.newPropertyInstance( firstNameBinding, expectedValue2 );
+        assertNotNull( firstNameProperty );
+        assertTrue( IBatisMutablePropertyInstance.class.equals( firstNameProperty.getClass() ) );
+        assertEquals( expectedValue2, firstNameProperty.get() );
+    }
+
     @Override
     public final void configure( ModuleAssembly aModule )
     {
         String testName = getName();
         if( "testComputePropertyValue".equals( testName ) ||
-            "testExists".equals( testName ) )
+            "testExists".equals( testName ) ||
+            "testNewPropertyInstance".equals( testName ) )
         {
             aModule.addComposites( PersonComposite.class );
 
             if( "testComputePropertyValue".equals( testName ) )
             {
                 PropertyDeclaration hasFirstNameDeclaration = aModule.addProperty();
-                HasFirstName firstName = hasFirstNameDeclaration.withAccessor( HasFirstName.class );
-                firstName.firstName().set( DEFAULT_FIRST_NAME );
+                Property<String> firstName = hasFirstNameDeclaration.withAccessor( PersonComposite.class ).firstName();
+                firstName.set( DEFAULT_FIRST_NAME );
 
                 PropertyDeclaration hasLastNameDeclaration = aModule.addProperty();
-                HasLastName lastName = hasLastNameDeclaration.withAccessor( HasLastName.class );
-                lastName.lastName().set( DEFAULT_LAST_NAME );
+                Property<String> lastName = hasLastNameDeclaration.withAccessor( PersonComposite.class ).lastName();
+                lastName.set( DEFAULT_LAST_NAME );
             }
         }
     }

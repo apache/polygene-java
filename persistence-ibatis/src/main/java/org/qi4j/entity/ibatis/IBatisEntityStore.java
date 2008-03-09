@@ -59,7 +59,6 @@ import org.qi4j.spi.entity.StoreException;
 import org.qi4j.spi.property.AssociationBinding;
 import org.qi4j.spi.property.ImmutablePropertyInstance;
 import org.qi4j.spi.property.PropertyBinding;
-import org.qi4j.spi.property.PropertyInstance;
 import org.qi4j.spi.property.PropertyModel;
 import org.qi4j.spi.structure.ServiceDescriptor;
 
@@ -271,13 +270,13 @@ final class IBatisEntityStore
     }
 
     /**
-     * Check The proprty value type against its property declaration.
+     * Check The property value type against its property declaration.
      * <p/>
      * Note: This method only check {@code Class} value type. GenericArrayType, TypeVariable, WildcardType and
      * ParameterizedType are not handled yet.
      *
-     * @param aPropertyValue         The property value.
-     * @param aPropertyBinding       The property binding.
+     * @param aPropertyValue   The property value.
+     * @param aPropertyBinding The property binding.
      * @throws IllegalStateException Thrown if there is a mismatch of expected and actual value type.
      * @since 0.1.0
      */
@@ -312,23 +311,21 @@ final class IBatisEntityStore
      * @return A new property instance.
      * @since 0.1.0
      */
-    private Property<Object> newPropertyInstance( PropertyBinding aPropertyBinding, Object aPropertyValue )
+    final Property<Object> newPropertyInstance( PropertyBinding aPropertyBinding, Object aPropertyValue )
     {
         PropertyResolution propertyResolution = aPropertyBinding.getPropertyResolution();
         PropertyModel propertyModel = propertyResolution.getPropertyModel();
         Method accessor = propertyModel.getAccessor();
         Class<?> type = accessor.getReturnType();
-        Property<Object> propertyInstance;
+
         if( ImmutableProperty.class.isAssignableFrom( type ) )
         {
-            propertyInstance = new ImmutablePropertyInstance<Object>( aPropertyBinding, aPropertyValue );
+            return new ImmutablePropertyInstance<Object>( aPropertyBinding, aPropertyValue );
         }
         else
         {
-            // TODO: needs to use a modified version of mutable property instance to detect state change
-            propertyInstance = new PropertyInstance<Object>( aPropertyBinding, aPropertyValue );
+            return new IBatisMutablePropertyInstance<Object>( aPropertyBinding, aPropertyValue );
         }
-        return propertyInstance;
     }
 
     // TODO: This is copied from MemoryEntityStore need to be revised

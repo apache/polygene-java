@@ -18,13 +18,17 @@
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="file://$TEMPLATE$/dev/ibatis/2.3.0/mapper/mapper2/src" />
+          <root url="file://$MODULE_DIR$/../../../../../ibatis/2.3.0/mapper/mapper2/src" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module" module-name="core-spi" />
     <orderEntry type="module" module-name="core-api" />
+    <orderEntry type="module" module-name="core-runtime" />
+    <orderEntry type="module" module-name="core-bootstrap" />
     <orderEntry type="library" name="junit-4.1" level="project" />
+    <orderEntry type="module" module-name="core-testsupport" />
+    <orderEntry type="library" name="jmock-2.4.0" level="project" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>
@@ -52,9 +56,8 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module" module-name="core-runtime" />
-    <orderEntry type="module" module-name="core-testsupport" />
-    <orderEntry type="module" module-name="core-bootstrap" />
+    <orderEntry type="library" name="hamcrest-core-1.1" level="project" />
+    <orderEntry type="library" name="hamcrest-library-1.1" level="project" />
     <orderEntryProperties />
   </component>
 </module>

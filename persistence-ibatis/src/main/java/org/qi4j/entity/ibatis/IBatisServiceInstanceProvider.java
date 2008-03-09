@@ -115,7 +115,8 @@ public final class IBatisServiceInstanceProvider
         {
         case STARTING:
             Map<Class, Object> serviceInfos = descriptor.getServiceInfos();
-            serviceInstance = new ServiceInstance( new IBatisEntityStore( descriptor ), this, serviceInfos );
+            IBatisEntityStore entityStore = new IBatisEntityStore( descriptor );
+            serviceInstance = new ServiceInstance( entityStore, this, serviceInfos );
             break;
 
         case STOPPING:
