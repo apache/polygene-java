@@ -20,7 +20,7 @@ import java.util.Properties;
 import static org.qi4j.composite.NullArgumentException.validateNotEmpty;
 
 /**
- * TODO Figure out what is required to initialized ibatis service
+ * {@code IBatisEntityStoreServiceInfo} provides service information for {@link IBatisEntityStore}.
  *
  * @author edward.yakop@gmail.com
  * @since 0.1.0
@@ -29,6 +29,7 @@ public final class IBatisEntityStoreServiceInfo
 {
     private final String sqlMapConfigURL;
     private final Properties configProperties;
+    private boolean isDebugMode;
 
     /**
      * Construct an instance of {@code IBatisServiceInfo}.
@@ -58,6 +59,31 @@ public final class IBatisEntityStoreServiceInfo
 
         sqlMapConfigURL = aSQLMapConfigURL;
         configProperties = aProperties;
+        isDebugMode = false;
+    }
+
+    /**
+     * Sets whether the entity store service info is in debug mode.
+     *
+     * @param isNewDebugMode The new debug mode.
+     * @since 0.1.0
+     */
+    public final void setIsDebugMode( boolean isNewDebugMode )
+    {
+        isDebugMode = isNewDebugMode;
+    }
+
+    /**
+     * Returns {@code true} if the {@code IBatisEntityStore} represented by this {@code IBatisEntityStoreServiceInfo}
+     * is in debug mode, {@code false} otherwise.
+     *
+     * @return Returns a {@code boolean} indicator whether the {@code IBatisEntityStore} represented by this
+     *         {@code IBatisEntityStoreServiceInfo} is in debug mode.
+     * @since 0.1.0
+     */
+    public final boolean isDebugMode()
+    {
+        return isDebugMode;
     }
 
     /**

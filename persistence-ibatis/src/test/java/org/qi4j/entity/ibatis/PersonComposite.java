@@ -18,6 +18,6 @@ package org.qi4j.entity.ibatis;
 
 import org.qi4j.entity.EntityComposite;
 
-public interface PersonComposite extends EntityComposite
+public interface PersonComposite extends EntityComposite, HasFirstName, HasLastName
 {
 }

@@ -19,6 +19,9 @@ package org.qi4j.entity.ibatis;
 import java.util.Map;
 import org.qi4j.association.AbstractAssociation;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
+import static org.qi4j.entity.ibatis.IBatisEntityState.STATUS.statusLoadToDeleted;
+import static org.qi4j.entity.ibatis.IBatisEntityState.STATUS.statusNew;
+import static org.qi4j.entity.ibatis.IBatisEntityState.STATUS.statusNewToDeleted;
 import org.qi4j.property.Property;
 import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.entity.EntityState;
@@ -33,25 +36,54 @@ import org.qi4j.spi.entity.StoreException;
 final class IBatisEntityState
     implements EntityState
 {
+    public static enum STATUS
+    {
+        statusNew,
+        statusLoadFromDb,
+        statusNewToDeleted,
+        statusLoadToDeleted,
+    }
+
     private final String identity;
+
     private final CompositeBinding compositeBinding;
+    private final Map<String, Property> properties;
+    private final Map<String, AbstractAssociation> associations;
+    private final IBatisEntityStore entityStore;
+    private STATUS status;
 
     /**
      * Construct an instance of {@code IBatisEntityState}.
      *
      * @param anIdentity        The identity. This argument must not be {@code null}.
      * @param aCompositeBinding The composite binding. This argument must not be {@code null}.
+     * @param propertiez        The entity properties. This argument must not be {@code null}.
+     * @param associationz      The entity associations. This argument must not be {@code null}.
+     * @param aStatus           The initial status of this state. This argument must not be {@code null}.
+     * @param anEntitySTore     The entity store. This argument must not be {@code null}.
      * @throws IllegalArgumentException Thrown if one or some or all arguments are {@code null}.
      * @since 0.1.0
      */
-    IBatisEntityState( String anIdentity, CompositeBinding aCompositeBinding )
+    IBatisEntityState(
+        String anIdentity, CompositeBinding aCompositeBinding,
+        Map<String, Property> propertiez,
+        Map<String, AbstractAssociation> associationz,
+        STATUS aStatus, IBatisEntityStore anEntitySTore )
         throws IllegalArgumentException
     {
         validateNotNull( "anIdentity", anIdentity );
         validateNotNull( "aCompositeBinding", aCompositeBinding );
+        validateNotNull( "propertiez", propertiez );
+        validateNotNull( "associationz", associationz );
+        validateNotNull( "aStatus", aStatus );
+        validateNotNull( "anEntitySTore", anEntitySTore );
 
         identity = anIdentity;
         compositeBinding = aCompositeBinding;
+        properties = propertiez;
+        associations = associationz;
+        entityStore = anEntitySTore;
+        status = aStatus;
     }
 
     /**
@@ -65,28 +97,52 @@ final class IBatisEntityState
         return identity;
     }
 
-    public CompositeBinding getCompositeBinding()
+    public final CompositeBinding getCompositeBinding()
     {
         return compositeBinding;
     }
 
-    public Map<String, Property> getProperties()
+    public final Map<String, Property> getProperties()
     {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return properties;
     }
 
-    public Map<String, AbstractAssociation> getAssociations()
+    public final Map<String, AbstractAssociation> getAssociations()
     {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return associations;
     }
 
-    public void refresh()
+    public final void refresh()
     {
-        //To change body of implemented methods use File | Settings | File Templates.
+        // Check whether refresh is required at all
+        if( status == statusNew || status == statusNewToDeleted || status == statusLoadToDeleted )
+        {
+            return;
+        }
+
+        // TODO
     }
 
-    public boolean delete() throws StoreException
+    public boolean delete()
+        throws StoreException
     {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        switch( status )
+        {
+        case statusNew:
+        case statusNewToDeleted:
+        case statusLoadToDeleted:
+            status = statusNewToDeleted;
+            return true;
+
+        case statusLoadFromDb:
+            return entityStore.deleteComposite( identity, compositeBinding );
+        }
+
+        return false;
+    }
+
+    final void persist()
+    {
+        // TODO
     }
 }

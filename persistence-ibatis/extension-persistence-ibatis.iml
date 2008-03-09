@@ -52,6 +52,9 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="module" module-name="core-runtime" />
+    <orderEntry type="module" module-name="core-testsupport" />
+    <orderEntry type="module" module-name="core-bootstrap" />
     <orderEntryProperties />
   </component>
 </module>

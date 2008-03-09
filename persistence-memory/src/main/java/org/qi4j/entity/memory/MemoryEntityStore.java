@@ -38,7 +38,6 @@ import org.qi4j.spi.composite.CompositeModel;
 import org.qi4j.spi.composite.CompositeResolution;
 import org.qi4j.spi.composite.PropertyResolution;
 import org.qi4j.spi.entity.EntityAlreadyExistsException;
-import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.StoreException;
 import org.qi4j.spi.property.AssociationBinding;
@@ -50,7 +49,7 @@ import org.qi4j.spi.serialization.SerializedEntity;
 import org.qi4j.spi.serialization.SerializedState;
 
 public class MemoryEntityStore
-    implements EntityStore
+    implements EntityStore<MemoryEntityState>
 {
     private final Map<SerializedEntity, SerializedState> entityState;
 
@@ -67,7 +66,7 @@ public class MemoryEntityStore
         return entityState.containsKey( new SerializedEntity( identity, compositeType ) );
     }
 
-    public EntityState newEntityInstance(
+    public MemoryEntityState newEntityInstance(
         EntitySession session, String identity, CompositeBinding compositeBinding, Map<String, Object> propertyValues ) throws StoreException
     {
         CompositeResolution compositeResolution = compositeBinding.getCompositeResolution();
@@ -137,14 +136,14 @@ public class MemoryEntityStore
         return entityState;
     }
 
-    public EntityState getEntityInstance( EntitySession session, String identity, CompositeBinding compositeBinding )
+    public MemoryEntityState getEntityInstance( EntitySession session, String identity, CompositeBinding compositeBinding )
         throws StoreException
     {
         // TODO
         return null;
     }
 
-    public void complete( EntitySession session, List<EntityState> states ) throws StoreException
+    public void complete( EntitySession session, List<MemoryEntityState> states ) throws StoreException
     {
         // TODO
     }

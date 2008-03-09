@@ -29,8 +29,8 @@ public final class DBInitializerInfo
 {
     private final String dbURL;
     private final Properties connectionProperties;
-    private String schemaURL;
-    private String dbDataURL;
+    private final String schemaURL;
+    private final String dbDataURL;
 
     /**
      * Construct an instance of {@code DBInitializerInfo}.

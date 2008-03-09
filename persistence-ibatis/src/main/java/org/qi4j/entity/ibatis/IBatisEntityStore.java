@@ -23,31 +23,58 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import org.qi4j.association.AbstractAssociation;
+import org.qi4j.association.ManyAssociation;
+import org.qi4j.association.SetAssociation;
+import org.qi4j.composite.Composite;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
 import org.qi4j.entity.EntitySession;
+import static org.qi4j.entity.ibatis.IBatisEntityState.STATUS;
+import static org.qi4j.entity.ibatis.IBatisEntityState.STATUS.statusLoadFromDb;
+import static org.qi4j.entity.ibatis.IBatisEntityState.STATUS.statusNew;
 import org.qi4j.entity.ibatis.dbInitializer.DBInitializer;
 import org.qi4j.entity.ibatis.dbInitializer.DBInitializerInfo;
+import org.qi4j.property.ImmutableProperty;
+import org.qi4j.property.Property;
+import org.qi4j.runtime.association.AssociationInstance;
+import org.qi4j.runtime.association.ListAssociationInstance;
 import org.qi4j.service.Activatable;
+import org.qi4j.spi.composite.AssociationModel;
+import org.qi4j.spi.composite.AssociationResolution;
 import org.qi4j.spi.composite.CompositeBinding;
-import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.composite.CompositeModel;
+import org.qi4j.spi.composite.CompositeResolution;
+import org.qi4j.spi.composite.PropertyResolution;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.StoreException;
+import org.qi4j.spi.property.AssociationBinding;
+import org.qi4j.spi.property.ImmutablePropertyInstance;
+import org.qi4j.spi.property.PropertyBinding;
+import org.qi4j.spi.property.PropertyInstance;
+import org.qi4j.spi.property.PropertyModel;
 import org.qi4j.spi.structure.ServiceDescriptor;
 
 /**
  * TODO: Figure out how does transaction supposed for all EntityStore methods.
+ * TODO: identity is a keyword in SQL. We need to have an alias for this identity property for query purposes.
  *
  * @author edward.yakop@gmail.com
  */
 final class IBatisEntityStore
-    implements EntityStore, Activatable
+    implements EntityStore<IBatisEntityState>, Activatable
 {
-    private final ServiceDescriptor serviceDescriptor;
+    private final IBatisEntityStoreServiceInfo serviceInfo;
+    private final DBInitializerInfo dbInitializerInfo;
+
     private SqlMapClient client;
 
     /**
@@ -62,7 +89,10 @@ final class IBatisEntityStore
     {
         validateNotNull( "aServiceDescriptor", aServiceDescriptor );
 
-        serviceDescriptor = aServiceDescriptor;
+        Map<Class, Object> serviceInfos = aServiceDescriptor.getServiceInfos();
+        serviceInfo = (IBatisEntityStoreServiceInfo) serviceInfos.get( IBatisEntityStoreServiceInfo.class );
+        dbInitializerInfo = (DBInitializerInfo) serviceInfos.get( DBInitializerInfo.class );
+
         client = null;
     }
 
@@ -80,24 +110,38 @@ final class IBatisEntityStore
         throws StoreException
     {
         validateNotNull( "anIdentity", anIdentity );
-
-        // TODO: Deactivated to test hardcoded value.
-//        validateNotNull( "aCompositeBinding", aCompositeBinding );
+        validateNotNull( "aCompositeBinding", aCompositeBinding );
 
         throwIfNotActive();
 
-        // TODO uncomment the next 4 lines, once this is done.
-//        CompositeResolution compositeResolution = aCompositeBinding.getCompositeResolution();
-//        CompositeModel compositeModel = compositeResolution.getCompositeModel();
-//        Class<? extends Composite> compositeClass = compositeModel.getCompositeClass();
-//        final String statementId = compositeClass.getName() + ".getById";
 
-        final String statementId = "org.qi4j.entity.ibatis.PersonComposite.getById";
+        Object rawData = getRawData( anIdentity, aCompositeBinding );
+        return rawData != null;
+    }
 
+    /**
+     * Returns raw data given the composite class.
+     *
+     * @param anIdentity        The identity. This argument must not be {@code null}.
+     * @param aCompositeBinding The composite class. This argument must not be {@code null}.
+     * @return The raw data given input.
+     * @throws StoreException Thrown if retrieval failed.
+     * @since 0.1.0
+     */
+    private Map getRawData( String anIdentity, CompositeBinding aCompositeBinding )
+        throws StoreException
+    {
+        validateNotNull( "anIdentity", anIdentity );
+        validateNotNull( "aCompositeBinding", aCompositeBinding );
+        CompositeResolution compositeResolution = aCompositeBinding.getCompositeResolution();
+        CompositeModel compositeModel = compositeResolution.getCompositeModel();
+        Class<? extends Composite> compositeClass = compositeModel.getCompositeClass();
+        String statementId = compositeClass.getName() + ".getById";
+
+        // TODO: Transaction?
         try
         {
-            Object isRowExists = client.queryForObject( statementId, anIdentity );
-            return isRowExists != null;
+            return (Map) client.queryForObject( statementId, anIdentity );
         }
         catch( SQLException e )
         {
@@ -105,6 +149,12 @@ final class IBatisEntityStore
         }
     }
 
+    /**
+     * Throws {@link StoreException} if this service is not active.
+     *
+     * @throws StoreException Thrown if this service instance is not active.
+     * @since 0.1.0
+     */
     private void throwIfNotActive()
         throws StoreException
     {
@@ -115,31 +165,259 @@ final class IBatisEntityStore
         }
     }
 
-    public EntityState newEntityInstance(
-        EntitySession session, String identity, CompositeBinding compositeBinding, Map<String, Object> propertyValues )
-        throws StoreException
+    /**
+     * Construct a new entity instance.
+     *
+     * @param aSession          The entity session.
+     * @param anIdentity        The new entity identity. This argument must not be {@code null}.
+     * @param aCompositeBinding The composite binding. This argument must not be {@code null}.
+     * @param propertyValues    The property values. This argument must not be {@code null}.
+     * @return The new entity state.
+     * @throws IllegalArgumentException Thrown if one or some or all arguments are {@code null}.
+     * @throws StoreException           Thrown if creational failed.
+     * @since 0.1.0
+     */
+    public final IBatisEntityState newEntityInstance(
+        EntitySession aSession, String anIdentity, CompositeBinding aCompositeBinding,
+        Map<String, Object> propertyValues )
+        throws IllegalArgumentException, StoreException
     {
-        throwIfNotActive();
+        validateNotNull( "aSession", aSession );
+        validateNotNull( "anIdentity", anIdentity );
+        validateNotNull( "aCompositeBinding", aCompositeBinding );
+        validateNotNull( "propertyValues", propertyValues );
 
-        // TODO
-        return null;
+        return newEntityInstance( anIdentity, aCompositeBinding, propertyValues, true, statusNew );
     }
 
-    public EntityState getEntityInstance( EntitySession session, String identity, CompositeBinding compositeBinding )
+    private IBatisEntityState newEntityInstance(
+        String anIdentity, CompositeBinding aCompositeBinding,
+        Map<String, Object> fieldValues, boolean isUseDefaultValue, STATUS aStatus )
         throws StoreException
     {
         throwIfNotActive();
 
-        // TODO
-        return null;
+        Map<String, Property> properties = transformToProperties( aCompositeBinding, fieldValues, isUseDefaultValue );
+        Map<String, AbstractAssociation> associations = transformToAssociations( aCompositeBinding, fieldValues );
+        return new IBatisEntityState( anIdentity, aCompositeBinding, properties, associations, aStatus, this );
     }
 
-    public void complete( EntitySession session, List<EntityState> states )
+    /**
+     * Transform the map of property values to map of property. Must not return {@code null}.
+     *
+     * @param aCompositeBinding The composite binding. This argument must not be {@code null}.
+     * @param propertyValues    The property values. This argument must not be {@code null}.
+     * @param useDefaultValue   Sets to {@code true} if one should use the default values.
+     * @return The map of properties.
+     * @since 0.1.0
+     */
+    private Map<String, Property> transformToProperties(
+        CompositeBinding aCompositeBinding, Map<String, Object> propertyValues, boolean useDefaultValue )
+    {
+        Map<String, Property> properties = new HashMap<String, Property>();
+        Iterable<PropertyBinding> propertyBindings = aCompositeBinding.getPropertyBindings();
+        for( PropertyBinding propertyBinding : propertyBindings )
+        {
+            String propQualifiedName = propertyBinding.getQualifiedName();
+            Object value = computePropertyValue( propertyBinding, propertyValues, useDefaultValue );
+            Property<Object> propertyInstance = newPropertyInstance( propertyBinding, value );
+
+            properties.put( propQualifiedName, propertyInstance );
+        }
+
+        return properties;
+    }
+
+    /**
+     * Compute the property value. Returns the default value if the argument {@code isUseDefaultValue} is sets to
+     * {@code true} and the property value does not exists in {@code propertyValues} argument.
+     *
+     * @param propertyBinding   The binding to use to look up default value.
+     *                          This argument must not be {@code null} if {@code isUseDefaultValue} value
+     *                          is {@code true}.
+     * @param propertyValues    The property values. The key is property name (not qualified name).
+     *                          This argument must not be {@code null}.
+     * @param isUseDefaultValue Sets to {@code true} to use default value, {@code false} otherwise.
+     * @return The computed property value.
+     * @throws IllegalStateException Thrown if debug mode is <b>on</b> and there is a mismatch between actual and
+     *                               expected value type.
+     * @since 0.1.0
+     */
+    final Object computePropertyValue(
+        PropertyBinding propertyBinding, Map<String, Object> propertyValues,
+        boolean isUseDefaultValue )
+        throws IllegalStateException
+    {
+        String propertyName = propertyBinding.getName();
+
+        Object value = null;
+        if( propertyValues.containsKey( propertyName ) )
+        {
+            // TODO: Handle mapping of compound property?
+            value = propertyValues.get( propertyName );
+        }
+        else if( isUseDefaultValue )
+        {
+            value = propertyBinding.getDefaultValue();
+        }
+
+        // Check if debug mode
+        if( value != null && serviceInfo.isDebugMode() )
+        {
+            checkPropertyValueType( value, propertyBinding );
+        }
+
+        return value;
+    }
+
+    /**
+     * Check The proprty value type against its property declaration.
+     * <p/>
+     * Note: This method only check {@code Class} value type. GenericArrayType, TypeVariable, WildcardType and
+     * ParameterizedType are not handled yet.
+     *
+     * @param aPropertyValue         The property value.
+     * @param aPropertyBinding       The property binding.
+     * @throws IllegalStateException Thrown if there is a mismatch of expected and actual value type.
+     * @since 0.1.0
+     */
+    private void checkPropertyValueType(
+        Object aPropertyValue, PropertyBinding aPropertyBinding )
+        throws IllegalStateException
+    {
+        String propertyQualifiedName = aPropertyBinding.getQualifiedName();
+        PropertyResolution propertyResolution = aPropertyBinding.getPropertyResolution();
+        PropertyModel propertyModel = propertyResolution.getPropertyModel();
+        Type type = propertyModel.getType();
+        Class<? extends Type> typeClass = type.getClass();
+        Class<?> valueClass = aPropertyValue.getClass();
+
+        if( Class.class.isAssignableFrom( typeClass ) )
+        {
+            Class typeAsClass = (Class) type;
+            if( !typeAsClass.isAssignableFrom( valueClass ) )
+            {
+                String msg = "Mismatch propervy [" + propertyQualifiedName + "] value type. Expected [" +
+                             typeAsClass.getName() + "] Actual [" + valueClass + "].";
+                throw new IllegalStateException( msg );
+            }
+        }
+    }
+
+    /**
+     * Construct a new instance of {@link Property}. Must not return {@code null}.
+     *
+     * @param aPropertyBinding The property binding. This argument must not be {@code null}.
+     * @param aPropertyValue   The property value.
+     * @return A new property instance.
+     * @since 0.1.0
+     */
+    private Property<Object> newPropertyInstance( PropertyBinding aPropertyBinding, Object aPropertyValue )
+    {
+        PropertyResolution propertyResolution = aPropertyBinding.getPropertyResolution();
+        PropertyModel propertyModel = propertyResolution.getPropertyModel();
+        Method accessor = propertyModel.getAccessor();
+        Class<?> type = accessor.getReturnType();
+        Property<Object> propertyInstance;
+        if( ImmutableProperty.class.isAssignableFrom( type ) )
+        {
+            propertyInstance = new ImmutablePropertyInstance<Object>( aPropertyBinding, aPropertyValue );
+        }
+        else
+        {
+            // TODO: needs to use a modified version of mutable property instance to detect state change
+            propertyInstance = new PropertyInstance<Object>( aPropertyBinding, aPropertyValue );
+        }
+        return propertyInstance;
+    }
+
+    // TODO: This is copied from MemoryEntityStore need to be revised
+    private Map<String, AbstractAssociation> transformToAssociations(
+        CompositeBinding compositeBinding, Map<String, Object> propertyValues )
+    {
+        Map<String, AbstractAssociation> associations = new HashMap<String, AbstractAssociation>();
+        Iterable<AssociationBinding> associationBindings = compositeBinding.getAssociationBindings();
+        for( AssociationBinding associationBinding : associationBindings )
+        {
+            AssociationResolution associationResolution = associationBinding.getAssociationResolution();
+            AssociationModel associationModel = associationResolution.getAssociationModel();
+            Method accessor = associationModel.getAccessor();
+            Class<?> type = accessor.getReturnType();
+            String assocationQualifiedName = associationBinding.getQualifiedName();
+            if( SetAssociation.class.isAssignableFrom( type ) )
+            {
+//                associations.put( assocationQualifiedName, new SetAssociationInstance())
+            }
+            else if( ManyAssociation.class.isAssignableFrom( type ) )
+            {
+
+                ListAssociationInstance<Object> listInstance =
+                    new ListAssociationInstance<Object>( new ArrayList<Object>(), associationBinding );
+                associations.put( assocationQualifiedName, listInstance );
+            }
+            else
+            {
+                AssociationInstance<Object> instance = new AssociationInstance<Object>( associationBinding, null );
+                associations.put( assocationQualifiedName, instance );
+            }
+        }
+        return associations;
+    }
+
+    /**
+     * Returns existing entity instance. Returns {@code null} if not found.
+     *
+     * @param anEntitySession   The entity session. This argument must not be {@code null}.
+     * @param anIdentity        The identity. This argument must not be {@code null}.
+     * @param aCompositeBinding The composite binding. This argument must not be {@code null}.
+     * @return The entity instance with id as {@code anIdentity}.
+     * @throws IllegalArgumentException Thrown if one or some or all arguments are {@code null}.
+     * @throws StoreException           Thrown if retrieval fail.
+     * @since 0.1.0
+     */
+    @SuppressWarnings( "unchecked" )
+    public final IBatisEntityState getEntityInstance(
+        EntitySession anEntitySession, String anIdentity, CompositeBinding aCompositeBinding )
+        throws IllegalArgumentException, StoreException
+    {
+        validateNotNull( "anEntitySession", anEntitySession );
+        validateNotNull( "anIdentity", anIdentity );
+        validateNotNull( "aCompositeBinding", aCompositeBinding );
+
+        throwIfNotActive();
+
+        Map rawData = getRawData( anIdentity, aCompositeBinding );
+        if( rawData == null )
+        {
+            return null;
+        }
+
+        return newEntityInstance( anIdentity, aCompositeBinding, rawData, false, statusLoadFromDb );
+    }
+
+    /**
+     * Complete or persists the list of entity state.
+     *
+     * @param session The entity session. This argument must not be {@code null}.
+     * @param states  The states to complete. This argument must not be {@code null}.
+     * @throws StoreException Thrown if the complete failed.
+     * @since 0.1.0
+     */
+    public final void complete( EntitySession session, List<IBatisEntityState> states )
         throws StoreException
     {
         throwIfNotActive();
 
+        for( IBatisEntityState state : states )
+        {
+            state.persist();
+        }
+    }
+
+    final boolean deleteComposite( String anIdentity, CompositeBinding aCompositeBinding )
+    {
         // TODO
+        return false;
     }
 
     /**
@@ -152,10 +430,7 @@ final class IBatisEntityStore
     public final void activate()
         throws IOException, SQLException
     {
-        Map<Class, Object> serviceInfos = serviceDescriptor.getServiceInfos();
-
         // Initialize database if required.
-        DBInitializerInfo dbInitializerInfo = (DBInitializerInfo) serviceInfos.get( DBInitializerInfo.class );
         if( dbInitializerInfo != null )
         {
             DBInitializer dbInitializer = new DBInitializer( dbInitializerInfo );
@@ -163,15 +438,12 @@ final class IBatisEntityStore
         }
 
         // Initialize client
-        IBatisEntityStoreServiceInfo entityStoreServiceInfo =
-            (IBatisEntityStoreServiceInfo) serviceInfos.get( IBatisEntityStoreServiceInfo.class );
-
-        String configURL = entityStoreServiceInfo.getSQLMapConfigURL();
+        String configURL = serviceInfo.getSQLMapConfigURL();
         InputStream configStream = new URL( configURL ).openStream();
         InputStreamReader streamReader = new InputStreamReader( configStream );
         Reader bufferedReader = new BufferedReader( streamReader );
 
-        Properties properties = entityStoreServiceInfo.getConfigProperties();
+        Properties properties = serviceInfo.getConfigProperties();
         if( properties == null )
         {
             client = buildSqlMapClient( bufferedReader );

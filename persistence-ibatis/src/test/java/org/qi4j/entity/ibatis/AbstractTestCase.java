@@ -27,23 +27,25 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
-import junit.framework.TestCase;
 import org.apache.derby.drda.NetworkServerControl;
+import org.qi4j.bootstrap.CompositeDeclaration;
+import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entity.ibatis.dbInitializer.DBInitializerInfo;
+import org.qi4j.test.AbstractQi4jTest;
 
 /**
  * @author edward.yakop@gmail.com
  * @since 0.1.0
  */
-public abstract class AbstractTestCase extends TestCase
+public abstract class AbstractTestCase extends AbstractQi4jTest
 {
-    protected static final String JDBC_URL = "jdbc:derby://localhost/testdb;create=true";
-    protected static final String DERBY_DRIVER_CLASS_NAME = "org.apache.derby.jdbc.ClientDriver";
-    protected static final String DERBY_USER = "sa";
-    protected static final String DERBY_PASSWORD = "derbypass";
+    private static final String JDBC_URL = "jdbc:derby://localhost/testdb;create=true";
+    private static final String DERBY_DRIVER_CLASS_NAME = "org.apache.derby.jdbc.ClientDriver";
+    private static final String DERBY_USER = "sa";
+    private static final String DERBY_PASSWORD = "derbypass";
 
-    protected static final String SCHEMA_URL = "testDbSchema.sql";
-    protected static final String DATA_URL = "testDbData.sql";
+    private static final String SCHEMA_URL = "testDbSchema.sql";
+    private static final String DATA_URL = "testDbData.sql";
 
     private NetworkServerControl nsc;
 
@@ -146,7 +148,7 @@ public abstract class AbstractTestCase extends TestCase
         Connection connection = null;
         try
         {
-            connection = getConnection( JDBC_URL, DERBY_USER, DERBY_PASSWORD );
+            connection = getJDBCConnection();
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery( "SELECT COUNT(*) FROM PERSON" );
             resultSet.next();
@@ -165,6 +167,19 @@ public abstract class AbstractTestCase extends TestCase
                 connection.close();
             }
         }
+    }
+
+    /**
+     * Returns the jdbc connection to test db. Must not return {@code null}.
+     *
+     * @return The jdbc connection to test db.
+     * @throws SQLException Thrown if initializing connection failed.
+     * @since 0.1.0
+     */
+    final Connection getJDBCConnection()
+        throws SQLException
+    {
+        return getConnection( JDBC_URL, DERBY_USER, DERBY_PASSWORD );
     }
 
     /**
@@ -244,5 +259,15 @@ public abstract class AbstractTestCase extends TestCase
         }
 
         super.tearDown();
+    }
+
+    /**
+     * Initialize qi4j test application.
+     *
+     * @param aModule The single module.
+     * @since 0.1.0
+     */
+    public void configure( ModuleAssembly aModule )
+    {
     }
 }
