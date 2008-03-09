@@ -1,5 +1,6 @@
 /*
  * Copyright 2008 Niclas Hedhman.
+ * Copyright 2008 Edward Yakop.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -17,47 +18,102 @@
  */
 package org.qi4j.spi.property;
 
+import static org.qi4j.composite.NullArgumentException.validateNotNull;
 import org.qi4j.property.Property;
 import org.qi4j.property.PropertyInfo;
 import org.qi4j.property.PropertyVetoException;
 
+/**
+ * {@code ComputedPropertyInstance} is the base implementation of {@link Property}.
+ *
+ * @author Niclas Hedhman
+ * @since 0.1.0
+ */
 public abstract class ComputedPropertyInstance<T>
     implements Property<T>
 {
     protected PropertyInfo propertyInfo;
 
-    public ComputedPropertyInstance( PropertyInfo propertyInfo )
+    /**
+     * Construct an instance of {@code ComputedPropertyInstance}.
+     *
+     * @param aPropertyInfo The property info. This argument must not be {@code null}.
+     * @throws IllegalArgumentException Thrown if the specified {@code aPropertyInfo} argument is {@code null}.
+     * @since 0.1.0
+     */
+    protected ComputedPropertyInstance( PropertyInfo aPropertyInfo )
+        throws IllegalArgumentException
     {
-        this.propertyInfo = propertyInfo;
+        validateNotNull( "aPropertyInfo", aPropertyInfo );
+        propertyInfo = aPropertyInfo;
     }
 
+    /**
+     * Returns {@code null} by default.
+     *
+     * @return Returns null by default.
+     * @since 0.1.0
+     */
     public T get()
     {
         return null;
     }
 
-    public void set( T newValue )
+    /**
+     * Throws {@link PropertyVetoException} exception.
+     *
+     * @param anIgnoredValue This value is ignored.
+     * @throws PropertyVetoException Thrown by default.
+     * @since 0.1.0
+     */
+    public void set( T anIgnoredValue )
         throws PropertyVetoException
     {
-        throw new PropertyVetoException( "Property '" + getQualifiedName() + "' is read-only" );
+        String qualifiedName = getQualifiedName();
+        throw new PropertyVetoException( "Property [" + qualifiedName + "] is read-only" );
     }
 
-    public <T> T getPropertyInfo( Class<T> infoType )
+    /**
+     * Returns the property info given {@code anInfoType} argument.
+     *
+     * @param anInfoType The info type.
+     * @return Property info given {@code anInfoType} argument.
+     * @since 0.1.0
+     */
+    public final <T> T getPropertyInfo( Class<T> anInfoType )
     {
-        return propertyInfo.getPropertyInfo( infoType );
+        return propertyInfo.getPropertyInfo( anInfoType );
     }
 
-    public String getName()
+    /**
+     * Returns the property name. Must not return {@code null}.
+     *
+     * @return The property name.
+     * @since 0.1.0
+     */
+    public final String getName()
     {
         return propertyInfo.getName();
     }
 
-    public String getQualifiedName()
+    /**
+     * Returns the qualified name of this {@code Property}. Must not return {@code null}.
+     *
+     * @return The qualified name of this {@code Property}.
+     * @since 0.1.0
+     */
+    public final String getQualifiedName()
     {
         return propertyInfo.getQualifiedName();
     }
 
-
+    /**
+     * Perform equals with {@code o} argument.
+     *
+     * @param o The other object to compare.
+     * @return Returns a {@code boolean} indicator whether this object is equals the other.
+     * @since 0.1.0
+     */
     public boolean equals( Object o )
     {
         if( this == o )
@@ -71,14 +127,15 @@ public abstract class ComputedPropertyInstance<T>
 
         ComputedPropertyInstance that = (ComputedPropertyInstance) o;
 
-        if( propertyInfo != null ? !propertyInfo.equals( that.propertyInfo ) : that.propertyInfo != null )
-        {
-            return false;
-        }
-
-        return true;
+        return propertyInfo.equals( that.propertyInfo );
     }
 
+    /**
+     * Calculate hash code.
+     *
+     * @return the hashcode of this {@code ComputedPropertyInstance} instance.
+     * @since 0.1.0
+     */
     public int hashCode()
     {
         return ( propertyInfo != null ? propertyInfo.hashCode() : 0 );

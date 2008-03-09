@@ -21,6 +21,7 @@ import java.util.Map;
 import org.qi4j.spi.service.ServiceInstanceProvider;
 import org.qi4j.spi.structure.ServiceDescriptor;
 import org.qi4j.spi.structure.Visibility;
+import static org.qi4j.spi.structure.Visibility.module;
 
 /**
  * TODO
@@ -29,13 +30,15 @@ public final class ServiceDeclaration
 {
     private Class<? extends ServiceInstanceProvider> serviceProvider;
     private Iterable<Class> serviceTypes;
-    private Map<Class, Object> serviceInfos = new HashMap<Class, Object>();
-    private Visibility visibility = Visibility.module;
+    private Map<Class, Object> serviceInfos;
+    private Visibility visibility;
 
     public ServiceDeclaration( Class<? extends ServiceInstanceProvider> serviceProvider, Iterable<Class> serviceTypes )
     {
         this.serviceProvider = serviceProvider;
         this.serviceTypes = serviceTypes;
+        serviceInfos = new HashMap<Class, Object>();
+        visibility = module;
     }
 
     public ServiceDeclaration visibleIn( Visibility visibility )
@@ -55,8 +58,8 @@ public final class ServiceDeclaration
         List<ServiceDescriptor> serviceDescriptors = new ArrayList<ServiceDescriptor>();
         for( Class serviceType : serviceTypes )
         {
-            ServiceDescriptor serviceDescriptor = new ServiceDescriptor( serviceType, serviceProvider, visibility, serviceInfos );
-            serviceDescriptors.add( serviceDescriptor );
+            ServiceDescriptor descriptor = new ServiceDescriptor( serviceType, serviceProvider, visibility, serviceInfos );
+            serviceDescriptors.add( descriptor );
         }
         return serviceDescriptors;
     }

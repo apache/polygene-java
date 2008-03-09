@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2008, Edward Yakop. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -11,58 +12,65 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.spi.property;
 
 import org.qi4j.property.PropertyInfo;
-import org.qi4j.property.PropertyVetoException;
-import org.qi4j.property.Property;
 
 /**
- * TODO
+ * {@code PropertyInstance} represents a mutable property.
+ *
+ * @author Rickard Öberg
+ * @since 0.1.0
  */
 public class PropertyInstance<T> extends ComputedPropertyInstance<T>
 {
     protected T value;
 
-    public PropertyInstance( PropertyInfo propertyInfo, T value )
+    /**
+     * Construct an instance of {@code PropertyInstance} with the specified arguments.
+     *
+     * @param aPropertyInfo The property info. This argument must not be {@code null}.
+     * @param aValue        The property value.
+     * @throws IllegalArgumentException Thrown if the specified {@code aPropertyInfo} is {@code null}.
+     * @since 0.1.0
+     */
+    public PropertyInstance( PropertyInfo aPropertyInfo, T aValue )
+        throws IllegalArgumentException
     {
-        super( propertyInfo );
-        this.value = value;
+        super( aPropertyInfo );
+        value = aValue;
     }
 
+    /**
+     * Returns this property value.
+     *
+     * @return This property value.
+     * @since 0.1.0
+     */
     public T get()
     {
         return value;
     }
 
-    public void set( T newValue )
-        throws PropertyVetoException
+    /**
+     * Sets this property value.
+     *
+     * @param aNewValue The new value.
+     */
+    public void set( T aNewValue )
     {
-        value = newValue;
+        value = aNewValue;
     }
 
-    @Override public String toString()
+    /**
+     * Returns the value as string.
+     *
+     * @return The value as string.
+     * @since 0.1.0
+     */
+    @Override
+    public String toString()
     {
-        if( value == null )
-        {
-            return "";
-        }
-        else
-        {
-            return value.toString();
-        }
-    }
-
-    @Override public int hashCode()
-    {
-        if( value == null )
-        {
-            return 0;
-        }
-        else
-        {
-            return value.hashCode();
-        }
+        return value == null ? "" : value.toString();
     }
 }
