@@ -189,6 +189,20 @@ final class IBatisEntityStore
         return newEntityInstance( anIdentity, aCompositeBinding, propertyValues, true, statusNew );
     }
 
+    /**
+     * Actual implementation of {@code newEntityInstance}. Must not return {@code null}.
+     *
+     * @param anIdentity        anIdentity.
+     * @param aCompositeBinding The composite binding. This argument must not be {@code null}.
+     * @param fieldValues       The field values (this applies for both property and associations.
+     *                          This argument must not be {@code null}.
+     * @param isUseDefaultValue Sets to {@code true} to lookup default value when the initial value is not located in
+     *                          {@code fieldValues} argument, {@code false} to disable this feature.
+     * @param aStatus           The initial status for the created state.
+     * @return A new entity instance.
+     * @throws StoreException Thrown if creating new instance failed.
+     * @since 0.1.0
+     */
     private IBatisEntityState newEntityInstance(
         String anIdentity, CompositeBinding aCompositeBinding,
         Map<String, Object> fieldValues, boolean isUseDefaultValue, STATUS aStatus )
@@ -210,7 +224,7 @@ final class IBatisEntityStore
      * @return The map of properties.
      * @since 0.1.0
      */
-    private Map<String, Property> transformToProperties(
+    final Map<String, Property> transformToProperties(
         CompositeBinding aCompositeBinding, Map<String, Object> propertyValues, boolean useDefaultValue )
     {
         Map<String, Property> properties = new HashMap<String, Property>();

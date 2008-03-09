@@ -118,7 +118,7 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
     }
 
     /**
-     * Test {@link IBatisEntityStore#exists(String, org.qi4j.spi.composite.CompositeBinding)}.
+     * Test {@link IBatisEntityStore#exists(String, CompositeBinding)}.
      *
      * @throws SQLException Thrown if failed.
      */
@@ -340,17 +340,144 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
         assertEquals( expectedValue2, firstNameProperty.get() );
     }
 
+    /**
+     * Tests {@link IBatisEntityStore#transformToProperties(CompositeBinding, Map, boolean)}.
+     *
+     * @since 0.1.0
+     */
+    public final void testTransformToProperties()
+    {
+        ServiceDescriptor descriptor = newValidServiceDescriptor();
+        IBatisEntityStore entityStore = new IBatisEntityStore( descriptor );
+
+        CompositeBuilderFactory builderFactory = moduleInstance.getCompositeBuilderFactory();
+        PersonComposite composite = builderFactory.newComposite( PersonComposite.class );
+        CompositeBinding personBinding = runtime.getCompositeBinding( composite );
+
+        String[] propertyQualifiedNames = new String[]{
+            "org.qi4j.entity.Identity:identity",
+            "org.qi4j.entity.ibatis.HasFirstName:firstName",
+            "org.qi4j.entity.ibatis.HasLastName:lastName",
+        };
+
+        // *******************************************************
+        // Test with empty property values
+        // *******************************************************
+        HashMap<String, Object> propertyValues = new HashMap<String, Object>();
+
+        // ----------------------------------
+        // Test with default value turned off
+        // ----------------------------------
+        Map<String, Property> properties1 = entityStore.transformToProperties( personBinding, propertyValues, false );
+
+        String[] expectedValues1 = new String[]{
+            null, null, null
+        };
+        testPropertiesMap( properties1, propertyQualifiedNames, expectedValues1 );
+
+        // ---------------------------------
+        // Test with default value turned on
+        // ---------------------------------
+        Map<String, Property> properties2 = entityStore.transformToProperties( personBinding, propertyValues, true );
+        String[] expectedValues2 = new String[]{
+            null, DEFAULT_FIRST_NAME, DEFAULT_LAST_NAME
+        };
+        testPropertiesMap( properties2, propertyQualifiedNames, expectedValues2 );
+
+        // *********************************
+        // Test with initial property values
+        // *********************************
+
+        // --------------------------------------------------------------
+        // Test with partial property values and default value turned off
+        // --------------------------------------------------------------
+        String identityExpectedValue3 = "1";
+        String firstNameExpected3 = "Niclas";
+        propertyValues.put( "identity", identityExpectedValue3 );
+        propertyValues.put( "firstName", firstNameExpected3 );
+
+        Map<String, Property> properties3 = entityStore.transformToProperties( personBinding, propertyValues, false );
+        String[] expectedValues3 = new String[]{
+            identityExpectedValue3, firstNameExpected3, null
+        };
+        testPropertiesMap( properties3, propertyQualifiedNames, expectedValues3 );
+
+        // -------------------------------------------------------------
+        // Test with partial property values and default value turned on
+        // -------------------------------------------------------------
+        Map<String, Property> properties4 = entityStore.transformToProperties( personBinding, propertyValues, true );
+        String[] expectedValues4 = new String[]{
+            identityExpectedValue3, firstNameExpected3, DEFAULT_LAST_NAME
+        };
+        testPropertiesMap( properties4, propertyQualifiedNames, expectedValues4 );
+
+        // -----------------------------------------------------------
+        // Test with full property values and default value turned off
+        // -----------------------------------------------------------
+        String lastNameExpected5 = "Hedhman";
+        propertyValues.put( "lastName", lastNameExpected5 );
+        Map<String, Property> properties5 = entityStore.transformToProperties( personBinding, propertyValues, false );
+        String[] expectedValues5 = new String[]{
+            identityExpectedValue3, firstNameExpected3, lastNameExpected5
+        };
+        testPropertiesMap( properties5, propertyQualifiedNames, expectedValues5 );
+
+        // -----------------------------------------------------------
+        // Test with full property values and default value turned on
+        // -----------------------------------------------------------
+        Map<String, Property> properties6 = entityStore.transformToProperties( personBinding, propertyValues, false );
+        testPropertiesMap( properties6, propertyQualifiedNames, expectedValues5 );
+    }
+
+    /**
+     * Helper method to test properties map.
+     *
+     * @param aPropertiesMap         The properties map. This argument must not be {@code null}.
+     * @param propertyQualifiedNames The expected property qualified names. This argument must not be {@code null}.
+     * @param expectedValues         The expected values. This argument must not be {@code null}.
+     * @since 0.1.0
+     */
+    private static void testPropertiesMap(
+        Map<String, Property> aPropertiesMap, String[] propertyQualifiedNames, String[] expectedValues )
+    {
+        int numberProperties = propertyQualifiedNames.length;
+
+        // **********************************
+        // Test number of expected properties
+        // **********************************
+        int numberOfActualProperties = aPropertiesMap.size();
+        assertEquals( "Number of properties must be [" + numberProperties + "]",
+                      numberProperties, numberOfActualProperties );
+
+        // *************************
+        // Test each property values
+        // *************************
+        for( int i = 0; i < propertyQualifiedNames.length; i++ )
+        {
+            String propertyQualifiedName = propertyQualifiedNames[ i ];
+            Property property = aPropertiesMap.get( propertyQualifiedName );
+            assertNotNull( property );
+            Object expectedValue = expectedValues[ i ];
+
+            Object actualValue = property.get();
+            assertEquals( "Property [" + propertyQualifiedName + "] must have [" + expectedValue + "] value.",
+                          expectedValue, actualValue );
+        }
+    }
+
     @Override
     public final void configure( ModuleAssembly aModule )
     {
         String testName = getName();
         if( "testComputePropertyValue".equals( testName ) ||
             "testExists".equals( testName ) ||
-            "testNewPropertyInstance".equals( testName ) )
+            "testNewPropertyInstance".equals( testName ) ||
+            "testTransformToProperties".equals( testName ) )
         {
             aModule.addComposites( PersonComposite.class );
 
-            if( "testComputePropertyValue".equals( testName ) )
+            if( "testComputePropertyValue".equals( testName ) ||
+                "testTransformToProperties".equals( testName ) )
             {
                 PropertyDeclaration hasFirstNameDeclaration = aModule.addProperty();
                 Property<String> firstName = hasFirstNameDeclaration.withAccessor( PersonComposite.class ).firstName();

@@ -122,7 +122,9 @@ public class IBatisMutablePropertyInstanceTest extends TestCase
         assertEquals( "Must return [1].", expectedValue1, property.get() );
         assertFalse( "Setting the same value as initial value, must not mark property dirty.", property.isDirty() );
 
+        // ------------------------------------------
         // Test set with the different  initial value
+        // ------------------------------------------
         property.set( null );
         assertEquals( "Must return [null].", null, property.get() );
         assertTrue( "Setting different value as initial value, must mark property dirty.", property.isDirty() );
