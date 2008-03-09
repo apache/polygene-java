@@ -14,20 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.entity.ibatis;
+package org.qi4j.entity.ibatis.internal.property;
 
 import junit.framework.TestCase;
 import org.jmock.Mockery;
-import static org.qi4j.entity.ibatis.IBatisMutablePropertyInstance.isNotEquals;
+import static org.qi4j.entity.ibatis.internal.property.MutablePropertyInstance.isNotEquals;
 import org.qi4j.property.PropertyInfo;
 
 /**
- * {@code IBatisMutablePropertyInstanceTest} tests {@code IBatisMutablePropertyInstance}.
+ * {@code MutablePropertyInstanceTest} tests {@code MutablePropertyInstance}.
  *
  * @author edward.yakop@gmail.com
  * @since 0.1.0
  */
-public class IBatisMutablePropertyInstanceTest extends TestCase
+public class MutablePropertyInstanceTest extends TestCase
 {
     private Mockery context;
 
@@ -44,7 +44,7 @@ public class IBatisMutablePropertyInstanceTest extends TestCase
         String failMsg = "PropertyInfo is [null]. Must throw an IllegalArgumentException.";
         try
         {
-            new IBatisMutablePropertyInstance<Object>( null, null );
+            new MutablePropertyInstance<Object>( null, null );
             fail( failMsg );
         }
         catch( IllegalArgumentException e )
@@ -62,7 +62,7 @@ public class IBatisMutablePropertyInstanceTest extends TestCase
         PropertyInfo propertyInfo = context.mock( PropertyInfo.class );
         try
         {
-            new IBatisMutablePropertyInstance<Object>( propertyInfo, null );
+            new MutablePropertyInstance<Object>( propertyInfo, null );
         }
         catch( Exception e )
         {
@@ -78,8 +78,8 @@ public class IBatisMutablePropertyInstanceTest extends TestCase
     public final void testDirtiness()
     {
         PropertyInfo propertyInfo = context.mock( PropertyInfo.class );
-        IBatisMutablePropertyInstance<Object> property =
-            new IBatisMutablePropertyInstance<Object>( propertyInfo, null );
+        MutablePropertyInstance<Object> property =
+            new MutablePropertyInstance<Object>( propertyInfo, null );
 
         // ******************
         // Test initial value

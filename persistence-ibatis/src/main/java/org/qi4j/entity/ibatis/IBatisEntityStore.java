@@ -38,10 +38,15 @@ import org.qi4j.association.SetAssociation;
 import org.qi4j.composite.Composite;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
 import org.qi4j.entity.EntitySession;
-import static org.qi4j.entity.ibatis.IBatisEntityStateStatus.statusLoadFromDb;
-import static org.qi4j.entity.ibatis.IBatisEntityStateStatus.statusNew;
 import org.qi4j.entity.ibatis.dbInitializer.DBInitializer;
 import org.qi4j.entity.ibatis.dbInitializer.DBInitializerInfo;
+import org.qi4j.entity.ibatis.internal.IBatisEntityState;
+import org.qi4j.entity.ibatis.internal.IBatisEntityStateDao;
+import org.qi4j.entity.ibatis.internal.IBatisEntityStateStatus;
+import static org.qi4j.entity.ibatis.internal.IBatisEntityStateStatus.statusLoadFromDb;
+import static org.qi4j.entity.ibatis.internal.IBatisEntityStateStatus.statusNew;
+import org.qi4j.entity.ibatis.internal.entityState.EntityState;
+import org.qi4j.entity.ibatis.internal.property.MutablePropertyInstance;
 import org.qi4j.property.ImmutableProperty;
 import org.qi4j.property.Property;
 import org.qi4j.runtime.association.AssociationInstance;
@@ -177,7 +182,7 @@ final class IBatisEntityStore
      * @throws StoreException           Thrown if creational failed.
      * @since 0.1.0
      */
-    public final IBatisEntityState newEntityInstance(
+    public final EntityState newEntityInstance(
         EntitySession aSession, String anIdentity, CompositeBinding aCompositeBinding,
         Map<String, Object> propertyValues )
         throws IllegalArgumentException, StoreException
@@ -204,7 +209,7 @@ final class IBatisEntityStore
      * @throws StoreException Thrown if creating new instance failed.
      * @since 0.1.0
      */
-    private IBatisEntityState newEntityInstance(
+    private EntityState newEntityInstance(
         String anIdentity, CompositeBinding aCompositeBinding,
         Map<String, Object> fieldValues, boolean isUseDefaultValue, IBatisEntityStateStatus aStatus )
         throws StoreException
@@ -213,7 +218,7 @@ final class IBatisEntityStore
 
         Map<String, Property> properties = transformToProperties( aCompositeBinding, fieldValues, isUseDefaultValue );
         Map<String, AbstractAssociation> associations = transformToAssociations( aCompositeBinding, fieldValues );
-        return new IBatisEntityState( anIdentity, aCompositeBinding, properties, associations, aStatus, dao );
+        return new EntityState( anIdentity, aCompositeBinding, properties, associations, aStatus, dao );
     }
 
     /**
@@ -339,7 +344,7 @@ final class IBatisEntityStore
         }
         else
         {
-            return new IBatisMutablePropertyInstance<Object>( aPropertyBinding, aPropertyValue );
+            return new MutablePropertyInstance<Object>( aPropertyBinding, aPropertyValue );
         }
     }
 
@@ -388,7 +393,7 @@ final class IBatisEntityStore
      * @since 0.1.0
      */
     @SuppressWarnings( "unchecked" )
-    public final IBatisEntityState getEntityInstance(
+    public final EntityState getEntityInstance(
         EntitySession anEntitySession, String anIdentity, CompositeBinding aCompositeBinding )
         throws IllegalArgumentException, StoreException
     {

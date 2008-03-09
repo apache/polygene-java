@@ -24,6 +24,7 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.PropertyDeclaration;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.entity.ibatis.dbInitializer.DBInitializerInfo;
+import org.qi4j.entity.ibatis.internal.property.MutablePropertyInstance;
 import org.qi4j.property.Property;
 import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.entity.StoreException;
@@ -336,7 +337,7 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
         String expectedValue2 = "Edward";
         Property<Object> firstNameProperty = entityStore.newPropertyInstance( firstNameBinding, expectedValue2 );
         assertNotNull( firstNameProperty );
-        assertTrue( IBatisMutablePropertyInstance.class.equals( firstNameProperty.getClass() ) );
+        assertTrue( MutablePropertyInstance.class.equals( firstNameProperty.getClass() ) );
         assertEquals( expectedValue2, firstNameProperty.get() );
     }
 

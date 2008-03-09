@@ -14,18 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.entity.ibatis;
+package org.qi4j.entity.ibatis.internal.property;
 
+import org.qi4j.entity.ibatis.internal.IBatisMutableField;
 import org.qi4j.property.PropertyInfo;
 import org.qi4j.spi.property.PropertyInstance;
 
 /**
- * {@code IBatisMutablePropertyInstance} represents a mutable property.
+ * {@code MutablePropertyInstance} represents a mutable property.
  *
  * @author edward.yakop@gmail.com
  * @since 0.1.0
  */
-final class IBatisMutablePropertyInstance<T> extends PropertyInstance<T>
+public final class MutablePropertyInstance<T> extends PropertyInstance<T>
+    implements IBatisMutableField<T>
 {
     private boolean isDirty;
 
@@ -37,7 +39,7 @@ final class IBatisMutablePropertyInstance<T> extends PropertyInstance<T>
      * @throws IllegalArgumentException Thrown if the specified {@code aPropertyInfo} argument is {@code null}.
      * @since 0.1.0
      */
-    IBatisMutablePropertyInstance( PropertyInfo aPropertyInfo, T anInitialValue )
+    public MutablePropertyInstance( PropertyInfo aPropertyInfo, T anInitialValue )
         throws IllegalArgumentException
     {
         super( aPropertyInfo, anInitialValue );
@@ -78,7 +80,7 @@ final class IBatisMutablePropertyInstance<T> extends PropertyInstance<T>
      * @return A {@code boolean} indicator whether this {@code IBatisMutablePropertyInstance} instance is dirty.
      * @since 0.1.0
      */
-    final boolean isDirty()
+    public final boolean isDirty()
     {
         return isDirty;
     }
@@ -88,7 +90,7 @@ final class IBatisMutablePropertyInstance<T> extends PropertyInstance<T>
      *
      * @since 0.1.0
      */
-    final void markAsClean()
+    public final void markAsClean()
     {
         isDirty = false;
     }

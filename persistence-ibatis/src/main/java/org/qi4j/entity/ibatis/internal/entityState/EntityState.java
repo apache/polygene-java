@@ -14,29 +14,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.entity.ibatis;
+package org.qi4j.entity.ibatis.internal.entityState;
 
 import java.util.Map;
 import org.qi4j.association.AbstractAssociation;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
-import static org.qi4j.entity.ibatis.IBatisEntityStateStatus.statusLoadToDeleted;
-import static org.qi4j.entity.ibatis.IBatisEntityStateStatus.statusNew;
-import static org.qi4j.entity.ibatis.IBatisEntityStateStatus.statusNewToDeleted;
+import org.qi4j.entity.ibatis.internal.IBatisEntityState;
+import org.qi4j.entity.ibatis.internal.IBatisEntityStateDao;
+import org.qi4j.entity.ibatis.internal.IBatisEntityStateStatus;
 import org.qi4j.property.Property;
 import org.qi4j.spi.composite.CompositeBinding;
-import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.StoreException;
 
 /**
- * {@code IBatisEntityState} represents {@code IBatis} version of {@link EntityState}.
+ * {@code IBatisEntityState} represents {@code IBatis} version of {@link org.qi4j.spi.entity.EntityState}.
  *
  * @author edward.yakop@gmail.com
  * @since 0.1.0
  */
-final class IBatisEntityState
-    implements EntityState
+public final class EntityState
+    implements IBatisEntityState
 {
-
     private final String identity;
 
     private final CompositeBinding compositeBinding;
@@ -46,7 +44,7 @@ final class IBatisEntityState
     private IBatisEntityStateStatus status;
 
     /**
-     * Construct an instance of {@code IBatisEntityState}.
+     * Construct an instance of {@code EntityState}.
      *
      * @param anIdentity        The identity. This argument must not be {@code null}.
      * @param aCompositeBinding The composite binding. This argument must not be {@code null}.
@@ -57,7 +55,7 @@ final class IBatisEntityState
      * @throws IllegalArgumentException Thrown if one or some or all arguments are {@code null}.
      * @since 0.1.0
      */
-    IBatisEntityState(
+    public EntityState(
         String anIdentity, CompositeBinding aCompositeBinding,
         Map<String, Property> propertiez,
         Map<String, AbstractAssociation> associationz,
@@ -108,7 +106,7 @@ final class IBatisEntityState
     public final void refresh()
     {
         // Check whether refresh is required at all
-        if( status == statusNew || status == statusNewToDeleted || status == statusLoadToDeleted )
+        if( status == IBatisEntityStateStatus.statusNew || status == IBatisEntityStateStatus.statusNewToDeleted || status == IBatisEntityStateStatus.statusLoadToDeleted )
         {
             return;
         }
@@ -124,7 +122,7 @@ final class IBatisEntityState
         case statusNew:
         case statusNewToDeleted:
         case statusLoadToDeleted:
-            status = statusNewToDeleted;
+            status = IBatisEntityStateStatus.statusNewToDeleted;
             return true;
 
         case statusLoadFromDb:
@@ -134,7 +132,12 @@ final class IBatisEntityState
         return false;
     }
 
-    final void persist()
+    /**
+     * Persist this entity state.
+     *
+     * @since 0.1.0
+     */
+    public final void persist()
     {
         // TODO
     }

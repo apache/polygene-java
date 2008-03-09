@@ -14,19 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.entity.ibatis;
+package org.qi4j.entity.ibatis.internal;
+
+import org.qi4j.spi.entity.EntityState;
 
 /**
- * Created by IntelliJ IDEA.
-* User: efy
-* Date: Mar 9, 2008
-* Time: 5:55:21 PM
-* To change this template use File | Settings | File Templates.
-*/
-public enum IBatisEntityStateStatus
+ * TODO
+ */
+public interface IBatisEntityState extends EntityState
 {
-    statusNew,
-    statusLoadFromDb,
-    statusNewToDeleted,
-    statusLoadToDeleted,;
+    /**
+     * Persist this entity state.
+     *
+     * @since 0.1.0
+     */
+    void persist();
 }

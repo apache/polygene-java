@@ -1,4 +1,4 @@
-package org.qi4j.entity.ibatis;
+package org.qi4j.entity.ibatis.internal;
 
 import org.qi4j.spi.composite.CompositeBinding;
 
@@ -7,7 +7,7 @@ import org.qi4j.spi.composite.CompositeBinding;
  *
  * @author edward.yakop@gmail.com
  */
-interface IBatisEntityStateDao
+public interface IBatisEntityStateDao
 {
     /**
      * TODO

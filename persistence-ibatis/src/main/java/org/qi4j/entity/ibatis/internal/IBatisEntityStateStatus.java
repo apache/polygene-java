@@ -14,21 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.entity.ibatis;
-
-import org.qi4j.composite.Mixins;
-import org.qi4j.entity.ibatis.internal.entityState.EntityState;
-import org.qi4j.service.ServiceComposite;
-import org.qi4j.spi.entity.EntityStore;
+package org.qi4j.entity.ibatis.internal;
 
 /**
- * {@code IBatisEntityStoreComposite} provides integration between qi4j and ibatis.
+ * {@code IBatisEntityStateStatus} represent status of {@code IBatisEntityState}.
  *
  * @author edward.yakop@gmail.com
  * @since 0.1.0
  */
-@Mixins( IBatisEntityStore.class )
-public interface IBatisEntityStoreComposite
-    extends EntityStore<EntityState>, ServiceComposite
+public enum IBatisEntityStateStatus
 {
+    statusNew,
+    statusLoadFromDb,
+    statusNewToDeleted,
+    statusLoadToDeleted,;
 }
