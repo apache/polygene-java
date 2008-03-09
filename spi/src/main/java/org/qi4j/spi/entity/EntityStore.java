@@ -24,22 +24,22 @@ import org.qi4j.spi.property.AssociationBinding;
 import org.qi4j.spi.property.PropertyBinding;
 import org.qi4j.spi.composite.CompositeBinding;
 
-public interface EntityStore
+public interface EntityStore<T extends EntityState>
 {
     boolean exists( String identity, CompositeBinding compositeBinding )
         throws StoreException;
 
-    EntityState newEntityInstance( EntitySession session,
+    T newEntityInstance( EntitySession session,
                                    String identity,
                                    CompositeBinding compositeBinding,
                                    Map<String, Object> propertyValues )
         throws StoreException;
 
-    EntityState getEntityInstance( EntitySession session,
+    T getEntityInstance( EntitySession session,
                                    String identity,
                                    CompositeBinding compositeBinding )
         throws StoreException;
 
-    void complete( EntitySession session, List<EntityState> states )
+    void complete( EntitySession session, List<T> states )
         throws StoreException;
 }
