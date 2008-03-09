@@ -15,7 +15,7 @@ package org.qi4j.library.general.model.associations;
 import java.io.Serializable;
 import org.qi4j.association.Association;
 import org.qi4j.composite.Mixins;
-import org.qi4j.composite.scope.PropertyField;
+import org.qi4j.composite.scope.AssociationField;
 import org.qi4j.library.general.model.City;
 
 /**
@@ -37,7 +37,7 @@ public interface HasCity
     {
         private static final long serialVersionUID = 1L;
 
-        @PropertyField
+        @AssociationField
         private Association<City> city;
 
         public final Association<City> city()
