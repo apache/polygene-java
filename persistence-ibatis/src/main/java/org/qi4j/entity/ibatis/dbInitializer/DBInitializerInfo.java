@@ -16,6 +16,7 @@
  */
 package org.qi4j.entity.ibatis.dbInitializer;
 
+import java.io.Serializable;
 import java.util.Properties;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
 
@@ -26,7 +27,10 @@ import static org.qi4j.composite.NullArgumentException.validateNotNull;
  * @since 0.1.0
  */
 public final class DBInitializerInfo
+    implements Serializable
 {
+    private static final long serialVersionUID = 1L;
+
     private final String dbURL;
     private final Properties connectionProperties;
     private final String schemaURL;

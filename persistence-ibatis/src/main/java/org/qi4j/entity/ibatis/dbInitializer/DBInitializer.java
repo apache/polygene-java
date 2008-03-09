@@ -20,6 +20,7 @@ import com.ibatis.common.jdbc.ScriptRunner;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -34,7 +35,10 @@ import static org.qi4j.composite.NullArgumentException.validateNotNull;
  * @since 0.1.0
  */
 public final class DBInitializer
+    implements Serializable
 {
+    private static final long serialVersionUID = 1L;
+
     private final DBInitializerInfo dBInitializerInfo;
 
     /**

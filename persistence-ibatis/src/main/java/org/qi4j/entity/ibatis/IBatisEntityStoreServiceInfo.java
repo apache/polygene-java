@@ -16,6 +16,7 @@
  */
 package org.qi4j.entity.ibatis;
 
+import java.io.Serializable;
 import java.util.Properties;
 import static org.qi4j.composite.NullArgumentException.validateNotEmpty;
 
@@ -26,7 +27,10 @@ import static org.qi4j.composite.NullArgumentException.validateNotEmpty;
  * @since 0.1.0
  */
 public final class IBatisEntityStoreServiceInfo
+    implements Serializable
 {
+    private static final long serialVersionUID = 1L;
+
     private final String sqlMapConfigURL;
     private final Properties configProperties;
     private boolean isDebugMode;
