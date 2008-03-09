@@ -19,9 +19,9 @@ package org.qi4j.entity.ibatis;
 import java.util.Map;
 import org.qi4j.association.AbstractAssociation;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
-import static org.qi4j.entity.ibatis.IBatisEntityState.STATUS.statusLoadToDeleted;
-import static org.qi4j.entity.ibatis.IBatisEntityState.STATUS.statusNew;
-import static org.qi4j.entity.ibatis.IBatisEntityState.STATUS.statusNewToDeleted;
+import static org.qi4j.entity.ibatis.IBatisEntityStateStatus.statusLoadToDeleted;
+import static org.qi4j.entity.ibatis.IBatisEntityStateStatus.statusNew;
+import static org.qi4j.entity.ibatis.IBatisEntityStateStatus.statusNewToDeleted;
 import org.qi4j.property.Property;
 import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.entity.EntityState;
@@ -36,21 +36,14 @@ import org.qi4j.spi.entity.StoreException;
 final class IBatisEntityState
     implements EntityState
 {
-    public static enum STATUS
-    {
-        statusNew,
-        statusLoadFromDb,
-        statusNewToDeleted,
-        statusLoadToDeleted,
-    }
 
     private final String identity;
 
     private final CompositeBinding compositeBinding;
     private final Map<String, Property> properties;
     private final Map<String, AbstractAssociation> associations;
-    private final IBatisEntityStore entityStore;
-    private STATUS status;
+    private final IBatisEntityStateDao dao;
+    private IBatisEntityStateStatus status;
 
     /**
      * Construct an instance of {@code IBatisEntityState}.
@@ -60,7 +53,7 @@ final class IBatisEntityState
      * @param propertiez        The entity properties. This argument must not be {@code null}.
      * @param associationz      The entity associations. This argument must not be {@code null}.
      * @param aStatus           The initial status of this state. This argument must not be {@code null}.
-     * @param anEntitySTore     The entity store. This argument must not be {@code null}.
+     * @param aDao              The entity store. This argument must not be {@code null}.
      * @throws IllegalArgumentException Thrown if one or some or all arguments are {@code null}.
      * @since 0.1.0
      */
@@ -68,7 +61,7 @@ final class IBatisEntityState
         String anIdentity, CompositeBinding aCompositeBinding,
         Map<String, Property> propertiez,
         Map<String, AbstractAssociation> associationz,
-        STATUS aStatus, IBatisEntityStore anEntitySTore )
+        IBatisEntityStateStatus aStatus, IBatisEntityStateDao aDao )
         throws IllegalArgumentException
     {
         validateNotNull( "anIdentity", anIdentity );
@@ -76,13 +69,13 @@ final class IBatisEntityState
         validateNotNull( "propertiez", propertiez );
         validateNotNull( "associationz", associationz );
         validateNotNull( "aStatus", aStatus );
-        validateNotNull( "anEntitySTore", anEntitySTore );
+        validateNotNull( "aDao", aDao );
 
         identity = anIdentity;
         compositeBinding = aCompositeBinding;
         properties = propertiez;
         associations = associationz;
-        entityStore = anEntitySTore;
+        dao = aDao;
         status = aStatus;
     }
 
@@ -135,7 +128,7 @@ final class IBatisEntityState
             return true;
 
         case statusLoadFromDb:
-            return entityStore.deleteComposite( identity, compositeBinding );
+            return dao.deleteComposite( identity, compositeBinding );
         }
 
         return false;

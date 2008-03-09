@@ -38,9 +38,8 @@ import org.qi4j.association.SetAssociation;
 import org.qi4j.composite.Composite;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
 import org.qi4j.entity.EntitySession;
-import static org.qi4j.entity.ibatis.IBatisEntityState.STATUS;
-import static org.qi4j.entity.ibatis.IBatisEntityState.STATUS.statusLoadFromDb;
-import static org.qi4j.entity.ibatis.IBatisEntityState.STATUS.statusNew;
+import static org.qi4j.entity.ibatis.IBatisEntityStateStatus.statusLoadFromDb;
+import static org.qi4j.entity.ibatis.IBatisEntityStateStatus.statusNew;
 import org.qi4j.entity.ibatis.dbInitializer.DBInitializer;
 import org.qi4j.entity.ibatis.dbInitializer.DBInitializerInfo;
 import org.qi4j.property.ImmutableProperty;
@@ -73,6 +72,7 @@ final class IBatisEntityStore
 {
     private final IBatisEntityStoreServiceInfo serviceInfo;
     private final DBInitializerInfo dbInitializerInfo;
+    private final IBatisEntityStateDao dao;
 
     private SqlMapClient client;
 
@@ -91,6 +91,7 @@ final class IBatisEntityStore
         Map<Class, Object> serviceInfos = aServiceDescriptor.getServiceInfos();
         serviceInfo = (IBatisEntityStoreServiceInfo) serviceInfos.get( IBatisEntityStoreServiceInfo.class );
         dbInitializerInfo = (DBInitializerInfo) serviceInfos.get( DBInitializerInfo.class );
+        dao = new EntityStateDao();
 
         client = null;
     }
@@ -205,14 +206,14 @@ final class IBatisEntityStore
      */
     private IBatisEntityState newEntityInstance(
         String anIdentity, CompositeBinding aCompositeBinding,
-        Map<String, Object> fieldValues, boolean isUseDefaultValue, STATUS aStatus )
+        Map<String, Object> fieldValues, boolean isUseDefaultValue, IBatisEntityStateStatus aStatus )
         throws StoreException
     {
         throwIfNotActive();
 
         Map<String, Property> properties = transformToProperties( aCompositeBinding, fieldValues, isUseDefaultValue );
         Map<String, AbstractAssociation> associations = transformToAssociations( aCompositeBinding, fieldValues );
-        return new IBatisEntityState( anIdentity, aCompositeBinding, properties, associations, aStatus, this );
+        return new IBatisEntityState( anIdentity, aCompositeBinding, properties, associations, aStatus, dao );
     }
 
     /**
@@ -425,12 +426,6 @@ final class IBatisEntityStore
         }
     }
 
-    final boolean deleteComposite( String anIdentity, CompositeBinding aCompositeBinding )
-    {
-        // TODO
-        return false;
-    }
-
     /**
      * Activate this service.
      *
@@ -476,5 +471,15 @@ final class IBatisEntityStore
     {
         // clean up client
         client = null;
+    }
+
+    private class EntityStateDao
+        implements IBatisEntityStateDao
+    {
+        public boolean deleteComposite( String aCompositeIdentity, CompositeBinding aCompositeBinding )
+        {
+            // TODO
+            return false;
+        }
     }
 }
