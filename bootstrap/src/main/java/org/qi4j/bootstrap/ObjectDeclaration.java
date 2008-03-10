@@ -14,12 +14,11 @@
 
 package org.qi4j.bootstrap;
 
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.qi4j.runtime.composite.ObjectModelFactory;
 import org.qi4j.spi.structure.ObjectDescriptor;
 import org.qi4j.spi.structure.Visibility;
@@ -35,6 +34,14 @@ public final class ObjectDeclaration
 
     public ObjectDeclaration( Iterable<Class> classes )
     {
+        for( Class clazz : classes )
+        {
+            // best try to find out if the class is a concrete class
+            if( clazz.isEnum() || Modifier.isAbstract( clazz.getModifiers() ) )
+            {
+                throw new IllegalArgumentException( "Declared objects must be concrete classes." );
+            }
+        }
         this.objectTypes = classes;
     }
 
