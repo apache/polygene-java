@@ -33,6 +33,8 @@ import org.qi4j.composite.scope.Service;
 import org.qi4j.composite.scope.Structure;
 import org.qi4j.composite.scope.ThisCompositeAs;
 import org.qi4j.property.ImmutableProperty;
+import org.qi4j.property.Property;
+import org.qi4j.spi.property.PropertyInstance;
 
 @AppliesTo( RequiresPermission.class )
 public class AuthorizationConcern
@@ -57,7 +59,9 @@ public class AuthorizationConcern
         CompositeBuilder<AuthorizationContextComposite> authBuilder = cbf.newCompositeBuilder( AuthorizationContextComposite.class );
         AuthorizationContext context = PropertyValue.name( AuthorizationContext.class );
         AuthorizationContext authorizationContext = authBuilder.propertiesFor( AuthorizationContext.class );
-        ImmutableProperty<UserComposite> compositeImmutableProperty = authorizationContext.user();
+        Object userObject = authorizationContext.user();
+        System.out.println( userObject instanceof Property );
+        Property<UserComposite> compositeImmutableProperty = (Property<UserComposite>) userObject;
         compositeImmutableProperty.set( user );
         authBuilder.propertiesFor( AuthorizationContext.class ).time().set( new Date() );
         authBuilder.propertiesFor( AuthorizationContext.class).authenticationMethod().set( new BasicAuthenticationMethod() );

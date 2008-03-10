@@ -16,15 +16,16 @@ package org.qi4j.library.auth;
 
 import java.util.Date;
 import org.qi4j.property.ImmutableProperty;
+import org.qi4j.property.Property;
 
 /**
  *
  */
 public interface AuthorizationContext
 {
-    ImmutableProperty<UserComposite> user();
+    Property<UserComposite> user();
 
-    ImmutableProperty<Date> time();
+    Property<Date> time();
 
-    ImmutableProperty<AuthenticationMethod> authenticationMethod();
+    Property<AuthenticationMethod> authenticationMethod();
 }
