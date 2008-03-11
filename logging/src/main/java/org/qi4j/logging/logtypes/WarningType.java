@@ -21,6 +21,7 @@ import org.qi4j.logging.LogType;
 import org.qi4j.property.Property;
 import org.qi4j.spi.property.GenericPropertyInfo;
 import org.qi4j.spi.property.ImmutablePropertyInstance;
+import org.qi4j.spi.property.PropertyModel;
 
 public final class WarningType
     implements LogType
@@ -30,7 +31,7 @@ public final class WarningType
 
     static
     {
-        GenericPropertyInfo info = new GenericPropertyInfo( "logTypeName", "logTypeName" );
+        GenericPropertyInfo info = new GenericPropertyInfo( PropertyModel.getQualifiedName( LogType.class, "logTypeName" ) );
         PROPERTY = new ImmutablePropertyInstance( info, "WARN" );
     }
 
