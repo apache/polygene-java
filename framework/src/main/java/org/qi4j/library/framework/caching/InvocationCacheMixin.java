@@ -20,23 +20,21 @@ import java.util.concurrent.ConcurrentHashMap;
 public class InvocationCacheMixin
     implements InvocationCache
 {
-    // Attributes ----------------------------------------------------
     Map<String, Object> cachedValues = new ConcurrentHashMap<String, Object>();
 
-    // InvocationCache implementation --------------------------------
-    public Object setCachedValue( String aName, Object aResult )
+    public Object setCachedValue( String name, Object aResult )
     {
-        return cachedValues.put( aName, aResult );
+        return cachedValues.put( name, aResult );
     }
 
-    public Object getCachedValue( String aName )
+    public Object getCachedValue( String name )
     {
-        return cachedValues.get( aName );
+        return cachedValues.get( name );
     }
 
-    public Object removeCachedValue( String aName )
+    public Object removeCachedValue( String name )
     {
-        return cachedValues.remove( aName );
+        return cachedValues.remove( name );
     }
 
     public void clearCachedValues()

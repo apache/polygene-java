@@ -40,12 +40,12 @@ import org.qi4j.spi.property.PropertyInstance;
 public class AuthorizationConcern
     implements InvocationHandler
 {
-    @Invocation RequiresPermission requiresPermission;
+    @Invocation private RequiresPermission requiresPermission;
 
-    @Service AuthorizationService authorizor;
-    @ThisCompositeAs ProtectedResource roleAssignments;
-    @Structure CompositeBuilderFactory cbf;
-    @ConcernFor InvocationHandler next;
+    @Service private AuthorizationService authorizor;
+    @ThisCompositeAs private ProtectedResource roleAssignments;
+    @Structure private CompositeBuilderFactory cbf;
+    @ConcernFor private InvocationHandler next;
 
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
     {
@@ -57,21 +57,15 @@ public class AuthorizationConcern
         UserComposite user = subject.getPrincipals( UserPrincipal.class ).iterator().next().getUser();
 
         CompositeBuilder<AuthorizationContextComposite> authBuilder = cbf.newCompositeBuilder( AuthorizationContextComposite.class );
-        AuthorizationContext context = PropertyValue.name( AuthorizationContext.class );
-        AuthorizationContext authorizationContext = authBuilder.propertiesFor( AuthorizationContext.class );
-        Object userObject = authorizationContext.user();
-        System.out.println( userObject instanceof Property );
-        Property<UserComposite> compositeImmutableProperty = (Property<UserComposite>) userObject;
-        compositeImmutableProperty.set( user );
-        authBuilder.propertiesFor( AuthorizationContext.class ).time().set( new Date() );
-        authBuilder.propertiesFor( AuthorizationContext.class).authenticationMethod().set( new BasicAuthenticationMethod() );
-        context = authBuilder.newInstance();
-
+        AuthorizationContext authProps = authBuilder.propertiesFor( AuthorizationContext.class );
+        authProps.user().set( user );
+        authProps.time().set( new Date() );
+        authProps.authenticationMethod().set( new BasicAuthenticationMethod() );
+        AuthorizationContext context = authBuilder.newInstance();
         if( !authorizor.hasPermission( permission, roleAssignments, context ) )
         {
             throw new SecurityException( "User " + user + " does not have the required permission " + requiresPermission.value() );
         }
-
         return next.invoke( proxy, method, args );
     }
 }
