@@ -22,41 +22,41 @@ public final class UsesInjectionProviderFactory
     public InjectionProvider newInjectionProvider( BindingContext bindingContext ) throws InvalidInjectionException
     {
         InjectionResolution resolution = bindingContext.getInjectionResolution();
-        return new AdaptInjectionProvider( resolution );
+        return new UsesInjectionProvider( resolution );
     }
 
-    private class AdaptInjectionProvider implements InjectionProvider
+    private class UsesInjectionProvider implements InjectionProvider
     {
         private InjectionResolution resolution;
 
-        public AdaptInjectionProvider( InjectionResolution resolution )
+        public UsesInjectionProvider( InjectionResolution resolution )
         {
             this.resolution = resolution;
         }
 
         public Object provideInjection( InjectionContext context )
         {
-            Iterable<Object> adapt;
+            Iterable<Object> uses;
             if( context instanceof ObjectInjectionContext )
             {
                 ObjectInjectionContext objectInjectionContext = (ObjectInjectionContext) context;
-                adapt = objectInjectionContext.getUses();
+                uses = objectInjectionContext.getUses();
             }
             else if( context instanceof MixinInjectionContext )
             {
                 MixinInjectionContext mixinInjectionContext = (MixinInjectionContext) context;
-                adapt = mixinInjectionContext.getUses();
+                uses = mixinInjectionContext.getUses();
             }
             else
             {
                 return null;
             }
 
-            for( Object adaptedObject : adapt )
+            for( Object usedObject : uses )
             {
-                if( resolution.getInjectionModel().getInjectionClass().isAssignableFrom( adaptedObject.getClass() ) )
+                if( resolution.getInjectionModel().getInjectionClass().isAssignableFrom( usedObject.getClass() ) )
                 {
-                    return adaptedObject;
+                    return usedObject;
                 }
             }
 

@@ -33,7 +33,7 @@ public class UsesInjectionTest extends AbstractQi4jTest
     {
         ObjectBuilder<Object1> builder = objectBuilderFactory.newObjectBuilder( Object1.class );
         Object2 used = new Object2( "Object2" );
-        builder.uses( used );
+        builder.use( used );
 
         Object1 object = builder.newInstance();
 

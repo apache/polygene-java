@@ -66,9 +66,9 @@ public class CompositeBuilderImpl<T extends Composite>
         this.compositeInterface = (Class<? extends T>) context.getCompositeBinding().getCompositeResolution().getCompositeModel().getCompositeClass();
     }
 
-    public void uses( Object adaptedObject )
+    public void use( Object usedObject )
     {
-        getUses().add( adaptedObject );
+        getUses().add( usedObject );
     }
 
     public <K> void properties( Class<K> mixinType, PropertyValue... properties )

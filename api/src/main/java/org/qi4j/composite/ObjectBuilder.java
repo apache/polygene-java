@@ -25,9 +25,9 @@ public interface ObjectBuilder<T>
     /**
      * Make the given object available for @Uses injection
      *
-     * @param object the object to be adapted
+     * @param object the object to be used
      */
-    void uses( Object object );
+    void use( Object object );
 
     T newInstance();
 

@@ -53,8 +53,8 @@ public final class AssociationContext
             {
                 Class<? extends Composite> associationCompositeType = (Class<? extends Composite>) associationType;
                 CompositeBuilder<? extends Composite> cb = moduleInstance.getStructureContext().getCompositeBuilderFactory().newCompositeBuilder( associationCompositeType );
-                cb.uses( value );
-                cb.uses( associationBinding );
+                cb.use( value );
+                cb.use( associationBinding );
                 return AbstractAssociation.class.cast( cb.newInstance() );
             }
             else

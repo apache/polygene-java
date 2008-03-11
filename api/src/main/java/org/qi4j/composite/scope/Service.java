@@ -23,7 +23,16 @@ import org.qi4j.injection.InjectionScope;
 import org.qi4j.injection.Optional;
 
 /**
- * Annotation to denote the injection of a service dependency into a Fragment (a Invocation or Mixin).
+ * Annotation to denote the injection of a service dependency into a Fragment.
+ * <p/>
+ * <p/>
+ * Examples:
+ * <code><pre>
+ * &#64;Service MyService service
+ * &#64;Service Iterable<MyService> services
+ * &#64;Service ServiceReference<MyService> serviceRef
+ * &#64;Service Iterable<ServiceReference<MyService>> serviceRefs
+ * </pre></code>
  */
 @Retention( RetentionPolicy.RUNTIME )
 @Target( { ElementType.FIELD, ElementType.PARAMETER } )

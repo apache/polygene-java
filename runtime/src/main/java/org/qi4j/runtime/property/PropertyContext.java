@@ -50,8 +50,8 @@ public final class PropertyContext
             {
                 Class<? extends Composite> propertyCompositeType = (Class<? extends Composite>) propertyType;
                 CompositeBuilder<? extends Composite> cb = moduleInstance.getStructureContext().getCompositeBuilderFactory().newCompositeBuilder( propertyCompositeType );
-                cb.uses( value );
-                cb.uses( propertyBinding );
+                cb.use( value );
+                cb.use( propertyBinding );
                 return Property.class.cast( cb.newInstance() );
             }
             else

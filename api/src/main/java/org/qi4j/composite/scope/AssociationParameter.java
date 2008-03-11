@@ -31,5 +31,5 @@ import org.qi4j.injection.Name;
 @InjectionScope
 public @interface AssociationParameter
 {
-    @Name String value(); // Name of the property
+    @Name String value(); // Name of the association
 }

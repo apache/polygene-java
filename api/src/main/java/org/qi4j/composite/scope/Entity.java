@@ -25,6 +25,9 @@ import org.qi4j.injection.Name;
 /**
  * Annotation to denote the injection of a Query, QueryBuilder, or Entity prototype dependency into a Fragment (a Invocation or Mixin).
  * <p/>
+ * This annotation is only valid in fragments in EntityComposites since the queries and builders have to be created within
+ * the scope of a particular EntitySession, namely the session of the injected EntityComposite.
+ * <p/>
  * Examples:
  * <code><pre>
  * &#64;Entity Query<Person> findPeople; // call findPeople.iterator() to execute query

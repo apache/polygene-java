@@ -40,7 +40,7 @@ public final class ObjectBuilderImpl<T>
 
     }
 
-    public void uses( Object usedObject )
+    public void use( Object usedObject )
     {
         Set<Object> context = getUses();
         context.add( usedObject );

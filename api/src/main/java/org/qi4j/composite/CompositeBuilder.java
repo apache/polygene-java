@@ -28,7 +28,7 @@ public interface CompositeBuilder<T extends Composite>
      *
      * @param usedObject The object that can be injected into mixins.
      */
-    void uses( Object usedObject );
+    void use( Object usedObject );
 
     <K> void properties( Class<K> mixinType, PropertyValue... properties );
 
