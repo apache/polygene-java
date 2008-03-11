@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.net.URL;
@@ -93,7 +94,7 @@ final class IBatisEntityStore
     {
         validateNotNull( "aServiceDescriptor", aServiceDescriptor );
 
-        Map<Class, Object> serviceInfos = aServiceDescriptor.getServiceInfos();
+        Map<Class, Serializable> serviceInfos = aServiceDescriptor.getServiceInfos();
         serviceInfo = (IBatisEntityStoreServiceInfo) serviceInfos.get( IBatisEntityStoreServiceInfo.class );
         dbInitializerInfo = (DBInitializerInfo) serviceInfos.get( DBInitializerInfo.class );
         dao = new EntityStateDao();

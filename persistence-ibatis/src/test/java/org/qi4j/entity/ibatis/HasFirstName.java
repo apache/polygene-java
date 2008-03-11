@@ -15,7 +15,7 @@ public interface HasFirstName
 
     class HasFirstNameMixin implements HasFirstName
     {
-        @PropertyField( optional = false )
+        @PropertyField
         private Property<String> firstName;
 
         public Property<String> firstName()

@@ -96,7 +96,7 @@ public class IBatisAbstractAssociationInstanceTest extends AbstractQi4jTest
 
     private Map<String, AssociationBinding> getAllAccountAssociationBindings()
     {
-        CompositeBuilderFactory builderFactory = moduleInstance.getCompositeBuilderFactory();
+        CompositeBuilderFactory builderFactory = moduleInstance.getStructureContext().getCompositeBuilderFactory();
         AccountComposite accountComposite = builderFactory.newComposite( AccountComposite.class );
         CompositeBinding accountBinding = runtime.getCompositeBinding( accountComposite );
         Iterable<AssociationBinding> associationBindings = accountBinding.getAssociationBindings();

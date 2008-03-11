@@ -15,7 +15,7 @@ public interface HasLastName
 
     class HasLastNameMixin implements HasLastName
     {
-        @PropertyField( optional = false )
+        @PropertyField
         private Property<String> lastName;
 
         public Property<String> lastName()

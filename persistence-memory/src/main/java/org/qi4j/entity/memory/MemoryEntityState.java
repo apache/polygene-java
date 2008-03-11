@@ -20,13 +20,12 @@ import java.util.Map;
 import org.qi4j.association.AbstractAssociation;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.property.Property;
+import org.qi4j.spi.composite.CompositeBinding;
+import org.qi4j.spi.composite.CompositeModel;
+import org.qi4j.spi.composite.CompositeResolution;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.StoreException;
-import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.serialization.SerializedEntity;
-import org.qi4j.spi.composite.CompositeBinding;
-import org.qi4j.spi.composite.CompositeResolution;
-import org.qi4j.spi.composite.CompositeModel;
 
 public class MemoryEntityState
     implements EntityState
@@ -56,14 +55,14 @@ public class MemoryEntityState
         return compositeBinding;
     }
 
-    public Map<String, Property> getProperties()
+    public Property getProperty( String qualifiedName )
     {
-        return properties;
+        return properties.get( qualifiedName );
     }
 
-    public Map<String, AbstractAssociation> getAssociations()
+    public AbstractAssociation getAssociation( String qualifiedName )
     {
-        return associations;
+        return associations.get( qualifiedName );
     }
 
     public void refresh()

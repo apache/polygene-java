@@ -93,14 +93,14 @@ public final class EntityState
         return compositeBinding;
     }
 
-    public final Map<String, Property> getProperties()
+    public Property getProperty( String qualifiedName )
     {
-        return properties;
+        return properties.get( qualifiedName );
     }
 
-    public final Map<String, AbstractAssociation> getAssociations()
+    public AbstractAssociation getAssociation( String qualifiedName )
     {
-        return associations;
+        return associations.get( qualifiedName );
     }
 
     public final void refresh()

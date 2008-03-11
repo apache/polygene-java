@@ -16,6 +16,7 @@
  */
 package org.qi4j.entity.ibatis;
 
+import java.io.Serializable;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -30,7 +31,7 @@ import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.entity.StoreException;
 import org.qi4j.spi.property.ImmutablePropertyInstance;
 import org.qi4j.spi.property.PropertyBinding;
-import org.qi4j.spi.service.ServiceInstanceProvider;
+import org.qi4j.spi.service.provider.DefaultServiceInstanceProvider;
 import org.qi4j.spi.structure.ServiceDescriptor;
 import static org.qi4j.spi.structure.Visibility.module;
 
@@ -119,7 +120,7 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
     }
 
     /**
-     * Test {@link IBatisEntityStore#exists(String, CompositeBinding)}.
+     * Test {@link IBatisEntityStore#exists(String,CompositeBinding)}.
      *
      * @throws SQLException Thrown if failed.
      */
@@ -131,7 +132,7 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
         IBatisEntityStore entityStore = newAndActivateEntityStore();
 
         // Intialize test arguments
-        PersonComposite composite = moduleInstance.getCompositeBuilderFactory().newComposite( PersonComposite.class );
+        PersonComposite composite = moduleInstance.getStructureContext().getCompositeBuilderFactory().newComposite( PersonComposite.class );
         CompositeBinding personBinding = runtime.getCompositeBinding( composite );
 
         // **********************
@@ -200,7 +201,7 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
      */
     private ServiceDescriptor newValidServiceDescriptor()
     {
-        HashMap<Class, Object> infos = new HashMap<Class, Object>();
+        HashMap<Class, Serializable> infos = new HashMap<Class, Serializable>();
 
         Class<? extends IBatisEntityStoreTest> aClass = getClass();
         URL sqlMapConfigURL = aClass.getResource( SQL_MAP_CONFIG_XML );
@@ -211,12 +212,12 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
         infos.put( IBatisEntityStoreServiceInfo.class, batisEntityStoreServiceInfo );
         infos.put( DBInitializerInfo.class, newDbInitializerInfo() );
 
-        return new ServiceDescriptor( IBatisEntityStoreTest.class, ServiceInstanceProvider.class, module, infos );
+        return new ServiceDescriptor( IBatisEntityStore.class, DefaultServiceInstanceProvider.class, "ibatis", module, true, infos );
     }
 
 
     /**
-     * Tests {@link IBatisEntityStore#computePropertyValue(PropertyBinding, Map, boolean)}.
+     * Tests {@link IBatisEntityStore#computePropertyValue(PropertyBinding,Map,boolean)}.
      *
      * @since 0.1.0
      */
@@ -254,7 +255,7 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
         // ***********************
         // Test with debug mode on
         // ***********************
-        HashMap<Class, Object> infos = new HashMap<Class, Object>();
+        HashMap<Class, Serializable> infos = new HashMap<Class, Serializable>();
         Class<? extends IBatisEntityStoreTest> aClass = getClass();
         URL sqlMapConfigURL = aClass.getResource( SQL_MAP_CONFIG_XML );
         String sqlMapConfigURLAsString = sqlMapConfigURL.toString();
@@ -263,7 +264,7 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
         entityStoreServiceInfo.setIsDebugMode( true );
         infos.put( IBatisEntityStoreServiceInfo.class, entityStoreServiceInfo );
         ServiceDescriptor descriptor2 = new ServiceDescriptor(
-            IBatisEntityStoreTest.class, ServiceInstanceProvider.class, module, infos );
+            IBatisEntityStore.class, DefaultServiceInstanceProvider.class, "ibatis", module, true, infos );
         IBatisEntityStore entityStore2 = new IBatisEntityStore( descriptor2 );
         propertyValues.put( firstNamePropertyName, 2 );
 
@@ -291,7 +292,7 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
      */
     private Map<String, PropertyBinding> getPersonCompositePropertyBindings()
     {
-        CompositeBuilderFactory builderFactory = moduleInstance.getCompositeBuilderFactory();
+        CompositeBuilderFactory builderFactory = moduleInstance.getStructureContext().getCompositeBuilderFactory();
         PersonComposite composite = builderFactory.newComposite( PersonComposite.class );
         CompositeBinding personBinding = runtime.getCompositeBinding( composite );
         Iterable<PropertyBinding> propertyBindings = personBinding.getPropertyBindings();
@@ -342,7 +343,7 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
     }
 
     /**
-     * Tests {@link IBatisEntityStore#transformToProperties(CompositeBinding, Map, boolean)}.
+     * Tests {@link IBatisEntityStore#transformToProperties(CompositeBinding,Map,boolean)}.
      *
      * @since 0.1.0
      */
@@ -351,7 +352,7 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
         ServiceDescriptor descriptor = newValidServiceDescriptor();
         IBatisEntityStore entityStore = new IBatisEntityStore( descriptor );
 
-        CompositeBuilderFactory builderFactory = moduleInstance.getCompositeBuilderFactory();
+        CompositeBuilderFactory builderFactory = moduleInstance.getStructureContext().getCompositeBuilderFactory();
         PersonComposite composite = builderFactory.newComposite( PersonComposite.class );
         CompositeBinding personBinding = runtime.getCompositeBinding( composite );
 
