@@ -29,6 +29,7 @@ import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.CompositeInstantiationException;
 import org.qi4j.composite.PropertyValue;
+import org.qi4j.property.ImmutableProperty;
 import org.qi4j.property.Property;
 import org.qi4j.property.PropertyVetoException;
 import org.qi4j.runtime.composite.CompositeContext;
@@ -42,8 +43,6 @@ import org.qi4j.spi.property.AssociationBinding;
 import org.qi4j.spi.property.PropertyBinding;
 import org.qi4j.spi.property.PropertyInstance;
 import org.qi4j.spi.property.PropertyModel;
-import org.qi4j.spi.property.ComputedPropertyInstance;
-import org.qi4j.spi.property.ImmutablePropertyInstance;
 
 /**
  *
@@ -190,7 +189,6 @@ public class CompositeBuilderImpl<T extends Composite>
         };
     }
 
-    // Private ------------------------------------------------------
     private Set getAdaptContext()
     {
         if( adaptContext == null )
@@ -224,7 +222,8 @@ public class CompositeBuilderImpl<T extends Composite>
         compositeProperties.put( propertyContext.getPropertyBinding().getQualifiedName(), property );
     }
 
-    private class PropertiesInvocationHandler implements InvocationHandler
+    private class PropertiesInvocationHandler
+        implements InvocationHandler
     {
         public PropertiesInvocationHandler()
         {
@@ -235,19 +234,35 @@ public class CompositeBuilderImpl<T extends Composite>
             final PropertyContext propertyContext = context.getMethodDescriptor( method ).getCompositeMethodContext().getPropertyContext();
             if( propertyContext != null )
             {
-                return new PropertyInstance<Object>( propertyContext.getPropertyBinding(), propertyContext.getPropertyBinding().getDefaultValue() )
-                {
-                    @Override public void set( Object newValue ) throws PropertyVetoException
-                    {
-                        super.set( newValue );
-                        setProperty( propertyContext, newValue );
-                    }
-                };
+                Object defValue = propertyContext.getPropertyBinding().getDefaultValue();
+                PropertyBinding binding = propertyContext.getPropertyBinding();
+                PropertyInstance<Object> propertyInstance = new ImmutablePropertySupport( binding, defValue, propertyContext );
+                return propertyInstance;
             }
             else
             {
                 throw new IllegalArgumentException( "Method is not a property: " + method );
             }
+        }
+
+    }
+
+    private class ImmutablePropertySupport extends PropertyInstance<Object>
+        implements ImmutableProperty<Object>
+    {
+        private final PropertyContext propertyContext;
+
+        public ImmutablePropertySupport( PropertyBinding binding, Object defValue, PropertyContext propertyContext )
+            throws IllegalArgumentException
+        {
+            super( binding, defValue );
+            this.propertyContext = propertyContext;
+        }
+
+        @Override public void set( Object newValue ) throws PropertyVetoException
+        {
+            super.set( newValue );
+            setProperty( propertyContext, newValue );
         }
     }
 }

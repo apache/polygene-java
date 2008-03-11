@@ -61,7 +61,7 @@ public final class EntitySessionCompositeBuilder<T extends Composite>
 
     public T newInstance()
     {
-        EntityState state = null;
+        EntityState state;
         String identity = getPropertyValues().get( Identity.class.getName() + ":identity" ).toString();
         Map<String, Object> propertyValues = getPropertyValues();
         try

@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.HashSet;
 import org.qi4j.association.AbstractAssociation;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeInstantiationException;
@@ -46,6 +47,7 @@ import org.qi4j.spi.structure.ModuleBinding;
  */
 public final class CompositeContext
 {
+    private static final Set<Object> EMPTY_SET = new HashSet<Object>();
     private static final Method CREATE_METHOD;
 
     private CompositeBinding compositeBinding;
@@ -220,7 +222,7 @@ public final class CompositeContext
 
     public void newMixins( ModuleInstance moduleInstance, CompositeInstance compositeInstance, Set adaptContext, Object decoratedObject, Map<String, Property> compositeProperties, Map<String, AbstractAssociation> compositeAssociations, Object[] mixins )
     {
-        Set<Object> adapt = adaptContext == null ? Collections.EMPTY_SET : adaptContext;
+        Set<Object> adapt = adaptContext == null ? EMPTY_SET : adaptContext;
 
         int i = 0;
         for( MixinContext mixinContext : mixinContexts )

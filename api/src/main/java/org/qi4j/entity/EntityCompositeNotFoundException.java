@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
- * Copyright (c) 2007, Niclas Hedhman. All Rights Reserved.
+ * Copyright (c) 2007-2008, Niclas Hedhman. All Rights Reserved.
  * Copyright (c) 2007, Alin Dreghiciu. All Rights Reserved. 
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,8 +19,7 @@ package org.qi4j.entity;
  * Qi4j exception to be thrown in case that an entity composite
  * was not found during a lookup call.
  */
-public class EntityCompositeNotFoundException
-    extends EntitySessionException
+public class EntityCompositeNotFoundException extends EntitySessionException
 {
     private String identity;
     private Class compositeType;
