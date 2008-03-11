@@ -39,6 +39,7 @@ import org.qi4j.runtime.property.PropertyContext;
 import org.qi4j.spi.composite.AssociationModel;
 import org.qi4j.spi.composite.AssociationResolution;
 import org.qi4j.spi.composite.PropertyResolution;
+import org.qi4j.spi.composite.State;
 import org.qi4j.spi.property.AssociationBinding;
 import org.qi4j.spi.property.PropertyBinding;
 import org.qi4j.spi.property.PropertyInstance;
@@ -164,7 +165,9 @@ public class CompositeBuilderImpl<T extends Composite>
             associations.put( qualifiedName, association );
         }
 
-        CompositeInstance compositeInstance = context.newCompositeInstance( moduleInstance, adaptContext, decoratedObject, properties, associations );
+        CompositeInstance compositeInstance = context.newCompositeInstance( moduleInstance,
+                                                                            adaptContext, decoratedObject,
+                                                                            new CompositeBuilderState( properties, associations ) );
         return compositeInterface.cast( compositeInstance.getProxy() );
     }
 
@@ -263,6 +266,29 @@ public class CompositeBuilderImpl<T extends Composite>
         {
             super.set( newValue );
             setProperty( propertyContext, newValue );
+        }
+    }
+
+    static class CompositeBuilderState
+        implements State
+    {
+        Map<String, Property> properties;
+        Map<String, AbstractAssociation> associations;
+
+        public CompositeBuilderState( Map<String, Property> properties, Map<String, AbstractAssociation> associations )
+        {
+            this.properties = properties;
+            this.associations = associations;
+        }
+
+        public Property getProperty( String qualifiedName )
+        {
+            return properties.get( qualifiedName );
+        }
+
+        public AbstractAssociation getAssociation( String qualifiedName )
+        {
+            return associations.get( qualifiedName );
         }
     }
 }

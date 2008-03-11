@@ -19,7 +19,7 @@ import org.qi4j.composite.Composite;
 import org.qi4j.composite.Mixins;
 import org.qi4j.composite.scope.Service;
 import org.qi4j.service.ServiceComposite;
-import org.qi4j.spi.service.provider.Singleton;
+import org.qi4j.spi.service.provider.DefaultServiceInstanceProvider;
 import org.qi4j.test.AbstractQi4jTest;
 
 /**
@@ -31,7 +31,7 @@ public class SingletonServiceTest extends AbstractQi4jTest
     {
         module.addComposites( TestComposite1.class );
         module.addComposites( TestComposite2.class );
-        module.addServices( Singleton.class, TestComposite2.class );
+        module.addServices( DefaultServiceInstanceProvider.class, TestComposite2.class );
     }
 
     public void testServiceInjection()

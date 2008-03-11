@@ -17,25 +17,7 @@ package org.qi4j.spi.service;
 /**
  * TODO
  */
-public class ServiceProviderException
-    extends Exception
+public interface ServiceProviderRepository
 {
-    public ServiceProviderException()
-    {
-    }
-
-    public ServiceProviderException( String string )
-    {
-        super( string );
-    }
-
-    public ServiceProviderException( String string, Throwable throwable )
-    {
-        super( string, throwable );
-    }
-
-    public ServiceProviderException( Throwable throwable )
-    {
-        super( throwable );
-    }
+    ServiceInstanceProvider getServiceProvider( Class type );
 }

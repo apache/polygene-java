@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,15 +12,17 @@
  *
  */
 
-package org.qi4j.spi.injection;
+package org.qi4j.spi.composite;
 
-import java.util.Map;
 import org.qi4j.association.AbstractAssociation;
+import org.qi4j.property.Property;
 
 /**
- * TODO
+ * This represents the state of a composite (properties+associations).
  */
-public interface AssociationInjectionContext
+public interface State
 {
-    Map<String, AbstractAssociation> getAssociations();
+    Property getProperty( String qualifiedName );
+
+    AbstractAssociation getAssociation( String qualifiedName );
 }

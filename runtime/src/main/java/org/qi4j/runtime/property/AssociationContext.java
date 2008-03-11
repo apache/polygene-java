@@ -52,7 +52,7 @@ public final class AssociationContext
             if( Composite.class.isAssignableFrom( associationType ) )
             {
                 Class<? extends Composite> associationCompositeType = (Class<? extends Composite>) associationType;
-                CompositeBuilder<? extends Composite> cb = moduleInstance.getCompositeBuilderFactory().newCompositeBuilder( associationCompositeType );
+                CompositeBuilder<? extends Composite> cb = moduleInstance.getStructureContext().getCompositeBuilderFactory().newCompositeBuilder( associationCompositeType );
                 cb.adapt( associationBinding );
                 cb.decorate( value );
                 return AbstractAssociation.class.cast( cb.newInstance() );

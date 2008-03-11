@@ -14,42 +14,38 @@
 
 package org.qi4j.spi.service;
 
-import java.util.Map;
+import org.qi4j.spi.structure.ServiceDescriptor;
 
 /**
  * TODO
  */
-public class ServiceInstance
+public class ServiceInstance<T>
 {
-    Object instance;
-    ServiceInstanceProvider serviceInstanceProvider;
-    Map<Class, Object> serviceInfo;
+    private T instance;
+    private ServiceDescriptor serviceDescriptor;
+    private ServiceInstanceProvider serviceInstanceProvider;
 
-    public ServiceInstance( Object instance, ServiceInstanceProvider serviceInstanceProvider, Map<Class, Object> serviceInfo )
+    public ServiceInstance( T instance,
+                            ServiceInstanceProvider serviceInstanceProvider,
+                            ServiceDescriptor serviceDescriptor )
     {
+        this.serviceDescriptor = serviceDescriptor;
         this.instance = instance;
         this.serviceInstanceProvider = serviceInstanceProvider;
-        this.serviceInfo = serviceInfo;
     }
 
-    public Object getInstance()
+    public T getInstance()
     {
         return instance;
+    }
+
+    public ServiceDescriptor getServiceDescriptor()
+    {
+        return serviceDescriptor;
     }
 
     public ServiceInstanceProvider getServiceInstanceProvider()
     {
         return serviceInstanceProvider;
-    }
-
-    public Map<Class, Object> getServiceInfo()
-    {
-        return serviceInfo;
-    }
-
-    public void release() 
-        throws Exception
-    {
-        serviceInstanceProvider.releaseInstance( this );
     }
 }

@@ -56,7 +56,7 @@ public class PrivateCompositeVisibilityTest
 
         ApplicationInstance app = applicationFactory.newApplication( assemblies ).newApplicationInstance( "Test" );
         app.activate();
-        ObjectA object = app.getLayerInstances().get( 0 ).getModuleInstances().get( 0 ).getObjectBuilderFactory().newObjectBuilder( ObjectA.class ).newInstance();
+        ObjectA object = app.getLayerInstances().get( 0 ).getModuleInstances().get( 0 ).getStructureContext().getObjectBuilderFactory().newObjectBuilder( ObjectA.class ).newInstance();
         try
         {
             object.test();

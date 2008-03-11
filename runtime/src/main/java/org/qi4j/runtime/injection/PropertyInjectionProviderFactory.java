@@ -1,9 +1,8 @@
 package org.qi4j.runtime.injection;
 
-import java.util.Map;
 import org.qi4j.property.Property;
-import org.qi4j.property.ImmutableProperty;
 import org.qi4j.spi.composite.PropertyResolution;
+import org.qi4j.spi.composite.State;
 import org.qi4j.spi.composite.StateResolution;
 import org.qi4j.spi.injection.BindingContext;
 import org.qi4j.spi.injection.InjectionContext;
@@ -12,8 +11,8 @@ import org.qi4j.spi.injection.InjectionProviderException;
 import org.qi4j.spi.injection.InjectionProviderFactory;
 import org.qi4j.spi.injection.InjectionResolution;
 import org.qi4j.spi.injection.InvalidInjectionException;
-import org.qi4j.spi.injection.PropertyInjectionContext;
 import org.qi4j.spi.injection.PropertyInjectionModel;
+import org.qi4j.spi.injection.StateInjectionContext;
 
 /**
  * TODO
@@ -24,10 +23,10 @@ public final class PropertyInjectionProviderFactory
     public InjectionProvider newInjectionProvider( BindingContext bindingContext ) throws InvalidInjectionException
     {
         InjectionResolution resolution = bindingContext.getInjectionResolution();
-        if( resolution.getInjectionModel().getInjectionClass().equals( String.class ) && resolution.getInjectionModel().getRawInjectionType().equals( Map.class ) )
+        if( resolution.getInjectionModel().getRawInjectionType().equals( State.class ) )
         {
-            // @PropertyField Map<String, Property> properties;
-            return new PropertyMapInjectionProvider();
+            // @PropertyField State properties;
+            return new StateInjectionProvider();
         }
         else if( Property.class.isAssignableFrom( resolution.getInjectionModel().getRawInjectionType() ) )
         {
@@ -59,10 +58,10 @@ public final class PropertyInjectionProviderFactory
 
         public Object provideInjection( InjectionContext context )
         {
-            if( context instanceof PropertyInjectionContext )
+            if( context instanceof StateInjectionContext )
             {
-                PropertyInjectionContext propertyInjectionContext = (PropertyInjectionContext) context;
-                ImmutableProperty value = (ImmutableProperty) propertyInjectionContext.getProperties().get( qualifiedName );
+                StateInjectionContext stateInjectionContext = (StateInjectionContext) context;
+                Property value = stateInjectionContext.getState().getProperty( qualifiedName );
                 if( value != null )
                 {
                     return value.get();
@@ -88,10 +87,10 @@ public final class PropertyInjectionProviderFactory
 
         public Object provideInjection( InjectionContext context )
         {
-            if( context instanceof PropertyInjectionContext )
+            if( context instanceof StateInjectionContext )
             {
-                PropertyInjectionContext propertyInjectionContext = (PropertyInjectionContext) context;
-                Property value = propertyInjectionContext.getProperties().get( qualifiedName );
+                StateInjectionContext stateInjectionContext = (StateInjectionContext) context;
+                Property value = stateInjectionContext.getState().getProperty( qualifiedName );
                 if( value != null )
                 {
                     return value;
@@ -106,14 +105,14 @@ public final class PropertyInjectionProviderFactory
         }
     }
 
-    private class PropertyMapInjectionProvider implements InjectionProvider
+    private class StateInjectionProvider implements InjectionProvider
     {
         public Object provideInjection( InjectionContext context )
         {
-            if( context instanceof PropertyInjectionContext )
+            if( context instanceof StateInjectionContext )
             {
-                PropertyInjectionContext propertyInjectionContext = (PropertyInjectionContext) context;
-                return propertyInjectionContext.getProperties();
+                StateInjectionContext stateInjectionContext = (StateInjectionContext) context;
+                return stateInjectionContext.getState();
             }
 
             return null;

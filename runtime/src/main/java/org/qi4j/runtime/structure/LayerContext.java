@@ -19,7 +19,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.qi4j.composite.Composite;
-import org.qi4j.spi.service.ServiceRegistry;
+import org.qi4j.runtime.util.ListMap;
+import org.qi4j.service.ServiceLocator;
 import org.qi4j.spi.structure.CompositeDescriptor;
 import org.qi4j.spi.structure.LayerBinding;
 import org.qi4j.spi.structure.ObjectDescriptor;
@@ -45,7 +46,7 @@ public final class LayerContext
         return layerBinding;
     }
 
-    LayerInstance newLayerInstance( Map<Class<? extends Composite>, ModuleInstance> availableCompositeModules, Map<Class, ModuleInstance> availableObjectModules, Map<Class, ModuleInstance> availableServiceModules )
+    LayerInstance newLayerInstance( Map<Class<? extends Composite>, ModuleInstance> availableCompositeModules, Map<Class, ModuleInstance> availableObjectModules, Map<Class, List<ModuleInstance>> availableServiceModules )
     {
         List<ModuleInstance> moduleInstances = new ArrayList<ModuleInstance>();
         Map<Class<? extends Composite>, ModuleInstance> modulesForPublicComposites = new HashMap<Class<? extends Composite>, ModuleInstance>();
@@ -54,14 +55,13 @@ public final class LayerContext
         Map<Class, ModuleInstance> modulesForPublicObjects = new HashMap<Class, ModuleInstance>();
         modulesForPublicObjects.putAll( availableObjectModules );
 
-        Map<Class, ModuleInstance> modulesForPublicServices = new HashMap<Class, ModuleInstance>();
-        modulesForPublicServices.putAll( availableServiceModules );
+        ListMap<Class, ModuleInstance> modulesForPublicServices = new ListMap<Class, ModuleInstance>();
 
-        ServiceRegistry serviceRegistry = new LayerServiceRegistry( modulesForPublicServices );
+        ServiceLocator serviceLocator = new LayerServiceLocator( modulesForPublicServices );
 
         for( ModuleContext moduleContext : moduleContexts )
         {
-            ModuleInstance moduleInstance = moduleContext.newModuleInstance( modulesForPublicComposites, modulesForPublicObjects, serviceRegistry );
+            ModuleInstance moduleInstance = moduleContext.newModuleInstance( modulesForPublicComposites, modulesForPublicObjects, serviceLocator );
             moduleInstances.add( moduleInstance );
 
             Iterable<CompositeDescriptor> publicComposites = moduleContext.getModuleBinding().getModuleResolution().getModuleModel().getCompositeDescriptors();
@@ -85,12 +85,26 @@ public final class LayerContext
             {
                 if( publicService.getVisibility() != Visibility.module )
                 {
-                    modulesForPublicServices.put( publicService.getServiceType(), moduleInstance );
+                    modulesForPublicServices.add( publicService.getServiceType(), moduleInstance );
                 }
             }
         }
 
-        return new LayerInstance( this, moduleInstances, modulesForPublicComposites, modulesForPublicObjects, modulesForPublicServices, serviceRegistry );
+        // Add services from used layers
+        for( Map.Entry<Class, List<ModuleInstance>> entry : availableServiceModules.entrySet() )
+        {
+            for( ModuleInstance moduleInstance : entry.getValue() )
+            {
+                modulesForPublicServices.add( entry.getKey(), moduleInstance );
+            }
+        }
+
+        return new LayerInstance( this,
+                                  moduleInstances,
+                                  modulesForPublicComposites,
+                                  modulesForPublicObjects,
+                                  modulesForPublicServices,
+                                  serviceLocator );
     }
 
 }

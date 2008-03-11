@@ -16,14 +16,12 @@ package org.qi4j.bootstrap;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 import org.qi4j.composite.Composite;
 import org.qi4j.runtime.composite.CompositeModelFactory;
 import org.qi4j.runtime.composite.ObjectModelFactory;
-import org.qi4j.spi.service.ServiceInstanceProvider;
 import org.qi4j.spi.structure.CompositeDescriptor;
 import org.qi4j.spi.structure.ObjectDescriptor;
 import org.qi4j.spi.structure.ServiceDescriptor;
@@ -35,7 +33,7 @@ import org.qi4j.spi.structure.Visibility;
 public final class ModuleAssembly
 {
     private static final Map<Class, Object> EMPTY_MAP = new HashMap<Class, Object>();
-    
+
     private LayerAssembly layerAssembly;
     private String name;
     private List<CompositeDeclaration> compositeDeclarations;
@@ -85,9 +83,9 @@ public final class ModuleAssembly
         return objectDeclaration;
     }
 
-    public ServiceDeclaration addServices( Class<? extends ServiceInstanceProvider> serviceProvider, Class... serviceTypes )
+    public ServiceDeclaration addServices( Class... serviceTypes )
     {
-        ServiceDeclaration serviceDeclaration = new ServiceDeclaration( serviceProvider, Arrays.asList( serviceTypes ) );
+        ServiceDeclaration serviceDeclaration = new ServiceDeclaration( Arrays.asList( serviceTypes ) );
         serviceDeclarations.add( serviceDeclaration );
         return serviceDeclaration;
     }

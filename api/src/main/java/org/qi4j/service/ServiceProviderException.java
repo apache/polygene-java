@@ -14,12 +14,28 @@
 
 package org.qi4j.service;
 
-import org.qi4j.composite.Composite;
-
 /**
  * TODO
  */
-public interface ServiceComposite
-    extends Composite, ServiceStatus
+public class ServiceProviderException
+    extends Exception
 {
+    public ServiceProviderException()
+    {
+    }
+
+    public ServiceProviderException( String string )
+    {
+        super( string );
+    }
+
+    public ServiceProviderException( String string, Throwable throwable )
+    {
+        super( string, throwable );
+    }
+
+    public ServiceProviderException( Throwable throwable )
+    {
+        super( throwable );
+    }
 }

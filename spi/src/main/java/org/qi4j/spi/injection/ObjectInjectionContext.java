@@ -1,28 +1,27 @@
 package org.qi4j.spi.injection;
 
-import java.util.Map;
-import org.qi4j.association.AbstractAssociation;
-import org.qi4j.composite.CompositeBuilderFactory;
-import org.qi4j.composite.ObjectBuilderFactory;
-import org.qi4j.property.Property;
-import org.qi4j.spi.service.ServiceRegistry;
+import org.qi4j.spi.composite.State;
 import org.qi4j.spi.structure.ModuleBinding;
 
 /**
  * TODO
  */
 public final class ObjectInjectionContext extends InjectionContext
-    implements PropertyInjectionContext
+    implements StateInjectionContext
 {
     private Iterable<Object> adapt;
     private Object decorated;
-    private Map<String, Property> properties;
+    private State state;
 
-    public ObjectInjectionContext( CompositeBuilderFactory compositeBuilderFactory, ObjectBuilderFactory objectBuilderFactory, ServiceRegistry serviceRegistry, ModuleBinding moduleBinding, Iterable<Object> adapt, Object decorated, Map<String, Property> properties, Map<String, AbstractAssociation> objectAssociations )
+    public ObjectInjectionContext( StructureContext structureContext,
+                                   ModuleBinding moduleBinding,
+                                   Iterable<Object> adapt,
+                                   Object decorated,
+                                   State state )
     {
-        super( compositeBuilderFactory, objectBuilderFactory, serviceRegistry, moduleBinding );
-        this.properties = properties;
+        super( structureContext, moduleBinding );
         this.adapt = adapt;
+        this.state = state;
         this.decorated = decorated;
     }
 
@@ -36,8 +35,8 @@ public final class ObjectInjectionContext extends InjectionContext
         return decorated;
     }
 
-    public Map<String, Property> getProperties()
+    public State getState()
     {
-        return properties;
+        return state;
     }
 }

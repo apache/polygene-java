@@ -15,8 +15,7 @@
 package org.qi4j.service;
 
 /**
- * Individual Mixins in ServiceComposites may implement this interface
- * to get callbacks upon activation and passivation.
+ * Instances that want to get callbacks on activation and passivation should implement this.
  */
 public interface Activatable
 {

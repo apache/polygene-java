@@ -1,10 +1,7 @@
 package org.qi4j.spi.injection;
 
 import java.lang.reflect.InvocationHandler;
-import org.qi4j.composite.CompositeBuilderFactory;
-import org.qi4j.composite.ObjectBuilderFactory;
 import org.qi4j.spi.composite.CompositeBinding;
-import org.qi4j.spi.service.ServiceRegistry;
 import org.qi4j.spi.structure.ModuleBinding;
 
 /**
@@ -15,9 +12,12 @@ public class FragmentInjectionContext extends InjectionContext
     private CompositeBinding compositeBinding;
     private InvocationHandler thisCompositeAs;
 
-    public FragmentInjectionContext( CompositeBuilderFactory compositeBuilderFactory, ObjectBuilderFactory objectBuilderFactory, ServiceRegistry serviceRegistry, ModuleBinding moduleBinding, CompositeBinding compositeBinding, InvocationHandler thisCompositeAs )
+    public FragmentInjectionContext( StructureContext structureContext,
+                                     ModuleBinding moduleBinding,
+                                     CompositeBinding compositeBinding,
+                                     InvocationHandler thisCompositeAs )
     {
-        super( compositeBuilderFactory, objectBuilderFactory, serviceRegistry, moduleBinding );
+        super( structureContext, moduleBinding );
         this.compositeBinding = compositeBinding;
         this.thisCompositeAs = thisCompositeAs;
     }

@@ -15,6 +15,7 @@
 package org.qi4j.runtime.structure;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,20 +25,23 @@ import org.qi4j.composite.ObjectBuilder;
 import org.qi4j.composite.ObjectBuilderFactory;
 import org.qi4j.entity.EntitySessionFactory;
 import org.qi4j.runtime.entity.EntitySessionFactoryImpl;
+import org.qi4j.runtime.service.ServiceReferenceInstance;
 import org.qi4j.service.Activatable;
 import org.qi4j.service.ActivationListener;
 import org.qi4j.service.ActivationStatus;
 import org.qi4j.service.ActivationStatusChange;
+import org.qi4j.service.ServiceLocator;
+import org.qi4j.service.ServiceReference;
 import org.qi4j.service.ServiceStatus;
+import org.qi4j.spi.injection.StructureContext;
 import org.qi4j.spi.service.ServiceInstanceProvider;
-import org.qi4j.spi.service.ServiceRegistry;
 import org.qi4j.spi.structure.ServiceDescriptor;
 
 /**
  * TODO
  */
 public final class ModuleInstance
-    implements Activatable, ServiceStatus, ServiceRegistry
+    implements Activatable, ServiceStatus, ServiceLocator
 {
     private ModuleContext moduleContext;
 
@@ -47,14 +51,24 @@ public final class ModuleInstance
     private CompositeBuilderFactory compositeBuilderFactory;
     private ObjectBuilderFactory objectBuilderFactory;
     private EntitySessionFactory entitySessionFactory;
-    private ServiceRegistry serviceRegistry;
+    private ServiceLocator serviceLocator;
+    private StructureContext structureContext;
 
     private ActivationStatus status = ActivationStatus.INACTIVE;
     private boolean available = false;
     private List<ActivationListener> activationListeners = new ArrayList<ActivationListener>();
-    private Map<Class, ServiceInstanceProvider> providers = new HashMap<Class, ServiceInstanceProvider>();
 
-    public ModuleInstance( ModuleContext moduleContext, Map<Class<? extends Composite>, ModuleInstance> moduleInstances, Map<Class, ModuleInstance> moduleForPublicObjects, ServiceRegistry layerRegistry )
+    // List of active Services in this Module
+    private List<ServiceReferenceInstance> serviceInstances = new ArrayList<ServiceReferenceInstance>();
+
+    // For each type there may be zero, one or many active instances
+    private Map<Class<?>, List<ServiceReferenceInstance>> serviceReferences = new HashMap<Class<?>, List<ServiceReferenceInstance>>();
+
+
+    public ModuleInstance( ModuleContext moduleContext,
+                           Map<Class<? extends Composite>, ModuleInstance> moduleInstances,
+                           Map<Class, ModuleInstance> moduleForPublicObjects,
+                           ServiceLocator layerServiceLocator )
     {
         this.moduleForPublicObjects = moduleForPublicObjects;
         this.moduleForPublicComposites = moduleInstances;
@@ -63,10 +77,9 @@ public final class ModuleInstance
         compositeBuilderFactory = new ModuleCompositeBuilderFactory( this );
         objectBuilderFactory = new ModuleObjectBuilderFactory( this );
         entitySessionFactory = new EntitySessionFactoryImpl( this );
+        serviceLocator = new ModuleServiceLocator( this, layerServiceLocator );
 
-        this.serviceRegistry = new ModuleServiceRegistry( this, layerRegistry );
-
-        injectServiceProvidersIntoObjectBuilders( moduleContext );
+        structureContext = new StructureContext( compositeBuilderFactory, objectBuilderFactory, entitySessionFactory, serviceLocator );
     }
 
     public ModuleContext getModuleContext()
@@ -74,29 +87,44 @@ public final class ModuleInstance
         return moduleContext;
     }
 
-    public CompositeBuilderFactory getCompositeBuilderFactory()
+    public ServiceLocator getServiceLocator()
     {
-        return compositeBuilderFactory;
+        return serviceLocator;
     }
 
-    public ObjectBuilderFactory getObjectBuilderFactory()
+    public StructureContext getStructureContext()
     {
-        return objectBuilderFactory;
+        return structureContext;
     }
 
-    public EntitySessionFactory getEntitySessionFactory()
+    public <T> ServiceReference<T> lookupService( Class<T> serviceType )
     {
-        return entitySessionFactory;
+        List<ServiceReferenceInstance> serviceRefs = serviceReferences.get( serviceType );
+        if( serviceRefs != null )
+        {
+            if( !serviceRefs.isEmpty() )
+            {
+                return (ServiceReference<T>) serviceRefs.get( 0 );
+            }
+        }
+        return null;
     }
 
-    public ServiceRegistry getServiceRegistry()
+    public <T> Iterable<ServiceReference<T>> lookupServices( Class<T> serviceType )
     {
-        return serviceRegistry;
-    }
+        List<ServiceReferenceInstance> serviceRefs = serviceReferences.get( serviceType );
+        if( serviceRefs == null )
+        {
+            return Collections.emptyList();
+        }
 
-    public ServiceInstanceProvider getServiceProvider( Class type )
-    {
-        return providers.get( type );
+        // TODO: Can this be done without copying the list?? Generics issue...
+        List<ServiceReference<T>> typedServiceRefs = new ArrayList<ServiceReference<T>>( serviceRefs.size() );
+        for( ServiceReferenceInstance serviceRef : serviceRefs )
+        {
+            typedServiceRefs.add( serviceRef );
+        }
+        return typedServiceRefs;
     }
 
     public ModuleInstance getModuleForPublicComposite( Class<? extends Composite> compositeType )
@@ -133,19 +161,18 @@ public final class ModuleInstance
     {
         if( status == ActivationStatus.INACTIVE )
         {
-            // Instantiate all service providers in this module
+            // Instantiate all services in this module
             Iterable<ServiceDescriptor> serviceDescriptors = getModuleContext().getModuleBinding().getModuleResolution().getModuleModel().getServiceDescriptors();
             for( ServiceDescriptor serviceDescriptor : serviceDescriptors )
             {
                 Class<? extends ServiceInstanceProvider> providerType = serviceDescriptor.getServiceProvider();
-                ObjectBuilder<? extends ServiceInstanceProvider> builder = getObjectBuilderFactory().newObjectBuilder( providerType );
-                builder.adapt( serviceDescriptor );
+                ObjectBuilder<? extends ServiceInstanceProvider> builder = objectBuilderFactory.newObjectBuilder( providerType );
                 ServiceInstanceProvider sip = builder.newInstance();
-                activationListeners.add( sip );
                 Class serviceType = serviceDescriptor.getServiceType();
-                registerServiceProvider( serviceType, sip );
+                ServiceReferenceInstance<Object> serviceReference = new ServiceReferenceInstance<Object>( serviceDescriptor, sip );
+                registerServiceReference( serviceType, serviceReference );
+                serviceInstances.add( serviceReference );
             }
-
 
             try
             {
@@ -163,17 +190,6 @@ public final class ModuleInstance
         }
     }
 
-    private void registerServiceProvider( Class serviceType, ServiceInstanceProvider sip )
-    {
-        providers.put( serviceType, sip );
-
-        Class[] extended = serviceType.getInterfaces();
-        for( Class extendedType : extended )
-        {
-            registerServiceProvider( extendedType, sip );
-        }
-    }
-
     public void passivate() throws Exception
     {
         if( status == ActivationStatus.ACTIVE )
@@ -182,6 +198,12 @@ public final class ModuleInstance
             try
             {
                 setActivationStatus( ActivationStatus.STOPPING );
+
+                // Passivate services
+                for( ServiceReferenceInstance<Object> serviceReference : serviceInstances )
+                {
+                    serviceReference.passivate();
+                }
             }
             catch( Exception e )
             {
@@ -189,11 +211,8 @@ public final class ModuleInstance
             }
             setActivationStatus( ActivationStatus.INACTIVE );
 
-            for( ServiceInstanceProvider serviceInstanceProvider : providers.values() )
-            {
-                activationListeners.remove( serviceInstanceProvider );
-            }
-            providers.clear();
+            serviceReferences.clear();
+            serviceInstances.clear();
         }
     }
 
@@ -218,17 +237,22 @@ public final class ModuleInstance
         }
     }
 
-    private void injectServiceProvidersIntoObjectBuilders( ModuleContext moduleContext )
+    private void registerServiceReference( Class serviceType, ServiceReferenceInstance<Object> serviceReference )
     {
-        // Inject service providers
-/* TODO Fix this
-        Map<Class, ServiceInstanceProvider> providers = moduleContext.getModuleBinding().getModuleResolution().getModuleModel().getServiceProviders();
-        for( ServiceInstanceProvider serviceInstanceProvider : providers.values() )
+        // Add to list - create list if none exists
+        List<ServiceReferenceInstance> serviceRefs = serviceReferences.get( serviceType );
+        if( serviceRefs == null )
         {
-            Class serviceProviderType = serviceInstanceProvider.getClass();
-            ObjectBuilder builder = objectBuilderFactory.newObjectBuilder( serviceProviderType );
-            builder.inject( serviceInstanceProvider );
+            serviceRefs = new ArrayList<ServiceReferenceInstance>();
+            serviceReferences.put( serviceType, serviceRefs );
         }
-*/
+        serviceRefs.add( serviceReference );
+
+        Class[] extended = serviceType.getInterfaces();
+        for( Class extendedType : extended )
+        {
+            registerServiceReference( extendedType, serviceReference );
+        }
     }
+
 }

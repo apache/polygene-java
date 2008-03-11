@@ -14,32 +14,36 @@
 
 package org.qi4j.runtime.structure;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import org.qi4j.composite.Composite;
 import org.qi4j.service.Activatable;
-import org.qi4j.spi.service.ServiceRegistry;
+import org.qi4j.service.ServiceLocator;
+import org.qi4j.service.ServiceReference;
 
 /**
  * TODO
  */
 public final class LayerInstance
-    implements Activatable
+    implements Activatable, ServiceLocator
 {
     private LayerContext layerContext;
     private List<ModuleInstance> moduleInstances;
     private Map<Class<? extends Composite>, ModuleInstance> publicCompositeModules;
     private Map<Class, ModuleInstance> publicObjectModules;
-    private Map<Class, ModuleInstance> publicServiceModules;
-    private ServiceRegistry serviceRegistry;
+    private Map<Class, List<ModuleInstance>> publicServiceModules;
+    private ServiceLocator serviceLocator;
 
 
     public LayerInstance( LayerContext layerContext, List<ModuleInstance> moduleInstances,
                           Map<Class<? extends Composite>, ModuleInstance> publicCompositeModules,
                           Map<Class, ModuleInstance> publicObjectModules,
-                          Map<Class, ModuleInstance> publicServiceModules, ServiceRegistry serviceRegistry )
+                          Map<Class, List<ModuleInstance>> publicServiceModules,
+                          ServiceLocator serviceLocator )
     {
-        this.serviceRegistry = serviceRegistry;
+        this.serviceLocator = serviceLocator;
         this.publicServiceModules = publicServiceModules;
         this.publicObjectModules = publicObjectModules;
         this.publicCompositeModules = publicCompositeModules;
@@ -67,14 +71,60 @@ public final class LayerInstance
         return publicObjectModules;
     }
 
-    public Map<Class, ModuleInstance> getPublicServiceModules()
+    public Map<Class, List<ModuleInstance>> getPublicServiceModules()
     {
         return publicServiceModules;
     }
 
-    public ServiceRegistry getServiceRegistry()
+    /**
+     * Lookup a public Service implemented by a Module in this Layer
+     *
+     * @param serviceType
+     * @return
+     */
+    public <T> ServiceReference<T> lookupService( Class<T> serviceType )
     {
-        return serviceRegistry;
+        List<ModuleInstance> modulesForService = publicServiceModules.get( serviceType );
+        if( modulesForService != null )
+        {
+            for( ModuleInstance moduleInstance : modulesForService )
+            {
+                ServiceReference<T> serviceReference = moduleInstance.lookupService( serviceType );
+                if( serviceReference != null )
+                {
+                    return serviceReference;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Lookup public Services implemented by Modules in this Layer
+     *
+     * @param serviceType
+     * @return
+     */
+    public <T> Iterable<ServiceReference<T>> lookupServices( Class<T> serviceType )
+    {
+        List<ModuleInstance> modulesForService = publicServiceModules.get( serviceType );
+        if( modulesForService != null )
+        {
+            List<ServiceReference<T>> serviceRefs = new ArrayList<ServiceReference<T>>();
+            for( ModuleInstance moduleInstance : modulesForService )
+            {
+                Iterable<ServiceReference<T>> serviceReferences = moduleInstance.lookupServices( serviceType );
+                for( ServiceReference<T> serviceReference : serviceReferences )
+                {
+                    serviceRefs.add( serviceReference );
+                }
+            }
+            return serviceRefs;
+        }
+        else
+        {
+            return Collections.emptyList();
+        }
     }
 
     public void activate() throws Exception

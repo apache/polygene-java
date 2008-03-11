@@ -20,7 +20,6 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import org.qi4j.composite.CompositeBuilder;
-import static org.qi4j.composite.PropertyValue.property;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.EntityCompositeNotFoundException;
 import org.qi4j.entity.EntitySession;
@@ -35,10 +34,10 @@ import org.qi4j.runtime.composite.CompositeContext;
 import org.qi4j.runtime.composite.EntityCompositeInstance;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.structure.ServiceMap;
+import org.qi4j.service.ServiceProviderException;
 import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
-import org.qi4j.spi.service.ServiceProviderException;
 
 public final class EntitySessionInstance
     implements EntitySession
@@ -75,7 +74,7 @@ public final class EntitySessionInstance
                 identity = identityGenerators.getService( compositeType ).generate( compositeType );
             }
 
-            builder.properties( Identity.class, property( "identity", identity ) );
+            builder.propertiesFor( Identity.class ).identity().set( identity );
 
             return builder;
         }
@@ -108,8 +107,8 @@ public final class EntitySessionInstance
             EntityEntry entity = getCachedEntity( identity, compositeType );
             if( entity == null )
             {
-                CompositeBuilder<T> builder = moduleInstance.getCompositeBuilderFactory().newCompositeBuilder( compositeType );
-                builder.properties( Identity.class, property( "identity", identity ) );
+                CompositeBuilder<T> builder = moduleInstance.getStructureContext().getCompositeBuilderFactory().newCompositeBuilder( compositeType );
+                builder.propertiesFor( Identity.class ).identity().set( identity );
                 entity = new EntityEntry( EntityStatus.CACHED, builder.newInstance() );
 
                 EntityStore store = entityStores.getService( compositeType );
@@ -153,8 +152,8 @@ public final class EntitySessionInstance
         EntityEntry entity = getCachedEntity( identity, compositeType );
         if( entity == null )
         {
-            CompositeBuilder<T> builder = moduleInstance.getCompositeBuilderFactory().newCompositeBuilder( compositeType );
-            builder.properties( Identity.class, property( "identity", identity ) );
+            CompositeBuilder<T> builder = moduleInstance.getStructureContext().getCompositeBuilderFactory().newCompositeBuilder( compositeType );
+            builder.propertiesFor( Identity.class ).identity().set( identity );
             entity = new EntityEntry( EntityStatus.CACHED, builder.newInstance() );
             Map<String, EntityEntry> entityCache = getEntityCache( compositeType );
             entityCache.put( identity, entity );

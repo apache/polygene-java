@@ -14,7 +14,6 @@
 
 package org.qi4j.runtime.entity;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import org.qi4j.association.AbstractAssociation;
@@ -73,28 +72,22 @@ public final class EntitySessionCompositeBuilder<T extends Composite>
             throw new CompositeInstantiationException( "Could not create new entity in store", e );
         }
 
-        Iterable<AbstractAssociation> associations = state.getAssociations().values();
-        Map<String, AbstractAssociation> associationMap = new HashMap<String, AbstractAssociation>();
         Map<String, AbstractAssociation> associationValues = getAssociationValues();
-        for( AbstractAssociation association : associations )
+        for( Map.Entry<String, AbstractAssociation> association : associationValues.entrySet() )
         {
-            if( associationValues.containsKey( association.getQualifiedName() ) )
+            AbstractAssociation associationValue = state.getAssociation( association.getKey() );
+            if( associationValue instanceof ManyAssociation )
             {
-                AbstractAssociation associationValue = associationValues.get( association.getQualifiedName() );
-                if( associationValue instanceof ManyAssociation )
-                {
-                    ManyAssociation manyAssociation = (ManyAssociation) associationValue;
-                    ManyAssociation newAssociation = (ManyAssociation) association;
-                    newAssociation.addAll( manyAssociation );
-                }
-                else
-                {
-                    Association singleAssociation = (Association) associationValue;
-                    Association newAssociation = (Association) association;
-                    newAssociation.set( singleAssociation.get() );
-                }
+                ManyAssociation manyAssociation = (ManyAssociation) associationValue;
+                ManyAssociation newAssociation = (ManyAssociation) association;
+                manyAssociation.addAll( newAssociation );
             }
-            associationMap.put( association.getQualifiedName(), association );
+            else
+            {
+                Association singleAssociation = (Association) associationValue;
+                Association newAssociation = (Association) association;
+                singleAssociation.set( newAssociation.get() );
+            }
         }
 
         EntityCompositeInstance compositeInstance = context.newEntityCompositeInstance( moduleInstance, entitySession, store, identity );

@@ -14,9 +14,8 @@
 
 package org.qi4j.runtime.injection;
 
-import java.util.Map;
 import org.qi4j.association.AbstractAssociation;
-import org.qi4j.spi.injection.AssociationInjectionContext;
+import org.qi4j.spi.composite.State;
 import org.qi4j.spi.injection.AssociationInjectionModel;
 import org.qi4j.spi.injection.BindingContext;
 import org.qi4j.spi.injection.InjectionContext;
@@ -25,6 +24,7 @@ import org.qi4j.spi.injection.InjectionProviderException;
 import org.qi4j.spi.injection.InjectionProviderFactory;
 import org.qi4j.spi.injection.InjectionResolution;
 import org.qi4j.spi.injection.InvalidInjectionException;
+import org.qi4j.spi.injection.StateInjectionContext;
 
 /**
  * TODO
@@ -35,9 +35,9 @@ public final class AssociationInjectionProviderFactory
     public InjectionProvider newInjectionProvider( BindingContext bindingContext ) throws InvalidInjectionException
     {
         InjectionResolution resolution = bindingContext.getInjectionResolution();
-        if( resolution.getInjectionModel().getInjectionClass().equals( String.class ) && resolution.getInjectionModel().getRawInjectionType().equals( Map.class ) )
+        if( resolution.getInjectionModel().getRawInjectionType().equals( State.class ) )
         {
-            return new AssociationInjectionProviderFactory.AssociationMapInjectionProvider();
+            return new AssociationInjectionProviderFactory.StateInjectionProvider();
         }
         else
         {
@@ -58,10 +58,10 @@ public final class AssociationInjectionProviderFactory
 
         public Object provideInjection( InjectionContext context )
         {
-            if( context instanceof AssociationInjectionContext )
+            if( context instanceof StateInjectionContext )
             {
-                AssociationInjectionContext associationInjectionContext = (AssociationInjectionContext) context;
-                AbstractAssociation abstractAssociation = associationInjectionContext.getAssociations().get( name );
+                StateInjectionContext associationInjectionContext = (StateInjectionContext) context;
+                AbstractAssociation abstractAssociation = associationInjectionContext.getState().getAssociation( name );
                 if( abstractAssociation != null )
                 {
                     return abstractAssociation;
@@ -83,14 +83,14 @@ public final class AssociationInjectionProviderFactory
         }
     }
 
-    private class AssociationMapInjectionProvider implements InjectionProvider
+    private class StateInjectionProvider implements InjectionProvider
     {
         public Object provideInjection( InjectionContext context )
         {
-            if( context instanceof AssociationInjectionContext )
+            if( context instanceof StateInjectionContext )
             {
-                AssociationInjectionContext associationInjectionContext = (AssociationInjectionContext) context;
-                return associationInjectionContext.getAssociations();
+                StateInjectionContext associationInjectionContext = (StateInjectionContext) context;
+                return associationInjectionContext.getState();
             }
 
             return null;

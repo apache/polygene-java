@@ -26,7 +26,7 @@ import java.lang.reflect.TypeVariable;
 public class InjectionModel
 {
     private Class<? extends Annotation> injectionAnnotation;
-    private Type injectedType;
+    private Type injectionType;
     private Class injectedClass;
     protected boolean optional;
 
@@ -34,7 +34,7 @@ public class InjectionModel
     {
         this.injectionAnnotation = injectionAnnotation;
         this.injectedClass = injectedClass;
-        this.injectedType = genericType;
+        this.injectionType = genericType;
         this.optional = optional;
     }
 
@@ -45,7 +45,7 @@ public class InjectionModel
 
     public Type getInjectionType()
     {
-        return injectedType;
+        return injectionType;
     }
 
     /**
@@ -59,13 +59,13 @@ public class InjectionModel
      */
     public Class getRawInjectionType()
     {
-        if( injectedType instanceof Class )
+        if( injectionType instanceof Class )
         {
-            return (Class) injectedType;
+            return (Class) injectionType;
         }
-        else if( injectedType instanceof ParameterizedType )
+        else if( injectionType instanceof ParameterizedType )
         {
-            return (Class) ( (ParameterizedType) injectedType ).getRawType();
+            return (Class) ( (ParameterizedType) injectionType ).getRawType();
         }
         else
         {
@@ -84,17 +84,25 @@ public class InjectionModel
      */
     public Class getInjectionClass()
     {
-        if( injectedType instanceof ParameterizedType )
+        if( injectionType instanceof ParameterizedType )
         {
-            return (Class) ( (ParameterizedType) injectedType ).getActualTypeArguments()[ 0 ];
+            Type type = ( (ParameterizedType) injectionType ).getActualTypeArguments()[ 0 ];
+            if( type instanceof Class )
+            {
+                return (Class) type;
+            }
+            else
+            {
+                return (Class) ( (ParameterizedType) type ).getRawType();
+            }
         }
-        else if( injectedType instanceof TypeVariable )
+        else if( injectionType instanceof TypeVariable )
         {
-            return (Class) ( (TypeVariable) injectedType ).getBounds()[ 0 ];
+            return (Class) ( (TypeVariable) injectionType ).getBounds()[ 0 ];
         }
         else
         {
-            return (Class) injectedType;
+            return (Class) injectionType;
         }
     }
 
@@ -116,7 +124,7 @@ public class InjectionModel
 
         InjectionModel that = (InjectionModel) o;
 
-        if( !injectedType.equals( that.injectedType ) )
+        if( !injectionType.equals( that.injectionType ) )
         {
             return false;
         }
@@ -128,14 +136,14 @@ public class InjectionModel
     @Override public int hashCode()
     {
         int result;
-        result = injectedType.hashCode();
+        result = injectionType.hashCode();
         result = 31 * result + injectedClass.hashCode();
         return result;
     }
 
     @Override public String toString()
     {
-        return ( injectedClass == null ? "" : injectedClass.getSimpleName() + ":" ) + injectedType;
+        return ( injectedClass == null ? "" : injectedClass.getSimpleName() + ":" ) + injectionType;
     }
 
     public boolean isOptional()

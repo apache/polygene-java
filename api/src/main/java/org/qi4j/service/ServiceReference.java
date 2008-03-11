@@ -12,25 +12,25 @@
  *
  */
 
-package org.qi4j.spi.service.provider;
+package org.qi4j.service;
 
 import java.io.Serializable;
 
 /**
- * TODO
+ * From a ServiceReference you can access and modify metadata about a service.
+ * You can also acquire a service instance through getInstance() that can be invoked. When the usage is
+ * done this must be signalled by calling releaseInstance().
  */
-public final class Singleton
-    implements Serializable
+public interface ServiceReference<T>
 {
-    private Object instance;
+    <K extends Serializable> K getServiceInfo( Class<K> infoType );
 
-    public Singleton( Object instance )
-    {
-        this.instance = instance;
-    }
+    <K extends Serializable> void setServiceInfo( Class<K> infoType, K value );
 
-    public Object getInstance()
-    {
-        return instance;
-    }
+    T getInstance()
+        throws ServiceProviderException;
+
+    void release()
+        throws IllegalStateException;
+
 }

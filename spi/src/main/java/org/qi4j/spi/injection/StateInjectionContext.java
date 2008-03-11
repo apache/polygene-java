@@ -12,12 +12,14 @@
  *
  */
 
-package org.qi4j.spi.service;
+package org.qi4j.spi.injection;
+
+import org.qi4j.spi.composite.State;
 
 /**
  * TODO
  */
-public interface ServiceRegistry
+public interface StateInjectionContext
 {
-    ServiceInstanceProvider getServiceProvider( Class type );
+    State getState();
 }

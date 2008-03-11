@@ -14,12 +14,12 @@
 
 package org.qi4j.service;
 
+import java.io.Serializable;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembly;
 import org.qi4j.composite.Mixins;
 import org.qi4j.composite.scope.Service;
-import org.qi4j.spi.service.provider.Singleton;
 import org.qi4j.test.AbstractQi4jTest;
 
 /**
@@ -28,7 +28,7 @@ import org.qi4j.test.AbstractQi4jTest;
 public class ServiceInjectionTest
     extends AbstractQi4jTest
 {
-    public void testInjectSingleton()
+    public void testInjectService()
         throws Exception
     {
         SingletonAssembly assembly = new SingletonAssembly()
@@ -36,14 +36,18 @@ public class ServiceInjectionTest
             public void configure( ModuleAssembly module ) throws AssemblyException
             {
                 module.addComposites( MyServiceComposite.class );
-                module.addServices( Singleton.class, MyServiceComposite.class );
+                module.addServices( MyServiceComposite.class ).setServiceInfo( ServiceName.class, new ServiceName( "Foo" ) );
+                module.addServices( MyServiceComposite.class ).setServiceInfo( ServiceName.class, new ServiceName( "Bar" ) );
                 module.addObjects( ServiceUser.class );
             }
         };
 
         ServiceUser user = assembly.getObjectBuilderFactory().newObjectBuilder( ServiceUser.class ).newInstance();
 
-        assertEquals( "Hello World!", user.doStuff() );
+        assertEquals( "X", user.testSingle() );
+        assertEquals( "XX", user.testIterable() );
+        assertEquals( "FooX", user.testServiceReference() );
+        assertEquals( "FooXBarX", user.testIterableServiceReferences() );
     }
 
     public void configure( ModuleAssembly module )
@@ -70,17 +74,65 @@ public class ServiceInjectionTest
 
         public String doStuff()
         {
-            return "Hello World";
+            return "X";
         }
     }
 
     public static class ServiceUser
     {
         @Service MyService service;
+        @Service Iterable<MyService> services;
+        @Service ServiceReference<MyService> serviceRef;
+        @Service Iterable<ServiceReference<MyService>> serviceRefs;
 
-        public String doStuff()
+        public String testSingle()
         {
-            return service.doStuff() + "!";
+            return service.doStuff();
+        }
+
+        public String testIterable()
+        {
+            String str = "";
+            for( MyService myService : services )
+            {
+                str += myService.doStuff();
+            }
+            return str;
+        }
+
+        public String testServiceReference()
+            throws ServiceProviderException
+        {
+            ServiceName info = serviceRef.getServiceInfo( ServiceName.class );
+            return info.getName() + serviceRef.getInstance().doStuff();
+        }
+
+        public String testIterableServiceReferences()
+            throws ServiceProviderException
+        {
+            String str = "";
+            for( ServiceReference<MyService> serviceReference : serviceRefs )
+            {
+                str += serviceReference.getServiceInfo( ServiceName.class ).getName();
+                str += serviceReference.getInstance().doStuff();
+            }
+            return str;
+        }
+    }
+
+    public static class ServiceName
+        implements Serializable
+    {
+        private String name;
+
+        public ServiceName( String name )
+        {
+            this.name = name;
+        }
+
+        public String getName()
+        {
+            return name;
         }
     }
 }

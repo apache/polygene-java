@@ -17,8 +17,8 @@ package org.qi4j.runtime.structure;
 import java.util.HashMap;
 import java.util.Map;
 import org.qi4j.composite.Composite;
-import org.qi4j.spi.service.ServiceInstance;
-import org.qi4j.spi.service.ServiceProviderException;
+import org.qi4j.service.ServiceProviderException;
+import org.qi4j.service.ServiceReference;
 
 /**
  * TODO
@@ -27,7 +27,7 @@ public final class ServiceMap<T>
 {
     private ModuleInstance moduleInstance;
     private Class<T> serviceClass;
-    private Map<Class<? extends Composite>, ServiceInstance> instances = new HashMap<Class<? extends Composite>, ServiceInstance>();
+    private Map<Class<? extends Composite>, ServiceReference> instances = new HashMap<Class<? extends Composite>, ServiceReference>();
 
     public ServiceMap( ModuleInstance moduleInstance, Class<T> serviceClass )
     {
@@ -38,30 +38,21 @@ public final class ServiceMap<T>
     public T getService( Class<? extends Composite> compositeType )
         throws ServiceProviderException
     {
-        ServiceInstance instance = instances.get( compositeType );
-        if( instance == null )
+        ServiceReference serviceReference = instances.get( compositeType );
+        if( serviceReference == null )
         {
             ModuleInstance realModule = moduleInstance.getModuleForComposite( compositeType );
-            instance = realModule.getServiceRegistry().getServiceProvider( serviceClass ).getInstance();
-            instances.put( compositeType, instance );
+            serviceReference = realModule.getServiceLocator().lookupService( serviceClass );
+            instances.put( compositeType, serviceReference );
         }
-        return (T) instance.getInstance();
+        return (T) serviceReference.getInstance();
     }
 
     public void release()
     {
-        for( ServiceInstance serviceInstance : instances.values() )
+        for( ServiceReference serviceReference : instances.values() )
         {
-            try
-            {
-                serviceInstance.release();
-            }
-            catch( Exception e )
-            {
-                // TODO: I think we should accumulate Exceptions and aggregate into a single Exception
-                //       thrown out of this method.
-                e.printStackTrace();
-            }
+            serviceReference.release();
         }
     }
 }

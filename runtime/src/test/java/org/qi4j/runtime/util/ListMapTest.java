@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,15 +12,26 @@
  *
  */
 
-package org.qi4j.spi.injection;
-
-import java.util.Map;
-import org.qi4j.property.Property;
-
+package org.qi4j.runtime.util;
 /**
- * TODO
+ *  Test for ListMap
  */
-public interface PropertyInjectionContext
+
+import java.util.Collections;
+import java.util.List;
+import junit.framework.TestCase;
+
+public class ListMapTest extends TestCase
 {
-    Map<String, Property> getProperties();
+    ListMap<String, String> listMap;
+
+    public void testAdd() throws Exception
+    {
+        listMap = new ListMap<String, String>();
+
+        listMap.add( "Foo", "Bar" );
+
+        List<String> values = listMap.get( "Foo" );
+        assertEquals( Collections.singletonList( "Bar" ), values );
+    }
 }

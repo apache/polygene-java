@@ -96,17 +96,14 @@ public final class CompositeMethodContext
 
                 Object modifies = getModifies( method, classloader, previousConcern, concernBinding.getConcernResolution().getConcernModel() );
 
-                ModifierInjectionContext modifierContext = new ModifierInjectionContext(
-                    moduleInstance.getCompositeBuilderFactory(),
-                    moduleInstance.getObjectBuilderFactory(),
-                    moduleInstance.getServiceRegistry(),
-                    moduleInstance.getModuleContext().getModuleBinding(),
-                    compositeBinding,
-                    proxyHandler,
-                    modifies,
-                    compositeMethodBinding,
-                    compositeMethodBinding.getMixinBinding(),
-                    proxyHandler );
+                ModifierInjectionContext modifierContext = new ModifierInjectionContext( moduleInstance.getStructureContext(),
+                                                                                         moduleInstance.getModuleContext().getModuleBinding(),
+                                                                                         compositeBinding,
+                                                                                         proxyHandler,
+                                                                                         modifies,
+                                                                                         compositeMethodBinding,
+                                                                                         compositeMethodBinding.getMixinBinding(),
+                                                                                         proxyHandler );
                 previousConcern = runtime.getInstanceFactory().newInstance( concernBinding, modifierContext );
             }
         }
@@ -160,9 +157,7 @@ public final class CompositeMethodContext
         {
             Object modifies = getModifies( method, classloader, sideEffectResult, sideEffectBinding.getSideEffectResolution().getSideEffectModel() );
 
-            ModifierInjectionContext modifierContext = new ModifierInjectionContext( moduleInstance.getCompositeBuilderFactory(),
-                                                                                     moduleInstance.getObjectBuilderFactory(),
-                                                                                     moduleInstance.getServiceRegistry(),
+            ModifierInjectionContext modifierContext = new ModifierInjectionContext( moduleInstance.getStructureContext(),
                                                                                      moduleInstance.getModuleContext().getModuleBinding(),
                                                                                      compositeBinding,
                                                                                      proxyHandler,

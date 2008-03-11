@@ -16,12 +16,8 @@
  */
 package org.qi4j.spi.entity;
 
-import java.util.Map;
-import java.util.List;
-import org.qi4j.association.AbstractAssociation;
-import org.qi4j.entity.EntityComposite;
-import org.qi4j.property.Property;
 import org.qi4j.spi.composite.CompositeBinding;
+import org.qi4j.spi.composite.State;
 
 /**
  * The EntityState is a shared "second-level cache" mixin state container for a particular
@@ -38,6 +34,7 @@ import org.qi4j.spi.composite.CompositeBinding;
  * </pre></code>
  */
 public interface EntityState
+    extends State
 {
     /**
      * Returns the identity of the entity that this EntityState represents.
@@ -52,10 +49,6 @@ public interface EntityState
      * @return the composite binding of the entity represented by this EntityState.
      */
     CompositeBinding getCompositeBinding();
-
-    Map<String, Property> getProperties();
-
-    Map<String, AbstractAssociation> getAssociations();
 
     /**
      * Instruct the EntityState to retrieve the data from the backing store.

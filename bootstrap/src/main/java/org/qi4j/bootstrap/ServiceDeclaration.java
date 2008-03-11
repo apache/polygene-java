@@ -14,31 +14,31 @@
 
 package org.qi4j.bootstrap;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.qi4j.spi.service.ServiceInstanceProvider;
+import org.qi4j.spi.service.provider.DefaultServiceInstanceProvider;
 import org.qi4j.spi.structure.ServiceDescriptor;
 import org.qi4j.spi.structure.Visibility;
-import static org.qi4j.spi.structure.Visibility.module;
 
 /**
  * TODO
  */
 public final class ServiceDeclaration
 {
-    private Class<? extends ServiceInstanceProvider> serviceProvider;
+    private Class<? extends ServiceInstanceProvider> serviceProvider = DefaultServiceInstanceProvider.class;
     private Iterable<Class> serviceTypes;
-    private Map<Class, Object> serviceInfos;
-    private Visibility visibility;
+    private String identity;
+    private boolean activateOnStartup = false;
+    private Map<Class, Serializable> serviceInfos = new HashMap<Class, Serializable>();
+    private Visibility visibility = Visibility.module;
 
-    public ServiceDeclaration( Class<? extends ServiceInstanceProvider> serviceProvider, Iterable<Class> serviceTypes )
+    public ServiceDeclaration( Iterable<Class> serviceTypes )
     {
-        this.serviceProvider = serviceProvider;
         this.serviceTypes = serviceTypes;
-        serviceInfos = new HashMap<Class, Object>();
-        visibility = module;
     }
 
     public ServiceDeclaration visibleIn( Visibility visibility )
@@ -47,7 +47,26 @@ public final class ServiceDeclaration
         return this;
     }
 
-    public <T> ServiceDeclaration setServiceInfo( Class<T> infoType, T serviceInfo )
+    public ServiceDeclaration providedBy( Class<? extends ServiceInstanceProvider> sip )
+    {
+        serviceProvider = sip;
+
+        return this;
+    }
+
+    public ServiceDeclaration identifiedBy( String identity )
+    {
+        this.identity = identity;
+        return this;
+    }
+
+    public ServiceDeclaration activateOnStartup()
+    {
+        activateOnStartup = true;
+        return this;
+    }
+
+    public <K extends Serializable> ServiceDeclaration setServiceInfo( Class<K> infoType, K serviceInfo )
     {
         serviceInfos.put( infoType, serviceInfo );
         return this;
@@ -58,8 +77,13 @@ public final class ServiceDeclaration
         List<ServiceDescriptor> serviceDescriptors = new ArrayList<ServiceDescriptor>();
         for( Class serviceType : serviceTypes )
         {
-            ServiceDescriptor descriptor = new ServiceDescriptor( serviceType, serviceProvider, visibility, serviceInfos );
-            serviceDescriptors.add( descriptor );
+            String id = identity;
+            if( id == null )
+            {
+                id = serviceType.getName();
+            }
+            ServiceDescriptor serviceDescriptor = new ServiceDescriptor( serviceType, serviceProvider, identity, visibility, activateOnStartup, serviceInfos );
+            serviceDescriptors.add( serviceDescriptor );
         }
         return serviceDescriptors;
     }

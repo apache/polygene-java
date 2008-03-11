@@ -16,14 +16,13 @@ package org.qi4j.runtime.composite;
 
 import java.util.Map;
 import java.util.Set;
-import org.qi4j.association.AbstractAssociation;
-import org.qi4j.property.Property;
 import org.qi4j.runtime.property.AssociationContext;
 import org.qi4j.runtime.property.PropertyContext;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.ObjectBinding;
 import org.qi4j.spi.composite.ObjectModel;
 import org.qi4j.spi.composite.ObjectResolution;
+import org.qi4j.spi.composite.State;
 import org.qi4j.spi.injection.ObjectInjectionContext;
 import org.qi4j.spi.structure.ModuleBinding;
 
@@ -79,18 +78,26 @@ public final class ObjectContext
     }
 
 
-    public Object newObjectInstance( ModuleInstance moduleInstance, Set adapt, Object decoratedObject, Map<String, Property> objectProperties, Map<String, AbstractAssociation> objectAssociations )
+    public Object newObjectInstance( ModuleInstance moduleInstance, Set adapt, Object decoratedObject, State state )
     {
-        ObjectInjectionContext objectInjectionContext = new ObjectInjectionContext( moduleInstance.getCompositeBuilderFactory(), moduleInstance.getObjectBuilderFactory(), moduleInstance.getServiceRegistry(), moduleBinding, adapt, decoratedObject, objectProperties, objectAssociations );
+        ObjectInjectionContext objectInjectionContext = new ObjectInjectionContext( moduleInstance.getStructureContext(),
+                                                                                    moduleBinding,
+                                                                                    adapt,
+                                                                                    decoratedObject,
+                                                                                    state );
         Object objectInstance = instanceFactory.newInstance( objectBinding, objectInjectionContext );
 
         // Return
         return objectInstance;
     }
 
-    public void inject( Object instance, ModuleInstance moduleInstance, Set<Object> adaptContext, Object decoratedObject, Map<String, Property> objectProperties, Map<String, AbstractAssociation> objectAssociations )
+    public void inject( Object instance, ModuleInstance moduleInstance, Set<Object> adaptContext, Object decoratedObject, State state )
     {
-        ObjectInjectionContext objectInjectionContext = new ObjectInjectionContext( moduleInstance.getCompositeBuilderFactory(), moduleInstance.getObjectBuilderFactory(), moduleInstance.getServiceRegistry(), moduleBinding, adaptContext, decoratedObject, objectProperties, objectAssociations );
+        ObjectInjectionContext objectInjectionContext = new ObjectInjectionContext( moduleInstance.getStructureContext(),
+                                                                                    moduleBinding,
+                                                                                    adaptContext,
+                                                                                    decoratedObject,
+                                                                                    state );
         instanceFactory.inject( instance, objectBinding, objectInjectionContext );
     }
 }

@@ -14,6 +14,12 @@
 
 package org.qi4j.runtime.injection;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
+import org.qi4j.service.ServiceProviderException;
+import org.qi4j.service.ServiceReference;
 import org.qi4j.spi.injection.BindingContext;
 import org.qi4j.spi.injection.InjectionContext;
 import org.qi4j.spi.injection.InjectionProvider;
@@ -21,9 +27,6 @@ import org.qi4j.spi.injection.InjectionProviderException;
 import org.qi4j.spi.injection.InjectionProviderFactory;
 import org.qi4j.spi.injection.InjectionResolution;
 import org.qi4j.spi.injection.InvalidInjectionException;
-import org.qi4j.spi.service.ServiceInstanceProvider;
-import org.qi4j.spi.service.ServiceProviderException;
-import org.qi4j.spi.structure.ServiceDescriptor;
 
 public final class ServiceInjectionProviderFactory
     implements InjectionProviderFactory
@@ -31,42 +34,122 @@ public final class ServiceInjectionProviderFactory
     public InjectionProvider newInjectionProvider( BindingContext bindingContext ) throws InvalidInjectionException
     {
         InjectionResolution resolution = bindingContext.getInjectionResolution();
-        Class serviceType = resolution.getInjectionModel().getInjectionClass();
-        ServiceDescriptor serviceDescriptor = bindingContext.getModuleResolution().getServiceDescriptor( serviceType );
-        if( serviceDescriptor == null )
-        {
-            serviceDescriptor = bindingContext.getLayerResolution().getServiceDescriptor( serviceType );
-        }
 
-        if( serviceDescriptor == null )
+        if( resolution.getInjectionModel().getRawInjectionType().equals( Iterable.class ) )
         {
-            throw new InvalidInjectionException( "No service found for type " + serviceType.getName() );
-        }
+            if( resolution.getInjectionModel().getInjectionClass().equals( ServiceReference.class ) )
+            {
+                // @Service Iterable<ServiceReference<MyService>> serviceRefs
+                Type[] arguments = ( (ParameterizedType) resolution.getInjectionModel().getInjectionType() ).getActualTypeArguments();
+                Class serviceType = (Class) ( (ParameterizedType) arguments[ 0 ] ).getActualTypeArguments()[ 0 ];
+                return new IterableServiceReferenceProvider( serviceType );
 
-        return new ServiceInjectionProvider( resolution );
+            }
+            else
+            {
+                // @Service Iterable<MyService> services
+                Class serviceType = resolution.getInjectionModel().getInjectionClass();
+                return new IterableServiceProvider( serviceType );
+            }
+
+        }
+        else if( resolution.getInjectionModel().getRawInjectionType().equals( ServiceReference.class ) )
+        {
+            // @Service ServiceReference<MyService> serviceRef
+            Class serviceType = resolution.getInjectionModel().getInjectionClass();
+            return new ServiceReferenceProvider( serviceType );
+        }
+        else
+        {
+            // @Service MyService service
+            Class serviceType = resolution.getInjectionModel().getInjectionClass();
+            return new ServiceProvider( serviceType );
+        }
     }
 
-    static class ServiceInjectionProvider
+    static class IterableServiceReferenceProvider
         implements InjectionProvider
     {
-        private InjectionResolution injectionResolution;
+        private Class serviceType;
 
-        public ServiceInjectionProvider( InjectionResolution injectionResolution )
+        public IterableServiceReferenceProvider( Class serviceType )
         {
-            this.injectionResolution = injectionResolution;
+            this.serviceType = serviceType;
+        }
+
+        public Object provideInjection( InjectionContext context ) throws InjectionProviderException
+        {
+            Iterable<ServiceReference> serviceReferences = context.getStructureContext().getServiceLocator().lookupServices( serviceType );
+            return serviceReferences;
+        }
+    }
+
+    static class IterableServiceProvider
+        implements InjectionProvider
+    {
+        private Class serviceType;
+
+        public IterableServiceProvider( Class serviceType )
+        {
+            this.serviceType = serviceType;
         }
 
         public Object provideInjection( InjectionContext context ) throws InjectionProviderException
         {
             try
             {
-                ServiceInstanceProvider serviceInstanceProvider = context.getServiceRegistry().getServiceProvider( injectionResolution.getInjectionModel().getInjectionClass() );
-                Object service = serviceInstanceProvider.getInstance().getInstance();
+                Iterable<ServiceReference> serviceReferences = context.getStructureContext().getServiceLocator().lookupServices( serviceType );
+                List serviceInstances = new ArrayList();
+                for( ServiceReference serviceReference : serviceReferences )
+                {
+                    serviceInstances.add( serviceReference.getInstance() );
+                }
+                return serviceInstances;
+            }
+            catch( ServiceProviderException e )
+            {
+                throw new InjectionProviderException( "Could not get service instances", e );
+            }
+        }
+    }
+
+    static class ServiceReferenceProvider
+        implements InjectionProvider
+    {
+        private Class serviceType;
+
+        public ServiceReferenceProvider( Class serviceType )
+        {
+            this.serviceType = serviceType;
+        }
+
+        public Object provideInjection( InjectionContext context ) throws InjectionProviderException
+        {
+            return context.getStructureContext().getServiceLocator().lookupServices( serviceType );
+        }
+    }
+
+    static class ServiceProvider
+        implements InjectionProvider
+    {
+        private Class serviceType;
+
+        public ServiceProvider( Class serviceType )
+        {
+            this.serviceType = serviceType;
+        }
+
+        public Object provideInjection( InjectionContext context ) throws InjectionProviderException
+        {
+            try
+            {
+                ServiceReference serviceReference = context.getStructureContext().getServiceLocator().lookupService( serviceType );
+                Object service = serviceReference.getInstance();
                 return service;
             }
             catch( ServiceProviderException e )
             {
-                throw new InjectionProviderException( "Could not provide injected value", e );
+                throw new InjectionProviderException( "Could not get service instance", e );
             }
         }
     }

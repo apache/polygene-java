@@ -19,10 +19,11 @@ package org.qi4j.runtime.injection;
 
 import java.lang.reflect.Type;
 import org.qi4j.Qi4j;
-import org.qi4j.entity.EntitySessionFactory;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.ObjectBuilderFactory;
+import org.qi4j.entity.EntitySessionFactory;
 import org.qi4j.runtime.Qi4jRuntime;
+import org.qi4j.service.ServiceLocator;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.injection.BindingContext;
 import org.qi4j.spi.injection.InjectionContext;
@@ -30,7 +31,7 @@ import org.qi4j.spi.injection.InjectionProvider;
 import org.qi4j.spi.injection.InjectionProviderFactory;
 import org.qi4j.spi.injection.InjectionResolution;
 import org.qi4j.spi.injection.InvalidInjectionException;
-import org.qi4j.spi.service.ServiceRegistry;
+import org.qi4j.spi.injection.StructureContext;
 import org.qi4j.spi.structure.ModuleBinding;
 
 public final class StructureInjectionProviderFactory
@@ -63,17 +64,23 @@ public final class StructureInjectionProviderFactory
         {
             Type type = resolution.getInjectionModel().getInjectionType();
 
+            StructureContext structureContext = context.getStructureContext();
+
             if( type.equals( CompositeBuilderFactory.class ) )
             {
-                return context.getCompositeBuilderFactory();
+                return structureContext.getCompositeBuilderFactory();
             }
             else if( type.equals( ObjectBuilderFactory.class ) )
             {
-                return context.getObjectBuilderFactory();
+                return structureContext.getObjectBuilderFactory();
             }
-            else if( type.equals( ServiceRegistry.class ) )
+            else if( type.equals( EntitySessionFactory.class ) )
             {
-                return context.getServiceRegistry();
+                return structureContext.getEntitySessionFactory();
+            }
+            else if( type.equals( ServiceLocator.class ) )
+            {
+                return structureContext.getServiceLocator();
             }
             else if( type.equals( ModuleBinding.class ) )
             {

@@ -16,11 +16,11 @@ package org.qi4j.runtime.property;
 
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
-import org.qi4j.property.Property;
 import org.qi4j.property.ImmutableProperty;
+import org.qi4j.property.Property;
 import org.qi4j.runtime.structure.ModuleInstance;
-import org.qi4j.spi.property.PropertyBinding;
 import org.qi4j.spi.property.ImmutablePropertyInstance;
+import org.qi4j.spi.property.PropertyBinding;
 import org.qi4j.spi.property.PropertyInstance;
 
 /**
@@ -49,7 +49,7 @@ public final class PropertyContext
             if( Composite.class.isAssignableFrom( propertyType ) )
             {
                 Class<? extends Composite> propertyCompositeType = (Class<? extends Composite>) propertyType;
-                CompositeBuilder<? extends Composite> cb = moduleInstance.getCompositeBuilderFactory().newCompositeBuilder( propertyCompositeType );
+                CompositeBuilder<? extends Composite> cb = moduleInstance.getStructureContext().getCompositeBuilderFactory().newCompositeBuilder( propertyCompositeType );
                 cb.adapt( propertyBinding );
                 cb.decorate( value );
                 return Property.class.cast( cb.newInstance() );

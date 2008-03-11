@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,25 +12,27 @@
  *
  */
 
-package org.qi4j.spi.service;
+package org.qi4j.spi.service.provider;
 
 import org.qi4j.service.ServiceProviderException;
+import org.qi4j.spi.service.ServiceInstance;
+import org.qi4j.spi.service.ServiceInstanceProvider;
 import org.qi4j.spi.structure.ServiceDescriptor;
 
 /**
- * TODO
+ * Return a predefined singleton instance that was provided as service-info
+ * through the Singleton class.
  */
-public interface ServiceInstanceProvider
+public class SingletonInstanceProvider
+    implements ServiceInstanceProvider
 {
-    Object newInstance( ServiceDescriptor serviceDescriptor )
-        throws ServiceProviderException;
 
-    /**
-     * Called for each client releasing the instance from use.
-     *
-     * @param instance The
-     * @throws Exception
-     */
-    void releaseInstance( ServiceInstance instance )
-        throws Exception;
+    public Object newInstance( ServiceDescriptor serviceDescriptor ) throws ServiceProviderException
+    {
+        return serviceDescriptor.getServiceInfo( Singleton.class ).getInstance();
+    }
+
+    public void releaseInstance( ServiceInstance instance ) throws Exception
+    {
+    }
 }

@@ -32,6 +32,7 @@ import org.qi4j.runtime.property.PropertyContext;
 import org.qi4j.spi.composite.AssociationModel;
 import org.qi4j.spi.composite.AssociationResolution;
 import org.qi4j.spi.composite.PropertyResolution;
+import org.qi4j.spi.composite.State;
 import org.qi4j.spi.property.AssociationBinding;
 import org.qi4j.spi.property.PropertyBinding;
 import org.qi4j.spi.property.PropertyModel;
@@ -122,7 +123,7 @@ public final class ObjectBuilderImpl<T>
         }
 
 
-        return (T) objectContext.newObjectInstance( moduleInstance, adaptContext, decoratedObject, properties, associations );
+        return (T) objectContext.newObjectInstance( moduleInstance, adaptContext, decoratedObject, new ObjectBuilderState( properties, associations ) );
     }
 
     public Iterator<T> iterator()
@@ -152,7 +153,7 @@ public final class ObjectBuilderImpl<T>
         Map<String, AbstractAssociation> associations = new HashMap<String, AbstractAssociation>();
 
         // Inject existing object
-        objectContext.inject( instance, moduleInstance, adaptContext, decoratedObject, properties, associations );
+        objectContext.inject( instance, moduleInstance, adaptContext, decoratedObject, new ObjectBuilderState( properties, associations ) );
     }
 
     // Private ------------------------------------------------------
@@ -183,6 +184,29 @@ public final class ObjectBuilderImpl<T>
             associationValues = new HashMap<String, AbstractAssociation>();
         }
         return associationValues;
+    }
+
+    static class ObjectBuilderState
+        implements State
+    {
+        Map<String, Property> properties;
+        Map<String, AbstractAssociation> associations;
+
+        public ObjectBuilderState( Map<String, Property> properties, Map<String, AbstractAssociation> associations )
+        {
+            this.properties = properties;
+            this.associations = associations;
+        }
+
+        public Property getProperty( String qualifiedName )
+        {
+            return properties.get( qualifiedName );
+        }
+
+        public AbstractAssociation getAssociation( String qualifiedName )
+        {
+            return associations.get( qualifiedName );
+        }
     }
 
 }

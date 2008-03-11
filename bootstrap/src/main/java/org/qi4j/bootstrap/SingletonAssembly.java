@@ -17,11 +17,13 @@ package org.qi4j.bootstrap;
 import org.qi4j.Qi4j;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.ObjectBuilderFactory;
+import org.qi4j.entity.EntitySessionFactory;
 import org.qi4j.runtime.Energy4Java;
 import org.qi4j.runtime.Qi4jRuntime;
 import org.qi4j.runtime.structure.ApplicationInstance;
 import org.qi4j.runtime.structure.LayerInstance;
 import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.service.ServiceLocator;
 
 /**
  * TODO
@@ -35,8 +37,7 @@ public abstract class SingletonAssembly
     private ApplicationAssemblyFactory applicationAssemblyFactory = new ApplicationAssemblyFactory();
     private ApplicationFactory applicationFactory = new ApplicationFactory( runtime, applicationAssemblyFactory );
     private ApplicationInstance applicationInstance;
-    private CompositeBuilderFactory compositeBuilderFactory;
-    private ObjectBuilderFactory objectBuilderFactory;
+    private ModuleInstance moduleInstance;
 
     public SingletonAssembly()
         throws IllegalStateException
@@ -59,9 +60,7 @@ public abstract class SingletonAssembly
             throw new IllegalStateException( "Could not activate application", e );
         }
 
-        ModuleInstance moduleInstance = applicationInstance.getLayerInstances().iterator().next().getModuleInstances().iterator().next();
-        compositeBuilderFactory = moduleInstance.getCompositeBuilderFactory();
-        objectBuilderFactory = moduleInstance.getObjectBuilderFactory();
+        moduleInstance = applicationInstance.getLayerInstances().iterator().next().getModuleInstances().iterator().next();
     }
 
     public Qi4jRuntime getRuntime()
@@ -91,16 +90,26 @@ public abstract class SingletonAssembly
 
     public ModuleInstance getModuleInstance()
     {
-        return getLayerInstance().getModuleInstances().get( 0 );
+        return moduleInstance;
     }
 
     public CompositeBuilderFactory getCompositeBuilderFactory()
     {
-        return compositeBuilderFactory;
+        return moduleInstance.getStructureContext().getCompositeBuilderFactory();
     }
 
     public ObjectBuilderFactory getObjectBuilderFactory()
     {
-        return objectBuilderFactory;
+        return moduleInstance.getStructureContext().getObjectBuilderFactory();
+    }
+
+    public EntitySessionFactory getEntitySessionFactory()
+    {
+        return moduleInstance.getStructureContext().getEntitySessionFactory();
+    }
+
+    public ServiceLocator getServiceLocator()
+    {
+        return moduleInstance.getStructureContext().getServiceLocator();
     }
 }
