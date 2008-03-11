@@ -23,13 +23,14 @@ import org.qi4j.injection.InjectionScope;
 import org.qi4j.injection.Optional;
 
 /**
- * Annotation to denote the injection of a dependency to be adapted into a Mixin.
+ * Annotation to denote the injection of a dependency to be used by a Mixin. The injected
+ * object is provided by the CompositeBuilder
  */
 @Retention( RetentionPolicy.RUNTIME )
 @Target( { ElementType.PARAMETER, ElementType.FIELD } )
 @Documented
 @InjectionScope
-public @interface Adapt
+public @interface Uses
 {
-    @Optional boolean optional() default false; // True if adaptation is optional, only fail if false
+    @Optional boolean optional() default false; // True if usage is optional, only fail if false
 }

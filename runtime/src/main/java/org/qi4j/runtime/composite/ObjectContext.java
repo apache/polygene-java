@@ -22,7 +22,6 @@ import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.ObjectBinding;
 import org.qi4j.spi.composite.ObjectModel;
 import org.qi4j.spi.composite.ObjectResolution;
-import org.qi4j.spi.composite.State;
 import org.qi4j.spi.injection.ObjectInjectionContext;
 import org.qi4j.spi.structure.ModuleBinding;
 
@@ -78,26 +77,22 @@ public final class ObjectContext
     }
 
 
-    public Object newObjectInstance( ModuleInstance moduleInstance, Set adapt, Object decoratedObject, State state )
+    public Object newObjectInstance( ModuleInstance moduleInstance, Set<Object> uses )
     {
         ObjectInjectionContext objectInjectionContext = new ObjectInjectionContext( moduleInstance.getStructureContext(),
                                                                                     moduleBinding,
-                                                                                    adapt,
-                                                                                    decoratedObject,
-                                                                                    state );
+                                                                                    uses );
         Object objectInstance = instanceFactory.newInstance( objectBinding, objectInjectionContext );
 
         // Return
         return objectInstance;
     }
 
-    public void inject( Object instance, ModuleInstance moduleInstance, Set<Object> adaptContext, Object decoratedObject, State state )
+    public void inject( Object instance, ModuleInstance moduleInstance, Set<Object> uses )
     {
         ObjectInjectionContext objectInjectionContext = new ObjectInjectionContext( moduleInstance.getStructureContext(),
                                                                                     moduleBinding,
-                                                                                    adaptContext,
-                                                                                    decoratedObject,
-                                                                                    state );
+                                                                                    uses );
         instanceFactory.inject( instance, objectBinding, objectInjectionContext );
     }
 }

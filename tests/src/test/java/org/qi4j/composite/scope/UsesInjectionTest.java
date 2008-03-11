@@ -12,38 +12,57 @@
  *
  */
 
-package org.qi4j.composite;
+package org.qi4j.composite.scope;
 
 import org.qi4j.bootstrap.ModuleAssembly;
-import static org.qi4j.composite.PropertyValue.property;
-import static org.qi4j.spi.property.PropertyModel.getQualifiedName;
+import org.qi4j.composite.ObjectBuilder;
 import org.qi4j.test.AbstractQi4jTest;
-import org.qi4j.test.model1.Object1;
 
 /**
  * TODO
  */
-public class ObjectPropertyTest extends AbstractQi4jTest
+public class UsesInjectionTest extends AbstractQi4jTest
 {
     public void configure( ModuleAssembly module )
     {
-        module.addObjects( Object1.class );
+        module.addObjects( Object1.class, Object2.class );
     }
 
-    public void testPropertyInjection()
+    public void testUses()
         throws Exception
     {
         ObjectBuilder<Object1> builder = objectBuilderFactory.newObjectBuilder( Object1.class );
-        builder.properties( property( getQualifiedName( Object1.class, "foo" ), "Test1" ) );
-        builder.properties( property( getQualifiedName( Object1.class, "bar" ), "Test2" ) );
-        builder.properties( property( getQualifiedName( Object1.class, "xyzzy" ), 42 ) );
+        Object2 used = new Object2( "Object2" );
+        builder.uses( used );
 
-/* TODO Fix this
         Object1 object = builder.newInstance();
 
-       assertEquals( "Test1", object.foo().get() );
-        assertEquals( "Test2", object.bar().get() );
-        assertEquals( 42, (int)object.xyzzy().get() );
-        */
+        assertEquals( used, object.getUsed() );
+    }
+
+    public static class Object1
+    {
+        @Uses
+        Object2 used;
+
+        public Object2 getUsed()
+        {
+            return used;
+        }
+    }
+
+    public class Object2
+    {
+        String name;
+
+        public Object2( String name )
+        {
+            this.name = name;
+        }
+
+        public String getName()
+        {
+            return name;
+        }
     }
 }

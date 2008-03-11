@@ -127,7 +127,7 @@ public final class CompositeContext
     }
 
     public CompositeInstance newCompositeInstance( ModuleInstance moduleInstance,
-                                                   Set<Object> adapt, Object decoratedObject,
+                                                   Set<Object> uses,
                                                    State state )
     {
         CompositeInstance compositeInstance = new StandardCompositeInstance( this, moduleInstance );
@@ -140,7 +140,7 @@ public final class CompositeContext
         Object[] mixins = new Object[mixinContexts.size()];
         compositeInstance.setMixins( mixins );
         newMixins( moduleInstance, compositeInstance,
-                   adapt, decoratedObject,
+                   uses,
                    state,
                    mixins );
 
@@ -221,16 +221,19 @@ public final class CompositeContext
     {
         Object[] mixins = new Object[mixinContexts.size()];
         compositeInstance.setMixins( mixins );
-        newMixins( moduleInstance, compositeInstance, Collections.emptySet(), null, state, mixins );
+        newMixins( moduleInstance, compositeInstance, Collections.emptySet(), state, mixins );
     }
 
     public void newMixins( ModuleInstance moduleInstance,
                            CompositeInstance compositeInstance,
-                           Set adaptContext, Object decoratedObject,
+                           Set<Object> uses,
                            State state,
                            Object[] mixins )
     {
-        Set<Object> adapt = adaptContext == null ? EMPTY_SET : adaptContext;
+        if( uses == null )
+        {
+            uses = EMPTY_SET;
+        }
 
         int i = 0;
         for( MixinContext mixinContext : mixinContexts )
@@ -239,8 +242,7 @@ public final class CompositeContext
                                                                                 moduleInstance.getModuleContext().getModuleBinding(),
                                                                                 compositeBinding,
                                                                                 compositeInstance,
-                                                                                adapt,
-                                                                                decoratedObject,
+                                                                                uses,
                                                                                 state );
             Object mixin = instanceFactory.newInstance( mixinContext.getMixinBinding(), injectionContext );
             mixins[ i++ ] = mixin;

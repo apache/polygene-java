@@ -12,10 +12,10 @@ import org.qi4j.spi.injection.ObjectInjectionContext;
 /**
  * TODO
  */
-public final class AdaptInjectionProviderFactory
+public final class UsesInjectionProviderFactory
     implements InjectionProviderFactory
 {
-    public AdaptInjectionProviderFactory()
+    public UsesInjectionProviderFactory()
     {
     }
 
@@ -40,12 +40,12 @@ public final class AdaptInjectionProviderFactory
             if( context instanceof ObjectInjectionContext )
             {
                 ObjectInjectionContext objectInjectionContext = (ObjectInjectionContext) context;
-                adapt = objectInjectionContext.getAdapt();
+                adapt = objectInjectionContext.getUses();
             }
             else if( context instanceof MixinInjectionContext )
             {
                 MixinInjectionContext mixinInjectionContext = (MixinInjectionContext) context;
-                adapt = mixinInjectionContext.getAdapt();
+                adapt = mixinInjectionContext.getUses();
             }
             else
             {

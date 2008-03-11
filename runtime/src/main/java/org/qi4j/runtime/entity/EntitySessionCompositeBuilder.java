@@ -48,7 +48,7 @@ public final class EntitySessionCompositeBuilder<T extends Composite>
         this.store = store;
     }
 
-    public void adapt( Object mixin )
+    public void uses( Object mixin )
     {
         throw new CompositeInstantiationException( "Entities may not adapt other objects" );
     }

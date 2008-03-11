@@ -23,15 +23,11 @@ public interface ObjectBuilder<T>
     extends Iterable<T>
 {
     /**
-     * Make the given object available for @Adapt injection
+     * Make the given object available for @Uses injection
      *
      * @param object the object to be adapted
      */
-    void adapt( Object object );
-
-    void decorate( Object object );
-
-    void properties( PropertyValue... properties );
+    void uses( Object object );
 
     T newInstance();
 

@@ -12,17 +12,15 @@ public final class MixinInjectionContext extends FragmentInjectionContext
     implements StateInjectionContext
 {
     private State state;
-    private Iterable<Object> adapt;
-    private Object decorated;
+    private Iterable<Object> uses;
 
     public MixinInjectionContext( StructureContext structureContext,
                                   ModuleBinding moduleBinding, CompositeBinding compositeBinding, InvocationHandler thisCompositeAs,
-                                  Iterable<Object> adapt, Object decorated, State state )
+                                  Iterable<Object> uses, State state )
     {
         super( structureContext, moduleBinding, compositeBinding, thisCompositeAs );
         this.state = state;
-        this.adapt = adapt;
-        this.decorated = decorated;
+        this.uses = uses;
     }
 
     public State getState()
@@ -30,13 +28,8 @@ public final class MixinInjectionContext extends FragmentInjectionContext
         return state;
     }
 
-    public Iterable<Object> getAdapt()
+    public Iterable<Object> getUses()
     {
-        return adapt;
-    }
-
-    public Object getDecorated()
-    {
-        return decorated;
+        return uses;
     }
 }

@@ -55,8 +55,7 @@ public class CompositeBuilderImpl<T extends Composite>
     protected ModuleInstance moduleInstance;
     protected CompositeContext context;
 
-    protected Set adaptContext;
-    protected Object decoratedObject;
+    protected Set uses;
     protected Map<String, Object> propertyValues;
     protected Map<String, AbstractAssociation> associationValues;
 
@@ -67,14 +66,9 @@ public class CompositeBuilderImpl<T extends Composite>
         this.compositeInterface = (Class<? extends T>) context.getCompositeBinding().getCompositeResolution().getCompositeModel().getCompositeClass();
     }
 
-    public void adapt( Object adaptedObject )
+    public void uses( Object adaptedObject )
     {
-        getAdaptContext().add( adaptedObject );
-    }
-
-    public <K, T extends K> void decorate( K decoratedObject )
-    {
-        this.decoratedObject = decoratedObject;
+        getUses().add( adaptedObject );
     }
 
     public <K> void properties( Class<K> mixinType, PropertyValue... properties )
@@ -166,7 +160,7 @@ public class CompositeBuilderImpl<T extends Composite>
         }
 
         CompositeInstance compositeInstance = context.newCompositeInstance( moduleInstance,
-                                                                            adaptContext, decoratedObject,
+                                                                            uses,
                                                                             new CompositeBuilderState( properties, associations ) );
         return compositeInterface.cast( compositeInstance.getProxy() );
     }
@@ -192,13 +186,13 @@ public class CompositeBuilderImpl<T extends Composite>
         };
     }
 
-    private Set getAdaptContext()
+    private Set getUses()
     {
-        if( adaptContext == null )
+        if( uses == null )
         {
-            adaptContext = new LinkedHashSet();
+            uses = new LinkedHashSet();
         }
-        return adaptContext;
+        return uses;
     }
 
     protected Map<String, Object> getPropertyValues()

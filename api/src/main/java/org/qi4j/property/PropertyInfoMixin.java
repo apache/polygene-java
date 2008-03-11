@@ -14,7 +14,7 @@
 
 package org.qi4j.property;
 
-import org.qi4j.composite.scope.Adapt;
+import org.qi4j.composite.scope.Uses;
 
 /**
  * TODO
@@ -22,7 +22,7 @@ import org.qi4j.composite.scope.Adapt;
 public class PropertyInfoMixin
     implements PropertyInfo
 {
-    @Adapt PropertyInfo info;
+    @Uses PropertyInfo info;
 
     public <T> T getPropertyInfo( Class<T> infoType )
     {

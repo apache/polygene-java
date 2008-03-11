@@ -23,14 +23,12 @@ public interface CompositeBuilder<T extends Composite>
     extends Iterable<T>
 {
     /**
-     * Adapts the mixin object to be used for any mixin references missing in the builder, and can
-     * be provided by the mixin object.
+     * Provide an object that can be injected into mixins that has the @Uses
+     * dependency injection annotation.
      *
-     * @param mixin The object to use as a mixin.
+     * @param usedObject The object that can be injected into mixins.
      */
-    void adapt( Object mixin );
-
-    <K, T extends K> void decorate( K object );
+    void uses( Object usedObject );
 
     <K> void properties( Class<K> mixinType, PropertyValue... properties );
 

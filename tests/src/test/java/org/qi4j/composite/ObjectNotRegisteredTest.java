@@ -16,7 +16,6 @@ package org.qi4j.composite;
 
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
-import org.qi4j.test.model1.Object2;
 
 /**
  * TODO
@@ -25,7 +24,6 @@ public class ObjectNotRegisteredTest extends AbstractQi4jTest
 {
     public void configure( ModuleAssembly module )
     {
-//        module.addObject( Object2.class);
     }
 
     public void testObjectNotRegistered()
@@ -33,12 +31,17 @@ public class ObjectNotRegisteredTest extends AbstractQi4jTest
     {
         try
         {
-            ObjectBuilder<Object2> builder = objectBuilderFactory.newObjectBuilder( Object2.class );
+            ObjectBuilder<Object1> builder = objectBuilderFactory.newObjectBuilder( Object1.class );
             fail( "Could create builder for unregistered object type" );
         }
         catch( Exception e )
         {
             // Ok!
         }
+    }
+
+    public static final class Object1
+    {
+
     }
 }

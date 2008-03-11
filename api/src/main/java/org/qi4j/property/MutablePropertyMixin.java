@@ -14,7 +14,7 @@
 
 package org.qi4j.property;
 
-import org.qi4j.composite.scope.Decorate;
+import org.qi4j.composite.scope.Uses;
 
 /**
  * TODO
@@ -24,7 +24,7 @@ public abstract class MutablePropertyMixin<Object>
 {
     private Object value;
 
-    public void write( @Decorate Object value )
+    public void write( @Uses Object value )
     {
         this.value = value;
     }
