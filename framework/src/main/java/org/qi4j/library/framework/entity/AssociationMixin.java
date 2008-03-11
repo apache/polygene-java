@@ -16,25 +16,25 @@ package org.qi4j.library.framework.entity;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.util.Map;
 import org.qi4j.association.AbstractAssociation;
 import org.qi4j.composite.AppliesTo;
 import org.qi4j.composite.AppliesToFilter;
 import org.qi4j.composite.scope.AssociationField;
+import org.qi4j.spi.composite.State;
 
 /**
- * Generic mixin for properties.
+ * Generic mixin for state.
  */
 @AppliesTo( { AssociationMixin.AssocationFilter.class } )
 public class AssociationMixin
     implements InvocationHandler
 {
-    @AssociationField Map<String, AbstractAssociation> associations;
+    @AssociationField State associations;
 
     @SuppressWarnings( "unchecked" )
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
     {
-        return associations.get( method.getDeclaringClass().getName() + ":" + method.getName() );
+        return associations.getAssociation( method.getDeclaringClass().getName() + ":" + method.getName() );
     }
 
     public static class AssocationFilter

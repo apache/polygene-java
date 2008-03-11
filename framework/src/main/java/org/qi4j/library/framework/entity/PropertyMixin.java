@@ -16,26 +16,26 @@ package org.qi4j.library.framework.entity;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.util.Map;
 import org.qi4j.composite.AppliesTo;
 import org.qi4j.composite.AppliesToFilter;
 import org.qi4j.composite.scope.PropertyField;
 import org.qi4j.property.Property;
+import org.qi4j.spi.composite.State;
 
 /**
- * Generic mixin for properties.
+ * Generic mixin for state.
  */
 @AppliesTo( { PropertyMixin.PropertyFilter.class } )
 public class PropertyMixin
     implements InvocationHandler
 {
-    @PropertyField Map<String, Property> properties;
+    @PropertyField State state;
 
     @SuppressWarnings( "unchecked" )
     public Object invoke( Object proxy, Method method, Object[] args )
         throws Throwable
     {
-        return properties.get( method.getDeclaringClass().getName() + ":" + method.getName() );
+        return state.getProperty( method.getDeclaringClass().getName() + ":" + method.getName() );
     }
 
     public static class PropertyFilter

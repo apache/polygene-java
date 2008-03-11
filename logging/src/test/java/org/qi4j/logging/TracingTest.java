@@ -24,14 +24,12 @@ import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.Concerns;
 import org.qi4j.composite.Mixins;
-import org.qi4j.composite.scope.Adapt;
 import org.qi4j.composite.scope.ConcernFor;
 import org.qi4j.composite.scope.Structure;
 import org.qi4j.logging.service.LogServiceComposite;
-import org.qi4j.service.ActivationStatusChange;
+import org.qi4j.service.ServiceProviderException;
 import org.qi4j.spi.service.ServiceInstance;
 import org.qi4j.spi.service.ServiceInstanceProvider;
-import org.qi4j.spi.service.ServiceProviderException;
 import org.qi4j.spi.structure.ServiceDescriptor;
 import org.qi4j.test.AbstractQi4jTest;
 
@@ -105,30 +103,18 @@ public class TracingTest extends AbstractQi4jTest
     {
         @Structure CompositeBuilderFactory factory;
 
-        private ServiceInstance serviceInstance;
-
-        public void init( @Adapt ServiceDescriptor descriptor )
+        public Object newInstance( ServiceDescriptor serviceDescriptor ) throws ServiceProviderException
         {
             CompositeBuilder<LogServiceComposite> builder = factory.newCompositeBuilder( LogServiceComposite.class );
             LogService props = builder.propertiesFor( LogService.class );
             props.traceLevel().set( Trace.NORMAL );
             props.debugLevel().set( Debug.NORMAL );
             LogServiceComposite instance = builder.newInstance();
-            serviceInstance = new ServiceInstance( instance, this, descriptor.getServiceInfos() );
-        }
-
-        public ServiceInstance getInstance() throws ServiceProviderException
-        {
-            return serviceInstance;
+            return instance;
         }
 
         public void releaseInstance( ServiceInstance instance ) throws Exception
         {
-        }
-
-        public void onActivationStatusChange( ActivationStatusChange change ) throws Exception
-        {
-            System.out.println( "Activation: " + change.getNewStatus() );
         }
     }
 }
