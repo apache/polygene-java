@@ -14,6 +14,7 @@
 
 package org.qi4j.spi.structure;
 
+import java.io.Serializable;
 import java.util.Map;
 import org.qi4j.spi.composite.CompositeModel;
 
@@ -23,10 +24,10 @@ import org.qi4j.spi.composite.CompositeModel;
 public final class CompositeDescriptor
 {
     private CompositeModel compositeModel;
-    private Map<Class, Object> compositeInfos;
+    private Map<Class, Serializable> compositeInfos;
     private Visibility visibility;
 
-    public CompositeDescriptor( CompositeModel compositeModel, Map<Class, Object> compositeInfos, Visibility visibility )
+    public CompositeDescriptor( CompositeModel compositeModel, Map<Class, Serializable> compositeInfos, Visibility visibility )
     {
         this.compositeModel = compositeModel;
         this.compositeInfos = compositeInfos;
@@ -38,7 +39,7 @@ public final class CompositeDescriptor
         return compositeModel;
     }
 
-    public Map<Class, Object> getCompositeInfos()
+    public Map<Class, Serializable> getCompositeInfos()
     {
         return compositeInfos;
     }

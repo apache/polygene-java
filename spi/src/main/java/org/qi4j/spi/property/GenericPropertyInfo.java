@@ -17,21 +17,22 @@
  */
 package org.qi4j.spi.property;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import org.qi4j.property.PropertyInfo;
 
-public class GenericPropertyInfo
+public final class GenericPropertyInfo
     implements PropertyInfo
 {
-    private HashMap<Class, Object> infos;
+    private HashMap<Class, Serializable> infos;
     private final String qualifiedName;
     private final String name;
 
-    public GenericPropertyInfo( String name, String qualifiedName )
+    public GenericPropertyInfo( String qualifiedName )
     {
         this.qualifiedName = qualifiedName;
-        this.name = name;
-        infos = new HashMap<Class, Object>();
+        this.name = PropertyModel.getName( qualifiedName );
+        infos = new HashMap<Class, Serializable>();
     }
 
     public <T> T getPropertyInfo( Class<T> infoType )
@@ -50,22 +51,12 @@ public class GenericPropertyInfo
         return qualifiedName;
     }
 
-    public <T> void addProperty( Class<T> infoType, T instance )
+    public <T extends Serializable> void setPropertyInfo( Class<T> infoType, T instance )
     {
         synchronized( infos )
         {
-            HashMap<Class, Object> clone = (HashMap<Class, Object>) infos.clone();
-            clone.remove( infoType );
-            infos = clone;
-        }
-    }
-
-    public <T> void removeProperty( Class<T> infoType )
-    {
-        synchronized( infos )
-        {
-            HashMap<Class, Object> clone = (HashMap<Class, Object>) infos.clone();
-            clone.remove( infoType );
+            HashMap<Class, Serializable> clone = (HashMap<Class, Serializable>) infos.clone();
+            clone.put( infoType, instance );
             infos = clone;
         }
     }

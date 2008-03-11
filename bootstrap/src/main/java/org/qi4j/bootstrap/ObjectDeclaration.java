@@ -14,6 +14,7 @@
 
 package org.qi4j.bootstrap;
 
+import java.io.Serializable;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,7 +30,7 @@ import org.qi4j.spi.structure.Visibility;
 public final class ObjectDeclaration
 {
     private Iterable<Class> objectTypes;
-    private Map<Class, Object> objectInfos = new HashMap<Class, Object>();
+    private Map<Class, Serializable> objectInfos = new HashMap<Class, Serializable>();
     private Visibility visibility = Visibility.module;
 
     public ObjectDeclaration( Iterable<Class> classes )
@@ -45,7 +46,7 @@ public final class ObjectDeclaration
         this.objectTypes = classes;
     }
 
-    public <T> ObjectDeclaration addObjectInfo( Class<T> infoType, T info )
+    public <T extends Serializable> ObjectDeclaration setObjectInfo( Class<T> infoType, T info )
     {
         objectInfos.put( infoType, info );
         return this;

@@ -14,6 +14,7 @@
 
 package org.qi4j.bootstrap;
 
+import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -31,7 +32,7 @@ import org.qi4j.spi.structure.PropertyDescriptor;
 public final class PropertyDeclaration
 {
     private Class valueType;
-    private Map<Class, Object> propertyInfos = new HashMap<Class, Object>();
+    private Map<Class, Serializable> propertyInfos = new HashMap<Class, Serializable>();
     private Object defaultValue;
     private Method accessor;
 
@@ -44,7 +45,7 @@ public final class PropertyDeclaration
         return mixinType.cast( Proxy.newProxyInstance( mixinType.getClassLoader(), new Class[]{ mixinType }, new AccessorInvocationHandler() ) );
     }
 
-    public <T> PropertyDeclaration setPropertyInfo( Class<T> infoType, Object propertyInfo )
+    public <T extends Serializable> PropertyDeclaration setPropertyInfo( Class<T> infoType, T propertyInfo )
     {
         this.propertyInfos.put( infoType, propertyInfo );
         return this;
@@ -120,9 +121,10 @@ public final class PropertyDeclaration
             return null;
         }
 
-        public void set( Object newValue ) throws PropertyVetoException
+        public Object set( Object newValue ) throws PropertyVetoException
         {
             defaultValue = newValue;
+            return newValue;
         }
     }
 }

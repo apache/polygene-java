@@ -57,9 +57,10 @@ public class PropertyInstance<T> extends ComputedPropertyInstance<T>
      *
      * @param aNewValue The new value.
      */
-    public void set( T aNewValue )
+    public T set( T aNewValue )
     {
         value = aNewValue;
+        return value;
     }
 
     /**

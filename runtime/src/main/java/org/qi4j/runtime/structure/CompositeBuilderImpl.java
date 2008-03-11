@@ -239,7 +239,7 @@ public class CompositeBuilderImpl<T extends Composite>
             {
                 Object defValue = propertyContext.getPropertyBinding().getDefaultValue();
                 PropertyBinding binding = propertyContext.getPropertyBinding();
-                PropertyInstance<Object> propertyInstance = new ImmutablePropertySupport( binding, defValue, propertyContext );
+                PropertyInstance<Object> propertyInstance = new ImmutablePropertySupport<Object>( binding, defValue, propertyContext );
                 return propertyInstance;
             }
             else
@@ -250,22 +250,23 @@ public class CompositeBuilderImpl<T extends Composite>
 
     }
 
-    private class ImmutablePropertySupport extends PropertyInstance<Object>
-        implements ImmutableProperty<Object>
+    private class ImmutablePropertySupport<T> extends PropertyInstance<T>
+        implements ImmutableProperty<T>
     {
         private final PropertyContext propertyContext;
 
-        public ImmutablePropertySupport( PropertyBinding binding, Object defValue, PropertyContext propertyContext )
+        public ImmutablePropertySupport( PropertyBinding binding, T defValue, PropertyContext propertyContext )
             throws IllegalArgumentException
         {
             super( binding, defValue );
             this.propertyContext = propertyContext;
         }
 
-        @Override public void set( Object newValue ) throws PropertyVetoException
+        @Override public T set( T newValue ) throws PropertyVetoException
         {
             super.set( newValue );
             setProperty( propertyContext, newValue );
+            return newValue;
         }
     }
 

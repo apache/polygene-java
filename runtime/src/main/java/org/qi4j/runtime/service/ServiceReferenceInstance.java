@@ -15,9 +15,13 @@
 package org.qi4j.runtime.service;
 
 import java.io.Serializable;
+import org.qi4j.property.ImmutableProperty;
 import org.qi4j.service.Activatable;
 import org.qi4j.service.ServiceProviderException;
 import org.qi4j.service.ServiceReference;
+import org.qi4j.spi.property.GenericPropertyInfo;
+import org.qi4j.spi.property.ImmutablePropertyInstance;
+import org.qi4j.spi.property.PropertyModel;
 import org.qi4j.spi.service.ServiceInstance;
 import org.qi4j.spi.service.ServiceInstanceProvider;
 import org.qi4j.spi.structure.ServiceDescriptor;
@@ -30,6 +34,7 @@ public class ServiceReferenceInstance<T>
 {
     private ServiceDescriptor serviceDescriptor;
     private ServiceInstanceProvider serviceInstanceProvider;
+    private ImmutableProperty identity;
 
     private ServiceInstance<T> serviceInstance;
     private int referenceCounter = 0;
@@ -38,6 +43,12 @@ public class ServiceReferenceInstance<T>
     {
         this.serviceDescriptor = serviceDescriptor;
         this.serviceInstanceProvider = serviceInstanceProvider;
+        identity = new ImmutablePropertyInstance( new GenericPropertyInfo( PropertyModel.getQualifiedName( ServiceReference.class, "identity" ) ), serviceDescriptor.getIdentity() );
+    }
+
+    public ImmutableProperty identity()
+    {
+        return identity;
     }
 
     public <K extends Serializable> K getServiceInfo( Class<K> infoType )

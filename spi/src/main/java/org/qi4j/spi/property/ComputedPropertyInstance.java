@@ -66,7 +66,7 @@ public abstract class ComputedPropertyInstance<T>
      * @throws PropertyVetoException Thrown by default.
      * @since 0.1.0
      */
-    public void set( T anIgnoredValue )
+    public T set( T anIgnoredValue )
         throws PropertyVetoException
     {
         String qualifiedName = getQualifiedName();

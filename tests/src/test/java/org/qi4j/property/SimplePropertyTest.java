@@ -14,6 +14,7 @@
 
 package org.qi4j.property;
 
+import java.io.Serializable;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -94,10 +95,11 @@ public class SimplePropertyTest extends AbstractQi4jTest
     {
         @ConcernFor Property<String> next;
 
-        public void set( String newValue ) throws PropertyVetoException
+        public String set( String newValue ) throws PropertyVetoException
         {
             newValue = newValue.toUpperCase();
             next.set( newValue );
+            return newValue;
         }
     }
 
@@ -121,13 +123,15 @@ public class SimplePropertyTest extends AbstractQi4jTest
         @ThisCompositeAs ImmutableProperty current;
         @ThisCompositeAs PropertyInfo info;
 
-        public void set( Object newValue ) throws PropertyVetoException
+        public Object set( Object newValue ) throws PropertyVetoException
         {
             System.out.println( "Property " + info.getName() + " changed from " + current.get() + " to " + newValue );
+            return newValue;
         }
     }
 
     public static class DisplayInfo
+        implements Serializable
     {
         private String name;
         private String description;
@@ -171,6 +175,7 @@ public class SimplePropertyTest extends AbstractQi4jTest
     }
 
     public static class RdfInfo
+        implements Serializable
     {
         private String predicate;
         private String namespace;

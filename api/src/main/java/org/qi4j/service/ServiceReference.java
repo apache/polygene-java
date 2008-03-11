@@ -15,6 +15,7 @@
 package org.qi4j.service;
 
 import java.io.Serializable;
+import org.qi4j.property.ImmutableProperty;
 
 /**
  * From a ServiceReference you can access and modify metadata about a service.
@@ -23,6 +24,8 @@ import java.io.Serializable;
  */
 public interface ServiceReference<T>
 {
+    ImmutableProperty identity();
+
     <K extends Serializable> K getServiceInfo( Class<K> infoType );
 
     <K extends Serializable> void setServiceInfo( Class<K> infoType, K value );

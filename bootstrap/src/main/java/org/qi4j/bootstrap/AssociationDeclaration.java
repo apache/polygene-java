@@ -14,6 +14,7 @@
 
 package org.qi4j.bootstrap;
 
+import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -30,7 +31,7 @@ import org.qi4j.spi.structure.AssociationDescriptor;
 public final class AssociationDeclaration
 {
     private Method accessor;
-    private Map<Class, Object> associationInfos = new HashMap<Class, Object>();
+    private Map<Class, Serializable> associationInfos = new HashMap<Class, Serializable>();
     private Class associatedType;
     private Class associationType;
 
@@ -38,7 +39,7 @@ public final class AssociationDeclaration
     {
     }
 
-    public <T> AssociationDeclaration setAssociationInfo( Class<T> infoType, T info )
+    public <T extends Serializable> AssociationDeclaration setAssociationInfo( Class<T> infoType, T info )
     {
         associationInfos.put( infoType, info );
         return this;

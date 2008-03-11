@@ -39,9 +39,10 @@ public abstract class MutablePropertyMixin<Object>
         return value;
     }
 
-    public void set( Object newValue ) throws PropertyVetoException
+    public Object set( Object newValue ) throws PropertyVetoException
     {
         value = newValue;
+        return newValue;
     }
 
 }

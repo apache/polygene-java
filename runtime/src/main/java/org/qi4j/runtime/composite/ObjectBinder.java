@@ -14,6 +14,7 @@
 
 package org.qi4j.runtime.composite;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -60,7 +61,7 @@ public final class ObjectBinder extends CompositeBinder
             for( PropertyModel propertyModel : propertyModels )
             {
                 PropertyDescriptor propertyDescriptor = bindingContext.getModuleResolution().getModuleModel().getPropertyDescriptor( propertyModel.getAccessor() );
-                Map<Class, Object> propertyInfos;
+                Map<Class, Serializable> propertyInfos;
                 if( propertyDescriptor != null )
                 {
                     propertyInfos = propertyDescriptor.getPropertyInfos();
@@ -79,7 +80,7 @@ public final class ObjectBinder extends CompositeBinder
             for( AssociationModel associationModel : associationModels )
             {
                 AssociationDescriptor associationDescriptor = bindingContext.getModuleResolution().getModuleModel().getAssociationDescriptor( associationModel.getAccessor() );
-                Map<Class, Object> associationInfos;
+                Map<Class, Serializable> associationInfos;
                 if( associationDescriptor != null )
                 {
                     associationInfos = associationDescriptor.getAssociationInfos();

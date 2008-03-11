@@ -17,11 +17,10 @@
  */
 package org.qi4j.spi.property;
 
+import org.qi4j.composite.NullArgumentException;
 import org.qi4j.property.ImmutableProperty;
 import org.qi4j.property.Property;
 import org.qi4j.property.PropertyVetoException;
-import org.qi4j.property.PropertyInfo;
-import org.qi4j.composite.NullArgumentException;
 
 public class ImmutableFacade<T>
     implements ImmutableProperty<T>
@@ -39,7 +38,7 @@ public class ImmutableFacade<T>
         return target.get();
     }
 
-    public void set( T newValue )
+    public T set( T newValue )
         throws PropertyVetoException
     {
         throw new PropertyVetoException( "Property '" + getQualifiedName() + "' is immutable." );

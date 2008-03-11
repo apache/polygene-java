@@ -14,6 +14,7 @@
 
 package org.qi4j.property;
 
+import java.io.Serializable;
 import javax.swing.Icon;
 import org.qi4j.association.ManyAssociation;
 import org.qi4j.bootstrap.AssemblyHelper;
@@ -103,6 +104,7 @@ public class SimpleAssociationTest extends AbstractQi4jTest
     }
 
     public static class DisplayInfo
+        implements Serializable
     {
         private String name;
         private String description;
@@ -146,6 +148,7 @@ public class SimpleAssociationTest extends AbstractQi4jTest
     }
 
     public static class RdfInfo
+        implements Serializable
     {
         private String predicate;
         private String namespace;

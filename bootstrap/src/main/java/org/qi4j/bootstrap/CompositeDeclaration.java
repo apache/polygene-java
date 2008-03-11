@@ -14,11 +14,11 @@
 
 package org.qi4j.bootstrap;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.awt.Color;
 import org.qi4j.composite.Composite;
 import org.qi4j.runtime.composite.CompositeModelFactory;
 import org.qi4j.spi.composite.CompositeModel;
@@ -31,7 +31,7 @@ import org.qi4j.spi.structure.Visibility;
 public final class CompositeDeclaration
 {
     private Class<? extends Composite>[] compositeTypes;
-    private Map<Class, Object> compositeInfos = new HashMap<Class, Object>();
+    private Map<Class, Serializable> compositeInfos = new HashMap<Class, Serializable>();
     private Visibility visibility = Visibility.module;
 
     public CompositeDeclaration( Class<? extends Composite>[] compositeTypes )
@@ -39,7 +39,7 @@ public final class CompositeDeclaration
         this.compositeTypes = compositeTypes;
     }
 
-    public <T> CompositeDeclaration setCompositeInfo( Class<T> infoType, T info )
+    public <T extends Serializable> CompositeDeclaration setCompositeInfo( Class<T> infoType, T info )
     {
         compositeInfos.put( infoType, info );
         return this;

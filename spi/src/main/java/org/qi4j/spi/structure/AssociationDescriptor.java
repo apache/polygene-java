@@ -14,6 +14,7 @@
 
 package org.qi4j.spi.structure;
 
+import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.Map;
 
@@ -24,10 +25,10 @@ public final class AssociationDescriptor
 {
     private Class associationType;
     private Class associatedType;
-    private Map<Class, Object> associationInfos;
+    private Map<Class, Serializable> associationInfos;
     private Method accessor;
 
-    public AssociationDescriptor( Class associationType, Class associatedType, Map<Class, Object> associationInfos, Method accessor )
+    public AssociationDescriptor( Class associationType, Class associatedType, Map<Class, Serializable> associationInfos, Method accessor )
     {
         this.associationType = associationType;
         this.associatedType = associatedType;
@@ -45,7 +46,7 @@ public final class AssociationDescriptor
         return associatedType;
     }
 
-    public Map<Class, Object> getAssociationInfos()
+    public Map<Class, Serializable> getAssociationInfos()
     {
         return associationInfos;
     }

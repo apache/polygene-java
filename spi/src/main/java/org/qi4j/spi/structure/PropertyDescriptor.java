@@ -14,6 +14,7 @@
 
 package org.qi4j.spi.structure;
 
+import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.Map;
 
@@ -23,11 +24,11 @@ import java.util.Map;
 public final class PropertyDescriptor
 {
     private Class valueType;
-    private Map<Class, Object> propertyInfos;
+    private Map<Class, Serializable> propertyInfos;
     private Method accessor;
     private Object defaultValue;
 
-    public PropertyDescriptor( Class valueType, Map<Class, Object> propertyInfos, Method accessor, Object defaultValue )
+    public PropertyDescriptor( Class valueType, Map<Class, Serializable> propertyInfos, Method accessor, Object defaultValue )
     {
         this.valueType = valueType;
         this.propertyInfos = propertyInfos;
@@ -40,7 +41,7 @@ public final class PropertyDescriptor
         return valueType;
     }
 
-    public Map<Class, Object> getPropertyInfos()
+    public Map<Class, Serializable> getPropertyInfos()
     {
         return propertyInfos;
     }

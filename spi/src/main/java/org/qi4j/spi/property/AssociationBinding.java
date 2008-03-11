@@ -14,6 +14,7 @@
 
 package org.qi4j.spi.property;
 
+import java.io.Serializable;
 import java.util.Map;
 import org.qi4j.association.AssociationInfo;
 import org.qi4j.spi.composite.AssociationResolution;
@@ -25,9 +26,9 @@ public final class AssociationBinding
     implements AssociationInfo
 {
     private AssociationResolution associationResolution;
-    private Map<Class, Object> associationInfo;
+    private Map<Class, Serializable> associationInfo;
 
-    public AssociationBinding( AssociationResolution associationResolution, Map<Class, Object> associationInfo )
+    public AssociationBinding( AssociationResolution associationResolution, Map<Class, Serializable> associationInfo )
     {
         this.associationInfo = associationInfo;
         this.associationResolution = associationResolution;

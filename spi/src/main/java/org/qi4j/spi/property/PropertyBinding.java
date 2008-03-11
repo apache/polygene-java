@@ -14,6 +14,7 @@
 
 package org.qi4j.spi.property;
 
+import java.io.Serializable;
 import java.util.Map;
 import org.qi4j.property.PropertyInfo;
 import org.qi4j.spi.composite.PropertyResolution;
@@ -25,10 +26,10 @@ public final class PropertyBinding
     implements PropertyInfo
 {
     private PropertyResolution propertyResolution;
-    private Map<Class, Object> propertyInfo;
+    private Map<Class, Serializable> propertyInfo;
     private Object defaultValue;
 
-    public PropertyBinding( PropertyResolution propertyResolution, Map<Class, Object> propertyInfo, Object defaultValue )
+    public PropertyBinding( PropertyResolution propertyResolution, Map<Class, Serializable> propertyInfo, Object defaultValue )
     {
         this.defaultValue = defaultValue;
         this.propertyInfo = propertyInfo;

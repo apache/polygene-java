@@ -14,6 +14,7 @@
 
 package org.qi4j.bootstrap;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -32,7 +33,7 @@ import org.qi4j.spi.structure.Visibility;
  */
 public final class ModuleAssembly
 {
-    private static final Map<Class, Object> EMPTY_MAP = new HashMap<Class, Object>();
+    private static final Map<Class, Serializable> EMPTY_MAP = new HashMap<Class, Serializable>();
 
     private LayerAssembly layerAssembly;
     private String name;
