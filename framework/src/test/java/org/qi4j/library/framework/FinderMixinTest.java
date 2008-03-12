@@ -9,7 +9,7 @@ import org.qi4j.test.AbstractQi4jTest;
 public class FinderMixinTest
     extends AbstractQi4jTest
 {
-    public void configure( ModuleAssembly module )
+    public void assemble( ModuleAssembly module )
     {
 //        module.addComposite( Composite1.class );
     }

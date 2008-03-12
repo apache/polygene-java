@@ -17,7 +17,7 @@
  */
 package org.qi4j.logging;
 
-import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.AssemblerException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
@@ -35,11 +35,11 @@ import org.qi4j.test.AbstractQi4jTest;
 
 public class TracingTest extends AbstractQi4jTest
 {
-    public void configure( ModuleAssembly module )
-        throws AssemblyException
+    public void assemble( ModuleAssembly module )
+        throws AssemblerException
     {
-        module.addComposites( SomeComposite.class, LogServiceComposite.class );
-        module.addServices( LogServiceProvider.class, LogServiceComposite.class );
+        module.addComposites( SomeComposite.class );
+        module.addServices( LogServiceComposite.class );
     }
 
     public void testTrace()
