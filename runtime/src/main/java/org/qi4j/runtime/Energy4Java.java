@@ -89,17 +89,47 @@ public final class Energy4Java
         providerFactories.put( Service.class, new ServiceInjectionProviderFactory() );
         InjectionProviderFactory ipf = new InjectionProviderFactoryStrategy( providerFactories );
 
-        instanceFactory = delegate == null ? new InstanceFactoryImpl() : delegate.getInstanceFactory();
-        compositeModelFactory = delegate == null ? new CompositeModelFactory() : delegate.getCompositeModelFactory();
-        compositeResolver = delegate == null ? new CompositeResolver() : delegate.getCompositeResolver();
-        compositeBinder = delegate == null ? new CompositeBinder( ipf ) : delegate.getCompositeBinder();
-
-        objectModelFactory = delegate == null ? new ObjectModelFactory() : delegate.getObjectModelFactory();
-        objectResolver = delegate == null ? new ObjectResolver() : delegate.getObjectResolver();
-        objectBinder = delegate == null ? new ObjectBinder( ipf ) : delegate.getObjectBinder();
+        if( delegate != null )
+        {
+            instanceFactory = delegate.getInstanceFactory();
+            compositeModelFactory = delegate.getCompositeModelFactory();
+            compositeResolver = delegate.getCompositeResolver();
+            compositeBinder = delegate.getCompositeBinder();
+            objectModelFactory = delegate.getObjectModelFactory();
+            objectResolver = delegate.getObjectResolver();
+            objectBinder = delegate.getObjectBinder();
+        }
+        if( instanceFactory == null )
+        {
+            instanceFactory = new InstanceFactoryImpl();
+        }
+        if( compositeModelFactory == null )
+        {
+            compositeModelFactory = new CompositeModelFactory();
+        }
+        if( compositeResolver == null )
+        {
+            compositeResolver = new CompositeResolver();
+        }
+        if( compositeBinder == null )
+        {
+            compositeBinder = new CompositeBinder( ipf );
+        }
+        if( objectModelFactory == null )
+        {
+            objectModelFactory = new ObjectModelFactory();
+        }
+        if( objectResolver == null )
+        {
+            objectResolver = new ObjectResolver();
+        }
+        if( objectBinder == null )
+        {
+            objectBinder = new ObjectBinder( ipf );
+        }
     }
 
-    // API
+// API
 
     public <S extends Composite, T extends S> Class<S> getSuperComposite( Class<T> compositeClass )
     {
