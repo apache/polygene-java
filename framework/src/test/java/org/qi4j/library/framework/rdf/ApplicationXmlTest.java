@@ -26,6 +26,7 @@ import org.openrdf.rio.RDFWriter;
 import org.openrdf.rio.RDFWriterFactory;
 import org.openrdf.rio.n3.N3WriterFactory;
 import org.openrdf.rio.rdfxml.RDFXMLWriterFactory;
+import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.LayerAssembly;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
@@ -46,6 +47,7 @@ public class ApplicationXmlTest
 {
 
     public void configure( ModuleAssembly module )
+        throws AssemblyException
     {
         LayerAssembly layerAssembly = module.getLayerAssembly();
         layerAssembly.getApplicationAssembly().setName( "testapp" );

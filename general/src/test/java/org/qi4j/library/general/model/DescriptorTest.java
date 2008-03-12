@@ -12,6 +12,7 @@
  */
 package org.qi4j.library.general.model;
 
+import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
@@ -23,6 +24,7 @@ import org.qi4j.test.AbstractQi4jTest;
 public class DescriptorTest extends AbstractQi4jTest
 {
     public void configure( ModuleAssembly module )
+        throws AssemblyException
     {
         module.addComposites( DummyComposite.class, DummyComposite2.class );
     }
