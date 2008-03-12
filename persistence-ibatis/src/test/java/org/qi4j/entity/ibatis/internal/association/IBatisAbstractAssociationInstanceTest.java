@@ -18,7 +18,7 @@ package org.qi4j.entity.ibatis.internal.association;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.AssemblerException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.entity.ibatis.AccountComposite;
@@ -148,8 +148,8 @@ public class IBatisAbstractAssociationInstanceTest extends AbstractQi4jTest
         assertEquals( primaryContactPersonBinding, instance.associationBinding );
     }
 
-    public final void configure( ModuleAssembly aModule )
-        throws AssemblyException
+    public final void assemble( ModuleAssembly aModule )
+        throws AssemblerException
     {
         aModule.addComposites( AccountComposite.class );
         aModule.addComposites( PersonComposite.class );

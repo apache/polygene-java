@@ -28,7 +28,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
 import org.apache.derby.drda.NetworkServerControl;
-import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.AssemblerException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entity.ibatis.dbInitializer.DBInitializerInfo;
 import org.qi4j.test.AbstractQi4jTest;
@@ -267,8 +267,8 @@ public abstract class AbstractTestCase extends AbstractQi4jTest
      * @param aModule The single module.
      * @since 0.1.0
      */
-    public void configure( ModuleAssembly aModule )
-        throws AssemblyException
+    public void assemble( ModuleAssembly aModule )
+        throws AssemblerException
     {
     }
 }

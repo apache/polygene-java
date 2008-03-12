@@ -21,7 +21,7 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
-import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.AssemblerException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.PropertyDeclaration;
 import org.qi4j.composite.CompositeBuilderFactory;
@@ -469,8 +469,8 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
     }
 
     @Override
-    public final void configure( ModuleAssembly aModule )
-        throws AssemblyException
+    public final void assemble( ModuleAssembly aModule )
+        throws AssemblerException
     {
         String testName = getName();
         if( "testComputePropertyValue".equals( testName ) ||
