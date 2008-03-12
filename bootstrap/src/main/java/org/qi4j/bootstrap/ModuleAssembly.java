@@ -14,12 +14,9 @@
 
 package org.qi4j.bootstrap;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.qi4j.composite.Composite;
 import org.qi4j.runtime.composite.CompositeModelFactory;
 import org.qi4j.runtime.composite.ObjectModelFactory;
@@ -33,8 +30,6 @@ import org.qi4j.spi.structure.ServiceDescriptor;
  */
 public final class ModuleAssembly
 {
-    private static final Map<Class, Serializable> EMPTY_MAP = new HashMap<Class, Serializable>();
-
     private LayerAssembly layerAssembly;
     private String name;
     private List<CompositeDeclaration> compositeDeclarations;
