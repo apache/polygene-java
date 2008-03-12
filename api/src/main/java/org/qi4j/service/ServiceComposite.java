@@ -20,6 +20,6 @@ import org.qi4j.composite.Composite;
  * TODO
  */
 public interface ServiceComposite
-    extends Composite, ServiceStatus
+    extends Composite
 {
 }

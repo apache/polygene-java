@@ -16,6 +16,7 @@ package org.qi4j.bootstrap;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -34,6 +35,7 @@ import org.qi4j.runtime.property.PropertyContext;
 import org.qi4j.runtime.structure.ApplicationContext;
 import org.qi4j.runtime.structure.LayerContext;
 import org.qi4j.runtime.structure.ModuleContext;
+import org.qi4j.service.ServiceComposite;
 import org.qi4j.spi.composite.AssociationModel;
 import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.composite.CompositeMethodBinding;
@@ -46,6 +48,7 @@ import org.qi4j.spi.injection.ResolutionContext;
 import org.qi4j.spi.property.AssociationBinding;
 import org.qi4j.spi.property.PropertyBinding;
 import org.qi4j.spi.property.PropertyModel;
+import org.qi4j.spi.service.ServiceInstanceProvider;
 import org.qi4j.spi.structure.ApplicationBinding;
 import org.qi4j.spi.structure.ApplicationModel;
 import org.qi4j.spi.structure.ApplicationResolution;
@@ -59,6 +62,7 @@ import org.qi4j.spi.structure.ModuleModel;
 import org.qi4j.spi.structure.ModuleResolution;
 import org.qi4j.spi.structure.ObjectDescriptor;
 import org.qi4j.spi.structure.PropertyDescriptor;
+import org.qi4j.spi.structure.ServiceDescriptor;
 import org.qi4j.spi.structure.Visibility;
 
 /**
@@ -326,12 +330,43 @@ public final class ApplicationBuilder
 
         List<CompositeDescriptor> compositeDescriptors = moduleAssembly.getCompositeDescriptors( runtime.getCompositeModelFactory() );
 
-        Iterable<ObjectDescriptor> objectDescriptors = moduleAssembly.getObjectDescriptors( runtime.getObjectModelFactory() );
+        List<ObjectDescriptor> objectDescriptors = moduleAssembly.getObjectDescriptors( runtime.getObjectModelFactory() );
+
+        List<ServiceDescriptor> serviceDescriptors = moduleAssembly.getServiceDescriptors();
+
+        for( ServiceDescriptor serviceDescriptor : serviceDescriptors )
+        {
+            if( ServiceComposite.class.isAssignableFrom( serviceDescriptor.getServiceType() ) )
+            {
+                // Add as composite
+                Class<? extends Composite>[] serviceComposite = new Class[]{ serviceDescriptor.getServiceType() };
+                compositeDescriptors.add( new CompositeDeclaration( serviceComposite ).getCompositeDescriptors( runtime.getCompositeModelFactory() ).get( 0 ) );
+            }
+
+            // Register instance provider
+            {
+                boolean found = false;
+                Class<? extends ServiceInstanceProvider> provider = serviceDescriptor.getServiceProvider();
+                for( ObjectDescriptor objectDescriptor : objectDescriptors )
+                {
+                    if( objectDescriptor.getObjectModel().getModelClass().equals( provider ) )
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+                if( !found )
+                {
+                    Set providerClass = Collections.singleton( provider );
+                    objectDescriptors.add( new ObjectDeclaration( providerClass ).getObjectDescriptors( runtime.getObjectModelFactory() ).get( 0 ) );
+                }
+            }
+        }
 
         ModuleModel moduleModel = new ModuleModel( moduleAssembly.getName(),
                                                    compositeDescriptors,
                                                    objectDescriptors,
-                                                   moduleAssembly.getServiceDescriptors(),
+                                                   serviceDescriptors,
                                                    propertyDescriptors,
                                                    associationDescriptors );
         return moduleModel;

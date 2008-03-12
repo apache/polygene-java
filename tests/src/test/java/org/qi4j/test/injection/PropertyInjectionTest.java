@@ -12,6 +12,7 @@
  */
 package org.qi4j.test.injection;
 
+import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
@@ -26,6 +27,7 @@ import org.qi4j.test.AbstractQi4jTest;
 public class PropertyInjectionTest extends AbstractQi4jTest
 {
     public void configure( ModuleAssembly module )
+        throws AssemblyException
     {
         module.addComposites( SayHelloComposite.class );
     }

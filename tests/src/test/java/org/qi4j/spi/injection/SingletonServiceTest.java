@@ -14,6 +14,7 @@
 
 package org.qi4j.spi.injection;
 
+import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.Mixins;
@@ -28,6 +29,7 @@ import org.qi4j.test.AbstractQi4jTest;
 public class SingletonServiceTest extends AbstractQi4jTest
 {
     public void configure( ModuleAssembly module )
+        throws AssemblyException
     {
         module.addComposites( TestComposite1.class );
         module.addComposites( TestComposite2.class );

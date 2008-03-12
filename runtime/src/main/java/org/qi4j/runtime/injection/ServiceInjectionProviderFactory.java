@@ -144,6 +144,11 @@ public final class ServiceInjectionProviderFactory
             try
             {
                 ServiceReference serviceReference = context.getStructureContext().getServiceLocator().lookupService( serviceType );
+                if( serviceReference == null )
+                {
+                    return null;
+                }
+
                 Object service = serviceReference.getInstance();
                 return service;
             }

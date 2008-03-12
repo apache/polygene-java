@@ -23,10 +23,10 @@ import java.util.Map;
 import org.qi4j.composite.Composite;
 import org.qi4j.runtime.composite.CompositeModelFactory;
 import org.qi4j.runtime.composite.ObjectModelFactory;
+import org.qi4j.service.ServiceComposite;
 import org.qi4j.spi.structure.CompositeDescriptor;
 import org.qi4j.spi.structure.ObjectDescriptor;
 import org.qi4j.spi.structure.ServiceDescriptor;
-import org.qi4j.spi.structure.Visibility;
 
 /**
  * TODO
@@ -71,7 +71,17 @@ public final class ModuleAssembly
     }
 
     public CompositeDeclaration addComposites( Class<? extends Composite>... compositeTypes )
+        throws AssemblyException
     {
+        for( Class<? extends Composite> compositeType : compositeTypes )
+        {
+            // May not register ServiceComposites
+            if( ServiceComposite.class.isAssignableFrom( compositeType ) )
+            {
+                throw new AssemblyException( "May not register ServiceComposites as a Composite" );
+            }
+        }
+
         CompositeDeclaration compositeDeclaration = new CompositeDeclaration( compositeTypes );
         compositeDeclarations.add( compositeDeclaration );
         return compositeDeclaration;
@@ -84,8 +94,21 @@ public final class ModuleAssembly
         return objectDeclaration;
     }
 
-    public ServiceDeclaration addServices( Class... serviceTypes )
+    public ServiceDeclaration addServices( Class... serviceTypes ) throws AssemblyException
     {
+        for( Class serviceType : serviceTypes )
+        {
+            if( !serviceType.isInterface() )
+            {
+                throw new AssemblyException( "May not register classes as service types" );
+            }
+
+            if( Composite.class.isAssignableFrom( serviceType ) && !ServiceComposite.class.isAssignableFrom( serviceType ) )
+            {
+                throw new AssemblyException( "May not register Composites which are not ServiceComposites" );
+            }
+        }
+
         ServiceDeclaration serviceDeclaration = new ServiceDeclaration( Arrays.asList( serviceTypes ) );
         serviceDeclarations.add( serviceDeclaration );
         return serviceDeclaration;
@@ -112,25 +135,21 @@ public final class ModuleAssembly
         {
             compositeDescriptors.addAll( compositeDeclaration.getCompositeDescriptors( compositeModelFactory ) );
         }
+
         return compositeDescriptors;
     }
 
-    Iterable<ObjectDescriptor> getObjectDescriptors( ObjectModelFactory objectModelFactory )
+    List<ObjectDescriptor> getObjectDescriptors( ObjectModelFactory objectModelFactory )
     {
         List<ObjectDescriptor> objectDescriptors = new ArrayList<ObjectDescriptor>();
         for( ObjectDeclaration objectDeclaration : objectDeclarations )
         {
             objectDescriptors.addAll( objectDeclaration.getObjectDescriptors( objectModelFactory ) );
         }
-
-        for( ServiceDescriptor serviceDescriptor : getServiceDescriptors() )
-        {
-            objectDescriptors.add( new ObjectDescriptor( objectModelFactory.newObjectModel( serviceDescriptor.getServiceProvider() ), EMPTY_MAP, Visibility.module ) );
-        }
         return objectDescriptors;
     }
 
-    Iterable<ServiceDescriptor> getServiceDescriptors()
+    List<ServiceDescriptor> getServiceDescriptors()
     {
         List<ServiceDescriptor> serviceDescriptors = new ArrayList<ServiceDescriptor>();
         for( ServiceDeclaration serviceDeclaration : serviceDeclarations )

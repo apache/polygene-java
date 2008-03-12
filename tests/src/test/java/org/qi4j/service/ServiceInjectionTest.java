@@ -15,18 +15,18 @@
 package org.qi4j.service;
 
 import java.io.Serializable;
+import junit.framework.TestCase;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembly;
 import org.qi4j.composite.Mixins;
 import org.qi4j.composite.scope.Service;
-import org.qi4j.test.AbstractQi4jTest;
 
 /**
  * TODO
  */
 public class ServiceInjectionTest
-    extends AbstractQi4jTest
+    extends TestCase
 {
     public void testInjectService()
         throws Exception
@@ -35,7 +35,6 @@ public class ServiceInjectionTest
         {
             public void configure( ModuleAssembly module ) throws AssemblyException
             {
-                module.addComposites( MyServiceComposite.class );
                 module.addServices( MyServiceComposite.class ).setServiceInfo( ServiceName.class, new ServiceName( "Foo" ) );
                 module.addServices( MyServiceComposite.class ).setServiceInfo( ServiceName.class, new ServiceName( "Bar" ) );
                 module.addObjects( ServiceUser.class );
@@ -49,13 +48,6 @@ public class ServiceInjectionTest
         assertEquals( "FooX", user.testServiceReference() );
         assertEquals( "FooXBarX", user.testIterableServiceReferences() );
     }
-
-    public void configure( ModuleAssembly module )
-        throws AssemblyException
-    {
-        module.addComposites( MyServiceComposite.class );
-    }
-
 
     @Mixins( MyServiceMixin.class )
     public static interface MyServiceComposite

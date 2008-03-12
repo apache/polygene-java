@@ -117,12 +117,6 @@ public class ServiceReferenceInstance<T>
     {
         if( serviceInstance != null )
         {
-            // Don't allow passivation if there are any active references
-            if( referenceCounter > 0 )
-            {
-                throw new IllegalStateException( "Cannot passivate a service instance of type " + serviceDescriptor.getServiceType() + " which still has " + referenceCounter + " active references" );
-            }
-
             // Passivate the instance
             T instance = serviceInstance.getInstance();
             if( instance instanceof Activatable )

@@ -15,7 +15,6 @@
 package org.qi4j.runtime.structure;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import org.qi4j.service.ServiceLocator;
 import org.qi4j.service.ServiceReference;
@@ -40,16 +39,17 @@ public class ModuleServiceLocator
 
     public <T> ServiceReference<T> lookupService( Class<T> serviceType )
     {
-        Iterable<ServiceReference<T>> services = lookupServices( serviceType );
-        Iterator<ServiceReference<T>> serviceIterator = services.iterator();
-        if( serviceIterator.hasNext() )
+        // Check for services in the own module
+        ServiceReference<T> service = moduleInstance.lookupService( serviceType );
+        if( service != null )
         {
-            return serviceIterator.next();
+            return service;
         }
-        else
-        {
-            return null;
-        }
+
+        // Check for service in the layer and used layers
+        service = layerServiceLocator.lookupService( serviceType );
+
+        return service;
     }
 
     public <T> Iterable<ServiceReference<T>> lookupServices( Class<T> serviceType )
