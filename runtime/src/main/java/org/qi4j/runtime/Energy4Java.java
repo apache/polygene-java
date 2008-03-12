@@ -89,16 +89,8 @@ public final class Energy4Java
         providerFactories.put( Service.class, new ServiceInjectionProviderFactory() );
         InjectionProviderFactory ipf = new InjectionProviderFactoryStrategy( providerFactories );
 
-        if( delegate != null )
-        {
-            instanceFactory = delegate.getInstanceFactory();
-            compositeModelFactory = delegate.getCompositeModelFactory();
-            compositeResolver = delegate.getCompositeResolver();
-            compositeBinder = delegate.getCompositeBinder();
-            objectModelFactory = delegate.getObjectModelFactory();
-            objectResolver = delegate.getObjectResolver();
-            objectBinder = delegate.getObjectBinder();
-        }
+        processDelegate( delegate );
+
         if( instanceFactory == null )
         {
             instanceFactory = new InstanceFactoryImpl();
@@ -184,5 +176,45 @@ public final class Energy4Java
     public ObjectBinder getObjectBinder()
     {
         return objectBinder;
+    }
+
+    private void processDelegate( Qi4jRuntime delegate )
+    {
+        if( delegate != null )
+        {
+            // Alternate method to do it, to ensure we don't forget methods if they are added
+            // to the Qi4jRuntime interface.
+            // If there is ever a bug that the delegate has been forgotten, strong suggestion that this
+            // code is introduced instead of the simple assignments now in place below.
+//            Method[] methods = Qi4jRuntime.class.getDeclaredMethods();
+//            try
+//            {
+//            for( Method method : methods )
+//            {
+//                String name = method.getName();
+//                if( name.startsWith( "get" ) )
+//                {
+//                    name = name.substring( 3 );
+//                    name = "" + Character.toLowerCase( name.charAt( 0 ) ) + name.substring( 1 );
+//                    Field f = getClass().getField( name );
+//                    f.setAccessible( true );
+//                    f.set( this, method.invoke( delegate ) );
+//                }
+//            }
+//            }
+//            catch( Exception e )
+//            {
+//                InternalError error = new InternalError( "Energy4Java is corrupt." );
+//                error.initCause( e );
+//                throw error;
+//            }
+            instanceFactory = delegate.getInstanceFactory();
+            compositeModelFactory = delegate.getCompositeModelFactory();
+            compositeResolver = delegate.getCompositeResolver();
+            compositeBinder = delegate.getCompositeBinder();
+            objectModelFactory = delegate.getObjectModelFactory();
+            objectResolver = delegate.getObjectResolver();
+            objectBinder = delegate.getObjectBinder();
+        }
     }
 }
