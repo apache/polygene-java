@@ -52,7 +52,7 @@ public final class LayerResolution
         return moduleResolutions;
     }
 
-    public List<LayerResolution> getUses()
+    public Iterable<LayerResolution> getUses()
     {
         return uses;
     }
