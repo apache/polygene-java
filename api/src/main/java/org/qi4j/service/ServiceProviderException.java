@@ -18,7 +18,7 @@ package org.qi4j.service;
  * TODO
  */
 public class ServiceProviderException
-    extends Exception
+    extends RuntimeException
 {
     public ServiceProviderException()
     {

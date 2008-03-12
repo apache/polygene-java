@@ -28,8 +28,8 @@ import org.qi4j.service.ServiceLocator;
 /**
  * TODO
  */
-public abstract class SingletonAssembly
-    implements Assembly
+public abstract class SingletonAssembler
+    implements Assembler
 {
     private Qi4j is = new Energy4Java();
 
@@ -39,14 +39,14 @@ public abstract class SingletonAssembly
     private ApplicationInstance applicationInstance;
     private ModuleInstance moduleInstance;
 
-    public SingletonAssembly()
+    public SingletonAssembler()
         throws IllegalStateException
     {
         try
         {
             applicationInstance = applicationFactory.newApplication( this ).newApplicationInstance( "Simple application" );
         }
-        catch( AssemblyException e )
+        catch( AssemblerException e )
         {
             throw new IllegalStateException( "Could not instantiate application", e );
         }

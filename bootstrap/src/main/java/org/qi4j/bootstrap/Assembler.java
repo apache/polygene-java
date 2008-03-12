@@ -15,14 +15,10 @@
 package org.qi4j.bootstrap;
 
 /**
- * Default assembly implementation that does nothing.
- * Override and implement configuration methods to use it.
+ * TODO
  */
-public abstract class AbstractAssembly
-    implements Assembly
+public interface Assembler
 {
-    public void configure( ModuleAssembly module )
-        throws AssemblyException
-    {
-    }
+    void assemble( ModuleAssembly module )
+        throws AssemblerException;
 }

@@ -20,6 +20,10 @@ import java.lang.reflect.Method;
 
 public final class CompositeMethodInstance
 {
+    // Boolean system property for controlling compaction of stack traces. Set this property to "false" to disable compaction
+    // Default value is "true"
+    private static final String COMPACT_TRACE = "qi4j.compacttrace";
+
     private Object firstConcern;
     private Object[] sideEffects;
     private SideEffectInvocationHandlerResult sideEffectResult;
@@ -37,7 +41,10 @@ public final class CompositeMethodInstance
         this.mixinType = mixinType;
         this.method = method;
         method.setAccessible( true );
-        this.firstConcern = firstConcern;
+        if( firstConcern != aMixinInvocationHandler )
+        {
+            this.firstConcern = firstConcern; // No modifiers -> skip it
+        }
         proxyHandler = aProxyHandler;
         mixinInvocationHandler = aMixinInvocationHandler;
         this.poolComposite = poolComposite;
@@ -59,6 +66,11 @@ public final class CompositeMethodInstance
                 {
                     result = method.invoke( mixin, args );
                 }
+
+                if( sideEffects.length > 0 )
+                {
+                    proxyHandler.setContext( proxy, mixin, mixinType );
+                }
             }
             else
             {
@@ -79,9 +91,17 @@ public final class CompositeMethodInstance
 
             return result;
         }
-        catch( InvocationTargetException e )
+        catch( Throwable throwable )
         {
-            Throwable throwable = e.getTargetException();
+            if( throwable instanceof InvocationTargetException )
+            {
+                throwable = ( (InvocationTargetException) throwable ).getTargetException();
+            }
+
+            // Clean stacktrace
+            fixStackTrace( throwable, proxy, method );
+
+            proxyHandler.setContext( proxy, mixin, mixinType );
             invokeSideEffects( null, throwable, proxy, args );
 
             throw throwable;
@@ -91,6 +111,63 @@ public final class CompositeMethodInstance
             proxyHandler.clearContext();
             poolComposite.returnInstance( this );
         }
+    }
+
+    /**
+     * If the origin of the exception is application code,
+     * then clean out the framework from the stacktrace.
+     *
+     * @param throwable
+     * @param proxy
+     * @param method
+     */
+    private void fixStackTrace( Throwable throwable, Object proxy, Method method )
+    {
+        if( !Boolean.parseBoolean( System.getProperty( COMPACT_TRACE, "true" ) ) )
+        {
+            return;
+        }
+
+        StackTraceElement[] trace = throwable.getStackTrace();
+//        if (isApplicationClass(trace[0].getClassName()))
+        {
+            int count = 0;
+            for( int i = 0; i < trace.length; i++ )
+            {
+                StackTraceElement stackTraceElement = trace[ i ];
+                if( !isApplicationClass( stackTraceElement.getClassName() ) )
+                {
+                    trace[ i ] = null;
+                    count++;
+                }
+                else
+                if( stackTraceElement.getClassName().equals( proxy.getClass().getSimpleName() ) && stackTraceElement.getMethodName().equals( method.getName() ) )
+                {
+                    trace[ i ] = new StackTraceElement( proxy.getClass().getInterfaces()[ 0 ].getName(), method.getName(), null, -1 );
+                    break; // Stop compacting this trace
+                }
+            }
+
+            // Create new trace array
+            int idx = 0;
+            StackTraceElement[] newTrace = new StackTraceElement[trace.length - count];
+            for( int i = 0; i < trace.length; i++ )
+            {
+                StackTraceElement stackTraceElement = trace[ i ];
+                if( stackTraceElement != null )
+                {
+                    newTrace[ idx++ ] = stackTraceElement;
+                }
+            }
+            throwable.setStackTrace( newTrace );
+        }
+    }
+
+    private boolean isApplicationClass( String className )
+    {
+        return !( className.startsWith( "org.qi4j.runtime" ) ||
+                  className.startsWith( "java.lang.reflect" ) ||
+                  className.startsWith( "sun.reflect" ) );
     }
 
     private void invokeSideEffects( Object result, Throwable throwable, Object proxy, Object[] args )

@@ -17,7 +17,7 @@
  */
 package org.qi4j.test.context;
 
-import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.AssemblerException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
@@ -39,7 +39,7 @@ public class ContextCompositeTest extends AbstractQi4jTest
     public void testThreadScope()
         throws InterruptedException
     {
-        for( int i = 0; i < 10; i++ )
+        for( int i = 0; i < 5; i++ )
         {
             CompositeBuilder<MyContextComposite> builder = compositeBuilderFactory.newCompositeBuilder( MyContextComposite.class );
             builder.propertiesFor( MyData.class ).data().set( 0 );
@@ -49,8 +49,8 @@ public class ContextCompositeTest extends AbstractQi4jTest
             Worker w2;
             MyContextComposite c1 = builder.newInstance();
             {
-                w1 = new Worker( "w1", context, 100, 0 );
-                w2 = new Worker( "w2", context, 400, 20 );
+                w1 = new Worker( "w1", context, 10, 0 );
+                w2 = new Worker( "w2", context, 40, 20 );
                 w2.start();
                 w1.start();
             }
@@ -59,13 +59,13 @@ public class ContextCompositeTest extends AbstractQi4jTest
             System.out.println( "W1: " + w1.getData() );
             System.out.println( "W2: " + w2.getData() );
             assertEquals( 0, (int) c1.data().get() );
-            assertEquals( 100, w1.getData() );
-            assertEquals( 400, w2.getData() );
+            assertEquals( 10, w1.getData() );
+            assertEquals( 40, w2.getData() );
         }
     }
 
-    public void configure( ModuleAssembly module )
-        throws AssemblyException
+    public void assemble( ModuleAssembly module )
+        throws AssemblerException
     {
         module.addComposites( MyContextComposite.class );
     }

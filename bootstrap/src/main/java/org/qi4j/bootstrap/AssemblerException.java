@@ -17,23 +17,23 @@ package org.qi4j.bootstrap;
 /**
  * TODO
  */
-public class AssemblyException extends Exception
+public class AssemblerException extends Exception
 {
-    public AssemblyException()
+    public AssemblerException()
     {
     }
 
-    public AssemblyException( String string )
+    public AssemblerException( String string )
     {
         super( string );
     }
 
-    public AssemblyException( String string, Throwable throwable )
+    public AssemblerException( String string, Throwable throwable )
     {
         super( string, throwable );
     }
 
-    public AssemblyException( Throwable throwable )
+    public AssemblerException( Throwable throwable )
     {
         super( throwable );
     }

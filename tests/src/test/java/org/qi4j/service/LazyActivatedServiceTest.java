@@ -24,10 +24,10 @@ import org.qi4j.composite.scope.Service;
 /**
  * TODO
  */
-public class ActivatableServiceTest
+public class LazyActivatedServiceTest
     extends TestCase
 {
-    @Service ServiceReference<Activatable> service;
+    @Service ServiceReference<MyService> service;
 
     public static boolean isActive;
 
@@ -38,18 +38,22 @@ public class ActivatableServiceTest
         {
             public void assemble( ModuleAssembly module ) throws AssemblerException
             {
-                module.addObjects( ActivatableServiceTest.class );
-                module.addServices( ActivatableComposite.class ).activateOnStartup();
+                module.addObjects( LazyActivatedServiceTest.class );
+                module.addServices( LazyActivatedServiceTest.ActivatableComposite.class );
             }
         };
 
-        assertTrue( isActive );
+        assertFalse( isActive );
 
-        assembly.getObjectBuilderFactory().newObjectBuilder( ActivatableServiceTest.class ).inject( this );
+        assembly.getObjectBuilderFactory().newObjectBuilder( LazyActivatedServiceTest.class ).inject( this );
 
-        assertTrue( isActive );
+        assertFalse( isActive );
 
         service.getService();
+
+        assertFalse( isActive );
+
+        service.getService().doStuff();
 
         assertTrue( isActive );
 
@@ -58,10 +62,25 @@ public class ActivatableServiceTest
         assertFalse( isActive );
     }
 
-    @Mixins( ActivatableMixin.class )
+    @Mixins( { LazyActivatedServiceTest.ActivatableMixin.class, MyServiceMixin.class } )
     public static interface ActivatableComposite
-        extends Activatable, ServiceComposite
+        extends Activatable, MyService, ServiceComposite
     {
+    }
+
+    public static interface MyService
+    {
+        String doStuff();
+    }
+
+    public static class MyServiceMixin
+        implements MyService
+    {
+
+        public String doStuff()
+        {
+            return "X";
+        }
     }
 
     public static class ActivatableMixin

@@ -105,6 +105,7 @@ public final class CompositeMethodContext
                                                                                          compositeMethodBinding.getMixinBinding(),
                                                                                          proxyHandler );
                 previousConcern = runtime.getInstanceFactory().newInstance( concernBinding, modifierContext );
+
             }
         }
 

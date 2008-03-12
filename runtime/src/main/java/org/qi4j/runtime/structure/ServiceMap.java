@@ -17,7 +17,6 @@ package org.qi4j.runtime.structure;
 import java.util.HashMap;
 import java.util.Map;
 import org.qi4j.composite.Composite;
-import org.qi4j.service.ServiceProviderException;
 import org.qi4j.service.ServiceReference;
 
 /**
@@ -36,7 +35,6 @@ public final class ServiceMap<T>
     }
 
     public T getService( Class<? extends Composite> compositeType )
-        throws ServiceProviderException
     {
         ServiceReference serviceReference = instances.get( compositeType );
         if( serviceReference == null )
@@ -45,14 +43,14 @@ public final class ServiceMap<T>
             serviceReference = realModule.getServiceLocator().lookupService( serviceClass );
             instances.put( compositeType, serviceReference );
         }
-        return (T) serviceReference.getInstance();
+        return (T) serviceReference.getService();
     }
 
     public void release()
     {
         for( ServiceReference serviceReference : instances.values() )
         {
-            serviceReference.release();
+            serviceReference.releaseService();
         }
     }
 }

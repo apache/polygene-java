@@ -17,7 +17,7 @@ package org.qi4j.property;
 import java.io.Serializable;
 import javax.swing.Icon;
 import org.qi4j.association.ManyAssociation;
-import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.AssemblerException;
 import org.qi4j.bootstrap.AssemblyHelper;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
@@ -32,8 +32,8 @@ import org.qi4j.test.AbstractQi4jTest;
  */
 public class SimpleAssociationTest extends AbstractQi4jTest
 {
-    public void configure( ModuleAssembly module )
-        throws AssemblyException
+    public void assemble( ModuleAssembly module )
+        throws AssemblerException
     {
         module.addComposites( SimpleAssociationTest.Person.class,
                               SimpleAssociationTest.Company.class );

@@ -15,6 +15,10 @@
 package org.qi4j.runtime.service;
 
 import java.io.Serializable;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import org.qi4j.property.ImmutableProperty;
 import org.qi4j.service.Activatable;
 import org.qi4j.service.ServiceProviderException;
@@ -29,14 +33,16 @@ import org.qi4j.spi.structure.ServiceDescriptor;
 /**
  * TODO
  */
-public class ServiceReferenceInstance<T>
+public final class ServiceReferenceInstance<T>
     implements ServiceReference<T>, Activatable
 {
     private ServiceDescriptor serviceDescriptor;
     private ServiceInstanceProvider serviceInstanceProvider;
     private ImmutableProperty identity;
 
-    private ServiceInstance<T> serviceInstance;
+    private volatile ServiceInstance<T> serviceInstance;
+    private Object instance;
+    private T serviceProxy;
     private int referenceCounter = 0;
 
     public ServiceReferenceInstance( ServiceDescriptor serviceDescriptor, ServiceInstanceProvider serviceInstanceProvider )
@@ -44,6 +50,8 @@ public class ServiceReferenceInstance<T>
         this.serviceDescriptor = serviceDescriptor;
         this.serviceInstanceProvider = serviceInstanceProvider;
         identity = new ImmutablePropertyInstance( new GenericPropertyInfo( PropertyModel.getQualifiedName( ServiceReference.class, "identity" ) ), serviceDescriptor.getIdentity() );
+
+        serviceProxy = (T) Proxy.newProxyInstance( serviceDescriptor.getServiceType().getClassLoader(), new Class[]{ serviceDescriptor.getServiceType() }, new ServiceInvocationHandler() );
     }
 
     public ImmutableProperty identity()
@@ -58,37 +66,17 @@ public class ServiceReferenceInstance<T>
 
     public <K extends Serializable> void setServiceInfo( Class<K> infoType, K value )
     {
+        // TODO Not thread-safe
         serviceDescriptor.getServiceInfos().put( infoType, value );
     }
 
-    public synchronized T getInstance()
-        throws ServiceProviderException
+    public synchronized T getService()
     {
-        if( serviceInstance == null )
-        {
-            T instance = (T) serviceInstanceProvider.newInstance( serviceDescriptor );
-            serviceInstance = new ServiceInstance<T>( instance, serviceInstanceProvider, serviceDescriptor );
-
-            if( serviceInstance.getInstance() instanceof Activatable )
-            {
-                try
-                {
-                    ( (Activatable) serviceInstance.getInstance() ).activate();
-                }
-                catch( Exception e )
-                {
-                    serviceInstance = null;
-                    throw new ServiceProviderException( e );
-                }
-            }
-        }
-
         referenceCounter++;
-
-        return serviceInstance.getInstance();
+        return serviceProxy;
     }
 
-    public synchronized void release()
+    public synchronized void releaseService()
         throws IllegalStateException
     {
         if( referenceCounter == 0 )
@@ -144,5 +132,72 @@ public class ServiceReferenceInstance<T>
     public ServiceDescriptor getServiceDescriptor()
     {
         return serviceDescriptor;
+    }
+
+    private Object getInstance()
+        throws ServiceProviderException
+    {
+        // DCL that works with Java 1.5 volatile semantics
+        if( serviceInstance == null )
+        {
+            synchronized( this )
+            {
+                if( serviceInstance == null )
+                {
+                    T providedInstance = (T) serviceInstanceProvider.newInstance( serviceDescriptor );
+                    serviceInstance = new ServiceInstance<T>( providedInstance, serviceInstanceProvider, serviceDescriptor );
+
+                    if( providedInstance instanceof Activatable )
+                    {
+                        try
+                        {
+                            ( (Activatable) providedInstance ).activate();
+                        }
+                        catch( Exception e )
+                        {
+                            serviceInstance = null;
+                            throw new ServiceProviderException( e );
+                        }
+                    }
+
+                    if( providedInstance instanceof Proxy )
+                    {
+                        instance = Proxy.getInvocationHandler( providedInstance );
+                    }
+                    else
+                    {
+                        instance = providedInstance;
+                    }
+                }
+            }
+        }
+
+        return instance;
+    }
+
+    public final class ServiceInvocationHandler
+        implements InvocationHandler
+    {
+        public Object invoke( Object object, Method method, Object[] objects ) throws Throwable
+        {
+            Object instance = getInstance();
+
+            if( instance instanceof InvocationHandler )
+            {
+                InvocationHandler handler = (InvocationHandler) instance;
+                return handler.invoke( instance, method, objects );
+            }
+            else
+            {
+                try
+                {
+                    return method.invoke( instance, objects );
+                }
+                catch( InvocationTargetException e )
+                {
+                    throw e.getTargetException();
+                }
+            }
+        }
     }
 }

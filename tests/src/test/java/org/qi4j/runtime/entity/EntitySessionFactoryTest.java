@@ -14,7 +14,7 @@
 
 package org.qi4j.runtime.entity;
 
-import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.AssemblerException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.entity.EntitySession;
@@ -22,7 +22,6 @@ import org.qi4j.entity.EntitySessionFactory;
 import org.qi4j.entity.SessionCompletionException;
 import org.qi4j.entity.memory.MemoryEntityStoreComposite;
 import org.qi4j.spi.entity.UuidIdentityGeneratorComposite;
-import org.qi4j.spi.service.provider.DefaultServiceInstanceProvider;
 import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.entity.AccountComposite;
 import org.qi4j.test.entity.CustomerComposite;
@@ -37,13 +36,15 @@ public class EntitySessionFactoryTest
     extends AbstractQi4jTest
 {
 
-    public void configure( ModuleAssembly module ) throws AssemblyException
+    public void assemble( ModuleAssembly module ) throws AssemblerException
     {
-        module.addComposites( MemoryEntityStoreComposite.class );
-        module.addComposites( UuidIdentityGeneratorComposite.class );
-        module.addComposites( AccountComposite.class, OrderComposite.class, ProductComposite.class, CustomerComposite.class );
-        module.addServices( DefaultServiceInstanceProvider.class, MemoryEntityStoreComposite.class );
-        module.addServices( DefaultServiceInstanceProvider.class, UuidIdentityGeneratorComposite.class );
+        module.addComposites( AccountComposite.class,
+                              OrderComposite.class,
+                              ProductComposite.class,
+                              CustomerComposite.class );
+
+        module.addServices( MemoryEntityStoreComposite.class,
+                            UuidIdentityGeneratorComposite.class );
     }
 
     public void testEntitySession()

@@ -14,12 +14,12 @@
 
 package org.qi4j.test.structure;
 
-import org.qi4j.bootstrap.AbstractAssembly;
+import org.qi4j.bootstrap.AbstractAssembler;
 import org.qi4j.bootstrap.ApplicationAssembly;
 import org.qi4j.bootstrap.ApplicationAssemblyFactory;
 import org.qi4j.bootstrap.ApplicationFactory;
-import org.qi4j.bootstrap.Assembly;
-import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.Assembler;
+import org.qi4j.bootstrap.AssemblerException;
 import org.qi4j.bootstrap.LayerAssembly;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.runtime.structure.ApplicationContext;
@@ -43,7 +43,7 @@ public class StructureTest
                 {
                     {
                         ModuleAssembly mb = applicationLayer.newModuleAssembly();
-                        mb.addAssembly( new DomainApplicationAssembly() );
+                        mb.addAssembly( new DomainApplicationAssembler() );
                     }
                 }
 
@@ -51,76 +51,76 @@ public class StructureTest
                 {
                     {
                         ModuleAssembly mb = viewLayer.newModuleAssembly();
-                        mb.addAssembly( new ViewAssembly() );
+                        mb.addAssembly( new ViewAssembler() );
                     }
                     viewLayer.uses( applicationLayer );
                 }
             }
             ApplicationContext applicationContext = af.newApplication( ab );
         }
-        catch( AssemblyException e )
+        catch( AssemblerException e )
         {
             e.printStackTrace();
         }
 
-        Assembly[][][] assemblies = new Assembly[][][]
+        Assembler[][][] assemblers = new Assembler[][][]
             {
                 { // User Interface layer
                   {
-                      new ViewAssembly()
+                      new ViewAssembler()
                   }
                 },
                 { // Application layer
                   {
-                      new DomainApplicationAssembly()
+                      new DomainApplicationAssembler()
                   }
                 },
                 { // Domain layer
                   {
-                      new DomainModelAssembly()
+                      new DomainModelAssembler()
                   }
                 },
                 { // Infrastructure layer
                   {
-                      new InfrastructureAssembly()
+                      new InfrastructureAssembler()
                   }
                 }
             };
 
         try
         {
-            ApplicationContext appContext = af.newApplication( assemblies );
+            ApplicationContext appContext = af.newApplication( assemblers );
         }
-        catch( AssemblyException e )
+        catch( AssemblerException e )
         {
             e.printStackTrace();
         }
     }
 
-    public void configure( ModuleAssembly module ) throws AssemblyException
+    public void assemble( ModuleAssembly module ) throws AssemblerException
     {
     }
 
-    static class ViewAssembly
-        extends AbstractAssembly
-    {
-
-    }
-
-    static class DomainApplicationAssembly
-        extends AbstractAssembly
+    static class ViewAssembler
+        extends AbstractAssembler
     {
 
     }
 
-    static class DomainModelAssembly
-        extends AbstractAssembly
+    static class DomainApplicationAssembler
+        extends AbstractAssembler
     {
 
     }
 
-    static class InfrastructureAssembly
-        extends AbstractAssembly
+    static class DomainModelAssembler
+        extends AbstractAssembler
+    {
+
+    }
+
+    static class InfrastructureAssembler
+        extends AbstractAssembler
     {
 
     }

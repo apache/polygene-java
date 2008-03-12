@@ -16,9 +16,9 @@ package org.qi4j.service;
 
 import java.io.Serializable;
 import junit.framework.TestCase;
-import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.AssemblerException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.bootstrap.SingletonAssembly;
+import org.qi4j.bootstrap.SingletonAssembler;
 import org.qi4j.composite.Mixins;
 import org.qi4j.composite.scope.Service;
 
@@ -31,9 +31,9 @@ public class ServiceInjectionTest
     public void testInjectService()
         throws Exception
     {
-        SingletonAssembly assembly = new SingletonAssembly()
+        SingletonAssembler assembly = new SingletonAssembler()
         {
-            public void configure( ModuleAssembly module ) throws AssemblyException
+            public void assemble( ModuleAssembly module ) throws AssemblerException
             {
                 module.addServices( MyServiceComposite.class ).setServiceInfo( ServiceName.class, new ServiceName( "Foo" ) );
                 module.addServices( MyServiceComposite.class ).setServiceInfo( ServiceName.class, new ServiceName( "Bar" ) );
@@ -96,7 +96,7 @@ public class ServiceInjectionTest
             throws ServiceProviderException
         {
             ServiceName info = serviceRef.getServiceInfo( ServiceName.class );
-            return info.getName() + serviceRef.getInstance().doStuff();
+            return info.getName() + serviceRef.getService().doStuff();
         }
 
         public String testIterableServiceReferences()
@@ -106,7 +106,7 @@ public class ServiceInjectionTest
             for( ServiceReference<MyService> serviceReference : serviceRefs )
             {
                 str += serviceReference.getServiceInfo( ServiceName.class ).getName();
-                str += serviceReference.getInstance().doStuff();
+                str += serviceReference.getService().doStuff();
             }
             return str;
         }

@@ -18,7 +18,6 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import org.qi4j.service.ServiceProviderException;
 import org.qi4j.service.ServiceReference;
 import org.qi4j.spi.injection.BindingContext;
 import org.qi4j.spi.injection.InjectionContext;
@@ -96,20 +95,13 @@ public final class ServiceInjectionProviderFactory
 
         public Object provideInjection( InjectionContext context ) throws InjectionProviderException
         {
-            try
+            Iterable<ServiceReference> serviceReferences = context.getStructureContext().getServiceLocator().lookupServices( serviceType );
+            List serviceInstances = new ArrayList();
+            for( ServiceReference serviceReference : serviceReferences )
             {
-                Iterable<ServiceReference> serviceReferences = context.getStructureContext().getServiceLocator().lookupServices( serviceType );
-                List serviceInstances = new ArrayList();
-                for( ServiceReference serviceReference : serviceReferences )
-                {
-                    serviceInstances.add( serviceReference.getInstance() );
-                }
-                return serviceInstances;
+                serviceInstances.add( serviceReference.getService() );
             }
-            catch( ServiceProviderException e )
-            {
-                throw new InjectionProviderException( "Could not get service instances", e );
-            }
+            return serviceInstances;
         }
     }
 
@@ -141,21 +133,14 @@ public final class ServiceInjectionProviderFactory
 
         public Object provideInjection( InjectionContext context ) throws InjectionProviderException
         {
-            try
+            ServiceReference serviceReference = context.getStructureContext().getServiceLocator().lookupService( serviceType );
+            if( serviceReference == null )
             {
-                ServiceReference serviceReference = context.getStructureContext().getServiceLocator().lookupService( serviceType );
-                if( serviceReference == null )
-                {
-                    return null;
-                }
+                return null;
+            }
 
-                Object service = serviceReference.getInstance();
-                return service;
-            }
-            catch( ServiceProviderException e )
-            {
-                throw new InjectionProviderException( "Could not get service instance", e );
-            }
+            Object service = serviceReference.getService();
+            return service;
         }
     }
 }

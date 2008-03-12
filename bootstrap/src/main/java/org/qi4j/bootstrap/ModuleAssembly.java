@@ -48,11 +48,11 @@ public final class ModuleAssembly
         associationDeclarations = new ArrayList<AssociationDeclaration>();
     }
 
-    public void addAssembly( Assembly assembly )
-        throws AssemblyException
+    public void addAssembly( Assembler assembler )
+        throws AssemblerException
     {
-        // Invoke Assembly callback
-        assembly.configure( this );
+        // Invoke Assembler callback
+        assembler.assemble( this );
     }
 
     public LayerAssembly getLayerAssembly()
@@ -66,14 +66,14 @@ public final class ModuleAssembly
     }
 
     public CompositeDeclaration addComposites( Class<? extends Composite>... compositeTypes )
-        throws AssemblyException
+        throws AssemblerException
     {
         for( Class<? extends Composite> compositeType : compositeTypes )
         {
             // May not register ServiceComposites
             if( ServiceComposite.class.isAssignableFrom( compositeType ) )
             {
-                throw new AssemblyException( "May not register ServiceComposites as a Composite" );
+                throw new AssemblerException( "May not register ServiceComposites as a Composite" );
             }
         }
 
@@ -83,24 +83,33 @@ public final class ModuleAssembly
     }
 
     public ObjectDeclaration addObjects( Class... objectTypes )
+        throws AssemblerException
     {
+        for( Class objectType : objectTypes )
+        {
+            if( objectType.isInterface() )
+            {
+                throw new AssemblerException( "May not register interfaces as objects" );
+            }
+        }
+
         ObjectDeclaration objectDeclaration = new ObjectDeclaration( Arrays.asList( objectTypes ) );
         objectDeclarations.add( objectDeclaration );
         return objectDeclaration;
     }
 
-    public ServiceDeclaration addServices( Class... serviceTypes ) throws AssemblyException
+    public ServiceDeclaration addServices( Class... serviceTypes ) throws AssemblerException
     {
         for( Class serviceType : serviceTypes )
         {
             if( !serviceType.isInterface() )
             {
-                throw new AssemblyException( "May not register classes as service types" );
+                throw new AssemblerException( "May not register classes as service types" );
             }
 
             if( Composite.class.isAssignableFrom( serviceType ) && !ServiceComposite.class.isAssignableFrom( serviceType ) )
             {
-                throw new AssemblyException( "May not register Composites which are not ServiceComposites" );
+                throw new AssemblerException( "May not register Composites which are not ServiceComposites" );
             }
         }
 

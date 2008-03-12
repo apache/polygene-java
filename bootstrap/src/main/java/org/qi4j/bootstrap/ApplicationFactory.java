@@ -31,34 +31,34 @@ public final class ApplicationFactory
         this.applicationAssemblyFactory = applicationAssembly;
     }
 
-    public ApplicationContext newApplication( Assembly assembly )
-        throws AssemblyException
+    public ApplicationContext newApplication( Assembler assembler )
+        throws AssemblerException
     {
-        return newApplication( new Assembly[][][]{ { { assembly } } } );
+        return newApplication( new Assembler[][][]{ { { assembler } } } );
     }
 
-    public ApplicationContext newApplication( Assembly[][][] assemblies )
-        throws AssemblyException
+    public ApplicationContext newApplication( Assembler[][][] assemblers )
+        throws AssemblerException
     {
         ApplicationAssembly applicationAssembly = applicationAssemblyFactory.newApplicationAssembly();
         applicationAssembly.setName( "Application " );
 
         // Build all layers bottom-up
         LayerAssembly below = null;
-        for( int layer = assemblies.length - 1; layer >= 0; layer-- )
+        for( int layer = assemblers.length - 1; layer >= 0; layer-- )
         {
             // Create Layer
             LayerAssembly lb = applicationAssembly.newLayerBuilder();
             lb.setName( "Layer " + layer );
-            for( int module = 0; module < assemblies[ layer ].length; module++ )
+            for( int module = 0; module < assemblers[ layer ].length; module++ )
             {
                 // Create Module
                 ModuleAssembly mb = lb.newModuleAssembly();
                 mb.setName( "Module " + ( module + 1 ) );
-                for( int assembly = 0; assembly < assemblies[ layer ][ module ].length; assembly++ )
+                for( int assembly = 0; assembly < assemblers[ layer ][ module ].length; assembly++ )
                 {
-                    // Register Assembly
-                    mb.addAssembly( assemblies[ layer ][ module ][ assembly ] );
+                    // Register Assembler
+                    mb.addAssembly( assemblers[ layer ][ module ][ assembly ] );
                 }
             }
             if( below != null )

@@ -23,7 +23,7 @@ import org.qi4j.test.AbstractQi4jTest;
  */
 public class UsesInjectionTest extends AbstractQi4jTest
 {
-    public void configure( ModuleAssembly module )
+    public void assemble( ModuleAssembly module )
     {
         module.addObjects( Object1.class, Object2.class );
     }

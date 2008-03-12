@@ -16,15 +16,15 @@
  */
 package org.qi4j.test.model4;
 
-import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.AssemblerException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.test.AbstractQi4jTest;
 
 public class InjectionTest extends AbstractQi4jTest
 {
-    public void configure( ModuleAssembly module )
-        throws AssemblyException
+    public void assemble( ModuleAssembly module )
+        throws AssemblerException
     {
         module.addComposites( Composite1.class );
     }

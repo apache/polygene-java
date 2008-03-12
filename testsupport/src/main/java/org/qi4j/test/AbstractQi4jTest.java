@@ -18,8 +18,8 @@ import junit.framework.TestCase;
 import org.qi4j.Qi4j;
 import org.qi4j.bootstrap.ApplicationAssemblyFactory;
 import org.qi4j.bootstrap.ApplicationFactory;
-import org.qi4j.bootstrap.Assembly;
-import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.Assembler;
+import org.qi4j.bootstrap.AssemblerException;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.ObjectBuilderFactory;
 import org.qi4j.entity.EntitySessionFactory;
@@ -36,7 +36,7 @@ import org.qi4j.spi.Qi4jSPI;
  * Base class for Composite tests
  */
 public abstract class AbstractQi4jTest extends TestCase
-    implements Assembly
+    implements Assembler
 {
     protected Qi4j api;
     protected Qi4jSPI spi;
@@ -71,7 +71,7 @@ public abstract class AbstractQi4jTest extends TestCase
     }
 
     protected ApplicationInstance newApplication()
-        throws AssemblyException
+        throws AssemblerException
     {
         ApplicationContext applicationContext = applicationFactory.newApplication( this );
         return applicationContext.newApplicationInstance( "Test application" );

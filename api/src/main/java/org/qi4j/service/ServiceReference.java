@@ -19,8 +19,8 @@ import org.qi4j.property.ImmutableProperty;
 
 /**
  * From a ServiceReference you can access and modify metadata about a service.
- * You can also acquire a service instance through getInstance() that can be invoked. When the usage is
- * done this must be signalled by calling releaseInstance().
+ * You can also the actual service through getService(), that can then be invoked. When the usage is
+ * done this must be signalled by calling releaseService().
  */
 public interface ServiceReference<T>
 {
@@ -30,10 +30,8 @@ public interface ServiceReference<T>
 
     <K extends Serializable> void setServiceInfo( Class<K> infoType, K value );
 
-    T getInstance()
-        throws ServiceProviderException;
+    T getService();
 
-    void release()
+    void releaseService()
         throws IllegalStateException;
-
 }

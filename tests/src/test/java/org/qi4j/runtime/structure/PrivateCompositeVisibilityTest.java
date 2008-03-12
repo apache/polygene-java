@@ -17,8 +17,8 @@ package org.qi4j.runtime.structure;
 import junit.framework.TestCase;
 import org.qi4j.bootstrap.ApplicationAssemblyFactory;
 import org.qi4j.bootstrap.ApplicationFactory;
-import org.qi4j.bootstrap.Assembly;
-import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.Assembler;
+import org.qi4j.bootstrap.AssemblerException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilderFactory;
@@ -41,20 +41,20 @@ public class PrivateCompositeVisibilityTest
         Qi4jRuntime is = new Energy4Java();
         ApplicationFactory applicationFactory = new ApplicationFactory( is, new ApplicationAssemblyFactory() );
 
-        Assembly[][][] assemblies = new Assembly[][][]
+        Assembler[][][] assemblers = new Assembler[][][]
             {
                 { // Layer
                   {
-                      new AssemblyA()
+                      new AssemblerA()
                   },
                   {
-                      new AssemblyB()
+                      new AssemblerB()
                   }
                 }
             };
 
 
-        ApplicationInstance app = applicationFactory.newApplication( assemblies ).newApplicationInstance( "Test" );
+        ApplicationInstance app = applicationFactory.newApplication( assemblers ).newApplicationInstance( "Test" );
         app.activate();
         ObjectA object = app.getLayerInstances().get( 0 ).getModuleInstances().get( 0 ).getStructureContext().getObjectBuilderFactory().newObjectBuilder( ObjectA.class ).newInstance();
         try
@@ -69,20 +69,20 @@ public class PrivateCompositeVisibilityTest
 
     }
 
-    class AssemblyA
-        implements Assembly
+    class AssemblerA
+        implements Assembler
     {
-        public void configure( ModuleAssembly module ) throws AssemblyException
+        public void assemble( ModuleAssembly module ) throws AssemblerException
         {
             module.setName( "Module A" );
             module.addObjects( ObjectA.class );
         }
     }
 
-    class AssemblyB
-        implements Assembly
+    class AssemblerB
+        implements Assembler
     {
-        public void configure( ModuleAssembly module ) throws AssemblyException
+        public void assemble( ModuleAssembly module ) throws AssemblerException
         {
             module.setName( "Module B" );
             module.addComposites( CompositeB.class ).visibleIn( Visibility.module );

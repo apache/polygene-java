@@ -169,9 +169,23 @@ public final class ModuleInstance
                 ObjectBuilder<? extends ServiceInstanceProvider> builder = objectBuilderFactory.newObjectBuilder( providerType );
                 ServiceInstanceProvider sip = builder.newInstance();
                 Class serviceType = serviceDescriptor.getServiceType();
-                ServiceReferenceInstance<Object> serviceReference = new ServiceReferenceInstance<Object>( serviceDescriptor, sip );
+                final ServiceReferenceInstance<Object> serviceReference = new ServiceReferenceInstance<Object>( serviceDescriptor, sip );
                 registerServiceReference( serviceType, serviceReference );
                 serviceInstances.add( serviceReference );
+                activationListeners.add( new ActivationListener()
+                {
+                    public void onActivationStatusChange( ActivationStatusChange change ) throws Exception
+                    {
+                        if( change.getNewStatus() == ActivationStatus.STARTING )
+                        {
+                            serviceReference.activate();
+                        }
+                        else if( change.getNewStatus() == ActivationStatus.STOPPING )
+                        {
+                            serviceReference.passivate();
+                        }
+                    }
+                } );
             }
 
             try
@@ -198,12 +212,6 @@ public final class ModuleInstance
             try
             {
                 setActivationStatus( ActivationStatus.STOPPING );
-
-                // Passivate services
-                for( ServiceReferenceInstance<Object> serviceReference : serviceInstances )
-                {
-                    serviceReference.passivate();
-                }
             }
             catch( Exception e )
             {
