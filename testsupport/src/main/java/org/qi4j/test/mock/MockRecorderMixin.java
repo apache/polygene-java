@@ -15,7 +15,7 @@ public class MockRecorderMixin
     }
 
 
-    public MockRecorderType play( Object mock )
+    public MockRecorderType useMock( Object mock )
     {
         System.out.println( "Recorded " + mock );
         MockProxy proxy = new MockProxy( mock, new UnplayableMock() );
