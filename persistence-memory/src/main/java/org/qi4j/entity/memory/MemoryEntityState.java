@@ -16,6 +16,7 @@
  */
 package org.qi4j.entity.memory;
 
+import java.lang.reflect.Method;
 import java.util.Map;
 import org.qi4j.association.AbstractAssociation;
 import org.qi4j.entity.EntityComposite;
@@ -32,11 +33,15 @@ public class MemoryEntityState
 {
     private String identity;
     private final CompositeBinding compositeBinding;
-    private Map<String, Property> properties;
-    private Map<String, AbstractAssociation> associations;
+    private Map<Method, Property> properties;
+    private Map<Method, AbstractAssociation> associations;
     private MemoryEntityStore owningStore;
 
-    public MemoryEntityState( String identity, CompositeBinding compositeBinding, Map<String, Property> properties, Map<String, AbstractAssociation> associations, MemoryEntityStore owningStore )
+    public MemoryEntityState( String identity,
+                              CompositeBinding compositeBinding,
+                              Map<Method, Property> properties,
+                              Map<Method, AbstractAssociation> associations,
+                              MemoryEntityStore owningStore )
     {
         this.identity = identity;
         this.compositeBinding = compositeBinding;
@@ -55,14 +60,14 @@ public class MemoryEntityState
         return compositeBinding;
     }
 
-    public Property getProperty( String qualifiedName )
+    public Property getProperty( Method propertyMethod )
     {
-        return properties.get( qualifiedName );
+        return properties.get( propertyMethod );
     }
 
-    public AbstractAssociation getAssociation( String qualifiedName )
+    public AbstractAssociation getAssociation( Method associationMethod )
     {
-        return associations.get( qualifiedName );
+        return associations.get( associationMethod );
     }
 
     public void refresh()

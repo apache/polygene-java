@@ -16,6 +16,7 @@
  */
 package org.qi4j.entity.ibatis.internal.entityState;
 
+import java.lang.reflect.Method;
 import java.util.Map;
 import org.qi4j.association.AbstractAssociation;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
@@ -38,8 +39,8 @@ public final class EntityState
     private final String identity;
 
     private final CompositeBinding compositeBinding;
-    private final Map<String, Property> properties;
-    private final Map<String, AbstractAssociation> associations;
+    private final Map<Method, Property> properties;
+    private final Map<Method, AbstractAssociation> associations;
     private final IBatisEntityStateDao dao;
     private IBatisEntityStateStatus status;
 
@@ -57,8 +58,8 @@ public final class EntityState
      */
     public EntityState(
         String anIdentity, CompositeBinding aCompositeBinding,
-        Map<String, Property> propertiez,
-        Map<String, AbstractAssociation> associationz,
+        Map<Method, Property> propertiez,
+        Map<Method, AbstractAssociation> associationz,
         IBatisEntityStateStatus aStatus, IBatisEntityStateDao aDao )
         throws IllegalArgumentException
     {
@@ -93,14 +94,14 @@ public final class EntityState
         return compositeBinding;
     }
 
-    public Property getProperty( String qualifiedName )
+    public Property getProperty( Method propertyMethod )
     {
-        return properties.get( qualifiedName );
+        return properties.get( propertyMethod );
     }
 
-    public AbstractAssociation getAssociation( String qualifiedName )
+    public AbstractAssociation getAssociation( Method associationMethod )
     {
-        return associations.get( qualifiedName );
+        return associations.get( associationMethod );
     }
 
     public final void refresh()

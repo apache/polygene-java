@@ -185,7 +185,7 @@ final class IBatisEntityStore
      */
     public final EntityState newEntityInstance(
         EntitySession aSession, String anIdentity, CompositeBinding aCompositeBinding,
-        Map<String, Object> propertyValues )
+        Map<Method, Object> propertyValues )
         throws IllegalArgumentException, StoreException
     {
         validateNotNull( "aSession", aSession );
@@ -212,13 +212,13 @@ final class IBatisEntityStore
      */
     private EntityState newEntityInstance(
         String anIdentity, CompositeBinding aCompositeBinding,
-        Map<String, Object> fieldValues, boolean isUseDefaultValue, IBatisEntityStateStatus aStatus )
+        Map<Method, Object> fieldValues, boolean isUseDefaultValue, IBatisEntityStateStatus aStatus )
         throws StoreException
     {
         throwIfNotActive();
 
-        Map<String, Property> properties = transformToProperties( aCompositeBinding, fieldValues, isUseDefaultValue );
-        Map<String, AbstractAssociation> associations = transformToAssociations( aCompositeBinding, fieldValues );
+        Map<Method, Property> properties = transformToProperties( aCompositeBinding, fieldValues, isUseDefaultValue );
+        Map<Method, AbstractAssociation> associations = transformToAssociations( aCompositeBinding, fieldValues );
         return new EntityState( anIdentity, aCompositeBinding, properties, associations, aStatus, dao );
     }
 
@@ -231,10 +231,10 @@ final class IBatisEntityStore
      * @return The map of properties.
      * @since 0.1.0
      */
-    final Map<String, Property> transformToProperties(
-        CompositeBinding aCompositeBinding, Map<String, Object> propertyValues, boolean useDefaultValue )
+    final Map<Method, Property> transformToProperties(
+        CompositeBinding aCompositeBinding, Map<Method, Object> propertyValues, boolean useDefaultValue )
     {
-        Map<String, Property> properties = new HashMap<String, Property>();
+        Map<Method, Property> properties = new HashMap<Method, Property>();
         Iterable<PropertyBinding> propertyBindings = aCompositeBinding.getPropertyBindings();
         for( PropertyBinding propertyBinding : propertyBindings )
         {
@@ -242,7 +242,7 @@ final class IBatisEntityStore
             Object value = computePropertyValue( propertyBinding, propertyValues, useDefaultValue );
             Property<Object> propertyInstance = newPropertyInstance( propertyBinding, value );
 
-            properties.put( propQualifiedName, propertyInstance );
+            properties.put( propertyBinding.getPropertyResolution().getPropertyModel().getAccessor(), propertyInstance );
         }
 
         return properties;
@@ -264,17 +264,17 @@ final class IBatisEntityStore
      * @since 0.1.0
      */
     final Object computePropertyValue(
-        PropertyBinding propertyBinding, Map<String, Object> propertyValues,
+        PropertyBinding propertyBinding, Map<Method, Object> propertyValues,
         boolean isUseDefaultValue )
         throws IllegalStateException
     {
-        String propertyName = propertyBinding.getName();
+        Method accessor = propertyBinding.getPropertyResolution().getPropertyModel().getAccessor();
 
         Object value = null;
-        if( propertyValues.containsKey( propertyName ) )
+        if( propertyValues.containsKey( accessor ) )
         {
             // TODO: Handle mapping of compound property?
-            value = propertyValues.get( propertyName );
+            value = propertyValues.get( accessor );
         }
         else if( isUseDefaultValue )
         {
@@ -350,10 +350,10 @@ final class IBatisEntityStore
     }
 
     // TODO: This is copied from MemoryEntityStore need to be revised
-    private Map<String, AbstractAssociation> transformToAssociations(
-        CompositeBinding compositeBinding, Map<String, Object> propertyValues )
+    private Map<Method, AbstractAssociation> transformToAssociations(
+        CompositeBinding compositeBinding, Map<Method, Object> propertyValues )
     {
-        Map<String, AbstractAssociation> associations = new HashMap<String, AbstractAssociation>();
+        Map<Method, AbstractAssociation> associations = new HashMap<Method, AbstractAssociation>();
         Iterable<AssociationBinding> associationBindings = compositeBinding.getAssociationBindings();
         for( AssociationBinding associationBinding : associationBindings )
         {
@@ -371,12 +371,12 @@ final class IBatisEntityStore
 
                 ListAssociationInstance<Object> listInstance =
                     new ListAssociationInstance<Object>( new ArrayList<Object>(), associationBinding );
-                associations.put( assocationQualifiedName, listInstance );
+                associations.put( associationModel.getAccessor(), listInstance );
             }
             else
             {
                 AssociationInstance<Object> instance = new AssociationInstance<Object>( associationBinding, null );
-                associations.put( assocationQualifiedName, instance );
+                associations.put( associationModel.getAccessor(), instance );
             }
         }
         return associations;

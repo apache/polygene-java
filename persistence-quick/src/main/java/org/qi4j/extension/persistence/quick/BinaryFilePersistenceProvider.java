@@ -28,7 +28,7 @@ import java.io.OutputStream;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
-import org.qi4j.composite.CompositeInstantiationException;
+import org.qi4j.composite.InstantiationException;
 import org.qi4j.entity.EntityCompositeNotFoundException;
 import org.qi4j.spi.serialization.SerializablePersistenceSpi;
 import org.qi4j.spi.serialization.SerializedObject;
@@ -101,11 +101,11 @@ public final class BinaryFilePersistenceProvider
         }
         catch( IOException e )
         {
-            throw new CompositeInstantiationException( "Error reading I/O for object [" + anId + "].", e );
+            throw new InstantiationException( "Error reading I/O for object [" + anId + "].", e );
         }
         catch( ClassNotFoundException e )
         {
-            throw new CompositeInstantiationException( "Class(es) for object [" + anId + "] can not be found.", e );
+            throw new InstantiationException( "Class(es) for object [" + anId + "] can not be found.", e );
         }
         finally
         {

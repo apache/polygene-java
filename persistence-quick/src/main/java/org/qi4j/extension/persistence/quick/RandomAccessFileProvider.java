@@ -25,7 +25,7 @@ import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.util.HashMap;
 import java.util.Map;
-import org.qi4j.composite.CompositeInstantiationException;
+import org.qi4j.composite.InstantiationException;
 import org.qi4j.spi.serialization.SerializablePersistenceSpi;
 import org.qi4j.spi.serialization.SerializedObject;
 
@@ -162,11 +162,11 @@ public class RandomAccessFileProvider
         }
         catch( IOException e )
         {
-            throw new CompositeInstantiationException( "Unable to retrieve object [" + identity + "].", e );
+            throw new InstantiationException( "Unable to retrieve object [" + identity + "].", e );
         }
         catch( ClassNotFoundException e )
         {
-            throw new CompositeInstantiationException( "Unable to retrieve object [" + identity + "].", e );
+            throw new InstantiationException( "Unable to retrieve object [" + identity + "].", e );
         }
         finally
         {

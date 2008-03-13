@@ -67,7 +67,7 @@ public class MemoryEntityStore
     }
 
     public MemoryEntityState newEntityInstance(
-        EntitySession session, String identity, CompositeBinding compositeBinding, Map<String, Object> propertyValues ) throws StoreException
+        EntitySession session, String identity, CompositeBinding compositeBinding, Map<Method, Object> propertyValues ) throws StoreException
     {
         CompositeResolution compositeResolution = compositeBinding.getCompositeResolution();
         CompositeModel compositeModel = compositeResolution.getCompositeModel();
@@ -79,7 +79,7 @@ public class MemoryEntityStore
             throw new EntityAlreadyExistsException( "Memory store", identity );
         }
 
-        Map<String, Property> properties = new HashMap<String, Property>();
+        Map<Method, Property> properties = new HashMap<Method, Property>();
         Iterable<PropertyBinding> propertyBindings = compositeBinding.getPropertyBindings();
         for( PropertyBinding propertyBinding : propertyBindings )
         {
@@ -97,15 +97,15 @@ public class MemoryEntityStore
             Class<?> type = accessor.getReturnType();
             if( ImmutableProperty.class.isAssignableFrom( type ) )
             {
-                properties.put( propertyQualifiedName, new ImmutablePropertyInstance<Object>( propertyBinding, value ) );
+                properties.put( accessor, new ImmutablePropertyInstance<Object>( propertyBinding, value ) );
             }
             else
             {
-                properties.put( propertyQualifiedName, new PropertyInstance<Object>( propertyBinding, value ) );
+                properties.put( accessor, new PropertyInstance<Object>( propertyBinding, value ) );
             }
         }
 
-        Map<String, AbstractAssociation> associations = new HashMap<String, AbstractAssociation>();
+        Map<Method, AbstractAssociation> associations = new HashMap<Method, AbstractAssociation>();
         Iterable<AssociationBinding> associationBindings = compositeBinding.getAssociationBindings();
         for( AssociationBinding associationBinding : associationBindings )
         {
@@ -123,12 +123,12 @@ public class MemoryEntityStore
 
                 ListAssociationInstance<Object> listInstance =
                     new ListAssociationInstance<Object>( new ArrayList<Object>(), associationBinding );
-                associations.put( assocationQualifiedName, listInstance );
+                associations.put( accessor, listInstance );
             }
             else
             {
                 AssociationInstance<Object> instance = new AssociationInstance<Object>( associationBinding, null );
-                associations.put( assocationQualifiedName, instance );
+                associations.put( accessor, instance );
             }
         }
 
