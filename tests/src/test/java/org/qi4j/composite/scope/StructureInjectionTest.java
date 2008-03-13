@@ -29,7 +29,7 @@ import org.qi4j.spi.structure.ModuleBinding;
 import org.qi4j.test.AbstractQi4jTest;
 
 /**
- * TODO
+ * Test the @Structure annotation
  */
 public class StructureInjectionTest
     extends AbstractQi4jTest
@@ -39,7 +39,7 @@ public class StructureInjectionTest
         module.addComposites( StructureInjectionComposite.class );
     }
 
-    public void testStructureInjection()
+    public void testWhenStructureAnnotationThenInjectMixin()
     {
         StructureInjectionComposite sic = compositeBuilderFactory.newComposite( StructureInjectionComposite.class );
         assertTrue( sic.test() );

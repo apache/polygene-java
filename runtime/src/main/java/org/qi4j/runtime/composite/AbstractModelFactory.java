@@ -87,6 +87,9 @@ public abstract class AbstractModelFactory
                 realConstructor = constructor;
             }
 
+            // This is required to be able to instantiate package protected class
+            realConstructor.setAccessible( true );
+
             Annotation[][] parameterAnnotations = realConstructor.getParameterAnnotations();
             List<ParameterModel> parameterModels = new ArrayList<ParameterModel>();
             int idx = 0;

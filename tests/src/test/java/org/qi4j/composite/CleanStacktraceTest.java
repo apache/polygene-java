@@ -32,7 +32,7 @@ public class CleanStacktraceTest
         module.addComposites( CleanStacktraceTest.TestComposite.class );
     }
 
-    public void testCleanStackTrace()
+    public void testWhenApplicationExceptionThenCleanStackTrace()
     {
         CleanStacktraceTest.TestComposite composite = compositeBuilderFactory.newComposite( CleanStacktraceTest.TestComposite.class );
 
@@ -46,11 +46,11 @@ public class CleanStacktraceTest
             e.printStackTrace( new PrintWriter( actualTrace ) );
 
             String correctTrace = "java.lang.RuntimeException\n" +
-                                  "\tat org.qi4j.composite.CleanStacktraceTest$DoStuffMixin.doStuff(CleanStacktraceTest.java:71)\n" +
+                                  "\tat org.qi4j.composite.CleanStacktraceTest$DoStuffMixin.doStuff(CleanStacktraceTest.java:70)\n" +
                                   "\tat org.qi4j.composite.CleanStacktraceTest$TestComposite.doStuff(Unknown Source)\n" +
-                                  "\tat org.qi4j.composite.CleanStacktraceTest.testCleanStackTrace(CleanStacktraceTest.java:41)";
+                                  "\tat org.qi4j.composite.CleanStacktraceTest.testWhenApplicationExceptionThenCleanStackTrace(CleanStacktraceTest.java:41)";
 
-            assertTrue( actualTrace.toString().startsWith( correctTrace ) );
+            assertTrue( "Trace should have been:\n" + correctTrace + "\nbut was:\n" + actualTrace, actualTrace.toString().startsWith( correctTrace ) );
         }
     }
 

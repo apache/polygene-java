@@ -20,7 +20,7 @@ import org.qi4j.composite.ObjectBuilder;
 import org.qi4j.test.AbstractQi4jTest;
 
 /**
- * TODO
+ * Test the @Uses annotation
  */
 public class UsesInjectionTest extends AbstractQi4jTest
 {
@@ -30,7 +30,7 @@ public class UsesInjectionTest extends AbstractQi4jTest
         module.addObjects( Object1.class, Object2.class );
     }
 
-    public void testUses()
+    public void testWhenUsesAnnotationThenInjectObject()
         throws Exception
     {
         ObjectBuilder<Object1> builder = objectBuilderFactory.newObjectBuilder( Object1.class );

@@ -35,6 +35,12 @@ public final class PropertyInjectionProviderFactory
             PropertyInjectionModel pim = (PropertyInjectionModel) resolution.getInjectionModel();
             PropertyResolution propertyResolution = injectable.getPropertyResolution( pim.getName() );
 
+            // No such property found
+            if( propertyResolution == null )
+            {
+                return null;
+            }
+
             return new PropertyInjectionProvider( propertyResolution.getPropertyModel().getQualifiedName() );
         }
         else

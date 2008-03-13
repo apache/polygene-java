@@ -18,7 +18,7 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
 
 /**
- * TODO
+ * Test if it is
  */
 public class ObjectNotRegisteredTest extends AbstractQi4jTest
 {
@@ -26,7 +26,7 @@ public class ObjectNotRegisteredTest extends AbstractQi4jTest
     {
     }
 
-    public void testObjectNotRegistered()
+    public void testWhenObjectNotRegisteredThenThrowException()
         throws Exception
     {
         try

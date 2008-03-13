@@ -52,7 +52,7 @@ public class ServiceInvocationPerformanceTest
             service.test();
         }
 
-        int rounds = 2;
+        int rounds = 5;
         for( int i = 0; i < rounds; i++ )
         {
             performanceCheck( service );

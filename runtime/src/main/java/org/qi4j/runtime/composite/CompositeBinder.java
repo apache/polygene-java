@@ -51,6 +51,7 @@ import org.qi4j.spi.composite.SideEffectBinding;
 import org.qi4j.spi.composite.SideEffectResolution;
 import org.qi4j.spi.injection.BindingContext;
 import org.qi4j.spi.injection.InjectionBinding;
+import org.qi4j.spi.injection.InjectionProvider;
 import org.qi4j.spi.injection.InjectionProviderFactory;
 import org.qi4j.spi.injection.InjectionResolution;
 import org.qi4j.spi.injection.InvalidInjectionException;
@@ -288,7 +289,18 @@ public class CompositeBinder
         if( injectionResolution != null )
         {
             BindingContext injectionContext = new BindingContext( injectionResolution, bindingContext );
-            injectionBinding = new InjectionBinding( injectionResolution, injectionProviderFactory.newInjectionProvider( injectionContext ) );
+            InjectionProvider injectionProvider = injectionProviderFactory.newInjectionProvider( injectionContext );
+            if( injectionProvider == null )
+            {
+                if( !injectionResolution.getInjectionModel().isOptional() )
+                {
+                    throw new BindingException( "Could not bind non-optional injection:" + injectionResolution.getInjectionModel() );
+                }
+            }
+            else
+            {
+                injectionBinding = new InjectionBinding( injectionResolution, injectionProvider );
+            }
         }
         FieldBinding fieldBinding = new FieldBinding( fieldResolution, injectionBinding );
         return fieldBinding;

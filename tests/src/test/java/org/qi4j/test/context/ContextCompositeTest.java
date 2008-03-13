@@ -49,8 +49,8 @@ public class ContextCompositeTest extends AbstractQi4jTest
             Worker w2;
             MyContextComposite c1 = builder.newInstance();
             {
-                w1 = new Worker( "w1", context, 10, 0 );
-                w2 = new Worker( "w2", context, 40, 20 );
+                w1 = new Worker( "w1", context, 100, 0 );
+                w2 = new Worker( "w2", context, 400, 20 );
                 w2.start();
                 w1.start();
             }
@@ -59,8 +59,8 @@ public class ContextCompositeTest extends AbstractQi4jTest
             System.out.println( "W1: " + w1.getData() );
             System.out.println( "W2: " + w2.getData() );
             assertEquals( 0, (int) c1.data().get() );
-            assertEquals( 10, w1.getData() );
-            assertEquals( 40, w2.getData() );
+            assertEquals( 100, w1.getData() );
+            assertEquals( 400, w2.getData() );
         }
     }
 

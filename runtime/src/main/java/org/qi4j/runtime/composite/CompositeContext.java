@@ -52,7 +52,6 @@ public final class CompositeContext
     private CompositeBinding compositeBinding;
     private InstanceFactory instanceFactory;
     private ModuleBinding moduleBinding;
-    private CompositeMethodInstancePool[] compositeMethodInstancePools;
     private HashMap<Method, MethodDescriptor> methodDescriptors;
     private Set<MixinContext> mixinContexts;
     private Map<String, PropertyContext> propertyContexts;
@@ -82,7 +81,6 @@ public final class CompositeContext
         // Create index of method to mixin and invocation instance pools
         methodDescriptors = new HashMap<Method, MethodDescriptor>();
         Map<MixinBinding, Integer> mixinIndices = new HashMap<MixinBinding, Integer>();
-        compositeMethodInstancePools = new CompositeMethodInstancePool[compositeBinding.getCompositeMethodBindings().size()];
 
         // Assign index to each mixin binding
         int currentMixinIndex = 0;
@@ -96,11 +94,14 @@ public final class CompositeContext
         {
             MixinBinding mixinBinding = compositeMethodContext.getCompositeMethodBinding().getMixinBinding();
             int index = mixinIndices.get( mixinBinding );
-            compositeMethodInstancePools[ methodIndex ] = new CompositeMethodInstancePool();
-            MethodDescriptor methodDescriptor = new MethodDescriptor( compositeMethodContext, methodIndex, index, compositeMethodInstancePools[ methodIndex ] );
+//            CompositeMethodInstancePool pool = new SynchronizedCompositeMethodInstancePool();
+            CompositeMethodInstancePool pool = new AtomicCompositeMethodInstancePool();
+            MethodDescriptor methodDescriptor = new MethodDescriptor( compositeMethodContext,
+                                                                      methodIndex,
+                                                                      index,
+                                                                      pool );
             Method method = compositeMethodContext.getCompositeMethodBinding().getCompositeMethodResolution().getCompositeMethodModel().getMethod();
             methodDescriptors.put( method, methodDescriptor );
-//            System.out.println( this + " : [" + index + "] : [" +methodIndex+"]  -> " + methodDescriptor.getCompositeMethodContext().getCompositeMethodBinding() );
             methodIndex++;
         }
 

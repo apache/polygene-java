@@ -3,46 +3,9 @@ package org.qi4j.runtime.composite;
 /**
  * TODO
  */
-public final class CompositeMethodInstancePool
+public interface CompositeMethodInstancePool
 {
-    private CompositeMethodInstance first = null;
+    public CompositeMethodInstance getInstance();
 
-    public synchronized CompositeMethodInstance getInstance()
-    {
-        CompositeMethodInstance instance = first;
-        if( instance != null )
-        {
-            first = instance.getNext();
-
-        }
-        return instance;
-    }
-
-    public synchronized void returnInstance( CompositeMethodInstance instance )
-    {
-        instance.setNext( first );
-        first = instance;
-    }
+    public void returnInstance( CompositeMethodInstance instance );
 }
-
-/* TODO Test this code
-private AtomicReference<CompositeMethodInstance> first = new AtomicReference<CompositeMethodInstance>();
-
-public CompositeMethodInstance getInstance()
-{
-//        synchronized(this)
-    {
-        CompositeMethodInstance instance = first.getAndSet( null );
-        return instance;
-    }
-}
-
-public void returnInstance( CompositeMethodInstance instance )
-{
-//        synchronized (this)
-    {
-       //instance.setNext( first );
-        first.set( instance );
-    }
-}
-*/
