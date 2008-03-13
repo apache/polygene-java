@@ -12,31 +12,12 @@
  */
 package org.qi4j.library.general.model;
 
-import java.io.Serializable;
-import org.qi4j.composite.Mixins;
-import org.qi4j.composite.scope.PropertyField;
 import org.qi4j.property.Property;
 
 /**
  * Generic interface for Amount
  */
-@Mixins( Amount.AmountMixin.class )
 public interface Amount<T extends Number>
 {
     Property<T> amount();
-
-    final class AmountMixin<T extends Number>
-        implements Amount<T>, Serializable
-    {
-        private static final long serialVersionUID = 1L;
-
-        @PropertyField
-        private Property<T> amount;
-
-        public final Property<T> amount()
-        {
-            return amount;
-        }
-    }
-
 }

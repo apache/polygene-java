@@ -35,7 +35,7 @@ public class PropertyMixin
     public Object invoke( Object proxy, Method method, Object[] args )
         throws Throwable
     {
-        return state.getProperty( method.getDeclaringClass().getName() + ":" + method.getName() );
+        return state.getProperty( method );
     }
 
     public static class PropertyFilter

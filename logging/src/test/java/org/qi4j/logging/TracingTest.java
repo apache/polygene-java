@@ -27,7 +27,7 @@ import org.qi4j.composite.Mixins;
 import org.qi4j.composite.scope.ConcernFor;
 import org.qi4j.composite.scope.Structure;
 import org.qi4j.logging.service.LogServiceComposite;
-import org.qi4j.service.ServiceProviderException;
+import org.qi4j.service.ServiceInstanceProviderException;
 import org.qi4j.spi.service.ServiceInstance;
 import org.qi4j.spi.service.ServiceInstanceProvider;
 import org.qi4j.spi.structure.ServiceDescriptor;
@@ -103,7 +103,7 @@ public class TracingTest extends AbstractQi4jTest
     {
         @Structure CompositeBuilderFactory factory;
 
-        public Object newInstance( ServiceDescriptor serviceDescriptor ) throws ServiceProviderException
+        public Object newInstance( ServiceDescriptor serviceDescriptor ) throws ServiceInstanceProviderException
         {
             CompositeBuilder<LogServiceComposite> builder = factory.newCompositeBuilder( LogServiceComposite.class );
             LogService props = builder.propertiesFor( LogService.class );

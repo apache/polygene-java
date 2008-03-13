@@ -21,9 +21,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import org.qi4j.composite.AppliesTo;
-import org.qi4j.composite.Property;
-import org.qi4j.composite.PropertyValue;
-import org.qi4j.composite.scope.PropertyParameter;
 
 /**
  * Generic property mixin. Methods in interface
@@ -34,12 +31,10 @@ import org.qi4j.composite.scope.PropertyParameter;
  * removeFoo = remove object from list named foo
  * fooIterator - return an iterator over the list of Foos
  */
-@AppliesTo( { Getters.class, Setters.class, Property.class } )
+@AppliesTo( { Getters.class, Setters.class } )
 public class PropertiesMixin
     implements InvocationHandler
 {
-    private static final String PROPERTY_VALUE_PROPERTIES = "properties";
-
     // Attributes ----------------------------------------------------
     Map<String, Object> properties;
 
@@ -51,25 +46,6 @@ public class PropertiesMixin
     public PropertiesMixin()
     {
         properties = new HashMap<String, Object>();
-    }
-
-    /**
-     * Construct an instance of {@code PropertiesMixins} with initial values.
-     *
-     * @param props The initial values. This argument must not be {@code null}.
-     * @since 0.1.0
-     */
-    public PropertiesMixin( @PropertyParameter( PROPERTY_VALUE_PROPERTIES )Iterable<PropertyValue> props )
-    {
-        this();
-
-        for( PropertyValue propertyValue : props )
-        {
-            String name = propertyValue.getName();
-            Object value = propertyValue.getValue();
-
-            properties.put( "v:" + name, value );
-        }
     }
 
     // InvocationHandler implementation ------------------------------

@@ -17,6 +17,8 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.Concerns;
+import org.qi4j.composite.Mixins;
+import org.qi4j.library.framework.entity.PropertyMixin;
 import org.qi4j.library.general.test.model.DescriptorConcern;
 import org.qi4j.property.Property;
 import org.qi4j.test.AbstractQi4jTest;
@@ -43,6 +45,8 @@ public class DescriptorTest extends AbstractQi4jTest
         assertEquals( value, displayValue );
     }
 
+    e
+
     public void testDescriptorWithModifier() throws Exception
     {
         DummyComposite2 composite = compositeBuilderFactory.newCompositeBuilder( DummyComposite2.class ).newInstance();
@@ -51,11 +55,13 @@ public class DescriptorTest extends AbstractQi4jTest
         assertEquals( displayValue, "My name is Sianny" );
     }
 
+    @Mixins( PropertyMixin.class )
     private interface DummyComposite extends Descriptor, HasName, Composite
     {
     }
 
     @Concerns( DescriptorConcern.class )
+    @Mixins( PropertyMixin.class )
     private interface DummyComposite2 extends Descriptor, HasName, Composite
     {
     }

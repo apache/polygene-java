@@ -13,14 +13,12 @@
 package org.qi4j.library.framework.properties;
 
 import java.lang.reflect.Proxy;
-import java.util.Collections;
 import java.util.Iterator;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import org.junit.Before;
 import org.junit.Test;
-import org.qi4j.composite.PropertyValue;
 
 public class PropertiesMixinTest
 {
@@ -30,7 +28,7 @@ public class PropertiesMixinTest
     @Before
     public void setUp() throws NoSuchMethodException
     {
-        m_underTest = new PropertiesMixin( (Iterable<PropertyValue>) Collections.EMPTY_LIST );
+        m_underTest = new PropertiesMixin();
         m_proxy = (Value) Proxy.newProxyInstance( Value.class.getClassLoader(), new Class[]{ Value.class }, m_underTest );
     }
 

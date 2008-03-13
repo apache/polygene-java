@@ -12,30 +12,12 @@
  */
 package org.qi4j.library.general.model;
 
-import java.io.Serializable;
-import org.qi4j.composite.Mixins;
-import org.qi4j.composite.scope.PropertyField;
 import org.qi4j.property.Property;
 
 /**
  * Generic interface for Currency
  */
-@Mixins( Currency.CurrencyMixin.class )
 public interface Currency
 {
     Property<java.util.Currency> currency();
-
-    final class CurrencyMixin
-        implements Currency, Serializable
-    {
-        private static final long serialVersionUID = 1L;
-
-        @PropertyField
-        private Property<java.util.Currency> currency;
-
-        public final Property<java.util.Currency> currency()
-        {
-            return currency;
-        }
-    }
 }

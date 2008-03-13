@@ -25,16 +25,11 @@ import javax.security.auth.Subject;
 import org.qi4j.composite.AppliesTo;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.CompositeBuilderFactory;
-import org.qi4j.composite.PropertyValue;
-import static org.qi4j.composite.PropertyValue.property;
 import org.qi4j.composite.scope.ConcernFor;
 import org.qi4j.composite.scope.Invocation;
 import org.qi4j.composite.scope.Service;
 import org.qi4j.composite.scope.Structure;
 import org.qi4j.composite.scope.ThisCompositeAs;
-import org.qi4j.property.ImmutableProperty;
-import org.qi4j.property.Property;
-import org.qi4j.spi.property.PropertyInstance;
 
 @AppliesTo( RequiresPermission.class )
 public class AuthorizationConcern

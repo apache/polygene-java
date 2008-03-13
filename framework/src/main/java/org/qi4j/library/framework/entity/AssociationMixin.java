@@ -34,7 +34,7 @@ public class AssociationMixin
     @SuppressWarnings( "unchecked" )
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
     {
-        return associations.getAssociation( method.getDeclaringClass().getName() + ":" + method.getName() );
+        return associations.getAssociation( method );
     }
 
     public static class AssocationFilter
