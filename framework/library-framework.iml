@@ -15,7 +15,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="core-api" />
-    <orderEntry type="library" name="junit-4.1" level="project" />
     <orderEntry type="module" module-name="core-runtime" />
     <orderEntry type="library" name="jta-1_1-classes" level="project" />
     <orderEntry type="module" module-name="core-testsupport" />
@@ -33,6 +32,7 @@
     <orderEntry type="library" name="openrdf-rio-n3-2.0-rc2" level="project" />
     <orderEntry type="library" name="openrdf-rio-rdfxml-2.0-rc2" level="project" />
     <orderEntry type="library" name="openrdf-rio-turtle-2.0-rc2" level="project" />
+    <orderEntry type="library" name="junit" level="project" />
     <orderEntryProperties />
   </component>
   <component name="copyright">
