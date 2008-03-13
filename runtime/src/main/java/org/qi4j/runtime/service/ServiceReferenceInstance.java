@@ -29,6 +29,8 @@ import org.qi4j.spi.property.PropertyModel;
 import org.qi4j.spi.service.ServiceInstance;
 import org.qi4j.spi.service.ServiceInstanceProvider;
 import org.qi4j.spi.structure.ServiceDescriptor;
+import org.qi4j.composite.Composite;
+import org.qi4j.runtime.composite.CompositeInstance;
 
 /**
  * TODO
@@ -160,9 +162,14 @@ public final class ServiceReferenceInstance<T>
                         }
                     }
 
-                    if( providedInstance instanceof Proxy )
+                    if( providedInstance instanceof Composite )
                     {
-                        instance = Proxy.getInvocationHandler( providedInstance );
+                        InvocationHandler handler = Proxy.getInvocationHandler( providedInstance );
+                        if (handler instanceof CompositeInstance )
+                            instance = handler;
+                        else
+                            instance = providedInstance;
+
                     }
                     else
                     {
