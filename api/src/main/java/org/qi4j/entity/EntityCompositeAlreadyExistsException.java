@@ -17,7 +17,12 @@
  */
 package org.qi4j.entity;
 
-public class EntityCompositeAlreadyExistsException     extends EntitySessionException
+/**
+ * If you try to create an EntityComposite whose identity already exists,
+ * then this exception will be thrown.
+ */
+public class EntityCompositeAlreadyExistsException
+    extends EntitySessionException
 {
     private String identity;
     private Class compositeType;

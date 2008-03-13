@@ -14,6 +14,9 @@
  */
 package org.qi4j.entity;
 
+/**
+ * Factory for EntitySessions.
+ */
 public interface EntitySessionFactory
 {
     EntitySession newEntitySession();

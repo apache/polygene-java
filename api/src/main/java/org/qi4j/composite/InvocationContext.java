@@ -16,6 +16,12 @@ package org.qi4j.composite;
 
 import java.util.Collection;
 
+/**
+ * The InvocationContext is available for Concerns to introspect during a method invocation.
+ * It contains information about the invoked Composite and the Mixin that is to be invoked.
+ * <p/>
+ * It can also be used to access the Constraint violations that have been accumulated.
+ */
 public interface InvocationContext
 {
     Object getComposite();

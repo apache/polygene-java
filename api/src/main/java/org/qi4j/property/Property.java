@@ -15,14 +15,28 @@
 package org.qi4j.property;
 
 /**
- * TODO
+ * Properties are declared in Composite interfaces
+ * by using this interface. It creates a first-class
+ * object for the property from which you can get and
+ * set the value, and access any metadata about it.
  */
 public interface Property<T>
     extends PropertyInfo
 {
+    /**
+     * Get the value of the property.
+     *
+     * @return the value
+     */
     T get();
 
+    /**
+     * Set the value of the property
+     *
+     * @param newValue the new value
+     * @return the new value
+     * @throws PropertyVetoException is thrown if the value is invalid
+     */
     T set( T newValue )
         throws PropertyVetoException;
-
 }

@@ -20,5 +20,5 @@ package org.qi4j.composite;
 public interface Initializable
 {
     void initialize()
-        throws CompositeInstantiationException;
+        throws InstantiationException;
 }

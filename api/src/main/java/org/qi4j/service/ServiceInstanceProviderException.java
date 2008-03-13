@@ -12,22 +12,31 @@
  *
  */
 
-package org.qi4j.composite;
-
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import org.qi4j.injection.Name;
+package org.qi4j.service;
 
 /**
- * Annotation to denote that a method returns or sets a property for the object
+ * If a ServiceInstanceProvider could not create a service
+ * instance it must throw this exception.
  */
-@Retention( RetentionPolicy.RUNTIME )
-@Target( { ElementType.METHOD } )
-@Documented
-public @interface Property
+public class ServiceInstanceProviderException
+    extends RuntimeException
 {
-    @Name String value() default ""; // Name of the property. If not set then name will be JavaBean name of getter/setter method
+    public ServiceInstanceProviderException()
+    {
+    }
+
+    public ServiceInstanceProviderException( String string )
+    {
+        super( string );
+    }
+
+    public ServiceInstanceProviderException( String string, Throwable throwable )
+    {
+        super( string, throwable );
+    }
+
+    public ServiceInstanceProviderException( Throwable throwable )
+    {
+        super( throwable );
+    }
 }

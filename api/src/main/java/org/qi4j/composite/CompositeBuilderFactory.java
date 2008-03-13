@@ -21,14 +21,20 @@ package org.qi4j.composite;
 public interface CompositeBuilderFactory
 {
     /**
-     * Create a builder for creating new objects that implements the given interface.
+     * Create a builder for creating new Composites that implements the given Composite type.
      *
-     * @param compositeType an interface that describes the object to be created
-     * @return a CompositeBuilder for cretaion of objects implementing the interface
-     * @throws CompositeInstantiationException
-     *          thrown if instantiation fails
+     * @param compositeType an interface that describes the Composite to be instantiated
+     * @return a CompositeBuilder for creation of Composites implementing the interface
      */
-    <T extends Composite> CompositeBuilder<T> newCompositeBuilder( Class<T> compositeType );
+    <T extends Composite> CompositeBuilder<T> newCompositeBuilder( Class<T> compositeType )
+        throws InvalidApplicationException;
 
-    <T> T newComposite( Class<T> compositeInterface );
+    /**
+     * Instantiate a Composite of the given type.
+     *
+     * @param compositeType the Composite type to instantiate
+     * @return a new Composite instance
+     */
+    <T> T newComposite( Class<T> compositeType )
+        throws InvalidApplicationException, InstantiationException;
 }

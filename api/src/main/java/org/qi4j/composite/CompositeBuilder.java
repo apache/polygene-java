@@ -17,25 +17,35 @@
 package org.qi4j.composite;
 
 /**
- * TODO for Rickard; Explanation needed on how to use for Templating, Strategy and Builder patterns.
+ * CompositeBuilders are used to instantiate Composites. They can be acquired from
+ * {@link CompositeBuilderFactory#newCompositeBuilder(Class)} and allows the client
+ * to provide additional settings before instantiating the Composite.
+ * <p/>
+ * It extends Iterable which allows client code to iteratively create new instances. This
+ * can be used to implement the prototype pattern.
  */
 public interface CompositeBuilder<T extends Composite>
     extends Iterable<T>
 {
     /**
-     * Provide an object that can be injected into mixins that has the @Uses
+     * Provide objects that can be injected into mixins that has the @Uses
      * dependency injection annotation.
      *
-     * @param usedObject The object that can be injected into mixins.
+     * @param usedObjects The objects that can be injected into mixins.
+     * @see org.qi4j.composite.scope.Uses
      */
-    void use( Object usedObject );
-
-    <K> void properties( Class<K> mixinType, PropertyValue... properties );
+    void use( Object... usedObjects );
 
     T propertiesOfComposite();
 
     <K> K propertiesFor( Class<K> mixinType );
 
+    /**
+     * Create a new Composite instance.
+     *
+     * @return a new Composite instance
+     * @throws InstantiationException thrown if it was not possible to instantiate the Composite
+     */
     T newInstance()
-        throws CompositeInstantiationException;
+        throws InstantiationException;
 }

@@ -16,12 +16,10 @@
  */
 package org.qi4j.spi.entity;
 
-import java.util.Map;
+import java.lang.reflect.Method;
 import java.util.List;
-import org.qi4j.entity.EntityComposite;
+import java.util.Map;
 import org.qi4j.entity.EntitySession;
-import org.qi4j.spi.property.AssociationBinding;
-import org.qi4j.spi.property.PropertyBinding;
 import org.qi4j.spi.composite.CompositeBinding;
 
 public interface EntityStore<T extends EntityState>
@@ -30,14 +28,14 @@ public interface EntityStore<T extends EntityState>
         throws StoreException;
 
     T newEntityInstance( EntitySession session,
-                                   String identity,
-                                   CompositeBinding compositeBinding,
-                                   Map<String, Object> propertyValues )
+                         String identity,
+                         CompositeBinding compositeBinding,
+                         Map<Method, Object> propertyValues )
         throws StoreException;
 
     T getEntityInstance( EntitySession session,
-                                   String identity,
-                                   CompositeBinding compositeBinding )
+                         String identity,
+                         CompositeBinding compositeBinding )
         throws StoreException;
 
     void complete( EntitySession session, List<T> states )

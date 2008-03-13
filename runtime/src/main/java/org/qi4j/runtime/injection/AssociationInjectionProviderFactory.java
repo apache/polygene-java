@@ -14,8 +14,11 @@
 
 package org.qi4j.runtime.injection;
 
+import java.lang.reflect.Method;
 import org.qi4j.association.AbstractAssociation;
+import org.qi4j.spi.composite.AssociationResolution;
 import org.qi4j.spi.composite.State;
+import org.qi4j.spi.composite.StateResolution;
 import org.qi4j.spi.injection.AssociationInjectionModel;
 import org.qi4j.spi.injection.BindingContext;
 import org.qi4j.spi.injection.InjectionContext;
@@ -41,19 +44,28 @@ public final class AssociationInjectionProviderFactory
         }
         else
         {
-            return new AssociationInjectionProviderFactory.AssociationInjectionProvider( resolution );
+            // @AssociationField Association<String> name;
+            StateResolution injectable = (StateResolution) bindingContext.getAbstractResolution();
+            AssociationInjectionModel aim = (AssociationInjectionModel) resolution.getInjectionModel();
+            AssociationResolution associationResolution = injectable.getAssociationResolution( aim.getName() );
+
+            // No such association found
+            if( associationResolution == null )
+            {
+                return null;
+            }
+
+            return new AssociationInjectionProviderFactory.AssociationInjectionProvider( associationResolution.getAssociationModel().getAccessor() );
         }
     }
 
     private class AssociationInjectionProvider implements InjectionProvider
     {
-        private InjectionResolution association;
-        private String name;
+        private Method accessor;
 
-        public AssociationInjectionProvider( InjectionResolution association )
+        public AssociationInjectionProvider( Method accessor )
         {
-            this.association = association;
-            name = ( (AssociationInjectionModel) association.getInjectionModel() ).getName();
+            this.accessor = accessor;
         }
 
         public Object provideInjection( InjectionContext context )
@@ -61,21 +73,14 @@ public final class AssociationInjectionProviderFactory
             if( context instanceof StateInjectionContext )
             {
                 StateInjectionContext associationInjectionContext = (StateInjectionContext) context;
-                AbstractAssociation abstractAssociation = associationInjectionContext.getState().getAssociation( name );
+                AbstractAssociation abstractAssociation = associationInjectionContext.getState().getAssociation( accessor );
                 if( abstractAssociation != null )
                 {
                     return abstractAssociation;
                 }
                 else
                 {
-                    if( this.association.getInjectionModel().isOptional() )
-                    {
-                        return null;
-                    }
-                    else
-                    {
-                        throw new InjectionProviderException( "Non-optional association " + name + " had no association when injecting " + this.association.getInjectionModel().getInjectedClass().getName() );
-                    }
+                    throw new InjectionProviderException( "Non-optional association " + accessor.getName() + " had no association" );
                 }
             }
 

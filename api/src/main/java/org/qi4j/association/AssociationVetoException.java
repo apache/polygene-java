@@ -15,7 +15,7 @@
 package org.qi4j.association;
 
 /**
- * TODO
+ * This exception is thrown when an assocation is set to an invalid entity
  */
 public class AssociationVetoException extends RuntimeException
 {

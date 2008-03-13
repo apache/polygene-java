@@ -14,6 +14,9 @@
  */
 package org.qi4j.entity;
 
+/**
+ * If a persistence error occurs, then this exception is thrown.
+ */
 public class PersistenceException
     extends RuntimeException
 {

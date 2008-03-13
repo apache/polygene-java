@@ -21,7 +21,6 @@ import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.Mixins;
 import org.qi4j.property.Property;
 import org.qi4j.spi.composite.State;
-import org.qi4j.spi.property.PropertyModel;
 import org.qi4j.test.AbstractQi4jTest;
 
 /**
@@ -36,13 +35,14 @@ public class PropertyFieldInjectionTest
     }
 
     public void testWhenPropertyFieldAnnotationThenInjectMixin()
+        throws Exception
     {
         CompositeBuilder<PropertyFieldInjectionComposite> pficBuilder = compositeBuilderFactory.newCompositeBuilder( PropertyFieldInjectionTest.PropertyFieldInjectionComposite.class );
         pficBuilder.propertiesOfComposite().testField().set( "X" );
         PropertyFieldInjectionComposite pfic = pficBuilder.newInstance();
         assertEquals( "X", pfic.testField().get() );
         assertEquals( "X", pfic.namedField().get() );
-        assertEquals( "X", pfic.getState().getProperty( PropertyModel.getQualifiedName( PropertyFieldInjectionComposite.class, "testField" ) ).get() );
+        assertEquals( "X", pfic.getState().getProperty( PropertyFieldInjectionComposite.class.getMethod( "testField" ) ).get() );
     }
 
     @Mixins( PropertyFieldInjectionMixin.class )

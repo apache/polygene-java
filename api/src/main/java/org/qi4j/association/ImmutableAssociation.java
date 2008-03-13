@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,30 +12,12 @@
  *
  */
 
-package org.qi4j.property;
-
-import org.qi4j.composite.scope.Uses;
+package org.qi4j.association;
 
 /**
  * TODO
  */
-public class PropertyInfoMixin
-    implements PropertyInfo
+public interface ImmutableAssociation<T>
+    extends Association<T>
 {
-    @Uses PropertyInfo info;
-
-    public <T> T getPropertyInfo( Class<T> infoType )
-    {
-        return info.getPropertyInfo( infoType );
-    }
-
-    public String getName()
-    {
-        return info.getName();
-    }
-
-    public String getQualifiedName()
-    {
-        return info.getQualifiedName();
-    }
 }

@@ -24,8 +24,7 @@ public interface ObjectBuilderFactory
      *
      * @param type an object class which will be instantiated
      * @return a ObjectBuilder for creation of objects of the given type
-     * @throws CompositeInstantiationException
-     *          thrown if instantiation fails
+     * @throws InstantiationException thrown if instantiation fails
      */
     <T> ObjectBuilder<T> newObjectBuilder( Class<T> type );
 

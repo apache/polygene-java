@@ -15,7 +15,7 @@
 package org.qi4j.service;
 
 /**
- * TODO
+ * Enumeration of possible activation states
  */
 public enum ActivationStatus
 {

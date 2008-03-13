@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.qi4j.composite.Composite;
-import org.qi4j.composite.CompositeInstantiationException;
+import org.qi4j.composite.InstantiationException;
 import org.qi4j.entity.EntitySession;
 import org.qi4j.entity.Lifecycle;
 import org.qi4j.runtime.property.AssociationContext;
@@ -94,8 +94,8 @@ public final class CompositeContext
         {
             MixinBinding mixinBinding = compositeMethodContext.getCompositeMethodBinding().getMixinBinding();
             int index = mixinIndices.get( mixinBinding );
-//            CompositeMethodInstancePool pool = new SynchronizedCompositeMethodInstancePool();
-            CompositeMethodInstancePool pool = new AtomicCompositeMethodInstancePool();
+            CompositeMethodInstancePool pool = new SynchronizedCompositeMethodInstancePool();
+//            CompositeMethodInstancePool pool = new AtomicCompositeMethodInstancePool();
             MethodDescriptor methodDescriptor = new MethodDescriptor( compositeMethodContext,
                                                                       methodIndex,
                                                                       index,
@@ -203,7 +203,7 @@ public final class CompositeContext
     }
 
     private Composite newProxy( CompositeInstance handler )
-        throws CompositeInstantiationException
+        throws InstantiationException
     {
         // Instantiate proxy for given composite interface
         try
@@ -214,7 +214,7 @@ public final class CompositeContext
         }
         catch( Exception e )
         {
-            throw new CompositeInstantiationException( e );
+            throw new InstantiationException( e );
         }
     }
 
@@ -259,12 +259,12 @@ public final class CompositeContext
         catch( InvocationTargetException e )
         {
             Throwable t = e.getTargetException();
-            throw new CompositeInstantiationException( t );
+            throw new InstantiationException( t );
         }
         catch( UndeclaredThrowableException e )
         {
             Throwable t = e.getUndeclaredThrowable();
-            throw new CompositeInstantiationException( t );
+            throw new InstantiationException( t );
         }
         catch( RuntimeException e )
         {
@@ -272,7 +272,7 @@ public final class CompositeContext
         }
         catch( Throwable e )
         {
-            throw new CompositeInstantiationException( e );
+            throw new InstantiationException( e );
         }
     }
 }

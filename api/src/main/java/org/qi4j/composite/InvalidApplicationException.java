@@ -15,7 +15,9 @@
 package org.qi4j.composite;
 
 /**
- * TODO
+ * Thrown when an application is considered to not be constructed properly.
+ * This happens primarily when client code tries to instantiate Composites
+ * and objects which have not been registered in the ModuleAssembly.
  */
 public class InvalidApplicationException
     extends RuntimeException

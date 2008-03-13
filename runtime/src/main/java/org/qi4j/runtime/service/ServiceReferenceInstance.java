@@ -19,9 +19,11 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import org.qi4j.composite.Composite;
 import org.qi4j.property.ImmutableProperty;
+import org.qi4j.runtime.composite.CompositeInstance;
 import org.qi4j.service.Activatable;
-import org.qi4j.service.ServiceProviderException;
+import org.qi4j.service.ServiceInstanceProviderException;
 import org.qi4j.service.ServiceReference;
 import org.qi4j.spi.property.GenericPropertyInfo;
 import org.qi4j.spi.property.ImmutablePropertyInstance;
@@ -29,8 +31,6 @@ import org.qi4j.spi.property.PropertyModel;
 import org.qi4j.spi.service.ServiceInstance;
 import org.qi4j.spi.service.ServiceInstanceProvider;
 import org.qi4j.spi.structure.ServiceDescriptor;
-import org.qi4j.composite.Composite;
-import org.qi4j.runtime.composite.CompositeInstance;
 
 /**
  * TODO
@@ -137,7 +137,7 @@ public final class ServiceReferenceInstance<T>
     }
 
     private Object getInstance()
-        throws ServiceProviderException
+        throws ServiceInstanceProviderException
     {
         // DCL that works with Java 1.5 volatile semantics
         if( serviceInstance == null )
@@ -158,17 +158,21 @@ public final class ServiceReferenceInstance<T>
                         catch( Exception e )
                         {
                             serviceInstance = null;
-                            throw new ServiceProviderException( e );
+                            throw new ServiceInstanceProviderException( e );
                         }
                     }
 
                     if( providedInstance instanceof Composite )
                     {
                         InvocationHandler handler = Proxy.getInvocationHandler( providedInstance );
-                        if (handler instanceof CompositeInstance )
+                        if( handler instanceof CompositeInstance )
+                        {
                             instance = handler;
+                        }
                         else
+                        {
                             instance = providedInstance;
+                        }
 
                     }
                     else

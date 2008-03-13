@@ -16,9 +16,12 @@
  */
 package org.qi4j.entity;
 
-import java.net.URL;
 import org.qi4j.composite.Composite;
 
+/**
+ * Interface that all Entities implements. It contains methods
+ * which are specific for Entities.
+ */
 public interface Entity
 {
     /**
@@ -42,18 +45,4 @@ public interface Entity
     boolean isInstance( Class anObjectType );
 
     boolean isReference();
-
-    /**
-     * The full absolute external form of the composite reference.
-     * <p/>
-     * The composite reference will be converted to a URL with the following
-     * format;
-     * <code><pre>
-     * &lt;transport-protocol&gt;://&lt;repository-host&gt;/&lt;identity&gt;?type=&lt;type&gt;
-     * </pre></code>
-     *
-     * @return A URL pointing to the potenitally globally accessible location where the composite
-     *         can be retrieved.
-     */
-    URL toURL();
 }

@@ -17,9 +17,9 @@ package org.qi4j.association;
 import java.util.Set;
 
 /**
- * TODO
+ * Specialization of ManyAssociation which has Set semantics.
  */
-public interface SetAssociation<T>
-    extends ManyAssociation<T>, Set<T>
+public interface SetAssociation<A>
+    extends ManyAssociation<A>, Set<A>
 {
 }

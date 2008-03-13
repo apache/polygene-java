@@ -6,7 +6,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Iterator;
-import org.qi4j.composite.CompositeInstantiationException;
+import org.qi4j.composite.InstantiationException;
 import org.qi4j.spi.composite.AbstractBinding;
 import org.qi4j.spi.composite.ConstructorBinding;
 import org.qi4j.spi.composite.FieldBinding;
@@ -23,7 +23,7 @@ public final class InstanceFactoryImpl
     implements InstanceFactory
 {
     public Object newInstance( AbstractBinding abstractBinding, InjectionContext context )
-        throws CompositeInstantiationException
+        throws InstantiationException
     {
         // New instance
         Object instance;
@@ -46,7 +46,7 @@ public final class InstanceFactoryImpl
 
                 if( parameter == null && !parameterBinding.getInjectionBinding().getInjectionResolution().getInjectionModel().isOptional() )
                 {
-                    throw new CompositeInstantiationException( "Non-optional @" + parameterBinding.getInjectionBinding().getInjectionResolution().getInjectionModel().getInjectionAnnotationType().getSimpleName() + " parameter " + ( i + 1 ) + " of type " + parameterBinding.getInjectionBinding().getInjectionResolution().getInjectionModel().getInjectionType() + " in class " + abstractBinding.getAbstractResolution().getAbstractModel().getModelClass().getName() + " was null" );
+                    throw new InstantiationException( "Non-optional @" + parameterBinding.getInjectionBinding().getInjectionResolution().getInjectionModel().getInjectionAnnotationType().getSimpleName() + " parameter " + ( i + 1 ) + " of type " + parameterBinding.getInjectionBinding().getInjectionResolution().getInjectionModel().getInjectionType() + " in class " + abstractBinding.getAbstractResolution().getAbstractModel().getModelClass().getName() + " was null" );
                 }
 
                 Class parameterType = constructor.getParameterTypes()[ i ];
@@ -57,17 +57,17 @@ public final class InstanceFactoryImpl
             // Invoke constructor
             instance = constructor.newInstance( parameters );
         }
-        catch( CompositeInstantiationException e )
+        catch( InstantiationException e )
         {
             throw e;
         }
         catch( InvocationTargetException e )
         {
-            throw new CompositeInstantiationException( "Could not instantiate class " + abstractBinding.getAbstractResolution().getAbstractModel().getModelClass().getName(), e.getTargetException() );
+            throw new InstantiationException( "Could not instantiate class " + abstractBinding.getAbstractResolution().getAbstractModel().getModelClass().getName(), e.getTargetException() );
         }
         catch( Exception e )
         {
-            throw new CompositeInstantiationException( "Could not instantiate class " + abstractBinding.getAbstractResolution().getAbstractModel().getModelClass().getName(), e );
+            throw new InstantiationException( "Could not instantiate class " + abstractBinding.getAbstractResolution().getAbstractModel().getModelClass().getName(), e );
         }
 
         // Inject fields and methods
@@ -77,7 +77,7 @@ public final class InstanceFactoryImpl
     }
 
     public void inject( Object instance, AbstractBinding abstractBinding, InjectionContext context )
-        throws CompositeInstantiationException
+        throws InstantiationException
     {
         try
         {
@@ -89,7 +89,7 @@ public final class InstanceFactoryImpl
         }
         catch( Exception e )
         {
-            throw new CompositeInstantiationException( "Could not inject object of class " + instance.getClass().getName(), e );
+            throw new InstantiationException( "Could not inject object of class " + instance.getClass().getName(), e );
         }
     }
 
@@ -114,7 +114,7 @@ public final class InstanceFactoryImpl
                     }
                     catch( IllegalArgumentException e )
                     {
-                        throw new CompositeInstantiationException( "Could not set field " + field.getName() + " in " + field.getDeclaringClass().getName() + " to value of type " + value.getClass().getName() );
+                        throw new InstantiationException( "Could not set field " + field.getName() + " in " + field.getDeclaringClass().getName() + " to value of type " + value.getClass().getName() );
                     }
                     catch( IllegalAccessException e )
                     {
@@ -125,7 +125,7 @@ public final class InstanceFactoryImpl
                 {
                     if( !injectionBinding.getInjectionResolution().getInjectionModel().isOptional() )
                     {
-                        throw new CompositeInstantiationException( "Non-optional @" + injectionBinding.getInjectionResolution().getInjectionModel().getInjectionAnnotationType().getSimpleName() + " field " + fieldBinding.getFieldResolution().getFieldModel().getField().getName() + " of type " + fieldBinding.getFieldResolution().getFieldModel().getField().getGenericType() + " in class " + instance.getClass().getName() + " was null" );
+                        throw new InstantiationException( "Non-optional @" + injectionBinding.getInjectionResolution().getInjectionModel().getInjectionAnnotationType().getSimpleName() + " field " + fieldBinding.getFieldResolution().getFieldModel().getField().getName() + " of type " + fieldBinding.getFieldResolution().getFieldModel().getField().getGenericType() + " in class " + instance.getClass().getName() + " was null" );
                     }
                 }
             }
@@ -133,7 +133,7 @@ public final class InstanceFactoryImpl
     }
 
     private void injectMethods( AbstractBinding abstractBinding, InjectionContext context, Object instance )
-        throws InstantiationException, IllegalAccessException, InvocationTargetException
+        throws java.lang.InstantiationException, IllegalAccessException, InvocationTargetException
     {
         Iterable<MethodBinding> methodBindings = abstractBinding.getInjectedMethodsBindings();
         for( MethodBinding methodBinding : methodBindings )

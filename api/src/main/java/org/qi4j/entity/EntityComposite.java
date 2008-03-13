@@ -17,8 +17,7 @@ package org.qi4j.entity;
 import org.qi4j.composite.Composite;
 
 /**
- * Persistent domain objects should implement this composite
- * which provides an identity and a reference to a repository
+ * Entity domain objects must implement this interface.
  */
 public interface EntityComposite extends Identity, Lifecycle, Entity, Composite
 {

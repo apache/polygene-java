@@ -14,7 +14,7 @@
 
 package org.qi4j.spi.service.provider;
 
-import org.qi4j.service.ServiceProviderException;
+import org.qi4j.service.ServiceInstanceProviderException;
 import org.qi4j.spi.service.ServiceInstance;
 import org.qi4j.spi.service.ServiceInstanceProvider;
 import org.qi4j.spi.structure.ServiceDescriptor;
@@ -27,7 +27,7 @@ public class SingletonInstanceProvider
     implements ServiceInstanceProvider
 {
 
-    public Object newInstance( ServiceDescriptor serviceDescriptor ) throws ServiceProviderException
+    public Object newInstance( ServiceDescriptor serviceDescriptor ) throws ServiceInstanceProviderException
     {
         return serviceDescriptor.getServiceInfo( Singleton.class ).getInstance();
     }

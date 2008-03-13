@@ -17,7 +17,7 @@ package org.qi4j.composite;
 import java.lang.annotation.Annotation;
 
 /**
- * All constraints must implement this interface, which is used for each
+ * All Constraints must implement this interface, which is used for each
  * value validation.
  */
 public interface Constraint<A extends Annotation, P>

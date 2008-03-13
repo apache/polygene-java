@@ -14,13 +14,15 @@
 
 package org.qi4j.runtime.entity;
 
+import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.Map;
 import org.qi4j.association.AbstractAssociation;
 import org.qi4j.association.Association;
 import org.qi4j.association.ManyAssociation;
 import org.qi4j.composite.Composite;
-import org.qi4j.composite.CompositeInstantiationException;
+import org.qi4j.composite.InstantiationException;
+import org.qi4j.composite.InvalidApplicationException;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.Identity;
 import org.qi4j.entity.Lifecycle;
@@ -40,6 +42,19 @@ public final class EntitySessionCompositeBuilder<T extends Composite>
 {
     private EntitySessionInstance entitySession;
     private EntityStore store;
+    private static Method IDENTITY_METHOD = null;
+
+    static
+    {
+        try
+        {
+            IDENTITY_METHOD = Identity.class.getMethod( "identity" );
+        }
+        catch( NoSuchMethodException e )
+        {
+            e.printStackTrace();
+        }
+    }
 
     public EntitySessionCompositeBuilder( ModuleInstance moduleInstance, CompositeContext compositeContext, EntitySessionInstance entitySession, EntityStore store )
     {
@@ -48,27 +63,27 @@ public final class EntitySessionCompositeBuilder<T extends Composite>
         this.store = store;
     }
 
-    public void use( Object mixin )
+    public void use( Object... usedObjects )
     {
-        throw new CompositeInstantiationException( "Entities may not use other objects" );
+        throw new InvalidApplicationException( "Entities may not use other objects" );
     }
 
     public T newInstance()
     {
         EntityState state;
-        String identity = getPropertyValues().get( Identity.class.getName() + ":identity" ).toString();
-        Map<String, Object> propertyValues = getPropertyValues();
+        String identity = getPropertyValues().get( IDENTITY_METHOD ).toString();
+        Map<Method, Object> propertyValues = getPropertyValues();
         try
         {
             state = store.newEntityInstance( entitySession, identity, context.getCompositeBinding(), propertyValues );
         }
         catch( StoreException e )
         {
-            throw new CompositeInstantiationException( "Could not create new entity in store", e );
+            throw new InstantiationException( "Could not create new entity in store", e );
         }
 
-        Map<String, AbstractAssociation> associationValues = getAssociationValues();
-        for( Map.Entry<String, AbstractAssociation> association : associationValues.entrySet() )
+        Map<Method, AbstractAssociation> associationValues = getAssociationValues();
+        for( Map.Entry<Method, AbstractAssociation> association : associationValues.entrySet() )
         {
             AbstractAssociation associationValue = state.getAssociation( association.getKey() );
             if( associationValue instanceof ManyAssociation )

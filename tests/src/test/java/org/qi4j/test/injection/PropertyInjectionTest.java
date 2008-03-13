@@ -17,7 +17,6 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.Mixins;
-import org.qi4j.composite.PropertyValue;
 import org.qi4j.composite.scope.PropertyField;
 import org.qi4j.composite.scope.PropertyParameter;
 import org.qi4j.library.framework.entity.PropertyMixin;
@@ -36,9 +35,9 @@ public class PropertyInjectionTest extends AbstractQi4jTest
     {
         CompositeBuilder<SayHelloComposite> builder = compositeBuilderFactory.newCompositeBuilder( SayHelloComposite.class );
 
-        builder.properties( SampleInterface.class,
-                            PropertyValue.property( "sampleOne", "Hello" ),
-                            PropertyValue.property( "sampleTwo", "World" ) );
+        SayHelloComposite state = builder.propertiesOfComposite();
+        state.sampleOne().set( "Hello" );
+        state.sampleTwo().set( "World" );
 
         SampleInterface sampleInterface = builder.newInstance();
 

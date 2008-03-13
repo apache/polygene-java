@@ -17,9 +17,9 @@ package org.qi4j.association;
 import java.util.List;
 
 /**
- * TODO
+ * Specialization of ManyAssociation which has List semantics.
  */
-public interface ListAssociation<T>
-    extends ManyAssociation<T>, List<T>
+public interface ListAssociation<A>
+    extends ManyAssociation<A>, List<A>
 {
 }

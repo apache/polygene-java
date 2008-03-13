@@ -18,7 +18,6 @@ package org.qi4j.runtime.entity;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
-import java.net.URL;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.scope.Structure;
@@ -93,10 +92,5 @@ public final class EntityMixin
     {
         EntityCompositeInstance handler = EntityCompositeInstance.getEntityCompositeInstance( meAsEntity );
         return handler.isReference();
-    }
-
-    public URL toURL()
-    {
-        return null;  //toDo()
     }
 }

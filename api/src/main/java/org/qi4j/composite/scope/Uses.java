@@ -24,7 +24,8 @@ import org.qi4j.injection.Optional;
 
 /**
  * Annotation to denote the injection of a dependency to be used by a Mixin. The injected
- * object is provided by the CompositeBuilder
+ * object is provided by the CompositeBuilder. Call {@link org.qi4j.composite.CompositeBuilder#use} to provide the instance
+ * to be injected.
  */
 @Retention( RetentionPolicy.RUNTIME )
 @Target( { ElementType.PARAMETER, ElementType.FIELD } )

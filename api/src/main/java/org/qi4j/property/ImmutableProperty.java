@@ -15,7 +15,15 @@
 package org.qi4j.property;
 
 /**
- * TODO
+ * Immutable properties should use this interface.
+ * The {@link Property#set} method is still there,
+ * but an exception is thrown on invocation.
+ * <p/>
+ * For proxies created by CompositeBuilder the set()
+ * method will not cause exceptions, which will allow
+ * you to set the value of the property before the
+ * Composite is instantiated. After instantiation there
+ * is no way to change it.
  */
 public interface ImmutableProperty<T>
     extends Property<T>

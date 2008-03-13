@@ -16,6 +16,10 @@
  */
 package org.qi4j.composite;
 
+/**
+ * Thrown if an argument to a method was null, and the method required
+ * it to be non-null.
+ */
 public class NullArgumentException extends IllegalArgumentException
 {
     private NullArgumentException( String message )

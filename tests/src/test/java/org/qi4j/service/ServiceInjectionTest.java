@@ -93,14 +93,14 @@ public class ServiceInjectionTest
         }
 
         public String testServiceReference()
-            throws ServiceProviderException
+            throws ServiceInstanceProviderException
         {
             ServiceName info = serviceRef.getServiceInfo( ServiceName.class );
             return info.getName() + serviceRef.getService().doStuff();
         }
 
         public String testIterableServiceReferences()
-            throws ServiceProviderException
+            throws ServiceInstanceProviderException
         {
             String str = "";
             for( ServiceReference<MyService> serviceReference : serviceRefs )

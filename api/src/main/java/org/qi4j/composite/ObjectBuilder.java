@@ -23,13 +23,15 @@ public interface ObjectBuilder<T>
     extends Iterable<T>
 {
     /**
-     * Make the given object available for @Uses injection
+     * Make the given objects available for @Uses injection
      *
-     * @param object the object to be used
+     * @param objects the objects to be used
      */
-    void use( Object object );
+    void use( Object... objects );
 
-    T newInstance();
+    T newInstance()
+        throws InstantiationException;
 
-    void inject( T instance );
+    void inject( T instance )
+        throws InstantiationException;
 }

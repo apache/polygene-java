@@ -34,7 +34,7 @@ import org.qi4j.runtime.composite.CompositeContext;
 import org.qi4j.runtime.composite.EntityCompositeInstance;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.structure.ServiceMap;
-import org.qi4j.service.ServiceProviderException;
+import org.qi4j.service.ServiceInstanceProviderException;
 import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
@@ -78,7 +78,7 @@ public final class EntitySessionInstance
 
             return builder;
         }
-        catch( ServiceProviderException e )
+        catch( ServiceInstanceProviderException e )
         {
             throw new EntitySessionException( "Could not get service", e );
         }
@@ -253,7 +253,7 @@ public final class EntitySessionInstance
                 }
             }
         }
-        catch( ServiceProviderException e )
+        catch( ServiceInstanceProviderException e )
         {
             throw new SessionCompletionException( "Could not get store", e );
         }

@@ -17,7 +17,8 @@ package org.qi4j.service;
 import org.qi4j.composite.Composite;
 
 /**
- * TODO
+ * All Composites being used to implement services
+ * must extend this interface.
  */
 public interface ServiceComposite
     extends Composite

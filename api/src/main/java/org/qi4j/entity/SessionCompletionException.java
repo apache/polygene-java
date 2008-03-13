@@ -15,7 +15,8 @@
 package org.qi4j.entity;
 
 /**
- * TODO
+ * When an attempt to {@link org.qi4j.entity.EntitySession#complete()} an EntitySession
+ * fails, this exception will be thrown.
  */
 public class SessionCompletionException extends Exception
 {

@@ -14,6 +14,7 @@
 
 package org.qi4j.spi.composite;
 
+import java.lang.reflect.Method;
 import org.qi4j.association.AbstractAssociation;
 import org.qi4j.property.Property;
 
@@ -22,7 +23,7 @@ import org.qi4j.property.Property;
  */
 public interface State
 {
-    Property getProperty( String qualifiedName );
+    Property getProperty( Method propertyMethod );
 
-    AbstractAssociation getAssociation( String qualifiedName );
+    AbstractAssociation getAssociation( Method associationMethod );
 }

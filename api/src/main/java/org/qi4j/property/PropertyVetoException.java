@@ -15,7 +15,8 @@
 package org.qi4j.property;
 
 /**
- * TODO
+ * This exception is thrown by {@link Property#set} if the value
+ * being set is invalid.
  */
 public class PropertyVetoException extends RuntimeException
 {

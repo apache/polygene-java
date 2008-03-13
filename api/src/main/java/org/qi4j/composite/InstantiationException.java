@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2007, Niclas Hedhman. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -11,31 +12,30 @@
  * limitations under the License.
  *
  */
-
-package org.qi4j.service;
+package org.qi4j.composite;
 
 /**
- * TODO
+ * Thrown when a Fragment or object could not be instantiated.
  */
-public final class ServiceAvailabilityEvent
+public class InstantiationException
+    extends RuntimeException
 {
-    private ServiceComposite service;
-    private boolean available;
-
-    public ServiceAvailabilityEvent( ServiceComposite service, boolean available )
+    public InstantiationException()
     {
-        this.service = service;
-        this.available = available;
     }
 
-
-    public ServiceComposite getService()
+    public InstantiationException( String message )
     {
-        return service;
+        super( message );
     }
 
-    public boolean isAvailable()
+    public InstantiationException( String message, Throwable cause )
     {
-        return available;
+        super( message, cause );
+    }
+
+    public InstantiationException( Throwable cause )
+    {
+        super( cause );
     }
 }

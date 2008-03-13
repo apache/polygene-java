@@ -32,7 +32,6 @@ import org.qi4j.service.ActivationStatus;
 import org.qi4j.service.ActivationStatusChange;
 import org.qi4j.service.ServiceLocator;
 import org.qi4j.service.ServiceReference;
-import org.qi4j.service.ServiceStatus;
 import org.qi4j.spi.injection.StructureContext;
 import org.qi4j.spi.service.ServiceInstanceProvider;
 import org.qi4j.spi.structure.ServiceDescriptor;
@@ -41,7 +40,7 @@ import org.qi4j.spi.structure.ServiceDescriptor;
  * TODO
  */
 public final class ModuleInstance
-    implements Activatable, ServiceStatus, ServiceLocator
+    implements Activatable, ServiceLocator
 {
     private ModuleContext moduleContext;
 
@@ -55,7 +54,6 @@ public final class ModuleInstance
     private StructureContext structureContext;
 
     private ActivationStatus status = ActivationStatus.INACTIVE;
-    private boolean available = false;
     private List<ActivationListener> activationListeners = new ArrayList<ActivationListener>();
 
     // List of active Services in this Module
@@ -192,7 +190,6 @@ public final class ModuleInstance
             {
                 setActivationStatus( ActivationStatus.STARTING );
                 setActivationStatus( ActivationStatus.ACTIVE );
-                available = true;
             }
             catch( Exception e )
             {
@@ -208,7 +205,6 @@ public final class ModuleInstance
     {
         if( status == ActivationStatus.ACTIVE )
         {
-            available = false;
             try
             {
                 setActivationStatus( ActivationStatus.STOPPING );
@@ -222,16 +218,6 @@ public final class ModuleInstance
             serviceReferences.clear();
             serviceInstances.clear();
         }
-    }
-
-    public ActivationStatus getActivationStatus()
-    {
-        return status;
-    }
-
-    public boolean isAvailable()
-    {
-        return available;
     }
 
     private void setActivationStatus( ActivationStatus newStatus )

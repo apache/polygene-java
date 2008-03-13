@@ -27,8 +27,7 @@ import java.util.Set;
 import org.qi4j.association.AbstractAssociation;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
-import org.qi4j.composite.CompositeInstantiationException;
-import org.qi4j.composite.PropertyValue;
+import org.qi4j.composite.InstantiationException;
 import org.qi4j.property.ImmutableProperty;
 import org.qi4j.property.Property;
 import org.qi4j.property.PropertyVetoException;
@@ -55,9 +54,9 @@ public class CompositeBuilderImpl<T extends Composite>
     protected ModuleInstance moduleInstance;
     protected CompositeContext context;
 
-    protected Set uses;
-    protected Map<String, Object> propertyValues;
-    protected Map<String, AbstractAssociation> associationValues;
+    protected Set<Object> uses;
+    protected Map<Method, Object> propertyValues;
+    protected Map<Method, AbstractAssociation> associationValues;
 
     public CompositeBuilderImpl( ModuleInstance moduleInstance, CompositeContext context )
     {
@@ -66,21 +65,12 @@ public class CompositeBuilderImpl<T extends Composite>
         this.compositeInterface = (Class<? extends T>) context.getCompositeBinding().getCompositeResolution().getCompositeModel().getCompositeClass();
     }
 
-    public void use( Object usedObject )
+    public void use( Object... usedObjects )
     {
-        getUses().add( usedObject );
-    }
-
-    public <K> void properties( Class<K> mixinType, PropertyValue... properties )
-    {
-        for( PropertyValue property : properties )
+        Set<Object> useSet = getUses();
+        for( Object usedObject : usedObjects )
         {
-            PropertyContext propertyContext = context.getPropertyContext( mixinType, property.getName() );
-            if( propertyContext == null )
-            {
-                throw new CompositeInstantiationException( "No property named " + property.getName() + " found in mixin for type " + mixinType.getName() );
-            }
-            setProperty( propertyContext, property.getValue() );
+            useSet.add( usedObject );
         }
     }
 
@@ -96,7 +86,7 @@ public class CompositeBuilderImpl<T extends Composite>
         }
         catch( Exception e )
         {
-            throw new CompositeInstantiationException( e );
+            throw new InstantiationException( e );
         }
     }
 
@@ -112,21 +102,21 @@ public class CompositeBuilderImpl<T extends Composite>
         }
         catch( Exception e )
         {
-            throw new CompositeInstantiationException( e );
+            throw new InstantiationException( e );
         }
     }
 
     public T newInstance()
     {
         // Calculate total set of Properties for this Composite
-        Map<String, Property> properties = new HashMap<String, Property>();
+        Map<Method, Property> properties = new HashMap<Method, Property>();
         for( PropertyContext propertyContext : context.getPropertyContexts() )
         {
             Object value;
-            String propertyName = propertyContext.getPropertyBinding().getQualifiedName();
-            if( propertyValues != null && propertyValues.containsKey( propertyName ) )
+            Method accessor = propertyContext.getPropertyBinding().getPropertyResolution().getPropertyModel().getAccessor();
+            if( propertyValues != null && propertyValues.containsKey( accessor ) )
             {
-                value = propertyValues.get( propertyName );
+                value = propertyValues.get( accessor );
             }
             else
             {
@@ -137,26 +127,25 @@ public class CompositeBuilderImpl<T extends Composite>
             PropertyBinding binding = propertyContext.getPropertyBinding();
             PropertyResolution propertyResolution = binding.getPropertyResolution();
             PropertyModel propertyModel = propertyResolution.getPropertyModel();
-            String qualifiedName = propertyModel.getQualifiedName();
-            properties.put( qualifiedName, property );
+            properties.put( propertyModel.getAccessor(), property );
         }
 
         // Calculate total set of Associations for this Composite
-        Map<String, AbstractAssociation> associations = new HashMap<String, AbstractAssociation>();
+        Map<Method, AbstractAssociation> associations = new HashMap<Method, AbstractAssociation>();
         for( AssociationContext mixinAssociation : context.getAssociationContexts() )
         {
             Object value = null;
-            if( associationValues != null && associationValues.containsKey( mixinAssociation ) )
+            Method accessor = mixinAssociation.getAssociationBinding().getAssociationResolution().getAssociationModel().getAccessor();
+            if( associationValues != null && associationValues.containsKey( accessor ) )
             {
-                value = associationValues.get( mixinAssociation );
+                value = associationValues.get( accessor );
             }
 
             AbstractAssociation association = mixinAssociation.newInstance( moduleInstance, value );
             AssociationBinding binding = mixinAssociation.getAssociationBinding();
             AssociationResolution associationResolution = binding.getAssociationResolution();
             AssociationModel associationModel = associationResolution.getAssociationModel();
-            String qualifiedName = associationModel.getQualifiedName();
-            associations.put( qualifiedName, association );
+            associations.put( associationModel.getAccessor(), association );
         }
 
         CompositeInstance compositeInstance = context.newCompositeInstance( moduleInstance,
@@ -186,37 +175,37 @@ public class CompositeBuilderImpl<T extends Composite>
         };
     }
 
-    private Set getUses()
+    private Set<Object> getUses()
     {
         if( uses == null )
         {
-            uses = new LinkedHashSet();
+            uses = new LinkedHashSet<Object>();
         }
         return uses;
     }
 
-    protected Map<String, Object> getPropertyValues()
+    protected Map<Method, Object> getPropertyValues()
     {
         if( propertyValues == null )
         {
-            propertyValues = new HashMap<String, Object>();
+            propertyValues = new HashMap<Method, Object>();
         }
         return propertyValues;
     }
 
-    protected Map<String, AbstractAssociation> getAssociationValues()
+    protected Map<Method, AbstractAssociation> getAssociationValues()
     {
         if( associationValues == null )
         {
-            associationValues = new HashMap<String, AbstractAssociation>();
+            associationValues = new HashMap<Method, AbstractAssociation>();
         }
         return associationValues;
     }
 
     private void setProperty( PropertyContext propertyContext, Object property )
     {
-        Map<String, Object> compositeProperties = getPropertyValues();
-        compositeProperties.put( propertyContext.getPropertyBinding().getQualifiedName(), property );
+        Map<Method, Object> compositeProperties = getPropertyValues();
+        compositeProperties.put( propertyContext.getPropertyBinding().getPropertyResolution().getPropertyModel().getAccessor(), property );
     }
 
     private class PropertiesInvocationHandler
@@ -267,21 +256,21 @@ public class CompositeBuilderImpl<T extends Composite>
     static class CompositeBuilderState
         implements State
     {
-        Map<String, Property> properties;
-        Map<String, AbstractAssociation> associations;
+        Map<Method, Property> properties;
+        Map<Method, AbstractAssociation> associations;
 
-        public CompositeBuilderState( Map<String, Property> properties, Map<String, AbstractAssociation> associations )
+        public CompositeBuilderState( Map<Method, Property> properties, Map<Method, AbstractAssociation> associations )
         {
             this.properties = properties;
             this.associations = associations;
         }
 
-        public Property getProperty( String qualifiedName )
+        public Property getProperty( Method method )
         {
-            return properties.get( qualifiedName );
+            return properties.get( method );
         }
 
-        public AbstractAssociation getAssociation( String qualifiedName )
+        public AbstractAssociation getAssociation( Method qualifiedName )
         {
             return associations.get( qualifiedName );
         }

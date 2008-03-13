@@ -25,7 +25,6 @@ import org.qi4j.injection.Optional;
 /**
  * Annotation to denote the injection of a service dependency into a Fragment.
  * <p/>
- * <p/>
  * Examples:
  * <code><pre>
  * &#64;Service MyService service

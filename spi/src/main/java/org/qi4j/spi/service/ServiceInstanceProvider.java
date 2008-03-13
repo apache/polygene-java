@@ -14,7 +14,7 @@
 
 package org.qi4j.spi.service;
 
-import org.qi4j.service.ServiceProviderException;
+import org.qi4j.service.ServiceInstanceProviderException;
 import org.qi4j.spi.structure.ServiceDescriptor;
 
 /**
@@ -23,7 +23,7 @@ import org.qi4j.spi.structure.ServiceDescriptor;
 public interface ServiceInstanceProvider
 {
     Object newInstance( ServiceDescriptor serviceDescriptor )
-        throws ServiceProviderException;
+        throws ServiceInstanceProviderException;
 
     /**
      * Called for each client releasing the instance from use.

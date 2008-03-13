@@ -40,10 +40,13 @@ public final class ObjectBuilderImpl<T>
 
     }
 
-    public void use( Object usedObject )
+    public void use( Object... usedObjects )
     {
-        Set<Object> context = getUses();
-        context.add( usedObject );
+        Set<Object> useSet = getUses();
+        for( Object usedObject : usedObjects )
+        {
+            useSet.add( usedObject );
+        }
     }
 
     public T newInstance()

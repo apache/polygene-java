@@ -21,8 +21,8 @@ import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import org.qi4j.composite.CompositeInstantiationException;
 import org.qi4j.composite.Constraint;
+import org.qi4j.composite.InstantiationException;
 import org.qi4j.runtime.Qi4jRuntime;
 import org.qi4j.runtime.property.AssociationContext;
 import org.qi4j.runtime.property.PropertyContext;
@@ -78,7 +78,7 @@ public final class CompositeMethodContext
     }
 
     CompositeMethodInstance newCompositeMethodInstance( ModuleInstance moduleInstance, CompositeMethodInstancePool compositeMethodInstancePool )
-        throws CompositeInstantiationException
+        throws InstantiationException
     {
         ProxyReferenceInvocationHandler proxyHandler = new ProxyReferenceInvocationHandler();
         Method method = compositeMethodBinding.getCompositeMethodResolution().getCompositeMethodModel().getMethod();
@@ -138,7 +138,7 @@ public final class CompositeMethodContext
                 }
                 catch( Exception e )
                 {
-                    throw new CompositeInstantiationException( "Could not instantiate constraint " + constraintType.getName(), e );
+                    throw new InstantiationException( "Could not instantiate constraint " + constraintType.getName(), e );
                 }
             }
             parameterConstraintInstances.add( constraintInstances );

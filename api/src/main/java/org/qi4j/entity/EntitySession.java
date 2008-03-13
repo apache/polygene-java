@@ -17,6 +17,9 @@ package org.qi4j.entity;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.query.QueryBuilderFactory;
 
+/**
+ * All operations on entities goes through an EntitySession. <TODO Muuuch longer explanation needed>
+ */
 public interface EntitySession
 {
     <T extends EntityComposite> CompositeBuilder<T> newEntityBuilder( String identity, Class<T> compositeType );

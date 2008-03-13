@@ -15,7 +15,7 @@
 package org.qi4j.association;
 
 /**
- * TODO
+ * Base interface for all associations.
  */
 public interface AbstractAssociation
     extends AssociationInfo

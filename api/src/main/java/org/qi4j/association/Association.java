@@ -15,13 +15,24 @@
 package org.qi4j.association;
 
 /**
- * TODO
+ * Association to a single EntityComposite.
  */
 public interface Association<T>
     extends AbstractAssociation
 {
+    /**
+     * Get the associated entity.
+     *
+     * @return the associated entity
+     */
     T get();
 
+    /**
+     * Set the associated entity.
+     *
+     * @param associated the entity
+     * @throws AssociationVetoException thrown if the entity is not a valid reference for this association
+     */
     void set( T associated )
         throws AssociationVetoException;
 }

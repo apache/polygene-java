@@ -17,8 +17,10 @@ package org.qi4j.association;
 import java.util.Collection;
 
 /**
- * TODO
+ * Association to a collection of entities. The collection always
+ * contains other immutable associations.
  */
-public interface ManyAssociation<T> extends Collection<T>, AbstractAssociation
+public interface ManyAssociation<T>
+    extends Collection<T>, AbstractAssociation
 {
 }

@@ -1,5 +1,6 @@
 package org.qi4j.runtime.injection;
 
+import java.lang.reflect.Method;
 import org.qi4j.property.Property;
 import org.qi4j.spi.composite.PropertyResolution;
 import org.qi4j.spi.composite.State;
@@ -41,7 +42,7 @@ public final class PropertyInjectionProviderFactory
                 return null;
             }
 
-            return new PropertyInjectionProvider( propertyResolution.getPropertyModel().getQualifiedName() );
+            return new PropertyInjectionProvider( propertyResolution.getPropertyModel().getAccessor() );
         }
         else
         {
@@ -49,17 +50,17 @@ public final class PropertyInjectionProviderFactory
             PropertyInjectionModel pim = (PropertyInjectionModel) resolution.getInjectionModel();
             PropertyResolution propertyResolution = injectable.getPropertyResolution( pim.getName() );
 
-            return new PropertyValueInjectionProvider( propertyResolution.getPropertyModel().getQualifiedName() );
+            return new PropertyValueInjectionProvider( propertyResolution.getPropertyModel().getAccessor() );
         }
     }
 
     private class PropertyValueInjectionProvider implements InjectionProvider
     {
-        private String qualifiedName;
+        private Method accessor;
 
-        public PropertyValueInjectionProvider( String qualifiedName )
+        public PropertyValueInjectionProvider( Method accessor )
         {
-            this.qualifiedName = qualifiedName;
+            this.accessor = accessor;
         }
 
         public Object provideInjection( InjectionContext context )
@@ -67,14 +68,14 @@ public final class PropertyInjectionProviderFactory
             if( context instanceof StateInjectionContext )
             {
                 StateInjectionContext stateInjectionContext = (StateInjectionContext) context;
-                Property value = stateInjectionContext.getState().getProperty( qualifiedName );
+                Property value = stateInjectionContext.getState().getProperty( accessor );
                 if( value != null )
                 {
                     return value.get();
                 }
                 else
                 {
-                    throw new InjectionProviderException( "Non-optional property " + qualifiedName + " had no value" );
+                    throw new InjectionProviderException( "Non-optional property " + accessor.getName() + " had no value" );
                 }
             }
 
@@ -84,11 +85,11 @@ public final class PropertyInjectionProviderFactory
 
     private class PropertyInjectionProvider implements InjectionProvider
     {
-        private String qualifiedName;
+        private Method accessor;
 
-        public PropertyInjectionProvider( String qualifiedName )
+        public PropertyInjectionProvider( Method accessor )
         {
-            this.qualifiedName = qualifiedName;
+            this.accessor = accessor;
         }
 
         public Object provideInjection( InjectionContext context )
@@ -96,14 +97,14 @@ public final class PropertyInjectionProviderFactory
             if( context instanceof StateInjectionContext )
             {
                 StateInjectionContext stateInjectionContext = (StateInjectionContext) context;
-                Property value = stateInjectionContext.getState().getProperty( qualifiedName );
+                Property value = stateInjectionContext.getState().getProperty( accessor );
                 if( value != null )
                 {
                     return value;
                 }
                 else
                 {
-                    throw new InjectionProviderException( "Non-optional property " + qualifiedName + " had no value when" );
+                    throw new InjectionProviderException( "Non-optional property " + accessor + " had no value" );
                 }
             }
 

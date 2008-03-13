@@ -16,6 +16,9 @@
  */
 package org.qi4j.entity;
 
+/**
+ * Generator for identities of EntityComposite's.
+ */
 public interface IdentityGenerator
 {
     String generate( Class<? extends Identity> compositeType );

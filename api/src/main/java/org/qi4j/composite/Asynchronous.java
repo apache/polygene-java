@@ -21,7 +21,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * TODO
+ * Side-effect implementations can be maked with this annotation to denote that they may be run
+ * asynchronously from the method invocation.
  */
 @Retention( RetentionPolicy.RUNTIME )
 @Target( { ElementType.TYPE, ElementType.METHOD } )
