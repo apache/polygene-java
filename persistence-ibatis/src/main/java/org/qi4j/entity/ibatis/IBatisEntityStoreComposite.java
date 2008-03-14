@@ -17,7 +17,7 @@
 package org.qi4j.entity.ibatis;
 
 import org.qi4j.composite.Mixins;
-import org.qi4j.entity.ibatis.internal.entityState.EntityState;
+import org.qi4j.entity.ibatis.internal.EntityState;
 import org.qi4j.service.ServiceComposite;
 import org.qi4j.spi.entity.EntityStore;
 

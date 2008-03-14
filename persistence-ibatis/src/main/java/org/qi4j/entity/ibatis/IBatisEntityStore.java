@@ -25,46 +25,28 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.Serializable;
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 import java.net.URL;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import org.qi4j.association.AbstractAssociation;
-import org.qi4j.association.ManyAssociation;
-import org.qi4j.association.SetAssociation;
 import org.qi4j.composite.Composite;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
 import org.qi4j.entity.EntitySession;
 import org.qi4j.entity.ibatis.dbInitializer.DBInitializer;
 import org.qi4j.entity.ibatis.dbInitializer.DBInitializerInfo;
+import org.qi4j.entity.ibatis.internal.EntityState;
 import org.qi4j.entity.ibatis.internal.IBatisEntityState;
 import org.qi4j.entity.ibatis.internal.IBatisEntityStateDao;
-import org.qi4j.entity.ibatis.internal.IBatisEntityStateStatus;
 import static org.qi4j.entity.ibatis.internal.IBatisEntityStateStatus.statusLoadFromDb;
 import static org.qi4j.entity.ibatis.internal.IBatisEntityStateStatus.statusNew;
-import org.qi4j.entity.ibatis.internal.entityState.EntityState;
-import org.qi4j.entity.ibatis.internal.property.MutablePropertyInstance;
-import org.qi4j.property.ImmutableProperty;
-import org.qi4j.property.Property;
-import org.qi4j.runtime.association.AssociationInstance;
-import org.qi4j.runtime.association.ListAssociationInstance;
 import org.qi4j.service.Activatable;
-import org.qi4j.spi.composite.AssociationModel;
-import org.qi4j.spi.composite.AssociationResolution;
 import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.composite.CompositeModel;
 import org.qi4j.spi.composite.CompositeResolution;
-import org.qi4j.spi.composite.PropertyResolution;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.StoreException;
-import org.qi4j.spi.property.AssociationBinding;
-import org.qi4j.spi.property.ImmutablePropertyInstance;
-import org.qi4j.spi.property.PropertyBinding;
-import org.qi4j.spi.property.PropertyModel;
 import org.qi4j.spi.structure.ServiceDescriptor;
 
 /**
@@ -119,7 +101,6 @@ final class IBatisEntityStore
         validateNotNull( "aCompositeBinding", aCompositeBinding );
 
         throwIfNotActive();
-
 
         Object rawData = getRawData( anIdentity, aCompositeBinding );
         return rawData != null;
@@ -193,193 +174,17 @@ final class IBatisEntityStore
         validateNotNull( "aCompositeBinding", aCompositeBinding );
         validateNotNull( "propertyValues", propertyValues );
 
-        return newEntityInstance( anIdentity, aCompositeBinding, propertyValues, true, statusNew );
-    }
-
-    /**
-     * Actual implementation of {@code newEntityInstance}. Must not return {@code null}.
-     *
-     * @param anIdentity        anIdentity.
-     * @param aCompositeBinding The composite binding. This argument must not be {@code null}.
-     * @param fieldValues       The field values (this applies for both property and associations.
-     *                          This argument must not be {@code null}.
-     * @param isUseDefaultValue Sets to {@code true} to lookup default value when the initial value is not located in
-     *                          {@code fieldValues} argument, {@code false} to disable this feature.
-     * @param aStatus           The initial status for the created state.
-     * @return A new entity instance.
-     * @throws StoreException Thrown if creating new instance failed.
-     * @since 0.1.0
-     */
-    private EntityState newEntityInstance(
-        String anIdentity, CompositeBinding aCompositeBinding,
-        Map<Method, Object> fieldValues, boolean isUseDefaultValue, IBatisEntityStateStatus aStatus )
-        throws StoreException
-    {
         throwIfNotActive();
 
-        Map<Method, Property> properties = transformToProperties( aCompositeBinding, fieldValues, isUseDefaultValue );
-        Map<Method, AbstractAssociation> associations = transformToAssociations( aCompositeBinding, fieldValues );
-        return new EntityState( anIdentity, aCompositeBinding, properties, associations, aStatus, dao );
-    }
-
-    /**
-     * Transform the map of property values to map of property. Must not return {@code null}.
-     *
-     * @param aCompositeBinding The composite binding. This argument must not be {@code null}.
-     * @param propertyValues    The property values. This argument must not be {@code null}.
-     * @param useDefaultValue   Sets to {@code true} if one should use the default values.
-     * @return The map of properties.
-     * @since 0.1.0
-     */
-    final Map<Method, Property> transformToProperties(
-        CompositeBinding aCompositeBinding, Map<Method, Object> propertyValues, boolean useDefaultValue )
-    {
-        Map<Method, Property> properties = new HashMap<Method, Property>();
-        Iterable<PropertyBinding> propertyBindings = aCompositeBinding.getPropertyBindings();
-        for( PropertyBinding propertyBinding : propertyBindings )
+        Map<String, Object> fieldValues = new HashMap<String, Object>();
+        for( Map.Entry<Method, Object> entry : propertyValues.entrySet() )
         {
-            String propQualifiedName = propertyBinding.getQualifiedName();
-            Object value = computePropertyValue( propertyBinding, propertyValues, useDefaultValue );
-            Property<Object> propertyInstance = newPropertyInstance( propertyBinding, value );
-
-            properties.put( propertyBinding.getPropertyResolution().getPropertyModel().getAccessor(), propertyInstance );
+            String propertyName = entry.getKey().getName();
+            Object propertyValue = entry.getValue();
+            fieldValues.put( propertyName, propertyValue );
         }
 
-        return properties;
-    }
-
-    /**
-     * Compute the property value. Returns the default value if the argument {@code isUseDefaultValue} is sets to
-     * {@code true} and the property value does not exists in {@code propertyValues} argument.
-     *
-     * @param propertyBinding   The binding to use to look up default value.
-     *                          This argument must not be {@code null} if {@code isUseDefaultValue} value
-     *                          is {@code true}.
-     * @param propertyValues    The property values. The key is property name (not qualified name).
-     *                          This argument must not be {@code null}.
-     * @param isUseDefaultValue Sets to {@code true} to use default value, {@code false} otherwise.
-     * @return The computed property value.
-     * @throws IllegalStateException Thrown if debug mode is <b>on</b> and there is a mismatch between actual and
-     *                               expected value type.
-     * @since 0.1.0
-     */
-    final Object computePropertyValue(
-        PropertyBinding propertyBinding, Map<Method, Object> propertyValues,
-        boolean isUseDefaultValue )
-        throws IllegalStateException
-    {
-        Method accessor = propertyBinding.getPropertyResolution().getPropertyModel().getAccessor();
-
-        Object value = null;
-        if( propertyValues.containsKey( accessor ) )
-        {
-            // TODO: Handle mapping of compound property?
-            value = propertyValues.get( accessor );
-        }
-        else if( isUseDefaultValue )
-        {
-            value = propertyBinding.getDefaultValue();
-        }
-
-        // Check if debug mode
-        if( value != null && serviceInfo.isDebugMode() )
-        {
-            checkPropertyValueType( value, propertyBinding );
-        }
-
-        return value;
-    }
-
-    /**
-     * Check The property value type against its property declaration.
-     * <p/>
-     * Note: This method only check {@code Class} value type. GenericArrayType, TypeVariable, WildcardType and
-     * ParameterizedType are not handled yet.
-     *
-     * @param aPropertyValue   The property value.
-     * @param aPropertyBinding The property binding.
-     * @throws IllegalStateException Thrown if there is a mismatch of expected and actual value type.
-     * @since 0.1.0
-     */
-    private void checkPropertyValueType(
-        Object aPropertyValue, PropertyBinding aPropertyBinding )
-        throws IllegalStateException
-    {
-        String propertyQualifiedName = aPropertyBinding.getQualifiedName();
-        PropertyResolution propertyResolution = aPropertyBinding.getPropertyResolution();
-        PropertyModel propertyModel = propertyResolution.getPropertyModel();
-        Type type = propertyModel.getType();
-        Class<? extends Type> typeClass = type.getClass();
-        Class<?> valueClass = aPropertyValue.getClass();
-
-        if( Class.class.isAssignableFrom( typeClass ) )
-        {
-            Class typeAsClass = (Class) type;
-            if( !typeAsClass.isAssignableFrom( valueClass ) )
-            {
-                String msg = "Mismatch propervy [" + propertyQualifiedName + "] value type. Expected [" +
-                             typeAsClass.getName() + "] Actual [" + valueClass + "].";
-                throw new IllegalStateException( msg );
-            }
-        }
-    }
-
-    /**
-     * Construct a new instance of {@link Property}. Must not return {@code null}.
-     *
-     * @param aPropertyBinding The property binding. This argument must not be {@code null}.
-     * @param aPropertyValue   The property value.
-     * @return A new property instance.
-     * @since 0.1.0
-     */
-    final Property<Object> newPropertyInstance( PropertyBinding aPropertyBinding, Object aPropertyValue )
-    {
-        PropertyResolution propertyResolution = aPropertyBinding.getPropertyResolution();
-        PropertyModel propertyModel = propertyResolution.getPropertyModel();
-        Method accessor = propertyModel.getAccessor();
-        Class<?> type = accessor.getReturnType();
-
-        if( ImmutableProperty.class.isAssignableFrom( type ) )
-        {
-            return new ImmutablePropertyInstance<Object>( aPropertyBinding, aPropertyValue );
-        }
-        else
-        {
-            return new MutablePropertyInstance<Object>( aPropertyBinding, aPropertyValue );
-        }
-    }
-
-    // TODO: This is copied from MemoryEntityStore need to be revised
-    private Map<Method, AbstractAssociation> transformToAssociations(
-        CompositeBinding compositeBinding, Map<Method, Object> propertyValues )
-    {
-        Map<Method, AbstractAssociation> associations = new HashMap<Method, AbstractAssociation>();
-        Iterable<AssociationBinding> associationBindings = compositeBinding.getAssociationBindings();
-        for( AssociationBinding associationBinding : associationBindings )
-        {
-            AssociationResolution associationResolution = associationBinding.getAssociationResolution();
-            AssociationModel associationModel = associationResolution.getAssociationModel();
-            Method accessor = associationModel.getAccessor();
-            Class<?> type = accessor.getReturnType();
-            String assocationQualifiedName = associationBinding.getQualifiedName();
-            if( SetAssociation.class.isAssignableFrom( type ) )
-            {
-//                associations.put( assocationQualifiedName, new SetAssociationInstance())
-            }
-            else if( ManyAssociation.class.isAssignableFrom( type ) )
-            {
-
-                ListAssociationInstance<Object> listInstance =
-                    new ListAssociationInstance<Object>( new ArrayList<Object>(), associationBinding );
-                associations.put( associationModel.getAccessor(), listInstance );
-            }
-            else
-            {
-                AssociationInstance<Object> instance = new AssociationInstance<Object>( associationBinding, null );
-                associations.put( associationModel.getAccessor(), instance );
-            }
-        }
-        return associations;
+        return new EntityState( anIdentity, aCompositeBinding, fieldValues, statusNew, dao, serviceInfo );
     }
 
     /**
@@ -410,7 +215,7 @@ final class IBatisEntityStore
             return null;
         }
 
-        return newEntityInstance( anIdentity, aCompositeBinding, rawData, false, statusLoadFromDb );
+        return new EntityState( anIdentity, aCompositeBinding, rawData, statusLoadFromDb, dao, serviceInfo );
     }
 
     /**
