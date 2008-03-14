@@ -12,7 +12,7 @@ public class MockPlayerMixin
 
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
     {
-        System.out.println( "Play on " + method.getDeclaringClass() );
+        System.out.println( "Play mock for " + method );
         for( Mock mock : mockRepository.getAll() )
         {
             InvocationHandler handler = mock.getInvocationHandler( proxy, method, args );
