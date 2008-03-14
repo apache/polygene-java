@@ -23,7 +23,7 @@ import java.util.Properties;
 import jdbm.RecordManagerOptions;
 import org.objectweb.jotm.Jotm;
 import org.objectweb.transaction.jta.TransactionManager;
-import org.qi4j.bootstrap.AssemblerException;
+import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
 
@@ -68,7 +68,7 @@ public class JdbmPersistenceTest extends AbstractQi4jTest
         underTest = new JdbmStorage( testDir, transactionManager );
     }
 
-    public void assemble( ModuleAssembly module ) throws AssemblerException
+    public void assemble( ModuleAssembly module ) throws AssemblyException
     {
 
     }
