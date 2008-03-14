@@ -20,7 +20,9 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * TODO
+ * Assembly of a Layer. From here you can create more ModuleAssemblies for
+ * the Layer that is being assembled. It is also here that you define
+ * what other Layers this Layer is using by calling {@link LayerAssembly#uses(LayerAssembly)}.
  */
 public final class LayerAssembly
 {

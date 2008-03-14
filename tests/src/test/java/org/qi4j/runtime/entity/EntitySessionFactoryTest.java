@@ -14,7 +14,7 @@
 
 package org.qi4j.runtime.entity;
 
-import org.qi4j.bootstrap.AssemblerException;
+import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.entity.EntitySession;
@@ -36,7 +36,7 @@ public class EntitySessionFactoryTest
     extends AbstractQi4jTest
 {
 
-    public void assemble( ModuleAssembly module ) throws AssemblerException
+    public void assemble( ModuleAssembly module ) throws AssemblyException
     {
         module.addComposites( AccountComposite.class,
                               OrderComposite.class,

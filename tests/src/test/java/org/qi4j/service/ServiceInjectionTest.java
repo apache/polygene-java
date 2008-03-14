@@ -16,7 +16,7 @@ package org.qi4j.service;
 
 import java.io.Serializable;
 import junit.framework.TestCase;
-import org.qi4j.bootstrap.AssemblerException;
+import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
 import org.qi4j.composite.Mixins;
@@ -33,7 +33,7 @@ public class ServiceInjectionTest
     {
         SingletonAssembler assembly = new SingletonAssembler()
         {
-            public void assemble( ModuleAssembly module ) throws AssemblerException
+            public void assemble( ModuleAssembly module ) throws AssemblyException
             {
                 module.addServices( MyServiceComposite.class ).setServiceInfo( ServiceName.class, new ServiceName( "Foo" ) );
                 module.addServices( MyServiceComposite.class ).setServiceInfo( ServiceName.class, new ServiceName( "Bar" ) );

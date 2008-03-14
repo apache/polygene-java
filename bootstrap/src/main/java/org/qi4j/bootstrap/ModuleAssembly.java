@@ -26,7 +26,11 @@ import org.qi4j.spi.structure.ObjectDescriptor;
 import org.qi4j.spi.structure.ServiceDescriptor;
 
 /**
- * TODO
+ * Assembly of a Module. This is where you register all objects, Composites,
+ * Services. Each "add" method returns a declaration that you can use to add
+ * additional information and metadata. If you call an "add" method with many
+ * parameters then the declared metadata will apply to all types in the method
+ * call.
  */
 public final class ModuleAssembly
 {
@@ -49,7 +53,7 @@ public final class ModuleAssembly
     }
 
     public void addAssembly( Assembler assembler )
-        throws AssemblerException
+        throws AssemblyException
     {
         // Invoke Assembler callback
         assembler.assemble( this );
@@ -66,14 +70,14 @@ public final class ModuleAssembly
     }
 
     public CompositeDeclaration addComposites( Class<? extends Composite>... compositeTypes )
-        throws AssemblerException
+        throws AssemblyException
     {
         for( Class<? extends Composite> compositeType : compositeTypes )
         {
             // May not register ServiceComposites
             if( ServiceComposite.class.isAssignableFrom( compositeType ) )
             {
-                throw new AssemblerException( "May not register ServiceComposites as a Composite" );
+                throw new AssemblyException( "May not register ServiceComposites as a Composite" );
             }
         }
 
@@ -83,13 +87,13 @@ public final class ModuleAssembly
     }
 
     public ObjectDeclaration addObjects( Class... objectTypes )
-        throws AssemblerException
+        throws AssemblyException
     {
         for( Class objectType : objectTypes )
         {
             if( objectType.isInterface() )
             {
-                throw new AssemblerException( "May not register interfaces as objects" );
+                throw new AssemblyException( "May not register interfaces as objects" );
             }
         }
 
@@ -98,18 +102,18 @@ public final class ModuleAssembly
         return objectDeclaration;
     }
 
-    public ServiceDeclaration addServices( Class... serviceTypes ) throws AssemblerException
+    public ServiceDeclaration addServices( Class... serviceTypes ) throws AssemblyException
     {
         for( Class serviceType : serviceTypes )
         {
             if( !serviceType.isInterface() )
             {
-                throw new AssemblerException( "May not register classes as service types" );
+                throw new AssemblyException( "May not register classes as service types" );
             }
 
             if( Composite.class.isAssignableFrom( serviceType ) && !ServiceComposite.class.isAssignableFrom( serviceType ) )
             {
-                throw new AssemblerException( "May not register Composites which are not ServiceComposites" );
+                throw new AssemblyException( "May not register Composites which are not ServiceComposites" );
             }
         }
 

@@ -18,7 +18,7 @@ import org.qi4j.runtime.Qi4jRuntime;
 import org.qi4j.runtime.structure.ApplicationContext;
 
 /**
- * TODO
+ * Factory for ApplicationContext.
  */
 public final class ApplicationFactory
 {
@@ -32,13 +32,13 @@ public final class ApplicationFactory
     }
 
     public ApplicationContext newApplication( Assembler assembler )
-        throws AssemblerException
+        throws AssemblyException
     {
         return newApplication( new Assembler[][][]{ { { assembler } } } );
     }
 
     public ApplicationContext newApplication( Assembler[][][] assemblers )
-        throws AssemblerException
+        throws AssemblyException
     {
         ApplicationAssembly applicationAssembly = applicationAssemblyFactory.newApplicationAssembly();
         applicationAssembly.setName( "Application " );
@@ -48,7 +48,7 @@ public final class ApplicationFactory
         for( int layer = assemblers.length - 1; layer >= 0; layer-- )
         {
             // Create Layer
-            LayerAssembly lb = applicationAssembly.newLayerBuilder();
+            LayerAssembly lb = applicationAssembly.newLayerAssembly();
             lb.setName( "Layer " + layer );
             for( int module = 0; module < assemblers[ layer ].length; module++ )
             {

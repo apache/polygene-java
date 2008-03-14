@@ -25,7 +25,7 @@ import org.qi4j.spi.structure.ServiceDescriptor;
 import org.qi4j.spi.structure.Visibility;
 
 /**
- * TODO
+ * Declaration of a Service. Created by {@link org.qi4j.bootstrap.ModuleAssembly#addServices(Class[])}.
  */
 public final class ServiceDeclaration
 {

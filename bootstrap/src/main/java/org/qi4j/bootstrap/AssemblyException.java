@@ -15,25 +15,25 @@
 package org.qi4j.bootstrap;
 
 /**
- * TODO
+ * Thrown by ModuleAssembly if the Assembler tries to make an invalid assembly.
  */
-public class AssemblerException extends Exception
+public class AssemblyException extends Exception
 {
-    public AssemblerException()
+    public AssemblyException()
     {
     }
 
-    public AssemblerException( String string )
+    public AssemblyException( String string )
     {
         super( string );
     }
 
-    public AssemblerException( String string, Throwable throwable )
+    public AssemblyException( String string, Throwable throwable )
     {
         super( string, throwable );
     }
 
-    public AssemblerException( Throwable throwable )
+    public AssemblyException( Throwable throwable )
     {
         super( throwable );
     }

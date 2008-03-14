@@ -18,7 +18,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
 import junit.framework.TestCase;
-import org.qi4j.bootstrap.AssemblerException;
+import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
 import org.qi4j.composite.Composite;
@@ -38,7 +38,7 @@ public class CompositeSerializationMappingTest
         // Create "server" application
         SingletonAssembler server = new SingletonAssembler()
         {
-            public void assemble( ModuleAssembly module ) throws AssemblerException
+            public void assemble( ModuleAssembly module ) throws AssemblyException
             {
                 module.addComposites( ServerChairComposite.class );
             }
@@ -47,7 +47,7 @@ public class CompositeSerializationMappingTest
         // Create "client" application
         SingletonAssembler client = new SingletonAssembler()
         {
-            public void assemble( ModuleAssembly module ) throws AssemblerException
+            public void assemble( ModuleAssembly module ) throws AssemblyException
             {
                 module.addComposites( ClientChairComposite.class );
             }

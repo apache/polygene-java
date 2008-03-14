@@ -18,14 +18,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * TODO
+ * The representation of an entire application. From
+ * this you can set information about the application
+ * and create LayerAssemblies.
  */
 public final class ApplicationAssembly
 {
     private List<LayerAssembly> layerAssemblies = new ArrayList<LayerAssembly>();
     private String name;
 
-    public LayerAssembly newLayerBuilder()
+    public LayerAssembly newLayerAssembly()
     {
         LayerAssembly layerAssembly = new LayerAssembly( this );
         layerAssemblies.add( layerAssembly );

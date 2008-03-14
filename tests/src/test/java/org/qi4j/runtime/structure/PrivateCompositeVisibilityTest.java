@@ -18,7 +18,7 @@ import junit.framework.TestCase;
 import org.qi4j.bootstrap.ApplicationAssemblyFactory;
 import org.qi4j.bootstrap.ApplicationFactory;
 import org.qi4j.bootstrap.Assembler;
-import org.qi4j.bootstrap.AssemblerException;
+import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilderFactory;
@@ -72,7 +72,7 @@ public class PrivateCompositeVisibilityTest
     class AssemblerA
         implements Assembler
     {
-        public void assemble( ModuleAssembly module ) throws AssemblerException
+        public void assemble( ModuleAssembly module ) throws AssemblyException
         {
             module.setName( "Module A" );
             module.addObjects( ObjectA.class );
@@ -82,7 +82,7 @@ public class PrivateCompositeVisibilityTest
     class AssemblerB
         implements Assembler
     {
-        public void assemble( ModuleAssembly module ) throws AssemblerException
+        public void assemble( ModuleAssembly module ) throws AssemblyException
         {
             module.setName( "Module B" );
             module.addComposites( CompositeB.class ).visibleIn( Visibility.module );

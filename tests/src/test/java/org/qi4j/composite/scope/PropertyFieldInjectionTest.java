@@ -14,7 +14,7 @@
 
 package org.qi4j.composite.scope;
 
-import org.qi4j.bootstrap.AssemblerException;
+import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
@@ -29,7 +29,7 @@ import org.qi4j.test.AbstractQi4jTest;
 public class PropertyFieldInjectionTest
     extends AbstractQi4jTest
 {
-    public void assemble( ModuleAssembly module ) throws AssemblerException
+    public void assemble( ModuleAssembly module ) throws AssemblyException
     {
         module.addComposites( PropertyFieldInjectionTest.PropertyFieldInjectionComposite.class );
     }

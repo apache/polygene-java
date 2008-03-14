@@ -17,7 +17,7 @@
  */
 package org.qi4j.test.context;
 
-import org.qi4j.bootstrap.AssemblerException;
+import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
@@ -65,7 +65,7 @@ public class ContextCompositeTest extends AbstractQi4jTest
     }
 
     public void assemble( ModuleAssembly module )
-        throws AssemblerException
+        throws AssemblyException
     {
         module.addComposites( MyContextComposite.class );
     }

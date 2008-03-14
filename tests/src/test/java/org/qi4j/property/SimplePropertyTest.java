@@ -20,7 +20,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import javax.swing.Icon;
-import org.qi4j.bootstrap.AssemblerException;
+import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.AppliesTo;
 import org.qi4j.composite.Composite;
@@ -42,7 +42,7 @@ public class SimplePropertyTest extends AbstractQi4jTest
 {
 
     public void assemble( ModuleAssembly module )
-        throws AssemblerException
+        throws AssemblyException
     {
         module.addComposites( Company.class );
         module.addProperty().

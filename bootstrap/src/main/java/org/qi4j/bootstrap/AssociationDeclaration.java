@@ -26,7 +26,7 @@ import org.qi4j.association.AbstractAssociation;
 import org.qi4j.spi.structure.AssociationDescriptor;
 
 /**
- * TODO
+ * Declaration of an Association. Created by {@link org.qi4j.bootstrap.ModuleAssembly#addAssociation()}.
  */
 public final class AssociationDeclaration
 {

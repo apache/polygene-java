@@ -15,7 +15,7 @@
 package org.qi4j.bootstrap;
 
 /**
- * TODO
+ * A factory for {@link ApplicationAssembly}
  */
 public final class ApplicationAssemblyFactory
 {

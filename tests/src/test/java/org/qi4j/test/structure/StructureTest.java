@@ -14,32 +14,34 @@
 
 package org.qi4j.test.structure;
 
-import org.qi4j.bootstrap.AbstractAssembler;
+import junit.framework.TestCase;
 import org.qi4j.bootstrap.ApplicationAssembly;
 import org.qi4j.bootstrap.ApplicationAssemblyFactory;
 import org.qi4j.bootstrap.ApplicationFactory;
 import org.qi4j.bootstrap.Assembler;
-import org.qi4j.bootstrap.AssemblerException;
+import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.LayerAssembly;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.runtime.Energy4Java;
+import org.qi4j.runtime.Qi4jRuntime;
 import org.qi4j.runtime.structure.ApplicationContext;
-import org.qi4j.test.AbstractQi4jTest;
 
 /**
  * TODO
  */
 public class StructureTest
-    extends AbstractQi4jTest
+    extends TestCase
 {
     public void testStructure()
     {
+        Qi4jRuntime is = new Energy4Java();
         ApplicationAssemblyFactory aaf = new ApplicationAssemblyFactory();
-        ApplicationFactory af = new ApplicationFactory( runtime, aaf );
+        ApplicationFactory af = new ApplicationFactory( is, aaf );
         try
         {
             ApplicationAssembly ab = aaf.newApplicationAssembly();
             {
-                LayerAssembly applicationLayer = ab.newLayerBuilder();
+                LayerAssembly applicationLayer = ab.newLayerAssembly();
                 {
                     {
                         ModuleAssembly mb = applicationLayer.newModuleAssembly();
@@ -47,7 +49,7 @@ public class StructureTest
                     }
                 }
 
-                LayerAssembly viewLayer = ab.newLayerBuilder();
+                LayerAssembly viewLayer = ab.newLayerAssembly();
                 {
                     {
                         ModuleAssembly mb = viewLayer.newModuleAssembly();
@@ -58,7 +60,7 @@ public class StructureTest
             }
             ApplicationContext applicationContext = af.newApplication( ab );
         }
-        catch( AssemblerException e )
+        catch( AssemblyException e )
         {
             e.printStackTrace();
         }
@@ -91,37 +93,45 @@ public class StructureTest
         {
             ApplicationContext appContext = af.newApplication( assemblers );
         }
-        catch( AssemblerException e )
+        catch( AssemblyException e )
         {
             e.printStackTrace();
         }
     }
 
-    public void assemble( ModuleAssembly module ) throws AssemblerException
+    public void assemble( ModuleAssembly module ) throws AssemblyException
     {
     }
 
     static class ViewAssembler
-        extends AbstractAssembler
+        implements Assembler
     {
-
+        public void assemble( ModuleAssembly module ) throws AssemblyException
+        {
+        }
     }
 
     static class DomainApplicationAssembler
-        extends AbstractAssembler
+        implements Assembler
     {
-
+        public void assemble( ModuleAssembly module ) throws AssemblyException
+        {
+        }
     }
 
     static class DomainModelAssembler
-        extends AbstractAssembler
+        implements Assembler
     {
-
+        public void assemble( ModuleAssembly module ) throws AssemblyException
+        {
+        }
     }
 
     static class InfrastructureAssembler
-        extends AbstractAssembler
+        implements Assembler
     {
-
+        public void assemble( ModuleAssembly module ) throws AssemblyException
+        {
+        }
     }
 }

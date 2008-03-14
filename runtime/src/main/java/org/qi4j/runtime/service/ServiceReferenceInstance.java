@@ -33,7 +33,11 @@ import org.qi4j.spi.service.ServiceInstanceProvider;
 import org.qi4j.spi.structure.ServiceDescriptor;
 
 /**
- * TODO
+ * Implementation of ServiceReference. This manages the actual instance of the service
+ * and implements the invocation of the Activatable interface on the service.
+ * <p/>
+ * Whenever the service is requested a proxy is returned which points to this class. This means
+ * that the instance can be passivated even though a client is holding on to a service proxy.
  */
 public final class ServiceReferenceInstance<T>
     implements ServiceReference<T>, Activatable

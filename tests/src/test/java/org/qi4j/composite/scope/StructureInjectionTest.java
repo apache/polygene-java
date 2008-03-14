@@ -15,7 +15,7 @@
 package org.qi4j.composite.scope;
 
 import org.qi4j.Qi4j;
-import org.qi4j.bootstrap.AssemblerException;
+import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilderFactory;
@@ -34,7 +34,7 @@ import org.qi4j.test.AbstractQi4jTest;
 public class StructureInjectionTest
     extends AbstractQi4jTest
 {
-    public void assemble( ModuleAssembly module ) throws AssemblerException
+    public void assemble( ModuleAssembly module ) throws AssemblyException
     {
         module.addComposites( StructureInjectionComposite.class );
     }

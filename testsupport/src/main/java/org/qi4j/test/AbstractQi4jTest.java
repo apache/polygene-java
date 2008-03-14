@@ -19,7 +19,7 @@ import org.qi4j.Qi4j;
 import org.qi4j.bootstrap.ApplicationAssemblyFactory;
 import org.qi4j.bootstrap.ApplicationFactory;
 import org.qi4j.bootstrap.Assembler;
-import org.qi4j.bootstrap.AssemblerException;
+import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.ObjectBuilderFactory;
 import org.qi4j.entity.EntitySessionFactory;
@@ -71,7 +71,7 @@ public abstract class AbstractQi4jTest extends TestCase
     }
 
     protected ApplicationInstance newApplication()
-        throws AssemblerException
+        throws AssemblyException
     {
         ApplicationContext applicationContext = applicationFactory.newApplication( this );
         return applicationContext.newApplicationInstance( "Test application" );

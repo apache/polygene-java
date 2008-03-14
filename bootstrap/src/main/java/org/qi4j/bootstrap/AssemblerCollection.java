@@ -34,7 +34,7 @@ public final class AssemblerCollection
     }
 
     public AssemblerCollection( Class<? extends Assembler>... assemblyClasses )
-        throws AssemblerException
+        throws AssemblyException
     {
         assemblers = new ArrayList<Assembler>();
         for( Class<? extends Assembler> assemblyClass : assemblyClasses )
@@ -46,7 +46,7 @@ public final class AssemblerCollection
             }
             catch( Exception e )
             {
-                throw new AssemblerException( "Could not instantiate assembly with class " + assemblyClass.getName(), e );
+                throw new AssemblyException( "Could not instantiate assembly with class " + assemblyClass.getName(), e );
             }
         }
     }
@@ -57,7 +57,7 @@ public final class AssemblerCollection
     }
 
     public void assemble( ModuleAssembly module )
-        throws AssemblerException
+        throws AssemblyException
     {
         for( Assembler assembler : assemblers )
         {

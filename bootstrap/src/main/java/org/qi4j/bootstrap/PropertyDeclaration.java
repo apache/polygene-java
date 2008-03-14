@@ -27,7 +27,7 @@ import org.qi4j.property.PropertyVetoException;
 import org.qi4j.spi.structure.PropertyDescriptor;
 
 /**
- * TODO
+ * Declaration of a Property. Created by {@link ModuleAssembly#addProperty()}.
  */
 public final class PropertyDeclaration
 {

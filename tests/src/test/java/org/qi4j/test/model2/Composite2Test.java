@@ -13,7 +13,7 @@
 package org.qi4j.test.model2;
 
 import junit.framework.TestCase;
-import org.qi4j.bootstrap.AssemblerException;
+import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
 import org.qi4j.spi.composite.CompositeModel;
@@ -24,7 +24,7 @@ public class Composite2Test extends TestCase
     {
         SingletonAssembler assembly = new SingletonAssembler()
         {
-            public void assemble( ModuleAssembly module ) throws AssemblerException
+            public void assemble( ModuleAssembly module ) throws AssemblyException
             {
                 module.addComposites( TestComposite.class );
             }
@@ -62,7 +62,7 @@ public class Composite2Test extends TestCase
     {
         SingletonAssembler assembly = new SingletonAssembler()
         {
-            public void assemble( ModuleAssembly module ) throws AssemblerException
+            public void assemble( ModuleAssembly module ) throws AssemblyException
             {
                 module.addComposites( CustomTestComposite.class );
             }

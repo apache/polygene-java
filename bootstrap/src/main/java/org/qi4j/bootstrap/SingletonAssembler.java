@@ -26,7 +26,12 @@ import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.service.ServiceLocator;
 
 /**
- * TODO
+ * Base class for Assembler that creates an Application
+ * with one Layer and one Module. Create a subclass of this
+ * and implement the {@link Assembler#assemble(ModuleAssembly)} method.
+ * Once the SingletonAssembler is instantiated it will have created and activated
+ * an Application which can be accessed from {@link org.qi4j.bootstrap.SingletonAssembler#getApplicationInstance()}.
+ * You can also easily access any resources specific for the single Module, such as the CompositeBuilderFactory.
  */
 public abstract class SingletonAssembler
     implements Assembler
@@ -46,7 +51,7 @@ public abstract class SingletonAssembler
         {
             applicationInstance = applicationFactory.newApplication( this ).newApplicationInstance( "Simple application" );
         }
-        catch( AssemblerException e )
+        catch( AssemblyException e )
         {
             throw new IllegalStateException( "Could not instantiate application", e );
         }

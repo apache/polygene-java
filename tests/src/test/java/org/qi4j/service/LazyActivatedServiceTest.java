@@ -15,7 +15,7 @@
 package org.qi4j.service;
 
 import junit.framework.TestCase;
-import org.qi4j.bootstrap.AssemblerException;
+import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
 import org.qi4j.composite.Mixins;
@@ -36,7 +36,7 @@ public class LazyActivatedServiceTest
     {
         SingletonAssembler assembly = new SingletonAssembler()
         {
-            public void assemble( ModuleAssembly module ) throws AssemblerException
+            public void assemble( ModuleAssembly module ) throws AssemblyException
             {
                 module.addObjects( LazyActivatedServiceTest.class );
                 module.addServices( LazyActivatedServiceTest.ActivatableComposite.class );

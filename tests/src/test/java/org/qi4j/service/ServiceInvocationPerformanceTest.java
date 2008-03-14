@@ -18,7 +18,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.text.NumberFormat;
 import junit.framework.TestCase;
-import org.qi4j.bootstrap.AssemblerException;
+import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
 import org.qi4j.composite.Mixins;
@@ -37,7 +37,7 @@ public class ServiceInvocationPerformanceTest
     {
         SingletonAssembler assembly = new SingletonAssembler()
         {
-            public void assemble( ModuleAssembly module ) throws AssemblerException
+            public void assemble( ModuleAssembly module ) throws AssemblyException
             {
                 module.addServices( ServiceInvocationPerformanceTest.MyServiceComposite.class );
                 module.addObjects( ServiceInvocationPerformanceTest.class );

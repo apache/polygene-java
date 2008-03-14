@@ -3,7 +3,7 @@ package org.qi4j.runtime.composite;
  *  TODO
  */
 
-import org.qi4j.bootstrap.AssemblerException;
+import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
 import org.qi4j.composite.Composite;
@@ -21,7 +21,7 @@ public class CompositeModelResolverTest extends AbstractQi4jTest
         {
             new SingletonAssembler()
             {
-                public void assemble( ModuleAssembly module ) throws AssemblerException
+                public void assemble( ModuleAssembly module ) throws AssemblyException
                 {
                     module.addComposites( TestComposite2.class );
                 }
@@ -39,7 +39,7 @@ public class CompositeModelResolverTest extends AbstractQi4jTest
     {
         CompositeBuilderFactory cbf = new SingletonAssembler()
         {
-            public void assemble( ModuleAssembly module ) throws AssemblerException
+            public void assemble( ModuleAssembly module ) throws AssemblyException
             {
                 module.addComposites( TestComposite1.class );
             }
@@ -49,7 +49,7 @@ public class CompositeModelResolverTest extends AbstractQi4jTest
         assertEquals( "ok", cbf.newCompositeBuilder( TestComposite1.class ).newInstance().testB() );
     }
 
-    public void assemble( ModuleAssembly module ) throws AssemblerException
+    public void assemble( ModuleAssembly module ) throws AssemblyException
     {
     }
 

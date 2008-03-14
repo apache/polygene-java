@@ -26,7 +26,7 @@ import org.qi4j.spi.structure.CompositeDescriptor;
 import org.qi4j.spi.structure.Visibility;
 
 /**
- * TODO
+ * Declaration of a Composite. Created by {@link org.qi4j.bootstrap.ModuleAssembly#addComposites(Class[])}.
  */
 public final class CompositeDeclaration
 {
@@ -34,7 +34,7 @@ public final class CompositeDeclaration
     private Map<Class, Serializable> compositeInfos = new HashMap<Class, Serializable>();
     private Visibility visibility = Visibility.module;
 
-    public CompositeDeclaration( Class<? extends Composite>[] compositeTypes )
+    public CompositeDeclaration( Class<? extends Composite>... compositeTypes )
     {
         this.compositeTypes = compositeTypes;
     }

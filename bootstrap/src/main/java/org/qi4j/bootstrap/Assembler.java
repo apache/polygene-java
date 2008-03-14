@@ -15,10 +15,29 @@
 package org.qi4j.bootstrap;
 
 /**
- * TODO
+ * ModuleAssemblies are configured by Assemblers. This
+ * is the interface you would implement in order to provide
+ * all configuration and additional metainfo that is needed
+ * to instantiate a Qi4j application.
  */
 public interface Assembler
 {
+    /**
+     * Assemblers receive a callback to the ModuleAssembly
+     * they are supposed to configure. They can use this
+     * to register objects, composites, services etc. and
+     * the additional metadata that may exist for these
+     * artifacts.
+     * <p/>
+     * An Assembler may create new Modules by calling
+     * {@link org.qi4j.bootstrap.ModuleAssembly#getLayerAssembly()} and
+     * then {@link org.qi4j.bootstrap.LayerAssembly#newModuleAssembly()}.
+     * This allows an Assembler to bootstrap an entire Layer with
+     * more Modules.
+     *
+     * @param module the Module to assemble
+     * @throws AssemblyException thrown if the assembler tries to do something illegal
+     */
     void assemble( ModuleAssembly module )
-        throws AssemblerException;
+        throws AssemblyException;
 }

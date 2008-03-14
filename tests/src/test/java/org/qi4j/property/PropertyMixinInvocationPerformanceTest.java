@@ -15,7 +15,7 @@
 package org.qi4j.property;
 
 import java.text.NumberFormat;
-import org.qi4j.bootstrap.AssemblerException;
+import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
@@ -31,7 +31,7 @@ import org.qi4j.test.AbstractQi4jTest;
 public class PropertyMixinInvocationPerformanceTest extends AbstractQi4jTest
 {
     public void assemble( ModuleAssembly module )
-        throws AssemblerException
+        throws AssemblyException
     {
         module.addComposites( SimpleComposite.class );
         module.addComposites( SimpleComposite2.class );

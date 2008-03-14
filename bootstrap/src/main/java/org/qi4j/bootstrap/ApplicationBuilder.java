@@ -28,10 +28,10 @@ import org.qi4j.composite.Composite;
 import org.qi4j.runtime.Qi4jRuntime;
 import org.qi4j.runtime.composite.CompositeContext;
 import org.qi4j.runtime.composite.CompositeMethodContext;
+import org.qi4j.runtime.composite.CompositeModelFactory;
 import org.qi4j.runtime.composite.MixinContext;
 import org.qi4j.runtime.composite.ObjectContext;
 import org.qi4j.runtime.composite.ObjectModelFactory;
-import org.qi4j.runtime.composite.CompositeModelFactory;
 import org.qi4j.runtime.property.AssociationContext;
 import org.qi4j.runtime.property.PropertyContext;
 import org.qi4j.runtime.structure.ApplicationContext;
@@ -68,7 +68,8 @@ import org.qi4j.spi.structure.ServiceDescriptor;
 import org.qi4j.spi.structure.Visibility;
 
 /**
- * TODO
+ * Builder for Applications. This can be used to construct
+ * ApplicationContexts which can then be instantiated.
  */
 public final class ApplicationBuilder
 {
@@ -79,7 +80,6 @@ public final class ApplicationBuilder
     private Map<LayerModel, LayerAssembly> layerModelAssemblyMap;
     private Map<LayerAssembly, LayerModel> layerAssemblyModelMap;
     private Map<LayerModel, LayerResolution> layerResolutionMap;
-    private Map<ModuleModel, ModuleAssembly> moduleModelAssemblyMap;
 
     public ApplicationBuilder( Qi4jRuntime runtime )
     {
@@ -87,7 +87,6 @@ public final class ApplicationBuilder
         layerModelAssemblyMap = new HashMap<LayerModel, LayerAssembly>();
         layerAssemblyModelMap = new HashMap<LayerAssembly, LayerModel>();
         layerResolutionMap = new HashMap<LayerModel, LayerResolution>();
-        moduleModelAssemblyMap = new HashMap<ModuleModel, ModuleAssembly>();
     }
 
     public ApplicationContext newApplicationContext( ApplicationAssembly applicationAssembly )
@@ -169,7 +168,6 @@ public final class ApplicationBuilder
         {
             ModuleModel moduleModel = newModuleModel( moduleAssembly );
             modules.add( moduleModel );
-            moduleModelAssemblyMap.put( moduleModel, moduleAssembly );
 
             // Add public Composites in Module to Layer
             // Must be explicitly marked as public in the Layer to be added!
@@ -356,7 +354,8 @@ public final class ApplicationBuilder
             if( ServiceComposite.class.isAssignableFrom( serviceType ) )
             {
                 // Add as composite
-                CompositeDeclaration compositeDeclaration = new CompositeDeclaration( serviceType );
+                Class<? extends ServiceComposite> serviceCompositeType = (Class<? extends ServiceComposite>) serviceType;
+                CompositeDeclaration compositeDeclaration = new CompositeDeclaration( serviceCompositeType );
                 List<CompositeDescriptor> descriptors = compositeDeclaration.getCompositeDescriptors( compositeModelFactory );
                 compositeDescriptors.add( descriptors.get( 0 ) );
             }

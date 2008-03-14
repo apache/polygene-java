@@ -25,7 +25,7 @@ import org.qi4j.spi.structure.ObjectDescriptor;
 import org.qi4j.spi.structure.Visibility;
 
 /**
- * TODO
+ * Declaration of an Object. Created by {@link org.qi4j.bootstrap.ModuleAssembly#addObjects(Class[])}.
  */
 public final class ObjectDeclaration
 {
