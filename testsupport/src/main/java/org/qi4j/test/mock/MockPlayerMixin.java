@@ -21,24 +21,44 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import org.qi4j.composite.scope.ThisCompositeAs;
 
+/**
+ * Generic mixin for mock composites. Overrides any generic mixins but not typed mixins, as typed mixins have precedence
+ * over generic mixins. To override a typed mixin {@link org.qi4j.test.mock.MockPlayerConcern} can be used.
+ * MockResolver player mixin will delegate method invocations to registered mocks. Mocks can be registered by using
+ * {@link org.qi4j.test.mock.MockComposite}.
+ * If there is no mock registered to handle the method invocation invocation will fail by throwing an
+ * IllegalStateException.
+ *
+ * @author Alin Dreghiciu
+ */
 public class MockPlayerMixin
     implements InvocationHandler
 {
 
+    /**
+     * MockResolver repository. Holds all registred mocks.
+     */
     @ThisCompositeAs MockRepository mockRepository;
 
-    public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
+    /**
+     * Finds a registered mock that can handle the method invocation and delegate to it. If there is no such mock throws
+     * IllegalStateException.
+     *
+     * @see java.lang.reflect.InvocationHandler#invoke(Object,java.lang.reflect.Method,Object[])
+     */
+    public Object invoke( final Object proxy, final Method method, final Object[] args )
+        throws Throwable
     {
         System.out.println( "Play mock for " + method );
-        for( Mock mock : mockRepository.getAll() )
+        for( MockResolver mockResolver : mockRepository.getAll() )
         {
-            InvocationHandler handler = mock.getInvocationHandler( proxy, method, args );
+            InvocationHandler handler = mockResolver.getInvocationHandler( proxy, method, args );
             if( handler != null )
             {
-                return handler.invoke( mock, method, args );
+                return handler.invoke( mockResolver, method, args );
             }
         }
-        throw new IllegalStateException( "No behavior definition" );
+        throw new IllegalStateException( "There is no mock registered that can handle " + method );
     }
 
 }

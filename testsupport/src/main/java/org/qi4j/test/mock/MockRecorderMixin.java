@@ -20,33 +20,38 @@ package org.qi4j.test.mock;
 import java.util.ArrayList;
 import java.util.Collection;
 
+/**
+ * TODO Add JavaDoc.
+ *
+ * @author Alin Dreghiciu
+ */
 public class MockRecorderMixin
     implements MockRecorder, MockRepository
 {
 
-    private final Collection<Mock> mocks;
+    private final Collection<MockResolver> mockResolvers;
 
     public MockRecorderMixin()
     {
-        this.mocks = new ArrayList<Mock>();
+        this.mockResolvers = new ArrayList<MockResolver>();
     }
 
 
-    public MockRecorderType useMock( Object mock )
+    public MockResolverType useMock( Object mock )
     {
         System.out.println( "Recorded " + mock );
-        MockProxy proxy = new MockProxy( mock, new UnplayableMock() );
+        MockResolverProxy proxy = new MockResolverProxy( mock, new UnresolvableMockResolver() );
         add( proxy );
-        return new MockRecorderTypeImpl( proxy );
+        return new MockResolverTypeImpl( proxy );
     }
 
-    public void add( Mock mock )
+    public void add( MockResolver mockResolver )
     {
-        mocks.add( mock );
+        mockResolvers.add( mockResolver );
     }
 
-    public Iterable<Mock> getAll()
+    public Iterable<MockResolver> getAll()
     {
-        return mocks;
+        return mockResolvers;
     }
 }

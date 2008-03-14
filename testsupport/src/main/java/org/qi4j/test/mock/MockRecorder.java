@@ -17,7 +17,12 @@
  */
 package org.qi4j.test.mock;
 
+/**
+ * TODO Add JavaDoc.
+ *
+ * @author Alin Dreghiciu
+ */
 public interface MockRecorder
 {
-    MockRecorderType useMock( Object mock );
+    MockResolverType useMock( Object mock );
 }

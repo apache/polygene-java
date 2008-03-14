@@ -20,14 +20,19 @@ package org.qi4j.test.mock;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
-public class MethodClassMatcherMock
-    implements Mock, InvocationHandler
+/**
+ * TODO Add JavaDoc.
+ *
+ * @author Alin Dreghiciu
+ */
+public class MethodClassMatcherMockResolver
+    implements MockResolver, InvocationHandler
 {
 
     private final Object recordedMock;
     private final Class methodClass;
 
-    public MethodClassMatcherMock( Object recordedMock, Class methodClass )
+    public MethodClassMatcherMockResolver( Object recordedMock, Class methodClass )
     {
         this.recordedMock = recordedMock;
         this.methodClass = methodClass;

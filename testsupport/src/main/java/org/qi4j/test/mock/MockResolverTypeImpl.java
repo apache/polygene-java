@@ -17,34 +17,24 @@
  */
 package org.qi4j.test.mock;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-
-public class MockProxy
-    implements Mock
+/**
+ * TODO Add JavaDoc.
+ *
+ * @author Alin Dreghiciu
+ */
+public class MockResolverTypeImpl
+    implements MockResolverType
 {
-    private final Object recordedMock;
-    private Mock mock;
+    private final MockResolverProxy proxy;
 
-    MockProxy( Object recordedMock, Mock mock )
+    public MockResolverTypeImpl( MockResolverProxy proxy )
     {
-        this.recordedMock = recordedMock;
-        this.mock = mock;
+        this.proxy = proxy;
     }
 
-    MockProxy setMock( Mock mock )
+    public void forClass( final Class clazz )
     {
-        this.mock = mock;
-        return this;
+        proxy.setMock( new MethodClassMatcherMockResolver( proxy.getRegisteredMock(), clazz ) );
     }
 
-    public Object getRecordedMock()
-    {
-        return recordedMock;
-    }
-
-    public InvocationHandler getInvocationHandler( Object proxy, Method method, Object[] args )
-    {
-        return mock.getInvocationHandler( proxy, method, args );
-    }
 }

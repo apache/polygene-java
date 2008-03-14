@@ -17,9 +17,14 @@
  */
 package org.qi4j.test.mock;
 
+/**
+ * TODO Add JavaDoc.
+ *
+ * @author Alin Dreghiciu
+ */
 public interface MockRepository
 {
-    void add( Mock mock );
+    void add( MockResolver mockResolver );
 
-    Iterable<Mock> getAll();
+    Iterable<MockResolver> getAll();
 }

@@ -17,7 +17,12 @@
  */
 package org.qi4j.test.mock;
 
-public interface MockRecorderType
+/**
+ * TODO Add JavaDoc.
+ *
+ * @author Alin Dreghiciu
+ */
+public interface MockResolverType
 {
     void forClass( Class clazz );
 }

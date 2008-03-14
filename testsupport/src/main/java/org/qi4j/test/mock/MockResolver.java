@@ -20,11 +20,20 @@ package org.qi4j.test.mock;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
-public class UnplayableMock
-    implements Mock
+/**
+ * Resolves the invocation handler for a registred mock. Actual matching method is specific to each implementation.
+ *
+ * @author Alin Dreghiciu
+ */
+public interface MockResolver
 {
-    public InvocationHandler getInvocationHandler( Object proxy, Method method, Object[] args )
-    {
-        throw new IllegalStateException( "Undefined" );
-    }
+    /**
+     * Matches the method invocation to an invocation handler for a registered mock.
+     *
+     * @param proxy  object on which the method was invoked
+     * @param method invoked method
+     * @param args   invocation arguments
+     * @return invocation handler if this resolved can handle the call or null otherwise.
+     */
+    InvocationHandler getInvocationHandler( Object proxy, Method method, Object[] args );
 }

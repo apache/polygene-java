@@ -20,6 +20,11 @@ package org.qi4j.test.mock;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.Mixins;
 
+/**
+ * A mocked composite. Adds {@link org.qi4j.test.mock.MockRecorder} to the mocked composite.
+ *
+ * @author Alin Dreghiciu
+ */
 @Mixins( { MockRecorderMixin.class } )
 public interface MockComposite
     extends MockRecorder, Composite

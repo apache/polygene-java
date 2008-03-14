@@ -17,19 +17,24 @@
  */
 package org.qi4j.test.mock;
 
-public class MockRecorderTypeImpl
-    implements MockRecorderType
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+
+/**
+ * Placeholder for a not specified resolver type.
+ *
+ * @author Alin Dreghiciu
+ */
+public class UnresolvableMockResolver
+    implements MockResolver
 {
-    private final MockProxy proxy;
-
-    public MockRecorderTypeImpl( MockProxy proxy )
+    /**
+     * Does not match any method invocation. Always returns null.
+     *
+     * @see org.qi4j.test.mock.MockResolver#getInvocationHandler(Object,java.lang.reflect.Method,Object[])
+     */
+    public InvocationHandler getInvocationHandler( final Object proxy, final Method method, final Object[] args )
     {
-        this.proxy = proxy;
+        return null;
     }
-
-    public void forClass( final Class clazz )
-    {
-        proxy.setMock( new MethodClassMatcherMock( proxy.getRecordedMock(), clazz ) );
-    }
-
 }
