@@ -14,6 +14,9 @@
 
 package org.qi4j.composite.scope;
 
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
+import org.junit.Test;
 import org.qi4j.Qi4j;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -26,54 +29,172 @@ import org.qi4j.runtime.Qi4jRuntime;
 import org.qi4j.service.ServiceLocator;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.structure.ModuleBinding;
-import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.test.Qi4jTestSetup;
 
 /**
  * Test the @Structure annotation
  */
 public class StructureInjectionTest
-    extends AbstractQi4jTest
+    extends Qi4jTestSetup
 {
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
         module.addComposites( StructureInjectionComposite.class );
     }
 
-    public void testWhenStructureAnnotationThenInjectMixin()
+    /**
+     * Tests injected mixin for a CompositeBuilderFactory annotated with {@link @org.qi4j.composite.scope.Structure}.
+     */
+    @Test
+    public void injectedStructureForCompositeBuilderFactory()
     {
         StructureInjectionComposite sic = compositeBuilderFactory.newComposite( StructureInjectionComposite.class );
-        assertTrue( sic.test() );
+        assertThat( "Injected CompositeBuilderFactory", sic.getCompositeBuilderFactory(), is( notNullValue() ) );
+    }
+
+    /**
+     * Tests injected mixin for a ObjectBuilderFactory annotated with {@link @org.qi4j.composite.scope.Structure}.
+     */
+    @Test
+    public void injectedStructureForObjectBuilderFactory()
+    {
+        StructureInjectionComposite sic = compositeBuilderFactory.newComposite( StructureInjectionComposite.class );
+        assertThat( "Injected ObjectBuilderFactory", sic.getObjectBuilderFactory(), is( notNullValue() ) );
+    }
+
+    /**
+     * Tests injected mixin for a EntitySessionFactory annotated with {@link @org.qi4j.composite.scope.Structure}.
+     */
+    @Test
+    public void injectedStructureForEntitySessionFactory()
+    {
+        StructureInjectionComposite sic = compositeBuilderFactory.newComposite( StructureInjectionComposite.class );
+        assertThat( "Injected EntitySessionFactory", sic.getEntitySessionFactory(), is( notNullValue() ) );
+    }
+
+    /**
+     * Tests injected mixin for a ServiceLocator annotated with {@link @org.qi4j.composite.scope.Structure}.
+     */
+    @Test
+    public void injectedStructureForServiceLocator()
+    {
+        StructureInjectionComposite sic = compositeBuilderFactory.newComposite( StructureInjectionComposite.class );
+        assertThat( "Injected ServiceLocator", sic.getServiceLocator(), is( notNullValue() ) );
+    }
+
+    /**
+     * Tests injected mixin for a ModuleBinding annotated with {@link @org.qi4j.composite.scope.Structure}.
+     */
+    @Test
+    public void injectedStructureForModuleBinding()
+    {
+        StructureInjectionComposite sic = compositeBuilderFactory.newComposite( StructureInjectionComposite.class );
+        assertThat( "Injected ModuleBinding", sic.getModuleBinding(), is( notNullValue() ) );
+    }
+
+    /**
+     * Tests injected mixin for a Qi4j annotated with {@link @org.qi4j.composite.scope.Structure}.
+     */
+    @Test
+    public void injectedStructureForQi4j()
+    {
+        StructureInjectionComposite sic = compositeBuilderFactory.newComposite( StructureInjectionComposite.class );
+        assertThat( "Injected Qi4j", sic.getQi4j(), is( notNullValue() ) );
+    }
+
+    /**
+     * Tests injected mixin for a Qi4jSpi annotated with {@link @org.qi4j.composite.scope.Structure}.
+     */
+    @Test
+    public void injectedStructureForQi4jSpi()
+    {
+        StructureInjectionComposite sic = compositeBuilderFactory.newComposite( StructureInjectionComposite.class );
+        assertThat( "Injected Qi4jSpi", sic.getQi4jSpi(), is( notNullValue() ) );
+    }
+
+    /**
+     * Tests injected mixin for a Qi4jRuntime annotated with {@link @org.qi4j.composite.scope.Structure}.
+     */
+    @Test
+    public void injectedStructureForQi4jRuntime()
+    {
+        StructureInjectionComposite sic = compositeBuilderFactory.newComposite( StructureInjectionComposite.class );
+        assertThat( "Injected Qi4jRuntime", sic.getQi4jRuntime(), is( notNullValue() ) );
     }
 
     @Mixins( StructureInjectionMixin.class )
     public interface StructureInjectionComposite
         extends Composite
     {
-        boolean test();
+        public CompositeBuilderFactory getCompositeBuilderFactory();
+
+        public ObjectBuilderFactory getObjectBuilderFactory();
+
+        public EntitySessionFactory getEntitySessionFactory();
+
+        public ServiceLocator getServiceLocator();
+
+        public ModuleBinding getModuleBinding();
+
+        public Qi4j getQi4j();
+
+        public Qi4jSPI getQi4jSpi();
+
+        public Qi4jRuntime getQi4jRuntime();
     }
 
     public abstract static class StructureInjectionMixin
         implements StructureInjectionComposite
     {
-        @Structure CompositeBuilderFactory cbf;
-        @Structure ObjectBuilderFactory obf;
-        @Structure EntitySessionFactory esf;
-        @Structure ServiceLocator sl;
-        @Structure ModuleBinding mb;
+        @Structure CompositeBuilderFactory compositeBuilderFactory;
+        @Structure ObjectBuilderFactory objectBuilderFactory;
+        @Structure EntitySessionFactory entitySessionFactory;
+        @Structure ServiceLocator serviceLocator;
+        @Structure ModuleBinding moduleBinding;
 
         @Structure Qi4j qi4j;
         @Structure Qi4jSPI qi4jSpi;
         @Structure Qi4jRuntime qi4jRuntime;
 
-        public boolean test()
+
+        public CompositeBuilderFactory getCompositeBuilderFactory()
         {
-            return cbf != null &&
-                   obf != null &&
-                   esf != null &&
-                   sl != null &&
-                   qi4j != null &&
-                   qi4jSpi != null &&
-                   qi4jRuntime != null;
+            return compositeBuilderFactory;
+        }
+
+        public ObjectBuilderFactory getObjectBuilderFactory()
+        {
+            return objectBuilderFactory;
+        }
+
+        public EntitySessionFactory getEntitySessionFactory()
+        {
+            return entitySessionFactory;
+        }
+
+        public ServiceLocator getServiceLocator()
+        {
+            return serviceLocator;
+        }
+
+        public ModuleBinding getModuleBinding()
+        {
+            return moduleBinding;
+        }
+
+        public Qi4j getQi4j()
+        {
+            return qi4j;
+        }
+
+        public Qi4jSPI getQi4jSpi()
+        {
+            return qi4jSpi;
+        }
+
+        public Qi4jRuntime getQi4jRuntime()
+        {
+            return qi4jRuntime;
         }
     }
 }

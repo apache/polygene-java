@@ -14,6 +14,9 @@
 
 package org.qi4j.composite.scope;
 
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
+import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
@@ -21,28 +24,34 @@ import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.Mixins;
 import org.qi4j.property.Property;
 import org.qi4j.spi.composite.State;
-import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.test.Qi4jTestSetup;
 
 /**
  * Test the @PropertyField annotation
  */
 public class PropertyFieldInjectionTest
-    extends AbstractQi4jTest
+    extends Qi4jTestSetup
 {
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
         module.addComposites( PropertyFieldInjectionTest.PropertyFieldInjectionComposite.class );
     }
 
-    public void testWhenPropertyFieldAnnotationThenInjectMixin()
+    /**
+     * Tests that a mixin is injected into member variables annotated with {@link @PropertyField}.
+     *
+     * @throws Exception re-thrown
+     */
+    @Test
+    public void mixinIsInjectedForMemberVariablesAnnotatedWithPropertyField()
         throws Exception
     {
         CompositeBuilder<PropertyFieldInjectionComposite> pficBuilder = compositeBuilderFactory.newCompositeBuilder( PropertyFieldInjectionTest.PropertyFieldInjectionComposite.class );
         pficBuilder.propertiesOfComposite().testField().set( "X" );
         PropertyFieldInjectionComposite pfic = pficBuilder.newInstance();
-        assertEquals( "X", pfic.testField().get() );
-        assertEquals( "X", pfic.namedField().get() );
-        assertEquals( "X", pfic.getState().getProperty( PropertyFieldInjectionComposite.class.getMethod( "testField" ) ).get() );
+        assertThat( "Test field", pfic.testField().get(), is( equalTo( "X" ) ) );
+        assertThat( "Named fieldX", pfic.namedField().get(), is( equalTo( "X" ) ) );
+        assertThat( "State", (String) pfic.getState().getProperty( PropertyFieldInjectionComposite.class.getMethod( "testField" ) ).get(), is( equalTo( "X" ) ) );
     }
 
     @Mixins( PropertyFieldInjectionMixin.class )

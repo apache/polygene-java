@@ -16,15 +16,17 @@ package org.qi4j.composite;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import static org.junit.Assert.*;
+import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.test.Qi4jTestSetup;
 
 /**
- * Test if the stacktrace is cleaned up properly
+ * Test if the stacktrace is cleaned up properly.
  */
 public class CleanStacktraceTest
-    extends AbstractQi4jTest
+    extends Qi4jTestSetup
 {
 
     public void assemble( ModuleAssembly module ) throws AssemblyException
@@ -32,9 +34,13 @@ public class CleanStacktraceTest
         module.addComposites( CleanStacktraceTest.TestComposite.class );
     }
 
-    public void testWhenApplicationExceptionThenCleanStackTrace()
+    /**
+     * Tests that stack trace is cleaned up on an application exception.
+     */
+    @Test
+    public void cleanStackTraceOnAplicationException()
     {
-        CleanStacktraceTest.TestComposite composite = compositeBuilderFactory.newComposite( CleanStacktraceTest.TestComposite.class );
+        TestComposite composite = compositeBuilderFactory.newComposite( TestComposite.class );
 
         try
         {
@@ -46,9 +52,9 @@ public class CleanStacktraceTest
             e.printStackTrace( new PrintWriter( actualTrace ) );
 
             String correctTrace = "java.lang.RuntimeException\n" +
-                                  "\tat org.qi4j.composite.CleanStacktraceTest$DoStuffMixin.doStuff(CleanStacktraceTest.java:70)\n" +
+                                  "\tat org.qi4j.composite.CleanStacktraceTest$DoStuffMixin.doStuff(CleanStacktraceTest.java:76)\n" +
                                   "\tat org.qi4j.composite.CleanStacktraceTest$TestComposite.doStuff(Unknown Source)\n" +
-                                  "\tat org.qi4j.composite.CleanStacktraceTest.testWhenApplicationExceptionThenCleanStackTrace(CleanStacktraceTest.java:41)";
+                                  "\tat org.qi4j.composite.CleanStacktraceTest.cleanStackTraceOnAplicationException(CleanStacktraceTest.java:47)";
 
             assertTrue( "Trace should have been:\n" + correctTrace + "\nbut was:\n" + actualTrace, actualTrace.toString().startsWith( correctTrace ) );
         }

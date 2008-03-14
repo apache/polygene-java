@@ -14,57 +14,53 @@
 
 package org.qi4j.composite.scope;
 
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
+import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.ObjectBuilder;
-import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.test.Qi4jTestSetup;
 
 /**
  * Test the @Uses annotation
  */
-public class UsesInjectionTest extends AbstractQi4jTest
+public class UsesInjectionTest
+    extends Qi4jTestSetup
 {
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addObjects( Object1.class, Object2.class );
+        module.addObjects( InjectionTarget.class, ToBeInjected.class );
     }
 
-    public void testWhenUsesAnnotationThenInjectObject()
+    /**
+     * Tests the injected object for {@link @org.qi4j.composite.scope.Uses} annotation.
+     *
+     * @throws Exception re-thrown
+     */
+    @Test
+    public void injectedObjectForUsesAnnotation()
         throws Exception
     {
-        ObjectBuilder<Object1> builder = objectBuilderFactory.newObjectBuilder( Object1.class );
-        Object2 used = new Object2( "Object2" );
-        builder.use( used );
-
-        Object1 object = builder.newInstance();
-
-        assertEquals( used, object.getUsed() );
+        ObjectBuilder<InjectionTarget> builder = objectBuilderFactory.newObjectBuilder( InjectionTarget.class );
+        ToBeInjected toBeInjected = new ToBeInjected();
+        builder.use( toBeInjected );
+        assertThat( "Injected object", builder.newInstance().getUsed(), is( equalTo( toBeInjected ) ) );
     }
 
-    public static class Object1
+    public static class InjectionTarget
     {
-        @Uses
-        Object2 used;
+        @Uses ToBeInjected used;
 
-        public Object2 getUsed()
+        public ToBeInjected getUsed()
         {
             return used;
         }
     }
 
-    public class Object2
+    public class ToBeInjected
     {
-        String name;
-
-        public Object2( String name )
-        {
-            this.name = name;
-        }
-
-        public String getName()
-        {
-            return name;
-        }
     }
+
 }
