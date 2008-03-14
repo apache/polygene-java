@@ -45,8 +45,6 @@ public class DescriptorTest extends AbstractQi4jTest
         assertEquals( value, displayValue );
     }
 
-    e
-
     public void testDescriptorWithModifier() throws Exception
     {
         DummyComposite2 composite = compositeBuilderFactory.newCompositeBuilder( DummyComposite2.class ).newInstance();
