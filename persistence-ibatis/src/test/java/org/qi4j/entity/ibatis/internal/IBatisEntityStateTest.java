@@ -35,13 +35,14 @@ import org.qi4j.property.Property;
 import org.qi4j.runtime.composite.CompositeContext;
 import org.qi4j.runtime.structure.ModuleContext;
 import org.qi4j.spi.composite.CompositeBinding;
+import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.property.ImmutablePropertyInstance;
 import org.qi4j.spi.property.PropertyBinding;
 
 /**
  * @author edward.yakop@gmail.com
  */
-public final class EntityStateTest extends AbstractTestCase
+public final class IBatisEntityStateTest extends AbstractTestCase
 {
     private static final String DEFAULT_FIRST_NAME = "Edward";
     private static final String DEFAULT_LAST_NAME = "Yakop";
@@ -144,7 +145,7 @@ public final class EntityStateTest extends AbstractTestCase
         // Test get first name on 
     }
 
-    private EntityState newPersonEntityState( HashMap<String, Object> initialValues )
+    private IBatisEntityState newPersonEntityState( HashMap<String, Object> initialValues )
     {
         ModuleContext moduleContext = moduleInstance.getModuleContext();
         Map<Class<? extends Composite>, CompositeContext> compositeContexts = moduleContext.getCompositeContexts();
@@ -158,18 +159,18 @@ public final class EntityStateTest extends AbstractTestCase
         IBatisEntityStateDao dao = mockery.mock( IBatisEntityStateDao.class );
         IBatisEntityStoreServiceInfo serviceInfo = new IBatisEntityStoreServiceInfo( "a" );
         serviceInfo.setIsDebugMode( true );
-        return new EntityState( "1", personCompositeBinding, initialValues, statusNew, dao, serviceInfo );
+        return new IBatisEntityState( "1", personCompositeBinding, initialValues, statusNew, dao, serviceInfo );
     }
 
     /**
-     * Tests {@link EntityState#computePropertyValue(PropertyBinding,Map,boolean)}.
+     * Tests {@link IBatisEntityState#computePropertyValue(PropertyBinding,Map,boolean)}.
      *
      * @since 0.1.0
      */
     public final void testComputePropertyValue()
     {
         HashMap<String, Object> propertyValues = new HashMap<String, Object>();
-        EntityState personEntityState1 = newPersonEntityState( propertyValues );
+        IBatisEntityState personEntityState1 = newPersonEntityState( propertyValues );
         Map<String, PropertyBinding> personPropertyBindings = getPersonCompositePropertyBindings();
 
         String firstNamePropertyName = "firstName";
@@ -221,7 +222,7 @@ public final class EntityStateTest extends AbstractTestCase
     public final void testNewPropertyInstance()
     {
         HashMap<String, Object> propertyValues = new HashMap<String, Object>();
-        EntityState personEntityState1 = newPersonEntityState( propertyValues );
+        IBatisEntityState personEntityState1 = newPersonEntityState( propertyValues );
 
         // Set up test arguments
         Map<String, PropertyBinding> properties = getPersonCompositePropertyBindings();

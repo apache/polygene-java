@@ -36,7 +36,6 @@ import static org.qi4j.composite.NullArgumentException.validateNotNull;
 import org.qi4j.entity.EntitySession;
 import org.qi4j.entity.ibatis.dbInitializer.DBInitializer;
 import org.qi4j.entity.ibatis.dbInitializer.DBInitializerInfo;
-import org.qi4j.entity.ibatis.internal.EntityState;
 import org.qi4j.entity.ibatis.internal.IBatisEntityState;
 import org.qi4j.entity.ibatis.internal.IBatisEntityStateDao;
 import static org.qi4j.entity.ibatis.internal.IBatisEntityStateStatus.statusLoadFromDb;
@@ -164,7 +163,7 @@ final class IBatisEntityStore
      * @throws StoreException           Thrown if creational failed.
      * @since 0.1.0
      */
-    public final EntityState newEntityInstance(
+    public final IBatisEntityState newEntityInstance(
         EntitySession aSession, String anIdentity, CompositeBinding aCompositeBinding,
         Map<Method, Object> propertyValues )
         throws IllegalArgumentException, StoreException
@@ -184,7 +183,7 @@ final class IBatisEntityStore
             fieldValues.put( propertyName, propertyValue );
         }
 
-        return new EntityState( anIdentity, aCompositeBinding, fieldValues, statusNew, dao, serviceInfo );
+        return new IBatisEntityState( anIdentity, aCompositeBinding, fieldValues, statusNew, dao, serviceInfo );
     }
 
     /**
@@ -199,7 +198,7 @@ final class IBatisEntityStore
      * @since 0.1.0
      */
     @SuppressWarnings( "unchecked" )
-    public final EntityState getEntityInstance(
+    public final IBatisEntityState getEntityInstance(
         EntitySession anEntitySession, String anIdentity, CompositeBinding aCompositeBinding )
         throws IllegalArgumentException, StoreException
     {
@@ -215,7 +214,7 @@ final class IBatisEntityStore
             return null;
         }
 
-        return new EntityState( anIdentity, aCompositeBinding, rawData, statusLoadFromDb, dao, serviceInfo );
+        return new IBatisEntityState( anIdentity, aCompositeBinding, rawData, statusLoadFromDb, dao, serviceInfo );
     }
 
     /**
