@@ -14,7 +14,6 @@
 
 package org.qi4j.spi.property;
 
-import org.qi4j.property.PropertyVetoException;
 import org.qi4j.property.ImmutableProperty;
 import org.qi4j.property.PropertyInfo;
 
