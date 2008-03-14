@@ -14,8 +14,6 @@
 
 package org.qi4j.test;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.qi4j.Qi4j;
@@ -36,7 +34,7 @@ import org.qi4j.service.ServiceLocator;
 import org.qi4j.spi.Qi4jSPI;
 
 /**
- * Base class for Composite tests
+ * Base class for Composite tests.
  */
 public abstract class Qi4jTestSetup
     implements Assembler
@@ -85,34 +83,6 @@ public abstract class Qi4jTestSetup
         {
             application.passivate();
         }
-    }
-
-    private static ThreadLocal<List<Object>> mocks = new ThreadLocal<List<Object>>();
-
-    static <T> T getMock( Object mocked )
-    {
-        T found = null;
-        if( mocks.get() != null && !mocks.get().isEmpty() )
-        {
-            for( Object mock : mocks.get() )
-            {
-                if( mock.getClass().isInstance( mocked ) )
-                {
-                    found = (T) mock;
-                }
-            }
-        }
-        return found;
-    }
-
-    public static <T> T registerMock( T mock )
-    {
-        if( mocks.get() == null )
-        {
-            mocks.set( new ArrayList<Object>() );
-        }
-        mocks.get().add( mock );
-        return mock;
     }
 
 }

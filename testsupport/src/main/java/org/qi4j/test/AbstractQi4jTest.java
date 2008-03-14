@@ -35,6 +35,7 @@ import org.qi4j.spi.Qi4jSPI;
 /**
  * Base class for Composite tests
  */
+@Deprecated
 public abstract class AbstractQi4jTest extends TestCase
     implements Assembler
 {
