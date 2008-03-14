@@ -15,11 +15,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.test.mock;
+package org.qi4j.test.mock.internal;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import org.qi4j.composite.NullArgumentException;
+import org.qi4j.test.mock.internal.MockResolver;
 
 /**
  * Proxy to another mock resolver that can be set/changed over time. This allows
@@ -82,7 +83,7 @@ public class MockResolverProxy
     /**
      * Delegates to current mock resolver delegate.
      *
-     * @see org.qi4j.test.mock.MockResolver#getInvocationHandler(Object,java.lang.reflect.Method,Object[])
+     * @see MockResolver#getInvocationHandler(Object,java.lang.reflect.Method,Object[])
      */
     public InvocationHandler getInvocationHandler( final Object proxy, final Method method, final Object[] args )
     {

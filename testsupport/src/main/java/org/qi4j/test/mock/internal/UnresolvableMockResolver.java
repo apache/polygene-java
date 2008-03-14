@@ -15,16 +15,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.test.mock;
+package org.qi4j.test.mock.internal;
+
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import org.qi4j.test.mock.internal.MockResolver;
 
 /**
- * TODO Add JavaDoc.
+ * Placeholder for a not specified resolver type.
  *
  * @author Alin Dreghiciu
  */
-public interface MockRepository
+public class UnresolvableMockResolver
+    implements MockResolver
 {
-    void add( MockResolver mockResolver );
-
-    Iterable<MockResolver> getAll();
+    /**
+     * Does not match any method invocation. Always returns null.
+     *
+     * @see MockResolver#getInvocationHandler(Object,java.lang.reflect.Method,Object[])
+     */
+    public InvocationHandler getInvocationHandler( final Object proxy, final Method method, final Object[] args )
+    {
+        return null;
+    }
 }

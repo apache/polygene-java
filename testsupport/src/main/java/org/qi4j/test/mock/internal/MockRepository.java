@@ -15,26 +15,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.test.mock;
+package org.qi4j.test.mock.internal;
+
+import org.qi4j.test.mock.internal.MockResolver;
 
 /**
  * TODO Add JavaDoc.
  *
  * @author Alin Dreghiciu
  */
-public class MockResolverTypeImpl
-    implements MockResolverType
+public interface MockRepository
 {
-    private final MockResolverProxy proxy;
+    void add( MockResolver mockResolver );
 
-    public MockResolverTypeImpl( MockResolverProxy proxy )
-    {
-        this.proxy = proxy;
-    }
-
-    public void forClass( final Class clazz )
-    {
-        proxy.setMock( new MethodClassMatcherMockResolver( proxy.getRegisteredMock(), clazz ) );
-    }
-
+    Iterable<MockResolver> getAll();
 }

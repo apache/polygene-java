@@ -20,6 +20,8 @@ package org.qi4j.test.mock;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import org.qi4j.composite.scope.ThisCompositeAs;
+import org.qi4j.test.mock.internal.MockRepository;
+import org.qi4j.test.mock.internal.MockResolver;
 
 /**
  * Generic mixin for mock composites. Overrides any generic mixins but not typed mixins, as typed mixins have precedence
