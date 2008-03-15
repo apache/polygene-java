@@ -16,13 +16,10 @@
  */
 package org.qi4j.entity.ibatis;
 
-import org.qi4j.association.Association;
-
 /**
  * @author edward.yakop@gmail.com
  * @since 0.1.0
  */
-public interface HasPrimaryContactPerson
+public interface Person extends HasFirstName, HasLastName
 {
-    Association<PersonComposite> primaryContactPerson();
 }

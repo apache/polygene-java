@@ -54,6 +54,11 @@ public class IBatisAbstractAssociationInstanceTest extends Qi4jTestSetup
         {
             super( aBinding );
         }
+
+        public final void complete()
+        {
+            // Do nothing
+        }
     }
 
     /**

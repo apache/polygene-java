@@ -14,15 +14,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.entity.ibatis;
+package org.qi4j.entity.ibatis.internal.util;
 
-import org.qi4j.association.Association;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
+import org.junit.Test;
+import static org.qi4j.entity.ibatis.internal.util.Util.isNotEquals;
 
 /**
  * @author edward.yakop@gmail.com
  * @since 0.1.0
  */
-public interface HasPrimaryContactPerson
+public final class UtilTestCase
 {
-    Association<PersonComposite> primaryContactPerson();
+    /**
+     * Tests not equals.
+     *
+     * @since 0.1.0
+     */
+    @Test
+    public final void testNotEquals()
+    {
+        assertFalse( isNotEquals( null, null ) );
+        assertFalse( isNotEquals( 1, 1 ) );
+        assertTrue( isNotEquals( null, 1 ) );
+        assertTrue( isNotEquals( 1, null ) );
+        assertTrue( isNotEquals( 1, 2 ) );
+    }
 }

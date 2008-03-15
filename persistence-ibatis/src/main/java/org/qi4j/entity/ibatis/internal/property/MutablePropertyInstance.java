@@ -16,6 +16,7 @@
  */
 package org.qi4j.entity.ibatis.internal.property;
 
+import static org.qi4j.entity.ibatis.internal.util.Util.isNotEquals;
 import org.qi4j.property.PropertyInfo;
 import org.qi4j.spi.property.PropertyInstance;
 
@@ -56,23 +57,6 @@ public final class MutablePropertyInstance<T> extends PropertyInstance<T>
         return aNewValue;
     }
 
-    /**
-     * Returns {@code true} if both arguments are equals.
-     *
-     * @param aValue       A value.
-     * @param anotherValue Another value.
-     * @return A {@code boolean} indicator whether both arguments are equal.
-     * @since 0.1.0
-     */
-    static boolean isNotEquals( Object aValue, Object anotherValue )
-    {
-        if( aValue == anotherValue )
-        {
-            return false;
-        }
-
-        return ( aValue != null ) ? !aValue.equals( anotherValue ) : !anotherValue.equals( aValue );
-    }
 
     /**
      * Returns {@code true} if this {@code IBatisMutablePropertyInstance} instance is dirty, {@code false} otherwise.

@@ -14,15 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.entity.ibatis;
-
-import org.qi4j.association.Association;
+package org.qi4j.entity.ibatis.internal;
 
 /**
+ * {@code Status} represent status.
+ *
  * @author edward.yakop@gmail.com
  * @since 0.1.0
  */
-public interface HasPrimaryContactPerson
+public enum Status
 {
-    Association<PersonComposite> primaryContactPerson();
+    statusNew,
+    statusLoadFromDb,
+    statusNewToDeleted,
+    statusLoadToDeleted,;
 }

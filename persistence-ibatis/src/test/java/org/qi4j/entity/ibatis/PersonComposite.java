@@ -16,8 +16,11 @@
  */
 package org.qi4j.entity.ibatis;
 
+import org.qi4j.composite.Mixins;
 import org.qi4j.entity.EntityComposite;
+import org.qi4j.library.framework.entity.PropertyMixin;
 
-public interface PersonComposite extends EntityComposite, HasFirstName, HasLastName
+@Mixins( PropertyMixin.class )
+public interface PersonComposite extends EntityComposite, Person
 {
 }

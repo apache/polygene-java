@@ -23,7 +23,6 @@ import static junit.framework.Assert.fail;
 import org.jmock.Mockery;
 import org.junit.Before;
 import org.junit.Test;
-import static org.qi4j.entity.ibatis.internal.property.MutablePropertyInstance.isNotEquals;
 import org.qi4j.property.PropertyInfo;
 
 /**
@@ -135,21 +134,6 @@ public class MutablePropertyInstanceTest
         property.set( null );
         assertEquals( "Must return [null].", null, property.get() );
         assertTrue( "Setting different value as initial value, must mark property dirty.", property.isDirty() );
-    }
-
-    /**
-     * Tests not equals.
-     *
-     * @since 0.1.0
-     */
-    @Test
-    public final void testNotEquals()
-    {
-        assertFalse( isNotEquals( null, null ) );
-        assertFalse( isNotEquals( 1, 1 ) );
-        assertTrue( isNotEquals( null, 1 ) );
-        assertTrue( isNotEquals( 1, null ) );
-        assertTrue( isNotEquals( 1, 2 ) );
     }
 
     @Before

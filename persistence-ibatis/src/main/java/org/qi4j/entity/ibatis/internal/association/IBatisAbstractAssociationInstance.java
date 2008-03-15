@@ -28,7 +28,7 @@ import org.qi4j.spi.property.AssociationBinding;
  * @author edward.yakop@gmail.com
  * @since 0.1.0
  */
-abstract class IBatisAbstractAssociationInstance implements AbstractAssociation
+public abstract class IBatisAbstractAssociationInstance implements AbstractAssociation
 {
     protected final AssociationBinding associationBinding;
 
@@ -83,4 +83,11 @@ abstract class IBatisAbstractAssociationInstance implements AbstractAssociation
         AssociationModel model = associationResolution.getAssociationModel();
         return model.getQualifiedName();
     }
+
+    /**
+     * Complete the persistence for this assocation instance.
+     *
+     * @since 0.1.0
+     */
+    public abstract void complete();
 }

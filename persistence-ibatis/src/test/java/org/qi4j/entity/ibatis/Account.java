@@ -14,18 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.entity.ibatis.internal;
+package org.qi4j.entity.ibatis;
+
+import org.qi4j.library.general.model.HasName;
 
 /**
- * {@code IBatisEntityStateStatus} represent status of {@code IBatisEntityState}.
- *
  * @author edward.yakop@gmail.com
  * @since 0.1.0
  */
-public enum IBatisEntityStateStatus
+public interface Account extends HasPrimaryContactPerson, HasName
 {
-    statusNew,
-    statusLoadFromDb,
-    statusNewToDeleted,
-    statusLoadToDeleted,;
 }

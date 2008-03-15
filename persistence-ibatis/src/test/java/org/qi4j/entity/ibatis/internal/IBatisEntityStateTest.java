@@ -31,12 +31,12 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilderFactory;
+import org.qi4j.entity.EntitySession;
 import org.qi4j.entity.ibatis.AbstractTestCase;
 import org.qi4j.entity.ibatis.HasFirstName;
 import org.qi4j.entity.ibatis.HasLastName;
-import org.qi4j.entity.ibatis.IBatisEntityStoreServiceInfo;
 import org.qi4j.entity.ibatis.PersonComposite;
-import static org.qi4j.entity.ibatis.internal.IBatisEntityStateStatus.statusNew;
+import static org.qi4j.entity.ibatis.internal.Status.statusNew;
 import org.qi4j.entity.ibatis.internal.property.MutablePropertyInstance;
 import org.qi4j.property.Property;
 import org.qi4j.runtime.composite.CompositeContext;
@@ -165,8 +165,8 @@ public final class IBatisEntityStateTest extends AbstractTestCase
 
         Mockery mockery = new Mockery();
         IBatisEntityStateDao dao = mockery.mock( IBatisEntityStateDao.class );
-        IBatisEntityStoreServiceInfo serviceInfo = new IBatisEntityStoreServiceInfo( "a" );
-        return new IBatisEntityState( "1", personCompositeBinding, initialValues, statusNew, dao );
+        EntitySession session = mockery.mock( EntitySession.class );
+        return new IBatisEntityState( "1", personCompositeBinding, initialValues, statusNew, session, dao );
     }
 
     /**
