@@ -18,6 +18,9 @@ package org.qi4j.entity.ibatis.internal.association;
 
 import java.util.HashMap;
 import java.util.Map;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.fail;
+import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.CompositeBuilderFactory;
@@ -27,7 +30,7 @@ import org.qi4j.spi.composite.AssociationModel;
 import org.qi4j.spi.composite.AssociationResolution;
 import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.property.AssociationBinding;
-import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.test.Qi4jTestSetup;
 
 /**
  * {@code IBatisAbstractAssociationInstanceTest} tests {@code IBatisAbstractAssociationInstance}.
@@ -35,7 +38,7 @@ import org.qi4j.test.AbstractQi4jTest;
  * @author edward.yakop@gmail.com
  * @since 0.1.0
  */
-public class IBatisAbstractAssociationInstanceTest extends AbstractQi4jTest
+public class IBatisAbstractAssociationInstanceTest extends Qi4jTestSetup
 {
 
     private static final class StubAbstractAssociationInstance
@@ -58,6 +61,7 @@ public class IBatisAbstractAssociationInstanceTest extends AbstractQi4jTest
      *
      * @since 0.1.0
      */
+    @Test
     public final void testConstructor()
     {
         // **************************
@@ -114,6 +118,7 @@ public class IBatisAbstractAssociationInstanceTest extends AbstractQi4jTest
      *
      * @since 0.1.0
      */
+    @Test
     public final void testGettersAndInternalState()
     {
         Map<String, AssociationBinding> accountAssociationsBindings = getAllAccountAssociationBindings();

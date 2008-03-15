@@ -23,7 +23,14 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertNull;
+import static junit.framework.Assert.assertTrue;
+import static junit.framework.Assert.fail;
 import org.jmock.Mockery;
+import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
@@ -59,6 +66,7 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
      *
      * @since 0.1.0
      */
+    @Test
     public final void testConstructor()
     {
         try
@@ -130,6 +138,7 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
      *
      * @throws SQLException Thrown if failed.
      */
+    @Test
     public final void testExists()
         throws SQLException
     {
@@ -228,6 +237,7 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
      *
      * @throws SQLException Thrown if initialization fails.
      */
+    @Test
     public final void testNewEntityInstance()
         throws SQLException
     {
@@ -292,6 +302,7 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
      *
      * @throws SQLException Thrown if initialization fails.
      */
+    @Test
     public final void testGetEntityInstance()
         throws SQLException
     {
@@ -363,15 +374,10 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
         }
     }
 
-    @Override
     public final void assemble( ModuleAssembly aModule )
         throws AssemblyException
     {
         aModule.addComposites( PersonComposite.class );
     }
 
-    protected final boolean isDerbyServerShouldBeStarted()
-    {
-        return true;
-    }
 }

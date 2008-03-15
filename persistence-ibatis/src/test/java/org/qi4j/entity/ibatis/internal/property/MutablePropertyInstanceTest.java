@@ -16,8 +16,13 @@
  */
 package org.qi4j.entity.ibatis.internal.property;
 
-import junit.framework.TestCase;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
+import static junit.framework.Assert.fail;
 import org.jmock.Mockery;
+import org.junit.Before;
+import org.junit.Test;
 import static org.qi4j.entity.ibatis.internal.property.MutablePropertyInstance.isNotEquals;
 import org.qi4j.property.PropertyInfo;
 
@@ -27,7 +32,7 @@ import org.qi4j.property.PropertyInfo;
  * @author edward.yakop@gmail.com
  * @since 0.1.0
  */
-public class MutablePropertyInstanceTest extends TestCase
+public class MutablePropertyInstanceTest
 {
     private Mockery context;
 
@@ -36,6 +41,7 @@ public class MutablePropertyInstanceTest extends TestCase
      *
      * @since 0.1.0
      */
+    @Test
     public final void testConstructor()
     {
         // **************************
@@ -75,6 +81,7 @@ public class MutablePropertyInstanceTest extends TestCase
      *
      * @since 0.1.0
      */
+    @Test
     public final void testDirtiness()
     {
         PropertyInfo propertyInfo = context.mock( PropertyInfo.class );
@@ -135,6 +142,7 @@ public class MutablePropertyInstanceTest extends TestCase
      *
      * @since 0.1.0
      */
+    @Test
     public final void testNotEquals()
     {
         assertFalse( isNotEquals( null, null ) );
@@ -144,15 +152,9 @@ public class MutablePropertyInstanceTest extends TestCase
         assertTrue( isNotEquals( 1, 2 ) );
     }
 
-    protected void setUp() throws Exception
+    @Before
+    public final void setUp() throws Exception
     {
-        super.setUp();
         context = new Mockery();
-    }
-
-    protected void tearDown() throws Exception
-    {
-        context = null;
-        super.tearDown();
     }
 }

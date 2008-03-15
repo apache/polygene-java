@@ -17,14 +17,16 @@
 package org.qi4j.entity.ibatis;
 
 import java.util.Properties;
-import junit.framework.TestCase;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.fail;
+import org.junit.Test;
 
 /**
  * {@code IBatisEntityStoreServiceInfoTest} tests {@code IBatisEntityStoreServiceInfo}.
  *
  * @author edward.yakop@gmail.com
  */
-public final class IBatisEntityStoreServiceInfoTest extends TestCase
+public final class IBatisEntityStoreServiceInfoTest
 {
     private static final String SOME_URL = "aURL";
 
@@ -33,6 +35,7 @@ public final class IBatisEntityStoreServiceInfoTest extends TestCase
      *
      * @since 0.1.0
      */
+    @Test
     public final void testConstructors()
     {
         // ***************************
@@ -141,26 +144,4 @@ public final class IBatisEntityStoreServiceInfoTest extends TestCase
         assertEquals( SOME_URL, info3.getSQLMapConfigURL() );
         assertEquals( blankProperties, info3.getConfigProperties() );
     }
-
-    /**
-     * Tests isDebugModeOn.
-     *
-     * @since 0.1.0
-     */
-    public void testIsDebugModeOn()
-    {
-        IBatisEntityStoreServiceInfo info1 = new IBatisEntityStoreServiceInfo( SOME_URL );
-
-        // ******************
-        // Test default value
-        // ******************
-        assertFalse( "By default debug mode is [false].", info1.isDebugMode() );
-
-        // *********************
-        // Test setIsDebugModeOn
-        // *********************
-        info1.setIsDebugMode( true );
-        assertTrue( "After sets to [true]. Debug mode must be [true].", info1.isDebugMode() );
-    }
-
 }

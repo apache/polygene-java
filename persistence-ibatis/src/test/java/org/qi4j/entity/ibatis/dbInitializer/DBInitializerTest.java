@@ -17,6 +17,10 @@
 package org.qi4j.entity.ibatis.dbInitializer;
 
 import java.util.Properties;
+import static junit.framework.Assert.fail;
+import org.junit.Test;
+import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entity.ibatis.AbstractTestCase;
 
 /**
@@ -32,6 +36,7 @@ public final class DBInitializerTest extends AbstractTestCase
      *
      * @since 0.1.0
      */
+    @Test
     public void testConstructor()
     {
         DBInitializerInfo dbInitializerInfo = new DBInitializerInfo( "aURL", new Properties(), null, null );
@@ -65,6 +70,7 @@ public final class DBInitializerTest extends AbstractTestCase
      * @throws Exception Thrown if initialization failed.
      * @since 0.1.0
      */
+    @Test
     public void testInitializer()
         throws Exception
     {
@@ -85,9 +91,8 @@ public final class DBInitializerTest extends AbstractTestCase
         checkDataInitialization();
     }
 
-    protected final boolean isDerbyServerShouldBeStarted()
+    public void assemble( ModuleAssembly module ) throws AssemblyException
     {
-        String testName = getName();
-        return "testInitializer".equals( testName );
+        // Do nothing
     }
 }

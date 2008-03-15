@@ -28,16 +28,17 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
 import org.apache.derby.drda.NetworkServerControl;
-import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.ModuleAssembly;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 import org.qi4j.entity.ibatis.dbInitializer.DBInitializerInfo;
-import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.test.Qi4jTestSetup;
 
 /**
  * @author edward.yakop@gmail.com
  * @since 0.1.0
  */
-public abstract class AbstractTestCase extends AbstractQi4jTest
+public abstract class AbstractTestCase extends Qi4jTestSetup
 {
     private static final String JDBC_URL = "jdbc:derby://localhost/testdb;create=true";
     private static final String DERBY_DRIVER_CLASS_NAME = "org.apache.derby.jdbc.ClientDriver";
@@ -182,35 +183,21 @@ public abstract class AbstractTestCase extends AbstractQi4jTest
         return getConnection( JDBC_URL, DERBY_USER, DERBY_PASSWORD );
     }
 
-    /**
-     * Returns {@code true} if the derby server should be started.
-     * By default this method always returns {@code false}.
-     *
-     * @return A {@code boolean} indicator whether the derby server should be started.
-     * @since 0.1.0
-     */
-    protected boolean isDerbyServerShouldBeStarted()
-    {
-        return false;
-    }
-
-    protected void setUp()
+    @Override
+    public void setUp()
         throws Exception
     {
         super.setUp();
 
-        if( isDerbyServerShouldBeStarted() )
-        {
-            Properties systemProperties = System.getProperties();
-            systemProperties.setProperty( "derby.drda.securityMechanism", "CLEAR_TEXT_PASSWORD_SECURITY" );
+        Properties systemProperties = System.getProperties();
+        systemProperties.setProperty( "derby.drda.securityMechanism", "CLEAR_TEXT_PASSWORD_SECURITY" );
 
-            nsc = new NetworkServerControl();
-            PrintWriter logOuput = new PrintWriter( out );
-            nsc.start( logOuput );
+        nsc = new NetworkServerControl();
+        PrintWriter logOuput = new PrintWriter( out );
+        nsc.start( logOuput );
 
-            // Wait until server started up
-            waitUntilDerbyStarted();
-        }
+        // Wait until server started up
+        waitUntilDerbyStarted();
     }
 
 
@@ -249,7 +236,7 @@ public abstract class AbstractTestCase extends AbstractQi4jTest
         }
     }
 
-    protected void tearDown()
+    public void tearDown()
         throws Exception
     {
         if( nsc != null )
@@ -259,16 +246,5 @@ public abstract class AbstractTestCase extends AbstractQi4jTest
         }
 
         super.tearDown();
-    }
-
-    /**
-     * Initialize qi4j test application.
-     *
-     * @param aModule The single module.
-     * @since 0.1.0
-     */
-    public void assemble( ModuleAssembly aModule )
-        throws AssemblyException
-    {
     }
 }

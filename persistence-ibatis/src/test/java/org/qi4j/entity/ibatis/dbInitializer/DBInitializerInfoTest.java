@@ -17,7 +17,9 @@
 package org.qi4j.entity.ibatis.dbInitializer;
 
 import java.util.Properties;
-import junit.framework.TestCase;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.fail;
+import org.junit.Test;
 
 /**
  * {@code DBInitializerInfoTest} tests {@code DBInitializerInfo}.
@@ -25,13 +27,14 @@ import junit.framework.TestCase;
  * @author edward.yakop@gmail.com
  * @since 0.1.0
  */
-public final class DBInitializerInfoTest extends TestCase
+public final class DBInitializerInfoTest
 {
     /**
      * Test validitiy of constructors arguments.
      *
      * @since 0.1.0
      */
+    @Test
     public final void testConstructor()
     {
         try
@@ -75,6 +78,7 @@ public final class DBInitializerInfoTest extends TestCase
     /**
      * Test getters.
      */
+    @Test
     public final void testGetters()
     {
         String dbURL = "aURL";

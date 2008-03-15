@@ -19,7 +19,14 @@ package org.qi4j.entity.ibatis.internal;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertNull;
+import static junit.framework.Assert.assertTrue;
+import static junit.framework.Assert.fail;
 import org.jmock.Mockery;
+import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
@@ -51,6 +58,7 @@ public final class IBatisEntityStateTest extends AbstractTestCase
      * Test constructor of entity state.
      */
     @SuppressWarnings( "unchecked" )
+    @Test
     public void testGetProperty()
     {
         // =======================
@@ -158,7 +166,6 @@ public final class IBatisEntityStateTest extends AbstractTestCase
         Mockery mockery = new Mockery();
         IBatisEntityStateDao dao = mockery.mock( IBatisEntityStateDao.class );
         IBatisEntityStoreServiceInfo serviceInfo = new IBatisEntityStoreServiceInfo( "a" );
-        serviceInfo.setIsDebugMode( true );
         return new IBatisEntityState( "1", personCompositeBinding, initialValues, statusNew, dao );
     }
 
@@ -167,6 +174,7 @@ public final class IBatisEntityStateTest extends AbstractTestCase
      *
      * @since 0.1.0
      */
+    @Test
     public final void testComputePropertyValue()
     {
         HashMap<String, Object> propertyValues = new HashMap<String, Object>();
@@ -201,6 +209,7 @@ public final class IBatisEntityStateTest extends AbstractTestCase
      *
      * @since 0.1.0
      */
+    @Test
     public final void testNewPropertyInstance()
     {
         HashMap<String, Object> propertyValues = new HashMap<String, Object>();
@@ -254,10 +263,8 @@ public final class IBatisEntityStateTest extends AbstractTestCase
         return properties;
     }
 
-    public void assemble( ModuleAssembly aModule ) throws AssemblyException
+    public final void assemble( ModuleAssembly aModule ) throws AssemblyException
     {
-        super.assemble( aModule );
-
         aModule.addComposites( PersonComposite.class );
 
         // Has Name
