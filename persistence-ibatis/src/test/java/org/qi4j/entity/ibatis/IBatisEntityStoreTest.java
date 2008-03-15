@@ -17,14 +17,29 @@
 package org.qi4j.entity.ibatis;
 
 import java.io.Serializable;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
+import org.jmock.Mockery;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.composite.Composite;
+import org.qi4j.entity.EntitySession;
+import org.qi4j.entity.Identity;
 import org.qi4j.entity.ibatis.dbInitializer.DBInitializerInfo;
+import org.qi4j.entity.ibatis.internal.IBatisEntityState;
+import org.qi4j.property.Property;
+import org.qi4j.runtime.composite.CompositeContext;
+import org.qi4j.runtime.structure.ModuleContext;
 import org.qi4j.spi.composite.CompositeBinding;
+import org.qi4j.spi.composite.CompositeMethodBinding;
+import org.qi4j.spi.composite.CompositeMethodModel;
+import org.qi4j.spi.composite.CompositeMethodResolution;
 import org.qi4j.spi.entity.StoreException;
+import org.qi4j.spi.property.PropertyBinding;
 import org.qi4j.spi.service.provider.DefaultServiceInstanceProvider;
 import org.qi4j.spi.structure.ServiceDescriptor;
 import static org.qi4j.spi.structure.Visibility.module;
@@ -123,8 +138,10 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
         IBatisEntityStore entityStore = newAndActivateEntityStore();
 
         // Intialize test arguments
-        PersonComposite composite = moduleInstance.getStructureContext().getCompositeBuilderFactory().newComposite( PersonComposite.class );
-        CompositeBinding personBinding = runtime.getCompositeBinding( composite );
+        ModuleContext moduleContext = moduleInstance.getModuleContext();
+        Map<Class<? extends Composite>, CompositeContext> compositeContexts = moduleContext.getCompositeContexts();
+        CompositeContext personCompositeContext = compositeContexts.get( PersonComposite.class );
+        CompositeBinding personBinding = personCompositeContext.getCompositeBinding();
 
         // **********************
         // Test invalid arguments
@@ -206,20 +223,155 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
         return new ServiceDescriptor( IBatisEntityStore.class, DefaultServiceInstanceProvider.class, "ibatis", module, true, infos );
     }
 
+    /**
+     * Tests {@link IBatisEntityStore#newEntityInstance(EntitySession, String, CompositeBinding, java.util.Map)}
+     *
+     * @throws SQLException Thrown if initialization fails.
+     */
+    public final void testNewEntityInstance()
+        throws SQLException
+    {
+        // Initialize the derby and entity store
+        initializeDerby();
+        IBatisEntityStore entityStore = newAndActivateEntityStore();
+
+        // Intialize test arguments
+        ModuleContext moduleContext = moduleInstance.getModuleContext();
+        Map<Class<? extends Composite>, CompositeContext> compositeContexts = moduleContext.getCompositeContexts();
+        CompositeContext personCompositeContext = compositeContexts.get( PersonComposite.class );
+        CompositeBinding personBinding = personCompositeContext.getCompositeBinding();
+
+        Mockery mockery = new Mockery();
+        EntitySession entitySession = mockery.mock( EntitySession.class );
+        HashMap<Method, Object> initialValues = new HashMap<Method, Object>();
+        try
+        {
+            IBatisEntityState state = entityStore.newEntityInstance( entitySession, "1", personBinding, initialValues );
+            assertNotNull( state );
+
+            checkStateProperties( personBinding, state );
+        }
+        catch( StoreException e )
+        {
+            e.printStackTrace();
+            fail( "Creating entity state must not fail." );
+        }
+
+    }
+
+    private static void checkStateProperties( CompositeBinding personBinding, IBatisEntityState state )
+    {
+        Collection<CompositeMethodBinding> methodBindings = personBinding.getCompositeMethodBindings();
+        for( CompositeMethodBinding methodBinding : methodBindings )
+        {
+            PropertyBinding propertyBinding = methodBinding.getPropertyBinding();
+            if( propertyBinding == null )
+            {
+                continue;
+            }
+
+            CompositeMethodResolution methodResolution = methodBinding.getCompositeMethodResolution();
+            CompositeMethodModel methodModel = methodResolution.getCompositeMethodModel();
+            Method propertyMethod = methodModel.getMethod();
+            Class<?> propertyReturnType = propertyMethod.getReturnType();
+            if( Property.class.isAssignableFrom( propertyReturnType ) )
+            {
+                Property property = state.getProperty( propertyMethod );
+
+                if( property == null )
+                {
+                    String propertyName = propertyBinding.getName();
+                    fail( "Property [" + propertyName + "] is not found." );
+                }
+            }
+        }
+    }
+
+    /**
+     * Tests {@link IBatisEntityStore#getEntityInstance(EntitySession, String, CompositeBinding)}
+     *
+     * @throws SQLException Thrown if initialization fails.
+     */
+    public final void testGetEntityInstance()
+        throws SQLException
+    {
+        // Initialize the derby and entity store
+        initializeDerby();
+        IBatisEntityStore entityStore = newAndActivateEntityStore();
+
+        // Intialize test arguments
+        ModuleContext moduleContext = moduleInstance.getModuleContext();
+        Map<Class<? extends Composite>, CompositeContext> compositeContexts = moduleContext.getCompositeContexts();
+        CompositeContext personCompositeContext = compositeContexts.get( PersonComposite.class );
+        CompositeBinding personBinding = personCompositeContext.getCompositeBinding();
+
+        Mockery mockery = new Mockery();
+        EntitySession entitySession = mockery.mock( EntitySession.class );
+
+        // ============================
+        // Test get with valid identity
+        // ============================
+        try
+        {
+            IBatisEntityState state = entityStore.getEntityInstance( entitySession, "1", personBinding );
+            assertNotNull( state );
+
+            // --------
+            // Identity
+            // --------
+            Property identityProperty = state.getProperty( Identity.class.getMethod( "identity" ) );
+            assertNotNull( identityProperty );
+            assertEquals( "1", identityProperty.get() );
+
+            // ----------
+            // First Name
+            // ----------
+            Property firstNameProperty = state.getProperty( HasFirstName.class.getMethod( "firstName" ) );
+            assertNotNull( firstNameProperty );
+            assertEquals( "John", firstNameProperty.get() );
+
+            // ---------
+            // Last Name
+            // ---------
+            Property lastNameProperty = state.getProperty( HasLastName.class.getMethod( "lastName" ) );
+            assertNotNull( lastNameProperty );
+            assertEquals( "Smith", lastNameProperty.get() );
+        }
+        catch( StoreException e )
+        {
+            e.printStackTrace();
+            fail( "Creating entity state must not fail." );
+        }
+        catch( NoSuchMethodException e )
+        {
+            e.printStackTrace();
+            fail();
+        }
+
+        // ===================================
+        // Test get with non-existant identity
+        // ===================================
+        try
+        {
+            IBatisEntityState state = entityStore.getEntityInstance( entitySession, "1123123", personBinding );
+            assertNull( state );
+        }
+        catch( StoreException e )
+        {
+            e.printStackTrace();
+            fail( "Creating entity state must not fail." );
+        }
+    }
+
     @Override
     public final void assemble( ModuleAssembly aModule )
         throws AssemblyException
     {
-        String testName = getName();
-        if( "testExists".equals( testName ) )
-        {
-            aModule.addComposites( PersonComposite.class );
-        }
+        aModule.addComposites( PersonComposite.class );
     }
 
     protected final boolean isDerbyServerShouldBeStarted()
     {
-        String testName = getName();
-        return "testActivate".equals( testName ) || "testExists".equals( testName );
+        return true;
     }
 }

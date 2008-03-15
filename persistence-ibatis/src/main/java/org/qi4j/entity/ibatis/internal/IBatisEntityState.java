@@ -21,6 +21,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import org.qi4j.association.AbstractAssociation;
 import org.qi4j.association.ManyAssociation;
 import org.qi4j.association.SetAssociation;
@@ -64,15 +65,19 @@ public final class IBatisEntityState
     private final IBatisEntityStoreServiceInfo serviceInfo;
 
     /**
-     * Construct an instance of {@code EntityState}.
+     * Construct an instance of {@code IBatisEntityState}.
      *
-     * @param anIdentity        The identity. This argument must not be {@code null}.
-     * @param aCompositeBinding The composite binding. This argument must not be {@code null].
-     * @param valuez            The composite values. This argument must not be {@code null}.
+     * @param anIdentity        The identity of the composite that this {@code IBatisEntityState} represents.
+     *                          This argument must not be {@code null}.
+     * @param aCompositeBinding The composite binding. This argument must not be {@code null}.
+     * @param valuez            The field valuez of this entity state. This argument must not be {@code null}.
      * @param aStatus           The initial entity state status. This argument must not be {@code null}.
-     * @param aDao              The entity dao. This argument must not be {@code null}.
-     * @param aServiceInfo      The service info. This argument must not be {@code null}.
+     * @param aDao              The dao to retrieve associations and complete this entity state.
+     *                          This argument must not be {@code null}.
+     * @param aServiceInfo      The service info. This is used to check whether printing debug information is required.
+     *                          This argument must not be {@code null}.
      * @throws IllegalArgumentException Thrown if one or some or all arguments are {@code null}.
+     * @since 0.1.0
      */
     public IBatisEntityState(
         String anIdentity, CompositeBinding aCompositeBinding,
@@ -93,6 +98,26 @@ public final class IBatisEntityState
         dao = aDao;
         serviceInfo = aServiceInfo;
         properties = new HashMap<Method, Property>();
+
+        capitalizeKeys();
+    }
+
+    /**
+     * Capitalize keys of the values. This is needed to ensure that regardless the backing database it will return
+     * the right property names.
+     *
+     * @since 0.1.0
+     */
+    private void capitalizeKeys()
+    {
+        Set<String> keys = values.keySet();
+        String[] keysArray = keys.toArray( new String[keys.size()] );
+        for( String key : keysArray )
+        {
+            Object value = values.remove( key );
+            String capitalizeKey = key.toUpperCase();
+            values.put( capitalizeKey, value );
+        }
     }
 
     /**
@@ -164,7 +189,7 @@ public final class IBatisEntityState
     {
         Object value = null;
 
-        String propertyName = propertyBinding.getName();
+        String propertyName = propertyBinding.getName().toUpperCase();
         if( propertyValues.containsKey( propertyName ) )
         {
             // TODO: Handle mapping of compound property?

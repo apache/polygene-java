@@ -214,6 +214,7 @@ final class IBatisEntityStore
             return null;
         }
 
+        rawData.put( "identity", anIdentity );
         return new IBatisEntityState( anIdentity, aCompositeBinding, rawData, statusLoadFromDb, dao, serviceInfo );
     }
 

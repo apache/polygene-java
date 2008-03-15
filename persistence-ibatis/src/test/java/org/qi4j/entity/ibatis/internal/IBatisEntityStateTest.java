@@ -174,10 +174,12 @@ public final class IBatisEntityStateTest extends AbstractTestCase
         Map<String, PropertyBinding> personPropertyBindings = getPersonCompositePropertyBindings();
 
         String firstNamePropertyName = "firstName";
+        String firstNamePropertyCapitalizeName = firstNamePropertyName.toUpperCase();
         // ****************************
         // Test to return default value
         // ****************************
         PropertyBinding firstNameProperty = personPropertyBindings.get( firstNamePropertyName );
+        assertNotNull( firstNameProperty );
         Object testValue1 = personEntityState1.computePropertyValue( firstNameProperty, propertyValues, true );
         assertEquals( DEFAULT_FIRST_NAME, testValue1 );
 
@@ -189,14 +191,14 @@ public final class IBatisEntityStateTest extends AbstractTestCase
         // Test to return assigned value
         // *****************************
         String expectedValue3 = "value3";
-        propertyValues.put( firstNamePropertyName, expectedValue3 );
+        propertyValues.put( firstNamePropertyCapitalizeName, expectedValue3 );
         Object testValue3 = personEntityState1.computePropertyValue( firstNameProperty, propertyValues, true );
         assertEquals( expectedValue3, testValue3 );
 
         // ***********************
         // Test with debug mode on
         // ***********************
-        propertyValues.put( firstNamePropertyName, 2 );
+        propertyValues.put( firstNamePropertyCapitalizeName, 2 );
 
         String failMsg = "Must [fail]. Mismatch between expected (String) and actual (Integer) property value type.";
         try
