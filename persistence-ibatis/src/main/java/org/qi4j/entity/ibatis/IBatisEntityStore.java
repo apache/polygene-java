@@ -183,7 +183,7 @@ final class IBatisEntityStore
             fieldValues.put( propertyName, propertyValue );
         }
 
-        return new IBatisEntityState( anIdentity, aCompositeBinding, fieldValues, statusNew, dao, serviceInfo );
+        return new IBatisEntityState( anIdentity, aCompositeBinding, fieldValues, statusNew, dao );
     }
 
     /**
@@ -215,7 +215,7 @@ final class IBatisEntityStore
         }
 
         rawData.put( "identity", anIdentity );
-        return new IBatisEntityState( anIdentity, aCompositeBinding, rawData, statusLoadFromDb, dao, serviceInfo );
+        return new IBatisEntityState( anIdentity, aCompositeBinding, rawData, statusLoadFromDb, dao );
     }
 
     /**

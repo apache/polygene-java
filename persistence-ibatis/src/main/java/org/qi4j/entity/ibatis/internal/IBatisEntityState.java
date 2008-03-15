@@ -17,7 +17,6 @@
 package org.qi4j.entity.ibatis.internal;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,7 +25,6 @@ import org.qi4j.association.AbstractAssociation;
 import org.qi4j.association.ManyAssociation;
 import org.qi4j.association.SetAssociation;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
-import org.qi4j.entity.ibatis.IBatisEntityStoreServiceInfo;
 import static org.qi4j.entity.ibatis.internal.IBatisEntityStateStatus.statusLoadToDeleted;
 import static org.qi4j.entity.ibatis.internal.IBatisEntityStateStatus.statusNew;
 import static org.qi4j.entity.ibatis.internal.IBatisEntityStateStatus.statusNewToDeleted;
@@ -62,7 +60,6 @@ public final class IBatisEntityState
     private final Map<Method, Property> properties;
     private IBatisEntityStateStatus status;
     private final IBatisEntityStateDao dao;
-    private final IBatisEntityStoreServiceInfo serviceInfo;
 
     /**
      * Construct an instance of {@code IBatisEntityState}.
@@ -74,29 +71,24 @@ public final class IBatisEntityState
      * @param aStatus           The initial entity state status. This argument must not be {@code null}.
      * @param aDao              The dao to retrieve associations and complete this entity state.
      *                          This argument must not be {@code null}.
-     * @param aServiceInfo      The service info. This is used to check whether printing debug information is required.
-     *                          This argument must not be {@code null}.
      * @throws IllegalArgumentException Thrown if one or some or all arguments are {@code null}.
      * @since 0.1.0
      */
     public IBatisEntityState(
         String anIdentity, CompositeBinding aCompositeBinding,
-        Map<String, Object> valuez, IBatisEntityStateStatus aStatus, IBatisEntityStateDao aDao,
-        IBatisEntityStoreServiceInfo aServiceInfo )
+        Map<String, Object> valuez, IBatisEntityStateStatus aStatus, IBatisEntityStateDao aDao )
         throws IllegalArgumentException
     {
         validateNotNull( "anIdentity", anIdentity );
         validateNotNull( "aCompositeBinding", aCompositeBinding );
         validateNotNull( "valuez", valuez );
         validateNotNull( "aDao", aDao );
-        validateNotNull( "aServiceInfo", aServiceInfo );
 
         identity = anIdentity;
         compositeBinding = aCompositeBinding;
         values = valuez;
         status = aStatus;
         dao = aDao;
-        serviceInfo = aServiceInfo;
         properties = new HashMap<Method, Property>();
 
         capitalizeKeys();
@@ -200,12 +192,6 @@ public final class IBatisEntityState
             value = propertyBinding.getDefaultValue();
         }
 
-        // Check if debug mode
-        if( value != null && serviceInfo.isDebugMode() )
-        {
-            checkPropertyValueType( value, propertyBinding );
-        }
-
         return value;
     }
 
@@ -231,29 +217,6 @@ public final class IBatisEntityState
         else
         {
             return new MutablePropertyInstance<Object>( aPropertyBinding, aPropertyValue );
-        }
-    }
-
-    private void checkPropertyValueType(
-        Object aPropertyValue, PropertyBinding aPropertyBinding )
-        throws IllegalStateException
-    {
-        String propertyQualifiedName = aPropertyBinding.getQualifiedName();
-        PropertyResolution propertyResolution = aPropertyBinding.getPropertyResolution();
-        PropertyModel propertyModel = propertyResolution.getPropertyModel();
-        Type type = propertyModel.getType();
-        Class<? extends Type> typeClass = type.getClass();
-        Class<?> valueClass = aPropertyValue.getClass();
-
-        if( Class.class.isAssignableFrom( typeClass ) )
-        {
-            Class typeAsClass = (Class) type;
-            if( !typeAsClass.isAssignableFrom( valueClass ) )
-            {
-                String msg = "Mismatch propervy [" + propertyQualifiedName + "] value type. Expected [" +
-                             typeAsClass.getName() + "] Actual [" + valueClass + "].";
-                throw new IllegalStateException( msg );
-            }
         }
     }
 

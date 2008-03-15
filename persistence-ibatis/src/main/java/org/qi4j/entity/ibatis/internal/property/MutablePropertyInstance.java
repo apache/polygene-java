@@ -16,7 +16,6 @@
  */
 package org.qi4j.entity.ibatis.internal.property;
 
-import org.qi4j.entity.ibatis.internal.IBatisMutableField;
 import org.qi4j.property.PropertyInfo;
 import org.qi4j.spi.property.PropertyInstance;
 
@@ -27,7 +26,6 @@ import org.qi4j.spi.property.PropertyInstance;
  * @since 0.1.0
  */
 public final class MutablePropertyInstance<T> extends PropertyInstance<T>
-    implements IBatisMutableField<T>
 {
     private boolean isDirty;
 

@@ -159,7 +159,7 @@ public final class IBatisEntityStateTest extends AbstractTestCase
         IBatisEntityStateDao dao = mockery.mock( IBatisEntityStateDao.class );
         IBatisEntityStoreServiceInfo serviceInfo = new IBatisEntityStoreServiceInfo( "a" );
         serviceInfo.setIsDebugMode( true );
-        return new IBatisEntityState( "1", personCompositeBinding, initialValues, statusNew, dao, serviceInfo );
+        return new IBatisEntityState( "1", personCompositeBinding, initialValues, statusNew, dao );
     }
 
     /**
@@ -194,26 +194,6 @@ public final class IBatisEntityStateTest extends AbstractTestCase
         propertyValues.put( firstNamePropertyCapitalizeName, expectedValue3 );
         Object testValue3 = personEntityState1.computePropertyValue( firstNameProperty, propertyValues, true );
         assertEquals( expectedValue3, testValue3 );
-
-        // ***********************
-        // Test with debug mode on
-        // ***********************
-        propertyValues.put( firstNamePropertyCapitalizeName, 2 );
-
-        String failMsg = "Must [fail]. Mismatch between expected (String) and actual (Integer) property value type.";
-        try
-        {
-            personEntityState1.computePropertyValue( firstNameProperty, propertyValues, false );
-            fail( failMsg );
-        }
-        catch( IllegalStateException e )
-        {
-            // Expected
-        }
-        catch( Exception e )
-        {
-            fail( failMsg );
-        }
     }
 
     /**
