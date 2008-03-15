@@ -28,11 +28,12 @@ import org.qi4j.association.SetAssociation;
 import org.qi4j.composite.Composite;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
 import org.qi4j.entity.EntitySession;
-import static org.qi4j.entity.ibatis.internal.Status.statusLoadToDeleted;
-import static org.qi4j.entity.ibatis.internal.Status.statusNew;
-import static org.qi4j.entity.ibatis.internal.Status.statusNewToDeleted;
 import org.qi4j.entity.ibatis.internal.association.IBatisAbstractAssociationInstance;
 import org.qi4j.entity.ibatis.internal.association.IBatisAssociation;
+import org.qi4j.entity.ibatis.internal.common.Status;
+import static org.qi4j.entity.ibatis.internal.common.Status.statusLoadToDeleted;
+import static org.qi4j.entity.ibatis.internal.common.Status.statusNew;
+import static org.qi4j.entity.ibatis.internal.common.Status.statusNewToDeleted;
 import org.qi4j.entity.ibatis.internal.property.MutablePropertyInstance;
 import org.qi4j.property.ImmutableProperty;
 import org.qi4j.property.Property;
@@ -267,7 +268,7 @@ public final class IBatisEntityState
             String associationNameKey = anAssociationMethod.getName().toUpperCase();
 
             String associationIdentity = (String) values.get( associationNameKey );
-            return new IBatisAssociation( associationIdentity, associationBinding, entitySession );
+            return new IBatisAssociation( associationIdentity, associationBinding, status, entitySession );
         }
 
         return null;

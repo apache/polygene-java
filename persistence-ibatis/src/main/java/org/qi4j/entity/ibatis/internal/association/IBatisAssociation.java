@@ -20,7 +20,8 @@ import org.qi4j.association.Association;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
 import org.qi4j.entity.EntitySession;
 import org.qi4j.entity.Identity;
-import static org.qi4j.entity.ibatis.internal.util.Util.isNotEquals;
+import org.qi4j.entity.ibatis.internal.common.Status;
+import static org.qi4j.entity.ibatis.internal.common.Util.isNotEquals;
 import org.qi4j.spi.composite.AssociationModel;
 import org.qi4j.spi.composite.AssociationResolution;
 import org.qi4j.spi.property.AssociationBinding;
@@ -39,25 +40,32 @@ public final class IBatisAssociation<T> extends IBatisAbstractAssociationInstanc
     private String valueIdentity;
     private T value;
     private boolean isDirty;
+    private Status status;
 
     /**
      * Construct an instance of {@code IBatisAbstractAssociationInstance}.
      *
      * @param anInitialIdentity The initial identity.
      * @param aBinding          The association binding. This argument must not be {@code null}.
+     * @param aStatus           The status of this association. This argument must not be {@code null}.
      * @param aSession          The entity session. This argument must not be {@code null}.
      * @throws IllegalArgumentException Thrown if one or both {@code aBinding} and {@code aSession} arguments are
      *                                  {@code null}.
      * @since 0.1.0
      */
-    public IBatisAssociation( String anInitialIdentity, AssociationBinding aBinding, EntitySession aSession )
+    public IBatisAssociation(
+        String anInitialIdentity, AssociationBinding aBinding,
+        Status aStatus, EntitySession aSession )
         throws IllegalArgumentException
     {
         super( aBinding );
 
         validateNotNull( "aBinding", aBinding );
+        validateNotNull( "aStatus", aStatus );
         validateNotNull( "aSession", aSession );
+
         valueIdentity = anInitialIdentity;
+        status = aStatus;
         session = aSession;
         isDirty = false;
     }
@@ -76,7 +84,13 @@ public final class IBatisAssociation<T> extends IBatisAbstractAssociationInstanc
             return null;
         }
 
-        // Retrieves the 
+        // If retrieved before
+        if( value != null )
+        {
+            return value;
+        }
+
+        // Retrieves the value given the value identity
         AssociationResolution associationResolution = associationBinding.getAssociationResolution();
         AssociationModel model = associationResolution.getAssociationModel();
         Class modelType = (Class) model.getType();
@@ -91,20 +105,30 @@ public final class IBatisAssociation<T> extends IBatisAbstractAssociationInstanc
      */
     public void set( T aNewAssociationValue )
     {
+        Identity newAssociationIdentity = (Identity) aNewAssociationValue;
         if( !isDirty )
         {
-            isDirty = isNotEquals( value, aNewAssociationValue );
+            // If value is not fetched before
+            if( value != null )
+            {
+                isDirty = isNotEquals( value, aNewAssociationValue );
+            }
+            else
+            {
+                String associationIdentity = newAssociationIdentity.identity().get();
+                isDirty = isNotEquals( valueIdentity, associationIdentity );
+            }
         }
 
         value = aNewAssociationValue;
+
         if( aNewAssociationValue == null )
         {
             valueIdentity = null;
         }
         else
         {
-            Identity hasIdentity = (Identity) aNewAssociationValue;
-            valueIdentity = hasIdentity.identity().get();
+            valueIdentity = newAssociationIdentity.identity().get();
         }
     }
 
@@ -136,14 +160,19 @@ public final class IBatisAssociation<T> extends IBatisAbstractAssociationInstanc
      */
     public final void complete()
     {
-        // TODO: Should we check whether the entity still exists?
-        // TODO: In the case of cross entity store occured
-
+        // TODO: Should we check whether the entity pointed by this association exists?
         if( !isDirty )
         {
             return;
         }
 
+        // TODO: How could this trigger for the other association to complete ?
 
+        // Persistent for this type of association that doesn't have any properties is done by entity state.
+
+        // TODO: Persistence for this type of association that has some properties.
+        // e.g. in the test case of primary contact, we also wants to capture reasoning why this person is
+        // the primary contact.
+        markAsClean();
     }
 }

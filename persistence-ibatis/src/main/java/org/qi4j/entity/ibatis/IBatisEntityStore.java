@@ -38,8 +38,8 @@ import org.qi4j.entity.ibatis.dbInitializer.DBInitializer;
 import org.qi4j.entity.ibatis.dbInitializer.DBInitializerInfo;
 import org.qi4j.entity.ibatis.internal.IBatisEntityState;
 import org.qi4j.entity.ibatis.internal.IBatisEntityStateDao;
-import static org.qi4j.entity.ibatis.internal.Status.statusLoadFromDb;
-import static org.qi4j.entity.ibatis.internal.Status.statusNew;
+import static org.qi4j.entity.ibatis.internal.common.Status.statusLoadFromDb;
+import static org.qi4j.entity.ibatis.internal.common.Status.statusNew;
 import org.qi4j.service.Activatable;
 import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.composite.CompositeModel;
@@ -189,7 +189,7 @@ final class IBatisEntityStore
     /**
      * Returns existing entity instance. Returns {@code null} if not found.
      *
-     * @param aSession   The entity session. This argument must not be {@code null}.
+     * @param aSession          The entity session. This argument must not be {@code null}.
      * @param anIdentity        The identity. This argument must not be {@code null}.
      * @param aCompositeBinding The composite binding. This argument must not be {@code null}.
      * @return The entity instance with id as {@code anIdentity}.

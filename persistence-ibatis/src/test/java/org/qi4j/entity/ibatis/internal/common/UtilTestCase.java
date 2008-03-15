@@ -14,18 +14,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.entity.ibatis.internal;
+package org.qi4j.entity.ibatis.internal.common;
+
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
+import org.junit.Test;
+import static org.qi4j.entity.ibatis.internal.common.Util.isNotEquals;
 
 /**
- * {@code Status} represent status.
- *
  * @author edward.yakop@gmail.com
  * @since 0.1.0
  */
-public enum Status
+public final class UtilTestCase
 {
-    statusNew,
-    statusLoadFromDb,
-    statusNewToDeleted,
-    statusLoadToDeleted,;
+    /**
+     * Tests not equals.
+     *
+     * @since 0.1.0
+     */
+    @Test
+    public final void testNotEquals()
+    {
+        assertFalse( isNotEquals( null, null ) );
+        assertFalse( isNotEquals( 1, 1 ) );
+        assertTrue( isNotEquals( null, 1 ) );
+        assertTrue( isNotEquals( 1, null ) );
+        assertTrue( isNotEquals( 1, 2 ) );
+    }
 }

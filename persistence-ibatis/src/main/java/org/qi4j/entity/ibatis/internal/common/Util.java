@@ -14,31 +14,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.entity.ibatis.internal.util;
-
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
-import org.junit.Test;
-import static org.qi4j.entity.ibatis.internal.util.Util.isNotEquals;
+package org.qi4j.entity.ibatis.internal.common;
 
 /**
  * @author edward.yakop@gmail.com
  * @since 0.1.0
  */
-public final class UtilTestCase
+public final class Util
 {
+    private Util()
+    {
+    }
+
     /**
-     * Tests not equals.
+     * Returns {@code true} if both arguments are equals.
      *
+     * @param aValue       A value.
+     * @param anotherValue Another value.
+     * @return A {@code boolean} indicator whether both arguments are equal.
      * @since 0.1.0
      */
-    @Test
-    public final void testNotEquals()
+    public static boolean isNotEquals( Object aValue, Object anotherValue )
     {
-        assertFalse( isNotEquals( null, null ) );
-        assertFalse( isNotEquals( 1, 1 ) );
-        assertTrue( isNotEquals( null, 1 ) );
-        assertTrue( isNotEquals( 1, null ) );
-        assertTrue( isNotEquals( 1, 2 ) );
+        if( aValue == anotherValue )
+        {
+            return false;
+        }
+
+        return ( aValue != null ) ? !aValue.equals( anotherValue ) : !anotherValue.equals( aValue );
     }
 }

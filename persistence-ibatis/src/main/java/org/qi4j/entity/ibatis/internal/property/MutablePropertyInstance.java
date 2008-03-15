@@ -16,7 +16,7 @@
  */
 package org.qi4j.entity.ibatis.internal.property;
 
-import static org.qi4j.entity.ibatis.internal.util.Util.isNotEquals;
+import static org.qi4j.entity.ibatis.internal.common.Util.isNotEquals;
 import org.qi4j.property.PropertyInfo;
 import org.qi4j.spi.property.PropertyInstance;
 

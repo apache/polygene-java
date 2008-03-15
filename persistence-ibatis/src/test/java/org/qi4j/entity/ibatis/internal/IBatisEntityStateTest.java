@@ -36,7 +36,7 @@ import org.qi4j.entity.ibatis.AbstractTestCase;
 import org.qi4j.entity.ibatis.HasFirstName;
 import org.qi4j.entity.ibatis.HasLastName;
 import org.qi4j.entity.ibatis.PersonComposite;
-import static org.qi4j.entity.ibatis.internal.Status.statusNew;
+import static org.qi4j.entity.ibatis.internal.common.Status.statusNew;
 import org.qi4j.entity.ibatis.internal.property.MutablePropertyInstance;
 import org.qi4j.property.Property;
 import org.qi4j.runtime.composite.CompositeContext;
