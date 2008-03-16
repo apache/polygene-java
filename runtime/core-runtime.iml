@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module version="4" relativePaths="true" type="JAVA_MODULE">
-  <component name="ModuleRootManager" />
+<module relativePaths="true" type="JAVA_MODULE" version="4">
   <component name="NewModuleRootManager" inherit-compiler-output="false">
     <output url="file://$MODULE_DIR$/target/classes" />
     <exclude-output />
@@ -45,7 +44,7 @@
       <option name="fileLocation" value="1" />
       <option name="useAlternate" value="false" />
     </LanguageOptions>
-    <LanguageOptions name="$MODULE_DIR$/../../../..">
+    <LanguageOptions name="$TEMPLATE$/dev/ops4j">
       <option name="templateOptions">
         <value>
           <option name="block" value="true" />
