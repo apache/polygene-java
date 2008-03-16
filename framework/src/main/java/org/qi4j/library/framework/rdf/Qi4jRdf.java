@@ -23,47 +23,62 @@ import org.openrdf.model.impl.URIImpl;
  */
 public interface Qi4jRdf
 {
-    // Namespace TODO: Need to figure out what these should really be!
-    String QI4J = "http://www.qi4j.org/rdf/1.0";
 
-    String QI4J_TYPES = "http://www.qi4j.org/rdf/1.0/types#";
-    String QI4J_RELATIONSHIPS = "http://www.qi4j.org/rdf/1.0/";
-    String QI4J_PROPERTIES = "http://www.qi4j.org/rdf/1.0/properties/";
+// MODEL
+    // Namespace TODO: Need to figure out what these should really be!
+    String QI4JMODEL = "http://www.qi4j.org/rdf/model/1.0/";
+
+    String QI4JMODEL_TYPES = "http://www.qi4j.org/rdf/model/1.0/type#";
+    String QI4JMODEL_RELATIONSHIPS = "http://www.qi4j.org/rdf/module/1.0/";
+    String QI4JMODEL_PROPERTIES = "http://www.qi4j.org/rdf/model/1.0/property#";
 
     // Types
-    URI TYPE_APPLICATION = new URIImpl( QI4J_TYPES + "application" );
-    URI TYPE_LAYER = new URIImpl( QI4J_TYPES + "layer" );
-    URI TYPE_MODULE = new URIImpl( QI4J_TYPES + "module" );
-    URI TYPE_ENTITY = new URIImpl( QI4J_TYPES + "entity" );
-    URI TYPE_COMPOSITE = new URIImpl( QI4J_TYPES + "composite" );
-    URI TYPE_METHOD = new URIImpl( QI4J_TYPES + "method" );
-    URI TYPE_CONSTRAINT = new URIImpl( QI4J_TYPES + "constraint" );
-    URI TYPE_CONCERN = new URIImpl( QI4J_TYPES + "concern" );
-    URI TYPE_CONSTRUCTOR = new URIImpl( QI4J_TYPES + "constructor" );
-    URI TYPE_SIDEEFFECT = new URIImpl( QI4J_TYPES + "sideeffect" );
-    URI TYPE_MIXIN = new URIImpl( QI4J_TYPES + "mixin" );
-    URI TYPE_FIELD = new URIImpl( QI4J_TYPES + "field" );
-    URI TYPE_CLASS = new URIImpl( QI4J_TYPES + "class" );
-    URI TYPE_OBJECT = new URIImpl( QI4J_TYPES + "object" );
-    URI TYPE_PARAMETER = new URIImpl( QI4J_TYPES + "parameter" );
-    URI TYPE_INJECTION = new URIImpl( QI4J_TYPES + "injection" );
+    URI TYPE_APPLICATION = new URIImpl( QI4JMODEL_TYPES + "application" );
+    URI TYPE_LAYER = new URIImpl( QI4JMODEL_TYPES + "layer" );
+    URI TYPE_MODULE = new URIImpl( QI4JMODEL_TYPES + "module" );
+    URI TYPE_ENTITY = new URIImpl( QI4JMODEL_TYPES + "entity" );
+    URI TYPE_COMPOSITE = new URIImpl( QI4JMODEL_TYPES + "composite" );
+    URI TYPE_SERVICE =  new URIImpl( QI4JMODEL_TYPES + "service" );
+    URI TYPE_METHOD = new URIImpl( QI4JMODEL_TYPES + "method" );
+    URI TYPE_CONSTRAINT = new URIImpl( QI4JMODEL_TYPES + "constraint" );
+    URI TYPE_CONCERN = new URIImpl( QI4JMODEL_TYPES + "concern" );
+    URI TYPE_CONSTRUCTOR = new URIImpl( QI4JMODEL_TYPES + "constructor" );
+    URI TYPE_SIDEEFFECT = new URIImpl( QI4JMODEL_TYPES + "sideeffect" );
+    URI TYPE_MIXIN = new URIImpl( QI4JMODEL_TYPES + "mixin" );
+    URI TYPE_FIELD = new URIImpl( QI4JMODEL_TYPES + "field" );
+    URI TYPE_CLASS = new URIImpl( QI4JMODEL_TYPES + "class" );
+    URI TYPE_OBJECT = new URIImpl( QI4JMODEL_TYPES + "object" );
+    URI TYPE_PARAMETER = new URIImpl( QI4JMODEL_TYPES + "parameter" );
+    URI TYPE_INJECTION = new URIImpl( QI4JMODEL_TYPES + "injection" );
+    URI TYPE_INFO = new URIImpl( QI4JMODEL_TYPES + "info" );
 
     // Properties
-    URI HAS_INJECTIONS = new URIImpl( QI4J_PROPERTIES + "hasinjections" );
+    URI HAS_INJECTIONS = new URIImpl( QI4JMODEL_PROPERTIES + "hasinjections" );
 
     // Relationship
-    URI RELATIONSHIP_PUBLIC_COMPOSITE = new URIImpl( QI4J_RELATIONSHIPS + "publiccomposite" );
-    URI RELATIONSHIP_PRIVATE_COMPOSITE = new URIImpl( QI4J_RELATIONSHIPS + "privatecomposite" );
-    URI RELATIONSHIP_PRIVATE_METHOD = new URIImpl( QI4J_RELATIONSHIPS + "privatemethod" );
-    URI RELATIONSHIP_INJECTION = new URIImpl( QI4J_RELATIONSHIPS + "injection" );
-    URI RELATIONSHIP_CONSTRUCTOR = new URIImpl( QI4J_RELATIONSHIPS + "constructor" );
-    URI RELATIONSHIP_FIELD = new URIImpl( QI4J_RELATIONSHIPS + "field" );
-    URI RELATIONSHIP_APPLIESTO = new URIImpl( QI4J_RELATIONSHIPS + "appliesto" );
-    URI RELATION_METHOD = new URIImpl( QI4J_RELATIONSHIPS + "method" );
-    URI RELATIONSHIP_CONSTRAINT = new URIImpl( QI4J_RELATIONSHIPS + "constraint" );
-    URI RELATIONSHIP_CONCERN = new URIImpl( QI4J_RELATIONSHIPS + "concern" );
-    URI RELATIONSHIP_SIDEEFFECT = new URIImpl( QI4J_RELATIONSHIPS + "sideeffect" );
-    URI RELATIONSHIP_MIXIN = new URIImpl( QI4J_RELATIONSHIPS + "mixin" );
-    URI RELATIONSHIP_LAYER = new URIImpl( QI4J_RELATIONSHIPS + "layer" );
-    URI RELATIONSHIP_MODULE = new URIImpl( QI4J_RELATIONSHIPS + "module" );
+    URI RELATIONSHIP_PUBLIC_COMPOSITE = new URIImpl( QI4JMODEL_RELATIONSHIPS + "public/composite" );
+    URI RELATIONSHIP_PUBLIC_OBJECT = new URIImpl( QI4JMODEL_RELATIONSHIPS + "public/object" );
+    URI RELATIONSHIP_PRIVATE_COMPOSITE = new URIImpl( QI4JMODEL_RELATIONSHIPS + "private/composite" );
+    URI RELATIONSHIP_PRIVATE_OBJECT = new URIImpl( QI4JMODEL_RELATIONSHIPS + "private/object" );
+    URI RELATIONSHIP_PRIVATE_METHOD = new URIImpl( QI4JMODEL_RELATIONSHIPS + "private/method" );
+    URI RELATIONSHIP_INJECTION = new URIImpl( QI4JMODEL_RELATIONSHIPS + "injection" );
+    URI RELATIONSHIP_CONSTRUCTOR = new URIImpl( QI4JMODEL_RELATIONSHIPS + "constructor" );
+    URI RELATIONSHIP_FIELD = new URIImpl( QI4JMODEL_RELATIONSHIPS + "field" );
+    URI RELATIONSHIP_APPLIESTO = new URIImpl( QI4JMODEL_RELATIONSHIPS + "appliesto" );
+    URI RELATION_METHOD = new URIImpl( QI4JMODEL_RELATIONSHIPS + "method" );
+    URI RELATIONSHIP_CONSTRAINT = new URIImpl( QI4JMODEL_RELATIONSHIPS + "constraint" );
+    URI RELATIONSHIP_CONCERN = new URIImpl( QI4JMODEL_RELATIONSHIPS + "concern" );
+    URI RELATIONSHIP_SIDEEFFECT = new URIImpl( QI4JMODEL_RELATIONSHIPS + "sideeffect" );
+    URI RELATIONSHIP_PUBLIC_SERVICE = new URIImpl( QI4JMODEL_RELATIONSHIPS + "public/service" );
+    URI RELATIONSHIP_PRIVATE_SERVICE = new URIImpl( QI4JMODEL_RELATIONSHIPS + "private/service" );
+    URI RELATIONSHIP_PROVIDEDBY =  new URIImpl( QI4JMODEL_RELATIONSHIPS + "providedby" );
+    URI RELATIONSHIP_SERVICEINFO =  new URIImpl( QI4JMODEL_RELATIONSHIPS + "info/service" );
+    URI RELATIONSHIP_INFOVALUE =  new URIImpl( QI4JMODEL_RELATIONSHIPS + "info/value" );
+    URI RELATIONSHIP_MIXIN = new URIImpl( QI4JMODEL_RELATIONSHIPS + "mixin" );
+    URI RELATIONSHIP_LAYER = new URIImpl( QI4JMODEL_RELATIONSHIPS + "layer" );
+    URI RELATIONSHIP_MODULE = new URIImpl( QI4JMODEL_RELATIONSHIPS + "module" );
+
+    
+// BINDING
+    String QI4JBINDING = "http://www.qi4j.org/rdf/binding/1.0/";
 }

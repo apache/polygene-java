@@ -15,17 +15,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.library.framework.rdf.parse;
+package org.qi4j.library.framework.rdf.parse.model;
 
 import org.openrdf.model.BNode;
 import org.openrdf.model.Value;
+import org.qi4j.library.framework.rdf.parse.ParseContext;
 import org.qi4j.spi.composite.CompositeMethodModel;
 
 public final class CompositeMethodParser
 {
     private final ParseContext context;
 
-    protected CompositeMethodParser( ParseContext context )
+    public CompositeMethodParser( ParseContext context )
     {
         this.context = context;
     }

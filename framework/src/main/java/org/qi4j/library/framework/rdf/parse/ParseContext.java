@@ -65,10 +65,18 @@ public final class ParseContext
         return applicationURI;
     }
 
+    public URI createServiceUri( LayerModel layer, ModuleModel module, Class type, String identity )
+    {
+        String serviceType = normalizeClassToURI( type );
+        URI moduleUri = createModuleUri( layer, module );
+        URI uri = valueFactory.createURI( moduleUri + "/" + serviceType + "/" + identity );
+        setNameAndType( uri, identity, Qi4jRdf.TYPE_SERVICE );
+        return uri;
+    }
+
     public URI createCompositeUri( LayerModel layer, ModuleModel module, Class composite )
     {
-        String compositeName = composite.getName();
-        compositeName = compositeName.replace( '.', '_' ).replace( '$', '-' ); // TODO: Is this a good algorithm?
+        String compositeName = normalizeClassToURI( composite );
         URI uri = valueFactory.createURI( createModuleUri( layer, module ) + "/" + compositeName );
         setNameAndType( uri, compositeName, Qi4jRdf.TYPE_COMPOSITE );
         return uri;
@@ -127,5 +135,11 @@ public final class ParseContext
         Literal object = valueFactory.createLiteral( literal );
         Statement statement = valueFactory.createStatement( subject, predicate, object );
         graph.add( statement );
+    }
+
+    public static String normalizeClassToURI( Class clazz )
+    {
+        String serviceType = clazz.getName();
+        return serviceType.replace( '.', '_' ).replace( '$', '-' ); // TODO: Is this a good algorithm?
     }
 }

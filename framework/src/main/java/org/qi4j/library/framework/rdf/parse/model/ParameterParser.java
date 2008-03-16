@@ -15,41 +15,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.library.framework.rdf.parse;
+package org.qi4j.library.framework.rdf.parse.model;
 
 import org.openrdf.model.BNode;
 import org.openrdf.model.Value;
 import org.qi4j.library.framework.rdf.Qi4jRdf;
-import org.qi4j.spi.composite.MethodModel;
+import org.qi4j.library.framework.rdf.parse.ParseContext;
 import org.qi4j.spi.composite.ParameterModel;
 
-public final class MethodParser
+public class ParameterParser
 {
     private final ParseContext context;
 
-    public MethodParser( ParseContext context )
+    public ParameterParser( ParseContext context )
     {
         this.context = context;
     }
 
-    public Value parseModel( MethodModel methodModel )
+    public Value parseModel( ParameterModel model )
     {
-        BNode node = createMethod( methodModel );
-        context.addStatement( node, Qi4jRdf.HAS_INJECTIONS, methodModel.hasInjections() );
-
-        ParameterParser parser = context.getParserFactory().newParameterParser();
-        for( ParameterModel parameterModel : methodModel.getParameterModels() )
-        {
-            Value parameter = parser.parseModel( parameterModel );
-            context.addRelationship( node, Qi4jRdf.TYPE_PARAMETER, parameter );
-        }
+        BNode node = createParameter( model );
         return node;
     }
 
-    private BNode createMethod( MethodModel methodModel )
+    private BNode createParameter( ParameterModel model )
     {
-        BNode node = context.getValueFactory().createBNode( methodModel.getMethod().getName() );
-        context.addType( node, Qi4jRdf.TYPE_METHOD );
+        BNode node = context.getValueFactory().createBNode( model.getClass().getName() );
+        context.addType( node, Qi4jRdf.TYPE_PARAMETER );
         return node;
     }
 }

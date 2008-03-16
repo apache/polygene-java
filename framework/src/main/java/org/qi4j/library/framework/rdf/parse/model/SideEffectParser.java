@@ -15,32 +15,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.library.framework.rdf.parse;
+package org.qi4j.library.framework.rdf.parse.model;
 
 import org.openrdf.model.BNode;
 import org.openrdf.model.Value;
 import org.qi4j.library.framework.rdf.Qi4jRdf;
-import org.qi4j.spi.composite.ConstructorModel;
+import org.qi4j.library.framework.rdf.parse.ParseContext;
+import org.qi4j.spi.composite.SideEffectModel;
 
-public class ConstructorParser
+public final class SideEffectParser
 {
     private final ParseContext context;
 
-    public ConstructorParser( ParseContext context )
+    public SideEffectParser( ParseContext context )
     {
         this.context = context;
     }
 
-    public Value parseModel( ConstructorModel constructorModel )
+    public Value parseModel( SideEffectModel sideeffectModel )
     {
-        BNode node = createConstructor( constructorModel );
+        BNode node = createSideeffect( sideeffectModel );
         return node;
     }
 
-    private BNode createConstructor( ConstructorModel constructorModel )
+    private BNode createSideeffect( SideEffectModel sideeffectModel )
     {
-        BNode node = context.getValueFactory().createBNode( constructorModel.getClass().getName() );
-        context.addType( node, Qi4jRdf.TYPE_CONSTRUCTOR );
+        BNode node = context.getValueFactory().createBNode( sideeffectModel.getClass().getName() );
+        context.addType( node, Qi4jRdf.TYPE_SIDEEFFECT );
         return node;
     }
+
 }

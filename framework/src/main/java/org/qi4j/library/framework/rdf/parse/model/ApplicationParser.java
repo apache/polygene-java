@@ -15,11 +15,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.library.framework.rdf.parse;
+package org.qi4j.library.framework.rdf.parse.model;
 
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.qi4j.library.framework.rdf.Qi4jRdf;
+import org.qi4j.library.framework.rdf.parse.ParseContext;
 import org.qi4j.spi.structure.ApplicationModel;
 import org.qi4j.spi.structure.LayerModel;
 
@@ -44,6 +45,5 @@ public final class ApplicationParser
             Value layer = layerParser.parseModel( layerModel );
             context.addRelationship( appUri, Qi4jRdf.RELATIONSHIP_LAYER, layer );
         }
-
     }
 }

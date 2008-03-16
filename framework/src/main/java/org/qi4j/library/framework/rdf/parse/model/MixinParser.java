@@ -15,32 +15,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.library.framework.rdf.parse;
+package org.qi4j.library.framework.rdf.parse.model;
 
 import org.openrdf.model.BNode;
 import org.openrdf.model.Value;
 import org.qi4j.library.framework.rdf.Qi4jRdf;
-import org.qi4j.spi.composite.ObjectModel;
+import org.qi4j.library.framework.rdf.parse.ParseContext;
+import org.qi4j.spi.composite.MixinModel;
 
-public final class ObjectParser
+public final class MixinParser
 {
     private final ParseContext context;
 
-    protected ObjectParser( ParseContext context )
+    public MixinParser( ParseContext context )
     {
         this.context = context;
     }
 
-    public Value parseModel( ObjectModel objectModel )
+    public Value parseModel( MixinModel model )
     {
-        BNode node = createObject( objectModel );
+        BNode node = createMixin( model );
         return node;
     }
 
-    private BNode createObject( ObjectModel objectModel )
+    private BNode createMixin( MixinModel model )
     {
-        BNode node = context.getValueFactory().createBNode( objectModel.getClass().getName() );
-        context.addType( node, Qi4jRdf.TYPE_OBJECT );
+        BNode node = context.getValueFactory().createBNode( model.getClass().getName() );
+        context.addType( node, Qi4jRdf.TYPE_MIXIN );
         return node;
     }
 

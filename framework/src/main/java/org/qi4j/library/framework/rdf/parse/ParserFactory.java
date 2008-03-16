@@ -17,6 +17,23 @@
  */
 package org.qi4j.library.framework.rdf.parse;
 
+import org.qi4j.library.framework.rdf.parse.model.ApplicationParser;
+import org.qi4j.library.framework.rdf.parse.model.CompositeMethodParser;
+import org.qi4j.library.framework.rdf.parse.model.CompositeParser;
+import org.qi4j.library.framework.rdf.parse.model.ConcernParser;
+import org.qi4j.library.framework.rdf.parse.model.ConstraintParser;
+import org.qi4j.library.framework.rdf.parse.model.ConstructorParser;
+import org.qi4j.library.framework.rdf.parse.model.FieldParser;
+import org.qi4j.library.framework.rdf.parse.model.InjectionParser;
+import org.qi4j.library.framework.rdf.parse.model.LayerParser;
+import org.qi4j.library.framework.rdf.parse.model.MethodParser;
+import org.qi4j.library.framework.rdf.parse.model.MixinParser;
+import org.qi4j.library.framework.rdf.parse.model.ModuleParser;
+import org.qi4j.library.framework.rdf.parse.model.ObjectParser;
+import org.qi4j.library.framework.rdf.parse.model.ParameterParser;
+import org.qi4j.library.framework.rdf.parse.model.SideEffectParser;
+import org.qi4j.library.framework.rdf.parse.model.ServiceParser;
+
 public interface ParserFactory
 {
     ApplicationParser newApplicationParser();
@@ -48,4 +65,6 @@ public interface ParserFactory
     ParameterParser newParameterParser();
 
     InjectionParser newInjectionParser();
+
+    ServiceParser newServiceParser();
 }

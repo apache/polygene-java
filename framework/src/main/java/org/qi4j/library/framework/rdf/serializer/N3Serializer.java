@@ -35,7 +35,7 @@ public final class N3Serializer
     {
         RDFWriter writer = new N3WriterFactory().getWriter( out );
         writer.startRDF();
-        writer.handleNamespace( "qi4j", Qi4jRdf.QI4J );
+        writer.handleNamespace( "qi4j", Qi4jRdf.QI4JMODEL );
         writer.handleNamespace( "rdf", Rdfs.RDF );
         writer.handleNamespace( "rdfs", Rdfs.RDFS );
         for( Statement st : graph )

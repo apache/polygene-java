@@ -15,32 +15,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.library.framework.rdf.parse;
+package org.qi4j.library.framework.rdf.parse.model;
 
 import org.openrdf.model.BNode;
 import org.openrdf.model.Value;
 import org.qi4j.library.framework.rdf.Qi4jRdf;
-import org.qi4j.spi.composite.ConstraintModel;
+import org.qi4j.library.framework.rdf.parse.ParseContext;
+import org.qi4j.spi.injection.InjectionModel;
 
-public final class ConstraintParser
+public class InjectionParser
 {
     private final ParseContext context;
 
-    public ConstraintParser( ParseContext context )
+    public InjectionParser( ParseContext context )
     {
         this.context = context;
     }
 
-    public Value parseModel( ConstraintModel constraintModel )
+    public Value parseModel( InjectionModel injectionModel )
     {
-        BNode node = createConstraint( constraintModel );
+        BNode node = createInjection( injectionModel );
         return node;
     }
 
-    private BNode createConstraint( ConstraintModel constraintModel )
+    private BNode createInjection( InjectionModel injectionModel )
     {
-        BNode node = context.getValueFactory().createBNode( constraintModel.getClass().getName() );
-        context.addType( node, Qi4jRdf.TYPE_CONSTRAINT );
+        BNode node = context.getValueFactory().createBNode( injectionModel.getInjectedClass().getName() );
+        context.addType( node, Qi4jRdf.TYPE_INJECTION );
         return node;
     }
 

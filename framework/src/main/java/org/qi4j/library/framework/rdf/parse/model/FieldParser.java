@@ -15,33 +15,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.library.framework.rdf.parse;
+package org.qi4j.library.framework.rdf.parse.model;
 
 import org.openrdf.model.BNode;
 import org.openrdf.model.Value;
 import org.qi4j.library.framework.rdf.Qi4jRdf;
+import org.qi4j.library.framework.rdf.parse.ParseContext;
+import org.qi4j.spi.composite.FieldModel;
 import org.qi4j.spi.injection.InjectionModel;
 
-public class InjectionParser
+public class FieldParser
 {
     private final ParseContext context;
 
-    public InjectionParser( ParseContext context )
+    public FieldParser( ParseContext context )
     {
         this.context = context;
     }
 
-    public Value parseModel( InjectionModel injectionModel )
+    public Value parseModel( FieldModel fieldModel )
     {
-        BNode node = createInjection( injectionModel );
+        BNode node = createField( fieldModel );
+        InjectionModel injectionModel = fieldModel.getInjectionModel();
+        InjectionParser parser = context.getParserFactory().newInjectionParser();
+        Value injection = parser.parseModel( injectionModel );
+        context.addRelationship( node, Qi4jRdf.RELATIONSHIP_INJECTION, injection );
         return node;
     }
 
-    private BNode createInjection( InjectionModel injectionModel )
+    private BNode createField( FieldModel fieldModel )
     {
-        BNode node = context.getValueFactory().createBNode( injectionModel.getInjectedClass().getName() );
-        context.addType( node, Qi4jRdf.TYPE_INJECTION );
+        BNode node = context.getValueFactory().createBNode( fieldModel.getField().getName() );
+        context.addType( node, Qi4jRdf.TYPE_FIELD );
         return node;
     }
-
 }

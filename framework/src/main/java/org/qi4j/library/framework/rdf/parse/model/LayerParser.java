@@ -15,13 +15,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.library.framework.rdf.parse;
+package org.qi4j.library.framework.rdf.parse.model;
 
 import java.util.Map;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.qi4j.composite.Composite;
 import org.qi4j.library.framework.rdf.Qi4jRdf;
+import org.qi4j.library.framework.rdf.parse.ParseContext;
 import org.qi4j.spi.structure.LayerModel;
 import org.qi4j.spi.structure.ModuleModel;
 
@@ -37,7 +38,6 @@ public final class LayerParser
     public Value parseModel( LayerModel layerModel )
     {
         URI layer = context.createLayerUri( layerModel );
-
         ModuleParser parser = context.getParserFactory().newModuleParser();
         for( ModuleModel moduleModel : layerModel.getModuleModels() )
         {
@@ -52,6 +52,15 @@ public final class LayerParser
             ModuleModel moduleModel = entry.getValue();
             URI composite = context.createCompositeUri( layerModel, moduleModel, publicComposite );
             context.addRelationship( layer, Qi4jRdf.RELATIONSHIP_PUBLIC_COMPOSITE, composite );
+        }
+
+        Map<Class, ModuleModel> publicObjects = layerModel.getPublicObjectMap();
+        for( Map.Entry<Class, ModuleModel> entry : publicObjects.entrySet() )
+        {
+            Class publicComposite = entry.getKey();
+            ModuleModel moduleModel = entry.getValue();
+            URI composite = context.createCompositeUri( layerModel, moduleModel, publicComposite );
+            context.addRelationship( layer, Qi4jRdf.RELATIONSHIP_PUBLIC_OBJECT, composite );
         }
         return layer;
     }
