@@ -20,6 +20,7 @@ import java.util.Map;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
+import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.fail;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -40,6 +41,7 @@ import org.qi4j.spi.composite.AssociationResolution;
 import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.property.AssociationBinding;
 import org.qi4j.test.Qi4jTestSetup;
+import org.qi4j.property.ImmutableProperty;
 
 /**
  * @author edward.yakop@gmail.com
@@ -132,18 +134,15 @@ public final class IBatisAssociationTest extends Qi4jTestSetup
         }
     }
 
+    /**
+     * Tests {@link IBatisAssociation#get()}
+     */
     @Test
     @SuppressWarnings( "unchecked" )
     public final void testGet()
     {
         // Set up
-        ModuleContext moduleContext = moduleInstance.getModuleContext();
-        Map<Class<? extends Composite>, CompositeContext> compositeContexts = moduleContext.getCompositeContexts();
-        CompositeContext accountContext = compositeContexts.get( AccountComposite.class );
-        CompositeBinding accountBinding = accountContext.getCompositeBinding();
-        Iterable<AssociationBinding> associationBindings = accountBinding.getAssociationBindings();
-        final AssociationBinding associationBinding = associationBindings.iterator().next();
-
+        final AssociationBinding associationBinding = getPrimaryContactPersonAssociation();
         Mockery mockery = new Mockery();
         final EntitySession entitySession = mockery.mock( EntitySession.class );
 
@@ -157,7 +156,7 @@ public final class IBatisAssociationTest extends Qi4jTestSetup
         // ================================
         // Test with not null initial value
         // ================================
-        IBatisAssociation assoc2 = new IBatisAssociation( "1", associationBinding, statusNew, entitySession );
+        IBatisAssociation<Object> assoc2 = new IBatisAssociation<Object>( "1", associationBinding, statusNew, entitySession );
 
         final PersonComposite personComposite = mockery.mock( PersonComposite.class );
         mockery.checking( new Expectations()
@@ -181,6 +180,69 @@ public final class IBatisAssociationTest extends Qi4jTestSetup
         Object assoc3Value = assoc2.get();
         assertNotNull( assoc3Value );
         assertEquals( personComposite, assoc3Value );
+    }
+
+    /**
+     * Tests {@link IBatisAssociation#set(Object)}
+     */
+    @Test
+    public final void testSet()
+    {
+        // Set up
+        AssociationBinding primaryContactPersonAssoc = getPrimaryContactPersonAssociation();
+        final Mockery mockery = new Mockery();
+        EntitySession entitySession = mockery.mock( EntitySession.class );
+        final PersonComposite personComposite = mockery.mock( PersonComposite.class );
+        mockery.checking( new Expectations()
+        {
+            {
+                one( personComposite ).identity();
+                ImmutableProperty immutableProperty = mockery.mock( ImmutableProperty.class );
+                will( returnValue( immutableProperty ) );
+
+                one( immutableProperty ).get();
+                will( returnValue( "1" ) );
+            }
+        } );
+
+        // ========
+        // Test set
+        // ========
+        IBatisAssociation<PersonComposite> assoc1 =
+            new IBatisAssociation<PersonComposite>( null, primaryContactPersonAssoc, statusNew, entitySession );
+        Object assoc1Value = assoc1.get();
+        assertNull( assoc1Value );
+
+        assoc1.set( personComposite );
+        assertTrue( assoc1.isDirty() );
+
+        // ------------------
+        // Test set with null
+        // ------------------
+        assoc1.set( null );
+        assertNull( assoc1.get() );
+        assertTrue( assoc1.isDirty() );
+    }
+
+    private AssociationBinding getPrimaryContactPersonAssociation()
+    {
+        ModuleContext moduleContext = moduleInstance.getModuleContext();
+        Map<Class<? extends Composite>, CompositeContext> compositeContexts = moduleContext.getCompositeContexts();
+        CompositeContext accountContext = compositeContexts.get( AccountComposite.class );
+        CompositeBinding accountBinding = accountContext.getCompositeBinding();
+        Iterable<AssociationBinding> associationBindings = accountBinding.getAssociationBindings();
+
+        for( AssociationBinding associationBinding : associationBindings )
+        {
+            String associationName = associationBinding.getName();
+            if( "primaryContactPerson".equals( associationName ) )
+            {
+                return associationBinding;
+            }
+        }
+
+        fail( "Association [primaryContactPerson] is not found." );
+        return null;
     }
 
     public final void assemble( ModuleAssembly module )

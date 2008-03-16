@@ -113,9 +113,13 @@ public final class IBatisAssociation<T> extends IBatisAbstractAssociationInstanc
             {
                 isDirty = isNotEquals( value, aNewAssociationValue );
             }
-            else
+            else if( valueIdentity != null )
             {
-                String associationIdentity = newAssociationIdentity.identity().get();
+                String associationIdentity = null;
+                if( aNewAssociationValue != null )
+                {
+                    associationIdentity = newAssociationIdentity.identity().get();
+                }
                 isDirty = isNotEquals( valueIdentity, associationIdentity );
             }
         }
@@ -130,6 +134,7 @@ public final class IBatisAssociation<T> extends IBatisAbstractAssociationInstanc
         {
             valueIdentity = newAssociationIdentity.identity().get();
         }
+        isDirty = true;
     }
 
     /**
