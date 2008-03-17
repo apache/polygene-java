@@ -15,6 +15,7 @@
 package org.qi4j.property;
 
 import java.text.NumberFormat;
+import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
@@ -22,13 +23,14 @@ import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.Mixins;
 import org.qi4j.composite.scope.PropertyField;
 import org.qi4j.library.framework.entity.PropertyMixin;
-import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.test.Qi4jTestSetup;
 
 /**
  * PropertyMixin invocation performance test. Don't forget to add VM value "-server"
  * before running this test!
  */
-public class PropertyMixinInvocationPerformanceTest extends AbstractQi4jTest
+public class PropertyMixinInvocationPerformanceTest
+    extends Qi4jTestSetup
 {
     public void assemble( ModuleAssembly module )
         throws AssemblyException
@@ -37,6 +39,7 @@ public class PropertyMixinInvocationPerformanceTest extends AbstractQi4jTest
         module.addComposites( SimpleComposite2.class );
     }
 
+    @Test
     public void testNewInstance()
     {
         {
