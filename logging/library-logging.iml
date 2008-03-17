@@ -9,21 +9,13 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$APPLICATION_HOME_DIR$/lib/junit.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
     <orderEntry type="module" module-name="core-testsupport" />
     <orderEntry type="module" module-name="core-bootstrap" />
     <orderEntry type="module" module-name="core-api" />
     <orderEntry type="module" module-name="library-framework" />
     <orderEntry type="module" module-name="core-spi" />
     <orderEntry type="module" module-name="extension-persistence-memory" />
+    <orderEntry type="library" name="junit" level="project" />
     <orderEntryProperties />
   </component>
   <component name="copyright">
