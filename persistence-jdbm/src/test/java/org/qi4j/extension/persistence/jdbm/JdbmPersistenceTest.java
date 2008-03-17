@@ -21,17 +21,18 @@ import java.io.FileOutputStream;
 import java.lang.reflect.Method;
 import java.util.Properties;
 import jdbm.RecordManagerOptions;
+import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
 import org.objectweb.jotm.Jotm;
 import org.objectweb.transaction.jta.TransactionManager;
-import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.test.AbstractQi4jTest;
 
-public class JdbmPersistenceTest extends AbstractQi4jTest
+public class JdbmPersistenceTest
 {
     private JdbmStorage underTest;
     private File testDir;
 
+    @Test
     public void testGetProperties()
         throws Exception
     {
@@ -46,7 +47,8 @@ public class JdbmPersistenceTest extends AbstractQi4jTest
 
     }
 
-    protected void setUp() throws Exception
+    @Before
+    public void setUp() throws Exception
     {
         File userHome = new File( System.getProperty( "user.home" ) );
         testDir = new File( userHome, ".junit-qi4j" );
@@ -68,8 +70,4 @@ public class JdbmPersistenceTest extends AbstractQi4jTest
         underTest = new JdbmStorage( testDir, transactionManager );
     }
 
-    public void assemble( ModuleAssembly module ) throws AssemblyException
-    {
-
-    }
 }
