@@ -16,15 +16,17 @@ package org.qi4j.composite;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import static org.junit.Assert.assertEquals;
+import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.test.Qi4jTestSetup;
 
 /**
  * Test mixin declaration precedence test
  */
 public class MixinPrecedenceTest
-    extends AbstractQi4jTest
+    extends Qi4jTestSetup
 {
 
     public void assemble( ModuleAssembly module ) throws AssemblyException
@@ -34,19 +36,22 @@ public class MixinPrecedenceTest
                               TestComposite3.class );
     }
 
-    public void testWhenMultipleTypedMixinsPrecedence()
+    @Test
+    public void whenMultipleTypedMixinsPrecedence()
     {
         TestComposite1 instance = compositeBuilderFactory.newComposite( TestComposite1.class );
         assertEquals( "A1", instance.AMethod() );
     }
 
-    public void testWhenGenericAndTypedMixinPrecedence()
+    @Test
+    public void whenGenericAndTypedMixinPrecedence()
     {
         TestComposite2 instance = compositeBuilderFactory.newComposite( TestComposite2.class );
         assertEquals( "A1", instance.AMethod() );
     }
 
-    public void testWhenMultipleGenericMixinsPrecedence()
+    @Test
+    public void whenMultipleGenericMixinsPrecedence()
     {
         TestComposite3 instance = compositeBuilderFactory.newComposite( TestComposite3.class );
         assertEquals( "GM1", instance.AMethod() );

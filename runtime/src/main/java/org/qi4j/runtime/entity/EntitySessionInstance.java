@@ -239,7 +239,7 @@ public final class EntitySessionInstance
     {
         checkOpen();
 
-// Create new entities
+        // Create new entities
         for( Map.Entry<Class<? extends EntityComposite>, Map<String, EntityEntry>> entry : cache.entrySet() )
         {
             EntityStore store = stateServices.getEntityStore( entry.getKey() );
@@ -261,6 +261,7 @@ public final class EntitySessionInstance
 //        {
 //            throw new SessionCompletionException( "Could not complete session", e );
 //        }
+
 
         cache.clear();
 

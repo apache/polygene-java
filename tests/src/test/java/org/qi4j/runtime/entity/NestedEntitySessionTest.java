@@ -14,14 +14,14 @@
 
 package org.qi4j.runtime.entity;
 
+import static junit.framework.Assert.assertEquals;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.entity.EntitySession;
-import org.qi4j.entity.SessionCompletionException;
 import org.qi4j.entity.memory.MemoryEntityStoreComposite;
 import org.qi4j.spi.entity.UuidIdentityGeneratorComposite;
-import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.test.Qi4jTestSetup;
 import org.qi4j.test.entity.AccountComposite;
 import org.qi4j.test.entity.CustomerComposite;
 import org.qi4j.test.entity.OrderComposite;
@@ -31,8 +31,8 @@ import org.qi4j.test.entity.ProductComposite;
 /**
  * TODO
  */
-public class EntitySessionFactoryTest
-    extends AbstractQi4jTest
+public class NestedEntitySessionTest
+    extends Qi4jTestSetup
 {
 
     public void assemble( ModuleAssembly module ) throws AssemblyException
@@ -46,7 +46,9 @@ public class EntitySessionFactoryTest
                             UuidIdentityGeneratorComposite.class );
     }
 
-    public void testEntitySession()
+    //    @Test
+    public void whenNestedSessionThenReturnCorrectPropertyValues()
+        throws Exception
     {
         EntitySession session = entitySessionFactory.newEntitySession();
 
@@ -56,15 +58,21 @@ public class EntitySessionFactoryTest
         cb.propertiesOfComposite().price().set( 57 );
         Product chair = cb.newInstance();
 
-        System.out.println( "Product '" + chair.name().get() + "' costs " + chair.price() );
+        assertEquals( "Price was not correct", 57, (int) chair.price().get() );
 
-        try
-        {
-            session.complete();
-        }
-        catch( SessionCompletionException e )
-        {
-            e.printStackTrace();
-        }
+        // Create nested session
+        EntitySession nestedSession = session.newEntitySession();
+        Product nestedChair = nestedSession.getReference( chair );
+        assertEquals( "Price was not correct", 57, (int) chair.price().get() );
+
+        nestedChair.price().set( 60 );
+
+        assertEquals( "Price was not correct", 57, (int) chair.price().get() );
+
+        assertEquals( "Price was not correct", 60, (int) nestedChair.price().get() );
+
+        session.complete();
+
+        assertEquals( "Price was not correct", 60, (int) chair.price().get() );
     }
 }

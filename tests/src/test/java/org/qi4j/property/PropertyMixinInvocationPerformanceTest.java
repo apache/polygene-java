@@ -43,7 +43,7 @@ public class PropertyMixinInvocationPerformanceTest extends AbstractQi4jTest
             CompositeBuilder<SimpleComposite> builder = compositeBuilderFactory.newCompositeBuilder( SimpleComposite.class );
             SimpleComposite simple = builder.newInstance();
 
-            int rounds = 2;
+            int rounds = 1;
             for( int i = 0; i < rounds; i++ )
             {
                 performanceCheck( simple );
@@ -54,7 +54,7 @@ public class PropertyMixinInvocationPerformanceTest extends AbstractQi4jTest
             CompositeBuilder<SimpleComposite> builder = compositeBuilderFactory.newCompositeBuilder( SimpleComposite.class );
             SimpleComposite simple = builder.newInstance();
 
-            int rounds = 2;
+            int rounds = 1;
             for( int i = 0; i < rounds; i++ )
             {
                 performanceCheck( simple );

@@ -16,24 +16,51 @@
  */
 package org.qi4j.runtime.entity;
 
+import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.EntitySession;
 import org.qi4j.entity.EntitySessionFactory;
+import org.qi4j.entity.IdentityGenerator;
 import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.runtime.structure.ServiceMap;
+import org.qi4j.spi.entity.EntityStore;
 
 public final class EntitySessionFactoryImpl
     implements EntitySessionFactory
 {
     private ModuleInstance moduleInstance;
-    private EntitySessionInstance entitySessionInstance;
+    private ModuleStateServices services;
 
     public EntitySessionFactoryImpl( ModuleInstance moduleInstance )
     {
         this.moduleInstance = moduleInstance;
-        entitySessionInstance = new EntitySessionInstance( moduleInstance, null );
+        services = new ModuleStateServices( moduleInstance );
     }
 
     public EntitySession newEntitySession()
     {
-        return entitySessionInstance;
+        return new EntitySessionInstance( moduleInstance, services );
+    }
+
+    private class ModuleStateServices
+        implements StateServices
+    {
+        ServiceMap<EntityStore> entityStores;
+        ServiceMap<IdentityGenerator> identityGenerators;
+
+        public ModuleStateServices( ModuleInstance moduleInstance )
+        {
+            entityStores = new ServiceMap<EntityStore>( moduleInstance, EntityStore.class );
+            identityGenerators = new ServiceMap<IdentityGenerator>( moduleInstance, IdentityGenerator.class );
+        }
+
+        public EntityStore getEntityStore( Class<? extends EntityComposite> compositeType )
+        {
+            return entityStores.getService( compositeType );
+        }
+
+        public IdentityGenerator getIdentityGenerator( Class<? extends EntityComposite> compositeType )
+        {
+            return identityGenerators.getService( compositeType );
+        }
     }
 }
