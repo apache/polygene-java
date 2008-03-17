@@ -14,8 +14,11 @@ package org.qi4j.library.framework.scripting;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.test.Qi4jTestSetup;
+import org.junit.Test;
 
-public class JavaScriptMixinTest extends AbstractQi4jTest
+public class JavaScriptMixinTest 
+    extends Qi4jTestSetup
 {
     public void assemble( ModuleAssembly module )
         throws AssemblyException
@@ -23,6 +26,7 @@ public class JavaScriptMixinTest extends AbstractQi4jTest
         module.addComposites( ScriptComposite.class );
     }
 
+    @Test
     public void testInvoke() throws Throwable
     {
         ScriptComposite domain = compositeBuilderFactory.newCompositeBuilder( ScriptComposite.class ).newInstance();

@@ -15,18 +15,20 @@ import java.io.IOException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import static org.junit.Assert.*;
+import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.library.framework.remote.RemoteInterface;
 import org.qi4j.library.framework.remote.RemoteInterfaceComposite;
 import org.qi4j.library.framework.remote.RemoteInterfaceImpl;
-import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.test.Qi4jTestSetup;
 
 /**
  * TODO
  */
 public class RMIMixinTest
-    extends AbstractQi4jTest
+    extends Qi4jTestSetup
 {
     public void assemble( ModuleAssembly module )
         throws AssemblyException
@@ -35,6 +37,7 @@ public class RMIMixinTest
     }
 
     // Public --------------------------------------------------------
+    @Test
     public void testRMIMixin()
         throws Exception
     {

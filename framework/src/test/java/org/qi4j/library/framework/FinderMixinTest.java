@@ -5,15 +5,18 @@ import org.qi4j.composite.Composite;
 import org.qi4j.composite.Mixins;
 import org.qi4j.composite.scope.ThisCompositeAs;
 import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.test.Qi4jTestSetup;
+import org.junit.Test;
 
 public class FinderMixinTest
-    extends AbstractQi4jTest
+    extends Qi4jTestSetup
 {
     public void assemble( ModuleAssembly module )
     {
 //        module.addComposite( Composite1.class );
     }
 
+    @Test
     public void testFinderMixin() throws Exception
     {
 /*

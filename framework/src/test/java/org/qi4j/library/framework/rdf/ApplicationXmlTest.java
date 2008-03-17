@@ -19,6 +19,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import org.junit.Test;
 import org.openrdf.model.Graph;
 import org.openrdf.model.Statement;
 import org.openrdf.rio.RDFHandlerException;
@@ -37,13 +38,13 @@ import org.qi4j.composite.scope.ConcernFor;
 import org.qi4j.composite.scope.SideEffectFor;
 import org.qi4j.composite.scope.ThisCompositeAs;
 import org.qi4j.library.framework.rdf.parse.StructureParser;
-import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.test.Qi4jTestSetup;
 
 /**
  * TODO
  */
 public class ApplicationXmlTest
-    extends AbstractQi4jTest
+    extends Qi4jTestSetup
 {
 
     public void assemble( ModuleAssembly module )
@@ -56,6 +57,7 @@ public class ApplicationXmlTest
         module.addComposites( TestComposite.class );
     }
 
+    @Test
     public void testApplicationXml()
         throws Exception
     {
