@@ -22,17 +22,19 @@ import org.qi4j.entity.SessionCompletionException;
 import org.qi4j.entity.memory.MemoryEntityStoreComposite;
 import org.qi4j.spi.entity.UuidIdentityGeneratorComposite;
 import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.test.Qi4jTestSetup;
 import org.qi4j.test.entity.AccountComposite;
 import org.qi4j.test.entity.CustomerComposite;
 import org.qi4j.test.entity.OrderComposite;
 import org.qi4j.test.entity.Product;
 import org.qi4j.test.entity.ProductComposite;
+import org.junit.Test;
 
 /**
  * TODO
  */
 public class EntitySessionFactoryTest
-    extends AbstractQi4jTest
+    extends Qi4jTestSetup
 {
 
     public void assemble( ModuleAssembly module ) throws AssemblyException
@@ -46,6 +48,7 @@ public class EntitySessionFactoryTest
                             UuidIdentityGeneratorComposite.class );
     }
 
+    @Test
     public void testEntitySession()
     {
         EntitySession session = entitySessionFactory.newEntitySession();

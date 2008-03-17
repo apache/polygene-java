@@ -12,14 +12,16 @@
 
 package org.qi4j.test.model2;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
+import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
 import org.qi4j.spi.composite.CompositeModel;
 
-public class Composite2Test extends TestCase
+public class Composite2Test
 {
+    @Test
     public void testGetImplementation() throws Exception
     {
         SingletonAssembler assembly = new SingletonAssembler()
@@ -58,6 +60,7 @@ public class Composite2Test extends TestCase
         }
     }
 
+    @Test
     public void testCustomizedImplementation() throws Exception
     {
         SingletonAssembler assembly = new SingletonAssembler()

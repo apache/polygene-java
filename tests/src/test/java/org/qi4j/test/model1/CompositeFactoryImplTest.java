@@ -12,13 +12,16 @@
  */
 package org.qi4j.test.model1;
 
+import static org.junit.Assert.*;
+import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.InvalidApplicationException;
-import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.test.Qi4jTestSetup;
 
-public class CompositeFactoryImplTest extends AbstractQi4jTest
+public class CompositeFactoryImplTest
+    extends Qi4jTestSetup
 {
     public void assemble( ModuleAssembly module )
         throws AssemblyException
@@ -28,6 +31,7 @@ public class CompositeFactoryImplTest extends AbstractQi4jTest
     }
 
     @SuppressWarnings( "unchecked" )
+    @Test
     public void testNewInstanceNotExtendingComposite()
         throws Exception
     {
@@ -45,6 +49,7 @@ public class CompositeFactoryImplTest extends AbstractQi4jTest
         }
     }
 
+    @Test
     public void testNewComposition9()
         throws Exception
     {

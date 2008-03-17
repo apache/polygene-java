@@ -14,7 +14,7 @@
 
 package org.qi4j.test.structure;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 import org.qi4j.bootstrap.ApplicationAssembly;
 import org.qi4j.bootstrap.ApplicationAssemblyFactory;
 import org.qi4j.bootstrap.ApplicationFactory;
@@ -24,46 +24,49 @@ import org.qi4j.bootstrap.LayerAssembly;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.runtime.Energy4Java;
 import org.qi4j.runtime.Qi4jRuntime;
-import org.qi4j.runtime.structure.ApplicationContext;
 
 /**
  * TODO
  */
 public class StructureTest
-    extends TestCase
 {
-    public void testStructure()
+
+    @Test
+    public void createApplicationUsingApplicationAssembly()
+        throws AssemblyException
     {
         Qi4jRuntime is = new Energy4Java();
         ApplicationAssemblyFactory aaf = new ApplicationAssemblyFactory();
         ApplicationFactory af = new ApplicationFactory( is, aaf );
-        try
+        ApplicationAssembly ab = aaf.newApplicationAssembly();
         {
-            ApplicationAssembly ab = aaf.newApplicationAssembly();
+            LayerAssembly applicationLayer = ab.newLayerAssembly();
             {
-                LayerAssembly applicationLayer = ab.newLayerAssembly();
                 {
-                    {
-                        ModuleAssembly mb = applicationLayer.newModuleAssembly();
-                        mb.addAssembly( new DomainApplicationAssembler() );
-                    }
-                }
-
-                LayerAssembly viewLayer = ab.newLayerAssembly();
-                {
-                    {
-                        ModuleAssembly mb = viewLayer.newModuleAssembly();
-                        mb.addAssembly( new ViewAssembler() );
-                    }
-                    viewLayer.uses( applicationLayer );
+                    ModuleAssembly mb = applicationLayer.newModuleAssembly();
+                    mb.addAssembly( new DomainApplicationAssembler() );
                 }
             }
-            ApplicationContext applicationContext = af.newApplication( ab );
+
+            LayerAssembly viewLayer = ab.newLayerAssembly();
+            {
+                {
+                    ModuleAssembly mb = viewLayer.newModuleAssembly();
+                    mb.addAssembly( new ViewAssembler() );
+                }
+                viewLayer.uses( applicationLayer );
+            }
         }
-        catch( AssemblyException e )
-        {
-            e.printStackTrace();
-        }
+        af.newApplication( ab );
+    }
+
+    @Test
+    public void createApplicationUsingArrayOfAssemblers()
+        throws AssemblyException
+    {
+        Qi4jRuntime is = new Energy4Java();
+        ApplicationAssemblyFactory aaf = new ApplicationAssemblyFactory();
+        ApplicationFactory af = new ApplicationFactory( is, aaf );
 
         Assembler[][][] assemblers = new Assembler[][][]
             {
@@ -89,18 +92,7 @@ public class StructureTest
                 }
             };
 
-        try
-        {
-            ApplicationContext appContext = af.newApplication( assemblers );
-        }
-        catch( AssemblyException e )
-        {
-            e.printStackTrace();
-        }
-    }
-
-    public void assemble( ModuleAssembly module ) throws AssemblyException
-    {
+        af.newApplication( assemblers );
     }
 
     static class ViewAssembler

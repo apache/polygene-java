@@ -14,7 +14,7 @@
 
 package org.qi4j.runtime.structure;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 import org.qi4j.bootstrap.ApplicationAssemblyFactory;
 import org.qi4j.bootstrap.ApplicationFactory;
 import org.qi4j.bootstrap.Assembler;
@@ -33,8 +33,8 @@ import org.qi4j.spi.structure.Visibility;
  * TODO
  */
 public class PrivateCompositeVisibilityTest
-    extends TestCase
 {
+    @Test( expected = InvalidApplicationException.class )
     public void testPrivateCompositeVisibility()
         throws Exception
     {
@@ -57,16 +57,7 @@ public class PrivateCompositeVisibilityTest
         ApplicationInstance app = applicationFactory.newApplication( assemblers ).newApplicationInstance( "Test" );
         app.activate();
         ObjectA object = app.getLayerInstances().get( 0 ).getModuleInstances().get( 0 ).getStructureContext().getObjectBuilderFactory().newObjectBuilder( ObjectA.class ).newInstance();
-        try
-        {
-            object.test();
-            fail( "Should have thrown an exception since CompositeB is not visible" );
-        }
-        catch( InvalidApplicationException e )
-        {
-            // Ok
-        }
-
+        object.test();
     }
 
     class AssemblerA

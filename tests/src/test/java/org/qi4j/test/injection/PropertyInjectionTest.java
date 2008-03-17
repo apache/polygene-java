@@ -12,6 +12,8 @@
  */
 package org.qi4j.test.injection;
 
+import static org.junit.Assert.*;
+import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
@@ -21,9 +23,10 @@ import org.qi4j.composite.scope.PropertyField;
 import org.qi4j.composite.scope.PropertyParameter;
 import org.qi4j.library.framework.entity.PropertyMixin;
 import org.qi4j.property.Property;
-import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.test.Qi4jTestSetup;
 
-public class PropertyInjectionTest extends AbstractQi4jTest
+public class PropertyInjectionTest
+    extends Qi4jTestSetup
 {
     public void assemble( ModuleAssembly module )
         throws AssemblyException
@@ -31,6 +34,7 @@ public class PropertyInjectionTest extends AbstractQi4jTest
         module.addComposites( SayHelloComposite.class );
     }
 
+    @Test
     public void testPropertyFieldInjection()
     {
         CompositeBuilder<SayHelloComposite> builder = compositeBuilderFactory.newCompositeBuilder( SayHelloComposite.class );
