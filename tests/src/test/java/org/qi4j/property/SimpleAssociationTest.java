@@ -25,11 +25,14 @@ import org.qi4j.composite.Mixins;
 import org.qi4j.library.framework.entity.AssociationMixin;
 import org.qi4j.library.framework.entity.PropertyMixin;
 import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.test.Qi4jTestSetup;
+import org.junit.Test;
 
 /**
  * TODO
  */
-public class SimpleAssociationTest extends AbstractQi4jTest
+public class SimpleAssociationTest
+    extends Qi4jTestSetup
 {
     public void assemble( ModuleAssembly module )
         throws AssemblyException
@@ -41,6 +44,7 @@ public class SimpleAssociationTest extends AbstractQi4jTest
             withAccessor( SimpleAssociationTest.Employer.class ).employees();
     }
 
+    @Test
     public void testAssociation()
     {
         SimpleAssociationTest.Company company;

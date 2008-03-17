@@ -32,6 +32,7 @@ import org.qi4j.spi.composite.CompositeModel;
 import org.qi4j.spi.composite.ConcernModel;
 import org.qi4j.spi.composite.InvalidCompositeException;
 import org.qi4j.spi.composite.MixinModel;
+import org.qi4j.test.Qi4jTestSetup;
 
 public class CompositeModelFactoryTest
 {

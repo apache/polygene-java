@@ -34,11 +34,14 @@ import org.qi4j.composite.scope.ThisCompositeAs;
 import org.qi4j.library.framework.entity.AssociationMixin;
 import org.qi4j.library.framework.entity.PropertyMixin;
 import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.test.Qi4jTestSetup;
+import org.junit.Test;
 
 /**
  * TODO
  */
-public class SimplePropertyTest extends AbstractQi4jTest
+public class SimplePropertyTest
+    extends Qi4jTestSetup
 {
 
     public void assemble( ModuleAssembly module )
@@ -52,6 +55,7 @@ public class SimplePropertyTest extends AbstractQi4jTest
             set( "Hello World" ); // Set default value
     }
 
+    @Test
     public void testProperty()
     {
         Company company;

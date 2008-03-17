@@ -16,12 +16,19 @@
  */
 package org.qi4j.runtime;
 
+import static org.junit.Assert.*;
+import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
-import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.composite.Concerns;
+import org.qi4j.composite.scope.ConcernFor;
+import org.qi4j.entity.Lifecycle;
+import org.qi4j.test.Qi4jTestSetup;
 
-public class CompositeBuilderTest extends AbstractQi4jTest
+public class CompositeBuilderTest
+    extends Qi4jTestSetup
 {
     public void assemble( ModuleAssembly module )
         throws AssemblyException
@@ -29,11 +36,50 @@ public class CompositeBuilderTest extends AbstractQi4jTest
         module.addComposites( Model1.class );
     }
 
+    @Test
     public void testNewInstance()
         throws Exception
     {
         CompositeBuilder<Model1> impl = compositeBuilderFactory.newCompositeBuilder( Model1.class );
-        Model1 instance = impl.newInstance();
+        impl.newInstance();
         assertEquals( true, Model1LifecycleModifier.createMethod );
+    }
+
+    @Concerns( Model1LifecycleModifier.class )
+    public static interface Model1 extends Composite, Lifecycle
+    {
+    }
+
+    public static class Model1LifecycleModifier
+        implements Lifecycle
+    {
+        static boolean deleteMethod;
+        static boolean createMethod;
+
+        @ConcernFor Lifecycle next;
+
+        /**
+         * Creation callback method.
+         * <p/>
+         * Called by the Qi4J runtime before the newInstance of the composite completes, allowing
+         * for additional initialization.
+         */
+        public void create()
+        {
+            createMethod = true;
+            next.create();
+        }
+
+        /**
+         * Deletion callback method.
+         * <p/>
+         * Called by the Qi4J runtime before the composite is deleted from the system, allowing
+         * for clean-up operations.
+         */
+        public void delete()
+        {
+            deleteMethod = true;
+            next.delete();
+        }
     }
 }

@@ -1,16 +1,19 @@
 package org.qi4j.runtime;
 
+import static org.junit.Assert.*;
+import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.Mixins;
 import org.qi4j.composite.scope.ThisCompositeAs;
-import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.test.Qi4jTestSetup;
 
 /**
  * TODO
  */
-public class InternalMixinsTest extends AbstractQi4jTest
+public class InternalMixinsTest
+    extends Qi4jTestSetup
 {
     public void assemble( ModuleAssembly module )
         throws AssemblyException
@@ -18,6 +21,7 @@ public class InternalMixinsTest extends AbstractQi4jTest
         module.addComposites( TestComposite.class );
     }
 
+    @Test
     public void testInternalMixins()
     {
         TestComposite test = compositeBuilderFactory.newCompositeBuilder( TestComposite.class ).newInstance();
