@@ -18,6 +18,7 @@
  */
 package org.qi4j.spi.property;
 
+import java.lang.reflect.Type;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
 import org.qi4j.property.Property;
 import org.qi4j.property.PropertyInfo;
@@ -105,6 +106,11 @@ public abstract class ComputedPropertyInstance<T>
     public final String getQualifiedName()
     {
         return propertyInfo.getQualifiedName();
+    }
+
+    public Type getPropertyType()
+    {
+        return propertyInfo.getPropertyType();
     }
 
     /**

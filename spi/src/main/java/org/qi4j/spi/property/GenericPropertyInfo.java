@@ -18,6 +18,8 @@
 package org.qi4j.spi.property;
 
 import java.io.Serializable;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import org.qi4j.property.PropertyInfo;
 
@@ -27,11 +29,13 @@ public final class GenericPropertyInfo
     private HashMap<Class, Serializable> infos;
     private final String qualifiedName;
     private final String name;
+    private final Type type;
 
-    public GenericPropertyInfo( String qualifiedName )
+    public GenericPropertyInfo( Method accessor )
     {
-        this.qualifiedName = qualifiedName;
+        this.qualifiedName = PropertyModel.getQualifiedName( accessor );
         this.name = PropertyModel.getName( qualifiedName );
+        this.type = PropertyModel.getPropertyType( accessor );
         infos = new HashMap<Class, Serializable>();
     }
 
@@ -49,6 +53,11 @@ public final class GenericPropertyInfo
     public String getQualifiedName()
     {
         return qualifiedName;
+    }
+
+    public Type getPropertyType()
+    {
+        return type;
     }
 
     public <T extends Serializable> void setPropertyInfo( Class<T> infoType, T instance )

@@ -14,6 +14,7 @@
 
 package org.qi4j.spi.property;
 
+import java.lang.reflect.Method;
 import org.qi4j.property.ImmutableProperty;
 import org.qi4j.property.PropertyInfo;
 
@@ -24,6 +25,11 @@ public final class ImmutablePropertyInstance<T> extends ComputedPropertyInstance
     implements ImmutableProperty<T>
 {
     protected T value;
+
+    public ImmutablePropertyInstance( Method accessor, T value )
+    {
+        this( new GenericPropertyInfo( accessor ), value );
+    }
 
     public ImmutablePropertyInstance( PropertyInfo info, T value )
     {

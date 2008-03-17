@@ -16,7 +16,9 @@ package org.qi4j.spi.property;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import org.qi4j.property.Property;
 
 /**
  * TODO
@@ -48,15 +50,43 @@ public final class PropertyModel
         return declaringClass.getName() + ":" + name;
     }
 
+    public static Type getPropertyType( Method accessor )
+    {
+        return getPropertyType( accessor.getGenericReturnType() );
+    }
+
+    private static Type getPropertyType( Type methodReturnType )
+    {
+        if( methodReturnType instanceof ParameterizedType )
+        {
+            ParameterizedType parameterizedType = (ParameterizedType) methodReturnType;
+            if( Property.class.isAssignableFrom( (Class<?>) parameterizedType.getRawType() ) )
+            {
+                return parameterizedType.getActualTypeArguments()[ 0 ];
+            }
+        }
+
+        Type[] interfaces = ( (Class) methodReturnType ).getInterfaces();
+        for( Type anInterface : interfaces )
+        {
+            Type propertyType = getPropertyType( anInterface );
+            if( propertyType != null )
+            {
+                return propertyType;
+            }
+        }
+        return null;
+    }
+
     private String name;
     private Type type;
     private Method accessor; // Interface accessor
     private String qualifiedName;
 
-    public PropertyModel( Type aType, Method anAccessor )
+    public PropertyModel( Method anAccessor )
     {
         name = anAccessor.getName();
-        type = aType;
+        type = getPropertyType( anAccessor );
         accessor = anAccessor;
         qualifiedName = getQualifiedName( anAccessor );
     }

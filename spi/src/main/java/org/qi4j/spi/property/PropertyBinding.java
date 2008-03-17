@@ -15,6 +15,7 @@
 package org.qi4j.spi.property;
 
 import java.io.Serializable;
+import java.lang.reflect.Type;
 import java.util.Map;
 import org.qi4j.property.PropertyInfo;
 import org.qi4j.spi.composite.PropertyResolution;
@@ -54,6 +55,11 @@ public final class PropertyBinding
     public String getQualifiedName()
     {
         return propertyResolution.getPropertyModel().getQualifiedName();
+    }
+
+    public Type getPropertyType()
+    {
+        return propertyResolution.getPropertyModel().getType();
     }
 
     public Object getDefaultValue()

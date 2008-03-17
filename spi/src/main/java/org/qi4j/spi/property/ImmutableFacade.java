@@ -17,6 +17,7 @@
  */
 package org.qi4j.spi.property;
 
+import java.lang.reflect.Type;
 import org.qi4j.composite.NullArgumentException;
 import org.qi4j.property.ImmutableProperty;
 import org.qi4j.property.Property;
@@ -58,6 +59,11 @@ public class ImmutableFacade<T>
     public String getQualifiedName()
     {
         return target.getQualifiedName();
+    }
+
+    public Type getPropertyType()
+    {
+        return target.getPropertyType();
     }
 
     @Override public String toString()
