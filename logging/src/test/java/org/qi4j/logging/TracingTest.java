@@ -17,6 +17,7 @@
  */
 package org.qi4j.logging;
 
+import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
@@ -31,9 +32,7 @@ import org.qi4j.service.ServiceInstanceProviderException;
 import org.qi4j.spi.service.ServiceInstance;
 import org.qi4j.spi.service.ServiceInstanceProvider;
 import org.qi4j.spi.structure.ServiceDescriptor;
-import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.Qi4jTestSetup;
-import org.junit.Test;
 
 public class TracingTest
     extends Qi4jTestSetup

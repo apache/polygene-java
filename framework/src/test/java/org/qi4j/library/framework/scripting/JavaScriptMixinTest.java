@@ -11,13 +11,12 @@ package org.qi4j.library.framework.scripting;
  * limitations under the License.
 */
 
+import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.Qi4jTestSetup;
-import org.junit.Test;
 
-public class JavaScriptMixinTest 
+public class JavaScriptMixinTest
     extends Qi4jTestSetup
 {
     public void assemble( ModuleAssembly module )
