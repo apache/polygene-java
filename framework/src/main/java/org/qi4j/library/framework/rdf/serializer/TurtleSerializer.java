@@ -17,7 +17,7 @@
  */
 package org.qi4j.library.framework.rdf.serializer;
 
-import java.io.OutputStream;
+import java.io.Writer;
 import org.openrdf.model.Graph;
 import org.openrdf.model.Statement;
 import org.openrdf.rio.RDFHandlerException;
@@ -30,7 +30,7 @@ import org.qi4j.library.framework.rdf.Serializer;
 public final class TurtleSerializer
     implements Serializer
 {
-    public void serialize( Graph graph, OutputStream out ) throws RDFHandlerException
+    public void serialize( Graph graph, Writer out ) throws RDFHandlerException
     {
         RDFWriter writer = new TurtleWriterFactory().getWriter( out );
         writer.startRDF();

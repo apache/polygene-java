@@ -13,12 +13,12 @@
  */
 package org.qi4j.library.framework.rdf;
 
-import java.io.OutputStream;
+import java.io.Writer;
 import org.openrdf.model.Graph;
 import org.openrdf.rio.RDFHandlerException;
 
 public interface Serializer
 {
-    void serialize( Graph graph, OutputStream out )
+    void serialize( Graph graph, Writer out )
         throws RDFHandlerException;
 }

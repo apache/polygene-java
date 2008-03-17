@@ -13,12 +13,16 @@
  */
 package org.qi4j.library.framework.rdf;
 
+import java.io.IOException;
+import java.io.Writer;
+import org.openrdf.model.Graph;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.UnsupportedRDFormatException;
 import org.qi4j.library.framework.rdf.parse.StructureParser;
 import org.qi4j.library.framework.rdf.serializer.N3Serializer;
 import org.qi4j.library.framework.rdf.serializer.RdfXmlSerializer;
 import org.qi4j.library.framework.rdf.serializer.TurtleSerializer;
+import org.qi4j.runtime.structure.ApplicationContext;
 
 public class RdfFactory
 {
@@ -64,5 +68,27 @@ public class RdfFactory
             throw new UnsupportedRDFormatException( "Unsupported format: " + format );
         }
         return serializer;
+    }
+
+    public void serialize( ApplicationContext context, String applicationUri, RdfFormat format, Writer out )
+        throws IOException
+    {
+        RdfFactory factory = RdfFactory.getInstance();
+
+        // Parse application
+        StructureParser parser = factory.newStructureParser();
+        Graph graph = parser.parse( context, applicationUri );
+
+        // Serialize it
+        try
+        {
+            Serializer serializer = factory.newSerializer( format );
+            serializer.serialize( graph, out );
+        }
+        catch( RDFHandlerException e )
+        {
+            throw (IOException) new IOException().initCause( e );
+        }
+
     }
 }
