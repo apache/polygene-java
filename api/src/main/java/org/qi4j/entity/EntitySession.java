@@ -22,15 +22,17 @@ import org.qi4j.query.QueryBuilderFactory;
  */
 public interface EntitySession
 {
-    EntitySession newEntitySession();
+    <T extends EntityComposite> CompositeBuilder<T> newEntityBuilder( Class<T> compositeType );
 
-    <T extends EntityComposite> CompositeBuilder<T> newEntityBuilder( String identity, Class<T> compositeType )
-        throws EntityCompositeAlreadyExistsException;
+    <T extends EntityComposite> CompositeBuilder<T> newEntityBuilder( String identity, Class<T> compositeType );
 
     <T extends EntityComposite> T find( String identity, Class<T> compositeType )
         throws EntityCompositeNotFoundException;
 
     <T extends EntityComposite> T getReference( String identity, Class<T> compositeType )
+        throws EntityCompositeNotFoundException;
+
+    <T> T getReference( T entity )
         throws EntityCompositeNotFoundException;
 
     void refresh( EntityComposite entity );
@@ -51,4 +53,6 @@ public interface EntitySession
     boolean isOpen();
 
     QueryBuilderFactory getQueryBuilderFactory();
+
+    EntitySession newEntitySession();
 }
