@@ -21,18 +21,24 @@ import org.qi4j.logging.LogType;
 import org.qi4j.property.Property;
 import org.qi4j.spi.property.GenericPropertyInfo;
 import org.qi4j.spi.property.ImmutablePropertyInstance;
-import org.qi4j.spi.property.PropertyModel;
 
 public final class WarningType
     implements LogType
 {
     public static final LogType INSTANCE = new WarningType();
-    private static final Property PROPERTY;
+    private static Property PROPERTY;
 
     static
     {
-        GenericPropertyInfo info = new GenericPropertyInfo( PropertyModel.getQualifiedName( LogType.class, "logTypeName" ) );
-        PROPERTY = new ImmutablePropertyInstance( info, "WARN" );
+        try
+        {
+            GenericPropertyInfo info = new GenericPropertyInfo( LogType.class.getMethod( "logTypeName" ) );
+            PROPERTY = new ImmutablePropertyInstance( info, "WARN" );
+        }
+        catch( NoSuchMethodException e )
+        {
+            e.printStackTrace();
+        }
     }
 
     private WarningType()
