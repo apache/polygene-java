@@ -24,14 +24,16 @@ public final class EntitySessionFactoryImpl
     implements EntitySessionFactory
 {
     private ModuleInstance moduleInstance;
+    private EntitySessionInstance entitySessionInstance;
 
     public EntitySessionFactoryImpl( ModuleInstance moduleInstance )
     {
         this.moduleInstance = moduleInstance;
+        entitySessionInstance = new EntitySessionInstance( moduleInstance, null );
     }
 
     public EntitySession newEntitySession()
     {
-        return new EntitySessionInstance( moduleInstance );
+        return entitySessionInstance;
     }
 }

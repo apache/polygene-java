@@ -14,6 +14,7 @@
 
 package org.qi4j.runtime.entity;
 
+import java.util.Iterator;
 import java.util.Map;
 import org.qi4j.query.QueryImpl;
 import org.qi4j.query.Queryable;
@@ -37,7 +38,7 @@ public final class QueryableEntitySession
         Class resultType = query.getResultType();
         Map<String, EntitySessionInstance.EntityEntry> cache = entitySession.getEntityCache( resultType );
 
-        QueryableIterable queryableCache = new QueryableIterable( cache.values() );
+        QueryableIterable queryableCache = new QueryableIterable( new EntityUnwrapper( cache.values() ) );
 
         return queryableCache.find( query );
     }
@@ -47,8 +48,41 @@ public final class QueryableEntitySession
         Class resultType = query.getResultType();
         Map<String, EntitySessionInstance.EntityEntry> cache = entitySession.getEntityCache( resultType );
 
-        QueryableIterable queryableCache = new QueryableIterable( cache.values() );
+        QueryableIterable queryableCache = new QueryableIterable( new EntityUnwrapper( cache.values() ) );
 
         return queryableCache.iterable( query );
+    }
+
+    class EntityUnwrapper
+        implements Iterable
+    {
+        private Iterable<EntitySessionInstance.EntityEntry> iterable;
+
+        private EntityUnwrapper( Iterable<EntitySessionInstance.EntityEntry> iterable )
+        {
+            this.iterable = iterable;
+        }
+
+        public Iterator iterator()
+        {
+            final Iterator<EntitySessionInstance.EntityEntry> iter = iterable.iterator();
+            return new Iterator()
+            {
+                public boolean hasNext()
+                {
+                    return iter.hasNext();
+                }
+
+                public Object next()
+                {
+                    return iter.next().getInstance();
+                }
+
+                public void remove()
+                {
+                    iter.remove();
+                }
+            };
+        }
     }
 }
