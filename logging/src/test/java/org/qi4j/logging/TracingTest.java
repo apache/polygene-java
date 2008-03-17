@@ -32,8 +32,11 @@ import org.qi4j.spi.service.ServiceInstance;
 import org.qi4j.spi.service.ServiceInstanceProvider;
 import org.qi4j.spi.structure.ServiceDescriptor;
 import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.test.Qi4jTestSetup;
+import org.junit.Test;
 
-public class TracingTest extends AbstractQi4jTest
+public class TracingTest
+    extends Qi4jTestSetup
 {
     public void assemble( ModuleAssembly module )
         throws AssemblyException
@@ -42,6 +45,7 @@ public class TracingTest extends AbstractQi4jTest
         module.addServices( LogServiceComposite.class );
     }
 
+    @Test
     public void testTrace()
         throws Exception
     {

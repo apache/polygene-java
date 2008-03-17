@@ -18,6 +18,8 @@
 package org.qi4j.library.auth.tests;
 
 import java.util.Date;
+import static org.junit.Assert.*;
+import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
@@ -35,9 +37,10 @@ import org.qi4j.library.auth.RoleComposite;
 import org.qi4j.library.auth.UserComposite;
 import org.qi4j.library.framework.entity.AssociationMixin;
 import org.qi4j.library.framework.entity.PropertyMixin;
-import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.test.Qi4jTestSetup;
 
-public class AuthTest extends AbstractQi4jTest
+public class AuthTest
+    extends Qi4jTestSetup
 {
 
     public void assemble( ModuleAssembly module ) throws AssemblyException
@@ -52,6 +55,7 @@ public class AuthTest extends AbstractQi4jTest
                               SecuredRoom.class );
     }
 
+    @Test
     public void testAuth()
         throws Exception
     {
