@@ -3,6 +3,8 @@ package org.qi4j.runtime.composite;
  *  TODO
  */
 
+import static org.junit.Assert.*;
+import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
@@ -11,10 +13,10 @@ import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.Mixins;
 import org.qi4j.composite.scope.ThisCompositeAs;
 import org.qi4j.spi.composite.InvalidCompositeException;
-import org.qi4j.test.AbstractQi4jTest;
 
-public class CompositeModelResolverTest extends AbstractQi4jTest
+public class CompositeModelResolverTest
 {
+    @Test
     public void testWhenCyclicDependencyThenThrowException()
     {
         try
@@ -34,6 +36,7 @@ public class CompositeModelResolverTest extends AbstractQi4jTest
         }
     }
 
+    @Test
     public void testWhenDependentMixinsThenOrderMixins()
         throws Exception
     {

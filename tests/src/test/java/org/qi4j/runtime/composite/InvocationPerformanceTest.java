@@ -12,6 +12,7 @@
 package org.qi4j.runtime.composite;
 
 import java.text.NumberFormat;
+import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
@@ -19,13 +20,14 @@ import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.Concerns;
 import org.qi4j.composite.Mixins;
 import org.qi4j.composite.scope.ConcernFor;
-import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.test.Qi4jTestSetup;
 
 /**
  * Invocation performance test. Don't forget to add VM value "-server"
  * before running this test!
  */
-public class InvocationPerformanceTest extends AbstractQi4jTest
+public class InvocationPerformanceTest
+    extends Qi4jTestSetup
 {
     public void assemble( ModuleAssembly module )
         throws AssemblyException
@@ -33,6 +35,7 @@ public class InvocationPerformanceTest extends AbstractQi4jTest
         module.addComposites( SimpleComposite.class );
     }
 
+    @Test
     public void testNewInstance()
     {
         // Create instance
