@@ -83,17 +83,17 @@ public class MemoryEntityStore
         Iterable<PropertyBinding> propertyBindings = compositeBinding.getPropertyBindings();
         for( PropertyBinding propertyBinding : propertyBindings )
         {
-            // Either use default value or the one that was set through the builder
-            Object value = propertyBinding.getDefaultValue();
-            String propertyQualifiedName = propertyBinding.getQualifiedName();
-            if( propertyValues.containsKey( propertyQualifiedName ) )
-            {
-                value = propertyValues.get( propertyQualifiedName );
-            }
-
             PropertyResolution propertyResolution = propertyBinding.getPropertyResolution();
             PropertyModel propertyModel = propertyResolution.getPropertyModel();
             Method accessor = propertyModel.getAccessor();
+
+            // Either use default value or the one that was set through the builder
+            Object value = propertyBinding.getDefaultValue();
+            if( propertyValues.containsKey( accessor ) )
+            {
+                value = propertyValues.get( accessor );
+            }
+
             Class<?> type = accessor.getReturnType();
             if( ImmutableProperty.class.isAssignableFrom( type ) )
             {
