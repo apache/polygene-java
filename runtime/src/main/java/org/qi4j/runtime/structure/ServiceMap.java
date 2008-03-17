@@ -40,7 +40,11 @@ public final class ServiceMap<T>
         if( serviceReference == null )
         {
             ModuleInstance realModule = moduleInstance.getModuleForComposite( compositeType );
-            serviceReference = realModule.getServiceLocator().lookupService( serviceClass );
+            serviceReference = realModule.getStructureContext().getServiceLocator().lookupService( serviceClass );
+            if( serviceReference == null )
+            {
+                return null;
+            }
             instances.put( compositeType, serviceReference );
         }
         return (T) serviceReference.getService();

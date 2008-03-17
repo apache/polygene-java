@@ -49,6 +49,19 @@ public final class ApplicationInstance
         return name;
     }
 
+    public LayerInstance getLayerByName( String name )
+    {
+        for( LayerInstance layerInstance : layerInstances )
+        {
+            if( layerInstance.getLayerContext().getLayerBinding().getLayerResolution().getLayerModel().getName().equals( name ) )
+            {
+                return layerInstance;
+            }
+        }
+
+        return null;
+    }
+
     public void activate() throws Exception
     {
         for( LayerInstance layerInstance : layerInstances )

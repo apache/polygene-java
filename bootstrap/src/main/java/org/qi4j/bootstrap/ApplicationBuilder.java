@@ -453,11 +453,15 @@ public final class ApplicationBuilder
         Map<Class<? extends Composite>, ModuleContext> instantiableModuleContexts = new HashMap<Class<? extends Composite>, ModuleContext>();
         for( Map.Entry<Class<? extends Composite>, ModuleModel> entry : instantiableComposites.entrySet() )
         {
-            CompositeContext context = compositeContexts.get( entry.getValue() ).get( entry.getKey() );
-            if( context != null )
+            Map<Class<? extends Composite>, CompositeContext> map = compositeContexts.get( entry.getValue() );
+            if( map != null )
             {
-                addCompositeContext( instantiableCompositeContexts, entry.getKey(), context );
-                addModuleContext( entry.getKey(), moduleModelContextMap.get( entry.getValue() ), instantiableModuleContexts );
+                CompositeContext context = map.get( entry.getKey() );
+                if( context != null )
+                {
+                    addCompositeContext( instantiableCompositeContexts, entry.getKey(), context );
+                    addModuleContext( entry.getKey(), moduleModelContextMap.get( entry.getValue() ), instantiableModuleContexts );
+                }
             }
         }
 

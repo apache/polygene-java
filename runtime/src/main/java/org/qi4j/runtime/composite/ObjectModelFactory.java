@@ -67,9 +67,7 @@ public final class ObjectModelFactory extends AbstractModelFactory
             PropertyModel propertyModel = null;
             if( Property.class.isAssignableFrom( method.getReturnType() ) )
             {
-                Type returnType = method.getGenericReturnType();
-                Type propertyType = getPropertyType( returnType );
-                propertyModel = new PropertyModel( propertyType, method );
+                propertyModel = new PropertyModel( method );
             }
 
             // AbstractAssociation model, if any

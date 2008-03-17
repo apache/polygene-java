@@ -14,6 +14,7 @@
 
 package org.qi4j.bootstrap;
 
+import org.qi4j.runtime.Energy4Java;
 import org.qi4j.runtime.Qi4jRuntime;
 import org.qi4j.runtime.structure.ApplicationContext;
 
@@ -24,6 +25,11 @@ public final class ApplicationFactory
 {
     private Qi4jRuntime runtime;
     private ApplicationAssemblyFactory applicationAssemblyFactory;
+
+    public ApplicationFactory()
+    {
+        this( new Energy4Java(), new ApplicationAssemblyFactory() );
+    }
 
     public ApplicationFactory( Qi4jRuntime runtime, ApplicationAssemblyFactory applicationAssembly )
     {

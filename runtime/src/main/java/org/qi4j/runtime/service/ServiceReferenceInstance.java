@@ -27,7 +27,6 @@ import org.qi4j.service.ServiceInstanceProviderException;
 import org.qi4j.service.ServiceReference;
 import org.qi4j.spi.property.GenericPropertyInfo;
 import org.qi4j.spi.property.ImmutablePropertyInstance;
-import org.qi4j.spi.property.PropertyModel;
 import org.qi4j.spi.service.ServiceInstance;
 import org.qi4j.spi.service.ServiceInstanceProvider;
 import org.qi4j.spi.structure.ServiceDescriptor;
@@ -50,12 +49,25 @@ public final class ServiceReferenceInstance<T>
     private Object instance;
     private T serviceProxy;
     private int referenceCounter = 0;
+    private static Method IDENTITY_METHOD;
+
+    static
+    {
+        try
+        {
+            IDENTITY_METHOD = ServiceReference.class.getMethod( "identity" );
+        }
+        catch( NoSuchMethodException e )
+        {
+            IDENTITY_METHOD = null;
+        }
+    }
 
     public ServiceReferenceInstance( ServiceDescriptor serviceDescriptor, ServiceInstanceProvider serviceInstanceProvider )
     {
         this.serviceDescriptor = serviceDescriptor;
         this.serviceInstanceProvider = serviceInstanceProvider;
-        identity = new ImmutablePropertyInstance( new GenericPropertyInfo( PropertyModel.getQualifiedName( ServiceReference.class, "identity" ) ), serviceDescriptor.getIdentity() );
+        identity = new ImmutablePropertyInstance( new GenericPropertyInfo( IDENTITY_METHOD ), serviceDescriptor.getIdentity() );
 
         serviceProxy = (T) Proxy.newProxyInstance( serviceDescriptor.getServiceType().getClassLoader(), new Class[]{ serviceDescriptor.getServiceType() }, new ServiceInvocationHandler() );
     }
@@ -97,13 +109,7 @@ public final class ServiceReferenceInstance<T>
     {
         if( serviceDescriptor.isActivateOnStartup() )
         {
-            T instance = (T) serviceInstanceProvider.newInstance( serviceDescriptor );
-            serviceInstance = new ServiceInstance<T>( instance, serviceInstanceProvider, serviceDescriptor );
-
-            if( serviceInstance.getInstance() instanceof Activatable )
-            {
-                ( (Activatable) serviceInstance.getInstance() ).activate();
-            }
+            getInstance();
         }
     }
 

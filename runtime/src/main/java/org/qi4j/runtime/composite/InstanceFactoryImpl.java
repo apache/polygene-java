@@ -6,6 +6,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Iterator;
+import org.qi4j.composite.Initializable;
 import org.qi4j.composite.InstantiationException;
 import org.qi4j.spi.composite.AbstractBinding;
 import org.qi4j.spi.composite.ConstructorBinding;
@@ -90,6 +91,12 @@ public final class InstanceFactoryImpl
         catch( Exception e )
         {
             throw new InstantiationException( "Could not inject object of class " + instance.getClass().getName(), e );
+        }
+
+        // Check for Initializable
+        if( instance instanceof Initializable )
+        {
+            ( (Initializable) instance ).initialize();
         }
     }
 

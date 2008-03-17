@@ -56,6 +56,19 @@ public final class LayerInstance
         return layerContext;
     }
 
+    public ModuleInstance getModuleByName( String name )
+    {
+        for( ModuleInstance moduleInstance : moduleInstances )
+        {
+            if( moduleInstance.getModuleContext().getModuleBinding().getModuleResolution().getModuleModel().getName().equals( name ) )
+            {
+                return moduleInstance;
+            }
+        }
+
+        return null;
+    }
+
     public List<ModuleInstance> getModuleInstances()
     {
         return moduleInstances;

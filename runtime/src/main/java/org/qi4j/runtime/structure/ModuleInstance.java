@@ -85,11 +85,6 @@ public final class ModuleInstance
         return moduleContext;
     }
 
-    public ServiceLocator getServiceLocator()
-    {
-        return serviceLocator;
-    }
-
     public StructureContext getStructureContext()
     {
         return structureContext;

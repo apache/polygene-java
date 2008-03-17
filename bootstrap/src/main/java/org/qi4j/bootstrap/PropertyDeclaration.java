@@ -121,6 +121,11 @@ public final class PropertyDeclaration
             return null;
         }
 
+        public Type getPropertyType()
+        {
+            return null;
+        }
+
         public Object set( Object newValue ) throws PropertyVetoException
         {
             defaultValue = newValue;
