@@ -59,12 +59,16 @@ public final class EntitySessionInstance
         identityGenerators = new ServiceMap<IdentityGenerator>( moduleInstance, IdentityGenerator.class );
     }
 
+    public EntitySession newEntitySession()
+    {
+        //TODO: Auto-generated, need attention.
+        return null;
+    }
+
     public <T extends EntityComposite> CompositeBuilder<T> newEntityBuilder( String identity, Class<T> compositeType )
     {
         checkOpen();
 
-        try
-        {
             EntityStore store = entityStores.getService( compositeType );
 
             CompositeBuilder<T> builder = new EntityCompositeBuilderFactory( moduleInstance, this, store ).newCompositeBuilder( compositeType );
@@ -77,11 +81,6 @@ public final class EntitySessionInstance
             builder.propertiesFor( Identity.class ).identity().set( identity );
 
             return builder;
-        }
-        catch( ServiceInstanceProviderException e )
-        {
-            throw new EntitySessionException( "Could not get service", e );
-        }
     }
 
     public void remove( EntityComposite entity )
@@ -232,8 +231,6 @@ public final class EntitySessionInstance
     {
         checkOpen();
 
-        try
-        {
 // Create new entities
             for( Map.Entry<Class<? extends EntityComposite>, Map<String, EntityEntry>> entry : cache.entrySet() )
             {
@@ -252,11 +249,6 @@ public final class EntitySessionInstance
                     }
                 }
             }
-        }
-        catch( ServiceInstanceProviderException e )
-        {
-            throw new SessionCompletionException( "Could not get store", e );
-        }
 //        catch( StoreException e )
 //        {
 //            throw new SessionCompletionException( "Could not complete session", e );
