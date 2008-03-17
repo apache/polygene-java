@@ -14,6 +14,7 @@
 
 package org.qi4j.runtime.entity;
 
+import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.CompositeBuilder;
@@ -21,14 +22,12 @@ import org.qi4j.entity.EntitySession;
 import org.qi4j.entity.SessionCompletionException;
 import org.qi4j.entity.memory.MemoryEntityStoreComposite;
 import org.qi4j.spi.entity.UuidIdentityGeneratorComposite;
-import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.Qi4jTestSetup;
 import org.qi4j.test.entity.AccountComposite;
 import org.qi4j.test.entity.CustomerComposite;
 import org.qi4j.test.entity.OrderComposite;
 import org.qi4j.test.entity.Product;
 import org.qi4j.test.entity.ProductComposite;
-import org.junit.Test;
 
 /**
  * TODO

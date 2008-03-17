@@ -18,6 +18,7 @@
 package org.qi4j.test.context;
 
 import static org.junit.Assert.*;
+import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
@@ -26,9 +27,7 @@ import org.qi4j.composite.ContextComposite;
 import org.qi4j.composite.Mixins;
 import org.qi4j.library.framework.entity.PropertyMixin;
 import org.qi4j.property.Property;
-import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.Qi4jTestSetup;
-import org.junit.Test;
 
 public class ContextCompositeTest
     extends Qi4jTestSetup

@@ -16,6 +16,7 @@ package org.qi4j.property;
 
 import java.io.Serializable;
 import javax.swing.Icon;
+import org.junit.Test;
 import org.qi4j.association.ManyAssociation;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -24,9 +25,7 @@ import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.Mixins;
 import org.qi4j.library.framework.entity.AssociationMixin;
 import org.qi4j.library.framework.entity.PropertyMixin;
-import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.Qi4jTestSetup;
-import org.junit.Test;
 
 /**
  * TODO
