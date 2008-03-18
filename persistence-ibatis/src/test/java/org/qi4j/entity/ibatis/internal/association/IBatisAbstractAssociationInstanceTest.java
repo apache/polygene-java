@@ -30,7 +30,7 @@ import org.qi4j.spi.composite.AssociationModel;
 import org.qi4j.spi.composite.AssociationResolution;
 import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.property.AssociationBinding;
-import org.qi4j.test.Qi4jTestSetup;
+import org.qi4j.test.AbstractQi4jTest;
 
 /**
  * {@code IBatisAbstractAssociationInstanceTest} tests {@code IBatisAbstractAssociationInstance}.
@@ -38,7 +38,7 @@ import org.qi4j.test.Qi4jTestSetup;
  * @author edward.yakop@gmail.com
  * @since 0.1.0
  */
-public class IBatisAbstractAssociationInstanceTest extends Qi4jTestSetup
+public class IBatisAbstractAssociationInstanceTest extends AbstractQi4jTest
 {
 
     private static final class StubAbstractAssociationInstance

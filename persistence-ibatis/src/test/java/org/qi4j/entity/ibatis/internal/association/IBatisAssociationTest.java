@@ -40,14 +40,14 @@ import org.qi4j.spi.composite.AssociationModel;
 import org.qi4j.spi.composite.AssociationResolution;
 import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.property.AssociationBinding;
-import org.qi4j.test.Qi4jTestSetup;
+import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.property.ImmutableProperty;
 
 /**
  * @author edward.yakop@gmail.com
  * @since 0.1.0
  */
-public final class IBatisAssociationTest extends Qi4jTestSetup
+public final class IBatisAssociationTest extends AbstractQi4jTest
 {
     /**
      * Test {@link IBatisAssociation#IBatisAssociation(String, AssociationBinding, Status, EntitySession)}

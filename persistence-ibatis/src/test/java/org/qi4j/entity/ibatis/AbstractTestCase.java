@@ -32,13 +32,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 import org.qi4j.entity.ibatis.dbInitializer.DBInitializerInfo;
-import org.qi4j.test.Qi4jTestSetup;
+import org.qi4j.test.AbstractQi4jTest;
 
 /**
  * @author edward.yakop@gmail.com
  * @since 0.1.0
  */
-public abstract class AbstractTestCase extends Qi4jTestSetup
+public abstract class AbstractTestCase extends AbstractQi4jTest
 {
     private static final String JDBC_URL = "jdbc:derby://localhost/testdb;create=true";
     private static final String DERBY_DRIVER_CLASS_NAME = "org.apache.derby.jdbc.ClientDriver";
