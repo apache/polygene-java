@@ -37,10 +37,10 @@ import org.qi4j.library.auth.RoleComposite;
 import org.qi4j.library.auth.UserComposite;
 import org.qi4j.library.framework.entity.AssociationMixin;
 import org.qi4j.library.framework.entity.PropertyMixin;
-import org.qi4j.test.Qi4jTestSetup;
+import org.qi4j.test.AbstractQi4jTest;
 
 public class AuthTest
-    extends Qi4jTestSetup
+    extends AbstractQi4jTest
 {
 
     public void assemble( ModuleAssembly module ) throws AssemblyException

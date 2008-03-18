@@ -21,12 +21,12 @@ import org.qi4j.composite.Mixins;
 import org.qi4j.library.framework.entity.PropertyMixin;
 import org.qi4j.library.general.test.model.DescriptorConcern;
 import org.qi4j.property.Property;
-import org.qi4j.test.Qi4jTestSetup;
+import org.qi4j.test.AbstractQi4jTest;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class DescriptorTest 
-    extends Qi4jTestSetup
+    extends AbstractQi4jTest
 {
     public void assemble( ModuleAssembly module )
         throws AssemblyException

@@ -22,13 +22,13 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.library.framework.remote.RemoteInterface;
 import org.qi4j.library.framework.remote.RemoteInterfaceComposite;
 import org.qi4j.library.framework.remote.RemoteInterfaceImpl;
-import org.qi4j.test.Qi4jTestSetup;
+import org.qi4j.test.AbstractQi4jTest;
 
 /**
  * TODO
  */
 public class RMIMixinTest
-    extends Qi4jTestSetup
+    extends AbstractQi4jTest
 {
     public void assemble( ModuleAssembly module )
         throws AssemblyException
