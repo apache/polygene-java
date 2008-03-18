@@ -17,7 +17,7 @@
 package org.qi4j.entity.ibatis;
 
 import com.ibatis.sqlmap.client.SqlMapClient;
-import static com.ibatis.sqlmap.client.SqlMapClientBuilder.buildSqlMapClient;
+import static com.ibatis.sqlmap.client.SqlMapClientBuilder.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,18 +28,16 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import org.qi4j.composite.Composite;
-import static org.qi4j.composite.NullArgumentException.validateNotNull;
+import static org.qi4j.composite.NullArgumentException.*;
 import org.qi4j.entity.EntitySession;
 import org.qi4j.entity.ibatis.dbInitializer.DBInitializer;
 import org.qi4j.entity.ibatis.dbInitializer.DBInitializerInfo;
 import org.qi4j.entity.ibatis.internal.IBatisEntityState;
 import org.qi4j.entity.ibatis.internal.IBatisEntityStateDao;
-import static org.qi4j.entity.ibatis.internal.common.Status.statusLoadFromDb;
-import static org.qi4j.entity.ibatis.internal.common.Status.statusNew;
+import static org.qi4j.entity.ibatis.internal.common.Status.*;
 import org.qi4j.service.Activatable;
 import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.composite.CompositeModel;
@@ -226,7 +224,7 @@ final class IBatisEntityStore
      * @throws StoreException Thrown if the complete failed.
      * @since 0.1.0
      */
-    public final void complete( EntitySession session, List<IBatisEntityState> states )
+    public final void complete( EntitySession session, Iterable<IBatisEntityState> states )
         throws StoreException
     {
         throwIfNotActive();

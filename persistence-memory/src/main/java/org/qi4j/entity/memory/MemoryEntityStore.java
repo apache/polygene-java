@@ -19,7 +19,6 @@ package org.qi4j.entity.memory;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.qi4j.association.AbstractAssociation;
@@ -143,7 +142,7 @@ public class MemoryEntityStore
         return null;
     }
 
-    public void complete( EntitySession session, List<MemoryEntityState> states ) throws StoreException
+    public void complete( EntitySession session, Iterable<MemoryEntityState> states ) throws StoreException
     {
         // TODO
     }
