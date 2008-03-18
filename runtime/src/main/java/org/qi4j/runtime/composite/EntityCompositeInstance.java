@@ -25,6 +25,7 @@ import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.composite.InvalidCompositeException;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
+import org.qi4j.spi.entity.StoreException;
 
 public final class EntityCompositeInstance
     extends AbstractCompositeInstance
@@ -43,8 +44,6 @@ public final class EntityCompositeInstance
         this.identity = identity;
         this.session = session;
         this.store = store;
-
-        mixins = new Object[aContext.getCompositeResolution().getMixinCount()];
     }
 
     public static <T extends EntityComposite> EntityCompositeInstance getEntityCompositeInstance( T aProxy )
@@ -57,16 +56,10 @@ public final class EntityCompositeInstance
     {
         if( mixins == null ) // Check if this is a lazy-loaded reference
         {
-            // Check if removed from session
-            // TODO
-
-            // Load state
             CompositeBinding binding = context.getCompositeBinding();
-            if( state == null )
-            {
-                state = store.getEntityInstance( session, identity, binding );
-            }
-            context.newEntityMixins( moduleInstance, this, state );
+            EntityState entityState = store.getEntityInstance( session, identity, binding );
+
+            context.newEntityMixins( moduleInstance, this, entityState );
         }
 
         MethodDescriptor descriptor = context.getMethodDescriptor( method );
@@ -104,6 +97,18 @@ public final class EntityCompositeInstance
 
     public EntityState getState()
     {
+        return state;
+    }
+
+    public EntityState loadState()
+        throws StoreException
+    {
+        if( state == null )
+        {
+            CompositeBinding binding = context.getCompositeBinding();
+            state = store.getEntityInstance( session, identity, binding );
+        }
+
         return state;
     }
 

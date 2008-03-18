@@ -19,7 +19,7 @@
 package org.qi4j.spi.property;
 
 import java.lang.reflect.Type;
-import static org.qi4j.composite.NullArgumentException.validateNotNull;
+import static org.qi4j.composite.NullArgumentException.*;
 import org.qi4j.property.Property;
 import org.qi4j.property.PropertyInfo;
 import org.qi4j.property.PropertyVetoException;
@@ -145,5 +145,15 @@ public abstract class ComputedPropertyInstance<T>
     public int hashCode()
     {
         return ( propertyInfo != null ? propertyInfo.hashCode() : 0 );
+    }
+
+    /**
+     * Get the property info implementation
+     *
+     * @return the property implementation
+     */
+    public PropertyInfo getPropertyInfo()
+    {
+        return propertyInfo;
     }
 }

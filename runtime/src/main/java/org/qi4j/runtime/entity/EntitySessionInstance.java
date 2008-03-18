@@ -17,6 +17,8 @@
 package org.qi4j.runtime.entity;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +31,9 @@ import org.qi4j.entity.EntitySessionException;
 import org.qi4j.entity.Identity;
 import org.qi4j.entity.IdentityGenerator;
 import org.qi4j.entity.SessionCompletionException;
+import org.qi4j.property.ImmutableProperty;
 import org.qi4j.property.Property;
+import org.qi4j.property.PropertyInfo;
 import org.qi4j.query.Query;
 import org.qi4j.query.QueryBuilderFactory;
 import org.qi4j.query.QueryBuilderFactoryImpl;
@@ -108,17 +112,13 @@ public final class EntitySessionInstance
             EntityEntry entity = getCachedEntity( identity, compositeType );
             if( entity == null )
             {
-                CompositeBuilder<T> builder = moduleInstance.getStructureContext().getCompositeBuilderFactory().newCompositeBuilder( compositeType );
-                builder.propertiesFor( Identity.class ).identity().set( identity );
-                entity = new EntityEntry( EntityStatus.CACHED, builder.newInstance() );
-
                 EntityStore store = stateServices.getEntityStore( compositeType );
                 CompositeContext compositeContext = moduleInstance.getModuleContext().getCompositeContext( compositeType );
                 CompositeBinding compositeBinding = compositeContext.getCompositeBinding();
                 EntityState state = store.getEntityInstance( this, identity, compositeBinding );
+                entity = new EntityEntry( EntityStatus.CACHED, (EntityComposite) compositeContext.newEntityCompositeInstance( moduleInstance, this, store, identity ).getProxy() );
                 EntityCompositeInstance compositeInstance = EntityCompositeInstance.getEntityCompositeInstance( entity.getInstance() );
                 compositeContext.newEntityMixins( moduleInstance, compositeInstance, state );
-                compositeInstance.setState( state );
                 Map<String, EntityEntry> entityCache = getEntityCache( compositeType );
                 entityCache.put( identity, entity );
             }
@@ -128,9 +128,9 @@ public final class EntitySessionInstance
                 {
                     EntityStore store = stateServices.getEntityStore( compositeType );
                     CompositeBinding compositeBinding = moduleInstance.getModuleContext().getCompositeContext( compositeType ).getCompositeBinding();
-                    EntityState holder = store.getEntityInstance( this, identity, compositeBinding );
+                    EntityState state = store.getEntityInstance( this, identity, compositeBinding );
                     EntityCompositeInstance handler = EntityCompositeInstance.getEntityCompositeInstance( entity.getInstance() );
-                    handler.setState( holder );
+                    handler.setState( state );
                 }
             }
             else
@@ -153,9 +153,9 @@ public final class EntitySessionInstance
         EntityEntry entity = getCachedEntity( identity, compositeType );
         if( entity == null )
         {
-            CompositeBuilder<T> builder = moduleInstance.getStructureContext().getCompositeBuilderFactory().newCompositeBuilder( compositeType );
-            builder.propertiesFor( Identity.class ).identity().set( identity );
-            entity = new EntityEntry( EntityStatus.CACHED, builder.newInstance() );
+            EntityStore store = stateServices.getEntityStore( compositeType );
+            CompositeContext compositeContext = moduleInstance.getModuleContext().getCompositeContext( compositeType );
+            entity = new EntityEntry( EntityStatus.CACHED, (EntityComposite) compositeContext.newEntityCompositeInstance( moduleInstance, this, store, identity ).getProxy() );
             Map<String, EntityEntry> entityCache = getEntityCache( compositeType );
             entityCache.put( identity, entity );
         }
@@ -177,10 +177,9 @@ public final class EntitySessionInstance
         checkOpen();
 
         EntityCompositeInstance handler = EntityCompositeInstance.getEntityCompositeInstance( entity );
-        EntityState state = handler.getState();
-        if( state != null )
+        if( !handler.isReference() )
         {
-            state.refresh();
+            handler.getState().refresh();
         }
     }
 
@@ -239,29 +238,42 @@ public final class EntitySessionInstance
     {
         checkOpen();
 
-        // Create new entities
+        // Create complete lists
+        Map<EntityStore<EntityState>, List<EntityState>> storeCompletions = new HashMap<EntityStore<EntityState>, List<EntityState>>();
         for( Map.Entry<Class<? extends EntityComposite>, Map<String, EntityEntry>> entry : cache.entrySet() )
         {
-            EntityStore store = stateServices.getEntityStore( entry.getKey() );
+            EntityStore<EntityState> store = stateServices.getEntityStore( entry.getKey() );
+            List<EntityState> storeCompletionList = storeCompletions.get( store );
+            if( storeCompletionList == null )
+            {
+                storeCompletionList = new ArrayList<EntityState>();
+                storeCompletions.put( store, storeCompletionList );
+            }
+
             Map<String, EntityEntry> entities = entry.getValue();
             for( EntityEntry entityEntry : entities.values() )
             {
-                if( entityEntry.getStatus() == EntityStatus.CREATED )
-                {
-                    // TODO
-                }
-                else if( entityEntry.getStatus() == EntityStatus.REMOVED )
-                {
-                    // TODO
-//                        store.delete( entityEntry.getInstance().identity().get(), entityEntry.getInstance().getCompositeType() );
-                }
+                EntityComposite composite = entityEntry.getInstance();
+                EntityState state = EntityCompositeInstance.getEntityCompositeInstance( composite ).getState();
+                storeCompletionList.add( state );
             }
         }
-//        catch( StoreException e )
-//        {
-//            throw new SessionCompletionException( "Could not complete session", e );
-//        }
 
+        // Commit complete lists
+        for( Map.Entry<EntityStore<EntityState>, List<EntityState>> entityStoreListEntry : storeCompletions.entrySet() )
+        {
+            EntityStore<EntityState> entityStore = entityStoreListEntry.getKey();
+            List<EntityState> stateList = entityStoreListEntry.getValue();
+
+            try
+            {
+                entityStore.complete( this, stateList );
+            }
+            catch( StoreException e )
+            {
+                e.printStackTrace();
+            }
+        }
 
         cache.clear();
 
@@ -285,8 +297,6 @@ public final class EntitySessionInstance
     public EntitySession newEntitySession()
     {
         return new EntitySessionInstance( moduleInstance, new EntitySessionStateServices() );
-        // TODO This needs to be fixed
-        // This session should be used as store
     }
 
     void createEntity( EntityComposite instance )
@@ -361,10 +371,11 @@ public final class EntitySessionInstance
     private class EntitySessionStateServices
         implements StateServices
     {
+        private EntitySessionStore store = new EntitySessionStore();
 
         public EntityStore getEntityStore( Class<? extends EntityComposite> compositeType )
         {
-            return new EntitySessionStore();
+            return store;
         }
 
         public IdentityGenerator getIdentityGenerator( Class<? extends EntityComposite> compositeType )
@@ -374,7 +385,7 @@ public final class EntitySessionInstance
     }
 
     private class EntitySessionStore
-        implements EntityStore
+        implements EntityStore<EntitySessionState>
     {
 
         public boolean exists( String identity, CompositeBinding compositeBinding ) throws StoreException
@@ -396,22 +407,40 @@ public final class EntitySessionInstance
             }
         }
 
-        public EntityState newEntityInstance( EntitySession session, String identity, CompositeBinding compositeBinding, Map propertyValues ) throws StoreException
+        public EntitySessionState newEntityInstance( EntitySession session, String identity, CompositeBinding compositeBinding, Map propertyValues ) throws StoreException
         {
 
             return null;
         }
 
-        public EntityState getEntityInstance( EntitySession session, String identity, CompositeBinding compositeBinding ) throws StoreException
+        public EntitySessionState getEntityInstance( EntitySession session, String identity, CompositeBinding compositeBinding ) throws StoreException
         {
             Class<? extends EntityComposite> entityType = (Class<? extends EntityComposite>) compositeBinding.getCompositeResolution().getCompositeModel().getCompositeClass();
-            getReference( identity, entityType );
-
-            return null;
+            EntityComposite parentEntity = getReference( identity, entityType );
+            EntitySessionState entitySessionState = new EntitySessionState( parentEntity );
+            return entitySessionState;
         }
 
-        public void complete( EntitySession session, List states ) throws StoreException
+        public void complete( EntitySession session, Iterable<EntitySessionState> states ) throws StoreException
         {
+            for( EntitySessionState state : states )
+            {
+                EntityComposite instance = state.getParentEntity();
+                Collection<Property> properties = state.getProperties().values();
+                for( Property property : properties )
+                {
+                    // If property in nested session has been updated then copy value to original
+                    if( property instanceof EntitySessionPropertyInstance )
+                    {
+                        EntitySessionPropertyInstance propertyInstance = (EntitySessionPropertyInstance) property;
+                        if( propertyInstance.isUpdated() )
+                        {
+                            Property original = (Property) propertyInstance.getPropertyInfo();
+                            original.set( propertyInstance.get() );
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -421,6 +450,11 @@ public final class EntitySessionInstance
         EntityComposite parentEntity;
         Map<Method, Property> properties = new HashMap<Method, Property>();
         Map<Method, AbstractAssociation> associations = new HashMap<Method, AbstractAssociation>();
+
+        private EntitySessionState( EntityComposite parentEntity )
+        {
+            this.parentEntity = parentEntity;
+        }
 
         public String getIdentity()
         {
@@ -446,18 +480,74 @@ public final class EntitySessionInstance
 
         public Property getProperty( Method propertyMethod )
         {
-            Property property = properties.get( propertyMethod );
-            if( property == null )
+            try
             {
-                property = new PropertyInstance( property, property.get() );
-                properties.put( propertyMethod, property );
+                Property property = properties.get( propertyMethod );
+                if( property == null )
+                {
+                    EntityCompositeInstance compositeInstance = EntityCompositeInstance.getEntityCompositeInstance( parentEntity );
+                    EntityState state = compositeInstance.loadState();
+                    Property original = state.getProperty( propertyMethod );
+                    if( original instanceof ImmutableProperty )
+                    {
+                        property = original;
+                    }
+                    else
+                    {
+                        property = new EntitySessionPropertyInstance( original, original.get() );
+                    }
+                    properties.put( propertyMethod, property );
+                }
+                return property;
             }
-            return property;
+            catch( StoreException e )
+            {
+                // Could not load state for this entity
+                throw new EntitySessionException( e );
+            }
         }
 
         public AbstractAssociation getAssociation( Method associationMethod )
         {
             return null;
+        }
+
+        private EntityComposite getParentEntity()
+        {
+            return parentEntity;
+        }
+
+        private Map<Method, Property> getProperties()
+        {
+            return properties;
+        }
+
+        private Map<Method, AbstractAssociation> getAssociations()
+        {
+            return associations;
+        }
+    }
+
+    private class EntitySessionPropertyInstance
+        extends PropertyInstance
+    {
+        boolean updated = false;
+
+        private EntitySessionPropertyInstance( PropertyInfo aPropertyInfo, Object aValue )
+            throws IllegalArgumentException
+        {
+            super( aPropertyInfo, aValue );
+        }
+
+        @Override public Object set( Object aNewValue )
+        {
+            updated = true;
+            return super.set( aNewValue );
+        }
+
+        public boolean isUpdated()
+        {
+            return updated;
         }
     }
 

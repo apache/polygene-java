@@ -16,7 +16,8 @@ package org.qi4j.composite;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -40,14 +41,14 @@ public class MixinPrecedenceTest
     public void whenMultipleTypedMixinsPrecedence()
     {
         TestComposite1 instance = compositeBuilderFactory.newComposite( TestComposite1.class );
-        assertEquals( "A1", instance.AMethod() );
+        assertThat( "Mixin precedence", instance.AMethod(), equalTo( "A1" ) );
     }
 
     @Test
     public void whenGenericAndTypedMixinPrecedence()
     {
         TestComposite2 instance = compositeBuilderFactory.newComposite( TestComposite2.class );
-        assertEquals( "A1", instance.AMethod() );
+        assertThat( "Typed mixin is chosen over generic mixin", instance.AMethod(), equalTo( "A1" ) );
     }
 
     @Test

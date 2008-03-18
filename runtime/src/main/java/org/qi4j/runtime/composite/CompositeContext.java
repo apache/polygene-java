@@ -222,6 +222,7 @@ public final class CompositeContext
     {
         Object[] mixins = new Object[mixinContexts.size()];
         compositeInstance.setMixins( mixins );
+        compositeInstance.setState( state );
         newMixins( moduleInstance, compositeInstance, Collections.emptySet(), state, mixins );
     }
 

@@ -14,7 +14,9 @@
 
 package org.qi4j.runtime.entity;
 
-import static junit.framework.Assert.assertEquals;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
+import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.CompositeBuilder;
@@ -27,7 +29,6 @@ import org.qi4j.test.entity.CustomerComposite;
 import org.qi4j.test.entity.OrderComposite;
 import org.qi4j.test.entity.Product;
 import org.qi4j.test.entity.ProductComposite;
-import org.junit.Test;
 
 /**
  * TODO
@@ -51,29 +52,31 @@ public class NestedEntitySessionTest
     public void whenNestedSessionThenReturnCorrectPropertyValues()
         throws Exception
     {
-//        EntitySession session = entitySessionFactory.newEntitySession();
-//
-//        // Create product
-//        CompositeBuilder<ProductComposite> cb = session.newEntityBuilder( ProductComposite.class );
-//        cb.propertiesOfComposite().name().set( "Chair" );
-//        cb.propertiesOfComposite().price().set( 57 );
-//        Product chair = cb.newInstance();
-//
-//        assertEquals( "Price was not correct", 57, (int) chair.price().get() );
-//
-//        // Create nested session
-//        EntitySession nestedSession = session.newEntitySession();
-//        Product nestedChair = nestedSession.getReference( chair );
-//        assertEquals( "Price was not correct", 57, (int) chair.price().get() );
-//
-//        nestedChair.price().set( 60 );
-//
-//        assertEquals( "Price was not correct", 57, (int) chair.price().get() );
-//
-//        assertEquals( "Price was not correct", 60, (int) nestedChair.price().get() );
-//
-//        session.complete();
-//
-//        assertEquals( "Price was not correct", 60, (int) chair.price().get() );
+        EntitySession session = entitySessionFactory.newEntitySession();
+
+        // Create product
+        CompositeBuilder<ProductComposite> cb = session.newEntityBuilder( ProductComposite.class );
+        cb.propertiesOfComposite().name().set( "Chair" );
+        cb.propertiesOfComposite().price().set( 57 );
+        Product chair = cb.newInstance();
+
+        assertThat( "Initial property is correct", chair.price().get(), equalTo( 57 ) );
+
+        // Create nested session
+        EntitySession nestedSession = session.newEntitySession();
+        Product nestedChair = nestedSession.getReference( chair );
+        assertThat( "Nested property is correct", chair.price().get(), equalTo( 57 ) );
+
+        nestedChair.price().set( 60 );
+
+        assertThat( "Initial property has not changed", chair.price().get(), equalTo( 57 ) );
+
+        assertThat( "Nested property has changed", nestedChair.price().get(), equalTo( 60 ) );
+
+        nestedSession.complete();
+
+        assertThat( "Initial property has been updated", chair.price().get(), equalTo( 60 ) );
+
+        session.complete();
     }
 }

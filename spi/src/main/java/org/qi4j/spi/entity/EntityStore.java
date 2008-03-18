@@ -17,7 +17,6 @@
 package org.qi4j.spi.entity;
 
 import java.lang.reflect.Method;
-import java.util.List;
 import java.util.Map;
 import org.qi4j.entity.EntitySession;
 import org.qi4j.spi.composite.CompositeBinding;
@@ -38,6 +37,6 @@ public interface EntityStore<T extends EntityState>
                          CompositeBinding compositeBinding )
         throws StoreException;
 
-    void complete( EntitySession session, List<T> states )
+    void complete( EntitySession session, Iterable<T> states )
         throws StoreException;
 }
