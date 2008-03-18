@@ -25,10 +25,10 @@ import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.Concerns;
 import org.qi4j.composite.scope.ConcernFor;
 import org.qi4j.entity.Lifecycle;
-import org.qi4j.test.Qi4jTestSetup;
+import org.qi4j.test.AbstractQi4jTest;
 
 public class CompositeBuilderTest
-    extends Qi4jTestSetup
+    extends AbstractQi4jTest
 {
     public void assemble( ModuleAssembly module )
         throws AssemblyException

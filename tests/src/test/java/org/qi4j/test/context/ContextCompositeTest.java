@@ -27,10 +27,10 @@ import org.qi4j.composite.ContextComposite;
 import org.qi4j.composite.Mixins;
 import org.qi4j.library.framework.entity.PropertyMixin;
 import org.qi4j.property.Property;
-import org.qi4j.test.Qi4jTestSetup;
+import org.qi4j.test.AbstractQi4jTest;
 
 public class ContextCompositeTest
-    extends Qi4jTestSetup
+    extends AbstractQi4jTest
 {
 
     @Test

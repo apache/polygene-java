@@ -23,10 +23,10 @@ import org.qi4j.composite.scope.PropertyField;
 import org.qi4j.composite.scope.PropertyParameter;
 import org.qi4j.library.framework.entity.PropertyMixin;
 import org.qi4j.property.Property;
-import org.qi4j.test.Qi4jTestSetup;
+import org.qi4j.test.AbstractQi4jTest;
 
 public class PropertyInjectionTest
-    extends Qi4jTestSetup
+    extends AbstractQi4jTest
 {
     public void assemble( ModuleAssembly module )
         throws AssemblyException

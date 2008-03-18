@@ -23,7 +23,7 @@ import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.entity.EntitySession;
 import org.qi4j.entity.memory.MemoryEntityStoreComposite;
 import org.qi4j.spi.entity.UuidIdentityGeneratorComposite;
-import org.qi4j.test.Qi4jTestSetup;
+import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.entity.AccountComposite;
 import org.qi4j.test.entity.CustomerComposite;
 import org.qi4j.test.entity.OrderComposite;
@@ -34,7 +34,7 @@ import org.qi4j.test.entity.ProductComposite;
  * TODO
  */
 public class NestedEntitySessionTest
-    extends Qi4jTestSetup
+    extends AbstractQi4jTest
 {
 
     public void assemble( ModuleAssembly module ) throws AssemblyException

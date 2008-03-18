@@ -24,13 +24,13 @@ import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.Mixins;
 import org.qi4j.property.Property;
 import org.qi4j.spi.composite.State;
-import org.qi4j.test.Qi4jTestSetup;
+import org.qi4j.test.AbstractQi4jTest;
 
 /**
  * Test the @PropertyField annotation
  */
 public class PropertyFieldInjectionTest
-    extends Qi4jTestSetup
+    extends AbstractQi4jTest
 {
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {

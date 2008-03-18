@@ -20,13 +20,13 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.test.Qi4jTestSetup;
+import org.qi4j.test.AbstractQi4jTest;
 
 /**
  * Test if the stacktrace is cleaned up properly.
  */
 public class CleanStacktraceTest
-    extends Qi4jTestSetup
+    extends AbstractQi4jTest
 {
 
     public void assemble( ModuleAssembly module ) throws AssemblyException

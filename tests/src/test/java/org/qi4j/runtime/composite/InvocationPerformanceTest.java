@@ -20,14 +20,14 @@ import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.Concerns;
 import org.qi4j.composite.Mixins;
 import org.qi4j.composite.scope.ConcernFor;
-import org.qi4j.test.Qi4jTestSetup;
+import org.qi4j.test.AbstractQi4jTest;
 
 /**
  * Invocation performance test. Don't forget to add VM value "-server"
  * before running this test!
  */
 public class InvocationPerformanceTest
-    extends Qi4jTestSetup
+    extends AbstractQi4jTest
 {
     public void assemble( ModuleAssembly module )
         throws AssemblyException

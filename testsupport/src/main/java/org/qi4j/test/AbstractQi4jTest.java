@@ -36,7 +36,7 @@ import org.qi4j.spi.Qi4jSPI;
 /**
  * Base class for Composite tests.
  */
-public abstract class Qi4jTestSetup
+public abstract class AbstractQi4jTest
     implements Assembler
 {
     protected Qi4j api;

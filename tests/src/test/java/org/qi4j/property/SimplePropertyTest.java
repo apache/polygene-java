@@ -34,13 +34,13 @@ import org.qi4j.composite.scope.SideEffectFor;
 import org.qi4j.composite.scope.ThisCompositeAs;
 import org.qi4j.library.framework.entity.AssociationMixin;
 import org.qi4j.library.framework.entity.PropertyMixin;
-import org.qi4j.test.Qi4jTestSetup;
+import org.qi4j.test.AbstractQi4jTest;
 
 /**
  * TODO
  */
 public class SimplePropertyTest
-    extends Qi4jTestSetup
+    extends AbstractQi4jTest
 {
 
     public void assemble( ModuleAssembly module )

@@ -23,14 +23,14 @@ import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.Mixins;
 import org.qi4j.composite.scope.PropertyField;
 import org.qi4j.library.framework.entity.PropertyMixin;
-import org.qi4j.test.Qi4jTestSetup;
+import org.qi4j.test.AbstractQi4jTest;
 
 /**
  * PropertyMixin invocation performance test. Don't forget to add VM value "-server"
  * before running this test!
  */
 public class PropertyMixinInvocationPerformanceTest
-    extends Qi4jTestSetup
+    extends AbstractQi4jTest
 {
     public void assemble( ModuleAssembly module )
         throws AssemblyException

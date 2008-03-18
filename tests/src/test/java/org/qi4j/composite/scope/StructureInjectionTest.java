@@ -29,13 +29,13 @@ import org.qi4j.runtime.Qi4jRuntime;
 import org.qi4j.service.ServiceLocator;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.structure.ModuleBinding;
-import org.qi4j.test.Qi4jTestSetup;
+import org.qi4j.test.AbstractQi4jTest;
 
 /**
  * Test the @Structure annotation
  */
 public class StructureInjectionTest
-    extends Qi4jTestSetup
+    extends AbstractQi4jTest
 {
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
