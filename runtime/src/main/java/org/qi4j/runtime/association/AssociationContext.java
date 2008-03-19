@@ -12,7 +12,7 @@
  *
  */
 
-package org.qi4j.runtime.property;
+package org.qi4j.runtime.association;
 
 import java.util.ArrayList;
 import org.qi4j.association.AbstractAssociation;
@@ -20,11 +20,10 @@ import org.qi4j.association.ManyAssociation;
 import org.qi4j.association.SetAssociation;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
-import org.qi4j.runtime.association.AssociationInstance;
-import org.qi4j.runtime.association.InvalidAssociationException;
-import org.qi4j.runtime.association.ListAssociationInstance;
 import org.qi4j.runtime.structure.ModuleInstance;
-import org.qi4j.spi.property.AssociationBinding;
+import org.qi4j.spi.association.AssociationBinding;
+import org.qi4j.spi.association.AssociationInstance;
+import org.qi4j.spi.association.ListAssociationInstance;
 
 /**
  * TODO

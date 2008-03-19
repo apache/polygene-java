@@ -12,54 +12,65 @@
  *
  */
 
-package org.qi4j.runtime.association;
+package org.qi4j.spi.association;
 
+import java.lang.reflect.Type;
 import org.qi4j.association.Association;
+import org.qi4j.association.AssociationInfo;
 import org.qi4j.association.AssociationVetoException;
-import org.qi4j.spi.property.AssociationBinding;
+import org.qi4j.entity.EntityComposite;
 
 /**
- * TODO
+ * Implementation of Association to a single Entity.
  */
 public class AssociationInstance<T>
     implements Association<T>
 {
-    private AssociationBinding associationBinding;
+    private AssociationInfo associationInfo;
     private T value;
 
-    public AssociationInstance( AssociationBinding associationBinding, T value )
+    public AssociationInstance( AssociationInfo associationInfo, T value )
     {
-        this.associationBinding = associationBinding;
+        this.associationInfo = associationInfo;
         this.value = value;
     }
 
-    // ReadableAssociation
+    // Association implementation
     public T get()
     {
         return value;
     }
 
-    // WritableAssociation
     public void set( T newValue )
         throws AssociationVetoException
     {
+        if( !( newValue instanceof EntityComposite ) )
+        {
+            throw new AssociationVetoException( "Associated value must be an EntityComposite" );
+        }
+
         this.value = newValue;
     }
 
-    // AssociationInfo
+    // AssociationInfo implementation
     public <T> T getAssociationInfo( Class<T> infoType )
     {
-        return associationBinding.getAssociationInfo( infoType );
+        return associationInfo.getAssociationInfo( infoType );
     }
 
     public String getName()
     {
-        return associationBinding.getAssociationResolution().getAssociationModel().getName();
+        return associationInfo.getName();
     }
 
     public String getQualifiedName()
     {
-        return associationBinding.getAssociationResolution().getAssociationModel().getQualifiedName();
+        return associationInfo.getQualifiedName();
+    }
+
+    public Type getAssociationType()
+    {
+        return associationInfo.getAssociationType();
     }
 
     public void write( T value )

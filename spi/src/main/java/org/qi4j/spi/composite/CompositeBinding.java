@@ -18,7 +18,7 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
-import org.qi4j.spi.property.AssociationBinding;
+import org.qi4j.spi.association.AssociationBinding;
 import org.qi4j.spi.property.PropertyBinding;
 
 /**

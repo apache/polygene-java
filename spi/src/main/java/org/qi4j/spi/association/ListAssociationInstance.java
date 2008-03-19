@@ -12,45 +12,53 @@
  *
  */
 
-package org.qi4j.runtime.association;
+package org.qi4j.spi.association;
 
+import java.lang.reflect.Type;
 import java.util.AbstractList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import org.qi4j.association.AssociationInfo;
+import org.qi4j.association.AssociationVetoException;
 import org.qi4j.association.ListAssociation;
-import org.qi4j.spi.property.AssociationBinding;
+import org.qi4j.entity.EntityComposite;
 
 /**
- * TODO
+ * Implementation of ListAssociation, which delegates to an
+ * ordinary List.
  */
 public final class ListAssociationInstance<T> extends AbstractList<T>
     implements ListAssociation<T>
 {
-    private AssociationBinding associationBinding;
+    private AssociationInfo associationInfo;
     private List<T> associated;
 
-    public ListAssociationInstance( List<T> associated, AssociationBinding associationBinding )
+    public ListAssociationInstance( List<T> associated, AssociationInfo associationInfo )
     {
-        this.associationBinding = associationBinding;
+        this.associationInfo = associationInfo;
         this.associated = associated;
     }
 
     public <T> T getAssociationInfo( Class<T> infoType )
     {
-        // TODO
-        return associationBinding.getAssociationInfo( infoType );
+        return associationInfo.getAssociationInfo( infoType );
     }
 
     public String getName()
     {
-        return associationBinding.getName();
+        return associationInfo.getName();
     }
 
     public String getQualifiedName()
     {
-        return associationBinding.getQualifiedName();
+        return associationInfo.getQualifiedName();
+    }
+
+    public Type getAssociationType()
+    {
+        return associationInfo.getAssociationType();
     }
 
     @Override public T get( int i )
@@ -66,17 +74,32 @@ public final class ListAssociationInstance<T> extends AbstractList<T>
 
     @Override public boolean add( T t )
     {
+        if( !( t instanceof EntityComposite ) )
+        {
+            throw new AssociationVetoException( "Associated object must be an EntityComposite" );
+        }
+
         return associated.add( t );
     }
 
 
     @Override public T set( int i, T t )
     {
+        if( !( t instanceof EntityComposite ) )
+        {
+            throw new AssociationVetoException( "Associated object must be an EntityComposite" );
+        }
+
         return associated.set( i, t );
     }
 
     @Override public void add( int i, T t )
     {
+        if( !( t instanceof EntityComposite ) )
+        {
+            throw new AssociationVetoException( "Associated object must be an EntityComposite" );
+        }
+
         associated.add( i, t );
     }
 
@@ -87,11 +110,21 @@ public final class ListAssociationInstance<T> extends AbstractList<T>
 
     @Override public int indexOf( Object o )
     {
+        if( !( o instanceof EntityComposite ) )
+        {
+            throw new AssociationVetoException( "Object must be an EntityComposite" );
+        }
+
         return associated.indexOf( o );
     }
 
     @Override public int lastIndexOf( Object o )
     {
+        if( !( o instanceof EntityComposite ) )
+        {
+            throw new AssociationVetoException( "Object must be an EntityComposite" );
+        }
+
         return associated.lastIndexOf( o );
     }
 

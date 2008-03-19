@@ -14,6 +14,8 @@
 
 package org.qi4j.association;
 
+import java.lang.reflect.Type;
+
 /**
  * Metadata about an Association.
  */
@@ -47,4 +49,6 @@ public interface AssociationInfo
      * @return the qualified name of the association
      */
     String getQualifiedName();
+
+    Type getAssociationType();
 }

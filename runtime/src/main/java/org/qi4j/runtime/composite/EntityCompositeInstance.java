@@ -57,7 +57,7 @@ public final class EntityCompositeInstance
         if( mixins == null ) // Check if this is a lazy-loaded reference
         {
             CompositeBinding binding = context.getCompositeBinding();
-            EntityState entityState = store.getEntityInstance( session, identity, binding );
+            EntityState entityState = store.getEntityState( session, identity, binding );
 
             context.newEntityMixins( moduleInstance, this, entityState );
         }
@@ -106,7 +106,7 @@ public final class EntityCompositeInstance
         if( state == null )
         {
             CompositeBinding binding = context.getCompositeBinding();
-            state = store.getEntityInstance( session, identity, binding );
+            state = store.getEntityState( session, identity, binding );
         }
 
         return state;

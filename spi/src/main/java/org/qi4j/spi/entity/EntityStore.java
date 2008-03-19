@@ -21,22 +21,60 @@ import java.util.Map;
 import org.qi4j.entity.EntitySession;
 import org.qi4j.spi.composite.CompositeBinding;
 
+/**
+ * Interface that must be implemented by store for
+ * persistent state of EntityComposites.
+ */
 public interface EntityStore<T extends EntityState>
 {
-    boolean exists( String identity, CompositeBinding compositeBinding )
+    /**
+     * Create new EntityState for a given identity and
+     * composite type.
+     * <p/>
+     * This should only create the EntityState
+     * and not insert it into any database, since
+     * that should occur during the {@link #prepare(org.qi4j.entity.EntitySession, Iterable)}
+     * call.
+     *
+     * @param session          the session for which to create the EntityState
+     * @param identity         the identity of the entity
+     * @param compositeBinding the composite binding for the entity
+     * @param propertyValues   the value of the properties.
+     * @return a new EntityState implementation
+     * @throws StoreException
+     */
+    T newEntityState( EntitySession session,
+                      String identity,
+                      CompositeBinding compositeBinding,
+                      Map<Method, Object> propertyValues )
         throws StoreException;
 
-    T newEntityInstance( EntitySession session,
-                         String identity,
-                         CompositeBinding compositeBinding,
-                         Map<Method, Object> propertyValues )
+    /**
+     * Get the EntityState for a given identity
+     * and composite type.
+     *
+     * @param session
+     * @param identity
+     * @param compositeBinding
+     * @return
+     * @throws StoreException
+     */
+    T getEntityState( EntitySession session,
+                      String identity,
+                      CompositeBinding compositeBinding )
         throws StoreException;
 
-    T getEntityInstance( EntitySession session,
-                         String identity,
-                         CompositeBinding compositeBinding )
-        throws StoreException;
-
-    void complete( EntitySession session, Iterable<T> states )
+    /**
+     * This method is called by {@link org.qi4j.entity.EntitySession#complete()}.
+     * The implementation of this method should take the state and send any changes
+     * to the underlying datastore. The method returns a StateCommitter that the session
+     * will invoke once all EntityStore's have been prepared.
+     *
+     * @param session the session for the state
+     * @param states  the state to send to the datastore
+     * @return an implementation of StateCommitter
+     * @throws StoreException if the state could not be sent to the datastore
+     */
+    StateCommitter prepare( EntitySession session, Iterable<T> states )
         throws StoreException;
 }

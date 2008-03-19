@@ -12,9 +12,10 @@
  *
  */
 
-package org.qi4j.spi.property;
+package org.qi4j.spi.association;
 
 import java.io.Serializable;
+import java.lang.reflect.Type;
 import java.util.Map;
 import org.qi4j.association.AssociationInfo;
 import org.qi4j.spi.composite.AssociationResolution;
@@ -52,5 +53,10 @@ public final class AssociationBinding
     public String getQualifiedName()
     {
         return associationResolution.getAssociationModel().getQualifiedName();
+    }
+
+    public Type getAssociationType()
+    {
+        return associationResolution.getAssociationModel().getType();
     }
 }

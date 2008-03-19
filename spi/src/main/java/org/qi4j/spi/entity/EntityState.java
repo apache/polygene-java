@@ -51,18 +51,9 @@ public interface EntityState
     CompositeBinding getCompositeBinding();
 
     /**
-     * Instruct the EntityState to retrieve the data from the backing store.
-     * This is called to force new data to be read from physical storage and in effect
-     * invalidates any caches for this entity.
+     * Remove the entity represented by this EntityState when the session is completed.
      */
-    void refresh();
+    void remove();
 
-    /**
-     * Delete the entity represented by this EntityState.
-     *
-     * @return true if an entity was removed, otherwise false.
-     * @throws StoreException if there is a physical problem with the connection to the backing store.
-     */
-    boolean delete()
-        throws StoreException;
+    EntityStatus getStatus();
 }

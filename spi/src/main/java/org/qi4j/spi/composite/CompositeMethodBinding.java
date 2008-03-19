@@ -15,7 +15,7 @@
 package org.qi4j.spi.composite;
 
 import java.util.List;
-import org.qi4j.spi.property.AssociationBinding;
+import org.qi4j.spi.association.AssociationBinding;
 import org.qi4j.spi.property.PropertyBinding;
 
 /**

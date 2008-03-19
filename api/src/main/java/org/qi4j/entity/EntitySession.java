@@ -35,7 +35,8 @@ public interface EntitySession
     <T> T getReference( T entity )
         throws EntityCompositeNotFoundException;
 
-    void refresh( EntityComposite entity );
+    void refresh( EntityComposite entity )
+        throws EntitySessionException;
 
     void remove( EntityComposite entity );
 

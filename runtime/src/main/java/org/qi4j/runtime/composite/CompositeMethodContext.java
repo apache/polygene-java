@@ -24,7 +24,7 @@ import java.util.Map;
 import org.qi4j.composite.Constraint;
 import org.qi4j.composite.InstantiationException;
 import org.qi4j.runtime.Qi4jRuntime;
-import org.qi4j.runtime.property.AssociationContext;
+import org.qi4j.runtime.association.AssociationContext;
 import org.qi4j.runtime.property.PropertyContext;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.CompositeBinding;

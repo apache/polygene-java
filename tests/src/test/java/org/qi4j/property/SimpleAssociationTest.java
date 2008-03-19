@@ -20,9 +20,9 @@ import org.junit.Test;
 import org.qi4j.association.ManyAssociation;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.Mixins;
+import org.qi4j.entity.EntityComposite;
 import org.qi4j.library.framework.entity.AssociationMixin;
 import org.qi4j.library.framework.entity.PropertyMixin;
 import org.qi4j.test.AbstractQi4jTest;
@@ -73,7 +73,7 @@ public class SimpleAssociationTest
         extends SimpleAssociationTest.Nameable,
                 SimpleAssociationTest.Employer,
                 SimpleAssociationTest.StandardComposite,
-                Composite
+                EntityComposite
     {
     }
 
@@ -81,7 +81,7 @@ public class SimpleAssociationTest
         extends SimpleAssociationTest.Nameable,
                 SimpleAssociationTest.Employee,
                 SimpleAssociationTest.StandardComposite,
-                Composite
+                EntityComposite
     {
     }
 
