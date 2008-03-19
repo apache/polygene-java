@@ -29,10 +29,12 @@ import org.qi4j.association.AbstractAssociation;
 import org.qi4j.association.ListAssociation;
 import org.qi4j.association.ManyAssociation;
 import org.qi4j.composite.Composite;
+import org.qi4j.composite.scope.Structure;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.EntitySession;
 import org.qi4j.property.ImmutableProperty;
 import org.qi4j.property.Property;
+import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.association.AssociationBinding;
 import org.qi4j.spi.association.AssociationInstance;
 import org.qi4j.spi.association.ListAssociationInstance;
@@ -55,16 +57,18 @@ import org.qi4j.spi.property.PropertyBinding;
 import org.qi4j.spi.property.PropertyInstance;
 import org.qi4j.spi.property.PropertyModel;
 import org.qi4j.spi.serialization.SerializedEntity;
+import org.qi4j.spi.serialization.SerializedObject;
 import org.qi4j.spi.serialization.SerializedState;
 
 public class MemoryEntityStore
     implements EntityStore<EntityStateInstance>
 {
-    private final Map<SerializedEntity, SerializedState> entityState;
+    private @Structure Qi4jSPI spi;
+    private final Map<SerializedEntity, SerializedObject<SerializedState>> entityState;
 
     public MemoryEntityStore()
     {
-        entityState = new ConcurrentHashMap<SerializedEntity, SerializedState>();
+        entityState = new ConcurrentHashMap<SerializedEntity, SerializedObject<SerializedState>>();
     }
 
     public EntityStateInstance newEntityState(
@@ -89,11 +93,21 @@ public class MemoryEntityStore
     {
         Class<? extends EntityComposite> compositeType = (Class<? extends EntityComposite>) compositeBinding.getCompositeResolution().getCompositeModel().getCompositeClass();
         SerializedEntity serializedEntity = new SerializedEntity( identity, compositeType );
-        SerializedState state = entityState.get( serializedEntity );
+        SerializedObject<SerializedState> serializedState = entityState.get( serializedEntity );
 
-        if( state == null )
+        if( serializedState == null )
         {
             throw new EntityNotFoundException( "Memory store", identity );
+        }
+
+        SerializedState state = null;
+        try
+        {
+            state = serializedState.getObject( session, spi );
+        }
+        catch( ClassNotFoundException e )
+        {
+            throw new StoreException( "Could not load entity " + serializedEntity, e );
         }
 
         Map<Method, Object> propertyValues = new HashMap<Method, Object>();
@@ -112,7 +126,7 @@ public class MemoryEntityStore
 
     public StateCommitter prepare( EntitySession session, Iterable<EntityStateInstance> states ) throws StoreException
     {
-        final Map<SerializedEntity, SerializedState> updatedEntities = new HashMap<SerializedEntity, SerializedState>();
+        final Map<SerializedEntity, SerializedObject<SerializedState>> updatedEntities = new HashMap<SerializedEntity, SerializedObject<SerializedState>>();
         final List<SerializedEntity> removedEntities = new ArrayList<SerializedEntity>();
 
         for( EntityStateInstance stateInstance : states )
@@ -147,7 +161,10 @@ public class MemoryEntityStore
                 SerializedState state = new SerializedState( serializedProperties, serializedAssociations, serializedManyAssociations );
                 Class<? extends Composite> compositeType = stateInstance.getCompositeBinding().getCompositeResolution().getCompositeModel().getCompositeClass();
                 SerializedEntity serializedEntity = new SerializedEntity( stateInstance.getIdentity(), (Class<? extends EntityComposite>) compositeType );
-                updatedEntities.put( serializedEntity, state );
+
+                SerializedObject<SerializedState> serializedState = new SerializedObject<SerializedState>( state, spi );
+
+                updatedEntities.put( serializedEntity, serializedState );
             }
             else
             {
@@ -170,10 +187,7 @@ public class MemoryEntityStore
                     }
 
                     // Update state
-                    for( Map.Entry<SerializedEntity, SerializedState> serializedEntitySerializedStateEntry : updatedEntities.entrySet() )
-                    {
-                        entityState.put( serializedEntitySerializedStateEntry.getKey(), serializedEntitySerializedStateEntry.getValue() );
-                    }
+                    entityState.putAll( updatedEntities );
                 }
             }
 

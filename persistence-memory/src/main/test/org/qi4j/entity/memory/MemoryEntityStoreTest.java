@@ -70,6 +70,67 @@ public class MemoryEntityStoreTest
         session.discard();
     }
 
+    @Test
+    public void whenNewEntitiesThenPerformanceIsOk()
+        throws Exception
+    {
+        long start = System.currentTimeMillis();
+
+        int nrOfEntities = 100000;
+        for( int i = 0; i < nrOfEntities; i++ )
+        {
+            createEntity();
+        }
+
+        long end = System.currentTimeMillis();
+        System.out.println( end - start );
+    }
+
+    @Test
+    public void whenFindEntityThenPerformanceIsOk()
+        throws Exception
+    {
+        long start = System.currentTimeMillis();
+
+        String id = createEntity();
+
+        int nrOfLookups = 1000000;
+        EntitySession session = entitySessionFactory.newEntitySession();
+        for( int i = 0; i < nrOfLookups; i++ )
+        {
+            TestComposite instance = session.find( id, TestComposite.class );
+            session.clear();
+        }
+        session.discard();
+
+        long end = System.currentTimeMillis();
+        long time = end - start;
+        System.out.println( time );
+        System.out.println( nrOfLookups / ( time / 1000.0D ) );
+    }
+
+    @Test
+    public void whenBulkNewEntitiesThenPerformanceIsOk()
+        throws Exception
+    {
+        long start = System.currentTimeMillis();
+
+        int nrOfEntities = 100000;
+        EntitySession session = entitySessionFactory.newEntitySession();
+        CompositeBuilder<TestComposite> builder = session.newEntityBuilder( TestComposite.class );
+        builder.propertiesOfComposite().name().set( "Rickard" );
+        for( int i = 0; i < nrOfEntities; i++ )
+        {
+            // Create entity
+            TestComposite instance = builder.newInstance();
+            instance.identity().get();
+        }
+        session.complete();
+
+        long end = System.currentTimeMillis();
+        System.out.println( end - start );
+    }
+
     private String createEntity()
         throws SessionCompletionException
     {
