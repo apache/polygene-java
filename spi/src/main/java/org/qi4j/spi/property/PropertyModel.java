@@ -145,4 +145,9 @@ public final class PropertyModel
     {
         return accessor.hashCode();
     }
+
+    @Override public String toString()
+    {
+        return accessor.toGenericString();
+    }
 }

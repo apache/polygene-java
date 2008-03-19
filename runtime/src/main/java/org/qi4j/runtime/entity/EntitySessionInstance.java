@@ -47,6 +47,7 @@ import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.association.ListAssociationInstance;
 import org.qi4j.spi.association.SetAssociationInstance;
 import org.qi4j.spi.composite.CompositeBinding;
+import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityStore;
@@ -89,7 +90,13 @@ public final class EntitySessionInstance
 
         if( identity == null )
         {
-            identity = stateServices.getIdentityGenerator( compositeType ).generate( compositeType );
+            IdentityGenerator identityGenerator = stateServices.getIdentityGenerator( compositeType );
+            if( identityGenerator == null )
+            {
+                throw new EntitySessionException( "No identity generator found for type " + compositeType.getName() );
+            }
+
+            identity = identityGenerator.generate( compositeType );
         }
 
         builder.propertiesFor( Identity.class ).identity().set( identity );
@@ -122,7 +129,15 @@ public final class EntitySessionInstance
                 EntityStore store = stateServices.getEntityStore( compositeType );
                 CompositeContext compositeContext = moduleInstance.getModuleContext().getCompositeContext( compositeType );
                 CompositeBinding compositeBinding = compositeContext.getCompositeBinding();
-                EntityState state = store.getEntityState( this, identity, compositeBinding );
+                EntityState state = null;
+                try
+                {
+                    state = store.getEntityState( this, identity, compositeBinding );
+                }
+                catch( EntityNotFoundException e )
+                {
+                    throw new EntityCompositeNotFoundException( "Entity does not exist", identity, compositeType );
+                }
 
                 // Create entity instance
                 entity = (EntityComposite) compositeContext.newEntityCompositeInstance( moduleInstance, this, store, identity ).getProxy();
@@ -156,7 +171,7 @@ public final class EntitySessionInstance
 
             return compositeType.cast( entity );
         }
-        catch( Exception e )
+        catch( StoreException e )
         {
             throw new EntityStorageException( "Storage unable to access entity " + identity, e );
         }

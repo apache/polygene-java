@@ -66,4 +66,9 @@ public final class PropertyBinding
     {
         return defaultValue;
     }
+
+    @Override public String toString()
+    {
+        return propertyResolution.toString() + ( defaultValue != null ? defaultValue.toString() : "" );
+    }
 }

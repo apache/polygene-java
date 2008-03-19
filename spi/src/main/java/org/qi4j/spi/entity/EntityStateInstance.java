@@ -48,6 +48,7 @@ public class EntityStateInstance
         this.associations = associations;
     }
 
+    // EntityState implementation
     public String getIdentity()
     {
         return identity;
@@ -76,5 +77,15 @@ public class EntityStateInstance
     public EntityStatus getStatus()
     {
         return status;
+    }
+
+    public Map<Method, Property> getProperties()
+    {
+        return properties;
+    }
+
+    public Map<Method, AbstractAssociation> getAssociations()
+    {
+        return associations;
     }
 }

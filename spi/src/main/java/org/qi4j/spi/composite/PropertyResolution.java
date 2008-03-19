@@ -34,4 +34,9 @@ public final class PropertyResolution
     {
         return propertyModel;
     }
+
+    @Override public String toString()
+    {
+        return propertyModel.toString();
+    }
 }

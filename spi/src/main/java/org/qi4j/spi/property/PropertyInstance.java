@@ -74,4 +74,14 @@ public class PropertyInstance<T> extends ComputedPropertyInstance<T>
     {
         return value == null ? "" : value.toString();
     }
+
+    public T read()
+    {
+        return value;
+    }
+
+    public void write( T value )
+    {
+        this.value = value;
+    }
 }
