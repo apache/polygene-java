@@ -16,15 +16,19 @@
  */
 package org.qi4j.entity.memory;
 
+import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.qi4j.association.AbstractAssociation;
 import org.qi4j.association.ListAssociation;
 import org.qi4j.association.ManyAssociation;
+import org.qi4j.composite.Composite;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.EntitySession;
 import org.qi4j.property.ImmutableProperty;
@@ -40,6 +44,7 @@ import org.qi4j.spi.composite.CompositeModel;
 import org.qi4j.spi.composite.CompositeResolution;
 import org.qi4j.spi.composite.PropertyResolution;
 import org.qi4j.spi.entity.EntityAlreadyExistsException;
+import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityStateInstance;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityStore;
@@ -75,6 +80,112 @@ public class MemoryEntityStore
             throw new EntityAlreadyExistsException( "Memory store", identity );
         }
 
+        EntityStateInstance entityStateInstance = createEntityState( EntityStatus.NEW, identity, compositeBinding, propertyValues );
+        return entityStateInstance;
+    }
+
+    public EntityStateInstance getEntityState( EntitySession session, String identity, CompositeBinding compositeBinding )
+        throws StoreException
+    {
+        Class<? extends EntityComposite> compositeType = (Class<? extends EntityComposite>) compositeBinding.getCompositeResolution().getCompositeModel().getCompositeClass();
+        SerializedEntity serializedEntity = new SerializedEntity( identity, compositeType );
+        SerializedState state = entityState.get( serializedEntity );
+
+        if( state == null )
+        {
+            throw new EntityNotFoundException( "Memory store", identity );
+        }
+
+        Map<Method, Object> propertyValues = new HashMap<Method, Object>();
+        Map<String, Serializable> storedProperties = state.getProperties();
+        Iterable<PropertyBinding> propertyBindings = compositeBinding.getPropertyBindings();
+        for( PropertyBinding propertyBinding : propertyBindings )
+        {
+            Object storedValue = storedProperties.get( propertyBinding.getQualifiedName() );
+            propertyValues.put( propertyBinding.getPropertyResolution().getPropertyModel().getAccessor(), storedValue );
+        }
+
+        EntityStateInstance stateInstance = createEntityState( EntityStatus.LOADED, identity, compositeBinding, propertyValues );
+
+        return stateInstance;
+    }
+
+    public StateCommitter prepare( EntitySession session, Iterable<EntityStateInstance> states ) throws StoreException
+    {
+        final Map<SerializedEntity, SerializedState> updatedEntities = new HashMap<SerializedEntity, SerializedState>();
+        final List<SerializedEntity> removedEntities = new ArrayList<SerializedEntity>();
+
+        for( EntityStateInstance stateInstance : states )
+        {
+            if( stateInstance.getStatus() == EntityStatus.NEW || stateInstance.getStatus() == EntityStatus.LOADED )
+            {
+                Map<String, Serializable> serializedProperties = new HashMap<String, Serializable>();
+                Map<String, SerializedEntity> serializedAssociations = new HashMap<String, SerializedEntity>();
+                Map<String, Collection<SerializedEntity>> serializedManyAssociations = new HashMap<String, Collection<SerializedEntity>>();
+
+                CompositeBinding binding = stateInstance.getCompositeBinding();
+                Iterable<PropertyBinding> propertyBindings = binding.getPropertyBindings();
+                for( PropertyBinding propertyBinding : propertyBindings )
+                {
+                    String qName = propertyBinding.getQualifiedName();
+                    Method accessor = propertyBinding.getPropertyResolution().getPropertyModel().getAccessor();
+                    Property property = stateInstance.getProperty( accessor );
+                    if( property instanceof PropertyInstance )
+                    {
+                        PropertyInstance propertyInstance = (PropertyInstance) stateInstance.getProperty( accessor );
+                        Object value = propertyInstance.read();
+                        serializedProperties.put( qName, (Serializable) value );
+                    }
+                    else if( property instanceof ImmutablePropertyInstance )
+                    {
+                        ImmutablePropertyInstance propertyInstance = (ImmutablePropertyInstance) stateInstance.getProperty( accessor );
+                        Object value = propertyInstance.get();
+                        serializedProperties.put( qName, (Serializable) value );
+                    }
+                }
+
+                SerializedState state = new SerializedState( serializedProperties, serializedAssociations, serializedManyAssociations );
+                Class<? extends Composite> compositeType = stateInstance.getCompositeBinding().getCompositeResolution().getCompositeModel().getCompositeClass();
+                SerializedEntity serializedEntity = new SerializedEntity( stateInstance.getIdentity(), (Class<? extends EntityComposite>) compositeType );
+                updatedEntities.put( serializedEntity, state );
+            }
+            else
+            {
+                Class<? extends Composite> compositeType = stateInstance.getCompositeBinding().getCompositeResolution().getCompositeModel().getCompositeClass();
+                SerializedEntity serializedEntity = new SerializedEntity( stateInstance.getIdentity(), (Class<? extends EntityComposite>) compositeType );
+                removedEntities.add( serializedEntity );
+            }
+        }
+
+        return new StateCommitter()
+        {
+            public void commit()
+            {
+                synchronized( entityState )
+                {
+                    // Remove state
+                    for( SerializedEntity removedEntity : removedEntities )
+                    {
+                        entityState.remove( removedEntity );
+                    }
+
+                    // Update state
+                    for( Map.Entry<SerializedEntity, SerializedState> serializedEntitySerializedStateEntry : updatedEntities.entrySet() )
+                    {
+                        entityState.put( serializedEntitySerializedStateEntry.getKey(), serializedEntitySerializedStateEntry.getValue() );
+                    }
+                }
+            }
+
+            public void cancel()
+            {
+                // Do nothing
+            }
+        };
+    }
+
+    private EntityStateInstance createEntityState( EntityStatus status, String identity, CompositeBinding compositeBinding, Map<Method, Object> propertyValues )
+    {
         Map<Method, Property> properties = new HashMap<Method, Property>();
         Iterable<PropertyBinding> propertyBindings = compositeBinding.getPropertyBindings();
         for( PropertyBinding propertyBinding : propertyBindings )
@@ -127,38 +238,8 @@ public class MemoryEntityStore
             }
         }
 
-        EntityStateInstance entityStateInstance = new EntityStateInstance( identity, compositeBinding, EntityStatus.NEW, properties, associations );
+        EntityStateInstance entityStateInstance = new EntityStateInstance( identity, compositeBinding, status, properties, associations );
         return entityStateInstance;
     }
 
-    public EntityStateInstance getEntityState( EntitySession session, String identity, CompositeBinding compositeBinding )
-        throws StoreException
-    {
-        // TODO
-        return null;
-    }
-
-    public StateCommitter prepare( EntitySession session, Iterable<EntityStateInstance> states ) throws StoreException
-    {
-        for( EntityStateInstance stateInstance : states )
-        {
-            // TODO
-        }
-
-        return new StateCommitter()
-        {
-            public void commit()
-            {
-            }
-
-            public void cancel()
-            {
-            }
-        };
-    }
-
-    private final boolean remove( SerializedEntity serializedEntity )
-    {
-        return entityState.remove( serializedEntity ) != null;
-    }
 }
