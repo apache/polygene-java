@@ -12,8 +12,8 @@ import jdbm.RecordManagerFactory;
 import jdbm.htree.HTree;
 import org.qi4j.composite.scope.Structure;
 import org.qi4j.composite.scope.ThisCompositeAs;
-import org.qi4j.entity.EntitySession;
 import org.qi4j.entity.PersistenceException;
+import org.qi4j.entity.UnitOfWork;
 import org.qi4j.library.framework.locking.WriteLock;
 import org.qi4j.service.Activatable;
 import org.qi4j.spi.Qi4jSPI;
@@ -64,7 +64,7 @@ public class JdbmSerializationStoreMixin
 
     // SerializationStore implementation
     @WriteLock
-    public SerializedState get( SerializedEntity entityId, EntitySession session ) throws IOException
+    public SerializedState get( SerializedEntity entityId, UnitOfWork unitOfWork ) throws IOException
     {
         String indexKey = entityId.toString();
         Long stateIndex = (Long) index.get( indexKey );
@@ -83,7 +83,7 @@ public class JdbmSerializationStoreMixin
 
         try
         {
-            return serializedState.getObject( session, spi );
+            return serializedState.getObject( unitOfWork, spi );
         }
         catch( ClassNotFoundException e )
         {

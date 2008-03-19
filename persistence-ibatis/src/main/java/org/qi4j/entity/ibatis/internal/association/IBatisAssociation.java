@@ -18,8 +18,8 @@ package org.qi4j.entity.ibatis.internal.association;
 
 import static org.qi4j.composite.NullArgumentException.*;
 import org.qi4j.entity.EntityComposite;
-import org.qi4j.entity.EntitySession;
 import org.qi4j.entity.Identity;
+import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.ibatis.internal.common.Status;
 import static org.qi4j.entity.ibatis.internal.common.Util.*;
 import org.qi4j.spi.association.AssociationBinding;
@@ -33,7 +33,7 @@ import org.qi4j.spi.association.AssociationInstance;
  */
 public final class IBatisAssociation<T> extends AssociationInstance
 {
-    private final EntitySession session;
+    private final UnitOfWork unitOfWork;
 
     private String valueIdentity;
     private T value;
@@ -46,25 +46,25 @@ public final class IBatisAssociation<T> extends AssociationInstance
      * @param anInitialIdentity The initial identity.
      * @param aBinding          The association binding. This argument must not be {@code null}.
      * @param aStatus           The status of this association. This argument must not be {@code null}.
-     * @param aSession          The entity session. This argument must not be {@code null}.
-     * @throws IllegalArgumentException Thrown if one or both {@code aBinding} and {@code aSession} arguments are
+     * @param unitOfWork        The unit of work. This argument must not be {@code null}.
+     * @throws IllegalArgumentException Thrown if one or both {@code aBinding} and {@code unitOfWork} arguments are
      *                                  {@code null}.
      * @since 0.1.0
      */
     public IBatisAssociation(
         String anInitialIdentity, AssociationBinding aBinding,
-        Status aStatus, EntitySession aSession )
+        Status aStatus, UnitOfWork unitOfWork )
         throws IllegalArgumentException
     {
         super( aBinding, null );
 
         validateNotNull( "aBinding", aBinding );
         validateNotNull( "aStatus", aStatus );
-        validateNotNull( "aSession", aSession );
+        validateNotNull( "unitOfWork", unitOfWork );
 
         valueIdentity = anInitialIdentity;
         status = aStatus;
-        session = aSession;
+        this.unitOfWork = unitOfWork;
         isDirty = false;
     }
 
@@ -89,7 +89,7 @@ public final class IBatisAssociation<T> extends AssociationInstance
         }
 
         // Retrieves the value given the value identity
-        value = (T) session.getReference( valueIdentity, (Class<? extends EntityComposite>) getAssociationType() );
+        value = (T) unitOfWork.getReference( valueIdentity, (Class<? extends EntityComposite>) getAssociationType() );
         return value;
     }
 

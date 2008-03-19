@@ -9,8 +9,8 @@ import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.Mixins;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.EntityCompositeNotFoundException;
-import org.qi4j.entity.EntitySession;
-import org.qi4j.entity.SessionCompletionException;
+import org.qi4j.entity.UnitOfWork;
+import org.qi4j.entity.UnitOfWorkCompletionException;
 import org.qi4j.library.framework.entity.AssociationMixin;
 import org.qi4j.library.framework.entity.PropertyMixin;
 import org.qi4j.property.Property;
@@ -34,14 +34,14 @@ public class MemoryEntityStoreTest
         throws Exception
     {
         String id = createEntity();
-        EntitySession session;
+        UnitOfWork unitOfWork;
         TestComposite instance;
 
         // Find entity
-        session = entitySessionFactory.newEntitySession();
-        instance = session.find( id, TestComposite.class );
+        unitOfWork = unitOfWorkFactory.newUnitOfWork();
+        instance = unitOfWork.find( id, TestComposite.class );
         assertThat( "property has correct value", instance.name().get(), equalTo( "Rickard" ) );
-        session.discard();
+        unitOfWork.discard();
     }
 
     @Test
@@ -51,23 +51,23 @@ public class MemoryEntityStoreTest
         String id = createEntity();
 
         // Remove entity
-        EntitySession session = entitySessionFactory.newEntitySession();
-        TestComposite instance = session.find( id, TestComposite.class );
-        session.remove( instance );
-        session.complete();
+        UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
+        TestComposite instance = unitOfWork.find( id, TestComposite.class );
+        unitOfWork.remove( instance );
+        unitOfWork.complete();
 
         // Find entity
-        session = entitySessionFactory.newEntitySession();
+        unitOfWork = unitOfWorkFactory.newUnitOfWork();
         try
         {
-            instance = session.find( id, TestComposite.class );
+            instance = unitOfWork.find( id, TestComposite.class );
             fail( "Should not be able to find entity" );
         }
         catch( EntityCompositeNotFoundException e )
         {
             // Ok!
         }
-        session.discard();
+        unitOfWork.discard();
     }
 
     @Test
@@ -91,29 +91,29 @@ public class MemoryEntityStoreTest
         throws Exception
     {
         int nrOfEntities = 1000000;
-        EntitySession session = entitySessionFactory.newEntitySession();
+        UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
 
         for( int i = 0; i < nrOfEntities; i++ )
         {
             // Create entity
-            CompositeBuilder<TestComposite> builder = session.newEntityBuilder( TestComposite.class );
+            CompositeBuilder<TestComposite> builder = unitOfWork.newEntityBuilder( TestComposite.class );
             builder.propertiesOfComposite().name().set( "Rickard" );
             TestComposite instance = builder.newInstance();
         }
 
-        session.clear();
+        unitOfWork.clear();
 
         long start = System.currentTimeMillis();
 
         for( int i = 0; i < nrOfEntities; i++ )
         {
             // Create entity
-            CompositeBuilder<TestComposite> builder = session.newEntityBuilder( TestComposite.class );
+            CompositeBuilder<TestComposite> builder = unitOfWork.newEntityBuilder( TestComposite.class );
             builder.propertiesOfComposite().name().set( "Rickard" );
             TestComposite instance = builder.newInstance();
         }
 
-        session.complete();
+        unitOfWork.complete();
         long end = System.currentTimeMillis();
         long time = end - start;
         System.out.println( end - start );
@@ -129,13 +129,13 @@ public class MemoryEntityStoreTest
         String id = createEntity();
 
         int nrOfLookups = 1000000;
-        EntitySession session = entitySessionFactory.newEntitySession();
+        UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
         for( int i = 0; i < nrOfLookups; i++ )
         {
-            TestComposite instance = session.find( id, TestComposite.class );
-            session.clear();
+            TestComposite instance = unitOfWork.find( id, TestComposite.class );
+            unitOfWork.clear();
         }
-        session.discard();
+        unitOfWork.discard();
 
         long end = System.currentTimeMillis();
         long time = end - start;
@@ -144,15 +144,15 @@ public class MemoryEntityStoreTest
     }
 
     private String createEntity()
-        throws SessionCompletionException
+        throws UnitOfWorkCompletionException
     {
         // Create entity
-        EntitySession session = entitySessionFactory.newEntitySession();
-        CompositeBuilder<TestComposite> builder = session.newEntityBuilder( TestComposite.class );
+        UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
+        CompositeBuilder<TestComposite> builder = unitOfWork.newEntityBuilder( TestComposite.class );
         builder.propertiesOfComposite().name().set( "Rickard" );
         TestComposite instance = builder.newInstance();
         String id = instance.identity().get();
-        session.complete();
+        unitOfWork.complete();
         return id;
     }
 

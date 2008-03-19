@@ -27,7 +27,7 @@ import org.qi4j.association.ManyAssociation;
 import org.qi4j.association.SetAssociation;
 import org.qi4j.composite.Composite;
 import static org.qi4j.composite.NullArgumentException.*;
-import org.qi4j.entity.EntitySession;
+import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.ibatis.internal.association.IBatisAbstractAssociationInstance;
 import org.qi4j.entity.ibatis.internal.association.IBatisAssociation;
 import org.qi4j.entity.ibatis.internal.common.Status;
@@ -63,7 +63,7 @@ public final class IBatisEntityState
     private final Map<String, Object> values;
     private Status status;
     private final IBatisEntityStateDao dao;
-    private final EntitySession entitySession;
+    private final UnitOfWork unitOfWork;
 
     /**
      * Construct an instance of {@code IBatisEntityState}.
@@ -73,7 +73,7 @@ public final class IBatisEntityState
      * @param aCompositeBinding The composite binding. This argument must not be {@code null}.
      * @param valuez            The field valuez of this entity state. This argument must not be {@code null}.
      * @param aStatus           The initial entity state status. This argument must not be {@code null}.
-     * @param anEntitySession   The entity session. This argument must not be {@code null}.
+     * @param anUnitOfWork      The unit of work. This argument must not be {@code null}.
      * @param aDao              The dao to retrieve associations and complete this entity state.
      *                          This argument must not be {@code null}.
      * @throws IllegalArgumentException Thrown if one or some or all arguments are {@code null}.
@@ -82,7 +82,7 @@ public final class IBatisEntityState
     public IBatisEntityState(
         String anIdentity, CompositeBinding aCompositeBinding, Map<String, Object> valuez,
         EntityStatus status,
-        Status aStatus, EntitySession anEntitySession, IBatisEntityStateDao aDao )
+        Status aStatus, UnitOfWork anUnitOfWork, IBatisEntityStateDao aDao )
         throws IllegalArgumentException
     {
         super( anIdentity, aCompositeBinding, status, new HashMap<Method, Property>(), new HashMap<Method, AbstractAssociation>() );
@@ -90,12 +90,12 @@ public final class IBatisEntityState
         validateNotNull( "anIdentity", anIdentity );
         validateNotNull( "aCompositeBinding", aCompositeBinding );
         validateNotNull( "valuez", valuez );
-        validateNotNull( "anEntitySession", anEntitySession );
+        validateNotNull( "anUnitOfWork", anUnitOfWork );
         validateNotNull( "aDao", aDao );
 
         this.values = valuez;
         this.status = aStatus;
-        entitySession = anEntitySession;
+        unitOfWork = anUnitOfWork;
         dao = aDao;
 
         capitalizeKeys();
@@ -239,7 +239,7 @@ public final class IBatisEntityState
             String associationNameKey = anAssociationMethod.getName().toUpperCase();
 
             String associationIdentity = (String) values.get( associationNameKey );
-            return new IBatisAssociation( associationIdentity, associationBinding, status, entitySession );
+            return new IBatisAssociation( associationIdentity, associationBinding, status, unitOfWork );
         }
 
         return null;

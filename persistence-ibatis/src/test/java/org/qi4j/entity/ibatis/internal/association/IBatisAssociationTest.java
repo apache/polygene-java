@@ -25,7 +25,7 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
 import org.qi4j.entity.EntityComposite;
-import org.qi4j.entity.EntitySession;
+import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.ibatis.AccountComposite;
 import org.qi4j.entity.ibatis.PersonComposite;
 import org.qi4j.entity.ibatis.internal.common.Status;
@@ -46,7 +46,7 @@ import org.qi4j.test.AbstractQi4jTest;
 public final class IBatisAssociationTest extends AbstractQi4jTest
 {
     /**
-     * Test {@link IBatisAssociation#IBatisAssociation(String, AssociationBinding, Status, EntitySession)}
+     * Test {@link IBatisAssociation#IBatisAssociation(String, AssociationBinding, Status, org.qi4j.entity.UnitOfWork)}
      */
     @Test
     public void testConstructor()
@@ -60,25 +60,25 @@ public final class IBatisAssociationTest extends AbstractQi4jTest
         AssociationBinding associationBinding = associationBindings.iterator().next();
 
         Mockery mockery = new Mockery();
-        EntitySession entitySession = mockery.mock( EntitySession.class );
+        UnitOfWork unitOfWork = mockery.mock( UnitOfWork.class );
 
         // ==========================
         // Test with invalid argument
         // ==========================
         Object[] invalidArgumentss = new Object[]{
             new Object[]{ null, null, null, null },
-            new Object[]{ null, null, null, entitySession },
+            new Object[]{ null, null, null, unitOfWork },
             new Object[]{ null, null, statusNew, null },
-            new Object[]{ null, null, statusNew, entitySession },
+            new Object[]{ null, null, statusNew, unitOfWork },
             new Object[]{ null, associationBinding, null, null },
-            new Object[]{ null, associationBinding, null, entitySession },
+            new Object[]{ null, associationBinding, null, unitOfWork },
             new Object[]{ null, associationBinding, statusNew, null },
             new Object[]{ "1", null, null, null },
-            new Object[]{ "1", null, null, entitySession },
+            new Object[]{ "1", null, null, unitOfWork },
             new Object[]{ "1", null, statusNew, null },
-            new Object[]{ "1", null, statusNew, entitySession },
+            new Object[]{ "1", null, statusNew, unitOfWork },
             new Object[]{ "1", associationBinding, null, null },
-            new Object[]{ "1", associationBinding, null, entitySession },
+            new Object[]{ "1", associationBinding, null, unitOfWork },
             new Object[]{ "1", associationBinding, statusNew, null }
         };
 
@@ -89,10 +89,10 @@ public final class IBatisAssociationTest extends AbstractQi4jTest
             String identity = (String) arrArgument[ 0 ];
             AssociationBinding binding = (AssociationBinding) arrArgument[ 1 ];
             Status status = (Status) arrArgument[ 2 ];
-            EntitySession session = (EntitySession) arrArgument[ 3 ];
+            UnitOfWork unit = (UnitOfWork) arrArgument[ 3 ];
             try
             {
-                new IBatisAssociation( identity, binding, status, session );
+                new IBatisAssociation( identity, binding, status, unit );
                 fail( failMsg );
             }
             catch( IllegalArgumentException e )
@@ -109,8 +109,8 @@ public final class IBatisAssociationTest extends AbstractQi4jTest
         // Test with valid argument
         // ========================
         Object[] validArgumentss = new Object[]{
-            new Object[]{ "1", associationBinding, statusNew, entitySession },
-            new Object[]{ null, associationBinding, statusNew, entitySession }
+            new Object[]{ "1", associationBinding, statusNew, unitOfWork },
+            new Object[]{ null, associationBinding, statusNew, unitOfWork }
         };
         for( Object validArguments : validArgumentss )
         {
@@ -118,10 +118,10 @@ public final class IBatisAssociationTest extends AbstractQi4jTest
             String identity = (String) arrArgument[ 0 ];
             AssociationBinding binding = (AssociationBinding) arrArgument[ 1 ];
             Status status = (Status) arrArgument[ 2 ];
-            EntitySession session = (EntitySession) arrArgument[ 3 ];
+            UnitOfWork unit = (UnitOfWork) arrArgument[ 3 ];
             try
             {
-                new IBatisAssociation( identity, binding, status, session );
+                new IBatisAssociation( identity, binding, status, unit );
             }
             catch( Exception e )
             {
@@ -140,19 +140,19 @@ public final class IBatisAssociationTest extends AbstractQi4jTest
         // Set up
         final AssociationBinding associationBinding = getPrimaryContactPersonAssociation();
         Mockery mockery = new Mockery();
-        final EntitySession entitySession = mockery.mock( EntitySession.class );
+        final UnitOfWork unitOfWork = mockery.mock( UnitOfWork.class );
 
         // ============================
         // Test with null initial value
         // ============================
-        IBatisAssociation assoc1 = new IBatisAssociation( null, associationBinding, statusNew, entitySession );
+        IBatisAssociation assoc1 = new IBatisAssociation( null, associationBinding, statusNew, unitOfWork );
         Object assoc1Value = assoc1.get();
         assertNull( assoc1Value );
 
         // ================================
         // Test with not null initial value
         // ================================
-        IBatisAssociation<Object> assoc2 = new IBatisAssociation<Object>( "1", associationBinding, statusNew, entitySession );
+        IBatisAssociation<Object> assoc2 = new IBatisAssociation<Object>( "1", associationBinding, statusNew, unitOfWork );
 
         final PersonComposite personComposite = mockery.mock( PersonComposite.class );
         mockery.checking( new Expectations()
@@ -163,7 +163,7 @@ public final class IBatisAssociationTest extends AbstractQi4jTest
                 Class<EntityComposite> compositeType = (Class<EntityComposite>) model.getType();
 
                 // One invocation of get refefence and return person composite
-                one( entitySession ).getReference( "1", compositeType );
+                one( unitOfWork ).getReference( "1", compositeType );
                 will( returnValue( personComposite ) );
             }
         }
@@ -172,7 +172,7 @@ public final class IBatisAssociationTest extends AbstractQi4jTest
         assertNotNull( assoc2Value );
         assertEquals( personComposite, assoc2Value );
 
-        // Ensure that it doesn't call entity session again
+        // Ensure that it doesn't call unit of work again
         Object assoc3Value = assoc2.get();
         assertNotNull( assoc3Value );
         assertEquals( personComposite, assoc3Value );
@@ -187,7 +187,7 @@ public final class IBatisAssociationTest extends AbstractQi4jTest
         // Set up
         AssociationBinding primaryContactPersonAssoc = getPrimaryContactPersonAssociation();
         final Mockery mockery = new Mockery();
-        EntitySession entitySession = mockery.mock( EntitySession.class );
+        UnitOfWork unitOfWork = mockery.mock( UnitOfWork.class );
         final PersonComposite personComposite = mockery.mock( PersonComposite.class );
         mockery.checking( new Expectations()
         {
@@ -205,7 +205,7 @@ public final class IBatisAssociationTest extends AbstractQi4jTest
         // Test set
         // ========
         IBatisAssociation<PersonComposite> assoc1 =
-            new IBatisAssociation<PersonComposite>( null, primaryContactPersonAssoc, statusNew, entitySession );
+            new IBatisAssociation<PersonComposite>( null, primaryContactPersonAssoc, statusNew, unitOfWork );
         Object assoc1Value = assoc1.get();
         assertNull( assoc1Value );
 

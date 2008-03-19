@@ -29,8 +29,8 @@ import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
-import org.qi4j.entity.EntitySession;
 import org.qi4j.entity.Identity;
+import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.ibatis.dbInitializer.DBInitializerInfo;
 import org.qi4j.entity.ibatis.internal.IBatisEntityState;
 import org.qi4j.property.Property;
@@ -151,7 +151,7 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
     }
 
     /**
-     * Tests {@link IBatisEntityStore#newEntityState(EntitySession, String, CompositeBinding, java.util.Map)}
+     * Tests {@link IBatisEntityStore#newEntityState(org.qi4j.entity.UnitOfWork , String, CompositeBinding, java.util.Map)}
      *
      * @throws SQLException Thrown if initialization fails.
      */
@@ -170,11 +170,11 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
         CompositeBinding personBinding = personCompositeContext.getCompositeBinding();
 
         Mockery mockery = new Mockery();
-        EntitySession entitySession = mockery.mock( EntitySession.class );
+        UnitOfWork unitOfWork = mockery.mock( UnitOfWork.class );
         HashMap<Method, Object> initialValues = new HashMap<Method, Object>();
         try
         {
-            IBatisEntityState state = entityStore.newEntityState( entitySession, "1", personBinding, initialValues );
+            IBatisEntityState state = entityStore.newEntityState( unitOfWork, "1", personBinding, initialValues );
             assertNotNull( state );
 
             checkStateProperties( personBinding, state );
@@ -216,7 +216,7 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
     }
 
     /**
-     * Tests {@link IBatisEntityStore#getEntityState(EntitySession, String, CompositeBinding)}
+     * Tests {@link IBatisEntityStore#getEntityState(org.qi4j.entity.UnitOfWork , String, CompositeBinding)}
      *
      * @throws SQLException Thrown if initialization fails.
      */
@@ -235,14 +235,14 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
         CompositeBinding personBinding = personCompositeContext.getCompositeBinding();
 
         Mockery mockery = new Mockery();
-        EntitySession entitySession = mockery.mock( EntitySession.class );
+        UnitOfWork unitOfWork = mockery.mock( UnitOfWork.class );
 
         // ============================
         // Test get with valid identity
         // ============================
         try
         {
-            IBatisEntityState state = entityStore.getEntityState( entitySession, "1", personBinding );
+            IBatisEntityState state = entityStore.getEntityState( unitOfWork, "1", personBinding );
             assertNotNull( state );
 
             // --------
@@ -282,7 +282,7 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
         // ===================================
         try
         {
-            IBatisEntityState state = entityStore.getEntityState( entitySession, "1123123", personBinding );
+            IBatisEntityState state = entityStore.getEntityState( unitOfWork, "1123123", personBinding );
             assertNull( state );
         }
         catch( StoreException e )

@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.qi4j.composite.scope.Structure;
-import org.qi4j.entity.EntitySession;
+import org.qi4j.entity.UnitOfWork;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.serialization.SerializationStore;
@@ -27,7 +27,7 @@ public class MemorySerializationStoreMixin
         store = new ConcurrentHashMap<SerializedEntity, SerializedObject<SerializedState>>();
     }
 
-    public SerializedState get( SerializedEntity entityId, EntitySession session ) throws IOException
+    public SerializedState get( SerializedEntity entityId, UnitOfWork unitOfWork ) throws IOException
     {
         SerializedObject<SerializedState> serializedState = store.get( entityId );
 
@@ -38,7 +38,7 @@ public class MemorySerializationStoreMixin
 
         try
         {
-            return serializedState.getObject( session, spi );
+            return serializedState.getObject( unitOfWork, spi );
         }
         catch( ClassNotFoundException e )
         {

@@ -26,7 +26,7 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilderFactory;
-import org.qi4j.entity.EntitySession;
+import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.ibatis.AbstractTestCase;
 import org.qi4j.entity.ibatis.HasFirstName;
 import org.qi4j.entity.ibatis.HasLastName;
@@ -161,8 +161,8 @@ public final class IBatisEntityStateTest extends AbstractTestCase
 
         Mockery mockery = new Mockery();
         IBatisEntityStateDao dao = mockery.mock( IBatisEntityStateDao.class );
-        EntitySession session = mockery.mock( EntitySession.class );
-        return new IBatisEntityState( "1", personCompositeBinding, initialValues, EntityStatus.NEW, statusNew, session, dao );
+        UnitOfWork unitOfWork = mockery.mock( UnitOfWork.class );
+        return new IBatisEntityState( "1", personCompositeBinding, initialValues, EntityStatus.NEW, statusNew, unitOfWork, dao );
     }
 
     /**

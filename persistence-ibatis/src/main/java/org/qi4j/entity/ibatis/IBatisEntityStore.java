@@ -32,7 +32,7 @@ import java.util.Map;
 import java.util.Properties;
 import org.qi4j.composite.Composite;
 import static org.qi4j.composite.NullArgumentException.*;
-import org.qi4j.entity.EntitySession;
+import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.ibatis.dbInitializer.DBInitializer;
 import org.qi4j.entity.ibatis.dbInitializer.DBInitializerInfo;
 import org.qi4j.entity.ibatis.internal.IBatisEntityState;
@@ -132,7 +132,7 @@ final class IBatisEntityStore
     /**
      * Construct a new entity instance.
      *
-     * @param aSession          The entity session.
+     * @param unitOfWork        The unit of work.
      * @param anIdentity        The new entity identity. This argument must not be {@code null}.
      * @param aCompositeBinding The composite binding. This argument must not be {@code null}.
      * @param propertyValues    The property values. This argument must not be {@code null}.
@@ -142,11 +142,11 @@ final class IBatisEntityStore
      * @since 0.1.0
      */
     public final IBatisEntityState newEntityState(
-        EntitySession aSession, String anIdentity, CompositeBinding aCompositeBinding,
+        UnitOfWork unitOfWork, String anIdentity, CompositeBinding aCompositeBinding,
         Map<Method, Object> propertyValues )
         throws IllegalArgumentException, StoreException
     {
-        validateNotNull( "aSession", aSession );
+        validateNotNull( "unitOfWork", unitOfWork );
         validateNotNull( "anIdentity", anIdentity );
         validateNotNull( "aCompositeBinding", aCompositeBinding );
         validateNotNull( "propertyValues", propertyValues );
@@ -161,13 +161,13 @@ final class IBatisEntityStore
             fieldValues.put( propertyName, propertyValue );
         }
 
-        return new IBatisEntityState( anIdentity, aCompositeBinding, fieldValues, EntityStatus.NEW, statusNew, aSession, dao );
+        return new IBatisEntityState( anIdentity, aCompositeBinding, fieldValues, EntityStatus.NEW, statusNew, unitOfWork, dao );
     }
 
     /**
      * Returns existing entity instance. Returns {@code null} if not found.
      *
-     * @param aSession          The entity session. This argument must not be {@code null}.
+     * @param aUnit             The unit of work. This argument must not be {@code null}.
      * @param anIdentity        The identity. This argument must not be {@code null}.
      * @param aCompositeBinding The composite binding. This argument must not be {@code null}.
      * @return The entity instance with id as {@code anIdentity}.
@@ -177,10 +177,10 @@ final class IBatisEntityStore
      */
     @SuppressWarnings( "unchecked" )
     public final IBatisEntityState getEntityState(
-        EntitySession aSession, String anIdentity, CompositeBinding aCompositeBinding )
+        UnitOfWork aUnit, String anIdentity, CompositeBinding aCompositeBinding )
         throws IllegalArgumentException, StoreException
     {
-        validateNotNull( "anEntitySession", aSession );
+        validateNotNull( "aUnitOfWork", aUnit );
         validateNotNull( "anIdentity", anIdentity );
         validateNotNull( "aCompositeBinding", aCompositeBinding );
 
@@ -193,18 +193,18 @@ final class IBatisEntityStore
         }
 
         rawData.put( "identity", anIdentity );
-        return new IBatisEntityState( anIdentity, aCompositeBinding, rawData, EntityStatus.LOADED, statusLoadFromDb, aSession, dao );
+        return new IBatisEntityState( anIdentity, aCompositeBinding, rawData, EntityStatus.LOADED, statusLoadFromDb, aUnit, dao );
     }
 
     /**
      * Complete or persists the list of entity state.
      *
-     * @param session The entity session. This argument must not be {@code null}.
-     * @param states  The states to complete. This argument must not be {@code null}.
+     * @param unitOfWork The unit of work. This argument must not be {@code null}.
+     * @param states     The states to complete. This argument must not be {@code null}.
      * @throws StoreException Thrown if the complete failed.
      * @since 0.1.0
      */
-    public final StateCommitter prepare( EntitySession session, Iterable<IBatisEntityState> states )
+    public final StateCommitter prepare( UnitOfWork unitOfWork, Iterable<IBatisEntityState> states )
         throws StoreException
     {
         throwIfNotActive();
