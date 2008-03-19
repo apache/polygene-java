@@ -92,16 +92,14 @@ public abstract class AbstractModelFactory
             List<ParameterModel> parameterModels = new ArrayList<ParameterModel>();
             int idx = 0;
             boolean hasInjections = false;
+            boolean hasNonInjectedParameters = false;
             for( Type parameterType : parameterTypes )
             {
                 Annotation[] parameterAnnotation = parameterAnnotations[ idx ];
                 ParameterModel parameterModel = getParameterModel( parameterAnnotation, mixinClass, parameterType );
                 if( parameterModel.getInjectionModel() == null )
                 {
-                    if( compositeType != null )
-                    {
-                        throw new InvalidCompositeException( "All parameters in constructor for " + mixinClass.getName() + " must be injected", compositeType );
-                    }
+                    hasNonInjectedParameters = true;
                 }
                 else
                 {
@@ -109,8 +107,18 @@ public abstract class AbstractModelFactory
                 }
                 parameterModels.add( parameterModel );
             }
-            ConstructorModel constructorModel = new ConstructorModel( constructor, parameterModels, hasInjections );
-            constructorModels.add( constructorModel );
+            if( hasInjections && hasNonInjectedParameters )
+            {
+                if( compositeType != null )
+                {
+                    throw new InvalidCompositeException( "All parameters in constructor for " + mixinClass.getName() + " must be injected", compositeType );
+                }
+            }
+            else if( !hasNonInjectedParameters )
+            {
+                ConstructorModel constructorModel = new ConstructorModel( constructor, parameterModels, hasInjections );
+                constructorModels.add( constructorModel );
+            }
         }
     }
 

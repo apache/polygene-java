@@ -59,7 +59,7 @@ public class UsesInjectionTest
         }
     }
 
-    public class ToBeInjected
+    public static class ToBeInjected
     {
     }
 

@@ -16,14 +16,17 @@ package org.qi4j.spi.serialization;
 
 import java.io.IOException;
 import java.util.Map;
+import org.qi4j.entity.EntitySession;
+import org.qi4j.spi.entity.StateCommitter;
 
-public interface SerializablePersistenceSpi
+public interface SerializationStore
 {
-    void putInstance( String anId, Map<Class, SerializedObject> mixins );
+    SerializedState get( SerializedEntity entityId, EntitySession session )
+        throws IOException;
 
-    Map<Class, SerializedObject> getInstance( String identity );
+    boolean contains( SerializedEntity entityId )
+        throws IOException;
 
-    void removeInstance( String identity );
-
-    void close() throws IOException;
+    StateCommitter prepare( Map<SerializedEntity, SerializedState> newEntities, Map<SerializedEntity, SerializedState> updatedEntities, Iterable<SerializedEntity> removedEntities )
+        throws IOException;
 }
