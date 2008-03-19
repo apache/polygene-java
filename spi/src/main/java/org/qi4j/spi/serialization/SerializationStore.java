@@ -16,12 +16,12 @@ package org.qi4j.spi.serialization;
 
 import java.io.IOException;
 import java.util.Map;
-import org.qi4j.entity.EntitySession;
+import org.qi4j.entity.UnitOfWork;
 import org.qi4j.spi.entity.StateCommitter;
 
 public interface SerializationStore
 {
-    SerializedState get( SerializedEntity entityId, EntitySession session )
+    SerializedState get( SerializedEntity entityId, UnitOfWork unitOfWork )
         throws IOException;
 
     boolean contains( SerializedEntity entityId )

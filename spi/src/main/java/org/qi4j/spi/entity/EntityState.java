@@ -22,7 +22,7 @@ import org.qi4j.spi.composite.State;
 /**
  * The EntityState is a shared "second-level cache" mixin state container for a particular
  * entity. All mixins are shared across transactions, and therefor there is a "copy-on-write" pattern
- * expected from the higher-level systems. This means that when a EntitySession in a transaction wants
+ * expected from the higher-level systems. This means that when a UnitOfWork in a transaction wants
  * to modify the mixin state, it must first retrieve a non-shared copy from the EntityState by
  * calling <code><K> K getMixinResolution( Class<K> mixinType );</code>. For instance;
  * <code><pre>
@@ -51,7 +51,7 @@ public interface EntityState
     CompositeBinding getCompositeBinding();
 
     /**
-     * Remove the entity represented by this EntityState when the session is completed.
+     * Remove the entity represented by this EntityState when the unit of work is completed.
      */
     void remove();
 

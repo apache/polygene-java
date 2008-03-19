@@ -37,10 +37,10 @@ import org.qi4j.spi.entity.StoreException;
 /**
  * TODO
  */
-public final class EntitySessionCompositeBuilder<T extends Composite>
+public final class UnitOfWorkCompositeBuilder<T extends Composite>
     extends CompositeBuilderImpl<T>
 {
-    private EntitySessionInstance entitySession;
+    private UnitOfWorkInstance uow;
     private EntityStore store;
     private static Method IDENTITY_METHOD = null;
 
@@ -56,10 +56,10 @@ public final class EntitySessionCompositeBuilder<T extends Composite>
         }
     }
 
-    public EntitySessionCompositeBuilder( ModuleInstance moduleInstance, CompositeContext compositeContext, EntitySessionInstance entitySession, EntityStore store )
+    public UnitOfWorkCompositeBuilder( ModuleInstance moduleInstance, CompositeContext compositeContext, UnitOfWorkInstance uow, EntityStore store )
     {
         super( moduleInstance, compositeContext );
-        this.entitySession = entitySession;
+        this.uow = uow;
         this.store = store;
     }
 
@@ -75,7 +75,7 @@ public final class EntitySessionCompositeBuilder<T extends Composite>
         Map<Method, Object> propertyValues = getPropertyValues();
         try
         {
-            state = store.newEntityState( entitySession, identity, context.getCompositeBinding(), propertyValues );
+            state = store.newEntityState( uow, identity, context.getCompositeBinding(), propertyValues );
         }
         catch( StoreException e )
         {
@@ -100,10 +100,10 @@ public final class EntitySessionCompositeBuilder<T extends Composite>
             }
         }
 
-        EntityCompositeInstance compositeInstance = context.newEntityCompositeInstance( moduleInstance, entitySession, store, identity );
+        EntityCompositeInstance compositeInstance = context.newEntityCompositeInstance( moduleInstance, uow, store, identity );
         context.newEntityMixins( moduleInstance, compositeInstance, state );
         T instance = compositeInterface.cast( compositeInstance.getProxy() );
-        entitySession.createEntity( (EntityComposite) instance );
+        uow.createEntity( (EntityComposite) instance );
 
         // Invoke lifecycle create() method
         if( instance instanceof Lifecycle )
@@ -128,7 +128,7 @@ public final class EntitySessionCompositeBuilder<T extends Composite>
             public T next()
             {
                 T instance = decoratedIterator.next();
-                entitySession.createEntity( (EntityComposite) instance );
+                uow.createEntity( (EntityComposite) instance );
                 return instance;
             }
 

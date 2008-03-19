@@ -17,28 +17,28 @@
 package org.qi4j.runtime.entity;
 
 import org.qi4j.entity.EntityComposite;
-import org.qi4j.entity.EntitySession;
-import org.qi4j.entity.EntitySessionFactory;
 import org.qi4j.entity.IdentityGenerator;
+import org.qi4j.entity.UnitOfWork;
+import org.qi4j.entity.UnitOfWorkFactory;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.structure.ServiceMap;
 import org.qi4j.spi.entity.EntityStore;
 
-public final class EntitySessionFactoryImpl
-    implements EntitySessionFactory
+public final class UnitOfWorkFactoryImpl
+    implements UnitOfWorkFactory
 {
     private ModuleInstance moduleInstance;
     private ModuleStateServices services;
 
-    public EntitySessionFactoryImpl( ModuleInstance moduleInstance )
+    public UnitOfWorkFactoryImpl( ModuleInstance moduleInstance )
     {
         this.moduleInstance = moduleInstance;
         services = new ModuleStateServices( moduleInstance );
     }
 
-    public EntitySession newEntitySession()
+    public UnitOfWork newUnitOfWork()
     {
-        return new EntitySessionInstance( moduleInstance, services );
+        return new UnitOfWorkInstance( moduleInstance, services );
     }
 
     private class ModuleStateServices

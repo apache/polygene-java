@@ -15,9 +15,9 @@
 package org.qi4j.entity;
 
 /**
- * Factory for EntitySessions.
+ * Factory for UnitOfWork.
  */
-public interface EntitySessionFactory
+public interface UnitOfWorkFactory
 {
-    EntitySession newEntitySession();
+    UnitOfWork newUnitOfWork();
 }

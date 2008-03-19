@@ -16,24 +16,24 @@
  */
 package org.qi4j.entity;
 
-public class EntitySessionException extends RuntimeException
+public class UnitOfWorkException extends RuntimeException
 {
 
-    public EntitySessionException()
+    public UnitOfWorkException()
     {
     }
 
-    public EntitySessionException( String message )
+    public UnitOfWorkException( String message )
     {
         super( message );
     }
 
-    public EntitySessionException( String message, Throwable cause )
+    public UnitOfWorkException( String message, Throwable cause )
     {
         super( message, cause );
     }
 
-    public EntitySessionException( Throwable cause )
+    public UnitOfWorkException( Throwable cause )
     {
         super( cause );
     }

@@ -27,20 +27,20 @@ import org.qi4j.spi.entity.EntityStore;
 public class EntityCompositeBuilderFactory
     extends ModuleCompositeBuilderFactory
 {
-    private EntitySessionInstance entitySession;
+    private UnitOfWorkInstance unitOfWork;
     private EntityStore store;
 
-    public EntityCompositeBuilderFactory( ModuleInstance moduleInstance, EntitySessionInstance entitySession, EntityStore store )
+    public EntityCompositeBuilderFactory( ModuleInstance moduleInstance, UnitOfWorkInstance unitOfWork, EntityStore store )
     {
         super( moduleInstance );
         this.store = store;
-        this.entitySession = entitySession;
+        this.unitOfWork = unitOfWork;
     }
 
     @Override protected <T extends Composite> CompositeBuilder<T> createBuilder( ModuleInstance moduleInstance, CompositeContext compositeContext )
     {
         // Create a builder
-        CompositeBuilder<T> builder = new EntitySessionCompositeBuilder<T>( moduleInstance, compositeContext, entitySession, store );
+        CompositeBuilder<T> builder = new UnitOfWorkCompositeBuilder<T>( moduleInstance, compositeContext, unitOfWork, store );
         return builder;
     }
 }

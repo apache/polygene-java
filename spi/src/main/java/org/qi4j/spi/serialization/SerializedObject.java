@@ -21,7 +21,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import org.qi4j.Qi4j;
-import org.qi4j.entity.EntitySession;
+import org.qi4j.entity.UnitOfWork;
 import org.qi4j.spi.Qi4jSPI;
 
 
@@ -50,13 +50,13 @@ public final class SerializedObject<T>
 
     }
 
-    public T getObject( EntitySession session, Qi4j api )
+    public T getObject( UnitOfWork unitOfWork, Qi4j api )
         throws ClassNotFoundException
     {
         try
         {
             ByteArrayInputStream in = new ByteArrayInputStream( data );
-            CompositeInputStream stream = new CompositeInputStream( in, session, api );
+            CompositeInputStream stream = new CompositeInputStream( in, unitOfWork, api );
             return (T) stream.readObject();
         }
         catch( IOException e )

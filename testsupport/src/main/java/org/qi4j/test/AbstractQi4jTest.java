@@ -23,7 +23,7 @@ import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.ObjectBuilderFactory;
-import org.qi4j.entity.EntitySessionFactory;
+import org.qi4j.entity.UnitOfWorkFactory;
 import org.qi4j.runtime.Energy4Java;
 import org.qi4j.runtime.Qi4jRuntime;
 import org.qi4j.runtime.structure.ApplicationContext;
@@ -48,7 +48,7 @@ public abstract class AbstractQi4jTest
 
     protected CompositeBuilderFactory compositeBuilderFactory;
     protected ObjectBuilderFactory objectBuilderFactory;
-    protected EntitySessionFactory entitySessionFactory;
+    protected UnitOfWorkFactory unitOfWorkFactory;
     protected ServiceLocator serviceLocator;
 
     protected ModuleInstance moduleInstance;
@@ -66,7 +66,7 @@ public abstract class AbstractQi4jTest
         moduleInstance = layerInstance.getModuleInstances().iterator().next();
         compositeBuilderFactory = moduleInstance.getStructureContext().getCompositeBuilderFactory();
         objectBuilderFactory = moduleInstance.getStructureContext().getObjectBuilderFactory();
-        entitySessionFactory = moduleInstance.getStructureContext().getEntitySessionFactory();
+        unitOfWorkFactory = moduleInstance.getStructureContext().getUnitOfWorkFactory();
         serviceLocator = moduleInstance.getStructureContext().getServiceLocator();
     }
 

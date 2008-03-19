@@ -21,7 +21,7 @@ import java.lang.reflect.Type;
 import org.qi4j.Qi4j;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.ObjectBuilderFactory;
-import org.qi4j.entity.EntitySessionFactory;
+import org.qi4j.entity.UnitOfWorkFactory;
 import org.qi4j.runtime.Qi4jRuntime;
 import org.qi4j.service.ServiceLocator;
 import org.qi4j.spi.Qi4jSPI;
@@ -74,9 +74,9 @@ public final class StructureInjectionProviderFactory
             {
                 return structureContext.getObjectBuilderFactory();
             }
-            else if( type.equals( EntitySessionFactory.class ) )
+            else if( type.equals( UnitOfWorkFactory.class ) )
             {
-                return structureContext.getEntitySessionFactory();
+                return structureContext.getUnitOfWorkFactory();
             }
             else if( type.equals( ServiceLocator.class ) )
             {

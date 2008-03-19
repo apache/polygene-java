@@ -2,7 +2,7 @@ package org.qi4j.runtime.injection;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.qi4j.entity.EntitySession;
+import org.qi4j.entity.UnitOfWork;
 import org.qi4j.query.Query;
 import org.qi4j.query.QueryBuilder;
 import org.qi4j.query.QueryBuilderFactory;
@@ -21,11 +21,11 @@ public final class EntityInjectionProviderFactory
 {
     Map<String, QueryBuilderFactory> queries = new HashMap<String, QueryBuilderFactory>();
 
-    EntitySession session;
+    UnitOfWork unitOfWork;
 
-    public EntityInjectionProviderFactory( EntitySession session )
+    public EntityInjectionProviderFactory( UnitOfWork unitOfWork )
     {
-        this.session = session;
+        this.unitOfWork = unitOfWork;
     }
 
     public InjectionProvider newInjectionProvider( BindingContext bindingContext ) throws InvalidInjectionException
@@ -84,7 +84,7 @@ public final class EntityInjectionProviderFactory
                 }
 */
 
-                QueryBuilderFactory builderFactory = session.getQueryBuilderFactory();
+                QueryBuilderFactory builderFactory = unitOfWork.getQueryBuilderFactory();
 
                 if( rawType.equals( QueryBuilderFactory.class ) )
                 {
@@ -106,7 +106,7 @@ public final class EntityInjectionProviderFactory
             else if( resolution.getName() != null )
             {
                 Class dependencyType = resolution.getRawType();
-                return session.getReference( resolution.getName(), dependencyType );
+                return unitOfWork.getReference( resolution.getName(), dependencyType );
             }
 */
 

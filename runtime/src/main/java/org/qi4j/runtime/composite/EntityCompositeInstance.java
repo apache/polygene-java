@@ -19,7 +19,7 @@ package org.qi4j.runtime.composite;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import org.qi4j.entity.EntityComposite;
-import org.qi4j.entity.EntitySession;
+import org.qi4j.entity.UnitOfWork;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.composite.InvalidCompositeException;
@@ -33,16 +33,16 @@ public final class EntityCompositeInstance
 {
     private Object[] mixins;
 
-    private EntitySession session;
+    private UnitOfWork unitOfWork;
     private EntityState state;
     private EntityStore store;
     private String identity;
 
-    public EntityCompositeInstance( EntitySession session, CompositeContext aContext, ModuleInstance moduleInstance, EntityStore store, String identity )
+    public EntityCompositeInstance( UnitOfWork unitOfWork, CompositeContext aContext, ModuleInstance moduleInstance, EntityStore store, String identity )
     {
         super( aContext, moduleInstance );
         this.identity = identity;
-        this.session = session;
+        this.unitOfWork = unitOfWork;
         this.store = store;
     }
 
@@ -57,7 +57,7 @@ public final class EntityCompositeInstance
         if( mixins == null ) // Check if this is a lazy-loaded reference
         {
             CompositeBinding binding = context.getCompositeBinding();
-            EntityState entityState = store.getEntityState( session, identity, binding );
+            EntityState entityState = store.getEntityState( unitOfWork, identity, binding );
 
             context.newEntityMixins( moduleInstance, this, entityState );
         }
@@ -106,15 +106,15 @@ public final class EntityCompositeInstance
         if( state == null )
         {
             CompositeBinding binding = context.getCompositeBinding();
-            state = store.getEntityState( session, identity, binding );
+            state = store.getEntityState( unitOfWork, identity, binding );
         }
 
         return state;
     }
 
-    public EntitySession getSession()
+    public UnitOfWork getUnitOfWork()
     {
-        return session;
+        return unitOfWork;
     }
 
     public EntityStore getStore()

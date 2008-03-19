@@ -17,7 +17,7 @@ package org.qi4j.bootstrap;
 import org.qi4j.Qi4j;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.ObjectBuilderFactory;
-import org.qi4j.entity.EntitySessionFactory;
+import org.qi4j.entity.UnitOfWorkFactory;
 import org.qi4j.runtime.Energy4Java;
 import org.qi4j.runtime.Qi4jRuntime;
 import org.qi4j.runtime.structure.ApplicationInstance;
@@ -108,9 +108,9 @@ public abstract class SingletonAssembler
         return moduleInstance.getStructureContext().getObjectBuilderFactory();
     }
 
-    public EntitySessionFactory getEntitySessionFactory()
+    public UnitOfWorkFactory getUnitOfWorkFactory()
     {
-        return moduleInstance.getStructureContext().getEntitySessionFactory();
+        return moduleInstance.getStructureContext().getUnitOfWorkFactory();
     }
 
     public ServiceLocator getServiceLocator()

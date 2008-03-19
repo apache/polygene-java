@@ -19,7 +19,7 @@ package org.qi4j.entity;
  * Qi4j exception to be thrown in case that an entity composite
  * was not found during a lookup call.
  */
-public class EntityCompositeNotFoundException extends EntitySessionException
+public class EntityCompositeNotFoundException extends UnitOfWorkException
 {
     private String identity;
     private Class compositeType;

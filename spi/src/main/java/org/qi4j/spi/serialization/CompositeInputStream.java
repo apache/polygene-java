@@ -25,7 +25,7 @@ import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.InvalidApplicationException;
 import org.qi4j.entity.EntityComposite;
-import org.qi4j.entity.EntitySession;
+import org.qi4j.entity.UnitOfWork;
 import org.qi4j.spi.composite.CompositeState;
 
 /**
@@ -33,16 +33,16 @@ import org.qi4j.spi.composite.CompositeState;
  */
 final class CompositeInputStream extends ObjectInputStream
 {
-    private EntitySession session;
+    private UnitOfWork unitOfWork;
     private CompositeBuilderFactory cbf;
     private Qi4j is;
 
-    public CompositeInputStream( InputStream in, EntitySession session, Qi4j is )
+    public CompositeInputStream( InputStream in, UnitOfWork unitOfWork, Qi4j is )
         throws IOException
     {
         super( in );
-        this.session = session;
-        this.cbf = session.getCompositeBuilderFactory();
+        this.unitOfWork = unitOfWork;
+        this.cbf = unitOfWork.getCompositeBuilderFactory();
         this.is = is;
         enableResolveObject( true );
     }
@@ -63,7 +63,7 @@ final class CompositeInputStream extends ObjectInputStream
             SerializedEntity holder = (SerializedEntity) obj;
             Class<? extends EntityComposite> clazz = holder.getCompositeType();
             String id = holder.getIdentity();
-            Object instance = session.find( id, clazz );
+            Object instance = unitOfWork.find( id, clazz );
             return instance;
         }
 

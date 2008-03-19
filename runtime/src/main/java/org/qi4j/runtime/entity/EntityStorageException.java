@@ -16,9 +16,9 @@
  */
 package org.qi4j.runtime.entity;
 
-import org.qi4j.entity.EntitySessionException;
+import org.qi4j.entity.UnitOfWorkException;
 
-public class EntityStorageException extends EntitySessionException
+public class EntityStorageException extends UnitOfWorkException
 {
     public EntityStorageException( String message, Exception e )
     {

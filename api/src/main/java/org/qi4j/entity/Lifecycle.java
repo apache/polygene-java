@@ -53,14 +53,14 @@ import org.qi4j.composite.Mixins;
  *     implements Lifecyle
  * {
  *      &#64;Modifies private Lifecycle next;
- *      &#64;Structure private EntitySession session;
+ *      &#64;Structure private UnitOfWork unit;
  *      &#64;ThisCompositeAs private Identity meAsIdentity;
  *      &#64;ThisCompositeAs private System meAsSystem;
  * <p/>
  *      public void create()
  *      {
  *          String thisId = meAsIdentity.getIdentity();
- *          CompositeBuilder builder = session.newEntityBuilder( thisId + ":1", UserComposite.class );
+ *          CompositeBuilder builder = unit.newEntityBuilder( thisId + ":1", UserComposite.class );
  *          User admin = builder.newInstance();
  *          meAsSystem.setAdmin( admin );
  *          next.create();

@@ -24,7 +24,7 @@ import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.Mixins;
 import org.qi4j.composite.ObjectBuilderFactory;
-import org.qi4j.entity.EntitySessionFactory;
+import org.qi4j.entity.UnitOfWorkFactory;
 import org.qi4j.runtime.Qi4jRuntime;
 import org.qi4j.service.ServiceLocator;
 import org.qi4j.spi.Qi4jSPI;
@@ -63,13 +63,13 @@ public class StructureInjectionTest
     }
 
     /**
-     * Tests injected mixin for a EntitySessionFactory annotated with {@link @org.qi4j.composite.scope.Structure}.
+     * Tests injected mixin for a UnitOfWorkFactory annotated with {@link @org.qi4j.composite.scope.Structure}.
      */
     @Test
-    public void injectedStructureForEntitySessionFactory()
+    public void injectedStructureForUnitOfWorkFactory()
     {
         StructureInjectionComposite sic = compositeBuilderFactory.newComposite( StructureInjectionComposite.class );
-        assertThat( "Injected EntitySessionFactory", sic.getEntitySessionFactory(), is( notNullValue() ) );
+        assertThat( "Injected UnitOfWorkFactory", sic.getUnitOfWorkFactory(), is( notNullValue() ) );
     }
 
     /**
@@ -130,7 +130,7 @@ public class StructureInjectionTest
 
         public ObjectBuilderFactory getObjectBuilderFactory();
 
-        public EntitySessionFactory getEntitySessionFactory();
+        public UnitOfWorkFactory getUnitOfWorkFactory();
 
         public ServiceLocator getServiceLocator();
 
@@ -148,7 +148,7 @@ public class StructureInjectionTest
     {
         @Structure CompositeBuilderFactory compositeBuilderFactory;
         @Structure ObjectBuilderFactory objectBuilderFactory;
-        @Structure EntitySessionFactory entitySessionFactory;
+        @Structure UnitOfWorkFactory unitOfWorkFactory;
         @Structure ServiceLocator serviceLocator;
         @Structure ModuleBinding moduleBinding;
 
@@ -167,9 +167,9 @@ public class StructureInjectionTest
             return objectBuilderFactory;
         }
 
-        public EntitySessionFactory getEntitySessionFactory()
+        public UnitOfWorkFactory getUnitOfWorkFactory()
         {
-            return entitySessionFactory;
+            return unitOfWorkFactory;
         }
 
         public ServiceLocator getServiceLocator()

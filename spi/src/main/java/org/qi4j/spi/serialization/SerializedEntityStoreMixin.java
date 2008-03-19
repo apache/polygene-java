@@ -31,7 +31,7 @@ import org.qi4j.association.ManyAssociation;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.scope.ThisCompositeAs;
 import org.qi4j.entity.EntityComposite;
-import org.qi4j.entity.EntitySession;
+import org.qi4j.entity.UnitOfWork;
 import org.qi4j.property.ImmutableProperty;
 import org.qi4j.property.Property;
 import org.qi4j.spi.association.AssociationBinding;
@@ -62,7 +62,7 @@ public class SerializedEntityStoreMixin
     private @ThisCompositeAs SerializationStore serializationStore;
 
     public EntityStateInstance newEntityState(
-        EntitySession session, String identity, CompositeBinding compositeBinding, Map<Method, Object> propertyValues ) throws StoreException
+        UnitOfWork unitOfWork, String identity, CompositeBinding compositeBinding, Map<Method, Object> propertyValues ) throws StoreException
     {
         CompositeResolution compositeResolution = compositeBinding.getCompositeResolution();
         CompositeModel compositeModel = compositeResolution.getCompositeModel();
@@ -85,7 +85,7 @@ public class SerializedEntityStoreMixin
         return entityStateInstance;
     }
 
-    public EntityStateInstance getEntityState( EntitySession session, String identity, CompositeBinding compositeBinding )
+    public EntityStateInstance getEntityState( UnitOfWork unitOfWork, String identity, CompositeBinding compositeBinding )
         throws StoreException
     {
         Class<? extends EntityComposite> compositeType = (Class<? extends EntityComposite>) compositeBinding.getCompositeResolution().getCompositeModel().getCompositeClass();
@@ -93,7 +93,7 @@ public class SerializedEntityStoreMixin
         SerializedState serializedState = null;
         try
         {
-            serializedState = serializationStore.get( serializedEntity, session );
+            serializedState = serializationStore.get( serializedEntity, unitOfWork );
         }
         catch( IOException e )
         {
@@ -119,7 +119,7 @@ public class SerializedEntityStoreMixin
         return stateInstance;
     }
 
-    public StateCommitter prepare( EntitySession session, Iterable<EntityStateInstance> states ) throws StoreException
+    public StateCommitter prepare( UnitOfWork unitOfWork, Iterable<EntityStateInstance> states ) throws StoreException
     {
         final Map<SerializedEntity, SerializedState> newEntities = new HashMap<SerializedEntity, SerializedState>();
         final Map<SerializedEntity, SerializedState> updatedEntities = new HashMap<SerializedEntity, SerializedState>();

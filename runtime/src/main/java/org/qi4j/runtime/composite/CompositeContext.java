@@ -26,8 +26,8 @@ import java.util.Map;
 import java.util.Set;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.InstantiationException;
-import org.qi4j.entity.EntitySession;
 import org.qi4j.entity.Lifecycle;
+import org.qi4j.entity.UnitOfWork;
 import org.qi4j.runtime.association.AssociationContext;
 import org.qi4j.runtime.property.PropertyContext;
 import org.qi4j.runtime.structure.ModuleInstance;
@@ -155,9 +155,9 @@ public final class CompositeContext
         return compositeInstance;
     }
 
-    public EntityCompositeInstance newEntityCompositeInstance( ModuleInstance moduleInstance, EntitySession session, EntityStore store, String identity )
+    public EntityCompositeInstance newEntityCompositeInstance( ModuleInstance moduleInstance, UnitOfWork unitOfWork, EntityStore store, String identity )
     {
-        EntityCompositeInstance compositeInstance = new EntityCompositeInstance( session, this, moduleInstance, store, identity );
+        EntityCompositeInstance compositeInstance = new EntityCompositeInstance( unitOfWork, this, moduleInstance, store, identity );
 
         // Instantiate composite proxy
         Composite proxy = newProxy( compositeInstance );

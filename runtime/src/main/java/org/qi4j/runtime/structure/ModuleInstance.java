@@ -23,8 +23,8 @@ import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.ObjectBuilder;
 import org.qi4j.composite.ObjectBuilderFactory;
-import org.qi4j.entity.EntitySessionFactory;
-import org.qi4j.runtime.entity.EntitySessionFactoryImpl;
+import org.qi4j.entity.UnitOfWorkFactory;
+import org.qi4j.runtime.entity.UnitOfWorkFactoryImpl;
 import org.qi4j.runtime.service.ServiceReferenceInstance;
 import org.qi4j.service.Activatable;
 import org.qi4j.service.ActivationListener;
@@ -49,7 +49,7 @@ public final class ModuleInstance
 
     private CompositeBuilderFactory compositeBuilderFactory;
     private ObjectBuilderFactory objectBuilderFactory;
-    private EntitySessionFactory entitySessionFactory;
+    private UnitOfWorkFactory unitOfWorkFactory;
     private ServiceLocator serviceLocator;
     private StructureContext structureContext;
 
@@ -74,10 +74,10 @@ public final class ModuleInstance
 
         compositeBuilderFactory = new ModuleCompositeBuilderFactory( this );
         objectBuilderFactory = new ModuleObjectBuilderFactory( this );
-        entitySessionFactory = new EntitySessionFactoryImpl( this );
+        unitOfWorkFactory = new UnitOfWorkFactoryImpl( this );
         serviceLocator = new ModuleServiceLocator( this, layerServiceLocator );
 
-        structureContext = new StructureContext( compositeBuilderFactory, objectBuilderFactory, entitySessionFactory, serviceLocator );
+        structureContext = new StructureContext( compositeBuilderFactory, objectBuilderFactory, unitOfWorkFactory, serviceLocator );
     }
 
     public ModuleContext getModuleContext()

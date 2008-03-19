@@ -22,7 +22,7 @@ package org.qi4j.entity;
  * then this exception will be thrown.
  */
 public class EntityCompositeAlreadyExistsException
-    extends EntitySessionException
+    extends UnitOfWorkException
 {
     private String identity;
     private Class compositeType;

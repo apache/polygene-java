@@ -28,7 +28,7 @@ import org.qi4j.injection.InjectionScope;
  * <code><pre>
  * &#64;Structure CompositeBuilderFactory cbf
  * &#64;Structure ObjectBuilderFactory obf
- * &#64;Structure EntitySessionFactory esf
+ * &#64;Structure UnitOfWorkFactory uowf
  * &#64;Structure ServiceLocator serviceLocator
  * &#64;Structure ModuleBinding moduleBinding
  * &#64;Structure Qi4j qi4j
