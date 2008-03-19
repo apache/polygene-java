@@ -30,11 +30,10 @@ import java.util.Properties;
 import java.util.Random;
 import org.qi4j.composite.InstantiationException;
 import org.qi4j.entity.EntityCompositeNotFoundException;
-import org.qi4j.spi.serialization.SerializablePersistenceSpi;
 import org.qi4j.spi.serialization.SerializedObject;
 
 public final class BinaryFilePersistenceProvider
-    implements SerializablePersistenceSpi
+    //   implements SerializationStore
 {
     private static final String INDEX_FILE = "oos-index.qi4j";
     private File storageDir;

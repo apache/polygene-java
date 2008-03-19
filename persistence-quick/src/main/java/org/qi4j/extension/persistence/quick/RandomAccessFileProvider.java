@@ -26,11 +26,10 @@ import java.io.RandomAccessFile;
 import java.util.HashMap;
 import java.util.Map;
 import org.qi4j.composite.InstantiationException;
-import org.qi4j.spi.serialization.SerializablePersistenceSpi;
 import org.qi4j.spi.serialization.SerializedObject;
 
 public class RandomAccessFileProvider
-    implements SerializablePersistenceSpi
+    //   implements SerializationStore
 {
     private static final String INDEX_FILE = "raf-index.qi4j";
     private static final String DATA_FILE = "raf-data.qi4j";

@@ -17,11 +17,12 @@ package org.qi4j.entity.memory;
 import org.qi4j.composite.Mixins;
 import org.qi4j.service.ServiceComposite;
 import org.qi4j.spi.entity.EntityStore;
+import org.qi4j.spi.serialization.SerializedEntityStoreMixin;
 
 /**
  * TODO
  */
-@Mixins( MemoryEntityStore.class )
+@Mixins( { SerializedEntityStoreMixin.class, MemorySerializationStoreMixin.class } )
 public interface MemoryEntityStoreComposite
     extends EntityStore, ServiceComposite
 {

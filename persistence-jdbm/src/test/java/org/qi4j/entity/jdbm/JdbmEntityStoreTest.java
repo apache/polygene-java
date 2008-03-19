@@ -1,6 +1,8 @@
-package org.qi4j.entity.memory;
+package org.qi4j.entity.jdbm;
 
+import java.io.File;
 import static org.hamcrest.CoreMatchers.*;
+import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
@@ -20,20 +22,32 @@ import org.qi4j.test.AbstractQi4jTest;
 /**
  * TODO
  */
-public class MemoryEntityStoreTest
+public class JdbmEntityStoreTest
     extends AbstractQi4jTest
 {
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
-        module.addServices( MemoryEntityStoreComposite.class, UuidIdentityGeneratorComposite.class );
+        module.addServices( JdbmEntityStoreComposite.class, UuidIdentityGeneratorComposite.class );
         module.addComposites( TestComposite.class );
+    }
+
+    @Override @After public void tearDown() throws Exception
+    {
+        super.tearDown();
+
+        boolean deleted = new File( "qi4j.data.db" ).delete();
+        deleted = deleted | new File( "qi4j.data.lg" ).delete();
+        if( !deleted )
+        {
+            throw new Exception( "Could not delete test data" );
+        }
     }
 
     @Test
     public void whenNewEntityThenFindEntity()
         throws Exception
     {
-        String id = createEntity();
+        String id = createEntity( null );
         EntitySession session;
         TestComposite instance;
 
@@ -48,7 +62,7 @@ public class MemoryEntityStoreTest
     public void whenRemovedEntityThenCannotFindEntity()
         throws Exception
     {
-        String id = createEntity();
+        String id = createEntity( null );
 
         // Remove entity
         EntitySession session = entitySessionFactory.newEntitySession();
@@ -76,32 +90,24 @@ public class MemoryEntityStoreTest
     {
         long start = System.currentTimeMillis();
 
-        int nrOfEntities = 100000;
+        int nrOfEntities = 10000;
         for( int i = 0; i < nrOfEntities; i++ )
         {
-            createEntity();
+            createEntity( null );
         }
 
         long end = System.currentTimeMillis();
+        long time = end - start;
         System.out.println( end - start );
+        System.out.println( nrOfEntities / ( time / 1000.0D ) );
     }
 
     @Test
     public void whenBulkNewEntitiesThenPerformanceIsOk()
         throws Exception
     {
-        int nrOfEntities = 1000000;
+        int nrOfEntities = 10000;
         EntitySession session = entitySessionFactory.newEntitySession();
-
-        for( int i = 0; i < nrOfEntities; i++ )
-        {
-            // Create entity
-            CompositeBuilder<TestComposite> builder = session.newEntityBuilder( TestComposite.class );
-            builder.propertiesOfComposite().name().set( "Rickard" );
-            TestComposite instance = builder.newInstance();
-        }
-
-        session.clear();
 
         long start = System.currentTimeMillis();
 
@@ -126,9 +132,9 @@ public class MemoryEntityStoreTest
     {
         long start = System.currentTimeMillis();
 
-        String id = createEntity();
+        String id = createEntity( null );
 
-        int nrOfLookups = 1000000;
+        int nrOfLookups = 10000;
         EntitySession session = entitySessionFactory.newEntitySession();
         for( int i = 0; i < nrOfLookups; i++ )
         {
@@ -143,15 +149,15 @@ public class MemoryEntityStoreTest
         System.out.println( nrOfLookups / ( time / 1000.0D ) );
     }
 
-    private String createEntity()
+    private String createEntity( String id )
         throws SessionCompletionException
     {
         // Create entity
         EntitySession session = entitySessionFactory.newEntitySession();
-        CompositeBuilder<TestComposite> builder = session.newEntityBuilder( TestComposite.class );
+        CompositeBuilder<TestComposite> builder = session.newEntityBuilder( id, TestComposite.class );
         builder.propertiesOfComposite().name().set( "Rickard" );
         TestComposite instance = builder.newInstance();
-        String id = instance.identity().get();
+        id = instance.identity().get();
         session.complete();
         return id;
     }
