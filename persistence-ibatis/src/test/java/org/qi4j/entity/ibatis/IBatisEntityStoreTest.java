@@ -23,12 +23,7 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertNull;
-import static junit.framework.Assert.assertTrue;
-import static junit.framework.Assert.fail;
+import static junit.framework.Assert.*;
 import org.jmock.Mockery;
 import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
@@ -49,7 +44,7 @@ import org.qi4j.spi.entity.StoreException;
 import org.qi4j.spi.property.PropertyBinding;
 import org.qi4j.spi.service.provider.DefaultServiceInstanceProvider;
 import org.qi4j.spi.structure.ServiceDescriptor;
-import static org.qi4j.spi.structure.Visibility.module;
+import static org.qi4j.spi.structure.Visibility.*;
 
 /**
  * {@code IBatisEntityStoreTest} tests {@code IBatisEntityStore}.
@@ -134,83 +129,6 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
     }
 
     /**
-     * Test {@link IBatisEntityStore#exists(String,CompositeBinding)}.
-     *
-     * @throws SQLException Thrown if failed.
-     */
-    @Test
-    public final void testExists()
-        throws SQLException
-    {
-        // Initialize the derby and entity store
-        initializeDerby();
-        IBatisEntityStore entityStore = newAndActivateEntityStore();
-
-        // Intialize test arguments
-        ModuleContext moduleContext = moduleInstance.getModuleContext();
-        Map<Class<? extends Composite>, CompositeContext> compositeContexts = moduleContext.getCompositeContexts();
-        CompositeContext personCompositeContext = compositeContexts.get( PersonComposite.class );
-        CompositeBinding personBinding = personCompositeContext.getCompositeBinding();
-
-        // **********************
-        // Test invalid arguments
-        // **********************
-        String failMsg = "Invoke with invalid arguments. Must throw an [IllegalArgumentException]";
-        try
-        {
-            entityStore.exists( null, null );
-            fail( failMsg );
-        }
-        catch( IllegalArgumentException e )
-        {
-            // Expected
-        }
-        catch( StoreException e )
-        {
-            fail( failMsg );
-        }
-
-        try
-        {
-            entityStore.exists( null, personBinding );
-            fail( failMsg );
-        }
-        catch( IllegalArgumentException e )
-        {
-            // Expected
-        }
-        catch( StoreException e )
-        {
-            fail( failMsg );
-        }
-
-        // *************************
-        // Test with valid arguments
-        // *************************
-        try
-        {
-            boolean isExist = entityStore.exists( "1", personBinding );
-            assertTrue( isExist );
-        }
-        catch( Exception e )
-        {
-            e.printStackTrace();
-            fail( "Check must exists must throw any exception." );
-        }
-
-        try
-        {
-            boolean isExist = entityStore.exists( "3", personBinding );
-            assertFalse( isExist );
-        }
-        catch( Exception e )
-        {
-            e.printStackTrace();
-            fail( "Check must exists must throw any exception." );
-        }
-    }
-
-    /**
      * Construct a new valid service descriptor.
      *
      * @return a new valid service descriptor.
@@ -233,12 +151,12 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
     }
 
     /**
-     * Tests {@link IBatisEntityStore#newEntityInstance(EntitySession, String, CompositeBinding, java.util.Map)}
+     * Tests {@link IBatisEntityStore#newEntityState(EntitySession, String, CompositeBinding, java.util.Map)}
      *
      * @throws SQLException Thrown if initialization fails.
      */
     @Test
-    public final void testNewEntityInstance()
+    public final void testNewEntityState()
         throws SQLException
     {
         // Initialize the derby and entity store
@@ -256,7 +174,7 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
         HashMap<Method, Object> initialValues = new HashMap<Method, Object>();
         try
         {
-            IBatisEntityState state = entityStore.newEntityInstance( entitySession, "1", personBinding, initialValues );
+            IBatisEntityState state = entityStore.newEntityState( entitySession, "1", personBinding, initialValues );
             assertNotNull( state );
 
             checkStateProperties( personBinding, state );
@@ -298,12 +216,12 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
     }
 
     /**
-     * Tests {@link IBatisEntityStore#getEntityInstance(EntitySession, String, CompositeBinding)}
+     * Tests {@link IBatisEntityStore#getEntityState(EntitySession, String, CompositeBinding)}
      *
      * @throws SQLException Thrown if initialization fails.
      */
     @Test
-    public final void testGetEntityInstance()
+    public final void testGetEntityState()
         throws SQLException
     {
         // Initialize the derby and entity store
@@ -324,7 +242,7 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
         // ============================
         try
         {
-            IBatisEntityState state = entityStore.getEntityInstance( entitySession, "1", personBinding );
+            IBatisEntityState state = entityStore.getEntityState( entitySession, "1", personBinding );
             assertNotNull( state );
 
             // --------
@@ -364,7 +282,7 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
         // ===================================
         try
         {
-            IBatisEntityState state = entityStore.getEntityInstance( entitySession, "1123123", personBinding );
+            IBatisEntityState state = entityStore.getEntityState( entitySession, "1123123", personBinding );
             assertNull( state );
         }
         catch( StoreException e )

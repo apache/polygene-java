@@ -42,7 +42,9 @@ import org.qi4j.service.Activatable;
 import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.composite.CompositeModel;
 import org.qi4j.spi.composite.CompositeResolution;
+import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityStore;
+import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.entity.StoreException;
 import org.qi4j.spi.structure.ServiceDescriptor;
 
@@ -79,28 +81,6 @@ final class IBatisEntityStore
         dao = new EntityStateDao();
 
         client = null;
-    }
-
-    /**
-     * Returns {@code true}  if the specified {@code compositeType} for the specified {@code identity} is found,
-     * {@code false} otherwise.
-     *
-     * @param anIdentity        The identity.
-     * @param aCompositeBinding The composite binding. This argument must not be {@code null}.
-     * @return A {@code boolean} indicator whether there exists a composite type with the specified identity.
-     * @throws StoreException Thrown if retrieval failed or this method is invoked when this service is not active.
-     * @since 0.1.0
-     */
-    public boolean exists( final String anIdentity, CompositeBinding aCompositeBinding )
-        throws StoreException
-    {
-        validateNotNull( "anIdentity", anIdentity );
-        validateNotNull( "aCompositeBinding", aCompositeBinding );
-
-        throwIfNotActive();
-
-        Object rawData = getRawData( anIdentity, aCompositeBinding );
-        return rawData != null;
     }
 
     /**
@@ -161,7 +141,7 @@ final class IBatisEntityStore
      * @throws StoreException           Thrown if creational failed.
      * @since 0.1.0
      */
-    public final IBatisEntityState newEntityInstance(
+    public final IBatisEntityState newEntityState(
         EntitySession aSession, String anIdentity, CompositeBinding aCompositeBinding,
         Map<Method, Object> propertyValues )
         throws IllegalArgumentException, StoreException
@@ -181,7 +161,7 @@ final class IBatisEntityStore
             fieldValues.put( propertyName, propertyValue );
         }
 
-        return new IBatisEntityState( anIdentity, aCompositeBinding, fieldValues, statusNew, aSession, dao );
+        return new IBatisEntityState( anIdentity, aCompositeBinding, fieldValues, EntityStatus.NEW, statusNew, aSession, dao );
     }
 
     /**
@@ -196,7 +176,7 @@ final class IBatisEntityStore
      * @since 0.1.0
      */
     @SuppressWarnings( "unchecked" )
-    public final IBatisEntityState getEntityInstance(
+    public final IBatisEntityState getEntityState(
         EntitySession aSession, String anIdentity, CompositeBinding aCompositeBinding )
         throws IllegalArgumentException, StoreException
     {
@@ -213,7 +193,7 @@ final class IBatisEntityStore
         }
 
         rawData.put( "identity", anIdentity );
-        return new IBatisEntityState( anIdentity, aCompositeBinding, rawData, statusLoadFromDb, aSession, dao );
+        return new IBatisEntityState( anIdentity, aCompositeBinding, rawData, EntityStatus.LOADED, statusLoadFromDb, aSession, dao );
     }
 
     /**
@@ -224,7 +204,7 @@ final class IBatisEntityStore
      * @throws StoreException Thrown if the complete failed.
      * @since 0.1.0
      */
-    public final void complete( EntitySession session, Iterable<IBatisEntityState> states )
+    public final StateCommitter prepare( EntitySession session, Iterable<IBatisEntityState> states )
         throws StoreException
     {
         throwIfNotActive();
@@ -233,6 +213,18 @@ final class IBatisEntityStore
         {
             state.persist();
         }
+
+        // TODO Implement this properly
+        return new StateCommitter()
+        {
+            public void commit()
+            {
+            }
+
+            public void cancel()
+            {
+            }
+        };
     }
 
     /**

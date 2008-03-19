@@ -18,18 +18,17 @@ package org.qi4j.entity.ibatis.internal.association;
 
 import java.util.HashMap;
 import java.util.Map;
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.fail;
+import static junit.framework.Assert.*;
 import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.entity.ibatis.AccountComposite;
 import org.qi4j.entity.ibatis.PersonComposite;
+import org.qi4j.spi.association.AssociationBinding;
 import org.qi4j.spi.composite.AssociationModel;
 import org.qi4j.spi.composite.AssociationResolution;
 import org.qi4j.spi.composite.CompositeBinding;
-import org.qi4j.spi.property.AssociationBinding;
 import org.qi4j.test.AbstractQi4jTest;
 
 /**

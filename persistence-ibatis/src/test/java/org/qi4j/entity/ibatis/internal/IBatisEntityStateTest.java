@@ -19,12 +19,7 @@ package org.qi4j.entity.ibatis.internal;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertNull;
-import static junit.framework.Assert.assertTrue;
-import static junit.framework.Assert.fail;
+import static junit.framework.Assert.*;
 import org.jmock.Mockery;
 import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
@@ -36,13 +31,14 @@ import org.qi4j.entity.ibatis.AbstractTestCase;
 import org.qi4j.entity.ibatis.HasFirstName;
 import org.qi4j.entity.ibatis.HasLastName;
 import org.qi4j.entity.ibatis.PersonComposite;
-import static org.qi4j.entity.ibatis.internal.common.Status.statusNew;
+import static org.qi4j.entity.ibatis.internal.common.Status.*;
 import org.qi4j.entity.ibatis.internal.property.MutablePropertyInstance;
 import org.qi4j.property.Property;
 import org.qi4j.runtime.composite.CompositeContext;
 import org.qi4j.runtime.structure.ModuleContext;
 import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.property.ImmutablePropertyInstance;
 import org.qi4j.spi.property.PropertyBinding;
 
@@ -166,7 +162,7 @@ public final class IBatisEntityStateTest extends AbstractTestCase
         Mockery mockery = new Mockery();
         IBatisEntityStateDao dao = mockery.mock( IBatisEntityStateDao.class );
         EntitySession session = mockery.mock( EntitySession.class );
-        return new IBatisEntityState( "1", personCompositeBinding, initialValues, statusNew, session, dao );
+        return new IBatisEntityState( "1", personCompositeBinding, initialValues, EntityStatus.NEW, statusNew, session, dao );
     }
 
     /**

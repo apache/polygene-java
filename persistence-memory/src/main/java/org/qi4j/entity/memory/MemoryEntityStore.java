@@ -19,17 +19,20 @@ package org.qi4j.entity.memory;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.qi4j.association.AbstractAssociation;
+import org.qi4j.association.ListAssociation;
 import org.qi4j.association.ManyAssociation;
-import org.qi4j.association.SetAssociation;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.EntitySession;
 import org.qi4j.property.ImmutableProperty;
 import org.qi4j.property.Property;
-import org.qi4j.runtime.association.AssociationInstance;
-import org.qi4j.runtime.association.ListAssociationInstance;
+import org.qi4j.spi.association.AssociationBinding;
+import org.qi4j.spi.association.AssociationInstance;
+import org.qi4j.spi.association.ListAssociationInstance;
+import org.qi4j.spi.association.SetAssociationInstance;
 import org.qi4j.spi.composite.AssociationModel;
 import org.qi4j.spi.composite.AssociationResolution;
 import org.qi4j.spi.composite.CompositeBinding;
@@ -37,9 +40,11 @@ import org.qi4j.spi.composite.CompositeModel;
 import org.qi4j.spi.composite.CompositeResolution;
 import org.qi4j.spi.composite.PropertyResolution;
 import org.qi4j.spi.entity.EntityAlreadyExistsException;
+import org.qi4j.spi.entity.EntityStateInstance;
+import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityStore;
+import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.entity.StoreException;
-import org.qi4j.spi.property.AssociationBinding;
 import org.qi4j.spi.property.ImmutablePropertyInstance;
 import org.qi4j.spi.property.PropertyBinding;
 import org.qi4j.spi.property.PropertyInstance;
@@ -48,7 +53,7 @@ import org.qi4j.spi.serialization.SerializedEntity;
 import org.qi4j.spi.serialization.SerializedState;
 
 public class MemoryEntityStore
-    implements EntityStore<MemoryEntityState>
+    implements EntityStore<EntityStateInstance>
 {
     private final Map<SerializedEntity, SerializedState> entityState;
 
@@ -57,15 +62,7 @@ public class MemoryEntityStore
         entityState = new ConcurrentHashMap<SerializedEntity, SerializedState>();
     }
 
-    public boolean exists( String identity, CompositeBinding compositeBinding ) throws StoreException
-    {
-        CompositeResolution compositeResolution = compositeBinding.getCompositeResolution();
-        CompositeModel compositeModel = compositeResolution.getCompositeModel();
-        Class<? extends EntityComposite> compositeType = (Class<? extends EntityComposite>) compositeModel.getCompositeClass();
-        return entityState.containsKey( new SerializedEntity( identity, compositeType ) );
-    }
-
-    public MemoryEntityState newEntityInstance(
+    public EntityStateInstance newEntityState(
         EntitySession session, String identity, CompositeBinding compositeBinding, Map<Method, Object> propertyValues ) throws StoreException
     {
         CompositeResolution compositeResolution = compositeBinding.getCompositeResolution();
@@ -112,17 +109,16 @@ public class MemoryEntityStore
             AssociationModel associationModel = associationResolution.getAssociationModel();
             Method accessor = associationModel.getAccessor();
             Class<?> type = accessor.getReturnType();
-            String assocationQualifiedName = associationBinding.getQualifiedName();
-            if( SetAssociation.class.isAssignableFrom( type ) )
+            if( ListAssociation.class.isAssignableFrom( type ) )
             {
-//                associations.put( assocationQualifiedName, new SetAssociationInstance())
-            }
-            else if( ManyAssociation.class.isAssignableFrom( type ) )
-            {
-
                 ListAssociationInstance<Object> listInstance =
                     new ListAssociationInstance<Object>( new ArrayList<Object>(), associationBinding );
                 associations.put( accessor, listInstance );
+            }
+            else if( ManyAssociation.class.isAssignableFrom( type ) )
+            {
+                SetAssociationInstance setInstance = new SetAssociationInstance<Object>( new HashSet<Object>(), associationBinding );
+                associations.put( accessor, setInstance );
             }
             else
             {
@@ -131,23 +127,37 @@ public class MemoryEntityStore
             }
         }
 
-        MemoryEntityState entityState = new MemoryEntityState( identity, compositeBinding, properties, associations, this );
-        return entityState;
+        EntityStateInstance entityStateInstance = new EntityStateInstance( identity, compositeBinding, EntityStatus.NEW, properties, associations );
+        return entityStateInstance;
     }
 
-    public MemoryEntityState getEntityInstance( EntitySession session, String identity, CompositeBinding compositeBinding )
+    public EntityStateInstance getEntityState( EntitySession session, String identity, CompositeBinding compositeBinding )
         throws StoreException
     {
         // TODO
         return null;
     }
 
-    public void complete( EntitySession session, Iterable<MemoryEntityState> states ) throws StoreException
+    public StateCommitter prepare( EntitySession session, Iterable<EntityStateInstance> states ) throws StoreException
     {
-        // TODO
+        for( EntityStateInstance stateInstance : states )
+        {
+            // TODO
+        }
+
+        return new StateCommitter()
+        {
+            public void commit()
+            {
+            }
+
+            public void cancel()
+            {
+            }
+        };
     }
 
-    final boolean remove( SerializedEntity serializedEntity )
+    private final boolean remove( SerializedEntity serializedEntity )
     {
         return entityState.remove( serializedEntity ) != null;
     }

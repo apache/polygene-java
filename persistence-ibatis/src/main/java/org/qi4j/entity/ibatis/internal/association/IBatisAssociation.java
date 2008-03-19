@@ -16,15 +16,14 @@
  */
 package org.qi4j.entity.ibatis.internal.association;
 
-import org.qi4j.association.Association;
-import static org.qi4j.composite.NullArgumentException.validateNotNull;
+import static org.qi4j.composite.NullArgumentException.*;
+import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.EntitySession;
 import org.qi4j.entity.Identity;
 import org.qi4j.entity.ibatis.internal.common.Status;
-import static org.qi4j.entity.ibatis.internal.common.Util.isNotEquals;
-import org.qi4j.spi.composite.AssociationModel;
-import org.qi4j.spi.composite.AssociationResolution;
-import org.qi4j.spi.property.AssociationBinding;
+import static org.qi4j.entity.ibatis.internal.common.Util.*;
+import org.qi4j.spi.association.AssociationBinding;
+import org.qi4j.spi.association.AssociationInstance;
 
 /**
  * {@code IBatisAssociation} provides implementation of {@code Association}.
@@ -32,8 +31,7 @@ import org.qi4j.spi.property.AssociationBinding;
  * @author edward.yakop@gmail.com
  * @since 0.1.0
  */
-public final class IBatisAssociation<T> extends IBatisAbstractAssociationInstance
-    implements Association<T>
+public final class IBatisAssociation<T> extends AssociationInstance
 {
     private final EntitySession session;
 
@@ -58,7 +56,7 @@ public final class IBatisAssociation<T> extends IBatisAbstractAssociationInstanc
         Status aStatus, EntitySession aSession )
         throws IllegalArgumentException
     {
-        super( aBinding );
+        super( aBinding, null );
 
         validateNotNull( "aBinding", aBinding );
         validateNotNull( "aStatus", aStatus );
@@ -91,10 +89,7 @@ public final class IBatisAssociation<T> extends IBatisAbstractAssociationInstanc
         }
 
         // Retrieves the value given the value identity
-        AssociationResolution associationResolution = associationBinding.getAssociationResolution();
-        AssociationModel model = associationResolution.getAssociationModel();
-        Class modelType = (Class) model.getType();
-        value = (T) session.getReference( valueIdentity, modelType );
+        value = (T) session.getReference( valueIdentity, (Class<? extends EntityComposite>) getAssociationType() );
         return value;
     }
 
@@ -103,7 +98,7 @@ public final class IBatisAssociation<T> extends IBatisAbstractAssociationInstanc
      *
      * @param aNewAssociationValue A new association value.
      */
-    public void set( T aNewAssociationValue )
+    public T set( T aNewAssociationValue )
     {
         Identity newAssociationIdentity = (Identity) aNewAssociationValue;
         if( !isDirty )
@@ -135,6 +130,8 @@ public final class IBatisAssociation<T> extends IBatisAbstractAssociationInstanc
             valueIdentity = newAssociationIdentity.identity().get();
         }
         isDirty = true;
+
+        return aNewAssociationValue;
     }
 
     /**

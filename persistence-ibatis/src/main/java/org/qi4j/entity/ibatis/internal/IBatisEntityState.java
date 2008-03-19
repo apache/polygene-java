@@ -26,19 +26,18 @@ import org.qi4j.association.Association;
 import org.qi4j.association.ManyAssociation;
 import org.qi4j.association.SetAssociation;
 import org.qi4j.composite.Composite;
-import static org.qi4j.composite.NullArgumentException.validateNotNull;
+import static org.qi4j.composite.NullArgumentException.*;
 import org.qi4j.entity.EntitySession;
 import org.qi4j.entity.ibatis.internal.association.IBatisAbstractAssociationInstance;
 import org.qi4j.entity.ibatis.internal.association.IBatisAssociation;
 import org.qi4j.entity.ibatis.internal.common.Status;
-import static org.qi4j.entity.ibatis.internal.common.Status.statusLoadToDeleted;
-import static org.qi4j.entity.ibatis.internal.common.Status.statusNew;
-import static org.qi4j.entity.ibatis.internal.common.Status.statusNewToDeleted;
+import static org.qi4j.entity.ibatis.internal.common.Status.*;
 import org.qi4j.entity.ibatis.internal.property.MutablePropertyInstance;
 import org.qi4j.property.ImmutableProperty;
 import org.qi4j.property.Property;
-import org.qi4j.runtime.association.AssociationInstance;
-import org.qi4j.runtime.association.ListAssociationInstance;
+import org.qi4j.spi.association.AssociationBinding;
+import org.qi4j.spi.association.AssociationInstance;
+import org.qi4j.spi.association.ListAssociationInstance;
 import org.qi4j.spi.composite.AssociationModel;
 import org.qi4j.spi.composite.AssociationResolution;
 import org.qi4j.spi.composite.CompositeBinding;
@@ -46,9 +45,8 @@ import org.qi4j.spi.composite.CompositeMethodBinding;
 import org.qi4j.spi.composite.CompositeModel;
 import org.qi4j.spi.composite.CompositeResolution;
 import org.qi4j.spi.composite.PropertyResolution;
-import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.StoreException;
-import org.qi4j.spi.property.AssociationBinding;
+import org.qi4j.spi.entity.EntityStateInstance;
+import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.property.ImmutablePropertyInstance;
 import org.qi4j.spi.property.PropertyBinding;
 import org.qi4j.spi.property.PropertyModel;
@@ -60,14 +58,10 @@ import org.qi4j.spi.property.PropertyModel;
  * @since 0.1.0
  */
 public final class IBatisEntityState
-    implements EntityState
+    extends EntityStateInstance
 {
-    private final String identity;
-    private final CompositeBinding compositeBinding;
     private final Map<String, Object> values;
     private Status status;
-    private final Map<Method, Property> properties;
-    private final Map<Method, IBatisAbstractAssociationInstance> associations;
     private final IBatisEntityStateDao dao;
     private final EntitySession entitySession;
 
@@ -87,23 +81,22 @@ public final class IBatisEntityState
      */
     public IBatisEntityState(
         String anIdentity, CompositeBinding aCompositeBinding, Map<String, Object> valuez,
+        EntityStatus status,
         Status aStatus, EntitySession anEntitySession, IBatisEntityStateDao aDao )
         throws IllegalArgumentException
     {
+        super( anIdentity, aCompositeBinding, status, new HashMap<Method, Property>(), new HashMap<Method, AbstractAssociation>() );
+
         validateNotNull( "anIdentity", anIdentity );
         validateNotNull( "aCompositeBinding", aCompositeBinding );
         validateNotNull( "valuez", valuez );
         validateNotNull( "anEntitySession", anEntitySession );
         validateNotNull( "aDao", aDao );
 
-        identity = anIdentity;
-        compositeBinding = aCompositeBinding;
-        values = valuez;
-        status = aStatus;
+        this.values = valuez;
+        this.status = aStatus;
         entitySession = anEntitySession;
         dao = aDao;
-        properties = new HashMap<Method, Property>();
-        associations = new HashMap<Method, IBatisAbstractAssociationInstance>();
 
         capitalizeKeys();
     }
@@ -127,28 +120,6 @@ public final class IBatisEntityState
     }
 
     /**
-     * Returns the identity of the entity that this EntityState represents.
-     *
-     * @return the identity of the entity that this EntityState represents.
-     * @since 0.1.0
-     */
-    public final String getIdentity()
-    {
-        return identity;
-    }
-
-    /**
-     * Returns the composite binding.
-     *
-     * @return The composite binding.
-     * @since 0.1.0
-     */
-    public final CompositeBinding getCompositeBinding()
-    {
-        return compositeBinding;
-    }
-
-    /**
      * Returns the property for the specified {@code propertyMethod}.
      *
      * @param aPropertyMethod The property method. This argument must not be {@code null}.
@@ -161,7 +132,7 @@ public final class IBatisEntityState
 
         if( propertyInstance == null )
         {
-            CompositeMethodBinding compositeMethodBinding = compositeBinding.getCompositeMethodBinding( aPropertyMethod );
+            CompositeMethodBinding compositeMethodBinding = getCompositeBinding().getCompositeMethodBinding( aPropertyMethod );
             PropertyBinding propertyBinding = compositeMethodBinding.getPropertyBinding();
             Boolean useDefaultValue = ( status == statusNew ) || ( status == statusNewToDeleted );
             Object value = computePropertyValue( propertyBinding, values, useDefaultValue );
@@ -243,18 +214,18 @@ public final class IBatisEntityState
      */
     public AbstractAssociation getAssociation( Method anAssociationMethod )
     {
-        IBatisAbstractAssociationInstance association = associations.get( anAssociationMethod );
+        IBatisAbstractAssociationInstance association = (IBatisAbstractAssociationInstance) associations.get( anAssociationMethod );
         if( association != null )
         {
             return association;
         }
 
         // Check whether the association exists.
-        CompositeMethodBinding methodBinding = compositeBinding.getCompositeMethodBinding( anAssociationMethod );
+        CompositeMethodBinding methodBinding = getCompositeBinding().getCompositeMethodBinding( anAssociationMethod );
         AssociationBinding associationBinding = methodBinding.getAssociationBinding();
         if( associationBinding == null )
         {
-            CompositeResolution compositeResolution = compositeBinding.getCompositeResolution();
+            CompositeResolution compositeResolution = getCompositeBinding().getCompositeResolution();
             CompositeModel compositeModel = compositeResolution.getCompositeModel();
             Class<? extends Composite> compositeClass = compositeModel.getCompositeClass();
             String msg = "There is no association associated with [" + anAssociationMethod +
@@ -317,8 +288,7 @@ public final class IBatisEntityState
         // TODO
     }
 
-    public boolean delete()
-        throws StoreException
+    public void remove()
     {
         switch( status )
         {
@@ -326,13 +296,10 @@ public final class IBatisEntityState
         case statusNewToDeleted:
         case statusLoadToDeleted:
             status = statusNewToDeleted;
-            return true;
 
         case statusLoadFromDb:
-            return dao.deleteComposite( identity, compositeBinding );
+            dao.deleteComposite( getIdentity(), getCompositeBinding() );
         }
-
-        return false;
     }
 
     /**
