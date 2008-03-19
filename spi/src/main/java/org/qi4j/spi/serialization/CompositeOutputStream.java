@@ -16,6 +16,7 @@ package org.qi4j.spi.serialization;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.io.ObjectStreamClass;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Proxy;
@@ -71,5 +72,10 @@ final class CompositeOutputStream extends ObjectOutputStream
             }
         }
         return obj;
+    }
+
+    @Override protected void writeClassDescriptor( ObjectStreamClass objectStreamClass ) throws IOException
+    {
+        writeUTF( objectStreamClass.getName() );
     }
 }

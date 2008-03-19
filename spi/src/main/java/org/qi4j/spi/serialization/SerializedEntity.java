@@ -74,4 +74,9 @@ public final class SerializedEntity
         result = 31 * result + compositeType.hashCode();
         return result;
     }
+
+    @Override public String toString()
+    {
+        return compositeType.getName() + ":" + identity;
+    }
 }

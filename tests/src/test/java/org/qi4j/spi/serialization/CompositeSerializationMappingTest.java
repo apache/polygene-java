@@ -65,7 +65,7 @@ public class CompositeSerializationMappingTest
 
         // Deserialize it
         ByteArrayInputStream bin = new ByteArrayInputStream( bout.toByteArray() );
-        CompositeInputStream cin = new CompositeInputStream( bin, null, client.getCompositeBuilderFactory(), client.getRuntime() );
+        CompositeInputStream cin = new CompositeInputStream( bin, client.getCompositeBuilderFactory(), client.getRuntime() );
         ClientChairComposite clientChair = (ClientChairComposite) cin.readObject();
 
         assertEquals( "Sitting on the client", clientChair.sit() );

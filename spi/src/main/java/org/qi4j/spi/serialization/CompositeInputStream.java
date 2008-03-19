@@ -17,6 +17,7 @@ package org.qi4j.spi.serialization;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
+import java.io.ObjectStreamClass;
 import java.lang.reflect.Proxy;
 import org.qi4j.Qi4j;
 import org.qi4j.composite.Composite;
@@ -33,15 +34,24 @@ import org.qi4j.spi.composite.CompositeState;
 final class CompositeInputStream extends ObjectInputStream
 {
     private EntitySession session;
+    private CompositeBuilderFactory cbf;
     private Qi4j is;
-    private CompositeBuilderFactory factory;
 
-    public CompositeInputStream( InputStream in, EntitySession session, CompositeBuilderFactory factory, Qi4j is )
+    public CompositeInputStream( InputStream in, EntitySession session, Qi4j is )
         throws IOException
     {
         super( in );
-        this.factory = factory;
         this.session = session;
+        this.cbf = session.getCompositeBuilderFactory();
+        this.is = is;
+        enableResolveObject( true );
+    }
+
+    public CompositeInputStream( InputStream in, CompositeBuilderFactory cbf, Qi4j is )
+        throws IOException
+    {
+        super( in );
+        this.cbf = cbf;
         this.is = is;
         enableResolveObject( true );
     }
@@ -69,7 +79,7 @@ final class CompositeInputStream extends ObjectInputStream
             {
                 try
                 {
-                    builder = factory.newCompositeBuilder( compositeInterface );
+                    builder = cbf.newCompositeBuilder( compositeInterface );
                 }
                 catch( InvalidApplicationException e )
                 {
@@ -103,5 +113,12 @@ final class CompositeInputStream extends ObjectInputStream
             return composite;
         }
         return obj;
+    }
+
+    @Override protected ObjectStreamClass readClassDescriptor() throws IOException, ClassNotFoundException
+    {
+        String className = readUTF();
+        Class clazz = Class.forName( className );
+        return ObjectStreamClass.lookup( clazz );
     }
 }

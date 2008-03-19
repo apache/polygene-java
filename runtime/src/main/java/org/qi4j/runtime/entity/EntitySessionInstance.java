@@ -28,6 +28,8 @@ import org.qi4j.association.AbstractAssociation;
 import org.qi4j.association.ListAssociation;
 import org.qi4j.association.SetAssociation;
 import org.qi4j.composite.CompositeBuilder;
+import org.qi4j.composite.CompositeBuilderFactory;
+import org.qi4j.composite.ObjectBuilderFactory;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.EntityCompositeNotFoundException;
 import org.qi4j.entity.EntitySession;
@@ -268,6 +270,16 @@ public final class EntitySessionInstance
         checkOpen();
 
         return getCachedEntity( entity.identity().get(), entity.getCompositeType() ) != null;
+    }
+
+    public CompositeBuilderFactory getCompositeBuilderFactory()
+    {
+        return moduleInstance.getStructureContext().getCompositeBuilderFactory();
+    }
+
+    public ObjectBuilderFactory getObjectBuilderFactory()
+    {
+        return moduleInstance.getStructureContext().getObjectBuilderFactory();
     }
 
     public QueryBuilderFactory getQueryBuilderFactory()

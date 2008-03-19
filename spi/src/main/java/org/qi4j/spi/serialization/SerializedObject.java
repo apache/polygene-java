@@ -21,21 +21,20 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import org.qi4j.Qi4j;
-import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.entity.EntitySession;
 import org.qi4j.spi.Qi4jSPI;
 
 
-public final class SerializedObject
+public final class SerializedObject<T>
     implements Serializable
 {
     private byte[] data;
 
-    public SerializedObject( Object value, Qi4jSPI spi )
+    public SerializedObject( T value, Qi4jSPI spi )
     {
         try
         {
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            ByteArrayOutputStream out = new ByteArrayOutputStream( 1024 );
             CompositeOutputStream stream = new CompositeOutputStream( out, spi );
             stream.writeObject( value );
             stream.flush();
@@ -51,14 +50,14 @@ public final class SerializedObject
 
     }
 
-    public Object getObject( EntitySession session, CompositeBuilderFactory factory, Qi4j api )
+    public T getObject( EntitySession session, Qi4j api )
         throws ClassNotFoundException
     {
         try
         {
             ByteArrayInputStream in = new ByteArrayInputStream( data );
-            CompositeInputStream stream = new CompositeInputStream( in, session, factory, api );
-            return stream.readObject();
+            CompositeInputStream stream = new CompositeInputStream( in, session, api );
+            return (T) stream.readObject();
         }
         catch( IOException e )
         {

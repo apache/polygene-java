@@ -15,6 +15,8 @@
 package org.qi4j.entity;
 
 import org.qi4j.composite.CompositeBuilder;
+import org.qi4j.composite.CompositeBuilderFactory;
+import org.qi4j.composite.ObjectBuilderFactory;
 import org.qi4j.query.QueryBuilderFactory;
 
 /**
@@ -56,4 +58,8 @@ public interface EntitySession
     QueryBuilderFactory getQueryBuilderFactory();
 
     EntitySession newEntitySession();
+
+    CompositeBuilderFactory getCompositeBuilderFactory();
+
+    ObjectBuilderFactory getObjectBuilderFactory();
 }
