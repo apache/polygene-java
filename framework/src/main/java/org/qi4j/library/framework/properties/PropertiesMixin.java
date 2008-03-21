@@ -20,6 +20,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Iterator;
 import org.qi4j.composite.AppliesTo;
 
 /**
@@ -108,6 +109,22 @@ public class PropertiesMixin
             {
                 return list.iterator();
             }
+            return new Iterator()
+            {
+                public boolean hasNext()
+                {
+                    return false;
+                }
+
+                public Object next()
+                {
+                    return null;
+                }
+
+                public void remove()
+                {
+                }
+            };
         }
         return null;
     }
