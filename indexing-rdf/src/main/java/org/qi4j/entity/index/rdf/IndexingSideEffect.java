@@ -17,8 +17,12 @@
  */
 package org.qi4j.entity.index.rdf;
 
-import java.io.OutputStream;
+import java.io.IOException;
 import java.util.Map;
+import org.qi4j.composite.scope.Service;
+import org.qi4j.composite.scope.SideEffectFor;
+import org.qi4j.spi.entity.StateCommitter;
+import org.qi4j.spi.serialization.SerializationStore;
 import org.qi4j.spi.serialization.SerializedEntity;
 import org.qi4j.spi.serialization.SerializedState;
 
@@ -28,14 +32,19 @@ import org.qi4j.spi.serialization.SerializedState;
  * @author Alin Dreghiciu
  * @since March 18, 2008
  */
-public interface Indexer
+public abstract class IndexingSideEffect
+    implements SerializationStore
 {
-    void index( Map<SerializedEntity, SerializedState> newEntities,
-                Map<SerializedEntity, SerializedState> updatedEntities,
-                Iterable<SerializedEntity> removedEntities );
 
-    /**
-     * Temporary debug only.
-     */
-    void toRDF( OutputStream outputStream );
+    @SideEffectFor SerializationStore serializationStore;
+    @Service Indexer indexer;
+
+    public StateCommitter prepare( Map<SerializedEntity, SerializedState> newEntities,
+                                   Map<SerializedEntity, SerializedState> updatedEntities,
+                                   Iterable<SerializedEntity> removedEntities ) throws IOException
+    {
+        indexer.index( newEntities, updatedEntities, removedEntities );
+        indexer.toRDF( System.out );
+        return null;
+    }
 }

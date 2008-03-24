@@ -24,7 +24,7 @@ import org.qi4j.bootstrap.SingletonAssembler;
 import org.qi4j.entity.UnitOfWorkCompletionException;
 import org.qi4j.spi.entity.UuidIdentityGeneratorComposite;
 
-public class SesameIndexerTest
+public class SesameQueryTest
 {
     @Test
     public void script01() throws UnitOfWorkCompletionException
@@ -35,8 +35,7 @@ public class SesameIndexerTest
             {
                 module.addComposites(
                     PersonComposite.class,
-                    CityComposite.class,
-                    DomainComposite.class
+                    CityComposite.class
                 );
                 module.addServices(
                     IndexedMemoryEntityStoreComposite.class,
@@ -45,7 +44,6 @@ public class SesameIndexerTest
                 );
             }
         };
-        Network.populate( assembler.getUnitOfWorkFactory().newUnitOfWork() );
     }
 
 

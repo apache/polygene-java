@@ -17,25 +17,24 @@
  */
 package org.qi4j.entity.index.rdf;
 
-import java.io.OutputStream;
-import java.util.Map;
-import org.qi4j.spi.serialization.SerializedEntity;
-import org.qi4j.spi.serialization.SerializedState;
+import org.qi4j.composite.scope.Entity;
+import org.qi4j.query.QueryBuilder;
 
 /**
  * TODO Add JavaDoc
  *
  * @author Alin Dreghiciu
- * @since March 18, 2008
+ * @since March 20, 2008
  */
-public interface Indexer
+public class GoogleMixin
+    implements Google
 {
-    void index( Map<SerializedEntity, SerializedState> newEntities,
-                Map<SerializedEntity, SerializedState> updatedEntities,
-                Iterable<SerializedEntity> removedEntities );
 
-    /**
-     * Temporary debug only.
-     */
-    void toRDF( OutputStream outputStream );
+    @Entity QueryBuilder<Person> queryBuilder;
+
+    public Iterable<Person> bornIn( String city )
+    {
+        System.out.println( "QueryBuilder: " + queryBuilder );
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
 }

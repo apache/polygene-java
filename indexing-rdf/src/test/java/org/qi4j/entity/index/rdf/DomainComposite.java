@@ -17,25 +17,18 @@
  */
 package org.qi4j.entity.index.rdf;
 
-import java.io.OutputStream;
-import java.util.Map;
-import org.qi4j.spi.serialization.SerializedEntity;
-import org.qi4j.spi.serialization.SerializedState;
+import org.qi4j.composite.Mixins;
+import org.qi4j.entity.EntityComposite;
+import org.qi4j.library.framework.entity.PropertyMixin;
 
 /**
  * TODO Add JavaDoc
  *
  * @author Alin Dreghiciu
- * @since March 18, 2008
+ * @since March 20, 2008
  */
-public interface Indexer
+@Mixins( PropertyMixin.class )
+public interface DomainComposite
+    extends Domain, EntityComposite
 {
-    void index( Map<SerializedEntity, SerializedState> newEntities,
-                Map<SerializedEntity, SerializedState> updatedEntities,
-                Iterable<SerializedEntity> removedEntities );
-
-    /**
-     * Temporary debug only.
-     */
-    void toRDF( OutputStream outputStream );
 }
