@@ -25,7 +25,9 @@ import org.qi4j.composite.InstantiationException;
 import org.qi4j.composite.InvalidApplicationException;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.Identity;
+import org.qi4j.entity.IdentityGenerator;
 import org.qi4j.entity.Lifecycle;
+import org.qi4j.entity.UnitOfWorkException;
 import org.qi4j.runtime.composite.CompositeContext;
 import org.qi4j.runtime.composite.EntityCompositeInstance;
 import org.qi4j.runtime.structure.CompositeBuilderImpl;
@@ -40,9 +42,9 @@ import org.qi4j.spi.entity.StoreException;
 public final class UnitOfWorkCompositeBuilder<T extends Composite>
     extends CompositeBuilderImpl<T>
 {
+    private static final Method IDENTITY_METHOD;
     private UnitOfWorkInstance uow;
     private EntityStore store;
-    private static Method IDENTITY_METHOD = null;
 
     static
     {
@@ -52,7 +54,7 @@ public final class UnitOfWorkCompositeBuilder<T extends Composite>
         }
         catch( NoSuchMethodException e )
         {
-            e.printStackTrace();
+            throw new InternalError( "Qi4j Core Runtime codebase is corrupted. Contact Qi4j team: UnitOfWorkCompositeBuilder" );
         }
     }
 
@@ -72,6 +74,16 @@ public final class UnitOfWorkCompositeBuilder<T extends Composite>
     {
         EntityState state;
         String identity = getPropertyValues().get( IDENTITY_METHOD ).toString();
+        if( identity == null )
+        {
+            Class compositeType = context.getCompositeModel().getCompositeClass();
+            IdentityGenerator identityGenerator = uow.stateServices.getIdentityGenerator( compositeType );
+            if( identityGenerator == null )
+            {
+                throw new UnitOfWorkException( "No identity generator found for type " + compositeType.getName() );
+            }
+            identity = identityGenerator.generate( compositeType );
+        }
         Map<Method, Object> propertyValues = getPropertyValues();
         try
         {

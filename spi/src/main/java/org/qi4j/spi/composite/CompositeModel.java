@@ -236,9 +236,7 @@ public final class CompositeModel
         {
             return false;
         }
-
         CompositeModel composite1 = (CompositeModel) o;
-
         return compositeClass.equals( composite1.compositeClass );
 
     }

@@ -64,7 +64,7 @@ public final class UnitOfWorkInstance
 
     private boolean open;
     private ModuleInstance moduleInstance;
-    private StateServices stateServices;
+    StateServices stateServices;
 
     public UnitOfWorkInstance( ModuleInstance moduleInstance, StateServices stateServices )
     {
@@ -89,20 +89,10 @@ public final class UnitOfWorkInstance
 //                throw new UnitOfWorkException("No store for composite type "+compositeType.getName());
 
         CompositeBuilder<T> builder = new EntityCompositeBuilderFactory( moduleInstance, this, store ).newCompositeBuilder( compositeType );
-
-        if( identity == null )
+        if( identity != null )
         {
-            IdentityGenerator identityGenerator = stateServices.getIdentityGenerator( compositeType );
-            if( identityGenerator == null )
-            {
-                throw new UnitOfWorkException( "No identity generator found for type " + compositeType.getName() );
-            }
-
-            identity = identityGenerator.generate( compositeType );
+            builder.propertiesFor( Identity.class ).identity().set( identity );
         }
-
-        builder.propertiesFor( Identity.class ).identity().set( identity );
-
         return builder;
     }
 
