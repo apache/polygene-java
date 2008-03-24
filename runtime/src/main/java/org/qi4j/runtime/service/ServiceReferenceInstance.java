@@ -206,7 +206,7 @@ public final class ServiceReferenceInstance<T>
             if( instance instanceof InvocationHandler )
             {
                 InvocationHandler handler = (InvocationHandler) instance;
-                return handler.invoke( instance, method, objects );
+                return handler.invoke( serviceInstance.getInstance(), method, objects );
             }
             else
             {
