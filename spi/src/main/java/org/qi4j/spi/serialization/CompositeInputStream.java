@@ -31,7 +31,7 @@ import org.qi4j.spi.composite.CompositeState;
 /**
  * TODO
  */
-final class CompositeInputStream extends ObjectInputStream
+public final class CompositeInputStream extends ObjectInputStream
 {
     private UnitOfWork unitOfWork;
     private CompositeBuilderFactory cbf;

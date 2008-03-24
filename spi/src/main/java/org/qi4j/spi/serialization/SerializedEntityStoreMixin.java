@@ -73,7 +73,7 @@ public class SerializedEntityStoreMixin
         {
             if( serializationStore.contains( id ) )
             {
-                throw new EntityAlreadyExistsException( "Memory store", identity );
+                throw new EntityAlreadyExistsException( "Serialization store", identity );
             }
         }
         catch( IOException e )
@@ -102,7 +102,7 @@ public class SerializedEntityStoreMixin
 
         if( serializedState == null )
         {
-            throw new EntityNotFoundException( "Memory store", identity );
+            throw new EntityNotFoundException( "Serialization store", identity );
         }
 
         Map<Method, Object> propertyValues = new HashMap<Method, Object>();

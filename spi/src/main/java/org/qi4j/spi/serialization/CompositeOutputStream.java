@@ -31,7 +31,7 @@ import org.qi4j.spi.composite.CompositeState;
 /**
  * TODO
  */
-final class CompositeOutputStream extends ObjectOutputStream
+public final class CompositeOutputStream extends ObjectOutputStream
 {
     Qi4jSPI spi;
 

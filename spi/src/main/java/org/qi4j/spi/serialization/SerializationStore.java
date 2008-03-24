@@ -19,14 +19,42 @@ import java.util.Map;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.spi.entity.StateCommitter;
 
+/**
+ * SerializedEntityStoreMixin backends should implement this interface. Then
+ * create a ServiceComposite with it.
+ */
 public interface SerializationStore
 {
+    /**
+     * Get the serialized state for the given entity.
+     *
+     * @param entityId
+     * @param unitOfWork
+     * @return the state for the entityId, or null if not found
+     * @throws IOException
+     */
     SerializedState get( SerializedEntity entityId, UnitOfWork unitOfWork )
         throws IOException;
 
+    /**
+     * Check whether a particular entity exists or not.
+     *
+     * @param entityId
+     * @return true if the entity with the given entityId exists
+     * @throws IOException
+     */
     boolean contains( SerializedEntity entityId )
         throws IOException;
 
+    /**
+     * Prepare to store the given new, updated and remove state in the store.
+     *
+     * @param newEntities
+     * @param updatedEntities
+     * @param removedEntities
+     * @return
+     * @throws IOException
+     */
     StateCommitter prepare( Map<SerializedEntity, SerializedState> newEntities, Map<SerializedEntity, SerializedState> updatedEntities, Iterable<SerializedEntity> removedEntities )
         throws IOException;
 }
