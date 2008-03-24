@@ -73,7 +73,7 @@ public final class UnitOfWorkCompositeBuilder<T extends Composite>
     public T newInstance()
     {
         EntityState state;
-        String identity = getPropertyValues().get( IDENTITY_METHOD ).toString();
+        String identity = (String) getPropertyValues().get( IDENTITY_METHOD );
         if( identity == null )
         {
             Class compositeType = context.getCompositeModel().getCompositeClass();
