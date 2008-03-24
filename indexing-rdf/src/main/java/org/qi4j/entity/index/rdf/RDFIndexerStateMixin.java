@@ -1,0 +1,66 @@
+/*
+ * Copyright 2008 Alin Dreghiciu.
+ *
+ * Licensed  under the  Apache License,  Version 2.0  (the "License");
+ * you may not use  this file  except in  compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed  under the  License is distributed on an "AS IS" BASIS,
+ * WITHOUT  WARRANTIES OR CONDITIONS  OF ANY KIND, either  express  or
+ * implied.
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.qi4j.entity.index.rdf;
+
+import java.io.OutputStream;
+import java.io.Serializable;
+import java.util.Map;
+import org.openrdf.model.Literal;
+import org.openrdf.model.URI;
+import org.openrdf.model.ValueFactory;
+import org.openrdf.query.QueryLanguage;
+import org.openrdf.repository.Repository;
+import org.openrdf.repository.RepositoryConnection;
+import org.openrdf.repository.RepositoryException;
+import org.openrdf.repository.sail.SailRepository;
+import org.openrdf.rio.RDFWriter;
+import org.openrdf.rio.rdfxml.util.RDFXMLPrettyWriter;
+import org.openrdf.sail.memory.MemoryStore;
+import org.qi4j.spi.serialization.SerializedEntity;
+import org.qi4j.spi.serialization.SerializedState;
+
+/**
+ * TODO Add JavaDoc
+ *
+ * @author Alin Dreghiciu
+ * @since March 24, 2008
+ */
+public class RDFIndexerStateMixin
+    implements RDFIndexerState
+{
+
+    private Repository repository;
+
+    public RDFIndexerStateMixin()
+    {
+        repository = new SailRepository( new MemoryStore() );
+        try
+        {
+            repository.initialize();
+        }
+        catch( RepositoryException e )
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public Repository getRepository()
+    {
+        return repository;
+    }
+}

@@ -17,17 +17,13 @@
  */
 package org.qi4j.entity.index.rdf;
 
-import org.qi4j.composite.Mixins;
-import org.qi4j.service.ServiceComposite;
-
 /**
  * TODO Add JavaDoc
  *
  * @author Alin Dreghiciu
- * @since March 18, 2008
+ * @since March 24, 2008
  */
-@Mixins( { RDFIndexerMixin.class, RDFIndexerStateMixin.class, RDFSearchEngineMixin.class } )
-public interface RDFIndexerComposite
-    extends Indexer, SearchEngine, ServiceComposite
+public interface SearchEngine
 {
+    Iterable<String> findbyNativeQuery( String query );
 }

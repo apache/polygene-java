@@ -41,11 +41,12 @@ public class SesameIndexerTest
                 module.addServices(
                     IndexedMemoryEntityStoreComposite.class,
                     UuidIdentityGeneratorComposite.class,
-                    RDFIndexerComposite.class
+                    RDFIndexerExporterComposite.class
                 );
             }
         };
         Network.populate( assembler.getUnitOfWorkFactory().newUnitOfWork() );
+        assembler.getServiceLocator().lookupService( RDFIndexerExporterComposite.class ).getService().toRDF( System.out );
     }
 
 

@@ -35,7 +35,8 @@ public class SesameQueryTest
             {
                 module.addComposites(
                     PersonComposite.class,
-                    CityComposite.class
+                    CityComposite.class,
+                    DomainComposite.class
                 );
                 module.addServices(
                     IndexedMemoryEntityStoreComposite.class,
@@ -44,6 +45,15 @@ public class SesameQueryTest
                 );
             }
         };
+        Network.populate( assembler.getUnitOfWorkFactory().newUnitOfWork() );
+        SearchEngine searchEngine = assembler.getServiceLocator().lookupService( RDFIndexerComposite.class ).getService();
+        searchEngine.findbyNativeQuery(
+            "CONSTRUCT {Entity} id:identity {Identity} " +
+            "FROM {Entity} id:identity {Identity}; rdf:type {qi4j:org.qi4j.entity.index.rdf.PersonComposite} " +
+            "USING NAMESPACE " +
+            "  id = <urn:org.qi4j.entity.Identity/>, " +
+            "  qi4j = <urn:qi4j/>"
+        );
     }
 
 

@@ -44,7 +44,6 @@ public abstract class IndexingSideEffect
                                    Iterable<SerializedEntity> removedEntities ) throws IOException
     {
         indexer.index( newEntities, updatedEntities, removedEntities );
-        indexer.toRDF( System.out );
         return null;
     }
 }

@@ -51,6 +51,7 @@ class Network
         City kualaLumpur = cityBuilder.newInstance();
         kualaLumpur.name().set( "Kuala Lumpur" );
         kualaLumpur.country().set( "Malaysia" );
+        kualaLumpur.county().set( "Some Jaya");
 
         CompositeBuilder<PersonComposite> personBuilder = unitOfWork.newEntityBuilder( PersonComposite.class );
 

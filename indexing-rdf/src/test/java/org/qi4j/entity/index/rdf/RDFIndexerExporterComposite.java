@@ -19,15 +19,18 @@ package org.qi4j.entity.index.rdf;
 
 import org.qi4j.composite.Mixins;
 import org.qi4j.service.ServiceComposite;
+import java.io.Writer;
+import java.io.OutputStream;
 
 /**
  * TODO Add JavaDoc
  *
  * @author Alin Dreghiciu
- * @since March 18, 2008
+ * @since March 24, 2008
  */
-@Mixins( { RDFIndexerMixin.class, RDFIndexerStateMixin.class, RDFSearchEngineMixin.class } )
-public interface RDFIndexerComposite
-    extends Indexer, SearchEngine, ServiceComposite
+@Mixins( RDFIndexerExporterMixin.class )
+public interface RDFIndexerExporterComposite
+    extends RDFIndexerComposite
 {
+    void toRDF( OutputStream outputStream );
 }
