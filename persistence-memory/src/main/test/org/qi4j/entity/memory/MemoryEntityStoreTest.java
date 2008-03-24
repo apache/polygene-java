@@ -76,7 +76,7 @@ public class MemoryEntityStoreTest
     {
         long start = System.currentTimeMillis();
 
-        int nrOfEntities = 100000;
+        int nrOfEntities = 10000;
         for( int i = 0; i < nrOfEntities; i++ )
         {
             createEntity();
@@ -90,7 +90,7 @@ public class MemoryEntityStoreTest
     public void whenBulkNewEntitiesThenPerformanceIsOk()
         throws Exception
     {
-        int nrOfEntities = 1000000;
+        int nrOfEntities = 10000;
         UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
 
         for( int i = 0; i < nrOfEntities; i++ )
@@ -128,7 +128,7 @@ public class MemoryEntityStoreTest
 
         String id = createEntity();
 
-        int nrOfLookups = 1000000;
+        int nrOfLookups = 10000;
         UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
         for( int i = 0; i < nrOfLookups; i++ )
         {

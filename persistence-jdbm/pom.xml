@@ -9,8 +9,8 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.qi4j.extensions</groupId>
-  <artifactId>qi4j-persistence-jdbm</artifactId>
-  <name>Qi4J Extension - Persistence JDBM</name>
+  <artifactId>qi4j-persistence-s3</artifactId>
+  <name>Qi4J Extension - Persistence Amazon S3</name>
   <version>0.1.0-SNAPSHOT</version>
   <dependencies>
     <dependency>
