@@ -15,10 +15,12 @@ package org.qi4j.library.framework.properties;
 import java.lang.reflect.Proxy;
 import java.util.Iterator;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import org.junit.Before;
 import org.junit.Test;
+import static junit.framework.Assert.assertFalse;
 
 public class PropertiesMixinTest
 {
@@ -78,7 +80,8 @@ public class PropertiesMixinTest
         m_proxy.addBar( "aValue" );
         m_proxy.removeBar( "aValue" );
         Iterator<String> iterator = m_proxy.barIterator();
-        assertNull( iterator );
+        assertNotNull( iterator );
+        assertFalse( iterator.hasNext() );
     }
 
     @Test
@@ -87,7 +90,8 @@ public class PropertiesMixinTest
         m_proxy.add( "aValue" );
         m_proxy.remove( "aValue" );
         Iterator<String> iterator = m_proxy.iterator();
-        assertNull( iterator );
+        assertNotNull( iterator );
+        assertFalse( iterator.hasNext() );
     }
 
     @Test
@@ -105,13 +109,17 @@ public class PropertiesMixinTest
     @Test
     public void iterateBarWithoutAddBar()
     {
-        assertNull( "iterator supposed to be null", m_proxy.barIterator() );
+        Iterator<String> iterator = m_proxy.barIterator();
+        assertNotNull( "iterator not supposed to be null", iterator );
+        assertFalse( iterator.hasNext() );
     }
 
     @Test
     public void iterateWithoutAdd()
     {
-        assertNull( "iterator supposed to be null", m_proxy.barIterator() );
+        Iterator<String> iterator = m_proxy.barIterator();
+        assertNotNull( "iterator not supposed to be null", iterator );
+        assertFalse( iterator.hasNext() );
     }
 
     @Test
@@ -147,7 +155,9 @@ public class PropertiesMixinTest
     public void setFooAndIterateFoo()
     {
         m_proxy.setFoo( "aValue" );
-        assertNull( "iterator supposed to be null", m_proxy.fooIterator() );
+        Iterator<String> iterator = m_proxy.fooIterator();
+        assertNotNull( "iterator not supposed to be null", iterator );
+        assertFalse(  iterator.hasNext() );
     }
 
     public static interface Value
