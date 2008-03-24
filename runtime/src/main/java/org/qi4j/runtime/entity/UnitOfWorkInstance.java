@@ -227,6 +227,7 @@ public final class UnitOfWorkInstance
             {
                 EntityState state = entityInstance.getStore().getEntityState( this, entity.identity().get(), entityInstance.getContext().getCompositeBinding() );
                 entityInstance.setState( state );
+                entityInstance.setMixins( null );
             }
             catch( StoreException e )
             {

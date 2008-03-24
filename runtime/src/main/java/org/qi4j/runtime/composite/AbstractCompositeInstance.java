@@ -29,7 +29,7 @@ import org.qi4j.spi.composite.CompositeState;
 public abstract class AbstractCompositeInstance
     implements InvocationHandler, CompositeState
 {
-    protected static final Method METHOD_GETIDENTITY;
+    protected static final Method METHOD_IDENTITY;
     protected static final Method METHOD_GET;
 
     protected CompositeContext context;
@@ -40,19 +40,12 @@ public abstract class AbstractCompositeInstance
     {
         try
         {
-            METHOD_GETIDENTITY = Identity.class.getMethod( "identity" );
-        }
-        catch( NoSuchMethodException e )
-        {
-            throw new InternalError( Identity.class + " is corrupt." );
-        }
-        try
-        {
             METHOD_GET = ImmutableProperty.class.getMethod( "get" );
+            METHOD_IDENTITY = Identity.class.getMethod( "identity" );
         }
         catch( NoSuchMethodException e )
         {
-            throw new InternalError( ImmutableProperty.class + " is corrupt." );
+            throw new InternalError( "Qi4j Core Runtime codebase is corrupted. Contact Qi4j team: AbstractCompositeInstance" );
         }
     }
 
@@ -87,58 +80,74 @@ public abstract class AbstractCompositeInstance
     {
         if( method.getName().equals( "hashCode" ) )
         {
-            if( context.getCompositeModel().getCompositeClass().isAssignableFrom( Identity.class ) )
-            {
-                String id = ( (Identity) proxy ).identity().get();
-                if( id != null )
-                {
-                    return id.hashCode();
-                }
-                else
-                {
-                    return 0;
-                }
-            }
-            else
-            {
-                return 0; // TODO ?
-            }
+            return onHashCode( proxy );
         }
         if( method.getName().equals( "equals" ) )
         {
-            if( args[ 0 ] == null )
-            {
-                return false;
-            }
-            if( context.getCompositeModel().getCompositeClass().isAssignableFrom( Identity.class ) )
-            {
-                String id = ( (Identity) proxy ).identity().get();
-                Identity other = ( (Identity) args[ 0 ] );
-                return id != null && id.equals( other.identity().get() );
-            }
-            else
-            {
-                return getCompositeInstance( (Composite) proxy ) == this;
-            }
+            return onEquals( proxy, args );
         }
         if( method.getName().equals( "toString" ) )
         {
-            if( context.getCompositeModel().getCompositeClass().isAssignableFrom( Identity.class ) )
-            {
-                Property<String> id = (Property<String>) invoke( proxy, METHOD_GETIDENTITY, null );
-                return id != null ? id.get() : "";
-            }
-            else if( ImmutableProperty.class.isAssignableFrom( context.getCompositeModel().getCompositeClass() ) )
-            {
-                Object value = invoke( proxy, METHOD_GET, null );
-                return value != null ? value.toString() : "";
-            }
-            else
-            {
-                return "";
-            }
+            return onToString( proxy );
         }
 
         return null;
+    }
+
+    protected Object onHashCode( Object proxy )
+    {
+        if( context.getCompositeModel().getCompositeClass().isAssignableFrom( Identity.class ) )
+        {
+            String id = ( (Identity) proxy ).identity().get();
+            if( id != null )
+            {
+                return id.hashCode();
+            }
+            else
+            {
+                return 0;
+            }
+        }
+        else
+        {
+            return 0; // TODO ?
+        }
+    }
+
+    protected Object onEquals( Object proxy, Object[] args )
+    {
+        if( args[ 0 ] == null )
+        {
+            return false;
+        }
+        if( context.getCompositeModel().getCompositeClass().isAssignableFrom( Identity.class ) )
+        {
+            String id = ( (Identity) proxy ).identity().get();
+            Identity other = ( (Identity) args[ 0 ] );
+            return id != null && id.equals( other.identity().get() );
+        }
+        else
+        {
+            return getCompositeInstance( (Composite) proxy ) == this;
+        }
+    }
+
+    protected Object onToString( Object proxy )
+        throws Throwable
+    {
+        if( context.getCompositeModel().getCompositeClass().isAssignableFrom( Identity.class ) )
+        {
+            Property<String> id = (Property<String>) invoke( proxy, METHOD_IDENTITY, null );
+            return id != null ? id.get() : "";
+        }
+        else if( ImmutableProperty.class.isAssignableFrom( context.getCompositeModel().getCompositeClass() ) )
+        {
+            Object value = invoke( proxy, METHOD_GET, null );
+            return value != null ? value.toString() : "";
+        }
+        else
+        {
+            return "";
+        }
     }
 }

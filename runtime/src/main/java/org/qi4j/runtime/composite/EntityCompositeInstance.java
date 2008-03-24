@@ -20,6 +20,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.UnitOfWork;
+import org.qi4j.entity.Identity;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.composite.InvalidCompositeException;
@@ -34,16 +35,16 @@ public final class EntityCompositeInstance
     private Object[] mixins;
 
     private UnitOfWork unitOfWork;
+    private String identity;
     private EntityState state;
     private EntityStore store;
-    private String identity;
 
     public EntityCompositeInstance( UnitOfWork unitOfWork, CompositeContext aContext, ModuleInstance moduleInstance, EntityStore store, String identity )
     {
         super( aContext, moduleInstance );
-        this.identity = identity;
         this.unitOfWork = unitOfWork;
         this.store = store;
+        this.identity = identity;
     }
 
     public static <T extends EntityComposite> EntityCompositeInstance getEntityCompositeInstance( T aProxy )
@@ -58,7 +59,6 @@ public final class EntityCompositeInstance
         {
             CompositeBinding binding = context.getCompositeBinding();
             EntityState entityState = store.getEntityState( unitOfWork, identity, binding );
-
             context.newEntityMixins( moduleInstance, this, entityState );
         }
 
@@ -67,7 +67,6 @@ public final class EntityCompositeInstance
         {
             return invokeObject( composite, method, args );
         }
-
         Object mixin = mixins[ descriptor.getMixinIndex() ];
 
         if( mixin == null )

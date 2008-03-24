@@ -14,6 +14,8 @@
 
 package org.qi4j.runtime.entity;
 
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -58,7 +60,8 @@ public class UnitOfWorkFactoryTest
         cb.propertiesOfComposite().price().set( 57 );
         Product chair = cb.newInstance();
 
-        System.out.println( "Product '" + chair.name().get() + "' costs " + chair.price() );
+        assertThat( "Chair.name()", chair.name().get(), equalTo( "Chair" ) );
+        assertThat( "Chair.price()", chair.price().get(), equalTo( 57 ) );
 
         try
         {
@@ -68,5 +71,31 @@ public class UnitOfWorkFactoryTest
         {
             e.printStackTrace();
         }
+    }
+
+    @Test
+    public void testPrototypePattern()
+    {
+        UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
+
+        // Create product
+        CompositeBuilder<ProductComposite> cb = unitOfWork.newEntityBuilder( ProductComposite.class );
+        cb.propertiesOfComposite().name().set( "Chair" );
+        cb.propertiesOfComposite().price().set( 57 );
+        ProductComposite chair1 = cb.newInstance();
+        ProductComposite chair2 = cb.newInstance();
+        try
+        {
+            unitOfWork.complete();
+        }
+        catch( UnitOfWorkCompletionException e )
+        {
+            e.printStackTrace();
+        }
+        String id1 = chair1.identity().get();
+        String id2 = chair2.identity().get();
+        System.out.println( "Identity Chair1: " + id1 );
+        System.out.println( "Identity Chair2: " + id2 );
+        assertThat( "Identity are same.", id1, not( id2 ) );
     }
 }

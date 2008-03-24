@@ -72,6 +72,7 @@ public final class UnitOfWorkCompositeBuilder<T extends Composite>
 
     public T newInstance()
     {
+        boolean prototypePattern = false;
         EntityState state;
         String identity = (String) getPropertyValues().get( IDENTITY_METHOD );
         if( identity == null )
@@ -83,6 +84,8 @@ public final class UnitOfWorkCompositeBuilder<T extends Composite>
                 throw new UnitOfWorkException( "No identity generator found for type " + compositeType.getName() );
             }
             identity = identityGenerator.generate( compositeType );
+            prototypePattern = true;
+            propertyValues.put( IDENTITY_METHOD, identity );
         }
         Map<Method, Object> propertyValues = getPropertyValues();
         try
@@ -122,7 +125,10 @@ public final class UnitOfWorkCompositeBuilder<T extends Composite>
         {
             context.invokeCreate( instance, compositeInstance );
         }
-
+        if( prototypePattern )
+        {
+            propertyValues.remove( IDENTITY_METHOD );
+        }
         return instance;
     }
 
