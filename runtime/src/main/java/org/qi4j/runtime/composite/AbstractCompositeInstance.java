@@ -120,7 +120,7 @@ public abstract class AbstractCompositeInstance
         {
             return false;
         }
-        if( context.getCompositeModel().getCompositeClass().isAssignableFrom( Identity.class ) )
+        if( Identity.class.isAssignableFrom( context.getCompositeModel().getCompositeClass() ) )
         {
             String id = ( (Identity) proxy ).identity().get();
             Identity other = ( (Identity) args[ 0 ] );
