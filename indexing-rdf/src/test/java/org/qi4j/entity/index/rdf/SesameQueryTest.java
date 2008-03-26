@@ -56,5 +56,29 @@ public class SesameQueryTest
         );
     }
 
+    @Test
+    public void script02() throws UnitOfWorkCompletionException
+    {
+        SingletonAssembler assembler = new SingletonAssembler()
+        {
+            public void assemble( ModuleAssembly module ) throws AssemblyException
+            {
+                module.addComposites(
+                    PersonComposite.class,
+                    CityComposite.class,
+                    DomainComposite.class,
+                    GoogleComposite.class
+                );
+                module.addServices(
+                    IndexedMemoryEntityStoreComposite.class,
+                    UuidIdentityGeneratorComposite.class,
+                    RDFIndexerComposite.class
+                );
+            }
+        };
+        Network.populate( assembler.getUnitOfWorkFactory().newUnitOfWork() );
+        Google google = assembler.getCompositeBuilderFactory().newComposite( GoogleComposite.class );
+        google.bornIn( "Kuala Lumpur" );
+    }
 
 }

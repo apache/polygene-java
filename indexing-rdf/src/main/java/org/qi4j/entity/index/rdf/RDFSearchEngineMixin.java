@@ -44,7 +44,7 @@ public class RDFSearchEngineMixin
 
     public Iterable<String> findbyNativeQuery( String query )
     {
-        // TODO what about a null query shall it fail?, return null or return empty
+        // TODO what about a null queryobsolete shall it fail?, return null or return empty
         if( query == null )
         {
             return null;

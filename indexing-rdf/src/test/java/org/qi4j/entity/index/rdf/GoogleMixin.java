@@ -17,8 +17,11 @@
  */
 package org.qi4j.entity.index.rdf;
 
-import org.qi4j.composite.scope.Entity;
-import org.qi4j.query.QueryBuilder;
+import org.qi4j.composite.scope.Structure;
+import org.qi4j.entity.UnitOfWorkFactory;
+import org.qi4j.queryobsolete.QueryBuilder;
+import org.qi4j.queryobsolete.Query;
+import static org.qi4j.queryobsolete.QueryExpression.*;
 
 /**
  * TODO Add JavaDoc
@@ -30,11 +33,17 @@ public class GoogleMixin
     implements Google
 {
 
-    @Entity QueryBuilder<Person> queryBuilder;
+    @Structure UnitOfWorkFactory unitOfWorkFactory;
 
     public Iterable<Person> bornIn( String city )
     {
-        System.out.println( "QueryBuilder: " + queryBuilder );
+        QueryBuilder<Person> queryBuilder = unitOfWorkFactory.newUnitOfWork().getQueryBuilderFactory()
+            .newQueryBuilder( Person.class );
+        Person personTemplate = queryBuilder.parameter( Person.class );
+        Query<Person> query = queryBuilder
+            .where( eq( personTemplate.placeOfBirth(), city ) )
+            .newQuery();
+        query.find();
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }
