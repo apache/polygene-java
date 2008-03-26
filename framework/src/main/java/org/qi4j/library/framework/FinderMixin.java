@@ -5,9 +5,9 @@ import java.lang.reflect.Method;
 import org.qi4j.composite.AppliesTo;
 import org.qi4j.composite.AppliesToFilter;
 import org.qi4j.composite.scope.Entity;
-import org.qi4j.query.QueryBuilder;
-import org.qi4j.query.QueryBuilderFactory;
-import static org.qi4j.query.QueryExpression.eq;
+import org.qi4j.queryobsolete.QueryBuilder;
+import org.qi4j.queryobsolete.QueryBuilderFactory;
+import static org.qi4j.queryobsolete.QueryExpression.eq;
 
 /**
  * Generic finder mixin.
@@ -40,7 +40,7 @@ public class FinderMixin
     // InvocationHandler implementation ------------------------------
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
     {
-        // Build query
+        // Build queryobsolete
         String methodName = method.getName();
 
         Class resultType = method.getReturnType();
@@ -56,7 +56,7 @@ public class FinderMixin
 
         builder = builder.where( eq( getter.invoke( param ), args[ 0 ] ) );
 
-        // Execute query
+        // Execute queryobsolete
         return builder.newQuery().find();
     }
 
