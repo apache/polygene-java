@@ -96,7 +96,7 @@ public abstract class AbstractCompositeInstance
 
     protected Object onHashCode( Object proxy )
     {
-        if( context.getCompositeModel().getCompositeClass().isAssignableFrom( Identity.class ) )
+        if( Identity.class.isAssignableFrom( context.getCompositeModel().getCompositeClass() ) )
         {
             String id = ( (Identity) proxy ).identity().get();
             if( id != null )
@@ -135,7 +135,7 @@ public abstract class AbstractCompositeInstance
     protected Object onToString( Object proxy )
         throws Throwable
     {
-        if( context.getCompositeModel().getCompositeClass().isAssignableFrom( Identity.class ) )
+        if( Identity.class.isAssignableFrom( context.getCompositeModel().getCompositeClass() ) )
         {
             Property<String> id = (Property<String>) invoke( proxy, METHOD_IDENTITY, null );
             return id != null ? id.get() : "";
