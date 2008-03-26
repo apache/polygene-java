@@ -16,9 +16,9 @@ package org.qi4j.runtime.entity;
 
 import java.util.Map;
 import org.qi4j.entity.EntityComposite;
-import org.qi4j.query.QueryImpl;
-import org.qi4j.query.Queryable;
-import org.qi4j.query.QueryableIterable;
+import org.qi4j.queryobsolete.QueryImpl;
+import org.qi4j.queryobsolete.Queryable;
+import org.qi4j.queryobsolete.QueryableIterable;
 
 /**
  * Queryable implementation for UnitOfWorkInstance.

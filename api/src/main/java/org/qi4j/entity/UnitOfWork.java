@@ -17,7 +17,7 @@ package org.qi4j.entity;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.ObjectBuilderFactory;
-import org.qi4j.query.QueryBuilderFactory;
+import org.qi4j.queryobsolete.QueryBuilderFactory;
 
 /**
  * All operations on entities goes through an UnitOfWork. <TODO Muuuch longer explanation needed>

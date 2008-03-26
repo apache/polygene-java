@@ -3,9 +3,9 @@ package org.qi4j.runtime.injection;
 import java.util.HashMap;
 import java.util.Map;
 import org.qi4j.entity.UnitOfWork;
-import org.qi4j.query.Query;
-import org.qi4j.query.QueryBuilder;
-import org.qi4j.query.QueryBuilderFactory;
+import org.qi4j.queryobsolete.Query;
+import org.qi4j.queryobsolete.QueryBuilder;
+import org.qi4j.queryobsolete.QueryBuilderFactory;
 import org.qi4j.spi.injection.BindingContext;
 import org.qi4j.spi.injection.InjectionContext;
 import org.qi4j.spi.injection.InjectionProvider;
@@ -72,8 +72,8 @@ public final class EntityInjectionProviderFactory
                         else if( resolution.getRawType().equals( Iterable.class ) )
                         {
                             QueryBuilder queryBuilder = builderFactory.newQueryBuilder( resolution.getDependencyType() );
-                            Query query = queryBuilder.newQuery();
-                            return query.iterator();
+                            Query queryobsolete = queryBuilder.newQuery();
+                            return queryobsolete.iterator();
                         }
                         else
                         {
