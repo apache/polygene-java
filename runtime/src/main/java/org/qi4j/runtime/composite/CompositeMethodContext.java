@@ -84,7 +84,15 @@ public final class CompositeMethodContext
         Method method = compositeMethodBinding.getCompositeMethodResolution().getCompositeMethodModel().getMethod();
         ClassLoader classloader = method.getDeclaringClass().getClassLoader();
 
-        FragmentInvocationHandler mixinInvocationHandler = new FragmentInvocationHandler();
+        FragmentInvocationHandler mixinInvocationHandler;
+        if( InvocationHandler.class.isAssignableFrom( compositeMethodBinding.getMixinBinding().getMixinResolution().getMixinModel().getModelClass() ) )
+        {
+            mixinInvocationHandler = new GenericFragmentInvocationHandler();
+        }
+        else
+        {
+            mixinInvocationHandler = new TypedFragmentInvocationHandler();
+        }
 
         // Instantiate and link concerns
         Object previousConcern = mixinInvocationHandler;
@@ -190,7 +198,7 @@ public final class CompositeMethodContext
             }
             else
             {
-                modifies = new FragmentInvocationHandler( next );
+                modifies = new TypedFragmentInvocationHandler( next );
             }
         }
         else

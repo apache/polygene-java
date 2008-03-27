@@ -12,26 +12,26 @@
 package org.qi4j.runtime.composite;
 
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
 
 /**
  * TODO
  */
-public abstract class FragmentInvocationHandler
-    implements InvocationHandler
+public class GenericFragmentInvocationHandler
+    extends FragmentInvocationHandler
 {
-    protected Object fragment;
-
-    public FragmentInvocationHandler()
+    public GenericFragmentInvocationHandler()
     {
     }
 
-    public FragmentInvocationHandler( Object fragment )
+    public GenericFragmentInvocationHandler( Object fragment )
     {
-        this.fragment = fragment;
+        super( fragment );
     }
 
-    public void setFragment( Object fragment )
+    // InvocationHandler implementation ------------------------------
+    public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
     {
-        this.fragment = fragment;
+        return ( (InvocationHandler) fragment ).invoke( proxy, method, args );
     }
 }

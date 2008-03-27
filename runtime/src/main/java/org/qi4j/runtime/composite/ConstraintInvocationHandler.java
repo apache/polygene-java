@@ -1,5 +1,7 @@
 package org.qi4j.runtime.composite;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,16 +11,17 @@ import org.qi4j.composite.ConstraintViolation;
 /**
  * TODO
  */
-public final class ConstraintInvocationHandler extends FragmentInvocationHandler
+public final class ConstraintInvocationHandler implements InvocationHandler
 {
     private ProxyReferenceInvocationHandler proxyHandler;
     private List<List<ConstraintInstance>> parameterConstraintInstances;
+    private Object next;
 
     public ConstraintInvocationHandler( ProxyReferenceInvocationHandler proxyHandler, List<List<ConstraintInstance>> parameterConstraintInstances, Object previousConcern )
     {
-        super( previousConcern );
         this.proxyHandler = proxyHandler;
         this.parameterConstraintInstances = parameterConstraintInstances;
+        this.next = previousConcern;
     }
 
     public Object invoke( Object object, Method method, Object[] args ) throws Throwable
@@ -49,7 +52,8 @@ public final class ConstraintInvocationHandler extends FragmentInvocationHandler
                 catch( NullPointerException e )
                 {
                     // Ignore...
-                    // TODO Question from Niclas: Why??
+                    // Since we have @NotNull it is ok for Constraint implementations to throw NPE's instead of
+                    // having to implement null checks
                 }
             }
             idx++;
@@ -60,6 +64,26 @@ public final class ConstraintInvocationHandler extends FragmentInvocationHandler
             proxyHandler.setConstraintViolations( constraintViolations );
         }
 
-        return super.invoke( object, method, args );
+        // Invoke next
+        if( next instanceof InvocationHandler )
+        {
+            return ( (InvocationHandler) next ).invoke( object, method, args );
+        }
+        else
+        {
+            try
+            {
+                return method.invoke( next, args );
+            }
+            catch( NullPointerException e )
+            {
+                e.printStackTrace();
+                throw e;
+            }
+            catch( InvocationTargetException e )
+            {
+                throw e.getTargetException();
+            }
+        }
     }
 }

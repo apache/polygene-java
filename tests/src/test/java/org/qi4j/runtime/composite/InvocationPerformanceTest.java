@@ -11,6 +11,8 @@
  */
 package org.qi4j.runtime.composite;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
 import java.text.NumberFormat;
 import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
@@ -33,10 +35,12 @@ public class InvocationPerformanceTest
         throws AssemblyException
     {
         module.addComposites( SimpleComposite.class );
+        module.addComposites( SimpleWithTypedConcernComposite.class );
+        module.addComposites( SimpleWithGenericConcernComposite.class );
     }
 
     @Test
-    public void testNewInstance()
+    public void testInvokeMixin()
     {
         // Create instance
         CompositeBuilder<SimpleComposite> builder = compositeBuilderFactory.newCompositeBuilder( SimpleComposite.class );
@@ -47,7 +51,43 @@ public class InvocationPerformanceTest
             simple.test();
         }
 
-        int rounds = 2;
+        int rounds = 3;
+        for( int i = 0; i < rounds; i++ )
+        {
+            performanceCheck( simple );
+        }
+    }
+
+    @Test
+    public void testInvokeMixinWithTypedConcern()
+    {
+        // Create instance
+        Simple simple = compositeBuilderFactory.newComposite( SimpleWithTypedConcernComposite.class );
+
+        for( int i = 0; i < 60000; i++ )
+        {
+            simple.test();
+        }
+
+        int rounds = 3;
+        for( int i = 0; i < rounds; i++ )
+        {
+            performanceCheck( simple );
+        }
+    }
+
+    @Test
+    public void testInvokeMixinWithGenericConcern()
+    {
+        // Create instance
+        Simple simple = compositeBuilderFactory.newComposite( SimpleWithGenericConcernComposite.class );
+
+        for( int i = 0; i < 60000; i++ )
+        {
+            simple.test();
+        }
+
+        int rounds = 3;
         for( int i = 0; i < rounds; i++ )
         {
             performanceCheck( simple );
@@ -70,7 +110,20 @@ public class InvocationPerformanceTest
     }
 
     @Mixins( SimpleMixin.class )
-    @Concerns( SimpleConcern.class )
+    @Concerns( SimpleTypedConcern.class )
+    public interface SimpleWithTypedConcernComposite
+        extends Simple, Composite
+    {
+    }
+
+    @Mixins( SimpleMixin.class )
+    @Concerns( SimpleGenericConcern.class )
+    public interface SimpleWithGenericConcernComposite
+        extends Simple, Composite
+    {
+    }
+
+    @Mixins( SimpleMixin.class )
     public interface SimpleComposite
         extends Simple, Composite
     {
@@ -93,7 +146,7 @@ public class InvocationPerformanceTest
         }
     }
 
-    public static class SimpleConcern
+    public static class SimpleTypedConcern
         implements Simple
     {
         @ConcernFor Simple next;
@@ -101,6 +154,17 @@ public class InvocationPerformanceTest
         public void test()
         {
             next.test();
+        }
+    }
+
+    public static class SimpleGenericConcern
+        implements InvocationHandler
+    {
+        @ConcernFor InvocationHandler next;
+
+        public Object invoke( Object o, Method method, Object[] objects ) throws Throwable
+        {
+            return next.invoke( o, method, objects );
         }
     }
 }

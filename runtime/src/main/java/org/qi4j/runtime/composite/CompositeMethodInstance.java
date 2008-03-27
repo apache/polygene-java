@@ -33,6 +33,7 @@ public final class CompositeMethodInstance
     private ProxyReferenceInvocationHandler proxyHandler;
     private CompositeMethodInstancePool poolComposite;
     private CompositeMethodInstance next;
+    private InvocationType invocationType;
 
     public CompositeMethodInstance( Object firstConcern, Object[] sideEffects, SideEffectInvocationHandlerResult sideEffectResult, FragmentInvocationHandler aMixinInvocationHandler, ProxyReferenceInvocationHandler aProxyHandler, CompositeMethodInstancePool poolComposite, Method method, Class mixinType )
     {
@@ -48,6 +49,29 @@ public final class CompositeMethodInstance
         proxyHandler = aProxyHandler;
         mixinInvocationHandler = aMixinInvocationHandler;
         this.poolComposite = poolComposite;
+
+        if( this.firstConcern == null )
+        {
+            if( aMixinInvocationHandler instanceof GenericFragmentInvocationHandler )
+            {
+                invocationType = InvocationType.NoConcerns_InvocationHandler;
+            }
+            else
+            {
+                invocationType = InvocationType.NoConcerns_TypedMixin;
+            }
+        }
+        else
+        {
+            if( this.firstConcern instanceof InvocationHandler )
+            {
+                invocationType = InvocationType.Concerns_InvocationHandler;
+            }
+            else
+            {
+                invocationType = InvocationType.Concerns_TypedMixin;
+            }
+        }
     }
 
     public Object invoke( Object proxy, Object[] args, Object mixin )
@@ -55,39 +79,47 @@ public final class CompositeMethodInstance
     {
         try
         {
-            Object result;
-            if( firstConcern == null )
+            Object result = null;
+            switch( invocationType )
             {
-                if( mixin instanceof InvocationHandler )
-                {
-                    result = ( (InvocationHandler) mixin ).invoke( proxy, method, args );
-                }
-                else
-                {
-                    result = method.invoke( mixin, args );
-                }
-
+            case NoConcerns_InvocationHandler:
+            {
+                result = ( (InvocationHandler) mixin ).invoke( proxy, method, args );
                 if( sideEffects.length > 0 )
                 {
                     proxyHandler.setContext( proxy, mixin, mixinType );
                 }
+                break;
             }
-            else
+            case NoConcerns_TypedMixin:
+            {
+                result = method.invoke( mixin, args );
+                if( sideEffects.length > 0 )
+                {
+                    proxyHandler.setContext( proxy, mixin, mixinType );
+                }
+                break;
+            }
+            case Concerns_InvocationHandler:
             {
                 proxyHandler.setContext( proxy, mixin, mixinType );
                 mixinInvocationHandler.setFragment( mixin );
-                if( firstConcern instanceof InvocationHandler )
-                {
-                    result = ( (InvocationHandler) firstConcern ).invoke( proxy, method, args );
-                }
-                else
-                {
-                    result = method.invoke( firstConcern, args );
-                }
+
+                result = ( (InvocationHandler) firstConcern ).invoke( proxy, method, args );
+                break;
+            }
+            case Concerns_TypedMixin:
+            {
+                proxyHandler.setContext( proxy, mixin, mixinType );
+                mixinInvocationHandler.setFragment( mixin );
+
+                result = method.invoke( firstConcern, args );
+                break;
+            }
             }
 
             // Check for side-effects
-            invokeSideEffects( result, null, proxy, args );
+//            invokeSideEffects( result, null, proxy, args );
 
             return result;
         }
@@ -212,3 +244,11 @@ public final class CompositeMethodInstance
         this.next = next;
     }
 }
+
+enum InvocationType
+{
+    NoConcerns_InvocationHandler, NoConcerns_TypedMixin,
+    Concerns_InvocationHandler, Concerns_TypedMixin
+}
+
+
