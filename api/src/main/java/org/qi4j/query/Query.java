@@ -20,13 +20,22 @@
  */
 package org.qi4j.query;
 
+import org.qi4j.query.graph.OrderBy;
+
 /**
  * TODO Add JavaDoc.
  */
-public interface Query<R>
-    extends Iterable<R>
+public interface Query<T>
+    extends Iterable<T>
 {
-    R find();
+
+    Query<T> orderBy( OrderBy... orderBys );
+
+    Query<T> setFirstResult( int firstResult );
+
+    Query<T> setMaxResults( int maxResults );
+
+    T find();
 
     void setVariable( String name, Object value );
 }

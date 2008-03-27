@@ -23,16 +23,15 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 import org.junit.Test;
 import org.qi4j.property.Property;
-import org.qi4j.query.el.AbstractPropertyBinaryOperator;
-import org.qi4j.query.el.BinaryOperator;
-import org.qi4j.query.el.BooleanExpression;
-import org.qi4j.query.el.PropertyExpression;
-import org.qi4j.query.el.UnaryOperator;
-import org.qi4j.query.el.VariableValue;
-import org.qi4j.query.el.Equals;
+import org.qi4j.query.graph.BinaryOperator;
+import org.qi4j.query.graph.BooleanExpression;
+import org.qi4j.query.graph.Equals;
+import org.qi4j.query.graph.PropertyExpression;
+import org.qi4j.query.graph.UnaryOperator;
+import org.qi4j.query.graph.VariableValue;
 
 /**
- * Unit tests for {@link org.qi4j.query.QueryExpressions}.
+ * Unit tests for {@link QueryExpressions}.
  */
 public class QueryExpressionsTest
 {
@@ -44,7 +43,7 @@ public class QueryExpressionsTest
     public void validEqual()
     {
         StringPropertyExpression property = createMock( StringPropertyExpression.class );
-        AbstractPropertyBinaryOperator<String> operator = QueryExpressions.equals( property, "Foo" );
+        Equals<String> operator = QueryExpressions.eq( property, "Foo" );
         assertThat( "Property", operator.getLeftArgument(), is( equalTo( (PropertyExpression) property ) ) );
         assertThat( "Value", operator.getRightArgument().getValue(), is( equalTo( "Foo" ) ) );
     }
@@ -57,7 +56,7 @@ public class QueryExpressionsTest
     {
         StringPropertyExpression property = createMock( StringPropertyExpression.class );
         VariableValue<String> variable = QueryExpressions.variable( "var" );
-        AbstractPropertyBinaryOperator<String> operator = QueryExpressions.equals( property, variable );
+        Equals<String> operator = QueryExpressions.eq( property, variable );
         variable.setValue( "Foo" );
         assertThat( "Property", operator.getLeftArgument(), is( equalTo( (PropertyExpression) property ) ) );
         assertThat( "Value", operator.getRightArgument().getValue(), is( equalTo( "Foo" ) ) );

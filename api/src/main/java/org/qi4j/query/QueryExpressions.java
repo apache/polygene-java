@@ -20,22 +20,25 @@
  */
 package org.qi4j.query;
 
+import java.lang.reflect.Proxy;
 import org.qi4j.property.Property;
-import org.qi4j.query.el.And;
-import org.qi4j.query.el.BooleanExpression;
-import org.qi4j.query.el.Equals;
-import org.qi4j.query.el.GreaterOrEqual;
-import org.qi4j.query.el.GreaterThan;
-import org.qi4j.query.el.IsNotNull;
-import org.qi4j.query.el.IsNull;
-import org.qi4j.query.el.LessOrEqual;
-import org.qi4j.query.el.LessThan;
-import org.qi4j.query.el.Not;
-import org.qi4j.query.el.NotEquals;
-import org.qi4j.query.el.Or;
-import org.qi4j.query.el.PropertyExpression;
-import org.qi4j.query.el.TypedValueExpression;
-import org.qi4j.query.el.VariableValue;
+import org.qi4j.query.graph.And;
+import org.qi4j.query.graph.BooleanExpression;
+import org.qi4j.query.graph.Equals;
+import org.qi4j.query.graph.EqualsProperty;
+import org.qi4j.query.graph.GreaterOrEqual;
+import org.qi4j.query.graph.GreaterThan;
+import org.qi4j.query.graph.IsNotNull;
+import org.qi4j.query.graph.IsNull;
+import org.qi4j.query.graph.LessOrEqual;
+import org.qi4j.query.graph.LessThan;
+import org.qi4j.query.graph.Not;
+import org.qi4j.query.graph.NotEquals;
+import org.qi4j.query.graph.Or;
+import org.qi4j.query.graph.PropertyExpression;
+import org.qi4j.query.graph.PropertyExpressionFactory;
+import org.qi4j.query.graph.TypedValue;
+import org.qi4j.query.graph.VariableValue;
 
 /**
  * Static factory methods for query expressions and operators.
@@ -44,31 +47,19 @@ public class QueryExpressions
 {
 
     /**
-     * {@link Equals} factory method.
+     * Creates a template for the a mixin type to be used to access properties in type safe fashion.
      *
-     * @param property filtered property; cannot be null
-     * @param value    expected value that property is equal to; cannot be null
-     * @return an {@link Equals} expression
-     * @throws IllegalArgumentException - If property or value are null
+     * @param mixinType mixin type
+     * @return template instance
      */
-    public static <T> Equals<T> equals( final Property<T> property,
-                                        final T value )
+    @SuppressWarnings( "unchecked" )
+    public static <T> T templateFor( Class<T> mixinType )
     {
-        return new Equals<T>( asPropertyExpression( property ), asTypedValueExpression( value ) );
-    }
-
-    /**
-     * {@link Equals} factory method.
-     *
-     * @param property filtered property; cannot be null
-     * @param value    expected value that property is equal to; cannot be null
-     * @return an {@link Equals} expression
-     * @throws IllegalArgumentException - If property or value are null
-     */
-    public static <T> Equals<T> equals( final Property<T> property,
-                                        final VariableValue<T> value )
-    {
-        return new Equals<T>( asPropertyExpression( property ), value );
+        return (T) Proxy.newProxyInstance(
+            QueryExpressions.class.getClassLoader(),
+            new Class[]{ mixinType },
+            new PropertyExpressionFactory()
+        );
     }
 
     /**
@@ -81,6 +72,48 @@ public class QueryExpressions
     public static <T> VariableValue<T> variable( final String name )
     {
         return new VariableValue<T>( name );
+    }
+
+    /**
+     * {@link Equals} factory method.
+     *
+     * @param property filtered property; cannot be null
+     * @param value    expected value that property is equal to; cannot be null
+     * @return an {@link Equals} expression
+     * @throws IllegalArgumentException - If property or value are null
+     */
+    public static <T> Equals<T> eq( final Property<T> property,
+                                    final T value )
+    {
+        return new Equals<T>( asPropertyExpression( property ), asTypedValueExpression( value ) );
+    }
+
+    /**
+     * {@link Equals} factory method.
+     *
+     * @param property filtered property; cannot be null
+     * @param value    expected value that property is equal to; cannot be null
+     * @return an {@link Equals} expression
+     * @throws IllegalArgumentException - If property or value are null
+     */
+    public static <T> Equals<T> eq( final Property<T> property,
+                                    final VariableValue<T> value )
+    {
+        return new Equals<T>( asPropertyExpression( property ), value );
+    }
+
+    /**
+     * {@link EqualsProperty} factory method.
+     *
+     * @param property        filtered property; cannot be null
+     * @param anotherProperty expected property that left side property is equal to; cannot be null
+     * @return an {@link EqualsProperty} expression
+     * @throws IllegalArgumentException - If property or value are null
+     */
+    public static <T> EqualsProperty<T> eq( final Property<T> property,
+                                            final Property<T> anotherProperty )
+    {
+        return new EqualsProperty<T>( asPropertyExpression( property ), asPropertyExpression( anotherProperty ) );
     }
 
     /**
@@ -115,10 +148,24 @@ public class QueryExpressions
      * @return an {@link NotEquals} expression
      * @throws IllegalArgumentException - If property or value are null
      */
-    public static <T> NotEquals<T> notEquals( final Property<T> property,
-                                              final T value )
+    public static <T> NotEquals<T> notEq( final Property<T> property,
+                                          final T value )
     {
         return new NotEquals<T>( asPropertyExpression( property ), asTypedValueExpression( value ) );
+    }
+
+    /**
+     * {@link NotEquals} factory method.
+     *
+     * @param property filtered property; cannot be null
+     * @param value    expected value that property is not equal to; cannot be null
+     * @return an {@link NotEquals} expression
+     * @throws IllegalArgumentException - If property or value are null
+     */
+    public static <T> NotEquals<T> notEq( final Property<T> property,
+                                          final VariableValue<T> value )
+    {
+        return new NotEquals<T>( asPropertyExpression( property ), value );
     }
 
 
@@ -137,6 +184,20 @@ public class QueryExpressions
     }
 
     /**
+     * {@link LessThan} factory method.
+     *
+     * @param property filtered property; cannot be null
+     * @param value    expected value that property is less than; cannot be null
+     * @return an {@link LessThan} expression
+     * @throws IllegalArgumentException - If property or value are null
+     */
+    public static <T> LessThan<T> lt( final Property<T> property,
+                                      final VariableValue<T> value )
+    {
+        return new LessThan<T>( asPropertyExpression( property ), value );
+    }
+
+    /**
      * {@link LessOrEqual} factory method.
      *
      * @param property filtered property; cannot be null
@@ -148,6 +209,20 @@ public class QueryExpressions
                                          final T value )
     {
         return new LessOrEqual<T>( asPropertyExpression( property ), asTypedValueExpression( value ) );
+    }
+
+    /**
+     * {@link LessOrEqual} factory method.
+     *
+     * @param property filtered property; cannot be null
+     * @param value    expected value that property is less than or equal to; cannot be null
+     * @return an {@link LessOrEqual} expression
+     * @throws IllegalArgumentException - If property or value are null
+     */
+    public static <T> LessOrEqual<T> le( final Property<T> property,
+                                         final VariableValue<T> value )
+    {
+        return new LessOrEqual<T>( asPropertyExpression( property ), value );
     }
 
     /**
@@ -165,6 +240,20 @@ public class QueryExpressions
     }
 
     /**
+     * {@link GreaterThan} factory method.
+     *
+     * @param property filtered property; cannot be null
+     * @param value    expected value that property is greater than; cannot be null
+     * @return an {@link GreaterThan} expression
+     * @throws IllegalArgumentException - If property or value are null
+     */
+    public static <T> GreaterThan<T> gt( final Property<T> property,
+                                         final VariableValue<T> value )
+    {
+        return new GreaterThan<T>( asPropertyExpression( property ), value );
+    }
+
+    /**
      * {@link GreaterOrEqual} factory method.
      *
      * @param property filtered property; cannot be null
@@ -176,6 +265,20 @@ public class QueryExpressions
                                             final T value )
     {
         return new GreaterOrEqual<T>( asPropertyExpression( property ), asTypedValueExpression( value ) );
+    }
+
+    /**
+     * {@link GreaterOrEqual} factory method.
+     *
+     * @param property filtered property; cannot be null
+     * @param value    expected value that property is greater than or equal; cannot be null
+     * @return an {@link GreaterOrEqual} expression
+     * @throws IllegalArgumentException - If property or value are null
+     */
+    public static <T> GreaterOrEqual<T> ge( final Property<T> property,
+                                            final VariableValue<T> value )
+    {
+        return new GreaterOrEqual<T>( asPropertyExpression( property ), value );
     }
 
     /**
@@ -247,13 +350,14 @@ public class QueryExpressions
      * @return created expression
      * @throws IllegalArgumentException - If value is null
      */
-    private static <T> TypedValueExpression<T> asTypedValueExpression( final T value )
+    private static <T> TypedValue<T> asTypedValueExpression( final T value )
     {
         if( value == null )
         {
             throw new IllegalArgumentException( "Value cannot be null" );
         }
-        return new TypedValueExpression<T>( value );
+        return new TypedValue<T>( value );
     }
+
 
 }

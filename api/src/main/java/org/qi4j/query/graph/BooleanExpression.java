@@ -17,21 +17,12 @@
  * limitations under the License.
  *
  */
-package org.qi4j.query;
-
-import org.qi4j.query.graph.BooleanExpression;
+package org.qi4j.query.graph;
 
 /**
- * TODO Add JavaDoc.
+ * TODO Add JavaDoc
  */
-public interface QueryBuilder<T>
+public interface BooleanExpression
+    extends Expression
 {
-
-    QueryBuilder<T> where( BooleanExpression expressions );
-
-    //<K> QueryBuilder<K> resultSet( K property );
-
-    //<K> QueryBuilder<K> resultList( K property );
-
-    Query<T> newQuery();
 }

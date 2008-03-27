@@ -1,5 +1,4 @@
 /*
- * Copyright 2007 Rickard Öberg.
  * Copyright 2008 Alin Dreghiciu.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,21 +16,17 @@
  * limitations under the License.
  *
  */
-package org.qi4j.query;
+package org.qi4j.runtime.query.model;
 
-import org.qi4j.query.graph.BooleanExpression;
+import org.qi4j.property.Property;
+import org.qi4j.composite.Composite;
 
 /**
- * TODO Add JavaDoc.
+ * @author Alin Dreghiciu
+ * @since March 25, 2008
  */
-public interface QueryBuilder<T>
+public interface CompanyComposite
+    extends Company, Nameable, Composite
 {
 
-    QueryBuilder<T> where( BooleanExpression expressions );
-
-    //<K> QueryBuilder<K> resultSet( K property );
-
-    //<K> QueryBuilder<K> resultList( K property );
-
-    Query<T> newQuery();
 }
