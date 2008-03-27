@@ -51,8 +51,8 @@ public class RMIMixinTest
 
         // MethodCallExpression remote interface
         System.out.println( remote.foo( "Bar" ) );
-        System.out.println( remote.foo( "Bar" ) );
-        System.out.println( remote.foo( "Xyz" ) );
+//        System.out.println( remote.foo( "Bar" ) );
+//        System.out.println( remote.foo( "Xyz" ) );
 
         try
         {
