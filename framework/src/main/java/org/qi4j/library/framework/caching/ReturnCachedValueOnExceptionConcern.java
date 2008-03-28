@@ -5,7 +5,6 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import org.qi4j.composite.AppliesTo;
 import org.qi4j.composite.scope.ConcernFor;
-import org.qi4j.composite.scope.Invocation;
 import org.qi4j.composite.scope.ThisCompositeAs;
 
 /**
@@ -18,7 +17,6 @@ public class ReturnCachedValueOnExceptionConcern
     implements InvocationHandler
 {
     @ThisCompositeAs private InvocationCache cache;
-    @Invocation private Method method;
     @ConcernFor private InvocationHandler next;
 
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable

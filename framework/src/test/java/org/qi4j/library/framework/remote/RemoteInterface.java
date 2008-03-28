@@ -22,7 +22,6 @@ import org.qi4j.library.framework.caching.Cached;
 public interface RemoteInterface
     extends Remote
 {
-    // Public --------------------------------------------------------
     String foo( String aBar )
         throws IOException;
 }
