@@ -19,16 +19,12 @@
 package org.qi4j.runtime.query.model;
 
 import org.qi4j.association.Association;
-import org.qi4j.property.Property;
 
 /**
  * @author Alin Dreghiciu
- * @since March 25, 2008
+ * @since March 28, 2008
  */
-public interface Company
-    extends HasName
+public interface Address
 {
-    Property<String> stockQuote();
-
-    Association<Address> businessAddress();
+    Association<City> city();
 }

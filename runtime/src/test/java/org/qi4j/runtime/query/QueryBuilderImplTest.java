@@ -22,8 +22,9 @@ import org.junit.Test;
 import org.qi4j.query.QueryBuilder;
 import static org.qi4j.query.QueryExpressions.*;
 import org.qi4j.runtime.query.model.Company;
-import org.qi4j.runtime.query.model.CompanyComposite;
-import org.qi4j.runtime.query.model.Nameable;
+import org.qi4j.runtime.query.model.Employee;
+import org.qi4j.runtime.query.model.HasName;
+import org.qi4j.runtime.query.model.Person;
 
 /**
  * Unit tests for {@link QueryBuilderImpl}.
@@ -37,10 +38,10 @@ public class QueryBuilderImplTest
     @Test
     public void script01()
     {
-        QueryBuilder<CompanyComposite> queryBuilder = new QueryBuilderImpl<CompanyComposite>();
-        Nameable nameable = templateFor( Nameable.class );
+        QueryBuilder<Company> queryBuilder = new QueryBuilderImpl<Company>();
+        HasName hasName = templateFor( HasName.class );
         queryBuilder.where(
-            eq( nameable.name(), "JayWay" )
+            eq( hasName.name(), "JayWay" )
         );
     }
 
@@ -50,11 +51,11 @@ public class QueryBuilderImplTest
     @Test
     public void script02()
     {
-        QueryBuilder<CompanyComposite> queryBuilder = new QueryBuilderImpl<CompanyComposite>();
-        Nameable nameable = templateFor( Nameable.class );
+        QueryBuilder<Company> queryBuilder = new QueryBuilderImpl<Company>();
+        HasName hasName = templateFor( HasName.class );
         Company company = templateFor( Company.class );
         queryBuilder.where(
-            and( eq( nameable.name(), "Jayway" ),
+            and( eq( hasName.name(), "Jayway" ),
                  or( eq( company.stockQuote(), "JAWY" ),
                      eq( company.stockQuote(), "JAY" )
                  )
@@ -68,13 +69,39 @@ public class QueryBuilderImplTest
     @Test
     public void script03()
     {
-        QueryBuilder<CompanyComposite> queryBuilder = new QueryBuilderImpl<CompanyComposite>();
-        Nameable nameable = templateFor( Nameable.class );
+        QueryBuilder<Company> queryBuilder = new QueryBuilderImpl<Company>();
+        HasName hasName = templateFor( HasName.class );
         Company company = templateFor( Company.class );
         queryBuilder.where(
-            and( eq( nameable.name(), "Jayway" ),
+            and( eq( hasName.name(), "Jayway" ),
                  isNotNull( company.stockQuote() )
             )
+        );
+    }
+
+    /**
+     * Query builder usage test.
+     */
+    @Test
+    public void script04()
+    {
+        QueryBuilder<Employee> queryBuilder = new QueryBuilderImpl<Employee>();
+        Employee employee = templateFor( Employee.class );
+        queryBuilder.where(
+            eq( employee.employer().get().name(), "Jaway" )
+        );
+    }
+
+    /**
+     * Query builder usage test.
+     */
+    @Test
+    public void script05()
+    {
+        QueryBuilder<Employee> queryBuilder = new QueryBuilderImpl<Employee>();
+        Employee employee = templateFor( Employee.class );
+        queryBuilder.where(
+            eq( employee.employer().get().businessAddress().get().city().get().name(), "Kuala Lumpur" )
         );
     }
 

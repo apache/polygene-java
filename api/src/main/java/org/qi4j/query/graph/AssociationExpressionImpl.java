@@ -23,25 +23,25 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 /**
- * Default implementation of {@link PropertyExpression}.
+ * Default implementation of {@link AssociationExpression}.
  *
  * @author Alin Dreghiciu
- * @since March 25, 2008
+ * @since March 28, 2008
  */
-public class PropertyExpressionImpl
-    implements PropertyExpression
+public class AssociationExpressionImpl
+    implements AssociationExpression
 {
 
     /**
-     * Property name.
+     * Assocaition name.
      */
     private final String name;
     /**
-     * Interface that declared the property.
+     * Interface that declared the association.
      */
     private final Class declaringType;
     /**
-     * Property type.
+     * Association type.
      */
     private final Class type;
     /**
@@ -52,13 +52,13 @@ public class PropertyExpressionImpl
     /**
      * Constructor.
      *
-     * @param name          property name; cannot be null
-     * @param declaringType type that declared the property; cannot be null
-     * @param type;         property type
+     * @param name          association name; cannot be null
+     * @param declaringType type that declared the association; cannot be null
+     * @param type;         association type
      */
-    public PropertyExpressionImpl( final String name,
-                                   final Class declaringType,
-                                   final Class type )
+    public AssociationExpressionImpl( final String name,
+                                      final Class declaringType,
+                                      final Class type )
     {
         this( name, declaringType, type, null );
     }
@@ -66,15 +66,15 @@ public class PropertyExpressionImpl
     /**
      * Constructor.
      *
-     * @param name          property name; cannot be null
-     * @param declaringType type that declared the property; cannot be null
-     * @param type;         property type
+     * @param name          association name; cannot be null
+     * @param declaringType type that declared the association; cannot be null
+     * @param type;         association type
      * @param traversed     traversed association
      */
-    public PropertyExpressionImpl( final String name,
-                                   final Class declaringType,
-                                   final Class type,
-                                   final AssociationExpression traversed )
+    public AssociationExpressionImpl( final String name,
+                                      final Class declaringType,
+                                      final Class type,
+                                      final AssociationExpression traversed )
     {
         this.name = name;
         this.declaringType = declaringType;
@@ -85,41 +85,41 @@ public class PropertyExpressionImpl
     /**
      * Constructor.
      *
-     * @param propertyMethod method that acts as property
+     * @param method method that acts as association
      */
-    public PropertyExpressionImpl( final Method propertyMethod )
+    public AssociationExpressionImpl( final Method method )
     {
-        this( propertyMethod, null );
+        this( method, null );
     }
 
 
     /**
      * Constructor.
      *
-     * @param propertyMethod method that acts as property
-     * @param traversed      traversed association
+     * @param method    method that acts as association
+     * @param traversed traversed association
      */
-    public PropertyExpressionImpl( final Method propertyMethod,
-                                   final AssociationExpression traversed )
+    public AssociationExpressionImpl( final Method method,
+                                      final AssociationExpression traversed )
     {
-        name = propertyMethod.getName();
-        declaringType = propertyMethod.getDeclaringClass();
-        Type returnType = propertyMethod.getGenericReturnType();
+        name = method.getName();
+        declaringType = method.getDeclaringClass();
+        Type returnType = method.getGenericReturnType();
         if( !( returnType instanceof ParameterizedType ) )
         {
-            throw new UnsupportedOperationException( "Unsupported property type:" + returnType );
+            throw new UnsupportedOperationException( "Unsupported association type:" + returnType );
         }
-        Type propertyTypeAsType = ( (ParameterizedType) returnType ).getActualTypeArguments()[ 0 ];
-        if( !( propertyTypeAsType instanceof Class ) )
+        Type associationTypeAsType = ( (ParameterizedType) returnType ).getActualTypeArguments()[ 0 ];
+        if( !( associationTypeAsType instanceof Class ) )
         {
-            throw new UnsupportedOperationException( "Unsupported property type:" + propertyTypeAsType );
+            throw new UnsupportedOperationException( "Unsupported association type:" + associationTypeAsType );
         }
-        type = (Class) propertyTypeAsType;
+        type = (Class) associationTypeAsType;
         this.traversed = traversed;
     }
 
     /**
-     * @see PropertyExpression#getName()
+     * @see AssociationExpression#getName()
      */
     public String getName()
     {
@@ -127,7 +127,7 @@ public class PropertyExpressionImpl
     }
 
     /**
-     * @see PropertyExpression#getDeclaringType()
+     * @see AssociationExpression#getDeclaringType()
      */
     public Class getDeclaringType()
     {
@@ -135,7 +135,7 @@ public class PropertyExpressionImpl
     }
 
     /**
-     * @see PropertyExpression#getType()
+     * @see AssociationExpression#getType()
      */
     public Class getType()
     {
@@ -143,7 +143,7 @@ public class PropertyExpressionImpl
     }
 
     /**
-     * @see PropertyExpression#getTraversedAssociation()
+     * @see AssociationExpression#getTraversedAssociation()
      */
     public AssociationExpression getTraversedAssociation()
     {
@@ -157,8 +157,6 @@ public class PropertyExpressionImpl
             .append( declaringType.getSimpleName() )
             .append( ":" )
             .append( name )
-            .append( "()^^" )
-            .append( type.getName() )
             .toString();
     }
 

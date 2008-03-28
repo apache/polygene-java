@@ -36,7 +36,7 @@ import org.qi4j.query.graph.Not;
 import org.qi4j.query.graph.NotEquals;
 import org.qi4j.query.graph.Or;
 import org.qi4j.query.graph.PropertyExpression;
-import org.qi4j.query.graph.PropertyExpressionFactory;
+import org.qi4j.query.graph.MixinTypeProxyFactory;
 import org.qi4j.query.graph.TypedValue;
 import org.qi4j.query.graph.VariableValue;
 
@@ -58,7 +58,7 @@ public class QueryExpressions
         return (T) Proxy.newProxyInstance(
             QueryExpressions.class.getClassLoader(),
             new Class[]{ mixinType },
-            new PropertyExpressionFactory()
+            new MixinTypeProxyFactory()
         );
     }
 
@@ -82,8 +82,8 @@ public class QueryExpressions
      * @return an {@link Equals} expression
      * @throws IllegalArgumentException - If property or value are null
      */
-    public static <T> Equals<T> eq( final Property<T> property,
-                                    final T value )
+    public static <T> BooleanExpression eq( final Property<T> property,
+                                            final T value )
     {
         return new Equals<T>( asPropertyExpression( property ), asTypedValueExpression( value ) );
     }
@@ -96,8 +96,8 @@ public class QueryExpressions
      * @return an {@link Equals} expression
      * @throws IllegalArgumentException - If property or value are null
      */
-    public static <T> Equals<T> eq( final Property<T> property,
-                                    final VariableValue<T> value )
+    public static <T> BooleanExpression eq( final Property<T> property,
+                                            final VariableValue<T> value )
     {
         return new Equals<T>( asPropertyExpression( property ), value );
     }
@@ -110,7 +110,7 @@ public class QueryExpressions
      * @return an {@link EqualsProperty} expression
      * @throws IllegalArgumentException - If property or value are null
      */
-    public static <T> EqualsProperty<T> eq( final Property<T> property,
+    public static <T> BooleanExpression eq( final Property<T> property,
                                             final Property<T> anotherProperty )
     {
         return new EqualsProperty<T>( asPropertyExpression( property ), asPropertyExpression( anotherProperty ) );
@@ -123,9 +123,9 @@ public class QueryExpressions
      * @return an {@link IsNull} expression
      * @throws IllegalArgumentException - If property or value are null
      */
-    public static IsNull isNull( final Property property )
+    public static <T> BooleanExpression isNull( final Property<T> property )
     {
-        return new IsNull( asPropertyExpression( property ) );
+        return new IsNull<T>( asPropertyExpression( property ) );
     }
 
     /**
@@ -135,9 +135,9 @@ public class QueryExpressions
      * @return an {@link IsNotNull} expression
      * @throws IllegalArgumentException - If propertyis null
      */
-    public static IsNotNull isNotNull( final Property property )
+    public static <T> BooleanExpression isNotNull( final Property<T> property )
     {
-        return new IsNotNull( asPropertyExpression( property ) );
+        return new IsNotNull<T>( asPropertyExpression( property ) );
     }
 
     /**
@@ -148,8 +148,8 @@ public class QueryExpressions
      * @return an {@link NotEquals} expression
      * @throws IllegalArgumentException - If property or value are null
      */
-    public static <T> NotEquals<T> notEq( final Property<T> property,
-                                          final T value )
+    public static <T> BooleanExpression notEq( final Property<T> property,
+                                               final T value )
     {
         return new NotEquals<T>( asPropertyExpression( property ), asTypedValueExpression( value ) );
     }
@@ -162,8 +162,8 @@ public class QueryExpressions
      * @return an {@link NotEquals} expression
      * @throws IllegalArgumentException - If property or value are null
      */
-    public static <T> NotEquals<T> notEq( final Property<T> property,
-                                          final VariableValue<T> value )
+    public static <T> BooleanExpression notEq( final Property<T> property,
+                                               final VariableValue<T> value )
     {
         return new NotEquals<T>( asPropertyExpression( property ), value );
     }
@@ -177,8 +177,8 @@ public class QueryExpressions
      * @return an {@link LessThan} expression
      * @throws IllegalArgumentException - If property or value are null
      */
-    public static <T> LessThan<T> lt( final Property<T> property,
-                                      final T value )
+    public static <T> BooleanExpression lt( final Property<T> property,
+                                            final T value )
     {
         return new LessThan<T>( asPropertyExpression( property ), asTypedValueExpression( value ) );
     }
@@ -191,8 +191,8 @@ public class QueryExpressions
      * @return an {@link LessThan} expression
      * @throws IllegalArgumentException - If property or value are null
      */
-    public static <T> LessThan<T> lt( final Property<T> property,
-                                      final VariableValue<T> value )
+    public static <T> BooleanExpression lt( final Property<T> property,
+                                            final VariableValue<T> value )
     {
         return new LessThan<T>( asPropertyExpression( property ), value );
     }
@@ -205,8 +205,8 @@ public class QueryExpressions
      * @return an {@link LessOrEqual} expression
      * @throws IllegalArgumentException - If property or value are null
      */
-    public static <T> LessOrEqual<T> le( final Property<T> property,
-                                         final T value )
+    public static <T> BooleanExpression le( final Property<T> property,
+                                            final T value )
     {
         return new LessOrEqual<T>( asPropertyExpression( property ), asTypedValueExpression( value ) );
     }
@@ -219,8 +219,8 @@ public class QueryExpressions
      * @return an {@link LessOrEqual} expression
      * @throws IllegalArgumentException - If property or value are null
      */
-    public static <T> LessOrEqual<T> le( final Property<T> property,
-                                         final VariableValue<T> value )
+    public static <T> BooleanExpression le( final Property<T> property,
+                                            final VariableValue<T> value )
     {
         return new LessOrEqual<T>( asPropertyExpression( property ), value );
     }
@@ -233,8 +233,8 @@ public class QueryExpressions
      * @return an {@link GreaterThan} expression
      * @throws IllegalArgumentException - If property or value are null
      */
-    public static <T> GreaterThan<T> gt( final Property<T> property,
-                                         final T value )
+    public static <T> BooleanExpression gt( final Property<T> property,
+                                            final T value )
     {
         return new GreaterThan<T>( asPropertyExpression( property ), asTypedValueExpression( value ) );
     }
@@ -247,8 +247,8 @@ public class QueryExpressions
      * @return an {@link GreaterThan} expression
      * @throws IllegalArgumentException - If property or value are null
      */
-    public static <T> GreaterThan<T> gt( final Property<T> property,
-                                         final VariableValue<T> value )
+    public static <T> BooleanExpression gt( final Property<T> property,
+                                            final VariableValue<T> value )
     {
         return new GreaterThan<T>( asPropertyExpression( property ), value );
     }
@@ -261,7 +261,7 @@ public class QueryExpressions
      * @return an {@link GreaterOrEqual} expression
      * @throws IllegalArgumentException - If property or value are null
      */
-    public static <T> GreaterOrEqual<T> ge( final Property<T> property,
+    public static <T> BooleanExpression ge( final Property<T> property,
                                             final T value )
     {
         return new GreaterOrEqual<T>( asPropertyExpression( property ), asTypedValueExpression( value ) );
@@ -275,7 +275,7 @@ public class QueryExpressions
      * @return an {@link GreaterOrEqual} expression
      * @throws IllegalArgumentException - If property or value are null
      */
-    public static <T> GreaterOrEqual<T> ge( final Property<T> property,
+    public static <T> BooleanExpression ge( final Property<T> property,
                                             final VariableValue<T> value )
     {
         return new GreaterOrEqual<T>( asPropertyExpression( property ), value );
@@ -289,8 +289,8 @@ public class QueryExpressions
      * @return an {@link And} operator
      * @throws IllegalArgumentException - If left or right expressions are null
      */
-    public static And and( final BooleanExpression left,
-                           final BooleanExpression right )
+    public static BooleanExpression and( final BooleanExpression left,
+                                         final BooleanExpression right )
     {
         return new And( left, right );
     }
@@ -303,8 +303,8 @@ public class QueryExpressions
      * @return an {@link Or} operator
      * @throws IllegalArgumentException - If left or right expressions are null
      */
-    public static Or or( final BooleanExpression left,
-                         final BooleanExpression right )
+    public static BooleanExpression or( final BooleanExpression left,
+                                        final BooleanExpression right )
     {
         return new Or( left, right );
     }
@@ -316,7 +316,7 @@ public class QueryExpressions
      * @return an {@link Not} operator
      * @throws IllegalArgumentException - If expression is null
      */
-    public static Not not( final BooleanExpression expression )
+    public static BooleanExpression not( final BooleanExpression expression )
     {
         return new Not( expression );
     }
@@ -328,7 +328,7 @@ public class QueryExpressions
      * @return adapted property expression
      * @throws IllegalArgumentException - If property is null or is not an property expression
      */
-    private static PropertyExpression asPropertyExpression( final Property property )
+    private static <T> PropertyExpression<T> asPropertyExpression( final Property<T> property )
     {
         if( property == null )
         {
@@ -340,7 +340,7 @@ public class QueryExpressions
                 "Invalid property. Properties used in queries must be a result of using QueryBuilder.parameter(...)."
             );
         }
-        return (PropertyExpression) property;
+        return (PropertyExpression<T>) property;
     }
 
     /**

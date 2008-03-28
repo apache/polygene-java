@@ -18,40 +18,40 @@
  */
 package org.qi4j.query.graph;
 
-import org.qi4j.property.Property;
+import org.qi4j.association.Association;
 
 /**
- * An expression related to {@link Property}.
+ * An expression related to {@link Association}.
  */
-public interface PropertyExpression<T>
+public interface AssociationExpression<T>
     extends Expression
 {
 
     /**
-     * Get the name of the property, which is equal to the name of the method that declared it.
+     * Get the name of the association, which is equal to the name of the method that declared it.
      *
-     * @return the name of the property
+     * @return the name of the association
      */
     String getName();
 
     /**
-     * Get the type of the interface that declared the property.
+     * Get the type of the interface that declared the association.
      *
-     * @return the type of property that declared the property
+     * @return the type of property that declared the association
      */
     Class getDeclaringType();
 
     /**
-     * Get the type of the property. If the property is declared as Property<X> then X is returned.
+     * Get the type of the assocition. If the association is declared as Association<X> then X is returned.
      *
-     * @return the property type
+     * @return the association type
      */
     Class<T> getType();
 
     /**
-     * Gets the traversed association used to get to this property  or null if there was no traversal involved.
+     * Gets the traversed association used to get to this association or null if there was no traversal involved.
      *
-     * @return traversed association used to get to this property.
+     * @return traversed association used to get to this association.
      */
     AssociationExpression getTraversedAssociation();
 

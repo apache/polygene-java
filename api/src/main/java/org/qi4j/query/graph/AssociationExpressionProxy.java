@@ -20,62 +20,46 @@ package org.qi4j.query.graph;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 
 /**
  * TODO Add JavaDoc
  *
  * @author Alin Dreghiciu
- * @since March 26, 2008
+ * @since March 25, 2008
  */
-class PropertyExpressionProxy
+public class AssociationExpressionProxy
     implements InvocationHandler
 {
 
-    private final PropertyExpression property;
-
     /**
-     * Constructor.
-     *
-     * @param method method that acts as property
+     * Traversed association.
      */
-    PropertyExpressionProxy( final Method method )
-    {
-        this( method, null );
-    }
+    private final AssociationExpression traversed;
 
     /**
      * Constructor.
      *
-     * @param method    method that acts as property
      * @param traversed traversed association
      */
-    PropertyExpressionProxy( final Method method,
-                             final AssociationExpression traversed )
+    AssociationExpressionProxy( final AssociationExpression traversed )
     {
-        property = new PropertyExpressionImpl( method, traversed );
+        this.traversed = traversed;
     }
 
     public Object invoke( final Object proxy,
                           final Method method,
                           final Object[] args )
-        throws Throwable
     {
-        if( method.getDeclaringClass().equals( PropertyExpression.class ) )
+        if( args == null && "get".equals( method.getName() ) )
         {
-            // TODO Shall we handle reflection exceptions here?
-            return method.invoke( property, args );
+            return Proxy.newProxyInstance(
+                this.getClass().getClassLoader(),
+                new Class[]{ traversed.getType() },
+                new MixinTypeProxyFactory( traversed )
+            );
         }
-        if( "toString".equals( method.getName() ) )
-        {
-            return property.toString();
-        }
-        // TODO handle toString/equals/hashcode
         throw new UnsupportedOperationException( "Only property methods can be used for queries" );
-    }
-
-    @Override public String toString()
-    {
-        return property.toString();
     }
 
 }

@@ -18,13 +18,14 @@
  */
 package org.qi4j.runtime.query.model;
 
-import org.qi4j.property.Property;
+import org.qi4j.association.ManyAssociation;
 
 /**
  * @author Alin Dreghiciu
- * @since March 25, 2008
+ * @since March 28, 2008
  */
-public interface Nameable
+public interface Person
+    extends HasName
 {
-    Property<String> name();
+    ManyAssociation<Person> children();
 }

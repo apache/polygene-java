@@ -20,62 +20,67 @@ package org.qi4j.query.graph;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import org.qi4j.association.Association;
+import org.qi4j.property.Property;
 
 /**
  * TODO Add JavaDoc
  *
  * @author Alin Dreghiciu
- * @since March 26, 2008
+ * @since March 25, 2008
  */
-class PropertyExpressionProxy
+public class MixinTypeProxyFactory
     implements InvocationHandler
 {
 
-    private final PropertyExpression property;
+    /**
+     * Traversed association.
+     */
+    private final AssociationExpression traversed;
 
     /**
      * Constructor.
-     *
-     * @param method method that acts as property
      */
-    PropertyExpressionProxy( final Method method )
+    public MixinTypeProxyFactory()
     {
-        this( method, null );
+        this( null );
     }
 
     /**
      * Constructor.
      *
-     * @param method    method that acts as property
      * @param traversed traversed association
      */
-    PropertyExpressionProxy( final Method method,
-                             final AssociationExpression traversed )
+    public MixinTypeProxyFactory( final AssociationExpression traversed )
     {
-        property = new PropertyExpressionImpl( method, traversed );
+        this.traversed = traversed;
     }
 
     public Object invoke( final Object proxy,
                           final Method method,
                           final Object[] args )
-        throws Throwable
     {
-        if( method.getDeclaringClass().equals( PropertyExpression.class ) )
+        if( args == null )
         {
-            // TODO Shall we handle reflection exceptions here?
-            return method.invoke( property, args );
+            if( Property.class.isAssignableFrom( method.getReturnType() ) )
+            {
+                return Proxy.newProxyInstance(
+                    this.getClass().getClassLoader(),
+                    new Class[]{ method.getReturnType(), PropertyExpression.class },
+                    new PropertyExpressionProxy( method, traversed )
+                );
+            }
+            else if( Association.class.isAssignableFrom( method.getReturnType() ) )
+            {
+                return Proxy.newProxyInstance(
+                    this.getClass().getClassLoader(),
+                    new Class[]{ method.getReturnType() },
+                    new AssociationExpressionProxy( new AssociationExpressionImpl( method, traversed ) )
+                );
+            }
         }
-        if( "toString".equals( method.getName() ) )
-        {
-            return property.toString();
-        }
-        // TODO handle toString/equals/hashcode
         throw new UnsupportedOperationException( "Only property methods can be used for queries" );
-    }
-
-    @Override public String toString()
-    {
-        return property.toString();
     }
 
 }

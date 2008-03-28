@@ -19,14 +19,12 @@
 package org.qi4j.runtime.query.model;
 
 import org.qi4j.property.Property;
-import org.qi4j.composite.Composite;
 
 /**
  * @author Alin Dreghiciu
  * @since March 25, 2008
  */
-public interface CompanyComposite
-    extends Company, Nameable, Composite
+public interface HasName
 {
-
+    Property<String> name();
 }

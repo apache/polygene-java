@@ -29,6 +29,9 @@ import org.qi4j.query.graph.Equals;
 import org.qi4j.query.graph.PropertyExpression;
 import org.qi4j.query.graph.UnaryOperator;
 import org.qi4j.query.graph.VariableValue;
+import org.qi4j.query.graph.And;
+import org.qi4j.query.graph.Or;
+import org.qi4j.query.graph.Not;
 
 /**
  * Unit tests for {@link QueryExpressions}.
@@ -43,7 +46,7 @@ public class QueryExpressionsTest
     public void validEqual()
     {
         StringPropertyExpression property = createMock( StringPropertyExpression.class );
-        Equals<String> operator = QueryExpressions.eq( property, "Foo" );
+        Equals<String> operator = (Equals<String>) QueryExpressions.eq( property, "Foo" );
         assertThat( "Property", operator.getLeftArgument(), is( equalTo( (PropertyExpression) property ) ) );
         assertThat( "Value", operator.getRightArgument().getValue(), is( equalTo( "Foo" ) ) );
     }
@@ -56,7 +59,7 @@ public class QueryExpressionsTest
     {
         StringPropertyExpression property = createMock( StringPropertyExpression.class );
         VariableValue<String> variable = QueryExpressions.variable( "var" );
-        Equals<String> operator = QueryExpressions.eq( property, variable );
+        Equals<String> operator = (Equals<String>) QueryExpressions.eq( property, variable );
         variable.setValue( "Foo" );
         assertThat( "Property", operator.getLeftArgument(), is( equalTo( (PropertyExpression) property ) ) );
         assertThat( "Value", operator.getRightArgument().getValue(), is( equalTo( "Foo" ) ) );
@@ -70,7 +73,7 @@ public class QueryExpressionsTest
     {
         BooleanExpression left = createMock( BooleanExpression.class );
         BooleanExpression right = createMock( BooleanExpression.class );
-        BinaryOperator<BooleanExpression, BooleanExpression> operator = QueryExpressions.and( left, right );
+        And operator = (And) QueryExpressions.and( left, right );
         assertThat( "Left side expression", operator.getLeftArgument(), is( equalTo( left ) ) );
         assertThat( "Right side expression", operator.getRightArgument(), is( equalTo( right ) ) );
     }
@@ -83,7 +86,7 @@ public class QueryExpressionsTest
     {
         BooleanExpression left = createMock( BooleanExpression.class );
         BooleanExpression right = createMock( BooleanExpression.class );
-        BinaryOperator<BooleanExpression, BooleanExpression> operator = QueryExpressions.or( left, right );
+        Or operator = (Or) QueryExpressions.or( left, right );
         assertThat( "Left side expression", operator.getLeftArgument(), is( equalTo( left ) ) );
         assertThat( "Right side expression", operator.getRightArgument(), is( equalTo( right ) ) );
     }
@@ -95,7 +98,7 @@ public class QueryExpressionsTest
     public void validNot()
     {
         BooleanExpression expression = createMock( BooleanExpression.class );
-        UnaryOperator<BooleanExpression> unaryOperator = QueryExpressions.not( expression );
+        Not unaryOperator = (Not) QueryExpressions.not( expression );
         assertThat( "Expression", unaryOperator.getArgument(), is( equalTo( expression ) ) );
     }
 
