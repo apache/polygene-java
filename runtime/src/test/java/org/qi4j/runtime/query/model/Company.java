@@ -30,5 +30,7 @@ public interface Company
 {
     Property<String> stockQuote();
 
+    Property<Integer> existsSince();
+
     Association<Address> businessAddress();
 }

@@ -24,7 +24,6 @@ import static org.qi4j.query.QueryExpressions.*;
 import org.qi4j.runtime.query.model.Company;
 import org.qi4j.runtime.query.model.Employee;
 import org.qi4j.runtime.query.model.HasName;
-import org.qi4j.runtime.query.model.Person;
 
 /**
  * Unit tests for {@link QueryBuilderImpl}.
@@ -52,10 +51,9 @@ public class QueryBuilderImplTest
     public void script02()
     {
         QueryBuilder<Company> queryBuilder = new QueryBuilderImpl<Company>();
-        HasName hasName = templateFor( HasName.class );
         Company company = templateFor( Company.class );
         queryBuilder.where(
-            and( eq( hasName.name(), "Jayway" ),
+            and( ge( company.existsSince(), 2000 ),
                  or( eq( company.stockQuote(), "JAWY" ),
                      eq( company.stockQuote(), "JAY" )
                  )

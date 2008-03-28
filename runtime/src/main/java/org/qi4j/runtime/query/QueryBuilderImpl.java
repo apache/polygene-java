@@ -18,11 +18,10 @@
  */
 package org.qi4j.runtime.query;
 
-import java.util.Arrays;
 import org.qi4j.query.Query;
 import org.qi4j.query.QueryBuilder;
 import org.qi4j.query.QueryExpressions;
-import org.qi4j.query.graph.BooleanExpression;
+import org.qi4j.query.grammar.BooleanExpression;
 
 /**
  * Default implementation of {@link QueryBuilder}
@@ -56,7 +55,7 @@ public final class QueryBuilderImpl<T>
         {
             throw new IllegalArgumentException( "Where expression cannot be null" );
         }
-        if (where == null)
+        if( where == null )
         {
             where = expression;
         }

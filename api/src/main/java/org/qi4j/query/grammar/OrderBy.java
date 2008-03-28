@@ -16,27 +16,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.runtime.query;
-
-import org.qi4j.query.QueryBuilder;
-import org.qi4j.query.QueryBuilderFactory;
+package org.qi4j.query.grammar;
 
 /**
- * Default implementation of {@link QueryBuilderFactory}
+ * Query sorting segment.
  *
+ * @author Niclas Hedhman
  * @author Alin Dreghiciu
  * @since March 25, 2008
  */
-public final class QueryBuilderFactoryImpl
-    implements QueryBuilderFactory
+public interface OrderBy
 {
+    /**
+     * Getter.
+     *
+     * @return property reference; cannot be null
+     */
+    PropertyReference getPropertyReference();
 
     /**
-     * @see QueryBuilderFactory#newQueryBuilder(Class)
+     * Getter.
+     *
+     * @return direction; cannot be null
      */
-    public <T> QueryBuilder<T> newQueryBuilder( final Class<T> compositeType )
+    Order getOrder();
+
+    /**
+     * Order direction.
+     */
+    public enum Order
     {
-        return new QueryBuilderImpl<T>();
+        ASCENDING, DESCENDING
     }
 
 }

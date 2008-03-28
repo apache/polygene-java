@@ -1,5 +1,4 @@
 /*
- * Copyright 2007 Rickard Öberg.
  * Copyright 2008 Alin Dreghiciu.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,21 +16,16 @@
  * limitations under the License.
  *
  */
-package org.qi4j.query;
-
-import org.qi4j.query.grammar.BooleanExpression;
+package org.qi4j.query.grammar;
 
 /**
- * TODO Add JavaDoc.
+ * Constraints that a {@link org.qi4j.property.Property} is not equal to a value
+ * (as in Property<X>.get() != X).
+ *
+ * @author Alin Dreghiciu
+ * @since March 28, 2008
  */
-public interface QueryBuilder<T>
+public interface NotEqualsPredicate<T>
+    extends ComparisonPredicate<T>
 {
-
-    QueryBuilder<T> where( BooleanExpression expressions );
-
-    //<K> QueryBuilder<K> resultSet( K property );
-
-    //<K> QueryBuilder<K> resultList( K property );
-
-    Query<T> newQuery();
 }

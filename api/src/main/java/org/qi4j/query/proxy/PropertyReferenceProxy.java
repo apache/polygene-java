@@ -1,0 +1,84 @@
+/*
+ * Copyright 2007 Niclas Hedhman.
+ * Copyright 2008 Alin Dreghiciu.
+ *
+ * Licensed  under the  Apache License,  Version 2.0  (the "License");
+ * you may not use  this file  except in  compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed  under the  License is distributed on an "AS IS" BASIS,
+ * WITHOUT  WARRANTIES OR CONDITIONS  OF ANY KIND, either  express  or
+ * implied.
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License. 
+ */
+package org.qi4j.query.proxy;
+
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import org.qi4j.query.grammar.AssociationReference;
+import org.qi4j.query.grammar.PropertyReference;
+import org.qi4j.query.grammar.impl.PropertyReferenceImpl;
+
+/**
+ * TODO Add JavaDoc
+ *
+ * @author Alin Dreghiciu
+ * @since March 26, 2008
+ */
+class PropertyReferenceProxy
+    implements InvocationHandler
+{
+
+    private final PropertyReference property;
+
+    /**
+     * Constructor.
+     *
+     * @param method method that acts as property
+     */
+    PropertyReferenceProxy( final Method method )
+    {
+        this( method, null );
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param method    method that acts as property
+     * @param traversed traversed association
+     */
+    PropertyReferenceProxy( final Method method,
+                            final AssociationReference traversed )
+    {
+        property = new PropertyReferenceImpl( method, traversed );
+    }
+
+    public Object invoke( final Object proxy,
+                          final Method method,
+                          final Object[] args )
+        throws Throwable
+    {
+        if( method.getDeclaringClass().equals( PropertyReference.class ) )
+        {
+            // TODO Shall we handle reflection exceptions here?
+            return method.invoke( property, args );
+        }
+        if( "toString".equals( method.getName() ) )
+        {
+            return property.toString();
+        }
+        // TODO handle toString/equals/hashcode
+        throw new UnsupportedOperationException( "Only property methods can be used for queries" );
+    }
+
+    @Override public String toString()
+    {
+        return property.toString();
+    }
+
+}

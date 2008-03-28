@@ -20,7 +20,7 @@
  */
 package org.qi4j.query;
 
-import org.qi4j.query.graph.OrderBy;
+import org.qi4j.query.grammar.OrderBy;
 
 /**
  * TODO Add JavaDoc.
@@ -29,7 +29,7 @@ public interface Query<T>
     extends Iterable<T>
 {
 
-    Query<T> orderBy( OrderBy... orderBys );
+    Query<T> orderBy( OrderBy... segments );
 
     Query<T> setFirstResult( int firstResult );
 

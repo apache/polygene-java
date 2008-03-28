@@ -1,5 +1,4 @@
 /*
- * Copyright 2007 Niclas Hedhman.
  * Copyright 2008 Alin Dreghiciu.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
@@ -14,29 +13,46 @@
  * implied.
  *
  * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * limitations under the License.
  */
-package org.qi4j.runtime.query;
+package org.qi4j.query.grammar.impl;
 
-import org.qi4j.query.QueryBuilder;
-import org.qi4j.query.QueryBuilderFactory;
+import org.qi4j.query.grammar.SingleValueExpression;
 
 /**
- * Default implementation of {@link QueryBuilderFactory}
+ * A simple value holder.
  *
  * @author Alin Dreghiciu
  * @since March 25, 2008
  */
-public final class QueryBuilderFactoryImpl
-    implements QueryBuilderFactory
+public class StaticValueExpression<T>
+    implements SingleValueExpression<T>
 {
 
+    private final T value;
+
     /**
-     * @see QueryBuilderFactory#newQueryBuilder(Class)
+     * Constructor.
+     *
+     * @param value value
      */
-    public <T> QueryBuilder<T> newQueryBuilder( final Class<T> compositeType )
+    public StaticValueExpression( final T value )
     {
-        return new QueryBuilderImpl<T>();
+        this.value = value;
     }
 
+    /**
+     * Getter.
+     *
+     * @return value
+     */
+    public T getValue()
+    {
+        return value;
+    }
+
+    @Override public String toString()
+    {
+        return value.toString();
+    }
 }
