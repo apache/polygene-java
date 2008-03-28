@@ -14,5 +14,11 @@ Below follows a list of binary dependencies and their licenses;
 This module uses OpenRDF, Copyright Aduna (http://www.aduna-software.com/),
 © 2001-2007, All rights reserved. See licenses/openrdf.license
 
+This module uses Rhino, The Original Code is Rhino code, released
+May 6, 1999. The Initial Developer of the Original Code is Netscape
+Communications Corporation. Portions created by the Initial Developer are
+Copyright (C) 1997-1999 the Initial Developer. All Rights Reserved.
+Additional Contributor(s): Norris Boyd, Igor Bukanov, David P. Caldwell
+
 
 END OF NOTICE
