@@ -20,7 +20,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.UnitOfWork;
-import org.qi4j.entity.Identity;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.composite.InvalidCompositeException;
@@ -129,5 +128,10 @@ public final class EntityCompositeInstance
     public boolean isReference()
     {
         return mixins == null;
+    }
+
+    @Override public String toString()
+    {
+        return context.getCompositeModel().getCompositeClass().getName() + ":" + identity;
     }
 }

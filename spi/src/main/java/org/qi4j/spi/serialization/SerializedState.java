@@ -25,10 +25,10 @@ public final class SerializedState
     implements Serializable
 {
     private Map<String, Serializable> properties;
-    private Map<String, SerializedEntity> associations;
-    private Map<String, Collection<SerializedEntity>> manyAssociations;
+    private Map<String, EntityId> associations;
+    private Map<String, Collection<EntityId>> manyAssociations;
 
-    public SerializedState( Map<String, Serializable> properties, Map<String, SerializedEntity> associations, Map<String, Collection<SerializedEntity>> manyAssociations )
+    public SerializedState( Map<String, Serializable> properties, Map<String, EntityId> associations, Map<String, Collection<EntityId>> manyAssociations )
     {
         this.properties = properties;
         this.associations = associations;
@@ -40,12 +40,12 @@ public final class SerializedState
         return properties;
     }
 
-    public Map<String, SerializedEntity> getAssociations()
+    public Map<String, EntityId> getAssociations()
     {
         return associations;
     }
 
-    public Map<String, Collection<SerializedEntity>> getManyAssociations()
+    public Map<String, Collection<EntityId>> getManyAssociations()
     {
         return manyAssociations;
     }

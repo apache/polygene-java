@@ -16,7 +16,6 @@ package org.qi4j.spi.serialization;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.io.ObjectStreamClass;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Proxy;
@@ -24,8 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.qi4j.composite.Composite;
 import org.qi4j.entity.EntityComposite;
-import org.qi4j.spi.Qi4jSPI;
-import org.qi4j.spi.composite.CompositeModel;
 import org.qi4j.spi.composite.CompositeState;
 
 /**
@@ -33,14 +30,11 @@ import org.qi4j.spi.composite.CompositeState;
  */
 public final class CompositeOutputStream extends ObjectOutputStream
 {
-    Qi4jSPI spi;
-
-    public CompositeOutputStream( OutputStream out, Qi4jSPI spi )
+    public CompositeOutputStream( OutputStream out )
         throws IOException
     {
         super( out );
         enableReplaceObject( true );
-        this.spi = spi;
     }
 
     protected Object replaceObject( Object obj ) throws IOException
@@ -48,12 +42,11 @@ public final class CompositeOutputStream extends ObjectOutputStream
         if( obj instanceof Composite && obj instanceof Proxy )
         {
             Composite composite = (Composite) obj;
-            CompositeModel compositeObject = spi.getCompositeBinding( composite ).getCompositeResolution().getCompositeModel();
-            Class compositeInterface = compositeObject.getCompositeClass();
+            Class compositeInterface = composite.getCompositeType();
             if( obj instanceof EntityComposite )
             {
                 String id = ( (EntityComposite) composite ).identity().get();
-                return new SerializedEntity( id, compositeInterface );
+                return new EntityId( id, compositeInterface );
             }
             else
             {
@@ -74,8 +67,10 @@ public final class CompositeOutputStream extends ObjectOutputStream
         return obj;
     }
 
+/*
     @Override protected void writeClassDescriptor( ObjectStreamClass objectStreamClass ) throws IOException
     {
         writeUTF( objectStreamClass.getName() );
     }
+*/
 }

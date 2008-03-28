@@ -40,7 +40,7 @@ public final class PropertyContext
         return propertyBinding;
     }
 
-    public <T> Property newInstance( ModuleInstance moduleInstance, Object value )
+    public Property newInstance( ModuleInstance moduleInstance, Object value )
     {
         try
         {

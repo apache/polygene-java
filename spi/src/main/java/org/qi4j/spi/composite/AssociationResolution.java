@@ -33,4 +33,9 @@ public final class AssociationResolution
     {
         return associationModel;
     }
+
+    @Override public String toString()
+    {
+        return associationModel.toString();
+    }
 }

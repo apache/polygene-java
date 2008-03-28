@@ -82,4 +82,9 @@ public final class AssociationModel
     {
         return accessor;
     }
+
+    @Override public String toString()
+    {
+        return qualifiedName;
+    }
 }

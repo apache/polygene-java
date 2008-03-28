@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Set;
 import org.qi4j.association.AbstractAssociation;
 import org.qi4j.association.ListAssociation;
+import org.qi4j.association.ManyAssociation;
 import org.qi4j.association.SetAssociation;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.CompositeBuilderFactory;
@@ -46,16 +47,24 @@ import org.qi4j.queryobsolete.QueryBuilderFactoryImpl;
 import org.qi4j.runtime.composite.CompositeContext;
 import org.qi4j.runtime.composite.EntityCompositeInstance;
 import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.spi.association.AssociationBinding;
+import org.qi4j.spi.association.AssociationInstance;
 import org.qi4j.spi.association.ListAssociationInstance;
 import org.qi4j.spi.association.SetAssociationInstance;
+import org.qi4j.spi.composite.AssociationModel;
+import org.qi4j.spi.composite.AssociationResolution;
 import org.qi4j.spi.composite.CompositeBinding;
+import org.qi4j.spi.composite.PropertyResolution;
 import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.entity.StoreException;
+import org.qi4j.spi.property.ImmutablePropertyInstance;
+import org.qi4j.spi.property.PropertyBinding;
 import org.qi4j.spi.property.PropertyInstance;
+import org.qi4j.spi.property.PropertyModel;
 
 public final class UnitOfWorkInstance
     implements UnitOfWork
@@ -300,10 +309,10 @@ public final class UnitOfWorkInstance
         checkOpen();
 
         // Create complete lists
-        Map<EntityStore<EntityState>, List<EntityState>> storeCompletions = new HashMap<EntityStore<EntityState>, List<EntityState>>();
+        Map<EntityStore, List<EntityState>> storeCompletions = new HashMap<EntityStore, List<EntityState>>();
         for( Map.Entry<Class<? extends EntityComposite>, Map<String, EntityComposite>> entry : cache.entrySet() )
         {
-            EntityStore<EntityState> store = stateServices.getEntityStore( entry.getKey() );
+            EntityStore store = stateServices.getEntityStore( entry.getKey() );
             List<EntityState> storeCompletionList = storeCompletions.get( store );
             if( storeCompletionList == null )
             {
@@ -321,9 +330,9 @@ public final class UnitOfWorkInstance
 
         // Commit complete lists
         List<StateCommitter> committers = new ArrayList<StateCommitter>();
-        for( Map.Entry<EntityStore<EntityState>, List<EntityState>> entityStoreListEntry : storeCompletions.entrySet() )
+        for( Map.Entry<EntityStore, List<EntityState>> entityStoreListEntry : storeCompletions.entrySet() )
         {
-            EntityStore<EntityState> entityStore = entityStoreListEntry.getKey();
+            EntityStore entityStore = entityStoreListEntry.getKey();
             List<EntityState> stateList = entityStoreListEntry.getValue();
 
             try
@@ -429,47 +438,72 @@ public final class UnitOfWorkInstance
     }
 
     private class UnitOfWorkStore
-        implements EntityStore<UnitOfWorkEntityState>
+        implements EntityStore
     {
-
-        public boolean exists( String identity, CompositeBinding compositeBinding ) throws StoreException
+        public EntityState newEntityState( String identity, CompositeBinding compositeBinding ) throws StoreException
         {
-            Class<? extends EntityComposite> entityType = (Class<? extends EntityComposite>) compositeBinding.getCompositeResolution().getCompositeModel().getCompositeClass();
-            if( !getReference( identity, entityType ).isReference() )
+            Map<Method, Property> properties = new HashMap<Method, Property>();
+            Iterable<PropertyBinding> propertyBindings = compositeBinding.getPropertyBindings();
+            for( PropertyBinding propertyBinding : propertyBindings )
             {
-                return true;
+                PropertyResolution propertyResolution = propertyBinding.getPropertyResolution();
+                PropertyModel propertyModel = propertyResolution.getPropertyModel();
+                Method accessor = propertyModel.getAccessor();
+
+                Class<?> type = accessor.getReturnType();
+                if( ImmutableProperty.class.isAssignableFrom( type ) )
+                {
+                    properties.put( accessor, new ImmutablePropertyInstance<Object>( propertyBinding ) );
+                }
+                else
+                {
+                    properties.put( accessor, new PropertyInstance<Object>( propertyBinding ) );
+                }
             }
 
-            try
+            Map<Method, AbstractAssociation> associations = new HashMap<Method, AbstractAssociation>();
+            Iterable<AssociationBinding> associationBindings = compositeBinding.getAssociationBindings();
+            for( AssociationBinding associationBinding : associationBindings )
             {
-                find( identity, entityType );
-                return true;
+                AssociationResolution associationResolution = associationBinding.getAssociationResolution();
+                AssociationModel associationModel = associationResolution.getAssociationModel();
+                Method accessor = associationModel.getAccessor();
+                Class<?> type = accessor.getReturnType();
+                if( ListAssociation.class.isAssignableFrom( type ) )
+                {
+                    ListAssociationInstance<Object> listInstance =
+                        new ListAssociationInstance<Object>( new ArrayList<Object>(), associationBinding );
+                    associations.put( accessor, listInstance );
+                }
+                else if( ManyAssociation.class.isAssignableFrom( type ) )
+                {
+                    SetAssociationInstance setInstance = new SetAssociationInstance<Object>( new HashSet<Object>(), associationBinding );
+                    associations.put( accessor, setInstance );
+                }
+                else
+                {
+                    AssociationInstance<Object> instance = new AssociationInstance<Object>( associationBinding, null );
+                    associations.put( accessor, instance );
+                }
             }
-            catch( EntityCompositeNotFoundException e )
-            {
-                return false;
-            }
+
+            return new UnitOfWorkEntityState( identity, properties, associations );
         }
 
-        public UnitOfWorkEntityState newEntityState( UnitOfWork unitOfWork, String identity, CompositeBinding compositeBinding, Map propertyValues ) throws StoreException
-        {
-
-            return null;
-        }
-
-        public UnitOfWorkEntityState getEntityState( UnitOfWork unitOfWork, String identity, CompositeBinding compositeBinding ) throws StoreException
+        public EntityState getEntityState( UnitOfWork unitOfWork, String identity, CompositeBinding compositeBinding ) throws StoreException
         {
             Class<? extends EntityComposite> entityType = (Class<? extends EntityComposite>) compositeBinding.getCompositeResolution().getCompositeModel().getCompositeClass();
             EntityComposite parentEntity = getReference( identity, entityType );
-            UnitOfWorkEntityState unitOfWorkEntityState = new UnitOfWorkEntityState( parentEntity );
+            UnitOfWorkEntityState unitOfWorkEntityState = new UnitOfWorkEntityState( identity, parentEntity );
             return unitOfWorkEntityState;
         }
 
-        public StateCommitter prepare( UnitOfWork unitOfWork, Iterable<UnitOfWorkEntityState> states ) throws StoreException
+        public StateCommitter prepare( UnitOfWork unitOfWork, Iterable<EntityState> states ) throws StoreException
         {
-            for( UnitOfWorkEntityState stateUnitOfWork : states )
+            for( EntityState stateUnitOfWork : states )
             {
-                Collection<Property> properties = stateUnitOfWork.getProperties().values();
+                UnitOfWorkEntityState uowState = (UnitOfWorkEntityState) stateUnitOfWork;
+                Collection<Property> properties = uowState.getProperties().values();
                 for( Property property : properties )
                 {
                     // If property in nested unitOfWork has been updated then copy value to original
@@ -505,9 +539,18 @@ public final class UnitOfWorkInstance
         EntityComposite parentEntity;
         Map<Method, Property> properties = new HashMap<Method, Property>();
         Map<Method, AbstractAssociation> associations = new HashMap<Method, AbstractAssociation>();
+        private String identity;
 
-        private UnitOfWorkEntityState( EntityComposite parentEntity )
+        private UnitOfWorkEntityState( String identity, Map<Method, Property> properties, Map<Method, AbstractAssociation> associations )
         {
+            this.identity = identity;
+            this.properties = properties;
+            this.associations = associations;
+        }
+
+        public UnitOfWorkEntityState( String identity, EntityComposite parentEntity )
+        {
+            this.identity = identity;
             this.parentEntity = parentEntity;
         }
 
@@ -519,12 +562,6 @@ public final class UnitOfWorkInstance
         public CompositeBinding getCompositeBinding()
         {
             return EntityCompositeInstance.getEntityCompositeInstance( parentEntity ).getState().getCompositeBinding();
-        }
-
-        public void refresh()
-        {
-            properties.clear();
-            associations.clear();
         }
 
         public void remove()

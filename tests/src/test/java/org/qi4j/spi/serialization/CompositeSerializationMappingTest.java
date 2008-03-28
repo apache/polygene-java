@@ -60,7 +60,7 @@ public class CompositeSerializationMappingTest
 
         // Serialize it
         ByteArrayOutputStream bout = new ByteArrayOutputStream();
-        CompositeOutputStream cout = new CompositeOutputStream( bout, server.getRuntime() );
+        CompositeOutputStream cout = new CompositeOutputStream( bout );
         cout.writeObject( serverChair );
 
         // Deserialize it

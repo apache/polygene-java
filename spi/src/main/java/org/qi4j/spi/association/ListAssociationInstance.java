@@ -41,6 +41,11 @@ public final class ListAssociationInstance<T> extends AbstractList<T>
         this.associated = associated;
     }
 
+    public List<T> getAssociatedList()
+    {
+        return associated;
+    }
+
     public <T> T getAssociationInfo( Class<T> infoType )
     {
         return associationInfo.getAssociationInfo( infoType );

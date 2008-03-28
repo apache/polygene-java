@@ -21,8 +21,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import org.qi4j.Qi4j;
+import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.entity.UnitOfWork;
-import org.qi4j.spi.Qi4jSPI;
 
 
 public final class SerializedObject<T>
@@ -30,12 +30,12 @@ public final class SerializedObject<T>
 {
     private byte[] data;
 
-    public SerializedObject( T value, Qi4jSPI spi )
+    public SerializedObject( T value )
     {
         try
         {
             ByteArrayOutputStream out = new ByteArrayOutputStream( 1024 );
-            CompositeOutputStream stream = new CompositeOutputStream( out, spi );
+            CompositeOutputStream stream = new CompositeOutputStream( out );
             stream.writeObject( value );
             stream.flush();
             data = out.toByteArray();
@@ -57,6 +57,22 @@ public final class SerializedObject<T>
         {
             ByteArrayInputStream in = new ByteArrayInputStream( data );
             CompositeInputStream stream = new CompositeInputStream( in, unitOfWork, api );
+            return (T) stream.readObject();
+        }
+        catch( IOException e )
+        {
+            // can not happen, as there is no underlying I/O to go wrong!
+            throw new IllegalStateException( "This exception should not be possible.", e );
+        }
+    }
+
+    public T getObject( CompositeBuilderFactory cbf, Qi4j api )
+        throws ClassNotFoundException
+    {
+        try
+        {
+            ByteArrayInputStream in = new ByteArrayInputStream( data );
+            CompositeInputStream stream = new CompositeInputStream( in, cbf, api );
             return (T) stream.readObject();
         }
         catch( IOException e )

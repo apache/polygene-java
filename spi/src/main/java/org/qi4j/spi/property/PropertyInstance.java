@@ -42,6 +42,19 @@ public class PropertyInstance<T> extends ComputedPropertyInstance<T>
     }
 
     /**
+     * Construct an instance of {@code PropertyInstance} with the specified arguments.
+     *
+     * @param aPropertyInfo The property info. This argument must not be {@code null}.
+     * @throws IllegalArgumentException Thrown if the specified {@code aPropertyInfo} is {@code null}.
+     * @since 0.1.0
+     */
+    public PropertyInstance( PropertyInfo aPropertyInfo )
+        throws IllegalArgumentException
+    {
+        super( aPropertyInfo );
+    }
+
+    /**
      * Returns this property value.
      *
      * @return This property value.

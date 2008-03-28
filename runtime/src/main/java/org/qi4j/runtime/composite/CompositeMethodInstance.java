@@ -119,7 +119,7 @@ public final class CompositeMethodInstance
             }
 
             // Check for side-effects
-//            invokeSideEffects( result, null, proxy, args );
+            invokeSideEffects( result, null, proxy, args );
 
             return result;
         }

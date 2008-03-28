@@ -16,8 +16,6 @@
  */
 package org.qi4j.spi.entity;
 
-import java.lang.reflect.Method;
-import java.util.Map;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.spi.composite.CompositeBinding;
 
@@ -25,7 +23,7 @@ import org.qi4j.spi.composite.CompositeBinding;
  * Interface that must be implemented by store for
  * persistent state of EntityComposites.
  */
-public interface EntityStore<T extends EntityState>
+public interface EntityStore
 {
     /**
      * Create new EntityState for a given identity and
@@ -36,17 +34,13 @@ public interface EntityStore<T extends EntityState>
      * that should occur during the {@link #prepare(org.qi4j.entity.UnitOfWork , Iterable)}
      * call.
      *
-     * @param unitOfWork       the unit of work for which to create the EntityState
      * @param identity         the identity of the entity
      * @param compositeBinding the composite binding for the entity
-     * @param propertyValues   the value of the properties.
-     * @return a new EntityState implementation
      * @throws StoreException
      */
-    T newEntityState( UnitOfWork unitOfWork,
-                      String identity,
-                      CompositeBinding compositeBinding,
-                      Map<Method, Object> propertyValues )
+    EntityState newEntityState( String identity,
+                                CompositeBinding compositeBinding
+    )
         throws StoreException;
 
     /**
@@ -59,9 +53,9 @@ public interface EntityStore<T extends EntityState>
      * @return
      * @throws StoreException
      */
-    T getEntityState( UnitOfWork unitOfWork,
-                      String identity,
-                      CompositeBinding compositeBinding )
+    EntityState getEntityState( UnitOfWork unitOfWork,
+                                String identity,
+                                CompositeBinding compositeBinding )
         throws StoreException;
 
     /**
@@ -75,6 +69,6 @@ public interface EntityStore<T extends EntityState>
      * @return an implementation of StateCommitter
      * @throws StoreException if the state could not be sent to the datastore
      */
-    StateCommitter prepare( UnitOfWork unitOfWork, Iterable<T> states )
+    StateCommitter prepare( UnitOfWork unitOfWork, Iterable<EntityState> states )
         throws StoreException;
 }

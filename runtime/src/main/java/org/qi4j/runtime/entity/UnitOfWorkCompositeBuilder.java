@@ -28,6 +28,7 @@ import org.qi4j.entity.Identity;
 import org.qi4j.entity.IdentityGenerator;
 import org.qi4j.entity.Lifecycle;
 import org.qi4j.entity.UnitOfWorkException;
+import org.qi4j.property.Property;
 import org.qi4j.runtime.composite.CompositeContext;
 import org.qi4j.runtime.composite.EntityCompositeInstance;
 import org.qi4j.runtime.structure.CompositeBuilderImpl;
@@ -35,6 +36,8 @@ import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.StoreException;
+import org.qi4j.spi.property.ImmutablePropertyInstance;
+import org.qi4j.spi.property.PropertyBinding;
 
 /**
  * TODO
@@ -72,10 +75,11 @@ public final class UnitOfWorkCompositeBuilder<T extends Composite>
 
     public T newInstance()
     {
+        // Figure out whether to use given or generated identity
         boolean prototypePattern = false;
-        EntityState state;
-        String identity = (String) getPropertyValues().get( IDENTITY_METHOD );
-        if( identity == null )
+        Property<String> identityProperty = getProperties().get( IDENTITY_METHOD );
+        String identity;
+        if( identityProperty == null )
         {
             Class compositeType = context.getCompositeModel().getCompositeClass();
             IdentityGenerator identityGenerator = uow.stateServices.getIdentityGenerator( compositeType );
@@ -84,20 +88,45 @@ public final class UnitOfWorkCompositeBuilder<T extends Composite>
                 throw new UnitOfWorkException( "No identity generator found for type " + compositeType.getName() );
             }
             identity = identityGenerator.generate( compositeType );
+            identityProperty = new ImmutablePropertyInstance( context.getPropertyContext( Identity.class, "identity" ).getPropertyBinding(), identity );
             prototypePattern = true;
-            propertyValues.put( IDENTITY_METHOD, identity );
+            propertyValues.put( IDENTITY_METHOD, identityProperty );
         }
-        Map<Method, Object> propertyValues = getPropertyValues();
+        else
+        {
+            identity = identityProperty.get();
+        }
+
+        // Create state holder for this entity
+        EntityState state;
         try
         {
-            state = store.newEntityState( uow, identity, context.getCompositeBinding(), propertyValues );
+            state = store.newEntityState( identity, context.getCompositeBinding() );
         }
         catch( StoreException e )
         {
             throw new InstantiationException( "Could not create new entity in store", e );
         }
 
-        Map<Method, AbstractAssociation> associationValues = getAssociationValues();
+        // Populate state
+        Map<Method, Property> propertyValues = getProperties();
+        Iterable<PropertyBinding> propertyBindings = context.getCompositeBinding().getPropertyBindings();
+        for( PropertyBinding propertyBinding : propertyBindings )
+        {
+            Method accessor = propertyBinding.getPropertyResolution().getPropertyModel().getAccessor();
+            Property propertyValue = propertyValues.get( accessor );
+            if( propertyValue != null )
+            {
+                state.getProperty( accessor ).set( propertyValue.get() );
+            }
+            else
+            {
+                state.getProperty( accessor ).set( propertyBinding.getDefaultValue() );
+            }
+        }
+
+
+        Map<Method, AbstractAssociation> associationValues = getAssociations();
         for( Map.Entry<Method, AbstractAssociation> association : associationValues.entrySet() )
         {
             AbstractAssociation associationValue = state.getAssociation( association.getKey() );
@@ -125,6 +154,7 @@ public final class UnitOfWorkCompositeBuilder<T extends Composite>
         {
             context.invokeCreate( instance, compositeInstance );
         }
+
         if( prototypePattern )
         {
             propertyValues.remove( IDENTITY_METHOD );

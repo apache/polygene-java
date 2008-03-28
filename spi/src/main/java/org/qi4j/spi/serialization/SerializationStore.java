@@ -28,22 +28,22 @@ public interface SerializationStore
     /**
      * Get the serialized state for the given entity.
      *
-     * @param entityId
+     * @param entityIdId
      * @param unitOfWork
      * @return the state for the entityId, or null if not found
      * @throws IOException
      */
-    SerializedState get( SerializedEntity entityId, UnitOfWork unitOfWork )
+    SerializedState get( EntityId entityIdId, UnitOfWork unitOfWork )
         throws IOException;
 
     /**
      * Check whether a particular entity exists or not.
      *
-     * @param entityId
+     * @param entityIdId
      * @return true if the entity with the given entityId exists
      * @throws IOException
      */
-    boolean contains( SerializedEntity entityId )
+    boolean contains( EntityId entityIdId )
         throws IOException;
 
     /**
@@ -55,6 +55,6 @@ public interface SerializationStore
      * @return
      * @throws IOException
      */
-    StateCommitter prepare( Map<SerializedEntity, SerializedState> newEntities, Map<SerializedEntity, SerializedState> updatedEntities, Iterable<SerializedEntity> removedEntities )
+    StateCommitter prepare( Map<EntityId, SerializedState> newEntities, Map<EntityId, SerializedState> updatedEntities, Iterable<EntityId> removedEntities )
         throws IOException;
 }

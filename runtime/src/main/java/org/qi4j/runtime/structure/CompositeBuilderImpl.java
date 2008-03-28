@@ -28,9 +28,7 @@ import org.qi4j.association.AbstractAssociation;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.InstantiationException;
-import org.qi4j.property.ImmutableProperty;
 import org.qi4j.property.Property;
-import org.qi4j.property.PropertyVetoException;
 import org.qi4j.runtime.association.AssociationContext;
 import org.qi4j.runtime.composite.CompositeContext;
 import org.qi4j.runtime.composite.CompositeInstance;
@@ -40,8 +38,8 @@ import org.qi4j.spi.composite.AssociationModel;
 import org.qi4j.spi.composite.AssociationResolution;
 import org.qi4j.spi.composite.PropertyResolution;
 import org.qi4j.spi.composite.State;
+import org.qi4j.spi.property.ImmutablePropertyInstance;
 import org.qi4j.spi.property.PropertyBinding;
-import org.qi4j.spi.property.PropertyInstance;
 import org.qi4j.spi.property.PropertyModel;
 
 /**
@@ -55,7 +53,7 @@ public class CompositeBuilderImpl<T extends Composite>
     protected CompositeContext context;
 
     protected Set<Object> uses;
-    protected Map<Method, Object> propertyValues;
+    protected Map<Method, Property> propertyValues;
     protected Map<Method, AbstractAssociation> associationValues;
 
     public CompositeBuilderImpl( ModuleInstance moduleInstance, CompositeContext context )
@@ -79,7 +77,7 @@ public class CompositeBuilderImpl<T extends Composite>
         // Instantiate proxy for given composite interface
         try
         {
-            PropertiesInvocationHandler handler = new PropertiesInvocationHandler();
+            StateInvocationHandler handler = new StateInvocationHandler();
             ClassLoader proxyClassloader = compositeInterface.getClassLoader();
             Class[] interfaces = new Class[]{ compositeInterface };
             return compositeInterface.cast( Proxy.newProxyInstance( proxyClassloader, interfaces, handler ) );
@@ -95,7 +93,7 @@ public class CompositeBuilderImpl<T extends Composite>
         // Instantiate proxy for given interface
         try
         {
-            PropertiesInvocationHandler handler = new PropertiesInvocationHandler();
+            StateInvocationHandler handler = new StateInvocationHandler();
             ClassLoader proxyClassloader = mixinType.getClassLoader();
             Class[] interfaces = new Class[]{ mixinType };
             return mixinType.cast( Proxy.newProxyInstance( proxyClassloader, interfaces, handler ) );
@@ -116,7 +114,7 @@ public class CompositeBuilderImpl<T extends Composite>
             Method accessor = propertyContext.getPropertyBinding().getPropertyResolution().getPropertyModel().getAccessor();
             if( propertyValues != null && propertyValues.containsKey( accessor ) )
             {
-                value = propertyValues.get( accessor );
+                value = propertyValues.get( accessor ).get();
             }
             else
             {
@@ -184,16 +182,16 @@ public class CompositeBuilderImpl<T extends Composite>
         return uses;
     }
 
-    protected Map<Method, Object> getPropertyValues()
+    protected Map<Method, Property> getProperties()
     {
         if( propertyValues == null )
         {
-            propertyValues = new HashMap<Method, Object>();
+            propertyValues = new HashMap<Method, Property>();
         }
         return propertyValues;
     }
 
-    protected Map<Method, AbstractAssociation> getAssociationValues()
+    protected Map<Method, AbstractAssociation> getAssociations()
     {
         if( associationValues == null )
         {
@@ -202,55 +200,36 @@ public class CompositeBuilderImpl<T extends Composite>
         return associationValues;
     }
 
-    private void setProperty( PropertyContext propertyContext, Object property )
-    {
-        Map<Method, Object> compositeProperties = getPropertyValues();
-        compositeProperties.put( propertyContext.getPropertyBinding().getPropertyResolution().getPropertyModel().getAccessor(), property );
-    }
-
-    private class PropertiesInvocationHandler
+    private class StateInvocationHandler
         implements InvocationHandler
     {
-        public PropertiesInvocationHandler()
+        public StateInvocationHandler()
         {
         }
 
         public Object invoke( Object o, Method method, Object[] objects ) throws Throwable
         {
-            final PropertyContext propertyContext = context.getMethodDescriptor( method ).getCompositeMethodContext().getPropertyContext();
-            if( propertyContext != null )
+            if( AbstractAssociation.class.isAssignableFrom( method.getReturnType() ) )
             {
-                Object defValue = propertyContext.getPropertyBinding().getDefaultValue();
-                PropertyBinding binding = propertyContext.getPropertyBinding();
-                PropertyInstance<Object> propertyInstance = new ImmutablePropertySupport<Object>( binding, defValue, propertyContext );
+                final AssociationContext associationContext = context.getMethodDescriptor( method ).getCompositeMethodContext().getAssociationContext();
+                AbstractAssociation association = associationContext.newInstance( moduleInstance, null );
+                getAssociations().put( method, association );
+                return association;
+
+            }
+            else if( Property.class.isAssignableFrom( method.getReturnType() ) )
+            {
+                final PropertyContext propertyContext = context.getMethodDescriptor( method ).getCompositeMethodContext().getPropertyContext();
+                Property<Object> propertyInstance = propertyContext.newInstance( moduleInstance, ImmutablePropertyInstance.UNSET );
+                getProperties().put( method, propertyInstance );
                 return propertyInstance;
             }
             else
             {
-                throw new IllegalArgumentException( "Method is not a property: " + method );
+                throw new IllegalArgumentException( "Method is not a property or association: " + method );
             }
         }
 
-    }
-
-    private class ImmutablePropertySupport<T> extends PropertyInstance<T>
-        implements ImmutableProperty<T>
-    {
-        private final PropertyContext propertyContext;
-
-        public ImmutablePropertySupport( PropertyBinding binding, T defValue, PropertyContext propertyContext )
-            throws IllegalArgumentException
-        {
-            super( binding, defValue );
-            this.propertyContext = propertyContext;
-        }
-
-        @Override public T set( T newValue ) throws PropertyVetoException
-        {
-            super.set( newValue );
-            setProperty( propertyContext, newValue );
-            return newValue;
-        }
     }
 
     static class CompositeBuilderState

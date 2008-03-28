@@ -25,7 +25,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.qi4j.association.AbstractAssociation;
+import org.qi4j.association.Association;
 import org.qi4j.association.ListAssociation;
 import org.qi4j.association.ManyAssociation;
 import org.qi4j.composite.Composite;
@@ -46,6 +48,7 @@ import org.qi4j.spi.composite.CompositeResolution;
 import org.qi4j.spi.composite.PropertyResolution;
 import org.qi4j.spi.entity.EntityAlreadyExistsException;
 import org.qi4j.spi.entity.EntityNotFoundException;
+import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStateInstance;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityStore;
@@ -57,18 +60,17 @@ import org.qi4j.spi.property.PropertyInstance;
 import org.qi4j.spi.property.PropertyModel;
 
 public class SerializedEntityStoreMixin
-    implements EntityStore<EntityStateInstance>
+    implements EntityStore
 {
     private @ThisCompositeAs SerializationStore serializationStore;
 
-    public EntityStateInstance newEntityState(
-        UnitOfWork unitOfWork, String identity, CompositeBinding compositeBinding, Map<Method, Object> propertyValues ) throws StoreException
+    public EntityState newEntityState( String identity, CompositeBinding compositeBinding ) throws StoreException
     {
         CompositeResolution compositeResolution = compositeBinding.getCompositeResolution();
         CompositeModel compositeModel = compositeResolution.getCompositeModel();
         Class<? extends EntityComposite> compositeType = (Class<? extends EntityComposite>) compositeModel.getCompositeClass();
 
-        SerializedEntity id = new SerializedEntity( identity, compositeType );
+        EntityId id = new EntityId( identity, compositeType );
         try
         {
             if( serializationStore.contains( id ) )
@@ -81,19 +83,19 @@ public class SerializedEntityStoreMixin
             throw new StoreException( "Could not verify if entity already exists", e );
         }
 
-        EntityStateInstance entityStateInstance = createEntityState( EntityStatus.NEW, identity, compositeBinding, propertyValues );
+        EntityStateInstance entityStateInstance = createEntityState( EntityStatus.NEW, identity, compositeBinding );
         return entityStateInstance;
     }
 
-    public EntityStateInstance getEntityState( UnitOfWork unitOfWork, String identity, CompositeBinding compositeBinding )
+    public EntityState getEntityState( UnitOfWork unitOfWork, String identity, CompositeBinding compositeBinding )
         throws StoreException
     {
         Class<? extends EntityComposite> compositeType = (Class<? extends EntityComposite>) compositeBinding.getCompositeResolution().getCompositeModel().getCompositeClass();
-        SerializedEntity serializedEntity = new SerializedEntity( identity, compositeType );
+        EntityId entityId = new EntityId( identity, compositeType );
         SerializedState serializedState = null;
         try
         {
-            serializedState = serializationStore.get( serializedEntity, unitOfWork );
+            serializedState = serializationStore.get( entityId, unitOfWork );
         }
         catch( IOException e )
         {
@@ -105,33 +107,60 @@ public class SerializedEntityStoreMixin
             throw new EntityNotFoundException( "Serialization store", identity );
         }
 
-        Map<Method, Object> propertyValues = new HashMap<Method, Object>();
+        EntityStateInstance stateInstance = createEntityState( EntityStatus.LOADED, identity, compositeBinding );
+
+        // Populate properties with values
         Map<String, Serializable> storedProperties = serializedState.getProperties();
         Iterable<PropertyBinding> propertyBindings = compositeBinding.getPropertyBindings();
         for( PropertyBinding propertyBinding : propertyBindings )
         {
             Object storedValue = storedProperties.get( propertyBinding.getQualifiedName() );
-            propertyValues.put( propertyBinding.getPropertyResolution().getPropertyModel().getAccessor(), storedValue );
+            stateInstance.getProperty( propertyBinding.getPropertyResolution().getPropertyModel().getAccessor() ).set( storedValue );
         }
 
-        EntityStateInstance stateInstance = createEntityState( EntityStatus.LOADED, identity, compositeBinding, propertyValues );
+        // Populate associations
+        Map<String, EntityId> storedAssociations = serializedState.getAssociations();
+        Iterable<AssociationBinding> associationBindings = compositeBinding.getAssociationBindings();
+        for( AssociationBinding associationBinding : associationBindings )
+        {
+            if( ManyAssociation.class.isAssignableFrom( associationBinding.getAssociationResolution().getAssociationModel().getAccessor().getReturnType() ) )
+            {
+                Collection<EntityId> assoc = serializedState.getManyAssociations().get( associationBinding.getQualifiedName() );
+                ManyAssociation<Object> manyAssociation = (ManyAssociation<Object>) stateInstance.getAssociation( associationBinding.getAssociationResolution().getAssociationModel().getAccessor() );
+                for( EntityId id : assoc )
+                {
+                    EntityComposite referencedComposite = unitOfWork.getReference( id.getIdentity(), id.getCompositeType() );
+                    manyAssociation.add( referencedComposite );
+                }
+            }
+            else
+            {
+                EntityId assoc = serializedState.getAssociations().get( associationBinding.getQualifiedName() );
+                if( assoc != null )
+                {
+                    Association<Object> association = (Association<Object>) stateInstance.getAssociation( associationBinding.getAssociationResolution().getAssociationModel().getAccessor() );
+                    EntityComposite referencedComposite = unitOfWork.getReference( assoc.getIdentity(), assoc.getCompositeType() );
+                    association.set( referencedComposite );
+                }
+            }
+        }
 
         return stateInstance;
     }
 
-    public StateCommitter prepare( UnitOfWork unitOfWork, Iterable<EntityStateInstance> states ) throws StoreException
+    public StateCommitter prepare( UnitOfWork unitOfWork, Iterable<EntityState> states ) throws StoreException
     {
-        final Map<SerializedEntity, SerializedState> newEntities = new HashMap<SerializedEntity, SerializedState>();
-        final Map<SerializedEntity, SerializedState> updatedEntities = new HashMap<SerializedEntity, SerializedState>();
-        final List<SerializedEntity> removedEntities = new ArrayList<SerializedEntity>();
+        final Map<EntityId, SerializedState> newEntities = new HashMap<EntityId, SerializedState>();
+        final Map<EntityId, SerializedState> updatedEntities = new HashMap<EntityId, SerializedState>();
+        final List<EntityId> removedEntityIds = new ArrayList<EntityId>();
 
-        for( EntityStateInstance stateInstance : states )
+        for( EntityState stateInstance : states )
         {
             if( stateInstance.getStatus() == EntityStatus.NEW || stateInstance.getStatus() == EntityStatus.LOADED )
             {
                 Map<String, Serializable> serializedProperties = new HashMap<String, Serializable>();
-                Map<String, SerializedEntity> serializedAssociations = new HashMap<String, SerializedEntity>();
-                Map<String, Collection<SerializedEntity>> serializedManyAssociations = new HashMap<String, Collection<SerializedEntity>>();
+                Map<String, EntityId> serializedAssociations = new HashMap<String, EntityId>();
+                Map<String, Collection<EntityId>> serializedManyAssociations = new HashMap<String, Collection<EntityId>>();
 
                 CompositeBinding binding = stateInstance.getCompositeBinding();
                 Iterable<PropertyBinding> propertyBindings = binding.getPropertyBindings();
@@ -142,7 +171,7 @@ public class SerializedEntityStoreMixin
                     Property property = stateInstance.getProperty( accessor );
                     if( property instanceof PropertyInstance )
                     {
-                        PropertyInstance propertyInstance = (PropertyInstance) stateInstance.getProperty( accessor );
+                        PropertyInstance propertyInstance = (PropertyInstance) property;
                         Object value = propertyInstance.read();
                         serializedProperties.put( qName, (Serializable) value );
                     }
@@ -154,30 +183,76 @@ public class SerializedEntityStoreMixin
                     }
                 }
 
+                Iterable<AssociationBinding> associationBindings = binding.getAssociationBindings();
+                for( AssociationBinding associationBinding : associationBindings )
+                {
+                    String qName = associationBinding.getQualifiedName();
+                    Method accessor = associationBinding.getAssociationResolution().getAssociationModel().getAccessor();
+                    AbstractAssociation association = stateInstance.getAssociation( accessor );
+                    if( association instanceof AssociationInstance )
+                    {
+                        AssociationInstance AssociationInstance = (AssociationInstance) association;
+                        EntityComposite value = (EntityComposite) AssociationInstance.read();
+                        if( value != null )
+                        {
+                            EntityId entityIdId = new EntityId( value );
+                            serializedAssociations.put( qName, entityIdId );
+                        }
+                    }
+                    else if( association instanceof SetAssociationInstance )
+                    {
+                        SetAssociationInstance associationInstance = (SetAssociationInstance) association;
+                        Set set = associationInstance.getAssociatedSet();
+                        Set<EntityId> serializedSet = new HashSet<EntityId>( set.size() );
+                        for( Object object : set )
+                        {
+                            EntityComposite entity = (EntityComposite) object;
+                            EntityId entityId = new EntityId( entity );
+                            serializedSet.add( entityId );
+
+                        }
+                        serializedManyAssociations.put( qName, serializedSet );
+                    }
+                    else if( association instanceof ListAssociationInstance )
+                    {
+                        ListAssociationInstance associationInstance = (ListAssociationInstance) association;
+                        List list = associationInstance.getAssociatedList();
+                        List<EntityId> serializedList = new ArrayList<EntityId>( list.size() );
+                        for( Object object : list )
+                        {
+                            EntityComposite entity = (EntityComposite) object;
+                            EntityId entityId = new EntityId( entity );
+                            serializedList.add( entityId );
+
+                        }
+                        serializedManyAssociations.put( qName, serializedList );
+                    }
+                }
+
                 SerializedState state = new SerializedState( serializedProperties, serializedAssociations, serializedManyAssociations );
                 Class<? extends Composite> compositeType = stateInstance.getCompositeBinding().getCompositeResolution().getCompositeModel().getCompositeClass();
-                SerializedEntity serializedEntity = new SerializedEntity( stateInstance.getIdentity(), (Class<? extends EntityComposite>) compositeType );
+                EntityId entityId = new EntityId( stateInstance.getIdentity(), (Class<? extends EntityComposite>) compositeType );
 
                 if( stateInstance.getStatus() == EntityStatus.NEW )
                 {
-                    newEntities.put( serializedEntity, state );
+                    newEntities.put( entityId, state );
                 }
                 else
                 {
-                    updatedEntities.put( serializedEntity, state );
+                    updatedEntities.put( entityId, state );
                 }
             }
             else
             {
                 Class<? extends Composite> compositeType = stateInstance.getCompositeBinding().getCompositeResolution().getCompositeModel().getCompositeClass();
-                SerializedEntity serializedEntity = new SerializedEntity( stateInstance.getIdentity(), (Class<? extends EntityComposite>) compositeType );
-                removedEntities.add( serializedEntity );
+                EntityId entityId = new EntityId( stateInstance.getIdentity(), (Class<? extends EntityComposite>) compositeType );
+                removedEntityIds.add( entityId );
             }
         }
 
         try
         {
-            return serializationStore.prepare( newEntities, updatedEntities, removedEntities );
+            return serializationStore.prepare( newEntities, updatedEntities, removedEntityIds );
         }
         catch( IOException e )
         {
@@ -185,7 +260,7 @@ public class SerializedEntityStoreMixin
         }
     }
 
-    private EntityStateInstance createEntityState( EntityStatus status, String identity, CompositeBinding compositeBinding, Map<Method, Object> propertyValues )
+    private EntityStateInstance createEntityState( EntityStatus status, String identity, CompositeBinding compositeBinding )
     {
         Map<Method, Property> properties = new HashMap<Method, Property>();
         Iterable<PropertyBinding> propertyBindings = compositeBinding.getPropertyBindings();
@@ -195,21 +270,14 @@ public class SerializedEntityStoreMixin
             PropertyModel propertyModel = propertyResolution.getPropertyModel();
             Method accessor = propertyModel.getAccessor();
 
-            // Either use default value or the one that was set through the builder
-            Object value = propertyBinding.getDefaultValue();
-            if( propertyValues.containsKey( accessor ) )
-            {
-                value = propertyValues.get( accessor );
-            }
-
             Class<?> type = accessor.getReturnType();
             if( ImmutableProperty.class.isAssignableFrom( type ) )
             {
-                properties.put( accessor, new ImmutablePropertyInstance<Object>( propertyBinding, value ) );
+                properties.put( accessor, new ImmutablePropertyInstance<Object>( propertyBinding ) );
             }
             else
             {
-                properties.put( accessor, new PropertyInstance<Object>( propertyBinding, value ) );
+                properties.put( accessor, new PropertyInstance<Object>( propertyBinding ) );
             }
         }
 

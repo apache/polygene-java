@@ -40,6 +40,11 @@ public final class SetAssociationInstance<T> extends AbstractSet<T>
         this.associated = associated;
     }
 
+    public Set<T> getAssociatedSet()
+    {
+        return associated;
+    }
+
     public <T> T getAssociationInfo( Class<T> infoType )
     {
         return associationInfo.getAssociationInfo( infoType );

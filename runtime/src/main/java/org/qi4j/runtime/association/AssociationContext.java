@@ -15,15 +15,17 @@
 package org.qi4j.runtime.association;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import org.qi4j.association.AbstractAssociation;
+import org.qi4j.association.ListAssociation;
 import org.qi4j.association.ManyAssociation;
-import org.qi4j.association.SetAssociation;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.association.AssociationBinding;
 import org.qi4j.spi.association.AssociationInstance;
 import org.qi4j.spi.association.ListAssociationInstance;
+import org.qi4j.spi.association.SetAssociationInstance;
 
 /**
  * TODO
@@ -59,13 +61,13 @@ public final class AssociationContext
             else
             {
                 AbstractAssociation instance;
-                if( SetAssociation.class.isAssignableFrom( associationType ) )
+                if( ListAssociation.class.isAssignableFrom( associationType ) )
                 {
-                    throw new InvalidAssociationException( "Not yet implemented: SetAssociation" );
+                    instance = new ListAssociationInstance<Object>( new ArrayList<Object>(), associationBinding );
                 }
                 else if( ManyAssociation.class.isAssignableFrom( associationType ) )
                 {
-                    instance = new ListAssociationInstance<Object>( new ArrayList<Object>(), associationBinding );
+                    instance = new SetAssociationInstance<Object>( new HashSet<Object>(), associationBinding );
                 }
                 else
                 {

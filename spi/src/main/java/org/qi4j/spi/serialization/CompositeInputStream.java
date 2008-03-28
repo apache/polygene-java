@@ -17,7 +17,6 @@ package org.qi4j.spi.serialization;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
-import java.io.ObjectStreamClass;
 import java.lang.reflect.Proxy;
 import org.qi4j.Qi4j;
 import org.qi4j.composite.Composite;
@@ -58,9 +57,9 @@ public final class CompositeInputStream extends ObjectInputStream
 
     protected Object resolveObject( Object obj ) throws IOException
     {
-        if( obj instanceof SerializedEntity )
+        if( obj instanceof EntityId && unitOfWork != null )
         {
-            SerializedEntity holder = (SerializedEntity) obj;
+            EntityId holder = (EntityId) obj;
             Class<? extends EntityComposite> clazz = holder.getCompositeType();
             String id = holder.getIdentity();
             Object instance = unitOfWork.find( id, clazz );
@@ -115,10 +114,12 @@ public final class CompositeInputStream extends ObjectInputStream
         return obj;
     }
 
+/*
     @Override protected ObjectStreamClass readClassDescriptor() throws IOException, ClassNotFoundException
     {
         String className = readUTF();
         Class clazz = Class.forName( className );
         return ObjectStreamClass.lookup( clazz );
     }
+*/
 }

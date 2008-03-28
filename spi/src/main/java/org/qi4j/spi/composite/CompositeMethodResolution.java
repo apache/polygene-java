@@ -81,4 +81,9 @@ public final class CompositeMethodResolution
     {
         return annotatedElement;
     }
+
+    @Override public String toString()
+    {
+        return compositeMethodModel.toString();
+    }
 }

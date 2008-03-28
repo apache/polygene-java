@@ -17,6 +17,7 @@ package org.qi4j.spi.property;
 import java.lang.reflect.Method;
 import org.qi4j.property.ImmutableProperty;
 import org.qi4j.property.PropertyInfo;
+import org.qi4j.property.PropertyVetoException;
 
 /**
  * TODO
@@ -24,6 +25,10 @@ import org.qi4j.property.PropertyInfo;
 public final class ImmutablePropertyInstance<T> extends ComputedPropertyInstance<T>
     implements ImmutableProperty<T>
 {
+    // During initialization of the property the value will be set to this
+    // As long as this value is used the value can be changed.
+    public static final Object UNSET = "UNSET";
+
     protected T value;
 
     public ImmutablePropertyInstance( Method accessor, T value )
@@ -37,9 +42,37 @@ public final class ImmutablePropertyInstance<T> extends ComputedPropertyInstance
         this.value = value;
     }
 
+    public ImmutablePropertyInstance( PropertyInfo info )
+    {
+        super( info );
+        this.value = (T) UNSET;
+    }
+
     public T get()
     {
         return value;
+    }
+
+    /**
+     * Throws {@link org.qi4j.property.PropertyVetoException} exception.
+     *
+     * @param newValue This value is ignored, unless this is set during the initialization phase.
+     * @throws org.qi4j.property.PropertyVetoException
+     *          Thrown by default.
+     * @since 0.1.0
+     */
+    public T set( T newValue )
+        throws PropertyVetoException
+    {
+        if( this.value != UNSET )
+        {
+            return super.set( newValue );
+        }
+        else
+        {
+            this.value = newValue;
+            return value;
+        }
     }
 
     @Override public String toString()

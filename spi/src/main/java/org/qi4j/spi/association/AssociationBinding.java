@@ -59,4 +59,9 @@ public final class AssociationBinding
     {
         return associationResolution.getAssociationModel().getType();
     }
+
+    @Override public String toString()
+    {
+        return associationResolution.toString();
+    }
 }

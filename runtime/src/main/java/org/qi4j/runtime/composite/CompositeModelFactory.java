@@ -112,7 +112,7 @@ public final class CompositeModelFactory
         fragmentModels.addAll( mixins );
         fragmentModels.addAll( concerns );
         fragmentModels.addAll( sideEffects );
-        Iterable<CompositeMethodModel> thisCompositeAsModels = getThisCompositeAsModels( fragmentModels );
+        Iterable<CompositeMethodModel> thisCompositeAsModels = getThisCompositeAsModels( fragmentModels, methods );
 
         Iterable<ConstraintModel> constraintModels = getConstraintDeclarations( compositeClass );
 
@@ -386,7 +386,7 @@ public final class CompositeModelFactory
         return mixinModels;
     }
 
-    private Iterable<CompositeMethodModel> getThisCompositeAsModels( Iterable<FragmentModel> fragmentModels )
+    private Iterable<CompositeMethodModel> getThisCompositeAsModels( Iterable<FragmentModel> fragmentModels, Collection<CompositeMethodModel> methods )
     {
         Map<Method, CompositeMethodModel> methodModels = new HashMap<Method, CompositeMethodModel>();
         for( FragmentModel fragmentModel : fragmentModels )
@@ -398,7 +398,11 @@ public final class CompositeModelFactory
                 if( methodModel == null )
                 {
                     methodModel = newCompositeMethodModel( thisAsMethod, fragmentModel.getModelClass() );
-                    methodModels.put( thisAsMethod, methodModel );
+
+                    if( !methods.contains( methodModel ) ) // Don't include methods from the Composite type
+                    {
+                        methodModels.put( thisAsMethod, methodModel );
+                    }
                 }
             }
         }
