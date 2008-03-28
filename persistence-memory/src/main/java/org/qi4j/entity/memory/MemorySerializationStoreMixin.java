@@ -8,8 +8,8 @@ import org.qi4j.composite.scope.Structure;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.entity.StateCommitter;
+import org.qi4j.spi.serialization.EntityId;
 import org.qi4j.spi.serialization.SerializationStore;
-import org.qi4j.spi.serialization.SerializedEntity;
 import org.qi4j.spi.serialization.SerializedObject;
 import org.qi4j.spi.serialization.SerializedState;
 
@@ -20,16 +20,16 @@ public class MemorySerializationStoreMixin
     implements SerializationStore
 {
     private @Structure Qi4jSPI spi;
-    private Map<SerializedEntity, SerializedObject<SerializedState>> store;
+    private Map<EntityId, SerializedObject<SerializedState>> store;
 
     public MemorySerializationStoreMixin()
     {
-        store = new ConcurrentHashMap<SerializedEntity, SerializedObject<SerializedState>>();
+        store = new ConcurrentHashMap<EntityId, SerializedObject<SerializedState>>();
     }
 
-    public SerializedState get( SerializedEntity entityId, UnitOfWork unitOfWork ) throws IOException
+    public SerializedState get( EntityId entityIdId, UnitOfWork unitOfWork ) throws IOException
     {
-        SerializedObject<SerializedState> serializedState = store.get( entityId );
+        SerializedObject<SerializedState> serializedState = store.get( entityIdId );
 
         if( serializedState == null )
         {
@@ -38,7 +38,7 @@ public class MemorySerializationStoreMixin
 
         try
         {
-            return serializedState.getObject( unitOfWork, spi );
+            return serializedState.getObject( unitOfWork.getCompositeBuilderFactory(), spi );
         }
         catch( ClassNotFoundException e )
         {
@@ -46,25 +46,25 @@ public class MemorySerializationStoreMixin
         }
     }
 
-    public boolean contains( SerializedEntity entityId ) throws IOException
+    public boolean contains( EntityId entityIdId ) throws IOException
     {
-        return store.containsKey( entityId );
+        return store.containsKey( entityIdId );
     }
 
-    public StateCommitter prepare( Map<SerializedEntity, SerializedState> newEntities, Map<SerializedEntity, SerializedState> updatedEntities, final Iterable<SerializedEntity> removedEntities )
+    public StateCommitter prepare( Map<EntityId, SerializedState> newEntities, Map<EntityId, SerializedState> updatedEntities, final Iterable<EntityId> removedEntities )
     {
-        final Map<SerializedEntity, SerializedObject<SerializedState>> updatedState = new HashMap<SerializedEntity, SerializedObject<SerializedState>>();
+        final Map<EntityId, SerializedObject<SerializedState>> updatedState = new HashMap<EntityId, SerializedObject<SerializedState>>();
 
 
-        for( Map.Entry<SerializedEntity, SerializedState> entry : newEntities.entrySet() )
+        for( Map.Entry<EntityId, SerializedState> entry : newEntities.entrySet() )
         {
-            SerializedObject<SerializedState> serializedObject = new SerializedObject<SerializedState>( entry.getValue(), spi );
+            SerializedObject<SerializedState> serializedObject = new SerializedObject<SerializedState>( entry.getValue() );
             updatedState.put( entry.getKey(), serializedObject );
         }
 
-        for( Map.Entry<SerializedEntity, SerializedState> entry : updatedEntities.entrySet() )
+        for( Map.Entry<EntityId, SerializedState> entry : updatedEntities.entrySet() )
         {
-            SerializedObject<SerializedState> serializedObject = new SerializedObject<SerializedState>( entry.getValue(), spi );
+            SerializedObject<SerializedState> serializedObject = new SerializedObject<SerializedState>( entry.getValue() );
             updatedState.put( entry.getKey(), serializedObject );
         }
 
@@ -75,9 +75,9 @@ public class MemorySerializationStoreMixin
                 synchronized( store )
                 {
                     // Remove state
-                    for( SerializedEntity removedEntity : removedEntities )
+                    for( EntityId removedEntityId : removedEntities )
                     {
-                        store.remove( removedEntity );
+                        store.remove( removedEntityId );
                     }
 
                     // Update state

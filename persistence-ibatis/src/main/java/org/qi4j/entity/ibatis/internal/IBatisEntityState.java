@@ -90,7 +90,6 @@ public final class IBatisEntityState
         validateNotNull( "anIdentity", anIdentity );
         validateNotNull( "aCompositeBinding", aCompositeBinding );
         validateNotNull( "valuez", valuez );
-        validateNotNull( "anUnitOfWork", anUnitOfWork );
         validateNotNull( "aDao", aDao );
 
         this.values = valuez;

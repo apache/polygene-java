@@ -17,7 +17,6 @@
 package org.qi4j.entity.ibatis;
 
 import org.qi4j.composite.Mixins;
-import org.qi4j.entity.ibatis.internal.IBatisEntityState;
 import org.qi4j.service.ServiceComposite;
 import org.qi4j.spi.entity.EntityStore;
 
@@ -29,6 +28,6 @@ import org.qi4j.spi.entity.EntityStore;
  */
 @Mixins( IBatisEntityStore.class )
 public interface IBatisEntityStoreComposite
-    extends EntityStore<IBatisEntityState>, ServiceComposite
+    extends EntityStore, ServiceComposite
 {
 }

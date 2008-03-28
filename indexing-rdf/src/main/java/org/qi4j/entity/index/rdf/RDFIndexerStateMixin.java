@@ -17,22 +17,10 @@
  */
 package org.qi4j.entity.index.rdf;
 
-import java.io.OutputStream;
-import java.io.Serializable;
-import java.util.Map;
-import org.openrdf.model.Literal;
-import org.openrdf.model.URI;
-import org.openrdf.model.ValueFactory;
-import org.openrdf.query.QueryLanguage;
 import org.openrdf.repository.Repository;
-import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.sail.SailRepository;
-import org.openrdf.rio.RDFWriter;
-import org.openrdf.rio.rdfxml.util.RDFXMLPrettyWriter;
 import org.openrdf.sail.memory.MemoryStore;
-import org.qi4j.spi.serialization.SerializedEntity;
-import org.qi4j.spi.serialization.SerializedState;
 
 /**
  * TODO Add JavaDoc

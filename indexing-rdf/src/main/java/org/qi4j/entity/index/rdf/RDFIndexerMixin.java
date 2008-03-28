@@ -26,7 +26,7 @@ import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.qi4j.composite.scope.ThisCompositeAs;
-import org.qi4j.spi.serialization.SerializedEntity;
+import org.qi4j.spi.serialization.EntityId;
 import org.qi4j.spi.serialization.SerializedState;
 
 /**
@@ -41,9 +41,9 @@ public class RDFIndexerMixin
 
     @ThisCompositeAs RDFIndexerState state;
 
-    public void index( final Map<SerializedEntity, SerializedState> newEntities,
-                       final Map<SerializedEntity, SerializedState> updatedEntities,
-                       final Iterable<SerializedEntity> removedEntities )
+    public void index( final Map<EntityId, SerializedState> newEntities,
+                       final Map<EntityId, SerializedState> updatedEntities,
+                       final Iterable<EntityId> removedEntities )
     {
         System.out.println( "New: " + newEntities );
         System.out.println( "Updated: " + updatedEntities );
@@ -55,7 +55,7 @@ public class RDFIndexerMixin
             final ValueFactory valueFactory = state.getRepository().getValueFactory();
             try
             {
-                for( Map.Entry<SerializedEntity, SerializedState> entry : newEntities.entrySet() )
+                for( Map.Entry<EntityId, SerializedState> entry : newEntities.entrySet() )
                 {
                     final URI entityTypeUri = valueFactory.createURI(
                         normalizeInnerClass(
@@ -67,7 +67,7 @@ public class RDFIndexerMixin
                             "urn:" + entry.getKey().getCompositeType().getName() + "/" + entry.getKey().getIdentity()
                         )
                     );
-                    connection.add( entityUri, RDF.TYPE,entityTypeUri );
+                    connection.add( entityUri, RDF.TYPE, entityTypeUri );
 
                     // properties
                     // map between property type and associated blank node
@@ -85,7 +85,7 @@ public class RDFIndexerMixin
                         }
                     }
                     // association
-                    for( Map.Entry<String, SerializedEntity> assoc : entry.getValue().getAssociations().entrySet() )
+                    for( Map.Entry<String, EntityId> assoc : entry.getValue().getAssociations().entrySet() )
                     {
                     }
                 }

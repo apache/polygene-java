@@ -151,7 +151,7 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
     }
 
     /**
-     * Tests {@link IBatisEntityStore#newEntityState(org.qi4j.entity.UnitOfWork , String, CompositeBinding, java.util.Map)}
+     * Tests {@link org.qi4j.spi.entity.EntityStore#newEntityState(String,org.qi4j.spi.composite.CompositeBinding}
      *
      * @throws SQLException Thrown if initialization fails.
      */
@@ -174,7 +174,7 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
         HashMap<Method, Object> initialValues = new HashMap<Method, Object>();
         try
         {
-            IBatisEntityState state = entityStore.newEntityState( unitOfWork, "1", personBinding, initialValues );
+            IBatisEntityState state = (IBatisEntityState) entityStore.newEntityState( "1", personBinding );
             assertNotNull( state );
 
             checkStateProperties( personBinding, state );

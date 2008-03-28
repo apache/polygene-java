@@ -24,7 +24,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.Serializable;
-import java.lang.reflect.Method;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -42,6 +41,7 @@ import org.qi4j.service.Activatable;
 import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.composite.CompositeModel;
 import org.qi4j.spi.composite.CompositeResolution;
+import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.StateCommitter;
@@ -55,7 +55,7 @@ import org.qi4j.spi.structure.ServiceDescriptor;
  * @author edward.yakop@gmail.com
  */
 final class IBatisEntityStore
-    implements EntityStore<IBatisEntityState>, Activatable
+    implements EntityStore, Activatable
 {
     private final IBatisEntityStoreServiceInfo serviceInfo;
     private final DBInitializerInfo dbInitializerInfo;
@@ -132,36 +132,24 @@ final class IBatisEntityStore
     /**
      * Construct a new entity instance.
      *
-     * @param unitOfWork        The unit of work.
      * @param anIdentity        The new entity identity. This argument must not be {@code null}.
      * @param aCompositeBinding The composite binding. This argument must not be {@code null}.
-     * @param propertyValues    The property values. This argument must not be {@code null}.
-     * @return The new entity state.
      * @throws IllegalArgumentException Thrown if one or some or all arguments are {@code null}.
      * @throws StoreException           Thrown if creational failed.
      * @since 0.1.0
      */
-    public final IBatisEntityState newEntityState(
-        UnitOfWork unitOfWork, String anIdentity, CompositeBinding aCompositeBinding,
-        Map<Method, Object> propertyValues )
+    public final EntityState newEntityState(
+        String anIdentity, CompositeBinding aCompositeBinding )
         throws IllegalArgumentException, StoreException
     {
-        validateNotNull( "unitOfWork", unitOfWork );
         validateNotNull( "anIdentity", anIdentity );
         validateNotNull( "aCompositeBinding", aCompositeBinding );
-        validateNotNull( "propertyValues", propertyValues );
 
         throwIfNotActive();
 
         Map<String, Object> fieldValues = new HashMap<String, Object>();
-        for( Map.Entry<Method, Object> entry : propertyValues.entrySet() )
-        {
-            String propertyName = entry.getKey().getName();
-            Object propertyValue = entry.getValue();
-            fieldValues.put( propertyName, propertyValue );
-        }
 
-        return new IBatisEntityState( anIdentity, aCompositeBinding, fieldValues, EntityStatus.NEW, statusNew, unitOfWork, dao );
+        return new IBatisEntityState( anIdentity, aCompositeBinding, fieldValues, EntityStatus.NEW, statusNew, null, dao );
     }
 
     /**
@@ -204,14 +192,15 @@ final class IBatisEntityStore
      * @throws StoreException Thrown if the complete failed.
      * @since 0.1.0
      */
-    public final StateCommitter prepare( UnitOfWork unitOfWork, Iterable<IBatisEntityState> states )
+    public final StateCommitter prepare( UnitOfWork unitOfWork, Iterable<EntityState> states )
         throws StoreException
     {
         throwIfNotActive();
 
-        for( IBatisEntityState state : states )
+        for( EntityState state : states )
         {
-            state.persist();
+            IBatisEntityState ibatisState = (IBatisEntityState) state;
+            ibatisState.persist();
         }
 
         // TODO Implement this properly

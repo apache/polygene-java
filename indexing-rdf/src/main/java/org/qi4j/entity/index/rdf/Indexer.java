@@ -18,7 +18,7 @@
 package org.qi4j.entity.index.rdf;
 
 import java.util.Map;
-import org.qi4j.spi.serialization.SerializedEntity;
+import org.qi4j.spi.serialization.EntityId;
 import org.qi4j.spi.serialization.SerializedState;
 
 /**
@@ -29,7 +29,7 @@ import org.qi4j.spi.serialization.SerializedState;
  */
 public interface Indexer
 {
-    void index( Map<SerializedEntity, SerializedState> newEntities,
-                Map<SerializedEntity, SerializedState> updatedEntities,
-                Iterable<SerializedEntity> removedEntities );
+    void index( Map<EntityId, SerializedState> newEntities,
+                Map<EntityId, SerializedState> updatedEntities,
+                Iterable<EntityId> removedEntities );
 }

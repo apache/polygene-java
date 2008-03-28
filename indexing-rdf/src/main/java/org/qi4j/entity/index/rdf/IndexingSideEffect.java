@@ -22,8 +22,8 @@ import java.util.Map;
 import org.qi4j.composite.scope.Service;
 import org.qi4j.composite.scope.SideEffectFor;
 import org.qi4j.spi.entity.StateCommitter;
+import org.qi4j.spi.serialization.EntityId;
 import org.qi4j.spi.serialization.SerializationStore;
-import org.qi4j.spi.serialization.SerializedEntity;
 import org.qi4j.spi.serialization.SerializedState;
 
 /**
@@ -39,9 +39,9 @@ public abstract class IndexingSideEffect
     @SideEffectFor SerializationStore serializationStore;
     @Service Indexer indexer;
 
-    public StateCommitter prepare( Map<SerializedEntity, SerializedState> newEntities,
-                                   Map<SerializedEntity, SerializedState> updatedEntities,
-                                   Iterable<SerializedEntity> removedEntities ) throws IOException
+    public StateCommitter prepare( Map<EntityId, SerializedState> newEntities,
+                                   Map<EntityId, SerializedState> updatedEntities,
+                                   Iterable<EntityId> removedEntities ) throws IOException
     {
         indexer.index( newEntities, updatedEntities, removedEntities );
         return null;

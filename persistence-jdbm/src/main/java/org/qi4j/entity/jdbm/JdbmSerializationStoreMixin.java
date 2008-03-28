@@ -34,8 +34,8 @@ import org.qi4j.library.framework.locking.WriteLock;
 import org.qi4j.service.Activatable;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.entity.StateCommitter;
+import org.qi4j.spi.serialization.EntityId;
 import org.qi4j.spi.serialization.SerializationStore;
-import org.qi4j.spi.serialization.SerializedEntity;
 import org.qi4j.spi.serialization.SerializedObject;
 import org.qi4j.spi.serialization.SerializedState;
 
@@ -80,9 +80,9 @@ public class JdbmSerializationStoreMixin
 
     // SerializationStore implementation
     @WriteLock
-    public SerializedState get( SerializedEntity entityId, UnitOfWork unitOfWork ) throws IOException
+    public SerializedState get( EntityId entityIdId, UnitOfWork unitOfWork ) throws IOException
     {
-        String indexKey = entityId.toString();
+        String indexKey = entityIdId.toString();
         Long stateIndex = (Long) index.get( indexKey );
 
         if( stateIndex == null )
@@ -99,7 +99,7 @@ public class JdbmSerializationStoreMixin
 
         try
         {
-            return serializedState.getObject( unitOfWork, spi );
+            return serializedState.getObject( unitOfWork.getCompositeBuilderFactory(), spi );
         }
         catch( ClassNotFoundException e )
         {
@@ -108,13 +108,13 @@ public class JdbmSerializationStoreMixin
     }
 
     @WriteLock
-    public boolean contains( SerializedEntity entityId ) throws IOException
+    public boolean contains( EntityId entityIdId ) throws IOException
     {
-        String indexKey = entityId.toString();
+        String indexKey = entityIdId.toString();
         return index.get( indexKey ) != null;
     }
 
-    public StateCommitter prepare( Map<SerializedEntity, SerializedState> newEntities, Map<SerializedEntity, SerializedState> updatedEntities, Iterable<SerializedEntity> removedEntities )
+    public StateCommitter prepare( Map<EntityId, SerializedState> newEntities, Map<EntityId, SerializedState> updatedEntities, Iterable<EntityId> removedEntities )
         throws IOException
     {
         lock.writeLock().lock();
@@ -122,27 +122,27 @@ public class JdbmSerializationStoreMixin
         try
         {
             // Add state
-            for( Map.Entry<SerializedEntity, SerializedState> entry : newEntities.entrySet() )
+            for( Map.Entry<EntityId, SerializedState> entry : newEntities.entrySet() )
             {
-                SerializedObject<SerializedState> serializedObject = new SerializedObject<SerializedState>( entry.getValue(), spi );
+                SerializedObject<SerializedState> serializedObject = new SerializedObject<SerializedState>( entry.getValue() );
                 long stateIndex = recordManager.insert( serializedObject );
                 String indexKey = entry.getKey().toString();
                 index.put( indexKey, stateIndex );
             }
 
             // Update state
-            for( Map.Entry<SerializedEntity, SerializedState> entry : updatedEntities.entrySet() )
+            for( Map.Entry<EntityId, SerializedState> entry : updatedEntities.entrySet() )
             {
-                SerializedObject<SerializedState> serializedObject = new SerializedObject<SerializedState>( entry.getValue(), spi );
+                SerializedObject<SerializedState> serializedObject = new SerializedObject<SerializedState>( entry.getValue() );
                 String indexKey = entry.getKey().toString();
                 Long stateIndex = (Long) index.get( indexKey );
                 recordManager.update( stateIndex, serializedObject );
             }
 
             // Remove state
-            for( SerializedEntity removedEntity : removedEntities )
+            for( EntityId removedEntityId : removedEntities )
             {
-                String indexKey = removedEntity.toString();
+                String indexKey = removedEntityId.toString();
                 Long stateIndex = (Long) index.get( indexKey );
                 index.remove( indexKey );
                 recordManager.delete( stateIndex );
