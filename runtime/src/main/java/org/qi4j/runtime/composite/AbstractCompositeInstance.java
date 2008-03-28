@@ -21,7 +21,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import org.qi4j.composite.Composite;
 import org.qi4j.entity.Identity;
-import org.qi4j.property.Property;
 import org.qi4j.property.ImmutableProperty;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.CompositeState;
@@ -96,22 +95,7 @@ public abstract class AbstractCompositeInstance
 
     protected Object onHashCode( Object proxy )
     {
-        if( Identity.class.isAssignableFrom( context.getCompositeModel().getCompositeClass() ) )
-        {
-            String id = ( (Identity) proxy ).identity().get();
-            if( id != null )
-            {
-                return id.hashCode();
-            }
-            else
-            {
-                return 0;
-            }
-        }
-        else
-        {
-            return 0; // TODO ?
-        }
+        return hashCode();
     }
 
     protected Object onEquals( Object proxy, Object[] args )
@@ -120,34 +104,23 @@ public abstract class AbstractCompositeInstance
         {
             return false;
         }
-        if( Identity.class.isAssignableFrom( context.getCompositeModel().getCompositeClass() ) )
-        {
-            String id = ( (Identity) proxy ).identity().get();
-            Identity other = ( (Identity) args[ 0 ] );
-            return id != null && id.equals( other.identity().get() );
-        }
         else
         {
-            return getCompositeInstance( (Composite) proxy ) == this;
+            return getCompositeInstance( proxy ) == this;
         }
     }
 
     protected Object onToString( Object proxy )
         throws Throwable
     {
-        if( Identity.class.isAssignableFrom( context.getCompositeModel().getCompositeClass() ) )
-        {
-            Property<String> id = (Property<String>) invoke( proxy, METHOD_IDENTITY, null );
-            return id != null ? id.get() : "";
-        }
-        else if( ImmutableProperty.class.isAssignableFrom( context.getCompositeModel().getCompositeClass() ) )
+        if( ImmutableProperty.class.isAssignableFrom( context.getCompositeModel().getCompositeClass() ) )
         {
             Object value = invoke( proxy, METHOD_GET, null );
             return value != null ? value.toString() : "";
         }
         else
         {
-            return "";
+            return toString();
         }
     }
 }

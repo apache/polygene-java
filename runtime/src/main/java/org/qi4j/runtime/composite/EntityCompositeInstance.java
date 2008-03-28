@@ -19,6 +19,7 @@ package org.qi4j.runtime.composite;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import org.qi4j.entity.EntityComposite;
+import org.qi4j.entity.Identity;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.CompositeBinding;
@@ -54,6 +55,12 @@ public final class EntityCompositeInstance
     // InvocationHandler implementation ------------------------------
     public Object invoke( Object composite, Method method, Object[] args ) throws Throwable
     {
+        MethodDescriptor descriptor = context.getMethodDescriptor( method );
+        if( descriptor == null )
+        {
+            return invokeObject( composite, method, args );
+        }
+
         if( mixins == null ) // Check if this is a lazy-loaded reference
         {
             CompositeBinding binding = context.getCompositeBinding();
@@ -61,11 +68,6 @@ public final class EntityCompositeInstance
             context.newEntityMixins( moduleInstance, this, entityState );
         }
 
-        MethodDescriptor descriptor = context.getMethodDescriptor( method );
-        if( descriptor == null )
-        {
-            return invokeObject( composite, method, args );
-        }
         Object mixin = mixins[ descriptor.getMixinIndex() ];
 
         if( mixin == null )
@@ -129,6 +131,24 @@ public final class EntityCompositeInstance
     {
         return mixins == null;
     }
+
+    protected Object onHashCode( Object proxy )
+    {
+        return identity.hashCode();
+    }
+
+    protected Object onEquals( Object proxy, Object[] args )
+    {
+        Identity other = ( (Identity) args[ 0 ] );
+        return identity.equals( other.identity().get() );
+    }
+
+    protected Object onToString( Object proxy )
+        throws Throwable
+    {
+        return identity;
+    }
+
 
     @Override public String toString()
     {

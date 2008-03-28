@@ -198,7 +198,7 @@ public final class UnitOfWorkInstance
             // Check if it has been removed
             EntityCompositeInstance handler = EntityCompositeInstance.getEntityCompositeInstance( entity );
             EntityState entityState = handler.getState();
-            if( entityState.getStatus() == EntityStatus.REMOVED )
+            if( entityState != null && entityState.getStatus() == EntityStatus.REMOVED )
             {
                 throw new EntityCompositeNotFoundException( "Entity has been removed", identity, compositeType );
             }
