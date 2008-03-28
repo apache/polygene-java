@@ -37,8 +37,8 @@ import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.serialization.CompositeInputStream;
 import org.qi4j.spi.serialization.CompositeOutputStream;
+import org.qi4j.spi.serialization.EntityId;
 import org.qi4j.spi.serialization.SerializationStore;
-import org.qi4j.spi.serialization.SerializedEntity;
 import org.qi4j.spi.serialization.SerializedState;
 
 /**
@@ -87,11 +87,11 @@ public class S3SerializationStoreMixin
 
     // SerializationStore implementation
     @WriteLock
-    public SerializedState get( SerializedEntity entityId, UnitOfWork unitOfWork ) throws IOException
+    public SerializedState get( EntityId entityIdId, UnitOfWork unitOfWork ) throws IOException
     {
         try
         {
-            S3Object objectComplete = s3Service.getObject( entityBucket, entityId.toString() );
+            S3Object objectComplete = s3Service.getObject( entityBucket, entityIdId.toString() );
             System.out.println( "S3Object, complete: " + objectComplete );
 
             InputStream inputStream = objectComplete.getDataInputStream();
@@ -115,11 +115,11 @@ public class S3SerializationStoreMixin
     }
 
     @WriteLock
-    public boolean contains( SerializedEntity entityId ) throws IOException
+    public boolean contains( EntityId entityIdId ) throws IOException
     {
         try
         {
-            S3Object entityDetailsOnly = s3Service.getObjectDetails( entityBucket, entityId.toString() );
+            S3Object entityDetailsOnly = s3Service.getObjectDetails( entityBucket, entityIdId.toString() );
             return true;
         }
         catch( S3ServiceException e )
@@ -132,7 +132,7 @@ public class S3SerializationStoreMixin
         }
     }
 
-    public StateCommitter prepare( Map<SerializedEntity, SerializedState> newEntities, Map<SerializedEntity, SerializedState> updatedEntities, Iterable<SerializedEntity> removedEntities )
+    public StateCommitter prepare( Map<EntityId, SerializedState> newEntities, Map<EntityId, SerializedState> updatedEntities, Iterable<EntityId> removedEntities )
         throws IOException
     {
         lock.writeLock().lock();
@@ -140,21 +140,21 @@ public class S3SerializationStoreMixin
         try
         {
             // Add state
-            for( Map.Entry<SerializedEntity, SerializedState> entry : newEntities.entrySet() )
+            for( Map.Entry<EntityId, SerializedState> entry : newEntities.entrySet() )
             {
                 uploadObject( entry );
             }
 
             // Update state
-            for( Map.Entry<SerializedEntity, SerializedState> entry : updatedEntities.entrySet() )
+            for( Map.Entry<EntityId, SerializedState> entry : updatedEntities.entrySet() )
             {
                 uploadObject( entry );
             }
 
             // Remove state
-            for( SerializedEntity removedEntity : removedEntities )
+            for( EntityId removedEntityId : removedEntities )
             {
-                s3Service.deleteObject( entityBucket, removedEntity.toString() );
+                s3Service.deleteObject( entityBucket, removedEntityId.toString() );
             }
 
             return new StateCommitter()
@@ -178,11 +178,11 @@ public class S3SerializationStoreMixin
         }
     }
 
-    private void uploadObject( Map.Entry<SerializedEntity, SerializedState> entry )
+    private void uploadObject( Map.Entry<EntityId, SerializedState> entry )
         throws IOException, S3ServiceException
     {
         ByteArrayOutputStream out = new ByteArrayOutputStream( 1024 );
-        CompositeOutputStream stream = new CompositeOutputStream( out, spi );
+        CompositeOutputStream stream = new CompositeOutputStream( out );
         stream.writeObject( entry.getValue() );
         stream.flush();
         byte[] data = out.toByteArray();
