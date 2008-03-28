@@ -1,0 +1,22 @@
+Qi4j Amazon S3 Persistence Extension
+Copyright 2007-2008, The Qi4j Development Team of individuals.
+
+See http://www.qi4j.org/contributors for list of of individuals.
+Also see each file for additional information of Copyright claims.
+
+Qi4j is a community aggregated works under Copyright law.
+All parts of the original works at Qi4j is licensed under the
+Apache License ver 2.0 http://www.apache.org/licenses
+
+Below follows a list of binary dependencies and their licenses;
+----------------------------------------------------------------
+
+This module uses Apache Commons Logging, software developed at The Apache
+Software Foundation (http://www.apache.org/).
+See licenses/commons-logging.license
+
+This module uses JetS3t, software developed at https://jets3t.dev.java.net/
+See licenses/jets3t.license
+
+
+END OF NOTICE

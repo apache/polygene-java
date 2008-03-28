@@ -14,9 +14,6 @@
     <orderEntry type="module" module-name="core-spi" />
     <orderEntry type="module" module-name="core-runtime" />
     <orderEntry type="library" name="jdbm-1.0" level="project" />
-    <orderEntry type="library" name="jta-1_1-classes" level="project" />
-    <orderEntry type="library" name="jotm-2.0.10" level="project" />
-    <orderEntry type="library" name="connector-1.5" level="project" />
     <orderEntry type="module" module-name="core-testsupport" />
     <orderEntry type="module" module-name="core-bootstrap" />
     <orderEntry type="library" name="commons-logging-api-1.1" level="project" />
