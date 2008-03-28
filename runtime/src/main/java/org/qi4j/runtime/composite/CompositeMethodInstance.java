@@ -149,9 +149,9 @@ public final class CompositeMethodInstance
      * If the origin of the exception is application code,
      * then clean out the framework from the stacktrace.
      *
-     * @param throwable
-     * @param proxy
-     * @param method
+     * @param throwable TODO
+     * @param proxy TODO
+     * @param method TODO
      */
     private void fixStackTrace( Throwable throwable, Object proxy, Method method )
     {
@@ -183,9 +183,8 @@ public final class CompositeMethodInstance
             // Create new trace array
             int idx = 0;
             StackTraceElement[] newTrace = new StackTraceElement[trace.length - count];
-            for( int i = 0; i < trace.length; i++ )
+            for( StackTraceElement stackTraceElement : trace )
             {
-                StackTraceElement stackTraceElement = trace[ i ];
                 if( stackTraceElement != null )
                 {
                     newTrace[ idx++ ] = stackTraceElement;
