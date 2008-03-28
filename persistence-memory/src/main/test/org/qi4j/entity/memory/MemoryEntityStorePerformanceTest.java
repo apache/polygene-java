@@ -2,13 +2,13 @@ package org.qi4j.entity.memory;
 
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entity.AbstractEntityStoreTest;
+import org.qi4j.entity.AbstractEntityStorePerformanceTest;
 
 /**
- * Test for MemoryEntityStoreComposite
+ * Performance test for MemoryEntityStoreComposite
  */
-public class MemoryEntityStoreTest
-    extends AbstractEntityStoreTest
+public class MemoryEntityStorePerformanceTest
+    extends AbstractEntityStorePerformanceTest
 {
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
