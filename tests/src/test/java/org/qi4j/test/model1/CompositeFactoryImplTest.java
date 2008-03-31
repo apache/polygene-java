@@ -18,6 +18,7 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.InvalidApplicationException;
+import org.qi4j.composite.MixinTypeNotAvailableException;
 import org.qi4j.test.AbstractQi4jTest;
 
 public class CompositeFactoryImplTest
@@ -41,9 +42,9 @@ public class CompositeFactoryImplTest
             Class aClass = Composition8.class;
             CompositeBuilder builder = compositeBuilderFactory.newCompositeBuilder( aClass );
             builder.newInstance();
-            fail( "CompositeBuilderFactory.newInstance() should return InvalidApplicationException when creating a new instance for " + aClass.getName() );
+            fail( "CompositeBuilderFactory.newInstance() should return MixinTypeNotAvailableException when creating a new instance for " + aClass.getName() );
         }
-        catch( InvalidApplicationException e )
+        catch( MixinTypeNotAvailableException e )
         {
             // Correct
         }
