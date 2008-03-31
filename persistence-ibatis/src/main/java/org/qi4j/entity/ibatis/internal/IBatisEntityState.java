@@ -226,7 +226,7 @@ public final class IBatisEntityState
         {
             CompositeResolution compositeResolution = getCompositeBinding().getCompositeResolution();
             CompositeModel compositeModel = compositeResolution.getCompositeModel();
-            Class<? extends Composite> compositeClass = compositeModel.getCompositeClass();
+            Class<? extends Composite> compositeClass = compositeModel.getCompositeType();
             String msg = "There is no association associated with [" + anAssociationMethod +
                          "] for Composite [" + compositeClass + "].";
             throw new IllegalArgumentException( msg );

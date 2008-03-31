@@ -99,7 +99,7 @@ final class IBatisEntityStore
         validateNotNull( "aCompositeBinding", aCompositeBinding );
         CompositeResolution compositeResolution = aCompositeBinding.getCompositeResolution();
         CompositeModel compositeModel = compositeResolution.getCompositeModel();
-        Class<? extends Composite> compositeClass = compositeModel.getCompositeClass();
+        Class<? extends Composite> compositeClass = compositeModel.getCompositeType();
         String statementId = compositeClass.getName() + ".getById";
 
         // TODO: Transaction?
