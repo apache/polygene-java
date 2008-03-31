@@ -68,7 +68,7 @@ public class SerializedEntityStoreMixin
     {
         CompositeResolution compositeResolution = compositeBinding.getCompositeResolution();
         CompositeModel compositeModel = compositeResolution.getCompositeModel();
-        Class<? extends EntityComposite> compositeType = (Class<? extends EntityComposite>) compositeModel.getCompositeClass();
+        Class<? extends EntityComposite> compositeType = (Class<? extends EntityComposite>) compositeModel.getCompositeType();
 
         EntityId id = new EntityId( identity, compositeType );
         try
@@ -90,7 +90,7 @@ public class SerializedEntityStoreMixin
     public EntityState getEntityState( UnitOfWork unitOfWork, String identity, CompositeBinding compositeBinding )
         throws StoreException
     {
-        Class<? extends EntityComposite> compositeType = (Class<? extends EntityComposite>) compositeBinding.getCompositeResolution().getCompositeModel().getCompositeClass();
+        Class<? extends EntityComposite> compositeType = (Class<? extends EntityComposite>) compositeBinding.getCompositeResolution().getCompositeModel().getCompositeType();
         EntityId entityId = new EntityId( identity, compositeType );
         SerializedState serializedState = null;
         try
@@ -230,7 +230,7 @@ public class SerializedEntityStoreMixin
                 }
 
                 SerializedState state = new SerializedState( serializedProperties, serializedAssociations, serializedManyAssociations );
-                Class<? extends Composite> compositeType = stateInstance.getCompositeBinding().getCompositeResolution().getCompositeModel().getCompositeClass();
+                Class<? extends Composite> compositeType = stateInstance.getCompositeBinding().getCompositeResolution().getCompositeModel().getCompositeType();
                 EntityId entityId = new EntityId( stateInstance.getIdentity(), (Class<? extends EntityComposite>) compositeType );
 
                 if( stateInstance.getStatus() == EntityStatus.NEW )
@@ -244,7 +244,7 @@ public class SerializedEntityStoreMixin
             }
             else
             {
-                Class<? extends Composite> compositeType = stateInstance.getCompositeBinding().getCompositeResolution().getCompositeModel().getCompositeClass();
+                Class<? extends Composite> compositeType = stateInstance.getCompositeBinding().getCompositeResolution().getCompositeModel().getCompositeType();
                 EntityId entityId = new EntityId( stateInstance.getIdentity(), (Class<? extends EntityComposite>) compositeType );
                 removedEntityIds.add( entityId );
             }

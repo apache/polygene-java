@@ -45,7 +45,7 @@ public final class EntityMixin
         }
         CompositeInstance handler = AbstractCompositeInstance.getCompositeInstance( meAsEntity );
         CompositeModel model = handler.getContext().getCompositeModel();
-        Class existingCompositeClass = model.getCompositeClass();
+        Class existingCompositeClass = model.getCompositeType();
         if( !existingCompositeClass.isAssignableFrom( compositeType ) )
         {
             throw new CompositeCastException( existingCompositeClass.getName() + " is not a super-type of " + compositeType.getName() );
@@ -85,7 +85,7 @@ public final class EntityMixin
         }
         handler = Proxy.getInvocationHandler( anObject );
         AbstractCompositeInstance oih = (AbstractCompositeInstance) handler;
-        return oih.getContext().getCompositeModel().getCompositeClass().isAssignableFrom( anObjectType );
+        return oih.getContext().getCompositeModel().getCompositeType().isAssignableFrom( anObjectType );
     }
 
     public boolean isReference()

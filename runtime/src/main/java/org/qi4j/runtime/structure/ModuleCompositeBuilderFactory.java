@@ -18,6 +18,8 @@ import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.InvalidApplicationException;
+import org.qi4j.composite.AmbiguousMixinTypeException;
+import org.qi4j.composite.MixinTypeNotAvailableException;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
 import org.qi4j.runtime.composite.CompositeContext;
 import org.qi4j.spi.structure.ModuleBinding;
@@ -43,21 +45,7 @@ public class ModuleCompositeBuilderFactory
         Class<? extends Composite> compositeType;
         if( ! Composite.class.isAssignableFrom( mixinType ) )
         {
-            ModuleContext moduleContext = moduleInstance.getModuleContext();
-            compositeType = moduleContext.getCompositeForMixinType( mixinType );
-            if( compositeType == null )
-            {
-                ModuleBinding moduleBinding = moduleContext.getModuleBinding();
-                ModuleResolution moduleResolution = moduleBinding.getModuleResolution();
-                ModuleModel moduleModel = moduleResolution.getModuleModel();
-                String moduleModelName = moduleModel.getName();
-
-                String compositeInterfaceClassName = mixinType.getName();
-                throw new InvalidApplicationException(
-                    "Trying to create unregistered composite interface [" + compositeInterfaceClassName + "] in module [" +
-                    moduleModelName + "]."
-                );
-            }
+            compositeType = locateCompositeType( mixinType );
         }
         else
         {
@@ -87,6 +75,32 @@ public class ModuleCompositeBuilderFactory
         }
 
         return createBuilder( compositeModuleInstance, compositeContext );
+    }
+
+    private <T> Class<? extends Composite> locateCompositeType( Class<T> mixinType )
+    {
+        Class<? extends Composite> compositeType;
+        ModuleInstance module = moduleInstance.getModuleForMixinType( mixinType );
+        if( module == null )
+        {
+        }
+        ModuleContext moduleContext = module.getModuleContext();
+        compositeType = moduleContext.getCompositeForMixinType( mixinType );
+        if( compositeType == Composite.class )
+        {
+            // conflict detected earlier.
+            throw new AmbiguousMixinTypeException( mixinType );
+        }
+        if( compositeType == null )
+        {
+            ModuleBinding moduleBinding = moduleContext.getModuleBinding();
+            ModuleResolution moduleResolution = moduleBinding.getModuleResolution();
+            ModuleModel moduleModel = moduleResolution.getModuleModel();
+            String moduleModelName = moduleModel.getName();
+
+            throw new MixinTypeNotAvailableException( mixinType, moduleModelName );
+        }
+        return compositeType;
     }
 
     public <T> T newComposite( Class<T> mixinType )

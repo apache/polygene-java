@@ -25,7 +25,6 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import org.qi4j.association.AbstractAssociation;
-import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.InstantiationException;
 import org.qi4j.property.Property;
@@ -60,7 +59,7 @@ public class CompositeBuilderImpl<T>
     {
         this.moduleInstance = moduleInstance;
         this.context = context;
-        this.compositeInterface = (Class<? extends T>) context.getCompositeBinding().getCompositeResolution().getCompositeModel().getCompositeClass();
+        this.compositeInterface = (Class<? extends T>) context.getCompositeBinding().getCompositeResolution().getCompositeModel().getCompositeType();
     }
 
     public void use( Object... usedObjects )

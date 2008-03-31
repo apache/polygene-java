@@ -15,7 +15,6 @@
 package org.qi4j.runtime.structure;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import org.qi4j.composite.Composite;
 import org.qi4j.runtime.composite.CompositeContext;
@@ -37,9 +36,7 @@ public final class ModuleContext
     {
         this.moduleBinding = moduleBinding;
         objectContexts = instantiableObjectContexts;
-
         this.compositeContexts = compositeContexts;
-
         interfaceCompositeMapping = createMapping();
     }
 
@@ -50,10 +47,11 @@ public final class ModuleContext
 
     public ModuleInstance newModuleInstance( Map<Class<? extends Composite>, ModuleInstance> modulesForPublicComposites,
                                              Map<Class, ModuleInstance> modulesForPublicObjects,
+                                             Map<Class, ModuleInstance> moduleForPublicMixinTypes,
                                              ServiceLocator layerServiceLocator )
     {
 
-        ModuleInstance moduleInstance = new ModuleInstance( this, modulesForPublicComposites, modulesForPublicObjects, layerServiceLocator );
+        ModuleInstance moduleInstance = new ModuleInstance( this, modulesForPublicComposites, modulesForPublicObjects, moduleForPublicMixinTypes, layerServiceLocator );
         return moduleInstance;
     }
 
@@ -74,7 +72,9 @@ public final class ModuleContext
 
     public Class<? extends Composite> getCompositeForMixinType( Class mixinType )
     {
-        return interfaceCompositeMapping.get( mixinType );
+        Class<? extends Composite> compositeType = interfaceCompositeMapping.get( mixinType );
+        
+        return compositeType;
     }
 
     private Map<Class, Class<? extends Composite>> createMapping()
@@ -83,45 +83,9 @@ public final class ModuleContext
         Map<Class<? extends Composite>, CompositeContext> composites = getCompositeContexts();
         for( Class<? extends Composite> compositeType : composites.keySet() )
         {
-            mapComposite( compositeType, mapping );
+            MixinMapper.mapMixinsToComposite( compositeType, mapping );
         }
-        cleanupDummies( mapping );
         return mapping;
-    }
-
-    private void mapComposite( Class<? extends Composite> compositeType, Map<Class, Class<? extends Composite>> mapping )
-    {
-        mapType( compositeType, compositeType, mapping );
-    }
-
-    private void mapType( Class type, Class<? extends Composite> compositeType, Map<Class, Class<? extends Composite>> mapping )
-    {
-        if( mapping.containsKey( type ) )
-        {
-            mapping.put( type, Composite.class );
-        }
-        else
-        {
-            mapping.put( type, compositeType );
-        }
-
-        for( Class subtype : type.getInterfaces() )
-        {
-            mapType( subtype, compositeType, mapping );
-        }
-    }
-
-    private void cleanupDummies( Map<Class, Class<? extends Composite>> mapping )
-    {
-        Iterator<Class<? extends Composite>> it = mapping.values().iterator();
-        while( it.hasNext() )
-        {
-            Class<? extends Composite> isDummy = it.next();
-            if( isDummy == Composite.class )
-            {
-                it.remove();
-            }
-        }
     }
 
 }

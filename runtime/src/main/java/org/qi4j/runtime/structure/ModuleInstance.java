@@ -42,10 +42,13 @@ import org.qi4j.spi.structure.ServiceDescriptor;
 public final class ModuleInstance
     implements Activatable, ServiceLocator
 {
+    static final ModuleInstance DUMMY = new ModuleInstance();
+
     private ModuleContext moduleContext;
 
     private Map<Class<? extends Composite>, ModuleInstance> moduleForPublicComposites;
     private Map<Class, ModuleInstance> moduleForPublicObjects;
+    private Map<Class, ModuleInstance> moduleForPublicMixinTypes;
 
     private CompositeBuilderFactory compositeBuilderFactory;
     private ObjectBuilderFactory objectBuilderFactory;
@@ -63,14 +66,20 @@ public final class ModuleInstance
     private Map<Class<?>, List<ServiceReferenceInstance>> serviceReferences = new HashMap<Class<?>, List<ServiceReferenceInstance>>();
 
 
+    private ModuleInstance()
+    {
+        // Support for the DUMMY
+    }
+
     public ModuleInstance( ModuleContext moduleContext,
                            Map<Class<? extends Composite>, ModuleInstance> moduleInstances,
                            Map<Class, ModuleInstance> moduleForPublicObjects,
-                           ServiceLocator layerServiceLocator )
+                           Map<Class, ModuleInstance> moduleForPublicMixinTypes, ServiceLocator layerServiceLocator )
     {
         this.moduleForPublicObjects = moduleForPublicObjects;
         this.moduleForPublicComposites = moduleInstances;
         this.moduleContext = moduleContext;
+        this.moduleForPublicMixinTypes = moduleForPublicMixinTypes;
 
         compositeBuilderFactory = new ModuleCompositeBuilderFactory( this );
         objectBuilderFactory = new ModuleObjectBuilderFactory( this );
@@ -128,6 +137,20 @@ public final class ModuleInstance
     public ModuleInstance getModuleForPublicObject( Class objectType )
     {
         return moduleForPublicObjects.get( objectType );
+    }
+
+    public ModuleInstance getModuleForMixinType( Class<?> mixinType )
+    {
+        ModuleInstance module = moduleForPublicMixinTypes.get( mixinType );
+        if( module == null )
+        {
+            return this;
+        }
+        if( module == DUMMY )
+        {
+            return null;
+        }
+        return module;
     }
 
     public ModuleInstance getModuleForComposite( Class<? extends Composite> compositeType )

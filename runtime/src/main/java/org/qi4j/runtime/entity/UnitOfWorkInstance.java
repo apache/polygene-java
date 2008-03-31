@@ -492,7 +492,7 @@ public final class UnitOfWorkInstance
 
         public EntityState getEntityState( UnitOfWork unitOfWork, String identity, CompositeBinding compositeBinding ) throws StoreException
         {
-            Class<? extends EntityComposite> entityType = (Class<? extends EntityComposite>) compositeBinding.getCompositeResolution().getCompositeModel().getCompositeClass();
+            Class<? extends EntityComposite> entityType = (Class<? extends EntityComposite>) compositeBinding.getCompositeResolution().getCompositeModel().getCompositeType();
             EntityComposite parentEntity = getReference( identity, entityType );
             UnitOfWorkEntityState unitOfWorkEntityState = new UnitOfWorkEntityState( identity, parentEntity );
             return unitOfWorkEntityState;

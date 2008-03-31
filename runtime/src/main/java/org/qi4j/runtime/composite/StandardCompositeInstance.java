@@ -47,7 +47,7 @@ public final class StandardCompositeInstance extends AbstractCompositeInstance
         if( mixin == null )
         {
             throw new InvalidCompositeException( "Implementation missing for method " + method.getName() + "() ",
-                                                 context.getCompositeModel().getCompositeClass() );
+                                                 context.getCompositeModel().getCompositeType() );
         }
         // Invoke
         CompositeMethodInstance compositeMethodInstance = context.getMethodInstance( descriptor, moduleInstance );

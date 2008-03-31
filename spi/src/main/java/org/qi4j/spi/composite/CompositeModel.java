@@ -69,7 +69,7 @@ public final class CompositeModel
         }
     }
 
-    public Class<? extends Composite> getCompositeClass()
+    public Class<? extends Composite> getCompositeType()
     {
         return compositeClass;
     }

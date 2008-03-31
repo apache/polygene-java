@@ -21,8 +21,7 @@ import org.qi4j.spi.property.PropertyBinding;
  * A mixin is an implementation of a particular interface,
  * and is used as a fragment in a composite.
  */
-public final class MixinBinding
-    extends FragmentBinding
+public final class MixinBinding extends FragmentBinding
     implements StateBinding
 {
     private Iterable<PropertyBinding> propertyBindings;

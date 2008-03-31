@@ -39,7 +39,7 @@ public class CompositeModelFactoryTest extends TestCase
     {
 /*
         CompositeModel composite1 = modelFactory.newCompositeModel( Composition2.class );
-        assertEquals( Composition2.class, composite1.getCompositeClass() );
+        assertEquals( Composition2.class, composite1.getCompositeType() );
         List<MixinModel> lists = composite1.getMixinModels();
         assertEquals( 3, lists.size() );
 

@@ -176,7 +176,7 @@ public final class ApplicationBuilder
             {
                 if( moduleComposite.getVisibility() == Visibility.layer || moduleComposite.getVisibility() == Visibility.application )
                 {
-                    publicCompositeMap.put( moduleComposite.getCompositeModel().getCompositeClass(), moduleModel );
+                    publicCompositeMap.put( moduleComposite.getCompositeModel().getCompositeType(), moduleModel );
                 }
             }
 
@@ -431,7 +431,7 @@ public final class ApplicationBuilder
             BindingContext bindingContext = new BindingContext( null, null, compositeResolution, moduleResolution, layerResolution, applicationResolution );
             CompositeBinding compositeBinding = runtime.getCompositeBinder().bindCompositeResolution( bindingContext );
 
-            compositeBindings.put( compositeResolution.getCompositeModel().getCompositeClass(), compositeBinding );
+            compositeBindings.put( compositeResolution.getCompositeModel().getCompositeType(), compositeBinding );
         }
 
         // Bind Objects in this Module
@@ -446,7 +446,10 @@ public final class ApplicationBuilder
         return new ModuleBinding( moduleResolution, compositeBindings, objectBindings );
     }
 
-    private ModuleContext newModuleContext( ModuleBinding moduleBinding, Map<ModuleModel, Map<Class<? extends Composite>, CompositeContext>> compositeContexts, Map<ModuleModel, ModuleContext> moduleModelContextMap )
+    private ModuleContext newModuleContext(
+        ModuleBinding moduleBinding,
+        Map<ModuleModel, Map<Class<? extends Composite>, CompositeContext>> compositeContexts,
+        Map<ModuleModel, ModuleContext> moduleModelContextMap )
     {
         Map<Class<? extends Composite>, ModuleModel> instantiableComposites = moduleBinding.getModuleResolution().getInstantiableComposites();
         Map<Class<? extends Composite>, CompositeContext> instantiableCompositeContexts = new LinkedHashMap<Class<? extends Composite>, CompositeContext>();
@@ -573,7 +576,7 @@ public final class ApplicationBuilder
             {
                 // TODO Niclas: ????
             }
-            privateModuleComposites.put( privateComposite.getCompositeModel().getCompositeClass(), moduleModel );
+            privateModuleComposites.put( privateComposite.getCompositeModel().getCompositeType(), moduleModel );
         }
         return privateModuleComposites;
     }

@@ -73,7 +73,7 @@ public final class EntityCompositeInstance
         if( mixin == null )
         {
             throw new InvalidCompositeException( "Implementation missing for method " + method.getName() + "() ",
-                                                 context.getCompositeModel().getCompositeClass() );
+                                                 context.getCompositeModel().getCompositeType() );
         }
         // Invoke
         CompositeMethodInstance compositeMethodInstance = context.getMethodInstance( descriptor, moduleInstance );
@@ -152,6 +152,6 @@ public final class EntityCompositeInstance
 
     @Override public String toString()
     {
-        return context.getCompositeModel().getCompositeClass().getName() + ":" + identity;
+        return context.getCompositeModel().getCompositeType().getName() + ":" + identity;
     }
 }

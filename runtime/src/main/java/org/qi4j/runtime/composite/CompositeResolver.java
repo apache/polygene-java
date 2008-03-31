@@ -196,7 +196,7 @@ public final class CompositeResolver
                     // Check cyclic dependency
                     if( dependsOn( otherMixinModel, model, mixinsForMethods ) )
                     {
-                        throw new InvalidCompositeException( "Cyclic dependency between mixins " + model.getModelClass().getName() + " and " + otherMixinModel.getModelClass().getName(), compositeModel.getCompositeClass() );
+                        throw new InvalidCompositeException( "Cyclic dependency between mixins " + model.getModelClass().getName() + " and " + otherMixinModel.getModelClass().getName(), compositeModel.getCompositeType() );
                     }
                     else
                     {
@@ -329,7 +329,7 @@ public final class CompositeResolver
                         }
                         catch( InvalidInjectionException e )
                         {
-                            throw new ResolutionException( "Could not resolve concern " + concern.getModelClass() + " in composite " + compositeModel.getCompositeClass().getName(), e );
+                            throw new ResolutionException( "Could not resolve concern " + concern.getModelClass() + " in composite " + compositeModel.getCompositeType().getName(), e );
                         }
                     }
                     methodConcernResolutions.add( resolution );
@@ -352,7 +352,7 @@ public final class CompositeResolver
                         }
                         catch( InvalidInjectionException e )
                         {
-                            throw new ResolutionException( "Could not resolve side-effect " + sideEffect.getModelClass() + " in composite " + compositeModel.getCompositeClass().getName(), e );
+                            throw new ResolutionException( "Could not resolve side-effect " + sideEffect.getModelClass() + " in composite " + compositeModel.getCompositeType().getName(), e );
                         }
                     }
                     methodSideEffectResolutions.add( resolution );
@@ -397,7 +397,7 @@ public final class CompositeResolver
             }
             catch( NoSuchMethodException e )
             {
-                throw new InvalidCompositeException( "Could not find mapped method in mixin", compositeModel.getCompositeClass() );
+                throw new InvalidCompositeException( "Could not find mapped method in mixin", compositeModel.getCompositeType() );
             }
 
         }
@@ -462,7 +462,7 @@ public final class CompositeResolver
         // NOTE: a generic mixin may also be non-generic and implement a particular interface at the same time
         for( MixinModel implementation : mixinModels )
         {
-            if( ( !implementation.isGeneric() || methodModel.getDeclaringClass().isAssignableFrom( implementation.getModelClass() ) ) && appliesTo( implementation, methodModel, annotatedElement, implementation, compositeModel.getCompositeClass() ) )
+            if( ( !implementation.isGeneric() || methodModel.getDeclaringClass().isAssignableFrom( implementation.getModelClass() ) ) && appliesTo( implementation, methodModel, annotatedElement, implementation, compositeModel.getCompositeType() ) )
             {
                 return implementation;
             }
@@ -471,18 +471,18 @@ public final class CompositeResolver
         // Check generic impls
         for( MixinModel implementation : mixinModels )
         {
-            if( implementation.isGeneric() && appliesTo( implementation, methodModel, annotatedElement, implementation, compositeModel.getCompositeClass() ) )
+            if( implementation.isGeneric() && appliesTo( implementation, methodModel, annotatedElement, implementation, compositeModel.getCompositeType() ) )
             {
                 return implementation;
             }
         }
 
-        throw new ResolutionException( "Could not find mixin for method " + methodModel.toGenericString() + " in composite " + compositeModel.getCompositeClass().getName() );
+        throw new ResolutionException( "Could not find mixin for method " + methodModel.toGenericString() + " in composite " + compositeModel.getCompositeType().getName() );
     }
 
     private Iterable<ConcernModel> getConcernsForMethod( CompositeModel compositeModel, Method method, AnnotatedElement annotatedElement, MixinModel mixinModel, Iterable<MixinResolution> usedMixins )
     {
-        Class compositeClass = compositeModel.getCompositeClass();
+        Class compositeClass = compositeModel.getCompositeType();
 
         List<ConcernModel> methodModifierModels = new ArrayList<ConcernModel>();
 
@@ -507,7 +507,7 @@ public final class CompositeResolver
 
     private Iterable<SideEffectModel> getSideEffectsForMethod( CompositeModel compositeModel, Method method, AnnotatedElement annotatedElement, MixinModel mixinModel, Iterable<MixinResolution> usedMixins )
     {
-        Class compositeClass = compositeModel.getCompositeClass();
+        Class compositeClass = compositeModel.getCompositeType();
 
         List<SideEffectModel> methodModifierModels = new ArrayList<SideEffectModel>();
 

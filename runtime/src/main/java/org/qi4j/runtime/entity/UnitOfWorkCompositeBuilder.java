@@ -20,7 +20,6 @@ import java.util.Map;
 import org.qi4j.association.AbstractAssociation;
 import org.qi4j.association.Association;
 import org.qi4j.association.ManyAssociation;
-import org.qi4j.composite.Composite;
 import org.qi4j.composite.InstantiationException;
 import org.qi4j.composite.InvalidApplicationException;
 import org.qi4j.entity.EntityComposite;
@@ -81,7 +80,7 @@ public final class UnitOfWorkCompositeBuilder<T>
         String identity;
         if( identityProperty == null )
         {
-            Class compositeType = context.getCompositeModel().getCompositeClass();
+            Class compositeType = context.getCompositeModel().getCompositeType();
             IdentityGenerator identityGenerator = uow.stateServices.getIdentityGenerator( compositeType );
             if( identityGenerator == null )
             {

@@ -113,7 +113,7 @@ public abstract class AbstractCompositeInstance
     protected Object onToString( Object proxy )
         throws Throwable
     {
-        if( ImmutableProperty.class.isAssignableFrom( context.getCompositeModel().getCompositeClass() ) )
+        if( ImmutableProperty.class.isAssignableFrom( context.getCompositeModel().getCompositeType() ) )
         {
             Object value = invoke( proxy, METHOD_GET, null );
             return value != null ? value.toString() : "";

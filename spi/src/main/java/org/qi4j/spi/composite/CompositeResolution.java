@@ -79,7 +79,7 @@ public final class CompositeResolution
 /*
         StringWriter str = new StringWriter();
         PrintWriter out = new PrintWriter( str );
-        out.println( compositeModel.getCompositeClass().getName() );
+        out.println( compositeModel.getCompositeType().getName() );
 
         for( MethodResolution compositeMethodResolution : methodResolutionList )
         {

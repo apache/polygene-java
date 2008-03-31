@@ -28,7 +28,7 @@ public final class ModifiesInjectionProviderFactory
             }
             else
             {
-                throw new InvalidInjectionException( "Composite " + bindingContext.getCompositeResolution().getCompositeModel().getCompositeClass() + " does not implement @ConcernFor type " + injectionModel.getInjectionClass().getName() + " in modifier " + injectionModel.getInjectedClass() );
+                throw new InvalidInjectionException( "Composite " + bindingContext.getCompositeResolution().getCompositeModel().getCompositeType() + " does not implement @ConcernFor type " + injectionModel.getInjectionClass().getName() + " in modifier " + injectionModel.getInjectedClass() );
             }
         }
         else

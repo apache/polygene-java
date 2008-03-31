@@ -35,17 +35,20 @@ public final class LayerInstance
     private Map<Class, ModuleInstance> publicObjectModules;
     private Map<Class, List<ModuleInstance>> publicServiceModules;
     private ServiceLocator serviceLocator;
+    private Map<Class, ModuleInstance> publicMixinModules;
 
 
     public LayerInstance( LayerContext layerContext, List<ModuleInstance> moduleInstances,
                           Map<Class<? extends Composite>, ModuleInstance> publicCompositeModules,
                           Map<Class, ModuleInstance> publicObjectModules,
+                          Map<Class, ModuleInstance> publicMixinModules,
                           Map<Class, List<ModuleInstance>> publicServiceModules,
                           ServiceLocator serviceLocator )
     {
         this.serviceLocator = serviceLocator;
         this.publicServiceModules = publicServiceModules;
         this.publicObjectModules = publicObjectModules;
+        this.publicMixinModules = publicMixinModules;
         this.publicCompositeModules = publicCompositeModules;
         this.layerContext = layerContext;
         this.moduleInstances = moduleInstances;
@@ -82,6 +85,11 @@ public final class LayerInstance
     public Map<Class, ModuleInstance> getPublicObjectModules()
     {
         return publicObjectModules;
+    }
+
+    public Map<Class, ModuleInstance> getPublicMixinModules()
+    {
+        return publicMixinModules;
     }
 
     public Map<Class, List<ModuleInstance>> getPublicServiceModules()

@@ -67,7 +67,7 @@ public class CompositeModelFactoryTest
     @Test
     public void getCompositeClass()
     {
-        assertEquals( TestComposite.class, factory.newCompositeModel( TestComposite.class ).getCompositeClass() );
+        assertEquals( TestComposite.class, factory.newCompositeModel( TestComposite.class ).getCompositeType() );
     }
 
     @Test

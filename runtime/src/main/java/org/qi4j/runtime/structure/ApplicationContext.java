@@ -56,6 +56,7 @@ public final class ApplicationContext
             Iterable<LayerResolution> uses = layerContext.getLayerBinding().getLayerResolution().getUses();
             Map<Class<? extends Composite>, ModuleInstance> availableCompositeModules = new HashMap<Class<? extends Composite>, ModuleInstance>();
             Map<Class, ModuleInstance> availableObjectModules = new HashMap<Class, ModuleInstance>();
+            Map<Class, ModuleInstance> availableMixinModules = new HashMap<Class, ModuleInstance>();
             Map<Class, List<ModuleInstance>> availableServiceModules = new HashMap<Class, List<ModuleInstance>>();
             for( LayerResolution use : uses )
             {
@@ -67,12 +68,15 @@ public final class ApplicationContext
                 Map<Class, ModuleInstance> publicObjectModules = usedLayer.getPublicObjectModules();
                 availableObjectModules.putAll( publicObjectModules );
 
+                Map<Class, ModuleInstance> publicMixinModules = usedLayer.getPublicMixinModules();
+                availableMixinModules.putAll( publicMixinModules );
+
                 Map<Class, List<ModuleInstance>> publicServiceModules = usedLayer.getPublicServiceModules();
                 // TODO Do proper list insertion
                 availableServiceModules.putAll( publicServiceModules );
             }
 
-            LayerInstance layerInstance = layerContext.newLayerInstance( availableCompositeModules, availableObjectModules, availableServiceModules );
+            LayerInstance layerInstance = layerContext.newLayerInstance( availableCompositeModules, availableObjectModules, availableMixinModules, availableServiceModules );
             layerInstances.add( layerInstance );
             usedLayers.put( layerContext.getLayerBinding().getLayerResolution(), layerInstance );
         }
