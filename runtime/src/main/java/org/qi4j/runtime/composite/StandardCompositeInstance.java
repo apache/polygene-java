@@ -64,6 +64,10 @@ public final class StandardCompositeInstance extends AbstractCompositeInstance
         return mixins;
     }
 
+    public String toURI()
+    {
+        return "urn:qi4j:composite:" + context.getCompositeModel().getCompositeType().getName(); 
+    }
 
     @Override public String toString()
     {
