@@ -55,7 +55,7 @@ public class GreaterThanPredicateImpl<T>
             .append( "\"" )
             .append( getValueExpression() )
             .append( "\"^^" )
-            .append( getPropertyReference().getType().getSimpleName() )
+            .append( getPropertyReference().getPropertyReferenceType().getSimpleName() )
             .append( " )" )
             .toString();
     }

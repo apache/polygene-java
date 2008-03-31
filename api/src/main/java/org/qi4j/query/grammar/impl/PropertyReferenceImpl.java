@@ -120,25 +120,25 @@ public class PropertyReferenceImpl
     }
 
     /**
-     * @see org.qi4j.query.grammar.PropertyReference#getName()
+     * @see org.qi4j.query.grammar.PropertyReference#getPropertyReferenceName()
      */
-    public String getName()
+    public String getPropertyReferenceName()
     {
         return name;
     }
 
     /**
-     * @see PropertyReference#getDeclaringType()
+     * @see PropertyReference#getPropertyReferenceDeclaringType()
      */
-    public Class getDeclaringType()
+    public Class getPropertyReferenceDeclaringType()
     {
         return declaringType;
     }
 
     /**
-     * @see org.qi4j.query.grammar.PropertyReference#getType()
+     * @see org.qi4j.query.grammar.PropertyReference#getPropertyReferenceType()
      */
-    public Class getType()
+    public Class getPropertyReferenceType()
     {
         return type;
     }

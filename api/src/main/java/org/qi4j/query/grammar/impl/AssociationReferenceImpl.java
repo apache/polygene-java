@@ -120,25 +120,25 @@ public class AssociationReferenceImpl
     }
 
     /**
-     * @see AssociationReference#getName()
+     * @see AssociationReference#getAssociationReferenceName()
      */
-    public String getName()
+    public String getAssociationReferenceName()
     {
         return name;
     }
 
     /**
-     * @see org.qi4j.query.grammar.AssociationReference#getDeclaringType()
+     * @see org.qi4j.query.grammar.AssociationReference#getAssociationReferenceDeclaringType()
      */
-    public Class getDeclaringType()
+    public Class getAssociationReferenceDeclaringType()
     {
         return declaringType;
     }
 
     /**
-     * @see AssociationReference#getType()
+     * @see AssociationReference#getAssociationReferenceType()
      */
-    public Class getType()
+    public Class getAssociationReferenceType()
     {
         return type;
     }

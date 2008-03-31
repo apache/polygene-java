@@ -29,21 +29,21 @@ public interface PropertyReference<T>
      *
      * @return the name of the property
      */
-    String getName();
+    String getPropertyReferenceName();
 
     /**
      * Get the type of the interface that declared the property.
      *
      * @return the type of property that declared the property
      */
-    Class getDeclaringType();
+    Class getPropertyReferenceDeclaringType();
 
     /**
      * Get the type of the property. If the property is declared as Property<X> then X is returned.
      *
      * @return the property type
      */
-    Class<T> getType();
+    Class<T> getPropertyReferenceType();
 
     /**
      * Gets the traversed association used to get to this property  or null if there was no traversal involved.
