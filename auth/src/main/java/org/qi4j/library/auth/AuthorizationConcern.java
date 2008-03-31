@@ -1,5 +1,6 @@
 /*
- * Copyright 2006 Niclas Hedhman.
+ * Copyright (c) 2007-2008, Niclas Hedhman. All Rights Reserved.
+ * Copyright (c) 2007-2008, Rickard Öberg. All Rights Reserved.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -44,14 +45,14 @@ public class AuthorizationConcern
 
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
     {
-        CompositeBuilder<NamedPermissionComposite> cb = cbf.newCompositeBuilder( NamedPermissionComposite.class );
+        CompositeBuilder<NamedPermission> cb = cbf.newCompositeBuilder( NamedPermission.class );
         cb.propertiesOfComposite().name().set( requiresPermission.value() );
         Permission permission = cb.newInstance();
 
         Subject subject = Subject.getSubject( AccessController.getContext() );
-        UserComposite user = subject.getPrincipals( UserPrincipal.class ).iterator().next().getUser();
+        User user = subject.getPrincipals( UserPrincipal.class ).iterator().next().getUser();
 
-        CompositeBuilder<AuthorizationContextComposite> authBuilder = cbf.newCompositeBuilder( AuthorizationContextComposite.class );
+        CompositeBuilder<AuthorizationContext> authBuilder = cbf.newCompositeBuilder( AuthorizationContext.class );
         AuthorizationContext authProps = authBuilder.propertiesFor( AuthorizationContext.class );
         authProps.user().set( user );
         authProps.time().set( new Date() );

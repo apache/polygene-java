@@ -15,9 +15,17 @@
 
 package org.qi4j.library.auth;
 
+import org.qi4j.composite.Composite;
+import org.qi4j.composite.Mixins;
+import org.qi4j.library.framework.entity.AssociationMixin;
+import org.qi4j.library.framework.entity.PropertyMixin;
+import org.qi4j.property.Property;
+import org.qi4j.entity.EntityComposite;
+
 /**
  * TODO
  */
-public interface RoleAssignee
+@Mixins( { PropertyMixin.class, AssociationMixin.class } )
+public interface NamedPermissionEntity extends EntityComposite, NamedPermission
 {
 }

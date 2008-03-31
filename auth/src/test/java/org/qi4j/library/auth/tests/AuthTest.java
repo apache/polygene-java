@@ -24,16 +24,22 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.Mixins;
+import org.qi4j.composite.CompositeBuilder;
+import org.qi4j.composite.scope.Service;
 import org.qi4j.library.auth.AuthorizationContext;
 import org.qi4j.library.auth.AuthorizationContextComposite;
 import org.qi4j.library.auth.AuthorizationService;
 import org.qi4j.library.auth.AuthorizationServiceComposite;
-import org.qi4j.library.auth.GroupComposite;
-import org.qi4j.library.auth.NamedPermissionComposite;
+import org.qi4j.library.auth.Group;
+import org.qi4j.library.auth.GroupEntity;
+import org.qi4j.library.auth.NamedPermission;
+import org.qi4j.library.auth.NamedPermissionEntity;
 import org.qi4j.library.auth.ProtectedResource;
+import org.qi4j.library.auth.Role;
 import org.qi4j.library.auth.RoleAssignment;
-import org.qi4j.library.auth.RoleAssignmentComposite;
-import org.qi4j.library.auth.RoleComposite;
+import org.qi4j.library.auth.RoleAssignmentEntity;
+import org.qi4j.library.auth.RoleEntity;
+import org.qi4j.library.auth.User;
 import org.qi4j.library.auth.UserComposite;
 import org.qi4j.library.framework.entity.AssociationMixin;
 import org.qi4j.library.framework.entity.PropertyMixin;
@@ -46,13 +52,13 @@ public class AuthTest
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
         module.addComposites( UserComposite.class,
-                              GroupComposite.class,
-                              RoleComposite.class,
+                              GroupEntity.class,
+                              RoleEntity.class,
                               AuthorizationContextComposite.class,
-                              NamedPermissionComposite.class,
-                              RoleAssignmentComposite.class,
-                              AuthorizationServiceComposite.class,
+                              NamedPermissionEntity.class,
+                              RoleAssignmentEntity.class,
                               SecuredRoom.class );
+        module.addServices( AuthorizationServiceComposite.class );
     }
 
     @Test
@@ -63,30 +69,31 @@ public class AuthTest
         SecuredRoom room = compositeBuilderFactory.newCompositeBuilder( SecuredRoom.class ).newInstance();
 
         // Create user
-        UserComposite user = compositeBuilderFactory.newCompositeBuilder( UserComposite.class ).newInstance();
+        User user = compositeBuilderFactory.newCompositeBuilder( User.class ).newInstance();
 
         // Create permission
-        NamedPermissionComposite permission = compositeBuilderFactory.newCompositeBuilder( NamedPermissionComposite.class ).newInstance();
+        NamedPermission permission = compositeBuilderFactory.newCompositeBuilder( NamedPermission.class ).newInstance();
         permission.name().set( "Enter room" );
 
         // Create role
-        RoleComposite role = compositeBuilderFactory.newCompositeBuilder( RoleComposite.class ).newInstance();
+        Role role = compositeBuilderFactory.newCompositeBuilder( Role.class ).newInstance();
 
         role.permissions().add( permission );
 
         // Create authorization service
-        AuthorizationService authorization = compositeBuilderFactory.newCompositeBuilder( AuthorizationServiceComposite.class ).newInstance();
+        AuthorizationService authorization = compositeBuilderFactory.newCompositeBuilder( AuthorizationService.class ).newInstance();
 
         // Create authorization context
-        AuthorizationContext context = compositeBuilderFactory.newCompositeBuilder( AuthorizationContextComposite.class ).newInstance();
-        context.user().set( user );
-        context.time().set( new Date() );
+        CompositeBuilder<AuthorizationContext> accb = compositeBuilderFactory.newCompositeBuilder( AuthorizationContext.class );
+        accb.propertiesOfComposite().user().set( user );
+        accb.propertiesOfComposite().time().set( new Date() );
+        AuthorizationContext context = accb.newInstance();
 
         // Check permission
         assertFalse( authorization.hasPermission( permission, room, context ) );
 
         // Create role assignment
-        RoleAssignmentComposite roleAssignment = compositeBuilderFactory.newCompositeBuilder( RoleAssignmentComposite.class ).newInstance();
+        RoleAssignment roleAssignment = compositeBuilderFactory.newCompositeBuilder( RoleAssignment.class ).newInstance();
         roleAssignment.assignee().set( user );
         roleAssignment.role().set( role );
         roleAssignment.type().set( RoleAssignment.Type.ALLOW );
@@ -96,12 +103,12 @@ public class AuthTest
         assertTrue( authorization.hasPermission( permission, room, context ) );
 
         // Create group
-        GroupComposite group = compositeBuilderFactory.newCompositeBuilder( GroupComposite.class ).newInstance();
+        Group group = compositeBuilderFactory.newCompositeBuilder( Group.class ).newInstance();
         group.members().add( user );
         user.groups().add( group );
 
         // Create role assignment
-        RoleAssignmentComposite groupRoleAssignment = compositeBuilderFactory.newCompositeBuilder( RoleAssignmentComposite.class ).newInstance();
+        RoleAssignment groupRoleAssignment = compositeBuilderFactory.newComposite( RoleAssignment.class );
         groupRoleAssignment.assignee().set( group );
         groupRoleAssignment.role().set( role );
         groupRoleAssignment.type().set( RoleAssignment.Type.ALLOW );
@@ -118,5 +125,12 @@ public class AuthTest
     public interface SecuredRoom
         extends Composite, ProtectedResource
     {
+    }
+
+    public class PojoRunner
+    {
+        @Service AuthorizationService auth;
+
+
     }
 }

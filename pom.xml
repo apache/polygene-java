@@ -15,6 +15,7 @@
   <packaging>pom</packaging>
   <!-- This POM is ONLY to initiate the modules to be built. -->
   <modules>
+    <module>auth</module>
     <module>general</module>
     <module>business</module>
     <module>framework</module>
