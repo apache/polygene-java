@@ -151,6 +151,7 @@ public final class EntityCompositeInstance
 
     public String toURI()
     {
+        // TODO: Shall the URI contain the type ("entity"), or is it always understood in a larger context??
         return "urn:qi4j:entity:" + identity;
     }
 

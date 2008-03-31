@@ -200,8 +200,10 @@ public final class CompositeModel
 
     public String toURI()
     {
-        // TODO: Shall the URI contain the type, or is it always understood in a larger context??
-        return "urn:qi4j:composite" + compositeClass.getName();
+        // TODO: Shall the URI contain the type ("type"), or is it always understood in a larger context??
+        String className = compositeClass.getName();
+        className = className.replace( '$', '&' );
+        return "urn:qi4j:type" + className;
     }
 
     public String toString()

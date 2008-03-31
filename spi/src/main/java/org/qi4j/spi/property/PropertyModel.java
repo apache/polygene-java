@@ -42,12 +42,16 @@ public final class PropertyModel
 
     public static String getQualifiedName( Method accessor )
     {
-        return accessor.getDeclaringClass().getName() + ":" + accessor.getName();
+        String className = accessor.getDeclaringClass().getName();
+        className = className.replace( '$', '&' );
+        return className + ":" + accessor.getName();
     }
 
     public static String getQualifiedName( Class declaringClass, String name )
     {
-        return declaringClass.getName() + ":" + name;
+        String className = declaringClass.getName();
+        className = className.replace( '$', '&' );
+        return className + ":" + name;
     }
 
     public static Type getPropertyType( Method accessor )
