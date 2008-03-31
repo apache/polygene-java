@@ -42,8 +42,8 @@ public final class CompositeParser
 
     public URI parseModel( LayerModel layerModel, ModuleModel moduleModel, CompositeModel model )
     {
-        URI compositeNode = context.createCompositeUri( layerModel, moduleModel, model.getCompositeClass() );
-        if( Entity.class.isAssignableFrom( model.getCompositeClass() ) )
+        URI compositeNode = context.createCompositeUri( layerModel, moduleModel, model.getCompositeType() );
+        if( Entity.class.isAssignableFrom( model.getCompositeType() ) )
         {
             context.addType( compositeNode, Qi4jRdf.TYPE_ENTITY );
         }
