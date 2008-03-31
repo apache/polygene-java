@@ -149,6 +149,10 @@ public final class EntityCompositeInstance
         return identity;
     }
 
+    public String toURI()
+    {
+        return "urn:qi4j:entity:" + identity;
+    }
 
     @Override public String toString()
     {

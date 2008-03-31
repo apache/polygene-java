@@ -32,4 +32,6 @@ public interface CompositeInstance extends InvocationHandler
     void setProxy( Composite proxy );
 
     CompositeContext getContext();
+
+    String toURI();
 }

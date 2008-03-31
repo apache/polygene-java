@@ -120,6 +120,12 @@ public final class PropertyModel
         return accessor;
     }
 
+    public String toURI()
+    {
+        // TODO: Shall the URI contain the type (property), or is it always understood in a larger context??
+        return "urn:qi4j:property:" + getQualifiedName();
+    }
+
     public boolean equals( Object o )
     {
         if( this == o )

@@ -198,6 +198,12 @@ public final class CompositeModel
         return associations;
     }
 
+    public String toURI()
+    {
+        // TODO: Shall the URI contain the type, or is it always understood in a larger context??
+        return "urn:qi4j:composite" + compositeClass.getName();
+    }
+
     public String toString()
     {
         StringWriter str = new StringWriter();
