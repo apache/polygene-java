@@ -45,7 +45,7 @@ import org.qi4j.spi.property.PropertyModel;
 /**
  *
  */
-public class CompositeBuilderImpl<T extends Composite>
+public class CompositeBuilderImpl<T>
     implements CompositeBuilder<T>
 {
     protected Class<? extends T> compositeInterface;

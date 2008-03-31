@@ -72,9 +72,9 @@ public final class ModuleContext
         return compositeContexts;
     }
 
-    public Class<? extends Composite> getCompositeForInterface( Class interfaceClass )
+    public Class<? extends Composite> getCompositeForMixinType( Class mixinType )
     {
-        return interfaceCompositeMapping.get( interfaceClass );
+        return interfaceCompositeMapping.get( mixinType );
     }
 
     private Map<Class, Class<? extends Composite>> createMapping()

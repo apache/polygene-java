@@ -26,7 +26,7 @@ public interface CompositeBuilderFactory
      * @param compositeType an interface that describes the Composite to be instantiated
      * @return a CompositeBuilder for creation of Composites implementing the interface
      */
-    <T extends Composite> CompositeBuilder<T> newCompositeBuilder( Class<T> compositeType )
+    <T> CompositeBuilder<T> newCompositeBuilder( Class<T> compositeType )
         throws InvalidApplicationException;
 
     /**

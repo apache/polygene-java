@@ -42,7 +42,7 @@ import org.qi4j.spi.property.PropertyBinding;
 /**
  * TODO
  */
-public final class UnitOfWorkCompositeBuilder<T extends Composite>
+public final class UnitOfWorkCompositeBuilder<T>
     extends CompositeBuilderImpl<T>
 {
     private static final Method IDENTITY_METHOD;

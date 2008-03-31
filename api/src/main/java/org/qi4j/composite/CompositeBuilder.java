@@ -24,7 +24,7 @@ package org.qi4j.composite;
  * It extends Iterable which allows client code to iteratively create new instances. This
  * can be used to implement the prototype pattern.
  */
-public interface CompositeBuilder<T extends Composite>
+public interface CompositeBuilder<T>
     extends Iterable<T>
 {
     /**

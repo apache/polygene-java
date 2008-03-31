@@ -37,8 +37,32 @@ public class ModuleCompositeBuilderFactory
         this.moduleInstance = moduleInstance;
     }
 
-    public <T extends Composite> CompositeBuilder<T> newCompositeBuilder( Class<T> compositeType )
+    public <T> CompositeBuilder<T> newCompositeBuilder( Class<T> mixinType )
     {
+        validateNotNull( "mixinType", mixinType );
+        Class<? extends Composite> compositeType;
+        if( ! Composite.class.isAssignableFrom( mixinType ) )
+        {
+            ModuleContext moduleContext = moduleInstance.getModuleContext();
+            compositeType = moduleContext.getCompositeForMixinType( mixinType );
+            if( compositeType == null )
+            {
+                ModuleBinding moduleBinding = moduleContext.getModuleBinding();
+                ModuleResolution moduleResolution = moduleBinding.getModuleResolution();
+                ModuleModel moduleModel = moduleResolution.getModuleModel();
+                String moduleModelName = moduleModel.getName();
+
+                String compositeInterfaceClassName = mixinType.getName();
+                throw new InvalidApplicationException(
+                    "Trying to create unregistered composite interface [" + compositeInterfaceClassName + "] in module [" +
+                    moduleModelName + "]."
+                );
+            }
+        }
+        else
+        {
+            compositeType = (Class<? extends Composite>) mixinType;
+        }
         // Find which Module handles this Composite type
         ModuleInstance compositeModuleInstance = moduleInstance.getModuleForComposite( compositeType );
 
@@ -65,34 +89,14 @@ public class ModuleCompositeBuilderFactory
         return createBuilder( compositeModuleInstance, compositeContext );
     }
 
-    public <T> T newComposite( Class<T> aCompositeInterface )
+    public <T> T newComposite( Class<T> mixinType )
     {
-        validateNotNull( "aCompositeInterface", aCompositeInterface );
-        ModuleContext moduleContext = moduleInstance.getModuleContext();
-        Class<? extends Composite> compositeType = moduleContext.getCompositeForInterface( aCompositeInterface );
-
-        if( compositeType == null )
-        {
-            ModuleBinding moduleBinding = moduleContext.getModuleBinding();
-            ModuleResolution moduleResolution = moduleBinding.getModuleResolution();
-            ModuleModel moduleModel = moduleResolution.getModuleModel();
-            String moduleModelName = moduleModel.getName();
-
-            String compositeInterfaceClassName = aCompositeInterface.getName();
-            throw new InvalidApplicationException(
-                "Trying to create unregistered composite interface [" + compositeInterfaceClassName + "] in module [" +
-                moduleModelName + "]."
-            );
-        }
-
-        Composite composite = newCompositeBuilder( compositeType ).newInstance();
-        return aCompositeInterface.cast( composite );
+        return newCompositeBuilder( mixinType ).newInstance();
     }
 
-    protected <T extends Composite> CompositeBuilder<T> createBuilder( ModuleInstance moduleInstance, CompositeContext compositeContext )
+    protected <T> CompositeBuilder<T> createBuilder( ModuleInstance moduleInstance, CompositeContext compositeContext )
     {
         // Create a builder
-        CompositeBuilder<T> builder = new CompositeBuilderImpl<T>( moduleInstance, compositeContext );
-        return builder;
+        return new CompositeBuilderImpl<T>( moduleInstance, compositeContext );
     }
 }

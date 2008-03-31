@@ -37,7 +37,7 @@ public class EntityCompositeBuilderFactory
         this.unitOfWork = unitOfWork;
     }
 
-    @Override protected <T extends Composite> CompositeBuilder<T> createBuilder( ModuleInstance moduleInstance, CompositeContext compositeContext )
+    @Override protected <T> CompositeBuilder<T> createBuilder( ModuleInstance moduleInstance, CompositeContext compositeContext )
     {
         // Create a builder
         CompositeBuilder<T> builder = new UnitOfWorkCompositeBuilder<T>( moduleInstance, compositeContext, unitOfWork, store );
