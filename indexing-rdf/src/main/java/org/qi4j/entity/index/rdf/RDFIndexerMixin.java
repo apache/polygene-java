@@ -18,14 +18,18 @@
 package org.qi4j.entity.index.rdf;
 
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
 import org.openrdf.model.Literal;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.vocabulary.RDF;
+import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.qi4j.composite.scope.ThisCompositeAs;
+import org.qi4j.entity.EntityComposite;
 import org.qi4j.spi.serialization.EntityId;
 import org.qi4j.spi.serialization.SerializedState;
 
@@ -57,9 +61,10 @@ public class RDFIndexerMixin
             {
                 for( Map.Entry<EntityId, SerializedState> entry : newEntities.entrySet() )
                 {
+                    indexCompositeType( entry.getKey().getCompositeType(), connection, valueFactory );
                     final URI entityTypeUri = valueFactory.createURI(
                         normalizeInnerClass(
-                            "urn:qi4j/" + entry.getKey().getCompositeType().getName()
+                            "urn:" + entry.getKey().getCompositeType().getName()
                         )
                     );
                     final URI entityUri = valueFactory.createURI(
@@ -70,7 +75,6 @@ public class RDFIndexerMixin
                     connection.add( entityUri, RDF.TYPE, entityTypeUri );
 
                     // properties
-                    // map between property type and associated blank node
                     for( Map.Entry<String, Serializable> property : entry.getValue().getProperties().entrySet() )
                     {
                         if( property.getValue() != null )
@@ -87,6 +91,17 @@ public class RDFIndexerMixin
                     // association
                     for( Map.Entry<String, EntityId> assoc : entry.getValue().getAssociations().entrySet() )
                     {
+                        final URI assocType = valueFactory.createURI(
+                            normalizeInnerClass(
+                                "urn:" + assoc.getKey().replace( ":", "/" )
+                            )
+                        );
+                        final URI assocRef = valueFactory.createURI(
+                            normalizeInnerClass(
+                                "urn:" + assoc.getValue().getCompositeType().getName() + "/" + assoc.getValue().getIdentity()
+                            )
+                        );
+                        connection.add( entityUri, assocType, assocRef );
                     }
                 }
             }
@@ -102,6 +117,30 @@ public class RDFIndexerMixin
         {
             e.printStackTrace();
         }
+    }
+
+    private static void indexCompositeType( final Class<? extends EntityComposite> compositeType,
+                                            final RepositoryConnection connection,
+                                            final ValueFactory valueFactory )
+        throws RepositoryException
+    {
+        final URI compositeTypeURI = valueFactory.createURI( "urn:" + compositeType.getName() );
+        connection.add( compositeTypeURI, RDF.TYPE, RDFS.CLASS );
+        for( Class subType : extractSubTypes( compositeType ) )
+        {
+            connection.add( compositeTypeURI, RDFS.SUBCLASSOF, valueFactory.createURI( "urn:" + subType.getName() ) );
+        }
+    }
+
+    private static Collection<Class> extractSubTypes( final Class clazz )
+    {
+        final Collection<Class> subTypes = new HashSet<Class>();
+        for( Class subType : clazz.getInterfaces() )
+        {
+            subTypes.add( subType );
+            subTypes.addAll( extractSubTypes( subType ) );
+        }
+        return subTypes;
     }
 
     private String normalizeInnerClass( String className )

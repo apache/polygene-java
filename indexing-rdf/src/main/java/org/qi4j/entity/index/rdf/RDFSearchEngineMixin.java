@@ -17,18 +17,20 @@
  */
 package org.qi4j.entity.index.rdf;
 
-import org.openrdf.model.Statement;
-import org.openrdf.query.GraphQuery;
-import org.openrdf.query.GraphQueryResult;
+import java.util.Collection;
+import java.util.HashSet;
+import org.openrdf.model.Value;
+import org.openrdf.query.BindingSet;
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.QueryEvaluationException;
-import org.openrdf.query.QueryLanguage;
+import org.openrdf.query.TupleQuery;
+import org.openrdf.query.TupleQueryResult;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
-import org.openrdf.rio.RDFWriter;
-import org.openrdf.rio.RDFHandlerException;
-import org.openrdf.rio.rdfxml.util.RDFXMLPrettyWriter;
 import org.qi4j.composite.scope.ThisCompositeAs;
+import org.qi4j.query.grammar.BooleanExpression;
+import org.qi4j.spi.query.SearchEngine;
+import org.qi4j.spi.query.SearchException;
 
 /**
  * TODO Add JavaDoc
@@ -42,47 +44,57 @@ public class RDFSearchEngineMixin
 
     @ThisCompositeAs RDFIndexerState state;
 
-    public Iterable<String> findbyNativeQuery( String query )
+    public Iterable<String> find( final Class entityType,
+                                  final BooleanExpression whereClause )
+        throws SearchException
     {
-        // TODO what about a null queryobsolete shall it fail?, return null or return empty
-        if( query == null )
-        {
-            return null;
-        }
+        final Collection<String> entities = new HashSet<String>();
         try
         {
             final RepositoryConnection connection = state.getRepository().getConnection();
-            GraphQuery graphQuery = connection.prepareGraphQuery( QueryLanguage.SERQL, query );
-            GraphQueryResult queryResult = graphQuery.evaluate();
-            while( queryResult.hasNext() )
-            {
-                Statement statement = queryResult.next();
-                System.out.println( "Result: " + statement.getObject() );
-            }
-            RDFWriter rdfWriter = new RDFXMLPrettyWriter( System.out );
+            // TODO shall we support different implementation as SERQL?
+            final RDFQueryParser parser = new SPARQLRDFQueryParser();
+            final TupleQuery tupleQuery = connection.prepareTupleQuery(
+                parser.getQueryLanguage(),
+                parser.getQuery( entityType, whereClause )
+            );
+            final TupleQueryResult result = tupleQuery.evaluate();
             try
             {
-                graphQuery.evaluate( rdfWriter );
+                while( result.hasNext() )
+                {
+                    final BindingSet bindingSet = result.next();
+                    final Value identifier = bindingSet.getValue( "identity" );
+                    //TODO Shall we throw an exception if there is no binding for identifier = query parser is not right
+                    if( identifier != null )
+                    {
+                        final String value = identifier.stringValue();
+                        if( value != null )
+                        {
+                            System.out.println( "Identity: " + value );
+                            entities.add( value );
+                        }
+                    }
+                }
             }
-            catch( RDFHandlerException e )
+            finally
             {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                result.close();
             }
         }
         catch( RepositoryException e )
         {
-            e.printStackTrace();
+            throw new SearchException( e );
         }
         catch( MalformedQueryException e )
         {
-            // TODO shall it throw exception?
-            e.printStackTrace();
+            throw new SearchException( e );
         }
         catch( QueryEvaluationException e )
         {
-            // TODO shall it throw exception?
-            e.printStackTrace();
+            throw new SearchException( e );
         }
-        return null;
+        return entities;
     }
+
 }

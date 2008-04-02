@@ -17,24 +17,19 @@
  */
 package org.qi4j.entity.index.rdf;
 
-import org.qi4j.association.Association;
-import org.qi4j.association.ManyAssociation;
-import org.qi4j.property.Property;
+import org.openrdf.query.QueryLanguage;
+import org.qi4j.query.grammar.BooleanExpression;
 
 /**
  * TODO Add JavaDoc
  *
  * @author Alin Dreghiciu
- * @since March 20, 2008
+ * @since April 02, 2008
  */
-public interface Person
-    extends Nameable, Alive
+public interface RDFQueryParser
 {
-    Association<City> placeOfBirth();
+    QueryLanguage getQueryLanguage();
 
-    Property<Integer> yearOfBirth();
-
-    Association<Person> mother();
-
-    ManyAssociation<Domain> interests();
+    String getQuery( Class entityType,
+                     BooleanExpression whereClause );
 }

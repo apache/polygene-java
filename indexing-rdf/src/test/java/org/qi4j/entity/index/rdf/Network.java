@@ -37,15 +37,17 @@ class Network
         gaming.name().set( "Gaming" );
         gaming.description().set( "Gaming domain" );
 
-        //domainBuilder = unitOfWork.newEntityBuilder( DomainComposite.class );
         Domain programming = domainBuilder.newInstance();
         programming.name().set( "Programming" );
         programming.description().set( "Programing domain" );
 
-        //domainBuilder = unitOfWork.newEntityBuilder( DomainComposite.class );
         Domain cooking = domainBuilder.newInstance();
         cooking.name().set( "Cooking" );
         cooking.description().set( "Cooking domain" );
+
+        Domain cars = domainBuilder.newInstance();
+        cars.name().set( "Cars" );
+        cars.description().set( "Cars" );
 
         CompositeBuilder<CityComposite> cityBuilder = unitOfWork.newEntityBuilder( CityComposite.class );
         City kualaLumpur = cityBuilder.newInstance();
@@ -53,20 +55,37 @@ class Network
         kualaLumpur.country().set( "Malaysia" );
         kualaLumpur.county().set( "Some Jaya");
 
+        City penang = cityBuilder.newInstance();
+        penang.name().set( "Penang" );
+        penang.country().set( "Malaysia" );
+        penang.county().set( "Some Other Jaya");
+
         CompositeBuilder<PersonComposite> personBuilder = unitOfWork.newEntityBuilder( PersonComposite.class );
 
         Person annDoe = personBuilder.newInstance();
         annDoe.name().set( "Ann Doe" );
         annDoe.placeOfBirth().set( kualaLumpur );
+        annDoe.yearOfBirth().set( 1975 );
         annDoe.interests().add( cooking );
 
-        //personBuilder = unitOfWork.newEntityBuilder( PersonComposite.class );
         Person joeDoe = personBuilder.newInstance();
         joeDoe.name().set( "Joe Doe" );
         joeDoe.placeOfBirth().set( kualaLumpur );
+        joeDoe.yearOfBirth().set( 1990 );
         joeDoe.mother().set( annDoe );
         joeDoe.interests().add( programming );
         joeDoe.interests().add( gaming );
+
+        Person jackDoe = personBuilder.newInstance();
+        jackDoe.name().set( "Jack Doe" );
+        jackDoe.placeOfBirth().set( penang );
+        jackDoe.yearOfBirth().set( 1970 );
+        jackDoe.interests().add( cars );
+
+        CompositeBuilder<CatComposite> catBuilder = unitOfWork.newEntityBuilder( CatComposite.class );
+
+        Cat felix = catBuilder.newInstance();
+        felix.name().set( "Felix" );
 
         unitOfWork.complete();
     }

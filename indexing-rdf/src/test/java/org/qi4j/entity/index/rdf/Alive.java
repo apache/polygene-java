@@ -19,22 +19,13 @@ package org.qi4j.entity.index.rdf;
 
 import org.qi4j.association.Association;
 import org.qi4j.association.ManyAssociation;
-import org.qi4j.property.Property;
 
 /**
  * TODO Add JavaDoc
  *
  * @author Alin Dreghiciu
- * @since March 20, 2008
+ * @since March 31, 2008
  */
-public interface Person
-    extends Nameable, Alive
+public interface Alive
 {
-    Association<City> placeOfBirth();
-
-    Property<Integer> yearOfBirth();
-
-    Association<Person> mother();
-
-    ManyAssociation<Domain> interests();
 }

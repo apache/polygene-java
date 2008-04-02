@@ -17,24 +17,18 @@
  */
 package org.qi4j.entity.index.rdf;
 
-import org.qi4j.association.Association;
-import org.qi4j.association.ManyAssociation;
-import org.qi4j.property.Property;
+import org.qi4j.composite.Mixins;
+import org.qi4j.entity.EntityComposite;
+import org.qi4j.library.framework.entity.PropertyMixin;
 
 /**
  * TODO Add JavaDoc
  *
  * @author Alin Dreghiciu
- * @since March 20, 2008
+ * @since March 31, 2008
  */
-public interface Person
-    extends Nameable, Alive
+@Mixins( PropertyMixin.class )
+public interface PetComposite
+    extends Pet, EntityComposite
 {
-    Association<City> placeOfBirth();
-
-    Property<Integer> yearOfBirth();
-
-    Association<Person> mother();
-
-    ManyAssociation<Domain> interests();
 }

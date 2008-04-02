@@ -19,6 +19,7 @@ package org.qi4j.entity.index.rdf;
 
 import org.qi4j.composite.Mixins;
 import org.qi4j.service.ServiceComposite;
+import org.qi4j.spi.query.SearchEngine;
 
 /**
  * TODO Add JavaDoc

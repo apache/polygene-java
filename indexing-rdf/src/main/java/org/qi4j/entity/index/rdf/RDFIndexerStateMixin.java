@@ -20,6 +20,7 @@ package org.qi4j.entity.index.rdf;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.sail.SailRepository;
+import org.openrdf.sail.inferencer.fc.ForwardChainingRDFSInferencer;
 import org.openrdf.sail.memory.MemoryStore;
 
 /**
@@ -36,7 +37,7 @@ public class RDFIndexerStateMixin
 
     public RDFIndexerStateMixin()
     {
-        repository = new SailRepository( new MemoryStore() );
+        repository = new SailRepository( new ForwardChainingRDFSInferencer( new MemoryStore() ) );
         try
         {
             repository.initialize();
