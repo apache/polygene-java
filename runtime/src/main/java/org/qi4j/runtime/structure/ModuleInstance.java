@@ -23,6 +23,8 @@ import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.ObjectBuilder;
 import org.qi4j.composite.ObjectBuilderFactory;
+import org.qi4j.composite.AmbiguousMixinTypeException;
+import org.qi4j.composite.MixinTypeNotAvailableException;
 import org.qi4j.entity.UnitOfWorkFactory;
 import org.qi4j.runtime.entity.UnitOfWorkFactoryImpl;
 import org.qi4j.runtime.service.ServiceReferenceInstance;
@@ -35,6 +37,9 @@ import org.qi4j.service.ServiceReference;
 import org.qi4j.spi.injection.StructureContext;
 import org.qi4j.spi.service.ServiceInstanceProvider;
 import org.qi4j.spi.structure.ServiceDescriptor;
+import org.qi4j.spi.structure.ModuleBinding;
+import org.qi4j.spi.structure.ModuleResolution;
+import org.qi4j.spi.structure.ModuleModel;
 
 /**
  * TODO
@@ -97,6 +102,41 @@ public final class ModuleInstance
     public StructureContext getStructureContext()
     {
         return structureContext;
+    }
+
+    public <T> Class<? extends Composite> lookupCompositeType( Class<T> mixinType )
+    {
+        Class<? extends Composite> compositeType;
+        if( ! Composite.class.isAssignableFrom( mixinType ) )
+        {
+            Class<? extends Composite> compositeType1;
+            ModuleInstance module = getModuleForMixinType( mixinType );
+            if( module == null )
+            {
+            }
+            ModuleContext moduleContext = module.getModuleContext();
+            compositeType1 = moduleContext.getCompositeForMixinType( mixinType );
+            if( compositeType1 == Composite.class )
+            {
+                // conflict detected earlier.
+                throw new AmbiguousMixinTypeException( mixinType );
+            }
+            if( compositeType1 == null )
+            {
+                ModuleBinding moduleBinding = moduleContext.getModuleBinding();
+                ModuleResolution moduleResolution = moduleBinding.getModuleResolution();
+                ModuleModel moduleModel = moduleResolution.getModuleModel();
+                String moduleModelName = moduleModel.getName();
+
+                throw new MixinTypeNotAvailableException( mixinType, moduleModelName );
+            }
+            compositeType = compositeType1;
+        }
+        else
+        {
+            compositeType = (Class<? extends Composite>) mixinType;
+        }
+        return compositeType;
     }
 
     public <T> ServiceReference<T> lookupService( Class<T> serviceType )

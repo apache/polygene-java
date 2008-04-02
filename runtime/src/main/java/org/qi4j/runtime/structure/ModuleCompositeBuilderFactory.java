@@ -42,15 +42,7 @@ public class ModuleCompositeBuilderFactory
     public <T> CompositeBuilder<T> newCompositeBuilder( Class<T> mixinType )
     {
         validateNotNull( "mixinType", mixinType );
-        Class<? extends Composite> compositeType;
-        if( ! Composite.class.isAssignableFrom( mixinType ) )
-        {
-            compositeType = locateCompositeType( mixinType );
-        }
-        else
-        {
-            compositeType = (Class<? extends Composite>) mixinType;
-        }
+        Class<? extends Composite> compositeType = moduleInstance.lookupCompositeType( mixinType );
         // Find which Module handles this Composite type
         ModuleInstance compositeModuleInstance = moduleInstance.getModuleForComposite( compositeType );
 
@@ -75,32 +67,6 @@ public class ModuleCompositeBuilderFactory
         }
 
         return createBuilder( compositeModuleInstance, compositeContext );
-    }
-
-    private <T> Class<? extends Composite> locateCompositeType( Class<T> mixinType )
-    {
-        Class<? extends Composite> compositeType;
-        ModuleInstance module = moduleInstance.getModuleForMixinType( mixinType );
-        if( module == null )
-        {
-        }
-        ModuleContext moduleContext = module.getModuleContext();
-        compositeType = moduleContext.getCompositeForMixinType( mixinType );
-        if( compositeType == Composite.class )
-        {
-            // conflict detected earlier.
-            throw new AmbiguousMixinTypeException( mixinType );
-        }
-        if( compositeType == null )
-        {
-            ModuleBinding moduleBinding = moduleContext.getModuleBinding();
-            ModuleResolution moduleResolution = moduleBinding.getModuleResolution();
-            ModuleModel moduleModel = moduleResolution.getModuleModel();
-            String moduleModelName = moduleModel.getName();
-
-            throw new MixinTypeNotAvailableException( mixinType, moduleModelName );
-        }
-        return compositeType;
     }
 
     public <T> T newComposite( Class<T> mixinType )
