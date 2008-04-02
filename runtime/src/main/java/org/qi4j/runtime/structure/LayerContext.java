@@ -104,7 +104,7 @@ public final class LayerContext
         }
         if( mapping != null )
         {
-            availableMixinModules.putAll( mapping );
+            modulesForPublicMixinTypes.putAll( mapping );
         }
 
         // Add services from used layers

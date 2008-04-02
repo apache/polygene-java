@@ -346,7 +346,7 @@ public class MixinVisibilityTest
 
         ApplicationInstance app = applicationFactory.newApplication( assemblers ).newApplicationInstance( "Test" );
         app.activate();
-        LayerInstance layerInstance = app.getLayerInstances().get( 0 );
+        LayerInstance layerInstance = app.getLayerByName( "Layer 0" );
         ModuleInstance moduleInstance = layerInstance.getModuleInstances().get( 0 );
         StructureContext structureContext = moduleInstance.getStructureContext();
         ObjectBuilderFactory objectBuilderFactory = structureContext.getObjectBuilderFactory();
@@ -396,7 +396,7 @@ public class MixinVisibilityTest
 
         ApplicationInstance app = applicationFactory.newApplication( assemblers ).newApplicationInstance( "Test" );
         app.activate();
-        LayerInstance layerInstance = app.getLayerInstances().get( 0 );
+        LayerInstance layerInstance = app.getLayerByName( "Layer 0" );
         ModuleInstance moduleInstance = layerInstance.getModuleInstances().get( 0 );
         StructureContext structureContext = moduleInstance.getStructureContext();
         ObjectBuilderFactory objectBuilderFactory = structureContext.getObjectBuilderFactory();
