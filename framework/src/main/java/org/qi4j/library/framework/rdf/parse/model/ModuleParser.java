@@ -89,7 +89,7 @@ public final class ModuleParser
         for( ServiceDescriptor descriptor : descriptors )
         {
             Value service = parser.parseModel( layerModel, moduleModel, descriptor );
-            if( descriptor.getVisibility() != Visibility.module )
+            if( descriptor.visibility() != Visibility.module )
             {
                 context.addRelationship( module, Qi4jRdf.RELATIONSHIP_PUBLIC_SERVICE, service );
             }

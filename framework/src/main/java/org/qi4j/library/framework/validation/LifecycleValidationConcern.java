@@ -36,9 +36,9 @@ public class LifecycleValidationConcern
         next.create();
     }
 
-    public void delete()
+    public void remove()
     {
-        next.delete();
+        next.remove();
     }
 }
 

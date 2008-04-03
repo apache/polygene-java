@@ -17,8 +17,10 @@
  */
 package org.qi4j.logging;
 
+import org.qi4j.Qi4j;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.scope.Service;
+import org.qi4j.composite.scope.Structure;
 import org.qi4j.composite.scope.ThisCompositeAs;
 import org.qi4j.logging.logtypes.ErrorType;
 import org.qi4j.logging.logtypes.InfoType;
@@ -27,66 +29,67 @@ import org.qi4j.logging.logtypes.WarningType;
 public final class SimpleLogConcern
     implements SimpleLog
 {
+    @Structure Qi4j api;
     @Service private LogService logService;
     @ThisCompositeAs Composite composite;
 
     public void info( String message )
     {
-        logService.log( InfoType.INSTANCE, composite.dereference(), "", message );
+        logService.log( InfoType.INSTANCE, api.dereference( composite ), "", message );
     }
 
     public void info( String message, Object param1 )
     {
-        logService.log( InfoType.INSTANCE, composite.dereference(), "", message, param1 );
+        logService.log( InfoType.INSTANCE, api.dereference( composite ), "", message, param1 );
     }
 
     public void info( String message, Object param1, Object param2 )
     {
-        logService.log( InfoType.INSTANCE, composite.dereference(), "", message, param1, param2 );
+        logService.log( InfoType.INSTANCE, api.dereference( composite ), "", message, param1, param2 );
     }
 
     public void info( String message, Object... params )
     {
-        logService.log( InfoType.INSTANCE, composite.dereference(), "", message, params );
+        logService.log( InfoType.INSTANCE, api.dereference( composite ), "", message, params );
     }
 
     public void warning( String message )
     {
-        logService.log( WarningType.INSTANCE, composite.dereference(), "", message );
+        logService.log( WarningType.INSTANCE, api.dereference( composite ), "", message );
     }
 
     public void warning( String message, Object param1 )
     {
-        logService.log( WarningType.INSTANCE, composite.dereference(), "", message, param1 );
+        logService.log( WarningType.INSTANCE, api.dereference( composite ), "", message, param1 );
     }
 
     public void warning( String message, Object param1, Object param2 )
     {
-        logService.log( WarningType.INSTANCE, composite.dereference(), "", message, param1, param2 );
+        logService.log( WarningType.INSTANCE, api.dereference( composite ), "", message, param1, param2 );
     }
 
     public void warning( String message, Object... params )
     {
-        logService.log( WarningType.INSTANCE, composite.dereference(), "", message, params );
+        logService.log( WarningType.INSTANCE, api.dereference( composite ), "", message, params );
     }
 
     public void error( String message )
     {
-        logService.log( ErrorType.INSTANCE, composite.dereference(), "", message );
+        logService.log( ErrorType.INSTANCE, api.dereference( composite ), "", message );
     }
 
     public void error( String message, Object param1 )
     {
-        logService.log( ErrorType.INSTANCE, composite.dereference(), "", message, param1 );
+        logService.log( ErrorType.INSTANCE, api.dereference( composite ), "", message, param1 );
     }
 
     public void error( String message, Object param1, Object param2 )
     {
-        logService.log( ErrorType.INSTANCE, composite.dereference(), "", message, param1, param2 );
+        logService.log( ErrorType.INSTANCE, api.dereference( composite ), "", message, param1, param2 );
     }
 
     public void error( String message, Object... params )
     {
-        logService.log( ErrorType.INSTANCE, composite.dereference(), "", message, params );
+        logService.log( ErrorType.INSTANCE, api.dereference( composite ), "", message, params );
     }
 }

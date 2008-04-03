@@ -83,12 +83,12 @@ public class AuthTest
         role.permissions().add( permission );
 
         // Create authorization service
-        AuthorizationService authorization = serviceLocator.lookupService( AuthorizationService.class ).getService();
+        AuthorizationService authorization = serviceLocator.lookupService( AuthorizationService.class ).get();
 
         // Create authorization context
         CompositeBuilder<AuthorizationContext> accb = compositeBuilderFactory.newCompositeBuilder( AuthorizationContext.class );
-        accb.propertiesOfComposite().user().set( user );
-        accb.propertiesOfComposite().time().set( new Date() );
+        accb.stateOfComposite().user().set( user );
+        accb.stateOfComposite().time().set( new Date() );
         AuthorizationContext context = accb.newInstance();
 
         // Check permission

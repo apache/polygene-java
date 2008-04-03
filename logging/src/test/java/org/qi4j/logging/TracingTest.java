@@ -108,14 +108,14 @@ public class TracingTest
         public Object newInstance( ServiceDescriptor serviceDescriptor ) throws ServiceInstanceProviderException
         {
             CompositeBuilder<LogServiceComposite> builder = factory.newCompositeBuilder( LogServiceComposite.class );
-            LogService props = builder.propertiesFor( LogService.class );
+            LogService props = builder.stateFor( LogService.class );
             props.traceLevel().set( Trace.NORMAL );
             props.debugLevel().set( Debug.NORMAL );
             LogServiceComposite instance = builder.newInstance();
             return instance;
         }
 
-        public void releaseInstance( Object instance ) throws Exception
+        public void releaseInstance( Object instance )
         {
         }
     }

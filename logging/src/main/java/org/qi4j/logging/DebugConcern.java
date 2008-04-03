@@ -17,14 +17,17 @@
  */
 package org.qi4j.logging;
 
+import org.qi4j.Qi4j;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.scope.Service;
+import org.qi4j.composite.scope.Structure;
 import org.qi4j.composite.scope.ThisCompositeAs;
 import org.qi4j.property.Property;
 
 public final class DebugConcern
     implements Debug
 {
+    @Structure Qi4j api;
     @Service private LogService logService;
     @ThisCompositeAs private Composite composite;
 
@@ -38,7 +41,7 @@ public final class DebugConcern
     {
         if( priority >= logService.debugLevel().get() )
         {
-            logService.debug( composite.dereference(), message );
+            logService.debug( api.dereference( composite ), message );
         }
     }
 
@@ -46,7 +49,7 @@ public final class DebugConcern
     {
         if( priority >= logService.debugLevel().get() )
         {
-            logService.debug( composite.dereference(), message, param1 );
+            logService.debug( api.dereference( composite ), message, param1 );
         }
     }
 
@@ -54,7 +57,7 @@ public final class DebugConcern
     {
         if( priority >= logService.debugLevel().get() )
         {
-            logService.debug( composite.dereference(), message, param1, param2 );
+            logService.debug( api.dereference( composite ), message, param1, param2 );
         }
     }
 
@@ -62,7 +65,7 @@ public final class DebugConcern
     {
         if( priority >= logService.debugLevel().get() )
         {
-            logService.debug( composite.dereference(), message, params );
+            logService.debug( api.dereference( composite ), message, params );
         }
     }
 }

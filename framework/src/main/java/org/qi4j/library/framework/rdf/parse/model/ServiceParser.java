@@ -17,8 +17,6 @@
  */
 package org.qi4j.library.framework.rdf.parse.model;
 
-import java.io.Serializable;
-import java.util.Map;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
@@ -41,21 +39,20 @@ public class ServiceParser
     public Value parseModel( LayerModel layerModel, ModuleModel moduleModel, ServiceDescriptor descriptor )
     {
         ValueFactory valueFactory = context.getValueFactory();
-        String identity = descriptor.getIdentity();
-        Class type = descriptor.getServiceType();
+        String identity = descriptor.identity();
+        Class type = descriptor.gerviceType();
         URI serviceNode = context.createServiceUri( layerModel, moduleModel, type, identity );
-        Class<? extends ServiceInstanceProvider> serviceProvider = descriptor.getServiceProvider();
+        Class<? extends ServiceInstanceProvider> serviceProvider = descriptor.serviceProvider();
         String providerName = ParseContext.normalizeClassToURI( serviceProvider );
         context.addStatement( serviceNode, Qi4jRdf.RELATIONSHIP_PROVIDEDBY, providerName );
-        Map<Class, Serializable> infos = descriptor.getServiceInfos();
-        for( Map.Entry<Class, Serializable> info : infos.entrySet() )
+        Iterable<Class> infos = descriptor.serviceAttributeTypes();
+        for( Class info : infos )
         {
-            Class key = info.getKey();
-            String infoName = ParseContext.normalizeClassToURI( key );
+            String infoName = ParseContext.normalizeClassToURI( info );
             URI infoNode = valueFactory.createURI( serviceNode.toString() + "/" + infoName );
             context.addType( infoNode, Qi4jRdf.TYPE_INFO );
             context.addRelationship( serviceNode, Qi4jRdf.RELATIONSHIP_SERVICEINFO, infoNode );
-            Value value = valueFactory.createLiteral( info.getValue().toString() );
+            Value value = valueFactory.createLiteral( descriptor.serviceAttribute( info ).toString() );
             context.addRelationship( infoNode, Qi4jRdf.RELATIONSHIP_INFOVALUE, value );
         }
         return serviceNode;

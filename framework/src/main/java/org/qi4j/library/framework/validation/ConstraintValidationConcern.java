@@ -103,17 +103,17 @@ public class ConstraintValidationConcern
 
     public Object invoke( Object object, Method method, Object[] objects ) throws Throwable
     {
-        if( context.getConstraintViolations().size() > 0 )
+        if( context.constraintViolations().size() > 0 )
         {
             // Convert constraint violations into validation messages
-            Collection<ConstraintViolation> violations = context.getConstraintViolations();
+            Collection<ConstraintViolation> violations = context.constraintViolations();
             List<ValidationMessage> messages = new ArrayList<ValidationMessage>( violations.size() );
             for( ConstraintViolation violation : violations )
             {
-                Annotation constraint = violation.getConstraint();
+                Annotation constraint = violation.constraint();
                 Method[] constraintMethods = constraint.annotationType().getDeclaredMethods();
                 Object[] paramValues = new Object[constraintMethods.length + 1];
-                paramValues[ 0 ] = violation.getValue();
+                paramValues[ 0 ] = violation.value();
                 for( int j = 0; j < constraintMethods.length; j++ )
                 {
                     Object paramValue = constraintMethods[ j ].invoke( constraint );

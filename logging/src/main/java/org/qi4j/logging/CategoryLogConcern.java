@@ -17,76 +17,79 @@
  */
 package org.qi4j.logging;
 
-import org.qi4j.composite.scope.Service;
-import org.qi4j.composite.scope.ThisCompositeAs;
+import org.qi4j.Qi4j;
 import org.qi4j.composite.Composite;
+import org.qi4j.composite.scope.Service;
+import org.qi4j.composite.scope.Structure;
+import org.qi4j.composite.scope.ThisCompositeAs;
+import org.qi4j.logging.logtypes.ErrorType;
 import org.qi4j.logging.logtypes.InfoType;
 import org.qi4j.logging.logtypes.WarningType;
-import org.qi4j.logging.logtypes.ErrorType;
 
 public final class CategoryLogConcern
     implements CategoryLog
 {
+    @Structure Qi4j api;
     @Service private LogService logService;
     @ThisCompositeAs Composite composite;
 
     public void info( String category, String message )
     {
-        logService.log( InfoType.INSTANCE, composite.dereference(), category, message );
+        logService.log( InfoType.INSTANCE, api.dereference( composite ), category, message );
     }
 
     public void info( String category, String message, Object param1 )
     {
-        logService.log( InfoType.INSTANCE, composite.dereference(), category, message, param1 );
+        logService.log( InfoType.INSTANCE, api.dereference( composite ), category, message, param1 );
     }
 
     public void info( String category, String message, Object param1, Object param2 )
     {
-        logService.log( InfoType.INSTANCE, composite.dereference(), category, message, param1, param2 );
+        logService.log( InfoType.INSTANCE, api.dereference( composite ), category, message, param1, param2 );
     }
 
     public void info( String category, String message, Object... params )
     {
-        logService.log( InfoType.INSTANCE, composite.dereference(), category, message, params );
+        logService.log( InfoType.INSTANCE, api.dereference( composite ), category, message, params );
     }
 
     public void warning( String category, String message )
     {
-        logService.log( WarningType.INSTANCE, composite.dereference(), category, message );
+        logService.log( WarningType.INSTANCE, api.dereference( composite ), category, message );
     }
 
     public void warning( String category, String message, Object param1 )
     {
-        logService.log( WarningType.INSTANCE, composite.dereference(), category, message, param1 );
+        logService.log( WarningType.INSTANCE, api.dereference( composite ), category, message, param1 );
     }
 
     public void warning( String category, String message, Object param1, Object param2 )
     {
-        logService.log( WarningType.INSTANCE, composite.dereference(), category, message, param1, param2 );
+        logService.log( WarningType.INSTANCE, api.dereference( composite ), category, message, param1, param2 );
     }
 
     public void warning( String category, String message, Object... params )
     {
-        logService.log( WarningType.INSTANCE, composite.dereference(), category, message, params );
+        logService.log( WarningType.INSTANCE, api.dereference( composite ), category, message, params );
     }
 
     public void error( String category, String message )
     {
-        logService.log( ErrorType.INSTANCE, composite.dereference(), category, message );
+        logService.log( ErrorType.INSTANCE, api.dereference( composite ), category, message );
     }
 
     public void error( String category, String message, Object param1 )
     {
-        logService.log( ErrorType.INSTANCE, composite.dereference(), category, message, param1 );
+        logService.log( ErrorType.INSTANCE, api.dereference( composite ), category, message, param1 );
     }
 
     public void error( String category, String message, Object param1, Object param2 )
     {
-        logService.log( ErrorType.INSTANCE, composite.dereference(), category, message, param1, param2 );
+        logService.log( ErrorType.INSTANCE, api.dereference( composite ), category, message, param1, param2 );
     }
 
     public void error( String category, String message, Object... params )
     {
-        logService.log( ErrorType.INSTANCE, composite.dereference(), category, message, params );
+        logService.log( ErrorType.INSTANCE, api.dereference( composite ), category, message, params );
     }
 }

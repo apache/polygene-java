@@ -19,14 +19,17 @@ package org.qi4j.logging;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import org.qi4j.Qi4j;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.scope.ConcernFor;
 import org.qi4j.composite.scope.Service;
+import org.qi4j.composite.scope.Structure;
 
 
 public abstract class AbstractTraceConcern
     implements InvocationHandler
 {
+    @Structure Qi4j api;
     @ConcernFor private InvocationHandler next;
     @Service protected LogService logService;
     private Composite thisComposite;
@@ -47,19 +50,19 @@ public abstract class AbstractTraceConcern
         {
             if( doTrace )
             {
-                logService.traceEntry( compositeType, thisComposite.dereference(), method, args );
+                logService.traceEntry( compositeType, api.dereference( thisComposite ), method, args );
             }
             result = next.invoke( proxy, method, args );
             if( doTrace )
             {
-                logService.traceExit( compositeType, thisComposite.dereference(), method, args, result );
+                logService.traceExit( compositeType, api.dereference( thisComposite ), method, args, result );
             }
         }
         catch( Throwable t )
         {
             if( doTrace )
             {
-                logService.traceException( compositeType, thisComposite.dereference(), method, args, t );
+                logService.traceException( compositeType, api.dereference( thisComposite ), method, args, t );
             }
             throw t;
         }

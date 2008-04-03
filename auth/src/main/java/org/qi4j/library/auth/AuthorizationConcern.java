@@ -46,14 +46,14 @@ public class AuthorizationConcern
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
     {
         CompositeBuilder<NamedPermission> cb = cbf.newCompositeBuilder( NamedPermission.class );
-        cb.propertiesOfComposite().name().set( requiresPermission.value() );
+        cb.stateOfComposite().name().set( requiresPermission.value() );
         Permission permission = cb.newInstance();
 
         Subject subject = Subject.getSubject( AccessController.getContext() );
         User user = subject.getPrincipals( UserPrincipal.class ).iterator().next().getUser();
 
         CompositeBuilder<AuthorizationContext> authBuilder = cbf.newCompositeBuilder( AuthorizationContext.class );
-        AuthorizationContext authProps = authBuilder.propertiesFor( AuthorizationContext.class );
+        AuthorizationContext authProps = authBuilder.stateFor( AuthorizationContext.class );
         authProps.user().set( user );
         authProps.time().set( new Date() );
         authProps.authenticationMethod().set( new BasicAuthenticationMethod() );
