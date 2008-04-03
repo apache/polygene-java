@@ -12,6 +12,7 @@
 package org.qi4j.spi.composite;
 
 import java.util.Map;
+import org.qi4j.spi.entity.association.AssociationResolution;
 
 /**
  * Base class for object model resolutions. Resolutions are models resolved in a runtime environment

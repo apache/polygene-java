@@ -12,6 +12,7 @@
 package org.qi4j.spi.composite;
 
 import java.util.Map;
+import org.qi4j.spi.entity.association.AssociationResolution;
 
 /**
  * A mixin is an implementation of a particular interface,

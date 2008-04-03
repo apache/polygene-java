@@ -12,17 +12,14 @@
  *
  */
 
-package org.qi4j.spi.composite;
+package org.qi4j.entity.association;
 
-import org.qi4j.spi.entity.association.AssociationBinding;
-import org.qi4j.spi.property.PropertyBinding;
+import java.util.Set;
 
 /**
- * TODO
+ * Specialization of ManyAssociation which has Set semantics.
  */
-public interface StateBinding
+public interface SetAssociation<A>
+    extends ManyAssociation<A>, Set<A>
 {
-    public Iterable<PropertyBinding> getPropertyBindings();
-
-    public Iterable<AssociationBinding> getAssociationBindings();
 }

@@ -21,7 +21,7 @@ package org.qi4j.query.proxy;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import org.qi4j.association.Association;
+import org.qi4j.entity.association.Association;
 import org.qi4j.property.Property;
 import org.qi4j.query.grammar.AssociationReference;
 import org.qi4j.query.grammar.PropertyReference;

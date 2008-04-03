@@ -27,7 +27,6 @@ import org.qi4j.service.ServiceDescriptor;
 import org.qi4j.service.ServiceInstanceProvider;
 import org.qi4j.service.ServiceInstanceProviderException;
 import org.qi4j.service.ServiceReference;
-import org.qi4j.spi.property.GenericPropertyInfo;
 import org.qi4j.spi.property.ImmutablePropertyInstance;
 
 /**
@@ -66,7 +65,7 @@ public final class ServiceReferenceInstance<T>
     {
         this.serviceDescriptor = serviceDescriptor;
         this.serviceInstanceProvider = serviceInstanceProvider;
-        identity = new ImmutablePropertyInstance( new GenericPropertyInfo( IDENTITY_METHOD ), serviceDescriptor.getIdentity() );
+        identity = new ImmutablePropertyInstance( IDENTITY_METHOD, serviceDescriptor.getIdentity() );
 
         serviceProxy = (T) Proxy.newProxyInstance( serviceDescriptor.getServiceType().getClassLoader(), new Class[]{ serviceDescriptor.getServiceType() }, new ServiceInvocationHandler() );
     }

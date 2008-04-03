@@ -18,7 +18,7 @@
  */
 package org.qi4j.runtime.query.model;
 
-import org.qi4j.association.ManyAssociation;
+import org.qi4j.entity.association.ManyAssociation;
 
 /**
  * @author Alin Dreghiciu

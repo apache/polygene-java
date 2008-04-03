@@ -14,9 +14,9 @@
  */
 package org.qi4j.entity;
 
-import org.qi4j.association.AssociationMixin;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.Mixins;
+import org.qi4j.entity.association.AssociationMixin;
 
 /**
  * Entity domain objects must implement this interface.

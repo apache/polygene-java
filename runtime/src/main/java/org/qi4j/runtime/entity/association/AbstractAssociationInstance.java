@@ -1,9 +1,9 @@
-package org.qi4j.runtime.association;
+package org.qi4j.runtime.entity.association;
 
 import java.lang.reflect.Type;
-import org.qi4j.association.AbstractAssociation;
-import org.qi4j.association.AssociationInfo;
 import org.qi4j.entity.EntityComposite;
+import org.qi4j.entity.association.AbstractAssociation;
+import org.qi4j.entity.association.AssociationInfo;
 import org.qi4j.runtime.entity.UnitOfWorkInstance;
 import org.qi4j.spi.serialization.EntityId;
 

@@ -12,7 +12,7 @@
  *
  */
 
-package org.qi4j.association;
+package org.qi4j.entity.association;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;

@@ -12,15 +12,30 @@
  *
  */
 
-package org.qi4j.association;
+package org.qi4j.spi.entity.association;
 
-import java.util.Collection;
+import java.io.Serializable;
 
 /**
- * Association to a collection of entities. The collection always
- * contains other immutable associations.
+ * TODO
  */
-public interface ManyAssociation<T>
-    extends Collection<T>, AbstractAssociation
+public final class AssociationResolution
+    implements Serializable
 {
+    private AssociationModel associationModel;
+
+    public AssociationResolution( AssociationModel associationModel )
+    {
+        this.associationModel = associationModel;
+    }
+
+    public AssociationModel getAssociationModel()
+    {
+        return associationModel;
+    }
+
+    @Override public String toString()
+    {
+        return associationModel.toString();
+    }
 }

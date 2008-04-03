@@ -12,12 +12,15 @@
  *
  */
 
-package org.qi4j.association;
+package org.qi4j.entity.association;
+
+import java.util.Collection;
 
 /**
- * Base interface for all associations.
+ * Association to a collection of entities. The collection always
+ * contains other immutable associations.
  */
-public interface AbstractAssociation
-    extends AssociationInfo
+public interface ManyAssociation<T>
+    extends Collection<T>, AbstractAssociation
 {
 }

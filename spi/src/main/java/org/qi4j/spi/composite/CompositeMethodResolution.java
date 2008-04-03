@@ -15,6 +15,7 @@
 package org.qi4j.spi.composite;
 
 import java.lang.reflect.AnnotatedElement;
+import org.qi4j.spi.entity.association.AssociationResolution;
 
 /**
  * TODO

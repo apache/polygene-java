@@ -14,6 +14,7 @@ package org.qi4j.spi.composite;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Comparator;
+import org.qi4j.spi.entity.association.AssociationResolution;
 import org.qi4j.spi.structure.CompositeDescriptor;
 
 /**

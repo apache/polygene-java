@@ -13,9 +13,10 @@
  *
  */
 
-package org.qi4j.service;
+package org.qi4j.runtime.structure;
 
-import static org.qi4j.composite.NullArgumentException.validateNotNull;
+import static org.qi4j.composite.NullArgumentException.*;
+import org.qi4j.service.Activatable;
 
 /**
  * {@code ActivationStatusChange} represents which activatable that has its status changed.

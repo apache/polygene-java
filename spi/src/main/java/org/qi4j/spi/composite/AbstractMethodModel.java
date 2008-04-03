@@ -16,6 +16,7 @@ package org.qi4j.spi.composite;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
+import org.qi4j.spi.entity.association.AssociationModel;
 import org.qi4j.spi.property.PropertyModel;
 
 /**

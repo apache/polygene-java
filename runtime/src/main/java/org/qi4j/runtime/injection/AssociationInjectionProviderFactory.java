@@ -15,10 +15,10 @@
 package org.qi4j.runtime.injection;
 
 import java.lang.reflect.Method;
-import org.qi4j.association.AbstractAssociation;
 import org.qi4j.composite.State;
-import org.qi4j.spi.composite.AssociationResolution;
+import org.qi4j.entity.association.AbstractAssociation;
 import org.qi4j.spi.composite.StateResolution;
+import org.qi4j.spi.entity.association.AssociationResolution;
 import org.qi4j.spi.injection.AssociationInjectionModel;
 import org.qi4j.spi.injection.BindingContext;
 import org.qi4j.spi.injection.InjectionContext;

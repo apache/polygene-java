@@ -12,30 +12,14 @@
  *
  */
 
-package org.qi4j.runtime.association;
+package org.qi4j.entity.association;
+
+import java.util.List;
 
 /**
- * TODO
+ * Specialization of ManyAssociation which has List semantics.
  */
-public class InvalidAssociationException
-    extends RuntimeException
+public interface ListAssociation<A>
+    extends ManyAssociation<A>, List<A>
 {
-    public InvalidAssociationException()
-    {
-    }
-
-    public InvalidAssociationException( String string )
-    {
-        super( string );
-    }
-
-    public InvalidAssociationException( String string, Throwable throwable )
-    {
-        super( string, throwable );
-    }
-
-    public InvalidAssociationException( Throwable throwable )
-    {
-        super( throwable );
-    }
 }

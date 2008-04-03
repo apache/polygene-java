@@ -13,6 +13,12 @@ import org.qi4j.composite.Composite;
  */
 public class PropertyMapper
 {
+    /**
+     * Populate the Composite with properties from the given properties object.
+     *
+     * @param props
+     * @param composite
+     */
     public static void map( Properties props, Composite composite )
     {
         for( Map.Entry<Object, Object> objectObjectEntry : props.entrySet() )
@@ -38,6 +44,14 @@ public class PropertyMapper
         }
     }
 
+    /**
+     * Load a Properties object from the given stream, close it, and then populate
+     * the Composite with the properties.
+     *
+     * @param propertyInputStream
+     * @param composite
+     * @throws IOException
+     */
     public static void map( InputStream propertyInputStream, Composite composite )
         throws IOException
     {
@@ -50,6 +64,12 @@ public class PropertyMapper
         }
     }
 
+    /**
+     * Create Properties object which is backed by the given Composite.
+     *
+     * @param composite
+     * @return
+     */
     public static Properties getProperties( final Composite composite )
     {
         return new Properties()

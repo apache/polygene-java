@@ -12,14 +12,12 @@
  *
  */
 
-package org.qi4j.association;
-
-import java.util.Set;
+package org.qi4j.entity.association;
 
 /**
- * Specialization of ManyAssociation which has Set semantics.
+ * Base interface for all associations.
  */
-public interface SetAssociation<A>
-    extends ManyAssociation<A>, Set<A>
+public interface AbstractAssociation
+    extends AssociationInfo
 {
 }

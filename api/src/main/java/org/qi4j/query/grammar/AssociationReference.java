@@ -19,7 +19,7 @@
 package org.qi4j.query.grammar;
 
 /**
- * An expression related to {@link org.qi4j.association.Association}.
+ * An expression related to {@link org.qi4j.entity.association.Association}.
  */
 public interface AssociationReference
 {

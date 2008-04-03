@@ -5,10 +5,9 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import org.qi4j.association.AbstractAssociation;
 import org.qi4j.composite.NullArgumentException;
+import org.qi4j.entity.association.AbstractAssociation;
 import org.qi4j.property.Property;
-import org.qi4j.spi.composite.AssociationModel;
 import org.qi4j.spi.composite.ConstructorModel;
 import org.qi4j.spi.composite.FieldModel;
 import org.qi4j.spi.composite.InvalidCompositeException;
@@ -16,6 +15,7 @@ import org.qi4j.spi.composite.MethodModel;
 import org.qi4j.spi.composite.ObjectMethodModel;
 import org.qi4j.spi.composite.ObjectModel;
 import org.qi4j.spi.composite.ParameterModel;
+import org.qi4j.spi.entity.association.AssociationModel;
 import org.qi4j.spi.property.PropertyModel;
 
 /**

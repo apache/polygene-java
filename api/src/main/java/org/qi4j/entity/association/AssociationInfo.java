@@ -12,7 +12,7 @@
  *
  */
 
-package org.qi4j.association;
+package org.qi4j.entity.association;
 
 import java.lang.reflect.Type;
 

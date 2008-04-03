@@ -34,7 +34,6 @@ import net.sf.cglib.proxy.Callback;
 import net.sf.cglib.proxy.CallbackFilter;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.NoOp;
-import org.qi4j.association.AbstractAssociation;
 import org.qi4j.composite.AppliesTo;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.Concerns;
@@ -44,9 +43,9 @@ import org.qi4j.composite.Mixins;
 import org.qi4j.composite.NullArgumentException;
 import org.qi4j.composite.SideEffects;
 import org.qi4j.entity.EntityComposite;
+import org.qi4j.entity.association.AbstractAssociation;
 import org.qi4j.property.Property;
 import org.qi4j.runtime.entity.EntityMixin;
-import org.qi4j.spi.composite.AssociationModel;
 import org.qi4j.spi.composite.CompositeMethodModel;
 import org.qi4j.spi.composite.CompositeModel;
 import org.qi4j.spi.composite.ConcernModel;
@@ -59,6 +58,7 @@ import org.qi4j.spi.composite.MethodModel;
 import org.qi4j.spi.composite.MixinModel;
 import org.qi4j.spi.composite.ParameterModel;
 import org.qi4j.spi.composite.SideEffectModel;
+import org.qi4j.spi.entity.association.AssociationModel;
 import org.qi4j.spi.property.PropertyModel;
 
 public final class CompositeModelFactory

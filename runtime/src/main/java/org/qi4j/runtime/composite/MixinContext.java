@@ -14,7 +14,7 @@
 
 package org.qi4j.runtime.composite;
 
-import org.qi4j.runtime.association.AssociationContext;
+import org.qi4j.runtime.entity.association.AssociationContext;
 import org.qi4j.runtime.property.PropertyContext;
 import org.qi4j.spi.composite.MixinBinding;
 

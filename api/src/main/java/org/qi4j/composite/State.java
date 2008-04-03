@@ -15,7 +15,7 @@
 package org.qi4j.composite;
 
 import java.lang.reflect.Method;
-import org.qi4j.association.AbstractAssociation;
+import org.qi4j.entity.association.AbstractAssociation;
 import org.qi4j.property.Property;
 
 /**

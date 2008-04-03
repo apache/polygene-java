@@ -12,19 +12,27 @@
  *
  */
 
-package org.qi4j.association;
+package org.qi4j.entity.association;
 
 /**
- * This exception is thrown when an assocation is set to an invalid entity
+ * Association to a single EntityComposite.
  */
-public class AssociationVetoException extends RuntimeException
+public interface Association<T>
+    extends AbstractAssociation
 {
-    public AssociationVetoException( String string )
-    {
-        super( string );
-    }
+    /**
+     * Get the associated entity.
+     *
+     * @return the associated entity
+     */
+    T get();
 
-    public AssociationVetoException()
-    {
-    }
+    /**
+     * Set the associated entity.
+     *
+     * @param associated the entity
+     * @throws AssociationVetoException thrown if the entity is not a valid reference for this association
+     */
+    void set( T associated )
+        throws AssociationVetoException;
 }

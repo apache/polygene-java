@@ -22,7 +22,7 @@ import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
-import org.qi4j.association.AbstractAssociation;
+import org.qi4j.entity.association.AbstractAssociation;
 import org.qi4j.spi.structure.AssociationDescriptor;
 
 /**

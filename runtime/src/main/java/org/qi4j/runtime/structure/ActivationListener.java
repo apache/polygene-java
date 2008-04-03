@@ -12,7 +12,7 @@
  *
  */
 
-package org.qi4j.service;
+package org.qi4j.runtime.structure;
 
 /**
  * Some Activatables allows others to listen to changes in its status.

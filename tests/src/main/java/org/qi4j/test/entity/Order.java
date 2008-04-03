@@ -14,8 +14,8 @@
 
 package org.qi4j.test.entity;
 
-import org.qi4j.association.Association;
-import org.qi4j.association.ListAssociation;
+import org.qi4j.entity.association.Association;
+import org.qi4j.entity.association.ListAssociation;
 
 /**
  * TODO

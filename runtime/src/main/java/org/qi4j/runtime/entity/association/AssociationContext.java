@@ -12,20 +12,20 @@
  *
  */
 
-package org.qi4j.runtime.association;
+package org.qi4j.runtime.entity.association;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.qi4j.association.AbstractAssociation;
-import org.qi4j.association.ListAssociation;
-import org.qi4j.association.ManyAssociation;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
+import org.qi4j.entity.association.AbstractAssociation;
+import org.qi4j.entity.association.ListAssociation;
+import org.qi4j.entity.association.ManyAssociation;
 import org.qi4j.runtime.entity.UnitOfWorkInstance;
-import org.qi4j.spi.association.AssociationBinding;
 import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.association.AssociationBinding;
 
 /**
  * TODO

@@ -20,10 +20,8 @@ import org.qi4j.property.ImmutableProperty;
 import org.qi4j.property.Property;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.property.EntityPropertyInstance;
 import org.qi4j.spi.property.ImmutablePropertyInstance;
 import org.qi4j.spi.property.PropertyBinding;
-import org.qi4j.spi.property.PropertyInstance;
 
 /**
  * TODO

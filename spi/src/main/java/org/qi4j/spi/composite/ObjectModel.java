@@ -12,6 +12,7 @@
 package org.qi4j.spi.composite;
 
 import java.util.List;
+import org.qi4j.spi.entity.association.AssociationModel;
 import org.qi4j.spi.property.PropertyModel;
 
 /**

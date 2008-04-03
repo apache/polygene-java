@@ -12,15 +12,15 @@
  *
  */
 
-package org.qi4j.runtime.association;
+package org.qi4j.runtime.entity.association;
 
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
-import org.qi4j.association.AssociationInfo;
-import org.qi4j.association.AssociationVetoException;
-import org.qi4j.association.SetAssociation;
 import org.qi4j.entity.EntityComposite;
+import org.qi4j.entity.association.AssociationInfo;
+import org.qi4j.entity.association.AssociationVetoException;
+import org.qi4j.entity.association.SetAssociation;
 import org.qi4j.runtime.entity.UnitOfWorkInstance;
 import org.qi4j.spi.serialization.EntityId;
 

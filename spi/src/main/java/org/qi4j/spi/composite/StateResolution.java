@@ -14,6 +14,8 @@
 
 package org.qi4j.spi.composite;
 
+import org.qi4j.spi.entity.association.AssociationResolution;
+
 /**
  * TODO
  */
