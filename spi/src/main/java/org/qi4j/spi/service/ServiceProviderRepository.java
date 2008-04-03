@@ -14,6 +14,8 @@
 
 package org.qi4j.spi.service;
 
+import org.qi4j.service.ServiceInstanceProvider;
+
 /**
  * TODO
  */

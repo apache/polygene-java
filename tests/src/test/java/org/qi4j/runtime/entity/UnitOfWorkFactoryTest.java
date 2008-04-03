@@ -21,7 +21,6 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.entity.UnitOfWork;
-import org.qi4j.entity.UnitOfWorkCompletionException;
 import org.qi4j.entity.memory.MemoryEntityStoreComposite;
 import org.qi4j.spi.entity.UuidIdentityGeneratorComposite;
 import org.qi4j.test.AbstractQi4jTest;
@@ -51,6 +50,7 @@ public class UnitOfWorkFactoryTest
 
     @Test
     public void testUnitOfWork()
+        throws Exception
     {
         UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
 
@@ -63,14 +63,7 @@ public class UnitOfWorkFactoryTest
         assertThat( "Chair.name()", chair.name().get(), equalTo( "Chair" ) );
         assertThat( "Chair.price()", chair.price().get(), equalTo( 57 ) );
 
-        try
-        {
-            unitOfWork.complete();
-        }
-        catch( UnitOfWorkCompletionException e )
-        {
-            e.printStackTrace();
-        }
+        unitOfWork.complete();
     }
 
     @Test
@@ -95,6 +88,8 @@ public class UnitOfWorkFactoryTest
         String id2 = chair2.identity().get();
         System.out.println( "Identity Chair1: " + id1 );
         System.out.println( "Identity Chair2: " + id2 );
-        assertThat( "Identity are same.", id1, not( id2 ) );
+        assertThat( "Identity are not same.", id1, not( id2 ) );
+
+        unitOfWork.discard();
     }
 }

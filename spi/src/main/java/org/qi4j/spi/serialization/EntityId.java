@@ -31,7 +31,7 @@ public final class EntityId
 
     public EntityId( EntityComposite entityComposite )
     {
-        this( entityComposite.identity().get(), entityComposite.getCompositeType().getName() );
+        this( entityComposite.identity().get(), entityComposite.type().getName() );
     }
 
     public EntityId( String identity, String clazz )

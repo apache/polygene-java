@@ -21,7 +21,6 @@ import java.lang.reflect.Type;
 import org.qi4j.composite.NullArgumentException;
 import org.qi4j.property.ImmutableProperty;
 import org.qi4j.property.Property;
-import org.qi4j.property.PropertyVetoException;
 
 public class ImmutableFacade<T>
     implements ImmutableProperty<T>
@@ -40,30 +39,30 @@ public class ImmutableFacade<T>
     }
 
     public T set( T newValue )
-        throws PropertyVetoException
+        throws IllegalArgumentException
     {
-        throw new PropertyVetoException( "Property '" + getQualifiedName() + "' is immutable." );
+        throw new IllegalArgumentException( "Property '" + qualifiedName() + "' is immutable." );
     }
 
     // PropertyInfo
-    public <T> T getPropertyInfo( Class<T> infoType )
+    public <T> T metaInfo( Class<T> infoType )
     {
-        return target.getPropertyInfo( infoType );
+        return target.metaInfo( infoType );
     }
 
-    public String getName()
+    public String name()
     {
-        return target.getName();
+        return target.name();
     }
 
-    public String getQualifiedName()
+    public String qualifiedName()
     {
-        return target.getQualifiedName();
+        return target.qualifiedName();
     }
 
-    public Type getPropertyType()
+    public Type type()
     {
-        return target.getPropertyType();
+        return target.type();
     }
 
     @Override public String toString()

@@ -96,7 +96,7 @@ public class SimplePropertyTest
     {
         @ConcernFor Property<String> next;
 
-        public String set( String newValue ) throws PropertyVetoException
+        public String set( String newValue ) throws IllegalArgumentException
         {
             newValue = newValue.toUpperCase();
             next.set( newValue );
@@ -112,7 +112,7 @@ public class SimplePropertyTest
 
         public String get()
         {
-            System.out.println( "Property " + info.getName() + " accessed with value " + next.get() );
+            System.out.println( "Property " + info.name() + " accessed with value " + next.get() );
             return null;
         }
     }
@@ -124,9 +124,9 @@ public class SimplePropertyTest
         @ThisCompositeAs ImmutableProperty current;
         @ThisCompositeAs PropertyInfo info;
 
-        public Object set( Object newValue ) throws PropertyVetoException
+        public Object set( Object newValue ) throws IllegalArgumentException
         {
-            System.out.println( "Property " + info.getName() + " changed from " + current.get() + " to " + newValue );
+            System.out.println( "Property " + info.name() + " changed from " + current.get() + " to " + newValue );
             return newValue;
         }
     }

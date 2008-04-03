@@ -23,7 +23,7 @@ import org.qi4j.composite.Composite;
 import org.qi4j.runtime.composite.CompositeModelFactory;
 import org.qi4j.spi.composite.CompositeModel;
 import org.qi4j.spi.structure.CompositeDescriptor;
-import org.qi4j.spi.structure.Visibility;
+import org.qi4j.structure.Visibility;
 
 /**
  * Declaration of a Composite. Created by {@link org.qi4j.bootstrap.ModuleAssembly#addComposites(Class[])}.

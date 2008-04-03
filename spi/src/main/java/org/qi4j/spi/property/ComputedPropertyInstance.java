@@ -22,7 +22,6 @@ import java.lang.reflect.Type;
 import static org.qi4j.composite.NullArgumentException.*;
 import org.qi4j.property.Property;
 import org.qi4j.property.PropertyInfo;
-import org.qi4j.property.PropertyVetoException;
 
 /**
  * {@code ComputedPropertyInstance} is the base implementation of {@link Property}.
@@ -61,17 +60,17 @@ public abstract class ComputedPropertyInstance<T>
     }
 
     /**
-     * Throws {@link PropertyVetoException} exception.
+     * Throws {@link IllegalArgumentException} exception.
      *
      * @param anIgnoredValue This value is ignored.
-     * @throws PropertyVetoException Thrown by default.
+     * @throws IllegalArgumentException Thrown by default.
      * @since 0.1.0
      */
     public T set( T anIgnoredValue )
-        throws PropertyVetoException
+        throws IllegalArgumentException
     {
-        String qualifiedName = getQualifiedName();
-        throw new PropertyVetoException( "Property [" + qualifiedName + "] is read-only" );
+        String qualifiedName = qualifiedName();
+        throw new IllegalArgumentException( "Property [" + qualifiedName + "] is read-only" );
     }
 
     /**
@@ -81,9 +80,9 @@ public abstract class ComputedPropertyInstance<T>
      * @return Property info given {@code anInfoType} argument.
      * @since 0.1.0
      */
-    public final <T> T getPropertyInfo( Class<T> anInfoType )
+    public final <T> T metaInfo( Class<T> anInfoType )
     {
-        return propertyInfo.getPropertyInfo( anInfoType );
+        return propertyInfo.metaInfo( anInfoType );
     }
 
     /**
@@ -92,9 +91,9 @@ public abstract class ComputedPropertyInstance<T>
      * @return The property name.
      * @since 0.1.0
      */
-    public final String getName()
+    public final String name()
     {
-        return propertyInfo.getName();
+        return propertyInfo.name();
     }
 
     /**
@@ -103,14 +102,14 @@ public abstract class ComputedPropertyInstance<T>
      * @return The qualified name of this {@code Property}.
      * @since 0.1.0
      */
-    public final String getQualifiedName()
+    public final String qualifiedName()
     {
-        return propertyInfo.getQualifiedName();
+        return propertyInfo.qualifiedName();
     }
 
-    public Type getPropertyType()
+    public Type type()
     {
-        return propertyInfo.getPropertyType();
+        return propertyInfo.type();
     }
 
     /**

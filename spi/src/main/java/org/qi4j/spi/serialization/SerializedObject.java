@@ -39,7 +39,7 @@ public final class SerializedObject<T>
     {
         try
         {
-            ByteArrayOutputStream out = new ByteArrayOutputStream( 1024 );
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
             CompositeOutputStream stream = new CompositeOutputStream( out );
             stream.writeObject( value );
             stream.flush();

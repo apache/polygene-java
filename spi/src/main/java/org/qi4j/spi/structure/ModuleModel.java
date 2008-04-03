@@ -17,6 +17,7 @@ package org.qi4j.spi.structure;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.Map;
+import org.qi4j.service.ServiceDescriptor;
 
 /**
  * TODO

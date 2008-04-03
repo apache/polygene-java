@@ -32,14 +32,14 @@ import org.qi4j.service.Activatable;
 import org.qi4j.service.ActivationListener;
 import org.qi4j.service.ActivationStatus;
 import org.qi4j.service.ActivationStatusChange;
+import org.qi4j.service.ServiceDescriptor;
+import org.qi4j.service.ServiceInstanceProvider;
 import org.qi4j.service.ServiceLocator;
 import org.qi4j.service.ServiceReference;
 import org.qi4j.spi.injection.StructureContext;
-import org.qi4j.spi.service.ServiceInstanceProvider;
 import org.qi4j.spi.structure.ModuleBinding;
 import org.qi4j.spi.structure.ModuleModel;
 import org.qi4j.spi.structure.ModuleResolution;
-import org.qi4j.spi.structure.ServiceDescriptor;
 
 /**
  * TODO
@@ -92,6 +92,33 @@ public final class ModuleInstance
         serviceLocator = new ModuleServiceLocator( this, layerServiceLocator );
 
         structureContext = new StructureContext( compositeBuilderFactory, objectBuilderFactory, unitOfWorkFactory, serviceLocator );
+
+        // Create service instances
+        Iterable<ServiceDescriptor> serviceDescriptors = getModuleContext().getModuleBinding().getModuleResolution().getModuleModel().getServiceDescriptors();
+        for( ServiceDescriptor serviceDescriptor : serviceDescriptors )
+        {
+            Class<? extends ServiceInstanceProvider> providerType = serviceDescriptor.getServiceProvider();
+            ObjectBuilder<? extends ServiceInstanceProvider> builder = objectBuilderFactory.newObjectBuilder( providerType );
+            ServiceInstanceProvider sip = builder.newInstance();
+            Class serviceType = serviceDescriptor.getServiceType();
+            final ServiceReferenceInstance<Object> serviceReference = new ServiceReferenceInstance<Object>( serviceDescriptor, sip );
+            registerServiceReference( serviceType, serviceReference );
+            serviceInstances.add( serviceReference );
+            activationListeners.add( new ActivationListener()
+            {
+                public void onActivationStatusChange( ActivationStatusChange change ) throws Exception
+                {
+                    if( change.getNewStatus() == ActivationStatus.STARTING )
+                    {
+                        serviceReference.activate();
+                    }
+                    else if( change.getNewStatus() == ActivationStatus.STOPPING )
+                    {
+                        serviceReference.passivate();
+                    }
+                }
+            } );
+        }
     }
 
     public ModuleContext getModuleContext()
@@ -217,33 +244,6 @@ public final class ModuleInstance
     {
         if( status == ActivationStatus.INACTIVE )
         {
-            // Instantiate all services in this module
-            Iterable<ServiceDescriptor> serviceDescriptors = getModuleContext().getModuleBinding().getModuleResolution().getModuleModel().getServiceDescriptors();
-            for( ServiceDescriptor serviceDescriptor : serviceDescriptors )
-            {
-                Class<? extends ServiceInstanceProvider> providerType = serviceDescriptor.getServiceProvider();
-                ObjectBuilder<? extends ServiceInstanceProvider> builder = objectBuilderFactory.newObjectBuilder( providerType );
-                ServiceInstanceProvider sip = builder.newInstance();
-                Class serviceType = serviceDescriptor.getServiceType();
-                final ServiceReferenceInstance<Object> serviceReference = new ServiceReferenceInstance<Object>( serviceDescriptor, sip );
-                registerServiceReference( serviceType, serviceReference );
-                serviceInstances.add( serviceReference );
-                activationListeners.add( new ActivationListener()
-                {
-                    public void onActivationStatusChange( ActivationStatusChange change ) throws Exception
-                    {
-                        if( change.getNewStatus() == ActivationStatus.STARTING )
-                        {
-                            serviceReference.activate();
-                        }
-                        else if( change.getNewStatus() == ActivationStatus.STOPPING )
-                        {
-                            serviceReference.passivate();
-                        }
-                    }
-                } );
-            }
-
             try
             {
                 setActivationStatus( ActivationStatus.STARTING );
@@ -272,9 +272,6 @@ public final class ModuleInstance
                 // Ignore
             }
             setActivationStatus( ActivationStatus.INACTIVE );
-
-            serviceReferences.clear();
-            serviceInstances.clear();
         }
     }
 

@@ -35,8 +35,7 @@ public interface Property<T>
      *
      * @param newValue the new value
      * @return the new value
-     * @throws PropertyVetoException is thrown if the value is invalid
      */
     T set( T newValue )
-        throws PropertyVetoException;
+        throws IllegalArgumentException;
 }

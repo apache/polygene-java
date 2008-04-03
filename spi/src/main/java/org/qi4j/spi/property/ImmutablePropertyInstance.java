@@ -17,7 +17,6 @@ package org.qi4j.spi.property;
 import java.lang.reflect.Method;
 import org.qi4j.property.ImmutableProperty;
 import org.qi4j.property.PropertyInfo;
-import org.qi4j.property.PropertyVetoException;
 
 /**
  * TODO
@@ -54,15 +53,14 @@ public final class ImmutablePropertyInstance<T> extends ComputedPropertyInstance
     }
 
     /**
-     * Throws {@link org.qi4j.property.PropertyVetoException} exception.
+     * Throws {@link IllegalArgumentException} exception.
      *
      * @param newValue This value is ignored, unless this is set during the initialization phase.
-     * @throws org.qi4j.property.PropertyVetoException
-     *          Thrown by default.
+     * @throws IllegalArgumentException Thrown by default.
      * @since 0.1.0
      */
     public T set( T newValue )
-        throws PropertyVetoException
+        throws IllegalArgumentException
     {
         if( this.value != UNSET )
         {

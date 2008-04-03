@@ -65,7 +65,7 @@ public class EntityPropertyInstance<T> extends PropertyInstance<T>
     {
         if( value == ImmutablePropertyInstance.UNSET )
         {
-            value = (T) entityState.getProperty( getQualifiedName() );
+            value = (T) entityState.getProperty( qualifiedName() );
         }
 
         return value;
@@ -79,7 +79,7 @@ public class EntityPropertyInstance<T> extends PropertyInstance<T>
     public T set( T aNewValue )
     {
         value = aNewValue;
-        entityState.setProperty( getQualifiedName(), aNewValue );
+        entityState.setProperty( qualifiedName(), aNewValue );
         return aNewValue;
     }
 

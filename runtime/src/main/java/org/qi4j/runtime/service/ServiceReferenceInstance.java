@@ -23,13 +23,12 @@ import org.qi4j.composite.Composite;
 import org.qi4j.property.ImmutableProperty;
 import org.qi4j.runtime.composite.CompositeInstance;
 import org.qi4j.service.Activatable;
+import org.qi4j.service.ServiceDescriptor;
+import org.qi4j.service.ServiceInstanceProvider;
 import org.qi4j.service.ServiceInstanceProviderException;
 import org.qi4j.service.ServiceReference;
 import org.qi4j.spi.property.GenericPropertyInfo;
 import org.qi4j.spi.property.ImmutablePropertyInstance;
-import org.qi4j.spi.service.ServiceInstance;
-import org.qi4j.spi.service.ServiceInstanceProvider;
-import org.qi4j.spi.structure.ServiceDescriptor;
 
 /**
  * Implementation of ServiceReference. This manages the actual instance of the service
@@ -107,7 +106,7 @@ public final class ServiceReferenceInstance<T>
 
     public void activate() throws Exception
     {
-        if( serviceDescriptor.isActivateOnStartup() )
+        if( serviceDescriptor.isInstantiateOnStartup() )
         {
             getInstance();
         }
@@ -127,7 +126,7 @@ public final class ServiceReferenceInstance<T>
             // Release the instance
             try
             {
-                serviceInstanceProvider.releaseInstance( serviceInstance );
+                serviceInstanceProvider.releaseInstance( serviceInstance.getInstance() );
             }
             finally
             {
@@ -194,6 +193,11 @@ public final class ServiceReferenceInstance<T>
         }
 
         return instance;
+    }
+
+    @Override public String toString()
+    {
+        return serviceDescriptor.getIdentity() + ", active=" + ( serviceInstance != null );
     }
 
     public final class ServiceInvocationHandler

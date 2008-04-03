@@ -21,9 +21,9 @@ import org.qi4j.composite.Composite;
 import org.qi4j.runtime.composite.CompositeModelFactory;
 import org.qi4j.runtime.composite.ObjectModelFactory;
 import org.qi4j.service.ServiceComposite;
+import org.qi4j.service.ServiceDescriptor;
 import org.qi4j.spi.structure.CompositeDescriptor;
 import org.qi4j.spi.structure.ObjectDescriptor;
-import org.qi4j.spi.structure.ServiceDescriptor;
 
 /**
  * Assembly of a Module. This is where you register all objects, Composites,

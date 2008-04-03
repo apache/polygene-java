@@ -20,13 +20,13 @@ import java.util.List;
 import java.util.Map;
 import org.qi4j.composite.Composite;
 import org.qi4j.runtime.util.ListMap;
+import org.qi4j.service.ServiceDescriptor;
 import org.qi4j.service.ServiceLocator;
 import org.qi4j.spi.composite.CompositeModel;
 import org.qi4j.spi.structure.CompositeDescriptor;
 import org.qi4j.spi.structure.LayerBinding;
 import org.qi4j.spi.structure.ObjectDescriptor;
-import org.qi4j.spi.structure.ServiceDescriptor;
-import org.qi4j.spi.structure.Visibility;
+import org.qi4j.structure.Visibility;
 
 /**
  * TODO

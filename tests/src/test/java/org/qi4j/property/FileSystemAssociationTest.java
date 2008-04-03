@@ -61,6 +61,7 @@ public class FileSystemAssociationTest
 
         String indent = "";
         print( root, indent );
+        work.discard();
     }
 
     private void print( Directory root, String indent )

@@ -30,7 +30,7 @@ import org.qi4j.composite.ObjectBuilderFactory;
 import org.qi4j.composite.scope.Structure;
 import org.qi4j.property.Property;
 import org.qi4j.spi.injection.StructureContext;
-import org.qi4j.spi.structure.Visibility;
+import org.qi4j.structure.Visibility;
 
 /**
  * TODO

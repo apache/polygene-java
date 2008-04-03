@@ -31,14 +31,14 @@ public interface PropertyInfo
      * @param infoType the type of the metadata to return
      * @return a metadata object that implements the requested type or null if none is registered
      */
-    <T> T getPropertyInfo( Class<T> infoType );
+    <T> T metaInfo( Class<T> infoType );
 
     /**
      * Get the name of the property, which is equal to the name of the metod that declared it.
      *
      * @return the name of the property.
      */
-    String getName();
+    String name();
 
     /**
      * Get the qualified name of the property which is equal to:<br/>
@@ -46,7 +46,7 @@ public interface PropertyInfo
      *
      * @return the qualified name of the property
      */
-    String getQualifiedName();
+    String qualifiedName();
 
     /**
      * Get the type of the property. If the property is declared
@@ -54,5 +54,5 @@ public interface PropertyInfo
      *
      * @return the property type
      */
-    Type getPropertyType();
+    Type type();
 }

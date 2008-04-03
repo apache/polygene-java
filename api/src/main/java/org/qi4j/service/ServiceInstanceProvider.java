@@ -11,11 +11,23 @@
  * limitations under the License.
  *
  */
-package org.qi4j.spi.structure;
 
-public enum Visibility
+package org.qi4j.service;
+
+/**
+ * TODO
+ */
+public interface ServiceInstanceProvider
 {
-    module, // Artifact is visible only in the declaring module
-    layer,  // Artifact is visible to all modules in the same layer
-    application; // Artifact is visible to other modules in the same layer and any modules in extending layers
+    Object newInstance( ServiceDescriptor serviceDescriptor )
+        throws ServiceInstanceProviderException;
+
+    /**
+     * Called for each client releasing the instance from use.
+     *
+     * @param instance The
+     * @throws Exception
+     */
+    void releaseInstance( Object instance )
+        throws Exception;
 }

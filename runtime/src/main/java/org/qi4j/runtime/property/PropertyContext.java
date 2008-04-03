@@ -96,7 +96,7 @@ public final class PropertyContext
                 Property instance;
                 if( ImmutableProperty.class.isAssignableFrom( propertyType ) )
                 {
-                    instance = new ImmutablePropertyInstance<Object>( propertyBinding, entityState.getProperty( propertyBinding.getQualifiedName() ) );
+                    instance = new ImmutablePropertyInstance<Object>( propertyBinding, entityState.getProperty( propertyBinding.qualifiedName() ) );
                 }
                 else
                 {

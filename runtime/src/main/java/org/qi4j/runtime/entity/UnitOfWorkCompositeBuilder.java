@@ -154,7 +154,7 @@ public final class UnitOfWorkCompositeBuilder<T>
                     }
                     else
                     {
-                        id = new EntityId( association.get().identity().get(), association.get().getCompositeType().getName() );
+                        id = new EntityId( association.get().identity().get(), association.get().type().getName() );
                     }
                     state.setAssociation( associationModel.getQualifiedName(), id );
                 }

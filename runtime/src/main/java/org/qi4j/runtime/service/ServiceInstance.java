@@ -12,9 +12,10 @@
  *
  */
 
-package org.qi4j.spi.service;
+package org.qi4j.runtime.service;
 
-import org.qi4j.spi.structure.ServiceDescriptor;
+import org.qi4j.service.ServiceDescriptor;
+import org.qi4j.service.ServiceInstanceProvider;
 
 /**
  * TODO

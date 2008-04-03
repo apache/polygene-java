@@ -25,7 +25,6 @@ import java.util.Stack;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.ObjectBuilderFactory;
-import org.qi4j.composite.Composite;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.EntityCompositeNotFoundException;
 import org.qi4j.entity.Identity;
@@ -44,8 +43,8 @@ import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStateInstance;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityStore;
-import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.entity.EntityStoreException;
+import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.serialization.EntityId;
 import org.qi4j.spi.structure.ModuleBinding;
 
@@ -141,6 +140,11 @@ public final class UnitOfWorkInstance
 
                 // Get the state from the store
                 EntityStore store = stateServices.getEntityStore( compositeType );
+                if( store == null )
+                {
+                    throw new UnitOfWorkException( "No store found for type " + compositeType );
+                }
+
                 CompositeContext compositeContext = moduleInstance.getModuleContext().getCompositeContext( compositeType );
                 EntityState state = null;
                 try
@@ -290,7 +294,7 @@ public final class UnitOfWorkInstance
         checkOpen();
 
         EntityComposite entityComposite = (EntityComposite) entity;
-        return getCachedEntity( entityComposite.identity().get(), entityComposite.getCompositeType() ) != null;
+        return getCachedEntity( entityComposite.identity().get(), entityComposite.type() ) != null;
     }
 
     public CompositeBuilderFactory getCompositeBuilderFactory()
@@ -441,7 +445,7 @@ public final class UnitOfWorkInstance
 
     void createEntity( EntityComposite instance )
     {
-        Class<? extends EntityComposite> compositeType = (Class<? extends EntityComposite>) instance.getCompositeType();
+        Class<? extends EntityComposite> compositeType = (Class<? extends EntityComposite>) instance.type();
         Map<String, EntityComposite> entityCache = getEntityCache( compositeType );
         entityCache.put( instance.identity().get(), instance );
     }

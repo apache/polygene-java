@@ -39,23 +39,23 @@ public final class GenericPropertyInfo
         infos = new HashMap<Class, Serializable>();
     }
 
-    public <T> T getPropertyInfo( Class<T> infoType )
+    public <T> T metaInfo( Class<T> infoType )
     {
         Object o = infos.get( infoType );
         return infoType.cast( o );
     }
 
-    public String getName()
+    public String name()
     {
         return name;
     }
 
-    public String getQualifiedName()
+    public String qualifiedName()
     {
         return qualifiedName;
     }
 
-    public Type getPropertyType()
+    public Type type()
     {
         return type;
     }

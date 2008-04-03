@@ -27,7 +27,7 @@ public class CompositeMixinTest
     public void testGetCompositeType()
     {
         TestComposite composite = compositeBuilderFactory.newComposite( TestComposite.class );
-        Class<? extends Composite> compositeType = composite.getCompositeType();
+        Class<? extends Composite> compositeType = composite.type();
 
         assertEquals( TestComposite.class, compositeType );
     }

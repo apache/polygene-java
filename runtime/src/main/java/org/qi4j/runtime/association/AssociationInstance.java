@@ -50,7 +50,7 @@ public class AssociationInstance<T>
     {
         if( value == UNSET )
         {
-            EntityId entityId = entityState.getAssociation( getQualifiedName() );
+            EntityId entityId = entityState.getAssociation( qualifiedName() );
             value = getEntity( entityId );
         }
         return value;
@@ -67,29 +67,29 @@ public class AssociationInstance<T>
         this.value = newValue;
         if( entityState != null )
         {
-            entityState.setAssociation( getQualifiedName(), getEntityId( newValue ) );
+            entityState.setAssociation( qualifiedName(), getEntityId( newValue ) );
         }
     }
 
     // AssociationInfo implementation
-    public <T> T getAssociationInfo( Class<T> infoType )
+    public <T> T metaInfo( Class<T> infoType )
     {
-        return associationInfo.getAssociationInfo( infoType );
+        return associationInfo.metaInfo( infoType );
     }
 
-    public String getName()
+    public String name()
     {
-        return associationInfo.getName();
+        return associationInfo.name();
     }
 
-    public String getQualifiedName()
+    public String qualifiedName()
     {
-        return associationInfo.getQualifiedName();
+        return associationInfo.qualifiedName();
     }
 
-    public Type getAssociationType()
+    public Type type()
     {
-        return associationInfo.getAssociationType();
+        return associationInfo.type();
     }
 
     public void write( T value )

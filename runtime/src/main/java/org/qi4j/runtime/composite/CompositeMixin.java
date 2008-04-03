@@ -18,13 +18,20 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.scope.ThisCompositeAs;
+import org.qi4j.spi.structure.CompositeDescriptor;
 
 public final class CompositeMixin
     implements Composite
 {
     @ThisCompositeAs private Composite meAsComposite;
 
-    public Class<? extends Composite> getCompositeType()
+    public <T> T metaInfo( Class<T> infoType )
+    {
+        CompositeDescriptor descriptor = AbstractCompositeInstance.getCompositeInstance( meAsComposite ).getContext().getCompositeResolution().getCompositeDescriptor();
+        return infoType.cast( descriptor.getCompositeInfos().get( infoType ) );
+    }
+
+    public Class<? extends Composite> type()
     {
         return AbstractCompositeInstance.getCompositeInstance( meAsComposite ).getContext().getCompositeModel().getCompositeType();
     }

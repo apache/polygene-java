@@ -27,7 +27,7 @@ public interface AssociationInfo
      * @param infoType the type of metadata to be returned
      * @return the metadata for the given type or null if no such metadata has been registered
      */
-    <T> T getAssociationInfo( Class<T> infoType );
+    <T> T metaInfo( Class<T> infoType );
 
     /**
      * Get the unqualified name of the association. This is the method
@@ -35,7 +35,7 @@ public interface AssociationInfo
      *
      * @return the name of the association
      */
-    String getName();
+    String name();
 
     /**
      * Get the qualified name of the assocation. This is constructed by
@@ -48,7 +48,7 @@ public interface AssociationInfo
      *
      * @return the qualified name of the association
      */
-    String getQualifiedName();
+    String qualifiedName();
 
-    Type getAssociationType();
+    Type type();
 }

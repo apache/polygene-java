@@ -39,7 +39,7 @@ public class ActivatableServiceTest
             public void assemble( ModuleAssembly module ) throws AssemblyException
             {
                 module.addObjects( ActivatableServiceTest.class );
-                module.addServices( ActivatableComposite.class ).activateOnStartup();
+                module.addServices( ActivatableComposite.class ).instantiateOnStartup();
             }
         };
 

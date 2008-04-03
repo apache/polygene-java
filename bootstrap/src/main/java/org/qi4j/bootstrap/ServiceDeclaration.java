@@ -19,10 +19,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.qi4j.spi.service.ServiceInstanceProvider;
+import org.qi4j.service.ServiceDescriptor;
+import org.qi4j.service.ServiceInstanceProvider;
 import org.qi4j.spi.service.provider.DefaultServiceInstanceProvider;
-import org.qi4j.spi.structure.ServiceDescriptor;
-import org.qi4j.spi.structure.Visibility;
+import org.qi4j.structure.Visibility;
 
 /**
  * Declaration of a Service. Created by {@link org.qi4j.bootstrap.ModuleAssembly#addServices(Class[])}.
@@ -32,7 +32,7 @@ public final class ServiceDeclaration
     private Class<? extends ServiceInstanceProvider> serviceProvider = DefaultServiceInstanceProvider.class;
     private Iterable<Class> serviceTypes;
     private String identity;
-    private boolean activateOnStartup = false;
+    private boolean instantiateOnStartup = false;
     private Map<Class, Serializable> serviceInfos = new HashMap<Class, Serializable>();
     private Visibility visibility = Visibility.module;
 
@@ -60,9 +60,9 @@ public final class ServiceDeclaration
         return this;
     }
 
-    public ServiceDeclaration activateOnStartup()
+    public ServiceDeclaration instantiateOnStartup()
     {
-        activateOnStartup = true;
+        instantiateOnStartup = true;
         return this;
     }
 
@@ -80,9 +80,9 @@ public final class ServiceDeclaration
             String id = identity;
             if( id == null )
             {
-                id = serviceType.getName();
+                id = serviceType.getSimpleName();
             }
-            ServiceDescriptor serviceDescriptor = new ServiceDescriptor( serviceType, serviceProvider, identity, visibility, activateOnStartup, serviceInfos );
+            ServiceDescriptor serviceDescriptor = new ServiceDescriptor( serviceType, serviceProvider, id, visibility, instantiateOnStartup, serviceInfos );
             serviceDescriptors.add( serviceDescriptor );
         }
         return serviceDescriptors;

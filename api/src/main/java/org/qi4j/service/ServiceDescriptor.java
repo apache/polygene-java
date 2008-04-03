@@ -12,11 +12,11 @@
  *
  */
 
-package org.qi4j.spi.structure;
+package org.qi4j.service;
 
 import java.io.Serializable;
 import java.util.Map;
-import org.qi4j.spi.service.ServiceInstanceProvider;
+import org.qi4j.structure.Visibility;
 
 /**
  * {@code ServiceDescriptor} provides meta informations of a service.
@@ -30,21 +30,21 @@ public final class ServiceDescriptor
     private Class<? extends ServiceInstanceProvider> serviceProvider;
     private String identity;
     private Visibility visibility;
-    private boolean activateOnStartup;
+    private boolean instantiateOnStartup;
     private Map<Class, Serializable> serviceInfos;
 
     public ServiceDescriptor( Class serviceType,
                               Class<? extends ServiceInstanceProvider> serviceProvider,
                               String identity,
                               Visibility visibility,
-                              boolean activateOnStartup,
+                              boolean instantiateOnStartup,
                               Map<Class, Serializable> serviceInfos )
     {
         this.serviceType = serviceType;
         this.serviceProvider = serviceProvider;
         this.identity = identity;
         this.visibility = visibility;
-        this.activateOnStartup = activateOnStartup;
+        this.instantiateOnStartup = instantiateOnStartup;
         this.serviceInfos = serviceInfos;
     }
 
@@ -68,9 +68,9 @@ public final class ServiceDescriptor
         return visibility;
     }
 
-    public boolean isActivateOnStartup()
+    public boolean isInstantiateOnStartup()
     {
-        return activateOnStartup;
+        return instantiateOnStartup;
     }
 
     public Map<Class, Serializable> getServiceInfos()
@@ -81,5 +81,10 @@ public final class ServiceDescriptor
     public <K extends Serializable> K getServiceInfo( Class<K> infoType )
     {
         return (K) serviceInfos.get( infoType );
+    }
+
+    @Override public String toString()
+    {
+        return identity + "(" + serviceType.getName() + ", visible in " + visibility + ")";
     }
 }

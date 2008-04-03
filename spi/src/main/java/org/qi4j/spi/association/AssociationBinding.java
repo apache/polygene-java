@@ -40,22 +40,22 @@ public final class AssociationBinding
         return associationResolution;
     }
 
-    public <T> T getAssociationInfo( Class<T> infoClass )
+    public <T> T metaInfo( Class<T> infoClass )
     {
         return infoClass.cast( associationInfo.get( infoClass ) );
     }
 
-    public String getName()
+    public String name()
     {
         return associationResolution.getAssociationModel().getName();
     }
 
-    public String getQualifiedName()
+    public String qualifiedName()
     {
         return associationResolution.getAssociationModel().getQualifiedName();
     }
 
-    public Type getAssociationType()
+    public Type type()
     {
         return associationResolution.getAssociationModel().getType();
     }

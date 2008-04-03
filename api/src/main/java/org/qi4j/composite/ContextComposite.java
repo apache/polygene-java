@@ -43,7 +43,7 @@ public class ContextComposite<T extends Composite>
     {
         Composite composite = get();
 
-        return (T) Proxy.newProxyInstance( composite.getClass().getClassLoader(), new Class[]{ composite.getCompositeType() }, new ContextInvocationhandler() );
+        return (T) Proxy.newProxyInstance( composite.getClass().getClassLoader(), new Class[]{ composite.type() }, new ContextInvocationhandler() );
     }
 
     private class ContextInvocationhandler

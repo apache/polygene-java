@@ -38,6 +38,8 @@ import org.qi4j.runtime.structure.ApplicationContext;
 import org.qi4j.runtime.structure.LayerContext;
 import org.qi4j.runtime.structure.ModuleContext;
 import org.qi4j.service.ServiceComposite;
+import org.qi4j.service.ServiceDescriptor;
+import org.qi4j.service.ServiceInstanceProvider;
 import org.qi4j.spi.association.AssociationBinding;
 import org.qi4j.spi.composite.AssociationModel;
 import org.qi4j.spi.composite.CompositeBinding;
@@ -50,7 +52,6 @@ import org.qi4j.spi.injection.BindingContext;
 import org.qi4j.spi.injection.ResolutionContext;
 import org.qi4j.spi.property.PropertyBinding;
 import org.qi4j.spi.property.PropertyModel;
-import org.qi4j.spi.service.ServiceInstanceProvider;
 import org.qi4j.spi.structure.ApplicationBinding;
 import org.qi4j.spi.structure.ApplicationModel;
 import org.qi4j.spi.structure.ApplicationResolution;
@@ -64,8 +65,7 @@ import org.qi4j.spi.structure.ModuleModel;
 import org.qi4j.spi.structure.ModuleResolution;
 import org.qi4j.spi.structure.ObjectDescriptor;
 import org.qi4j.spi.structure.PropertyDescriptor;
-import org.qi4j.spi.structure.ServiceDescriptor;
-import org.qi4j.spi.structure.Visibility;
+import org.qi4j.structure.Visibility;
 
 /**
  * Builder for Applications. This can be used to construct

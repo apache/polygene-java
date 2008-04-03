@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 import org.qi4j.runtime.composite.ObjectModelFactory;
 import org.qi4j.spi.structure.ObjectDescriptor;
-import org.qi4j.spi.structure.Visibility;
+import org.qi4j.structure.Visibility;
 
 /**
  * Declaration of an Object. Created by {@link org.qi4j.bootstrap.ModuleAssembly#addObjects(Class[])}.

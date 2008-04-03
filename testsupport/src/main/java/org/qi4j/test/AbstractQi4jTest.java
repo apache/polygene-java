@@ -79,6 +79,11 @@ public abstract class AbstractQi4jTest
 
     @After public void tearDown() throws Exception
     {
+        if( unitOfWorkFactory.getCurrentUnitOfWork() != null )
+        {
+            throw new Exception( "UnitOfWork not properly cleaned up" );
+        }
+
         if( application != null )
         {
             application.passivate();

@@ -42,7 +42,7 @@ public final class CompositeOutputStream extends ObjectOutputStream
         if( obj instanceof Composite && obj instanceof Proxy )
         {
             Composite composite = (Composite) obj;
-            Class compositeInterface = composite.getCompositeType();
+            Class compositeInterface = composite.type();
             if( obj instanceof EntityComposite )
             {
                 String id = ( (EntityComposite) composite ).identity().get();

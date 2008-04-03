@@ -23,7 +23,6 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 import org.qi4j.property.Property;
-import org.qi4j.property.PropertyVetoException;
 import org.qi4j.spi.structure.PropertyDescriptor;
 
 /**
@@ -106,27 +105,27 @@ public final class PropertyDeclaration
             return null;
         }
 
-        public <T> T getPropertyInfo( Class<T> infoType )
+        public <T> T metaInfo( Class<T> infoType )
         {
             return null;
         }
 
-        public String getName()
+        public String name()
         {
             return null;
         }
 
-        public String getQualifiedName()
+        public String qualifiedName()
         {
             return null;
         }
 
-        public Type getPropertyType()
+        public Type type()
         {
             return null;
         }
 
-        public Object set( Object newValue ) throws PropertyVetoException
+        public Object set( Object newValue ) throws IllegalArgumentException
         {
             defaultValue = newValue;
             return newValue;

@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.qi4j.composite.Composite;
+import org.qi4j.service.ServiceDescriptor;
 import org.qi4j.spi.composite.CompositeResolution;
 import org.qi4j.spi.composite.ObjectResolution;
 

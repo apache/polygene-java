@@ -30,7 +30,7 @@ public interface EntityStore
      * <p/>
      * This should only create the EntityState
      * and not insert it into any database, since
-     * that should occur during the {@link #prepare(Iterable}
+     * that should occur during the {@link #prepare}
      * call.
      *
      * @param identity the identity of the entity

@@ -23,24 +23,24 @@ public class AbstractAssociationInstance<T>
     }
 
     // AssociationInfo implementation
-    public <T> T getAssociationInfo( Class<T> infoType )
+    public <T> T metaInfo( Class<T> infoType )
     {
-        return associationInfo.getAssociationInfo( infoType );
+        return associationInfo.metaInfo( infoType );
     }
 
-    public String getName()
+    public String name()
     {
-        return associationInfo.getName();
+        return associationInfo.name();
     }
 
-    public String getQualifiedName()
+    public String qualifiedName()
     {
-        return associationInfo.getQualifiedName();
+        return associationInfo.qualifiedName();
     }
 
-    public Type getAssociationType()
+    public Type type()
     {
-        return associationInfo.getAssociationType();
+        return associationInfo.type();
     }
 
     protected T getEntity( EntityId entityId )
@@ -62,7 +62,7 @@ public class AbstractAssociationInstance<T>
         }
 
         EntityComposite entityComposite = (EntityComposite) composite;
-        return new EntityId( entityComposite.identity().get(), entityComposite.getCompositeType().getName() );
+        return new EntityId( entityComposite.identity().get(), entityComposite.type().getName() );
     }
 
 }

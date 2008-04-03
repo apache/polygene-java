@@ -15,13 +15,14 @@
 package org.qi4j.spi.service.provider;
 
 import org.qi4j.composite.Composite;
+import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.CompositeBuilderFactory;
+import org.qi4j.composite.ObjectBuilder;
 import org.qi4j.composite.ObjectBuilderFactory;
 import org.qi4j.composite.scope.Structure;
+import org.qi4j.service.ServiceDescriptor;
+import org.qi4j.service.ServiceInstanceProvider;
 import org.qi4j.service.ServiceInstanceProviderException;
-import org.qi4j.spi.service.ServiceInstance;
-import org.qi4j.spi.service.ServiceInstanceProvider;
-import org.qi4j.spi.structure.ServiceDescriptor;
 
 /**
  * Default service instance provider that simply uses
@@ -38,15 +39,19 @@ public final class DefaultServiceInstanceProvider
     {
         if( Composite.class.isAssignableFrom( descriptor.getServiceType() ) )
         {
-            return cbf.newComposite( descriptor.getServiceType() );
+            CompositeBuilder builder = cbf.newCompositeBuilder( descriptor.getServiceType() );
+            builder.use( descriptor );
+            return builder.newInstance();
         }
         else
         {
-            return obf.newObject( descriptor.getServiceType() );
+            ObjectBuilder builder = obf.newObjectBuilder( descriptor.getServiceType() );
+            builder.use( descriptor );
+            return builder.newInstance();
         }
     }
 
-    public void releaseInstance( ServiceInstance instance )
+    public void releaseInstance( Object instance )
     {
     }
 }

@@ -42,22 +42,22 @@ public final class PropertyBinding
         return propertyResolution;
     }
 
-    public <T> T getPropertyInfo( Class<T> infoClass )
+    public <T> T metaInfo( Class<T> infoClass )
     {
         return infoClass.cast( propertyInfo.get( infoClass ) );
     }
 
-    public String getName()
+    public String name()
     {
         return propertyResolution.getPropertyModel().getName();
     }
 
-    public String getQualifiedName()
+    public String qualifiedName()
     {
         return propertyResolution.getPropertyModel().getQualifiedName();
     }
 
-    public Type getPropertyType()
+    public Type type()
     {
         return propertyResolution.getPropertyModel().getType();
     }

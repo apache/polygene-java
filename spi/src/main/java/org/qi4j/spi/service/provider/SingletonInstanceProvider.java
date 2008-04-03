@@ -14,10 +14,9 @@
 
 package org.qi4j.spi.service.provider;
 
+import org.qi4j.service.ServiceDescriptor;
+import org.qi4j.service.ServiceInstanceProvider;
 import org.qi4j.service.ServiceInstanceProviderException;
-import org.qi4j.spi.service.ServiceInstance;
-import org.qi4j.spi.service.ServiceInstanceProvider;
-import org.qi4j.spi.structure.ServiceDescriptor;
 
 /**
  * Return a predefined singleton instance that was provided as service-info
@@ -32,7 +31,7 @@ public class SingletonInstanceProvider
         return serviceDescriptor.getServiceInfo( Singleton.class ).getInstance();
     }
 
-    public void releaseInstance( ServiceInstance instance ) throws Exception
+    public void releaseInstance( Object instance ) throws Exception
     {
     }
 }

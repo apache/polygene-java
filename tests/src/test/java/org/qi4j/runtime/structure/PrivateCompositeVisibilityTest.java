@@ -27,7 +27,7 @@ import org.qi4j.composite.Mixins;
 import org.qi4j.composite.scope.Structure;
 import org.qi4j.runtime.Energy4Java;
 import org.qi4j.runtime.Qi4jRuntime;
-import org.qi4j.spi.structure.Visibility;
+import org.qi4j.structure.Visibility;
 
 /**
  * TODO
