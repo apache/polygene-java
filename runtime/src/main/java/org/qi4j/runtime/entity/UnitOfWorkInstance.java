@@ -65,8 +65,13 @@ public final class UnitOfWorkInstance
 
     static
     {
-        current = new ThreadLocal<Stack<UnitOfWork>>();
-        current.set( new Stack<UnitOfWork>() );
+        current = new ThreadLocal<Stack<UnitOfWork>>()
+        {
+            protected Stack<UnitOfWork> initialValue()
+            {
+                return new Stack<UnitOfWork>();
+            }
+        };
     }
 
     public UnitOfWorkInstance( ModuleInstance moduleInstance, StateServices stateServices )
