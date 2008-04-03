@@ -18,8 +18,8 @@
  */
 package org.qi4j.library.auth;
 
-import org.qi4j.association.ListAssociation;
 import org.qi4j.entity.Entity;
+import org.qi4j.entity.association.ListAssociation;
 
 public interface Role extends Entity
 {

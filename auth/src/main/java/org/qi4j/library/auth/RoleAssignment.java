@@ -15,7 +15,7 @@
 
 package org.qi4j.library.auth;
 
-import org.qi4j.association.Association;
+import org.qi4j.entity.association.Association;
 import org.qi4j.property.Property;
 
 /**

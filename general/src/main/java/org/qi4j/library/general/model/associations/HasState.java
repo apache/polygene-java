@@ -13,9 +13,9 @@
 package org.qi4j.library.general.model.associations;
 
 import java.io.Serializable;
-import org.qi4j.association.Association;
 import org.qi4j.composite.Mixins;
 import org.qi4j.composite.scope.AssociationField;
+import org.qi4j.entity.association.Association;
 import org.qi4j.library.general.model.State;
 
 /**
