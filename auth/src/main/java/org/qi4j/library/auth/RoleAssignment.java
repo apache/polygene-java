@@ -29,9 +29,9 @@ public interface RoleAssignment
 
     Property<RoleCondition> condition();
 
-    Property<Type> type();
+    Property<RoleType> roleType();
 
-    public enum Type
+    public enum RoleType
     {
         ALLOW, DENY
     }

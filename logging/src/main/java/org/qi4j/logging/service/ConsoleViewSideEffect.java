@@ -74,35 +74,35 @@ public abstract class ConsoleViewSideEffect
     public void debug( Composite composite, String message )
     {
         String localized = bundle.getString( message );
-        OUT.println( "DEBUG:" + composite.getCompositeType().getName() + ": " + localized );
+        OUT.println( "DEBUG:" + composite.type().getName() + ": " + localized );
     }
 
     public void debug( Composite composite, String message, Object param1 )
     {
         String localized = bundle.getString( message );
         String formatted = MessageFormat.format( localized, param1 );
-        OUT.println( "DEBUG:" + composite.getCompositeType().getName() + ": " + formatted );
+        OUT.println( "DEBUG:" + composite.type().getName() + ": " + formatted );
     }
 
     public void debug( Composite composite, String message, Object param1, Object param2 )
     {
         String localized = bundle.getString( message );
         String formatted = MessageFormat.format( localized, param1, param2 );
-        OUT.println( "DEBUG:" + composite.getCompositeType().getName() + ": " + formatted );
+        OUT.println( "DEBUG:" + composite.type().getName() + ": " + formatted );
     }
 
     public void debug( Composite composite, String message, Object... params )
     {
         String localized = bundle.getString( message );
         String formatted = MessageFormat.format( localized, params );
-        OUT.println( "DEBUG:" + composite.getCompositeType().getName() + ": " + formatted );
+        OUT.println( "DEBUG:" + composite.type().getName() + ": " + formatted );
     }
 
     public void log( LogType type, Composite composite, String category, String message )
     {
         String localized = bundle.getString( message );
         String logType = type.logTypeName().get();
-        OUT.println( logType + ":" + category + ":" + composite.getCompositeType().getName() + ": " + localized );
+        OUT.println( logType + ":" + category + ":" + composite.type().getName() + ": " + localized );
     }
 
     public void log( LogType type, Composite composite, String category, String message, Object param1 )
@@ -110,7 +110,7 @@ public abstract class ConsoleViewSideEffect
         String localized = bundle.getString( message );
         String formatted = MessageFormat.format( localized, param1 );
         String logType = type.logTypeName().get();
-        OUT.println( logType + ":" + category + ":" + composite.getCompositeType().getName() + ": " + formatted );
+        OUT.println( logType + ":" + category + ":" + composite.type().getName() + ": " + formatted );
     }
 
     public void log( LogType type, Composite composite, String category, String message, Object param1, Object param2 )
@@ -118,7 +118,7 @@ public abstract class ConsoleViewSideEffect
         String localized = bundle.getString( message );
         String formatted = MessageFormat.format( localized, param1, param2 );
         String logtype = type.logTypeName().get();
-        OUT.println( logtype + ":" + category + ":" + composite.getCompositeType().getName() + ": " + formatted );
+        OUT.println( logtype + ":" + category + ":" + composite.type().getName() + ": " + formatted );
     }
 
     public void log( LogType type, Composite composite, String category, String message, Object... params )
@@ -126,7 +126,7 @@ public abstract class ConsoleViewSideEffect
         String localized = bundle.getString( message );
         String formatted = MessageFormat.format( localized, params );
         String logType = type.logTypeName().get();
-        OUT.println( logType + ":" + category + ":" + composite.getCompositeType().getName() + ": " + formatted );
+        OUT.println( logType + ":" + category + ":" + composite.type().getName() + ": " + formatted );
     }
 
     private void formatMethod( StringBuffer buf, Class compositeType, Method method, Object[] args )

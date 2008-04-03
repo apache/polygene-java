@@ -21,12 +21,12 @@ import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.qi4j.library.framework.rdf.Qi4jRdf;
 import org.qi4j.library.framework.rdf.parse.ParseContext;
+import org.qi4j.service.ServiceDescriptor;
 import org.qi4j.spi.structure.CompositeDescriptor;
 import org.qi4j.spi.structure.LayerModel;
 import org.qi4j.spi.structure.ModuleModel;
 import org.qi4j.spi.structure.ObjectDescriptor;
-import org.qi4j.spi.structure.ServiceDescriptor;
-import org.qi4j.spi.structure.Visibility;
+import org.qi4j.structure.Visibility;
 
 public final class ModuleParser
 {

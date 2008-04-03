@@ -28,10 +28,9 @@ import org.qi4j.composite.Mixins;
 import org.qi4j.composite.scope.ConcernFor;
 import org.qi4j.composite.scope.Structure;
 import org.qi4j.logging.service.LogServiceComposite;
+import org.qi4j.service.ServiceDescriptor;
+import org.qi4j.service.ServiceInstanceProvider;
 import org.qi4j.service.ServiceInstanceProviderException;
-import org.qi4j.spi.service.ServiceInstance;
-import org.qi4j.spi.service.ServiceInstanceProvider;
-import org.qi4j.spi.structure.ServiceDescriptor;
 import org.qi4j.test.AbstractQi4jTest;
 
 public class TracingTest
@@ -116,7 +115,7 @@ public class TracingTest
             return instance;
         }
 
-        public void releaseInstance( ServiceInstance instance ) throws Exception
+        public void releaseInstance( Object instance ) throws Exception
         {
         }
     }

@@ -98,7 +98,7 @@ public class AuthTest
         RoleAssignment roleAssignment = unit.newEntityBuilder( RoleAssignment.class ).newInstance();
         roleAssignment.assignee().set( user );
         roleAssignment.role().set( role );
-        roleAssignment.type().set( RoleAssignment.Type.ALLOW );
+        roleAssignment.roleType().set( RoleAssignment.RoleType.ALLOW );
         room.roleAssignments().add( roleAssignment );
 
         // Check permission
@@ -113,7 +113,7 @@ public class AuthTest
         RoleAssignment groupRoleAssignment = unit.newEntityBuilder( RoleAssignment.class ).newInstance();
         groupRoleAssignment.assignee().set( group );
         groupRoleAssignment.role().set( role );
-        groupRoleAssignment.type().set( RoleAssignment.Type.ALLOW );
+        groupRoleAssignment.roleType().set( RoleAssignment.RoleType.ALLOW );
         room.roleAssignments().add( groupRoleAssignment );
 
         room.roleAssignments().add( groupRoleAssignment );
@@ -121,6 +121,8 @@ public class AuthTest
 
         // Check permission - user should still be allowed
         assertTrue( authorization.hasPermission( permission, room, context ) );
+
+        unit.discard();
     }
 
     public interface SecuredRoom

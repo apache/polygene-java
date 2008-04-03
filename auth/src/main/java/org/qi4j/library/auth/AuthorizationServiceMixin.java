@@ -57,7 +57,7 @@ public class AuthorizationServiceMixin
             {
                 if( permission.equals( requiredPermission ) )
                 {
-                    if( roleAssignment.type().get().equals( RoleAssignment.Type.ALLOW ) )
+                    if( roleAssignment.roleType().get().equals( RoleAssignment.RoleType.ALLOW ) )
                     {
                         return true;
                     }

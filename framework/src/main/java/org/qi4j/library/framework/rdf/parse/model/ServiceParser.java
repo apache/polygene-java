@@ -24,10 +24,10 @@ import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
 import org.qi4j.library.framework.rdf.Qi4jRdf;
 import org.qi4j.library.framework.rdf.parse.ParseContext;
-import org.qi4j.spi.service.ServiceInstanceProvider;
+import org.qi4j.service.ServiceDescriptor;
+import org.qi4j.service.ServiceInstanceProvider;
 import org.qi4j.spi.structure.LayerModel;
 import org.qi4j.spi.structure.ModuleModel;
-import org.qi4j.spi.structure.ServiceDescriptor;
 
 public class ServiceParser
 {
