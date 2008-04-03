@@ -28,10 +28,10 @@ import org.qi4j.query.grammar.BooleanExpression;
 import org.qi4j.query.grammar.ComparisonPredicate;
 import org.qi4j.query.grammar.Conjunction;
 import org.qi4j.query.grammar.EqualsPredicate;
+import org.qi4j.query.grammar.GreaterOrEqualPredicate;
 import org.qi4j.query.grammar.PropertyReference;
 import org.qi4j.query.grammar.SingleValueExpression;
 import org.qi4j.query.grammar.ValueExpression;
-import org.qi4j.query.grammar.GreaterOrEqualPredicate;
 
 /**
  * TODO Add JavaDoc
@@ -110,9 +110,9 @@ class SPARQLRDFQueryParser
         {
             filter
                 .append( "(" )
-                .append( process( ( (Conjunction) expression ).getLeftSideExpression() ) )
+                .append( process( ( (Conjunction) expression ).leftSideExpression() ) )
                 .append( " && " )
-                .append( process( ( (Conjunction) expression ).getRightSideExpression() ) )
+                .append( process( ( (Conjunction) expression ).rightSideExpression() ) )
                 .append( ")" );
         }
         else if( expression instanceof EqualsPredicate )
@@ -129,11 +129,11 @@ class SPARQLRDFQueryParser
     }
 
     private void processComparisonPredicate( final ComparisonPredicate predicate,
-                                        final String operator,
-                                        final StringBuilder filter )
+                                             final String operator,
+                                             final StringBuilder filter )
     {
-        String valueVariable = addTriple( predicate.getPropertyReference() );
-        ValueExpression valueExpression = predicate.getValueExpression();
+        String valueVariable = addTriple( predicate.propertyReference() );
+        ValueExpression valueExpression = predicate.valueExpression();
         if( valueExpression instanceof SingleValueExpression )
         {
             filter
@@ -142,7 +142,7 @@ class SPARQLRDFQueryParser
                 .append( " " )
                 .append( operator )
                 .append( " \"" )
-                .append( ( (SingleValueExpression) valueExpression ).getValue() )
+                .append( ( (SingleValueExpression) valueExpression ).value() )
                 .append( "\")" );
         }
     }
@@ -168,23 +168,23 @@ class SPARQLRDFQueryParser
     private String addTriple( PropertyReference propertyReference )
     {
         String subject = "?entity";
-        if( propertyReference.getTraversedAssociation() != null )
+        if( propertyReference.traversedAssociation() != null )
         {
-            subject = addTriple( propertyReference.getTraversedAssociation() );
+            subject = addTriple( propertyReference.traversedAssociation() );
         }
-        String ns = addNamespace( propertyReference.getPropertyReferenceDeclaringType() );
-        return addTriple( subject, ns + ":" + propertyReference.getPropertyReferenceName() );
+        String ns = addNamespace( propertyReference.propertyDeclaringType() );
+        return addTriple( subject, ns + ":" + propertyReference.propertyName() );
     }
 
     private String addTriple( AssociationReference associationReference )
     {
         String subject = "?entity";
-        if( associationReference.getTraversedAssociation() != null )
+        if( associationReference.traversedAssociation() != null )
         {
-            subject = addTriple( associationReference.getTraversedAssociation() );
+            subject = addTriple( associationReference.traversedAssociation() );
         }
-        String ns = addNamespace( associationReference.getAssociationReferenceDeclaringType() );
-        return addTriple( subject, ns + ":" + associationReference.getAssociationReferenceName() );
+        String ns = addNamespace( associationReference.associationDeclaringType() );
+        return addTriple( subject, ns + ":" + associationReference.associationName() );
     }
 
     private String addTriple( String subject, String predicate )

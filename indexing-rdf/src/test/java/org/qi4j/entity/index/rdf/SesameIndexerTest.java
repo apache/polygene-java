@@ -47,7 +47,7 @@ public class SesameIndexerTest
             }
         };
         Network.populate( assembler.getUnitOfWorkFactory().newUnitOfWork() );
-        assembler.getServiceLocator().lookupService( RDFIndexerExporterComposite.class ).getService().toRDF( System.out );
+        assembler.getServiceLocator().lookupService( RDFIndexerExporterComposite.class ).get().toRDF( System.out );
     }
 
 

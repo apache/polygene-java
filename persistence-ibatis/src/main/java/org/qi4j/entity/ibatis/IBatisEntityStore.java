@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.io.Serializable;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -71,9 +70,8 @@ final class IBatisEntityStore
     {
         validateNotNull( "aServiceDescriptor", aServiceDescriptor );
 
-        Map<Class, Serializable> serviceInfos = aServiceDescriptor.getServiceInfos();
-        serviceInfo = (IBatisEntityStoreServiceInfo) serviceInfos.get( IBatisEntityStoreServiceInfo.class );
-        dbInitializerInfo = (DBInitializerInfo) serviceInfos.get( DBInitializerInfo.class );
+        serviceInfo = aServiceDescriptor.serviceAttribute( IBatisEntityStoreServiceInfo.class );
+        dbInitializerInfo = aServiceDescriptor.serviceAttribute( DBInitializerInfo.class );
         dao = new EntityStateDao();
 
         client = null;

@@ -34,7 +34,6 @@ import jdbm.htree.HTree;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.scope.Structure;
 import org.qi4j.composite.scope.ThisCompositeAs;
-import org.qi4j.entity.PersistenceException;
 import org.qi4j.library.framework.locking.WriteLock;
 import org.qi4j.service.Activatable;
 import org.qi4j.spi.Qi4jSPI;
@@ -80,7 +79,7 @@ public class JdbmSerializationEntityStoreMixin
         }
         catch( IOException e )
         {
-            throw new PersistenceException( "Unable to read properties from " + directory + "/qi4j.properties", e );
+            throw new EntityStoreException( "Unable to read properties from " + directory + "/qi4j.properties", e );
         }
         recordManager = RecordManagerFactory.createRecordManager( name, properties );
         serializer = new ByteArraySerializer();

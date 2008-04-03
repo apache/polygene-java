@@ -74,7 +74,7 @@ public class JGroupsEntityStoreTest
         // Find entity in app 2
         System.out.println( "Find entity" );
         UnitOfWork app2Unit = app2.getUnitOfWorkFactory().newUnitOfWork();
-        instance = app2Unit.getReference( instance );
+        instance = app2Unit.dereference( instance );
 
         System.out.println( instance.name() );
         app2Unit.discard();

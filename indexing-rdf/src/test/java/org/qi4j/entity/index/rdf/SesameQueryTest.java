@@ -54,13 +54,13 @@ public class SesameQueryTest
             }
         };
         Network.populate( assembler.getUnitOfWorkFactory().newUnitOfWork() );
-        searchEngine = assembler.getServiceLocator().lookupService( RDFIndexerComposite.class ).getService();
+        searchEngine = assembler.getServiceLocator().lookupService( RDFIndexerComposite.class ).get();
     }
 
     @Test
     public void showNetwork()
     {
-        assembler.getServiceLocator().lookupService( RDFIndexerExporterComposite.class ).getService().toRDF( System.out );
+        assembler.getServiceLocator().lookupService( RDFIndexerExporterComposite.class ).get().toRDF( System.out );
     }
 
     @Test

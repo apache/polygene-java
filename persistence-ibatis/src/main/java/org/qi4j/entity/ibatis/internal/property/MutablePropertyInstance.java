@@ -45,7 +45,7 @@ public final class MutablePropertyInstance<T> extends PropertyInstance<T>
         isDirty = false;
     }
 
-    public T set( T aNewValue )
+    public void set( T aNewValue )
     {
         if( !isDirty )
         {
@@ -53,8 +53,6 @@ public final class MutablePropertyInstance<T> extends PropertyInstance<T>
         }
 
         super.set( aNewValue );
-
-        return aNewValue;
     }
 
 
