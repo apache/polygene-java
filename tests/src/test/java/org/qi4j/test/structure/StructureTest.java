@@ -44,7 +44,7 @@ public class StructureTest
             {
                 {
                     ModuleAssembly mb = applicationLayer.newModuleAssembly();
-                    mb.addAssembly( new DomainApplicationAssembler() );
+                    mb.addAssembler( new DomainApplicationAssembler() );
                 }
             }
 
@@ -52,7 +52,7 @@ public class StructureTest
             {
                 {
                     ModuleAssembly mb = viewLayer.newModuleAssembly();
-                    mb.addAssembly( new ViewAssembler() );
+                    mb.addAssembler( new ViewAssembler() );
                 }
                 viewLayer.uses( applicationLayer );
             }

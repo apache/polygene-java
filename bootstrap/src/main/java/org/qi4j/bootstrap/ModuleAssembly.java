@@ -52,7 +52,7 @@ public final class ModuleAssembly
         associationDeclarations = new ArrayList<AssociationDeclaration>();
     }
 
-    public void addAssembly( Assembler assembler )
+    public void addAssembler( Assembler assembler )
         throws AssemblyException
     {
         // Invoke Assembler callback

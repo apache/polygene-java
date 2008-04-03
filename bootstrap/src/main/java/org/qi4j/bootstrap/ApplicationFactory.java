@@ -64,7 +64,7 @@ public final class ApplicationFactory
                 for( int assembly = 0; assembly < assemblers[ layer ][ module ].length; assembly++ )
                 {
                     // Register Assembler
-                    mb.addAssembly( assemblers[ layer ][ module ][ assembly ] );
+                    mb.addAssembler( assemblers[ layer ][ module ][ assembly ] );
                 }
             }
             if( below != null )
