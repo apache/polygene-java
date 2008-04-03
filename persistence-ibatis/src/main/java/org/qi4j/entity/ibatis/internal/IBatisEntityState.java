@@ -155,7 +155,7 @@ public final class IBatisEntityState
     {
         Object value = null;
 
-        String propertyName = propertyBinding.getName().toUpperCase();
+        String propertyName = propertyBinding.name().toUpperCase();
         if( propertyValues.containsKey( propertyName ) )
         {
             // TODO: Handle mapping of compound property?

@@ -1,8 +1,12 @@
 package org.qi4j.entity.jdbm;
 
+import java.io.File;
+import org.junit.After;
 import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.entity.memory.MemoryEntityStoreComposite;
+import org.qi4j.structure.Visibility;
 import org.qi4j.test.entity.AbstractEntityStorePerformanceTest;
 
 /**
@@ -15,7 +19,25 @@ public class JdbmEntityStorePerformanceTest
     {
         super.assemble( module );
         module.addServices( JdbmEntityStoreComposite.class );
+
+        ModuleAssembly config = module.getLayerAssembly().newModuleAssembly();
+        config.setName( "config" );
+        config.addComposites( JdbmConfigurationComposite.class ).visibleIn( Visibility.layer );
+        config.addServices( MemoryEntityStoreComposite.class );
     }
+
+    @Override @After public void tearDown() throws Exception
+    {
+        super.tearDown();
+
+        boolean deleted = new File( "qi4j.data.db" ).delete();
+        deleted = deleted | new File( "qi4j.data.lg" ).delete();
+        if( !deleted )
+        {
+            throw new Exception( "Could not delete test data" );
+        }
+    }
+
 
     @Override @Test
     public void whenNewEntitiesThenPerformanceIsOk() throws Exception

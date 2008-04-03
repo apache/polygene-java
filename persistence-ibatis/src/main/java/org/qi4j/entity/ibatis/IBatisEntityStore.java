@@ -36,13 +36,13 @@ import org.qi4j.entity.ibatis.dbInitializer.DBInitializer;
 import org.qi4j.entity.ibatis.dbInitializer.DBInitializerInfo;
 import org.qi4j.entity.ibatis.internal.IBatisEntityState;
 import org.qi4j.entity.ibatis.internal.IBatisEntityStateDao;
+import org.qi4j.service.ServiceDescriptor;
 import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.composite.CompositeModel;
 import org.qi4j.spi.composite.CompositeResolution;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.StateCommitter;
-import org.qi4j.spi.structure.ServiceDescriptor;
 
 /**
  * TODO: Figure out how does transaction supposed for all EntityStore methods.

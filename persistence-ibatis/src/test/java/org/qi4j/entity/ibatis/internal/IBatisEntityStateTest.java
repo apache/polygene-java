@@ -250,7 +250,7 @@ public final class IBatisEntityStateTest extends AbstractTestCase
         Map<String, PropertyBinding> properties = new HashMap<String, PropertyBinding>();
         for( PropertyBinding aBinding : propertyBindings )
         {
-            String propertyName = aBinding.getName();
+            String propertyName = aBinding.name();
             properties.put( propertyName, aBinding );
         }
         assertFalse( "Properties must not be empty.", properties.isEmpty() );

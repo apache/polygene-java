@@ -230,7 +230,7 @@ public final class IBatisAssociationTest extends AbstractQi4jTest
 
         for( AssociationBinding associationBinding : associationBindings )
         {
-            String associationName = associationBinding.getName();
+            String associationName = associationBinding.name();
             if( "primaryContactPerson".equals( associationName ) )
             {
                 return associationBinding;

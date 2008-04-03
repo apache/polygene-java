@@ -111,7 +111,7 @@ public class IBatisAbstractAssociationInstanceTest extends AbstractQi4jTest
         Map<String, AssociationBinding> associations = new HashMap<String, AssociationBinding>();
         for( AssociationBinding associationBinding : associationBindings )
         {
-            String associationName = associationBinding.getName();
+            String associationName = associationBinding.name();
             associations.put( associationName, associationBinding );
         }
         return associations;
@@ -136,7 +136,7 @@ public class IBatisAbstractAssociationInstanceTest extends AbstractQi4jTest
         // ---------------------
         // Test get association info
         // ---------------------
-        assertEquals( null, instance.getAssociationInfo( String.class ) );
+        assertEquals( null, instance.metaInfo( String.class ) );
 
         AssociationResolution resolution = primaryContactPersonBinding.getAssociationResolution();
         AssociationModel model = resolution.getAssociationModel();
@@ -144,12 +144,12 @@ public class IBatisAbstractAssociationInstanceTest extends AbstractQi4jTest
         // -------------
         // Test get name
         // -------------
-        assertEquals( model.getName(), instance.getName() );
+        assertEquals( model.getName(), instance.name() );
 
         // -------------------
         // Test qualified name
         // -------------------
-        assertEquals( model.getQualifiedName(), instance.getQualifiedName() );
+        assertEquals( model.getQualifiedName(), instance.qualifiedName() );
 
         // *******************
         // Test internal state

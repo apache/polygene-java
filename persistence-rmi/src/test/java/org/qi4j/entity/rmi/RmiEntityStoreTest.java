@@ -31,7 +31,7 @@ public class RmiEntityStoreTest
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
         super.assemble( module );
-        module.addServices( ClientRmiEntityStoreComposite.class ).activateOnStartup();
+        module.addServices( ClientRmiEntityStoreComposite.class ).instantiateOnStartup();
     }
 
     @Override @After public void tearDown() throws Exception

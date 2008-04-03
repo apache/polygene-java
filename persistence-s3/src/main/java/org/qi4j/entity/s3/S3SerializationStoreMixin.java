@@ -31,9 +31,7 @@ import org.jets3t.service.impl.rest.httpclient.RestS3Service;
 import org.jets3t.service.model.S3Bucket;
 import org.jets3t.service.model.S3Object;
 import org.jets3t.service.security.AWSCredentials;
-import org.qi4j.composite.scope.Structure;
 import org.qi4j.composite.scope.ThisCompositeAs;
-import org.qi4j.entity.UnitOfWorkFactory;
 import org.qi4j.library.framework.locking.WriteLock;
 import org.qi4j.service.Activatable;
 import org.qi4j.spi.entity.EntityNotFoundException;
@@ -56,7 +54,7 @@ public class S3SerializationStoreMixin
     implements EntityStore, Activatable
 {
     private @ThisCompositeAs ReadWriteLock lock;
-    private @Structure UnitOfWorkFactory uowf;
+    private @ThisCompositeAs S3ConfigurationComposite configuration;
 
     private S3Service s3Service;
     private S3Bucket entityBucket;
@@ -64,10 +62,8 @@ public class S3SerializationStoreMixin
     // Activatable implementation
     public void activate() throws Exception
     {
-        S3ConfigurationComposite config = uowf.newUnitOfWork().getReference( "s3configuration", S3ConfigurationComposite.class );
-
-        String awsAccessKey = config.accessKey().get();
-        String awsSecretKey = config.secretKey().get();
+        String awsAccessKey = configuration.accessKey().get();
+        String awsSecretKey = configuration.secretKey().get();
 
         AWSCredentials awsCredentials =
             new AWSCredentials( awsAccessKey, awsSecretKey );

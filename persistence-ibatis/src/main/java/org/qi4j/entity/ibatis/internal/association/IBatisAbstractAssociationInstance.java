@@ -54,9 +54,9 @@ public abstract class IBatisAbstractAssociationInstance implements AbstractAssoc
      * @return Returns the association info.
      * @since 0.1.0
      */
-    public final <T> T getAssociationInfo( Class<T> infoType )
+    public final <T> T metaInfo( Class<T> infoType )
     {
-        return associationBinding.getAssociationInfo( infoType );
+        return associationBinding.metaInfo( infoType );
     }
 
     /**
@@ -65,11 +65,11 @@ public abstract class IBatisAbstractAssociationInstance implements AbstractAssoc
      * @return The association name.
      * @since 0.1.0
      */
-    public final String getName()
+    public final String name()
     {
         AssociationResolution associationResolution = associationBinding.getAssociationResolution();
         AssociationModel model = associationResolution.getAssociationModel();
-        return associationBinding.getName();
+        return associationBinding.name();
     }
 
     /**
@@ -78,14 +78,14 @@ public abstract class IBatisAbstractAssociationInstance implements AbstractAssoc
      * @return The association qualified name.
      * @since 0.1.0
      */
-    public final String getQualifiedName()
+    public final String qualifiedName()
     {
         AssociationResolution associationResolution = associationBinding.getAssociationResolution();
         AssociationModel model = associationResolution.getAssociationModel();
         return model.getQualifiedName();
     }
 
-    public Type getAssociationType()
+    public Type type()
     {
         return null;
     }

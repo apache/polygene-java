@@ -36,6 +36,7 @@ import org.qi4j.entity.ibatis.internal.IBatisEntityState;
 import org.qi4j.property.Property;
 import org.qi4j.runtime.composite.CompositeContext;
 import org.qi4j.runtime.structure.ModuleContext;
+import org.qi4j.service.ServiceDescriptor;
 import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.composite.CompositeMethodBinding;
 import org.qi4j.spi.composite.CompositeMethodModel;
@@ -43,8 +44,7 @@ import org.qi4j.spi.composite.CompositeMethodResolution;
 import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.property.PropertyBinding;
 import org.qi4j.spi.service.provider.DefaultServiceInstanceProvider;
-import org.qi4j.spi.structure.ServiceDescriptor;
-import static org.qi4j.spi.structure.Visibility.*;
+import static org.qi4j.structure.Visibility.*;
 
 /**
  * {@code IBatisEntityStoreTest} tests {@code IBatisEntityStore}.
@@ -208,7 +208,7 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
 
                 if( property == null )
                 {
-                    String propertyName = propertyBinding.getName();
+                    String propertyName = propertyBinding.name();
                     fail( "Property [" + propertyName + "] is not found." );
                 }
             }

@@ -47,7 +47,7 @@ public class JGroupsEntityStoreTest
         {
             public void assemble( ModuleAssembly module ) throws AssemblyException
             {
-                module.addServices( JGroupsEntityStoreComposite.class, UuidIdentityGeneratorComposite.class ).activateOnStartup();
+                module.addServices( JGroupsEntityStoreComposite.class, UuidIdentityGeneratorComposite.class ).instantiateOnStartup();
                 module.addComposites( TestComposite.class );
             }
         };
@@ -57,7 +57,7 @@ public class JGroupsEntityStoreTest
         {
             public void assemble( ModuleAssembly module ) throws AssemblyException
             {
-                module.addServices( JGroupsEntityStoreComposite.class, UuidIdentityGeneratorComposite.class ).activateOnStartup();
+                module.addServices( JGroupsEntityStoreComposite.class, UuidIdentityGeneratorComposite.class ).instantiateOnStartup();
                 module.addComposites( TestComposite.class );
             }
         };
@@ -77,6 +77,7 @@ public class JGroupsEntityStoreTest
         instance = app2Unit.getReference( instance );
 
         System.out.println( instance.name() );
+        app2Unit.discard();
 
     }
 }

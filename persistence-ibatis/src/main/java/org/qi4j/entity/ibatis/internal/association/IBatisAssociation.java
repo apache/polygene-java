@@ -89,7 +89,7 @@ public final class IBatisAssociation<T> extends AssociationInstance
         }
 
         // Retrieves the value given the value identity
-        value = (T) unitOfWork.getReference( valueIdentity, (Class<? extends EntityComposite>) getAssociationType() );
+        value = (T) unitOfWork.getReference( valueIdentity, (Class<? extends EntityComposite>) type() );
         return value;
     }
 

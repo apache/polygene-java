@@ -23,8 +23,8 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkFactory;
 import org.qi4j.entity.memory.MemoryEntityStoreComposite;
-import org.qi4j.library.framework.properties.PropertyMapper;
-import org.qi4j.spi.structure.Visibility;
+import org.qi4j.property.PropertyMapper;
+import org.qi4j.structure.Visibility;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
 
 /**
@@ -36,7 +36,7 @@ public class S3EntityStoreTest
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
         super.assemble( module );
-        module.addServices( S3EntityStoreComposite.class );
+        module.addServices( S3EntityStoreComposite.class ).instantiateOnStartup();
 
         ModuleAssembly config = module.getLayerAssembly().newModuleAssembly();
         config.setName( "config" );

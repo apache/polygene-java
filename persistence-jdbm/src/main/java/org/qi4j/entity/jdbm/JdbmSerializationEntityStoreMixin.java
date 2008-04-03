@@ -17,9 +17,11 @@
 package org.qi4j.entity.jdbm;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Properties;
@@ -57,6 +59,7 @@ public class JdbmSerializationEntityStoreMixin
 {
     private @Structure Qi4jSPI spi;
     private @ThisCompositeAs ReadWriteLock lock;
+    private @ThisCompositeAs JdbmConfigurationComposite config;
 
     private RecordManager recordManager;
     private HTree index;
@@ -66,7 +69,7 @@ public class JdbmSerializationEntityStoreMixin
     // Activatable implementation
     public void activate() throws Exception
     {
-        dataFile = new File( "qi4j.data" );
+        dataFile = new File( config.file().get() );
         System.out.println( "JDBM store:" + dataFile.getAbsolutePath() );
         File directory = dataFile.getParentFile();
         String name = dataFile.getAbsolutePath();
@@ -111,6 +114,7 @@ public class JdbmSerializationEntityStoreMixin
         return new EntityStateInstance( 0, identity, EntityStatus.NEW, new HashMap<String, Object>(), new HashMap<String, EntityId>(), new HashMap<String, Collection<EntityId>>() );
     }
 
+    @WriteLock
     public EntityState getEntityState( EntityId identity ) throws EntityStoreException
     {
         try
@@ -153,12 +157,16 @@ public class JdbmSerializationEntityStoreMixin
 
         try
         {
+            ByteArrayOutputStream bout = new ByteArrayOutputStream();
             for( EntityState entityState : newStates )
             {
                 EntityStateInstance entityStateInstance = (EntityStateInstance) entityState;
                 SerializableState state = new SerializableState( entityState.getEntityVersion(), entityStateInstance.getProperties(), entityStateInstance.getAssociations(), entityStateInstance.getManyAssociations() );
-                SerializedObject<SerializableState> serializedObject = new SerializedObject<SerializableState>( state );
-                long stateIndex = recordManager.insert( serializedObject.getData(), serializer );
+                ObjectOutputStream out = new ObjectOutputStream( bout );
+                out.writeUnshared( state );
+                out.close();
+                long stateIndex = recordManager.insert( bout.toByteArray(), serializer );
+                bout.reset();
                 String indexKey = entityState.getIdentity().getIdentity();
                 index.put( indexKey, stateIndex );
             }
@@ -167,10 +175,12 @@ public class JdbmSerializationEntityStoreMixin
             {
                 EntityStateInstance entityStateInstance = (EntityStateInstance) entityState;
                 SerializableState state = new SerializableState( entityState.getEntityVersion(), entityStateInstance.getProperties(), entityStateInstance.getAssociations(), entityStateInstance.getManyAssociations() );
-                SerializedObject<SerializableState> serializedObject = new SerializedObject<SerializableState>( state );
+                ObjectOutputStream out = new ObjectOutputStream( bout );
+                out.writeUnshared( state );
+                out.close();
                 String indexKey = entityState.getIdentity().getIdentity();
                 Long stateIndex = (Long) index.get( indexKey );
-                recordManager.update( stateIndex, serializedObject.getData(), serializer );
+                recordManager.update( stateIndex, bout.toByteArray(), serializer );
             }
 
             for( EntityId removedState : removedStates )
@@ -185,6 +195,8 @@ public class JdbmSerializationEntityStoreMixin
             lock.writeLock().unlock();
             throw new EntityStoreException( e );
         }
+
+        long end = System.currentTimeMillis();
 
         return new StateCommitter()
         {

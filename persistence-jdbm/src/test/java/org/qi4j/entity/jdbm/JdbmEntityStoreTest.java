@@ -20,6 +20,8 @@ import java.io.File;
 import org.junit.After;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.entity.memory.MemoryEntityStoreComposite;
+import org.qi4j.structure.Visibility;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
 
 /**
@@ -32,6 +34,11 @@ public class JdbmEntityStoreTest
     {
         super.assemble( module );
         module.addServices( JdbmEntityStoreComposite.class );
+
+        ModuleAssembly config = module.getLayerAssembly().newModuleAssembly();
+        config.setName( "config" );
+        config.addComposites( JdbmConfigurationComposite.class ).visibleIn( Visibility.layer );
+        config.addServices( MemoryEntityStoreComposite.class );
     }
 
     @Override @After public void tearDown() throws Exception
