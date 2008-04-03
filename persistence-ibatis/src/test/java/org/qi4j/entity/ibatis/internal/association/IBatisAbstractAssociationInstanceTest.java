@@ -25,10 +25,10 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.entity.ibatis.AccountComposite;
 import org.qi4j.entity.ibatis.PersonComposite;
-import org.qi4j.spi.association.AssociationBinding;
-import org.qi4j.spi.composite.AssociationModel;
-import org.qi4j.spi.composite.AssociationResolution;
 import org.qi4j.spi.composite.CompositeBinding;
+import org.qi4j.spi.entity.association.AssociationBinding;
+import org.qi4j.spi.entity.association.AssociationModel;
+import org.qi4j.spi.entity.association.AssociationResolution;
 import org.qi4j.test.AbstractQi4jTest;
 
 /**

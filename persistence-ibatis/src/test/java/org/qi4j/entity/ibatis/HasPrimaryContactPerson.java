@@ -16,7 +16,7 @@
  */
 package org.qi4j.entity.ibatis;
 
-import org.qi4j.association.Association;
+import org.qi4j.entity.association.Association;
 
 /**
  * @author edward.yakop@gmail.com

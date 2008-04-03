@@ -16,9 +16,9 @@
  */
 package org.qi4j.entity.ibatis.internal.property;
 
-import static org.qi4j.entity.ibatis.internal.common.Util.isNotEquals;
+import static org.qi4j.entity.ibatis.internal.common.Util.*;
 import org.qi4j.property.PropertyInfo;
-import org.qi4j.spi.property.PropertyInstance;
+import org.qi4j.runtime.property.PropertyInstance;
 
 /**
  * {@code MutablePropertyInstance} represents a mutable property.

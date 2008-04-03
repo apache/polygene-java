@@ -17,9 +17,6 @@
  */
 package org.qi4j.entity.index.rdf;
 
-import org.qi4j.association.Association;
-import org.qi4j.association.ManyAssociation;
-
 /**
  * TODO Add JavaDoc
  *

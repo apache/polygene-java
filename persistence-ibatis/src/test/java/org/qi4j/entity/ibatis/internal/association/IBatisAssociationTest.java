@@ -33,10 +33,10 @@ import static org.qi4j.entity.ibatis.internal.common.Status.*;
 import org.qi4j.property.ImmutableProperty;
 import org.qi4j.runtime.composite.CompositeContext;
 import org.qi4j.runtime.structure.ModuleContext;
-import org.qi4j.spi.association.AssociationBinding;
-import org.qi4j.spi.composite.AssociationModel;
-import org.qi4j.spi.composite.AssociationResolution;
 import org.qi4j.spi.composite.CompositeBinding;
+import org.qi4j.spi.entity.association.AssociationBinding;
+import org.qi4j.spi.entity.association.AssociationModel;
+import org.qi4j.spi.entity.association.AssociationResolution;
 import org.qi4j.test.AbstractQi4jTest;
 
 /**

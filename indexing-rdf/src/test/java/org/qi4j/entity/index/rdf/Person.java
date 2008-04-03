@@ -17,8 +17,8 @@
  */
 package org.qi4j.entity.index.rdf;
 
-import org.qi4j.association.Association;
-import org.qi4j.association.ManyAssociation;
+import org.qi4j.entity.association.Association;
+import org.qi4j.entity.association.ManyAssociation;
 import org.qi4j.property.Property;
 
 /**

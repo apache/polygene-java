@@ -17,11 +17,11 @@
 package org.qi4j.entity.ibatis.internal.association;
 
 import java.lang.reflect.Type;
-import org.qi4j.association.AbstractAssociation;
 import static org.qi4j.composite.NullArgumentException.*;
-import org.qi4j.spi.association.AssociationBinding;
-import org.qi4j.spi.composite.AssociationModel;
-import org.qi4j.spi.composite.AssociationResolution;
+import org.qi4j.entity.association.AbstractAssociation;
+import org.qi4j.spi.entity.association.AssociationBinding;
+import org.qi4j.spi.entity.association.AssociationModel;
+import org.qi4j.spi.entity.association.AssociationResolution;
 
 /**
  * {@code IBatisAbstractAssociationInstance} provides implementation of {@code AbstractAssociation}.
