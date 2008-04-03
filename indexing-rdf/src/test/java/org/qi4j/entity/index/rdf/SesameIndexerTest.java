@@ -36,7 +36,8 @@ public class SesameIndexerTest
                 module.addComposites(
                     PersonComposite.class,
                     CityComposite.class,
-                    DomainComposite.class
+                    DomainComposite.class,
+                    CatComposite.class
                 );
                 module.addServices(
                     IndexedMemoryEntityStoreComposite.class,

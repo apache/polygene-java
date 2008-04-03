@@ -22,13 +22,12 @@ import org.qi4j.library.framework.locking.LockingAbstractComposite;
 import org.qi4j.service.Activatable;
 import org.qi4j.service.ServiceComposite;
 import org.qi4j.spi.entity.EntityStore;
-import org.qi4j.spi.serialization.SerializedEntityStoreMixin;
 
 /**
  * EntityStore service backed by JGroups store.
  */
 
-@Mixins( { SerializedEntityStoreMixin.class, JGroupsSerializationStoreMixin.class } )
+@Mixins( { JGroupsSerializationEntityStoreMixin.class } )
 public interface JGroupsEntityStoreComposite
     extends EntityStore, ServiceComposite, Activatable, LockingAbstractComposite
 

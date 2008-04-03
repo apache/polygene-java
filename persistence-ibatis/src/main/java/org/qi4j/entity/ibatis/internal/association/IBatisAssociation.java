@@ -22,8 +22,8 @@ import org.qi4j.entity.Identity;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.ibatis.internal.common.Status;
 import static org.qi4j.entity.ibatis.internal.common.Util.*;
+import org.qi4j.runtime.association.AssociationInstance;
 import org.qi4j.spi.association.AssociationBinding;
-import org.qi4j.spi.association.AssociationInstance;
 
 /**
  * {@code IBatisAssociation} provides implementation of {@code Association}.
@@ -56,7 +56,7 @@ public final class IBatisAssociation<T> extends AssociationInstance
         Status aStatus, UnitOfWork unitOfWork )
         throws IllegalArgumentException
     {
-        super( aBinding, null );
+        super( aBinding, null, null );
 
         validateNotNull( "aBinding", aBinding );
         validateNotNull( "aStatus", aStatus );

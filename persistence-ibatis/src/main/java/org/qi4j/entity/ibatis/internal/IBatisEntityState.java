@@ -17,39 +17,26 @@
 package org.qi4j.entity.ibatis.internal;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import org.qi4j.association.AbstractAssociation;
-import org.qi4j.association.Association;
-import org.qi4j.association.ManyAssociation;
-import org.qi4j.association.SetAssociation;
-import org.qi4j.composite.Composite;
 import static org.qi4j.composite.NullArgumentException.*;
 import org.qi4j.entity.UnitOfWork;
-import org.qi4j.entity.ibatis.internal.association.IBatisAbstractAssociationInstance;
-import org.qi4j.entity.ibatis.internal.association.IBatisAssociation;
 import org.qi4j.entity.ibatis.internal.common.Status;
 import static org.qi4j.entity.ibatis.internal.common.Status.*;
 import org.qi4j.entity.ibatis.internal.property.MutablePropertyInstance;
 import org.qi4j.property.ImmutableProperty;
 import org.qi4j.property.Property;
-import org.qi4j.spi.association.AssociationBinding;
-import org.qi4j.spi.association.AssociationInstance;
-import org.qi4j.spi.association.ListAssociationInstance;
-import org.qi4j.spi.composite.AssociationModel;
-import org.qi4j.spi.composite.AssociationResolution;
 import org.qi4j.spi.composite.CompositeBinding;
-import org.qi4j.spi.composite.CompositeMethodBinding;
-import org.qi4j.spi.composite.CompositeModel;
-import org.qi4j.spi.composite.CompositeResolution;
 import org.qi4j.spi.composite.PropertyResolution;
 import org.qi4j.spi.entity.EntityStateInstance;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.property.ImmutablePropertyInstance;
 import org.qi4j.spi.property.PropertyBinding;
 import org.qi4j.spi.property.PropertyModel;
+import org.qi4j.spi.serialization.EntityId;
 
 /**
  * {@code IBatisEntityState} represents {@code IBatis} version of {@link org.qi4j.spi.entity.EntityState}.
@@ -80,12 +67,12 @@ public final class IBatisEntityState
      * @since 0.1.0
      */
     public IBatisEntityState(
-        String anIdentity, CompositeBinding aCompositeBinding, Map<String, Object> valuez,
+        EntityId anIdentity, CompositeBinding aCompositeBinding, Map<String, Object> valuez,
         EntityStatus status,
         Status aStatus, UnitOfWork anUnitOfWork, IBatisEntityStateDao aDao )
         throws IllegalArgumentException
     {
-        super( anIdentity, aCompositeBinding, status, new HashMap<Method, Property>(), new HashMap<Method, AbstractAssociation>() );
+        super( 0, anIdentity, status, new HashMap<String, Object>(), new HashMap<String, EntityId>(), new HashMap<String, Collection<EntityId>>() );
 
         validateNotNull( "anIdentity", anIdentity );
         validateNotNull( "aCompositeBinding", aCompositeBinding );
@@ -127,6 +114,7 @@ public final class IBatisEntityState
      */
     public final Property getProperty( Method aPropertyMethod )
     {
+/*
         Property propertyInstance = properties.get( aPropertyMethod );
 
         if( propertyInstance == null )
@@ -141,6 +129,8 @@ public final class IBatisEntityState
         }
 
         return propertyInstance;
+*/
+        return null;
     }
 
     /**
@@ -213,6 +203,7 @@ public final class IBatisEntityState
      */
     public AbstractAssociation getAssociation( Method anAssociationMethod )
     {
+/*
         IBatisAbstractAssociationInstance association = (IBatisAbstractAssociationInstance) associations.get( anAssociationMethod );
         if( association != null )
         {
@@ -240,6 +231,8 @@ public final class IBatisEntityState
             String associationIdentity = (String) values.get( associationNameKey );
             return new IBatisAssociation( associationIdentity, associationBinding, status, unitOfWork );
         }
+*/
+
 
         return null;
     }
@@ -249,6 +242,7 @@ public final class IBatisEntityState
         CompositeBinding compositeBinding, Map<Method, Object> propertyValues )
     {
         Map<Method, AbstractAssociation> associations = new HashMap<Method, AbstractAssociation>();
+/*
         Iterable<AssociationBinding> associationBindings = compositeBinding.getAssociationBindings();
         for( AssociationBinding associationBinding : associationBindings )
         {
@@ -264,7 +258,7 @@ public final class IBatisEntityState
             {
 
                 ListAssociationInstance<Object> listInstance =
-                    new ListAssociationInstance<Object>( new ArrayList<Object>(), associationBinding );
+                    new ListAssociationInstance<Object>( new ArrayList<Object>(), associationBinding, unitOfWork );
                 associations.put( accessor, listInstance );
             }
             else
@@ -273,6 +267,7 @@ public final class IBatisEntityState
                 associations.put( accessor, instance );
             }
         }
+*/
         return associations;
     }
 
@@ -289,7 +284,7 @@ public final class IBatisEntityState
 
     public void remove()
     {
-        switch( status )
+/*        switch( status )
         {
         case statusNew:
         case statusNewToDeleted:
@@ -298,7 +293,7 @@ public final class IBatisEntityState
 
         case statusLoadFromDb:
             dao.deleteComposite( getIdentity(), getCompositeBinding() );
-        }
+        }*/
     }
 
     /**

@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.entity.jdbm;
+package org.qi4j.entity.rmi;
 
 import java.io.File;
 import org.junit.After;
@@ -25,13 +25,13 @@ import org.qi4j.test.entity.AbstractEntityStoreTest;
 /**
  * TODO
  */
-public class JdbmEntityStoreTest
+public class RmiEntityStoreTest
     extends AbstractEntityStoreTest
 {
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
         super.assemble( module );
-        module.addServices( JdbmEntityStoreComposite.class );
+        module.addServices( ClientRmiEntityStoreComposite.class ).activateOnStartup();
     }
 
     @Override @After public void tearDown() throws Exception

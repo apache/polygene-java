@@ -16,97 +16,50 @@
  */
 package org.qi4j.entity.s3;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.composite.CompositeBuilder;
-import org.qi4j.composite.Mixins;
-import org.qi4j.entity.EntityComposite;
-import org.qi4j.entity.EntityCompositeNotFoundException;
 import org.qi4j.entity.UnitOfWork;
-import org.qi4j.entity.UnitOfWorkCompletionException;
-import org.qi4j.library.framework.entity.AssociationMixin;
-import org.qi4j.library.framework.entity.PropertyMixin;
-import org.qi4j.property.Property;
-import org.qi4j.spi.entity.UuidIdentityGeneratorComposite;
-import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.entity.UnitOfWorkFactory;
+import org.qi4j.entity.memory.MemoryEntityStoreComposite;
+import org.qi4j.library.framework.properties.PropertyMapper;
+import org.qi4j.spi.structure.Visibility;
+import org.qi4j.test.entity.AbstractEntityStoreTest;
 
 /**
  * Amazon S3 EntityStore test
  */
 public class S3EntityStoreTest
-    extends AbstractQi4jTest
+    extends AbstractEntityStoreTest
 {
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
-        module.addServices( S3EntityStoreComposite.class, UuidIdentityGeneratorComposite.class );
-        module.addComposites( TestComposite.class );
+        super.assemble( module );
+        module.addServices( S3EntityStoreComposite.class );
+
+        ModuleAssembly config = module.getLayerAssembly().newModuleAssembly();
+        config.setName( "config" );
+        config.addComposites( S3ConfigurationComposite.class ).visibleIn( Visibility.layer );
+        config.addServices( MemoryEntityStoreComposite.class );
+    }
+
+    @Override @Before public void setUp() throws Exception
+    {
+        super.setUp();
+
+        UnitOfWorkFactory uowf = application.getLayerByName( "Layer 1" ).getModuleByName( "config" ).getStructureContext().getUnitOfWorkFactory();
+        UnitOfWork uow = uowf.newUnitOfWork();
+        S3ConfigurationComposite config = uow.newEntityBuilder( "s3configuration", S3ConfigurationComposite.class ).newInstance();
+
+        PropertyMapper.map( getClass().getResourceAsStream( "s3configuration.properties" ), config );
+
+        uow.complete();
     }
 
     @Test
     public void dummyTest()
     {
         // All tests are disabled since by default the S3 store doesn't work due to missing account keys!
-    }
-
-    //    @Test
-    public void whenNewEntityThenFindEntity()
-        throws Exception
-    {
-        String id = createEntity( null );
-        UnitOfWork unitOfWork;
-        TestComposite instance;
-
-        // Find entity
-        unitOfWork = unitOfWorkFactory.newUnitOfWork();
-        instance = unitOfWork.find( id, TestComposite.class );
-        org.junit.Assert.assertThat( "property has correct value", instance.name().get(), org.hamcrest.CoreMatchers.equalTo( "Rickard" ) );
-        unitOfWork.discard();
-    }
-
-    //    @Test
-    public void whenRemovedEntityThenCannotFindEntity()
-        throws Exception
-    {
-        String id = createEntity( null );
-
-        // Remove entity
-        UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
-        TestComposite instance = unitOfWork.find( id, TestComposite.class );
-        unitOfWork.remove( instance );
-        unitOfWork.complete();
-
-        // Find entity
-        unitOfWork = unitOfWorkFactory.newUnitOfWork();
-        try
-        {
-            instance = unitOfWork.find( id, TestComposite.class );
-            org.junit.Assert.fail( "Should not be able to find entity" );
-        }
-        catch( EntityCompositeNotFoundException e )
-        {
-            // Ok!
-        }
-        unitOfWork.discard();
-    }
-
-    private String createEntity( String id )
-        throws UnitOfWorkCompletionException
-    {
-        // Create entity
-        UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
-        CompositeBuilder<TestComposite> builder = unitOfWork.newEntityBuilder( id, TestComposite.class );
-        builder.propertiesOfComposite().name().set( "Rickard" );
-        TestComposite instance = builder.newInstance();
-        id = instance.identity().get();
-        unitOfWork.complete();
-        return id;
-    }
-
-    @Mixins( { PropertyMixin.class, AssociationMixin.class } )
-    public interface TestComposite
-        extends EntityComposite
-    {
-        Property<String> name();
     }
 }

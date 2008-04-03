@@ -17,10 +17,8 @@
  */
 package org.qi4j.entity.index.rdf;
 
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Map;
 import org.openrdf.model.Literal;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
@@ -30,8 +28,9 @@ import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.qi4j.composite.scope.ThisCompositeAs;
 import org.qi4j.entity.EntityComposite;
+import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.serialization.EntityId;
-import org.qi4j.spi.serialization.SerializedState;
+import org.qi4j.spi.structure.ModuleBinding;
 
 /**
  * TODO Add JavaDoc
@@ -45,13 +44,11 @@ public class RDFIndexerMixin
 
     @ThisCompositeAs RDFIndexerState state;
 
-    public void index( final Map<EntityId, SerializedState> newEntities,
-                       final Map<EntityId, SerializedState> updatedEntities,
-                       final Iterable<EntityId> removedEntities )
+    public void index( Iterable<EntityState> newStates, Iterable<EntityState> changedStates, Iterable<EntityId> removedStates, ModuleBinding moduleBinding )
     {
-        System.out.println( "New: " + newEntities );
-        System.out.println( "Updated: " + updatedEntities );
-        System.out.println( "Removed: " + removedEntities );
+        System.out.println( "New: " + newStates );
+        System.out.println( "Updated: " + changedStates );
+        System.out.println( "Removed: " + removedStates );
 
         try
         {
@@ -59,49 +56,55 @@ public class RDFIndexerMixin
             final ValueFactory valueFactory = state.getRepository().getValueFactory();
             try
             {
-                for( Map.Entry<EntityId, SerializedState> entry : newEntities.entrySet() )
+                for( EntityState entry : newStates )
                 {
-                    indexCompositeType( entry.getKey().getCompositeType(), connection, valueFactory );
+                    Class compositeType = moduleBinding.lookupClass( entry.getIdentity().getCompositeType() );
+                    indexCompositeType( compositeType, connection, valueFactory );
                     final URI entityTypeUri = valueFactory.createURI(
                         normalizeInnerClass(
-                            "urn:" + entry.getKey().getCompositeType().getName()
+                            "urn:" + entry.getIdentity().getCompositeType()
                         )
                     );
                     final URI entityUri = valueFactory.createURI(
                         normalizeInnerClass(
-                            "urn:" + entry.getKey().getCompositeType().getName() + "/" + entry.getKey().getIdentity()
+                            "urn:" + entry.getIdentity().getCompositeType() + "/" + entry.getIdentity().getIdentity()
                         )
                     );
                     connection.add( entityUri, RDF.TYPE, entityTypeUri );
 
                     // properties
-                    for( Map.Entry<String, Serializable> property : entry.getValue().getProperties().entrySet() )
+                    for( String property : entry.getPropertyNames() )
                     {
-                        if( property.getValue() != null )
+                        Object propertyValue = entry.getProperty( property );
+                        if( propertyValue != null )
                         {
                             final URI propertyType = valueFactory.createURI(
                                 normalizeInnerClass(
-                                    "urn:" + property.getKey().replace( ":", "/" )
+                                    "urn:" + property.replace( ":", "/" )
                                 )
                             );
-                            final Literal propertyValue = valueFactory.createLiteral( property.getValue().toString() );
-                            connection.add( entityUri, propertyType, propertyValue );
+                            final Literal propertyLiteral = valueFactory.createLiteral( propertyValue.toString() );
+                            connection.add( entityUri, propertyType, propertyLiteral );
                         }
                     }
                     // association
-                    for( Map.Entry<String, EntityId> assoc : entry.getValue().getAssociations().entrySet() )
+                    for( String assoc : entry.getAssociationNames() )
                     {
-                        final URI assocType = valueFactory.createURI(
-                            normalizeInnerClass(
-                                "urn:" + assoc.getKey().replace( ":", "/" )
-                            )
-                        );
-                        final URI assocRef = valueFactory.createURI(
-                            normalizeInnerClass(
-                                "urn:" + assoc.getValue().getCompositeType().getName() + "/" + assoc.getValue().getIdentity()
-                            )
-                        );
-                        connection.add( entityUri, assocType, assocRef );
+                        EntityId entityId = entry.getAssociation( assoc );
+                        if( entityId != null )
+                        {
+                            final URI assocType = valueFactory.createURI(
+                                normalizeInnerClass(
+                                    "urn:" + assoc.replace( ":", "/" )
+                                )
+                            );
+                            final URI assocRef = valueFactory.createURI(
+                                normalizeInnerClass(
+                                    "urn:" + entityId.getCompositeType() + "/" + entityId.getIdentity()
+                                )
+                            );
+                            connection.add( entityUri, assocType, assocRef );
+                        }
                     }
                 }
             }

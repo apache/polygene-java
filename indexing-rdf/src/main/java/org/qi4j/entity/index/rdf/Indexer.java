@@ -17,9 +17,9 @@
  */
 package org.qi4j.entity.index.rdf;
 
-import java.util.Map;
+import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.serialization.EntityId;
-import org.qi4j.spi.serialization.SerializedState;
+import org.qi4j.spi.structure.ModuleBinding;
 
 /**
  * TODO Add JavaDoc
@@ -29,7 +29,8 @@ import org.qi4j.spi.serialization.SerializedState;
  */
 public interface Indexer
 {
-    void index( Map<EntityId, SerializedState> newEntities,
-                Map<EntityId, SerializedState> updatedEntities,
-                Iterable<EntityId> removedEntities );
+    void index( Iterable<EntityState> newStates,
+                Iterable<EntityState> changedStates,
+                Iterable<EntityId> removedStates,
+                ModuleBinding moduleBinding );
 }

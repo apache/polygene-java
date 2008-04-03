@@ -17,10 +17,7 @@
  */
 package org.qi4j.entity.index.rdf;
 
-import org.qi4j.composite.Mixins;
 import org.qi4j.entity.EntityComposite;
-import org.qi4j.library.framework.entity.AssociationMixin;
-import org.qi4j.library.framework.entity.PropertyMixin;
 
 /**
  * TODO Add JavaDoc
@@ -28,7 +25,6 @@ import org.qi4j.library.framework.entity.PropertyMixin;
  * @author Alin Dreghiciu
  * @since March 20, 2008
  */
-@Mixins( { PropertyMixin.class, AssociationMixin.class } )
 public interface PersonComposite
     extends Person, EntityComposite
 {

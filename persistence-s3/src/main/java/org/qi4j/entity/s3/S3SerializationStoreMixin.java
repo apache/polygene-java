@@ -20,7 +20,10 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Map;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.concurrent.locks.ReadWriteLock;
 import org.jets3t.service.S3Service;
 import org.jets3t.service.S3ServiceException;
@@ -30,16 +33,19 @@ import org.jets3t.service.model.S3Object;
 import org.jets3t.service.security.AWSCredentials;
 import org.qi4j.composite.scope.Structure;
 import org.qi4j.composite.scope.ThisCompositeAs;
-import org.qi4j.entity.UnitOfWork;
+import org.qi4j.entity.UnitOfWorkFactory;
 import org.qi4j.library.framework.locking.WriteLock;
 import org.qi4j.service.Activatable;
-import org.qi4j.spi.Qi4jSPI;
+import org.qi4j.spi.entity.EntityNotFoundException;
+import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.EntityStateInstance;
+import org.qi4j.spi.entity.EntityStatus;
+import org.qi4j.spi.entity.EntityStore;
+import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.StateCommitter;
-import org.qi4j.spi.serialization.CompositeInputStream;
-import org.qi4j.spi.serialization.CompositeOutputStream;
 import org.qi4j.spi.serialization.EntityId;
-import org.qi4j.spi.serialization.SerializationStore;
-import org.qi4j.spi.serialization.SerializedState;
+import org.qi4j.spi.serialization.SerializableState;
+import org.qi4j.spi.structure.ModuleBinding;
 
 /**
  * Amazon S3 implementation of SerializationStore.
@@ -47,10 +53,10 @@ import org.qi4j.spi.serialization.SerializedState;
  * To use this you must supply your own access key and secret key for your Amazon S3 account.
  */
 public class S3SerializationStoreMixin
-    implements SerializationStore, Activatable
+    implements EntityStore, Activatable
 {
-    private @Structure Qi4jSPI spi;
     private @ThisCompositeAs ReadWriteLock lock;
+    private @Structure UnitOfWorkFactory uowf;
 
     private S3Service s3Service;
     private S3Bucket entityBucket;
@@ -58,10 +64,10 @@ public class S3SerializationStoreMixin
     // Activatable implementation
     public void activate() throws Exception
     {
-        String awsAccessKey = null;
-        String awsSecretKey = null;
-//      awsAccessKey = "INSERT-YOUR-KEY-HERE";
-//      awsSecretKey = "INSERT-YOUR-SECRET-KEY-HERE";
+        S3ConfigurationComposite config = uowf.newUnitOfWork().getReference( "s3configuration", S3ConfigurationComposite.class );
+
+        String awsAccessKey = config.accessKey().get();
+        String awsSecretKey = config.secretKey().get();
 
         AWSCredentials awsCredentials =
             new AWSCredentials( awsAccessKey, awsSecretKey );
@@ -85,76 +91,70 @@ public class S3SerializationStoreMixin
     {
     }
 
-    // SerializationStore implementation
+    // EntityStore implementation
     @WriteLock
-    public SerializedState get( EntityId entityIdId, UnitOfWork unitOfWork ) throws IOException
+    public EntityState newEntityState( EntityId identity ) throws EntityStoreException
+    {
+        // Skip existence check
+
+        return new EntityStateInstance( 0, identity, EntityStatus.NEW, new HashMap<String, Object>(), new HashMap<String, EntityId>(), new HashMap<String, Collection<EntityId>>() );
+    }
+
+    @WriteLock
+    public EntityState getEntityState( EntityId identity ) throws EntityStoreException
     {
         try
         {
-            S3Object objectComplete = s3Service.getObject( entityBucket, entityIdId.toString() );
+            S3Object objectComplete = s3Service.getObject( entityBucket, identity.getIdentity() );
             System.out.println( "S3Object, complete: " + objectComplete );
 
             InputStream inputStream = objectComplete.getDataInputStream();
-            CompositeInputStream stream = new CompositeInputStream( inputStream, unitOfWork, spi );
-            SerializedState state = (SerializedState) stream.readObject();
+            ObjectInputStream stream = new ObjectInputStream( inputStream );
+            SerializableState serializableState = (SerializableState) stream.readObject();
 
-            return state;
+            return new EntityStateInstance( serializableState.getEntityVersion(), identity, EntityStatus.LOADED, serializableState.getProperties(), serializableState.getAssociations(), serializableState.getManyAssociations() );
         }
         catch( S3ServiceException e )
         {
             if( e.getS3ErrorCode().equals( "NoSuchKey" ) )
             {
-                return null;
+                throw new EntityNotFoundException( "S3 store", identity.getIdentity() );
             }
-            throw (IOException) new IOException().initCause( e );
+            throw new EntityStoreException( e );
         }
         catch( ClassNotFoundException e )
         {
-            throw (IOException) new IOException().initCause( e );
+            throw new EntityStoreException( e );
+        }
+        catch( IOException e )
+        {
+            throw new EntityStoreException( e );
         }
     }
 
-    @WriteLock
-    public boolean contains( EntityId entityIdId ) throws IOException
-    {
-        try
-        {
-            S3Object entityDetailsOnly = s3Service.getObjectDetails( entityBucket, entityIdId.toString() );
-            return true;
-        }
-        catch( S3ServiceException e )
-        {
-            if( e.getMessage().indexOf( "ResponseCode=404" ) != -1 ) // Hack, but seems to work
-            {
-                return false;
-            }
-            throw (IOException) new IOException().initCause( e );
-        }
-    }
-
-    public StateCommitter prepare( Map<EntityId, SerializedState> newEntities, Map<EntityId, SerializedState> updatedEntities, Iterable<EntityId> removedEntities )
-        throws IOException
+    public StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, Iterable<EntityId> removedStates, ModuleBinding moduleBinding ) throws EntityStoreException
     {
         lock.writeLock().lock();
 
         try
         {
-            // Add state
-            for( Map.Entry<EntityId, SerializedState> entry : newEntities.entrySet() )
+            for( EntityState entityState : newStates )
             {
-                uploadObject( entry );
+                EntityStateInstance entityStateInstance = (EntityStateInstance) entityState;
+                SerializableState state = new SerializableState( entityState.getEntityVersion(), entityStateInstance.getProperties(), entityStateInstance.getAssociations(), entityStateInstance.getManyAssociations() );
+                uploadObject( entityState.getIdentity(), state );
             }
 
-            // Update state
-            for( Map.Entry<EntityId, SerializedState> entry : updatedEntities.entrySet() )
+            for( EntityState entityState : loadedStates )
             {
-                uploadObject( entry );
+                EntityStateInstance entityStateInstance = (EntityStateInstance) entityState;
+                SerializableState state = new SerializableState( entityState.getEntityVersion(), entityStateInstance.getProperties(), entityStateInstance.getAssociations(), entityStateInstance.getManyAssociations() );
+                uploadObject( entityState.getIdentity(), state );
             }
 
-            // Remove state
-            for( EntityId removedEntityId : removedEntities )
+            for( EntityId removedState : removedStates )
             {
-                s3Service.deleteObject( entityBucket, removedEntityId.toString() );
+                s3Service.deleteObject( entityBucket, removedState.getIdentity() );
             }
 
             return new StateCommitter()
@@ -171,25 +171,25 @@ public class S3SerializationStoreMixin
                 }
             };
         }
-        catch( S3ServiceException e )
+        catch( Exception e )
         {
             lock.writeLock().unlock();
-            throw (IOException) new IOException().initCause( e );
+            throw new EntityStoreException( e );
         }
     }
 
-    private void uploadObject( Map.Entry<EntityId, SerializedState> entry )
+    private void uploadObject( EntityId identity, SerializableState serializableState )
         throws IOException, S3ServiceException
     {
         ByteArrayOutputStream out = new ByteArrayOutputStream( 1024 );
-        CompositeOutputStream stream = new CompositeOutputStream( out );
-        stream.writeObject( entry.getValue() );
+        ObjectOutputStream stream = new ObjectOutputStream( out );
+        stream.writeObject( serializableState );
         stream.flush();
         byte[] data = out.toByteArray();
         stream.close();
         out.close();
 
-        S3Object entityState = new S3Object( entry.getKey().toString() );
+        S3Object entityState = new S3Object( identity.getIdentity() );
         ByteArrayInputStream entityData = new ByteArrayInputStream( data );
         entityState.setDataInputStream( entityData );
         entityState.setContentLength( entityData.available() );

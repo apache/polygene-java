@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.entity.s3;
+package org.qi4j.entity.rmi;
 
 import org.qi4j.composite.Mixins;
 import org.qi4j.library.framework.locking.LockingAbstractComposite;
@@ -23,11 +23,11 @@ import org.qi4j.service.ServiceComposite;
 import org.qi4j.spi.entity.EntityStore;
 
 /**
- * EntityStore service backed by Amazon S3 store.
+ * EntityStore service backed by JDBM store.
  */
 
-@Mixins( { S3SerializationStoreMixin.class } )
-public interface S3EntityStoreComposite
+@Mixins( { ClientRmiSerializationStoreMixin.class } )
+public interface ClientRmiEntityStoreComposite
     extends EntityStore, ServiceComposite, Activatable, LockingAbstractComposite
 
 {

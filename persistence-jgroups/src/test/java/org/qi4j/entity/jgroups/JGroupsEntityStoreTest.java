@@ -18,79 +18,24 @@
 
 package org.qi4j.entity.jgroups;
 
-import org.junit.After;
 import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
-import org.qi4j.composite.CompositeBuilder;
-import org.qi4j.composite.Mixins;
-import org.qi4j.entity.EntityComposite;
-import org.qi4j.entity.EntityCompositeNotFoundException;
 import org.qi4j.entity.UnitOfWork;
-import org.qi4j.entity.UnitOfWorkCompletionException;
-import org.qi4j.library.framework.entity.AssociationMixin;
-import org.qi4j.library.framework.entity.PropertyMixin;
-import org.qi4j.property.Property;
 import org.qi4j.spi.entity.UuidIdentityGeneratorComposite;
-import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.test.entity.AbstractEntityStoreTest;
 
 /**
  * Test of JGroups EntityStore backend.
  */
 public class JGroupsEntityStoreTest
-    extends AbstractQi4jTest
+    extends AbstractEntityStoreTest
 {
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
-        module.addServices( JGroupsEntityStoreComposite.class, UuidIdentityGeneratorComposite.class );
-        module.addComposites( TestComposite.class );
-    }
-
-    @Override @After public void tearDown() throws Exception
-    {
-        super.tearDown();
-    }
-
-    @Test
-    public void whenNewEntityThenFindEntity()
-        throws Exception
-    {
-        String id = createEntity( null );
-        UnitOfWork unitOfWork;
-        TestComposite instance;
-
-        // Find entity
-        unitOfWork = unitOfWorkFactory.newUnitOfWork();
-        instance = unitOfWork.find( id, TestComposite.class );
-        org.junit.Assert.assertThat( "property has correct value", instance.name().get(), org.hamcrest.CoreMatchers.equalTo( "Rickard" ) );
-        unitOfWork.discard();
-    }
-
-    @Test
-    public void whenRemovedEntityThenCannotFindEntity()
-        throws Exception
-    {
-        String id = createEntity( null );
-
-        // Remove entity
-        UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
-        TestComposite instance = unitOfWork.find( id, TestComposite.class );
-        unitOfWork.remove( instance );
-        unitOfWork.complete();
-
-        // Find entity
-        unitOfWork = unitOfWorkFactory.newUnitOfWork();
-        try
-        {
-            instance = unitOfWork.find( id, TestComposite.class );
-            org.junit.Assert.fail( "Should not be able to find entity" );
-        }
-        catch( EntityCompositeNotFoundException e )
-        {
-            // Ok!
-        }
-        unitOfWork.discard();
+        super.assemble( module );
+        module.addServices( JGroupsEntityStoreComposite.class );
     }
 
     @Test
@@ -133,90 +78,5 @@ public class JGroupsEntityStoreTest
 
         System.out.println( instance.name() );
 
-    }
-
-    @Test
-    public void whenNewEntitiesThenPerformanceIsOk()
-        throws Exception
-    {
-        long start = System.currentTimeMillis();
-
-        int nrOfEntities = 10000;
-        for( int i = 0; i < nrOfEntities; i++ )
-        {
-            createEntity( null );
-        }
-
-        long end = System.currentTimeMillis();
-        long time = end - start;
-        System.out.println( end - start );
-        System.out.println( nrOfEntities / ( time / 1000.0D ) );
-    }
-
-    @Test
-    public void whenBulkNewEntitiesThenPerformanceIsOk()
-        throws Exception
-    {
-        int nrOfEntities = 10000;
-        UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
-
-        long start = System.currentTimeMillis();
-
-        for( int i = 0; i < nrOfEntities; i++ )
-        {
-            // Create entity
-            CompositeBuilder<TestComposite> builder = unitOfWork.newEntityBuilder( TestComposite.class );
-            builder.propertiesOfComposite().name().set( "Rickard" );
-            TestComposite instance = builder.newInstance();
-        }
-
-        unitOfWork.complete();
-        long end = System.currentTimeMillis();
-        long time = end - start;
-        System.out.println( end - start );
-        System.out.println( nrOfEntities / ( time / 1000.0D ) );
-    }
-
-    @Test
-    public void whenFindEntityThenPerformanceIsOk()
-        throws Exception
-    {
-        long start = System.currentTimeMillis();
-
-        String id = createEntity( null );
-
-        int nrOfLookups = 10000;
-        UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
-        for( int i = 0; i < nrOfLookups; i++ )
-        {
-            TestComposite instance = unitOfWork.find( id, TestComposite.class );
-            unitOfWork.clear();
-        }
-        unitOfWork.discard();
-
-        long end = System.currentTimeMillis();
-        long time = end - start;
-        System.out.println( time );
-        System.out.println( nrOfLookups / ( time / 1000.0D ) );
-    }
-
-    private String createEntity( String id )
-        throws UnitOfWorkCompletionException
-    {
-        // Create entity
-        UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
-        CompositeBuilder<TestComposite> builder = unitOfWork.newEntityBuilder( id, TestComposite.class );
-        builder.propertiesOfComposite().name().set( "Rickard" );
-        TestComposite instance = builder.newInstance();
-        id = instance.identity().get();
-        unitOfWork.complete();
-        return id;
-    }
-
-    @Mixins( { PropertyMixin.class, AssociationMixin.class } )
-    public interface TestComposite
-        extends EntityComposite
-    {
-        Property<String> name();
     }
 }

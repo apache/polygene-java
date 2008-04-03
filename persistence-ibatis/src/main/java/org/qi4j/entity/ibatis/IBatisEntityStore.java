@@ -36,16 +36,12 @@ import org.qi4j.entity.ibatis.dbInitializer.DBInitializer;
 import org.qi4j.entity.ibatis.dbInitializer.DBInitializerInfo;
 import org.qi4j.entity.ibatis.internal.IBatisEntityState;
 import org.qi4j.entity.ibatis.internal.IBatisEntityStateDao;
-import static org.qi4j.entity.ibatis.internal.common.Status.*;
-import org.qi4j.service.Activatable;
 import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.composite.CompositeModel;
 import org.qi4j.spi.composite.CompositeResolution;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.EntityStatus;
-import org.qi4j.spi.entity.EntityStore;
+import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.StateCommitter;
-import org.qi4j.spi.entity.StoreException;
 import org.qi4j.spi.structure.ServiceDescriptor;
 
 /**
@@ -55,7 +51,7 @@ import org.qi4j.spi.structure.ServiceDescriptor;
  * @author edward.yakop@gmail.com
  */
 final class IBatisEntityStore
-    implements EntityStore, Activatable
+//    implements EntityStore, Activatable
 {
     private final IBatisEntityStoreServiceInfo serviceInfo;
     private final DBInitializerInfo dbInitializerInfo;
@@ -89,11 +85,12 @@ final class IBatisEntityStore
      * @param anIdentity        The identity. This argument must not be {@code null}.
      * @param aCompositeBinding The composite class. This argument must not be {@code null}.
      * @return The raw data given input.
-     * @throws StoreException Thrown if retrieval failed.
+     * @throws org.qi4j.spi.entity.EntityStoreException
+     *          Thrown if retrieval failed.
      * @since 0.1.0
      */
     private Map getRawData( String anIdentity, CompositeBinding aCompositeBinding )
-        throws StoreException
+        throws EntityStoreException
     {
         validateNotNull( "anIdentity", anIdentity );
         validateNotNull( "aCompositeBinding", aCompositeBinding );
@@ -109,23 +106,24 @@ final class IBatisEntityStore
         }
         catch( SQLException e )
         {
-            throw new StoreException( e );
+            throw new EntityStoreException( e );
         }
     }
 
     /**
-     * Throws {@link StoreException} if this service is not active.
+     * Throws {@link org.qi4j.spi.entity.EntityStoreException} if this service is not active.
      *
-     * @throws StoreException Thrown if this service instance is not active.
+     * @throws org.qi4j.spi.entity.EntityStoreException
+     *          Thrown if this service instance is not active.
      * @since 0.1.0
      */
     private void throwIfNotActive()
-        throws StoreException
+        throws EntityStoreException
     {
         if( client == null )
         {
             String message = "Possibly bug in the qi4j where the store is not activate but its service is invoked.";
-            throw new StoreException( message );
+            throw new EntityStoreException( message );
         }
     }
 
@@ -135,12 +133,13 @@ final class IBatisEntityStore
      * @param anIdentity        The new entity identity. This argument must not be {@code null}.
      * @param aCompositeBinding The composite binding. This argument must not be {@code null}.
      * @throws IllegalArgumentException Thrown if one or some or all arguments are {@code null}.
-     * @throws StoreException           Thrown if creational failed.
+     * @throws org.qi4j.spi.entity.EntityStoreException
+     *                                  Thrown if creational failed.
      * @since 0.1.0
      */
     public final EntityState newEntityState(
         String anIdentity, CompositeBinding aCompositeBinding )
-        throws IllegalArgumentException, StoreException
+        throws IllegalArgumentException, EntityStoreException
     {
         validateNotNull( "anIdentity", anIdentity );
         validateNotNull( "aCompositeBinding", aCompositeBinding );
@@ -149,7 +148,7 @@ final class IBatisEntityStore
 
         Map<String, Object> fieldValues = new HashMap<String, Object>();
 
-        return new IBatisEntityState( anIdentity, aCompositeBinding, fieldValues, EntityStatus.NEW, statusNew, null, dao );
+        return null; // new IBatisEntityState( anIdentity, aCompositeBinding, fieldValues, EntityStatus.NEW, statusNew, null, dao );
     }
 
     /**
@@ -160,13 +159,14 @@ final class IBatisEntityStore
      * @param aCompositeBinding The composite binding. This argument must not be {@code null}.
      * @return The entity instance with id as {@code anIdentity}.
      * @throws IllegalArgumentException Thrown if one or some or all arguments are {@code null}.
-     * @throws StoreException           Thrown if retrieval fail.
+     * @throws org.qi4j.spi.entity.EntityStoreException
+     *                                  Thrown if retrieval fail.
      * @since 0.1.0
      */
     @SuppressWarnings( "unchecked" )
     public final IBatisEntityState getEntityState(
         UnitOfWork aUnit, String anIdentity, CompositeBinding aCompositeBinding )
-        throws IllegalArgumentException, StoreException
+        throws IllegalArgumentException, EntityStoreException
     {
         validateNotNull( "aUnitOfWork", aUnit );
         validateNotNull( "anIdentity", anIdentity );
@@ -181,7 +181,7 @@ final class IBatisEntityStore
         }
 
         rawData.put( "identity", anIdentity );
-        return new IBatisEntityState( anIdentity, aCompositeBinding, rawData, EntityStatus.LOADED, statusLoadFromDb, aUnit, dao );
+        return null; // new IBatisEntityState( anIdentity, aCompositeBinding, rawData, EntityStatus.LOADED, statusLoadFromDb, aUnit, dao );
     }
 
     /**
@@ -189,11 +189,12 @@ final class IBatisEntityStore
      *
      * @param unitOfWork The unit of work. This argument must not be {@code null}.
      * @param states     The states to complete. This argument must not be {@code null}.
-     * @throws StoreException Thrown if the complete failed.
+     * @throws org.qi4j.spi.entity.EntityStoreException
+     *          Thrown if the complete failed.
      * @since 0.1.0
      */
     public final StateCommitter prepare( UnitOfWork unitOfWork, Iterable<EntityState> states )
-        throws StoreException
+        throws EntityStoreException
     {
         throwIfNotActive();
 

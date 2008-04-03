@@ -17,14 +17,14 @@
  */
 package org.qi4j.entity.index.rdf;
 
-import java.io.IOException;
-import java.util.Map;
 import org.qi4j.composite.scope.Service;
 import org.qi4j.composite.scope.SideEffectFor;
+import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.EntityStore;
+import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.serialization.EntityId;
-import org.qi4j.spi.serialization.SerializationStore;
-import org.qi4j.spi.serialization.SerializedState;
+import org.qi4j.spi.structure.ModuleBinding;
 
 /**
  * TODO Add JavaDoc
@@ -33,17 +33,14 @@ import org.qi4j.spi.serialization.SerializedState;
  * @since March 18, 2008
  */
 public abstract class IndexingSideEffect
-    implements SerializationStore
+    implements EntityStore
 {
-
-    @SideEffectFor SerializationStore serializationStore;
+    @SideEffectFor EntityStore serializationStore;
     @Service Indexer indexer;
 
-    public StateCommitter prepare( Map<EntityId, SerializedState> newEntities,
-                                   Map<EntityId, SerializedState> updatedEntities,
-                                   Iterable<EntityId> removedEntities ) throws IOException
+    public StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, Iterable<EntityId> removedStates, ModuleBinding moduleBinding ) throws EntityStoreException
     {
-        indexer.index( newEntities, updatedEntities, removedEntities );
+        indexer.index( newStates, loadedStates, removedStates, moduleBinding );
         return null;
     }
 }
