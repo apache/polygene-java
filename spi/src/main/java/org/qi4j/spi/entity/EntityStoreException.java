@@ -16,23 +16,23 @@
  */
 package org.qi4j.spi.entity;
 
-public class StoreException extends Exception
+public class EntityStoreException extends RuntimeException
 {
-    public StoreException()
+    public EntityStoreException()
     {
     }
 
-    public StoreException( String message )
+    public EntityStoreException( String message )
     {
         super( message );
     }
 
-    public StoreException( String message, Throwable cause )
+    public EntityStoreException( String message, Throwable cause )
     {
         super( message, cause );
     }
 
-    public StoreException( Throwable cause )
+    public EntityStoreException( Throwable cause )
     {
         super( cause );
     }

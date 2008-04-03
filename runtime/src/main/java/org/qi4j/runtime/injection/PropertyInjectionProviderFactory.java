@@ -1,9 +1,9 @@
 package org.qi4j.runtime.injection;
 
 import java.lang.reflect.Method;
+import org.qi4j.composite.State;
 import org.qi4j.property.Property;
 import org.qi4j.spi.composite.PropertyResolution;
-import org.qi4j.spi.composite.State;
 import org.qi4j.spi.composite.StateResolution;
 import org.qi4j.spi.injection.BindingContext;
 import org.qi4j.spi.injection.InjectionContext;

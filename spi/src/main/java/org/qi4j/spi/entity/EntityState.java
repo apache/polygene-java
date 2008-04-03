@@ -16,8 +16,8 @@
  */
 package org.qi4j.spi.entity;
 
-import org.qi4j.spi.composite.CompositeBinding;
-import org.qi4j.spi.composite.State;
+import java.util.Collection;
+import org.qi4j.spi.serialization.EntityId;
 
 /**
  * The EntityState is a shared "second-level cache" mixin state container for a particular
@@ -34,21 +34,15 @@ import org.qi4j.spi.composite.State;
  * </pre></code>
  */
 public interface EntityState
-    extends State
 {
     /**
      * Returns the identity of the entity that this EntityState represents.
      *
      * @return the identity of the entity that this EntityState represents.
      */
-    String getIdentity();
+    EntityId getIdentity();
 
-    /**
-     * Returns the composite binding of the entity represented by this EntityState.
-     *
-     * @return the composite binding of the entity represented by this EntityState.
-     */
-    CompositeBinding getCompositeBinding();
+    long getEntityVersion();
 
     /**
      * Remove the entity represented by this EntityState when the unit of work is completed.
@@ -56,4 +50,22 @@ public interface EntityState
     void remove();
 
     EntityStatus getStatus();
+
+    Object getProperty( String qualifiedName );
+
+    void setProperty( String qualifiedName, Object newValue );
+
+    EntityId getAssociation( String qualifiedName );
+
+    void setAssociation( String qualifiedName, EntityId newEntity );
+
+    Collection<EntityId> getManyAssociation( String qualifiedName );
+
+    Collection<EntityId> setManyAssociation( String qualifiedName, Collection<EntityId> newManyAssociation );
+
+    Iterable<String> getPropertyNames();
+
+    Iterable<String> getAssociationNames();
+
+    Iterable<String> getManyAssociationNames();
 }

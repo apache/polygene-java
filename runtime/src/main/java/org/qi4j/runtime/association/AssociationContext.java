@@ -16,16 +16,16 @@ package org.qi4j.runtime.association;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import org.qi4j.association.AbstractAssociation;
 import org.qi4j.association.ListAssociation;
 import org.qi4j.association.ManyAssociation;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
-import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.runtime.entity.UnitOfWorkInstance;
 import org.qi4j.spi.association.AssociationBinding;
-import org.qi4j.spi.association.AssociationInstance;
-import org.qi4j.spi.association.ListAssociationInstance;
-import org.qi4j.spi.association.SetAssociationInstance;
+import org.qi4j.spi.entity.EntityState;
 
 /**
  * TODO
@@ -44,7 +44,7 @@ public final class AssociationContext
         return associationBinding;
     }
 
-    public <T> AbstractAssociation newInstance( ModuleInstance moduleInstance, Object value )
+    public AbstractAssociation newInstance( UnitOfWorkInstance unitOfWork, Object value )
     {
         try
         {
@@ -53,7 +53,7 @@ public final class AssociationContext
             if( Composite.class.isAssignableFrom( associationType ) )
             {
                 Class<? extends Composite> associationCompositeType = (Class<? extends Composite>) associationType;
-                CompositeBuilder<? extends Composite> cb = moduleInstance.getStructureContext().getCompositeBuilderFactory().newCompositeBuilder( associationCompositeType );
+                CompositeBuilder<? extends Composite> cb = unitOfWork.getModuleInstance().getStructureContext().getCompositeBuilderFactory().newCompositeBuilder( associationCompositeType );
                 cb.use( value );
                 cb.use( associationBinding );
                 return AbstractAssociation.class.cast( cb.newInstance() );
@@ -63,15 +63,23 @@ public final class AssociationContext
                 AbstractAssociation instance;
                 if( ListAssociation.class.isAssignableFrom( associationType ) )
                 {
-                    instance = new ListAssociationInstance<Object>( new ArrayList<Object>(), associationBinding );
+                    if( value == null )
+                    {
+                        value = new ArrayList();
+                    }
+                    instance = new ListAssociationInstance<Object>( associationBinding, unitOfWork, (List) value );
                 }
                 else if( ManyAssociation.class.isAssignableFrom( associationType ) )
                 {
-                    instance = new SetAssociationInstance<Object>( new HashSet<Object>(), associationBinding );
+                    if( value == null )
+                    {
+                        value = new HashSet();
+                    }
+                    instance = new SetAssociationInstance<Object>( associationBinding, unitOfWork, (Set) value );
                 }
                 else
                 {
-                    instance = new AssociationInstance<Object>( associationBinding, value );
+                    instance = new AssociationInstance<Object>( associationBinding, unitOfWork, (EntityState) value );
                 }
                 return instance;
             }

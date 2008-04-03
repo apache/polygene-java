@@ -16,7 +16,7 @@
  */
 package org.qi4j.spi.entity;
 
-public class EntityAlreadyExistsException extends StoreException
+public class EntityAlreadyExistsException extends EntityStoreException
 {
     private String storeName;
     private String identity;

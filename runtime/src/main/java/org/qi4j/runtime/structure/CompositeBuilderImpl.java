@@ -27,16 +27,13 @@ import java.util.Set;
 import org.qi4j.association.AbstractAssociation;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.InstantiationException;
+import org.qi4j.composite.InvalidApplicationException;
+import org.qi4j.composite.State;
 import org.qi4j.property.Property;
-import org.qi4j.runtime.association.AssociationContext;
 import org.qi4j.runtime.composite.CompositeContext;
 import org.qi4j.runtime.composite.CompositeInstance;
 import org.qi4j.runtime.property.PropertyContext;
-import org.qi4j.spi.association.AssociationBinding;
-import org.qi4j.spi.composite.AssociationModel;
-import org.qi4j.spi.composite.AssociationResolution;
 import org.qi4j.spi.composite.PropertyResolution;
-import org.qi4j.spi.composite.State;
 import org.qi4j.spi.property.ImmutablePropertyInstance;
 import org.qi4j.spi.property.PropertyBinding;
 import org.qi4j.spi.property.PropertyModel;
@@ -76,7 +73,7 @@ public class CompositeBuilderImpl<T>
         // Instantiate proxy for given composite interface
         try
         {
-            StateInvocationHandler handler = new StateInvocationHandler();
+            StateInvocationHandler handler = newStateInvocationHandler();
             ClassLoader proxyClassloader = compositeInterface.getClassLoader();
             Class[] interfaces = new Class[]{ compositeInterface };
             return compositeInterface.cast( Proxy.newProxyInstance( proxyClassloader, interfaces, handler ) );
@@ -92,7 +89,7 @@ public class CompositeBuilderImpl<T>
         // Instantiate proxy for given interface
         try
         {
-            StateInvocationHandler handler = new StateInvocationHandler();
+            StateInvocationHandler handler = newStateInvocationHandler();
             ClassLoader proxyClassloader = mixinType.getClassLoader();
             Class[] interfaces = new Class[]{ mixinType };
             return mixinType.cast( Proxy.newProxyInstance( proxyClassloader, interfaces, handler ) );
@@ -127,27 +124,9 @@ public class CompositeBuilderImpl<T>
             properties.put( propertyModel.getAccessor(), property );
         }
 
-        // Calculate total set of Associations for this Composite
-        Map<Method, AbstractAssociation> associations = new HashMap<Method, AbstractAssociation>();
-        for( AssociationContext mixinAssociation : context.getAssociationContexts() )
-        {
-            Object value = null;
-            Method accessor = mixinAssociation.getAssociationBinding().getAssociationResolution().getAssociationModel().getAccessor();
-            if( associationValues != null && associationValues.containsKey( accessor ) )
-            {
-                value = associationValues.get( accessor );
-            }
-
-            AbstractAssociation association = mixinAssociation.newInstance( moduleInstance, value );
-            AssociationBinding binding = mixinAssociation.getAssociationBinding();
-            AssociationResolution associationResolution = binding.getAssociationResolution();
-            AssociationModel associationModel = associationResolution.getAssociationModel();
-            associations.put( associationModel.getAccessor(), association );
-        }
-
         CompositeInstance compositeInstance = context.newCompositeInstance( moduleInstance,
                                                                             uses,
-                                                                            new CompositeBuilderState( properties, associations ) );
+                                                                            new CompositeBuilderState( properties ) );
         return compositeInterface.cast( compositeInstance.getProxy() );
     }
 
@@ -172,7 +151,12 @@ public class CompositeBuilderImpl<T>
         };
     }
 
-    private Set<Object> getUses()
+    protected StateInvocationHandler newStateInvocationHandler()
+    {
+        return new StateInvocationHandler();
+    }
+
+    protected Set<Object> getUses()
     {
         if( uses == null )
         {
@@ -199,7 +183,7 @@ public class CompositeBuilderImpl<T>
         return associationValues;
     }
 
-    private class StateInvocationHandler
+    protected class StateInvocationHandler
         implements InvocationHandler
     {
         public StateInvocationHandler()
@@ -208,24 +192,20 @@ public class CompositeBuilderImpl<T>
 
         public Object invoke( Object o, Method method, Object[] objects ) throws Throwable
         {
-            if( AbstractAssociation.class.isAssignableFrom( method.getReturnType() ) )
+            if( Property.class.isAssignableFrom( method.getReturnType() ) )
             {
-                final AssociationContext associationContext = context.getMethodDescriptor( method ).getCompositeMethodContext().getAssociationContext();
-                AbstractAssociation association = associationContext.newInstance( moduleInstance, null );
-                getAssociations().put( method, association );
-                return association;
-
-            }
-            else if( Property.class.isAssignableFrom( method.getReturnType() ) )
-            {
-                final PropertyContext propertyContext = context.getMethodDescriptor( method ).getCompositeMethodContext().getPropertyContext();
-                Property<Object> propertyInstance = propertyContext.newInstance( moduleInstance, ImmutablePropertyInstance.UNSET );
-                getProperties().put( method, propertyInstance );
+                Property<Object> propertyInstance = getProperties().get( method );
+                if( propertyInstance == null )
+                {
+                    PropertyContext propertyContext = context.getMethodDescriptor( method ).getCompositeMethodContext().getPropertyContext();
+                    propertyInstance = propertyContext.newInstance( moduleInstance, ImmutablePropertyInstance.UNSET );
+                    getProperties().put( method, propertyInstance );
+                }
                 return propertyInstance;
             }
             else
             {
-                throw new IllegalArgumentException( "Method is not a property or association: " + method );
+                throw new IllegalArgumentException( "Method does not represent state: " + method );
             }
         }
 
@@ -235,12 +215,10 @@ public class CompositeBuilderImpl<T>
         implements State
     {
         Map<Method, Property> properties;
-        Map<Method, AbstractAssociation> associations;
 
-        public CompositeBuilderState( Map<Method, Property> properties, Map<Method, AbstractAssociation> associations )
+        public CompositeBuilderState( Map<Method, Property> properties )
         {
             this.properties = properties;
-            this.associations = associations;
         }
 
         public Property getProperty( Method method )
@@ -250,7 +228,7 @@ public class CompositeBuilderImpl<T>
 
         public AbstractAssociation getAssociation( Method qualifiedName )
         {
-            return associations.get( qualifiedName );
+            throw new InvalidApplicationException( "May not use Associations in Composites that are not accessed through a UnitOfWork" );
         }
     }
 }

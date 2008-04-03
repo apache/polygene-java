@@ -23,15 +23,18 @@ import org.qi4j.entity.EntityComposite;
 public final class EntityId
     implements Serializable
 {
+    // Associations who have been set to "null" should use this as the representation in the EntityState
+    public static final EntityId NULL = new EntityId( "null", "none" );
+
     private String identity;
-    private Class<? extends EntityComposite> compositeType;
+    private String compositeType;
 
     public EntityId( EntityComposite entityComposite )
     {
-        this( entityComposite.identity().get(), (Class<? extends EntityComposite>) entityComposite.getCompositeType() );
+        this( entityComposite.identity().get(), entityComposite.getCompositeType().getName() );
     }
 
-    public EntityId( String identity, Class<? extends EntityComposite> clazz )
+    public EntityId( String identity, String clazz )
     {
         this.identity = identity;
         this.compositeType = clazz;
@@ -42,7 +45,7 @@ public final class EntityId
         return identity;
     }
 
-    public Class<? extends EntityComposite> getCompositeType()
+    public String getCompositeType()
     {
         return compositeType;
     }
@@ -82,6 +85,6 @@ public final class EntityId
 
     @Override public String toString()
     {
-        return compositeType.getName() + ":" + identity;
+        return compositeType + ":" + identity;
     }
 }

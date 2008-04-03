@@ -75,4 +75,9 @@ public final class ModuleModel
     {
         return associationDescriptors.get( associationMethod );
     }
+
+    @Override public String toString()
+    {
+        return name;
+    }
 }

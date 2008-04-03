@@ -27,10 +27,12 @@ public final class StandardCompositeInstance extends AbstractCompositeInstance
     implements CompositeInstance
 {
     private Object[] mixins;
+    private ModuleInstance moduleInstance;
 
     public StandardCompositeInstance( CompositeContext aContext, ModuleInstance moduleInstance )
     {
-        super( aContext, moduleInstance );
+        super( aContext );
+        this.moduleInstance = moduleInstance;
     }
 
     public Object invoke( Object composite, Method method, Object[] args )
@@ -66,7 +68,7 @@ public final class StandardCompositeInstance extends AbstractCompositeInstance
 
     public String toURI()
     {
-        return "urn:qi4j:composite:" + context.getCompositeModel().getCompositeType().getName(); 
+        return "urn:qi4j:composite:" + context.getCompositeModel().getCompositeType().getName();
     }
 
     @Override public String toString()

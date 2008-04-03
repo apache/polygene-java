@@ -30,6 +30,11 @@ public final class SerializedObject<T>
 {
     private byte[] data;
 
+    public SerializedObject( byte[] data )
+    {
+        this.data = data;
+    }
+
     public SerializedObject( T value )
     {
         try
@@ -82,4 +87,13 @@ public final class SerializedObject<T>
         }
     }
 
+    public byte[] getData()
+    {
+        return data;
+    }
+
+    public void setData( byte[] data )
+    {
+        this.data = data;
+    }
 }

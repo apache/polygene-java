@@ -1,8 +1,8 @@
 package org.qi4j.spi.injection;
 
 import java.lang.reflect.InvocationHandler;
+import org.qi4j.composite.State;
 import org.qi4j.spi.composite.CompositeBinding;
-import org.qi4j.spi.composite.State;
 import org.qi4j.spi.structure.ModuleBinding;
 
 /**

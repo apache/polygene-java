@@ -24,27 +24,27 @@ import org.qi4j.queryobsolete.QueryBuilderFactory;
  */
 public interface UnitOfWork
 {
-    <T extends EntityComposite> CompositeBuilder<T> newEntityBuilder( Class<T> compositeType );
+    <T> CompositeBuilder<T> newEntityBuilder( Class<T> compositeType );
 
-    <T extends EntityComposite> CompositeBuilder<T> newEntityBuilder( String identity, Class<T> compositeType );
+    <T> CompositeBuilder<T> newEntityBuilder( String identity, Class<T> compositeType );
 
-    <T extends EntityComposite> T find( String identity, Class<T> compositeType )
+    <T> T find( String identity, Class<T> compositeType )
         throws EntityCompositeNotFoundException;
 
-    <T extends EntityComposite> T getReference( String identity, Class<T> compositeType )
+    <T> T getReference( String identity, Class<T> compositeType )
         throws EntityCompositeNotFoundException;
 
     <T> T getReference( T entity )
         throws EntityCompositeNotFoundException;
 
-    void refresh( EntityComposite entity )
+    void refresh( Object entity )
         throws UnitOfWorkException;
 
-    void remove( EntityComposite entity );
+    void remove( Object entity );
 
     void refresh();
 
-    boolean contains( EntityComposite entity );
+    boolean contains( Object entity );
 
     void clear();
 

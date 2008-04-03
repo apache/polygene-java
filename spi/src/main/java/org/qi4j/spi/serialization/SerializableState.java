@@ -19,23 +19,31 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * TODO
+ * Serializable state for a single entity. This includes the version
+ * of the state and the version of the type.
  */
-public final class SerializedState
+public final class SerializableState
     implements Serializable
 {
-    private Map<String, Serializable> properties;
-    private Map<String, EntityId> associations;
-    private Map<String, Collection<EntityId>> manyAssociations;
+    private final long entityVersion;
+    private final Map<String, Object> properties;
+    private final Map<String, EntityId> associations;
+    private final Map<String, Collection<EntityId>> manyAssociations;
 
-    public SerializedState( Map<String, Serializable> properties, Map<String, EntityId> associations, Map<String, Collection<EntityId>> manyAssociations )
+    public SerializableState( long entityVersion, Map<String, Object> properties, Map<String, EntityId> associations, Map<String, Collection<EntityId>> manyAssociations )
     {
+        this.entityVersion = entityVersion;
         this.properties = properties;
         this.associations = associations;
         this.manyAssociations = manyAssociations;
     }
 
-    public Map<String, Serializable> getProperties()
+    public long getEntityVersion()
+    {
+        return entityVersion;
+    }
+
+    public Map<String, Object> getProperties()
     {
         return properties;
     }

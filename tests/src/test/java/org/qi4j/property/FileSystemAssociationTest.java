@@ -20,12 +20,9 @@ import org.qi4j.association.ManyAssociation;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.CompositeBuilder;
-import org.qi4j.composite.Mixins;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.memory.MemoryEntityStoreComposite;
-import org.qi4j.library.framework.entity.AssociationMixin;
-import org.qi4j.library.framework.entity.PropertyMixin;
 import org.qi4j.spi.entity.UuidIdentityGeneratorComposite;
 import org.qi4j.test.AbstractQi4jTest;
 
@@ -104,7 +101,6 @@ public class FileSystemAssociationTest
         }
     }
 
-    @Mixins( { PropertyMixin.class, AssociationMixin.class } )
     public interface Entry
     {
         Property<String> name();

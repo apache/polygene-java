@@ -21,7 +21,6 @@ import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.Mixins;
 import org.qi4j.composite.scope.PropertyField;
 import org.qi4j.composite.scope.PropertyParameter;
-import org.qi4j.library.framework.entity.PropertyMixin;
 import org.qi4j.property.Property;
 import org.qi4j.test.AbstractQi4jTest;
 
@@ -48,7 +47,7 @@ public class PropertyInjectionTest
         assertEquals( "Hello World", sampleInterface.say() );
     }
 
-    @Mixins( { SampleInterfaceMixin.class, PropertyMixin.class } )
+    @Mixins( { SampleInterfaceMixin.class } )
     public static interface SampleInterface
     {
         String say();

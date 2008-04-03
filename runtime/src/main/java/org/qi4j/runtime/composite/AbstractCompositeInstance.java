@@ -22,7 +22,6 @@ import java.lang.reflect.Proxy;
 import org.qi4j.composite.Composite;
 import org.qi4j.entity.Identity;
 import org.qi4j.property.ImmutableProperty;
-import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.CompositeState;
 
 public abstract class AbstractCompositeInstance
@@ -32,7 +31,6 @@ public abstract class AbstractCompositeInstance
     protected static final Method METHOD_GET;
 
     protected CompositeContext context;
-    protected ModuleInstance moduleInstance;
     protected Composite proxy;
 
     static
@@ -53,10 +51,9 @@ public abstract class AbstractCompositeInstance
         return (CompositeInstance) Proxy.getInvocationHandler( aProxy );
     }
 
-    public AbstractCompositeInstance( CompositeContext aContext, ModuleInstance moduleInstance )
+    public AbstractCompositeInstance( CompositeContext aContext )
     {
         this.context = aContext;
-        this.moduleInstance = moduleInstance;
     }
 
     public CompositeContext getContext()

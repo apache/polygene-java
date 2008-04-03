@@ -22,8 +22,8 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.Mixins;
+import org.qi4j.composite.State;
 import org.qi4j.property.Property;
-import org.qi4j.spi.composite.State;
 import org.qi4j.test.AbstractQi4jTest;
 
 /**

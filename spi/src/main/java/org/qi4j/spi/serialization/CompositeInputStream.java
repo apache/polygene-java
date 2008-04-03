@@ -60,10 +60,17 @@ public final class CompositeInputStream extends ObjectInputStream
         if( obj instanceof EntityId && unitOfWork != null )
         {
             EntityId holder = (EntityId) obj;
-            Class<? extends EntityComposite> clazz = holder.getCompositeType();
-            String id = holder.getIdentity();
-            Object instance = unitOfWork.find( id, clazz );
-            return instance;
+            try
+            {
+                Class<? extends EntityComposite> clazz = (Class<? extends EntityComposite>) Class.forName( holder.getCompositeType() );
+                String id = holder.getIdentity();
+                Object instance = unitOfWork.find( id, clazz );
+                return instance;
+            }
+            catch( ClassNotFoundException e )
+            {
+                throw (IOException) new IOException().initCause( e );
+            }
         }
 
         if( obj instanceof SerializedComposite )

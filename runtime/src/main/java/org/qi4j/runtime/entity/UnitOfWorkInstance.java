@@ -16,18 +16,11 @@
  */
 package org.qi4j.runtime.entity;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import org.qi4j.association.AbstractAssociation;
-import org.qi4j.association.ListAssociation;
-import org.qi4j.association.ManyAssociation;
-import org.qi4j.association.SetAssociation;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.ObjectBuilderFactory;
@@ -38,33 +31,21 @@ import org.qi4j.entity.IdentityGenerator;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkCompletionException;
 import org.qi4j.entity.UnitOfWorkException;
-import org.qi4j.property.ImmutableProperty;
-import org.qi4j.property.Property;
-import org.qi4j.property.PropertyInfo;
 import org.qi4j.queryobsolete.Query;
 import org.qi4j.queryobsolete.QueryBuilderFactory;
 import org.qi4j.queryobsolete.QueryBuilderFactoryImpl;
 import org.qi4j.runtime.composite.CompositeContext;
 import org.qi4j.runtime.composite.EntityCompositeInstance;
 import org.qi4j.runtime.structure.ModuleInstance;
-import org.qi4j.spi.association.AssociationBinding;
-import org.qi4j.spi.association.AssociationInstance;
-import org.qi4j.spi.association.ListAssociationInstance;
-import org.qi4j.spi.association.SetAssociationInstance;
-import org.qi4j.spi.composite.AssociationModel;
-import org.qi4j.spi.composite.AssociationResolution;
-import org.qi4j.spi.composite.CompositeBinding;
-import org.qi4j.spi.composite.PropertyResolution;
 import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.EntityStateInstance;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityStore;
+import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.StateCommitter;
-import org.qi4j.spi.entity.StoreException;
-import org.qi4j.spi.property.ImmutablePropertyInstance;
-import org.qi4j.spi.property.PropertyBinding;
-import org.qi4j.spi.property.PropertyInstance;
-import org.qi4j.spi.property.PropertyModel;
+import org.qi4j.spi.serialization.EntityId;
+import org.qi4j.spi.structure.ModuleBinding;
 
 public final class UnitOfWorkInstance
     implements UnitOfWork
@@ -83,21 +64,29 @@ public final class UnitOfWorkInstance
         cache = new HashMap<Class<? extends EntityComposite>, Map<String, EntityComposite>>();
     }
 
-    public <T extends EntityComposite> CompositeBuilder<T> newEntityBuilder( Class<T> compositeType )
+    public <T> CompositeBuilder<T> newEntityBuilder( Class<T> mixinType )
     {
-        return newEntityBuilder( null, compositeType );
+        return newEntityBuilder( null, mixinType );
     }
 
-    public <T extends EntityComposite> CompositeBuilder<T> newEntityBuilder( String identity, Class<T> compositeType )
+    public <T> CompositeBuilder<T> newEntityBuilder( String identity, Class<T> mixinType )
     {
         checkOpen();
 
-        EntityStore store = stateServices.getEntityStore( compositeType );
+        // Translate mixin type to actual Composite type
+        Class<? extends T> compositeType = (Class<? extends T>) moduleInstance.lookupCompositeType( mixinType );
+
+        if( !EntityComposite.class.isAssignableFrom( compositeType ) )
+        {
+            throw new UnitOfWorkException( "Trying to create builder for non-Entity type " + compositeType.getName() );
+        }
+
+        EntityStore store = stateServices.getEntityStore( (Class<? extends EntityComposite>) compositeType );
 
 //            if (store == null)
 //                throw new UnitOfWorkException("No store for composite type "+compositeType.getName());
 
-        CompositeBuilder<T> builder = new EntityCompositeBuilderFactory( moduleInstance, this, store ).newCompositeBuilder( compositeType );
+        CompositeBuilder<T> builder = (CompositeBuilder<T>) new EntityCompositeBuilderFactory( moduleInstance, this, store ).newCompositeBuilder( compositeType );
         if( identity != null )
         {
             builder.propertiesFor( Identity.class ).identity().set( identity );
@@ -105,35 +94,38 @@ public final class UnitOfWorkInstance
         return builder;
     }
 
-    public void remove( EntityComposite entity )
+    public void remove( Object entity )
     {
         checkOpen();
 
-        EntityCompositeInstance compositeInstance = EntityCompositeInstance.getEntityCompositeInstance( entity );
-        compositeInstance.getState().remove();
+        EntityComposite entityComposite = (EntityComposite) entity;
+
+        EntityCompositeInstance compositeInstance = EntityCompositeInstance.getEntityCompositeInstance( entityComposite );
+        compositeInstance.loadState().remove();
     }
 
-    public <T extends EntityComposite> T find( String identity, Class<T> compositeType )
+    public <T> T find( String identity, Class<T> mixinType )
         throws EntityCompositeNotFoundException
     {
         checkOpen();
+
+        Class<? extends EntityComposite> compositeType = (Class<? extends EntityComposite>) moduleInstance.lookupCompositeType( mixinType );
 
         // TODO: Argument check.
 
         try
         {
-            EntityComposite entity = getCachedEntity( identity, compositeType );
+            EntityComposite entity = getCachedEntity( identity, mixinType );
             if( entity == null )
             {   // Not yet in cache
 
                 // Get the state from the store
                 EntityStore store = stateServices.getEntityStore( compositeType );
                 CompositeContext compositeContext = moduleInstance.getModuleContext().getCompositeContext( compositeType );
-                CompositeBinding compositeBinding = compositeContext.getCompositeBinding();
                 EntityState state = null;
                 try
                 {
-                    state = store.getEntityState( this, identity, compositeBinding );
+                    state = store.getEntityState( new EntityId( identity, compositeType.getName() ) );
                 }
                 catch( EntityNotFoundException e )
                 {
@@ -141,9 +133,9 @@ public final class UnitOfWorkInstance
                 }
 
                 // Create entity instance
-                entity = (EntityComposite) compositeContext.newEntityCompositeInstance( moduleInstance, this, store, identity ).getProxy();
+                entity = (EntityComposite) compositeContext.newEntityCompositeInstance( this, store, identity ).getProxy();
                 EntityCompositeInstance compositeInstance = EntityCompositeInstance.getEntityCompositeInstance( entity );
-                compositeContext.newEntityMixins( moduleInstance, compositeInstance, state );
+                compositeContext.newEntityMixins( this, compositeInstance, state );
                 Map<String, EntityComposite> entityCache = getEntityCache( compositeType );
                 entityCache.put( identity, entity );
             }
@@ -153,8 +145,7 @@ public final class UnitOfWorkInstance
                 {
                     // Check that state exists
                     EntityStore store = stateServices.getEntityStore( compositeType );
-                    CompositeBinding compositeBinding = moduleInstance.getModuleContext().getCompositeContext( compositeType ).getCompositeBinding();
-                    EntityState state = store.getEntityState( this, identity, compositeBinding );
+                    EntityState state = store.getEntityState( new EntityId( identity, compositeType.getName() ) );
                     EntityCompositeInstance entityCompositeInstance = EntityCompositeInstance.getEntityCompositeInstance( entity );
                     entityCompositeInstance.setState( state );
                 }
@@ -170,18 +161,20 @@ public final class UnitOfWorkInstance
                 }
             }
 
-            return compositeType.cast( entity );
+            return mixinType.cast( entity );
         }
-        catch( StoreException e )
+        catch( EntityStoreException e )
         {
             throw new EntityStorageException( "Storage unable to access entity " + identity, e );
         }
     }
 
-    public <T extends EntityComposite> T getReference( String identity, Class<T> compositeType )
+    public <T> T getReference( String identity, Class<T> mixinType )
         throws EntityCompositeNotFoundException
     {
         checkOpen();
+
+        Class<? extends EntityComposite> compositeType = (Class<? extends EntityComposite>) moduleInstance.lookupCompositeType( mixinType );
 
         EntityComposite entity = getCachedEntity( identity, compositeType );
         if( entity == null )
@@ -189,7 +182,7 @@ public final class UnitOfWorkInstance
             // Create entity instance
             EntityStore store = stateServices.getEntityStore( compositeType );
             CompositeContext compositeContext = moduleInstance.getModuleContext().getCompositeContext( compositeType );
-            entity = (EntityComposite) compositeContext.newEntityCompositeInstance( moduleInstance, this, store, identity ).getProxy();
+            entity = (EntityComposite) compositeContext.newEntityCompositeInstance( this, store, identity ).getProxy();
             Map<String, EntityComposite> entityCache = getEntityCache( compositeType );
             entityCache.put( identity, entity );
         }
@@ -204,27 +197,31 @@ public final class UnitOfWorkInstance
             }
         }
 
-        return compositeType.cast( entity );
+        return mixinType.cast( entity );
     }
 
     public <T> T getReference( T entity ) throws EntityCompositeNotFoundException
     {
         EntityComposite entityComposite = (EntityComposite) entity;
-        return (T) getReference( entityComposite.identity().get(), (Class<? extends EntityComposite>) entityComposite.getCompositeType() );
+        EntityCompositeInstance compositeInstance = EntityCompositeInstance.getEntityCompositeInstance( entityComposite );
+        String id = compositeInstance.getIdentity();
+        Class<? extends EntityComposite> type = (Class<? extends EntityComposite>) compositeInstance.getContext().getCompositeModel().getCompositeType();
+        return (T) getReference( id, type );
     }
 
-    public void refresh( EntityComposite entity )
+    public void refresh( Object entity )
         throws UnitOfWorkException
     {
         checkOpen();
 
-        EntityCompositeInstance entityInstance = EntityCompositeInstance.getEntityCompositeInstance( entity );
+        EntityComposite entityComposite = (EntityComposite) entity;
+        EntityCompositeInstance entityInstance = EntityCompositeInstance.getEntityCompositeInstance( entityComposite );
         if( !entityInstance.isReference() )
         {
             EntityStatus entityStatus = entityInstance.getState().getStatus();
             if( entityStatus == EntityStatus.REMOVED )
             {
-                throw new EntityCompositeNotFoundException( "Entity has been removed", entityInstance.getIdentity(), entity.getCompositeType() );
+                throw new EntityCompositeNotFoundException( "Entity has been removed", entityInstance.getIdentity(), entityInstance.getContext().getCompositeModel().getCompositeType() );
             }
             else if( entityStatus == EntityStatus.NEW )
             {
@@ -234,11 +231,13 @@ public final class UnitOfWorkInstance
             // Refresh the state
             try
             {
-                EntityState state = entityInstance.getStore().getEntityState( this, entity.identity().get(), entityInstance.getContext().getCompositeBinding() );
-                entityInstance.setState( state );
+                EntityId identity = new EntityId( entityInstance.getIdentity(),
+                                                  entityInstance.getContext().getCompositeModel().getCompositeType().getName() );
+                EntityState state = entityInstance.getStore().getEntityState( identity );
+                entityInstance.refresh( state );
                 entityInstance.setMixins( null );
             }
-            catch( StoreException e )
+            catch( EntityStoreException e )
             {
                 throw new UnitOfWorkException( e );
             }
@@ -265,11 +264,12 @@ public final class UnitOfWorkInstance
         cache.clear();
     }
 
-    public boolean contains( EntityComposite entity )
+    public boolean contains( Object entity )
     {
         checkOpen();
 
-        return getCachedEntity( entity.identity().get(), entity.getCompositeType() ) != null;
+        EntityComposite entityComposite = (EntityComposite) entity;
+        return getCachedEntity( entityComposite.identity().get(), entityComposite.getCompositeType() ) != null;
     }
 
     public CompositeBuilderFactory getCompositeBuilderFactory()
@@ -309,37 +309,48 @@ public final class UnitOfWorkInstance
         checkOpen();
 
         // Create complete lists
-        Map<EntityStore, List<EntityState>> storeCompletions = new HashMap<EntityStore, List<EntityState>>();
+        Map<EntityStore, StoreCompletion> storeCompletion = new HashMap<EntityStore, StoreCompletion>();
         for( Map.Entry<Class<? extends EntityComposite>, Map<String, EntityComposite>> entry : cache.entrySet() )
         {
             EntityStore store = stateServices.getEntityStore( entry.getKey() );
-            List<EntityState> storeCompletionList = storeCompletions.get( store );
+            StoreCompletion storeCompletionList = storeCompletion.get( store );
             if( storeCompletionList == null )
             {
-                storeCompletionList = new ArrayList<EntityState>();
-                storeCompletions.put( store, storeCompletionList );
+                storeCompletionList = new StoreCompletion();
+                storeCompletion.put( store, storeCompletionList );
             }
 
             Map<String, EntityComposite> entities = entry.getValue();
             for( EntityComposite entityInstance : entities.values() )
             {
                 EntityState state = EntityCompositeInstance.getEntityCompositeInstance( entityInstance ).getState();
-                storeCompletionList.add( state );
+                if( state.getStatus() == EntityStatus.NEW )
+                {
+                    storeCompletionList.getNewState().add( state );
+                }
+                else if( state.getStatus() == EntityStatus.LOADED )
+                {
+                    storeCompletionList.getUpdatedState().add( state );
+                }
+                if( state.getStatus() == EntityStatus.REMOVED )
+                {
+                    storeCompletionList.getRemovedState().add( state.getIdentity() );
+                }
             }
         }
 
         // Commit complete lists
         List<StateCommitter> committers = new ArrayList<StateCommitter>();
-        for( Map.Entry<EntityStore, List<EntityState>> entityStoreListEntry : storeCompletions.entrySet() )
+        for( Map.Entry<EntityStore, StoreCompletion> entityStoreListEntry : storeCompletion.entrySet() )
         {
             EntityStore entityStore = entityStoreListEntry.getKey();
-            List<EntityState> stateList = entityStoreListEntry.getValue();
+            StoreCompletion completion = entityStoreListEntry.getValue();
 
             try
             {
-                committers.add( entityStore.prepare( this, stateList ) );
+                committers.add( entityStore.prepare( completion.getNewState(), completion.getUpdatedState(), completion.getRemovedState(), moduleInstance.getModuleContext().getModuleBinding() ) );
             }
-            catch( StoreException e )
+            catch( EntityStoreException e )
             {
                 // Cancel all previously prepared stores
                 for( StateCommitter committer : committers )
@@ -378,7 +389,16 @@ public final class UnitOfWorkInstance
 
     public UnitOfWork newUnitOfWork()
     {
+        checkOpen();
+
         return new UnitOfWorkInstance( moduleInstance, new UnitOfWorkStateServices() );
+    }
+
+    public ModuleInstance getModuleInstance()
+    {
+        checkOpen();
+
+        return moduleInstance;
     }
 
     void createEntity( EntityComposite instance )
@@ -413,6 +433,27 @@ public final class UnitOfWorkInstance
         return entityCache.get( identity );
     }
 
+    private EntityState getCachedState( EntityId entityId )
+    {
+        String type = entityId.getCompositeType();
+        Class compositeType = moduleInstance.getModuleContext().getModuleBinding().lookupClass( type );
+        Map<String, EntityComposite> entityCache = cache.get( compositeType );
+        if( entityCache == null )
+        {
+            return null;
+        }
+
+        EntityComposite composite = entityCache.get( entityId.getIdentity() );
+        if( composite != null )
+        {
+            return EntityCompositeInstance.getEntityCompositeInstance( composite ).getState();
+        }
+        else
+        {
+            return null;
+        }
+    }
+
     private void checkOpen()
     {
         if( !isOpen() )
@@ -440,82 +481,105 @@ public final class UnitOfWorkInstance
     private class UnitOfWorkStore
         implements EntityStore
     {
-        public EntityState newEntityState( String identity, CompositeBinding compositeBinding ) throws StoreException
+        public EntityState newEntityState( EntityId identity ) throws EntityStoreException
         {
-            Map<Method, Property> properties = new HashMap<Method, Property>();
-            Iterable<PropertyBinding> propertyBindings = compositeBinding.getPropertyBindings();
-            for( PropertyBinding propertyBinding : propertyBindings )
-            {
-                PropertyResolution propertyResolution = propertyBinding.getPropertyResolution();
-                PropertyModel propertyModel = propertyResolution.getPropertyModel();
-                Method accessor = propertyModel.getAccessor();
-
-                Class<?> type = accessor.getReturnType();
-                if( ImmutableProperty.class.isAssignableFrom( type ) )
-                {
-                    properties.put( accessor, new ImmutablePropertyInstance<Object>( propertyBinding ) );
-                }
-                else
-                {
-                    properties.put( accessor, new PropertyInstance<Object>( propertyBinding ) );
-                }
-            }
-
-            Map<Method, AbstractAssociation> associations = new HashMap<Method, AbstractAssociation>();
-            Iterable<AssociationBinding> associationBindings = compositeBinding.getAssociationBindings();
-            for( AssociationBinding associationBinding : associationBindings )
-            {
-                AssociationResolution associationResolution = associationBinding.getAssociationResolution();
-                AssociationModel associationModel = associationResolution.getAssociationModel();
-                Method accessor = associationModel.getAccessor();
-                Class<?> type = accessor.getReturnType();
-                if( ListAssociation.class.isAssignableFrom( type ) )
-                {
-                    ListAssociationInstance<Object> listInstance =
-                        new ListAssociationInstance<Object>( new ArrayList<Object>(), associationBinding );
-                    associations.put( accessor, listInstance );
-                }
-                else if( ManyAssociation.class.isAssignableFrom( type ) )
-                {
-                    SetAssociationInstance setInstance = new SetAssociationInstance<Object>( new HashSet<Object>(), associationBinding );
-                    associations.put( accessor, setInstance );
-                }
-                else
-                {
-                    AssociationInstance<Object> instance = new AssociationInstance<Object>( associationBinding, null );
-                    associations.put( accessor, instance );
-                }
-            }
-
-            return new UnitOfWorkEntityState( identity, properties, associations );
+            UnitOfWorkEntityState entityState = new UnitOfWorkEntityState( 0, identity, EntityStatus.NEW, new HashMap<String, Object>(), new HashMap<String, EntityId>(), new HashMap<String, Collection<EntityId>>(), null );
+            return entityState;
         }
 
-        public EntityState getEntityState( UnitOfWork unitOfWork, String identity, CompositeBinding compositeBinding ) throws StoreException
+        public EntityState getEntityState( EntityId identity ) throws EntityStoreException
         {
-            Class<? extends EntityComposite> entityType = (Class<? extends EntityComposite>) compositeBinding.getCompositeResolution().getCompositeModel().getCompositeType();
-            EntityComposite parentEntity = getReference( identity, entityType );
-            UnitOfWorkEntityState unitOfWorkEntityState = new UnitOfWorkEntityState( identity, parentEntity );
+            EntityState parentState = getCachedState( identity );
+            if( parentState == null )
+            {
+                // Force load into parent
+                Class<? extends EntityComposite> entityType = (Class<? extends EntityComposite>) moduleInstance.getModuleContext().getModuleBinding().lookupClass( identity.getCompositeType() );
+                parentState = EntityCompositeInstance.getEntityCompositeInstance( find( identity.getIdentity(), entityType ) ).getState();
+            }
+            UnitOfWorkEntityState unitOfWorkEntityState = new UnitOfWorkEntityState( parentState.getEntityVersion(),
+                                                                                     identity,
+                                                                                     EntityStatus.LOADED,
+                                                                                     new HashMap<String, Object>(),
+                                                                                     new HashMap<String, EntityId>(),
+                                                                                     new HashMap<String, Collection<EntityId>>(),
+                                                                                     parentState );
             return unitOfWorkEntityState;
         }
 
-        public StateCommitter prepare( UnitOfWork unitOfWork, Iterable<EntityState> states ) throws StoreException
+        public StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, Iterable<EntityId> removedStates, ModuleBinding moduleBinding ) throws EntityStoreException
         {
-            for( EntityState stateUnitOfWork : states )
+            // Create new entity and transfer state
+            for( EntityState newState : newStates )
             {
-                UnitOfWorkEntityState uowState = (UnitOfWorkEntityState) stateUnitOfWork;
-                Collection<Property> properties = uowState.getProperties().values();
-                for( Property property : properties )
+                UnitOfWorkEntityState uowState = (UnitOfWorkEntityState) newState;
+                EntityComposite entityInstance = newEntityBuilder( uowState.getIdentity().getIdentity(), (Class<? extends EntityComposite>) moduleInstance.getModuleContext().getModuleBinding().lookupClass( uowState.getIdentity().getCompositeType() ) ).newInstance();
+
+                EntityState parentState = EntityCompositeInstance.getEntityCompositeInstance( entityInstance ).getState();
+                Iterable<String> propertyNames = uowState.getPropertyNames();
+                for( String propertyName : propertyNames )
                 {
-                    // If property in nested unitOfWork has been updated then copy value to original
-                    if( property instanceof UnitOfWorkPropertyInstance )
+                    parentState.setProperty( propertyName, uowState.getProperty( propertyName ) );
+                }
+                Iterable<String> associationNames = uowState.getAssociationNames();
+                for( String associationName : associationNames )
+                {
+                    parentState.setAssociation( associationName, uowState.getAssociation( associationName ) );
+                }
+                Iterable<String> manyAssociationNames = uowState.getManyAssociationNames();
+                for( String manyAssociationName : manyAssociationNames )
+                {
+                    Collection<EntityId> collection = parentState.getManyAssociation( manyAssociationName );
+                    Collection<EntityId> newCollection = uowState.getManyAssociation( manyAssociationName );
+
+                    // TODO This can be soooo much more optimized by comparing the collections and matching them
+                    // up by doing individual add/removes
+                    collection.clear();
+                    collection.addAll( newCollection );
+                }
+            }
+
+            // Copy state back to already loaded entities
+            for( EntityState loadedState : loadedStates )
+            {
+                UnitOfWorkEntityState uowState = (UnitOfWorkEntityState) loadedState;
+                if( uowState.isChanged() )
+                {
+                    EntityState parentState = uowState.getParentState();
+                    Iterable<String> propertyNames = uowState.getPropertyNames();
+                    for( String propertyName : propertyNames )
                     {
-                        UnitOfWorkPropertyInstance propertyInstance = (UnitOfWorkPropertyInstance) property;
-                        if( propertyInstance.isUpdated() )
-                        {
-                            Property original = (Property) propertyInstance.getPropertyInfo();
-                            original.set( propertyInstance.get() );
-                        }
+                        parentState.setProperty( propertyName, uowState.getProperty( propertyName ) );
                     }
+                    Iterable<String> associationNames = uowState.getAssociationNames();
+                    for( String associationName : associationNames )
+                    {
+                        parentState.setAssociation( associationName, uowState.getAssociation( associationName ) );
+                    }
+                    Iterable<String> manyAssociationNames = uowState.getManyAssociationNames();
+                    for( String manyAssociationName : manyAssociationNames )
+                    {
+                        Collection<EntityId> collection = parentState.getManyAssociation( manyAssociationName );
+                        Collection<EntityId> newCollection = uowState.getManyAssociation( manyAssociationName );
+
+                        // TODO This can be soooo much more optimized by comparing the collections and matching them
+                        // up by doing individual add/removes
+                        collection.clear();
+                        collection.addAll( newCollection );
+                    }
+
+                    Class<? extends EntityComposite> entityType = (Class<? extends EntityComposite>) moduleInstance.getModuleContext().getModuleBinding().lookupClass( uowState.getIdentity().getCompositeType() );
+                    EntityComposite instance = find( uowState.getIdentity().getIdentity(), entityType );
+                    EntityCompositeInstance.getEntityCompositeInstance( instance ).refresh( parentState );
+                }
+            }
+
+            // Remove entities
+            for( EntityId removedState : removedStates )
+            {
+                EntityState parentState = getCachedState( removedState );
+                if( parentState != null )
+                {
+                    parentState.remove(); // Mark for deletion when parent unit completes
                 }
             }
 
@@ -533,148 +597,91 @@ public final class UnitOfWorkInstance
     }
 
     private class UnitOfWorkEntityState
-        implements EntityState
+        extends EntityStateInstance
     {
-        EntityStatus status;
-        EntityComposite parentEntity;
-        Map<Method, Property> properties = new HashMap<Method, Property>();
-        Map<Method, AbstractAssociation> associations = new HashMap<Method, AbstractAssociation>();
-        private String identity;
+        private EntityState parentState;
+        private long entityVersion;
 
-        private UnitOfWorkEntityState( String identity, Map<Method, Property> properties, Map<Method, AbstractAssociation> associations )
+        private UnitOfWorkEntityState( long entityVersion, EntityId identity, EntityStatus status, Map<String, Object> properties, Map<String, EntityId> associations, Map<String, Collection<EntityId>> manyAssociations, EntityState parentState )
         {
-            this.identity = identity;
-            this.properties = properties;
-            this.associations = associations;
+            super( entityVersion, identity, status, properties, associations, manyAssociations );
+            this.parentState = parentState;
+            this.entityVersion = entityVersion;
         }
 
-        public UnitOfWorkEntityState( String identity, EntityComposite parentEntity )
+        public long getEntityVersion()
         {
-            this.identity = identity;
-            this.parentEntity = parentEntity;
+            return entityVersion;
         }
 
-        public String getIdentity()
+        public Object getProperty( String qualifiedName )
         {
-            return parentEntity.identity().get();
-        }
-
-        public CompositeBinding getCompositeBinding()
-        {
-            return EntityCompositeInstance.getEntityCompositeInstance( parentEntity ).getState().getCompositeBinding();
-        }
-
-        public void remove()
-        {
-            status = EntityStatus.REMOVED;
-        }
-
-        public EntityStatus getStatus()
-        {
-            return status;
-        }
-
-        public Property getProperty( Method propertyMethod )
-        {
-            try
+            if( properties.containsKey( qualifiedName ) )
             {
-                Property property = properties.get( propertyMethod );
-                if( property == null )
-                {
-                    EntityCompositeInstance compositeInstance = EntityCompositeInstance.getEntityCompositeInstance( parentEntity );
-                    EntityState state = compositeInstance.loadState();
-                    Property original = state.getProperty( propertyMethod );
-                    if( original instanceof ImmutableProperty )
-                    {
-                        property = original;
-                    }
-                    else
-                    {
-                        property = new UnitOfWorkPropertyInstance( original, original.get() );
-                    }
-                    properties.put( propertyMethod, property );
-                }
-                return property;
+                return properties.get( qualifiedName );
             }
-            catch( StoreException e )
-            {
-                // Could not load state for this entity
-                throw new UnitOfWorkException( e );
-            }
+
+            // Get from parent state
+            return parentState == null ? null : parentState.getProperty( qualifiedName );
         }
 
-        public AbstractAssociation getAssociation( Method associationMethod )
+        public EntityId getAssociation( String qualifiedName )
         {
-            try
+            if( associations.containsKey( qualifiedName ) )
             {
-                AbstractAssociation association = associations.get( associationMethod );
-                if( association == null )
-                {
-                    EntityCompositeInstance compositeInstance = EntityCompositeInstance.getEntityCompositeInstance( parentEntity );
-                    EntityState state = compositeInstance.loadState();
-                    AbstractAssociation original = state.getAssociation( associationMethod );
-                    if( original instanceof ListAssociation )
-                    {
-                        List associationList = new ArrayList();
-                        ListAssociation originalList = (ListAssociation) original;
-                        for( Object entity : originalList )
-                        {
-                            associationList.add( entity );
-                        }
-                        association = new ListAssociationInstance( associationList, original );
-                    }
-                    else if( original instanceof SetAssociation )
-                    {
-                        Set associationSet = new HashSet();
-                        SetAssociation originalSet = (SetAssociation) original;
-                        for( Object entity : originalSet )
-                        {
-                            associationSet.add( entity );
-                        }
-                        association = new SetAssociationInstance( associationSet, original );
-                    }
-                    associations.put( associationMethod, association );
-                }
-                return association;
+                return associations.get( qualifiedName );
             }
-            catch( StoreException e )
-            {
-                // Could not load state for this entity
-                throw new UnitOfWorkException( e );
-            }
+
+            return parentState == null ? null : parentState.getAssociation( qualifiedName );
         }
 
-        private Map<Method, Property> getProperties()
+        public Collection<EntityId> getManyAssociation( String qualifiedName )
         {
-            return properties;
+            if( manyAssociations.containsKey( qualifiedName ) )
+            {
+                return manyAssociations.get( qualifiedName );
+            }
+
+            return parentState == null ? null : parentState.getManyAssociation( qualifiedName );
         }
 
-        private Map<Method, AbstractAssociation> getAssociations()
+        public EntityState getParentState()
         {
-            return associations;
+            return parentState;
+        }
+
+        public boolean isChanged()
+        {
+            return properties.size() > 0 || associations.size() > 0 || manyAssociations.size() > 0;
         }
     }
 
-    private class UnitOfWorkPropertyInstance
-        extends PropertyInstance
+    private class StoreCompletion
     {
-        boolean updated = false;
+        List<EntityState> newState;
+        List<EntityState> updatedState;
+        List<EntityId> removedState;
 
-        private UnitOfWorkPropertyInstance( PropertyInfo aPropertyInfo, Object aValue )
-            throws IllegalArgumentException
+        private StoreCompletion()
         {
-            super( aPropertyInfo, aValue );
+            this.newState = new ArrayList<EntityState>();
+            this.updatedState = new ArrayList<EntityState>();
+            this.removedState = new ArrayList<EntityId>();
         }
 
-        @Override public Object set( Object aNewValue )
+        public List<EntityState> getNewState()
         {
-            updated = true;
-            return super.set( aNewValue );
+            return newState;
         }
 
-        public boolean isUpdated()
+        public List<EntityState> getUpdatedState()
         {
-            return updated;
+            return updatedState;
+        }
+
+        public List<EntityId> getRemovedState()
+        {
+            return removedState;
         }
     }
 

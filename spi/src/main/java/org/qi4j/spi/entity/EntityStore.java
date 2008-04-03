@@ -16,8 +16,8 @@
  */
 package org.qi4j.spi.entity;
 
-import org.qi4j.entity.UnitOfWork;
-import org.qi4j.spi.composite.CompositeBinding;
+import org.qi4j.spi.serialization.EntityId;
+import org.qi4j.spi.structure.ModuleBinding;
 
 /**
  * Interface that must be implemented by store for
@@ -26,37 +26,29 @@ import org.qi4j.spi.composite.CompositeBinding;
 public interface EntityStore
 {
     /**
-     * Create new EntityState for a given identity and
-     * composite type.
+     * Create new EntityState for a given identity.
      * <p/>
      * This should only create the EntityState
      * and not insert it into any database, since
-     * that should occur during the {@link #prepare(org.qi4j.entity.UnitOfWork , Iterable)}
+     * that should occur during the {@link #prepare(Iterable}
      * call.
      *
-     * @param identity         the identity of the entity
-     * @param compositeBinding the composite binding for the entity
-     * @throws StoreException
+     * @param identity the identity of the entity
+     * @throws EntityStoreException
      */
-    EntityState newEntityState( String identity,
-                                CompositeBinding compositeBinding
-    )
-        throws StoreException;
+    EntityState newEntityState( EntityId identity )
+        throws EntityStoreException;
 
     /**
      * Get the EntityState for a given identity
      * and composite type.
      *
-     * @param unitOfWork
      * @param identity
-     * @param compositeBinding
      * @return
-     * @throws StoreException
+     * @throws EntityStoreException
      */
-    EntityState getEntityState( UnitOfWork unitOfWork,
-                                String identity,
-                                CompositeBinding compositeBinding )
-        throws StoreException;
+    EntityState getEntityState( EntityId identity )
+        throws EntityStoreException;
 
     /**
      * This method is called by {@link org.qi4j.entity.UnitOfWork#complete()}.
@@ -64,11 +56,15 @@ public interface EntityStore
      * to the underlying datastore. The method returns a StateCommitter that the unit of work
      * will invoke once all EntityStore's have been prepared.
      *
-     * @param unitOfWork the unit for the state
-     * @param states     the state to send to the datastore
+     * @param newStates
+     * @param loadedStates
+     * @param removedStates
+     * @param moduleBinding
      * @return an implementation of StateCommitter
-     * @throws StoreException if the state could not be sent to the datastore
+     * @throws EntityStoreException if the state could not be sent to the datastore
      */
-    StateCommitter prepare( UnitOfWork unitOfWork, Iterable<EntityState> states )
-        throws StoreException;
+    StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, Iterable<EntityId> removedStates, ModuleBinding moduleBinding )
+        throws EntityStoreException;
+
+//    EntityIterator iterator();
 }

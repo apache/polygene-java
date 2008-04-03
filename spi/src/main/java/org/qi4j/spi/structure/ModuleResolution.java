@@ -126,4 +126,9 @@ public final class ModuleResolution
             }
         }
     }
+
+    @Override public String toString()
+    {
+        return moduleModel.toString();
+    }
 }

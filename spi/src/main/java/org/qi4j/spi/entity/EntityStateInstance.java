@@ -16,11 +16,9 @@
  */
 package org.qi4j.spi.entity;
 
-import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.Map;
-import org.qi4j.association.AbstractAssociation;
-import org.qi4j.property.Property;
-import org.qi4j.spi.composite.CompositeBinding;
+import org.qi4j.spi.serialization.EntityId;
 
 /**
  * Standard implementation of EntityState.
@@ -28,45 +26,70 @@ import org.qi4j.spi.composite.CompositeBinding;
 public class EntityStateInstance
     implements EntityState
 {
-    private final String identity;
-    private final CompositeBinding compositeBinding;
+    private final long entityVersion;
+    private final EntityId identity;
     private EntityStatus status;
 
-    protected final Map<Method, Property> properties;
-    protected final Map<Method, AbstractAssociation> associations;
+    protected final Map<String, Object> properties;
+    protected final Map<String, EntityId> associations;
+    protected final Map<String, Collection<EntityId>> manyAssociations;
 
-    public EntityStateInstance( String identity,
-                                CompositeBinding compositeBinding,
+    public EntityStateInstance( long entityVersion,
+                                EntityId identity,
                                 EntityStatus status,
-                                Map<Method, Property> properties,
-                                Map<Method, AbstractAssociation> associations )
+                                Map<String, Object> properties,
+                                Map<String, EntityId> associations,
+                                Map<String, Collection<EntityId>> manyAssociations )
     {
+        this.entityVersion = entityVersion;
         this.identity = identity;
-        this.compositeBinding = compositeBinding;
         this.status = status;
         this.properties = properties;
         this.associations = associations;
+        this.manyAssociations = manyAssociations;
     }
 
     // EntityState implementation
-    public String getIdentity()
+    public long getEntityVersion()
+    {
+        return entityVersion;
+    }
+
+    public EntityId getIdentity()
     {
         return identity;
     }
 
-    public CompositeBinding getCompositeBinding()
+    public Object getProperty( String qualifiedName )
     {
-        return compositeBinding;
+        return properties.get( qualifiedName );
     }
 
-    public Property getProperty( Method propertyMethod )
+    public void setProperty( String qualifiedName, Object newValue )
     {
-        return properties.get( propertyMethod );
+        properties.put( qualifiedName, newValue );
     }
 
-    public AbstractAssociation getAssociation( Method associationMethod )
+    public EntityId getAssociation( String qualifiedName )
     {
-        return associations.get( associationMethod );
+        return associations.get( qualifiedName );
+    }
+
+    public void setAssociation( String qualifiedName, EntityId newEntity )
+    {
+        associations.put( qualifiedName, newEntity );
+    }
+
+    public Collection<EntityId> getManyAssociation( String qualifiedName )
+    {
+        Collection<EntityId> manyAssociation = manyAssociations.get( qualifiedName );
+        return manyAssociation;
+    }
+
+    public Collection<EntityId> setManyAssociation( String qualifiedName, Collection<EntityId> newManyAssociation )
+    {
+        manyAssociations.put( qualifiedName, newManyAssociation );
+        return newManyAssociation;
     }
 
     public void remove()
@@ -79,13 +102,38 @@ public class EntityStateInstance
         return status;
     }
 
-    public Map<Method, Property> getProperties()
+    public Iterable<String> getPropertyNames()
+    {
+        return properties.keySet();
+    }
+
+    public Iterable<String> getAssociationNames()
+    {
+        return associations.keySet();
+    }
+
+    public Iterable<String> getManyAssociationNames()
+    {
+        return manyAssociations.keySet();
+    }
+
+    public Map<String, Object> getProperties()
     {
         return properties;
     }
 
-    public Map<Method, AbstractAssociation> getAssociations()
+    public Map<String, EntityId> getAssociations()
     {
         return associations;
+    }
+
+    public Map<String, Collection<EntityId>> getManyAssociations()
+    {
+        return manyAssociations;
+    }
+
+    @Override public String toString()
+    {
+        return identity + "(" + properties.size() + " properties, " + associations.size() + " associations, " + manyAssociations.size() + " many-associations)";
     }
 }

@@ -19,6 +19,8 @@ import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.property.ImmutableProperty;
 import org.qi4j.property.Property;
 import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.property.EntityPropertyInstance;
 import org.qi4j.spi.property.ImmutablePropertyInstance;
 import org.qi4j.spi.property.PropertyBinding;
 import org.qi4j.spi.property.PropertyInstance;
@@ -64,6 +66,41 @@ public final class PropertyContext
                 else
                 {
                     instance = new PropertyInstance<Object>( propertyBinding, value );
+                }
+
+                return instance;
+            }
+        }
+        catch( Exception e )
+        {
+            throw new InvalidPropertyException( "Could not instantiate property", e );
+        }
+    }
+
+    public Property newEntityInstance( ModuleInstance moduleInstance, EntityState entityState )
+    {
+        try
+        {
+            Class propertyType = propertyBinding.getPropertyResolution().getPropertyModel().getAccessor().getReturnType();
+
+            if( Composite.class.isAssignableFrom( propertyType ) )
+            {
+                Class<? extends Composite> propertyCompositeType = (Class<? extends Composite>) propertyType;
+                CompositeBuilder<? extends Composite> cb = moduleInstance.getStructureContext().getCompositeBuilderFactory().newCompositeBuilder( propertyCompositeType );
+                cb.use( entityState );
+                cb.use( propertyBinding );
+                return Property.class.cast( cb.newInstance() );
+            }
+            else
+            {
+                Property instance;
+                if( ImmutableProperty.class.isAssignableFrom( propertyType ) )
+                {
+                    instance = new ImmutablePropertyInstance<Object>( propertyBinding, entityState.getProperty( propertyBinding.getQualifiedName() ) );
+                }
+                else
+                {
+                    instance = new EntityPropertyInstance<Object>( propertyBinding, entityState );
                 }
 
                 return instance;

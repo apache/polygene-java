@@ -28,12 +28,9 @@ import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.Concerns;
 import org.qi4j.composite.ConstraintDeclaration;
-import org.qi4j.composite.Mixins;
 import org.qi4j.composite.scope.ConcernFor;
 import org.qi4j.composite.scope.SideEffectFor;
 import org.qi4j.composite.scope.ThisCompositeAs;
-import org.qi4j.library.framework.entity.AssociationMixin;
-import org.qi4j.library.framework.entity.PropertyMixin;
 import org.qi4j.test.AbstractQi4jTest;
 
 /**
@@ -76,7 +73,6 @@ public class SimplePropertyTest
     {
     }
 
-    @Mixins( { PropertyMixin.class, AssociationMixin.class } )
     public interface StandardComposite
     {
     }

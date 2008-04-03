@@ -55,7 +55,7 @@ public final class ApplicationFactory
         {
             // Create Layer
             LayerAssembly lb = applicationAssembly.newLayerAssembly();
-            lb.setName( "Layer " + layer );
+            lb.setName( "Layer " + ( layer + 1 ) );
             for( int module = 0; module < assemblers[ layer ].length; module++ )
             {
                 // Create Module

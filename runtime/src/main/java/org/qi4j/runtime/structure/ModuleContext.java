@@ -73,7 +73,7 @@ public final class ModuleContext
     public Class<? extends Composite> getCompositeForMixinType( Class mixinType )
     {
         Class<? extends Composite> compositeType = interfaceCompositeMapping.get( mixinType );
-        
+
         return compositeType;
     }
 
@@ -88,4 +88,8 @@ public final class ModuleContext
         return mapping;
     }
 
+    @Override public String toString()
+    {
+        return moduleBinding.toString();
+    }
 }

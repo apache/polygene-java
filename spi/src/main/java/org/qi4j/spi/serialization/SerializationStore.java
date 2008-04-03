@@ -16,7 +16,7 @@ package org.qi4j.spi.serialization;
 
 import java.io.IOException;
 import java.util.Map;
-import org.qi4j.entity.UnitOfWork;
+import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.spi.entity.StateCommitter;
 
 /**
@@ -29,11 +29,11 @@ public interface SerializationStore
      * Get the serialized state for the given entity.
      *
      * @param entityIdId
-     * @param unitOfWork
+     * @param compositeBuilderFactory
      * @return the state for the entityId, or null if not found
      * @throws IOException
      */
-    SerializedState get( EntityId entityIdId, UnitOfWork unitOfWork )
+    SerializableState get( EntityId entityIdId, CompositeBuilderFactory compositeBuilderFactory )
         throws IOException;
 
     /**
@@ -55,6 +55,6 @@ public interface SerializationStore
      * @return
      * @throws IOException
      */
-    StateCommitter prepare( Map<EntityId, SerializedState> newEntities, Map<EntityId, SerializedState> updatedEntities, Iterable<EntityId> removedEntities )
+    StateCommitter prepare( Map<EntityId, SerializableState> newEntities, Map<EntityId, SerializableState> updatedEntities, Iterable<EntityId> removedEntities )
         throws IOException;
 }

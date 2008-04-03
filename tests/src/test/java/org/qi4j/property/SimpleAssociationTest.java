@@ -21,10 +21,10 @@ import org.qi4j.association.ManyAssociation;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.CompositeBuilder;
-import org.qi4j.composite.Mixins;
 import org.qi4j.entity.EntityComposite;
-import org.qi4j.library.framework.entity.AssociationMixin;
-import org.qi4j.library.framework.entity.PropertyMixin;
+import org.qi4j.entity.UnitOfWork;
+import org.qi4j.entity.memory.MemoryEntityStoreComposite;
+import org.qi4j.spi.entity.UuidIdentityGeneratorComposite;
 import org.qi4j.test.AbstractQi4jTest;
 
 /**
@@ -36,6 +36,7 @@ public class SimpleAssociationTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
+        module.addServices( MemoryEntityStoreComposite.class, UuidIdentityGeneratorComposite.class );
         module.addComposites( SimpleAssociationTest.Person.class,
                               SimpleAssociationTest.Company.class );
         module.addAssociation().
@@ -46,9 +47,11 @@ public class SimpleAssociationTest
     @Test
     public void testAssociation()
     {
+        UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
+
         SimpleAssociationTest.Company company;
         {
-            CompositeBuilder<Company> builder = compositeBuilderFactory.newCompositeBuilder( SimpleAssociationTest.Company.class );
+            CompositeBuilder<Company> builder = unitOfWork.newEntityBuilder( SimpleAssociationTest.Company.class );
             builder.propertiesOfComposite().name().set( "JayWay" );
             company = builder.newInstance();
         }
@@ -57,7 +60,7 @@ public class SimpleAssociationTest
 
         System.out.println( "Name is:" + company.name().get() );
 
-        CompositeBuilder<SimpleAssociationTest.Person> builder = compositeBuilderFactory.newCompositeBuilder( SimpleAssociationTest.Person.class );
+        CompositeBuilder<SimpleAssociationTest.Person> builder = unitOfWork.newEntityBuilder( SimpleAssociationTest.Person.class );
         builder.propertiesOfComposite().name().set( "Rickard" );
         SimpleAssociationTest.Person rickard = builder.newInstance();
 
@@ -67,6 +70,8 @@ public class SimpleAssociationTest
         {
             System.out.println( ( (SimpleAssociationTest.Nameable) employer ).name() );
         }
+
+        unitOfWork.discard();
     }
 
     public interface Company
@@ -85,7 +90,6 @@ public class SimpleAssociationTest
     {
     }
 
-    @Mixins( { PropertyMixin.class, AssociationMixin.class } )
     public interface StandardComposite
     {
     }

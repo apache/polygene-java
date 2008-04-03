@@ -61,4 +61,9 @@ public final class ModuleObjectBuilderFactory
     {
         return newObjectBuilder( type ).newInstance();
     }
+
+    @Override public String toString()
+    {
+        return "ObjectBuilderFactory for " + moduleInstance;
+    }
 }

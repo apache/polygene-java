@@ -15,6 +15,7 @@
 package org.qi4j.spi.structure;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 import org.qi4j.composite.Composite;
 import org.qi4j.spi.composite.CompositeBinding;
@@ -30,12 +31,19 @@ public final class ModuleBinding
     private Map<Class, ObjectBinding> objectBindings;
 
     private Map<Class<? extends Composite>, CompositeBinding> compositeBindings;
+    private Map<String, Class> compositeClasses;
 
     public ModuleBinding( ModuleResolution moduleResolution, Map<Class<? extends Composite>, CompositeBinding> compositeBindingMap, Map<Class, ObjectBinding> objectBindings )
     {
         this.compositeBindings = compositeBindingMap;
         this.moduleResolution = moduleResolution;
         this.objectBindings = objectBindings;
+
+        compositeClasses = new HashMap<String, Class>();
+        for( Class<? extends Composite> compositeClass : compositeBindingMap.keySet() )
+        {
+            compositeClasses.put( compositeClass.getName(), compositeClass );
+        }
     }
 
     public ModuleResolution getModuleResolution()
@@ -64,5 +72,15 @@ public final class ModuleBinding
     public Map<Class, ObjectBinding> getObjectBindings()
     {
         return objectBindings;
+    }
+
+    public Class lookupClass( String name )
+    {
+        return compositeClasses.get( name );
+    }
+
+    @Override public String toString()
+    {
+        return moduleResolution.toString();
     }
 }

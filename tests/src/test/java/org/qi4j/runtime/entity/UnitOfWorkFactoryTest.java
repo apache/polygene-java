@@ -75,6 +75,7 @@ public class UnitOfWorkFactoryTest
 
     @Test
     public void testPrototypePattern()
+        throws Exception
     {
         UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
 
@@ -84,14 +85,12 @@ public class UnitOfWorkFactoryTest
         cb.propertiesOfComposite().price().set( 57 );
         ProductComposite chair1 = cb.newInstance();
         ProductComposite chair2 = cb.newInstance();
-        try
-        {
-            unitOfWork.complete();
-        }
-        catch( UnitOfWorkCompletionException e )
-        {
-            e.printStackTrace();
-        }
+        unitOfWork.complete();
+
+        unitOfWork = unitOfWorkFactory.newUnitOfWork();
+        chair1 = unitOfWork.getReference( chair1 );
+        chair2 = unitOfWork.getReference( chair2 );
+
         String id1 = chair1.identity().get();
         String id2 = chair2.identity().get();
         System.out.println( "Identity Chair1: " + id1 );

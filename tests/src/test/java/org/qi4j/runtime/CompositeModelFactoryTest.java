@@ -18,14 +18,14 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.LinkedList;
 import java.util.List;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import org.junit.Test;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.Concerns;
 import org.qi4j.composite.Mixins;
 import org.qi4j.composite.NullArgumentException;
 import org.qi4j.composite.scope.ConcernFor;
+import org.qi4j.property.PropertyMixin;
 import org.qi4j.runtime.composite.CompositeMixin;
 import org.qi4j.runtime.composite.CompositeModelFactory;
 import org.qi4j.spi.composite.CompositeModel;
@@ -75,6 +75,7 @@ public class CompositeModelFactoryTest
     {
         CompositeModel model = factory.newCompositeModel( TestComposite.class );
         List<Class> expected = new LinkedList<Class>();
+        expected.add( PropertyMixin.class );
         expected.add( TestMixin1.class );
         expected.add( TestMixin2.class );
         expected.add( TestMixin1.class );
@@ -84,7 +85,7 @@ public class CompositeModelFactoryTest
         {
             assertTrue( "unexpected mixin model: " + mixinModel, expected.remove( mixinModel.getModelClass() ) );
         }
-        assertTrue( "unexpected mixin modles: ", expected.size() == 0 );
+        assertTrue( "unexpected mixin models: ", expected.size() == 0 );
     }
 
     @Test

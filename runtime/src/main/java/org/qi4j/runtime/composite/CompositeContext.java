@@ -26,19 +26,21 @@ import java.util.Map;
 import java.util.Set;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.InstantiationException;
+import org.qi4j.composite.State;
 import org.qi4j.entity.Lifecycle;
-import org.qi4j.entity.UnitOfWork;
 import org.qi4j.runtime.association.AssociationContext;
+import org.qi4j.runtime.entity.UnitOfWorkInstance;
 import org.qi4j.runtime.property.PropertyContext;
 import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.spi.composite.AssociationModel;
 import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.composite.CompositeModel;
 import org.qi4j.spi.composite.CompositeResolution;
 import org.qi4j.spi.composite.MixinBinding;
-import org.qi4j.spi.composite.State;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.injection.MixinInjectionContext;
+import org.qi4j.spi.property.PropertyModel;
 import org.qi4j.spi.structure.ModuleBinding;
 
 /**
@@ -155,9 +157,9 @@ public final class CompositeContext
         return compositeInstance;
     }
 
-    public EntityCompositeInstance newEntityCompositeInstance( ModuleInstance moduleInstance, UnitOfWork unitOfWork, EntityStore store, String identity )
+    public EntityCompositeInstance newEntityCompositeInstance( UnitOfWorkInstance unitOfWork, EntityStore store, String identity )
     {
-        EntityCompositeInstance compositeInstance = new EntityCompositeInstance( unitOfWork, this, moduleInstance, store, identity );
+        EntityCompositeInstance compositeInstance = new EntityCompositeInstance( unitOfWork, this, store, identity );
 
         // Instantiate composite proxy
         Composite proxy = newProxy( compositeInstance );
@@ -187,14 +189,19 @@ public final class CompositeContext
         return instance;
     }
 
-    public PropertyContext getPropertyContext( Class mixinType, String name )
+    public PropertyContext getPropertyContext( Method accessor )
     {
-        return propertyContexts.get( mixinType.getName() + ":" + name );
+        return propertyContexts.get( PropertyModel.getQualifiedName( accessor ) );
     }
 
     public Iterable<PropertyContext> getPropertyContexts()
     {
         return propertyContexts.values();
+    }
+
+    public AssociationContext getAssociationContext( Method accessor )
+    {
+        return associationContexts.get( AssociationModel.getQualifiedName( accessor ) );
     }
 
     public Iterable<AssociationContext> getAssociationContexts()
@@ -218,12 +225,12 @@ public final class CompositeContext
         }
     }
 
-    public void newEntityMixins( ModuleInstance moduleInstance, EntityCompositeInstance compositeInstance, EntityState state )
+    public void newEntityMixins( UnitOfWorkInstance unitOfWorkInstance, EntityCompositeInstance compositeInstance, EntityState state )
     {
         Object[] mixins = new Object[mixinContexts.size()];
         compositeInstance.setMixins( mixins );
         compositeInstance.setState( state );
-        newMixins( moduleInstance, compositeInstance, Collections.emptySet(), state, mixins );
+        newMixins( unitOfWorkInstance.getModuleInstance(), compositeInstance, Collections.emptySet(), compositeInstance, mixins );
     }
 
     public void newMixins( ModuleInstance moduleInstance,

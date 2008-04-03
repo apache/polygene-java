@@ -12,7 +12,7 @@
  *
  */
 
-package org.qi4j.spi.composite;
+package org.qi4j.composite;
 
 import java.lang.reflect.Method;
 import org.qi4j.association.AbstractAssociation;

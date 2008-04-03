@@ -163,5 +163,10 @@ public final class LayerInstance
             moduleInstances.get( i ).passivate();
         }
     }
+
+    @Override public String toString()
+    {
+        return layerContext.toString();
+    }
 }
 

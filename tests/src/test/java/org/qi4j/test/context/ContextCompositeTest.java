@@ -24,8 +24,6 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.ContextComposite;
-import org.qi4j.composite.Mixins;
-import org.qi4j.library.framework.entity.PropertyMixin;
 import org.qi4j.property.Property;
 import org.qi4j.test.AbstractQi4jTest;
 
@@ -72,7 +70,6 @@ public class ContextCompositeTest
     {
     }
 
-    @Mixins( PropertyMixin.class )
     public static interface MyData
     {
         Property<Integer> data();

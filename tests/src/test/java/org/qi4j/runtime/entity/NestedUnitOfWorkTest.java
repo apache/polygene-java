@@ -22,6 +22,7 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.memory.MemoryEntityStoreComposite;
+import org.qi4j.property.Property;
 import org.qi4j.spi.entity.UuidIdentityGeneratorComposite;
 import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.entity.AccountComposite;
@@ -69,13 +70,14 @@ public class NestedUnitOfWorkTest
 
         nestedChair.price().set( 60 );
 
-        assertThat( "Initial property has not changed", chair.price().get(), equalTo( 57 ) );
+        Property<Integer> originalPrice = chair.price();
+        assertThat( "Initial property has not changed", originalPrice.get(), equalTo( 57 ) );
 
         assertThat( "Nested property has changed", nestedChair.price().get(), equalTo( 60 ) );
 
         nestedUnitOfWork.complete();
 
-        assertThat( "Initial property has been updated", chair.price().get(), equalTo( 60 ) );
+        assertThat( "Initial property has been updated", originalPrice.get(), equalTo( 60 ) );
 
         unitOfWork.complete();
     }

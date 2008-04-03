@@ -59,4 +59,9 @@ public final class LayerModel
     {
         return name;
     }
+
+    @Override public String toString()
+    {
+        return name;
+    }
 }

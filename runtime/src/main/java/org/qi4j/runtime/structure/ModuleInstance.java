@@ -19,12 +19,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.qi4j.composite.AmbiguousMixinTypeException;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilderFactory;
+import org.qi4j.composite.MixinTypeNotAvailableException;
 import org.qi4j.composite.ObjectBuilder;
 import org.qi4j.composite.ObjectBuilderFactory;
-import org.qi4j.composite.AmbiguousMixinTypeException;
-import org.qi4j.composite.MixinTypeNotAvailableException;
 import org.qi4j.entity.UnitOfWorkFactory;
 import org.qi4j.runtime.entity.UnitOfWorkFactoryImpl;
 import org.qi4j.runtime.service.ServiceReferenceInstance;
@@ -36,10 +36,10 @@ import org.qi4j.service.ServiceLocator;
 import org.qi4j.service.ServiceReference;
 import org.qi4j.spi.injection.StructureContext;
 import org.qi4j.spi.service.ServiceInstanceProvider;
-import org.qi4j.spi.structure.ServiceDescriptor;
 import org.qi4j.spi.structure.ModuleBinding;
-import org.qi4j.spi.structure.ModuleResolution;
 import org.qi4j.spi.structure.ModuleModel;
+import org.qi4j.spi.structure.ModuleResolution;
+import org.qi4j.spi.structure.ServiceDescriptor;
 
 /**
  * TODO
@@ -107,7 +107,7 @@ public final class ModuleInstance
     public <T> Class<? extends Composite> lookupCompositeType( Class<T> mixinType )
     {
         Class<? extends Composite> compositeType;
-        if( ! Composite.class.isAssignableFrom( mixinType ) )
+        if( !Composite.class.isAssignableFrom( mixinType ) )
         {
             Class<? extends Composite> compositeType1;
             ModuleInstance module = getModuleForMixinType( mixinType );
@@ -307,4 +307,8 @@ public final class ModuleInstance
         }
     }
 
+    @Override public String toString()
+    {
+        return moduleContext.toString();
+    }
 }

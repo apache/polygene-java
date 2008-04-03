@@ -19,7 +19,8 @@ import java.util.Iterator;
 import java.util.Map;
 import org.qi4j.association.AbstractAssociation;
 import org.qi4j.association.Association;
-import org.qi4j.association.ManyAssociation;
+import org.qi4j.association.ListAssociation;
+import org.qi4j.association.SetAssociation;
 import org.qi4j.composite.InstantiationException;
 import org.qi4j.composite.InvalidApplicationException;
 import org.qi4j.entity.EntityComposite;
@@ -28,15 +29,21 @@ import org.qi4j.entity.IdentityGenerator;
 import org.qi4j.entity.Lifecycle;
 import org.qi4j.entity.UnitOfWorkException;
 import org.qi4j.property.Property;
+import org.qi4j.runtime.association.AssociationContext;
+import org.qi4j.runtime.association.ListAssociationInstance;
+import org.qi4j.runtime.association.SetAssociationInstance;
 import org.qi4j.runtime.composite.CompositeContext;
 import org.qi4j.runtime.composite.EntityCompositeInstance;
 import org.qi4j.runtime.structure.CompositeBuilderImpl;
 import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.spi.association.AssociationBinding;
+import org.qi4j.spi.composite.AssociationModel;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
-import org.qi4j.spi.entity.StoreException;
-import org.qi4j.spi.property.ImmutablePropertyInstance;
+import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.property.PropertyBinding;
+import org.qi4j.spi.property.PropertyModel;
+import org.qi4j.spi.serialization.EntityId;
 
 /**
  * TODO
@@ -87,7 +94,7 @@ public final class UnitOfWorkCompositeBuilder<T>
                 throw new UnitOfWorkException( "No identity generator found for type " + compositeType.getName() );
             }
             identity = identityGenerator.generate( compositeType );
-            identityProperty = new ImmutablePropertyInstance( context.getPropertyContext( Identity.class, "identity" ).getPropertyBinding(), identity );
+            identityProperty = context.getPropertyContext( IDENTITY_METHOD ).newInstance( moduleInstance, identity );
             prototypePattern = true;
             propertyValues.put( IDENTITY_METHOD, identityProperty );
         }
@@ -100,9 +107,9 @@ public final class UnitOfWorkCompositeBuilder<T>
         EntityState state;
         try
         {
-            state = store.newEntityState( identity, context.getCompositeBinding() );
+            state = store.newEntityState( new EntityId( identity, context.getCompositeModel().getCompositeType().getName() ) );
         }
-        catch( StoreException e )
+        catch( EntityStoreException e )
         {
             throw new InstantiationException( "Could not create new entity in store", e );
         }
@@ -112,39 +119,60 @@ public final class UnitOfWorkCompositeBuilder<T>
         Iterable<PropertyBinding> propertyBindings = context.getCompositeBinding().getPropertyBindings();
         for( PropertyBinding propertyBinding : propertyBindings )
         {
-            Method accessor = propertyBinding.getPropertyResolution().getPropertyModel().getAccessor();
-            Property propertyValue = propertyValues.get( accessor );
-            if( propertyValue != null )
+            PropertyModel propertyModel = propertyBinding.getPropertyResolution().getPropertyModel();
+            Method accessor = propertyModel.getAccessor();
+            if( propertyValues.containsKey( accessor ) )
             {
-                state.getProperty( accessor ).set( propertyValue.get() );
+                Property propertyValue = propertyValues.get( accessor );
+                state.setProperty( propertyModel.getQualifiedName(), propertyValue.get() );
             }
             else
             {
-                state.getProperty( accessor ).set( propertyBinding.getDefaultValue() );
+                state.setProperty( propertyModel.getQualifiedName(), propertyBinding.getDefaultValue() );
             }
         }
 
 
         Map<Method, AbstractAssociation> associationValues = getAssociations();
-        for( Map.Entry<Method, AbstractAssociation> association : associationValues.entrySet() )
+        Iterable<AssociationBinding> associationBindings = context.getCompositeBinding().getAssociationBindings();
+        //    Map<String, EntityId> entityAssociations = state.getAssociations();
+        //    Map<String, Collection<EntityId>> entityManyAssociations = state.getManyAssociations();
+        for( AssociationBinding associationBinding : associationBindings )
         {
-            AbstractAssociation associationValue = state.getAssociation( association.getKey() );
-            if( associationValue instanceof ManyAssociation )
+            AssociationModel associationModel = associationBinding.getAssociationResolution().getAssociationModel();
+            Method accessor = associationModel.getAccessor();
+            if( associationValues.containsKey( accessor ) )
             {
-                ManyAssociation manyAssociation = (ManyAssociation) associationValue;
-                ManyAssociation newAssociation = (ManyAssociation) association;
-                manyAssociation.addAll( newAssociation );
-            }
-            else
-            {
-                Association singleAssociation = (Association) associationValue;
-                Association newAssociation = (Association) association;
-                singleAssociation.set( newAssociation.get() );
+                AbstractAssociation associationValue = associationValues.get( accessor );
+                if( associationValue instanceof Association )
+                {
+                    Association<EntityComposite> association = (Association<EntityComposite>) associationValue;
+                    EntityId id;
+                    if( association.get() == null )
+                    {
+                        id = EntityId.NULL;
+                    }
+                    else
+                    {
+                        id = new EntityId( association.get().identity().get(), association.get().getCompositeType().getName() );
+                    }
+                    state.setAssociation( associationModel.getQualifiedName(), id );
+                }
+                else if( associationValue instanceof ListAssociation )
+                {
+                    ListAssociationInstance<EntityComposite> manyAssociation = (ListAssociationInstance<EntityComposite>) associationValue;
+                    state.getManyAssociation( associationModel.getQualifiedName() ).addAll( manyAssociation.getAssociatedList() );
+                }
+                else if( associationValue instanceof SetAssociation )
+                {
+                    SetAssociationInstance<EntityComposite> manyAssociation = (SetAssociationInstance<EntityComposite>) associationValue;
+                    state.getManyAssociation( associationModel.getQualifiedName() ).addAll( manyAssociation.getAssociatedSet() );
+                }
             }
         }
 
-        EntityCompositeInstance compositeInstance = context.newEntityCompositeInstance( moduleInstance, uow, store, identity );
-        context.newEntityMixins( moduleInstance, compositeInstance, state );
+        EntityCompositeInstance compositeInstance = context.newEntityCompositeInstance( uow, store, identity );
+        context.newEntityMixins( uow, compositeInstance, state );
         T instance = compositeInterface.cast( compositeInstance.getProxy() );
         uow.createEntity( (EntityComposite) instance );
 
@@ -185,5 +213,36 @@ public final class UnitOfWorkCompositeBuilder<T>
         };
     }
 
+    @Override protected StateInvocationHandler newStateInvocationHandler()
+    {
+        return new EntityStateInvocationHandler();
+    }
+
+    private class EntityStateInvocationHandler
+        extends StateInvocationHandler
+    {
+        public EntityStateInvocationHandler()
+        {
+        }
+
+        public Object invoke( Object o, Method method, Object[] objects ) throws Throwable
+        {
+            if( AbstractAssociation.class.isAssignableFrom( method.getReturnType() ) )
+            {
+                AbstractAssociation association = getAssociations().get( method );
+                if( association == null )
+                {
+                    AssociationContext associationContext = context.getMethodDescriptor( method ).getCompositeMethodContext().getAssociationContext();
+                    association = associationContext.newInstance( uow, null );
+                    getAssociations().put( method, association );
+                }
+                return association;
+
+            }
+
+            return super.invoke( o, method, objects );
+        }
+
+    }
 
 }

@@ -72,4 +72,9 @@ public final class LayerResolution
         // No provider found for this type
         return null;
     }
+
+    @Override public String toString()
+    {
+        return layerModel.toString();
+    }
 }

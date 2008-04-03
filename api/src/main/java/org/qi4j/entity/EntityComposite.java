@@ -14,11 +14,14 @@
  */
 package org.qi4j.entity;
 
+import org.qi4j.association.AssociationMixin;
 import org.qi4j.composite.Composite;
+import org.qi4j.composite.Mixins;
 
 /**
  * Entity domain objects must implement this interface.
  */
+@Mixins( AssociationMixin.class )
 public interface EntityComposite extends Identity, Lifecycle, Entity, Composite
 {
 }

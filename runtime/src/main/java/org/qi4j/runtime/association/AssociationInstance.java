@@ -12,32 +12,47 @@
  *
  */
 
-package org.qi4j.spi.association;
+package org.qi4j.runtime.association;
 
 import java.lang.reflect.Type;
 import org.qi4j.association.Association;
 import org.qi4j.association.AssociationInfo;
 import org.qi4j.association.AssociationVetoException;
 import org.qi4j.entity.EntityComposite;
+import org.qi4j.runtime.entity.UnitOfWorkInstance;
+import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.serialization.EntityId;
 
 /**
  * Implementation of Association to a single Entity.
  */
 public class AssociationInstance<T>
+    extends AbstractAssociationInstance<T>
     implements Association<T>
 {
-    private AssociationInfo associationInfo;
-    private T value;
+    private static final Object UNSET = new Object();
 
-    public AssociationInstance( AssociationInfo associationInfo, T value )
+    private T value = (T) UNSET;
+    private EntityState entityState;
+
+    public AssociationInstance( AssociationInfo associationInfo, UnitOfWorkInstance unitOfWork, EntityState entityState )
     {
-        this.associationInfo = associationInfo;
-        this.value = value;
+        super( associationInfo, unitOfWork );
+        this.entityState = entityState;
+        if( entityState == null )
+        {
+            value = null;
+        }
     }
 
     // Association implementation
     public T get()
     {
+        if( value == UNSET )
+        {
+            EntityId entityId = entityState.getAssociation( getQualifiedName() );
+            value = getEntity( entityId );
+        }
         return value;
     }
 
@@ -50,6 +65,10 @@ public class AssociationInstance<T>
         }
 
         this.value = newValue;
+        if( entityState != null )
+        {
+            entityState.setAssociation( getQualifiedName(), getEntityId( newValue ) );
+        }
     }
 
     // AssociationInfo implementation
@@ -126,5 +145,11 @@ public class AssociationInstance<T>
         }
 
         return true;
+    }
+
+    public void refresh( EntityState newState )
+    {
+        value = (T) UNSET;
+        entityState = newState;
     }
 }

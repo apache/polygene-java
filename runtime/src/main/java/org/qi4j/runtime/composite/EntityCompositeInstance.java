@@ -18,30 +18,51 @@ package org.qi4j.runtime.composite;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import org.qi4j.association.AbstractAssociation;
+import org.qi4j.association.Association;
+import org.qi4j.association.ListAssociation;
+import org.qi4j.composite.State;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.Identity;
 import org.qi4j.entity.UnitOfWork;
-import org.qi4j.runtime.structure.ModuleInstance;
-import org.qi4j.spi.composite.CompositeBinding;
+import org.qi4j.property.Property;
+import org.qi4j.runtime.association.AssociationInstance;
+import org.qi4j.runtime.association.ListAssociationInstance;
+import org.qi4j.runtime.association.SetAssociationInstance;
+import org.qi4j.runtime.entity.UnitOfWorkInstance;
+import org.qi4j.spi.composite.AssociationModel;
 import org.qi4j.spi.composite.InvalidCompositeException;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
-import org.qi4j.spi.entity.StoreException;
+import org.qi4j.spi.entity.EntityStoreException;
+import org.qi4j.spi.property.EntityPropertyInstance;
+import org.qi4j.spi.property.PropertyModel;
+import org.qi4j.spi.serialization.EntityId;
 
 public final class EntityCompositeInstance
     extends AbstractCompositeInstance
-    implements CompositeInstance
+    implements CompositeInstance, State
 {
     private Object[] mixins;
 
-    private UnitOfWork unitOfWork;
+    private UnitOfWorkInstance unitOfWork;
     private String identity;
     private EntityState state;
     private EntityStore store;
 
-    public EntityCompositeInstance( UnitOfWork unitOfWork, CompositeContext aContext, ModuleInstance moduleInstance, EntityStore store, String identity )
+    private Map<Method, Property> properties;
+    private Map<Method, AbstractAssociation> associations;
+
+    public EntityCompositeInstance( UnitOfWorkInstance unitOfWork, CompositeContext aContext, EntityStore store, String identity )
     {
-        super( aContext, moduleInstance );
+        super( aContext );
         this.unitOfWork = unitOfWork;
         this.store = store;
         this.identity = identity;
@@ -63,9 +84,8 @@ public final class EntityCompositeInstance
 
         if( mixins == null ) // Check if this is a lazy-loaded reference
         {
-            CompositeBinding binding = context.getCompositeBinding();
-            EntityState entityState = store.getEntityState( unitOfWork, identity, binding );
-            context.newEntityMixins( moduleInstance, this, entityState );
+            EntityState entityState = loadState();
+            context.newEntityMixins( unitOfWork, this, entityState );
         }
 
         Object mixin = mixins[ descriptor.getMixinIndex() ];
@@ -76,9 +96,106 @@ public final class EntityCompositeInstance
                                                  context.getCompositeModel().getCompositeType() );
         }
         // Invoke
-        CompositeMethodInstance compositeMethodInstance = context.getMethodInstance( descriptor, moduleInstance );
+        CompositeMethodInstance compositeMethodInstance = context.getMethodInstance( descriptor, unitOfWork.getModuleInstance() );
         return compositeMethodInstance.invoke( composite, args, mixin );
     }
+
+    // State implementation -----------------------------------------
+    public Property getProperty( Method propertyMethod )
+    {
+        if( properties == null )
+        {
+            properties = new HashMap<Method, Property>();
+        }
+
+        Property property = properties.get( propertyMethod );
+        if( property == null )
+        {
+            property = context.getPropertyContext( propertyMethod ).newEntityInstance( unitOfWork.getModuleInstance(), loadState() );
+            properties.put( propertyMethod, property );
+        }
+        return property;
+    }
+
+    public AbstractAssociation getAssociation( Method associationMethod )
+    {
+        if( associations == null )
+        {
+            associations = new HashMap<Method, AbstractAssociation>();
+        }
+
+        AbstractAssociation association = associations.get( associationMethod );
+        if( association == null )
+        {
+            if( Association.class.isAssignableFrom( associationMethod.getReturnType() ) )
+            {
+                association = context.getAssociationContext( associationMethod ).newInstance( unitOfWork, state );
+                associations.put( associationMethod, association );
+            }
+            else
+            {
+                String qualifiedName = PropertyModel.getQualifiedName( associationMethod );
+                Collection<EntityId> associationCollection = state.getManyAssociation( qualifiedName );
+
+                if( associationCollection == null )
+                {
+                    if( ListAssociation.class.isAssignableFrom( associationMethod.getReturnType() ) )
+                    {
+                        associationCollection = new ArrayList<EntityId>();
+                        associationCollection = state.setManyAssociation( qualifiedName, associationCollection );
+                    }
+                    else
+                    {
+                        associationCollection = new HashSet<EntityId>();
+                        associationCollection = state.setManyAssociation( qualifiedName, associationCollection );
+                    }
+                }
+
+                association = context.getAssociationContext( associationMethod ).newInstance( unitOfWork, associationCollection );
+                associations.put( associationMethod, association );
+            }
+        }
+        return association;
+    }
+
+    public void refresh( EntityState newState )
+    {
+        state = newState;
+
+        // Reset values
+        if( properties != null )
+        {
+            for( Property property : properties.values() )
+            {
+                if( property instanceof EntityPropertyInstance )
+                {
+                    ( (EntityPropertyInstance) property ).refresh( state );
+                }
+            }
+        }
+
+        if( associations != null )
+        {
+            for( Map.Entry<Method, AbstractAssociation> methodAbstractAssociationEntry : associations.entrySet() )
+            {
+                AbstractAssociation abstractAssociation = methodAbstractAssociationEntry.getValue();
+
+                if( abstractAssociation instanceof AssociationInstance )
+                {
+                    ( (AssociationInstance) abstractAssociation ).refresh( state );
+                }
+                else if( abstractAssociation instanceof ListAssociationInstance )
+                {
+                    ( (ListAssociationInstance) abstractAssociation ).refresh( (List<EntityId>) state.getManyAssociation( AssociationModel.getQualifiedName( methodAbstractAssociationEntry.getKey() ) ) );
+                }
+                else if( abstractAssociation instanceof SetAssociationInstance )
+                {
+                    ( (SetAssociationInstance) abstractAssociation ).refresh( (Set<EntityId>) state.getManyAssociation( AssociationModel.getQualifiedName( methodAbstractAssociationEntry.getKey() ) ) );
+                }
+            }
+        }
+    }
+
 
     public void setMixins( Object[] mixins )
     {
@@ -101,12 +218,11 @@ public final class EntityCompositeInstance
     }
 
     public EntityState loadState()
-        throws StoreException
+        throws EntityStoreException
     {
         if( state == null )
         {
-            CompositeBinding binding = context.getCompositeBinding();
-            state = store.getEntityState( unitOfWork, identity, binding );
+            state = store.getEntityState( new EntityId( identity, context.getCompositeModel().getCompositeType().getName() ) );
         }
 
         return state;

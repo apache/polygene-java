@@ -40,4 +40,9 @@ public final class LayerBinding
     {
         return moduleBindings;
     }
+
+    @Override public String toString()
+    {
+        return layerResolution.toString();
+    }
 }

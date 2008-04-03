@@ -14,7 +14,7 @@
 
 package org.qi4j.spi.injection;
 
-import org.qi4j.spi.composite.State;
+import org.qi4j.composite.State;
 
 /**
  * TODO
