@@ -120,33 +120,33 @@ public class AssociationReferenceImpl
     }
 
     /**
-     * @see AssociationReference#getAssociationReferenceName()
+     * @see AssociationReference#associationName()
      */
-    public String getAssociationReferenceName()
+    public String associationName()
     {
         return name;
     }
 
     /**
-     * @see org.qi4j.query.grammar.AssociationReference#getAssociationReferenceDeclaringType()
+     * @see org.qi4j.query.grammar.AssociationReference#associationDeclaringType()
      */
-    public Class getAssociationReferenceDeclaringType()
+    public Class associationDeclaringType()
     {
         return declaringType;
     }
 
     /**
-     * @see AssociationReference#getAssociationReferenceType()
+     * @see AssociationReference#associationType()
      */
-    public Class getAssociationReferenceType()
+    public Class associationType()
     {
         return type;
     }
 
     /**
-     * @see AssociationReference#getTraversedAssociation()
+     * @see AssociationReference#traversedAssociation()
      */
-    public AssociationReference getTraversedAssociation()
+    public AssociationReference traversedAssociation()
     {
         return traversed;
     }

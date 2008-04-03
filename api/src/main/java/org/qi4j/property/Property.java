@@ -36,6 +36,6 @@ public interface Property<T>
      * @param newValue the new value
      * @return the new value
      */
-    T set( T newValue )
+    void set( T newValue )
         throws IllegalArgumentException;
 }

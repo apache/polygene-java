@@ -19,6 +19,8 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.HashMap;
+import java.util.Map;
 import org.qi4j.composite.Composite;
 import org.qi4j.property.ImmutableProperty;
 import org.qi4j.runtime.composite.CompositeInstance;
@@ -44,6 +46,7 @@ public final class ServiceReferenceInstance<T>
     private ImmutableProperty identity;
 
     private volatile ServiceInstance<T> serviceInstance;
+    private Map<Class, Serializable> serviceAttributes;
     private Object instance;
     private T serviceProxy;
     private int referenceCounter = 0;
@@ -65,9 +68,15 @@ public final class ServiceReferenceInstance<T>
     {
         this.serviceDescriptor = serviceDescriptor;
         this.serviceInstanceProvider = serviceInstanceProvider;
-        identity = new ImmutablePropertyInstance( IDENTITY_METHOD, serviceDescriptor.getIdentity() );
+        identity = new ImmutablePropertyInstance( IDENTITY_METHOD, serviceDescriptor.identity() );
 
-        serviceProxy = (T) Proxy.newProxyInstance( serviceDescriptor.getServiceType().getClassLoader(), new Class[]{ serviceDescriptor.getServiceType() }, new ServiceInvocationHandler() );
+        serviceAttributes = new HashMap<Class, Serializable>();
+        Iterable<Class> serviceAttributeTypes = serviceDescriptor.serviceAttributeTypes();
+        for( Class serviceAttributeType : serviceAttributeTypes )
+        {
+            serviceAttributes.put( serviceAttributeType, serviceDescriptor.serviceAttribute( serviceAttributeType ) );
+        }
+        serviceProxy = (T) Proxy.newProxyInstance( serviceDescriptor.gerviceType().getClassLoader(), new Class[]{ serviceDescriptor.gerviceType() }, new ServiceInvocationHandler() );
     }
 
     public ImmutableProperty identity()
@@ -75,18 +84,18 @@ public final class ServiceReferenceInstance<T>
         return identity;
     }
 
-    public <K extends Serializable> K getServiceInfo( Class<K> infoType )
+    public <K extends Serializable> K getServiceAttribute( Class<K> infoType )
     {
-        return infoType.cast( serviceDescriptor.getServiceInfos().get( infoType ) );
+        return infoType.cast( serviceAttributes.get( infoType ) );
     }
 
-    public <K extends Serializable> void setServiceInfo( Class<K> infoType, K value )
+    public <K extends Serializable> void setServiceAttribute( Class<K> infoType, K value )
     {
         // TODO Not thread-safe
-        serviceDescriptor.getServiceInfos().put( infoType, value );
+        serviceAttributes.put( infoType, value );
     }
 
-    public synchronized T getService()
+    public synchronized T get()
     {
         referenceCounter++;
         return serviceProxy;
@@ -196,7 +205,7 @@ public final class ServiceReferenceInstance<T>
 
     @Override public String toString()
     {
-        return serviceDescriptor.getIdentity() + ", active=" + ( serviceInstance != null );
+        return serviceDescriptor.identity() + ", active=" + ( serviceInstance != null );
     }
 
     public final class ServiceInvocationHandler

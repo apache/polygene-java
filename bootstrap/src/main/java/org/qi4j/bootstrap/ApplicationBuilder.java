@@ -350,7 +350,7 @@ public final class ApplicationBuilder
         List<ServiceDescriptor> serviceDescriptors = moduleAssembly.getServiceDescriptors();
         for( ServiceDescriptor serviceDescriptor : serviceDescriptors )
         {
-            Class serviceType = serviceDescriptor.getServiceType();
+            Class serviceType = serviceDescriptor.gerviceType();
             if( ServiceComposite.class.isAssignableFrom( serviceType ) )
             {
                 // Add as composite
@@ -363,7 +363,7 @@ public final class ApplicationBuilder
             // Register instance provider
             {
                 boolean found = false;
-                Class<? extends ServiceInstanceProvider> provider = serviceDescriptor.getServiceProvider();
+                Class<? extends ServiceInstanceProvider> provider = serviceDescriptor.serviceProvider();
                 for( ObjectDescriptor objectDescriptor : objectDescriptors )
                 {
                     if( objectDescriptor.getObjectModel().getModelClass().equals( provider ) )

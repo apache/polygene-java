@@ -83,7 +83,7 @@ public abstract class AbstractEntityStorePerformanceTest
         for( int i = 0; i < nrOfLookups; i++ )
         {
             TestComposite instance = unitOfWork.find( id, TestComposite.class );
-            unitOfWork.clear();
+            unitOfWork.reset();
         }
         unitOfWork.discard();
 

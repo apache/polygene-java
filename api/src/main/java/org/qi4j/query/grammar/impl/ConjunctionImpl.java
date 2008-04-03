@@ -49,9 +49,9 @@ public class ConjunctionImpl
     {
         return new StringBuilder()
             .append( "( " )
-            .append( getLeftSideExpression() )
+            .append( leftSideExpression() )
             .append( " AND " )
-            .append( getRightSideExpression() )
+            .append( rightSideExpression() )
             .append( " )" )
             .toString();
     }

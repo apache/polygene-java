@@ -47,9 +47,9 @@ public class NegationImpl
     }
 
     /**
-     * @see org.qi4j.query.grammar.Negation#getExpression()
+     * @see org.qi4j.query.grammar.Negation#expression()
      */
-    public BooleanExpression getExpression()
+    public BooleanExpression expression()
     {
         return expression;
     }

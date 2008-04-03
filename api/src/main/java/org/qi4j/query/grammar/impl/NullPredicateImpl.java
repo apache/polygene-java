@@ -51,9 +51,9 @@ public abstract class NullPredicateImpl<T>
     }
 
     /**
-     * @see org.qi4j.query.grammar.NullPredicate#getPropertyReference()
+     * @see org.qi4j.query.grammar.NullPredicate#propertyReference()
      */
-    public PropertyReference<T> getPropertyReference()
+    public PropertyReference<T> propertyReference()
     {
         return propertyReference;
     }

@@ -34,12 +34,12 @@ public class EntityCompositeAlreadyExistsException
         this.compositeType = compositeType;
     }
 
-    public String getIdentity()
+    public String identity()
     {
         return identity;
     }
 
-    public Class getCompositeType()
+    public Class compositeType()
     {
         return compositeType;
     }

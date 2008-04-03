@@ -32,6 +32,6 @@ public interface ObjectBuilder<T>
     T newInstance()
         throws InstantiationException;
 
-    void inject( T instance )
+    void injectTo( T instance )
         throws InstantiationException;
 }

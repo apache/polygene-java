@@ -24,5 +24,5 @@ package org.qi4j.query.grammar;
 public interface NullPredicate<T>
     extends Predicate
 {
-    PropertyReference<T> getPropertyReference();
+    PropertyReference<T> propertyReference();
 }

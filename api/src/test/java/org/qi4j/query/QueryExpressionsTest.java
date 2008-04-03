@@ -46,8 +46,8 @@ public class QueryExpressionsTest
     {
         StringPropertyReference property = createMock( StringPropertyReference.class );
         EqualsPredicate<String> operator = QueryExpressions.eq( property, "Foo" );
-        assertThat( "Property", operator.getPropertyReference(), is( equalTo( (PropertyReference) property ) ) );
-        assertThat( "Value", ( (SingleValueExpression<String>) operator.getValueExpression() ).getValue(), is( equalTo( "Foo" ) ) );
+        assertThat( "Property", operator.propertyReference(), is( equalTo( (PropertyReference) property ) ) );
+        assertThat( "Value", ( (SingleValueExpression<String>) operator.valueExpression() ).value(), is( equalTo( "Foo" ) ) );
     }
 
     /**
@@ -60,8 +60,8 @@ public class QueryExpressionsTest
         VariableValueExpression<String> variableExpression = QueryExpressions.variable( "var" );
         EqualsPredicate<String> operator = QueryExpressions.eq( property, variableExpression );
         variableExpression.setValue( "Foo" );
-        assertThat( "Property", operator.getPropertyReference(), is( equalTo( (PropertyReference) property ) ) );
-        assertThat( "Value", ( (VariableValueExpression<String>) operator.getValueExpression() ).getValue(), is( equalTo( "Foo" ) ) );
+        assertThat( "Property", operator.propertyReference(), is( equalTo( (PropertyReference) property ) ) );
+        assertThat( "Value", ( (VariableValueExpression<String>) operator.valueExpression() ).value(), is( equalTo( "Foo" ) ) );
     }
 
     /**
@@ -73,8 +73,8 @@ public class QueryExpressionsTest
         BooleanExpression left = createMock( BooleanExpression.class );
         BooleanExpression right = createMock( BooleanExpression.class );
         Conjunction conjunction = QueryExpressions.and( left, right );
-        assertThat( "Left side expression", conjunction.getLeftSideExpression(), is( equalTo( left ) ) );
-        assertThat( "Right side expression", conjunction.getRightSideExpression(), is( equalTo( right ) ) );
+        assertThat( "Left side expression", conjunction.leftSideExpression(), is( equalTo( left ) ) );
+        assertThat( "Right side expression", conjunction.rightSideExpression(), is( equalTo( right ) ) );
     }
 
     /**
@@ -86,8 +86,8 @@ public class QueryExpressionsTest
         BooleanExpression left = createMock( BooleanExpression.class );
         BooleanExpression right = createMock( BooleanExpression.class );
         Disjunction disjunction = QueryExpressions.or( left, right );
-        assertThat( "Left side expression", disjunction.getLeftSideExpression(), is( equalTo( left ) ) );
-        assertThat( "Right side expression", disjunction.getRightSideExpression(), is( equalTo( right ) ) );
+        assertThat( "Left side expression", disjunction.leftSideExpression(), is( equalTo( left ) ) );
+        assertThat( "Right side expression", disjunction.rightSideExpression(), is( equalTo( right ) ) );
     }
 
     /**
@@ -98,7 +98,7 @@ public class QueryExpressionsTest
     {
         BooleanExpression expression = createMock( BooleanExpression.class );
         Negation negation = QueryExpressions.not( expression );
-        assertThat( "Expression", negation.getExpression(), is( equalTo( expression ) ) );
+        assertThat( "Expression", negation.expression(), is( equalTo( expression ) ) );
     }
 
     static interface StringPropertyReference

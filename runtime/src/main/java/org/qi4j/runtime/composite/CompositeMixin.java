@@ -14,8 +14,6 @@
  */
 package org.qi4j.runtime.composite;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Proxy;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.scope.ThisCompositeAs;
 import org.qi4j.spi.structure.CompositeDescriptor;
@@ -34,19 +32,5 @@ public final class CompositeMixin
     public Class<? extends Composite> type()
     {
         return AbstractCompositeInstance.getCompositeInstance( meAsComposite ).getContext().getCompositeModel().getCompositeType();
-    }
-
-    public Composite dereference()
-    {
-        InvocationHandler handler = Proxy.getInvocationHandler( meAsComposite );
-        if( handler instanceof ProxyReferenceInvocationHandler )
-        {
-            return (Composite) ( (ProxyReferenceInvocationHandler) handler ).getComposite();
-        }
-        if( handler instanceof AbstractCompositeInstance )
-        {
-            return meAsComposite;
-        }
-        return null;
     }
 }

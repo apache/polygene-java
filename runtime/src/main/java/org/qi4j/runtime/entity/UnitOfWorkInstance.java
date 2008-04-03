@@ -83,6 +83,16 @@ public final class UnitOfWorkInstance
         paused = false;
     }
 
+    public <T> T newEntity( Class<T> compositeType )
+    {
+        return newEntityBuilder( compositeType ).newInstance();
+    }
+
+    public <T> T newEntity( String identity, Class<T> compositeType )
+    {
+        return newEntityBuilder( identity, compositeType ).newInstance();
+    }
+
     public <T> CompositeBuilder<T> newEntityBuilder( Class<T> mixinType )
     {
         return newEntityBuilder( null, mixinType );
@@ -108,7 +118,7 @@ public final class UnitOfWorkInstance
         CompositeBuilder<T> builder = (CompositeBuilder<T>) new EntityCompositeBuilderFactory( moduleInstance, this, store ).newCompositeBuilder( compositeType );
         if( identity != null )
         {
-            builder.propertiesFor( Identity.class ).identity().set( identity );
+            builder.stateFor( Identity.class ).identity().set( identity );
         }
         return builder;
     }
@@ -153,7 +163,7 @@ public final class UnitOfWorkInstance
                 }
                 catch( EntityNotFoundException e )
                 {
-                    throw new EntityCompositeNotFoundException( "Entity does not exist", identity, compositeType );
+                    throw new EntityCompositeNotFoundException( identity, compositeType );
                 }
 
                 // Create entity instance
@@ -180,7 +190,7 @@ public final class UnitOfWorkInstance
                     EntityState entityState = handler.getState();
                     if( entityState.getStatus() == EntityStatus.REMOVED )
                     {
-                        throw new EntityCompositeNotFoundException( "Entity has been removed", identity, compositeType );
+                        throw new EntityCompositeNotFoundException( identity, compositeType );
                     }
                 }
             }
@@ -217,14 +227,14 @@ public final class UnitOfWorkInstance
             EntityState entityState = handler.getState();
             if( entityState != null && entityState.getStatus() == EntityStatus.REMOVED )
             {
-                throw new EntityCompositeNotFoundException( "Entity has been removed", identity, compositeType );
+                throw new EntityCompositeNotFoundException( identity, compositeType );
             }
         }
 
         return mixinType.cast( entity );
     }
 
-    public <T> T getReference( T entity )
+    public <T> T dereference( T entity )
         throws EntityCompositeNotFoundException
     {
         EntityComposite entityComposite = (EntityComposite) entity;
@@ -246,7 +256,7 @@ public final class UnitOfWorkInstance
             EntityStatus entityStatus = entityInstance.getState().getStatus();
             if( entityStatus == EntityStatus.REMOVED )
             {
-                throw new EntityCompositeNotFoundException( "Entity has been removed", entityInstance.getIdentity(), entityInstance.getContext().getCompositeModel().getCompositeType() );
+                throw new EntityCompositeNotFoundException( entityInstance.getIdentity(), entityInstance.getContext().getCompositeModel().getCompositeType() );
             }
             else if( entityStatus == EntityStatus.NEW )
             {
@@ -282,7 +292,7 @@ public final class UnitOfWorkInstance
         }
     }
 
-    public void clear()
+    public void reset()
     {
         checkOpen();
 
@@ -297,12 +307,12 @@ public final class UnitOfWorkInstance
         return getCachedEntity( entityComposite.identity().get(), entityComposite.type() ) != null;
     }
 
-    public CompositeBuilderFactory getCompositeBuilderFactory()
+    public CompositeBuilderFactory compositeBuilderFactory()
     {
         return moduleInstance.getStructureContext().getCompositeBuilderFactory();
     }
 
-    public ObjectBuilderFactory getObjectBuilderFactory()
+    public ObjectBuilderFactory objectBuilderFactory()
     {
         return moduleInstance.getStructureContext().getObjectBuilderFactory();
     }
@@ -325,7 +335,7 @@ public final class UnitOfWorkInstance
         }
     }
 
-    public QueryBuilderFactory getQueryBuilderFactory()
+    public QueryBuilderFactory queryBuilderFactory()
     {
         checkOpen();
 

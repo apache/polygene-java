@@ -16,12 +16,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.spi.property;
+package org.qi4j.property;
 
 import java.lang.reflect.Type;
 import static org.qi4j.composite.NullArgumentException.*;
-import org.qi4j.property.Property;
-import org.qi4j.property.PropertyInfo;
 
 /**
  * {@code ComputedPropertyInstance} is the base implementation of {@link Property}.
@@ -66,7 +64,7 @@ public abstract class ComputedPropertyInstance<T>
      * @throws IllegalArgumentException Thrown by default.
      * @since 0.1.0
      */
-    public T set( T anIgnoredValue )
+    public void set( T anIgnoredValue )
         throws IllegalArgumentException
     {
         String qualifiedName = qualifiedName();

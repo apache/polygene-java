@@ -120,33 +120,33 @@ public class PropertyReferenceImpl
     }
 
     /**
-     * @see org.qi4j.query.grammar.PropertyReference#getPropertyReferenceName()
+     * @see org.qi4j.query.grammar.PropertyReference#propertyName()
      */
-    public String getPropertyReferenceName()
+    public String propertyName()
     {
         return name;
     }
 
     /**
-     * @see PropertyReference#getPropertyReferenceDeclaringType()
+     * @see PropertyReference#propertyDeclaringType()
      */
-    public Class getPropertyReferenceDeclaringType()
+    public Class propertyDeclaringType()
     {
         return declaringType;
     }
 
     /**
-     * @see org.qi4j.query.grammar.PropertyReference#getPropertyReferenceType()
+     * @see org.qi4j.query.grammar.PropertyReference#propertyType()
      */
-    public Class getPropertyReferenceType()
+    public Class propertyType()
     {
         return type;
     }
 
     /**
-     * @see org.qi4j.query.grammar.PropertyReference#getTraversedAssociation()
+     * @see org.qi4j.query.grammar.PropertyReference#traversedAssociation()
      */
-    public AssociationReference getTraversedAssociation()
+    public AssociationReference traversedAssociation()
     {
         return traversed;
     }

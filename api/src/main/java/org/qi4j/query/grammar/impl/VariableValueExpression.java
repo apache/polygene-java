@@ -70,7 +70,7 @@ public class VariableValueExpression<T>
      * @return value
      * @throws IllegalStateException - If value of this variable was not set prior
      */
-    public T getValue()
+    public T value()
     {
         if( value == null )
         {

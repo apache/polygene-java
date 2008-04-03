@@ -12,19 +12,22 @@
  *
  */
 
-package org.qi4j.entity.association;
+package org.qi4j.entity;
 
 /**
- * This exception is thrown when an assocation is set to an invalid entity
+ * TODO
  */
-public class AssociationVetoException extends RuntimeException
+public class ConcurrentEntityModificationException extends UnitOfWorkCompletionException
 {
-    public AssociationVetoException( String string )
+    private Iterable<EntityComposite> alreadyModifiedEntities;
+
+    public ConcurrentEntityModificationException( Iterable<EntityComposite> concurrentlyModifiedEntities )
     {
-        super( string );
+        this.alreadyModifiedEntities = concurrentlyModifiedEntities;
     }
 
-    public AssociationVetoException()
+    public Iterable<EntityComposite> alreadyModifiedEntities()
     {
+        return alreadyModifiedEntities;
     }
 }

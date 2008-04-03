@@ -34,21 +34,21 @@ public class ServiceConfigurationMixin
             uow = uowf.newUnitOfWork();
             try
             {
-                configuration = uow.find( descriptor.getIdentity(), method.getDeclaringClass() );
+                configuration = uow.find( descriptor.identity(), method.getDeclaringClass() );
             }
             catch( EntityCompositeNotFoundException e )
             {
-                configuration = uow.newEntityBuilder( descriptor.getIdentity(), method.getDeclaringClass() ).newInstance();
+                configuration = uow.newEntityBuilder( descriptor.identity(), method.getDeclaringClass() ).newInstance();
 
                 // Check for defaults
-                InputStream asStream = getClass().getResourceAsStream( "/" + descriptor.getIdentity() + ".properties" );
+                InputStream asStream = getClass().getResourceAsStream( "/" + descriptor.identity() + ".properties" );
                 if( asStream != null )
                 {
                     PropertyMapper.map( asStream, (Composite) configuration );
                 }
                 uow.complete();
                 uow = uowf.newUnitOfWork();
-                configuration = uow.getReference( configuration );
+                configuration = uow.dereference( configuration );
             }
             uow.pause();
         }

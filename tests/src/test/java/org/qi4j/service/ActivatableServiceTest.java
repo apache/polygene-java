@@ -45,11 +45,11 @@ public class ActivatableServiceTest
 
         assertTrue( isActive );
 
-        assembly.getObjectBuilderFactory().newObjectBuilder( ActivatableServiceTest.class ).inject( this );
+        assembly.getObjectBuilderFactory().newObjectBuilder( ActivatableServiceTest.class ).injectTo( this );
 
         assertTrue( isActive );
 
-        service.getService();
+        service.get();
 
         assertTrue( isActive );
 

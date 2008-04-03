@@ -18,13 +18,18 @@ import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.ObjectBuilderFactory;
 import org.qi4j.queryobsolete.QueryBuilderFactory;
-import java.util.Stack;
 
 /**
  * All operations on entities goes through an UnitOfWork. <TODO Muuuch longer explanation needed>
  */
 public interface UnitOfWork
 {
+    UnitOfWork newUnitOfWork();
+
+    <T> T newEntity( Class<T> compositeType );
+
+    <T> T newEntity( String identity, Class<T> compositeType );
+
     <T> CompositeBuilder<T> newEntityBuilder( Class<T> compositeType );
 
     <T> CompositeBuilder<T> newEntityBuilder( String identity, Class<T> compositeType );
@@ -35,36 +40,29 @@ public interface UnitOfWork
     <T> T getReference( String identity, Class<T> compositeType )
         throws EntityCompositeNotFoundException;
 
-    <T> T getReference( T entity )
+    <T> T dereference( T entity )
         throws EntityCompositeNotFoundException;
 
     void refresh( Object entity )
         throws UnitOfWorkException;
 
-    void remove( Object entity );
-
     void refresh();
 
     boolean contains( Object entity );
 
-    void clear();
+    void reset();
+
+    void remove( Object entity );
 
     void complete()
-        throws UnitOfWorkCompletionException;
+        throws UnitOfWorkCompletionException, ConcurrentEntityModificationException;
 
     void discard();
 
     boolean isOpen();
 
-    QueryBuilderFactory getQueryBuilderFactory();
-
-    UnitOfWork newUnitOfWork();
-
-    CompositeBuilderFactory getCompositeBuilderFactory();
-
-    ObjectBuilderFactory getObjectBuilderFactory();
-
-    /** Pauses this UnitOfWork.
+    /**
+     * Pauses this UnitOfWork.
      * <p>
      * Calling this method will cause the underlying UnitOfWork to become the current UnitOfWork until the
      * the resume() method is called. It is the client's responsibility not to drop the reference to this
@@ -73,8 +71,14 @@ public interface UnitOfWork
      */
     void pause();
 
-    /** Resumes this UnitOfWork to again become the current UnitOfWork.
-     * 
+    /**
+     * Resumes this UnitOfWork to again become the current UnitOfWork.
      */
     void resume();
+
+    QueryBuilderFactory queryBuilderFactory();
+
+    CompositeBuilderFactory compositeBuilderFactory();
+
+    ObjectBuilderFactory objectBuilderFactory();
 }

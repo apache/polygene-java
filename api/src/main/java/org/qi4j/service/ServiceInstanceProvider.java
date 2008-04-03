@@ -26,8 +26,9 @@ public interface ServiceInstanceProvider
      * Called for each client releasing the instance from use.
      *
      * @param instance The
-     * @throws Exception
+     * @throws ServiceInstanceProviderException
+     *
      */
     void releaseInstance( Object instance )
-        throws Exception;
+        throws ServiceInstanceProviderException;
 }

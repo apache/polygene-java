@@ -46,7 +46,7 @@ public class IsNullPredicateImpl<T>
     {
         return new StringBuilder()
             .append( "( " )
-            .append( getPropertyReference() )
+            .append( propertyReference() )
             .append( " IS NULL )" )
             .toString();
     }

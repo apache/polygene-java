@@ -125,10 +125,9 @@ public final class PropertyDeclaration
             return null;
         }
 
-        public Object set( Object newValue ) throws IllegalArgumentException
+        public void set( Object newValue ) throws IllegalArgumentException
         {
             defaultValue = newValue;
-            return newValue;
         }
     }
 }

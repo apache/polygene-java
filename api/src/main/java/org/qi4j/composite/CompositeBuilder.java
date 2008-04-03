@@ -36,9 +36,9 @@ public interface CompositeBuilder<T>
      */
     void use( Object... usedObjects );
 
-    T propertiesOfComposite();
+    T stateOfComposite();
 
-    <K> K propertiesFor( Class<K> mixinType );
+    <K> K stateFor( Class<K> mixinType );
 
     /**
      * Create a new Composite instance.

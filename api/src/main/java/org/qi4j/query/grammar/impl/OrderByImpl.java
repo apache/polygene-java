@@ -18,8 +18,8 @@
  */
 package org.qi4j.query.grammar.impl;
 
-import org.qi4j.query.grammar.PropertyReference;
 import org.qi4j.query.grammar.OrderBy;
+import org.qi4j.query.grammar.PropertyReference;
 
 /**
  * Query sorting segment.
@@ -55,11 +55,11 @@ public class OrderByImpl
      * Constructor.
      *
      * @param propertyReference property that determines the order; cannot be null
-     * @param order    direction
+     * @param order             direction
      * @throws IllegalArgumentException - If property is null
      */
     public OrderByImpl( final PropertyReference propertyReference,
-                    final Order order )
+                        final Order order )
     {
         if( propertyReference == null )
         {
@@ -74,7 +74,7 @@ public class OrderByImpl
      *
      * @return property; cannot be null
      */
-    public PropertyReference getPropertyReference()
+    public PropertyReference propertyReference()
     {
         return propertyReference;
     }
@@ -84,7 +84,7 @@ public class OrderByImpl
      *
      * @return direction; cannot be null
      */
-    public Order getOrder()
+    public Order order()
     {
         return order;
     }

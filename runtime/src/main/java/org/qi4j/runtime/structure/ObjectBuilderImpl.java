@@ -75,7 +75,7 @@ public final class ObjectBuilderImpl<T>
         };
     }
 
-    public void inject( T instance )
+    public void injectTo( T instance )
     {
         // Inject existing object
         objectContext.inject( instance, moduleInstance, uses );

@@ -94,10 +94,10 @@ public final class ModuleInstance
         Iterable<ServiceDescriptor> serviceDescriptors = getModuleContext().getModuleBinding().getModuleResolution().getModuleModel().getServiceDescriptors();
         for( ServiceDescriptor serviceDescriptor : serviceDescriptors )
         {
-            Class<? extends ServiceInstanceProvider> providerType = serviceDescriptor.getServiceProvider();
+            Class<? extends ServiceInstanceProvider> providerType = serviceDescriptor.serviceProvider();
             ObjectBuilder<? extends ServiceInstanceProvider> builder = objectBuilderFactory.newObjectBuilder( providerType );
             ServiceInstanceProvider sip = builder.newInstance();
-            Class serviceType = serviceDescriptor.getServiceType();
+            Class serviceType = serviceDescriptor.gerviceType();
             final ServiceReferenceInstance<Object> serviceReference = new ServiceReferenceInstance<Object>( serviceDescriptor, sip );
             registerServiceReference( serviceType, serviceReference );
             serviceInstances.add( serviceReference );

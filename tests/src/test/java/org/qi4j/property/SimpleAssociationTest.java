@@ -52,7 +52,7 @@ public class SimpleAssociationTest
         SimpleAssociationTest.Company company;
         {
             CompositeBuilder<Company> builder = unitOfWork.newEntityBuilder( SimpleAssociationTest.Company.class );
-            builder.propertiesOfComposite().name().set( "JayWay" );
+            builder.stateOfComposite().name().set( "JayWay" );
             company = builder.newInstance();
         }
 
@@ -61,7 +61,7 @@ public class SimpleAssociationTest
         System.out.println( "Name is:" + company.name().get() );
 
         CompositeBuilder<SimpleAssociationTest.Person> builder = unitOfWork.newEntityBuilder( SimpleAssociationTest.Person.class );
-        builder.propertiesOfComposite().name().set( "Rickard" );
+        builder.stateOfComposite().name().set( "Rickard" );
         SimpleAssociationTest.Person rickard = builder.newInstance();
 
         company.employees().add( rickard );

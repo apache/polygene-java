@@ -38,8 +38,8 @@ public class ContextCompositeTest
         for( int i = 0; i < 5; i++ )
         {
             CompositeBuilder<MyContextComposite> builder = compositeBuilderFactory.newCompositeBuilder( MyContextComposite.class );
-            builder.propertiesFor( MyData.class ).data().set( 0 );
-            MyContextComposite context = new ContextComposite<MyContextComposite>( builder ).getProxy();
+            builder.stateFor( MyData.class ).data().set( 0 );
+            MyContextComposite context = new ContextComposite<MyContextComposite>( builder ).proxy();
 
             Worker w1;
             Worker w2;

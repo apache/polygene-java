@@ -18,7 +18,6 @@ import java.lang.reflect.Type;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.association.Association;
 import org.qi4j.entity.association.AssociationInfo;
-import org.qi4j.entity.association.AssociationVetoException;
 import org.qi4j.runtime.entity.UnitOfWorkInstance;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.serialization.EntityId;
@@ -57,11 +56,11 @@ public class AssociationInstance<T>
     }
 
     public void set( T newValue )
-        throws AssociationVetoException
+        throws IllegalArgumentException
     {
         if( !( newValue instanceof EntityComposite ) )
         {
-            throw new AssociationVetoException( "Associated value must be an EntityComposite" );
+            throw new IllegalArgumentException( "Associated value must be an EntityComposite" );
         }
 
         this.value = newValue;

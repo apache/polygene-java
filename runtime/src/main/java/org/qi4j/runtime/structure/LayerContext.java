@@ -96,9 +96,9 @@ public final class LayerContext
             Iterable<ServiceDescriptor> publicServices = moduleContext.getModuleBinding().getModuleResolution().getModuleModel().getServiceDescriptors();
             for( ServiceDescriptor publicService : publicServices )
             {
-                if( publicService.getVisibility() != Visibility.module )
+                if( publicService.visibility() != Visibility.module )
                 {
-                    modulesForPublicServices.add( publicService.getServiceType(), moduleInstance );
+                    modulesForPublicServices.add( publicService.gerviceType(), moduleInstance );
                 }
             }
         }

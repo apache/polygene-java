@@ -50,12 +50,12 @@ public class LessThanPredicateImpl<T>
     {
         return new StringBuilder()
             .append( "( " )
-            .append( getPropertyReference() )
+            .append( propertyReference() )
             .append( " < " )
             .append( "\"" )
-            .append( getValueExpression() )
+            .append( valueExpression() )
             .append( "\"^^" )
-            .append( getPropertyReference().getPropertyReferenceType().getSimpleName() )
+            .append( propertyReference().propertyType().getSimpleName() )
             .append( " )" )
             .toString();
     }

@@ -57,7 +57,7 @@ public class SimplePropertyTest
         Company company;
         {
             CompositeBuilder<Company> builder = compositeBuilderFactory.newCompositeBuilder( Company.class );
-            builder.propertiesOfComposite().name().set( "JayWay" );
+            builder.stateOfComposite().name().set( "JayWay" );
             company = builder.newInstance();
         }
 
@@ -96,11 +96,10 @@ public class SimplePropertyTest
     {
         @ConcernFor Property<String> next;
 
-        public String set( String newValue ) throws IllegalArgumentException
+        public void set( String newValue ) throws IllegalArgumentException
         {
             newValue = newValue.toUpperCase();
             next.set( newValue );
-            return newValue;
         }
     }
 
@@ -124,10 +123,9 @@ public class SimplePropertyTest
         @ThisCompositeAs ImmutableProperty current;
         @ThisCompositeAs PropertyInfo info;
 
-        public Object set( Object newValue ) throws IllegalArgumentException
+        public void set( Object newValue ) throws IllegalArgumentException
         {
             System.out.println( "Property " + info.name() + " changed from " + current.get() + " to " + newValue );
-            return newValue;
         }
     }
 

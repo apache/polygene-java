@@ -40,7 +40,7 @@ public abstract class AbstractEntityStoreTest
 
         // Find entity
         unitOfWork = unitOfWorkFactory.newUnitOfWork();
-        instance = unitOfWork.getReference( instance );
+        instance = unitOfWork.dereference( instance );
 
         // Check state
         assertThat( "property has correct value", instance.name().get(), equalTo( "Test" ) );
@@ -66,7 +66,7 @@ public abstract class AbstractEntityStoreTest
 
         // Remove entity
         unitOfWork = unitOfWorkFactory.newUnitOfWork();
-        TestComposite instance = unitOfWork.getReference( newInstance );
+        TestComposite instance = unitOfWork.dereference( newInstance );
         unitOfWork.remove( instance );
         unitOfWork.complete();
 

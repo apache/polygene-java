@@ -162,7 +162,7 @@ public final class ModuleAssembly
         List<ServiceDescriptor> serviceDescriptors = new ArrayList<ServiceDescriptor>();
         for( ServiceDeclaration serviceDeclaration : serviceDeclarations )
         {
-            serviceDescriptors.addAll( serviceDeclaration.getServiceDescriptors() );
+            serviceDescriptors.addAll( serviceDeclaration.serviceDescriptors() );
         }
         return serviceDescriptors;
     }

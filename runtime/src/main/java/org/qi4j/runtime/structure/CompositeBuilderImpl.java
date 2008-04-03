@@ -68,7 +68,7 @@ public class CompositeBuilderImpl<T>
         }
     }
 
-    public T propertiesOfComposite()
+    public T stateOfComposite()
     {
         // Instantiate proxy for given composite interface
         try
@@ -84,7 +84,7 @@ public class CompositeBuilderImpl<T>
         }
     }
 
-    public <K> K propertiesFor( Class<K> mixinType )
+    public <K> K stateFor( Class<K> mixinType )
     {
         // Instantiate proxy for given interface
         try

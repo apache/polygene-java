@@ -15,7 +15,7 @@ package org.qi4j.structure;
 
 public enum Visibility
 {
-    module, // Artifact is visible only in the declaring module
+    module, // Artifact is visible only in the declaring module (default)
     layer,  // Artifact is visible to all modules in the same layer
     application; // Artifact is visible to other modules in the same layer and any modules in extending layers
 }

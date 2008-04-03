@@ -14,8 +14,8 @@
  */
 package org.qi4j.runtime.property;
 
+import org.qi4j.property.ComputedPropertyInstance;
 import org.qi4j.property.PropertyInfo;
-import org.qi4j.spi.property.ComputedPropertyInstance;
 
 /**
  * {@code PropertyInstance} represents a mutable property.
@@ -71,10 +71,9 @@ public class PropertyInstance<T> extends ComputedPropertyInstance<T>
      *
      * @param aNewValue The new value.
      */
-    public T set( T aNewValue )
+    public void set( T aNewValue )
     {
         value = aNewValue;
-        return value;
     }
 
     /**

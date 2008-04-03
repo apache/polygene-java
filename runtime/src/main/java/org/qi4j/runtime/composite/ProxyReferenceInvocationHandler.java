@@ -14,10 +14,6 @@
  */
 package org.qi4j.runtime.composite;
 
-import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -25,7 +21,6 @@ import java.lang.reflect.Proxy;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Map;
 import org.qi4j.composite.ConstraintViolation;
 import org.qi4j.composite.InvocationContext;
 
@@ -37,23 +32,23 @@ public final class ProxyReferenceInvocationHandler
     private Class mixinType;
     private Collection<ConstraintViolation> constraintViolations;
 
-    public Object getComposite()
+    public Object composite()
     {
         return proxy;
     }
 
-    public Object getMixin()
+    public Object mixin()
     {
         return mixin;
     }
 
-    public Class getMixinType()
+    public Class mixinType()
     {
         return mixinType;
     }
 
 
-    public Collection<ConstraintViolation> getConstraintViolations()
+    public Collection<ConstraintViolation> constraintViolations()
     {
         if( constraintViolations == null )
         {
@@ -99,27 +94,6 @@ public final class ProxyReferenceInvocationHandler
         catch( UndeclaredThrowableException e )
         {
             throw e.getUndeclaredThrowable();
-        }
-    }
-
-    public void initializeMixins( Map<Class, Object> mixins )
-        throws IntrospectionException, IllegalAccessException, InvocationTargetException
-    {
-        // TODO Improve?
-        Object currentMixin = mixins.get( getMixinType() );
-        Object invokedMixin = getMixin();
-        BeanInfo info = Introspector.getBeanInfo( currentMixin.getClass() );
-        PropertyDescriptor[] properties = info.getPropertyDescriptors();
-        for( PropertyDescriptor property : properties )
-        {
-            Method read = property.getReadMethod();
-            Method write = property.getWriteMethod();
-            if( read != null && write != null )
-            {
-                Object value = property.getReadMethod().invoke( currentMixin );
-                Method writeMethod = property.getWriteMethod();
-                writeMethod.invoke( invokedMixin, value );
-            }
         }
     }
 }

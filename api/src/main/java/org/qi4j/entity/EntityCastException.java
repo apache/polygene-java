@@ -19,9 +19,9 @@ package org.qi4j.entity;
 /**
  * Thrown by {@link EntityComposite#cast} if the cast is not possible.
  */
-public class CompositeCastException extends RuntimeException
+public class EntityCastException extends RuntimeException
 {
-    public CompositeCastException( String message )
+    public EntityCastException( String message )
     {
         super( message );
     }

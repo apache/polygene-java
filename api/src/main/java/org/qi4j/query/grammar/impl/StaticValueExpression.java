@@ -46,7 +46,7 @@ public class StaticValueExpression<T>
      *
      * @return value
      */
-    public T getValue()
+    public T value()
     {
         return value;
     }

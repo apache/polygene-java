@@ -33,7 +33,7 @@ public final class ServiceDeclaration
     private Iterable<Class> serviceTypes;
     private String identity;
     private boolean instantiateOnStartup = false;
-    private Map<Class, Serializable> serviceInfos = new HashMap<Class, Serializable>();
+    private Map<Class, Serializable> serviceAttributes = new HashMap<Class, Serializable>();
     private Visibility visibility = Visibility.module;
 
     public ServiceDeclaration( Iterable<Class> serviceTypes )
@@ -66,13 +66,13 @@ public final class ServiceDeclaration
         return this;
     }
 
-    public <K extends Serializable> ServiceDeclaration setServiceInfo( Class<K> infoType, K serviceInfo )
+    public <K extends Serializable> ServiceDeclaration setServiceAttribute( Class<K> attributeType, K serviceAttribute )
     {
-        serviceInfos.put( infoType, serviceInfo );
+        serviceAttributes.put( attributeType, serviceAttribute );
         return this;
     }
 
-    List<ServiceDescriptor> getServiceDescriptors()
+    List<ServiceDescriptor> serviceDescriptors()
     {
         List<ServiceDescriptor> serviceDescriptors = new ArrayList<ServiceDescriptor>();
         for( Class serviceType : serviceTypes )
@@ -82,7 +82,7 @@ public final class ServiceDeclaration
             {
                 id = serviceType.getSimpleName();
             }
-            ServiceDescriptor serviceDescriptor = new ServiceDescriptor( serviceType, serviceProvider, id, visibility, instantiateOnStartup, serviceInfos );
+            ServiceDescriptor serviceDescriptor = new ServiceDescriptor( serviceType, serviceProvider, id, visibility, instantiateOnStartup, serviceAttributes );
             serviceDescriptors.add( serviceDescriptor );
         }
         return serviceDescriptors;

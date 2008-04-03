@@ -66,9 +66,9 @@ import org.qi4j.composite.Mixins;
  *          next.create();
  *      }
  * <p/>
- *      public void delete()
+ *      public void remove()
  *      {
- *          next.delete();
+ *          next.remove();
  *          repository.deleteInstance( meAsSystem.getAdmin() );
  *      }
  * }
@@ -92,12 +92,12 @@ public interface Lifecycle
     void create();
 
     /**
-     * Deletion callback method.
+     * Removal callback method.
      * <p/>
-     * Called by the Qi4J runtime before the composite is deleted from the system, allowing
+     * Called by the Qi4J runtime before the composite is removed from the system, allowing
      * for clean-up operations.
      */
-    void delete();
+    void remove();
 
     // Default implementation
     public final class LifecycleMixin
@@ -106,12 +106,10 @@ public interface Lifecycle
         public static final Lifecycle INSTANCE = new LifecycleMixin();
 
         public void create()
-            throws PersistenceException
         {
         }
 
-        public void delete()
-            throws PersistenceException
+        public void remove()
         {
         }
     }

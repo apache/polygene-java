@@ -76,10 +76,10 @@ public class CompositeBuilderTest
          * Called by the Qi4J runtime before the composite is deleted from the system, allowing
          * for clean-up operations.
          */
-        public void delete()
+        public void remove()
         {
             deleteMethod = true;
-            next.delete();
+            next.remove();
         }
     }
 }

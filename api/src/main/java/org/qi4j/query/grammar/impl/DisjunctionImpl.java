@@ -18,7 +18,6 @@
 package org.qi4j.query.grammar.impl;
 
 import org.qi4j.query.grammar.BooleanExpression;
-import org.qi4j.query.grammar.Conjunction;
 import org.qi4j.query.grammar.Disjunction;
 
 /**
@@ -50,9 +49,9 @@ public class DisjunctionImpl
     {
         return new StringBuilder()
             .append( "( " )
-            .append( getLeftSideExpression() )
+            .append( leftSideExpression() )
             .append( " OR " )
-            .append( getRightSideExpression() )
+            .append( rightSideExpression() )
             .append( " )" )
             .toString();
     }

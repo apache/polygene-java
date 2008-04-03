@@ -41,7 +41,7 @@ public final class CompositeInputStream extends ObjectInputStream
     {
         super( in );
         this.unitOfWork = unitOfWork;
-        this.cbf = unitOfWork.getCompositeBuilderFactory();
+        this.cbf = unitOfWork.compositeBuilderFactory();
         this.is = is;
         enableResolveObject( true );
     }

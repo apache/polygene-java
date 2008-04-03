@@ -15,6 +15,8 @@
 package org.qi4j.runtime;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 import org.qi4j.composite.Composite;
@@ -39,6 +41,7 @@ import org.qi4j.runtime.composite.InstanceFactoryImpl;
 import org.qi4j.runtime.composite.ObjectBinder;
 import org.qi4j.runtime.composite.ObjectModelFactory;
 import org.qi4j.runtime.composite.ObjectResolver;
+import org.qi4j.runtime.composite.ProxyReferenceInvocationHandler;
 import org.qi4j.runtime.injection.AssociationInjectionProviderFactory;
 import org.qi4j.runtime.injection.InvocationInjectionProviderFactory;
 import org.qi4j.runtime.injection.ModifiesInjectionProviderFactory;
@@ -121,7 +124,20 @@ public final class Energy4Java
         }
     }
 
-// API
+    // API
+    public Composite dereference( Composite composite )
+    {
+        InvocationHandler handler = Proxy.getInvocationHandler( composite );
+        if( handler instanceof ProxyReferenceInvocationHandler )
+        {
+            return (Composite) ( (ProxyReferenceInvocationHandler) handler ).composite();
+        }
+        if( handler instanceof AbstractCompositeInstance )
+        {
+            return composite;
+        }
+        return null;
+    }
 
     public <S extends Composite, T extends S> Class<S> getSuperComposite( Class<T> compositeClass )
     {

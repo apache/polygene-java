@@ -79,7 +79,7 @@ public abstract class AbstractQi4jTest
 
     @After public void tearDown() throws Exception
     {
-        if( unitOfWorkFactory.getCurrentUnitOfWork() != null )
+        if( unitOfWorkFactory.currentUnitOfWork() != null )
         {
             throw new Exception( "UnitOfWork not properly cleaned up" );
         }

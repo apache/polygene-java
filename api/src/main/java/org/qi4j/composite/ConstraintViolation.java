@@ -22,8 +22,8 @@ import java.lang.annotation.Annotation;
  */
 public class ConstraintViolation
 {
-    Annotation constraint;
-    Object value;
+    private Annotation constraint;
+    private Object value;
 
     public ConstraintViolation( Annotation constraint, Object value )
     {
@@ -31,12 +31,12 @@ public class ConstraintViolation
         this.value = value;
     }
 
-    public Annotation getConstraint()
+    public Annotation constraint()
     {
         return constraint;
     }
 
-    public Object getValue()
+    public Object value()
     {
         return value;
     }

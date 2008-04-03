@@ -37,15 +37,15 @@ public final class DefaultServiceInstanceProvider
 
     public Object newInstance( ServiceDescriptor descriptor ) throws ServiceInstanceProviderException
     {
-        if( Composite.class.isAssignableFrom( descriptor.getServiceType() ) )
+        if( Composite.class.isAssignableFrom( descriptor.gerviceType() ) )
         {
-            CompositeBuilder builder = cbf.newCompositeBuilder( descriptor.getServiceType() );
+            CompositeBuilder builder = cbf.newCompositeBuilder( descriptor.gerviceType() );
             builder.use( descriptor );
             return builder.newInstance();
         }
         else
         {
-            ObjectBuilder builder = obf.newObjectBuilder( descriptor.getServiceType() );
+            ObjectBuilder builder = obf.newObjectBuilder( descriptor.gerviceType() );
             builder.use( descriptor );
             return builder.newInstance();
         }

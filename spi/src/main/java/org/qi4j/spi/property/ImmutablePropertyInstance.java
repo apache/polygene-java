@@ -15,6 +15,7 @@
 package org.qi4j.spi.property;
 
 import java.lang.reflect.Method;
+import org.qi4j.property.ComputedPropertyInstance;
 import org.qi4j.property.ImmutableProperty;
 import org.qi4j.property.PropertyInfo;
 
@@ -59,17 +60,16 @@ public final class ImmutablePropertyInstance<T> extends ComputedPropertyInstance
      * @throws IllegalArgumentException Thrown by default.
      * @since 0.1.0
      */
-    public T set( T newValue )
+    public void set( T newValue )
         throws IllegalArgumentException
     {
         if( this.value != UNSET )
         {
-            return super.set( newValue );
+            super.set( newValue );
         }
         else
         {
             this.value = newValue;
-            return value;
         }
     }
 

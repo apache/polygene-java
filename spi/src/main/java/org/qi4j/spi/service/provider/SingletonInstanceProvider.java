@@ -28,10 +28,10 @@ public class SingletonInstanceProvider
 
     public Object newInstance( ServiceDescriptor serviceDescriptor ) throws ServiceInstanceProviderException
     {
-        return serviceDescriptor.getServiceInfo( Singleton.class ).getInstance();
+        return serviceDescriptor.serviceAttribute( Singleton.class ).getInstance();
     }
 
-    public void releaseInstance( Object instance ) throws Exception
+    public void releaseInstance( Object instance )
     {
     }
 }

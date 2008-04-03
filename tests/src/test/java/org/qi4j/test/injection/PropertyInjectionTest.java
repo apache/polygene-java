@@ -38,7 +38,7 @@ public class PropertyInjectionTest
     {
         CompositeBuilder<SayHelloComposite> builder = compositeBuilderFactory.newCompositeBuilder( SayHelloComposite.class );
 
-        SayHelloComposite state = builder.propertiesOfComposite();
+        SayHelloComposite state = builder.stateOfComposite();
         state.sampleOne().set( "Hello" );
         state.sampleTwo().set( "World" );
 

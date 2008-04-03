@@ -22,8 +22,8 @@ import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.scope.Structure;
 import org.qi4j.composite.scope.ThisCompositeAs;
-import org.qi4j.entity.CompositeCastException;
 import org.qi4j.entity.Entity;
+import org.qi4j.entity.EntityCastException;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.runtime.composite.AbstractCompositeInstance;
 import org.qi4j.runtime.composite.CompositeInstance;
@@ -37,6 +37,7 @@ public final class EntityMixin
     @Structure private CompositeBuilderFactory builderFactory;
     @ThisCompositeAs private EntityComposite meAsEntity;
 
+    // TODO This needs to use UnitOfWork.newEntityBuilder to be correct
     public <T extends Composite> T cast( Class<T> compositeType )
     {
         if( compositeType.isInstance( compositeType ) )
@@ -48,7 +49,7 @@ public final class EntityMixin
         Class existingCompositeClass = model.getCompositeType();
         if( !existingCompositeClass.isAssignableFrom( compositeType ) )
         {
-            throw new CompositeCastException( existingCompositeClass.getName() + " is not a super-type of " + compositeType.getName() );
+            throw new EntityCastException( existingCompositeClass.getName() + " is not a super-type of " + compositeType.getName() );
         }
 
 
@@ -78,7 +79,7 @@ public final class EntityMixin
     public boolean isInstance( Class anObjectType )
     {
         InvocationHandler handler = Proxy.getInvocationHandler( meAsEntity );
-        Object anObject = ( (ProxyReferenceInvocationHandler) handler ).getComposite();
+        Object anObject = ( (ProxyReferenceInvocationHandler) handler ).composite();
         if( anObjectType.isInstance( anObject ) )
         {
             return true;

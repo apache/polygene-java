@@ -31,8 +31,8 @@ public interface Association<T>
      * Set the associated entity.
      *
      * @param associated the entity
-     * @throws AssociationVetoException thrown if the entity is not a valid reference for this association
+     * @throws IllegalArgumentException thrown if the entity is not a valid reference for this association
      */
     void set( T associated )
-        throws AssociationVetoException;
+        throws IllegalArgumentException;
 }

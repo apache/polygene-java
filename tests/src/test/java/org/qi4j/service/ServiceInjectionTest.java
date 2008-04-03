@@ -35,8 +35,8 @@ public class ServiceInjectionTest
         {
             public void assemble( ModuleAssembly module ) throws AssemblyException
             {
-                module.addServices( MyServiceComposite.class ).setServiceInfo( ServiceName.class, new ServiceName( "Foo" ) );
-                module.addServices( MyServiceComposite.class ).setServiceInfo( ServiceName.class, new ServiceName( "Bar" ) );
+                module.addServices( MyServiceComposite.class ).setServiceAttribute( ServiceName.class, new ServiceName( "Foo" ) );
+                module.addServices( MyServiceComposite.class ).setServiceAttribute( ServiceName.class, new ServiceName( "Bar" ) );
                 module.addObjects( ServiceUser.class );
             }
         };
@@ -95,8 +95,8 @@ public class ServiceInjectionTest
         public String testServiceReference()
             throws ServiceInstanceProviderException
         {
-            ServiceName info = serviceRef.getServiceInfo( ServiceName.class );
-            return info.getName() + serviceRef.getService().doStuff();
+            ServiceName info = serviceRef.getServiceAttribute( ServiceName.class );
+            return info.getName() + serviceRef.get().doStuff();
         }
 
         public String testIterableServiceReferences()
@@ -105,8 +105,8 @@ public class ServiceInjectionTest
             String str = "";
             for( ServiceReference<MyService> serviceReference : serviceRefs )
             {
-                str += serviceReference.getServiceInfo( ServiceName.class ).getName();
-                str += serviceReference.getService().doStuff();
+                str += serviceReference.getServiceAttribute( ServiceName.class ).getName();
+                str += serviceReference.get().doStuff();
             }
             return str;
         }

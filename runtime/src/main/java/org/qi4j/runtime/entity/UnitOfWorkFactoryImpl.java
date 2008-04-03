@@ -16,6 +16,7 @@
  */
 package org.qi4j.runtime.entity;
 
+import java.util.Stack;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.IdentityGenerator;
 import org.qi4j.entity.UnitOfWork;
@@ -23,7 +24,6 @@ import org.qi4j.entity.UnitOfWorkFactory;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.structure.ServiceMap;
 import org.qi4j.spi.entity.EntityStore;
-import java.util.Stack;
 
 public final class UnitOfWorkFactoryImpl
     implements UnitOfWorkFactory
@@ -42,7 +42,7 @@ public final class UnitOfWorkFactoryImpl
         return new UnitOfWorkInstance( moduleInstance, services );
     }
 
-    public UnitOfWork getCurrentUnitOfWork()
+    public UnitOfWork currentUnitOfWork()
     {
         Stack<UnitOfWork> stack = UnitOfWorkInstance.current.get();
         if( stack.size() == 0 )

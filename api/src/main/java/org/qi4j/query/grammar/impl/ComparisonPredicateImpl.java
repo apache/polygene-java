@@ -64,17 +64,17 @@ public abstract class ComparisonPredicateImpl<T>
     }
 
     /**
-     * @see org.qi4j.query.grammar.ComparisonPredicate#getPropertyReference()
+     * @see org.qi4j.query.grammar.ComparisonPredicate#propertyReference()
      */
-    public PropertyReference<T> getPropertyReference()
+    public PropertyReference<T> propertyReference()
     {
         return propertyReference;
     }
 
     /**
-     * @see org.qi4j.query.grammar.ComparisonPredicate#getValueExpression()
+     * @see org.qi4j.query.grammar.ComparisonPredicate#valueExpression()
      */
-    public ValueExpression<T> getValueExpression()
+    public ValueExpression<T> valueExpression()
     {
         return valueExpression;
     }

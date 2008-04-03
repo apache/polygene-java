@@ -24,25 +24,24 @@ public class EntityCompositeNotFoundException extends UnitOfWorkException
     private String identity;
     private Class compositeType;
 
-    public EntityCompositeNotFoundException( String message, String identity, Class compositeType )
+    public EntityCompositeNotFoundException( String identity, Class compositeType )
     {
-        super( message );
         this.identity = identity;
         this.compositeType = compositeType;
     }
 
-    public String getIdentity()
+    public String identity()
     {
         return identity;
     }
 
-    public Class getCompositeType()
+    public Class compositeType()
     {
         return compositeType;
     }
 
     @Override public String getMessage()
     {
-        return super.getMessage() + "(" + getIdentity() + " of type " + compositeType.getName() + ")";
+        return "Could not find entity (" + identity() + " of type " + compositeType.getName() + ")";
     }
 }

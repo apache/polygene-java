@@ -15,12 +15,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.spi.property;
+package org.qi4j.property;
 
 import java.lang.reflect.Type;
 import org.qi4j.composite.NullArgumentException;
-import org.qi4j.property.ImmutableProperty;
-import org.qi4j.property.Property;
 
 public class ImmutableFacade<T>
     implements ImmutableProperty<T>
@@ -38,7 +36,7 @@ public class ImmutableFacade<T>
         return target.get();
     }
 
-    public T set( T newValue )
+    public void set( T newValue )
         throws IllegalArgumentException
     {
         throw new IllegalArgumentException( "Property '" + qualifiedName() + "' is immutable." );

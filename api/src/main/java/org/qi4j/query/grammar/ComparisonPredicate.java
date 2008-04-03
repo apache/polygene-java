@@ -24,7 +24,7 @@ package org.qi4j.query.grammar;
 public interface ComparisonPredicate<T>
     extends Predicate
 {
-    PropertyReference<T> getPropertyReference();
+    PropertyReference<T> propertyReference();
 
-    ValueExpression<T> getValueExpression();
+    ValueExpression<T> valueExpression();
 }

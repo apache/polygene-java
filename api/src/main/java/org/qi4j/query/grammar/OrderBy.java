@@ -32,14 +32,14 @@ public interface OrderBy
      *
      * @return property reference; cannot be null
      */
-    PropertyReference getPropertyReference();
+    PropertyReference propertyReference();
 
     /**
      * Getter.
      *
      * @return direction; cannot be null
      */
-    Order getOrder();
+    Order order();
 
     /**
      * Order direction.

@@ -47,7 +47,7 @@ public class PropertyFieldInjectionTest
         throws Exception
     {
         CompositeBuilder<PropertyFieldInjectionComposite> pficBuilder = compositeBuilderFactory.newCompositeBuilder( PropertyFieldInjectionTest.PropertyFieldInjectionComposite.class );
-        pficBuilder.propertiesOfComposite().testField().set( "X" );
+        pficBuilder.stateOfComposite().testField().set( "X" );
         PropertyFieldInjectionComposite pfic = pficBuilder.newInstance();
         assertThat( "Test field", pfic.testField().get(), is( equalTo( "X" ) ) );
         assertThat( "Named fieldX", pfic.namedField().get(), is( equalTo( "X" ) ) );

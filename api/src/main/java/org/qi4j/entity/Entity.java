@@ -34,7 +34,7 @@ public interface Entity
      * @return a new composite object implementing the interface
      */
     <T extends Composite> T cast( Class<T> anObjectType )
-        throws CompositeCastException;
+        throws EntityCastException;
 
     /**
      * Checks if the object can be cast() to the provided object type.

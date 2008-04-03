@@ -22,6 +22,8 @@ import org.qi4j.composite.Composite;
  */
 public interface Qi4j
 {
+    Composite dereference( Composite composite );
+
     /**
      * Get the super Composite of the given Composite. If one Composite
      * type MyComposite is extended by CustomMyComposite interface,

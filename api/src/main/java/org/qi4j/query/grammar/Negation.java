@@ -27,5 +27,5 @@ package org.qi4j.query.grammar;
 public interface Negation
     extends BooleanExpression
 {
-    BooleanExpression getExpression();
+    BooleanExpression expression();
 }

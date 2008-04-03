@@ -99,7 +99,7 @@ public final class ServiceInjectionProviderFactory
             List serviceInstances = new ArrayList();
             for( ServiceReference serviceReference : serviceReferences )
             {
-                serviceInstances.add( serviceReference.getService() );
+                serviceInstances.add( serviceReference.get() );
             }
             return serviceInstances;
         }
@@ -139,7 +139,7 @@ public final class ServiceInjectionProviderFactory
                 return null;
             }
 
-            Object service = serviceReference.getService();
+            Object service = serviceReference.get();
             return service;
         }
     }

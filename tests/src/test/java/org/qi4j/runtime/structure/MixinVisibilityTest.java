@@ -414,7 +414,7 @@ public class MixinVisibilityTest
         String test2()
         {
             CompositeBuilder<B2> builder = cbf.newCompositeBuilder( B2.class );
-            builder.propertiesFor( B2.class ).b2().set( "abc" );
+            builder.stateFor( B2.class ).b2().set( "abc" );
             B2 instance = builder.newInstance();
             return instance.b2().get();
         }

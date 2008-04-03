@@ -24,5 +24,5 @@ package org.qi4j.query.grammar;
 public interface SingleValueExpression<T>
     extends ValueExpression<T>
 {
-    T getValue();
+    T value();
 }

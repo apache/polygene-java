@@ -22,7 +22,6 @@ import org.qi4j.composite.Mixins;
  * must extend this interface.
  */
 @Mixins( ServiceConfigurationMixin.class )
-public interface ServiceComposite
-    extends Composite
+public interface ServiceComposite extends Composite
 {
 }

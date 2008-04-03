@@ -58,7 +58,7 @@ public final class ModuleResolution
         // Add extended interfaces, unless they have been specifically registered already
         for( ServiceDescriptor serviceDescriptor : moduleModel.getServiceDescriptors() )
         {
-            Class serviceType = serviceDescriptor.getServiceType();
+            Class serviceType = serviceDescriptor.gerviceType();
             availableServices.put( serviceType, serviceDescriptor );
             addSuperTypeProviders( serviceType, serviceDescriptor, availableServices );
         }

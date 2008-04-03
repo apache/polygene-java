@@ -17,7 +17,8 @@
  */
 package org.qi4j.composite;
 
-/** This Exception is thrown when no visible Composite implements the MixinType that is
+/**
+ * This Exception is thrown when no visible Composite implements the MixinType that is
  * requested to be built in the CompositeBuilder.
  */
 public class MixinTypeNotAvailableException extends MixinMappingException
@@ -37,12 +38,12 @@ public class MixinTypeNotAvailableException extends MixinMappingException
         this.moduleModelName = moduleModelName;
     }
 
-    public Class getMixinType()
+    public Class mixinType()
     {
         return mixinType;
     }
 
-    public String getModuleName()
+    public String moduleName()
     {
         return moduleModelName;
     }

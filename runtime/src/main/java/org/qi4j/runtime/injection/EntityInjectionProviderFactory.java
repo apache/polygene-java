@@ -84,7 +84,7 @@ public final class EntityInjectionProviderFactory
                 }
 */
 
-                QueryBuilderFactory builderFactory = unitOfWork.getQueryBuilderFactory();
+                QueryBuilderFactory builderFactory = unitOfWork.queryBuilderFactory();
 
                 if( rawType.equals( QueryBuilderFactory.class ) )
                 {

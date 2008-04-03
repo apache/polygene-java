@@ -65,7 +65,7 @@ public class JunctionImpl
      *
      * @return left side boolean expression
      */
-    public BooleanExpression getLeftSideExpression()
+    public BooleanExpression leftSideExpression()
     {
         return leftSideExpression;
     }
@@ -75,7 +75,7 @@ public class JunctionImpl
      *
      * @return right side boolean expression
      */
-    public BooleanExpression getRightSideExpression()
+    public BooleanExpression rightSideExpression()
     {
         return rightSideExpression;
     }

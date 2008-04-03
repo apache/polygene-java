@@ -26,11 +26,11 @@ public interface ServiceReference<T>
 {
     ImmutableProperty identity();
 
-    <K extends Serializable> K getServiceInfo( Class<K> infoType );
+    <K extends Serializable> K getServiceAttribute( Class<K> infoType );
 
-    <K extends Serializable> void setServiceInfo( Class<K> infoType, K value );
+    <K extends Serializable> void setServiceAttribute( Class<K> infoType, K value );
 
-    T getService();
+    T get();
 
     void releaseService()
         throws IllegalStateException;

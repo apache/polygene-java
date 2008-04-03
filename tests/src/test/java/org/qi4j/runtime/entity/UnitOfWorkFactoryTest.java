@@ -56,8 +56,8 @@ public class UnitOfWorkFactoryTest
 
         // Create product
         CompositeBuilder<ProductComposite> cb = unitOfWork.newEntityBuilder( ProductComposite.class );
-        cb.propertiesOfComposite().name().set( "Chair" );
-        cb.propertiesOfComposite().price().set( 57 );
+        cb.stateOfComposite().name().set( "Chair" );
+        cb.stateOfComposite().price().set( 57 );
         Product chair = cb.newInstance();
 
         assertThat( "Chair.name()", chair.name().get(), equalTo( "Chair" ) );
@@ -74,15 +74,15 @@ public class UnitOfWorkFactoryTest
 
         // Create product
         CompositeBuilder<ProductComposite> cb = unitOfWork.newEntityBuilder( ProductComposite.class );
-        cb.propertiesOfComposite().name().set( "Chair" );
-        cb.propertiesOfComposite().price().set( 57 );
+        cb.stateOfComposite().name().set( "Chair" );
+        cb.stateOfComposite().price().set( 57 );
         ProductComposite chair1 = cb.newInstance();
         ProductComposite chair2 = cb.newInstance();
         unitOfWork.complete();
 
         unitOfWork = unitOfWorkFactory.newUnitOfWork();
-        chair1 = unitOfWork.getReference( chair1 );
-        chair2 = unitOfWork.getReference( chair2 );
+        chair1 = unitOfWork.dereference( chair1 );
+        chair2 = unitOfWork.dereference( chair2 );
 
         String id1 = chair1.identity().get();
         String id2 = chair2.identity().get();

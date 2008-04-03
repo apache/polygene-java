@@ -24,11 +24,11 @@ import java.util.Collection;
  */
 public interface InvocationContext
 {
-    Object getComposite();
+    Object composite();
 
-    Object getMixin();
+    Object mixin();
 
-    Class getMixinType();
+    Class mixinType();
 
-    Collection<ConstraintViolation> getConstraintViolations();
+    Collection<ConstraintViolation> constraintViolations();
 }

@@ -29,27 +29,27 @@ public interface AssociationReference
      *
      * @return the name of the association
      */
-    String getAssociationReferenceName();
+    String associationName();
 
     /**
      * Get the type of the interface that declared the association.
      *
      * @return the type of property that declared the association
      */
-    Class getAssociationReferenceDeclaringType();
+    Class associationDeclaringType();
 
     /**
      * Get the type of the assocition. If the association is declared as Association<X> then X is returned.
      *
      * @return the association type
      */
-    Class getAssociationReferenceType();
+    Class associationType();
 
     /**
      * Gets the traversed association used to get to this association or null if there was no traversal involved.
      *
      * @return traversed association used to get to this association.
      */
-    AssociationReference getTraversedAssociation();
+    AssociationReference traversedAssociation();
 
 }

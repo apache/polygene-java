@@ -39,7 +39,7 @@ public class ContextComposite<T extends Composite>
         return builder.newInstance();
     }
 
-    public T getProxy()
+    public T proxy()
     {
         Composite composite = get();
 

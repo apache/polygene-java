@@ -17,9 +17,11 @@ package org.qi4j.runtime.entity;
 import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.Map;
+import org.qi4j.composite.Composite;
 import org.qi4j.composite.InstantiationException;
 import org.qi4j.composite.InvalidApplicationException;
 import org.qi4j.entity.EntityComposite;
+import org.qi4j.entity.EntityCompositeAlreadyExistsException;
 import org.qi4j.entity.Identity;
 import org.qi4j.entity.IdentityGenerator;
 import org.qi4j.entity.Lifecycle;
@@ -36,6 +38,7 @@ import org.qi4j.runtime.entity.association.ListAssociationInstance;
 import org.qi4j.runtime.entity.association.SetAssociationInstance;
 import org.qi4j.runtime.structure.CompositeBuilderImpl;
 import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.spi.entity.EntityAlreadyExistsException;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreException;
@@ -105,9 +108,14 @@ public final class UnitOfWorkCompositeBuilder<T>
 
         // Create state holder for this entity
         EntityState state;
+        Class<? extends Composite> entityType = context.getCompositeModel().getCompositeType();
         try
         {
-            state = store.newEntityState( new EntityId( identity, context.getCompositeModel().getCompositeType().getName() ) );
+            state = store.newEntityState( new EntityId( identity, entityType.getName() ) );
+        }
+        catch( EntityAlreadyExistsException e )
+        {
+            throw new EntityCompositeAlreadyExistsException( identity, entityType );
         }
         catch( EntityStoreException e )
         {

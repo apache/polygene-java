@@ -31,39 +31,39 @@ public final class ServiceDescriptor
     private String identity;
     private Visibility visibility;
     private boolean instantiateOnStartup;
-    private Map<Class, Serializable> serviceInfos;
+    private Map<Class, Serializable> serviceAttributes;
 
     public ServiceDescriptor( Class serviceType,
                               Class<? extends ServiceInstanceProvider> serviceProvider,
                               String identity,
                               Visibility visibility,
                               boolean instantiateOnStartup,
-                              Map<Class, Serializable> serviceInfos )
+                              Map<Class, Serializable> serviceAttributes )
     {
         this.serviceType = serviceType;
         this.serviceProvider = serviceProvider;
         this.identity = identity;
         this.visibility = visibility;
         this.instantiateOnStartup = instantiateOnStartup;
-        this.serviceInfos = serviceInfos;
+        this.serviceAttributes = serviceAttributes;
     }
 
-    public Class getServiceType()
+    public Class gerviceType()
     {
         return serviceType;
     }
 
-    public Class<? extends ServiceInstanceProvider> getServiceProvider()
+    public Class<? extends ServiceInstanceProvider> serviceProvider()
     {
         return serviceProvider;
     }
 
-    public String getIdentity()
+    public String identity()
     {
         return identity;
     }
 
-    public Visibility getVisibility()
+    public Visibility visibility()
     {
         return visibility;
     }
@@ -73,14 +73,14 @@ public final class ServiceDescriptor
         return instantiateOnStartup;
     }
 
-    public Map<Class, Serializable> getServiceInfos()
+    public Iterable<Class> serviceAttributeTypes()
     {
-        return serviceInfos;
+        return serviceAttributes.keySet();
     }
 
-    public <K extends Serializable> K getServiceInfo( Class<K> infoType )
+    public <K extends Serializable> K serviceAttribute( Class<K> infoType )
     {
-        return (K) serviceInfos.get( infoType );
+        return (K) serviceAttributes.get( infoType );
     }
 
     @Override public String toString()

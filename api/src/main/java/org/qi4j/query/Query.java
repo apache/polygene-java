@@ -31,11 +31,13 @@ public interface Query<T>
 
     Query<T> orderBy( OrderBy... segments );
 
-    Query<T> setFirstResult( int firstResult );
+    Query<T> firstResult( int firstResult );
 
-    Query<T> setMaxResults( int maxResults );
+    Query<T> maxResults( int maxResults );
 
     T find();
 
     void setVariable( String name, Object value );
+
+    Object getVariable( String name );
 }

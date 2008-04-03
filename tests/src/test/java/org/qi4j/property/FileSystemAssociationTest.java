@@ -57,7 +57,7 @@ public class FileSystemAssociationTest
 
         // Try loading it
         work = unitOfWorkFactory.newUnitOfWork();
-        root = work.getReference( root );
+        root = work.dereference( root );
 
         String indent = "";
         print( root, indent );
@@ -85,7 +85,7 @@ public class FileSystemAssociationTest
             if( file.isDirectory() )
             {
                 CompositeBuilder<Directory> builder = work.newEntityBuilder( Directory.class );
-                Directory dir = builder.propertiesOfComposite();
+                Directory dir = builder.stateOfComposite();
                 dir.name().set( file.getName() );
                 dir = builder.newInstance();
                 populate( work, dir, file );
@@ -94,7 +94,7 @@ public class FileSystemAssociationTest
             else
             {
                 CompositeBuilder<FileEntry> builder = work.newEntityBuilder( FileEntry.class );
-                FileEntry fileEntry = builder.propertiesOfComposite();
+                FileEntry fileEntry = builder.stateOfComposite();
                 fileEntry.name().set( file.getName() );
                 fileEntry = builder.newInstance();
                 root.entries().add( fileEntry );

@@ -24,5 +24,5 @@ package org.qi4j.query.grammar;
 public interface PropertyReferenceValueExpression<T>
     extends ValueExpression<T>
 {
-    PropertyReference<T> getPropertyReference();
+    PropertyReference<T> propertyReference();
 }

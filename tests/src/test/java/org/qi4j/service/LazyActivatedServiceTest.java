@@ -45,15 +45,15 @@ public class LazyActivatedServiceTest
 
         assertFalse( isActive );
 
-        assembly.getObjectBuilderFactory().newObjectBuilder( LazyActivatedServiceTest.class ).inject( this );
+        assembly.getObjectBuilderFactory().newObjectBuilder( LazyActivatedServiceTest.class ).injectTo( this );
 
         assertFalse( isActive );
 
-        service.getService();
+        service.get();
 
         assertFalse( isActive );
 
-        service.getService().doStuff();
+        service.get().doStuff();
 
         assertTrue( isActive );
 

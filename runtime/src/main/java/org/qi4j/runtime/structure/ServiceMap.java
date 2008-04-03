@@ -47,7 +47,7 @@ public final class ServiceMap<T>
             }
             instances.put( compositeType, serviceReference );
         }
-        return (T) serviceReference.getService();
+        return (T) serviceReference.get();
     }
 
     public void release()

@@ -21,8 +21,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Side-effect implementations can be maked with this annotation to denote that they may be run
+ * Side-effect implementations can be marked with this annotation to denote that they may be run
  * asynchronously from the method invocation.
+ * <p/>
+ * Not yet implemented.
  */
 @Retention( RetentionPolicy.RUNTIME )
 @Target( { ElementType.TYPE, ElementType.METHOD } )

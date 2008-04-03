@@ -77,11 +77,10 @@ public class EntityPropertyInstance<T> extends PropertyInstance<T>
      *
      * @param aNewValue The new value.
      */
-    public T set( T aNewValue )
+    public void set( T aNewValue )
     {
         value = aNewValue;
         entityState.setProperty( qualifiedName(), aNewValue );
-        return aNewValue;
     }
 
     /**

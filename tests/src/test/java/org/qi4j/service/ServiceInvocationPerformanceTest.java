@@ -44,7 +44,7 @@ public class ServiceInvocationPerformanceTest
             }
         };
 
-        assembly.getObjectBuilderFactory().newObjectBuilder( ServiceInvocationPerformanceTest.class ).inject( this );
+        assembly.getObjectBuilderFactory().newObjectBuilder( ServiceInvocationPerformanceTest.class ).injectTo( this );
 
         // Warmup
         for( int i = 0; i < 60000; i++ )

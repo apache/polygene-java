@@ -27,7 +27,7 @@ package org.qi4j.query.grammar;
 public interface Conjunction
     extends BooleanExpression
 {
-    BooleanExpression getLeftSideExpression();
+    BooleanExpression leftSideExpression();
 
-    BooleanExpression getRightSideExpression();
+    BooleanExpression rightSideExpression();
 }

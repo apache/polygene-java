@@ -19,7 +19,6 @@ import java.util.Iterator;
 import java.util.Set;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.association.AssociationInfo;
-import org.qi4j.entity.association.AssociationVetoException;
 import org.qi4j.entity.association.SetAssociation;
 import org.qi4j.runtime.entity.UnitOfWorkInstance;
 import org.qi4j.spi.serialization.EntityId;
@@ -59,7 +58,7 @@ public final class SetAssociationInstance<T>
     {
         if( !( o instanceof EntityComposite ) )
         {
-            throw new AssociationVetoException( "Object must be an EntityComposite" );
+            throw new IllegalArgumentException( "Object must be an EntityComposite" );
         }
 
         return associated.contains( getEntityId( o ) );
@@ -93,7 +92,7 @@ public final class SetAssociationInstance<T>
     {
         if( !( t instanceof EntityComposite ) )
         {
-            throw new AssociationVetoException( "Associated object must be an EntityComposite" );
+            throw new IllegalArgumentException( "Associated object must be an EntityComposite" );
         }
 
         return associated.add( getEntityId( t ) );
@@ -103,7 +102,7 @@ public final class SetAssociationInstance<T>
     {
         if( !( o instanceof EntityComposite ) )
         {
-            throw new AssociationVetoException( "Associated object must be an EntityComposite" );
+            throw new IllegalArgumentException( "Associated object must be an EntityComposite" );
         }
 
         return associated.remove( getEntityId( o ) );

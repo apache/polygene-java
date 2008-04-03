@@ -29,6 +29,4 @@ public interface Composite
     <T> T metaInfo( Class<T> infoType );
 
     Class<? extends Composite> type();
-
-    Composite dereference();
 }
