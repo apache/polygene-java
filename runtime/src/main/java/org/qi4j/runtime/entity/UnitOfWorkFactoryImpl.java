@@ -23,6 +23,7 @@ import org.qi4j.entity.UnitOfWorkFactory;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.structure.ServiceMap;
 import org.qi4j.spi.entity.EntityStore;
+import java.util.Stack;
 
 public final class UnitOfWorkFactoryImpl
     implements UnitOfWorkFactory
@@ -39,6 +40,16 @@ public final class UnitOfWorkFactoryImpl
     public UnitOfWork newUnitOfWork()
     {
         return new UnitOfWorkInstance( moduleInstance, services );
+    }
+
+    public UnitOfWork getCurrentUnitOfWork()
+    {
+        Stack<UnitOfWork> stack = UnitOfWorkInstance.current.get();
+        if( stack.size() == 0 )
+        {
+            return null;
+        }
+        return stack.peek();
     }
 
     private class ModuleStateServices

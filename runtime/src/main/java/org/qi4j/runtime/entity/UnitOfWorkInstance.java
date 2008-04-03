@@ -21,9 +21,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.ObjectBuilderFactory;
+import org.qi4j.composite.Composite;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.EntityCompositeNotFoundException;
 import org.qi4j.entity.Identity;
@@ -42,19 +44,30 @@ import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStateInstance;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityStore;
-import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.StateCommitter;
+import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.serialization.EntityId;
 import org.qi4j.spi.structure.ModuleBinding;
 
 public final class UnitOfWorkInstance
     implements UnitOfWork
 {
+    static ThreadLocal<Stack<UnitOfWork>> current;
+
     private HashMap<Class<? extends EntityComposite>, Map<String, EntityComposite>> cache;
 
     private boolean open;
+
+    private boolean paused;
+
     private ModuleInstance moduleInstance;
     StateServices stateServices;
+
+    static
+    {
+        current = new ThreadLocal<Stack<UnitOfWork>>();
+        current.set( new Stack<UnitOfWork>() );
+    }
 
     public UnitOfWorkInstance( ModuleInstance moduleInstance, StateServices stateServices )
     {
@@ -62,6 +75,8 @@ public final class UnitOfWorkInstance
         this.stateServices = stateServices;
         this.open = true;
         cache = new HashMap<Class<? extends EntityComposite>, Map<String, EntityComposite>>();
+        current.get().push( this );
+        paused = false;
     }
 
     public <T> CompositeBuilder<T> newEntityBuilder( Class<T> mixinType )
@@ -200,7 +215,8 @@ public final class UnitOfWorkInstance
         return mixinType.cast( entity );
     }
 
-    public <T> T getReference( T entity ) throws EntityCompositeNotFoundException
+    public <T> T getReference( T entity )
+        throws EntityCompositeNotFoundException
     {
         EntityComposite entityComposite = (EntityComposite) entity;
         EntityCompositeInstance compositeInstance = EntityCompositeInstance.getEntityCompositeInstance( entityComposite );
@@ -280,6 +296,24 @@ public final class UnitOfWorkInstance
     public ObjectBuilderFactory getObjectBuilderFactory()
     {
         return moduleInstance.getStructureContext().getObjectBuilderFactory();
+    }
+
+    public void pause()
+    {
+        if( !paused )
+        {
+            paused = true;
+            current.get().pop();
+        }
+    }
+
+    public void resume()
+    {
+        if( paused )
+        {
+            paused = false;
+            current.get().push( this );
+        }
     }
 
     public QueryBuilderFactory getQueryBuilderFactory()
@@ -369,17 +403,16 @@ public final class UnitOfWorkInstance
         }
 
         cache.clear();
-
         open = false;
+        current.get().pop();
     }
 
     public void discard()
     {
         checkOpen();
-
-        cache.clear();
-
         open = false;
+        cache.clear();
+        current.get().pop();
     }
 
     public boolean isOpen()
@@ -596,7 +629,7 @@ public final class UnitOfWorkInstance
         }
     }
 
-    private class UnitOfWorkEntityState
+    private static class UnitOfWorkEntityState
         extends EntityStateInstance
     {
         private EntityState parentState;
@@ -656,7 +689,7 @@ public final class UnitOfWorkInstance
         }
     }
 
-    private class StoreCompletion
+    private static class StoreCompletion
     {
         List<EntityState> newState;
         List<EntityState> updatedState;
@@ -684,5 +717,4 @@ public final class UnitOfWorkInstance
             return removedState;
         }
     }
-
 }

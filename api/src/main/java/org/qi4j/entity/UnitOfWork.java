@@ -18,6 +18,7 @@ import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.ObjectBuilderFactory;
 import org.qi4j.queryobsolete.QueryBuilderFactory;
+import java.util.Stack;
 
 /**
  * All operations on entities goes through an UnitOfWork. <TODO Muuuch longer explanation needed>
@@ -62,4 +63,18 @@ public interface UnitOfWork
     CompositeBuilderFactory getCompositeBuilderFactory();
 
     ObjectBuilderFactory getObjectBuilderFactory();
+
+    /** Pauses this UnitOfWork.
+     * <p>
+     * Calling this method will cause the underlying UnitOfWork to become the current UnitOfWork until the
+     * the resume() method is called. It is the client's responsibility not to drop the reference to this
+     * UnitOfWork while being paused.
+     * </p>
+     */
+    void pause();
+
+    /** Resumes this UnitOfWork to again become the current UnitOfWork.
+     * 
+     */
+    void resume();
 }

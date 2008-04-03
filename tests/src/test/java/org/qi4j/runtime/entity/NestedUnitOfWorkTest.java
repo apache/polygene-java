@@ -55,16 +55,20 @@ public class NestedUnitOfWorkTest
     {
         UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
 
+        assertThat( "Current UnitOfWork is not set.", unitOfWork, equalTo( unitOfWorkFactory.getCurrentUnitOfWork() ) );
+
         // Create product
         CompositeBuilder<ProductComposite> cb = unitOfWork.newEntityBuilder( ProductComposite.class );
         cb.propertiesOfComposite().name().set( "Chair" );
         cb.propertiesOfComposite().price().set( 57 );
         Product chair = cb.newInstance();
 
-        assertThat( "Initial property is correct", chair.price().get(), equalTo( 57 ) );
+        assertThat( "Initial property is not correct", chair.price().get(), equalTo( 57 ) );
 
         // Create nested unitOfWork
         UnitOfWork nestedUnitOfWork = unitOfWork.newUnitOfWork();
+        assertThat( "Current UnitOfWork is not set correctly.", nestedUnitOfWork, equalTo( unitOfWorkFactory.getCurrentUnitOfWork() ) );
+
         Product nestedChair = nestedUnitOfWork.getReference( chair );
         assertThat( "Nested property is correct", chair.price().get(), equalTo( 57 ) );
 
@@ -76,9 +80,12 @@ public class NestedUnitOfWorkTest
         assertThat( "Nested property has changed", nestedChair.price().get(), equalTo( 60 ) );
 
         nestedUnitOfWork.complete();
+        assertThat( "Current UnitOfWork is not popped correctly.", unitOfWork, equalTo( unitOfWorkFactory.getCurrentUnitOfWork() ) );
 
         assertThat( "Initial property has been updated", originalPrice.get(), equalTo( 60 ) );
 
         unitOfWork.complete();
+
+        assertThat( "Current UnitOfWork is not reset.", null, equalTo( unitOfWorkFactory.getCurrentUnitOfWork() ) );
     }
 }

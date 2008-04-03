@@ -14,10 +14,18 @@
  */
 package org.qi4j.entity;
 
+import java.util.Stack;
+
 /**
  * Factory for UnitOfWork.
  */
 public interface UnitOfWorkFactory
 {
     UnitOfWork newUnitOfWork();
+
+    /** Returns the UnitOfWork that is currently associated with the executing thread.
+     *
+     * @return The current UnitOfWork associated with the executing thread, or null if there is no current UnitOfWork.
+     */
+    UnitOfWork getCurrentUnitOfWork();
 }
