@@ -12,20 +12,18 @@
  */
 package org.qi4j.library.general.model;
 
+import static org.junit.Assert.*;
+import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.Concerns;
-import org.qi4j.composite.Mixins;
-import org.qi4j.library.framework.entity.PropertyMixin;
 import org.qi4j.library.general.test.model.DescriptorConcern;
 import org.qi4j.property.Property;
 import org.qi4j.test.AbstractQi4jTest;
-import org.junit.Test;
-import static org.junit.Assert.*;
 
-public class DescriptorTest 
+public class DescriptorTest
     extends AbstractQi4jTest
 {
     public void assemble( ModuleAssembly module )
@@ -58,13 +56,11 @@ public class DescriptorTest
         assertEquals( displayValue, "My name is Sianny" );
     }
 
-    @Mixins( PropertyMixin.class )
     private interface DummyComposite extends Descriptor, HasName, Composite
     {
     }
 
     @Concerns( DescriptorConcern.class )
-    @Mixins( PropertyMixin.class )
     private interface DummyComposite2 extends Descriptor, HasName, Composite
     {
     }

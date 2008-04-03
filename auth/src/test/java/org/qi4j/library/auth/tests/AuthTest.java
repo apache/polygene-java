@@ -22,10 +22,11 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.composite.Composite;
-import org.qi4j.composite.Mixins;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.scope.Service;
+import org.qi4j.entity.EntityComposite;
+import org.qi4j.entity.UnitOfWork;
+import org.qi4j.entity.memory.MemoryEntityStoreComposite;
 import org.qi4j.library.auth.AuthorizationContext;
 import org.qi4j.library.auth.AuthorizationContextComposite;
 import org.qi4j.library.auth.AuthorizationService;
@@ -41,8 +42,7 @@ import org.qi4j.library.auth.RoleAssignmentEntity;
 import org.qi4j.library.auth.RoleEntity;
 import org.qi4j.library.auth.User;
 import org.qi4j.library.auth.UserComposite;
-import org.qi4j.library.framework.entity.AssociationMixin;
-import org.qi4j.library.framework.entity.PropertyMixin;
+import org.qi4j.spi.entity.UuidIdentityGeneratorComposite;
 import org.qi4j.test.AbstractQi4jTest;
 
 public class AuthTest
@@ -58,30 +58,32 @@ public class AuthTest
                               NamedPermissionEntity.class,
                               RoleAssignmentEntity.class,
                               SecuredRoom.class );
-        module.addServices( AuthorizationServiceComposite.class );
+        module.addServices( AuthorizationServiceComposite.class, MemoryEntityStoreComposite.class, UuidIdentityGeneratorComposite.class );
     }
 
     @Test
     public void testAuth()
         throws Exception
     {
+        UnitOfWork unit = unitOfWorkFactory.newUnitOfWork();
+
         // Create resource
-        SecuredRoom room = compositeBuilderFactory.newCompositeBuilder( SecuredRoom.class ).newInstance();
+        SecuredRoom room = unit.newEntityBuilder( SecuredRoom.class ).newInstance();
 
         // Create user
-        User user = compositeBuilderFactory.newCompositeBuilder( User.class ).newInstance();
+        User user = unit.newEntityBuilder( User.class ).newInstance();
 
         // Create permission
-        NamedPermission permission = compositeBuilderFactory.newCompositeBuilder( NamedPermission.class ).newInstance();
+        NamedPermission permission = unit.newEntityBuilder( NamedPermission.class ).newInstance();
         permission.name().set( "Enter room" );
 
         // Create role
-        Role role = compositeBuilderFactory.newCompositeBuilder( Role.class ).newInstance();
+        Role role = unit.newEntityBuilder( Role.class ).newInstance();
 
         role.permissions().add( permission );
 
         // Create authorization service
-        AuthorizationService authorization = compositeBuilderFactory.newCompositeBuilder( AuthorizationService.class ).newInstance();
+        AuthorizationService authorization = serviceLocator.lookupService( AuthorizationService.class ).getService();
 
         // Create authorization context
         CompositeBuilder<AuthorizationContext> accb = compositeBuilderFactory.newCompositeBuilder( AuthorizationContext.class );
@@ -93,7 +95,7 @@ public class AuthTest
         assertFalse( authorization.hasPermission( permission, room, context ) );
 
         // Create role assignment
-        RoleAssignment roleAssignment = compositeBuilderFactory.newCompositeBuilder( RoleAssignment.class ).newInstance();
+        RoleAssignment roleAssignment = unit.newEntityBuilder( RoleAssignment.class ).newInstance();
         roleAssignment.assignee().set( user );
         roleAssignment.role().set( role );
         roleAssignment.type().set( RoleAssignment.Type.ALLOW );
@@ -103,12 +105,12 @@ public class AuthTest
         assertTrue( authorization.hasPermission( permission, room, context ) );
 
         // Create group
-        Group group = compositeBuilderFactory.newCompositeBuilder( Group.class ).newInstance();
+        Group group = unit.newEntityBuilder( Group.class ).newInstance();
         group.members().add( user );
         user.groups().add( group );
 
         // Create role assignment
-        RoleAssignment groupRoleAssignment = compositeBuilderFactory.newComposite( RoleAssignment.class );
+        RoleAssignment groupRoleAssignment = unit.newEntityBuilder( RoleAssignment.class ).newInstance();
         groupRoleAssignment.assignee().set( group );
         groupRoleAssignment.role().set( role );
         groupRoleAssignment.type().set( RoleAssignment.Type.ALLOW );
@@ -121,16 +123,13 @@ public class AuthTest
         assertTrue( authorization.hasPermission( permission, room, context ) );
     }
 
-    @Mixins( { PropertyMixin.class, AssociationMixin.class } )
     public interface SecuredRoom
-        extends Composite, ProtectedResource
+        extends EntityComposite, ProtectedResource
     {
     }
 
     public class PojoRunner
     {
         @Service AuthorizationService auth;
-
-
     }
 }
