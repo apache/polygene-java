@@ -35,7 +35,7 @@ public class JGroupsEntityStoreTest
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
         super.assemble( module );
-        module.addServices( JGroupsEntityStoreComposite.class );
+        module.addServices( JGroupsEntityStoreService.class );
     }
 
     @Test
@@ -47,7 +47,7 @@ public class JGroupsEntityStoreTest
         {
             public void assemble( ModuleAssembly module ) throws AssemblyException
             {
-                module.addServices( JGroupsEntityStoreComposite.class, UuidIdentityGeneratorComposite.class ).instantiateOnStartup();
+                module.addServices( JGroupsEntityStoreService.class, UuidIdentityGeneratorComposite.class ).instantiateOnStartup();
                 module.addComposites( TestEntity.class );
             }
         };
@@ -57,7 +57,7 @@ public class JGroupsEntityStoreTest
         {
             public void assemble( ModuleAssembly module ) throws AssemblyException
             {
-                module.addServices( JGroupsEntityStoreComposite.class, UuidIdentityGeneratorComposite.class ).instantiateOnStartup();
+                module.addServices( JGroupsEntityStoreService.class, UuidIdentityGeneratorComposite.class ).instantiateOnStartup();
                 module.addComposites( TestEntity.class );
             }
         };

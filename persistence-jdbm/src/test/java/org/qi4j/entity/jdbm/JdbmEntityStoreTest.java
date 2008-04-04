@@ -33,11 +33,11 @@ public class JdbmEntityStoreTest
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
         super.assemble( module );
-        module.addServices( JdbmEntityStoreComposite.class );
+        module.addServices( JdbmEntityStoreService.class );
 
         ModuleAssembly config = module.getLayerAssembly().newModuleAssembly();
         config.setName( "config" );
-        config.addComposites( JdbmConfigurationComposite.class ).visibleIn( Visibility.layer );
+        config.addComposites( JdbmConfiguration.class ).visibleIn( Visibility.layer );
         config.addServices( MemoryEntityStoreComposite.class );
     }
 

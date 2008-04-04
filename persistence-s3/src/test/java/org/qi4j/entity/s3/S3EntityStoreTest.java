@@ -32,7 +32,7 @@ public abstract class S3EntityStoreTest
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
         super.assemble( module );
-        module.addServices( S3EntityStoreComposite.class ).instantiateOnStartup();
+        module.addServices( S3EntityStoreService.class ).instantiateOnStartup();
 
         ModuleAssembly config = module.getLayerAssembly().newModuleAssembly();
         config.setName( "config" );

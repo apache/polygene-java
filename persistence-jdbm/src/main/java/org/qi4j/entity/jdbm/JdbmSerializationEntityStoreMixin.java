@@ -59,7 +59,7 @@ public class JdbmSerializationEntityStoreMixin
 {
     private @Structure Qi4jSPI spi;
     private @ThisCompositeAs ReadWriteLock lock;
-    private @ThisCompositeAs JdbmConfigurationComposite config;
+    private @ThisCompositeAs JdbmConfiguration config;
 
     private RecordManager recordManager;
     private HTree index;
