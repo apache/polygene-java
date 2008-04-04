@@ -8,7 +8,7 @@
     <version>0.1.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.qi4j.extensions</groupId>
+  <groupId>org.qi4j.extension</groupId>
   <artifactId>qi4j-persistence-jgroups</artifactId>
   <name>Qi4J Extension - Persistence JGroups</name>
   <version>0.1.0-SNAPSHOT</version>

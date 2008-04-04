@@ -17,7 +17,7 @@
   <modules>
     <module>indexing-rdf</module>
     <module>persistence-memory</module>
-    <!--    <module>persistence-quick</module>  -->
+        <module>persistence-quick</module>
     <module>persistence-ibatis</module>
     <module>persistence-jdbm</module>
     <module>persistence-s3</module>
