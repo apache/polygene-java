@@ -18,8 +18,8 @@
 package org.qi4j.logging.logtypes;
 
 import org.qi4j.logging.LogType;
+import org.qi4j.property.GenericPropertyInfo;
 import org.qi4j.property.Property;
-import org.qi4j.spi.property.GenericPropertyInfo;
 import org.qi4j.spi.property.ImmutablePropertyInstance;
 
 public final class WarningType
