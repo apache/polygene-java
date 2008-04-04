@@ -4,7 +4,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import org.qi4j.composite.AppliesTo;
-import org.qi4j.composite.scope.ConcernFor;
+import org.qi4j.composite.ConcernOf;
 import org.qi4j.composite.scope.ThisCompositeAs;
 
 /**
@@ -13,11 +13,10 @@ import org.qi4j.composite.scope.ThisCompositeAs;
  * If an Exception occurs, try to reuse a previous result. Don't do anything on Throwables.
  */
 @AppliesTo( Cached.class )
-public class ReturnCachedValueOnExceptionConcern
+public class ReturnCachedValueOnExceptionConcern extends ConcernOf<InvocationHandler>
     implements InvocationHandler
 {
     @ThisCompositeAs private InvocationCache cache;
-    @ConcernFor private InvocationHandler next;
 
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
     {

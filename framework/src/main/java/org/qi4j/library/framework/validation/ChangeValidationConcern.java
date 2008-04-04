@@ -4,7 +4,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import org.qi4j.composite.AppliesTo;
 import org.qi4j.composite.AppliesToFilter;
-import org.qi4j.composite.scope.ConcernFor;
+import org.qi4j.composite.ConcernOf;
 import org.qi4j.composite.scope.ThisCompositeAs;
 
 /**
@@ -13,7 +13,7 @@ import org.qi4j.composite.scope.ThisCompositeAs;
  * This applies to all methods which throws ValidationException
  */
 @AppliesTo( ChangeValidationConcern.AppliesTo.class )
-public class ChangeValidationConcern
+public class ChangeValidationConcern extends ConcernOf<InvocationHandler>
     implements InvocationHandler
 {
     public static class AppliesTo
@@ -54,7 +54,6 @@ public class ChangeValidationConcern
     }
 
     @ThisCompositeAs Validatable validatable;
-    @ConcernFor InvocationHandler next;
 
     public Object invoke( Object object, Method method, Object[] objects ) throws Throwable
     {

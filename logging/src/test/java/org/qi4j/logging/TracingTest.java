@@ -23,9 +23,9 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.CompositeBuilderFactory;
+import org.qi4j.composite.ConcernOf;
 import org.qi4j.composite.Concerns;
 import org.qi4j.composite.Mixins;
-import org.qi4j.composite.scope.ConcernFor;
 import org.qi4j.composite.scope.Structure;
 import org.qi4j.logging.service.LogServiceComposite;
 import org.qi4j.service.ServiceDescriptor;
@@ -65,11 +65,9 @@ public class TracingTest
         int doSomethingLessImportant();
     }
 
-    public static class SomeConcern
+    public static class SomeConcern extends ConcernOf<Some>
         implements Some
     {
-        @ConcernFor Some next;
-
         public int doSomethingImportant()
         {
             System.out.println( "-- doSomethingImportant()" );

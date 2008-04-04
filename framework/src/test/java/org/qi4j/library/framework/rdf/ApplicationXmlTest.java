@@ -31,11 +31,11 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.LayerAssembly;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
+import org.qi4j.composite.ConcernOf;
 import org.qi4j.composite.Concerns;
 import org.qi4j.composite.Mixins;
+import org.qi4j.composite.SideEffectOf;
 import org.qi4j.composite.SideEffects;
-import org.qi4j.composite.scope.ConcernFor;
-import org.qi4j.composite.scope.SideEffectFor;
 import org.qi4j.composite.scope.ThisCompositeAs;
 import org.qi4j.library.framework.rdf.parse.StructureParser;
 import org.qi4j.test.AbstractQi4jTest;
@@ -137,22 +137,18 @@ public class ApplicationXmlTest
         }
     }
 
-    public static class OtherStuffConcern
+    public static class OtherStuffConcern extends ConcernOf<B>
         implements B
     {
-        @ConcernFor B next;
-
         public String otherStuff()
         {
             return next.otherStuff() + "!";
         }
     }
 
-    public static class LogSideEffect
+    public static class LogSideEffect extends SideEffectOf<InvocationHandler>
         implements InvocationHandler
     {
-        @SideEffectFor InvocationHandler next;
-
         public Object invoke( Object object, Method method, Object[] objects ) throws Throwable
         {
             System.out.println( "Called " + method.getName() );

@@ -26,14 +26,14 @@ import javax.security.auth.Subject;
 import org.qi4j.composite.AppliesTo;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.CompositeBuilderFactory;
-import org.qi4j.composite.scope.ConcernFor;
+import org.qi4j.composite.ConcernOf;
 import org.qi4j.composite.scope.Invocation;
 import org.qi4j.composite.scope.Service;
 import org.qi4j.composite.scope.Structure;
 import org.qi4j.composite.scope.ThisCompositeAs;
 
 @AppliesTo( RequiresPermission.class )
-public class AuthorizationConcern
+public class AuthorizationConcern extends ConcernOf<InvocationHandler>
     implements InvocationHandler
 {
     @Invocation private RequiresPermission requiresPermission;
@@ -41,7 +41,6 @@ public class AuthorizationConcern
     @Service private AuthorizationService authorizor;
     @ThisCompositeAs private ProtectedResource roleAssignments;
     @Structure private CompositeBuilderFactory cbf;
-    @ConcernFor private InvocationHandler next;
 
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
     {

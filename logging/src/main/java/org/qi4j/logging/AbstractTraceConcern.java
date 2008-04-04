@@ -21,16 +21,15 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import org.qi4j.Qi4j;
 import org.qi4j.composite.Composite;
-import org.qi4j.composite.scope.ConcernFor;
+import org.qi4j.composite.ConcernOf;
 import org.qi4j.composite.scope.Service;
 import org.qi4j.composite.scope.Structure;
 
 
-public abstract class AbstractTraceConcern
+public abstract class AbstractTraceConcern extends ConcernOf<InvocationHandler>
     implements InvocationHandler
 {
     @Structure Qi4j api;
-    @ConcernFor private InvocationHandler next;
     @Service protected LogService logService;
     private Composite thisComposite;
     private Class compositeType;

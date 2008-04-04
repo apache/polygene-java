@@ -4,17 +4,16 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.concurrent.locks.ReadWriteLock;
 import org.qi4j.composite.AppliesTo;
-import org.qi4j.composite.scope.ConcernFor;
+import org.qi4j.composite.ConcernOf;
 import org.qi4j.composite.scope.ThisCompositeAs;
 
 /**
  * Applies read-lock to Composite
  */
 @AppliesTo( ReadLock.class )
-public class ReadLockConcern
+public class ReadLockConcern extends ConcernOf<InvocationHandler>
     implements InvocationHandler
 {
-    private @ConcernFor InvocationHandler next;
     private @ThisCompositeAs ReadWriteLock lock;
 
     public Object invoke( Object o, Method method, Object[] objects ) throws Throwable

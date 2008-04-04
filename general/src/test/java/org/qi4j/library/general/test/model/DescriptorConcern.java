@@ -12,21 +12,18 @@
  */
 package org.qi4j.library.general.test.model;
 
-import static java.lang.Thread.currentThread;
+import static java.lang.Thread.*;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import static java.lang.reflect.Proxy.newProxyInstance;
-import org.qi4j.composite.scope.ConcernFor;
+import static java.lang.reflect.Proxy.*;
+import org.qi4j.composite.ConcernOf;
 import org.qi4j.library.general.model.Descriptor;
 import org.qi4j.property.Property;
 
-public class DescriptorConcern
+public class DescriptorConcern extends ConcernOf<Descriptor>
     implements Descriptor
 {
     private static final Class[] INTERFACES = { Property.class };
-
-    @ConcernFor
-    private Descriptor next;
 
     @SuppressWarnings( "unchecked" )
     public Property<String> displayValue()

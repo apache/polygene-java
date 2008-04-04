@@ -19,7 +19,7 @@ import javax.transaction.Status;
 import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
 import org.qi4j.composite.AppliesTo;
-import org.qi4j.composite.scope.ConcernFor;
+import org.qi4j.composite.ConcernOf;
 import org.qi4j.composite.scope.Invocation;
 import org.qi4j.composite.scope.Service;
 
@@ -33,15 +33,12 @@ import org.qi4j.composite.scope.Service;
  * @see org.qi4j.library.framework.Transactional.Propagation
  */
 @AppliesTo( Transactional.class )
-public class TransactionalConcern
+public class TransactionalConcern extends ConcernOf<InvocationHandler>
     implements InvocationHandler
 {
-    // Attributes ----------------------------------------------------
     @Service TransactionManager tm;
     @Invocation Transactional transactional;
-    @ConcernFor InvocationHandler next;
 
-    // InvocationHandler implementation ------------------------------
     public Object invoke( Object proxy, Method method, Object[] args )
         throws Throwable
     {

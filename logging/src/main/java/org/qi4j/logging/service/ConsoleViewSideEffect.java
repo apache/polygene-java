@@ -22,8 +22,8 @@ import java.lang.reflect.Method;
 import java.text.MessageFormat;
 import java.util.ResourceBundle;
 import org.qi4j.composite.Composite;
+import org.qi4j.composite.SideEffectOf;
 import org.qi4j.composite.scope.Invocation;
-import org.qi4j.composite.scope.SideEffectFor;
 import org.qi4j.logging.LogService;
 import org.qi4j.logging.LogType;
 
@@ -31,12 +31,10 @@ import org.qi4j.logging.LogType;
  * The ConsoleViewSideEffect is just a temporary solution for logging output, until a more
  * robust framework has been designed.
  */
-public abstract class ConsoleViewSideEffect
+public abstract class ConsoleViewSideEffect extends SideEffectOf<LogService>
     implements LogService
 {
     private static PrintStream OUT = System.err;
-
-    @SideEffectFor private LogService service;
 
     private final ResourceBundle bundle;
 

@@ -1,16 +1,14 @@
 package org.qi4j.library.framework.validation;
 
 import java.util.List;
-import org.qi4j.composite.scope.ConcernFor;
+import org.qi4j.composite.ConcernOf;
 
 /**
  * Base class for validation concerns.
  */
-public class AbstractValidatableConcern
+public class AbstractValidatableConcern extends ConcernOf<Validatable>
     implements Validatable
 {
-    protected @ConcernFor Validatable next;
-
     public List<ValidationMessage> validate()
     {
         List<ValidationMessage> messages = next.validate();

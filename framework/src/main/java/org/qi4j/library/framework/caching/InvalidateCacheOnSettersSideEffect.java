@@ -4,7 +4,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import org.qi4j.composite.AppliesTo;
 import org.qi4j.composite.AppliesToFilter;
-import org.qi4j.composite.scope.SideEffectFor;
+import org.qi4j.composite.SideEffectOf;
 import org.qi4j.composite.scope.ThisCompositeAs;
 import org.qi4j.library.framework.properties.Setters;
 
@@ -12,7 +12,7 @@ import org.qi4j.library.framework.properties.Setters;
  * Invalidate cache on setters.
  */
 @AppliesTo( InvalidateCacheOnSettersSideEffect.AppliesTo.class )
-public class InvalidateCacheOnSettersSideEffect
+public class InvalidateCacheOnSettersSideEffect extends SideEffectOf<InvocationHandler>
     implements InvocationHandler
 {
     public static class AppliesTo
@@ -29,7 +29,6 @@ public class InvalidateCacheOnSettersSideEffect
         }
     }
 
-    @SideEffectFor InvocationHandler next;
     @ThisCompositeAs private InvocationCache cache;
 
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable

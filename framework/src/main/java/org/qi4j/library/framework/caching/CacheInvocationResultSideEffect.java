@@ -4,20 +4,19 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import org.qi4j.composite.AppliesTo;
+import org.qi4j.composite.SideEffectOf;
 import org.qi4j.composite.scope.Invocation;
-import org.qi4j.composite.scope.SideEffectFor;
 import org.qi4j.composite.scope.ThisCompositeAs;
 
 /**
  * Cache result of @Cached method calls.
  */
 @AppliesTo( Cached.class )
-public class CacheInvocationResultSideEffect
+public class CacheInvocationResultSideEffect extends SideEffectOf<InvocationHandler>
     implements InvocationHandler
 {
     @ThisCompositeAs private InvocationCache cache;
     @Invocation private Method method;
-    @SideEffectFor private InvocationHandler next;
 
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
     {

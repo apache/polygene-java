@@ -12,7 +12,7 @@
  */
 package org.qi4j.library.framework.validation;
 
-import org.qi4j.composite.scope.ConcernFor;
+import org.qi4j.composite.ConcernOf;
 import org.qi4j.composite.scope.ThisCompositeAs;
 import org.qi4j.entity.Lifecycle;
 
@@ -23,11 +23,10 @@ import org.qi4j.entity.Lifecycle;
  * <p/>
  * TODO: We need to distinguish between Validatable on create, delete and update.
  */
-public class LifecycleValidationConcern
+public class LifecycleValidationConcern extends ConcernOf<Lifecycle>
     implements Lifecycle
 {
     @ThisCompositeAs Validatable validation;
-    @ConcernFor Lifecycle next;
 
     public void create()
     {
