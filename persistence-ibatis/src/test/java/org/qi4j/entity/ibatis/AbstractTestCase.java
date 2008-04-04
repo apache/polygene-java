@@ -227,10 +227,8 @@ public abstract class AbstractTestCase extends AbstractQi4jTest
             }
             catch( Exception e )
             {
-                // Sleep for 50 ms before restart
-                sleep( 50 );
-
-
+                // Sleep for 200 ms before restart
+                sleep( 200 );
             }
             count++;
         }
