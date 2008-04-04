@@ -67,6 +67,20 @@ public class InjectionModel
         {
             return (Class) ( (ParameterizedType) injectionType ).getRawType();
         }
+        else if( injectionType instanceof TypeVariable )
+        {
+            int index = 0;
+            TypeVariable<?>[] typeVariables = ( (TypeVariable) injectionType ).getGenericDeclaration().getTypeParameters();
+            for( TypeVariable typeVariable : typeVariables )
+            {
+                if( "T".equals( typeVariable.getName() ) )
+                {
+                    return (Class) ( (ParameterizedType) injectedClass.getGenericSuperclass() ).getActualTypeArguments()[ index ];
+                }
+                index++;
+            }
+            return null;
+        }
         else
         {
             return null; // TODO can this happen?

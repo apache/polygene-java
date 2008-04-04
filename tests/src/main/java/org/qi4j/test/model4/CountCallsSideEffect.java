@@ -19,14 +19,13 @@ package org.qi4j.test.model4;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import org.qi4j.composite.AppliesTo;
-import org.qi4j.composite.scope.SideEffectFor;
+import org.qi4j.composite.SideEffectOf;
 import org.qi4j.composite.scope.ThisCompositeAs;
 
 @AppliesTo( CountCalls.class )
-public class CountCallsSideEffect
+public class CountCallsSideEffect extends SideEffectOf<InvocationHandler>
     implements InvocationHandler
 {
-    private @SideEffectFor InvocationHandler next;
     private @ThisCompositeAs Counter counter;
 
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable

@@ -113,6 +113,9 @@ public abstract class ComputedPropertyInstance<T>
     /**
      * Perform equals with {@code o} argument.
      *
+     * The definition of equals() for the ComputedProperty is that if the Value, subclass and all the metaInfo are
+     * equal, then th
+     *
      * @param o The other object to compare.
      * @return Returns a {@code boolean} indicator whether this object is equals the other.
      * @since 0.1.0
@@ -130,7 +133,16 @@ public abstract class ComputedPropertyInstance<T>
 
         ComputedPropertyInstance that = (ComputedPropertyInstance) o;
 
-        return propertyInfo.equals( that.propertyInfo );
+        if( !propertyInfo.equals( that.propertyInfo ) )
+        {
+            return false;
+        }
+        T value = get();
+        if( value == null )
+        {
+            return that.get() == null;
+        }
+        return value.equals( that.get() );
     }
 
     /**
@@ -141,16 +153,17 @@ public abstract class ComputedPropertyInstance<T>
      */
     public int hashCode()
     {
-        return ( propertyInfo != null ? propertyInfo.hashCode() : 0 );
-    }
-
-    /**
-     * Get the property info implementation
-     *
-     * @return the property implementation
-     */
-    public PropertyInfo getPropertyInfo()
-    {
-        return propertyInfo;
+        int hash = getClass().hashCode();
+        if( propertyInfo != null )
+        {
+            hash = propertyInfo.hashCode();
+        }
+        hash = hash * 19;
+        T value = get();
+        if( value != null )
+        {
+            hash = hash + value.hashCode() * 13;
+        }
+        return hash;
     }
 }

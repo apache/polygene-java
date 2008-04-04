@@ -3,15 +3,15 @@ package org.qi4j.runtime.injection;
 import java.util.HashMap;
 import java.util.Map;
 import org.qi4j.entity.UnitOfWork;
-import org.qi4j.queryobsolete.Query;
-import org.qi4j.queryobsolete.QueryBuilder;
-import org.qi4j.queryobsolete.QueryBuilderFactory;
 import org.qi4j.spi.injection.BindingContext;
 import org.qi4j.spi.injection.InjectionContext;
 import org.qi4j.spi.injection.InjectionProvider;
 import org.qi4j.spi.injection.InjectionProviderFactory;
 import org.qi4j.spi.injection.InjectionResolution;
 import org.qi4j.spi.injection.InvalidInjectionException;
+import org.qi4j.query.QueryBuilderFactory;
+import org.qi4j.query.Query;
+import org.qi4j.query.QueryBuilder;
 
 /**
  * TODO

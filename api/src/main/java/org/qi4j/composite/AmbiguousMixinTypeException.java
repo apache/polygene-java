@@ -53,7 +53,7 @@ public class AmbiguousMixinTypeException extends MixinMappingException
         this.mixinType = mixinType;
     }
 
-    public Class getMixinType()
+    public Class mixinType()
     {
         return mixinType;
     }

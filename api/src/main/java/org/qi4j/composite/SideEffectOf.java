@@ -17,9 +17,9 @@
  */
 package org.qi4j.composite;
 
-import org.qi4j.composite.scope.SideEffectFor;
+import org.qi4j.composite.internal.SideEffectFor;
 
-public class SideEffectOf<T>
+public abstract class SideEffectOf<T>
 {
     @SideEffectFor protected T next;
 }

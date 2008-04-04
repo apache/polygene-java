@@ -29,7 +29,7 @@ public final class ObjectModelFactory extends AbstractModelFactory
         List<ConstructorModel> constructorModels = new ArrayList<ConstructorModel>();
         getConstructorModels( objectClass, null, constructorModels );
         List<FieldModel> fieldModels = new ArrayList<FieldModel>();
-        getFieldModels( objectClass, null, fieldModels );
+        getFieldModels( objectClass, objectClass, null, fieldModels );
         Iterable<MethodModel> methodModels = getMethodModels( objectClass );
 
         Iterable<ObjectMethodModel> objectMethodModels = getObjectMethodModels( objectClass );

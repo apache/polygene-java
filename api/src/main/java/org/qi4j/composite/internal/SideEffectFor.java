@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
- * Copyright (c) 2007, Niclas Hedhman. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +11,8 @@
  * limitations under the License.
  *
  */
-package org.qi4j.composite.scope;
+
+package org.qi4j.composite.internal;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -22,11 +22,11 @@ import java.lang.annotation.Target;
 import org.qi4j.injection.InjectionScope;
 
 /**
- * This annotation is required once in each Concern, to mark the
- * field where the next element in the call sequence should be
+ * This annotation is required once in each SideEffect, to mark the
+ * field where the element providing the invocation result should be
  * injected.
  * <p/>
- * The type of the field must be of the same type as the Concern
+ * The type of the field must be of the same type as the SideEffect
  * itself, or an InvocationHandler.
  * <p/>
  * <p/>
@@ -34,20 +34,21 @@ import org.qi4j.injection.InjectionScope;
  * <pre><code>
  * public interface MyStuff
  * {
- *     void doSomething();
+ *     SomeResult doSomething();
  * }
  * <p/>
- * public class MyStuffConcern
+ * public class MyStuffSideEffect
  *     implements MyStuff
  * {
- *     &#64;ConcernFor MyStuff next;
+ *     &#64;SideEffectFor MyStuff next;
  * <p/>
- *     public void doSomething()
+ *     public SomeResult doSomething()
  *     {
- *         // HERE DO THE MODIFIER STUFF.
+ *          SomeResult result = next.doSomething();
  * <p/>
- *         // Delegate to the underlying mixin/modifier.
- *         next.doSomething();
+ *         // HERE DO THE SIDEEFFECT STUFF.
+ * <p/>
+ *          return result; // Result value is ignored, null would work too.
  *     }
  * }
  * </code></pre>
@@ -56,6 +57,6 @@ import org.qi4j.injection.InjectionScope;
 @Target( { ElementType.FIELD, ElementType.PARAMETER } )
 @Documented
 @InjectionScope
-public @interface ConcernFor
+public @interface SideEffectFor
 {
 }

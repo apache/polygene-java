@@ -11,18 +11,14 @@
  */
 package org.qi4j.test.model2;
 
-import org.qi4j.composite.scope.ConcernFor;
+import org.qi4j.composite.ConcernOf;
 
 /**
  * TODO
  */
-public class DomainValidationModifier
+public class DomainValidationModifier extends ConcernOf<DomainInterface>
     implements DomainInterface
 {
-    // Attributes ----------------------------------------------------
-    @ConcernFor DomainInterface next;
-
-    // DomainInterface implementation --------------------------------
     public String getFoo()
     {
         return next.getFoo();

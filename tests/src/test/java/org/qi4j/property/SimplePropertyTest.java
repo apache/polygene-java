@@ -26,10 +26,10 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.AppliesTo;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
+import org.qi4j.composite.ConcernOf;
 import org.qi4j.composite.Concerns;
 import org.qi4j.composite.ConstraintDeclaration;
-import org.qi4j.composite.scope.ConcernFor;
-import org.qi4j.composite.scope.SideEffectFor;
+import org.qi4j.composite.SideEffectOf;
 import org.qi4j.composite.scope.ThisCompositeAs;
 import org.qi4j.test.AbstractQi4jTest;
 
@@ -91,11 +91,9 @@ public class SimplePropertyTest
     }
 
     @AppliesTo( Capitalized.class )
-    public static abstract class CapitalizeConcern
+    public static abstract class CapitalizeConcern extends ConcernOf<Property<String>>
         implements Property<String>
     {
-        @ConcernFor Property<String> next;
-
         public void set( String newValue ) throws IllegalArgumentException
         {
             newValue = newValue.toUpperCase();
@@ -103,10 +101,9 @@ public class SimplePropertyTest
         }
     }
 
-    public static abstract class LogPropertyAccess
+    public static abstract class LogPropertyAccess extends SideEffectOf<ImmutableProperty<String>>
         implements ImmutableProperty<String>
     {
-        @SideEffectFor ImmutableProperty<String> next;
         @ThisCompositeAs PropertyInfo info;
 
         public String get()
@@ -116,10 +113,9 @@ public class SimplePropertyTest
         }
     }
 
-    public static abstract class LogPropertyChanges
+    public static abstract class LogPropertyChanges extends SideEffectOf<ImmutableProperty<String>>
         implements Property<Object>
     {
-        @SideEffectFor Property<Object> next;
         @ThisCompositeAs ImmutableProperty current;
         @ThisCompositeAs PropertyInfo info;
 

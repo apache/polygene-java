@@ -110,8 +110,8 @@ public final class CompositeMethodContext
                                                                                          proxyHandler,
                                                                                          modifies,
                                                                                          compositeMethodBinding,
-                                                                                         compositeMethodBinding.getMixinBinding(),
-                                                                                         proxyHandler );
+                                                                                         compositeMethodBinding.getMixinBinding()
+                );
                 previousConcern = runtime.getInstanceFactory().newInstance( concernBinding, modifierContext );
 
             }
@@ -172,8 +172,8 @@ public final class CompositeMethodContext
                                                                                      proxyHandler,
                                                                                      modifies,
                                                                                      compositeMethodBinding,
-                                                                                     compositeMethodBinding.getMixinBinding(),
-                                                                                     proxyHandler );
+                                                                                     compositeMethodBinding.getMixinBinding()
+            );
             sideEffects[ i++ ] = runtime.getInstanceFactory().newInstance( sideEffectBinding, modifierContext );
         }
 

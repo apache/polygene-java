@@ -12,14 +12,23 @@
  *
  */
 
-package org.qi4j.queryobsolete;
+package org.qi4j.composite.internal;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * TODO
+ * Side-effect implementations can be marked with this annotation to denote that they may be run
+ * asynchronously from the method invocation.
+ * <p/>
+ * Not yet implemented.
  */
-public interface Queryable
+@Retention( RetentionPolicy.RUNTIME )
+@Target( { ElementType.TYPE, ElementType.METHOD } )
+@Documented
+public @interface Asynchronous
 {
-    <T> T find( QueryImpl<T> query );
-
-    <T> Iterable<T> iterable( QueryImpl<T> query );
 }

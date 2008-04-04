@@ -15,7 +15,7 @@
 package org.qi4j.spi.composite;
 
 import java.lang.annotation.Annotation;
-import org.qi4j.composite.scope.SideEffectFor;
+import org.qi4j.composite.internal.SideEffectFor;
 
 /**
  * Modifiers provide stateless modifications of method invocation behaviour.

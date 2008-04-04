@@ -1,11 +1,10 @@
 package org.qi4j.test.model1;
 
-import org.qi4j.composite.scope.ConcernFor;
+import org.qi4j.composite.ConcernOf;
 
-public final class Modifier7 implements Mixin3
+public final class Modifier7 extends ConcernOf<Mixin3>
+    implements Mixin3
 {
-    @ConcernFor Mixin3 next;
-
     public void setValue( String value )
     {
         next.setValue( value );

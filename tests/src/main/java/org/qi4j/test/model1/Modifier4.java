@@ -18,13 +18,11 @@ package org.qi4j.test.model1;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import org.qi4j.composite.scope.ConcernFor;
+import org.qi4j.composite.ConcernOf;
 
-public class Modifier4
+public class Modifier4 extends ConcernOf<InvocationHandler>
     implements InvocationHandler
 {
-    @ConcernFor InvocationHandler next;
-
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
     {
         Object obj = next.invoke( proxy, method, args );

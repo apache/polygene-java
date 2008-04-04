@@ -17,9 +17,9 @@
  */
 package org.qi4j.composite;
 
-import org.qi4j.composite.scope.ConcernFor;
+import org.qi4j.composite.internal.ConcernFor;
 
-public class ConcernOf<T>
+public abstract class ConcernOf<T>
 {
     @ConcernFor protected T next;
 }

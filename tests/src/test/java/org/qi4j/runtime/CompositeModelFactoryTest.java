@@ -21,10 +21,10 @@ import java.util.List;
 import static org.junit.Assert.*;
 import org.junit.Test;
 import org.qi4j.composite.Composite;
+import org.qi4j.composite.ConcernOf;
 import org.qi4j.composite.Concerns;
 import org.qi4j.composite.Mixins;
 import org.qi4j.composite.NullArgumentException;
-import org.qi4j.composite.scope.ConcernFor;
 import org.qi4j.property.PropertyMixin;
 import org.qi4j.runtime.composite.CompositeMixin;
 import org.qi4j.runtime.composite.CompositeModelFactory;
@@ -46,16 +46,17 @@ public class CompositeModelFactoryTest
     @Test( expected = InvalidCompositeException.class )
     public void constructorWithNonInterfaceComposite()
     {
-        factory.newCompositeModel( ( (Composite) Proxy.newProxyInstance(
-            Thread.currentThread().getContextClassLoader(),
-            new Class<?>[]{ Composite.class },
-            new InvocationHandler()
+        ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+        InvocationHandler handler = new InvocationHandler()
+        {
+            public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
             {
-                public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
-                {
-                    return null;
-                }
-            } ) ).getClass() );
+                return null;
+            }
+        };
+        Class<?>[] type = { Composite.class };
+        Composite composite = (Composite) Proxy.newProxyInstance( classloader, type, handler );
+        factory.newCompositeModel( composite.getClass() );
     }
 
     @Test( expected = InvalidCompositeException.class )
@@ -100,8 +101,8 @@ public class CompositeModelFactoryTest
     {
         CompositeModel model = factory.newCompositeModel( TestComposite.class );
         List<Class> expected = new LinkedList<Class>();
-        expected.add( TestModifier1.class );
-        expected.add( TestModifier2.class );
+        expected.add( TestConcern1.class );
+        expected.add( TestConcern2.class );
         Iterable<ConcernModel> list = model.getConcernModels();
         for( ConcernModel concernModel : list )
         {
@@ -118,7 +119,7 @@ public class CompositeModelFactoryTest
     }
 
     @Mixins( { TestMixin1.class, TestMixin2.class, TestMixin1.class } )
-    @Concerns( { TestModifier1.class, TestModifier2.class, TestModifier1.class } )
+    @Concerns( { TestConcern1.class, TestConcern2.class, TestConcern1.class } )
     private interface TestComposite extends Composite
     {
 
@@ -129,14 +130,12 @@ public class CompositeModelFactoryTest
 
     }
 
-    private class TestModifier1
+    private class TestConcern1 extends ConcernOf<InvocationHandler>
     {
-        @ConcernFor InvocationHandler handler;
     }
 
-    private class TestModifier2
+    private class TestConcern2 extends ConcernOf<InvocationHandler>
     {
-        @ConcernFor InvocationHandler handler;
     }
 
     private class TestMixin1

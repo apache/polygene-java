@@ -16,21 +16,21 @@
  */
 package org.qi4j.test.model1;
 
-import org.qi4j.composite.scope.ConcernFor;
+import org.qi4j.composite.ConcernOf;
+import org.qi4j.composite.internal.ConcernFor;
 
-public class Modifier3
+public class Modifier3 extends ConcernOf<Mixin1>
     implements Mixin1, Mixin2
 {
-    @ConcernFor Mixin1 mixin1;
     @ConcernFor Mixin2 mixin2;
 
     public String do1()
     {
-        return mixin2 + "-m3";
+        return mixin2.do2() + "-m3";
     }
 
     public String do2()
     {
-        return mixin1 + "-m3";
+        return next.do1() + "-m3";
     }
 }

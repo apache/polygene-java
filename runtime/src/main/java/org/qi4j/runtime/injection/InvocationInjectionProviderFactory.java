@@ -3,7 +3,6 @@ package org.qi4j.runtime.injection;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
-import org.qi4j.composite.InvocationContext;
 import org.qi4j.spi.injection.BindingContext;
 import org.qi4j.spi.injection.InjectionContext;
 import org.qi4j.spi.injection.InjectionProvider;
@@ -24,7 +23,6 @@ public final class InvocationInjectionProviderFactory
         Class injectionClass = resolution.getInjectionModel().getInjectionClass();
         if( injectionClass.equals( Method.class ) ||
             injectionClass.equals( AnnotatedElement.class ) ||
-            injectionClass.equals( InvocationContext.class ) ||
             Annotation.class.isAssignableFrom( injectionClass ) )
         {
             return new InvocationDependencyResolution( resolution );
@@ -56,10 +54,6 @@ public final class InvocationInjectionProviderFactory
             else if( injectedClass.equals( AnnotatedElement.class ) )
             {
                 return modifierContext.getMethod().getCompositeMethodResolution().getAnnotatedElement();
-            }
-            else if( injectedClass.equals( InvocationContext.class ) )
-            {
-                return modifierContext.getInvocationContext();
             }
             else
             {

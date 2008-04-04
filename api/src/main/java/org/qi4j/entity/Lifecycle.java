@@ -28,55 +28,54 @@ import org.qi4j.composite.Mixins;
  * public interface System
  * {
  *     User getAdmin();
- * <p/>
+ *
  *     void setAdmin( User admin );
- * <p/>
+ *
  * }
- * <p/>
+ *
  * public class SystemImpl
  *     implements System
  * {
  *     private User admin;
- * <p/>
+ *
  *     public User getAdmin()
  *     {
  *         return admin;
  *     }
- * <p/>
+ *
  *     public void setAdmin( User admin )
  *     {
  *         this.admin = admin;
  *     }
  * }
- * <p/>
- * public class SystemAdminLifecycleModifier
+ *
+ * public class SystemAdminLifecycleConcern extends ConcernOf<LifeCycle>
  *     implements Lifecyle
  * {
- *      &#64;Modifies private Lifecycle next;
  *      &#64;Structure private UnitOfWork unit;
  *      &#64;ThisCompositeAs private Identity meAsIdentity;
  *      &#64;ThisCompositeAs private System meAsSystem;
- * <p/>
+ *
  *      public void create()
  *      {
- *          String thisId = meAsIdentity.getIdentity();
+ *          String thisId = meAsIdentity.identity().get();
  *          CompositeBuilder builder = unit.newEntityBuilder( thisId + ":1", UserComposite.class );
  *          User admin = builder.newInstance();
  *          meAsSystem.setAdmin( admin );
  *          next.create();
  *      }
- * <p/>
+ *
  *      public void remove()
  *      {
  *          next.remove();
  *          repository.deleteInstance( meAsSystem.getAdmin() );
  *      }
  * }
- * <p/>
- * &#64;ModifedBy( SystemAdminLifecycleModifier.class )
+ *
+ * &#64;Concerns( SystemAdminLifecycleModifier.class )
  * public interface SystemComposite extends System, Composite
  * {}
- * <p/>
+ *
  * </pre></code>
  */
 @Mixins( Lifecycle.LifecycleMixin.class )

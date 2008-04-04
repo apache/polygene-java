@@ -182,7 +182,7 @@ public final class CompositeModelFactory
         List<ConstructorModel> constructorModels = new ArrayList<ConstructorModel>();
         getConstructorModels( mixinClass, compositeType, constructorModels );
         List<FieldModel> fieldModels = new ArrayList<FieldModel>();
-        getFieldModels( mixinClass, compositeType, fieldModels );
+        getFieldModels( mixinClass, mixinClass, compositeType, fieldModels );
         Iterable<MethodModel> methodModels = getMethodModels( mixinClass );
 
         Class[] appliesTo = getAppliesTo( mixinClass );
@@ -216,7 +216,7 @@ public final class CompositeModelFactory
         List<ConstructorModel> constructorModels = new ArrayList<ConstructorModel>();
         getConstructorModels( modifierClass, compositeType, constructorModels );
         List<FieldModel> fieldModels = new ArrayList<FieldModel>();
-        getFieldModels( modifierClass, compositeType, fieldModels );
+        getFieldModels( modifierClass, modifierClass, compositeType, fieldModels );
         Iterable<MethodModel> methodModels = getMethodModels( modifierClass );
 
         Class[] appliesTo = getAppliesTo( modifierClass );
@@ -233,7 +233,7 @@ public final class CompositeModelFactory
         List<ConstructorModel> constructorModels = new ArrayList<ConstructorModel>();
         getConstructorModels( modifierClass, compositeType, constructorModels );
         List<FieldModel> fieldModels = new ArrayList<FieldModel>();
-        getFieldModels( modifierClass, compositeType, fieldModels );
+        getFieldModels( modifierClass, modifierClass, compositeType, fieldModels );
         Iterable<MethodModel> methodModels = getMethodModels( modifierClass );
 
         Class[] appliesTo = getAppliesTo( modifierClass );

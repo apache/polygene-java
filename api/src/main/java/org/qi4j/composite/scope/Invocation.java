@@ -31,7 +31,6 @@ import org.qi4j.injection.InjectionScope;
  * <code><pre>
  * &#64;Invocation Method theInvokedMethod
  * &#64;Invocation AnnotationElement annotations
- * &#64;Invocation InvocationContext context
  * </pre></code>
  */
 @Retention( RetentionPolicy.RUNTIME )

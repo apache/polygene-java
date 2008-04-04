@@ -19,9 +19,9 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
+import org.qi4j.composite.ConcernOf;
 import org.qi4j.composite.Concerns;
 import org.qi4j.composite.Mixins;
-import org.qi4j.composite.scope.ConcernFor;
 import org.qi4j.test.AbstractQi4jTest;
 
 /**
@@ -146,22 +146,18 @@ public class InvocationPerformanceTest
         }
     }
 
-    public static class SimpleTypedConcern
+    public static class SimpleTypedConcern extends ConcernOf<Simple>
         implements Simple
     {
-        @ConcernFor Simple next;
-
         public void test()
         {
             next.test();
         }
     }
 
-    public static class SimpleGenericConcern
+    public static class SimpleGenericConcern extends ConcernOf<InvocationHandler>
         implements InvocationHandler
     {
-        @ConcernFor InvocationHandler next;
-
         public Object invoke( Object o, Method method, Object[] objects ) throws Throwable
         {
             return next.invoke( o, method, objects );

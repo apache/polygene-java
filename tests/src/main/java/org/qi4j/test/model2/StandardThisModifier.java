@@ -11,16 +11,14 @@
  */
 package org.qi4j.test.model2;
 
-import org.qi4j.composite.scope.ConcernFor;
+import org.qi4j.composite.ConcernOf;
 
 /**
  * TODO
  */
-public class StandardThisModifier
+public class StandardThisModifier extends ConcernOf<StandardThis>
     implements StandardThis
 {
-    @ConcernFor StandardThis next;
-
     public String bar()
     {
         return next.bar();

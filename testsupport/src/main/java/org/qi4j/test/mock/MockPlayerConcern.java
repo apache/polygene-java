@@ -2,23 +2,16 @@ package org.qi4j.test.mock;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import org.qi4j.composite.scope.ConcernFor;
-import org.qi4j.composite.Composite;
+import org.qi4j.composite.ConcernOf;
 
 /**
  * TODO Add JavaDoc.
  *
  * @author Alin Dreghiciu
  */
-public class MockPlayerConcern
+public class MockPlayerConcern extends ConcernOf<InvocationHandler>
     implements InvocationHandler
 {
-
-    /**
-     * Mocked composite.
-     */
-    @ConcernFor Composite composite;
-
     /**
      * @see java.lang.reflect.InvocationHandler#invoke(Object,java.lang.reflect.Method,Object[])
      */

@@ -22,8 +22,8 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
+import org.qi4j.composite.ConcernOf;
 import org.qi4j.composite.Concerns;
-import org.qi4j.composite.scope.ConcernFor;
 import org.qi4j.entity.Lifecycle;
 import org.qi4j.test.AbstractQi4jTest;
 
@@ -42,21 +42,19 @@ public class CompositeBuilderTest
     {
         CompositeBuilder<Model1> impl = compositeBuilderFactory.newCompositeBuilder( Model1.class );
         impl.newInstance();
-        assertEquals( true, Model1LifecycleModifier.createMethod );
+        assertEquals( true, Model1LifecycleConcern.createMethod );
     }
 
-    @Concerns( Model1LifecycleModifier.class )
+    @Concerns( Model1LifecycleConcern.class )
     public static interface Model1 extends Composite, Lifecycle
     {
     }
 
-    public static class Model1LifecycleModifier
+    public static class Model1LifecycleConcern extends ConcernOf<Lifecycle>
         implements Lifecycle
     {
         static boolean deleteMethod;
         static boolean createMethod;
-
-        @ConcernFor Lifecycle next;
 
         /**
          * Creation callback method.

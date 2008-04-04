@@ -25,19 +25,19 @@ import java.lang.annotation.Target;
  * Modifiers that implement InvocationHandler and which should only
  * be applied to methods that have a particular annotation or implements
  * a known interface should use this annotation.
- * <p/>
+ * <p>
  * Example:
+ * </p>
  * <pre><code>
- * <p/>
  * &#64;AppliesTo( Sessional.class )
  * public class SessionModifier
  * implements InvocationHandler
  * {
- * public Object invoke( Object proxy, Method method, Object[] args )
- * throws Throwable
- * {
- * ... do session stuff ...
- * }
+ *     public Object invoke( Object proxy, Method method, Object[] args )
+ *         throws Throwable
+ *     {
+ *         ... do session stuff ...
+ *     }
  * }
  * &#64;Retention( RetentionPolicy.RUNTIME )
  * &#64;Target( ElementType.METHOD )
@@ -45,47 +45,49 @@ import java.lang.annotation.Target;
  * &#64;Inherited public @interface Sessional
  * {
  * }
- * <p/>
- * public class MyStateMixin
- * implements SessionState
- * {
- * private State state;
- * <p/>
  *
- * @Sessional public void setSomeState( State state )
+ * public class MyStateMixin
+ *     implements SessionState
  * {
- * this.state = state;
+ *     private State state;
+ *
+ *     @Sessional public void setSomeState( State state )
+ *     {
+ *     this.state = state;
+ *     }
+ *
+ *     @Sessional public State getSomeState()
+ *     {
+ *         return this.state;
+ *     }
+ *
+ *     public void setStateService( StateService service )
+ *     {
+ *         this.service = service;
+ *     }
+ *
+ *     public StateService getStateService()
+ *     {
+ *         return this.service;
+ *     }
  * }
- * <p/>
- * @Sessional public State getSomeState()
- * {
- * return this.state;
- * }
- * <p/>
- * public void setStateService( StateService service )
- * {
- * this.service = service;
- * }
- * <p/>
- * public StateService getStateService()
- * {
- * return this.service;
- * }
- * }
- * <p/>
+ *
  * public interface SessionState
  * {
- * State getSomeState();
- * void setSomeState( State state );
+ *     State getSomeState();
+ *     void setSomeState( State state );
  * }
+ *
  * &#64;ModifiedBy( SessionModifier.class )
  * &#64;ImplementedBy( MyStateMixin.class )
  * public interface MyComposite extends Composite, SessionState
  * {}
  * </code></pre>
+ * <p>
  * The setStateService and getStateService methods does not have the @Sessional annotation,
  * and will therefor the SessionModifier will not be placed into the call sequence of these
  * methods, and the other way around.
+ * </p>
  */
 @Retention( RetentionPolicy.RUNTIME )
 @Target( { ElementType.TYPE, ElementType.METHOD } )

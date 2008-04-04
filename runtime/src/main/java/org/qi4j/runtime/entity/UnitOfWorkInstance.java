@@ -32,12 +32,10 @@ import org.qi4j.entity.IdentityGenerator;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkCompletionException;
 import org.qi4j.entity.UnitOfWorkException;
-import org.qi4j.queryobsolete.Query;
-import org.qi4j.queryobsolete.QueryBuilderFactory;
-import org.qi4j.queryobsolete.QueryBuilderFactoryImpl;
 import org.qi4j.runtime.composite.CompositeContext;
 import org.qi4j.runtime.composite.EntityCompositeInstance;
 import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.runtime.query.QueryBuilderFactoryImpl;
 import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStateInstance;
@@ -47,6 +45,8 @@ import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.serialization.EntityId;
 import org.qi4j.spi.structure.ModuleBinding;
+import org.qi4j.query.QueryBuilderFactory;
+import org.qi4j.query.Query;
 
 public final class UnitOfWorkInstance
     implements UnitOfWork
@@ -339,7 +339,7 @@ public final class UnitOfWorkInstance
     {
         checkOpen();
 
-        return new QueryBuilderFactoryImpl( new QueryableUnitOfWork( this ) );
+        return new QueryBuilderFactoryImpl();
     }
 
     public Query getNamedQuery( String name )

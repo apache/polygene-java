@@ -16,13 +16,11 @@
  */
 package org.qi4j.test.model1;
 
-import org.qi4j.composite.scope.ConcernFor;
+import org.qi4j.composite.ConcernOf;
 
-public class Modifier2
+public class Modifier2 extends ConcernOf<Mixin2>
     implements Mixin2
 {
-    @ConcernFor Mixin2 next;
-
     public String do2()
     {
         return next.do2() + "-m2";

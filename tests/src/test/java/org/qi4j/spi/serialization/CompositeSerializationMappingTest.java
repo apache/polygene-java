@@ -22,9 +22,9 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
 import org.qi4j.composite.Composite;
+import org.qi4j.composite.ConcernOf;
 import org.qi4j.composite.Concerns;
 import org.qi4j.composite.Mixins;
-import org.qi4j.composite.scope.ConcernFor;
 
 /**
  * TODO
@@ -92,22 +92,18 @@ public class CompositeSerializationMappingTest
     {
     }
 
-    public static abstract class ServerSitting
+    public static abstract class ServerSitting extends ConcernOf<Chair>
         implements Chair
     {
-        @ConcernFor Chair next;
-
         public String sit()
         {
             return next.sit() + " on the server";
         }
     }
 
-    public static abstract class ClientSitting
+    public static abstract class ClientSitting extends ConcernOf<Chair>
         implements Chair
     {
-        @ConcernFor Chair next;
-
         public String sit()
         {
             return next.sit() + " on the client";

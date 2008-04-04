@@ -32,9 +32,9 @@ import org.qi4j.spi.injection.PropertyInjectionModel;
  */
 public abstract class AbstractModelFactory
 {
-    protected void getFieldModels( Class fragmentClass, Class compositeType, List<FieldModel> fieldModels )
+    protected void getFieldModels( Class fragmentClass, Class fieldClass, Class compositeType, List<FieldModel> fieldModels )
     {
-        Field[] fields = fragmentClass.getDeclaredFields();
+        Field[] fields = fieldClass.getDeclaredFields();
         for( Field field : fields )
         {
             field.setAccessible( true );
@@ -52,10 +52,10 @@ public abstract class AbstractModelFactory
         }
 
         // Add fields in superclass
-        Class<?> parent = fragmentClass.getSuperclass();
+        Class<?> parent = fieldClass.getSuperclass();
         if( parent != null && parent != Object.class )
         {
-            getFieldModels( parent, compositeType, fieldModels );
+            getFieldModels( fragmentClass, parent, compositeType, fieldModels );
         }
     }
 

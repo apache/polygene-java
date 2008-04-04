@@ -14,7 +14,7 @@ package org.qi4j.test.model2;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import org.qi4j.composite.AppliesTo;
-import org.qi4j.composite.scope.ConcernFor;
+import org.qi4j.composite.ConcernOf;
 import org.qi4j.composite.scope.Invocation;
 
 /**
@@ -22,11 +22,9 @@ import org.qi4j.composite.scope.Invocation;
  * the annotation on the mixin method.
  */
 @AppliesTo( FooAnnotation.class )
-public class FooModifier
+public class FooModifier extends ConcernOf<InvocationHandler>
     implements InvocationHandler
 {
-    // Attributes ----------------------------------------------------
-    @ConcernFor InvocationHandler next;
     @Invocation FooAnnotation fooAnnotation;
 
     // InvocationHandler implementation -----------------------------
