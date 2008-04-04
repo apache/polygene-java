@@ -21,7 +21,7 @@
     <module>persistence-ibatis</module>
     <module>persistence-jdbm</module>
     <module>persistence-s3</module>
-    <module>persistence-jgroups</module>
+    <!-- <module>persistence-jgroups</module>   Need to take out, si-->
     <module>persistence-rmi</module>
   </modules>
 </project>
