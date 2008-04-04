@@ -17,8 +17,8 @@
  */
 package org.qi4j.entity.index.rdf;
 
+import org.qi4j.composite.SideEffectOf;
 import org.qi4j.composite.scope.Service;
-import org.qi4j.composite.scope.SideEffectFor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreException;
@@ -32,10 +32,9 @@ import org.qi4j.spi.structure.ModuleBinding;
  * @author Alin Dreghiciu
  * @since March 18, 2008
  */
-public abstract class IndexingSideEffect
+public abstract class IndexingSideEffect extends SideEffectOf<EntityStore>
     implements EntityStore
 {
-    @SideEffectFor EntityStore serializationStore;
     @Service Indexer indexer;
 
     public StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, Iterable<EntityId> removedStates, ModuleBinding moduleBinding ) throws EntityStoreException

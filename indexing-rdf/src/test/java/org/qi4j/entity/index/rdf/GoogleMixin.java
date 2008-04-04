@@ -19,9 +19,6 @@ package org.qi4j.entity.index.rdf;
 
 import org.qi4j.composite.scope.Structure;
 import org.qi4j.entity.UnitOfWorkFactory;
-import org.qi4j.queryobsolete.Query;
-import org.qi4j.queryobsolete.QueryBuilder;
-import static org.qi4j.queryobsolete.QueryExpression.*;
 
 /**
  * TODO Add JavaDoc
@@ -37,13 +34,13 @@ public class GoogleMixin
 
     public Iterable<Person> bornIn( String city )
     {
-        QueryBuilder<Person> queryBuilder = unitOfWorkFactory.newUnitOfWork().queryBuilderFactory()
-            .newQueryBuilder( Person.class );
-        Person personTemplate = queryBuilder.parameter( Person.class );
-        Query<Person> query = queryBuilder
-            .where( eq( personTemplate.placeOfBirth(), city ) )
-            .newQuery();
-        query.find();
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+//        QueryBuilder<Person> queryBuilder = unitOfWorkFactory.newUnitOfWork().queryBuilderFactory()
+//            .newQueryBuilder( Person.class );
+//        Person personTemplate = queryBuilder.parameter( Person.class );
+//        Query<Person> query = queryBuilder
+//            .where( eq( personTemplate.placeOfBirth(), city ) )
+//            .newQuery();
+//        query.find();
+        return null;
     }
 }
