@@ -111,7 +111,7 @@ public final class UnitOfWorkCompositeBuilder<T>
         Class<? extends Composite> entityType = context.getCompositeModel().getCompositeType();
         try
         {
-            state = store.newEntityState( new EntityId( identity, entityType.getName() ) );
+            state = store.newEntityState( context.getCompositeResolution().getCompositeDescriptor(), new EntityId( identity, entityType.getName() ) );
         }
         catch( EntityAlreadyExistsException e )
         {

@@ -32,6 +32,7 @@ import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.association.AbstractAssociation;
 import org.qi4j.entity.association.Association;
 import org.qi4j.entity.association.ListAssociation;
+import org.qi4j.property.ComputedPropertyInstance;
 import org.qi4j.property.Property;
 import org.qi4j.runtime.entity.UnitOfWorkInstance;
 import org.qi4j.runtime.entity.association.AssociationInstance;
@@ -43,7 +44,6 @@ import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.association.AssociationModel;
-import org.qi4j.spi.property.PropertyModel;
 import org.qi4j.spi.serialization.EntityId;
 
 public final class EntityCompositeInstance
@@ -134,7 +134,7 @@ public final class EntityCompositeInstance
             }
             else
             {
-                String qualifiedName = PropertyModel.getQualifiedName( associationMethod );
+                String qualifiedName = ComputedPropertyInstance.getQualifiedName( associationMethod );
                 Collection<EntityId> associationCollection = state.getManyAssociation( qualifiedName );
 
                 if( associationCollection == null )
@@ -222,7 +222,7 @@ public final class EntityCompositeInstance
     {
         if( state == null )
         {
-            state = store.getEntityState( new EntityId( identity, context.getCompositeModel().getCompositeType().getName() ) );
+            state = store.getEntityState( context.getCompositeResolution().getCompositeDescriptor(), new EntityId( identity, context.getCompositeModel().getCompositeType().getName() ) );
         }
 
         return state;

@@ -15,13 +15,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.spi.property;
+package org.qi4j.property;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.HashMap;
-import org.qi4j.property.PropertyInfo;
+import static org.qi4j.property.ComputedPropertyInstance.*;
 
 public final class GenericPropertyInfo
     implements PropertyInfo
@@ -33,9 +33,9 @@ public final class GenericPropertyInfo
 
     public GenericPropertyInfo( Method accessor )
     {
-        this.qualifiedName = PropertyModel.getQualifiedName( accessor );
-        this.name = PropertyModel.getName( qualifiedName );
-        this.type = PropertyModel.getPropertyType( accessor );
+        this.qualifiedName = getQualifiedName( accessor );
+        this.name = getName( qualifiedName );
+        this.type = getPropertyType( accessor );
         infos = new HashMap<Class, Serializable>();
     }
 

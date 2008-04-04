@@ -462,7 +462,7 @@ public final class CompositeResolver
         // NOTE: a generic mixin may also be non-generic and implement a particular interface at the same time
         for( MixinModel implementation : mixinModels )
         {
-            if( ( !implementation.isGeneric() || methodModel.getDeclaringClass().isAssignableFrom( implementation.getModelClass() ) ) && appliesTo( implementation, methodModel, annotatedElement, implementation, compositeModel.getCompositeType() ) )
+            if( methodModel.getDeclaringClass().isAssignableFrom( implementation.getModelClass() ) && appliesTo( implementation, methodModel, annotatedElement, implementation, compositeModel.getCompositeType() ) )
             {
                 return implementation;
             }

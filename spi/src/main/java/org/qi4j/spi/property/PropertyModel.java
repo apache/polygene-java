@@ -16,9 +16,8 @@ package org.qi4j.spi.property;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import org.qi4j.property.Property;
+import org.qi4j.property.ComputedPropertyInstance;
 
 /**
  * TODO
@@ -28,60 +27,6 @@ public final class PropertyModel
 {
     private static final long serialVersionUID = 1L;
 
-    public static String getName( String qualifiedName )
-    {
-        int idx = qualifiedName.lastIndexOf( ":" );
-        return qualifiedName.substring( idx + 1 );
-    }
-
-    public static String getDeclaringClassName( String qualifiedName )
-    {
-        int idx = qualifiedName.lastIndexOf( ":" );
-        return qualifiedName.substring( 0, idx + 1 );
-    }
-
-    public static String getQualifiedName( Method accessor )
-    {
-        String className = accessor.getDeclaringClass().getName();
-        className = className.replace( '$', '&' );
-        return className + ":" + accessor.getName();
-    }
-
-    public static String getQualifiedName( Class declaringClass, String name )
-    {
-        String className = declaringClass.getName();
-        className = className.replace( '$', '&' );
-        return className + ":" + name;
-    }
-
-    public static Type getPropertyType( Method accessor )
-    {
-        return getPropertyType( accessor.getGenericReturnType() );
-    }
-
-    private static Type getPropertyType( Type methodReturnType )
-    {
-        if( methodReturnType instanceof ParameterizedType )
-        {
-            ParameterizedType parameterizedType = (ParameterizedType) methodReturnType;
-            if( Property.class.isAssignableFrom( (Class<?>) parameterizedType.getRawType() ) )
-            {
-                return parameterizedType.getActualTypeArguments()[ 0 ];
-            }
-        }
-
-        Type[] interfaces = ( (Class) methodReturnType ).getInterfaces();
-        for( Type anInterface : interfaces )
-        {
-            Type propertyType = getPropertyType( anInterface );
-            if( propertyType != null )
-            {
-                return propertyType;
-            }
-        }
-        return null;
-    }
-
     private String name;
     private Type type;
     private Method accessor; // Interface accessor
@@ -90,9 +35,9 @@ public final class PropertyModel
     public PropertyModel( Method anAccessor )
     {
         name = anAccessor.getName();
-        type = getPropertyType( anAccessor );
+        type = ComputedPropertyInstance.getPropertyType( anAccessor );
         accessor = anAccessor;
-        qualifiedName = getQualifiedName( anAccessor );
+        qualifiedName = ComputedPropertyInstance.getQualifiedName( anAccessor );
     }
 
     public String getName()

@@ -28,6 +28,7 @@ import org.qi4j.composite.Composite;
 import org.qi4j.composite.InstantiationException;
 import org.qi4j.composite.State;
 import org.qi4j.entity.Lifecycle;
+import org.qi4j.property.ComputedPropertyInstance;
 import org.qi4j.runtime.entity.UnitOfWorkInstance;
 import org.qi4j.runtime.entity.association.AssociationContext;
 import org.qi4j.runtime.property.PropertyContext;
@@ -40,7 +41,6 @@ import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.association.AssociationModel;
 import org.qi4j.spi.injection.MixinInjectionContext;
-import org.qi4j.spi.property.PropertyModel;
 import org.qi4j.spi.structure.ModuleBinding;
 
 /**
@@ -191,7 +191,7 @@ public final class CompositeContext
 
     public PropertyContext getPropertyContext( Method accessor )
     {
-        return propertyContexts.get( PropertyModel.getQualifiedName( accessor ) );
+        return propertyContexts.get( ComputedPropertyInstance.getQualifiedName( accessor ) );
     }
 
     public Iterable<PropertyContext> getPropertyContexts()

@@ -85,7 +85,8 @@ public final class CompositeMethodContext
         ClassLoader classloader = method.getDeclaringClass().getClassLoader();
 
         FragmentInvocationHandler mixinInvocationHandler;
-        if( InvocationHandler.class.isAssignableFrom( compositeMethodBinding.getMixinBinding().getMixinResolution().getMixinModel().getModelClass() ) )
+        Class modelClass = compositeMethodBinding.getMixinBinding().getMixinResolution().getMixinModel().getModelClass();
+        if( InvocationHandler.class.isAssignableFrom( modelClass ) && !method.getDeclaringClass().isAssignableFrom( modelClass ) )
         {
             mixinInvocationHandler = new GenericFragmentInvocationHandler();
         }

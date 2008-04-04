@@ -18,6 +18,8 @@
  */
 package org.qi4j.property;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import static org.qi4j.composite.NullArgumentException.*;
 
@@ -30,6 +32,60 @@ import static org.qi4j.composite.NullArgumentException.*;
 public abstract class ComputedPropertyInstance<T>
     implements Property<T>
 {
+    public static String getName( String qualifiedName )
+    {
+        int idx = qualifiedName.lastIndexOf( ":" );
+        return qualifiedName.substring( idx + 1 );
+    }
+
+    public static String getDeclaringClassName( String qualifiedName )
+    {
+        int idx = qualifiedName.lastIndexOf( ":" );
+        return qualifiedName.substring( 0, idx + 1 );
+    }
+
+    public static String getQualifiedName( Method accessor )
+    {
+        String className = accessor.getDeclaringClass().getName();
+        className = className.replace( '$', '&' );
+        return className + ":" + accessor.getName();
+    }
+
+    public static String getQualifiedName( Class declaringClass, String name )
+    {
+        String className = declaringClass.getName();
+        className = className.replace( '$', '&' );
+        return className + ":" + name;
+    }
+
+    public static Type getPropertyType( Method accessor )
+    {
+        return getPropertyType( accessor.getGenericReturnType() );
+    }
+
+    public static Type getPropertyType( Type methodReturnType )
+    {
+        if( methodReturnType instanceof ParameterizedType )
+        {
+            ParameterizedType parameterizedType = (ParameterizedType) methodReturnType;
+            if( Property.class.isAssignableFrom( (Class<?>) parameterizedType.getRawType() ) )
+            {
+                return parameterizedType.getActualTypeArguments()[ 0 ];
+            }
+        }
+
+        Type[] interfaces = ( (Class) methodReturnType ).getInterfaces();
+        for( Type anInterface : interfaces )
+        {
+            Type propertyType = getPropertyType( anInterface );
+            if( propertyType != null )
+            {
+                return propertyType;
+            }
+        }
+        return null;
+    }
+
     protected PropertyInfo propertyInfo;
 
     /**
@@ -166,4 +222,5 @@ public abstract class ComputedPropertyInstance<T>
         }
         return hash;
     }
+
 }

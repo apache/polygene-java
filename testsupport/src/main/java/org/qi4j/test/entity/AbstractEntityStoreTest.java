@@ -27,7 +27,7 @@ public abstract class AbstractEntityStoreTest
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
         module.addServices( UuidIdentityGeneratorComposite.class );
-        module.addComposites( TestComposite.class );
+        module.addComposites( TestEntity.class );
     }
 
     @Test
@@ -35,7 +35,7 @@ public abstract class AbstractEntityStoreTest
         throws Exception
     {
         UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
-        TestComposite instance = createEntity( unitOfWork );
+        TestEntity instance = createEntity( unitOfWork );
         unitOfWork.complete();
 
         // Find entity
@@ -60,13 +60,13 @@ public abstract class AbstractEntityStoreTest
         throws Exception
     {
         UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
-        TestComposite newInstance = createEntity( unitOfWork );
+        TestEntity newInstance = createEntity( unitOfWork );
         String identity = newInstance.identity().get();
         unitOfWork.complete();
 
         // Remove entity
         unitOfWork = unitOfWorkFactory.newUnitOfWork();
-        TestComposite instance = unitOfWork.dereference( newInstance );
+        TestEntity instance = unitOfWork.dereference( newInstance );
         unitOfWork.remove( instance );
         unitOfWork.complete();
 
@@ -74,7 +74,7 @@ public abstract class AbstractEntityStoreTest
         unitOfWork = unitOfWorkFactory.newUnitOfWork();
         try
         {
-            instance = unitOfWork.find( identity, TestComposite.class );
+            instance = unitOfWork.find( identity, TestEntity.class );
             fail( "Should not be able to find entity" );
         }
         catch( EntityCompositeNotFoundException e )
@@ -84,12 +84,12 @@ public abstract class AbstractEntityStoreTest
         unitOfWork.discard();
     }
 
-    protected TestComposite createEntity( UnitOfWork unitOfWork )
+    protected TestEntity createEntity( UnitOfWork unitOfWork )
         throws UnitOfWorkCompletionException
     {
         // Create entity
-        CompositeBuilder<TestComposite> builder = unitOfWork.newEntityBuilder( TestComposite.class );
-        TestComposite instance = builder.newInstance();
+        CompositeBuilder<TestEntity> builder = unitOfWork.newEntityBuilder( TestEntity.class );
+        TestEntity instance = builder.newInstance();
         String id = instance.identity().get();
 
         instance.name().set( "Test" );
@@ -106,21 +106,21 @@ public abstract class AbstractEntityStoreTest
         return instance;
     }
 
-    public interface TestComposite
+    public interface TestEntity
         extends EntityComposite
     {
         Property<String> name();
 
         Property<String> unsetName();
 
-        Association<TestComposite> association();
+        Association<TestEntity> association();
 
-        Association<TestComposite> unsetAssociation();
+        Association<TestEntity> unsetAssociation();
 
-        ManyAssociation<TestComposite> manyAssociation();
+        ManyAssociation<TestEntity> manyAssociation();
 
-        ListAssociation<TestComposite> listAssociation();
+        ListAssociation<TestEntity> listAssociation();
 
-        SetAssociation<TestComposite> setAssociation();
+        SetAssociation<TestEntity> setAssociation();
     }
 }

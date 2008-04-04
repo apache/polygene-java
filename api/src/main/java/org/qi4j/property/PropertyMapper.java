@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Properties;
 import org.qi4j.composite.Composite;
@@ -25,9 +26,34 @@ public class PropertyMapper
         {
             try
             {
-                Method propertyMethod = composite.getClass().getMethod( objectObjectEntry.getKey().toString() );
+                Method propertyMethod = composite.getClass().getInterfaces()[ 0 ].getMethod( objectObjectEntry.getKey().toString() );
+                Object value = objectObjectEntry.getValue();
+                Type propertyType = ComputedPropertyInstance.getPropertyType( propertyMethod );
+
+                // Convert to non-strings
+                if( propertyType.equals( Integer.class ) )
+                {
+                    value = new Integer( value.toString() );
+                }
+                else if( propertyType.equals( Long.class ) )
+                {
+                    value = new Long( value.toString() );
+                }
+                else if( propertyType.equals( Boolean.class ) )
+                {
+                    value = Boolean.valueOf( value.toString() );
+                }
+                else if( propertyType.equals( Float.class ) )
+                {
+                    value = new Float( value.toString() );
+                }
+                else if( propertyType.equals( Double.class ) )
+                {
+                    value = new Double( value.toString() );
+                }
+
                 Property<Object> property = (Property<Object>) propertyMethod.invoke( composite );
-                property.set( objectObjectEntry.getValue() );
+                property.set( value );
             }
             catch( NoSuchMethodException e )
             {

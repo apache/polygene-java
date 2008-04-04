@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Stack;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.CompositeBuilderFactory;
+import org.qi4j.composite.InvalidApplicationException;
 import org.qi4j.composite.ObjectBuilderFactory;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.EntityCompositeNotFoundException;
@@ -32,10 +33,12 @@ import org.qi4j.entity.IdentityGenerator;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkCompletionException;
 import org.qi4j.entity.UnitOfWorkException;
+import org.qi4j.query.Query;
+import org.qi4j.query.QueryBuilderFactory;
 import org.qi4j.runtime.composite.CompositeContext;
 import org.qi4j.runtime.composite.EntityCompositeInstance;
-import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.query.QueryBuilderFactoryImpl;
+import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStateInstance;
@@ -44,9 +47,8 @@ import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.serialization.EntityId;
+import org.qi4j.spi.structure.CompositeDescriptor;
 import org.qi4j.spi.structure.ModuleBinding;
-import org.qi4j.query.QueryBuilderFactory;
-import org.qi4j.query.Query;
 
 public final class UnitOfWorkInstance
     implements UnitOfWork
@@ -156,10 +158,19 @@ public final class UnitOfWorkInstance
                 }
 
                 CompositeContext compositeContext = moduleInstance.getModuleContext().getCompositeContext( compositeType );
+
+                if( compositeContext == null )
+                {
+                    throw new InvalidApplicationException(
+                        "Trying to create unregistered composite of type [" + compositeType.getName() + "] in module [" +
+                        moduleInstance.getModuleContext().getModuleBinding().getModuleResolution().getModuleModel().getName() + "]."
+                    );
+                }
+
                 EntityState state = null;
                 try
                 {
-                    state = store.getEntityState( new EntityId( identity, compositeType.getName() ) );
+                    state = store.getEntityState( compositeContext.getCompositeResolution().getCompositeDescriptor(), new EntityId( identity, compositeType.getName() ) );
                 }
                 catch( EntityNotFoundException e )
                 {
@@ -175,19 +186,18 @@ public final class UnitOfWorkInstance
             }
             else
             {
+                EntityCompositeInstance entityCompositeInstance = EntityCompositeInstance.getEntityCompositeInstance( entity );
                 if( entity.isReference() )
                 {
                     // Check that state exists
                     EntityStore store = stateServices.getEntityStore( compositeType );
-                    EntityState state = store.getEntityState( new EntityId( identity, compositeType.getName() ) );
-                    EntityCompositeInstance entityCompositeInstance = EntityCompositeInstance.getEntityCompositeInstance( entity );
+                    EntityState state = store.getEntityState( entityCompositeInstance.getContext().getCompositeResolution().getCompositeDescriptor(), new EntityId( identity, compositeType.getName() ) );
                     entityCompositeInstance.setState( state );
                 }
                 else
                 {
                     // Check if it has been removed
-                    EntityCompositeInstance handler = EntityCompositeInstance.getEntityCompositeInstance( entity );
-                    EntityState entityState = handler.getState();
+                    EntityState entityState = entityCompositeInstance.getState();
                     if( entityState.getStatus() == EntityStatus.REMOVED )
                     {
                         throw new EntityCompositeNotFoundException( identity, compositeType );
@@ -268,7 +278,7 @@ public final class UnitOfWorkInstance
             {
                 EntityId identity = new EntityId( entityInstance.getIdentity(),
                                                   entityInstance.getContext().getCompositeModel().getCompositeType().getName() );
-                EntityState state = entityInstance.getStore().getEntityState( identity );
+                EntityState state = entityInstance.getStore().getEntityState( entityInstance.getContext().getCompositeResolution().getCompositeDescriptor(), identity );
                 entityInstance.refresh( state );
                 entityInstance.setMixins( null );
             }
@@ -533,13 +543,13 @@ public final class UnitOfWorkInstance
     private class UnitOfWorkStore
         implements EntityStore
     {
-        public EntityState newEntityState( EntityId identity ) throws EntityStoreException
+        public EntityState newEntityState( CompositeDescriptor compositeDescriptor, EntityId identity ) throws EntityStoreException
         {
             UnitOfWorkEntityState entityState = new UnitOfWorkEntityState( 0, identity, EntityStatus.NEW, new HashMap<String, Object>(), new HashMap<String, EntityId>(), new HashMap<String, Collection<EntityId>>(), null );
             return entityState;
         }
 
-        public EntityState getEntityState( EntityId identity ) throws EntityStoreException
+        public EntityState getEntityState( CompositeDescriptor compositeDescriptor, EntityId identity ) throws EntityStoreException
         {
             EntityState parentState = getCachedState( identity );
             if( parentState == null )

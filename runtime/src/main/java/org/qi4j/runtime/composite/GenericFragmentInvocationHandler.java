@@ -12,6 +12,7 @@
 package org.qi4j.runtime.composite;
 
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
@@ -32,6 +33,13 @@ public class GenericFragmentInvocationHandler
     // InvocationHandler implementation ------------------------------
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
     {
-        return ( (InvocationHandler) fragment ).invoke( proxy, method, args );
+        try
+        {
+            return ( (InvocationHandler) fragment ).invoke( proxy, method, args );
+        }
+        catch( InvocationTargetException throwable )
+        {
+            throw throwable.getTargetException();
+        }
     }
 }

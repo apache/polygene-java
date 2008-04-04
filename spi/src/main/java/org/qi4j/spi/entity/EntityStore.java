@@ -17,6 +17,7 @@
 package org.qi4j.spi.entity;
 
 import org.qi4j.spi.serialization.EntityId;
+import org.qi4j.spi.structure.CompositeDescriptor;
 import org.qi4j.spi.structure.ModuleBinding;
 
 /**
@@ -33,21 +34,21 @@ public interface EntityStore
      * that should occur during the {@link #prepare}
      * call.
      *
-     * @param identity the identity of the entity
-     * @throws EntityStoreException
+     * @param compositeDescriptor
+     * @param identity            the identity of the entity @throws EntityStoreException
      */
-    EntityState newEntityState( EntityId identity )
+    EntityState newEntityState( CompositeDescriptor compositeDescriptor, EntityId identity )
         throws EntityStoreException;
 
     /**
      * Get the EntityState for a given identity
      * and composite type.
      *
-     * @param identity
-     * @return
+     * @param compositeDescriptor
+     * @param identity            @return
      * @throws EntityStoreException
      */
-    EntityState getEntityState( EntityId identity )
+    EntityState getEntityState( CompositeDescriptor compositeDescriptor, EntityId identity )
         throws EntityStoreException;
 
     /**

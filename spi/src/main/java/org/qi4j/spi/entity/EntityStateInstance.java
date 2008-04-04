@@ -16,7 +16,9 @@
  */
 package org.qi4j.spi.entity;
 
+import java.io.Serializable;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import org.qi4j.spi.serialization.EntityId;
 
@@ -24,7 +26,7 @@ import org.qi4j.spi.serialization.EntityId;
  * Standard implementation of EntityState.
  */
 public class EntityStateInstance
-    implements EntityState
+    implements EntityState, Serializable
 {
     private final long entityVersion;
     private final EntityId identity;
@@ -33,6 +35,11 @@ public class EntityStateInstance
     protected final Map<String, Object> properties;
     protected final Map<String, EntityId> associations;
     protected final Map<String, Collection<EntityId>> manyAssociations;
+
+    public EntityStateInstance( EntityId identity )
+    {
+        this( 0, identity, EntityStatus.NEW, new HashMap<String, Object>(), new HashMap<String, EntityId>(), new HashMap<String, Collection<EntityId>>() );
+    }
 
     public EntityStateInstance( long entityVersion,
                                 EntityId identity,

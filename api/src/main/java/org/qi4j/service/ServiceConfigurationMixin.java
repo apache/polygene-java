@@ -3,13 +3,17 @@ package org.qi4j.service;
 import java.io.InputStream;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import org.qi4j.composite.AppliesTo;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.scope.Structure;
 import org.qi4j.composite.scope.Uses;
+import org.qi4j.entity.Entity;
 import org.qi4j.entity.EntityCompositeNotFoundException;
+import org.qi4j.entity.Lifecycle;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkFactory;
 import org.qi4j.property.PropertyMapper;
+import org.qi4j.property.PropertyMixin;
 
 /**
  * Generic mixin that handles invocations on configuration.
@@ -18,6 +22,7 @@ import org.qi4j.property.PropertyMapper;
  *
  * @ThisCompositeAs ServiceConfiguration config;j
  */
+@AppliesTo( { PropertyMixin.PropertyFilter.class, Lifecycle.class, Entity.class, Composite.class } )
 public class ServiceConfigurationMixin
     implements InvocationHandler
 {
