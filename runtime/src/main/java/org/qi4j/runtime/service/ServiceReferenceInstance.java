@@ -43,7 +43,7 @@ public final class ServiceReferenceInstance<T>
 {
     private ServiceDescriptor serviceDescriptor;
     private ServiceInstanceProvider serviceInstanceProvider;
-    private ImmutableProperty identity;
+    private ImmutableProperty<String> identity;
 
     private volatile ServiceInstance<T> serviceInstance;
     private Map<Class, Serializable> serviceAttributes;
@@ -68,7 +68,7 @@ public final class ServiceReferenceInstance<T>
     {
         this.serviceDescriptor = serviceDescriptor;
         this.serviceInstanceProvider = serviceInstanceProvider;
-        identity = new ImmutablePropertyInstance( IDENTITY_METHOD, serviceDescriptor.identity() );
+        identity = new ImmutablePropertyInstance<String>( IDENTITY_METHOD, serviceDescriptor.identity() );
 
         serviceAttributes = new HashMap<Class, Serializable>();
         Iterable<Class> serviceAttributeTypes = serviceDescriptor.serviceAttributeTypes();
@@ -79,7 +79,7 @@ public final class ServiceReferenceInstance<T>
         serviceProxy = (T) Proxy.newProxyInstance( serviceDescriptor.gerviceType().getClassLoader(), new Class[]{ serviceDescriptor.gerviceType() }, new ServiceInvocationHandler() );
     }
 
-    public ImmutableProperty identity()
+    public ImmutableProperty<String> identity()
     {
         return identity;
     }

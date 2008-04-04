@@ -24,7 +24,7 @@ import org.qi4j.property.ImmutableProperty;
  */
 public interface ServiceReference<T>
 {
-    ImmutableProperty identity();
+    ImmutableProperty<String> identity();
 
     <K extends Serializable> K getServiceAttribute( Class<K> infoType );
 
