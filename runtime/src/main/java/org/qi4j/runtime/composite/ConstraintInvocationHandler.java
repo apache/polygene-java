@@ -7,11 +7,14 @@ import java.util.ArrayList;
 import java.util.List;
 import org.qi4j.composite.Constraint;
 import org.qi4j.composite.ConstraintViolation;
+import org.qi4j.composite.ConstraintViolationException;
+import org.qi4j.composite.Composite;
 
 /**
  * TODO
  */
-public final class ConstraintInvocationHandler implements InvocationHandler
+public final class ConstraintInvocationHandler
+    implements InvocationHandler
 {
     private ProxyReferenceInvocationHandler proxyHandler;
     private List<List<ConstraintInstance>> parameterConstraintInstances;
@@ -24,7 +27,8 @@ public final class ConstraintInvocationHandler implements InvocationHandler
         this.next = previousConcern;
     }
 
-    public Object invoke( Object object, Method method, Object[] args ) throws Throwable
+    public Object invoke( Object object, Method method, Object[] args )
+        throws Throwable
     {
         // Check constraints
         int idx = 0;
@@ -61,7 +65,8 @@ public final class ConstraintInvocationHandler implements InvocationHandler
 
         if( constraintViolations != null )
         {
-            proxyHandler.setConstraintViolations( constraintViolations );
+            Composite composite = (Composite) proxyHandler.composite();
+            throw new ConstraintViolationException( composite, method, constraintViolations );
         }
 
         // Invoke next

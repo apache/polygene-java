@@ -22,6 +22,5 @@ import java.lang.annotation.Annotation;
  */
 public interface Constraint<A extends Annotation, P>
 {
-    boolean isValid( A annotation, P value )
-        throws NullPointerException;
+    boolean isValid( A annotation, P value );
 }

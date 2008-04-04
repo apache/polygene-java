@@ -19,18 +19,13 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.UndeclaredThrowableException;
-import java.util.Collection;
-import java.util.Collections;
-import org.qi4j.composite.ConstraintViolation;
-import org.qi4j.composite.InvocationContext;
 
 public final class ProxyReferenceInvocationHandler
-    implements InvocationHandler, InvocationContext
+    implements InvocationHandler
 {
     private Object proxy;
     private Object mixin;
     private Class mixinType;
-    private Collection<ConstraintViolation> constraintViolations;
 
     public Object composite()
     {
@@ -47,19 +42,6 @@ public final class ProxyReferenceInvocationHandler
         return mixinType;
     }
 
-
-    public Collection<ConstraintViolation> constraintViolations()
-    {
-        if( constraintViolations == null )
-        {
-            return Collections.emptyList();
-        }
-        else
-        {
-            return constraintViolations;
-        }
-    }
-
     public void setContext( Object aProxy, Object aMixin, Class mixinType )
     {
         this.mixinType = mixinType;
@@ -67,17 +49,11 @@ public final class ProxyReferenceInvocationHandler
         mixin = aMixin;
     }
 
-    public void setConstraintViolations( Collection<ConstraintViolation> constraintViolations )
-    {
-        this.constraintViolations = constraintViolations;
-    }
-
     public void clearContext()
     {
         this.mixinType = null;
         proxy = null;
         mixin = null;
-        constraintViolations = null;
     }
 
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
