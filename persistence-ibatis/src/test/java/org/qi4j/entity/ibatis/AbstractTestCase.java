@@ -213,10 +213,10 @@ public abstract class AbstractTestCase extends AbstractQi4jTest
         int count = 0;
         while( true )
         {
-            // If we retries 3 times
+            // If we retries 2 times 200ms
             if( count == 2 )
             {
-                fail( "DB is not started after waiting for [150] ms" );
+                fail( "DB is not started after waiting for [400] ms" );
                 break;
             }
 
