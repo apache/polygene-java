@@ -48,7 +48,7 @@ public class JGroupsEntityStoreTest
             public void assemble( ModuleAssembly module ) throws AssemblyException
             {
                 module.addServices( JGroupsEntityStoreComposite.class, UuidIdentityGeneratorComposite.class ).instantiateOnStartup();
-                module.addComposites( TestComposite.class );
+                module.addComposites( TestEntity.class );
             }
         };
 
@@ -58,14 +58,14 @@ public class JGroupsEntityStoreTest
             public void assemble( ModuleAssembly module ) throws AssemblyException
             {
                 module.addServices( JGroupsEntityStoreComposite.class, UuidIdentityGeneratorComposite.class ).instantiateOnStartup();
-                module.addComposites( TestComposite.class );
+                module.addComposites( TestEntity.class );
             }
         };
 
         // Create entity in app 1
         System.out.println( "Create entity" );
         UnitOfWork app1Unit = app1.getUnitOfWorkFactory().newUnitOfWork();
-        TestComposite instance = app1Unit.newEntityBuilder( TestComposite.class ).newInstance();
+        TestEntity instance = app1Unit.newEntityBuilder( TestEntity.class ).newInstance();
         instance.name().set( "Foo" );
         app1Unit.complete();
 

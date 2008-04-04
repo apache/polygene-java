@@ -48,6 +48,7 @@ import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.serialization.EntityId;
 import org.qi4j.spi.serialization.SerializableState;
 import org.qi4j.spi.serialization.SerializedObject;
+import org.qi4j.spi.structure.CompositeDescriptor;
 import org.qi4j.spi.structure.ModuleBinding;
 
 /**
@@ -94,7 +95,7 @@ public class JdbmSerializationEntityStoreMixin
 
     // EntityStore implementation
     @WriteLock
-    public EntityState newEntityState( EntityId identity ) throws EntityStoreException
+    public EntityState newEntityState( CompositeDescriptor compositeDescriptor, EntityId identity ) throws EntityStoreException
     {
         try
         {
@@ -114,7 +115,7 @@ public class JdbmSerializationEntityStoreMixin
     }
 
     @WriteLock
-    public EntityState getEntityState( EntityId identity ) throws EntityStoreException
+    public EntityState getEntityState( CompositeDescriptor compositeDescriptor, EntityId identity ) throws EntityStoreException
     {
         try
         {

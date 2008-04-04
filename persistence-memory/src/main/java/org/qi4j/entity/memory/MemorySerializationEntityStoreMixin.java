@@ -2,11 +2,9 @@ package org.qi4j.entity.memory;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.spi.entity.EntityAlreadyExistsException;
-import org.qi4j.spi.entity.EntityIterator;
 import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStateInstance;
@@ -17,6 +15,7 @@ import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.serialization.EntityId;
 import org.qi4j.spi.serialization.SerializableState;
 import org.qi4j.spi.serialization.SerializedObject;
+import org.qi4j.spi.structure.CompositeDescriptor;
 import org.qi4j.spi.structure.ModuleBinding;
 
 /**
@@ -32,7 +31,7 @@ public class MemorySerializationEntityStoreMixin
         store = new HashMap<String, Map<EntityId, SerializedObject<SerializableState>>>();
     }
 
-    public EntityState newEntityState( EntityId identity ) throws EntityStoreException
+    public EntityState newEntityState( CompositeDescriptor compositeDescriptor, EntityId identity ) throws EntityStoreException
     {
         Map<EntityId, SerializedObject<SerializableState>> typeStore;
         synchronized( store )
@@ -54,7 +53,7 @@ public class MemorySerializationEntityStoreMixin
         return new EntityStateInstance( 0, identity, EntityStatus.NEW, new HashMap<String, Object>(), new HashMap<String, EntityId>(), new HashMap<String, Collection<EntityId>>() );
     }
 
-    public EntityState getEntityState( EntityId identity ) throws EntityStoreException
+    public EntityState getEntityState( CompositeDescriptor compositeDescriptor, EntityId identity ) throws EntityStoreException
     {
         try
         {
@@ -143,56 +142,6 @@ public class MemorySerializationEntityStoreMixin
             public void cancel()
             {
                 // Do nothing
-            }
-        };
-    }
-
-    public EntityIterator iterator()
-    {
-        final Iterable<Map<EntityId, SerializedObject<SerializableState>>> typeStore = store.values();
-        return new EntityIterator()
-        {
-            Iterator<Map<EntityId, SerializedObject<SerializableState>>> typeIterator = typeStore.iterator();
-            Iterator<EntityId> identities;
-
-            public boolean hasNext()
-            {
-                if( identities == null )
-                {
-                    if( typeIterator.hasNext() )
-                    {
-                        identities = typeIterator.next().keySet().iterator();
-                    }
-                    else
-                    {
-                        return false;
-                    }
-                }
-
-                if( identities.hasNext() )
-                {
-                    return true;
-                }
-                else
-                {
-                    identities = null;
-                    return hasNext();
-                }
-            }
-
-            public EntityState next()
-            {
-                EntityId id = nextIdentity();
-                return getEntityState( id );
-            }
-
-            public EntityId nextIdentity()
-            {
-                return identities.next();
-            }
-
-            public void remove()
-            {
             }
         };
     }

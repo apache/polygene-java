@@ -16,21 +16,17 @@
  */
 package org.qi4j.entity.s3;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entity.UnitOfWork;
-import org.qi4j.entity.UnitOfWorkFactory;
 import org.qi4j.entity.memory.MemoryEntityStoreComposite;
-import org.qi4j.property.PropertyMapper;
 import org.qi4j.structure.Visibility;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
 
 /**
  * Amazon S3 EntityStore test
  */
-public class S3EntityStoreTest
+public abstract class S3EntityStoreTest
     extends AbstractEntityStoreTest
 {
     public void assemble( ModuleAssembly module ) throws AssemblyException
@@ -40,21 +36,8 @@ public class S3EntityStoreTest
 
         ModuleAssembly config = module.getLayerAssembly().newModuleAssembly();
         config.setName( "config" );
-        config.addComposites( S3ConfigurationComposite.class ).visibleIn( Visibility.layer );
+        config.addComposites( S3Configuration.class ).visibleIn( Visibility.layer );
         config.addServices( MemoryEntityStoreComposite.class );
-    }
-
-    @Override @Before public void setUp() throws Exception
-    {
-        super.setUp();
-
-        UnitOfWorkFactory uowf = application.getLayerByName( "Layer 1" ).getModuleByName( "config" ).getStructureContext().getUnitOfWorkFactory();
-        UnitOfWork uow = uowf.newUnitOfWork();
-        S3ConfigurationComposite config = uow.newEntityBuilder( "s3configuration", S3ConfigurationComposite.class ).newInstance();
-
-        PropertyMapper.map( getClass().getResourceAsStream( "s3configuration.properties" ), config );
-
-        uow.complete();
     }
 
     @Test

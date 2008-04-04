@@ -20,15 +20,14 @@ import org.qi4j.composite.Mixins;
 import org.qi4j.library.framework.locking.LockingAbstractComposite;
 import org.qi4j.service.Activatable;
 import org.qi4j.service.ServiceComposite;
-import org.qi4j.spi.entity.EntityStore;
 
 /**
- * EntityStore service backed by JDBM store.
+ * EntityStore service for remote access of another EntityStore.
  */
 
-@Mixins( { ClientRmiSerializationStoreMixin.class } )
-public interface ClientRmiEntityStoreComposite
-    extends EntityStore, ServiceComposite, Activatable, LockingAbstractComposite
+@Mixins( { ServerRemoteEntityStoreMixin.class } )
+public interface ServerRmiEntityStoreService
+    extends RemoteEntityStore, ServiceComposite, Activatable, LockingAbstractComposite
 
 {
 }

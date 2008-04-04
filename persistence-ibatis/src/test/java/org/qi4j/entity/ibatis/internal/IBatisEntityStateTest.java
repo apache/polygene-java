@@ -33,6 +33,7 @@ import org.qi4j.entity.ibatis.HasLastName;
 import org.qi4j.entity.ibatis.PersonComposite;
 import static org.qi4j.entity.ibatis.internal.common.Status.*;
 import org.qi4j.entity.ibatis.internal.property.MutablePropertyInstance;
+import org.qi4j.property.ComputedPropertyInstance;
 import org.qi4j.property.Property;
 import org.qi4j.runtime.composite.CompositeContext;
 import org.qi4j.runtime.structure.ModuleContext;
@@ -41,7 +42,6 @@ import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.property.ImmutablePropertyInstance;
 import org.qi4j.spi.property.PropertyBinding;
-import org.qi4j.spi.property.PropertyModel;
 import org.qi4j.spi.serialization.EntityId;
 
 /**
@@ -72,7 +72,7 @@ public final class IBatisEntityStateTest extends AbstractTestCase
         {
             Method firstNamePropertyAccessor = HasFirstName.class.getMethod( "firstName" );
 
-            String firstNameProperty = (String) personEntityState1.getProperty( PropertyModel.getQualifiedName( firstNamePropertyAccessor ) );
+            String firstNameProperty = (String) personEntityState1.getProperty( ComputedPropertyInstance.getQualifiedName( firstNamePropertyAccessor ) );
             assertNotNull( firstNameProperty );
 
             assertEquals( DEFAULT_FIRST_NAME, firstNameProperty );
@@ -90,7 +90,7 @@ public final class IBatisEntityStateTest extends AbstractTestCase
         {
             Method lastNamePropertyAccessor = HasLastName.class.getMethod( "lastName" );
 
-            String lastNameProperty = (String) personEntityState1.getProperty( PropertyModel.getQualifiedName( lastNamePropertyAccessor ) );
+            String lastNameProperty = (String) personEntityState1.getProperty( ComputedPropertyInstance.getQualifiedName( lastNamePropertyAccessor ) );
             assertNotNull( lastNameProperty );
 
             assertEquals( DEFAULT_LAST_NAME, lastNameProperty );
@@ -116,7 +116,7 @@ public final class IBatisEntityStateTest extends AbstractTestCase
         {
             Method firstNamePropertyAccessor = HasFirstName.class.getMethod( "firstName" );
 
-            String firstNameProperty = (String) personEntityState2.getProperty( PropertyModel.getQualifiedName( firstNamePropertyAccessor ) );
+            String firstNameProperty = (String) personEntityState2.getProperty( ComputedPropertyInstance.getQualifiedName( firstNamePropertyAccessor ) );
             assertNotNull( firstNameProperty );
 
             assertEquals( expectedFirstNameValue, firstNameProperty );
@@ -133,7 +133,7 @@ public final class IBatisEntityStateTest extends AbstractTestCase
         {
             Method lastNamePropertyAccessor = HasLastName.class.getMethod( "lastName" );
 
-            String lastNameProperty = (String) personEntityState2.getProperty( PropertyModel.getQualifiedName( lastNamePropertyAccessor ) );
+            String lastNameProperty = (String) personEntityState2.getProperty( ComputedPropertyInstance.getQualifiedName( lastNamePropertyAccessor ) );
             assertNotNull( lastNameProperty );
 
             assertEquals( DEFAULT_LAST_NAME, lastNameProperty );

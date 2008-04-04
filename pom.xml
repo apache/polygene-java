@@ -16,11 +16,12 @@
   <!-- This POM is ONLY to initiate the modules to be built. -->
   <modules>
     <module>indexing-rdf</module>
-    <module>persistence-quick</module>
+    <module>persistence-memory</module>
+    <!--    <module>persistence-quick</module>  -->
     <module>persistence-ibatis</module>
     <module>persistence-jdbm</module>
-    <module>persistence-memory</module>
     <module>persistence-s3</module>
     <module>persistence-jgroups</module>
+    <module>persistence-rmi</module>
   </modules>
 </project>

@@ -16,14 +16,13 @@
  */
 package org.qi4j.entity.rmi;
 
-import java.io.File;
-import org.junit.After;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.entity.memory.MemoryEntityStoreComposite;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
 
 /**
- * TODO
+ * Test the RMI store
  */
 public class RmiEntityStoreTest
     extends AbstractEntityStoreTest
@@ -31,18 +30,14 @@ public class RmiEntityStoreTest
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
         super.assemble( module );
-        module.addServices( ClientRmiEntityStoreComposite.class ).instantiateOnStartup();
-    }
+        module.setName( "Client" );
+        module.addServices( ClientRmiEntityStoreService.class );
 
-    @Override @After public void tearDown() throws Exception
-    {
-        super.tearDown();
-
-        boolean deleted = new File( "qi4j.data.db" ).delete();
-        deleted = deleted | new File( "qi4j.data.lg" ).delete();
-        if( !deleted )
-        {
-            throw new Exception( "Could not delete test data" );
-        }
+        ModuleAssembly remote = module.getLayerAssembly().newModuleAssembly();
+        remote.setName( "Server" );
+        remote.addComposites( TestEntity.class, RegistryConfiguration.class );
+        remote.addServices( ServerRmiEntityStoreService.class,
+                            RegistryService.class,
+                            MemoryEntityStoreComposite.class ).instantiateOnStartup();
     }
 }

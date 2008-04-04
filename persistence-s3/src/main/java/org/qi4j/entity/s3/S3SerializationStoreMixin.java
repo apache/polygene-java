@@ -43,6 +43,7 @@ import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.serialization.EntityId;
 import org.qi4j.spi.serialization.SerializableState;
+import org.qi4j.spi.structure.CompositeDescriptor;
 import org.qi4j.spi.structure.ModuleBinding;
 
 /**
@@ -54,7 +55,7 @@ public class S3SerializationStoreMixin
     implements EntityStore, Activatable
 {
     private @ThisCompositeAs ReadWriteLock lock;
-    private @ThisCompositeAs S3ConfigurationComposite configuration;
+    private @ThisCompositeAs S3Configuration configuration;
 
     private S3Service s3Service;
     private S3Bucket entityBucket;
@@ -64,6 +65,11 @@ public class S3SerializationStoreMixin
     {
         String awsAccessKey = configuration.accessKey().get();
         String awsSecretKey = configuration.secretKey().get();
+
+        if( awsAccessKey == null || awsSecretKey == null )
+        {
+            throw new IllegalStateException( "No S3 keys configured" );
+        }
 
         AWSCredentials awsCredentials =
             new AWSCredentials( awsAccessKey, awsSecretKey );
@@ -89,7 +95,7 @@ public class S3SerializationStoreMixin
 
     // EntityStore implementation
     @WriteLock
-    public EntityState newEntityState( EntityId identity ) throws EntityStoreException
+    public EntityState newEntityState( CompositeDescriptor compositeDescriptor, EntityId identity ) throws EntityStoreException
     {
         // Skip existence check
 
@@ -97,7 +103,7 @@ public class S3SerializationStoreMixin
     }
 
     @WriteLock
-    public EntityState getEntityState( EntityId identity ) throws EntityStoreException
+    public EntityState getEntityState( CompositeDescriptor compositeDescriptor, EntityId identity ) throws EntityStoreException
     {
         try
         {

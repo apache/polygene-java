@@ -6,7 +6,7 @@ import org.qi4j.property.Property;
 /**
  * Configuration for the Amazon S3 EntityStore
  */
-public interface S3ConfigurationComposite
+public interface S3Configuration
     extends EntityComposite
 {
     Property<String> accessKey();

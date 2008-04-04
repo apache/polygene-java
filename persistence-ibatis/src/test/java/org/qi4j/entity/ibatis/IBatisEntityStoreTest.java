@@ -151,7 +151,7 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
     }
 
     /**
-     * Tests {@link org.qi4j.spi.entity.EntityStore#newEntityState(org.qi4j.spi.serialization.EntityId)}
+     * Tests {@link org.qi4j.spi.entity.EntityStore#newEntityState(org.qi4j.spi.structure.CompositeDescriptor,org.qi4j.spi.serialization.EntityId)}
      *
      * @throws SQLException Thrown if initialization fails.
      */
