@@ -17,26 +17,12 @@ import org.qi4j.composite.Mixins;
 import org.qi4j.composite.scope.AssociationField;
 import org.qi4j.entity.association.Association;
 import org.qi4j.library.general.model.Country;
+import org.qi4j.property.Property;
 
 /**
  * Represents one-to-one relationship with {@link org.qi4j.library.general.model.Country}
  */
-@Mixins( HasCountry.HasCountryMixin.class )
 public interface HasCountry
 {
-    Association<Country> country();
-
-    final class HasCountryMixin
-        implements HasCountry, Serializable
-    {
-        private static final long serialVersionUID = 1L;
-
-        @AssociationField
-        private Association<Country> country;
-
-        public final Association<Country> country()
-        {
-            return country;
-        }
-    }
+    Property<Country> country();
 }

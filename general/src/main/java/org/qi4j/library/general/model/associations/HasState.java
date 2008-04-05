@@ -12,31 +12,13 @@
  */
 package org.qi4j.library.general.model.associations;
 
-import java.io.Serializable;
-import org.qi4j.composite.Mixins;
-import org.qi4j.composite.scope.AssociationField;
-import org.qi4j.entity.association.Association;
 import org.qi4j.library.general.model.State;
+import org.qi4j.property.Property;
 
 /**
  * Represents one-to-one relationship with {@link org.qi4j.library.general.model.State}
  */
-@Mixins( HasState.HasStateMixin.class )
 public interface HasState
 {
-    Association<State> state();
-
-    final class HasStateMixin
-        implements HasState, Serializable
-    {
-        private static final long serialVersionUID = 1L;
-
-        @AssociationField
-        private Association<State> state;
-
-        public final Association<State> state()
-        {
-            return state;
-        }
-    }
+    Property<State> state();
 }

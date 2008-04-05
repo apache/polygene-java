@@ -12,37 +12,13 @@
  */
 package org.qi4j.library.general.model.associations;
 
-import java.io.Serializable;
-import org.qi4j.composite.Mixins;
-import org.qi4j.composite.scope.AssociationField;
-import org.qi4j.entity.association.Association;
 import org.qi4j.library.general.model.City;
+import org.qi4j.property.Property;
 
 /**
  * Represents one-to-one relationship with {@link org.qi4j.library.general.model.composites.CityComposite}
  */
-@Mixins( HasCity.HasCityMixin.class )
 public interface HasCity
 {
-    Association<City> city();
-
-    /**
-     * {@code HasCityMixin} is the default implementation of {@code HasCity}.
-     *
-     * @author edward.yakop@gmail.com
-     * @since 0.1.0
-     */
-    final class HasCityMixin
-        implements HasCity, Serializable
-    {
-        private static final long serialVersionUID = 1L;
-
-        @AssociationField
-        private Association<City> city;
-
-        public final Association<City> city()
-        {
-            return city;
-        }
-    }
+    Property<City> city();
 }
