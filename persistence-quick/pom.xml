@@ -2,23 +2,23 @@
   <parent>
     <groupId>org.qi4j</groupId>
     <artifactId>qi4j</artifactId>
-    <version>0.1.0</version>
+    <version>0.2.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.qi4j.extension</groupId>
   <artifactId>qi4j-persistence-quick</artifactId>
   <name>Qi4J Extension - Persistence Quick</name>
-  <version>0.1.0</version>
+  <version>0.2.0-SNAPSHOT</version>
   <dependencies>
     <dependency>
       <groupId>org.qi4j.core</groupId>
       <artifactId>qi4j-spi</artifactId>
-      <version>0.1.0</version>
+      <version>0.2.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.qi4j.core</groupId>
       <artifactId>qi4j-runtime</artifactId>
-      <version>0.1.0</version>
+      <version>0.2.0-SNAPSHOT</version>
     </dependency>
   </dependencies>
 </project>
