@@ -17,9 +17,8 @@
  */
 package org.qi4j.entity.index.rdf;
 
-import java.util.Collection;
 import java.util.HashSet;
-import org.openrdf.model.Literal;
+import java.util.Set;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.vocabulary.RDF;
@@ -27,11 +26,17 @@ import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.qi4j.composite.scope.ThisCompositeAs;
-import org.qi4j.entity.EntityComposite;
+import org.qi4j.spi.composite.CompositeBinding;
+import org.qi4j.spi.composite.CompositeModel;
+import org.qi4j.spi.composite.MixinTypeModel;
 import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.association.AssociationBinding;
+import org.qi4j.spi.entity.association.AssociationModel;
+import org.qi4j.spi.property.PropertyBinding;
+import org.qi4j.spi.property.PropertyModel;
+import org.qi4j.spi.query.EntityIndexer;
 import org.qi4j.spi.serialization.EntityId;
 import org.qi4j.spi.structure.ModuleBinding;
-import org.qi4j.spi.query.EntityIndexer;
 
 /**
  * TODO Add JavaDoc
@@ -43,9 +48,12 @@ public class RDFEntityIndexerMixin
     implements EntityIndexer
 {
 
-    @ThisCompositeAs RDFQueryContext state;
+    @ThisCompositeAs RDFQueryContext queryContext;
 
-    public void index( Iterable<EntityState> newStates, Iterable<EntityState> changedStates, Iterable<EntityId> removedStates, ModuleBinding moduleBinding )
+    public void index( final Iterable<EntityState> newStates,
+                       final Iterable<EntityState> changedStates,
+                       final Iterable<EntityId> removedStates,
+                       final ModuleBinding moduleBinding )
     {
         System.out.println( "New: " + newStates );
         System.out.println( "Updated: " + changedStates );
@@ -53,60 +61,29 @@ public class RDFEntityIndexerMixin
 
         try
         {
-            final RepositoryConnection connection = state.getRepository().getConnection();
-            final ValueFactory valueFactory = state.getRepository().getValueFactory();
+            final RepositoryConnection connection = queryContext.getRepository().getConnection();
+            final ValueFactory valueFactory = queryContext.getRepository().getValueFactory();
             try
             {
-                for( EntityState entry : newStates )
+                final Set<String> entityTypes = new HashSet<String>();
+                for( EntityState entityState : newStates )
                 {
-                    Class compositeType = moduleBinding.lookupClass( entry.getIdentity().getCompositeType() );
-                    indexCompositeType( compositeType, connection, valueFactory );
-                    final URI entityTypeUri = valueFactory.createURI(
-                        normalizeInnerClass(
-                            "urn:" + entry.getIdentity().getCompositeType()
-                        )
-                    );
-                    final URI entityUri = valueFactory.createURI(
-                        normalizeInnerClass(
-                            "urn:" + entry.getIdentity().getCompositeType() + "/" + entry.getIdentity().getIdentity()
-                        )
-                    );
-                    connection.add( entityUri, RDF.TYPE, entityTypeUri );
-
-                    // properties
-                    for( String property : entry.getPropertyNames() )
-                    {
-                        Object propertyValue = entry.getProperty( property );
-                        if( propertyValue != null )
-                        {
-                            final URI propertyType = valueFactory.createURI(
-                                normalizeInnerClass(
-                                    "urn:" + property.replace( ":", "/" )
-                                )
-                            );
-                            final Literal propertyLiteral = valueFactory.createLiteral( propertyValue.toString() );
-                            connection.add( entityUri, propertyType, propertyLiteral );
-                        }
-                    }
-                    // association
-                    for( String assoc : entry.getAssociationNames() )
-                    {
-                        EntityId entityId = entry.getAssociation( assoc );
-                        if( entityId != null )
-                        {
-                            final URI assocType = valueFactory.createURI(
-                                normalizeInnerClass(
-                                    "urn:" + assoc.replace( ":", "/" )
-                                )
-                            );
-                            final URI assocRef = valueFactory.createURI(
-                                normalizeInnerClass(
-                                    "urn:" + entityId.getCompositeType() + "/" + entityId.getIdentity()
-                                )
-                            );
-                            connection.add( entityUri, assocType, assocRef );
-                        }
-                    }
+                    entityTypes.add( entityState.getIdentity().getCompositeType() );
+                    indexEntityState( entityState, moduleBinding, connection, valueFactory );
+                }
+                for( EntityState entityState : changedStates )
+                {
+                    entityTypes.add( entityState.getIdentity().getCompositeType() );
+                    removeEntityState( entityState.getIdentity(), moduleBinding, connection, valueFactory );
+                    indexEntityState( entityState, moduleBinding, connection, valueFactory );
+                }
+                for( EntityId entityId : removedStates )
+                {
+                    removeEntityState( entityId, moduleBinding, connection, valueFactory );
+                }
+                for( String entityType : entityTypes )
+                {
+                    indexEntityType( entityType, moduleBinding, connection, valueFactory );
                 }
             }
             finally
@@ -123,33 +100,85 @@ public class RDFEntityIndexerMixin
         }
     }
 
-    private static void indexCompositeType( final Class<? extends EntityComposite> compositeType,
-                                            final RepositoryConnection connection,
-                                            final ValueFactory valueFactory )
+    private static void indexEntityState( final EntityState entityState,
+                                          final ModuleBinding moduleBinding,
+                                          final RepositoryConnection connection,
+                                          final ValueFactory valueFactory )
         throws RepositoryException
     {
-        final URI compositeTypeURI = valueFactory.createURI( "urn:" + compositeType.getName() );
-        connection.add( compositeTypeURI, RDF.TYPE, RDFS.CLASS );
-        for( Class subType : extractSubTypes( compositeType ) )
+        final Class compositeClass = moduleBinding.lookupClass( entityState.getIdentity().getCompositeType() );
+        final CompositeBinding compositeBinding = moduleBinding.getCompositeBinding( compositeClass );
+        final CompositeModel compositeModel = compositeBinding.getCompositeResolution().getCompositeModel();
+        final URI compositeURI = valueFactory.createURI( compositeModel.toURI() );
+        final URI entityURI = valueFactory.createURI( compositeModel.toURI()
+                                                      + "/" + entityState.getIdentity().getIdentity() );
+        connection.add( entityURI, RDF.TYPE, compositeURI );
+        // index properties
+        for( String propName : entityState.getPropertyNames() )
         {
-            connection.add( compositeTypeURI, RDFS.SUBCLASSOF, valueFactory.createURI( "urn:" + subType.getName() ) );
+            final Object propValue = entityState.getProperty( propName );
+            if( propValue != null )
+            {
+                final PropertyBinding propBinding = compositeBinding.getPropertyBinding( propName );
+                final PropertyModel propModel = propBinding.getPropertyResolution().getPropertyModel();
+                final URI propURI = valueFactory.createURI( propModel.toURI() );
+                connection.add( entityURI, propURI, valueFactory.createLiteral( propValue.toString() ) );
+            }
+        }
+        // index associations
+        for( String assocName : entityState.getAssociationNames() )
+        {
+            final EntityId assocEntityId = entityState.getAssociation( assocName );
+            if( assocEntityId != null )
+            {
+                final AssociationBinding assocBinding = compositeBinding.getAssociationBinding( assocName );
+                final AssociationModel assocModel = assocBinding.getAssociationResolution().getAssociationModel();
+                final URI assocURI = valueFactory.createURI( assocModel.toURI() );
+
+                final Class assocCompositeClass = moduleBinding.lookupClass( assocEntityId.getCompositeType() );
+                final CompositeBinding assocCompositeBinding = moduleBinding.getCompositeBinding( assocCompositeClass );
+                final CompositeModel assocCompositeModel = assocCompositeBinding.getCompositeResolution().getCompositeModel();
+                final URI assocEntityURI = valueFactory.createURI( assocCompositeModel.toURI()
+                                                                   + "/" + assocEntityId.getIdentity() );
+                connection.add( entityURI, assocURI, assocEntityURI );
+            }
         }
     }
 
-    private static Collection<Class> extractSubTypes( final Class clazz )
+    private static void removeEntityState( final EntityId entityId,
+                                           final ModuleBinding moduleBinding,
+                                           final RepositoryConnection connection,
+                                           final ValueFactory valueFactory )
+        throws RepositoryException
     {
-        final Collection<Class> subTypes = new HashSet<Class>();
-        for( Class subType : clazz.getInterfaces() )
-        {
-            subTypes.add( subType );
-            subTypes.addAll( extractSubTypes( subType ) );
-        }
-        return subTypes;
+        final Class compositeClass = moduleBinding.lookupClass( entityId.getCompositeType() );
+        final CompositeBinding compositeBinding = moduleBinding.getCompositeBinding( compositeClass );
+        final CompositeModel compositeModel = compositeBinding.getCompositeResolution().getCompositeModel();
+        final URI entityURI = valueFactory.createURI( compositeModel.toURI() + "/" + entityId.getIdentity() );
+        connection.remove( entityURI, null, null );
     }
 
-    private String normalizeInnerClass( String className )
+    private static void indexEntityType( final String entityType,
+                                         final ModuleBinding moduleBinding,
+                                         final RepositoryConnection connection,
+                                         final ValueFactory valueFactory )
+        throws RepositoryException
     {
-        return className.replace( '$', '.' );
+
+        final Class compositeClass = moduleBinding.lookupClass( entityType );
+        final CompositeBinding compositeBinding = moduleBinding.getCompositeBinding( compositeClass );
+        final CompositeModel compositeModel = compositeBinding.getCompositeResolution().getCompositeModel();
+        final URI compositeURI = valueFactory.createURI( compositeModel.toURI() );
+        // remove composite type if already present
+        connection.remove( compositeURI, null, null );
+        // first add the composite type as rdfs:Class
+        connection.add( compositeURI, RDF.TYPE, RDFS.CLASS );
+        // add all subclasses as rdfs:subClassOf
+        for( MixinTypeModel mixinTypeModel : compositeModel.getMixinTypeModels() )
+        {
+            connection.add( compositeURI, RDFS.SUBCLASSOF, valueFactory.createURI( mixinTypeModel.toURI() ) );
+        }
     }
+
 
 }
