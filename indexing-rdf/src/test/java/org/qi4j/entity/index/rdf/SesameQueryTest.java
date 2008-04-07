@@ -23,15 +23,16 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
 import org.qi4j.entity.UnitOfWorkCompletionException;
+import org.qi4j.entity.memory.IndexedMemoryEntityStoreComposite;
 import static org.qi4j.query.QueryExpressions.*;
 import org.qi4j.spi.entity.UuidIdentityGeneratorComposite;
-import org.qi4j.spi.query.SearchEngine;
+import org.qi4j.spi.query.EntitySearcher;
 import org.qi4j.spi.query.SearchException;
 
 public class SesameQueryTest
 {
     private SingletonAssembler assembler;
-    private SearchEngine searchEngine;
+    private EntitySearcher searchEngine;
 
     @Before
     public void setUp() throws UnitOfWorkCompletionException
@@ -54,7 +55,7 @@ public class SesameQueryTest
             }
         };
         Network.populate( assembler.getUnitOfWorkFactory().newUnitOfWork() );
-        searchEngine = assembler.getServiceLocator().lookupService( RDFIndexerComposite.class ).get();
+        searchEngine = assembler.getServiceLocator().lookupService( RDFQueryService.class ).get();
     }
 
     @Test

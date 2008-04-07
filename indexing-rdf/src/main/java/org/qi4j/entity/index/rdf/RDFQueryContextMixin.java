@@ -29,13 +29,13 @@ import org.openrdf.sail.memory.MemoryStore;
  * @author Alin Dreghiciu
  * @since March 24, 2008
  */
-public class RDFIndexerStateMixin
-    implements RDFIndexerState
+public class RDFQueryContextMixin
+    implements RDFQueryContext
 {
 
     private Repository repository;
 
-    public RDFIndexerStateMixin()
+    public RDFQueryContextMixin()
     {
         repository = new SailRepository( new ForwardChainingRDFSInferencer( new MemoryStore() ) );
         try

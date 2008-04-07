@@ -19,15 +19,17 @@ package org.qi4j.entity.index.rdf;
 
 import org.qi4j.composite.Mixins;
 import org.qi4j.service.ServiceComposite;
-import org.openrdf.repository.Repository;
+import org.qi4j.spi.query.EntitySearcher;
+import org.qi4j.spi.query.EntityIndexer;
 
 /**
  * TODO Add JavaDoc
  *
  * @author Alin Dreghiciu
- * @since March 24, 2008
+ * @since March 18, 2008
  */
-public interface RDFIndexerState
+@Mixins( { RDFEntityIndexerMixin.class, RDFEntitySearcherMixin.class, RDFQueryContextMixin.class } )
+public interface RDFQueryService
+    extends EntityIndexer, EntitySearcher, ServiceComposite
 {
-    Repository getRepository();
 }

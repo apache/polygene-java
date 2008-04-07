@@ -35,7 +35,7 @@ public abstract class RDFIndexerExporterMixin
     implements RDFIndexerExporterComposite
 {
 
-    @ThisCompositeAs RDFIndexerState state;
+    @ThisCompositeAs RDFQueryContext state;
 
     public void toRDF( final OutputStream outputStream )
     {

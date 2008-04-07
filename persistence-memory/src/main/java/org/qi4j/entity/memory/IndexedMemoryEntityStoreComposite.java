@@ -15,22 +15,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.entity.index.rdf;
+package org.qi4j.entity.memory;
 
-import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.serialization.EntityId;
-import org.qi4j.spi.structure.ModuleBinding;
+import org.qi4j.composite.SideEffects;
+import org.qi4j.entity.memory.MemoryEntityStoreComposite;
+import org.qi4j.spi.query.IndexingSideEffect;
 
 /**
- * TODO Add JavaDoc
+ * Indexed {@link org.qi4j.entity.memory.MemoryEntityStoreComposite}.
  *
  * @author Alin Dreghiciu
  * @since March 18, 2008
  */
-public interface Indexer
+@SideEffects( IndexingSideEffect.class )
+public interface IndexedMemoryEntityStoreComposite
+    extends MemoryEntityStoreComposite
 {
-    void index( Iterable<EntityState> newStates,
-                Iterable<EntityState> changedStates,
-                Iterable<EntityId> removedStates,
-                ModuleBinding moduleBinding );
+
 }

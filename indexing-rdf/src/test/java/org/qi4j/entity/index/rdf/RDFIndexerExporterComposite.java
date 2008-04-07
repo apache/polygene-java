@@ -18,8 +18,6 @@
 package org.qi4j.entity.index.rdf;
 
 import org.qi4j.composite.Mixins;
-import org.qi4j.service.ServiceComposite;
-import java.io.Writer;
 import java.io.OutputStream;
 
 /**
@@ -30,7 +28,7 @@ import java.io.OutputStream;
  */
 @Mixins( RDFIndexerExporterMixin.class )
 public interface RDFIndexerExporterComposite
-    extends RDFIndexerComposite
+    extends RDFQueryService
 {
     void toRDF( OutputStream outputStream );
 }

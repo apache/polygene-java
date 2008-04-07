@@ -22,6 +22,7 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
 import org.qi4j.entity.UnitOfWorkCompletionException;
+import org.qi4j.entity.memory.IndexedMemoryEntityStoreComposite;
 import org.qi4j.spi.entity.UuidIdentityGeneratorComposite;
 
 public class SesameIndexerTest

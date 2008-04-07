@@ -29,7 +29,7 @@ import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.qi4j.composite.scope.ThisCompositeAs;
 import org.qi4j.query.grammar.BooleanExpression;
-import org.qi4j.spi.query.SearchEngine;
+import org.qi4j.spi.query.EntitySearcher;
 import org.qi4j.spi.query.SearchException;
 
 /**
@@ -38,11 +38,11 @@ import org.qi4j.spi.query.SearchException;
  * @author Alin Dreghiciu
  * @since March 18, 2008
  */
-public class RDFSearchEngineMixin
-    implements SearchEngine
+public class RDFEntitySearcherMixin
+    implements EntitySearcher
 {
 
-    @ThisCompositeAs RDFIndexerState state;
+    @ThisCompositeAs RDFQueryContext state;
 
     public Iterable<String> find( final Class entityType,
                                   final BooleanExpression whereClause )
