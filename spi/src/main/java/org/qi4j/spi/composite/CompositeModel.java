@@ -204,7 +204,7 @@ public final class CompositeModel
         // TODO: Shall the URI contain the type ("type"), or is it always understood in a larger context??
         String className = compositeClass.getName();
         className = className.replace( '$', '&' );
-        return "urn:qi4j:type" + className;
+        return "urn:qi4j:type:" + className;
     }
 
     public String toString()
