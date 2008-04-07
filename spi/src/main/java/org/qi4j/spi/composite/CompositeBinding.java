@@ -74,7 +74,7 @@ public final class CompositeBinding
 
     public PropertyBinding getPropertyBinding( final String qualifiedName )
     {
-        // TODO shall this be prepared by creating a map beteen qwualified name and property binding?
+        // TODO shall this be prepared by creating a map between qualified name and property binding?
         if( qualifiedName != null )
         {
             for( PropertyBinding propertyBinding : getPropertyBindings() )
@@ -91,6 +91,22 @@ public final class CompositeBinding
     public Iterable<AssociationBinding> getAssociationBindings()
     {
         return associationBindings;
+    }
+
+    public AssociationBinding getAssociationBinding( final String qualifiedName )
+    {
+        // TODO shall this be prepared by creating a map between qualified name and association binding?
+        if( qualifiedName != null )
+        {
+            for( AssociationBinding associationBinding : getAssociationBindings() )
+            {
+                if( associationBinding.qualifiedName().equals( qualifiedName ) )
+                {
+                    return associationBinding;
+                }
+            }
+        }
+        return null;
     }
 
     public String toString()
