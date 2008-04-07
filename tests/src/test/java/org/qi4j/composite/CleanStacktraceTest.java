@@ -16,6 +16,8 @@ package org.qi4j.composite;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.io.File;
+import java.util.Properties;
 import static org.junit.Assert.*;
 import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
@@ -51,12 +53,13 @@ public class CleanStacktraceTest
             StringWriter actualTrace = new StringWriter();
             e.printStackTrace( new PrintWriter( actualTrace ) );
 
-            String correctTrace = "java.lang.RuntimeException\n" +
-                                  "\tat org.qi4j.composite.CleanStacktraceTest$DoStuffMixin.doStuff(CleanStacktraceTest.java:76)\n" +
-                                  "\tat org.qi4j.composite.CleanStacktraceTest$TestComposite.doStuff(Unknown Source)\n" +
-                                  "\tat org.qi4j.composite.CleanStacktraceTest.cleanStackTraceOnAplicationException(CleanStacktraceTest.java:47)";
-
-            assertTrue( "Trace should have been:\n" + correctTrace + "\nbut was:\n" + actualTrace, actualTrace.toString().startsWith( correctTrace ) );
+            String separator = System.getProperty( "line.separator" );
+            String correctTrace = "java.lang.RuntimeException" + separator +
+                                  "\tat org.qi4j.composite.CleanStacktraceTest$DoStuffMixin.doStuff(CleanStacktraceTest.java:79)" + separator +
+                                  "\tat org.qi4j.composite.CleanStacktraceTest$TestComposite.doStuff(Unknown Source)" + separator +
+                                  "\tat org.qi4j.composite.CleanStacktraceTest.cleanStackTraceOnAplicationException(CleanStacktraceTest.java:49)";
+            String actual = actualTrace.toString();
+            assertTrue( "Trace should have been:\n" + correctTrace + "\nbut was:\n" + actualTrace, actual.startsWith( correctTrace ) );
         }
     }
 
