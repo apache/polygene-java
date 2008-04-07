@@ -19,8 +19,10 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeSet;
 import org.qi4j.composite.Composite;
 import org.qi4j.spi.entity.association.AssociationModel;
 import org.qi4j.spi.injection.InjectionModel;
@@ -41,6 +43,7 @@ public final class CompositeModel
     private Iterable<CompositeMethodModel> thisAsModels;
     private Iterable<PropertyModel> properties;
     private Iterable<AssociationModel> associations;
+    private Iterable<MixinTypeModel> mixinTypes;
 
     private Map<Class<? extends Annotation>, List<ConstraintModel>> constraintModelMappings;
     private Map<Method, CompositeMethodModel> compositeMethodModelMap;
@@ -73,6 +76,26 @@ public final class CompositeModel
     public Class<? extends Composite> getCompositeType()
     {
         return compositeClass;
+    }
+
+    public Iterable<MixinTypeModel> getMixinTypeModels()
+    {
+        if( mixinTypes == null )
+        {
+            mixinTypes = new TreeSet<MixinTypeModel>( extractSubTypes( compositeClass ) );
+        }
+        return mixinTypes;
+    }
+
+    private static Collection<MixinTypeModel> extractSubTypes( final Class clazz )
+    {
+        final Collection<MixinTypeModel> subTypes = new HashSet<MixinTypeModel>();
+        for( Class subType : clazz.getInterfaces() )
+        {
+            subTypes.add( new MixinTypeModel( subType ) );
+            subTypes.addAll( extractSubTypes( subType ) );
+        }
+        return subTypes;
     }
 
     public Class getProxyClass()
