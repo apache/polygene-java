@@ -87,4 +87,11 @@ public final class AssociationModel
     {
         return qualifiedName;
     }
+
+    public String toURI()
+    {
+        // TODO: Shall the URI contain the type (asscoaition), or is it always understood in a larger context??
+        return "urn:qi4j:association:" + getQualifiedName();
+    }
+
 }
