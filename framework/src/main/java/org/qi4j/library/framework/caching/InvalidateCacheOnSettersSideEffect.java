@@ -1,10 +1,9 @@
 package org.qi4j.library.framework.caching;
 
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import org.qi4j.composite.AppliesTo;
 import org.qi4j.composite.AppliesToFilter;
-import org.qi4j.composite.SideEffectOf;
+import org.qi4j.composite.GenericSideEffect;
 import org.qi4j.composite.scope.ThisCompositeAs;
 import org.qi4j.library.framework.properties.Setters;
 
@@ -12,8 +11,7 @@ import org.qi4j.library.framework.properties.Setters;
  * Invalidate cache on setters.
  */
 @AppliesTo( InvalidateCacheOnSettersSideEffect.AppliesTo.class )
-public class InvalidateCacheOnSettersSideEffect extends SideEffectOf<InvocationHandler>
-    implements InvocationHandler
+public class InvalidateCacheOnSettersSideEffect extends GenericSideEffect
 {
     public static class AppliesTo
         implements AppliesToFilter
@@ -31,9 +29,8 @@ public class InvalidateCacheOnSettersSideEffect extends SideEffectOf<InvocationH
 
     @ThisCompositeAs private InvocationCache cache;
 
-    public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
+    protected void invoke( Method method, Object[] args )
     {
         cache.clearCachedValues();
-        return null;
     }
 }
