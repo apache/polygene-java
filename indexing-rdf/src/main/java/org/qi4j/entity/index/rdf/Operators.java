@@ -25,20 +25,21 @@ import org.qi4j.query.grammar.GreaterThanPredicate;
 import org.qi4j.query.grammar.LessOrEqualPredicate;
 import org.qi4j.query.grammar.LessThanPredicate;
 import org.qi4j.query.grammar.NotEqualsPredicate;
+import org.qi4j.query.grammar.Predicate;
 
 /**
- * TODO Add JavaDoc
+ * Utility class for mathcing an operator based on a predicate.
  *
  * @author Alin Dreghiciu
  * @since April 08, 2008
  */
-class ComparisonOperators
+class Operators
 {
-    private static final Map<Class, String> m_operators;
+    private static final Map<Class<? extends Predicate>, String> m_operators;
 
     static
     {
-        m_operators = new HashMap<Class, String>();
+        m_operators = new HashMap<Class<? extends Predicate>, String>();
         m_operators.put( EqualsPredicate.class, "=" );
         m_operators.put( GreaterOrEqualPredicate.class, ">=" );
         m_operators.put( GreaterThanPredicate.class, ">" );
@@ -50,17 +51,17 @@ class ComparisonOperators
     /**
      * Private constructor. Utility class.
      */
-    private ComparisonOperators()
+    private Operators()
     {
 
     }
 
-    static String getOperator( final Class predicateClass )
+    static String getOperator( final Class<? extends Predicate> predicateClass )
     {
         String operator = null;
-        for( Map.Entry<Class, String> entry : m_operators.entrySet() )
+        for( Map.Entry<Class<? extends Predicate>, String> entry : m_operators.entrySet() )
         {
-            if (entry.getKey().isAssignableFrom( predicateClass ))
+            if( entry.getKey().isAssignableFrom( predicateClass ) )
             {
                 operator = entry.getValue();
                 break;

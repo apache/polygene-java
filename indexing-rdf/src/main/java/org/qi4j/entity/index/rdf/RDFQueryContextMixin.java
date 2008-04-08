@@ -37,7 +37,8 @@ public class RDFQueryContextMixin
 
     public RDFQueryContextMixin()
     {
-        repository = new SailRepository( new ForwardChainingRDFSInferencer( new MemoryStore() ) );
+        //repository = new SailRepository( new ForwardChainingRDFSInferencer( new MemoryStore() ) );
+        repository = new SailRepository( new MemoryStore() );
         try
         {
             repository.initialize();
