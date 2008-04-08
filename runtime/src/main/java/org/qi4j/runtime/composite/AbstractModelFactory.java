@@ -106,6 +106,7 @@ public abstract class AbstractModelFactory
                     hasInjections = true;
                 }
                 parameterModels.add( parameterModel );
+                idx++;
             }
             if( hasInjections && hasNonInjectedParameters )
             {
