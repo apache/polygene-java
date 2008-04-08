@@ -28,22 +28,7 @@ import org.qi4j.property.Property;
  * Generic interface for a contact type such as home_office, phone_home, mobile_office,
  * mobile_private, icq, jabber, msn, yahoo, email.
  */
-@Mixins( ContactType.ContactTypeMixin.class )
 public interface ContactType
 {
     Property<String> contactType();
-
-    final class ContactTypeMixin
-        implements ContactType, Serializable
-    {
-        private static final long serialVersionUID = 1L;
-
-        @PropertyField
-        private Property<String> contactType;
-
-        public final Property<String> contactType()
-        {
-            return contactType;
-        }
-    }
 }

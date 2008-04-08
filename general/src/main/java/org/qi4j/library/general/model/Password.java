@@ -12,30 +12,12 @@
  */
 package org.qi4j.library.general.model;
 
-import java.io.Serializable;
-import org.qi4j.composite.Mixins;
-import org.qi4j.composite.scope.PropertyField;
 import org.qi4j.property.Property;
 
 /**
  * Generic interface for password
  */
-@Mixins( Password.PasswordMixin.class )
 public interface Password
 {
     Property<String> password();
-
-    final class PasswordMixin
-        implements Password, Serializable
-    {
-        private static final long serialVersionUID = 1L;
-
-        @PropertyField
-        private Property<String> password;
-
-        public Property<String> password()
-        {
-            return password;
-        }
-    }
 }

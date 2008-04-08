@@ -13,27 +13,9 @@
  */
 package org.qi4j.library.general.model;
 
-import java.io.Serializable;
-import org.qi4j.composite.Mixins;
-import org.qi4j.composite.scope.PropertyField;
 import org.qi4j.property.Property;
 
-@Mixins( Description.DescriptionMixin.class )
 public interface Description
 {
     Property<String> description();
-
-    final class DescriptionMixin
-        implements Description, Serializable
-    {
-        private static final long serialVersionUID = 1L;
-
-        @PropertyField
-        private Property<String> description;
-
-        public final Property<String> description()
-        {
-            return description;
-        }
-    }
 }

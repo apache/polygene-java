@@ -12,12 +12,12 @@
  */
 package org.qi4j.library.general.model.composites;
 
-import org.qi4j.composite.Composite;
 import org.qi4j.library.general.model.State;
+import org.qi4j.entity.EntityComposite;
 
 /**
  * Persistable State entity
  */
-public interface StateComposite extends State, Composite
+public interface StateComposite extends State, EntityComposite
 {
 }

@@ -12,30 +12,12 @@
  */
 package org.qi4j.library.general.model;
 
-import java.io.Serializable;
-import org.qi4j.composite.Mixins;
-import org.qi4j.composite.scope.PropertyField;
 import org.qi4j.property.Property;
 
 /**
  * Generic interface for a regular expression
  */
-@Mixins( RegularExpression.RegularExpressionMixin.class )
-public interface RegularExpression extends Serializable
+public interface RegularExpression
 {
     Property<String> regex();
-
-    final class RegularExpressionMixin
-        implements RegularExpression, Serializable
-    {
-        private static final long serialVersionUID = 1L;
-
-        @PropertyField
-        private Property<String> regex;
-
-        public final Property<String> regex()
-        {
-            return regex;
-        }
-    }
 }

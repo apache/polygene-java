@@ -13,12 +13,12 @@
 package org.qi4j.library.general.model.associations;
 
 import org.qi4j.library.general.model.State;
-import org.qi4j.property.Property;
+import org.qi4j.entity.association.Association;
 
 /**
  * Represents one-to-one relationship with {@link org.qi4j.library.general.model.State}
  */
 public interface HasState
 {
-    Property<State> state();
+    Association<State> state();
 }

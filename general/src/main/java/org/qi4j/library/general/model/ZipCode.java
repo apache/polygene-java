@@ -12,30 +12,12 @@
  */
 package org.qi4j.library.general.model;
 
-import java.io.Serializable;
-import org.qi4j.composite.Mixins;
-import org.qi4j.composite.scope.PropertyField;
 import org.qi4j.property.Property;
 
 /**
  * Generic interface for Zipcode that stores the zip-code value itself.
  */
-@Mixins( ZipCode.ZipCodeMixin.class )
-public interface ZipCode extends Serializable
+public interface ZipCode
 {
     Property<String> zipCode();
-
-    final class ZipCodeMixin
-        implements ZipCode, Serializable
-    {
-        private static final long serialVersionUID = 1L;
-
-        @PropertyField
-        private Property<String> zipCode;
-
-        public final Property<String> zipCode()
-        {
-            return zipCode;
-        }
-    }
 }

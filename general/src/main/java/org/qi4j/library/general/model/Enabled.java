@@ -12,28 +12,12 @@
  */
 package org.qi4j.library.general.model;
 
-import java.io.Serializable;
-import org.qi4j.composite.Mixins;
-import org.qi4j.composite.scope.PropertyField;
 import org.qi4j.property.Property;
 
 /**
  * Generic interface for enabling/disabling service.
  */
-@Mixins( Enabled.EnabledMixin.class )
 public interface Enabled
 {
     Property<Boolean> isEnabled();
-
-    final class EnabledMixin
-        implements Enabled, Serializable
-    {
-        @PropertyField
-        private Property<Boolean> isEnabled;
-
-        public Property<Boolean> isEnabled()
-        {
-            return isEnabled;
-        }
-    }
 }

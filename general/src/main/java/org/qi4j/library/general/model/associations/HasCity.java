@@ -13,12 +13,12 @@
 package org.qi4j.library.general.model.associations;
 
 import org.qi4j.library.general.model.City;
-import org.qi4j.property.Property;
+import org.qi4j.entity.association.Association;
 
 /**
  * Represents one-to-one relationship with {@link org.qi4j.library.general.model.composites.CityComposite}
  */
 public interface HasCity
 {
-    Property<City> city();
+    Association<City> city();
 }

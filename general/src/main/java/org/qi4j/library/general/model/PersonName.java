@@ -12,53 +12,38 @@
  */
 package org.qi4j.library.general.model;
 
-import java.io.Serializable;
+import org.qi4j.property.Property;
+import org.qi4j.property.ComputedPropertyInstance;
 import org.qi4j.composite.Mixins;
 import org.qi4j.composite.scope.PropertyField;
-import org.qi4j.property.Property;
+import org.qi4j.composite.scope.ThisCompositeAs;
 
 /**
  * Generic interface of PersonName that stores first and last name.
  */
 @Mixins( PersonName.PersonNameMixin.class )
-public interface PersonName extends Serializable
+public interface PersonName extends HasName
 {
-    String getFullname();
-
     Property<String> firstName();
 
     Property<String> lastName();
 
-    final class PersonNameMixin
-        implements PersonName, Serializable
+    public final class PersonNameMixin implements HasName
     {
-        private static final long serialVersionUID = 1L;
+        @ThisCompositeAs PersonName personName;
+        @PropertyField Property<String> name;
 
-        @PropertyField
-        private Property<String> firstName;
-
-        @PropertyField
-        private Property<String> lastName;
-
-        public final Property<String> firstName()
+        public Property<String> name()
         {
-            return firstName;
-        }
+            return new ComputedPropertyInstance<String>( name )
+            {
+                private String m_name = personName.firstName().get() + " " + personName.lastName().get();
 
-        public final Property<String> lastName()
-        {
-            return lastName;
-        }
-
-        public final String getFullname()
-        {
-            StringBuilder builder = new StringBuilder( 100 );
-
-            builder.append( firstName().get() );
-            builder.append( " " );
-            builder.append( lastName().get() );
-
-            return builder.toString().trim();
+                public String get()
+                {
+                    return m_name;
+                }
+            };
         }
     }
 }

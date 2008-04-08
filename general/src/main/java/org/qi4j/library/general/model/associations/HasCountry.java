@@ -12,17 +12,13 @@
  */
 package org.qi4j.library.general.model.associations;
 
-import java.io.Serializable;
-import org.qi4j.composite.Mixins;
-import org.qi4j.composite.scope.AssociationField;
 import org.qi4j.entity.association.Association;
 import org.qi4j.library.general.model.Country;
-import org.qi4j.property.Property;
 
 /**
  * Represents one-to-one relationship with {@link org.qi4j.library.general.model.Country}
  */
 public interface HasCountry
 {
-    Property<Country> country();
+    Association<Country> country();
 }

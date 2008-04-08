@@ -21,11 +21,11 @@ public enum GenderType
 
     public static GenderType getGenderType( String genderType )
     {
-        if( MALE.toString().equals( genderType ) )
+        if( MALE.toString().equalsIgnoreCase( genderType ) )
         {
             return MALE;
         }
-        else if( FEMALE.toString().equals( genderType ) )
+        else if( FEMALE.toString().equalsIgnoreCase( genderType ) )
         {
             return FEMALE;
         }
