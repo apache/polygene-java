@@ -41,6 +41,21 @@ public final class AssociationModel
         return accessor.getDeclaringClass().getName() + ":" + accessor.getName();
     }
 
+    /**
+     * Get URI for an association.
+     *
+     * @param accessor accessor method
+     * @return association URI
+     */
+    public static String toURI( final Method accessor )
+    {
+        if( accessor == null )
+        {
+            return null;
+        }
+        return "urn:qi4j:association:" + getQualifiedName( accessor );
+    }    
+
     private String name;
     private Type type;
     private Method accessor; // Interface accessor
@@ -90,8 +105,7 @@ public final class AssociationModel
 
     public String toURI()
     {
-        // TODO: Shall the URI contain the type (asscoaition), or is it always understood in a larger context??
-        return "urn:qi4j:association:" + getQualifiedName();
+        return toURI( accessor );
     }
 
 }

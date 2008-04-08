@@ -32,6 +32,21 @@ public final class PropertyModel
     private Method accessor; // Interface accessor
     private String qualifiedName;
 
+    /**
+     * Get URI for a property.
+     *
+     * @param accessor accessor method
+     * @return property URI
+     */
+    public static String toURI( final Method accessor )
+    {
+        if( accessor == null )
+        {
+            return null;
+        }
+        return "urn:qi4j:property:" + ComputedPropertyInstance.getQualifiedName( accessor );
+    }
+
     public PropertyModel( Method anAccessor )
     {
         name = anAccessor.getName();
@@ -71,8 +86,7 @@ public final class PropertyModel
 
     public String toURI()
     {
-        // TODO: Shall the URI contain the type (property), or is it always understood in a larger context??
-        return "urn:qi4j:property:" + getQualifiedName();
+        return toURI( accessor );
     }
 
     public boolean equals( Object o )

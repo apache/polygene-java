@@ -33,6 +33,24 @@ import org.qi4j.spi.property.PropertyModel;
  */
 public final class CompositeModel
 {
+
+    /**
+     * Get URI for a composite class.
+     *
+     * @param compositeClass composite class
+     * @return composite URI
+     */
+    public static String toURI( final Class<? extends Composite> compositeClass )
+    {
+        if( compositeClass == null )
+        {
+            return null;
+        }
+        String className = compositeClass.getName();
+        className = className.replace( '$', '&' );
+        return "urn:qi4j:" + className;
+    }
+    
     private Class<? extends Composite> compositeClass;
     private Class proxyClass;
     private Collection<CompositeMethodModel> compositeMethodModels;
@@ -224,10 +242,7 @@ public final class CompositeModel
 
     public String toURI()
     {
-        // TODO: Shall the URI contain the type ("type"), or is it always understood in a larger context??
-        String className = compositeClass.getName();
-        className = className.replace( '$', '&' );
-        return "urn:qi4j:type:" + className;
+        return toURI( compositeClass );
     }
 
     public String toString()

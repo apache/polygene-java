@@ -26,6 +26,24 @@ package org.qi4j.spi.composite;
 public final class MixinTypeModel
     implements Comparable<MixinTypeModel>
 {
+
+    /**
+     * Get URI for a mixin type class.
+     *
+     * @param mixinTypeClass mixin type class
+     * @return mixin type URI
+     */
+    public static String toURI( final Class mixinTypeClass )
+    {
+        if( mixinTypeClass == null )
+        {
+            return null;
+        }
+        String className = mixinTypeClass.getName();
+        className = className.replace( '$', '&' );
+        return "urn:qi4j:" + className;
+    }
+
     /**
      * Mixin type class.
      */
@@ -58,9 +76,7 @@ public final class MixinTypeModel
      */
     public String toURI()
     {
-        String className = mixinTypeClass.getName();
-        className = className.replace( '$', '&' );
-        return "urn:qi4j:mixinType:" + className;
+        return toURI( mixinTypeClass );
     }
 
     @Override public boolean equals( Object o )
@@ -76,12 +92,14 @@ public final class MixinTypeModel
 
         MixinTypeModel that = (MixinTypeModel) o;
 
-        if( mixinTypeClass != null ? !mixinTypeClass.equals( that.mixinTypeClass ) : that.mixinTypeClass != null )
+        if( mixinTypeClass != null )
         {
-            return false;
+            return mixinTypeClass.equals( that.mixinTypeClass );
         }
-
-        return true;
+        else
+        {
+            return that.mixinTypeClass == null;
+        }
     }
 
     @Override public int hashCode()
