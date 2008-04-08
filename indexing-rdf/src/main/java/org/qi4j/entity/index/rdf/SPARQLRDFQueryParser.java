@@ -27,13 +27,10 @@ import org.qi4j.query.grammar.AssociationReference;
 import org.qi4j.query.grammar.BooleanExpression;
 import org.qi4j.query.grammar.ComparisonPredicate;
 import org.qi4j.query.grammar.Conjunction;
-import org.qi4j.query.grammar.EqualsPredicate;
-import org.qi4j.query.grammar.GreaterOrEqualPredicate;
 import org.qi4j.query.grammar.PropertyReference;
 import org.qi4j.query.grammar.SingleValueExpression;
 import org.qi4j.query.grammar.ValueExpression;
 import org.qi4j.query.grammar.Disjunction;
-import org.qi4j.query.grammar.GreaterThanPredicate;
 
 /**
  * TODO Add JavaDoc
@@ -145,7 +142,7 @@ class SPARQLRDFQueryParser
                 .append( "(" )
                 .append( valueVariable )
                 .append( " " )
-                .append( ComparisonOperators.getOperator( predicate.getClass() ))
+                .append( Operators.getOperator( predicate.getClass() ))
                 .append( " \"" )
                 .append( ( (SingleValueExpression) valueExpression ).value() )
                 .append( "\")" );
