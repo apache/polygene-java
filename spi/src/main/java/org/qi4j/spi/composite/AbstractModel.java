@@ -130,7 +130,7 @@ public abstract class AbstractModel
             {
                 for( ParameterModel parameterModel : constructorModel.getParameters() )
                 {
-                    Class annotationType = parameterModel.getInjectionModel().getInjectionAnnotationType();
+                    Class<? extends Annotation> annotationType = parameterModel.getInjectionModel().getInjectionAnnotationType();
                     Set<InjectionModel> dependencyModels = injectionsByScope.get( annotationType );
                     if( dependencyModels == null )
                     {

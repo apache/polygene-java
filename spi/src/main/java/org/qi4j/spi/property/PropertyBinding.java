@@ -35,6 +35,31 @@ public final class PropertyBinding
         this.defaultValue = defaultValue;
         this.propertyInfo = propertyInfo;
         this.propertyResolution = propertyResolution;
+
+        // Better default values for primitives
+        if( defaultValue == null )
+        {
+            if( propertyResolution.getPropertyModel().getType().equals( Integer.class ) )
+            {
+                this.defaultValue = 0;
+            }
+            else if( propertyResolution.getPropertyModel().getType().equals( Long.class ) )
+            {
+                this.defaultValue = 0L;
+            }
+            else if( propertyResolution.getPropertyModel().getType().equals( Double.class ) )
+            {
+                this.defaultValue = 0.0D;
+            }
+            else if( propertyResolution.getPropertyModel().getType().equals( Float.class ) )
+            {
+                this.defaultValue = 0.0F;
+            }
+            else if( propertyResolution.getPropertyModel().getType().equals( Boolean.class ) )
+            {
+                this.defaultValue = false;
+            }
+        }
     }
 
     public PropertyResolution getPropertyResolution()

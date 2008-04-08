@@ -17,15 +17,16 @@
  */
 package org.qi4j.composite;
 
-import org.qi4j.composite.internal.SideEffectFor;
+import java.lang.reflect.InvocationHandler;
 
 /**
- * Base class for SideEffects. It introduces a typed "next" pointer
- * that SideEffects can use to get the result of the original invocation.
- * <p/>
- * Generic SideEffects should subclass {@link GenericSideEffect} instead.
+ * Base class for generic Concerns. Subclass
+ * and implement the "invoke" method. Use the
+ * "next" field in {@link ConcernOf} to continue the invocation
+ * chain.
  */
-public abstract class SideEffectOf<T>
+public abstract class GenericConcern
+    extends ConcernOf<InvocationHandler>
+    implements InvocationHandler
 {
-    @SideEffectFor protected T next;
 }

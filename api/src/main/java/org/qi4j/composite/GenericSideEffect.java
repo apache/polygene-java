@@ -17,15 +17,29 @@
  */
 package org.qi4j.composite;
 
-import org.qi4j.composite.internal.SideEffectFor;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
 
 /**
- * Base class for SideEffects. It introduces a typed "next" pointer
- * that SideEffects can use to get the result of the original invocation.
- * <p/>
- * Generic SideEffects should subclass {@link GenericSideEffect} instead.
+ * Base class for generic SideEffects.
  */
-public abstract class SideEffectOf<T>
+public abstract class GenericSideEffect
+    extends SideEffectOf<InvocationHandler>
+    implements InvocationHandler
 {
-    @SideEffectFor protected T next;
+    public Object invoke( Object o, Method method, Object[] objects ) throws Throwable
+    {
+        invoke( method, objects );
+        return null;
+    }
+
+    /**
+     * Override this method to avoid having to do "retun null;" in the code
+     *
+     * @param method  the method that was invoked
+     * @param objects the arguments of the method invocation
+     */
+    protected void invoke( Method method, Object[] objects )
+    {
+    }
 }

@@ -19,6 +19,13 @@ package org.qi4j.composite;
 
 import org.qi4j.composite.internal.ConcernFor;
 
+/**
+ * Base class for Concerns. It introduces a typed "next" pointer
+ * that Concerns can use to invoke the next Concern (or mixin) in
+ * the chain.
+ * <p/>
+ * Generic Concerns should subclass {@link GenericConcern} instead.
+ */
 public abstract class ConcernOf<T>
 {
     @ConcernFor protected T next;
