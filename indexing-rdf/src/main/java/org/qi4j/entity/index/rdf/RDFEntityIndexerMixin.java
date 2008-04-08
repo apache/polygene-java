@@ -17,10 +17,12 @@
  */
 package org.qi4j.entity.index.rdf;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
+import org.openrdf.model.BNode;
 import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.repository.RepositoryConnection;
@@ -141,6 +143,26 @@ public class RDFEntityIndexerMixin
                 final URI assocEntityURI = valueFactory.createURI( assocCompositeModel.toURI()
                                                                    + "/" + assocEntityId.getIdentity() );
                 connection.add( entityURI, assocURI, assocEntityURI );
+            }
+        }
+        // index many associations
+        for( String qualifiedName : entityState.getManyAssociationNames() )
+        {
+            final Collection<EntityId> assocEntityIds = entityState.getManyAssociation( qualifiedName );
+            if( assocEntityIds != null )
+            {
+                final AssociationBinding assocBinding = compositeBinding.getAssociationBinding( qualifiedName );
+                final AssociationModel assocModel = assocBinding.getAssociationResolution().getAssociationModel();
+                final URI assocURI = valueFactory.createURI( assocModel.toURI() );
+                
+                for( EntityId assocEntityId : assocEntityIds )
+                {
+                    final Class assocCompositeClass = moduleBinding.lookupClass( assocEntityId.getCompositeType() );
+                    final CompositeBinding assocCompositeBinding = moduleBinding.getCompositeBinding( assocCompositeClass );
+                    final CompositeModel assocCompositeModel = assocCompositeBinding.getCompositeResolution().getCompositeModel();
+                    final URI assocEntityURI = valueFactory.createURI( assocCompositeModel.toURI()
+                                                                       + "/" + assocEntityId.getIdentity() );
+                }
             }
         }
     }
