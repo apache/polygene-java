@@ -42,7 +42,7 @@ public class RDFEntitySearcherMixin
     implements EntitySearcher
 {
 
-    @ThisCompositeAs RDFQueryContext state;
+    @ThisCompositeAs RDFQueryContext queryContext;
 
     public Iterable<String> find( final Class entityType,
                                   final BooleanExpression whereClause )
@@ -51,7 +51,7 @@ public class RDFEntitySearcherMixin
         final Collection<String> entities = new HashSet<String>();
         try
         {
-            final RepositoryConnection connection = state.getRepository().getConnection();
+            final RepositoryConnection connection = queryContext.getRepository().getConnection();
             // TODO shall we support different implementation as SERQL?
             final RDFQueryParser parser = new SPARQLRDFQueryParser();
             final TupleQuery tupleQuery = connection.prepareTupleQuery(

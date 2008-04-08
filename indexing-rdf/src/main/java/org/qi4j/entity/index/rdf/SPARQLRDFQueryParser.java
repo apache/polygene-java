@@ -32,6 +32,8 @@ import org.qi4j.query.grammar.GreaterOrEqualPredicate;
 import org.qi4j.query.grammar.PropertyReference;
 import org.qi4j.query.grammar.SingleValueExpression;
 import org.qi4j.query.grammar.ValueExpression;
+import org.qi4j.query.grammar.Disjunction;
+import org.qi4j.query.grammar.GreaterThanPredicate;
 
 /**
  * TODO Add JavaDoc
@@ -115,21 +117,24 @@ class SPARQLRDFQueryParser
                 .append( process( ( (Conjunction) expression ).rightSideExpression() ) )
                 .append( ")" );
         }
-        else if( expression instanceof EqualsPredicate )
+        else if( expression instanceof Disjunction )
         {
-            processComparisonPredicate( (ComparisonPredicate) expression, "=", filter );
-
+            filter
+                .append( "(" )
+                .append( process( ( (Disjunction) expression ).leftSideExpression() ) )
+                .append( " || " )
+                .append( process( ( (Disjunction) expression ).rightSideExpression() ) )
+                .append( ")" );
         }
-        else if( expression instanceof GreaterOrEqualPredicate )
+        else if( expression instanceof ComparisonPredicate )
         {
-            processComparisonPredicate( (ComparisonPredicate) expression, ">=", filter );
+            processComparisonPredicate( (ComparisonPredicate) expression, filter );
 
         }
         return filter.toString();
     }
 
     private void processComparisonPredicate( final ComparisonPredicate predicate,
-                                             final String operator,
                                              final StringBuilder filter )
     {
         String valueVariable = addTriple( predicate.propertyReference() );
@@ -140,7 +145,7 @@ class SPARQLRDFQueryParser
                 .append( "(" )
                 .append( valueVariable )
                 .append( " " )
-                .append( operator )
+                .append( ComparisonOperators.getOperator( predicate.getClass() ))
                 .append( " \"" )
                 .append( ( (SingleValueExpression) valueExpression ).value() )
                 .append( "\")" );
