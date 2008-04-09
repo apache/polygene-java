@@ -17,23 +17,19 @@
  */
 package org.qi4j.query.grammar.impl;
 
-import org.qi4j.query.grammar.NullPredicate;
+import org.qi4j.query.grammar.PropertyIsNotNullPredicate;
 import org.qi4j.query.grammar.PropertyReference;
 
 /**
- * Generic {@link org.qi4j.query.grammar.NullPredicate} implementation.
+ * Default {@link org.qi4j.query.grammar.PropertyIsNotNullPredicate} implementation.
  *
  * @author Alin Dreghiciu
- * @since March 28, 2008
+ * @since March 25, 2008
  */
-public abstract class NullPredicateImpl<T>
-    implements NullPredicate<T>
+public class PropertyIsNotNullPredicateImpl<T>
+    extends PropertyNullPredicateImpl<T>
+    implements PropertyIsNotNullPredicate<T>
 {
-
-    /**
-     * Property reference.
-     */
-    private final PropertyReference<T> propertyReference;
 
     /**
      * Constructor.
@@ -41,21 +37,18 @@ public abstract class NullPredicateImpl<T>
      * @param propertyReference property reference; cannot be null
      * @throws IllegalArgumentException - If property reference is null
      */
-    protected NullPredicateImpl( final PropertyReference<T> propertyReference )
+    public PropertyIsNotNullPredicateImpl( final PropertyReference<T> propertyReference )
     {
-        if( propertyReference == null )
-        {
-            throw new IllegalArgumentException( "Property reference cannot be null" );
-        }
-        this.propertyReference = propertyReference;
+        super( propertyReference );
     }
 
-    /**
-     * @see org.qi4j.query.grammar.NullPredicate#propertyReference()
-     */
-    public PropertyReference<T> propertyReference()
+    @Override public String toString()
     {
-        return propertyReference;
+        return new StringBuilder()
+            .append( "( " )
+            .append( propertyReference() )
+            .append( " IS NOT NULL )" )
+            .toString();
     }
 
 }

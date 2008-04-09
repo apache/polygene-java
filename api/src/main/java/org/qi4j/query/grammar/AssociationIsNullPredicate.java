@@ -19,12 +19,12 @@
 package org.qi4j.query.grammar;
 
 /**
- * Constraints that a {@link org.qi4j.property.Property} is null (not set).
+ * Constraints that an {@link org.qi4j.entity.association.Association} is null (not set).
  *
  * @author Alin Dreghiciu
- * @since March 28, 2008
+ * @since April 09, 2008
  */
-public interface IsNullPredicate<T>
-    extends NullPredicate<T>
+public interface AssociationIsNullPredicate
+    extends AssociationNullPredicate
 {
 }

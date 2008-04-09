@@ -45,7 +45,7 @@ public interface AssociationReference
      *
      * @return accessor method
      */
-    Method associationAccessor();    
+    Method associationAccessor();
 
     /**
      * Get the type of the assocition. If the association is declared as Association<X> then X is returned.

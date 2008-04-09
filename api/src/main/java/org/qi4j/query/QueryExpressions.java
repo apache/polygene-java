@@ -21,31 +21,37 @@
 package org.qi4j.query;
 
 import java.lang.reflect.Proxy;
+import org.qi4j.entity.association.Association;
 import org.qi4j.property.Property;
+import org.qi4j.query.grammar.AssociationIsNotNullPredicate;
+import org.qi4j.query.grammar.AssociationIsNullPredicate;
+import org.qi4j.query.grammar.AssociationReference;
 import org.qi4j.query.grammar.BooleanExpression;
 import org.qi4j.query.grammar.Conjunction;
 import org.qi4j.query.grammar.Disjunction;
 import org.qi4j.query.grammar.EqualsPredicate;
 import org.qi4j.query.grammar.GreaterOrEqualPredicate;
 import org.qi4j.query.grammar.GreaterThanPredicate;
-import org.qi4j.query.grammar.IsNotNullPredicate;
-import org.qi4j.query.grammar.IsNullPredicate;
 import org.qi4j.query.grammar.LessOrEqualPredicate;
 import org.qi4j.query.grammar.LessThanPredicate;
 import org.qi4j.query.grammar.Negation;
 import org.qi4j.query.grammar.NotEqualsPredicate;
+import org.qi4j.query.grammar.PropertyIsNotNullPredicate;
+import org.qi4j.query.grammar.PropertyIsNullPredicate;
 import org.qi4j.query.grammar.PropertyReference;
+import org.qi4j.query.grammar.impl.AssociationIsNotNullPredicateImpl;
+import org.qi4j.query.grammar.impl.AssociationIsNullPredicateImpl;
 import org.qi4j.query.grammar.impl.ConjunctionImpl;
 import org.qi4j.query.grammar.impl.DisjunctionImpl;
 import org.qi4j.query.grammar.impl.EqualsPredicateImpl;
 import org.qi4j.query.grammar.impl.GreaterOrEqualPredicateImpl;
 import org.qi4j.query.grammar.impl.GreaterThanPredicateImpl;
-import org.qi4j.query.grammar.impl.IsNotNullPredicateImpl;
-import org.qi4j.query.grammar.impl.IsNullPredicateImpl;
 import org.qi4j.query.grammar.impl.LessOrEqualPredicateImpl;
 import org.qi4j.query.grammar.impl.LessThanPredicateImpl;
 import org.qi4j.query.grammar.impl.NegationImpl;
 import org.qi4j.query.grammar.impl.NotEqualsPredicateImpl;
+import org.qi4j.query.grammar.impl.PropertyIsNotNullPredicateImpl;
+import org.qi4j.query.grammar.impl.PropertyIsNullPredicateImpl;
 import org.qi4j.query.grammar.impl.StaticValueExpression;
 import org.qi4j.query.grammar.impl.VariableValueExpression;
 import org.qi4j.query.proxy.MixinTypeProxy;
@@ -113,27 +119,51 @@ public class QueryExpressions
     }
 
     /**
-     * {@link org.qi4j.query.grammar.impl.IsNullPredicateImpl} factory method.
+     * {@link org.qi4j.query.grammar.impl.PropertyIsNullPredicateImpl} factory method.
      *
      * @param property filtered property; cannot be null
-     * @return an {@link org.qi4j.query.grammar.impl.IsNullPredicateImpl} expression
-     * @throws IllegalArgumentException - If property or value are null
+     * @return an {@link org.qi4j.query.grammar.impl.PropertyIsNullPredicateImpl} expression
+     * @throws IllegalArgumentException - If property is null
      */
-    public static <T> IsNullPredicate<T> isNull( final Property<T> property )
+    public static <T> PropertyIsNullPredicate<T> isNull( final Property<T> property )
     {
-        return new IsNullPredicateImpl<T>( asPropertyExpression( property ) );
+        return new PropertyIsNullPredicateImpl<T>( asPropertyExpression( property ) );
     }
 
     /**
-     * {@link org.qi4j.query.grammar.impl.IsNotNullPredicateImpl} factory method.
+     * {@link org.qi4j.query.grammar.impl.AssociationIsNullPredicateImpl} factory method.
+     *
+     * @param association filtered association; cannot be null
+     * @return an {@link org.qi4j.query.grammar.impl.AssociationIsNullPredicateImpl} expression
+     * @throws IllegalArgumentException - If association is null
+     */
+    public static AssociationIsNullPredicate isNull( final Association association )
+    {
+        return new AssociationIsNullPredicateImpl( asAssociationExpression( association ) );
+    }
+
+    /**
+     * {@link org.qi4j.query.grammar.impl.PropertyIsNotNullPredicateImpl} factory method.
      *
      * @param property filtered property; cannot be null
-     * @return an {@link org.qi4j.query.grammar.impl.IsNotNullPredicateImpl} expression
-     * @throws IllegalArgumentException - If propertyis null
+     * @return an {@link org.qi4j.query.grammar.impl.PropertyIsNotNullPredicateImpl} expression
+     * @throws IllegalArgumentException - If property is null
      */
-    public static <T> IsNotNullPredicate<T> isNotNull( final Property<T> property )
+    public static <T> PropertyIsNotNullPredicate<T> isNotNull( final Property<T> property )
     {
-        return new IsNotNullPredicateImpl<T>( asPropertyExpression( property ) );
+        return new PropertyIsNotNullPredicateImpl<T>( asPropertyExpression( property ) );
+    }
+
+    /**
+     * {@link org.qi4j.query.grammar.impl.AssociationIsNotNullPredicateImpl} factory method.
+     *
+     * @param association filtered association; cannot be null
+     * @return an {@link org.qi4j.query.grammar.impl.AssociationIsNotNullPredicateImpl} expression
+     * @throws IllegalArgumentException - If association is null
+     */
+    public static AssociationIsNotNullPredicate isNotNull( final Association association )
+    {
+        return new AssociationIsNotNullPredicateImpl( asAssociationExpression( association ) );
     }
 
     /**
@@ -324,6 +354,7 @@ public class QueryExpressions
      * @return adapted property expression
      * @throws IllegalArgumentException - If property is null or is not an property expression
      */
+    @SuppressWarnings( "unchecked" )
     private static <T> PropertyReference<T> asPropertyExpression( final Property<T> property )
     {
         if( property == null )
@@ -333,10 +364,32 @@ public class QueryExpressions
         if( !( property instanceof PropertyReference ) )
         {
             throw new IllegalArgumentException(
-                "Invalid property. Properties used in queries must be a result of using QueryBuilder.parameter(...)."
+                "Invalid property. Properties used in queries must be a result of using QueryBuilder.templateFor(...)."
             );
         }
         return (PropertyReference<T>) property;
+    }
+
+    /**
+     * Adapts an {@link Association} to a {@link org.qi4j.query.grammar.AssociationReference}.
+     *
+     * @param association to be adapted; cannot be null
+     * @return adapted association expression
+     * @throws IllegalArgumentException - If association is null or is not an association expression
+     */
+    private static AssociationReference asAssociationExpression( final Association association )
+    {
+        if( association == null )
+        {
+            throw new IllegalArgumentException( "Association cannot be null" );
+        }
+        if( !( association instanceof AssociationReference ) )
+        {
+            throw new IllegalArgumentException(
+                "Invalid property. Association used in queries must be a result of using QueryBuilder.templateFor(...)."
+            );
+        }
+        return (AssociationReference) association;
     }
 
     /**

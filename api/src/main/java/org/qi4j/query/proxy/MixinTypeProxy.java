@@ -78,7 +78,7 @@ public class MixinTypeProxy
             {
                 return Proxy.newProxyInstance(
                     this.getClass().getClassLoader(),
-                    new Class[]{ method.getReturnType() },
+                    new Class[]{ method.getReturnType(), AssociationReference.class },
                     new AssociationReferenceProxy( new AssociationReferenceImpl( method, traversed ) )
                 );
             }

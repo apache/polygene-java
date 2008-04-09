@@ -60,6 +60,11 @@ public class AssociationReferenceProxy
                 new MixinTypeProxy( traversed )
             );
         }
+        if( "toString".equals( method.getName() ) )
+        {
+            return traversed.toString();
+        }
+        // TODO handle equals/hashcode?
         throw new UnsupportedOperationException( "Only property methods can be used for queries" );
     }
 

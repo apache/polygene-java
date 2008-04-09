@@ -19,10 +19,12 @@
 package org.qi4j.query.grammar;
 
 /**
- * TODO Add JavaDoc
+ * Constraints that a {@link org.qi4j.property.Property} is null (not set).
+ *
+ * @author Alin Dreghiciu
+ * @since March 28, 2008
  */
-public interface NullPredicate<T>
-    extends Predicate
+public interface PropertyIsNullPredicate<T>
+    extends PropertyNullPredicate<T>
 {
-    PropertyReference<T> propertyReference();
 }

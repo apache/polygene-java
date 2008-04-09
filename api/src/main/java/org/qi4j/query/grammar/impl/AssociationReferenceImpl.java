@@ -68,7 +68,7 @@ public class AssociationReferenceImpl
     /**
      * Constructor.
      *
-     * @param accessor    method that acts as association
+     * @param accessor  method that acts as association
      * @param traversed traversed association
      */
     public AssociationReferenceImpl( final Method accessor,

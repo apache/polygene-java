@@ -17,37 +17,37 @@
  */
 package org.qi4j.query.grammar.impl;
 
-import org.qi4j.query.grammar.IsNotNullPredicate;
-import org.qi4j.query.grammar.PropertyReference;
+import org.qi4j.query.grammar.AssociationIsNullPredicate;
+import org.qi4j.query.grammar.AssociationReference;
 
 /**
- * Constraints that a {@link org.qi4j.property.Property} is not null (is set).
+ * Default {@link org.qi4j.query.grammar.AssociationIsNullPredicate} implementation.
  *
  * @author Alin Dreghiciu
- * @since March 25, 2008
+ * @since 0.2.0, April 09, 2008
  */
-public class IsNotNullPredicateImpl<T>
-    extends NullPredicateImpl<T>
-    implements IsNotNullPredicate<T>
+public class AssociationIsNullPredicateImpl
+    extends AssociationNullPredicateImpl
+    implements AssociationIsNullPredicate
 {
 
     /**
      * Constructor.
      *
-     * @param propertyReference property reference; cannot be null
-     * @throws IllegalArgumentException - If property reference is null
+     * @param associationReference association reference; cannot be null
+     * @throws IllegalArgumentException - If association reference is null
      */
-    public IsNotNullPredicateImpl( final PropertyReference<T> propertyReference )
+    public AssociationIsNullPredicateImpl( final AssociationReference associationReference )
     {
-        super( propertyReference );
+        super( associationReference );
     }
 
     @Override public String toString()
     {
         return new StringBuilder()
             .append( "( " )
-            .append( propertyReference() )
-            .append( " IS NOT NULL )" )
+            .append( associationReference() )
+            .append( " IS NULL )" )
             .toString();
     }
 
