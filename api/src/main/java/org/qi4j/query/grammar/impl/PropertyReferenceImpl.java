@@ -43,6 +43,10 @@ public class PropertyReferenceImpl
      */
     private final Class declaringType;
     /**
+     * Property accessor method.
+     */
+    private final Method accessor;
+    /**
      * Property type.
      */
     private final Class type;
@@ -54,58 +58,26 @@ public class PropertyReferenceImpl
     /**
      * Constructor.
      *
-     * @param name          property name; cannot be null
-     * @param declaringType type that declared the property; cannot be null
-     * @param type;         property type
+     * @param accessor method that acts as property
      */
-    public PropertyReferenceImpl( final String name,
-                                  final Class declaringType,
-                                  final Class type )
+    public PropertyReferenceImpl( final Method accessor )
     {
-        this( name, declaringType, type, null );
+        this( accessor, null );
     }
 
     /**
      * Constructor.
      *
-     * @param name          property name; cannot be null
-     * @param declaringType type that declared the property; cannot be null
-     * @param type;         property type
-     * @param traversed     traversed association
+     * @param accessor  method that acts as property
+     * @param traversed traversed association
      */
-    public PropertyReferenceImpl( final String name,
-                                  final Class declaringType,
-                                  final Class type,
+    public PropertyReferenceImpl( final Method accessor,
                                   final AssociationReference traversed )
     {
-        this.name = name;
-        this.declaringType = declaringType;
-        this.type = type;
-        this.traversed = traversed;
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param propertyMethod method that acts as property
-     */
-    public PropertyReferenceImpl( final Method propertyMethod )
-    {
-        this( propertyMethod, null );
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param propertyMethod method that acts as property
-     * @param traversed      traversed association
-     */
-    public PropertyReferenceImpl( final Method propertyMethod,
-                                  final AssociationReference traversed )
-    {
-        name = propertyMethod.getName();
-        declaringType = propertyMethod.getDeclaringClass();
-        Type returnType = propertyMethod.getGenericReturnType();
+        this.accessor = accessor;
+        name = accessor.getName();
+        declaringType = accessor.getDeclaringClass();
+        Type returnType = accessor.getGenericReturnType();
         if( !( returnType instanceof ParameterizedType ) )
         {
             throw new UnsupportedOperationException( "Unsupported property type:" + returnType );
@@ -133,6 +105,14 @@ public class PropertyReferenceImpl
     public Class propertyDeclaringType()
     {
         return declaringType;
+    }
+
+    /**
+     * @see PropertyReference#propertyAccessor()
+     */
+    public Method propertyAccessor()
+    {
+        return accessor;
     }
 
     /**

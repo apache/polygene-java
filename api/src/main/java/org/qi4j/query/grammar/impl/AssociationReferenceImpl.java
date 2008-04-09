@@ -24,7 +24,7 @@ import java.lang.reflect.Type;
 import org.qi4j.query.grammar.AssociationReference;
 
 /**
- * Default {@link org.qi4j.query.grammar.AssociationReference}.
+ * Default {@link AssociationReference}.
  *
  * @author Alin Dreghiciu
  * @since March 28, 2008
@@ -42,6 +42,10 @@ public class AssociationReferenceImpl
      */
     private final Class declaringType;
     /**
+     * Association accessor method.
+     */
+    private final Method accessor;
+    /**
      * Association type.
      */
     private final Class type;
@@ -53,59 +57,27 @@ public class AssociationReferenceImpl
     /**
      * Constructor.
      *
-     * @param name          association name; cannot be null
-     * @param declaringType type that declared the association; cannot be null
-     * @param type;         association type
+     * @param accessor method that acts as association
      */
-    public AssociationReferenceImpl( final String name,
-                                     final Class declaringType,
-                                     final Class type )
+    public AssociationReferenceImpl( final Method accessor )
     {
-        this( name, declaringType, type, null );
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param name          association name; cannot be null
-     * @param declaringType type that declared the association; cannot be null
-     * @param type;         association type
-     * @param traversed     traversed association
-     */
-    public AssociationReferenceImpl( final String name,
-                                     final Class declaringType,
-                                     final Class type,
-                                     final AssociationReference traversed )
-    {
-        this.name = name;
-        this.declaringType = declaringType;
-        this.type = type;
-        this.traversed = traversed;
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param method method that acts as association
-     */
-    public AssociationReferenceImpl( final Method method )
-    {
-        this( method, null );
+        this( accessor, null );
     }
 
 
     /**
      * Constructor.
      *
-     * @param method    method that acts as association
+     * @param accessor    method that acts as association
      * @param traversed traversed association
      */
-    public AssociationReferenceImpl( final Method method,
+    public AssociationReferenceImpl( final Method accessor,
                                      final AssociationReference traversed )
     {
-        name = method.getName();
-        declaringType = method.getDeclaringClass();
-        Type returnType = method.getGenericReturnType();
+        this.accessor = accessor;
+        name = accessor.getName();
+        declaringType = accessor.getDeclaringClass();
+        Type returnType = accessor.getGenericReturnType();
         if( !( returnType instanceof ParameterizedType ) )
         {
             throw new UnsupportedOperationException( "Unsupported association type:" + returnType );
@@ -128,11 +100,19 @@ public class AssociationReferenceImpl
     }
 
     /**
-     * @see org.qi4j.query.grammar.AssociationReference#associationDeclaringType()
+     * @see AssociationReference#associationDeclaringType()
      */
     public Class associationDeclaringType()
     {
         return declaringType;
+    }
+
+    /**
+     * @see AssociationReference#associationAccessor()
+     */
+    public Method associationAccessor()
+    {
+        return accessor;
     }
 
     /**

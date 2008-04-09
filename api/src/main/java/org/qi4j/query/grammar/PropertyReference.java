@@ -18,6 +18,8 @@
  */
 package org.qi4j.query.grammar;
 
+import java.lang.reflect.Method;
+
 /**
  * An expression related to {@link org.qi4j.property.Property}.
  */
@@ -37,6 +39,13 @@ public interface PropertyReference<T>
      * @return the type of property that declared the property
      */
     Class propertyDeclaringType();
+
+    /**
+     * Get the accessor method for the property.
+     *
+     * @return accessor method
+     */
+    Method propertyAccessor();
 
     /**
      * Get the type of the property. If the property is declared as Property<X> then X is returned.

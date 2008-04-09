@@ -18,6 +18,8 @@
  */
 package org.qi4j.query.grammar;
 
+import java.lang.reflect.Method;
+
 /**
  * An expression related to {@link org.qi4j.entity.association.Association}.
  */
@@ -37,6 +39,13 @@ public interface AssociationReference
      * @return the type of property that declared the association
      */
     Class associationDeclaringType();
+
+    /**
+     * Get the accessor method for the association.
+     *
+     * @return accessor method
+     */
+    Method associationAccessor();    
 
     /**
      * Get the type of the assocition. If the association is declared as Association<X> then X is returned.
