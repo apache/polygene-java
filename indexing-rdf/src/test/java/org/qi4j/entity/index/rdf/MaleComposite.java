@@ -17,18 +17,13 @@
  */
 package org.qi4j.entity.index.rdf;
 
-import java.io.OutputStream;
-import org.qi4j.composite.Mixins;
-
 /**
  * TODO Add JavaDoc
  *
  * @author Alin Dreghiciu
- * @since March 24, 2008
+ * @since April 09, 2008
  */
-@Mixins( RDFIndexerExporterMixin.class )
-public interface RDFIndexerExporterComposite
-    extends RDFQueryService
+public interface MaleComposite
+    extends Male, PersonComposite
 {
-    void toRDF( OutputStream outputStream );
 }

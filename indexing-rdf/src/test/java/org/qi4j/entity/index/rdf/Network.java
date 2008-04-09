@@ -53,22 +53,23 @@ class Network
         City kualaLumpur = cityBuilder.newInstance();
         kualaLumpur.name().set( "Kuala Lumpur" );
         kualaLumpur.country().set( "Malaysia" );
-        kualaLumpur.county().set( "Some Jaya");
+        kualaLumpur.county().set( "Some Jaya" );
 
         City penang = cityBuilder.newInstance();
         penang.name().set( "Penang" );
         penang.country().set( "Malaysia" );
-        penang.county().set( "Some Other Jaya");
+        penang.county().set( "Some Other Jaya" );
 
-        CompositeBuilder<PersonComposite> personBuilder = unitOfWork.newEntityBuilder( PersonComposite.class );
+        CompositeBuilder<MaleComposite> maleBuilder = unitOfWork.newEntityBuilder( MaleComposite.class );
+        CompositeBuilder<FemaleComposite> femaleBuilder = unitOfWork.newEntityBuilder( FemaleComposite.class );
 
-        Person annDoe = personBuilder.newInstance();
+        Person annDoe = femaleBuilder.newInstance();
         annDoe.name().set( "Ann Doe" );
         annDoe.placeOfBirth().set( kualaLumpur );
         annDoe.yearOfBirth().set( 1975 );
         annDoe.interests().add( cooking );
 
-        Person joeDoe = personBuilder.newInstance();
+        Person joeDoe = maleBuilder.newInstance();
         joeDoe.name().set( "Joe Doe" );
         joeDoe.placeOfBirth().set( kualaLumpur );
         joeDoe.yearOfBirth().set( 1990 );
@@ -76,7 +77,7 @@ class Network
         joeDoe.interests().add( programming );
         joeDoe.interests().add( gaming );
 
-        Person jackDoe = personBuilder.newInstance();
+        Person jackDoe = maleBuilder.newInstance();
         jackDoe.name().set( "Jack Doe" );
         jackDoe.placeOfBirth().set( penang );
         jackDoe.yearOfBirth().set( 1970 );

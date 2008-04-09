@@ -42,7 +42,8 @@ public class SesameQueryTest
             public void assemble( ModuleAssembly module ) throws AssemblyException
             {
                 module.addComposites(
-                    PersonComposite.class,
+                    MaleComposite.class,
+                    FemaleComposite.class,
                     CityComposite.class,
                     DomainComposite.class,
                     CatComposite.class
@@ -138,6 +139,34 @@ public class SesameQueryTest
             and(
                 ge( person.yearOfBirth(), 1900 ),
                 eq( person.placeOfBirth().get().name(), "Penang" )
+            )
+        );
+    }
+
+    @Test
+    public void script08() throws SearchException
+    {
+        Person person = templateFor( Person.class );
+        // should return Jack and Ann Doe
+        searchEngine.find(
+            Person.class,
+            or(
+                eq( person.yearOfBirth(), 1970 ),
+                eq( person.yearOfBirth(), 1975 )
+            )
+        );
+    }
+
+    @Test
+    public void script09() throws SearchException
+    {
+        Person person = templateFor( Person.class );
+        // should return Ann Doe
+        searchEngine.find(
+            Female.class,
+            or(
+                eq( person.yearOfBirth(), 1970 ),
+                eq( person.yearOfBirth(), 1975 )
             )
         );
     }

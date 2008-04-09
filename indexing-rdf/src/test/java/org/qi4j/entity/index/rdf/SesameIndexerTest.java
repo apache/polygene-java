@@ -35,7 +35,8 @@ public class SesameIndexerTest
             public void assemble( ModuleAssembly module ) throws AssemblyException
             {
                 module.addComposites(
-                    PersonComposite.class,
+                    MaleComposite.class,
+                    FemaleComposite.class,
                     CityComposite.class,
                     DomainComposite.class,
                     CatComposite.class
