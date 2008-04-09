@@ -47,6 +47,21 @@ public final class PropertyModel
         return "urn:qi4j:property:" + ComputedPropertyInstance.getQualifiedName( accessor );
     }
 
+    /**
+     * Get namespace for a property.
+     *
+     * @param accessor accessor method
+     * @return property namespace
+     */
+    public static String toNamespace( final Method accessor )
+    {
+        if( accessor == null )
+        {
+            return null;
+        }
+        return "urn:qi4j:property:" + ComputedPropertyInstance.getDeclaringClassName( accessor ) + ":";
+    }
+
     public PropertyModel( Method anAccessor )
     {
         name = anAccessor.getName();

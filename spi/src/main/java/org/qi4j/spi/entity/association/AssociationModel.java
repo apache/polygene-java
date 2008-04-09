@@ -17,6 +17,7 @@ package org.qi4j.spi.entity.association;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import org.qi4j.property.ComputedPropertyInstance;
 
 /**
  * TODO
@@ -34,6 +35,11 @@ public final class AssociationModel
     {
         int idx = qualifiedName.lastIndexOf( ":" );
         return qualifiedName.substring( 0, idx + 1 );
+    }
+
+    public static String getDeclaringClassName( Method accessor )
+    {
+        return accessor.getDeclaringClass().getName();
     }
 
     public static String getQualifiedName( Method accessor )
@@ -54,7 +60,22 @@ public final class AssociationModel
             return null;
         }
         return "urn:qi4j:association:" + getQualifiedName( accessor );
-    }    
+    }
+
+    /**
+     * Get namespace for an association.
+     *
+     * @param accessor accessor method
+     * @return association namespace
+     */
+    public static String toNamespace( final Method accessor )
+    {
+        if( accessor == null )
+        {
+            return null;
+        }
+        return "urn:qi4j:association:" + ComputedPropertyInstance.getDeclaringClassName( accessor ) + ":";
+    }
 
     private String name;
     private Type type;

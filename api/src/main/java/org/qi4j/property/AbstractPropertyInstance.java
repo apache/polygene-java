@@ -44,6 +44,11 @@ public abstract class AbstractPropertyInstance<T>
         return qualifiedName.substring( 0, idx + 1 );
     }
 
+    public static String getDeclaringClassName( Method accessor )
+    {
+        return accessor.getDeclaringClass().getName();
+    }
+
     public static String getQualifiedName( Method accessor )
     {
         String className = accessor.getDeclaringClass().getName();
