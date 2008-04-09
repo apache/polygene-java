@@ -17,6 +17,8 @@
  */
 package org.qi4j.entity.index.rdf;
 
+import org.qi4j.entity.association.Association;
+
 /**
  * TODO Add JavaDoc
  *
@@ -24,5 +26,7 @@ package org.qi4j.entity.index.rdf;
  * @since April 09, 2008
  */
 public interface Male
+    extends Person
 {
+    Association<Female> wife();
 }

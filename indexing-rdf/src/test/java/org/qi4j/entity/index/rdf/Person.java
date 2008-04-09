@@ -34,7 +34,11 @@ public interface Person
 
     Property<Integer> yearOfBirth();
 
-    Association<Person> mother();
+    Association<Female> mother();
+
+    Association<Male> father();
 
     ManyAssociation<Domain> interests();
+
+    Property<String> email();
 }

@@ -63,13 +63,13 @@ class Network
         CompositeBuilder<MaleComposite> maleBuilder = unitOfWork.newEntityBuilder( MaleComposite.class );
         CompositeBuilder<FemaleComposite> femaleBuilder = unitOfWork.newEntityBuilder( FemaleComposite.class );
 
-        Person annDoe = femaleBuilder.newInstance();
+        Female annDoe = femaleBuilder.newInstance();
         annDoe.name().set( "Ann Doe" );
         annDoe.placeOfBirth().set( kualaLumpur );
         annDoe.yearOfBirth().set( 1975 );
         annDoe.interests().add( cooking );
 
-        Person joeDoe = maleBuilder.newInstance();
+        Male joeDoe = maleBuilder.newInstance();
         joeDoe.name().set( "Joe Doe" );
         joeDoe.placeOfBirth().set( kualaLumpur );
         joeDoe.yearOfBirth().set( 1990 );
@@ -77,7 +77,7 @@ class Network
         joeDoe.interests().add( programming );
         joeDoe.interests().add( gaming );
 
-        Person jackDoe = maleBuilder.newInstance();
+        Male jackDoe = maleBuilder.newInstance();
         jackDoe.name().set( "Jack Doe" );
         jackDoe.placeOfBirth().set( penang );
         jackDoe.yearOfBirth().set( 1970 );

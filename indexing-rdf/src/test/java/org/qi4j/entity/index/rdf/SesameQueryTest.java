@@ -184,4 +184,50 @@ public class SesameQueryTest
         );
     }
 
+    @Test
+    public void script11() throws SearchException
+    {
+        Person person = templateFor( Person.class );
+        // should return Joe and Jack Doe
+        searchEngine.find(
+            Person.class,
+            isNotNull( person.email() )
+        );
+    }
+
+    @Test
+    public void script12() throws SearchException
+    {
+        Person person = templateFor( Person.class );
+        // should return Joe and Jack Doe
+        searchEngine.find(
+            Person.class,
+            isNull( person.email() )
+        );
+    }
+
+    @Test
+    public void script13() throws SearchException
+    {
+        Male person = templateFor( Male.class );
+        // should return Joe and Jack Doe
+        searchEngine.find(
+            Person.class,
+            isNotNull( person.wife() )
+        );
+    }
+
+    @Test
+    public void script14() throws SearchException
+    {
+        Male person = templateFor( Male.class );
+        // should return Joe and Jack Doe
+        searchEngine.find(
+            Person.class,
+            isNull( person.wife() )
+        );
+    }
+
+
+
 }
