@@ -29,6 +29,7 @@ import org.qi4j.query.grammar.BooleanExpression;
 import org.qi4j.query.grammar.ComparisonPredicate;
 import org.qi4j.query.grammar.Conjunction;
 import org.qi4j.query.grammar.Disjunction;
+import org.qi4j.query.grammar.Negation;
 import org.qi4j.query.grammar.PropertyReference;
 import org.qi4j.query.grammar.SingleValueExpression;
 import org.qi4j.query.grammar.ValueExpression;
@@ -109,7 +110,11 @@ class SPARQLRDFQueryParser
 
     private String process( BooleanExpression expression )
     {
-        StringBuilder filter = new StringBuilder();
+        if (expression == null)
+        {
+            return "";
+        }
+        final StringBuilder filter = new StringBuilder();
         if( expression instanceof Conjunction )
         {
             filter
@@ -128,10 +133,21 @@ class SPARQLRDFQueryParser
                 .append( process( ( (Disjunction) expression ).rightSideExpression() ) )
                 .append( ")" );
         }
+        else if( expression instanceof Negation )
+        {
+            filter
+                .append( "(!" )
+                .append( process( ( (Negation) expression ).expression() ) )
+                .append( ")" );
+        }
         else if( expression instanceof ComparisonPredicate )
         {
             processComparisonPredicate( (ComparisonPredicate) expression, filter );
 
+        }
+        else
+        {
+            throw new UnsupportedOperationException( "Expression " + expression + " is not supported" );
         }
         return filter.toString();
     }

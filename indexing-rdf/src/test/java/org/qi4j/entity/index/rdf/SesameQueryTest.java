@@ -171,4 +171,17 @@ public class SesameQueryTest
         );
     }
 
+    @Test
+    public void script10() throws SearchException
+    {
+        Person person = templateFor( Person.class );
+        // should return Joe and Jack Doe
+        searchEngine.find(
+            Person.class,
+            not(
+                eq( person.yearOfBirth(), 1975 )
+            )
+        );
+    }
+
 }
