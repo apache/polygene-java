@@ -71,7 +71,7 @@ public class RDFEntitySearcherMixin
                         final String value = identifier.stringValue();
                         if( value != null )
                         {
-                            System.out.println( "Identity: " + value );
+                            System.out.println( bindingSet.getValue( "entity" ).stringValue() + " -> " + value );
                             entities.add( value );
                         }
                     }
