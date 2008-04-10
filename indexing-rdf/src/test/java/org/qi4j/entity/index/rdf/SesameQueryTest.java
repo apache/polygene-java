@@ -188,7 +188,7 @@ public class SesameQueryTest
     public void script11() throws SearchException
     {
         Person person = templateFor( Person.class );
-        // should return Joe and Jack Doe
+        // should return Joe Doe
         searchEngine.find(
             Person.class,
             isNotNull( person.email() )
@@ -199,7 +199,7 @@ public class SesameQueryTest
     public void script12() throws SearchException
     {
         Person person = templateFor( Person.class );
-        // should return Joe and Jack Doe
+        // should return Ann and Jack Doe
         searchEngine.find(
             Person.class,
             isNull( person.email() )
@@ -210,7 +210,7 @@ public class SesameQueryTest
     public void script13() throws SearchException
     {
         Male person = templateFor( Male.class );
-        // should return Joe and Jack Doe
+        // should return Jack Doe
         searchEngine.find(
             Person.class,
             isNotNull( person.wife() )
@@ -221,13 +221,22 @@ public class SesameQueryTest
     public void script14() throws SearchException
     {
         Male person = templateFor( Male.class );
-        // should return Joe and Jack Doe
+        // should return Jack Doe
+        searchEngine.find(
+            Male.class,
+            isNull( person.wife() )
+        );
+    }
+
+    @Test
+    public void script15() throws SearchException
+    {
+        Male person = templateFor( Male.class );
+        // should return Ann and Jack Doe
         searchEngine.find(
             Person.class,
             isNull( person.wife() )
         );
     }
-
-
 
 }

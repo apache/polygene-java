@@ -76,12 +76,14 @@ class Network
         joeDoe.mother().set( annDoe );
         joeDoe.interests().add( programming );
         joeDoe.interests().add( gaming );
+        joeDoe.email().set( "joe@thedoes.net" );
 
         Male jackDoe = maleBuilder.newInstance();
         jackDoe.name().set( "Jack Doe" );
         jackDoe.placeOfBirth().set( penang );
         jackDoe.yearOfBirth().set( 1970 );
         jackDoe.interests().add( cars );
+        jackDoe.wife().set( annDoe );
 
         CompositeBuilder<CatComposite> catBuilder = unitOfWork.newEntityBuilder( CatComposite.class );
 
