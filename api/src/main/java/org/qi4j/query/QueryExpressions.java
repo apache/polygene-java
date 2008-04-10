@@ -69,12 +69,12 @@ public class QueryExpressions
      * @return template instance
      */
     @SuppressWarnings( "unchecked" )
-    public static <T> T templateFor( Class<T> mixinType )
+    public static <T> T templateFor( final Class<T> mixinType )
     {
         return (T) Proxy.newProxyInstance(
             QueryExpressions.class.getClassLoader(),
             new Class[]{ mixinType },
-            new MixinTypeProxy()
+            new MixinTypeProxy( mixinType )
         );
     }
 

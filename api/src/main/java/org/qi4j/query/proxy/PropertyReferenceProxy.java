@@ -34,28 +34,28 @@ class PropertyReferenceProxy
     implements InvocationHandler
 {
 
-    private final PropertyReference property;
+    private final PropertyReference propertyReference;
 
     /**
      * Constructor.
      *
-     * @param method method that acts as property
+     * @param accessor property accessor method
      */
-    PropertyReferenceProxy( final Method method )
+    PropertyReferenceProxy( final Method accessor )
     {
-        this( method, null );
+        this( accessor, null );
     }
 
     /**
      * Constructor.
      *
-     * @param method    method that acts as property
-     * @param traversed traversed association
+     * @param accessor             property accessor method
+     * @param traversedAssociation traversed association
      */
-    PropertyReferenceProxy( final Method method,
-                            final AssociationReference traversed )
+    PropertyReferenceProxy( final Method accessor,
+                            final AssociationReference traversedAssociation )
     {
-        property = new PropertyReferenceImpl( method, traversed );
+        propertyReference = new PropertyReferenceImpl( accessor, traversedAssociation );
     }
 
     public Object invoke( final Object proxy,
@@ -66,19 +66,19 @@ class PropertyReferenceProxy
         if( method.getDeclaringClass().equals( PropertyReference.class ) )
         {
             // TODO Shall we handle reflection exceptions here?
-            return method.invoke( property, args );
+            return method.invoke( propertyReference, args );
         }
         if( "toString".equals( method.getName() ) )
         {
-            return property.toString();
+            return propertyReference.toString();
         }
         // TODO handle equals/hashcode?
-        throw new UnsupportedOperationException( "Only property methods can be used for queries" );
+        throw new UnsupportedOperationException( "Only property methods can be used" );
     }
 
     @Override public String toString()
     {
-        return property.toString();
+        return propertyReference.toString();
     }
 
 }

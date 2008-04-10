@@ -22,6 +22,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import org.qi4j.query.grammar.AssociationReference;
+import org.qi4j.query.grammar.impl.AssociationReferenceImpl;
 
 /**
  * TODO Add JavaDoc
@@ -36,36 +37,59 @@ public class AssociationReferenceProxy
     /**
      * Traversed association.
      */
-    private final AssociationReference traversed;
+    private final AssociationReference associationReference;
 
     /**
      * Constructor.
      *
-     * @param traversed traversed association
+     * @param accessor association accessor method
      */
-    AssociationReferenceProxy( final AssociationReference traversed )
+    AssociationReferenceProxy( final Method accessor )
     {
-        this.traversed = traversed;
+        this( accessor, null );
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param accessor             association accessor method
+     * @param traversedAssociation traversed association
+     */
+    AssociationReferenceProxy( final Method accessor,
+                               final AssociationReference traversedAssociation )
+    {
+        associationReference = new AssociationReferenceImpl( accessor, traversedAssociation );
     }
 
     public Object invoke( final Object proxy,
                           final Method method,
                           final Object[] args )
+        throws Throwable
     {
+        if( method.getDeclaringClass().equals( AssociationReference.class ) )
+        {
+            // TODO Shall we handle reflection exceptions here?
+            return method.invoke( associationReference, args );
+        }
         if( args == null && "get".equals( method.getName() ) )
         {
             return Proxy.newProxyInstance(
                 this.getClass().getClassLoader(),
-                new Class[]{ traversed.associationType() },
-                new MixinTypeProxy( traversed )
+                new Class[]{ associationReference.associationType() },
+                new MixinTypeProxy( associationReference.associationType(), associationReference )
             );
         }
         if( "toString".equals( method.getName() ) )
         {
-            return traversed.toString();
+            return associationReference.toString();
         }
         // TODO handle equals/hashcode?
-        throw new UnsupportedOperationException( "Only property methods can be used for queries" );
+        throw new UnsupportedOperationException( "Only association methods can be used" );
+    }
+
+    @Override public String toString()
+    {
+        return associationReference.toString();
     }
 
 }

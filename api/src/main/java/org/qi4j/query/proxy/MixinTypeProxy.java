@@ -25,7 +25,6 @@ import org.qi4j.entity.association.Association;
 import org.qi4j.property.Property;
 import org.qi4j.query.grammar.AssociationReference;
 import org.qi4j.query.grammar.PropertyReference;
-import org.qi4j.query.grammar.impl.AssociationReferenceImpl;
 
 /**
  * TODO Add JavaDoc
@@ -38,26 +37,35 @@ public class MixinTypeProxy
 {
 
     /**
+     * Class of template this proxy is for.
+     */
+    private Class templateClass;
+    /**
      * Traversed association.
      */
-    private final AssociationReference traversed;
+    private final AssociationReference traversedAssociation;
 
     /**
      * Constructor.
+     *
+     * @param templateClass class of template this proxy is for
      */
-    public MixinTypeProxy()
+    public MixinTypeProxy( final Class templateClass )
     {
-        this( null );
+        this( templateClass, null );
     }
 
     /**
      * Constructor.
      *
-     * @param traversed traversed association
+     * @param templateClass        class of template this proxy is for
+     * @param traversedAssociation traversed association
      */
-    public MixinTypeProxy( final AssociationReference traversed )
+    public MixinTypeProxy( final Class templateClass,
+                           final AssociationReference traversedAssociation )
     {
-        this.traversed = traversed;
+        this.templateClass = templateClass;
+        this.traversedAssociation = traversedAssociation;
     }
 
     public Object invoke( final Object proxy,
@@ -71,7 +79,7 @@ public class MixinTypeProxy
                 return Proxy.newProxyInstance(
                     this.getClass().getClassLoader(),
                     new Class[]{ method.getReturnType(), PropertyReference.class },
-                    new PropertyReferenceProxy( method, traversed )
+                    new PropertyReferenceProxy( method, traversedAssociation )
                 );
             }
             else if( Association.class.isAssignableFrom( method.getReturnType() ) )
@@ -79,11 +87,15 @@ public class MixinTypeProxy
                 return Proxy.newProxyInstance(
                     this.getClass().getClassLoader(),
                     new Class[]{ method.getReturnType(), AssociationReference.class },
-                    new AssociationReferenceProxy( new AssociationReferenceImpl( method, traversed ) )
+                    new AssociationReferenceProxy( method, traversedAssociation )
                 );
             }
         }
-        throw new UnsupportedOperationException( "Only property methods can be used for queries" );
+        throw new UnsupportedOperationException( "Only property and association methods can be used" );
     }
 
+    @Override public String toString()
+    {
+        return "Template for " + templateClass.getName();
+    }
 }
