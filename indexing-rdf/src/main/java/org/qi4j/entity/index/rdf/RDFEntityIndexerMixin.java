@@ -154,7 +154,8 @@ public class RDFEntityIndexerMixin
                 final AssociationBinding assocBinding = compositeBinding.getAssociationBinding( qualifiedName );
                 final AssociationModel assocModel = assocBinding.getAssociationResolution().getAssociationModel();
                 final URI assocURI = valueFactory.createURI( assocModel.toURI() );
-                
+                BNode prevAssocEntityBNode = null;
+
                 for( EntityId assocEntityId : assocEntityIds )
                 {
                     final Class assocCompositeClass = moduleBinding.lookupClass( assocEntityId.getCompositeType() );
@@ -162,6 +163,17 @@ public class RDFEntityIndexerMixin
                     final CompositeModel assocCompositeModel = assocCompositeBinding.getCompositeResolution().getCompositeModel();
                     final URI assocEntityURI = valueFactory.createURI( assocCompositeModel.toURI()
                                                                        + "/" + assocEntityId.getIdentity() );
+                    final BNode assocEntityBNode = valueFactory.createBNode(  );
+                    if( prevAssocEntityBNode == null )
+                    {
+                        connection.add( entityURI, assocURI, assocEntityBNode );
+                    }
+                    else
+                    {
+                        connection.add( prevAssocEntityBNode, RDF.REST, assocEntityBNode );
+                    }
+                    connection.add(assocEntityBNode, RDF.FIRST, assocEntityURI);
+                    prevAssocEntityBNode = assocEntityBNode;
                 }
             }
         }
