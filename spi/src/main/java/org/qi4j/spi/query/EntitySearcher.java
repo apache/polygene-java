@@ -17,8 +17,8 @@
  */
 package org.qi4j.spi.query;
 
-import org.qi4j.entity.EntityComposite;
 import org.qi4j.query.grammar.BooleanExpression;
+import org.qi4j.query.grammar.OrderBy;
 
 /**
  * TODO Add JavaDoc
@@ -29,6 +29,9 @@ import org.qi4j.query.grammar.BooleanExpression;
 public interface EntitySearcher
 {
     Iterable<String> find( Class entityType,
-                           BooleanExpression whereClause )
+                           BooleanExpression whereClause,
+                           OrderBy[] orderBySegments,
+                           Integer firstResult,
+                           Integer maxResults )
         throws SearchException;
 }
