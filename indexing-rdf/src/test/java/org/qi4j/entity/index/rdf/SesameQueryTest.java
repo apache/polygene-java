@@ -336,4 +336,16 @@ public class SesameQueryTest
         );
     }
 
+    @Test
+    public void script22() throws SearchException
+    {
+        Nameable nameable = templateFor( Nameable.class );
+        // should return Jack and Joe Doe
+        searchEngine.find(
+            Nameable.class,
+            matches( nameable.name(), "J.*Doe" ),
+            NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS
+        );
+    }
+
 }

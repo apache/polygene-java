@@ -31,6 +31,7 @@ import org.qi4j.query.grammar.BooleanExpression;
 import org.qi4j.query.grammar.ComparisonPredicate;
 import org.qi4j.query.grammar.Conjunction;
 import org.qi4j.query.grammar.Disjunction;
+import org.qi4j.query.grammar.MatchesPredicate;
 import org.qi4j.query.grammar.Negation;
 import org.qi4j.query.grammar.OrderBy;
 import org.qi4j.query.grammar.PropertyIsNullPredicate;
@@ -140,7 +141,7 @@ class SPARQLRDFQueryParser
         return query.toString();
     }
 
-    private String processFilter( BooleanExpression expression )
+    private String processFilter( final BooleanExpression expression )
     {
         if( expression == null )
         {
@@ -172,6 +173,11 @@ class SPARQLRDFQueryParser
                 .append( processFilter( ( (Negation) expression ).expression() ) )
                 .append( ")" );
         }
+        else if( expression instanceof MatchesPredicate )
+        {
+            processMatchesPredicate( (MatchesPredicate) expression, filter );
+
+        }
         else if( expression instanceof ComparisonPredicate )
         {
             processComparisonPredicate( (ComparisonPredicate) expression, filter );
@@ -192,6 +198,27 @@ class SPARQLRDFQueryParser
         return filter.toString();
     }
 
+    private void processMatchesPredicate( final MatchesPredicate predicate,
+                                          final StringBuilder filter )
+    {
+        String valueVariable = addTriple( predicate.propertyReference(), false ).value;
+        ValueExpression valueExpression = predicate.valueExpression();
+        if( valueExpression instanceof SingleValueExpression )
+        {
+            filter
+                .append( "regex(" )
+                .append( valueVariable )
+                .append( "," )
+                .append( " \"" )
+                .append( ( (SingleValueExpression) valueExpression ).value() )
+                .append( "\")" );
+        }
+        else
+        {
+            throw new UnsupportedOperationException( "Value " + valueExpression + " is not supported" );
+        }
+    }
+
     private void processComparisonPredicate( final ComparisonPredicate predicate,
                                              final StringBuilder filter )
     {
@@ -207,6 +234,10 @@ class SPARQLRDFQueryParser
                 .append( " \"" )
                 .append( ( (SingleValueExpression) valueExpression ).value() )
                 .append( "\")" );
+        }
+        else
+        {
+            throw new UnsupportedOperationException( "Value " + valueExpression + " is not supported" );
         }
     }
 
