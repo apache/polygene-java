@@ -54,7 +54,7 @@ public final class UsesInjectionProviderFactory
 
             for( Object usedObject : uses )
             {
-                if( resolution.getInjectionModel().getInjectionClass().isAssignableFrom( usedObject.getClass() ) )
+                if( resolution.getInjectionModel().getRawInjectionType().isAssignableFrom( usedObject.getClass() ) )
                 {
                     return usedObject;
                 }
