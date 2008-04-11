@@ -36,6 +36,7 @@ import org.qi4j.query.grammar.LessOrEqualPredicate;
 import org.qi4j.query.grammar.LessThanPredicate;
 import org.qi4j.query.grammar.Negation;
 import org.qi4j.query.grammar.NotEqualsPredicate;
+import org.qi4j.query.grammar.OrderBy;
 import org.qi4j.query.grammar.PropertyIsNotNullPredicate;
 import org.qi4j.query.grammar.PropertyIsNullPredicate;
 import org.qi4j.query.grammar.PropertyReference;
@@ -50,6 +51,7 @@ import org.qi4j.query.grammar.impl.LessOrEqualPredicateImpl;
 import org.qi4j.query.grammar.impl.LessThanPredicateImpl;
 import org.qi4j.query.grammar.impl.NegationImpl;
 import org.qi4j.query.grammar.impl.NotEqualsPredicateImpl;
+import org.qi4j.query.grammar.impl.OrderByImpl;
 import org.qi4j.query.grammar.impl.PropertyIsNotNullPredicateImpl;
 import org.qi4j.query.grammar.impl.PropertyIsNullPredicateImpl;
 import org.qi4j.query.grammar.impl.StaticValueExpression;
@@ -345,6 +347,32 @@ public class QueryExpressions
     public static Negation not( final BooleanExpression expression )
     {
         return new NegationImpl( expression );
+    }
+
+    /**
+     * {@link org.qi4j.query.grammar.OrderBy} factory method (ascending order).
+     *
+     * @param property sorting property; cannot be null
+     * @return an {@link org.qi4j.query.grammar.OrderBy}
+     * @throws IllegalArgumentException - If property is null
+     */
+    public static <T> OrderBy orderBy( final Property<T> property )
+    {
+        return orderBy( property, null );
+    }
+
+    /**
+     * {@link org.qi4j.query.grammar.OrderBy} factory method.
+     *
+     * @param property sorting property; cannot be null
+     * @param order    sorting direction
+     * @return an {@link org.qi4j.query.grammar.OrderBy}
+     * @throws IllegalArgumentException - If property is null
+     */
+    public static <T> OrderBy orderBy( final Property<T> property,
+                                       final OrderBy.Order order )
+    {
+        return new OrderByImpl( asPropertyExpression( property ), order );
     }
 
     /**
