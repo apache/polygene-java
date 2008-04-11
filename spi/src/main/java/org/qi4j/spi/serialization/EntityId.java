@@ -23,6 +23,8 @@ import org.qi4j.entity.EntityComposite;
 public final class EntityId
     implements Serializable
 {
+    private static final long serialVersionUID = 1L;
+
     // Associations who have been set to "null" should use this as the representation in the EntityState
     public static final EntityId NULL = new EntityId( "null", "none" );
 

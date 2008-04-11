@@ -1,5 +1,6 @@
 package org.qi4j.test.entity;
 
+import java.util.Random;
 import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -21,8 +22,9 @@ import org.qi4j.test.AbstractQi4jTest;
 public abstract class AbstractEntityStorePerformanceTest
     extends AbstractQi4jTest
 {
-    protected int nrOfEntities = 10000;
+    protected int nrOfEntities = 30000;
     protected int nrOfLookups = 100000;
+    private int idx;
 
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
@@ -60,12 +62,19 @@ public abstract class AbstractEntityStorePerformanceTest
         {
             // Create entity
             builder.newInstance();
+
+            if( i % 4000 == 0 )
+            {
+                unitOfWork.complete();
+                unitOfWork = unitOfWorkFactory.newUnitOfWork();
+                builder = unitOfWork.newEntityBuilder( TestComposite.class );
+            }
         }
 
         unitOfWork.complete();
         long end = System.currentTimeMillis();
         long time = end - start;
-        System.out.println( time );
+        System.out.println( time + "ms" );
         System.out.println( nrOfEntities / ( time / 1000.0D ) + " entities created per second" );
     }
 
@@ -76,12 +85,17 @@ public abstract class AbstractEntityStorePerformanceTest
         long start = System.currentTimeMillis();
 
         UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
-        String id = createEntity( unitOfWork ).identity().get();
+        for( int i = 0; i < nrOfEntities; i++ )
+        {
+            createEntity( unitOfWork );
+        }
         unitOfWork.complete();
 
+        Random rnd = new Random();
         unitOfWork = unitOfWorkFactory.newUnitOfWork();
         for( int i = 0; i < nrOfLookups; i++ )
         {
+            String id = "" + rnd.nextInt( nrOfEntities );
             TestComposite instance = unitOfWork.find( id, TestComposite.class );
             unitOfWork.reset();
         }
@@ -97,7 +111,7 @@ public abstract class AbstractEntityStorePerformanceTest
         throws UnitOfWorkCompletionException
     {
         // Create entity
-        CompositeBuilder<TestComposite> builder = unitOfWork.newEntityBuilder( TestComposite.class );
+        CompositeBuilder<TestComposite> builder = unitOfWork.newEntityBuilder( "" + ( idx++ ), TestComposite.class );
         TestComposite instance = builder.newInstance();
         String id = instance.identity().get();
 

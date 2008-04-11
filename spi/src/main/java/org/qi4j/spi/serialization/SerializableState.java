@@ -25,6 +25,8 @@ import java.util.Map;
 public final class SerializableState
     implements Serializable
 {
+    private static final long serialVersionUID = 1L;
+
     private final long entityVersion;
     private final Map<String, Object> properties;
     private final Map<String, EntityId> associations;
