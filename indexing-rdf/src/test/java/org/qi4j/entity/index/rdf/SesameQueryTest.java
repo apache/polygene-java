@@ -26,6 +26,7 @@ import org.qi4j.entity.UnitOfWorkCompletionException;
 import org.qi4j.entity.memory.IndexedMemoryEntityStoreComposite;
 import static org.qi4j.query.QueryExpressions.*;
 import org.qi4j.query.grammar.OrderBy;
+import org.qi4j.query.grammar.BooleanExpression;
 import org.qi4j.spi.entity.UuidIdentityGeneratorComposite;
 import org.qi4j.spi.query.EntitySearcher;
 import org.qi4j.spi.query.SearchException;
@@ -33,6 +34,7 @@ import org.qi4j.spi.query.SearchException;
 public class SesameQueryTest
 {
 
+    private static final BooleanExpression ALL = null;
     private static final OrderBy[] NO_SORTING = null;
     private static final Integer NO_FIRST_RESULT = null;
     private static final Integer NO_MAX_RESULTS = null;
@@ -77,7 +79,7 @@ public class SesameQueryTest
         // should return all persons (Joe, Ann, Jack Doe)
         searchEngine.find(
             PersonComposite.class,
-            null, // all
+            ALL,
             NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS
         );
     }
@@ -100,7 +102,7 @@ public class SesameQueryTest
         // should return all entities
         searchEngine.find(
             Nameable.class,
-            null, // all
+            ALL,
             NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS
         );
     }
@@ -266,7 +268,7 @@ public class SesameQueryTest
         // should return only 2 entities
         searchEngine.find(
             Nameable.class,
-            null, // all
+            ALL,
             NO_SORTING, NO_FIRST_RESULT, 2
         );
     }
@@ -277,9 +279,61 @@ public class SesameQueryTest
         // should return only 2 entities starting with third one
         searchEngine.find(
             Nameable.class,
-            null, // all
+            ALL,
             NO_SORTING, 3, 2
         );
-    }    
+    }
+
+    @Test
+    public void script18() throws SearchException
+    {
+        // should return all Nameable entities sorted by name
+        Nameable nameable = templateFor( Nameable.class );
+        searchEngine.find(
+            Nameable.class,
+            ALL,
+            new OrderBy[]{ orderBy( nameable.name() ) },
+            NO_FIRST_RESULT, NO_MAX_RESULTS
+        );
+    }
+
+    @Test
+    public void script19() throws SearchException
+    {
+        // should return all Nameable entities with a name > "B" sorted by name
+        Nameable nameable = templateFor( Nameable.class );
+        searchEngine.find(
+            Nameable.class,
+            gt( nameable.name(), "B" ),
+            new OrderBy[]{ orderBy( nameable.name() ) },
+            NO_FIRST_RESULT, NO_MAX_RESULTS
+        );
+    }
+
+    @Test
+    public void script20() throws SearchException
+    {
+        // should return all Persons born after 1973 (Ann and Joe Doe) sorted descending by name
+        Person person = templateFor( Person.class );
+        searchEngine.find(
+            Person.class,
+            gt( person.yearOfBirth(), 1973 ),
+            new OrderBy[]{ orderBy( person.name(), OrderBy.Order.DESCENDING ) },
+            NO_FIRST_RESULT, NO_MAX_RESULTS
+        );
+    }
+
+    @Test
+    public void script21() throws SearchException
+    {
+        // should return all Persons sorted name of the city they were born
+        Person person = templateFor( Person.class );
+        searchEngine.find(
+            Person.class,
+            ALL,
+            new OrderBy[]{ orderBy( person.placeOfBirth().get().name() ) },
+            NO_FIRST_RESULT, NO_MAX_RESULTS
+        );
+    }
 
 }

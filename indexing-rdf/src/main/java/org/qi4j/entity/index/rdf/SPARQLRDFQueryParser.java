@@ -99,7 +99,8 @@ class SPARQLRDFQueryParser
                 false
             )
         );
-        String filter = process( whereClause );
+        final String filter = processFilter( whereClause );
+        final String orderBy = processOrderBy( orderBySegments );
         for( Map.Entry<String, String> nsEntry : namespaces.entrySet() )
         {
             query
@@ -123,6 +124,10 @@ class SPARQLRDFQueryParser
             }
             query.append( "}" );
         }
+        if( orderBy != null )
+        {
+            query.append( " ORDER BY " ).append( orderBy );
+        }
         if( firstResult != null )
         {
             query.append( " OFFSET " ).append( firstResult );
@@ -135,7 +140,7 @@ class SPARQLRDFQueryParser
         return query.toString();
     }
 
-    private String process( BooleanExpression expression )
+    private String processFilter( BooleanExpression expression )
     {
         if( expression == null )
         {
@@ -146,25 +151,25 @@ class SPARQLRDFQueryParser
         {
             filter
                 .append( "(" )
-                .append( process( ( (Conjunction) expression ).leftSideExpression() ) )
+                .append( processFilter( ( (Conjunction) expression ).leftSideExpression() ) )
                 .append( " && " )
-                .append( process( ( (Conjunction) expression ).rightSideExpression() ) )
+                .append( processFilter( ( (Conjunction) expression ).rightSideExpression() ) )
                 .append( ")" );
         }
         else if( expression instanceof Disjunction )
         {
             filter
                 .append( "(" )
-                .append( process( ( (Disjunction) expression ).leftSideExpression() ) )
+                .append( processFilter( ( (Disjunction) expression ).leftSideExpression() ) )
                 .append( " || " )
-                .append( process( ( (Disjunction) expression ).rightSideExpression() ) )
+                .append( processFilter( ( (Disjunction) expression ).rightSideExpression() ) )
                 .append( ")" );
         }
         else if( expression instanceof Negation )
         {
             filter
                 .append( "(!" )
-                .append( process( ( (Negation) expression ).expression() ) )
+                .append( processFilter( ( (Negation) expression ).expression() ) )
                 .append( ")" );
         }
         else if( expression instanceof ComparisonPredicate )
@@ -231,6 +236,35 @@ class SPARQLRDFQueryParser
             .append( "bound(" )
             .append( addTriple( predicate.associationReference(), true ).value )
             .append( "))" );
+    }
+
+    private String processOrderBy( OrderBy[] orderBySegments )
+    {
+        if( orderBySegments != null && orderBySegments.length > 0 )
+        {
+            final StringBuilder orderBy = new StringBuilder();
+            for( OrderBy orderBySegment : orderBySegments )
+            {
+                if( orderBySegment != null )
+                {
+                    final String valueVariable = addTriple( orderBySegment.propertyReference(), false ).value;
+                    if( orderBySegment.order() == OrderBy.Order.ASCENDING )
+                    {
+                        orderBy.append( "ASC" );
+                    }
+                    else
+                    {
+                        orderBy.append( "DESC" );
+                    }
+                    orderBy
+                        .append( "(" )
+                        .append( valueVariable )
+                        .append( ")" );
+                }
+            }
+            return orderBy.toString();
+        }
+        return null;
     }
 
     private String addNamespace( final String namespace )
