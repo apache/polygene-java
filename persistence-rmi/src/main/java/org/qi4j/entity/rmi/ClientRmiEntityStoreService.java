@@ -29,6 +29,5 @@ import org.qi4j.spi.entity.EntityStore;
 @Mixins( { ClientRmiEntityStoreMixin.class } )
 public interface ClientRmiEntityStoreService
     extends EntityStore, ServiceComposite, Activatable, LockingAbstractComposite
-
 {
 }

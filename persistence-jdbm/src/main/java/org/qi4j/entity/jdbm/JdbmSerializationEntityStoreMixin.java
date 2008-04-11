@@ -17,10 +17,12 @@
 package org.qi4j.entity.jdbm;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Collection;
 import java.util.HashMap;
@@ -28,10 +30,11 @@ import java.util.Properties;
 import java.util.concurrent.locks.ReadWriteLock;
 import jdbm.RecordManager;
 import jdbm.RecordManagerFactory;
+import jdbm.btree.BTree;
+import jdbm.helper.ByteArrayComparator;
 import jdbm.helper.ByteArraySerializer;
+import jdbm.helper.LongSerializer;
 import jdbm.helper.Serializer;
-import jdbm.htree.HTree;
-import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.scope.Structure;
 import org.qi4j.composite.scope.ThisCompositeAs;
 import org.qi4j.library.framework.locking.WriteLock;
@@ -47,7 +50,6 @@ import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.serialization.EntityId;
 import org.qi4j.spi.serialization.SerializableState;
-import org.qi4j.spi.serialization.SerializedObject;
 import org.qi4j.spi.structure.CompositeDescriptor;
 import org.qi4j.spi.structure.ModuleBinding;
 
@@ -62,7 +64,7 @@ public class JdbmSerializationEntityStoreMixin
     private @ThisCompositeAs JdbmConfiguration config;
 
     private RecordManager recordManager;
-    private HTree index;
+    private BTree index;
     private File dataFile;
     private Serializer serializer;
 
@@ -99,7 +101,7 @@ public class JdbmSerializationEntityStoreMixin
     {
         try
         {
-            Long stateIndex = (Long) index.get( identity.getIdentity() );
+            Long stateIndex = (Long) index.find( identity.getIdentity().getBytes() );
 
             if( stateIndex != null )
             {
@@ -119,25 +121,26 @@ public class JdbmSerializationEntityStoreMixin
     {
         try
         {
-            Long stateIndex = (Long) index.get( identity.getIdentity() );
+            Long stateIndex = (Long) index.find( identity.getIdentity().getBytes() );
 
             if( stateIndex == null )
             {
                 throw new EntityNotFoundException( "JDBM Store", identity.getIdentity() );
             }
 
-            byte[] serializedState = (byte[]) recordManager.fetch( stateIndex.longValue(), serializer );
+            byte[] serializedState = (byte[]) recordManager.fetch( stateIndex, serializer );
 
             if( serializedState == null )
             {
                 throw new EntityNotFoundException( "JDBM Store", identity.getIdentity() );
             }
 
-            SerializedObject<SerializableState> serializedObject = new SerializedObject<SerializableState>( serializedState );
+            ByteArrayInputStream bin = new ByteArrayInputStream( serializedState );
+            ObjectInputStream oin = new FastObjectInputStream( bin );
 
             try
             {
-                SerializableState serializableState = serializedObject.getObject( (CompositeBuilderFactory) null, spi );
+                SerializableState serializableState = (SerializableState) oin.readObject();
                 return new EntityStateInstance( serializableState.getEntityVersion(), identity, EntityStatus.LOADED, serializableState.getProperties(), serializableState.getAssociations(), serializableState.getManyAssociations() );
             }
             catch( ClassNotFoundException e )
@@ -162,30 +165,30 @@ public class JdbmSerializationEntityStoreMixin
             {
                 EntityStateInstance entityStateInstance = (EntityStateInstance) entityState;
                 SerializableState state = new SerializableState( entityState.getEntityVersion(), entityStateInstance.getProperties(), entityStateInstance.getAssociations(), entityStateInstance.getManyAssociations() );
-                ObjectOutputStream out = new ObjectOutputStream( bout );
-                out.writeUnshared( state );
+                ObjectOutputStream out = new FastObjectOutputStream( bout );
+                out.writeObject( state );
                 out.close();
                 long stateIndex = recordManager.insert( bout.toByteArray(), serializer );
                 bout.reset();
                 String indexKey = entityState.getIdentity().getIdentity();
-                index.put( indexKey, stateIndex );
+                index.insert( indexKey.getBytes(), stateIndex, false );
             }
 
             for( EntityState entityState : loadedStates )
             {
                 EntityStateInstance entityStateInstance = (EntityStateInstance) entityState;
                 SerializableState state = new SerializableState( entityState.getEntityVersion(), entityStateInstance.getProperties(), entityStateInstance.getAssociations(), entityStateInstance.getManyAssociations() );
-                ObjectOutputStream out = new ObjectOutputStream( bout );
-                out.writeUnshared( state );
+                ObjectOutputStream out = new FastObjectOutputStream( bout );
+                out.writeObject( state );
                 out.close();
                 String indexKey = entityState.getIdentity().getIdentity();
-                Long stateIndex = (Long) index.get( indexKey );
+                Long stateIndex = (Long) index.find( indexKey.getBytes() );
                 recordManager.update( stateIndex, bout.toByteArray(), serializer );
             }
 
             for( EntityId removedState : removedStates )
             {
-                Long stateIndex = (Long) index.get( removedState.getIdentity() );
+                Long stateIndex = (Long) index.find( removedState.getIdentity() );
                 recordManager.delete( stateIndex );
                 index.remove( removedState.getIdentity() );
             }
@@ -269,12 +272,12 @@ public class JdbmSerializationEntityStoreMixin
         if( recid != 0 )
         {
             System.out.println( "Using existing index" );
-            index = HTree.load( recordManager, recid );
+            index = BTree.load( recordManager, recid );
         }
         else
         {
             System.out.println( "Creating new index" );
-            index = HTree.createInstance( recordManager );
+            index = BTree.createInstance( recordManager, new ByteArrayComparator(), new ByteArraySerializer(), new LongSerializer(), 16 );
             recordManager.setNamedObject( "index", index.getRecid() );
         }
     }

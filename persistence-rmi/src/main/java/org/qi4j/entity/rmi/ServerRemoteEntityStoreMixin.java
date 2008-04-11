@@ -43,7 +43,7 @@ import org.qi4j.spi.serialization.EntityId;
 import org.qi4j.spi.structure.ModuleBinding;
 
 /**
- * RMI client implementation of Entity
+ * RMI server implementation of EntityStore
  */
 public class ServerRemoteEntityStoreMixin
     implements RemoteEntityStore, Activatable
