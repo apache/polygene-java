@@ -1,6 +1,7 @@
 package org.qi4j.composite;
 
-import java.util.ArrayList;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -8,9 +9,9 @@ import org.qi4j.composite.scope.Uses;
 import org.qi4j.test.AbstractQi4jTest;
 
 /**
- * Test of generic list injection
+ * Test of generic class injection
  */
-public class UseGenericListTest
+public class UseGenericClassTest
     extends AbstractQi4jTest
 {
     public void assemble( ModuleAssembly module ) throws AssemblyException
@@ -19,17 +20,14 @@ public class UseGenericListTest
     }
 
     @Test
-    public void givenMixinUsesGenericListWhenUseListThenInjectWorks()
+    public void givenMixinUsesGenericClassWhenUseClassThenInjectWorks()
     {
         CompositeBuilder<TestCase> builder = compositeBuilderFactory.newCompositeBuilder( TestCase.class );
 
-        ArrayList<String> list = new ArrayList<String>();
-        list.add( "Hello" );
-        list.add( "Bye" );
-        builder.use( list );
+        builder.use( UseGenericClassTest.class );
 
-        TestCase TestCase = builder.newInstance();
-        TestCase.sayHello();
+        TestCase testCase = builder.newInstance();
+        assertThat( "class name is returned", testCase.test(), equalTo( UseGenericClassTest.class.getName() ) );
 
     }
 
@@ -37,16 +35,16 @@ public class UseGenericListTest
     public interface TestCase
         extends Composite
     {
-        void sayHello();
+        String test();
     }
 
     public abstract static class TestMixin implements TestCase
     {
-        @Uses ArrayList<String> messages;
+        @Uses Class<? extends TestCase> clazz;
 
-        public void sayHello()
+        public String test()
         {
-            System.out.println( messages );
+            return clazz.getName();
         }
     }
 }
