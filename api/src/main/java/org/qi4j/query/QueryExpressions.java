@@ -34,6 +34,7 @@ import org.qi4j.query.grammar.GreaterOrEqualPredicate;
 import org.qi4j.query.grammar.GreaterThanPredicate;
 import org.qi4j.query.grammar.LessOrEqualPredicate;
 import org.qi4j.query.grammar.LessThanPredicate;
+import org.qi4j.query.grammar.MatchesPredicate;
 import org.qi4j.query.grammar.Negation;
 import org.qi4j.query.grammar.NotEqualsPredicate;
 import org.qi4j.query.grammar.OrderBy;
@@ -49,6 +50,7 @@ import org.qi4j.query.grammar.impl.GreaterOrEqualPredicateImpl;
 import org.qi4j.query.grammar.impl.GreaterThanPredicateImpl;
 import org.qi4j.query.grammar.impl.LessOrEqualPredicateImpl;
 import org.qi4j.query.grammar.impl.LessThanPredicateImpl;
+import org.qi4j.query.grammar.impl.MatchesPredicateImpl;
 import org.qi4j.query.grammar.impl.NegationImpl;
 import org.qi4j.query.grammar.impl.NotEqualsPredicateImpl;
 import org.qi4j.query.grammar.impl.OrderByImpl;
@@ -90,34 +92,6 @@ public class QueryExpressions
     public static <T> VariableValueExpression<T> variable( final String name )
     {
         return new VariableValueExpression<T>( name );
-    }
-
-    /**
-     * {@link org.qi4j.query.grammar.EqualsPredicate} factory method.
-     *
-     * @param property filtered property; cannot be null
-     * @param value    expected value that property is equal to; cannot be null
-     * @return an {@link org.qi4j.query.grammar.EqualsPredicate}
-     * @throws IllegalArgumentException - If property or value are null
-     */
-    public static <T> EqualsPredicate<T> eq( final Property<T> property,
-                                             final T value )
-    {
-        return new EqualsPredicateImpl<T>( asPropertyExpression( property ), asTypedValueExpression( value ) );
-    }
-
-    /**
-     * {@link org.qi4j.query.grammar.EqualsPredicate} factory method.
-     *
-     * @param property        filtered property; cannot be null
-     * @param valueExpression expected value that property is equal to; cannot be null
-     * @return an {@link org.qi4j.query.grammar.EqualsPredicate}
-     * @throws IllegalArgumentException - If property or value are null
-     */
-    public static <T> EqualsPredicate<T> eq( final Property<T> property,
-                                             final VariableValueExpression<T> valueExpression )
-    {
-        return new EqualsPredicateImpl<T>( asPropertyExpression( property ), valueExpression );
     }
 
     /**
@@ -166,6 +140,34 @@ public class QueryExpressions
     public static AssociationIsNotNullPredicate isNotNull( final Association association )
     {
         return new AssociationIsNotNullPredicateImpl( asAssociationExpression( association ) );
+    }
+
+    /**
+     * {@link org.qi4j.query.grammar.EqualsPredicate} factory method.
+     *
+     * @param property filtered property; cannot be null
+     * @param value    expected value that property is equal to; cannot be null
+     * @return an {@link org.qi4j.query.grammar.EqualsPredicate}
+     * @throws IllegalArgumentException - If property or value are null
+     */
+    public static <T> EqualsPredicate<T> eq( final Property<T> property,
+                                             final T value )
+    {
+        return new EqualsPredicateImpl<T>( asPropertyExpression( property ), asTypedValueExpression( value ) );
+    }
+
+    /**
+     * {@link org.qi4j.query.grammar.EqualsPredicate} factory method.
+     *
+     * @param property        filtered property; cannot be null
+     * @param valueExpression expected value that property is equal to; cannot be null
+     * @return an {@link org.qi4j.query.grammar.EqualsPredicate}
+     * @throws IllegalArgumentException - If property or value are null
+     */
+    public static <T> EqualsPredicate<T> eq( final Property<T> property,
+                                             final VariableValueExpression<T> valueExpression )
+    {
+        return new EqualsPredicateImpl<T>( asPropertyExpression( property ), valueExpression );
     }
 
     /**
@@ -307,6 +309,20 @@ public class QueryExpressions
                                                      final VariableValueExpression<T> valueExpression )
     {
         return new GreaterOrEqualPredicateImpl<T>( asPropertyExpression( property ), valueExpression );
+    }
+
+    /**
+     * {@link org.qi4j.query.grammar.MatchesPredicate} factory method.
+     *
+     * @param property filtered property; cannot be null
+     * @param regexp   expected regexp that property should match to; cannot be null
+     * @return an {@link org.qi4j.query.grammar.MatchesPredicate}
+     * @throws IllegalArgumentException - If property or value are null
+     */
+    public static MatchesPredicate matches( final Property<String> property,
+                                            final String regexp )
+    {
+        return new MatchesPredicateImpl( asPropertyExpression( property ), asTypedValueExpression( regexp ) );
     }
 
     /**
