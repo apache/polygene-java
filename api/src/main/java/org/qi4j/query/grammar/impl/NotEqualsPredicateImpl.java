@@ -27,7 +27,7 @@ import org.qi4j.query.grammar.ValueExpression;
  * @author Alin Dreghiciu
  * @since March 25, 2008
  */
-public class NotEqualsPredicateImpl<T>
+public final class NotEqualsPredicateImpl<T>
     extends ComparisonPredicateImpl<T>
     implements NotEqualsPredicate<T>
 {

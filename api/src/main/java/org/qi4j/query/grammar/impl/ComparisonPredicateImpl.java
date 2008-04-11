@@ -27,7 +27,7 @@ import org.qi4j.query.grammar.ValueExpression;
  * @author Alin Dreghiciu
  * @since March 28, 2008
  */
-public abstract class ComparisonPredicateImpl<T>
+abstract class ComparisonPredicateImpl<T>
     implements ComparisonPredicate<T>
 {
 
@@ -48,7 +48,7 @@ public abstract class ComparisonPredicateImpl<T>
      * @throws IllegalArgumentException - If property reference is null
      *                                  - If value expression is null
      */
-    protected ComparisonPredicateImpl( final PropertyReference<T> propertyReference,
+    ComparisonPredicateImpl( final PropertyReference<T> propertyReference,
                                        final ValueExpression<T> valueExpression )
     {
         if( propertyReference == null )

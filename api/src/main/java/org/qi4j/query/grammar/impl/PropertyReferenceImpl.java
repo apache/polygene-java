@@ -30,7 +30,7 @@ import org.qi4j.query.grammar.PropertyReference;
  * @author Alin Dreghiciu
  * @since March 28, 2008
  */
-public class PropertyReferenceImpl
+public final class PropertyReferenceImpl
     implements PropertyReference
 {
 

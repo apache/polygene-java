@@ -26,7 +26,7 @@ import org.qi4j.query.grammar.Conjunction;
  * @author Alin Dreghiciu
  * @since March 28, 2008
  */
-public class ConjunctionImpl
+public final class ConjunctionImpl
     extends JunctionImpl
     implements Conjunction
 {

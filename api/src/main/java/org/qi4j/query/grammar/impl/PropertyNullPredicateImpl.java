@@ -26,7 +26,7 @@ import org.qi4j.query.grammar.PropertyReference;
  * @author Alin Dreghiciu
  * @since March 28, 2008
  */
-public abstract class PropertyNullPredicateImpl<T>
+abstract class PropertyNullPredicateImpl<T>
     implements PropertyNullPredicate<T>
 {
 
@@ -41,7 +41,7 @@ public abstract class PropertyNullPredicateImpl<T>
      * @param propertyReference property reference; cannot be null
      * @throws IllegalArgumentException - If property reference is null
      */
-    protected PropertyNullPredicateImpl( final PropertyReference<T> propertyReference )
+    PropertyNullPredicateImpl( final PropertyReference<T> propertyReference )
     {
         if( propertyReference == null )
         {

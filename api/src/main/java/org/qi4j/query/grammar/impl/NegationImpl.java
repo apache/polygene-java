@@ -26,7 +26,7 @@ import org.qi4j.query.grammar.Negation;
  * @author Alin Dreghiciu
  * @since March 25, 2008
  */
-public class NegationImpl
+public final class NegationImpl
     implements Negation
 {
 

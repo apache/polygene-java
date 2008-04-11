@@ -63,7 +63,7 @@ import org.qi4j.query.proxy.MixinTypeProxy;
 /**
  * Static factory methods for query expressions and operators.
  */
-public class QueryExpressions
+public final class QueryExpressions
 {
 
     /**

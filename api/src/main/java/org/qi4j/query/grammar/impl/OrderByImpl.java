@@ -28,7 +28,7 @@ import org.qi4j.query.grammar.PropertyReference;
  * @author Alin Dreghiciu
  * @since March 25, 2008
  */
-public class OrderByImpl
+public final class OrderByImpl
     implements OrderBy
 {
     /**

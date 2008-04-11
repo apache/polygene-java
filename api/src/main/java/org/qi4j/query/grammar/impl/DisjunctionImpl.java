@@ -26,7 +26,7 @@ import org.qi4j.query.grammar.Disjunction;
  * @author Alin Dreghiciu
  * @since March 28, 2008
  */
-public class DisjunctionImpl
+public final class DisjunctionImpl
     extends JunctionImpl
     implements Disjunction
 {

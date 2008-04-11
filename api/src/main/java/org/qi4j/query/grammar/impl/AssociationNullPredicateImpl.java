@@ -26,7 +26,7 @@ import org.qi4j.query.grammar.AssociationReference;
  * @author Alin Dreghiciu
  * @since 0.2.0, April 09, 2008
  */
-public abstract class AssociationNullPredicateImpl
+abstract class AssociationNullPredicateImpl
     implements AssociationNullPredicate
 {
 
@@ -41,7 +41,7 @@ public abstract class AssociationNullPredicateImpl
      * @param associationReference association reference; cannot be null
      * @throws IllegalArgumentException - If association reference is null
      */
-    protected AssociationNullPredicateImpl( final AssociationReference associationReference )
+    AssociationNullPredicateImpl( final AssociationReference associationReference )
     {
         if( associationReference == null )
         {

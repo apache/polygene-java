@@ -25,7 +25,7 @@ import org.qi4j.query.grammar.BooleanExpression;
  * @author Alin Dreghiciu
  * @since March 28, 2008
  */
-public class JunctionImpl
+abstract class JunctionImpl
 {
 
     /**
@@ -45,8 +45,8 @@ public class JunctionImpl
      * @throws IllegalArgumentException - If left side expression is null
      *                                  - If right side expression is null
      */
-    protected JunctionImpl( final BooleanExpression leftSideExpression,
-                            final BooleanExpression rightSideExpression )
+    JunctionImpl( final BooleanExpression leftSideExpression,
+                  final BooleanExpression rightSideExpression )
     {
         if( leftSideExpression == null )
         {

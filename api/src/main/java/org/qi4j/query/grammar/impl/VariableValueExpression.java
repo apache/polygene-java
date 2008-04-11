@@ -26,7 +26,7 @@ import org.qi4j.query.grammar.SingleValueExpression;
  * @author Alin Dreghiciu
  * @since March 25, 2008
  */
-public class VariableValueExpression<T>
+public final class VariableValueExpression<T>
     implements SingleValueExpression<T>
 {
 

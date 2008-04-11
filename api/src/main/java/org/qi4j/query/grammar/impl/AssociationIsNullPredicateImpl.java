@@ -26,7 +26,7 @@ import org.qi4j.query.grammar.AssociationReference;
  * @author Alin Dreghiciu
  * @since 0.2.0, April 09, 2008
  */
-public class AssociationIsNullPredicateImpl
+public final class AssociationIsNullPredicateImpl
     extends AssociationNullPredicateImpl
     implements AssociationIsNullPredicate
 {

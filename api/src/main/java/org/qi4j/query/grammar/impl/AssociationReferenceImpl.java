@@ -29,7 +29,7 @@ import org.qi4j.query.grammar.AssociationReference;
  * @author Alin Dreghiciu
  * @since March 28, 2008
  */
-public class AssociationReferenceImpl
+public final class AssociationReferenceImpl
     implements AssociationReference
 {
 
