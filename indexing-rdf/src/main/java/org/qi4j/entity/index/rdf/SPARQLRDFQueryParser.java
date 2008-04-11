@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import org.openrdf.query.QueryLanguage;
 import org.qi4j.entity.Identity;
+import org.qi4j.query.grammar.AssociationIsNullPredicate;
 import org.qi4j.query.grammar.AssociationNullPredicate;
 import org.qi4j.query.grammar.AssociationReference;
 import org.qi4j.query.grammar.BooleanExpression;
@@ -31,12 +32,12 @@ import org.qi4j.query.grammar.ComparisonPredicate;
 import org.qi4j.query.grammar.Conjunction;
 import org.qi4j.query.grammar.Disjunction;
 import org.qi4j.query.grammar.Negation;
+import org.qi4j.query.grammar.OrderBy;
 import org.qi4j.query.grammar.PropertyIsNullPredicate;
 import org.qi4j.query.grammar.PropertyNullPredicate;
 import org.qi4j.query.grammar.PropertyReference;
 import org.qi4j.query.grammar.SingleValueExpression;
 import org.qi4j.query.grammar.ValueExpression;
-import org.qi4j.query.grammar.AssociationIsNullPredicate;
 import org.qi4j.spi.composite.MixinTypeModel;
 import org.qi4j.spi.entity.association.AssociationModel;
 import org.qi4j.spi.property.PropertyModel;
@@ -77,7 +78,10 @@ class SPARQLRDFQueryParser
     }
 
     public String getQuery( final Class entityType,
-                            final BooleanExpression whereClause )
+                            final BooleanExpression whereClause,
+                            final OrderBy[] orderBySegments,
+                            final Integer firstResult,
+                            final Integer maxResults )
     {
         StringBuilder query = new StringBuilder();
         triples.add(
@@ -118,6 +122,14 @@ class SPARQLRDFQueryParser
                 query.append( " FILTER " ).append( filter );
             }
             query.append( "}" );
+        }
+        if( firstResult != null )
+        {
+            query.append( " OFFSET " ).append( firstResult );
+        }
+        if( maxResults != null )
+        {
+            query.append( " LIMIT " ).append( maxResults );
         }
         System.out.println( "Query: " + query );
         return query.toString();
@@ -347,7 +359,7 @@ class SPARQLRDFQueryParser
             {
                 return false;
             }
-            if( value != null)
+            if( value != null )
             {
                 return value.equals( other.value );
             }

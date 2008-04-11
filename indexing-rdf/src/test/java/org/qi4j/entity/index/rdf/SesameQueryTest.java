@@ -25,12 +25,18 @@ import org.qi4j.bootstrap.SingletonAssembler;
 import org.qi4j.entity.UnitOfWorkCompletionException;
 import org.qi4j.entity.memory.IndexedMemoryEntityStoreComposite;
 import static org.qi4j.query.QueryExpressions.*;
+import org.qi4j.query.grammar.OrderBy;
 import org.qi4j.spi.entity.UuidIdentityGeneratorComposite;
 import org.qi4j.spi.query.EntitySearcher;
 import org.qi4j.spi.query.SearchException;
 
 public class SesameQueryTest
 {
+
+    private static final OrderBy[] NO_SORTING = null;
+    private static final Integer NO_FIRST_RESULT = null;
+    private static final Integer NO_MAX_RESULTS = null;
+
     private SingletonAssembler assembler;
     private EntitySearcher searchEngine;
 
@@ -71,7 +77,8 @@ public class SesameQueryTest
         // should return all persons (Joe, Ann, Jack Doe)
         searchEngine.find(
             PersonComposite.class,
-            null // all
+            null, // all
+            NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS
         );
     }
 
@@ -82,7 +89,8 @@ public class SesameQueryTest
         // should return Gaming domain
         searchEngine.find(
             Domain.class,
-            eq( nameable.name(), "Gaming" )
+            eq( nameable.name(), "Gaming" ),
+            NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS
         );
     }
 
@@ -92,7 +100,8 @@ public class SesameQueryTest
         // should return all entities
         searchEngine.find(
             Nameable.class,
-            null // all
+            null, // all
+            NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS
         );
     }
 
@@ -103,7 +112,8 @@ public class SesameQueryTest
         // should return Joe and Ann Doe
         searchEngine.find(
             Person.class,
-            eq( person.placeOfBirth().get().name(), "Kuala Lumpur" )
+            eq( person.placeOfBirth().get().name(), "Kuala Lumpur" ),
+            NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS
         );
     }
 
@@ -114,7 +124,8 @@ public class SesameQueryTest
         // should return Joe Doe
         searchEngine.find(
             Person.class,
-            eq( person.mother().get().placeOfBirth().get().name(), "Kuala Lumpur" )
+            eq( person.mother().get().placeOfBirth().get().name(), "Kuala Lumpur" ),
+            NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS
         );
     }
 
@@ -125,7 +136,8 @@ public class SesameQueryTest
         // should return Joe and Ann Doe
         searchEngine.find(
             Person.class,
-            ge( person.yearOfBirth(), 1973 )
+            ge( person.yearOfBirth(), 1973 ),
+            NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS
         );
     }
 
@@ -139,7 +151,8 @@ public class SesameQueryTest
             and(
                 ge( person.yearOfBirth(), 1900 ),
                 eq( person.placeOfBirth().get().name(), "Penang" )
-            )
+            ),
+            NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS
         );
     }
 
@@ -153,7 +166,8 @@ public class SesameQueryTest
             or(
                 eq( person.yearOfBirth(), 1970 ),
                 eq( person.yearOfBirth(), 1975 )
-            )
+            ),
+            NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS
         );
     }
 
@@ -167,7 +181,8 @@ public class SesameQueryTest
             or(
                 eq( person.yearOfBirth(), 1970 ),
                 eq( person.yearOfBirth(), 1975 )
-            )
+            ),
+            NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS
         );
     }
 
@@ -180,7 +195,8 @@ public class SesameQueryTest
             Person.class,
             not(
                 eq( person.yearOfBirth(), 1975 )
-            )
+            ),
+            NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS
         );
     }
 
@@ -191,7 +207,8 @@ public class SesameQueryTest
         // should return Joe Doe
         searchEngine.find(
             Person.class,
-            isNotNull( person.email() )
+            isNotNull( person.email() ),
+            NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS
         );
     }
 
@@ -202,7 +219,8 @@ public class SesameQueryTest
         // should return Ann and Jack Doe
         searchEngine.find(
             Person.class,
-            isNull( person.email() )
+            isNull( person.email() ),
+            NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS
         );
     }
 
@@ -213,7 +231,8 @@ public class SesameQueryTest
         // should return Jack Doe
         searchEngine.find(
             Person.class,
-            isNotNull( person.wife() )
+            isNotNull( person.wife() ),
+            NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS
         );
     }
 
@@ -224,7 +243,8 @@ public class SesameQueryTest
         // should return Jack Doe
         searchEngine.find(
             Male.class,
-            isNull( person.wife() )
+            isNull( person.wife() ),
+            NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS
         );
     }
 
@@ -235,8 +255,31 @@ public class SesameQueryTest
         // should return Ann and Jack Doe
         searchEngine.find(
             Person.class,
-            isNull( person.wife() )
+            isNull( person.wife() ),
+            NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS
         );
     }
+
+    @Test
+    public void script16() throws SearchException
+    {
+        // should return only 2 entities
+        searchEngine.find(
+            Nameable.class,
+            null, // all
+            NO_SORTING, NO_FIRST_RESULT, 2
+        );
+    }
+
+    @Test
+    public void script17() throws SearchException
+    {
+        // should return only 2 entities starting with third one
+        searchEngine.find(
+            Nameable.class,
+            null, // all
+            NO_SORTING, 3, 2
+        );
+    }    
 
 }

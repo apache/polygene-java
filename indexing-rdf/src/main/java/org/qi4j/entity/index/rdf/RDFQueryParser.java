@@ -19,6 +19,7 @@ package org.qi4j.entity.index.rdf;
 
 import org.openrdf.query.QueryLanguage;
 import org.qi4j.query.grammar.BooleanExpression;
+import org.qi4j.query.grammar.OrderBy;
 
 /**
  * TODO Add JavaDoc
@@ -31,5 +32,8 @@ public interface RDFQueryParser
     QueryLanguage getQueryLanguage();
 
     String getQuery( Class entityType,
-                     BooleanExpression whereClause );
+                     BooleanExpression whereClause,
+                     OrderBy[] orderBySegments,
+                     Integer firstResult,
+                     Integer maxResults );
 }

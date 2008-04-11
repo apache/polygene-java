@@ -29,6 +29,7 @@ import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.qi4j.composite.scope.ThisCompositeAs;
 import org.qi4j.query.grammar.BooleanExpression;
+import org.qi4j.query.grammar.OrderBy;
 import org.qi4j.spi.query.EntitySearcher;
 import org.qi4j.spi.query.SearchException;
 
@@ -45,7 +46,10 @@ public class RDFEntitySearcherMixin
     @ThisCompositeAs RDFQueryContext queryContext;
 
     public Iterable<String> find( final Class entityType,
-                                  final BooleanExpression whereClause )
+                                  final BooleanExpression whereClause,
+                                  final OrderBy[] orderBySegments,
+                                  final Integer firstResult,
+                                  final Integer maxResults )
         throws SearchException
     {
         final Collection<String> entities = new HashSet<String>();
@@ -56,7 +60,7 @@ public class RDFEntitySearcherMixin
             final RDFQueryParser parser = new SPARQLRDFQueryParser();
             final TupleQuery tupleQuery = connection.prepareTupleQuery(
                 parser.getQueryLanguage(),
-                parser.getQuery( entityType, whereClause )
+                parser.getQuery( entityType, whereClause, orderBySegments, firstResult, maxResults )
             );
             final TupleQueryResult result = tupleQuery.evaluate();
             try
