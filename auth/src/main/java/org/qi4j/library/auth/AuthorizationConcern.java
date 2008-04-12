@@ -38,7 +38,7 @@ public class AuthorizationConcern extends ConcernOf<InvocationHandler>
 {
     @Invocation private RequiresPermission requiresPermission;
 
-    @Service private AuthorizationService authorizor;
+    @Service private Authorization authorizor;
     @ThisCompositeAs private ProtectedResource roleAssignments;
     @Structure private CompositeBuilderFactory cbf;
 

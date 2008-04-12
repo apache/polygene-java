@@ -26,11 +26,11 @@ import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.scope.Service;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.UnitOfWork;
-import org.qi4j.entity.memory.MemoryEntityStoreComposite;
+import org.qi4j.entity.memory.MemoryEntityStoreService;
+import org.qi4j.library.auth.Authorization;
 import org.qi4j.library.auth.AuthorizationContext;
 import org.qi4j.library.auth.AuthorizationContextComposite;
 import org.qi4j.library.auth.AuthorizationService;
-import org.qi4j.library.auth.AuthorizationServiceComposite;
 import org.qi4j.library.auth.Group;
 import org.qi4j.library.auth.GroupEntity;
 import org.qi4j.library.auth.NamedPermission;
@@ -42,7 +42,7 @@ import org.qi4j.library.auth.RoleAssignmentEntity;
 import org.qi4j.library.auth.RoleEntity;
 import org.qi4j.library.auth.User;
 import org.qi4j.library.auth.UserComposite;
-import org.qi4j.spi.entity.UuidIdentityGeneratorComposite;
+import org.qi4j.spi.entity.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
 
 public class AuthTest
@@ -58,7 +58,7 @@ public class AuthTest
                               NamedPermissionEntity.class,
                               RoleAssignmentEntity.class,
                               SecuredRoom.class );
-        module.addServices( AuthorizationServiceComposite.class, MemoryEntityStoreComposite.class, UuidIdentityGeneratorComposite.class );
+        module.addServices( AuthorizationService.class, MemoryEntityStoreService.class, UuidIdentityGeneratorService.class );
     }
 
     @Test
@@ -83,7 +83,7 @@ public class AuthTest
         role.permissions().add( permission );
 
         // Create authorization service
-        AuthorizationService authorization = serviceLocator.lookupService( AuthorizationService.class ).get();
+        Authorization authorization = serviceLocator.lookupService( Authorization.class ).get();
 
         // Create authorization context
         CompositeBuilder<AuthorizationContext> accb = compositeBuilderFactory.newCompositeBuilder( AuthorizationContext.class );
@@ -132,6 +132,6 @@ public class AuthTest
 
     public class PojoRunner
     {
-        @Service AuthorizationService auth;
+        @Service Authorization auth;
     }
 }
