@@ -28,7 +28,6 @@ import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.ConcernOf;
 import org.qi4j.composite.Concerns;
-import org.qi4j.composite.ConstraintDeclaration;
 import org.qi4j.composite.SideEffectOf;
 import org.qi4j.composite.scope.ThisCompositeAs;
 import org.qi4j.test.AbstractQi4jTest;
@@ -83,7 +82,6 @@ public class SimplePropertyTest
         @Capitalized Property<String> name();
     }
 
-    @ConstraintDeclaration
     @Retention( RetentionPolicy.RUNTIME )
     @Target( { ElementType.METHOD } )
     public @interface Capitalized

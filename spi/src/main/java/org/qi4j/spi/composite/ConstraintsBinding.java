@@ -20,20 +20,20 @@ import java.util.Map;
 /**
  * TODO
  */
-public final class ParameterConstraintsBinding
+public final class ConstraintsBinding
 {
-    private ParameterConstraintsResolution parameterConstraintsResolution;
+    private ConstraintsResolution constraintsResolution;
     private Map<Annotation, ConstraintBinding> constraintBindings;
 
-    public ParameterConstraintsBinding( ParameterConstraintsResolution parameterConstraintsResolution, Map<Annotation, ConstraintBinding> constraintBindings )
+    public ConstraintsBinding( ConstraintsResolution constraintsResolution, Map<Annotation, ConstraintBinding> constraintBindings )
     {
         this.constraintBindings = constraintBindings;
-        this.parameterConstraintsResolution = parameterConstraintsResolution;
+        this.constraintsResolution = constraintsResolution;
     }
 
-    public ParameterConstraintsResolution getParameterConstraintResolution()
+    public ConstraintsResolution getConstraintsResolution()
     {
-        return parameterConstraintsResolution;
+        return constraintsResolution;
     }
 
     public Map<Annotation, ConstraintBinding> getConstraintBindings()

@@ -4,28 +4,34 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import net.sf.cglib.proxy.Factory;
+import org.qi4j.composite.Constraint;
 import org.qi4j.composite.ConstraintDeclaration;
+import org.qi4j.composite.Constraints;
 import org.qi4j.composite.scope.AssociationField;
 import org.qi4j.composite.scope.AssociationParameter;
 import org.qi4j.composite.scope.PropertyField;
 import org.qi4j.composite.scope.PropertyParameter;
 import org.qi4j.injection.InjectionScope;
 import org.qi4j.injection.Optional;
+import org.qi4j.spi.composite.ConstraintDeclarationModel;
+import org.qi4j.spi.composite.ConstraintModel;
+import org.qi4j.spi.composite.ConstraintsModel;
 import org.qi4j.spi.composite.ConstructorModel;
 import org.qi4j.spi.composite.FieldModel;
 import org.qi4j.spi.composite.InvalidCompositeException;
 import org.qi4j.spi.composite.MethodModel;
-import org.qi4j.spi.composite.ParameterConstraintsModel;
 import org.qi4j.spi.composite.ParameterModel;
 import org.qi4j.spi.injection.AssociationInjectionModel;
 import org.qi4j.spi.injection.DependencyInjectionModel;
 import org.qi4j.spi.injection.InjectionModel;
 import org.qi4j.spi.injection.PropertyInjectionModel;
+import org.qi4j.spi.property.PropertyModel;
 
 /**
  * TODO
@@ -191,13 +197,51 @@ public abstract class AbstractModelFactory
                 injectionModel = newInjectionModel( annotation, parameterType, methodClass, null );
             }
         }
-        ParameterConstraintsModel parameterConstraintsModel = null;
+        ConstraintsModel constraintsModel = null;
         if( parameterConstraints.size() > 0 )
         {
-            parameterConstraintsModel = new ParameterConstraintsModel( parameterConstraints );
+            constraintsModel = new ConstraintsModel( parameterConstraints );
         }
-        ParameterModel parameterModel = new ParameterModel( parameterType, parameterConstraintsModel, injectionModel );
+        ParameterModel parameterModel = new ParameterModel( parameterType, constraintsModel, injectionModel );
         return parameterModel;
+    }
+
+    protected PropertyModel getPropertyModel( Method method )
+    {
+        PropertyModel propertyModel;
+        Annotation[] annotations = method.getAnnotations();
+        List<Annotation> constraintAnnotations = null;
+        ConstraintsModel constraintsModel = null;
+        for( Annotation annotation : annotations )
+        {
+            if( annotation.annotationType().getAnnotation( ConstraintDeclaration.class ) != null )
+            {
+                Constraints constraintsAnnotation = annotation.annotationType().getAnnotation( Constraints.class );
+                List<ConstraintModel> constraintModels = null;
+                if( constraintsAnnotation != null )
+                {
+                    constraintModels = new ArrayList<ConstraintModel>();
+                    Class<? extends Constraint>[] constraintImplementations = constraintsAnnotation.value();
+                    for( Class<? extends Constraint> constraintImplementation : constraintImplementations )
+                    {
+                        Class annotationType = (Class) ( (ParameterizedType) constraintImplementation.getGenericInterfaces()[ 0 ] ).getActualTypeArguments()[ 0 ];
+                        Class valueType = (Class) ( (ParameterizedType) constraintImplementation.getGenericInterfaces()[ 0 ] ).getActualTypeArguments()[ 1 ];
+
+                        constraintModels.add( new ConstraintModel( constraintImplementation, annotationType, valueType, annotation.annotationType() ) );
+                    }
+                }
+                ConstraintDeclarationModel constraintDeclarationModel = new ConstraintDeclarationModel( annotation.annotationType(), constraintModels );
+
+                if( constraintAnnotations == null )
+                {
+                    constraintAnnotations = new ArrayList<Annotation>();
+                    constraintsModel = new ConstraintsModel( constraintAnnotations );
+                }
+                constraintAnnotations.add( annotation );
+            }
+        }
+        propertyModel = new PropertyModel( method, constraintsModel );
+        return propertyModel;
     }
 
     private InjectionModel newInjectionModel( Annotation annotation, Type injectionType, Class injectedType, Field field )

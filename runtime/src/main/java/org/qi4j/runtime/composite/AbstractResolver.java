@@ -17,14 +17,14 @@ package org.qi4j.runtime.composite;
 import java.util.ArrayList;
 import java.util.List;
 import org.qi4j.spi.composite.ConstraintResolution;
+import org.qi4j.spi.composite.ConstraintsModel;
+import org.qi4j.spi.composite.ConstraintsResolution;
 import org.qi4j.spi.composite.ConstructorModel;
 import org.qi4j.spi.composite.ConstructorResolution;
 import org.qi4j.spi.composite.FieldModel;
 import org.qi4j.spi.composite.FieldResolution;
 import org.qi4j.spi.composite.MethodModel;
 import org.qi4j.spi.composite.MethodResolution;
-import org.qi4j.spi.composite.ParameterConstraintsModel;
-import org.qi4j.spi.composite.ParameterConstraintsResolution;
 import org.qi4j.spi.composite.ParameterModel;
 import org.qi4j.spi.composite.ParameterResolution;
 import org.qi4j.spi.injection.InjectionModel;
@@ -82,13 +82,13 @@ public abstract class AbstractResolver
     {
         for( ParameterModel parameterModel : parameterModels )
         {
-            ParameterConstraintsModel parameterConstraintsModel = parameterModel.getParameterConstraintModel();
-            ParameterConstraintsResolution parameterConstraintsResolution = null;
-            if( parameterConstraintsModel != null )
+            ConstraintsModel constraintsModel = parameterModel.getConstraintsModel();
+            ConstraintsResolution constraintsResolution = null;
+            if( constraintsModel != null )
             {
                 List<ConstraintResolution> constraintResolutions = new ArrayList<ConstraintResolution>();
                 // TODO Fill in the list
-                parameterConstraintsResolution = new ParameterConstraintsResolution( parameterConstraintsModel, constraintResolutions );
+                constraintsResolution = new ConstraintsResolution( constraintsModel, constraintResolutions );
             }
 
             InjectionResolution injectionResolution = null;
@@ -96,7 +96,7 @@ public abstract class AbstractResolver
             {
                 injectionResolution = new InjectionResolution( parameterModel.getInjectionModel(), resolutionContext.getModule(), resolutionContext.getLayer(), resolutionContext.getApplication() );
             }
-            ParameterResolution parameterResolution = new ParameterResolution( parameterModel, parameterConstraintsResolution, injectionResolution );
+            ParameterResolution parameterResolution = new ParameterResolution( parameterModel, constraintsResolution, injectionResolution );
             parameterResolutions.add( parameterResolution );
         }
     }

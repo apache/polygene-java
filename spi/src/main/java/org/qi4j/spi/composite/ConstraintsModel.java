@@ -17,13 +17,13 @@ package org.qi4j.spi.composite;
 import java.lang.annotation.Annotation;
 
 /**
- * TODO
+ * This models the annotations used for a parameter or property.
  */
-public final class ParameterConstraintsModel
+public final class ConstraintsModel
 {
     private Iterable<Annotation> constraints;
 
-    public ParameterConstraintsModel( Iterable<Annotation> constraints )
+    public ConstraintsModel( Iterable<Annotation> constraints )
     {
         this.constraints = constraints;
     }

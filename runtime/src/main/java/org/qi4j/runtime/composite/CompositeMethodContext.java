@@ -33,9 +33,9 @@ import org.qi4j.spi.composite.ConcernBinding;
 import org.qi4j.spi.composite.ConstraintBinding;
 import org.qi4j.spi.composite.ConstraintModel;
 import org.qi4j.spi.composite.ConstraintResolution;
+import org.qi4j.spi.composite.ConstraintsBinding;
 import org.qi4j.spi.composite.ModifierModel;
 import org.qi4j.spi.composite.ParameterBinding;
-import org.qi4j.spi.composite.ParameterConstraintsBinding;
 import org.qi4j.spi.composite.SideEffectBinding;
 import org.qi4j.spi.injection.ModifierInjectionContext;
 import org.qi4j.spi.structure.ApplicationBinding;
@@ -125,14 +125,14 @@ public final class CompositeMethodContext
         for( ParameterBinding parameterBinding : parameterBindings )
         {
             List<ConstraintInstance> constraintInstances = new ArrayList<ConstraintInstance>();
-            ParameterConstraintsBinding parameterConstraintsBinding = parameterBinding.getParameterConstraintsBinding();
+            ConstraintsBinding constraintsBinding = parameterBinding.getConstraintsBinding();
 
-            if( parameterConstraintsBinding == null )
+            if( constraintsBinding == null )
             {
                 continue;
             }
 
-            Map<Annotation, ConstraintBinding> constraintBindings = parameterConstraintsBinding.getConstraintBindings();
+            Map<Annotation, ConstraintBinding> constraintBindings = constraintsBinding.getConstraintBindings();
             for( Map.Entry<Annotation, ConstraintBinding> entry : constraintBindings.entrySet() )
             {
                 ConstraintBinding constraintBinding = entry.getValue();

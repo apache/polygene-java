@@ -19,66 +19,53 @@ package org.qi4j.constraints;
 
 import java.util.Collection;
 import static org.junit.Assert.*;
-import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.ConstraintViolation;
+import org.qi4j.composite.ConstraintViolationException;
 import org.qi4j.composite.Constraints;
-import org.qi4j.composite.Mixins;
-import org.qi4j.composite.ParameterConstraintViolationException;
+import org.qi4j.library.framework.constraint.MinLengthConstraint;
 import org.qi4j.library.framework.constraint.NotNullConstraint;
+import org.qi4j.library.framework.constraint.annotation.MinLength;
 import org.qi4j.library.framework.constraint.annotation.NotNull;
+import org.qi4j.property.Property;
 import org.qi4j.test.AbstractQi4jTest;
 
 
-public class ConstraintsTest extends AbstractQi4jTest
+public class PropertyConstraintTest extends AbstractQi4jTest
 {
-    @Test
-    public void testSingleConstraintOnMethod()
+    @org.junit.Test
+    public void givenConstraintOnPropertyWhenInvalidValueThenThrowException()
         throws Throwable
     {
-        MyOne my = compositeBuilderFactory.newComposite( MyOne.class );
-        my.doSomething( "habba" );
+        Test test = compositeBuilderFactory.newComposite( Test.class );
         try
         {
-            my.doSomething( null );
-            fail( "Should have thrown a ParameterConstraintViolationException." );
+            test.test().set( null );
+            fail( "Should have thrown a ConstraintViolationException." );
         }
-        catch( ParameterConstraintViolationException e )
+        catch( ConstraintViolationException e )
         {
             Collection<ConstraintViolation> violations = e.constraintViolations();
-            assertEquals( 1, violations.size() );
-            assertEquals( MyOneComposite.class.getName(), e.compositeType() );
+            assertEquals( 2, violations.size() );
+
+            System.out.println( e.getLocalizedMessage() );
         }
     }
 
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
-        module.addComposites( MyOneComposite.class );
+        module.addComposites( TestComposite.class );
     }
 
-    @Constraints( NotNullConstraint.class )
-    @Mixins( MyOneMixin.class )
-    public interface MyOneComposite extends MyOne, Composite
+    @Constraints( { NotNullConstraint.class, MinLengthConstraint.class } )
+    public interface TestComposite extends Test, Composite
     {
     }
 
-    public interface MyOne
+    public interface Test
     {
-        void doSomething( @NotNull String abc );
-    }
-
-    public static class MyOneMixin
-        implements MyOne
-    {
-
-        public void doSomething( String abc )
-        {
-            if( abc == null )
-            {
-                throw new NullPointerException();
-            }
-        }
+        @NotNull @MinLength( 3 ) Property<String> test();
     }
 }

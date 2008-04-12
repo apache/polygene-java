@@ -25,6 +25,8 @@ import java.util.Collection;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import org.qi4j.entity.EntityComposite;
+import org.qi4j.service.ServiceComposite;
 
 /**
  * This Exception is thrown when there is one or more Constraint Violations in a method
@@ -39,21 +41,21 @@ import java.util.ResourceBundle;
  * change. It will be stable before the 1.0 release.
  * </p>
  */
-public class ConstraintViolationException extends IllegalArgumentException
+public class ParameterConstraintViolationException extends ConstraintViolationException
 {
-    private final Method method;
-    private Collection<ConstraintViolation> constraintViolations;
+    private String instanceName;
+    private String compositeType;
+    private boolean isEntity;
+    private boolean isService;
 
-    public ConstraintViolationException( Method method,
-                                         Collection<ConstraintViolation> constraintViolations )
+    public ParameterConstraintViolationException( Composite instance, Method method,
+                                                  Collection<ConstraintViolation> constraintViolations )
     {
-        this.method = method;
-        this.constraintViolations = constraintViolations;
-    }
-
-    public Collection<ConstraintViolation> constraintViolations()
-    {
-        return constraintViolations;
+        super( method, constraintViolations );
+        instanceName = instance.toString();
+        compositeType = instance.type().getName();
+        isEntity = instance instanceof EntityComposite;
+        isService = instance instanceof ServiceComposite;
     }
 
     /**
@@ -110,17 +112,31 @@ public class ConstraintViolationException extends IllegalArgumentException
      */
     public String[] getLocalizedMessages( ResourceBundle bundle )
     {
-        String pattern = "Constraint violation in {0}.{1} with constraint {2}, for value ''{3}''";
-
+        String pattern;
+        if( isEntity )
+        {
+            pattern = "Constraint violation in {2}.{3} with constraint {4}, in entity {1}[id={0}] for value '{5}'";
+        }
+        else
+        {
+            if( isService )
+            {
+                pattern = "Constraint violation in {2}.{3} with constraint {4}, in service {0} for value '{5}'";
+            }
+            else
+            {
+                pattern = "Constraint violation in {2}.{3} with constraint {4}, in composite \n{0} of type {1} for value '{5}'";
+            }
+        }
         ArrayList<String> list = new ArrayList<String>();
-        for( ConstraintViolation violation : constraintViolations )
+        for( ConstraintViolation violation : constraintViolations() )
         {
             Locale locale;
             if( bundle != null )
             {
                 try
                 {
-                    pattern = bundle.getString( "qi4j.constraint." + method.getDeclaringClass().getName() + "." + method.getName() );
+                    pattern = bundle.getString( "qi4j.constraint." + compositeType );
                 }
                 catch( MissingResourceException e1 )
                 {
@@ -145,8 +161,10 @@ public class ConstraintViolationException extends IllegalArgumentException
             Object value = violation.value();
             Object[] args = new String[]
                 {
-                    method.getDeclaringClass().getName(),
-                    method.getName(),
+                    instanceName,
+                    compositeType,
+                    method().getDeclaringClass().getName(),
+                    method().getName(),
                     annotation.toString(),
                     "" + value
                 };
@@ -176,13 +194,23 @@ public class ConstraintViolationException extends IllegalArgumentException
         return result.toString();
     }
 
-    @Override public String getLocalizedMessage()
+    public String instanceName()
     {
-        return localizedMessage();
+        return instanceName;
     }
 
-    public Method method()
+    public String compositeType()
     {
-        return method;
+        return compositeType;
+    }
+
+    public boolean isEntity()
+    {
+        return isEntity;
+    }
+
+    public boolean isService()
+    {
+        return isService;
     }
 }

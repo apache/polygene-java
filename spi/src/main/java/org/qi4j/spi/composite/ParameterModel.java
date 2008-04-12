@@ -25,7 +25,7 @@ public final class ParameterModel
     implements Serializable
 {
     private Type type;
-    private ParameterConstraintsModel parameterConstraintsModel; // May be null
+    private ConstraintsModel constraintsModel; // May be null
     private InjectionModel injectionModel; // May be null
 
     public ParameterModel( Type type )
@@ -33,10 +33,10 @@ public final class ParameterModel
         this.type = type;
     }
 
-    public ParameterModel( Type type, ParameterConstraintsModel parameterConstraintsModel, InjectionModel injectionModel )
+    public ParameterModel( Type type, ConstraintsModel constraintsModel, InjectionModel injectionModel )
     {
         this.type = type;
-        this.parameterConstraintsModel = parameterConstraintsModel;
+        this.constraintsModel = constraintsModel;
         this.injectionModel = injectionModel;
     }
 
@@ -45,9 +45,9 @@ public final class ParameterModel
         return type;
     }
 
-    public ParameterConstraintsModel getParameterConstraintModel()
+    public ConstraintsModel getConstraintsModel()
     {
-        return parameterConstraintsModel;
+        return constraintsModel;
     }
 
     public InjectionModel getInjectionModel()

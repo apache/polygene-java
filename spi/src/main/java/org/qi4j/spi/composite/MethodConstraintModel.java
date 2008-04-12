@@ -22,9 +22,9 @@ import java.lang.reflect.Method;
 public final class MethodConstraintModel
 {
     private Method method;
-    private Iterable<ParameterConstraintsModel> parameterConstraints;
+    private Iterable<ConstraintsModel> parameterConstraints;
 
-    public MethodConstraintModel( Method method, Iterable<ParameterConstraintsModel> parameterConstraints )
+    public MethodConstraintModel( Method method, Iterable<ConstraintsModel> parameterConstraints )
     {
         this.method = method;
         this.parameterConstraints = parameterConstraints;
@@ -35,7 +35,7 @@ public final class MethodConstraintModel
         return method;
     }
 
-    public Iterable<ParameterConstraintsModel> getParameterConstraints()
+    public Iterable<ConstraintsModel> getParameterConstraints()
     {
         return parameterConstraints;
     }

@@ -24,15 +24,22 @@ public final class PropertyResolution
     implements Serializable
 {
     private PropertyModel propertyModel;
+    private ConstraintsResolution constraintsResolution;
 
-    public PropertyResolution( PropertyModel propertyModel )
+    public PropertyResolution( PropertyModel propertyModel, ConstraintsResolution constraintsResolution )
     {
         this.propertyModel = propertyModel;
+        this.constraintsResolution = constraintsResolution;
     }
 
     public PropertyModel getPropertyModel()
     {
         return propertyModel;
+    }
+
+    public ConstraintsResolution getConstraintsResolution()
+    {
+        return constraintsResolution;
     }
 
     @Override public String toString()

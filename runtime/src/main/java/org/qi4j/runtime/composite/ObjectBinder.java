@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import org.qi4j.spi.composite.BindingException;
+import org.qi4j.spi.composite.ConstraintsBinding;
 import org.qi4j.spi.composite.ConstructorBinding;
 import org.qi4j.spi.composite.ConstructorResolution;
 import org.qi4j.spi.composite.FieldBinding;
@@ -71,7 +72,8 @@ public final class ObjectBinder extends CompositeBinder
                     propertyInfos = Collections.emptyMap();
                 }
 
-                PropertyBinding propertyBinding = new PropertyBinding( objectResolution.getPropertyResolution( propertyModel.getName() ), propertyInfos, propertyDescriptor != null ? propertyDescriptor.getDefaultValue() : null );
+                ConstraintsBinding constraintsBinding = null;
+                PropertyBinding propertyBinding = new PropertyBinding( objectResolution.getPropertyResolution( propertyModel.getName() ), propertyInfos, propertyDescriptor != null ? propertyDescriptor.getDefaultValue() : null, constraintsBinding );
                 propertyBindings.add( propertyBinding );
             }
 

@@ -296,9 +296,9 @@ public final class CompositeModelFactory
             for( Class<? extends Constraint> constraintImplementation : constraintImplementations )
             {
                 Class annotationType = (Class) ( (ParameterizedType) constraintImplementation.getGenericInterfaces()[ 0 ] ).getActualTypeArguments()[ 0 ];
-                Class parameterType = (Class) ( (ParameterizedType) constraintImplementation.getGenericInterfaces()[ 0 ] ).getActualTypeArguments()[ 1 ];
+                Class valueType = (Class) ( (ParameterizedType) constraintImplementation.getGenericInterfaces()[ 0 ] ).getActualTypeArguments()[ 1 ];
 
-                constraintModels.add( new ConstraintModel( constraintImplementation, annotationType, parameterType, compositeClass ) );
+                constraintModels.add( new ConstraintModel( constraintImplementation, annotationType, valueType, compositeClass ) );
             }
 
         }
@@ -347,7 +347,7 @@ public final class CompositeModelFactory
         PropertyModel propertyModel = null;
         if( Property.class.isAssignableFrom( method.getReturnType() ) )
         {
-            propertyModel = new PropertyModel( method );
+            propertyModel = getPropertyModel( method );
         }
 
         // AbstractAssociation model, if any

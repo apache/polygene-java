@@ -8,13 +8,13 @@ import org.qi4j.spi.injection.InjectionResolution;
 public final class ParameterResolution
 {
     private ParameterModel parameterModel;
-    private ParameterConstraintsResolution parameterConstraintsResolution;
+    private ConstraintsResolution constraintsResolution;
     private InjectionResolution injectionResolution;
 
-    public ParameterResolution( ParameterModel parameterModel, ParameterConstraintsResolution parameterConstraintsResolutions, InjectionResolution injectionResolution )
+    public ParameterResolution( ParameterModel parameterModel, ConstraintsResolution constraintsResolutions, InjectionResolution injectionResolution )
     {
         this.parameterModel = parameterModel;
-        this.parameterConstraintsResolution = parameterConstraintsResolutions;
+        this.constraintsResolution = constraintsResolutions;
         this.injectionResolution = injectionResolution;
     }
 
@@ -23,9 +23,9 @@ public final class ParameterResolution
         return parameterModel;
     }
 
-    public ParameterConstraintsResolution getParameterConstraintResolution()
+    public ConstraintsResolution getConstraintsResolution()
     {
-        return parameterConstraintsResolution;
+        return constraintsResolution;
     }
 
     public InjectionResolution getInjectionResolution()

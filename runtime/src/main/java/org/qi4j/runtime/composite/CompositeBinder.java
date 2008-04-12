@@ -34,6 +34,8 @@ import org.qi4j.spi.composite.ConcernBinding;
 import org.qi4j.spi.composite.ConcernResolution;
 import org.qi4j.spi.composite.ConstraintBinding;
 import org.qi4j.spi.composite.ConstraintResolution;
+import org.qi4j.spi.composite.ConstraintsBinding;
+import org.qi4j.spi.composite.ConstraintsResolution;
 import org.qi4j.spi.composite.ConstructorBinding;
 import org.qi4j.spi.composite.ConstructorResolution;
 import org.qi4j.spi.composite.FieldBinding;
@@ -43,9 +45,8 @@ import org.qi4j.spi.composite.MethodResolution;
 import org.qi4j.spi.composite.MixinBinding;
 import org.qi4j.spi.composite.MixinResolution;
 import org.qi4j.spi.composite.ParameterBinding;
-import org.qi4j.spi.composite.ParameterConstraintsBinding;
-import org.qi4j.spi.composite.ParameterConstraintsResolution;
 import org.qi4j.spi.composite.ParameterResolution;
+import org.qi4j.spi.composite.PropertyResolution;
 import org.qi4j.spi.composite.SideEffectBinding;
 import org.qi4j.spi.composite.SideEffectResolution;
 import org.qi4j.spi.entity.association.AssociationBinding;
@@ -104,7 +105,13 @@ public class CompositeBinder
                         propertyInfos = Collections.emptyMap();
                     }
 
-                    PropertyBinding propertyBinding = new PropertyBinding( compositeMethodResolution.getPropertyResolution(), propertyInfos, propertyDescriptor != null ? propertyDescriptor.getDefaultValue() : null );
+                    ConstraintsBinding constraintsBinding = null;
+                    PropertyResolution propertyResolution = compositeMethodResolution.getPropertyResolution();
+                    if( propertyResolution.getConstraintsResolution() != null )
+                    {
+                        constraintsBinding = bindConstraints( propertyResolution.getConstraintsResolution() );
+                    }
+                    PropertyBinding propertyBinding = new PropertyBinding( compositeMethodResolution.getPropertyResolution(), propertyInfos, propertyDescriptor != null ? propertyDescriptor.getDefaultValue() : null, constraintsBinding );
                     Map<PropertyModel, PropertyBinding> propertyBindings = mixinProperties.get( compositeMethodResolution.getMixinResolution() );
                     if( propertyBindings == null )
                     {
@@ -312,17 +319,11 @@ public class CompositeBinder
         List<ParameterBinding> parameterBindings = new ArrayList<ParameterBinding>();
         for( ParameterResolution parameterResolution : parameterResolutions )
         {
-            ParameterConstraintsResolution parameterConstraintsResolution = parameterResolution.getParameterConstraintResolution();
-            ParameterConstraintsBinding parameterConstraintsBinding = null;
-            if( parameterConstraintsResolution != null )
+            ConstraintsResolution constraintsResolution = parameterResolution.getConstraintsResolution();
+            ConstraintsBinding constraintsBinding = null;
+            if( constraintsResolution != null )
             {
-                Map<Annotation, ConstraintBinding> annotationConstraintBindings = new HashMap<Annotation, ConstraintBinding>();
-                for( ConstraintResolution constraintResolution : parameterConstraintsResolution.getConstraintResolutions() )
-                {
-                    ConstraintBinding constraintBinding = new ConstraintBinding( constraintResolution );
-                    annotationConstraintBindings.put( constraintResolution.getConstraintAnnotation(), constraintBinding );
-                }
-                parameterConstraintsBinding = new ParameterConstraintsBinding( parameterConstraintsResolution, annotationConstraintBindings );
+                constraintsBinding = bindConstraints( constraintsResolution );
             }
 
             InjectionResolution injectionResolution = parameterResolution.getInjectionResolution();
@@ -333,9 +334,22 @@ public class CompositeBinder
                 injectionBinding = new InjectionBinding( injectionResolution, injectionProviderFactory.newInjectionProvider( injectionContext ) );
             }
 
-            ParameterBinding parameterBinding = new ParameterBinding( parameterResolution, parameterConstraintsBinding, injectionBinding );
+            ParameterBinding parameterBinding = new ParameterBinding( parameterResolution, constraintsBinding, injectionBinding );
             parameterBindings.add( parameterBinding );
         }
         return parameterBindings;
+    }
+
+    private ConstraintsBinding bindConstraints( ConstraintsResolution constraintsResolution )
+    {
+        ConstraintsBinding constraintsBinding;
+        Map<Annotation, ConstraintBinding> annotationConstraintBindings = new HashMap<Annotation, ConstraintBinding>();
+        for( ConstraintResolution constraintResolution : constraintsResolution.getConstraintResolutions() )
+        {
+            ConstraintBinding constraintBinding = new ConstraintBinding( constraintResolution );
+            annotationConstraintBindings.put( constraintResolution.getConstraintAnnotation(), constraintBinding );
+        }
+        constraintsBinding = new ConstraintsBinding( constraintsResolution, annotationConstraintBindings );
+        return constraintsBinding;
     }
 }

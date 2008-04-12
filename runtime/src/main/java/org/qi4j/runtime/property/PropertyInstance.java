@@ -16,6 +16,7 @@ package org.qi4j.runtime.property;
 
 import org.qi4j.property.ComputedPropertyInstance;
 import org.qi4j.property.PropertyInfo;
+import org.qi4j.runtime.composite.ConstraintsInstance;
 
 /**
  * {@code PropertyInstance} represents a mutable property.
@@ -73,6 +74,13 @@ public class PropertyInstance<T> extends ComputedPropertyInstance<T>
      */
     public void set( T aNewValue )
     {
+        PropertyContext propertyContext = (PropertyContext) propertyInfo;
+        ConstraintsInstance constraintsInstance = propertyContext.getConstraintsInstance();
+        if( constraintsInstance != null )
+        {
+            constraintsInstance.checkValid( aNewValue, propertyContext.getPropertyBinding().getPropertyResolution().getPropertyModel().getAccessor() );
+        }
+
         value = aNewValue;
     }
 
@@ -86,15 +94,5 @@ public class PropertyInstance<T> extends ComputedPropertyInstance<T>
     public String toString()
     {
         return value == null ? "" : value.toString();
-    }
-
-    public T read()
-    {
-        return value;
-    }
-
-    public void write( T value )
-    {
-        this.value = value;
     }
 }

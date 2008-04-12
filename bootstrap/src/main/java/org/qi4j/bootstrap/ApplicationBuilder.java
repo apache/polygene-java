@@ -29,6 +29,7 @@ import org.qi4j.runtime.Qi4jRuntime;
 import org.qi4j.runtime.composite.CompositeContext;
 import org.qi4j.runtime.composite.CompositeMethodContext;
 import org.qi4j.runtime.composite.CompositeModelFactory;
+import org.qi4j.runtime.composite.ConstraintsContext;
 import org.qi4j.runtime.composite.MixinContext;
 import org.qi4j.runtime.composite.ObjectContext;
 import org.qi4j.runtime.composite.ObjectModelFactory;
@@ -43,6 +44,7 @@ import org.qi4j.service.ServiceInstanceProvider;
 import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.composite.CompositeMethodBinding;
 import org.qi4j.spi.composite.CompositeResolution;
+import org.qi4j.spi.composite.ConstraintsBinding;
 import org.qi4j.spi.composite.MixinBinding;
 import org.qi4j.spi.composite.ObjectBinding;
 import org.qi4j.spi.composite.ObjectResolution;
@@ -308,7 +310,13 @@ public final class ApplicationBuilder
         PropertyContext propertyContext = null;
         if( compositeMethodBinding.getPropertyBinding() != null )
         {
-            propertyContext = new PropertyContext( compositeMethodBinding.getPropertyBinding() );
+            ConstraintsBinding constraintsBinding = compositeMethodBinding.getPropertyBinding().getConstraintsBinding();
+            ConstraintsContext constraintsContext = null;
+            if( constraintsBinding != null )
+            {
+                constraintsContext = new ConstraintsContext( constraintsBinding );
+            }
+            propertyContext = new PropertyContext( compositeMethodBinding.getPropertyBinding(), constraintsContext );
             PropertyModel propertyModel = propertyContext.getPropertyBinding().getPropertyResolution().getPropertyModel();
             propertyContexts.put( propertyModel.getQualifiedName(), propertyContext );
         }
@@ -477,7 +485,14 @@ public final class ApplicationBuilder
             Iterable<PropertyBinding> propertyBindings = entry.getValue().getPropertyBindings();
             for( PropertyBinding propertyBinding : propertyBindings )
             {
-                PropertyContext propertyContext = new PropertyContext( propertyBinding );
+                ConstraintsBinding constraintsBinding = propertyBinding.getConstraintsBinding();
+                ConstraintsContext constraintsContext = null;
+                if( constraintsBinding != null )
+                {
+                    constraintsContext = new ConstraintsContext( constraintsBinding );
+                }
+
+                PropertyContext propertyContext = new PropertyContext( propertyBinding, constraintsContext );
                 PropertyModel propertyModel = propertyContext.getPropertyBinding().getPropertyResolution().getPropertyModel();
                 propertyContexts.put( propertyModel.getQualifiedName(), propertyContext );
             }

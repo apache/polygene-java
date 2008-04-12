@@ -22,7 +22,7 @@ import org.qi4j.test.AbstractQi4jTest;
 public abstract class AbstractEntityStorePerformanceTest
     extends AbstractQi4jTest
 {
-    protected int nrOfEntities = 30000;
+    protected int nrOfEntities = 10000;
     protected int nrOfLookups = 100000;
     private int idx;
 

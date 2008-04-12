@@ -15,26 +15,26 @@
 package org.qi4j.spi.property;
 
 import java.io.Serializable;
-import java.lang.reflect.Type;
 import java.util.Map;
-import org.qi4j.property.PropertyInfo;
+import org.qi4j.spi.composite.ConstraintsBinding;
 import org.qi4j.spi.composite.PropertyResolution;
 
 /**
  * TODO
  */
 public final class PropertyBinding
-    implements PropertyInfo
 {
     private PropertyResolution propertyResolution;
+    private ConstraintsBinding constraintsBinding;
     private Map<Class, Serializable> propertyInfo;
     private Object defaultValue;
 
-    public PropertyBinding( PropertyResolution propertyResolution, Map<Class, Serializable> propertyInfo, Object defaultValue )
+    public PropertyBinding( PropertyResolution propertyResolution, Map<Class, Serializable> propertyInfo, Object defaultValue, ConstraintsBinding constraintsBinding )
     {
         this.defaultValue = defaultValue;
         this.propertyInfo = propertyInfo;
         this.propertyResolution = propertyResolution;
+        this.constraintsBinding = constraintsBinding;
 
         // Better default values for primitives
         if( defaultValue == null )
@@ -72,24 +72,14 @@ public final class PropertyBinding
         return infoClass.cast( propertyInfo.get( infoClass ) );
     }
 
-    public String name()
-    {
-        return propertyResolution.getPropertyModel().getName();
-    }
-
-    public String qualifiedName()
-    {
-        return propertyResolution.getPropertyModel().getQualifiedName();
-    }
-
-    public Type type()
-    {
-        return propertyResolution.getPropertyModel().getType();
-    }
-
     public Object getDefaultValue()
     {
         return defaultValue;
+    }
+
+    public ConstraintsBinding getConstraintsBinding()
+    {
+        return constraintsBinding;
     }
 
     @Override public String toString()

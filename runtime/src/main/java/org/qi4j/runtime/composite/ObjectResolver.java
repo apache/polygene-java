@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.qi4j.spi.composite.ConstraintsResolution;
 import org.qi4j.spi.composite.ConstructorResolution;
 import org.qi4j.spi.composite.FieldResolution;
 import org.qi4j.spi.composite.MethodResolution;
@@ -37,7 +38,8 @@ public final class ObjectResolver
         for( PropertyModel propertyModel : objectModel.getPropertyModels() )
         {
             String propertyModelName = propertyModel.getName();
-            propertyResolutions.put( propertyModelName, new PropertyResolution( propertyModel ) );
+            ConstraintsResolution constraintsResolution = null; // TODO Fix this
+            propertyResolutions.put( propertyModelName, new PropertyResolution( propertyModel, constraintsResolution ) );
         }
 
         Map<String, AssociationResolution> associationResolutions = new HashMap<String, AssociationResolution>();

@@ -22,9 +22,9 @@ import java.lang.reflect.Constructor;
 public final class ConstructorConstraintModel
 {
     private Constructor constructor;
-    private Iterable<ParameterConstraintsModel> parameterConstraints;
+    private Iterable<ConstraintsModel> parameterConstraints;
 
-    public ConstructorConstraintModel( Constructor constructor, Iterable<ParameterConstraintsModel> parameterConstraints )
+    public ConstructorConstraintModel( Constructor constructor, Iterable<ConstraintsModel> parameterConstraints )
     {
         this.parameterConstraints = parameterConstraints;
         this.constructor = constructor;
@@ -35,7 +35,7 @@ public final class ConstructorConstraintModel
         return constructor;
     }
 
-    public Iterable<ParameterConstraintsModel> getParameterConstraints()
+    public Iterable<ConstraintsModel> getParameterConstraints()
     {
         return parameterConstraints;
     }

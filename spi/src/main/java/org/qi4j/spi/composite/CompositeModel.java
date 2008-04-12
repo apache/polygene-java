@@ -50,7 +50,7 @@ public final class CompositeModel
         className = className.replace( '$', '&' );
         return "urn:qi4j:" + className;
     }
-    
+
     private Class<? extends Composite> compositeClass;
     private Class proxyClass;
     private Collection<CompositeMethodModel> compositeMethodModels;
@@ -208,7 +208,7 @@ public final class CompositeModel
         {
             for( ConstraintModel possibleConstraintModel : possibleConstraintModels )
             {
-                if( possibleConstraintModel.getParameterType().equals( parameterType ) )
+                if( possibleConstraintModel.getValueType().equals( parameterType ) )
                 {
                     return possibleConstraintModel;
                 }

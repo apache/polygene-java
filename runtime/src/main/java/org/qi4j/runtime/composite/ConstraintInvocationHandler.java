@@ -5,10 +5,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import org.qi4j.composite.Composite;
 import org.qi4j.composite.Constraint;
 import org.qi4j.composite.ConstraintViolation;
-import org.qi4j.composite.ConstraintViolationException;
-import org.qi4j.composite.Composite;
+import org.qi4j.composite.ParameterConstraintViolationException;
 
 /**
  * TODO
@@ -66,7 +66,7 @@ public final class ConstraintInvocationHandler
         if( constraintViolations != null )
         {
             Composite composite = (Composite) proxyHandler.composite();
-            throw new ConstraintViolationException( composite, method, constraintViolations );
+            throw new ParameterConstraintViolationException( composite, method, constraintViolations );
         }
 
         // Invoke next

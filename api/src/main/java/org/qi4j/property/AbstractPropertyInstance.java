@@ -91,6 +91,36 @@ public abstract class AbstractPropertyInstance<T>
         return null;
     }
 
+    /**
+     * Get URI for a property.
+     *
+     * @param accessor accessor method
+     * @return property URI
+     */
+    public static String toURI( final Method accessor )
+    {
+        if( accessor == null )
+        {
+            return null;
+        }
+        return "urn:qi4j:property:" + ComputedPropertyInstance.getQualifiedName( accessor );
+    }
+
+    /**
+     * Get namespace for a property.
+     *
+     * @param accessor accessor method
+     * @return property namespace
+     */
+    public static String toNamespace( final Method accessor )
+    {
+        if( accessor == null )
+        {
+            return null;
+        }
+        return "urn:qi4j:property:" + ComputedPropertyInstance.getDeclaringClassName( accessor ) + ":";
+    }
+
     protected PropertyInfo propertyInfo;
 
     /**

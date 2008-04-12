@@ -26,15 +26,15 @@ public final class ConstraintModel<T>
 {
     private Class<? extends Constraint> constraintType;
     private Class<? extends Annotation> annotationType;
-    private Class<T> parameterType;
+    private Class<T> valueType;
     private Class declaredBy;
 
-    public ConstraintModel( Class<? extends Constraint> constraintType, Class<? extends Annotation> annotationType, Class<T> parameterType, Class declaredBy )
+    public ConstraintModel( Class<? extends Constraint> constraintType, Class<? extends Annotation> annotationType, Class<T> valueType, Class declaredBy )
     {
         this.declaredBy = declaredBy;
         this.constraintType = constraintType;
         this.annotationType = annotationType;
-        this.parameterType = parameterType;
+        this.valueType = valueType;
     }
 
     public Class<? extends Constraint> getConstraintType()
@@ -47,9 +47,9 @@ public final class ConstraintModel<T>
         return annotationType;
     }
 
-    public Class<T> getParameterType()
+    public Class<T> getValueType()
     {
-        return parameterType;
+        return valueType;
     }
 
     public Class getDeclaredBy()
@@ -87,6 +87,6 @@ public final class ConstraintModel<T>
 
     @Override public String toString()
     {
-        return "@" + annotationType.getName() + " for " + parameterType.getName() + " implemented by " + constraintType.getName();
+        return "@" + annotationType.getName() + " for " + valueType.getName() + " implemented by " + constraintType.getName();
     }
 }

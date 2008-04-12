@@ -22,13 +22,13 @@ import org.qi4j.spi.injection.InjectionBinding;
 public final class ParameterBinding
 {
     private ParameterResolution parameterResolution;
-    private ParameterConstraintsBinding parameterConstraintsBindings;
+    private ConstraintsBinding constraintsBindings;
     private InjectionBinding injectionBinding;
 
-    public ParameterBinding( ParameterResolution parameterResolution, ParameterConstraintsBinding parameterConstraintsBinding, InjectionBinding injectionBinding )
+    public ParameterBinding( ParameterResolution parameterResolution, ConstraintsBinding constraintsBinding, InjectionBinding injectionBinding )
     {
         this.parameterResolution = parameterResolution;
-        this.parameterConstraintsBindings = parameterConstraintsBinding;
+        this.constraintsBindings = constraintsBinding;
         this.injectionBinding = injectionBinding;
     }
 
@@ -37,9 +37,9 @@ public final class ParameterBinding
         return parameterResolution;
     }
 
-    public ParameterConstraintsBinding getParameterConstraintsBinding()
+    public ConstraintsBinding getConstraintsBinding()
     {
-        return parameterConstraintsBindings;
+        return constraintsBindings;
     }
 
     public InjectionBinding getInjectionBinding()

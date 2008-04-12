@@ -17,7 +17,9 @@ package org.qi4j.spi.property;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import org.qi4j.property.AbstractPropertyInstance;
 import org.qi4j.property.ComputedPropertyInstance;
+import org.qi4j.spi.composite.ConstraintsModel;
 
 /**
  * TODO
@@ -32,42 +34,16 @@ public final class PropertyModel
     private Method accessor; // Interface accessor
     private String qualifiedName;
 
-    /**
-     * Get URI for a property.
-     *
-     * @param accessor accessor method
-     * @return property URI
-     */
-    public static String toURI( final Method accessor )
-    {
-        if( accessor == null )
-        {
-            return null;
-        }
-        return "urn:qi4j:property:" + ComputedPropertyInstance.getQualifiedName( accessor );
-    }
+    private ConstraintsModel constraintsModel; // May be null
 
-    /**
-     * Get namespace for a property.
-     *
-     * @param accessor accessor method
-     * @return property namespace
-     */
-    public static String toNamespace( final Method accessor )
-    {
-        if( accessor == null )
-        {
-            return null;
-        }
-        return "urn:qi4j:property:" + ComputedPropertyInstance.getDeclaringClassName( accessor ) + ":";
-    }
-
-    public PropertyModel( Method anAccessor )
+    public PropertyModel( Method anAccessor, ConstraintsModel constraintsModel )
     {
         name = anAccessor.getName();
         type = ComputedPropertyInstance.getPropertyType( anAccessor );
         accessor = anAccessor;
         qualifiedName = ComputedPropertyInstance.getQualifiedName( anAccessor );
+
+        this.constraintsModel = constraintsModel;
     }
 
     public String getName()
@@ -99,9 +75,14 @@ public final class PropertyModel
         return accessor;
     }
 
+    public ConstraintsModel getConstraintsModel()
+    {
+        return constraintsModel;
+    }
+
     public String toURI()
     {
-        return toURI( accessor );
+        return AbstractPropertyInstance.toURI( accessor );
     }
 
     public boolean equals( Object o )

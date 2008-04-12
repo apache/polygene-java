@@ -4,6 +4,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -23,6 +24,8 @@ import org.qi4j.spi.composite.ConcernModel;
 import org.qi4j.spi.composite.ConcernResolution;
 import org.qi4j.spi.composite.ConstraintModel;
 import org.qi4j.spi.composite.ConstraintResolution;
+import org.qi4j.spi.composite.ConstraintsModel;
+import org.qi4j.spi.composite.ConstraintsResolution;
 import org.qi4j.spi.composite.ConstructorModel;
 import org.qi4j.spi.composite.ConstructorResolution;
 import org.qi4j.spi.composite.FieldModel;
@@ -34,8 +37,6 @@ import org.qi4j.spi.composite.MethodResolution;
 import org.qi4j.spi.composite.MixinModel;
 import org.qi4j.spi.composite.MixinResolution;
 import org.qi4j.spi.composite.ModifierModel;
-import org.qi4j.spi.composite.ParameterConstraintsModel;
-import org.qi4j.spi.composite.ParameterConstraintsResolution;
 import org.qi4j.spi.composite.ParameterModel;
 import org.qi4j.spi.composite.ParameterResolution;
 import org.qi4j.spi.composite.PropertyResolution;
@@ -148,7 +149,7 @@ public final class CompositeResolver
                 if( pm != null )
                 {
                     String propertyModelName = pm.getName();
-                    propertyResolutions.put( propertyModelName, new PropertyResolution( pm ) );
+                    propertyResolutions.put( propertyModelName, resolvePropertyModel( compositeModel, pm ) );
                 }
 
                 AssociationModel am = cmm.getAssociationModel();
@@ -363,26 +364,27 @@ public final class CompositeResolver
                 List<ParameterResolution> parameterResolutions = new ArrayList<ParameterResolution>();
                 for( ParameterModel parameterModel : parameterModels )
                 {
-                    ParameterConstraintsResolution parameterConstraintsResolution = null;
-                    ParameterConstraintsModel parameterConstraintsModel = parameterModel.getParameterConstraintModel();
-                    if( parameterConstraintsModel != null )
+                    ConstraintsResolution constraintsResolution = null;
+                    ConstraintsModel constraintsModel = parameterModel.getConstraintsModel();
+                    if( constraintsModel != null )
                     {
-                        Iterable<Annotation> constraintAnnotations = parameterConstraintsModel.getConstraints();
+                        Iterable<Annotation> constraintAnnotations = constraintsModel.getConstraints();
                         List<ConstraintResolution> constraintResolutions = new ArrayList<ConstraintResolution>();
                         for( Annotation constraintAnnotation : constraintAnnotations )
                         {
-                            addConstraintResolution( compositeModel, constraintAnnotation, parameterModel, constraintResolutions );
+                            addConstraintResolution( compositeModel, constraintAnnotation, parameterModel.getType(), constraintResolutions );
                         }
-                        parameterConstraintsResolution = new ParameterConstraintsResolution( parameterConstraintsModel, constraintResolutions );
+                        constraintsResolution = new ConstraintsResolution( constraintsModel, constraintResolutions );
                     }
-                    ParameterResolution parameterResolution = new ParameterResolution( parameterModel, parameterConstraintsResolution, null );
+                    ParameterResolution parameterResolution = new ParameterResolution( parameterModel, constraintsResolution, null );
                     parameterResolutions.add( parameterResolution );
                 }
 
                 PropertyResolution propertyResolution = null;
                 if( methodModel.getPropertyModel() != null )
                 {
-                    propertyResolution = new PropertyResolution( methodModel.getPropertyModel() );
+                    PropertyModel propertyModel = methodModel.getPropertyModel();
+                    propertyResolution = resolvePropertyModel( compositeModel, propertyModel );
                 }
 
                 AssociationResolution associationResolution = null;
@@ -403,9 +405,28 @@ public final class CompositeResolver
         }
     }
 
-    private void addConstraintResolution( CompositeModel compositeModel, Annotation constraintAnnotation, ParameterModel parameterModel, List<ConstraintResolution> constraintResolutions )
+    private PropertyResolution resolvePropertyModel( CompositeModel compositeModel, PropertyModel propertyModel )
     {
-        ConstraintModel constraintModel = compositeModel.getConstraintModel( constraintAnnotation.annotationType(), parameterModel.getType() );
+        PropertyResolution propertyResolution;
+        ConstraintsResolution constraintsResolution = null;
+        ConstraintsModel constraintsModel = propertyModel.getConstraintsModel();
+        if( constraintsModel != null )
+        {
+            Iterable<Annotation> constraintAnnotations = constraintsModel.getConstraints();
+            List<ConstraintResolution> constraintResolutions = new ArrayList<ConstraintResolution>();
+            for( Annotation constraintAnnotation : constraintAnnotations )
+            {
+                addConstraintResolution( compositeModel, constraintAnnotation, propertyModel.getType(), constraintResolutions );
+            }
+            constraintsResolution = new ConstraintsResolution( constraintsModel, constraintResolutions );
+        }
+        propertyResolution = new PropertyResolution( propertyModel, constraintsResolution );
+        return propertyResolution;
+    }
+
+    private void addConstraintResolution( CompositeModel compositeModel, Annotation constraintAnnotation, Type valueType, List<ConstraintResolution> constraintResolutions )
+    {
+        ConstraintModel constraintModel = compositeModel.getConstraintModel( constraintAnnotation.annotationType(), valueType );
         if( constraintModel != null )
         {
             ConstraintResolution constraintResolution = new ConstraintResolution( constraintModel, constraintAnnotation );
@@ -420,7 +441,7 @@ public final class CompositeResolver
             {
                 if( annotation.annotationType().getAnnotation( ConstraintDeclaration.class ) != null )
                 {
-                    addConstraintResolution( compositeModel, annotation, parameterModel, constraintResolutions );
+                    addConstraintResolution( compositeModel, annotation, valueType, constraintResolutions );
                 }
             }
 

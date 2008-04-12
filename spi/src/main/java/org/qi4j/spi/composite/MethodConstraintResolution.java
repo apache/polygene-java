@@ -6,12 +6,12 @@ package org.qi4j.spi.composite;
 public final class MethodConstraintResolution
 {
     MethodConstraintModel constraintModel;
-    Iterable<ParameterConstraintsResolution> parameterConstraintResolutions;
+    Iterable<ConstraintsResolution> constraintResolutions;
 
-    public MethodConstraintResolution( MethodConstraintModel constraintModel, Iterable<ParameterConstraintsResolution> parameterConstraintResolutions )
+    public MethodConstraintResolution( MethodConstraintModel constraintModel, Iterable<ConstraintsResolution> constraintResolutions )
     {
         this.constraintModel = constraintModel;
-        this.parameterConstraintResolutions = parameterConstraintResolutions;
+        this.constraintResolutions = constraintResolutions;
     }
 
     public MethodConstraintModel getConstraint()
@@ -19,8 +19,8 @@ public final class MethodConstraintResolution
         return constraintModel;
     }
 
-    public Iterable<ParameterConstraintsResolution> getParameterConstraintResolutions()
+    public Iterable<ConstraintsResolution> getConstraintsResolutions()
     {
-        return parameterConstraintResolutions;
+        return constraintResolutions;
     }
 }

@@ -79,7 +79,7 @@ public final class CompositeBinding
         {
             for( PropertyBinding propertyBinding : getPropertyBindings() )
             {
-                if( propertyBinding.qualifiedName().equals( qualifiedName ) )
+                if( propertyBinding.getPropertyResolution().getPropertyModel().getQualifiedName().equals( qualifiedName ) )
                 {
                     return propertyBinding;
                 }
