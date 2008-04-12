@@ -208,7 +208,7 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
 
                 if( property == null )
                 {
-                    String propertyName = propertyBinding.name();
+                    String propertyName = propertyBinding.getPropertyResolution().getPropertyModel().getName();
                     fail( "Property [" + propertyName + "] is not found." );
                 }
             }

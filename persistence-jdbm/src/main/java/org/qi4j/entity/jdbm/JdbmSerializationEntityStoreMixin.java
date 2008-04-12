@@ -188,9 +188,9 @@ public class JdbmSerializationEntityStoreMixin
 
             for( EntityId removedState : removedStates )
             {
-                Long stateIndex = (Long) index.find( removedState.getIdentity() );
+                Long stateIndex = (Long) index.find( removedState.getIdentity().getBytes() );
                 recordManager.delete( stateIndex );
-                index.remove( removedState.getIdentity() );
+                index.remove( removedState.getIdentity().getBytes() );
             }
         }
         catch( IOException e )

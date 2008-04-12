@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import org.openrdf.query.QueryLanguage;
 import org.qi4j.entity.Identity;
+import org.qi4j.property.AbstractPropertyInstance;
 import org.qi4j.query.grammar.AssociationIsNullPredicate;
 import org.qi4j.query.grammar.AssociationNullPredicate;
 import org.qi4j.query.grammar.AssociationReference;
@@ -41,7 +42,6 @@ import org.qi4j.query.grammar.SingleValueExpression;
 import org.qi4j.query.grammar.ValueExpression;
 import org.qi4j.spi.composite.MixinTypeModel;
 import org.qi4j.spi.entity.association.AssociationModel;
-import org.qi4j.spi.property.PropertyModel;
 
 /**
  * TODO Add JavaDoc
@@ -95,7 +95,7 @@ class SPARQLRDFQueryParser
         triples.add(
             new Triple(
                 "?entity",
-                addNamespace( PropertyModel.toNamespace( getAccessor( Identity.class, "identity" ) ) ) + ":identity",
+                addNamespace( AbstractPropertyInstance.toNamespace( getAccessor( Identity.class, "identity" ) ) ) + ":identity",
                 "?identity",
                 false
             )
@@ -324,7 +324,7 @@ class SPARQLRDFQueryParser
         {
             subject = addTriple( propertyReference.traversedAssociation(), false ).value;
         }
-        String ns = addNamespace( PropertyModel.toNamespace( propertyReference.propertyAccessor() ) );
+        String ns = addNamespace( AbstractPropertyInstance.toNamespace( propertyReference.propertyAccessor() ) );
         return addTriple( subject, ns + ":" + propertyReference.propertyName(), optional );
     }
 

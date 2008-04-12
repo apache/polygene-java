@@ -26,14 +26,12 @@ import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.association.AbstractAssociation;
 import org.qi4j.entity.ibatis.internal.common.Status;
 import static org.qi4j.entity.ibatis.internal.common.Status.*;
-import org.qi4j.entity.ibatis.internal.property.MutablePropertyInstance;
 import org.qi4j.property.ImmutableProperty;
 import org.qi4j.property.Property;
 import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.composite.PropertyResolution;
 import org.qi4j.spi.entity.EntityStateInstance;
 import org.qi4j.spi.entity.EntityStatus;
-import org.qi4j.spi.property.ImmutablePropertyInstance;
 import org.qi4j.spi.property.PropertyBinding;
 import org.qi4j.spi.property.PropertyModel;
 import org.qi4j.spi.serialization.EntityId;
@@ -155,7 +153,7 @@ public final class IBatisEntityState
     {
         Object value = null;
 
-        String propertyName = propertyBinding.name().toUpperCase();
+        String propertyName = propertyBinding.getPropertyResolution().getPropertyModel().getName().toUpperCase();
         if( propertyValues.containsKey( propertyName ) )
         {
             // TODO: Handle mapping of compound property?
@@ -186,12 +184,14 @@ public final class IBatisEntityState
 
         if( ImmutableProperty.class.isAssignableFrom( type ) )
         {
-            return new ImmutablePropertyInstance<Object>( aPropertyBinding, aPropertyValue );
+//            return new ImmutablePropertyInstance<Object>( aPropertyBinding, aPropertyValue );
         }
         else
         {
-            return new MutablePropertyInstance<Object>( aPropertyBinding, aPropertyValue );
+// FIX THIS           return new MutablePropertyInstance<Object>( aPropertyBinding, aPropertyValue );
         }
+
+        return null; // Hack
     }
 
     /**

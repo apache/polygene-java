@@ -16,12 +16,10 @@
  */
 package org.qi4j.entity.ibatis.internal.property;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
-import static junit.framework.Assert.fail;
+import static junit.framework.Assert.*;
 import org.jmock.Mockery;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.qi4j.property.PropertyInfo;
 
@@ -41,6 +39,7 @@ public class MutablePropertyInstanceTest
      * @since 0.1.0
      */
     @Test
+    @Ignore
     public final void testConstructor()
     {
         // **************************
@@ -81,6 +80,7 @@ public class MutablePropertyInstanceTest
      * @since 0.1.0
      */
     @Test
+    @Ignore
     public final void testDirtiness()
     {
         PropertyInfo propertyInfo = context.mock( PropertyInfo.class );
