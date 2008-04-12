@@ -23,7 +23,7 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
 import org.qi4j.entity.UnitOfWork;
-import org.qi4j.spi.entity.UuidIdentityGeneratorComposite;
+import org.qi4j.spi.entity.UuidIdentityGeneratorService;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
 
 /**
@@ -47,7 +47,7 @@ public class JGroupsEntityStoreTest
         {
             public void assemble( ModuleAssembly module ) throws AssemblyException
             {
-                module.addServices( JGroupsEntityStoreService.class, UuidIdentityGeneratorComposite.class ).instantiateOnStartup();
+                module.addServices( JGroupsEntityStoreService.class, UuidIdentityGeneratorService.class ).instantiateOnStartup();
                 module.addComposites( TestEntity.class );
             }
         };
@@ -57,7 +57,7 @@ public class JGroupsEntityStoreTest
         {
             public void assemble( ModuleAssembly module ) throws AssemblyException
             {
-                module.addServices( JGroupsEntityStoreService.class, UuidIdentityGeneratorComposite.class ).instantiateOnStartup();
+                module.addServices( JGroupsEntityStoreService.class, UuidIdentityGeneratorService.class ).instantiateOnStartup();
                 module.addComposites( TestEntity.class );
             }
         };

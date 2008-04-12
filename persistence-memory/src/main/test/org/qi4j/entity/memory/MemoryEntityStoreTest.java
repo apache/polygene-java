@@ -13,6 +13,6 @@ public class MemoryEntityStoreTest
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
         super.assemble( module );
-        module.addServices( MemoryEntityStoreComposite.class );
+        module.addServices( MemoryEntityStoreService.class );
     }
 }

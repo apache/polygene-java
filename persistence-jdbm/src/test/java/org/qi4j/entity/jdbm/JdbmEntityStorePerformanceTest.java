@@ -5,7 +5,7 @@ import org.junit.After;
 import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entity.memory.MemoryEntityStoreComposite;
+import org.qi4j.entity.memory.MemoryEntityStoreService;
 import org.qi4j.structure.Visibility;
 import org.qi4j.test.entity.AbstractEntityStorePerformanceTest;
 
@@ -23,7 +23,7 @@ public class JdbmEntityStorePerformanceTest
         ModuleAssembly config = module.getLayerAssembly().newModuleAssembly();
         config.setName( "config" );
         config.addComposites( JdbmConfiguration.class ).visibleIn( Visibility.layer );
-        config.addServices( MemoryEntityStoreComposite.class );
+        config.addServices( MemoryEntityStoreService.class );
     }
 
     @Override @After public void tearDown() throws Exception

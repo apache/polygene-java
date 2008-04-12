@@ -18,7 +18,7 @@ package org.qi4j.entity.rmi;
 
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entity.memory.MemoryEntityStoreComposite;
+import org.qi4j.entity.memory.MemoryEntityStoreService;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
 
 /**
@@ -38,6 +38,6 @@ public class RmiEntityStoreTest
         remote.addComposites( TestEntity.class, RegistryConfiguration.class );
         remote.addServices( ServerRmiEntityStoreService.class,
                             RegistryService.class,
-                            MemoryEntityStoreComposite.class ).instantiateOnStartup();
+                            MemoryEntityStoreService.class ).instantiateOnStartup();
     }
 }

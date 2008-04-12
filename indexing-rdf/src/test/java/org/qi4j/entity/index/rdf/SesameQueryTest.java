@@ -23,11 +23,11 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
 import org.qi4j.entity.UnitOfWorkCompletionException;
-import org.qi4j.entity.memory.IndexedMemoryEntityStoreComposite;
+import org.qi4j.entity.memory.IndexedMemoryEntityStoreService;
 import static org.qi4j.query.QueryExpressions.*;
-import org.qi4j.query.grammar.OrderBy;
 import org.qi4j.query.grammar.BooleanExpression;
-import org.qi4j.spi.entity.UuidIdentityGeneratorComposite;
+import org.qi4j.query.grammar.OrderBy;
+import org.qi4j.spi.entity.UuidIdentityGeneratorService;
 import org.qi4j.spi.query.EntitySearcher;
 import org.qi4j.spi.query.SearchException;
 
@@ -57,8 +57,8 @@ public class SesameQueryTest
                     CatComposite.class
                 );
                 module.addServices(
-                    IndexedMemoryEntityStoreComposite.class,
-                    UuidIdentityGeneratorComposite.class,
+                    IndexedMemoryEntityStoreService.class,
+                    UuidIdentityGeneratorService.class,
                     RDFIndexerExporterComposite.class
                 );
             }
