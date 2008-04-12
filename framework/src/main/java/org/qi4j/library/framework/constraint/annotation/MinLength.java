@@ -8,7 +8,7 @@ import org.qi4j.composite.ConstraintDeclaration;
 
 @ConstraintDeclaration
 @Retention( RetentionPolicy.RUNTIME )
-@Target( { ElementType.PARAMETER, ElementType.ANNOTATION_TYPE } )
+@Target( { ElementType.PARAMETER, ElementType.ANNOTATION_TYPE, ElementType.METHOD } )
 public @interface MinLength
 {
     int value();
