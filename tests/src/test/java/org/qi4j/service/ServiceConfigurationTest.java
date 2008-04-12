@@ -10,9 +10,9 @@ import org.qi4j.composite.scope.Service;
 import org.qi4j.composite.scope.ThisCompositeAs;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.UnitOfWork;
-import org.qi4j.entity.memory.MemoryEntityStoreComposite;
+import org.qi4j.entity.memory.MemoryEntityStoreService;
 import org.qi4j.property.Property;
-import org.qi4j.spi.entity.UuidIdentityGeneratorComposite;
+import org.qi4j.spi.entity.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
 
 /**
@@ -28,7 +28,7 @@ public class ServiceConfigurationTest
         module.addObjects( this.getClass() );
         module.addComposites( HelloWorldConfiguration.class );
         module.addServices( HelloWorldService.class );
-        module.addServices( MemoryEntityStoreComposite.class, UuidIdentityGeneratorComposite.class );
+        module.addServices( MemoryEntityStoreService.class, UuidIdentityGeneratorService.class );
     }
 
     @Test

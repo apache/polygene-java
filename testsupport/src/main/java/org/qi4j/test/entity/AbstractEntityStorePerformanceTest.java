@@ -13,7 +13,7 @@ import org.qi4j.entity.association.ListAssociation;
 import org.qi4j.entity.association.ManyAssociation;
 import org.qi4j.entity.association.SetAssociation;
 import org.qi4j.property.Property;
-import org.qi4j.spi.entity.UuidIdentityGeneratorComposite;
+import org.qi4j.spi.entity.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
 
 /**
@@ -28,7 +28,7 @@ public abstract class AbstractEntityStorePerformanceTest
 
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
-        module.addServices( UuidIdentityGeneratorComposite.class );
+        module.addServices( UuidIdentityGeneratorService.class );
         module.addComposites( TestComposite.class );
     }
 
