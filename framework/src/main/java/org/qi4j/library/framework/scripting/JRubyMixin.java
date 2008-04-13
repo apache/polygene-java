@@ -39,13 +39,16 @@ import org.qi4j.composite.scope.This;
  * Example:
  * org/qi4j/samples/hello/domain/HelloWorldSpeaker.rb
  */
-@AppliesTo( JavaScriptMixin.AppliesTo.class )
+@AppliesTo( JRubyMixin.AppliesTo.class )
 public class JRubyMixin
     implements InvocationHandler
 {
     @This Composite me;
 
     private Ruby runtime;
+
+    private IRubyObject rubyObject;
+    private RubyObjectAdapter rubyObjectAdapter;
 
     public static class AppliesTo
         implements AppliesToFilter
@@ -60,40 +63,45 @@ public class JRubyMixin
 
     public JRubyMixin()
     {
-        runtime = Ruby.newInstance();
+        runtime = Ruby.getCurrentInstance();
+        if( runtime == null )
+        {
+            runtime = Ruby.newInstance();
+        }
     }
 
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
     {
-        // Evaluate Ruby script
-        runtime.evalScriptlet( getFunction( method ) );
+        if( rubyObject == null )
+        {
+            // Evaluate Ruby script
+            runtime.evalScriptlet( getFunction( method ) );
 
-        // Create object instance
-        IRubyObject rubyObject = runtime.evalScriptlet( method.getDeclaringClass().getSimpleName() + ".new()" );
-        IRubyObject meRuby = JavaEmbedUtils.javaToRuby( runtime, me );
-        RubyObjectAdapter rubyObjectAdapter = JavaEmbedUtils.newObjectAdapter();
+            // Create object instance
+            rubyObject = runtime.evalScriptlet( method.getDeclaringClass().getSimpleName() + ".new()" );
 
-        // Set @this variable to Composite
-        rubyObjectAdapter.setInstanceVariable( rubyObject, "@this", meRuby );
+            // Set @this variable to Composite
+            IRubyObject meRuby = JavaEmbedUtils.javaToRuby( runtime, me );
+            rubyObjectAdapter = JavaEmbedUtils.newObjectAdapter();
+            rubyObjectAdapter.setInstanceVariable( rubyObject, "@this", meRuby );
+        }
 
-        // Convert method arguments
-        IRubyObject[] rubyArgs = null;
+        // Convert method arguments and invoke the method
+        IRubyObject rubyResult;
         if( args != null )
         {
-            rubyArgs = new IRubyObject[args.length];
+            IRubyObject[] rubyArgs = new IRubyObject[args.length];
             for( int i = 0; i < args.length; i++ )
             {
                 Object arg = args[ i ];
                 rubyArgs[ i ] = JavaEmbedUtils.javaToRuby( runtime, arg );
             }
+            rubyResult = rubyObjectAdapter.callMethod( rubyObject, method.getName() );
         }
         else
         {
-            rubyArgs = new IRubyObject[0];
+            rubyResult = rubyObjectAdapter.callMethod( rubyObject, method.getName() );
         }
-
-        // Call method in JRuby object
-        IRubyObject rubyResult = rubyObjectAdapter.callMethod( rubyObject, method.getName(), rubyArgs );
 
         // Convert result to Java
         Object result = org.jruby.javasupport.JavaEmbedUtils.rubyToJava( runtime, rubyResult, method.getReturnType() );
