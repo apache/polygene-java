@@ -14,7 +14,7 @@
 
 package org.qi4j.test.entity;
 
-import org.qi4j.composite.scope.ThisCompositeAs;
+import org.qi4j.composite.scope.This;
 import org.qi4j.property.Property;
 
 /**
@@ -24,7 +24,7 @@ public abstract class AccountMixin implements Account
 {
     Property<Integer> balance;
 
-    public AccountMixin( @ThisCompositeAs Account account )
+    public AccountMixin( @This Account account )
     {
         this.balance = account.balance();
     }

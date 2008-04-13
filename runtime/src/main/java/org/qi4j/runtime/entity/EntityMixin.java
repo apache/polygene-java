@@ -21,7 +21,7 @@ import java.lang.reflect.Proxy;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.scope.Structure;
-import org.qi4j.composite.scope.ThisCompositeAs;
+import org.qi4j.composite.scope.This;
 import org.qi4j.entity.Entity;
 import org.qi4j.entity.EntityCastException;
 import org.qi4j.entity.EntityComposite;
@@ -35,7 +35,7 @@ public final class EntityMixin
     implements Entity
 {
     @Structure private CompositeBuilderFactory builderFactory;
-    @ThisCompositeAs private EntityComposite meAsEntity;
+    @This private EntityComposite meAsEntity;
 
     // TODO This needs to use UnitOfWork.newEntityBuilder to be correct
     public <T extends Composite> T cast( Class<T> compositeType )

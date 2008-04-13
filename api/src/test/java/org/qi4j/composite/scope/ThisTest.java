@@ -13,15 +13,14 @@
 package org.qi4j.composite.scope;
 
 import java.lang.annotation.Annotation;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 /**
  * Tests public api exposed by ConcernFor annotation.
  * This will ensure that the public api does not get changed by mistake.
  */
-public class ThisCompositeAsTest
+public class ThisTest
 {
 
     @Test
@@ -30,23 +29,23 @@ public class ThisCompositeAsTest
         Annotation[] annotations = Annotated.class.getDeclaredField( "uses" ).getDeclaredAnnotations();
         assertNotNull( "annotations should not be null", annotations );
         assertEquals( "number of annotations", 1, annotations.length );
-        assertEquals( "annotation type", ThisCompositeAs.class, annotations[ 0 ].annotationType() );
+        assertEquals( "annotation type", This.class, annotations[ 0 ].annotationType() );
     }
 
     @Test
     public void defaultOptionalIsFalse() throws NoSuchFieldException
     {
         Annotation[] annotations = Annotated.class.getDeclaredField( "uses" ).getDeclaredAnnotations();
-        if( annotations != null && annotations.length > 0 && ThisCompositeAs.class.equals( annotations[ 0 ].annotationType() ) )
+        if( annotations != null && annotations.length > 0 && This.class.equals( annotations[ 0 ].annotationType() ) )
         {
-            assertEquals( "default optional value", false, ( (ThisCompositeAs) annotations[ 0 ] ).optional() );
+            assertEquals( "default optional value", false, ( (This) annotations[ 0 ] ).optional() );
         }
     }
 
     private static class Annotated
     {
-        @ThisCompositeAs String uses;
-        @ThisCompositeAs( optional = true ) String usesOptional;
+        @This String uses;
+        @This( optional = true ) String usesOptional;
     }
 
 }

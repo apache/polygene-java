@@ -20,7 +20,7 @@ import org.qi4j.property.PropertyMixin;
  * Services that store configuration in EntityComposites should
  * declare the following to access it:
  *
- * @ThisCompositeAs ServiceConfiguration config;j
+ * @This ServiceConfiguration config;j
  */
 @AppliesTo( { PropertyMixin.PropertyFilter.class, Lifecycle.class, Entity.class, Composite.class } )
 public class ServiceConfigurationMixin

@@ -15,13 +15,13 @@
 package org.qi4j.runtime.composite;
 
 import org.qi4j.composite.Composite;
-import org.qi4j.composite.scope.ThisCompositeAs;
+import org.qi4j.composite.scope.This;
 import org.qi4j.spi.structure.CompositeDescriptor;
 
 public final class CompositeMixin
     implements Composite
 {
-    @ThisCompositeAs private Composite meAsComposite;
+    @This private Composite meAsComposite;
 
     public <T> T metaInfo( Class<T> infoType )
     {

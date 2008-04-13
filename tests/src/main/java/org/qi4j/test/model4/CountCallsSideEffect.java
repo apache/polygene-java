@@ -19,12 +19,12 @@ package org.qi4j.test.model4;
 import java.lang.reflect.Method;
 import org.qi4j.composite.AppliesTo;
 import org.qi4j.composite.GenericSideEffect;
-import org.qi4j.composite.scope.ThisCompositeAs;
+import org.qi4j.composite.scope.This;
 
 @AppliesTo( CountCalls.class )
 public class CountCallsSideEffect extends GenericSideEffect
 {
-    private @ThisCompositeAs Counter counter;
+    private @This Counter counter;
 
     protected void invoke( Method method, Object[] args )
     {

@@ -40,7 +40,7 @@ public class InjectionTest
 
         Composite1 instance = builder.newInstance();
         assertNotNull( "DependencyOld not injected.", instance.getBuilderFactory() );
-        assertNotNull( "ThisCompositeAs not injected.", instance.getMeAsMixin2() );
+        assertNotNull( "This not injected.", instance.getMeAsMixin2() );
         assertEquals( 1, instance.getValue() );
         instance.getBuilderFactory();
         instance.getBuilderFactory();

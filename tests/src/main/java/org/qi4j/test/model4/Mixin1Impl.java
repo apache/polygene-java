@@ -20,14 +20,14 @@ import java.util.List;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.SideEffects;
 import org.qi4j.composite.scope.Structure;
-import org.qi4j.composite.scope.ThisCompositeAs;
+import org.qi4j.composite.scope.This;
 
 @SideEffects( CountCallsSideEffect.class )
 public class Mixin1Impl
     implements Mixin1
 {
-    private  @Structure CompositeBuilderFactory builderFactory;
-    private @ThisCompositeAs Mixin2 meAsMixin2;
+    private @Structure CompositeBuilderFactory builderFactory;
+    private @This Mixin2 meAsMixin2;
 
     @CountCalls public CompositeBuilderFactory getBuilderFactory()
     {

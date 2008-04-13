@@ -20,7 +20,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.composite.scope.ThisCompositeAs;
+import org.qi4j.composite.scope.This;
 import org.qi4j.property.Property;
 import org.qi4j.test.AbstractQi4jTest;
 
@@ -77,7 +77,7 @@ public class GenericSideEffectTest
     public static class CounterSideEffect
         extends GenericSideEffect
     {
-        @ThisCompositeAs Counter counter;
+        @This Counter counter;
 
         public void invoke( Method method, Object[] objects )
         {

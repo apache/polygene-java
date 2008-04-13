@@ -19,7 +19,7 @@ package org.qi4j.test.mock;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import org.qi4j.composite.scope.ThisCompositeAs;
+import org.qi4j.composite.scope.This;
 import org.qi4j.test.mock.internal.MockRepository;
 import org.qi4j.test.mock.internal.MockResolver;
 
@@ -40,7 +40,7 @@ public class MockPlayerMixin
     /**
      * MockResolver repository. Holds all registred mocks.
      */
-    @ThisCompositeAs MockRepository mockRepository;
+    @This MockRepository mockRepository;
 
     /**
      * Finds a registered mock that can handle the method invocation and delegate to it. If there is no such mock throws

@@ -22,7 +22,7 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.Mixins;
 import org.qi4j.composite.scope.PropertyField;
-import org.qi4j.composite.scope.ThisCompositeAs;
+import org.qi4j.composite.scope.This;
 import org.qi4j.test.AbstractQi4jTest;
 
 /**
@@ -74,7 +74,7 @@ public class ComputedPropertyTest
     public static abstract class StorableVolumeMixin
         implements Storable
     {
-        @ThisCompositeAs Storable s;
+        @This Storable s;
         @PropertyField ImmutableProperty<Double> volume;
 
         public ImmutableProperty<Double> volume()

@@ -10,16 +10,16 @@ import org.qi4j.spi.structure.ModuleBinding;
 public class FragmentInjectionContext extends InjectionContext
 {
     private CompositeBinding compositeBinding;
-    private InvocationHandler thisCompositeAs;
+    private InvocationHandler This;
 
     public FragmentInjectionContext( StructureContext structureContext,
                                      ModuleBinding moduleBinding,
                                      CompositeBinding compositeBinding,
-                                     InvocationHandler thisCompositeAs )
+                                     InvocationHandler This )
     {
         super( structureContext, moduleBinding );
         this.compositeBinding = compositeBinding;
-        this.thisCompositeAs = thisCompositeAs;
+        this.This = This;
     }
 
     public CompositeBinding getCompositeBinding()
@@ -27,8 +27,8 @@ public class FragmentInjectionContext extends InjectionContext
         return compositeBinding;
     }
 
-    public InvocationHandler getThisCompositeAs()
+    public InvocationHandler getThis()
     {
-        return thisCompositeAs;
+        return This;
     }
 }

@@ -146,7 +146,7 @@ public final class CompositeModel
         return sideEffectModels;
     }
 
-    public Iterable<CompositeMethodModel> getThisCompositeAsModels()
+    public Iterable<CompositeMethodModel> getThisModels()
     {
         return thisAsModels;
     }

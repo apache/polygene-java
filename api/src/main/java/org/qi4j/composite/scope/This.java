@@ -36,7 +36,7 @@ import org.qi4j.injection.Optional;
 @Target( { ElementType.FIELD, ElementType.PARAMETER } )
 @Documented
 @InjectionScope
-public @interface ThisCompositeAs
+public @interface This
 {
     @Optional boolean optional() default false; // True if the dependency is optional, only fail if this is false
 }

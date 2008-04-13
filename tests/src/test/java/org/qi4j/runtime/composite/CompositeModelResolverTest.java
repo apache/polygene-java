@@ -11,7 +11,7 @@ import org.qi4j.bootstrap.SingletonAssembler;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.Mixins;
-import org.qi4j.composite.scope.ThisCompositeAs;
+import org.qi4j.composite.scope.This;
 import org.qi4j.spi.composite.InvalidCompositeException;
 
 public class CompositeModelResolverTest
@@ -81,7 +81,7 @@ public class CompositeModelResolverTest
         {
             private TestA testA;
 
-            public TestBMixin( @ThisCompositeAs TestA testA )
+            public TestBMixin( @This TestA testA )
             {
                 this.testA = testA;
                 testA.test();
@@ -105,7 +105,7 @@ public class CompositeModelResolverTest
         {
             private TestD testD;
 
-            public TestCMixin( @ThisCompositeAs TestD testD )
+            public TestCMixin( @This TestD testD )
             {
                 this.testD = testD;
                 testD.testD();
@@ -129,7 +129,7 @@ public class CompositeModelResolverTest
         {
             private TestC testC;
 
-            public TestDMixin( @ThisCompositeAs TestC testC )
+            public TestDMixin( @This TestC testC )
             {
                 this.testC = testC;
                 testC.testC();

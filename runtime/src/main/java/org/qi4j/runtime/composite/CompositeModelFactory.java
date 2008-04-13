@@ -112,7 +112,7 @@ public final class CompositeModelFactory
         fragmentModels.addAll( mixins );
         fragmentModels.addAll( concerns );
         fragmentModels.addAll( sideEffects );
-        Iterable<CompositeMethodModel> thisCompositeAsModels = getThisCompositeAsModels( fragmentModels, methods );
+        Iterable<CompositeMethodModel> ThisModels = getThisModels( fragmentModels, methods );
 
         Iterable<ConstraintModel> constraintModels = getConstraintDeclarations( compositeClass );
 
@@ -142,19 +142,19 @@ public final class CompositeModelFactory
                 associations.add( method.getAssociationModel() );
             }
         }
-        for( CompositeMethodModel thisCompositeAsModel : thisCompositeAsModels )
+        for( CompositeMethodModel ThisModel : ThisModels )
         {
-            if( thisCompositeAsModel.getPropertyModel() != null )
+            if( ThisModel.getPropertyModel() != null )
             {
-                properties.add( thisCompositeAsModel.getPropertyModel() );
+                properties.add( ThisModel.getPropertyModel() );
             }
-            if( thisCompositeAsModel.getAssociationModel() != null )
+            if( ThisModel.getAssociationModel() != null )
             {
-                associations.add( thisCompositeAsModel.getAssociationModel() );
+                associations.add( ThisModel.getAssociationModel() );
             }
         }
 
-        CompositeModel model = new CompositeModel( compositeClass, proxyClass, methods, mixins, constraintModels, concerns, sideEffects, thisCompositeAsModels, constraintModelMappings, properties, associations );
+        CompositeModel model = new CompositeModel( compositeClass, proxyClass, methods, mixins, constraintModels, concerns, sideEffects, ThisModels, constraintModelMappings, properties, associations );
         return model;
     }
 
@@ -386,12 +386,12 @@ public final class CompositeModelFactory
         return mixinModels;
     }
 
-    private Iterable<CompositeMethodModel> getThisCompositeAsModels( Iterable<FragmentModel> fragmentModels, Collection<CompositeMethodModel> methods )
+    private Iterable<CompositeMethodModel> getThisModels( Iterable<FragmentModel> fragmentModels, Collection<CompositeMethodModel> methods )
     {
         Map<Method, CompositeMethodModel> methodModels = new HashMap<Method, CompositeMethodModel>();
         for( FragmentModel fragmentModel : fragmentModels )
         {
-            Set<Method> thisAsmethods = fragmentModel.getThisCompositeAsMethods();
+            Set<Method> thisAsmethods = fragmentModel.getThisMethods();
             for( Method thisAsMethod : thisAsmethods )
             {
                 CompositeMethodModel methodModel = methodModels.get( thisAsMethod );

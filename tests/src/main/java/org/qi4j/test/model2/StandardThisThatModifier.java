@@ -12,7 +12,7 @@
 package org.qi4j.test.model2;
 
 import org.qi4j.composite.ConcernOf;
-import org.qi4j.composite.scope.ThisCompositeAs;
+import org.qi4j.composite.scope.This;
 
 /**
  * TODO
@@ -20,7 +20,7 @@ import org.qi4j.composite.scope.ThisCompositeAs;
 public class StandardThisThatModifier extends ConcernOf<StandardThat>
     implements StandardThat
 {
-    @ThisCompositeAs StandardThis meAsThis;
+    @This StandardThis meAsThis;
 
     public String foo( String aString )
     {

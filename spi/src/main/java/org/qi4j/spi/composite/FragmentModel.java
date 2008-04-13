@@ -18,7 +18,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import org.qi4j.composite.scope.ThisCompositeAs;
+import org.qi4j.composite.scope.This;
 import org.qi4j.spi.injection.InjectionModel;
 
 /**
@@ -37,7 +37,7 @@ public abstract class FragmentModel extends AbstractModel
     protected FragmentModel( Class fragmentClass, Iterable<ConstructorModel> constructorModels, Iterable<FieldModel> fieldModels, Iterable<MethodModel> methodDependencies, Class[] appliesTo )
     {
         super( fragmentClass, constructorModels, fieldModels, methodDependencies );
-        this.thisAsMethods = getThisCompositeAsMethods( getInjectionsByScope( ThisCompositeAs.class ) );
+        this.thisAsMethods = getThisMethods( getInjectionsByScope( This.class ) );
 
         if( appliesTo == null )
         {
@@ -67,12 +67,12 @@ public abstract class FragmentModel extends AbstractModel
         return isGeneric;
     }
 
-    public Set<Method> getThisCompositeAsMethods()
+    public Set<Method> getThisMethods()
     {
         return thisAsMethods;
     }
 
-    private Set<Method> getThisCompositeAsMethods( Iterable<InjectionModel> aClass )
+    private Set<Method> getThisMethods( Iterable<InjectionModel> aClass )
     {
         Set<Method> methods = new HashSet<Method>();
         for( InjectionModel injectionModel : aClass )

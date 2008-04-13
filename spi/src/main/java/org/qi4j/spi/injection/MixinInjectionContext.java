@@ -15,10 +15,10 @@ public final class MixinInjectionContext extends FragmentInjectionContext
     private Iterable<Object> uses;
 
     public MixinInjectionContext( StructureContext structureContext,
-                                  ModuleBinding moduleBinding, CompositeBinding compositeBinding, InvocationHandler thisCompositeAs,
+                                  ModuleBinding moduleBinding, CompositeBinding compositeBinding, InvocationHandler This,
                                   Iterable<Object> uses, State state )
     {
-        super( structureContext, moduleBinding, compositeBinding, thisCompositeAs );
+        super( structureContext, moduleBinding, compositeBinding, This );
         this.state = state;
         this.uses = uses;
     }

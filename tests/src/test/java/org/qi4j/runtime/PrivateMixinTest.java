@@ -7,7 +7,7 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.Mixins;
-import org.qi4j.composite.scope.ThisCompositeAs;
+import org.qi4j.composite.scope.This;
 import org.qi4j.test.AbstractQi4jTest;
 
 /**
@@ -41,7 +41,7 @@ public class PrivateMixinTest
     public static class SpeakMixin
         implements Speak
     {
-        @ThisCompositeAs Word word;
+        @This Word word;
 
         public String speak()
         {

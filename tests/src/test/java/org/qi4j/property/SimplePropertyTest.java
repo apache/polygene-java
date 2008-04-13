@@ -29,7 +29,7 @@ import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.ConcernOf;
 import org.qi4j.composite.Concerns;
 import org.qi4j.composite.SideEffectOf;
-import org.qi4j.composite.scope.ThisCompositeAs;
+import org.qi4j.composite.scope.This;
 import org.qi4j.test.AbstractQi4jTest;
 
 /**
@@ -102,7 +102,7 @@ public class SimplePropertyTest
     public static abstract class LogPropertyAccess extends SideEffectOf<ImmutableProperty<String>>
         implements ImmutableProperty<String>
     {
-        @ThisCompositeAs PropertyInfo info;
+        @This PropertyInfo info;
 
         public String get()
         {
@@ -114,8 +114,8 @@ public class SimplePropertyTest
     public static abstract class LogPropertyChanges extends SideEffectOf<ImmutableProperty<String>>
         implements Property<Object>
     {
-        @ThisCompositeAs ImmutableProperty current;
-        @ThisCompositeAs PropertyInfo info;
+        @This ImmutableProperty current;
+        @This PropertyInfo info;
 
         public void set( Object newValue ) throws IllegalArgumentException
         {

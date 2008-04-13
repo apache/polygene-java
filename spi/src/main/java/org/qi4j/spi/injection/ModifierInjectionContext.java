@@ -18,13 +18,13 @@ public final class ModifierInjectionContext extends FragmentInjectionContext
     public ModifierInjectionContext( StructureContext structureContext,
                                      ModuleBinding moduleBinding,
                                      CompositeBinding compositeBinding,
-                                     InvocationHandler thisCompositeAs,
+                                     InvocationHandler This,
                                      Object modifies,
                                      CompositeMethodBinding method,
                                      MixinBinding mixinBinding
     )
     {
-        super( structureContext, moduleBinding, compositeBinding, thisCompositeAs );
+        super( structureContext, moduleBinding, compositeBinding, This );
         this.modifies = modifies;
         this.method = method;
         this.mixinBinding = mixinBinding;

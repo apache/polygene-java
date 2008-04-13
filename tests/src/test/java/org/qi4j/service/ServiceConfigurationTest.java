@@ -7,7 +7,7 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Mixins;
 import org.qi4j.composite.scope.Service;
-import org.qi4j.composite.scope.ThisCompositeAs;
+import org.qi4j.composite.scope.This;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.memory.MemoryEntityStoreService;
@@ -69,7 +69,7 @@ public class ServiceConfigurationTest
     public static class HelloWorldMixin
         implements HelloWorld, Activatable
     {
-        @ThisCompositeAs
+        @This
         HelloWorldConfiguration config;
 
         String result;

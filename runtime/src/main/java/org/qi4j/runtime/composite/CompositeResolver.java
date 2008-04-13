@@ -180,7 +180,7 @@ public final class CompositeResolver
         Set<MixinModel> usedMixins = new LinkedHashSet<MixinModel>();
         usedMixins.addAll( mixinsForMethods.values() );
 
-        // If a mixin A uses mixin B as a @ThisCompositeAs parameterModel dependency, then ensure that the order is correct.
+        // If a mixin A uses mixin B as a @This parameterModel dependency, then ensure that the order is correct.
         Set<MixinModel> orderedUsedMixins = new LinkedHashSet<MixinModel>();
         dependencyCheck:
         while( !usedMixins.isEmpty() )
@@ -233,7 +233,7 @@ public final class CompositeResolver
 
     private boolean dependsOn( MixinModel model, MixinModel otherModel, Map<Method, MixinModel> mixinsForMethods )
     {
-        Set<Method> methods = model.getThisCompositeAsMethods();
+        Set<Method> methods = model.getThisMethods();
         for( Method methodModel : methods )
         {
             if( mixinsForMethods.get( methodModel ).equals( otherModel ) )
@@ -263,7 +263,7 @@ public final class CompositeResolver
         Collection<CompositeMethodModel> methodModels = compositeModel.getCompositeMethodModels();
         resolveMethods( compositeModel, methodModels, methodMixins, resolutionContext, mixinResolutions, concernResolutions, sideEffectResolutions, constraintModelMappings, methodResolutions );
 
-        Iterable<CompositeMethodModel> thisAsMethodModels = compositeModel.getThisCompositeAsModels();
+        Iterable<CompositeMethodModel> thisAsMethodModels = compositeModel.getThisModels();
         resolveMethods( compositeModel, thisAsMethodModels, methodMixins, resolutionContext, mixinResolutions, concernResolutions, sideEffectResolutions, constraintModelMappings, methodResolutions );
 
         return methodResolutions;
@@ -464,8 +464,8 @@ public final class CompositeResolver
             methodMixinMappings.put( methodModel.getMethod(), getMixinForMethod( methodModel.getMethod(), compositeModel, methodModel.getMethod() ) );
         }
 
-        // Map methods in internal @ThisCompositeAs dependencies to mixins
-        Iterable<CompositeMethodModel> thisAsMethodModels = compositeModel.getThisCompositeAsModels();
+        // Map methods in internal @This dependencies to mixins
+        Iterable<CompositeMethodModel> thisAsMethodModels = compositeModel.getThisModels();
         for( CompositeMethodModel methodModel : thisAsMethodModels )
         {
             methodMixinMappings.put( methodModel.getMethod(), getMixinForMethod( methodModel.getMethod(), compositeModel, methodModel.getMethod() ) );

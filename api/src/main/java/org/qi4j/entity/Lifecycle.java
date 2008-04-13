@@ -53,8 +53,8 @@ import org.qi4j.composite.Mixins;
  *     implements Lifecyle
  * {
  *      &#64;Structure private UnitOfWork unit;
- *      &#64;ThisCompositeAs private Identity meAsIdentity;
- *      &#64;ThisCompositeAs private System meAsSystem;
+ *      &#64;This private Identity meAsIdentity;
+ *      &#64;This private System meAsSystem;
  *
  *      public void create()
  *      {

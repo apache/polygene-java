@@ -20,16 +20,16 @@ import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 import org.qi4j.composite.Composite;
-import org.qi4j.composite.scope.AssociationField;
-import org.qi4j.composite.scope.AssociationParameter;
 import org.qi4j.composite.internal.ConcernFor;
 import org.qi4j.composite.internal.SideEffectFor;
+import org.qi4j.composite.scope.AssociationField;
+import org.qi4j.composite.scope.AssociationParameter;
 import org.qi4j.composite.scope.Invocation;
 import org.qi4j.composite.scope.PropertyField;
 import org.qi4j.composite.scope.PropertyParameter;
 import org.qi4j.composite.scope.Service;
 import org.qi4j.composite.scope.Structure;
-import org.qi4j.composite.scope.ThisCompositeAs;
+import org.qi4j.composite.scope.This;
 import org.qi4j.composite.scope.Uses;
 import org.qi4j.runtime.composite.AbstractCompositeInstance;
 import org.qi4j.runtime.composite.CompositeBinder;
@@ -48,7 +48,7 @@ import org.qi4j.runtime.injection.ModifiesInjectionProviderFactory;
 import org.qi4j.runtime.injection.PropertyInjectionProviderFactory;
 import org.qi4j.runtime.injection.ServiceInjectionProviderFactory;
 import org.qi4j.runtime.injection.StructureInjectionProviderFactory;
-import org.qi4j.runtime.injection.ThisCompositeAsInjectionProviderFactory;
+import org.qi4j.runtime.injection.ThisInjectionProviderFactory;
 import org.qi4j.runtime.injection.UsesInjectionProviderFactory;
 import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.injection.InjectionProviderFactory;
@@ -76,7 +76,7 @@ public final class Energy4Java
     public Energy4Java( Qi4jRuntime delegate )
     {
         Map<Class<? extends Annotation>, InjectionProviderFactory> providerFactories = new HashMap<Class<? extends Annotation>, InjectionProviderFactory>();
-        providerFactories.put( ThisCompositeAs.class, new ThisCompositeAsInjectionProviderFactory() );
+        providerFactories.put( This.class, new ThisInjectionProviderFactory() );
         ModifiesInjectionProviderFactory modifiesInjectionProviderFactory = new ModifiesInjectionProviderFactory();
         providerFactories.put( ConcernFor.class, modifiesInjectionProviderFactory );
         providerFactories.put( SideEffectFor.class, modifiesInjectionProviderFactory );

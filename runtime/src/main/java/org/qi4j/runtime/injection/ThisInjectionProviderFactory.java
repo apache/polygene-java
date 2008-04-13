@@ -15,7 +15,7 @@ import org.qi4j.spi.injection.InvalidInjectionException;
 /**
  * TODO
  */
-public final class ThisCompositeAsInjectionProviderFactory
+public final class ThisInjectionProviderFactory
     implements InjectionProviderFactory
 {
     public InjectionProvider newInjectionProvider( BindingContext bindingContext ) throws InvalidInjectionException
@@ -23,31 +23,39 @@ public final class ThisCompositeAsInjectionProviderFactory
         InjectionResolution resolution = bindingContext.getInjectionResolution();
         if( bindingContext.getCompositeResolution() != null )
         {
-            return new ThisCompositeAsInjectionProvider( resolution.getInjectionModel().getInjectionClass() );
+            // If Composite type then return real type, otherwise use the specified one
+            Class thisType = resolution.getInjectionModel().getInjectionClass();
+
+            if( thisType.isAssignableFrom( bindingContext.getCompositeResolution().getCompositeModel().getCompositeType() ) )
+            {
+                thisType = bindingContext.getCompositeResolution().getCompositeModel().getCompositeType();
+            }
+
+            return new ThisInjectionProvider( thisType );
 
 /* TODO Needs to be fixed to support internal mixins
             // Check if the composite implements the desired type
             if( resolution.getRawType().isAssignableFrom( fragmentKey.getCompositeType() ) )
             {
-                return new ThisCompositeAsInjectionProvider(resolution.getRawType());
+                return new ThisInjectionProvider(resolution.getRawType());
             }
             else
             {
-                throw new InvalidInjectionException( "Composite " + fragmentKey.getCompositeType() + " does not implement @ThisCompositeAs type " + resolution.getDependencyType() + " in fragment " + resolution.getDependentType() );
+                throw new InvalidInjectionException( "Composite " + fragmentKey.getCompositeType() + " does not implement @This type " + resolution.getDependencyType() + " in fragment " + resolution.getDependentType() );
             }
 */
         }
         else
         {
-            throw new InvalidInjectionException( "Object " + resolution.getInjectionModel().getInjectedClass() + " may not use @ThisCompositeAs" );
+            throw new InvalidInjectionException( "Object " + resolution.getInjectionModel().getInjectedClass() + " may not use @This" );
         }
     }
 
-    private class ThisCompositeAsInjectionProvider implements InjectionProvider
+    private class ThisInjectionProvider implements InjectionProvider
     {
         Constructor proxyConstructor;
 
-        public ThisCompositeAsInjectionProvider( Class type )
+        public ThisInjectionProvider( Class type )
         {
             try
             {
@@ -65,13 +73,13 @@ public final class ThisCompositeAsInjectionProviderFactory
             try
             {
                 FragmentInjectionContext fic = (FragmentInjectionContext) context;
-                InvocationHandler handler = fic.getThisCompositeAs();
+                InvocationHandler handler = fic.getThis();
                 Object proxy = proxyConstructor.newInstance( handler );
                 return proxy;
             }
             catch( Exception e )
             {
-                throw new InjectionProviderException( "Could not instantiate @ThisCompositeAs proxy", e );
+                throw new InjectionProviderException( "Could not instantiate @This proxy", e );
             }
         }
     }
