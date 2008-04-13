@@ -13,7 +13,7 @@
 package org.qi4j.library.framework.validation;
 
 import org.qi4j.composite.ConcernOf;
-import org.qi4j.composite.scope.ThisCompositeAs;
+import org.qi4j.composite.scope.This;
 import org.qi4j.entity.Lifecycle;
 
 /**
@@ -26,7 +26,7 @@ import org.qi4j.entity.Lifecycle;
 public class LifecycleValidationConcern extends ConcernOf<Lifecycle>
     implements Lifecycle
 {
-    @ThisCompositeAs Validatable validation;
+    @This Validatable validation;
 
     public void create()
     {

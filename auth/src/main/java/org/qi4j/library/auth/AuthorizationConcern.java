@@ -30,7 +30,7 @@ import org.qi4j.composite.ConcernOf;
 import org.qi4j.composite.scope.Invocation;
 import org.qi4j.composite.scope.Service;
 import org.qi4j.composite.scope.Structure;
-import org.qi4j.composite.scope.ThisCompositeAs;
+import org.qi4j.composite.scope.This;
 
 @AppliesTo( RequiresPermission.class )
 public class AuthorizationConcern extends ConcernOf<InvocationHandler>
@@ -39,7 +39,7 @@ public class AuthorizationConcern extends ConcernOf<InvocationHandler>
     @Invocation private RequiresPermission requiresPermission;
 
     @Service private Authorization authorizor;
-    @ThisCompositeAs private ProtectedResource roleAssignments;
+    @This private ProtectedResource roleAssignments;
     @Structure private CompositeBuilderFactory cbf;
 
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable

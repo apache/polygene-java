@@ -36,7 +36,7 @@ import org.qi4j.composite.Concerns;
 import org.qi4j.composite.Mixins;
 import org.qi4j.composite.SideEffectOf;
 import org.qi4j.composite.SideEffects;
-import org.qi4j.composite.scope.ThisCompositeAs;
+import org.qi4j.composite.scope.This;
 import org.qi4j.library.framework.rdf.parse.StructureParser;
 import org.qi4j.test.AbstractQi4jTest;
 
@@ -115,7 +115,7 @@ public class ApplicationXmlTest
     public static class AMixin
         implements A
     {
-        @ThisCompositeAs B bRef;
+        @This B bRef;
 
         public String doStuff()
         {

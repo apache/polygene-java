@@ -3,7 +3,7 @@ package org.qi4j.library.framework.validation;
 import java.util.List;
 import org.qi4j.composite.AppliesTo;
 import org.qi4j.composite.ConcernOf;
-import org.qi4j.composite.scope.ThisCompositeAs;
+import org.qi4j.composite.scope.This;
 
 /**
  * TODO
@@ -12,7 +12,7 @@ import org.qi4j.composite.scope.ThisCompositeAs;
 public abstract class ValidatableMessagesConcern extends ConcernOf<Validatable>
     implements Validatable
 {
-    @ThisCompositeAs ValidationMessages messages;
+    @This ValidationMessages messages;
 
     public List<ValidationMessage> validate()
     {

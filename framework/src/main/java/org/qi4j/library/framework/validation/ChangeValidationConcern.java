@@ -5,7 +5,7 @@ import java.lang.reflect.Method;
 import org.qi4j.composite.AppliesTo;
 import org.qi4j.composite.AppliesToFilter;
 import org.qi4j.composite.ConcernOf;
-import org.qi4j.composite.scope.ThisCompositeAs;
+import org.qi4j.composite.scope.This;
 
 /**
  * After invocation, ensure that the validation rules pass.
@@ -53,7 +53,7 @@ public class ChangeValidationConcern extends ConcernOf<InvocationHandler>
         }
     }
 
-    @ThisCompositeAs Validatable validatable;
+    @This Validatable validatable;
 
     public Object invoke( Object object, Method method, Object[] objects ) throws Throwable
     {

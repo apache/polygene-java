@@ -21,7 +21,7 @@ import java.lang.reflect.InvocationHandler;
 import org.qi4j.composite.AppliesTo;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.scope.Invocation;
-import org.qi4j.composite.scope.ThisCompositeAs;
+import org.qi4j.composite.scope.This;
 
 /**
  * The TraceConcern will call the traceEntry(), traceExit() and traceException() methods in the
@@ -44,7 +44,7 @@ public final class TraceConcern extends AbstractTraceConcern
 {
     @Invocation private Trace trace;
 
-    public TraceConcern( @ThisCompositeAs Composite thisComposite )
+    public TraceConcern( @This Composite thisComposite )
     {
         super( thisComposite );
     }

@@ -21,7 +21,7 @@ import org.qi4j.Qi4j;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.scope.Service;
 import org.qi4j.composite.scope.Structure;
-import org.qi4j.composite.scope.ThisCompositeAs;
+import org.qi4j.composite.scope.This;
 import org.qi4j.logging.logtypes.ErrorType;
 import org.qi4j.logging.logtypes.InfoType;
 import org.qi4j.logging.logtypes.WarningType;
@@ -31,7 +31,7 @@ public final class SimpleLogConcern
 {
     @Structure Qi4j api;
     @Service private LogService logService;
-    @ThisCompositeAs Composite composite;
+    @This Composite composite;
 
     public void info( String message )
     {

@@ -12,11 +12,11 @@
  */
 package org.qi4j.library.general.model;
 
-import org.qi4j.property.Property;
-import org.qi4j.property.ComputedPropertyInstance;
 import org.qi4j.composite.Mixins;
 import org.qi4j.composite.scope.PropertyField;
-import org.qi4j.composite.scope.ThisCompositeAs;
+import org.qi4j.composite.scope.This;
+import org.qi4j.property.ComputedPropertyInstance;
+import org.qi4j.property.Property;
 
 /**
  * Generic interface of PersonName that stores first and last name.
@@ -30,7 +30,7 @@ public interface PersonName extends HasName
 
     public final class PersonNameMixin implements HasName
     {
-        @ThisCompositeAs PersonName personName;
+        @This PersonName personName;
         @PropertyField Property<String> name;
 
         public Property<String> name()

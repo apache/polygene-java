@@ -4,7 +4,7 @@ import java.lang.reflect.Method;
 import org.qi4j.composite.AppliesTo;
 import org.qi4j.composite.AppliesToFilter;
 import org.qi4j.composite.GenericSideEffect;
-import org.qi4j.composite.scope.ThisCompositeAs;
+import org.qi4j.composite.scope.This;
 import org.qi4j.library.framework.properties.Setters;
 
 /**
@@ -27,7 +27,7 @@ public class InvalidateCacheOnSettersSideEffect extends GenericSideEffect
         }
     }
 
-    @ThisCompositeAs private InvocationCache cache;
+    @This private InvocationCache cache;
 
     protected void invoke( Method method, Object[] args )
     {

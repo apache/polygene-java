@@ -32,6 +32,24 @@
     <orderEntry type="library" name="openrdf-rio-rdfxml-2.0-rc2" level="project" />
     <orderEntry type="library" name="openrdf-rio-turtle-2.0-rc2" level="project" />
     <orderEntry type="library" name="junit" level="project" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../../../Downloads/jruby-1.1/lib/bsf.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../../../Downloads/jruby-1.1/lib/jruby.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
     <orderEntryProperties />
   </component>
 </module>

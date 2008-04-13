@@ -21,7 +21,7 @@ import org.qi4j.Qi4j;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.scope.Service;
 import org.qi4j.composite.scope.Structure;
-import org.qi4j.composite.scope.ThisCompositeAs;
+import org.qi4j.composite.scope.This;
 import org.qi4j.property.Property;
 
 public final class DebugConcern
@@ -29,7 +29,7 @@ public final class DebugConcern
 {
     @Structure Qi4j api;
     @Service private LogService logService;
-    @ThisCompositeAs private Composite composite;
+    @This private Composite composite;
 
 
     public Property<Integer> debugLevel()

@@ -52,7 +52,7 @@ public final class CompositeParser
         parseConcernModels( compositeNode, model );
         parseSideEffectModels( compositeNode, model );
         parseMixinModels( compositeNode, model );
-        parseThisCompositeAsModels( compositeNode, model );
+        parseThisModels( compositeNode, model );
         return compositeNode;
     }
 
@@ -109,10 +109,10 @@ public final class CompositeParser
 
     }
 
-    private void parseThisCompositeAsModels( URI compositeNode, CompositeModel model )
+    private void parseThisModels( URI compositeNode, CompositeModel model )
     {
         CompositeMethodParser parser = context.getParserFactory().newCompositeMethodParser();
-        for( CompositeMethodModel methodModel : model.getThisCompositeAsModels() )
+        for( CompositeMethodModel methodModel : model.getThisModels() )
         {
             Value method = parser.parseModel( methodModel );
             context.addRelationship( compositeNode, Qi4jRdf.RELATIONSHIP_PRIVATE_METHOD, method );

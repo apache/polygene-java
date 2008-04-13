@@ -5,7 +5,7 @@ import java.util.Arrays;
 import org.qi4j.composite.AppliesTo;
 import org.qi4j.composite.GenericSideEffect;
 import org.qi4j.composite.scope.Invocation;
-import org.qi4j.composite.scope.ThisCompositeAs;
+import org.qi4j.composite.scope.This;
 
 /**
  * Cache result of @Cached method calls.
@@ -13,7 +13,7 @@ import org.qi4j.composite.scope.ThisCompositeAs;
 @AppliesTo( Cached.class )
 public class CacheInvocationResultSideEffect extends GenericSideEffect
 {
-    @ThisCompositeAs private InvocationCache cache;
+    @This private InvocationCache cache;
     @Invocation private Method method;
 
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable

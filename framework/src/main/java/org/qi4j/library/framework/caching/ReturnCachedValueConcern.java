@@ -17,7 +17,7 @@ import java.util.Arrays;
 import org.qi4j.composite.AppliesTo;
 import org.qi4j.composite.ConcernOf;
 import org.qi4j.composite.scope.Invocation;
-import org.qi4j.composite.scope.ThisCompositeAs;
+import org.qi4j.composite.scope.This;
 
 /**
  * Return value of @Cached calls if possible.
@@ -26,7 +26,7 @@ import org.qi4j.composite.scope.ThisCompositeAs;
 public class ReturnCachedValueConcern extends ConcernOf<InvocationHandler>
     implements InvocationHandler
 {
-    @ThisCompositeAs private InvocationCache cache;
+    @This private InvocationCache cache;
     @Invocation private Method method;
 
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
