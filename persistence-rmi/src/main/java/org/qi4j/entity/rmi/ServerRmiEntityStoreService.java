@@ -27,7 +27,6 @@ import org.qi4j.service.ServiceComposite;
 
 @Mixins( { ServerRemoteEntityStoreMixin.class } )
 public interface ServerRmiEntityStoreService
-    extends RemoteEntityStore, ServiceComposite, Activatable, LockingAbstractComposite
-
+    extends ServiceComposite, Activatable, LockingAbstractComposite
 {
 }

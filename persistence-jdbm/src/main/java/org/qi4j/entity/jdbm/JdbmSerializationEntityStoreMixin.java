@@ -36,7 +36,7 @@ import jdbm.helper.ByteArraySerializer;
 import jdbm.helper.LongSerializer;
 import jdbm.helper.Serializer;
 import org.qi4j.composite.scope.Structure;
-import org.qi4j.composite.scope.ThisCompositeAs;
+import org.qi4j.composite.scope.This;
 import org.qi4j.library.framework.locking.WriteLock;
 import org.qi4j.service.Activatable;
 import org.qi4j.spi.Qi4jSPI;
@@ -60,8 +60,8 @@ public class JdbmSerializationEntityStoreMixin
     implements EntityStore, Activatable
 {
     private @Structure Qi4jSPI spi;
-    private @ThisCompositeAs ReadWriteLock lock;
-    private @ThisCompositeAs JdbmConfiguration config;
+    private @This ReadWriteLock lock;
+    private @This JdbmConfiguration config;
 
     private RecordManager recordManager;
     private BTree index;

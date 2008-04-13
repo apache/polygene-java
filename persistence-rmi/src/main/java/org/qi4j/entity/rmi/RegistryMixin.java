@@ -7,7 +7,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import org.qi4j.composite.AppliesTo;
-import org.qi4j.composite.scope.ThisCompositeAs;
+import org.qi4j.composite.scope.This;
 import org.qi4j.service.Activatable;
 
 /**
@@ -19,7 +19,7 @@ public class RegistryMixin
 {
     Registry registry;
 
-    @ThisCompositeAs RegistryConfiguration config;
+    @This RegistryConfiguration config;
 
     public void activate() throws Exception
     {

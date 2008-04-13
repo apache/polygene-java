@@ -24,7 +24,7 @@ import org.jgroups.JChannel;
 import org.jgroups.blocks.ReplicatedHashMap;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.scope.Structure;
-import org.qi4j.composite.scope.ThisCompositeAs;
+import org.qi4j.composite.scope.This;
 import org.qi4j.library.framework.locking.ReadLock;
 import org.qi4j.library.framework.locking.WriteLock;
 import org.qi4j.service.Activatable;
@@ -50,7 +50,7 @@ public class JGroupsSerializationEntityStoreMixin
     implements EntityStore, Activatable
 {
     private @Structure Qi4jSPI spi;
-    private @ThisCompositeAs ReadWriteLock lock;
+    private @This ReadWriteLock lock;
 
     private ReplicatedHashMap<String, SerializedObject<SerializableState>> replicatedMap;
     private JChannel channel;

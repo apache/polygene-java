@@ -28,7 +28,7 @@ import java.util.Set;
 import java.util.concurrent.locks.ReadWriteLock;
 import org.qi4j.composite.scope.Service;
 import org.qi4j.composite.scope.Structure;
-import org.qi4j.composite.scope.ThisCompositeAs;
+import org.qi4j.composite.scope.This;
 import org.qi4j.composite.scope.Uses;
 import org.qi4j.library.framework.locking.WriteLock;
 import org.qi4j.service.Activatable;
@@ -49,8 +49,8 @@ public class ServerRemoteEntityStoreMixin
     implements RemoteEntityStore, Activatable
 {
     private @Uses ServiceDescriptor descriptor;
-    private @ThisCompositeAs RemoteEntityStore remote;
-    private @ThisCompositeAs ReadWriteLock lock;
+    private @This RemoteEntityStore remote;
+    private @This ReadWriteLock lock;
     private @Structure ModuleBinding moduleBinding;
     private @Service EntityStore entityStore;
     private @Service Registry registry;

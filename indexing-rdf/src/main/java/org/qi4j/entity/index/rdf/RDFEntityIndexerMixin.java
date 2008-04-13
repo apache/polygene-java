@@ -20,14 +20,14 @@ package org.qi4j.entity.index.rdf;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import org.openrdf.model.BNode;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
-import org.openrdf.model.BNode;
 import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
-import org.qi4j.composite.scope.ThisCompositeAs;
+import org.qi4j.composite.scope.This;
 import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.composite.CompositeModel;
 import org.qi4j.spi.composite.MixinTypeModel;
@@ -50,7 +50,7 @@ public class RDFEntityIndexerMixin
     implements EntityIndexer
 {
 
-    @ThisCompositeAs RDFQueryContext queryContext;
+    @This RDFQueryContext queryContext;
 
     public void index( final Iterable<EntityState> newStates,
                        final Iterable<EntityState> changedStates,
@@ -163,7 +163,7 @@ public class RDFEntityIndexerMixin
                     final CompositeModel assocCompositeModel = assocCompositeBinding.getCompositeResolution().getCompositeModel();
                     final URI assocEntityURI = valueFactory.createURI( assocCompositeModel.toURI()
                                                                        + "/" + assocEntityId.getIdentity() );
-                    final BNode assocEntityBNode = valueFactory.createBNode(  );
+                    final BNode assocEntityBNode = valueFactory.createBNode();
                     if( prevAssocEntityBNode == null )
                     {
                         connection.add( entityURI, assocURI, assocEntityBNode );
@@ -172,7 +172,7 @@ public class RDFEntityIndexerMixin
                     {
                         connection.add( prevAssocEntityBNode, RDF.REST, assocEntityBNode );
                     }
-                    connection.add(assocEntityBNode, RDF.FIRST, assocEntityURI);
+                    connection.add( assocEntityBNode, RDF.FIRST, assocEntityURI );
                     prevAssocEntityBNode = assocEntityBNode;
                 }
             }

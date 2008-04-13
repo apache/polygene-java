@@ -27,7 +27,7 @@ import org.openrdf.query.TupleQuery;
 import org.openrdf.query.TupleQueryResult;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
-import org.qi4j.composite.scope.ThisCompositeAs;
+import org.qi4j.composite.scope.This;
 import org.qi4j.query.grammar.BooleanExpression;
 import org.qi4j.query.grammar.OrderBy;
 import org.qi4j.spi.query.EntitySearcher;
@@ -43,7 +43,7 @@ public class RDFEntitySearcherMixin
     implements EntitySearcher
 {
 
-    @ThisCompositeAs RDFQueryContext queryContext;
+    @This RDFQueryContext queryContext;
 
     public Iterable<String> find( final Class entityType,
                                   final BooleanExpression whereClause,
