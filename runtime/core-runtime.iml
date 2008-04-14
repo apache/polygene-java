@@ -14,7 +14,6 @@
     <orderEntry type="module" module-name="core-api" />
     <orderEntry type="module" module-name="core-spi" />
     <orderEntry type="library" name="jta-1_1-classes" level="project" />
-    <orderEntry type="library" name="jotm-2.0.10" level="project" />
     <orderEntry type="library" name="cglib-nodep-2.1_3" level="project" />
     <orderEntry type="library" name="junit" level="project" />
     <orderEntryProperties />

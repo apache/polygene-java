@@ -18,7 +18,7 @@ import org.qi4j.composite.Composite;
 import org.qi4j.composite.Mixins;
 
 /**
- * All Composites being used to implement services
+ * All Composites being used to implement Services
  * must extend this interface.
  */
 @Mixins( ServiceConfigurationMixin.class )
