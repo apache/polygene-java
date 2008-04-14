@@ -17,8 +17,8 @@
  */
 package org.qi4j.entity.index.rdf;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import org.openrdf.model.Value;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.MalformedQueryException;
@@ -32,6 +32,7 @@ import org.qi4j.query.grammar.BooleanExpression;
 import org.qi4j.query.grammar.OrderBy;
 import org.qi4j.spi.query.EntitySearcher;
 import org.qi4j.spi.query.SearchException;
+import org.qi4j.spi.serialization.EntityId;
 
 /**
  * TODO Add JavaDoc
@@ -45,14 +46,14 @@ public class RDFEntitySearcherMixin
 
     @This RDFQueryContext queryContext;
 
-    public Iterable<String> find( final Class entityType,
-                                  final BooleanExpression whereClause,
-                                  final OrderBy[] orderBySegments,
-                                  final Integer firstResult,
-                                  final Integer maxResults )
+    public Iterable<EntityId> find( final Class resultType,
+                                    final BooleanExpression whereClause,
+                                    final OrderBy[] orderBySegments,
+                                    final Integer firstResult,
+                                    final Integer maxResults )
         throws SearchException
     {
-        final Collection<String> entities = new HashSet<String>();
+        final Collection<EntityId> entities = new ArrayList<EntityId>();
         try
         {
             final RepositoryConnection connection = queryContext.getRepository().getConnection();
@@ -60,7 +61,7 @@ public class RDFEntitySearcherMixin
             final RDFQueryParser parser = new SPARQLRDFQueryParser();
             final TupleQuery tupleQuery = connection.prepareTupleQuery(
                 parser.getQueryLanguage(),
-                parser.getQuery( entityType, whereClause, orderBySegments, firstResult, maxResults )
+                parser.getQuery( resultType, whereClause, orderBySegments, firstResult, maxResults )
             );
             final TupleQueryResult result = tupleQuery.evaluate();
             try
@@ -69,15 +70,12 @@ public class RDFEntitySearcherMixin
                 {
                     final BindingSet bindingSet = result.next();
                     final Value identifier = bindingSet.getValue( "identity" );
+                    final Value entityClass = bindingSet.getValue( "entityType" );
                     //TODO Shall we throw an exception if there is no binding for identifier = query parser is not right
                     if( identifier != null )
                     {
-                        final String value = identifier.stringValue();
-                        if( value != null )
-                        {
-                            System.out.println( bindingSet.getValue( "entity" ).stringValue() + " -> " + value );
-                            entities.add( value );
-                        }
+                        System.out.println( entityClass.stringValue() + " -> " + identifier.stringValue() );
+                        entities.add( new EntityId( identifier.stringValue(), entityClass.stringValue() ) );
                     }
                 }
             }

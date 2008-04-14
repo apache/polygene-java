@@ -25,7 +25,7 @@ import org.qi4j.entity.UnitOfWorkCompletionException;
 import org.qi4j.entity.memory.IndexedMemoryEntityStoreService;
 import org.qi4j.spi.entity.UuidIdentityGeneratorService;
 
-public class SesameIndexerTest
+public class RDFEntityIndexerTest
 {
     @Test
     public void script01() throws UnitOfWorkCompletionException

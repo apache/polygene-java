@@ -27,6 +27,7 @@ import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
+import org.qi4j.composite.Composite;
 import org.qi4j.composite.scope.This;
 import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.composite.CompositeModel;
@@ -57,10 +58,6 @@ public class RDFEntityIndexerMixin
                        final Iterable<EntityId> removedStates,
                        final ModuleBinding moduleBinding )
     {
-        System.out.println( "New: " + newStates );
-        System.out.println( "Updated: " + changedStates );
-        System.out.println( "Removed: " + removedStates );
-
         try
         {
             final RepositoryConnection connection = queryContext.getRepository().getConnection();
@@ -112,9 +109,11 @@ public class RDFEntityIndexerMixin
         final CompositeBinding compositeBinding = moduleBinding.getCompositeBinding( compositeClass );
         final CompositeModel compositeModel = compositeBinding.getCompositeResolution().getCompositeModel();
         final URI compositeURI = valueFactory.createURI( compositeModel.toURI() );
+        final URI compositeClassURI = valueFactory.createURI( MixinTypeModel.toURI( Composite.class ) + ":entityType" );
         final URI entityURI = valueFactory.createURI( compositeModel.toURI()
                                                       + "/" + entityState.getIdentity().getIdentity() );
         connection.add( entityURI, RDF.TYPE, compositeURI );
+        connection.add( entityURI, compositeClassURI, valueFactory.createLiteral( compositeClass.getName() ) );
         // index properties
         for( String propName : entityState.getPropertyNames() )
         {

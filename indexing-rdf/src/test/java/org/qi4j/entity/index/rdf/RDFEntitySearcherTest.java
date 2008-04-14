@@ -31,7 +31,7 @@ import org.qi4j.spi.entity.UuidIdentityGeneratorService;
 import org.qi4j.spi.query.EntitySearcher;
 import org.qi4j.spi.query.SearchException;
 
-public class SesameQueryTest
+public class RDFEntitySearcherTest
 {
 
     private static final BooleanExpression ALL = null;
@@ -40,7 +40,7 @@ public class SesameQueryTest
     private static final Integer NO_MAX_RESULTS = null;
 
     private SingletonAssembler assembler;
-    private EntitySearcher searchEngine;
+    private EntitySearcher entitySearcher;
 
     @Before
     public void setUp() throws UnitOfWorkCompletionException
@@ -64,7 +64,7 @@ public class SesameQueryTest
             }
         };
         Network.populate( assembler.getUnitOfWorkFactory().newUnitOfWork() );
-        searchEngine = assembler.getServiceLocator().lookupService( RDFQueryService.class ).get();
+        entitySearcher = assembler.getServiceLocator().lookupService( RDFQueryService.class ).get();
     }
 
     @Test
@@ -77,7 +77,7 @@ public class SesameQueryTest
     public void script01() throws SearchException
     {
         // should return all persons (Joe, Ann, Jack Doe)
-        searchEngine.find(
+        entitySearcher.find(
             PersonComposite.class,
             ALL,
             NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS
@@ -89,7 +89,7 @@ public class SesameQueryTest
     {
         Nameable nameable = templateFor( Nameable.class );
         // should return Gaming domain
-        searchEngine.find(
+        entitySearcher.find(
             Domain.class,
             eq( nameable.name(), "Gaming" ),
             NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS
@@ -100,7 +100,7 @@ public class SesameQueryTest
     public void script03() throws SearchException
     {
         // should return all entities
-        searchEngine.find(
+        entitySearcher.find(
             Nameable.class,
             ALL,
             NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS
@@ -112,7 +112,7 @@ public class SesameQueryTest
     {
         Person person = templateFor( Person.class );
         // should return Joe and Ann Doe
-        searchEngine.find(
+        entitySearcher.find(
             Person.class,
             eq( person.placeOfBirth().get().name(), "Kuala Lumpur" ),
             NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS
@@ -124,7 +124,7 @@ public class SesameQueryTest
     {
         Person person = templateFor( Person.class );
         // should return Joe Doe
-        searchEngine.find(
+        entitySearcher.find(
             Person.class,
             eq( person.mother().get().placeOfBirth().get().name(), "Kuala Lumpur" ),
             NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS
@@ -136,7 +136,7 @@ public class SesameQueryTest
     {
         Person person = templateFor( Person.class );
         // should return Joe and Ann Doe
-        searchEngine.find(
+        entitySearcher.find(
             Person.class,
             ge( person.yearOfBirth(), 1973 ),
             NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS
@@ -148,7 +148,7 @@ public class SesameQueryTest
     {
         Person person = templateFor( Person.class );
         // should return Jack Doe
-        searchEngine.find(
+        entitySearcher.find(
             Nameable.class,
             and(
                 ge( person.yearOfBirth(), 1900 ),
@@ -163,7 +163,7 @@ public class SesameQueryTest
     {
         Person person = templateFor( Person.class );
         // should return Jack and Ann Doe
-        searchEngine.find(
+        entitySearcher.find(
             Person.class,
             or(
                 eq( person.yearOfBirth(), 1970 ),
@@ -178,7 +178,7 @@ public class SesameQueryTest
     {
         Person person = templateFor( Person.class );
         // should return Ann Doe
-        searchEngine.find(
+        entitySearcher.find(
             Female.class,
             or(
                 eq( person.yearOfBirth(), 1970 ),
@@ -193,7 +193,7 @@ public class SesameQueryTest
     {
         Person person = templateFor( Person.class );
         // should return Joe and Jack Doe
-        searchEngine.find(
+        entitySearcher.find(
             Person.class,
             not(
                 eq( person.yearOfBirth(), 1975 )
@@ -207,7 +207,7 @@ public class SesameQueryTest
     {
         Person person = templateFor( Person.class );
         // should return Joe Doe
-        searchEngine.find(
+        entitySearcher.find(
             Person.class,
             isNotNull( person.email() ),
             NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS
@@ -219,7 +219,7 @@ public class SesameQueryTest
     {
         Person person = templateFor( Person.class );
         // should return Ann and Jack Doe
-        searchEngine.find(
+        entitySearcher.find(
             Person.class,
             isNull( person.email() ),
             NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS
@@ -231,7 +231,7 @@ public class SesameQueryTest
     {
         Male person = templateFor( Male.class );
         // should return Jack Doe
-        searchEngine.find(
+        entitySearcher.find(
             Person.class,
             isNotNull( person.wife() ),
             NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS
@@ -242,8 +242,8 @@ public class SesameQueryTest
     public void script14() throws SearchException
     {
         Male person = templateFor( Male.class );
-        // should return Jack Doe
-        searchEngine.find(
+        // should return Joe Doe
+        entitySearcher.find(
             Male.class,
             isNull( person.wife() ),
             NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS
@@ -254,8 +254,8 @@ public class SesameQueryTest
     public void script15() throws SearchException
     {
         Male person = templateFor( Male.class );
-        // should return Ann and Jack Doe
-        searchEngine.find(
+        // should return Ann and Joe Doe
+        entitySearcher.find(
             Person.class,
             isNull( person.wife() ),
             NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS
@@ -266,7 +266,7 @@ public class SesameQueryTest
     public void script16() throws SearchException
     {
         // should return only 2 entities
-        searchEngine.find(
+        entitySearcher.find(
             Nameable.class,
             ALL,
             NO_SORTING, NO_FIRST_RESULT, 2
@@ -277,7 +277,7 @@ public class SesameQueryTest
     public void script17() throws SearchException
     {
         // should return only 2 entities starting with third one
-        searchEngine.find(
+        entitySearcher.find(
             Nameable.class,
             ALL,
             NO_SORTING, 3, 2
@@ -289,7 +289,7 @@ public class SesameQueryTest
     {
         // should return all Nameable entities sorted by name
         Nameable nameable = templateFor( Nameable.class );
-        searchEngine.find(
+        entitySearcher.find(
             Nameable.class,
             ALL,
             new OrderBy[]{ orderBy( nameable.name() ) },
@@ -302,7 +302,7 @@ public class SesameQueryTest
     {
         // should return all Nameable entities with a name > "B" sorted by name
         Nameable nameable = templateFor( Nameable.class );
-        searchEngine.find(
+        entitySearcher.find(
             Nameable.class,
             gt( nameable.name(), "B" ),
             new OrderBy[]{ orderBy( nameable.name() ) },
@@ -315,7 +315,7 @@ public class SesameQueryTest
     {
         // should return all Persons born after 1973 (Ann and Joe Doe) sorted descending by name
         Person person = templateFor( Person.class );
-        searchEngine.find(
+        entitySearcher.find(
             Person.class,
             gt( person.yearOfBirth(), 1973 ),
             new OrderBy[]{ orderBy( person.name(), OrderBy.Order.DESCENDING ) },
@@ -328,7 +328,7 @@ public class SesameQueryTest
     {
         // should return all Persons sorted name of the city they were born
         Person person = templateFor( Person.class );
-        searchEngine.find(
+        entitySearcher.find(
             Person.class,
             ALL,
             new OrderBy[]{ orderBy( person.placeOfBirth().get().name() ) },
@@ -341,7 +341,7 @@ public class SesameQueryTest
     {
         Nameable nameable = templateFor( Nameable.class );
         // should return Jack and Joe Doe
-        searchEngine.find(
+        entitySearcher.find(
             Nameable.class,
             matches( nameable.name(), "J.*Doe" ),
             NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS

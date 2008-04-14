@@ -31,7 +31,7 @@ public interface RDFQueryParser
 {
     QueryLanguage getQueryLanguage();
 
-    String getQuery( Class entityType,
+    String getQuery( Class resultType,
                      BooleanExpression whereClause,
                      OrderBy[] orderBySegments,
                      Integer firstResult,

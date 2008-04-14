@@ -42,6 +42,7 @@ import org.qi4j.query.grammar.SingleValueExpression;
 import org.qi4j.query.grammar.ValueExpression;
 import org.qi4j.spi.composite.MixinTypeModel;
 import org.qi4j.spi.entity.association.AssociationModel;
+import org.qi4j.composite.Composite;
 
 /**
  * TODO Add JavaDoc
@@ -78,7 +79,7 @@ class SPARQLRDFQueryParser
         return QueryLanguage.SPARQL;
     }
 
-    public String getQuery( final Class entityType,
+    public String getQuery( final Class resultType,
                             final BooleanExpression whereClause,
                             final OrderBy[] orderBySegments,
                             final Integer firstResult,
@@ -89,7 +90,14 @@ class SPARQLRDFQueryParser
             new Triple(
                 "?entity",
                 "rdf:type",
-                "<" + MixinTypeModel.toURI( entityType ) + ">",
+                "<" + MixinTypeModel.toURI( resultType ) + ">",
+                false )
+        );
+        triples.add(
+            new Triple(
+                "?entity",
+                addNamespace( MixinTypeModel.toURI( Composite.class ) + ":" ) + ":entityType",
+                "?entityType",
                 false )
         );
         triples.add(
@@ -111,7 +119,7 @@ class SPARQLRDFQueryParser
                 .append( nsEntry.getKey() )
                 .append( "> " );
         }
-        query.append( "SELECT DISTINCT ?entity ?identity " );
+        query.append( "SELECT DISTINCT ?entityType ?identity " );
         if( !triples.isEmpty() )
         {
             query.append( "WHERE {" );
