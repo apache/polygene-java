@@ -22,5 +22,5 @@ package org.qi4j.query;
  */
 public interface QueryBuilderFactory
 {
-    <T> QueryBuilder<T> newQueryBuilder( Class<T> compositeType );
+    <T> QueryBuilder<T> newQueryBuilder( Class<T> resultType );
 }

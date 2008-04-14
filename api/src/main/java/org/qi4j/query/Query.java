@@ -39,5 +39,5 @@ public interface Query<T>
 
     void setVariable( String name, Object value );
 
-    Object getVariable( String name );
+    <V> V getVariable( String name );
 }

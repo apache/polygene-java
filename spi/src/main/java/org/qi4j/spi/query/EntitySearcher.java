@@ -19,6 +19,7 @@ package org.qi4j.spi.query;
 
 import org.qi4j.query.grammar.BooleanExpression;
 import org.qi4j.query.grammar.OrderBy;
+import org.qi4j.spi.serialization.EntityId;
 
 /**
  * TODO Add JavaDoc
@@ -28,10 +29,10 @@ import org.qi4j.query.grammar.OrderBy;
  */
 public interface EntitySearcher
 {
-    Iterable<String> find( Class entityType,
-                           BooleanExpression whereClause,
-                           OrderBy[] orderBySegments,
-                           Integer firstResult,
-                           Integer maxResults )
+    Iterable<EntityId> find( Class resultType,
+                             BooleanExpression whereClause,
+                             OrderBy[] orderBySegments,
+                             Integer firstResult,
+                             Integer maxResults )
         throws SearchException;
 }

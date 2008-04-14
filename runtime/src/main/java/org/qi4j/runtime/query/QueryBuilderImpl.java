@@ -22,6 +22,8 @@ import org.qi4j.query.Query;
 import org.qi4j.query.QueryBuilder;
 import org.qi4j.query.QueryExpressions;
 import org.qi4j.query.grammar.BooleanExpression;
+import org.qi4j.runtime.entity.UnitOfWorkInstance;
+import org.qi4j.spi.query.EntitySearcher;
 
 /**
  * Default implementation of {@link QueryBuilder}
@@ -29,41 +31,62 @@ import org.qi4j.query.grammar.BooleanExpression;
  * @author Alin Dreghiciu
  * @since March 25, 2008
  */
-public final class QueryBuilderImpl<T>
+final class QueryBuilderImpl<T>
     implements QueryBuilder<T>
 {
 
     /**
+     * Parent unit of work.
+     */
+    private final UnitOfWorkInstance unitOfWorkInstance;
+    /**
+     * Entity searcher to be used to locate entities.
+     */
+    private final EntitySearcher entitySearcher;
+    /**
+     * Type of queried entities.
+     */
+    private final Class<T> resultType;
+    /**
      * Where clause.
      */
-    private BooleanExpression where;
+    private BooleanExpression whereClause;
 
     /**
      * Constructor.
+     *
+     * @param unitOfWorkInstance parent unit of work; cannot be null
+     * @param entitySearcher     entity searcher to be used to locate entities; canot be null
+     * @param resultType         type of queried entities; cannot be null
      */
-    public QueryBuilderImpl()
+    public QueryBuilderImpl( final UnitOfWorkInstance unitOfWorkInstance,
+                             final EntitySearcher entitySearcher,
+                             final Class<T> resultType )
     {
-        where = null;
+        this.unitOfWorkInstance = unitOfWorkInstance;
+        this.entitySearcher = entitySearcher;
+        this.resultType = resultType;
+        this.whereClause = null;
     }
 
     /**
      * @see QueryBuilder#where(BooleanExpression)
      */
-    public QueryBuilder<T> where( final BooleanExpression expression )
+    public QueryBuilder<T> where( final BooleanExpression whereClause )
     {
-        if( expression == null )
+        if( whereClause == null )
         {
-            throw new IllegalArgumentException( "Where expression cannot be null" );
+            throw new IllegalArgumentException( "Where whereClause cannot be null" );
         }
-        if( where == null )
+        if( this.whereClause == null )
         {
-            where = expression;
+            this.whereClause = whereClause;
         }
         else
         {
-            where = QueryExpressions.and( where, expression );
+            this.whereClause = QueryExpressions.and( this.whereClause, whereClause );
         }
-        System.out.println( where );
+        System.out.println( this.whereClause );
         return this;
     }
 
@@ -72,7 +95,7 @@ public final class QueryBuilderImpl<T>
      */
     public Query<T> newQuery()
     {
-        throw new UnsupportedOperationException( "Not yet implemented" );
+        return new QueryImpl<T>( unitOfWorkInstance, entitySearcher, resultType, whereClause );
     }
 
 }

@@ -64,6 +64,11 @@ public final class UnitOfWorkInstance
     private ModuleInstance moduleInstance;
     StateServices stateServices;
 
+    /**
+     * Lazy query builder factory.
+     */
+    private QueryBuilderFactory queryBuilderFactory;
+
     static
     {
         current = new ThreadLocal<Stack<UnitOfWork>>()
@@ -348,8 +353,11 @@ public final class UnitOfWorkInstance
     public QueryBuilderFactory queryBuilderFactory()
     {
         checkOpen();
-
-        return new QueryBuilderFactoryImpl();
+        if( queryBuilderFactory == null )
+        {
+            queryBuilderFactory = new QueryBuilderFactoryImpl( this );
+        }
+        return queryBuilderFactory;
     }
 
     public Query getNamedQuery( String name )
