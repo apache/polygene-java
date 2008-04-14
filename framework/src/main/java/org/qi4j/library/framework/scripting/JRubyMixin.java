@@ -35,7 +35,7 @@ import org.qi4j.composite.scope.This;
 /**
  * Generic mixin that implements interfaces by delegating to Ruby functions
  * using JRuby. Each method in an interface is declared by a Ruby method
- * in a file located in classpath with the name "<interface>.js",
+ * in a file located in classpath with the name "<interface>.rb",
  * where the interface name includes the package, and has "." replaced with "/".
  * <p/>
  * Example:
@@ -104,7 +104,7 @@ public class JRubyMixin
                 Object arg = args[ i ];
                 rubyArgs[ i ] = JavaEmbedUtils.javaToRuby( runtime, arg );
             }
-            rubyResult = rubyObjectAdapter.callMethod( rubyObject, method.getName() );
+            rubyResult = rubyObjectAdapter.callMethod( rubyObject, method.getName(), rubyArgs );
         }
         else
         {
@@ -112,7 +112,7 @@ public class JRubyMixin
         }
 
         // Convert result to Java
-        Object result = org.jruby.javasupport.JavaEmbedUtils.rubyToJava( runtime, rubyResult, method.getReturnType() );
+        Object result = JavaEmbedUtils.rubyToJava( runtime, rubyResult, method.getReturnType() );
         return result;
     }
 
