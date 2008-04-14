@@ -19,6 +19,8 @@ import java.io.InputStreamReader;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import org.jruby.Ruby;
 import org.jruby.RubyObjectAdapter;
 import org.jruby.javasupport.JavaEmbedUtils;
@@ -47,7 +49,7 @@ public class JRubyMixin
 
     private Ruby runtime;
 
-    private IRubyObject rubyObject;
+    private Map<Class, IRubyObject> rubyObjects = new HashMap<Class, IRubyObject>();
     private RubyObjectAdapter rubyObjectAdapter;
 
     public static class AppliesTo
@@ -72,18 +74,24 @@ public class JRubyMixin
 
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
     {
+        // Get Ruby object for declaring class of the method
+        Class declaringClass = method.getDeclaringClass();
+        IRubyObject rubyObject = rubyObjects.get( declaringClass );
+
+        // If not yet created, create one
         if( rubyObject == null )
         {
             // Evaluate Ruby script
             runtime.evalScriptlet( getFunction( method ) );
 
             // Create object instance
-            rubyObject = runtime.evalScriptlet( method.getDeclaringClass().getSimpleName() + ".new()" );
+            rubyObject = runtime.evalScriptlet( declaringClass.getSimpleName() + ".new()" );
 
             // Set @this variable to Composite
             IRubyObject meRuby = JavaEmbedUtils.javaToRuby( runtime, me );
             rubyObjectAdapter = JavaEmbedUtils.newObjectAdapter();
             rubyObjectAdapter.setInstanceVariable( rubyObject, "@this", meRuby );
+            rubyObjects.put( declaringClass, rubyObject );
         }
 
         // Convert method arguments and invoke the method
