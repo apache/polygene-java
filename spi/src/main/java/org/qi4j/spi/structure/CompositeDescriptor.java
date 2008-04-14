@@ -49,4 +49,35 @@ public final class CompositeDescriptor
     {
         return visibility;
     }
+
+    public boolean equals( Object o )
+    {
+        if( this == o )
+        {
+            return true;
+        }
+        if( o == null || getClass() != o.getClass() )
+        {
+            return false;
+        }
+
+        CompositeDescriptor that = (CompositeDescriptor) o;
+
+        if( !compositeModel.equals( that.compositeModel ) )
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    public int hashCode()
+    {
+        return compositeModel.hashCode();
+    }
+
+    @Override public String toString()
+    {
+        return compositeModel.toString();
+    }
 }

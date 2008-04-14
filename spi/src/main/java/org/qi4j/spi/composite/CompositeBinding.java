@@ -168,4 +168,25 @@ public final class CompositeBinding
     {
         return compositeResolution.hashCode();
     }
+
+    public boolean equals( Object o )
+    {
+        if( this == o )
+        {
+            return true;
+        }
+        if( o == null || getClass() != o.getClass() )
+        {
+            return false;
+        }
+
+        CompositeBinding that = (CompositeBinding) o;
+
+        if( !compositeResolution.equals( that.compositeResolution ) )
+        {
+            return false;
+        }
+
+        return true;
+    }
 }

@@ -69,14 +69,35 @@ public final class CompositeResolution
         return associationResolutions;
     }
 
+    public boolean equals( Object o )
+    {
+        if( this == o )
+        {
+            return true;
+        }
+        if( o == null || getClass() != o.getClass() )
+        {
+            return false;
+        }
+
+        CompositeResolution that = (CompositeResolution) o;
+
+        if( !compositeDescriptor.equals( that.compositeDescriptor ) )
+        {
+            return false;
+        }
+
+        return true;
+    }
+
     @Override public int hashCode()
     {
-        return compositeDescriptor.getCompositeModel().hashCode();
+        return compositeDescriptor.hashCode();
     }
 
     public String toString()
     {
-        return compositeDescriptor.getCompositeModel().toString();
+        return compositeDescriptor.toString();
 /*
         StringWriter str = new StringWriter();
         PrintWriter out = new PrintWriter( str );
