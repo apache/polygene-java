@@ -17,10 +17,10 @@
     <orderEntry type="library" name="jdbm-1.0" level="project" />
     <orderEntry type="module" module-name="core-testsupport" />
     <orderEntry type="module" module-name="core-bootstrap" />
-    <orderEntry type="library" name="commons-logging-api-1.1" level="project" />
     <orderEntry type="library" name="junit" level="project" />
     <orderEntry type="module" module-name="library-framework" />
     <orderEntry type="module" module-name="extension-persistence-memory" />
+    <orderEntry type="library" name="commons-logging-1.1" level="project" />
     <orderEntryProperties />
   </component>
 </module>
