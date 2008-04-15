@@ -17,27 +17,34 @@ import org.qi4j.composite.scope.PropertyField;
 import org.qi4j.composite.scope.This;
 import org.qi4j.property.ComputedPropertyInstance;
 import org.qi4j.property.Property;
+import org.qi4j.property.ImmutableProperty;
 
 /**
  * Generic interface of PersonName that stores first and last name.
  */
 @Mixins( PersonName.PersonNameMixin.class )
-public interface PersonName extends HasName
+public interface PersonName
 {
     Property<String> firstName();
 
     Property<String> lastName();
 
-    public final class PersonNameMixin implements HasName
+    ImmutableProperty<String> fullName();
+
+    public abstract class PersonNameMixin implements PersonName
     {
         @This PersonName personName;
-        @PropertyField Property<String> name;
 
-        public Property<String> name()
+        @PropertyField ImmutableProperty<String> fullName;
+
+        /**
+         * Returns a person full name in the format LastName, FirstName 
+         */
+        public ImmutableProperty<String> fullName()
         {
-            return new ComputedPropertyInstance<String>( name )
+            return new ComputedPropertyInstance<String>( fullName )
             {
-                private String m_name = personName.firstName().get() + " " + personName.lastName().get();
+                private String m_name = personName.lastName().get() + ", " + personName.firstName().get();
 
                 public String get()
                 {
