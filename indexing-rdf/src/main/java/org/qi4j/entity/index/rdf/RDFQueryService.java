@@ -19,7 +19,7 @@ package org.qi4j.entity.index.rdf;
 
 import org.qi4j.composite.Mixins;
 import org.qi4j.service.ServiceComposite;
-import org.qi4j.spi.query.EntitySearcher;
+import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityIndexer;
 
 /**
@@ -28,8 +28,8 @@ import org.qi4j.spi.query.EntityIndexer;
  * @author Alin Dreghiciu
  * @since March 18, 2008
  */
-@Mixins( { RDFEntityIndexerMixin.class, RDFEntitySearcherMixin.class, RDFQueryContextMixin.class } )
+@Mixins( { RDFEntityIndexerMixin.class, RDFEntityFinderMixin.class, RDFQueryContextMixin.class } )
 public interface RDFQueryService
-    extends EntityIndexer, EntitySearcher, ServiceComposite
+    extends EntityIndexer, EntityFinder, ServiceComposite
 {
 }

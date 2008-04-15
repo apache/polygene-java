@@ -30,7 +30,7 @@ import org.openrdf.repository.RepositoryException;
 import org.qi4j.composite.scope.This;
 import org.qi4j.query.grammar.BooleanExpression;
 import org.qi4j.query.grammar.OrderBy;
-import org.qi4j.spi.query.EntitySearcher;
+import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.SearchException;
 import org.qi4j.spi.serialization.EntityId;
 
@@ -40,8 +40,8 @@ import org.qi4j.spi.serialization.EntityId;
  * @author Alin Dreghiciu
  * @since March 18, 2008
  */
-public class RDFEntitySearcherMixin
-    implements EntitySearcher
+public class RDFEntityFinderMixin
+    implements EntityFinder
 {
 
     @This RDFQueryContext queryContext;
