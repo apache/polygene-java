@@ -23,7 +23,7 @@ import org.qi4j.query.QueryBuilder;
 import org.qi4j.query.QueryBuilderFactory;
 import org.qi4j.runtime.entity.UnitOfWorkInstance;
 import org.qi4j.service.ServiceReference;
-import org.qi4j.spi.query.EntitySearcher;
+import org.qi4j.spi.query.EntityFinder;
 
 /**
  * Default implementation of {@link QueryBuilderFactory}
@@ -56,9 +56,9 @@ public final class QueryBuilderFactoryImpl
      */
     public <T> QueryBuilder<T> newQueryBuilder( final Class<T> resultType )
     {
-        final ServiceReference<EntitySearcher> serviceReference =
+        final ServiceReference<EntityFinder> serviceReference =
             unitOfWorkInstance.getModuleInstance().getStructureContext().getServiceLocator()
-                .lookupService( EntitySearcher.class );
+                .lookupService( EntityFinder.class );
         try
         {
             return new QueryBuilderImpl<T>( unitOfWorkInstance, serviceReference.get(), resultType );

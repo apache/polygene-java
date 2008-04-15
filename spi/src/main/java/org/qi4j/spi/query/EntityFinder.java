@@ -27,7 +27,7 @@ import org.qi4j.spi.serialization.EntityId;
  * @author Alin Dreghiciu
  * @since March 24, 2008
  */
-public interface EntitySearcher
+public interface EntityFinder
 {
     Iterable<EntityId> find( Class resultType,
                              BooleanExpression whereClause,

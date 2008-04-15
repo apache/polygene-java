@@ -23,7 +23,7 @@ import org.qi4j.query.QueryBuilder;
 import org.qi4j.query.QueryExpressions;
 import org.qi4j.query.grammar.BooleanExpression;
 import org.qi4j.runtime.entity.UnitOfWorkInstance;
-import org.qi4j.spi.query.EntitySearcher;
+import org.qi4j.spi.query.EntityFinder;
 
 /**
  * Default implementation of {@link QueryBuilder}
@@ -40,9 +40,9 @@ final class QueryBuilderImpl<T>
      */
     private final UnitOfWorkInstance unitOfWorkInstance;
     /**
-     * Entity searcher to be used to locate entities.
+     * Entity finder to be used to locate entities.
      */
-    private final EntitySearcher entitySearcher;
+    private final EntityFinder entityFinder;
     /**
      * Type of queried entities.
      */
@@ -56,15 +56,15 @@ final class QueryBuilderImpl<T>
      * Constructor.
      *
      * @param unitOfWorkInstance parent unit of work; cannot be null
-     * @param entitySearcher     entity searcher to be used to locate entities; canot be null
+     * @param entityFinder       entity finder to be used to locate entities; canot be null
      * @param resultType         type of queried entities; cannot be null
      */
     public QueryBuilderImpl( final UnitOfWorkInstance unitOfWorkInstance,
-                             final EntitySearcher entitySearcher,
+                             final EntityFinder entityFinder,
                              final Class<T> resultType )
     {
         this.unitOfWorkInstance = unitOfWorkInstance;
-        this.entitySearcher = entitySearcher;
+        this.entityFinder = entityFinder;
         this.resultType = resultType;
         this.whereClause = null;
     }
@@ -76,7 +76,7 @@ final class QueryBuilderImpl<T>
     {
         if( whereClause == null )
         {
-            throw new IllegalArgumentException( "Where whereClause cannot be null" );
+            throw new IllegalArgumentException( "Where clause cannot be null" );
         }
         if( this.whereClause == null )
         {
@@ -95,7 +95,7 @@ final class QueryBuilderImpl<T>
      */
     public Query<T> newQuery()
     {
-        return new QueryImpl<T>( unitOfWorkInstance, entitySearcher, resultType, whereClause );
+        return new QueryImpl<T>( unitOfWorkInstance, entityFinder, resultType, whereClause );
     }
 
 }

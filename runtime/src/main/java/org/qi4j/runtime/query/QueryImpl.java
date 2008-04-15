@@ -28,7 +28,7 @@ import org.qi4j.query.grammar.BooleanExpression;
 import org.qi4j.query.grammar.OrderBy;
 import org.qi4j.query.grammar.SingleValueExpression;
 import org.qi4j.runtime.entity.UnitOfWorkInstance;
-import org.qi4j.spi.query.EntitySearcher;
+import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.SearchException;
 import org.qi4j.spi.serialization.EntityId;
 
@@ -47,9 +47,9 @@ final class QueryImpl<T>
      */
     private final UnitOfWorkInstance unitOfWorkInstance;
     /**
-     * Entity searcher to be used to locate entities.
+     * Entity finder to be used to locate entities.
      */
-    private final EntitySearcher entitySearcher;
+    private final EntityFinder entityFinder;
     /**
      * Type of queried entities.
      */
@@ -79,17 +79,17 @@ final class QueryImpl<T>
      * Constructor.
      *
      * @param unitOfWorkInstance parent unit of work; cannot be null
-     * @param entitySearcher     entity searcher to be used to locate entities; cannot be null
+     * @param entityFinder       entity finder to be used to locate entities; cannot be null
      * @param resultType         type of queried entities; cannot be null
      * @param whereClause        where clause
      */
     QueryImpl( final UnitOfWorkInstance unitOfWorkInstance,
-               final EntitySearcher entitySearcher,
+               final EntityFinder entityFinder,
                final Class<T> resultType,
                final BooleanExpression whereClause )
     {
         this.unitOfWorkInstance = unitOfWorkInstance;
-        this.entitySearcher = entitySearcher;
+        this.entityFinder = entityFinder;
         this.resultType = resultType;
         this.whereClause = whereClause;
         this.variables = new HashMap<String, SingleValueExpression>();
@@ -163,7 +163,7 @@ final class QueryImpl<T>
         final List<T> entities = new ArrayList<T>();
         try
         {
-            final Iterable<EntityId> foundEntities = entitySearcher.find(
+            final Iterable<EntityId> foundEntities = entityFinder.find(
                 resultType, whereClause, orderBySegments, firstResult, maxResults
             );
             if( foundEntities != null )
