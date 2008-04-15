@@ -12,13 +12,15 @@
 package org.qi4j.library.framework.scripting;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.StringTokenizer;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.Scriptable;
@@ -40,18 +42,24 @@ import org.qi4j.composite.scope.Structure;
  */
 @AppliesTo( JavaScriptMixin.AppliesTo.class )
 public class JavaScriptMixin
-    implements InvocationHandler
+    implements InvocationHandler, ScriptReloadable
 {
     public static class AppliesTo
         implements AppliesToFilter
     {
+
         public boolean appliesTo( Method method, Class compositeType, Class mixin, Class modelClass )
         {
             return getFunctionResoure( method ) != null;
         }
+
     }
 
-    static Scriptable standardScope;
+    static private Scriptable standardScope;
+
+    private HashMap<String, Function> cachedScripts;
+    @Structure private CompositeBuilderFactory factory;
+    private Scriptable instanceScope;
 
     static
     {
@@ -60,15 +68,14 @@ public class JavaScriptMixin
         Context.exit();
     }
 
-    @Structure CompositeBuilderFactory factory;
-    Scriptable instanceScope;
-
     public JavaScriptMixin()
     {
+        cachedScripts = new HashMap<String, Function>();
         Context cx = Context.enter();
         instanceScope = cx.newObject( standardScope );
         instanceScope.setPrototype( standardScope );
         Context.exit();
+
     }
 
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
@@ -101,33 +108,204 @@ public class JavaScriptMixin
         }
     }
 
-    protected Function getFunction( Context cx, Scriptable scope, Method aMethod )
+    public void reloadScripts()
+    {
+        cachedScripts.clear();
+    }
+
+    private Function getFunction( Context cx, Scriptable scope, Method method )
         throws IOException
     {
-        URL scriptUrl = getFunctionResoure( aMethod );
+        Class<?> declaringClass = method.getDeclaringClass();
+        String classname = declaringClass.getName();
+        String methodName = method.getName();
+        String requestedFunctionName = classname + ":" + methodName;
 
+        Function fx = cachedScripts.get( requestedFunctionName );
+        if( fx != null )
+        {
+            return fx;
+        }
+        compileScripts( cx, scope, method );
+        fx = cachedScripts.get( requestedFunctionName );
+        return fx;
+    }
+
+    private void compileScripts( Context cx, Scriptable scope, Method method )
+        throws IOException
+    {
+        URL scriptUrl = getFunctionResoure( method );
         if( scriptUrl == null )
         {
-            throw new IOException( "No script found for method " + aMethod.getName() );
+            throw new IOException( "No script found for method " + method.getName() );
         }
 
         InputStream in = scriptUrl.openStream();
         BufferedReader scriptReader = new BufferedReader( new InputStreamReader( in ) );
-        String line;
-        String script = "";
-        while( ( line = scriptReader.readLine() ) != null )
+        int lineNo = 1;
+        String classname = method.getDeclaringClass().getName();
+        while( true )
         {
-            script += line + "\n";
+            ScriptFragment fragment = extractFunction( scriptReader );
+            if( "".equals( fragment.script.trim() ) )
+            {
+                break;
+            }
+            String functionName = parseFunctionName( fragment.script, scriptUrl.toString() );
+            Function function = cx.compileFunction( scope, fragment.script, "<" + scriptUrl.toString() + ">", lineNo, null );
+            cachedScripts.put( classname + ":" + functionName, function );
+            lineNo = lineNo + fragment.numberOfLines;
         }
-
-        return cx.compileFunction( scope, script, "<" + scriptUrl.getFile() + ">", 0, null );
     }
 
-    protected static URL getFunctionResoure( Method method )
+    /** Extracts the function name.
+     * <p>
+     * Since the fragment has been stripped of all comments, the first non-whitespace word to appear
+     * should be "function" and the word after that should be the function name.
+     * </p>
+     * @param script The script snippet.
+     * @param scriptName The name of the script being parsed.
+     * @return the name of the function declared in this snippet.
+     */
+    private String parseFunctionName( String script, String scriptName )
     {
-        String scriptFile = method.getDeclaringClass().getName().replace( '.', File.separatorChar ) + "." + method.getName() + ".js";
-        URL scriptUrl = method.getDeclaringClass().getClassLoader().getResource( scriptFile );
+        // TODO optimize with hardcoded parser??
+        StringTokenizer st = new StringTokenizer( script, " \t\n\r\f(){}", false );
+        if( ! st.hasMoreTokens() )
+            throw new ScriptException( "The word \"function\" was not found in script: " + scriptName );
+        String fx = st.nextToken();
+        if( ! "function".equals( fx ) )
+            throw new ScriptException( "The word \"function\" was not found in script: " + scriptName );
+        if( ! st.hasMoreTokens() )
+            throw new ScriptException( "Invalid syntax in: " + scriptName + "\n No function name." );
+        return st.nextToken();
+    }
 
-        return scriptUrl;
+    /** Returns ONE function, minus comments.
+     *
+     * @param scriptReader The Reader of the script
+     * @return A ScriptFragment containing the Script text for the function, and how many lines it is.
+     * @throws IOException If a problem in the Reader occurs.
+     */
+    private ScriptFragment extractFunction( Reader scriptReader )
+        throws IOException
+    {
+        ScriptFragment fragment = new ScriptFragment();
+        boolean inString = false;
+        boolean inChar = false;
+        boolean escaped = false;
+        boolean lineComment = false;
+        boolean blockComment = false;
+        char lastCh = '\0';
+        int braceCounter = 0;
+        boolean notStarted = true;
+        int b = scriptReader.read();
+        int skip = 0;
+        while( b != -1 && ( notStarted || braceCounter > 0 ) )
+        {
+            char ch = (char) b;
+            if( !blockComment && !lineComment )
+            {
+                fragment.script = fragment.script + ch;
+                if( !escaped )
+                {
+                    if( !inString && !inChar )
+                    {
+                        if( ch == '{' )
+                        {
+                            braceCounter++;
+                            notStarted = false;
+                        }
+                        if( ch == '}' )
+                        {
+                            braceCounter--;
+                        }
+                    }
+                    if( ch == '\"' )
+                    {
+                        inString = !inString;
+                    }
+                    if( ch == '\'' )
+                    {
+                        inChar = !inChar;
+                    }
+                    if( ch == '\\' )
+                    {
+                        escaped = true;
+                    }
+                    if( ch == '\n' )
+                    {
+                        fragment.numberOfLines++;
+                    }
+                    if( ch == '/' && lastCh == '/' )
+                    {
+                        lineComment = true;
+                        fragment.script = fragment.script.substring( 0, fragment.script.length()-2 );
+                    }
+                    if( ch == '*' && lastCh == '/' )
+                    {
+                        blockComment = true;
+                        fragment.script = fragment.script.substring( 0, fragment.script.length()-2 );
+                    }
+                }
+                else
+                {
+                    if( ch == 'u' )
+                    {
+                        skip = 4;
+                    }
+                    else if( skip > 0 )
+                    {
+                        skip--;
+                    }
+                    else
+                    {
+                        escaped = false;
+                    }
+                }
+            }
+            else
+            {
+                if( lineComment )
+                {
+                    if( ch == '\n' )
+                    {
+                        lineComment = false;
+                    }
+                }
+                if( blockComment )
+                {
+                    if( ch == '/' && lastCh == '*' )
+                    {
+                        blockComment = false;
+                    }
+                }
+            }
+            lastCh = ch;
+            b = scriptReader.read();
+        }
+        return fragment;
+    }
+
+    private static URL getFunctionResoure( Method method )
+    {
+        String scriptName = getScriptName( method );
+        Class<?> declaringClass = method.getDeclaringClass();
+        ClassLoader loader = declaringClass.getClassLoader();
+        return loader.getResource( scriptName );
+    }
+
+    private static String getScriptName( Method method )
+    {
+        Class<?> declaringClass = method.getDeclaringClass();
+        String classname = declaringClass.getName();
+        return classname.replace( '.', '/' ) + ".js";
+    }
+
+
+    private static class ScriptFragment
+    {
+        String script = "";
+        int numberOfLines = 0;
     }
 }
