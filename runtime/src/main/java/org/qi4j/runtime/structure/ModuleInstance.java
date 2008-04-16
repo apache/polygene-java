@@ -26,6 +26,10 @@ import org.qi4j.composite.MixinTypeNotAvailableException;
 import org.qi4j.composite.ObjectBuilder;
 import org.qi4j.composite.ObjectBuilderFactory;
 import org.qi4j.entity.UnitOfWorkFactory;
+import org.qi4j.property.ComputedPropertyInstance;
+import org.qi4j.property.GenericPropertyInfo;
+import org.qi4j.property.ImmutableProperty;
+import org.qi4j.property.PropertyInfo;
 import org.qi4j.runtime.entity.UnitOfWorkFactoryImpl;
 import org.qi4j.runtime.service.ServiceReferenceInstance;
 import org.qi4j.service.Activatable;
@@ -37,14 +41,29 @@ import org.qi4j.spi.injection.StructureContext;
 import org.qi4j.spi.structure.ModuleBinding;
 import org.qi4j.spi.structure.ModuleModel;
 import org.qi4j.spi.structure.ModuleResolution;
+import org.qi4j.structure.Module;
 
 /**
- * TODO
+ * Instance of a Module.
  */
 public final class ModuleInstance
-    implements Activatable, ServiceLocator
+    implements Activatable, ServiceLocator, Module
 {
     static final ModuleInstance DUMMY = new ModuleInstance();
+
+    private static final PropertyInfo NAME_INFO;
+
+    static
+    {
+        try
+        {
+            NAME_INFO = new GenericPropertyInfo( Module.class.getMethod( "name" ) );
+        }
+        catch( NoSuchMethodException e )
+        {
+            throw new InternalError( "Qi4j Core Runtime codebase is corrupted. Contact Qi4j team: Module" );
+        }
+    }
 
     private ModuleContext moduleContext;
 
@@ -128,41 +147,6 @@ public final class ModuleInstance
         return structureContext;
     }
 
-    public <T> Class<? extends Composite> lookupCompositeType( Class<T> mixinType )
-    {
-        Class<? extends Composite> compositeType;
-        if( !Composite.class.isAssignableFrom( mixinType ) )
-        {
-            Class<? extends Composite> compositeType1;
-            ModuleInstance module = getModuleForMixinType( mixinType );
-            if( module == null )
-            {
-            }
-            ModuleContext moduleContext = module.getModuleContext();
-            compositeType1 = moduleContext.getCompositeForMixinType( mixinType );
-            if( compositeType1 == Composite.class )
-            {
-                // conflict detected earlier.
-                throw new AmbiguousMixinTypeException( mixinType );
-            }
-            if( compositeType1 == null )
-            {
-                ModuleBinding moduleBinding = moduleContext.getModuleBinding();
-                ModuleResolution moduleResolution = moduleBinding.getModuleResolution();
-                ModuleModel moduleModel = moduleResolution.getModuleModel();
-                String moduleModelName = moduleModel.getName();
-
-                throw new MixinTypeNotAvailableException( mixinType, moduleModelName );
-            }
-            compositeType = compositeType1;
-        }
-        else
-        {
-            compositeType = (Class<? extends Composite>) mixinType;
-        }
-        return compositeType;
-    }
-
     public <T> ServiceReference<T> lookupService( Class<T> serviceType )
     {
         List<ServiceReferenceInstance> serviceRefs = serviceReferences.get( serviceType );
@@ -203,40 +187,7 @@ public final class ModuleInstance
         return moduleForPublicObjects.get( objectType );
     }
 
-    public ModuleInstance getModuleForMixinType( Class<?> mixinType )
-    {
-        ModuleInstance module = moduleForPublicMixinTypes.get( mixinType );
-        if( module == null )
-        {
-            return this;
-        }
-        if( module == DUMMY )
-        {
-            return null;
-        }
-        return module;
-    }
-
-    public ModuleInstance getModuleForComposite( Class<? extends Composite> compositeType )
-    {
-        ModuleInstance realInstance = getModuleForPublicComposite( compositeType );
-        if( realInstance == null )
-        {
-            realInstance = this;
-        }
-        return realInstance;
-    }
-
-    public ModuleInstance getModuleForObject( Class objectType )
-    {
-        ModuleInstance realInstance = getModuleForPublicObject( objectType );
-        if( realInstance == null )
-        {
-            realInstance = this;
-        }
-        return realInstance;
-    }
-
+    // Activatable implementation
     public void activate() throws Exception
     {
         if( status == ActivationStatus.INACTIVE )
@@ -270,6 +221,99 @@ public final class ModuleInstance
             }
             setActivationStatus( ActivationStatus.INACTIVE );
         }
+    }
+
+    // Module implementation
+    public ImmutableProperty<String> name()
+    {
+        return new ComputedPropertyInstance<String>( NAME_INFO )
+        {
+            public String get()
+            {
+                return moduleContext.getModuleBinding().getModuleResolution().getModuleModel().getName();
+            }
+        };
+    }
+
+    public ModuleInstance moduleForMixinType( Class<?> mixinType )
+    {
+        ModuleInstance module = moduleForPublicMixinTypes.get( mixinType );
+        if( module == null )
+        {
+            return this;
+        }
+        if( module == DUMMY )
+        {
+            return null;
+        }
+        return module;
+    }
+
+    public ModuleInstance moduleForComposite( Class<? extends Composite> compositeType )
+    {
+        ModuleInstance realInstance = getModuleForPublicComposite( compositeType );
+        if( realInstance == null )
+        {
+            realInstance = this;
+        }
+        return realInstance;
+    }
+
+    public ModuleInstance moduleForObject( Class<?> objectType )
+    {
+        ModuleInstance realInstance = getModuleForPublicObject( objectType );
+        if( realInstance == null )
+        {
+            realInstance = this;
+        }
+        return realInstance;
+    }
+
+    public Class<? extends Composite> lookupCompositeType( Class<?> mixinType )
+    {
+        Class<? extends Composite> compositeType;
+        if( !Composite.class.isAssignableFrom( mixinType ) )
+        {
+            Class<? extends Composite> compositeType1;
+            ModuleInstance module = moduleForMixinType( mixinType );
+            if( module == null )
+            {
+            }
+            ModuleContext moduleContext = module.getModuleContext();
+            compositeType1 = moduleContext.getCompositeForMixinType( mixinType );
+            if( compositeType1 == Composite.class )
+            {
+                // conflict detected earlier.
+                throw new AmbiguousMixinTypeException( mixinType );
+            }
+            if( compositeType1 == null )
+            {
+                ModuleBinding moduleBinding = moduleContext.getModuleBinding();
+                ModuleResolution moduleResolution = moduleBinding.getModuleResolution();
+                ModuleModel moduleModel = moduleResolution.getModuleModel();
+                String moduleModelName = moduleModel.getName();
+
+                throw new MixinTypeNotAvailableException( mixinType, moduleModelName );
+            }
+            compositeType = compositeType1;
+        }
+        else
+        {
+            compositeType = (Class<? extends Composite>) mixinType;
+        }
+        return compositeType;
+    }
+
+    public boolean isPublic( Class<?> compositeOrObject )
+    {
+
+
+        return false;
+    }
+
+    public Class lookupClass( String className )
+    {
+        return moduleContext.getModuleBinding().lookupClass( className );
     }
 
     private void setActivationStatus( ActivationStatus newStatus )

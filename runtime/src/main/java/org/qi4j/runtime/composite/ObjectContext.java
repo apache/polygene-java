@@ -23,7 +23,6 @@ import org.qi4j.spi.composite.ObjectBinding;
 import org.qi4j.spi.composite.ObjectModel;
 import org.qi4j.spi.composite.ObjectResolution;
 import org.qi4j.spi.injection.ObjectInjectionContext;
-import org.qi4j.spi.structure.ModuleBinding;
 
 /**
  * TODO
@@ -32,16 +31,14 @@ public final class ObjectContext
 {
     private ObjectBinding objectBinding;
     private InstanceFactory instanceFactory;
-    private ModuleBinding moduleBinding;
 
     private Map<String, PropertyContext> propertyContexts;
     private Map<String, AssociationContext> associationContexts;
 
-    public ObjectContext( ObjectBinding objectBinding, ModuleBinding moduleBinding, InstanceFactory instanceFactory, Map<String, PropertyContext> propertyContexts, Map<String, AssociationContext> associationContexts )
+    public ObjectContext( ObjectBinding objectBinding, InstanceFactory instanceFactory, Map<String, PropertyContext> propertyContexts, Map<String, AssociationContext> associationContexts )
     {
         this.associationContexts = associationContexts;
         this.propertyContexts = propertyContexts;
-        this.moduleBinding = moduleBinding;
         this.objectBinding = objectBinding;
         this.instanceFactory = instanceFactory;
     }
@@ -61,11 +58,6 @@ public final class ObjectContext
         return objectBinding;
     }
 
-    public ModuleBinding getModuleBinding()
-    {
-        return moduleBinding;
-    }
-
     public Iterable<PropertyContext> getPropertyContexts()
     {
         return propertyContexts.values();
@@ -80,7 +72,7 @@ public final class ObjectContext
     public Object newObjectInstance( ModuleInstance moduleInstance, Set<Object> uses )
     {
         ObjectInjectionContext objectInjectionContext = new ObjectInjectionContext( moduleInstance.getStructureContext(),
-                                                                                    moduleBinding,
+                                                                                    moduleInstance,
                                                                                     uses );
         Object objectInstance = instanceFactory.newInstance( objectBinding, objectInjectionContext );
 
@@ -91,7 +83,7 @@ public final class ObjectContext
     public void inject( Object instance, ModuleInstance moduleInstance, Set<Object> uses )
     {
         ObjectInjectionContext objectInjectionContext = new ObjectInjectionContext( moduleInstance.getStructureContext(),
-                                                                                    moduleBinding,
+                                                                                    moduleInstance,
                                                                                     uses );
         instanceFactory.inject( instance, objectBinding, objectInjectionContext );
     }

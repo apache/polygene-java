@@ -1,6 +1,6 @@
 package org.qi4j.spi.injection;
 
-import org.qi4j.spi.structure.ModuleBinding;
+import org.qi4j.structure.Module;
 
 /**
  * TODO
@@ -8,13 +8,13 @@ import org.qi4j.spi.structure.ModuleBinding;
 public abstract class InjectionContext
 {
     private StructureContext structureContext;
-    private ModuleBinding moduleBinding;
+    private Module module;
 
     public InjectionContext( StructureContext structureContext,
-                             ModuleBinding moduleBinding )
+                             Module module )
     {
         this.structureContext = structureContext;
-        this.moduleBinding = moduleBinding;
+        this.module = module;
     }
 
     public StructureContext getStructureContext()
@@ -22,8 +22,8 @@ public abstract class InjectionContext
         return structureContext;
     }
 
-    public ModuleBinding getModuleBinding()
+    public Module getModule()
     {
-        return moduleBinding;
+        return module;
     }
 }

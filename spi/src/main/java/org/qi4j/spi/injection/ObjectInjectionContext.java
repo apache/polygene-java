@@ -1,6 +1,6 @@
 package org.qi4j.spi.injection;
 
-import org.qi4j.spi.structure.ModuleBinding;
+import org.qi4j.structure.Module;
 
 /**
  * TODO
@@ -10,10 +10,10 @@ public final class ObjectInjectionContext extends InjectionContext
     private Iterable<Object> uses;
 
     public ObjectInjectionContext( StructureContext structureContext,
-                                   ModuleBinding moduleBinding,
+                                   Module module,
                                    Iterable<Object> uses )
     {
-        super( structureContext, moduleBinding );
+        super( structureContext, module );
         this.uses = uses;
     }
 

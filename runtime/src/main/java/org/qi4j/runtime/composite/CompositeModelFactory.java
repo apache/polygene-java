@@ -46,6 +46,7 @@ import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.association.AbstractAssociation;
 import org.qi4j.property.Property;
 import org.qi4j.runtime.entity.EntityMixin;
+import org.qi4j.runtime.util.ListMap;
 import org.qi4j.spi.composite.CompositeMethodModel;
 import org.qi4j.spi.composite.CompositeModel;
 import org.qi4j.spi.composite.ConcernModel;
@@ -117,16 +118,10 @@ public final class CompositeModelFactory
         Iterable<ConstraintModel> constraintModels = getConstraintDeclarations( compositeClass );
 
         // Compute mapping annotation-><list of constraint implementations for different parameter types>
-        Map<Class<? extends Annotation>, List<ConstraintModel>> constraintModelMappings = new HashMap<Class<? extends Annotation>, List<ConstraintModel>>();
+        ListMap<Class<? extends Annotation>, ConstraintModel> constraintModelMappings = new ListMap<Class<? extends Annotation>, ConstraintModel>();
         for( ConstraintModel constraintModel : constraintModels )
         {
-            List<ConstraintModel> constraintModelList = constraintModelMappings.get( constraintModel.getAnnotationType() );
-            if( constraintModelList == null )
-            {
-                constraintModelList = new ArrayList<ConstraintModel>();
-                constraintModelMappings.put( constraintModel.getAnnotationType(), constraintModelList );
-            }
-            constraintModelList.add( constraintModel );
+            constraintModelMappings.add( constraintModel.getAnnotationType(), constraintModel );
         }
 
         List<PropertyModel> properties = new ArrayList<PropertyModel>();
@@ -295,10 +290,7 @@ public final class CompositeModelFactory
             Class<? extends Constraint>[] constraintImplementations = constraintsAnnotation.value();
             for( Class<? extends Constraint> constraintImplementation : constraintImplementations )
             {
-                Class annotationType = (Class) ( (ParameterizedType) constraintImplementation.getGenericInterfaces()[ 0 ] ).getActualTypeArguments()[ 0 ];
-                Class valueType = (Class) ( (ParameterizedType) constraintImplementation.getGenericInterfaces()[ 0 ] ).getActualTypeArguments()[ 1 ];
-
-                constraintModels.add( new ConstraintModel( constraintImplementation, annotationType, valueType, compositeClass ) );
+                constraintModels.add( new ConstraintModel( constraintImplementation, compositeClass ) );
             }
 
         }

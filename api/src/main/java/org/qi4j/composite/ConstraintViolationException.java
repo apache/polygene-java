@@ -181,6 +181,11 @@ public class ConstraintViolationException extends IllegalArgumentException
         return localizedMessage();
     }
 
+    @Override public String getMessage()
+    {
+        return localizedMessage();
+    }
+
     public Method method()
     {
         return method;

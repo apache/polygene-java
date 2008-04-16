@@ -15,6 +15,7 @@
 package org.qi4j.spi.composite;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.ParameterizedType;
 import org.qi4j.composite.Constraint;
 
 /**
@@ -29,12 +30,12 @@ public final class ConstraintModel<T>
     private Class<T> valueType;
     private Class declaredBy;
 
-    public ConstraintModel( Class<? extends Constraint> constraintType, Class<? extends Annotation> annotationType, Class<T> valueType, Class declaredBy )
+    public ConstraintModel( Class<? extends Constraint> constraintType, Class declaredBy )
     {
         this.declaredBy = declaredBy;
         this.constraintType = constraintType;
-        this.annotationType = annotationType;
-        this.valueType = valueType;
+        annotationType = (Class) ( (ParameterizedType) constraintType.getGenericInterfaces()[ 0 ] ).getActualTypeArguments()[ 0 ];
+        valueType = (Class) ( (ParameterizedType) constraintType.getGenericInterfaces()[ 0 ] ).getActualTypeArguments()[ 1 ];
     }
 
     public Class<? extends Constraint> getConstraintType()

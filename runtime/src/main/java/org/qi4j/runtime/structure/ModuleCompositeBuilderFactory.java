@@ -18,9 +18,7 @@ import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.InvalidApplicationException;
-import org.qi4j.composite.AmbiguousMixinTypeException;
-import org.qi4j.composite.MixinTypeNotAvailableException;
-import static org.qi4j.composite.NullArgumentException.validateNotNull;
+import static org.qi4j.composite.NullArgumentException.*;
 import org.qi4j.runtime.composite.CompositeContext;
 import org.qi4j.spi.structure.ModuleBinding;
 import org.qi4j.spi.structure.ModuleModel;
@@ -44,7 +42,7 @@ public class ModuleCompositeBuilderFactory
         validateNotNull( "mixinType", mixinType );
         Class<? extends Composite> compositeType = moduleInstance.lookupCompositeType( mixinType );
         // Find which Module handles this Composite type
-        ModuleInstance compositeModuleInstance = moduleInstance.getModuleForComposite( compositeType );
+        ModuleInstance compositeModuleInstance = moduleInstance.moduleForComposite( compositeType );
 
         // Get the Composite context
         ModuleContext context = compositeModuleInstance.getModuleContext();

@@ -505,7 +505,7 @@ public final class ApplicationBuilder
                 associationContexts.put( associationModel.getQualifiedName(), associationContext );
             }
 
-            ObjectContext objectContext = new ObjectContext( entry.getValue(), moduleBinding, runtime.getInstanceFactory(), propertyContexts, associationContexts );
+            ObjectContext objectContext = new ObjectContext( entry.getValue(), runtime.getInstanceFactory(), propertyContexts, associationContexts );
             instantiableObjectContexts.put( entry.getKey(), objectContext );
         }
 

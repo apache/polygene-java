@@ -2,7 +2,7 @@ package org.qi4j.spi.injection;
 
 import java.lang.reflect.InvocationHandler;
 import org.qi4j.spi.composite.CompositeBinding;
-import org.qi4j.spi.structure.ModuleBinding;
+import org.qi4j.structure.Module;
 
 /**
  * TODO
@@ -13,11 +13,11 @@ public class FragmentInjectionContext extends InjectionContext
     private InvocationHandler This;
 
     public FragmentInjectionContext( StructureContext structureContext,
-                                     ModuleBinding moduleBinding,
+                                     Module module,
                                      CompositeBinding compositeBinding,
                                      InvocationHandler This )
     {
-        super( structureContext, moduleBinding );
+        super( structureContext, module );
         this.compositeBinding = compositeBinding;
         this.This = This;
     }

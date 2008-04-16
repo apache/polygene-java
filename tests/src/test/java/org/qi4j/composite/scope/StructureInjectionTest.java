@@ -28,7 +28,7 @@ import org.qi4j.entity.UnitOfWorkFactory;
 import org.qi4j.runtime.Qi4jRuntime;
 import org.qi4j.service.ServiceLocator;
 import org.qi4j.spi.Qi4jSPI;
-import org.qi4j.spi.structure.ModuleBinding;
+import org.qi4j.structure.Module;
 import org.qi4j.test.AbstractQi4jTest;
 
 /**
@@ -89,7 +89,7 @@ public class StructureInjectionTest
     public void injectedStructureForModuleBinding()
     {
         StructureInjectionComposite sic = compositeBuilderFactory.newComposite( StructureInjectionComposite.class );
-        assertThat( "Injected ModuleBinding", sic.getModuleBinding(), is( notNullValue() ) );
+        assertThat( "Injected Module", sic.getModule(), is( notNullValue() ) );
     }
 
     /**
@@ -134,7 +134,7 @@ public class StructureInjectionTest
 
         public ServiceLocator getServiceLocator();
 
-        public ModuleBinding getModuleBinding();
+        public Module getModule();
 
         public Qi4j getQi4j();
 
@@ -150,7 +150,7 @@ public class StructureInjectionTest
         @Structure ObjectBuilderFactory objectBuilderFactory;
         @Structure UnitOfWorkFactory unitOfWorkFactory;
         @Structure ServiceLocator serviceLocator;
-        @Structure ModuleBinding moduleBinding;
+        @Structure Module module;
 
         @Structure Qi4j qi4j;
         @Structure Qi4jSPI qi4jSpi;
@@ -177,9 +177,9 @@ public class StructureInjectionTest
             return serviceLocator;
         }
 
-        public ModuleBinding getModuleBinding()
+        public Module getModule()
         {
-            return moduleBinding;
+            return module;
         }
 
         public Qi4j getQi4j()

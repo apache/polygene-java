@@ -17,28 +17,36 @@
  */
 package org.qi4j.constraints;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.Collection;
 import static org.junit.Assert.*;
 import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
+import org.qi4j.composite.Constraint;
+import org.qi4j.composite.ConstraintDeclaration;
 import org.qi4j.composite.ConstraintViolation;
 import org.qi4j.composite.Constraints;
 import org.qi4j.composite.Mixins;
 import org.qi4j.composite.ParameterConstraintViolationException;
-import org.qi4j.library.framework.constraint.NotNullConstraint;
-import org.qi4j.library.framework.constraint.annotation.NotNull;
 import org.qi4j.test.AbstractQi4jTest;
 
 
 public class ConstraintsTest extends AbstractQi4jTest
 {
+    public void assemble( ModuleAssembly module ) throws AssemblyException
+    {
+        module.addComposites( MyOneComposite.class );
+        module.addComposites( MyOneComposite2.class );
+    }
+
     @Test
-    public void testSingleConstraintOnMethod()
+    public void givenCompositeWithConstraintsWhenInstantiatedThenUseDeclarationOnComposite()
         throws Throwable
     {
-        MyOne my = compositeBuilderFactory.newComposite( MyOne.class );
+        MyOne my = compositeBuilderFactory.newComposite( MyOneComposite.class );
         my.doSomething( "habba" );
         try
         {
@@ -53,20 +61,39 @@ public class ConstraintsTest extends AbstractQi4jTest
         }
     }
 
-    public void assemble( ModuleAssembly module ) throws AssemblyException
+    @Test
+    public void givenCompositeWithoutConstraintsWhenInstantiatedThenUseDeclarationOnConstraint()
+        throws Throwable
     {
-        module.addComposites( MyOneComposite.class );
+        MyOne my = compositeBuilderFactory.newComposite( MyOneComposite.class );
+        my.doSomething( "habba" );
+        try
+        {
+            my.doSomething( null );
+            fail( "Should have thrown a ParameterConstraintViolationException." );
+        }
+        catch( ParameterConstraintViolationException e )
+        {
+            Collection<ConstraintViolation> violations = e.constraintViolations();
+            assertEquals( 1, violations.size() );
+            assertEquals( MyOneComposite.class.getName(), e.compositeType() );
+        }
     }
 
-    @Constraints( NotNullConstraint.class )
+    @Constraints( TestConstraintImpl.class )
     @Mixins( MyOneMixin.class )
     public interface MyOneComposite extends MyOne, Composite
     {
     }
 
+    @Mixins( MyOneMixin.class )
+    public interface MyOneComposite2 extends MyOne, Composite
+    {
+    }
+
     public interface MyOne
     {
-        void doSomething( @NotNull String abc );
+        void doSomething( @TestConstraint String abc );
     }
 
     public static class MyOneMixin
@@ -79,6 +106,22 @@ public class ConstraintsTest extends AbstractQi4jTest
             {
                 throw new NullPointerException();
             }
+        }
+    }
+
+    @ConstraintDeclaration
+    @Retention( RetentionPolicy.RUNTIME )
+    @Constraints( TestConstraintImpl.class )
+    public @interface TestConstraint
+    {
+    }
+
+    public static class TestConstraintImpl
+        implements Constraint<TestConstraint, Object>
+    {
+        public boolean isValid( TestConstraint annotation, Object value ) throws NullPointerException
+        {
+            return value != null;
         }
     }
 }

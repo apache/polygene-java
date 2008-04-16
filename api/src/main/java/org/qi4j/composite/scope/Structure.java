@@ -30,7 +30,7 @@ import org.qi4j.injection.InjectionScope;
  * &#64;Structure ObjectBuilderFactory obf
  * &#64;Structure UnitOfWorkFactory uowf
  * &#64;Structure ServiceLocator serviceLocator
- * &#64;Structure ModuleBinding moduleBinding
+ * &#64;Structure Module module
  * &#64;Structure Qi4j qi4j
  * &#64;Structure Qi4jSPI qi4jSpi
  * &#64;Structure Qi4jRuntime qi4jRuntime

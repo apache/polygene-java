@@ -18,7 +18,7 @@ package org.qi4j.spi.entity;
 
 import org.qi4j.spi.serialization.EntityId;
 import org.qi4j.spi.structure.CompositeDescriptor;
-import org.qi4j.spi.structure.ModuleBinding;
+import org.qi4j.structure.Module;
 
 /**
  * Interface that must be implemented by store for
@@ -60,11 +60,11 @@ public interface EntityStore
      * @param newStates
      * @param loadedStates
      * @param removedStates
-     * @param moduleBinding
+     * @param module
      * @return an implementation of StateCommitter
      * @throws EntityStoreException if the state could not be sent to the datastore
      */
-    StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, Iterable<EntityId> removedStates, ModuleBinding moduleBinding )
+    StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, Iterable<EntityId> removedStates, Module module )
         throws EntityStoreException;
 
 //    EntityIterator iterator();

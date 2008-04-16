@@ -27,7 +27,7 @@ import org.qi4j.composite.scope.Service;
 /**
  * TODO
  */
-public class ServiceInvocationPerformanceTest
+public abstract class ServiceInvocationPerformanceTest
     extends TestCase
 {
     @Service ServiceInvocationPerformanceTest.MyService service;

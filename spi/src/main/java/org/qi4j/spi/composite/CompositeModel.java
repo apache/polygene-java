@@ -15,6 +15,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,6 +25,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
 import org.qi4j.composite.Composite;
+import org.qi4j.composite.Constraint;
+import org.qi4j.composite.Constraints;
 import org.qi4j.spi.entity.association.AssociationModel;
 import org.qi4j.spi.injection.InjectionModel;
 import org.qi4j.spi.property.PropertyModel;
@@ -195,12 +198,27 @@ public final class CompositeModel
         return impls;
     }
 
-    public ConstraintModel getConstraintModel( Class<? extends Annotation> annotationType, Type parameterType )
+    public ConstraintModel getConstraintModel( Class<? extends Annotation> annotationType, Type valueType )
     {
         Iterable<ConstraintModel> possibleConstraintModels = constraintModelMappings.get( annotationType );
 
         if( possibleConstraintModels == null )
         {
+            // Check annotation type for Constraints declaration
+            Constraints constraintsAnnotation = annotationType.getAnnotation( Constraints.class );
+            if( constraintsAnnotation != null )
+            {
+                Class<? extends Constraint>[] constraintImplementations = constraintsAnnotation.value();
+                for( Class<? extends Constraint> constraintImplementation : constraintImplementations )
+                {
+                    Class implValueType = (Class) ( (ParameterizedType) constraintImplementation.getGenericInterfaces()[ 0 ] ).getActualTypeArguments()[ 1 ];
+                    if( implValueType.isAssignableFrom( (Class<?>) valueType ) )
+                    {
+                        return new ConstraintModel( constraintImplementation, constraintImplementation );
+                    }
+                }
+            }
+
             return null;
         }
 
@@ -208,20 +226,20 @@ public final class CompositeModel
         {
             for( ConstraintModel possibleConstraintModel : possibleConstraintModels )
             {
-                if( possibleConstraintModel.getValueType().equals( parameterType ) )
+                if( possibleConstraintModel.getValueType().equals( valueType ) )
                 {
                     return possibleConstraintModel;
                 }
             }
 
-            if( parameterType.equals( Object.class ) )
+            if( valueType.equals( Object.class ) )
             {
                 return null; // No suitable constraint implementation found for this annotation
             }
 
-            if( parameterType instanceof Class )
+            if( valueType instanceof Class )
             {
-                parameterType = ( (Class) parameterType ).getSuperclass(); // Try super-class
+                valueType = ( (Class) valueType ).getSuperclass(); // Try super-class
             }
             else
             {

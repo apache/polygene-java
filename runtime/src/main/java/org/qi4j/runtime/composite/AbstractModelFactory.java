@@ -4,7 +4,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -224,10 +223,7 @@ public abstract class AbstractModelFactory
                     Class<? extends Constraint>[] constraintImplementations = constraintsAnnotation.value();
                     for( Class<? extends Constraint> constraintImplementation : constraintImplementations )
                     {
-                        Class annotationType = (Class) ( (ParameterizedType) constraintImplementation.getGenericInterfaces()[ 0 ] ).getActualTypeArguments()[ 0 ];
-                        Class valueType = (Class) ( (ParameterizedType) constraintImplementation.getGenericInterfaces()[ 0 ] ).getActualTypeArguments()[ 1 ];
-
-                        constraintModels.add( new ConstraintModel( constraintImplementation, annotationType, valueType, annotation.annotationType() ) );
+                        constraintModels.add( new ConstraintModel( constraintImplementation, annotation.annotationType() ) );
                     }
                 }
                 ConstraintDeclarationModel constraintDeclarationModel = new ConstraintDeclarationModel( annotation.annotationType(), constraintModels );

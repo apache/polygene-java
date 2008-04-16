@@ -32,7 +32,7 @@ import org.qi4j.spi.injection.InjectionProviderFactory;
 import org.qi4j.spi.injection.InjectionResolution;
 import org.qi4j.spi.injection.InvalidInjectionException;
 import org.qi4j.spi.injection.StructureContext;
-import org.qi4j.spi.structure.ModuleBinding;
+import org.qi4j.structure.Module;
 
 public final class StructureInjectionProviderFactory
     implements InjectionProviderFactory
@@ -82,9 +82,9 @@ public final class StructureInjectionProviderFactory
             {
                 return structureContext.getServiceLocator();
             }
-            else if( type.equals( ModuleBinding.class ) )
+            else if( type.equals( Module.class ) )
             {
-                return context.getModuleBinding();
+                return context.getModule();
             }
             else if( type.equals( Qi4j.class ) || type.equals( Qi4jSPI.class ) || type.equals( Qi4jRuntime.class ) )
             {

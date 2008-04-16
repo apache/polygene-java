@@ -48,7 +48,7 @@ import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.serialization.EntityId;
 import org.qi4j.spi.structure.CompositeDescriptor;
-import org.qi4j.spi.structure.ModuleBinding;
+import org.qi4j.structure.Module;
 
 public final class UnitOfWorkInstance
     implements UnitOfWork
@@ -419,7 +419,7 @@ public final class UnitOfWorkInstance
 
             try
             {
-                committers.add( entityStore.prepare( completion.getNewState(), completion.getUpdatedState(), completion.getRemovedState(), moduleInstance.getModuleContext().getModuleBinding() ) );
+                committers.add( entityStore.prepare( completion.getNewState(), completion.getUpdatedState(), completion.getRemovedState(), moduleInstance ) );
             }
             catch( EntityStoreException e )
             {
@@ -576,7 +576,7 @@ public final class UnitOfWorkInstance
             return unitOfWorkEntityState;
         }
 
-        public StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, Iterable<EntityId> removedStates, ModuleBinding moduleBinding ) throws EntityStoreException
+        public StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, Iterable<EntityId> removedStates, Module module ) throws EntityStoreException
         {
             // Create new entity and transfer state
             for( EntityState newState : newStates )
