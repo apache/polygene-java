@@ -18,6 +18,8 @@
  */
 package org.qi4j.property;
 
+import java.lang.reflect.Method;
+
 /**
  * {@code ComputedPropertyInstance} is the base implementation of {@link Property}.
  *
@@ -39,6 +41,11 @@ public abstract class ComputedPropertyInstance<T>
         throws IllegalArgumentException
     {
         super( aPropertyInfo );
+    }
+
+    protected ComputedPropertyInstance( Method accessor )
+    {
+        super( new GenericPropertyInfo( accessor ) );
     }
 
     /**
