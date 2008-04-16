@@ -7,7 +7,7 @@ import org.qi4j.test.entity.AbstractEntityStorePerformanceTest;
 /**
  * Performance test for MemoryEntityStoreComposite
  */
-public class MemoryEntityStorePerformanceTest
+public abstract class MemoryEntityStorePerformanceTest
     extends AbstractEntityStorePerformanceTest
 {
     public void assemble( ModuleAssembly module ) throws AssemblyException

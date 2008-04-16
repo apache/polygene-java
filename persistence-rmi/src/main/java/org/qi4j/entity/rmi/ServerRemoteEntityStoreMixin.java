@@ -33,14 +33,13 @@ import org.qi4j.composite.scope.Uses;
 import org.qi4j.library.framework.locking.WriteLock;
 import org.qi4j.service.Activatable;
 import org.qi4j.service.ServiceDescriptor;
-import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStateInstance;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.serialization.EntityId;
-import org.qi4j.spi.structure.ModuleBinding;
+import org.qi4j.structure.Module;
 
 /**
  * RMI server implementation of EntityStore
@@ -51,7 +50,7 @@ public class ServerRemoteEntityStoreMixin
     private @Uses ServiceDescriptor descriptor;
     private @This RemoteEntityStore remote;
     private @This ReadWriteLock lock;
-    private @Structure ModuleBinding moduleBinding;
+    private @Structure Module module;
     private @Service EntityStore entityStore;
     private @Service Registry registry;
 
@@ -72,11 +71,10 @@ public class ServerRemoteEntityStoreMixin
     @WriteLock
     public EntityState getEntityState( EntityId identity )
     {
-        Class compositeType = moduleBinding.lookupClass( identity.getCompositeType() );
+        Class compositeType = module.lookupClass( identity.getCompositeType() );
 
-        CompositeBinding binding = moduleBinding.getCompositeBinding( compositeType );
-
-        EntityState state = entityStore.getEntityState( binding.getCompositeResolution().getCompositeDescriptor(), identity );
+        // TODO How should we get ahold of the CompositeDescriptor?
+        EntityState state = entityStore.getEntityState( null, identity );
 
         // Copy properties
         Map<String, Object> properties = new HashMap<String, Object>();
@@ -125,7 +123,7 @@ public class ServerRemoteEntityStoreMixin
         lock.writeLock().lock();
         try
         {
-            entityStore.prepare( newStates, loadedStates, removedStates, moduleBinding ).commit();
+            entityStore.prepare( newStates, loadedStates, removedStates, module ).commit();
             return null;
         }
         catch( EntityStoreException e )

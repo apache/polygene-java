@@ -41,7 +41,7 @@ import org.qi4j.spi.serialization.EntityId;
 import org.qi4j.spi.serialization.SerializableState;
 import org.qi4j.spi.serialization.SerializedObject;
 import org.qi4j.spi.structure.CompositeDescriptor;
-import org.qi4j.spi.structure.ModuleBinding;
+import org.qi4j.structure.Module;
 
 /**
  * JGroups implementation of EntityStore
@@ -105,7 +105,7 @@ public class JGroupsSerializationEntityStoreMixin
     }
 
 
-    public StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, final Iterable<EntityId> removedStates, ModuleBinding moduleBinding ) throws EntityStoreException
+    public StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, final Iterable<EntityId> removedStates, Module module ) throws EntityStoreException
     {
         lock.writeLock().lock();
         try

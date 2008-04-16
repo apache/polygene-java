@@ -12,7 +12,7 @@ import org.qi4j.test.entity.AbstractEntityStorePerformanceTest;
 /**
  * Performance test for JdbmEntityStoreComposite
  */
-public class JdbmEntityStorePerformanceTest
+public abstract class JdbmEntityStorePerformanceTest
     extends AbstractEntityStorePerformanceTest
 {
     public void assemble( ModuleAssembly module ) throws AssemblyException

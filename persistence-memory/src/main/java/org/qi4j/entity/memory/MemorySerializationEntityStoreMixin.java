@@ -16,7 +16,7 @@ import org.qi4j.spi.serialization.EntityId;
 import org.qi4j.spi.serialization.SerializableState;
 import org.qi4j.spi.serialization.SerializedObject;
 import org.qi4j.spi.structure.CompositeDescriptor;
-import org.qi4j.spi.structure.ModuleBinding;
+import org.qi4j.structure.Module;
 
 /**
  * In-memory implementation of EntityStore
@@ -88,7 +88,7 @@ public class MemorySerializationEntityStoreMixin
         }
     }
 
-    public StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, final Iterable<EntityId> removedStates, ModuleBinding moduleBinding ) throws EntityStoreException
+    public StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, final Iterable<EntityId> removedStates, Module module ) throws EntityStoreException
     {
         final Map<EntityId, SerializedObject<SerializableState>> updatedState = new HashMap<EntityId, SerializedObject<SerializableState>>();
 

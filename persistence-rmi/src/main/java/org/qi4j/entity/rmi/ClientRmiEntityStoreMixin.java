@@ -28,7 +28,7 @@ import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.serialization.EntityId;
 import org.qi4j.spi.structure.CompositeDescriptor;
-import org.qi4j.spi.structure.ModuleBinding;
+import org.qi4j.structure.Module;
 
 /**
  * RMI client implementation of Entity
@@ -80,7 +80,7 @@ public class ClientRmiEntityStoreMixin
     }
 
     @WriteLock
-    public StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, Iterable<EntityId> removedStates, ModuleBinding moduleBinding ) throws EntityStoreException
+    public StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, Iterable<EntityId> removedStates, Module module ) throws EntityStoreException
     {
         try
         {

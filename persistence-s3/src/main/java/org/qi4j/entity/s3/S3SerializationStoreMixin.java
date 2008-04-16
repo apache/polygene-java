@@ -44,7 +44,7 @@ import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.serialization.EntityId;
 import org.qi4j.spi.serialization.SerializableState;
 import org.qi4j.spi.structure.CompositeDescriptor;
-import org.qi4j.spi.structure.ModuleBinding;
+import org.qi4j.structure.Module;
 
 /**
  * Amazon S3 implementation of SerializationStore.
@@ -134,7 +134,7 @@ public class S3SerializationStoreMixin
         }
     }
 
-    public StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, Iterable<EntityId> removedStates, ModuleBinding moduleBinding ) throws EntityStoreException
+    public StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, Iterable<EntityId> removedStates, Module module ) throws EntityStoreException
     {
         lock.writeLock().lock();
 
