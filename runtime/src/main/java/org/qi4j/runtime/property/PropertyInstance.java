@@ -14,7 +14,7 @@
  */
 package org.qi4j.runtime.property;
 
-import org.qi4j.property.ComputedPropertyInstance;
+import org.qi4j.property.AbstractPropertyInstance;
 import org.qi4j.property.PropertyInfo;
 import org.qi4j.runtime.composite.ConstraintsInstance;
 
@@ -24,7 +24,7 @@ import org.qi4j.runtime.composite.ConstraintsInstance;
  * @author Rickard Öberg
  * @since 0.1.0
  */
-public class PropertyInstance<T> extends ComputedPropertyInstance<T>
+public class PropertyInstance<T> extends AbstractPropertyInstance<T>
 {
     protected T value;
 
