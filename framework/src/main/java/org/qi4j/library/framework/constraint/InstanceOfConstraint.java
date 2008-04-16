@@ -27,7 +27,13 @@ public class InstanceOfConstraint
     {
         if( parameter != null )
         {
-            return annotation.value().isInstance( parameter );
+            for( Class aClass : annotation.value() )
+            {
+                if( !aClass.isInstance( parameter ) )
+                {
+                    return false;
+                }
+            }
         }
 
         return true;

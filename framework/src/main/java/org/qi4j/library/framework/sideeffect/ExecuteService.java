@@ -12,20 +12,18 @@
  *
  */
 
-package org.qi4j.library.framework;
+package org.qi4j.library.framework.sideeffect;
 
+import java.util.concurrent.Executor;
 import org.qi4j.composite.Mixins;
-import org.qi4j.entity.association.AssociationMixin;
-import org.qi4j.library.framework.properties.PropertiesMixin;
-import org.qi4j.library.framework.scripting.JRubyMixin;
-import org.qi4j.library.framework.scripting.JavaScriptMixin;
-import org.qi4j.property.PropertyMixin;
+import org.qi4j.service.Activatable;
+import org.qi4j.service.ServiceComposite;
 
 /**
- * Adds all the various generic mixins that can be used to implement
- * Composite methods.
+ * TODO
  */
-@Mixins( { PropertyMixin.class, AssociationMixin.class, PropertiesMixin.class, JavaScriptMixin.class, JRubyMixin.class, RMIMixin.class, NoopMixin.class } )
-public interface GenericMixinsAbstractComposite
+@Mixins( ExecutorMixin.class )
+public interface ExecuteService
+    extends Executor, Activatable, ServiceComposite
 {
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Rickard Ã–berg. All Rights Reserved.
+ * Copyright (c) 2008, Rickard …berg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,18 +12,19 @@
  *
  */
 
-package org.qi4j.library.framework.constraint.annotation;
+package org.qi4j.library.framework.sideeffect;
 
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import org.qi4j.composite.ConstraintDeclaration;
-import org.qi4j.composite.Constraints;
-import org.qi4j.library.framework.constraint.InstanceOfConstraint;
+import java.lang.annotation.Target;
 
-@ConstraintDeclaration
+/**
+ * TODO
+ */
 @Retention( RetentionPolicy.RUNTIME )
-@Constraints( InstanceOfConstraint.class )
-public @interface InstanceOf
+@Target( { ElementType.METHOD } )
+public @interface ExecuteSideEffect
 {
-    Class[] value();
+    Class value();
 }

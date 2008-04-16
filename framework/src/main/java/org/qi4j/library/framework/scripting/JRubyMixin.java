@@ -22,8 +22,17 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import org.jruby.Ruby;
+import org.jruby.RubyClass;
+import org.jruby.RubyModule;
+import org.jruby.RubyNameError;
 import org.jruby.RubyObjectAdapter;
+import org.jruby.exceptions.RaiseException;
+import org.jruby.internal.runtime.methods.CallConfiguration;
+import org.jruby.internal.runtime.methods.DynamicMethod;
 import org.jruby.javasupport.JavaEmbedUtils;
+import org.jruby.runtime.Block;
+import org.jruby.runtime.ThreadContext;
+import org.jruby.runtime.Visibility;
 import org.jruby.runtime.builtin.IRubyObject;
 import org.qi4j.composite.AppliesTo;
 import org.qi4j.composite.AppliesToFilter;
@@ -31,6 +40,7 @@ import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.scope.Structure;
 import org.qi4j.composite.scope.This;
+import org.qi4j.property.Property;
 
 /**
  * Generic mixin that implements interfaces by delegating to Ruby functions
@@ -50,7 +60,6 @@ public class JRubyMixin
     private Ruby runtime;
 
     private Map<Class, IRubyObject> rubyObjects = new HashMap<Class, IRubyObject>();
-    private RubyObjectAdapter rubyObjectAdapter;
 
     public static class AppliesTo
         implements AppliesToFilter
@@ -74,46 +83,88 @@ public class JRubyMixin
 
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
     {
-        // Get Ruby object for declaring class of the method
-        Class declaringClass = method.getDeclaringClass();
-        IRubyObject rubyObject = rubyObjects.get( declaringClass );
-
-        // If not yet created, create one
-        if( rubyObject == null )
+        try
         {
-            // Evaluate Ruby script
-            runtime.evalScriptlet( getFunction( method ) );
+            // Get Ruby object for declaring class of the method
+            Class declaringClass = method.getDeclaringClass();
+            IRubyObject rubyObject = rubyObjects.get( declaringClass );
 
-            // Create object instance
-            rubyObject = runtime.evalScriptlet( declaringClass.getSimpleName() + ".new()" );
-
-            // Set @this variable to Composite
-            IRubyObject meRuby = JavaEmbedUtils.javaToRuby( runtime, me );
-            rubyObjectAdapter = JavaEmbedUtils.newObjectAdapter();
-            rubyObjectAdapter.setInstanceVariable( rubyObject, "@this", meRuby );
-            rubyObjects.put( declaringClass, rubyObject );
-        }
-
-        // Convert method arguments and invoke the method
-        IRubyObject rubyResult;
-        if( args != null )
-        {
-            IRubyObject[] rubyArgs = new IRubyObject[args.length];
-            for( int i = 0; i < args.length; i++ )
+            // If not yet created, create one
+            if( rubyObject == null )
             {
-                Object arg = args[ i ];
-                rubyArgs[ i ] = JavaEmbedUtils.javaToRuby( runtime, arg );
-            }
-            rubyResult = rubyObjectAdapter.callMethod( rubyObject, method.getName(), rubyArgs );
-        }
-        else
-        {
-            rubyResult = rubyObjectAdapter.callMethod( rubyObject, method.getName() );
-        }
+                // Create object instance
+                try
+                {
+                    rubyObject = runtime.evalScriptlet( declaringClass.getSimpleName() + ".new()" );
+                }
+                catch( RaiseException e )
+                {
+                    if( e.getException() instanceof RubyNameError )
+                    {
+                        // Initialize Ruby class
+                        String script = getFunction( method );
+                        runtime.evalScriptlet( script );
 
-        // Convert result to Java
-        Object result = JavaEmbedUtils.rubyToJava( runtime, rubyResult, method.getReturnType() );
-        return result;
+                        // Try creating a Ruby instance again
+                        rubyObject = runtime.evalScriptlet( declaringClass.getSimpleName() + ".new()" );
+                    }
+                    else
+                    {
+                        throw e;
+                    }
+                }
+
+                // Set @this variable to Composite
+                IRubyObject meRuby = JavaEmbedUtils.javaToRuby( runtime, me );
+                RubyClass rubyClass = meRuby.getMetaClass();
+                if( !rubyClass.isFrozen() )
+                {
+                    SetterDynamicMethod setter = new SetterDynamicMethod( runtime.getObjectSpaceModule(), Visibility.PUBLIC, null );
+                    GetterDynamicMethod getter = new GetterDynamicMethod( runtime.getObjectSpaceModule(), Visibility.PUBLIC, null );
+                    Method[] compositeMethods = me.getClass().getInterfaces()[ 0 ].getMethods();
+                    for( Method compositeMethod : compositeMethods )
+                    {
+                        if( Property.class.isAssignableFrom( compositeMethod.getReturnType() ) )
+                        {
+
+                            rubyClass.addMethod( compositeMethod.getName() + "=", setter );
+                            rubyClass.addMethod( compositeMethod.getName(), getter );
+                        }
+                    }
+                    rubyClass.freeze();
+                }
+
+                RubyObjectAdapter rubyObjectAdapter = JavaEmbedUtils.newObjectAdapter();
+                rubyObjectAdapter.setInstanceVariable( rubyObject, "@this", meRuby );
+                rubyObjects.put( declaringClass, rubyObject );
+            }
+
+            // Convert method arguments and invoke the method
+            IRubyObject rubyResult;
+            if( args != null )
+            {
+                IRubyObject[] rubyArgs = new IRubyObject[args.length];
+                for( int i = 0; i < args.length; i++ )
+                {
+                    Object arg = args[ i ];
+                    rubyArgs[ i ] = JavaEmbedUtils.javaToRuby( runtime, arg );
+                }
+                rubyResult = rubyObject.callMethod( runtime.getCurrentContext(), method.getName(), rubyArgs );
+            }
+            else
+            {
+                rubyResult = rubyObject.callMethod( runtime.getCurrentContext(), method.getName() );
+            }
+
+            // Convert result to Java
+            Object result = JavaEmbedUtils.rubyToJava( runtime, rubyResult, method.getReturnType() );
+            return result;
+        }
+        catch( Exception e )
+        {
+            e.printStackTrace();
+            throw e;
+        }
     }
 
     protected String getFunction( Method aMethod )
@@ -144,5 +195,61 @@ public class JRubyMixin
         URL scriptUrl = method.getDeclaringClass().getClassLoader().getResource( scriptFile );
 
         return scriptUrl;
+    }
+
+    private static class SetterDynamicMethod
+        extends DynamicMethod
+    {
+        private SetterDynamicMethod( RubyModule rubyModule, Visibility visibility, CallConfiguration callConfiguration )
+        {
+            super( rubyModule, visibility, callConfiguration );
+        }
+
+        public IRubyObject call( ThreadContext threadContext, IRubyObject iRubyObject, RubyModule rubyModule, String methodName, IRubyObject[] iRubyObjects, Block block )
+        {
+            String propertyName = methodName.substring( 0, methodName.length() - 1 );
+            IRubyObject prop = iRubyObject.callMethod( threadContext, propertyName );
+            prop.callMethod( threadContext, "set", iRubyObjects );
+            return null;
+        }
+
+        public DynamicMethod dup()
+        {
+            return this;
+        }
+
+    }
+
+    private static class GetterDynamicMethod
+        extends DynamicMethod
+    {
+        private GetterDynamicMethod( RubyModule rubyModule, Visibility visibility, CallConfiguration callConfiguration )
+        {
+            super( rubyModule, visibility, callConfiguration );
+        }
+
+        public IRubyObject call( ThreadContext threadContext, IRubyObject iRubyObject, RubyModule rubyModule, String methodName, IRubyObject[] iRubyObjects, Block block )
+        {
+            try
+            {
+                String propertyName = methodName;
+                Object thisComposite = JavaEmbedUtils.rubyToJava( iRubyObject.getRuntime(), iRubyObject, Object.class );
+                Method propertyMethod = thisComposite.getClass().getMethod( propertyName );
+                Property property = (Property) propertyMethod.invoke( thisComposite );
+                Object propertyValue = property.get();
+                IRubyObject prop = JavaEmbedUtils.javaToRuby( iRubyObject.getRuntime(), propertyValue );
+                return prop;
+            }
+            catch( Exception e )
+            {
+                throw new RaiseException( new RubyNameError( iRubyObject.getRuntime(), iRubyObject.getMetaClass(), "Could not find property " + methodName ) );
+            }
+        }
+
+        public DynamicMethod dup()
+        {
+            return this;
+        }
+
     }
 }

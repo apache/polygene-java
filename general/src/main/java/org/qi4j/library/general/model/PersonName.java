@@ -16,8 +16,8 @@ import org.qi4j.composite.Mixins;
 import org.qi4j.composite.scope.PropertyField;
 import org.qi4j.composite.scope.This;
 import org.qi4j.property.ComputedPropertyInstance;
-import org.qi4j.property.Property;
 import org.qi4j.property.ImmutableProperty;
+import org.qi4j.property.Property;
 
 /**
  * Generic interface of PersonName that stores first and last name.
@@ -38,17 +38,15 @@ public interface PersonName
         @PropertyField ImmutableProperty<String> fullName;
 
         /**
-         * Returns a person full name in the format LastName, FirstName 
+         * Returns a person full name in the format LastName, FirstName
          */
         public ImmutableProperty<String> fullName()
         {
             return new ComputedPropertyInstance<String>( fullName )
             {
-                private String m_name = personName.lastName().get() + ", " + personName.firstName().get();
-
                 public String get()
                 {
-                    return m_name;
+                    return personName.firstName().get() + " " + personName.lastName().get();
                 }
             };
         }
