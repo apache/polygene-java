@@ -86,7 +86,13 @@ public final class ServiceReferenceInstance<T>
 
     public <K extends Serializable> K getServiceAttribute( Class<K> infoType )
     {
-        return infoType.cast( serviceAttributes.get( infoType ) );
+        Serializable serviceAttribute = serviceAttributes.get( infoType );
+        if( serviceAttribute == null )
+        {
+            throw new IllegalArgumentException( "No service attribute of type " + infoType.getName() + " defined in service " + identity.get() );
+        }
+
+        return infoType.cast( serviceAttribute );
     }
 
     public <K extends Serializable> void setServiceAttribute( Class<K> infoType, K value )
