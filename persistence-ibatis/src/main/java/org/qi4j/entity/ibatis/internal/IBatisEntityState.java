@@ -32,9 +32,9 @@ import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.composite.PropertyResolution;
 import org.qi4j.spi.entity.EntityStateInstance;
 import org.qi4j.spi.entity.EntityStatus;
+import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.property.PropertyBinding;
 import org.qi4j.spi.property.PropertyModel;
-import org.qi4j.spi.serialization.EntityId;
 
 /**
  * {@code IBatisEntityState} represents {@code IBatis} version of {@link org.qi4j.spi.entity.EntityState}.
@@ -65,12 +65,12 @@ public final class IBatisEntityState
      * @since 0.1.0
      */
     public IBatisEntityState(
-        EntityId anIdentity, CompositeBinding aCompositeBinding, Map<String, Object> valuez,
+        QualifiedIdentity anIdentity, CompositeBinding aCompositeBinding, Map<String, Object> valuez,
         EntityStatus status,
         Status aStatus, UnitOfWork anUnitOfWork, IBatisEntityStateDao aDao )
         throws IllegalArgumentException
     {
-        super( 0, anIdentity, status, new HashMap<String, Object>(), new HashMap<String, EntityId>(), new HashMap<String, Collection<EntityId>>() );
+        super( 0, anIdentity, status, new HashMap<String, Object>(), new HashMap<String, QualifiedIdentity>(), new HashMap<String, Collection<QualifiedIdentity>>() );
 
         validateNotNull( "anIdentity", anIdentity );
         validateNotNull( "aCompositeBinding", aCompositeBinding );

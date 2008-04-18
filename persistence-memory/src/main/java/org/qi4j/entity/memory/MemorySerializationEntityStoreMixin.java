@@ -12,7 +12,7 @@ import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.StateCommitter;
-import org.qi4j.spi.serialization.EntityId;
+import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.serialization.SerializableState;
 import org.qi4j.spi.serialization.SerializedObject;
 import org.qi4j.spi.structure.CompositeDescriptor;
@@ -24,16 +24,16 @@ import org.qi4j.structure.Module;
 public class MemorySerializationEntityStoreMixin
     implements EntityStore
 {
-    private final Map<String, Map<EntityId, SerializedObject<SerializableState>>> store;
+    private final Map<String, Map<QualifiedIdentity, SerializedObject<SerializableState>>> store;
 
     public MemorySerializationEntityStoreMixin()
     {
-        store = new HashMap<String, Map<EntityId, SerializedObject<SerializableState>>>();
+        store = new HashMap<String, Map<QualifiedIdentity, SerializedObject<SerializableState>>>();
     }
 
-    public EntityState newEntityState( CompositeDescriptor compositeDescriptor, EntityId identity ) throws EntityStoreException
+    public EntityState newEntityState( CompositeDescriptor compositeDescriptor, QualifiedIdentity identity ) throws EntityStoreException
     {
-        Map<EntityId, SerializedObject<SerializableState>> typeStore;
+        Map<QualifiedIdentity, SerializedObject<SerializableState>> typeStore;
         synchronized( store )
         {
             typeStore = store.get( identity.getCompositeType() );
@@ -50,14 +50,14 @@ public class MemorySerializationEntityStoreMixin
             }
         }
 
-        return new EntityStateInstance( 0, identity, EntityStatus.NEW, new HashMap<String, Object>(), new HashMap<String, EntityId>(), new HashMap<String, Collection<EntityId>>() );
+        return new EntityStateInstance( 0, identity, EntityStatus.NEW, new HashMap<String, Object>(), new HashMap<String, QualifiedIdentity>(), new HashMap<String, Collection<QualifiedIdentity>>() );
     }
 
-    public EntityState getEntityState( CompositeDescriptor compositeDescriptor, EntityId identity ) throws EntityStoreException
+    public EntityState getEntityState( CompositeDescriptor compositeDescriptor, QualifiedIdentity identity ) throws EntityStoreException
     {
         try
         {
-            Map<EntityId, SerializedObject<SerializableState>> typeStore;
+            Map<QualifiedIdentity, SerializedObject<SerializableState>> typeStore;
             synchronized( store )
             {
                 typeStore = store.get( identity.getCompositeType() );
@@ -88,9 +88,9 @@ public class MemorySerializationEntityStoreMixin
         }
     }
 
-    public StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, final Iterable<EntityId> removedStates, Module module ) throws EntityStoreException
+    public StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, final Iterable<QualifiedIdentity> removedStates, Module module ) throws EntityStoreException
     {
-        final Map<EntityId, SerializedObject<SerializableState>> updatedState = new HashMap<EntityId, SerializedObject<SerializableState>>();
+        final Map<QualifiedIdentity, SerializedObject<SerializableState>> updatedState = new HashMap<QualifiedIdentity, SerializedObject<SerializableState>>();
 
 
         for( EntityState entityState : newStates )
@@ -116,9 +116,9 @@ public class MemorySerializationEntityStoreMixin
                 synchronized( store )
                 {
                     // Remove state
-                    for( EntityId removedEntityId : removedStates )
+                    for( QualifiedIdentity removedEntityId : removedStates )
                     {
-                        Map<EntityId, SerializedObject<SerializableState>> typeStore = store.get( removedEntityId.getCompositeType() );
+                        Map<QualifiedIdentity, SerializedObject<SerializableState>> typeStore = store.get( removedEntityId.getCompositeType() );
                         if( typeStore != null )
                         {
                             typeStore.remove( removedEntityId );
@@ -126,12 +126,12 @@ public class MemorySerializationEntityStoreMixin
                     }
 
                     // Update state
-                    for( Map.Entry<EntityId, SerializedObject<SerializableState>> entityIdSerializedObjectEntry : updatedState.entrySet() )
+                    for( Map.Entry<QualifiedIdentity, SerializedObject<SerializableState>> entityIdSerializedObjectEntry : updatedState.entrySet() )
                     {
-                        Map<EntityId, SerializedObject<SerializableState>> typeStore = store.get( entityIdSerializedObjectEntry.getKey().getCompositeType() );
+                        Map<QualifiedIdentity, SerializedObject<SerializableState>> typeStore = store.get( entityIdSerializedObjectEntry.getKey().getCompositeType() );
                         if( typeStore == null )
                         {
-                            typeStore = new HashMap<EntityId, SerializedObject<SerializableState>>();
+                            typeStore = new HashMap<QualifiedIdentity, SerializedObject<SerializableState>>();
                             store.put( entityIdSerializedObjectEntry.getKey().getCompositeType(), typeStore );
                         }
                         typeStore.put( entityIdSerializedObjectEntry.getKey(), entityIdSerializedObjectEntry.getValue() );

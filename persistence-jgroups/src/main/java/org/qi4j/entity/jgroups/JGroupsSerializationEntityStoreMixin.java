@@ -37,7 +37,7 @@ import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.StateCommitter;
-import org.qi4j.spi.serialization.EntityId;
+import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.serialization.SerializableState;
 import org.qi4j.spi.serialization.SerializedObject;
 import org.qi4j.spi.structure.CompositeDescriptor;
@@ -71,18 +71,18 @@ public class JGroupsSerializationEntityStoreMixin
 
     // EntityStore implementation
     @WriteLock
-    public EntityState newEntityState( CompositeDescriptor compositeDescriptor, EntityId identity ) throws EntityStoreException
+    public EntityState newEntityState( CompositeDescriptor compositeDescriptor, QualifiedIdentity identity ) throws EntityStoreException
     {
         if( replicatedMap.containsKey( identity.toString() ) )
         {
             throw new EntityAlreadyExistsException( "JGroups store", identity.getIdentity() );
         }
 
-        return new EntityStateInstance( 0, identity, EntityStatus.NEW, new HashMap<String, Object>(), new HashMap<String, EntityId>(), new HashMap<String, Collection<EntityId>>() );
+        return new EntityStateInstance( 0, identity, EntityStatus.NEW, new HashMap<String, Object>(), new HashMap<String, QualifiedIdentity>(), new HashMap<String, Collection<QualifiedIdentity>>() );
     }
 
     @ReadLock
-    public EntityState getEntityState( CompositeDescriptor compositeDescriptor, EntityId identity ) throws EntityStoreException
+    public EntityState getEntityState( CompositeDescriptor compositeDescriptor, QualifiedIdentity identity ) throws EntityStoreException
     {
         try
         {
@@ -105,7 +105,7 @@ public class JGroupsSerializationEntityStoreMixin
     }
 
 
-    public StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, final Iterable<EntityId> removedStates, Module module ) throws EntityStoreException
+    public StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, final Iterable<QualifiedIdentity> removedStates, Module module ) throws EntityStoreException
     {
         lock.writeLock().lock();
         try
@@ -126,7 +126,7 @@ public class JGroupsSerializationEntityStoreMixin
                 replicatedMap.put( entityState.getIdentity().toString(), serializedObject );
             }
 
-            for( EntityId removedState : removedStates )
+            for( QualifiedIdentity removedState : removedStates )
             {
                 replicatedMap.remove( removedState.toString() );
             }

@@ -48,7 +48,7 @@ import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.StateCommitter;
-import org.qi4j.spi.serialization.EntityId;
+import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.serialization.SerializableState;
 import org.qi4j.spi.structure.CompositeDescriptor;
 import org.qi4j.structure.Module;
@@ -97,7 +97,7 @@ public class JdbmSerializationEntityStoreMixin
 
     // EntityStore implementation
     @WriteLock
-    public EntityState newEntityState( CompositeDescriptor compositeDescriptor, EntityId identity ) throws EntityStoreException
+    public EntityState newEntityState( CompositeDescriptor compositeDescriptor, QualifiedIdentity identity ) throws EntityStoreException
     {
         try
         {
@@ -113,11 +113,11 @@ public class JdbmSerializationEntityStoreMixin
             throw new EntityStoreException( e );
         }
 
-        return new EntityStateInstance( 0, identity, EntityStatus.NEW, new HashMap<String, Object>(), new HashMap<String, EntityId>(), new HashMap<String, Collection<EntityId>>() );
+        return new EntityStateInstance( 0, identity, EntityStatus.NEW, new HashMap<String, Object>(), new HashMap<String, QualifiedIdentity>(), new HashMap<String, Collection<QualifiedIdentity>>() );
     }
 
     @WriteLock
-    public EntityState getEntityState( CompositeDescriptor compositeDescriptor, EntityId identity ) throws EntityStoreException
+    public EntityState getEntityState( CompositeDescriptor compositeDescriptor, QualifiedIdentity identity ) throws EntityStoreException
     {
         try
         {
@@ -154,7 +154,7 @@ public class JdbmSerializationEntityStoreMixin
         }
     }
 
-    public StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, final Iterable<EntityId> removedStates, Module module ) throws EntityStoreException
+    public StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, final Iterable<QualifiedIdentity> removedStates, Module module ) throws EntityStoreException
     {
         lock.writeLock().lock();
 
@@ -186,7 +186,7 @@ public class JdbmSerializationEntityStoreMixin
                 recordManager.update( stateIndex, bout.toByteArray(), serializer );
             }
 
-            for( EntityId removedState : removedStates )
+            for( QualifiedIdentity removedState : removedStates )
             {
                 Long stateIndex = (Long) index.find( removedState.getIdentity().getBytes() );
                 recordManager.delete( stateIndex );

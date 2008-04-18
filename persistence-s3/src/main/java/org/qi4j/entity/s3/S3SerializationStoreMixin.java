@@ -41,7 +41,7 @@ import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.StateCommitter;
-import org.qi4j.spi.serialization.EntityId;
+import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.serialization.SerializableState;
 import org.qi4j.spi.structure.CompositeDescriptor;
 import org.qi4j.structure.Module;
@@ -95,15 +95,15 @@ public class S3SerializationStoreMixin
 
     // EntityStore implementation
     @WriteLock
-    public EntityState newEntityState( CompositeDescriptor compositeDescriptor, EntityId identity ) throws EntityStoreException
+    public EntityState newEntityState( CompositeDescriptor compositeDescriptor, QualifiedIdentity identity ) throws EntityStoreException
     {
         // Skip existence check
 
-        return new EntityStateInstance( 0, identity, EntityStatus.NEW, new HashMap<String, Object>(), new HashMap<String, EntityId>(), new HashMap<String, Collection<EntityId>>() );
+        return new EntityStateInstance( 0, identity, EntityStatus.NEW, new HashMap<String, Object>(), new HashMap<String, QualifiedIdentity>(), new HashMap<String, Collection<QualifiedIdentity>>() );
     }
 
     @WriteLock
-    public EntityState getEntityState( CompositeDescriptor compositeDescriptor, EntityId identity ) throws EntityStoreException
+    public EntityState getEntityState( CompositeDescriptor compositeDescriptor, QualifiedIdentity identity ) throws EntityStoreException
     {
         try
         {
@@ -134,7 +134,7 @@ public class S3SerializationStoreMixin
         }
     }
 
-    public StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, Iterable<EntityId> removedStates, Module module ) throws EntityStoreException
+    public StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, Iterable<QualifiedIdentity> removedStates, Module module ) throws EntityStoreException
     {
         lock.writeLock().lock();
 
@@ -154,7 +154,7 @@ public class S3SerializationStoreMixin
                 uploadObject( entityState.getIdentity(), state );
             }
 
-            for( EntityId removedState : removedStates )
+            for( QualifiedIdentity removedState : removedStates )
             {
                 s3Service.deleteObject( entityBucket, removedState.getIdentity() );
             }
@@ -180,7 +180,7 @@ public class S3SerializationStoreMixin
         }
     }
 
-    private void uploadObject( EntityId identity, SerializableState serializableState )
+    private void uploadObject( QualifiedIdentity identity, SerializableState serializableState )
         throws IOException, S3ServiceException
     {
         ByteArrayOutputStream out = new ByteArrayOutputStream( 1024 );

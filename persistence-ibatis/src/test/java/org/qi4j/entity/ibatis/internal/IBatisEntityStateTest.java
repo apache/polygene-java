@@ -40,7 +40,7 @@ import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.property.PropertyBinding;
-import org.qi4j.spi.serialization.EntityId;
+import org.qi4j.spi.entity.QualifiedIdentity;
 
 /**
  * @author edward.yakop@gmail.com
@@ -158,7 +158,7 @@ public final class IBatisEntityStateTest extends AbstractTestCase
         Mockery mockery = new Mockery();
         IBatisEntityStateDao dao = mockery.mock( IBatisEntityStateDao.class );
         UnitOfWork unitOfWork = mockery.mock( UnitOfWork.class );
-        return new IBatisEntityState( new EntityId( "1", PersonComposite.class.getName() ), personCompositeBinding, initialValues, EntityStatus.NEW, statusNew, unitOfWork, dao );
+        return new IBatisEntityState( new QualifiedIdentity( "1", PersonComposite.class.getName() ), personCompositeBinding, initialValues, EntityStatus.NEW, statusNew, unitOfWork, dao );
     }
 
     /**

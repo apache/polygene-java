@@ -32,7 +32,7 @@ import org.qi4j.query.grammar.BooleanExpression;
 import org.qi4j.query.grammar.OrderBy;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.SearchException;
-import org.qi4j.spi.serialization.EntityId;
+import org.qi4j.spi.entity.QualifiedIdentity;
 
 /**
  * TODO Add JavaDoc
@@ -46,14 +46,14 @@ public class RDFEntityFinderMixin
 
     @This RDFQueryContext queryContext;
 
-    public Iterable<EntityId> find( final Class resultType,
+    public Iterable<QualifiedIdentity> find( final Class resultType,
                                     final BooleanExpression whereClause,
                                     final OrderBy[] orderBySegments,
                                     final Integer firstResult,
                                     final Integer maxResults )
         throws SearchException
     {
-        final Collection<EntityId> entities = new ArrayList<EntityId>();
+        final Collection<QualifiedIdentity> entities = new ArrayList<QualifiedIdentity>();
         try
         {
             final RepositoryConnection connection = queryContext.getRepository().getConnection();
@@ -75,7 +75,7 @@ public class RDFEntityFinderMixin
                     if( identifier != null )
                     {
                         System.out.println( entityClass.stringValue() + " -> " + identifier.stringValue() );
-                        entities.add( new EntityId( identifier.stringValue(), entityClass.stringValue() ) );
+                        entities.add( new QualifiedIdentity( identifier.stringValue(), entityClass.stringValue() ) );
                     }
                 }
             }

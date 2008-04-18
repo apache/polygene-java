@@ -38,7 +38,7 @@ import org.qi4j.spi.entity.EntityStateInstance;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.StateCommitter;
-import org.qi4j.spi.serialization.EntityId;
+import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.structure.Module;
 
 /**
@@ -69,7 +69,7 @@ public class ServerRemoteEntityStoreMixin
 
     // EntityStore implementation
     @WriteLock
-    public EntityState getEntityState( EntityId identity )
+    public EntityState getEntityState( QualifiedIdentity identity )
     {
         Class compositeType = module.lookupClass( identity.getCompositeType() );
 
@@ -85,26 +85,26 @@ public class ServerRemoteEntityStoreMixin
         }
 
         // Copy associations
-        Map<String, EntityId> associations = new HashMap<String, EntityId>();
+        Map<String, QualifiedIdentity> associations = new HashMap<String, QualifiedIdentity>();
         for( String associationName : state.getAssociationNames() )
         {
-            EntityId id = state.getAssociation( associationName );
+            QualifiedIdentity id = state.getAssociation( associationName );
             associations.put( associationName, id );
         }
 
         // Copy manyassociations
-        Map<String, Collection<EntityId>> manyAssociations = new HashMap<String, Collection<EntityId>>();
+        Map<String, Collection<QualifiedIdentity>> manyAssociations = new HashMap<String, Collection<QualifiedIdentity>>();
         for( String associationName : state.getManyAssociationNames() )
         {
-            Collection<EntityId> idCollection = state.getManyAssociation( associationName );
+            Collection<QualifiedIdentity> idCollection = state.getManyAssociation( associationName );
             if( idCollection instanceof Set )
             {
-                Set<EntityId> collectionCopy = new HashSet<EntityId>( idCollection );
+                Set<QualifiedIdentity> collectionCopy = new HashSet<QualifiedIdentity>( idCollection );
                 manyAssociations.put( associationName, collectionCopy );
             }
             else if( idCollection instanceof List )
             {
-                List<EntityId> collectionCopy = new ArrayList<EntityId>( idCollection );
+                List<QualifiedIdentity> collectionCopy = new ArrayList<QualifiedIdentity>( idCollection );
                 manyAssociations.put( associationName, collectionCopy );
             }
         }
@@ -118,7 +118,7 @@ public class ServerRemoteEntityStoreMixin
         return entityState;
     }
 
-    public StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, Iterable<EntityId> removedStates )
+    public StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, Iterable<QualifiedIdentity> removedStates )
     {
         lock.writeLock().lock();
         try

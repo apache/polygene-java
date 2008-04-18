@@ -25,8 +25,8 @@ import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStateInstance;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreException;
+import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.StateCommitter;
-import org.qi4j.spi.serialization.EntityId;
 import org.qi4j.spi.structure.CompositeDescriptor;
 import org.qi4j.structure.Module;
 
@@ -51,13 +51,13 @@ public class ClientRmiEntityStoreMixin
     }
 
     // EntityStore implementation
-    public EntityState newEntityState( CompositeDescriptor compositeDescriptor, EntityId identity ) throws EntityStoreException
+    public EntityState newEntityState( CompositeDescriptor compositeDescriptor, QualifiedIdentity identity ) throws EntityStoreException
     {
         return new EntityStateInstance( identity );
     }
 
     @WriteLock
-    public EntityState getEntityState( CompositeDescriptor compositeDescriptor, EntityId identity ) throws EntityStoreException
+    public EntityState getEntityState( CompositeDescriptor compositeDescriptor, QualifiedIdentity identity ) throws EntityStoreException
     {
         try
         {
@@ -80,7 +80,7 @@ public class ClientRmiEntityStoreMixin
     }
 
     @WriteLock
-    public StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, Iterable<EntityId> removedStates, Module module ) throws EntityStoreException
+    public StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, Iterable<QualifiedIdentity> removedStates, Module module ) throws EntityStoreException
     {
         try
         {

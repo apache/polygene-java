@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.rmi.Remote;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.StateCommitter;
-import org.qi4j.spi.serialization.EntityId;
+import org.qi4j.spi.entity.QualifiedIdentity;
 
 /**
  * Interface for remote EntityStore
@@ -12,9 +12,9 @@ import org.qi4j.spi.serialization.EntityId;
 public interface RemoteEntityStore
     extends Remote
 {
-    EntityState getEntityState( EntityId identity )
+    EntityState getEntityState( QualifiedIdentity identity )
         throws IOException;
 
-    StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, Iterable<EntityId> removedStates )
+    StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, Iterable<QualifiedIdentity> removedStates )
         throws IOException;
 }
