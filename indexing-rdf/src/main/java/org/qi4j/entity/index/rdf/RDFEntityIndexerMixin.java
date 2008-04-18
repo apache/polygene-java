@@ -33,12 +33,12 @@ import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.composite.CompositeModel;
 import org.qi4j.spi.composite.MixinTypeModel;
 import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.association.AssociationBinding;
 import org.qi4j.spi.entity.association.AssociationModel;
 import org.qi4j.spi.property.PropertyBinding;
 import org.qi4j.spi.property.PropertyModel;
 import org.qi4j.spi.query.EntityIndexer;
-import org.qi4j.spi.serialization.EntityId;
 import org.qi4j.spi.structure.ModuleBinding;
 
 /**
@@ -55,7 +55,7 @@ public class RDFEntityIndexerMixin
 
     public void index( final Iterable<EntityState> newStates,
                        final Iterable<EntityState> changedStates,
-                       final Iterable<EntityId> removedStates,
+                       final Iterable<QualifiedIdentity> removedStates,
                        final ModuleBinding moduleBinding )
     {
         try
@@ -76,7 +76,7 @@ public class RDFEntityIndexerMixin
                     removeEntityState( entityState.getIdentity(), moduleBinding, connection, valueFactory );
                     indexEntityState( entityState, moduleBinding, connection, valueFactory );
                 }
-                for( EntityId entityId : removedStates )
+                for( QualifiedIdentity entityId : removedStates )
                 {
                     removeEntityState( entityId, moduleBinding, connection, valueFactory );
                 }
@@ -129,7 +129,7 @@ public class RDFEntityIndexerMixin
         // index associations
         for( String assocName : entityState.getAssociationNames() )
         {
-            final EntityId assocEntityId = entityState.getAssociation( assocName );
+            final QualifiedIdentity assocEntityId = entityState.getAssociation( assocName );
             if( assocEntityId != null )
             {
                 final AssociationBinding assocBinding = compositeBinding.getAssociationBinding( assocName );
@@ -147,7 +147,7 @@ public class RDFEntityIndexerMixin
         // index many associations
         for( String qualifiedName : entityState.getManyAssociationNames() )
         {
-            final Collection<EntityId> assocEntityIds = entityState.getManyAssociation( qualifiedName );
+            final Collection<QualifiedIdentity> assocEntityIds = entityState.getManyAssociation( qualifiedName );
             if( assocEntityIds != null )
             {
                 final AssociationBinding assocBinding = compositeBinding.getAssociationBinding( qualifiedName );
@@ -155,7 +155,7 @@ public class RDFEntityIndexerMixin
                 final URI assocURI = valueFactory.createURI( assocModel.toURI() );
                 BNode prevAssocEntityBNode = null;
 
-                for( EntityId assocEntityId : assocEntityIds )
+                for( QualifiedIdentity assocEntityId : assocEntityIds )
                 {
                     final Class assocCompositeClass = moduleBinding.lookupClass( assocEntityId.getCompositeType() );
                     final CompositeBinding assocCompositeBinding = moduleBinding.getCompositeBinding( assocCompositeClass );
@@ -178,7 +178,7 @@ public class RDFEntityIndexerMixin
         }
     }
 
-    private static void removeEntityState( final EntityId entityId,
+    private static void removeEntityState( final QualifiedIdentity entityId,
                                            final ModuleBinding moduleBinding,
                                            final RepositoryConnection connection,
                                            final ValueFactory valueFactory )
