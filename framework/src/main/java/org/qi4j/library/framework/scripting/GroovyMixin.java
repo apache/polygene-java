@@ -58,7 +58,6 @@ public class GroovyMixin
     {
         public boolean appliesTo( Method method, Class compositeType, Class mixin, Class modelClass )
         {
-            method.
             return getFunctionResource( method ) != null;
         }
     }
