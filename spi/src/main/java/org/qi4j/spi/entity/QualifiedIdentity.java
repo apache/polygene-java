@@ -12,7 +12,7 @@
  *
  */
 
-package org.qi4j.spi.serialization;
+package org.qi4j.spi.entity;
 
 import java.io.Serializable;
 import org.qi4j.entity.EntityComposite;
@@ -20,23 +20,23 @@ import org.qi4j.entity.EntityComposite;
 /**
  * TODO
  */
-public final class EntityId
+public final class QualifiedIdentity
     implements Serializable
 {
     private static final long serialVersionUID = 1L;
 
     // Associations who have been set to "null" should use this as the representation in the EntityState
-    public static final EntityId NULL = new EntityId( "null", "none" );
+    public static final QualifiedIdentity NULL = new QualifiedIdentity( "null", "none" );
 
     private String identity;
     private String compositeType;
 
-    public EntityId( EntityComposite entityComposite )
+    public QualifiedIdentity( EntityComposite entityComposite )
     {
         this( entityComposite.identity().get(), entityComposite.type().getName() );
     }
 
-    public EntityId( String identity, String clazz )
+    public QualifiedIdentity( String identity, String clazz )
     {
         this.identity = identity;
         this.compositeType = clazz;
@@ -63,7 +63,7 @@ public final class EntityId
             return false;
         }
 
-        EntityId that = (EntityId) o;
+        QualifiedIdentity that = (QualifiedIdentity) o;
 
         if( !compositeType.equals( that.compositeType ) )
         {

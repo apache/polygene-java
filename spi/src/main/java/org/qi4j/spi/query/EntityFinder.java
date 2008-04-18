@@ -19,7 +19,7 @@ package org.qi4j.spi.query;
 
 import org.qi4j.query.grammar.BooleanExpression;
 import org.qi4j.query.grammar.OrderBy;
-import org.qi4j.spi.serialization.EntityId;
+import org.qi4j.spi.entity.QualifiedIdentity;
 
 /**
  * TODO Add JavaDoc
@@ -29,7 +29,7 @@ import org.qi4j.spi.serialization.EntityId;
  */
 public interface EntityFinder
 {
-    Iterable<EntityId> find( Class resultType,
+    Iterable<QualifiedIdentity> find( Class resultType,
                              BooleanExpression whereClause,
                              OrderBy[] orderBySegments,
                              Integer firstResult,

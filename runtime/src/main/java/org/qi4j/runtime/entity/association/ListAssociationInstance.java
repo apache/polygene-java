@@ -22,7 +22,7 @@ import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.association.AssociationInfo;
 import org.qi4j.entity.association.ListAssociation;
 import org.qi4j.runtime.entity.UnitOfWorkInstance;
-import org.qi4j.spi.serialization.EntityId;
+import org.qi4j.spi.entity.QualifiedIdentity;
 
 /**
  * Implementation of ListAssociation, which delegates to a
@@ -32,15 +32,15 @@ public final class ListAssociationInstance<T>
     extends AbstractManyAssociationInstance<T>
     implements ListAssociation<T>
 {
-    private List<EntityId> associated;
+    private List<QualifiedIdentity> associated;
 
-    public ListAssociationInstance( AssociationInfo associationInfo, UnitOfWorkInstance unitOfWork, List<EntityId> associated )
+    public ListAssociationInstance( AssociationInfo associationInfo, UnitOfWorkInstance unitOfWork, List<QualifiedIdentity> associated )
     {
         super( associationInfo, unitOfWork );
         this.associated = associated;
     }
 
-    public List<EntityId> getAssociatedList()
+    public List<QualifiedIdentity> getAssociatedList()
     {
         return associated;
     }
@@ -118,7 +118,7 @@ public final class ListAssociationInstance<T>
 
     public boolean addAll( int i, Collection<? extends T> ts )
     {
-        Collection<EntityId> list = getEntityIdCollection( ts );
+        Collection<QualifiedIdentity> list = getEntityIdCollection( ts );
 
         return associated.addAll( i, list );
     }
@@ -140,7 +140,7 @@ public final class ListAssociationInstance<T>
 
     public List<T> subList( int i, int i1 )
     {
-        List<EntityId> subList = associated.subList( i, i1 );
+        List<QualifiedIdentity> subList = associated.subList( i, i1 );
         return new ListAssociationInstance<T>( associationInfo, unitOfWork, subList );
     }
 
@@ -191,7 +191,7 @@ public final class ListAssociationInstance<T>
         Object[] ids = associated.toArray();
         for( int i = 0; i < ids.length; i++ )
         {
-            ids[ i ] = getEntity( (EntityId) ids[ i ] );
+            ids[ i ] = getEntity( (QualifiedIdentity) ids[ i ] );
         }
 
         return ids;
@@ -199,11 +199,11 @@ public final class ListAssociationInstance<T>
 
     public <T> T[] toArray( T[] ts )
     {
-        EntityId[] ids = new EntityId[ts.length];
+        QualifiedIdentity[] ids = new QualifiedIdentity[ts.length];
         associated.toArray( ids );
         for( int i = 0; i < ids.length; i++ )
         {
-            EntityId id = ids[ i ];
+            QualifiedIdentity id = ids[ i ];
             ts[ i ] = (T) getEntity( id );
         }
         return ts;
@@ -221,7 +221,7 @@ public final class ListAssociationInstance<T>
 
     public boolean addAll( Collection<? extends T> ts )
     {
-        Collection<EntityId> list = getEntityIdCollection( ts );
+        Collection<QualifiedIdentity> list = getEntityIdCollection( ts );
 
         return associated.addAll( list );
     }
@@ -241,7 +241,7 @@ public final class ListAssociationInstance<T>
         return associated.toString();
     }
 
-    public void refresh( List<EntityId> newList )
+    public void refresh( List<QualifiedIdentity> newList )
     {
         associated = newList;
     }
@@ -249,9 +249,9 @@ public final class ListAssociationInstance<T>
     private class ListAssociationListIterator
         implements ListIterator<T>
     {
-        private ListIterator<EntityId> idIterator;
+        private ListIterator<QualifiedIdentity> idIterator;
 
-        public ListAssociationListIterator( ListIterator<EntityId> idIterator )
+        public ListAssociationListIterator( ListIterator<QualifiedIdentity> idIterator )
         {
             this.idIterator = idIterator;
         }

@@ -16,7 +16,6 @@
  */
 package org.qi4j.spi.entity;
 
-import org.qi4j.spi.serialization.EntityId;
 import org.qi4j.spi.structure.CompositeDescriptor;
 import org.qi4j.structure.Module;
 
@@ -37,7 +36,7 @@ public interface EntityStore
      * @param compositeDescriptor
      * @param identity            the identity of the entity @throws EntityStoreException
      */
-    EntityState newEntityState( CompositeDescriptor compositeDescriptor, EntityId identity )
+    EntityState newEntityState( CompositeDescriptor compositeDescriptor, QualifiedIdentity identity )
         throws EntityStoreException;
 
     /**
@@ -48,7 +47,7 @@ public interface EntityStore
      * @param identity            @return
      * @throws EntityStoreException
      */
-    EntityState getEntityState( CompositeDescriptor compositeDescriptor, EntityId identity )
+    EntityState getEntityState( CompositeDescriptor compositeDescriptor, QualifiedIdentity identity )
         throws EntityStoreException;
 
     /**
@@ -64,7 +63,7 @@ public interface EntityStore
      * @return an implementation of StateCommitter
      * @throws EntityStoreException if the state could not be sent to the datastore
      */
-    StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, Iterable<EntityId> removedStates, Module module )
+    StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, Iterable<QualifiedIdentity> removedStates, Module module )
         throws EntityStoreException;
 
 //    EntityIterator iterator();

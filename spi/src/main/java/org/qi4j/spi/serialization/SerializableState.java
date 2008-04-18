@@ -17,6 +17,7 @@ package org.qi4j.spi.serialization;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
+import org.qi4j.spi.entity.QualifiedIdentity;
 
 /**
  * Serializable state for a single entity. This includes the version
@@ -29,10 +30,10 @@ public final class SerializableState
 
     private final long entityVersion;
     private final Map<String, Object> properties;
-    private final Map<String, EntityId> associations;
-    private final Map<String, Collection<EntityId>> manyAssociations;
+    private final Map<String, QualifiedIdentity> associations;
+    private final Map<String, Collection<QualifiedIdentity>> manyAssociations;
 
-    public SerializableState( long entityVersion, Map<String, Object> properties, Map<String, EntityId> associations, Map<String, Collection<EntityId>> manyAssociations )
+    public SerializableState( long entityVersion, Map<String, Object> properties, Map<String, QualifiedIdentity> associations, Map<String, Collection<QualifiedIdentity>> manyAssociations )
     {
         this.entityVersion = entityVersion;
         this.properties = properties;
@@ -50,12 +51,12 @@ public final class SerializableState
         return properties;
     }
 
-    public Map<String, EntityId> getAssociations()
+    public Map<String, QualifiedIdentity> getAssociations()
     {
         return associations;
     }
 
-    public Map<String, Collection<EntityId>> getManyAssociations()
+    public Map<String, Collection<QualifiedIdentity>> getManyAssociations()
     {
         return manyAssociations;
     }

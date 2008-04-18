@@ -24,6 +24,7 @@ import java.util.List;
 import org.qi4j.composite.Composite;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.spi.composite.CompositeState;
+import org.qi4j.spi.entity.QualifiedIdentity;
 
 /**
  * TODO
@@ -46,7 +47,7 @@ public final class CompositeOutputStream extends ObjectOutputStream
             if( obj instanceof EntityComposite )
             {
                 String id = ( (EntityComposite) composite ).identity().get();
-                return new EntityId( id, compositeInterface.toString() );
+                return new QualifiedIdentity( id, compositeInterface.toString() );
             }
             else
             {

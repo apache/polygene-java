@@ -17,7 +17,6 @@
 package org.qi4j.spi.entity;
 
 import java.util.Collection;
-import org.qi4j.spi.serialization.EntityId;
 
 /**
  * The EntityState is a shared "second-level cache" mixin state container for a particular
@@ -40,7 +39,7 @@ public interface EntityState
      *
      * @return the identity of the entity that this EntityState represents.
      */
-    EntityId getIdentity();
+    QualifiedIdentity getIdentity();
 
     long getEntityVersion();
 
@@ -55,13 +54,13 @@ public interface EntityState
 
     void setProperty( String qualifiedName, Object newValue );
 
-    EntityId getAssociation( String qualifiedName );
+    QualifiedIdentity getAssociation( String qualifiedName );
 
-    void setAssociation( String qualifiedName, EntityId newEntity );
+    void setAssociation( String qualifiedName, QualifiedIdentity newEntity );
 
-    Collection<EntityId> getManyAssociation( String qualifiedName );
+    Collection<QualifiedIdentity> getManyAssociation( String qualifiedName );
 
-    Collection<EntityId> setManyAssociation( String qualifiedName, Collection<EntityId> newManyAssociation );
+    Collection<QualifiedIdentity> setManyAssociation( String qualifiedName, Collection<QualifiedIdentity> newManyAssociation );
 
     Iterable<String> getPropertyNames();
 

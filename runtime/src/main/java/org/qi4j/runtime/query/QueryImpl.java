@@ -30,7 +30,7 @@ import org.qi4j.query.grammar.SingleValueExpression;
 import org.qi4j.runtime.entity.UnitOfWorkInstance;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.SearchException;
-import org.qi4j.spi.serialization.EntityId;
+import org.qi4j.spi.entity.QualifiedIdentity;
 
 /**
  * Default implementation of {@link Query}
@@ -163,12 +163,12 @@ final class QueryImpl<T>
         final List<T> entities = new ArrayList<T>();
         try
         {
-            final Iterable<EntityId> foundEntities = entityFinder.find(
+            final Iterable<QualifiedIdentity> foundEntities = entityFinder.find(
                 resultType, whereClause, orderBySegments, firstResult, maxResults
             );
             if( foundEntities != null )
             {
-                for( final EntityId foundEntity : foundEntities )
+                for( final QualifiedIdentity foundEntity : foundEntities )
                 {
                     final Class<T> entityType = unitOfWorkInstance.getModuleInstance().getModuleContext().getModuleBinding().lookupClass( foundEntity.getCompositeType() );
                     // TODO shall we throw an exception if class cannot be found?

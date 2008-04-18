@@ -46,7 +46,7 @@ import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.StateCommitter;
-import org.qi4j.spi.serialization.EntityId;
+import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.structure.CompositeDescriptor;
 import org.qi4j.structure.Module;
 
@@ -175,7 +175,7 @@ public final class UnitOfWorkInstance
                 EntityState state = null;
                 try
                 {
-                    state = store.getEntityState( compositeContext.getCompositeResolution().getCompositeDescriptor(), new EntityId( identity, compositeType.getName() ) );
+                    state = store.getEntityState( compositeContext.getCompositeResolution().getCompositeDescriptor(), new QualifiedIdentity( identity, compositeType.getName() ) );
                 }
                 catch( EntityNotFoundException e )
                 {
@@ -196,7 +196,7 @@ public final class UnitOfWorkInstance
                 {
                     // Check that state exists
                     EntityStore store = stateServices.getEntityStore( compositeType );
-                    EntityState state = store.getEntityState( entityCompositeInstance.getContext().getCompositeResolution().getCompositeDescriptor(), new EntityId( identity, compositeType.getName() ) );
+                    EntityState state = store.getEntityState( entityCompositeInstance.getContext().getCompositeResolution().getCompositeDescriptor(), new QualifiedIdentity( identity, compositeType.getName() ) );
                     entityCompositeInstance.setState( state );
                 }
                 else
@@ -281,7 +281,7 @@ public final class UnitOfWorkInstance
             // Refresh the state
             try
             {
-                EntityId identity = new EntityId( entityInstance.getIdentity(),
+                QualifiedIdentity identity = new QualifiedIdentity( entityInstance.getIdentity(),
                                                   entityInstance.getContext().getCompositeModel().getCompositeType().getName() );
                 EntityState state = entityInstance.getStore().getEntityState( entityInstance.getContext().getCompositeResolution().getCompositeDescriptor(), identity );
                 entityInstance.refresh( state );
@@ -503,7 +503,7 @@ public final class UnitOfWorkInstance
         return entityCache.get( identity );
     }
 
-    private EntityState getCachedState( EntityId entityId )
+    private EntityState getCachedState( QualifiedIdentity entityId )
     {
         String type = entityId.getCompositeType();
         Class compositeType = moduleInstance.getModuleContext().getModuleBinding().lookupClass( type );
@@ -551,13 +551,13 @@ public final class UnitOfWorkInstance
     private class UnitOfWorkStore
         implements EntityStore
     {
-        public EntityState newEntityState( CompositeDescriptor compositeDescriptor, EntityId identity ) throws EntityStoreException
+        public EntityState newEntityState( CompositeDescriptor compositeDescriptor, QualifiedIdentity identity ) throws EntityStoreException
         {
-            UnitOfWorkEntityState entityState = new UnitOfWorkEntityState( 0, identity, EntityStatus.NEW, new HashMap<String, Object>(), new HashMap<String, EntityId>(), new HashMap<String, Collection<EntityId>>(), null );
+            UnitOfWorkEntityState entityState = new UnitOfWorkEntityState( 0, identity, EntityStatus.NEW, new HashMap<String, Object>(), new HashMap<String, QualifiedIdentity>(), new HashMap<String, Collection<QualifiedIdentity>>(), null );
             return entityState;
         }
 
-        public EntityState getEntityState( CompositeDescriptor compositeDescriptor, EntityId identity ) throws EntityStoreException
+        public EntityState getEntityState( CompositeDescriptor compositeDescriptor, QualifiedIdentity identity ) throws EntityStoreException
         {
             EntityState parentState = getCachedState( identity );
             if( parentState == null )
@@ -570,13 +570,13 @@ public final class UnitOfWorkInstance
                                                                                      identity,
                                                                                      EntityStatus.LOADED,
                                                                                      new HashMap<String, Object>(),
-                                                                                     new HashMap<String, EntityId>(),
-                                                                                     new HashMap<String, Collection<EntityId>>(),
+                                                                                     new HashMap<String, QualifiedIdentity>(),
+                                                                                     new HashMap<String, Collection<QualifiedIdentity>>(),
                                                                                      parentState );
             return unitOfWorkEntityState;
         }
 
-        public StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, Iterable<EntityId> removedStates, Module module ) throws EntityStoreException
+        public StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, Iterable<QualifiedIdentity> removedStates, Module module ) throws EntityStoreException
         {
             // Create new entity and transfer state
             for( EntityState newState : newStates )
@@ -598,8 +598,8 @@ public final class UnitOfWorkInstance
                 Iterable<String> manyAssociationNames = uowState.getManyAssociationNames();
                 for( String manyAssociationName : manyAssociationNames )
                 {
-                    Collection<EntityId> collection = parentState.getManyAssociation( manyAssociationName );
-                    Collection<EntityId> newCollection = uowState.getManyAssociation( manyAssociationName );
+                    Collection<QualifiedIdentity> collection = parentState.getManyAssociation( manyAssociationName );
+                    Collection<QualifiedIdentity> newCollection = uowState.getManyAssociation( manyAssociationName );
 
                     // TODO This can be soooo much more optimized by comparing the collections and matching them
                     // up by doing individual add/removes
@@ -628,8 +628,8 @@ public final class UnitOfWorkInstance
                     Iterable<String> manyAssociationNames = uowState.getManyAssociationNames();
                     for( String manyAssociationName : manyAssociationNames )
                     {
-                        Collection<EntityId> collection = parentState.getManyAssociation( manyAssociationName );
-                        Collection<EntityId> newCollection = uowState.getManyAssociation( manyAssociationName );
+                        Collection<QualifiedIdentity> collection = parentState.getManyAssociation( manyAssociationName );
+                        Collection<QualifiedIdentity> newCollection = uowState.getManyAssociation( manyAssociationName );
 
                         // TODO This can be soooo much more optimized by comparing the collections and matching them
                         // up by doing individual add/removes
@@ -644,7 +644,7 @@ public final class UnitOfWorkInstance
             }
 
             // Remove entities
-            for( EntityId removedState : removedStates )
+            for( QualifiedIdentity removedState : removedStates )
             {
                 EntityState parentState = getCachedState( removedState );
                 if( parentState != null )
@@ -672,7 +672,7 @@ public final class UnitOfWorkInstance
         private EntityState parentState;
         private long entityVersion;
 
-        private UnitOfWorkEntityState( long entityVersion, EntityId identity, EntityStatus status, Map<String, Object> properties, Map<String, EntityId> associations, Map<String, Collection<EntityId>> manyAssociations, EntityState parentState )
+        private UnitOfWorkEntityState( long entityVersion, QualifiedIdentity identity, EntityStatus status, Map<String, Object> properties, Map<String, QualifiedIdentity> associations, Map<String, Collection<QualifiedIdentity>> manyAssociations, EntityState parentState )
         {
             super( entityVersion, identity, status, properties, associations, manyAssociations );
             this.parentState = parentState;
@@ -695,7 +695,7 @@ public final class UnitOfWorkInstance
             return parentState == null ? null : parentState.getProperty( qualifiedName );
         }
 
-        public EntityId getAssociation( String qualifiedName )
+        public QualifiedIdentity getAssociation( String qualifiedName )
         {
             if( associations.containsKey( qualifiedName ) )
             {
@@ -705,7 +705,7 @@ public final class UnitOfWorkInstance
             return parentState == null ? null : parentState.getAssociation( qualifiedName );
         }
 
-        public Collection<EntityId> getManyAssociation( String qualifiedName )
+        public Collection<QualifiedIdentity> getManyAssociation( String qualifiedName )
         {
             if( manyAssociations.containsKey( qualifiedName ) )
             {
@@ -730,13 +730,13 @@ public final class UnitOfWorkInstance
     {
         List<EntityState> newState;
         List<EntityState> updatedState;
-        List<EntityId> removedState;
+        List<QualifiedIdentity> removedState;
 
         private StoreCompletion()
         {
             this.newState = new ArrayList<EntityState>();
             this.updatedState = new ArrayList<EntityState>();
-            this.removedState = new ArrayList<EntityId>();
+            this.removedState = new ArrayList<QualifiedIdentity>();
         }
 
         public List<EntityState> getNewState()
@@ -749,7 +749,7 @@ public final class UnitOfWorkInstance
             return updatedState;
         }
 
-        public List<EntityId> getRemovedState()
+        public List<QualifiedIdentity> getRemovedState()
         {
             return removedState;
         }

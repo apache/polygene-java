@@ -17,6 +17,7 @@ package org.qi4j.spi.serialization;
 import java.io.IOException;
 import java.util.Map;
 import org.qi4j.composite.CompositeBuilderFactory;
+import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.StateCommitter;
 
 /**
@@ -33,7 +34,7 @@ public interface SerializationStore
      * @return the state for the entityId, or null if not found
      * @throws IOException
      */
-    SerializableState get( EntityId entityIdId, CompositeBuilderFactory compositeBuilderFactory )
+    SerializableState get( QualifiedIdentity entityIdId, CompositeBuilderFactory compositeBuilderFactory )
         throws IOException;
 
     /**
@@ -43,7 +44,7 @@ public interface SerializationStore
      * @return true if the entity with the given entityId exists
      * @throws IOException
      */
-    boolean contains( EntityId entityIdId )
+    boolean contains( QualifiedIdentity entityIdId )
         throws IOException;
 
     /**
@@ -55,6 +56,6 @@ public interface SerializationStore
      * @return
      * @throws IOException
      */
-    StateCommitter prepare( Map<EntityId, SerializableState> newEntities, Map<EntityId, SerializableState> updatedEntities, Iterable<EntityId> removedEntities )
+    StateCommitter prepare( Map<QualifiedIdentity, SerializableState> newEntities, Map<QualifiedIdentity, SerializableState> updatedEntities, Iterable<QualifiedIdentity> removedEntities )
         throws IOException;
 }

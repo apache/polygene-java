@@ -43,8 +43,8 @@ import org.qi4j.spi.composite.InvalidCompositeException;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreException;
+import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.association.AssociationModel;
-import org.qi4j.spi.serialization.EntityId;
 
 public final class EntityCompositeInstance
     extends AbstractCompositeInstance
@@ -135,18 +135,18 @@ public final class EntityCompositeInstance
             else
             {
                 String qualifiedName = ComputedPropertyInstance.getQualifiedName( associationMethod );
-                Collection<EntityId> associationCollection = state.getManyAssociation( qualifiedName );
+                Collection<QualifiedIdentity> associationCollection = state.getManyAssociation( qualifiedName );
 
                 if( associationCollection == null )
                 {
                     if( ListAssociation.class.isAssignableFrom( associationMethod.getReturnType() ) )
                     {
-                        associationCollection = new ArrayList<EntityId>();
+                        associationCollection = new ArrayList<QualifiedIdentity>();
                         associationCollection = state.setManyAssociation( qualifiedName, associationCollection );
                     }
                     else
                     {
-                        associationCollection = new HashSet<EntityId>();
+                        associationCollection = new HashSet<QualifiedIdentity>();
                         associationCollection = state.setManyAssociation( qualifiedName, associationCollection );
                     }
                 }
@@ -186,11 +186,11 @@ public final class EntityCompositeInstance
                 }
                 else if( abstractAssociation instanceof ListAssociationInstance )
                 {
-                    ( (ListAssociationInstance) abstractAssociation ).refresh( (List<EntityId>) state.getManyAssociation( AssociationModel.getQualifiedName( methodAbstractAssociationEntry.getKey() ) ) );
+                    ( (ListAssociationInstance) abstractAssociation ).refresh( (List<QualifiedIdentity>) state.getManyAssociation( AssociationModel.getQualifiedName( methodAbstractAssociationEntry.getKey() ) ) );
                 }
                 else if( abstractAssociation instanceof SetAssociationInstance )
                 {
-                    ( (SetAssociationInstance) abstractAssociation ).refresh( (Set<EntityId>) state.getManyAssociation( AssociationModel.getQualifiedName( methodAbstractAssociationEntry.getKey() ) ) );
+                    ( (SetAssociationInstance) abstractAssociation ).refresh( (Set<QualifiedIdentity>) state.getManyAssociation( AssociationModel.getQualifiedName( methodAbstractAssociationEntry.getKey() ) ) );
                 }
             }
         }
@@ -222,7 +222,7 @@ public final class EntityCompositeInstance
     {
         if( state == null )
         {
-            state = store.getEntityState( context.getCompositeResolution().getCompositeDescriptor(), new EntityId( identity, context.getCompositeModel().getCompositeType().getName() ) );
+            state = store.getEntityState( context.getCompositeResolution().getCompositeDescriptor(), new QualifiedIdentity( identity, context.getCompositeModel().getCompositeType().getName() ) );
         }
 
         return state;

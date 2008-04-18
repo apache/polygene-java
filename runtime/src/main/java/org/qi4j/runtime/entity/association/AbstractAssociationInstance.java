@@ -5,7 +5,7 @@ import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.association.AbstractAssociation;
 import org.qi4j.entity.association.AssociationInfo;
 import org.qi4j.runtime.entity.UnitOfWorkInstance;
-import org.qi4j.spi.serialization.EntityId;
+import org.qi4j.spi.entity.QualifiedIdentity;
 
 /**
  * Implementation of AbstractAssociation. Includes helper methods for subclasses
@@ -43,9 +43,9 @@ public class AbstractAssociationInstance<T>
         return associationInfo.type();
     }
 
-    protected T getEntity( EntityId entityId )
+    protected T getEntity( QualifiedIdentity entityId )
     {
-        if( entityId == null || entityId == EntityId.NULL )
+        if( entityId == null || entityId == QualifiedIdentity.NULL )
         {
             return null;
         }
@@ -54,15 +54,15 @@ public class AbstractAssociationInstance<T>
         return (T) unitOfWork.getReference( entityId.getIdentity(), entityCompositeType );
     }
 
-    protected EntityId getEntityId( Object composite )
+    protected QualifiedIdentity getEntityId( Object composite )
     {
         if( composite == null )
         {
-            return EntityId.NULL;
+            return QualifiedIdentity.NULL;
         }
 
         EntityComposite entityComposite = (EntityComposite) composite;
-        return new EntityId( entityComposite.identity().get(), entityComposite.type().getName() );
+        return new QualifiedIdentity( entityComposite.identity().get(), entityComposite.type().getName() );
     }
 
 }

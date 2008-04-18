@@ -21,7 +21,7 @@ import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.association.AssociationInfo;
 import org.qi4j.entity.association.SetAssociation;
 import org.qi4j.runtime.entity.UnitOfWorkInstance;
-import org.qi4j.spi.serialization.EntityId;
+import org.qi4j.spi.entity.QualifiedIdentity;
 
 /**
  * Implementation of SetAssociation, which delegates to a
@@ -31,15 +31,15 @@ public final class SetAssociationInstance<T>
     extends AbstractManyAssociationInstance<T>
     implements SetAssociation<T>
 {
-    private Set<EntityId> associated;
+    private Set<QualifiedIdentity> associated;
 
-    public SetAssociationInstance( AssociationInfo associationInfo, UnitOfWorkInstance unitOfWork, Set<EntityId> associated )
+    public SetAssociationInstance( AssociationInfo associationInfo, UnitOfWorkInstance unitOfWork, Set<QualifiedIdentity> associated )
     {
         super( associationInfo, unitOfWork );
         this.associated = associated;
     }
 
-    public Set<EntityId> getAssociatedSet()
+    public Set<QualifiedIdentity> getAssociatedSet()
     {
         return associated;
     }
@@ -70,7 +70,7 @@ public final class SetAssociationInstance<T>
         Object[] ids = associated.toArray();
         for( int i = 0; i < ids.length; i++ )
         {
-            ids[ i ] = getEntity( (EntityId) ids[ i ] );
+            ids[ i ] = getEntity( (QualifiedIdentity) ids[ i ] );
         }
 
         return ids;
@@ -78,11 +78,11 @@ public final class SetAssociationInstance<T>
 
     public <T> T[] toArray( T[] ts )
     {
-        EntityId[] ids = new EntityId[ts.length];
+        QualifiedIdentity[] ids = new QualifiedIdentity[ts.length];
         associated.toArray( ids );
         for( int i = 0; i < ids.length; i++ )
         {
-            EntityId id = ids[ i ];
+            QualifiedIdentity id = ids[ i ];
             ts[ i ] = (T) getEntity( id );
         }
         return ts;
@@ -143,7 +143,7 @@ public final class SetAssociationInstance<T>
         return associated.size();
     }
 
-    public void refresh( Set<EntityId> newSet )
+    public void refresh( Set<QualifiedIdentity> newSet )
     {
         associated = newSet;
     }

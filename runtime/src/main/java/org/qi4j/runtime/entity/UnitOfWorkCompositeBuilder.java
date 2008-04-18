@@ -46,7 +46,7 @@ import org.qi4j.spi.entity.association.AssociationBinding;
 import org.qi4j.spi.entity.association.AssociationModel;
 import org.qi4j.spi.property.PropertyBinding;
 import org.qi4j.spi.property.PropertyModel;
-import org.qi4j.spi.serialization.EntityId;
+import org.qi4j.spi.entity.QualifiedIdentity;
 
 /**
  * TODO
@@ -111,7 +111,7 @@ public final class UnitOfWorkCompositeBuilder<T>
         Class<? extends Composite> entityType = context.getCompositeModel().getCompositeType();
         try
         {
-            state = store.newEntityState( context.getCompositeResolution().getCompositeDescriptor(), new EntityId( identity, entityType.getName() ) );
+            state = store.newEntityState( context.getCompositeResolution().getCompositeDescriptor(), new QualifiedIdentity( identity, entityType.getName() ) );
         }
         catch( EntityAlreadyExistsException e )
         {
@@ -155,14 +155,14 @@ public final class UnitOfWorkCompositeBuilder<T>
                 if( associationValue instanceof Association )
                 {
                     Association<EntityComposite> association = (Association<EntityComposite>) associationValue;
-                    EntityId id;
+                    QualifiedIdentity id;
                     if( association.get() == null )
                     {
-                        id = EntityId.NULL;
+                        id = QualifiedIdentity.NULL;
                     }
                     else
                     {
-                        id = new EntityId( association.get().identity().get(), association.get().type().getName() );
+                        id = new QualifiedIdentity( association.get().identity().get(), association.get().type().getName() );
                     }
                     state.setAssociation( associationModel.getQualifiedName(), id );
                 }

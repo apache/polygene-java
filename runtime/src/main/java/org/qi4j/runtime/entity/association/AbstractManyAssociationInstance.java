@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import org.qi4j.entity.association.AssociationInfo;
 import org.qi4j.runtime.entity.UnitOfWorkInstance;
-import org.qi4j.spi.serialization.EntityId;
+import org.qi4j.spi.entity.QualifiedIdentity;
 
 /**
  * TODO
@@ -18,9 +18,9 @@ public class AbstractManyAssociationInstance<T>
         super( associationInfo, unitOfWork );
     }
 
-    protected Collection<EntityId> getEntityIdCollection( Collection ts )
+    protected Collection<QualifiedIdentity> getEntityIdCollection( Collection ts )
     {
-        ArrayList<EntityId> list = new ArrayList<EntityId>();
+        ArrayList<QualifiedIdentity> list = new ArrayList<QualifiedIdentity>();
         for( Object t : ts )
         {
             list.add( getEntityId( t ) );
@@ -32,9 +32,9 @@ public class AbstractManyAssociationInstance<T>
     protected class ManyAssociationIterator
         implements Iterator<T>
     {
-        private Iterator<EntityId> idIterator;
+        private Iterator<QualifiedIdentity> idIterator;
 
-        public ManyAssociationIterator( Iterator<EntityId> idIterator )
+        public ManyAssociationIterator( Iterator<QualifiedIdentity> idIterator )
         {
             this.idIterator = idIterator;
         }

@@ -18,7 +18,7 @@
 package org.qi4j.spi.query;
 
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.serialization.EntityId;
+import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.structure.ModuleBinding;
 
 /**
@@ -31,6 +31,6 @@ public interface EntityIndexer
 {
     void index( Iterable<EntityState> newStates,
                 Iterable<EntityState> changedStates,
-                Iterable<EntityId> removedStates,
+                Iterable<QualifiedIdentity> removedStates,
                 ModuleBinding moduleBinding );
 }

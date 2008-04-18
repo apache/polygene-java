@@ -20,7 +20,7 @@ import org.qi4j.entity.association.Association;
 import org.qi4j.entity.association.AssociationInfo;
 import org.qi4j.runtime.entity.UnitOfWorkInstance;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.serialization.EntityId;
+import org.qi4j.spi.entity.QualifiedIdentity;
 
 /**
  * Implementation of Association to a single Entity.
@@ -49,7 +49,7 @@ public class AssociationInstance<T>
     {
         if( value == UNSET )
         {
-            EntityId entityId = entityState.getAssociation( qualifiedName() );
+            QualifiedIdentity entityId = entityState.getAssociation( qualifiedName() );
             value = getEntity( entityId );
         }
         return value;

@@ -23,7 +23,7 @@ import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.StateCommitter;
-import org.qi4j.spi.serialization.EntityId;
+import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.structure.ModuleBinding;
 
 /**
@@ -40,7 +40,7 @@ public abstract class IndexingSideEffect
 
     public StateCommitter prepare( final Iterable<EntityState> newStates,
                                    final Iterable<EntityState> loadedStates,
-                                   final Iterable<EntityId> removedStates,
+                                   final Iterable<QualifiedIdentity> removedStates,
                                    final ModuleBinding moduleBinding )
         throws EntityStoreException
     {

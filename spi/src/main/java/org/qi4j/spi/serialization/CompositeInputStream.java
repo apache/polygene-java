@@ -26,6 +26,7 @@ import org.qi4j.composite.InvalidApplicationException;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.spi.composite.CompositeState;
+import org.qi4j.spi.entity.QualifiedIdentity;
 
 /**
  * TODO
@@ -57,9 +58,9 @@ public final class CompositeInputStream extends ObjectInputStream
 
     protected Object resolveObject( Object obj ) throws IOException
     {
-        if( obj instanceof EntityId && unitOfWork != null )
+        if( obj instanceof QualifiedIdentity && unitOfWork != null )
         {
-            EntityId holder = (EntityId) obj;
+            QualifiedIdentity holder = (QualifiedIdentity) obj;
             try
             {
                 Class<? extends EntityComposite> clazz = (Class<? extends EntityComposite>) Class.forName( holder.getCompositeType() );

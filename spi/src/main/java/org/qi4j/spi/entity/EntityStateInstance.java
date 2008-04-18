@@ -20,7 +20,6 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import org.qi4j.spi.serialization.EntityId;
 
 /**
  * Standard implementation of EntityState.
@@ -29,24 +28,24 @@ public class EntityStateInstance
     implements EntityState, Serializable
 {
     private final long entityVersion;
-    private final EntityId identity;
+    private final QualifiedIdentity identity;
     private EntityStatus status;
 
     protected final Map<String, Object> properties;
-    protected final Map<String, EntityId> associations;
-    protected final Map<String, Collection<EntityId>> manyAssociations;
+    protected final Map<String, QualifiedIdentity> associations;
+    protected final Map<String, Collection<QualifiedIdentity>> manyAssociations;
 
-    public EntityStateInstance( EntityId identity )
+    public EntityStateInstance( QualifiedIdentity identity )
     {
-        this( 0, identity, EntityStatus.NEW, new HashMap<String, Object>(), new HashMap<String, EntityId>(), new HashMap<String, Collection<EntityId>>() );
+        this( 0, identity, EntityStatus.NEW, new HashMap<String, Object>(), new HashMap<String, QualifiedIdentity>(), new HashMap<String, Collection<QualifiedIdentity>>() );
     }
 
     public EntityStateInstance( long entityVersion,
-                                EntityId identity,
+                                QualifiedIdentity identity,
                                 EntityStatus status,
                                 Map<String, Object> properties,
-                                Map<String, EntityId> associations,
-                                Map<String, Collection<EntityId>> manyAssociations )
+                                Map<String, QualifiedIdentity> associations,
+                                Map<String, Collection<QualifiedIdentity>> manyAssociations )
     {
         this.entityVersion = entityVersion;
         this.identity = identity;
@@ -62,7 +61,7 @@ public class EntityStateInstance
         return entityVersion;
     }
 
-    public EntityId getIdentity()
+    public QualifiedIdentity getIdentity()
     {
         return identity;
     }
@@ -77,23 +76,23 @@ public class EntityStateInstance
         properties.put( qualifiedName, newValue );
     }
 
-    public EntityId getAssociation( String qualifiedName )
+    public QualifiedIdentity getAssociation( String qualifiedName )
     {
         return associations.get( qualifiedName );
     }
 
-    public void setAssociation( String qualifiedName, EntityId newEntity )
+    public void setAssociation( String qualifiedName, QualifiedIdentity newEntity )
     {
         associations.put( qualifiedName, newEntity );
     }
 
-    public Collection<EntityId> getManyAssociation( String qualifiedName )
+    public Collection<QualifiedIdentity> getManyAssociation( String qualifiedName )
     {
-        Collection<EntityId> manyAssociation = manyAssociations.get( qualifiedName );
+        Collection<QualifiedIdentity> manyAssociation = manyAssociations.get( qualifiedName );
         return manyAssociation;
     }
 
-    public Collection<EntityId> setManyAssociation( String qualifiedName, Collection<EntityId> newManyAssociation )
+    public Collection<QualifiedIdentity> setManyAssociation( String qualifiedName, Collection<QualifiedIdentity> newManyAssociation )
     {
         manyAssociations.put( qualifiedName, newManyAssociation );
         return newManyAssociation;
@@ -129,12 +128,12 @@ public class EntityStateInstance
         return properties;
     }
 
-    public Map<String, EntityId> getAssociations()
+    public Map<String, QualifiedIdentity> getAssociations()
     {
         return associations;
     }
 
-    public Map<String, Collection<EntityId>> getManyAssociations()
+    public Map<String, Collection<QualifiedIdentity>> getManyAssociations()
     {
         return manyAssociations;
     }
