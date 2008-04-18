@@ -19,13 +19,14 @@ import org.qi4j.entity.association.AssociationMixin;
 import org.qi4j.library.framework.properties.PropertiesMixin;
 import org.qi4j.library.framework.scripting.JRubyMixin;
 import org.qi4j.library.framework.scripting.JavaScriptMixin;
+import org.qi4j.library.framework.scripting.GroovyMixin;
 import org.qi4j.property.PropertyMixin;
 
 /**
  * Adds all the various generic mixins that can be used to implement
  * Composite methods.
  */
-@Mixins( { PropertyMixin.class, AssociationMixin.class, PropertiesMixin.class, JavaScriptMixin.class, JRubyMixin.class, RMIMixin.class, NoopMixin.class } )
+@Mixins( { PropertyMixin.class, AssociationMixin.class, PropertiesMixin.class, JavaScriptMixin.class, JRubyMixin.class, GroovyMixin.class, RMIMixin.class, NoopMixin.class } )
 public interface GenericMixinsAbstractComposite
 {
 }
