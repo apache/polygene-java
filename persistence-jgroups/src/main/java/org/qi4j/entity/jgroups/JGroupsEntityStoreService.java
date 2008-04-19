@@ -1,4 +1,4 @@
-/*  Copyright 2008 Rickard …berg.
+/*  Copyright 2008 Rickard Ã–berg.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
