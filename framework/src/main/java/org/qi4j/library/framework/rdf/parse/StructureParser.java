@@ -21,7 +21,6 @@ import org.openrdf.model.Graph;
 import org.openrdf.model.impl.GraphImpl;
 import org.qi4j.library.framework.rdf.Parser;
 import org.qi4j.library.framework.rdf.parse.model.ApplicationParser;
-import org.qi4j.runtime.structure.ApplicationContext;
 import org.qi4j.spi.structure.ApplicationBinding;
 import org.qi4j.spi.structure.ApplicationModel;
 import org.qi4j.spi.structure.ApplicationResolution;
@@ -29,14 +28,13 @@ import org.qi4j.spi.structure.ApplicationResolution;
 public final class StructureParser
     implements Parser
 {
-    public Graph parse( ApplicationContext applicationContext, String applicationURI )
+    public Graph parse( ApplicationBinding binding, String applicationURI )
     {
         Graph graph = new GraphImpl();
         ParserFactoryImpl factory = new ParserFactoryImpl();
         ParseContext context = new ParseContext( graph, factory, applicationURI );
         factory.setParseContext( context );
         ApplicationParser applicationParser = new ApplicationParser( context );
-        ApplicationBinding binding = applicationContext.getApplicationBinding();
         ApplicationResolution resolution = binding.getApplicationResolution();
         ApplicationModel model = resolution.getApplicationModel();
         applicationParser.parseModel( model );

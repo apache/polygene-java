@@ -17,19 +17,21 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
 
-public class JavaScriptMixinTest
+public class JRubyMixinTest
     extends AbstractQi4jTest
 {
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addComposites( JavaScriptComposite.class );
+        module.addComposites( JRubyComposite.class );
     }
 
     @Test
-    public void testInvoke() throws Throwable
+    public void testInvoke()
+        throws Throwable
     {
-        JavaScriptComposite domain = compositeBuilderFactory.newCompositeBuilder( JavaScriptComposite.class ).newInstance();
-        Assert.assertEquals( "do1 script \" and ' for many cases is harder.", domain.do1() );
+        JRubyComposite domain = compositeBuilderFactory.newCompositeBuilder( JRubyComposite.class ).newInstance();
+
+        Assert.assertEquals( "do1() in Ruby mixin.", domain.do1() );
     }
 }

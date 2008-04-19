@@ -53,7 +53,7 @@ import org.qi4j.property.Property;
  */
 @AppliesTo( JRubyMixin.AppliesTo.class )
 public class JRubyMixin
-    implements InvocationHandler
+    implements InvocationHandler, ScriptReloadable
 {
     @This Composite me;
 
@@ -64,10 +64,12 @@ public class JRubyMixin
     public static class AppliesTo
         implements AppliesToFilter
     {
+
         public boolean appliesTo( Method method, Class compositeType, Class mixin, Class modelClass )
         {
             return getFunctionResoure( method ) != null;
         }
+
     }
 
     @Structure CompositeBuilderFactory factory;
@@ -167,6 +169,11 @@ public class JRubyMixin
         }
     }
 
+    public void reloadScripts()
+    {
+        rubyObjects.clear();
+    }
+
     protected String getFunction( Method aMethod )
         throws IOException
     {
@@ -191,9 +198,11 @@ public class JRubyMixin
 
     protected static URL getFunctionResoure( Method method )
     {
-        String scriptFile = method.getDeclaringClass().getName().replace( '.', File.separatorChar ) + ".rb";
-        URL scriptUrl = method.getDeclaringClass().getClassLoader().getResource( scriptFile );
-
+        Class<?> declaringClass = method.getDeclaringClass();
+        String classname = declaringClass.getName();
+        String scriptFile = classname.replace( '.', File.separatorChar ) + ".rb";
+        ClassLoader loader = declaringClass.getClassLoader();
+        URL scriptUrl = loader.getResource( scriptFile );
         return scriptUrl;
     }
 

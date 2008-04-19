@@ -22,7 +22,7 @@ import org.qi4j.library.framework.rdf.parse.StructureParser;
 import org.qi4j.library.framework.rdf.serializer.N3Serializer;
 import org.qi4j.library.framework.rdf.serializer.RdfXmlSerializer;
 import org.qi4j.library.framework.rdf.serializer.TurtleSerializer;
-import org.qi4j.runtime.structure.ApplicationContext;
+import org.qi4j.spi.structure.ApplicationBinding;
 
 public class RdfFactory
 {
@@ -70,14 +70,14 @@ public class RdfFactory
         return serializer;
     }
 
-    public void serialize( ApplicationContext context, String applicationUri, RdfFormat format, Writer out )
+    public void serialize( ApplicationBinding binding, String applicationUri, RdfFormat format, Writer out )
         throws IOException
     {
         RdfFactory factory = RdfFactory.getInstance();
 
         // Parse application
         StructureParser parser = factory.newStructureParser();
-        Graph graph = parser.parse( context, applicationUri );
+        Graph graph = parser.parse( binding, applicationUri );
 
         // Serialize it
         try

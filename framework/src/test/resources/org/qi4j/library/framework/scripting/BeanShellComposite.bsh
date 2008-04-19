@@ -1,0 +1,12 @@
+
+public class Mixin1Impl
+    implements org.qi4j.library.framework.scripting.Mixin1
+{
+    private int counter;
+
+    public String do1()
+    {
+        counter++;
+        return "do1() in Beanshell:" + counter;
+    }
+}

@@ -18,7 +18,7 @@ import org.qi4j.composite.Mixins;
  * TODO
  */
 @Mixins( JavaScriptMixin.class )
-public interface ScriptComposite
+public interface JavaScriptComposite
     extends Mixin1, Composite
 {
 }
