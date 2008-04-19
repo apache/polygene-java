@@ -1,6 +1,7 @@
 /*
  * Copyright 2008 Niclas Hedhman.
  * Copyright 2008 Edward Yakop.
+ * Copyright 2008 Rickard Ã–berg.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -26,7 +27,6 @@ import static org.qi4j.composite.NullArgumentException.*;
 /**
  * {@code AbstractPropertyInstance} is the base implementation of {@link org.qi4j.property.Property}.
  *
- * @author Rickard …berg
  * @since 0.1.0
  */
 public abstract class AbstractPropertyInstance<T>

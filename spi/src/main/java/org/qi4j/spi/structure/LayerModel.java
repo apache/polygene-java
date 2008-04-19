@@ -15,6 +15,7 @@
 package org.qi4j.spi.structure;
 
 import java.io.Serializable;
+import java.io.File;
 import java.util.Map;
 import org.qi4j.composite.Composite;
 
@@ -63,5 +64,10 @@ public final class LayerModel
     @Override public String toString()
     {
         return name;
+    }
+
+    public String toURI()
+    {
+        return "urn:qi4j:model:layer:" + name;
     }
 }

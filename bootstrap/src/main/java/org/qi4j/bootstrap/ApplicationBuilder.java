@@ -229,7 +229,7 @@ public final class ApplicationBuilder
 
         // TODO Order modules according to inter-dependencies
 
-        return new LayerBinding( layerResolution, moduleBindings );
+        return new LayerBinding( applicationBinding, layerResolution, moduleBindings );
     }
 
     private LayerContext newLayerContext( LayerBinding layerBinding )

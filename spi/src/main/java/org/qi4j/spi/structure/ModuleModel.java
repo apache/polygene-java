@@ -81,4 +81,9 @@ public final class ModuleModel
     {
         return name;
     }
+
+    public String toURI()
+    {
+        return "urn:qi4j:model:module:" + name;
+    }
 }

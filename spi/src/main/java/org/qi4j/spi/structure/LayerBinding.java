@@ -25,7 +25,7 @@ public final class LayerBinding
     private LayerResolution layerResolution;
     private Iterable<ModuleBinding> moduleBindings;
 
-    public LayerBinding( LayerResolution layerResolution, Iterable<ModuleBinding> modules )
+    public LayerBinding( ApplicationBinding application, LayerResolution layerResolution, Iterable<ModuleBinding> modules )
     {
         this.layerResolution = layerResolution;
         this.moduleBindings = modules;

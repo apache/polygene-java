@@ -15,6 +15,8 @@
 package org.qi4j.spi.structure;
 
 import java.io.Serializable;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 /**
  * TODO
@@ -24,11 +26,13 @@ public final class ApplicationBinding
 {
     private ApplicationResolution applicationResolution;
     private Iterable<LayerBinding> layerBindings;
+    private final String uri;
 
-    public ApplicationBinding( ApplicationResolution applicationModel, Iterable<LayerBinding> layers )
+    public ApplicationBinding( ApplicationResolution applicationResolution, Iterable<LayerBinding> layers )
     {
-        this.applicationResolution = applicationModel;
+        this.applicationResolution = applicationResolution;
         this.layerBindings = layers;
+        this.uri = createApplicationUri();
     }
 
     public ApplicationResolution getApplicationResolution()
@@ -39,5 +43,35 @@ public final class ApplicationBinding
     public Iterable<LayerBinding> getLayerBindings()
     {
         return layerBindings;
+    }
+
+    public String toURI()
+    {
+        return this.uri;
+    }
+
+    private String createApplicationUri()
+    {
+        String hostname;
+        try
+        {
+            hostname = InetAddress.getLocalHost().getHostName();
+        }
+        catch( UnknownHostException e )
+        {
+            // Can not happen ?
+            hostname = "localhost";
+        }
+        String jvminstance = System.getProperty( "qi4j.jvm.name" );
+        if( jvminstance != null )
+        {
+            jvminstance = ":" + jvminstance;
+        }
+        else
+        {
+            jvminstance = "";
+        }
+        String name = applicationResolution.getApplicationModel().getName();
+        return "urn:qi4j:instance:" + hostname + jvminstance + ":" + name;
     }
 }
