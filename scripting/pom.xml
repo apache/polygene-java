@@ -5,18 +5,16 @@
     <artifactId>qi4j</artifactId>
     <version>0.2.0-SNAPSHOT</version>
   </parent>
-  <groupId>org.qi4j</groupId>
-  <artifactId>qi4j-library</artifactId>
-  <name>Qi4J Library</name>
+  <groupId>org.qi4j.library</groupId>
+  <artifactId>qi4j-script</artifactId>
+  <name>Qi4J Libraries - Scripting</name>
   <version>0.2.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <!-- This POM is ONLY to initiate the modules to be built. -->
   <modules>
-    <module>auth</module>
-    <module>general</module>
-    <module>business</module>
-    <module>framework</module>
-    <module>logging</module>
-    <module>scripting</module>
+    <module>jruby</module>
+    <module>javascript</module>
+    <module>groovy</module>
+    <module>beanshell</module>
   </modules>
 </project>
