@@ -16,8 +16,8 @@ package org.qi4j.runtime.entity.association;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
+import java.util.List;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.entity.association.AbstractAssociation;
