@@ -17,6 +17,7 @@
     <module>business</module>
     <module>framework</module>
     <module>logging</module>
+    <module>rdf</module>
     <module>scripting</module>
   </modules>
 </project>
