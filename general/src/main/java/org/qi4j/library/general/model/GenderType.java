@@ -17,8 +17,35 @@ package org.qi4j.library.general.model;
  */
 public enum GenderType
 {
-    MALE, FEMALE;
+    MALE( "Male" ), FEMALE( "Female" );
 
+    private String description;
+
+    private GenderType( String description )
+    {
+        this.description = description;
+    }
+
+    @Override public String toString()
+    {
+        return this.description;
+    }
+
+    public static final GenderType toEnum( String text )
+    {
+        try
+        {
+            return valueOf( text.toUpperCase() );
+        }
+        catch( IllegalArgumentException iae )
+        {
+            // TODO
+        }
+
+        return null;
+    }
+
+/*
     public static GenderType getGenderType( String genderType )
     {
         if( MALE.toString().equalsIgnoreCase( genderType ) )
@@ -34,4 +61,5 @@ public enum GenderType
             throw new IllegalArgumentException( "Unknown genderType " + genderType );
         }
     }
+*/
 }
