@@ -52,7 +52,8 @@ public final class ObjectBinder extends CompositeBinder
         try
         {
             ObjectResolution objectResolution = (ObjectResolution) bindingContext.getAbstractResolution();
-            ConstructorResolution constructorResolution = objectResolution.getConstructorResolutions().iterator().next(); // TODO Pick the best one
+            Iterable<ConstructorResolution> constructorResolutions = objectResolution.getConstructorResolutions();
+            ConstructorResolution constructorResolution = constructorResolutions.iterator().next(); // TODO Pick the best one
             ConstructorBinding constructorBinding = bindConstructor( bindingContext, constructorResolution );
             Iterable<FieldBinding> fieldBindings = bindFields( bindingContext, objectResolution.getFieldResolutions() );
             Iterable<MethodBinding> methodBindings = bindMethods( bindingContext, objectResolution.getMethodResolutions() );
