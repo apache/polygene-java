@@ -22,7 +22,6 @@
     <orderEntry type="library" name="commons-codec-1.3" level="project" />
     <orderEntry type="library" name="jets3t-0.6.0" level="project" />
     <orderEntry type="library" name="junit" level="project" />
-    <orderEntry type="module" module-name="extension-persistence-memory" />
     <orderEntry type="module" module-name="core-runtime" />
     <orderEntryProperties />
   </component>
