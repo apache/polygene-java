@@ -19,7 +19,7 @@ package org.qi4j.logging;
 
 import org.qi4j.composite.Concerns;
 import org.qi4j.composite.Mixins;
-import org.qi4j.library.framework.NoopMixin;
+import org.qi4j.composite.NoopMixin;
 import org.qi4j.property.Property;
 
 @Concerns( DebugConcern.class )

@@ -15,6 +15,7 @@
 package org.qi4j.library.framework;
 
 import org.qi4j.composite.Mixins;
+import org.qi4j.composite.NoopMixin;
 import org.qi4j.entity.association.AssociationMixin;
 import org.qi4j.library.framework.properties.PropertiesMixin;
 import org.qi4j.property.PropertyMixin;
