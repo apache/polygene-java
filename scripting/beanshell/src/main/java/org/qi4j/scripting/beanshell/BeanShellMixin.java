@@ -106,7 +106,7 @@ public class BeanShellMixin
         {
             runtime = new Interpreter();
             BshClassManager.createClassManager( runtime );
-            Class<? extends Composite> compositeType = me.getClass().getInterfaces()[0];
+            Class compositeType = me.getClass().getInterfaces()[0];
             NameSpace namespace = buildNamespace( compositeType, runtime );
             runtime.setNameSpace( namespace );
             synchronized( BeanShellMixin.class )
