@@ -40,7 +40,7 @@ public class ServiceParser
     {
         ValueFactory valueFactory = context.getValueFactory();
         String identity = descriptor.identity();
-        Class type = descriptor.gerviceType();
+        Class type = descriptor.serviceType();
         URI serviceNode = context.createServiceUri( layerModel, moduleModel, type, identity );
         Class<? extends ServiceInstanceProvider> serviceProvider = descriptor.serviceProvider();
         String providerName = ParseContext.normalizeClassToURI( serviceProvider );
