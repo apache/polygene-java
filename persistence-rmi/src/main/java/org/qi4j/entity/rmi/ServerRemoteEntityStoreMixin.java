@@ -16,10 +16,12 @@
  */
 package org.qi4j.entity.rmi;
 
+import java.io.IOException;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -37,9 +39,11 @@ import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStateInstance;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreException;
-import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.spi.entity.StateCommitter;
+import org.qi4j.spi.util.ListMap;
 import org.qi4j.structure.Module;
+import org.qi4j.structure.ServiceMap;
 
 /**
  * RMI server implementation of EntityStore
@@ -70,8 +74,16 @@ public class ServerRemoteEntityStoreMixin
     // EntityStore implementation
     @WriteLock
     public EntityState getEntityState( QualifiedIdentity identity )
+        throws IOException
     {
-        Class compositeType = module.lookupClass( identity.getCompositeType() );
+        try
+        {
+            Class compositeType = module.lookupClass( identity.getCompositeType() );
+        }
+        catch( ClassNotFoundException e )
+        {
+            throw (IOException) new IOException().initCause( e );
+        }
 
         // TODO How should we get ahold of the CompositeDescriptor?
         EntityState state = entityStore.getEntityState( null, identity );
@@ -118,18 +130,81 @@ public class ServerRemoteEntityStoreMixin
         return entityState;
     }
 
-    public StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, Iterable<QualifiedIdentity> removedStates )
+    public void prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, Iterable<QualifiedIdentity> removedStates )
     {
         lock.writeLock().lock();
         try
         {
-            entityStore.prepare( newStates, loadedStates, removedStates, module ).commit();
-            return null;
+            ServiceMap<EntityStore> storeMap = new ServiceMap<EntityStore>( module, EntityStore.class );
+            Set<EntityStore> stores = new HashSet<EntityStore>();
+
+            ListMap<EntityStore, EntityState> newStoreState = new ListMap<EntityStore, EntityState>();
+            for( EntityState newState : newStates )
+            {
+                QualifiedIdentity id = newState.getIdentity();
+                Class compositeType = module.lookupClass( id.getCompositeType() );
+                EntityStore compositeStore = storeMap.getService( compositeType );
+                newStoreState.add( compositeStore, newState );
+                stores.add( compositeStore );
+            }
+
+            ListMap<EntityStore, EntityState> loadedStoreState = new ListMap<EntityStore, EntityState>();
+            for( EntityState loadedState : loadedStates )
+            {
+                QualifiedIdentity id = loadedState.getIdentity();
+                Class compositeType = module.lookupClass( id.getCompositeType() );
+                EntityStore compositeStore = storeMap.getService( compositeType );
+                loadedStoreState.add( compositeStore, loadedState );
+                stores.add( compositeStore );
+            }
+
+            ListMap<EntityStore, QualifiedIdentity> removedStoreState = new ListMap<EntityStore, QualifiedIdentity>();
+            for( QualifiedIdentity removedState : removedStates )
+            {
+                Class compositeType = module.lookupClass( removedState.getCompositeType() );
+                EntityStore compositeStore = storeMap.getService( compositeType );
+                removedStoreState.add( compositeStore, removedState );
+                stores.add( compositeStore );
+            }
+
+            // Call all stores with their respective subsets
+            List<StateCommitter> committers = new ArrayList<StateCommitter>();
+            try
+            {
+                for( EntityStore store : stores )
+                {
+                    Iterable<EntityState> newState = newStoreState.get( store );
+                    Iterable<EntityState> loadedState = loadedStoreState.get( store );
+                    Iterable<QualifiedIdentity> removedState = removedStoreState.get( store );
+
+                    committers.add( store.prepare( newState == null ? Collections.EMPTY_LIST : newState,
+                                                   loadedState == null ? Collections.EMPTY_LIST : loadedState,
+                                                   removedState == null ? Collections.EMPTY_LIST : removedState,
+                                                   module ) );
+                }
+
+                for( StateCommitter committer : committers )
+                {
+                    committer.commit();
+                }
+            }
+            catch( EntityStoreException e )
+            {
+                for( StateCommitter committer : committers )
+                {
+                    committer.cancel();
+                }
+
+                throw e;
+            }
         }
-        catch( EntityStoreException e )
+        catch( ClassNotFoundException e )
+        {
+            throw new EntityStoreException( e );
+        }
+        finally
         {
             lock.writeLock().unlock();
-            throw e;
         }
     }
 }

@@ -1,4 +1,4 @@
-/*  Copyright 2008 Rickard Ã–berg.
+/*  Copyright 2008 Rickard …berg.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,8 +47,8 @@ import org.qi4j.spi.entity.EntityStateInstance;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreException;
-import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.serialization.SerializableState;
 import org.qi4j.spi.structure.CompositeDescriptor;
 import org.qi4j.structure.Module;
@@ -56,7 +56,7 @@ import org.qi4j.structure.Module;
 /**
  * JDBM implementation of SerializationStore
  */
-public class JdbmSerializationEntityStoreMixin
+public class JdbmEntityStoreMixin
     implements EntityStore, Activatable
 {
     private @Structure Qi4jSPI spi;

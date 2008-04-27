@@ -26,7 +26,7 @@ import org.qi4j.spi.entity.EntityStore;
  * EntityStore service backed by JDBM store.
  */
 
-@Mixins( { JdbmSerializationEntityStoreMixin.class } )
+@Mixins( { JdbmEntityStoreMixin.class } )
 public interface JdbmEntityStoreService
     extends EntityStore, ServiceComposite, Activatable, LockingAbstractComposite
 

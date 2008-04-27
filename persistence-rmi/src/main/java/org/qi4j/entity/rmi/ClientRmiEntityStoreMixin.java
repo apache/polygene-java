@@ -85,20 +85,21 @@ public class ClientRmiEntityStoreMixin
         try
         {
             remote.prepare( newStates, loadedStates, removedStates );
-            return new StateCommitter()
-            {
-                public void commit()
-                {
-                }
-
-                public void cancel()
-                {
-                }
-            };
         }
         catch( IOException e )
         {
             throw new EntityStoreException( e );
         }
+
+        return new StateCommitter()
+        {
+            public void commit()
+            {
+            }
+
+            public void cancel()
+            {
+            }
+        };
     }
 }
