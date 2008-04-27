@@ -59,13 +59,15 @@ public class CompositeBuilderImpl<T>
         this.compositeInterface = (Class<? extends T>) context.getCompositeBinding().getCompositeResolution().getCompositeModel().getCompositeType();
     }
 
-    public void use( Object... usedObjects )
+    public CompositeBuilder<T> use( Object... usedObjects )
     {
         Set<Object> useSet = getUses();
         for( Object usedObject : usedObjects )
         {
             useSet.add( usedObject );
         }
+
+        return this;
     }
 
     public T stateOfComposite()

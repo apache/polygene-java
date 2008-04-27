@@ -12,26 +12,27 @@
  *
  */
 
-package org.qi4j.runtime.util;
-/**
- *  Test for ListMap
- */
+package org.qi4j.spi.util;
 
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import junit.framework.TestCase;
 
-public class ListMapTest extends TestCase
+/**
+ * Map whose values are Lists of things. Create
+ * one ArrayList for each key that is added
+ */
+public class ListMap<K, V>
+    extends HashMap<K, List<V>>
 {
-    ListMap<String, String> listMap;
-
-    public void testAdd() throws Exception
+    public void add( K key, V value )
     {
-        listMap = new ListMap<String, String>();
-
-        listMap.add( "Foo", "Bar" );
-
-        List<String> values = listMap.get( "Foo" );
-        assertEquals( Collections.singletonList( "Bar" ), values );
+        List<V> list = get( key );
+        if( list == null )
+        {
+            list = new ArrayList<V>();
+            put( key, list );
+        }
+        list.add( value );
     }
 }

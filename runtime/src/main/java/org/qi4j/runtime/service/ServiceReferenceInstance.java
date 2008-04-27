@@ -76,7 +76,7 @@ public final class ServiceReferenceInstance<T>
         {
             serviceAttributes.put( serviceAttributeType, serviceDescriptor.serviceAttribute( serviceAttributeType ) );
         }
-        serviceProxy = (T) Proxy.newProxyInstance( serviceDescriptor.gerviceType().getClassLoader(), new Class[]{ serviceDescriptor.gerviceType() }, new ServiceInvocationHandler() );
+        serviceProxy = (T) Proxy.newProxyInstance( serviceDescriptor.serviceType().getClassLoader(), new Class[]{ serviceDescriptor.serviceType() }, new ServiceInvocationHandler() );
     }
 
     public ImmutableProperty<String> identity()
@@ -105,6 +105,11 @@ public final class ServiceReferenceInstance<T>
     {
         referenceCounter++;
         return serviceProxy;
+    }
+
+    public boolean isActive()
+    {
+        return serviceInstance != null;
     }
 
     public synchronized void releaseService()

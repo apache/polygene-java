@@ -28,6 +28,19 @@ public final class ObjectModelFactory extends AbstractModelFactory
     {
         List<ConstructorModel> constructorModels = new ArrayList<ConstructorModel>();
         getConstructorModels( objectClass, null, constructorModels );
+
+        if( constructorModels.size() == 0 )
+        {
+            if( objectClass.getEnclosingClass() != null )
+            {
+                throw new InvalidCompositeException( "Class " + objectClass.getName() + " should be declared as a static class", objectClass );
+            }
+            else
+            {
+                throw new InvalidCompositeException( "Class " + objectClass.getName() + " does not have any valid constructors", objectClass );
+            }
+        }
+
         List<FieldModel> fieldModels = new ArrayList<FieldModel>();
         getFieldModels( objectClass, objectClass, null, fieldModels );
         Iterable<MethodModel> methodModels = getMethodModels( objectClass );

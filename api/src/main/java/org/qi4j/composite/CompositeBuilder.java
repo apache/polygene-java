@@ -34,7 +34,7 @@ public interface CompositeBuilder<T>
      * @param usedObjects The objects that can be injected into mixins.
      * @see org.qi4j.composite.scope.Uses
      */
-    void use( Object... usedObjects );
+    CompositeBuilder<T> use( Object... usedObjects );
 
     T stateOfComposite();
 

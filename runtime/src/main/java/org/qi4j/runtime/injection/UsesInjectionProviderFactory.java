@@ -52,9 +52,10 @@ public final class UsesInjectionProviderFactory
                 return null;
             }
 
+            Class injectionType = resolution.getInjectionModel().getRawInjectionType();
             for( Object usedObject : uses )
             {
-                if( resolution.getInjectionModel().getRawInjectionType().isAssignableFrom( usedObject.getClass() ) )
+                if( injectionType.isAssignableFrom( usedObject.getClass() ) )
                 {
                     return usedObject;
                 }

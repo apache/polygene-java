@@ -45,8 +45,8 @@ import org.qi4j.spi.entity.EntityStateInstance;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreException;
-import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.structure.CompositeDescriptor;
 import org.qi4j.structure.Module;
 
@@ -162,15 +162,17 @@ public final class UnitOfWorkInstance
                     throw new UnitOfWorkException( "No store found for type " + compositeType );
                 }
 
-                CompositeContext compositeContext = moduleInstance.getModuleContext().getCompositeContext( compositeType );
+                ModuleInstance.ModuleDelegate module = (ModuleInstance.ModuleDelegate) moduleInstance.getModule().moduleForComposite( compositeType );
 
-                if( compositeContext == null )
+                if( module == null )
                 {
                     throw new InvalidApplicationException(
-                        "Trying to create unregistered composite of type [" + compositeType.getName() + "] in module [" +
-                        moduleInstance.getModuleContext().getModuleBinding().getModuleResolution().getModuleModel().getName() + "]."
+                        "Trying to find unregistered composite of type [" + compositeType.getName() + "] in module [" +
+                        moduleInstance.getModule().name().get() + "]."
                     );
                 }
+
+                CompositeContext compositeContext = module.getModuleInstance().getModuleContext().getCompositeContext( compositeType );
 
                 EntityState state = null;
                 try
@@ -230,7 +232,18 @@ public final class UnitOfWorkInstance
         {
             // Create entity instance
             EntityStore store = stateServices.getEntityStore( compositeType );
-            CompositeContext compositeContext = moduleInstance.getModuleContext().getCompositeContext( compositeType );
+
+            ModuleInstance.ModuleDelegate module = (ModuleInstance.ModuleDelegate) moduleInstance.getModule().moduleForComposite( compositeType );
+
+            if( module == null )
+            {
+                throw new InvalidApplicationException(
+                    "Trying to get reference unregistered composite of type [" + compositeType.getName() + "] in module [" +
+                    moduleInstance.getModule().name().get() + "]."
+                );
+            }
+
+            CompositeContext compositeContext = module.getModuleInstance().getModuleContext().getCompositeContext( compositeType );
             entity = (EntityComposite) compositeContext.newEntityCompositeInstance( this, store, identity ).getProxy();
             Map<String, EntityComposite> entityCache = getEntityCache( compositeType );
             entityCache.put( identity, entity );
@@ -282,7 +295,7 @@ public final class UnitOfWorkInstance
             try
             {
                 QualifiedIdentity identity = new QualifiedIdentity( entityInstance.getIdentity(),
-                                                  entityInstance.getContext().getCompositeModel().getCompositeType().getName() );
+                                                                    entityInstance.getContext().getCompositeModel().getCompositeType().getName() );
                 EntityState state = entityInstance.getStore().getEntityState( entityInstance.getContext().getCompositeResolution().getCompositeDescriptor(), identity );
                 entityInstance.refresh( state );
                 entityInstance.setMixins( null );
@@ -419,7 +432,7 @@ public final class UnitOfWorkInstance
 
             try
             {
-                committers.add( entityStore.prepare( completion.getNewState(), completion.getUpdatedState(), completion.getRemovedState(), moduleInstance ) );
+                committers.add( entityStore.prepare( completion.getNewState(), completion.getUpdatedState(), completion.getRemovedState(), moduleInstance.getModule() ) );
             }
             catch( EntityStoreException e )
             {

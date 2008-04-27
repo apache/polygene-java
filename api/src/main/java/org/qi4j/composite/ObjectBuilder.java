@@ -27,7 +27,7 @@ public interface ObjectBuilder<T>
      *
      * @param objects the objects to be used
      */
-    void use( Object... objects );
+    ObjectBuilder<T> use( Object... objects );
 
     T newInstance()
         throws InstantiationException;

@@ -28,7 +28,7 @@ import org.qi4j.test.AbstractQi4jTest;
  * PropertyMixin invocation performance test. Don't forget to add VM value "-server"
  * before running this test!
  */
-public class PropertyMixinInvocationPerformanceTest
+public abstract class PropertyMixinInvocationPerformanceTest
     extends AbstractQi4jTest
 {
     public void assemble( ModuleAssembly module )

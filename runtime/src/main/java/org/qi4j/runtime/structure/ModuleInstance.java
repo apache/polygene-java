@@ -47,7 +47,7 @@ import org.qi4j.structure.Module;
  * Instance of a Module.
  */
 public final class ModuleInstance
-    implements Activatable, ServiceLocator, Module
+    implements Activatable, ServiceLocator
 {
     static final ModuleInstance DUMMY = new ModuleInstance();
 
@@ -66,6 +66,7 @@ public final class ModuleInstance
     }
 
     private ModuleContext moduleContext;
+    private Module module;
 
     private Map<Class<? extends Composite>, ModuleInstance> moduleForPublicComposites;
     private Map<Class, ModuleInstance> moduleForPublicObjects;
@@ -95,12 +96,14 @@ public final class ModuleInstance
     public ModuleInstance( ModuleContext moduleContext,
                            Map<Class<? extends Composite>, ModuleInstance> moduleInstances,
                            Map<Class, ModuleInstance> moduleForPublicObjects,
-                           Map<Class, ModuleInstance> moduleForPublicMixinTypes, ServiceLocator layerServiceLocator )
+                           Map<Class, ModuleInstance> moduleForPublicMixinTypes,
+                           ServiceLocator layerServiceLocator )
     {
         this.moduleForPublicObjects = moduleForPublicObjects;
         this.moduleForPublicComposites = moduleInstances;
         this.moduleContext = moduleContext;
         this.moduleForPublicMixinTypes = moduleForPublicMixinTypes;
+        this.module = new ModuleDelegate();
 
         compositeBuilderFactory = new ModuleCompositeBuilderFactory( this );
         objectBuilderFactory = new ModuleObjectBuilderFactory( this );
@@ -116,7 +119,7 @@ public final class ModuleInstance
             Class<? extends ServiceInstanceProvider> providerType = serviceDescriptor.serviceProvider();
             ObjectBuilder<? extends ServiceInstanceProvider> builder = objectBuilderFactory.newObjectBuilder( providerType );
             ServiceInstanceProvider sip = builder.newInstance();
-            Class serviceType = serviceDescriptor.gerviceType();
+            Class serviceType = serviceDescriptor.serviceType();
             final ServiceReferenceInstance<Object> serviceReference = new ServiceReferenceInstance<Object>( serviceDescriptor, sip );
             registerServiceReference( serviceType, serviceReference );
             serviceInstances.add( serviceReference );
@@ -147,6 +150,18 @@ public final class ModuleInstance
         return structureContext;
     }
 
+    public Module getModule()
+    {
+        return module;
+    }
+
+    /**
+     * Lookup a service for a particular type. Only look in the local Module; do not try
+     * and delegate to the Layer.
+     *
+     * @param serviceType the type of the service to lookup
+     * @return a service reference to the found service, or null if no service matching the type was found
+     */
     public <T> ServiceReference<T> lookupService( Class<T> serviceType )
     {
         List<ServiceReferenceInstance> serviceRefs = serviceReferences.get( serviceType );
@@ -312,8 +327,14 @@ public final class ModuleInstance
     }
 
     public Class lookupClass( String className )
+        throws ClassNotFoundException
     {
-        return moduleContext.getModuleBinding().lookupClass( className );
+        Class aClass = moduleContext.getModuleBinding().lookupClass( className );
+        if( aClass == null )
+        {
+            throw new ClassNotFoundException( className );
+        }
+        return aClass;
     }
 
     private void setActivationStatus( ActivationStatus newStatus )
@@ -348,5 +369,60 @@ public final class ModuleInstance
     @Override public String toString()
     {
         return moduleContext.toString();
+    }
+
+    public class ModuleDelegate
+        implements Module
+    {
+        public ModuleInstance getModuleInstance()
+        {
+            return ModuleInstance.this;
+        }
+
+        public ImmutableProperty<String> name()
+        {
+            return ModuleInstance.this.name();
+        }
+
+        public Module moduleForComposite( Class<? extends Composite> compositetype )
+        {
+            return ModuleInstance.this.moduleForComposite( compositetype ).getModule();
+        }
+
+        public Module moduleForMixinType( Class<?> mixintype )
+        {
+            return ModuleInstance.this.moduleForMixinType( mixintype ).getModule();
+        }
+
+        public Module moduleForObject( Class<?> objecttype )
+        {
+            return ModuleInstance.this.moduleForObject( objecttype ).getModule();
+        }
+
+        public boolean isPublic( Class<?> compositeOrObject )
+        {
+            return ModuleInstance.this.isPublic( compositeOrObject );
+        }
+
+        public Class<? extends Composite> lookupCompositeType( Class<?> mixintype )
+        {
+            return ModuleInstance.this.lookupCompositeType( mixintype );
+        }
+
+        public Class lookupClass( String className )
+            throws ClassNotFoundException
+        {
+            return ModuleInstance.this.lookupClass( className );
+        }
+
+        public <T> ServiceReference<T> lookupService( Class<T> serviceType )
+        {
+            return serviceLocator.lookupService( serviceType );
+        }
+
+        public <T> Iterable<ServiceReference<T>> lookupServices( Class<T> serviceType )
+        {
+            return serviceLocator.lookupServices( serviceType );
+        }
     }
 }

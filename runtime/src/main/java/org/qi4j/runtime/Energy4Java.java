@@ -50,8 +50,10 @@ import org.qi4j.runtime.injection.ServiceInjectionProviderFactory;
 import org.qi4j.runtime.injection.StructureInjectionProviderFactory;
 import org.qi4j.runtime.injection.ThisInjectionProviderFactory;
 import org.qi4j.runtime.injection.UsesInjectionProviderFactory;
+import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.injection.InjectionProviderFactory;
+import org.qi4j.structure.Module;
 
 /**
  * Incarnation of Qi4j.
@@ -156,6 +158,12 @@ public final class Energy4Java
     public CompositeBinding getCompositeBinding( Composite composite )
     {
         return AbstractCompositeInstance.getCompositeInstance( composite ).getContext().getCompositeBinding();
+    }
+
+    public CompositeBinding getCompositeBinding( Class<? extends Composite> compositeType, Module module )
+    {
+        ModuleInstance.ModuleDelegate delegate = (ModuleInstance.ModuleDelegate) module;
+        return delegate.getModuleInstance().getModuleContext().getModuleBinding().getCompositeBinding( compositeType );
     }
 
     // Runtime

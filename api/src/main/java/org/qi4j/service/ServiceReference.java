@@ -34,4 +34,6 @@ public interface ServiceReference<T>
 
     void releaseService()
         throws IllegalStateException;
+
+    boolean isActive();
 }

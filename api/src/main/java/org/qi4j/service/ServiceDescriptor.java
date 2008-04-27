@@ -48,7 +48,7 @@ public final class ServiceDescriptor
         this.serviceAttributes = serviceAttributes;
     }
 
-    public Class gerviceType()
+    public Class serviceType()
     {
         return serviceType;
     }
@@ -80,7 +80,7 @@ public final class ServiceDescriptor
 
     public <K extends Serializable> K serviceAttribute( Class<K> infoType )
     {
-        return (K) serviceAttributes.get( infoType );
+        return infoType.cast( serviceAttributes.get( infoType ) );
     }
 
     @Override public String toString()

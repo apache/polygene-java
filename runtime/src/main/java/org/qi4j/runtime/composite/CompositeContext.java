@@ -248,7 +248,7 @@ public final class CompositeContext
         for( MixinContext mixinContext : mixinContexts )
         {
             MixinInjectionContext injectionContext = new MixinInjectionContext( moduleInstance.getStructureContext(),
-                                                                                moduleInstance,
+                                                                                moduleInstance.getModule(),
                                                                                 compositeBinding,
                                                                                 compositeInstance,
                                                                                 uses,

@@ -358,7 +358,7 @@ public final class ApplicationBuilder
         List<ServiceDescriptor> serviceDescriptors = moduleAssembly.getServiceDescriptors();
         for( ServiceDescriptor serviceDescriptor : serviceDescriptors )
         {
-            Class serviceType = serviceDescriptor.gerviceType();
+            Class serviceType = serviceDescriptor.serviceType();
             if( ServiceComposite.class.isAssignableFrom( serviceType ) )
             {
                 // Add as composite

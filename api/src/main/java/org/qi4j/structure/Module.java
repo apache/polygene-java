@@ -39,5 +39,6 @@ public interface Module
 
     Class<? extends Composite> lookupCompositeType( Class<?> mixintype );
 
-    Class lookupClass( String className );
+    Class lookupClass( String className )
+        throws ClassNotFoundException;
 }

@@ -40,13 +40,15 @@ public final class ObjectBuilderImpl<T>
 
     }
 
-    public void use( Object... usedObjects )
+    public ObjectBuilder<T> use( Object... usedObjects )
     {
         Set<Object> useSet = getUses();
         for( Object usedObject : usedObjects )
         {
             useSet.add( usedObject );
         }
+
+        return this;
     }
 
     public T newInstance()

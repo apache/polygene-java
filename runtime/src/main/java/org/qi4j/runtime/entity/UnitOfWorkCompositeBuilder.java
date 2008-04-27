@@ -18,6 +18,7 @@ import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.Map;
 import org.qi4j.composite.Composite;
+import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.InstantiationException;
 import org.qi4j.composite.InvalidApplicationException;
 import org.qi4j.entity.EntityComposite;
@@ -42,11 +43,11 @@ import org.qi4j.spi.entity.EntityAlreadyExistsException;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreException;
+import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.association.AssociationBinding;
 import org.qi4j.spi.entity.association.AssociationModel;
 import org.qi4j.spi.property.PropertyBinding;
 import org.qi4j.spi.property.PropertyModel;
-import org.qi4j.spi.entity.QualifiedIdentity;
 
 /**
  * TODO
@@ -77,7 +78,7 @@ public final class UnitOfWorkCompositeBuilder<T>
         this.store = store;
     }
 
-    public void use( Object... usedObjects )
+    public CompositeBuilder<T> use( Object... usedObjects )
     {
         throw new InvalidApplicationException( "Entities may not use other objects" );
     }

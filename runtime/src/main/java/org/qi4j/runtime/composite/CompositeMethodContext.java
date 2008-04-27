@@ -106,7 +106,7 @@ public final class CompositeMethodContext
                 Object modifies = getModifies( method, classloader, previousConcern, concernBinding.getConcernResolution().getConcernModel() );
 
                 ModifierInjectionContext modifierContext = new ModifierInjectionContext( moduleInstance.getStructureContext(),
-                                                                                         moduleInstance,
+                                                                                         moduleInstance.getModule(),
                                                                                          compositeBinding,
                                                                                          proxyHandler,
                                                                                          modifies,
@@ -168,7 +168,7 @@ public final class CompositeMethodContext
             Object modifies = getModifies( method, classloader, sideEffectResult, sideEffectBinding.getSideEffectResolution().getSideEffectModel() );
 
             ModifierInjectionContext modifierContext = new ModifierInjectionContext( moduleInstance.getStructureContext(),
-                                                                                     moduleInstance,
+                                                                                     moduleInstance.getModule(),
                                                                                      compositeBinding,
                                                                                      proxyHandler,
                                                                                      modifies,

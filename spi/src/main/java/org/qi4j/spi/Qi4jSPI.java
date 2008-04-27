@@ -17,6 +17,7 @@ package org.qi4j.spi;
 import org.qi4j.Qi4j;
 import org.qi4j.composite.Composite;
 import org.qi4j.spi.composite.CompositeBinding;
+import org.qi4j.structure.Module;
 
 /**
  * Encapsulation of the Qi4j SPI. The Qi4jSPI holds references
@@ -26,4 +27,6 @@ public interface Qi4jSPI
     extends Qi4j
 {
     CompositeBinding getCompositeBinding( Composite composite );
+
+    CompositeBinding getCompositeBinding( Class<? extends Composite> compositeType, Module module );
 }

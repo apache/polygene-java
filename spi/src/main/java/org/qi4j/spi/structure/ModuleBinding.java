@@ -31,7 +31,7 @@ public final class ModuleBinding
     private Map<Class, ObjectBinding> objectBindings;
 
     private Map<Class<? extends Composite>, CompositeBinding> compositeBindings;
-    private Map<String, Class> compositeClasses;
+    private Map<String, Class> classMappings;
 
     public ModuleBinding( ModuleResolution moduleResolution, Map<Class<? extends Composite>, CompositeBinding> compositeBindingMap, Map<Class, ObjectBinding> objectBindings )
     {
@@ -39,10 +39,16 @@ public final class ModuleBinding
         this.moduleResolution = moduleResolution;
         this.objectBindings = objectBindings;
 
-        compositeClasses = new HashMap<String, Class>();
+        // Mapping for string->class lookups
+        classMappings = new HashMap<String, Class>();
         for( Class<? extends Composite> compositeClass : compositeBindingMap.keySet() )
         {
-            compositeClasses.put( compositeClass.getName(), compositeClass );
+            classMappings.put( compositeClass.getName(), compositeClass );
+        }
+
+        for( Class objectClass : objectBindings.keySet() )
+        {
+            classMappings.put( objectClass.getName(), objectClass );
         }
     }
 
@@ -76,7 +82,7 @@ public final class ModuleBinding
 
     public Class lookupClass( String name )
     {
-        return compositeClasses.get( name );
+        return classMappings.get( name );
     }
 
     @Override public String toString()

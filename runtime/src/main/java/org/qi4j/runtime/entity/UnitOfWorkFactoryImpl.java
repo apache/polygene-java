@@ -22,8 +22,8 @@ import org.qi4j.entity.IdentityGenerator;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkFactory;
 import org.qi4j.runtime.structure.ModuleInstance;
-import org.qi4j.runtime.structure.ServiceMap;
 import org.qi4j.spi.entity.EntityStore;
+import org.qi4j.structure.ServiceMap;
 
 public final class UnitOfWorkFactoryImpl
     implements UnitOfWorkFactory
@@ -60,8 +60,8 @@ public final class UnitOfWorkFactoryImpl
 
         public ModuleStateServices( ModuleInstance moduleInstance )
         {
-            entityStores = new ServiceMap<EntityStore>( moduleInstance, EntityStore.class );
-            identityGenerators = new ServiceMap<IdentityGenerator>( moduleInstance, IdentityGenerator.class );
+            entityStores = new ServiceMap<EntityStore>( moduleInstance.getModule(), EntityStore.class );
+            identityGenerators = new ServiceMap<IdentityGenerator>( moduleInstance.getModule(), IdentityGenerator.class );
         }
 
         public EntityStore getEntityStore( Class<? extends EntityComposite> compositeType )

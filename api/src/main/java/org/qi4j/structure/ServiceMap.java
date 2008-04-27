@@ -12,7 +12,7 @@
  *
  */
 
-package org.qi4j.runtime.structure;
+package org.qi4j.structure;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,15 +20,18 @@ import org.qi4j.composite.Composite;
 import org.qi4j.service.ServiceReference;
 
 /**
- * TODO
+ * This class helps you manage references to services which are acquired
+ * from the perspective of given Composite types. Once you are done
+ * with the Map, make sure to call {@link #release()} on it to release
+ * all the services that have been used.
  */
 public final class ServiceMap<T>
 {
-    private ModuleInstance moduleInstance;
+    private Module moduleInstance;
     private Class<T> serviceClass;
     private Map<Class<? extends Composite>, ServiceReference> instances = new HashMap<Class<? extends Composite>, ServiceReference>();
 
-    public ServiceMap( ModuleInstance moduleInstance, Class<T> serviceClass )
+    public ServiceMap( Module moduleInstance, Class<T> serviceClass )
     {
         this.moduleInstance = moduleInstance;
         this.serviceClass = serviceClass;
@@ -39,8 +42,8 @@ public final class ServiceMap<T>
         ServiceReference serviceReference = instances.get( compositeType );
         if( serviceReference == null )
         {
-            ModuleInstance realModule = moduleInstance.moduleForComposite( compositeType );
-            serviceReference = realModule.getStructureContext().getServiceLocator().lookupService( serviceClass );
+            Module realModule = moduleInstance.moduleForComposite( compositeType );
+            serviceReference = realModule.lookupService( serviceClass );
             if( serviceReference == null )
             {
                 return null;

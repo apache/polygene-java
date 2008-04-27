@@ -40,22 +40,30 @@ public class UsesInjectionTest
      * @throws Exception re-thrown
      */
     @Test
-    public void injectedObjectForUsesAnnotation()
+    public void givenUsedObjectWhenUseWithBuilderThenInjectReferences()
         throws Exception
     {
         ObjectBuilder<InjectionTarget> builder = objectBuilderFactory.newObjectBuilder( InjectionTarget.class );
         ToBeInjected toBeInjected = new ToBeInjected();
         builder.use( toBeInjected );
-        assertThat( "Injected object", builder.newInstance().getUsed(), is( equalTo( toBeInjected ) ) );
+        builder.use( true );
+        assertThat( "Injected object", builder.newInstance().getUsedObject(), is( equalTo( toBeInjected ) ) );
+        assertThat( "Injected boolean", builder.newInstance().isUsedBoolean(), is( equalTo( true ) ) );
     }
 
     public static class InjectionTarget
     {
-        @Uses ToBeInjected used;
+        @Uses ToBeInjected usedObject;
+        @Uses boolean usedBoolean;
 
-        public ToBeInjected getUsed()
+        public ToBeInjected getUsedObject()
         {
-            return used;
+            return usedObject;
+        }
+
+        public boolean isUsedBoolean()
+        {
+            return usedBoolean;
         }
     }
 

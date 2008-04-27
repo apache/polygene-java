@@ -46,7 +46,6 @@ import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.association.AbstractAssociation;
 import org.qi4j.property.Property;
 import org.qi4j.runtime.entity.EntityMixin;
-import org.qi4j.runtime.util.ListMap;
 import org.qi4j.spi.composite.CompositeMethodModel;
 import org.qi4j.spi.composite.CompositeModel;
 import org.qi4j.spi.composite.ConcernModel;
@@ -61,6 +60,7 @@ import org.qi4j.spi.composite.ParameterModel;
 import org.qi4j.spi.composite.SideEffectModel;
 import org.qi4j.spi.entity.association.AssociationModel;
 import org.qi4j.spi.property.PropertyModel;
+import org.qi4j.spi.util.ListMap;
 
 public final class CompositeModelFactory
     extends AbstractModelFactory
