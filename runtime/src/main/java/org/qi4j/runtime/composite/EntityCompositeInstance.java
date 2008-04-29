@@ -255,8 +255,15 @@ public final class EntityCompositeInstance
 
     protected Object onEquals( Object proxy, Object[] args )
     {
-        Identity other = ( (Identity) args[ 0 ] );
-        return other != null && identity.equals( other.identity().get() );
+        try
+        {
+            Identity other = ( (Identity) args[ 0 ] );
+            return other != null && identity.equals( other.identity().get() );
+        }
+        catch( ClassCastException e )
+        {
+            return false;
+        }
     }
 
     protected Object onToString( Object proxy )
