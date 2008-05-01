@@ -19,6 +19,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.qi4j.composite.Composite;
+import org.qi4j.entity.Entity;
+import org.qi4j.service.ServiceComposite;
 import org.qi4j.service.ServiceDescriptor;
 import org.qi4j.service.ServiceInstanceProvider;
 import org.qi4j.spi.service.provider.DefaultServiceInstanceProvider;
@@ -50,7 +53,6 @@ public final class ServiceDeclaration
     public ServiceDeclaration providedBy( Class<? extends ServiceInstanceProvider> sip )
     {
         serviceProvider = sip;
-
         return this;
     }
 
@@ -82,9 +84,14 @@ public final class ServiceDeclaration
             {
                 id = serviceType.getSimpleName();
             }
-            ServiceDescriptor serviceDescriptor = new ServiceDescriptor( serviceType, serviceProvider, id, visibility, instantiateOnStartup, serviceAttributes );
-            serviceDescriptors.add( serviceDescriptor );
+            createServiceDescriptor( serviceDescriptors, serviceType, id );
         }
         return serviceDescriptors;
+    }
+
+    private void createServiceDescriptor( List<ServiceDescriptor> serviceDescriptors, Class serviceType, String id )
+    {
+        ServiceDescriptor serviceDescriptor = new ServiceDescriptor( serviceType, serviceProvider, id, visibility, instantiateOnStartup, serviceAttributes );
+        serviceDescriptors.add( serviceDescriptor );
     }
 }

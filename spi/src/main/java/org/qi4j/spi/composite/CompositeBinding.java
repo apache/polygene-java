@@ -18,14 +18,17 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
+import java.io.Serializable;
 import org.qi4j.spi.entity.association.AssociationBinding;
 import org.qi4j.spi.property.PropertyBinding;
+import org.qi4j.composite.Composite;
 
 /**
  * A Composite Binding is the result of taking a Composite Resolution and performing
  * dependency binding on all its dependencies.
  */
 public final class CompositeBinding
+    implements Serializable
 {
     private final CompositeResolution compositeResolution;
     private final Collection<CompositeMethodBinding> compositeMethodBindings;
@@ -45,6 +48,11 @@ public final class CompositeBinding
         this.mixinBindings = mixinBindings;
         this.compositeResolution = compositeResolution;
         this.compositeMethodBindings = methodBindings;
+    }
+
+    public Class<? extends Composite> getCompositeType()
+    {
+        return compositeResolution.getCompositeModel().getCompositeType();
     }
 
     public CompositeResolution getCompositeResolution()

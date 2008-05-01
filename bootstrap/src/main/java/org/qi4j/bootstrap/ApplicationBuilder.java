@@ -372,20 +372,30 @@ public final class ApplicationBuilder
             {
                 boolean found = false;
                 Class<? extends ServiceInstanceProvider> provider = serviceDescriptor.serviceProvider();
-                for( ObjectDescriptor objectDescriptor : objectDescriptors )
+                if( Composite.class.isAssignableFrom( provider ) )
                 {
-                    if( objectDescriptor.getObjectModel().getModelClass().equals( provider ) )
-                    {
-                        found = true;
-                        break;
-                    }
+                    Class<? extends Composite> compositeProvider = (Class<? extends Composite>) provider;
+                    CompositeDeclaration compositeDeclaration = new CompositeDeclaration( compositeProvider );
+                    List<CompositeDescriptor> descriptors = compositeDeclaration.getCompositeDescriptors( compositeModelFactory );
+                    compositeDescriptors.add( descriptors.get( 0 ) );
                 }
-                if( !found )
+                else
                 {
-                    Set<Class> providerClass = Collections.singleton( (Class) provider );
-                    ObjectDeclaration objectDeclaration = new ObjectDeclaration( providerClass );
-                    List<ObjectDescriptor> descriptors = objectDeclaration.getObjectDescriptors( objectModelFactory );
-                    objectDescriptors.add( descriptors.get( 0 ) );
+                    for( ObjectDescriptor objectDescriptor : objectDescriptors )
+                    {
+                        if( objectDescriptor.getObjectModel().getModelClass().equals( provider ) )
+                        {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if( !found )
+                    {
+                        Set<Class> providerClass = Collections.singleton( (Class) provider );
+                        ObjectDeclaration objectDeclaration = new ObjectDeclaration( providerClass );
+                        List<ObjectDescriptor> descriptors = objectDeclaration.getObjectDescriptors( objectModelFactory );
+                        objectDescriptors.add( descriptors.get( 0 ) );
+                    }
                 }
             }
         }

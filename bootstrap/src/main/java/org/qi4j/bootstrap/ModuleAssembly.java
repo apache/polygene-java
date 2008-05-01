@@ -91,6 +91,10 @@ public final class ModuleAssembly
     {
         for( Class objectType : objectTypes )
         {
+            if( objectType.isPrimitive() )
+            {
+                throw new AssemblyException( "May not register primitives as objects" );
+            }
             if( objectType.isInterface() )
             {
                 throw new AssemblyException( "May not register interfaces as objects" );
@@ -177,7 +181,7 @@ public final class ModuleAssembly
         return associationDeclarations;
     }
 
-    String getName()
+    public String getName()
     {
         return name;
     }

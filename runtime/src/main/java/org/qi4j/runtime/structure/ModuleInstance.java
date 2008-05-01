@@ -25,6 +25,7 @@ import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.MixinTypeNotAvailableException;
 import org.qi4j.composite.ObjectBuilder;
 import org.qi4j.composite.ObjectBuilderFactory;
+import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.entity.UnitOfWorkFactory;
 import org.qi4j.property.ComputedPropertyInstance;
 import org.qi4j.property.GenericPropertyInfo;
@@ -117,8 +118,17 @@ public final class ModuleInstance
         for( ServiceDescriptor serviceDescriptor : serviceDescriptors )
         {
             Class<? extends ServiceInstanceProvider> providerType = serviceDescriptor.serviceProvider();
-            ObjectBuilder<? extends ServiceInstanceProvider> builder = objectBuilderFactory.newObjectBuilder( providerType );
-            ServiceInstanceProvider sip = builder.newInstance();
+            ServiceInstanceProvider sip;
+            if( Composite.class.isAssignableFrom( providerType) )
+            {
+                CompositeBuilder<? extends ServiceInstanceProvider> builder = compositeBuilderFactory.newCompositeBuilder( providerType );
+                sip = builder.newInstance();
+            }
+            else
+            {
+                ObjectBuilder<? extends ServiceInstanceProvider> builder = objectBuilderFactory.newObjectBuilder( providerType );
+                sip = builder.newInstance();
+            }
             Class serviceType = serviceDescriptor.serviceType();
             final ServiceReferenceInstance<Object> serviceReference = new ServiceReferenceInstance<Object>( serviceDescriptor, sip );
             registerServiceReference( serviceType, serviceReference );
@@ -321,8 +331,6 @@ public final class ModuleInstance
 
     public boolean isPublic( Class<?> compositeOrObject )
     {
-
-
         return false;
     }
 
@@ -371,7 +379,7 @@ public final class ModuleInstance
         return moduleContext.toString();
     }
 
-    public class ModuleDelegate
+    public final class ModuleDelegate
         implements Module
     {
         public ModuleInstance getModuleInstance()

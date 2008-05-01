@@ -107,6 +107,7 @@ public final class CompositeMethodContext
 
                 ModifierInjectionContext modifierContext = new ModifierInjectionContext( moduleInstance.getStructureContext(),
                                                                                          moduleInstance.getModule(),
+                                                                                         moduleInstance.getModuleContext().getModuleBinding(),
                                                                                          compositeBinding,
                                                                                          proxyHandler,
                                                                                          modifies,
@@ -169,6 +170,7 @@ public final class CompositeMethodContext
 
             ModifierInjectionContext modifierContext = new ModifierInjectionContext( moduleInstance.getStructureContext(),
                                                                                      moduleInstance.getModule(),
+                                                                                     moduleInstance.getModuleContext().getModuleBinding(),
                                                                                      compositeBinding,
                                                                                      proxyHandler,
                                                                                      modifies,

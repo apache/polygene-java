@@ -76,4 +76,9 @@ public final class ObjectDescriptor
     {
         return objectModel.hashCode();
     }
+
+    public String toString()
+    {
+        return "descriptor[" + objectModel.getModelClass().getName() + "]";
+    }
 }

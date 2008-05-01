@@ -21,9 +21,13 @@ package org.qi4j.runtime.query;
 import org.qi4j.composite.NullArgumentException;
 import org.qi4j.query.QueryBuilder;
 import org.qi4j.query.QueryBuilderFactory;
+import org.qi4j.query.MissingIndexingSystemException;
 import org.qi4j.runtime.entity.UnitOfWorkInstance;
+import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.service.ServiceReference;
+import org.qi4j.service.ServiceLocator;
 import org.qi4j.spi.query.EntityFinder;
+import org.qi4j.spi.injection.StructureContext;
 
 /**
  * Default implementation of {@link QueryBuilderFactory}
@@ -56,9 +60,14 @@ public final class QueryBuilderFactoryImpl
      */
     public <T> QueryBuilder<T> newQueryBuilder( final Class<T> resultType )
     {
-        final ServiceReference<EntityFinder> serviceReference =
-            unitOfWorkInstance.getModuleInstance().getStructureContext().getServiceLocator()
-                .lookupService( EntityFinder.class );
+        ModuleInstance module = unitOfWorkInstance.getModuleInstance();
+        StructureContext structureContext = module.getStructureContext();
+        ServiceLocator serviceLocator = structureContext.getServiceLocator();
+        final ServiceReference<EntityFinder> serviceReference = serviceLocator.lookupService( EntityFinder.class );
+        if( serviceReference == null )
+        {
+            throw new MissingIndexingSystemException();
+        }
         try
         {
             return new QueryBuilderImpl<T>( unitOfWorkInstance, serviceReference.get(), resultType );

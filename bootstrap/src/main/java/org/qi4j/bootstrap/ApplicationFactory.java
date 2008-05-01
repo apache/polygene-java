@@ -60,7 +60,7 @@ public final class ApplicationFactory
             {
                 // Create Module
                 ModuleAssembly mb = lb.newModuleAssembly();
-                mb.setName( "Module " + ( module + 1 ) );
+                mb.setName( lb.getName() + " : Module " + ( module + 1 ) );
                 for( int assembly = 0; assembly < assemblers[ layer ][ module ].length; assembly++ )
                 {
                     // Register Assembler

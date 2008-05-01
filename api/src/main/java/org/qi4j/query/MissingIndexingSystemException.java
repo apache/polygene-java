@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2008, Niclas Hedhman. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -11,24 +11,15 @@
  * limitations under the License.
  *
  */
+package org.qi4j.query;
 
-package org.qi4j.bootstrap;
-
-/**
- * Set the name of the module
+/** This Exception is thrown in <code>QueryBuilderFactory.newQueryBuilder()</code> method if
+ * no indexing subsystem has been declared in the assembly.
  */
-public final class ModuleName
-    implements Assembler
+public class MissingIndexingSystemException extends QueryException
 {
-    private String name;
-
-    public ModuleName( String name )
+    public MissingIndexingSystemException()
     {
-        this.name = name;
-    }
-
-    public void assemble( ModuleAssembly module ) throws AssemblyException
-    {
-        module.setName( name );
+        super("No QueryService has been declared in the assembly of the application.");
     }
 }

@@ -155,6 +155,11 @@ final class QueryImpl<T>
         return (V) variables.get( name );
     }
 
+    public Class<T> resultType()
+    {
+        return resultType;
+    }
+
     /**
      * @see Query#iterator()
      */

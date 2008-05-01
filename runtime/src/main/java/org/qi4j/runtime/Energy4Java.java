@@ -53,8 +53,9 @@ import org.qi4j.runtime.injection.UsesInjectionProviderFactory;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.injection.InjectionProviderFactory;
+import org.qi4j.entity.EntityComposite;
+import org.qi4j.service.ServiceComposite;
 import org.qi4j.structure.Module;
-
 /**
  * Incarnation of Qi4j.
  */
@@ -146,7 +147,11 @@ public final class Energy4Java
         Class[] extendedInterfaces = compositeClass.getInterfaces();
         for( Class extendedInterface : extendedInterfaces )
         {
-            if( Composite.class.isAssignableFrom( extendedInterface ) && !Composite.class.equals( extendedInterface ) )
+            if( Composite.class.isAssignableFrom( extendedInterface ) &&
+                !Composite.class.equals( extendedInterface ) &&
+                !EntityComposite.class.equals( extendedInterface ) &&
+                !ServiceComposite.class.equals( extendedInterface )
+                )
             {
                 return extendedInterface;
             }

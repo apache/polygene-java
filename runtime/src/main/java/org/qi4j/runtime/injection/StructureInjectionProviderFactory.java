@@ -23,6 +23,7 @@ import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.ObjectBuilderFactory;
 import org.qi4j.entity.UnitOfWorkFactory;
 import org.qi4j.runtime.Qi4jRuntime;
+import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.service.ServiceLocator;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.injection.BindingContext;
@@ -32,6 +33,7 @@ import org.qi4j.spi.injection.InjectionProviderFactory;
 import org.qi4j.spi.injection.InjectionResolution;
 import org.qi4j.spi.injection.InvalidInjectionException;
 import org.qi4j.spi.injection.StructureContext;
+import org.qi4j.spi.structure.ModuleBinding;
 import org.qi4j.structure.Module;
 
 public final class StructureInjectionProviderFactory
@@ -86,11 +88,14 @@ public final class StructureInjectionProviderFactory
             {
                 return context.getModule();
             }
+            else if( type.equals( ModuleBinding.class ) )
+            {
+                return context.getModuleBinding();
+            }
             else if( type.equals( Qi4j.class ) || type.equals( Qi4jSPI.class ) || type.equals( Qi4jRuntime.class ) )
             {
                 return runtime;
             }
-
             return null;
         }
     }

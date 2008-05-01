@@ -65,15 +65,12 @@ public class ModuleServiceLocator
             }
         }
 
+        // Add service from the layer and used layers
+        Iterable<ServiceReference<T>> services = layerServiceLocator.lookupServices( serviceType );
+        for( ServiceReference<T> service : services )
         {
-            // Add service from the layer and used layers
-            Iterable<ServiceReference<T>> services = layerServiceLocator.lookupServices( serviceType );
-            for( ServiceReference<T> service : services )
-            {
-                serviceList.add( service );
-            }
+            serviceList.add( service );
         }
-
         return serviceList;
     }
 }

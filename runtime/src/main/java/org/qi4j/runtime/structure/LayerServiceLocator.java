@@ -53,9 +53,9 @@ public class LayerServiceLocator
     {
         // Look in the used Layers
         List<ModuleInstance> modules = modulesForPublicServices.get( serviceType );
-        List<ServiceReference<T>> serviceReferences = new ArrayList<ServiceReference<T>>();
         if( modules != null )
         {
+            List<ServiceReference<T>> serviceReferences = new ArrayList<ServiceReference<T>>();
             for( ModuleInstance module : modules )
             {
                 Iterable<ServiceReference<T>> moduleServices = module.lookupServices( serviceType );
@@ -66,7 +66,6 @@ public class LayerServiceLocator
             }
             return serviceReferences;
         }
-
         return Collections.emptyList();
     }
 }

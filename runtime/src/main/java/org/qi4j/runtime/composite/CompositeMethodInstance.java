@@ -23,6 +23,7 @@ public final class CompositeMethodInstance
     // Boolean system property for controlling compaction of stack traces. Set this property to "false" to disable compaction
     // Default value is "true"
     private static final String COMPACT_TRACE = "qi4j.compacttrace";
+    private static CompactLevel compactLevel = CompactLevel.proxy;
 
     private Object firstConcern;
     private Object[] sideEffects;
@@ -34,6 +35,11 @@ public final class CompositeMethodInstance
     private CompositeMethodInstancePool poolComposite;
     private CompositeMethodInstance next;
     private InvocationType invocationType;
+
+    static
+    {
+        compactLevel = CompactLevel.valueOf( System.getProperty( COMPACT_TRACE, "proxy" ) );
+    }
 
     public CompositeMethodInstance( Object firstConcern, Object[] sideEffects, SideEffectInvocationHandlerResult sideEffectResult, FragmentInvocationHandler aMixinInvocationHandler, ProxyReferenceInvocationHandler aProxyHandler, CompositeMethodInstancePool poolComposite, Method method, Class mixinType )
     {
@@ -150,55 +156,73 @@ public final class CompositeMethodInstance
      * then clean out the framework from the stacktrace.
      *
      * @param throwable TODO
-     * @param proxy TODO
-     * @param method TODO
+     * @param proxy     TODO
+     * @param method    TODO
      */
     private void fixStackTrace( Throwable throwable, Object proxy, Method method )
     {
-        if( !Boolean.parseBoolean( System.getProperty( COMPACT_TRACE, "true" ) ) )
+        if( compactLevel == CompactLevel.off )
         {
             return;
         }
 
         StackTraceElement[] trace = throwable.getStackTrace();
-//        if (isApplicationClass(trace[0].getClassName()))
+        int count = 0;
+        for( int i = 0; i < trace.length; i++ )
         {
-            int count = 0;
-            for( int i = 0; i < trace.length; i++ )
+            StackTraceElement stackTraceElement = trace[ i ];
+            if( !isApplicationClass( stackTraceElement.getClassName() ) )
             {
-                StackTraceElement stackTraceElement = trace[ i ];
-                if( !isApplicationClass( stackTraceElement.getClassName() ) )
+                trace[ i ] = null;
+                count++;
+            }
+            else
+            {
+                boolean classOrigin = stackTraceElement.getClassName().equals( proxy.getClass().getSimpleName() );
+                boolean methodOrigin = stackTraceElement.getMethodName().equals( method.getName() );
+                if( classOrigin && methodOrigin && compactLevel == CompactLevel.proxy )
                 {
-                    trace[ i ] = null;
-                    count++;
-                }
-                else
-                if( stackTraceElement.getClassName().equals( proxy.getClass().getSimpleName() ) && stackTraceElement.getMethodName().equals( method.getName() ) )
-                {
+                    // Stop removing if the originating method call has been located in the stack.
+                    // For 'semi' and 'extensive' compaction, we don't and do the entire stack instead.
                     trace[ i ] = new StackTraceElement( proxy.getClass().getInterfaces()[ 0 ].getName(), method.getName(), null, -1 );
                     break; // Stop compacting this trace
                 }
             }
+        }
 
-            // Create new trace array
-            int idx = 0;
-            StackTraceElement[] newTrace = new StackTraceElement[trace.length - count];
-            for( StackTraceElement stackTraceElement : trace )
+        // Create new trace array
+        int idx = 0;
+        StackTraceElement[] newTrace = new StackTraceElement[trace.length - count];
+        for( StackTraceElement stackTraceElement : trace )
+        {
+            if( stackTraceElement != null )
             {
-                if( stackTraceElement != null )
-                {
-                    newTrace[ idx++ ] = stackTraceElement;
-                }
+                newTrace[ idx++ ] = stackTraceElement;
             }
-            throwable.setStackTrace( newTrace );
+        }
+        throwable.setStackTrace( newTrace );
+
+        Throwable nested = throwable.getCause();
+        if( nested != null )
+        {
+            fixStackTrace( nested, proxy, method );
         }
     }
 
     private boolean isApplicationClass( String className )
     {
+        if( compactLevel == CompactLevel.semi )
+        {
+            return !isJdkInternals( className );
+        }
         return !( className.startsWith( "org.qi4j.runtime" ) ||
-                  className.startsWith( "java.lang.reflect" ) ||
-                  className.startsWith( "sun.reflect" ) );
+                  isJdkInternals( className ) );
+    }
+
+    private boolean isJdkInternals( String className )
+    {
+        return className.startsWith( "java.lang.reflect" ) ||
+               className.startsWith( "sun.reflect" );
     }
 
     private void invokeSideEffects( Object result, Throwable throwable, Object proxy, Object[] args )
@@ -250,4 +274,23 @@ enum InvocationType
     Concerns_InvocationHandler, Concerns_TypedMixin
 }
 
-
+/**
+ * Compaction Level of the StackTrace clenaup operation.
+ *
+ * <pre>
+ * <b>off</b>       = Do not modify the stack trace.
+ * <b>proxy</b>     = Remove all Qi4j internal classes and all JDK internal classes from
+ *             the originating method call.
+ * <b>semi</b>      = Remove all JDK internal classes on the entire stack.
+ * <b>extensive</b> = Remove all Qi4j internal and JDK internal classes from the entire stack.
+ * </pre>
+ *
+ * <p>
+ * The Compaction is set through the System Property "<code><b>qi4j.compacttrace</b></code>" to
+ * any of the above values.
+ * </p>
+ */
+enum CompactLevel
+{
+    off, proxy, semi, extensive
+}

@@ -68,52 +68,52 @@ public abstract class SingletonAssembler
         moduleInstance = applicationInstance.getLayerInstances().iterator().next().getModuleInstances().iterator().next();
     }
 
-    public Qi4jRuntime getRuntime()
+    public final Qi4jRuntime getRuntime()
     {
         return runtime;
     }
 
-    public ApplicationAssemblyFactory getApplicationAssemblyFactory()
+    public final ApplicationAssemblyFactory getApplicationAssemblyFactory()
     {
         return applicationAssemblyFactory;
     }
 
-    public ApplicationFactory getApplicationFactory()
+    public final ApplicationFactory getApplicationFactory()
     {
         return applicationFactory;
     }
 
-    public ApplicationInstance getApplicationInstance()
+    public final ApplicationInstance getApplicationInstance()
     {
         return applicationInstance;
     }
 
-    public LayerInstance getLayerInstance()
+    public final LayerInstance getLayerInstance()
     {
         return applicationInstance.getLayerInstances().get( 0 );
     }
 
-    public ModuleInstance getModuleInstance()
+    public final ModuleInstance getModuleInstance()
     {
         return moduleInstance;
     }
 
-    public CompositeBuilderFactory getCompositeBuilderFactory()
+    public final CompositeBuilderFactory getCompositeBuilderFactory()
     {
         return moduleInstance.getStructureContext().getCompositeBuilderFactory();
     }
 
-    public ObjectBuilderFactory getObjectBuilderFactory()
+    public final ObjectBuilderFactory getObjectBuilderFactory()
     {
         return moduleInstance.getStructureContext().getObjectBuilderFactory();
     }
 
-    public UnitOfWorkFactory getUnitOfWorkFactory()
+    public final UnitOfWorkFactory getUnitOfWorkFactory()
     {
         return moduleInstance.getStructureContext().getUnitOfWorkFactory();
     }
 
-    public ServiceLocator getServiceLocator()
+    public final ServiceLocator getServiceLocator()
     {
         return moduleInstance.getStructureContext().getServiceLocator();
     }

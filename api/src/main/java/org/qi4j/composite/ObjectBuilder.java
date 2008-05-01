@@ -23,12 +23,26 @@ public interface ObjectBuilder<T>
     extends Iterable<T>
 {
     /**
-     * Make the given objects available for @Uses injection
+     * Make the given objects available for @Uses injection.
+     * <p>
+     * These objects will be injected to the @Uses fields and arguments, when the
+     * object is created (constructor injection) or just has been created (field injection).
+     * </p>
+     * <p>
+     * It is possible to provide more objects in the <code>use()</code> method than is actually
+     * required. Any additional objects will be discarded before the Application.activate() method
+     * is called, and eventually garbage collected.
+     * </p>
      *
      * @param objects the objects to be used
      */
     ObjectBuilder<T> use( Object... objects );
 
+    /** Creates a new instance from this ObjectBuilder.
+     *
+     * @return An object of type <code><i>T</i></code>.
+     * @throws InstantiationException If the object class is not compatible with the  
+     */
     T newInstance()
         throws InstantiationException;
 

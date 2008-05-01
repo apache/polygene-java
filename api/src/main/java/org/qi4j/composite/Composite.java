@@ -15,6 +15,7 @@
 package org.qi4j.composite;
 
 import org.qi4j.property.PropertyMixin;
+import java.io.Serializable;
 
 /**
  * All Composite objects must implement this interface. Let the
@@ -24,7 +25,7 @@ import org.qi4j.property.PropertyMixin;
  * Properties and associations are handled by default.
  */
 @Mixins( { PropertyMixin.class } )
-public interface Composite
+public interface Composite extends Serializable
 {
     <T> T metaInfo( Class<T> infoType );
 

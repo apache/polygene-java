@@ -3,6 +3,7 @@ package org.qi4j.spi.injection;
 import java.lang.reflect.InvocationHandler;
 import org.qi4j.composite.State;
 import org.qi4j.spi.composite.CompositeBinding;
+import org.qi4j.spi.structure.ModuleBinding;
 import org.qi4j.structure.Module;
 
 /**
@@ -15,10 +16,12 @@ public final class MixinInjectionContext extends FragmentInjectionContext
     private Iterable<Object> uses;
 
     public MixinInjectionContext( StructureContext structureContext,
-                                  Module module, CompositeBinding compositeBinding, InvocationHandler This,
+                                  Module module,
+                                  ModuleBinding moduleBinding,
+                                  CompositeBinding compositeBinding, InvocationHandler This,
                                   Iterable<Object> uses, State state )
     {
-        super( structureContext, module, compositeBinding, This );
+        super( structureContext, module, moduleBinding, compositeBinding, This );
         this.state = state;
         this.uses = uses;
     }

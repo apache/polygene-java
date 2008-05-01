@@ -17,10 +17,13 @@ import org.qi4j.property.PropertyMixin;
 
 /**
  * Generic mixin that handles invocations on configuration.
+ * <p>
  * Services that store configuration in EntityComposites should
  * declare the following to access it:
- *
- * @This ServiceConfiguration config;j
+ * </p>
+ * <pre><code>
+ * &#64This MyServiceConfiguration config;
+ * </code></pre>
  */
 @AppliesTo( { PropertyMixin.PropertyFilter.class, Lifecycle.class, Entity.class, Composite.class } )
 public class ServiceConfigurationMixin
@@ -32,14 +35,15 @@ public class ServiceConfigurationMixin
     private Object configuration;
     private UnitOfWork uow;
 
-    public synchronized Object invoke( Object o, Method method, Object[] objects ) throws Throwable
+    public synchronized Object invoke( Object proxy, Method method, Object[] arguments ) throws Throwable
     {
         if( configuration == null )
         {
             uow = uowf.newUnitOfWork();
             try
             {
-                configuration = uow.find( descriptor.identity(), method.getDeclaringClass() );
+                String id = descriptor.identity();
+                configuration = uow.find( id, method.getDeclaringClass() );
             }
             catch( EntityCompositeNotFoundException e )
             {
@@ -58,6 +62,6 @@ public class ServiceConfigurationMixin
             uow.pause();
         }
 
-        return method.invoke( configuration, objects );
+        return method.invoke( configuration, arguments );
     }
 }

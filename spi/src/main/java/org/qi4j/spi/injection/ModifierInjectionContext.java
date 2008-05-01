@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationHandler;
 import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.composite.CompositeMethodBinding;
 import org.qi4j.spi.composite.MixinBinding;
+import org.qi4j.spi.structure.ModuleBinding;
 import org.qi4j.structure.Module;
 
 /**
@@ -17,6 +18,7 @@ public final class ModifierInjectionContext extends FragmentInjectionContext
 
     public ModifierInjectionContext( StructureContext structureContext,
                                      Module module,
+                                     ModuleBinding moduleBinding,
                                      CompositeBinding compositeBinding,
                                      InvocationHandler This,
                                      Object modifies,
@@ -24,7 +26,7 @@ public final class ModifierInjectionContext extends FragmentInjectionContext
                                      MixinBinding mixinBinding
     )
     {
-        super( structureContext, module, compositeBinding, This );
+        super( structureContext, module, moduleBinding, compositeBinding, This );
         this.modifies = modifies;
         this.method = method;
         this.mixinBinding = mixinBinding;

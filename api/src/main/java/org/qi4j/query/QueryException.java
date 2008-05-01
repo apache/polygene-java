@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2008, Niclas Hedhman. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -11,24 +11,21 @@
  * limitations under the License.
  *
  */
+package org.qi4j.query;
 
-package org.qi4j.bootstrap;
-
-/**
- * Set the name of the module
- */
-public final class ModuleName
-    implements Assembler
+public abstract class QueryException extends RuntimeException
 {
-    private String name;
-
-    public ModuleName( String name )
+    public QueryException()
     {
-        this.name = name;
     }
 
-    public void assemble( ModuleAssembly module ) throws AssemblyException
+    public QueryException( String message )
     {
-        module.setName( name );
+        super( message );
+    }
+
+    public QueryException( String message, Throwable cause )
+    {
+        super( message, cause );
     }
 }

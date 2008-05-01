@@ -18,6 +18,7 @@ import org.qi4j.composite.Composite;
 import org.qi4j.composite.scope.Structure;
 import org.qi4j.property.ImmutableProperty;
 import org.qi4j.service.ServiceLocator;
+import java.util.Map;
 
 /**
  * API for interacting with a Module. Instances

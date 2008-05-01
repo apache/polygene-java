@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.qi4j.composite.Composite;
 import org.qi4j.runtime.composite.ObjectModelFactory;
 import org.qi4j.spi.structure.ObjectDescriptor;
 import org.qi4j.structure.Visibility;
@@ -38,9 +39,10 @@ public final class ObjectDeclaration
         for( Class clazz : classes )
         {
             // best try to find out if the class is a concrete class
-            if( clazz.isEnum() || Modifier.isAbstract( clazz.getModifiers() ) )
+            if( clazz.isEnum() ||
+                ( !Composite.class.isAssignableFrom( clazz ) && Modifier.isAbstract( clazz.getModifiers() ) ) )
             {
-                throw new IllegalArgumentException( "Declared objects must be concrete classes." );
+                throw new IllegalArgumentException( "Declared objects must be concrete classes: " + clazz );
             }
         }
         this.objectTypes = classes;

@@ -21,12 +21,13 @@
 package org.qi4j.query;
 
 import org.qi4j.query.grammar.OrderBy;
+import java.io.Serializable;
 
 /**
  * TODO Add JavaDoc.
  */
 public interface Query<T>
-    extends Iterable<T>
+    extends Iterable<T>, Serializable
 {
 
     Query<T> orderBy( OrderBy... segments );
@@ -40,4 +41,6 @@ public interface Query<T>
     void setVariable( String name, Object value );
 
     <V> V getVariable( String name );
+
+    Class<T> resultType();
 }

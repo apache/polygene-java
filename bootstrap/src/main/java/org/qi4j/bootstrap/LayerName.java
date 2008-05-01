@@ -17,7 +17,7 @@ package org.qi4j.bootstrap;
 /**
  * Set the name of the layer
  */
-public class LayerName
+public final class LayerName
     implements Assembler
 {
     private String name;

@@ -73,6 +73,7 @@ public final class ObjectContext
     {
         ObjectInjectionContext objectInjectionContext = new ObjectInjectionContext( moduleInstance.getStructureContext(),
                                                                                     moduleInstance.getModule(),
+                                                                                    moduleInstance.getModuleContext().getModuleBinding(),
                                                                                     uses );
         Object objectInstance = instanceFactory.newInstance( objectBinding, objectInjectionContext );
 
@@ -84,6 +85,7 @@ public final class ObjectContext
     {
         ObjectInjectionContext objectInjectionContext = new ObjectInjectionContext( moduleInstance.getStructureContext(),
                                                                                     moduleInstance.getModule(),
+                                                                                    moduleInstance.getModuleContext().getModuleBinding(),
                                                                                     uses );
         instanceFactory.inject( instance, objectBinding, objectInjectionContext );
     }

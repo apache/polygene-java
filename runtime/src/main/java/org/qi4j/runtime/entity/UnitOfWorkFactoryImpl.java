@@ -55,8 +55,8 @@ public final class UnitOfWorkFactoryImpl
     private class ModuleStateServices
         implements StateServices
     {
-        ServiceMap<EntityStore> entityStores;
-        ServiceMap<IdentityGenerator> identityGenerators;
+        private ServiceMap<EntityStore> entityStores;
+        private ServiceMap<IdentityGenerator> identityGenerators;
 
         public ModuleStateServices( ModuleInstance moduleInstance )
         {
