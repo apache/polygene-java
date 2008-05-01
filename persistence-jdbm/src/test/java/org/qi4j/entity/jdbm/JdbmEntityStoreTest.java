@@ -23,6 +23,8 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entity.memory.MemoryEntityStoreService;
 import org.qi4j.structure.Visibility;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
+import org.qi4j.spi.entity.EntityStore;
+import org.qi4j.service.ServiceReference;
 
 /**
  * TODO
@@ -44,7 +46,6 @@ public class JdbmEntityStoreTest
     @Override @After public void tearDown() throws Exception
     {
         super.tearDown();
-
         boolean deleted = new File( "qi4j.data.db" ).delete();
         deleted = deleted | new File( "qi4j.data.lg" ).delete();
         if( !deleted )
