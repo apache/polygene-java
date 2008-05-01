@@ -25,6 +25,4 @@ import org.qi4j.logging.LogService;
 public class SwingViewer extends JFrame
 {
     @Service LogService service;
-
-
 }
