@@ -40,8 +40,7 @@ public interface Identity
     public final class IdentityMixin
         implements Identity
     {
-        @PropertyField
-        private ImmutableProperty<String> identity;
+        @PropertyField private ImmutableProperty<String> identity;
 
         public ImmutableProperty<String> identity()
         {
