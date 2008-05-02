@@ -1,0 +1,55 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <groupId>org.qi4j</groupId>
+    <artifactId>qi4j</artifactId>
+    <version>0.2.0-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.qi4j.extension</groupId>
+  <artifactId>qi4j-quikit</artifactId>
+  <name>Qi4J Extension - Quikit</name>
+  <version>0.2.0-SNAPSHOT</version>
+  <dependencies>
+    <dependency>
+      <groupId>org.qi4j.core</groupId>
+      <artifactId>qi4j-api</artifactId>
+      <version>0.2.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.qi4j.core</groupId>
+      <artifactId>qi4j-spi</artifactId>
+      <version>0.2.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.qi4j.core</groupId>
+      <artifactId>qi4j-bootstrap</artifactId>
+      <version>0.2.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.qi4j.core</groupId>
+      <artifactId>qi4j-runtime</artifactId>
+      <version>0.2.0-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.qi4j.core</groupId>
+      <artifactId>qi4j-testsupport</artifactId>
+      <version>0.2.0-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.wicket</groupId>
+      <artifactId>wicket</artifactId>
+      <version>1.3.3</version>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.mortbay.jetty</groupId>
+      <artifactId>jetty</artifactId>
+    </dependency>
+  </dependencies>
+</project>
