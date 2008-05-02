@@ -73,7 +73,6 @@ public final class EntityCompositeInstance
         return (EntityCompositeInstance) Proxy.getInvocationHandler( aProxy );
     }
 
-    // InvocationHandler implementation ------------------------------
     public Object invoke( Object composite, Method method, Object[] args ) throws Throwable
     {
         MethodDescriptor descriptor = context.getMethodDescriptor( method );
@@ -100,7 +99,6 @@ public final class EntityCompositeInstance
         return compositeMethodInstance.invoke( composite, args, mixin );
     }
 
-    // State implementation -----------------------------------------
     public Property getProperty( Method propertyMethod )
     {
         if( properties == null )
