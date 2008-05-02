@@ -64,7 +64,11 @@ public class InjectionModel
                     }
                     else
                     {
-                        type = ((Class) genericSuperclass).getGenericInterfaces()[index++];
+                        type = ((Class) genericSuperclass).getGenericInterfaces()[index];
+                        if( type instanceof ParameterizedType )
+                        {
+                            type = ( (ParameterizedType) type).getActualTypeArguments()[ index ];
+                        }
                     }
                     rawInjectionType = (Class) type;
                 }
