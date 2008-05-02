@@ -49,6 +49,18 @@ public class DecoratorMixin
             {
                 throw e.getCause();
             }
+            catch( IllegalArgumentException e )
+            {
+                System.err.println( "method: " + method.getDeclaringClass().getName() + "." + method.getName() );
+                System.err.println( "delegate: " + delegate );
+                System.err.println( "delegateType: " + delegate.getClass().getName() );
+                System.err.println( "arguments: " );
+                for( Object arg : args )
+                {
+                    System.err.println( "    " + arg.getClass().getName() );
+                }
+                throw e;
+            }
         }
     }
 }
