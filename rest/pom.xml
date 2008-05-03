@@ -33,6 +33,12 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.qi4j.extension</groupId>
+      <artifactId>qi4j-indexing-rdf</artifactId>
+      <version>0.2.0-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.qi4j.core</groupId>
       <artifactId>qi4j-testsupport</artifactId>
       <version>0.2.0-SNAPSHOT</version>

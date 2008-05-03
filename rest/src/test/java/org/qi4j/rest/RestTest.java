@@ -24,11 +24,12 @@ import java.io.OutputStream;
 import java.net.URL;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.methods.DeleteMethod;
 import org.apache.commons.httpclient.methods.PutMethod;
 import org.apache.commons.httpclient.methods.RequestEntity;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
-import org.apache.commons.httpclient.methods.DeleteMethod;
-import org.junit.Assert;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.qi4j.bootstrap.Assembler;
@@ -37,7 +38,8 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.scope.Service;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.UnitOfWork;
-import org.qi4j.entity.memory.MemoryEntityStoreService;
+import org.qi4j.entity.index.rdf.RDFQueryService;
+import org.qi4j.entity.memory.IndexedMemoryEntityStoreService;
 import org.qi4j.property.Property;
 import org.qi4j.rest.assembly.RestAssembler;
 import org.qi4j.runtime.structure.ApplicationContext;
@@ -69,7 +71,8 @@ public class RestTest extends AbstractQi4jTest
     {
         module.addObjects( RestTester.class );
         module.addComposites( TestEntity.class );
-        module.addServices( MemoryEntityStoreService.class ).identifiedBy( "store" );
+        module.addServices( IndexedMemoryEntityStoreService.class ).identifiedBy( "store" );
+        module.addServices( RDFQueryService.class );
         module.addServices( UuidIdentityGeneratorService.class );
     }
 
@@ -80,9 +83,13 @@ public class RestTest extends AbstractQi4jTest
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         try
         {
-            TestEntity testEntity = uow.newEntity( "1234", TestEntity.class );
-            testEntity.firstname().set( "Niclas" );
-            testEntity.lastname().set( "Hedhman" );
+            TestEntity testEntity1 = uow.newEntity( "1234", TestEntity.class );
+            testEntity1.firstname().set( "Niclas" );
+            testEntity1.lastname().set( "Hedhman" );
+
+            TestEntity testEntity2 = uow.newEntity( "5678", TestEntity.class );
+            testEntity2.firstname().set( "Alin" );
+            testEntity2.lastname().set( "Dreghiciu" );
             uow.complete();
         }
         catch( Exception e )
@@ -98,7 +105,7 @@ public class RestTest extends AbstractQi4jTest
     {
         RestTester restTester = objectBuilderFactory.newObject( RestTester.class );
         String xml = restTester.getEntity( "1234" );
-        Assert.assertEquals( "Incorrect XML produced", "<?xml version=\"1.0\" encoding=\"UTF-8\"?><entity><type>org.qi4j.rest.RestTest$TestEntity</type><identity>1234</identity><properties><identity>1234</identity><firstname>Niclas</firstname><lastname>Hedhman</lastname></properties></entity>", xml );
+        assertEquals( "Incorrect XML produced", "<?xml version=\"1.0\" encoding=\"UTF-8\"?><entity><type>org.qi4j.rest.RestTest$TestEntity</type><identity>1234</identity><properties><identity>1234</identity><firstname>Niclas</firstname><lastname>Hedhman</lastname></properties></entity>", xml );
     }
 
     @Test
@@ -111,8 +118,8 @@ public class RestTest extends AbstractQi4jTest
         try
         {
             TestEntity entity = work.find( "1234", TestEntity.class );
-            Assert.assertEquals( "FirstName not changed.", "Rickard", entity.firstname().get() );
-            Assert.assertEquals( "LastName not changed.", "Oberg", entity.lastname().get() );
+            assertEquals( "FirstName not changed.", "Rickard", entity.firstname().get() );
+            assertEquals( "LastName not changed.", "Oberg", entity.lastname().get() );
             work.complete();
         }
         catch( Exception e )
@@ -131,13 +138,24 @@ public class RestTest extends AbstractQi4jTest
         try
         {
             TestEntity entity = work.find( "1234", TestEntity.class );
-            Assert.assertNull( "Entity not removed.", entity );
+            assertNull( "Entity not removed.", entity );
             work.complete();
         }
         catch( Exception e )
         {
             work.discard();
         }
+    }
+
+    @Test
+    public void givenAnTypeWhenExecutingGetCommandThenExpectTheCorrectXml()
+        throws Exception
+    {
+        final RestTester restTester = objectBuilderFactory.newObject( RestTester.class );
+        final String result = restTester.getEntities( TestEntity.class );
+        assertThat( "Returned XML",
+                    result,
+                    is( equalTo( "<?xml version=\"1.0\" encoding=\"UTF-8\"?><entities><entity href=\"/entity/org.qi4j.rest.RestTest$TestEntity/1234\">1234</entity><entity href=\"/entity/org.qi4j.rest.RestTest$TestEntity/5678\">5678</entity></entities>" ) ) );
     }
 
     public static class RestTester
@@ -178,6 +196,18 @@ public class RestTest extends AbstractQi4jTest
             host.setHost( "localhost", 8182, "http" );
             method.setPath( "/entity/" + TestEntity.class.getName() + "/" + identity );
             client.executeMethod( host, method );
+        }
+
+        public String getEntities( Class type )
+            throws IOException
+        {
+            URL url = new URL( "http://localhost:8182/entity/" + type.getName() );
+            InputStream in = (InputStream) url.getContent();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            copyStream( in, baos );
+            in.close();
+            baos.close();
+            return baos.toString();
         }
 
         private void copyStream( InputStream in, OutputStream baos )
