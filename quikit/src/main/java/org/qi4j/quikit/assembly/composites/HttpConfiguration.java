@@ -16,6 +16,10 @@ package org.qi4j.quikit.assembly.composites;
 import org.qi4j.property.Property;
 import org.qi4j.entity.EntityComposite;
 
+
+/** Configuration entity for the Jetty Http Server.
+ * 
+ */
 public interface HttpConfiguration extends EntityComposite
 {
     Property<Integer> hostPort();
