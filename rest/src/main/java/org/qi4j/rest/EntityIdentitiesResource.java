@@ -53,7 +53,7 @@ public class EntityIdentitiesResource extends Resource
 
         // Define the supported variant.
         getVariants().add( new Variant( MediaType.TEXT_XML ) );
-        setModifiable( true );
+        setModifiable( false );
 
         final Map<String, Object> attributes = getRequest().getAttributes();
         String typeAttr = (String) attributes.get( "type" );
