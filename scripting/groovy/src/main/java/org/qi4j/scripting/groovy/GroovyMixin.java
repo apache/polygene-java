@@ -107,7 +107,7 @@ public class GroovyMixin
                 }
                 groovyObject = (GroovyObject) groovyClass.newInstance();
                 // TODO check if there is such a property
-                groovyObject.setProperty( "self", me );
+                groovyObject.setProperty( "This", me );
                 groovyObjects.put( declaringClass, groovyObject );
             }
             return groovyObject.invokeMethod( method.getName(), args );
@@ -124,7 +124,7 @@ public class GroovyMixin
         try
         {
             Binding binding = new Binding();
-            binding.setVariable( "self", me );
+            binding.setVariable( "This", me );
             // TODO bind arguments to an "args" variable?
             GroovyShell shell = new GroovyShell( binding );
             InputStream is = null;

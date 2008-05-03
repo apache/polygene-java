@@ -2,7 +2,7 @@ import org.qi4j.scripting.groovy.Mixin1
 
 public class Mixin1
 {
-    def self
+    def This
     def counter = 0
 
     public String do1()
