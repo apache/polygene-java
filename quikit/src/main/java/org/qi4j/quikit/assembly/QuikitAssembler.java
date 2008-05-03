@@ -42,7 +42,7 @@ import org.qi4j.entity.memory.IndexedMemoryEntityStoreService;
 /**
  * TODO
  */
-public class WebAssembler
+public class QuikitAssembler
     implements Assembler
 {
     private String jettyIdentity;
