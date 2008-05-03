@@ -110,7 +110,7 @@ public class RestTest extends AbstractQi4jTest
 
     @Test
     public void givenExistingIdentityWhenExecutingPutCommandThenNewValuesInEntity()
-        throws Exception
+        throws Throwable
     {
         RestTester restTester = objectBuilderFactory.newObject( RestTester.class );
         restTester.putEntity( "1234", "<?xml version=\"1.0\" encoding=\"UTF-8\"?><entity><identity>1234</identity><properties><identity>1234</identity><firstname>Rickard</firstname><lastname>Oberg</lastname></properties></entity>" );
@@ -122,15 +122,16 @@ public class RestTest extends AbstractQi4jTest
             assertEquals( "LastName not changed.", "Oberg", entity.lastname().get() );
             work.complete();
         }
-        catch( Exception e )
+        catch( Throwable e )
         {
             work.discard();
+            throw e;
         }
     }
 
     @Test
     public void givenExistingIdentityWhenExecutingDeleteCommandThenEntityIsRemoved()
-        throws Exception
+        throws Throwable
     {
         RestTester restTester = objectBuilderFactory.newObject( RestTester.class );
         restTester.deleteEntity( "1234" );
@@ -141,9 +142,10 @@ public class RestTest extends AbstractQi4jTest
             assertNull( "Entity not removed.", entity );
             work.complete();
         }
-        catch( Exception e )
+        catch( Throwable e )
         {
             work.discard();
+            throw e;
         }
     }
 
