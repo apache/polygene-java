@@ -29,10 +29,12 @@ import org.qi4j.composite.scope.Uses;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkFactory;
+import org.qi4j.entity.association.Association;
 import org.qi4j.property.Property;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.composite.PropertyResolution;
+import org.qi4j.spi.entity.association.AssociationBinding;
 import org.qi4j.spi.property.PropertyBinding;
 import org.qi4j.spi.property.PropertyModel;
 import org.qi4j.structure.Module;
@@ -149,6 +151,30 @@ public class EntityResource extends Resource
                     }
                     propertyElement.appendChild( d.createTextNode( value.toString() ) );
                     propertiesElement.appendChild( propertyElement );
+                }
+                Element associationsElement = null;
+                for( AssociationBinding associationBinding : binding.getAssociationBindings() )
+                {
+                    final Association<?> association = getAssociation( associationBinding );
+                    Object value = association.get();
+                    if( value != null && !( value instanceof EntityComposite ) )
+                    {
+                        //TODO what to do in the case that association is not an entity composite
+                        throw new InternalError( "Association is not an EntitityComposite" );
+                    }
+                    final EntityComposite entityComposite = (EntityComposite) value;
+                    if( associationsElement == null )
+                    {
+                        associationsElement = d.createElement( "associations" );
+                        entityElement.appendChild( associationsElement );
+                    }
+                    final Element associationElement = d.createElement( association.name() );
+                    associationsElement.appendChild( associationElement );
+                    if( entityComposite != null )
+                    {
+                        associationElement.setAttribute( "href", "/entity/" + entityComposite.type().getName() + "/" + entityComposite.identity().get() );
+                        associationElement.appendChild( d.createTextNode( entityComposite.identity().get() ) );
+                    }
                 }
                 d.normalizeDocument();
 
@@ -274,11 +300,33 @@ public class EntityResource extends Resource
         }
         catch( InvocationTargetException e )
         {
-            // What to do?
+            //TODO  What to do?
             e.printStackTrace();
             throw new InternalError();
         }
         return property;
+    }
+
+    private Association<?> getAssociation( final AssociationBinding associationBinding )
+    {
+        final Method accessor = associationBinding.getAssociationResolution().getAssociationModel().getAccessor();
+        Association<?> association;
+        try
+        {
+            association = (Association<?>) accessor.invoke( entity );
+        }
+        catch( IllegalAccessException e )
+        {
+            // Can not happen.
+            throw new InternalError();
+        }
+        catch( InvocationTargetException e )
+        {
+            //TODO  What to do?
+            e.printStackTrace();
+            throw new InternalError();
+        }
+        return association;
     }
 
     private String getQualifiedPropertyName( Method accessor )

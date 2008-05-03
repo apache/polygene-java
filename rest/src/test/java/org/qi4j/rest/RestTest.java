@@ -37,7 +37,9 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.scope.Service;
 import org.qi4j.entity.EntityComposite;
+import org.qi4j.entity.EntityCompositeNotFoundException;
 import org.qi4j.entity.UnitOfWork;
+import org.qi4j.entity.association.Association;
 import org.qi4j.entity.index.rdf.RDFQueryService;
 import org.qi4j.entity.memory.IndexedMemoryEntityStoreService;
 import org.qi4j.property.Property;
@@ -70,7 +72,7 @@ public class RestTest extends AbstractQi4jTest
         throws AssemblyException
     {
         module.addObjects( RestTester.class );
-        module.addComposites( TestEntity.class );
+        module.addComposites( PersonEntity.class );
         module.addServices( IndexedMemoryEntityStoreService.class ).identifiedBy( "store" );
         module.addServices( RDFQueryService.class );
         module.addServices( UuidIdentityGeneratorService.class );
@@ -83,13 +85,15 @@ public class RestTest extends AbstractQi4jTest
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         try
         {
-            TestEntity testEntity1 = uow.newEntity( "1234", TestEntity.class );
-            testEntity1.firstname().set( "Niclas" );
-            testEntity1.lastname().set( "Hedhman" );
+            PersonEntity maryDoe = uow.newEntity( "P2", PersonEntity.class );
+            maryDoe.firstname().set( "Mary" );
+            maryDoe.lastname().set( "Doe" );
 
-            TestEntity testEntity2 = uow.newEntity( "5678", TestEntity.class );
-            testEntity2.firstname().set( "Alin" );
-            testEntity2.lastname().set( "Dreghiciu" );
+            PersonEntity joeDoe = uow.newEntity( "P1", PersonEntity.class );
+            joeDoe.firstname().set( "Joe" );
+            joeDoe.lastname().set( "Doe" );
+            joeDoe.mother().set( maryDoe );
+
             uow.complete();
         }
         catch( Exception e )
@@ -104,8 +108,8 @@ public class RestTest extends AbstractQi4jTest
         throws Exception
     {
         RestTester restTester = objectBuilderFactory.newObject( RestTester.class );
-        String xml = restTester.getEntity( "1234" );
-        assertEquals( "Incorrect XML produced", "<?xml version=\"1.0\" encoding=\"UTF-8\"?><entity><type>org.qi4j.rest.RestTest$TestEntity</type><identity>1234</identity><properties><identity>1234</identity><firstname>Niclas</firstname><lastname>Hedhman</lastname></properties></entity>", xml );
+        String xml = restTester.getEntity( "P1" );
+        assertEquals( "Incorrect XML produced", "<?xml version=\"1.0\" encoding=\"UTF-8\"?><entity><type>org.qi4j.rest.RestTest$PersonEntity</type><identity>P1</identity><properties><identity>P1</identity><firstname>Joe</firstname><lastname>Doe</lastname></properties><associations><mother href=\"/entity/org.qi4j.rest.RestTest$PersonEntity/P2\">P2</mother></associations></entity>", xml );
     }
 
     @Test
@@ -113,13 +117,13 @@ public class RestTest extends AbstractQi4jTest
         throws Throwable
     {
         RestTester restTester = objectBuilderFactory.newObject( RestTester.class );
-        restTester.putEntity( "1234", "<?xml version=\"1.0\" encoding=\"UTF-8\"?><entity><identity>1234</identity><properties><identity>1234</identity><firstname>Rickard</firstname><lastname>Oberg</lastname></properties></entity>" );
+        restTester.putEntity( "P1", "<?xml version=\"1.0\" encoding=\"UTF-8\"?><entity><identity>P1</identity><properties><identity>P1</identity><firstname>Jack</firstname><lastname>Doe</lastname></properties></entity>" );
         UnitOfWork work = unitOfWorkFactory.newUnitOfWork();
         try
         {
-            TestEntity entity = work.find( "1234", TestEntity.class );
-            assertEquals( "FirstName not changed.", "Rickard", entity.firstname().get() );
-            assertEquals( "LastName not changed.", "Oberg", entity.lastname().get() );
+            PersonEntity entity = work.find( "P1", PersonEntity.class );
+            assertEquals( "FirstName not changed.", "Jack", entity.firstname().get() );
+            assertEquals( "LastName not changed.", "Doe", entity.lastname().get() );
             work.complete();
         }
         catch( Throwable e )
@@ -134,11 +138,19 @@ public class RestTest extends AbstractQi4jTest
         throws Throwable
     {
         RestTester restTester = objectBuilderFactory.newObject( RestTester.class );
-        restTester.deleteEntity( "1234" );
+        restTester.deleteEntity( "P1" );
         UnitOfWork work = unitOfWorkFactory.newUnitOfWork();
         try
         {
-            TestEntity entity = work.find( "1234", TestEntity.class );
+            PersonEntity entity = null;
+            try
+            {
+                entity = work.find( "P1", PersonEntity.class );
+            }
+            catch( EntityCompositeNotFoundException expected )
+            {
+                // expected
+            }
             assertNull( "Entity not removed.", entity );
             work.complete();
         }
@@ -154,10 +166,10 @@ public class RestTest extends AbstractQi4jTest
         throws Exception
     {
         final RestTester restTester = objectBuilderFactory.newObject( RestTester.class );
-        final String result = restTester.getEntities( TestEntity.class );
+        final String result = restTester.getEntities( PersonEntity.class );
         assertThat( "Returned XML",
                     result,
-                    is( equalTo( "<?xml version=\"1.0\" encoding=\"UTF-8\"?><entities><entity href=\"/entity/org.qi4j.rest.RestTest$TestEntity/1234\">1234</entity><entity href=\"/entity/org.qi4j.rest.RestTest$TestEntity/5678\">5678</entity></entities>" ) ) );
+                    is( equalTo( "<?xml version=\"1.0\" encoding=\"UTF-8\"?><entities><entity href=\"/entity/org.qi4j.rest.RestTest$PersonEntity/P1\">P1</entity><entity href=\"/entity/org.qi4j.rest.RestTest$PersonEntity/P2\">P2</entity></entities>" ) ) );
     }
 
     public static class RestTester
@@ -167,7 +179,7 @@ public class RestTest extends AbstractQi4jTest
         public String getEntity( String id )
             throws IOException
         {
-            URL url = new URL( "http://localhost:8182/entity/" + TestEntity.class.getName() + "/" + id );
+            URL url = new URL( "http://localhost:8182/entity/" + PersonEntity.class.getName() + "/" + id );
             InputStream in = (InputStream) url.getContent();
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             copyStream( in, baos );
@@ -185,7 +197,7 @@ public class RestTest extends AbstractQi4jTest
             host.setHost( "localhost", 8182, "http" );
             RequestEntity entity = new StringRequestEntity( xml, "text/xml", "UTF-8" );
             method.setRequestEntity( entity );
-            method.setPath( "/entity/" + TestEntity.class.getName() + "/" + identity );
+            method.setPath( "/entity/" + PersonEntity.class.getName() + "/" + identity );
             client.executeMethod( host, method );
         }
 
@@ -196,7 +208,7 @@ public class RestTest extends AbstractQi4jTest
             DeleteMethod method = new DeleteMethod();
             HostConfiguration host = new HostConfiguration();
             host.setHost( "localhost", 8182, "http" );
-            method.setPath( "/entity/" + TestEntity.class.getName() + "/" + identity );
+            method.setPath( "/entity/" + PersonEntity.class.getName() + "/" + identity );
             client.executeMethod( host, method );
         }
 
@@ -224,14 +236,16 @@ public class RestTest extends AbstractQi4jTest
         }
     }
 
-    public interface TestEntity extends EntityComposite, TestType
+    public interface PersonEntity extends EntityComposite, Person
     {
     }
 
-    public interface TestType
+    public interface Person
     {
         Property<String> firstname();
 
         Property<String> lastname();
+
+        Association<Person> mother();
     }
 }
