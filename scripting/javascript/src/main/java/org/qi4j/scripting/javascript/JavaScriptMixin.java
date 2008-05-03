@@ -29,7 +29,9 @@ import org.mozilla.javascript.Wrapper;
 import org.qi4j.composite.AppliesTo;
 import org.qi4j.composite.AppliesToFilter;
 import org.qi4j.composite.CompositeBuilderFactory;
+import org.qi4j.composite.Composite;
 import org.qi4j.composite.scope.Structure;
+import org.qi4j.composite.scope.This;
 import org.qi4j.scripting.ScriptReloadable;
 import org.qi4j.scripting.ScriptException;
 
@@ -46,6 +48,8 @@ import org.qi4j.scripting.ScriptException;
 public class JavaScriptMixin
     implements InvocationHandler, ScriptReloadable
 {
+    @This private Composite me;
+
     public static class AppliesTo
         implements AppliesToFilter
     {
@@ -88,6 +92,7 @@ public class JavaScriptMixin
             Scriptable proxyScope = Context.toObject( proxy, instanceScope );
             proxyScope.setPrototype( instanceScope );
             proxyScope.put( "compositeBuilderFactory", proxyScope, factory );
+            proxyScope.put( "This", proxyScope, me );
             Function fn = getFunction( cx, proxyScope, method );
             Object result = fn.call( cx, instanceScope, proxyScope, args );
 
