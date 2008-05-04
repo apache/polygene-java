@@ -40,7 +40,7 @@ import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.EntityCompositeNotFoundException;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.association.Association;
-import org.qi4j.entity.index.rdf.RDFQueryService;
+import org.qi4j.entity.index.rdf.RdfQueryService;
 import org.qi4j.entity.memory.IndexedMemoryEntityStoreService;
 import org.qi4j.property.Property;
 import org.qi4j.rest.assembly.RestAssembler;
@@ -74,7 +74,7 @@ public class RestTest extends AbstractQi4jTest
         module.addObjects( RestTester.class );
         module.addComposites( PersonEntity.class );
         module.addServices( IndexedMemoryEntityStoreService.class ).identifiedBy( "store" );
-        module.addServices( RDFQueryService.class );
+        module.addServices( RdfQueryService.class );
         module.addServices( UuidIdentityGeneratorService.class );
     }
 

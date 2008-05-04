@@ -23,6 +23,7 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
 import org.qi4j.entity.UnitOfWorkCompletionException;
+import org.qi4j.entity.index.rdf.memory.MemoryRepositoryService;
 import org.qi4j.entity.memory.IndexedMemoryEntityStoreService;
 import org.qi4j.query.Query;
 import org.qi4j.query.QueryBuilder;
@@ -55,7 +56,8 @@ public class RDFQueryTest
                 module.addServices(
                     IndexedMemoryEntityStoreService.class,
                     UuidIdentityGeneratorService.class,
-                    RDFIndexerExporterComposite.class
+                    RdfIndexerExporterComposite.class,
+                    MemoryRepositoryService.class
                 );
             }
         };
@@ -66,7 +68,7 @@ public class RDFQueryTest
     @Test
     public void showNetwork()
     {
-        assembler.getServiceLocator().lookupService( RDFIndexerExporterComposite.class ).get().toRDF( System.out );
+        assembler.getServiceLocator().lookupService( RdfIndexerExporterComposite.class ).get().toRDF( System.out );
     }
 
     @Test

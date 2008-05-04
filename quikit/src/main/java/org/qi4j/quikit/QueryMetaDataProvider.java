@@ -13,19 +13,18 @@
  */
 package org.qi4j.quikit;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-import org.qi4j.entity.EntityComposite;
-import org.qi4j.query.Query;
 import org.qi4j.composite.scope.Structure;
 import org.qi4j.composite.scope.Uses;
+import org.qi4j.entity.EntityComposite;
 import org.qi4j.spi.Qi4jSPI;
-import org.qi4j.spi.property.PropertyBinding;
 import org.qi4j.spi.composite.CompositeBinding;
+import org.qi4j.spi.property.PropertyBinding;
 import org.qi4j.structure.Module;
-import java.util.Iterator;
-import java.util.ArrayList;
 
 public class QueryMetaDataProvider
     implements IDataProvider

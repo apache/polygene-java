@@ -22,6 +22,7 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
 import org.qi4j.entity.UnitOfWorkCompletionException;
+import org.qi4j.entity.index.rdf.memory.MemoryRepositoryService;
 import org.qi4j.entity.memory.IndexedMemoryEntityStoreService;
 import org.qi4j.spi.entity.UuidIdentityGeneratorService;
 
@@ -44,12 +45,13 @@ public class RDFEntityIndexerTest
                 module.addServices(
                     IndexedMemoryEntityStoreService.class,
                     UuidIdentityGeneratorService.class,
-                    RDFIndexerExporterComposite.class
+                    RdfIndexerExporterComposite.class,
+                    MemoryRepositoryService.class
                 );
             }
         };
         Network.populate( assembler.getUnitOfWorkFactory().newUnitOfWork() );
-        assembler.getServiceLocator().lookupService( RDFIndexerExporterComposite.class ).get().toRDF( System.out );
+        assembler.getServiceLocator().lookupService( RdfIndexerExporterComposite.class ).get().toRDF( System.out );
     }
 
 

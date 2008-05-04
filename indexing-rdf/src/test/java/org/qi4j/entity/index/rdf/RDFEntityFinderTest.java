@@ -23,6 +23,9 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
 import org.qi4j.entity.UnitOfWorkCompletionException;
+import org.qi4j.entity.index.rdf.natiive.NativeRdfRepositoryService;
+import org.qi4j.entity.index.rdf.natiive.NativeRdfConfiguration;
+import org.qi4j.entity.index.rdf.memory.MemoryRepositoryService;
 import org.qi4j.entity.memory.IndexedMemoryEntityStoreService;
 import static org.qi4j.query.QueryExpressions.*;
 import org.qi4j.query.grammar.BooleanExpression;
@@ -33,7 +36,6 @@ import org.qi4j.spi.query.SearchException;
 
 public class RDFEntityFinderTest
 {
-
     private static final BooleanExpression ALL = null;
     private static final OrderBy[] NO_SORTING = null;
     private static final Integer NO_FIRST_RESULT = null;
@@ -59,18 +61,21 @@ public class RDFEntityFinderTest
                 module.addServices(
                     IndexedMemoryEntityStoreService.class,
                     UuidIdentityGeneratorService.class,
-                    RDFIndexerExporterComposite.class
-                );
+                    RdfIndexerExporterComposite.class
+                    );
+                module.addServices( MemoryRepositoryService.class ).identifiedBy( "rdf-indexing" );
+//                module.addServices( NativeRdfRepositoryService.class ).identifiedBy( "rdf-indexing" );
+//                module.addComposites( NativeRdfConfiguration.class );
             }
         };
         Network.populate( assembler.getUnitOfWorkFactory().newUnitOfWork() );
-        entityFinder = assembler.getServiceLocator().lookupService( RDFQueryService.class ).get();
+        entityFinder = assembler.getServiceLocator().lookupService( RdfQueryService.class ).get();
     }
 
     @Test
     public void showNetwork()
     {
-        assembler.getServiceLocator().lookupService( RDFIndexerExporterComposite.class ).get().toRDF( System.out );
+        assembler.getServiceLocator().lookupService( RdfIndexerExporterComposite.class ).get().toRDF( System.out );
     }
 
     @Test
