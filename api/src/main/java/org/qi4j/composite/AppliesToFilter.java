@@ -23,5 +23,5 @@ import java.lang.reflect.Method;
  */
 public interface AppliesToFilter
 {
-    boolean appliesTo( Method method, Class mixin, Class compositeType, Class fragmentClass );
+    boolean appliesTo( Method method, Class<?> mixin, Class<?> compositeType, Class<?> fragmentClass );
 }

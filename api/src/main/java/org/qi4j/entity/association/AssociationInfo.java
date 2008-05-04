@@ -25,20 +25,21 @@ public interface AssociationInfo
      * Get metadata that implements the given type
      *
      * @param infoType the type of metadata to be returned
-     * @return the metadata for the given type or null if no such metadata has been registered
+     * @return the metadata for the given type, or <code>null</code> if 
+     *         no such metadata has been registered
      */
     <T> T metaInfo( Class<T> infoType );
 
     /**
      * Get the unqualified name of the association. This is the method
-     * name of the assocation.
+     * name of the association.
      *
      * @return the name of the association
      */
     String name();
 
     /**
-     * Get the qualified name of the assocation. This is constructed by
+     * Get the qualified name of the association. This is constructed by
      * concatenating the name of the declaring interface with the name
      * of the method, using ":" as separator. Example:<br/>
      * com.somecompany.MyInterface with association method<br/>

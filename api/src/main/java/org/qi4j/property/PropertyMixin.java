@@ -30,7 +30,6 @@ public class PropertyMixin
 {
     @PropertyField State state;
 
-    @SuppressWarnings( "unchecked" )
     public Object invoke( Object proxy, Method method, Object[] args )
         throws Throwable
     {
@@ -40,7 +39,7 @@ public class PropertyMixin
     public static class PropertyFilter
         implements AppliesToFilter
     {
-        public boolean appliesTo( Method method, Class mixin, Class compositeType, Class modifierClass )
+        public boolean appliesTo( Method method, Class<?> mixin, Class<?> compositeType, Class<?> modifierClass )
         {
             return Property.class.isAssignableFrom( method.getReturnType() );
         }

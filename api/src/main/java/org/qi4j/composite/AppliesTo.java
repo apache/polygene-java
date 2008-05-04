@@ -10,7 +10,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package org.qi4j.composite;
@@ -53,7 +52,7 @@ import java.lang.annotation.Target;
  *
  *     @Sessional public void setSomeState( State state )
  *     {
- *     this.state = state;
+ *         this.state = state;
  *     }
  *
  *     @Sessional public State getSomeState()
@@ -84,9 +83,9 @@ import java.lang.annotation.Target;
  * {}
  * </code></pre>
  * <p>
- * The setStateService and getStateService methods does not have the @Sessional annotation,
- * and will therefor the SessionModifier will not be placed into the call sequence of these
- * methods, and the other way around.
+ * The setStateService and getStateService methods do not have the @Sessional annotation,
+ * therefore the SessionModifier will not be placed into the call sequence of these
+ * methods, and vice-versa.
  * </p>
  */
 @Retention( RetentionPolicy.RUNTIME )
@@ -98,5 +97,5 @@ public @interface AppliesTo
     // If one of them matches the current element it will be accepted,
     // so this list can be considered an "or"
 
-    Class[] value();
+    Class<?>[] value();
 }

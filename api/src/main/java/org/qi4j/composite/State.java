@@ -23,7 +23,7 @@ import org.qi4j.property.Property;
  */
 public interface State
 {
-    Property getProperty( Method propertyMethod );
+    Property<?> getProperty( Method propertyMethod );
 
     AbstractAssociation getAssociation( Method associationMethod );
 }
