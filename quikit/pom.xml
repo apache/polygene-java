@@ -7,7 +7,7 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.qi4j.extension</groupId>
-  <artifactId>qi4j-quikit</artifactId>
+  <artifactId>qi4j-ext-quikit</artifactId>
   <name>Qi4J Extension - Quikit</name>
   <version>0.2.0-SNAPSHOT</version>
   <dependencies>

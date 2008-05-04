@@ -6,8 +6,8 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.qi4j.extension</groupId>
-  <artifactId>qi4j-persistence-quick</artifactId>
-  <name>Qi4J Extension - Persistence Quick</name>
+  <artifactId>qi4j-ext-entitystore-quick</artifactId>
+  <name>Qi4J Extension - Entity Store - Quick</name>
   <version>0.2.0-SNAPSHOT</version>
   <dependencies>
     <dependency>

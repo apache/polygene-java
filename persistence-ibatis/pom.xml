@@ -6,8 +6,8 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.qi4j.extension</groupId>
-  <artifactId>qi4j-persistence-ibatis</artifactId>
-  <name>Qi4J Extension - Persistence IBatis</name>
+  <artifactId>qi4j-ext-entitystore-ibatis</artifactId>
+  <name>Qi4J Extension - Entity Store - IBatis</name>
   <version>0.2.0-SNAPSHOT</version>
 
   <properties>

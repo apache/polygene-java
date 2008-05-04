@@ -6,8 +6,8 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.qi4j.extension</groupId>
-  <artifactId>qi4j-persistence-jgroups</artifactId>
-  <name>Qi4J Extension - Persistence JGroups</name>
+  <artifactId>qi4j-ext-entitystore-jgroups</artifactId>
+  <name>Qi4J Extension - Entity Store - JGroups</name>
   <version>0.2.0-SNAPSHOT</version>
   <build>
     <plugins>
