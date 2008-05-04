@@ -37,14 +37,12 @@ import org.qi4j.spi.entity.QualifiedIdentity;
 /**
  * TODO Add JavaDoc
  *
- * @author Alin Dreghiciu
- * @since March 18, 2008
  */
-public class RDFEntityFinderMixin
+public class RdfEntityFinderMixin
     implements EntityFinder
 {
 
-    @This RDFQueryContext queryContext;
+    @This RdfQueryContext queryContext;
 
     public Iterable<QualifiedIdentity> find( final Class resultType,
                                     final BooleanExpression whereClause,
@@ -58,7 +56,7 @@ public class RDFEntityFinderMixin
         {
             final RepositoryConnection connection = queryContext.getRepository().getConnection();
             // TODO shall we support different implementation as SERQL?
-            final RDFQueryParser parser = new SPARQLRDFQueryParser();
+            final RdfQueryParser parser = new SparqlRdfQueryParser();
             final TupleQuery tupleQuery = connection.prepareTupleQuery(
                 parser.getQueryLanguage(),
                 parser.getQuery( resultType, whereClause, orderBySegments, firstResult, maxResults )

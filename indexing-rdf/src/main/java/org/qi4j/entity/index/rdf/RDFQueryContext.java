@@ -17,17 +17,12 @@
  */
 package org.qi4j.entity.index.rdf;
 
-import org.qi4j.composite.Mixins;
-import org.qi4j.service.ServiceComposite;
 import org.openrdf.repository.Repository;
 
 /**
  * TODO Add JavaDoc
- *
- * @author Alin Dreghiciu
- * @since March 24, 2008
  */
-public interface RDFQueryContext
+public interface RdfQueryContext
 {
     Repository getRepository();
 }

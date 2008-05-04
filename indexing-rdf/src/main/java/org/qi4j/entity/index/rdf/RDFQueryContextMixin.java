@@ -1,5 +1,6 @@
 /*
  * Copyright 2008 Alin Dreghiciu.
+ * Copyright 2008 Niclas Hedhman.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -20,37 +21,34 @@ package org.qi4j.entity.index.rdf;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.sail.SailRepository;
+import org.openrdf.sail.Sail;
 import org.openrdf.sail.inferencer.fc.ForwardChainingRDFSInferencer;
-import org.openrdf.sail.memory.MemoryStore;
+import org.qi4j.composite.scope.Service;
+import org.qi4j.service.Activatable;
 
 /**
  * TODO Add JavaDoc
  *
- * @author Alin Dreghiciu
- * @since March 24, 2008
  */
-public class RDFQueryContextMixin
-    implements RDFQueryContext
+public class RdfQueryContextMixin
+    implements RdfQueryContext, Activatable
 {
-
-    private Repository repository;
-
-    public RDFQueryContextMixin()
-    {
-        repository = new SailRepository( new ForwardChainingRDFSInferencer( new MemoryStore() ) );
-        //repository = new SailRepository( new MemoryStore() );
-        try
-        {
-            repository.initialize();
-        }
-        catch( RepositoryException e )
-        {
-            e.printStackTrace();
-        }
-    }
+    @Service private Repository repository;
 
     public Repository getRepository()
     {
         return repository;
+    }
+
+    public void activate()
+        throws Exception
+    {
+        repository.initialize();
+    }
+
+    public void passivate()
+        throws Exception
+    {
+        repository.shutDown();
     }
 }

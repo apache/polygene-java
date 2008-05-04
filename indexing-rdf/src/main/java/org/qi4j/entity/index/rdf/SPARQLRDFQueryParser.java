@@ -47,13 +47,10 @@ import org.qi4j.composite.Composite;
 /**
  * TODO Add JavaDoc
  *
- * @author Alin Dreghiciu
- * @since April 02, 2008
  */
-class SPARQLRDFQueryParser
-    implements RDFQueryParser
+class SparqlRdfQueryParser
+    implements RdfQueryParser
 {
-
     private int namespaceCounter = 0;
     private int valueCounter = 0;
 
@@ -66,7 +63,7 @@ class SPARQLRDFQueryParser
     /**
      * Constructor.
      */
-    SPARQLRDFQueryParser()
+    SparqlRdfQueryParser()
     {
         namespaces = new HashMap<String, String>();
         addNamespace( "rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#" );

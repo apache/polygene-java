@@ -24,10 +24,8 @@ import org.qi4j.query.grammar.OrderBy;
 /**
  * TODO Add JavaDoc
  *
- * @author Alin Dreghiciu
- * @since April 02, 2008
  */
-public interface RDFQueryParser
+public interface RdfQueryParser
 {
     QueryLanguage getQueryLanguage();
 

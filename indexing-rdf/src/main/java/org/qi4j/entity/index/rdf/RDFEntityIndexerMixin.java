@@ -19,6 +19,7 @@ package org.qi4j.entity.index.rdf;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 import org.openrdf.model.BNode;
 import org.openrdf.model.URI;
@@ -30,6 +31,7 @@ import org.openrdf.repository.RepositoryException;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.scope.Structure;
 import org.qi4j.composite.scope.This;
+import org.qi4j.entity.index.rdf.natiive.NativeRdfConfiguration;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.composite.CompositeModel;
@@ -45,16 +47,13 @@ import org.qi4j.structure.Module;
 
 /**
  * TODO Add JavaDoc
- *
- * @author Alin Dreghiciu
- * @since March 18, 2008
  */
-public class RDFEntityIndexerMixin
+public class RdfEntityIndexerMixin
     implements EntityIndexer
 {
     @Structure private Qi4jSPI spi;
 
-    @This RDFQueryContext queryContext;
+    @This RdfQueryContext queryContext;
 
     public void index( final Iterable<EntityState> newStates,
                        final Iterable<EntityState> changedStates,
@@ -63,6 +62,11 @@ public class RDFEntityIndexerMixin
     {
         try
         {
+            boolean abort = abortIfInternalConfigurationEntity( newStates );
+            if( abort )
+            {
+                return;
+            }
             final RepositoryConnection connection = queryContext.getRepository().getConnection();
             final ValueFactory valueFactory = queryContext.getRepository().getValueFactory();
             try
@@ -220,6 +224,20 @@ public class RDFEntityIndexerMixin
         {
             connection.add( compositeURI, RDFS.SUBCLASSOF, valueFactory.createURI( mixinTypeModel.toURI() ) );
         }
+    }
+
+    private boolean abortIfInternalConfigurationEntity( Iterable<EntityState> newStates )
+    {
+        Iterator<EntityState> entityStateIterator = newStates.iterator();
+        if( entityStateIterator.hasNext() )
+        {
+            String compositeTypeName = entityStateIterator.next().getIdentity().getCompositeType();
+            if( NativeRdfConfiguration.class.getName().equals( compositeTypeName ) )
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
 
