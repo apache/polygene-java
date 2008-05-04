@@ -26,9 +26,9 @@ import org.qi4j.composite.Mixins;
  * @author Alin Dreghiciu
  * @since March 24, 2008
  */
-@Mixins( RDFIndexerExporterMixin.class )
-public interface RDFIndexerExporterComposite
-    extends RDFQueryService
+@Mixins( RdfIndexerExporterMixin.class )
+public interface RdfIndexerExporterComposite
+    extends RdfQueryService
 {
     void toRDF( OutputStream outputStream );
 }

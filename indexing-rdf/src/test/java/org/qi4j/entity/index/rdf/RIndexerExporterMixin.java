@@ -31,11 +31,11 @@ import org.qi4j.composite.scope.This;
  * @author Alin Dreghiciu
  * @since March 18, 2008
  */
-public abstract class RDFIndexerExporterMixin
-    implements RDFIndexerExporterComposite
+public abstract class RdfIndexerExporterMixin
+    implements RdfIndexerExporterComposite
 {
 
-    @This RDFQueryContext state;
+    @This RdfQueryContext state;
 
     public void toRDF( final OutputStream outputStream )
     {
