@@ -21,6 +21,6 @@
     <module>entitystore-jgroups</module>
     <module>entitystore-quick</module>    
     <module>entitystore-rmi</module>
-    <module>persistence-s3</module>
+    <module>entitystore-s3</module>
   </modules>
 </project>
