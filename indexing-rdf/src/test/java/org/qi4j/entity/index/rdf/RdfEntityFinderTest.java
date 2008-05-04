@@ -34,7 +34,7 @@ import org.qi4j.spi.entity.UuidIdentityGeneratorService;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.SearchException;
 
-public class RDFEntityFinderTest
+public class RdfEntityFinderTest
 {
     private static final BooleanExpression ALL = null;
     private static final OrderBy[] NO_SORTING = null;

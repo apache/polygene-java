@@ -26,7 +26,7 @@ import org.qi4j.entity.index.rdf.memory.MemoryRepositoryService;
 import org.qi4j.entity.memory.IndexedMemoryEntityStoreService;
 import org.qi4j.spi.entity.UuidIdentityGeneratorService;
 
-public class RDFEntityIndexerTest
+public class RdfEntityIndexerTest
 {
     @Test
     public void script01() throws UnitOfWorkCompletionException

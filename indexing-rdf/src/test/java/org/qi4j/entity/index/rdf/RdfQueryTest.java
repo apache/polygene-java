@@ -33,7 +33,7 @@ import org.qi4j.query.grammar.OrderBy;
 import org.qi4j.spi.entity.UuidIdentityGeneratorService;
 import org.qi4j.spi.query.SearchException;
 
-public class RDFQueryTest
+public class RdfQueryTest
 {
 
     private SingletonAssembler assembler;
