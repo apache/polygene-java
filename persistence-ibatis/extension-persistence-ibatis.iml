@@ -58,8 +58,6 @@
     <orderEntry type="library" name="hamcrest-core-1.1" level="project" />
     <orderEntry type="library" name="hamcrest-library-1.1" level="project" />
     <orderEntry type="library" name="junit" level="project" />
-    <orderEntry type="module" module-name="library-framework" />
-    <orderEntry type="module" module-name="library-general" />
     <orderEntryProperties />
   </component>
 </module>
