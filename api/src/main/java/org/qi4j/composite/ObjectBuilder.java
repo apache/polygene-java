@@ -38,10 +38,11 @@ public interface ObjectBuilder<T>
      */
     ObjectBuilder<T> use( Object... objects );
 
-    /** Creates a new instance from this ObjectBuilder.
+    /**
+     * Creates a new instance from this ObjectBuilder.
      *
      * @return An object of type <code><i>T</i></code>.
-     * @throws InstantiationException If the object class is not compatible with the  
+     * @throws InstantiationException If the object class is not compatible with the
      */
     T newInstance()
         throws InstantiationException;

@@ -33,11 +33,10 @@ import org.qi4j.structure.Module;
  * @author Alin Dreghiciu
  * @since March 18, 2008
  */
-public abstract class IndexingSideEffect
-    extends SideEffectOf<EntityStore>
+public abstract class IndexingSideEffect extends SideEffectOf<EntityStore>
     implements EntityStore
 {
-    @Service EntityIndexer indexer;
+    @Service private EntityIndexer indexer;
 
     public StateCommitter prepare( Iterable<EntityState> newStates,
                                    Iterable<EntityState> loadedStates,
@@ -45,7 +44,6 @@ public abstract class IndexingSideEffect
                                    Module module )
         throws EntityStoreException
     {
-
         indexer.index( newStates, loadedStates, removedStates, module );
         return null;
     }

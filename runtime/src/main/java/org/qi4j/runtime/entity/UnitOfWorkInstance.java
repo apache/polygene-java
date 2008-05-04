@@ -33,6 +33,7 @@ import org.qi4j.entity.IdentityGenerator;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkCompletionException;
 import org.qi4j.entity.UnitOfWorkException;
+import org.qi4j.entity.EntityNotRegisteredException;
 import org.qi4j.query.Query;
 import org.qi4j.query.QueryBuilderFactory;
 import org.qi4j.runtime.composite.CompositeContext;
@@ -48,6 +49,7 @@ import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.structure.CompositeDescriptor;
+import org.qi4j.spi.composite.CompositeResolution;
 import org.qi4j.structure.Module;
 
 public final class UnitOfWorkInstance
@@ -166,18 +168,22 @@ public final class UnitOfWorkInstance
 
                 if( module == null )
                 {
-                    throw new InvalidApplicationException(
-                        "Trying to find unregistered composite of type [" + compositeType.getName() + "] in module [" +
-                        moduleInstance.getModule().name().get() + "]."
-                    );
+                    throw new EntityNotRegisteredException( compositeType, moduleInstance.getModule() );
                 }
 
                 CompositeContext compositeContext = module.getModuleInstance().getModuleContext().getCompositeContext( compositeType );
+                if( compositeContext == null )
+                {
+                    throw new EntityNotRegisteredException( compositeType, moduleInstance.getModule() );
+                }
 
-                EntityState state = null;
+                EntityState state;
                 try
                 {
-                    state = store.getEntityState( compositeContext.getCompositeResolution().getCompositeDescriptor(), new QualifiedIdentity( identity, compositeType.getName() ) );
+                    CompositeResolution compositeResolution = compositeContext.getCompositeResolution();
+                    CompositeDescriptor descriptor = compositeResolution.getCompositeDescriptor();
+                    QualifiedIdentity qualifiedIdentity = new QualifiedIdentity( identity, compositeType.getName() );
+                    state = store.getEntityState( descriptor, qualifiedIdentity );
                 }
                 catch( EntityNotFoundException e )
                 {
@@ -237,10 +243,7 @@ public final class UnitOfWorkInstance
 
             if( module == null )
             {
-                throw new InvalidApplicationException(
-                    "Trying to get reference unregistered composite of type [" + compositeType.getName() + "] in module [" +
-                    moduleInstance.getModule().name().get() + "]."
-                );
+                throw new EntityNotRegisteredException( compositeType, moduleInstance.getModule() );
             }
 
             CompositeContext compositeContext = module.getModuleInstance().getModuleContext().getCompositeContext( compositeType );

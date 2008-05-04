@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2008, Niclas Hedhman. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -11,19 +11,22 @@
  * limitations under the License.
  *
  */
+package org.qi4j.spi.query;
 
-package org.qi4j.composite;
+import java.io.Serializable;
 
-/**
- * Thrown when an application is considered to not be constructed properly.
- * This happens primarily when client code tries to instantiate Composites
- * and objects which have not been registered in the ModuleAssembly.
- */
-public abstract class InvalidApplicationException
-    extends RuntimeException
+public class IndexingMeta
+    implements Serializable
 {
-    public InvalidApplicationException( String string )
+    private boolean ignore;
+
+    public IndexingMeta( boolean ignore )
     {
-        super( string );
+        this.ignore = ignore;
+    }
+
+    public boolean ignore()
+    {
+        return ignore;
     }
 }

@@ -80,7 +80,7 @@ public final class UnitOfWorkCompositeBuilder<T>
 
     public CompositeBuilder<T> use( Object... usedObjects )
     {
-        throw new InvalidApplicationException( "Entities may not use other objects" );
+        throw new ObjectAccessException( "Entities may not use other objects" );
     }
 
     public T newInstance()

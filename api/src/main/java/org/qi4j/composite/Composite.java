@@ -14,8 +14,8 @@
  */
 package org.qi4j.composite;
 
-import org.qi4j.property.PropertyMixin;
 import java.io.Serializable;
+import org.qi4j.property.PropertyMixin;
 
 /**
  * All Composite objects must implement this interface. Let the

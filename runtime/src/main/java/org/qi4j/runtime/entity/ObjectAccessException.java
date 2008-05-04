@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2008, Niclas Hedhman. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -11,19 +11,14 @@
  * limitations under the License.
  *
  */
+package org.qi4j.runtime.entity;
 
-package org.qi4j.composite;
+import org.qi4j.composite.InvalidApplicationException;
 
-/**
- * Thrown when an application is considered to not be constructed properly.
- * This happens primarily when client code tries to instantiate Composites
- * and objects which have not been registered in the ModuleAssembly.
- */
-public abstract class InvalidApplicationException
-    extends RuntimeException
+public class ObjectAccessException extends InvalidApplicationException
 {
-    public InvalidApplicationException( String string )
+    public ObjectAccessException( String message )
     {
-        super( string );
+        super( message );
     }
 }

@@ -17,7 +17,8 @@
  */
 package org.qi4j.composite;
 
-/** This Exception is thrown when it is not possible to map the MixinType to a valid
+/**
+ * This Exception is thrown when it is not possible to map the MixinType to a valid
  * CompositeType.
  */
 public class MixinMappingException extends RuntimeException

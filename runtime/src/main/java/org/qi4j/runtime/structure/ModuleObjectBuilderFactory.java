@@ -17,6 +17,7 @@ package org.qi4j.runtime.structure;
 import org.qi4j.composite.InvalidApplicationException;
 import org.qi4j.composite.ObjectBuilder;
 import org.qi4j.composite.ObjectBuilderFactory;
+import org.qi4j.composite.ObjectNotRegisteredException;
 import org.qi4j.runtime.composite.ObjectContext;
 
 /**
@@ -49,7 +50,7 @@ public final class ModuleObjectBuilderFactory
         // Check if this Composite has been registered properly
         if( objectContext == null )
         {
-            throw new InvalidApplicationException( "Trying to create unregistered object of type " + objectType.getName() + " in module " + moduleInstance.getModuleContext().getModuleBinding().getModuleResolution().getModuleModel().getName() );
+            throw new ObjectNotRegisteredException( objectType, moduleInstance.getModule() );
         }
 
         // Create a builder

@@ -33,6 +33,7 @@ import org.qi4j.property.Property;
 import org.qi4j.runtime.composite.CompositeContext;
 import org.qi4j.runtime.composite.CompositeInstance;
 import org.qi4j.runtime.property.PropertyContext;
+import org.qi4j.runtime.entity.InvalidAssociationAccessException;
 import org.qi4j.spi.composite.PropertyResolution;
 import org.qi4j.spi.property.ImmutablePropertyInstance;
 import org.qi4j.spi.property.PropertyBinding;
@@ -230,7 +231,7 @@ public class CompositeBuilderImpl<T>
 
         public AbstractAssociation getAssociation( Method qualifiedName )
         {
-            throw new InvalidApplicationException( "May not use Associations in Composites that are not accessed through a UnitOfWork" );
+            throw new InvalidAssociationAccessException( qualifiedName );
         }
     }
 }

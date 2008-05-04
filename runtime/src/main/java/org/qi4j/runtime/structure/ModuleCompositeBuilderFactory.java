@@ -18,6 +18,7 @@ import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.InvalidApplicationException;
+import org.qi4j.composite.CompositeNotRegisteredException;
 import static org.qi4j.composite.NullArgumentException.*;
 import org.qi4j.runtime.composite.CompositeContext;
 import org.qi4j.spi.structure.ModuleBinding;
@@ -50,18 +51,7 @@ public class ModuleCompositeBuilderFactory
 
         if( compositeContext == null )
         {
-            String compositeTypeName = compositeType.getName();
-
-            ModuleContext moduleContext = moduleInstance.getModuleContext();
-            ModuleBinding moduleBinding = moduleContext.getModuleBinding();
-            ModuleResolution moduleResolution = moduleBinding.getModuleResolution();
-            ModuleModel moduleModel = moduleResolution.getModuleModel();
-            String moduleModelName = moduleModel.getName();
-
-            throw new InvalidApplicationException(
-                "Trying to create unregistered composite of type [" + compositeTypeName + "] in module [" +
-                moduleModelName + "]."
-            );
+            throw new CompositeNotRegisteredException(compositeType, compositeModuleInstance.getModule() );
         }
 
         return createBuilder( compositeModuleInstance, compositeContext );

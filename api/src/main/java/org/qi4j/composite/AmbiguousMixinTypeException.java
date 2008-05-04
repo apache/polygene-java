@@ -17,7 +17,8 @@
  */
 package org.qi4j.composite;
 
-/** This Exception is thrown when more than one Composite implements a MixinType that one tries
+/**
+ * This Exception is thrown when more than one Composite implements a MixinType that one tries
  * to use to create a Composite instance from.
  * <p>
  * For instance;
