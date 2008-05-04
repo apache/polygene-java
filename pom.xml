@@ -8,7 +8,7 @@
   </parent>
   <groupId>org.qi4j</groupId>
   <artifactId>qi4j-extensions</artifactId>
-  <name>Qi4J Extensions</name>
+  <name>Qi4J Extension (Build POM)</name>
   <version>0.2.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <!-- This POM is ONLY to initiate the modules to be built. -->
