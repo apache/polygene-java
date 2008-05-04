@@ -19,8 +19,8 @@
     <module>persistence-quick</module>
     <module>entitystore-ibatis</module>
     <module>entitystore-jdbm</module>
+    <module>entitystore-jgroups</module>
     <module>persistence-s3</module>
-    <module>persistence-jgroups</module>
     <module>persistence-rmi</module>
   </modules>
 </project>
