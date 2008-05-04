@@ -56,7 +56,7 @@ import org.qi4j.scripting.ScriptReloadable;
 public class JRubyMixin
     implements InvocationHandler, ScriptReloadable
 {
-    @This Composite me;
+    @This private Composite me;
 
     private Ruby runtime;
 
