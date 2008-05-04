@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module relativePaths="true" type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_5" inherit-compiler-output="false">
+    <output url="file://$MODULE_DIR$/target/classes" />
+    <exclude-output />
+    <output-test url="file://$MODULE_DIR$/target/test-classes" />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main/resources" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test/resources" isTestSource="true" />
+      <excludeFolder url="file://$MODULE_DIR$/target/classes" />
+      <excludeFolder url="file://$MODULE_DIR$/target/maven-archiver" />
+      <excludeFolder url="file://$MODULE_DIR$/target/surefire-reports" />
+      <excludeFolder url="file://$MODULE_DIR$/target/test-classes" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="qi4j-core-api" exported="" />
+    <orderEntry type="module" module-name="qi4j-core-spi" exported="" />
+    <orderEntry type="module" module-name="qi4j-core-runtime" exported="" />
+    <orderEntry type="module-library">
+      <library name="cglib:cglib-nodep:2.1_3">
+        <CLASSES>
+          <root url="jar://$M2_REPO$/cglib/cglib-nodep/2.1_3/cglib-nodep-2.1_3.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$M2_REPO$/cglib/cglib-nodep/2.1_3/cglib-nodep-2.1_3-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$M2_REPO$/cglib/cglib-nodep/2.1_3/cglib-nodep-2.1_3-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module" module-name="qi4j-core-testsupport" exported="" />
+    <orderEntry type="module" module-name="qi4j-core-bootstrap" exported="" />
+    <orderEntry type="module-library">
+      <library name="junit:junit:4.4">
+        <CLASSES>
+          <root url="jar://$M2_REPO$/junit/junit/4.4/junit-4.4.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$M2_REPO$/junit/junit/4.4/junit-4.4-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$M2_REPO$/junit/junit/4.4/junit-4.4-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library name="org.openrdf:openrdf-model:2.0-rc2">
+        <CLASSES>
+          <root url="jar://$M2_REPO$/org/openrdf/openrdf-model/2.0-rc2/openrdf-model-2.0-rc2.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$M2_REPO$/org/openrdf/openrdf-model/2.0-rc2/openrdf-model-2.0-rc2-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$M2_REPO$/org/openrdf/openrdf-model/2.0-rc2/openrdf-model-2.0-rc2-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library name="info.aduna:aduna-collections:1.4">
+        <CLASSES>
+          <root url="jar://$M2_REPO$/info/aduna/aduna-collections/1.4/aduna-collections-1.4.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$M2_REPO$/info/aduna/aduna-collections/1.4/aduna-collections-1.4-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$M2_REPO$/info/aduna/aduna-collections/1.4/aduna-collections-1.4-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library name="info.aduna:aduna-concurrent:1.4">
+        <CLASSES>
+          <root url="jar://$M2_REPO$/info/aduna/aduna-concurrent/1.4/aduna-concurrent-1.4.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$M2_REPO$/info/aduna/aduna-concurrent/1.4/aduna-concurrent-1.4-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$M2_REPO$/info/aduna/aduna-concurrent/1.4/aduna-concurrent-1.4-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library name="org.slf4j:slf4j-api:1.4.2">
+        <CLASSES>
+          <root url="jar://$M2_REPO$/org/slf4j/slf4j-api/1.4.2/slf4j-api-1.4.2.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$M2_REPO$/org/slf4j/slf4j-api/1.4.2/slf4j-api-1.4.2-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$M2_REPO$/org/slf4j/slf4j-api/1.4.2/slf4j-api-1.4.2-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library name="info.aduna:aduna-iteration:1.4">
+        <CLASSES>
+          <root url="jar://$M2_REPO$/info/aduna/aduna-iteration/1.4/aduna-iteration-1.4.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$M2_REPO$/info/aduna/aduna-iteration/1.4/aduna-iteration-1.4-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$M2_REPO$/info/aduna/aduna-iteration/1.4/aduna-iteration-1.4-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library name="org.openrdf:openrdf-rio-n3:2.0-rc2">
+        <CLASSES>
+          <root url="jar://$M2_REPO$/org/openrdf/openrdf-rio-n3/2.0-rc2/openrdf-rio-n3-2.0-rc2.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$M2_REPO$/org/openrdf/openrdf-rio-n3/2.0-rc2/openrdf-rio-n3-2.0-rc2-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$M2_REPO$/org/openrdf/openrdf-rio-n3/2.0-rc2/openrdf-rio-n3-2.0-rc2-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library name="org.openrdf:openrdf-rio-api:2.0-rc2">
+        <CLASSES>
+          <root url="jar://$M2_REPO$/org/openrdf/openrdf-rio-api/2.0-rc2/openrdf-rio-api-2.0-rc2.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$M2_REPO$/org/openrdf/openrdf-rio-api/2.0-rc2/openrdf-rio-api-2.0-rc2-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$M2_REPO$/org/openrdf/openrdf-rio-api/2.0-rc2/openrdf-rio-api-2.0-rc2-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library name="info.aduna:aduna-lang:1.4">
+        <CLASSES>
+          <root url="jar://$M2_REPO$/info/aduna/aduna-lang/1.4/aduna-lang-1.4.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$M2_REPO$/info/aduna/aduna-lang/1.4/aduna-lang-1.4-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$M2_REPO$/info/aduna/aduna-lang/1.4/aduna-lang-1.4-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library name="info.aduna:aduna-net:1.4">
+        <CLASSES>
+          <root url="jar://$M2_REPO$/info/aduna/aduna-net/1.4/aduna-net-1.4.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$M2_REPO$/info/aduna/aduna-net/1.4/aduna-net-1.4-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$M2_REPO$/info/aduna/aduna-net/1.4/aduna-net-1.4-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library name="info.aduna:aduna-text:1.3">
+        <CLASSES>
+          <root url="jar://$M2_REPO$/info/aduna/aduna-text/1.3/aduna-text-1.3.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$M2_REPO$/info/aduna/aduna-text/1.3/aduna-text-1.3-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$M2_REPO$/info/aduna/aduna-text/1.3/aduna-text-1.3-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library name="org.openrdf:openrdf-rio-turtle:2.0-rc2">
+        <CLASSES>
+          <root url="jar://$M2_REPO$/org/openrdf/openrdf-rio-turtle/2.0-rc2/openrdf-rio-turtle-2.0-rc2.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$M2_REPO$/org/openrdf/openrdf-rio-turtle/2.0-rc2/openrdf-rio-turtle-2.0-rc2-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$M2_REPO$/org/openrdf/openrdf-rio-turtle/2.0-rc2/openrdf-rio-turtle-2.0-rc2-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library name="info.aduna:aduna-io:1.3">
+        <CLASSES>
+          <root url="jar://$M2_REPO$/info/aduna/aduna-io/1.3/aduna-io-1.3.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$M2_REPO$/info/aduna/aduna-io/1.3/aduna-io-1.3-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$M2_REPO$/info/aduna/aduna-io/1.3/aduna-io-1.3-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library name="org.openrdf:openrdf-rio-rdfxml:2.0-rc2">
+        <CLASSES>
+          <root url="jar://$M2_REPO$/org/openrdf/openrdf-rio-rdfxml/2.0-rc2/openrdf-rio-rdfxml-2.0-rc2.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$M2_REPO$/org/openrdf/openrdf-rio-rdfxml/2.0-rc2/openrdf-rio-rdfxml-2.0-rc2-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$M2_REPO$/org/openrdf/openrdf-rio-rdfxml/2.0-rc2/openrdf-rio-rdfxml-2.0-rc2-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library name="info.aduna:aduna-xml:1.5">
+        <CLASSES>
+          <root url="jar://$M2_REPO$/info/aduna/aduna-xml/1.5/aduna-xml-1.5.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$M2_REPO$/info/aduna/aduna-xml/1.5/aduna-xml-1.5-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$M2_REPO$/info/aduna/aduna-xml/1.5/aduna-xml-1.5-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntryProperties />
+  </component>
+</module>
+
