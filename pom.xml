@@ -16,7 +16,6 @@
     <module>indexing-rdf</module>
     <module>quikit</module>
     <module>rest</module>
-    <module>persistence-memory</module>
     <module>persistence-quick</module>
     <module>persistence-ibatis</module>
     <module>persistence-jdbm</module>
