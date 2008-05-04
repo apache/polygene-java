@@ -20,7 +20,7 @@
     <module>entitystore-jdbm</module>
     <module>entitystore-jgroups</module>
     <module>entitystore-quick</module>    
+    <module>entitystore-rmi</module>
     <module>persistence-s3</module>
-    <module>persistence-rmi</module>
   </modules>
 </project>
