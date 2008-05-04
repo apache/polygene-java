@@ -11,11 +11,11 @@
  *
  */
 
-package org.qi4j.extension.persistence.quick;
+package org.qi4j.entity.quick;
 
-public class ObjectIndexingException extends RuntimeException
+public class PersistenceInitializationException extends RuntimeException
 {
-    public ObjectIndexingException( String message, Throwable cause )
+    public PersistenceInitializationException( String message, Throwable cause )
     {
         super( message, cause );
     }

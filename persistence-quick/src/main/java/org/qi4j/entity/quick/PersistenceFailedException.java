@@ -11,11 +11,11 @@
  *
  */
 
-package org.qi4j.extension.persistence.quick;
+package org.qi4j.entity.quick;
 
-public class ObjectDeletionException extends RuntimeException
+public class PersistenceFailedException extends RuntimeException
 {
-    public ObjectDeletionException( String message, Throwable cause )
+    public PersistenceFailedException( String message, Throwable cause )
     {
         super( message, cause );
     }

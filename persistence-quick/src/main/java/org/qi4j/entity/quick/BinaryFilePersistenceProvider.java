@@ -12,7 +12,7 @@
  * limitations under the License.
  *
  */
-package org.qi4j.extension.persistence.quick;
+package org.qi4j.entity.quick;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
