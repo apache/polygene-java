@@ -17,6 +17,7 @@ import org.openrdf.repository.Repository;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.sail.memory.MemoryStore;
 import org.openrdf.sail.inferencer.fc.ForwardChainingRDFSInferencer;
+import org.openrdf.sail.Sail;
 import org.qi4j.service.Activatable;
 
 public class MemoryRepositoryMixin extends SailRepository
@@ -34,6 +35,10 @@ public class MemoryRepositoryMixin extends SailRepository
 
     public void passivate() throws Exception
     {
-        getSail().shutDown();
+        ForwardChainingRDFSInferencer sail1 = (ForwardChainingRDFSInferencer) getSail();
+        Sail sail2 = sail1.getBaseSail();
+        sail2.shutDown();
+        sail1.shutDown();
+        shutDown();
     }
 }

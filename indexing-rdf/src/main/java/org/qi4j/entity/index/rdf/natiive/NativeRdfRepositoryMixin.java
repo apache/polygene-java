@@ -73,6 +73,10 @@ public class NativeRdfRepositoryMixin extends SailRepository
     public void passivate()
         throws Exception
     {
+        ForwardChainingRDFSInferencer sail1 = (ForwardChainingRDFSInferencer) getSail();
+        Sail sail2 = sail1.getBaseSail();
+        sail2.shutDown();
+        sail1.shutDown();
         shutDown();
     }
 }
