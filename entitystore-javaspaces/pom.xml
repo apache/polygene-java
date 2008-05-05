@@ -1,0 +1,98 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<parent>
+		<groupId>org.qi4j</groupId>
+		<artifactId>qi4j</artifactId>
+		<version>0.2.0-SNAPSHOT</version>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.qi4j.extension</groupId>
+	<artifactId>qi4j-ext-entitystore-javaspaces</artifactId>
+	<packaging>jar</packaging>
+	<name>Qi4J Extension - Entity Store - Java Spaces</name>
+	<dependencies>
+		<dependency>
+			<groupId>org.qi4j.core</groupId>
+			<artifactId>qi4j-core-spi</artifactId>
+			<version>0.2.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.qi4j.core</groupId>
+			<artifactId>qi4j-core-runtime</artifactId>
+			<version>0.2.0-SNAPSHOT</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.qi4j.core</groupId>
+			<artifactId>qi4j-core-testsupport</artifactId>
+			<version>0.2.0-SNAPSHOT</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.qi4j.library</groupId>
+			<artifactId>qi4j-lib-framework</artifactId>
+			<version>0.2.0-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
+	<!-- Note that you need to have the GigaSpaces J_Spaces.jar AND the Jini Jars shiped with GS 6.0.0 or later.  There are bug fixes to
+		the GS version of the Jini jars -->
+	<profiles>
+		<profile>
+			<id>gigaspaces</id>
+			<activation>
+				<property>
+					<!--
+						specifiy -Dcom.gs.home=$JSHOMEDIR and let that point to a local GS installation;
+						we cannot use JSHOMEDIR for profile activation because:
+						http://jira.codehaus.org/browse/MNG-2848
+						http://jira.codehaus.org/browse/MNGECLIPSE-247
+					-->
+					<name>com.gs.home</name>
+				</property>
+			</activation>
+			<dependencies>
+				<dependency>
+					<!-- maven insists on groupId/artifactId/version -->
+					<groupId>com.gigaspaces</groupId>
+					<artifactId>gigaspaces-JSpaces</artifactId>
+					<version>6.0.0</version>
+					<scope>system</scope>
+					<systemPath>
+						${com.gs.home}/lib/JSpaces.jar
+					</systemPath>
+				</dependency>
+				<dependency>
+					<!-- maven insists on groupId/artifactId/version -->
+					<groupId>com.gigaspaces</groupId>
+					<artifactId>gigaspaces-jsk-lib</artifactId>
+					<version>6.0.0</version>
+					<scope>system</scope>
+					<systemPath>
+						${com.gs.home}/lib/jini/jsk-lib.jar
+					</systemPath>
+				</dependency>
+				<dependency>
+					<!-- maven insists on groupId/artifactId/version -->
+					<groupId>com.gigaspaces</groupId>
+					<artifactId>gigaspaces-jsk-platform</artifactId>
+					<version>6.0.0</version>
+					<scope>system</scope>
+					<systemPath>
+						${com.gs.home}/lib/jini/jsk-platform.jar
+					</systemPath>
+				</dependency>
+				<dependency>
+					<!-- maven insists on groupId/artifactId/version -->
+					<groupId>com.gigaspaces</groupId>
+					<artifactId>gigaspaces-reggie</artifactId>
+					<version>6.0.0</version>
+					<scope>system</scope>
+					<systemPath>
+						${com.gs.home}/lib/jini/reggie.jar
+					</systemPath>
+				</dependency>
+			</dependencies>
+		</profile>
+	</profiles>
+</project>
