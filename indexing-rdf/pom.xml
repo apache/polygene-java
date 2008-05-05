@@ -48,6 +48,16 @@
     </dependency>
     <dependency>
       <groupId>org.openrdf</groupId>
+      <artifactId>openrdf-repository-http</artifactId>
+      <version>2.0.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.openrdf</groupId>
+      <artifactId>openrdf-repository-dataset</artifactId>
+      <version>2.0.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.openrdf</groupId>
       <artifactId>openrdf-rio-rdfxml</artifactId>
       <version>2.0.1</version>
     </dependency>
