@@ -25,6 +25,7 @@ import org.qi4j.spi.entity.EntityStore;
  * EntityStore service backed by a Java Space
  */
 @Mixins(JavaSpacesEntityStoreMixin.class)
-public interface JavaSpacesEntityStoreService  extends EntityStore, ServiceComposite, Activatable {
+public interface JavaSpacesEntityStoreService extends EntityStore, ServiceComposite, Activatable
+{
 
 }
