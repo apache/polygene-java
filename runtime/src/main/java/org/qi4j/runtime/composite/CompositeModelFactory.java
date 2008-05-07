@@ -69,53 +69,58 @@ public final class CompositeModelFactory
     {
     }
 
-    public CompositeModel newCompositeModel( Class<? extends Composite> compositeClass )
+    public CompositeModel newCompositeModel( Class<? extends Composite> compositeType )
         throws NullArgumentException, InvalidCompositeException
     {
-        validateClass( compositeClass );
+        validateClass( compositeType );
 
         // Method models
-        Collection<CompositeMethodModel> methods = getCompositeMethodModels( compositeClass );
+        Collection<CompositeMethodModel> methods = getCompositeMethodModels( compositeType );
 
         // Find mixins
-        List<MixinModel> mixins = getMixinModels( compositeClass, compositeClass );
+        List<MixinModel> mixins = new ArrayList<MixinModel>();
+        addMixinModels( compositeType, compositeType, mixins );
 
         // Standard mixins
-        mixins.add( newMixinModel( compositeClass, CompositeMixin.class ) );
+        mixins.add( newMixinModel( compositeType, CompositeMixin.class ) );
 
-        if( EntityComposite.class.isAssignableFrom( compositeClass ) )
+        if( EntityComposite.class.isAssignableFrom( compositeType ) )
         {
-            mixins.add( newMixinModel( compositeClass, EntityMixin.class ) );
+            mixins.add( newMixinModel( compositeType, EntityMixin.class ) );
         }
 
         // Find concerns
-        Set<Class> concernClasses = getModifiers( compositeClass, Concerns.class );
+        Set<Class> concernClasses = getModifiers( compositeType, Concerns.class );
         List<ConcernModel> concerns = new ArrayList<ConcernModel>();
         for( Class concernClass : concernClasses )
         {
-            concerns.add( newConcernModel( compositeClass, concernClass ) );
+            concerns.add( newConcernModel( compositeType, concernClass ) );
         }
 
         // Find side-effects
-        Set<Class> sideEffectClasses = getModifiers( compositeClass, SideEffects.class );
+        Set<Class> sideEffectClasses = getModifiers( compositeType, SideEffects.class );
         List<SideEffectModel> sideEffects = new ArrayList<SideEffectModel>();
         for( Class sideEffectClass : sideEffectClasses )
         {
-            sideEffects.add( newSideEffectModel( compositeClass, sideEffectClass ) );
+            sideEffects.add( newSideEffectModel( compositeType, sideEffectClass ) );
         }
 
         // Create proxy class
-        ClassLoader proxyClassloader = compositeClass.getClassLoader();
-        Class[] interfaces = new Class[]{ compositeClass };
+        ClassLoader proxyClassloader = compositeType.getClassLoader();
+        Class[] interfaces = new Class[]{ compositeType };
         Class proxyClass = Proxy.getProxyClass( proxyClassloader, interfaces );
 
         List<FragmentModel> fragmentModels = new ArrayList<FragmentModel>();
         fragmentModels.addAll( mixins );
         fragmentModels.addAll( concerns );
         fragmentModels.addAll( sideEffects );
-        Iterable<CompositeMethodModel> ThisModels = getThisModels( fragmentModels, methods );
+        Map<Method, CompositeMethodModel> ThisModels = new HashMap<Method, CompositeMethodModel>();
+        addThisModels( fragmentModels, methods, ThisModels );
 
-        Iterable<ConstraintModel> constraintModels = getConstraintDeclarations( compositeClass );
+        // Add mixins declared on interfaces injected with @This
+        addThisInjectionMixinModels( compositeType, ThisModels.values(), mixins );
+
+        Iterable<ConstraintModel> constraintModels = getConstraintDeclarations( compositeType );
 
         // Compute mapping annotation-><list of constraint implementations for different parameter types>
         ListMap<Class<? extends Annotation>, ConstraintModel> constraintModelMappings = new ListMap<Class<? extends Annotation>, ConstraintModel>();
@@ -137,7 +142,7 @@ public final class CompositeModelFactory
                 associations.add( method.getAssociationModel() );
             }
         }
-        for( CompositeMethodModel ThisModel : ThisModels )
+        for( CompositeMethodModel ThisModel : ThisModels.values() )
         {
             if( ThisModel.getPropertyModel() != null )
             {
@@ -149,7 +154,7 @@ public final class CompositeModelFactory
             }
         }
 
-        CompositeModel model = new CompositeModel( compositeClass, proxyClass, methods, mixins, constraintModels, concerns, sideEffects, ThisModels, constraintModelMappings, properties, associations );
+        CompositeModel model = new CompositeModel( compositeType, proxyClass, methods, mixins, constraintModels, concerns, sideEffects, ThisModels.values(), constraintModelMappings, properties, associations );
         return model;
     }
 
@@ -355,16 +360,23 @@ public final class CompositeModelFactory
         return methodModel;
     }
 
-    private List<MixinModel> getMixinModels( Class compositeType, Class aType )
+    private void addMixinModels( Class compositeType, Class aType, List<MixinModel> mixins )
     {
-        List<MixinModel> mixinModels = new ArrayList<MixinModel>();
-
         Mixins mixinClasses = (Mixins) aType.getAnnotation( Mixins.class );
         if( mixinClasses != null )
         {
+            nextMixin:
             for( Class mixinClass : mixinClasses.value() )
             {
-                mixinModels.add( newMixinModel( compositeType, mixinClass ) );
+                for( MixinModel mixin : mixins )
+                {
+                    if( mixin.getModelClass().equals( mixinClass ) )
+                    {
+                        continue nextMixin;
+                    }
+                }
+
+                mixins.add( newMixinModel( compositeType, mixinClass ) );
             }
         }
 
@@ -372,15 +384,12 @@ public final class CompositeModelFactory
         Class[] subTypes = aType.getInterfaces();
         for( Class subType : subTypes )
         {
-            mixinModels.addAll( getMixinModels( compositeType, subType ) );
+            addMixinModels( compositeType, subType, mixins );
         }
-
-        return mixinModels;
     }
 
-    private Iterable<CompositeMethodModel> getThisModels( Iterable<FragmentModel> fragmentModels, Collection<CompositeMethodModel> methods )
+    private void addThisModels( Iterable<FragmentModel> fragmentModels, Collection<CompositeMethodModel> methods, Map<Method, CompositeMethodModel> methodModels )
     {
-        Map<Method, CompositeMethodModel> methodModels = new HashMap<Method, CompositeMethodModel>();
         for( FragmentModel fragmentModel : fragmentModels )
         {
             Set<Method> thisAsmethods = fragmentModel.getThisMethods();
@@ -398,8 +407,15 @@ public final class CompositeModelFactory
                 }
             }
         }
+    }
 
-        return methodModels.values();
+    private void addThisInjectionMixinModels( Class compositeType, Collection<CompositeMethodModel> compositeMethodModels, List<MixinModel> mixins )
+    {
+        for( CompositeMethodModel compositeMethodModel : compositeMethodModels )
+        {
+            Class thisMethodMixinType = compositeMethodModel.getMethod().getDeclaringClass();
+            addMixinModels( compositeType, thisMethodMixinType, mixins );
+        }
     }
 
     private Class getFragmentClass( Class mixinClass )

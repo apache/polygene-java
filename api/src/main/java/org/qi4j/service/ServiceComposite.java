@@ -15,13 +15,11 @@
 package org.qi4j.service;
 
 import org.qi4j.composite.Composite;
-import org.qi4j.composite.Mixins;
 
 /**
  * All Composites being used to implement Services
  * must extend this interface.
  */
-@Mixins( ServiceConfigurationMixin.class )
 public interface ServiceComposite extends Composite
 {
 }

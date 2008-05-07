@@ -36,4 +36,6 @@ public interface Qi4j
      * @return the super Composite of the given Composite, or null if it does not have one
      */
     <S extends Composite, T extends S> Class<S> getSuperComposite( Class<T> compositeClass );
+
+    Class getConfigurationType( Composite serviceComposite );
 }

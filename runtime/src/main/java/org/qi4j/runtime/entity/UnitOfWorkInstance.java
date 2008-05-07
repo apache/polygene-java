@@ -300,8 +300,8 @@ public final class UnitOfWorkInstance
             // Refresh the state
             try
             {
-                QualifiedIdentity identity = new QualifiedIdentity( entityInstance.getIdentity(),
-                                                                    entityInstance.getContext().getCompositeModel().getCompositeType().getName() );
+
+                QualifiedIdentity identity = entityInstance.getState().getIdentity();
                 EntityState state = entityInstance.getStore().getEntityState( entityInstance.getContext().getCompositeResolution().getCompositeDescriptor(), identity );
                 entityInstance.refresh( state );
                 entityInstance.setMixins( null );

@@ -16,6 +16,7 @@ package org.qi4j.runtime;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,6 +32,7 @@ import org.qi4j.composite.scope.Service;
 import org.qi4j.composite.scope.Structure;
 import org.qi4j.composite.scope.This;
 import org.qi4j.composite.scope.Uses;
+import org.qi4j.entity.EntityComposite;
 import org.qi4j.runtime.composite.AbstractCompositeInstance;
 import org.qi4j.runtime.composite.CompositeBinder;
 import org.qi4j.runtime.composite.CompositeModelFactory;
@@ -51,11 +53,13 @@ import org.qi4j.runtime.injection.StructureInjectionProviderFactory;
 import org.qi4j.runtime.injection.ThisInjectionProviderFactory;
 import org.qi4j.runtime.injection.UsesInjectionProviderFactory;
 import org.qi4j.runtime.structure.ModuleInstance;
-import org.qi4j.spi.composite.CompositeBinding;
-import org.qi4j.spi.injection.InjectionProviderFactory;
-import org.qi4j.entity.EntityComposite;
+import org.qi4j.service.Configuration;
 import org.qi4j.service.ServiceComposite;
+import org.qi4j.spi.composite.CompositeBinding;
+import org.qi4j.spi.injection.InjectionModel;
+import org.qi4j.spi.injection.InjectionProviderFactory;
 import org.qi4j.structure.Module;
+
 /**
  * Incarnation of Qi4j.
  */
@@ -157,6 +161,21 @@ public final class Energy4Java
             }
         }
         return null; // No super Composite type found
+    }
+
+    public Class getConfigurationType( Composite serviceComposite )
+    {
+        CompositeBinding binding = getCompositeBinding( serviceComposite );
+        Iterable<InjectionModel> injections = binding.getCompositeResolution().getCompositeModel().getInjectionsByScope( This.class );
+        for( InjectionModel injection : injections )
+        {
+            if( injection.getRawInjectionType().equals( Configuration.class ) )
+            {
+                return (Class) ( (ParameterizedType) injection.getInjectionType() ).getActualTypeArguments()[ 0 ];
+            }
+        }
+
+        return null;
     }
 
     // SPI
