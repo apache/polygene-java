@@ -19,6 +19,7 @@ package org.qi4j.entity.jgroups;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.concurrent.locks.ReadWriteLock;
 import org.jgroups.JChannel;
 import org.jgroups.blocks.ReplicatedHashMap;
@@ -36,8 +37,8 @@ import org.qi4j.spi.entity.EntityStateInstance;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreException;
-import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.serialization.SerializableState;
 import org.qi4j.spi.serialization.SerializedObject;
 import org.qi4j.spi.structure.CompositeDescriptor;
@@ -96,7 +97,12 @@ public class JGroupsSerializationEntityStoreMixin
 
             SerializableState serializableState = serializableObject.getObject( (CompositeBuilderFactory) null, null );
 
-            return new EntityStateInstance( serializableState.getEntityVersion(), identity, EntityStatus.LOADED, serializableState.getProperties(), serializableState.getAssociations(), serializableState.getManyAssociations() );
+            return new EntityStateInstance( serializableState.entityVersion(),
+                                            identity,
+                                            EntityStatus.LOADED,
+                                            serializableState.properties(),
+                                            serializableState.associations(),
+                                            serializableState.manyAssociations() );
         }
         catch( ClassNotFoundException e )
         {
@@ -113,7 +119,11 @@ public class JGroupsSerializationEntityStoreMixin
             for( EntityState entityState : newStates )
             {
                 EntityStateInstance entityStateInstance = (EntityStateInstance) entityState;
-                SerializableState state = new SerializableState( entityState.getEntityVersion(), entityStateInstance.getProperties(), entityStateInstance.getAssociations(), entityStateInstance.getManyAssociations() );
+                SerializableState state = new SerializableState( entityState.getIdentity(),
+                                                                 entityState.getEntityVersion(),
+                                                                 entityStateInstance.getProperties(),
+                                                                 entityStateInstance.getAssociations(),
+                                                                 entityStateInstance.getManyAssociations() );
                 SerializedObject<SerializableState> serializedObject = new SerializedObject<SerializableState>( state );
                 replicatedMap.put( entityState.getIdentity().toString(), serializedObject );
             }
@@ -121,7 +131,11 @@ public class JGroupsSerializationEntityStoreMixin
             for( EntityState entityState : loadedStates )
             {
                 EntityStateInstance entityStateInstance = (EntityStateInstance) entityState;
-                SerializableState state = new SerializableState( entityState.getEntityVersion(), entityStateInstance.getProperties(), entityStateInstance.getAssociations(), entityStateInstance.getManyAssociations() );
+                SerializableState state = new SerializableState( entityState.getIdentity(),
+                                                                 entityState.getEntityVersion() + 1,
+                                                                 entityStateInstance.getProperties(),
+                                                                 entityStateInstance.getAssociations(),
+                                                                 entityStateInstance.getManyAssociations() );
                 SerializedObject<SerializableState> serializedObject = new SerializedObject<SerializableState>( state );
                 replicatedMap.put( entityState.getIdentity().toString(), serializedObject );
             }
@@ -149,5 +163,10 @@ public class JGroupsSerializationEntityStoreMixin
                 lock.writeLock().unlock();
             }
         };
+    }
+
+    public Iterator<EntityState> iterator()
+    {
+        return null;
     }
 }

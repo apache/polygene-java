@@ -24,6 +24,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.concurrent.locks.ReadWriteLock;
 import org.jets3t.service.S3Service;
 import org.jets3t.service.S3ServiceException;
@@ -40,8 +41,8 @@ import org.qi4j.spi.entity.EntityStateInstance;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreException;
-import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.serialization.SerializableState;
 import org.qi4j.spi.structure.CompositeDescriptor;
 import org.qi4j.structure.Module;
@@ -114,7 +115,12 @@ public class S3SerializationStoreMixin
             ObjectInputStream stream = new ObjectInputStream( inputStream );
             SerializableState serializableState = (SerializableState) stream.readObject();
 
-            return new EntityStateInstance( serializableState.getEntityVersion(), identity, EntityStatus.LOADED, serializableState.getProperties(), serializableState.getAssociations(), serializableState.getManyAssociations() );
+            return new EntityStateInstance( serializableState.entityVersion(),
+                                            identity,
+                                            EntityStatus.LOADED,
+                                            serializableState.properties(),
+                                            serializableState.associations(),
+                                            serializableState.manyAssociations() );
         }
         catch( S3ServiceException e )
         {
@@ -143,14 +149,22 @@ public class S3SerializationStoreMixin
             for( EntityState entityState : newStates )
             {
                 EntityStateInstance entityStateInstance = (EntityStateInstance) entityState;
-                SerializableState state = new SerializableState( entityState.getEntityVersion(), entityStateInstance.getProperties(), entityStateInstance.getAssociations(), entityStateInstance.getManyAssociations() );
+                SerializableState state = new SerializableState( entityState.getIdentity(),
+                                                                 entityState.getEntityVersion(),
+                                                                 entityStateInstance.getProperties(),
+                                                                 entityStateInstance.getAssociations(),
+                                                                 entityStateInstance.getManyAssociations() );
                 uploadObject( entityState.getIdentity(), state );
             }
 
             for( EntityState entityState : loadedStates )
             {
                 EntityStateInstance entityStateInstance = (EntityStateInstance) entityState;
-                SerializableState state = new SerializableState( entityState.getEntityVersion(), entityStateInstance.getProperties(), entityStateInstance.getAssociations(), entityStateInstance.getManyAssociations() );
+                SerializableState state = new SerializableState( entityState.getIdentity(),
+                                                                 entityState.getEntityVersion(),
+                                                                 entityStateInstance.getProperties(),
+                                                                 entityStateInstance.getAssociations(),
+                                                                 entityStateInstance.getManyAssociations() );
                 uploadObject( entityState.getIdentity(), state );
             }
 
@@ -178,6 +192,11 @@ public class S3SerializationStoreMixin
             lock.writeLock().unlock();
             throw new EntityStoreException( e );
         }
+    }
+
+    public Iterator<EntityState> iterator()
+    {
+        return null;
     }
 
     private void uploadObject( QualifiedIdentity identity, SerializableState serializableState )

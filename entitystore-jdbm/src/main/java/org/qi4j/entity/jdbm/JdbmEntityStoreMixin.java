@@ -25,7 +25,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Properties;
 import java.util.concurrent.locks.ReadWriteLock;
 import jdbm.RecordManager;
@@ -35,6 +37,8 @@ import jdbm.helper.ByteArrayComparator;
 import jdbm.helper.ByteArraySerializer;
 import jdbm.helper.LongSerializer;
 import jdbm.helper.Serializer;
+import jdbm.helper.Tuple;
+import jdbm.helper.TupleBrowser;
 import org.qi4j.composite.scope.Structure;
 import org.qi4j.composite.scope.This;
 import org.qi4j.library.framework.locking.WriteLock;
@@ -141,7 +145,7 @@ public class JdbmEntityStoreMixin
             try
             {
                 SerializableState serializableState = (SerializableState) oin.readObject();
-                return new EntityStateInstance( serializableState.getEntityVersion(), identity, EntityStatus.LOADED, serializableState.getProperties(), serializableState.getAssociations(), serializableState.getManyAssociations() );
+                return new EntityStateInstance( serializableState.entityVersion(), identity, EntityStatus.LOADED, serializableState.properties(), serializableState.associations(), serializableState.manyAssociations() );
             }
             catch( ClassNotFoundException e )
             {
@@ -164,7 +168,11 @@ public class JdbmEntityStoreMixin
             for( EntityState entityState : newStates )
             {
                 EntityStateInstance entityStateInstance = (EntityStateInstance) entityState;
-                SerializableState state = new SerializableState( entityState.getEntityVersion(), entityStateInstance.getProperties(), entityStateInstance.getAssociations(), entityStateInstance.getManyAssociations() );
+                SerializableState state = new SerializableState( entityState.getIdentity(),
+                                                                 entityState.getEntityVersion(),
+                                                                 entityStateInstance.getProperties(),
+                                                                 entityStateInstance.getAssociations(),
+                                                                 entityStateInstance.getManyAssociations() );
                 ObjectOutputStream out = new FastObjectOutputStream( bout );
                 out.writeObject( state );
                 out.close();
@@ -177,7 +185,11 @@ public class JdbmEntityStoreMixin
             for( EntityState entityState : loadedStates )
             {
                 EntityStateInstance entityStateInstance = (EntityStateInstance) entityState;
-                SerializableState state = new SerializableState( entityState.getEntityVersion(), entityStateInstance.getProperties(), entityStateInstance.getAssociations(), entityStateInstance.getManyAssociations() );
+                SerializableState state = new SerializableState( entityState.getIdentity(),
+                                                                 entityState.getEntityVersion() + 1,
+                                                                 entityStateInstance.getProperties(),
+                                                                 entityStateInstance.getAssociations(),
+                                                                 entityStateInstance.getManyAssociations() );
                 ObjectOutputStream out = new FastObjectOutputStream( bout );
                 out.writeObject( state );
                 out.close();
@@ -237,6 +249,46 @@ public class JdbmEntityStoreMixin
                 }
             }
         };
+    }
+
+    public Iterator<EntityState> iterator()
+    {
+        try
+        {
+            final TupleBrowser browser = index.browse();
+            final Tuple tuple = new Tuple();
+
+            return new Iterator<EntityState>()
+            {
+                public boolean hasNext()
+                {
+                    try
+                    {
+                        return browser.getNext( tuple );
+                    }
+                    catch( IOException e )
+                    {
+                        return false;
+                    }
+                }
+
+                public EntityState next()
+                {
+                    String qid = (String) tuple.getKey();
+
+//                    tuple.
+                    return null;
+                }
+
+                public void remove()
+                {
+                }
+            };
+        }
+        catch( IOException e )
+        {
+            return Collections.EMPTY_LIST.iterator();
+        }
     }
 
     private Properties getProperties( File directory )
