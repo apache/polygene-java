@@ -81,4 +81,8 @@ public interface UnitOfWork
     CompositeBuilderFactory compositeBuilderFactory();
 
     ObjectBuilderFactory objectBuilderFactory();
+
+    LoadingPolicy loadingPolicy();
+
+    void setLoadingPolicy( LoadingPolicy loadingPolicy );
 }

@@ -42,6 +42,13 @@ public final class QualifiedIdentity
         this.compositeType = clazz;
     }
 
+    public QualifiedIdentity( String qualifiedIdentity )
+    {
+        int separatorIndex = qualifiedIdentity.indexOf( ":" );
+        this.identity = qualifiedIdentity.substring( 0, separatorIndex );
+        this.compositeType = qualifiedIdentity.substring( separatorIndex + 1 );
+    }
+
     public String getIdentity()
     {
         return identity;

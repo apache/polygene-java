@@ -24,7 +24,7 @@ public final class ThisInjectionProviderFactory
         if( bindingContext.getCompositeResolution() != null )
         {
             // If Composite type then return real type, otherwise use the specified one
-            Class thisType = resolution.getInjectionModel().getInjectionClass();
+            Class thisType = resolution.getInjectionModel().getRawInjectionType();
 
             if( thisType.isAssignableFrom( bindingContext.getCompositeResolution().getCompositeModel().getCompositeType() ) )
             {

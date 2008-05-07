@@ -4,6 +4,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.Collections;
 import java.util.Iterator;
 import org.qi4j.composite.Initializable;
@@ -121,7 +122,12 @@ public final class InstanceFactoryImpl
                     }
                     catch( IllegalArgumentException e )
                     {
-                        throw new InstantiationException( "Could not set field " + field.getName() + " in " + field.getDeclaringClass().getName() + " to value of type " + value.getClass().getName() );
+                        String valueTypeName = value.getClass().getName();
+                        if( value instanceof Proxy )
+                        {
+                            valueTypeName = value.getClass().getInterfaces()[ 0 ].getName();
+                        }
+                        throw new InstantiationException( "Could not set field " + field.getName() + " of type " + field.getType().getName() + " in " + field.getDeclaringClass().getName() + " to value of type " + valueTypeName );
                     }
                     catch( IllegalAccessException e )
                     {
@@ -177,7 +183,7 @@ public final class InstanceFactoryImpl
             return Collections.singleton( injectionResult );
         }
 
-        if( injectionResult instanceof Iterable && !Iterable.class.isAssignableFrom( type ) )
+        if( injectionResult instanceof Iterable && !Iterable.class.isAssignableFrom( type ) && !type.isInstance( injectionResult ) )
         {
             Iterator iterator = ( (Iterable) injectionResult ).iterator();
             if( iterator.hasNext() )

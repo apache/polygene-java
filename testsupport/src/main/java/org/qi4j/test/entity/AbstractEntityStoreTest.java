@@ -1,11 +1,18 @@
 package org.qi4j.test.entity;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
+import org.qi4j.composite.CompositeBuilderFactory;
+import org.qi4j.composite.Mixins;
+import org.qi4j.composite.scope.Structure;
+import org.qi4j.composite.scope.This;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.EntityCompositeNotFoundException;
 import org.qi4j.entity.UnitOfWork;
@@ -14,6 +21,7 @@ import org.qi4j.entity.association.Association;
 import org.qi4j.entity.association.ListAssociation;
 import org.qi4j.entity.association.ManyAssociation;
 import org.qi4j.entity.association.SetAssociation;
+import org.qi4j.property.ImmutableProperty;
 import org.qi4j.property.Property;
 import org.qi4j.spi.entity.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
@@ -27,7 +35,7 @@ public abstract class AbstractEntityStoreTest
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
         module.addServices( UuidIdentityGeneratorService.class );
-        module.addComposites( TestEntity.class );
+        module.addComposites( TestEntity.class, TestValue.class );
     }
 
     @Test
@@ -102,6 +110,15 @@ public abstract class AbstractEntityStoreTest
         instance.name().set( "Test" );
         instance.association().set( instance );
 
+        CompositeBuilder<TestValue> testValue = compositeBuilderFactory.newCompositeBuilder( TestValue.class );
+        TestValue state = testValue.stateOfComposite();
+        state.someValue().set( "Foo" );
+        state.otherValue().set( 5 );
+
+        TestValue value = testValue.newInstance();
+        //instance.valueProperty().set( value );
+        value.mutate();
+
         instance.manyAssociation().add( instance );
 
         instance.listAssociation().add( instance );
@@ -120,6 +137,8 @@ public abstract class AbstractEntityStoreTest
 
         Property<String> unsetName();
 
+        Property<TestValue> valueProperty();
+
         Association<TestEntity> association();
 
         Association<TestEntity> unsetAssociation();
@@ -129,5 +148,58 @@ public abstract class AbstractEntityStoreTest
         ListAssociation<TestEntity> listAssociation();
 
         SetAssociation<TestEntity> setAssociation();
+    }
+
+    public interface TestValue
+        extends ValueComposite<TestValue>
+    {
+        ImmutableProperty<String> someValue();
+
+        ImmutableProperty<Integer> otherValue();
+    }
+
+    @Mixins( ValueComposite.ValueCompositeMixin.class )
+    public interface ValueComposite<T>
+        extends Composite
+    {
+        CompositeBuilder<T> mutate();
+
+        public abstract class ValueCompositeMixin<T>
+            implements ValueComposite<T>
+        {
+            @This Composite composite;
+            @Structure CompositeBuilderFactory cbf;
+
+            public CompositeBuilder<T> mutate()
+            {
+                CompositeBuilder<T> builder = (CompositeBuilder<T>) cbf.newCompositeBuilder( composite.type() );
+                T state = builder.stateOfComposite();
+
+                // Copy current state
+                Method[] methods = state.getClass().getMethods();
+                for( Method method : methods )
+                {
+                    if( Property.class.isAssignableFrom( method.getReturnType() ) )
+                    {
+                        try
+                        {
+                            Property<Object> oldProperty = (Property<Object>) method.invoke( composite );
+                            Property<Object> newProperty = (Property<Object>) method.invoke( state );
+                            newProperty.set( oldProperty.get() );
+                        }
+                        catch( IllegalAccessException e )
+                        {
+                            e.printStackTrace();
+                        }
+                        catch( InvocationTargetException e )
+                        {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+
+                return builder;
+            }
+        }
     }
 }

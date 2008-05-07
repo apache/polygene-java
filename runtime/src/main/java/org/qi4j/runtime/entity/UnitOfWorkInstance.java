@@ -19,27 +19,29 @@ package org.qi4j.runtime.entity;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.CompositeBuilderFactory;
-import org.qi4j.composite.InvalidApplicationException;
 import org.qi4j.composite.ObjectBuilderFactory;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.EntityCompositeNotFoundException;
+import org.qi4j.entity.EntityNotRegisteredException;
 import org.qi4j.entity.Identity;
 import org.qi4j.entity.IdentityGenerator;
+import org.qi4j.entity.LoadingPolicy;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkCompletionException;
 import org.qi4j.entity.UnitOfWorkException;
-import org.qi4j.entity.EntityNotRegisteredException;
 import org.qi4j.query.Query;
 import org.qi4j.query.QueryBuilderFactory;
 import org.qi4j.runtime.composite.CompositeContext;
 import org.qi4j.runtime.composite.EntityCompositeInstance;
 import org.qi4j.runtime.query.QueryBuilderFactoryImpl;
 import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.spi.composite.CompositeResolution;
 import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStateInstance;
@@ -49,7 +51,6 @@ import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.structure.CompositeDescriptor;
-import org.qi4j.spi.composite.CompositeResolution;
 import org.qi4j.structure.Module;
 
 public final class UnitOfWorkInstance
@@ -70,6 +71,8 @@ public final class UnitOfWorkInstance
      * Lazy query builder factory.
      */
     private QueryBuilderFactory queryBuilderFactory;
+
+    private LoadingPolicy loadingPolicy;
 
     static
     {
@@ -346,6 +349,16 @@ public final class UnitOfWorkInstance
     public ObjectBuilderFactory objectBuilderFactory()
     {
         return moduleInstance.getStructureContext().getObjectBuilderFactory();
+    }
+
+    public LoadingPolicy loadingPolicy()
+    {
+        return loadingPolicy;
+    }
+
+    public void setLoadingPolicy( LoadingPolicy loadingPolicy )
+    {
+        this.loadingPolicy = loadingPolicy;
     }
 
     public void pause()
@@ -679,6 +692,11 @@ public final class UnitOfWorkInstance
                 {
                 }
             };
+        }
+
+        public Iterator<EntityState> iterator()
+        {
+            return null;
         }
     }
 

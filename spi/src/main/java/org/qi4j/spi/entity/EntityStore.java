@@ -24,7 +24,7 @@ import org.qi4j.structure.Module;
  * persistent state of EntityComposites.
  */
 public interface EntityStore
-//    extends Iterable<EntityState>
+    extends Iterable<EntityState>
 {
     /**
      * Create new EntityState for a given identity.
