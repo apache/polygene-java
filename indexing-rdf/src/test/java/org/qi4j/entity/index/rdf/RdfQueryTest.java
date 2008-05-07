@@ -31,7 +31,7 @@ import org.qi4j.query.QueryBuilderFactory;
 import static org.qi4j.query.QueryExpressions.*;
 import org.qi4j.query.grammar.OrderBy;
 import org.qi4j.spi.entity.UuidIdentityGeneratorService;
-import org.qi4j.spi.query.SearchException;
+import org.qi4j.spi.query.EntityFinderException;
 
 public class RdfQueryTest
 {
@@ -72,7 +72,7 @@ public class RdfQueryTest
     }
 
     @Test
-    public void script01() throws SearchException
+    public void script01() throws EntityFinderException
     {
         QueryBuilder<PersonComposite> qb = qbf.newQueryBuilder( PersonComposite.class );
         // should return all persons (Joe, Ann, Jack Doe)
@@ -84,7 +84,7 @@ public class RdfQueryTest
     }
 
     @Test
-    public void script02() throws SearchException
+    public void script02() throws EntityFinderException
     {
         QueryBuilder<Domain> qb = qbf.newQueryBuilder( Domain.class );
         Nameable nameable = templateFor( Nameable.class );
@@ -100,7 +100,7 @@ public class RdfQueryTest
     }
 
     @Test
-    public void script03() throws SearchException
+    public void script03() throws EntityFinderException
     {
         QueryBuilder<Nameable> qb = qbf.newQueryBuilder( Nameable.class );
         // should return all entities
@@ -112,7 +112,7 @@ public class RdfQueryTest
     }
 
     @Test
-    public void script04() throws SearchException
+    public void script04() throws EntityFinderException
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
@@ -128,7 +128,7 @@ public class RdfQueryTest
     }
 
     @Test
-    public void script05() throws SearchException
+    public void script05() throws EntityFinderException
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
@@ -144,7 +144,7 @@ public class RdfQueryTest
     }
 
     @Test
-    public void script06() throws SearchException
+    public void script06() throws EntityFinderException
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
@@ -160,7 +160,7 @@ public class RdfQueryTest
     }
 
     @Test
-    public void script07() throws SearchException
+    public void script07() throws EntityFinderException
     {
         QueryBuilder<Nameable> qb = qbf.newQueryBuilder( Nameable.class );
         Person person = templateFor( Person.class );
@@ -179,7 +179,7 @@ public class RdfQueryTest
     }
 
     @Test
-    public void script08() throws SearchException
+    public void script08() throws EntityFinderException
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
@@ -198,7 +198,7 @@ public class RdfQueryTest
     }
 
     @Test
-    public void script09() throws SearchException
+    public void script09() throws EntityFinderException
     {
         QueryBuilder<Female> qb = qbf.newQueryBuilder( Female.class );
         Person person = templateFor( Person.class );
@@ -217,7 +217,7 @@ public class RdfQueryTest
     }
 
     @Test
-    public void script10() throws SearchException
+    public void script10() throws EntityFinderException
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
@@ -235,7 +235,7 @@ public class RdfQueryTest
     }
 
     @Test
-    public void script11() throws SearchException
+    public void script11() throws EntityFinderException
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
@@ -251,7 +251,7 @@ public class RdfQueryTest
     }
 
     @Test
-    public void script12() throws SearchException
+    public void script12() throws EntityFinderException
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
@@ -267,7 +267,7 @@ public class RdfQueryTest
     }
 
     @Test
-    public void script13() throws SearchException
+    public void script13() throws EntityFinderException
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         Male person = templateFor( Male.class );
@@ -283,7 +283,7 @@ public class RdfQueryTest
     }
 
     @Test
-    public void script14() throws SearchException
+    public void script14() throws EntityFinderException
     {
         QueryBuilder<Male> qb = qbf.newQueryBuilder( Male.class );
         Male person = templateFor( Male.class );
@@ -299,7 +299,7 @@ public class RdfQueryTest
     }
 
     @Test
-    public void script15() throws SearchException
+    public void script15() throws EntityFinderException
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         Male person = templateFor( Male.class );
@@ -315,7 +315,7 @@ public class RdfQueryTest
     }
 
     @Test
-    public void script16() throws SearchException
+    public void script16() throws EntityFinderException
     {
         QueryBuilder<Nameable> qb = qbf.newQueryBuilder( Nameable.class );
         // should return only 2 entities
@@ -328,7 +328,7 @@ public class RdfQueryTest
     }
 
     @Test
-    public void script17() throws SearchException
+    public void script17() throws EntityFinderException
     {
         QueryBuilder<Nameable> qb = qbf.newQueryBuilder( Nameable.class );
         // should return only 3 entities starting with third one
@@ -342,7 +342,7 @@ public class RdfQueryTest
     }
 
     @Test
-    public void script18() throws SearchException
+    public void script18() throws EntityFinderException
     {
         QueryBuilder<Nameable> qb = qbf.newQueryBuilder( Nameable.class );
         // should return all Nameable entities sorted by name
@@ -356,7 +356,7 @@ public class RdfQueryTest
     }
 
     @Test
-    public void script19() throws SearchException
+    public void script19() throws EntityFinderException
     {
         QueryBuilder<Nameable> qb = qbf.newQueryBuilder( Nameable.class );
         // should return all Nameable entities with a name > "B" sorted by name
@@ -373,7 +373,7 @@ public class RdfQueryTest
     }
 
     @Test
-    public void script20() throws SearchException
+    public void script20() throws EntityFinderException
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         // should return all Persons born after 1973 (Ann and Joe Doe) sorted descending by name
@@ -390,7 +390,7 @@ public class RdfQueryTest
     }
 
     @Test
-    public void script21() throws SearchException
+    public void script21() throws EntityFinderException
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         // should return all Persons sorted by name of the city they were born
@@ -404,7 +404,7 @@ public class RdfQueryTest
     }
 
     @Test
-    public void script22() throws SearchException
+    public void script22() throws EntityFinderException
     {
         QueryBuilder<Nameable> qb = qbf.newQueryBuilder( Nameable.class );
         Nameable nameable = templateFor( Nameable.class );
