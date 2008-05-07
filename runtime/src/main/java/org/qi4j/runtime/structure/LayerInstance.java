@@ -20,21 +20,21 @@ import java.util.List;
 import java.util.Map;
 import org.qi4j.composite.Composite;
 import org.qi4j.service.Activatable;
-import org.qi4j.service.ServiceLocator;
+import org.qi4j.service.ServiceFinder;
 import org.qi4j.service.ServiceReference;
 
 /**
  * TODO
  */
 public final class LayerInstance
-    implements Activatable, ServiceLocator
+    implements Activatable, ServiceFinder
 {
     private LayerContext layerContext;
     private List<ModuleInstance> moduleInstances;
     private Map<Class<? extends Composite>, ModuleInstance> publicCompositeModules;
     private Map<Class, ModuleInstance> publicObjectModules;
     private Map<Class, List<ModuleInstance>> publicServiceModules;
-    private ServiceLocator serviceLocator;
+    private ServiceFinder serviceLocator;
     private Map<Class, ModuleInstance> publicMixinModules;
 
 
@@ -43,7 +43,7 @@ public final class LayerInstance
                           Map<Class, ModuleInstance> publicObjectModules,
                           Map<Class, ModuleInstance> publicMixinModules,
                           Map<Class, List<ModuleInstance>> publicServiceModules,
-                          ServiceLocator serviceLocator )
+                          ServiceFinder serviceLocator )
     {
         this.serviceLocator = serviceLocator;
         this.publicServiceModules = publicServiceModules;
@@ -103,14 +103,14 @@ public final class LayerInstance
      * @param serviceType
      * @return
      */
-    public <T> ServiceReference<T> lookupService( Class<T> serviceType )
+    public <T> ServiceReference<T> findService( Class<T> serviceType )
     {
         List<ModuleInstance> modulesForService = publicServiceModules.get( serviceType );
         if( modulesForService != null )
         {
             for( ModuleInstance moduleInstance : modulesForService )
             {
-                ServiceReference<T> serviceReference = moduleInstance.lookupService( serviceType );
+                ServiceReference<T> serviceReference = moduleInstance.findService( serviceType );
                 if( serviceReference != null )
                 {
                     return serviceReference;
@@ -126,7 +126,7 @@ public final class LayerInstance
      * @param serviceType
      * @return
      */
-    public <T> Iterable<ServiceReference<T>> lookupServices( Class<T> serviceType )
+    public <T> Iterable<ServiceReference<T>> findServices( Class<T> serviceType )
     {
         List<ModuleInstance> modulesForService = publicServiceModules.get( serviceType );
         if( modulesForService != null )
@@ -134,7 +134,7 @@ public final class LayerInstance
             List<ServiceReference<T>> serviceRefs = new ArrayList<ServiceReference<T>>();
             for( ModuleInstance moduleInstance : modulesForService )
             {
-                Iterable<ServiceReference<T>> serviceReferences = moduleInstance.lookupServices( serviceType );
+                Iterable<ServiceReference<T>> serviceReferences = moduleInstance.findServices( serviceType );
                 for( ServiceReference<T> serviceReference : serviceReferences )
                 {
                     serviceRefs.add( serviceReference );

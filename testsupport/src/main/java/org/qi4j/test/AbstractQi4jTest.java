@@ -30,7 +30,7 @@ import org.qi4j.runtime.structure.ApplicationContext;
 import org.qi4j.runtime.structure.ApplicationInstance;
 import org.qi4j.runtime.structure.LayerInstance;
 import org.qi4j.runtime.structure.ModuleInstance;
-import org.qi4j.service.ServiceLocator;
+import org.qi4j.service.ServiceFinder;
 import org.qi4j.spi.Qi4jSPI;
 
 /**
@@ -49,7 +49,7 @@ public abstract class AbstractQi4jTest
     protected CompositeBuilderFactory compositeBuilderFactory;
     protected ObjectBuilderFactory objectBuilderFactory;
     protected UnitOfWorkFactory unitOfWorkFactory;
-    protected ServiceLocator serviceLocator;
+    protected ServiceFinder serviceLocator;
 
     protected ModuleInstance moduleInstance;
     protected LayerInstance layerInstance;

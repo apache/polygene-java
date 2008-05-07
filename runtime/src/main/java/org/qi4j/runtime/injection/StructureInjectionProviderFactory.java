@@ -23,8 +23,7 @@ import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.ObjectBuilderFactory;
 import org.qi4j.entity.UnitOfWorkFactory;
 import org.qi4j.runtime.Qi4jRuntime;
-import org.qi4j.runtime.structure.ModuleInstance;
-import org.qi4j.service.ServiceLocator;
+import org.qi4j.service.ServiceFinder;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.injection.BindingContext;
 import org.qi4j.spi.injection.InjectionContext;
@@ -80,7 +79,7 @@ public final class StructureInjectionProviderFactory
             {
                 return structureContext.getUnitOfWorkFactory();
             }
-            else if( type.equals( ServiceLocator.class ) )
+            else if( type.equals( ServiceFinder.class ) )
             {
                 return structureContext.getServiceLocator();
             }

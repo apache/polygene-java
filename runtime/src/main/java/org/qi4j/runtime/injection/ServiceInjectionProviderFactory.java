@@ -78,7 +78,7 @@ public final class ServiceInjectionProviderFactory
 
         public Object provideInjection( InjectionContext context ) throws InjectionProviderException
         {
-            Iterable<ServiceReference> serviceReferences = context.getStructureContext().getServiceLocator().lookupServices( serviceType );
+            Iterable<ServiceReference> serviceReferences = context.getStructureContext().getServiceLocator().findServices( serviceType );
             return serviceReferences;
         }
     }
@@ -95,7 +95,7 @@ public final class ServiceInjectionProviderFactory
 
         public Object provideInjection( InjectionContext context ) throws InjectionProviderException
         {
-            Iterable<ServiceReference> serviceReferences = context.getStructureContext().getServiceLocator().lookupServices( serviceType );
+            Iterable<ServiceReference> serviceReferences = context.getStructureContext().getServiceLocator().findServices( serviceType );
             List serviceInstances = new ArrayList();
             for( ServiceReference serviceReference : serviceReferences )
             {
@@ -117,7 +117,7 @@ public final class ServiceInjectionProviderFactory
 
         public Object provideInjection( InjectionContext context ) throws InjectionProviderException
         {
-            return context.getStructureContext().getServiceLocator().lookupServices( serviceType );
+            return context.getStructureContext().getServiceLocator().findServices( serviceType );
         }
     }
 
@@ -133,7 +133,7 @@ public final class ServiceInjectionProviderFactory
 
         public Object provideInjection( InjectionContext context ) throws InjectionProviderException
         {
-            ServiceReference serviceReference = context.getStructureContext().getServiceLocator().lookupService( serviceType );
+            ServiceReference serviceReference = context.getStructureContext().getServiceLocator().findService( serviceType );
             if( serviceReference == null )
             {
                 return null;

@@ -17,7 +17,7 @@ package org.qi4j.spi.injection;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.ObjectBuilderFactory;
 import org.qi4j.entity.UnitOfWorkFactory;
-import org.qi4j.service.ServiceLocator;
+import org.qi4j.service.ServiceFinder;
 
 /**
  * TODO
@@ -27,9 +27,9 @@ public class StructureContext
     private CompositeBuilderFactory compositeBuilderFactory;
     private ObjectBuilderFactory objectBuilderFactory;
     private UnitOfWorkFactory unitOfWorkFactory;
-    private ServiceLocator serviceLocator;
+    private ServiceFinder serviceLocator;
 
-    public StructureContext( CompositeBuilderFactory compositeBuilderFactory, ObjectBuilderFactory objectBuilderFactory, UnitOfWorkFactory unitOfWorkFactory, ServiceLocator serviceLocator )
+    public StructureContext( CompositeBuilderFactory compositeBuilderFactory, ObjectBuilderFactory objectBuilderFactory, UnitOfWorkFactory unitOfWorkFactory, ServiceFinder serviceLocator )
     {
         this.compositeBuilderFactory = compositeBuilderFactory;
         this.objectBuilderFactory = objectBuilderFactory;
@@ -52,7 +52,7 @@ public class StructureContext
         return unitOfWorkFactory;
     }
 
-    public ServiceLocator getServiceLocator()
+    public ServiceFinder getServiceLocator()
     {
         return serviceLocator;
     }

@@ -17,8 +17,7 @@ package org.qi4j.structure;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.scope.Structure;
 import org.qi4j.property.ImmutableProperty;
-import org.qi4j.service.ServiceLocator;
-import java.util.Map;
+import org.qi4j.service.ServiceFinder;
 
 /**
  * API for interacting with a Module. Instances
@@ -26,20 +25,20 @@ import java.util.Map;
  * injection scope.
  */
 public interface Module
-    extends ServiceLocator
+    extends ServiceFinder
 {
     ImmutableProperty<String> name();
 
-    Module moduleForComposite( Class<? extends Composite> compositetype );
+    Module findModuleForComposite( Class<? extends Composite> compositetype );
 
-    Module moduleForMixinType( Class<?> mixintype );
+    Module findModuleForMixinType( Class<?> mixintype );
 
-    Module moduleForObject( Class<?> objecttype );
+    Module findModuleForObject( Class<?> objecttype );
 
     boolean isPublic( Class<?> compositeOrObject );
 
-    Class<? extends Composite> lookupCompositeType( Class<?> mixintype );
+    Class<? extends Composite> findCompositeType( Class<?> mixintype );
 
-    Class lookupClass( String className )
+    Class findClass( String className )
         throws ClassNotFoundException;
 }

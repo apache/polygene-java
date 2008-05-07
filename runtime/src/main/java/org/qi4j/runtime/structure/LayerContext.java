@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 import org.qi4j.composite.Composite;
 import org.qi4j.service.ServiceDescriptor;
-import org.qi4j.service.ServiceLocator;
+import org.qi4j.service.ServiceFinder;
 import org.qi4j.spi.composite.CompositeModel;
 import org.qi4j.spi.structure.CompositeDescriptor;
 import org.qi4j.spi.structure.LayerBinding;
@@ -65,7 +65,7 @@ public final class LayerContext
 
         ListMap<Class, ModuleInstance> modulesForPublicServices = new ListMap<Class, ModuleInstance>();
 
-        ServiceLocator serviceLocator = new LayerServiceLocator( modulesForPublicServices );
+        ServiceFinder serviceLocator = new LayerServiceLocator( modulesForPublicServices );
 
         Map<Class, ModuleInstance> mapping = null;
         for( ModuleContext moduleContext : moduleContexts )

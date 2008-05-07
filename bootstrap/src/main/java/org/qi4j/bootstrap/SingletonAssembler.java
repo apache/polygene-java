@@ -23,7 +23,7 @@ import org.qi4j.runtime.Qi4jRuntime;
 import org.qi4j.runtime.structure.ApplicationInstance;
 import org.qi4j.runtime.structure.LayerInstance;
 import org.qi4j.runtime.structure.ModuleInstance;
-import org.qi4j.service.ServiceLocator;
+import org.qi4j.service.ServiceFinder;
 
 /**
  * Base class for Assembler that creates an Application
@@ -113,7 +113,7 @@ public abstract class SingletonAssembler
         return moduleInstance.getStructureContext().getUnitOfWorkFactory();
     }
 
-    public final ServiceLocator getServiceLocator()
+    public final ServiceFinder getServiceLocator()
     {
         return moduleInstance.getStructureContext().getServiceLocator();
     }

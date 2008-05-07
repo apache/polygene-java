@@ -167,7 +167,7 @@ public final class UnitOfWorkInstance
                     throw new UnitOfWorkException( "No store found for type " + compositeType );
                 }
 
-                ModuleInstance.ModuleDelegate module = (ModuleInstance.ModuleDelegate) moduleInstance.getModule().moduleForComposite( compositeType );
+                ModuleInstance.ModuleDelegate module = (ModuleInstance.ModuleDelegate) moduleInstance.getModule().findModuleForComposite( compositeType );
 
                 if( module == null )
                 {
@@ -242,7 +242,7 @@ public final class UnitOfWorkInstance
             // Create entity instance
             EntityStore store = stateServices.getEntityStore( compositeType );
 
-            ModuleInstance.ModuleDelegate module = (ModuleInstance.ModuleDelegate) moduleInstance.getModule().moduleForComposite( compositeType );
+            ModuleInstance.ModuleDelegate module = (ModuleInstance.ModuleDelegate) moduleInstance.getModule().findModuleForComposite( compositeType );
 
             if( module == null )
             {

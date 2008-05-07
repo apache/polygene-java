@@ -18,17 +18,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import org.qi4j.service.ServiceLocator;
+import org.qi4j.service.ServiceFinder;
 import org.qi4j.service.ServiceReference;
 
 /**
  * ServiceLocator implementation for a LayerInstance.
  * This implements rules 2 and 3 in the ServiceLocator description
  *
- * @see ServiceLocator
+ * @see org.qi4j.service.ServiceFinder
  */
 public class LayerServiceLocator
-    implements ServiceLocator
+    implements ServiceFinder
 {
     private Map<Class, List<ModuleInstance>> modulesForPublicServices;
 
@@ -37,19 +37,19 @@ public class LayerServiceLocator
         this.modulesForPublicServices = modulesForPublicServices;
     }
 
-    public <T> ServiceReference<T> lookupService( Class<T> serviceType )
+    public <T> ServiceReference<T> findService( Class<T> serviceType )
     {
         // Look in the used Layers
         List<ModuleInstance> modules = modulesForPublicServices.get( serviceType );
         if( modules != null )
         {
-            return modules.get( 0 ).lookupService( serviceType );
+            return modules.get( 0 ).findService( serviceType );
         }
 
         return null;
     }
 
-    public <T> Iterable<ServiceReference<T>> lookupServices( Class<T> serviceType )
+    public <T> Iterable<ServiceReference<T>> findServices( Class<T> serviceType )
     {
         // Look in the used Layers
         List<ModuleInstance> modules = modulesForPublicServices.get( serviceType );
@@ -58,7 +58,7 @@ public class LayerServiceLocator
             List<ServiceReference<T>> serviceReferences = new ArrayList<ServiceReference<T>>();
             for( ModuleInstance module : modules )
             {
-                Iterable<ServiceReference<T>> moduleServices = module.lookupServices( serviceType );
+                Iterable<ServiceReference<T>> moduleServices = module.findServices( serviceType );
                 for( ServiceReference<T> moduleService : moduleServices )
                 {
                     serviceReferences.add( moduleService );

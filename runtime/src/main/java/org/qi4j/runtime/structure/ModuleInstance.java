@@ -21,11 +21,11 @@ import java.util.List;
 import java.util.Map;
 import org.qi4j.composite.AmbiguousMixinTypeException;
 import org.qi4j.composite.Composite;
+import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.MixinTypeNotAvailableException;
 import org.qi4j.composite.ObjectBuilder;
 import org.qi4j.composite.ObjectBuilderFactory;
-import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.entity.UnitOfWorkFactory;
 import org.qi4j.property.ComputedPropertyInstance;
 import org.qi4j.property.GenericPropertyInfo;
@@ -35,8 +35,8 @@ import org.qi4j.runtime.entity.UnitOfWorkFactoryImpl;
 import org.qi4j.runtime.service.ServiceReferenceInstance;
 import org.qi4j.service.Activatable;
 import org.qi4j.service.ServiceDescriptor;
+import org.qi4j.service.ServiceFinder;
 import org.qi4j.service.ServiceInstanceProvider;
-import org.qi4j.service.ServiceLocator;
 import org.qi4j.service.ServiceReference;
 import org.qi4j.spi.injection.StructureContext;
 import org.qi4j.spi.structure.ModuleBinding;
@@ -48,7 +48,7 @@ import org.qi4j.structure.Module;
  * Instance of a Module.
  */
 public final class ModuleInstance
-    implements Activatable, ServiceLocator
+    implements Activatable, ServiceFinder
 {
     static final ModuleInstance DUMMY = new ModuleInstance();
 
@@ -76,7 +76,7 @@ public final class ModuleInstance
     private CompositeBuilderFactory compositeBuilderFactory;
     private ObjectBuilderFactory objectBuilderFactory;
     private UnitOfWorkFactory unitOfWorkFactory;
-    private ServiceLocator serviceLocator;
+    private ServiceFinder serviceLocator;
     private StructureContext structureContext;
 
     private ActivationStatus status = ActivationStatus.INACTIVE;
@@ -98,7 +98,7 @@ public final class ModuleInstance
                            Map<Class<? extends Composite>, ModuleInstance> moduleInstances,
                            Map<Class, ModuleInstance> moduleForPublicObjects,
                            Map<Class, ModuleInstance> moduleForPublicMixinTypes,
-                           ServiceLocator layerServiceLocator )
+                           ServiceFinder layerServiceLocator )
     {
         this.moduleForPublicObjects = moduleForPublicObjects;
         this.moduleForPublicComposites = moduleInstances;
@@ -119,7 +119,7 @@ public final class ModuleInstance
         {
             Class<? extends ServiceInstanceProvider> providerType = serviceDescriptor.serviceProvider();
             ServiceInstanceProvider sip;
-            if( Composite.class.isAssignableFrom( providerType) )
+            if( Composite.class.isAssignableFrom( providerType ) )
             {
                 CompositeBuilder<? extends ServiceInstanceProvider> builder = compositeBuilderFactory.newCompositeBuilder( providerType );
                 sip = builder.newInstance();
@@ -172,7 +172,7 @@ public final class ModuleInstance
      * @param serviceType the type of the service to lookup
      * @return a service reference to the found service, or null if no service matching the type was found
      */
-    public <T> ServiceReference<T> lookupService( Class<T> serviceType )
+    public <T> ServiceReference<T> findService( Class<T> serviceType )
     {
         List<ServiceReferenceInstance> serviceRefs = serviceReferences.get( serviceType );
         if( serviceRefs != null )
@@ -185,7 +185,7 @@ public final class ModuleInstance
         return null;
     }
 
-    public <T> Iterable<ServiceReference<T>> lookupServices( Class<T> serviceType )
+    public <T> Iterable<ServiceReference<T>> findServices( Class<T> serviceType )
     {
         List<ServiceReferenceInstance> serviceRefs = serviceReferences.get( serviceType );
         if( serviceRefs == null )
@@ -392,17 +392,17 @@ public final class ModuleInstance
             return ModuleInstance.this.name();
         }
 
-        public Module moduleForComposite( Class<? extends Composite> compositetype )
+        public Module findModuleForComposite( Class<? extends Composite> compositetype )
         {
             return ModuleInstance.this.moduleForComposite( compositetype ).getModule();
         }
 
-        public Module moduleForMixinType( Class<?> mixintype )
+        public Module findModuleForMixinType( Class<?> mixintype )
         {
             return ModuleInstance.this.moduleForMixinType( mixintype ).getModule();
         }
 
-        public Module moduleForObject( Class<?> objecttype )
+        public Module findModuleForObject( Class<?> objecttype )
         {
             return ModuleInstance.this.moduleForObject( objecttype ).getModule();
         }
@@ -412,25 +412,25 @@ public final class ModuleInstance
             return ModuleInstance.this.isPublic( compositeOrObject );
         }
 
-        public Class<? extends Composite> lookupCompositeType( Class<?> mixintype )
+        public Class<? extends Composite> findCompositeType( Class<?> mixintype )
         {
             return ModuleInstance.this.lookupCompositeType( mixintype );
         }
 
-        public Class lookupClass( String className )
+        public Class findClass( String className )
             throws ClassNotFoundException
         {
             return ModuleInstance.this.lookupClass( className );
         }
 
-        public <T> ServiceReference<T> lookupService( Class<T> serviceType )
+        public <T> ServiceReference<T> findService( Class<T> serviceType )
         {
-            return serviceLocator.lookupService( serviceType );
+            return serviceLocator.findService( serviceType );
         }
 
-        public <T> Iterable<ServiceReference<T>> lookupServices( Class<T> serviceType )
+        public <T> Iterable<ServiceReference<T>> findServices( Class<T> serviceType )
         {
-            return serviceLocator.lookupServices( serviceType );
+            return serviceLocator.findServices( serviceType );
         }
     }
 }

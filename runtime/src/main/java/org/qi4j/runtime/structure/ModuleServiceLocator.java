@@ -16,7 +16,7 @@ package org.qi4j.runtime.structure;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.qi4j.service.ServiceLocator;
+import org.qi4j.service.ServiceFinder;
 import org.qi4j.service.ServiceReference;
 
 /**
@@ -26,39 +26,39 @@ import org.qi4j.service.ServiceReference;
  * 2) Check the same Layer for a provider for the given type
  */
 public class ModuleServiceLocator
-    implements ServiceLocator
+    implements ServiceFinder
 {
     private ModuleInstance moduleInstance;
-    private ServiceLocator layerServiceLocator;
+    private ServiceFinder layerServiceLocator;
 
-    public ModuleServiceLocator( ModuleInstance moduleInstance, ServiceLocator layerServiceLocator )
+    public ModuleServiceLocator( ModuleInstance moduleInstance, ServiceFinder layerServiceLocator )
     {
         this.moduleInstance = moduleInstance;
         this.layerServiceLocator = layerServiceLocator;
     }
 
-    public <T> ServiceReference<T> lookupService( Class<T> serviceType )
+    public <T> ServiceReference<T> findService( Class<T> serviceType )
     {
         // Check for services in the own module
-        ServiceReference<T> service = moduleInstance.lookupService( serviceType );
+        ServiceReference<T> service = moduleInstance.findService( serviceType );
         if( service != null )
         {
             return service;
         }
 
         // Check for service in the layer and used layers
-        service = layerServiceLocator.lookupService( serviceType );
+        service = layerServiceLocator.findService( serviceType );
 
         return service;
     }
 
-    public <T> Iterable<ServiceReference<T>> lookupServices( Class<T> serviceType )
+    public <T> Iterable<ServiceReference<T>> findServices( Class<T> serviceType )
     {
         List<ServiceReference<T>> serviceList = new ArrayList<ServiceReference<T>>();
 
         {
             // Add services from the own module
-            Iterable<ServiceReference<T>> services = moduleInstance.lookupServices( serviceType );
+            Iterable<ServiceReference<T>> services = moduleInstance.findServices( serviceType );
             for( ServiceReference<T> service : services )
             {
                 serviceList.add( service );
@@ -66,7 +66,7 @@ public class ModuleServiceLocator
         }
 
         // Add service from the layer and used layers
-        Iterable<ServiceReference<T>> services = layerServiceLocator.lookupServices( serviceType );
+        Iterable<ServiceReference<T>> services = layerServiceLocator.findServices( serviceType );
         for( ServiceReference<T> service : services )
         {
             serviceList.add( service );
