@@ -78,7 +78,7 @@ public class ServerRemoteEntityStoreMixin
     {
         try
         {
-            Class compositeType = module.lookupClass( identity.getCompositeType() );
+            Class compositeType = module.findClass( identity.getCompositeType() );
         }
         catch( ClassNotFoundException e )
         {
@@ -142,7 +142,7 @@ public class ServerRemoteEntityStoreMixin
             for( EntityState newState : newStates )
             {
                 QualifiedIdentity id = newState.getIdentity();
-                Class compositeType = module.lookupClass( id.getCompositeType() );
+                Class compositeType = module.findClass( id.getCompositeType() );
                 EntityStore compositeStore = storeMap.getService( compositeType );
                 newStoreState.add( compositeStore, newState );
                 stores.add( compositeStore );
@@ -152,7 +152,7 @@ public class ServerRemoteEntityStoreMixin
             for( EntityState loadedState : loadedStates )
             {
                 QualifiedIdentity id = loadedState.getIdentity();
-                Class compositeType = module.lookupClass( id.getCompositeType() );
+                Class compositeType = module.findClass( id.getCompositeType() );
                 EntityStore compositeStore = storeMap.getService( compositeType );
                 loadedStoreState.add( compositeStore, loadedState );
                 stores.add( compositeStore );
@@ -161,7 +161,7 @@ public class ServerRemoteEntityStoreMixin
             ListMap<EntityStore, QualifiedIdentity> removedStoreState = new ListMap<EntityStore, QualifiedIdentity>();
             for( QualifiedIdentity removedState : removedStates )
             {
-                Class compositeType = module.lookupClass( removedState.getCompositeType() );
+                Class compositeType = module.findClass( removedState.getCompositeType() );
                 EntityStore compositeStore = storeMap.getService( compositeType );
                 removedStoreState.add( compositeStore, removedState );
                 stores.add( compositeStore );

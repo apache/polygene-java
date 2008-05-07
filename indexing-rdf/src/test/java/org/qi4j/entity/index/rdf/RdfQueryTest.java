@@ -68,7 +68,7 @@ public class RdfQueryTest
     @Test
     public void showNetwork()
     {
-        assembler.getServiceLocator().lookupService( RdfIndexerExporterComposite.class ).get().toRDF( System.out );
+        assembler.getServiceLocator().findService( RdfIndexerExporterComposite.class ).get().toRDF( System.out );
     }
 
     @Test

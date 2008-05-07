@@ -118,7 +118,7 @@ public class RdfEntityIndexerMixin
                                    final ValueFactory valueFactory )
         throws RepositoryException, ClassNotFoundException
     {
-        final Class compositeClass = module.lookupClass( entityState.getIdentity().getCompositeType() );
+        final Class compositeClass = module.findClass( entityState.getIdentity().getCompositeType() );
         final CompositeBinding compositeBinding = spi.getCompositeBinding( compositeClass, module );
         final CompositeModel compositeModel = compositeBinding.getCompositeResolution().getCompositeModel();
         final URI compositeURI = valueFactory.createURI( compositeModel.toURI() );
@@ -149,7 +149,7 @@ public class RdfEntityIndexerMixin
                 final AssociationModel assocModel = assocBinding.getAssociationResolution().getAssociationModel();
                 final URI assocURI = valueFactory.createURI( assocModel.toURI() );
 
-                final Class assocCompositeClass = module.lookupClass( assocEntityId.getCompositeType() );
+                final Class assocCompositeClass = module.findClass( assocEntityId.getCompositeType() );
                 final CompositeBinding assocCompositeBinding = spi.getCompositeBinding( assocCompositeClass, module );
                 final CompositeModel assocCompositeModel = assocCompositeBinding.getCompositeResolution().getCompositeModel();
                 final URI assocEntityURI = valueFactory.createURI( assocCompositeModel.toURI()
@@ -170,7 +170,7 @@ public class RdfEntityIndexerMixin
 
                 for( QualifiedIdentity assocEntityId : assocEntityIds )
                 {
-                    final Class assocCompositeClass = module.lookupClass( assocEntityId.getCompositeType() );
+                    final Class assocCompositeClass = module.findClass( assocEntityId.getCompositeType() );
                     final CompositeBinding assocCompositeBinding = spi.getCompositeBinding( assocCompositeClass, module );
                     final CompositeModel assocCompositeModel = assocCompositeBinding.getCompositeResolution().getCompositeModel();
                     final URI assocEntityURI = valueFactory.createURI( assocCompositeModel.toURI()
@@ -197,7 +197,7 @@ public class RdfEntityIndexerMixin
                                     final ValueFactory valueFactory )
         throws RepositoryException, ClassNotFoundException
     {
-        final Class compositeClass = module.lookupClass( entityId.getCompositeType() );
+        final Class compositeClass = module.findClass( entityId.getCompositeType() );
         final CompositeBinding compositeBinding = spi.getCompositeBinding( compositeClass, module );
         final CompositeModel compositeModel = compositeBinding.getCompositeResolution().getCompositeModel();
         final URI entityURI = valueFactory.createURI( compositeModel.toURI() + "/" + entityId.getIdentity() );
@@ -211,7 +211,7 @@ public class RdfEntityIndexerMixin
         throws RepositoryException, ClassNotFoundException
     {
 
-        final Class compositeClass = module.lookupClass( entityType );
+        final Class compositeClass = module.findClass( entityType );
         final CompositeBinding compositeBinding = spi.getCompositeBinding( compositeClass, module );
         final CompositeModel compositeModel = compositeBinding.getCompositeResolution().getCompositeModel();
         final URI compositeURI = valueFactory.createURI( compositeModel.toURI() );

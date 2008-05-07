@@ -13,19 +13,18 @@
  */
 package org.qi4j.quikit.pages;
 
+import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.PageParameters;
 import org.qi4j.composite.ObjectBuilder;
 import org.qi4j.composite.ObjectBuilderFactory;
 import org.qi4j.composite.scope.Structure;
 import org.qi4j.composite.scope.Uses;
-import org.qi4j.entity.EntityComposite;
-import org.qi4j.entity.UnitOfWork;
-import org.qi4j.entity.UnitOfWorkFactory;
-import org.qi4j.entity.UnitOfWorkCompletionException;
 import org.qi4j.entity.ConcurrentEntityModificationException;
+import org.qi4j.entity.UnitOfWork;
+import org.qi4j.entity.UnitOfWorkCompletionException;
+import org.qi4j.entity.UnitOfWorkFactory;
 import org.qi4j.query.Query;
 import org.qi4j.query.QueryBuilder;
 import org.qi4j.query.QueryBuilderFactory;
@@ -44,7 +43,7 @@ public class EntityListViewPage extends WebPage
         try
         {
             QueryBuilderFactory queryFactory = uow.queryBuilderFactory();
-            Class entityType = module.lookupClass( parameters.getString( "entityType" ) );
+            Class entityType = module.findClass( parameters.getString( "entityType" ) );
             QueryBuilder<?> queryBuilder = queryFactory.newQueryBuilder( entityType );
             Query<?> query = queryBuilder.newQuery();
             IModel model = new Model( query );

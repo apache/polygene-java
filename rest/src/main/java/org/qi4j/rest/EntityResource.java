@@ -80,7 +80,7 @@ public class EntityResource extends Resource
         String type = (String) attributes.get( "type" );
         try
         {
-            compositeType = module.lookupClass( type );
+            compositeType = module.findClass( type );
         }
         catch( ClassNotFoundException e )
         {
