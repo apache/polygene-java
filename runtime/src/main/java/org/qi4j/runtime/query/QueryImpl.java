@@ -28,9 +28,9 @@ import org.qi4j.query.grammar.BooleanExpression;
 import org.qi4j.query.grammar.OrderBy;
 import org.qi4j.query.grammar.SingleValueExpression;
 import org.qi4j.runtime.entity.UnitOfWorkInstance;
-import org.qi4j.spi.query.EntityFinder;
-import org.qi4j.spi.query.SearchException;
 import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.spi.query.EntityFinder;
+import org.qi4j.spi.query.EntityFinderException;
 
 /**
  * Default implementation of {@link Query}
@@ -128,12 +128,29 @@ final class QueryImpl<T>
      */
     public T find()
     {
-        final Iterator<T> results = iterator();
-        if( results.hasNext() )
+        try
         {
-            return results.next();
+            final QualifiedIdentity foundEntity = entityFinder.findEntity(
+                resultType, whereClause
+            );
+
+            if( foundEntity != null )
+            {
+                final Class<T> entityType = unitOfWorkInstance.getModuleInstance().getModuleContext().getModuleBinding().lookupClass( foundEntity.getCompositeType() );
+                // TODO shall we throw an exception if class cannot be found?
+                final T entity = unitOfWorkInstance.getReference( foundEntity.getIdentity(), entityType );
+                return entity;
+            }
+            else
+            {
+                return null;
+            }
         }
-        return null;
+        catch( EntityFinderException e )
+        {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     /**
@@ -168,21 +185,19 @@ final class QueryImpl<T>
         final List<T> entities = new ArrayList<T>();
         try
         {
-            final Iterable<QualifiedIdentity> foundEntities = entityFinder.find(
+            final Iterable<QualifiedIdentity> foundEntities = entityFinder.findEntities(
                 resultType, whereClause, orderBySegments, firstResult, maxResults
             );
-            if( foundEntities != null )
+
+            for( final QualifiedIdentity foundEntity : foundEntities )
             {
-                for( final QualifiedIdentity foundEntity : foundEntities )
-                {
-                    final Class<T> entityType = unitOfWorkInstance.getModuleInstance().getModuleContext().getModuleBinding().lookupClass( foundEntity.getCompositeType() );
-                    // TODO shall we throw an exception if class cannot be found?
-                    final T entity = unitOfWorkInstance.getReference( foundEntity.getIdentity(), entityType );
-                    entities.add( entity );
-                }
+                final Class<T> entityType = unitOfWorkInstance.getModuleInstance().getModuleContext().getModuleBinding().lookupClass( foundEntity.getCompositeType() );
+                // TODO shall we throw an exception if class cannot be found?
+                final T entity = unitOfWorkInstance.getReference( foundEntity.getIdentity(), entityType );
+                entities.add( entity );
             }
         }
-        catch( SearchException e )
+        catch( EntityFinderException e )
         {
             // TODO what shall we do? return null / throw runtime exception?
             e.printStackTrace();
@@ -193,5 +208,18 @@ final class QueryImpl<T>
     @Override public String toString()
     {
         return whereClause.toString();
+    }
+
+    public long count()
+    {
+        try
+        {
+            return entityFinder.countEntities( resultType, whereClause );
+        }
+        catch( EntityFinderException e )
+        {
+            e.printStackTrace();
+            return 0;
+        }
     }
 }
