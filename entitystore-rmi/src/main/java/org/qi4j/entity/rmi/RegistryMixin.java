@@ -9,6 +9,7 @@ import java.rmi.server.UnicastRemoteObject;
 import org.qi4j.composite.AppliesTo;
 import org.qi4j.composite.scope.This;
 import org.qi4j.service.Activatable;
+import org.qi4j.service.Configuration;
 
 /**
  * Create and delegate to a RMI registry.
@@ -19,13 +20,13 @@ public class RegistryMixin
 {
     Registry registry;
 
-    @This RegistryConfiguration config;
+    @This Configuration<RegistryConfiguration> config;
 
     public void activate() throws Exception
     {
         try
         {
-            Integer port = config.port().get();
+            Integer port = config.configuration().port().get();
             registry = LocateRegistry.createRegistry( port );
         }
         catch( RemoteException e )

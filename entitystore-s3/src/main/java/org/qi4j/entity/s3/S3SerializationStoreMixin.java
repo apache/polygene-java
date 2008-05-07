@@ -35,6 +35,7 @@ import org.jets3t.service.security.AWSCredentials;
 import org.qi4j.composite.scope.This;
 import org.qi4j.library.framework.locking.WriteLock;
 import org.qi4j.service.Activatable;
+import org.qi4j.service.Configuration;
 import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStateInstance;
@@ -56,7 +57,7 @@ public class S3SerializationStoreMixin
     implements EntityStore, Activatable
 {
     private @This ReadWriteLock lock;
-    private @This S3Configuration configuration;
+    private @This Configuration<S3Configuration> configuration;
 
     private S3Service s3Service;
     private S3Bucket entityBucket;
@@ -64,8 +65,8 @@ public class S3SerializationStoreMixin
     // Activatable implementation
     public void activate() throws Exception
     {
-        String awsAccessKey = configuration.accessKey().get();
-        String awsSecretKey = configuration.secretKey().get();
+        String awsAccessKey = configuration.configuration().accessKey().get();
+        String awsSecretKey = configuration.configuration().secretKey().get();
 
         if( awsAccessKey == null || awsSecretKey == null )
         {

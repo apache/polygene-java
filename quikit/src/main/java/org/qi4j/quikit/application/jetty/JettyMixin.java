@@ -22,10 +22,11 @@ import org.mortbay.jetty.servlet.DefaultServlet;
 import org.mortbay.jetty.servlet.ServletHolder;
 import org.qi4j.composite.scope.Service;
 import org.qi4j.composite.scope.This;
-import org.qi4j.service.Activatable;
-import org.qi4j.service.ServiceReference;
 import org.qi4j.quikit.application.ServletInfo;
 import org.qi4j.quikit.assembly.composites.HttpConfiguration;
+import org.qi4j.service.Activatable;
+import org.qi4j.service.Configuration;
+import org.qi4j.service.ServiceReference;
 
 /**
  * TODO
@@ -34,22 +35,19 @@ public class JettyMixin
     implements Activatable
 {
     private Server server;
+    private Configuration<HttpConfiguration> config;
 
     public JettyMixin( @Service Iterable<ServiceReference<Servlet>> servlets,
-                       @This HttpConfiguration config )
+                       @This Configuration<HttpConfiguration> config )
     {
-        Integer port = config.hostPort().get();
-        if( port == null || port == 0 )
-        {
-            port = 8080;
-            config.hostPort().set( port );
-        }
+        this.config = config;
+        int port = config.configuration().hostPort().get();
         server = new Server( port );
-        String contextRoot = config.rootContextPath().get();
+        String contextRoot = config.configuration().rootContextPath().get();
         if( contextRoot == null )
         {
             contextRoot = "/";
-            config.rootContextPath().set( contextRoot );
+            config.configuration().rootContextPath().set( contextRoot );
         }
         Context root = new Context( server, contextRoot, Context.SESSIONS );
         File base = new File( getClass().getProtectionDomain().getCodeSource().getLocation().getPath() );
@@ -66,6 +64,8 @@ public class JettyMixin
 
     public void activate() throws Exception
     {
+        config.refresh();
+        server.getConnectors()[ 0 ].setPort( config.configuration().hostPort().get() );
         server.start();
     }
 

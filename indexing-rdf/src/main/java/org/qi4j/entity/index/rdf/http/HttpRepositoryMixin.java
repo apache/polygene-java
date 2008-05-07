@@ -16,15 +16,16 @@ package org.qi4j.entity.index.rdf.http;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.http.HTTPRepository;
 import org.qi4j.composite.scope.This;
-import org.qi4j.service.Activatable;
 import org.qi4j.property.Property;
+import org.qi4j.service.Activatable;
+import org.qi4j.service.Configuration;
 
 public class HttpRepositoryMixin extends HTTPRepository
     implements Repository, Activatable
 {
-    public HttpRepositoryMixin( @This HttpRepositoryConfiguration configuration )
+    public HttpRepositoryMixin( @This Configuration<HttpRepositoryConfiguration> configuration )
     {
-        super( getRepositoryUrl( configuration ), getRepositoryId(configuration) );
+        super( getRepositoryUrl( configuration.configuration() ), getRepositoryId( configuration.configuration() ) );
     }
 
     public void activate() throws Exception

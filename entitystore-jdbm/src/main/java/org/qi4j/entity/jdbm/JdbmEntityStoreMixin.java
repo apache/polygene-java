@@ -43,6 +43,7 @@ import org.qi4j.composite.scope.Structure;
 import org.qi4j.composite.scope.This;
 import org.qi4j.library.framework.locking.WriteLock;
 import org.qi4j.service.Activatable;
+import org.qi4j.service.Configuration;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.entity.EntityAlreadyExistsException;
 import org.qi4j.spi.entity.EntityNotFoundException;
@@ -65,7 +66,7 @@ public class JdbmEntityStoreMixin
 {
     private @Structure Qi4jSPI spi;
     private @This ReadWriteLock lock;
-    private @This JdbmConfiguration config;
+    private @This Configuration<JdbmConfiguration> config;
 
     private RecordManager recordManager;
     private BTree index;
@@ -75,7 +76,7 @@ public class JdbmEntityStoreMixin
     // Activatable implementation
     public void activate() throws Exception
     {
-        dataFile = new File( config.file().get() );
+        dataFile = new File( config.configuration().file().get() );
         System.out.println( "JDBM store:" + dataFile.getAbsolutePath() );
         File directory = dataFile.getParentFile();
         String name = dataFile.getAbsolutePath();

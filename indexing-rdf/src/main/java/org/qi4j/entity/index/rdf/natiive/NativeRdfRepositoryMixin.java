@@ -16,16 +16,17 @@ package org.qi4j.entity.index.rdf.natiive;
 import java.io.File;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.sail.SailRepository;
+import org.openrdf.sail.Sail;
 import org.openrdf.sail.inferencer.fc.ForwardChainingRDFSInferencer;
 import org.openrdf.sail.nativerdf.NativeStore;
-import org.openrdf.sail.Sail;
 import org.qi4j.composite.scope.This;
 import org.qi4j.service.Activatable;
+import org.qi4j.service.Configuration;
 
 public class NativeRdfRepositoryMixin extends SailRepository
     implements Repository, Activatable
 {
-    @This private NativeRdfConfiguration configuration;
+    @This private Configuration<NativeRdfConfiguration> configuration;
 
     public NativeRdfRepositoryMixin()
     {
@@ -36,10 +37,10 @@ public class NativeRdfRepositoryMixin extends SailRepository
     {
         ForwardChainingRDFSInferencer store = (ForwardChainingRDFSInferencer) getSail();
         NativeStore store2 = (NativeStore) store.getBaseSail();
-        String dataDir = configuration.dataDirectory().get();
+        String dataDir = configuration.configuration().dataDirectory().get();
         if( dataDir == null || "".equals( dataDir ) )
         {
-            String id = configuration.identity().get();
+            String id = configuration.configuration().identity().get();
             if( id == null || "".equals( id ) )
             {
                 dataDir = "./rdf-store";
@@ -48,26 +49,26 @@ public class NativeRdfRepositoryMixin extends SailRepository
             {
                 dataDir = "./rdf-stores/" + id;
             }
-            configuration.dataDirectory().set( dataDir );
+            configuration.configuration().dataDirectory().set( dataDir );
         }
         store2.setDataDir( new File( dataDir ) );
-        String tripleIndexes = configuration.tripleIndexes().get();
+        String tripleIndexes = configuration.configuration().tripleIndexes().get();
         if( tripleIndexes == null )
         {
             tripleIndexes = "";
-            configuration.tripleIndexes().set( tripleIndexes );
+            configuration.configuration().tripleIndexes().set( tripleIndexes );
         }
         store2.setTripleIndexes( tripleIndexes );
-        Boolean forceSync = configuration.forceSync().get();
+        Boolean forceSync = configuration.configuration().forceSync().get();
         if( forceSync == null )
         {
-            configuration.forceSync().set( false );
+            configuration.configuration().forceSync().set( false );
             forceSync = false;
         }
         store2.setForceSync( forceSync );
         long t0 = System.currentTimeMillis();
         initialize();
-        System.out.println( "Initialization Time: " + (System.currentTimeMillis() - t0 ) );
+        System.out.println( "Initialization Time: " + ( System.currentTimeMillis() - t0 ) );
     }
 
     public void passivate()
