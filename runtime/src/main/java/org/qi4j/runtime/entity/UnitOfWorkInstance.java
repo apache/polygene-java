@@ -35,6 +35,8 @@ import org.qi4j.entity.LoadingPolicy;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkCompletionException;
 import org.qi4j.entity.UnitOfWorkException;
+import org.qi4j.entity.UnitOfWorkSynchronization;
+import static org.qi4j.entity.UnitOfWorkSynchronization.UnitOfWorkStatus.*;
 import org.qi4j.query.Query;
 import org.qi4j.query.QueryBuilderFactory;
 import org.qi4j.runtime.composite.CompositeContext;
@@ -65,7 +67,7 @@ public final class UnitOfWorkInstance
     private boolean paused;
 
     private ModuleInstance moduleInstance;
-    StateServices stateServices;
+    StateServices stateServices; // Used by UOWCB
 
     /**
      * Lazy query builder factory.
@@ -73,6 +75,8 @@ public final class UnitOfWorkInstance
     private QueryBuilderFactory queryBuilderFactory;
 
     private LoadingPolicy loadingPolicy;
+
+    private List<UnitOfWorkSynchronization> synchronizations;
 
     static
     {
@@ -408,6 +412,15 @@ public final class UnitOfWorkInstance
     {
         checkOpen();
 
+        // Check synchronizations
+        if( synchronizations != null )
+        {
+            for( UnitOfWorkSynchronization synchronization : synchronizations )
+            {
+                synchronization.beforeCompletion();
+            }
+        }
+
         // Create complete lists
         Map<EntityStore, StoreCompletion> storeCompletion = new HashMap<EntityStore, StoreCompletion>();
         for( Map.Entry<Class<? extends EntityComposite>, Map<String, EntityComposite>> entry : cache.entrySet() )
@@ -471,6 +484,9 @@ public final class UnitOfWorkInstance
         cache.clear();
         open = false;
         current.get().pop();
+
+        // Call synchronizations
+        notifySynchronizations( COMPLETED );
     }
 
     public void discard()
@@ -478,7 +494,11 @@ public final class UnitOfWorkInstance
         checkOpen();
         open = false;
         cache.clear();
+
         current.get().pop();
+
+        // Call synchronizations
+        notifySynchronizations( DISCARDED );
     }
 
     public boolean isOpen()
@@ -500,6 +520,16 @@ public final class UnitOfWorkInstance
         return moduleInstance;
     }
 
+    public void registerUnitOfWorkSynchronization( UnitOfWorkSynchronization synchronization )
+    {
+        if( synchronizations == null )
+        {
+            synchronizations = new ArrayList<UnitOfWorkSynchronization>();
+        }
+
+        synchronizations.add( synchronization );
+    }
+
     void createEntity( EntityComposite instance )
     {
         Class<? extends EntityComposite> compositeType = (Class<? extends EntityComposite>) instance.type();
@@ -518,6 +548,17 @@ public final class UnitOfWorkInstance
         }
 
         return entityCache;
+    }
+
+    private void notifySynchronizations( UnitOfWorkSynchronization.UnitOfWorkStatus status )
+    {
+        if( synchronizations != null )
+        {
+            for( UnitOfWorkSynchronization synchronization : synchronizations )
+            {
+                synchronization.afterCompletion( status );
+            }
+        }
     }
 
     private EntityComposite getCachedEntity( String identity, Class compositeType )

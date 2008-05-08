@@ -82,6 +82,8 @@ public interface UnitOfWork
 
     ObjectBuilderFactory objectBuilderFactory();
 
+    void registerUnitOfWorkSynchronization( UnitOfWorkSynchronization synchronization );
+
     LoadingPolicy loadingPolicy();
 
     void setLoadingPolicy( LoadingPolicy loadingPolicy );

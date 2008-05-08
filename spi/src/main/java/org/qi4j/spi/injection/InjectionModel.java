@@ -50,24 +50,36 @@ public class InjectionModel
         }
         else if( injectionType instanceof TypeVariable )
         {
+            TypeVariable injectionTypeVariable = (TypeVariable) injectionType;
+
             int index = 0;
             TypeVariable<?>[] typeVariables = ( (TypeVariable) injectionType ).getGenericDeclaration().getTypeParameters();
             for( TypeVariable typeVariable : typeVariables )
             {
-                if( "T".equals( typeVariable.getName() ) )
+                if( injectionTypeVariable.getName().equals( typeVariable.getName() ) )
                 {
-                    Type genericSuperclass = injectedClass.getGenericSuperclass();
-                    Type type;
-                    if( genericSuperclass instanceof ParameterizedType )
+                    // Type index found - map it to actual type
+                    Type genericClass = injectedClass;
+                    Type type = null;
+
+                    while( !Object.class.equals( genericClass ) && type == null )
                     {
-                        type = ( (ParameterizedType) genericSuperclass ).getActualTypeArguments()[ index ];
-                    }
-                    else
-                    {
-                        type = ((Class) genericSuperclass).getGenericInterfaces()[index];
-                        if( type instanceof ParameterizedType )
+                        genericClass = ( (Class) genericClass ).getGenericSuperclass();
+                        if( genericClass instanceof ParameterizedType )
                         {
-                            type = ( (ParameterizedType) type).getActualTypeArguments()[ index ];
+                            type = ( (ParameterizedType) genericClass ).getActualTypeArguments()[ index ];
+                        }
+                        else
+                        {
+                            Type[] genericInterfaces = ( (Class) genericClass ).getGenericInterfaces();
+                            if( genericInterfaces.length > 0 )
+                            {
+                                type = genericInterfaces[ index ];
+                                if( type instanceof ParameterizedType )
+                                {
+                                    type = ( (ParameterizedType) type ).getActualTypeArguments()[ index ];
+                                }
+                            }
                         }
                     }
                     rawInjectionType = (Class) type;

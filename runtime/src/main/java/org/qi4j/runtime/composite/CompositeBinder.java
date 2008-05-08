@@ -198,7 +198,14 @@ public class CompositeBinder
                 {
                     BindingContext concernContext = new BindingContext( concernResolution, bindingContext );
 
-                    ConstructorResolution constructorResolution = concernResolution.getConstructorResolutions().iterator().next(); // TODO Pick the best one
+                    Iterator<ConstructorResolution> resolutionIterator = concernResolution.getConstructorResolutions().iterator();
+
+                    if( !resolutionIterator.hasNext() )
+                    {
+                        throw new BindingException( "No valid constructor found in " + concernResolution.getConcernModel().getModelClass().getName() );
+                    }
+
+                    ConstructorResolution constructorResolution = resolutionIterator.next(); // TODO Pick the best one
                     ConstructorBinding constructorBinding = bindConstructor( concernContext, constructorResolution );
                     Iterable<FieldBinding> fieldBindings = bindFields( concernContext, concernResolution.getFieldResolutions() );
                     Iterable<MethodBinding> methodBindings = bindMethods( concernContext, concernResolution.getMethodResolutions() );
@@ -212,7 +219,14 @@ public class CompositeBinder
                 {
                     BindingContext sideEffectContext = new BindingContext( null, sideEffectResolution, compositeResolution, bindingContext.getModuleResolution(), bindingContext.getLayerResolution(), bindingContext.getApplicationResolution() );
 
-                    ConstructorResolution constructorResolution = sideEffectResolution.getConstructorResolutions().iterator().next(); // TODO Pick the best one
+                    Iterator<ConstructorResolution> resolutionIterator = sideEffectResolution.getConstructorResolutions().iterator();
+
+                    if( !resolutionIterator.hasNext() )
+                    {
+                        throw new BindingException( "No valid constructor found in " + sideEffectResolution.getSideEffectModel().getModelClass().getName() );
+                    }
+
+                    ConstructorResolution constructorResolution = resolutionIterator.next(); // TODO Pick the best one
                     ConstructorBinding constructorBinding = bindConstructor( sideEffectContext, constructorResolution );
                     Iterable<FieldBinding> fieldBindings = bindFields( sideEffectContext, sideEffectResolution.getFieldResolutions() );
                     Iterable<MethodBinding> methodBindings = bindMethods( sideEffectContext, sideEffectResolution.getMethodResolutions() );
