@@ -18,12 +18,40 @@ package org.qi4j.library.framework.validation;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.qi4j.composite.scope.Structure;
 import org.qi4j.composite.scope.This;
+import org.qi4j.entity.UnitOfWorkCompletionException;
+import org.qi4j.entity.UnitOfWorkFactory;
+import org.qi4j.entity.UnitOfWorkSynchronization;
 
 public class ValidatableMixin
     implements Validatable
 {
     @This Validatable validatable;
+
+    public ValidatableMixin( @Structure UnitOfWorkFactory uowf )
+    {
+        UnitOfWorkSynchronization synch = new UnitOfWorkSynchronization()
+        {
+            public void beforeCompletion() throws UnitOfWorkCompletionException
+            {
+                try
+                {
+                    validatable.checkValid();
+                }
+                catch( ValidationException e )
+                {
+                    throw (UnitOfWorkCompletionException) new UnitOfWorkCompletionException( "Validation failed" ).initCause( e );
+                }
+            }
+
+            public void afterCompletion( UnitOfWorkStatus status )
+            {
+            }
+        };
+
+        uowf.currentUnitOfWork().registerUnitOfWorkSynchronization( synch );
+    }
 
     public List<ValidationMessage> validate()
     {
