@@ -79,7 +79,7 @@ public class EntityPropertyInstance<T> extends PropertyInstance<T>
      */
     public void set( T aNewValue )
     {
-        value = aNewValue;
+        super.set( aNewValue );
         entityState.setProperty( qualifiedName(), aNewValue );
     }
 
