@@ -6,7 +6,7 @@ import org.qi4j.composite.ConstraintDeclaration;
 
 @ConstraintDeclaration
 @Retention( RetentionPolicy.RUNTIME )
-@NonEmptyString
+@NotEmpty
 @Contains( "@" )
 public @interface Email
 {
