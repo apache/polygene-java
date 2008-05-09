@@ -44,7 +44,9 @@ public final class AssociationModel
 
     public static String getQualifiedName( Method accessor )
     {
-        return accessor.getDeclaringClass().getName() + ":" + accessor.getName();
+        String className = accessor.getDeclaringClass().getName();
+        className = className.replace( '$', '&' );
+        return className + ":" + accessor.getName();
     }
 
     /**
