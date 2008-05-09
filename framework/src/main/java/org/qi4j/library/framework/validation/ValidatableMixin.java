@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.qi4j.composite.scope.Structure;
 import org.qi4j.composite.scope.This;
+import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkCompletionException;
 import org.qi4j.entity.UnitOfWorkFactory;
 import org.qi4j.entity.UnitOfWorkSynchronization;
@@ -31,26 +32,30 @@ public class ValidatableMixin
 
     public ValidatableMixin( @Structure UnitOfWorkFactory uowf )
     {
-        UnitOfWorkSynchronization synch = new UnitOfWorkSynchronization()
+        UnitOfWork unitOfWork = uowf.currentUnitOfWork();
+        if( unitOfWork != null )
         {
-            public void beforeCompletion() throws UnitOfWorkCompletionException
+            UnitOfWorkSynchronization synch = new UnitOfWorkSynchronization()
             {
-                try
+                public void beforeCompletion() throws UnitOfWorkCompletionException
                 {
-                    validatable.checkValid();
+                    try
+                    {
+                        validatable.checkValid();
+                    }
+                    catch( ValidationException e )
+                    {
+                        throw (UnitOfWorkCompletionException) new UnitOfWorkCompletionException( "Validation failed" ).initCause( e );
+                    }
                 }
-                catch( ValidationException e )
+
+                public void afterCompletion( UnitOfWorkStatus status )
                 {
-                    throw (UnitOfWorkCompletionException) new UnitOfWorkCompletionException( "Validation failed" ).initCause( e );
                 }
-            }
+            };
 
-            public void afterCompletion( UnitOfWorkStatus status )
-            {
-            }
-        };
-
-        uowf.currentUnitOfWork().registerUnitOfWorkSynchronization( synch );
+            unitOfWork.registerUnitOfWorkSynchronization( synch );
+        }
     }
 
     public List<ValidationMessage> validate()
