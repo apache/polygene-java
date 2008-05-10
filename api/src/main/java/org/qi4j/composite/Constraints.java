@@ -31,5 +31,5 @@ import java.lang.annotation.Target;
 @Documented
 public @interface Constraints
 {
-    Class<? extends Constraint>[] value();
+    Class<? extends Constraint<?, ?>>[] value();
 }

@@ -18,7 +18,8 @@ import java.lang.annotation.Annotation;
 
 /**
  * When a constraint violation has occurred it is registered as a ConstraintViolation
- * and exposed through the @link{org.qi4j.composite.InvocationContext} for concerns and mixins to use.
+ * and exposed through the @link{org.qi4j.composite.InvocationContext} for concerns and 
+ * mixins to use.
  */
 public class ConstraintViolation
 {
