@@ -22,7 +22,7 @@ import java.lang.annotation.Target;
 
 /**
  * Modifiers that implement InvocationHandler and which should only
- * be applied to methods that have a particular annotation or implements
+ * be applied to methods that have a particular annotation or implement
  * a known interface should use this annotation.
  * <p>
  * Example:

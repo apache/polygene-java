@@ -18,8 +18,8 @@
 package org.qi4j.composite;
 
 /**
- * This Exception is thrown when more than one Composite implements a MixinType that one tries
- * to use to create a Composite instance from.
+ * This Exception is thrown when more than one Composite implements a MixinType 
+ * that one tries to use to create a Composite instance from.
  * <p>
  * For instance;
  * </p>
@@ -40,21 +40,24 @@ package org.qi4j.composite;
  * CompositeBuilder cb = factory.newCompositeBuilder( Abc.class );
  * </pre></code>
  * <p>
- * In the code above, both the AbcComposite and DefComposite implements Abc, and therefor
- * the <code>newCompositeBuilder</code> method can not unambiguously figure out which one is intended.
+ * In the code above, both the AbcComposite and DefComposite implement Abc, and therefore
+ * the <code>newCompositeBuilder</code> method can not unambiguously figure out which 
+ * one is intended.
  * </p>
  */
 public class AmbiguousMixinTypeException extends MixinMappingException
 {
-    private final Class mixinType;
+    private static final long serialVersionUID = -7293349466060160431L;
 
-    public AmbiguousMixinTypeException( Class mixinType )
+    private final Class<?> mixinType;
+
+    public AmbiguousMixinTypeException( Class<?> mixinType )
     {
         super( "More than one visible CompositeType implements MixinType: " + mixinType.getName() );
         this.mixinType = mixinType;
     }
 
-    public Class mixinType()
+    public Class<?> mixinType()
     {
         return mixinType;
     }
