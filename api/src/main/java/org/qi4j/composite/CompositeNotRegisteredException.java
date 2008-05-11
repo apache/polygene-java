@@ -17,7 +17,7 @@ import org.qi4j.structure.Module;
 
 public class CompositeNotRegisteredException extends InvalidApplicationException
 {
-    private static final long serialVersionUID = -7888033445125769663L;
+    private static final long serialVersionUID = 1L;
 
     private Class<? extends Composite> compositeType;
     private Module module;

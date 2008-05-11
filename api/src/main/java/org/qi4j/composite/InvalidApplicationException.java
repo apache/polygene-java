@@ -22,7 +22,7 @@ package org.qi4j.composite;
 public abstract class InvalidApplicationException
     extends RuntimeException
 {
-    private static final long serialVersionUID = 1809868777904776638L;
+    private static final long serialVersionUID = 1L;
 
     public InvalidApplicationException( String string )
     {

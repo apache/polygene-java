@@ -47,7 +47,7 @@ package org.qi4j.composite;
  */
 public class AmbiguousMixinTypeException extends MixinMappingException
 {
-    private static final long serialVersionUID = -7293349466060160431L;
+    private static final long serialVersionUID = 1L;
 
     private final Class<?> mixinType;
 

@@ -41,7 +41,7 @@ import java.util.ResourceBundle;
  */
 public class ConstraintViolationException extends IllegalArgumentException
 {
-    private static final long serialVersionUID = -1344917751309701689L;
+    private static final long serialVersionUID = 1L;
 
     private final Method method;
     private Collection<ConstraintViolation> constraintViolations;
