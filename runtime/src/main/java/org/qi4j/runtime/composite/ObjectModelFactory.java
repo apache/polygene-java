@@ -42,7 +42,7 @@ public final class ObjectModelFactory extends AbstractModelFactory
         }
 
         List<FieldModel> fieldModels = new ArrayList<FieldModel>();
-        getFieldModels( objectClass, objectClass, null, fieldModels );
+        getFieldModels( objectClass, objectClass, fieldModels );
         Iterable<MethodModel> methodModels = getMethodModels( objectClass );
 
         Iterable<ObjectMethodModel> objectMethodModels = getObjectMethodModels( objectClass );
@@ -67,8 +67,7 @@ public final class ObjectModelFactory extends AbstractModelFactory
             }
         }
 
-        ObjectModel model = new ObjectModel( objectClass, constructorModels, fieldModels, methodModels, objectMethodModels, propertyModels, associationModels );
-        return model;
+        return new ObjectModel( objectClass, constructorModels, fieldModels, methodModels, objectMethodModels, propertyModels, associationModels );
     }
 
     private Iterable<ObjectMethodModel> getObjectMethodModels( Class objectClass )

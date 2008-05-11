@@ -36,20 +36,18 @@ import org.qi4j.spi.property.PropertyModel;
  */
 public abstract class AbstractModelFactory
 {
-    protected void getFieldModels( Class<?> fragmentClass, Class<?> fieldClass, Class<?> compositeType, List<FieldModel> fieldModels )
+    protected void getFieldModels( Class<?> fragmentClass, Class<?> fieldClass, List<FieldModel> fieldModels )
     {
         Field[] fields = fieldClass.getDeclaredFields();
         for( Field field : fields )
         {
             field.setAccessible( true );
-
             Annotation[] annotations = field.getAnnotations();
-            InjectionModel injectionModel = null;
             Annotation annotation = getInjectionAnnotation( annotations );
             if( annotation != null )
             {
                 // Only add fields which have injections
-                injectionModel = newInjectionModel( annotation, field.getGenericType(), fragmentClass, field );
+                InjectionModel injectionModel = newInjectionModel( annotation, field.getGenericType(), fragmentClass, field );
                 FieldModel dependencyModel = new FieldModel( field, injectionModel );
                 fieldModels.add( dependencyModel );
             }
@@ -59,7 +57,7 @@ public abstract class AbstractModelFactory
         Class<?> parent = fieldClass.getSuperclass();
         if( parent != null && parent != Object.class )
         {
-            getFieldModels( fragmentClass, parent, compositeType, fieldModels );
+            getFieldModels( fragmentClass, parent, fieldModels );
         }
     }
 
@@ -166,8 +164,7 @@ public abstract class AbstractModelFactory
         {
             method.setAccessible( true );
         }
-        MethodModel methodModel = new MethodModel( method, parameterModels, hasInjections );
-        return methodModel;
+        return new MethodModel( method, parameterModels, hasInjections );
     }
 
     protected ParameterModel getParameterModel( Annotation[] parameterAnnotation, Class<?> methodClass, Type parameterType )
@@ -200,8 +197,7 @@ public abstract class AbstractModelFactory
         {
             constraintsModel = new ConstraintsModel( parameterConstraints );
         }
-        ParameterModel parameterModel = new ParameterModel( parameterType, constraintsModel, injectionModel );
-        return parameterModel;
+        return new ParameterModel( parameterType, constraintsModel, injectionModel );
     }
 
     @SuppressWarnings("unchecked")
@@ -216,14 +212,16 @@ public abstract class AbstractModelFactory
             if( annotation.annotationType().getAnnotation( ConstraintDeclaration.class ) != null )
             {
                 Constraints constraintsAnnotation = annotation.annotationType().getAnnotation( Constraints.class );
-                List<ConstraintModel> constraintModels = null;
+                List<ConstraintModel> constraintModels;
                 if( constraintsAnnotation != null )
                 {
                     constraintModels = new ArrayList<ConstraintModel>();
-                    Class<? extends Constraint>[] constraintImplementations = constraintsAnnotation.value();
-                    for( Class<? extends Constraint> constraintImplementation : constraintImplementations )
+                    Class<? extends Constraint<?,?>>[] constraintImplementations = constraintsAnnotation.value();
+                    for( Class<? extends Constraint<?,?>> constraintImplementation : constraintImplementations )
                     {
-                        constraintModels.add( new ConstraintModel( constraintImplementation, annotation.annotationType() ) );
+                        Class<? extends Annotation> annotationType = annotation.annotationType();
+                        ConstraintModel constraintModel = new ConstraintModel( constraintImplementation, annotationType );
+                        constraintModels.add( constraintModel );
                     }
                 }
                 // This line is never used...
