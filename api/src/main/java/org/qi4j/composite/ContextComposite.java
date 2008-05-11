@@ -20,9 +20,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
 /**
- * Thread-associated composites. This is basically a ThreadLocal which maintains a reference to a Composite
- * instance for each thread. This can be used to implement various context patterns without having to pass
- * the context explicitly as a parameter to methods.
+ * Thread-associated composites. This is basically a ThreadLocal which maintains a reference 
+ * to a Composite instance for each thread. This can be used to implement various context 
+ * patterns without having to pass the context explicitly as a parameter to methods.
  */
 public class ContextComposite<T extends Composite>
     extends ThreadLocal<T>
@@ -39,6 +39,7 @@ public class ContextComposite<T extends Composite>
         return builder.newInstance();
     }
 
+    @SuppressWarnings("unchecked")
     public T proxy()
     {
         Composite composite = get();

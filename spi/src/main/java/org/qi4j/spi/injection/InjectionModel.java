@@ -27,12 +27,12 @@ public class InjectionModel
 {
     private Class<? extends Annotation> injectionAnnotation;
     private Type injectionType;
-    private Class injectedClass;
-    private Class rawInjectionType;
-    private Class injectionClass;
+    private Class<?> injectedClass;
+    private Class<?> rawInjectionType;
+    private Class<?> injectionClass;
     protected boolean optional;
 
-    public InjectionModel( Class<? extends Annotation> injectionAnnotation, Type genericType, Class injectedClass, boolean optional )
+    public InjectionModel( Class<? extends Annotation> injectionAnnotation, Type genericType, Class<?> injectedClass, boolean optional )
     {
         this.injectionAnnotation = injectionAnnotation;
         this.injectedClass = injectedClass;
@@ -42,19 +42,19 @@ public class InjectionModel
         // Calculate raw injection type
         if( injectionType instanceof Class )
         {
-            rawInjectionType = (Class) injectionType;
+            rawInjectionType = (Class<?>) injectionType;
         }
         else if( injectionType instanceof ParameterizedType )
         {
-            rawInjectionType = (Class) ( (ParameterizedType) injectionType ).getRawType();
+            rawInjectionType = (Class<?>) ( (ParameterizedType) injectionType ).getRawType();
         }
         else if( injectionType instanceof TypeVariable )
         {
-            TypeVariable injectionTypeVariable = (TypeVariable) injectionType;
+            TypeVariable<?> injectionTypeVariable = (TypeVariable<?>) injectionType;
 
             int index = 0;
-            TypeVariable<?>[] typeVariables = ( (TypeVariable) injectionType ).getGenericDeclaration().getTypeParameters();
-            for( TypeVariable typeVariable : typeVariables )
+            TypeVariable<?>[] typeVariables = ( (TypeVariable<?>) injectionType ).getGenericDeclaration().getTypeParameters();
+            for( TypeVariable<?> typeVariable : typeVariables )
             {
                 if( injectionTypeVariable.getName().equals( typeVariable.getName() ) )
                 {
@@ -64,14 +64,14 @@ public class InjectionModel
 
                     while( !Object.class.equals( genericClass ) && type == null )
                     {
-                        genericClass = ( (Class) genericClass ).getGenericSuperclass();
+                        genericClass = ( (Class<?>) genericClass ).getGenericSuperclass();
                         if( genericClass instanceof ParameterizedType )
                         {
                             type = ( (ParameterizedType) genericClass ).getActualTypeArguments()[ index ];
                         }
                         else
                         {
-                            Type[] genericInterfaces = ( (Class) genericClass ).getGenericInterfaces();
+                            Type[] genericInterfaces = ( (Class<?>) genericClass ).getGenericInterfaces();
                             if( genericInterfaces.length > 0 )
                             {
                                 type = genericInterfaces[ index ];
@@ -82,7 +82,7 @@ public class InjectionModel
                             }
                         }
                     }
-                    rawInjectionType = (Class) type;
+                    rawInjectionType = (Class<?>) type;
                 }
                 index++;
             }
@@ -99,20 +99,20 @@ public class InjectionModel
             Type type = ( (ParameterizedType) injectionType ).getActualTypeArguments()[ 0 ];
             if( type instanceof Class )
             {
-                injectionClass = (Class) type;
+                injectionClass = (Class<?>) type;
             }
             else if( type instanceof ParameterizedType )
             {
-                injectionClass = (Class) ( (ParameterizedType) type ).getRawType();
+                injectionClass = (Class<?>) ( (ParameterizedType) type ).getRawType();
             }
         }
         else if( injectionType instanceof TypeVariable )
         {
-            injectionClass = (Class) ( (TypeVariable) injectionType ).getBounds()[ 0 ];
+            injectionClass = (Class<?>) ( (TypeVariable<?>) injectionType ).getBounds()[ 0 ];
         }
         else
         {
-            injectionClass = (Class) injectionType;
+            injectionClass = (Class<?>) injectionType;
         }
     }
 
@@ -135,7 +135,7 @@ public class InjectionModel
      * @Entity Iterable<Foo> fooList -> Iterable
      * @Entity Query<Foo> fooQuery -> Query
      */
-    public Class getRawInjectionType()
+    public Class<?> getRawInjectionType()
     {
         return rawInjectionType;
     }
@@ -149,12 +149,12 @@ public class InjectionModel
      * @Entity Iterable<Foo> fooList -> Foo
      * @Entity Query<Foo> fooQuery -> Foo
      */
-    public Class getInjectionClass()
+    public Class<?> getInjectionClass()
     {
         return injectionClass;
     }
 
-    public Class getInjectedClass()
+    public Class<?> getInjectedClass()
     {
         return injectedClass;
     }
@@ -199,7 +199,7 @@ public class InjectionModel
         return optional;
     }
 
-    private Class getNonPrimitiveType( Class rawInjectionType )
+    private Class<?> getNonPrimitiveType( Class<?> rawInjectionType )
     {
         if( rawInjectionType.getSimpleName().equals( "boolean" ) )
         {

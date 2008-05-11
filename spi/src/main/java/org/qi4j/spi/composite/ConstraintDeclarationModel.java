@@ -9,9 +9,9 @@ import java.util.List;
 public class ConstraintDeclarationModel
 {
     private Class<? extends Annotation> annotationType;
-    private List<ConstraintModel> constraintModels;
+    private List<ConstraintModel<?>> constraintModels;
 
-    public ConstraintDeclarationModel( Class<? extends Annotation> annotationType, List<ConstraintModel> constraintModels )
+    public ConstraintDeclarationModel( Class<? extends Annotation> annotationType, List<ConstraintModel<?>> constraintModels )
     {
         this.annotationType = annotationType;
         this.constraintModels = constraintModels;
@@ -22,7 +22,7 @@ public class ConstraintDeclarationModel
         return annotationType;
     }
 
-    public List<ConstraintModel> getConstraintModels()
+    public List<ConstraintModel<?>> getConstraintModels()
     {
         return constraintModels;
     }

@@ -146,10 +146,11 @@ public final class Energy4Java
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     public <S extends Composite, T extends S> Class<S> getSuperComposite( Class<T> compositeClass )
     {
-        Class[] extendedInterfaces = compositeClass.getInterfaces();
-        for( Class extendedInterface : extendedInterfaces )
+        Class<?>[] extendedInterfaces = compositeClass.getInterfaces();
+        for( Class<?> extendedInterface : extendedInterfaces )
         {
             if( Composite.class.isAssignableFrom( extendedInterface ) &&
                 !Composite.class.equals( extendedInterface ) &&
@@ -157,13 +158,13 @@ public final class Energy4Java
                 !ServiceComposite.class.equals( extendedInterface )
                 )
             {
-                return extendedInterface;
+                return (Class<S>)extendedInterface;
             }
         }
         return null; // No super Composite type found
     }
 
-    public Class getConfigurationType( Composite serviceComposite )
+    public Class<?> getConfigurationType( Composite serviceComposite )
     {
         CompositeBinding binding = getCompositeBinding( serviceComposite );
         Iterable<InjectionModel> injections = binding.getCompositeResolution().getCompositeModel().getInjectionsByScope( This.class );
@@ -171,7 +172,7 @@ public final class Energy4Java
         {
             if( injection.getRawInjectionType().equals( Configuration.class ) )
             {
-                return (Class) ( (ParameterizedType) injection.getInjectionType() ).getActualTypeArguments()[ 0 ];
+                return (Class<?>) ( (ParameterizedType) injection.getInjectionType() ).getActualTypeArguments()[ 0 ];
             }
         }
 

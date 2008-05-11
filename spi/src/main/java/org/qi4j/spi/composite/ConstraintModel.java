@@ -25,20 +25,21 @@ import org.qi4j.composite.Constraint;
  */
 public final class ConstraintModel<T>
 {
-    private Class<? extends Constraint> constraintType;
+    private Class<? extends Constraint<?, ?>> constraintType;
     private Class<? extends Annotation> annotationType;
     private Class<T> valueType;
-    private Class declaredBy;
+    private Class<?> declaredBy;
 
-    public ConstraintModel( Class<? extends Constraint> constraintType, Class declaredBy )
+    @SuppressWarnings("unchecked")
+    public ConstraintModel( Class<? extends Constraint<?, ?>> constraintType, Class<?> declaredBy )
     {
         this.declaredBy = declaredBy;
         this.constraintType = constraintType;
-        annotationType = (Class) ( (ParameterizedType) constraintType.getGenericInterfaces()[ 0 ] ).getActualTypeArguments()[ 0 ];
-        valueType = (Class) ( (ParameterizedType) constraintType.getGenericInterfaces()[ 0 ] ).getActualTypeArguments()[ 1 ];
+        annotationType = (Class<? extends Annotation>) ( (ParameterizedType) constraintType.getGenericInterfaces()[ 0 ] ).getActualTypeArguments()[ 0 ];
+        valueType = (Class<T>) ( (ParameterizedType) constraintType.getGenericInterfaces()[ 0 ] ).getActualTypeArguments()[ 1 ];
     }
 
-    public Class<? extends Constraint> getConstraintType()
+    public Class<? extends Constraint<?, ?>> getConstraintType()
     {
         return constraintType;
     }
@@ -53,7 +54,7 @@ public final class ConstraintModel<T>
         return valueType;
     }
 
-    public Class getDeclaredBy()
+    public Class<?> getDeclaredBy()
     {
         return declaredBy;
     }
@@ -70,7 +71,7 @@ public final class ConstraintModel<T>
             return false;
         }
 
-        ConstraintModel that = (ConstraintModel) o;
+        ConstraintModel<?> that = (ConstraintModel<?>) o;
 
         if( !constraintType.equals( that.constraintType ) )
         {

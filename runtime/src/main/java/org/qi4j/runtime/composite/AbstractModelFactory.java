@@ -18,7 +18,6 @@ import org.qi4j.composite.scope.PropertyField;
 import org.qi4j.composite.scope.PropertyParameter;
 import org.qi4j.injection.InjectionScope;
 import org.qi4j.injection.Optional;
-import org.qi4j.spi.composite.ConstraintDeclarationModel;
 import org.qi4j.spi.composite.ConstraintModel;
 import org.qi4j.spi.composite.ConstraintsModel;
 import org.qi4j.spi.composite.ConstructorModel;
@@ -37,7 +36,7 @@ import org.qi4j.spi.property.PropertyModel;
  */
 public abstract class AbstractModelFactory
 {
-    protected void getFieldModels( Class fragmentClass, Class fieldClass, Class compositeType, List<FieldModel> fieldModels )
+    protected void getFieldModels( Class<?> fragmentClass, Class<?> fieldClass, Class<?> compositeType, List<FieldModel> fieldModels )
     {
         Field[] fields = fieldClass.getDeclaredFields();
         for( Field field : fields )
@@ -65,14 +64,14 @@ public abstract class AbstractModelFactory
     }
 
 
-    protected void getConstructorModels( Class mixinClass, Class compositeType, List<ConstructorModel> constructorModels )
+    protected void getConstructorModels( Class<?> mixinClass, Class<?> compositeType, List<ConstructorModel> constructorModels )
     {
-        Constructor[] constructors = mixinClass.getConstructors();
-        for( Constructor constructor : constructors )
+        Constructor<?>[] constructors = mixinClass.getConstructors();
+        for( Constructor<?> constructor : constructors )
         {
             Type[] parameterTypes = constructor.getGenericParameterTypes();
 
-            Constructor realConstructor;
+            Constructor<?> realConstructor;
             if( Factory.class.isAssignableFrom( mixinClass ) )
             {
                 // Abstract mixin - get annotations from superclass
@@ -128,10 +127,10 @@ public abstract class AbstractModelFactory
         }
     }
 
-    protected Collection<MethodModel> getMethodModels( Class fragmentClass )
+    protected Collection<MethodModel> getMethodModels( Class<?> fragmentClass )
     {
         List<MethodModel> models = new ArrayList<MethodModel>();
-        Class methodClass = fragmentClass;
+        Class<?> methodClass = fragmentClass;
         while( !methodClass.equals( Object.class ) )
         {
             Method[] methods = methodClass.getDeclaredMethods();
@@ -146,7 +145,7 @@ public abstract class AbstractModelFactory
         return models;
     }
 
-    private MethodModel newMethodModel( Method method, Class fragmentClass )
+    private MethodModel newMethodModel( Method method, Class<?> fragmentClass )
     {
         Type[] parameterTypes = method.getGenericParameterTypes();
         Annotation[][] parameterAnnotations = method.getParameterAnnotations();
@@ -171,7 +170,7 @@ public abstract class AbstractModelFactory
         return methodModel;
     }
 
-    protected ParameterModel getParameterModel( Annotation[] parameterAnnotation, Class methodClass, Type parameterType )
+    protected ParameterModel getParameterModel( Annotation[] parameterAnnotation, Class<?> methodClass, Type parameterType )
     {
         InjectionModel injectionModel = null;
         List<Annotation> parameterConstraints = new ArrayList<Annotation>();
@@ -205,6 +204,7 @@ public abstract class AbstractModelFactory
         return parameterModel;
     }
 
+    @SuppressWarnings("unchecked")
     protected PropertyModel getPropertyModel( Method method )
     {
         PropertyModel propertyModel;
@@ -226,7 +226,8 @@ public abstract class AbstractModelFactory
                         constraintModels.add( new ConstraintModel( constraintImplementation, annotation.annotationType() ) );
                     }
                 }
-                ConstraintDeclarationModel constraintDeclarationModel = new ConstraintDeclarationModel( annotation.annotationType(), constraintModels );
+                // This line is never used...
+//                ConstraintDeclarationModel constraintDeclarationModel = new ConstraintDeclarationModel( annotation.annotationType(), constraintModels );
 
                 if( constraintAnnotations == null )
                 {
@@ -240,7 +241,7 @@ public abstract class AbstractModelFactory
         return propertyModel;
     }
 
-    private InjectionModel newInjectionModel( Annotation annotation, Type injectionType, Class injectedType, Field field )
+    private InjectionModel newInjectionModel( Annotation annotation, Type injectionType, Class<?> injectedType, Field field )
     {
         InjectionModel model;
         if( annotation.annotationType().equals( PropertyField.class ) )
