@@ -19,15 +19,23 @@ package org.qi4j.service;
  */
 public interface ServiceInstanceProvider
 {
+    /**
+     * Creates a new instance of service given the service descriptor.
+     *
+     * @param serviceDescriptor The service descriptor.
+     * @return The new service instance.
+     * @throws ServiceInstanceProviderException
+     *          Thrown if creational failed.
+     */
     Object newInstance( ServiceDescriptor serviceDescriptor )
         throws ServiceInstanceProviderException;
 
     /**
      * Called for each client releasing the instance from use.
      *
-     * @param instance The
+     * @param instance The instance to release.
      * @throws ServiceInstanceProviderException
-     *
+     *          Thrown if release service failed.
      */
     void releaseInstance( Object instance )
         throws ServiceInstanceProviderException;
