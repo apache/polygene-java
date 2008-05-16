@@ -24,7 +24,6 @@ import java.util.Set;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
-import static org.qi4j.spi.entity.EntityStatus.NEW;
 import static org.qi4j.spi.entity.EntityStatus.REMOVED;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.structure.CompositeDescriptor;
@@ -45,6 +44,7 @@ public final class IBatisEntityState
 
     private final Map<String, Object> propertyValues;
     private final Map<String, QualifiedIdentity> associations;
+    private final Map<String, Collection<QualifiedIdentity>> manyAssociations;
     private int version;
     private EntityStatus status;
 
@@ -78,6 +78,7 @@ public final class IBatisEntityState
         version = aVersion;
 
         associations = new HashMap<String, QualifiedIdentity>();
+        manyAssociations = new HashMap<String, Collection<QualifiedIdentity>>();
 
         capitalizeKeys();
     }
@@ -151,7 +152,7 @@ public final class IBatisEntityState
 
     public QualifiedIdentity getAssociation( String aQualifiedName )
     {
-        if( status == NEW || status == REMOVED )
+        if( status == REMOVED )
         {
             return null;
         }
@@ -168,31 +169,35 @@ public final class IBatisEntityState
         associations.put( aQualifiedName, newEntity );
     }
 
-    public Collection<QualifiedIdentity> getManyAssociation(
-        String qualifiedName )
+    public Collection<QualifiedIdentity> getManyAssociation( String qualifiedName )
     {
+        if( status == REMOVED )
+        {
+            return null;
+        }
+
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public Collection<QualifiedIdentity> setManyAssociation(
-        String qualifiedName, Collection<QualifiedIdentity> newManyAssociation )
+        String qualifiedName, Collection<QualifiedIdentity> newManyAssociations )
     {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return manyAssociations.put( qualifiedName, newManyAssociations );
     }
 
-    public Iterable<String> getPropertyNames()
+    public final Iterable<String> getPropertyNames()
     {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return propertyValues.keySet();
     }
 
-    public Iterable<String> getAssociationNames()
+    public final Iterable<String> getAssociationNames()
     {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return associations.keySet();
     }
 
-    public Iterable<String> getManyAssociationNames()
+    public final Iterable<String> getManyAssociationNames()
     {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return manyAssociations.keySet();
     }
 
 }
