@@ -33,6 +33,11 @@ import org.qi4j.structure.Module;
 
 public class EntityListViewPage extends WebPage
 {
+    private static final long serialVersionUID = 1L;
+
+    public static final String PARAM_ENTITY_TYPE = "entityType";
+
+    @SuppressWarnings( "unchecked" )
     public EntityListViewPage( @Structure ObjectBuilderFactory objectBuilderFactory,
                                @Structure UnitOfWorkFactory uowFactory,
                                @Structure Module module,
@@ -43,10 +48,10 @@ public class EntityListViewPage extends WebPage
         try
         {
             QueryBuilderFactory queryFactory = uow.queryBuilderFactory();
-            Class entityType = module.findClass( parameters.getString( "entityType" ) );
+            Class entityType = module.findClass( parameters.getString( PARAM_ENTITY_TYPE ) );
             QueryBuilder<?> queryBuilder = queryFactory.newQueryBuilder( entityType );
             Query<?> query = queryBuilder.newQuery();
-            IModel model = new Model( query );
+            IModel<Query> model = new Model<Query>( query );
 
             ObjectBuilder<EntityListViewPanel> builder = objectBuilderFactory.newObjectBuilder( EntityListViewPanel.class );
             builder.use( "view-panel" );

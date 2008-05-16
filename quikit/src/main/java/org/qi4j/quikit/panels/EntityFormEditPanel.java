@@ -14,11 +14,12 @@
 package org.qi4j.quikit.panels;
 
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.IModel;
 import org.qi4j.composite.scope.Uses;
 
 public class EntityFormEditPanel extends Panel
 {
+    private static final long serialVersionUID = 1L;
+
     public EntityFormEditPanel( @Uses String id )
     {
         super( id );

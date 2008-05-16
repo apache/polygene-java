@@ -11,15 +11,14 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.quikit.assembly;
 
 import javax.servlet.Servlet;
-
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.quikit.QueryMetaDataProvider;
+import org.qi4j.quikit.application.Qi4jObjectStreamFactory;
 import org.qi4j.quikit.application.QuikItApplication;
 import org.qi4j.quikit.application.QuikItFilter;
 import org.qi4j.quikit.application.QuikItServlet;
@@ -40,47 +39,57 @@ import org.qi4j.quikit.panels.EntityTypeListViewPanel;
 /**
  * TODO
  */
-public class QuikitAssembler implements Assembler {
-	private String jettyIdentity;
+public class QuikitAssembler implements Assembler
+{
+    private String jettyIdentity;
 
-	public void assemble(ModuleAssembly module) throws AssemblyException {
-		module.addComposites(QuikItPageFactoryComposite.class);
-		module.addComposites(QuikItServletProviderComposite.class);
-		module.addComposites(QuikItApplicationFactoryComposite.class);
+    public void assemble( ModuleAssembly module ) throws AssemblyException
+    {
+        module.addComposites( QuikItPageFactoryComposite.class );
+        module.addComposites( QuikItServletProviderComposite.class );
+        module.addComposites( QuikItApplicationFactoryComposite.class );
 
-		module.addServices(JettyService.class).instantiateOnStartup()
-				.identifiedBy(jettyIdentity(module));
-		module.addServices(Servlet.class).providedBy(
-				QuikItServletProviderComposite.class).setServiceAttribute(
-				ServletInfo.class, new ServletInfo("/quikit/"));
+        // Add jetty service
+        module.addServices( JettyService.class ).instantiateOnStartup()
+            .identifiedBy( jettyIdentity( module ) );
 
-		module.addObjects(QuikItApplication.class);
-		module.addObjects(QuikItFilter.class);
-		module.addObjects(QuikItServlet.class);
+        // Add the quikit servlet
+        module.addServices( Servlet.class )
+            .providedBy( QuikItServletProviderComposite.class )
+            .setServiceAttribute( ServletInfo.class, new ServletInfo( "/quikit/" ) );
 
-		// Register Pages
-		module.addObjects(MainPage.class);
-		module.addObjects(EntityFormEditPage.class);
-		module.addObjects(EntityFormViewPage.class);
-		module.addObjects(EntityListViewPage.class);
+        // Register wicket applications
+        module.addObjects( QuikItApplication.class );
+        module.addObjects( Qi4jObjectStreamFactory.class );
 
-		// Register helpers
-		module.addObjects(QueryMetaDataProvider.class);
+        module.addObjects( QuikItFilter.class );
+        module.addObjects( QuikItServlet.class );
 
-		// Registers Panels
-		module.addObjects(EntityTypeListViewPanel.class);
-		module.addObjects(EntityListViewPanel.class);
-		module.addObjects(EntityFormViewPanel.class);
-		module.addObjects(EntityFormEditPanel.class);
-	}
+        // Register Pages
+        module.addObjects( MainPage.class );
+        module.addObjects( EntityFormEditPage.class );
+        module.addObjects( EntityFormViewPage.class );
+        module.addObjects( EntityListViewPage.class );
 
-	public String jettyIdentity() {
-		return jettyIdentity;
-	}
+        // Register helpers
+        module.addObjects( QueryMetaDataProvider.class );
 
-	private String jettyIdentity(ModuleAssembly module) {
-		this.jettyIdentity = module.getName() + ":"
-				+ JettyService.class.getName();
-		return jettyIdentity;
-	}
+        // Registers Panels
+        module.addObjects( EntityTypeListViewPanel.class );
+        module.addObjects( EntityListViewPanel.class );
+        module.addObjects( EntityFormViewPanel.class );
+        module.addObjects( EntityFormEditPanel.class );
+    }
+
+    public String jettyIdentity()
+    {
+        return jettyIdentity;
+    }
+
+    private String jettyIdentity( ModuleAssembly module )
+    {
+        String moduleName = module.getName();
+        jettyIdentity = moduleName + ":" + JettyService.class.getName();
+        return jettyIdentity;
+    }
 }

@@ -20,17 +20,20 @@ import org.qi4j.composite.ObjectBuilder;
 import org.qi4j.composite.ObjectBuilderFactory;
 import org.qi4j.composite.scope.Structure;
 
-public class QuikItFactoryMixin
+public final class QuikItFactoryMixin
     implements IPageFactory
 {
-    @Structure private ObjectBuilderFactory objectBuilderFactory;
+    @Structure
+    private ObjectBuilderFactory objectBuilderFactory;
 
-    public Page newPage( Class pageClass )
+    @SuppressWarnings( "unchecked" )
+    public final Page newPage( Class pageClass )
     {
         return (Page) objectBuilderFactory.newObject( pageClass );
     }
 
-    public Page newPage( Class pageClass, PageParameters pageParameters )
+    @SuppressWarnings( "unchecked" )
+    public final Page newPage( Class pageClass, PageParameters pageParameters )
     {
         ObjectBuilder<Page> builder = objectBuilderFactory.newObjectBuilder( pageClass );
         builder.use( pageParameters );

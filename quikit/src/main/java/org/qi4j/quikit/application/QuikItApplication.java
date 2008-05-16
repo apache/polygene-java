@@ -14,53 +14,54 @@
 
 package org.qi4j.quikit.application;
 
-import static org.apache.wicket.util.lang.Objects.setObjectStreamFactory;
-
 import org.apache.wicket.IPageFactory;
 import org.apache.wicket.protocol.http.WebApplication;
+import org.apache.wicket.settings.ISessionSettings;
+import static org.apache.wicket.util.lang.Objects.*;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.ObjectBuilder;
 import org.qi4j.composite.ObjectBuilderFactory;
 import org.qi4j.composite.scope.Structure;
 import org.qi4j.composite.scope.Uses;
-import org.qi4j.quikit.application.wicket.bootstrap.serialization.Qi4jObjectStreamFactory;
+import org.qi4j.quikit.application.Qi4jObjectStreamFactory;
 import org.qi4j.quikit.assembly.composites.QuikItPageFactoryComposite;
 import org.qi4j.quikit.pages.MainPage;
+
 /**
  * @author Niclas Hedman
  * @author Nino Martinez Wael (nino.martinez@jayway.dk)
- *
  */
-public class QuikItApplication extends WebApplication {
-	@Uses
-	private QuikItFilter filter;
-	@Structure
-	CompositeBuilderFactory factory;
+public class QuikItApplication extends WebApplication
+{
+    @Uses
+    private QuikItFilter filter;
 
-	@Structure
-	private ObjectBuilderFactory objectBuilderFactory;
+    @Structure
+    CompositeBuilderFactory factory;
 
-	protected void init() {
-		super.init();
+    @Structure
+    private ObjectBuilderFactory objectBuilderFactory;
 
-		ObjectBuilder<QuikItPageFactoryComposite> pageFactoryBuilder = objectBuilderFactory.newObjectBuilder(QuikItPageFactoryComposite.class);
-		
-		IPageFactory pageFactory = factory
-				.newComposite(QuikItPageFactoryComposite.class);
+    @Override
+    protected void init()
+    {
+        super.init();
 
-		getSessionSettings().setPageFactory(pageFactory);
+        ISessionSettings sessionSettings = getSessionSettings();
+        IPageFactory pageFactory = factory.newComposite( QuikItPageFactoryComposite.class );
+        sessionSettings.setPageFactory( pageFactory );
 
-		// Sets the object stream factory builder
+        // Sets the object stream factory builder
+        ObjectBuilder<Qi4jObjectStreamFactory> objectStreamFactoryBuilder = objectBuilderFactory
+            .newObjectBuilder( Qi4jObjectStreamFactory.class );
+        Qi4jObjectStreamFactory objectStreamFactory = objectStreamFactoryBuilder
+            .newInstance();
+        setObjectStreamFactory( objectStreamFactory );
+    }
 
-		ObjectBuilder<Qi4jObjectStreamFactory> objectStreamFactoryBuilder = objectBuilderFactory
-				.newObjectBuilder(Qi4jObjectStreamFactory.class);
-		Qi4jObjectStreamFactory objectStreamFactory = objectStreamFactoryBuilder
-				.newInstance();
-		setObjectStreamFactory(objectStreamFactory);
-
-	}
-
-	public Class getHomePage() {
-		return MainPage.class;
-	}
+    @Override
+    public Class<MainPage> getHomePage()
+    {
+        return MainPage.class;
+    }
 }

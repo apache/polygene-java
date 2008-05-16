@@ -13,13 +13,13 @@
  */
 package org.qi4j.quikit;
 
-import org.apache.wicket.model.IModel;
-import org.qi4j.quikit.DisplayInfo;
 import java.io.Serializable;
 
 public class EntityField
     implements Serializable
 {
+    private static final long serialVersionUID = 1L;
+
     private Object value;
     private DisplayInfo info;
 
@@ -38,10 +38,10 @@ public class EntityField
     {
         return info;
     }
-    
+
     public void setObject( Object object )
     {
-        value = object;    
+        value = object;
     }
 
     public void detach()

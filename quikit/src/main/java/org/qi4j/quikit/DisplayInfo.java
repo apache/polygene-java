@@ -19,6 +19,8 @@ import java.io.Serializable;
 public class DisplayInfo
     implements Serializable
 {
+    private static final long serialVersionUID = 1L;
+
     private int order;
     private String label;
     private boolean shownInTable;

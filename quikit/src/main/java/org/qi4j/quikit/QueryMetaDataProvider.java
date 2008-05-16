@@ -27,15 +27,16 @@ import org.qi4j.spi.property.PropertyBinding;
 import org.qi4j.structure.Module;
 
 public class QueryMetaDataProvider
-    implements IDataProvider
+    implements IDataProvider<String>
 {
-    private ArrayList names;
+    private static final long serialVersionUID = 1L;
+    private ArrayList<String> names;
 
     public QueryMetaDataProvider( @Uses Class<EntityComposite> type, @Structure Module module, @Structure Qi4jSPI spi )
     {
         CompositeBinding binding = spi.getCompositeBinding( type, module );
         Iterable<PropertyBinding> properties = binding.getPropertyBindings();
-        names = new ArrayList();
+        names = new ArrayList<String>();
         for( PropertyBinding property : properties )
         {
             String name = property.getPropertyResolution().getPropertyModel().getName();
@@ -43,7 +44,7 @@ public class QueryMetaDataProvider
         }
     }
 
-    public Iterator iterator( int first, int count )
+    public Iterator<? extends String> iterator( int first, int count )
     {
         return names.iterator();
     }
@@ -53,9 +54,9 @@ public class QueryMetaDataProvider
         return names.size();
     }
 
-    public IModel model( Object object )
+    public IModel<String> model( String object )
     {
-        return new Model( (String) object );
+        return new Model<String>( object );
     }
 
     public void detach()

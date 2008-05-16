@@ -14,19 +14,21 @@
 package org.qi4j.quikit.pages;
 
 import org.apache.wicket.markup.html.WebPage;
-import org.apache.wicket.model.IModel;
 import org.qi4j.composite.ObjectBuilder;
 import org.qi4j.composite.ObjectBuilderFactory;
 import org.qi4j.composite.scope.Structure;
-import org.qi4j.composite.scope.Uses;
 import org.qi4j.quikit.panels.EntityFormEditPanel;
 
 public class EntityFormEditPage extends WebPage
 {
+    private static final long serialVersionUID = 1L;
+
+    private static final String WICKET_ID_EDIT_PANEL = "edit-panel";
+
     public EntityFormEditPage( @Structure ObjectBuilderFactory objectBuilderFactory )
     {
         ObjectBuilder<EntityFormEditPanel> builder = objectBuilderFactory.newObjectBuilder( EntityFormEditPanel.class );
-        builder.use( "edit-panel" );
+        builder.use( WICKET_ID_EDIT_PANEL );
         EntityFormEditPanel panel = builder.newInstance();
         add( panel );
     }

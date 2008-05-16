@@ -13,7 +13,6 @@
  */
 package org.qi4j.quikit;
 
-import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Iterator;
@@ -23,25 +22,30 @@ import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.qi4j.composite.scope.Structure;
+import org.qi4j.composite.scope.Uses;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.property.Property;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.composite.CompositeBinding;
+import org.qi4j.spi.composite.PropertyResolution;
 import org.qi4j.spi.property.PropertyBinding;
+import org.qi4j.spi.property.PropertyModel;
 
 public class EntityDataProvider
-    implements IDataProvider
+    implements IDataProvider<EntityField>
 {
-    @Structure private Qi4jSPI spi;
-    private EntityComposite entity;
-    private SortedMap<Integer, EntityField> infos;
+    private static final long serialVersionUID = 1L;
+
+    private final EntityComposite entity;
+    private final SortedMap<Integer, EntityField> infos;
 
     // Is private to ensure that it is only used from the ObjectBuilderFactory
-    private EntityDataProvider( EntityComposite entity )
+    EntityDataProvider( @Structure Qi4jSPI spi, @Uses EntityComposite anEntity )
     {
-        CompositeBinding compositeBinding = spi.getCompositeBinding( entity );
-        this.infos = new TreeMap<Integer, EntityField>();
-        this.entity = entity;
+        entity = anEntity;
+
+        CompositeBinding compositeBinding = spi.getCompositeBinding( anEntity );
+        infos = new TreeMap<Integer, EntityField>();
         Iterable<PropertyBinding> models = compositeBinding.getPropertyBindings();
         for( PropertyBinding binding : models )
         {
@@ -49,15 +53,17 @@ public class EntityDataProvider
             if( info.isVisible() )
             {
                 Integer order = info.order();
-                Method method = binding.getPropertyResolution().getPropertyModel().getAccessor();
-                Serializable value = ( (Property<Serializable>) invoke( method ) ).get();
+                PropertyResolution propertyResolution = binding.getPropertyResolution();
+                PropertyModel propertyModel = propertyResolution.getPropertyModel();
+                Method method = propertyModel.getAccessor();
+                Object value = ( (Property) invoke( method ) ).get();
                 EntityField field = new EntityField( value, info );
                 infos.put( order, field );
             }
         }
     }
 
-    public Iterator iterator( int first, int count )
+    public Iterator<? extends EntityField> iterator( int first, int count )
     {
         return infos.values().iterator();
     }
@@ -67,9 +73,9 @@ public class EntityDataProvider
         return infos.size();
     }
 
-    public IModel model( Object object )
+    public IModel<EntityField> model( EntityField object )
     {
-        return new Model( (EntityField) object );
+        return new Model<EntityField>( object );
     }
 
     private Object invoke( Method method )

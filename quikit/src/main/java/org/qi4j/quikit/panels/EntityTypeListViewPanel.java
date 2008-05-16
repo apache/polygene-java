@@ -13,28 +13,36 @@
  */
 package org.qi4j.quikit.panels;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import org.apache.wicket.PageParameters;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
+import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.markup.html.panel.Panel;
 import org.qi4j.composite.Composite;
-import org.qi4j.composite.scope.Uses;
 import org.qi4j.composite.scope.Structure;
-import org.qi4j.spi.composite.CompositeBinding;
-import org.qi4j.spi.structure.ModuleBinding;
+import org.qi4j.composite.scope.Uses;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.quikit.pages.EntityListViewPage;
-import org.apache.wicket.markup.html.list.ListView;
-import org.apache.wicket.markup.html.list.ListItem;
-import org.apache.wicket.markup.html.link.BookmarkablePageLink;
-import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.PageParameters;
-import java.util.Map;
-import java.util.ArrayList;
+import static org.qi4j.quikit.pages.EntityListViewPage.PARAM_ENTITY_TYPE;
+import org.qi4j.spi.composite.CompositeBinding;
+import org.qi4j.spi.structure.ModuleBinding;
 
-public class EntityTypeListViewPanel extends Panel
+public final class EntityTypeListViewPanel extends Panel
 {
-    public EntityTypeListViewPanel( @Uses String id, @Structure ModuleBinding module )
+    private static final long serialVersionUID = 1L;
+
+    private static final String WICKET_ID_COMPOSITES = "composites";
+
+    public EntityTypeListViewPanel( @Uses String aWicketId, @Structure ModuleBinding aModule )
     {
-        super( id );
-        Map<Class<? extends Composite>,CompositeBinding> composites = module.getCompositeBindings();
+        super( aWicketId );
+
+        Map<Class<? extends Composite>, CompositeBinding> composites = aModule.getCompositeBindings();
         ArrayList<CompositeBinding> bindings = new ArrayList<CompositeBinding>();
         for( CompositeBinding binding : composites.values() )
         {
@@ -44,20 +52,35 @@ public class EntityTypeListViewPanel extends Panel
                 bindings.add( binding );
             }
         }
-        final ListView view = new ListView( "composites", bindings )
+
+        add( new CompositeListView( bindings ) );
+    }
+
+    private class CompositeListView extends ListView<CompositeBinding>
+    {
+        private static final long serialVersionUID = 1L;
+
+        private static final String WICKET_ID_PAGELINK = "pagelink";
+        private static final String WICKET_ID_ENTITY_TYPE_NAME = "entityTypeName";
+
+        public CompositeListView( List<CompositeBinding> bindings )
         {
-            protected void populateItem( ListItem listItem )
-            {
-                CompositeBinding item = ((ArrayList<CompositeBinding>) getModelObject()).get( listItem.getIndex() );
-                Class<? extends Composite> type = item.getCompositeType();
-                PageParameters params = new PageParameters();
-                params.put( "entityType", type.getName() );
-                BookmarkablePageLink pageLink = new BookmarkablePageLink( "pagelink", EntityListViewPage.class, params );
-                listItem.add( pageLink );
-                Label label = new Label( "entityTypeName", type.getSimpleName() );
-                pageLink.add( label );
-            }
-        };
-        add( view );
+            super( WICKET_ID_COMPOSITES, bindings );
+        }
+
+        @Override
+        protected void populateItem( ListItem<CompositeBinding> listItem )
+        {
+            CompositeBinding item = listItem.getModelObject();
+            Class<? extends Composite> type = item.getCompositeType();
+            PageParameters params = new PageParameters();
+            params.put( PARAM_ENTITY_TYPE, type.getName() );
+
+            Link pageLink = new BookmarkablePageLink( WICKET_ID_PAGELINK, EntityListViewPage.class, params );
+            listItem.add( pageLink );
+
+            Label label = new Label( WICKET_ID_ENTITY_TYPE_NAME, type.getSimpleName() );
+            pageLink.add( label );
+        }
     }
 }

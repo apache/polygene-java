@@ -16,12 +16,15 @@ package org.qi4j.quikit.application.jetty;
 
 import java.io.File;
 import javax.servlet.Servlet;
+import org.mortbay.jetty.Connector;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.servlet.Context;
+import static org.mortbay.jetty.servlet.Context.*;
 import org.mortbay.jetty.servlet.DefaultServlet;
 import org.mortbay.jetty.servlet.ServletHolder;
 import org.qi4j.composite.scope.Service;
 import org.qi4j.composite.scope.This;
+import org.qi4j.property.Property;
 import org.qi4j.quikit.application.ServletInfo;
 import org.qi4j.quikit.assembly.composites.HttpConfiguration;
 import org.qi4j.service.Activatable;
@@ -38,24 +41,38 @@ public class JettyMixin
     private Configuration<HttpConfiguration> config;
 
     public JettyMixin( @Service Iterable<ServiceReference<Servlet>> servlets,
-                       @This Configuration<HttpConfiguration> config )
+                       @This Configuration<HttpConfiguration> aConfig )
     {
-        this.config = config;
-        int port = config.configuration().hostPort().get();
+        config = aConfig;
+
+        // Create a server given the host port
+        HttpConfiguration configuration = aConfig.configuration();
+        int port = configuration.hostPort().get();
         server = new Server( port );
-        String contextRoot = config.configuration().rootContextPath().get();
+
+        // Sets the context root
+        Property<String> rootContextPathProperty = configuration.rootContextPath();
+        String contextRoot = rootContextPathProperty.get();
         if( contextRoot == null )
         {
             contextRoot = "/";
-            config.configuration().rootContextPath().set( contextRoot );
+            rootContextPathProperty.set( contextRoot );
         }
-        Context root = new Context( server, contextRoot, Context.SESSIONS );
+
+        Context root = new Context( server, contextRoot, SESSIONS );
         File base = new File( getClass().getProtectionDomain().getCodeSource().getLocation().getPath() );
+
+        // Sets the resource
         root.setResourceBase( base.getAbsolutePath() );
+
+        // Sets the default servlet for default context
         root.addServlet( DefaultServlet.class, "/" );
+
+        // Iterate the available servlets and add it to the server
         for( ServiceReference<Servlet> servlet : servlets )
         {
-            String path = servlet.getServiceAttribute( ServletInfo.class ).getPath();
+            ServletInfo servletInfo = servlet.getServiceAttribute( ServletInfo.class );
+            String path = servletInfo.getPath();
             Servlet servletInstance = servlet.get();
             ServletHolder holder = new ServletHolder( servletInstance );
             root.addServlet( holder, path );
@@ -65,7 +82,13 @@ public class JettyMixin
     public void activate() throws Exception
     {
         config.refresh();
-        server.getConnectors()[ 0 ].setPort( config.configuration().hostPort().get() );
+
+        Connector[] connectors = server.getConnectors();
+        Connector connector = connectors[ 0 ];
+
+        HttpConfiguration configuration = config.configuration();
+        Integer hostPort = configuration.hostPort().get();
+        connector.setPort( hostPort );
         server.start();
     }
 

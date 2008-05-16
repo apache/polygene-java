@@ -28,69 +28,99 @@ import org.qi4j.composite.scope.Uses;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.query.Query;
 import org.qi4j.quikit.EntityDataProvider;
+import org.qi4j.quikit.EntityField;
 import org.qi4j.quikit.QueryDataProvider;
 import org.qi4j.quikit.QueryMetaDataProvider;
 
-public class EntityListViewPanel extends Panel {
-	public EntityListViewPanel(@Uses
-	String id, @Uses
-	IModel model, @Structure
-	final ObjectBuilderFactory factory) {
-		super(id, model);
-		Query<EntityComposite> query = (Query<EntityComposite>) model
-				.getObject();
-		createHeaders(factory, query);
-		DataView rows = createRows(factory, query);
-		add(new PagingNavigator("navigator", rows));
-	}
+public class EntityListViewPanel extends Panel<Query<EntityComposite>>
+{
+    private static final long serialVersionUID = 1L;
 
-	private void createHeaders(ObjectBuilderFactory factory,
-			Query<EntityComposite> query) {
+    private static final String WICKET_ID_HEADERS = "headers";
+    private static final String WICKET_ID_ROWS = "rows";
+    private static final String WICKET_ID_NAVIGATOR = "navigator";
 
-		ObjectBuilder<QueryMetaDataProvider> builder = factory
-				.newObjectBuilder(QueryMetaDataProvider.class);
-		builder.use(query.resultType());
-		QueryMetaDataProvider provider = builder.newInstance();
-		DataView headers = new DataView("headers", provider) {
-			protected void populateItem(Item item) {
-				String header = (String) item.getModelObject();
-				Label label = new Label("header", header);
-				item.add(label);
-			}
-		};
-		add(headers);
-	}
+    public EntityListViewPanel(
+        @Uses String id,
+        @Uses IModel<Query<EntityComposite>> model,
+        @Structure ObjectBuilderFactory factory )
+    {
+        super( id, model );
 
-	private DataView createRows(final ObjectBuilderFactory factory,
-			final Query<EntityComposite> query) {
-		DataView rows = new DataView("rows", new QueryDataProvider(query)) {
-			protected void populateItem(final Item item) {
-				EntityComposite entity = (EntityComposite) item
-						.getModelObject();
-				ObjectBuilder<EntityDataProvider> builder = factory
-						.newObjectBuilder(EntityDataProvider.class);
-				builder.use(entity);
-				DataView columns = new DataView("columns", builder
-						.newInstance()) {
-					protected void populateItem(Item item) {
-						Label label = new Label("column", item.getModelObject()
-								.toString());
-						item.add(label);
-					}
-				};
-				item.add(columns);
-				item.add(new AttributeModifier("class", true,
-						new AbstractReadOnlyModel() {
-							public Object getObject() {
-								return (item.getIndex() % 2 == 1) ? "even-row"
-										: "odd-row";
-							}
-						}));
-			}
+        Query<EntityComposite> query = getModelObject();
 
-		};
-		rows.setItemsPerPage(10);
-		add(rows);
-		return rows;
-	}
+        // Add headers
+        add( createHeaders( factory, query ) );
+
+        // Add rows
+        add( createRows( factory, query ) );
+
+        // Add paging navigator
+        add( new PagingNavigator( WICKET_ID_NAVIGATOR, createRows( factory, query ) ) );
+    }
+
+    private DataView<String> createHeaders( ObjectBuilderFactory factory, Query<EntityComposite> query )
+    {
+        ObjectBuilder<QueryMetaDataProvider> builder = factory.newObjectBuilder( QueryMetaDataProvider.class );
+        builder.use( query.resultType() );
+        QueryMetaDataProvider provider = builder.newInstance();
+
+        return new DataView<String>( WICKET_ID_HEADERS, provider )
+        {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            protected final void populateItem( Item<String> item )
+            {
+                String header = item.getModelObject();
+                Label label = new Label( "header", header );
+                item.add( label );
+            }
+        };
+    }
+
+    private DataView createRows( final ObjectBuilderFactory factory,
+                                 final Query<EntityComposite> query )
+    {
+        DataView<EntityComposite> rows = new DataView<EntityComposite>( WICKET_ID_ROWS, new QueryDataProvider( query ) )
+        {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            protected void populateItem( final Item<EntityComposite> item )
+            {
+                EntityComposite entity = item.getModelObject();
+                ObjectBuilder<EntityDataProvider> builder = factory.newObjectBuilder( EntityDataProvider.class );
+                builder.use( entity );
+                EntityDataProvider entityDataProvider = builder.newInstance();
+                DataView<EntityField> columns = new DataView<EntityField>( "columns", entityDataProvider )
+                {
+                    private static final long serialVersionUID = 1L;
+
+                    @Override
+                    protected final void populateItem( Item<EntityField> item )
+                    {
+                        EntityField field = item.getModelObject();
+                        Label label = new Label( "column", field.toString() );
+                        item.add( label );
+                    }
+                };
+                item.add( columns );
+                item.add( new AttributeModifier( "class", true, new AbstractReadOnlyModel<String>()
+                {
+                    private static final long serialVersionUID = 1L;
+
+                    @Override
+                    public String getObject()
+                    {
+                        int itemIndex = item.getIndex();
+                        return ( itemIndex % 2 == 1 ) ? "even-row" : "odd-row";
+                    }
+                } ) );
+            }
+
+        };
+        rows.setItemsPerPage( 10 );
+        return rows;
+    }
 }

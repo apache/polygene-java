@@ -22,11 +22,13 @@ import java.io.Serializable;
 public class ServletInfo
     implements Serializable
 {
-    String path;
+    private static final long serialVersionUID = 1L;
 
-    public ServletInfo( String path )
+    private final String path;
+
+    public ServletInfo( String aPath )
     {
-        this.path = path;
+        path = aPath;
     }
 
     public String getPath()

@@ -18,15 +18,18 @@ import org.qi4j.composite.ObjectBuilder;
 import org.qi4j.composite.ObjectBuilderFactory;
 import org.qi4j.composite.scope.Structure;
 import org.qi4j.quikit.panels.EntityTypeListViewPanel;
-import org.qi4j.spi.structure.ModuleBinding;
-import org.qi4j.structure.Module;
 
-public class MainPage extends WebPage
+public final class MainPage extends WebPage
 {
+    private static final long serialVersionUID = 1L;
+
+    private static final String WICKET_ID_ENTITY_BROWSER = "entity-browser";
+
     public MainPage( @Structure ObjectBuilderFactory factory )
     {
         ObjectBuilder<EntityTypeListViewPanel> builder = factory.newObjectBuilder( EntityTypeListViewPanel.class );
-        builder.use( "entity-browser" );
+        builder.use( WICKET_ID_ENTITY_BROWSER );
+
         EntityTypeListViewPanel panel = builder.newInstance();
         add( panel );
     }

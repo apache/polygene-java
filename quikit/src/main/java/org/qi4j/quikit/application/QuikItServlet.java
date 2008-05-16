@@ -13,24 +13,29 @@
  */
 package org.qi4j.quikit.application;
 
+import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.apache.wicket.protocol.http.WicketFilter;
 import org.apache.wicket.protocol.http.WicketServlet;
 import org.qi4j.composite.ObjectBuilderFactory;
 import org.qi4j.composite.scope.Structure;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.ServletException;
-import java.io.IOException;
 
 public class QuikItServlet extends WicketServlet
 {
-    @Structure private ObjectBuilderFactory objectBuilderFactory;
+    private static final long serialVersionUID = 1L;
 
+    @Structure
+    private ObjectBuilderFactory objectBuilderFactory;
+
+    @Override
     protected void service( HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse ) throws ServletException, IOException
     {
         super.service( httpServletRequest, httpServletResponse );
     }
 
+    @Override
     protected WicketFilter newWicketFilter()
     {
         return objectBuilderFactory.newObject( QuikItFilter.class );

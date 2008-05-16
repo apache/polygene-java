@@ -21,16 +21,18 @@ import org.qi4j.entity.EntityComposite;
 import org.qi4j.query.Query;
 
 public class QueryDataProvider
-    implements IDataProvider
+    implements IDataProvider<EntityComposite>
 {
-    private Query<EntityComposite> query;
+    private static final long serialVersionUID = 1L;
 
-    public QueryDataProvider( Query<EntityComposite> query )
+    private final Query<EntityComposite> query;
+
+    public QueryDataProvider( Query<EntityComposite> aQuery )
     {
-        this.query = query;
+        query = aQuery;
     }
 
-    public Iterator iterator( int first, int count )
+    public Iterator<? extends EntityComposite> iterator( int first, int count )
     {
         query.firstResult( first );
         query.maxResults( count );
@@ -43,13 +45,9 @@ public class QueryDataProvider
         return 100;
     }
 
-    public IModel model( Object object )
+    public IModel<EntityComposite> model( EntityComposite object )
     {
-        if( object instanceof EntityComposite )
-        {
-            return new Model( (EntityComposite) object );
-        }
-        throw new InternalError( "Only EntityComposite instances should be passed as argument here: " + object.getClass().getName() );
+        return new Model<EntityComposite>( object );
     }
 
     public void detach()

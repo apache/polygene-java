@@ -13,18 +13,18 @@
  */
 package org.qi4j.quikit.application;
 
+import java.io.IOException;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.apache.wicket.protocol.http.IWebApplicationFactory;
 import org.apache.wicket.protocol.http.WicketFilter;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.scope.Structure;
 import org.qi4j.quikit.assembly.composites.QuikItApplicationFactoryComposite;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.FilterChain;
-import java.io.IOException;
 
 public class QuikItFilter extends WicketFilter
 {
@@ -35,16 +35,21 @@ public class QuikItFilter extends WicketFilter
         applicationFactory = factory.newComposite( QuikItApplicationFactoryComposite.class );
     }
 
-    public void doFilter( ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain ) throws IOException, ServletException
+    @Override
+    public void doFilter( ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain )
+        throws IOException, ServletException
     {
-        super.doFilter( servletRequest, servletResponse, filterChain );    //To change body of overridden methods use File | Settings | File Templates.
+        super.doFilter( servletRequest, servletResponse, filterChain );
     }
 
-    public boolean doGet( HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse ) throws ServletException, IOException
+    @Override
+    public boolean doGet( HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse )
+        throws ServletException, IOException
     {
-        return super.doGet( httpServletRequest, httpServletResponse );    //To change body of overridden methods use File | Settings | File Templates.
+        return super.doGet( httpServletRequest, httpServletResponse );
     }
 
+    @Override
     protected IWebApplicationFactory getApplicationFactory()
     {
         return applicationFactory;

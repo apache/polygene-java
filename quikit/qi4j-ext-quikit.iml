@@ -10,6 +10,8 @@
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/resources" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/target/classes" />
+      <excludeFolder url="file://$MODULE_DIR$/target/dependency-maven-plugin-markers" />
+      <excludeFolder url="file://$MODULE_DIR$/target/maven-archiver" />
       <excludeFolder url="file://$MODULE_DIR$/target/test-classes" />
     </content>
     <orderEntry type="inheritedJdk" />
@@ -46,15 +48,15 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
-      <library name="org.apache.wicket:wicket:1.3.3">
+      <library name="org.apache.wicket:wicket:1.4-m1">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/apache/wicket/wicket/1.3.3/wicket-1.3.3.jar!/" />
+          <root url="jar://$M2_REPO$/org/apache/wicket/wicket/1.4-m1/wicket-1.4-m1.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/apache/wicket/wicket/1.3.3/wicket-1.3.3-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/apache/wicket/wicket/1.4-m1/wicket-1.4-m1-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/apache/wicket/wicket/1.3.3/wicket-1.3.3-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/apache/wicket/wicket/1.4-m1/wicket-1.4-m1-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>

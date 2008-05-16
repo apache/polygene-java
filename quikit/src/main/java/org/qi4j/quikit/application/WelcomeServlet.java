@@ -15,6 +15,7 @@
 package org.qi4j.quikit.application;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -26,6 +27,8 @@ import javax.servlet.http.HttpServletResponse;
 public class WelcomeServlet
     extends HttpServlet
 {
+    private static final long serialVersionUID = 1L;
+
     @Override public void init() throws ServletException
     {
         super.init();
@@ -33,6 +36,7 @@ public class WelcomeServlet
 
     @Override protected void doGet( HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse ) throws ServletException, IOException
     {
-        httpServletResponse.getWriter().println( "Welcome!" );
+        PrintWriter writer = httpServletResponse.getWriter();
+        writer.println( "Welcome!" );
     }
 }

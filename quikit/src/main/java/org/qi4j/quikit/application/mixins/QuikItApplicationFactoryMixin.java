@@ -21,10 +21,11 @@ import org.qi4j.composite.ObjectBuilderFactory;
 import org.qi4j.composite.scope.Structure;
 import org.qi4j.quikit.application.QuikItApplication;
 
-public class QuikItApplicationFactoryMixin
+public final class QuikItApplicationFactoryMixin
     implements IWebApplicationFactory
 {
-    @Structure private ObjectBuilderFactory objectBuilderFactory;
+    @Structure
+    private ObjectBuilderFactory objectBuilderFactory;
 
     public WebApplication createApplication( WicketFilter wicketFilter )
     {
