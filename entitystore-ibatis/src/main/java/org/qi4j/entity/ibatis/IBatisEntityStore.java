@@ -17,7 +17,7 @@
 package org.qi4j.entity.ibatis;
 
 import com.ibatis.sqlmap.client.SqlMapClient;
-import static com.ibatis.sqlmap.client.SqlMapClientBuilder.*;
+import static com.ibatis.sqlmap.client.SqlMapClientBuilder.buildSqlMapClient;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,22 +26,28 @@ import java.io.Reader;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 import org.qi4j.composite.Composite;
-import static org.qi4j.composite.NullArgumentException.*;
-import org.qi4j.entity.UnitOfWork;
+import static org.qi4j.composite.NullArgumentException.validateNotNull;
+import org.qi4j.composite.scope.This;
 import org.qi4j.entity.ibatis.dbInitializer.DBInitializer;
 import org.qi4j.entity.ibatis.dbInitializer.DBInitializerInfo;
 import org.qi4j.entity.ibatis.internal.IBatisEntityState;
-import org.qi4j.entity.ibatis.internal.IBatisEntityStateDao;
-import org.qi4j.service.ServiceDescriptor;
-import org.qi4j.spi.composite.CompositeBinding;
+import org.qi4j.service.Activatable;
+import org.qi4j.service.Configuration;
 import org.qi4j.spi.composite.CompositeModel;
-import org.qi4j.spi.composite.CompositeResolution;
+import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityState;
+import static org.qi4j.spi.entity.EntityStatus.LOADED;
+import static org.qi4j.spi.entity.EntityStatus.NEW;
+import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreException;
+import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.StateCommitter;
+import org.qi4j.spi.structure.CompositeDescriptor;
+import org.qi4j.structure.Module;
 
 /**
  * TODO: Figure out how does transaction supposed for all EntityStore methods.
@@ -50,69 +56,53 @@ import org.qi4j.spi.entity.StateCommitter;
  * @author edward.yakop@gmail.com
  */
 final class IBatisEntityStore
-//    implements EntityStore, Activatable
+    implements EntityStore, Activatable
 {
-    private final IBatisEntityStoreServiceInfo serviceInfo;
-    private final DBInitializerInfo dbInitializerInfo;
-    private final IBatisEntityStateDao dao;
+    private final Configuration<IBatisEntityStoreServiceInfo> serviceInfo;
+    private final Configuration<DBInitializerInfo> dbInitializerInfo;
 
     private SqlMapClient client;
 
     /**
      * Construct a new instance of {@code IBatisEntityStore}.
      *
-     * @param aServiceDescriptor The service descriptor. This argument must not be {@code null}.
-     * @throws IllegalArgumentException Thrown if the specified {@code aServiceDescriptor} argument is {@code null}.
+     * @param aServiceInfo       The entity store service info. This argument must not be {@code null}.
+     * @param aDBInitializerInfo The db initializer info.
      * @since 0.1.0
      */
-    IBatisEntityStore( ServiceDescriptor aServiceDescriptor )
-        throws IllegalArgumentException
+    IBatisEntityStore( @This Configuration<IBatisEntityStoreServiceInfo> aServiceInfo,
+                       @This( optional = true )Configuration<DBInitializerInfo> aDBInitializerInfo )
     {
-        validateNotNull( "aServiceDescriptor", aServiceDescriptor );
-
-        serviceInfo = aServiceDescriptor.serviceAttribute( IBatisEntityStoreServiceInfo.class );
-        dbInitializerInfo = aServiceDescriptor.serviceAttribute( DBInitializerInfo.class );
-        dao = new EntityStateDao();
+        serviceInfo = aServiceInfo;
+        dbInitializerInfo = aDBInitializerInfo;
 
         client = null;
     }
 
     /**
-     * Returns raw data given the composite class.
+     * Construct a new instance of entity state.
      *
-     * @param anIdentity        The identity. This argument must not be {@code null}.
-     * @param aCompositeBinding The composite class. This argument must not be {@code null}.
-     * @return The raw data given input.
-     * @throws org.qi4j.spi.entity.EntityStoreException
-     *          Thrown if retrieval failed.
-     * @since 0.1.0
+     * @param aCompositeDescriptor The composite descriptor. This argument must not be {@code null}.
+     * @param anIdentity           The identity. This argument must not be {@code null}.
+     * @return The new entity state given the arguments.
+     * @throws EntityStoreException Thrown if this service is not active.
+     * @since 0.2.0
      */
-    private Map getRawData( String anIdentity, CompositeBinding aCompositeBinding )
+    public final EntityState newEntityState( CompositeDescriptor aCompositeDescriptor, QualifiedIdentity anIdentity )
         throws EntityStoreException
     {
+        validateNotNull( "aCompositeDescriptor", aCompositeDescriptor );
         validateNotNull( "anIdentity", anIdentity );
-        validateNotNull( "aCompositeBinding", aCompositeBinding );
-        CompositeResolution compositeResolution = aCompositeBinding.getCompositeResolution();
-        CompositeModel compositeModel = compositeResolution.getCompositeModel();
-        Class<? extends Composite> compositeClass = compositeModel.getCompositeType();
-        String statementId = compositeClass.getName() + ".getById";
 
-        // TODO: Transaction?
-        try
-        {
-            return (Map) client.queryForObject( statementId, anIdentity );
-        }
-        catch( SQLException e )
-        {
-            throw new EntityStoreException( e );
-        }
+        throwIfNotActive();
+
+        return new IBatisEntityState( aCompositeDescriptor, anIdentity, new HashMap<String, Object>(), 0, NEW );
     }
 
     /**
-     * Throws {@link org.qi4j.spi.entity.EntityStoreException} if this service is not active.
+     * Throws {@link EntityStoreException} if this service is not active.
      *
-     * @throws org.qi4j.spi.entity.EntityStoreException
-     *          Thrown if this service instance is not active.
+     * @throws EntityStoreException Thrown if this service instance is not active.
      * @since 0.1.0
      */
     private void throwIfNotActive()
@@ -126,93 +116,84 @@ final class IBatisEntityStore
     }
 
     /**
-     * Construct a new entity instance.
+     * Get the entity state given the composite descriptor and identity.
      *
-     * @param anIdentity        The new entity identity. This argument must not be {@code null}.
-     * @param aCompositeBinding The composite binding. This argument must not be {@code null}.
-     * @throws IllegalArgumentException Thrown if one or some or all arguments are {@code null}.
-     * @throws org.qi4j.spi.entity.EntityStoreException
-     *                                  Thrown if creational failed.
-     * @since 0.1.0
-     */
-    public final EntityState newEntityState(
-        String anIdentity, CompositeBinding aCompositeBinding )
-        throws IllegalArgumentException, EntityStoreException
-    {
-        validateNotNull( "anIdentity", anIdentity );
-        validateNotNull( "aCompositeBinding", aCompositeBinding );
-
-        throwIfNotActive();
-
-        Map<String, Object> fieldValues = new HashMap<String, Object>();
-
-        return null; // new IBatisEntityState( anIdentity, aCompositeBinding, fieldValues, EntityStatus.NEW, statusNew, null, dao );
-    }
-
-    /**
-     * Returns existing entity instance. Returns {@code null} if not found.
-     *
-     * @param aUnit             The unit of work. This argument must not be {@code null}.
-     * @param anIdentity        The identity. This argument must not be {@code null}.
-     * @param aCompositeBinding The composite binding. This argument must not be {@code null}.
-     * @return The entity instance with id as {@code anIdentity}.
-     * @throws IllegalArgumentException Thrown if one or some or all arguments are {@code null}.
-     * @throws org.qi4j.spi.entity.EntityStoreException
-     *                                  Thrown if retrieval fail.
-     * @since 0.1.0
+     * @param aDescriptor The entity composite descriptor. This argument must not be {@code null}.
+     * @param anIdentity  The entity identity. This argument must not be {@code null}.
+     * @return The entity state given the descriptor and identity.
+     * @throws EntityStoreException    Thrown if retrieval failed.
+     * @throws EntityNotFoundException Thrown if the entity does not exists.
+     * @since 0.2.0
      */
     @SuppressWarnings( "unchecked" )
-    public final IBatisEntityState getEntityState(
-        UnitOfWork aUnit, String anIdentity, CompositeBinding aCompositeBinding )
-        throws IllegalArgumentException, EntityStoreException
-    {
-        validateNotNull( "aUnitOfWork", aUnit );
-        validateNotNull( "anIdentity", anIdentity );
-        validateNotNull( "aCompositeBinding", aCompositeBinding );
-
-        throwIfNotActive();
-
-        Map rawData = getRawData( anIdentity, aCompositeBinding );
-        if( rawData == null )
-        {
-            return null;
-        }
-
-        rawData.put( "identity", anIdentity );
-        return null; // new IBatisEntityState( anIdentity, aCompositeBinding, rawData, EntityStatus.LOADED, statusLoadFromDb, aUnit, dao );
-    }
-
-    /**
-     * Complete or persists the list of entity state.
-     *
-     * @param unitOfWork The unit of work. This argument must not be {@code null}.
-     * @param states     The states to complete. This argument must not be {@code null}.
-     * @throws org.qi4j.spi.entity.EntityStoreException
-     *          Thrown if the complete failed.
-     * @since 0.1.0
-     */
-    public final StateCommitter prepare( UnitOfWork unitOfWork, Iterable<EntityState> states )
+    public final EntityState getEntityState( CompositeDescriptor aDescriptor, QualifiedIdentity anIdentity )
         throws EntityStoreException
     {
         throwIfNotActive();
 
-        for( EntityState state : states )
+        Map propertyValues = getRawData( aDescriptor, anIdentity );
+        Integer version = (Integer) propertyValues.get( "VERSION" );
+        return new IBatisEntityState( aDescriptor, anIdentity, propertyValues, version, LOADED );
+    }
+
+
+    /**
+     * Returns raw data given the composite class.
+     *
+     * @param aDescriptor The descriptor. This argument must not be {@code null}.
+     * @param anIdentity  The identity. This argument must not be {@code null}.
+     * @return The raw data given input.
+     * @throws EntityStoreException Thrown if retrieval failed.
+     * @since 0.1.0
+     */
+    private Map getRawData( CompositeDescriptor aDescriptor, QualifiedIdentity anIdentity )
+        throws EntityStoreException
+    {
+        validateNotNull( "anIdentity", anIdentity );
+        validateNotNull( "aCompositeBinding", aDescriptor );
+        CompositeModel compositeModel = aDescriptor.getCompositeModel();
+        Class<? extends Composite> compositeClass = compositeModel.getCompositeType();
+        String statementId = compositeClass.getName() + ".getById";
+
+        String identityAsString = anIdentity.getIdentity();
+        Map compositePropertyValues;
+        try
         {
-            IBatisEntityState ibatisState = (IBatisEntityState) state;
-            ibatisState.persist();
+            compositePropertyValues = (Map) client.queryForObject( statementId, identityAsString );
+        }
+        catch( SQLException e )
+        {
+            throw new EntityStoreException( e );
         }
 
-        // TODO Implement this properly
-        return new StateCommitter()
+        if( compositePropertyValues == null )
         {
-            public void commit()
-            {
-            }
+            throw new EntityNotFoundException( this.toString(), identityAsString );
+        }
 
-            public void cancel()
-            {
-            }
-        };
+        return compositePropertyValues;
+    }
+
+
+    public final StateCommitter prepare(
+        Iterable<EntityState> newStates,
+        Iterable<EntityState> loadedStates,
+        Iterable<QualifiedIdentity> removedStates,
+        Module aModule )
+        throws EntityStoreException
+    {
+        // TODO
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    /**
+     * Not supported.
+     *
+     * @return {@code null}.
+     */
+    public final Iterator<EntityState> iterator()
+    {
+        return null;
     }
 
     /**
@@ -228,17 +209,24 @@ final class IBatisEntityStore
         // Initialize database if required.
         if( dbInitializerInfo != null )
         {
-            DBInitializer dbInitializer = new DBInitializer( dbInitializerInfo );
+            dbInitializerInfo.refresh();
+
+            DBInitializerInfo configuration = dbInitializerInfo.configuration();
+            DBInitializer dbInitializer = new DBInitializer( configuration );
             dbInitializer.initialize();
         }
 
+        serviceInfo.refresh();
+
+        IBatisEntityStoreServiceInfo configuration = serviceInfo.configuration();
+
         // Initialize client
-        String configURL = serviceInfo.getSQLMapConfigURL();
+        String configURL = configuration.getSQLMapConfigURL();
         InputStream configStream = new URL( configURL ).openStream();
         InputStreamReader streamReader = new InputStreamReader( configStream );
         Reader bufferedReader = new BufferedReader( streamReader );
 
-        Properties properties = serviceInfo.getConfigProperties();
+        Properties properties = configuration.getConfigProperties();
         if( properties == null )
         {
             client = buildSqlMapClient( bufferedReader );
@@ -262,13 +250,4 @@ final class IBatisEntityStore
         client = null;
     }
 
-    private class EntityStateDao
-        implements IBatisEntityStateDao
-    {
-        public boolean deleteComposite( String aCompositeIdentity, CompositeBinding aCompositeBinding )
-        {
-            // TODO
-            return false;
-        }
-    }
 }
