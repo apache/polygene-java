@@ -57,10 +57,12 @@ public final class DBInitializer
 
     /**
      * Initialize the database.
+     * Reads scripts from schemaURL and data scripts from dataUrl
      *
      * @throws java.sql.SQLException Thrown if db initialization failed.
      * @throws java.io.IOException   Thrown if reading schema or data sql resources failed.
      * @since 0.1.0
+     * todo close reader, connections, handle exceptions
      */
     public final void initialize()
         throws SQLException, IOException

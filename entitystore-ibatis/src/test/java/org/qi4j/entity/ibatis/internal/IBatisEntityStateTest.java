@@ -24,6 +24,7 @@ import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.fail;
 import org.jmock.Mockery;
+import org.junit.Test;
 import org.junit.Ignore;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -39,7 +40,10 @@ import org.qi4j.runtime.composite.CompositeContext;
 import org.qi4j.runtime.structure.ModuleContext;
 import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.property.PropertyBinding;
+import org.qi4j.spi.structure.CompositeDescriptor;
 
 /**
  * @author edward.yakop@gmail.com
@@ -54,23 +58,23 @@ public final class IBatisEntityStateTest extends AbstractTestCase
      * Test constructor of entity state.
      */
     @SuppressWarnings( "unchecked" )
-    // @Test
+    @Test
     public void testGetProperty()
     {
         // =======================
         // Test with default value
         // =======================
-        HashMap<String, Object> initialValues1 = new HashMap<String, Object>();
-        EntityState personEntityState1 = newPersonEntityState( initialValues1 );
+        final Map<String, Object> initialValues1 = new HashMap<String, Object>();
+        final EntityState personEntityState1 = newPersonEntityState( initialValues1 );
 
         // ----------
         // First name
         // ----------
         try
         {
-            Method firstNamePropertyAccessor = HasFirstName.class.getMethod( "firstName" );
+            final Method firstNamePropertyAccessor = HasFirstName.class.getMethod( "firstName" );
 
-            String firstNameProperty = (String) personEntityState1.getProperty( getQualifiedName( firstNamePropertyAccessor ) );
+            final String firstNameProperty = (String) personEntityState1.getProperty( getQualifiedName( firstNamePropertyAccessor ) );
             assertNotNull( firstNameProperty );
 
             assertEquals( DEFAULT_FIRST_NAME, firstNameProperty );
@@ -86,9 +90,9 @@ public final class IBatisEntityStateTest extends AbstractTestCase
         // ---------
         try
         {
-            Method lastNamePropertyAccessor = HasLastName.class.getMethod( "lastName" );
+            final Method lastNamePropertyAccessor = HasLastName.class.getMethod( "lastName" );
 
-            String lastNameProperty = (String) personEntityState1.getProperty( getQualifiedName( lastNamePropertyAccessor ) );
+            final String lastNameProperty = (String) personEntityState1.getProperty( getQualifiedName( lastNamePropertyAccessor ) );
             assertNotNull( lastNameProperty );
 
             assertEquals( DEFAULT_LAST_NAME, lastNameProperty );
@@ -102,19 +106,19 @@ public final class IBatisEntityStateTest extends AbstractTestCase
         // ==================================
         // Test with initialzed default value
         // ==================================
-        HashMap<String, Object> initialValues2 = new HashMap<String, Object>();
-        String expectedFirstNameValue = "Jane";
+        final HashMap<String, Object> initialValues2 = new HashMap<String, Object>();
+        final String expectedFirstNameValue = "Jane";
         initialValues2.put( "firstName", expectedFirstNameValue );
-        EntityState personEntityState2 = newPersonEntityState( initialValues2 );
+        final EntityState personEntityState2 = newPersonEntityState( initialValues2 );
 
         // ----------
         // First name
         // ----------
         try
         {
-            Method firstNamePropertyAccessor = HasFirstName.class.getMethod( "firstName" );
+            final Method firstNamePropertyAccessor = HasFirstName.class.getMethod( "firstName" );
 
-            String firstNameProperty = (String) personEntityState2.getProperty( getQualifiedName( firstNamePropertyAccessor ) );
+            final String firstNameProperty = (String) personEntityState2.getProperty( getQualifiedName( firstNamePropertyAccessor ) );
             assertNotNull( firstNameProperty );
 
             assertEquals( expectedFirstNameValue, firstNameProperty );
@@ -129,9 +133,9 @@ public final class IBatisEntityStateTest extends AbstractTestCase
         // ---------
         try
         {
-            Method lastNamePropertyAccessor = HasLastName.class.getMethod( "lastName" );
+            final Method lastNamePropertyAccessor = HasLastName.class.getMethod( "lastName" );
 
-            String lastNameProperty = (String) personEntityState2.getProperty( getQualifiedName( lastNamePropertyAccessor ) );
+            final String lastNameProperty = (String) personEntityState2.getProperty( getQualifiedName( lastNamePropertyAccessor ) );
             assertNotNull( lastNameProperty );
 
             assertEquals( DEFAULT_LAST_NAME, lastNameProperty );
@@ -145,18 +149,13 @@ public final class IBatisEntityStateTest extends AbstractTestCase
         // Test get first name on 
     }
 
-    private IBatisEntityState newPersonEntityState( HashMap<String, Object> initialValues )
+
+    private IBatisEntityState newPersonEntityStateOld( final Map<String, Object> initialValues )
     {
-        ModuleContext moduleContext = moduleInstance.getModuleContext();
-        Map<Class<? extends Composite>, CompositeContext> compositeContexts = moduleContext.getCompositeContexts();
-        CompositeContext personCompositeContext = compositeContexts.get( PersonComposite.class );
-        assertNotNull( personCompositeContext );
+        final CompositeBinding personCompositeBinding = getCompositeBinding( PersonComposite.class );
 
-        CompositeBinding personCompositeBinding = personCompositeContext.getCompositeBinding();
-        assertNotNull( personCompositeBinding );
-
-        Mockery mockery = new Mockery();
-        UnitOfWork unitOfWork = mockery.mock( UnitOfWork.class );
+        final Mockery mockery = new Mockery();
+        final UnitOfWork unitOfWork = mockery.mock( UnitOfWork.class );
         return null;
         // new IBatisEntityState( new QualifiedIdentity( "1", PersonComposite.class.getName() ), personCompositeBinding, initialValues, EntityStatus.NEW, statusNew, unitOfWork, dao );
     }
@@ -169,29 +168,29 @@ public final class IBatisEntityStateTest extends AbstractTestCase
      */
     private Map<String, PropertyBinding> getPersonCompositePropertyBindings()
     {
-        CompositeBuilderFactory builderFactory = moduleInstance.getStructureContext().getCompositeBuilderFactory();
-        PersonComposite composite = builderFactory.newComposite( PersonComposite.class );
-        CompositeBinding personBinding = runtime.getCompositeBinding( composite );
-        Iterable<PropertyBinding> propertyBindings = personBinding.getPropertyBindings();
-        Map<String, PropertyBinding> properties = new HashMap<String, PropertyBinding>();
-        for( PropertyBinding aBinding : propertyBindings )
+        final CompositeBuilderFactory builderFactory = moduleInstance.getStructureContext().getCompositeBuilderFactory();
+        final PersonComposite composite = builderFactory.newComposite( PersonComposite.class );
+        final CompositeBinding personBinding = runtime.getCompositeBinding( composite );
+        final Iterable<PropertyBinding> propertyBindings = personBinding.getPropertyBindings();
+        final Map<String, PropertyBinding> properties = new HashMap<String, PropertyBinding>();
+        for( final PropertyBinding aBinding : propertyBindings )
         {
-            String propertyName = aBinding.getPropertyResolution().getPropertyModel().getName();
+            final String propertyName = aBinding.getPropertyResolution().getPropertyModel().getName();
             properties.put( propertyName, aBinding );
         }
         assertFalse( "Properties must not be empty.", properties.isEmpty() );
         return properties;
     }
 
-    public final void assemble( ModuleAssembly aModule ) throws AssemblyException
+    public final void assemble( final ModuleAssembly aModule ) throws AssemblyException
     {
         aModule.addComposites( PersonComposite.class );
 
         // Has Name
-        HasFirstName hasFirstName = aModule.addProperty().withAccessor( HasFirstName.class );
+        final HasFirstName hasFirstName = aModule.addProperty().withAccessor( HasFirstName.class );
         hasFirstName.firstName().set( DEFAULT_FIRST_NAME );
 
-        HasLastName hasLastName = aModule.addProperty().withAccessor( HasLastName.class );
+        final HasLastName hasLastName = aModule.addProperty().withAccessor( HasLastName.class );
         hasLastName.lastName().set( DEFAULT_LAST_NAME );
     }
 }

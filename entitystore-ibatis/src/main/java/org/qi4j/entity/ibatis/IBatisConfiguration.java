@@ -16,19 +16,19 @@
  */
 package org.qi4j.entity.ibatis;
 
-import org.qi4j.composite.Mixins;
-import org.qi4j.service.ServiceComposite;
-import org.qi4j.service.Activatable;
-import org.qi4j.spi.entity.EntityStore;
+import java.util.Properties;
+import org.qi4j.entity.EntityComposite;
+import org.qi4j.property.Property;
 
 /**
- * {@code IBatisEntityStoreComposite} provides integration between qi4j and ibatis.
+ * {@code IBatisEntityStoreServiceInfo} provides service information for {@link org.qi4j.entity.ibatis.IBatisEntityStore}.
  *
  * @author edward.yakop@gmail.com
  * @since 0.1.0
  */
-@Mixins( IBatisEntityStore.class )
-public interface IBatisEntityStoreService extends EntityStore, ServiceComposite, Activatable
+public interface IBatisConfiguration extends EntityComposite
 {
-}
+    Property<String> sqlMapConfigURL();
 
+    Property<Properties> configProperties();
+}

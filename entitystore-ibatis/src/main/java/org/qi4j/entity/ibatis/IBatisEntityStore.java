@@ -18,11 +18,8 @@ package org.qi4j.entity.ibatis;
 
 import com.ibatis.sqlmap.client.SqlMapClient;
 import static com.ibatis.sqlmap.client.SqlMapClientBuilder.buildSqlMapClient;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -70,9 +67,10 @@ final class IBatisEntityStore
      * @param aDBInitializerInfo The db initializer info.
      * @since 0.1.0
      */
-    IBatisEntityStore( @This Configuration<IBatisEntityStoreServiceInfo> aServiceInfo,
-                       @This( optional = true )Configuration<DBInitializerInfo> aDBInitializerInfo )
+    IBatisEntityStore( @This final Configuration<IBatisEntityStoreServiceInfo> aServiceInfo,
+                       @This( optional = true ) final Configuration<DBInitializerInfo> aDBInitializerInfo )
     {
+        validateNotNull( "Configuration<IBatisEntityStoreServiceInfo>", aServiceInfo );
         serviceInfo = aServiceInfo;
         dbInitializerInfo = aDBInitializerInfo;
 
@@ -88,7 +86,7 @@ final class IBatisEntityStore
      * @throws EntityStoreException Thrown if this service is not active.
      * @since 0.2.0
      */
-    public final EntityState newEntityState( CompositeDescriptor aCompositeDescriptor, QualifiedIdentity anIdentity )
+    public final EntityState newEntityState( final CompositeDescriptor aCompositeDescriptor, final QualifiedIdentity anIdentity )
         throws EntityStoreException
     {
         validateNotNull( "aCompositeDescriptor", aCompositeDescriptor );
@@ -96,7 +94,7 @@ final class IBatisEntityStore
 
         throwIfNotActive();
 
-        return new IBatisEntityState( aCompositeDescriptor, anIdentity, new HashMap<String, Object>(), 0, NEW );
+        return new IBatisEntityState( aCompositeDescriptor, anIdentity, new HashMap<String, Object>(), 0L, NEW );
     }
 
     /**
@@ -110,7 +108,7 @@ final class IBatisEntityStore
     {
         if( client == null )
         {
-            String message = "Possibly bug in the qi4j where the store is not activate but its service is invoked.";
+            final String message = "Possibly bug in the qi4j where the store is not activate but its service is invoked.";
             throw new EntityStoreException( message );
         }
     }
@@ -125,14 +123,13 @@ final class IBatisEntityStore
      * @throws EntityNotFoundException Thrown if the entity does not exists.
      * @since 0.2.0
      */
-    @SuppressWarnings( "unchecked" )
-    public final EntityState getEntityState( CompositeDescriptor aDescriptor, QualifiedIdentity anIdentity )
+    public final EntityState getEntityState( final CompositeDescriptor aDescriptor, final QualifiedIdentity anIdentity )
         throws EntityStoreException
     {
         throwIfNotActive();
 
-        Map propertyValues = getRawData( aDescriptor, anIdentity );
-        Integer version = (Integer) propertyValues.get( "VERSION" );
+        final Map<String,Object> propertyValues = getRawData( aDescriptor, anIdentity );
+        final Long version = (Long) propertyValues.get( "VERSION" );
         return new IBatisEntityState( aDescriptor, anIdentity, propertyValues, version, LOADED );
     }
 
@@ -146,44 +143,53 @@ final class IBatisEntityStore
      * @throws EntityStoreException Thrown if retrieval failed.
      * @since 0.1.0
      */
-    private Map getRawData( CompositeDescriptor aDescriptor, QualifiedIdentity anIdentity )
+    private Map<String,Object> getRawData( final CompositeDescriptor aDescriptor, final QualifiedIdentity anIdentity )
         throws EntityStoreException
     {
         validateNotNull( "anIdentity", anIdentity );
         validateNotNull( "aCompositeBinding", aDescriptor );
-        CompositeModel compositeModel = aDescriptor.getCompositeModel();
-        Class<? extends Composite> compositeClass = compositeModel.getCompositeType();
-        String statementId = compositeClass.getName() + ".getById";
-
-        String identityAsString = anIdentity.getIdentity();
-        Map compositePropertyValues;
         try
         {
-            compositePropertyValues = (Map) client.queryForObject( statementId, identityAsString );
+            final String identityAsString = anIdentity.getIdentity();
+            final String statementId = getStatementId( aDescriptor, "getById" );
+            final Map<String,Object> compositePropertyValues =
+                (Map<String,Object>) client.queryForObject( statementId, identityAsString );
+            if( compositePropertyValues == null )
+            {
+                throw new EntityNotFoundException( this.toString(), identityAsString );
+            }
+
+            return compositePropertyValues;
         }
         catch( SQLException e )
         {
             throw new EntityStoreException( e );
         }
 
-        if( compositePropertyValues == null )
-        {
-            throw new EntityNotFoundException( this.toString(), identityAsString );
-        }
+    }
 
-        return compositePropertyValues;
+    private String getStatementId( final CompositeDescriptor aDescriptor, final String suffix )
+    {
+        return getNameSpace( aDescriptor ) + "." + suffix;
+    }
+
+    private String getNameSpace( final CompositeDescriptor aDescriptor )
+    {
+        final CompositeModel compositeModel = aDescriptor.getCompositeModel();
+        final Class<? extends Composite> compositeClass = compositeModel.getCompositeType();
+        return compositeClass.getName();
     }
 
 
     public final StateCommitter prepare(
-        Iterable<EntityState> newStates,
-        Iterable<EntityState> loadedStates,
-        Iterable<QualifiedIdentity> removedStates,
-        Module aModule )
+        final Iterable<EntityState> newStates,
+        final Iterable<EntityState> loadedStates,
+        final Iterable<QualifiedIdentity> removedStates,
+        final Module aModule )
         throws EntityStoreException
     {
         // TODO
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
     /**
@@ -206,34 +212,41 @@ final class IBatisEntityStore
     public final void activate()
         throws IOException, SQLException
     {
+        initializeDatabase();
+
+        final IBatisEntityStoreServiceInfo configuration = getUpdatedConfiguration();
+
+        client = newSqlMapClient( configuration );
+    }
+
+    private SqlMapClient newSqlMapClient( final IBatisEntityStoreServiceInfo configuration )
+        throws IOException
+    {
+        // Initialize client
+        final String configURL = configuration.getSQLMapConfigURL();
+        final InputStream configInputStream = new URL( configURL ).openStream();
+
+        final Properties properties = configuration.getConfigProperties();
+        return buildSqlMapClient( configInputStream, properties );
+    }
+
+    private IBatisEntityStoreServiceInfo getUpdatedConfiguration()
+    {
+        serviceInfo.refresh();
+        return serviceInfo.configuration();
+    }
+
+    private void initializeDatabase()
+        throws SQLException, IOException
+    {
         // Initialize database if required.
         if( dbInitializerInfo != null )
         {
             dbInitializerInfo.refresh();
 
-            DBInitializerInfo configuration = dbInitializerInfo.configuration();
-            DBInitializer dbInitializer = new DBInitializer( configuration );
+            final DBInitializerInfo configuration = dbInitializerInfo.configuration();
+            final DBInitializer dbInitializer = new DBInitializer( configuration );
             dbInitializer.initialize();
-        }
-
-        serviceInfo.refresh();
-
-        IBatisEntityStoreServiceInfo configuration = serviceInfo.configuration();
-
-        // Initialize client
-        String configURL = configuration.getSQLMapConfigURL();
-        InputStream configStream = new URL( configURL ).openStream();
-        InputStreamReader streamReader = new InputStreamReader( configStream );
-        Reader bufferedReader = new BufferedReader( streamReader );
-
-        Properties properties = configuration.getConfigProperties();
-        if( properties == null )
-        {
-            client = buildSqlMapClient( bufferedReader );
-        }
-        else
-        {
-            client = buildSqlMapClient( bufferedReader, properties );
         }
     }
 

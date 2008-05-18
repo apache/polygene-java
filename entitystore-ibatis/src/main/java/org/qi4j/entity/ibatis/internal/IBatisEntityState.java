@@ -20,12 +20,14 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
+import java.util.Collections;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import static org.qi4j.spi.entity.EntityStatus.REMOVED;
 import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.spi.entity.EntityStoreException;
+import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.structure.CompositeDescriptor;
 
 /**
@@ -42,10 +44,10 @@ public final class IBatisEntityState
     private final CompositeDescriptor descriptor;
     private final QualifiedIdentity identity;
 
-    private final Map<String, Object> propertyValues;
-    private final Map<String, QualifiedIdentity> associations;
-    private final Map<String, Collection<QualifiedIdentity>> manyAssociations;
-    private int version;
+    private final Map<String, Object> propertyValues = new HashMap<String,Object>();
+    private final Map<String, QualifiedIdentity> associations = new HashMap<String, QualifiedIdentity>();
+    private final Map<String, Collection<QualifiedIdentity>> manyAssociations = new HashMap<String, Collection<QualifiedIdentity>>();
+    private Long version;
     private EntityStatus status;
 
     /**
@@ -61,8 +63,8 @@ public final class IBatisEntityState
      * @since 0.1.0
      */
     public IBatisEntityState(
-        CompositeDescriptor aDescriptor, QualifiedIdentity anIdentity,
-        Map<String, Object> propertyValuez, int aVersion, EntityStatus aStatus
+        final CompositeDescriptor aDescriptor, final QualifiedIdentity anIdentity,
+        final Map<String, Object> propertyValuez, final Long aVersion, final EntityStatus aStatus
     )
         throws IllegalArgumentException
     {
@@ -70,17 +72,14 @@ public final class IBatisEntityState
         validateNotNull( "anIdentity", anIdentity );
         validateNotNull( "propertyValuez", propertyValuez );
         validateNotNull( "aStatus", aStatus );
+        validateNotNull( "aVersion", aVersion );
 
         descriptor = aDescriptor;
         identity = anIdentity;
         status = aStatus;
-        propertyValues = propertyValuez;
+        propertyValues.putAll(uppercaseKeys( propertyValuez ));
         version = aVersion;
 
-        associations = new HashMap<String, QualifiedIdentity>();
-        manyAssociations = new HashMap<String, Collection<QualifiedIdentity>>();
-
-        capitalizeKeys();
     }
 
     /**
@@ -88,17 +87,16 @@ public final class IBatisEntityState
      * the right property names.
      *
      * @since 0.1.0
+     * @param columnValueMap
      */
-    private void capitalizeKeys()
+    private <T> Map<String, T> uppercaseKeys( final Map<String, T> columnValueMap )
     {
-        Set<String> keys = propertyValues.keySet();
-        String[] keysArray = keys.toArray( new String[keys.size()] );
-        for( String key : keysArray )
+        final Map<String, T> result=new HashMap<String,T>(columnValueMap.size());
+        for( final Map.Entry<String,T> entry : columnValueMap.entrySet() )
         {
-            Object value = propertyValues.remove( key );
-            String capitalizeKey = key.toUpperCase();
-            propertyValues.put( capitalizeKey, value );
+            result.put( convertIdentifier( entry.getKey() ), entry.getValue());
         }
+        return result;
     }
 
     /**
@@ -136,68 +134,93 @@ public final class IBatisEntityState
     /**
      * Returns the property value given the property qualified name.
      *
-     * @param aQualifiedName The property qualified name. This argument must not be {@code null}.
+     * @param qualifiedName The property qualified name. This argument must not be {@code null}.
      * @return The property value given qualified name.
      * @since 0.2.0
      */
-    public final Object getProperty( String aQualifiedName )
+    public final Object getProperty( final String qualifiedName )
     {
-        return propertyValues.get( aQualifiedName );
+        validateNotNull( "qualifiedName", qualifiedName );
+        return propertyValues.get( convertIdentifier( qualifiedName ) );
     }
 
-    public void setProperty( String qualifiedName, Object newValue )
+    public void setProperty( final String qualifiedName, final Object newValue )
     {
-        propertyValues.put( qualifiedName, newValue );
+        validateNotNull( "qualifiedName", qualifiedName );
+        propertyValues.put( convertIdentifier( qualifiedName ), newValue );
     }
 
-    public QualifiedIdentity getAssociation( String aQualifiedName )
+    public QualifiedIdentity getAssociation( final String qualifiedName )
     {
+        validateNotNull( "qualifiedName", qualifiedName );
         if( status == REMOVED )
         {
             return null;
         }
 
-        if( !associations.containsKey( aQualifiedName ) )
+        final QualifiedIdentity qualifiedIdentity = associations.get( convertIdentifier( qualifiedName ) );
+        if (qualifiedIdentity == null) return QualifiedIdentity.NULL; // todo mandatory
+        return associations.get( qualifiedName );
+    }
+
+    public void setAssociation( final String qualifiedName, final QualifiedIdentity qualifiedIdentity )
+    {
+        validateNotNull( "qualifiedName", qualifiedName );
+        if( status == REMOVED )
         {
-            // TODO
+            throw new EntityNotFoundException("IbatisEntityStore",getIdentity().getIdentity());
         }
-        return associations.get( aQualifiedName );
+        final String convertedIdentifier = convertIdentifier( qualifiedName );
+        associations.put(convertedIdentifier, qualifiedIdentity != null ? qualifiedIdentity : QualifiedIdentity.NULL );
     }
 
-    public void setAssociation( String aQualifiedName, QualifiedIdentity newEntity )
+    public Collection<QualifiedIdentity> getManyAssociation( final String qualifiedName )
     {
-        associations.put( aQualifiedName, newEntity );
-    }
-
-    public Collection<QualifiedIdentity> getManyAssociation( String qualifiedName )
-    {
+        validateNotNull( "qualifiedName", qualifiedName );
         if( status == REMOVED )
         {
             return null;
         }
 
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        final Collection<QualifiedIdentity> identities = manyAssociations.get( convertIdentifier( qualifiedName ) );
+        if (identities==null) return Collections.emptyList();
+        return identities;
     }
 
     public Collection<QualifiedIdentity> setManyAssociation(
-        String qualifiedName, Collection<QualifiedIdentity> newManyAssociations )
+        final String qualifiedName, final Collection<QualifiedIdentity> newManyAssociations )
     {
-        return manyAssociations.put( qualifiedName, newManyAssociations );
+        validateNotNull( "qualifiedName", qualifiedName );
+        if( status == REMOVED )
+        {
+            throw new EntityNotFoundException("IbatisEntityStore",getIdentity().getIdentity());
+        }
+        final String convertedIdentifier = convertIdentifier( qualifiedName );
+        if (newManyAssociations==null) {
+            manyAssociations.put( convertedIdentifier, Collections.singletonList( QualifiedIdentity.NULL )); // todo ??
+        }
+
+        return manyAssociations.put( convertedIdentifier, newManyAssociations );
+    }
+
+    private String convertIdentifier( final String identifier )
+    {
+        return identifier.toUpperCase();
     }
 
     public final Iterable<String> getPropertyNames()
     {
-        return propertyValues.keySet();
+        return Collections.unmodifiableSet( propertyValues.keySet());
     }
 
     public final Iterable<String> getAssociationNames()
     {
-        return associations.keySet();
+        return Collections.unmodifiableSet( associations.keySet());
     }
 
     public final Iterable<String> getManyAssociationNames()
     {
-        return manyAssociations.keySet();
+        return Collections.unmodifiableSet( manyAssociations.keySet());
     }
 
 }

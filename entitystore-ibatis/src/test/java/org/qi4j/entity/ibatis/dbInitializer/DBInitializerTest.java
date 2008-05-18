@@ -19,6 +19,7 @@ package org.qi4j.entity.ibatis.dbInitializer;
 import java.util.Properties;
 import static junit.framework.Assert.fail;
 import org.junit.Test;
+import org.junit.Ignore;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entity.ibatis.AbstractTestCase;
@@ -29,39 +30,26 @@ import org.qi4j.entity.ibatis.AbstractTestCase;
  * @author edward.yakop@gmail.com
  * @since 0.1.0
  */
+@Ignore
 public final class DBInitializerTest extends AbstractTestCase
 {
-    /**
-     * Test validity of constructor arguments.
-     *
-     * @since 0.1.0
-     */
-    @Test
-    public void testConstructor()
+    public DBInitializerTest( final DBInitializerInfo dbInitializerInfo )
+        throws Exception
     {
-        DBInitializerInfo dbInitializerInfo = new DBInitializerInfo( "aURL", new Properties(), null, null );
-        try
-        {
-            new DBInitializer( dbInitializerInfo );
-        }
-        catch( Exception e )
-        {
-            fail( "Constructing [DBInitializer] with valid argument must not fail." );
-        }
+        this.dbInitializerInfo = dbInitializerInfo;
+    }
 
-        try
-        {
-            new DBInitializer( null );
-            fail( "Info is [null]. Must throw [IllegalArgumentException]." );
-        }
-        catch( IllegalArgumentException e )
-        {
-            // Expected
-        }
-        catch( Exception e )
-        {
-            fail( "Info is [null]. Must throw [IllegalArgumentException]." );
-        }
+    private DBInitializerInfo dbInitializerInfo = new DBInitializerInfo( "aURL", new Properties(), null, null );
+
+    @Test public void testValidConstructor()
+    {
+        new DBInitializer( dbInitializerInfo );
+    }
+
+    @Test( expected = IllegalArgumentException.class )
+    public void testConstructorNullArgument()
+    {
+        new DBInitializer( null );
     }
 
     /**
@@ -74,10 +62,8 @@ public final class DBInitializerTest extends AbstractTestCase
     public void testInitializer()
         throws Exception
     {
-        initializeDerby();
-
-        DBInitializerInfo info = newDbInitializerInfo();
-        DBInitializer initializer = new DBInitializer( info );
+        final DBInitializerInfo info = newDbInitializerInfo();
+        final DBInitializer initializer = new DBInitializer( info );
         try
         {
             initializer.initialize();
@@ -88,10 +74,10 @@ public final class DBInitializerTest extends AbstractTestCase
             fail( "Initialize db must succeed." );
         }
 
-        checkDataInitialization();
+        derbyDatabaseHandler.checkDataInitialization();
     }
 
-    public void assemble( ModuleAssembly module ) throws AssemblyException
+    public void assemble( final ModuleAssembly module ) throws AssemblyException
     {
         // Do nothing
     }

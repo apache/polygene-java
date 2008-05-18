@@ -16,22 +16,19 @@
  */
 package org.qi4j.entity.ibatis;
 
-import java.io.PrintWriter;
-import static java.lang.System.out;
-import static java.lang.Thread.sleep;
-import java.net.URL;
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import static java.sql.DriverManager.getConnection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Properties;
-import org.apache.derby.drda.NetworkServerControl;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import java.util.Map;
+import org.qi4j.composite.Composite;
+import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.ibatis.dbInitializer.DBInitializerInfo;
+import org.qi4j.entity.ibatis.internal.IBatisEntityState;
+import org.qi4j.runtime.composite.CompositeContext;
+import org.qi4j.runtime.structure.ModuleContext;
+import org.qi4j.spi.composite.CompositeBinding;
+import org.qi4j.spi.entity.EntityStatus;
+import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.spi.structure.CompositeDescriptor;
 import org.qi4j.test.AbstractQi4jTest;
 
 /**
@@ -40,19 +37,15 @@ import org.qi4j.test.AbstractQi4jTest;
  */
 public abstract class AbstractTestCase extends AbstractQi4jTest
 {
-    private static final String JDBC_URL = "jdbc:derby://localhost/testdb;create=true";
-    private static final String DERBY_DRIVER_CLASS_NAME = "org.apache.derby.jdbc.ClientDriver";
-    private static final String DERBY_USER = "sa";
-    private static final String DERBY_PASSWORD = "derbypass";
+    private static final String SCHEMA_FILE = "testDbSchema.sql";
+    private static final String DATA_FILE = "testDbData.sql";
 
-    private static final String SCHEMA_URL = "testDbSchema.sql";
-    private static final String DATA_URL = "testDbData.sql";
-
-    private NetworkServerControl nsc;
+    protected UnitOfWork uow;
+    protected final DerbyDatabaseHandler derbyDatabaseHandler;
 
     protected AbstractTestCase()
     {
-        nsc = null;
+        derbyDatabaseHandler = new DerbyDatabaseHandler();
     }
 
     /**
@@ -63,112 +56,9 @@ public abstract class AbstractTestCase extends AbstractQi4jTest
      */
     protected final DBInitializerInfo newDbInitializerInfo()
     {
-        Class aClass = AbstractTestCase.class;
-        URL schemaURL = aClass.getResource( SCHEMA_URL );
-        assertNotNull( "If run inside ide, make sure sql files are part of project resources.", schemaURL );
-        String schemaURLString = schemaURL.toString();
-
-        URL dataURL = aClass.getResource( DATA_URL );
-        assertNotNull( "If run inside ide, make sure sql files are part of project resources.", dataURL );
-        String dataURLString = dataURL.toString();
-
-        Properties dbProperties = new Properties();
-        dbProperties.setProperty( "username", DERBY_USER );
-        dbProperties.setProperty( "password", DERBY_PASSWORD );
-        return new DBInitializerInfo( JDBC_URL, dbProperties, schemaURLString, dataURLString );
+        return derbyDatabaseHandler.newDbInitializerInfo( SCHEMA_FILE, DATA_FILE );
     }
 
-    /**
-     * Initialize derby driver and remove all tables.
-     *
-     * @throws SQLException Thrown if intialization failed.
-     * @since 0.1.0
-     */
-    protected final void initializeDerby()
-        throws SQLException
-    {
-        // Initialize derby driver.
-        try
-        {
-            Class.forName( DERBY_DRIVER_CLASS_NAME );
-        }
-        catch( ClassNotFoundException e )
-        {
-            fail( "Derby client artifact must be included to run this test." );
-        }
-
-        Connection connection = getConnection( JDBC_URL, DERBY_USER, DERBY_PASSWORD );
-        try
-        {
-            Statement statement = connection.createStatement();
-            try
-            {
-                statement.execute( "CREATE SCHEMA SA" );
-            }
-            catch( SQLException e )
-            {
-                // Ignore
-            }
-
-            // Ensure that the all test tables are removed.
-
-            DatabaseMetaData data = connection.getMetaData();
-            ResultSet tables = data.getTables( null, null, null, new String[]{ "TABLE" } );
-            while( tables.next() )
-            {
-                String tableName = tables.getString( "TABLE_NAME" );
-                try
-                {
-                    statement.execute( "DROP TABLE " + tableName );
-                }
-                catch( SQLException e )
-                {
-                    // Ignore
-                }
-            }
-        }
-        finally
-        {
-            if( connection != null )
-            {
-                connection.close();
-            }
-        }
-    }
-
-    /**
-     * Check data initialization.
-     *
-     * @throws SQLException Thrown if closing connection failed.
-     * @since 0.1.0
-     */
-    protected final void checkDataInitialization()
-        throws SQLException
-    {
-        // Validate that the db is initialized
-        Connection connection = null;
-        try
-        {
-            connection = getJDBCConnection();
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery( "SELECT COUNT(*) FROM PERSON" );
-            resultSet.next();
-            int numberOfRows = resultSet.getInt( 1 );
-            assertEquals( "There must be 2 rows in persons table.", 2, numberOfRows );
-        }
-        catch( Exception e )
-        {
-            e.printStackTrace();
-            fail( "Fail to validate initialization" );
-        }
-        finally
-        {
-            if( connection != null )
-            {
-                connection.close();
-            }
-        }
-    }
 
     /**
      * Returns the jdbc connection to test db. Must not return {@code null}.
@@ -180,7 +70,7 @@ public abstract class AbstractTestCase extends AbstractQi4jTest
     final Connection getJDBCConnection()
         throws SQLException
     {
-        return getConnection( JDBC_URL, DERBY_USER, DERBY_PASSWORD );
+        return derbyDatabaseHandler.getJDBCConnection();
     }
 
     @Override
@@ -189,60 +79,40 @@ public abstract class AbstractTestCase extends AbstractQi4jTest
     {
         super.setUp();
 
-        Properties systemProperties = System.getProperties();
-        systemProperties.setProperty( "derby.drda.securityMechanism", "CLEAR_TEXT_PASSWORD_SECURITY" );
-
-        nsc = new NetworkServerControl();
-        PrintWriter logOuput = new PrintWriter( out );
-        nsc.start( logOuput );
-
-        // Wait until server started up
-        waitUntilDerbyStarted();
+        uow = unitOfWorkFactory.newUnitOfWork();
     }
 
-
-    /**
-     * Wait until derby started.
-     *
-     * @throws InterruptedException Thrown if sleep fails.
-     * @since 0.1.0
-     */
-    private void waitUntilDerbyStarted()
-        throws InterruptedException
+    protected IBatisEntityState newPersonEntityState( final Map<String, Object> initialValues )
     {
-        int count = 0;
-        while( true )
-        {
-            // If we retries 2 times 200ms
-            if( count == 2 )
-            {
-                fail( "DB is not started after waiting for [400] ms" );
-                break;
-            }
+        final CompositeDescriptor compositeDescriptor = getCompositeDescriptor( PersonComposite.class );
 
-            try
-            {
-                nsc.ping();
-                break;
-            }
-            catch( Exception e )
-            {
-                // Sleep for 200 ms before restart
-                sleep( 200 );
-            }
-            count++;
-        }
+        return new IBatisEntityState( compositeDescriptor,
+                                      new QualifiedIdentity( "1", PersonComposite.class.getName() ),
+                                      initialValues,
+                                      0L,
+                                      EntityStatus.NEW );
+        // return new IBatisEntityState( new QualifiedIdentity( "1", PersonComposite.class.getName() ), getCompositeBinding( PersonComposite.class ), initialValues, EntityStatus.NEW, statusNew, unitOfWork, dao );
     }
 
-    public void tearDown()
-        throws Exception
+    protected CompositeDescriptor getCompositeDescriptor( final Class<? extends Composite> compositeType )
     {
-        if( nsc != null )
-        {
-            nsc.shutdown();
-            nsc = null;
-        }
+        final CompositeContext compositeContext = getCompositeContext( compositeType );
+        return compositeContext.getCompositeResolution().getCompositeDescriptor();
+    }
 
-        super.tearDown();
+    protected CompositeBinding getCompositeBinding( final Class<? extends Composite> compositeType )
+    {
+        final CompositeContext compositeContext = getCompositeContext( compositeType );
+        final CompositeBinding compositeBinding = compositeContext.getCompositeBinding();
+        junit.framework.Assert.assertNotNull( compositeBinding );
+        return compositeBinding;
+    }
+
+    protected CompositeContext getCompositeContext( final Class<? extends Composite> compositeType )
+    {
+        final ModuleContext moduleContext = moduleInstance.getModuleContext();
+        final CompositeContext compositeContext = moduleContext.getCompositeContext( compositeType );
+        junit.framework.Assert.assertNotNull( compositeContext );
+        return compositeContext;
     }
 }

@@ -12,7 +12,7 @@
     maxRequests="32"
     maxSessions="10"
     maxTransactions="5"
-    useStatementNamespaces="false"
+    useStatementNamespaces="true"
     />
 
   <!-- Configure a datasource to use with this SQL Map using SimpleDataSource.

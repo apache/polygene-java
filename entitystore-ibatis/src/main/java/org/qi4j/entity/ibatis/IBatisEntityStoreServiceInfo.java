@@ -18,6 +18,7 @@ package org.qi4j.entity.ibatis;
 
 import java.io.Serializable;
 import java.util.Properties;
+import java.util.Collections;
 import static org.qi4j.composite.NullArgumentException.validateNotEmpty;
 
 /**
@@ -32,7 +33,7 @@ public final class IBatisEntityStoreServiceInfo
     private static final long serialVersionUID = 1L;
 
     private final String sqlMapConfigURL;
-    private final Properties configProperties;
+    private final Properties configProperties = new Properties( );
 
     /**
      * Construct an instance of {@code IBatisServiceInfo}.
@@ -41,10 +42,11 @@ public final class IBatisEntityStoreServiceInfo
      * @throws IllegalArgumentException Thrown if one or some or all arguments are {@code null}.
      * @since 0.1.0
      */
-    public IBatisEntityStoreServiceInfo( String aSQLMapConfigURL )
+    public IBatisEntityStoreServiceInfo( final String aSQLMapConfigURL )
         throws IllegalArgumentException
     {
-        this( aSQLMapConfigURL, null );
+        validateNotEmpty( "aSqlMapConfigURL", aSQLMapConfigURL );
+        sqlMapConfigURL = aSQLMapConfigURL;
     }
 
     /**
@@ -55,13 +57,12 @@ public final class IBatisEntityStoreServiceInfo
      * @throws IllegalArgumentException Thrown if one or some or all arguments are {@code null}.
      * @since 0.1.0
      */
-    public IBatisEntityStoreServiceInfo( String aSQLMapConfigURL, Properties aProperties )
+    public IBatisEntityStoreServiceInfo( final String aSQLMapConfigURL, final Properties aProperties )
         throws IllegalArgumentException
     {
-        validateNotEmpty( "aSqlMapConfigURL", aSQLMapConfigURL );
-
-        sqlMapConfigURL = aSQLMapConfigURL;
-        configProperties = aProperties;
+        this(aSQLMapConfigURL);
+        if ( aProperties!=null )
+            configProperties.putAll( aProperties );
     }
 
     /**
@@ -83,6 +84,6 @@ public final class IBatisEntityStoreServiceInfo
      */
     final Properties getConfigProperties()
     {
-        return configProperties;
+        return new Properties( configProperties );
     }
 }
