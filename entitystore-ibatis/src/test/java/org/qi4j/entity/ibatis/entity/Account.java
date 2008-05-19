@@ -14,12 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.entity.ibatis;
+package org.qi4j.entity.ibatis.entity;
+
+import org.qi4j.entity.ibatis.entity.HasName;
+import org.qi4j.entity.ibatis.entity.HasPrimaryContactPerson;
 
 /**
  * @author edward.yakop@gmail.com
  * @since 0.1.0
  */
-public interface Person extends HasFirstName, HasLastName
+public interface Account extends HasPrimaryContactPerson, HasName
 {
 }

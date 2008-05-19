@@ -28,22 +28,16 @@ import org.junit.Test;
 import org.junit.Ignore;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.entity.UnitOfWork;
-import org.qi4j.entity.ibatis.AbstractTestCase;
-import org.qi4j.entity.ibatis.HasFirstName;
-import org.qi4j.entity.ibatis.HasLastName;
-import org.qi4j.entity.ibatis.PersonComposite;
+import org.qi4j.entity.ibatis.test.AbstractTestCase;
+import org.qi4j.entity.ibatis.entity.HasFirstName;
+import org.qi4j.entity.ibatis.entity.HasLastName;
+import org.qi4j.entity.ibatis.entity.PersonComposite;
 import static org.qi4j.property.ComputedPropertyInstance.getQualifiedName;
-import org.qi4j.runtime.composite.CompositeContext;
-import org.qi4j.runtime.structure.ModuleContext;
 import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.property.PropertyBinding;
-import org.qi4j.spi.structure.CompositeDescriptor;
 
 /**
  * @author edward.yakop@gmail.com
@@ -149,16 +143,6 @@ public final class IBatisEntityStateTest extends AbstractTestCase
         // Test get first name on 
     }
 
-
-    private IBatisEntityState newPersonEntityStateOld( final Map<String, Object> initialValues )
-    {
-        final CompositeBinding personCompositeBinding = getCompositeBinding( PersonComposite.class );
-
-        final Mockery mockery = new Mockery();
-        final UnitOfWork unitOfWork = mockery.mock( UnitOfWork.class );
-        return null;
-        // new IBatisEntityState( new QualifiedIdentity( "1", PersonComposite.class.getName() ), personCompositeBinding, initialValues, EntityStatus.NEW, statusNew, unitOfWork, dao );
-    }
 
     /**
      * Returns all person composite property bindings.

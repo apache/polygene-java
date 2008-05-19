@@ -1,4 +1,4 @@
-package org.qi4j.entity.ibatis;
+package org.qi4j.entity.ibatis.entity;
 
 import org.qi4j.entity.EntityComposite;
 

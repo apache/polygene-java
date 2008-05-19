@@ -26,16 +26,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
-import org.qi4j.composite.Composite;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
 import org.qi4j.composite.scope.This;
 import org.qi4j.entity.ibatis.dbInitializer.DBInitializer;
-import org.qi4j.entity.ibatis.dbInitializer.DBInitializerInfo;
-import org.qi4j.entity.ibatis.dbInitializer.DBInitializerConfiguration;
 import org.qi4j.entity.ibatis.internal.IBatisEntityState;
 import org.qi4j.service.Activatable;
 import org.qi4j.service.Configuration;
-import org.qi4j.spi.composite.CompositeModel;
 import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityState;
 import static org.qi4j.spi.entity.EntityStatus.LOADED;
@@ -53,30 +49,12 @@ import org.qi4j.structure.Module;
  *
  * @author edward.yakop@gmail.com
  */
-final class IBatisEntityStore
-    implements EntityStore, Activatable
+public class IBatisEntityStore
+    implements EntityStore, Activatable, StateCommitter
 {
-    private final Configuration<IBatisConfiguration> iBatisConfiguration;
-    private final Configuration<DBInitializerConfiguration> dbInitializerInfo;
+    @This private Configuration<IBatisConfiguration> iBatisConfiguration;
 
     private SqlMapClient client;
-
-    /**
-     * Construct a new instance of {@code IBatisEntityStore}.
-     *
-     * @param ibatisConfiguration       The entity store service info. This argument must not be {@code null}.
-     * @param dbInitializerConfiguration The db initializer info.
-     * @since 0.1.0
-     */
-    public IBatisEntityStore( @This final Configuration<IBatisConfiguration> ibatisConfiguration,
-                       @This( optional = true ) final Configuration<DBInitializerConfiguration> dbInitializerConfiguration )
-    {
-        validateNotNull( "Configuration<IBatisConfiguration>", ibatisConfiguration );
-        iBatisConfiguration = ibatisConfiguration;
-        dbInitializerInfo = dbInitializerConfiguration;
-
-        client = null;
-    }
 
     /**
      * Construct a new instance of entity state.
@@ -109,8 +87,7 @@ final class IBatisEntityStore
     {
         if( client == null )
         {
-            final String message = "Possibly bug in the qi4j where the store is not activate but its service is invoked.";
-            throw new EntityStoreException( message );
+            throw new EntityStoreException( "IBatisEntityStore was not activated." );
         }
     }
 
@@ -129,7 +106,7 @@ final class IBatisEntityStore
     {
         throwIfNotActive();
 
-        final Map<String,Object> propertyValues = getRawData( aDescriptor, anIdentity );
+        final Map<String, Object> propertyValues = getRawData( aDescriptor, anIdentity );
         final Long version = (Long) propertyValues.get( "VERSION" );
         return new IBatisEntityState( aDescriptor, anIdentity, propertyValues, version, LOADED );
     }
@@ -144,20 +121,19 @@ final class IBatisEntityStore
      * @throws EntityStoreException Thrown if retrieval failed.
      * @since 0.1.0
      */
-    private Map<String,Object> getRawData( final CompositeDescriptor aDescriptor, final QualifiedIdentity anIdentity )
+    private Map<String, Object> getRawData( final CompositeDescriptor aDescriptor, final QualifiedIdentity anIdentity )
         throws EntityStoreException
     {
         validateNotNull( "anIdentity", anIdentity );
         validateNotNull( "aCompositeBinding", aDescriptor );
         try
         {
-            final String identityAsString = anIdentity.getIdentity();
-            final String statementId = getStatementId( aDescriptor, "getById" );
-            final Map<String,Object> compositePropertyValues =
-                (Map<String,Object>) client.queryForObject( statementId, identityAsString );
+            final String statementId = getStatementId( anIdentity, "load" );
+            final Map<String, Object> compositePropertyValues =
+                (Map<String, Object>) client.queryForObject( statementId, anIdentity.getIdentity() );
             if( compositePropertyValues == null )
             {
-                throw new EntityNotFoundException( this.toString(), identityAsString );
+                throw new EntityNotFoundException( this.toString(), anIdentity.getIdentity() );
             }
 
             return compositePropertyValues;
@@ -169,16 +145,9 @@ final class IBatisEntityStore
 
     }
 
-    private String getStatementId( final CompositeDescriptor aDescriptor, final String suffix )
+    private String getStatementId( final QualifiedIdentity qualifiedIdentity, final String suffix )
     {
-        return getNameSpace( aDescriptor ) + "." + suffix;
-    }
-
-    private String getNameSpace( final CompositeDescriptor aDescriptor )
-    {
-        final CompositeModel compositeModel = aDescriptor.getCompositeModel();
-        final Class<? extends Composite> compositeClass = compositeModel.getCompositeType();
-        return compositeClass.getName();
+        return qualifiedIdentity.getCompositeType() + "." + suffix;
     }
 
 
@@ -189,8 +158,34 @@ final class IBatisEntityStore
         final Module aModule )
         throws EntityStoreException
     {
-        // TODO
-        return null;
+        throwIfNotActive();
+
+        startTransaction();
+
+        for( final EntityState state : newStates )
+        {
+            executeUpdate( "insert", state.getIdentity(), getProperties( state ) );
+        }
+        for( final EntityState state : loadedStates )
+        {
+            executeUpdate( "update", state.getIdentity(), getProperties( state ) );
+        }
+        for( final QualifiedIdentity identity : removedStates )
+        {
+            executeUpdate( "delete", identity, identity.getIdentity() );
+        }
+
+        return this;
+    }
+
+
+    private Map<String, Object> getProperties( final EntityState state )
+    {
+        if( state instanceof IBatisEntityState )
+        {
+            return ( (IBatisEntityState) state ).getPropertyValues();
+        }
+        throw new UnsupportedOperationException( "Only supported for IBatisEntityStates by now" ); // todo extract by iteration from other states
     }
 
     /**
@@ -213,9 +208,9 @@ final class IBatisEntityStore
     public final void activate()
         throws IOException, SQLException
     {
-        initializeDatabase();
-
         final IBatisConfiguration configuration = getUpdatedConfiguration();
+
+        initializeDatabase( configuration );
 
         client = newSqlMapClient( configuration );
     }
@@ -237,18 +232,11 @@ final class IBatisEntityStore
         return iBatisConfiguration.configuration();
     }
 
-    private void initializeDatabase()
+    private void initializeDatabase( final IBatisConfiguration configuration )
         throws SQLException, IOException
     {
-        // Initialize database if required.
-        if( dbInitializerInfo != null )
-        {
-            dbInitializerInfo.refresh();
-
-            final DBInitializerConfiguration configuration = dbInitializerInfo.configuration();
-            final DBInitializer dbInitializer = new DBInitializer( configuration );
-            dbInitializer.initialize();
-        }
+        final DBInitializer dbInitializer = new DBInitializer( configuration );
+        dbInitializer.initialize();
     }
 
     /**
@@ -264,4 +252,55 @@ final class IBatisEntityStore
         client = null;
     }
 
+    private void startTransaction()
+    {
+        throwIfNotActive();
+
+        try
+        {
+            client.startTransaction();
+        }
+        catch( SQLException e )
+        {
+            throw new EntityStoreException( "Error starting transaction", e );
+        }
+    }
+
+    private int executeUpdate( final String operation, final QualifiedIdentity identity, final Object params )
+    {
+        try
+        {
+            return client.update( getStatementId( identity, operation ), params );
+        }
+        catch( SQLException e )
+        {
+            throw new EntityStoreException( "Error executing Operation " + operation + " for identity " + identity + " params " + params, e );
+        }
+    }
+
+    public void commit()
+    {
+        throwIfNotActive();
+        try
+        {
+            client.commitTransaction();
+        }
+        catch( SQLException e )
+        {
+            throw new EntityStoreException( "Error commiting transaction", e );
+        }
+    }
+
+    public void cancel()
+    {
+        throwIfNotActive();
+        try
+        {
+            client.endTransaction();
+        }
+        catch( SQLException e )
+        {
+            throw new EntityStoreException( "Error canceling transaction", e );
+        }
+    }
 }

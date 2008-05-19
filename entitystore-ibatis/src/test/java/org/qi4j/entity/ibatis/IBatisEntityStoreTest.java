@@ -17,24 +17,29 @@
 package org.qi4j.entity.ibatis;
 
 import java.net.URL;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import org.junit.Test;
-import org.junit.Ignore;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entity.ibatis.dbInitializer.DBInitializerConfiguration;
-import org.qi4j.entity.ibatis.internal.IBatisEntityState;
-import org.qi4j.entity.memory.MemoryEntityStoreService;
-import org.qi4j.entity.UnitOfWorkCompletionException;
+import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.entity.UnitOfWork;
+import org.qi4j.entity.UnitOfWorkCompletionException;
+import org.qi4j.entity.ibatis.dbInitializer.DBInitializerConfiguration;
+import org.qi4j.entity.ibatis.entity.PersonComposite;
+import org.qi4j.entity.ibatis.test.AbstractTestCase;
+import org.qi4j.entity.ibatis.DerbyDatabaseHandler;
+import org.qi4j.entity.memory.MemoryEntityStoreService;
 import org.qi4j.property.Property;
 import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.spi.entity.UuidIdentityGeneratorService;
 import org.qi4j.spi.property.PropertyBinding;
 import org.qi4j.spi.property.PropertyModel;
 import org.qi4j.spi.structure.CompositeDescriptor;
@@ -46,25 +51,102 @@ import org.qi4j.structure.Visibility;
  * @author edward.yakop@gmail.com
  * @since 0.1.0
  */
-@Ignore
 public final class IBatisEntityStoreTest extends AbstractTestCase
 {
-    private IBatisEntityStoreService entityStore;
-
-    public IBatisEntityStoreTest()
-        throws Exception
-    {
-    }
-
+    private static final String SCHEMA_FILE = "testDbSchema.sql";
+    private static final String DATA_FILE = "testDbData.sql";
     private static final String SQL_MAP_CONFIG_XML = "SqlMapConfig.xml";
 
+    private static final String NEW_TEST_ID = "111";
+    private static final String JOHN_SMITH_ID = "1";
 
-    public final void testActivate()
-        throws SQLException
+    private IBatisEntityStoreService entityStore;
+
+    @Test public void isThereDataInTheDatabaseAfterInitialization()
+        throws Exception
     {
-
-        // Make sure there's default data in database
+        entityStore.toString();
         derbyDatabaseHandler.checkDataInitialization();
+    }
+
+    @Test public final void createNewEntityStateWithoutPersisting()
+        throws SQLException, UnitOfWorkCompletionException
+    {
+        final UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+        final CompositeDescriptor personCompositeDescriptor = getCompositeDescriptor( PersonComposite.class );
+
+        final EntityState state = entityStore.newEntityState( personCompositeDescriptor, id( NEW_TEST_ID ) );
+        assertNotNull( state );
+        checkEntityStateProperties( getCompositeBinding( PersonComposite.class ), state, false );
+        uow.complete();
+    }
+
+    @Test public final void newEntityStateIsPersistedToDatabase()
+        throws SQLException, UnitOfWorkCompletionException
+    {
+        final Map<String, String> data = createTestData( "Edward", "Yakop" );
+
+        final UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+
+        final CompositeBuilder<PersonComposite> builder = uow.newEntityBuilder( PersonComposite.class );
+        final PersonComposite person = builder.newInstance();
+        final String newId = person.identity().get();
+
+        person.firstName().set( data.get( "FIRST_NAME" ) );
+        person.lastName().set( data.get( "LAST_NAME" ) );
+
+        uow.complete();
+        assertPersonEqualsInDatabase( newId, data );
+    }
+
+    @Test( expected = EntityStoreException.class )
+    public void loadOfNonExistingEntityFails()
+    {
+        loadEntity( "1123123" );
+    }
+
+    @Test public void loadExistingEntity()
+    {
+        final EntityState state = loadEntity( JOHN_SMITH_ID );
+        assertPersonEntityStateEquals( JOHN_SMITH_ID, "John", "Smith", state );
+    }
+
+    @Test public void findExistingPersonComposite() throws UnitOfWorkCompletionException
+    {
+        final UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+        final PersonComposite person = uow.find( JOHN_SMITH_ID, PersonComposite.class );
+        assertPersonEquals( JOHN_SMITH_ID, "John", "Smith", person );
+        uow.complete();
+    }
+
+    public final void assemble( final ModuleAssembly module )
+        throws AssemblyException
+    {
+        module.addComposites( PersonComposite.class );
+        module.addServices( UuidIdentityGeneratorService.class );
+        module.addServices( IBatisEntityStoreService.class );
+
+        final ModuleAssembly config = module.getLayerAssembly().newModuleAssembly();
+        config.setName( "config" );
+        config.addComposites( IBatisConfiguration.class ).visibleIn( Visibility.layer );
+        config.addComposites( DBInitializerConfiguration.class ).visibleIn( Visibility.layer );
+        config.addServices( MemoryEntityStoreService.class );
+        config.addProperty().withAccessor( IBatisConfiguration.class ).sqlMapConfigURL().set( getSqlMapConfigUrl() );
+        derbyDatabaseHandler.initDbInitializerInfo( config, SCHEMA_FILE, DATA_FILE );
+    }
+
+    private EntityState loadEntity( final String id )
+    {
+        final QualifiedIdentity qualifiedIdentity = id( id );
+        return this.entityStore.getEntityState( getCompositeDescriptor( PersonComposite.class ), qualifiedIdentity );
+    }
+
+    private Map<String, String> createTestData( final String firstName, final String lastName )
+    {
+        final Map<String, String> data = new HashMap<String, String>();
+        data.put( "FIRST_NAME", firstName );
+        data.put( "LAST_NAME", lastName );
+        return data;
     }
 
     private String getSqlMapConfigUrl()
@@ -73,78 +155,81 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
         return sqlMapConfigURL.toString();
     }
 
-    /**
-     * Tests {@link org.qi4j.spi.entity.EntityStore#newEntityState(org.qi4j.spi.structure.CompositeDescriptor, org.qi4j.spi.entity.QualifiedIdentity)}
-     *
-     * @throws SQLException Thrown if initialization fails.
-     */
-    @Test
-    public final void testNewEntityState()
-        throws SQLException, UnitOfWorkCompletionException
+    private void assertPersonEqualsInDatabase( final String identity, final Map<String, ?> values )
     {
-        final UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
-        final CompositeDescriptor personCompositeDescriptor = getCompositeDescriptor( PersonComposite.class );
-
-        final IBatisEntityState state = (IBatisEntityState) entityStore.newEntityState( personCompositeDescriptor, new QualifiedIdentity( "1", PersonComposite.class.getName() ) );
-        assertNotNull( state );
-
-        checkStateProperties( getCompositeBinding( PersonComposite.class ), state );
-        uow.complete();
+        final int count = derbyDatabaseHandler.executeStatement( "select * from person where id = '" + identity + "'", new DerbyDatabaseHandler.ResultSetCallback()
+        {
+            public void row( final ResultSet rs ) throws SQLException
+            {
+                assertEquals( "id", identity, rs.getString( "id" ) );
+                assertContainsValues( rs, values );
+            }
+        } );
+        assertEquals( "Person with Id " + identity, 1, count );
     }
 
-    private static void checkStateProperties( final CompositeBinding personBinding, final IBatisEntityState state )
+    private void assertContainsValues( final ResultSet rs, final Map<String, ?> values )
+        throws SQLException
     {
-        for( final PropertyBinding propertyBinding : personBinding.getPropertyBindings() )
+        if( values == null )
         {
-            final PropertyModel propertyModel = propertyBinding.getPropertyResolution().getPropertyModel();
+            return;
+        }
 
-            final Property property = (Property) state.getProperty( propertyModel.getQualifiedName() );
-
-            assertNotNull( "Property [" + propertyModel.getName() + "] is not found.", property );
+        for( final Map.Entry<String, ?> entry : values.entrySet() )
+        {
+            final String name = entry.getKey();
+            assertEquals( name, entry.getValue(), rs.getString( name ) );
         }
     }
 
-    @Test( expected = EntityStoreException.class )
-    public void testgetStateForNonExistentIdentity()
+    private static void checkEntityStateProperties( final CompositeBinding compositeBinding, final EntityState state, final boolean checkAll )
     {
-        final QualifiedIdentity identity = new QualifiedIdentity( "1123123", PersonComposite.class.getName() );
-        final EntityState state = this.entityStore.getEntityState( getCompositeDescriptor( PersonComposite.class ), identity );
-        assertNull( state );
+        assertNotNull( "identity", state.getIdentity() );
+        assertNotNull( "identity", state.getIdentity().getIdentity() );
+        if( !checkAll )
+        {
+            return;
+        }
+
+        for( final PropertyBinding propertyBinding : compositeBinding.getPropertyBindings() )
+        {
+            final PropertyModel propertyModel = propertyBinding.getPropertyResolution().getPropertyModel();
+
+            final String propertyName = propertyModel.getName();
+            if( "identity".equals( propertyName ) )
+            {
+                continue;
+            }
+            final Property property = (Property) state.getProperty( propertyModel.getQualifiedName() );
+
+            assertNotNull( "Property [" + propertyName + ": " + propertyModel.getType() + "] is not found.", property );
+        }
     }
 
-    @Test public void testgetStateForValidIdentity()
+    private void assertPersonEntityStateEquals( final String id, final String firstName, final String lastName, final EntityState state )
     {
-        final QualifiedIdentity johnSmithIdentity = new QualifiedIdentity( "1", PersonComposite.class.getName() );
-
-        final EntityState state = entityStore.getEntityState( getCompositeDescriptor( PersonComposite.class ), johnSmithIdentity );
         assertNotNull( state );
+        final QualifiedIdentity qualifiedIdentity = state.getIdentity();
 
-        final Property identityProperty = (Property) state.getProperty( "identity" );
-        assertNotNull( identityProperty );
-        assertEquals( "1", identityProperty.get() );
+        assertNotNull( "identity", qualifiedIdentity );
+        assertEquals( "identity", id, qualifiedIdentity.getIdentity() );
 
-        final Property firstNameProperty = (Property) state.getProperty( "firstName" );
-        assertNotNull( "firstName", firstNameProperty );
-        assertEquals( "firstName", "John", firstNameProperty.get() );
-
-        final Property lastNameProperty = (Property) state.getProperty( "lastName" );
-        assertNotNull( "lastName", lastNameProperty );
-        assertEquals( "lastName", "Smith", lastNameProperty.get() );
+        assertEquals( "identity", id, state.getProperty( "identity" ) );
+        assertEquals( "firstName", firstName, state.getProperty( "firstName" ) );
+        assertEquals( "lastName", lastName, state.getProperty( "lastName" ) );
     }
 
-    public final void assemble( final ModuleAssembly module )
-        throws AssemblyException
+    private void assertPersonEquals( final String id, final String firstName, final String lastName, final PersonComposite person )
     {
-        module.addComposites( PersonComposite.class );
-        module.addServices( IBatisEntityStoreService.class );
+        assertEquals( "identity", id, person.identity().get() );
+        assertEquals( "firstName", firstName, person.firstName().get() );
+        assertEquals( "lastName", lastName, person.lastName().get() );
+    }
 
-        final ModuleAssembly config = module.getLayerAssembly().newModuleAssembly();
-        config.setName( "config" );
-        config.addComposites( IBatisConfiguration.class).visibleIn( Visibility.layer );
-        config.addComposites( DBInitializerConfiguration.class ).visibleIn( Visibility.layer );
-        config.addServices( MemoryEntityStoreService.class );
-        config.addProperty().withAccessor( IBatisConfiguration.class ).sqlMapConfigURL().set( getSqlMapConfigUrl() );
-        derbyDatabaseHandler.initDbInitializerInfo( config );
+    private QualifiedIdentity id( final String id )
+    {
+        return new QualifiedIdentity( id, PersonComposite.class.getName() );
     }
 
     @Override

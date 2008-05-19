@@ -18,6 +18,7 @@ package org.qi4j.entity.ibatis;
 
 import java.util.Properties;
 import org.qi4j.entity.EntityComposite;
+import org.qi4j.entity.ibatis.dbInitializer.DBInitializerConfiguration;
 import org.qi4j.property.Property;
 
 /**
@@ -26,7 +27,7 @@ import org.qi4j.property.Property;
  * @author edward.yakop@gmail.com
  * @since 0.1.0
  */
-public interface IBatisConfiguration extends EntityComposite
+public interface IBatisConfiguration extends EntityComposite, DBInitializerConfiguration
 {
     Property<String> sqlMapConfigURL();
 

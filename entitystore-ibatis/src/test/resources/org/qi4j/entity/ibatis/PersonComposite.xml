@@ -2,10 +2,29 @@
 <!DOCTYPE sqlMap
   PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
   "http://ibatis.apache.org/dtd/sql-map-2.dtd">
-<sqlMap namespace="org.qi4j.entity.ibatis.PersonComposite">
-  <select id="getById" resultClass="java.util.HashMap">
+<sqlMap namespace="org.qi4j.entity.ibatis.entity.PersonComposite">
+  <select id="load" resultClass="java.util.HashMap">
     SELECT ID as id, FIRST_NAME as firstName, LAST_NAME as lastName
     FROM PERSON
     WHERE ID = #id#
   </select>
+  <delete id="delete" parameterClass="string">
+    DELETE
+    FROM PERSON
+    where ID = #id#
+  </delete>
+  <insert id="insert" parameterClass="map">
+    insert
+    INTO PERSON
+    (ID,FIRST_NAME,LAST_NAME)
+    values(#ID#,#FIRSTNAME:VARCHAR#,#LASTNAME:VARCHAR#)
+  </insert>
+  <update id="update" parameterClass="map">
+    update
+    PERSON
+    set
+    FIRST_NAME=#FIRSTNAME#,
+    LAST_NAME = #LASTNAME#
+    where ID = #ID#
+  </update>
 </sqlMap>

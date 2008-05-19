@@ -1,4 +1,4 @@
-package org.qi4j.entity.ibatis;
+package org.qi4j.entity.ibatis.test;
 
 import org.qi4j.property.Property;
 import java.lang.reflect.Type;
@@ -7,7 +7,7 @@ import java.lang.reflect.Type;
  * @autor Michael Hunger
 * @since 19.05.2008
 */
-class TestProperty<T> implements Property<T>
+public class TestProperty<T> implements Property<T>
 {
     private final T value;
     private final String name;

@@ -14,14 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.entity.ibatis;
+package org.qi4j.entity.ibatis.test;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Map;
 import org.qi4j.composite.Composite;
-import org.qi4j.entity.ibatis.dbInitializer.DBInitializerInfo;
 import org.qi4j.entity.ibatis.internal.IBatisEntityState;
+import org.qi4j.entity.ibatis.entity.PersonComposite;
+import org.qi4j.entity.ibatis.DerbyDatabaseHandler;
 import org.qi4j.runtime.composite.CompositeContext;
 import org.qi4j.runtime.structure.ModuleContext;
 import org.qi4j.spi.composite.CompositeBinding;
@@ -29,6 +30,7 @@ import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.structure.CompositeDescriptor;
 import org.qi4j.test.AbstractQi4jTest;
+import org.junit.Before;
 
 /**
  * @author edward.yakop@gmail.com
@@ -36,26 +38,7 @@ import org.qi4j.test.AbstractQi4jTest;
  */
 public abstract class AbstractTestCase extends AbstractQi4jTest
 {
-    private static final String SCHEMA_FILE = "testDbSchema.sql";
-    private static final String DATA_FILE = "testDbData.sql";
-
-    protected final DerbyDatabaseHandler derbyDatabaseHandler;
-
-    public AbstractTestCase()
-    {
-        derbyDatabaseHandler = new DerbyDatabaseHandler();
-    }
-
-    /**
-     * Construct a new db initializer info.
-     *
-     * @return a new db initializer info.
-     * @since 0.1.0
-     */
-    protected final DBInitializerInfo newDbInitializerInfo()
-    {
-        return derbyDatabaseHandler.newDbInitializerInfo( SCHEMA_FILE, DATA_FILE );
-    }
+    protected DerbyDatabaseHandler derbyDatabaseHandler;
 
 
     /**
@@ -110,5 +93,11 @@ public abstract class AbstractTestCase extends AbstractQi4jTest
         final CompositeContext compositeContext = moduleContext.getCompositeContext( compositeType );
         junit.framework.Assert.assertNotNull( compositeContext );
         return compositeContext;
+    }
+
+    @Before public void setUp() throws Exception
+    {
+        derbyDatabaseHandler = new DerbyDatabaseHandler();
+        super.setUp();
     }
 }

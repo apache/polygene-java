@@ -21,23 +21,23 @@ import static java.lang.System.out;
 import static java.lang.Thread.sleep;
 import java.net.URL;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import static java.sql.DriverManager.getConnection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.DatabaseMetaData;
 import java.util.Properties;
 import org.apache.derby.drda.NetworkServerControl;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
-import static org.junit.Assert.assertTrue;
-import org.qi4j.entity.ibatis.dbInitializer.DBInitializerInfo;
-import org.qi4j.entity.ibatis.dbInitializer.DBInitializerConfiguration;
-import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.property.Property;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.entity.ibatis.dbInitializer.DBInitializerConfiguration;
+import org.qi4j.entity.ibatis.test.TestProperty;
+import org.qi4j.property.Property;
 
 /**
  * @author edward.yakop@gmail.com
@@ -73,25 +73,6 @@ public class DerbyDatabaseHandler
     }
 
 
-    public final DBInitializerInfo newDbInitializerInfo()
-    {
-        return newDbInitializerInfo( SCHEMA_FILE, DATA_FILE );
-    }
-
-    /**
-     * Construct a new db initializer info.
-     *
-     * @param schemaFile
-     * @param dataFile
-     * @return a new db initializer info.
-     * @since 0.1.0
-     */
-    protected final DBInitializerInfo newDbInitializerInfo( final String schemaFile, final String dataFile )
-    {
-        final Properties dbProperties = createConnectionProperties();
-        return new DBInitializerInfo( JDBC_URL, dbProperties, getUrlString( schemaFile ), getUrlString( dataFile ) );
-    }
-
     private Properties createConnectionProperties()
     {
         final Properties dbProperties = new Properties();
@@ -102,10 +83,16 @@ public class DerbyDatabaseHandler
 
     public void initDbInitializerInfo( final ModuleAssembly module )
     {
-        module.addProperty().withAccessor( DBInitializerConfiguration.class ).dbUrl().set( JDBC_URL );
-        module.addProperty().withAccessor( DBInitializerConfiguration.class ).connectionProperties().set( createConnectionProperties() );
-        module.addProperty().withAccessor( DBInitializerConfiguration.class ).schemaUrl().set( getUrlString( SCHEMA_FILE ) );
-        module.addProperty().withAccessor( DBInitializerConfiguration.class ).dataUrl().set( getUrlString( DATA_FILE ) );
+        initDbInitializerInfo( module, SCHEMA_FILE, DATA_FILE );
+    }
+
+    public void initDbInitializerInfo( final ModuleAssembly module, final String schemaFile, final String dataFile )
+    {
+        final Class<IBatisConfiguration> configType = IBatisConfiguration.class; //DBInitializerConfiguration.class;
+        module.addProperty().withAccessor( configType ).dbUrl().set( JDBC_URL );
+        module.addProperty().withAccessor( configType ).connectionProperties().set( createConnectionProperties() );
+        module.addProperty().withAccessor( configType ).schemaUrl().set( getUrlString( schemaFile ) );
+        module.addProperty().withAccessor( configType ).dataUrl().set( getUrlString( dataFile ) );
     }
 
     public String getUrlString( final String file )
@@ -217,7 +204,7 @@ public class DerbyDatabaseHandler
      * @throws java.sql.SQLException Thrown if initializing connection failed.
      * @since 0.1.0
      */
-    final Connection getJDBCConnection()
+    public final Connection getJDBCConnection()
         throws SQLException
     {
         return getConnection( JDBC_URL, DERBY_USER, DERBY_PASSWORD );
@@ -264,23 +251,97 @@ public class DerbyDatabaseHandler
         }
     }
 
-    public DBInitializerConfiguration createDbInitializerConfigMock( )
+    public DBInitializerConfiguration createDbInitializerConfigMock()
     {
         final Mockery context = new Mockery();
         final DBInitializerConfiguration info = context.mock( DBInitializerConfiguration.class );
         context.checking(
-        new Expectations() {{
-           allowing( info ).connectionProperties(); will(returnValue( createProperty("connectionProperties",createConnectionProperties())  ));
-           allowing( info ).schemaUrl(); will(returnValue( createProperty("schemaUrl",getUrlString( SCHEMA_FILE ))  ));
-           allowing( info ).dataUrl(); will(returnValue( createProperty("dataUrl",getUrlString( DATA_FILE ))));
-           allowing( info ).dbUrl(); will(returnValue( createProperty("dbUrl",JDBC_URL)  ));
-        }});
+            new Expectations()
+            {
+                {
+                    allowing( info ).connectionProperties();
+                    will( returnValue( createProperty( "connectionProperties", createConnectionProperties() ) ) );
+                    allowing( info ).schemaUrl();
+                    will( returnValue( createProperty( "schemaUrl", getUrlString( SCHEMA_FILE ) ) ) );
+                    allowing( info ).dataUrl();
+                    will( returnValue( createProperty( "dataUrl", getUrlString( DATA_FILE ) ) ) );
+                    allowing( info ).dbUrl();
+                    will( returnValue( createProperty( "dbUrl", JDBC_URL ) ) );
+                }
+            } );
         return info;
     }
 
-    private <T> Property<T> createProperty( final String name,final T value )
+    private <T> Property<T> createProperty( final String name, final T value )
     {
         return new TestProperty<T>( value, name );
     }
 
+    public int executeStatement( final String sql, final ResultSetCallback callback )
+    {
+        Connection connection = null;
+        Statement statement = null;
+        ResultSet rs = null;
+        try
+        {
+            connection = getJDBCConnection();
+            statement = connection.createStatement();
+            rs = statement.executeQuery( sql );
+            int count = 0;
+            while( rs.next() )
+            {
+                callback.row( rs );
+                count++;
+            }
+            return count;
+        }
+        catch( SQLException sqle )
+        {
+            throw new RuntimeException( "Error executing statement: " + sql + " with callback " + callback, sqle );
+        }
+        finally
+        {
+            closeIt( rs );
+            closeIt( statement );
+            closeIt( connection );
+        }
+    }
+
+    private void closeIt( final Object jdbcHandle )
+    {
+        if( jdbcHandle == null )
+        {
+            return;
+        }
+        try
+        {
+            if( jdbcHandle instanceof ResultSet )
+            {
+                ( (ResultSet) jdbcHandle ).close();
+                return;
+            }
+            if( jdbcHandle instanceof Statement )
+            {
+                ( (Statement) jdbcHandle ).close();
+                return;
+            }
+            if( jdbcHandle instanceof Connection )
+            {
+                ( (Connection) jdbcHandle ).close();
+            }
+        }
+        catch( SQLException e )
+        {
+            System.err.print( "Error closing " + jdbcHandle.getClass() + ": " + e.getMessage() );
+        }
+    }
+
+    /**
+     * @autor Michael Hunger
+     * @since 19.05.2008
+     */
+    public static interface ResultSetCallback
+    {
+        void row( ResultSet rs ) throws SQLException;
+    }
 }

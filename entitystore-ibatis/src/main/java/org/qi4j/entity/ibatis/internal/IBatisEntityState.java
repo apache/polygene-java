@@ -18,16 +18,16 @@ package org.qi4j.entity.ibatis.internal;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Collections;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
+import org.qi4j.entity.ibatis.IdentifierConverter;
+import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import static org.qi4j.spi.entity.EntityStatus.REMOVED;
 import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.spi.entity.EntityStoreException;
-import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.structure.CompositeDescriptor;
 
 /**
@@ -44,11 +44,12 @@ public final class IBatisEntityState
     private final CompositeDescriptor descriptor;
     private final QualifiedIdentity identity;
 
-    private final Map<String, Object> propertyValues = new HashMap<String,Object>();
+    private final Map<String, Object> propertyValues = new HashMap<String, Object>();
     private final Map<String, QualifiedIdentity> associations = new HashMap<String, QualifiedIdentity>();
     private final Map<String, Collection<QualifiedIdentity>> manyAssociations = new HashMap<String, Collection<QualifiedIdentity>>();
     private Long version;
     private EntityStatus status;
+    private IdentifierConverter identifierConverter = new CapitalizingIdentifierConverter();
 
     /**
      * Construct an instance of {@code IBatisEntityState}.
@@ -72,12 +73,12 @@ public final class IBatisEntityState
         validateNotNull( "anIdentity", anIdentity );
         validateNotNull( "propertyValuez", propertyValuez );
         validateNotNull( "aStatus", aStatus );
-        validateNotNull( "aVersion", aVersion );
+        // TODO validateNotNull( "aVersion", aVersion );
 
         descriptor = aDescriptor;
         identity = anIdentity;
         status = aStatus;
-        propertyValues.putAll(uppercaseKeys( propertyValuez ));
+        propertyValues.putAll( convertKeys( propertyValuez ) );
         version = aVersion;
 
     }
@@ -86,15 +87,15 @@ public final class IBatisEntityState
      * Capitalize keys of the values. This is needed to ensure that regardless the backing database it will return
      * the right property names.
      *
-     * @since 0.1.0
      * @param columnValueMap
+     * @since 0.1.0
      */
-    private <T> Map<String, T> uppercaseKeys( final Map<String, T> columnValueMap )
+    private <T> Map<String, T> convertKeys( final Map<String, T> columnValueMap )
     {
-        final Map<String, T> result=new HashMap<String,T>(columnValueMap.size());
-        for( final Map.Entry<String,T> entry : columnValueMap.entrySet() )
+        final Map<String, T> result = new HashMap<String, T>( columnValueMap.size() );
+        for( final Map.Entry<String, T> entry : columnValueMap.entrySet() )
         {
-            result.put( convertIdentifier( entry.getKey() ), entry.getValue());
+            result.put( convertIdentifier( entry.getKey() ), entry.getValue() );
         }
         return result;
     }
@@ -159,7 +160,10 @@ public final class IBatisEntityState
         }
 
         final QualifiedIdentity qualifiedIdentity = associations.get( convertIdentifier( qualifiedName ) );
-        if (qualifiedIdentity == null) return QualifiedIdentity.NULL; // todo mandatory
+        if( qualifiedIdentity == null )
+        {
+            return QualifiedIdentity.NULL; // todo mandatory
+        }
         return associations.get( qualifiedName );
     }
 
@@ -168,10 +172,10 @@ public final class IBatisEntityState
         validateNotNull( "qualifiedName", qualifiedName );
         if( status == REMOVED )
         {
-            throw new EntityNotFoundException("IbatisEntityStore",getIdentity().getIdentity());
+            throw new EntityNotFoundException( "IbatisEntityStore", getIdentity().getIdentity() );
         }
         final String convertedIdentifier = convertIdentifier( qualifiedName );
-        associations.put(convertedIdentifier, qualifiedIdentity != null ? qualifiedIdentity : QualifiedIdentity.NULL );
+        associations.put( convertedIdentifier, qualifiedIdentity != null ? qualifiedIdentity : QualifiedIdentity.NULL );
     }
 
     public Collection<QualifiedIdentity> getManyAssociation( final String qualifiedName )
@@ -183,7 +187,10 @@ public final class IBatisEntityState
         }
 
         final Collection<QualifiedIdentity> identities = manyAssociations.get( convertIdentifier( qualifiedName ) );
-        if (identities==null) return Collections.emptyList();
+        if( identities == null )
+        {
+            return Collections.emptyList();
+        }
         return identities;
     }
 
@@ -193,34 +200,39 @@ public final class IBatisEntityState
         validateNotNull( "qualifiedName", qualifiedName );
         if( status == REMOVED )
         {
-            throw new EntityNotFoundException("IbatisEntityStore",getIdentity().getIdentity());
+            throw new EntityNotFoundException( "IbatisEntityStore", getIdentity().getIdentity() );
         }
         final String convertedIdentifier = convertIdentifier( qualifiedName );
-        if (newManyAssociations==null) {
-            manyAssociations.put( convertedIdentifier, Collections.singletonList( QualifiedIdentity.NULL )); // todo ??
+        if( newManyAssociations == null )
+        {
+            manyAssociations.put( convertedIdentifier, Collections.singletonList( QualifiedIdentity.NULL ) ); // todo ??
         }
 
         return manyAssociations.put( convertedIdentifier, newManyAssociations );
     }
 
-    private String convertIdentifier( final String identifier )
+    public String convertIdentifier( final String qualifiedIdentifier )
     {
-        return identifier.toUpperCase();
+        return identifierConverter.convertIdentifier( qualifiedIdentifier );
     }
 
     public final Iterable<String> getPropertyNames()
     {
-        return Collections.unmodifiableSet( propertyValues.keySet());
+        return Collections.unmodifiableSet( propertyValues.keySet() );
     }
 
     public final Iterable<String> getAssociationNames()
     {
-        return Collections.unmodifiableSet( associations.keySet());
+        return Collections.unmodifiableSet( associations.keySet() );
     }
 
     public final Iterable<String> getManyAssociationNames()
     {
-        return Collections.unmodifiableSet( manyAssociations.keySet());
+        return Collections.unmodifiableSet( manyAssociations.keySet() );
     }
 
+    public Map<String, Object> getPropertyValues()
+    {
+        return propertyValues;
+    }
 }
