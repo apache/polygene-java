@@ -34,7 +34,7 @@ public abstract class GenericSideEffect
     }
 
     /**
-     * Override this method to avoid having to do "retun null;" in the code
+     * Override this method to avoid having to do "return null;" in the code
      *
      * @param method  the method that was invoked
      * @param objects the arguments of the method invocation

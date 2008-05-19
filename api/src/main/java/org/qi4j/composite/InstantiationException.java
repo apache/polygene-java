@@ -20,6 +20,8 @@ package org.qi4j.composite;
 public class InstantiationException
     extends RuntimeException
 {
+    private static final long serialVersionUID = 6256204509469620412L;
+
     public InstantiationException()
     {
     }
