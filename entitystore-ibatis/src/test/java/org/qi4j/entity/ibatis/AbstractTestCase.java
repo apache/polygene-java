@@ -20,7 +20,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Map;
 import org.qi4j.composite.Composite;
-import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.ibatis.dbInitializer.DBInitializerInfo;
 import org.qi4j.entity.ibatis.internal.IBatisEntityState;
 import org.qi4j.runtime.composite.CompositeContext;
@@ -40,10 +39,9 @@ public abstract class AbstractTestCase extends AbstractQi4jTest
     private static final String SCHEMA_FILE = "testDbSchema.sql";
     private static final String DATA_FILE = "testDbData.sql";
 
-    protected UnitOfWork uow;
     protected final DerbyDatabaseHandler derbyDatabaseHandler;
 
-    protected AbstractTestCase()
+    public AbstractTestCase()
     {
         derbyDatabaseHandler = new DerbyDatabaseHandler();
     }
@@ -73,13 +71,11 @@ public abstract class AbstractTestCase extends AbstractQi4jTest
         return derbyDatabaseHandler.getJDBCConnection();
     }
 
-    @Override
-    public void setUp()
-        throws Exception
+    @Override public void tearDown() throws Exception
     {
-        super.setUp();
-
-        uow = unitOfWorkFactory.newUnitOfWork();
+        if (derbyDatabaseHandler!=null)
+            derbyDatabaseHandler.shutdown();
+        super.tearDown();
     }
 
     protected IBatisEntityState newPersonEntityState( final Map<String, Object> initialValues )

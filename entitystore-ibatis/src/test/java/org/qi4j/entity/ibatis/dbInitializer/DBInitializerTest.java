@@ -16,13 +16,10 @@
  */
 package org.qi4j.entity.ibatis.dbInitializer;
 
-import java.util.Properties;
 import static junit.framework.Assert.fail;
 import org.junit.Test;
-import org.junit.Ignore;
-import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entity.ibatis.AbstractTestCase;
+import org.junit.After;
+import org.qi4j.entity.ibatis.DerbyDatabaseHandler;
 
 /**
  * {@code DBInitializerTest} test db initializer.
@@ -30,27 +27,15 @@ import org.qi4j.entity.ibatis.AbstractTestCase;
  * @author edward.yakop@gmail.com
  * @since 0.1.0
  */
-@Ignore
-public final class DBInitializerTest extends AbstractTestCase
+public final class DBInitializerTest
 {
-    public DBInitializerTest( final DBInitializerInfo dbInitializerInfo )
-        throws Exception
+    private final DerbyDatabaseHandler derbyDatabaseHandler;
+
+    public DBInitializerTest()
     {
-        this.dbInitializerInfo = dbInitializerInfo;
+        derbyDatabaseHandler = new DerbyDatabaseHandler();
     }
 
-    private DBInitializerInfo dbInitializerInfo = new DBInitializerInfo( "aURL", new Properties(), null, null );
-
-    @Test public void testValidConstructor()
-    {
-        new DBInitializer( dbInitializerInfo );
-    }
-
-    @Test( expected = IllegalArgumentException.class )
-    public void testConstructorNullArgument()
-    {
-        new DBInitializer( null );
-    }
 
     /**
      * Tests the initializer.
@@ -62,23 +47,17 @@ public final class DBInitializerTest extends AbstractTestCase
     public void testInitializer()
         throws Exception
     {
-        final DBInitializerInfo info = newDbInitializerInfo();
+        final DBInitializerConfiguration info = derbyDatabaseHandler.createDbInitializerConfigMock();
         final DBInitializer initializer = new DBInitializer( info );
-        try
-        {
-            initializer.initialize();
-        }
-        catch( Exception e )
-        {
-            e.printStackTrace();
-            fail( "Initialize db must succeed." );
-        }
-
+        initializer.initialize();
         derbyDatabaseHandler.checkDataInitialization();
     }
 
-    public void assemble( final ModuleAssembly module ) throws AssemblyException
+    @After public void tearDown()
     {
-        // Do nothing
+        if( derbyDatabaseHandler != null )
+        {
+            derbyDatabaseHandler.shutdown();
+        }
     }
 }

@@ -31,6 +31,7 @@ import static org.qi4j.composite.NullArgumentException.validateNotNull;
 import org.qi4j.composite.scope.This;
 import org.qi4j.entity.ibatis.dbInitializer.DBInitializer;
 import org.qi4j.entity.ibatis.dbInitializer.DBInitializerInfo;
+import org.qi4j.entity.ibatis.dbInitializer.DBInitializerConfiguration;
 import org.qi4j.entity.ibatis.internal.IBatisEntityState;
 import org.qi4j.service.Activatable;
 import org.qi4j.service.Configuration;
@@ -55,24 +56,24 @@ import org.qi4j.structure.Module;
 final class IBatisEntityStore
     implements EntityStore, Activatable
 {
-    private final Configuration<IBatisEntityStoreServiceInfo> serviceInfo;
-    private final Configuration<DBInitializerInfo> dbInitializerInfo;
+    private final Configuration<IBatisConfiguration> iBatisConfiguration;
+    private final Configuration<DBInitializerConfiguration> dbInitializerInfo;
 
     private SqlMapClient client;
 
     /**
      * Construct a new instance of {@code IBatisEntityStore}.
      *
-     * @param aServiceInfo       The entity store service info. This argument must not be {@code null}.
-     * @param aDBInitializerInfo The db initializer info.
+     * @param ibatisConfiguration       The entity store service info. This argument must not be {@code null}.
+     * @param dbInitializerConfiguration The db initializer info.
      * @since 0.1.0
      */
-    IBatisEntityStore( @This final Configuration<IBatisEntityStoreServiceInfo> aServiceInfo,
-                       @This( optional = true ) final Configuration<DBInitializerInfo> aDBInitializerInfo )
+    public IBatisEntityStore( @This final Configuration<IBatisConfiguration> ibatisConfiguration,
+                       @This( optional = true ) final Configuration<DBInitializerConfiguration> dbInitializerConfiguration )
     {
-        validateNotNull( "Configuration<IBatisEntityStoreServiceInfo>", aServiceInfo );
-        serviceInfo = aServiceInfo;
-        dbInitializerInfo = aDBInitializerInfo;
+        validateNotNull( "Configuration<IBatisConfiguration>", ibatisConfiguration );
+        iBatisConfiguration = ibatisConfiguration;
+        dbInitializerInfo = dbInitializerConfiguration;
 
         client = null;
     }
@@ -214,26 +215,26 @@ final class IBatisEntityStore
     {
         initializeDatabase();
 
-        final IBatisEntityStoreServiceInfo configuration = getUpdatedConfiguration();
+        final IBatisConfiguration configuration = getUpdatedConfiguration();
 
         client = newSqlMapClient( configuration );
     }
 
-    private SqlMapClient newSqlMapClient( final IBatisEntityStoreServiceInfo configuration )
+    private SqlMapClient newSqlMapClient( final IBatisConfiguration configuration )
         throws IOException
     {
         // Initialize client
-        final String configURL = configuration.getSQLMapConfigURL();
+        final String configURL = configuration.sqlMapConfigURL().get();
         final InputStream configInputStream = new URL( configURL ).openStream();
 
-        final Properties properties = configuration.getConfigProperties();
+        final Properties properties = configuration.configProperties().get();
         return buildSqlMapClient( configInputStream, properties );
     }
 
-    private IBatisEntityStoreServiceInfo getUpdatedConfiguration()
+    private IBatisConfiguration getUpdatedConfiguration()
     {
-        serviceInfo.refresh();
-        return serviceInfo.configuration();
+        iBatisConfiguration.refresh();
+        return iBatisConfiguration.configuration();
     }
 
     private void initializeDatabase()
@@ -244,7 +245,7 @@ final class IBatisEntityStore
         {
             dbInitializerInfo.refresh();
 
-            final DBInitializerInfo configuration = dbInitializerInfo.configuration();
+            final DBInitializerConfiguration configuration = dbInitializerInfo.configuration();
             final DBInitializer dbInitializer = new DBInitializer( configuration );
             dbInitializer.initialize();
         }

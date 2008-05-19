@@ -39,7 +39,7 @@ public final class DBInitializer
 {
     private static final long serialVersionUID = 1L;
 
-    private final DBInitializerInfo dBInitializerInfo;
+    private final DBInitializerConfiguration dBInitializerInfo;
 
     /**
      * Construct an instance of {@code DBInitializerInfo}.
@@ -48,7 +48,7 @@ public final class DBInitializer
      * @throws IllegalArgumentException Thrown if the specified {@code aDBInitializerInfo} argument is {@code null}.
      * @since 0.1.0
      */
-    public DBInitializer( DBInitializerInfo aDBInitializerInfo )
+    public DBInitializer( final DBInitializerConfiguration aDBInitializerInfo )
         throws IllegalArgumentException
     {
         dBInitializerInfo = aDBInitializerInfo;
@@ -62,39 +62,51 @@ public final class DBInitializer
      * @throws java.sql.SQLException Thrown if db initialization failed.
      * @throws java.io.IOException   Thrown if reading schema or data sql resources failed.
      * @since 0.1.0
-     * todo close reader, connections, handle exceptions
+     *        todo close reader, connections, handle exceptions
      */
     public final void initialize()
         throws SQLException, IOException
     {
-        String schemaURLString = dBInitializerInfo.getSchemaURL();
-        String dbDataURLString = dBInitializerInfo.getDataURL();
+        runScript( dBInitializerInfo.schemaUrl().get() );
+        runScript( dBInitializerInfo.dataUrl().get() );
+    }
 
-        // Make sure at least one of the url exists.
-        if( schemaURLString == null && dbDataURLString == null )
+    private void runScript( final String urlString )
+        throws SQLException, IOException
+    {
+        if( urlString == null )
         {
             return;
         }
-
-        Connection connection = getSqlConnection();
-        ScriptRunner runner = new ScriptRunner( connection, true, true );
-
-        // Initialize schema if exists
-        if( schemaURLString != null )
+        final Connection connection = getSqlConnection();
+        try
         {
-            URL schemaURL = new URL( schemaURLString );
-            InputStreamReader inputStreamReader = new InputStreamReader( schemaURL.openStream() );
-            BufferedReader bufferedReader = new BufferedReader( inputStreamReader );
+            final ScriptRunner runner = new ScriptRunner( connection, true, true );
+
+            final URL url = new URL( urlString );
+            final InputStreamReader inputStreamReader = new InputStreamReader( url.openStream() );
+            final BufferedReader bufferedReader = new BufferedReader( inputStreamReader );
             runner.runScript( bufferedReader );
         }
-
-        // Initialize data if exists
-        if( dbDataURLString != null )
+        finally
         {
-            URL dbDURl = new URL( dbDataURLString );
-            InputStreamReader inputStreamReader = new InputStreamReader( dbDURl.openStream() );
-            BufferedReader bufferedReader = new BufferedReader( inputStreamReader );
-            runner.runScript( bufferedReader );
+            closeConnection( connection );
+        }
+    }
+
+    private void closeConnection( final Connection connection )
+    {
+        if( connection == null )
+        {
+            return;
+        }
+        try
+        {
+            connection.close();
+        }
+        catch( SQLException sqle )
+        {
+            // ignore
         }
     }
 
@@ -108,8 +120,8 @@ public final class DBInitializer
     private Connection getSqlConnection()
         throws SQLException
     {
-        String dbURL = dBInitializerInfo.getDbURL();
-        Properties dbProperties = dBInitializerInfo.getConnectionProperties();
+        final String dbURL = dBInitializerInfo.dbUrl().get();
+        final Properties dbProperties = dBInitializerInfo.connectionProperties().get();
         return DriverManager.getConnection( dbURL, dbProperties );
     }
 }

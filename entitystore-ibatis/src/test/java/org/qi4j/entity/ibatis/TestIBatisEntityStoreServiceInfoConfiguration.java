@@ -6,16 +6,16 @@ import org.qi4j.service.Configuration;
  * @autor Michael Hunger
  * @since 18.05.2008
  */
-class TestIBatisEntityStoreServiceInfoConfiguration implements Configuration<IBatisEntityStoreServiceInfo>
+class TestIBatisEntityStoreServiceInfoConfiguration implements Configuration<IBatisConfiguration>
 {
-    private final IBatisEntityStoreServiceInfo config;
+    private IBatisConfiguration config;
 
-    public TestIBatisEntityStoreServiceInfoConfiguration( final IBatisEntityStoreServiceInfo config )
+    TestIBatisEntityStoreServiceInfoConfiguration( final IBatisConfiguration config )
     {
         this.config = config;
     }
 
-    public IBatisEntityStoreServiceInfo configuration()
+    public IBatisConfiguration configuration()
     {
         return config;
     }

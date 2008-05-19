@@ -25,6 +25,7 @@ import static java.sql.DriverManager.getConnection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.DatabaseMetaData;
 import java.util.Properties;
 import org.apache.derby.drda.NetworkServerControl;
 import static org.junit.Assert.assertEquals;
@@ -32,6 +33,11 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 import static org.junit.Assert.assertTrue;
 import org.qi4j.entity.ibatis.dbInitializer.DBInitializerInfo;
+import org.qi4j.entity.ibatis.dbInitializer.DBInitializerConfiguration;
+import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.property.Property;
+import org.jmock.Expectations;
+import org.jmock.Mockery;
 
 /**
  * @author edward.yakop@gmail.com
@@ -48,42 +54,64 @@ public class DerbyDatabaseHandler
     private static final String DATA_FILE = "testDbData.sql";
     private static final int PING_COUNT = 2;
     private static final int PING_SLEEP_MILLIS = 200;
+    private final NetworkServerControl nsc;
 
-    protected DerbyDatabaseHandler() 
+    public DerbyDatabaseHandler()
     {
-        try {
-        final Properties systemProperties = System.getProperties();
-        systemProperties.setProperty( "derby.drda.securityMechanism", "CLEAR_TEXT_PASSWORD_SECURITY" );
+        try
+        {
+            System.setProperty( "derby.drda.securityMechanism", "CLEAR_TEXT_PASSWORD_SECURITY" );
+            nsc = startServer();
+            waitForStart();
+            initDriver();
             initSchema();
-            waitUntilDerbyStarted();
-        } catch(Exception e) {
-            throw new RuntimeException( "Error initializing Derby",e);
+        }
+        catch( Exception e )
+        {
+            throw new RuntimeException( "Error initializing Derby", e );
         }
     }
 
-    protected final DBInitializerInfo newDbInitializerInfo() {
+
+    public final DBInitializerInfo newDbInitializerInfo()
+    {
         return newDbInitializerInfo( SCHEMA_FILE, DATA_FILE );
     }
+
     /**
      * Construct a new db initializer info.
      *
-     * @return a new db initializer info.
-     * @since 0.1.0
      * @param schemaFile
      * @param dataFile
+     * @return a new db initializer info.
+     * @since 0.1.0
      */
     protected final DBInitializerInfo newDbInitializerInfo( final String schemaFile, final String dataFile )
+    {
+        final Properties dbProperties = createConnectionProperties();
+        return new DBInitializerInfo( JDBC_URL, dbProperties, getUrlString( schemaFile ), getUrlString( dataFile ) );
+    }
+
+    private Properties createConnectionProperties()
     {
         final Properties dbProperties = new Properties();
         dbProperties.setProperty( "username", DERBY_USER );
         dbProperties.setProperty( "password", DERBY_PASSWORD );
-        return new DBInitializerInfo( JDBC_URL, dbProperties, getUrlString( schemaFile ), getUrlString( dataFile ));
+        return dbProperties;
+    }
+
+    public void initDbInitializerInfo( final ModuleAssembly module )
+    {
+        module.addProperty().withAccessor( DBInitializerConfiguration.class ).dbUrl().set( JDBC_URL );
+        module.addProperty().withAccessor( DBInitializerConfiguration.class ).connectionProperties().set( createConnectionProperties() );
+        module.addProperty().withAccessor( DBInitializerConfiguration.class ).schemaUrl().set( getUrlString( SCHEMA_FILE ) );
+        module.addProperty().withAccessor( DBInitializerConfiguration.class ).dataUrl().set( getUrlString( DATA_FILE ) );
     }
 
     public String getUrlString( final String file )
     {
         final URL url = getClass().getResource( file );
-        assertNotNull( "If run inside ide, make sure file "+file+" is part of project resources.", url );
+        assertNotNull( "If run inside ide, make sure file " + file + " is part of project resources.", url );
         return url.toString();
     }
 
@@ -94,25 +122,9 @@ public class DerbyDatabaseHandler
         try
         {
             final Statement statement = connection.createStatement();
-            statement.execute( "DROP SCHEMA SA" );
-            statement.execute( "CREATE SCHEMA SA" );
-
-//            // Ensure that the all test tables are removed.
-//
-//            final DatabaseMetaData data = connection.getMetaData();
-//            final ResultSet tables = data.getTables( null, null, null, new String[]{ "TABLE" } );
-//            while( tables.next() )
-//            {
-//                final String tableName = tables.getString( "TABLE_NAME" );
-//                try
-//                {
-//                    statement.execute( "DROP TABLE " + tableName );
-//                }
-//                catch( SQLException e )
-//                {
-//                    // Ignore
-//                }
-//            }
+            // executeIgnore( statement, "DROP SCHEMA SA" );
+            executeIgnore( statement, "CREATE SCHEMA SA" );
+            removeTables( statement );
         }
         finally
         {
@@ -120,6 +132,30 @@ public class DerbyDatabaseHandler
             {
                 connection.close();
             }
+        }
+    }
+
+    private void removeTables( final Statement statement ) throws SQLException
+    {
+        // Ensure that the all test tables are removed.
+        final DatabaseMetaData data = statement.getConnection().getMetaData();
+        final ResultSet tables = data.getTables( null, null, null, new String[]{ "TABLE" } );
+        while( tables.next() )
+        {
+            executeIgnore( statement, "DROP TABLE " + tables.getString( "TABLE_NAME" ) );
+        }
+
+    }
+
+    private void executeIgnore( final Statement statement, final String sql )
+    {
+        try
+        {
+            statement.execute( sql );
+        }
+        catch( SQLException e )
+        {
+            System.err.println( "Error executing statement: " + sql + " " + e.getMessage() );
         }
     }
 
@@ -136,7 +172,7 @@ public class DerbyDatabaseHandler
         }
     }
 
-    private NetworkServerControl createNetworkServerControl()
+    private NetworkServerControl startServer()
         throws Exception
     {
         final NetworkServerControl nsc = new NetworkServerControl();
@@ -144,7 +180,7 @@ public class DerbyDatabaseHandler
         nsc.start( logOuput );
         return nsc;
     }
-    
+
     /**
      * Check data initialization.
      *
@@ -194,35 +230,57 @@ public class DerbyDatabaseHandler
      * @throws InterruptedException Thrown if sleep fails.
      * @since 0.1.0
      */
-    private void waitUntilDerbyStarted()
+    private void waitForStart()
         throws Exception
     {
-        initDriver();
-        NetworkServerControl nsc = null;
-        try
+        for( int count = 0; count < PING_COUNT; count++ )
         {
-            nsc = createNetworkServerControl();
-
-            for( int count = 0; count < PING_COUNT; count++ )
+            try
             {
-                try
-                {
-                    nsc.ping();
-                    return;
-                }
-                catch( Exception e )
-                {
-                    sleep( PING_SLEEP_MILLIS );
-                }
+                nsc.ping();
+                return;
             }
-            fail( "DB is not started after waiting for [400] ms" );
+            catch( Exception e )
+            {
+                sleep( PING_SLEEP_MILLIS );
+            }
         }
-        finally
+        shutdown();
+        fail( "DB is not started after waiting for [" + PING_COUNT * PING_SLEEP_MILLIS + "] ms" );
+    }
+
+    public void shutdown()
+    {
+        if( nsc != null )
         {
-            if( nsc != null )
+            try
             {
                 nsc.shutdown();
             }
+            catch( Exception e )
+            {
+                e.printStackTrace();
+            }
         }
     }
+
+    public DBInitializerConfiguration createDbInitializerConfigMock( )
+    {
+        final Mockery context = new Mockery();
+        final DBInitializerConfiguration info = context.mock( DBInitializerConfiguration.class );
+        context.checking(
+        new Expectations() {{
+           allowing( info ).connectionProperties(); will(returnValue( createProperty("connectionProperties",createConnectionProperties())  ));
+           allowing( info ).schemaUrl(); will(returnValue( createProperty("schemaUrl",getUrlString( SCHEMA_FILE ))  ));
+           allowing( info ).dataUrl(); will(returnValue( createProperty("dataUrl",getUrlString( DATA_FILE ))));
+           allowing( info ).dbUrl(); will(returnValue( createProperty("dbUrl",JDBC_URL)  ));
+        }});
+        return info;
+    }
+
+    private <T> Property<T> createProperty( final String name,final T value )
+    {
+        return new TestProperty<T>( value, name );
+    }
+
 }

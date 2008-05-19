@@ -16,29 +16,27 @@
  */
 package org.qi4j.entity.ibatis;
 
-import java.io.Serializable;
 import java.net.URL;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.Ignore;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entity.ibatis.dbInitializer.DBInitializerInfo;
+import org.qi4j.entity.ibatis.dbInitializer.DBInitializerConfiguration;
 import org.qi4j.entity.ibatis.internal.IBatisEntityState;
+import org.qi4j.entity.memory.MemoryEntityStoreService;
+import org.qi4j.entity.UnitOfWorkCompletionException;
+import org.qi4j.entity.UnitOfWork;
 import org.qi4j.property.Property;
-import org.qi4j.service.ServiceDescriptor;
 import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.property.PropertyBinding;
 import org.qi4j.spi.property.PropertyModel;
-import org.qi4j.spi.service.provider.DefaultServiceInstanceProvider;
 import org.qi4j.spi.structure.CompositeDescriptor;
 import org.qi4j.structure.Visibility;
 
@@ -51,7 +49,7 @@ import org.qi4j.structure.Visibility;
 @Ignore
 public final class IBatisEntityStoreTest extends AbstractTestCase
 {
-    private IBatisEntityStore entityStore;
+    private IBatisEntityStoreService entityStore;
 
     public IBatisEntityStoreTest()
         throws Exception
@@ -69,54 +67,6 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
         derbyDatabaseHandler.checkDataInitialization();
     }
 
-    /**
-     * Construct a new entity store and activates it.
-     *
-     * @return A new entity store.
-     * @since 0.1.0
-     */
-    private IBatisEntityStore newAndActivateEntityStore()
-    {
-        return moduleInstance.getStructureContext().getServiceLocator().findService( IBatisEntityStore.class ).get();
-//        ServiceDescriptor descriptor = newValidServiceDescriptor();
-//        IBatisEntityStore entityStore = new IBatisEntityStore( descriptor );
-//        try
-//        {
-//            entityStore.activate();
-//        }
-//        catch( Exception e )
-//        {
-//            e.printStackTrace();
-//            fail( "Activation with valid configuration must succeed." );
-//        }
-//
-//        return entityStore;
-    }
-
-    /**
-     * Construct a new valid service descriptor.
-     *
-     * @return a new valid service descriptor.
-     * @since 0.1.0
-     */
-    private ServiceDescriptor newValidServiceDescriptor()
-    {
-        final Map<Class, Serializable> infos = new HashMap<Class, Serializable>();
-
-        final IBatisEntityStoreServiceInfo ibatisEntityStoreServiceInfo = createServiceInfo();
-
-        infos.put( IBatisEntityStoreServiceInfo.class, ibatisEntityStoreServiceInfo );
-        infos.put( DBInitializerInfo.class, newDbInitializerInfo() );
-
-        return new ServiceDescriptor( IBatisEntityStore.class, DefaultServiceInstanceProvider.class, "ibatis", Visibility.module, true, infos );
-    }
-
-    private IBatisEntityStoreServiceInfo createServiceInfo()
-    {
-
-        return new IBatisEntityStoreServiceInfo( getSqlMapConfigUrl() );
-    }
-
     private String getSqlMapConfigUrl()
     {
         final URL sqlMapConfigURL = getClass().getResource( SQL_MAP_CONFIG_XML );
@@ -130,15 +80,16 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
      */
     @Test
     public final void testNewEntityState()
-        throws SQLException
+        throws SQLException, UnitOfWorkCompletionException
     {
+        final UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         final CompositeDescriptor personCompositeDescriptor = getCompositeDescriptor( PersonComposite.class );
 
-        final IBatisEntityState state = (IBatisEntityState) entityStore.newEntityState( personCompositeDescriptor, new QualifiedIdentity( "1" ) );
+        final IBatisEntityState state = (IBatisEntityState) entityStore.newEntityState( personCompositeDescriptor, new QualifiedIdentity( "1", PersonComposite.class.getName() ) );
         assertNotNull( state );
 
         checkStateProperties( getCompositeBinding( PersonComposite.class ), state );
-
+        uow.complete();
     }
 
     private static void checkStateProperties( final CompositeBinding personBinding, final IBatisEntityState state )
@@ -185,22 +136,27 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
         throws AssemblyException
     {
         module.addComposites( PersonComposite.class );
-        module.addProperty().withAccessor( IBatisConfiguration.class ).sqlMapConfigURL().set( getSqlMapConfigUrl() );
-        // module.addProperty().withAccessor( IBatisConfiguration.class ).configProperties().set(  );
-        module.addServices( IBatisEntityStoreService.class ).instantiateOnStartup();
-/* todo
+        module.addServices( IBatisEntityStoreService.class );
+
         final ModuleAssembly config = module.getLayerAssembly().newModuleAssembly();
         config.setName( "config" );
-        config.addComposites( IBatisConfiguration.class ).visibleIn( Visibility.layer );
+        config.addComposites( IBatisConfiguration.class).visibleIn( Visibility.layer );
+        config.addComposites( DBInitializerConfiguration.class ).visibleIn( Visibility.layer );
         config.addServices( MemoryEntityStoreService.class );
         config.addProperty().withAccessor( IBatisConfiguration.class ).sqlMapConfigURL().set( getSqlMapConfigUrl() );
-*/
+        derbyDatabaseHandler.initDbInitializerInfo( config );
     }
 
     @Override
     public void setUp() throws Exception
     {
         super.setUp();
-        entityStore = moduleInstance.getStructureContext().getServiceLocator().findService( IBatisEntityStore.class ).get();
+        entityStore = getEntityStore();
+    }
+
+    private IBatisEntityStoreService getEntityStore() throws Exception
+    {
+        assertNotNull( moduleInstance );
+        return moduleInstance.getStructureContext().getServiceLocator().findService( IBatisEntityStoreService.class ).get();
     }
 }
