@@ -101,6 +101,35 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
         assertPersonEqualsInDatabase( newId, data );
     }
 
+    @Test public final void existingEntityIsDeletedFromPersistentStore()
+        throws SQLException, UnitOfWorkCompletionException
+    {
+        final UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+        final PersonComposite john = uow.find( JOHN_SMITH_ID, PersonComposite.class );
+        uow.remove( john );
+        uow.complete();
+        derbyDatabaseHandler.executeStatement( "select count(*) CNT from person where ID= '"+JOHN_SMITH_ID+"'", new DerbyDatabaseHandler.ResultSetCallback() {
+            public void row( final ResultSet rs ) throws SQLException
+            {
+                assertEquals( 0, rs.getInt( "CNT" ));
+            }
+        });
+    }
+
+    @Test public final void existingEntityIsUpdatedInPersistentStore()
+        throws SQLException, UnitOfWorkCompletionException
+    {
+        final UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+        final PersonComposite john = uow.find( JOHN_SMITH_ID, PersonComposite.class );
+        john.lastName().set( "Doe" );
+        uow.complete();
+        derbyDatabaseHandler.executeStatement( "select LAST_NAME from person where ID= '"+JOHN_SMITH_ID+"'", new DerbyDatabaseHandler.ResultSetCallback() {
+            public void row( final ResultSet rs ) throws SQLException
+            {
+                assertEquals( "Doe", rs.getString( "LAST_NAME" ));
+            }
+        });
+    }
 
     @Test public final void associationIsPersistedToDatabase()
         throws SQLException, UnitOfWorkCompletionException
