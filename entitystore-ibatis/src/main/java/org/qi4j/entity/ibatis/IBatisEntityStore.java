@@ -16,16 +16,13 @@
  */
 package org.qi4j.entity.ibatis;
 
-import com.ibatis.sqlmap.client.SqlMapClient;
-import static com.ibatis.sqlmap.client.SqlMapClientBuilder.buildSqlMapClient;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Properties;
+import java.util.Collection;
+import java.util.ArrayList;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
 import org.qi4j.composite.scope.This;
 import org.qi4j.entity.ibatis.dbInitializer.DBInitializer;
@@ -50,11 +47,10 @@ import org.qi4j.structure.Module;
  * @author edward.yakop@gmail.com
  */
 public class IBatisEntityStore
-    implements EntityStore, Activatable, StateCommitter
+    implements EntityStore, Activatable
 {
     @This private Configuration<IBatisConfiguration> iBatisConfiguration;
-
-    private SqlMapClient client;
+    private IbatisClient config;
 
     /**
      * Construct a new instance of entity state.
@@ -71,7 +67,7 @@ public class IBatisEntityStore
         validateNotNull( "aCompositeDescriptor", aCompositeDescriptor );
         validateNotNull( "anIdentity", anIdentity );
 
-        throwIfNotActive();
+        checkActivation();
 
         return new IBatisEntityState( aCompositeDescriptor, anIdentity, new HashMap<String, Object>(), 0L, NEW );
     }
@@ -82,13 +78,14 @@ public class IBatisEntityStore
      * @throws EntityStoreException Thrown if this service instance is not active.
      * @since 0.1.0
      */
-    private void throwIfNotActive()
+    private void checkActivation()
         throws EntityStoreException
     {
-        if( client == null )
+        if( config == null )
         {
-            throw new EntityStoreException( "IBatisEntityStore was not activated." );
+            throw new EntityStoreException( "IBatisEntityStore not activated." );
         }
+        config.checkActive();
     }
 
     /**
@@ -104,11 +101,10 @@ public class IBatisEntityStore
     public final EntityState getEntityState( final CompositeDescriptor aDescriptor, final QualifiedIdentity anIdentity )
         throws EntityStoreException
     {
-        throwIfNotActive();
-
-        final Map<String, Object> propertyValues = getRawData( aDescriptor, anIdentity );
-        final Long version = (Long) propertyValues.get( "VERSION" );
-        return new IBatisEntityState( aDescriptor, anIdentity, propertyValues, version, LOADED );
+        checkActivation();
+        final Map<String, Object> rawData = getRawData( aDescriptor, anIdentity );
+        final Long version = (Long) rawData.get( "VERSION" );
+        return new IBatisEntityState( aDescriptor, anIdentity, rawData, version, LOADED );
     }
 
 
@@ -126,28 +122,14 @@ public class IBatisEntityStore
     {
         validateNotNull( "anIdentity", anIdentity );
         validateNotNull( "aCompositeBinding", aDescriptor );
-        try
+        checkActivation();
+        final Map<String, Object> compositePropertyValues = config.executeLoad( anIdentity );
+        if( compositePropertyValues == null )
         {
-            final String statementId = getStatementId( anIdentity, "load" );
-            final Map<String, Object> compositePropertyValues =
-                (Map<String, Object>) client.queryForObject( statementId, anIdentity.getIdentity() );
-            if( compositePropertyValues == null )
-            {
-                throw new EntityNotFoundException( this.toString(), anIdentity.getIdentity() );
-            }
-
-            return compositePropertyValues;
-        }
-        catch( SQLException e )
-        {
-            throw new EntityStoreException( e );
+            throw new EntityNotFoundException( this.toString(), anIdentity.getIdentity() );
         }
 
-    }
-
-    private String getStatementId( final QualifiedIdentity qualifiedIdentity, final String suffix )
-    {
-        return qualifiedIdentity.getCompositeType() + "." + suffix;
+        return compositePropertyValues;
     }
 
 
@@ -155,37 +137,57 @@ public class IBatisEntityStore
         final Iterable<EntityState> newStates,
         final Iterable<EntityState> loadedStates,
         final Iterable<QualifiedIdentity> removedStates,
-        final Module aModule )
+        final Module module )
         throws EntityStoreException
     {
-        throwIfNotActive();
+        checkActivation();
 
-        startTransaction();
+        config.startTransaction();
 
         for( final EntityState state : newStates )
         {
-            executeUpdate( "insert", state.getIdentity(), getProperties( state ) );
+            config.executeUpdate( "insert", state.getIdentity(), getProperties( state ) );
         }
         for( final EntityState state : loadedStates )
         {
-            executeUpdate( "update", state.getIdentity(), getProperties( state ) );
+            config.executeUpdate( "update", state.getIdentity(), getProperties( state ) );
         }
         for( final QualifiedIdentity identity : removedStates )
         {
-            executeUpdate( "delete", identity, identity.getIdentity() );
+            config.executeUpdate( "delete", identity, identity.getIdentity() );
         }
 
-        return this;
+        return config;
     }
 
 
     private Map<String, Object> getProperties( final EntityState state )
     {
-        if( state instanceof IBatisEntityState )
+        final Map<String, Object> result = new HashMap<String, Object>();
+        for( final String propertyName : state.getPropertyNames() )
         {
-            return ( (IBatisEntityState) state ).getPropertyValues();
+            result.put( propertyName, state.getProperty( propertyName ) );
         }
-        throw new UnsupportedOperationException( "Only supported for IBatisEntityStates by now" ); // todo extract by iteration from other states
+        for( final String assocName : state.getAssociationNames() )
+        {
+            result.put( assocName, state.getAssociation( assocName ).getIdentity() );
+        }
+        for( final String manyAssocName : state.getManyAssociationNames() )
+        {
+            final Collection<QualifiedIdentity> manyAssociation = state.getManyAssociation( manyAssocName );
+            result.put( manyAssocName, stringIdentifiersOf(manyAssociation) );
+        }
+        return result;
+    }
+
+    private Collection<String> stringIdentifiersOf( final Collection<QualifiedIdentity> qualifiedIdentities )
+    {
+        final Collection<String> identifiers=new ArrayList<String>(qualifiedIdentities.size());
+        for( final QualifiedIdentity identity : qualifiedIdentities )
+        {
+            identifiers.add(identity.getIdentity());
+        }
+        return identifiers;
     }
 
     /**
@@ -206,24 +208,14 @@ public class IBatisEntityStore
      * @since 0.1.0
      */
     public final void activate()
-        throws IOException, SQLException
+        throws Exception
     {
         final IBatisConfiguration configuration = getUpdatedConfiguration();
 
         initializeDatabase( configuration );
 
-        client = newSqlMapClient( configuration );
-    }
-
-    private SqlMapClient newSqlMapClient( final IBatisConfiguration configuration )
-        throws IOException
-    {
-        // Initialize client
-        final String configURL = configuration.sqlMapConfigURL().get();
-        final InputStream configInputStream = new URL( configURL ).openStream();
-
-        final Properties properties = configuration.configProperties().get();
-        return buildSqlMapClient( configInputStream, properties );
+        config = new IbatisClient( configuration.sqlMapConfigURL().get(), configuration.configProperties().get() );
+        config.activate();
     }
 
     private IBatisConfiguration getUpdatedConfiguration()
@@ -248,59 +240,9 @@ public class IBatisEntityStore
     public final void passivate()
         throws Exception
     {
-        // clean up client
-        client = null;
-    }
-
-    private void startTransaction()
-    {
-        throwIfNotActive();
-
-        try
+        if( config != null )
         {
-            client.startTransaction();
-        }
-        catch( SQLException e )
-        {
-            throw new EntityStoreException( "Error starting transaction", e );
-        }
-    }
-
-    private int executeUpdate( final String operation, final QualifiedIdentity identity, final Object params )
-    {
-        try
-        {
-            return client.update( getStatementId( identity, operation ), params );
-        }
-        catch( SQLException e )
-        {
-            throw new EntityStoreException( "Error executing Operation " + operation + " for identity " + identity + " params " + params, e );
-        }
-    }
-
-    public void commit()
-    {
-        throwIfNotActive();
-        try
-        {
-            client.commitTransaction();
-        }
-        catch( SQLException e )
-        {
-            throw new EntityStoreException( "Error commiting transaction", e );
-        }
-    }
-
-    public void cancel()
-    {
-        throwIfNotActive();
-        try
-        {
-            client.endTransaction();
-        }
-        catch( SQLException e )
-        {
-            throw new EntityStoreException( "Error canceling transaction", e );
+            config.passivate();
         }
     }
 }

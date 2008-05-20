@@ -9,6 +9,7 @@ CREATE TABLE SA.PERSON
 CREATE TABLE SA.ACCOUNT
 (
   ID                 VARCHAR  (50)    NOT NULL,
-  NAME               VARCHAR  (10)   NOT NULL,
+  NAME               VARCHAR  (40)    NOT NULL,
+  CONTACT_ID         VARCHAR  (50)    NOT NULL,
   PRIMARY KEY (ID)
 );

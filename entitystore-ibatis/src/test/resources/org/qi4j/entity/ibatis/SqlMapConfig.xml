@@ -27,4 +27,5 @@
   </transactionManager>
 
   <sqlMap resource="org/qi4j/entity/ibatis/PersonComposite.xml"/>
+  <sqlMap resource="org/qi4j/entity/ibatis/AccountComposite.xml"/>
 </sqlMapConfig>

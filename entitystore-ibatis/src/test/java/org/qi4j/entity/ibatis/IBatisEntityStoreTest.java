@@ -31,6 +31,7 @@ import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkCompletionException;
 import org.qi4j.entity.ibatis.dbInitializer.DBInitializerConfiguration;
 import org.qi4j.entity.ibatis.entity.PersonComposite;
+import org.qi4j.entity.ibatis.entity.AccountComposite;
 import org.qi4j.entity.ibatis.test.AbstractTestCase;
 import org.qi4j.entity.ibatis.DerbyDatabaseHandler;
 import org.qi4j.entity.memory.MemoryEntityStoreService;
@@ -61,6 +62,7 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
     private static final String JOHN_SMITH_ID = "1";
 
     private IBatisEntityStoreService entityStore;
+    private static final String JOHNS_ACCOUNT = "Johns Account";
 
     @Test public void isThereDataInTheDatabaseAfterInitialization()
         throws Exception
@@ -99,6 +101,26 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
         assertPersonEqualsInDatabase( newId, data );
     }
 
+
+    @Test public final void associationIsPersistedToDatabase()
+        throws SQLException, UnitOfWorkCompletionException
+    {
+        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+        final PersonComposite john = uow.find( JOHN_SMITH_ID, PersonComposite.class );
+        assertNotNull( "john", john );
+        final AccountComposite johnsAccount = uow.newEntity(AccountComposite.class );
+        final String accountId = johnsAccount.identity().get();
+        johnsAccount.name().set( JOHNS_ACCOUNT );
+        johnsAccount.primaryContactPerson().set( john );
+        uow.complete();
+
+        uow = unitOfWorkFactory.newUnitOfWork();
+        final AccountComposite account = uow.find( accountId, AccountComposite.class );
+        assertEquals( "account name",JOHNS_ACCOUNT, account.name().get() );
+        final PersonComposite contactPerson = account.primaryContactPerson().get();
+        assertEquals( "john is contact",john, contactPerson );
+        uow.discard();
+    }
     @Test( expected = EntityStoreException.class )
     public void loadOfNonExistingEntityFails()
     {
@@ -122,7 +144,8 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
     public final void assemble( final ModuleAssembly module )
         throws AssemblyException
     {
-        module.addComposites( PersonComposite.class );
+        module.addComposites( PersonComposite.class ).setCompositeInfo( IbatisClient.class, new IbatisClient(getSqlMapConfigUrl(),null));
+        module.addComposites( AccountComposite.class ).setCompositeInfo( IbatisClient.class, new IbatisClient(getSqlMapConfigUrl(),null));
         module.addServices( UuidIdentityGeneratorService.class );
         module.addServices( IBatisEntityStoreService.class );
 

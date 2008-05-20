@@ -3,7 +3,6 @@ VALUES
 ( '1', 'John', 'Smith' ),
 ( '2', 'Jane', 'Smith' ) ;
 
-INSERT INTO SA.ACCOUNT ( ID, NAME )
+INSERT INTO SA.ACCOUNT ( ID, NAME, CONTACT_ID )
 VALUES
-( '3', 'qi4j' ),
-( '4', 'ops4j' ) ;
+( '1', 'Janes Account','2' ) ;

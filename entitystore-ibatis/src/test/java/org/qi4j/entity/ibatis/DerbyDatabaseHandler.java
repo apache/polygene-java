@@ -52,8 +52,8 @@ public class DerbyDatabaseHandler
 
     private static final String SCHEMA_FILE = "testDbSchema.sql";
     private static final String DATA_FILE = "testDbData.sql";
-    private static final int PING_COUNT = 2;
-    private static final int PING_SLEEP_MILLIS = 200;
+    private static final int PING_COUNT = 5;
+    private static final int PING_SLEEP_MILLIS = 50;
     private final NetworkServerControl nsc;
 
     public DerbyDatabaseHandler()
@@ -186,7 +186,7 @@ public class DerbyDatabaseHandler
             final ResultSet resultSet = statement.executeQuery( "SELECT COUNT(*) FROM PERSON" );
             assertTrue( resultSet.next() );
             final int numberOfRows = resultSet.getInt( 1 );
-            assertEquals( "There must be 2 rows in persons table.", PING_COUNT, numberOfRows );
+            assertEquals( "There must be 2 rows in persons table.", 2, numberOfRows );
         }
         finally
         {

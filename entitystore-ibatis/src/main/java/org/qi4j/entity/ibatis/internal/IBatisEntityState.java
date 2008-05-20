@@ -21,13 +21,17 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.lang.reflect.Type;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
 import org.qi4j.entity.ibatis.IdentifierConverter;
+import org.qi4j.spi.composite.CompositeModel;
 import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import static org.qi4j.spi.entity.EntityStatus.REMOVED;
 import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.spi.entity.association.AssociationModel;
+import org.qi4j.spi.property.PropertyModel;
 import org.qi4j.spi.structure.CompositeDescriptor;
 
 /**
@@ -54,33 +58,68 @@ public final class IBatisEntityState
     /**
      * Construct an instance of {@code IBatisEntityState}.
      *
-     * @param aDescriptor    The composite descriptor. This argument must not be {@code null}.
-     * @param anIdentity     The identity of the composite that this {@code IBatisEntityState} represents.
-     *                       This argument must not be {@code null}.
-     * @param propertyValuez The field values of this entity state. This argument must not be {@code null}.
-     * @param aVersion       The version.
-     * @param aStatus        The initial entity state status. This argument must not be {@code null}.
+     * @param aDescriptor The composite descriptor. This argument must not be {@code null}.
+     * @param anIdentity  The identity of the composite that this {@code IBatisEntityState} represents.
+     *                    This argument must not be {@code null}.
+     * @param rawData     The field values of this entity state. This argument must not be {@code null}.
+     * @param aVersion    The version.
+     * @param aStatus     The initial entity state status. This argument must not be {@code null}.
      * @throws IllegalArgumentException Thrown if one or some or all arguments are {@code null}.
      * @since 0.1.0
      */
     public IBatisEntityState(
         final CompositeDescriptor aDescriptor, final QualifiedIdentity anIdentity,
-        final Map<String, Object> propertyValuez, final Long aVersion, final EntityStatus aStatus
+        final Map<String, Object> rawData, final Long aVersion, final EntityStatus aStatus
     )
         throws IllegalArgumentException
     {
         validateNotNull( "aDescriptor", aDescriptor );
         validateNotNull( "anIdentity", anIdentity );
-        validateNotNull( "propertyValuez", propertyValuez );
+        validateNotNull( "propertyValuez", rawData );
         validateNotNull( "aStatus", aStatus );
         // TODO validateNotNull( "aVersion", aVersion );
 
         descriptor = aDescriptor;
         identity = anIdentity;
         status = aStatus;
-        propertyValues.putAll( convertKeys( propertyValuez ) );
+        mapData( aDescriptor, rawData );
         version = aVersion;
 
+    }
+
+    private void mapData( final CompositeDescriptor compositeDescriptor, final Map<String, Object> rawData )
+    {
+        final CompositeModel compositeModel = compositeDescriptor.getCompositeModel();
+        for( final PropertyModel propertyModel : compositeModel.getPropertyModels() )
+        {
+            final String qualifiedName = propertyModel.getQualifiedName();
+            final String convertedIdentifier = convertIdentifier( qualifiedName );
+            if( rawData.containsKey( convertedIdentifier ) )
+            {
+                setProperty( qualifiedName, rawData.remove( convertedIdentifier ) );
+            }
+        }
+        for( final AssociationModel associationModel : compositeModel.getAssociationModels() )
+        {
+            final String qualifiedName = associationModel.getQualifiedName();
+            final String convertedIdentifier = convertIdentifier( qualifiedName );
+            if( rawData.containsKey( convertedIdentifier ) )
+            {
+                final String associationId = (String) rawData.remove( convertedIdentifier );
+                setAssociation( qualifiedName, new QualifiedIdentity( associationId, getTypeName( associationModel ) ) );
+            }
+        }
+    }
+
+    private String getTypeName( final AssociationModel associationModel )
+    {
+        final Type associationType = associationModel.getType();
+        if( associationType instanceof Class )
+        {
+            final Class type = (Class) associationType;
+            return type.getName();
+        }
+        return associationType.toString();
     }
 
     /**
@@ -159,12 +198,13 @@ public final class IBatisEntityState
             return null;
         }
 
-        final QualifiedIdentity qualifiedIdentity = associations.get( convertIdentifier( qualifiedName ) );
+        final String convertedIdentifier = convertIdentifier( qualifiedName );
+        final QualifiedIdentity qualifiedIdentity = associations.get( convertedIdentifier );
         if( qualifiedIdentity == null )
         {
             return QualifiedIdentity.NULL; // todo mandatory
         }
-        return associations.get( qualifiedName );
+        return associations.get( convertedIdentifier );
     }
 
     public void setAssociation( final String qualifiedName, final QualifiedIdentity qualifiedIdentity )
