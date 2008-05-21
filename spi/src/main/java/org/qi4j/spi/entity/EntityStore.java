@@ -20,8 +20,7 @@ import org.qi4j.spi.structure.CompositeDescriptor;
 import org.qi4j.structure.Module;
 
 /**
- * Interface that must be implemented by store for
- * persistent state of EntityComposites.
+ * Interface that must be implemented by store for persistent state of EntityComposites.
  */
 public interface EntityStore
     extends Iterable<EntityState>
@@ -29,26 +28,27 @@ public interface EntityStore
     /**
      * Create new EntityState for a given identity.
      * <p/>
-     * This should only create the EntityState
-     * and not insert it into any database, since
-     * that should occur during the {@link #prepare}
-     * call.
+     * This should only create the EntityState and not insert it into any database, since that should occur during
+     * the {@link #prepare} call.
      *
-     * @param compositeDescriptor
-     * @param identity            the identity of the entity @throws EntityStoreException
+     * @param aDescriptor The composite descriptor. This argument must not be {@code null}.
+     * @param anIdentity  the identity of the entity
+     * @return The new entity state.
+     * @throws EntityStoreException Thrown if creational fails.
      */
-    EntityState newEntityState( CompositeDescriptor compositeDescriptor, QualifiedIdentity identity )
+    EntityState newEntityState( CompositeDescriptor aDescriptor, QualifiedIdentity anIdentity )
         throws EntityStoreException;
 
     /**
-     * Get the EntityState for a given identity
-     * and composite type.
+     * Get the EntityState for a given identity and composite type. Throws {@link EntityNotFoundException}
+     * if the entity with given {@code anIdentity} is not found.
      *
-     * @param compositeDescriptor
-     * @param identity            @return
-     * @throws EntityStoreException
+     * @param aDescriptor The composite descriptor. This argument must not be {@code null}.
+     * @param anIdentity  The entity identity. This argument must not be {@code null}.
+     * @return Entity state given the composite descriptor and identity.
+     * @throws EntityStoreException Thrown if retrieval failed.
      */
-    EntityState getEntityState( CompositeDescriptor compositeDescriptor, QualifiedIdentity identity )
+    EntityState getEntityState( CompositeDescriptor aDescriptor, QualifiedIdentity anIdentity )
         throws EntityStoreException;
 
     /**
@@ -57,13 +57,17 @@ public interface EntityStore
      * to the underlying datastore. The method returns a StateCommitter that the unit of work
      * will invoke once all EntityStore's have been prepared.
      *
-     * @param newStates
-     * @param loadedStates
-     * @param removedStates
-     * @param module
+     * @param newStates     The new states. This argument must not be {@code null}.
+     * @param loadedStates  The loaded states. This argument must not be {@code null}.
+     * @param removedStates The removed states. This argument must not be {@code null}.
+     * @param aModule       The module.
      * @return an implementation of StateCommitter
      * @throws EntityStoreException if the state could not be sent to the datastore
      */
-    StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, Iterable<QualifiedIdentity> removedStates, Module module )
+    StateCommitter prepare(
+        Iterable<EntityState> newStates,
+        Iterable<EntityState> loadedStates,
+        Iterable<QualifiedIdentity> removedStates,
+        Module aModule )
         throws EntityStoreException;
 }
