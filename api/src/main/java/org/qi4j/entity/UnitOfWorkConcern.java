@@ -31,7 +31,7 @@ import org.qi4j.composite.scope.Structure;
  * @see org.qi4j.entity.UnitOfWorkDiscardOn
  * @since 0.2.0
  */
-@AppliesTo( { UnitOfWorkPropagation.class } )
+@AppliesTo( UnitOfWorkPropagation.class )
 public class UnitOfWorkConcern extends ConcernOf<InvocationHandler>
     implements InvocationHandler
 {
@@ -60,34 +60,22 @@ public class UnitOfWorkConcern extends ConcernOf<InvocationHandler>
         {
         case REQUIRED:
         {
-            boolean wasNull = false;
             if( currentUnitOfWork == null )
             {
-                wasNull = true;
                 currentUnitOfWork = uowf.newUnitOfWork();
-            }
 
-            try
-            {
-                Object result = next.invoke( proxy, method, args );
-
-                // Only complete if this concern create a new unit of work.
-                if( wasNull )
+                try
                 {
+                    Object result = next.invoke( proxy, method, args );
                     currentUnitOfWork.complete();
+                    return result;
                 }
-
-                return result;
-            }
-            catch( Throwable throwable )
-            {
-                // Discard only if this concern create a unit of work
-                if( wasNull )
+                catch( Throwable throwable )
                 {
+                    // Discard only if this concern create a unit of work
                     discardIfRequired( method, currentUnitOfWork, throwable );
+                    throw throwable;
                 }
-
-                throw throwable;
             }
         }
 
