@@ -26,7 +26,7 @@ import static org.qi4j.property.ComputedPropertyInstance.*;
 public final class GenericPropertyInfo
     implements PropertyInfo
 {
-    private HashMap<Class, Serializable> infos;
+    private HashMap<Class<?>, Serializable> infos;
     private final String qualifiedName;
     private final String name;
     private final Type type;
@@ -36,7 +36,7 @@ public final class GenericPropertyInfo
         this.qualifiedName = getQualifiedName( accessor );
         this.name = getName( qualifiedName );
         this.type = getPropertyType( accessor );
-        infos = new HashMap<Class, Serializable>();
+        infos = new HashMap<Class<?>, Serializable>();
     }
 
     public <T> T metaInfo( Class<T> infoType )
@@ -60,11 +60,12 @@ public final class GenericPropertyInfo
         return type;
     }
 
+    @SuppressWarnings("unchecked")
     public <T extends Serializable> void setPropertyInfo( Class<T> infoType, T instance )
     {
         synchronized( infos )
         {
-            HashMap<Class, Serializable> clone = (HashMap<Class, Serializable>) infos.clone();
+            HashMap<Class<?>, Serializable> clone = (HashMap<Class<?>, Serializable>) infos.clone();
             clone.put( infoType, instance );
             infos = clone;
         }

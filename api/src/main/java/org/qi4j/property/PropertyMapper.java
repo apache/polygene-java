@@ -52,6 +52,7 @@ public class PropertyMapper
                     value = new Double( value.toString() );
                 }
 
+                @SuppressWarnings("unchecked")
                 Property<Object> property = (Property<Object>) propertyMethod.invoke( composite );
                 property.set( value );
             }
@@ -100,12 +101,14 @@ public class PropertyMapper
     {
         return new Properties()
         {
+            private static final long serialVersionUID = 3550125427530538865L;
+
             @Override public Object get( Object o )
             {
                 try
                 {
                     Method propertyMethod = composite.getClass().getMethod( o.toString() );
-                    Property property = (Property) propertyMethod.invoke( composite );
+                    Property<?> property = (Property<?>) propertyMethod.invoke( composite );
                     return property.get();
                 }
                 catch( NoSuchMethodException e )

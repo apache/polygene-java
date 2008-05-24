@@ -56,7 +56,7 @@ public abstract class AbstractPropertyInstance<T>
         return className + ":" + accessor.getName();
     }
 
-    public static String getQualifiedName( Class declaringClass, String name )
+    public static String getQualifiedName( Class<?> declaringClass, String name )
     {
         String className = declaringClass.getName();
         className = className.replace( '$', '&' );
@@ -79,7 +79,7 @@ public abstract class AbstractPropertyInstance<T>
             }
         }
 
-        Type[] interfaces = ( (Class) methodReturnType ).getInterfaces();
+        Type[] interfaces = ( (Class<?>) methodReturnType ).getInterfaces();
         for( Type anInterface : interfaces )
         {
             Type propertyType = getPropertyType( anInterface );
@@ -144,7 +144,8 @@ public abstract class AbstractPropertyInstance<T>
      * @return Property info given {@code anInfoType} argument.
      * @since 0.1.0
      */
-    public final <T> T metaInfo( Class<T> anInfoType )
+    // Was it a mistake to have another T here? (I think so...)
+    public final <V> V metaInfo( Class<V> anInfoType )
     {
         return propertyInfo.metaInfo( anInfoType );
     }
@@ -197,7 +198,7 @@ public abstract class AbstractPropertyInstance<T>
             return false;
         }
 
-        Property that = (Property) o;
+        Property<?> that = (Property<?>) o;
 
         if( !type().equals( that.type() ) )
         {

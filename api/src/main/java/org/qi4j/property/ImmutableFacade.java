@@ -43,7 +43,8 @@ public class ImmutableFacade<T>
     }
 
     // PropertyInfo
-    public <T> T metaInfo( Class<T> infoType )
+    // I think that using T again here is a mistake...
+    public <V> V metaInfo( Class<V> infoType )
     {
         return target.metaInfo( infoType );
     }
@@ -80,7 +81,7 @@ public class ImmutableFacade<T>
             return false;
         }
 
-        ImmutableFacade that = (ImmutableFacade) o;
+        ImmutableFacade<?> that = (ImmutableFacade<?>) o;
 
         if( !target.equals( that.target ) )
         {
