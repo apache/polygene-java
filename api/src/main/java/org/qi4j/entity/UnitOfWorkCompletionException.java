@@ -20,6 +20,8 @@ package org.qi4j.entity;
  */
 public class UnitOfWorkCompletionException extends Exception
 {
+    private static final long serialVersionUID = 6531642131384516904L;
+
     public UnitOfWorkCompletionException()
     {
     }

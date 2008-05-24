@@ -23,8 +23,10 @@ import java.util.Set;
 public final class LoadingPolicy
     implements Serializable
 {
+    private static final long serialVersionUID = -4845530533299793091L;
+
     private Set<Class<? extends EntityComposite>> loadCompositeTypes;
-    private Set<Class> loadMixinTypes;
+    private Set<Class<?>> loadMixinTypes;
     private Set<String> loadProperties;
     private boolean recording;
 
@@ -33,7 +35,7 @@ public final class LoadingPolicy
         return loadCompositeTypes;
     }
 
-    public Set<Class> loadMixinTypes()
+    public Set<Class<?>> loadMixinTypes()
     {
         return loadMixinTypes;
     }

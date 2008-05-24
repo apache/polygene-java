@@ -19,6 +19,8 @@ package org.qi4j.entity;
  */
 public class ConcurrentEntityModificationException extends UnitOfWorkCompletionException
 {
+    private static final long serialVersionUID = 3872723845064767689L;
+
     private Iterable<EntityComposite> alreadyModifiedEntities;
 
     public ConcurrentEntityModificationException( Iterable<EntityComposite> concurrentlyModifiedEntities )

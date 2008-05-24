@@ -24,10 +24,12 @@ package org.qi4j.entity;
 public class EntityCompositeAlreadyExistsException
     extends UnitOfWorkException
 {
-    private String identity;
-    private Class compositeType;
+    private static final long serialVersionUID = -7297710939536508481L;
 
-    public EntityCompositeAlreadyExistsException( String identity, Class compositeType )
+    private String identity;
+    private Class<?> compositeType;
+
+    public EntityCompositeAlreadyExistsException( String identity, Class<?> compositeType )
     {
         super( "EntityComposite (" + identity + " of type " + compositeType.getName() + ") already exists." );
         this.identity = identity;
@@ -39,7 +41,7 @@ public class EntityCompositeAlreadyExistsException
         return identity;
     }
 
-    public Class compositeType()
+    public Class<?> compositeType()
     {
         return compositeType;
     }

@@ -30,7 +30,6 @@ public class AssociationMixin
 {
     @AssociationField State associations;
 
-    @SuppressWarnings( "unchecked" )
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
     {
         return associations.getAssociation( method );
@@ -39,7 +38,7 @@ public class AssociationMixin
     public static class AssocationFilter
         implements AppliesToFilter
     {
-        public boolean appliesTo( Method method, Class mixin, Class compositeType, Class modifierClass )
+        public boolean appliesTo( Method method, Class<?> mixin, Class<?> compositeType, Class<?> modifierClass )
         {
             return AbstractAssociation.class.isAssignableFrom( method.getReturnType() );
         }

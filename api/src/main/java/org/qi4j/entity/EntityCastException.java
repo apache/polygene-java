@@ -21,6 +21,8 @@ package org.qi4j.entity;
  */
 public class EntityCastException extends RuntimeException
 {
+    private static final long serialVersionUID = 6963551305072348217L;
+
     public EntityCastException( String message )
     {
         super( message );

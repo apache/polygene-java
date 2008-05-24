@@ -35,7 +35,7 @@ import org.qi4j.composite.scope.Structure;
 public class UnitOfWorkConcern extends ConcernOf<InvocationHandler>
     implements InvocationHandler
 {
-    private static final Class[] DEFAULT_DISCARD_CLASSES = new Class[]{ Throwable.class };
+    private static final Class<?>[] DEFAULT_DISCARD_CLASSES = new Class[]{ Throwable.class };
 
     @Structure UnitOfWorkFactory uowf;
     @Invocation UnitOfWorkPropagation propagation;
@@ -118,7 +118,7 @@ public class UnitOfWorkConcern extends ConcernOf<InvocationHandler>
     private void discardIfRequired( Method aMethod, UnitOfWork aUnitOfWork, Throwable aThrowable )
     {
         UnitOfWorkDiscardOn discardPolicy = aMethod.getAnnotation( UnitOfWorkDiscardOn.class );
-        Class[] discardClasses;
+        Class<?>[] discardClasses;
         if( discardPolicy != null )
         {
             discardClasses = discardPolicy.value();
@@ -129,7 +129,7 @@ public class UnitOfWorkConcern extends ConcernOf<InvocationHandler>
         }
 
         Class<? extends Throwable> aThrowableClass = aThrowable.getClass();
-        for( Class discardClass : discardClasses )
+        for( Class<?> discardClass : discardClasses )
         {
             if( discardClass.isAssignableFrom( aThrowableClass ) )
             {

@@ -18,6 +18,7 @@ package org.qi4j.entity;
 
 public class UnitOfWorkException extends RuntimeException
 {
+    private static final long serialVersionUID = -8544178439804058558L;
 
     public UnitOfWorkException()
     {

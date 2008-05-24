@@ -19,15 +19,15 @@ package org.qi4j.entity;
 import org.qi4j.composite.Composite;
 
 /**
- * Interface that all Entities implements. It contains methods
- * which are specific for Entities.
+ * Interface that all Entities implement. It contains methods
+ * that are specific for Entities.
  */
 public interface Entity
 {
     /**
      * Cast the current object to the given interface.
      * <p/>
-     * The returned object uses the current object which provides mixins
+     * The returned object uses the current object, which provides mixins
      * that should be reused for this new object.
      *
      * @param anObjectType an interface that describes the object to be created
@@ -42,7 +42,7 @@ public interface Entity
      * @param anObjectType The object type we want to check the assignability to for this object.
      * @return true if a cast() is possible of this object to the provided object type.
      */
-    boolean isInstance( Class anObjectType );
+    boolean isInstance( Class<?> anObjectType );
 
     boolean isReference();
 }

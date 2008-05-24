@@ -14,11 +14,12 @@
 package org.qi4j.entity;
 
 import org.qi4j.composite.InvalidApplicationException;
-import org.qi4j.composite.Composite;
 import org.qi4j.structure.Module;
 
 public class EntityNotRegisteredException extends InvalidApplicationException
 {
+    private static final long serialVersionUID = 7185723686654157891L;
+
     private Class<? extends EntityComposite> entityType;
     private Module module;
 
