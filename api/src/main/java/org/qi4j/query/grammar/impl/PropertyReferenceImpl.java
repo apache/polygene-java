@@ -30,8 +30,8 @@ import org.qi4j.query.grammar.PropertyReference;
  * @author Alin Dreghiciu
  * @since March 28, 2008
  */
-public final class PropertyReferenceImpl
-    implements PropertyReference
+public final class PropertyReferenceImpl<T>
+    implements PropertyReference<T>
 {
 
     /**
@@ -41,7 +41,7 @@ public final class PropertyReferenceImpl
     /**
      * Interface that declared the property.
      */
-    private final Class declaringType;
+    private final Class<?> declaringType;
     /**
      * Property accessor method.
      */
@@ -49,7 +49,7 @@ public final class PropertyReferenceImpl
     /**
      * Property type.
      */
-    private final Class type;
+    private final Class<T> type;
     /**
      * Traversed association.
      */
@@ -71,6 +71,7 @@ public final class PropertyReferenceImpl
      * @param accessor  method that acts as property
      * @param traversed traversed association
      */
+    @SuppressWarnings("unchecked")
     public PropertyReferenceImpl( final Method accessor,
                                   final AssociationReference traversed )
     {
@@ -87,7 +88,7 @@ public final class PropertyReferenceImpl
         {
             throw new UnsupportedOperationException( "Unsupported property type:" + propertyTypeAsType );
         }
-        type = (Class) propertyTypeAsType;
+        type = (Class<T>) propertyTypeAsType;
         this.traversed = traversed;
     }
 
@@ -102,7 +103,7 @@ public final class PropertyReferenceImpl
     /**
      * @see PropertyReference#propertyDeclaringType()
      */
-    public Class propertyDeclaringType()
+    public Class<?> propertyDeclaringType()
     {
         return declaringType;
     }
@@ -118,7 +119,7 @@ public final class PropertyReferenceImpl
     /**
      * @see org.qi4j.query.grammar.PropertyReference#propertyType()
      */
-    public Class propertyType()
+    public Class<T> propertyType()
     {
         return type;
     }

@@ -32,7 +32,7 @@ public interface OrderBy
      *
      * @return property reference; cannot be null
      */
-    PropertyReference propertyReference();
+    PropertyReference<?> propertyReference();
 
     /**
      * Getter.

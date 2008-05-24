@@ -40,7 +40,7 @@ public final class AssociationReferenceImpl
     /**
      * Interface that declared the association.
      */
-    private final Class declaringType;
+    private final Class<?> declaringType;
     /**
      * Association accessor method.
      */
@@ -48,7 +48,7 @@ public final class AssociationReferenceImpl
     /**
      * Association type.
      */
-    private final Class type;
+    private final Class<?> type;
     /**
      * Traversed association.
      */
@@ -87,7 +87,7 @@ public final class AssociationReferenceImpl
         {
             throw new UnsupportedOperationException( "Unsupported association type:" + associationTypeAsType );
         }
-        type = (Class) associationTypeAsType;
+        type = (Class<?>) associationTypeAsType;
         this.traversed = traversed;
     }
 
@@ -102,7 +102,7 @@ public final class AssociationReferenceImpl
     /**
      * @see AssociationReference#associationDeclaringType()
      */
-    public Class associationDeclaringType()
+    public Class<?> associationDeclaringType()
     {
         return declaringType;
     }
@@ -118,7 +118,7 @@ public final class AssociationReferenceImpl
     /**
      * @see AssociationReference#associationType()
      */
-    public Class associationType()
+    public Class<?> associationType()
     {
         return type;
     }

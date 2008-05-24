@@ -38,7 +38,7 @@ public interface PropertyReference<T>
      *
      * @return the type of property that declared the property
      */
-    Class propertyDeclaringType();
+    Class<?> propertyDeclaringType();
 
     /**
      * Get the accessor method for the property.

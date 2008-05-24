@@ -34,7 +34,7 @@ public final class OrderByImpl
     /**
      * Order.
      */
-    private final PropertyReference propertyReference;
+    private final PropertyReference<?> propertyReference;
     /**
      * Direction.
      */
@@ -46,7 +46,7 @@ public final class OrderByImpl
      * @param propertyReference property that determines the order; cannot be null
      * @throws IllegalArgumentException - If property is null
      */
-    public OrderByImpl( final PropertyReference propertyReference )
+    public OrderByImpl( final PropertyReference<?> propertyReference )
     {
         this( propertyReference, null );
     }
@@ -58,7 +58,7 @@ public final class OrderByImpl
      * @param order             direction
      * @throws IllegalArgumentException - If property is null
      */
-    public OrderByImpl( final PropertyReference propertyReference,
+    public OrderByImpl( final PropertyReference<?> propertyReference,
                         final Order order )
     {
         if( propertyReference == null )
@@ -74,7 +74,7 @@ public final class OrderByImpl
      *
      * @return property; cannot be null
      */
-    public PropertyReference propertyReference()
+    public PropertyReference<?> propertyReference()
     {
         return propertyReference;
     }

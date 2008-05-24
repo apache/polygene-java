@@ -38,7 +38,7 @@ public interface AssociationReference
      *
      * @return the type of property that declared the association
      */
-    Class associationDeclaringType();
+    Class<?> associationDeclaringType();
 
     /**
      * Get the accessor method for the association.
@@ -52,7 +52,7 @@ public interface AssociationReference
      *
      * @return the association type
      */
-    Class associationType();
+    Class<?> associationType();
 
     /**
      * Gets the traversed association used to get to this association or null if there was no traversal involved.
