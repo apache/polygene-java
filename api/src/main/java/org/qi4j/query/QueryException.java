@@ -15,16 +15,18 @@ package org.qi4j.query;
 
 public abstract class QueryException extends RuntimeException
 {
+    private static final long serialVersionUID = -3602596752342902060L;
+
     public QueryException()
     {
     }
 
-    public QueryException( String message )
+    public QueryException( final String message )
     {
         super( message );
     }
 
-    public QueryException( String message, Throwable cause )
+    public QueryException( final String message, final Throwable cause )
     {
         super( message, cause );
     }

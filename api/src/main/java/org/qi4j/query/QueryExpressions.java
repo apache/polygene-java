@@ -113,7 +113,7 @@ public final class QueryExpressions
      * @return an {@link org.qi4j.query.grammar.impl.AssociationIsNullPredicateImpl} expression
      * @throws IllegalArgumentException - If association is null
      */
-    public static AssociationIsNullPredicate isNull( final Association association )
+    public static AssociationIsNullPredicate isNull( final Association<?> association )
     {
         return new AssociationIsNullPredicateImpl( asAssociationExpression( association ) );
     }
@@ -137,7 +137,7 @@ public final class QueryExpressions
      * @return an {@link org.qi4j.query.grammar.impl.AssociationIsNotNullPredicateImpl} expression
      * @throws IllegalArgumentException - If association is null
      */
-    public static AssociationIsNotNullPredicate isNotNull( final Association association )
+    public static AssociationIsNotNullPredicate isNotNull( final Association<?> association )
     {
         return new AssociationIsNotNullPredicateImpl( asAssociationExpression( association ) );
     }
@@ -421,7 +421,7 @@ public final class QueryExpressions
      * @return adapted association expression
      * @throws IllegalArgumentException - If association is null or is not an association expression
      */
-    private static AssociationReference asAssociationExpression( final Association association )
+    private static AssociationReference asAssociationExpression( final Association<?> association )
     {
         if( association == null )
         {

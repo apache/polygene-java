@@ -16,10 +16,12 @@ package org.qi4j.query;
 /** This Exception is thrown in <code>QueryBuilderFactory.newQueryBuilder()</code> method if
  * no indexing subsystem has been declared in the assembly.
  */
-public class MissingIndexingSystemException extends QueryException
+public final class MissingIndexingSystemException extends QueryException
 {
+    private static final long serialVersionUID = 5147421865890379209L;
+
     public MissingIndexingSystemException()
     {
-        super("No QueryService has been declared in the assembly of the application.");
+        super( "No QueryService has been declared in the assembly of the application." );
     }
 }
