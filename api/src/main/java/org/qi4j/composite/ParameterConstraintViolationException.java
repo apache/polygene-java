@@ -43,6 +43,8 @@ import org.qi4j.service.ServiceComposite;
  */
 public class ParameterConstraintViolationException extends ConstraintViolationException
 {
+    private static final long serialVersionUID = -7526075395778399932L;
+
     private String instanceName;
     private String compositeType;
     private boolean isEntity;
@@ -59,7 +61,7 @@ public class ParameterConstraintViolationException extends ConstraintViolationEx
     }
 
     /**
-     * Creates localized messages of all the constraint violations that has occured.
+     * Creates localized messages of all the constraint violations that have occurred.
      * <p/>
      * The key &nbsp;"<code>Qi4j_ConstraintViolation_<i><strong>CompositeType</strong></code></i>" will be used to lookup the text formatting
      * pattern from the ResourceBundle, where <strong><code><i>CompositeType</i></code></strong> is the

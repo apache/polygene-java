@@ -35,7 +35,7 @@ public final class NoopMixin
     public Object invoke( Object object, Method method, Object[] args )
         throws Throwable
     {
-        Class retType = method.getReturnType();
+        Class<?> retType = method.getReturnType();
         if( !retType.isPrimitive() )
         {
             return null;

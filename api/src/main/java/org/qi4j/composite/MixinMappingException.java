@@ -23,6 +23,8 @@ package org.qi4j.composite;
  */
 public class MixinMappingException extends RuntimeException
 {
+    private static final long serialVersionUID = 6843167709252705294L;
+
     public MixinMappingException( String message )
     {
         super( message );

@@ -33,5 +33,5 @@ import java.lang.annotation.Target;
 @Documented
 public @interface SideEffects
 {
-    Class[] value();
+    Class<?>[] value();
 }

@@ -22,6 +22,8 @@ package org.qi4j.composite;
  */
 public class NullArgumentException extends IllegalArgumentException
 {
+    private static final long serialVersionUID = 4815431779868729780L;
+
     private NullArgumentException( String message )
     {
         super( message );

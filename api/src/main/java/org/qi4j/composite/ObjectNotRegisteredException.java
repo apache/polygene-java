@@ -17,6 +17,8 @@ import org.qi4j.structure.Module;
 
 public class ObjectNotRegisteredException extends InvalidApplicationException
 {
+    private static final long serialVersionUID = -1121690536365682511L;
+
     private Class<?> objectType;
     private Module module;
 

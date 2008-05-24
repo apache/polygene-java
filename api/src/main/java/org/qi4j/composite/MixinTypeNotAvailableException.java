@@ -23,22 +23,24 @@ package org.qi4j.composite;
  */
 public class MixinTypeNotAvailableException extends MixinMappingException
 {
-    private final Class mixinType;
+    private static final long serialVersionUID = 6664141678759594339L;
+
+    private final Class<?> mixinType;
     private final String moduleModelName;
 
-    public MixinTypeNotAvailableException( Class mixinType )
+    public MixinTypeNotAvailableException( Class<?> mixinType )
     {
         this( mixinType, null );
     }
 
-    public MixinTypeNotAvailableException( Class mixinType, String moduleModelName )
+    public MixinTypeNotAvailableException( Class<?> mixinType, String moduleModelName )
     {
         super( "No visible CompositeType implements MixinType:" + mixinType.getName() );
         this.mixinType = mixinType;
         this.moduleModelName = moduleModelName;
     }
 
-    public Class mixinType()
+    public Class<?> mixinType()
     {
         return mixinType;
     }
