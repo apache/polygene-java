@@ -17,6 +17,10 @@
  */
 package org.qi4j.entity.index.rdf;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
@@ -71,44 +75,85 @@ public class RdfQueryTest
         assembler.getServiceLocator().findService( RdfIndexerExporterComposite.class ).get().toRDF( System.out );
     }
 
+    private static void verifyUnorderedResults( final Iterable<? extends Nameable> results,
+                                                final String... names )
+    {
+        final List<String> expected = new ArrayList<String>( Arrays.asList( names ) );
+
+        for( Nameable entity : results )
+        {
+            assertTrue( entity.name().get() + " returned but not expected",
+                        expected.remove( entity.name().get() )
+            );
+        }
+        for( String notReturned : expected )
+        {
+            fail( notReturned + " was expected but not returned" );
+        }
+
+    }
+
+    private static void verifyOrderedResults( final Iterable<? extends Nameable> results,
+                                              final String... names )
+    {
+        final List<String> expected = new ArrayList<String>( Arrays.asList( names ) );
+
+        for( Nameable entity : results )
+        {
+            String firstExpected = null;
+            if( expected.size() > 0 )
+            {
+                firstExpected = expected.get( 0 );
+            }
+            if( firstExpected == null )
+            {
+                fail( entity.name().get() + " returned but not expected" );
+            }
+            else if( !firstExpected.equals( entity.name().get() ) )
+            {
+                fail( entity.name().get() + " is not in the expected order" );
+            }
+            expected.remove( 0 );
+        }
+        for( String notReturned : expected )
+        {
+            fail( notReturned + " was expected but not returned" );
+        }
+
+    }
+
     @Test
     public void script01() throws EntityFinderException
     {
-        QueryBuilder<PersonComposite> qb = qbf.newQueryBuilder( PersonComposite.class );
-        // should return all persons (Joe, Ann, Jack Doe)
-        Query<PersonComposite> query = qb.newQuery();
-        for( PersonComposite entity : query )
-        {
-            System.out.println( "Result: " + entity.name() );
-        }
+        final QueryBuilder<PersonComposite> qb = qbf.newQueryBuilder( PersonComposite.class );
+        final Query<PersonComposite> query = qb.newQuery();
+        verifyUnorderedResults( query, "Joe Doe", "Ann Doe", "Jack Doe" );
     }
 
     @Test
     public void script02() throws EntityFinderException
     {
-        QueryBuilder<Domain> qb = qbf.newQueryBuilder( Domain.class );
-        Nameable nameable = templateFor( Nameable.class );
+        final QueryBuilder<Domain> qb = qbf.newQueryBuilder( Domain.class );
+        final Nameable nameable = templateFor( Nameable.class );
         qb.where(
             eq( nameable.name(), "Gaming" )
         );
-        // should return Gaming domain
-        Query<Domain> query = qb.newQuery();
-        for( Domain entity : query )
-        {
-            System.out.println( "Result: " + entity.name() );
-        }
+        final Query<Domain> query = qb.newQuery();
+        verifyUnorderedResults( query, "Gaming" );
     }
 
     @Test
     public void script03() throws EntityFinderException
     {
         QueryBuilder<Nameable> qb = qbf.newQueryBuilder( Nameable.class );
-        // should return all entities
         Query<Nameable> query = qb.newQuery();
-        for( Nameable entity : query )
-        {
-            System.out.println( "Result: " + entity.name() );
-        }
+        verifyUnorderedResults(
+            query,
+            "Joe Doe", "Ann Doe", "Jack Doe",
+            "Penang", "Kuala Lumpur",
+            "Cooking", "Gaming", "Programming", "Cars",
+            "Felix"
+        );
     }
 
     @Test
@@ -116,15 +161,11 @@ public class RdfQueryTest
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
-        // should return Joe and Ann Doe
         qb.where(
             eq( person.placeOfBirth().get().name(), "Kuala Lumpur" )
         );
         Query<Person> query = qb.newQuery();
-        for( Nameable entity : query )
-        {
-            System.out.println( "Result: " + entity.name() );
-        }
+        verifyUnorderedResults( query, "Joe Doe", "Ann Doe" );
     }
 
     @Test
@@ -132,15 +173,11 @@ public class RdfQueryTest
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
-        // should return Joe Doe
         qb.where(
             eq( person.mother().get().placeOfBirth().get().name(), "Kuala Lumpur" )
         );
         Query<Person> query = qb.newQuery();
-        for( Nameable entity : query )
-        {
-            System.out.println( "Result: " + entity.name() );
-        }
+        verifyUnorderedResults( query, "Joe Doe" );
     }
 
     @Test
@@ -148,15 +185,11 @@ public class RdfQueryTest
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
-        // should return Joe and Ann Doe
         qb.where(
             ge( person.yearOfBirth(), 1973 )
         );
         Query<Person> query = qb.newQuery();
-        for( Nameable entity : query )
-        {
-            System.out.println( "Result: " + entity.name() );
-        }
+        verifyUnorderedResults( query, "Joe Doe", "Ann Doe" );
     }
 
     @Test
@@ -164,7 +197,6 @@ public class RdfQueryTest
     {
         QueryBuilder<Nameable> qb = qbf.newQueryBuilder( Nameable.class );
         Person person = templateFor( Person.class );
-        // should return Jack Doe
         qb.where(
             and(
                 ge( person.yearOfBirth(), 1900 ),
@@ -172,10 +204,7 @@ public class RdfQueryTest
             )
         );
         Query<Nameable> query = qb.newQuery();
-        for( Nameable entity : query )
-        {
-            System.out.println( "Result: " + entity.name() );
-        }
+        verifyUnorderedResults( query, "Jack Doe" );
     }
 
     @Test
@@ -183,7 +212,6 @@ public class RdfQueryTest
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
-        // should return Jack and Ann Doe
         qb.where(
             or(
                 eq( person.yearOfBirth(), 1970 ),
@@ -191,10 +219,7 @@ public class RdfQueryTest
             )
         );
         Query<Person> query = qb.newQuery();
-        for( Nameable entity : query )
-        {
-            System.out.println( "Result: " + entity.name() );
-        }
+        verifyUnorderedResults( query, "Jack Doe", "Ann Doe" );
     }
 
     @Test
@@ -202,7 +227,6 @@ public class RdfQueryTest
     {
         QueryBuilder<Female> qb = qbf.newQueryBuilder( Female.class );
         Person person = templateFor( Person.class );
-        // should return Ann Doe
         qb.where(
             or(
                 eq( person.yearOfBirth(), 1970 ),
@@ -210,10 +234,7 @@ public class RdfQueryTest
             )
         );
         Query<Female> query = qb.newQuery();
-        for( Nameable entity : query )
-        {
-            System.out.println( "Result: " + entity.name() );
-        }
+        verifyUnorderedResults( query, "Ann Doe" );
     }
 
     @Test
@@ -221,17 +242,13 @@ public class RdfQueryTest
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
-        // should return Joe and Jack Doe
         qb.where(
             not(
                 eq( person.yearOfBirth(), 1975 )
             )
         );
         Query<Person> query = qb.newQuery();
-        for( Nameable entity : query )
-        {
-            System.out.println( "Result: " + entity.name() );
-        }
+        verifyUnorderedResults( query, "Jack Doe", "Joe Doe" );
     }
 
     @Test
@@ -239,15 +256,11 @@ public class RdfQueryTest
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
-        // should return Joe Doe
         qb.where(
             isNotNull( person.email() )
         );
         Query<Person> query = qb.newQuery();
-        for( Nameable entity : query )
-        {
-            System.out.println( "Result: " + entity.name() );
-        }
+        verifyUnorderedResults( query, "Joe Doe" );
     }
 
     @Test
@@ -255,15 +268,11 @@ public class RdfQueryTest
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
-        // should return Ann and Jack Doe
         qb.where(
             isNull( person.email() )
         );
         Query<Person> query = qb.newQuery();
-        for( Nameable entity : query )
-        {
-            System.out.println( "Result: " + entity.name() );
-        }
+        verifyUnorderedResults( query, "Ann Doe", "Jack Doe" );
     }
 
     @Test
@@ -271,15 +280,11 @@ public class RdfQueryTest
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         Male person = templateFor( Male.class );
-        // should return Jack Doe
         qb.where(
             isNotNull( person.wife() )
         );
         Query<Person> query = qb.newQuery();
-        for( Nameable entity : query )
-        {
-            System.out.println( "Result: " + entity.name() );
-        }
+        verifyUnorderedResults( query, "Jack Doe" );
     }
 
     @Test
@@ -287,15 +292,11 @@ public class RdfQueryTest
     {
         QueryBuilder<Male> qb = qbf.newQueryBuilder( Male.class );
         Male person = templateFor( Male.class );
-        // should return Joe Doe
         qb.where(
             isNull( person.wife() )
         );
         Query<Male> query = qb.newQuery();
-        for( Nameable entity : query )
-        {
-            System.out.println( "Result: " + entity.name() );
-        }
+        verifyUnorderedResults( query, "Joe Doe" );
     }
 
     @Test
@@ -303,15 +304,11 @@ public class RdfQueryTest
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         Male person = templateFor( Male.class );
-        // should return Ann and Joe Doe
         qb.where(
             isNull( person.wife() )
         );
         Query<Person> query = qb.newQuery();
-        for( Nameable entity : query )
-        {
-            System.out.println( "Result: " + entity.name() );
-        }
+        verifyUnorderedResults( query, "Joe Doe", "Ann Doe" );
     }
 
     @Test
@@ -319,26 +316,30 @@ public class RdfQueryTest
     {
         QueryBuilder<Nameable> qb = qbf.newQueryBuilder( Nameable.class );
         // should return only 2 entities
+        Nameable nameable = templateFor( Nameable.class );
         Query<Nameable> query = qb.newQuery();
+        query.orderBy( orderBy( nameable.name() ) );
         query.maxResults( 2 );
-        for( Nameable entity : query )
-        {
-            System.out.println( "Result: " + entity.name() );
-        }
+        verifyOrderedResults(
+            query,
+            "Ann Doe", "Cars"
+        );
     }
 
     @Test
     public void script17() throws EntityFinderException
     {
         QueryBuilder<Nameable> qb = qbf.newQueryBuilder( Nameable.class );
-        // should return only 3 entities starting with third one
+        // should return only 3 entities starting with forth one
+        Nameable nameable = templateFor( Nameable.class );
         Query<Nameable> query = qb.newQuery();
+        query.orderBy( orderBy( nameable.name() ) );
         query.firstResult( 3 );
         query.maxResults( 3 );
-        for( Nameable entity : query )
-        {
-            System.out.println( "Result: " + entity.name() );
-        }
+        verifyOrderedResults(
+            query,
+            "Felix", "Gaming", "Jack Doe"
+        );
     }
 
     @Test
@@ -349,27 +350,28 @@ public class RdfQueryTest
         Nameable nameable = templateFor( Nameable.class );
         Query<Nameable> query = qb.newQuery();
         query.orderBy( orderBy( nameable.name() ) );
-        for( Nameable entity : query )
-        {
-            System.out.println( "Result: " + entity.name() );
-        }
+        verifyOrderedResults(
+            query,
+            "Ann Doe", "Cars", "Cooking", "Felix", "Gaming", "Jack Doe", "Joe Doe", "Kuala Lumpur", "Penang",
+            "Programming"
+        );
     }
 
     @Test
     public void script19() throws EntityFinderException
     {
         QueryBuilder<Nameable> qb = qbf.newQueryBuilder( Nameable.class );
-        // should return all Nameable entities with a name > "B" sorted by name
+        // should return all Nameable entities with a name > "D" sorted by name
         Nameable nameable = templateFor( Nameable.class );
         qb.where(
-            gt( nameable.name(), "B" )
+            gt( nameable.name(), "D" )
         );
         Query<Nameable> query = qb.newQuery();
         query.orderBy( orderBy( nameable.name() ) );
-        for( Nameable entity : query )
-        {
-            System.out.println( "Result: " + entity.name() );
-        }
+        verifyOrderedResults(
+            query,
+            "Felix", "Gaming", "Jack Doe", "Joe Doe", "Kuala Lumpur", "Penang", "Programming"
+        );
     }
 
     @Test
@@ -383,10 +385,10 @@ public class RdfQueryTest
         );
         Query<Person> query = qb.newQuery();
         query.orderBy( orderBy( person.name(), OrderBy.Order.DESCENDING ) );
-        for( Nameable entity : query )
-        {
-            System.out.println( "Result: " + entity.name() );
-        }
+        verifyOrderedResults(
+            query,
+            "Joe Doe", "Ann Doe"
+        );
     }
 
     @Test
@@ -397,10 +399,10 @@ public class RdfQueryTest
         Person person = templateFor( Person.class );
         Query<Person> query = qb.newQuery();
         query.orderBy( orderBy( person.placeOfBirth().get().name() ) );
-        for( Person entity : query )
-        {
-            System.out.println( "Result: " + entity.placeOfBirth().get().name() );
-        }
+        verifyOrderedResults(
+            query,
+            "Ann Doe", "Joe Doe", "Jack Doe"
+        );
     }
 
     @Test
@@ -413,10 +415,10 @@ public class RdfQueryTest
             matches( nameable.name(), "J.*Doe" )
         );
         Query<Nameable> query = qb.newQuery();
-        for( Nameable entity : query )
-        {
-            System.out.println( "Result: " + entity.name() );
-        }
+        verifyUnorderedResults(
+            query,
+            "Jack Doe", "Joe Doe"
+        );
     }
 
 }
