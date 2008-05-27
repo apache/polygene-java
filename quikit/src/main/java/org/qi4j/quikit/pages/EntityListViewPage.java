@@ -13,22 +13,15 @@
  */
 package org.qi4j.quikit.pages;
 
+import org.apache.wicket.Component;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.WebPage;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
+import org.apache.wicket.markup.html.basic.Label;
 import org.qi4j.composite.ObjectBuilder;
 import org.qi4j.composite.ObjectBuilderFactory;
 import org.qi4j.composite.scope.Structure;
 import org.qi4j.composite.scope.Uses;
-import org.qi4j.entity.ConcurrentEntityModificationException;
-import org.qi4j.entity.UnitOfWork;
-import org.qi4j.entity.UnitOfWorkCompletionException;
-import org.qi4j.entity.UnitOfWorkFactory;
-import org.qi4j.query.Query;
-import org.qi4j.query.QueryBuilder;
-import org.qi4j.query.QueryBuilderFactory;
-import org.qi4j.quikit.panels.EntityListViewPanel;
+import org.qi4j.quikit.panels.entityList.EntityListViewPanel;
 import org.qi4j.structure.Module;
 
 public class EntityListViewPage extends WebPage
@@ -37,48 +30,35 @@ public class EntityListViewPage extends WebPage
 
     public static final String PARAM_ENTITY_TYPE = "entityType";
 
-    @SuppressWarnings( "unchecked" )
-    public EntityListViewPage( @Structure ObjectBuilderFactory objectBuilderFactory,
-                               @Structure UnitOfWorkFactory uowFactory,
-                               @Structure Module module,
-                               @Uses PageParameters parameters )
-        throws UnitOfWorkCompletionException, ClassNotFoundException
-    {
-        UnitOfWork uow = uowFactory.newUnitOfWork();
-        try
-        {
-            QueryBuilderFactory queryFactory = uow.queryBuilderFactory();
-            Class entityType = module.findClass( parameters.getString( PARAM_ENTITY_TYPE ) );
-            QueryBuilder<?> queryBuilder = queryFactory.newQueryBuilder( entityType );
-            Query<?> query = queryBuilder.newQuery();
-            IModel<Query> model = new Model<Query>( query );
+    private static final String WICKET_ID_VIEW_PANEL = "view-panel";
 
-            ObjectBuilder<EntityListViewPanel> builder = objectBuilderFactory.newObjectBuilder( EntityListViewPanel.class );
-            builder.use( "view-panel" );
-            builder.use( model );
-            EntityListViewPanel panel = builder.newInstance();
-            add( panel );
-            uow.complete();
-        }
-        catch( RuntimeException e )
+    public EntityListViewPage(
+        @Structure ObjectBuilderFactory anOBF,
+        @Structure Module aModule,
+        @Uses PageParameters parameters )
+    {
+        Component panel;
+        String className = parameters.getString( PARAM_ENTITY_TYPE );
+        if( className != null )
         {
-            uow.discard();
-            throw e;
+            try
+            {
+                Class entityType = aModule.findClass( className );
+                ObjectBuilder<EntityListViewPanel> builder = anOBF.newObjectBuilder( EntityListViewPanel.class );
+                builder.use( WICKET_ID_VIEW_PANEL, entityType );
+                panel = builder.newInstance();
+            }
+            catch( ClassNotFoundException e )
+            {
+                // Display error message
+                panel = new Label( WICKET_ID_VIEW_PANEL, "Class [" + className + "] is not found." );
+            }
         }
-        catch( ConcurrentEntityModificationException e )
+        else
         {
-            uow.discard();
-            throw e;
+            // Display error message
+            panel = new Label( WICKET_ID_VIEW_PANEL, "Parameter [" + PARAM_ENTITY_TYPE + "] must not be [null]." );
         }
-        catch( UnitOfWorkCompletionException e )
-        {
-            uow.discard();
-            throw e;
-        }
-        catch( ClassNotFoundException e )
-        {
-            uow.discard();
-            throw e;
-        }
+        add( panel );
     }
 }

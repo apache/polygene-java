@@ -13,22 +13,15 @@
  */
 package org.qi4j.quikit.application;
 
-import java.io.IOException;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.apache.wicket.protocol.http.IWebApplicationFactory;
 import org.apache.wicket.protocol.http.WicketFilter;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.scope.Structure;
 import org.qi4j.quikit.assembly.composites.QuikItApplicationFactoryComposite;
 
-public class QuikItFilter extends WicketFilter
+public final class QuikItFilter extends WicketFilter
 {
-    private IWebApplicationFactory applicationFactory;
+    private final IWebApplicationFactory applicationFactory;
 
     public QuikItFilter( @Structure CompositeBuilderFactory factory )
     {
@@ -36,21 +29,7 @@ public class QuikItFilter extends WicketFilter
     }
 
     @Override
-    public void doFilter( ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain )
-        throws IOException, ServletException
-    {
-        super.doFilter( servletRequest, servletResponse, filterChain );
-    }
-
-    @Override
-    public boolean doGet( HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse )
-        throws ServletException, IOException
-    {
-        return super.doGet( httpServletRequest, httpServletResponse );
-    }
-
-    @Override
-    protected IWebApplicationFactory getApplicationFactory()
+    protected final IWebApplicationFactory getApplicationFactory()
     {
         return applicationFactory;
     }

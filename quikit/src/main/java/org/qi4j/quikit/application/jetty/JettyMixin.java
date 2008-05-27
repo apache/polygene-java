@@ -18,6 +18,8 @@ import java.io.File;
 import javax.servlet.Servlet;
 import org.mortbay.jetty.Connector;
 import org.mortbay.jetty.Server;
+import org.mortbay.jetty.Handler;
+import org.mortbay.jetty.handler.ResourceHandler;
 import org.mortbay.jetty.servlet.Context;
 import static org.mortbay.jetty.servlet.Context.*;
 import org.mortbay.jetty.servlet.DefaultServlet;

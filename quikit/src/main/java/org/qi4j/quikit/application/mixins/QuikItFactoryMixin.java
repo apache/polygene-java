@@ -16,6 +16,7 @@ package org.qi4j.quikit.application.mixins;
 import org.apache.wicket.IPageFactory;
 import org.apache.wicket.Page;
 import org.apache.wicket.PageParameters;
+import static org.apache.wicket.PageParameters.NULL;
 import org.qi4j.composite.ObjectBuilder;
 import org.qi4j.composite.ObjectBuilderFactory;
 import org.qi4j.composite.scope.Structure;
@@ -26,16 +27,15 @@ public final class QuikItFactoryMixin
     @Structure
     private ObjectBuilderFactory objectBuilderFactory;
 
-    @SuppressWarnings( "unchecked" )
-    public final Page newPage( Class pageClass )
+    public final Page newPage( Class<? extends Page> pageClass )
     {
-        return (Page) objectBuilderFactory.newObject( pageClass );
+        return newPage( pageClass, NULL );
     }
 
     @SuppressWarnings( "unchecked" )
-    public final Page newPage( Class pageClass, PageParameters pageParameters )
+    public final Page newPage( Class<? extends Page> pageClass, PageParameters pageParameters )
     {
-        ObjectBuilder<Page> builder = objectBuilderFactory.newObjectBuilder( pageClass );
+        ObjectBuilder<? extends Page> builder = objectBuilderFactory.newObjectBuilder( pageClass );
         builder.use( pageParameters );
         return builder.newInstance();
     }

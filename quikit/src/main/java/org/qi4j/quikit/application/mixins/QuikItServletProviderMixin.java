@@ -15,25 +15,26 @@ package org.qi4j.quikit.application.mixins;
 
 import org.qi4j.composite.ObjectBuilderFactory;
 import org.qi4j.composite.scope.Structure;
+import org.qi4j.quikit.application.QuikItServlet;
 import org.qi4j.service.ServiceDescriptor;
 import org.qi4j.service.ServiceInstanceProvider;
 import org.qi4j.service.ServiceInstanceProviderException;
-import org.qi4j.quikit.application.QuikItServlet;
 
-public class QuikItServletProviderMixin
+public final class QuikItServletProviderMixin
     implements ServiceInstanceProvider
 {
     @Structure ObjectBuilderFactory objectBuilderFactory;
 
-    public Object newInstance( ServiceDescriptor serviceDescriptor )
+    public final Object newInstance( ServiceDescriptor serviceDescriptor )
         throws ServiceInstanceProviderException
     {
         return objectBuilderFactory.newObject( QuikItServlet.class );
     }
 
-    public void releaseInstance( Object instance )
+    public final void releaseInstance( Object instance )
         throws ServiceInstanceProviderException
     {
-        ( (QuikItServlet) instance ).destroy();
+        QuikItServlet quikItServlet = (QuikItServlet) instance;
+        quikItServlet.destroy();
     }
 }

@@ -30,12 +30,6 @@ public class QuikItServlet extends WicketServlet
     private ObjectBuilderFactory objectBuilderFactory;
 
     @Override
-    protected void service( HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse ) throws ServletException, IOException
-    {
-        super.service( httpServletRequest, httpServletResponse );
-    }
-
-    @Override
     protected WicketFilter newWicketFilter()
     {
         return objectBuilderFactory.newObject( QuikItFilter.class );

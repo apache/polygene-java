@@ -18,24 +18,31 @@ package org.qi4j.quikit.application;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.NotSerializableException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.util.logging.Logger;
 import org.apache.wicket.util.io.IObjectStreamFactory;
+import org.apache.wicket.util.io.SerializableChecker;
 import org.qi4j.Qi4j;
-import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.scope.Structure;
+import org.qi4j.entity.UnitOfWork;
+import org.qi4j.entity.UnitOfWorkFactory;
 import org.qi4j.spi.serialization.CompositeInputStream;
 import org.qi4j.spi.serialization.CompositeOutputStream;
 
 /**
  * @author edward.yakop@gmail.com
+ * @since 0.2.0
  */
 public final class Qi4jObjectStreamFactory
     implements IObjectStreamFactory
 {
+    private static final Logger LOGGER = Logger.getLogger( Qi4jObjectStreamFactory.class.getName() );
+
     @Structure
-    private CompositeBuilderFactory compositeBuilderFactory;
+    private UnitOfWorkFactory uowf;
 
     @Structure
     private Qi4j qi4j;
@@ -43,12 +50,55 @@ public final class Qi4jObjectStreamFactory
     public final ObjectInputStream newObjectInputStream( InputStream in )
         throws IOException
     {
-        return new CompositeInputStream( in, compositeBuilderFactory, qi4j );
+        UnitOfWork uow = uowf.currentUnitOfWork();
+        return new CompositeInputStream( in, uow, qi4j );
     }
 
     public final ObjectOutputStream newObjectOutputStream( OutputStream out )
         throws IOException
     {
-        return new CompositeOutputStream( out );
+        final CompositeOutputStream oos = new CompositeOutputStream( out );
+        return new ObjectOutputStream()
+        {
+            @Override
+            protected final void writeObjectOverride( final Object obj ) throws IOException
+            {
+                try
+                {
+                    oos.writeObject( obj );
+                }
+                catch( IOException e )
+                {
+                    if( SerializableChecker.isAvailable() )
+                    {
+                        // trigger serialization again, but this time gather some more info
+                        new SerializableChecker( (NotSerializableException) e ).writeObject( obj );
+
+                        // if we get here, we didn't fail, while we should;
+                        throw e;
+                    }
+                    throw e;
+                }
+                catch( RuntimeException e )
+                {
+                    LOGGER.throwing( CompositeOutputStream.class.getName(), "replaceObject", e );
+                    throw e;
+                }
+            }
+
+            @Override
+            public final void flush()
+                throws IOException
+            {
+                oos.flush();
+            }
+
+            @Override
+            public final void close()
+                throws IOException
+            {
+                oos.close();
+            }
+        };
     }
 }
