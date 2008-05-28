@@ -16,7 +16,7 @@
     <module>indexing-rdf</module>
     <module>quikit</module>
     <module>rest</module>
-    <module>entitystore-neo4j</module>
+<!--    <module>entitystore-neo4j</module> -->
     <module>entitystore-ibatis</module>
     <module>entitystore-jdbm</module>
     <module>entitystore-jgroups</module>
