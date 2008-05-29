@@ -10,6 +10,9 @@
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/resources" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/target/classes" />
+      <excludeFolder url="file://$MODULE_DIR$/target/maven-archiver" />
+      <excludeFolder url="file://$MODULE_DIR$/target/neo" />
+      <excludeFolder url="file://$MODULE_DIR$/target/surefire-reports" />
       <excludeFolder url="file://$MODULE_DIR$/target/test-classes" />
     </content>
     <orderEntry type="inheritedJdk" />
@@ -41,7 +44,7 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
-      <library name="org.neo4j:neo:1.0-rc1-20080527.161030-32">
+      <library name="org.neo4j:neo:1.0-rc1-20080528.211105-33">
         <CLASSES>
           <root url="jar://$M2_REPO$/org/neo4j/neo/1.0-rc1-SNAPSHOT/neo-1.0-rc1-SNAPSHOT.jar!/" />
         </CLASSES>
