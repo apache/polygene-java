@@ -30,10 +30,9 @@ import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkCompletionException;
 import org.qi4j.entity.ibatis.dbInitializer.DBInitializerConfiguration;
-import org.qi4j.entity.ibatis.entity.PersonComposite;
 import org.qi4j.entity.ibatis.entity.AccountComposite;
+import org.qi4j.entity.ibatis.entity.PersonComposite;
 import org.qi4j.entity.ibatis.test.AbstractTestCase;
-import org.qi4j.entity.ibatis.DerbyDatabaseHandler;
 import org.qi4j.entity.memory.MemoryEntityStoreService;
 import org.qi4j.property.Property;
 import org.qi4j.spi.composite.CompositeBinding;
@@ -108,12 +107,13 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
         final PersonComposite john = uow.find( JOHN_SMITH_ID, PersonComposite.class );
         uow.remove( john );
         uow.complete();
-        derbyDatabaseHandler.executeStatement( "select count(*) CNT from person where ID= '"+JOHN_SMITH_ID+"'", new DerbyDatabaseHandler.ResultSetCallback() {
+        derbyDatabaseHandler.executeStatement( "select count(*) CNT from person where ID= '" + JOHN_SMITH_ID + "'", new DerbyDatabaseHandler.ResultSetCallback()
+        {
             public void row( final ResultSet rs ) throws SQLException
             {
-                assertEquals( 0, rs.getInt( "CNT" ));
+                assertEquals( 0, rs.getInt( "CNT" ) );
             }
-        });
+        } );
     }
 
     @Test public final void existingEntityIsUpdatedInPersistentStore()
@@ -123,12 +123,13 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
         final PersonComposite john = uow.find( JOHN_SMITH_ID, PersonComposite.class );
         john.lastName().set( "Doe" );
         uow.complete();
-        derbyDatabaseHandler.executeStatement( "select LAST_NAME from person where ID= '"+JOHN_SMITH_ID+"'", new DerbyDatabaseHandler.ResultSetCallback() {
+        derbyDatabaseHandler.executeStatement( "select LAST_NAME from person where ID= '" + JOHN_SMITH_ID + "'", new DerbyDatabaseHandler.ResultSetCallback()
+        {
             public void row( final ResultSet rs ) throws SQLException
             {
-                assertEquals( "Doe", rs.getString( "LAST_NAME" ));
+                assertEquals( "Doe", rs.getString( "LAST_NAME" ) );
             }
-        });
+        } );
     }
 
     @Test public final void associationIsPersistedToDatabase()
@@ -137,7 +138,7 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         final PersonComposite john = uow.find( JOHN_SMITH_ID, PersonComposite.class );
         assertNotNull( "john", john );
-        final AccountComposite johnsAccount = uow.newEntity(AccountComposite.class );
+        final AccountComposite johnsAccount = uow.newEntity( AccountComposite.class );
         final String accountId = johnsAccount.identity().get();
         johnsAccount.name().set( JOHNS_ACCOUNT );
         johnsAccount.primaryContactPerson().set( john );
@@ -145,11 +146,12 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
 
         uow = unitOfWorkFactory.newUnitOfWork();
         final AccountComposite account = uow.find( accountId, AccountComposite.class );
-        assertEquals( "account name",JOHNS_ACCOUNT, account.name().get() );
+        assertEquals( "account name", JOHNS_ACCOUNT, account.name().get() );
         final PersonComposite contactPerson = account.primaryContactPerson().get();
-        assertEquals( "john is contact",john, contactPerson );
+        assertEquals( "john is contact", john, contactPerson );
         uow.discard();
     }
+
     @Test( expected = EntityStoreException.class )
     public void loadOfNonExistingEntityFails()
     {
@@ -173,8 +175,8 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
     public final void assemble( final ModuleAssembly module )
         throws AssemblyException
     {
-        module.addComposites( PersonComposite.class ).setCompositeInfo( IbatisClient.class, new IbatisClient(getSqlMapConfigUrl(),null));
-        module.addComposites( AccountComposite.class ).setCompositeInfo( IbatisClient.class, new IbatisClient(getSqlMapConfigUrl(),null));
+        module.addComposites( PersonComposite.class ).setCompositeInfo( IbatisClient.class, new IbatisClient( getSqlMapConfigUrl(), null ) );
+        module.addComposites( AccountComposite.class ).setCompositeInfo( IbatisClient.class, new IbatisClient( getSqlMapConfigUrl(), null ) );
         module.addServices( UuidIdentityGeneratorService.class );
         module.addServices( IBatisEntityStoreService.class );
 
@@ -294,6 +296,6 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
     private IBatisEntityStoreService getEntityStore() throws Exception
     {
         assertNotNull( moduleInstance );
-        return moduleInstance.getStructureContext().getServiceLocator().findService( IBatisEntityStoreService.class ).get();
+        return moduleInstance.structureContext().getServiceLocator().findService( IBatisEntityStoreService.class ).get();
     }
 }

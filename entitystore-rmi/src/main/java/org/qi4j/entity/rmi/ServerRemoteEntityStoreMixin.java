@@ -21,7 +21,6 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -38,12 +37,8 @@ import org.qi4j.service.ServiceDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStateInstance;
 import org.qi4j.spi.entity.EntityStore;
-import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.spi.entity.StateCommitter;
-import org.qi4j.spi.util.ListMap;
 import org.qi4j.structure.Module;
-import org.qi4j.structure.ServiceMap;
 
 /**
  * RMI server implementation of EntityStore
@@ -132,10 +127,11 @@ public class ServerRemoteEntityStoreMixin
 
     public void prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, Iterable<QualifiedIdentity> removedStates )
     {
+/*
         lock.writeLock().lock();
         try
         {
-            ServiceMap<EntityStore> storeMap = new ServiceMap<EntityStore>( module, EntityStore.class );
+            ServiceMap<EntityStore> storeMap = new ServiceMap<EntityStore>( null, EntityStore.class );
             Set<EntityStore> stores = new HashSet<EntityStore>();
 
             ListMap<EntityStore, EntityState> newStoreState = new ListMap<EntityStore, EntityState>();
@@ -206,5 +202,6 @@ public class ServerRemoteEntityStoreMixin
         {
             lock.writeLock().unlock();
         }
+*/
     }
 }

@@ -23,17 +23,15 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.fail;
-import org.jmock.Mockery;
-import org.junit.Test;
 import org.junit.Ignore;
+import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.CompositeBuilderFactory;
-import org.qi4j.entity.UnitOfWork;
-import org.qi4j.entity.ibatis.test.AbstractTestCase;
 import org.qi4j.entity.ibatis.entity.HasFirstName;
 import org.qi4j.entity.ibatis.entity.HasLastName;
 import org.qi4j.entity.ibatis.entity.PersonComposite;
+import org.qi4j.entity.ibatis.test.AbstractTestCase;
 import static org.qi4j.property.ComputedPropertyInstance.getQualifiedName;
 import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.entity.EntityState;
@@ -152,7 +150,7 @@ public final class IBatisEntityStateTest extends AbstractTestCase
      */
     private Map<String, PropertyBinding> getPersonCompositePropertyBindings()
     {
-        final CompositeBuilderFactory builderFactory = moduleInstance.getStructureContext().getCompositeBuilderFactory();
+        final CompositeBuilderFactory builderFactory = moduleInstance.structureContext().getCompositeBuilderFactory();
         final PersonComposite composite = builderFactory.newComposite( PersonComposite.class );
         final CompositeBinding personBinding = runtime.getCompositeBinding( composite );
         final Iterable<PropertyBinding> propertyBindings = personBinding.getPropertyBindings();

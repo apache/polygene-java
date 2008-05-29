@@ -13,16 +13,20 @@
  */
 package org.qi4j.quikit.assembly.composites;
 
-import org.qi4j.property.Property;
 import org.qi4j.entity.EntityComposite;
+import org.qi4j.library.framework.constraint.annotation.Range;
+import org.qi4j.property.Property;
 
-
-/** Configuration entity for the Jetty Http Server.
- * 
+/**
+ * Configuration entity for the Jetty Http Server.
  */
 public interface HttpConfiguration extends EntityComposite
 {
-    Property<Integer> hostPort();
+    @Range( min = 0, max = 65535 ) Property<Integer> hostPort();
+
     Property<String> hostName();
+
     Property<String> rootContextPath();
+
+    Property<String> resourcePath();
 }

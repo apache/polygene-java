@@ -10,29 +10,38 @@
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/resources" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/target/classes" />
-      <excludeFolder url="file://$MODULE_DIR$/target/maven-archiver" />
       <excludeFolder url="file://$MODULE_DIR$/target/test-classes" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="qi4j-core-runtime" exported="" />
-    <orderEntry type="module" module-name="qi4j-core-api" exported="" />
-    <orderEntry type="module" module-name="qi4j-core-spi" exported="" />
     <orderEntry type="module-library" exported="">
-      <library name="cglib:cglib-nodep:2.1_3">
+      <library name="junit:junit:4.4">
         <CLASSES>
-          <root url="jar://$M2_REPO$/cglib/cglib-nodep/2.1_3/cglib-nodep-2.1_3.jar!/" />
+          <root url="jar://$M2_REPO$/junit/junit/4.4/junit-4.4.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/cglib/cglib-nodep/2.1_3/cglib-nodep-2.1_3-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/junit/junit/4.4/junit-4.4-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/cglib/cglib-nodep/2.1_3/cglib-nodep-2.1_3-sources.jar!/" />
+          <root url="jar://$M2_REPO$/junit/junit/4.4/junit-4.4-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
-      <library name="org.neo4j:neo:1.0-rc1-SNAPSHOT">
+      <library name="org.neo4j:index-util:0.3-20080428.100332-22">
+        <CLASSES>
+          <root url="jar://$M2_REPO$/org/neo4j/index-util/0.3-SNAPSHOT/index-util-0.3-SNAPSHOT.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$M2_REPO$/org/neo4j/index-util/0.3-SNAPSHOT/index-util-0.3-SNAPSHOT-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$M2_REPO$/org/neo4j/index-util/0.3-SNAPSHOT/index-util-0.3-SNAPSHOT-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library name="org.neo4j:neo:1.0-rc1-20080527.161030-32">
         <CLASSES>
           <root url="jar://$M2_REPO$/org/neo4j/neo/1.0-rc1-SNAPSHOT/neo-1.0-rc1-SNAPSHOT.jar!/" />
         </CLASSES>
@@ -54,19 +63,6 @@
         </JAVADOC>
         <SOURCES>
           <root url="jar://$M2_REPO$/javax/transaction/jta/1.0.1/jta-1.0.1-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library name="org.neo4j:index-util:0.3-SNAPSHOT">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/org/neo4j/index-util/0.3-SNAPSHOT/index-util-0.3-SNAPSHOT.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/org/neo4j/index-util/0.3-SNAPSHOT/index-util-0.3-SNAPSHOT-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/org/neo4j/index-util/0.3-SNAPSHOT/index-util-0.3-SNAPSHOT-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
@@ -96,23 +92,110 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module" module-name="qi4j-core-testsupport" exported="" />
-    <orderEntry type="module" module-name="qi4j-core-bootstrap" exported="" />
-    <orderEntry type="module-library">
-      <library name="junit:junit:4.4">
+    <orderEntry type="module-library" exported="">
+      <library name="org.qi4j.core:qi4j-core-bootstrap:0.2.0-SNAPSHOT">
         <CLASSES>
-          <root url="jar://$M2_REPO$/junit/junit/4.4/junit-4.4.jar!/" />
+          <root url="jar://$M2_REPO$/org/qi4j/core/qi4j-core-bootstrap/0.2.0-SNAPSHOT/qi4j-core-bootstrap-0.2.0-SNAPSHOT.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/junit/junit/4.4/junit-4.4-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/qi4j/core/qi4j-core-bootstrap/0.2.0-SNAPSHOT/qi4j-core-bootstrap-0.2.0-SNAPSHOT-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/junit/junit/4.4/junit-4.4-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/qi4j/core/qi4j-core-bootstrap/0.2.0-SNAPSHOT/qi4j-core-bootstrap-0.2.0-SNAPSHOT-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module" module-name="qi4j-tests-core" exported="" />
-    <orderEntry type="module" module-name="qi4j-lib-framework" exported="" />
+    <orderEntry type="module-library" exported="">
+      <library name="org.qi4j.core:qi4j-core-api:0.2.0-SNAPSHOT">
+        <CLASSES>
+          <root url="jar://$M2_REPO$/org/qi4j/core/qi4j-core-api/0.2.0-SNAPSHOT/qi4j-core-api-0.2.0-SNAPSHOT.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$M2_REPO$/org/qi4j/core/qi4j-core-api/0.2.0-SNAPSHOT/qi4j-core-api-0.2.0-SNAPSHOT-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$M2_REPO$/org/qi4j/core/qi4j-core-api/0.2.0-SNAPSHOT/qi4j-core-api-0.2.0-SNAPSHOT-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library name="org.qi4j.core:qi4j-core-spi:0.2.0-SNAPSHOT">
+        <CLASSES>
+          <root url="jar://$M2_REPO$/org/qi4j/core/qi4j-core-spi/0.2.0-SNAPSHOT/qi4j-core-spi-0.2.0-SNAPSHOT.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$M2_REPO$/org/qi4j/core/qi4j-core-spi/0.2.0-SNAPSHOT/qi4j-core-spi-0.2.0-SNAPSHOT-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$M2_REPO$/org/qi4j/core/qi4j-core-spi/0.2.0-SNAPSHOT/qi4j-core-spi-0.2.0-SNAPSHOT-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library name="org.qi4j.core:qi4j-core-runtime:0.2.0-SNAPSHOT">
+        <CLASSES>
+          <root url="jar://$M2_REPO$/org/qi4j/core/qi4j-core-runtime/0.2.0-SNAPSHOT/qi4j-core-runtime-0.2.0-SNAPSHOT.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$M2_REPO$/org/qi4j/core/qi4j-core-runtime/0.2.0-SNAPSHOT/qi4j-core-runtime-0.2.0-SNAPSHOT-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$M2_REPO$/org/qi4j/core/qi4j-core-runtime/0.2.0-SNAPSHOT/qi4j-core-runtime-0.2.0-SNAPSHOT-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library name="cglib:cglib-nodep:2.1_3">
+        <CLASSES>
+          <root url="jar://$M2_REPO$/cglib/cglib-nodep/2.1_3/cglib-nodep-2.1_3.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$M2_REPO$/cglib/cglib-nodep/2.1_3/cglib-nodep-2.1_3-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$M2_REPO$/cglib/cglib-nodep/2.1_3/cglib-nodep-2.1_3-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library name="org.qi4j.tests:qi4j-tests-core:0.2.0-SNAPSHOT">
+        <CLASSES>
+          <root url="jar://$M2_REPO$/org/qi4j/tests/qi4j-tests-core/0.2.0-SNAPSHOT/qi4j-tests-core-0.2.0-SNAPSHOT.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$M2_REPO$/org/qi4j/tests/qi4j-tests-core/0.2.0-SNAPSHOT/qi4j-tests-core-0.2.0-SNAPSHOT-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$M2_REPO$/org/qi4j/tests/qi4j-tests-core/0.2.0-SNAPSHOT/qi4j-tests-core-0.2.0-SNAPSHOT-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library name="org.qi4j.library:qi4j-lib-framework:0.2.0-SNAPSHOT">
+        <CLASSES>
+          <root url="jar://$M2_REPO$/org/qi4j/library/qi4j-lib-framework/0.2.0-SNAPSHOT/qi4j-lib-framework-0.2.0-SNAPSHOT.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$M2_REPO$/org/qi4j/library/qi4j-lib-framework/0.2.0-SNAPSHOT/qi4j-lib-framework-0.2.0-SNAPSHOT-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$M2_REPO$/org/qi4j/library/qi4j-lib-framework/0.2.0-SNAPSHOT/qi4j-lib-framework-0.2.0-SNAPSHOT-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library name="org.qi4j.core:qi4j-core-testsupport:0.2.0-SNAPSHOT">
+        <CLASSES>
+          <root url="jar://$M2_REPO$/org/qi4j/core/qi4j-core-testsupport/0.2.0-SNAPSHOT/qi4j-core-testsupport-0.2.0-SNAPSHOT.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$M2_REPO$/org/qi4j/core/qi4j-core-testsupport/0.2.0-SNAPSHOT/qi4j-core-testsupport-0.2.0-SNAPSHOT-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$M2_REPO$/org/qi4j/core/qi4j-core-testsupport/0.2.0-SNAPSHOT/qi4j-core-testsupport-0.2.0-SNAPSHOT-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
     <orderEntryProperties />
   </component>
 </module>

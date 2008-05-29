@@ -19,10 +19,11 @@ package org.qi4j.entity.ibatis.test;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Map;
+import org.junit.Before;
 import org.qi4j.composite.Composite;
-import org.qi4j.entity.ibatis.internal.IBatisEntityState;
-import org.qi4j.entity.ibatis.entity.PersonComposite;
 import org.qi4j.entity.ibatis.DerbyDatabaseHandler;
+import org.qi4j.entity.ibatis.entity.PersonComposite;
+import org.qi4j.entity.ibatis.internal.IBatisEntityState;
 import org.qi4j.runtime.composite.CompositeContext;
 import org.qi4j.runtime.structure.ModuleContext;
 import org.qi4j.spi.composite.CompositeBinding;
@@ -30,7 +31,6 @@ import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.structure.CompositeDescriptor;
 import org.qi4j.test.AbstractQi4jTest;
-import org.junit.Before;
 
 /**
  * @author edward.yakop@gmail.com
@@ -56,12 +56,16 @@ public abstract class AbstractTestCase extends AbstractQi4jTest
 
     @Override public void tearDown() throws Exception
     {
-        if (derbyDatabaseHandler!=null)
+        if( derbyDatabaseHandler != null )
+        {
             derbyDatabaseHandler.shutdown();
+        }
 
-        if (unitOfWorkFactory!=null && unitOfWorkFactory.currentUnitOfWork()!=null)
+        if( unitOfWorkFactory != null && unitOfWorkFactory.currentUnitOfWork() != null )
+        {
             unitOfWorkFactory.currentUnitOfWork().discard();
-        
+        }
+
         super.tearDown();
     }
 
@@ -93,7 +97,7 @@ public abstract class AbstractTestCase extends AbstractQi4jTest
 
     protected CompositeContext getCompositeContext( final Class<? extends Composite> compositeType )
     {
-        final ModuleContext moduleContext = moduleInstance.getModuleContext();
+        final ModuleContext moduleContext = moduleInstance.moduleContext();
         final CompositeContext compositeContext = moduleContext.getCompositeContext( compositeType );
         junit.framework.Assert.assertNotNull( compositeContext );
         return compositeContext;
