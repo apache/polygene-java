@@ -3,13 +3,12 @@ package org.qi4j.runtime.injection;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
-import org.qi4j.spi.injection.BindingContext;
-import org.qi4j.spi.injection.FragmentInjectionContext;
-import org.qi4j.spi.injection.InjectionContext;
-import org.qi4j.spi.injection.InjectionProvider;
+import org.qi4j.runtime.composite.qi.BindingContext;
+import org.qi4j.runtime.composite.qi.DependencyModel;
+import org.qi4j.runtime.composite.qi.InjectionContext;
+import org.qi4j.runtime.composite.qi.InjectionProvider;
+import org.qi4j.runtime.composite.qi.InjectionProviderFactory;
 import org.qi4j.spi.injection.InjectionProviderException;
-import org.qi4j.spi.injection.InjectionProviderFactory;
-import org.qi4j.spi.injection.InjectionResolution;
 import org.qi4j.spi.injection.InvalidInjectionException;
 
 /**
@@ -18,17 +17,16 @@ import org.qi4j.spi.injection.InvalidInjectionException;
 public final class ThisInjectionProviderFactory
     implements InjectionProviderFactory
 {
-    public InjectionProvider newInjectionProvider( BindingContext bindingContext ) throws InvalidInjectionException
+    public InjectionProvider newInjectionProvider( BindingContext bindingContext, DependencyModel dependencyModel ) throws InvalidInjectionException
     {
-        InjectionResolution resolution = bindingContext.getInjectionResolution();
-        if( bindingContext.getCompositeResolution() != null )
+        if( bindingContext.composite() != null )
         {
             // If Composite type then return real type, otherwise use the specified one
-            Class thisType = resolution.getInjectionModel().getRawInjectionType();
+            Class thisType = dependencyModel.rawInjectionType();
 
-            if( thisType.isAssignableFrom( bindingContext.getCompositeResolution().getCompositeModel().getCompositeType() ) )
+            if( thisType.isAssignableFrom( bindingContext.composite().type() ) )
             {
-                thisType = bindingContext.getCompositeResolution().getCompositeModel().getCompositeType();
+                thisType = bindingContext.composite().type();
             }
 
             return new ThisInjectionProvider( thisType );
@@ -47,7 +45,7 @@ public final class ThisInjectionProviderFactory
         }
         else
         {
-            throw new InvalidInjectionException( "Object " + resolution.getInjectionModel().getInjectedClass() + " may not use @This" );
+            throw new InvalidInjectionException( "Object " + dependencyModel.injectedClass() + " may not use @This" );
         }
     }
 
@@ -72,8 +70,7 @@ public final class ThisInjectionProviderFactory
         {
             try
             {
-                FragmentInjectionContext fic = (FragmentInjectionContext) context;
-                InvocationHandler handler = fic.getThis();
+                InvocationHandler handler = context.compositeInstance();
                 Object proxy = proxyConstructor.newInstance( handler );
                 return proxy;
             }

@@ -23,5 +23,15 @@ import java.lang.reflect.Method;
  */
 public interface AppliesToFilter
 {
+    /**
+     * Check if the Fragment should be applied or not. Can be used
+     * with Mixins, Concerns, SideEffects.
+     *
+     * @param method        method that is invoked
+     * @param mixin         mixin implementation for the method
+     * @param compositeType composite type
+     * @param fragmentClass fragment that is being applies
+     * @return true if the filter passes, otherwise false
+     */
     boolean appliesTo( Method method, Class<?> mixin, Class<?> compositeType, Class<?> fragmentClass );
 }

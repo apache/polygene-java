@@ -14,7 +14,6 @@
  */
 package org.qi4j.runtime.structure;
 
-import org.qi4j.composite.InvalidApplicationException;
 import org.qi4j.composite.ObjectBuilder;
 import org.qi4j.composite.ObjectBuilderFactory;
 import org.qi4j.composite.ObjectNotRegisteredException;
@@ -36,7 +35,7 @@ public final class ModuleObjectBuilderFactory
     public <T> ObjectBuilder<T> newObjectBuilder( Class<T> objectType )
     {
         // Find which Module handles this Composite type
-        ModuleInstance moduleInstance = this.moduleInstance.getModuleForPublicObject( objectType );
+        ModuleInstance moduleInstance = null; // this.moduleInstance.getModuleForPublicObject( objectType );
 
         // If no module handles this, then it could be a private Composite
         if( moduleInstance == null )
@@ -45,12 +44,12 @@ public final class ModuleObjectBuilderFactory
         }
 
         // Get the Object context
-        ObjectContext objectContext = moduleInstance.getModuleContext().getObjectContext( objectType );
+        ObjectContext objectContext = moduleInstance.moduleContext().getObjectContext( objectType );
 
         // Check if this Composite has been registered properly
         if( objectContext == null )
         {
-            throw new ObjectNotRegisteredException( objectType, moduleInstance.getModule() );
+            throw new ObjectNotRegisteredException( objectType, moduleInstance.module() );
         }
 
         // Create a builder

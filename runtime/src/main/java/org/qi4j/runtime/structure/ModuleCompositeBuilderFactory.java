@@ -17,13 +17,9 @@ package org.qi4j.runtime.structure;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.CompositeBuilderFactory;
-import org.qi4j.composite.InvalidApplicationException;
 import org.qi4j.composite.CompositeNotRegisteredException;
-import static org.qi4j.composite.NullArgumentException.*;
+import static org.qi4j.composite.NullArgumentException.validateNotNull;
 import org.qi4j.runtime.composite.CompositeContext;
-import org.qi4j.spi.structure.ModuleBinding;
-import org.qi4j.spi.structure.ModuleModel;
-import org.qi4j.spi.structure.ModuleResolution;
 
 /**
  * Default implementation of CompositeBuilderFactory
@@ -41,17 +37,17 @@ public class ModuleCompositeBuilderFactory
     public <T> CompositeBuilder<T> newCompositeBuilder( Class<T> mixinType )
     {
         validateNotNull( "mixinType", mixinType );
-        Class<? extends Composite> compositeType = moduleInstance.lookupCompositeType( mixinType );
+        Class<? extends Composite> compositeType = moduleInstance.findCompositeType( mixinType );
         // Find which Module handles this Composite type
-        ModuleInstance compositeModuleInstance = moduleInstance.moduleForComposite( compositeType );
+        ModuleInstance compositeModuleInstance = moduleInstance.findModuleForCompositeType( compositeType );
 
         // Get the Composite context
-        ModuleContext context = compositeModuleInstance.getModuleContext();
+        ModuleContext context = compositeModuleInstance.moduleContext();
         CompositeContext compositeContext = context.getCompositeContext( compositeType );
 
         if( compositeContext == null )
         {
-            throw new CompositeNotRegisteredException(compositeType, compositeModuleInstance.getModule() );
+            throw new CompositeNotRegisteredException( compositeType, compositeModuleInstance.module() );
         }
 
         return createBuilder( compositeModuleInstance, compositeContext );

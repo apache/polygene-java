@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.qi4j.service.ServiceFinder;
 import org.qi4j.service.ServiceReference;
+import org.qi4j.structure.Visibility;
 
 /**
  * ServiceProviderRepository implementation for a ModuleInstance.
@@ -31,7 +32,7 @@ public class ModuleServiceLocator
     private ModuleInstance moduleInstance;
     private ServiceFinder layerServiceLocator;
 
-    public ModuleServiceLocator( ModuleInstance moduleInstance, ServiceFinder layerServiceLocator )
+    public ModuleServiceLocator( ModuleInstance moduleInstance )
     {
         this.moduleInstance = moduleInstance;
         this.layerServiceLocator = layerServiceLocator;
@@ -40,7 +41,7 @@ public class ModuleServiceLocator
     public <T> ServiceReference<T> findService( Class<T> serviceType )
     {
         // Check for services in the own module
-        ServiceReference<T> service = moduleInstance.findService( serviceType );
+        ServiceReference<T> service = moduleInstance.findService( serviceType, Visibility.module );
         if( service != null )
         {
             return service;
@@ -58,7 +59,7 @@ public class ModuleServiceLocator
 
         {
             // Add services from the own module
-            Iterable<ServiceReference<T>> services = moduleInstance.findServices( serviceType );
+            Iterable<ServiceReference<T>> services = moduleInstance.findServices( serviceType, Visibility.module );
             for( ServiceReference<T> service : services )
             {
                 serviceList.add( service );

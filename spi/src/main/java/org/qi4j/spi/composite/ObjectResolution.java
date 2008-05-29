@@ -13,6 +13,7 @@ package org.qi4j.spi.composite;
 
 import java.util.Map;
 import org.qi4j.spi.entity.association.AssociationResolution;
+import org.qi4j.spi.structure.ObjectDescriptor;
 
 /**
  * Base class for object model resolutions. Resolutions are models resolved in a runtime environment
@@ -22,9 +23,10 @@ public final class ObjectResolution
     implements StateResolution
 {
     private Map<String, PropertyResolution> propertyResolutions;
+    private ObjectDescriptor objectDescriptor;
     private Map<String, AssociationResolution> associationResolutions;
 
-    public ObjectResolution( AbstractModel abstractModel,
+    public ObjectResolution( ObjectDescriptor objectDescriptor, AbstractModel abstractModel,
                              Iterable<ConstructorResolution> constructorResolutions,
                              Iterable<FieldResolution> fieldResolutions,
                              Iterable<MethodResolution> methodResolutions,
@@ -32,6 +34,7 @@ public final class ObjectResolution
                              Map<String, AssociationResolution> associationResolutions )
     {
         super( abstractModel, constructorResolutions, fieldResolutions, methodResolutions );
+        this.objectDescriptor = objectDescriptor;
         this.associationResolutions = associationResolutions;
         this.propertyResolutions = propertyResolutions;
     }
@@ -39,6 +42,11 @@ public final class ObjectResolution
     public ObjectModel getObjectModel()
     {
         return (ObjectModel) getAbstractModel();
+    }
+
+    public ObjectDescriptor getObjectDescriptor()
+    {
+        return objectDescriptor;
     }
 
     public PropertyResolution getPropertyResolution( String qualifiedName )

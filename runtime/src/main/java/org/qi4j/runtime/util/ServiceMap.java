@@ -12,12 +12,14 @@
  *
  */
 
-package org.qi4j.structure;
+package org.qi4j.runtime.util;
 
 import java.util.HashMap;
 import java.util.Map;
 import org.qi4j.composite.Composite;
+import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.service.ServiceReference;
+import org.qi4j.structure.Visibility;
 
 /**
  * This class helps you manage references to services which are acquired
@@ -27,11 +29,11 @@ import org.qi4j.service.ServiceReference;
  */
 public final class ServiceMap<T>
 {
-    private Module moduleInstance;
+    private ModuleInstance moduleInstance;
     private Class<T> serviceClass;
     private Map<Class<? extends Composite>, ServiceReference> instances = new HashMap<Class<? extends Composite>, ServiceReference>();
 
-    public ServiceMap( Module moduleInstance, Class<T> serviceClass )
+    public ServiceMap( ModuleInstance moduleInstance, Class<T> serviceClass )
     {
         this.moduleInstance = moduleInstance;
         this.serviceClass = serviceClass;
@@ -42,8 +44,8 @@ public final class ServiceMap<T>
         ServiceReference serviceReference = instances.get( compositeType );
         if( serviceReference == null )
         {
-            Module realModule = moduleInstance.findModuleForComposite( compositeType );
-            serviceReference = realModule.findService( serviceClass );
+            ModuleInstance realModule = moduleInstance.findModuleForCompositeType( compositeType );
+            serviceReference = realModule.findService( serviceClass, Visibility.module );
             if( serviceReference == null )
             {
                 return null;

@@ -80,7 +80,12 @@ public final class CompositeMethodInstance
         }
     }
 
-    public Object invoke( Object proxy, Object[] args, Object mixin )
+    public Method getMethod()
+    {
+        return method;
+    }
+
+    public Object invoke( Object proxy, Object[] params, Object mixin )
         throws Throwable
     {
         try
@@ -90,7 +95,7 @@ public final class CompositeMethodInstance
             {
             case NoConcerns_InvocationHandler:
             {
-                result = ( (InvocationHandler) mixin ).invoke( proxy, method, args );
+                result = ( (InvocationHandler) mixin ).invoke( proxy, method, params );
                 if( sideEffects.length > 0 )
                 {
                     proxyHandler.setContext( proxy, mixin, mixinType );
@@ -99,7 +104,7 @@ public final class CompositeMethodInstance
             }
             case NoConcerns_TypedMixin:
             {
-                result = method.invoke( mixin, args );
+                result = method.invoke( mixin, params );
                 if( sideEffects.length > 0 )
                 {
                     proxyHandler.setContext( proxy, mixin, mixinType );
@@ -111,7 +116,7 @@ public final class CompositeMethodInstance
                 proxyHandler.setContext( proxy, mixin, mixinType );
                 mixinInvocationHandler.setFragment( mixin );
 
-                result = ( (InvocationHandler) firstConcern ).invoke( proxy, method, args );
+                result = ( (InvocationHandler) firstConcern ).invoke( proxy, method, params );
                 break;
             }
             case Concerns_TypedMixin:
@@ -119,13 +124,13 @@ public final class CompositeMethodInstance
                 proxyHandler.setContext( proxy, mixin, mixinType );
                 mixinInvocationHandler.setFragment( mixin );
 
-                result = method.invoke( firstConcern, args );
+                result = method.invoke( firstConcern, params );
                 break;
             }
             }
 
             // Check for side-effects
-            invokeSideEffects( result, null, proxy, args );
+//            invokeSideEffects( result, null, proxy, args );
 
             return result;
         }
@@ -140,7 +145,7 @@ public final class CompositeMethodInstance
             fixStackTrace( throwable, proxy, method );
 
             proxyHandler.setContext( proxy, mixin, mixinType );
-            invokeSideEffects( null, throwable, proxy, args );
+//            invokeSideEffects( null, throwable, proxy, args );
 
             throw throwable;
         }

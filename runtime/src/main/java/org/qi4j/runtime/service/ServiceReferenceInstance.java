@@ -50,25 +50,12 @@ public final class ServiceReferenceInstance<T>
     private Object instance;
     private T serviceProxy;
     private int referenceCounter = 0;
-    private static Method IDENTITY_METHOD;
-
-    static
-    {
-        try
-        {
-            IDENTITY_METHOD = ServiceReference.class.getMethod( "identity" );
-        }
-        catch( NoSuchMethodException e )
-        {
-            IDENTITY_METHOD = null;
-        }
-    }
 
     public ServiceReferenceInstance( ServiceDescriptor serviceDescriptor, ServiceInstanceProvider serviceInstanceProvider )
     {
         this.serviceDescriptor = serviceDescriptor;
         this.serviceInstanceProvider = serviceInstanceProvider;
-        identity = new ImmutablePropertyInstance<String>( IDENTITY_METHOD, serviceDescriptor.identity() );
+        identity = new ImmutablePropertyInstance<String>( ServiceReference.class, "identity", serviceDescriptor.identity() );
 
         serviceAttributes = new HashMap<Class, Serializable>();
         Iterable<Class> serviceAttributeTypes = serviceDescriptor.serviceAttributeTypes();

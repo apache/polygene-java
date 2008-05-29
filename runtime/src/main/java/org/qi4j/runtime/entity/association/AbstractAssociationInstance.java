@@ -6,6 +6,7 @@ import org.qi4j.entity.association.AbstractAssociation;
 import org.qi4j.entity.association.AssociationInfo;
 import org.qi4j.runtime.entity.UnitOfWorkInstance;
 import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.structure.Visibility;
 
 /**
  * Implementation of AbstractAssociation. Includes helper methods for subclasses
@@ -50,7 +51,7 @@ public class AbstractAssociationInstance<T>
             return null;
         }
 
-        Class<? extends EntityComposite> entityCompositeType = (Class<? extends EntityComposite>) unitOfWork.getModuleInstance().getModuleContext().getModuleBinding().lookupClass( entityId.getCompositeType() );
+        Class<? extends EntityComposite> entityCompositeType = (Class<? extends EntityComposite>) unitOfWork.getModuleInstance().moduleContext().getModuleBinding().findClass( entityId.getCompositeType(), Visibility.module );
         return (T) unitOfWork.getReference( entityId.getIdentity(), entityCompositeType );
     }
 

@@ -19,7 +19,6 @@ import java.util.Map;
 import org.qi4j.composite.Composite;
 import org.qi4j.runtime.composite.CompositeContext;
 import org.qi4j.runtime.composite.ObjectContext;
-import org.qi4j.service.ServiceFinder;
 import org.qi4j.spi.structure.ModuleBinding;
 
 /**
@@ -45,13 +44,10 @@ public final class ModuleContext
         return moduleBinding;
     }
 
-    public ModuleInstance newModuleInstance( Map<Class<? extends Composite>, ModuleInstance> modulesForPublicComposites,
-                                             Map<Class, ModuleInstance> modulesForPublicObjects,
-                                             Map<Class, ModuleInstance> moduleForPublicMixinTypes,
-                                             ServiceFinder layerServiceLocator )
+    public ModuleInstance newModuleInstance(
+        LayerInstance layerInstance )
     {
-
-        ModuleInstance moduleInstance = new ModuleInstance( this, modulesForPublicComposites, modulesForPublicObjects, moduleForPublicMixinTypes, layerServiceLocator );
+        ModuleInstance moduleInstance = new ModuleInstance( this, layerInstance );
         return moduleInstance;
     }
 

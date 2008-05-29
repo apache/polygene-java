@@ -31,6 +31,7 @@ import org.qi4j.runtime.entity.UnitOfWorkInstance;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
+import org.qi4j.structure.Visibility;
 
 /**
  * Default implementation of {@link Query}
@@ -136,7 +137,7 @@ final class QueryImpl<T>
 
             if( foundEntity != null )
             {
-                final Class<T> entityType = unitOfWorkInstance.getModuleInstance().getModuleContext().getModuleBinding().lookupClass( foundEntity.getCompositeType() );
+                final Class<T> entityType = unitOfWorkInstance.getModuleInstance().moduleContext().getModuleBinding().findClass( foundEntity.getCompositeType(), Visibility.module );
                 // TODO shall we throw an exception if class cannot be found?
                 final T entity = unitOfWorkInstance.getReference( foundEntity.getIdentity(), entityType );
                 return entity;
@@ -191,7 +192,7 @@ final class QueryImpl<T>
 
             for( final QualifiedIdentity foundEntity : foundEntities )
             {
-                final Class<T> entityType = unitOfWorkInstance.getModuleInstance().getModuleContext().getModuleBinding().lookupClass( foundEntity.getCompositeType() );
+                final Class<T> entityType = unitOfWorkInstance.getModuleInstance().moduleContext().getModuleBinding().findClass( foundEntity.getCompositeType(), Visibility.module );
                 // TODO shall we throw an exception if class cannot be found?
                 final T entity = unitOfWorkInstance.getReference( foundEntity.getIdentity(), entityType );
                 entities.add( entity );

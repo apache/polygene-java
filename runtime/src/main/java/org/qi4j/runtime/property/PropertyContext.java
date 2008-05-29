@@ -59,7 +59,7 @@ public final class PropertyContext
             if( Composite.class.isAssignableFrom( propertyType ) )
             {
                 Class<? extends Composite> propertyCompositeType = (Class<? extends Composite>) propertyType;
-                CompositeBuilder<? extends Composite> cb = moduleInstance.getStructureContext().getCompositeBuilderFactory().newCompositeBuilder( propertyCompositeType );
+                CompositeBuilder<? extends Composite> cb = moduleInstance.structureContext().getCompositeBuilderFactory().newCompositeBuilder( propertyCompositeType );
                 cb.use( value );
                 cb.use( propertyBinding );
                 return Property.class.cast( cb.newInstance() );
@@ -95,7 +95,7 @@ public final class PropertyContext
             if( Composite.class.isAssignableFrom( propertyType ) )
             {
                 Class<? extends Composite> propertyCompositeType = (Class<? extends Composite>) propertyType;
-                CompositeBuilder<? extends Composite> cb = moduleInstance.getStructureContext().getCompositeBuilderFactory().newCompositeBuilder( propertyCompositeType );
+                CompositeBuilder<? extends Composite> cb = moduleInstance.structureContext().getCompositeBuilderFactory().newCompositeBuilder( propertyCompositeType );
                 cb.use( entityState );
                 cb.use( propertyBinding );
                 return Property.class.cast( cb.newInstance() );

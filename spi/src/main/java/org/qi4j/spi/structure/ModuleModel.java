@@ -16,8 +16,10 @@ package org.qi4j.spi.structure;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.Map;
 import org.qi4j.service.ServiceDescriptor;
+import org.qi4j.structure.Visibility;
 
 /**
  * TODO
@@ -32,6 +34,7 @@ public final class ModuleModel
     private Iterable<ServiceDescriptor> serviceDescriptors;
     private Map<Method, PropertyDescriptor> propertyDescriptors;
     private Map<Method, AssociationDescriptor> associationDescriptors;
+    private Map<Visibility, Map<String, Class>> classMappings;
 
     public ModuleModel( String name, Iterable<CompositeDescriptor> compositeDescriptors,
                         Iterable<ObjectDescriptor> objectDescriptors,
@@ -45,6 +48,24 @@ public final class ModuleModel
         this.serviceDescriptors = serviceDescriptors;
         this.propertyDescriptors = propertyDescriptors;
         this.associationDescriptors = associationDescriptors;
+
+        // Mapping for string->class lookups
+        classMappings = new HashMap<Visibility, Map<String, Class>>();
+        classMappings.put( Visibility.module, new HashMap<String, Class>() );
+        classMappings.put( Visibility.layer, new HashMap<String, Class>() );
+        classMappings.put( Visibility.application, new HashMap<String, Class>() );
+
+        for( CompositeDescriptor compositeDescriptor : compositeDescriptors )
+        {
+            classMappings.get( compositeDescriptor.getVisibility() )
+                .put( compositeDescriptor.getCompositeModel().getCompositeType().getName(), compositeDescriptor.getCompositeModel().getCompositeType() );
+        }
+
+        for( ObjectDescriptor objectDescriptor : objectDescriptors )
+        {
+            classMappings.get( objectDescriptor.getVisibility() )
+                .put( objectDescriptor.getObjectModel().getModelClass().getName(), objectDescriptor.getObjectModel().getModelClass() );
+        }
     }
 
     public String getName()
@@ -52,17 +73,17 @@ public final class ModuleModel
         return name;
     }
 
-    public Iterable<CompositeDescriptor> getCompositeDescriptors()
+    public Iterable<CompositeDescriptor> compositeDescriptors()
     {
         return compositeDescriptors;
     }
 
-    public Iterable<ObjectDescriptor> getObjectDescriptors()
+    public Iterable<ObjectDescriptor> objectDescriptors()
     {
         return objectDescriptors;
     }
 
-    public Iterable<ServiceDescriptor> getServiceDescriptors()
+    public Iterable<ServiceDescriptor> serviceDescriptors()
     {
         return serviceDescriptors;
     }
@@ -75,6 +96,11 @@ public final class ModuleModel
     public AssociationDescriptor getAssociationDescriptor( Method associationMethod )
     {
         return associationDescriptors.get( associationMethod );
+    }
+
+    public Class getClass( String name, Visibility visibility )
+    {
+        return classMappings.get( visibility ).get( name );
     }
 
     @Override public String toString()

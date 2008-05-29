@@ -16,8 +16,8 @@ package org.qi4j.runtime.entity.association;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Set;
 import java.util.List;
+import java.util.Set;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.entity.association.AbstractAssociation;
@@ -53,7 +53,7 @@ public final class AssociationContext
             if( Composite.class.isAssignableFrom( associationType ) )
             {
                 Class<? extends Composite> associationCompositeType = (Class<? extends Composite>) associationType;
-                CompositeBuilder<? extends Composite> cb = unitOfWork.getModuleInstance().getStructureContext().getCompositeBuilderFactory().newCompositeBuilder( associationCompositeType );
+                CompositeBuilder<? extends Composite> cb = unitOfWork.getModuleInstance().structureContext().getCompositeBuilderFactory().newCompositeBuilder( associationCompositeType );
                 cb.use( value );
                 cb.use( associationBinding );
                 return AbstractAssociation.class.cast( cb.newInstance() );

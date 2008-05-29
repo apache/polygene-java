@@ -16,42 +16,30 @@ package org.qi4j.runtime.structure;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import org.qi4j.composite.Composite;
 import org.qi4j.service.Activatable;
-import org.qi4j.service.ServiceFinder;
 import org.qi4j.service.ServiceReference;
+import org.qi4j.structure.Visibility;
 
 /**
  * TODO
  */
 public final class LayerInstance
-    implements Activatable, ServiceFinder
+    implements Activatable
 {
     private LayerContext layerContext;
     private List<ModuleInstance> moduleInstances;
-    private Map<Class<? extends Composite>, ModuleInstance> publicCompositeModules;
-    private Map<Class, ModuleInstance> publicObjectModules;
-    private Map<Class, List<ModuleInstance>> publicServiceModules;
-    private ServiceFinder serviceLocator;
-    private Map<Class, ModuleInstance> publicMixinModules;
+    private Iterable<LayerInstance> usedLayers;
 
 
-    public LayerInstance( LayerContext layerContext, List<ModuleInstance> moduleInstances,
-                          Map<Class<? extends Composite>, ModuleInstance> publicCompositeModules,
-                          Map<Class, ModuleInstance> publicObjectModules,
-                          Map<Class, ModuleInstance> publicMixinModules,
-                          Map<Class, List<ModuleInstance>> publicServiceModules,
-                          ServiceFinder serviceLocator )
+    public LayerInstance( LayerContext layerContext,
+                          List<ModuleInstance> moduleInstances,
+                          Iterable<LayerInstance> usedLayers )
     {
-        this.serviceLocator = serviceLocator;
-        this.publicServiceModules = publicServiceModules;
-        this.publicObjectModules = publicObjectModules;
-        this.publicMixinModules = publicMixinModules;
-        this.publicCompositeModules = publicCompositeModules;
         this.layerContext = layerContext;
         this.moduleInstances = moduleInstances;
+        this.usedLayers = usedLayers;
     }
 
     public LayerContext getLayerContext()
@@ -63,7 +51,7 @@ public final class LayerInstance
     {
         for( ModuleInstance moduleInstance : moduleInstances )
         {
-            if( moduleInstance.getModuleContext().getModuleBinding().getModuleResolution().getModuleModel().getName().equals( name ) )
+            if( moduleInstance.moduleContext().getModuleBinding().getModuleResolution().getModuleModel().getName().equals( name ) )
             {
                 return moduleInstance;
             }
@@ -77,75 +65,62 @@ public final class LayerInstance
         return moduleInstances;
     }
 
-    public Map<Class<? extends Composite>, ModuleInstance> getPublicCompositeModules()
+    public Iterable<LayerInstance> getUsedLayers()
     {
-        return publicCompositeModules;
-    }
-
-    public Map<Class, ModuleInstance> getPublicObjectModules()
-    {
-        return publicObjectModules;
-    }
-
-    public Map<Class, ModuleInstance> getPublicMixinModules()
-    {
-        return publicMixinModules;
-    }
-
-    public Map<Class, List<ModuleInstance>> getPublicServiceModules()
-    {
-        return publicServiceModules;
+        return usedLayers;
     }
 
     /**
-     * Lookup a public Service implemented by a Module in this Layer
+     * Lookup a Service implemented by a Module in this Layer
      *
      * @param serviceType
+     * @param visibility
      * @return
      */
-    public <T> ServiceReference<T> findService( Class<T> serviceType )
+    public <T> ServiceReference<T> findService( Class<T> serviceType, Visibility visibility )
     {
-        List<ModuleInstance> modulesForService = publicServiceModules.get( serviceType );
-        if( modulesForService != null )
+        for( ModuleInstance moduleInstance : moduleInstances )
         {
-            for( ModuleInstance moduleInstance : modulesForService )
+            ServiceReference<T> serviceRef = moduleInstance.findService( serviceType, visibility );
+            if( serviceRef != null )
             {
-                ServiceReference<T> serviceReference = moduleInstance.findService( serviceType );
-                if( serviceReference != null )
-                {
-                    return serviceReference;
-                }
+                return serviceRef;
             }
         }
+
         return null;
     }
 
     /**
-     * Lookup public Services implemented by Modules in this Layer
+     * Lookup Services implemented by Modules in this Layer
      *
      * @param serviceType
+     * @param visibility
      * @return
      */
-    public <T> Iterable<ServiceReference<T>> findServices( Class<T> serviceType )
+    public <T> Iterable<ServiceReference<T>> findServices( Class<T> serviceType, Visibility visibility )
     {
-        List<ModuleInstance> modulesForService = publicServiceModules.get( serviceType );
-        if( modulesForService != null )
+        List<ServiceReference<T>> services = null;
+        for( ModuleInstance moduleInstance : moduleInstances )
         {
-            List<ServiceReference<T>> serviceRefs = new ArrayList<ServiceReference<T>>();
-            for( ModuleInstance moduleInstance : modulesForService )
+            Iterator<ServiceReference<T>> serviceRefs = moduleInstance.findServices( serviceType, visibility ).iterator();
+            if( serviceRefs.hasNext() && services == null )
             {
-                Iterable<ServiceReference<T>> serviceReferences = moduleInstance.findServices( serviceType );
-                for( ServiceReference<T> serviceReference : serviceReferences )
-                {
-                    serviceRefs.add( serviceReference );
-                }
+                services = new ArrayList<ServiceReference<T>>();
             }
-            return serviceRefs;
+
+            while( serviceRefs.hasNext() )
+            {
+                services.add( serviceRefs.next() );
+            }
         }
-        else
+
+        if( services == null )
         {
-            return Collections.emptyList();
+            services = Collections.EMPTY_LIST;
         }
+
+        return services;
     }
 
     public void activate() throws Exception

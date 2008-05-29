@@ -71,9 +71,9 @@ public final class ObjectContext
 
     public Object newObjectInstance( ModuleInstance moduleInstance, Set<Object> uses )
     {
-        ObjectInjectionContext objectInjectionContext = new ObjectInjectionContext( moduleInstance.getStructureContext(),
-                                                                                    moduleInstance.getModule(),
-                                                                                    moduleInstance.getModuleContext().getModuleBinding(),
+        ObjectInjectionContext objectInjectionContext = new ObjectInjectionContext( moduleInstance.structureContext(),
+                                                                                    moduleInstance.module(),
+                                                                                    moduleInstance.moduleContext().getModuleBinding(),
                                                                                     uses );
         Object objectInstance = instanceFactory.newInstance( objectBinding, objectInjectionContext );
 
@@ -83,9 +83,9 @@ public final class ObjectContext
 
     public void inject( Object instance, ModuleInstance moduleInstance, Set<Object> uses )
     {
-        ObjectInjectionContext objectInjectionContext = new ObjectInjectionContext( moduleInstance.getStructureContext(),
-                                                                                    moduleInstance.getModule(),
-                                                                                    moduleInstance.getModuleContext().getModuleBinding(),
+        ObjectInjectionContext objectInjectionContext = new ObjectInjectionContext( moduleInstance.structureContext(),
+                                                                                    moduleInstance.module(),
+                                                                                    moduleInstance.moduleContext().getModuleBinding(),
                                                                                     uses );
         instanceFactory.inject( instance, objectBinding, objectInjectionContext );
     }

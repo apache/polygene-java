@@ -100,21 +100,21 @@ public abstract class SingletonAssembler
 
     public final CompositeBuilderFactory getCompositeBuilderFactory()
     {
-        return moduleInstance.getStructureContext().getCompositeBuilderFactory();
+        return moduleInstance.structureContext().getCompositeBuilderFactory();
     }
 
     public final ObjectBuilderFactory getObjectBuilderFactory()
     {
-        return moduleInstance.getStructureContext().getObjectBuilderFactory();
+        return moduleInstance.structureContext().getObjectBuilderFactory();
     }
 
     public final UnitOfWorkFactory getUnitOfWorkFactory()
     {
-        return moduleInstance.getStructureContext().getUnitOfWorkFactory();
+        return moduleInstance.structureContext().getUnitOfWorkFactory();
     }
 
     public final ServiceFinder getServiceLocator()
     {
-        return moduleInstance.getStructureContext().getServiceLocator();
+        return moduleInstance.structureContext().getServiceLocator();
     }
 }

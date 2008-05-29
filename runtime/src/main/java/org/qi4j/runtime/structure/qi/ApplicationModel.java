@@ -1,0 +1,68 @@
+/*
+ * Copyright (c) 2008, Rickard …berg. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
+package org.qi4j.runtime.structure.qi;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.qi4j.runtime.composite.qi.BindingContext;
+
+/**
+ * TODO
+ */
+public class ApplicationModel
+{
+    private List<LayerModel> layers;
+
+    public ApplicationModel( List<LayerModel> layers )
+    {
+        this.layers = layers;
+    }
+
+    // Binding
+    public void bind()
+    {
+        BindingContext bindingContext = new BindingContext( this, null, null, null );
+        for( LayerModel layer : layers )
+        {
+            layer.bind( bindingContext );
+        }
+    }
+
+    // Context
+    public ApplicationInstance newInstance()
+    {
+        List<LayerInstance> layerInstances = new ArrayList<LayerInstance>();
+        ApplicationInstance applicationInstance = new ApplicationInstance( this, layerInstances );
+
+        Map<LayerModel, LayerInstance> layerInstanceMap = new HashMap<LayerModel, LayerInstance>();
+        for( LayerModel layer : layers )
+        {
+            List<LayerModel> usedLayers = layer.usedLayers();
+            List<LayerInstance> usedLayerInstances = new ArrayList<LayerInstance>();
+            for( LayerModel usedLayer : usedLayers )
+            {
+                usedLayerInstances.add( layerInstanceMap.get( usedLayer ) );
+            }
+
+            LayerInstance layerInstance = layer.newInstance( applicationInstance, usedLayerInstances );
+            layerInstances.add( layerInstance );
+            layerInstanceMap.put( layer, layerInstance );
+        }
+
+        return applicationInstance;
+    }
+}

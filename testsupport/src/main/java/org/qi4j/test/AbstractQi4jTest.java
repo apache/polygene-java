@@ -64,10 +64,10 @@ public abstract class AbstractQi4jTest
         // Assume only one module
         layerInstance = application.getLayerInstances().iterator().next();
         moduleInstance = layerInstance.getModuleInstances().iterator().next();
-        compositeBuilderFactory = moduleInstance.getStructureContext().getCompositeBuilderFactory();
-        objectBuilderFactory = moduleInstance.getStructureContext().getObjectBuilderFactory();
-        unitOfWorkFactory = moduleInstance.getStructureContext().getUnitOfWorkFactory();
-        serviceLocator = moduleInstance.getStructureContext().getServiceLocator();
+        compositeBuilderFactory = moduleInstance.structureContext().getCompositeBuilderFactory();
+        objectBuilderFactory = moduleInstance.structureContext().getObjectBuilderFactory();
+        unitOfWorkFactory = moduleInstance.structureContext().getUnitOfWorkFactory();
+        serviceLocator = moduleInstance.structureContext().getServiceLocator();
     }
 
     protected ApplicationInstance newApplication()

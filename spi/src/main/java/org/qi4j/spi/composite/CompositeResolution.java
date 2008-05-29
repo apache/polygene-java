@@ -29,7 +29,11 @@ public final class CompositeResolution
     private Iterable<PropertyResolution> propertyResolutions;
     private Iterable<AssociationResolution> associationResolutions;
 
-    public CompositeResolution( CompositeDescriptor compositeDescriptor, Iterable<CompositeMethodResolution> compositeMethodResolutions, Collection<MixinResolution> mixinResolutions, Iterable<PropertyResolution> propertyResolutions, Iterable<AssociationResolution> associationResolutions )
+    public CompositeResolution( CompositeDescriptor compositeDescriptor,
+                                Iterable<CompositeMethodResolution> compositeMethodResolutions,
+                                Collection<MixinResolution> mixinResolutions,
+                                Iterable<PropertyResolution> propertyResolutions,
+                                Iterable<AssociationResolution> associationResolutions )
     {
         this.associationResolutions = associationResolutions;
         this.propertyResolutions = propertyResolutions;

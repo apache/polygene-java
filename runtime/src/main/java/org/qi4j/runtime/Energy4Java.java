@@ -50,7 +50,6 @@ import org.qi4j.runtime.injection.ModifiesInjectionProviderFactory;
 import org.qi4j.runtime.injection.PropertyInjectionProviderFactory;
 import org.qi4j.runtime.injection.ServiceInjectionProviderFactory;
 import org.qi4j.runtime.injection.StructureInjectionProviderFactory;
-import org.qi4j.runtime.injection.ThisInjectionProviderFactory;
 import org.qi4j.runtime.injection.UsesInjectionProviderFactory;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.service.Configuration;
@@ -83,7 +82,7 @@ public final class Energy4Java
     public Energy4Java( Qi4jRuntime delegate )
     {
         Map<Class<? extends Annotation>, InjectionProviderFactory> providerFactories = new HashMap<Class<? extends Annotation>, InjectionProviderFactory>();
-        providerFactories.put( This.class, new ThisInjectionProviderFactory() );
+        // providerFactories.put( This.class, new ThisInjectionProviderFactory() );
         ModifiesInjectionProviderFactory modifiesInjectionProviderFactory = new ModifiesInjectionProviderFactory();
         providerFactories.put( ConcernFor.class, modifiesInjectionProviderFactory );
         providerFactories.put( SideEffectFor.class, modifiesInjectionProviderFactory );
@@ -146,7 +145,7 @@ public final class Energy4Java
         return null;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings( "unchecked" )
     public <S extends Composite, T extends S> Class<S> getSuperComposite( Class<T> compositeClass )
     {
         Class<?>[] extendedInterfaces = compositeClass.getInterfaces();
@@ -158,7 +157,7 @@ public final class Energy4Java
                 !ServiceComposite.class.equals( extendedInterface )
                 )
             {
-                return (Class<S>)extendedInterface;
+                return (Class<S>) extendedInterface;
             }
         }
         return null; // No super Composite type found
@@ -188,7 +187,7 @@ public final class Energy4Java
     public CompositeBinding getCompositeBinding( Class<? extends Composite> compositeType, Module module )
     {
         ModuleInstance.ModuleDelegate delegate = (ModuleInstance.ModuleDelegate) module;
-        return delegate.getModuleInstance().getModuleContext().getModuleBinding().getCompositeBinding( compositeType );
+        return delegate.getModuleInstance().findCompositeBinding( compositeType );
     }
 
     // Runtime

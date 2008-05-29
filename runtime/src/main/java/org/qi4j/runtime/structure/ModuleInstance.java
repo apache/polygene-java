@@ -38,17 +38,19 @@ import org.qi4j.service.ServiceDescriptor;
 import org.qi4j.service.ServiceFinder;
 import org.qi4j.service.ServiceInstanceProvider;
 import org.qi4j.service.ServiceReference;
+import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.injection.StructureContext;
 import org.qi4j.spi.structure.ModuleBinding;
 import org.qi4j.spi.structure.ModuleModel;
 import org.qi4j.spi.structure.ModuleResolution;
 import org.qi4j.structure.Module;
+import org.qi4j.structure.Visibility;
 
 /**
  * Instance of a Module.
  */
 public final class ModuleInstance
-    implements Activatable, ServiceFinder
+    implements Activatable
 {
     static final ModuleInstance DUMMY = new ModuleInstance();
 
@@ -69,10 +71,6 @@ public final class ModuleInstance
     private ModuleContext moduleContext;
     private Module module;
 
-    private Map<Class<? extends Composite>, ModuleInstance> moduleForPublicComposites;
-    private Map<Class, ModuleInstance> moduleForPublicObjects;
-    private Map<Class, ModuleInstance> moduleForPublicMixinTypes;
-
     private CompositeBuilderFactory compositeBuilderFactory;
     private ObjectBuilderFactory objectBuilderFactory;
     private UnitOfWorkFactory unitOfWorkFactory;
@@ -87,6 +85,7 @@ public final class ModuleInstance
 
     // For each type there may be zero, one or many active instances
     private Map<Class<?>, List<ServiceReferenceInstance>> serviceReferences = new HashMap<Class<?>, List<ServiceReferenceInstance>>();
+    private LayerInstance layerInstance;
 
 
     private ModuleInstance()
@@ -95,26 +94,21 @@ public final class ModuleInstance
     }
 
     public ModuleInstance( ModuleContext moduleContext,
-                           Map<Class<? extends Composite>, ModuleInstance> moduleInstances,
-                           Map<Class, ModuleInstance> moduleForPublicObjects,
-                           Map<Class, ModuleInstance> moduleForPublicMixinTypes,
-                           ServiceFinder layerServiceLocator )
+                           LayerInstance layerInstance )
     {
-        this.moduleForPublicObjects = moduleForPublicObjects;
-        this.moduleForPublicComposites = moduleInstances;
         this.moduleContext = moduleContext;
-        this.moduleForPublicMixinTypes = moduleForPublicMixinTypes;
+        this.layerInstance = layerInstance;
         this.module = new ModuleDelegate();
 
         compositeBuilderFactory = new ModuleCompositeBuilderFactory( this );
         objectBuilderFactory = new ModuleObjectBuilderFactory( this );
         unitOfWorkFactory = new UnitOfWorkFactoryImpl( this );
-        serviceLocator = new ModuleServiceLocator( this, layerServiceLocator );
+        serviceLocator = new ModuleServiceLocator( this );
 
         structureContext = new StructureContext( compositeBuilderFactory, objectBuilderFactory, unitOfWorkFactory, serviceLocator );
 
         // Create service instances
-        Iterable<ServiceDescriptor> serviceDescriptors = getModuleContext().getModuleBinding().getModuleResolution().getModuleModel().getServiceDescriptors();
+        Iterable<ServiceDescriptor> serviceDescriptors = moduleContext().getModuleBinding().getModuleResolution().getModuleModel().serviceDescriptors();
         for( ServiceDescriptor serviceDescriptor : serviceDescriptors )
         {
             Class<? extends ServiceInstanceProvider> providerType = serviceDescriptor.serviceProvider();
@@ -150,42 +144,46 @@ public final class ModuleInstance
         }
     }
 
-    public ModuleContext getModuleContext()
+    public ModuleContext moduleContext()
     {
         return moduleContext;
     }
 
-    public StructureContext getStructureContext()
+    public StructureContext structureContext()
     {
         return structureContext;
     }
 
-    public Module getModule()
+    public Module module()
     {
         return module;
     }
 
     /**
-     * Lookup a service for a particular type. Only look in the local Module; do not try
+     * Get a service for a particular type. Only look in the local Module; do not try
      * and delegate to the Layer.
      *
      * @param serviceType the type of the service to lookup
+     * @param visibility
      * @return a service reference to the found service, or null if no service matching the type was found
      */
-    public <T> ServiceReference<T> findService( Class<T> serviceType )
+    public <T> ServiceReference<T> findService( Class<T> serviceType, Visibility visibility )
     {
         List<ServiceReferenceInstance> serviceRefs = serviceReferences.get( serviceType );
         if( serviceRefs != null )
         {
-            if( !serviceRefs.isEmpty() )
+            for( ServiceReferenceInstance serviceRef : serviceRefs )
             {
-                return (ServiceReference<T>) serviceRefs.get( 0 );
+                if( serviceRef.getServiceDescriptor().visibility() == visibility )
+                {
+                    return (ServiceReference<T>) serviceRef;
+                }
             }
         }
         return null;
     }
 
-    public <T> Iterable<ServiceReference<T>> findServices( Class<T> serviceType )
+    public <T> Iterable<ServiceReference<T>> findServices( Class<T> serviceType, Visibility visibility )
     {
         List<ServiceReferenceInstance> serviceRefs = serviceReferences.get( serviceType );
         if( serviceRefs == null )
@@ -193,23 +191,17 @@ public final class ModuleInstance
             return Collections.emptyList();
         }
 
-        // TODO: Can this be done without copying the list?? Generics issue...
-        List<ServiceReference<T>> typedServiceRefs = new ArrayList<ServiceReference<T>>( serviceRefs.size() );
+        List<ServiceReference<T>> services = new ArrayList<ServiceReference<T>>();
         for( ServiceReferenceInstance serviceRef : serviceRefs )
         {
-            typedServiceRefs.add( serviceRef );
+            if( serviceRef.getServiceDescriptor().visibility() == visibility )
+            {
+                ServiceReference<T> service = (ServiceReference<T>) serviceRef;
+                services.add( service );
+            }
         }
-        return typedServiceRefs;
-    }
 
-    public ModuleInstance getModuleForPublicComposite( Class<? extends Composite> compositeType )
-    {
-        return moduleForPublicComposites.get( compositeType );
-    }
-
-    public ModuleInstance getModuleForPublicObject( Class objectType )
-    {
-        return moduleForPublicObjects.get( objectType );
+        return services;
     }
 
     // Activatable implementation
@@ -262,6 +254,7 @@ public final class ModuleInstance
 
     public ModuleInstance moduleForMixinType( Class<?> mixinType )
     {
+/*
         ModuleInstance module = moduleForPublicMixinTypes.get( mixinType );
         if( module == null )
         {
@@ -272,29 +265,40 @@ public final class ModuleInstance
             return null;
         }
         return module;
+*/
+        return null;
     }
 
-    public ModuleInstance moduleForComposite( Class<? extends Composite> compositeType )
+    public ModuleInstance findModuleForCompositeType( Class<? extends Composite> compositeType )
     {
+/*
+        // Check local module
+        moduleContext.getModuleBinding().findCompositeBinding(  )
+
         ModuleInstance realInstance = getModuleForPublicComposite( compositeType );
         if( realInstance == null )
         {
             realInstance = this;
         }
         return realInstance;
+*/
+        return null;
     }
 
     public ModuleInstance moduleForObject( Class<?> objectType )
     {
+/*
         ModuleInstance realInstance = getModuleForPublicObject( objectType );
         if( realInstance == null )
         {
             realInstance = this;
         }
         return realInstance;
+*/
+        return null;
     }
 
-    public Class<? extends Composite> lookupCompositeType( Class<?> mixinType )
+    public Class<? extends Composite> findCompositeType( Class<?> mixinType )
     {
         Class<? extends Composite> compositeType;
         if( !Composite.class.isAssignableFrom( mixinType ) )
@@ -304,7 +308,7 @@ public final class ModuleInstance
             if( module == null )
             {
             }
-            ModuleContext moduleContext = module.getModuleContext();
+            ModuleContext moduleContext = module.moduleContext();
             compositeType1 = moduleContext.getCompositeForMixinType( mixinType );
             if( compositeType1 == Composite.class )
             {
@@ -327,22 +331,6 @@ public final class ModuleInstance
             compositeType = (Class<? extends Composite>) mixinType;
         }
         return compositeType;
-    }
-
-    public boolean isPublic( Class<?> compositeOrObject )
-    {
-        return false;
-    }
-
-    public Class lookupClass( String className )
-        throws ClassNotFoundException
-    {
-        Class aClass = moduleContext.getModuleBinding().lookupClass( className );
-        if( aClass == null )
-        {
-            throw new ClassNotFoundException( className );
-        }
-        return aClass;
     }
 
     private void setActivationStatus( ActivationStatus newStatus )
@@ -379,6 +367,14 @@ public final class ModuleInstance
         return moduleContext.toString();
     }
 
+    public CompositeBinding findCompositeBinding( Class<? extends Composite> compositeType )
+    {
+        // Check module itself
+        // moduleContext.getModuleBinding().findCompositeBinding( compositeType,  )
+
+        return null;
+    }
+
     public final class ModuleDelegate
         implements Module
     {
@@ -394,33 +390,58 @@ public final class ModuleInstance
 
         public Module findModuleForComposite( Class<? extends Composite> compositetype )
         {
-            return ModuleInstance.this.moduleForComposite( compositetype ).getModule();
+            return ModuleInstance.this.findModuleForCompositeType( compositetype ).module();
         }
 
         public Module findModuleForMixinType( Class<?> mixintype )
         {
-            return ModuleInstance.this.moduleForMixinType( mixintype ).getModule();
+            return ModuleInstance.this.moduleForMixinType( mixintype ).module();
         }
 
         public Module findModuleForObject( Class<?> objecttype )
         {
-            return ModuleInstance.this.moduleForObject( objecttype ).getModule();
-        }
-
-        public boolean isPublic( Class<?> compositeOrObject )
-        {
-            return ModuleInstance.this.isPublic( compositeOrObject );
+            return ModuleInstance.this.moduleForObject( objecttype ).module();
         }
 
         public Class<? extends Composite> findCompositeType( Class<?> mixintype )
         {
-            return ModuleInstance.this.lookupCompositeType( mixintype );
+            return ModuleInstance.this.findCompositeType( mixintype );
         }
 
         public Class findClass( String className )
             throws ClassNotFoundException
         {
-            return ModuleInstance.this.lookupClass( className );
+            // Check own Module first
+            Class clazz = ModuleInstance.this.moduleContext().getModuleBinding().findClass( className, Visibility.module );
+
+            // Then check with Layer
+            if( clazz == null )
+            {
+                clazz = ModuleInstance.this.layerInstance.getLayerContext().getLayerBinding().findClass( className, Visibility.layer );
+            }
+
+            // Check used Layers
+            if( clazz == null )
+            {
+                Iterable<LayerInstance> usedLayers = ModuleInstance.this.layerInstance.getUsedLayers();
+                for( LayerInstance usedLayer : usedLayers )
+                {
+                    clazz = usedLayer.getLayerContext().getLayerBinding().findClass( className, Visibility.application );
+                    if( clazz != null )
+                    {
+                        return clazz;
+                    }
+                }
+            }
+
+            if( clazz == null )
+            {
+                throw new ClassNotFoundException( className );
+            }
+            else
+            {
+                return clazz;
+            }
         }
 
         public <T> ServiceReference<T> findService( Class<T> serviceType )

@@ -15,6 +15,7 @@
 package org.qi4j.spi.structure;
 
 import java.io.Serializable;
+import org.qi4j.structure.Visibility;
 
 /**
  * TODO
@@ -39,6 +40,20 @@ public final class LayerBinding
     public Iterable<ModuleBinding> getModuleBindings()
     {
         return moduleBindings;
+    }
+
+    public Class findClass( String className, Visibility visibility )
+    {
+        for( ModuleBinding moduleBinding : moduleBindings )
+        {
+            Class clazz = moduleBinding.findClass( className, visibility );
+            if( clazz != null )
+            {
+                return clazz;
+            }
+        }
+
+        return null;
     }
 
     @Override public String toString()

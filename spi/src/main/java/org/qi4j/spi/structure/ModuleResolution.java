@@ -56,7 +56,7 @@ public final class ModuleResolution
         this.availableServices = new HashMap<Class, ServiceDescriptor>();
 
         // Add extended interfaces, unless they have been specifically registered already
-        for( ServiceDescriptor serviceDescriptor : moduleModel.getServiceDescriptors() )
+        for( ServiceDescriptor serviceDescriptor : moduleModel.serviceDescriptors() )
         {
             Class serviceType = serviceDescriptor.serviceType();
             availableServices.put( serviceType, serviceDescriptor );
@@ -92,6 +92,11 @@ public final class ModuleResolution
     public List<ObjectResolution> getObjectResolutions()
     {
         return objectResolutions;
+    }
+
+    public CompositeResolution findCompositeResolution( Class compositeType )
+    {
+        return null;
     }
 
     public ServiceDescriptor getServiceDescriptor( Class serviceType )

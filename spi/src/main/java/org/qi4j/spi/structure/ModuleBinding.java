@@ -15,11 +15,11 @@
 package org.qi4j.spi.structure;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.Map;
 import org.qi4j.composite.Composite;
 import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.composite.ObjectBinding;
+import org.qi4j.structure.Visibility;
 
 /**
  * TODO
@@ -30,26 +30,18 @@ public final class ModuleBinding
     private ModuleResolution moduleResolution;
     private Map<Class, ObjectBinding> objectBindings;
 
+    private LayerBinding layerBinding;
     private Map<Class<? extends Composite>, CompositeBinding> compositeBindings;
-    private Map<String, Class> classMappings;
 
-    public ModuleBinding( ModuleResolution moduleResolution, Map<Class<? extends Composite>, CompositeBinding> compositeBindingMap, Map<Class, ObjectBinding> objectBindings )
+    public ModuleBinding( ModuleResolution moduleResolution,
+                          LayerBinding layerBinding,
+                          Map<Class<? extends Composite>, CompositeBinding> compositeBindingMap,
+                          Map<Class, ObjectBinding> objectBindings )
     {
+        this.layerBinding = layerBinding;
         this.compositeBindings = compositeBindingMap;
         this.moduleResolution = moduleResolution;
         this.objectBindings = objectBindings;
-
-        // Mapping for string->class lookups
-        classMappings = new HashMap<String, Class>();
-        for( Class<? extends Composite> compositeClass : compositeBindingMap.keySet() )
-        {
-            classMappings.put( compositeClass.getName(), compositeClass );
-        }
-
-        for( Class objectClass : objectBindings.keySet() )
-        {
-            classMappings.put( objectClass.getName(), objectClass );
-        }
     }
 
     public ModuleResolution getModuleResolution()
@@ -62,11 +54,11 @@ public final class ModuleBinding
         return compositeBindings;
     }
 
-    public CompositeBinding getCompositeBinding( Class type )
+    public CompositeBinding findCompositeBinding( Class type, Visibility visibility )
     {
         for( Map.Entry<Class<? extends Composite>, CompositeBinding> entry : compositeBindings.entrySet() )
         {
-            if( type.isAssignableFrom( entry.getKey() ) )
+            if( type.isAssignableFrom( entry.getKey() ) && entry.getValue().getCompositeResolution().getCompositeDescriptor().getVisibility().equals( visibility ) )
             {
                 return entry.getValue();
             }
@@ -80,9 +72,42 @@ public final class ModuleBinding
         return objectBindings;
     }
 
-    public Class lookupClass( String name )
+    public ObjectBinding findObjectBinding( Class type, Visibility visibility )
     {
-        return classMappings.get( name );
+
+
+        for( Map.Entry<Class, ObjectBinding> entry : objectBindings.entrySet() )
+        {
+            if( type.isAssignableFrom( entry.getKey() ) && entry.getValue().getObjectResolution().getObjectDescriptor().getVisibility().equals( visibility ) )
+            {
+                return entry.getValue();
+            }
+        }
+
+        return null; // No Object bound which matches this type
+    }
+
+    public Class<? extends Composite> findCompositeType( Class<?> mixinType )
+    {
+/*
+        // Check the same module
+        Class<? extends Composite> compositeType = moduleResolution.findCompositeType(mixinType);
+        
+        if (compositeType != null)
+            return compositeType;
+        
+        // Check the same layer
+        compositeType = layerBinding.getLayerResolution().findCompositeType(mixinType);
+        
+        // Check the used layers
+        return layerBinding.findCompositeType(mixinType);
+*/
+        return null;
+    }
+
+    public Class findClass( String name, Visibility visibility )
+    {
+        return moduleResolution.getModuleModel().getClass( name, visibility );
     }
 
     @Override public String toString()

@@ -37,6 +37,11 @@ public final class ImmutablePropertyInstance<T> extends ComputedPropertyInstance
         this( new GenericPropertyInfo( accessor ), value );
     }
 
+    public ImmutablePropertyInstance( Class declaringClass, String accessorName, T value )
+    {
+        this( new GenericPropertyInfo( declaringClass, accessorName ), value );
+    }
+
     public ImmutablePropertyInstance( PropertyInfo info, T value )
     {
         super( info );

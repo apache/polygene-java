@@ -173,7 +173,7 @@ public final class ApplicationBuilder
 
             // Add public Composites in Module to Layer
             // Must be explicitly marked as public in the Layer to be added!
-            Iterable<CompositeDescriptor> moduleComposites = moduleModel.getCompositeDescriptors();
+            Iterable<CompositeDescriptor> moduleComposites = moduleModel.compositeDescriptors();
             for( CompositeDescriptor moduleComposite : moduleComposites )
             {
                 if( moduleComposite.getVisibility() == Visibility.layer || moduleComposite.getVisibility() == Visibility.application )
@@ -184,7 +184,7 @@ public final class ApplicationBuilder
 
             // Add public Objects in Module to Layer
             // Must be explicitly marked as public in the Layer to be added!
-            Iterable<ObjectDescriptor> moduleObjects = moduleModel.getObjectDescriptors();
+            Iterable<ObjectDescriptor> moduleObjects = moduleModel.objectDescriptors();
             for( ObjectDescriptor moduleObject : moduleObjects )
             {
                 if( moduleObject.getVisibility() == Visibility.layer || moduleObject.getVisibility() == Visibility.application )
@@ -221,15 +221,16 @@ public final class ApplicationBuilder
     private LayerBinding newLayerBinding( LayerResolution layerResolution )
     {
         List<ModuleBinding> moduleBindings = new ArrayList<ModuleBinding>();
+        LayerBinding layerBinding = new LayerBinding( applicationBinding, layerResolution, moduleBindings );
         for( ModuleResolution moduleResolution : layerResolution.getModuleResolutions() )
         {
-            ModuleBinding moduleBinding = newModuleBinding( layerResolution, moduleResolution );
+            ModuleBinding moduleBinding = newModuleBinding( layerBinding, moduleResolution );
             moduleBindings.add( moduleBinding );
         }
 
         // TODO Order modules according to inter-dependencies
 
-        return new LayerBinding( applicationBinding, layerResolution, moduleBindings );
+        return layerBinding;
     }
 
     private LayerContext newLayerContext( LayerBinding layerBinding )
@@ -430,23 +431,23 @@ public final class ApplicationBuilder
 
         // Resolve Composites in this Module
         List<CompositeResolution> compositeResolutions = new ArrayList<CompositeResolution>();
-        resolveComposites( moduleModel.getCompositeDescriptors(), applicationModel, layerModel, moduleModel, compositeResolutions );
+        resolveComposites( moduleModel.compositeDescriptors(), applicationModel, layerModel, moduleModel, compositeResolutions );
 
         // Resolve objects in this Module
         List<ObjectResolution> objectResolutions = new ArrayList<ObjectResolution>();
-        resolveObjects( moduleModel.getObjectDescriptors(), applicationModel, layerModel, moduleModel, objectResolutions );
+        resolveObjects( moduleModel.objectDescriptors(), applicationModel, layerModel, moduleModel, objectResolutions );
 
         return new ModuleResolution( moduleModel, applicationModel, layerModel, instantiableComposites, compositeResolutions, objectResolutions );
     }
 
-    private ModuleBinding newModuleBinding( LayerResolution layerResolution, ModuleResolution moduleResolution )
+    private ModuleBinding newModuleBinding( LayerBinding layerBinding, ModuleResolution moduleResolution )
     {
         // Bind Composites in this Module
         Map<Class<? extends Composite>, CompositeBinding> compositeBindings = new LinkedHashMap<Class<? extends Composite>, CompositeBinding>();
         Iterable<CompositeResolution> compositeResolutions = moduleResolution.getCompositeResolutions();
         for( CompositeResolution compositeResolution : compositeResolutions )
         {
-            BindingContext bindingContext = new BindingContext( null, null, compositeResolution, moduleResolution, layerResolution, applicationResolution );
+            BindingContext bindingContext = new BindingContext( null, null, compositeResolution, moduleResolution, layerBinding.getLayerResolution(), applicationResolution );
             CompositeBinding compositeBinding = runtime.getCompositeBinder().bindCompositeResolution( bindingContext );
 
             compositeBindings.put( compositeResolution.getCompositeModel().getCompositeType(), compositeBinding );
@@ -456,12 +457,12 @@ public final class ApplicationBuilder
         Map<Class, ObjectBinding> objectBindings = new LinkedHashMap<Class, ObjectBinding>();
         for( ObjectResolution objectResolution : moduleResolution.getObjectResolutions() )
         {
-            BindingContext bindingContext = new BindingContext( null, objectResolution, null, moduleResolution, layerResolution, applicationResolution );
+            BindingContext bindingContext = new BindingContext( null, objectResolution, null, moduleResolution, layerBinding.getLayerResolution(), applicationResolution );
             ObjectBinding objectBinding = runtime.getObjectBinder().bindObject( bindingContext );
             objectBindings.put( objectResolution.getObjectModel().getModelClass(), objectBinding );
         }
 
-        return new ModuleBinding( moduleResolution, compositeBindings, objectBindings );
+        return new ModuleBinding( moduleResolution, layerBinding, compositeBindings, objectBindings );
     }
 
     private ModuleContext newModuleContext(
@@ -594,7 +595,7 @@ public final class ApplicationBuilder
     private Map<Class<? extends Composite>, ModuleModel> getPrivateModuleComposites( ModuleModel moduleModel )
     {
         Map<Class<? extends Composite>, ModuleModel> privateModuleComposites = new LinkedHashMap<Class<? extends Composite>, ModuleModel>();
-        Iterable<CompositeDescriptor> privateComposites = moduleModel.getCompositeDescriptors();
+        Iterable<CompositeDescriptor> privateComposites = moduleModel.compositeDescriptors();
         for( CompositeDescriptor privateComposite : privateComposites )
         {
             if( privateComposite.getVisibility() == Visibility.module )

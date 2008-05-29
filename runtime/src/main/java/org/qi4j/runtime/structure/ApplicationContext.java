@@ -58,25 +58,10 @@ public final class ApplicationContext
             Map<Class, ModuleInstance> availableObjectModules = new HashMap<Class, ModuleInstance>();
             Map<Class, ModuleInstance> availableMixinModules = new HashMap<Class, ModuleInstance>();
             Map<Class, List<ModuleInstance>> availableServiceModules = new HashMap<Class, List<ModuleInstance>>();
-            for( LayerResolution use : uses )
-            {
-                LayerInstance usedLayer = usedLayers.get( use );
 
-                Map<Class<? extends Composite>, ModuleInstance> publicCompositeModules = usedLayer.getPublicCompositeModules();
-                availableCompositeModules.putAll( publicCompositeModules );
+            List<LayerInstance> usedLayerInstances = new ArrayList<LayerInstance>();
 
-                Map<Class, ModuleInstance> publicObjectModules = usedLayer.getPublicObjectModules();
-                availableObjectModules.putAll( publicObjectModules );
-
-                Map<Class, ModuleInstance> publicMixinModules = usedLayer.getPublicMixinModules();
-                availableMixinModules.putAll( publicMixinModules );
-
-                Map<Class, List<ModuleInstance>> publicServiceModules = usedLayer.getPublicServiceModules();
-                // TODO Do proper list insertion
-                availableServiceModules.putAll( publicServiceModules );
-            }
-
-            LayerInstance layerInstance = layerContext.newLayerInstance( availableCompositeModules, availableObjectModules, availableMixinModules, availableServiceModules );
+            LayerInstance layerInstance = layerContext.newLayerInstance( usedLayerInstances );
             layerInstances.add( layerInstance );
             usedLayers.put( layerContext.getLayerBinding().getLayerResolution(), layerInstance );
         }

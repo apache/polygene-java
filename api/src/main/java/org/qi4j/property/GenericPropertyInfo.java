@@ -21,7 +21,9 @@ import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.HashMap;
-import static org.qi4j.property.ComputedPropertyInstance.*;
+import static org.qi4j.property.ComputedPropertyInstance.getName;
+import static org.qi4j.property.ComputedPropertyInstance.getPropertyType;
+import static org.qi4j.property.ComputedPropertyInstance.getQualifiedName;
 
 public final class GenericPropertyInfo
     implements PropertyInfo
@@ -37,6 +39,23 @@ public final class GenericPropertyInfo
         this.name = getName( qualifiedName );
         this.type = getPropertyType( accessor );
         infos = new HashMap<Class<?>, Serializable>();
+    }
+
+    public GenericPropertyInfo( Class declaringClass, String accessorName )
+    {
+        try
+        {
+            Method accessor = declaringClass.getMethod( accessorName );
+
+            this.qualifiedName = getQualifiedName( accessor );
+            this.name = getName( qualifiedName );
+            this.type = getPropertyType( accessor );
+            infos = new HashMap<Class<?>, Serializable>();
+        }
+        catch( NoSuchMethodException e )
+        {
+            throw (InternalError) new InternalError().initCause( e );
+        }
     }
 
     public <T> T metaInfo( Class<T> infoType )
@@ -60,7 +79,7 @@ public final class GenericPropertyInfo
         return type;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings( "unchecked" )
     public <T extends Serializable> void setPropertyInfo( Class<T> infoType, T instance )
     {
         synchronized( infos )

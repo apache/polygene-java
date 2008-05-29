@@ -49,7 +49,7 @@ public final class ObjectResolver
             associationResolutions.put( associationModelName, new AssociationResolution( associationModel ) );
         }
 
-        ObjectResolution objectResolution = new ObjectResolution( objectModel, constructors, fields, methods, propertyResolutions, associationResolutions );
+        ObjectResolution objectResolution = new ObjectResolution( objectDescriptor, objectModel, constructors, fields, methods, propertyResolutions, associationResolutions );
         return objectResolution;
     }
 }

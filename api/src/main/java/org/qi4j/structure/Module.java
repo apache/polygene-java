@@ -35,10 +35,17 @@ public interface Module
 
     Module findModuleForObject( Class<?> objecttype );
 
-    boolean isPublic( Class<?> compositeOrObject );
-
     Class<? extends Composite> findCompositeType( Class<?> mixintype );
 
+    /**
+     * Lookup a class given the name of the class.
+     * The Module will look for both registered Object classes
+     * and Composite classes, using the standard visibility rules.
+     *
+     * @param className
+     * @return
+     * @throws ClassNotFoundException
+     */
     Class findClass( String className )
         throws ClassNotFoundException;
 }

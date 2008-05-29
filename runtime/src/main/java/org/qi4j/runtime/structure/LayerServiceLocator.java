@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import org.qi4j.service.ServiceFinder;
 import org.qi4j.service.ServiceReference;
+import org.qi4j.structure.Visibility;
 
 /**
  * ServiceLocator implementation for a LayerInstance.
@@ -43,7 +44,7 @@ public class LayerServiceLocator
         List<ModuleInstance> modules = modulesForPublicServices.get( serviceType );
         if( modules != null )
         {
-            return modules.get( 0 ).findService( serviceType );
+            return modules.get( 0 ).findService( serviceType, Visibility.application );
         }
 
         return null;
@@ -58,7 +59,7 @@ public class LayerServiceLocator
             List<ServiceReference<T>> serviceReferences = new ArrayList<ServiceReference<T>>();
             for( ModuleInstance module : modules )
             {
-                Iterable<ServiceReference<T>> moduleServices = module.findServices( serviceType );
+                Iterable<ServiceReference<T>> moduleServices = module.findServices( serviceType, Visibility.application );
                 for( ServiceReference<T> moduleService : moduleServices )
                 {
                     serviceReferences.add( moduleService );

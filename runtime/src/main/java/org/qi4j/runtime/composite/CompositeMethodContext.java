@@ -105,9 +105,9 @@ public final class CompositeMethodContext
 
                 Object modifies = getModifies( method, classloader, previousConcern, concernBinding.getConcernResolution().getConcernModel() );
 
-                ModifierInjectionContext modifierContext = new ModifierInjectionContext( moduleInstance.getStructureContext(),
-                                                                                         moduleInstance.getModule(),
-                                                                                         moduleInstance.getModuleContext().getModuleBinding(),
+                ModifierInjectionContext modifierContext = new ModifierInjectionContext( moduleInstance.structureContext(),
+                                                                                         moduleInstance.module(),
+                                                                                         moduleInstance.moduleContext().getModuleBinding(),
                                                                                          compositeBinding,
                                                                                          proxyHandler,
                                                                                          modifies,
@@ -168,9 +168,9 @@ public final class CompositeMethodContext
         {
             Object modifies = getModifies( method, classloader, sideEffectResult, sideEffectBinding.getSideEffectResolution().getSideEffectModel() );
 
-            ModifierInjectionContext modifierContext = new ModifierInjectionContext( moduleInstance.getStructureContext(),
-                                                                                     moduleInstance.getModule(),
-                                                                                     moduleInstance.getModuleContext().getModuleBinding(),
+            ModifierInjectionContext modifierContext = new ModifierInjectionContext( moduleInstance.structureContext(),
+                                                                                     moduleInstance.module(),
+                                                                                     moduleInstance.moduleContext().getModuleBinding(),
                                                                                      compositeBinding,
                                                                                      proxyHandler,
                                                                                      modifies,

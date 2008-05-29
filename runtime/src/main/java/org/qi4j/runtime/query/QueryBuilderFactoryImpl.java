@@ -61,7 +61,7 @@ public final class QueryBuilderFactoryImpl
     public <T> QueryBuilder<T> newQueryBuilder( final Class<T> resultType )
     {
         ModuleInstance module = unitOfWorkInstance.getModuleInstance();
-        StructureContext structureContext = module.getStructureContext();
+        StructureContext structureContext = module.structureContext();
         ServiceFinder serviceLocator = structureContext.getServiceLocator();
         final ServiceReference<EntityFinder> serviceReference = serviceLocator.findService( EntityFinder.class );
         if( serviceReference == null )

@@ -18,6 +18,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import org.qi4j.service.ServiceDescriptor;
+import org.qi4j.structure.Visibility;
 
 /**
  * TODO
@@ -71,6 +72,38 @@ public final class LayerResolution
         }
 
         // No provider found for this type
+        return null;
+    }
+
+    /**
+     * Find Object or Composite class with the given classname in this Layer.
+     * Check with Layer visibility in the layer, and Application visibility in
+     * all used Layers.
+     *
+     * @param className
+     * @return a class matching the given classname, or null
+     */
+    public Class findClass( String className )
+    {
+        Class clazz = null; // layerModel.findClass( className );
+
+        if( clazz != null )
+        {
+            return clazz;
+        }
+
+        for( LayerResolution use : uses )
+        {
+            for( ModuleResolution moduleResolution : use.moduleResolutions )
+            {
+                clazz = moduleResolution.getModuleModel().getClass( className, Visibility.application );
+                if( clazz != null )
+                {
+                    return clazz;
+                }
+            }
+        }
+
         return null;
     }
 
