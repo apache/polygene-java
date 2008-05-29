@@ -1,13 +1,12 @@
 package org.qi4j.runtime.injection;
 
-import org.qi4j.spi.injection.BindingContext;
-import org.qi4j.spi.injection.InjectionContext;
-import org.qi4j.spi.injection.InjectionModel;
-import org.qi4j.spi.injection.InjectionProvider;
-import org.qi4j.spi.injection.InjectionProviderFactory;
-import org.qi4j.spi.injection.InjectionResolution;
+import org.qi4j.runtime.composite.qi.BindingContext;
+import org.qi4j.runtime.composite.qi.DependencyModel;
+import org.qi4j.runtime.composite.qi.InjectionContext;
+import org.qi4j.runtime.composite.qi.InjectionProvider;
+import org.qi4j.runtime.composite.qi.InjectionProviderFactory;
+import org.qi4j.spi.injection.InjectionProviderException;
 import org.qi4j.spi.injection.InvalidInjectionException;
-import org.qi4j.spi.injection.ModifierInjectionContext;
 
 /**
  * TODO
@@ -15,33 +14,30 @@ import org.qi4j.spi.injection.ModifierInjectionContext;
 public final class ModifiesInjectionProviderFactory
     implements InjectionProviderFactory
 {
-
-    public InjectionProvider newInjectionProvider( BindingContext bindingContext ) throws InvalidInjectionException
+    public InjectionProvider newInjectionProvider( BindingContext bindingContext, DependencyModel dependencyModel ) throws InvalidInjectionException
     {
-        InjectionResolution resolution = bindingContext.getInjectionResolution();
-        InjectionModel injectionModel = resolution.getInjectionModel();
-        if( bindingContext.getCompositeResolution() != null )
+        if( bindingContext.composite() != null )
         {
-            if( injectionModel.getInjectionClass().isAssignableFrom( injectionModel.getInjectedClass() ) )
+            if( dependencyModel.injectionClass().isAssignableFrom( dependencyModel.injectedClass() ) )
             {
                 return new ModifiedInjectionProvider();
             }
             else
             {
-                throw new InvalidInjectionException( "Composite " + bindingContext.getCompositeResolution().getCompositeModel().getCompositeType() + " does not implement @ConcernFor type " + injectionModel.getInjectionClass().getName() + " in modifier " + injectionModel.getInjectedClass() );
+                throw new InvalidInjectionException( "Composite " + bindingContext.composite().type() + " does not implement @ConcernFor type " + dependencyModel.injectionClass().getName() + " in modifier " + dependencyModel.injectedClass().getName() );
             }
         }
         else
         {
-            throw new InvalidInjectionException( "The class " + injectionModel.getInjectedClass().getName() + " is not a modifier" );
+            throw new InvalidInjectionException( "The class " + dependencyModel.injectedClass().getName() + " is not a modifier" );
         }
     }
 
     private class ModifiedInjectionProvider implements InjectionProvider
     {
-        public Object provideInjection( InjectionContext context )
+        public Object provideInjection( InjectionContext context ) throws InjectionProviderException
         {
-            return ( (ModifierInjectionContext) context ).getModifies();
+            return context.next();
         }
     }
 }

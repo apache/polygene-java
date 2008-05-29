@@ -15,7 +15,6 @@
 package org.qi4j.runtime.composite;
 
 import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public final class CompositeMethodInstance
@@ -88,6 +87,7 @@ public final class CompositeMethodInstance
     public Object invoke( Object proxy, Object[] params, Object mixin )
         throws Throwable
     {
+/*
         try
         {
             Object result = null;
@@ -154,6 +154,8 @@ public final class CompositeMethodInstance
             proxyHandler.clearContext();
             poolComposite.returnInstance( this );
         }
+*/
+        return null;
     }
 
     /**

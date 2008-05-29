@@ -21,8 +21,6 @@ import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 import org.qi4j.composite.Composite;
-import org.qi4j.composite.internal.ConcernFor;
-import org.qi4j.composite.internal.SideEffectFor;
 import org.qi4j.composite.scope.AssociationField;
 import org.qi4j.composite.scope.AssociationParameter;
 import org.qi4j.composite.scope.Invocation;
@@ -84,8 +82,8 @@ public final class Energy4Java
         Map<Class<? extends Annotation>, InjectionProviderFactory> providerFactories = new HashMap<Class<? extends Annotation>, InjectionProviderFactory>();
         // providerFactories.put( This.class, new ThisInjectionProviderFactory() );
         ModifiesInjectionProviderFactory modifiesInjectionProviderFactory = new ModifiesInjectionProviderFactory();
-        providerFactories.put( ConcernFor.class, modifiesInjectionProviderFactory );
-        providerFactories.put( SideEffectFor.class, modifiesInjectionProviderFactory );
+        //providerFactories.put( ConcernFor.class, modifiesInjectionProviderFactory );
+        //providerFactories.put( SideEffectFor.class, modifiesInjectionProviderFactory );
         providerFactories.put( Invocation.class, new InvocationInjectionProviderFactory() );
         providerFactories.put( Uses.class, new UsesInjectionProviderFactory() );
         PropertyInjectionProviderFactory propertyInjectionProviderFactory = new PropertyInjectionProviderFactory();
@@ -136,7 +134,7 @@ public final class Energy4Java
         InvocationHandler handler = Proxy.getInvocationHandler( composite );
         if( handler instanceof ProxyReferenceInvocationHandler )
         {
-            return (Composite) ( (ProxyReferenceInvocationHandler) handler ).composite();
+            return (Composite) ( (ProxyReferenceInvocationHandler) handler ).proxy();
         }
         if( handler instanceof AbstractCompositeInstance )
         {

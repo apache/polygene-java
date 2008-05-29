@@ -65,7 +65,7 @@ public final class ConstraintInvocationHandler
 
         if( constraintViolations != null )
         {
-            Composite composite = (Composite) proxyHandler.composite();
+            Composite composite = (Composite) proxyHandler.proxy();
             throw new ParameterConstraintViolationException( composite, method, constraintViolations );
         }
 

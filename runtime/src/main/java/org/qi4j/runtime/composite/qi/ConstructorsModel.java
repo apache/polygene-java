@@ -20,7 +20,6 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import org.qi4j.spi.composite.BindingException;
-import static org.qi4j.util.ClassUtil.constructorsOf;
 
 /**
  * TODO
@@ -34,7 +33,7 @@ public class ConstructorsModel
     public ConstructorsModel( Class fragmentClass )
     {
         constructorModels = new ArrayList<ConstructorModel>();
-        List<Constructor> constructors = constructorsOf( fragmentClass );
+        Constructor[] constructors = fragmentClass.getDeclaredConstructors();
         for( Constructor constructor : constructors )
         {
             int idx = 0;

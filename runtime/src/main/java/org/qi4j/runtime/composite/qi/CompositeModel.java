@@ -28,6 +28,7 @@ import org.qi4j.runtime.structure.qi.ModuleModel;
  */
 public final class CompositeModel
 {
+    private ConcernsModel concernsModel;
     private MixinsModel mixinsModel;
     private CompositeMethodsModel compositeMethodsModel;
     private Class<? extends Composite> compositeType;
@@ -41,6 +42,8 @@ public final class CompositeModel
 
         // Create proxy class
         this.proxyClass = createProxyClass( compositeType );
+
+        concernsModel = new ConcernsModel( compositeType );
         mixinsModel = new MixinsModel( compositeType );
 
         compositeMethodsModel = new CompositeMethodsModel( this );
@@ -64,9 +67,9 @@ public final class CompositeModel
         return null;
     }
 
-    public ConcernsDeclaration concernsDeclaration()
+    public ConcernsModel concerns()
     {
-        return null;
+        return concernsModel;
     }
 
     public MixinsModel mixins()
@@ -87,6 +90,7 @@ public final class CompositeModel
     {
         bindingContext = new BindingContext( bindingContext.application(), bindingContext.layer(), bindingContext.module(), this );
         compositeMethodsModel.bind( bindingContext );
+        concernsModel.bind( bindingContext );
         mixinsModel.bind( bindingContext );
     }
 

@@ -59,7 +59,7 @@ public final class ConstructorModel
         }
         catch( Exception e )
         {
-            throw new InstantiationException( e );
+            throw new InstantiationException( "Could not instantiate " + constructor.getDeclaringClass(), e );
         }
     }
 }

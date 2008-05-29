@@ -25,7 +25,6 @@ import java.util.Set;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.Mixins;
 import org.qi4j.composite.State;
-import org.qi4j.runtime.composite.CompositeMethodInstance;
 import org.qi4j.runtime.composite.CompositeMixin;
 import org.qi4j.spi.composite.InvalidCompositeException;
 import org.qi4j.util.ClassUtil;
@@ -102,6 +101,20 @@ public final class MixinsModel
         }
     }
 
+    public void implementThisUsing( CompositeModel compositeModel )
+    {
+        Set<Class> thisMixinTypes = new HashSet<Class>();
+        for( MixinModel mixinModel : mixinModels )
+        {
+            thisMixinTypes.addAll( mixinModel.thisMixinTypes() );
+        }
+
+        for( Class thisMixinType : thisMixinTypes )
+        {
+            compositeModel.implementMixinType( thisMixinType );
+        }
+    }
+
     // Binding
     public void bind( BindingContext bindingContext )
     {
@@ -126,7 +139,7 @@ public final class MixinsModel
     public Object invoke( Object composite, Object[] params, Object[] mixins, CompositeMethodInstance methodInstance )
         throws Throwable
     {
-        return methodInstance.invoke( composite, params, mixins[ methodIndex.get( methodInstance.getMethod() ) ] );
+        return methodInstance.invoke( composite, params, mixins[ methodIndex.get( methodInstance.method() ) ] );
     }
 
     public void newMixins( CompositeInstance compositeInstance, Set<Object> uses, State state, Object[] mixins )
@@ -136,20 +149,6 @@ public final class MixinsModel
         {
             Object mixin = mixinModel.newInstance( compositeInstance, uses, state );
             mixins[ i++ ] = mixin;
-        }
-    }
-
-    public void implementThisUsing( CompositeModel compositeModel )
-    {
-        Set<Class> thisMixinTypes = new HashSet<Class>();
-        for( MixinModel mixinModel : mixinModels )
-        {
-            thisMixinTypes.addAll( mixinModel.thisMixinTypes() );
-        }
-
-        for( Class thisMixinType : thisMixinTypes )
-        {
-            compositeModel.implementMixinType( thisMixinType );
         }
     }
 }

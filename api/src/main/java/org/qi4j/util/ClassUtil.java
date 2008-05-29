@@ -79,6 +79,18 @@ public class ClassUtil
         return newSet;
     }
 
+    public static Class[] toClassArray( Set<Type> types )
+    {
+        Class[] array = new Class[types.size()];
+        int idx = 0;
+        for( Type type : types )
+        {
+            array[ idx++ ] = (Class) type;
+        }
+
+        return array;
+    }
+
     public static Type actualTypeOf( Type type )
     {
         Set<Type> types = interfacesOf( type );
@@ -144,11 +156,16 @@ public class ClassUtil
     {
         if( !interfaces.contains( type ) )
         {
-            interfaces.add( type );
-
             if( type instanceof Class )
             {
-                Type[] subTypes = ( (Class) type ).getGenericInterfaces();
+                Class clazz = (Class) type;
+
+                if( clazz.isInterface() )
+                {
+                    interfaces.add( clazz );
+                }
+
+                Type[] subTypes = clazz.getGenericInterfaces();
                 for( Type subType : subTypes )
                 {
                     addInterfaces( subType, interfaces );

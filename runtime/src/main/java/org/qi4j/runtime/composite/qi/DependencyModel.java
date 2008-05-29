@@ -20,7 +20,9 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.Collections;
 import java.util.Iterator;
+import org.qi4j.composite.internal.ConcernFor;
 import org.qi4j.composite.scope.This;
+import org.qi4j.runtime.injection.ModifiesInjectionProviderFactory;
 import org.qi4j.runtime.injection.ThisInjectionProviderFactory;
 import org.qi4j.spi.composite.BindingException;
 import org.qi4j.spi.injection.InvalidInjectionException;
@@ -164,6 +166,10 @@ public final class DependencyModel
         if( injectionAnnotation.annotationType().equals( This.class ) )
         {
             providerFactory = new ThisInjectionProviderFactory();
+        }
+        else if( injectionAnnotation.annotationType().equals( ConcernFor.class ) )
+        {
+            providerFactory = new ModifiesInjectionProviderFactory();
         }
         else
         {

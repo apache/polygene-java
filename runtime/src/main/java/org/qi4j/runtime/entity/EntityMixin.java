@@ -79,7 +79,7 @@ public final class EntityMixin
     public boolean isInstance( Class anObjectType )
     {
         InvocationHandler handler = Proxy.getInvocationHandler( meAsEntity );
-        Object anObject = ( (ProxyReferenceInvocationHandler) handler ).composite();
+        Object anObject = ( (ProxyReferenceInvocationHandler) handler ).proxy();
         if( anObjectType.isInstance( anObject ) )
         {
             return true;

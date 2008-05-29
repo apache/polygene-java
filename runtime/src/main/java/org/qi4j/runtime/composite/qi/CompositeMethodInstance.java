@@ -14,9 +14,31 @@
 
 package org.qi4j.runtime.composite.qi;
 
+import java.lang.reflect.Method;
+
 /**
  * TODO
  */
-public final class ConcernsDeclaration
+public class CompositeMethodInstance
 {
+    ConcernsInstance concerns;
+    private Method method;
+
+    public CompositeMethodInstance( ConcernsInstance concerns, Method method )
+    {
+        this.concerns = concerns;
+        this.method = method;
+    }
+
+    public Method method()
+    {
+        return method;
+    }
+
+    public Object invoke( Object composite, Object[] params, Object mixin )
+        throws Throwable
+    {
+        return concerns.invoke( composite, params, mixin );
+    }
+
 }

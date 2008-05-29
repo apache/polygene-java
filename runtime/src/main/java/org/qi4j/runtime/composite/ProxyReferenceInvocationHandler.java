@@ -24,36 +24,20 @@ public final class ProxyReferenceInvocationHandler
     implements InvocationHandler
 {
     private Object proxy;
-    private Object mixin;
-    private Class mixinType;
 
-    public Object composite()
+    public Object proxy()
     {
         return proxy;
     }
 
-    public Object mixin()
+    public void setProxy( Object proxy )
     {
-        return mixin;
+        this.proxy = proxy;
     }
 
-    public Class mixinType()
+    public void clearProxy()
     {
-        return mixinType;
-    }
-
-    public void setContext( Object aProxy, Object aMixin, Class mixinType )
-    {
-        this.mixinType = mixinType;
-        proxy = aProxy;
-        mixin = aMixin;
-    }
-
-    public void clearContext()
-    {
-        this.mixinType = null;
         proxy = null;
-        mixin = null;
     }
 
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
