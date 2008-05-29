@@ -51,7 +51,7 @@ public final class ModuleParser
     private void parseComposites( URI module, LayerModel layerModel, ModuleModel moduleModel )
     {
         CompositeParser parser = context.getParserFactory().newCompositeParser();
-        for( CompositeDescriptor compositeDescriptor : moduleModel.getCompositeDescriptors() )
+        for( CompositeDescriptor compositeDescriptor : moduleModel.compositeDescriptors() )
         {
             URI composite = parser.parseModel( layerModel, moduleModel, compositeDescriptor.getCompositeModel() );
             if( compositeDescriptor.getVisibility() == Visibility.module )
@@ -68,7 +68,7 @@ public final class ModuleParser
     private void parseObjects( URI module, ModuleModel model )
     {
         ObjectParser parser = context.getParserFactory().newObjectParser();
-        for( ObjectDescriptor objectDescriptor : model.getObjectDescriptors() )
+        for( ObjectDescriptor objectDescriptor : model.objectDescriptors() )
         {
             Value object = parser.parseModel( objectDescriptor.getObjectModel() );
             if( objectDescriptor.getVisibility() != Visibility.module )
@@ -85,7 +85,7 @@ public final class ModuleParser
     private void parseServices( URI module, LayerModel layerModel, ModuleModel moduleModel )
     {
         ServiceParser parser = context.getParserFactory().newServiceParser();
-        Iterable<ServiceDescriptor> descriptors = moduleModel.getServiceDescriptors();
+        Iterable<ServiceDescriptor> descriptors = moduleModel.serviceDescriptors();
         for( ServiceDescriptor descriptor : descriptors )
         {
             Value service = parser.parseModel( layerModel, moduleModel, descriptor );
