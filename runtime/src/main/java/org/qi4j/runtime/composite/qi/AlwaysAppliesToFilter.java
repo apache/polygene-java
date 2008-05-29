@@ -14,15 +14,17 @@
 
 package org.qi4j.runtime.composite.qi;
 
+import java.lang.reflect.Method;
+import org.qi4j.composite.AppliesToFilter;
+
 /**
  * TODO
  */
-public final class ConcernModel
-    extends AbstractModifierModel
+class AlwaysAppliesToFilter
+    implements AppliesToFilter
 {
-    public ConcernModel( Class concernClass )
+    public boolean appliesTo( Method method, Class<?> mixin, Class<?> compositeType, Class<?> fragmentClass )
     {
-        super( concernClass );
+        return true;
     }
-
 }

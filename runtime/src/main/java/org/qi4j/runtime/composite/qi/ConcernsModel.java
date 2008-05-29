@@ -63,7 +63,7 @@ public class ConcernsModel
             {
                 if( concern.appliesTo( method, compositeType ) )
                 {
-                    Class concernClass = concern.concernClass();
+                    Class concernClass = concern.type();
                     concernsForMethod.add( new ConcernModel( concernClass ) );
                 }
             }

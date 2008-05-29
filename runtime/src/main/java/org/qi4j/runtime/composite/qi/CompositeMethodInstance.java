@@ -19,14 +19,16 @@ import java.lang.reflect.Method;
 /**
  * TODO
  */
-public class CompositeMethodInstance
+public final class CompositeMethodInstance
 {
-    ConcernsInstance concerns;
+    private ConcernsInstance concerns;
+    private SideEffectsInstance sideEffects;
     private Method method;
 
-    public CompositeMethodInstance( ConcernsInstance concerns, Method method )
+    public CompositeMethodInstance( ConcernsInstance concerns, SideEffectsInstance sideEffects, Method method )
     {
         this.concerns = concerns;
+        this.sideEffects = sideEffects;
         this.method = method;
     }
 
@@ -38,7 +40,17 @@ public class CompositeMethodInstance
     public Object invoke( Object composite, Object[] params, Object mixin )
         throws Throwable
     {
-        return concerns.invoke( composite, params, mixin );
+        try
+        {
+            Object result = concerns.invoke( composite, params, mixin );
+            sideEffects.invoke( composite, params, result, null );
+            return result;
+        }
+        catch( Throwable throwable )
+        {
+            sideEffects.invoke( composite, params, null, throwable );
+            throw throwable;
+        }
     }
 
 }

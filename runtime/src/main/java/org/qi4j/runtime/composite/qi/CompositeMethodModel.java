@@ -42,6 +42,7 @@ public final class CompositeMethodModel
         this.composite = composite;
 
         composite.concerns().concernsFor( method );
+        composite.sideEffects().sideEffectsFor( method );
     }
 
     // Model
@@ -91,7 +92,8 @@ public final class CompositeMethodModel
         FragmentInvocationHandler mixinInvocationHandler = composite.mixins().mixinFor( method ).newInvocationHandler( method.getDeclaringClass() );
 
         ConcernsInstance concernsInstance = composite.concerns().newInstance( moduleInstance, method, mixinInvocationHandler );
-        return new CompositeMethodInstance( concernsInstance, method );
+        SideEffectsInstance sideEffectsInstance = composite.sideEffects().newInstance( moduleInstance, method );
+        return new CompositeMethodInstance( concernsInstance, sideEffectsInstance, method );
     }
 
 }

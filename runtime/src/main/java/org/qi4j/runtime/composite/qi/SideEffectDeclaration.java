@@ -14,15 +14,21 @@
 
 package org.qi4j.runtime.composite.qi;
 
+import java.lang.reflect.Type;
+
 /**
  * TODO
  */
-public final class ConcernModel
-    extends AbstractModifierModel
+public final class SideEffectDeclaration
+    extends AbstractModifierDeclaration
 {
-    public ConcernModel( Class concernClass )
+    public SideEffectDeclaration( Class sideEffectClass, Type declaredIn )
     {
-        super( concernClass );
+        super( sideEffectClass, declaredIn );
     }
 
+    @Override public String toString()
+    {
+        return "Side-effect " + modifierClass.getName() + " declared in " + declaredIn;
+    }
 }

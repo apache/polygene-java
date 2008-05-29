@@ -17,12 +17,11 @@ package org.qi4j.runtime.composite.qi;
 /**
  * TODO
  */
-public final class ConcernModel
+public final class SideEffectModel
     extends AbstractModifierModel
 {
-    public ConcernModel( Class concernClass )
+    public SideEffectModel( Class sideEffectClass )
     {
-        super( concernClass );
+        super( sideEffectClass );
     }
-
 }
