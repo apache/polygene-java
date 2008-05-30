@@ -14,24 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.entity.neo4j.test;
+package org.qi4j.entity.neo4j.state;
 
-import org.junit.Test;
-import org.qi4j.entity.neo4j.Configuration;
+import org.neo4j.api.core.Node;
+import org.qi4j.entity.neo4j.NeoIdentityIndex;
+import org.qi4j.spi.entity.EntityStatus;
+import org.qi4j.spi.entity.QualifiedIdentity;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
  */
-public class IndirectIdentityListTest extends DirectIdentityListTest
+public interface NodeEntityStateFactory extends NeoEntityStateFactory
 {
-    public IndirectIdentityListTest()
-    {
-        super( Configuration.INDIRECT );
-    }
+    CommittableEntityState createEntityState( NeoIdentityIndex idIndex, Node node, LoadedDescriptor descriptor, QualifiedIdentity identity, EntityStatus status );
 
-    @Test
-    public void testInitialization()
-    {
-        // This is just to make sure that the tools identifies this as a test class
-    }
+    CommittableEntityState loadEntityStateFromNode( NeoIdentityIndex idIndex, Node node );
 }

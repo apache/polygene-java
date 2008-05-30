@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.entity.neo4j.state.direct;
+package org.qi4j.entity.neo4j.state;
 
 import java.util.AbstractSequentialList;
 import java.util.Iterator;
@@ -26,39 +26,30 @@ import org.neo4j.api.core.Node;
 import org.neo4j.api.core.Relationship;
 import org.neo4j.api.core.RelationshipType;
 import org.qi4j.entity.neo4j.NeoIdentityIndex;
-import org.qi4j.entity.neo4j.state.LinkType;
-import org.qi4j.entity.neo4j.state.NeoEntityState;
 import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.spi.entity.association.AssociationModel;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
  */
 public class DirectIdentityList extends AbstractSequentialList<QualifiedIdentity>
 {
-    private static final String OUTGOING_INDEX_PROPERTY_KEY = "outgoingRelationIndex";
-    private static final String INCOMING_INDEX_PROPERTY_KEY = "incomingRelationIndex";
-    /*
-     * FIXME: we have a problem when the list contains duplicates,
-     * we cannot differentiate between the relations at the moment.
-     */
-    private final NeoEntityState state;
+    private final DirectEntityState state;
     private final NeoService neo;
     private final RelationshipType internalType;
     private final RelationshipType startType;
     private final RelationshipType endType;
-    private final AssociationModel model;
+    private final String qualifiedName;
     private final NeoIdentityIndex idIndex;
 
-    public DirectIdentityList( DirectEntityState state, AssociationModel model )
+    public DirectIdentityList( NeoService neo, NeoIdentityIndex idIndex, DirectEntityState state, String qualifiedName )
     {
-        this.idIndex = state.idIndex;
-        this.neo = state.neo;
+        this.neo = neo;
         this.state = state;
-        this.model = model;
-        this.internalType = NeoEntityState.getAssociationType( model, LinkType.INTERNAL );
-        this.startType = NeoEntityState.getAssociationType( model, LinkType.START );
-        this.endType = NeoEntityState.getAssociationType( model, LinkType.END );
+        this.internalType = LinkType.INTERNAL.getRelationshipType( qualifiedName );
+        this.startType = LinkType.START.getRelationshipType( qualifiedName );
+        this.endType = LinkType.END.getRelationshipType( qualifiedName );
+        this.qualifiedName = qualifiedName;
+        this.idIndex = idIndex;
     }
 
     public ListIterator<QualifiedIdentity> listIterator( int i )
@@ -68,8 +59,7 @@ public class DirectIdentityList extends AbstractSequentialList<QualifiedIdentity
 
     public int size()
     {
-        int size = state.getSizeOfCollection( model );
-        return size;
+        return state.getSizeOfCollection( qualifiedName );
     }
 
     private class NodeChainIterator implements ListIterator<QualifiedIdentity>
@@ -117,7 +107,7 @@ public class DirectIdentityList extends AbstractSequentialList<QualifiedIdentity
                 index++;
                 currentRelation = nextRelation( currentRelation.getEndNode() );
                 lastDirection = Direction.OUTGOING;
-                return NeoEntityState.getIdentityFromNode( unproxy( currentRelation.getStartNode() ) );
+                return DirectEntityState.getIdentityFromNode( unproxy( currentRelation.getStartNode() ) );
             }
             else
             {
@@ -137,7 +127,7 @@ public class DirectIdentityList extends AbstractSequentialList<QualifiedIdentity
                 index--;
                 currentRelation = previousRelation( currentRelation.getStartNode() );
                 lastDirection = Direction.INCOMING;
-                return NeoEntityState.getIdentityFromNode( unproxy( currentRelation.getEndNode() ) );
+                return DirectEntityState.getIdentityFromNode( unproxy( currentRelation.getEndNode() ) );
             }
             else
             {
@@ -311,7 +301,7 @@ public class DirectIdentityList extends AbstractSequentialList<QualifiedIdentity
         private Relationship createRelation( Node before, RelationshipType type, Node after )
         {
             Relationship relation = before.createRelationshipTo( after, type );
-            relation.setProperty( NeoEntityState.ASSOCIATION_OF_PROPERTY_KEY, state.underlyingNode.getId() );
+            relation.setProperty( DirectEntityState.ASSOCIATION_OF_PROPERTY_KEY, state.underlyingNode.getId() );
             return relation;
         }
 
@@ -331,7 +321,7 @@ public class DirectIdentityList extends AbstractSequentialList<QualifiedIdentity
         private Node proxy( Node original )
         {
             Node proxy = neo.createNode();
-            proxy.createRelationshipTo( original, NeoEntityState.PROXY_FOR );
+            proxy.createRelationshipTo( original, DirectEntityState.PROXY_FOR );
             return proxy;
         }
 
@@ -341,7 +331,7 @@ public class DirectIdentityList extends AbstractSequentialList<QualifiedIdentity
             {
                 return null;
             }
-            Relationship proxyRelation = listed.getSingleRelationship( NeoEntityState.PROXY_FOR, Direction.OUTGOING );
+            Relationship proxyRelation = listed.getSingleRelationship( DirectEntityState.PROXY_FOR, Direction.OUTGOING );
             if( proxyRelation != null )
             {
                 return proxyRelation.getEndNode();
@@ -387,13 +377,13 @@ public class DirectIdentityList extends AbstractSequentialList<QualifiedIdentity
 
         private boolean applicable( Relationship relation )
         {
-            final long relatedTo = (Long) relation.getProperty( NeoEntityState.ASSOCIATION_OF_PROPERTY_KEY );
+            final long relatedTo = (Long) relation.getProperty( DirectEntityState.ASSOCIATION_OF_PROPERTY_KEY );
             return relatedTo == state.underlyingNode.getId();
         }
     }
 
     private void changeSizeBy( int delta )
     {
-        state.setSizeOfCollection( model, state.getSizeOfCollection( model ) + delta );
+        state.setSizeOfCollection( qualifiedName, size() + delta );
     }
 }

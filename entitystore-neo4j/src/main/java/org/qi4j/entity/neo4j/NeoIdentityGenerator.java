@@ -14,24 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.entity.neo4j.test;
+package org.qi4j.entity.neo4j;
 
-import org.junit.Test;
-import org.qi4j.entity.neo4j.Configuration;
+import org.neo4j.api.core.Node;
+import org.qi4j.entity.IdentityGenerator;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
  */
-public class IndirectIdentityListTest extends DirectIdentityListTest
+public interface NeoIdentityGenerator extends IdentityGenerator
 {
-    public IndirectIdentityListTest()
-    {
-        super( Configuration.INDIRECT );
-    }
+    Node getNode( String identity );
 
-    @Test
-    public void testInitialization()
-    {
-        // This is just to make sure that the tools identifies this as a test class
-    }
+    boolean index( String identity, Node node );
 }

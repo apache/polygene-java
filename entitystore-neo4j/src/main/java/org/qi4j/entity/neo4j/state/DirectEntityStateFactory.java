@@ -14,17 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.entity.neo4j.state.indirect;
+package org.qi4j.entity.neo4j.state;
 
 import org.qi4j.composite.Mixins;
-import org.qi4j.entity.neo4j.NeoEntityStateFactory;
 import org.qi4j.service.ServiceComposite;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
  */
-@Mixins( IndirectEntityStateFactoryMixin.class )
-public interface IndirectEntityStateFactory
-    extends NeoEntityStateFactory, ServiceComposite
+@Mixins( DirectEntityStateFactoryMixin.class )
+public interface DirectEntityStateFactory
+    extends NodeEntityStateFactory, ServiceComposite
 {
 }

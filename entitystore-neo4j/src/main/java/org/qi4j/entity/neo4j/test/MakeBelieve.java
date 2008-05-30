@@ -16,22 +16,21 @@
  */
 package org.qi4j.entity.neo4j.test;
 
-import org.junit.Test;
-import org.qi4j.entity.neo4j.Configuration;
+import org.qi4j.entity.association.Association;
+import org.qi4j.property.Property;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
  */
-public class IndirectIdentityListTest extends DirectIdentityListTest
+public interface MakeBelieve
 {
-    public IndirectIdentityListTest()
-    {
-        super( Configuration.INDIRECT );
-    }
+    Property<String> imaginaryName();
 
-    @Test
-    public void testInitialization()
-    {
-        // This is just to make sure that the tools identifies this as a test class
-    }
+    Property<Integer> imaginaryNumber();
+
+    Property<Double> realNumber();
+
+    Association<MakeBelieve> bff();
+
+    Association<MakeBelieve> archNemesis();
 }

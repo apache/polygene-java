@@ -14,15 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.entity.neo4j.state.indirect;
+package org.qi4j.entity.neo4j;
 
-import java.util.Collection;
-import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.composite.Mixins;
+import org.qi4j.service.ServiceComposite;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
  */
-public interface IndirectCollection extends Collection<QualifiedIdentity>
+@Mixins( NeoIdentityIndexMixin.class )
+public interface NeoIdentityIndexService
+    extends NeoIdentityIndex, ServiceComposite
 {
-    void prepareCommit();
 }

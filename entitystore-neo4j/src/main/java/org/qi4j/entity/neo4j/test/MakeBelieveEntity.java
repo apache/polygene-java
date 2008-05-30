@@ -16,22 +16,11 @@
  */
 package org.qi4j.entity.neo4j.test;
 
-import org.junit.Test;
-import org.qi4j.entity.neo4j.Configuration;
+import org.qi4j.entity.EntityComposite;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
  */
-public class IndirectIdentityListTest extends DirectIdentityListTest
+public interface MakeBelieveEntity extends MakeBelieve, EntityComposite
 {
-    public IndirectIdentityListTest()
-    {
-        super( Configuration.INDIRECT );
-    }
-
-    @Test
-    public void testInitialization()
-    {
-        // This is just to make sure that the tools identifies this as a test class
-    }
 }

@@ -14,26 +14,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.entity.neo4j.state.indirect;
+package org.qi4j.entity.neo4j.state;
 
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import org.neo4j.api.core.Direction;
 import org.neo4j.api.core.Node;
-import org.neo4j.api.core.Relationship;
 import org.neo4j.api.core.Transaction;
 import org.qi4j.composite.scope.Service;
-import org.qi4j.entity.neo4j.NeoEntityStateFactory;
+import org.qi4j.entity.neo4j.NeoCoreService;
 import org.qi4j.entity.neo4j.NeoIdentityIndex;
 import org.qi4j.entity.neo4j.NeoTransactionService;
-import org.qi4j.entity.neo4j.state.NeoEntityState;
-import org.qi4j.entity.neo4j.state.direct.DirectEntityState;
-import org.qi4j.entity.neo4j.state.direct.DirectEntityStateFactory;
-import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.StateCommitter;
-import org.qi4j.spi.structure.CompositeDescriptor;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
@@ -42,13 +38,21 @@ public class IndirectEntityStateFactoryMixin implements NeoEntityStateFactory
 {
     private @Service DirectEntityStateFactory directFactory;
     private @Service NeoTransactionService txFactory;
+    private @Service NeoCoreService neo;
 
-    public EntityState createEntityState( NeoIdentityIndex idIndex, CompositeDescriptor descriptor, QualifiedIdentity identity, EntityStatus status )
+    public CommittableEntityState createEntityState( NeoIdentityIndex idIndex, LoadedDescriptor descriptor, QualifiedIdentity identity, EntityStatus status )
     {
         Transaction tx = txFactory.beginTx();
         try
         {
-            return new IndirectEntityState( (DirectEntityState) directFactory.createEntityState( idIndex, descriptor, identity, status ), descriptor );
+            Node node = idIndex.getNode( identity.getIdentity() );
+            if( node == null )
+            {
+                node = UncreatedNode.getNode( identity.getIdentity(), neo );
+            }
+            CommittableEntityState state = new IndirectEntityState( (DirectEntityState) directFactory.createEntityState( idIndex, node, descriptor, identity, status ) );
+            state.preloadState();
+            return state;
         }
         finally
         {
@@ -56,29 +60,34 @@ public class IndirectEntityStateFactoryMixin implements NeoEntityStateFactory
         }
     }
 
-    public StateCommitter prepareCommit( NeoIdentityIndex idIndex, Iterable<NeoEntityState> updated, Iterable<QualifiedIdentity> removed ) throws EntityStoreException
+    public StateCommitter prepareCommit( NeoIdentityIndex idIndex, Iterable<CommittableEntityState> updated, Iterable<QualifiedIdentity> removed ) throws EntityStoreException
     {
         final Transaction tx = txFactory.beginTx();
         try
         {
-            for( NeoEntityState state : updated )
+            for( CommittableEntityState state : updated )
+            {
+                state.prepareState();
+            }
+            for( CommittableEntityState state : updated )
             {
                 state.prepareCommit();
             }
+            List<Node> removedNodes = new LinkedList<Node>();
             for( QualifiedIdentity removedId : removed )
             {
                 Node removedNode = idIndex.getNode( removedId.getIdentity() );
-                for( Relationship relation : removedNode.getRelationships( Direction.OUTGOING ) )
-                {
-                    relation.delete();
-                }
+                CommittableEntityState entity = directFactory.loadEntityStateFromNode( idIndex, removedNode );
+                entity.prepareRemove();
+                removedNodes.add( removedNode );
             }
-            for( QualifiedIdentity removedId : removed )
+            for( Node removedNode : removedNodes )
             {
-                Node removedNode = idIndex.getNode( removedId.getIdentity() );
-                for( Relationship relation : removedNode.getRelationships( Direction.INCOMING ) )
+                if( removedNode.getRelationships( Direction.INCOMING ).iterator().hasNext() )
                 {
-                    throw new EntityStoreException( "Cannot remove " + removedId + ", it has incoming references." );
+                    throw new EntityStoreException(
+                        "Cannot remove " + DirectEntityState.getIdentityFromNode( removedNode ).getIdentity() +
+                        ", it has incoming references." );
                 }
                 removedNode.delete();
             }
@@ -111,8 +120,25 @@ public class IndirectEntityStateFactoryMixin implements NeoEntityStateFactory
         }
     }
 
-    public Iterator<EntityState> iterator()
+    public Iterator<CommittableEntityState> iterator( NeoIdentityIndex idIndex )
     {
-        return null;  // TODO: implement this
+        final Iterator<CommittableEntityState> direct = directFactory.iterator( idIndex );
+        return new Iterator<CommittableEntityState>()
+        {
+            public boolean hasNext()
+            {
+                return direct.hasNext();
+            }
+
+            public CommittableEntityState next()
+            {
+                return new IndirectEntityState( (DirectEntityState) direct.next() );
+            }
+
+            public void remove()
+            {
+                direct.remove();
+            }
+        };
     }
 }

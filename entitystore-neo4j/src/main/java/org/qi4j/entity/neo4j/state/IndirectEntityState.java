@@ -14,83 +14,83 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.entity.neo4j.state.indirect;
+package org.qi4j.entity.neo4j.state;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import org.qi4j.entity.neo4j.state.NeoEntityState;
-import org.qi4j.entity.neo4j.state.direct.DirectEntityState;
-import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.spi.entity.association.AssociationModel;
-import org.qi4j.spi.property.PropertyModel;
-import org.qi4j.spi.structure.CompositeDescriptor;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
  */
-public class IndirectEntityState implements EntityState
+public class IndirectEntityState implements CommittableEntityState
 {
+    // Cached state
+    private final DirectEntityState state;
+    private final long version;
+    private EntityStatus status;
+
+    // Properties and associations
     private final Map<String, Holder<Object>> properties = new HashMap<String, Holder<Object>>();
     private final Map<String, Holder<QualifiedIdentity>> associations = new HashMap<String, Holder<QualifiedIdentity>>();
     private final Map<String, IndirectCollection> manyAssociations = new HashMap<String, IndirectCollection>();
-    private final long version;
-    public final DirectEntityState underlyingState;
-    private EntityStatus status;
-    private QualifiedIdentity identity;
+    private boolean loaded = false;
 
-    IndirectEntityState( DirectEntityState underlyingState, CompositeDescriptor descriptor )
+    public IndirectEntityState( DirectEntityState state )
     {
-        this.underlyingState = underlyingState;
-        for( PropertyModel property : descriptor.getCompositeModel().getPropertyModels() )
-        {
-            String qName = property.getQualifiedName();
-            properties.put( qName, new Holder<Object>( underlyingState.getProperty( qName ) ) );
-        }
-        for( AssociationModel model : descriptor.getCompositeModel().getAssociationModels() )
-        {
-            String qName = model.getQualifiedName();
-            if( NeoEntityState.isManyAssociation( model ) )
-            {
-                manyAssociations.put( qName, null );
-            }
-            else
-            {
-                associations.put( qName, new Holder<QualifiedIdentity>( underlyingState.getAssociation( qName ) ) );
-            }
-        }
-        this.version = underlyingState.getEntityVersion();
-        this.status = underlyingState.getStatus();
-        this.identity = underlyingState.getIdentity();
+        this.state = state;
+        this.version = state.getEntityVersion();
+        this.status = state.getStatus();
     }
 
-    // NeoEntityState implementation
+    // CommittableEntityState implementation
+
+    public void preloadState()
+    {
+        if( !loaded )
+        {
+            loaded = true;
+            for( String qName : getPropertyNames() )
+            {
+                properties.put( qName, new Holder<Object>( state.getProperty( qName ) ) );
+            }
+            for( String qName : getAssociationNames() )
+            {
+                associations.put( qName, new Holder<QualifiedIdentity>( state.getAssociation( qName ) ) );
+            }
+            for( ManyAssociationFactory factory : getManyAssociationFactories() )
+            {
+                String qName = factory.getQualifiedName();
+                manyAssociations.put( qName, factory.createPreloadedCollection( state.getManyAssociation( qName ) ) );
+            }
+        }
+    }
+
+    public void prepareState()
+    {
+        state.preloadState();
+    }
 
     public void prepareCommit()
     {
-        if( status == EntityStatus.NEW )
+        if( status == EntityStatus.REMOVED )
         {
-        }
-        else if( status == EntityStatus.REMOVED )
-        {
-            underlyingState.remove();
+            state.remove();
             return;
         }
-        // Store the state
-        if( version != underlyingState.incNodeVersion() )
-        { // will aquire the write lock
-            throw new EntityStoreException( "Conflicting versions, the underlying representation has been modified. For :" + identity );
+        if( version != state.getEntityVersion() )
+        {
+            throw new EntityStoreException( "Conflicting versions, the underlying representation has been modified. For :" + getIdentity() );
         }
         for( Map.Entry<String, Holder<Object>> property : properties.entrySet() )
         {
             Holder<Object> holder = property.getValue();
             if( holder.updated )
             {
-                underlyingState.setProperty( property.getKey(), holder.value );
+                state.setProperty( property.getKey(), holder.value );
             }
         }
         for( Map.Entry<String, Holder<QualifiedIdentity>> association : associations.entrySet() )
@@ -98,21 +98,42 @@ public class IndirectEntityState implements EntityState
             Holder<QualifiedIdentity> holder = association.getValue();
             if( holder.updated )
             {
-                underlyingState.setAssociation( association.getKey(), holder.value );
+                state.setAssociation( association.getKey(), holder.value );
             }
         }
         for( IndirectCollection assoc : manyAssociations.values() )
         {
             assoc.prepareCommit();
         }
+        state.prepareCommit();
     }
 
-    protected void storeProperty( String qualifiedName, Object value )
+    public void prepareRemove()
     {
-        properties.get( qualifiedName ).set( value );
+        state.prepareRemove();
+    }
+
+    public Iterable<ManyAssociationFactory> getManyAssociationFactories()
+    {
+        return state.getManyAssociationFactories();
+    }
+
+    public boolean isUpdated()
+    {
+        return true;  // TODO: implement some logic here
     }
 
     // EntityState implementation
+
+    public QualifiedIdentity getIdentity()
+    {
+        return state.getIdentity();
+    }
+
+    public long getEntityVersion()
+    {
+        return version;
+    }
 
     public void remove()
     {
@@ -124,14 +145,19 @@ public class IndirectEntityState implements EntityState
         return status;
     }
 
-    public QualifiedIdentity getIdentity()
+    public Iterable<String> getPropertyNames()
     {
-        return identity;
+        return state.getPropertyNames();
     }
 
-    public long getEntityVersion()
+    public Iterable<String> getAssociationNames()
     {
-        return version;
+        return state.getAssociationNames();
+    }
+
+    public Iterable<String> getManyAssociationNames()
+    {
+        return state.getManyAssociationNames();
     }
 
     public Object getProperty( String qualifiedName )
@@ -164,20 +190,7 @@ public class IndirectEntityState implements EntityState
         throw new UnsupportedOperationException();
     }
 
-    public Iterable<String> getPropertyNames()
-    {
-        return Collections.unmodifiableCollection( properties.keySet() );
-    }
-
-    public Iterable<String> getAssociationNames()
-    {
-        return Collections.unmodifiableCollection( associations.keySet() );
-    }
-
-    public Iterable<String> getManyAssociationNames()
-    {
-        return Collections.unmodifiableCollection( manyAssociations.keySet() );
-    }
+    // Implementation internals
 
     private static class Holder<T>
     {

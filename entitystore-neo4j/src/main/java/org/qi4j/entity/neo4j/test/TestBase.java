@@ -19,16 +19,14 @@ package org.qi4j.entity.neo4j.test;
 import java.util.Collection;
 import org.junit.Before;
 import org.neo4j.api.core.Transaction;
+import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.composite.Composite;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkCompletionException;
-import org.qi4j.entity.neo4j.NeoCoreService;
-import org.qi4j.entity.neo4j.NeoEntityStoreService;
-import org.qi4j.entity.neo4j.NeoIdentityService;
+import org.qi4j.entity.neo4j.Configuration;
 import org.qi4j.entity.neo4j.NeoTransactionService;
-import org.qi4j.entity.neo4j.state.direct.DirectEntityStateFactory;
-import org.qi4j.entity.neo4j.state.indirect.IndirectEntityStateFactory;
 import org.qi4j.test.AbstractQi4jTest;
 
 /**
@@ -41,17 +39,95 @@ public abstract class TestBase extends AbstractQi4jTest
 
     private NeoTransactionService txFactory;
     private final boolean useTxService;
-    private final boolean direct;
+    private final Assembler serviceAssembler;
+    private final Class<? extends Composite>[] composites;
+    private final boolean useIdGenerator;
 
-    protected TestBase( boolean direct, boolean useTxService )
+    protected TestBase( Configuration config, boolean useTxService, boolean useIdGenerator, Class<? extends Composite>... composites )
     {
-        assert direct : "TODO: Need to implement transaction services before the Indirect Neo Entity Store can be used";
-        if( !direct && !useTxService )
+        assert ( config == Configuration.DIRECT || config == Configuration.INDIRECT ) : "Unsuported Configuration";
+        if( config == Configuration.INDIRECT && !useTxService )
         {
             throw new IllegalArgumentException( "The Indirect Neo Entity Store needs a transaction manager." );
         }
         this.useTxService = useTxService;
-        this.direct = direct;
+        this.useIdGenerator = useIdGenerator;
+        this.serviceAssembler = config;
+        this.composites = composites;
+    }
+
+    protected final void perform( TestExecutor executor ) throws Exception
+    {
+        if( !useTxService )
+        {
+            Transaction tx = txFactory.beginTx();
+            try
+            {
+                setup( executor );
+                tx.success();
+            }
+            finally
+            {
+                tx.finish();
+            }
+            tx = txFactory.beginTx();
+            try
+            {
+                verify( executor );
+                tx.success();
+            }
+            finally
+            {
+                tx.finish();
+            }
+        }
+        else
+        {
+            setup( executor );
+            verify( executor );
+        }
+    }
+
+    private void setup( TestExecutor executor ) throws Exception
+    {
+        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+        try
+        {
+            TestExecutor.setup( uow, executor );
+        }
+        finally
+        {
+            try
+            {
+                uow.complete();
+            }
+            catch( Exception e )
+            {
+                System.err.println( "uow.complete(); failed in makeCase( ... )" );
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void verify( TestExecutor executor ) throws Exception
+    {
+        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+        try
+        {
+            TestExecutor.verify( uow, executor );
+        }
+        finally
+        {
+            try
+            {
+                uow.complete();
+            }
+            catch( Exception e )
+            {
+                System.err.println( "uow.complete(); failed in makeCase( ... )" );
+                e.printStackTrace();
+            }
+        }
     }
 
     protected final <T extends Collection> Case<T> perform( CollectionBuilder<T>... builders ) throws UnitOfWorkCompletionException
@@ -117,7 +193,15 @@ public abstract class TestBase extends AbstractQi4jTest
         }
         finally
         {
-            uow.complete();
+            try
+            {
+                uow.complete();
+            }
+            catch( Exception e )
+            {
+                System.err.println( "uow.complete(); failed in explicit executeVerification( ... )" );
+                e.printStackTrace();
+            }
         }
     }
 
@@ -130,7 +214,15 @@ public abstract class TestBase extends AbstractQi4jTest
         }
         finally
         {
-            uow.complete();
+            try
+            {
+                uow.complete();
+            }
+            catch( Exception e )
+            {
+                System.err.println( "uow.complete(); failed in implicit executeVerification( ... )" );
+                e.printStackTrace();
+            }
         }
     }
 
@@ -143,27 +235,30 @@ public abstract class TestBase extends AbstractQi4jTest
         }
         finally
         {
-            uow.complete();
+            try
+            {
+                uow.complete();
+            }
+            catch( Exception e )
+            {
+                System.err.println( "uow.complete(); failed in makeCase( ... )" );
+                e.printStackTrace();
+            }
         }
     }
 
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
-        module.addServices(
-            NeoEntityStoreService.class,
-            NeoCoreService.class,
-            DirectEntityStateFactory.class,
-            NeoIdentityService.class
-        );
-        if( !direct )
+        serviceAssembler.assemble( module );
+        if( useIdGenerator )
         {
-            module.addServices( IndirectEntityStateFactory.class );
-        }
-        if( useTxService )
-        {
-            // TODO: module.addServices(TX_SERVICE.class);
+            Configuration.IDENTITY_GENERATOR.assemble( module );
         }
         module.addComposites( ElementOwnerComposite.class, ContainedElementComposite.class );
+        if( composites.length != 0 )
+        {
+            module.addComposites( composites );
+        }
     }
 
     @Before
@@ -172,7 +267,7 @@ public abstract class TestBase extends AbstractQi4jTest
         super.setUp();
         if( !useTxService )
         {
-            txFactory = serviceLocator.findService( NeoTransactionService.class ).get();
+            txFactory = serviceLocator.lookupService( NeoTransactionService.class ).get();
         }
     }
 }

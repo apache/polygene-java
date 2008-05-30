@@ -25,5 +25,9 @@ public interface NeoIdentityIndex
 {
     Node getNode( String identity );
 
+    Node getOrCreateNode( String identity );
+
+    void putNode( String identity, Node node );
+
     Node getTypeNode( String type );
 }

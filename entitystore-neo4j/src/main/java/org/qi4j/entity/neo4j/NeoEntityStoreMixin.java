@@ -19,10 +19,13 @@ package org.qi4j.entity.neo4j;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import org.neo4j.api.core.Transaction;
 import org.qi4j.composite.scope.Service;
-import org.qi4j.entity.neo4j.state.NeoEntityState;
-import org.qi4j.entity.neo4j.state.direct.DirectEntityStateFactory;
-import org.qi4j.entity.neo4j.state.indirect.IndirectEntityStateFactory;
+import org.qi4j.entity.neo4j.state.CommittableEntityState;
+import org.qi4j.entity.neo4j.state.DirectEntityStateFactory;
+import org.qi4j.entity.neo4j.state.IndirectEntityStateFactory;
+import org.qi4j.entity.neo4j.state.LoadedDescriptor;
+import org.qi4j.entity.neo4j.state.NeoEntityStateFactory;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityStore;
@@ -38,7 +41,7 @@ import org.qi4j.structure.Module;
 public class NeoEntityStoreMixin implements EntityStore
 {
     // Dependancies
-    private @Service NeoIdentityService idService;
+    private @Service NeoIdentityIndexService idService;
     private @Service DirectEntityStateFactory directFactory;
     private @Service( optional = true ) IndirectEntityStateFactory indirectFactory;
     private @Service NeoCoreService neo;
@@ -47,36 +50,74 @@ public class NeoEntityStoreMixin implements EntityStore
 
     public EntityState newEntityState( CompositeDescriptor compositeDescriptor, QualifiedIdentity identity ) throws EntityStoreException
     {
-        return factory().createEntityState( idService, compositeDescriptor, identity, EntityStatus.NEW );
+        CommittableEntityState state = factory().createEntityState( idService, load( compositeDescriptor, identity ), identity, EntityStatus.NEW );
+        state.preloadState();
+        return state;
     }
 
     public EntityState getEntityState( CompositeDescriptor compositeDescriptor, QualifiedIdentity identity ) throws EntityStoreException
     {
-        return factory().createEntityState( idService, compositeDescriptor, identity, EntityStatus.LOADED );
+        CommittableEntityState state = factory().createEntityState( idService, load( compositeDescriptor, identity ), identity, EntityStatus.LOADED );
+        state.preloadState();
+        return state;
     }
 
     public StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, Iterable<QualifiedIdentity> removedStates, Module module ) throws EntityStoreException
     {
-        List<NeoEntityState> updated = new ArrayList<NeoEntityState>();
+        List<CommittableEntityState> updated = new ArrayList<CommittableEntityState>();
         for( EntityState state : newStates )
         {
-            updated.add( (NeoEntityState) state );
+            updated.add( (CommittableEntityState) state );
         }
         for( EntityState state : loadedStates )
         {
-            NeoEntityState neoState = (NeoEntityState) state;
-            // TODO: add a check to see if they are actually updated?
-            updated.add( neoState );
+            CommittableEntityState neoState = (CommittableEntityState) state;
+            if( neoState.isUpdated() )
+            {
+                updated.add( neoState );
+            }
         }
         return factory().prepareCommit( idService, updated, removedStates );
     }
 
     public Iterator<EntityState> iterator()
     {
-        return factory().iterator();
+        final Iterator<CommittableEntityState> iter = factory().iterator( idService );
+        return new Iterator<EntityState>()
+        {
+            public boolean hasNext()
+            {
+                return iter.hasNext();
+            }
+
+            public EntityState next()
+            {
+                return iter.next();
+            }
+
+            public void remove()
+            {
+                iter.remove();
+            }
+        };
     }
 
     // Implementation details
+
+    private LoadedDescriptor load( CompositeDescriptor compositeDescriptor, QualifiedIdentity identity )
+    {
+        Transaction tx = neo.beginTx();
+        try
+        {
+            LoadedDescriptor descriptor = LoadedDescriptor.loadDescriptor( compositeDescriptor, idService.getTypeNode( identity.getCompositeType() ) );
+            tx.success();
+            return descriptor;
+        }
+        finally
+        {
+            tx.finish();
+        }
+    }
 
     private NeoEntityStateFactory factory()
     {

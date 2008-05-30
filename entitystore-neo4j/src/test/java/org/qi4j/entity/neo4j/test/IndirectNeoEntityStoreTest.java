@@ -14,17 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.entity.neo4j.state.direct;
+package org.qi4j.entity.neo4j.test;
 
-import org.qi4j.composite.Mixins;
-import org.qi4j.entity.neo4j.NeoEntityStateFactory;
-import org.qi4j.service.ServiceComposite;
+import org.junit.Test;
+import org.qi4j.entity.neo4j.Configuration;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
  */
-@Mixins( DirectEntityStateFactoryMixin.class )
-public interface DirectEntityStateFactory
-    extends NeoEntityStateFactory, ServiceComposite
+public class IndirectNeoEntityStoreTest extends DirectNeoEntityStoreTest
 {
+    public IndirectNeoEntityStoreTest()
+    {
+        super( Configuration.INDIRECT );
+    }
+
+    @Test
+    public void testInitialization()
+    {
+        // This is just to make sure that the tools identifies this as a test class
+    }
 }

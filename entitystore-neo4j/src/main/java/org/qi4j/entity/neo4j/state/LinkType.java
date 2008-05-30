@@ -17,7 +17,7 @@
 package org.qi4j.entity.neo4j.state;
 
 import org.neo4j.api.core.Relationship;
-import org.qi4j.spi.entity.association.AssociationModel;
+import org.neo4j.api.core.RelationshipType;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
@@ -26,19 +26,45 @@ public enum LinkType
 {
     UNQUALIFIED
         {
-            String getRelationshipTypeName( AssociationModel model )
+            String getRelationshipTypeName( String qualifiedName )
             {
-                return model.getQualifiedName();
+                return qualifiedName;
             }
         }, START, END, INTERNAL;
+    private final String suffix;
 
-    String getRelationshipTypeName( AssociationModel model )
+    private LinkType()
     {
-        return model.getQualifiedName() + "::" + name();
+        suffix = "::" + name();
+    }
+
+    private String getRelationshipTypeName( String qualifiedName )
+    {
+        return qualifiedName + suffix;
     }
 
     public boolean isInstance( Relationship relation )
     {
-        return relation.getType().name().endsWith( "::" + name() );
+        return relation.getType().name().endsWith( suffix );
+    }
+
+    public RelationshipType getRelationshipType( String qualifiedName )
+    {
+        return new AssociationRelationshipType( getRelationshipTypeName( qualifiedName ) );
+    }
+
+    private static class AssociationRelationshipType implements RelationshipType
+    {
+        private final String name;
+
+        public AssociationRelationshipType( String name )
+        {
+            this.name = name;
+        }
+
+        public String name()
+        {
+            return name;
+        }
     }
 }

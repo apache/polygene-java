@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.entity.neo4j.state.indirect;
+package org.qi4j.entity.neo4j.state;
 
 import java.util.AbstractCollection;
 import java.util.Collection;
@@ -22,7 +22,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import org.qi4j.entity.neo4j.state.BackendFactory;
 import org.qi4j.spi.entity.QualifiedIdentity;
 
 /**
@@ -37,8 +36,8 @@ public class IndirectUnorderedCollection extends AbstractCollection<QualifiedIde
 
     public IndirectUnorderedCollection( BackendFactory factory, Collection<QualifiedIdentity> underlyingCollection )
     {
-        backend = factory.createBackend();
-        added = factory.createBackend();
+        backend = factory.createBackend( QualifiedIdentity.class );
+        added = factory.createBackend( QualifiedIdentity.class );
         this.underlyingCollection = underlyingCollection;
         for( QualifiedIdentity id : underlyingCollection )
         {

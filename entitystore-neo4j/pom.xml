@@ -93,11 +93,6 @@ limitations under the License.
       <version>0.2.0-SNAPSHOT</version>
     </dependency>
     <dependency>
-      <groupId>org.qi4j.tests</groupId>
-      <artifactId>qi4j-tests-core</artifactId>
-      <version>0.2.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
       <groupId>org.qi4j.core</groupId>
       <artifactId>qi4j-core-testsupport</artifactId>
       <version>0.2.0-SNAPSHOT</version>

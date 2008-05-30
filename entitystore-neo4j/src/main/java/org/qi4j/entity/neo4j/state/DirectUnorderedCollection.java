@@ -14,37 +14,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.entity.neo4j.state.direct;
+package org.qi4j.entity.neo4j.state;
 
 import java.util.AbstractCollection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import org.neo4j.api.core.Direction;
+import org.neo4j.api.core.Node;
 import org.neo4j.api.core.Relationship;
-import org.qi4j.entity.neo4j.state.DuplicationChecker;
-import org.qi4j.entity.neo4j.state.NeoEntityState;
+import org.neo4j.api.core.RelationshipType;
+import org.qi4j.entity.neo4j.NeoIdentityIndex;
 import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.spi.entity.association.AssociationModel;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
  */
 public class DirectUnorderedCollection extends AbstractCollection<QualifiedIdentity> implements Set<QualifiedIdentity>
 {
-    private final NeoEntityState state;
-    private final AssociationModel model;
+    private final DirectEntityState state;
+    private final RelationshipType associationType;
     private final DuplicationChecker checker;
+    private final String qualifiedName;
+    private final NeoIdentityIndex idIndex;
 
-    public DirectUnorderedCollection( DuplicationChecker checker, final NeoEntityState state, final AssociationModel model )
+    public DirectUnorderedCollection( NeoIdentityIndex idIndex, DuplicationChecker checker, final DirectEntityState state, final String qualifiedName )
     {
+        this.idIndex = idIndex;
         this.state = state;
-        this.model = model;
+        this.associationType = LinkType.UNQUALIFIED.getRelationshipType( qualifiedName );
+        this.qualifiedName = qualifiedName;
         this.checker = checker;
     }
 
     public Iterator<QualifiedIdentity> iterator()
     {
-        final Iterator<Relationship> relations = state.getRelationships( model ).iterator();
+        final Iterator<Relationship> relations = state.underlyingNode.getRelationships( associationType, Direction.OUTGOING ).iterator();
         return new Iterator<QualifiedIdentity>()
         {
             Relationship last = null;
@@ -59,7 +64,7 @@ public class DirectUnorderedCollection extends AbstractCollection<QualifiedIdent
                 if( relations.hasNext() )
                 {
                     last = relations.next();
-                    return NeoEntityState.getIdentityFromNode( last.getEndNode() );
+                    return DirectEntityState.getIdentityFromNode( last.getEndNode() );
                 }
                 else
                 {
@@ -85,19 +90,20 @@ public class DirectUnorderedCollection extends AbstractCollection<QualifiedIdent
 
     public int size()
     {
-        return state.getSizeOfCollection( model );
+        return state.getSizeOfCollection( qualifiedName );
     }
 
     private void changeSize( int delta )
     {
-        state.setSizeOfCollection( model, size() + delta );
+        state.setSizeOfCollection( qualifiedName, size() + delta );
     }
 
     public boolean add( QualifiedIdentity qualifiedIdentity )
     {
         if( checker.goodToAdd( this, qualifiedIdentity ) )
         {
-            state.createLink( qualifiedIdentity, model );
+            Node node = idIndex.getNode( qualifiedIdentity.getIdentity() );
+            state.underlyingNode.createRelationshipTo( node, associationType );
             changeSize( 1 );
             return true;
         }

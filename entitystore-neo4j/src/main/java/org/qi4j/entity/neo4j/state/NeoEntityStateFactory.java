@@ -16,12 +16,21 @@
  */
 package org.qi4j.entity.neo4j.state;
 
-import java.util.Collection;
+import java.util.Iterator;
+import org.qi4j.entity.neo4j.NeoIdentityIndex;
+import org.qi4j.spi.entity.EntityStatus;
+import org.qi4j.spi.entity.EntityStoreException;
+import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.spi.entity.StateCommitter;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
  */
-public interface BackendFactory
+public interface NeoEntityStateFactory
 {
-    <E> Collection<E> createBackend( Class<E> elementType );
+    CommittableEntityState createEntityState( NeoIdentityIndex idIndex, LoadedDescriptor descriptor, QualifiedIdentity identity, EntityStatus status );
+
+    StateCommitter prepareCommit( NeoIdentityIndex idIndex, Iterable<CommittableEntityState> updated, Iterable<QualifiedIdentity> removed ) throws EntityStoreException;
+
+    Iterator<CommittableEntityState> iterator( NeoIdentityIndex idIndex );
 }

@@ -18,6 +18,7 @@ package org.qi4j.entity.neo4j.test;
 
 import java.util.Set;
 import org.junit.Test;
+import org.qi4j.entity.neo4j.Configuration;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
@@ -26,15 +27,20 @@ public class DirectIdentitySetTest extends TestBase
 {
     public DirectIdentitySetTest()
     {
-        super( true, false );
+        this( Configuration.DIRECT );
+    }
+
+    public DirectIdentitySetTest( Configuration config )
+    {
+        super( config, config == Configuration.INDIRECT, true );
     }
 
     @Test
     public void testEmptySet() throws Exception
     {
-        perform( new CollectionBuilder<Set>()
+        perform( new CollectionBuilder<Set<ContainedElement>>()
         {
-            protected void build( Set set )
+            protected void build( Set<ContainedElement> set )
             {
             }
         } );
@@ -43,9 +49,9 @@ public class DirectIdentitySetTest extends TestBase
     @Test
     public void testSimpleSet() throws Exception
     {
-        perform( new CollectionBuilder<Set>( 1, 2, 3 )
+        perform( new CollectionBuilder<Set<ContainedElement>>( 1, 2, 3 )
         {
-            protected void build( Set set )
+            protected void build( Set<ContainedElement> set )
             {
                 set.add( element( 1 ) );
                 set.add( element( 2 ) );
@@ -57,9 +63,9 @@ public class DirectIdentitySetTest extends TestBase
     @Test
     public void testDuplicates() throws Exception
     {
-        perform( new CollectionBuilder<Set>( 1, 2, 3 )
+        perform( new CollectionBuilder<Set<ContainedElement>>( 1, 2, 3 )
         {
-            protected void build( Set set )
+            protected void build( Set<ContainedElement> set )
             {
                 set.add( element( 1 ) );
                 set.add( element( 2 ) );
@@ -73,9 +79,9 @@ public class DirectIdentitySetTest extends TestBase
     @Test
     public void testRemove() throws Exception
     {
-        perform( new CollectionBuilder<Set>( 1, 2, 3 )
+        perform( new CollectionBuilder<Set<ContainedElement>>( 1, 2, 3 )
         {
-            protected void build( Set set )
+            protected void build( Set<ContainedElement> set )
             {
                 set.add( element( 1 ) );
                 set.add( element( 0 ) );
