@@ -14,29 +14,30 @@
 
 package org.qi4j.runtime.structure.qi;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * TODO
  */
-public class ApplicationInstance
+public final class UsedLayersModel
 {
-    private ApplicationModel model;
-    private List<LayerInstance> layerInstances;
+    private List<LayerModel> usedLayers;
 
-    public ApplicationInstance( ApplicationModel model, List<LayerInstance> layerInstances )
+    public UsedLayersModel( List<LayerModel> usedLayers )
     {
-        this.model = model;
-        this.layerInstances = layerInstances;
+        this.usedLayers = usedLayers;
     }
 
-    public ApplicationModel model()
+    public UsedLayersInstance newInstance( Map<LayerModel, LayerInstance> layerInstanceMap )
     {
-        return model;
-    }
+        List<LayerInstance> usedLayerInstances = new ArrayList<LayerInstance>();
+        for( LayerModel usedLayer : usedLayers )
+        {
+            usedLayerInstances.add( layerInstanceMap.get( usedLayer ) );
+        }
 
-    public List<LayerInstance> layers()
-    {
-        return layerInstances;
+        return new UsedLayersInstance( usedLayerInstances );
     }
 }

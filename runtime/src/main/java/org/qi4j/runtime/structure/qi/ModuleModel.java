@@ -15,6 +15,7 @@
 package org.qi4j.runtime.structure.qi;
 
 import java.util.List;
+import org.qi4j.composite.AmbiguousMixinTypeException;
 import org.qi4j.runtime.composite.qi.CompositeModel;
 import org.qi4j.runtime.composite.qi.Resolution;
 
@@ -51,4 +52,29 @@ public class ModuleModel
         return moduleInstance;
     }
 
+    public String name()
+    {
+        return null;
+    }
+
+    public CompositeModel getCompositeModelFor( Class mixinType )
+    {
+        CompositeModel foundModel = null;
+        for( CompositeModel composite : composites )
+        {
+            if( mixinType.isAssignableFrom( composite.type() ) )
+            {
+                if( foundModel != null )
+                {
+                    throw new AmbiguousMixinTypeException( mixinType );
+                }
+                else
+                {
+                    foundModel = composite;
+                }
+            }
+        }
+
+        return foundModel;
+    }
 }

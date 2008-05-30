@@ -47,7 +47,7 @@ public class ModuleCompositeBuilderFactory
 
         if( compositeContext == null )
         {
-            throw new CompositeNotRegisteredException( compositeType, compositeModuleInstance.module() );
+            throw new CompositeNotRegisteredException( compositeType, compositeModuleInstance.module().name().get() );
         }
 
         return createBuilder( compositeModuleInstance, compositeContext );

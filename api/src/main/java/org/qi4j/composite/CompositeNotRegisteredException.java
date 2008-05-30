@@ -13,30 +13,28 @@
  */
 package org.qi4j.composite;
 
-import org.qi4j.structure.Module;
-
 public class CompositeNotRegisteredException extends InvalidApplicationException
 {
     private static final long serialVersionUID = 1L;
 
-    private Class<? extends Composite> compositeType;
-    private Module module;
+    private Class compositeType;
+    private String moduleName;
 
-    public CompositeNotRegisteredException( Class<? extends Composite> compositeType, Module module )
+    public CompositeNotRegisteredException( Class compositeType, String moduleName )
     {
         super( "Trying to find unregistered composite of type [" + compositeType.getName() + "] in module [" +
-               module.name().get() + "]." );
+               moduleName + "]." );
         this.compositeType = compositeType;
-        this.module = module;
+        this.moduleName = moduleName;
     }
 
-    public Class<? extends Composite> compositeType()
+    public Class compositeType()
     {
         return compositeType;
     }
 
-    public Module module()
+    public String moduleName()
     {
-        return module;
+        return moduleName;
     }
 }

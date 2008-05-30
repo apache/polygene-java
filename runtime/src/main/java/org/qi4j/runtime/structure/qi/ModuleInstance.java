@@ -17,6 +17,8 @@ package org.qi4j.runtime.structure.qi;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.ObjectBuilderFactory;
 import org.qi4j.entity.UnitOfWorkFactory;
+import org.qi4j.runtime.composite.qi.CompositeBuilderFactoryInstance;
+import org.qi4j.runtime.composite.qi.CompositeModel;
 import org.qi4j.service.ServiceFinder;
 
 /**
@@ -36,10 +38,45 @@ public class ModuleInstance
     {
         this.moduleModel = moduleModel;
         this.layerInstance = layerInstance;
+
+        compositeBuilderFactory = new CompositeBuilderFactoryInstance( this );
     }
 
-    public ModuleModel module()
+    public ModuleModel model()
     {
         return moduleModel;
+    }
+
+    public CompositeBuilderFactory compositeBuilderFactory()
+    {
+        return compositeBuilderFactory;
+    }
+
+    public ObjectBuilderFactory objectBuilderFactory()
+    {
+        return objectBuilderFactory;
+    }
+
+    public UnitOfWorkFactory unitOfWorkFactory()
+    {
+        return unitOfWorkFactory;
+    }
+
+    public ServiceFinder serviceFinder()
+    {
+        return serviceFinder;
+    }
+
+    public ModuleInstance findModuleFor( Class mixinType )
+    {
+        // Check local first
+        CompositeModel model = moduleModel.getCompositeModelFor( mixinType );
+        if( model != null )
+        {
+            return this;
+        }
+
+        // Check layer
+        return layerInstance.findModuleFor( mixinType );
     }
 }

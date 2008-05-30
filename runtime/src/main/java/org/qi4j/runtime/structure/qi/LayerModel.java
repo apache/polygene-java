@@ -24,22 +24,20 @@ import org.qi4j.runtime.composite.qi.Resolution;
 public class LayerModel
 {
     private ApplicationModel applicationComposite;
-
-    private List<LayerModel> usedLayers;
-
+    private UsedLayersModel usedLayersModel;
     private List<ModuleModel> modules;
 
-    public LayerModel( ApplicationModel applicationComposite, List<LayerModel> usedLayers, List<ModuleModel> modules )
+    public LayerModel( ApplicationModel applicationComposite, UsedLayersModel usedLayersModel, List<ModuleModel> modules )
     {
         this.applicationComposite = applicationComposite;
-        this.usedLayers = usedLayers;
+        this.usedLayersModel = usedLayersModel;
         this.modules = modules;
     }
 
     // Resolution
-    public List<LayerModel> usedLayers()
+    public UsedLayersModel usedLayers()
     {
-        return usedLayers;
+        return usedLayersModel;
     }
 
     // Binding
@@ -53,10 +51,10 @@ public class LayerModel
     }
 
     // Context
-    public LayerInstance newInstance( ApplicationInstance applicationInstance, List<LayerInstance> usedLayerInstances )
+    public LayerInstance newInstance( ApplicationInstance applicationInstance, UsedLayersInstance usedLayerInstance )
     {
         List<ModuleInstance> moduleInstances = new ArrayList<ModuleInstance>();
-        LayerInstance layerInstance = new LayerInstance( this, moduleInstances, usedLayerInstances );
+        LayerInstance layerInstance = new LayerInstance( this, moduleInstances, usedLayerInstance );
         for( ModuleModel module : modules )
         {
             ModuleInstance moduleInstance = module.newInstance( layerInstance );

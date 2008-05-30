@@ -15,16 +15,66 @@
 package org.qi4j.runtime.structure.qi;
 
 import java.util.List;
+import org.qi4j.composite.AmbiguousMixinTypeException;
+import org.qi4j.runtime.composite.qi.CompositeModel;
 
 /**
  * TODO
  */
 public class LayerInstance
 {
+    private LayerModel model;
     private List<ModuleInstance> moduleInstances;
+    private UsedLayersInstance usedLayersInstance;
 
-    public LayerInstance( LayerModel instances, List<ModuleInstance> moduleInstances, List<LayerInstance> usedLayerInstances )
+    public LayerInstance( LayerModel model, List<ModuleInstance> moduleInstances, UsedLayersInstance usedLayersInstance )
     {
+        this.model = model;
         this.moduleInstances = moduleInstances;
+        this.usedLayersInstance = usedLayersInstance;
+    }
+
+    public LayerModel model()
+    {
+        return model;
+    }
+
+    public List<ModuleInstance> modules()
+    {
+        return moduleInstances;
+    }
+
+    public UsedLayersInstance usedLayersInstance()
+    {
+        return usedLayersInstance;
+    }
+
+    public ModuleInstance findModuleFor( Class mixinType )
+    {
+        // Check this layer
+        ModuleInstance foundModule = null;
+        for( ModuleInstance moduleInstance : moduleInstances )
+        {
+            CompositeModel compositeModel = moduleInstance.model().getCompositeModelFor( mixinType );
+            if( compositeModel != null )
+            {
+                if( foundModule != null )
+                {
+                    throw new AmbiguousMixinTypeException( mixinType );
+                }
+                else
+                {
+                    foundModule = moduleInstance;
+                }
+            }
+        }
+
+        if( foundModule != null )
+        {
+            return foundModule;
+        }
+
+        // Check used layers
+        return usedLayersInstance.findModuleFor( mixinType );
     }
 }

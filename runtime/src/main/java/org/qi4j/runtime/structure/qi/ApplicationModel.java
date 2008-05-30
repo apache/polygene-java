@@ -56,14 +56,8 @@ public class ApplicationModel
         Map<LayerModel, LayerInstance> layerInstanceMap = new HashMap<LayerModel, LayerInstance>();
         for( LayerModel layer : layers )
         {
-            List<LayerModel> usedLayers = layer.usedLayers();
-            List<LayerInstance> usedLayerInstances = new ArrayList<LayerInstance>();
-            for( LayerModel usedLayer : usedLayers )
-            {
-                usedLayerInstances.add( layerInstanceMap.get( usedLayer ) );
-            }
-
-            LayerInstance layerInstance = layer.newInstance( applicationInstance, usedLayerInstances );
+            UsedLayersInstance usedLayersInstance = layer.usedLayers().newInstance( layerInstanceMap );
+            LayerInstance layerInstance = layer.newInstance( applicationInstance, usedLayersInstance );
             layerInstances.add( layerInstance );
             layerInstanceMap.put( layer, layerInstance );
         }
