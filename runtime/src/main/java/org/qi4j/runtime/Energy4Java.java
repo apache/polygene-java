@@ -21,34 +21,18 @@ import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 import org.qi4j.composite.Composite;
-import org.qi4j.composite.scope.AssociationField;
-import org.qi4j.composite.scope.AssociationParameter;
-import org.qi4j.composite.scope.Invocation;
-import org.qi4j.composite.scope.PropertyField;
-import org.qi4j.composite.scope.PropertyParameter;
-import org.qi4j.composite.scope.Service;
-import org.qi4j.composite.scope.Structure;
 import org.qi4j.composite.scope.This;
-import org.qi4j.composite.scope.Uses;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.runtime.composite.AbstractCompositeInstance;
 import org.qi4j.runtime.composite.CompositeBinder;
 import org.qi4j.runtime.composite.CompositeModelFactory;
 import org.qi4j.runtime.composite.CompositeResolver;
-import org.qi4j.runtime.composite.InjectionProviderFactoryStrategy;
 import org.qi4j.runtime.composite.InstanceFactory;
 import org.qi4j.runtime.composite.InstanceFactoryImpl;
 import org.qi4j.runtime.composite.ObjectBinder;
 import org.qi4j.runtime.composite.ObjectModelFactory;
 import org.qi4j.runtime.composite.ObjectResolver;
 import org.qi4j.runtime.composite.ProxyReferenceInvocationHandler;
-import org.qi4j.runtime.injection.AssociationInjectionProviderFactory;
-import org.qi4j.runtime.injection.InvocationInjectionProviderFactory;
-import org.qi4j.runtime.injection.ModifiesInjectionProviderFactory;
-import org.qi4j.runtime.injection.PropertyInjectionProviderFactory;
-import org.qi4j.runtime.injection.ServiceInjectionProviderFactory;
-import org.qi4j.runtime.injection.StructureInjectionProviderFactory;
-import org.qi4j.runtime.injection.UsesInjectionProviderFactory;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.service.Configuration;
 import org.qi4j.service.ServiceComposite;
@@ -80,6 +64,7 @@ public final class Energy4Java
     public Energy4Java( Qi4jRuntime delegate )
     {
         Map<Class<? extends Annotation>, InjectionProviderFactory> providerFactories = new HashMap<Class<? extends Annotation>, InjectionProviderFactory>();
+/*
         // providerFactories.put( This.class, new ThisInjectionProviderFactory() );
         ModifiesInjectionProviderFactory modifiesInjectionProviderFactory = new ModifiesInjectionProviderFactory();
         //providerFactories.put( ConcernFor.class, modifiesInjectionProviderFactory );
@@ -94,7 +79,8 @@ public final class Energy4Java
         providerFactories.put( AssociationParameter.class, associationInjectionProviderFactory );
         providerFactories.put( Structure.class, new StructureInjectionProviderFactory( this ) );
         providerFactories.put( Service.class, new ServiceInjectionProviderFactory() );
-        InjectionProviderFactory ipf = new InjectionProviderFactoryStrategy( providerFactories );
+*/
+        InjectionProviderFactory ipf = null;
 
         processDelegate( delegate );
 

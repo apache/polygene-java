@@ -23,6 +23,14 @@ import java.lang.reflect.Method;
  */
 public interface AppliesToFilter
 {
+    AppliesToFilter ALWAYS = new AppliesToFilter()
+    {
+        public boolean appliesTo( Method method, Class<?> mixin, Class<?> compositeType, Class<?> fragmentClass )
+        {
+            return true;
+        }
+    };
+
     /**
      * Check if the Fragment should be applied or not. Can be used
      * with Mixins, Concerns, SideEffects.

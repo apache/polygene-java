@@ -14,35 +14,28 @@
 
 package org.qi4j.runtime.composite.qi;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
+import java.lang.reflect.Method;
+import java.util.List;
 
 /**
  * TODO
  */
-public final class ParameterModel
+public class ValueConstraintsModel
 {
-    private Annotation[] annotations;
-    private Type type;
+    private List<ConstraintModel> constraintModels;
 
-    public ParameterModel( Annotation[] annotations, Type type )
+    public ValueConstraintsModel( List<ConstraintModel> constraintModels )
     {
-        this.annotations = annotations;
-        this.type = type;
+        this.constraintModels = constraintModels;
     }
 
-    // Model
-    public Annotation[] annotations()
+    public ValueConstraintsInstance newInstance( Method method )
     {
-        return annotations;
+        return new ValueConstraintsInstance( method, constraintModels );
     }
 
-    public Type type()
+    public boolean isConstrained()
     {
-        return type;
-    }
-
-    public void checkConstraints( Object param )
-    {
+        return !constraintModels.isEmpty();
     }
 }

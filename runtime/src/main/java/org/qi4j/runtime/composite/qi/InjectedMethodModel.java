@@ -33,15 +33,15 @@ public final class InjectedMethodModel
     }
 
     // Binding
-    public void bind( BindingContext bindingContext )
+    public void bind( Resolution resolution )
     {
-        parameters.bind( bindingContext );
+        parameters.bind( resolution );
     }
 
     // Context
     public void inject( InjectionContext context, Object instance ) throws InjectionException
     {
-        Object[] params = parameters.newInstance( context );
+        Object[] params = parameters.newParametersInstance( context );
         try
         {
             method.invoke( instance, params );

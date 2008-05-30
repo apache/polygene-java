@@ -18,7 +18,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.qi4j.runtime.composite.qi.BindingContext;
+import org.qi4j.runtime.composite.InjectionProviderFactoryStrategy;
+import org.qi4j.runtime.composite.qi.InjectionProviderFactory;
+import org.qi4j.runtime.composite.qi.Resolution;
 
 /**
  * TODO
@@ -27,18 +29,21 @@ public class ApplicationModel
 {
     private List<LayerModel> layers;
 
+    private InjectionProviderFactory ipf;
+
     public ApplicationModel( List<LayerModel> layers )
     {
         this.layers = layers;
+        ipf = new InjectionProviderFactoryStrategy();
     }
 
     // Binding
     public void bind()
     {
-        BindingContext bindingContext = new BindingContext( this, null, null, null );
+        Resolution resolution = new Resolution( this, null, null, null, null );
         for( LayerModel layer : layers )
         {
-            layer.bind( bindingContext );
+            layer.bind( resolution );
         }
     }
 
@@ -64,5 +69,10 @@ public class ApplicationModel
         }
 
         return applicationInstance;
+    }
+
+    public InjectionProviderFactory injectionProviderFactory()
+    {
+        return ipf;
     }
 }

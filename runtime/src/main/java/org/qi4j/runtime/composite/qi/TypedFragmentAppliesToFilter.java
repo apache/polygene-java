@@ -14,28 +14,17 @@
 
 package org.qi4j.runtime.composite.qi;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.lang.reflect.Method;
+import org.qi4j.composite.AppliesToFilter;
 
 /**
  * TODO
  */
-public final class ParametersModel
+class TypedFragmentAppliesToFilter
+    implements AppliesToFilter
 {
-    private List<ParameterModel> parameters = new ArrayList<ParameterModel>();
-
-    public ParametersModel( List<ParameterModel> parameters )
+    public boolean appliesTo( Method method, Class<?> mixin, Class<?> compositeType, Class<?> fragmentClass )
     {
-        this.parameters = parameters;
-    }
-
-    public void checkConstraints( Object[] params )
-    {
-        // Check constraints
-        for( int j = 0; j < parameters.size(); j++ )
-        {
-            ParameterModel parameterModel = parameters.get( j );
-            parameterModel.checkConstraints( params[ j ] );
-        }
+        return method.getDeclaringClass().isAssignableFrom( fragmentClass );
     }
 }

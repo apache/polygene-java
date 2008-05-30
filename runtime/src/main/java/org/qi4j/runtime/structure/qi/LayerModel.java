@@ -16,7 +16,7 @@ package org.qi4j.runtime.structure.qi;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.qi4j.runtime.composite.qi.BindingContext;
+import org.qi4j.runtime.composite.qi.Resolution;
 
 /**
  * TODO
@@ -43,12 +43,12 @@ public class LayerModel
     }
 
     // Binding
-    public void bind( BindingContext bindingContext )
+    public void bind( Resolution resolution )
     {
-        bindingContext = new BindingContext( bindingContext.application(), this, null, null );
+        resolution = new Resolution( resolution.application(), this, null, null, null );
         for( ModuleModel module : modules )
         {
-            module.bind( bindingContext );
+            module.bind( resolution );
         }
     }
 

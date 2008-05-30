@@ -54,14 +54,14 @@ public abstract class AbstractModifierDeclaration
         return appliesToFilter.appliesTo( method, modifierClass, compositeType, modifierClass );
     }
 
-    private void createAppliesToFilter( Class modifierClass )
+    private void createAppliesToFilter( Class<?> modifierClass )
     {
         if( !InvocationHandler.class.isAssignableFrom( modifierClass ) )
         {
             appliesToFilter = new TypedModifierAppliesToFilter();
         }
 
-        AppliesTo appliesTo = (AppliesTo) modifierClass.getAnnotation( AppliesTo.class );
+        AppliesTo appliesTo = modifierClass.getAnnotation( AppliesTo.class );
         if( appliesTo != null )
         {
             for( Class<?> appliesToClass : appliesTo.value() )
@@ -101,7 +101,7 @@ public abstract class AbstractModifierDeclaration
 
         if( appliesToFilter == null )
         {
-            appliesToFilter = new AlwaysAppliesToFilter();
+            appliesToFilter = AppliesToFilter.ALWAYS;
         }
     }
 }

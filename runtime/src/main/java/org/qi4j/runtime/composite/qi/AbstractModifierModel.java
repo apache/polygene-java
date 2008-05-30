@@ -45,18 +45,13 @@ public abstract class AbstractModifierModel
         nextInterfaces = toClassArray( interfacesOf( modifierClass ) );
     }
 
-    public Class type()
-    {
-        return modifierClass;
-    }
-
     public boolean isGeneric()
     {
         return InvocationHandler.class.isAssignableFrom( modifierClass );
     }
 
     // Binding
-    public void bind( BindingContext context )
+    public void bind( Resolution context )
     {
         constructorsModel.bind( context );
         injectedFieldsModel.bind( context );
@@ -75,30 +70,28 @@ public abstract class AbstractModifierModel
 
     private Object wrapNext( Object next )
     {
-        Object modifies;
         if( isGeneric() )
         {
             if( next instanceof InvocationHandler )
             {
-                modifies = next;
+                return next;
             }
             else
             {
-                modifies = new TypedFragmentInvocationHandler( next );
+                return new TypedFragmentInvocationHandler( next );
             }
         }
         else
         {
             if( next instanceof InvocationHandler )
             {
-                modifies = Proxy.newProxyInstance( type().getClassLoader(), nextInterfaces, (InvocationHandler) next );
+                return Proxy.newProxyInstance( modifierClass.getClassLoader(), nextInterfaces, (InvocationHandler) next );
             }
             else
             {
-                modifies = next;
+                return next;
             }
         }
-        return modifies;
     }
 
 }

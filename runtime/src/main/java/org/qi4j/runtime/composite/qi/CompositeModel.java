@@ -28,6 +28,7 @@ import org.qi4j.runtime.structure.qi.ModuleModel;
  */
 public final class CompositeModel
 {
+    private ConstraintsModel constraintsModel;
     private ConcernsModel concernsModel;
     private SideEffectsModel sideEffectsModel;
     private MixinsModel mixinsModel;
@@ -44,6 +45,7 @@ public final class CompositeModel
         // Create proxy class
         this.proxyClass = createProxyClass( compositeType );
 
+        constraintsModel = new ConstraintsModel( compositeType );
         concernsModel = new ConcernsModel( compositeType );
         sideEffectsModel = new SideEffectsModel( compositeType );
         mixinsModel = new MixinsModel( compositeType );
@@ -64,9 +66,9 @@ public final class CompositeModel
         return proxyClass;
     }
 
-    public ConstraintsDeclaration constraintDeclaration()
+    public ConstraintsModel constraints()
     {
-        return null;
+        return constraintsModel;
     }
 
     public ConcernsModel concerns()
@@ -93,13 +95,11 @@ public final class CompositeModel
     }
 
     // Binding
-    public void bind( BindingContext bindingContext )
+    public void bind( Resolution resolution )
     {
-        bindingContext = new BindingContext( bindingContext.application(), bindingContext.layer(), bindingContext.module(), this );
-        compositeMethodsModel.bind( bindingContext );
-        concernsModel.bind( bindingContext );
-        sideEffectsModel.bind( bindingContext );
-        mixinsModel.bind( bindingContext );
+        resolution = new Resolution( resolution.application(), resolution.layer(), resolution.module(), this, null );
+        compositeMethodsModel.bind( resolution );
+        mixinsModel.bind( resolution );
     }
 
     // Context

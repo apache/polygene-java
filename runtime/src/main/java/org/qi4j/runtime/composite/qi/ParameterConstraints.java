@@ -14,17 +14,9 @@
 
 package org.qi4j.runtime.composite.qi;
 
-import java.lang.reflect.Method;
-import org.qi4j.composite.AppliesToFilter;
-
 /**
  * TODO
  */
-class AlwaysAppliesToFilter
-    implements AppliesToFilter
+public class ParameterConstraints
 {
-    public boolean appliesTo( Method method, Class<?> mixin, Class<?> compositeType, Class<?> fragmentClass )
-    {
-        return true;
-    }
 }

@@ -51,7 +51,7 @@ public final class InjectedFieldsModel
         }
     }
 
-    public void bind( BindingContext context )
+    public void bind( Resolution context )
     {
         for( InjectedFieldModel field : fields )
         {
@@ -64,6 +64,45 @@ public final class InjectedFieldsModel
         for( InjectedFieldModel field : fields )
         {
             field.inject( context, instance );
+        }
+    }
+
+    /**
+     * TODO
+     */
+    private static final class InjectedFieldModel
+    {
+        private DependencyModel dependencyModel;
+        private Field injectedField;
+
+        public InjectedFieldModel( Field injectedField, DependencyModel dependencyModel )
+        {
+            injectedField.setAccessible( true );
+            this.injectedField = injectedField;
+            this.dependencyModel = dependencyModel;
+        }
+
+        public void bind( Resolution resolution )
+        {
+            dependencyModel.bind( resolution );
+        }
+
+        public void inject( InjectionContext context, Object instance )
+        {
+            Object value = dependencyModel.inject( context );
+            try
+            {
+                injectedField.set( instance, value );
+            }
+            catch( IllegalAccessException e )
+            {
+                throw new InjectionException( e );
+            }
+        }
+
+        public void visitDependency( DependencyVisitor visitor )
+        {
+            visitor.visit( dependencyModel );
         }
     }
 }

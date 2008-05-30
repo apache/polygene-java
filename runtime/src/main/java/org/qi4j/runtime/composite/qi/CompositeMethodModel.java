@@ -14,6 +14,7 @@
 
 package org.qi4j.runtime.composite.qi;
 
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import org.qi4j.runtime.composite.CompositeMethodInstancePool;
 import org.qi4j.runtime.composite.FragmentInvocationHandler;
@@ -27,21 +28,25 @@ public final class CompositeMethodModel
 {
     // Model
     private Method method;
-    private ParametersModel parameters;
+    private MethodConstraintsModel methodConstraints;
+    private MethodConcernsModel methodConcerns;
+    private MethodSideEffectsModel methodSideEffects;
 
     // Resolution
     private CompositeModel composite;
 
     // Context
     private CompositeMethodInstancePool instancePool = new SynchronizedCompositeMethodInstancePool();
+    private MethodConstraintsInstance methodConstraintsInstance;
 
-    public CompositeMethodModel( Method method, ParametersModel parameters, CompositeModel composite )
+    public CompositeMethodModel( Method method, CompositeModel composite )
     {
         this.method = method;
-        this.parameters = parameters;
         this.composite = composite;
 
-        composite.concerns().concernsFor( method );
+        methodConcerns = composite.concerns().concernsFor( method );
+        methodSideEffects = composite.sideEffects().sideEffectsFor( method );
+        methodConstraints = new MethodConstraintsModel( method, composite.constraints() );
         composite.sideEffects().sideEffectsFor( method );
     }
 
@@ -51,11 +56,6 @@ public final class CompositeMethodModel
         return method;
     }
 
-    public ParametersModel parameters()
-    {
-        return parameters;
-    }
-
     // Resolution
     public CompositeModel composite()
     {
@@ -63,17 +63,20 @@ public final class CompositeMethodModel
     }
 
     // Binding
-    public void bind( BindingContext bindingContext )
+    public void bind( Resolution resolution )
     {
-        // Bind constraints
-        // Bind concerns
-        // Bind side-effects
+        resolution = new Resolution( resolution.application(), resolution.layer(), resolution.module(), resolution.composite(), this );
+
+        methodConcerns.bind( resolution );
+        methodSideEffects.bind( resolution );
+
+        methodConstraintsInstance = methodConstraints.newInstance();
     }
 
     // Context
     public Object invoke( Object composite, Object[] params, Object[] mixins, ModuleInstance moduleInstance ) throws Throwable
     {
-        parameters.checkConstraints( params );
+        methodConstraintsInstance.checkValid( params );
 
         CompositeMethodInstance methodInstance = getInstance( moduleInstance );
         return composite().mixins().invoke( composite, params, mixins, methodInstance );
@@ -89,11 +92,16 @@ public final class CompositeMethodModel
     private CompositeMethodInstance newCompositeMethodInstance( ModuleInstance moduleInstance )
         throws org.qi4j.composite.InstantiationException
     {
-        FragmentInvocationHandler mixinInvocationHandler = composite.mixins().mixinFor( method ).newInvocationHandler( method.getDeclaringClass() );
+        FragmentInvocationHandler mixinInvocationHandler = composite.mixins().newInvocationHandler( method );
 
-        ConcernsInstance concernsInstance = composite.concerns().newInstance( moduleInstance, method, mixinInvocationHandler );
-        SideEffectsInstance sideEffectsInstance = composite.sideEffects().newInstance( moduleInstance, method );
+        MethodConcernsInstance concernsInstance = methodConcerns.newInstance( moduleInstance, method, mixinInvocationHandler );
+        MethodSideEffectsInstance sideEffectsInstance = methodSideEffects.newInstance( moduleInstance, method );
         return new CompositeMethodInstance( concernsInstance, sideEffectsInstance, method );
     }
 
+    public AnnotatedElement annotatedElement()
+    {
+        // TODO Calc sum of composite + mixin
+        return method;
+    }
 }

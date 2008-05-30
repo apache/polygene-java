@@ -31,7 +31,7 @@ public final class InjectedFieldModel
         this.dependencyModel = dependencyModel;
     }
 
-    public void bind( BindingContext context )
+    public void bind( Resolution context )
     {
         dependencyModel.bind( context );
     }

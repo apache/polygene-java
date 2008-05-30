@@ -14,6 +14,7 @@
 
 package org.qi4j.runtime.composite.qi;
 
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -25,7 +26,11 @@ import java.util.Set;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.Mixins;
 import org.qi4j.composite.State;
+import org.qi4j.composite.scope.This;
 import org.qi4j.runtime.composite.CompositeMixin;
+import org.qi4j.runtime.composite.FragmentInvocationHandler;
+import org.qi4j.runtime.composite.GenericFragmentInvocationHandler;
+import org.qi4j.runtime.composite.TypedFragmentInvocationHandler;
 import org.qi4j.spi.composite.InvalidCompositeException;
 import org.qi4j.util.ClassUtil;
 
@@ -116,18 +121,12 @@ public final class MixinsModel
     }
 
     // Binding
-    public void bind( BindingContext bindingContext )
+    public void bind( Resolution resolution )
     {
         for( MixinModel mixinComposite : mixinModels )
         {
-            mixinComposite.bind( bindingContext );
+            mixinComposite.bind( resolution );
         }
-    }
-
-    public MixinModel mixinFor( Method method )
-    {
-        Integer integer = methodIndex.get( method );
-        return mixinModels.get( integer );
     }
 
     // Context
@@ -147,8 +146,93 @@ public final class MixinsModel
         int i = 0;
         for( MixinModel mixinModel : mixinModels )
         {
-            Object mixin = mixinModel.newInstance( compositeInstance, uses, state );
-            mixins[ i++ ] = mixin;
+            mixins[ i++ ] = mixinModel.newInstance( compositeInstance, uses, state );
         }
+    }
+
+    public FragmentInvocationHandler newInvocationHandler( final Method method )
+    {
+        return mixinFor( method ).newInvocationHandler( method.getDeclaringClass() );
+    }
+
+    private MixinModel mixinFor( Method method )
+    {
+        Integer integer = methodIndex.get( method );
+        return mixinModels.get( integer );
+    }
+
+    /**
+     * TODO
+     */
+    private static final class MixinModel
+    {
+        // Model
+        private Class mixinClass;
+        private ConstructorsModel constructorsModel;
+        private InjectedFieldsModel injectedFieldsModel;
+        private InjectedMethodsModel injectedMethodsModel;
+
+        private MixinModel( Class mixinClass )
+        {
+            this.mixinClass = mixinClass;
+
+            constructorsModel = new ConstructorsModel( mixinClass );
+            injectedFieldsModel = new InjectedFieldsModel( mixinClass );
+            injectedMethodsModel = new InjectedMethodsModel( mixinClass );
+        }
+
+        // Binding
+        private void bind( Resolution context )
+        {
+            constructorsModel.bind( context );
+            injectedFieldsModel.bind( context );
+            injectedMethodsModel.bind( context );
+        }
+
+        // Context
+        private Object newInstance( CompositeInstance compositeInstance, Set<Object> uses, State state )
+        {
+            InjectionContext injectionContext = new InjectionContext( compositeInstance, uses, state );
+            Object mixin = constructorsModel.newInstance( injectionContext );
+            injectedFieldsModel.inject( injectionContext, mixin );
+            injectedMethodsModel.inject( injectionContext, mixin );
+            return mixin;
+        }
+
+        private Set<Class> thisMixinTypes()
+        {
+            final Set<Class> mixinTypes = new HashSet<Class>();
+
+            DependencyVisitor visitor = new DependencyVisitor()
+            {
+                public void visit( DependencyModel dependencyModel )
+                {
+                    if( dependencyModel.injectionAnnotation().annotationType().equals( This.class ) )
+                    {
+                        mixinTypes.add( dependencyModel.injectionClass() );
+                    }
+                }
+            };
+
+            constructorsModel.visitDependencies( visitor );
+            injectedFieldsModel.visitDependencies( visitor );
+            injectedMethodsModel.visitDependencies( visitor );
+
+            return mixinTypes;
+        }
+
+        private FragmentInvocationHandler newInvocationHandler( Class methodClass )
+        {
+            if( InvocationHandler.class.isAssignableFrom( mixinClass ) && !methodClass.isAssignableFrom( mixinClass ) )
+            {
+                return new GenericFragmentInvocationHandler();
+            }
+            else
+            {
+                return new TypedFragmentInvocationHandler();
+            }
+
+        }
+
     }
 }

@@ -17,10 +17,21 @@ package org.qi4j.runtime.composite;
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
-import org.qi4j.spi.injection.BindingContext;
-import org.qi4j.spi.injection.InjectionProvider;
-import org.qi4j.spi.injection.InjectionProviderFactory;
-import org.qi4j.spi.injection.InjectionResolution;
+import org.qi4j.composite.internal.ConcernFor;
+import org.qi4j.composite.internal.SideEffectFor;
+import org.qi4j.composite.scope.Invocation;
+import org.qi4j.composite.scope.This;
+import org.qi4j.composite.scope.Uses;
+import org.qi4j.runtime.composite.qi.DependencyModel;
+import org.qi4j.runtime.composite.qi.InjectionProvider;
+import org.qi4j.runtime.composite.qi.InjectionProviderFactory;
+import org.qi4j.runtime.composite.qi.Resolution;
+import org.qi4j.runtime.injection.AssociationInjectionProviderFactory;
+import org.qi4j.runtime.injection.InvocationInjectionProviderFactory;
+import org.qi4j.runtime.injection.ModifiesInjectionProviderFactory;
+import org.qi4j.runtime.injection.PropertyInjectionProviderFactory;
+import org.qi4j.runtime.injection.ThisInjectionProviderFactory;
+import org.qi4j.runtime.injection.UsesInjectionProviderFactory;
 import org.qi4j.spi.injection.InvalidInjectionException;
 
 /**
@@ -29,23 +40,35 @@ import org.qi4j.spi.injection.InvalidInjectionException;
 public final class InjectionProviderFactoryStrategy
     implements InjectionProviderFactory
 {
-    private Map<Class<? extends Annotation>, InjectionProviderFactory> injectionBinders = new HashMap<Class<? extends Annotation>, InjectionProviderFactory>();
+    private Map<Class<? extends Annotation>, InjectionProviderFactory> providerFactories = new HashMap<Class<? extends Annotation>, InjectionProviderFactory>();
 
-    public InjectionProviderFactoryStrategy( Map<Class<? extends Annotation>, InjectionProviderFactory> injectionBinders )
+    public InjectionProviderFactoryStrategy()
     {
-        this.injectionBinders = injectionBinders;
+        providerFactories.put( This.class, new ThisInjectionProviderFactory() );
+        ModifiesInjectionProviderFactory modifiesInjectionProviderFactory = new ModifiesInjectionProviderFactory();
+        providerFactories.put( ConcernFor.class, modifiesInjectionProviderFactory );
+        providerFactories.put( SideEffectFor.class, modifiesInjectionProviderFactory );
+        providerFactories.put( Invocation.class, new InvocationInjectionProviderFactory() );
+        providerFactories.put( Uses.class, new UsesInjectionProviderFactory() );
+        PropertyInjectionProviderFactory propertyInjectionProviderFactory = new PropertyInjectionProviderFactory();
+//        providerFactories.put( PropertyField.class, propertyInjectionProviderFactory );
+//        providerFactories.put( PropertyParameter.class, propertyInjectionProviderFactory );
+        AssociationInjectionProviderFactory associationInjectionProviderFactory = new AssociationInjectionProviderFactory();
+//        providerFactories.put( AssociationField.class, associationInjectionProviderFactory );
+//        providerFactories.put( AssociationParameter.class, associationInjectionProviderFactory );
+//        providerFactories.put( Structure.class, new StructureInjectionProviderFactory( this ) );
+//        providerFactories.put( Service.class, new ServiceInjectionProviderFactory() );
     }
 
-    public InjectionProvider newInjectionProvider( BindingContext bindingContext ) throws InvalidInjectionException
+    public InjectionProvider newInjectionProvider( Resolution resolution, DependencyModel dependencyModel ) throws InvalidInjectionException
     {
-        InjectionResolution resolution = bindingContext.getInjectionResolution();
-        Class<? extends Annotation> annotationType = resolution.getInjectionModel().getInjectionAnnotationType();
-        InjectionProviderFactory injectionProviderFactory = injectionBinders.get( annotationType );
-        if( injectionProviderFactory == null )
+        Class<? extends Annotation> injectionAnnotationType = dependencyModel.injectionAnnotation().annotationType();
+        InjectionProviderFactory factory = providerFactories.get( injectionAnnotationType );
+        if( factory == null )
         {
-            throw new InvalidInjectionException( "Unknown injection annotation @" + annotationType.getSimpleName() );
+            throw new InvalidInjectionException( "Unknown injection annotation @" + injectionAnnotationType.getSimpleName() );
         }
 
-        return injectionProviderFactory.newInjectionProvider( bindingContext );
+        return factory.newInjectionProvider( resolution, dependencyModel );
     }
 }

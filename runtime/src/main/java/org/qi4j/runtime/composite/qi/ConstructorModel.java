@@ -39,7 +39,7 @@ public final class ConstructorModel
     }
 
     // Binding
-    public void bind( BindingContext context )
+    public void bind( Resolution context )
     {
         parameters.bind( context );
     }
@@ -49,7 +49,7 @@ public final class ConstructorModel
         throws InstantiationException
     {
         // Create parameters
-        Object[] parametersInstance = parameters.newInstance( context );
+        Object[] parametersInstance = parameters.newParametersInstance( context );
 
         // Invoke constructor
         try

@@ -49,7 +49,7 @@ public final class MixinModel
     }
 
     // Binding
-    public void bind( BindingContext context )
+    public void bind( Resolution context )
     {
         constructorsModel.bind( context );
         injectedFieldsModel.bind( context );

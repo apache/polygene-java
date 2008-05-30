@@ -14,7 +14,6 @@
 
 package org.qi4j.runtime.composite.qi;
 
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -24,10 +23,6 @@ import java.util.Map;
 import java.util.Set;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.Concerns;
-import org.qi4j.runtime.composite.FragmentInvocationHandler;
-import org.qi4j.runtime.composite.ProxyReferenceInvocationHandler;
-import org.qi4j.runtime.composite.TypedFragmentInvocationHandler;
-import org.qi4j.runtime.structure.qi.ModuleInstance;
 import static org.qi4j.util.ClassUtil.interfacesOf;
 
 /**
@@ -38,7 +33,7 @@ public class ConcernsModel
     private Class<? extends Composite> compositeType;
 
     private List<ConcernDeclaration> concerns = new ArrayList<ConcernDeclaration>();
-    private Map<Method, List<ConcernModel>> methodConcerns = new HashMap<Method, List<ConcernModel>>();
+    private Map<Method, MethodConcernsModel> methodConcernsModels = new HashMap<Method, MethodConcernsModel>();
 
     public ConcernsModel( Class<? extends Composite> compositeType )
     {
@@ -54,20 +49,17 @@ public class ConcernsModel
     }
 
     // Model
-    public void concernsFor( Method method )
+    public MethodConcernsModel concernsFor( Method method )
     {
-        if( !methodConcerns.containsKey( method ) )
+        if( !methodConcernsModels.containsKey( method ) )
         {
-            List<ConcernModel> concernsForMethod = new ArrayList<ConcernModel>();
-            for( ConcernDeclaration concern : concerns )
-            {
-                if( concern.appliesTo( method, compositeType ) )
-                {
-                    Class concernClass = concern.type();
-                    concernsForMethod.add( new ConcernModel( concernClass ) );
-                }
-            }
-            methodConcerns.put( method, concernsForMethod );
+            MethodConcernsModel methodConcerns = new MethodConcernsModel( method, compositeType, concerns );
+            methodConcernsModels.put( method, methodConcerns );
+            return methodConcerns;
+        }
+        else
+        {
+            return methodConcernsModels.get( method );
         }
     }
 
@@ -86,43 +78,4 @@ public class ConcernsModel
             }
         }
     }
-
-    // Binding
-    public void bind( BindingContext bindingContext )
-    {
-        for( List<ConcernModel> concernModels : methodConcerns.values() )
-        {
-            for( ConcernModel concernModel : concernModels )
-            {
-                concernModel.bind( bindingContext );
-            }
-        }
-    }
-
-    // Context
-    public ConcernsInstance newInstance( ModuleInstance moduleInstance, Method method, FragmentInvocationHandler mixinInvocationHandler )
-    {
-        ProxyReferenceInvocationHandler proxyHandler = new ProxyReferenceInvocationHandler();
-        List<ConcernModel> concernModels = methodConcerns.get( method );
-        Object nextConcern = mixinInvocationHandler;
-        for( int i = concernModels.size() - 1; i >= 0; i-- )
-        {
-            ConcernModel concernModel = concernModels.get( i );
-
-            nextConcern = concernModel.newInstance( moduleInstance, nextConcern, proxyHandler );
-        }
-
-        InvocationHandler firstConcern;
-        if( nextConcern instanceof InvocationHandler )
-        {
-            firstConcern = (InvocationHandler) nextConcern;
-        }
-        else
-        {
-            firstConcern = new TypedFragmentInvocationHandler( nextConcern );
-        }
-
-        return new ConcernsInstance( method, firstConcern, mixinInvocationHandler, proxyHandler );
-    }
-
 }

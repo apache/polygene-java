@@ -15,6 +15,7 @@
 package org.qi4j.runtime.composite.qi;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -39,8 +40,9 @@ public final class InjectedMethodsModel
             Annotation[][] parameterAnnotations = method.getParameterAnnotations();
             if( parameterAnnotations.length > 0 )
             {
-                List<InjectedParameterModel> parameterModels = new ArrayList<InjectedParameterModel>();
-                for( int i = 0; i < method.getGenericParameterTypes().length; i++ )
+                InjectedParametersModel parametersModel = new InjectedParametersModel();
+                final Type[] genericParameterTypes = method.getGenericParameterTypes();
+                for( int i = 0; i < parameterAnnotations.length; i++ )
                 {
                     Annotation injectionAnnotation = AnnotationUtil.getInjectionAnnotation( parameterAnnotations[ i ] );
                     if( injectionAnnotation == null )
@@ -48,13 +50,11 @@ public final class InjectedMethodsModel
                         continue nextMethod;
                     }
 
-                    Type type = method.getGenericParameterTypes()[ i ];
+                    Type type = genericParameterTypes[ i ];
 
                     DependencyModel dependencyModel = new DependencyModel( injectionAnnotation, type, fragmentClass, false );
-                    InjectedParameterModel parameterModel = new InjectedParameterModel( new ParameterModel( method.getAnnotations(), type ), dependencyModel );
-                    parameterModels.add( parameterModel );
+                    parametersModel.addDependency( dependencyModel );
                 }
-                InjectedParametersModel parametersModel = new InjectedParametersModel( parameterModels );
                 InjectedMethodModel methodModel = new InjectedMethodModel( method, parametersModel );
                 methodModels.add( methodModel );
             }
@@ -62,7 +62,7 @@ public final class InjectedMethodsModel
     }
 
     // Binding
-    public void bind( BindingContext context )
+    public void bind( Resolution context )
     {
         for( InjectedMethodModel methodModel : methodModels )
         {
@@ -84,6 +84,51 @@ public final class InjectedMethodsModel
         for( InjectedMethodModel methodModel : methodModels )
         {
             methodModel.visitDependencies( visitor );
+        }
+    }
+
+    /**
+     * TODO
+     */
+    private static final class InjectedMethodModel
+    {
+        // Model
+        private Method method;
+        private InjectedParametersModel parameters;
+
+        public InjectedMethodModel( Method method, InjectedParametersModel parameters )
+        {
+            this.method = method;
+            this.parameters = parameters;
+        }
+
+        // Binding
+        public void bind( Resolution resolution )
+        {
+            parameters.bind( resolution );
+        }
+
+        // Context
+        public void inject( InjectionContext context, Object instance ) throws InjectionException
+        {
+            Object[] params = parameters.newParametersInstance( context );
+            try
+            {
+                method.invoke( instance, params );
+            }
+            catch( IllegalAccessException e )
+            {
+                throw new InjectionException( e );
+            }
+            catch( InvocationTargetException e )
+            {
+                throw new InjectionException( e.getTargetException() );
+            }
+        }
+
+        public void visitDependencies( DependencyVisitor visitor )
+        {
+            parameters.visitDependencies( visitor );
         }
     }
 }

@@ -15,46 +15,53 @@
 package org.qi4j.runtime.composite.qi;
 
 import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import org.qi4j.runtime.composite.FragmentInvocationHandler;
+import java.util.List;
 import org.qi4j.runtime.composite.ProxyReferenceInvocationHandler;
+import org.qi4j.runtime.composite.SideEffectInvocationHandlerResult;
 
 /**
  * TODO
  */
-public class ConcernsInstance
+public class MethodSideEffectsInstance
 {
     private Method method;
-    private InvocationHandler firstConcern;
-    private FragmentInvocationHandler mixinInvocationHandler;
+    private List<InvocationHandler> sideEffects;
+    private SideEffectInvocationHandlerResult resultInvocationHandler;
     private ProxyReferenceInvocationHandler proxyHandler;
 
-    public ConcernsInstance( Method method, InvocationHandler firstConcern, FragmentInvocationHandler mixinInvocationHandler, ProxyReferenceInvocationHandler proxyHandler )
+    public MethodSideEffectsInstance( Method method, List<InvocationHandler> sideEffects, SideEffectInvocationHandlerResult resultInvocationHandler, ProxyReferenceInvocationHandler proxyHandler )
     {
         this.method = method;
-        this.firstConcern = firstConcern;
-        this.mixinInvocationHandler = mixinInvocationHandler;
+        this.sideEffects = sideEffects;
+        this.resultInvocationHandler = resultInvocationHandler;
         this.proxyHandler = proxyHandler;
     }
 
-    public Object invoke( Object proxy, Object[] params, Object mixin )
+    public void invoke( Object proxy, Object[] params, Object result, Throwable throwable )
         throws Throwable
     {
         proxyHandler.setProxy( proxy );
-        mixinInvocationHandler.setFragment( mixin );
+        resultInvocationHandler.setResult( result, throwable );
+
         try
         {
-            return firstConcern.invoke( proxy, method, params );
-        }
-        catch( InvocationTargetException e )
-        {
-            throw e.getTargetException();
+            for( InvocationHandler sideEffect : sideEffects )
+            {
+                try
+                {
+                    sideEffect.invoke( proxy, method, params );
+                }
+                catch( Throwable throwable1 )
+                {
+                    throwable1.printStackTrace();
+                }
+            }
         }
         finally
         {
             proxyHandler.clearProxy();
-            mixinInvocationHandler.setFragment( null );
+            resultInvocationHandler.setResult( null, null );
         }
     }
 }

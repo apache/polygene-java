@@ -3,11 +3,11 @@ package org.qi4j.runtime.injection;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
-import org.qi4j.runtime.composite.qi.BindingContext;
 import org.qi4j.runtime.composite.qi.DependencyModel;
 import org.qi4j.runtime.composite.qi.InjectionContext;
 import org.qi4j.runtime.composite.qi.InjectionProvider;
 import org.qi4j.runtime.composite.qi.InjectionProviderFactory;
+import org.qi4j.runtime.composite.qi.Resolution;
 import org.qi4j.spi.injection.InjectionProviderException;
 import org.qi4j.spi.injection.InvalidInjectionException;
 
@@ -17,7 +17,7 @@ import org.qi4j.spi.injection.InvalidInjectionException;
 public final class ThisInjectionProviderFactory
     implements InjectionProviderFactory
 {
-    public InjectionProvider newInjectionProvider( BindingContext bindingContext, DependencyModel dependencyModel ) throws InvalidInjectionException
+    public InjectionProvider newInjectionProvider( Resolution bindingContext, DependencyModel dependencyModel ) throws InvalidInjectionException
     {
         if( bindingContext.composite() != null )
         {

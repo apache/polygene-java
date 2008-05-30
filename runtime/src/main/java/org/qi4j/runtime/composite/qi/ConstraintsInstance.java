@@ -14,15 +14,20 @@
 
 package org.qi4j.runtime.composite.qi;
 
+import java.util.List;
+import org.qi4j.composite.Constraint;
+
 /**
  * TODO
  */
-public final class ConcernModel
-    extends AbstractModifierModel
+public final class ConstraintsInstance
 {
-    public ConcernModel( Class concernClass )
+    private List<Constraint> constraints;
+
+    public ConstraintsInstance( List<Constraint> constraints )
     {
-        super( concernClass );
+        this.constraints = constraints;
     }
+
 
 }

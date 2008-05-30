@@ -21,19 +21,21 @@ import org.qi4j.runtime.structure.qi.ModuleModel;
 /**
  * TODO
  */
-public final class BindingContext
+public final class Resolution
 {
     private ApplicationModel application;
     private LayerModel layer;
     private ModuleModel module;
     private CompositeModel compositeModel;
+    private CompositeMethodModel method;
 
-    public BindingContext( ApplicationModel application, LayerModel layer, ModuleModel module, CompositeModel compositeModel )
+    public Resolution( ApplicationModel application, LayerModel layer, ModuleModel module, CompositeModel compositeModel, CompositeMethodModel method )
     {
         this.application = application;
         this.layer = layer;
         this.module = module;
         this.compositeModel = compositeModel;
+        this.method = method;
     }
 
     public ApplicationModel application()
@@ -54,5 +56,10 @@ public final class BindingContext
     public CompositeModel composite()
     {
         return compositeModel;
+    }
+
+    public CompositeMethodModel method()
+    {
+        return method;
     }
 }

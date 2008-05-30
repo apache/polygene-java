@@ -15,10 +15,7 @@
 package org.qi4j.runtime.composite.qi;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.qi4j.runtime.structure.qi.ModuleInstance;
 
@@ -37,11 +34,11 @@ public final class CompositeMethodsModel
     }
 
     // Binding
-    public void bind( BindingContext bindingContext )
+    public void bind( Resolution resolution )
     {
         for( CompositeMethodModel compositeMethodComposite : methods.values() )
         {
-            compositeMethodComposite.bind( bindingContext );
+            compositeMethodComposite.bind( resolution );
         }
     }
 
@@ -67,14 +64,7 @@ public final class CompositeMethodsModel
         {
             if( methods.get( method ) == null )
             {
-                List<ParameterModel> parameterModels = new ArrayList<ParameterModel>();
-                for( Type type : method.getGenericParameterTypes() )
-                {
-                    ParameterModel parameterModel = new ParameterModel( method.getAnnotations(), type );
-                    parameterModels.add( parameterModel );
-                }
-                ParametersModel parameters = new ParametersModel( parameterModels );
-                CompositeMethodModel methodComposite = new CompositeMethodModel( method, parameters, composite );
+                CompositeMethodModel methodComposite = new CompositeMethodModel( method, composite );
 
                 methods.put( method, methodComposite );
                 mixinsModel.implementMethod( method );

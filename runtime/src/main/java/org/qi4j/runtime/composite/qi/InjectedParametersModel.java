@@ -22,45 +22,47 @@ import java.util.List;
  */
 public final class InjectedParametersModel
 {
-    // Model
-    private List<InjectedParameterModel> parameters = new ArrayList<InjectedParameterModel>();
+    private final List<DependencyModel> parameterDependencies = new ArrayList<DependencyModel>();
 
-    public InjectedParametersModel( List<InjectedParameterModel> parameters )
+    public InjectedParametersModel()
     {
-        this.parameters = parameters;
     }
 
     public void visitDependencies( DependencyVisitor dependencyVisitor )
     {
-        for( InjectedParameterModel parameter : parameters )
+        for( DependencyModel dependencyModel : parameterDependencies )
         {
-            parameter.visitDependency( dependencyVisitor );
+            dependencyVisitor.visit( dependencyModel );
         }
     }
 
     // Binding
-    public void bind( BindingContext context )
+    public void bind( Resolution resolution )
     {
-        for( InjectedParameterModel parameter : parameters )
+        for( DependencyModel parameterDependency : parameterDependencies )
         {
-            parameter.bind( context );
+            parameterDependency.bind( resolution );
         }
     }
 
     // Context
-    public Object[] newInstance( InjectionContext context )
+    public Object[] newParametersInstance( InjectionContext context )
     {
-        Object[] parametersInstance = new Object[parameters.size()];
+        Object[] parametersInstance = new Object[parameterDependencies.size()];
 
-        // Inject parameters
-        for( int j = 0; j < parameters.size(); j++ )
+        // Inject parameterDependencies
+        for( int j = 0; j < parameterDependencies.size(); j++ )
         {
-            InjectedParameterModel injectedParameterModel = parameters.get( j );
-            Object parameter = injectedParameterModel.inject( context );
+            DependencyModel dependencyModel = parameterDependencies.get( j );
+            Object parameter = dependencyModel.inject( context );
             parametersInstance[ j ] = parameter;
         }
 
         return parametersInstance;
     }
 
+    public void addDependency( DependencyModel dependency )
+    {
+        parameterDependencies.add( dependency );
+    }
 }

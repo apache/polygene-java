@@ -14,7 +14,6 @@
 
 package org.qi4j.runtime.composite.qi;
 
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -24,10 +23,6 @@ import java.util.Map;
 import java.util.Set;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.SideEffects;
-import org.qi4j.runtime.composite.ProxyReferenceInvocationHandler;
-import org.qi4j.runtime.composite.SideEffectInvocationHandlerResult;
-import org.qi4j.runtime.composite.TypedFragmentInvocationHandler;
-import org.qi4j.runtime.structure.qi.ModuleInstance;
 import static org.qi4j.util.ClassUtil.interfacesOf;
 
 /**
@@ -38,7 +33,7 @@ public class SideEffectsModel
     private Class<? extends Composite> compositeType;
 
     private List<SideEffectDeclaration> sideEffectDeclarations = new ArrayList<SideEffectDeclaration>();
-    private Map<Method, List<SideEffectModel>> methodSideEffects = new HashMap<Method, List<SideEffectModel>>();
+    private Map<Method, MethodSideEffectsModel> methodSideEffects = new HashMap<Method, MethodSideEffectsModel>();
 
     public SideEffectsModel( Class<? extends Composite> compositeType )
     {
@@ -54,20 +49,17 @@ public class SideEffectsModel
     }
 
     // Model
-    public void sideEffectsFor( Method method )
+    public MethodSideEffectsModel sideEffectsFor( Method method )
     {
         if( !methodSideEffects.containsKey( method ) )
         {
-            List<SideEffectModel> sideEffectsForMethod = new ArrayList<SideEffectModel>();
-            for( SideEffectDeclaration sideEffectDeclaration : sideEffectDeclarations )
-            {
-                if( sideEffectDeclaration.appliesTo( method, compositeType ) )
-                {
-                    Class sideEffectClass = sideEffectDeclaration.type();
-                    sideEffectsForMethod.add( new SideEffectModel( sideEffectClass ) );
-                }
-            }
-            methodSideEffects.put( method, sideEffectsForMethod );
+            MethodSideEffectsModel methodConcerns = new MethodSideEffectsModel( method, compositeType, sideEffectDeclarations );
+            methodSideEffects.put( method, methodConcerns );
+            return methodConcerns;
+        }
+        else
+        {
+            return methodSideEffects.get( method );
         }
     }
 
@@ -86,39 +78,4 @@ public class SideEffectsModel
             }
         }
     }
-
-    // Binding
-    public void bind( BindingContext bindingContext )
-    {
-        for( List<SideEffectModel> sideEffectModels : methodSideEffects.values() )
-        {
-            for( SideEffectModel sideEffectModel : sideEffectModels )
-            {
-                sideEffectModel.bind( bindingContext );
-            }
-        }
-    }
-
-    // Context
-    public SideEffectsInstance newInstance( ModuleInstance moduleInstance, Method method )
-    {
-        ProxyReferenceInvocationHandler proxyHandler = new ProxyReferenceInvocationHandler();
-        List<SideEffectModel> sideEffectModels = methodSideEffects.get( method );
-        SideEffectInvocationHandlerResult result = new SideEffectInvocationHandlerResult();
-        List<InvocationHandler> sideEffects = new ArrayList<InvocationHandler>( sideEffectModels.size() );
-        for( SideEffectModel sideEffectModel : sideEffectModels )
-        {
-            Object sideEffect = sideEffectModel.newInstance( moduleInstance, result, proxyHandler );
-            if( sideEffectModel.isGeneric() )
-            {
-                sideEffects.add( (InvocationHandler) sideEffect );
-            }
-            else
-            {
-                sideEffects.add( new TypedFragmentInvocationHandler( sideEffect ) );
-            }
-        }
-        return new SideEffectsInstance( method, sideEffects, result, proxyHandler );
-    }
-
 }

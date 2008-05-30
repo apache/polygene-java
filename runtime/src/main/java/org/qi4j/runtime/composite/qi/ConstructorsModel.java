@@ -19,6 +19,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import org.qi4j.composite.InstantiationException;
 import org.qi4j.spi.composite.BindingException;
 
 /**
@@ -37,17 +38,14 @@ public class ConstructorsModel
         for( Constructor constructor : constructors )
         {
             int idx = 0;
-            List<InjectedParameterModel> parameterModels = new ArrayList<InjectedParameterModel>();
+            InjectedParametersModel parameters = new InjectedParametersModel();
             Annotation[][] parameterAnnotations = constructor.getParameterAnnotations();
             for( Type type : constructor.getGenericParameterTypes() )
             {
                 DependencyModel dependency = null; // TODO
-                ParameterModel parameterModel = new ParameterModel( parameterAnnotations[ idx ], type );
-                InjectedParameterModel injectedParameterModel = new InjectedParameterModel( parameterModel, dependency );
-                parameterModels.add( injectedParameterModel );
+                parameters.addDependency( dependency );
                 idx++;
             }
-            InjectedParametersModel parameters = new InjectedParametersModel( parameterModels );
             ConstructorModel constructorModel = new ConstructorModel( constructor, parameters );
             constructorModels.add( constructorModel );
         }
@@ -62,13 +60,13 @@ public class ConstructorsModel
     }
 
     // Binding
-    public void bind( BindingContext context )
+    public void bind( Resolution resolution )
     {
         for( ConstructorModel constructorModel : constructorModels )
         {
             try
             {
-                constructorModel.bind( context );
+                constructorModel.bind( resolution );
                 boundConstructor = constructorModel;
             }
             catch( Exception e )
@@ -86,5 +84,51 @@ public class ConstructorsModel
     public Object newInstance( InjectionContext injectionContext )
     {
         return boundConstructor.newInstance( injectionContext );
+    }
+
+    /**
+     * TODO
+     */
+    private static final class ConstructorModel
+    {
+        private Constructor constructor;
+
+        private InjectedParametersModel parameters;
+
+        public ConstructorModel( Constructor constructor, InjectedParametersModel parameters )
+        {
+            constructor.setAccessible( true );
+            this.constructor = constructor;
+            this.parameters = parameters;
+        }
+
+        public void visitDependencies( DependencyVisitor dependencyVisitor )
+        {
+            parameters.visitDependencies( dependencyVisitor );
+        }
+
+        // Binding
+        public void bind( Resolution resolution )
+        {
+            parameters.bind( resolution );
+        }
+
+        // Context
+        public Object newInstance( InjectionContext context )
+            throws org.qi4j.composite.InstantiationException
+        {
+            // Create parameters
+            Object[] parametersInstance = parameters.newParametersInstance( context );
+
+            // Invoke constructor
+            try
+            {
+                return constructor.newInstance( parametersInstance );
+            }
+            catch( Exception e )
+            {
+                throw new InstantiationException( "Could not instantiate " + constructor.getDeclaringClass(), e );
+            }
+        }
     }
 }

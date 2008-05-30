@@ -1,13 +1,12 @@
 package org.qi4j.runtime.injection;
 
-import org.qi4j.spi.injection.BindingContext;
-import org.qi4j.spi.injection.InjectionContext;
-import org.qi4j.spi.injection.InjectionProvider;
-import org.qi4j.spi.injection.InjectionProviderFactory;
-import org.qi4j.spi.injection.InjectionResolution;
+import org.qi4j.runtime.composite.qi.DependencyModel;
+import org.qi4j.runtime.composite.qi.InjectionContext;
+import org.qi4j.runtime.composite.qi.InjectionProvider;
+import org.qi4j.runtime.composite.qi.InjectionProviderFactory;
+import org.qi4j.runtime.composite.qi.Resolution;
+import org.qi4j.spi.injection.InjectionProviderException;
 import org.qi4j.spi.injection.InvalidInjectionException;
-import org.qi4j.spi.injection.MixinInjectionContext;
-import org.qi4j.spi.injection.ObjectInjectionContext;
 
 /**
  * TODO
@@ -19,40 +18,25 @@ public final class UsesInjectionProviderFactory
     {
     }
 
-    public InjectionProvider newInjectionProvider( BindingContext bindingContext ) throws InvalidInjectionException
+    public InjectionProvider newInjectionProvider( Resolution resolution, DependencyModel dependencyModel ) throws InvalidInjectionException
     {
-        InjectionResolution resolution = bindingContext.getInjectionResolution();
-        return new UsesInjectionProvider( resolution );
+        return new UsesInjectionProvider( dependencyModel );
     }
 
     private class UsesInjectionProvider implements InjectionProvider
     {
-        private InjectionResolution resolution;
+        private DependencyModel dependency;
 
-        public UsesInjectionProvider( InjectionResolution resolution )
+        public UsesInjectionProvider( DependencyModel dependency )
         {
-            this.resolution = resolution;
+            this.dependency = dependency;
         }
 
-        public Object provideInjection( InjectionContext context )
+        public Object provideInjection( InjectionContext context ) throws InjectionProviderException
         {
-            Iterable<Object> uses;
-            if( context instanceof ObjectInjectionContext )
-            {
-                ObjectInjectionContext objectInjectionContext = (ObjectInjectionContext) context;
-                uses = objectInjectionContext.getUses();
-            }
-            else if( context instanceof MixinInjectionContext )
-            {
-                MixinInjectionContext mixinInjectionContext = (MixinInjectionContext) context;
-                uses = mixinInjectionContext.getUses();
-            }
-            else
-            {
-                return null;
-            }
+            Iterable<Object> uses = context.uses();
 
-            Class injectionType = resolution.getInjectionModel().getRawInjectionType();
+            Class injectionType = dependency.rawInjectionType();
             for( Object usedObject : uses )
             {
                 if( injectionType.isAssignableFrom( usedObject.getClass() ) )

@@ -37,7 +37,7 @@ public final class MixinDeclaration
 
         if( !InvocationHandler.class.isAssignableFrom( mixinClass ) )
         {
-            appliesToFilter = new TypedMixinAppliesToFilter();
+            appliesToFilter = new TypedFragmentAppliesToFilter();
         }
 
         AppliesTo appliesTo = (AppliesTo) mixinClass.getAnnotation( AppliesTo.class );
@@ -76,7 +76,7 @@ public final class MixinDeclaration
 
         if( appliesToFilter == null )
         {
-            appliesToFilter = new AlwaysAppliesToFilter();
+            appliesToFilter = AppliesToFilter.ALWAYS;
         }
     }
 
@@ -98,58 +98,5 @@ public final class MixinDeclaration
     @Override public String toString()
     {
         return "Mixin " + mixinClass.getName() + " declared in " + declaredIn;
-    }
-
-    private class ChainedAppliesToFilter
-        implements AppliesToFilter
-    {
-        private AppliesToFilter left;
-        private AppliesToFilter right;
-
-        private ChainedAppliesToFilter( AppliesToFilter left, AppliesToFilter right )
-        {
-            this.left = left;
-            this.right = right;
-        }
-
-        public boolean appliesTo( Method method, Class<?> mixin, Class<?> compositeType, Class<?> fragmentClass )
-        {
-            return left.appliesTo( method, mixin, compositeType, fragmentClass ) &&
-                   right.appliesTo( method, mixin, compositeType, fragmentClass );
-        }
-    }
-
-    private class TypeCheckAppliesToFilter
-        implements AppliesToFilter
-    {
-        private Class type;
-
-        private TypeCheckAppliesToFilter( Class type )
-        {
-            this.type = type;
-        }
-
-        public boolean appliesTo( Method method, Class<?> mixin, Class<?> compositeType, Class<?> fragmentClass )
-        {
-            return type.isAssignableFrom( compositeType );
-        }
-    }
-
-    private class TypedMixinAppliesToFilter
-        implements AppliesToFilter
-    {
-        public boolean appliesTo( Method method, Class<?> mixin, Class<?> compositeType, Class<?> fragmentClass )
-        {
-            return method.getDeclaringClass().isAssignableFrom( fragmentClass );
-        }
-    }
-
-    private class AlwaysAppliesToFilter
-        implements AppliesToFilter
-    {
-        public boolean appliesTo( Method method, Class<?> mixin, Class<?> compositeType, Class<?> fragmentClass )
-        {
-            return true;
-        }
     }
 }

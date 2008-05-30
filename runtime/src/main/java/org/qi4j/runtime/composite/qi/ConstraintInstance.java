@@ -14,9 +14,30 @@
 
 package org.qi4j.runtime.composite.qi;
 
+import java.lang.annotation.Annotation;
+import org.qi4j.composite.Constraint;
+
 /**
  * TODO
  */
-public final class ConstraintsDeclaration
+public class ConstraintInstance<A extends Annotation, T>
 {
+    private Constraint<A, T> constraint;
+    private A annotation;
+
+    public ConstraintInstance( Constraint<A, T> constraint, A annotation )
+    {
+        this.constraint = constraint;
+        this.annotation = annotation;
+    }
+
+    public A annotation()
+    {
+        return annotation;
+    }
+
+    public boolean isValid( T value )
+    {
+        return constraint.isValid( annotation, value );
+    }
 }

@@ -15,8 +15,8 @@
 package org.qi4j.runtime.structure.qi;
 
 import java.util.List;
-import org.qi4j.runtime.composite.qi.BindingContext;
 import org.qi4j.runtime.composite.qi.CompositeModel;
+import org.qi4j.runtime.composite.qi.Resolution;
 
 /**
  * TODO
@@ -34,12 +34,12 @@ public class ModuleModel
     }
 
     // Binding
-    public void bind( BindingContext bindingContext )
+    public void bind( Resolution resolution )
     {
-        bindingContext = new BindingContext( bindingContext.application(), bindingContext.layer(), this, null );
+        resolution = new Resolution( resolution.application(), resolution.layer(), this, null, null );
         for( CompositeModel compositeComposite : composites )
         {
-            compositeComposite.bind( bindingContext );
+            compositeComposite.bind( resolution );
         }
     }
 

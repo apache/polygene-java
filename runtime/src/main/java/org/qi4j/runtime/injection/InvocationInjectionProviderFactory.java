@@ -3,13 +3,13 @@ package org.qi4j.runtime.injection;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
-import org.qi4j.spi.injection.BindingContext;
-import org.qi4j.spi.injection.InjectionContext;
-import org.qi4j.spi.injection.InjectionProvider;
-import org.qi4j.spi.injection.InjectionProviderFactory;
-import org.qi4j.spi.injection.InjectionResolution;
+import org.qi4j.runtime.composite.qi.DependencyModel;
+import org.qi4j.runtime.composite.qi.InjectionContext;
+import org.qi4j.runtime.composite.qi.InjectionProvider;
+import org.qi4j.runtime.composite.qi.InjectionProviderFactory;
+import org.qi4j.runtime.composite.qi.Resolution;
+import org.qi4j.spi.injection.InjectionProviderException;
 import org.qi4j.spi.injection.InvalidInjectionException;
-import org.qi4j.spi.injection.ModifierInjectionContext;
 
 /**
  * TODO
@@ -17,47 +17,47 @@ import org.qi4j.spi.injection.ModifierInjectionContext;
 public final class InvocationInjectionProviderFactory
     implements InjectionProviderFactory
 {
-    public InjectionProvider newInjectionProvider( BindingContext bindingContext ) throws InvalidInjectionException
+    public InjectionProvider newInjectionProvider( Resolution resolution, DependencyModel dependencyModel ) throws InvalidInjectionException
     {
-        InjectionResolution resolution = bindingContext.getInjectionResolution();
-        Class injectionClass = resolution.getInjectionModel().getInjectionClass();
+        Class injectionClass = dependencyModel.injectionClass();
         if( injectionClass.equals( Method.class ) ||
             injectionClass.equals( AnnotatedElement.class ) ||
             Annotation.class.isAssignableFrom( injectionClass ) )
         {
-            return new InvocationDependencyResolution( resolution );
+            return new InvocationDependencyResolution( resolution, dependencyModel );
         }
         else
         {
-            throw new InvalidInjectionException( "Invalid injection type " + injectionClass + " in " + resolution.getInjectionModel().getInjectedClass().getName() );
+            throw new InvalidInjectionException( "Invalid injection type " + injectionClass + " in " + dependencyModel.injectedClass().getName() );
         }
     }
 
     private class InvocationDependencyResolution implements InjectionProvider
     {
-        private InjectionResolution resolution;
+        private Resolution resolution;
+        private DependencyModel dependencyModel;
 
-        public InvocationDependencyResolution( InjectionResolution resolution )
+        public InvocationDependencyResolution( Resolution resolution, DependencyModel dependencyModel )
         {
             this.resolution = resolution;
+            this.dependencyModel = dependencyModel;
         }
 
-        public Object provideInjection( InjectionContext context )
+        public Object provideInjection( InjectionContext context ) throws InjectionProviderException
         {
-            ModifierInjectionContext modifierContext = (ModifierInjectionContext) context;
-            Class injectedClass = resolution.getInjectionModel().getInjectionClass();
+            Class injectedClass = dependencyModel.injectedClass();
             if( injectedClass.equals( Method.class ) )
             {
                 // This needs to be updated to handle Apply and annotation aggregation correctly
-                return modifierContext.getMethod().getCompositeMethodResolution().getCompositeMethodModel().getMethod();
+                return resolution.method().method();
             }
             else if( injectedClass.equals( AnnotatedElement.class ) )
             {
-                return modifierContext.getMethod().getCompositeMethodResolution().getAnnotatedElement();
+                return resolution.method().annotatedElement();
             }
             else
             {
-                return modifierContext.getMethod().getCompositeMethodResolution().getAnnotatedElement().getAnnotation( injectedClass );
+                return resolution.method().annotatedElement().getAnnotation( injectedClass );
             }
         }
     }

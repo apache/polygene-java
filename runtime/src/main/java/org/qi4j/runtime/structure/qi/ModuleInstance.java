@@ -14,6 +14,11 @@
 
 package org.qi4j.runtime.structure.qi;
 
+import org.qi4j.composite.CompositeBuilderFactory;
+import org.qi4j.composite.ObjectBuilderFactory;
+import org.qi4j.entity.UnitOfWorkFactory;
+import org.qi4j.service.ServiceFinder;
+
 /**
  * TODO
  */
@@ -21,6 +26,11 @@ public class ModuleInstance
 {
     private ModuleModel moduleModel;
     private LayerInstance layerInstance;
+
+    private CompositeBuilderFactory compositeBuilderFactory;
+    private ObjectBuilderFactory objectBuilderFactory;
+    private UnitOfWorkFactory unitOfWorkFactory;
+    private ServiceFinder serviceFinder;
 
     public ModuleInstance( ModuleModel moduleModel, LayerInstance layerInstance )
     {
