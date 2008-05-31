@@ -23,7 +23,7 @@ import org.qi4j.composite.ConstraintViolationException;
 /**
  * TODO
  */
-public class ValueConstraintsInstance
+public final class ValueConstraintsInstance
 {
     private Method method;
     private List<ConstraintInstance> constraints;

@@ -22,7 +22,7 @@ import org.qi4j.composite.Constraint;
 /**
  * TODO
  */
-public class ConstraintDeclaration
+public final class ConstraintDeclaration
 {
     private Class<? extends Constraint<?, ?>> constraintClass;
     private Type declaredIn;

@@ -27,7 +27,7 @@ import org.qi4j.runtime.structure.qi.ModuleInstance;
 /**
  * TODO
  */
-public class MethodConcernsModel
+public final class MethodConcernsModel
 {
     private List<MethodConcernModel> concernsForMethod;
 

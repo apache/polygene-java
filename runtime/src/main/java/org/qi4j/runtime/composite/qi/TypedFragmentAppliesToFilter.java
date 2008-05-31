@@ -20,7 +20,7 @@ import org.qi4j.composite.AppliesToFilter;
 /**
  * TODO
  */
-class TypedFragmentAppliesToFilter
+final class TypedFragmentAppliesToFilter
     implements AppliesToFilter
 {
     public boolean appliesTo( Method method, Class<?> mixin, Class<?> compositeType, Class<?> fragmentClass )

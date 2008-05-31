@@ -27,7 +27,7 @@ import org.qi4j.runtime.structure.qi.ModuleInstance;
 /**
  * TODO
  */
-public class MethodSideEffectsModel
+public final class MethodSideEffectsModel
 {
     private List<MethodSideEffectModel> sideEffectsForMethod;
 

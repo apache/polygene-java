@@ -23,7 +23,7 @@ import org.qi4j.runtime.composite.SideEffectInvocationHandlerResult;
 /**
  * TODO
  */
-public class MethodSideEffectsInstance
+public final class MethodSideEffectsInstance
 {
     private Method method;
     private List<InvocationHandler> sideEffects;
@@ -48,20 +48,25 @@ public class MethodSideEffectsInstance
         {
             for( InvocationHandler sideEffect : sideEffects )
             {
-                try
-                {
-                    sideEffect.invoke( proxy, method, params );
-                }
-                catch( Throwable throwable1 )
-                {
-                    throwable1.printStackTrace();
-                }
+                invokeSideEffect( proxy, params, sideEffect );
             }
         }
         finally
         {
             proxyHandler.clearProxy();
             resultInvocationHandler.setResult( null, null );
+        }
+    }
+
+    private void invokeSideEffect( Object proxy, Object[] params, InvocationHandler sideEffect )
+    {
+        try
+        {
+            sideEffect.invoke( proxy, method, params );
+        }
+        catch( Throwable throwable )
+        {
+            throwable.printStackTrace();
         }
     }
 }

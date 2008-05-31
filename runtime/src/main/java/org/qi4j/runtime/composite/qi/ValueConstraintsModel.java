@@ -20,7 +20,7 @@ import java.util.List;
 /**
  * TODO
  */
-public class ValueConstraintsModel
+public final class ValueConstraintsModel
 {
     private List<ConstraintModel> constraintModels;
 

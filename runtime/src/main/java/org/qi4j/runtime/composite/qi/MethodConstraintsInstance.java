@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * TODO
  */
-public class MethodConstraintsInstance
+public final class MethodConstraintsInstance
 {
     private List<ValueConstraintsInstance> valueConstraintsInstances;
 

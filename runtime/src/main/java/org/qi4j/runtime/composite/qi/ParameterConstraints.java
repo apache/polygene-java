@@ -17,6 +17,6 @@ package org.qi4j.runtime.composite.qi;
 /**
  * TODO
  */
-public class ParameterConstraints
+public final class ParameterConstraints
 {
 }

@@ -20,7 +20,7 @@ import org.qi4j.composite.AppliesToFilter;
 /**
  * TODO
  */
-class TypeCheckAppliesToFilter
+final class TypeCheckAppliesToFilter
     implements AppliesToFilter
 {
     private Class type;

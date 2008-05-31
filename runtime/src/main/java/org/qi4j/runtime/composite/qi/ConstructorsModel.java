@@ -25,7 +25,7 @@ import org.qi4j.spi.composite.BindingException;
 /**
  * TODO
  */
-public class ConstructorsModel
+public final class ConstructorsModel
 {
     List<ConstructorModel> constructorModels;
 

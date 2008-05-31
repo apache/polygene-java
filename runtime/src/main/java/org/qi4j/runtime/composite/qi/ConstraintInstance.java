@@ -20,7 +20,7 @@ import org.qi4j.composite.Constraint;
 /**
  * TODO
  */
-public class ConstraintInstance<A extends Annotation, T>
+public final class ConstraintInstance<A extends Annotation, T>
 {
     private Constraint<A, T> constraint;
     private A annotation;

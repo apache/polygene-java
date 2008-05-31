@@ -27,7 +27,7 @@ import static org.qi4j.util.ClassUtil.interfacesOf;
 /**
  * TODO
  */
-public class ConstraintsModel
+public final class ConstraintsModel
 {
     private List<ConstraintDeclaration> constraints = new ArrayList<ConstraintDeclaration>();
 

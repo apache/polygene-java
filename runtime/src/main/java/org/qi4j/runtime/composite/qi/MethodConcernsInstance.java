@@ -23,7 +23,7 @@ import org.qi4j.runtime.composite.ProxyReferenceInvocationHandler;
 /**
  * TODO
  */
-public class MethodConcernsInstance
+public final class MethodConcernsInstance
 {
     private Method method;
     private InvocationHandler firstConcern;

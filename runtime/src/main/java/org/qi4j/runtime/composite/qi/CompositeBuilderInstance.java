@@ -25,7 +25,7 @@ import org.qi4j.runtime.structure.qi.ModuleInstance;
 /**
  * TODO
  */
-public class CompositeBuilderInstance<T>
+public final class CompositeBuilderInstance<T>
     implements CompositeBuilder<T>
 {
     private ModuleInstance moduleInstance;

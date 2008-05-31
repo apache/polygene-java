@@ -22,7 +22,7 @@ import java.util.List;
 /**
  * TODO
  */
-public class MethodConstraintsModel
+public final class MethodConstraintsModel
 {
     private List<ValueConstraintsModel> parameterConstraintModels;
     private Method method;

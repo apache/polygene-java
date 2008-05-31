@@ -28,7 +28,7 @@ import static org.qi4j.util.ClassUtil.interfacesOf;
 /**
  * TODO
  */
-public class ConcernsModel
+public final class ConcernsModel
 {
     private Class<? extends Composite> compositeType;
 

@@ -20,7 +20,7 @@ import org.qi4j.composite.AppliesToFilter;
 /**
  * TODO
  */
-class ChainedAppliesToFilter
+final class ChainedAppliesToFilter
     implements AppliesToFilter
 {
     private AppliesToFilter left;

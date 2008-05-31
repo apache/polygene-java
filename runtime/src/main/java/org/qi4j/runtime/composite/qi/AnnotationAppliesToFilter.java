@@ -20,7 +20,7 @@ import org.qi4j.composite.AppliesToFilter;
 /**
  * TODO
  */
-class AnnotationAppliesToFilter
+final class AnnotationAppliesToFilter
     implements AppliesToFilter
 {
     private Class annotationType;
