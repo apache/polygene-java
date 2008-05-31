@@ -32,10 +32,6 @@ import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.structure.CompositeDescriptor;
 import org.qi4j.test.AbstractQi4jTest;
 
-/**
- * @author edward.yakop@gmail.com
- * @since 0.1.0
- */
 public abstract class AbstractTestCase extends AbstractQi4jTest
 {
     protected DerbyDatabaseHandler derbyDatabaseHandler;

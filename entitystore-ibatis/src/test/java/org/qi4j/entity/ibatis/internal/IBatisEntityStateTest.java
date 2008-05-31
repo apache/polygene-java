@@ -37,9 +37,6 @@ import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.property.PropertyBinding;
 
-/**
- * @author edward.yakop@gmail.com
- */
 @Ignore
 public final class IBatisEntityStateTest extends AbstractTestCase
 {

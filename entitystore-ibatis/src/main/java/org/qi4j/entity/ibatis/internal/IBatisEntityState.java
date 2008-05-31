@@ -37,8 +37,6 @@ import org.qi4j.spi.structure.CompositeDescriptor;
 /**
  * {@code IBatisEntityState} represents {@code IBatis} version of {@link org.qi4j.spi.entity.EntityState}.
  *
- * @author edward.yakop@gmail.com
- * @since 0.1.0
  */
 public final class IBatisEntityState
     implements EntityState, Serializable

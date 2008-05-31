@@ -24,8 +24,6 @@ import org.qi4j.spi.entity.EntityStore;
 /**
  * {@code IBatisEntityStoreComposite} provides integration between qi4j and ibatis.
  *
- * @author edward.yakop@gmail.com
- * @since 0.1.0
  */
 @Mixins( IBatisEntityStore.class )
 public interface IBatisEntityStoreService

@@ -24,8 +24,6 @@ import org.qi4j.entity.ibatis.DerbyDatabaseHandler;
 /**
  * {@code DBInitializerTest} test db initializer.
  *
- * @author edward.yakop@gmail.com
- * @since 0.1.0
  */
 public final class DBInitializerTest
 {

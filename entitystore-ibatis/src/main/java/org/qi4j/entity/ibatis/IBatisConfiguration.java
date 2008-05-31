@@ -24,8 +24,6 @@ import org.qi4j.property.Property;
 /**
  * {@code IBatisEntityStoreServiceInfo} provides service information for {@link org.qi4j.entity.ibatis.IBatisEntityStore}.
  *
- * @author edward.yakop@gmail.com
- * @since 0.1.0
  */
 public interface IBatisConfiguration extends EntityComposite, DBInitializerConfiguration
 {

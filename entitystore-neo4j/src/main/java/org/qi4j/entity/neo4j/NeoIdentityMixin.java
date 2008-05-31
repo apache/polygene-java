@@ -24,13 +24,14 @@ import org.neo4j.api.core.Transaction;
 import org.qi4j.composite.scope.Service;
 import org.qi4j.entity.Identity;
 import org.qi4j.entity.IdentityGenerator;
-import org.qi4j.entity.neo4j.state.NeoEntityState;
+//import org.qi4j.entity.neo4j.state.NeoEntityState;
 import org.qi4j.service.Activatable;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
  */
-public class NeoIdentityMixin implements IdentityGenerator, NeoIdentityIndex, Activatable, PassivationListener
+public class NeoIdentityMixin
+    implements IdentityGenerator, NeoIdentityIndex, Activatable, PassivationListener
 {
     private static final String TYPE_INDEX = "<ENTITY TYPES>";
     private static final String FOREIGN_ENTITY_INDEX = "<FOREIGN ENTITIES>";
@@ -85,6 +86,18 @@ public class NeoIdentityMixin implements IdentityGenerator, NeoIdentityIndex, Ac
         }
     }
 
+    public Node getOrCreateNode( String identity )
+    {
+        //TODO: Auto-generated, need attention.
+        return null;
+    }
+
+    public void putNode( String identity, Node node )
+    {
+        //TODO: Auto-generated, need attention.
+
+    }
+
     public Node getTypeNode( String type )
     {
         Transaction tx = txService.beginTx();
@@ -95,7 +108,9 @@ public class NeoIdentityMixin implements IdentityGenerator, NeoIdentityIndex, Ac
             {
                 // NOTE: we might need some kind of thread safety here, double checking or something like that.
                 typeNode = neo.createNode();
-                typeNode.setProperty( NeoEntityState.TYPE_PROPERTY, type );
+
+// TODO: Compile Error, so take away this line for now
+//                typeNode.setProperty( NeoEntityState.TYPE_PROPERTY, type );
                 neo.index( typeNode, TYPE_INDEX, type );
             }
             tx.success();

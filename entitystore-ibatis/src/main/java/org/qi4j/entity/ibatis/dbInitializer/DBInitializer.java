@@ -31,8 +31,6 @@ import static org.qi4j.composite.NullArgumentException.validateNotNull;
 /**
  * {@code DBIntializer} initialize the db.
  *
- * @author edward.yakop@gmail.com
- * @since 0.1.0
  */
 public final class DBInitializer
     implements Serializable

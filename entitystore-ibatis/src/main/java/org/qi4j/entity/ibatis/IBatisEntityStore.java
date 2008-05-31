@@ -44,7 +44,6 @@ import org.qi4j.structure.Module;
  * TODO: Figure out how does transaction supposed for all EntityStore methods.
  * TODO: identity is a keyword in SQL. We need to have an alias for this identity property for query purposes.
  *
- * @author edward.yakop@gmail.com
  */
 public class IBatisEntityStore
     implements EntityStore, Activatable

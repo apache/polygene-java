@@ -23,8 +23,6 @@ import org.qi4j.property.Property;
 /**
  * {@code DBInitializerInfo} represents information on the sql resources to initialize the database.
  *
- * @author edward.yakop@gmail.com
- * @since 0.1.0
  */
 public interface DBInitializerConfiguration extends EntityComposite
 {

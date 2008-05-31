@@ -19,10 +19,6 @@ package org.qi4j.entity.ibatis.entity;
 import org.qi4j.entity.association.Association;
 import org.qi4j.entity.ibatis.entity.PersonComposite;
 
-/**
- * @author edward.yakop@gmail.com
- * @since 0.1.0
- */
 public interface HasPrimaryContactPerson
 {
     Association<PersonComposite> primaryContactPerson();
