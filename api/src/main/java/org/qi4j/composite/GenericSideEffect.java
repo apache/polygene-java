@@ -23,8 +23,7 @@ import java.lang.reflect.Method;
 /**
  * Base class for generic SideEffects.
  */
-public abstract class GenericSideEffect
-    extends SideEffectOf<InvocationHandler>
+public abstract class GenericSideEffect extends SideEffectOf<InvocationHandler>
     implements InvocationHandler
 {
     public Object invoke( Object o, Method method, Object[] objects ) throws Throwable

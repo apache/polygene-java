@@ -363,6 +363,7 @@ public final class ApplicationBuilder
             if( ServiceComposite.class.isAssignableFrom( serviceType ) )
             {
                 // Add as composite
+                //noinspection unchecked
                 Class<? extends ServiceComposite> serviceCompositeType = (Class<? extends ServiceComposite>) serviceType;
                 CompositeDeclaration compositeDeclaration = new CompositeDeclaration( serviceCompositeType );
                 List<CompositeDescriptor> descriptors = compositeDeclaration.getCompositeDescriptors( compositeModelFactory );
@@ -375,6 +376,7 @@ public final class ApplicationBuilder
                 Class<? extends ServiceInstanceProvider> provider = serviceDescriptor.serviceProvider();
                 if( Composite.class.isAssignableFrom( provider ) )
                 {
+                    //noinspection unchecked
                     Class<? extends Composite> compositeProvider = (Class<? extends Composite>) provider;
                     CompositeDeclaration compositeDeclaration = new CompositeDeclaration( compositeProvider );
                     List<CompositeDescriptor> descriptors = compositeDeclaration.getCompositeDescriptors( compositeModelFactory );
