@@ -109,8 +109,7 @@ public class TracingTest
             LogService props = builder.stateFor( LogService.class );
             props.traceLevel().set( Trace.NORMAL );
             props.debugLevel().set( Debug.NORMAL );
-            LogServiceComposite instance = builder.newInstance();
-            return instance;
+            return builder.newInstance();
         }
 
         public void releaseInstance( Object instance )
