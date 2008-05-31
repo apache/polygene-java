@@ -70,7 +70,7 @@ public class ClassUtil
         Set<Type> newSet = new LinkedHashSet<Type>();
         for( Type type : interfaces )
         {
-            if( type instanceof Class && ( (Class) type ).isInterface() && ( (Class) type ).getMethods().length > 0 )
+            if( type instanceof Class && ( (Class) type ).isInterface() && ( (Class) type ).getDeclaredMethods().length > 0 )
             {
                 newSet.add( type );
             }

@@ -28,8 +28,8 @@
       </library>
     </orderEntry>
     <orderEntry type="module" module-name="qi4j-core-api" exported="" />
-    <orderEntry type="module" module-name="qi4j-core-spi" exported="" />
-    <orderEntry type="module" module-name="qi4j-core-runtime" exported="" />
+    <orderEntry type="module" module-name="qi4j-core-spi" />
+    <orderEntry type="module" module-name="qi4j-core-runtime" />
     <orderEntryProperties />
   </component>
 </module>

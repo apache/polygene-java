@@ -15,9 +15,15 @@
 package org.qi4j;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import org.junit.Test;
 import static org.qi4j.util.ClassUtil.interfacesOf;
+import static org.qi4j.util.ClassUtil.interfacesWithMethods;
+import java.util.HashSet;
+import java.util.Set;
+import java.lang.reflect.Type;
 
 /**
  * Tests for ClassUtil
@@ -35,7 +41,19 @@ public class ClassUtilTest
     @Test
     public void givenClassWithInterfacesWhenGetInterfacesWithMethodsThenGetCorrectSet()
     {
-        assertThat( "one interface returned", interfacesOf( C.class ).size(), equalTo( 1 ) );
+        HashSet<Type> interfaces = new HashSet<Type>();
+        interfaces.add( B.class );
+        Set<Type> types = interfacesWithMethods( interfaces );
+        assertThat( "one interface returned", types.size(), equalTo( 1 ) );
+        assertThat( "correct interface returned", types.contains( B.class ), is( true ) );
+    }
+
+    @Test
+    public void givenClassesWithInterfacesWhenGetInterfacesWithMethodsThenGetCorrectSet()
+    {
+        Set<Type> types = interfacesWithMethods( interfacesOf( C.class ) );
+        assertThat( "one interface returned", types.size(), equalTo( 1 ) );
+        assertThat( "correct interface returned", types.contains( B.class ), is( true ) );
     }
 
     interface A
