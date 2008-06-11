@@ -24,12 +24,9 @@ import org.qi4j.composite.Composite;
 import org.qi4j.entity.ibatis.DerbyDatabaseHandler;
 import org.qi4j.entity.ibatis.entity.PersonComposite;
 import org.qi4j.entity.ibatis.internal.IBatisEntityState;
-import org.qi4j.runtime.composite.CompositeContext;
-import org.qi4j.runtime.structure.ModuleContext;
-import org.qi4j.spi.composite.CompositeBinding;
+import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.spi.structure.CompositeDescriptor;
 import org.qi4j.test.AbstractQi4jTest;
 
 public abstract class AbstractTestCase extends AbstractQi4jTest
@@ -79,24 +76,7 @@ public abstract class AbstractTestCase extends AbstractQi4jTest
 
     protected CompositeDescriptor getCompositeDescriptor( final Class<? extends Composite> compositeType )
     {
-        final CompositeContext compositeContext = getCompositeContext( compositeType );
-        return compositeContext.getCompositeResolution().getCompositeDescriptor();
-    }
-
-    protected CompositeBinding getCompositeBinding( final Class<? extends Composite> compositeType )
-    {
-        final CompositeContext compositeContext = getCompositeContext( compositeType );
-        final CompositeBinding compositeBinding = compositeContext.getCompositeBinding();
-        junit.framework.Assert.assertNotNull( compositeBinding );
-        return compositeBinding;
-    }
-
-    protected CompositeContext getCompositeContext( final Class<? extends Composite> compositeType )
-    {
-        final ModuleContext moduleContext = moduleInstance.moduleContext();
-        final CompositeContext compositeContext = moduleContext.getCompositeContext( compositeType );
-        junit.framework.Assert.assertNotNull( compositeContext );
-        return compositeContext;
+        return moduleInstance.findCompositeFor( compositeType );
     }
 
     @Before public void setUp() throws Exception

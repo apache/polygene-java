@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.openrdf.query.QueryLanguage;
+import org.qi4j.composite.Composite;
 import org.qi4j.entity.Identity;
 import org.qi4j.property.AbstractPropertyInstance;
 import org.qi4j.query.grammar.AssociationIsNullPredicate;
@@ -42,11 +43,9 @@ import org.qi4j.query.grammar.SingleValueExpression;
 import org.qi4j.query.grammar.ValueExpression;
 import org.qi4j.spi.composite.MixinTypeModel;
 import org.qi4j.spi.entity.association.AssociationModel;
-import org.qi4j.composite.Composite;
 
 /**
  * TODO Add JavaDoc
- *
  */
 class SparqlRdfQueryParser
     implements RdfQueryParser

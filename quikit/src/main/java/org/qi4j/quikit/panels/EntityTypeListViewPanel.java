@@ -29,8 +29,6 @@ import org.qi4j.composite.scope.Uses;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.quikit.pages.EntityListViewPage;
 import static org.qi4j.quikit.pages.EntityListViewPage.PARAM_ENTITY_TYPE;
-import org.qi4j.spi.composite.CompositeBinding;
-import org.qi4j.spi.structure.ModuleBinding;
 
 public final class EntityTypeListViewPanel extends Panel
 {

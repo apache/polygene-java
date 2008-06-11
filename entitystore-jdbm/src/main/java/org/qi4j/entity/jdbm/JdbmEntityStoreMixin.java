@@ -45,6 +45,7 @@ import org.qi4j.library.framework.locking.WriteLock;
 import org.qi4j.service.Activatable;
 import org.qi4j.service.Configuration;
 import org.qi4j.spi.Qi4jSPI;
+import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.entity.EntityAlreadyExistsException;
 import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityState;
@@ -55,7 +56,6 @@ import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.serialization.SerializableState;
-import org.qi4j.spi.structure.CompositeDescriptor;
 import org.qi4j.structure.Module;
 
 /**
@@ -106,11 +106,11 @@ public class JdbmEntityStoreMixin
     {
         try
         {
-            Long stateIndex = (Long) index.find( identity.getIdentity().getBytes() );
+            Long stateIndex = (Long) index.find( identity.identity().getBytes() );
 
             if( stateIndex != null )
             {
-                throw new EntityAlreadyExistsException( "JDBM store", identity.getIdentity() );
+                throw new EntityAlreadyExistsException( "JDBM store", identity.identity() );
             }
         }
         catch( IOException e )
@@ -126,18 +126,18 @@ public class JdbmEntityStoreMixin
     {
         try
         {
-            Long stateIndex = (Long) index.find( identity.getIdentity().getBytes() );
+            Long stateIndex = (Long) index.find( identity.identity().getBytes() );
 
             if( stateIndex == null )
             {
-                throw new EntityNotFoundException( "JDBM Store", identity.getIdentity() );
+                throw new EntityNotFoundException( "JDBM Store", identity.identity() );
             }
 
             byte[] serializedState = (byte[]) recordManager.fetch( stateIndex, serializer );
 
             if( serializedState == null )
             {
-                throw new EntityNotFoundException( "JDBM Store", identity.getIdentity() );
+                throw new EntityNotFoundException( "JDBM Store", identity.identity() );
             }
 
             ByteArrayInputStream bin = new ByteArrayInputStream( serializedState );
@@ -179,7 +179,7 @@ public class JdbmEntityStoreMixin
                 out.close();
                 long stateIndex = recordManager.insert( bout.toByteArray(), serializer );
                 bout.reset();
-                String indexKey = entityState.getIdentity().getIdentity();
+                String indexKey = entityState.getIdentity().identity();
                 index.insert( indexKey.getBytes(), stateIndex, false );
             }
 
@@ -194,16 +194,16 @@ public class JdbmEntityStoreMixin
                 ObjectOutputStream out = new FastObjectOutputStream( bout );
                 out.writeObject( state );
                 out.close();
-                String indexKey = entityState.getIdentity().getIdentity();
+                String indexKey = entityState.getIdentity().identity();
                 Long stateIndex = (Long) index.find( indexKey.getBytes() );
                 recordManager.update( stateIndex, bout.toByteArray(), serializer );
             }
 
             for( QualifiedIdentity removedState : removedStates )
             {
-                Long stateIndex = (Long) index.find( removedState.getIdentity().getBytes() );
+                Long stateIndex = (Long) index.find( removedState.identity().getBytes() );
                 recordManager.delete( stateIndex );
-                index.remove( removedState.getIdentity().getBytes() );
+                index.remove( removedState.identity().getBytes() );
             }
         }
         catch( IOException e )

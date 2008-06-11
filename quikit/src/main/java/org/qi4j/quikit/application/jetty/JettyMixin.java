@@ -18,10 +18,8 @@ import java.io.File;
 import javax.servlet.Servlet;
 import org.mortbay.jetty.Connector;
 import org.mortbay.jetty.Server;
-import org.mortbay.jetty.Handler;
-import org.mortbay.jetty.handler.ResourceHandler;
 import org.mortbay.jetty.servlet.Context;
-import static org.mortbay.jetty.servlet.Context.*;
+import static org.mortbay.jetty.servlet.Context.SESSIONS;
 import org.mortbay.jetty.servlet.DefaultServlet;
 import org.mortbay.jetty.servlet.ServletHolder;
 import org.qi4j.composite.scope.Service;
@@ -73,7 +71,7 @@ public class JettyMixin
         // Iterate the available servlets and add it to the server
         for( ServiceReference<Servlet> servlet : servlets )
         {
-            ServletInfo servletInfo = servlet.getServiceAttribute( ServletInfo.class );
+            ServletInfo servletInfo = servlet.metaInfo( ServletInfo.class );
             String path = servletInfo.getPath();
             Servlet servletInstance = servlet.get();
             ServletHolder holder = new ServletHolder( servletInstance );

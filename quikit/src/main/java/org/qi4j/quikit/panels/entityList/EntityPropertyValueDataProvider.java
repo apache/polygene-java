@@ -33,11 +33,8 @@ import org.qi4j.property.Property;
 import org.qi4j.quikit.DisplayInfo;
 import org.qi4j.quikit.application.QuikitSession;
 import static org.qi4j.quikit.panels.entityList.EntityPropertyValueDataProvider.EntityFieldValue;
+import org.qi4j.runtime.property.PropertyModel;
 import org.qi4j.spi.Qi4jSPI;
-import org.qi4j.spi.composite.CompositeBinding;
-import org.qi4j.spi.composite.PropertyResolution;
-import org.qi4j.spi.property.PropertyBinding;
-import org.qi4j.spi.property.PropertyModel;
 import org.qi4j.structure.Module;
 
 /**
@@ -90,7 +87,7 @@ final class EntityPropertyValueDataProvider
             module = quikitSession.getModule();
             spi = quikitSession.getQi4jSpi();
 
-            CompositeBinding binding = spi.getCompositeBinding( currentEntityClass, module );
+            CompositeBinding binding = spi.getCompositeDescriptor( currentEntityClass, module );
             Iterable<PropertyBinding> propertyBindings = binding.getPropertyBindings();
             for( PropertyBinding propertyBinding : propertyBindings )
             {

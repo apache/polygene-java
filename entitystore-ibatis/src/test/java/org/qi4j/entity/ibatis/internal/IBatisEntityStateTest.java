@@ -20,22 +20,18 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.fail;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.entity.ibatis.entity.HasFirstName;
 import org.qi4j.entity.ibatis.entity.HasLastName;
 import org.qi4j.entity.ibatis.entity.PersonComposite;
 import org.qi4j.entity.ibatis.test.AbstractTestCase;
 import static org.qi4j.property.ComputedPropertyInstance.getQualifiedName;
-import org.qi4j.spi.composite.CompositeBinding;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.property.PropertyBinding;
 
 @Ignore
 public final class IBatisEntityStateTest extends AbstractTestCase
@@ -145,11 +141,12 @@ public final class IBatisEntityStateTest extends AbstractTestCase
      * @return All person composite property bindings.
      * @since 0.1.0
      */
+/*
     private Map<String, PropertyBinding> getPersonCompositePropertyBindings()
     {
-        final CompositeBuilderFactory builderFactory = moduleInstance.structureContext().getCompositeBuilderFactory();
+        final CompositeBuilderFactory builderFactory = moduleInstance.compositeBuilderFactory();
         final PersonComposite composite = builderFactory.newComposite( PersonComposite.class );
-        final CompositeBinding personBinding = runtime.getCompositeBinding( composite );
+        final CompositeBinding personBinding = runtime.getCompositeDescriptor( composite );
         final Iterable<PropertyBinding> propertyBindings = personBinding.getPropertyBindings();
         final Map<String, PropertyBinding> properties = new HashMap<String, PropertyBinding>();
         for( final PropertyBinding aBinding : propertyBindings )
@@ -160,7 +157,7 @@ public final class IBatisEntityStateTest extends AbstractTestCase
         assertFalse( "Properties must not be empty.", properties.isEmpty() );
         return properties;
     }
-
+*/
     public final void assemble( final ModuleAssembly aModule ) throws AssemblyException
     {
         aModule.addComposites( PersonComposite.class );

@@ -18,17 +18,18 @@ package org.qi4j.entity.ibatis;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Collection;
-import java.util.ArrayList;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
 import org.qi4j.composite.scope.This;
 import org.qi4j.entity.ibatis.dbInitializer.DBInitializer;
 import org.qi4j.entity.ibatis.internal.IBatisEntityState;
 import org.qi4j.service.Activatable;
 import org.qi4j.service.Configuration;
+import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityState;
 import static org.qi4j.spi.entity.EntityStatus.LOADED;
@@ -37,13 +38,11 @@ import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.StateCommitter;
-import org.qi4j.spi.structure.CompositeDescriptor;
 import org.qi4j.structure.Module;
 
 /**
  * TODO: Figure out how does transaction supposed for all EntityStore methods.
  * TODO: identity is a keyword in SQL. We need to have an alias for this identity property for query purposes.
- *
  */
 public class IBatisEntityStore
     implements EntityStore, Activatable
@@ -125,7 +124,7 @@ public class IBatisEntityStore
         final Map<String, Object> compositePropertyValues = config.executeLoad( anIdentity );
         if( compositePropertyValues == null )
         {
-            throw new EntityNotFoundException( this.toString(), anIdentity.getIdentity() );
+            throw new EntityNotFoundException( this.toString(), anIdentity.identity() );
         }
 
         return compositePropertyValues;
@@ -153,7 +152,7 @@ public class IBatisEntityStore
         }
         for( final QualifiedIdentity identity : removedStates )
         {
-            config.executeUpdate( "delete", identity, identity.getIdentity() );
+            config.executeUpdate( "delete", identity, identity.identity() );
         }
 
         return config;
@@ -169,22 +168,22 @@ public class IBatisEntityStore
         }
         for( final String assocName : state.getAssociationNames() )
         {
-            result.put( assocName, state.getAssociation( assocName ).getIdentity() );
+            result.put( assocName, state.getAssociation( assocName ).identity() );
         }
         for( final String manyAssocName : state.getManyAssociationNames() )
         {
             final Collection<QualifiedIdentity> manyAssociation = state.getManyAssociation( manyAssocName );
-            result.put( manyAssocName, stringIdentifiersOf(manyAssociation) );
+            result.put( manyAssocName, stringIdentifiersOf( manyAssociation ) );
         }
         return result;
     }
 
     private Collection<String> stringIdentifiersOf( final Collection<QualifiedIdentity> qualifiedIdentities )
     {
-        final Collection<String> identifiers=new ArrayList<String>(qualifiedIdentities.size());
+        final Collection<String> identifiers = new ArrayList<String>( qualifiedIdentities.size() );
         for( final QualifiedIdentity identity : qualifiedIdentities )
         {
-            identifiers.add(identity.getIdentity());
+            identifiers.add( identity.identity() );
         }
         return identifiers;
     }

@@ -73,7 +73,7 @@ public class ServerRemoteEntityStoreMixin
     {
         try
         {
-            Class compositeType = module.findClass( identity.getCompositeType() );
+            Class compositeType = Class.forName( identity.type() ); // TODO module.findClass( identity.getCompositeType() );
         }
         catch( ClassNotFoundException e )
         {

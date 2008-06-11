@@ -17,10 +17,10 @@ import org.apache.wicket.Component;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
-import org.qi4j.composite.ObjectBuilder;
-import org.qi4j.composite.ObjectBuilderFactory;
 import org.qi4j.composite.scope.Structure;
 import org.qi4j.composite.scope.Uses;
+import org.qi4j.object.ObjectBuilder;
+import org.qi4j.object.ObjectBuilderFactory;
 import org.qi4j.quikit.panels.entityList.EntityListViewPanel;
 import org.qi4j.structure.Module;
 
@@ -43,7 +43,7 @@ public class EntityListViewPage extends WebPage
         {
             try
             {
-                Class entityType = aModule.findClass( className );
+                Class entityType = aModule.classLoader().loadClass( className );
                 ObjectBuilder<EntityListViewPanel> builder = anOBF.newObjectBuilder( EntityListViewPanel.class );
                 builder.use( WICKET_ID_VIEW_PANEL, entityType );
                 panel = builder.newInstance();

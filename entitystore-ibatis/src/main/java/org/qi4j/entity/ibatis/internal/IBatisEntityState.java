@@ -17,26 +17,23 @@
 package org.qi4j.entity.ibatis.internal;
 
 import java.io.Serializable;
+import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.lang.reflect.Type;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
 import org.qi4j.entity.ibatis.IdentifierConverter;
-import org.qi4j.spi.composite.CompositeModel;
+import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import static org.qi4j.spi.entity.EntityStatus.REMOVED;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.association.AssociationModel;
-import org.qi4j.spi.property.PropertyModel;
-import org.qi4j.spi.structure.CompositeDescriptor;
 
 /**
  * {@code IBatisEntityState} represents {@code IBatis} version of {@link org.qi4j.spi.entity.EntityState}.
- *
  */
 public final class IBatisEntityState
     implements EntityState, Serializable
@@ -87,7 +84,8 @@ public final class IBatisEntityState
 
     private void mapData( final CompositeDescriptor compositeDescriptor, final Map<String, Object> rawData )
     {
-        final CompositeModel compositeModel = compositeDescriptor.getCompositeModel();
+/*
+        final CompositeModel compositeModel = null; // TODO compositeDescriptor.getCompositeModel();
         for( final PropertyModel propertyModel : compositeModel.getPropertyModels() )
         {
             final String qualifiedName = propertyModel.getQualifiedName();
@@ -107,6 +105,7 @@ public final class IBatisEntityState
                 setAssociation( qualifiedName, new QualifiedIdentity( associationId, getTypeName( associationModel ) ) );
             }
         }
+*/
     }
 
     private String getTypeName( final AssociationModel associationModel )
@@ -210,7 +209,7 @@ public final class IBatisEntityState
         validateNotNull( "qualifiedName", qualifiedName );
         if( status == REMOVED )
         {
-            throw new EntityNotFoundException( "IbatisEntityStore", getIdentity().getIdentity() );
+            throw new EntityNotFoundException( "IbatisEntityStore", getIdentity().identity() );
         }
         final String convertedIdentifier = convertIdentifier( qualifiedName );
         associations.put( convertedIdentifier, qualifiedIdentity != null ? qualifiedIdentity : QualifiedIdentity.NULL );
@@ -238,7 +237,7 @@ public final class IBatisEntityState
         validateNotNull( "qualifiedName", qualifiedName );
         if( status == REMOVED )
         {
-            throw new EntityNotFoundException( "IbatisEntityStore", getIdentity().getIdentity() );
+            throw new EntityNotFoundException( "IbatisEntityStore", getIdentity().identity() );
         }
         final String convertedIdentifier = convertIdentifier( qualifiedName );
         if( newManyAssociations == null )

@@ -20,7 +20,8 @@ package org.qi4j.entity.index.rdf;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
@@ -32,7 +33,17 @@ import org.qi4j.entity.memory.IndexedMemoryEntityStoreService;
 import org.qi4j.query.Query;
 import org.qi4j.query.QueryBuilder;
 import org.qi4j.query.QueryBuilderFactory;
-import static org.qi4j.query.QueryExpressions.*;
+import static org.qi4j.query.QueryExpressions.and;
+import static org.qi4j.query.QueryExpressions.eq;
+import static org.qi4j.query.QueryExpressions.ge;
+import static org.qi4j.query.QueryExpressions.gt;
+import static org.qi4j.query.QueryExpressions.isNotNull;
+import static org.qi4j.query.QueryExpressions.isNull;
+import static org.qi4j.query.QueryExpressions.matches;
+import static org.qi4j.query.QueryExpressions.not;
+import static org.qi4j.query.QueryExpressions.or;
+import static org.qi4j.query.QueryExpressions.orderBy;
+import static org.qi4j.query.QueryExpressions.templateFor;
 import org.qi4j.query.grammar.OrderBy;
 import org.qi4j.spi.entity.UuidIdentityGeneratorService;
 import org.qi4j.spi.query.EntityFinderException;
@@ -65,14 +76,14 @@ public class RdfQueryTest
                 );
             }
         };
-        Network.populate( assembler.getUnitOfWorkFactory().newUnitOfWork() );
-        qbf = assembler.getUnitOfWorkFactory().newUnitOfWork().queryBuilderFactory();
+        Network.populate( assembler.unitOfWorkFactory().newUnitOfWork() );
+        qbf = assembler.unitOfWorkFactory().newUnitOfWork().queryBuilderFactory();
     }
 
     @Test
     public void showNetwork()
     {
-        assembler.getServiceLocator().findService( RdfIndexerExporterComposite.class ).get().toRDF( System.out );
+        assembler.serviceFinder().findService( RdfIndexerExporterComposite.class ).get().toRDF( System.out );
     }
 
     private static void verifyUnorderedResults( final Iterable<? extends Nameable> results,

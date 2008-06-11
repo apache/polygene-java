@@ -30,6 +30,7 @@ import org.qi4j.library.framework.locking.ReadLock;
 import org.qi4j.library.framework.locking.WriteLock;
 import org.qi4j.service.Activatable;
 import org.qi4j.spi.Qi4jSPI;
+import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.entity.EntityAlreadyExistsException;
 import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityState;
@@ -41,7 +42,6 @@ import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.serialization.SerializableState;
 import org.qi4j.spi.serialization.SerializedObject;
-import org.qi4j.spi.structure.CompositeDescriptor;
 import org.qi4j.structure.Module;
 
 /**
@@ -76,7 +76,7 @@ public class JGroupsSerializationEntityStoreMixin
     {
         if( replicatedMap.containsKey( identity.toString() ) )
         {
-            throw new EntityAlreadyExistsException( "JGroups store", identity.getIdentity() );
+            throw new EntityAlreadyExistsException( "JGroups store", identity.identity() );
         }
 
         return new EntityStateInstance( 0, identity, EntityStatus.NEW, new HashMap<String, Object>(), new HashMap<String, QualifiedIdentity>(), new HashMap<String, Collection<QualifiedIdentity>>() );
@@ -92,7 +92,7 @@ public class JGroupsSerializationEntityStoreMixin
 
             if( serializableObject == null )
             {
-                throw new EntityNotFoundException( "JGroups store", identity.getIdentity() );
+                throw new EntityNotFoundException( "JGroups store", identity.identity() );
             }
 
             SerializableState serializableState = serializableObject.getObject( (CompositeBuilderFactory) null, null );

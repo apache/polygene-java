@@ -15,10 +15,10 @@ package org.qi4j.quikit.assembly.composites;
 
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.Mixins;
-import org.qi4j.service.ServiceInstanceProvider;
 import org.qi4j.quikit.application.mixins.QuikItServletProviderMixin;
+import org.qi4j.service.ServiceInstanceFactory;
 
 @Mixins( QuikItServletProviderMixin.class )
-public interface QuikItServletProviderComposite extends Composite, ServiceInstanceProvider
+public interface QuikItServletProviderComposite extends Composite, ServiceInstanceFactory
 {
 }

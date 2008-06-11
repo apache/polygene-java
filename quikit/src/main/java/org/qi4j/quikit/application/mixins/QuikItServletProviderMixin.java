@@ -13,15 +13,15 @@
  */
 package org.qi4j.quikit.application.mixins;
 
-import org.qi4j.composite.ObjectBuilderFactory;
 import org.qi4j.composite.scope.Structure;
+import org.qi4j.object.ObjectBuilderFactory;
 import org.qi4j.quikit.application.QuikItServlet;
 import org.qi4j.service.ServiceDescriptor;
-import org.qi4j.service.ServiceInstanceProvider;
+import org.qi4j.service.ServiceInstanceFactory;
 import org.qi4j.service.ServiceInstanceProviderException;
 
 public final class QuikItServletProviderMixin
-    implements ServiceInstanceProvider
+    implements ServiceInstanceFactory
 {
     @Structure ObjectBuilderFactory objectBuilderFactory;
 

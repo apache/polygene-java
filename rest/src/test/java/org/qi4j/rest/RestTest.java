@@ -28,8 +28,11 @@ import org.apache.commons.httpclient.methods.DeleteMethod;
 import org.apache.commons.httpclient.methods.PutMethod;
 import org.apache.commons.httpclient.methods.RequestEntity;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import org.junit.Before;
 import org.junit.Test;
 import org.qi4j.bootstrap.Assembler;
@@ -40,20 +43,18 @@ import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.EntityCompositeNotFoundException;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.association.Association;
-import org.qi4j.entity.index.rdf.RdfQueryService;
 import org.qi4j.entity.index.rdf.assembly.RdfMemoryStoreAssembler;
 import org.qi4j.entity.memory.IndexedMemoryEntityStoreService;
 import org.qi4j.property.Property;
 import org.qi4j.rest.assembly.RestAssembler;
-import org.qi4j.runtime.structure.ApplicationContext;
-import org.qi4j.runtime.structure.ApplicationInstance;
 import org.qi4j.spi.entity.UuidIdentityGeneratorService;
+import org.qi4j.structure.Application;
 import org.qi4j.test.AbstractQi4jTest;
 
 public class RestTest extends AbstractQi4jTest
 {
 
-    protected ApplicationInstance newApplication()
+    protected Application newApplication()
         throws AssemblyException
     {
         Assembler[][][] assemblers = new Assembler[][][]
@@ -66,8 +67,7 @@ public class RestTest extends AbstractQi4jTest
                     }
                 }
             };
-        ApplicationContext applicationContext = applicationFactory.newApplication( assemblers );
-        return applicationContext.newApplicationInstance( "Test application" );
+        return applicationFactory.newApplication( assemblers );
     }
 
     public void assemble( ModuleAssembly module )

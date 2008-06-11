@@ -13,13 +13,13 @@
  */
 package org.qi4j.rest;
 
-import org.qi4j.composite.ObjectBuilder;
-import org.qi4j.composite.ObjectBuilderFactory;
 import org.qi4j.composite.scope.Structure;
 import org.qi4j.composite.scope.Uses;
+import org.qi4j.object.ObjectBuilder;
+import org.qi4j.object.ObjectBuilderFactory;
+import org.restlet.Context;
 import org.restlet.Finder;
 import org.restlet.Handler;
-import org.restlet.Context;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 

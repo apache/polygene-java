@@ -57,7 +57,7 @@ public class QuikitAssembler implements Assembler
         // Add the quikit servlet
         aModule.addServices( Servlet.class )
             .providedBy( QuikItServletProviderComposite.class )
-            .setServiceAttribute( ServletInfo.class, new ServletInfo( "/quikit/*" ) );
+            .setMetaInfo( new ServletInfo( "/quikit/*" ) );
 
         // Register wicket applications
         aModule.addObjects( QuikItApplication.class );

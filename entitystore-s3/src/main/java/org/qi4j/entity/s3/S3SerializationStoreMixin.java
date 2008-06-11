@@ -36,6 +36,7 @@ import org.qi4j.composite.scope.This;
 import org.qi4j.library.framework.locking.WriteLock;
 import org.qi4j.service.Activatable;
 import org.qi4j.service.Configuration;
+import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStateInstance;
@@ -45,7 +46,6 @@ import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.serialization.SerializableState;
-import org.qi4j.spi.structure.CompositeDescriptor;
 import org.qi4j.structure.Module;
 
 /**
@@ -109,7 +109,7 @@ public class S3SerializationStoreMixin
     {
         try
         {
-            S3Object objectComplete = s3Service.getObject( entityBucket, identity.getIdentity() );
+            S3Object objectComplete = s3Service.getObject( entityBucket, identity.identity() );
             System.out.println( "S3Object, complete: " + objectComplete );
 
             InputStream inputStream = objectComplete.getDataInputStream();
@@ -127,7 +127,7 @@ public class S3SerializationStoreMixin
         {
             if( e.getS3ErrorCode().equals( "NoSuchKey" ) )
             {
-                throw new EntityNotFoundException( "S3 store", identity.getIdentity() );
+                throw new EntityNotFoundException( "S3 store", identity.identity() );
             }
             throw new EntityStoreException( e );
         }
@@ -171,7 +171,7 @@ public class S3SerializationStoreMixin
 
             for( QualifiedIdentity removedState : removedStates )
             {
-                s3Service.deleteObject( entityBucket, removedState.getIdentity() );
+                s3Service.deleteObject( entityBucket, removedState.identity() );
             }
 
             return new StateCommitter()
@@ -211,7 +211,7 @@ public class S3SerializationStoreMixin
         stream.close();
         out.close();
 
-        S3Object entityState = new S3Object( identity.getIdentity() );
+        S3Object entityState = new S3Object( identity.identity() );
         ByteArrayInputStream entityData = new ByteArrayInputStream( data );
         entityState.setDataInputStream( entityData );
         entityState.setContentLength( entityData.available() );

@@ -20,11 +20,11 @@ import org.apache.wicket.Request;
 import org.apache.wicket.protocol.http.WebSession;
 import org.qi4j.composite.CompositeBuilderFactory;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
-import org.qi4j.composite.ObjectBuilderFactory;
 import org.qi4j.composite.scope.Structure;
 import org.qi4j.composite.scope.Uses;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkFactory;
+import org.qi4j.object.ObjectBuilderFactory;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.structure.Module;
 
@@ -90,6 +90,7 @@ public class QuikitSession extends WebSession
     /* Serialization work around */
 
     // TODO: Remove this method once module is serializable
+
     @Deprecated
     public final Module getModule()
     {

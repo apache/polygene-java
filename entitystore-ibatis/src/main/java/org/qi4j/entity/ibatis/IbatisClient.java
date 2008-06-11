@@ -54,7 +54,7 @@ public class IbatisClient
         try
         {
             //noinspection unchecked
-            return (Map<String, Object>) client.queryForObject( statementId, qualifiedIdentity.getIdentity() );
+            return (Map<String, Object>) client.queryForObject( statementId, qualifiedIdentity.identity() );
         }
         catch( SQLException e )
         {
@@ -64,7 +64,7 @@ public class IbatisClient
 
     private String getStatementId( final QualifiedIdentity qualifiedIdentity, final String suffix )
     {
-        return qualifiedIdentity.getCompositeType() + "." + suffix;
+        return qualifiedIdentity.type() + "." + suffix;
     }
 
     public void startTransaction()

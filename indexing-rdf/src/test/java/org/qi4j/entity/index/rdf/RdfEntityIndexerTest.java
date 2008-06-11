@@ -50,8 +50,8 @@ public class RdfEntityIndexerTest
                 );
             }
         };
-        Network.populate( assembler.getUnitOfWorkFactory().newUnitOfWork() );
-        assembler.getServiceLocator().findService( RdfIndexerExporterComposite.class ).get().toRDF( System.out );
+        Network.populate( assembler.unitOfWorkFactory().newUnitOfWork() );
+        assembler.serviceFinder().findService( RdfIndexerExporterComposite.class ).get().toRDF( System.out );
     }
 
 

@@ -26,11 +26,8 @@ import org.qi4j.composite.scope.Uses;
 import org.qi4j.quikit.DisplayInfo;
 import org.qi4j.quikit.application.QuikitSession;
 import static org.qi4j.quikit.panels.entityList.EntityPropertyLabelProvider.PropertyLabel;
+import org.qi4j.runtime.property.PropertyModel;
 import org.qi4j.spi.Qi4jSPI;
-import org.qi4j.spi.composite.CompositeBinding;
-import org.qi4j.spi.composite.PropertyResolution;
-import org.qi4j.spi.property.PropertyBinding;
-import org.qi4j.spi.property.PropertyModel;
 import org.qi4j.structure.Module;
 
 final class EntityPropertyLabelProvider
@@ -75,7 +72,7 @@ final class EntityPropertyLabelProvider
             module = quikitSession.getModule();
             spi = quikitSession.getQi4jSpi();
 
-            CompositeBinding binding = spi.getCompositeBinding( currentEntityCompositeClassModel, module );
+            CompositeBinding binding = spi.getCompositeDescriptor( currentEntityCompositeClassModel, module );
             Iterable<PropertyBinding> propertyBindings = binding.getPropertyBindings();
             for( PropertyBinding propertyBinding : propertyBindings )
             {

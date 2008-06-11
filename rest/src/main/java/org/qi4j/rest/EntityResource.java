@@ -30,13 +30,9 @@ import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkFactory;
 import org.qi4j.entity.association.Association;
-import org.qi4j.property.Property;
 import org.qi4j.spi.Qi4jSPI;
-import org.qi4j.spi.composite.CompositeBinding;
-import org.qi4j.spi.composite.PropertyResolution;
+import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.entity.association.AssociationBinding;
-import org.qi4j.spi.property.PropertyBinding;
-import org.qi4j.spi.property.PropertyModel;
 import org.qi4j.structure.Module;
 import org.restlet.Context;
 import org.restlet.data.MediaType;
@@ -80,7 +76,7 @@ public class EntityResource extends Resource
         String type = (String) attributes.get( "type" );
         try
         {
-            compositeType = module.findClass( type );
+            compositeType = (Class<? extends EntityComposite>) module.classLoader().loadClass( type );
         }
         catch( ClassNotFoundException e )
         {
@@ -138,8 +134,9 @@ public class EntityResource extends Resource
                 entityElement.appendChild( identityElement );
                 Element propertiesElement = d.createElement( "properties" );
                 entityElement.appendChild( propertiesElement );
-                CompositeBinding binding = spi.getCompositeBinding( entity );
-                for( PropertyBinding propertyBinding : binding.getPropertyBindings() )
+/* TODO Fix this!
+                CompositeDescriptor compositeDescriptor = spi.getCompositeDescriptor( entity );
+                for( PropertyBinding propertyBinding : compositeDescriptor.state().getPropertyBindings() )
                 {
                     Property property = getProperty( propertyBinding );
                     Object value = property.get();
@@ -153,7 +150,7 @@ public class EntityResource extends Resource
                     propertiesElement.appendChild( propertyElement );
                 }
                 Element associationsElement = null;
-                for( AssociationBinding associationBinding : binding.getAssociationBindings() )
+                for( AssociationBinding associationBinding : compositeDescriptor.getAssociationBindings() )
                 {
                     final Association<?> association = getAssociation( associationBinding );
                     Object value = association.get();
@@ -176,6 +173,7 @@ public class EntityResource extends Resource
                         associationElement.appendChild( d.createTextNode( entityComposite.identity().get() ) );
                     }
                 }
+*/
                 d.normalizeDocument();
 
                 // Returns the XML representation of this document.
@@ -230,7 +228,7 @@ public class EntityResource extends Resource
             {
                 entity = unitOfWork.find( identity, compositeType );
             }
-            CompositeBinding binding = spi.getCompositeBinding( entity );
+            CompositeDescriptor binding = spi.getCompositeDescriptor( entity );
             Element properties = (Element) rootElement.getElementsByTagName( "properties" ).item( 0 );
             NodeList propertyNodes = properties.getChildNodes();
             for( int i = 0; i < propertyNodes.getLength(); i++ )
@@ -240,6 +238,7 @@ public class EntityResource extends Resource
                 // TODO: Handle Read/Only and no need to check for identity() explicitly
                 if( !"identity".equals( propertyName ) )
                 {
+/* TODO Fix this!
                     Method method = compositeType.getMethod( propertyName );
                     String name = getQualifiedPropertyName( method );
                     PropertyBinding propertyBinding = binding.getPropertyBinding( name );
@@ -248,6 +247,7 @@ public class EntityResource extends Resource
                     // TODO: Need handling of different types.
                     String propertyValue = propertyNode.getTextContent();
                     ( (Property) method.invoke( entity ) ).set( propertyValue );
+*/
                 }
             }
             if( creation )
@@ -259,6 +259,7 @@ public class EntityResource extends Resource
                 getResponse().setStatus( Status.SUCCESS_OK );
             }
         }
+/*
         catch( InvocationTargetException e )
         {
             throw new ResourceException( Status.SERVER_ERROR_INTERNAL, "Internal Error?", e );
@@ -267,6 +268,11 @@ public class EntityResource extends Resource
         {
             throw new ResourceException( Status.SERVER_ERROR_INTERNAL, "Internal Error?", e );
         }
+        catch( NoSuchMethodException e )
+        {
+            throw new ResourceException( Status.CLIENT_ERROR_BAD_REQUEST, e );
+        }
+*/
         catch( IOException e )
         {
             throw new ResourceException( Status.CLIENT_ERROR_BAD_REQUEST, e );
@@ -279,12 +285,9 @@ public class EntityResource extends Resource
         {
             throw new ResourceException( Status.SERVER_ERROR_INTERNAL, "Internal Error?", e );
         }
-        catch( NoSuchMethodException e )
-        {
-            throw new ResourceException( Status.CLIENT_ERROR_BAD_REQUEST, e );
-        }
     }
 
+/*
     private Property getProperty( PropertyBinding propertyBinding )
     {
         Method method = propertyBinding.getPropertyResolution().getPropertyModel().getAccessor();
@@ -306,6 +309,7 @@ public class EntityResource extends Resource
         }
         return property;
     }
+*/
 
     private Association<?> getAssociation( final AssociationBinding associationBinding )
     {

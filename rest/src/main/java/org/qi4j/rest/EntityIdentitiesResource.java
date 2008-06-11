@@ -59,7 +59,7 @@ public class EntityIdentitiesResource extends Resource
         String typeAttr = (String) attributes.get( "type" );
         try
         {
-            type = module.findClass( typeAttr );
+            type = module.classLoader().loadClass( typeAttr );
         }
         catch( ClassNotFoundException e )
         {

@@ -25,7 +25,17 @@ import org.qi4j.bootstrap.SingletonAssembler;
 import org.qi4j.entity.UnitOfWorkCompletionException;
 import org.qi4j.entity.index.rdf.memory.MemoryRepositoryService;
 import org.qi4j.entity.memory.IndexedMemoryEntityStoreService;
-import static org.qi4j.query.QueryExpressions.*;
+import static org.qi4j.query.QueryExpressions.and;
+import static org.qi4j.query.QueryExpressions.eq;
+import static org.qi4j.query.QueryExpressions.ge;
+import static org.qi4j.query.QueryExpressions.gt;
+import static org.qi4j.query.QueryExpressions.isNotNull;
+import static org.qi4j.query.QueryExpressions.isNull;
+import static org.qi4j.query.QueryExpressions.matches;
+import static org.qi4j.query.QueryExpressions.not;
+import static org.qi4j.query.QueryExpressions.or;
+import static org.qi4j.query.QueryExpressions.orderBy;
+import static org.qi4j.query.QueryExpressions.templateFor;
 import org.qi4j.query.grammar.BooleanExpression;
 import org.qi4j.query.grammar.OrderBy;
 import org.qi4j.spi.entity.UuidIdentityGeneratorService;
@@ -66,14 +76,14 @@ public class RdfEntityFinderTest
 //                module.addComposites( NativeRdfConfiguration.class );
             }
         };
-        Network.populate( assembler.getUnitOfWorkFactory().newUnitOfWork() );
-        entityFinder = assembler.getServiceLocator().findService( RdfQueryService.class ).get();
+        Network.populate( assembler.unitOfWorkFactory().newUnitOfWork() );
+        entityFinder = assembler.serviceFinder().findService( RdfQueryService.class ).get();
     }
 
     @Test
     public void showNetwork()
     {
-        assembler.getServiceLocator().findService( RdfIndexerExporterComposite.class ).get().toRDF( System.out );
+        assembler.serviceFinder().findService( RdfIndexerExporterComposite.class ).get().toRDF( System.out );
     }
 
     @Test

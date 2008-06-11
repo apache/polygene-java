@@ -17,6 +17,15 @@
  */
 package org.qi4j.rest;
 
+import org.qi4j.composite.scope.Structure;
+import org.qi4j.composite.scope.Uses;
+import org.qi4j.entity.ConcurrentEntityModificationException;
+import org.qi4j.entity.UnitOfWork;
+import org.qi4j.entity.UnitOfWorkCompletionException;
+import org.qi4j.entity.UnitOfWorkException;
+import org.qi4j.entity.UnitOfWorkFactory;
+import org.qi4j.object.ObjectBuilder;
+import org.qi4j.object.ObjectBuilderFactory;
 import org.restlet.Application;
 import org.restlet.Context;
 import org.restlet.Restlet;
@@ -25,15 +34,6 @@ import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
 import org.restlet.resource.Resource;
-import org.qi4j.composite.ObjectBuilder;
-import org.qi4j.composite.ObjectBuilderFactory;
-import org.qi4j.composite.scope.Structure;
-import org.qi4j.composite.scope.Uses;
-import org.qi4j.entity.UnitOfWork;
-import org.qi4j.entity.UnitOfWorkFactory;
-import org.qi4j.entity.UnitOfWorkCompletionException;
-import org.qi4j.entity.ConcurrentEntityModificationException;
-import org.qi4j.entity.UnitOfWorkException;
 
 public class RestApplication extends Application
 {

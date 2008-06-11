@@ -14,9 +14,9 @@
 package org.qi4j.quikit.pages;
 
 import org.apache.wicket.markup.html.WebPage;
-import org.qi4j.composite.ObjectBuilder;
-import org.qi4j.composite.ObjectBuilderFactory;
 import org.qi4j.composite.scope.Structure;
+import org.qi4j.object.ObjectBuilder;
+import org.qi4j.object.ObjectBuilderFactory;
 import org.qi4j.quikit.panels.EntityFormEditPanel;
 
 public class EntityFormEditPage extends WebPage

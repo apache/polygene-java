@@ -17,7 +17,7 @@
  */
 package org.qi4j.entity.index.rdf;
 
-import org.qi4j.composite.CompositeBuilder;
+import org.qi4j.entity.EntityBuilder;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkCompletionException;
 
@@ -32,7 +32,7 @@ class Network
     static void populate( UnitOfWork unitOfWork )
         throws UnitOfWorkCompletionException
     {
-        CompositeBuilder<DomainComposite> domainBuilder = unitOfWork.newEntityBuilder( DomainComposite.class );
+        EntityBuilder<DomainComposite> domainBuilder = unitOfWork.newEntityBuilder( DomainComposite.class );
         Domain gaming = domainBuilder.newInstance();
         gaming.name().set( "Gaming" );
         gaming.description().set( "Gaming domain" );
@@ -49,7 +49,7 @@ class Network
         cars.name().set( "Cars" );
         cars.description().set( "Cars" );
 
-        CompositeBuilder<CityComposite> cityBuilder = unitOfWork.newEntityBuilder( CityComposite.class );
+        EntityBuilder<CityComposite> cityBuilder = unitOfWork.newEntityBuilder( CityComposite.class );
         City kualaLumpur = cityBuilder.newInstance();
         kualaLumpur.name().set( "Kuala Lumpur" );
         kualaLumpur.country().set( "Malaysia" );
@@ -60,8 +60,8 @@ class Network
         penang.country().set( "Malaysia" );
         penang.county().set( "Some Other Jaya" );
 
-        CompositeBuilder<MaleComposite> maleBuilder = unitOfWork.newEntityBuilder( MaleComposite.class );
-        CompositeBuilder<FemaleComposite> femaleBuilder = unitOfWork.newEntityBuilder( FemaleComposite.class );
+        EntityBuilder<MaleComposite> maleBuilder = unitOfWork.newEntityBuilder( MaleComposite.class );
+        EntityBuilder<FemaleComposite> femaleBuilder = unitOfWork.newEntityBuilder( FemaleComposite.class );
 
         Female annDoe = femaleBuilder.newInstance();
         annDoe.name().set( "Ann Doe" );
@@ -85,7 +85,7 @@ class Network
         jackDoe.interests().add( cars );
         jackDoe.wife().set( annDoe );
 
-        CompositeBuilder<CatComposite> catBuilder = unitOfWork.newEntityBuilder( CatComposite.class );
+        EntityBuilder<CatComposite> catBuilder = unitOfWork.newEntityBuilder( CatComposite.class );
 
         Cat felix = catBuilder.newInstance();
         felix.name().set( "Felix" );

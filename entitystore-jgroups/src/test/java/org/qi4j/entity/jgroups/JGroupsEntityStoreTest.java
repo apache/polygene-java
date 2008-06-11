@@ -18,35 +18,35 @@
 
 package org.qi4j.entity.jgroups;
 
-import org.junit.Test;
-import org.junit.Ignore;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
-import org.qi4j.entity.UnitOfWork;
-import org.qi4j.entity.EntityCompositeNotFoundException;
-import org.qi4j.entity.UnitOfWorkCompletionException;
-import org.qi4j.entity.EntityComposite;
-import org.qi4j.entity.association.Association;
-import org.qi4j.entity.association.ManyAssociation;
-import org.qi4j.entity.association.ListAssociation;
-import org.qi4j.entity.association.SetAssociation;
-import org.qi4j.spi.entity.UuidIdentityGeneratorService;
-import org.qi4j.test.entity.AbstractEntityStoreTest;
-import org.qi4j.test.AbstractQi4jTest;
-import org.qi4j.composite.CompositeBuilder;
-import org.qi4j.composite.Mixins;
 import org.qi4j.composite.Composite;
+import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.CompositeBuilderFactory;
-import org.qi4j.composite.scope.This;
+import org.qi4j.composite.Mixins;
 import org.qi4j.composite.scope.Structure;
-import org.qi4j.property.Property;
+import org.qi4j.composite.scope.This;
+import org.qi4j.entity.EntityBuilder;
+import org.qi4j.entity.EntityComposite;
+import org.qi4j.entity.EntityCompositeNotFoundException;
+import org.qi4j.entity.UnitOfWork;
+import org.qi4j.entity.UnitOfWorkCompletionException;
+import org.qi4j.entity.association.Association;
+import org.qi4j.entity.association.ListAssociation;
+import org.qi4j.entity.association.ManyAssociation;
+import org.qi4j.entity.association.SetAssociation;
 import org.qi4j.property.ImmutableProperty;
-import static org.hamcrest.CoreMatchers.equalTo;
-import java.lang.reflect.Method;
-import java.lang.reflect.InvocationTargetException;
+import org.qi4j.property.Property;
+import org.qi4j.spi.entity.UuidIdentityGeneratorService;
+import org.qi4j.test.AbstractQi4jTest;
 
 /**
  * Test of JGroups EntityStore backend.
@@ -88,7 +88,7 @@ public class JGroupsEntityStoreTest
 
         // Create entity in app 1
         System.out.println( "Create entity" );
-        UnitOfWork app1Unit = app1.getUnitOfWorkFactory().newUnitOfWork();
+        UnitOfWork app1Unit = app1.unitOfWorkFactory().newUnitOfWork();
         TestEntity instance = app1Unit.newEntityBuilder( TestEntity.class ).newInstance();
         instance.name().set( "Foo" );
         app1Unit.complete();
@@ -97,7 +97,7 @@ public class JGroupsEntityStoreTest
 
         // Find entity in app 2
         System.out.println( "Find entity" );
-        UnitOfWork app2Unit = app2.getUnitOfWorkFactory().newUnitOfWork();
+        UnitOfWork app2Unit = app2.unitOfWorkFactory().newUnitOfWork();
         instance = app2Unit.dereference( instance );
 
         System.out.println( instance.name() );
@@ -172,7 +172,7 @@ public class JGroupsEntityStoreTest
         throws UnitOfWorkCompletionException
     {
         // Create entity
-        CompositeBuilder<TestEntity> builder = unitOfWork.newEntityBuilder( TestEntity.class );
+        EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder( TestEntity.class );
         TestEntity instance = builder.newInstance();
         String id = instance.identity().get();
 

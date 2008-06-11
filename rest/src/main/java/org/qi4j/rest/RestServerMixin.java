@@ -18,9 +18,9 @@
 package org.qi4j.rest;
 
 import org.qi4j.composite.CompositeBuilderFactory;
-import org.qi4j.composite.ObjectBuilderFactory;
-import org.qi4j.composite.ObjectBuilder;
 import org.qi4j.composite.scope.Structure;
+import org.qi4j.object.ObjectBuilder;
+import org.qi4j.object.ObjectBuilderFactory;
 import org.qi4j.service.Activatable;
 import org.restlet.Component;
 import org.restlet.data.Protocol;
