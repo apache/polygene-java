@@ -26,7 +26,7 @@ import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.ConcernOf;
 import org.qi4j.composite.Concerns;
 import org.qi4j.composite.Mixins;
-import org.qi4j.composite.scope.Structure;
+import org.qi4j.injection.scope.Structure;
 import org.qi4j.logging.service.LogServiceComposite;
 import org.qi4j.service.ServiceDescriptor;
 import org.qi4j.service.ServiceInstanceFactory;

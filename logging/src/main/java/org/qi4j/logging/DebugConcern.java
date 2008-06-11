@@ -19,9 +19,9 @@ package org.qi4j.logging;
 
 import org.qi4j.Qi4j;
 import org.qi4j.composite.Composite;
-import org.qi4j.composite.scope.Service;
-import org.qi4j.composite.scope.Structure;
-import org.qi4j.composite.scope.This;
+import org.qi4j.injection.scope.Service;
+import org.qi4j.injection.scope.Structure;
+import org.qi4j.injection.scope.This;
 import org.qi4j.property.Property;
 
 public final class DebugConcern

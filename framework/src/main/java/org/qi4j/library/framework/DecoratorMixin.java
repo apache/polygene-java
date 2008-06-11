@@ -17,7 +17,7 @@ package org.qi4j.library.framework;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import org.qi4j.composite.scope.Uses;
+import org.qi4j.injection.scope.Uses;
 
 /**
  * Generic decorator mixin that allows a Composite to wrap

@@ -33,12 +33,11 @@ import org.qi4j.composite.AppliesTo;
 import org.qi4j.composite.AppliesToFilter;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilderFactory;
-import org.qi4j.composite.scope.Structure;
-import org.qi4j.composite.scope.This;
 import org.qi4j.entity.UnitOfWorkFactory;
-import org.qi4j.structure.Module;
-import org.qi4j.scripting.ScriptReloadable;
+import org.qi4j.injection.scope.Structure;
 import org.qi4j.scripting.ScriptException;
+import org.qi4j.scripting.ScriptReloadable;
+import org.qi4j.structure.Module;
 
 /**
  * Generic mixin that implements interfaces by delegating to BeanShell methods
@@ -106,7 +105,7 @@ public class BeanShellMixin
         {
             runtime = new Interpreter();
             BshClassManager.createClassManager( runtime );
-            Class compositeType = me.getClass().getInterfaces()[0];
+            Class compositeType = me.getClass().getInterfaces()[ 0 ];
             NameSpace namespace = buildNamespace( compositeType, runtime );
             runtime.setNameSpace( namespace );
             synchronized( BeanShellMixin.class )

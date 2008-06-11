@@ -17,9 +17,9 @@
  */
 package org.qi4j.logging.view;
 
-import org.qi4j.service.Activatable;
-import org.qi4j.composite.scope.Service;
+import org.qi4j.injection.scope.Service;
 import org.qi4j.logging.LogService;
+import org.qi4j.service.Activatable;
 
 public class ConsoleViewerMixin
     implements Activatable, LogServiceListener

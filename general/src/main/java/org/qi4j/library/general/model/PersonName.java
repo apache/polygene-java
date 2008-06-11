@@ -13,8 +13,8 @@
 package org.qi4j.library.general.model;
 
 import org.qi4j.composite.Mixins;
-import org.qi4j.composite.scope.PropertyField;
-import org.qi4j.composite.scope.This;
+import org.qi4j.injection.scope.PropertyField;
+import org.qi4j.injection.scope.This;
 import org.qi4j.property.ComputedPropertyInstance;
 import org.qi4j.property.ImmutableProperty;
 import org.qi4j.property.Property;

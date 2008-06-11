@@ -5,7 +5,7 @@ import java.lang.reflect.Method;
 import java.util.concurrent.locks.ReadWriteLock;
 import org.qi4j.composite.AppliesTo;
 import org.qi4j.composite.ConcernOf;
-import org.qi4j.composite.scope.This;
+import org.qi4j.injection.scope.This;
 
 /**
  * Applies write-lock to Composite

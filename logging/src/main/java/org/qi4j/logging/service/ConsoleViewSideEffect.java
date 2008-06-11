@@ -23,7 +23,7 @@ import java.text.MessageFormat;
 import java.util.ResourceBundle;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.SideEffectOf;
-import org.qi4j.composite.scope.Invocation;
+import org.qi4j.injection.scope.Invocation;
 import org.qi4j.logging.LogService;
 import org.qi4j.logging.LogType;
 

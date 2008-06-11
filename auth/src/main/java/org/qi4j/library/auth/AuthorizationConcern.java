@@ -27,10 +27,10 @@ import org.qi4j.composite.AppliesTo;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.ConcernOf;
-import org.qi4j.composite.scope.Invocation;
-import org.qi4j.composite.scope.Service;
-import org.qi4j.composite.scope.Structure;
-import org.qi4j.composite.scope.This;
+import org.qi4j.injection.scope.Invocation;
+import org.qi4j.injection.scope.Service;
+import org.qi4j.injection.scope.Structure;
+import org.qi4j.injection.scope.This;
 
 @AppliesTo( RequiresPermission.class )
 public class AuthorizationConcern extends ConcernOf<InvocationHandler>

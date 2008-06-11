@@ -36,7 +36,6 @@ import org.qi4j.composite.Concerns;
 import org.qi4j.composite.Mixins;
 import org.qi4j.composite.SideEffectOf;
 import org.qi4j.composite.SideEffects;
-import org.qi4j.composite.scope.This;
 import org.qi4j.library.rdf.parse.StructureParser;
 import org.qi4j.test.AbstractQi4jTest;
 

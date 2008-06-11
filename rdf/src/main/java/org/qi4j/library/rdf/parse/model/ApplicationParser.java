@@ -21,6 +21,8 @@ import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.qi4j.library.rdf.Qi4jRdf;
 import org.qi4j.library.rdf.parse.ParseContext;
+import org.qi4j.runtime.structure.ApplicationModel;
+import org.qi4j.runtime.structure.LayerModel;
 
 public final class ApplicationParser
 {
@@ -33,7 +35,7 @@ public final class ApplicationParser
 
     public void parseModel( ApplicationModel model )
     {
-        String name = model.getName();
+        String name = model.name();
         URI appUri = context.getApplicationURI();
         context.addName( appUri, name );
         context.addType( appUri, Qi4jRdf.TYPE_APPLICATION );

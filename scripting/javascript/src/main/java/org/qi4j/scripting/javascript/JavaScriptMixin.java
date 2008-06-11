@@ -28,12 +28,11 @@ import org.mozilla.javascript.Undefined;
 import org.mozilla.javascript.Wrapper;
 import org.qi4j.composite.AppliesTo;
 import org.qi4j.composite.AppliesToFilter;
-import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.Composite;
-import org.qi4j.composite.scope.Structure;
-import org.qi4j.composite.scope.This;
-import org.qi4j.scripting.ScriptReloadable;
+import org.qi4j.composite.CompositeBuilderFactory;
+import org.qi4j.injection.scope.Structure;
 import org.qi4j.scripting.ScriptException;
+import org.qi4j.scripting.ScriptReloadable;
 
 /**
  * Generic mixin that implements interfaces by delegating to JavaScript functions
@@ -165,12 +164,14 @@ public class JavaScriptMixin
         }
     }
 
-    /** Extracts the function name.
+    /**
+     * Extracts the function name.
      * <p>
      * Since the fragment has been stripped of all comments, the first non-whitespace word to appear
      * should be "function" and the word after that should be the function name.
      * </p>
-     * @param script The script snippet.
+     *
+     * @param script     The script snippet.
      * @param scriptName The name of the script being parsed.
      * @return the name of the function declared in this snippet.
      */
@@ -178,17 +179,24 @@ public class JavaScriptMixin
     {
         // TODO optimize with hardcoded parser??
         StringTokenizer st = new StringTokenizer( script, " \t\n\r\f(){}", false );
-        if( ! st.hasMoreTokens() )
+        if( !st.hasMoreTokens() )
+        {
             throw new ScriptException( "The word \"function\" was not found in script: " + scriptName );
+        }
         String fx = st.nextToken();
-        if( ! "function".equals( fx ) )
+        if( !"function".equals( fx ) )
+        {
             throw new ScriptException( "The word \"function\" was not found in script: " + scriptName );
-        if( ! st.hasMoreTokens() )
+        }
+        if( !st.hasMoreTokens() )
+        {
             throw new ScriptException( "Invalid syntax in: " + scriptName + "\n No function name." );
+        }
         return st.nextToken();
     }
 
-    /** Returns ONE function, minus comments.
+    /**
+     * Returns ONE function, minus comments.
      *
      * @param scriptReader The Reader of the script
      * @return A ScriptFragment containing the Script text for the function, and how many lines it is.
@@ -247,12 +255,12 @@ public class JavaScriptMixin
                     if( ch == '/' && lastCh == '/' )
                     {
                         lineComment = true;
-                        fragment.script = fragment.script.substring( 0, fragment.script.length()-2 );
+                        fragment.script = fragment.script.substring( 0, fragment.script.length() - 2 );
                     }
                     if( ch == '*' && lastCh == '/' )
                     {
                         blockComment = true;
-                        fragment.script = fragment.script.substring( 0, fragment.script.length()-2 );
+                        fragment.script = fragment.script.substring( 0, fragment.script.length() - 2 );
                     }
                 }
                 else

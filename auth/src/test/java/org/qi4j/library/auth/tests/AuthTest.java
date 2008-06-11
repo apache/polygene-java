@@ -18,15 +18,16 @@
 package org.qi4j.library.auth.tests;
 
 import java.util.Date;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.CompositeBuilder;
-import org.qi4j.composite.scope.Service;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.memory.MemoryEntityStoreService;
+import org.qi4j.injection.scope.Service;
 import org.qi4j.library.auth.Authorization;
 import org.qi4j.library.auth.AuthorizationContext;
 import org.qi4j.library.auth.AuthorizationContextComposite;

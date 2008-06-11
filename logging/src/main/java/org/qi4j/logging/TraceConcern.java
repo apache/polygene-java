@@ -20,8 +20,8 @@ package org.qi4j.logging;
 import java.lang.reflect.InvocationHandler;
 import org.qi4j.composite.AppliesTo;
 import org.qi4j.composite.Composite;
-import org.qi4j.composite.scope.Invocation;
-import org.qi4j.composite.scope.This;
+import org.qi4j.injection.scope.Invocation;
+import org.qi4j.injection.scope.This;
 
 /**
  * The TraceConcern will call the traceEntry(), traceExit() and traceException() methods in the
