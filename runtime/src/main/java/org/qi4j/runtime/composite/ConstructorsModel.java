@@ -19,12 +19,12 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import org.qi4j.composite.InstantiationException;
 import org.qi4j.runtime.injection.DependencyModel;
-import org.qi4j.runtime.injection.DependencyVisitor;
 import org.qi4j.runtime.injection.InjectedParametersModel;
 import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.structure.Binder;
+import org.qi4j.runtime.structure.ModelVisitor;
+import org.qi4j.util.AnnotationUtil;
 
 /**
  * TODO
@@ -47,8 +47,8 @@ public final class ConstructorsModel
             Annotation[][] parameterAnnotations = constructor.getParameterAnnotations();
             for( Type type : constructor.getGenericParameterTypes() )
             {
-                DependencyModel dependency = null; // TODO
-                parameters.addDependency( dependency );
+                DependencyModel dependencyModel = new DependencyModel( AnnotationUtil.getInjectionAnnotation( parameterAnnotations[ idx ] ), type, fragmentClass, false );
+                parameters.addDependency( dependencyModel );
                 idx++;
             }
             ConstructorModel constructorModel = new ConstructorModel( constructor, parameters );
@@ -56,12 +56,10 @@ public final class ConstructorsModel
         }
     }
 
-    public void visitDependencies( DependencyVisitor dependencyVisitor )
+
+    public void visitModel( ModelVisitor modelVisitor )
     {
-        for( ConstructorModel constructorModel : constructorModels )
-        {
-            constructorModel.visitDependencies( dependencyVisitor );
-        }
+        boundConstructor.visitModel( modelVisitor );
     }
 
     // Binding
@@ -91,50 +89,4 @@ public final class ConstructorsModel
         return boundConstructor.newInstance( injectionContext );
     }
 
-    /**
-     * TODO
-     */
-    private static final class ConstructorModel
-        implements Binder
-    {
-        private Constructor constructor;
-
-        private InjectedParametersModel parameters;
-
-        public ConstructorModel( Constructor constructor, InjectedParametersModel parameters )
-        {
-            constructor.setAccessible( true );
-            this.constructor = constructor;
-            this.parameters = parameters;
-        }
-
-        public void visitDependencies( DependencyVisitor dependencyVisitor )
-        {
-            parameters.visitDependencies( dependencyVisitor );
-        }
-
-        // Binding
-        public void bind( Resolution resolution ) throws BindingException
-        {
-            parameters.bind( resolution );
-        }
-
-        // Context
-        public Object newInstance( InjectionContext context )
-            throws org.qi4j.composite.InstantiationException
-        {
-            // Create parameters
-            Object[] parametersInstance = parameters.newParametersInstance( context );
-
-            // Invoke constructor
-            try
-            {
-                return constructor.newInstance( parametersInstance );
-            }
-            catch( Exception e )
-            {
-                throw new InstantiationException( "Could not instantiate " + constructor.getDeclaringClass(), e );
-            }
-        }
-    }
 }

@@ -17,6 +17,7 @@ package org.qi4j.runtime.entity;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.State;
 import org.qi4j.runtime.composite.AbstractMixinsModel;
+import org.qi4j.runtime.composite.MixinModel;
 import org.qi4j.runtime.composite.UsesInstance;
 
 /**

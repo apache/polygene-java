@@ -15,13 +15,13 @@
 package org.qi4j.runtime.injection;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.Resolution;
+import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.util.AnnotationUtil;
 import org.qi4j.util.ClassUtil;
 
@@ -81,56 +81,13 @@ public final class InjectedMethodsModel
         }
     }
 
-    public void visitDependencies( DependencyVisitor visitor )
+
+    public void visitModel( ModelVisitor modelVisitor )
     {
         for( InjectedMethodModel methodModel : methodModels )
         {
-            methodModel.visitDependencies( visitor );
+            methodModel.visitModel( modelVisitor );
         }
     }
 
-    /**
-     * TODO
-     */
-    private static final class InjectedMethodModel
-    {
-        // Model
-        private Method method;
-        private InjectedParametersModel parameters;
-
-        public InjectedMethodModel( Method method, InjectedParametersModel parameters )
-        {
-            this.method = method;
-            this.parameters = parameters;
-        }
-
-        // Binding
-        public void bind( Resolution resolution ) throws BindingException
-        {
-            parameters.bind( resolution );
-        }
-
-        // Context
-        public void inject( InjectionContext context, Object instance ) throws InjectionException
-        {
-            Object[] params = parameters.newParametersInstance( context );
-            try
-            {
-                method.invoke( instance, params );
-            }
-            catch( IllegalAccessException e )
-            {
-                throw new InjectionException( e );
-            }
-            catch( InvocationTargetException e )
-            {
-                throw new InjectionException( e.getTargetException() );
-            }
-        }
-
-        public void visitDependencies( DependencyVisitor visitor )
-        {
-            parameters.visitDependencies( visitor );
-        }
-    }
 }

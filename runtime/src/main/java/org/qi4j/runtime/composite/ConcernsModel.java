@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.Set;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.Concerns;
-import org.qi4j.runtime.injection.DependencyVisitor;
+import org.qi4j.runtime.structure.ModelVisitor;
 import static org.qi4j.util.ClassUtil.interfacesOf;
 
 /**
@@ -80,11 +80,13 @@ public final class ConcernsModel
         }
     }
 
-    public void visitDependencies( DependencyVisitor visitor )
+
+    public void visitModel( ModelVisitor modelVisitor )
     {
         for( MethodConcernsModel methodConcernsModel : methodConcernsModels.values() )
         {
-            methodConcernsModel.visitDependencies( visitor );
+            methodConcernsModel.visitModel( modelVisitor );
         }
     }
+
 }

@@ -19,9 +19,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.State;
-import org.qi4j.runtime.injection.DependencyVisitor;
 import org.qi4j.runtime.property.PropertiesModel;
 import org.qi4j.runtime.structure.Binder;
+import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.structure.ModuleModel;
 import org.qi4j.spi.composite.CompositeDescriptor;
@@ -144,11 +144,13 @@ public class CompositeModel
         return (Class<? extends Composite>) Proxy.getProxyClass( proxyClassloader, interfaces );
     }
 
-    public void visitDependencies( DependencyVisitor visitor )
+
+    public void visitModel( ModelVisitor modelVisitor )
     {
-        concernsModel.visitDependencies( visitor );
-        sideEffectsModel.visitDependencies( visitor );
-        mixinsModel.visitDependencies( visitor );
+        modelVisitor.visit( this );
+
+        compositeMethodsModel.visitModel( modelVisitor );
+        mixinsModel.visitModel( modelVisitor );
     }
 
     // Binding

@@ -16,7 +16,6 @@ package org.qi4j.runtime.structure;
 
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.Resolution;
-import org.qi4j.runtime.injection.DependencyVisitor;
 
 /**
  * TODO
@@ -72,11 +71,13 @@ public class ModuleModel
         return servicesModel;
     }
 
-    public void visitDependencies( DependencyVisitor visitor )
+    public void visitModel( ModelVisitor modelVisitor )
     {
-        compositesModel.visitDependencies( visitor );
-        entitiesModel.visitDependencies( visitor );
-        objectsModel.visitDependencies( visitor );
+        modelVisitor.visit( this );
+
+        compositesModel.visitModel( modelVisitor );
+        entitiesModel.visitModel( modelVisitor );
+        objectsModel.visitModel( modelVisitor );
     }
 
     // Binding

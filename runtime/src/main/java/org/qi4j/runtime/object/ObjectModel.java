@@ -19,11 +19,11 @@ import org.qi4j.runtime.composite.ConstraintsModel;
 import org.qi4j.runtime.composite.ConstructorsModel;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.composite.UsesInstance;
-import org.qi4j.runtime.injection.DependencyVisitor;
 import org.qi4j.runtime.injection.InjectedFieldsModel;
 import org.qi4j.runtime.injection.InjectedMethodsModel;
 import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.structure.Binder;
+import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.structure.ModuleModel;
 import org.qi4j.structure.Visibility;
@@ -75,11 +75,14 @@ public class ObjectModel
         return metaInfo;
     }
 
-    public void visitDependencies( DependencyVisitor visitor )
+
+    public void visitModel( ModelVisitor modelVisitor )
     {
-        constructorsModel.visitDependencies( visitor );
-        injectedFieldsModel.visitDependencies( visitor );
-        injectedMethodsModel.visitDependencies( visitor );
+        modelVisitor.visit( this );
+
+        constructorsModel.visitModel( modelVisitor );
+        injectedFieldsModel.visitModel( modelVisitor );
+        injectedMethodsModel.visitModel( modelVisitor );
     }
 
     public void bind( Resolution resolution ) throws BindingException

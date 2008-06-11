@@ -14,12 +14,45 @@
 
 package org.qi4j.runtime.injection;
 
-import org.qi4j.runtime.composite.Resolution;
+import java.lang.annotation.Annotation;
+import org.qi4j.runtime.structure.ModelVisitor;
 
 /**
  * TODO
  */
-public interface DependencyVisitor
+public abstract class DependencyVisitor
+    extends ModelVisitor
 {
-    void visit( DependencyModel dependencyModel, Resolution resolution );
+    Class<? extends Annotation> scope;
+
+    public DependencyVisitor( Class<? extends Annotation> scope )
+    {
+        this.scope = scope;
+    }
+
+    public DependencyVisitor()
+    {
+    }
+
+    @Override public void visit( InjectedParametersModel injectedParametersModel )
+    {
+        for( DependencyModel dependencyModel : injectedParametersModel.dependencies() )
+        {
+            if( scope != null && scope.equals( dependencyModel.injectionAnnotation().annotationType() ) )
+            {
+                visitDependency( dependencyModel );
+            }
+        }
+    }
+
+    @Override public void visit( InjectedFieldModel injectedFieldModel )
+    {
+        DependencyModel dependencyModel = injectedFieldModel.dependency();
+        if( scope != null && scope.equals( dependencyModel.injectionAnnotation().annotationType() ) )
+        {
+            visitDependency( dependencyModel );
+        }
+    }
+
+    public abstract void visitDependency( DependencyModel dependencyModel );
 }

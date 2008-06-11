@@ -16,11 +16,11 @@ package org.qi4j.runtime.composite;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
-import org.qi4j.runtime.injection.DependencyVisitor;
 import org.qi4j.runtime.injection.InjectedFieldsModel;
 import org.qi4j.runtime.injection.InjectedMethodsModel;
 import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.structure.Binder;
+import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
 import static org.qi4j.util.ClassUtil.interfacesOf;
 import static org.qi4j.util.ClassUtil.toClassArray;
@@ -55,11 +55,11 @@ public abstract class AbstractModifierModel
     }
 
 
-    public void visitDependencies( DependencyVisitor visitor )
+    public void visitModel( ModelVisitor modelVisitor )
     {
-        constructorsModel.visitDependencies( visitor );
-        injectedFieldsModel.visitDependencies( visitor );
-        injectedMethodsModel.visitDependencies( visitor );
+        constructorsModel.visitModel( modelVisitor );
+        injectedFieldsModel.visitModel( modelVisitor );
+        injectedMethodsModel.visitModel( modelVisitor );
     }
 
     // Binding

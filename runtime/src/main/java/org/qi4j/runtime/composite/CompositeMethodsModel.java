@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.qi4j.composite.Composite;
 import org.qi4j.runtime.structure.Binder;
+import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
 
 /**
@@ -86,6 +87,14 @@ public final class CompositeMethodsModel
                 methods.put( method, methodComposite );
                 mixinsModel.implementMethod( method );
             }
+        }
+    }
+
+    public void visitModel( ModelVisitor modelVisitor )
+    {
+        for( CompositeMethodModel compositeMethodModel : methods.values() )
+        {
+            compositeMethodModel.visitModel( modelVisitor );
         }
     }
 }

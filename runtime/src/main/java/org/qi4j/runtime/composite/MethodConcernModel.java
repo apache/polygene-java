@@ -14,37 +14,23 @@
 
 package org.qi4j.runtime.composite;
 
-import java.lang.reflect.Method;
-import java.util.List;
 import org.qi4j.runtime.structure.ModelVisitor;
 
 /**
  * TODO
  */
-public final class ValueConstraintsModel
+public final class MethodConcernModel
+    extends AbstractModifierModel
 {
-    private List<ConstraintModel> constraintModels;
-
-    public ValueConstraintsModel( List<ConstraintModel> constraintModels )
+    public MethodConcernModel( Class concernClass )
     {
-        this.constraintModels = constraintModels;
-    }
-
-    public ValueConstraintsInstance newInstance( Method method )
-    {
-        return new ValueConstraintsInstance( method, constraintModels );
-    }
-
-    public boolean isConstrained()
-    {
-        return !constraintModels.isEmpty();
+        super( concernClass );
     }
 
     public void visitModel( ModelVisitor modelVisitor )
     {
-        for( ConstraintModel constraintModel : constraintModels )
-        {
-            constraintModel.visitModel( modelVisitor );
-        }
+        modelVisitor.visit( this );
+
+        super.visitModel( modelVisitor );
     }
 }

@@ -19,7 +19,6 @@ import org.qi4j.composite.AmbiguousTypeException;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.entity.EntityModel;
-import org.qi4j.runtime.injection.DependencyVisitor;
 import org.qi4j.structure.Visibility;
 
 /**
@@ -35,11 +34,12 @@ public class EntitiesModel
         this.entityModels = entityModels;
     }
 
-    public void visitDependencies( DependencyVisitor visitor )
+
+    public void visitModel( ModelVisitor modelVisitor )
     {
         for( EntityModel entityModel : entityModels )
         {
-            entityModel.visitDependencies( visitor );
+            entityModel.visitModel( modelVisitor );
         }
     }
 

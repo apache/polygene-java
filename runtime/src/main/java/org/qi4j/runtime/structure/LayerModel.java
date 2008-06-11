@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.Resolution;
-import org.qi4j.runtime.injection.DependencyVisitor;
 
 /**
  * TODO
@@ -50,11 +49,13 @@ public final class LayerModel
         return usedLayersModel;
     }
 
-    public void visitDependencies( DependencyVisitor visitor )
+    public void visitModel( ModelVisitor modelVisitor )
     {
+        modelVisitor.visit( this );
+
         for( ModuleModel module : modules )
         {
-            module.visitDependencies( visitor );
+            module.visitModel( modelVisitor );
         }
     }
 
@@ -81,4 +82,5 @@ public final class LayerModel
 
         return layerInstance;
     }
+
 }

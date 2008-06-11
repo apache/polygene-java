@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.Set;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.SideEffects;
-import org.qi4j.runtime.injection.DependencyVisitor;
 import static org.qi4j.util.ClassUtil.interfacesOf;
 
 /**
@@ -77,14 +76,6 @@ public final class SideEffectsModel
                     sideEffectDeclarations.add( new SideEffectDeclaration( sideEffectClass, type ) );
                 }
             }
-        }
-    }
-
-    public void visitDependencies( DependencyVisitor visitor )
-    {
-        for( MethodSideEffectsModel methodSideEffectsModel : methodSideEffects.values() )
-        {
-            methodSideEffectsModel.visitDependencies( visitor );
         }
     }
 }

@@ -21,7 +21,6 @@ import java.util.Map;
 import org.qi4j.runtime.Qi4jRuntime;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.Resolution;
-import org.qi4j.runtime.injection.DependencyVisitor;
 import org.qi4j.runtime.injection.InjectionProviderFactory;
 import org.qi4j.runtime.injection.provider.InjectionProviderFactoryStrategy;
 
@@ -47,11 +46,13 @@ public class ApplicationModel
         return name;
     }
 
-    public void visitDependencies( DependencyVisitor visitor )
+    public void visitModel( ModelVisitor modelVisitor )
     {
+        modelVisitor.visit( this );
+
         for( LayerModel layer : layers )
         {
-            layer.visitDependencies( visitor );
+            layer.visitModel( modelVisitor );
         }
     }
 

@@ -19,6 +19,7 @@ import java.util.List;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.structure.Binder;
+import org.qi4j.runtime.structure.ModelVisitor;
 
 /**
  * TODO
@@ -27,25 +28,19 @@ public final class InjectedParametersModel
     implements Binder
 {
     private final List<DependencyModel> parameterDependencies = new ArrayList<DependencyModel>();
-    private Resolution resolution;
 
     public InjectedParametersModel()
     {
     }
 
-    public void visitDependencies( DependencyVisitor dependencyVisitor )
+    public List<DependencyModel> dependencies()
     {
-        for( DependencyModel dependencyModel : parameterDependencies )
-        {
-            dependencyVisitor.visit( dependencyModel, resolution );
-        }
+        return parameterDependencies;
     }
 
     // Binding
     public void bind( Resolution resolution ) throws BindingException
     {
-        this.resolution = resolution;
-
         for( DependencyModel parameterDependency : parameterDependencies )
         {
             parameterDependency.bind( resolution );
@@ -71,5 +66,10 @@ public final class InjectedParametersModel
     public void addDependency( DependencyModel dependency )
     {
         parameterDependencies.add( dependency );
+    }
+
+    public void visitModel( ModelVisitor modelVisitor )
+    {
+        modelVisitor.visit( this );
     }
 }

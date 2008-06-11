@@ -19,8 +19,8 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import org.qi4j.composite.Composite;
-import org.qi4j.runtime.injection.DependencyVisitor;
 import org.qi4j.runtime.structure.Binder;
+import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
 
 /**
@@ -30,9 +30,12 @@ public final class MethodConcernsModel
     implements Binder
 {
     private List<MethodConcernModel> concernsForMethod;
+    private Method method;
 
     public MethodConcernsModel( Method method, Class<? extends Composite> compositeType, List<ConcernDeclaration> concerns )
     {
+        this.method = method;
+
         concernsForMethod = new ArrayList<MethodConcernModel>();
         for( ConcernDeclaration concern : concerns )
         {
@@ -42,6 +45,11 @@ public final class MethodConcernsModel
                 concernsForMethod.add( new MethodConcernModel( concernClass ) );
             }
         }
+    }
+
+    public Method method()
+    {
+        return method;
     }
 
     // Binding
@@ -78,21 +86,11 @@ public final class MethodConcernsModel
         return new MethodConcernsInstance( method, firstConcern, mixinInvocationHandler, proxyHandler );
     }
 
-    public void visitDependencies( DependencyVisitor visitor )
+    public void visitModel( ModelVisitor modelVisitor )
     {
         for( MethodConcernModel methodConcernModel : concernsForMethod )
         {
-            methodConcernModel.visitDependencies( visitor );
+            methodConcernModel.visitModel( modelVisitor );
         }
     }
-
-    private static final class MethodConcernModel
-        extends AbstractModifierModel
-    {
-        private MethodConcernModel( Class concernClass )
-        {
-            super( concernClass );
-        }
-    }
-
 }

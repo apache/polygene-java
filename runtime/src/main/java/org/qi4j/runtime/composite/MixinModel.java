@@ -25,12 +25,13 @@ import org.qi4j.runtime.injection.InjectedFieldsModel;
 import org.qi4j.runtime.injection.InjectedMethodsModel;
 import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.structure.Binder;
+import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.spi.composite.CompositeInstance;
 
 /**
  * TODO
  */
-public class MixinModel
+public final class MixinModel
     implements Binder
 {
     // Model
@@ -48,9 +49,18 @@ public class MixinModel
         injectedMethodsModel = new InjectedMethodsModel( mixinClass );
     }
 
-    public Class type()
+    public Class mixinClass()
     {
         return mixinClass;
+    }
+
+    public void visitModel( ModelVisitor modelVisitor )
+    {
+        modelVisitor.visit( this );
+
+        constructorsModel.visitModel( modelVisitor );
+        injectedFieldsModel.visitModel( modelVisitor );
+        injectedMethodsModel.visitModel( modelVisitor );
     }
 
     // Binding
@@ -71,7 +81,24 @@ public class MixinModel
         return mixin;
     }
 
-    public FragmentInvocationHandler newInvocationHandler( Class methodClass )
+    protected Set<Class> thisMixinTypes()
+    {
+        final Set<Class> mixinTypes = new HashSet<Class>();
+
+        DependencyVisitor visitor = new DependencyVisitor( This.class )
+        {
+            public void visitDependency( DependencyModel dependencyModel )
+            {
+                mixinTypes.add( dependencyModel.injectionClass() );
+            }
+        };
+
+        visitModel( visitor );
+
+        return mixinTypes;
+    }
+
+    protected FragmentInvocationHandler newInvocationHandler( Class methodClass )
     {
         if( InvocationHandler.class.isAssignableFrom( mixinClass ) && !methodClass.isAssignableFrom( mixinClass ) )
         {
@@ -82,27 +109,5 @@ public class MixinModel
             return new TypedFragmentInvocationHandler();
         }
 
-    }
-
-    public Set<Class> thisMixinTypes()
-    {
-        final Set<Class> mixinTypes = new HashSet<Class>();
-
-        DependencyVisitor visitor = new DependencyVisitor()
-        {
-            public void visit( DependencyModel dependencyModel, Resolution resolution )
-            {
-                if( dependencyModel.injectionAnnotation().annotationType().equals( This.class ) )
-                {
-                    mixinTypes.add( dependencyModel.injectionClass() );
-                }
-            }
-        };
-
-        constructorsModel.visitDependencies( visitor );
-        injectedFieldsModel.visitDependencies( visitor );
-        injectedMethodsModel.visitDependencies( visitor );
-
-        return mixinTypes;
     }
 }

@@ -32,8 +32,8 @@ import org.qi4j.runtime.composite.MixinsInstance;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.composite.SideEffectsModel;
 import org.qi4j.runtime.entity.association.AssociationsModel;
-import org.qi4j.runtime.injection.DependencyVisitor;
 import org.qi4j.runtime.structure.Binder;
+import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.structure.ModuleModel;
 import org.qi4j.spi.composite.CompositeDescriptor;
@@ -139,11 +139,13 @@ public class EntityModel
         return stateModel;
     }
 
-    public void visitDependencies( DependencyVisitor visitor )
+
+    public void visitModel( ModelVisitor modelVisitor )
     {
-        concernsModel.visitDependencies( visitor );
-        sideEffectsModel.visitDependencies( visitor );
-        mixinsModel.visitDependencies( visitor );
+        modelVisitor.visit( this );
+
+        compositeMethodsModel.visitModel( modelVisitor );
+        mixinsModel.visitModel( modelVisitor );
     }
 
     public void bind( Resolution resolution ) throws BindingException
@@ -242,4 +244,5 @@ public class EntityModel
     {
         return CompositeModel.toURI( type );
     }
+
 }

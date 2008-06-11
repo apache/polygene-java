@@ -21,6 +21,7 @@ import java.util.List;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.structure.Binder;
+import org.qi4j.runtime.structure.ModelVisitor;
 import static org.qi4j.util.AnnotationUtil.getInjectionAnnotation;
 import static org.qi4j.util.ClassUtil.fieldsOf;
 
@@ -47,11 +48,12 @@ public final class InjectedFieldsModel
         }
     }
 
-    public void visitDependencies( DependencyVisitor visitor )
+
+    public void visitModel( ModelVisitor modelVisitor )
     {
         for( InjectedFieldModel field : fields )
         {
-            field.visitDependency( visitor );
+            field.visitModel( modelVisitor );
         }
     }
 
@@ -68,47 +70,6 @@ public final class InjectedFieldsModel
         for( InjectedFieldModel field : fields )
         {
             field.inject( context, instance );
-        }
-    }
-
-    /**
-     * TODO
-     */
-    private static final class InjectedFieldModel
-    {
-        private DependencyModel dependencyModel;
-        private Field injectedField;
-        private Resolution resolution;
-
-        public InjectedFieldModel( Field injectedField, DependencyModel dependencyModel )
-        {
-            injectedField.setAccessible( true );
-            this.injectedField = injectedField;
-            this.dependencyModel = dependencyModel;
-        }
-
-        public void bind( Resolution resolution ) throws BindingException
-        {
-            this.resolution = new Resolution( resolution.application(), resolution.layer(), resolution.module(), resolution.composite(), resolution.method(), injectedField );
-            dependencyModel.bind( resolution );
-        }
-
-        public void inject( InjectionContext context, Object instance )
-        {
-            Object value = dependencyModel.inject( context );
-            try
-            {
-                injectedField.set( instance, value );
-            }
-            catch( IllegalAccessException e )
-            {
-                throw new InjectionException( e );
-            }
-        }
-
-        public void visitDependency( DependencyVisitor visitor )
-        {
-            visitor.visit( dependencyModel, resolution );
         }
     }
 }

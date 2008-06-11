@@ -19,8 +19,8 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import org.qi4j.composite.Composite;
-import org.qi4j.runtime.injection.DependencyVisitor;
 import org.qi4j.runtime.structure.Binder;
+import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
 
 /**
@@ -74,22 +74,13 @@ public final class MethodSideEffectsModel
         return new MethodSideEffectsInstance( method, sideEffects, result, proxyHandler );
     }
 
-    public void visitDependencies( DependencyVisitor visitor )
+
+    public void visitModel( ModelVisitor modelVisitor )
     {
         for( MethodSideEffectModel methodSideEffectModel : sideEffectsForMethod )
         {
-            methodSideEffectModel.visitDependencies( visitor );
+            methodSideEffectModel.visitModel( modelVisitor );
         }
-    }
-
-    private static final class MethodSideEffectModel
-        extends AbstractModifierModel
-    {
-        private MethodSideEffectModel( Class sideEffectClass )
-        {
-            super( sideEffectClass );
-        }
-
     }
 
 }

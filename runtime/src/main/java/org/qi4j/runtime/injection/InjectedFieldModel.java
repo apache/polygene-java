@@ -14,8 +14,7 @@
 
 package org.qi4j.runtime.injection;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.lang.reflect.Field;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.structure.ModelVisitor;
@@ -23,50 +22,51 @@ import org.qi4j.runtime.structure.ModelVisitor;
 /**
  * TODO
  */
-public final class InjectedMethodModel
+public final class InjectedFieldModel
 {
-    // Model
-    private Method method;
-    private InjectedParametersModel parameters;
+    private DependencyModel dependencyModel;
+    private Field injectedField;
+    private Resolution resolution;
 
-    public InjectedMethodModel( Method method, InjectedParametersModel parameters )
+    public InjectedFieldModel( Field injectedField, DependencyModel dependencyModel )
     {
-        this.method = method;
-        this.parameters = parameters;
+        injectedField.setAccessible( true );
+        this.injectedField = injectedField;
+        this.dependencyModel = dependencyModel;
     }
 
-    public Method method()
+    public DependencyModel dependency()
     {
-        return method;
+        return dependencyModel;
     }
 
-    // Binding
+    public Field field()
+    {
+        return injectedField;
+    }
+
     public void bind( Resolution resolution ) throws BindingException
     {
-        parameters.bind( resolution );
+        this.resolution = new Resolution( resolution.application(), resolution.layer(), resolution.module(), resolution.composite(), resolution.method(), injectedField );
+        dependencyModel.bind( resolution );
     }
 
-    // Context
-    public void inject( InjectionContext context, Object instance ) throws InjectionException
+    public void inject( InjectionContext context, Object instance )
     {
-        Object[] params = parameters.newParametersInstance( context );
+        Object value = dependencyModel.inject( context );
         try
         {
-            method.invoke( instance, params );
+            injectedField.set( instance, value );
         }
         catch( IllegalAccessException e )
         {
             throw new InjectionException( e );
         }
-        catch( InvocationTargetException e )
-        {
-            throw new InjectionException( e.getTargetException() );
-        }
     }
+
 
     public void visitModel( ModelVisitor modelVisitor )
     {
         modelVisitor.visit( this );
-        parameters.visitModel( modelVisitor );
     }
 }

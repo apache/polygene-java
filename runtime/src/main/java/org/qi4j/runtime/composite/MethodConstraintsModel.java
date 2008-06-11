@@ -18,6 +18,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import org.qi4j.runtime.structure.ModelVisitor;
 
 /**
  * TODO
@@ -56,6 +57,11 @@ public final class MethodConstraintsModel
         }
     }
 
+    public Method method()
+    {
+        return method;
+    }
+
     public boolean isConstrained()
     {
         return !parameterConstraintModels.isEmpty();
@@ -64,5 +70,14 @@ public final class MethodConstraintsModel
     public MethodConstraintsInstance newInstance()
     {
         return parameterConstraintModels == null ? new MethodConstraintsInstance() : new MethodConstraintsInstance( method, parameterConstraintModels );
+    }
+
+    public void visitModel( ModelVisitor modelVisitor )
+    {
+        modelVisitor.visit( this );
+        for( ValueConstraintsModel parameterConstraintModel : parameterConstraintModels )
+        {
+            parameterConstraintModel.visitModel( modelVisitor );
+        }
     }
 }

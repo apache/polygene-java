@@ -17,6 +17,7 @@ package org.qi4j.runtime.composite;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import org.qi4j.runtime.structure.Binder;
+import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
 
 /**
@@ -97,5 +98,14 @@ public final class CompositeMethodModel
     {
         // TODO Calc sum of composite + mixin
         return method;
+    }
+
+    public void visitModel( ModelVisitor modelVisitor )
+    {
+        modelVisitor.visit( this );
+
+        methodConstraints.visitModel( modelVisitor );
+        methodConcerns.visitModel( modelVisitor );
+        methodSideEffects.visitModel( modelVisitor );
     }
 }

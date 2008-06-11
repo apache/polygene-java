@@ -15,15 +15,16 @@
 package org.qi4j.runtime.composite;
 
 import java.lang.reflect.Constructor;
-import org.qi4j.composite.InstantiationException;
-import org.qi4j.runtime.injection.DependencyVisitor;
 import org.qi4j.runtime.injection.InjectedParametersModel;
 import org.qi4j.runtime.injection.InjectionContext;
+import org.qi4j.runtime.structure.Binder;
+import org.qi4j.runtime.structure.ModelVisitor;
 
 /**
  * TODO
  */
 public final class ConstructorModel
+    implements Binder
 {
     private Constructor constructor;
 
@@ -36,20 +37,22 @@ public final class ConstructorModel
         this.parameters = parameters;
     }
 
-    public void visitDependencies( DependencyVisitor dependencyVisitor )
+
+    public void visitModel( ModelVisitor modelVisitor )
     {
-        parameters.visitDependencies( dependencyVisitor );
+        modelVisitor.visit( this );
+        parameters.visitModel( modelVisitor );
     }
 
     // Binding
-    public void bind( Resolution context ) throws BindingException
+    public void bind( Resolution resolution ) throws BindingException
     {
-        parameters.bind( context );
+        parameters.bind( resolution );
     }
 
     // Context
     public Object newInstance( InjectionContext context )
-        throws InstantiationException
+        throws org.qi4j.composite.InstantiationException
     {
         // Create parameters
         Object[] parametersInstance = parameters.newParametersInstance( context );
@@ -57,12 +60,11 @@ public final class ConstructorModel
         // Invoke constructor
         try
         {
-            Object instance = constructor.newInstance( parametersInstance );
-            return instance;
+            return constructor.newInstance( parametersInstance );
         }
         catch( Exception e )
         {
-            throw new InstantiationException( "Could not instantiate " + constructor.getDeclaringClass(), e );
+            throw new org.qi4j.composite.InstantiationException( "Could not instantiate " + constructor.getDeclaringClass(), e );
         }
     }
 }
