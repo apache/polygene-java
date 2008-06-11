@@ -59,7 +59,17 @@ public final class ConstructorsModel
 
     public void visitModel( ModelVisitor modelVisitor )
     {
-        boundConstructor.visitModel( modelVisitor );
+        if( boundConstructor != null )
+        {
+            boundConstructor.visitModel( modelVisitor );
+        }
+        else
+        {
+            for( ConstructorModel constructorModel : constructorModels )
+            {
+                constructorModel.visitModel( modelVisitor );
+            }
+        }
     }
 
     // Binding

@@ -70,7 +70,7 @@ public final class ApplicationFactory
             {
                 // Create Module
                 ModuleAssembly mb = lb.newModuleAssembly();
-                mb.setName( lb.getName() + " : Module " + ( module + 1 ) );
+                mb.setName( "Module " + ( module + 1 ) );
                 for( int assembly = 0; assembly < assemblers[ layer ][ module ].length; assembly++ )
                 {
                     // Register Assembler
@@ -110,6 +110,7 @@ public final class ApplicationFactory
                 moduleModels.add( moduleAssembly.assembleModule( layerModel ) );
             }
             mapAssemblyModel.put( layerAssembly, layerModel );
+            layerModels.add( layerModel );
         }
 
         try

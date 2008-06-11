@@ -83,4 +83,8 @@ public final class LayerModel
         return layerInstance;
     }
 
+    @Override public String toString()
+    {
+        return name;
+    }
 }

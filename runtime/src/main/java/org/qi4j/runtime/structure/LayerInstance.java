@@ -246,4 +246,9 @@ public class LayerInstance
 
         return null;
     }
+
+    @Override public String toString()
+    {
+        return model.toString();
+    }
 }
