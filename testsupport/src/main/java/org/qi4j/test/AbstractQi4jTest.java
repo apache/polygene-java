@@ -22,16 +22,14 @@ import org.qi4j.bootstrap.ApplicationFactory;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.composite.CompositeBuilderFactory;
-import org.qi4j.composite.ObjectBuilderFactory;
 import org.qi4j.entity.UnitOfWorkFactory;
+import org.qi4j.object.ObjectBuilderFactory;
 import org.qi4j.runtime.Energy4Java;
 import org.qi4j.runtime.Qi4jRuntime;
-import org.qi4j.runtime.structure.ApplicationContext;
-import org.qi4j.runtime.structure.ApplicationInstance;
-import org.qi4j.runtime.structure.LayerInstance;
-import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.runtime.structure.qi.ModuleInstance;
 import org.qi4j.service.ServiceFinder;
 import org.qi4j.spi.Qi4jSPI;
+import org.qi4j.structure.Application;
 
 /**
  * Base class for Composite tests.
@@ -44,7 +42,7 @@ public abstract class AbstractQi4jTest
     protected Qi4jRuntime runtime;
 
     protected ApplicationFactory applicationFactory;
-    protected ApplicationInstance application;
+    protected Application application;
 
     protected CompositeBuilderFactory compositeBuilderFactory;
     protected ObjectBuilderFactory objectBuilderFactory;
@@ -52,7 +50,6 @@ public abstract class AbstractQi4jTest
     protected ServiceFinder serviceLocator;
 
     protected ModuleInstance moduleInstance;
-    protected LayerInstance layerInstance;
 
     @Before public void setUp() throws Exception
     {
@@ -62,19 +59,17 @@ public abstract class AbstractQi4jTest
         application.activate();
 
         // Assume only one module
-        layerInstance = application.getLayerInstances().iterator().next();
-        moduleInstance = layerInstance.getModuleInstances().iterator().next();
-        compositeBuilderFactory = moduleInstance.structureContext().getCompositeBuilderFactory();
-        objectBuilderFactory = moduleInstance.structureContext().getObjectBuilderFactory();
-        unitOfWorkFactory = moduleInstance.structureContext().getUnitOfWorkFactory();
-        serviceLocator = moduleInstance.structureContext().getServiceLocator();
+        moduleInstance = (ModuleInstance) application.findModule( "Layer 1", "Module 1" );
+        compositeBuilderFactory = moduleInstance.compositeBuilderFactory();
+        objectBuilderFactory = moduleInstance.objectBuilderFactory();
+        unitOfWorkFactory = moduleInstance.unitOfWorkFactory();
+        serviceLocator = moduleInstance.serviceFinder();
     }
 
-    protected ApplicationInstance newApplication()
+    protected Application newApplication()
         throws AssemblyException
     {
-        ApplicationContext applicationContext = applicationFactory.newApplication( this );
-        return applicationContext.newApplicationInstance( "Test application" );
+        return applicationFactory.newApplication( this );
     }
 
     @After public void tearDown() throws Exception

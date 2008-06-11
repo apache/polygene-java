@@ -19,15 +19,18 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import org.qi4j.composite.Composite;
+import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.ProxyReferenceInvocationHandler;
 import org.qi4j.runtime.composite.SideEffectInvocationHandlerResult;
 import org.qi4j.runtime.composite.TypedFragmentInvocationHandler;
+import org.qi4j.runtime.structure.qi.Binder;
 import org.qi4j.runtime.structure.qi.ModuleInstance;
 
 /**
  * TODO
  */
 public final class MethodSideEffectsModel
+    implements Binder
 {
     private List<MethodSideEffectModel> sideEffectsForMethod;
 
@@ -45,7 +48,7 @@ public final class MethodSideEffectsModel
     }
 
     // Binding
-    public void bind( Resolution resolution )
+    public void bind( Resolution resolution ) throws BindingException
     {
         for( MethodSideEffectModel methodSideEffectModel : sideEffectsForMethod )
         {
@@ -72,6 +75,14 @@ public final class MethodSideEffectsModel
             }
         }
         return new MethodSideEffectsInstance( method, sideEffects, result, proxyHandler );
+    }
+
+    public void visitDependencies( DependencyVisitor visitor )
+    {
+        for( MethodSideEffectModel methodSideEffectModel : sideEffectsForMethod )
+        {
+            methodSideEffectModel.visitDependencies( visitor );
+        }
     }
 
     private static final class MethodSideEffectModel

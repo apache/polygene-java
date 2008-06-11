@@ -18,7 +18,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.qi4j.runtime.Qi4jRuntime;
+import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.InjectionProviderFactoryStrategy;
+import org.qi4j.runtime.composite.qi.DependencyVisitor;
 import org.qi4j.runtime.composite.qi.InjectionProviderFactory;
 import org.qi4j.runtime.composite.qi.Resolution;
 
@@ -27,20 +30,35 @@ import org.qi4j.runtime.composite.qi.Resolution;
  */
 public class ApplicationModel
 {
+    private String name;
     private List<LayerModel> layers;
 
     private InjectionProviderFactory ipf;
 
-    public ApplicationModel( List<LayerModel> layers )
+    public ApplicationModel( String name, List<LayerModel> layers )
     {
+        this.name = name;
         this.layers = layers;
         ipf = new InjectionProviderFactoryStrategy();
     }
 
-    // Binding
-    public void bind()
+    public String name()
     {
-        Resolution resolution = new Resolution( this, null, null, null, null );
+        return name;
+    }
+
+    public void visitDependencies( DependencyVisitor visitor )
+    {
+        for( LayerModel layer : layers )
+        {
+            layer.visitDependencies( visitor );
+        }
+    }
+
+    // Binding
+    public void bind() throws BindingException
+    {
+        Resolution resolution = new Resolution( this, null, null, null, null, null );
         for( LayerModel layer : layers )
         {
             layer.bind( resolution );
@@ -48,10 +66,10 @@ public class ApplicationModel
     }
 
     // Context
-    public ApplicationInstance newInstance()
+    public ApplicationInstance newInstance( Qi4jRuntime runtime )
     {
         List<LayerInstance> layerInstances = new ArrayList<LayerInstance>();
-        ApplicationInstance applicationInstance = new ApplicationInstance( this, layerInstances );
+        ApplicationInstance applicationInstance = new ApplicationInstance( this, runtime, layerInstances );
 
         Map<LayerModel, LayerInstance> layerInstanceMap = new HashMap<LayerModel, LayerInstance>();
         for( LayerModel layer : layers )

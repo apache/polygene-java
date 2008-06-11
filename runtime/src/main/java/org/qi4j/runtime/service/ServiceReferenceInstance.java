@@ -14,22 +14,18 @@
 
 package org.qi4j.runtime.service;
 
-import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.HashMap;
-import java.util.Map;
 import org.qi4j.composite.Composite;
-import org.qi4j.property.ImmutableProperty;
-import org.qi4j.runtime.composite.CompositeInstance;
+import org.qi4j.runtime.composite.qi.CompositeInstance;
+import org.qi4j.runtime.service.qi.ServiceModel;
+import org.qi4j.runtime.structure.qi.Activator;
 import org.qi4j.service.Activatable;
-import org.qi4j.service.ServiceDescriptor;
-import org.qi4j.service.ServiceInstanceProvider;
 import org.qi4j.service.ServiceInstanceProviderException;
 import org.qi4j.service.ServiceReference;
-import org.qi4j.spi.property.ImmutablePropertyInstance;
+import org.qi4j.structure.Module;
 
 /**
  * Implementation of ServiceReference. This manages the actual instance of the service
@@ -41,51 +37,30 @@ import org.qi4j.spi.property.ImmutablePropertyInstance;
 public final class ServiceReferenceInstance<T>
     implements ServiceReference<T>, Activatable
 {
-    private ServiceDescriptor serviceDescriptor;
-    private ServiceInstanceProvider serviceInstanceProvider;
-    private ImmutableProperty<String> identity;
-
     private volatile ServiceInstance<T> serviceInstance;
-    private Map<Class, Serializable> serviceAttributes;
     private Object instance;
     private T serviceProxy;
     private int referenceCounter = 0;
+    private Module module;
+    private ServiceModel serviceModel;
+    private Activator activator = new Activator();
 
-    public ServiceReferenceInstance( ServiceDescriptor serviceDescriptor, ServiceInstanceProvider serviceInstanceProvider )
+    public ServiceReferenceInstance( ServiceModel serviceModel, Module module )
     {
-        this.serviceDescriptor = serviceDescriptor;
-        this.serviceInstanceProvider = serviceInstanceProvider;
-        identity = new ImmutablePropertyInstance<String>( ServiceReference.class, "identity", serviceDescriptor.identity() );
+        this.module = module;
+        this.serviceModel = serviceModel;
 
-        serviceAttributes = new HashMap<Class, Serializable>();
-        Iterable<Class> serviceAttributeTypes = serviceDescriptor.serviceAttributeTypes();
-        for( Class serviceAttributeType : serviceAttributeTypes )
-        {
-            serviceAttributes.put( serviceAttributeType, serviceDescriptor.serviceAttribute( serviceAttributeType ) );
-        }
-        serviceProxy = (T) Proxy.newProxyInstance( serviceDescriptor.serviceType().getClassLoader(), new Class[]{ serviceDescriptor.serviceType() }, new ServiceInvocationHandler() );
+        serviceProxy = newProxy();
     }
 
-    public ImmutableProperty<String> identity()
+    public String identity()
     {
-        return identity;
+        return serviceModel.identity();
     }
 
-    public <K extends Serializable> K getServiceAttribute( Class<K> infoType )
+    public <K> K metaInfo( Class<K> infoType )
     {
-        Serializable serviceAttribute = serviceAttributes.get( infoType );
-        if( serviceAttribute == null )
-        {
-            throw new IllegalArgumentException( "No service attribute of type " + infoType.getName() + " defined in service " + identity.get() );
-        }
-
-        return infoType.cast( serviceAttribute );
-    }
-
-    public <K extends Serializable> void setServiceAttribute( Class<K> infoType, K value )
-    {
-        // TODO Not thread-safe
-        serviceAttributes.put( infoType, value );
+        return serviceModel.metaInfo().get( infoType );
     }
 
     public synchronized T get()
@@ -108,11 +83,23 @@ public final class ServiceReferenceInstance<T>
         }
 
         referenceCounter--;
+
+        if( referenceCounter == 0 )
+        {
+            try
+            {
+                passivate();
+            }
+            catch( Exception e )
+            {
+                e.printStackTrace(); // TODO What should we do here?
+            }
+        }
     }
 
     public void activate() throws Exception
     {
-        if( serviceDescriptor.isInstantiateOnStartup() )
+        if( serviceModel.isInstantiateOnStartup() )
         {
             getInstance();
         }
@@ -122,17 +109,12 @@ public final class ServiceReferenceInstance<T>
     {
         if( serviceInstance != null )
         {
-            // Passivate the instance
-            T instance = serviceInstance.getInstance();
-            if( instance instanceof Activatable )
-            {
-                ( (Activatable) instance ).passivate();
-            }
+            activator.passivate();
 
             // Release the instance
             try
             {
-                serviceInstanceProvider.releaseInstance( serviceInstance.getInstance() );
+                serviceInstance.release();
             }
             finally
             {
@@ -146,11 +128,6 @@ public final class ServiceReferenceInstance<T>
         return referenceCounter;
     }
 
-    public ServiceDescriptor getServiceDescriptor()
-    {
-        return serviceDescriptor;
-    }
-
     private Object getInstance()
         throws ServiceInstanceProviderException
     {
@@ -161,14 +138,14 @@ public final class ServiceReferenceInstance<T>
             {
                 if( serviceInstance == null )
                 {
-                    T providedInstance = (T) serviceInstanceProvider.newInstance( serviceDescriptor );
-                    serviceInstance = new ServiceInstance<T>( providedInstance, serviceInstanceProvider, serviceDescriptor );
+                    serviceInstance = (ServiceInstance<T>) serviceModel.newInstance( module );
+                    T providedInstance = serviceInstance.getInstance();
 
                     if( providedInstance instanceof Activatable )
                     {
                         try
                         {
-                            ( (Activatable) providedInstance ).activate();
+                            activator.activate( (Activatable) providedInstance );
                         }
                         catch( Exception e )
                         {
@@ -203,7 +180,13 @@ public final class ServiceReferenceInstance<T>
 
     @Override public String toString()
     {
-        return serviceDescriptor.identity() + ", active=" + ( serviceInstance != null );
+        return serviceModel.identity() + ", active=" + ( serviceInstance != null );
+    }
+
+
+    public T newProxy()
+    {
+        return (T) serviceModel.newProxy( new ServiceReferenceInstance.ServiceInvocationHandler() );
     }
 
     public final class ServiceInvocationHandler

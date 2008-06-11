@@ -16,21 +16,20 @@ package org.qi4j.bootstrap;
 
 import org.qi4j.Qi4j;
 import org.qi4j.composite.CompositeBuilderFactory;
-import org.qi4j.composite.ObjectBuilderFactory;
 import org.qi4j.entity.UnitOfWorkFactory;
+import org.qi4j.object.ObjectBuilderFactory;
 import org.qi4j.runtime.Energy4Java;
 import org.qi4j.runtime.Qi4jRuntime;
-import org.qi4j.runtime.structure.ApplicationInstance;
-import org.qi4j.runtime.structure.LayerInstance;
-import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.service.ServiceFinder;
+import org.qi4j.structure.Application;
+import org.qi4j.structure.Module;
 
 /**
  * Base class for Assembler that creates an Application
  * with one Layer and one Module. Create a subclass of this
  * and implement the {@link Assembler#assemble(ModuleAssembly)} method.
  * Once the SingletonAssembler is instantiated it will have created and activated
- * an Application which can be accessed from {@link org.qi4j.bootstrap.SingletonAssembler#getApplicationInstance()}.
+ * an Application which can be accessed from {@link org.qi4j.bootstrap.SingletonAssembler#application()}.
  * You can also easily access any resources specific for the single Module, such as the CompositeBuilderFactory.
  */
 public abstract class SingletonAssembler
@@ -39,17 +38,16 @@ public abstract class SingletonAssembler
     private Qi4j is = new Energy4Java();
 
     private Qi4jRuntime runtime = (Qi4jRuntime) is;
-    private ApplicationAssemblyFactory applicationAssemblyFactory = new ApplicationAssemblyFactory();
-    private ApplicationFactory applicationFactory = new ApplicationFactory( runtime, applicationAssemblyFactory );
-    private ApplicationInstance applicationInstance;
-    private ModuleInstance moduleInstance;
+    private ApplicationFactory applicationFactory = new ApplicationFactory();
+    private Application applicationInstance;
+    private Module moduleInstance;
 
     public SingletonAssembler()
         throws IllegalStateException
     {
         try
         {
-            applicationInstance = applicationFactory.newApplication( this ).newApplicationInstance( "Simple application" );
+            applicationInstance = applicationFactory.newApplication( this );
         }
         catch( AssemblyException e )
         {
@@ -65,56 +63,41 @@ public abstract class SingletonAssembler
             throw new IllegalStateException( "Could not activate application", e );
         }
 
-        moduleInstance = applicationInstance.getLayerInstances().iterator().next().getModuleInstances().iterator().next();
+        moduleInstance = applicationInstance.findModule( "Layer 1", "Module 1" );
     }
 
-    public final Qi4jRuntime getRuntime()
+    public final Qi4jRuntime runtime()
     {
         return runtime;
     }
 
-    public final ApplicationAssemblyFactory getApplicationAssemblyFactory()
-    {
-        return applicationAssemblyFactory;
-    }
-
-    public final ApplicationFactory getApplicationFactory()
-    {
-        return applicationFactory;
-    }
-
-    public final ApplicationInstance getApplicationInstance()
+    public final Application application()
     {
         return applicationInstance;
     }
 
-    public final LayerInstance getLayerInstance()
-    {
-        return applicationInstance.getLayerInstances().get( 0 );
-    }
-
-    public final ModuleInstance getModuleInstance()
+    public final Module module()
     {
         return moduleInstance;
     }
 
-    public final CompositeBuilderFactory getCompositeBuilderFactory()
+    public final CompositeBuilderFactory compositeBuilderFactory()
     {
-        return moduleInstance.structureContext().getCompositeBuilderFactory();
+        return moduleInstance.compositeBuilderFactory();
     }
 
-    public final ObjectBuilderFactory getObjectBuilderFactory()
+    public final ObjectBuilderFactory objectBuilderFactory()
     {
-        return moduleInstance.structureContext().getObjectBuilderFactory();
+        return moduleInstance.objectBuilderFactory();
     }
 
-    public final UnitOfWorkFactory getUnitOfWorkFactory()
+    public final UnitOfWorkFactory unitOfWorkFactory()
     {
-        return moduleInstance.structureContext().getUnitOfWorkFactory();
+        return moduleInstance.unitOfWorkFactory();
     }
 
-    public final ServiceFinder getServiceLocator()
+    public final ServiceFinder serviceFinder()
     {
-        return moduleInstance.structureContext().getServiceLocator();
+        return moduleInstance.serviceFinder();
     }
 }

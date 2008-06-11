@@ -20,13 +20,15 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.Collections;
 import java.util.Iterator;
-import org.qi4j.spi.composite.BindingException;
-import org.qi4j.spi.injection.InvalidInjectionException;
+import org.qi4j.runtime.composite.BindingException;
+import org.qi4j.runtime.injection.InvalidInjectionException;
+import org.qi4j.runtime.structure.qi.Binder;
 
 /**
  * TODO
  */
 public final class DependencyModel
+    implements Binder
 {
     // Model
     private Annotation injectionAnnotation;

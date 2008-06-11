@@ -23,7 +23,6 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 import org.qi4j.entity.association.AbstractAssociation;
-import org.qi4j.spi.structure.AssociationDescriptor;
 
 /**
  * Declaration of an Association. Created by {@link org.qi4j.bootstrap.ModuleAssembly#addAssociation()}.
@@ -48,11 +47,6 @@ public final class AssociationDeclaration
     public <T> T withAccessor( Class<T> interfaceClass )
     {
         return interfaceClass.cast( Proxy.newProxyInstance( interfaceClass.getClassLoader(), new Class[]{ interfaceClass }, new AccessorInvocationHandler() ) );
-    }
-
-    public AssociationDescriptor getAssociationDescriptor()
-    {
-        return new AssociationDescriptor( associationType, associatedType, associationInfos, accessor );
     }
 
     class AccessorInvocationHandler

@@ -16,11 +16,14 @@ package org.qi4j.runtime.composite.qi;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import org.qi4j.runtime.composite.BindingException;
+import org.qi4j.runtime.structure.qi.Binder;
 
 /**
  * TODO
  */
 public final class InjectedMethodModel
+    implements Binder
 {
     // Model
     private Method method;
@@ -33,7 +36,7 @@ public final class InjectedMethodModel
     }
 
     // Binding
-    public void bind( Resolution resolution )
+    public void bind( Resolution resolution ) throws BindingException
     {
         parameters.bind( resolution );
     }

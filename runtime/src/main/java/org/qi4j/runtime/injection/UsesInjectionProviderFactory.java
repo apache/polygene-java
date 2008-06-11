@@ -5,8 +5,7 @@ import org.qi4j.runtime.composite.qi.InjectionContext;
 import org.qi4j.runtime.composite.qi.InjectionProvider;
 import org.qi4j.runtime.composite.qi.InjectionProviderFactory;
 import org.qi4j.runtime.composite.qi.Resolution;
-import org.qi4j.spi.injection.InjectionProviderException;
-import org.qi4j.spi.injection.InvalidInjectionException;
+import org.qi4j.runtime.composite.qi.UsesInstance;
 
 /**
  * TODO
@@ -34,18 +33,10 @@ public final class UsesInjectionProviderFactory
 
         public Object provideInjection( InjectionContext context ) throws InjectionProviderException
         {
-            Iterable<Object> uses = context.uses();
+            UsesInstance uses = context.uses();
 
             Class injectionType = dependency.rawInjectionType();
-            for( Object usedObject : uses )
-            {
-                if( injectionType.isAssignableFrom( usedObject.getClass() ) )
-                {
-                    return usedObject;
-                }
-            }
-
-            return null;
+            return uses.useForType( injectionType );
         }
     }
 }

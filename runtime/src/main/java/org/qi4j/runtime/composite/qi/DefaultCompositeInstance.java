@@ -17,32 +17,40 @@
 package org.qi4j.runtime.composite.qi;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import org.qi4j.composite.Composite;
 import org.qi4j.runtime.structure.qi.ModuleInstance;
+import org.qi4j.util.MetaInfo;
 
 /**
  * InvocationHandler for proxy objects.
  */
 public final class DefaultCompositeInstance
-    implements CompositeInstance
+    implements CompositeInstance, MixinsInstance
 {
-    private Object proxy;
+    public static DefaultCompositeInstance getCompositeInstance( Composite composite )
+    {
+        return (DefaultCompositeInstance) Proxy.getInvocationHandler( composite );
+    }
+
+    private Composite proxy;
     private Object[] mixins;
-    private CompositeModel composite;
+    private CompositeModel compositeModel;
     private ModuleInstance moduleInstance;
 
-    public DefaultCompositeInstance( CompositeModel composite, ModuleInstance moduleInstance, Object[] mixins )
+    public DefaultCompositeInstance( CompositeModel compositeModel, ModuleInstance moduleInstance, Object[] mixins )
     {
-        this.composite = composite;
+        this.compositeModel = compositeModel;
         this.moduleInstance = moduleInstance;
         this.mixins = mixins;
 
-        proxy = composite.newProxy( this );
+        proxy = compositeModel.newProxy( this );
     }
 
     public Object invoke( Object proxy, Method method, Object[] args )
         throws Throwable
     {
-        return composite.invoke( mixins, proxy, method, args, moduleInstance );
+        return compositeModel.invoke( this, proxy, method, args, moduleInstance );
     }
 
     public Object proxy()
@@ -50,14 +58,24 @@ public final class DefaultCompositeInstance
         return proxy;
     }
 
-    public CompositeModel composite()
+    public MetaInfo metaInfo()
     {
-        return composite;
+        return compositeModel.metaInfo();
+    }
+
+    public Class<? extends Composite> type()
+    {
+        return compositeModel.type();
     }
 
     public ModuleInstance moduleInstance()
     {
         return moduleInstance;
+    }
+
+    public CompositeModel compositeModel()
+    {
+        return compositeModel;
     }
 
     public void setMixins( Object[] newMixins )
@@ -68,6 +86,18 @@ public final class DefaultCompositeInstance
     public Object[] getMixins()
     {
         return mixins;
+    }
+
+    public Object invoke( Object composite, Object[] params, CompositeMethodInstance methodInstance )
+        throws Throwable
+    {
+        return compositeModel.invoke( composite, params, mixins, methodInstance );
+    }
+
+    public Object invokeObject( Object proxy, Object[] args, Method method )
+        throws Throwable
+    {
+        return method.invoke( this, args );
     }
 
     public String toURI()

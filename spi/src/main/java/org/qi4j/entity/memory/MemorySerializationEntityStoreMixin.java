@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import org.qi4j.composite.CompositeBuilderFactory;
+import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.entity.EntityAlreadyExistsException;
 import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityState;
@@ -16,7 +17,6 @@ import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.serialization.SerializableState;
 import org.qi4j.spi.serialization.SerializedObject;
-import org.qi4j.spi.structure.CompositeDescriptor;
 import org.qi4j.structure.Module;
 
 /**
@@ -37,7 +37,7 @@ public class MemorySerializationEntityStoreMixin
         Map<QualifiedIdentity, SerializedObject<SerializableState>> typeStore;
         synchronized( store )
         {
-            typeStore = store.get( identity.getCompositeType() );
+            typeStore = store.get( identity.type() );
         }
 
         if( typeStore != null )
@@ -46,7 +46,7 @@ public class MemorySerializationEntityStoreMixin
             {
                 if( typeStore.containsKey( identity ) )
                 {
-                    throw new EntityAlreadyExistsException( "Serialization store", identity.getIdentity() );
+                    throw new EntityAlreadyExistsException( "Serialization store", identity.identity() );
                 }
             }
         }
@@ -61,10 +61,10 @@ public class MemorySerializationEntityStoreMixin
             Map<QualifiedIdentity, SerializedObject<SerializableState>> typeStore;
             synchronized( store )
             {
-                typeStore = store.get( identity.getCompositeType() );
+                typeStore = store.get( identity.type() );
                 if( typeStore == null )
                 {
-                    throw new EntityNotFoundException( "Serialization store", identity.getIdentity() );
+                    throw new EntityNotFoundException( "Serialization store", identity.identity() );
                 }
             }
 
@@ -76,7 +76,7 @@ public class MemorySerializationEntityStoreMixin
 
             if( serializableObject == null )
             {
-                throw new EntityNotFoundException( "Serialization store", identity.getIdentity() );
+                throw new EntityNotFoundException( "Serialization store", identity.identity() );
             }
 
             SerializableState serializableState = serializableObject.getObject( (CompositeBuilderFactory) null, null );
@@ -119,7 +119,7 @@ public class MemorySerializationEntityStoreMixin
                     // Remove state
                     for( QualifiedIdentity removedEntityId : removedStates )
                     {
-                        Map<QualifiedIdentity, SerializedObject<SerializableState>> typeStore = store.get( removedEntityId.getCompositeType() );
+                        Map<QualifiedIdentity, SerializedObject<SerializableState>> typeStore = store.get( removedEntityId.type() );
                         if( typeStore != null )
                         {
                             typeStore.remove( removedEntityId );
@@ -129,11 +129,11 @@ public class MemorySerializationEntityStoreMixin
                     // Update state
                     for( Map.Entry<QualifiedIdentity, SerializedObject<SerializableState>> entityIdSerializedObjectEntry : updatedState.entrySet() )
                     {
-                        Map<QualifiedIdentity, SerializedObject<SerializableState>> typeStore = store.get( entityIdSerializedObjectEntry.getKey().getCompositeType() );
+                        Map<QualifiedIdentity, SerializedObject<SerializableState>> typeStore = store.get( entityIdSerializedObjectEntry.getKey().type() );
                         if( typeStore == null )
                         {
                             typeStore = new HashMap<QualifiedIdentity, SerializedObject<SerializableState>>();
-                            store.put( entityIdSerializedObjectEntry.getKey().getCompositeType(), typeStore );
+                            store.put( entityIdSerializedObjectEntry.getKey().type(), typeStore );
                         }
                         typeStore.put( entityIdSerializedObjectEntry.getKey(), entityIdSerializedObjectEntry.getValue() );
                     }

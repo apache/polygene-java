@@ -25,6 +25,8 @@ public final class CompositeMethodInstance
     private MethodSideEffectsInstance sideEffects;
     private Method method;
 
+    private CompositeMethodInstance next;
+
     public CompositeMethodInstance( MethodConcernsInstance concerns, MethodSideEffectsInstance sideEffects, Method method )
     {
         this.concerns = concerns;
@@ -53,4 +55,13 @@ public final class CompositeMethodInstance
         }
     }
 
+    public CompositeMethodInstance getNext()
+    {
+        return next;
+    }
+
+    public void setNext( CompositeMethodInstance next )
+    {
+        this.next = next;
+    }
 }

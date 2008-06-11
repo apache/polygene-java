@@ -1,0 +1,203 @@
+/*
+ * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
+package org.qi4j.runtime.entity;
+
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.util.Iterator;
+import org.qi4j.composite.InstantiationException;
+import org.qi4j.composite.State;
+import org.qi4j.entity.EntityBuilder;
+import org.qi4j.entity.EntityComposite;
+import org.qi4j.entity.Identity;
+import org.qi4j.entity.IdentityGenerator;
+import org.qi4j.entity.Lifecycle;
+import org.qi4j.entity.UnitOfWorkException;
+import org.qi4j.entity.association.AbstractAssociation;
+import org.qi4j.property.Property;
+import org.qi4j.runtime.structure.qi.ModuleInstance;
+import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.EntityStore;
+
+/**
+ * TODO
+ */
+public final class EntityBuilderInstance<T>
+    implements EntityBuilder<T>
+{
+    private static final Method IDENTITY_METHOD;
+    private ModuleInstance moduleInstance;
+    private EntityModel entityModel;
+    private UnitOfWorkInstance uow;
+    private EntityStore store;
+    private T stateProxy;
+    private State state;
+
+    static
+    {
+        try
+        {
+            IDENTITY_METHOD = Identity.class.getMethod( "identity" );
+        }
+        catch( NoSuchMethodException e )
+        {
+            throw new InternalError( "Qi4j Core Runtime codebase is corrupted. Contact Qi4j team: EntityBuilderInstance" );
+        }
+    }
+
+    public EntityBuilderInstance( ModuleInstance moduleInstance, EntityModel entityModel, UnitOfWorkInstance uow, EntityStore store )
+    {
+        this.moduleInstance = moduleInstance;
+        this.entityModel = entityModel;
+        this.uow = uow;
+        this.store = store;
+    }
+
+    public T stateOfComposite()
+    {
+        // Instantiate proxy for given composite interface
+        if( stateProxy == null )
+        {
+            try
+            {
+                StateInvocationHandler handler = new StateInvocationHandler();
+                ClassLoader proxyClassloader = entityModel.type().getClassLoader();
+                Class[] interfaces = new Class[]{ entityModel.type() };
+                stateProxy = (T) ( Proxy.newProxyInstance( proxyClassloader, interfaces, handler ) );
+            }
+            catch( Exception e )
+            {
+                throw new InstantiationException( e );
+            }
+        }
+
+        return stateProxy;
+    }
+
+    public <K> K stateFor( Class<K> mixinType )
+    {
+        // Instantiate proxy for given interface
+        try
+        {
+            StateInvocationHandler handler = new StateInvocationHandler();
+            ClassLoader proxyClassloader = mixinType.getClassLoader();
+            Class[] interfaces = new Class[]{ mixinType };
+            return mixinType.cast( Proxy.newProxyInstance( proxyClassloader, interfaces, handler ) );
+        }
+        catch( Exception e )
+        {
+            throw new InstantiationException( e );
+        }
+    }
+
+    public T newInstance()
+    {
+
+        // Figure out whether to use given or generated identity
+        boolean prototypePattern = false;
+        Property<String> identityProperty = (Property<String>) getState().getProperty( IDENTITY_METHOD );
+        String identity = identityProperty.get();
+        if( identity == null )
+        {
+            Class compositeType = entityModel.type();
+            IdentityGenerator identityGenerator = uow.stateServices.getIdentityGenerator( compositeType );
+            if( identityGenerator == null )
+            {
+                throw new UnitOfWorkException( "No identity generator found for type " + compositeType.getName() );
+            }
+            identity = identityGenerator.generate( compositeType );
+            identityProperty.set( identity );
+            prototypePattern = true;
+        }
+
+        // Transfer state
+        EntityState entityState = entityModel.newEntityState( store, identity, state );
+
+        EntityInstance instance = entityModel.loadInstance( uow, store, entityState.getIdentity(), moduleInstance, entityState );
+
+        Object proxy = instance.proxy();
+        uow.createEntity( (EntityComposite) instance );
+
+        // Invoke lifecycle create() method
+        if( instance instanceof Lifecycle )
+        {
+//            context.invokeCreate( instance, compositeInstance );
+        }
+
+        if( prototypePattern )
+        {
+            identityProperty.set( null );
+        }
+        return (T) proxy;
+    }
+
+    public Iterator<T> iterator()
+    {
+        return new Iterator<T>()
+        {
+            public boolean hasNext()
+            {
+                return true;
+            }
+
+            public T next()
+            {
+                T instance = newInstance();
+                uow.createEntity( (EntityComposite) instance );
+                return instance;
+            }
+
+            public void remove()
+            {
+                throw new UnsupportedOperationException();
+            }
+        };
+    }
+
+    private State getState()
+    {
+        if( state == null )
+        {
+            state = entityModel.newDefaultState();
+        }
+
+        return state;
+    }
+
+    protected class StateInvocationHandler
+        implements InvocationHandler
+    {
+        public StateInvocationHandler()
+        {
+        }
+
+        public Object invoke( Object o, Method method, Object[] objects ) throws Throwable
+        {
+            if( Property.class.isAssignableFrom( method.getReturnType() ) )
+            {
+                return getState().getProperty( method );
+            }
+            else if( AbstractAssociation.class.isAssignableFrom( method.getReturnType() ) )
+            {
+                return getState().getAssociation( method );
+            }
+            else
+            {
+                throw new IllegalArgumentException( "Method does not represent state: " + method );
+            }
+        }
+    }
+}

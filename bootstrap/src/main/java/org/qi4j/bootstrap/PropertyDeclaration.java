@@ -23,7 +23,6 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 import org.qi4j.property.Property;
-import org.qi4j.spi.structure.PropertyDescriptor;
 
 /**
  * Declaration of a Property. Created by {@link ModuleAssembly#addProperty()}.
@@ -48,11 +47,6 @@ public final class PropertyDeclaration
     {
         this.propertyInfos.put( infoType, propertyInfo );
         return this;
-    }
-
-    public PropertyDescriptor getPropertyDescriptor()
-    {
-        return new PropertyDescriptor( valueType, propertyInfos, accessor, defaultValue );
     }
 
     class AccessorInvocationHandler

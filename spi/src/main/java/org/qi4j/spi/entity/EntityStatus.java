@@ -6,5 +6,5 @@ package org.qi4j.spi.entity;
  */
 public enum EntityStatus
 {
-    NEW, LOADED, REMOVED;
+    NEW, LOADED, REMOVED
 }

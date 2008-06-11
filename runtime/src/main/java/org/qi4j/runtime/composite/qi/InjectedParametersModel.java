@@ -16,13 +16,17 @@ package org.qi4j.runtime.composite.qi;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.qi4j.runtime.composite.BindingException;
+import org.qi4j.runtime.structure.qi.Binder;
 
 /**
  * TODO
  */
 public final class InjectedParametersModel
+    implements Binder
 {
     private final List<DependencyModel> parameterDependencies = new ArrayList<DependencyModel>();
+    private Resolution resolution;
 
     public InjectedParametersModel()
     {
@@ -32,13 +36,15 @@ public final class InjectedParametersModel
     {
         for( DependencyModel dependencyModel : parameterDependencies )
         {
-            dependencyVisitor.visit( dependencyModel );
+            dependencyVisitor.visit( dependencyModel, resolution );
         }
     }
 
     // Binding
-    public void bind( Resolution resolution )
+    public void bind( Resolution resolution ) throws BindingException
     {
+        this.resolution = resolution;
+
         for( DependencyModel parameterDependency : parameterDependencies )
         {
             parameterDependency.bind( resolution );

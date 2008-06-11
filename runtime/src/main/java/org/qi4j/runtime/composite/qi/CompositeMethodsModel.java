@@ -17,24 +17,38 @@ package org.qi4j.runtime.composite.qi;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import org.qi4j.composite.Composite;
+import org.qi4j.runtime.composite.BindingException;
+import org.qi4j.runtime.structure.qi.Binder;
 import org.qi4j.runtime.structure.qi.ModuleInstance;
 
 /**
  * TODO
  */
 public final class CompositeMethodsModel
+    implements Binder
 {
     private Map<Method, CompositeMethodModel> methods = new HashMap<Method, CompositeMethodModel>();
-    private CompositeModel composite;
+    private ConstraintsModel constraintsModel;
+    private ConcernsModel concernsModel;
+    private SideEffectsModel sideEffectsModel;
+    private AbstractMixinsModel mixinsModel;
 
-    public CompositeMethodsModel( CompositeModel composite )
+    public CompositeMethodsModel( Class<? extends Composite> type,
+                                  ConstraintsModel constraintsModel,
+                                  ConcernsModel concernsModel,
+                                  SideEffectsModel sideEffectsModel,
+                                  AbstractMixinsModel mixinsModel )
     {
-        this.composite = composite;
-        implementMixinType( composite.type(), composite.mixins() );
+        this.constraintsModel = constraintsModel;
+        this.concernsModel = concernsModel;
+        this.sideEffectsModel = sideEffectsModel;
+        this.mixinsModel = mixinsModel;
+        implementMixinType( type );
     }
 
     // Binding
-    public void bind( Resolution resolution )
+    public void bind( Resolution resolution ) throws BindingException
     {
         for( CompositeMethodModel compositeMethodComposite : methods.values() )
         {
@@ -43,28 +57,32 @@ public final class CompositeMethodsModel
     }
 
     // Context
-    public Object invoke( Object[] mixins, Object proxy, Method method, Object[] args, ModuleInstance moduleInstance )
+    public Object invoke( MixinsInstance mixins, Object proxy, Method method, Object[] args, ModuleInstance moduleInstance )
         throws Throwable
     {
         CompositeMethodModel compositeMethod = methods.get( method );
 
-        if( compositeMethod != null )
+        if( compositeMethod == null )
         {
-            return compositeMethod.invoke( proxy, args, mixins, moduleInstance );
+            return mixins.invokeObject( proxy, args, method );
         }
         else
         {
-            return null; // TODO handle Object methods
+            return compositeMethod.invoke( proxy, args, mixins, moduleInstance );
         }
     }
 
-    public void implementMixinType( Class mixinType, MixinsModel mixinsModel )
+    public void implementMixinType( Class mixinType )
     {
         for( Method method : mixinType.getMethods() )
         {
             if( methods.get( method ) == null )
             {
-                CompositeMethodModel methodComposite = new CompositeMethodModel( method, composite );
+                CompositeMethodModel methodComposite = new CompositeMethodModel( method,
+                                                                                 new MethodConstraintsModel( method, constraintsModel ),
+                                                                                 concernsModel.concernsFor( method ),
+                                                                                 sideEffectsModel.sideEffectsFor( method ),
+                                                                                 mixinsModel );
 
                 methods.put( method, methodComposite );
                 mixinsModel.implementMethod( method );

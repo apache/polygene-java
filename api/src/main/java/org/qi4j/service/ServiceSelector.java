@@ -35,7 +35,7 @@ public class ServiceSelector<T>
             {
                 for( ServiceReference<Object> service : services )
                 {
-                    if( service.identity().get().equals( anId ) )
+                    if( service.identity().equals( anId ) )
                     {
                         return service;
                     }

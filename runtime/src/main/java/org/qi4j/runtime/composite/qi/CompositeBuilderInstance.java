@@ -14,24 +14,28 @@
 
 package org.qi4j.runtime.composite.qi;
 
-import static java.util.Arrays.asList;
-import java.util.Collections;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.Set;
 import org.qi4j.composite.CompositeBuilder;
+import org.qi4j.composite.InstantiationException;
+import org.qi4j.composite.State;
+import org.qi4j.property.Property;
 import org.qi4j.runtime.structure.qi.ModuleInstance;
 
 /**
  * TODO
  */
-public final class CompositeBuilderInstance<T>
+public class CompositeBuilderInstance<T>
     implements CompositeBuilder<T>
 {
-    private ModuleInstance moduleInstance;
-    private CompositeModel compositeModel;
-    private Set<Object> uses;
+    protected ModuleInstance moduleInstance;
+    protected CompositeModel compositeModel;
+    private UsesInstance uses;
     private Class<T> compositeType;
+    private T stateProxy;
+    private State state;
 
     public CompositeBuilderInstance( ModuleInstance moduleInstance, CompositeModel compositeModel )
     {
@@ -41,26 +45,59 @@ public final class CompositeBuilderInstance<T>
         compositeType = (Class<T>) compositeModel.type();
     }
 
+    public Class<T> compositeType()
+    {
+        return compositeType;
+    }
+
     public CompositeBuilder<T> use( Object... usedObjects )
     {
-        getUses().addAll( asList( usedObjects ) );
+        getUses().use( usedObjects );
 
         return this;
     }
 
     public T stateOfComposite()
     {
-        return null;
+        // Instantiate proxy for given composite interface
+        if( stateProxy == null )
+        {
+            try
+            {
+                StateInvocationHandler handler = new StateInvocationHandler();
+                ClassLoader proxyClassloader = compositeType.getClassLoader();
+                Class[] interfaces = new Class[]{ compositeType };
+                stateProxy = compositeType.cast( Proxy.newProxyInstance( proxyClassloader, interfaces, handler ) );
+            }
+            catch( Exception e )
+            {
+                throw new InstantiationException( e );
+            }
+        }
+
+        return stateProxy;
     }
 
     public <K> K stateFor( Class<K> mixinType )
     {
-        return null;
+        // Instantiate proxy for given interface
+        try
+        {
+            StateInvocationHandler handler = new StateInvocationHandler();
+            ClassLoader proxyClassloader = mixinType.getClassLoader();
+            Class[] interfaces = new Class[]{ mixinType };
+            return mixinType.cast( Proxy.newProxyInstance( proxyClassloader, interfaces, handler ) );
+        }
+        catch( Exception e )
+        {
+            throw new InstantiationException( e );
+        }
     }
 
     public T newInstance() throws org.qi4j.composite.InstantiationException
     {
-        CompositeInstance compositeInstance = compositeModel.newCompositeInstance( moduleInstance, Collections.emptySet(), null );
+        CompositeInstance compositeInstance = compositeModel.newCompositeInstance( moduleInstance, uses == null ? UsesInstance.NO_USES : uses, state );
+        state = null; // Reset state - TODO should create a copy lazily
         return compositeType.cast( compositeInstance.proxy() );
     }
 
@@ -85,13 +122,42 @@ public final class CompositeBuilderInstance<T>
         };
     }
 
-    protected Set<Object> getUses()
+    protected UsesInstance getUses()
     {
         if( uses == null )
         {
-            uses = new LinkedHashSet<Object>();
+            uses = new UsesInstance();
         }
         return uses;
     }
 
+    private State getState()
+    {
+        if( state == null )
+        {
+            state = compositeModel.newDefaultState();
+        }
+
+        return state;
+    }
+
+    protected class StateInvocationHandler
+        implements InvocationHandler
+    {
+        public StateInvocationHandler()
+        {
+        }
+
+        public Object invoke( Object o, Method method, Object[] objects ) throws Throwable
+        {
+            if( Property.class.isAssignableFrom( method.getReturnType() ) )
+            {
+                return getState().getProperty( method );
+            }
+            else
+            {
+                throw new IllegalArgumentException( "Method does not represent state: " + method );
+            }
+        }
+    }
 }

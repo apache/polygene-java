@@ -16,6 +16,7 @@ package org.qi4j.runtime.composite.qi;
 
 import java.lang.reflect.Constructor;
 import org.qi4j.composite.InstantiationException;
+import org.qi4j.runtime.composite.BindingException;
 
 /**
  * TODO
@@ -39,7 +40,7 @@ public final class ConstructorModel
     }
 
     // Binding
-    public void bind( Resolution context )
+    public void bind( Resolution context ) throws BindingException
     {
         parameters.bind( context );
     }

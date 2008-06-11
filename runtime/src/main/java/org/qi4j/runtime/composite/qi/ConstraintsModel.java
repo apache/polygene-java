@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import org.qi4j.composite.Constraint;
+import org.qi4j.composite.ConstraintImplementationNotFoundException;
 import org.qi4j.composite.Constraints;
-import org.qi4j.spi.composite.BindingException;
 import static org.qi4j.util.ClassUtil.interfacesOf;
 
 /**
@@ -30,9 +30,11 @@ import static org.qi4j.util.ClassUtil.interfacesOf;
 public final class ConstraintsModel
 {
     private List<ConstraintDeclaration> constraints = new ArrayList<ConstraintDeclaration>();
+    private Class declaringType;
 
     public ConstraintsModel( Class declaringType )
     {
+        this.declaringType = declaringType;
         // Find constraint declarations
         Set<Type> interfaces = interfacesOf( declaringType );
 
@@ -43,7 +45,7 @@ public final class ConstraintsModel
 
     }
 
-    ValueConstraintsModel constraintsFor( Annotation[] constraintAnnotations, Class valueType )
+    public ValueConstraintsModel constraintsFor( Annotation[] constraintAnnotations, Type valueType )
     {
         List<ConstraintModel> constraintModels = new ArrayList<ConstraintModel>();
         nextConstraint:
@@ -76,7 +78,7 @@ public final class ConstraintsModel
             }
 
             // No implementation found!
-            throw new BindingException( "No constraint implementation found for annotation @" + annotationType.getSimpleName() + " and value type " + valueType );
+            throw new ConstraintImplementationNotFoundException( declaringType, constraintAnnotation.annotationType(), valueType );
         }
 
         return new ValueConstraintsModel( constraintModels );

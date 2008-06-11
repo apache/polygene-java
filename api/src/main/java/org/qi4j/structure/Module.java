@@ -14,9 +14,10 @@
 
 package org.qi4j.structure;
 
-import org.qi4j.composite.Composite;
+import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.scope.Structure;
-import org.qi4j.property.ImmutableProperty;
+import org.qi4j.entity.UnitOfWorkFactory;
+import org.qi4j.object.ObjectBuilderFactory;
 import org.qi4j.service.ServiceFinder;
 
 /**
@@ -25,27 +26,16 @@ import org.qi4j.service.ServiceFinder;
  * injection scope.
  */
 public interface Module
-    extends ServiceFinder
 {
-    ImmutableProperty<String> name();
+    String name();
 
-    Module findModuleForComposite( Class<? extends Composite> compositetype );
+    CompositeBuilderFactory compositeBuilderFactory();
 
-    Module findModuleForMixinType( Class<?> mixintype );
+    ObjectBuilderFactory objectBuilderFactory();
 
-    Module findModuleForObject( Class<?> objecttype );
+    UnitOfWorkFactory unitOfWorkFactory();
 
-    Class<? extends Composite> findCompositeType( Class<?> mixintype );
+    ServiceFinder serviceFinder();
 
-    /**
-     * Lookup a class given the name of the class.
-     * The Module will look for both registered Object classes
-     * and Composite classes, using the standard visibility rules.
-     *
-     * @param className
-     * @return
-     * @throws ClassNotFoundException
-     */
-    Class findClass( String className )
-        throws ClassNotFoundException;
+    ClassLoader classLoader();
 }

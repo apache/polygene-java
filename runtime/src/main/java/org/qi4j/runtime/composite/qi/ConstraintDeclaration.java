@@ -48,9 +48,9 @@ public final class ConstraintDeclaration
         return declaredIn;
     }
 
-    public boolean appliesTo( Class annotationType, Class valueType )
+    public boolean appliesTo( Class annotationType, Type valueType )
     {
-        return constraintAnnotationType.equals( annotationType ) && constraintValueType.isAssignableFrom( valueType );
+        return constraintAnnotationType.equals( annotationType ) && constraintValueType.isAssignableFrom( (Class<?>) valueType );
 
     }
 }

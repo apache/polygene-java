@@ -15,15 +15,12 @@
 package org.qi4j.bootstrap;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.qi4j.composite.Composite;
-import org.qi4j.runtime.composite.CompositeModelFactory;
-import org.qi4j.spi.composite.CompositeModel;
-import org.qi4j.spi.structure.CompositeDescriptor;
+import org.qi4j.runtime.composite.qi.CompositeModel;
+import org.qi4j.runtime.structure.qi.ModuleModel;
 import org.qi4j.structure.Visibility;
+import org.qi4j.util.MetaInfo;
 
 /**
  * Declaration of a Composite. Created by {@link org.qi4j.bootstrap.ModuleAssembly#addComposites(Class[])}.
@@ -31,7 +28,7 @@ import org.qi4j.structure.Visibility;
 public final class CompositeDeclaration
 {
     private Class<? extends Composite>[] compositeTypes;
-    private Map<Class, Serializable> compositeInfos = new HashMap<Class, Serializable>();
+    private MetaInfo metaInfo = new MetaInfo();
     private Visibility visibility = Visibility.module;
 
     public CompositeDeclaration( Class<? extends Composite>... compositeTypes )
@@ -39,9 +36,9 @@ public final class CompositeDeclaration
         this.compositeTypes = compositeTypes;
     }
 
-    public <T extends Serializable> CompositeDeclaration setCompositeInfo( Class<T> infoType, T info )
+    public <T extends Serializable> CompositeDeclaration setMetaInfo( Serializable info )
     {
-        compositeInfos.put( infoType, info );
+        metaInfo.set( info );
         return this;
     }
 
@@ -51,15 +48,15 @@ public final class CompositeDeclaration
         return this;
     }
 
-    List<CompositeDescriptor> getCompositeDescriptors( CompositeModelFactory compositeModelFactory )
+    void addComposites( ModuleModel moduleModel, List<CompositeModel> composites )
     {
-        List<CompositeDescriptor> compositeDescriptors = new ArrayList<CompositeDescriptor>();
         for( Class<? extends Composite> compositeType : compositeTypes )
         {
-            CompositeModel compositeModel = compositeModelFactory.newCompositeModel( compositeType );
-            CompositeDescriptor compositeDescriptor = new CompositeDescriptor( compositeModel, compositeInfos, visibility );
-            compositeDescriptors.add( compositeDescriptor );
+            CompositeModel compositeModel = CompositeModel.newModel( compositeType,
+                                                                     visibility,
+                                                                     new MetaInfo( metaInfo ),
+                                                                     moduleModel );
+            composites.add( compositeModel );
         }
-        return compositeDescriptors;
     }
 }

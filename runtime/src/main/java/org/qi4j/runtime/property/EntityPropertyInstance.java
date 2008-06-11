@@ -44,19 +44,6 @@ public class EntityPropertyInstance<T> extends PropertyInstance<T>
     }
 
     /**
-     * Construct an instance of {@code PropertyInstance} with the specified arguments.
-     *
-     * @param aPropertyInfo The property info. This argument must not be {@code null}.
-     * @throws IllegalArgumentException Thrown if the specified {@code aPropertyInfo} is {@code null}.
-     * @since 0.1.0
-     */
-    public EntityPropertyInstance( PropertyInfo aPropertyInfo )
-        throws IllegalArgumentException
-    {
-        super( aPropertyInfo );
-    }
-
-    /**
      * Returns this property value.
      *
      * @return This property value.

@@ -14,20 +14,32 @@
 
 package org.qi4j.runtime.structure.qi;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.List;
+import org.qi4j.runtime.Qi4jRuntime;
+import org.qi4j.structure.Application;
+import org.qi4j.structure.Module;
 
 /**
  * TODO
  */
 public class ApplicationInstance
+    implements Application
 {
     private ApplicationModel model;
+    private Qi4jRuntime runtime;
     private List<LayerInstance> layerInstances;
+    private Activator layerActivator;
+    private String uri;
 
-    public ApplicationInstance( ApplicationModel model, List<LayerInstance> layerInstances )
+    public ApplicationInstance( ApplicationModel model, Qi4jRuntime runtime, List<LayerInstance> layerInstances )
     {
         this.model = model;
+        this.runtime = runtime;
         this.layerInstances = layerInstances;
+        layerActivator = new Activator();
+        uri = createApplicationUri();
     }
 
     public ApplicationModel model()
@@ -35,8 +47,66 @@ public class ApplicationInstance
         return model;
     }
 
+    public Qi4jRuntime runtime()
+    {
+        return runtime;
+    }
+
+    public String toURI()
+    {
+        return uri;
+    }
+
     public List<LayerInstance> layers()
     {
         return layerInstances;
     }
+
+    public Module findModule( String layerName, String moduleName )
+    {
+        for( LayerInstance layerInstance : layerInstances )
+        {
+            if( layerInstance.model().name().equals( layerName ) )
+            {
+                return layerInstance.findModule( moduleName );
+            }
+        }
+
+        return null;
+    }
+
+    public void activate() throws Exception
+    {
+        layerActivator.activate( layerInstances );
+    }
+
+    public void passivate() throws Exception
+    {
+        layerActivator.passivate();
+    }
+
+    private String createApplicationUri()
+    {
+        String hostname;
+        try
+        {
+            hostname = InetAddress.getLocalHost().getHostName();
+        }
+        catch( UnknownHostException e )
+        {
+            // Can not happen ?
+            hostname = "localhost";
+        }
+        String jvminstance = System.getProperty( "qi4j.jvm.name" );
+        if( jvminstance != null )
+        {
+            jvminstance = ":" + jvminstance;
+        }
+        else
+        {
+            jvminstance = "";
+        }
+        return "urn:qi4j:instance:" + hostname + jvminstance + ":" + model.name();
+    }
+
 }

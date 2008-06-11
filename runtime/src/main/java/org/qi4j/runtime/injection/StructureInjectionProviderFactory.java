@@ -20,81 +20,66 @@ package org.qi4j.runtime.injection;
 import java.lang.reflect.Type;
 import org.qi4j.Qi4j;
 import org.qi4j.composite.CompositeBuilderFactory;
-import org.qi4j.composite.ObjectBuilderFactory;
 import org.qi4j.entity.UnitOfWorkFactory;
+import org.qi4j.object.ObjectBuilderFactory;
 import org.qi4j.runtime.Qi4jRuntime;
+import org.qi4j.runtime.composite.qi.DependencyModel;
+import org.qi4j.runtime.composite.qi.InjectionProvider;
+import org.qi4j.runtime.composite.qi.InjectionProviderFactory;
+import org.qi4j.runtime.composite.qi.Resolution;
 import org.qi4j.service.ServiceFinder;
 import org.qi4j.spi.Qi4jSPI;
-import org.qi4j.spi.injection.BindingContext;
-import org.qi4j.spi.injection.InjectionContext;
-import org.qi4j.spi.injection.InjectionProvider;
-import org.qi4j.spi.injection.InjectionProviderFactory;
-import org.qi4j.spi.injection.InjectionResolution;
-import org.qi4j.spi.injection.InvalidInjectionException;
-import org.qi4j.spi.injection.StructureContext;
-import org.qi4j.spi.structure.ModuleBinding;
 import org.qi4j.structure.Module;
 
 public final class StructureInjectionProviderFactory
     implements InjectionProviderFactory
 {
-    private Qi4jRuntime runtime;
-
-    public StructureInjectionProviderFactory( Qi4jRuntime runtime )
+    public InjectionProvider newInjectionProvider( Resolution resolution, DependencyModel dependencyModel ) throws InvalidInjectionException
     {
-        this.runtime = runtime;
+        return new StructureInjectionProvider( resolution, dependencyModel );
     }
 
-    public InjectionProvider newInjectionProvider( BindingContext bindingContext ) throws InvalidInjectionException
-    {
-        InjectionResolution resolution = bindingContext.getInjectionResolution();
-        return new StructureInjectionProvider( resolution );
-    }
-
-    private class StructureInjectionProvider
+    private static class StructureInjectionProvider
         implements InjectionProvider
     {
-        InjectionResolution resolution;
+        Resolution resolution;
+        private DependencyModel dependencyModel;
 
-        public StructureInjectionProvider( InjectionResolution resolution )
+        private StructureInjectionProvider( Resolution resolution, DependencyModel dependencyModel )
         {
             this.resolution = resolution;
+            this.dependencyModel = dependencyModel;
         }
 
-        public Object provideInjection( InjectionContext context )
+        public Object provideInjection( org.qi4j.runtime.composite.qi.InjectionContext context ) throws InjectionProviderException
         {
-            Type type = resolution.getInjectionModel().getInjectionType();
-
-            StructureContext structureContext = context.getStructureContext();
+            Type type = dependencyModel.injectionType();
 
             if( type.equals( CompositeBuilderFactory.class ) )
             {
-                return structureContext.getCompositeBuilderFactory();
+                return context.moduleInstance().compositeBuilderFactory();
             }
             else if( type.equals( ObjectBuilderFactory.class ) )
             {
-                return structureContext.getObjectBuilderFactory();
+                return context.moduleInstance().objectBuilderFactory();
             }
             else if( type.equals( UnitOfWorkFactory.class ) )
             {
-                return structureContext.getUnitOfWorkFactory();
+                return context.moduleInstance().unitOfWorkFactory();
             }
             else if( type.equals( ServiceFinder.class ) )
             {
-                return structureContext.getServiceLocator();
+                return context.moduleInstance().serviceFinder();
             }
             else if( type.equals( Module.class ) )
             {
-                return context.getModule();
-            }
-            else if( type.equals( ModuleBinding.class ) )
-            {
-                return context.getModuleBinding();
+                return context.moduleInstance();
             }
             else if( type.equals( Qi4j.class ) || type.equals( Qi4jSPI.class ) || type.equals( Qi4jRuntime.class ) )
             {
-                return runtime;
+                return context.moduleInstance().layerInstance().applicationInstance().runtime();
             }
+
             return null;
         }
     }

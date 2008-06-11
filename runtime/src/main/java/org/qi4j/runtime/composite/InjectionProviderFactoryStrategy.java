@@ -20,6 +20,8 @@ import java.util.Map;
 import org.qi4j.composite.internal.ConcernFor;
 import org.qi4j.composite.internal.SideEffectFor;
 import org.qi4j.composite.scope.Invocation;
+import org.qi4j.composite.scope.Service;
+import org.qi4j.composite.scope.Structure;
 import org.qi4j.composite.scope.This;
 import org.qi4j.composite.scope.Uses;
 import org.qi4j.runtime.composite.qi.DependencyModel;
@@ -27,12 +29,15 @@ import org.qi4j.runtime.composite.qi.InjectionProvider;
 import org.qi4j.runtime.composite.qi.InjectionProviderFactory;
 import org.qi4j.runtime.composite.qi.Resolution;
 import org.qi4j.runtime.injection.AssociationInjectionProviderFactory;
+import org.qi4j.runtime.injection.CachingInjectionProviderFactoryDecorator;
+import org.qi4j.runtime.injection.InvalidInjectionException;
 import org.qi4j.runtime.injection.InvocationInjectionProviderFactory;
 import org.qi4j.runtime.injection.ModifiesInjectionProviderFactory;
 import org.qi4j.runtime.injection.PropertyInjectionProviderFactory;
+import org.qi4j.runtime.injection.ServiceInjectionProviderFactory;
+import org.qi4j.runtime.injection.StructureInjectionProviderFactory;
 import org.qi4j.runtime.injection.ThisInjectionProviderFactory;
 import org.qi4j.runtime.injection.UsesInjectionProviderFactory;
-import org.qi4j.spi.injection.InvalidInjectionException;
 
 /**
  * TODO
@@ -56,8 +61,8 @@ public final class InjectionProviderFactoryStrategy
         AssociationInjectionProviderFactory associationInjectionProviderFactory = new AssociationInjectionProviderFactory();
 //        providerFactories.put( AssociationField.class, associationInjectionProviderFactory );
 //        providerFactories.put( AssociationParameter.class, associationInjectionProviderFactory );
-//        providerFactories.put( Structure.class, new StructureInjectionProviderFactory( this ) );
-//        providerFactories.put( Service.class, new ServiceInjectionProviderFactory() );
+        providerFactories.put( Structure.class, new CachingInjectionProviderFactoryDecorator( new StructureInjectionProviderFactory() ) );
+        providerFactories.put( Service.class, new CachingInjectionProviderFactoryDecorator( new ServiceInjectionProviderFactory() ) );
     }
 
     public InjectionProvider newInjectionProvider( Resolution resolution, DependencyModel dependencyModel ) throws InvalidInjectionException

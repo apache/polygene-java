@@ -24,9 +24,9 @@ public class EntityCompositeNotFoundException extends UnitOfWorkException
     private static final long serialVersionUID = 4842934969838228341L;
 
     private String identity;
-    private Class<?> compositeType;
+    private String compositeType;
 
-    public EntityCompositeNotFoundException( String identity, Class<?> compositeType )
+    public EntityCompositeNotFoundException( String identity, String compositeType )
     {
         this.identity = identity;
         this.compositeType = compositeType;
@@ -37,13 +37,13 @@ public class EntityCompositeNotFoundException extends UnitOfWorkException
         return identity;
     }
 
-    public Class<?> compositeType()
+    public String compositeType()
     {
         return compositeType;
     }
 
     @Override public String getMessage()
     {
-        return "Could not find entity (" + identity() + " of type " + compositeType.getName() + ")";
+        return "Could not find entity (" + identity() + " of type " + compositeType + ")";
     }
 }

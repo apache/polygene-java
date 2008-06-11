@@ -23,12 +23,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
-import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.CompositeBuilderFactory;
-import org.qi4j.composite.ObjectBuilderFactory;
+import org.qi4j.entity.EntityBuilder;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.EntityCompositeNotFoundException;
-import org.qi4j.entity.EntityNotRegisteredException;
 import org.qi4j.entity.Identity;
 import org.qi4j.entity.IdentityGenerator;
 import org.qi4j.entity.LoadingPolicy;
@@ -38,14 +36,12 @@ import org.qi4j.entity.UnitOfWorkException;
 import org.qi4j.entity.UnitOfWorkSynchronization;
 import static org.qi4j.entity.UnitOfWorkSynchronization.UnitOfWorkStatus.COMPLETED;
 import static org.qi4j.entity.UnitOfWorkSynchronization.UnitOfWorkStatus.DISCARDED;
+import org.qi4j.object.ObjectBuilderFactory;
 import org.qi4j.query.Query;
 import org.qi4j.query.QueryBuilderFactory;
-import org.qi4j.runtime.composite.CompositeContext;
-import org.qi4j.runtime.composite.EntityCompositeInstance;
 import org.qi4j.runtime.query.QueryBuilderFactoryImpl;
-import org.qi4j.runtime.structure.ModuleInstance;
-import org.qi4j.spi.composite.CompositeResolution;
-import org.qi4j.spi.entity.EntityNotFoundException;
+import org.qi4j.runtime.structure.qi.ModuleInstance;
+import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStateInstance;
 import org.qi4j.spi.entity.EntityStatus;
@@ -53,14 +49,12 @@ import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.StateCommitter;
-import org.qi4j.spi.structure.CompositeDescriptor;
 import org.qi4j.structure.Module;
-import org.qi4j.structure.Visibility;
 
 public final class UnitOfWorkInstance
     implements UnitOfWork
 {
-    static ThreadLocal<Stack<UnitOfWork>> current;
+    public static ThreadLocal<Stack<UnitOfWork>> current;
 
     private HashMap<Class<? extends EntityComposite>, Map<String, EntityComposite>> cache;
 
@@ -111,29 +105,17 @@ public final class UnitOfWorkInstance
         return newEntityBuilder( identity, compositeType ).newInstance();
     }
 
-    public <T> CompositeBuilder<T> newEntityBuilder( Class<T> mixinType )
+    public <T> EntityBuilder<T> newEntityBuilder( Class<T> mixinType )
     {
         return newEntityBuilder( null, mixinType );
     }
 
-    public <T> CompositeBuilder<T> newEntityBuilder( String identity, Class<T> mixinType )
+    public <T> EntityBuilder<T> newEntityBuilder( String identity, Class<T> mixinType )
     {
         checkOpen();
 
-        // Translate mixin type to actual Composite type
-        Class<? extends T> compositeType = (Class<? extends T>) moduleInstance.findCompositeType( mixinType );
-
-        if( !EntityComposite.class.isAssignableFrom( compositeType ) )
-        {
-            throw new UnitOfWorkException( "Trying to create builder for non-Entity type " + compositeType.getName() );
-        }
-
-        EntityStore store = stateServices.getEntityStore( (Class<? extends EntityComposite>) compositeType );
-
-//            if (store == null)
-//                throw new UnitOfWorkException("No store for composite type "+compositeType.getName());
-
-        CompositeBuilder<T> builder = (CompositeBuilder<T>) new EntityCompositeBuilderFactory( moduleInstance, this, store ).newCompositeBuilder( compositeType );
+        ModuleInstance realModuleInstance = moduleInstance.findModuleForEntity( mixinType );
+        EntityBuilder<T> builder = realModuleInstance.entities().newEntityBuilder( mixinType, this );
         if( identity != null )
         {
             builder.stateFor( Identity.class ).identity().set( identity );
@@ -147,8 +129,8 @@ public final class UnitOfWorkInstance
 
         EntityComposite entityComposite = (EntityComposite) entity;
 
-        EntityCompositeInstance compositeInstance = EntityCompositeInstance.getEntityCompositeInstance( entityComposite );
-        compositeInstance.loadState().remove();
+        EntityInstance compositeInstance = EntityInstance.getEntityInstance( entityComposite );
+        compositeInstance.remove();
     }
 
     public <T> T find( String identity, Class<T> mixinType )
@@ -156,7 +138,7 @@ public final class UnitOfWorkInstance
     {
         checkOpen();
 
-        Class<? extends EntityComposite> compositeType = (Class<? extends EntityComposite>) moduleInstance.findCompositeType( mixinType );
+        EntityModel entityModel = moduleInstance.findModuleForEntity( mixinType ).entities().model().getEntityModelFor( mixinType );
 
         // TODO: Argument check.
 
@@ -165,64 +147,24 @@ public final class UnitOfWorkInstance
             EntityComposite entity = getCachedEntity( identity, mixinType );
             if( entity == null )
             {   // Not yet in cache
-
-                // Get the state from the store
-                EntityStore store = stateServices.getEntityStore( compositeType );
-                if( store == null )
-                {
-                    throw new UnitOfWorkException( "No store found for type " + compositeType );
-                }
-
-                ModuleInstance.ModuleDelegate module = (ModuleInstance.ModuleDelegate) moduleInstance.module().findModuleForComposite( compositeType );
-
-                if( module == null )
-                {
-                    throw new EntityNotRegisteredException( compositeType, moduleInstance.module() );
-                }
-
-                CompositeContext compositeContext = module.getModuleInstance().moduleContext().getCompositeContext( compositeType );
-                if( compositeContext == null )
-                {
-                    throw new EntityNotRegisteredException( compositeType, moduleInstance.module() );
-                }
-
-                EntityState state;
-                try
-                {
-                    CompositeResolution compositeResolution = compositeContext.getCompositeResolution();
-                    CompositeDescriptor descriptor = compositeResolution.getCompositeDescriptor();
-                    QualifiedIdentity qualifiedIdentity = new QualifiedIdentity( identity, compositeType.getName() );
-                    state = store.getEntityState( descriptor, qualifiedIdentity );
-                }
-                catch( EntityNotFoundException e )
-                {
-                    throw new EntityCompositeNotFoundException( identity, compositeType );
-                }
-
-                // Create entity instance
-                entity = (EntityComposite) compositeContext.newEntityCompositeInstance( this, store, identity ).getProxy();
-                EntityCompositeInstance compositeInstance = EntityCompositeInstance.getEntityCompositeInstance( entity );
-                compositeContext.newEntityMixins( this, compositeInstance, state );
-                Map<String, EntityComposite> entityCache = getEntityCache( compositeType );
-                entityCache.put( identity, entity );
+                EntityInstance entityInstance = moduleInstance.entities().loadEntityInstance( identity, entityModel, this );
+                Map<String, EntityComposite> entityCache = getEntityCache( entityModel.type() );
+                entityCache.put( identity, entityInstance.proxy() );
             }
             else
             {
-                EntityCompositeInstance entityCompositeInstance = EntityCompositeInstance.getEntityCompositeInstance( entity );
-                if( entity.isReference() )
+                EntityInstance entityInstance = EntityInstance.getEntityInstance( entity );
+                if( entityInstance.isReference() )
                 {
                     // Check that state exists
-                    EntityStore store = stateServices.getEntityStore( compositeType );
-                    EntityState state = store.getEntityState( entityCompositeInstance.getContext().getCompositeResolution().getCompositeDescriptor(), new QualifiedIdentity( identity, compositeType.getName() ) );
-                    entityCompositeInstance.setState( state );
+                    entityInstance.load();
                 }
                 else
                 {
                     // Check if it has been removed
-                    EntityState entityState = entityCompositeInstance.getState();
-                    if( entityState.getStatus() == EntityStatus.REMOVED )
+                    if( entityInstance.status() == EntityStatus.REMOVED )
                     {
-                        throw new EntityCompositeNotFoundException( identity, compositeType );
+                        throw new EntityCompositeNotFoundException( identity, entityModel.type().getName() );
                     }
                 }
             }
@@ -240,34 +182,25 @@ public final class UnitOfWorkInstance
     {
         checkOpen();
 
-        Class<? extends EntityComposite> compositeType = (Class<? extends EntityComposite>) moduleInstance.findCompositeType( mixinType );
+        ModuleInstance moduleInstance = this.moduleInstance.findModuleForEntity( mixinType );
+        EntityModel entityModel = moduleInstance.entities().model().getEntityModelFor( mixinType );
 
-        EntityComposite entity = getCachedEntity( identity, compositeType );
+        EntityComposite entity = getCachedEntity( identity, entityModel.type() );
         if( entity == null )
         {
-            // Create entity instance
-            EntityStore store = stateServices.getEntityStore( compositeType );
-
-            ModuleInstance.ModuleDelegate module = (ModuleInstance.ModuleDelegate) moduleInstance.module().findModuleForComposite( compositeType );
-
-            if( module == null )
-            {
-                throw new EntityNotRegisteredException( compositeType, moduleInstance.module() );
-            }
-
-            CompositeContext compositeContext = module.getModuleInstance().moduleContext().getCompositeContext( compositeType );
-            entity = (EntityComposite) compositeContext.newEntityCompositeInstance( this, store, identity ).getProxy();
-            Map<String, EntityComposite> entityCache = getEntityCache( compositeType );
+            // Create entity moduleInstance
+            EntityInstance compositeInstance = this.moduleInstance.entities().getEntityInstance( identity, entityModel, this );
+            entity = compositeInstance.proxy();
+            Map<String, EntityComposite> entityCache = getEntityCache( entityModel.type() );
             entityCache.put( identity, entity );
         }
         else
         {
             // Check if it has been removed
-            EntityCompositeInstance handler = EntityCompositeInstance.getEntityCompositeInstance( entity );
-            EntityState entityState = handler.getState();
-            if( entityState != null && entityState.getStatus() == EntityStatus.REMOVED )
+            EntityInstance entityInstance = EntityInstance.getEntityInstance( entity );
+            if( entityInstance.status() == EntityStatus.REMOVED )
             {
-                throw new EntityCompositeNotFoundException( identity, compositeType );
+                throw new EntityCompositeNotFoundException( identity, entityModel.type().getName() );
             }
         }
 
@@ -278,9 +211,9 @@ public final class UnitOfWorkInstance
         throws EntityCompositeNotFoundException
     {
         EntityComposite entityComposite = (EntityComposite) entity;
-        EntityCompositeInstance compositeInstance = EntityCompositeInstance.getEntityCompositeInstance( entityComposite );
-        String id = compositeInstance.getIdentity();
-        Class<? extends EntityComposite> type = (Class<? extends EntityComposite>) compositeInstance.getContext().getCompositeModel().getCompositeType();
+        EntityInstance compositeInstance = EntityInstance.getEntityInstance( entityComposite );
+        String id = compositeInstance.identity().identity();
+        Class<? extends EntityComposite> type = compositeInstance.type();
         return (T) getReference( id, type );
     }
 
@@ -290,13 +223,13 @@ public final class UnitOfWorkInstance
         checkOpen();
 
         EntityComposite entityComposite = (EntityComposite) entity;
-        EntityCompositeInstance entityInstance = EntityCompositeInstance.getEntityCompositeInstance( entityComposite );
+        EntityInstance entityInstance = EntityInstance.getEntityInstance( entityComposite );
         if( !entityInstance.isReference() )
         {
-            EntityStatus entityStatus = entityInstance.getState().getStatus();
+            EntityStatus entityStatus = entityInstance.status();
             if( entityStatus == EntityStatus.REMOVED )
             {
-                throw new EntityCompositeNotFoundException( entityInstance.getIdentity(), entityInstance.getContext().getCompositeModel().getCompositeType() );
+                throw new EntityCompositeNotFoundException( entityInstance.identity().identity(), entityInstance.type().getName() );
             }
             else if( entityStatus == EntityStatus.NEW )
             {
@@ -307,10 +240,7 @@ public final class UnitOfWorkInstance
             try
             {
 
-                QualifiedIdentity identity = entityInstance.getState().getIdentity();
-                EntityState state = entityInstance.getStore().getEntityState( entityInstance.getContext().getCompositeResolution().getCompositeDescriptor(), identity );
-                entityInstance.refresh( state );
-                entityInstance.setMixins( null );
+                entityInstance.refresh();
             }
             catch( EntityStoreException e )
             {
@@ -349,12 +279,12 @@ public final class UnitOfWorkInstance
 
     public CompositeBuilderFactory compositeBuilderFactory()
     {
-        return moduleInstance.structureContext().getCompositeBuilderFactory();
+        return moduleInstance.compositeBuilderFactory();
     }
 
     public ObjectBuilderFactory objectBuilderFactory()
     {
-        return moduleInstance.structureContext().getObjectBuilderFactory();
+        return moduleInstance.objectBuilderFactory();
     }
 
     public LoadingPolicy loadingPolicy()
@@ -438,18 +368,18 @@ public final class UnitOfWorkInstance
             Map<String, EntityComposite> entities = entry.getValue();
             for( EntityComposite entityInstance : entities.values() )
             {
-                EntityState state = EntityCompositeInstance.getEntityCompositeInstance( entityInstance ).getState();
-                if( state.getStatus() == EntityStatus.NEW )
+                EntityInstance instance = EntityInstance.getEntityInstance( entityInstance );
+                if( instance.status() == EntityStatus.LOADED )
                 {
-                    storeCompletionList.getNewState().add( state );
+                    storeCompletionList.getUpdatedState().add( instance.state() );
                 }
-                else if( state.getStatus() == EntityStatus.LOADED )
+                else if( instance.status() == EntityStatus.NEW )
                 {
-                    storeCompletionList.getUpdatedState().add( state );
+                    storeCompletionList.getNewState().add( instance.state() );
                 }
-                if( state.getStatus() == EntityStatus.REMOVED )
+                if( instance.status() == EntityStatus.REMOVED )
                 {
-                    storeCompletionList.getRemovedState().add( state.getIdentity() );
+                    storeCompletionList.getRemovedState().add( instance.identity() );
                 }
             }
         }
@@ -463,7 +393,7 @@ public final class UnitOfWorkInstance
 
             try
             {
-                committers.add( entityStore.prepare( completion.getNewState(), completion.getUpdatedState(), completion.getRemovedState(), moduleInstance.module() ) );
+                committers.add( entityStore.prepare( completion.getNewState(), completion.getUpdatedState(), completion.getRemovedState(), moduleInstance ) );
             }
             catch( EntityStoreException e )
             {
@@ -515,7 +445,7 @@ public final class UnitOfWorkInstance
         return new UnitOfWorkInstance( moduleInstance, new UnitOfWorkStateServices() );
     }
 
-    public ModuleInstance getModuleInstance()
+    public ModuleInstance module()
     {
         checkOpen();
 
@@ -577,18 +507,18 @@ public final class UnitOfWorkInstance
 
     private EntityState getCachedState( QualifiedIdentity entityId )
     {
-        String type = entityId.getCompositeType();
-        Class compositeType = moduleInstance.moduleContext().getModuleBinding().findClass( type, Visibility.module );
+        String type = entityId.type();
+        Class compositeType = moduleInstance.findClassForName( type );
         Map<String, EntityComposite> entityCache = cache.get( compositeType );
         if( entityCache == null )
         {
             return null;
         }
 
-        EntityComposite composite = entityCache.get( entityId.getIdentity() );
+        EntityComposite composite = entityCache.get( entityId.identity() );
         if( composite != null )
         {
-            return EntityCompositeInstance.getEntityCompositeInstance( composite ).getState();
+            return EntityInstance.getEntityInstance( composite ).state();
         }
         else
         {
@@ -623,22 +553,33 @@ public final class UnitOfWorkInstance
     private class UnitOfWorkStore
         implements EntityStore
     {
+        Map<String, Class<? extends EntityComposite>> entityTypes = new HashMap<String, Class<? extends EntityComposite>>();
+
         public EntityState newEntityState( CompositeDescriptor compositeDescriptor, QualifiedIdentity identity ) throws EntityStoreException
         {
+            if( entityTypes.get( identity.type() ) == null )
+            {
+                entityTypes.put( identity.type(), (Class<? extends EntityComposite>) compositeDescriptor.type() );
+            }
+
             UnitOfWorkEntityState entityState = new UnitOfWorkEntityState( 0, identity, EntityStatus.NEW, new HashMap<String, Object>(), new HashMap<String, QualifiedIdentity>(), new HashMap<String, Collection<QualifiedIdentity>>(), null );
             return entityState;
         }
 
         public EntityState getEntityState( CompositeDescriptor compositeDescriptor, QualifiedIdentity identity ) throws EntityStoreException
         {
+            if( entityTypes.get( identity.type() ) == null )
+            {
+                entityTypes.put( identity.type(), (Class<? extends EntityComposite>) compositeDescriptor.type() );
+            }
+
             EntityState parentState = getCachedState( identity );
             if( parentState == null )
             {
                 // Force load into parent
-                Class<? extends EntityComposite> entityType = (Class<? extends EntityComposite>) moduleInstance.moduleContext().getModuleBinding().findClass( identity.getCompositeType(), Visibility.module );
-
-                parentState = EntityCompositeInstance.getEntityCompositeInstance( find( identity.getIdentity(), entityType ) ).getState();
+                parentState = EntityInstance.getEntityInstance( find( identity.identity(), compositeDescriptor.type() ) ).state();
             }
+
             UnitOfWorkEntityState unitOfWorkEntityState = new UnitOfWorkEntityState( parentState.getEntityVersion(),
                                                                                      identity,
                                                                                      EntityStatus.LOADED,
@@ -655,9 +596,10 @@ public final class UnitOfWorkInstance
             for( EntityState newState : newStates )
             {
                 UnitOfWorkEntityState uowState = (UnitOfWorkEntityState) newState;
-                EntityComposite entityInstance = newEntityBuilder( uowState.getIdentity().getIdentity(), (Class<? extends EntityComposite>) moduleInstance.moduleContext().getModuleBinding().findClass( uowState.getIdentity().getCompositeType(), Visibility.module ) ).newInstance();
+                Class<? extends EntityComposite> type = entityTypes.get( uowState.getIdentity().type() );
+                EntityComposite entityInstance = newEntityBuilder( uowState.getIdentity().identity(), type ).newInstance();
 
-                EntityState parentState = EntityCompositeInstance.getEntityCompositeInstance( entityInstance ).getState();
+                EntityState parentState = EntityInstance.getEntityInstance( entityInstance ).state();
                 Iterable<String> propertyNames = uowState.getPropertyNames();
                 for( String propertyName : propertyNames )
                 {
@@ -710,9 +652,9 @@ public final class UnitOfWorkInstance
                         collection.addAll( newCollection );
                     }
 
-                    Class<? extends EntityComposite> entityType = (Class<? extends EntityComposite>) moduleInstance.moduleContext().getModuleBinding().findClass( uowState.getIdentity().getCompositeType(), Visibility.module );
-                    EntityComposite instance = find( uowState.getIdentity().getIdentity(), entityType );
-                    EntityCompositeInstance.getEntityCompositeInstance( instance ).refresh( parentState );
+                    Class<? extends EntityComposite> type = entityTypes.get( uowState.getIdentity().type() );
+                    EntityComposite instance = find( uowState.getIdentity().identity(), type );
+                    EntityInstance.getEntityInstance( instance ).refresh( parentState );
                 }
             }
 
@@ -750,7 +692,13 @@ public final class UnitOfWorkInstance
         private EntityState parentState;
         private long entityVersion;
 
-        private UnitOfWorkEntityState( long entityVersion, QualifiedIdentity identity, EntityStatus status, Map<String, Object> properties, Map<String, QualifiedIdentity> associations, Map<String, Collection<QualifiedIdentity>> manyAssociations, EntityState parentState )
+        private UnitOfWorkEntityState( long entityVersion,
+                                       QualifiedIdentity identity,
+                                       EntityStatus status,
+                                       Map<String, Object> properties,
+                                       Map<String, QualifiedIdentity> associations,
+                                       Map<String, Collection<QualifiedIdentity>> manyAssociations,
+                                       EntityState parentState )
         {
             super( entityVersion, identity, status, properties, associations, manyAssociations );
             this.parentState = parentState;

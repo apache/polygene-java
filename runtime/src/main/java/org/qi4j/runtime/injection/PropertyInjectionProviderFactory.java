@@ -1,19 +1,12 @@
 package org.qi4j.runtime.injection;
 
-import java.lang.reflect.Method;
 import org.qi4j.composite.State;
 import org.qi4j.property.Property;
-import org.qi4j.spi.composite.PropertyResolution;
-import org.qi4j.spi.composite.StateResolution;
-import org.qi4j.spi.injection.BindingContext;
-import org.qi4j.spi.injection.InjectionContext;
-import org.qi4j.spi.injection.InjectionProvider;
-import org.qi4j.spi.injection.InjectionProviderException;
-import org.qi4j.spi.injection.InjectionProviderFactory;
-import org.qi4j.spi.injection.InjectionResolution;
-import org.qi4j.spi.injection.InvalidInjectionException;
-import org.qi4j.spi.injection.PropertyInjectionModel;
-import org.qi4j.spi.injection.StateInjectionContext;
+import org.qi4j.runtime.composite.qi.DependencyModel;
+import org.qi4j.runtime.composite.qi.InjectionProvider;
+import org.qi4j.runtime.composite.qi.InjectionProviderFactory;
+import org.qi4j.runtime.composite.qi.Resolution;
+import org.qi4j.spi.structure.PropertyDescriptor;
 
 /**
  * TODO
@@ -21,108 +14,58 @@ import org.qi4j.spi.injection.StateInjectionContext;
 public final class PropertyInjectionProviderFactory
     implements InjectionProviderFactory
 {
-    public InjectionProvider newInjectionProvider( BindingContext bindingContext ) throws InvalidInjectionException
+    public InjectionProvider newInjectionProvider( Resolution resolution, DependencyModel dependencyModel ) throws InvalidInjectionException
     {
-        InjectionResolution resolution = bindingContext.getInjectionResolution();
-        if( resolution.getInjectionModel().getRawInjectionType().equals( State.class ) )
+        if( dependencyModel.rawInjectionType().equals( State.class ) )
         {
             // @PropertyField State properties;
             return new StateInjectionProvider();
         }
-        else if( Property.class.isAssignableFrom( resolution.getInjectionModel().getRawInjectionType() ) )
+        else if( Property.class.isAssignableFrom( dependencyModel.rawInjectionType() ) )
         {
             // @PropertyField Property<String> name;
-            StateResolution injectable = (StateResolution) bindingContext.getAbstractResolution();
-            PropertyInjectionModel pim = (PropertyInjectionModel) resolution.getInjectionModel();
-            PropertyResolution propertyResolution = injectable.getPropertyResolution( pim.getName() );
+            PropertyDescriptor propertyDescriptor = resolution.composite().state().getPropertyByName( resolution.field().getName() );
 
             // No such property found
-            if( propertyResolution == null )
+            if( propertyDescriptor == null )
             {
                 return null;
             }
 
-            return new PropertyInjectionProvider( propertyResolution.getPropertyModel().getAccessor() );
-        }
-        else
-        {
-            StateResolution injectable = (StateResolution) bindingContext.getAbstractResolution();
-            PropertyInjectionModel pim = (PropertyInjectionModel) resolution.getInjectionModel();
-            PropertyResolution propertyResolution = injectable.getPropertyResolution( pim.getName() );
-
-            return new PropertyValueInjectionProvider( propertyResolution.getPropertyModel().getAccessor() );
-        }
-    }
-
-    private class PropertyValueInjectionProvider implements InjectionProvider
-    {
-        private Method accessor;
-
-        public PropertyValueInjectionProvider( Method accessor )
-        {
-            this.accessor = accessor;
+            return new PropertyInjectionProvider( propertyDescriptor );
         }
 
-        public Object provideInjection( InjectionContext context )
-        {
-            if( context instanceof StateInjectionContext )
-            {
-                StateInjectionContext stateInjectionContext = (StateInjectionContext) context;
-                Property value = stateInjectionContext.getState().getProperty( accessor );
-                if( value != null )
-                {
-                    return value.get();
-                }
-                else
-                {
-                    throw new InjectionProviderException( "Non-optional property " + accessor.getName() + " had no value" );
-                }
-            }
-
-            return null;
-        }
+        throw new InjectionProviderException( "Injected value has invalid type" );
     }
 
     private class PropertyInjectionProvider implements InjectionProvider
     {
-        private Method accessor;
+        private PropertyDescriptor propertyDescriptor;
 
-        public PropertyInjectionProvider( Method accessor )
+        public PropertyInjectionProvider( PropertyDescriptor propertyDescriptor )
         {
-            this.accessor = accessor;
+            this.propertyDescriptor = propertyDescriptor;
         }
 
-        public Object provideInjection( InjectionContext context )
+        public Object provideInjection( org.qi4j.runtime.composite.qi.InjectionContext context ) throws InjectionProviderException
         {
-            if( context instanceof StateInjectionContext )
+            Property value = context.state().getProperty( propertyDescriptor.accessor() );
+            if( value != null )
             {
-                StateInjectionContext stateInjectionContext = (StateInjectionContext) context;
-                Property value = stateInjectionContext.getState().getProperty( accessor );
-                if( value != null )
-                {
-                    return value;
-                }
-                else
-                {
-                    throw new InjectionProviderException( "Non-optional property " + accessor + " had no value" );
-                }
+                return value;
             }
-
-            return null;
+            else
+            {
+                throw new InjectionProviderException( "Non-optional property " + propertyDescriptor + " had no value" );
+            }
         }
     }
 
     private class StateInjectionProvider implements InjectionProvider
     {
-        public Object provideInjection( InjectionContext context )
+        public Object provideInjection( org.qi4j.runtime.composite.qi.InjectionContext context ) throws InjectionProviderException
         {
-            if( context instanceof StateInjectionContext )
-            {
-                StateInjectionContext stateInjectionContext = (StateInjectionContext) context;
-                return stateInjectionContext.getState();
-            }
-
-            return null;
+            return context.state();
         }
     }
 }

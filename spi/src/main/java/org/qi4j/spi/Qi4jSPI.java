@@ -16,7 +16,7 @@ package org.qi4j.spi;
 
 import org.qi4j.Qi4j;
 import org.qi4j.composite.Composite;
-import org.qi4j.spi.composite.CompositeBinding;
+import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.structure.Module;
 
 /**
@@ -26,7 +26,7 @@ import org.qi4j.structure.Module;
 public interface Qi4jSPI
     extends Qi4j
 {
-    CompositeBinding getCompositeBinding( Composite composite );
+    CompositeDescriptor getCompositeDescriptor( Composite composite );
 
-    CompositeBinding getCompositeBinding( Class<? extends Composite> compositeType, Module module );
+    CompositeDescriptor getCompositeDescriptor( Class<? extends Composite> compositeType, Module module );
 }

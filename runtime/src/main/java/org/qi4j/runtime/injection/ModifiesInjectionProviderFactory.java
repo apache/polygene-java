@@ -5,8 +5,6 @@ import org.qi4j.runtime.composite.qi.InjectionContext;
 import org.qi4j.runtime.composite.qi.InjectionProvider;
 import org.qi4j.runtime.composite.qi.InjectionProviderFactory;
 import org.qi4j.runtime.composite.qi.Resolution;
-import org.qi4j.spi.injection.InjectionProviderException;
-import org.qi4j.spi.injection.InvalidInjectionException;
 
 /**
  * TODO

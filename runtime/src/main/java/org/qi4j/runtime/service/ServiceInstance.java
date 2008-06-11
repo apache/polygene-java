@@ -15,7 +15,7 @@
 package org.qi4j.runtime.service;
 
 import org.qi4j.service.ServiceDescriptor;
-import org.qi4j.service.ServiceInstanceProvider;
+import org.qi4j.service.ServiceInstanceFactory;
 
 /**
  * TODO
@@ -23,16 +23,16 @@ import org.qi4j.service.ServiceInstanceProvider;
 public class ServiceInstance<T>
 {
     private T instance;
+    private ServiceInstanceFactory factory;
     private ServiceDescriptor serviceDescriptor;
-    private ServiceInstanceProvider serviceInstanceProvider;
 
     public ServiceInstance( T instance,
-                            ServiceInstanceProvider serviceInstanceProvider,
+                            ServiceInstanceFactory factory,
                             ServiceDescriptor serviceDescriptor )
     {
+        this.factory = factory;
         this.serviceDescriptor = serviceDescriptor;
         this.instance = instance;
-        this.serviceInstanceProvider = serviceInstanceProvider;
     }
 
     public T getInstance()
@@ -45,8 +45,8 @@ public class ServiceInstance<T>
         return serviceDescriptor;
     }
 
-    public ServiceInstanceProvider getServiceInstanceProvider()
+    public void release()
     {
-        return serviceInstanceProvider;
+        factory.releaseInstance( instance );
     }
 }

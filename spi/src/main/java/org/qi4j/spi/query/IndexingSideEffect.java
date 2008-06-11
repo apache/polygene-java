@@ -22,9 +22,8 @@ import org.qi4j.composite.scope.Service;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreException;
-import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.spi.structure.ModuleBinding;
+import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.structure.Module;
 
 /**

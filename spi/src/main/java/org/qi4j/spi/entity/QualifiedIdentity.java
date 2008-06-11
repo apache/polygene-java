@@ -49,12 +49,12 @@ public final class QualifiedIdentity
         this.compositeType = qualifiedIdentity.substring( separatorIndex + 1 );
     }
 
-    public String getIdentity()
+    public String identity()
     {
         return identity;
     }
 
-    public String getCompositeType()
+    public String type()
     {
         return compositeType;
     }

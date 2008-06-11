@@ -14,9 +14,8 @@
 
 package org.qi4j.service;
 
-import java.io.Serializable;
-import java.util.Map;
 import org.qi4j.structure.Visibility;
+import org.qi4j.util.MetaInfo;
 
 /**
  * {@code ServiceDescriptor} provides meta informations of a service.
@@ -26,36 +25,36 @@ import org.qi4j.structure.Visibility;
  */
 public final class ServiceDescriptor
 {
-    private Class serviceType;
-    private Class<? extends ServiceInstanceProvider> serviceProvider;
+    private Class<?> serviceType;
+    private Class<? extends ServiceInstanceFactory> serviceFactory;
     private String identity;
     private Visibility visibility;
     private boolean instantiateOnStartup;
-    private Map<Class, Serializable> serviceAttributes;
+    private MetaInfo metaInfo;
 
     public ServiceDescriptor( Class serviceType,
-                              Class<? extends ServiceInstanceProvider> serviceProvider,
+                              Class<? extends ServiceInstanceFactory> serviceFactory,
                               String identity,
                               Visibility visibility,
                               boolean instantiateOnStartup,
-                              Map<Class, Serializable> serviceAttributes )
+                              MetaInfo metaInfo )
     {
         this.serviceType = serviceType;
-        this.serviceProvider = serviceProvider;
+        this.serviceFactory = serviceFactory;
         this.identity = identity;
         this.visibility = visibility;
         this.instantiateOnStartup = instantiateOnStartup;
-        this.serviceAttributes = serviceAttributes;
+        this.metaInfo = metaInfo;
     }
 
-    public Class serviceType()
+    public Class<?> type()
     {
         return serviceType;
     }
 
-    public Class<? extends ServiceInstanceProvider> serviceProvider()
+    public Class<? extends ServiceInstanceFactory> serviceFactory()
     {
-        return serviceProvider;
+        return serviceFactory;
     }
 
     public String identity()
@@ -73,14 +72,9 @@ public final class ServiceDescriptor
         return instantiateOnStartup;
     }
 
-    public Iterable<Class> serviceAttributeTypes()
+    public <K> K metaInfo( Class<K> infoType )
     {
-        return serviceAttributes.keySet();
-    }
-
-    public <K extends Serializable> K serviceAttribute( Class<K> infoType )
-    {
-        return infoType.cast( serviceAttributes.get( infoType ) );
+        return metaInfo.get( infoType );
     }
 
     @Override public String toString()

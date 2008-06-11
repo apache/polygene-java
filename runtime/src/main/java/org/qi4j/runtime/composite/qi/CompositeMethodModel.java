@@ -16,15 +16,18 @@ package org.qi4j.runtime.composite.qi;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
+import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.CompositeMethodInstancePool;
 import org.qi4j.runtime.composite.FragmentInvocationHandler;
 import org.qi4j.runtime.composite.SynchronizedCompositeMethodInstancePool;
+import org.qi4j.runtime.structure.qi.Binder;
 import org.qi4j.runtime.structure.qi.ModuleInstance;
 
 /**
  * TODO
  */
 public final class CompositeMethodModel
+    implements Binder
 {
     // Model
     private Method method;
@@ -32,22 +35,23 @@ public final class CompositeMethodModel
     private MethodConcernsModel methodConcerns;
     private MethodSideEffectsModel methodSideEffects;
 
-    // Resolution
-    private CompositeModel composite;
-
     // Context
     private CompositeMethodInstancePool instancePool = new SynchronizedCompositeMethodInstancePool();
     private MethodConstraintsInstance methodConstraintsInstance;
 
-    public CompositeMethodModel( Method method, CompositeModel composite )
+    private AbstractMixinsModel mixins;
+
+    public CompositeMethodModel( Method method,
+                                 MethodConstraintsModel methodConstraintsModel,
+                                 MethodConcernsModel methodConcernsModel,
+                                 MethodSideEffectsModel methodSideEffectsModel,
+                                 AbstractMixinsModel mixinsModel )
     {
         this.method = method;
-        this.composite = composite;
-
-        methodConcerns = composite.concerns().concernsFor( method );
-        methodSideEffects = composite.sideEffects().sideEffectsFor( method );
-        methodConstraints = new MethodConstraintsModel( method, composite.constraints() );
-        composite.sideEffects().sideEffectsFor( method );
+        mixins = mixinsModel;
+        methodConcerns = methodConcernsModel;
+        methodSideEffects = methodSideEffectsModel;
+        methodConstraints = methodConstraintsModel;
     }
 
     // Model
@@ -56,16 +60,10 @@ public final class CompositeMethodModel
         return method;
     }
 
-    // Resolution
-    public CompositeModel composite()
-    {
-        return composite;
-    }
-
     // Binding
-    public void bind( Resolution resolution )
+    public void bind( Resolution resolution ) throws BindingException
     {
-        resolution = new Resolution( resolution.application(), resolution.layer(), resolution.module(), resolution.composite(), this );
+        resolution = new Resolution( resolution.application(), resolution.layer(), resolution.module(), resolution.composite(), this, null );
 
         methodConcerns.bind( resolution );
         methodSideEffects.bind( resolution );
@@ -74,12 +72,12 @@ public final class CompositeMethodModel
     }
 
     // Context
-    public Object invoke( Object composite, Object[] params, Object[] mixins, ModuleInstance moduleInstance ) throws Throwable
+    public Object invoke( Object composite, Object[] params, MixinsInstance mixins, ModuleInstance moduleInstance ) throws Throwable
     {
         methodConstraintsInstance.checkValid( params );
 
         CompositeMethodInstance methodInstance = getInstance( moduleInstance );
-        return composite().mixins().invoke( composite, params, mixins, methodInstance );
+        return mixins.invoke( composite, params, methodInstance );
     }
 
     private CompositeMethodInstance getInstance( ModuleInstance moduleInstance )
@@ -92,7 +90,7 @@ public final class CompositeMethodModel
     private CompositeMethodInstance newCompositeMethodInstance( ModuleInstance moduleInstance )
         throws org.qi4j.composite.InstantiationException
     {
-        FragmentInvocationHandler mixinInvocationHandler = composite.mixins().newInvocationHandler( method );
+        FragmentInvocationHandler mixinInvocationHandler = mixins.newInvocationHandler( method );
 
         MethodConcernsInstance concernsInstance = methodConcerns.newInstance( moduleInstance, method, mixinInvocationHandler );
         MethodSideEffectsInstance sideEffectsInstance = methodSideEffects.newInstance( moduleInstance, method );

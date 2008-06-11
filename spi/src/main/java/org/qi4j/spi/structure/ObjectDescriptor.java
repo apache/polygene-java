@@ -16,7 +16,6 @@ package org.qi4j.spi.structure;
 
 import java.io.Serializable;
 import java.util.Map;
-import org.qi4j.spi.composite.ObjectModel;
 import org.qi4j.structure.Visibility;
 
 /**
@@ -24,18 +23,18 @@ import org.qi4j.structure.Visibility;
  */
 public final class ObjectDescriptor
 {
-    private ObjectModel objectModel;
+    private Class objectModel;
     private Map<Class, Serializable> objectInfos;
     private Visibility visibility;
 
-    public ObjectDescriptor( ObjectModel objectModel, Map<Class, Serializable> objectInfos, Visibility visibility )
+    public ObjectDescriptor( Class objectModel, Map<Class, Serializable> objectInfos, Visibility visibility )
     {
         this.objectModel = objectModel;
         this.objectInfos = objectInfos;
         this.visibility = visibility;
     }
 
-    public ObjectModel getObjectModel()
+    public Class getObjectModel()
     {
         return objectModel;
     }
@@ -79,6 +78,6 @@ public final class ObjectDescriptor
 
     public String toString()
     {
-        return "descriptor[" + objectModel.getModelClass().getName() + "]";
+        return "descriptor[" + objectModel.getName() + "]";
     }
 }

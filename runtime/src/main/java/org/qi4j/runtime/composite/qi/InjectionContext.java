@@ -14,7 +14,6 @@
 
 package org.qi4j.runtime.composite.qi;
 
-import java.util.Set;
 import org.qi4j.composite.State;
 import org.qi4j.runtime.composite.ProxyReferenceInvocationHandler;
 import org.qi4j.runtime.structure.qi.ModuleInstance;
@@ -25,14 +24,14 @@ import org.qi4j.runtime.structure.qi.ModuleInstance;
 public final class InjectionContext
 {
     private CompositeInstance compositeInstance;
-    private Set<Object> uses;
+    private UsesInstance uses;
     private State state;
     private ModuleInstance moduleInstance;
     private Object next;
     private ProxyReferenceInvocationHandler proxyHandler;
 
     // For mixins
-    public InjectionContext( CompositeInstance compositeInstance, Set<Object> uses, State state )
+    public InjectionContext( CompositeInstance compositeInstance, UsesInstance uses, State state )
     {
         this.compositeInstance = compositeInstance;
         this.moduleInstance = compositeInstance.moduleInstance();
@@ -48,6 +47,12 @@ public final class InjectionContext
         this.proxyHandler = proxyHandler;
     }
 
+    public InjectionContext( ModuleInstance moduleInstance, UsesInstance uses )
+    {
+        this.moduleInstance = moduleInstance;
+        this.uses = uses;
+    }
+
     public ModuleInstance moduleInstance()
     {
         return moduleInstance;
@@ -58,7 +63,7 @@ public final class InjectionContext
         return compositeInstance;
     }
 
-    public Set<Object> uses()
+    public UsesInstance uses()
     {
         return uses;
     }

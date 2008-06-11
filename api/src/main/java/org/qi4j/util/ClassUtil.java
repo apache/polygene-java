@@ -79,6 +79,25 @@ public class ClassUtil
         return newSet;
     }
 
+    public static Set<Type> typesOf( Type type )
+    {
+        Set<Type> types = new LinkedHashSet<Type>();
+        addInterfaces( type, types );
+
+        if( type instanceof Class )
+        {
+            Class current = (Class) type;
+            while( current != null )
+            {
+                types.add( current );
+                current = current.getSuperclass();
+            }
+        }
+
+        return types;
+    }
+
+
     public static Class[] toClassArray( Set<Type> types )
     {
         Class[] array = new Class[types.size()];

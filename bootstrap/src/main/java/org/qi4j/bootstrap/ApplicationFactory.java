@@ -14,9 +14,19 @@
 
 package org.qi4j.bootstrap;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import org.qi4j.runtime.Energy4Java;
 import org.qi4j.runtime.Qi4jRuntime;
-import org.qi4j.runtime.structure.ApplicationContext;
+import org.qi4j.runtime.composite.BindingException;
+import org.qi4j.runtime.structure.qi.ApplicationModel;
+import org.qi4j.runtime.structure.qi.LayerModel;
+import org.qi4j.runtime.structure.qi.ModuleModel;
+import org.qi4j.runtime.structure.qi.UsedLayersModel;
+import org.qi4j.structure.Application;
 
 /**
  * Factory for ApplicationContext.
@@ -37,17 +47,17 @@ public final class ApplicationFactory
         this.applicationAssemblyFactory = applicationAssembly;
     }
 
-    public ApplicationContext newApplication( Assembler assembler )
+    public Application newApplication( Assembler assembler )
         throws AssemblyException
     {
         return newApplication( new Assembler[][][]{ { { assembler } } } );
     }
 
-    public ApplicationContext newApplication( Assembler[][][] assemblers )
+    public Application newApplication( Assembler[][][] assemblers )
         throws AssemblyException
     {
         ApplicationAssembly applicationAssembly = applicationAssemblyFactory.newApplicationAssembly();
-        applicationAssembly.setName( "Application " );
+        applicationAssembly.setName( "Application" );
 
         // Build all layers bottom-up
         LayerAssembly below = null;
@@ -76,8 +86,41 @@ public final class ApplicationFactory
         return newApplication( applicationAssembly );
     }
 
-    public ApplicationContext newApplication( ApplicationAssembly applicationAssembly )
+    public Application newApplication( ApplicationAssembly applicationAssembly )
+        throws AssemblyException
     {
-        return new ApplicationBuilder( runtime ).newApplicationContext( applicationAssembly );
+        List<LayerModel> layerModels = new ArrayList<LayerModel>();
+        ApplicationModel applicationModel = new ApplicationModel( applicationAssembly.getName(), layerModels );
+        List<LayerAssembly> layerAssemblies = applicationAssembly.getLayerAssemblies();
+        Map<LayerAssembly, LayerModel> mapAssemblyModel = new HashMap<LayerAssembly, LayerModel>();
+        for( LayerAssembly layerAssembly : layerAssemblies )
+        {
+            Set<LayerAssembly> usesLayers = layerAssembly.getUses();
+            List<LayerModel> usedLayers = new ArrayList<LayerModel>();
+            for( LayerAssembly usesLayer : usesLayers )
+            {
+                usedLayers.add( mapAssemblyModel.get( usesLayer ) );
+            }
+            UsedLayersModel usedLayersModel = new UsedLayersModel( usedLayers );
+            List<ModuleModel> moduleModels = new ArrayList<ModuleModel>();
+            LayerModel layerModel = new LayerModel( layerAssembly.getName(), applicationModel, usedLayersModel, moduleModels );
+
+            for( ModuleAssembly moduleAssembly : layerAssembly.getModuleAssemblies() )
+            {
+                moduleModels.add( moduleAssembly.assembleModule( layerModel ) );
+            }
+            mapAssemblyModel.put( layerAssembly, layerModel );
+        }
+
+        try
+        {
+            applicationModel.bind();
+        }
+        catch( BindingException e )
+        {
+            throw new AssemblyException( e );
+        }
+
+        return applicationModel.newInstance( runtime );
     }
 }

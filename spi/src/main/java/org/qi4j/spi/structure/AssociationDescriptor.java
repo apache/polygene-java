@@ -14,45 +14,16 @@
 
 package org.qi4j.spi.structure;
 
-import java.io.Serializable;
 import java.lang.reflect.Method;
-import java.util.Map;
+import org.qi4j.entity.association.AssociationInfo;
 
 /**
  * TODO
  */
-public final class AssociationDescriptor
+public interface AssociationDescriptor
+    extends AssociationInfo
 {
-    private Class associationType;
-    private Class associatedType;
-    private Map<Class, Serializable> associationInfos;
-    private Method accessor;
+    Method accessor();
 
-    public AssociationDescriptor( Class associationType, Class associatedType, Map<Class, Serializable> associationInfos, Method accessor )
-    {
-        this.associationType = associationType;
-        this.associatedType = associatedType;
-        this.associationInfos = associationInfos;
-        this.accessor = accessor;
-    }
-
-    public Class getAssociationType()
-    {
-        return associationType;
-    }
-
-    public Class getAssociatedType()
-    {
-        return associatedType;
-    }
-
-    public Map<Class, Serializable> getAssociationInfos()
-    {
-        return associationInfos;
-    }
-
-    public Method getAccessor()
-    {
-        return accessor;
-    }
+    String toURI();
 }

@@ -15,8 +15,8 @@
 package org.qi4j.spi.injection;
 
 import org.qi4j.composite.CompositeBuilderFactory;
-import org.qi4j.composite.ObjectBuilderFactory;
 import org.qi4j.entity.UnitOfWorkFactory;
+import org.qi4j.object.ObjectBuilderFactory;
 import org.qi4j.service.ServiceFinder;
 
 /**

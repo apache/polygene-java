@@ -18,12 +18,20 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.qi4j.composite.Composite;
-import org.qi4j.runtime.composite.CompositeModelFactory;
-import org.qi4j.runtime.composite.ObjectModelFactory;
+import org.qi4j.entity.EntityComposite;
+import org.qi4j.runtime.composite.qi.CompositeModel;
+import org.qi4j.runtime.entity.EntityModel;
+import org.qi4j.runtime.object.ObjectModel;
+import org.qi4j.runtime.service.qi.ServiceModel;
+import org.qi4j.runtime.structure.qi.CompositesModel;
+import org.qi4j.runtime.structure.qi.EntitiesModel;
+import org.qi4j.runtime.structure.qi.LayerModel;
+import org.qi4j.runtime.structure.qi.ModuleModel;
+import org.qi4j.runtime.structure.qi.ObjectsModel;
+import org.qi4j.runtime.structure.qi.ServicesModel;
 import org.qi4j.service.ServiceComposite;
-import org.qi4j.service.ServiceDescriptor;
-import org.qi4j.spi.structure.CompositeDescriptor;
-import org.qi4j.spi.structure.ObjectDescriptor;
+import org.qi4j.structure.Visibility;
+import org.qi4j.util.MetaInfo;
 
 /**
  * Assembly of a Module. This is where you register all objects, Composites,
@@ -37,6 +45,7 @@ public final class ModuleAssembly
     private LayerAssembly layerAssembly;
     private String name;
     private List<CompositeDeclaration> compositeDeclarations;
+    private List<EntityDeclaration> entityDeclarations;
     private List<ObjectDeclaration> objectDeclarations;
     private List<ServiceDeclaration> serviceDeclarations;
     private List<PropertyDeclaration> propertyDeclarations;
@@ -46,6 +55,7 @@ public final class ModuleAssembly
     {
         this.layerAssembly = layerAssembly;
         compositeDeclarations = new ArrayList<CompositeDeclaration>();
+        entityDeclarations = new ArrayList<EntityDeclaration>();
         objectDeclarations = new ArrayList<ObjectDeclaration>();
         serviceDeclarations = new ArrayList<ServiceDeclaration>();
         propertyDeclarations = new ArrayList<PropertyDeclaration>();
@@ -84,6 +94,14 @@ public final class ModuleAssembly
         CompositeDeclaration compositeDeclaration = new CompositeDeclaration( compositeTypes );
         compositeDeclarations.add( compositeDeclaration );
         return compositeDeclaration;
+    }
+
+    public EntityDeclaration addEntities( Class<? extends EntityComposite>... compositeTypes )
+        throws AssemblyException
+    {
+        EntityDeclaration entityDeclaration = new EntityDeclaration( compositeTypes );
+        entityDeclarations.add( entityDeclaration );
+        return entityDeclaration;
     }
 
     public ObjectDeclaration addObjects( Class... objectTypes )
@@ -140,49 +158,57 @@ public final class ModuleAssembly
         return declaration;
     }
 
-    List<CompositeDescriptor> getCompositeDescriptors( CompositeModelFactory compositeModelFactory )
+    ModuleModel assembleModule( LayerModel layerModel )
     {
-        List<CompositeDescriptor> compositeDescriptors = new ArrayList<CompositeDescriptor>();
+        List<CompositeModel> compositeModels = new ArrayList<CompositeModel>();
+        List<EntityModel> entityModels = new ArrayList<EntityModel>();
+        List<ObjectModel> objectModels = new ArrayList<ObjectModel>();
+        List<ServiceModel> serviceModels = new ArrayList<ServiceModel>();
+        ModuleModel moduleModel = new ModuleModel( name,
+                                                   layerModel,
+                                                   new CompositesModel( compositeModels ),
+                                                   new EntitiesModel( entityModels ),
+                                                   new ObjectsModel( objectModels ),
+                                                   new ServicesModel( serviceModels ) );
+
         for( CompositeDeclaration compositeDeclaration : compositeDeclarations )
         {
-            compositeDescriptors.addAll( compositeDeclaration.getCompositeDescriptors( compositeModelFactory ) );
+            compositeDeclaration.addComposites( moduleModel, compositeModels );
         }
 
-        return compositeDescriptors;
-    }
+        for( EntityDeclaration entityDeclaration : entityDeclarations )
+        {
+            entityDeclaration.addEntities( moduleModel, entityModels );
+        }
 
-    List<ObjectDescriptor> getObjectDescriptors( ObjectModelFactory objectModelFactory )
-    {
-        List<ObjectDescriptor> objectDescriptors = new ArrayList<ObjectDescriptor>();
         for( ObjectDeclaration objectDeclaration : objectDeclarations )
         {
-            objectDescriptors.addAll( objectDeclaration.getObjectDescriptors( objectModelFactory ) );
+            objectDeclaration.addObjects( moduleModel, objectModels );
         }
-        return objectDescriptors;
-    }
 
-    List<ServiceDescriptor> getServiceDescriptors()
-    {
-        List<ServiceDescriptor> serviceDescriptors = new ArrayList<ServiceDescriptor>();
         for( ServiceDeclaration serviceDeclaration : serviceDeclarations )
         {
-            serviceDescriptors.addAll( serviceDeclaration.serviceDescriptors() );
+            serviceDeclaration.addServices( moduleModel, serviceModels );
         }
-        return serviceDescriptors;
-    }
 
-    List<PropertyDeclaration> getPropertyDeclarations()
-    {
-        return propertyDeclarations;
-    }
+        nextService:
+        for( ServiceModel serviceModel : serviceModels )
+        {
+            if( Composite.class.isAssignableFrom( serviceModel.type() ) )
+            {
+                for( CompositeModel compositeModel : compositeModels )
+                {
+                    if( serviceModel.type().isAssignableFrom( compositeModel.type() ) )
+                    {
+                        continue nextService;
+                    }
+                }
 
-    List<AssociationDeclaration> getAssociationDeclarations()
-    {
-        return associationDeclarations;
-    }
+                // Auto-add implementation as Composite with Module visibility.
+                compositeModels.add( CompositeModel.newModel( serviceModel.type(), Visibility.module, new MetaInfo(), moduleModel ) );
+            }
+        }
 
-    public String getName()
-    {
-        return name;
+        return moduleModel;
     }
 }

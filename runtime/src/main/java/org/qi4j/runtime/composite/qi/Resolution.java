@@ -14,9 +14,11 @@
 
 package org.qi4j.runtime.composite.qi;
 
+import java.lang.reflect.Field;
 import org.qi4j.runtime.structure.qi.ApplicationModel;
 import org.qi4j.runtime.structure.qi.LayerModel;
 import org.qi4j.runtime.structure.qi.ModuleModel;
+import org.qi4j.spi.composite.CompositeDescriptor;
 
 /**
  * TODO
@@ -26,16 +28,18 @@ public final class Resolution
     private ApplicationModel application;
     private LayerModel layer;
     private ModuleModel module;
-    private CompositeModel compositeModel;
+    private CompositeDescriptor compositeDescriptor;
     private CompositeMethodModel method;
+    private Field field;
 
-    public Resolution( ApplicationModel application, LayerModel layer, ModuleModel module, CompositeModel compositeModel, CompositeMethodModel method )
+    public Resolution( ApplicationModel application, LayerModel layer, ModuleModel module, CompositeDescriptor compositeDescriptor, CompositeMethodModel method, Field field )
     {
         this.application = application;
         this.layer = layer;
         this.module = module;
-        this.compositeModel = compositeModel;
+        this.compositeDescriptor = compositeDescriptor;
         this.method = method;
+        this.field = field;
     }
 
     public ApplicationModel application()
@@ -53,13 +57,18 @@ public final class Resolution
         return module;
     }
 
-    public CompositeModel composite()
+    public CompositeDescriptor composite()
     {
-        return compositeModel;
+        return compositeDescriptor;
     }
 
     public CompositeMethodModel method()
     {
         return method;
+    }
+
+    public Field field()
+    {
+        return field;
     }
 }

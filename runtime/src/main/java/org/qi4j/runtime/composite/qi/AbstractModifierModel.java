@@ -16,8 +16,10 @@ package org.qi4j.runtime.composite.qi;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
+import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.ProxyReferenceInvocationHandler;
 import org.qi4j.runtime.composite.TypedFragmentInvocationHandler;
+import org.qi4j.runtime.structure.qi.Binder;
 import org.qi4j.runtime.structure.qi.ModuleInstance;
 import static org.qi4j.util.ClassUtil.interfacesOf;
 import static org.qi4j.util.ClassUtil.toClassArray;
@@ -26,6 +28,7 @@ import static org.qi4j.util.ClassUtil.toClassArray;
  * TODO
  */
 public abstract class AbstractModifierModel
+    implements Binder
 {
     private Class modifierClass;
     protected ConstructorsModel constructorsModel;
@@ -50,8 +53,16 @@ public abstract class AbstractModifierModel
         return InvocationHandler.class.isAssignableFrom( modifierClass );
     }
 
+
+    public void visitDependencies( DependencyVisitor visitor )
+    {
+        constructorsModel.visitDependencies( visitor );
+        injectedFieldsModel.visitDependencies( visitor );
+        injectedMethodsModel.visitDependencies( visitor );
+    }
+
     // Binding
-    public void bind( Resolution context )
+    public void bind( Resolution context ) throws BindingException
     {
         constructorsModel.bind( context );
         injectedFieldsModel.bind( context );

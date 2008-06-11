@@ -1,5 +1,7 @@
 package org.qi4j.runtime.composite;
 
+import org.qi4j.runtime.composite.qi.CompositeMethodInstance;
+
 /**
  * TODO
  */

@@ -25,11 +25,7 @@ import org.qi4j.composite.scope.This;
 import org.qi4j.entity.Entity;
 import org.qi4j.entity.EntityCastException;
 import org.qi4j.entity.EntityComposite;
-import org.qi4j.runtime.composite.AbstractCompositeInstance;
-import org.qi4j.runtime.composite.CompositeInstance;
-import org.qi4j.runtime.composite.EntityCompositeInstance;
 import org.qi4j.runtime.composite.ProxyReferenceInvocationHandler;
-import org.qi4j.spi.composite.CompositeModel;
 
 public final class EntityMixin
     implements Entity
@@ -44,34 +40,17 @@ public final class EntityMixin
         {
             return compositeType.cast( meAsEntity );
         }
-        CompositeInstance handler = AbstractCompositeInstance.getCompositeInstance( meAsEntity );
-        CompositeModel model = handler.getContext().getCompositeModel();
-        Class existingCompositeClass = model.getCompositeType();
+        EntityInstance entityInstance = EntityInstance.getEntityInstance( meAsEntity );
+        Class existingCompositeClass = entityInstance.type();
         if( !existingCompositeClass.isAssignableFrom( compositeType ) )
         {
             throw new EntityCastException( existingCompositeClass.getName() + " is not a super-type of " + compositeType.getName() );
         }
 
-
         T newComposite = builderFactory.newCompositeBuilder( compositeType ).newInstance();
-        Object[] oldMixins = handler.getMixins();
-        CompositeInstance newHandler = AbstractCompositeInstance.getCompositeInstance( newComposite );
+        EntityInstance newEntityInstance = EntityInstance.getEntityInstance( newComposite );
 
-        Object[] newMixins = newHandler.getMixins();
-
-        // Use any mixins that match the ones we already have
-        for( int i = 0; i < oldMixins.length; i++ )
-        {
-            Object oldMixin = oldMixins[ i ];
-            for( Object newMixin : newMixins )
-            {
-                if( oldMixin.getClass().equals( newMixin.getClass() ) )
-                {
-                    newMixins[ i ] = oldMixin;
-                    break;
-                }
-            }
-        }
+        entityInstance.cast( newEntityInstance );
 
         return newComposite;
     }
@@ -85,13 +64,13 @@ public final class EntityMixin
             return true;
         }
         handler = Proxy.getInvocationHandler( anObject );
-        AbstractCompositeInstance oih = (AbstractCompositeInstance) handler;
-        return oih.getContext().getCompositeModel().getCompositeType().isAssignableFrom( anObjectType );
+        EntityInstance entityInstance = (EntityInstance) handler;
+        return entityInstance.type().isAssignableFrom( anObjectType );
     }
 
     public boolean isReference()
     {
-        EntityCompositeInstance handler = EntityCompositeInstance.getEntityCompositeInstance( meAsEntity );
+        EntityInstance handler = EntityInstance.getEntityInstance( meAsEntity );
         return handler.isReference();
     }
 }

@@ -18,6 +18,8 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import org.qi4j.runtime.composite.BindingException;
+import org.qi4j.runtime.structure.qi.Binder;
 import static org.qi4j.util.AnnotationUtil.getInjectionAnnotation;
 import static org.qi4j.util.ClassUtil.fieldsOf;
 
@@ -25,6 +27,7 @@ import static org.qi4j.util.ClassUtil.fieldsOf;
  * TODO
  */
 public final class InjectedFieldsModel
+    implements Binder
 {
     private List<InjectedFieldModel> fields = new ArrayList<InjectedFieldModel>();
 
@@ -51,7 +54,7 @@ public final class InjectedFieldsModel
         }
     }
 
-    public void bind( Resolution context )
+    public void bind( Resolution context ) throws BindingException
     {
         for( InjectedFieldModel field : fields )
         {
@@ -74,6 +77,7 @@ public final class InjectedFieldsModel
     {
         private DependencyModel dependencyModel;
         private Field injectedField;
+        private Resolution resolution;
 
         public InjectedFieldModel( Field injectedField, DependencyModel dependencyModel )
         {
@@ -82,8 +86,9 @@ public final class InjectedFieldsModel
             this.dependencyModel = dependencyModel;
         }
 
-        public void bind( Resolution resolution )
+        public void bind( Resolution resolution ) throws BindingException
         {
+            this.resolution = new Resolution( resolution.application(), resolution.layer(), resolution.module(), resolution.composite(), resolution.method(), injectedField );
             dependencyModel.bind( resolution );
         }
 
@@ -102,7 +107,7 @@ public final class InjectedFieldsModel
 
         public void visitDependency( DependencyVisitor visitor )
         {
-            visitor.visit( dependencyModel );
+            visitor.visit( dependencyModel, resolution );
         }
     }
 }

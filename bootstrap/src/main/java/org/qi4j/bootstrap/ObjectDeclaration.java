@@ -16,14 +16,12 @@ package org.qi4j.bootstrap;
 
 import java.io.Serializable;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.qi4j.composite.Composite;
-import org.qi4j.runtime.composite.ObjectModelFactory;
-import org.qi4j.spi.structure.ObjectDescriptor;
+import org.qi4j.runtime.object.ObjectModel;
+import org.qi4j.runtime.structure.qi.ModuleModel;
 import org.qi4j.structure.Visibility;
+import org.qi4j.util.MetaInfo;
 
 /**
  * Declaration of an Object. Created by {@link org.qi4j.bootstrap.ModuleAssembly#addObjects(Class[])}.
@@ -31,7 +29,7 @@ import org.qi4j.structure.Visibility;
 public final class ObjectDeclaration
 {
     private Iterable<Class> objectTypes;
-    private Map<Class, Serializable> objectInfos = new HashMap<Class, Serializable>();
+    private MetaInfo metaInfo = new MetaInfo();
     private Visibility visibility = Visibility.module;
 
     public ObjectDeclaration( Iterable<Class> classes )
@@ -48,9 +46,9 @@ public final class ObjectDeclaration
         this.objectTypes = classes;
     }
 
-    public <T extends Serializable> ObjectDeclaration setObjectInfo( Class<T> infoType, T info )
+    public <T extends Serializable> ObjectDeclaration setMetaInfo( Serializable info )
     {
-        objectInfos.put( infoType, info );
+        metaInfo.set( info );
         return this;
     }
 
@@ -61,14 +59,12 @@ public final class ObjectDeclaration
         return this;
     }
 
-    List<ObjectDescriptor> getObjectDescriptors( ObjectModelFactory objectModelFactory )
+    public void addObjects( ModuleModel moduleModel, List<ObjectModel> objectModels )
     {
-        List<ObjectDescriptor> objectDescriptors = new ArrayList<ObjectDescriptor>();
         for( Class objectType : objectTypes )
         {
-            ObjectDescriptor objectDescriptor = new ObjectDescriptor( objectModelFactory.newObjectModel( objectType ), objectInfos, visibility );
-            objectDescriptors.add( objectDescriptor );
+            ObjectModel objectModel = new ObjectModel( objectType, visibility, metaInfo, moduleModel );
+            objectModels.add( objectModel );
         }
-        return objectDescriptors;
     }
 }

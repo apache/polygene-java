@@ -20,12 +20,14 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import org.qi4j.composite.InstantiationException;
-import org.qi4j.spi.composite.BindingException;
+import org.qi4j.runtime.composite.BindingException;
+import org.qi4j.runtime.structure.qi.Binder;
 
 /**
  * TODO
  */
 public final class ConstructorsModel
+    implements Binder
 {
     List<ConstructorModel> constructorModels;
 
@@ -60,7 +62,7 @@ public final class ConstructorsModel
     }
 
     // Binding
-    public void bind( Resolution resolution )
+    public void bind( Resolution resolution ) throws BindingException
     {
         for( ConstructorModel constructorModel : constructorModels )
         {
@@ -90,6 +92,7 @@ public final class ConstructorsModel
      * TODO
      */
     private static final class ConstructorModel
+        implements Binder
     {
         private Constructor constructor;
 
@@ -108,7 +111,7 @@ public final class ConstructorsModel
         }
 
         // Binding
-        public void bind( Resolution resolution )
+        public void bind( Resolution resolution ) throws BindingException
         {
             parameters.bind( resolution );
         }

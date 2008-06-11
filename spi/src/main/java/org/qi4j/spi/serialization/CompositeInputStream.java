@@ -63,8 +63,8 @@ public final class CompositeInputStream extends ObjectInputStream
             QualifiedIdentity holder = (QualifiedIdentity) obj;
             try
             {
-                Class<? extends EntityComposite> clazz = (Class<? extends EntityComposite>) Class.forName( holder.getCompositeType() );
-                String id = holder.getIdentity();
+                Class<? extends EntityComposite> clazz = (Class<? extends EntityComposite>) Class.forName( holder.type() );
+                String id = holder.identity();
                 Object instance = unitOfWork.find( id, clazz );
                 return instance;
             }

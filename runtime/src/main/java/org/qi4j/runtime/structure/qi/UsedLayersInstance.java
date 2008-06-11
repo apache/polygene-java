@@ -15,7 +15,8 @@
 package org.qi4j.runtime.structure.qi;
 
 import java.util.List;
-import org.qi4j.composite.AmbiguousMixinTypeException;
+import org.qi4j.composite.AmbiguousTypeException;
+import org.qi4j.structure.Visibility;
 
 /**
  * TODO
@@ -29,22 +30,75 @@ public final class UsedLayersInstance
         this.usedLayerInstances = usedLayerInstances;
     }
 
-    public ModuleInstance findModuleFor( Class mixinType )
+    public ModuleInstance findModuleForComposite( Class mixinType )
     {
         ModuleInstance foundModule = null;
         for( LayerInstance usedLayerInstance : usedLayerInstances )
         {
-            ModuleInstance module = usedLayerInstance.findModuleFor( mixinType );
+            ModuleInstance module = usedLayerInstance.findModuleForComposite( mixinType, Visibility.application );
             if( module != null )
             {
                 if( foundModule != null )
                 {
-                    throw new AmbiguousMixinTypeException( mixinType );
+                    throw new AmbiguousTypeException( mixinType );
                 }
                 foundModule = module;
             }
         }
 
         return foundModule;
+    }
+
+    public ModuleInstance findModuleForEntity( Class mixinType )
+    {
+        ModuleInstance foundModule = null;
+        for( LayerInstance usedLayerInstance : usedLayerInstances )
+        {
+            ModuleInstance module = usedLayerInstance.findModuleForEntity( mixinType, Visibility.application );
+            if( module != null )
+            {
+                if( foundModule != null )
+                {
+                    throw new AmbiguousTypeException( mixinType );
+                }
+                foundModule = module;
+            }
+        }
+
+        return foundModule;
+    }
+
+    public ModuleInstance findModuleForObject( Class type )
+    {
+        ModuleInstance foundModule = null;
+        for( LayerInstance usedLayerInstance : usedLayerInstances )
+        {
+            ModuleInstance module = usedLayerInstance.findModuleForObject( type, Visibility.application );
+            if( module != null )
+            {
+                if( foundModule != null )
+                {
+                    throw new AmbiguousTypeException( type );
+                }
+                foundModule = module;
+            }
+        }
+
+        return foundModule;
+    }
+
+    public Class getClassForName( String type )
+    {
+        Class clazz;
+        for( LayerInstance usedLayerInstance : usedLayerInstances )
+        {
+            clazz = usedLayerInstance.getClassForName( type );
+            if( clazz != null )
+            {
+                return clazz;
+            }
+        }
+
+        return null;
     }
 }

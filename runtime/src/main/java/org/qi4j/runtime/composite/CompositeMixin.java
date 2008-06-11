@@ -16,7 +16,8 @@ package org.qi4j.runtime.composite;
 
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.scope.This;
-import org.qi4j.spi.structure.CompositeDescriptor;
+import org.qi4j.runtime.composite.qi.CompositeInstance;
+import org.qi4j.runtime.composite.qi.DefaultCompositeInstance;
 
 public final class CompositeMixin
     implements Composite
@@ -25,12 +26,12 @@ public final class CompositeMixin
 
     public <T> T metaInfo( Class<T> infoType )
     {
-        CompositeDescriptor descriptor = AbstractCompositeInstance.getCompositeInstance( meAsComposite ).getContext().getCompositeResolution().getCompositeDescriptor();
-        return infoType.cast( descriptor.getCompositeInfos().get( infoType ) );
+        CompositeInstance descriptor = DefaultCompositeInstance.getCompositeInstance( meAsComposite );
+        return descriptor.metaInfo().get( infoType );
     }
 
     public Class<? extends Composite> type()
     {
-        return AbstractCompositeInstance.getCompositeInstance( meAsComposite ).getContext().getCompositeModel().getCompositeType();
+        return DefaultCompositeInstance.getCompositeInstance( meAsComposite ).type();
     }
 }

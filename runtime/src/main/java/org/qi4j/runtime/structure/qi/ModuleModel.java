@@ -14,67 +14,84 @@
 
 package org.qi4j.runtime.structure.qi;
 
-import java.util.List;
-import org.qi4j.composite.AmbiguousMixinTypeException;
-import org.qi4j.runtime.composite.qi.CompositeModel;
+import org.qi4j.runtime.composite.BindingException;
+import org.qi4j.runtime.composite.qi.DependencyVisitor;
 import org.qi4j.runtime.composite.qi.Resolution;
 
 /**
  * TODO
  */
 public class ModuleModel
+    implements Binder
 {
-    private List<CompositeModel> composites;
+    private CompositesModel compositesModel;
+    private EntitiesModel entitiesModel;
+    private ObjectsModel objectsModel;
+    private ServicesModel servicesModel;
 
+    private String name;
     private LayerModel layerComposite;
 
-    public ModuleModel( LayerModel layerComposite, List<CompositeModel> composites )
+    public ModuleModel( String name,
+                        LayerModel layerComposite,
+                        CompositesModel compositesModel,
+                        EntitiesModel entitiesModel,
+                        ObjectsModel objectsModel,
+                        ServicesModel servicesModel )
     {
+        this.name = name;
         this.layerComposite = layerComposite;
-        this.composites = composites;
+        this.compositesModel = compositesModel;
+        this.entitiesModel = entitiesModel;
+        this.objectsModel = objectsModel;
+        this.servicesModel = servicesModel;
+    }
+
+    public String name()
+    {
+        return name;
+    }
+
+    public CompositesModel composites()
+    {
+        return compositesModel;
+    }
+
+    public EntitiesModel entities()
+    {
+        return entitiesModel;
+    }
+
+    public ObjectsModel objects()
+    {
+        return objectsModel;
+    }
+
+    public ServicesModel services()
+    {
+        return servicesModel;
+    }
+
+    public void visitDependencies( DependencyVisitor visitor )
+    {
+        compositesModel.visitDependencies( visitor );
+        entitiesModel.visitDependencies( visitor );
+        objectsModel.visitDependencies( visitor );
     }
 
     // Binding
-    public void bind( Resolution resolution )
+    public void bind( Resolution resolution ) throws BindingException
     {
-        resolution = new Resolution( resolution.application(), resolution.layer(), this, null, null );
-        for( CompositeModel compositeComposite : composites )
-        {
-            compositeComposite.bind( resolution );
-        }
+        resolution = new Resolution( resolution.application(), resolution.layer(), this, null, null, null );
+
+        compositesModel.bind( resolution );
+        entitiesModel.bind( resolution );
+        objectsModel.bind( resolution );
     }
 
     // Context
     public ModuleInstance newInstance( LayerInstance layerInstance )
     {
-        ModuleInstance moduleInstance = new ModuleInstance( this, layerInstance );
-
-        return moduleInstance;
-    }
-
-    public String name()
-    {
-        return null;
-    }
-
-    public CompositeModel getCompositeModelFor( Class mixinType )
-    {
-        CompositeModel foundModel = null;
-        for( CompositeModel composite : composites )
-        {
-            if( mixinType.isAssignableFrom( composite.type() ) )
-            {
-                if( foundModel != null )
-                {
-                    throw new AmbiguousMixinTypeException( mixinType );
-                }
-                else
-                {
-                    foundModel = composite;
-                }
-            }
-        }
-
-        return foundModel;
+        return new ModuleInstance( this, layerInstance, compositesModel, entitiesModel, objectsModel, servicesModel );
     }
 }

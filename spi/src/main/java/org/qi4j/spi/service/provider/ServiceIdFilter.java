@@ -17,7 +17,7 @@ package org.qi4j.spi.service.provider;
 import org.qi4j.composite.scope.Structure;
 import org.qi4j.service.ServiceDescriptor;
 import org.qi4j.service.ServiceFinder;
-import org.qi4j.service.ServiceInstanceProvider;
+import org.qi4j.service.ServiceInstanceFactory;
 import org.qi4j.service.ServiceInstanceProviderException;
 import org.qi4j.service.ServiceReference;
 
@@ -25,7 +25,7 @@ import org.qi4j.service.ServiceReference;
  * TODO
  */
 public class ServiceIdFilter
-    implements ServiceInstanceProvider
+    implements ServiceInstanceFactory
 {
     private @Structure ServiceFinder locator;
 
@@ -36,12 +36,12 @@ public class ServiceIdFilter
     {
         if( serviceRef == null )
         {
-            String identityFilter = serviceDescriptor.serviceAttribute( String.class );
-            Class serviceType = serviceDescriptor.serviceType();
+            String identityFilter = serviceDescriptor.metaInfo( String.class );
+            Class serviceType = serviceDescriptor.type();
             Iterable<ServiceReference<?>> services = locator.findServices( serviceType );
             for( ServiceReference<?> service : services )
             {
-                if( service.identity().get().equals( identityFilter ) )
+                if( service.identity().equals( identityFilter ) )
                 {
                     serviceRef = service;
                     instance = service.get();

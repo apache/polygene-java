@@ -14,10 +14,7 @@
 
 package org.qi4j.runtime.entity.association;
 
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.Set;
-import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.association.AssociationInfo;
 import org.qi4j.entity.association.SetAssociation;
 import org.qi4j.runtime.entity.UnitOfWorkInstance;
@@ -28,123 +25,16 @@ import org.qi4j.spi.entity.QualifiedIdentity;
  * Set provided by the EntityStore.
  */
 public final class SetAssociationInstance<T>
-    extends AbstractManyAssociationInstance<T>
+    extends ManyAssociationInstance<T>
     implements SetAssociation<T>
 {
-    private Set<QualifiedIdentity> associated;
-
     public SetAssociationInstance( AssociationInfo associationInfo, UnitOfWorkInstance unitOfWork, Set<QualifiedIdentity> associated )
     {
-        super( associationInfo, unitOfWork );
-        this.associated = associated;
-    }
-
-    public Set<QualifiedIdentity> getAssociatedSet()
-    {
-        return associated;
-    }
-
-    public boolean removeAll( Collection<?> objects )
-    {
-        return associated.removeAll( getEntityIdCollection( objects ) );
-    }
-
-    public boolean isEmpty()
-    {
-        return associated.isEmpty();
-    }
-
-    public boolean contains( Object o )
-    {
-        if( !( o instanceof EntityComposite ) )
-        {
-            throw new IllegalArgumentException( "Object must be an EntityComposite" );
-        }
-
-        return associated.contains( getEntityId( o ) );
-    }
-
-
-    public Object[] toArray()
-    {
-        Object[] ids = associated.toArray();
-        for( int i = 0; i < ids.length; i++ )
-        {
-            ids[ i ] = getEntity( (QualifiedIdentity) ids[ i ] );
-        }
-
-        return ids;
-    }
-
-    public <T> T[] toArray( T[] ts )
-    {
-        QualifiedIdentity[] ids = new QualifiedIdentity[ts.length];
-        associated.toArray( ids );
-        for( int i = 0; i < ids.length; i++ )
-        {
-            QualifiedIdentity id = ids[ i ];
-            ts[ i ] = (T) getEntity( id );
-        }
-        return ts;
-    }
-
-    public boolean add( T t )
-    {
-        if( !( t instanceof EntityComposite ) )
-        {
-            throw new IllegalArgumentException( "Associated object must be an EntityComposite" );
-        }
-
-        return associated.add( getEntityId( t ) );
-    }
-
-    public boolean remove( Object o )
-    {
-        if( !( o instanceof EntityComposite ) )
-        {
-            throw new IllegalArgumentException( "Associated object must be an EntityComposite" );
-        }
-
-        return associated.remove( getEntityId( o ) );
-    }
-
-    public boolean containsAll( Collection<?> objects )
-    {
-        return associated.containsAll( getEntityIdCollection( objects ) );
-    }
-
-    public boolean addAll( Collection<? extends T> ts )
-    {
-        return associated.addAll( getEntityIdCollection( ts ) );
-    }
-
-    public boolean retainAll( Collection<?> objects )
-    {
-        return associated.retainAll( getEntityIdCollection( objects ) );
-    }
-
-    public void clear()
-    {
-        associated.clear();
-    }
-
-    public String toString()
-    {
-        return associated.toString();
-    }
-
-    public Iterator<T> iterator()
-    {
-        return new ManyAssociationIterator( associated.iterator() );
-    }
-
-    public int size()
-    {
-        return associated.size();
+        super( associationInfo, unitOfWork, associated );
     }
 
     public void refresh( Set<QualifiedIdentity> newSet )
     {
-        associated = newSet;
+        super.refresh( newSet );
     }
 }

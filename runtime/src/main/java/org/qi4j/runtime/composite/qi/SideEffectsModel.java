@@ -78,4 +78,12 @@ public final class SideEffectsModel
             }
         }
     }
+
+    public void visitDependencies( DependencyVisitor visitor )
+    {
+        for( MethodSideEffectsModel methodSideEffectsModel : methodSideEffects.values() )
+        {
+            methodSideEffectsModel.visitDependencies( visitor );
+        }
+    }
 }

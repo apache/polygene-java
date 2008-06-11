@@ -18,28 +18,23 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import org.qi4j.runtime.composite.qi.DependencyModel;
+import org.qi4j.runtime.composite.qi.InjectionProvider;
+import org.qi4j.runtime.composite.qi.InjectionProviderFactory;
+import org.qi4j.runtime.composite.qi.Resolution;
 import org.qi4j.service.ServiceReference;
-import org.qi4j.spi.injection.BindingContext;
-import org.qi4j.spi.injection.InjectionContext;
-import org.qi4j.spi.injection.InjectionProvider;
-import org.qi4j.spi.injection.InjectionProviderException;
-import org.qi4j.spi.injection.InjectionProviderFactory;
-import org.qi4j.spi.injection.InjectionResolution;
-import org.qi4j.spi.injection.InvalidInjectionException;
 
 public final class ServiceInjectionProviderFactory
     implements InjectionProviderFactory
 {
-    public InjectionProvider newInjectionProvider( BindingContext bindingContext ) throws InvalidInjectionException
+    public InjectionProvider newInjectionProvider( Resolution resolution, DependencyModel dependencyModel ) throws InvalidInjectionException
     {
-        InjectionResolution resolution = bindingContext.getInjectionResolution();
-
-        if( resolution.getInjectionModel().getRawInjectionType().equals( Iterable.class ) )
+        if( dependencyModel.rawInjectionType().equals( Iterable.class ) )
         {
-            if( resolution.getInjectionModel().getInjectionClass().equals( ServiceReference.class ) )
+            if( dependencyModel.injectionClass().equals( ServiceReference.class ) )
             {
                 // @Service Iterable<ServiceReference<MyService>> serviceRefs
-                Type[] arguments = ( (ParameterizedType) resolution.getInjectionModel().getInjectionType() ).getActualTypeArguments();
+                Type[] arguments = ( (ParameterizedType) dependencyModel.injectionType() ).getActualTypeArguments();
                 Class serviceType = (Class) ( (ParameterizedType) arguments[ 0 ] ).getActualTypeArguments()[ 0 ];
                 return new IterableServiceReferenceProvider( serviceType );
 
@@ -47,21 +42,21 @@ public final class ServiceInjectionProviderFactory
             else
             {
                 // @Service Iterable<MyService> services
-                Class serviceType = resolution.getInjectionModel().getInjectionClass();
+                Class serviceType = dependencyModel.injectionClass();
                 return new IterableServiceProvider( serviceType );
             }
 
         }
-        else if( resolution.getInjectionModel().getRawInjectionType().equals( ServiceReference.class ) )
+        else if( dependencyModel.rawInjectionType().equals( ServiceReference.class ) )
         {
             // @Service ServiceReference<MyService> serviceRef
-            Class serviceType = resolution.getInjectionModel().getInjectionClass();
+            Class serviceType = dependencyModel.injectionClass();
             return new ServiceReferenceProvider( serviceType );
         }
         else
         {
             // @Service MyService service
-            Class serviceType = resolution.getInjectionModel().getInjectionClass();
+            Class serviceType = dependencyModel.injectionClass();
             return new ServiceProvider( serviceType );
         }
     }
@@ -69,35 +64,34 @@ public final class ServiceInjectionProviderFactory
     static class IterableServiceReferenceProvider
         implements InjectionProvider
     {
-        private Class serviceType;
+        private Class<?> serviceType;
 
         public IterableServiceReferenceProvider( Class serviceType )
         {
             this.serviceType = serviceType;
         }
 
-        public Object provideInjection( InjectionContext context ) throws InjectionProviderException
+        public Object provideInjection( org.qi4j.runtime.composite.qi.InjectionContext context ) throws InjectionProviderException
         {
-            Iterable<ServiceReference> serviceReferences = context.getStructureContext().getServiceLocator().findServices( serviceType );
-            return serviceReferences;
+            return context.moduleInstance().serviceFinder().findServices( serviceType );
         }
     }
 
-    static class IterableServiceProvider
+    private static class IterableServiceProvider
         implements InjectionProvider
     {
         private Class serviceType;
 
-        public IterableServiceProvider( Class serviceType )
+        private IterableServiceProvider( Class serviceType )
         {
             this.serviceType = serviceType;
         }
 
-        public Object provideInjection( InjectionContext context ) throws InjectionProviderException
+        public Object provideInjection( org.qi4j.runtime.composite.qi.InjectionContext context ) throws InjectionProviderException
         {
-            Iterable<ServiceReference> serviceReferences = context.getStructureContext().getServiceLocator().findServices( serviceType );
-            List serviceInstances = new ArrayList();
-            for( ServiceReference serviceReference : serviceReferences )
+            Iterable<ServiceReference<?>> serviceReferences = context.moduleInstance().serviceFinder().findServices( serviceType );
+            List<Object> serviceInstances = new ArrayList<Object>();
+            for( ServiceReference<?> serviceReference : serviceReferences )
             {
                 serviceInstances.add( serviceReference.get() );
             }
@@ -105,42 +99,41 @@ public final class ServiceInjectionProviderFactory
         }
     }
 
-    static class ServiceReferenceProvider
+    private static class ServiceReferenceProvider
         implements InjectionProvider
     {
-        private Class serviceType;
+        private Class<?> serviceType;
 
-        public ServiceReferenceProvider( Class serviceType )
+        private ServiceReferenceProvider( Class serviceType )
         {
             this.serviceType = serviceType;
         }
 
-        public Object provideInjection( InjectionContext context ) throws InjectionProviderException
+        public Object provideInjection( org.qi4j.runtime.composite.qi.InjectionContext context ) throws InjectionProviderException
         {
-            return context.getStructureContext().getServiceLocator().findServices( serviceType );
+            return context.moduleInstance().serviceFinder().findServices( serviceType );
         }
     }
 
-    static class ServiceProvider
+    private static class ServiceProvider
         implements InjectionProvider
     {
-        private Class serviceType;
+        private Class<?> serviceType;
 
-        public ServiceProvider( Class serviceType )
+        private ServiceProvider( Class serviceType )
         {
             this.serviceType = serviceType;
         }
 
-        public Object provideInjection( InjectionContext context ) throws InjectionProviderException
+        public Object provideInjection( org.qi4j.runtime.composite.qi.InjectionContext context ) throws InjectionProviderException
         {
-            ServiceReference serviceReference = context.getStructureContext().getServiceLocator().findService( serviceType );
+            ServiceReference serviceReference = context.moduleInstance().serviceFinder().findService( serviceType );
             if( serviceReference == null )
             {
                 return null;
             }
 
-            Object service = serviceReference.get();
-            return service;
+            return serviceReference.get();
         }
     }
 }

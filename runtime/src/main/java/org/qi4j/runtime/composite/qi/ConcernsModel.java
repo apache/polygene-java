@@ -78,4 +78,12 @@ public final class ConcernsModel
             }
         }
     }
+
+    public void visitDependencies( DependencyVisitor visitor )
+    {
+        for( MethodConcernsModel methodConcernsModel : methodConcernsModels.values() )
+        {
+            methodConcernsModel.visitDependencies( visitor );
+        }
+    }
 }

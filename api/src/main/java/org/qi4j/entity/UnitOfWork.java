@@ -14,9 +14,8 @@
  */
 package org.qi4j.entity;
 
-import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.CompositeBuilderFactory;
-import org.qi4j.composite.ObjectBuilderFactory;
+import org.qi4j.object.ObjectBuilderFactory;
 import org.qi4j.query.QueryBuilderFactory;
 
 /**
@@ -26,18 +25,18 @@ public interface UnitOfWork
 {
     UnitOfWork newUnitOfWork();
 
-    <T> T newEntity( Class<T> compositeType );
+    <T> T newEntity( Class<T> type );
 
-    <T> T newEntity( String identity, Class<T> compositeType );
+    <T> T newEntity( String identity, Class<T> type );
 
-    <T> CompositeBuilder<T> newEntityBuilder( Class<T> compositeType );
+    <T> EntityBuilder<T> newEntityBuilder( Class<T> type );
 
-    <T> CompositeBuilder<T> newEntityBuilder( String identity, Class<T> compositeType );
+    <T> EntityBuilder<T> newEntityBuilder( String identity, Class<T> type );
 
-    <T> T find( String identity, Class<T> compositeType )
+    <T> T find( String identity, Class<T> type )
         throws EntityCompositeNotFoundException;
 
-    <T> T getReference( String identity, Class<T> compositeType )
+    <T> T getReference( String identity, Class<T> type )
         throws EntityCompositeNotFoundException;
 
     <T> T dereference( T entity )

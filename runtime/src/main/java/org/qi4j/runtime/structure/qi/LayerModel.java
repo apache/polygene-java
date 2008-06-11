@@ -16,34 +16,52 @@ package org.qi4j.runtime.structure.qi;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.qi4j.runtime.composite.BindingException;
+import org.qi4j.runtime.composite.qi.DependencyVisitor;
 import org.qi4j.runtime.composite.qi.Resolution;
 
 /**
  * TODO
  */
-public class LayerModel
+public final class LayerModel
+    implements Binder
 {
+    // Model
+    private String name;
     private ApplicationModel applicationComposite;
     private UsedLayersModel usedLayersModel;
     private List<ModuleModel> modules;
 
-    public LayerModel( ApplicationModel applicationComposite, UsedLayersModel usedLayersModel, List<ModuleModel> modules )
+    public LayerModel( String name, ApplicationModel applicationComposite, UsedLayersModel usedLayersModel, List<ModuleModel> modules )
     {
+        this.name = name;
         this.applicationComposite = applicationComposite;
         this.usedLayersModel = usedLayersModel;
         this.modules = modules;
     }
 
-    // Resolution
+    public String name()
+    {
+        return name;
+    }
+
     public UsedLayersModel usedLayers()
     {
         return usedLayersModel;
     }
 
-    // Binding
-    public void bind( Resolution resolution )
+    public void visitDependencies( DependencyVisitor visitor )
     {
-        resolution = new Resolution( resolution.application(), this, null, null, null );
+        for( ModuleModel module : modules )
+        {
+            module.visitDependencies( visitor );
+        }
+    }
+
+    // Binding
+    public void bind( Resolution resolution ) throws BindingException
+    {
+        resolution = new Resolution( resolution.application(), this, null, null, null, null );
         for( ModuleModel module : modules )
         {
             module.bind( resolution );
@@ -54,7 +72,7 @@ public class LayerModel
     public LayerInstance newInstance( ApplicationInstance applicationInstance, UsedLayersInstance usedLayerInstance )
     {
         List<ModuleInstance> moduleInstances = new ArrayList<ModuleInstance>();
-        LayerInstance layerInstance = new LayerInstance( this, moduleInstances, usedLayerInstance );
+        LayerInstance layerInstance = new LayerInstance( this, applicationInstance, moduleInstances, usedLayerInstance );
         for( ModuleModel module : modules )
         {
             ModuleInstance moduleInstance = module.newInstance( layerInstance );

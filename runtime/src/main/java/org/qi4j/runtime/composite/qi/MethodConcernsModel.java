@@ -19,15 +19,18 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import org.qi4j.composite.Composite;
+import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.FragmentInvocationHandler;
 import org.qi4j.runtime.composite.ProxyReferenceInvocationHandler;
 import org.qi4j.runtime.composite.TypedFragmentInvocationHandler;
+import org.qi4j.runtime.structure.qi.Binder;
 import org.qi4j.runtime.structure.qi.ModuleInstance;
 
 /**
  * TODO
  */
 public final class MethodConcernsModel
+    implements Binder
 {
     private List<MethodConcernModel> concernsForMethod;
 
@@ -45,7 +48,7 @@ public final class MethodConcernsModel
     }
 
     // Binding
-    public void bind( Resolution resolution )
+    public void bind( Resolution resolution ) throws BindingException
     {
         for( MethodConcernModel concernModel : concernsForMethod )
         {
@@ -78,6 +81,14 @@ public final class MethodConcernsModel
         return new MethodConcernsInstance( method, firstConcern, mixinInvocationHandler, proxyHandler );
     }
 
+    public void visitDependencies( DependencyVisitor visitor )
+    {
+        for( MethodConcernModel methodConcernModel : concernsForMethod )
+        {
+            methodConcernModel.visitDependencies( visitor );
+        }
+    }
+
     private static final class MethodConcernModel
         extends AbstractModifierModel
     {
@@ -85,7 +96,6 @@ public final class MethodConcernsModel
         {
             super( concernClass );
         }
-
     }
 
 }

@@ -15,7 +15,6 @@
 package org.qi4j.runtime.entity.association;
 
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import org.qi4j.entity.EntityComposite;
@@ -29,42 +28,21 @@ import org.qi4j.spi.entity.QualifiedIdentity;
  * List provided by the EntityStore.
  */
 public final class ListAssociationInstance<T>
-    extends AbstractManyAssociationInstance<T>
+    extends ManyAssociationInstance<T>
     implements ListAssociation<T>
 {
     private List<QualifiedIdentity> associated;
 
     public ListAssociationInstance( AssociationInfo associationInfo, UnitOfWorkInstance unitOfWork, List<QualifiedIdentity> associated )
     {
-        super( associationInfo, unitOfWork );
+        super( associationInfo, unitOfWork, associated );
         this.associated = associated;
-    }
-
-    public List<QualifiedIdentity> getAssociatedList()
-    {
-        return associated;
     }
 
     public T get( int i )
     {
         return getEntity( associated.get( i ) );
     }
-
-    public int size()
-    {
-        return associated.size();
-    }
-
-    public boolean add( T t )
-    {
-        if( !( t instanceof EntityComposite ) )
-        {
-            throw new IllegalArgumentException( "Associated object must be an EntityComposite" );
-        }
-
-        return associated.add( getEntityId( t ) );
-    }
-
 
     public T set( int i, T t )
     {
@@ -111,21 +89,11 @@ public final class ListAssociationInstance<T>
         return associated.lastIndexOf( o );
     }
 
-    public void clear()
-    {
-        associated.clear();
-    }
-
     public boolean addAll( int i, Collection<? extends T> ts )
     {
         Collection<QualifiedIdentity> list = getEntityIdCollection( ts );
 
         return associated.addAll( i, list );
-    }
-
-    public Iterator<T> iterator()
-    {
-        return new ManyAssociationIterator( associated.iterator() );
     }
 
     public ListIterator<T> listIterator()
@@ -142,103 +110,6 @@ public final class ListAssociationInstance<T>
     {
         List<QualifiedIdentity> subList = associated.subList( i, i1 );
         return new ListAssociationInstance<T>( associationInfo, unitOfWork, subList );
-    }
-
-    public boolean equals( Object o )
-    {
-        if( this == o )
-        {
-            return true;
-        }
-        if( o == null || getClass() != o.getClass() )
-        {
-            return false;
-        }
-        if( !super.equals( o ) )
-        {
-            return false;
-        }
-
-        ListAssociationInstance that = (ListAssociationInstance) o;
-
-        if( !associated.equals( that.associated ) )
-        {
-            return false;
-        }
-
-        return true;
-    }
-
-    public int hashCode()
-    {
-        int result = super.hashCode();
-        result = 31 * result + associated.hashCode();
-        return result;
-    }
-
-    public boolean isEmpty()
-    {
-        return associated.isEmpty();
-    }
-
-    public boolean contains( Object o )
-    {
-        return associated.contains( getEntityId( o ) );
-    }
-
-    public Object[] toArray()
-    {
-        Object[] ids = associated.toArray();
-        for( int i = 0; i < ids.length; i++ )
-        {
-            ids[ i ] = getEntity( (QualifiedIdentity) ids[ i ] );
-        }
-
-        return ids;
-    }
-
-    public <T> T[] toArray( T[] ts )
-    {
-        QualifiedIdentity[] ids = new QualifiedIdentity[ts.length];
-        associated.toArray( ids );
-        for( int i = 0; i < ids.length; i++ )
-        {
-            QualifiedIdentity id = ids[ i ];
-            ts[ i ] = (T) getEntity( id );
-        }
-        return ts;
-    }
-
-    public boolean remove( Object o )
-    {
-        return associated.remove( getEntityId( o ) );
-    }
-
-    public boolean containsAll( Collection<?> objects )
-    {
-        return associated.containsAll( objects );
-    }
-
-    public boolean addAll( Collection<? extends T> ts )
-    {
-        Collection<QualifiedIdentity> list = getEntityIdCollection( ts );
-
-        return associated.addAll( list );
-    }
-
-    public boolean removeAll( Collection<?> objects )
-    {
-        return associated.removeAll( getEntityIdCollection( objects ) );
-    }
-
-    public boolean retainAll( Collection<?> objects )
-    {
-        return associated.retainAll( getEntityIdCollection( objects ) );
-    }
-
-    public String toString()
-    {
-        return associated.toString();
     }
 
     public void refresh( List<QualifiedIdentity> newList )

@@ -23,10 +23,9 @@ import org.qi4j.query.MissingIndexingSystemException;
 import org.qi4j.query.QueryBuilder;
 import org.qi4j.query.QueryBuilderFactory;
 import org.qi4j.runtime.entity.UnitOfWorkInstance;
-import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.runtime.structure.qi.ModuleInstance;
 import org.qi4j.service.ServiceFinder;
 import org.qi4j.service.ServiceReference;
-import org.qi4j.spi.injection.StructureContext;
 import org.qi4j.spi.query.EntityFinder;
 
 /**
@@ -60,9 +59,8 @@ public final class QueryBuilderFactoryImpl
      */
     public <T> QueryBuilder<T> newQueryBuilder( final Class<T> resultType )
     {
-        ModuleInstance module = unitOfWorkInstance.getModuleInstance();
-        StructureContext structureContext = module.structureContext();
-        ServiceFinder serviceLocator = structureContext.getServiceLocator();
+        ModuleInstance module = unitOfWorkInstance.module();
+        ServiceFinder serviceLocator = module.serviceFinder();
         final ServiceReference<EntityFinder> serviceReference = serviceLocator.findService( EntityFinder.class );
         if( serviceReference == null )
         {

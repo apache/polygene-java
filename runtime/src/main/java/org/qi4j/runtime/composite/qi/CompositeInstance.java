@@ -15,7 +15,9 @@
 package org.qi4j.runtime.composite.qi;
 
 import java.lang.reflect.InvocationHandler;
+import org.qi4j.composite.Composite;
 import org.qi4j.runtime.structure.qi.ModuleInstance;
+import org.qi4j.util.MetaInfo;
 
 /**
  * TODO
@@ -25,7 +27,9 @@ public interface CompositeInstance
 {
     Object proxy();
 
-    CompositeModel composite();
-
     ModuleInstance moduleInstance();
+
+    MetaInfo metaInfo();
+
+    Class<? extends Composite> type();
 }

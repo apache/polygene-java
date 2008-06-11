@@ -27,13 +27,13 @@ public class EntityCompositeAlreadyExistsException
     private static final long serialVersionUID = -7297710939536508481L;
 
     private String identity;
-    private Class<?> compositeType;
+    private String type;
 
-    public EntityCompositeAlreadyExistsException( String identity, Class<?> compositeType )
+    public EntityCompositeAlreadyExistsException( String identity, String type )
     {
-        super( "EntityComposite (" + identity + " of type " + compositeType.getName() + ") already exists." );
+        super( "EntityComposite (" + identity + " of type " + type + ") already exists." );
         this.identity = identity;
-        this.compositeType = compositeType;
+        this.type = type;
     }
 
     public String identity()
@@ -41,8 +41,8 @@ public class EntityCompositeAlreadyExistsException
         return identity;
     }
 
-    public Class<?> compositeType()
+    public String type()
     {
-        return compositeType;
+        return type;
     }
 }

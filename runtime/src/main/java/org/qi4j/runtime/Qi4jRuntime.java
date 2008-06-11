@@ -14,13 +14,6 @@
 
 package org.qi4j.runtime;
 
-import org.qi4j.runtime.composite.CompositeBinder;
-import org.qi4j.runtime.composite.CompositeModelFactory;
-import org.qi4j.runtime.composite.CompositeResolver;
-import org.qi4j.runtime.composite.InstanceFactory;
-import org.qi4j.runtime.composite.ObjectBinder;
-import org.qi4j.runtime.composite.ObjectModelFactory;
-import org.qi4j.runtime.composite.ObjectResolver;
 import org.qi4j.spi.Qi4jSPI;
 
 /**
@@ -30,17 +23,4 @@ import org.qi4j.spi.Qi4jSPI;
 public interface Qi4jRuntime
     extends Qi4jSPI
 {
-    InstanceFactory getInstanceFactory();
-
-    CompositeModelFactory getCompositeModelFactory();
-
-    CompositeResolver getCompositeResolver();
-
-    CompositeBinder getCompositeBinder();
-
-    ObjectModelFactory getObjectModelFactory();
-
-    ObjectResolver getObjectResolver();
-
-    ObjectBinder getObjectBinder();
 }

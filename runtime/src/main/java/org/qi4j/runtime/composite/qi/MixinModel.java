@@ -19,14 +19,17 @@ import java.util.HashSet;
 import java.util.Set;
 import org.qi4j.composite.State;
 import org.qi4j.composite.scope.This;
+import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.FragmentInvocationHandler;
 import org.qi4j.runtime.composite.GenericFragmentInvocationHandler;
 import org.qi4j.runtime.composite.TypedFragmentInvocationHandler;
+import org.qi4j.runtime.structure.qi.Binder;
 
 /**
  * TODO
  */
-public final class MixinModel
+public class MixinModel
+    implements Binder
 {
     // Model
     private Class mixinClass;
@@ -49,7 +52,7 @@ public final class MixinModel
     }
 
     // Binding
-    public void bind( Resolution context )
+    public void bind( Resolution context ) throws BindingException
     {
         constructorsModel.bind( context );
         injectedFieldsModel.bind( context );
@@ -57,7 +60,7 @@ public final class MixinModel
     }
 
     // Context
-    public Object newInstance( CompositeInstance compositeInstance, Set<Object> uses, State state )
+    public Object newInstance( CompositeInstance compositeInstance, UsesInstance uses, State state )
     {
         InjectionContext injectionContext = new InjectionContext( compositeInstance, uses, state );
         Object mixin = constructorsModel.newInstance( injectionContext );
@@ -85,7 +88,7 @@ public final class MixinModel
 
         DependencyVisitor visitor = new DependencyVisitor()
         {
-            public void visit( DependencyModel dependencyModel )
+            public void visit( DependencyModel dependencyModel, Resolution resolution )
             {
                 if( dependencyModel.injectionAnnotation().annotationType().equals( This.class ) )
                 {

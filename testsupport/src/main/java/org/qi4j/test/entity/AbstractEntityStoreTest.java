@@ -2,8 +2,9 @@ package org.qi4j.test.entity;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -13,6 +14,7 @@ import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.Mixins;
 import org.qi4j.composite.scope.Structure;
 import org.qi4j.composite.scope.This;
+import org.qi4j.entity.EntityBuilder;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.EntityCompositeNotFoundException;
 import org.qi4j.entity.UnitOfWork;
@@ -103,7 +105,7 @@ public abstract class AbstractEntityStoreTest
         throws UnitOfWorkCompletionException
     {
         // Create entity
-        CompositeBuilder<TestEntity> builder = unitOfWork.newEntityBuilder( TestEntity.class );
+        EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder( TestEntity.class );
         TestEntity instance = builder.newInstance();
         String id = instance.identity().get();
 

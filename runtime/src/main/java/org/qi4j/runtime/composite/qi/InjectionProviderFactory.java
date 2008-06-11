@@ -14,7 +14,7 @@
 
 package org.qi4j.runtime.composite.qi;
 
-import org.qi4j.spi.injection.InvalidInjectionException;
+import org.qi4j.runtime.injection.InvalidInjectionException;
 
 /**
  * TODO

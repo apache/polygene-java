@@ -8,8 +8,6 @@ import org.qi4j.runtime.composite.qi.InjectionContext;
 import org.qi4j.runtime.composite.qi.InjectionProvider;
 import org.qi4j.runtime.composite.qi.InjectionProviderFactory;
 import org.qi4j.runtime.composite.qi.Resolution;
-import org.qi4j.spi.injection.InjectionProviderException;
-import org.qi4j.spi.injection.InvalidInjectionException;
 
 /**
  * TODO
@@ -33,13 +31,13 @@ public final class ThisInjectionProviderFactory
 
 /* TODO Needs to be fixed to support internal mixins
             // Check if the composite implements the desired type
-            if( resolution.getRawType().isAssignableFrom( fragmentKey.getCompositeType() ) )
+            if( dependencyModel.getRawType().isAssignableFrom( fragmentKey.getCompositeType() ) )
             {
-                return new ThisInjectionProvider(resolution.getRawType());
+                return new ThisInjectionProvider(dependencyModel.getRawType());
             }
             else
             {
-                throw new InvalidInjectionException( "Composite " + fragmentKey.getCompositeType() + " does not implement @This type " + resolution.getDependencyType() + " in fragment " + resolution.getDependentType() );
+                throw new InvalidInjectionException( "Composite " + fragmentKey.getCompositeType() + " does not implement @This type " + dependencyModel.getDependencyType() + " in fragment " + dependencyModel.getDependentType() );
             }
 */
         }
@@ -71,8 +69,7 @@ public final class ThisInjectionProviderFactory
             try
             {
                 InvocationHandler handler = context.compositeInstance();
-                Object proxy = proxyConstructor.newInstance( handler );
-                return proxy;
+                return proxyConstructor.newInstance( handler );
             }
             catch( Exception e )
             {

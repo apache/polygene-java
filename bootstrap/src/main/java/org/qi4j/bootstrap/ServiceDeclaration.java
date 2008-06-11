@@ -15,28 +15,24 @@
 package org.qi4j.bootstrap;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import org.qi4j.composite.Composite;
-import org.qi4j.entity.Entity;
-import org.qi4j.service.ServiceComposite;
-import org.qi4j.service.ServiceDescriptor;
-import org.qi4j.service.ServiceInstanceProvider;
-import org.qi4j.spi.service.provider.DefaultServiceInstanceProvider;
+import org.qi4j.runtime.service.qi.ServiceModel;
+import org.qi4j.runtime.structure.qi.ModuleModel;
+import org.qi4j.service.ServiceInstanceFactory;
+import org.qi4j.spi.service.provider.DefaultServiceInstanceFactory;
 import org.qi4j.structure.Visibility;
+import org.qi4j.util.MetaInfo;
 
 /**
  * Declaration of a Service. Created by {@link org.qi4j.bootstrap.ModuleAssembly#addServices(Class[])}.
  */
 public final class ServiceDeclaration
 {
-    private Class<? extends ServiceInstanceProvider> serviceProvider = DefaultServiceInstanceProvider.class;
+    private Class<? extends ServiceInstanceFactory> serviceProvider = DefaultServiceInstanceFactory.class;
     private Iterable<Class> serviceTypes;
     private String identity;
     private boolean instantiateOnStartup = false;
-    private Map<Class, Serializable> serviceAttributes = new HashMap<Class, Serializable>();
+    private MetaInfo metaInfo = new MetaInfo();
     private Visibility visibility = Visibility.module;
 
     public ServiceDeclaration( Iterable<Class> serviceTypes )
@@ -50,7 +46,7 @@ public final class ServiceDeclaration
         return this;
     }
 
-    public ServiceDeclaration providedBy( Class<? extends ServiceInstanceProvider> sip )
+    public ServiceDeclaration providedBy( Class<? extends ServiceInstanceFactory> sip )
     {
         serviceProvider = sip;
         return this;
@@ -68,30 +64,24 @@ public final class ServiceDeclaration
         return this;
     }
 
-    public <K extends Serializable> ServiceDeclaration setServiceAttribute( Class<K> attributeType, K serviceAttribute )
+    public <K extends Serializable> ServiceDeclaration setMetaInfo( Serializable serviceAttribute )
     {
-        serviceAttributes.put( attributeType, serviceAttribute );
+        metaInfo.set( serviceAttribute );
         return this;
     }
 
-    List<ServiceDescriptor> serviceDescriptors()
+    void addServices( ModuleModel moduleModel, List<ServiceModel> serviceModels )
     {
-        List<ServiceDescriptor> serviceDescriptors = new ArrayList<ServiceDescriptor>();
         for( Class serviceType : serviceTypes )
         {
-            String id = identity;
-            if( id == null )
-            {
-                id = serviceType.getSimpleName();
-            }
-            createServiceDescriptor( serviceDescriptors, serviceType, id );
+            ServiceModel serviceModel = new ServiceModel( serviceType,
+                                                          visibility,
+                                                          moduleModel,
+                                                          serviceProvider,
+                                                          identity,
+                                                          instantiateOnStartup,
+                                                          new MetaInfo( metaInfo ) );
+            serviceModels.add( serviceModel );
         }
-        return serviceDescriptors;
-    }
-
-    private void createServiceDescriptor( List<ServiceDescriptor> serviceDescriptors, Class serviceType, String id )
-    {
-        ServiceDescriptor serviceDescriptor = new ServiceDescriptor( serviceType, serviceProvider, id, visibility, instantiateOnStartup, serviceAttributes );
-        serviceDescriptors.add( serviceDescriptor );
     }
 }

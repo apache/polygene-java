@@ -19,5 +19,5 @@ package org.qi4j.runtime.composite.qi;
  */
 public interface DependencyVisitor
 {
-    void visit( DependencyModel dependencyModel );
+    void visit( DependencyModel dependencyModel, Resolution resolution );
 }

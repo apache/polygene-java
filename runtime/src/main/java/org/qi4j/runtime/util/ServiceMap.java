@@ -17,9 +17,8 @@ package org.qi4j.runtime.util;
 import java.util.HashMap;
 import java.util.Map;
 import org.qi4j.composite.Composite;
-import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.runtime.structure.qi.ModuleInstance;
 import org.qi4j.service.ServiceReference;
-import org.qi4j.structure.Visibility;
 
 /**
  * This class helps you manage references to services which are acquired
@@ -44,8 +43,8 @@ public final class ServiceMap<T>
         ServiceReference serviceReference = instances.get( compositeType );
         if( serviceReference == null )
         {
-            ModuleInstance realModule = moduleInstance.findModuleForCompositeType( compositeType );
-            serviceReference = realModule.findService( serviceClass, Visibility.module );
+            ModuleInstance realModule = moduleInstance.findModuleForComposite( compositeType );
+            serviceReference = realModule.serviceFinder().findService( serviceClass );
             if( serviceReference == null )
             {
                 return null;

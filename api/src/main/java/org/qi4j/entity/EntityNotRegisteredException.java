@@ -20,18 +20,18 @@ public class EntityNotRegisteredException extends InvalidApplicationException
 {
     private static final long serialVersionUID = 7185723686654157891L;
 
-    private Class<? extends EntityComposite> entityType;
+    private String entityType;
     private Module module;
 
-    public EntityNotRegisteredException( Class<? extends EntityComposite> entityType, Module module )
+    public EntityNotRegisteredException( String entityType, Module module )
     {
-        super( "Trying to find unregistered composite of type [" + entityType.getName() + "] in module [" +
-                        module.name().get() + "]." );
+        super( "Trying to find unregistered composite of type [" + entityType + "] in module [" +
+               module.name() + "]." );
         this.entityType = entityType;
         this.module = module;
     }
 
-    public Class<? extends EntityComposite> compositeType()
+    public String type()
     {
         return entityType;
     }

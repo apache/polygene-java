@@ -4,7 +4,7 @@ import java.util.Random;
 import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.composite.CompositeBuilder;
+import org.qi4j.entity.EntityBuilder;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkCompletionException;
@@ -57,7 +57,7 @@ public abstract class AbstractEntityStorePerformanceTest
         UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
 
         long start = System.currentTimeMillis();
-        CompositeBuilder<TestComposite> builder = unitOfWork.newEntityBuilder( TestComposite.class );
+        EntityBuilder<TestComposite> builder = unitOfWork.newEntityBuilder( TestComposite.class );
         for( int i = 0; i < nrOfEntities; i++ )
         {
             // Create entity
@@ -111,7 +111,7 @@ public abstract class AbstractEntityStorePerformanceTest
         throws UnitOfWorkCompletionException
     {
         // Create entity
-        CompositeBuilder<TestComposite> builder = unitOfWork.newEntityBuilder( "" + ( idx++ ), TestComposite.class );
+        EntityBuilder<TestComposite> builder = unitOfWork.newEntityBuilder( "" + ( idx++ ), TestComposite.class );
         TestComposite instance = builder.newInstance();
         String id = instance.identity().get();
 
