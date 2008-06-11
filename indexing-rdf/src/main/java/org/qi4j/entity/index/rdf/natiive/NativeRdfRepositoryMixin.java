@@ -19,7 +19,7 @@ import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.sail.Sail;
 import org.openrdf.sail.inferencer.fc.ForwardChainingRDFSInferencer;
 import org.openrdf.sail.nativerdf.NativeStore;
-import org.qi4j.composite.scope.This;
+import org.qi4j.injection.scope.This;
 import org.qi4j.service.Activatable;
 import org.qi4j.service.Configuration;
 

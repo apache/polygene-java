@@ -24,7 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.qi4j.composite.scope.This;
+import org.qi4j.injection.scope.This;
 import org.qi4j.entity.association.ListAssociation;
 import org.qi4j.service.Activatable;
 import org.qi4j.spi.entity.EntityNotFoundException;

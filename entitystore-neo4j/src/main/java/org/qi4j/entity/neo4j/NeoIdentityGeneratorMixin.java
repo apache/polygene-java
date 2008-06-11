@@ -21,8 +21,8 @@ import org.neo4j.api.core.Node;
 import org.neo4j.api.core.Relationship;
 import org.neo4j.api.core.RelationshipType;
 import org.neo4j.api.core.Transaction;
-import org.qi4j.composite.scope.Service;
 import org.qi4j.entity.Identity;
+import org.qi4j.injection.scope.Service;
 import org.qi4j.service.Activatable;
 
 /**

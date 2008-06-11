@@ -16,7 +16,7 @@ package org.qi4j.quikit.application.mixins;
 import org.apache.wicket.protocol.http.IWebApplicationFactory;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.protocol.http.WicketFilter;
-import org.qi4j.composite.scope.Structure;
+import org.qi4j.injection.scope.Structure;
 import org.qi4j.object.ObjectBuilder;
 import org.qi4j.object.ObjectBuilderFactory;
 import org.qi4j.quikit.application.QuikItApplication;

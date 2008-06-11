@@ -23,7 +23,7 @@ import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.rio.RDFWriter;
 import org.openrdf.rio.rdfxml.util.RDFXMLPrettyWriter;
-import org.qi4j.composite.scope.This;
+import org.qi4j.injection.scope.This;
 
 /**
  * TODO Add JavaDoc
@@ -34,7 +34,6 @@ import org.qi4j.composite.scope.This;
 public abstract class RdfIndexerExporterMixin
     implements RdfIndexerExporterComposite
 {
-
     @This RdfQueryContext state;
 
     public void toRDF( final OutputStream outputStream )

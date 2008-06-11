@@ -18,7 +18,7 @@
 package org.qi4j.rest;
 
 import org.qi4j.composite.CompositeBuilderFactory;
-import org.qi4j.composite.scope.Structure;
+import org.qi4j.injection.scope.Structure;
 import org.qi4j.object.ObjectBuilder;
 import org.qi4j.object.ObjectBuilderFactory;
 import org.qi4j.service.Activatable;

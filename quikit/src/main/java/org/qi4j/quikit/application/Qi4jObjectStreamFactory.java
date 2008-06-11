@@ -26,9 +26,9 @@ import java.util.logging.Logger;
 import org.apache.wicket.util.io.IObjectStreamFactory;
 import org.apache.wicket.util.io.SerializableChecker;
 import org.qi4j.Qi4j;
-import org.qi4j.composite.scope.Structure;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkFactory;
+import org.qi4j.injection.scope.Structure;
 import org.qi4j.spi.serialization.CompositeInputStream;
 import org.qi4j.spi.serialization.CompositeOutputStream;
 

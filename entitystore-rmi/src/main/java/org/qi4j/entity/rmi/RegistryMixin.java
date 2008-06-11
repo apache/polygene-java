@@ -7,7 +7,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import org.qi4j.composite.AppliesTo;
-import org.qi4j.composite.scope.This;
+import org.qi4j.injection.scope.This;
 import org.qi4j.service.Activatable;
 import org.qi4j.service.Configuration;
 

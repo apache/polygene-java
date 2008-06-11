@@ -16,7 +16,7 @@ package org.qi4j.quikit.application;
 import org.apache.wicket.protocol.http.IWebApplicationFactory;
 import org.apache.wicket.protocol.http.WicketFilter;
 import org.qi4j.composite.CompositeBuilderFactory;
-import org.qi4j.composite.scope.Structure;
+import org.qi4j.injection.scope.Structure;
 import org.qi4j.quikit.assembly.composites.QuikItApplicationFactoryComposite;
 
 public final class QuikItFilter extends WicketFilter

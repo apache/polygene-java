@@ -13,7 +13,7 @@
  */
 package org.qi4j.quikit.application.mixins;
 
-import org.qi4j.composite.scope.Structure;
+import org.qi4j.injection.scope.Structure;
 import org.qi4j.object.ObjectBuilderFactory;
 import org.qi4j.quikit.application.QuikItServlet;
 import org.qi4j.service.ServiceDescriptor;

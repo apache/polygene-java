@@ -15,11 +15,11 @@ package org.qi4j.rest;
 
 import java.io.IOException;
 import java.util.Map;
-import org.qi4j.composite.scope.Structure;
-import org.qi4j.composite.scope.Uses;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkFactory;
+import org.qi4j.injection.scope.Structure;
+import org.qi4j.injection.scope.Uses;
 import org.qi4j.query.Query;
 import org.qi4j.query.QueryBuilder;
 import org.qi4j.query.QueryBuilderFactory;

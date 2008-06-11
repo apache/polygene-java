@@ -14,7 +14,7 @@
 package org.qi4j.quikit.panels;
 
 import org.apache.wicket.markup.html.panel.Panel;
-import org.qi4j.composite.scope.Uses;
+import org.qi4j.injection.scope.Uses;
 
 public class EntityFormEditPanel extends Panel
 {

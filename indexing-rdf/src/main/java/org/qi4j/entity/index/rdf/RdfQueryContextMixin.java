@@ -19,16 +19,11 @@
 package org.qi4j.entity.index.rdf;
 
 import org.openrdf.repository.Repository;
-import org.openrdf.repository.RepositoryException;
-import org.openrdf.repository.sail.SailRepository;
-import org.openrdf.sail.Sail;
-import org.openrdf.sail.inferencer.fc.ForwardChainingRDFSInferencer;
-import org.qi4j.composite.scope.Service;
+import org.qi4j.injection.scope.Service;
 import org.qi4j.service.Activatable;
 
 /**
  * TODO Add JavaDoc
- *
  */
 public class RdfQueryContextMixin
     implements RdfQueryContext, Activatable

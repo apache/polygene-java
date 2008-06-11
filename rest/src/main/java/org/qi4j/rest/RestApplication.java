@@ -17,13 +17,13 @@
  */
 package org.qi4j.rest;
 
-import org.qi4j.composite.scope.Structure;
-import org.qi4j.composite.scope.Uses;
 import org.qi4j.entity.ConcurrentEntityModificationException;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkCompletionException;
 import org.qi4j.entity.UnitOfWorkException;
 import org.qi4j.entity.UnitOfWorkFactory;
+import org.qi4j.injection.scope.Structure;
+import org.qi4j.injection.scope.Uses;
 import org.qi4j.object.ObjectBuilder;
 import org.qi4j.object.ObjectBuilderFactory;
 import org.restlet.Application;
