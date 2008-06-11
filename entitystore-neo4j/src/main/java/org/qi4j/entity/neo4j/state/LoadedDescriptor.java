@@ -23,9 +23,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.neo4j.api.core.Node;
-import org.qi4j.spi.entity.association.AssociationModel;
-import org.qi4j.spi.property.PropertyModel;
-import org.qi4j.spi.structure.CompositeDescriptor;
+import org.qi4j.spi.composite.CompositeDescriptor;
+import org.qi4j.spi.entity.association.AssociationDescriptor;
+import org.qi4j.spi.property.PropertyDescriptor;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
@@ -83,7 +83,7 @@ public class LoadedDescriptor
     private LoadedDescriptor( CompositeDescriptor descriptor, Node descriptionNode )
     {
         this.descriptionNode = descriptionNode;
-        for( AssociationModel model : descriptor.getCompositeModel().getAssociationModels() )
+        for( AssociationDescriptor model : descriptor.state().associations() )
         {
             if( ManyAssociationFactory.isManyAssociation( model ) )
             {
@@ -91,12 +91,12 @@ public class LoadedDescriptor
             }
             else
             {
-                associations.add( model.getQualifiedName() );
+                associations.add( model.qualifiedName() );
             }
         }
-        for( PropertyModel model : descriptor.getCompositeModel().getPropertyModels() )
+        for( PropertyDescriptor model : descriptor.state().properties() )
         {
-            properties.add( model.getQualifiedName() );
+            properties.add( model.qualifiedName() );
         }
         store();
     }

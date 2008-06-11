@@ -99,17 +99,17 @@ public class DirectEntityState implements CommittableEntityState
 
     private void storeIdentity()
     {
-        Node typeNode = idIndex.getTypeNode( identity.getCompositeType() );
-        underlyingNode.setProperty( IDENTITY_PROPERTY_KEY, identity.getIdentity() );
+        Node typeNode = idIndex.getTypeNode( identity.type() );
+        underlyingNode.setProperty( IDENTITY_PROPERTY_KEY, identity.identity() );
         underlyingNode.createRelationshipTo( typeNode, ENTITY_TYPE_RELATIONSHIP_TYPE );
-        idIndex.putNode( identity.getIdentity(), underlyingNode );
+        idIndex.putNode( identity.identity(), underlyingNode );
     }
 
     private void verifyIdentity()
     {
         String errorMessage = "Stored identity does not match expected identity. ";
         Relationship typeRelation = underlyingNode.getSingleRelationship( ENTITY_TYPE_RELATIONSHIP_TYPE, Direction.OUTGOING );
-        Node expectedTypeNode = idIndex.getTypeNode( identity.getCompositeType() );
+        Node expectedTypeNode = idIndex.getTypeNode( identity.type() );
         if( typeRelation == null )
         {
             throw new IllegalStateException( errorMessage + "Not related to a type." );
@@ -118,9 +118,9 @@ public class DirectEntityState implements CommittableEntityState
         {
             throw new IllegalStateException( errorMessage + "Related to wrong type." );
         }
-        else if( !identity.getIdentity().equals( underlyingNode.getProperty( IDENTITY_PROPERTY_KEY, null ) ) )
+        else if( !identity.identity().equals( underlyingNode.getProperty( IDENTITY_PROPERTY_KEY, null ) ) )
         {
-            throw new IllegalStateException( errorMessage + "Expected id \"" + identity.getIdentity() +
+            throw new IllegalStateException( errorMessage + "Expected id \"" + identity.identity() +
                                              "\", was \"" + underlyingNode.getProperty( IDENTITY_PROPERTY_KEY, "null" ) + "\"." );
         }
     }
@@ -236,7 +236,7 @@ public class DirectEntityState implements CommittableEntityState
         {
             relation.delete();
         }
-        underlyingNode.createRelationshipTo( idIndex.getNode( newEntity.getIdentity() ), associationType );
+        underlyingNode.createRelationshipTo( idIndex.getNode( newEntity.identity() ), associationType );
     }
 
     public Collection<QualifiedIdentity> getManyAssociation( String qualifiedName )

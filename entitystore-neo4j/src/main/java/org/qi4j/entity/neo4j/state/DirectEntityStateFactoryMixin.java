@@ -35,7 +35,7 @@ public class DirectEntityStateFactoryMixin implements NodeEntityStateFactory
 
     public CommittableEntityState createEntityState( NeoIdentityIndex idIndex, LoadedDescriptor descriptor, QualifiedIdentity identity, EntityStatus status )
     {
-        Node node = idIndex.getOrCreateNode( identity.getIdentity() );
+        Node node = idIndex.getOrCreateNode( identity.identity() );
         return createEntityState( idIndex, node, descriptor, identity, status );
     }
 
@@ -47,7 +47,7 @@ public class DirectEntityStateFactoryMixin implements NodeEntityStateFactory
     public CommittableEntityState loadEntityStateFromNode( NeoIdentityIndex idIndex, Node node )
     {
         QualifiedIdentity identity = DirectEntityState.getIdentityFromNode( node );
-        LoadedDescriptor descriptor = LoadedDescriptor.loadDescriptor( idIndex.getTypeNode( identity.getCompositeType() ) );
+        LoadedDescriptor descriptor = LoadedDescriptor.loadDescriptor( idIndex.getTypeNode( identity.type() ) );
         return createEntityState( idIndex, node, descriptor, identity, EntityStatus.LOADED );
     }
 

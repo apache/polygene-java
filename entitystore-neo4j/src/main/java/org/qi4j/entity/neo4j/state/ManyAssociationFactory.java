@@ -24,7 +24,7 @@ import org.neo4j.api.core.RelationshipType;
 import org.qi4j.entity.association.ManyAssociation;
 import org.qi4j.entity.neo4j.NeoIdentityIndex;
 import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.spi.entity.association.AssociationModel;
+import org.qi4j.spi.entity.association.AssociationDescriptor;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
@@ -34,9 +34,9 @@ class ManyAssociationFactory
     private static final Map<String, ManyAssociationFactory> cache = new HashMap<String, ManyAssociationFactory>();
 
 
-    static ManyAssociationFactory getFactory( AssociationModel model )
+    static ManyAssociationFactory getFactory( AssociationDescriptor model )
     {
-        String qName = model.getQualifiedName();
+        String qName = model.qualifiedName();
         if( !isManyAssociation( model ) )
         {
             throw new IllegalArgumentException(
@@ -77,9 +77,9 @@ class ManyAssociationFactory
     private final String qName;
     private final CollectionFactory factory;
 
-    private ManyAssociationFactory( AssociationModel model )
+    private ManyAssociationFactory( AssociationDescriptor model )
     {
-        this.qName = model.getQualifiedName();
+        this.qName = model.qualifiedName();
         this.factory = CollectionFactory.getFactoryFor( model );
     }
 
@@ -104,9 +104,9 @@ class ManyAssociationFactory
         return factory.createNodeCollection( this, state, neo, idIndex );
     }
 
-    static boolean isManyAssociation( AssociationModel model )
+    static boolean isManyAssociation( AssociationDescriptor model )
     {
-        return ManyAssociation.class.isAssignableFrom( model.getAccessor().getReturnType() );
+        return ManyAssociation.class.isAssignableFrom( model.accessor().getReturnType() );
     }
 
     RelationshipType createAssociationType( LinkType type )

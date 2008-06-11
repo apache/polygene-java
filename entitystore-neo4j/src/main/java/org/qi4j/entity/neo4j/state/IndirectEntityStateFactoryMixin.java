@@ -45,10 +45,10 @@ public class IndirectEntityStateFactoryMixin implements NeoEntityStateFactory
         Transaction tx = txFactory.beginTx();
         try
         {
-            Node node = idIndex.getNode( identity.getIdentity() );
+            Node node = idIndex.getNode( identity.identity() );
             if( node == null )
             {
-                node = UncreatedNode.getNode( identity.getIdentity(), neo );
+                node = UncreatedNode.getNode( identity.identity(), neo );
             }
             CommittableEntityState state = new IndirectEntityState( (DirectEntityState) directFactory.createEntityState( idIndex, node, descriptor, identity, status ) );
             state.preloadState();
@@ -76,7 +76,7 @@ public class IndirectEntityStateFactoryMixin implements NeoEntityStateFactory
             List<Node> removedNodes = new LinkedList<Node>();
             for( QualifiedIdentity removedId : removed )
             {
-                Node removedNode = idIndex.getNode( removedId.getIdentity() );
+                Node removedNode = idIndex.getNode( removedId.identity() );
                 CommittableEntityState entity = directFactory.loadEntityStateFromNode( idIndex, removedNode );
                 entity.prepareRemove();
                 removedNodes.add( removedNode );
@@ -86,7 +86,7 @@ public class IndirectEntityStateFactoryMixin implements NeoEntityStateFactory
                 if( removedNode.getRelationships( Direction.INCOMING ).iterator().hasNext() )
                 {
                     throw new EntityStoreException(
-                        "Cannot remove " + DirectEntityState.getIdentityFromNode( removedNode ).getIdentity() +
+                        "Cannot remove " + DirectEntityState.getIdentityFromNode( removedNode ).identity() +
                         ", it has incoming references." );
                 }
                 removedNode.delete();

@@ -244,7 +244,7 @@ public class DirectIdentityList extends AbstractSequentialList<QualifiedIdentity
             {
                 throw new IllegalStateException();
             }
-            Node added = idIndex.getNode( qualifiedIdentity.getIdentity() );
+            Node added = idIndex.getNode( qualifiedIdentity.identity() );
             RelationshipModifier modifier = new RelationshipModifier();
             currentRelation = modifier.set( added );
             lastDirection = null;
@@ -274,7 +274,7 @@ public class DirectIdentityList extends AbstractSequentialList<QualifiedIdentity
                     afterType = endType;
                 }
             }
-            Node added = idIndex.getNode( qualifiedIdentity.getIdentity() );
+            Node added = idIndex.getNode( qualifiedIdentity.identity() );
             if( inList( added ) )
             {
                 added = proxy( added );

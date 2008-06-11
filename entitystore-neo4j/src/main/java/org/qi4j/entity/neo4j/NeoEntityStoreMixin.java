@@ -26,13 +26,13 @@ import org.qi4j.entity.neo4j.state.IndirectEntityStateFactory;
 import org.qi4j.entity.neo4j.state.LoadedDescriptor;
 import org.qi4j.entity.neo4j.state.NeoEntityStateFactory;
 import org.qi4j.injection.scope.Service;
+import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.StateCommitter;
-import org.qi4j.spi.structure.CompositeDescriptor;
 import org.qi4j.structure.Module;
 
 /**
@@ -109,7 +109,7 @@ public class NeoEntityStoreMixin implements EntityStore
         Transaction tx = neo.beginTx();
         try
         {
-            LoadedDescriptor descriptor = LoadedDescriptor.loadDescriptor( compositeDescriptor, idService.getTypeNode( identity.getCompositeType() ) );
+            LoadedDescriptor descriptor = LoadedDescriptor.loadDescriptor( compositeDescriptor, idService.getTypeNode( identity.type() ) );
             tx.success();
             return descriptor;
         }

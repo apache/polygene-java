@@ -25,7 +25,7 @@ import java.util.Set;
 import org.neo4j.api.core.NeoService;
 import org.qi4j.entity.neo4j.NeoIdentityIndex;
 import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.spi.entity.association.AssociationModel;
+import org.qi4j.spi.entity.association.AssociationDescriptor;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
@@ -108,9 +108,9 @@ enum CollectionFactory implements BackendFactory
         return type.getName();
     }
 
-    static CollectionFactory getFactoryFor( AssociationModel model )
+    static CollectionFactory getFactoryFor( AssociationDescriptor model )
     {
-        Class<?> targetType = model.getAccessor().getReturnType();
+        Class<?> targetType = model.accessor().getReturnType();
         return getFactoryFor( targetType );
     }
 

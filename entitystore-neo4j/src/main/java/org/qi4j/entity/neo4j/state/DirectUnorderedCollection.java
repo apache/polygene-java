@@ -102,7 +102,7 @@ public class DirectUnorderedCollection extends AbstractCollection<QualifiedIdent
     {
         if( checker.goodToAdd( this, qualifiedIdentity ) )
         {
-            Node node = idIndex.getNode( qualifiedIdentity.getIdentity() );
+            Node node = idIndex.getNode( qualifiedIdentity.identity() );
             state.underlyingNode.createRelationshipTo( node, associationType );
             changeSize( 1 );
             return true;

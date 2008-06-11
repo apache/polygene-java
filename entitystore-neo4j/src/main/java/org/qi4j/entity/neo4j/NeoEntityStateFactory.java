@@ -17,13 +17,10 @@
 package org.qi4j.entity.neo4j;
 
 import java.util.Iterator;
-import org.qi4j.entity.neo4j.state.NeoEntityState;
+import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
-import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.spi.entity.StateCommitter;
-import org.qi4j.spi.structure.CompositeDescriptor;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
@@ -32,7 +29,7 @@ public interface NeoEntityStateFactory
 {
     EntityState createEntityState( NeoIdentityIndex idIndex, CompositeDescriptor descriptor, QualifiedIdentity identity, EntityStatus status );
 
-    StateCommitter prepareCommit( NeoIdentityIndex idIndex, Iterable<NeoEntityState> updated, Iterable<QualifiedIdentity> removed ) throws EntityStoreException;
+//    StateCommitter prepareCommit( NeoIdentityIndex idIndex, Iterable<NeoEntityState> updated, Iterable<QualifiedIdentity> removed ) throws EntityStoreException;
 
     Iterator<EntityState> iterator();
 }
