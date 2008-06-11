@@ -26,6 +26,7 @@ import org.openrdf.query.QueryLanguage;
 import org.qi4j.composite.Composite;
 import org.qi4j.entity.Identity;
 import org.qi4j.property.AbstractPropertyInstance;
+import org.qi4j.property.ComputedPropertyInstance;
 import org.qi4j.query.grammar.AssociationIsNullPredicate;
 import org.qi4j.query.grammar.AssociationNullPredicate;
 import org.qi4j.query.grammar.AssociationReference;
@@ -42,7 +43,6 @@ import org.qi4j.query.grammar.PropertyReference;
 import org.qi4j.query.grammar.SingleValueExpression;
 import org.qi4j.query.grammar.ValueExpression;
 import org.qi4j.spi.composite.MixinTypeModel;
-import org.qi4j.spi.entity.association.AssociationModel;
 
 /**
  * TODO Add JavaDoc
@@ -340,7 +340,7 @@ class SparqlRdfQueryParser
         {
             subject = addTriple( associationReference.traversedAssociation(), false ).value;
         }
-        String ns = addNamespace( AssociationModel.toNamespace( associationReference.associationAccessor() ) );
+        String ns = addNamespace( toNamespace( associationReference.associationAccessor() ) );
         return addTriple( subject, ns + ":" + associationReference.associationName(), optional );
     }
 
@@ -374,6 +374,15 @@ class SparqlRdfQueryParser
             }
         }
         return null;
+    }
+
+    private String toNamespace( final Method accessor )
+    {
+        if( accessor == null )
+        {
+            return null;
+        }
+        return "urn:qi4j:association:" + ComputedPropertyInstance.getDeclaringClassName( accessor ) + ":";
     }
 
     private static Method getAccessor( final Class declaringClass,

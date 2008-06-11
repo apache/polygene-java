@@ -88,7 +88,7 @@ public class QuikitAssembler implements Assembler
 
     private String jettyIdentity( ModuleAssembly module )
     {
-        String moduleName = module.getName();
+        String moduleName = module.name();
         jettyIdentity = moduleName + ":" + JettyService.class.getName();
         return jettyIdentity;
     }

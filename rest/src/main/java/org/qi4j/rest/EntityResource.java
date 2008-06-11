@@ -18,7 +18,6 @@
 package org.qi4j.rest;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
 import javax.xml.parsers.DocumentBuilder;
@@ -29,10 +28,8 @@ import org.qi4j.composite.scope.Uses;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkFactory;
-import org.qi4j.entity.association.Association;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.composite.CompositeDescriptor;
-import org.qi4j.spi.entity.association.AssociationBinding;
 import org.qi4j.structure.Module;
 import org.restlet.Context;
 import org.restlet.data.MediaType;
@@ -311,6 +308,7 @@ public class EntityResource extends Resource
     }
 */
 
+/*
     private Association<?> getAssociation( final AssociationBinding associationBinding )
     {
         final Method accessor = associationBinding.getAssociationResolution().getAssociationModel().getAccessor();
@@ -332,6 +330,7 @@ public class EntityResource extends Resource
         }
         return association;
     }
+*/
 
     private String getQualifiedPropertyName( Method accessor )
     {

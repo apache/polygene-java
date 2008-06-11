@@ -44,7 +44,7 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
-      <library name="org.neo4j:neo:1.0-rc1-20080528.211105-33">
+      <library name="org.neo4j:neo:1.0-rc1-20080530.151028-34">
         <CLASSES>
           <root url="jar://$M2_REPO$/org/neo4j/neo/1.0-rc1-SNAPSHOT/neo-1.0-rc1-SNAPSHOT.jar!/" />
         </CLASSES>
@@ -157,32 +157,6 @@
         </JAVADOC>
         <SOURCES>
           <root url="jar://$M2_REPO$/cglib/cglib-nodep/2.1_3/cglib-nodep-2.1_3-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library name="org.qi4j.tests:qi4j-tests-core:0.2.0-SNAPSHOT">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/org/qi4j/tests/qi4j-tests-core/0.2.0-SNAPSHOT/qi4j-tests-core-0.2.0-SNAPSHOT.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/org/qi4j/tests/qi4j-tests-core/0.2.0-SNAPSHOT/qi4j-tests-core-0.2.0-SNAPSHOT-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/org/qi4j/tests/qi4j-tests-core/0.2.0-SNAPSHOT/qi4j-tests-core-0.2.0-SNAPSHOT-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library name="org.qi4j.library:qi4j-lib-framework:0.2.0-SNAPSHOT">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/org/qi4j/library/qi4j-lib-framework/0.2.0-SNAPSHOT/qi4j-lib-framework-0.2.0-SNAPSHOT.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/org/qi4j/library/qi4j-lib-framework/0.2.0-SNAPSHOT/qi4j-lib-framework-0.2.0-SNAPSHOT-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/org/qi4j/library/qi4j-lib-framework/0.2.0-SNAPSHOT/qi4j-lib-framework-0.2.0-SNAPSHOT-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>

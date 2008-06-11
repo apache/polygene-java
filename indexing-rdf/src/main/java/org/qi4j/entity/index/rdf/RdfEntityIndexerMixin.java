@@ -35,11 +35,11 @@ import org.qi4j.entity.index.rdf.natiive.NativeRdfConfiguration;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.composite.MixinTypeModel;
+import org.qi4j.spi.entity.AssociationDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.spi.query.EntityIndexer;
-import org.qi4j.spi.structure.AssociationDescriptor;
-import org.qi4j.spi.structure.PropertyDescriptor;
 import org.qi4j.structure.Module;
 
 /**

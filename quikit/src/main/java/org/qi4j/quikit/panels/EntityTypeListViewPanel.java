@@ -15,7 +15,6 @@ package org.qi4j.quikit.panels;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
@@ -23,12 +22,11 @@ import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.qi4j.composite.Composite;
 import org.qi4j.composite.scope.Structure;
 import org.qi4j.composite.scope.Uses;
-import org.qi4j.entity.EntityComposite;
 import org.qi4j.quikit.pages.EntityListViewPage;
 import static org.qi4j.quikit.pages.EntityListViewPage.PARAM_ENTITY_TYPE;
+import org.qi4j.structure.Module;
 
 public final class EntityTypeListViewPanel extends Panel
 {
@@ -36,12 +34,13 @@ public final class EntityTypeListViewPanel extends Panel
 
     private static final String WICKET_ID_COMPOSITES = "composites";
 
-    public EntityTypeListViewPanel( @Uses String aWicketId, @Structure ModuleBinding aModule )
+    public EntityTypeListViewPanel( @Uses String aWicketId, @Structure Module aModule )
     {
         super( aWicketId );
 
-        Map<Class<? extends Composite>, CompositeBinding> composites = aModule.getCompositeBindings();
         ArrayList<Class> bindings = new ArrayList<Class>();
+/* TODO
+        Map<Class<? extends Composite>, CompositeBinding> composites = aModule.getCompositeBindings();
         for( CompositeBinding binding : composites.values() )
         {
             Class<? extends Composite> type = binding.getCompositeType();
@@ -50,6 +49,7 @@ public final class EntityTypeListViewPanel extends Panel
                 bindings.add( type );
             }
         }
+*/
 
         add( new CompositeListView( bindings ) );
     }

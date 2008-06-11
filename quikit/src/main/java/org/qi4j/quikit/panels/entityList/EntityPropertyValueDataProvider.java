@@ -33,8 +33,9 @@ import org.qi4j.property.Property;
 import org.qi4j.quikit.DisplayInfo;
 import org.qi4j.quikit.application.QuikitSession;
 import static org.qi4j.quikit.panels.entityList.EntityPropertyValueDataProvider.EntityFieldValue;
-import org.qi4j.runtime.property.PropertyModel;
 import org.qi4j.spi.Qi4jSPI;
+import org.qi4j.spi.composite.CompositeDescriptor;
+import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.structure.Module;
 
 /**
@@ -87,17 +88,15 @@ final class EntityPropertyValueDataProvider
             module = quikitSession.getModule();
             spi = quikitSession.getQi4jSpi();
 
-            CompositeBinding binding = spi.getCompositeDescriptor( currentEntityClass, module );
-            Iterable<PropertyBinding> propertyBindings = binding.getPropertyBindings();
-            for( PropertyBinding propertyBinding : propertyBindings )
+            CompositeDescriptor compositeDescriptor = spi.getCompositeDescriptor( currentEntityClass, module );
+            Iterable<PropertyDescriptor> propertyDescriptorIterable = compositeDescriptor.state().properties();
+            for( PropertyDescriptor descriptor : propertyDescriptorIterable )
             {
-                DisplayInfo displayInfo = propertyBinding.metaInfo( DisplayInfo.class );
+                DisplayInfo displayInfo = descriptor.metaInfo( DisplayInfo.class );
                 boolean isPropertyVisible = ( displayInfo == null ) || displayInfo.isVisible();
                 if( isPropertyVisible )
                 {
-                    PropertyResolution propertyResolution = propertyBinding.getPropertyResolution();
-                    PropertyModel propertyModel = propertyResolution.getPropertyModel();
-                    Method propertyMethodAccessor = propertyModel.getAccessor();
+                    Method propertyMethodAccessor = descriptor.accessor();
 
                     int propertyOrder = ( displayInfo != null ) ? displayInfo.order() : MAX_VALUE;
                     EntityFieldValue fieldValue =

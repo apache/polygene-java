@@ -17,7 +17,6 @@
 package org.qi4j.entity.ibatis.internal;
 
 import java.io.Serializable;
-import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -30,7 +29,6 @@ import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import static org.qi4j.spi.entity.EntityStatus.REMOVED;
 import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.spi.entity.association.AssociationModel;
 
 /**
  * {@code IBatisEntityState} represents {@code IBatis} version of {@link org.qi4j.spi.entity.EntityState}.
@@ -108,6 +106,7 @@ public final class IBatisEntityState
 */
     }
 
+/*
     private String getTypeName( final AssociationModel associationModel )
     {
         final Type associationType = associationModel.getType();
@@ -118,6 +117,7 @@ public final class IBatisEntityState
         }
         return associationType.toString();
     }
+*/
 
     /**
      * Capitalize keys of the values. This is needed to ensure that regardless the backing database it will return

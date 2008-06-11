@@ -26,8 +26,9 @@ import org.qi4j.composite.scope.Uses;
 import org.qi4j.quikit.DisplayInfo;
 import org.qi4j.quikit.application.QuikitSession;
 import static org.qi4j.quikit.panels.entityList.EntityPropertyLabelProvider.PropertyLabel;
-import org.qi4j.runtime.property.PropertyModel;
 import org.qi4j.spi.Qi4jSPI;
+import org.qi4j.spi.composite.CompositeDescriptor;
+import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.structure.Module;
 
 final class EntityPropertyLabelProvider
@@ -72,20 +73,18 @@ final class EntityPropertyLabelProvider
             module = quikitSession.getModule();
             spi = quikitSession.getQi4jSpi();
 
-            CompositeBinding binding = spi.getCompositeDescriptor( currentEntityCompositeClassModel, module );
-            Iterable<PropertyBinding> propertyBindings = binding.getPropertyBindings();
-            for( PropertyBinding propertyBinding : propertyBindings )
+            CompositeDescriptor compositeDescriptor = spi.getCompositeDescriptor( currentEntityCompositeClassModel, module );
+            Iterable<PropertyDescriptor> propertyDescriptorIterable = compositeDescriptor.state().properties();
+            for( PropertyDescriptor propertyDescriptor : propertyDescriptorIterable )
             {
-                DisplayInfo displayInfo = propertyBinding.metaInfo( DisplayInfo.class );
+                DisplayInfo displayInfo = propertyDescriptor.metaInfo( DisplayInfo.class );
                 boolean isPropertyVisible = displayInfo == null || displayInfo.isVisible();
                 if( isPropertyVisible )
                 {
                     String propertyLabel = ( displayInfo != null ) ? displayInfo.getLabel() : null;
                     if( propertyLabel == null )
                     {
-                        PropertyResolution propertyResolution = propertyBinding.getPropertyResolution();
-                        PropertyModel propertyModel = propertyResolution.getPropertyModel();
-                        propertyLabel = propertyModel.getName();
+                        propertyLabel = propertyDescriptor.name();
                     }
                     int order = ( displayInfo != null ) ? displayInfo.order() : MAX_VALUE;
                     propertyLabels.add( new PropertyLabel( order, propertyLabel ) );
