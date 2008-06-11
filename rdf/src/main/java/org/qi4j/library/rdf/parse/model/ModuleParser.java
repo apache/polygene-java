@@ -17,13 +17,7 @@
  */
 package org.qi4j.library.rdf.parse.model;
 
-import org.openrdf.model.URI;
-import org.openrdf.model.Value;
-import org.qi4j.library.rdf.Qi4jRdf;
 import org.qi4j.library.rdf.parse.ParseContext;
-import org.qi4j.service.ServiceDescriptor;
-import org.qi4j.spi.object.ObjectDescriptor;
-import org.qi4j.structure.Visibility;
 
 public final class ModuleParser
 {
@@ -34,6 +28,7 @@ public final class ModuleParser
         this.context = context;
     }
 
+/*
     public URI parseModel( LayerModel layerModel, ModuleModel moduleModel )
     {
         URI module = context.createModuleUri( layerModel, moduleModel );
@@ -53,7 +48,7 @@ public final class ModuleParser
             URI composite = parser.parseModel( layerModel, moduleModel, compositeDescriptor.getCompositeModel() );
             if( compositeDescriptor.getVisibility() == Visibility.module )
             {
-                context.addRelationship( module, Qi4jRdf.RELATIONSHIP_PRIVATE_COMPOSITE, composite );
+                context.addRelationship( module, Qi4jRdf.RELATIONSHIP_COMPOSITE, composite );
             }
             else
             {
@@ -74,7 +69,7 @@ public final class ModuleParser
             }
             else
             {
-                context.addRelationship( module, Qi4jRdf.RELATIONSHIP_PRIVATE_OBJECT, object );
+                context.addRelationship( module, Qi4jRdf.RELATIONSHIP_OBJECT, object );
             }
         }
     }
@@ -109,4 +104,5 @@ public final class ModuleParser
 
     }
 
+*/
 }

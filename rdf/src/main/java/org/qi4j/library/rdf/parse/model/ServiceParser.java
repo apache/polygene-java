@@ -17,13 +17,7 @@
  */
 package org.qi4j.library.rdf.parse.model;
 
-import org.openrdf.model.URI;
-import org.openrdf.model.Value;
-import org.openrdf.model.ValueFactory;
-import org.qi4j.library.rdf.Qi4jRdf;
 import org.qi4j.library.rdf.parse.ParseContext;
-import org.qi4j.service.ServiceDescriptor;
-import org.qi4j.service.ServiceInstanceFactory;
 
 public class ServiceParser
 {
@@ -34,6 +28,7 @@ public class ServiceParser
         this.context = context;
     }
 
+/*
     public Value parseModel( LayerModel layerModel, ModuleModel moduleModel, ServiceDescriptor descriptor )
     {
         ValueFactory valueFactory = context.getValueFactory();
@@ -55,4 +50,5 @@ public class ServiceParser
         }
         return serviceNode;
     }
+*/
 }

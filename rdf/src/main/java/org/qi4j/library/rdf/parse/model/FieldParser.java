@@ -17,9 +17,6 @@
  */
 package org.qi4j.library.rdf.parse.model;
 
-import org.openrdf.model.BNode;
-import org.openrdf.model.Value;
-import org.qi4j.library.rdf.Qi4jRdf;
 import org.qi4j.library.rdf.parse.ParseContext;
 
 public class FieldParser
@@ -31,6 +28,7 @@ public class FieldParser
         this.context = context;
     }
 
+/*
     public Value parseModel( FieldModel fieldModel )
     {
         BNode node = createField( fieldModel );
@@ -47,4 +45,5 @@ public class FieldParser
         context.addType( node, Qi4jRdf.TYPE_FIELD );
         return node;
     }
+*/
 }

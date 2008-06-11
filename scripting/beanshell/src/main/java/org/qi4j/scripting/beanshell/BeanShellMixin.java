@@ -35,6 +35,7 @@ import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.entity.UnitOfWorkFactory;
 import org.qi4j.injection.scope.Structure;
+import org.qi4j.injection.scope.This;
 import org.qi4j.scripting.ScriptException;
 import org.qi4j.scripting.ScriptReloadable;
 import org.qi4j.structure.Module;

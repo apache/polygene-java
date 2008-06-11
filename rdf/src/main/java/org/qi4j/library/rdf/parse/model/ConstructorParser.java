@@ -17,9 +17,6 @@
  */
 package org.qi4j.library.rdf.parse.model;
 
-import org.openrdf.model.BNode;
-import org.openrdf.model.Value;
-import org.qi4j.library.rdf.Qi4jRdf;
 import org.qi4j.library.rdf.parse.ParseContext;
 
 public class ConstructorParser
@@ -31,6 +28,7 @@ public class ConstructorParser
         this.context = context;
     }
 
+/*
     public Value parseModel( ConstructorModel constructorModel )
     {
         BNode node = createConstructor( constructorModel );
@@ -43,4 +41,5 @@ public class ConstructorParser
         context.addType( node, Qi4jRdf.TYPE_CONSTRUCTOR );
         return node;
     }
+*/
 }

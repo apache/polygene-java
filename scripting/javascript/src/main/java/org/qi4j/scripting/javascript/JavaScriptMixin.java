@@ -31,6 +31,7 @@ import org.qi4j.composite.AppliesToFilter;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.injection.scope.Structure;
+import org.qi4j.injection.scope.This;
 import org.qi4j.scripting.ScriptException;
 import org.qi4j.scripting.ScriptReloadable;
 

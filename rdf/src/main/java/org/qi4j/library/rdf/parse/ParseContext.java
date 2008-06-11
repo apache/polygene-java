@@ -26,6 +26,8 @@ import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
 import org.qi4j.library.rdf.Qi4jRdf;
 import org.qi4j.library.rdf.Rdfs;
+import org.qi4j.runtime.structure.LayerModel;
+import org.qi4j.runtime.structure.ModuleModel;
 
 public final class ParseContext
 {
@@ -82,7 +84,7 @@ public final class ParseContext
 
     public URI createModuleUri( LayerModel layer, ModuleModel module )
     {
-        String moduleName = module.getName();
+        String moduleName = module.name();
         URI uri = valueFactory.createURI( createLayerUri( layer ).toString() + "/" + moduleName );
         setNameAndType( uri, moduleName, Qi4jRdf.TYPE_MODULE );
         return uri;
@@ -90,7 +92,7 @@ public final class ParseContext
 
     public URI createLayerUri( LayerModel layer )
     {
-        String layerName = layer.getName();
+        String layerName = layer.name();
         URI uri = valueFactory.createURI( applicationURI.toString() + "/" + layerName );
         setNameAndType( uri, layerName, Qi4jRdf.TYPE_LAYER );
         return uri;
@@ -103,7 +105,7 @@ public final class ParseContext
     }
 
 
-    public void addName( URI subject, String name )
+    public void addName( Resource subject, String name )
     {
         Value nameValue = valueFactory.createLiteral( name );
         graph.add( valueFactory.createStatement( subject, Rdfs.LABEL, nameValue ) );

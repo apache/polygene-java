@@ -17,12 +17,7 @@
  */
 package org.qi4j.library.rdf.parse.model;
 
-import org.openrdf.model.URI;
-import org.openrdf.model.Value;
-import org.qi4j.library.rdf.Qi4jRdf;
 import org.qi4j.library.rdf.parse.ParseContext;
-import org.qi4j.runtime.structure.ApplicationModel;
-import org.qi4j.runtime.structure.LayerModel;
 
 public final class ApplicationParser
 {
@@ -33,6 +28,7 @@ public final class ApplicationParser
         this.context = context;
     }
 
+/*
     public void parseModel( ApplicationModel model )
     {
         String name = model.name();
@@ -46,4 +42,5 @@ public final class ApplicationParser
             context.addRelationship( appUri, Qi4jRdf.RELATIONSHIP_LAYER, layer );
         }
     }
+*/
 }

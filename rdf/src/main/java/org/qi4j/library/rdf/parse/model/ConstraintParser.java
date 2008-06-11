@@ -17,9 +17,6 @@
  */
 package org.qi4j.library.rdf.parse.model;
 
-import org.openrdf.model.BNode;
-import org.openrdf.model.Value;
-import org.qi4j.library.rdf.Qi4jRdf;
 import org.qi4j.library.rdf.parse.ParseContext;
 
 public final class ConstraintParser
@@ -31,6 +28,7 @@ public final class ConstraintParser
         this.context = context;
     }
 
+/*
     public Value parseModel( ConstraintModel constraintModel )
     {
         BNode node = createConstraint( constraintModel );
@@ -44,4 +42,5 @@ public final class ConstraintParser
         return node;
     }
 
+*/
 }

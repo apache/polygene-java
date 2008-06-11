@@ -17,9 +17,6 @@
  */
 package org.qi4j.library.rdf.parse.model;
 
-import org.openrdf.model.BNode;
-import org.openrdf.model.Value;
-import org.qi4j.library.rdf.Qi4jRdf;
 import org.qi4j.library.rdf.parse.ParseContext;
 
 public final class ObjectParser
@@ -31,6 +28,7 @@ public final class ObjectParser
         this.context = context;
     }
 
+/*
     public Value parseModel( ObjectModel objectModel )
     {
         BNode node = createObject( objectModel );
@@ -44,4 +42,5 @@ public final class ObjectParser
         return node;
     }
 
+*/
 }

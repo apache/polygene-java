@@ -20,7 +20,7 @@ package org.qi4j.library.rdf.parse;
 import org.openrdf.model.Graph;
 import org.openrdf.model.impl.GraphImpl;
 import org.qi4j.library.rdf.Parser;
-import org.qi4j.library.rdf.parse.model.ApplicationParser;
+import org.qi4j.library.rdf.parse.model.ApplicationVisitor;
 import org.qi4j.runtime.structure.ApplicationModel;
 
 public final class StructureParser
@@ -32,8 +32,8 @@ public final class StructureParser
         ParserFactoryImpl factory = new ParserFactoryImpl();
         ParseContext context = new ParseContext( graph, factory, applicationURI );
         factory.setParseContext( context );
-        ApplicationParser applicationParser = new ApplicationParser( context );
-        applicationParser.parseModel( model );
+        ApplicationVisitor applicationVisitor = new ApplicationVisitor( context );
+        model.visitModel( applicationVisitor );
         return graph;
     }
 }

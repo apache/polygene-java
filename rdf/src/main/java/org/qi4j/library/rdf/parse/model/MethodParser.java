@@ -17,9 +17,6 @@
  */
 package org.qi4j.library.rdf.parse.model;
 
-import org.openrdf.model.BNode;
-import org.openrdf.model.Value;
-import org.qi4j.library.rdf.Qi4jRdf;
 import org.qi4j.library.rdf.parse.ParseContext;
 
 public final class MethodParser
@@ -31,6 +28,7 @@ public final class MethodParser
         this.context = context;
     }
 
+/*
     public Value parseModel( MethodModel methodModel )
     {
         BNode node = createMethod( methodModel );
@@ -51,4 +49,5 @@ public final class MethodParser
         context.addType( node, Qi4jRdf.TYPE_METHOD );
         return node;
     }
+*/
 }

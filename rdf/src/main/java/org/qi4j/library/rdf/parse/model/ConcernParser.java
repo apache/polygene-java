@@ -17,9 +17,6 @@
  */
 package org.qi4j.library.rdf.parse.model;
 
-import org.openrdf.model.BNode;
-import org.openrdf.model.Value;
-import org.qi4j.library.rdf.Qi4jRdf;
 import org.qi4j.library.rdf.parse.ParseContext;
 
 public final class ConcernParser
@@ -31,6 +28,7 @@ public final class ConcernParser
         this.context = context;
     }
 
+/*
     public Value parseModel( ConcernModel concernModel )
     {
         BNode concernNode = createConcern( concernModel );
@@ -86,4 +84,5 @@ public final class ConcernParser
         context.addType( node, Qi4jRdf.TYPE_CONCERN );
         return node;
     }
+*/
 }

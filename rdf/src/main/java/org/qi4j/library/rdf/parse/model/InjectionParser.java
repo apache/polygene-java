@@ -17,9 +17,6 @@
  */
 package org.qi4j.library.rdf.parse.model;
 
-import org.openrdf.model.BNode;
-import org.openrdf.model.Value;
-import org.qi4j.library.rdf.Qi4jRdf;
 import org.qi4j.library.rdf.parse.ParseContext;
 
 public class InjectionParser
@@ -31,6 +28,7 @@ public class InjectionParser
         this.context = context;
     }
 
+/*
     public Value parseModel( InjectionModel injectionModel )
     {
         BNode node = createInjection( injectionModel );
@@ -44,4 +42,5 @@ public class InjectionParser
         return node;
     }
 
+*/
 }

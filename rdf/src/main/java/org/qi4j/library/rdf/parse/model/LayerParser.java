@@ -17,11 +17,6 @@
  */
 package org.qi4j.library.rdf.parse.model;
 
-import java.util.Map;
-import org.openrdf.model.URI;
-import org.openrdf.model.Value;
-import org.qi4j.composite.Composite;
-import org.qi4j.library.rdf.Qi4jRdf;
 import org.qi4j.library.rdf.parse.ParseContext;
 
 public final class LayerParser
@@ -33,6 +28,7 @@ public final class LayerParser
         this.context = context;
     }
 
+/*
     public Value parseModel( LayerModel layerModel )
     {
         URI layer = context.createLayerUri( layerModel );
@@ -62,4 +58,5 @@ public final class LayerParser
         }
         return layer;
     }
+*/
 }

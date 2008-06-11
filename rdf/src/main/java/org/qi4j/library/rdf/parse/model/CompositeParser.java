@@ -17,10 +17,6 @@
  */
 package org.qi4j.library.rdf.parse.model;
 
-import org.openrdf.model.URI;
-import org.openrdf.model.Value;
-import org.qi4j.entity.Entity;
-import org.qi4j.library.rdf.Qi4jRdf;
 import org.qi4j.library.rdf.parse.ParseContext;
 
 public final class CompositeParser
@@ -32,7 +28,7 @@ public final class CompositeParser
         this.context = context;
     }
 
-    public URI parseModel( LayerModel layerModel, ModuleModel moduleModel, CompositeModel model )
+/*    public URI parseModel( LayerModel layerModel, ModuleModel moduleModel, CompositeModel model )
     {
         URI compositeNode = context.createCompositeUri( layerModel, moduleModel, model.getCompositeType() );
         if( Entity.class.isAssignableFrom( model.getCompositeType() ) )
@@ -109,5 +105,5 @@ public final class CompositeParser
             Value method = parser.parseModel( methodModel );
             context.addRelationship( compositeNode, Qi4jRdf.RELATIONSHIP_PRIVATE_METHOD, method );
         }
-    }
+    }*/
 }

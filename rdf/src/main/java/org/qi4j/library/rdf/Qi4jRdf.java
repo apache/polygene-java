@@ -24,7 +24,7 @@ import org.openrdf.model.impl.URIImpl;
 public interface Qi4jRdf
 {
 
-// MODEL
+    // MODEL
     // Namespace TODO: Need to figure out what these should really be!
     String QI4JMODEL = "http://www.qi4j.org/rdf/model/1.0/";
 
@@ -38,7 +38,7 @@ public interface Qi4jRdf
     URI TYPE_MODULE = new URIImpl( QI4JMODEL_TYPES + "module" );
     URI TYPE_ENTITY = new URIImpl( QI4JMODEL_TYPES + "entity" );
     URI TYPE_COMPOSITE = new URIImpl( QI4JMODEL_TYPES + "composite" );
-    URI TYPE_SERVICE =  new URIImpl( QI4JMODEL_TYPES + "service" );
+    URI TYPE_SERVICE = new URIImpl( QI4JMODEL_TYPES + "service" );
     URI TYPE_METHOD = new URIImpl( QI4JMODEL_TYPES + "method" );
     URI TYPE_CONSTRAINT = new URIImpl( QI4JMODEL_TYPES + "constraint" );
     URI TYPE_CONCERN = new URIImpl( QI4JMODEL_TYPES + "concern" );
@@ -58,8 +58,8 @@ public interface Qi4jRdf
     // Relationship
     URI RELATIONSHIP_PUBLIC_COMPOSITE = new URIImpl( QI4JMODEL_RELATIONSHIPS + "public/composite" );
     URI RELATIONSHIP_PUBLIC_OBJECT = new URIImpl( QI4JMODEL_RELATIONSHIPS + "public/object" );
-    URI RELATIONSHIP_PRIVATE_COMPOSITE = new URIImpl( QI4JMODEL_RELATIONSHIPS + "private/composite" );
-    URI RELATIONSHIP_PRIVATE_OBJECT = new URIImpl( QI4JMODEL_RELATIONSHIPS + "private/object" );
+    URI RELATIONSHIP_COMPOSITE = new URIImpl( QI4JMODEL_RELATIONSHIPS + "composite" );
+    URI RELATIONSHIP_OBJECT = new URIImpl( QI4JMODEL_RELATIONSHIPS + "object" );
     URI RELATIONSHIP_PRIVATE_METHOD = new URIImpl( QI4JMODEL_RELATIONSHIPS + "private/method" );
     URI RELATIONSHIP_INJECTION = new URIImpl( QI4JMODEL_RELATIONSHIPS + "injection" );
     URI RELATIONSHIP_CONSTRUCTOR = new URIImpl( QI4JMODEL_RELATIONSHIPS + "constructor" );
@@ -71,14 +71,14 @@ public interface Qi4jRdf
     URI RELATIONSHIP_SIDEEFFECT = new URIImpl( QI4JMODEL_RELATIONSHIPS + "sideeffect" );
     URI RELATIONSHIP_PUBLIC_SERVICE = new URIImpl( QI4JMODEL_RELATIONSHIPS + "public/service" );
     URI RELATIONSHIP_PRIVATE_SERVICE = new URIImpl( QI4JMODEL_RELATIONSHIPS + "private/service" );
-    URI RELATIONSHIP_PROVIDEDBY =  new URIImpl( QI4JMODEL_RELATIONSHIPS + "providedby" );
-    URI RELATIONSHIP_SERVICEINFO =  new URIImpl( QI4JMODEL_RELATIONSHIPS + "info/service" );
-    URI RELATIONSHIP_INFOVALUE =  new URIImpl( QI4JMODEL_RELATIONSHIPS + "info/value" );
+    URI RELATIONSHIP_PROVIDEDBY = new URIImpl( QI4JMODEL_RELATIONSHIPS + "providedby" );
+    URI RELATIONSHIP_SERVICEINFO = new URIImpl( QI4JMODEL_RELATIONSHIPS + "info/service" );
+    URI RELATIONSHIP_INFOVALUE = new URIImpl( QI4JMODEL_RELATIONSHIPS + "info/value" );
     URI RELATIONSHIP_MIXIN = new URIImpl( QI4JMODEL_RELATIONSHIPS + "mixin" );
     URI RELATIONSHIP_LAYER = new URIImpl( QI4JMODEL_RELATIONSHIPS + "layer" );
     URI RELATIONSHIP_MODULE = new URIImpl( QI4JMODEL_RELATIONSHIPS + "module" );
 
-    
-// BINDING
+
+    // BINDING
     String QI4JBINDING = "http://www.qi4j.org/rdf/binding/1.0/";
 }

@@ -17,9 +17,6 @@
  */
 package org.qi4j.library.rdf.parse.model;
 
-import org.openrdf.model.BNode;
-import org.openrdf.model.Value;
-import org.qi4j.library.rdf.Qi4jRdf;
 import org.qi4j.library.rdf.parse.ParseContext;
 
 public final class SideEffectParser
@@ -31,6 +28,7 @@ public final class SideEffectParser
         this.context = context;
     }
 
+/*
     public Value parseModel( SideEffectModel sideeffectModel )
     {
         BNode node = createSideeffect( sideeffectModel );
@@ -43,5 +41,6 @@ public final class SideEffectParser
         context.addType( node, Qi4jRdf.TYPE_SIDEEFFECT );
         return node;
     }
+*/
 
 }
