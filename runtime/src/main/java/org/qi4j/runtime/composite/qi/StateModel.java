@@ -23,7 +23,7 @@ import org.qi4j.property.Property;
 import org.qi4j.runtime.property.PropertiesInstance;
 import org.qi4j.runtime.property.PropertiesModel;
 import org.qi4j.spi.composite.StateDescriptor;
-import org.qi4j.spi.entity.AssociationDescriptor;
+import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.property.PropertyDescriptor;
 
 /**

@@ -29,9 +29,9 @@ import org.qi4j.property.ComputedPropertyInstance;
 import org.qi4j.runtime.composite.qi.ValueConstraintsInstance;
 import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.entity.UnitOfWorkInstance;
-import org.qi4j.spi.entity.AssociationDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.util.MetaInfo;
 
 /**
