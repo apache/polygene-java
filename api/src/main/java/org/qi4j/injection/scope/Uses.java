@@ -12,7 +12,7 @@
  * limitations under the License.
  *
  */
-package org.qi4j.composite.scope;
+package org.qi4j.injection.scope;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -20,26 +20,18 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import org.qi4j.injection.InjectionScope;
-import org.qi4j.injection.Name;
+import org.qi4j.injection.Optional;
 
 /**
- * Annotation to denote the injection of a Query, QueryBuilder, or Entity prototype dependency into a Fragment.
- * <p/>
- * This annotation is only valid in Fragments in EntityComposites since the queries and builders have to be created within
- * the scope of a particular UnitOfWork, namely the unit of the injected EntityComposite.
- * <p/>
- * Examples:
- * <code><pre>
- * &#64;Entity Query<Person> findPeople; // call findPeople.iterator() to execute query
- * &#64;Entity QueryBuilder<Person> findByName;
- * &#64;Entity Iterable<Person> personPrototype; // call personPrototype.iterator().next() to create new Person
- * </pre></code>
+ * Annotation to denote the injection of a dependency to be used by a Mixin. The injected
+ * object is provided by the CompositeBuilder. Call {@link org.qi4j.composite.CompositeBuilder#use} to provide the instance
+ * to be injected.
  */
 @Retention( RetentionPolicy.RUNTIME )
-@Target( { ElementType.FIELD, ElementType.PARAMETER } )
+@Target( { ElementType.PARAMETER, ElementType.FIELD } )
 @Documented
 @InjectionScope
-public @interface Entity
+public @interface Uses
 {
-    @Name String value() default ""; // This name can be used for lookups of named queries
+    @Optional boolean optional() default false; // True if usage is optional, only fail if false
 }

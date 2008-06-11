@@ -15,7 +15,7 @@
 package org.qi4j.entity;
 
 import org.qi4j.composite.Mixins;
-import org.qi4j.composite.scope.PropertyField;
+import org.qi4j.injection.scope.PropertyField;
 import org.qi4j.property.ImmutableProperty;
 
 /**

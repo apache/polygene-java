@@ -13,8 +13,10 @@
 package org.qi4j.composite.scope;
 
 import java.lang.annotation.Annotation;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
+import org.qi4j.injection.scope.This;
 
 /**
  * Tests public api exposed by ConcernFor annotation.

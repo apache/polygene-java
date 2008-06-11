@@ -17,7 +17,7 @@ package org.qi4j.runtime.injection;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import org.qi4j.runtime.composite.BindingException;
-import org.qi4j.runtime.composite.qi.Resolution;
+import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.structure.Binder;
 
 /**

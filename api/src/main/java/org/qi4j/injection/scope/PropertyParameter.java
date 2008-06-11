@@ -12,7 +12,7 @@
  * limitations under the License.
  *
  */
-package org.qi4j.composite.scope;
+package org.qi4j.injection.scope;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -20,18 +20,16 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import org.qi4j.injection.InjectionScope;
-import org.qi4j.injection.Optional;
+import org.qi4j.injection.Name;
 
 /**
- * Annotation to denote the injection of a dependency to be used by a Mixin. The injected
- * object is provided by the CompositeBuilder. Call {@link org.qi4j.composite.CompositeBuilder#use} to provide the instance
- * to be injected.
+ * Annotation to denote the injection of a property into a parameter (either constructor or method)
  */
 @Retention( RetentionPolicy.RUNTIME )
-@Target( { ElementType.PARAMETER, ElementType.FIELD } )
+@Target( ElementType.PARAMETER )
 @Documented
 @InjectionScope
-public @interface Uses
+public @interface PropertyParameter
 {
-    @Optional boolean optional() default false; // True if usage is optional, only fail if false
+    @Name String value(); // Name of the property
 }

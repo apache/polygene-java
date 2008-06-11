@@ -19,7 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 import org.qi4j.composite.Composite;
 import org.qi4j.entity.EntityComposite;
-import org.qi4j.runtime.composite.qi.CompositeModel;
+import org.qi4j.runtime.composite.CompositeModel;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.object.ObjectModel;
 import org.qi4j.runtime.service.qi.ServiceModel;

@@ -1,6 +1,5 @@
 /*
- * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
- * Copyright (c) 2007, Niclas Hedhman. All Rights Reserved.
+ * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,25 +11,57 @@
  * limitations under the License.
  *
  */
+
 package org.qi4j.runtime.composite;
 
+import java.lang.reflect.Method;
+
 /**
- * Compaction Level of the StackTrace clenaup operation.
- *
- * <pre>
- * <b>off</b>       = Do not modify the stack trace.
- * <b>proxy</b>     = Remove all Qi4j internal classes and all JDK internal classes from
- *             the originating method call.
- * <b>semi</b>      = Remove all JDK internal classes on the entire stack.
- * <b>extensive</b> = Remove all Qi4j internal and JDK internal classes from the entire stack.
- * </pre>
- *
- * <p>
- * The Compaction is set through the System Property "<code><b>qi4j.compacttrace</b></code>" to
- * any of the above values.
- * </p>
+ * TODO
  */
-enum CompactLevel
+public final class CompositeMethodInstance
 {
-    off, proxy, semi, extensive
+    private MethodConcernsInstance concerns;
+    private MethodSideEffectsInstance sideEffects;
+    private Method method;
+
+    private CompositeMethodInstance next;
+
+    public CompositeMethodInstance( MethodConcernsInstance concerns, MethodSideEffectsInstance sideEffects, Method method )
+    {
+        this.concerns = concerns;
+        this.sideEffects = sideEffects;
+        this.method = method;
+    }
+
+    public Method method()
+    {
+        return method;
+    }
+
+    public Object invoke( Object composite, Object[] params, Object mixin )
+        throws Throwable
+    {
+        try
+        {
+            Object result = concerns.invoke( composite, params, mixin );
+            sideEffects.invoke( composite, params, result, null );
+            return result;
+        }
+        catch( Throwable throwable )
+        {
+            sideEffects.invoke( composite, params, null, throwable );
+            throw throwable;
+        }
+    }
+
+    public CompositeMethodInstance getNext()
+    {
+        return next;
+    }
+
+    public void setNext( CompositeMethodInstance next )
+    {
+        this.next = next;
+    }
 }

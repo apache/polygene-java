@@ -16,7 +16,7 @@ package org.qi4j.runtime.structure;
 
 import java.util.List;
 import org.qi4j.composite.AmbiguousTypeException;
-import org.qi4j.runtime.composite.qi.CompositeModel;
+import org.qi4j.runtime.composite.CompositeModel;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.object.ObjectModel;
 import org.qi4j.service.Activatable;

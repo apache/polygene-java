@@ -18,7 +18,7 @@
 package org.qi4j.spi.query;
 
 import org.qi4j.composite.SideEffectOf;
-import org.qi4j.composite.scope.Service;
+import org.qi4j.injection.scope.Service;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreException;

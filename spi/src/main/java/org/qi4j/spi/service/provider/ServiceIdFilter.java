@@ -14,7 +14,7 @@
 
 package org.qi4j.spi.service.provider;
 
-import org.qi4j.composite.scope.Structure;
+import org.qi4j.injection.scope.Structure;
 import org.qi4j.service.ServiceDescriptor;
 import org.qi4j.service.ServiceFinder;
 import org.qi4j.service.ServiceInstanceFactory;

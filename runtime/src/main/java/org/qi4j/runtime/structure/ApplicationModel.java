@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 import org.qi4j.runtime.Qi4jRuntime;
 import org.qi4j.runtime.composite.BindingException;
-import org.qi4j.runtime.composite.qi.Resolution;
+import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.injection.DependencyVisitor;
 import org.qi4j.runtime.injection.InjectionProviderFactory;
 import org.qi4j.runtime.injection.provider.InjectionProviderFactoryStrategy;

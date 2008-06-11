@@ -17,7 +17,7 @@ package org.qi4j.runtime.structure;
 import java.util.ArrayList;
 import java.util.List;
 import org.qi4j.runtime.composite.BindingException;
-import org.qi4j.runtime.composite.qi.Resolution;
+import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.injection.DependencyVisitor;
 
 /**

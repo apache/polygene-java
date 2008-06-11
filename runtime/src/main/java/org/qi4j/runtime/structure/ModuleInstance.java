@@ -26,7 +26,7 @@ import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkFactory;
 import org.qi4j.object.ObjectBuilder;
 import org.qi4j.object.ObjectBuilderFactory;
-import org.qi4j.runtime.composite.qi.CompositeModel;
+import org.qi4j.runtime.composite.CompositeModel;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.entity.StateServices;
 import org.qi4j.runtime.entity.UnitOfWorkInstance;

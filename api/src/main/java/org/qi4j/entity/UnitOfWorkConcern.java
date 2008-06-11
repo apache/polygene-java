@@ -20,8 +20,8 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import org.qi4j.composite.AppliesTo;
 import org.qi4j.composite.ConcernOf;
-import org.qi4j.composite.scope.Invocation;
-import org.qi4j.composite.scope.Structure;
+import org.qi4j.injection.scope.Invocation;
+import org.qi4j.injection.scope.Structure;
 
 /**
  * {@code UnitOfWorkConcern} manages the unit of work complete and discard policy.

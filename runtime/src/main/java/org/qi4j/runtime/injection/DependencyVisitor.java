@@ -14,7 +14,7 @@
 
 package org.qi4j.runtime.injection;
 
-import org.qi4j.runtime.composite.qi.Resolution;
+import org.qi4j.runtime.composite.Resolution;
 
 /**
  * TODO

@@ -12,7 +12,7 @@
  * limitations under the License.
  *
  */
-package org.qi4j.composite.scope;
+package org.qi4j.injection.scope;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -20,23 +20,23 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import org.qi4j.injection.InjectionScope;
-import org.qi4j.injection.Optional;
 
 /**
- * Annotation to denote the injection of a reference to the same Composite
- * as the fragment is a part of.
+ * Annotation to denote the injection of a invocation specific resource. These include:
+ * The Method being invoked
+ * An AnnotationElement with annotations from both interface, mixin, and any Apply statement
+ * InvocationContext with information about the current invocation
  * <p/>
- * If the Composite type does not implement the type of the field or parameter
- * then it will be referencing a private mixin.
- * <p/>
- * Calls to the reference will have the same semantics as calls to the Composite itself.
- * Specifically the same set of Modifiers will be used.
+ * Examples:
+ * <code><pre>
+ * &#64;Invocation Method theInvokedMethod
+ * &#64;Invocation AnnotationElement annotations
+ * </pre></code>
  */
 @Retention( RetentionPolicy.RUNTIME )
 @Target( { ElementType.FIELD, ElementType.PARAMETER } )
 @Documented
 @InjectionScope
-public @interface This
+public @interface Invocation
 {
-    @Optional boolean optional() default false; // True if the dependency is optional, only fail if this is false
 }

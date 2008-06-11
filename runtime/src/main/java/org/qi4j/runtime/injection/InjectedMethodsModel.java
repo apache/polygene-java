@@ -21,7 +21,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import org.qi4j.runtime.composite.BindingException;
-import org.qi4j.runtime.composite.qi.Resolution;
+import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.util.AnnotationUtil;
 import org.qi4j.util.ClassUtil;
 

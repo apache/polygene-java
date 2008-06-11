@@ -21,7 +21,7 @@ import java.lang.reflect.TypeVariable;
 import java.util.Collections;
 import java.util.Iterator;
 import org.qi4j.runtime.composite.BindingException;
-import org.qi4j.runtime.composite.qi.Resolution;
+import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.injection.provider.InvalidInjectionException;
 import org.qi4j.runtime.structure.Binder;
 

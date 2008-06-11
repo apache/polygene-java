@@ -32,7 +32,7 @@ public interface CompositeBuilder<T>
      * dependency injection annotation.
      *
      * @param usedObjects The objects that can be injected into mixins.
-     * @see org.qi4j.composite.scope.Uses
+     * @see org.qi4j.injection.scope.Uses
      */
     CompositeBuilder<T> use( Object... usedObjects );
 

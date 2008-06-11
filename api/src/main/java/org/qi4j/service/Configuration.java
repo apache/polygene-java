@@ -20,12 +20,12 @@ import org.qi4j.composite.Composite;
 import org.qi4j.composite.ConcernOf;
 import org.qi4j.composite.Concerns;
 import org.qi4j.composite.Mixins;
-import org.qi4j.composite.scope.Structure;
-import org.qi4j.composite.scope.This;
-import org.qi4j.composite.scope.Uses;
 import org.qi4j.entity.EntityCompositeNotFoundException;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkFactory;
+import org.qi4j.injection.scope.Structure;
+import org.qi4j.injection.scope.This;
+import org.qi4j.injection.scope.Uses;
 import org.qi4j.property.PropertyMapper;
 
 /**

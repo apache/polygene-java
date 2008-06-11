@@ -19,7 +19,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import org.qi4j.runtime.composite.BindingException;
-import org.qi4j.runtime.composite.qi.Resolution;
+import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.structure.Binder;
 import static org.qi4j.util.AnnotationUtil.getInjectionAnnotation;
 import static org.qi4j.util.ClassUtil.fieldsOf;

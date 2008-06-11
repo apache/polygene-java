@@ -19,7 +19,7 @@ import java.lang.reflect.Method;
 import org.qi4j.composite.AppliesTo;
 import org.qi4j.composite.AppliesToFilter;
 import org.qi4j.composite.State;
-import org.qi4j.composite.scope.AssociationField;
+import org.qi4j.injection.scope.AssociationField;
 
 /**
  * Generic mixin for associations.

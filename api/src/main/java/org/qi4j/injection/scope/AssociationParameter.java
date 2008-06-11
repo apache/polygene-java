@@ -11,7 +11,8 @@
  * limitations under the License.
  *
  */
-package org.qi4j.composite.scope;
+
+package org.qi4j.injection.scope;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -20,18 +21,15 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import org.qi4j.injection.InjectionScope;
 import org.qi4j.injection.Name;
-import org.qi4j.injection.Optional;
 
 /**
- * Annotation to denote the injection of a property into a Fragment field (a Invocation or Mixin).
+ * Annotation to denote the injection of an association into a parameter (either constructor or method)
  */
 @Retention( RetentionPolicy.RUNTIME )
-@Target( { ElementType.FIELD } )
+@Target( ElementType.PARAMETER )
 @Documented
 @InjectionScope
-public @interface PropertyField
+public @interface AssociationParameter
 {
-    @Name String value() default ""; // Name of the property. If not set then name will be name of field
-
-    @Optional boolean optional() default true; // Whether or not the property is optional. If optional then the default value will be used
+    @Name String value(); // Name of the association
 }

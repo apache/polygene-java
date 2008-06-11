@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2007, Niclas Hedhman. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -11,8 +12,7 @@
  * limitations under the License.
  *
  */
-
-package org.qi4j.composite.scope;
+package org.qi4j.injection.scope;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -20,19 +20,23 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import org.qi4j.injection.InjectionScope;
-import org.qi4j.injection.Name;
 import org.qi4j.injection.Optional;
 
 /**
- * Annotation to denote the injection of an association into a Mixin field.
+ * Annotation to denote the injection of a reference to the same Composite
+ * as the fragment is a part of.
+ * <p/>
+ * If the Composite type does not implement the type of the field or parameter
+ * then it will be referencing a private mixin.
+ * <p/>
+ * Calls to the reference will have the same semantics as calls to the Composite itself.
+ * Specifically the same set of Modifiers will be used.
  */
 @Retention( RetentionPolicy.RUNTIME )
-@Target( { ElementType.FIELD } )
+@Target( { ElementType.FIELD, ElementType.PARAMETER } )
 @Documented
 @InjectionScope
-public @interface AssociationField
+public @interface This
 {
-    @Name String value() default ""; // Name of the association. If not set then name will be name of field
-
-    @Optional boolean optional() default true; // Whether or not the association is optional. If optional then the default value will be used
+    @Optional public abstract boolean optional() default false; // True if the dependency is optional, only fail if this is false
 }

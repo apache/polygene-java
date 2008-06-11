@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
- * Copyright (c) 2007, Niclas Hedhman. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +11,8 @@
  * limitations under the License.
  *
  */
-package org.qi4j.composite.scope;
+
+package org.qi4j.injection.scope;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -20,26 +20,19 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import org.qi4j.injection.InjectionScope;
+import org.qi4j.injection.Name;
+import org.qi4j.injection.Optional;
 
 /**
- * Annotation to denote the injection of a resource specific for the module which the injected object/fragment is instantiated in.
- * <p/>
- * Examples:
- * <code><pre>
- * &#64;Structure CompositeBuilderFactory cbf
- * &#64;Structure ObjectBuilderFactory obf
- * &#64;Structure UnitOfWorkFactory uowf
- * &#64;Structure ServiceLocator serviceLocator
- * &#64;Structure Module module
- * &#64;Structure Qi4j qi4j
- * &#64;Structure Qi4jSPI qi4jSpi
- * &#64;Structure Qi4jRuntime qi4jRuntime
- * </pre></code>
+ * Annotation to denote the injection of an association into a Mixin field.
  */
 @Retention( RetentionPolicy.RUNTIME )
-@Target( { ElementType.FIELD, ElementType.PARAMETER } )
+@Target( { ElementType.FIELD } )
 @Documented
 @InjectionScope
-public @interface Structure
+public @interface AssociationField
 {
+    @Name String value() default ""; // Name of the association. If not set then name will be name of field
+
+    @Optional boolean optional() default true; // Whether or not the association is optional. If optional then the default value will be used
 }

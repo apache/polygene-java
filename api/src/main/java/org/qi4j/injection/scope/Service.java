@@ -12,7 +12,7 @@
  * limitations under the License.
  *
  */
-package org.qi4j.composite.scope;
+package org.qi4j.injection.scope;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -20,16 +20,24 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import org.qi4j.injection.InjectionScope;
-import org.qi4j.injection.Name;
+import org.qi4j.injection.Optional;
 
 /**
- * Annotation to denote the injection of a property into a parameter (either constructor or method)
+ * Annotation to denote the injection of a service dependency into a Fragment.
+ * <p/>
+ * Examples:
+ * <code><pre>
+ * &#64;Service MyService service
+ * &#64;Service Iterable<MyService> services
+ * &#64;Service ServiceReference<MyService> serviceRef
+ * &#64;Service Iterable<ServiceReference<MyService>> serviceRefs
+ * </pre></code>
  */
 @Retention( RetentionPolicy.RUNTIME )
-@Target( ElementType.PARAMETER )
+@Target( { ElementType.FIELD, ElementType.PARAMETER } )
 @Documented
 @InjectionScope
-public @interface PropertyParameter
+public @interface Service
 {
-    @Name String value(); // Name of the property
+    @Optional boolean optional() default false; // True if the dependency is optional, only fail if this is false
 }

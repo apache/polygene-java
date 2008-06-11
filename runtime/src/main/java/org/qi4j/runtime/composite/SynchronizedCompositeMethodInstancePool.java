@@ -14,8 +14,6 @@
 
 package org.qi4j.runtime.composite;
 
-import org.qi4j.runtime.composite.qi.CompositeMethodInstance;
-
 /**
  * Method instance pool that keeps a linked list. Uses synchronization
  * to ensure that instances are acquired and returned in a thread-safe

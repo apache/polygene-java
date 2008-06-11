@@ -26,7 +26,7 @@ import org.qi4j.entity.association.ListAssociation;
 import org.qi4j.entity.association.ManyAssociation;
 import org.qi4j.entity.association.SetAssociation;
 import org.qi4j.property.ComputedPropertyInstance;
-import org.qi4j.runtime.composite.qi.ValueConstraintsInstance;
+import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.entity.UnitOfWorkInstance;
 import org.qi4j.spi.entity.EntityState;
