@@ -16,16 +16,13 @@
  */
 package org.qi4j.entity.neo4j.test;
 
-import org.junit.Assert;
-import org.junit.Test;
-import org.qi4j.composite.CompositeBuilder;
-import org.qi4j.entity.neo4j.Configuration;
-
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
  */
-public class DirectNeoEntityStoreTest extends TestBase
+public class DirectNeoEntityStoreTest
+    // extends TestBase
 {
+    /*
     public DirectNeoEntityStoreTest()
     {
         this( Configuration.DIRECT );
@@ -162,4 +159,5 @@ public class DirectNeoEntityStoreTest extends TestBase
             }
         } );
     }
+    */
 }
