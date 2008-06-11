@@ -28,7 +28,6 @@ import org.qi4j.entity.EntityBuilder;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.EntityCompositeNotFoundException;
 import org.qi4j.entity.Identity;
-import org.qi4j.entity.IdentityGenerator;
 import org.qi4j.entity.LoadingPolicy;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkCompletionException;
@@ -63,7 +62,6 @@ public final class UnitOfWorkInstance
     private boolean paused;
 
     private ModuleInstance moduleInstance;
-    StateServices stateServices; // Used by UOWCB
 
     /**
      * Lazy query builder factory.
@@ -85,10 +83,9 @@ public final class UnitOfWorkInstance
         };
     }
 
-    public UnitOfWorkInstance( ModuleInstance moduleInstance, StateServices stateServices )
+    public UnitOfWorkInstance( ModuleInstance moduleInstance )
     {
         this.moduleInstance = moduleInstance;
-        this.stateServices = stateServices;
         this.open = true;
         cache = new HashMap<Class<? extends EntityComposite>, Map<String, EntityComposite>>();
         current.get().push( this );
@@ -357,18 +354,19 @@ public final class UnitOfWorkInstance
         Map<EntityStore, StoreCompletion> storeCompletion = new HashMap<EntityStore, StoreCompletion>();
         for( Map.Entry<Class<? extends EntityComposite>, Map<String, EntityComposite>> entry : cache.entrySet() )
         {
-            EntityStore store = stateServices.getEntityStore( entry.getKey() );
-            StoreCompletion storeCompletionList = storeCompletion.get( store );
-            if( storeCompletionList == null )
-            {
-                storeCompletionList = new StoreCompletion();
-                storeCompletion.put( store, storeCompletionList );
-            }
-
             Map<String, EntityComposite> entities = entry.getValue();
             for( EntityComposite entityInstance : entities.values() )
             {
                 EntityInstance instance = EntityInstance.getEntityInstance( entityInstance );
+
+                EntityStore store = instance.store();
+                StoreCompletion storeCompletionList = storeCompletion.get( store );
+                if( storeCompletionList == null )
+                {
+                    storeCompletionList = new StoreCompletion();
+                    storeCompletion.put( store, storeCompletionList );
+                }
+
                 if( instance.status() == EntityStatus.LOADED )
                 {
                     storeCompletionList.getUpdatedState().add( instance.state() );
@@ -442,7 +440,7 @@ public final class UnitOfWorkInstance
     {
         checkOpen();
 
-        return new UnitOfWorkInstance( moduleInstance, new UnitOfWorkStateServices() );
+        return new UnitOfWorkInstance( moduleInstance );
     }
 
     public ModuleInstance module()
@@ -531,22 +529,6 @@ public final class UnitOfWorkInstance
         if( !isOpen() )
         {
             throw new UnitOfWorkException( "Unit of work has been closed" );
-        }
-    }
-
-    private class UnitOfWorkStateServices
-        implements StateServices
-    {
-        private UnitOfWorkStore store = new UnitOfWorkStore();
-
-        public EntityStore getEntityStore( Class<? extends EntityComposite> compositeType )
-        {
-            return store;
-        }
-
-        public IdentityGenerator getIdentityGenerator( Class<? extends EntityComposite> compositeType )
-        {
-            return stateServices.getIdentityGenerator( compositeType );
         }
     }
 

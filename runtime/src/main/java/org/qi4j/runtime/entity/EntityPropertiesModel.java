@@ -30,6 +30,7 @@ import org.qi4j.runtime.composite.ValueConstraintsModel;
 import org.qi4j.runtime.property.PropertiesInstance;
 import org.qi4j.runtime.property.PropertyModel;
 import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.property.ImmutablePropertyInstance;
 import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.util.MetaInfo;
 
@@ -77,7 +78,7 @@ public class EntityPropertiesModel
         Map<Method, Property> properties = new HashMap<Method, Property>();
         for( PropertyModel propertyModel : propertyModels )
         {
-            Property property = propertyModel.newInstance();
+            Property property = propertyModel.newInstance( ImmutablePropertyInstance.UNSET );
             properties.put( propertyModel.accessor(), property );
         }
 

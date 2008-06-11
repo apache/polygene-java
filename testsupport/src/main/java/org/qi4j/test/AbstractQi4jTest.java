@@ -22,6 +22,7 @@ import org.qi4j.bootstrap.ApplicationFactory;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.composite.CompositeBuilderFactory;
+import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkFactory;
 import org.qi4j.object.ObjectBuilderFactory;
 import org.qi4j.runtime.Energy4Java;
@@ -76,6 +77,12 @@ public abstract class AbstractQi4jTest
     {
         if( unitOfWorkFactory != null && unitOfWorkFactory.currentUnitOfWork() != null )
         {
+            UnitOfWork current;
+            while( ( current = unitOfWorkFactory.currentUnitOfWork() ) != null )
+            {
+                current.discard();
+            }
+
             throw new Exception( "UnitOfWork not properly cleaned up" );
         }
 

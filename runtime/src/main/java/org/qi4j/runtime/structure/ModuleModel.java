@@ -95,4 +95,9 @@ public class ModuleModel
     {
         return new ModuleInstance( this, layerInstance, compositesModel, entitiesModel, objectsModel, servicesModel );
     }
+
+    @Override public String toString()
+    {
+        return name;
+    }
 }

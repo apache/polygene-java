@@ -21,9 +21,11 @@ import java.util.HashMap;
 import java.util.Map;
 import org.qi4j.composite.ConstraintViolationException;
 import org.qi4j.property.AbstractPropertyInstance;
+import org.qi4j.property.ImmutableProperty;
 import org.qi4j.property.Property;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.property.ImmutablePropertyInstance;
 import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.util.MetaInfo;
 
@@ -61,6 +63,7 @@ public class PropertyModel
     private ValueConstraintsInstance constraints; // May be null
     private MetaInfo metaInfo;
     private Object defaultValue;
+    private boolean immutable;
 
     public PropertyModel( Method anAccessor, ValueConstraintsInstance constraints, MetaInfo metaInfo, Object defaultValue )
     {
@@ -77,6 +80,8 @@ public class PropertyModel
         this.defaultValue = defaultValue;
 
         this.constraints = constraints;
+
+        immutable = ImmutableProperty.class.isAssignableFrom( anAccessor.getReturnType() );
     }
 
     public <T> T metaInfo( Class<T> infoType )
@@ -104,6 +109,11 @@ public class PropertyModel
         return accessor;
     }
 
+    public boolean isImmutable()
+    {
+        return immutable;
+    }
+
     public String toURI()
     {
         return AbstractPropertyInstance.toURI( accessor );
@@ -124,19 +134,26 @@ public class PropertyModel
         }
 
         // Check constraints
-        constraints.checkConstraints( value );
+        checkConstraints( value );
 
-        entityState.setProperty( qualifiedName, defaultValue );
+        entityState.setProperty( qualifiedName, value );
     }
 
     public Property<?> newInstance()
     {
-        return new PropertyInstance<Object>( this, defaultValue );
+        return newInstance( defaultValue );
     }
 
     public Property<?> newInstance( Object value )
     {
-        return new PropertyInstance<Object>( this, value );
+        if( immutable )
+        {
+            return new ImmutablePropertyInstance( this, value );
+        }
+        else
+        {
+            return new PropertyInstance<Object>( this, value );
+        }
     }
 
     public void checkConstraints( Object value )

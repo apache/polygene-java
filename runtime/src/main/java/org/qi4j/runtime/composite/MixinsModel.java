@@ -14,6 +14,8 @@
 
 package org.qi4j.runtime.composite;
 
+import java.util.HashSet;
+import java.util.Set;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.State;
 import org.qi4j.spi.composite.CompositeInstance;
@@ -28,6 +30,21 @@ public class MixinsModel
     {
         super( compositeType );
     }
+
+    public void implementThisUsing( CompositeModel compositeModel )
+    {
+        Set<Class> thisMixinTypes = new HashSet<Class>();
+        for( MixinModel mixinModel : mixinModels )
+        {
+            thisMixinTypes.addAll( mixinModel.thisMixinTypes() );
+        }
+
+        for( Class thisMixinType : thisMixinTypes )
+        {
+            compositeModel.implementMixinType( thisMixinType );
+        }
+    }
+
 
     // Context
     public void newMixins( CompositeInstance compositeInstance, UsesInstance uses, State state, Object[] mixins )

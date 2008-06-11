@@ -69,6 +69,10 @@ public final class ThisInjectionProviderFactory
             try
             {
                 InvocationHandler handler = context.compositeInstance();
+                if( handler == null )
+                {
+                    handler = context.proxyHandler();
+                }
                 return proxyConstructor.newInstance( handler );
             }
             catch( Exception e )

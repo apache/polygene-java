@@ -15,6 +15,7 @@
 package org.qi4j.runtime.composite;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import org.qi4j.runtime.injection.InjectedParametersModel;
 import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.structure.Binder;
@@ -34,6 +35,7 @@ public final class ConstructorModel
     {
         constructor.setAccessible( true );
         this.constructor = constructor;
+        constructor.setAccessible( true );
         this.parameters = parameters;
     }
 
@@ -61,6 +63,10 @@ public final class ConstructorModel
         try
         {
             return constructor.newInstance( parametersInstance );
+        }
+        catch( InvocationTargetException e )
+        {
+            throw new org.qi4j.composite.InstantiationException( "Could not instantiate " + constructor.getDeclaringClass(), e.getTargetException() );
         }
         catch( Exception e )
         {

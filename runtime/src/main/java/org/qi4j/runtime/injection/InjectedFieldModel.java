@@ -26,7 +26,6 @@ public final class InjectedFieldModel
 {
     private DependencyModel dependencyModel;
     private Field injectedField;
-    private Resolution resolution;
 
     public InjectedFieldModel( Field injectedField, DependencyModel dependencyModel )
     {
@@ -47,7 +46,7 @@ public final class InjectedFieldModel
 
     public void bind( Resolution resolution ) throws BindingException
     {
-        this.resolution = new Resolution( resolution.application(), resolution.layer(), resolution.module(), resolution.composite(), resolution.method(), injectedField );
+        resolution = new Resolution( resolution.application(), resolution.layer(), resolution.module(), resolution.composite(), resolution.method(), injectedField );
         dependencyModel.bind( resolution );
     }
 
@@ -59,6 +58,10 @@ public final class InjectedFieldModel
             injectedField.set( instance, value );
         }
         catch( IllegalAccessException e )
+        {
+            throw new InjectionException( e );
+        }
+        catch( IllegalArgumentException e )
         {
             throw new InjectionException( e );
         }

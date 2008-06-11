@@ -158,14 +158,14 @@ public final class DependencyModel
     }
 
     // Binding
-    public void bind( Resolution context )
+    public void bind( Resolution resolution )
         throws BindingException
     {
-        InjectionProviderFactory providerFactory = context.application().injectionProviderFactory();
+        InjectionProviderFactory providerFactory = resolution.application().injectionProviderFactory();
 
         try
         {
-            injectionProvider = providerFactory.newInjectionProvider( context, this );
+            injectionProvider = providerFactory.newInjectionProvider( resolution, this );
         }
         catch( InvalidInjectionException e )
         {

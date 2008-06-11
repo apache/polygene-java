@@ -31,6 +31,7 @@ import org.qi4j.property.Property;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
+import org.qi4j.spi.property.ImmutablePropertyInstance;
 
 /**
  * TODO
@@ -43,6 +44,7 @@ public final class EntityBuilderInstance<T>
     private EntityModel entityModel;
     private UnitOfWorkInstance uow;
     private EntityStore store;
+    private IdentityGenerator identityGenerator;
     private T stateProxy;
     private State state;
 
@@ -58,12 +60,13 @@ public final class EntityBuilderInstance<T>
         }
     }
 
-    public EntityBuilderInstance( ModuleInstance moduleInstance, EntityModel entityModel, UnitOfWorkInstance uow, EntityStore store )
+    public EntityBuilderInstance( ModuleInstance moduleInstance, EntityModel entityModel, UnitOfWorkInstance uow, EntityStore store, IdentityGenerator identityGenerator )
     {
         this.moduleInstance = moduleInstance;
         this.entityModel = entityModel;
         this.uow = uow;
         this.store = store;
+        this.identityGenerator = identityGenerator;
     }
 
     public T stateOfComposite()
@@ -108,12 +111,11 @@ public final class EntityBuilderInstance<T>
 
         // Figure out whether to use given or generated identity
         boolean prototypePattern = false;
-        Property<String> identityProperty = (Property<String>) getState().getProperty( IDENTITY_METHOD );
-        String identity = identityProperty.get();
-        if( identity == null )
+        Property identityProperty = getState().getProperty( IDENTITY_METHOD );
+        Object identity = identityProperty.get();
+        if( identity == ImmutablePropertyInstance.UNSET )
         {
             Class compositeType = entityModel.type();
-            IdentityGenerator identityGenerator = uow.stateServices.getIdentityGenerator( compositeType );
             if( identityGenerator == null )
             {
                 throw new UnitOfWorkException( "No identity generator found for type " + compositeType.getName() );
@@ -124,12 +126,12 @@ public final class EntityBuilderInstance<T>
         }
 
         // Transfer state
-        EntityState entityState = entityModel.newEntityState( store, identity, state );
+        EntityState entityState = entityModel.newEntityState( store, identity.toString(), state );
 
         EntityInstance instance = entityModel.loadInstance( uow, store, entityState.getIdentity(), moduleInstance, entityState );
 
         Object proxy = instance.proxy();
-        uow.createEntity( (EntityComposite) instance );
+        uow.createEntity( (EntityComposite) proxy );
 
         // Invoke lifecycle create() method
         if( instance instanceof Lifecycle )
@@ -139,7 +141,7 @@ public final class EntityBuilderInstance<T>
 
         if( prototypePattern )
         {
-            identityProperty.set( null );
+            identityProperty.set( ImmutablePropertyInstance.UNSET );
         }
         return (T) proxy;
     }

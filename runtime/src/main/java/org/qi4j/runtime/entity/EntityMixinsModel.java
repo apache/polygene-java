@@ -14,9 +14,13 @@
 
 package org.qi4j.runtime.entity;
 
+import java.util.HashSet;
+import java.util.Set;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.State;
+import org.qi4j.entity.Entity;
 import org.qi4j.runtime.composite.AbstractMixinsModel;
+import org.qi4j.runtime.composite.MixinDeclaration;
 import org.qi4j.runtime.composite.MixinModel;
 import org.qi4j.runtime.composite.UsesInstance;
 
@@ -29,6 +33,21 @@ public class EntityMixinsModel
     public EntityMixinsModel( Class<? extends Composite> compositeType )
     {
         super( compositeType );
+        mixins.add( new MixinDeclaration( EntityMixin.class, Entity.class ) );
+    }
+
+    public void implementThisUsing( EntityModel entityModel )
+    {
+        Set<Class> thisMixinTypes = new HashSet<Class>();
+        for( MixinModel mixinModel : mixinModels )
+        {
+            thisMixinTypes.addAll( mixinModel.thisMixinTypes() );
+        }
+
+        for( Class thisMixinType : thisMixinTypes )
+        {
+            entityModel.implementMixinType( thisMixinType );
+        }
     }
 
     public void newMixins( EntityInstance entityInstance, State state, Object[] mixins )

@@ -20,6 +20,7 @@ import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.property.EntityPropertyInstance;
 import org.qi4j.runtime.property.PropertyModel;
 import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.property.ImmutablePropertyInstance;
 import org.qi4j.util.MetaInfo;
 
 /**
@@ -35,6 +36,13 @@ public class EntityPropertyModel
 
     public Property newEntityInstance( EntityState state )
     {
-        return new EntityPropertyInstance( this, state );
+        if( isImmutable() )
+        {
+            return new ImmutablePropertyInstance( this, state.getProperty( qualifiedName() ) );
+        }
+        else
+        {
+            return new EntityPropertyInstance( this, state );
+        }
     }
 }

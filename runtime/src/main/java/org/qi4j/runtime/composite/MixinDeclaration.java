@@ -16,6 +16,7 @@ package org.qi4j.runtime.composite;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import org.qi4j.composite.AppliesTo;
 import org.qi4j.composite.AppliesToFilter;
@@ -38,6 +39,11 @@ public final class MixinDeclaration
         if( !InvocationHandler.class.isAssignableFrom( mixinClass ) )
         {
             appliesToFilter = new TypedFragmentAppliesToFilter();
+
+            if( Modifier.isAbstract( mixinClass.getModifiers() ) )
+            {
+                appliesToFilter = new ChainedAppliesToFilter( appliesToFilter, new ImplementsMethodAppliesToFilter() );
+            }
         }
 
         AppliesTo appliesTo = (AppliesTo) mixinClass.getAnnotation( AppliesTo.class );
@@ -64,7 +70,7 @@ public final class MixinDeclaration
 
                 if( appliesToFilter == null )
                 {
-                    filter = appliesToFilter;
+                    appliesToFilter = filter;
                 }
                 else
                 {

@@ -18,14 +18,12 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.Mixins;
 import org.qi4j.runtime.structure.ModelVisitor;
-import org.qi4j.spi.composite.CompositeInstance;
 import org.qi4j.spi.composite.InvalidCompositeException;
 import org.qi4j.util.ClassUtil;
 
@@ -34,7 +32,7 @@ import org.qi4j.util.ClassUtil;
  */
 public class AbstractMixinsModel
 {
-    private List<MixinDeclaration> mixins = new ArrayList<MixinDeclaration>();
+    protected List<MixinDeclaration> mixins = new ArrayList<MixinDeclaration>();
 
     private Map<Method, Class> methodImplementation = new HashMap<Method, Class>();
     protected List<MixinModel> mixinModels = new ArrayList<MixinModel>();
@@ -83,11 +81,8 @@ public class AbstractMixinsModel
             index = mixinIndex.size();
             mixinIndex.put( mixinClass, index );
 
-            if( !mixinClass.equals( CompositeInstance.class ) )
-            {
-                MixinModel mixinModel = new MixinModel( mixinClass );
-                mixinModels.add( mixinModel );
-            }
+            MixinModel mixinModel = new MixinModel( mixinClass );
+            mixinModels.add( mixinModel );
         }
         methodIndex.put( method, index );
     }
@@ -107,21 +102,6 @@ public class AbstractMixinsModel
             }
         }
     }
-
-    public void implementThisUsing( CompositeModel compositeModel )
-    {
-        Set<Class> thisMixinTypes = new HashSet<Class>();
-        for( MixinModel mixinModel : mixinModels )
-        {
-            thisMixinTypes.addAll( mixinModel.thisMixinTypes() );
-        }
-
-        for( Class thisMixinType : thisMixinTypes )
-        {
-            compositeModel.implementMixinType( thisMixinType );
-        }
-    }
-
 
     public void visitModel( ModelVisitor modelVisitor )
     {

@@ -81,7 +81,7 @@ public class ServiceModel
 
     public Class<? extends ServiceInstanceFactory> serviceFactory()
     {
-        return null;
+        return serviceFactory;
     }
 
     public String identity()
@@ -105,5 +105,10 @@ public class ServiceModel
                                            serviceInvocationHandler );
         }
 
+    }
+
+    @Override public String toString()
+    {
+        return type.getName() + ":" + identity;
     }
 }

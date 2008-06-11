@@ -97,7 +97,7 @@ public class CompositeBuilderInstance<T>
 
     public T newInstance() throws org.qi4j.composite.InstantiationException
     {
-        CompositeInstance compositeInstance = compositeModel.newCompositeInstance( moduleInstance, uses == null ? UsesInstance.NO_USES : uses, state );
+        CompositeInstance compositeInstance = compositeModel.newCompositeInstance( moduleInstance, uses == null ? UsesInstance.NO_USES : uses, getState() );
         state = null; // Reset state - TODO should create a copy lazily
         return compositeType.cast( compositeInstance.proxy() );
     }

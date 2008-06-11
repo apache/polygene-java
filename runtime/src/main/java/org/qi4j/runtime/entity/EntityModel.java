@@ -117,6 +117,10 @@ public class EntityModel
         this.compositeMethodsModel = compositeMethodsModel;
 
         this.proxyClass = createProxyClass( type );
+
+        stateModel.addStateFor( type );
+
+        mixinsModel.implementThisUsing( this );
     }
 
     public Class<? extends EntityComposite> type()
@@ -205,6 +209,12 @@ public class EntityModel
         {
             throw new org.qi4j.composite.InstantiationException( e );
         }
+    }
+
+    public void implementMixinType( Class mixinType )
+    {
+        compositeMethodsModel.implementMixinType( mixinType );
+        stateModel.addStateFor( mixinType );
     }
 
     public State newDefaultState()

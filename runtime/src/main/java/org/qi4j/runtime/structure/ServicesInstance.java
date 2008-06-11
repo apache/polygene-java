@@ -14,7 +14,6 @@
 
 package org.qi4j.runtime.structure;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,16 +58,14 @@ public class ServicesInstance
         activator.passivate();
     }
 
-    public <T> Iterable<ServiceReference<T>> getServiceReferencesFor( Class<T> serviceType, Visibility visibility )
+    public <T> void getServiceReferencesFor( Class<T> serviceType, Visibility visibility, List<ServiceReference<T>> serviceReferences )
     {
         Iterable<ServiceModel> serviceModels = servicesModel.getServiceModelsFor( serviceType, visibility );
 
-        List<ServiceReference<T>> serviceReferences = new ArrayList<ServiceReference<T>>();
         for( ServiceModel serviceModel : serviceModels )
         {
             serviceReferences.add( mapIdentityServiceReference.get( serviceModel.identity() ) );
         }
-        return serviceReferences;
     }
 
 }

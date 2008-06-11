@@ -12,18 +12,18 @@
  *
  */
 
-package org.qi4j.runtime.entity;
+package org.qi4j.service;
 
-import org.qi4j.entity.EntityComposite;
-import org.qi4j.entity.IdentityGenerator;
-import org.qi4j.spi.entity.EntityStore;
+import org.qi4j.composite.InvalidApplicationException;
 
 /**
  * TODO
  */
-public interface StateServices
+public class DuplicateServiceIdentityException
+    extends InvalidApplicationException
 {
-    EntityStore getEntityStore( Class<? extends EntityComposite> compositeType );
-
-    IdentityGenerator getIdentityGenerator( Class<? extends EntityComposite> compositeType );
+    public DuplicateServiceIdentityException( String string )
+    {
+        super( string );
+    }
 }

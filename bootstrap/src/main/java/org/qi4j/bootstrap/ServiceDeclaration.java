@@ -74,14 +74,44 @@ public final class ServiceDeclaration
     {
         for( Class serviceType : serviceTypes )
         {
+            String id = identity;
+            if( id == null )
+            {
+                id = generateId( serviceModels, serviceType );
+            }
+
             ServiceModel serviceModel = new ServiceModel( serviceType,
                                                           visibility,
                                                           moduleModel,
                                                           serviceProvider,
-                                                          identity,
+                                                          id,
                                                           instantiateOnStartup,
                                                           new MetaInfo( metaInfo ) );
             serviceModels.add( serviceModel );
         }
+    }
+
+    private String generateId( List<ServiceModel> serviceModels, Class serviceType )
+    {
+        // Find identity that is not yet used
+        int idx = 0;
+        String id = serviceType.getSimpleName();
+        boolean invalid;
+        do
+        {
+            invalid = false;
+            for( ServiceModel serviceModel : serviceModels )
+            {
+                if( serviceModel.identity().equals( id ) )
+                {
+                    idx++;
+                    id = serviceType.getSimpleName() + "_" + idx;
+                    invalid = true;
+                    break;
+                }
+            }
+        }
+        while( invalid );
+        return id;
     }
 }

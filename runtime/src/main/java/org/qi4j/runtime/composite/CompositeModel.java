@@ -15,10 +15,12 @@
 package org.qi4j.runtime.composite;
 
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.State;
+import org.qi4j.entity.Lifecycle;
 import org.qi4j.runtime.property.PropertiesModel;
 import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.ModelVisitor;
@@ -36,6 +38,20 @@ import org.qi4j.util.MetaInfo;
 public class CompositeModel
     implements Binder, CompositeDescriptor
 {
+    private static final Method LIFECYCLE_CREATE;
+
+    static
+    {
+        try
+        {
+            LIFECYCLE_CREATE = Lifecycle.class.getMethod( "create" );
+        }
+        catch( NoSuchMethodException e )
+        {
+            throw new InternalError( "Qi4j Core Runtime codebase is corrupted. Contact Qi4j team: Lifeycle" );
+        }
+    }
+
     public static String toURI( final Class<? extends Composite> compositeClass )
     {
         if( compositeClass == null )
@@ -107,6 +123,8 @@ public class CompositeModel
         this.mixinsModel = mixinsModel;
 
         this.compositeMethodsModel = compositeMethodsModel;
+
+        stateModel.addStateFor( compositeType );
 
         mixinsModel.implementThisUsing( this );
     }
@@ -203,15 +221,30 @@ public class CompositeModel
                                mixins );
 
         // Invoke lifecycle create() method
-/*
+        Composite proxy = compositeInstance.proxy();
         if( proxy instanceof Lifecycle )
         {
-            invokeCreate( proxy, compositeInstance );
+            invokeCreate( proxy );
         }
-*/
 
         // Return
         return compositeInstance;
+    }
+
+    private void invokeCreate( Composite proxy )
+    {
+        try
+        {
+            LIFECYCLE_CREATE.invoke( proxy );
+        }
+        catch( IllegalAccessException e )
+        {
+            e.printStackTrace();
+        }
+        catch( InvocationTargetException e )
+        {
+            e.printStackTrace();
+        }
     }
 
     public void implementMixinType( Class mixinType )
@@ -228,5 +261,10 @@ public class CompositeModel
     public String toURI()
     {
         return toURI( compositeType );
+    }
+
+    @Override public String toString()
+    {
+        return compositeType.getName();
     }
 }

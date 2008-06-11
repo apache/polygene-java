@@ -19,7 +19,11 @@ import java.util.HashMap;
 import java.util.Map;
 import org.qi4j.composite.internal.ConcernFor;
 import org.qi4j.composite.internal.SideEffectFor;
+import org.qi4j.injection.scope.AssociationField;
+import org.qi4j.injection.scope.AssociationParameter;
 import org.qi4j.injection.scope.Invocation;
+import org.qi4j.injection.scope.PropertyField;
+import org.qi4j.injection.scope.PropertyParameter;
 import org.qi4j.injection.scope.Service;
 import org.qi4j.injection.scope.Structure;
 import org.qi4j.injection.scope.This;
@@ -46,11 +50,11 @@ public final class InjectionProviderFactoryStrategy
         providerFactories.put( Invocation.class, new InvocationInjectionProviderFactory() );
         providerFactories.put( Uses.class, new UsesInjectionProviderFactory() );
         PropertyInjectionProviderFactory propertyInjectionProviderFactory = new PropertyInjectionProviderFactory();
-//        providerFactories.put( PropertyField.class, propertyInjectionProviderFactory );
-//        providerFactories.put( PropertyParameter.class, propertyInjectionProviderFactory );
+        providerFactories.put( PropertyField.class, propertyInjectionProviderFactory );
+        providerFactories.put( PropertyParameter.class, propertyInjectionProviderFactory );
         AssociationInjectionProviderFactory associationInjectionProviderFactory = new AssociationInjectionProviderFactory();
-//        providerFactories.put( AssociationField.class, associationInjectionProviderFactory );
-//        providerFactories.put( AssociationParameter.class, associationInjectionProviderFactory );
+        providerFactories.put( AssociationField.class, associationInjectionProviderFactory );
+        providerFactories.put( AssociationParameter.class, associationInjectionProviderFactory );
         providerFactories.put( Structure.class, new CachingInjectionProviderFactoryDecorator( new StructureInjectionProviderFactory() ) );
         providerFactories.put( Service.class, new CachingInjectionProviderFactoryDecorator( new ServiceInjectionProviderFactory() ) );
     }

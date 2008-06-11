@@ -32,6 +32,7 @@ public final class CompositeDeclaration
     private Visibility visibility = Visibility.module;
 
     public CompositeDeclaration( Class<? extends Composite>... compositeTypes )
+        throws AssemblyException
     {
         this.compositeTypes = compositeTypes;
     }

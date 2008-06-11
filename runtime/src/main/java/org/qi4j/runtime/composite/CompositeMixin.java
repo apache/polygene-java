@@ -14,6 +14,7 @@
  */
 package org.qi4j.runtime.composite;
 
+import java.lang.reflect.Proxy;
 import org.qi4j.composite.Composite;
 import org.qi4j.injection.scope.This;
 import org.qi4j.spi.composite.CompositeInstance;
@@ -25,12 +26,13 @@ public final class CompositeMixin
 
     public <T> T metaInfo( Class<T> infoType )
     {
-        CompositeInstance descriptor = DefaultCompositeInstance.getCompositeInstance( meAsComposite );
-        return descriptor.metaInfo().get( infoType );
+        CompositeInstance compositeInstance = (CompositeInstance) Proxy.getInvocationHandler( meAsComposite );
+        return compositeInstance.metaInfo().get( infoType );
     }
 
     public Class<? extends Composite> type()
     {
-        return DefaultCompositeInstance.getCompositeInstance( meAsComposite ).type();
+        CompositeInstance compositeInstance = (CompositeInstance) Proxy.getInvocationHandler( meAsComposite );
+        return compositeInstance.type();
     }
 }

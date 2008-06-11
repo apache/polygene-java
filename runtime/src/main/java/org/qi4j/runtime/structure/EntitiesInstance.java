@@ -15,10 +15,13 @@
 package org.qi4j.runtime.structure;
 
 import org.qi4j.entity.EntityBuilder;
+import org.qi4j.entity.IdentityGenerator;
+import org.qi4j.entity.UnitOfWorkException;
 import org.qi4j.runtime.entity.EntityBuilderInstance;
 import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.entity.UnitOfWorkInstance;
+import org.qi4j.service.ServiceReference;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.QualifiedIdentity;
@@ -31,6 +34,7 @@ public class EntitiesInstance
     private EntitiesModel entities;
     private ModuleInstance moduleInstance;
     private EntityStore store;
+    private IdentityGenerator generator;
 
     public EntitiesInstance( EntitiesModel entities, ModuleInstance moduleInstance )
     {
@@ -45,32 +49,50 @@ public class EntitiesInstance
 
     public <T> EntityBuilder<T> newEntityBuilder( Class<T> mixinType, UnitOfWorkInstance uow )
     {
-        return new EntityBuilderInstance<T>( moduleInstance, entities.getEntityModelFor( mixinType ), uow, store );
+        return new EntityBuilderInstance<T>( moduleInstance, entities.getEntityModelFor( mixinType ), uow, getStore(), getIdentityGenerator() );
     }
 
     public EntityInstance loadEntityInstance( String identity, EntityModel entityModel, UnitOfWorkInstance uow )
     {
-        if( store == null )
-        {
-            store = moduleInstance.serviceFinder().findService( EntityStore.class ).get();
-        }
-
         QualifiedIdentity qid = entityModel.newQualifiedIdentity( identity );
 
         EntityState state = store.getEntityState( entityModel, qid );
 
-        return entityModel.loadInstance( uow, store, qid, moduleInstance, state );
+        return entityModel.loadInstance( uow, getStore(), qid, moduleInstance, state );
     }
 
     public EntityInstance getEntityInstance( String identity, EntityModel entityModel, UnitOfWorkInstance unitOfWorkInstance )
     {
-        if( store == null )
-        {
-            store = moduleInstance.serviceFinder().findService( EntityStore.class ).get();
-        }
-
         QualifiedIdentity qid = entityModel.newQualifiedIdentity( identity );
 
-        return entityModel.getInstance( unitOfWorkInstance, store, qid, moduleInstance );
+        return entityModel.getInstance( unitOfWorkInstance, getStore(), qid, moduleInstance );
+    }
+
+    private EntityStore getStore()
+    {
+        if( store == null )
+        {
+            ServiceReference<EntityStore> service = moduleInstance.serviceFinder().findService( EntityStore.class );
+            if( service == null )
+            {
+                throw new UnitOfWorkException( "No EntityStore service available in module " + moduleInstance.name() );
+            }
+            store = service.get();
+        }
+        return store;
+    }
+
+    private IdentityGenerator getIdentityGenerator()
+    {
+        if( generator == null )
+        {
+            ServiceReference<IdentityGenerator> service = moduleInstance.serviceFinder().findService( IdentityGenerator.class );
+            if( service == null )
+            {
+                throw new UnitOfWorkException( "No IdentityGenerator service available in module " + moduleInstance.name() );
+            }
+            generator = service.get();
+        }
+        return generator;
     }
 }

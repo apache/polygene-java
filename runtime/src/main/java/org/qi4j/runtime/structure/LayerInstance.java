@@ -20,6 +20,7 @@ import org.qi4j.runtime.composite.CompositeModel;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.object.ObjectModel;
 import org.qi4j.service.Activatable;
+import org.qi4j.service.ServiceReference;
 import org.qi4j.spi.service.Activator;
 import org.qi4j.structure.Visibility;
 
@@ -250,5 +251,25 @@ public class LayerInstance
     @Override public String toString()
     {
         return model.toString();
+    }
+
+    public <T> void getServiceReferencesFor( Class<T> serviceType, Visibility visibility, List<ServiceReference<T>> serviceReferences )
+    {
+        // Check this layer
+        for( ModuleInstance moduleInstance : moduleInstances )
+        {
+            moduleInstance.services().getServiceReferencesFor( serviceType, visibility, serviceReferences );
+        }
+
+        if( visibility == Visibility.layer )
+        {
+            // Check application scope
+            for( ModuleInstance moduleInstance : moduleInstances )
+            {
+                moduleInstance.services().getServiceReferencesFor( serviceType, Visibility.application, serviceReferences );
+            }
+
+            usedLayersInstance.getServiceReferencesFor( serviceType, serviceReferences );
+        }
     }
 }

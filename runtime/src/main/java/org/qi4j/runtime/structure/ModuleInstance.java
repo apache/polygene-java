@@ -14,28 +14,24 @@
 
 package org.qi4j.runtime.structure;
 
-import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.InvalidApplicationException;
-import org.qi4j.entity.EntityComposite;
-import org.qi4j.entity.IdentityGenerator;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkFactory;
 import org.qi4j.object.ObjectBuilder;
 import org.qi4j.object.ObjectBuilderFactory;
 import org.qi4j.runtime.composite.CompositeModel;
 import org.qi4j.runtime.entity.EntityModel;
-import org.qi4j.runtime.entity.StateServices;
 import org.qi4j.runtime.entity.UnitOfWorkInstance;
 import org.qi4j.runtime.object.ObjectModel;
-import org.qi4j.runtime.util.ServiceMap;
 import org.qi4j.service.Activatable;
 import org.qi4j.service.ServiceFinder;
 import org.qi4j.service.ServiceReference;
-import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.structure.Module;
 import org.qi4j.structure.Visibility;
 
@@ -103,6 +99,11 @@ public class ModuleInstance
     public ObjectsInstance objects()
     {
         return objects;
+    }
+
+    public ServicesInstance services()
+    {
+        return services;
     }
 
     public CompositeBuilderFactory compositeBuilderFactory()
@@ -201,6 +202,11 @@ public class ModuleInstance
         return clazz;
     }
 
+    @Override public String toString()
+    {
+        return moduleModel.toString();
+    }
+
     Class getClassForName( String type )
     {
         Class clazz = composites.model().getClassForName( type );
@@ -248,16 +254,13 @@ public class ModuleInstance
     private class UnitOfWorkFactoryInstance
         implements UnitOfWorkFactory
     {
-        private ModuleStateServices services;
-
         public UnitOfWorkFactoryInstance()
         {
-            services = new ModuleStateServices();
         }
 
         public UnitOfWork newUnitOfWork()
         {
-            return new UnitOfWorkInstance( ModuleInstance.this, services );
+            return new UnitOfWorkInstance( ModuleInstance.this );
         }
 
         public UnitOfWork currentUnitOfWork()
@@ -269,29 +272,6 @@ public class ModuleInstance
             }
             return stack.peek();
         }
-
-        private class ModuleStateServices
-            implements StateServices
-        {
-            private ServiceMap<EntityStore> entityStores;
-            private ServiceMap<IdentityGenerator> identityGenerators;
-
-            public ModuleStateServices()
-            {
-                entityStores = new ServiceMap<EntityStore>( ModuleInstance.this, EntityStore.class );
-                identityGenerators = new ServiceMap<IdentityGenerator>( ModuleInstance.this, IdentityGenerator.class );
-            }
-
-            public EntityStore getEntityStore( Class<? extends EntityComposite> compositeType )
-            {
-                return entityStores.getService( compositeType );
-            }
-
-            public IdentityGenerator getIdentityGenerator( Class<? extends EntityComposite> compositeType )
-            {
-                return identityGenerators.getService( compositeType );
-            }
-        }
     }
 
 
@@ -300,20 +280,29 @@ public class ModuleInstance
     {
         public <T> ServiceReference<T> findService( Class<T> serviceType )
         {
-            Iterator<ServiceReference<T>> serviceReferences = services.getServiceReferencesFor( serviceType, Visibility.module ).iterator();
-            if( serviceReferences.hasNext() )
+            List<ServiceReference<T>> serviceReferences = new ArrayList<ServiceReference<T>>();
+
+            services.getServiceReferencesFor( serviceType, Visibility.module, serviceReferences );
+            if( !serviceReferences.isEmpty() )
             {
-                return serviceReferences.next();
+                return serviceReferences.get( 0 );
             }
 
-            // TODO Check layer and application
+            layerInstance.getServiceReferencesFor( serviceType, Visibility.layer, serviceReferences );
 
-            return null;
+            if( !serviceReferences.isEmpty() )
+            {
+                return serviceReferences.get( 0 );
+            }
+
+            return null; // TODO Throw exception?
         }
 
         public <T> Iterable<ServiceReference<T>> findServices( Class<T> serviceType )
         {
-            return services.getServiceReferencesFor( serviceType, Visibility.module );
+            List<ServiceReference<T>> serviceReferences = new ArrayList<ServiceReference<T>>();
+            services.getServiceReferencesFor( serviceType, Visibility.module, serviceReferences );
+            return serviceReferences;
         }
     }
 
@@ -337,4 +326,5 @@ public class ModuleInstance
             return clazz;
         }
     }
+
 }

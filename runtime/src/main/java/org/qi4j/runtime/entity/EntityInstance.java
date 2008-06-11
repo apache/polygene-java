@@ -103,6 +103,12 @@ public class EntityInstance
         return moduleInstance;
     }
 
+
+    public EntityStore store()
+    {
+        return store;
+    }
+
     public EntityState state()
     {
         return state;
@@ -203,7 +209,7 @@ public class EntityInstance
         try
         {
             Identity other = ( (Identity) o );
-            return other != null && identity.equals( other.identity().get() );
+            return other != null && identity.identity().equals( other.identity().get() );
         }
         catch( ClassCastException e )
         {

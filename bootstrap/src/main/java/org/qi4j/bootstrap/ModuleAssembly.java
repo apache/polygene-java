@@ -16,7 +16,9 @@ package org.qi4j.bootstrap;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.qi4j.composite.Composite;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.runtime.composite.CompositeModel;
@@ -29,6 +31,7 @@ import org.qi4j.runtime.structure.LayerModel;
 import org.qi4j.runtime.structure.ModuleModel;
 import org.qi4j.runtime.structure.ObjectsModel;
 import org.qi4j.runtime.structure.ServicesModel;
+import org.qi4j.service.DuplicateServiceIdentityException;
 import org.qi4j.service.ServiceComposite;
 import org.qi4j.structure.Visibility;
 import org.qi4j.util.MetaInfo;
@@ -92,7 +95,11 @@ public final class ModuleAssembly
             // May not register ServiceComposites
             if( ServiceComposite.class.isAssignableFrom( compositeType ) )
             {
-                throw new AssemblyException( "May not register ServiceComposites as a Composite" );
+                throw new AssemblyException( "May not register ServiceComposites as a Composite:" + compositeType.getName() );
+            }
+            else if( EntityComposite.class.isAssignableFrom( compositeType ) )
+            {
+                throw new AssemblyException( "May not register EntityComposites as a Composite:" + compositeType.getName() );
             }
         }
 
@@ -196,21 +203,51 @@ public final class ModuleAssembly
             serviceDeclaration.addServices( moduleModel, serviceModels );
         }
 
+        Set<String> identities = new HashSet<String>();
+        for( ServiceModel serviceModel : serviceModels )
+        {
+            String identity = serviceModel.identity();
+            if( identities.contains( identity ) )
+            {
+                throw new DuplicateServiceIdentityException( "Duplicated service identity: " + identity + " in module " + moduleModel.name() );
+            }
+            identities.add( identity );
+        }
+
         nextService:
         for( ServiceModel serviceModel : serviceModels )
         {
             if( Composite.class.isAssignableFrom( serviceModel.type() ) )
             {
+                boolean found = false;
                 for( CompositeModel compositeModel : compositeModels )
                 {
                     if( serviceModel.type().isAssignableFrom( compositeModel.type() ) )
                     {
-                        continue nextService;
+                        found = true;
+                        break;
                     }
                 }
 
                 // Auto-add implementation as Composite with Module visibility.
-                compositeModels.add( CompositeModel.newModel( serviceModel.type(), Visibility.module, new MetaInfo(), moduleModel ) );
+                if( !found )
+                {
+                    compositeModels.add( CompositeModel.newModel( serviceModel.type(), Visibility.module, new MetaInfo(), moduleModel ) );
+                }
+            }
+
+            boolean found = false;
+            for( ObjectModel objectModel : objectModels )
+            {
+                if( objectModel.type().equals( serviceModel.serviceFactory() ) )
+                {
+                    found = true;
+                    break;
+                }
+            }
+            if( !found )
+            {
+                objectModels.add( new ObjectModel( serviceModel.serviceFactory(), Visibility.module, new MetaInfo(), moduleModel ) );
             }
         }
 

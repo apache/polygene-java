@@ -81,7 +81,7 @@ public final class MixinModel
         return mixin;
     }
 
-    protected Set<Class> thisMixinTypes()
+    public Set<Class> thisMixinTypes()
     {
         final Set<Class> mixinTypes = new HashSet<Class>();
 
