@@ -36,7 +36,7 @@ public class ServiceIdFilter
     {
         if( serviceRef == null )
         {
-            String identityFilter = serviceDescriptor.metaInfo( String.class );
+            String identityFilter = serviceDescriptor.metaInfo( ServiceId.class ).id();
             Class serviceType = serviceDescriptor.type();
             Iterable<ServiceReference<?>> services = locator.findServices( serviceType );
             for( ServiceReference<?> service : services )

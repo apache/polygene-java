@@ -28,5 +28,7 @@ public interface Qi4jSPI
 {
     CompositeDescriptor getCompositeDescriptor( Composite composite );
 
-    CompositeDescriptor getCompositeDescriptor( Class<? extends Composite> compositeType, Module module );
+    CompositeDescriptor getCompositeDescriptor( Class mixinType, Module module );
+
+    void setMixins( Composite composite, Object[] mixins );
 }

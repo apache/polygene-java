@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Set;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.SideEffects;
+import org.qi4j.runtime.injection.DependencyVisitor;
 import static org.qi4j.util.ClassUtil.interfacesOf;
 
 /**

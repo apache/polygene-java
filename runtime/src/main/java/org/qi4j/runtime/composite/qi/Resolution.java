@@ -15,9 +15,9 @@
 package org.qi4j.runtime.composite.qi;
 
 import java.lang.reflect.Field;
-import org.qi4j.runtime.structure.qi.ApplicationModel;
-import org.qi4j.runtime.structure.qi.LayerModel;
-import org.qi4j.runtime.structure.qi.ModuleModel;
+import org.qi4j.runtime.structure.ApplicationModel;
+import org.qi4j.runtime.structure.LayerModel;
+import org.qi4j.runtime.structure.ModuleModel;
 import org.qi4j.spi.composite.CompositeDescriptor;
 
 /**

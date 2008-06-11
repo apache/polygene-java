@@ -26,7 +26,7 @@ import org.qi4j.entity.UnitOfWorkFactory;
 import org.qi4j.object.ObjectBuilderFactory;
 import org.qi4j.runtime.Energy4Java;
 import org.qi4j.runtime.Qi4jRuntime;
-import org.qi4j.runtime.structure.qi.ModuleInstance;
+import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.service.ServiceFinder;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.structure.Application;

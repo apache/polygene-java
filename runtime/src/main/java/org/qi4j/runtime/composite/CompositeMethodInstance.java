@@ -14,12 +14,6 @@
  */
 package org.qi4j.runtime.composite;
 
-enum InvocationType
-{
-    NoConcerns_InvocationHandler, NoConcerns_TypedMixin,
-    Concerns_InvocationHandler, Concerns_TypedMixin
-}
-
 /**
  * Compaction Level of the StackTrace clenaup operation.
  *

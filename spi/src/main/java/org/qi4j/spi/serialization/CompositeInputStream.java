@@ -17,7 +17,6 @@ package org.qi4j.spi.serialization;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
-import java.lang.reflect.Proxy;
 import org.qi4j.Qi4j;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
@@ -25,7 +24,7 @@ import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.InvalidApplicationException;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.UnitOfWork;
-import org.qi4j.spi.composite.CompositeState;
+import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.entity.QualifiedIdentity;
 
 /**
@@ -78,10 +77,10 @@ public final class CompositeInputStream extends ObjectInputStream
         {
             // TODO Fix this!!
             SerializedComposite holder = (SerializedComposite) obj;
-            Class<Composite> compositeInterface = holder.getCompositeInterface();
-            Object[] mixins = holder.getMixins();
+            Class<? extends Composite> compositeInterface = holder.type();
+            Object[] mixins = holder.mixins();
 
-            CompositeBuilder<Composite> builder = null;
+            CompositeBuilder<? extends Composite> builder = null;
             do
             {
                 try
@@ -102,21 +101,7 @@ public final class CompositeInputStream extends ObjectInputStream
 
             // CompositeBuilder found
             Composite composite = builder.newInstance();
-            CompositeState mixinHandler = (CompositeState) Proxy.getInvocationHandler( composite );
-            Object[] newMixins = mixinHandler.getMixins();
-            for( int i = 0; i < newMixins.length; i++ )
-            {
-                Object newMixin = newMixins[ i ];
-
-                for( Object mixin : mixins )
-                {
-                    if( newMixin.getClass().equals( mixin.getClass() ) )
-                    {
-                        newMixins[ i ] = mixin; // Replace mixin
-                        break;
-                    }
-                }
-            }
+            ( (Qi4jSPI) is ).setMixins( composite, mixins );
             return composite;
         }
         return obj;

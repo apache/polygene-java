@@ -23,7 +23,7 @@ import org.qi4j.query.MissingIndexingSystemException;
 import org.qi4j.query.QueryBuilder;
 import org.qi4j.query.QueryBuilderFactory;
 import org.qi4j.runtime.entity.UnitOfWorkInstance;
-import org.qi4j.runtime.structure.qi.ModuleInstance;
+import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.service.ServiceFinder;
 import org.qi4j.service.ServiceReference;
 import org.qi4j.spi.query.EntityFinder;

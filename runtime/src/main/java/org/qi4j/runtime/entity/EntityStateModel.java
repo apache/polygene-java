@@ -16,6 +16,7 @@ package org.qi4j.runtime.entity;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.qi4j.composite.ConstraintViolationException;
 import org.qi4j.composite.State;
@@ -25,9 +26,9 @@ import org.qi4j.runtime.entity.association.AssociationsInstance;
 import org.qi4j.runtime.entity.association.AssociationsModel;
 import org.qi4j.runtime.property.PropertiesInstance;
 import org.qi4j.spi.composite.StateDescriptor;
+import org.qi4j.spi.entity.AssociationDescriptor;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.structure.AssociationDescriptor;
-import org.qi4j.spi.structure.PropertyDescriptor;
+import org.qi4j.spi.property.PropertyDescriptor;
 
 /**
  * TODO
@@ -67,9 +68,29 @@ public class EntityStateModel
         return propertiesModel.getPropertyByName( name );
     }
 
+    public PropertyDescriptor getPropertyByQualifiedName( String name )
+    {
+        return propertiesModel.getPropertyByQualifiedName( name );
+    }
+
     public AssociationDescriptor getAssociationByName( String name )
     {
         return associationsModel.getAssociationByName( name );
+    }
+
+    public AssociationDescriptor getAssociationByQualifiedName( String name )
+    {
+        return associationsModel.getAssociationByQualifiedName( name );
+    }
+
+    public List<PropertyDescriptor> properties()
+    {
+        return propertiesModel.properties();
+    }
+
+    public List<AssociationDescriptor> associations()
+    {
+        return associationsModel.associations();
     }
 
     public void setState( State state, EntityState entityState )

@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.qi4j.composite.Composite;
 import org.qi4j.entity.EntityComposite;
-import org.qi4j.spi.composite.CompositeState;
+import org.qi4j.spi.composite.CompositeInstance;
 import org.qi4j.spi.entity.QualifiedIdentity;
 
 /**
@@ -52,8 +52,8 @@ public final class CompositeOutputStream extends ObjectOutputStream
             else
             {
                 List mixinsToSave = new ArrayList();
-                CompositeState mixinsHolder = (CompositeState) Proxy.getInvocationHandler( obj );
-                Object[] existingMixins = mixinsHolder.getMixins();
+                CompositeInstance compositeInstance = (CompositeInstance) Proxy.getInvocationHandler( obj );
+                Object[] existingMixins = compositeInstance.mixins();
                 for( Object existingMixin : existingMixins )
                 {
                     if( existingMixin instanceof Serializable )

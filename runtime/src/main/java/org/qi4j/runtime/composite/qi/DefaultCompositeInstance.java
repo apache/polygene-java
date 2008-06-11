@@ -19,7 +19,8 @@ package org.qi4j.runtime.composite.qi;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import org.qi4j.composite.Composite;
-import org.qi4j.runtime.structure.qi.ModuleInstance;
+import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.spi.composite.CompositeInstance;
 import org.qi4j.util.MetaInfo;
 
 /**
@@ -53,7 +54,7 @@ public final class DefaultCompositeInstance
         return compositeModel.invoke( this, proxy, method, args, moduleInstance );
     }
 
-    public Object proxy()
+    public Composite proxy()
     {
         return proxy;
     }
@@ -68,7 +69,12 @@ public final class DefaultCompositeInstance
         return compositeModel.type();
     }
 
-    public ModuleInstance moduleInstance()
+    public Object[] mixins()
+    {
+        return mixins;
+    }
+
+    public ModuleInstance module()
     {
         return moduleInstance;
     }
@@ -80,7 +86,19 @@ public final class DefaultCompositeInstance
 
     public void setMixins( Object[] newMixins )
     {
-        this.mixins = newMixins;
+        // Use any mixins that match the ones we already have
+        for( int i = 0; i < mixins.length; i++ )
+        {
+            Object oldMixin = mixins[ i ];
+            for( Object newMixin : newMixins )
+            {
+                if( oldMixin.getClass().equals( newMixin.getClass() ) )
+                {
+                    newMixins[ i ] = oldMixin;
+                    break;
+                }
+            }
+        }
     }
 
     public Object[] getMixins()

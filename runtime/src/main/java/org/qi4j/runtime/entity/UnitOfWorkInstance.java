@@ -40,7 +40,7 @@ import org.qi4j.object.ObjectBuilderFactory;
 import org.qi4j.query.Query;
 import org.qi4j.query.QueryBuilderFactory;
 import org.qi4j.runtime.query.QueryBuilderFactoryImpl;
-import org.qi4j.runtime.structure.qi.ModuleInstance;
+import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStateInstance;

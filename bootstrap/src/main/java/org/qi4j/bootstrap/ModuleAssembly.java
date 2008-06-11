@@ -23,12 +23,12 @@ import org.qi4j.runtime.composite.qi.CompositeModel;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.object.ObjectModel;
 import org.qi4j.runtime.service.qi.ServiceModel;
-import org.qi4j.runtime.structure.qi.CompositesModel;
-import org.qi4j.runtime.structure.qi.EntitiesModel;
-import org.qi4j.runtime.structure.qi.LayerModel;
-import org.qi4j.runtime.structure.qi.ModuleModel;
-import org.qi4j.runtime.structure.qi.ObjectsModel;
-import org.qi4j.runtime.structure.qi.ServicesModel;
+import org.qi4j.runtime.structure.CompositesModel;
+import org.qi4j.runtime.structure.EntitiesModel;
+import org.qi4j.runtime.structure.LayerModel;
+import org.qi4j.runtime.structure.ModuleModel;
+import org.qi4j.runtime.structure.ObjectsModel;
+import org.qi4j.runtime.structure.ServicesModel;
 import org.qi4j.service.ServiceComposite;
 import org.qi4j.structure.Visibility;
 import org.qi4j.util.MetaInfo;
@@ -77,6 +77,11 @@ public final class ModuleAssembly
     public void setName( String name )
     {
         this.name = name;
+    }
+
+    public String name()
+    {
+        return name;
     }
 
     public CompositeDeclaration addComposites( Class<? extends Composite>... compositeTypes )

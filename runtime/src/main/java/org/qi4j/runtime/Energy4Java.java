@@ -22,16 +22,16 @@ import org.qi4j.composite.Composite;
 import org.qi4j.composite.scope.This;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.runtime.composite.ProxyReferenceInvocationHandler;
-import org.qi4j.runtime.composite.qi.CompositeInstance;
 import org.qi4j.runtime.composite.qi.CompositeModel;
 import org.qi4j.runtime.composite.qi.DefaultCompositeInstance;
-import org.qi4j.runtime.composite.qi.DependencyModel;
-import org.qi4j.runtime.composite.qi.DependencyVisitor;
 import org.qi4j.runtime.composite.qi.Resolution;
-import org.qi4j.runtime.structure.qi.ModuleInstance;
+import org.qi4j.runtime.injection.DependencyModel;
+import org.qi4j.runtime.injection.DependencyVisitor;
+import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.service.Configuration;
 import org.qi4j.service.ServiceComposite;
 import org.qi4j.spi.composite.CompositeDescriptor;
+import org.qi4j.spi.composite.CompositeInstance;
 import org.qi4j.structure.Module;
 
 /**
@@ -109,8 +109,15 @@ public final class Energy4Java
         return DefaultCompositeInstance.getCompositeInstance( composite ).compositeModel();
     }
 
-    public CompositeDescriptor getCompositeDescriptor( Class<? extends Composite> compositeType, Module module )
+    public CompositeDescriptor getCompositeDescriptor( Class mixinType, Module module )
     {
-        return ( (ModuleInstance) module ).findCompositeFor( compositeType );
+        return ( (ModuleInstance) module ).findCompositeFor( mixinType );
+    }
+
+    public void setMixins( Composite composite, Object[] mixins )
+    {
+        DefaultCompositeInstance instance = DefaultCompositeInstance.getCompositeInstance( composite );
+
+        instance.setMixins( mixins );
     }
 }

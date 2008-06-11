@@ -17,6 +17,9 @@ package org.qi4j.runtime.composite.qi;
 import java.lang.reflect.Constructor;
 import org.qi4j.composite.InstantiationException;
 import org.qi4j.runtime.composite.BindingException;
+import org.qi4j.runtime.injection.DependencyVisitor;
+import org.qi4j.runtime.injection.InjectedParametersModel;
+import org.qi4j.runtime.injection.InjectionContext;
 
 /**
  * TODO

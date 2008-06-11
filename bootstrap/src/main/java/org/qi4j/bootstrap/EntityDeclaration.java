@@ -18,7 +18,7 @@ import java.io.Serializable;
 import java.util.List;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.runtime.entity.EntityModel;
-import org.qi4j.runtime.structure.qi.ModuleModel;
+import org.qi4j.runtime.structure.ModuleModel;
 import org.qi4j.structure.Visibility;
 import org.qi4j.util.MetaInfo;
 

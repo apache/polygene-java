@@ -19,7 +19,7 @@ import java.lang.reflect.Modifier;
 import java.util.List;
 import org.qi4j.composite.Composite;
 import org.qi4j.runtime.object.ObjectModel;
-import org.qi4j.runtime.structure.qi.ModuleModel;
+import org.qi4j.runtime.structure.ModuleModel;
 import org.qi4j.structure.Visibility;
 import org.qi4j.util.MetaInfo;
 

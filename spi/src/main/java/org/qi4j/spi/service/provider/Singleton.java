@@ -29,7 +29,7 @@ public final class Singleton
         this.instance = instance;
     }
 
-    public Object getInstance()
+    public Object instance()
     {
         return instance;
     }

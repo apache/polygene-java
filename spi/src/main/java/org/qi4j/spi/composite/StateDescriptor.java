@@ -14,8 +14,9 @@
 
 package org.qi4j.spi.composite;
 
-import org.qi4j.spi.structure.AssociationDescriptor;
-import org.qi4j.spi.structure.PropertyDescriptor;
+import java.util.List;
+import org.qi4j.spi.entity.AssociationDescriptor;
+import org.qi4j.spi.property.PropertyDescriptor;
 
 /**
  * TODO
@@ -24,5 +25,13 @@ public interface StateDescriptor
 {
     PropertyDescriptor getPropertyByName( String name );
 
+    PropertyDescriptor getPropertyByQualifiedName( String name );
+
     AssociationDescriptor getAssociationByName( String name );
+
+    AssociationDescriptor getAssociationByQualifiedName( String name );
+
+    List<PropertyDescriptor> properties();
+
+    List<AssociationDescriptor> associations();
 }

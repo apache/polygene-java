@@ -19,8 +19,8 @@ import java.util.HashMap;
 import java.util.Map;
 import org.qi4j.composite.Composite;
 import org.qi4j.runtime.composite.BindingException;
-import org.qi4j.runtime.structure.qi.Binder;
-import org.qi4j.runtime.structure.qi.ModuleInstance;
+import org.qi4j.runtime.structure.Binder;
+import org.qi4j.runtime.structure.ModuleInstance;
 
 /**
  * TODO

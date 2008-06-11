@@ -19,12 +19,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import org.qi4j.composite.Composite;
-import org.qi4j.runtime.composite.qi.CompositeInstance;
 import org.qi4j.runtime.service.qi.ServiceModel;
-import org.qi4j.runtime.structure.qi.Activator;
 import org.qi4j.service.Activatable;
 import org.qi4j.service.ServiceInstanceProviderException;
 import org.qi4j.service.ServiceReference;
+import org.qi4j.spi.composite.CompositeInstance;
+import org.qi4j.spi.service.Activator;
 import org.qi4j.structure.Module;
 
 /**

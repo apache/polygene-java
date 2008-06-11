@@ -30,7 +30,7 @@ import org.qi4j.runtime.composite.qi.ValueConstraintsModel;
 import org.qi4j.runtime.property.PropertiesInstance;
 import org.qi4j.runtime.property.PropertyModel;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.structure.PropertyDescriptor;
+import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.util.MetaInfo;
 
 /**
@@ -38,10 +38,10 @@ import org.qi4j.util.MetaInfo;
  */
 public class EntityPropertiesModel
 {
-    Set<Class> mixinTypes = new HashSet<Class>();
-    List<EntityPropertyModel> propertyModels = new ArrayList<EntityPropertyModel>();
-    Map<Method, EntityPropertyModel> mapMethodPropertyModel = new HashMap<Method, EntityPropertyModel>();
-    Map<String, Method> accessors = new HashMap<String, Method>();
+    private Set<Class> mixinTypes = new HashSet<Class>();
+    private List<EntityPropertyModel> propertyModels = new ArrayList<EntityPropertyModel>();
+    private Map<Method, EntityPropertyModel> mapMethodPropertyModel = new HashMap<Method, EntityPropertyModel>();
+    private Map<String, Method> accessors = new HashMap<String, Method>();
     private ConstraintsModel constraints;
 
     public EntityPropertiesModel( ConstraintsModel constraints )
@@ -101,6 +101,18 @@ public class EntityPropertiesModel
         return null;
     }
 
+    public PropertyDescriptor getPropertyByQualifiedName( String name )
+    {
+        for( EntityPropertyModel propertyModel : propertyModels )
+        {
+            if( propertyModel.qualifiedName().equals( name ) )
+            {
+                return propertyModel;
+            }
+        }
+        return null;
+    }
+
     public void setState( PropertiesInstance properties, EntityState entityState )
         throws ConstraintViolationException
     {
@@ -109,5 +121,10 @@ public class EntityPropertiesModel
             Property property = properties.propertyFor( methodEntityPropertyModelEntry.getKey() );
             methodEntityPropertyModelEntry.getValue().setState( property, entityState );
         }
+    }
+
+    public List<PropertyDescriptor> properties()
+    {
+        return new ArrayList<PropertyDescriptor>( propertyModels );
     }
 }

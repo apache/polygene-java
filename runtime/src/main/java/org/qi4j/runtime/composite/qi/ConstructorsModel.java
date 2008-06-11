@@ -21,7 +21,11 @@ import java.util.ArrayList;
 import java.util.List;
 import org.qi4j.composite.InstantiationException;
 import org.qi4j.runtime.composite.BindingException;
-import org.qi4j.runtime.structure.qi.Binder;
+import org.qi4j.runtime.injection.DependencyModel;
+import org.qi4j.runtime.injection.DependencyVisitor;
+import org.qi4j.runtime.injection.InjectedParametersModel;
+import org.qi4j.runtime.injection.InjectionContext;
+import org.qi4j.runtime.structure.Binder;
 
 /**
  * TODO

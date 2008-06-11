@@ -25,12 +25,13 @@ import org.qi4j.entity.association.Association;
 import org.qi4j.entity.association.ListAssociation;
 import org.qi4j.entity.association.ManyAssociation;
 import org.qi4j.entity.association.SetAssociation;
+import org.qi4j.property.ComputedPropertyInstance;
 import org.qi4j.runtime.composite.qi.ValueConstraintsInstance;
 import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.entity.UnitOfWorkInstance;
+import org.qi4j.spi.entity.AssociationDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.spi.structure.AssociationDescriptor;
 import org.qi4j.util.MetaInfo;
 
 /**
@@ -85,6 +86,11 @@ public class AssociationModel
     public String toURI()
     {
         return AbstractAssociationInstance.toURI( accessor );
+    }
+
+    public String toNameSpace()
+    {
+        return "urn:qi4j:association:" + ComputedPropertyInstance.getDeclaringClassName( accessor ) + ":";
     }
 
     public AbstractAssociation newDefaultInstance()

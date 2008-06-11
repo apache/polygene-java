@@ -18,7 +18,7 @@ import java.util.Iterator;
 import org.qi4j.composite.InstantiationException;
 import org.qi4j.object.ObjectBuilder;
 import org.qi4j.runtime.composite.qi.UsesInstance;
-import org.qi4j.runtime.structure.qi.ModuleInstance;
+import org.qi4j.runtime.structure.ModuleInstance;
 
 /**
  * TODO

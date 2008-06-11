@@ -16,6 +16,7 @@ package org.qi4j.runtime.composite.qi;
 
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.State;
+import org.qi4j.spi.composite.CompositeInstance;
 
 /**
  * TODO

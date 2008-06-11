@@ -27,7 +27,7 @@ import org.qi4j.property.Property;
 import org.qi4j.runtime.composite.qi.ConstraintsModel;
 import org.qi4j.runtime.composite.qi.ValueConstraintsInstance;
 import org.qi4j.runtime.composite.qi.ValueConstraintsModel;
-import org.qi4j.spi.structure.PropertyDescriptor;
+import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.util.MetaInfo;
 
 /**
@@ -67,6 +67,13 @@ public class PropertiesModel
         }
     }
 
+
+    public List<PropertyDescriptor> properties()
+    {
+        return new ArrayList<PropertyDescriptor>( propertyModels );
+    }
+
+
     public PropertiesInstance newDefaultInstance()
     {
         Map<Method, Property> properties = new HashMap<Method, Property>();
@@ -101,6 +108,18 @@ public class PropertiesModel
         for( PropertyModel propertyModel : propertyModels )
         {
             if( propertyModel.name().equals( name ) )
+            {
+                return propertyModel;
+            }
+        }
+        return null;
+    }
+
+    public PropertyDescriptor getPropertyByQualifiedName( String name )
+    {
+        for( PropertyModel propertyModel : propertyModels )
+        {
+            if( propertyModel.qualifiedName().equals( name ) )
             {
                 return propertyModel;
             }

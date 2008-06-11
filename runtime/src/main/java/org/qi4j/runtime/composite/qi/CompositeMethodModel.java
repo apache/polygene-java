@@ -20,8 +20,8 @@ import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.CompositeMethodInstancePool;
 import org.qi4j.runtime.composite.FragmentInvocationHandler;
 import org.qi4j.runtime.composite.SynchronizedCompositeMethodInstancePool;
-import org.qi4j.runtime.structure.qi.Binder;
-import org.qi4j.runtime.structure.qi.ModuleInstance;
+import org.qi4j.runtime.structure.Binder;
+import org.qi4j.runtime.structure.ModuleInstance;
 
 /**
  * TODO

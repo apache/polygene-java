@@ -17,7 +17,7 @@ package org.qi4j.runtime.util;
 import java.util.HashMap;
 import java.util.Map;
 import org.qi4j.composite.Composite;
-import org.qi4j.runtime.structure.qi.ModuleInstance;
+import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.service.ServiceReference;
 
 /**

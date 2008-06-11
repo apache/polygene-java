@@ -26,8 +26,8 @@ import org.qi4j.runtime.composite.qi.ConstraintsModel;
 import org.qi4j.runtime.composite.qi.ValueConstraintsInstance;
 import org.qi4j.runtime.composite.qi.ValueConstraintsModel;
 import org.qi4j.runtime.entity.UnitOfWorkInstance;
+import org.qi4j.spi.entity.AssociationDescriptor;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.structure.AssociationDescriptor;
 import org.qi4j.util.MetaInfo;
 
 /**
@@ -67,6 +67,11 @@ public class AssociationsModel
                 }
             }
         }
+    }
+
+    public List<AssociationDescriptor> associations()
+    {
+        return new ArrayList<AssociationDescriptor>( associationModels );
     }
 
     public AssociationsInstance newInstance( UnitOfWorkInstance uow, EntityState state )
@@ -114,6 +119,19 @@ public class AssociationsModel
         return null;
     }
 
+    public AssociationDescriptor getAssociationByQualifiedName( String name )
+    {
+        for( AssociationModel associationModel : associationModels )
+        {
+            if( associationModel.qualifiedName().equals( name ) )
+            {
+                return associationModel;
+            }
+        }
+
+        return null;
+    }
+
     public void setState( AssociationsInstance associations, EntityState entityState )
     {
         for( Map.Entry<Method, AssociationModel> methodAssociationModelEntry : mapMethodAssociationModel.entrySet() )
@@ -122,4 +140,5 @@ public class AssociationsModel
             methodAssociationModelEntry.getValue().setState( association, entityState );
         }
     }
+
 }

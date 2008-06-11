@@ -25,22 +25,22 @@ final class SerializedComposite
     implements Serializable
 {
     private Object[] mixins;
-    private Class<Composite> compositeInterface;
+    private Class<? extends Composite> type;
 
-    public SerializedComposite( Object[] mixins, Class<Composite> compositeInterface )
+    public SerializedComposite( Object[] mixins, Class<? extends Composite> type )
     {
-        this.compositeInterface = compositeInterface;
+        this.type = type;
         this.mixins = mixins;
     }
 
-    public Object[] getMixins()
+    public Object[] mixins()
     {
         return mixins;
     }
 
-    public Class<Composite> getCompositeInterface()
+    public Class<? extends Composite> type()
     {
-        return compositeInterface;
+        return type;
     }
 
     private void writeObject( java.io.ObjectOutputStream out )
@@ -48,7 +48,7 @@ final class SerializedComposite
     {
         out.writeObject( mixins );
 
-        String serializedClassNames = addClassNames( compositeInterface );
+        String serializedClassNames = addClassNames( type );
         out.writeUTF( serializedClassNames );
     }
 
@@ -79,7 +79,7 @@ final class SerializedComposite
         {
             try
             {
-                compositeInterface = (Class<Composite>) Class.forName( className );
+                type = (Class<Composite>) Class.forName( className );
                 break;
             }
             catch( ClassNotFoundException e )

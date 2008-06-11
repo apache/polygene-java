@@ -16,8 +16,8 @@ package org.qi4j.runtime.composite;
 
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.scope.This;
-import org.qi4j.runtime.composite.qi.CompositeInstance;
 import org.qi4j.runtime.composite.qi.DefaultCompositeInstance;
+import org.qi4j.spi.composite.CompositeInstance;
 
 public final class CompositeMixin
     implements Composite

@@ -23,10 +23,10 @@ import org.qi4j.entity.EntityCompositeNotFoundException;
 import org.qi4j.entity.Identity;
 import org.qi4j.entity.association.AbstractAssociation;
 import org.qi4j.property.Property;
-import org.qi4j.runtime.composite.qi.CompositeInstance;
 import org.qi4j.runtime.composite.qi.CompositeMethodInstance;
 import org.qi4j.runtime.composite.qi.MixinsInstance;
-import org.qi4j.runtime.structure.qi.ModuleInstance;
+import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.spi.composite.CompositeInstance;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityStore;
@@ -93,7 +93,12 @@ public class EntityInstance
         return entity.type();
     }
 
-    public ModuleInstance moduleInstance()
+    public Object[] mixins()
+    {
+        return mixins;
+    }
+
+    public ModuleInstance module()
     {
         return moduleInstance;
     }

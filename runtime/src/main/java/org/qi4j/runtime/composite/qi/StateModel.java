@@ -15,14 +15,16 @@
 package org.qi4j.runtime.composite.qi;
 
 import java.lang.reflect.Method;
+import java.util.Collections;
+import java.util.List;
 import org.qi4j.composite.State;
 import org.qi4j.entity.association.AbstractAssociation;
 import org.qi4j.property.Property;
 import org.qi4j.runtime.property.PropertiesInstance;
 import org.qi4j.runtime.property.PropertiesModel;
 import org.qi4j.spi.composite.StateDescriptor;
-import org.qi4j.spi.structure.AssociationDescriptor;
-import org.qi4j.spi.structure.PropertyDescriptor;
+import org.qi4j.spi.entity.AssociationDescriptor;
+import org.qi4j.spi.property.PropertyDescriptor;
 
 /**
  * TODO
@@ -59,9 +61,30 @@ public class StateModel
         return propertiesModel.getPropertyByName( name );
     }
 
+    public PropertyDescriptor getPropertyByQualifiedName( String name )
+    {
+        return propertiesModel.getPropertyByQualifiedName( name );
+    }
+
+
     public AssociationDescriptor getAssociationByName( String name )
     {
         return null;
+    }
+
+    public AssociationDescriptor getAssociationByQualifiedName( String name )
+    {
+        return null;
+    }
+
+    public List<PropertyDescriptor> properties()
+    {
+        return propertiesModel.properties();
+    }
+
+    public List<AssociationDescriptor> associations()
+    {
+        return Collections.EMPTY_LIST;
     }
 
     private static final class StateInstance

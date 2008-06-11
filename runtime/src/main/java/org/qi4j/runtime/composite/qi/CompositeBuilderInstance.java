@@ -22,7 +22,8 @@ import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.InstantiationException;
 import org.qi4j.composite.State;
 import org.qi4j.property.Property;
-import org.qi4j.runtime.structure.qi.ModuleInstance;
+import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.spi.composite.CompositeInstance;
 
 /**
  * TODO
