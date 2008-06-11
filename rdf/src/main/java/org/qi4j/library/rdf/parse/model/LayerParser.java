@@ -23,8 +23,6 @@ import org.openrdf.model.Value;
 import org.qi4j.composite.Composite;
 import org.qi4j.library.rdf.Qi4jRdf;
 import org.qi4j.library.rdf.parse.ParseContext;
-import org.qi4j.spi.structure.LayerModel;
-import org.qi4j.spi.structure.ModuleModel;
 
 public final class LayerParser
 {

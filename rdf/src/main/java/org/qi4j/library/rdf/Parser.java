@@ -18,7 +18,6 @@
 package org.qi4j.library.rdf;
 
 import org.openrdf.model.Graph;
-import org.qi4j.spi.structure.ApplicationBinding;
 
 public interface Parser
 {

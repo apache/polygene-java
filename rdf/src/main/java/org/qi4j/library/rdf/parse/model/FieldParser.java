@@ -21,7 +21,6 @@ import org.openrdf.model.BNode;
 import org.openrdf.model.Value;
 import org.qi4j.library.rdf.Qi4jRdf;
 import org.qi4j.library.rdf.parse.ParseContext;
-import org.qi4j.spi.composite.FieldModel;
 import org.qi4j.spi.injection.InjectionModel;
 
 public class FieldParser

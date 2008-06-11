@@ -20,7 +20,6 @@ package org.qi4j.library.rdf.parse.model;
 import org.openrdf.model.BNode;
 import org.openrdf.model.Value;
 import org.qi4j.library.rdf.parse.ParseContext;
-import org.qi4j.spi.composite.CompositeMethodModel;
 
 public final class CompositeMethodParser
 {

@@ -22,7 +22,6 @@ import org.qi4j.library.rdf.parse.StructureParser;
 import org.qi4j.library.rdf.serializer.N3Serializer;
 import org.qi4j.library.rdf.serializer.RdfXmlSerializer;
 import org.qi4j.library.rdf.serializer.TurtleSerializer;
-import org.qi4j.spi.structure.ApplicationBinding;
 
 public class RdfFactory
 {

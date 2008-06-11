@@ -29,7 +29,7 @@ import org.qi4j.composite.Mixins;
 import org.qi4j.composite.scope.Structure;
 import org.qi4j.logging.service.LogServiceComposite;
 import org.qi4j.service.ServiceDescriptor;
-import org.qi4j.service.ServiceInstanceProvider;
+import org.qi4j.service.ServiceInstanceFactory;
 import org.qi4j.service.ServiceInstanceProviderException;
 import org.qi4j.test.AbstractQi4jTest;
 
@@ -99,7 +99,7 @@ public class TracingTest
     }
 
     public static class LogServiceProvider
-        implements ServiceInstanceProvider
+        implements ServiceInstanceFactory
     {
         @Structure CompositeBuilderFactory factory;
 

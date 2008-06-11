@@ -23,9 +23,7 @@ import org.openrdf.model.ValueFactory;
 import org.qi4j.library.rdf.Qi4jRdf;
 import org.qi4j.library.rdf.parse.ParseContext;
 import org.qi4j.service.ServiceDescriptor;
-import org.qi4j.service.ServiceInstanceProvider;
-import org.qi4j.spi.structure.LayerModel;
-import org.qi4j.spi.structure.ModuleModel;
+import org.qi4j.service.ServiceInstanceFactory;
 
 public class ServiceParser
 {
@@ -40,9 +38,9 @@ public class ServiceParser
     {
         ValueFactory valueFactory = context.getValueFactory();
         String identity = descriptor.identity();
-        Class type = descriptor.serviceType();
+        Class type = descriptor.type();
         URI serviceNode = context.createServiceUri( layerModel, moduleModel, type, identity );
-        Class<? extends ServiceInstanceProvider> serviceProvider = descriptor.serviceProvider();
+        Class<? extends ServiceInstanceFactory> serviceProvider = descriptor.serviceFactory();
         String providerName = ParseContext.normalizeClassToURI( serviceProvider );
         context.addStatement( serviceNode, Qi4jRdf.RELATIONSHIP_PROVIDEDBY, providerName );
         Iterable<Class> infos = descriptor.serviceAttributeTypes();
@@ -52,7 +50,7 @@ public class ServiceParser
             URI infoNode = valueFactory.createURI( serviceNode.toString() + "/" + infoName );
             context.addType( infoNode, Qi4jRdf.TYPE_INFO );
             context.addRelationship( serviceNode, Qi4jRdf.RELATIONSHIP_SERVICEINFO, infoNode );
-            Value value = valueFactory.createLiteral( descriptor.serviceAttribute( info ).toString() );
+            Value value = valueFactory.createLiteral( descriptor.metaInfo( info ).toString() );
             context.addRelationship( infoNode, Qi4jRdf.RELATIONSHIP_INFOVALUE, value );
         }
         return serviceNode;

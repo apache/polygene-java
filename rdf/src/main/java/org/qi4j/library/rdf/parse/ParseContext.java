@@ -26,8 +26,6 @@ import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
 import org.qi4j.library.rdf.Qi4jRdf;
 import org.qi4j.library.rdf.Rdfs;
-import org.qi4j.spi.structure.LayerModel;
-import org.qi4j.spi.structure.ModuleModel;
 
 public final class ParseContext
 {

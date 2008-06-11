@@ -22,14 +22,6 @@ import org.openrdf.model.Value;
 import org.qi4j.entity.Entity;
 import org.qi4j.library.rdf.Qi4jRdf;
 import org.qi4j.library.rdf.parse.ParseContext;
-import org.qi4j.spi.composite.CompositeMethodModel;
-import org.qi4j.spi.composite.CompositeModel;
-import org.qi4j.spi.composite.ConcernModel;
-import org.qi4j.spi.composite.ConstraintModel;
-import org.qi4j.spi.composite.MixinModel;
-import org.qi4j.spi.composite.SideEffectModel;
-import org.qi4j.spi.structure.LayerModel;
-import org.qi4j.spi.structure.ModuleModel;
 
 public final class CompositeParser
 {

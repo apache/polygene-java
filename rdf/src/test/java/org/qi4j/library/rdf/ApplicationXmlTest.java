@@ -39,8 +39,6 @@ import org.qi4j.composite.SideEffects;
 import org.qi4j.composite.scope.This;
 import org.qi4j.library.rdf.parse.StructureParser;
 import org.qi4j.test.AbstractQi4jTest;
-import org.qi4j.spi.structure.ApplicationBinding;
-import org.qi4j.runtime.structure.ApplicationContext;
 
 /**
  * TODO
@@ -65,9 +63,7 @@ public class ApplicationXmlTest
     {
         String name = "application";
         StructureParser parser = new StructureParser();
-        ApplicationContext context = application.getApplicationContext();
-        ApplicationBinding binding = context.getApplicationBinding();
-        Graph graph = parser.parse( binding, "urn:qi4j:dev/tests/application" );
+        Graph graph = parser.parse( null, "urn:qi4j:dev/tests/application" ); // TODO Fix this
         writeN3( graph, name );
         writeXml( graph, name );
     }

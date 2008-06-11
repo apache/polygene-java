@@ -21,9 +21,6 @@ import org.openrdf.model.Graph;
 import org.openrdf.model.impl.GraphImpl;
 import org.qi4j.library.rdf.Parser;
 import org.qi4j.library.rdf.parse.model.ApplicationParser;
-import org.qi4j.spi.structure.ApplicationBinding;
-import org.qi4j.spi.structure.ApplicationModel;
-import org.qi4j.spi.structure.ApplicationResolution;
 
 public final class StructureParser
     implements Parser
