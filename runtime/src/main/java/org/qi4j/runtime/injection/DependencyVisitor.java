@@ -23,11 +23,11 @@ import org.qi4j.runtime.structure.ModelVisitor;
 public abstract class DependencyVisitor
     extends ModelVisitor
 {
-    Class<? extends Annotation> scope;
+    DependencySpecification specification;
 
-    public DependencyVisitor( Class<? extends Annotation> scope )
+    public DependencyVisitor( DependencySpecification specification )
     {
-        this.scope = scope;
+        this.specification = specification;
     }
 
     public DependencyVisitor()
@@ -38,7 +38,7 @@ public abstract class DependencyVisitor
     {
         for( DependencyModel dependencyModel : injectedParametersModel.dependencies() )
         {
-            if( scope != null && scope.equals( dependencyModel.injectionAnnotation().annotationType() ) )
+            if( specification == null || specification.matches( dependencyModel ) )
             {
                 visitDependency( dependencyModel );
             }
@@ -48,11 +48,32 @@ public abstract class DependencyVisitor
     @Override public void visit( InjectedFieldModel injectedFieldModel )
     {
         DependencyModel dependencyModel = injectedFieldModel.dependency();
-        if( scope != null && scope.equals( dependencyModel.injectionAnnotation().annotationType() ) )
+        if( specification == null || specification.matches( dependencyModel ) )
         {
             visitDependency( dependencyModel );
         }
     }
 
     public abstract void visitDependency( DependencyModel dependencyModel );
+
+    public interface DependencySpecification
+    {
+        boolean matches( DependencyModel model );
+    }
+
+    public static class AnnotationSpecification
+        implements DependencySpecification
+    {
+        private Class<? extends Annotation> scope;
+
+        public AnnotationSpecification( Class<? extends Annotation> scope )
+        {
+            this.scope = scope;
+        }
+
+        public boolean matches( DependencyModel model )
+        {
+            return scope.equals( model.injectionAnnotation().annotationType() );
+        }
+    }
 }

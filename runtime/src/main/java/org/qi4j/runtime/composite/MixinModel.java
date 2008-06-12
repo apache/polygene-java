@@ -85,7 +85,7 @@ public final class MixinModel
     {
         final Set<Class> mixinTypes = new HashSet<Class>();
 
-        DependencyVisitor visitor = new DependencyVisitor( This.class )
+        DependencyVisitor visitor = new DependencyVisitor( new DependencyVisitor.AnnotationSpecification( This.class ) )
         {
             public void visitDependency( DependencyModel dependencyModel )
             {

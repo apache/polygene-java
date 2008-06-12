@@ -80,7 +80,7 @@ public final class Energy4Java
     {
         CompositeModel descriptor = (CompositeModel) getCompositeDescriptor( serviceComposite );
         final List<DependencyModel> dependencyModels = new ArrayList<DependencyModel>();
-        descriptor.visitModel( new DependencyVisitor( This.class )
+        descriptor.visitModel( new DependencyVisitor( new DependencyVisitor.AnnotationSpecification( This.class ) )
         {
             public void visitDependency( DependencyModel dependencyModel )
             {
