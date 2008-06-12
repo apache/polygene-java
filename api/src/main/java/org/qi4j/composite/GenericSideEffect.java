@@ -26,19 +26,34 @@ import java.lang.reflect.Method;
 public abstract class GenericSideEffect extends SideEffectOf<InvocationHandler>
     implements InvocationHandler
 {
-    public Object invoke( Object o, Method method, Object[] objects ) throws Throwable
+
+    /**
+     * {@inheritDoc}
+     */
+    public Object invoke( final Object proxy, final Method method, final Object[] args )
+        throws Throwable
     {
-        invoke( method, objects );
+        invoke( method, args );
         return null;
     }
 
     /**
-     * Override this method to avoid having to do "return null;" in the code
+     * Convenience method to be overridden by subclasses in order to avoid returning null, as returned value from side
+     * effects is not taken in consideration.
      *
-     * @param method  the method that was invoked
-     * @param objects the arguments of the method invocation
+     * @param method the method that was invoked
+     * @param args   the arguments of the method invocation
+     * @throws Throwable - the exception to throw from the method invocation on the proxy instance. The exception's type
+     *                   must be assignable either to any of the exception types declared in the throws clause of the
+     *                   interface method or to the unchecked exception types {code}java.lang.RuntimeException{code}
+     *                   or {code}java.lang.Error{code}. If a checked exception is thrown by this method that is not
+     *                   assignable to any of the exception types declared in the throws clause of the interface method,
+     *                   then an UndeclaredThrowableException containing the exception that was thrown by this method
+     *                   will be thrown by the method invocation on the proxy instance.
      */
-    protected void invoke( Method method, Object[] objects )
+    protected void invoke( final Method method, final Object[] args )
+        throws Throwable
     {
     }
+
 }
