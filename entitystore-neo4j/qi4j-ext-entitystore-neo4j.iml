@@ -99,6 +99,7 @@
     <orderEntry type="module" module-name="qi4j-core-runtime" exported="" />
     <orderEntry type="module" module-name="qi4j-core-spi" exported="" />
     <orderEntry type="module" module-name="qi4j-core-testsupport" exported="" />
+    <orderEntry type="module" module-name="qi4j-lib-framework" />
     <orderEntryProperties />
   </component>
 </module>

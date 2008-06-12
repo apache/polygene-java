@@ -14,22 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.entity.neo4j;
+package org.qi4j.entity.neo4j.test;
 
-import java.util.Iterator;
-import org.qi4j.spi.composite.CompositeDescriptor;
-import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.EntityStatus;
-import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.entity.EntityComposite;
+import org.qi4j.library.framework.GenericMixinsAbstractComposite;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
  */
-public interface NeoEntityStateFactory
+public interface ElementOwnerComposite
+    extends ElementOwner, EntityComposite, GenericMixinsAbstractComposite
 {
-    EntityState createEntityState( NeoIdentityIndex idIndex, CompositeDescriptor descriptor, QualifiedIdentity identity, EntityStatus status );
-
-//    StateCommitter prepareCommit( NeoIdentityIndex idIndex, Iterable<NeoEntityState> updated, Iterable<QualifiedIdentity> removed ) throws EntityStoreException;
-
-    Iterator<EntityState> iterator();
 }
