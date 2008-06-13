@@ -25,6 +25,7 @@ import java.util.Iterator;
 import java.util.Map;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
 import org.qi4j.entity.ibatis.dbInitializer.DBInitializer;
+import org.qi4j.entity.ibatis.dbInitializer.DBInitializerConfiguration;
 import org.qi4j.entity.ibatis.internal.IBatisEntityState;
 import org.qi4j.injection.scope.This;
 import org.qi4j.service.Activatable;
@@ -208,7 +209,7 @@ public class IBatisEntityStore
     public final void activate()
         throws Exception
     {
-        final IBatisConfiguration configuration = getUpdatedConfiguration();
+        final IBatisConfiguration configuration = iBatisConfiguration.configuration();
 
         initializeDatabase( configuration );
 
@@ -216,13 +217,7 @@ public class IBatisEntityStore
         config.activate();
     }
 
-    private IBatisConfiguration getUpdatedConfiguration()
-    {
-        iBatisConfiguration.refresh();
-        return iBatisConfiguration.configuration();
-    }
-
-    private void initializeDatabase( final IBatisConfiguration configuration )
+    private void initializeDatabase( final DBInitializerConfiguration configuration )
         throws SQLException, IOException
     {
         final DBInitializer dbInitializer = new DBInitializer( configuration );

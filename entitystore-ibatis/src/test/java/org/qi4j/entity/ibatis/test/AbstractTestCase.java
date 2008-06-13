@@ -24,6 +24,7 @@ import org.qi4j.composite.Composite;
 import org.qi4j.entity.ibatis.DerbyDatabaseHandler;
 import org.qi4j.entity.ibatis.entity.PersonComposite;
 import org.qi4j.entity.ibatis.internal.IBatisEntityState;
+import org.qi4j.entity.EntityComposite;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.QualifiedIdentity;
@@ -74,9 +75,9 @@ public abstract class AbstractTestCase extends AbstractQi4jTest
         // return new IBatisEntityState( new QualifiedIdentity( "1", PersonComposite.class.getName() ), getCompositeBinding( PersonComposite.class ), initialValues, EntityStatus.NEW, statusNew, unitOfWork, dao );
     }
 
-    protected CompositeDescriptor getCompositeDescriptor( final Class<? extends Composite> compositeType )
+    protected CompositeDescriptor getCompositeDescriptor( final Class<? extends EntityComposite> compositeType )
     {
-        return moduleInstance.findCompositeFor( compositeType );
+        return moduleInstance.findEntityCompositeFor( compositeType );
     }
 
     @Before public void setUp() throws Exception

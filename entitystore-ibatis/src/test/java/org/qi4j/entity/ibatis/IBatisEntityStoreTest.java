@@ -30,6 +30,7 @@ import org.qi4j.entity.EntityBuilder;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkCompletionException;
 import org.qi4j.entity.ibatis.dbInitializer.DBInitializerConfiguration;
+import org.qi4j.entity.ibatis.dbInitializer.DBInitializerConfigurationComposite;
 import org.qi4j.entity.ibatis.entity.AccountComposite;
 import org.qi4j.entity.ibatis.entity.PersonComposite;
 import org.qi4j.entity.ibatis.test.AbstractTestCase;
@@ -168,17 +169,17 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
     public final void assemble( final ModuleAssembly module )
         throws AssemblyException
     {
-        module.addComposites( PersonComposite.class ).setMetaInfo( new IbatisClient( getSqlMapConfigUrl(), null ) );
-        module.addComposites( AccountComposite.class ).setMetaInfo( new IbatisClient( getSqlMapConfigUrl(), null ) );
+        module.addEntities( PersonComposite.class );
+        module.addEntities( AccountComposite.class );
         module.addServices( UuidIdentityGeneratorService.class );
         module.addServices( IBatisEntityStoreService.class );
 
         final ModuleAssembly config = module.getLayerAssembly().newModuleAssembly();
         config.setName( "config" );
-        config.addComposites( IBatisConfiguration.class ).visibleIn( Visibility.layer );
-        config.addComposites( DBInitializerConfiguration.class ).visibleIn( Visibility.layer );
+        config.addEntities( IBatisConfigurationComposite.class ).visibleIn( Visibility.layer );
+        config.addEntities( DBInitializerConfigurationComposite.class ).visibleIn( Visibility.layer );
         config.addServices( MemoryEntityStoreService.class );
-        config.addProperty().withAccessor( IBatisConfiguration.class ).sqlMapConfigURL().set( getSqlMapConfigUrl() );
+        config.addProperty().withAccessor( IBatisConfigurationComposite.class ).sqlMapConfigURL().set( getSqlMapConfigUrl() );
         derbyDatabaseHandler.initDbInitializerInfo( config, SCHEMA_FILE, DATA_FILE );
     }
 

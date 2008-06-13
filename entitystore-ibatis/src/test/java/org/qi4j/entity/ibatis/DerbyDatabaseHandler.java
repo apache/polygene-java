@@ -88,7 +88,7 @@ public class DerbyDatabaseHandler
 
     public void initDbInitializerInfo( final ModuleAssembly module, final String schemaFile, final String dataFile )
     {
-        final Class<IBatisConfiguration> configType = IBatisConfiguration.class; //DBInitializerConfiguration.class;
+        final Class<DBInitializerConfiguration> configType = DBInitializerConfiguration.class;
         module.addProperty().withAccessor( configType ).dbUrl().set( JDBC_URL );
         module.addProperty().withAccessor( configType ).connectionProperties().set( createConnectionProperties() );
         module.addProperty().withAccessor( configType ).schemaUrl().set( getUrlString( schemaFile ) );

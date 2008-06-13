@@ -20,6 +20,7 @@ import org.qi4j.composite.Mixins;
 import org.qi4j.library.framework.locking.LockingAbstractComposite;
 import org.qi4j.service.Activatable;
 import org.qi4j.service.ServiceComposite;
+import org.qi4j.service.Configuration;
 import org.qi4j.spi.entity.EntityStore;
 
 /**
@@ -28,7 +29,7 @@ import org.qi4j.spi.entity.EntityStore;
 
 @Mixins( { JdbmEntityStoreMixin.class } )
 public interface JdbmEntityStoreService
-    extends EntityStore, ServiceComposite, Activatable, LockingAbstractComposite
+    extends EntityStore, ServiceComposite, Activatable, LockingAbstractComposite, Configuration
 
 {
 }

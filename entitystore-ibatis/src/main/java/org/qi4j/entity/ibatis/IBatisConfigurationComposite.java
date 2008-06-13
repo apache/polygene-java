@@ -14,23 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.entity.ibatis.dbInitializer;
+package org.qi4j.entity.ibatis;
 
 import java.util.Properties;
 import org.qi4j.entity.EntityComposite;
+import org.qi4j.entity.ibatis.dbInitializer.DBInitializerConfiguration;
 import org.qi4j.property.Property;
+import org.qi4j.composite.Composite;
+import org.qi4j.service.Configuration;
 
 /**
- * {@code DBInitializerInfo} represents information on the sql resources to initialize the database.
+ * {@code IBatisEntityStoreServiceInfo} provides service information for {@link IBatisEntityStore}.
  *
  */
-public interface DBInitializerConfiguration
+public interface IBatisConfigurationComposite extends IBatisConfiguration, DBInitializerConfiguration, EntityComposite
 {
-    Property<String> dbUrl();
-
-    Property<String> schemaUrl();
-
-    Property<String> dataUrl();
-
-    Property<Properties> connectionProperties();
 }

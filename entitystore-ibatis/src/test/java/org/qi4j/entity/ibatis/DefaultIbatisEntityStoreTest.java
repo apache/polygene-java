@@ -23,6 +23,7 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entity.memory.MemoryEntityStoreService;
 import org.qi4j.entity.ibatis.dbInitializer.DBInitializerConfiguration;
+import org.qi4j.entity.ibatis.dbInitializer.DBInitializerConfigurationComposite;
 import org.qi4j.entity.ibatis.entity.PersonComposite;
 import org.qi4j.entity.ibatis.DerbyDatabaseHandler;
 import org.qi4j.structure.Visibility;
@@ -54,10 +55,10 @@ public class DefaultIbatisEntityStoreTest
 
         final ModuleAssembly config = module.getLayerAssembly().newModuleAssembly();
         config.setName( "config" );
-        config.addComposites( IBatisConfiguration.class).visibleIn( Visibility.layer );
-        config.addComposites( DBInitializerConfiguration.class ).visibleIn( Visibility.layer );
+        config.addEntities( IBatisConfigurationComposite.class).visibleIn( Visibility.layer );
+        config.addEntities( DBInitializerConfigurationComposite.class ).visibleIn( Visibility.layer );
         config.addServices( MemoryEntityStoreService.class );
-        config.addProperty().withAccessor( IBatisConfiguration.class ).sqlMapConfigURL().set( derbyDatabaseHandler.getUrlString( TEST_VALUE_SQLMAP ));
+        config.addProperty().withAccessor( IBatisConfigurationComposite.class ).sqlMapConfigURL().set( derbyDatabaseHandler.getUrlString( TEST_VALUE_SQLMAP ));
         derbyDatabaseHandler.initDbInitializerInfo( config );
     }
 

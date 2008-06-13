@@ -20,12 +20,13 @@ import java.util.Properties;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.ibatis.dbInitializer.DBInitializerConfiguration;
 import org.qi4j.property.Property;
+import org.qi4j.composite.Composite;
 
 /**
  * {@code IBatisEntityStoreServiceInfo} provides service information for {@link org.qi4j.entity.ibatis.IBatisEntityStore}.
  *
  */
-public interface IBatisConfiguration extends EntityComposite, DBInitializerConfiguration
+public interface IBatisConfiguration extends DBInitializerConfiguration
 {
     Property<String> sqlMapConfigURL();
 

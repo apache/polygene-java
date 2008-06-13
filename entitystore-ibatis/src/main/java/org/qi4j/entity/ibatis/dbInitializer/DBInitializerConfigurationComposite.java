@@ -24,13 +24,6 @@ import org.qi4j.property.Property;
  * {@code DBInitializerInfo} represents information on the sql resources to initialize the database.
  *
  */
-public interface DBInitializerConfiguration
+public interface DBInitializerConfigurationComposite extends DBInitializerConfiguration, EntityComposite
 {
-    Property<String> dbUrl();
-
-    Property<String> schemaUrl();
-
-    Property<String> dataUrl();
-
-    Property<Properties> connectionProperties();
 }

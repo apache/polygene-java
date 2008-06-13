@@ -24,6 +24,7 @@ import org.qi4j.entity.memory.MemoryEntityStoreService;
 import org.qi4j.structure.Visibility;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
 import org.qi4j.spi.entity.EntityStore;
+import org.qi4j.spi.entity.UuidIdentityGeneratorService;
 import org.qi4j.service.ServiceReference;
 
 /**
@@ -39,8 +40,8 @@ public class JdbmEntityStoreTest
 
         ModuleAssembly config = module.getLayerAssembly().newModuleAssembly();
         config.setName( "config" );
-        config.addComposites( JdbmConfiguration.class ).visibleIn( Visibility.layer );
-        config.addServices( MemoryEntityStoreService.class );
+        config.addEntities( JdbmConfigurationComposite.class ).visibleIn( Visibility.layer );
+        config.addServices( MemoryEntityStoreService.class, UuidIdentityGeneratorService.class );
     }
 
     @Override @After public void tearDown() throws Exception
@@ -50,7 +51,7 @@ public class JdbmEntityStoreTest
         deleted = deleted | new File( "qi4j.data.lg" ).delete();
         if( !deleted )
         {
-            throw new Exception( "Could not delete test data" );
+            System.err.println( "Could not delete test data" );
         }
     }
 }
