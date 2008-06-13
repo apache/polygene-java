@@ -19,14 +19,16 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.Collections;
-import java.util.Iterator;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.injection.provider.InvalidInjectionException;
 import org.qi4j.runtime.structure.Binder;
+import static org.qi4j.runtime.util.CollectionUtils.*;
+import org.qi4j.runtime.structure.Specification;
 
 /**
  * TODO
+ * move all the extraction code to a TypeUtils class
  */
 public final class DependencyModel
     implements Binder
@@ -35,7 +37,7 @@ public final class DependencyModel
     private Annotation injectionAnnotation;
     private Type injectionType;
     private Class<?> injectedClass;
-    private Class<?> rawInjectionType;
+    private Class<?> rawInjectionClass;
     private Class<?> injectionClass;
     private boolean optional;
 
@@ -48,82 +50,103 @@ public final class DependencyModel
         this.injectedClass = injectedClass;
         this.injectionType = genericType;
         this.optional = optional;
+        this.rawInjectionClass = mapPrimitiveTypes( extractRawInjectionClass( injectedClass, injectionType ) );
+        this.injectionClass = extractInjectionClass( injectionType );
+    }
 
+    private Class<?> extractRawInjectionClass( Class<?> injectedClass, final Type injectionType )
+    {
         // Calculate raw injection type
         if( injectionType instanceof Class )
         {
-            rawInjectionType = (Class<?>) injectionType;
+            return (Class<?>) injectionType;
         }
         else if( injectionType instanceof ParameterizedType )
         {
-            rawInjectionType = (Class<?>) ( (ParameterizedType) injectionType ).getRawType();
+            return (Class<?>) ( (ParameterizedType) injectionType ).getRawType();
         }
         else if( injectionType instanceof TypeVariable )
         {
-            TypeVariable<?> injectionTypeVariable = (TypeVariable<?>) injectionType;
+            return extractRawInjectionClass( injectedClass, (TypeVariable<?>) injectionType );
+        }
+        throw new IllegalArgumentException( "Could not extract the rawInjectionClass of "+injectedClass+" and "+injectionType);
+    }
 
-            int index = 0;
-            TypeVariable<?>[] typeVariables = ( (TypeVariable<?>) injectionType ).getGenericDeclaration().getTypeParameters();
-            for( TypeVariable<?> typeVariable : typeVariables )
+    private Class<?> extractRawInjectionClass( Class<?> injectedClass, TypeVariable<?> injectionTypeVariable )
+    {
+        int index = 0;
+        for( TypeVariable<?> typeVariable : injectionTypeVariable.getGenericDeclaration().getTypeParameters() )
+        {
+            if( injectionTypeVariable.getName().equals( typeVariable.getName() ) )
             {
-                if( injectionTypeVariable.getName().equals( typeVariable.getName() ) )
-                {
-                    // Type index found - map it to actual type
-                    Type genericClass = injectedClass;
-                    Type type = null;
+                return (Class<?>) getActualType( injectedClass, index );
+            }
+            index++;
+        }
+        throw new IllegalArgumentException( "Could not extract the rawInjectionClass of "+injectedClass+" and "+injectionTypeVariable);
+    }
 
-                    while( !Object.class.equals( genericClass ) && type == null )
+    // todo continue refactoring
+    private Type getActualType( Class<?> injectedClass, int index )
+    {
+        // Type index found - map it to actual type
+        Type genericType = injectedClass;
+        Type type = null;
+
+        while( !Object.class.equals( genericType ) && type == null )
+        {
+            genericType = ( (Class<?>) genericType ).getGenericSuperclass();
+            if( genericType instanceof ParameterizedType )
+            {
+                type = ( (ParameterizedType) genericType ).getActualTypeArguments()[ index ];
+            }
+            else
+            {
+                Type[] genericInterfaces = ( (Class<?>) genericType ).getGenericInterfaces();
+                if( genericInterfaces.length > index )
+                {
+                    type = genericInterfaces[ index ];
+                    if( type instanceof ParameterizedType )
                     {
-                        genericClass = ( (Class<?>) genericClass ).getGenericSuperclass();
-                        if( genericClass instanceof ParameterizedType )
-                        {
-                            type = ( (ParameterizedType) genericClass ).getActualTypeArguments()[ index ];
-                        }
-                        else
-                        {
-                            Type[] genericInterfaces = ( (Class<?>) genericClass ).getGenericInterfaces();
-                            if( genericInterfaces.length > 0 )
-                            {
-                                type = genericInterfaces[ index ];
-                                if( type instanceof ParameterizedType )
-                                {
-                                    type = ( (ParameterizedType) type ).getActualTypeArguments()[ index ];
-                                }
-                            }
-                        }
+                        type = ( (ParameterizedType) type ).getActualTypeArguments()[ index ];
                     }
-                    rawInjectionType = (Class<?>) type;
+                    // TODO type may still be one of the generic interfaces???
                 }
-                index++;
             }
         }
+        return type;
+    }
 
-        if( rawInjectionType.isPrimitive() )
-        {
-            rawInjectionType = getNonPrimitiveType( rawInjectionType );
-        }
-
-        // Calculate injection class
+    private Class<?> extractInjectionClass( Type injectionType )
+    {
         if( injectionType instanceof ParameterizedType )
         {
-            Type type = ( (ParameterizedType) injectionType ).getActualTypeArguments()[ 0 ];
-            if( type instanceof Class )
-            {
-                injectionClass = (Class<?>) type;
-            }
-            else if( type instanceof ParameterizedType )
-            {
-                injectionClass = (Class<?>) ( (ParameterizedType) type ).getRawType();
-            }
+            return extractInjectionClass( (ParameterizedType) injectionType );
         }
         else if( injectionType instanceof TypeVariable )
         {
-            injectionClass = (Class<?>) ( (TypeVariable<?>) injectionType ).getBounds()[ 0 ];
+            return extractInjectionClass( (TypeVariable<?>) injectionType );
         }
-        else
+        return (Class<?>) injectionType;
+    }
+
+    private Class<?> extractInjectionClass( TypeVariable<?> typeVariable )
+    {
+        return (Class<?>) typeVariable.getBounds()[ 0 ];
+    }
+
+    private Class<?> extractInjectionClass( ParameterizedType parameterizedType )
+    {
+        Type type = parameterizedType.getActualTypeArguments()[ 0 ];
+        if( type instanceof Class )
         {
-            injectionClass = (Class<?>) injectionType;
+            return (Class<?>) type;
         }
+        else if( type instanceof ParameterizedType )
+        {
+            return (Class<?>) ( (ParameterizedType) type ).getRawType();
+        }
+        throw new IllegalArgumentException( "Could not extract injectionClass of Type "+parameterizedType);
     }
 
     // Model
@@ -144,7 +167,7 @@ public final class DependencyModel
 
     public Class<?> rawInjectionType()
     {
-        return rawInjectionType;
+        return rawInjectionClass;
     }
 
     public Class<?> injectionClass()
@@ -180,7 +203,7 @@ public final class DependencyModel
 
         if( injectedValue == null && !optional )
         {
-            throw new org.qi4j.composite.InstantiationException( "Non-optional @" + rawInjectionType.getName() + " was null" );
+            throw new org.qi4j.composite.InstantiationException( "Non-optional @" + rawInjectionClass.getName() + " was null" );
         }
 
         return getInjectedValue( injectedValue );
@@ -193,36 +216,75 @@ public final class DependencyModel
             return null;
         }
 
-        if( Iterable.class.equals( injectionType ) && !Iterable.class.isAssignableFrom( injectionResult.getClass() ) )
+        if( injectionResult instanceof Iterable )
         {
-            return Collections.singleton( injectionResult );
-        }
-
-        if( injectionResult instanceof Iterable && !Iterable.class.isAssignableFrom( rawInjectionType ) && !rawInjectionType.isInstance( injectionResult ) )
-        {
-            Iterator iterator = ( (Iterable) injectionResult ).iterator();
-            if( iterator.hasNext() )
+            if( Iterable.class.isAssignableFrom( rawInjectionClass ) || rawInjectionClass.isInstance( injectionResult ) )
             {
-                return iterator.next();
+                return injectionResult;
             }
             else
             {
-                return null;
+                return firstElementOrNull( (Iterable) injectionResult );
             }
-        }
-
-        return injectionResult;
-    }
-
-    private Class<?> getNonPrimitiveType( Class<?> rawInjectionType )
-    {
-        if( rawInjectionType.getSimpleName().equals( "boolean" ) )
-        {
-            return Boolean.class;
         }
         else
         {
-            return rawInjectionType;
+            if( Iterable.class.equals( injectionType ) )
+            {
+                return Collections.singleton( injectionResult );
+            }
+        }
+        return injectionResult;
+    }
+
+    private final static Class<?>[] primitiveTypeMapping = { boolean.class, Boolean.class,
+                                                             byte.class, Byte.class,
+                                                             short.class, Short.class,
+                                                             char.class, Character.class,
+                                                             long.class, Long.class,
+                                                             double.class, Double.class,
+                                                             float.class, Float.class,
+                                                             int.class, Integer.class,
+    };
+
+    private Class<?> mapPrimitiveTypes( Class<?> rawInjectionType )
+    {
+        if (rawInjectionType==null || !rawInjectionType.isPrimitive()) return rawInjectionType;
+        for( int i = 0; i < primitiveTypeMapping.length; i += 2 )
+        {
+            if( primitiveTypeMapping[ i ].equals( rawInjectionType ) )
+            {
+                return primitiveTypeMapping[ i + 1 ];
+            }
+
+        }
+        return rawInjectionType;
+    }
+
+    public boolean hasScope( final Class<? extends Annotation> scope )
+    {
+        return scope == null || scope.equals( injectionAnnotation().annotationType() );
+    }
+
+    public Class<? extends Annotation> injectionAnnotationType()
+    {
+        if (injectionAnnotation==null) return null;
+        return injectionAnnotation.annotationType();
+    }
+
+    public static class ScopeSpecification
+        implements Specification<DependencyModel>
+    {
+        private Class<? extends Annotation> scope;
+
+        public ScopeSpecification( Class<? extends Annotation> scope )
+        {
+            this.scope = scope;
+        }
+
+        public boolean matches( DependencyModel model )
+        {
+            return model.hasScope( scope );
         }
     }
 }

@@ -71,4 +71,9 @@ public final class Resolution
     {
         return field;
     }
+
+    public Resolution forField( final Field injectedField )
+    {
+        return new Resolution( application, layer, module, compositeDescriptor, method, injectedField );
+    }
 }

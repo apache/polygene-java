@@ -25,7 +25,7 @@ import org.qi4j.runtime.composite.CompositeModel;
 import org.qi4j.runtime.composite.DefaultCompositeInstance;
 import org.qi4j.runtime.composite.ProxyReferenceInvocationHandler;
 import org.qi4j.runtime.injection.DependencyModel;
-import org.qi4j.runtime.injection.DependencyVisitor;
+import org.qi4j.runtime.structure.DependencyVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.service.Configuration;
 import org.qi4j.service.ServiceComposite;
@@ -80,7 +80,7 @@ public final class Energy4Java
     {
         CompositeModel descriptor = (CompositeModel) getCompositeDescriptor( serviceComposite );
         final List<DependencyModel> dependencyModels = new ArrayList<DependencyModel>();
-        descriptor.visitModel( new DependencyVisitor( new DependencyVisitor.AnnotationSpecification( This.class ) )
+        descriptor.visitModel( new DependencyVisitor( new DependencyModel.ScopeSpecification( This.class ) )
         {
             public void visitDependency( DependencyModel dependencyModel )
             {

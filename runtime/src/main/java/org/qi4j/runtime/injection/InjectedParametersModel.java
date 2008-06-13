@@ -16,10 +16,13 @@ package org.qi4j.runtime.injection;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Collection;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.ModelVisitor;
+import org.qi4j.runtime.structure.Specification;
+import static org.qi4j.runtime.structure.Specification.CollectionFilter.filterBy;
 
 /**
  * TODO
@@ -72,4 +75,11 @@ public final class InjectedParametersModel
     {
         modelVisitor.visit( this );
     }
+
+    public Collection<DependencyModel> filter( Specification<DependencyModel> specification )
+    {
+        return filterBy( parameterDependencies,specification);
+    }
+
 }
+

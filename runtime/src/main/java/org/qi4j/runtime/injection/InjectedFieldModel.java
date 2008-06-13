@@ -15,9 +15,12 @@
 package org.qi4j.runtime.injection;
 
 import java.lang.reflect.Field;
+import java.util.Collections;
+import java.util.Collection;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.structure.ModelVisitor;
+import org.qi4j.runtime.structure.Specification;
 
 /**
  * TODO
@@ -46,8 +49,7 @@ public final class InjectedFieldModel
 
     public void bind( Resolution resolution ) throws BindingException
     {
-        resolution = new Resolution( resolution.application(), resolution.layer(), resolution.module(), resolution.composite(), resolution.method(), injectedField );
-        dependencyModel.bind( resolution );
+        dependencyModel.bind( resolution.forField( injectedField ) );
     }
 
     public void inject( InjectionContext context, Object instance )
@@ -71,5 +73,10 @@ public final class InjectedFieldModel
     public void visitModel( ModelVisitor modelVisitor )
     {
         modelVisitor.visit( this );
+    }
+
+    public Collection<DependencyModel> filter( Specification<DependencyModel> specification )
+    {
+        return specification.matches( dependencyModel ) ? Collections.singleton( dependencyModel ) : Collections.<DependencyModel>emptyList();
     }
 }
