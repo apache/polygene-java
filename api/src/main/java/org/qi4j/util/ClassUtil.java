@@ -175,6 +175,10 @@ public class ClassUtil
     {
         if( !interfaces.contains( type ) )
         {
+            if (type instanceof ParameterizedType) {
+                final ParameterizedType parameterizedType = (ParameterizedType) type;
+                addInterfaces( parameterizedType.getRawType() , interfaces);
+            } else
             if( type instanceof Class )
             {
                 Class clazz = (Class) type;
