@@ -84,8 +84,11 @@ public interface Configuration<T>
             {
                 configuration = (T) uow.find( descriptor.identity(), configurationType );
             }
-            catch( EntityCompositeNotFoundException e )
+            // todo workaround
+            //catch( EntityCompositeNotFoundException e )
+            catch( Exception e )
             {
+
                 configuration = (T) uow.newEntityBuilder( descriptor.identity(), configurationType ).newInstance();
 
                 // Check for defaults
