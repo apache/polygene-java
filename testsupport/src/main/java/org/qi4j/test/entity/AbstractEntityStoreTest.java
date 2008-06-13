@@ -37,7 +37,7 @@ public abstract class AbstractEntityStoreTest
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
         module.addServices( UuidIdentityGeneratorService.class );
-        module.addComposites( TestEntity.class, TestValue.class );
+        module.addEntities( TestEntity.class, TestValue.class );
     }
 
     @Test
@@ -153,21 +153,24 @@ public abstract class AbstractEntityStoreTest
     }
 
     public interface TestValue
-        extends ValueComposite<TestValue>
+        extends ValueComposite<TestValue>, EntityComposite
     {
         ImmutableProperty<String> someValue();
 
         ImmutableProperty<Integer> otherValue();
     }
 
-    @Mixins( ValueComposite.ValueCompositeMixin.class )
-    public interface ValueComposite<T>
-        extends Composite
-    {
+    public interface Mutable<T> {
         CompositeBuilder<T> mutate();
 
+    }
+    @Mixins( ValueComposite.ValueCompositeMixin.class )
+    public interface ValueComposite<T>
+        extends Mutable<T>
+    {
+
         public abstract class ValueCompositeMixin<T>
-            implements ValueComposite<T>
+            implements Mutable<T>
         {
             @This Composite composite;
             @Structure CompositeBuilderFactory cbf;
