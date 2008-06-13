@@ -116,14 +116,14 @@ public class EntityInstance
 
     public EntityStatus status()
     {
-        return status;
+        return state!=null ? state.getStatus() : status;
     }
 
     public Object invoke( Object composite, Object[] params, CompositeMethodInstance methodInstance ) throws Throwable
     {
         if( mixins == null )
         {
-            if( status == EntityStatus.REMOVED )
+            if( status() == EntityStatus.REMOVED )
             {
                 throw new EntityCompositeNotFoundException( identity.identity(), entity.type().getName() );
             }
@@ -195,7 +195,8 @@ public class EntityInstance
 
     public void refresh( EntityState newState )
     {
-
+        // TODO is this correct or too much ??
+        mixins = entity.newMixins( uow, state, this );
     }
 
 
@@ -249,7 +250,7 @@ public class EntityInstance
 
     public void load()
     {
-        if( status == EntityStatus.LOADED && state == null )
+        if( state == null && status() == EntityStatus.LOADED )
         {
             state = store.getEntityState( entity, identity );
         }
