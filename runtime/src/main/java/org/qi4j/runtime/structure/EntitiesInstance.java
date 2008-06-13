@@ -56,7 +56,7 @@ public class EntitiesInstance
     {
         QualifiedIdentity qid = entityModel.newQualifiedIdentity( identity );
 
-        EntityState state = store.getEntityState( entityModel, qid );
+        EntityState state = getStore().getEntityState( entityModel, qid );
 
         return entityModel.loadInstance( uow, getStore(), qid, moduleInstance, state );
     }
@@ -68,11 +68,12 @@ public class EntitiesInstance
         return entityModel.getInstance( unitOfWorkInstance, getStore(), qid, moduleInstance );
     }
 
+    // todo DCL??
     private EntityStore getStore()
     {
         if( store == null )
         {
-            ServiceReference<EntityStore> service = moduleInstance.serviceFinder().findService( EntityStore.class );
+            ServiceReference<EntityStore> service = moduleInstance.findService( EntityStore.class );
             if( service == null )
             {
                 throw new UnitOfWorkException( "No EntityStore service available in module " + moduleInstance.name() );
@@ -82,6 +83,7 @@ public class EntitiesInstance
         return store;
     }
 
+    // todo DCL??
     private IdentityGenerator getIdentityGenerator()
     {
         if( generator == null )
