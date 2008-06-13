@@ -30,27 +30,7 @@ public class PropertyMapper
                 Object value = objectObjectEntry.getValue();
                 Type propertyType = ComputedPropertyInstance.getPropertyType( propertyMethod );
 
-                // Convert to non-strings
-                if( propertyType.equals( Integer.class ) )
-                {
-                    value = new Integer( value.toString() );
-                }
-                else if( propertyType.equals( Long.class ) )
-                {
-                    value = new Long( value.toString() );
-                }
-                else if( propertyType.equals( Boolean.class ) )
-                {
-                    value = Boolean.valueOf( value.toString() );
-                }
-                else if( propertyType.equals( Float.class ) )
-                {
-                    value = new Float( value.toString() );
-                }
-                else if( propertyType.equals( Double.class ) )
-                {
-                    value = new Double( value.toString() );
-                }
+                value = mapToType( propertyType, value.toString() );
 
                 @SuppressWarnings("unchecked")
                 Property<Object> property = (Property<Object>) propertyMethod.invoke( composite );
@@ -69,6 +49,33 @@ public class PropertyMapper
                 throw (IllegalArgumentException) new IllegalArgumentException( "Could not populate property named " + objectObjectEntry.getKey() ).initCause( e );
             }
         }
+    }
+
+    private static Object mapToType( Type propertyType, Object value )
+    {
+        final String stringValue = value.toString();
+        // Convert to non-strings
+        if( propertyType.equals( Integer.class ) )
+        {
+            return new Integer( stringValue );
+        }
+        else if( propertyType.equals( Long.class ) )
+        {
+            return new Long( stringValue );
+        }
+        else if( propertyType.equals( Boolean.class ) )
+        {
+            return Boolean.valueOf( stringValue );
+        }
+        else if( propertyType.equals( Float.class ) )
+        {
+            return new Float( stringValue );
+        }
+        else if( propertyType.equals( Double.class ) )
+        {
+            return new Double( stringValue );
+        }
+        return value;
     }
 
     /**

@@ -31,21 +31,25 @@ import static org.qi4j.util.ClassUtil.fieldsOf;
 public final class InjectedFieldsModel
     implements Binder
 {
-    private List<InjectedFieldModel> fields = new ArrayList<InjectedFieldModel>();
+    private final List<InjectedFieldModel> fields = new ArrayList<InjectedFieldModel>();
 
     public InjectedFieldsModel( Class fragmentClass )
     {
-        List<Field> fields = fieldsOf( fragmentClass );
-        for( Field field : fields )
+        for( Field field : fieldsOf( fragmentClass ) )
         {
             Annotation injectionAnnotation = getInjectionAnnotation( field.getAnnotations() );
             if( injectionAnnotation != null )
             {
-                DependencyModel dependencyModel = new DependencyModel( injectionAnnotation, field.getGenericType(), fragmentClass, false );
-                InjectedFieldModel injectedFieldModel = new InjectedFieldModel( field, dependencyModel );
-                this.fields.add( injectedFieldModel );
+                addModel( fragmentClass, field, injectionAnnotation );
             }
         }
+    }
+
+    private void addModel( Class fragmentClass, Field field, Annotation injectionAnnotation )
+    {
+        DependencyModel dependencyModel = new DependencyModel( injectionAnnotation, field.getGenericType(), fragmentClass, false );
+        InjectedFieldModel injectedFieldModel = new InjectedFieldModel( field, dependencyModel );
+        this.fields.add( injectedFieldModel );
     }
 
 

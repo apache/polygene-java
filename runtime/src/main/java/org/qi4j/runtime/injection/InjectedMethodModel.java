@@ -26,8 +26,8 @@ import org.qi4j.runtime.structure.ModelVisitor;
 public final class InjectedMethodModel
 {
     // Model
-    private Method method;
-    private InjectedParametersModel parameters;
+    private final Method method;
+    private final InjectedParametersModel parameters;
 
     public InjectedMethodModel( Method method, InjectedParametersModel parameters )
     {

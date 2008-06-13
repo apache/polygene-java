@@ -129,7 +129,8 @@ public class AbstractMixinsModel
     public Object invoke( Object composite, Object[] params, Object[] mixins, CompositeMethodInstance methodInstance )
         throws Throwable
     {
-        return methodInstance.invoke( composite, params, mixins[ methodIndex.get( methodInstance.method() ) ] );
+        final Object mixin = mixins[ methodIndex.get( methodInstance.method() ) ];
+        return methodInstance.invoke( composite, params, mixin );
     }
 
     public FragmentInvocationHandler newInvocationHandler( final Method method )
