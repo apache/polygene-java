@@ -44,7 +44,7 @@ public final class ServiceMap<T>
         if( serviceReference == null )
         {
             ModuleInstance realModule = moduleInstance.findModuleForComposite( compositeType );
-            serviceReference = realModule.serviceFinder().findService( serviceClass );
+            serviceReference = realModule.findService( serviceClass );
             if( serviceReference == null )
             {
                 return null;

@@ -23,6 +23,7 @@ import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.InvalidApplicationException;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkFactory;
+import org.qi4j.entity.EntityComposite;
 import org.qi4j.object.ObjectBuilder;
 import org.qi4j.object.ObjectBuilderFactory;
 import org.qi4j.runtime.composite.CompositeModel;
@@ -134,7 +135,7 @@ public class ModuleInstance
     public ModuleInstance findModuleForComposite( Class mixinType )
     {
         // Check local first
-        CompositeModel model = composites.model().getCompositeModelFor( mixinType, Visibility.module );
+        CompositeModel model = getCompositeModelFor( mixinType, Visibility.module );
         if( model != null )
         {
             return this;
@@ -142,6 +143,12 @@ public class ModuleInstance
 
         // Check layer
         return layerInstance.findModuleForComposite( mixinType, Visibility.layer );
+    }
+
+
+    private CompositeModel getCompositeModelFor( Class mixinType, final Visibility visibility )
+    {
+        return composites.model().getCompositeModelFor( mixinType, visibility );
     }
 
 
@@ -190,6 +197,13 @@ public class ModuleInstance
         return realModuleInstance.composites().model().getCompositeModelFor( compositeType );
     }
 
+    public EntityModel findEntityCompositeFor( Class<? extends EntityComposite> entityCompositeType )
+    {
+        //TODO Cache this result
+        ModuleInstance realModuleInstance = findModuleForEntity( entityCompositeType );
+        return realModuleInstance.entities().model().getEntityModelFor( entityCompositeType );
+    }
+
     public Class findClassForName( String type )
     {
         Class clazz = getClassForName( type );
@@ -219,6 +233,11 @@ public class ModuleInstance
             clazz = objects.model().getClassForName( type );
         }
         return clazz;
+    }
+
+    public <T> ServiceReference<T> findService( Class<T> serviceClass )
+    {
+        return serviceFinder().findService( serviceClass );
     }
 
     private class CompositeBuilderFactoryInstance
