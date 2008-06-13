@@ -75,6 +75,11 @@ public final class MethodConstraintsModel
     public void visitModel( ModelVisitor modelVisitor )
     {
         modelVisitor.visit( this );
+        if( parameterConstraintModels == null )
+        {
+            return;
+        }
+
         for( ValueConstraintsModel parameterConstraintModel : parameterConstraintModels )
         {
             parameterConstraintModel.visitModel( modelVisitor );
