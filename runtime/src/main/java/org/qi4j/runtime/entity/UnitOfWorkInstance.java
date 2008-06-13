@@ -135,7 +135,8 @@ public final class UnitOfWorkInstance
     {
         checkOpen();
 
-        EntityModel entityModel = moduleInstance.findModuleForEntity( mixinType ).entities().model().getEntityModelFor( mixinType );
+        final ModuleInstance realModule = moduleInstance.findModuleForEntity( mixinType );
+        EntityModel entityModel = realModule.entities().model().getEntityModelFor( mixinType );
 
         // TODO: Argument check.
 
@@ -144,9 +145,10 @@ public final class UnitOfWorkInstance
             EntityComposite entity = getCachedEntity( identity, mixinType );
             if( entity == null )
             {   // Not yet in cache
-                EntityInstance entityInstance = moduleInstance.entities().loadEntityInstance( identity, entityModel, this );
+                EntityInstance entityInstance = realModule.entities().loadEntityInstance( identity, entityModel, this );
                 Map<String, EntityComposite> entityCache = getEntityCache( entityModel.type() );
-                entityCache.put( identity, entityInstance.proxy() );
+                entity = entityInstance.proxy();
+                entityCache.put( identity, entity );
             }
             else
             {
