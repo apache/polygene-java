@@ -172,7 +172,7 @@ public final class UnitOfWorkInstance
                     // Check if it has been removed
                     if( entityInstance.status() == EntityStatus.REMOVED )
                     {
-                        throw new EntityCompositeNotFoundException( identity, entityModel.type().getName() );
+                        throw new EntityCompositeNotFoundException( identity, entityModel.type() );
                     }
                 }
             }
@@ -181,7 +181,7 @@ public final class UnitOfWorkInstance
         }
         catch( EntityStoreException e )
         {
-            throw new EntityStorageException( "Storage unable to access entity " + identity, e );
+            throw new EntityCompositeNotFoundException( identity, entityModel.type() );
         }
     }
 
@@ -208,7 +208,7 @@ public final class UnitOfWorkInstance
             EntityInstance entityInstance = EntityInstance.getEntityInstance( entity );
             if( entityInstance.status() == EntityStatus.REMOVED )
             {
-                throw new EntityCompositeNotFoundException( identity, entityModel.type().getName() );
+                throw new EntityCompositeNotFoundException( identity, entityModel.type() );
             }
         }
 
@@ -237,7 +237,7 @@ public final class UnitOfWorkInstance
             EntityStatus entityStatus = entityInstance.status();
             if( entityStatus == EntityStatus.REMOVED )
             {
-                throw new EntityCompositeNotFoundException( entityInstance.identity().identity(), entityInstance.type().getName() );
+                throw new EntityCompositeNotFoundException( entityInstance.identity().identity(), entityInstance.type() );
             }
             else if( entityStatus == EntityStatus.NEW )
             {

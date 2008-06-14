@@ -21,12 +21,12 @@ package org.qi4j.entity;
  */
 public class EntityCompositeNotFoundException extends UnitOfWorkException
 {
-    private static final long serialVersionUID = 4842934969838228341L;
+    private static final long serialVersionUID = 1L;
 
     private String identity;
-    private String compositeType;
+    private Class compositeType;
 
-    public EntityCompositeNotFoundException( String identity, String compositeType )
+    public EntityCompositeNotFoundException( String identity, Class compositeType )
     {
         this.identity = identity;
         this.compositeType = compositeType;
@@ -37,7 +37,7 @@ public class EntityCompositeNotFoundException extends UnitOfWorkException
         return identity;
     }
 
-    public String compositeType()
+    public Class compositeType()
     {
         return compositeType;
     }

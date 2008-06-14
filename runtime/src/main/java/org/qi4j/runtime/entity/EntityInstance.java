@@ -125,7 +125,7 @@ public class EntityInstance
         {
             if( status() == EntityStatus.REMOVED )
             {
-                throw new EntityCompositeNotFoundException( identity.identity(), entity.type().getName() );
+                throw new EntityCompositeNotFoundException( identity.identity(), entity.type() );
             }
             if( state == null )
             {
