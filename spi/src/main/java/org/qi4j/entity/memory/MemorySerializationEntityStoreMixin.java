@@ -1,10 +1,17 @@
 package org.qi4j.entity.memory;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import org.qi4j.composite.CompositeBuilderFactory;
+import org.qi4j.entity.association.ListAssociation;
+import org.qi4j.entity.association.ManyAssociation;
+import org.qi4j.entity.association.SetAssociation;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.entity.EntityAlreadyExistsException;
 import org.qi4j.spi.entity.EntityNotFoundException;
@@ -15,6 +22,7 @@ import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.StateCommitter;
+import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.serialization.SerializableState;
 import org.qi4j.spi.serialization.SerializedObject;
 import org.qi4j.structure.Module;
@@ -51,7 +59,25 @@ public class MemorySerializationEntityStoreMixin
             }
         }
 
-        return new EntityStateInstance( 0, identity, EntityStatus.NEW, new HashMap<String, Object>(), new HashMap<String, QualifiedIdentity>(), new HashMap<String, Collection<QualifiedIdentity>>() );
+        HashMap<String, Object> properties = new HashMap<String, Object>();
+        HashMap<String, Collection<QualifiedIdentity>> manyAssociations = new HashMap<String, Collection<QualifiedIdentity>>();
+        for( AssociationDescriptor associationDescriptor : compositeDescriptor.state().associations() )
+        {
+            Method accessor = associationDescriptor.accessor();
+            if( ListAssociation.class.isAssignableFrom( accessor.getReturnType() ) )
+            {
+                manyAssociations.put( associationDescriptor.qualifiedName(), new ArrayList<QualifiedIdentity>() );
+            }
+            else if( SetAssociation.class.isAssignableFrom( accessor.getReturnType() ) )
+            {
+                manyAssociations.put( associationDescriptor.qualifiedName(), new LinkedHashSet<QualifiedIdentity>() );
+            }
+            else if( ManyAssociation.class.isAssignableFrom( accessor.getReturnType() ) )
+            {
+                manyAssociations.put( associationDescriptor.qualifiedName(), new HashSet<QualifiedIdentity>() );
+            }
+        }
+        return new EntityStateInstance( 0, identity, EntityStatus.NEW, properties, new HashMap<String, QualifiedIdentity>(), manyAssociations );
     }
 
     public EntityState getEntityState( CompositeDescriptor compositeDescriptor, QualifiedIdentity identity ) throws EntityStoreException

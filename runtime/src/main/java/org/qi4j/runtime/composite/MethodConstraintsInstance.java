@@ -17,6 +17,9 @@ package org.qi4j.runtime.composite;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import org.qi4j.composite.Composite;
+import org.qi4j.composite.ConstraintViolation;
+import org.qi4j.composite.ParameterConstraintViolationException;
 
 /**
  * TODO
@@ -24,6 +27,7 @@ import java.util.List;
 public final class MethodConstraintsInstance
 {
     private List<ValueConstraintsInstance> valueConstraintsInstances;
+    private Method method;
 
     public MethodConstraintsInstance()
     {
@@ -31,6 +35,7 @@ public final class MethodConstraintsInstance
 
     public MethodConstraintsInstance( Method method, List<ValueConstraintsModel> parameterConstraintsModels )
     {
+        this.method = method;
         valueConstraintsInstances = new ArrayList<ValueConstraintsInstance>();
         for( ValueConstraintsModel parameterConstraintModel : parameterConstraintsModels )
         {
@@ -39,17 +44,32 @@ public final class MethodConstraintsInstance
         }
     }
 
-    public void checkValid( Object[] params )
+    public void checkValid( Object instance, Object[] params )
+        throws ParameterConstraintViolationException
     {
         if( valueConstraintsInstances == null )
         {
             return; // No constraints to check
         }
 
+        List<ConstraintViolation> violations = null;
         for( int i = 0; i < params.length; i++ )
         {
             Object param = params[ i ];
-            valueConstraintsInstances.get( i ).checkConstraints( param );
+            List<ConstraintViolation> paramViolations = valueConstraintsInstances.get( i ).checkConstraints( param );
+            if( !paramViolations.isEmpty() )
+            {
+                if( violations == null )
+                {
+                    violations = new ArrayList<ConstraintViolation>();
+                }
+                violations.addAll( paramViolations );
+            }
+        }
+
+        if( violations != null )
+        {
+            throw new ParameterConstraintViolationException( (Composite) instance, method, violations );
         }
     }
 }

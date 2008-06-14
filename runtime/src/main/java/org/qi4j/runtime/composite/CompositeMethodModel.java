@@ -71,7 +71,8 @@ public final class CompositeMethodModel
     // Context
     public Object invoke( Object composite, Object[] params, MixinsInstance mixins, ModuleInstance moduleInstance ) throws Throwable
     {
-        methodConstraintsInstance.checkValid( params );
+        methodConstraintsInstance.checkValid( composite, params );
+
         CompositeMethodInstance methodInstance = getInstance( moduleInstance );
         try
         {

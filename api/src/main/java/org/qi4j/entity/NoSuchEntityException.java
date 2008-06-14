@@ -11,30 +11,32 @@
  * limitations under the License.
  *
  */
-package org.qi4j.composite;
+package org.qi4j.entity;
 
-public class CompositeNotRegisteredException extends InvalidApplicationException
+import org.qi4j.composite.InvalidApplicationException;
+
+public class NoSuchEntityException extends InvalidApplicationException
 {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 7185723686654157891L;
 
-    private Class compositeType;
+    private String entityType;
     private String moduleName;
 
-    public CompositeNotRegisteredException( Class compositeType, String moduleName )
+    public NoSuchEntityException( String entityType, String moduleName )
     {
-        super( "Trying to find unregistered composite of type [" + compositeType.getName() + "] in module [" +
+        super( "Could not find any visible EntityComposite of type [" + entityType + "] in module [" +
                moduleName + "]." );
-        this.compositeType = compositeType;
+        this.entityType = entityType;
         this.moduleName = moduleName;
     }
 
-    public Class compositeType()
+    public String type()
     {
-        return compositeType;
+        return entityType;
     }
 
     public String moduleName()
     {
-        return moduleName;
+        return this.moduleName;
     }
 }

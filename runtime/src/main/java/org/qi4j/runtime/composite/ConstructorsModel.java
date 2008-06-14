@@ -57,7 +57,7 @@ public final class ConstructorsModel
             parameterAnnotations = getConstructorAnnotations( fragmentClass, constructor );
             for( Type type : constructor.getGenericParameterTypes() )
             {
-                DependencyModel dependencyModel = new DependencyModel( AnnotationUtil.getInjectionAnnotation( parameterAnnotations[ idx ] ), type, fragmentClass, false );
+                DependencyModel dependencyModel = new DependencyModel( AnnotationUtil.getInjectionAnnotation( parameterAnnotations[ idx ] ), type, fragmentClass );
                 parameters.addDependency( dependencyModel );
                 idx++;
             }

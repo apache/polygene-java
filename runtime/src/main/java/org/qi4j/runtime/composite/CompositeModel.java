@@ -68,8 +68,8 @@ public class CompositeModel
         ConstraintsModel constraintsModel = new ConstraintsModel( type );
         MixinsModel mixinsModel = new MixinsModel( type );
         StateModel stateModel = new StateModel( new PropertiesModel( constraintsModel ) );
-        ConcernsModel concernsModel = new ConcernsModel( type );
-        SideEffectsModel sideEffectsModel = new SideEffectsModel( type );
+        ConcernsDeclaration concernsModel = new ConcernsDeclaration( type );
+        SideEffectsDeclaration sideEffectsModel = new SideEffectsDeclaration( type );
         CompositeMethodsModel compositeMethodsModel = new CompositeMethodsModel( type, constraintsModel, concernsModel, sideEffectsModel, mixinsModel );
 
         return new CompositeModel( type,
@@ -85,8 +85,8 @@ public class CompositeModel
     }
 
     private ConstraintsModel constraintsModel;
-    private ConcernsModel concernsModel;
-    private SideEffectsModel sideEffectsModel;
+    private ConcernsDeclaration concernsDeclaration;
+    private SideEffectsDeclaration sideEffectsModel;
     private MixinsModel mixinsModel;
     private CompositeMethodsModel compositeMethodsModel;
     private Class<? extends Composite> compositeType;
@@ -101,8 +101,8 @@ public class CompositeModel
                            MetaInfo metaInfo,
                            ModuleModel moduleModel,
                            ConstraintsModel constraintsModel,
-                           ConcernsModel concernsModel,
-                           SideEffectsModel sideEffectsModel,
+                           ConcernsDeclaration concernsDeclaration,
+                           SideEffectsDeclaration sideEffectsModel,
                            MixinsModel mixinsModel,
                            StateModel stateModel,
                            CompositeMethodsModel compositeMethodsModel
@@ -118,7 +118,7 @@ public class CompositeModel
         this.proxyClass = createProxyClass( compositeType );
 
         this.constraintsModel = constraintsModel;
-        this.concernsModel = concernsModel;
+        this.concernsDeclaration = concernsDeclaration;
         this.sideEffectsModel = sideEffectsModel;
         this.mixinsModel = mixinsModel;
 

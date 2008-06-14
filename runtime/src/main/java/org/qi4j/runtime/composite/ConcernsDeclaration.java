@@ -17,44 +17,50 @@ package org.qi4j.runtime.composite;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.Concerns;
-import org.qi4j.runtime.structure.ModelVisitor;
-import static org.qi4j.util.ClassUtil.interfacesOf;
+import static org.qi4j.util.ClassUtil.*;
 
 /**
  * TODO
  */
-public final class ConcernsModel
+public final class ConcernsDeclaration
 {
-    private Class<? extends Composite> compositeType;
-
     private List<ConcernDeclaration> concerns = new ArrayList<ConcernDeclaration>();
     private Map<Method, MethodConcernsModel> methodConcernsModels = new HashMap<Method, MethodConcernsModel>();
 
-    public ConcernsModel( Class<? extends Composite> compositeType )
+    public ConcernsDeclaration( Class type )
     {
-        this.compositeType = compositeType;
-
         // Find concern declarations
-        Set<Type> interfaces = interfacesOf( compositeType );
+        Set<Type> types = type.isInterface() ? interfacesOf( type ) : Collections.singleton( (Type) type );
 
-        for( Type anInterface : interfaces )
+        for( Type aType : types )
         {
-            addConcernDeclarations( anInterface );
+            addConcernDeclarations( aType );
         }
     }
 
     // Model
-    public MethodConcernsModel concernsFor( Method method )
+    public MethodConcernsModel concernsFor( Method method, Class<? extends Composite> type )
     {
         if( !methodConcernsModels.containsKey( method ) )
         {
-            MethodConcernsModel methodConcerns = new MethodConcernsModel( method, compositeType, concerns );
+            List<MethodConcernModel> concernsForMethod = new ArrayList<MethodConcernModel>();
+            for( ConcernDeclaration concern : concerns )
+            {
+                if( concern.appliesTo( method, type ) )
+                {
+                    Class concernClass = concern.type();
+                    concernsForMethod.add( new MethodConcernModel( concernClass ) );
+                }
+            }
+
+            MethodConcernsModel methodConcerns = new MethodConcernsModel( method, concernsForMethod );
             methodConcernsModels.put( method, methodConcerns );
             return methodConcerns;
         }
@@ -79,14 +85,4 @@ public final class ConcernsModel
             }
         }
     }
-
-
-    public void visitModel( ModelVisitor modelVisitor )
-    {
-        for( MethodConcernsModel methodConcernsModel : methodConcernsModels.values() )
-        {
-            methodConcernsModel.visitModel( modelVisitor );
-        }
-    }
-
 }

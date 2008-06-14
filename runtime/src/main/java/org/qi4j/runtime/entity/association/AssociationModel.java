@@ -20,6 +20,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import org.qi4j.composite.Composite;
+import org.qi4j.composite.ConstraintViolation;
+import org.qi4j.composite.ConstraintViolationException;
 import org.qi4j.entity.association.AbstractAssociation;
 import org.qi4j.entity.association.Association;
 import org.qi4j.entity.association.ListAssociation;
@@ -141,10 +143,15 @@ public class AssociationModel
     }
 
     public void checkConstraints( Object value )
+        throws ConstraintViolationException
     {
         if( constraints != null )
         {
-            constraints.checkConstraints( value );
+            List<ConstraintViolation> violations = constraints.checkConstraints( value );
+            if( !violations.isEmpty() )
+            {
+                throw new ConstraintViolationException( accessor, violations );
+            }
         }
     }
 

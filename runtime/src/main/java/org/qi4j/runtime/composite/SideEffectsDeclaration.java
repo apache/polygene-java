@@ -17,43 +17,58 @@ package org.qi4j.runtime.composite;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.SideEffects;
-import static org.qi4j.util.ClassUtil.interfacesOf;
+import static org.qi4j.util.ClassUtil.*;
 
 /**
  * TODO
  */
-public final class SideEffectsModel
+public final class SideEffectsDeclaration
 {
-    private Class<? extends Composite> compositeType;
-
     private List<SideEffectDeclaration> sideEffectDeclarations = new ArrayList<SideEffectDeclaration>();
     private Map<Method, MethodSideEffectsModel> methodSideEffects = new HashMap<Method, MethodSideEffectsModel>();
 
-    public SideEffectsModel( Class<? extends Composite> compositeType )
+    public SideEffectsDeclaration( Class type )
     {
-        this.compositeType = compositeType;
-
         // Find side-effect declarations
-        Set<Type> interfaces = interfacesOf( compositeType );
-
-        for( Type anInterface : interfaces )
+        Set<Type> types;
+        if( type.isInterface() )
         {
-            addSideEffectDeclaration( anInterface );
+            types = interfacesOf( type );
+        }
+        else
+        {
+            types = Collections.singleton( (Type) type );
+        }
+
+        for( Type aType : types )
+        {
+            addSideEffectDeclaration( aType );
         }
     }
 
     // Model
-    public MethodSideEffectsModel sideEffectsFor( Method method )
+    public MethodSideEffectsModel sideEffectsFor( Method method, Class<? extends Composite> compositeType )
     {
         if( !methodSideEffects.containsKey( method ) )
         {
-            MethodSideEffectsModel methodConcerns = new MethodSideEffectsModel( method, compositeType, sideEffectDeclarations );
+            List<MethodSideEffectModel> sideEffects = new ArrayList<MethodSideEffectModel>();
+            for( SideEffectDeclaration sideEffectDeclaration : sideEffectDeclarations )
+            {
+                if( sideEffectDeclaration.appliesTo( method, compositeType ) )
+                {
+                    Class sideEffectClass = sideEffectDeclaration.type();
+                    sideEffects.add( new MethodSideEffectModel( sideEffectClass ) );
+                }
+            }
+
+            MethodSideEffectsModel methodConcerns = new MethodSideEffectsModel( method, sideEffects );
             methodSideEffects.put( method, methodConcerns );
             return methodConcerns;
         }

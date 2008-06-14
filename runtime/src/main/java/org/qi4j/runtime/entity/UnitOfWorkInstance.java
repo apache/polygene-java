@@ -29,12 +29,12 @@ import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.EntityCompositeNotFoundException;
 import org.qi4j.entity.Identity;
 import org.qi4j.entity.LoadingPolicy;
+import org.qi4j.entity.NoSuchEntityException;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkCompletionException;
 import org.qi4j.entity.UnitOfWorkException;
 import org.qi4j.entity.UnitOfWorkSynchronization;
-import static org.qi4j.entity.UnitOfWorkSynchronization.UnitOfWorkStatus.COMPLETED;
-import static org.qi4j.entity.UnitOfWorkSynchronization.UnitOfWorkStatus.DISCARDED;
+import static org.qi4j.entity.UnitOfWorkSynchronization.UnitOfWorkStatus.*;
 import org.qi4j.object.ObjectBuilderFactory;
 import org.qi4j.query.Query;
 import org.qi4j.query.QueryBuilderFactory;
@@ -93,25 +93,34 @@ public final class UnitOfWorkInstance
     }
 
     public <T> T newEntity( Class<T> compositeType )
+        throws NoSuchEntityException
     {
         return newEntityBuilder( compositeType ).newInstance();
     }
 
     public <T> T newEntity( String identity, Class<T> compositeType )
+        throws NoSuchEntityException
     {
         return newEntityBuilder( identity, compositeType ).newInstance();
     }
 
     public <T> EntityBuilder<T> newEntityBuilder( Class<T> mixinType )
+        throws NoSuchEntityException
     {
         return newEntityBuilder( null, mixinType );
     }
 
     public <T> EntityBuilder<T> newEntityBuilder( String identity, Class<T> mixinType )
+        throws NoSuchEntityException
     {
         checkOpen();
 
         ModuleInstance realModuleInstance = moduleInstance.findModuleForEntity( mixinType );
+        if( realModuleInstance == null )
+        {
+            throw new NoSuchEntityException( mixinType.getName(), moduleInstance.name() );
+        }
+
         EntityBuilder<T> builder = realModuleInstance.entities().newEntityBuilder( mixinType, this );
         if( identity != null )
         {

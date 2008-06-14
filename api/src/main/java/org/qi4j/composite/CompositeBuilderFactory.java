@@ -27,7 +27,7 @@ public interface CompositeBuilderFactory
      * @return a CompositeBuilder for creation of Composites implementing the interface
      */
     <T> CompositeBuilder<T> newCompositeBuilder( Class<T> compositeType )
-        throws InvalidApplicationException;
+        throws NoSuchCompositeException;
 
     /**
      * Instantiate a Composite of the given type.
@@ -36,5 +36,5 @@ public interface CompositeBuilderFactory
      * @return a new Composite instance
      */
     <T> T newComposite( Class<T> compositeType )
-        throws InvalidApplicationException, InstantiationException;
+        throws NoSuchCompositeException, InstantiationException;
 }

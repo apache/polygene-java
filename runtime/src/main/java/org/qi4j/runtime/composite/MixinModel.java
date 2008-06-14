@@ -15,8 +15,10 @@
 package org.qi4j.runtime.composite;
 
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
+import org.qi4j.composite.Composite;
 import org.qi4j.composite.State;
 import org.qi4j.injection.scope.This;
 import org.qi4j.runtime.injection.DependencyModel;
@@ -39,6 +41,8 @@ public final class MixinModel
     private ConstructorsModel constructorsModel;
     private InjectedFieldsModel injectedFieldsModel;
     private InjectedMethodsModel injectedMethodsModel;
+    private ConcernsDeclaration concernsDeclaration;
+    private SideEffectsDeclaration sideEffectsDeclaration;
 
     public MixinModel( Class mixinClass )
     {
@@ -47,6 +51,9 @@ public final class MixinModel
         constructorsModel = new ConstructorsModel( mixinClass );
         injectedFieldsModel = new InjectedFieldsModel( mixinClass );
         injectedMethodsModel = new InjectedMethodsModel( mixinClass );
+
+        concernsDeclaration = new ConcernsDeclaration( mixinClass );
+        sideEffectsDeclaration = new SideEffectsDeclaration( mixinClass );
     }
 
     public Class mixinClass()
@@ -109,5 +116,16 @@ public final class MixinModel
             return new TypedFragmentInvocationHandler();
         }
 
+    }
+
+    public MethodConcernsModel concernsFor( Method method, Class<? extends Composite> type )
+    {
+        return concernsDeclaration.concernsFor( method, type );
+    }
+
+
+    public MethodSideEffectsModel sideEffectsFor( Method method, Class<? extends Composite> type )
+    {
+        return sideEffectsDeclaration.sideEffectsFor( method, type );
     }
 }

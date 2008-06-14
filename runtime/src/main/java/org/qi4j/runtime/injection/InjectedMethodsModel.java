@@ -54,7 +54,7 @@ public final class InjectedMethodsModel
 
                     Type type = genericParameterTypes[ i ];
 
-                    DependencyModel dependencyModel = new DependencyModel( injectionAnnotation, type, fragmentClass, false );
+                    DependencyModel dependencyModel = new DependencyModel( injectionAnnotation, type, fragmentClass );
                     parametersModel.addDependency( dependencyModel );
                 }
                 InjectedMethodModel methodModel = new InjectedMethodModel( method, parametersModel );

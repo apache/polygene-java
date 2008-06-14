@@ -18,7 +18,9 @@ import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import org.qi4j.composite.ConstraintViolation;
 import org.qi4j.composite.ConstraintViolationException;
 import org.qi4j.property.AbstractPropertyInstance;
 import org.qi4j.property.ImmutableProperty;
@@ -160,7 +162,11 @@ public class PropertyModel
     {
         if( constraints != null )
         {
-            constraints.checkConstraints( value );
+            List<ConstraintViolation> violations = constraints.checkConstraints( value );
+            if( !violations.isEmpty() )
+            {
+                throw new ConstraintViolationException( accessor, violations );
+            }
         }
     }
 

@@ -15,11 +15,13 @@
 package org.qi4j.runtime.injection;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 import java.util.Collections;
+import org.qi4j.injection.Optional;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.injection.provider.InvalidInjectionException;
@@ -45,14 +47,34 @@ public final class DependencyModel
     // Binding
     private InjectionProvider injectionProvider;
 
-    public DependencyModel( Annotation injectionAnnotation, Type genericType, Class<?> injectedClass, boolean optional )
+    public DependencyModel( Annotation injectionAnnotation, Type genericType, Class<?> injectedClass )
     {
         this.injectionAnnotation = injectionAnnotation;
         this.injectedClass = injectedClass;
         this.injectionType = genericType;
-        this.optional = optional;
+        this.optional = isOptional( injectionAnnotation );
         this.rawInjectionClass = mapPrimitiveTypes( extractRawInjectionClass( injectedClass, injectionType ) );
         this.injectionClass = extractInjectionClass( injectionType );
+    }
+
+    private boolean isOptional( Annotation injectionAnnotation )
+    {
+        Method[] methods = injectionAnnotation.annotationType().getMethods();
+        for( Method method : methods )
+        {
+            if( method.getAnnotation( Optional.class ) != null )
+            {
+                try
+                {
+                    return (Boolean) method.invoke( injectionAnnotation );
+                }
+                catch( Throwable e )
+                {
+                    return false;
+                }
+            }
+        }
+        return false;
     }
 
     private Class<?> extractRawInjectionClass( Class<?> injectedClass, final Type injectionType )
@@ -146,7 +168,8 @@ public final class DependencyModel
         else if( type instanceof ParameterizedType )
         {
             return (Class<?>) ( (ParameterizedType) type ).getRawType();
-        } else if( type instanceof WildcardType )
+        }
+        else if( type instanceof WildcardType )
         {
             // To handle for instance Class<? extends Habba>, which will then return habba
             WildcardType wcType = (WildcardType) type;
@@ -213,6 +236,11 @@ public final class DependencyModel
         try
         {
             injectionProvider = providerFactory.newInjectionProvider( resolution, this );
+
+            if( injectionProvider == null && !optional )
+            {
+                throw new org.qi4j.composite.InstantiationException( "Non-optional @" + rawInjectionClass.getName() + " was null in " + injectedClass.getName() );
+            }
         }
         catch( InvalidInjectionException e )
         {
@@ -223,11 +251,16 @@ public final class DependencyModel
     // Context
     public Object inject( InjectionContext context )
     {
+        if( injectionProvider == null )
+        {
+            return null;
+        }
+
         Object injectedValue = injectionProvider.provideInjection( context );
 
         if( injectedValue == null && !optional )
         {
-            throw new org.qi4j.composite.InstantiationException( "Non-optional @" + rawInjectionClass.getName() + " was null" );
+            throw new org.qi4j.composite.InstantiationException( "Non-optional @" + rawInjectionClass.getName() + " was null in " + injectedClass.getName() );
         }
 
         return getInjectedValue( injectedValue );

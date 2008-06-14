@@ -16,9 +16,9 @@ package org.qi4j.runtime.composite;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.qi4j.composite.ConstraintViolation;
-import org.qi4j.composite.ConstraintViolationException;
 
 /**
  * TODO
@@ -40,8 +40,7 @@ public final class ValueConstraintsInstance
         }
     }
 
-    public void checkConstraints( Object value )
-        throws ConstraintViolationException
+    public List<ConstraintViolation> checkConstraints( Object value )
     {
         List<ConstraintViolation> violations = null;
         for( ConstraintInstance constraint : constraints )
@@ -57,9 +56,11 @@ public final class ValueConstraintsInstance
             }
         }
 
-        if( violations != null )
+        if( violations == null )
         {
-            throw new ConstraintViolationException( method, violations );
+            violations = Collections.emptyList();
         }
+
+        return violations;
     }
 }

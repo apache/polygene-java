@@ -18,7 +18,6 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-import org.qi4j.composite.Composite;
 import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
@@ -32,19 +31,10 @@ public final class MethodConcernsModel
     private List<MethodConcernModel> concernsForMethod;
     private Method method;
 
-    public MethodConcernsModel( Method method, Class<? extends Composite> compositeType, List<ConcernDeclaration> concerns )
+    public MethodConcernsModel( Method method, List<MethodConcernModel> concernsForMethod )
     {
         this.method = method;
-
-        concernsForMethod = new ArrayList<MethodConcernModel>();
-        for( ConcernDeclaration concern : concerns )
-        {
-            if( concern.appliesTo( method, compositeType ) )
-            {
-                Class concernClass = concern.type();
-                concernsForMethod.add( new MethodConcernModel( concernClass ) );
-            }
-        }
+        this.concernsForMethod = concernsForMethod;
     }
 
     public Method method()
@@ -92,5 +82,13 @@ public final class MethodConcernsModel
         {
             methodConcernModel.visitModel( modelVisitor );
         }
+    }
+
+    public MethodConcernsModel combineWith( MethodConcernsModel mixinMethodConcernsModel )
+    {
+        List<MethodConcernModel> combinedModels = new ArrayList<MethodConcernModel>( concernsForMethod.size() + mixinMethodConcernsModel.concernsForMethod.size() );
+        combinedModels.addAll( concernsForMethod );
+        combinedModels.addAll( mixinMethodConcernsModel.concernsForMethod );
+        return new MethodConcernsModel( method, combinedModels );
     }
 }

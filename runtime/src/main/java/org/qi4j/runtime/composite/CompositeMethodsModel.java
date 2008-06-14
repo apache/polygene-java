@@ -28,17 +28,19 @@ public final class CompositeMethodsModel
     implements Binder
 {
     private ConcurrentHashMap<Method, CompositeMethodModel> methods = new ConcurrentHashMap<Method, CompositeMethodModel>( 1024 );
+    private Class<? extends Composite> type;
     private ConstraintsModel constraintsModel;
-    private ConcernsModel concernsModel;
-    private SideEffectsModel sideEffectsModel;
+    private ConcernsDeclaration concernsModel;
+    private SideEffectsDeclaration sideEffectsModel;
     private AbstractMixinsModel mixinsModel;
 
     public CompositeMethodsModel( Class<? extends Composite> type,
                                   ConstraintsModel constraintsModel,
-                                  ConcernsModel concernsModel,
-                                  SideEffectsModel sideEffectsModel,
+                                  ConcernsDeclaration concernsModel,
+                                  SideEffectsDeclaration sideEffectsModel,
                                   AbstractMixinsModel mixinsModel )
     {
+        this.type = type;
         this.constraintsModel = constraintsModel;
         this.concernsModel = concernsModel;
         this.sideEffectsModel = sideEffectsModel;
@@ -77,14 +79,22 @@ public final class CompositeMethodsModel
         {
             if( methods.get( method ) == null )
             {
+                MethodConcernsModel methodConcernsModel = concernsModel.concernsFor( method, type );
+                MethodSideEffectsModel methodSideEffectsModel1 = sideEffectsModel.sideEffectsFor( method, type );
+
+                MixinModel mixinModel = mixinsModel.implementMethod( method );
+                MethodConcernsModel mixinMethodConcernsModel = mixinModel.concernsFor( method, type );
+                methodConcernsModel = methodConcernsModel.combineWith( mixinMethodConcernsModel );
+                MethodSideEffectsModel mixinMethodSideEffectsModel = mixinModel.sideEffectsFor( method, type );
+                methodSideEffectsModel1 = methodSideEffectsModel1.combineWith( mixinMethodSideEffectsModel );
+
                 CompositeMethodModel methodComposite = new CompositeMethodModel( method,
                                                                                  new MethodConstraintsModel( method, constraintsModel ),
-                                                                                 concernsModel.concernsFor( method ),
-                                                                                 sideEffectsModel.sideEffectsFor( method ),
+                                                                                 methodConcernsModel,
+                                                                                 methodSideEffectsModel1,
                                                                                  mixinsModel );
 
                 methods.put( method, methodComposite );
-                mixinsModel.implementMethod( method );
             }
         }
     }

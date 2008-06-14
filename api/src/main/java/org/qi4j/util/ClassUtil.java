@@ -22,7 +22,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import static java.util.Arrays.asList;
+import static java.util.Arrays.*;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -62,6 +62,17 @@ public class ClassUtil
     {
         Set<Type> interfaces = new LinkedHashSet<Type>();
         addInterfaces( type, interfaces );
+
+        if( type instanceof Class )
+        {
+            Class current = (Class) type;
+            while( current != null )
+            {
+                addInterfaces( current, interfaces );
+                current = current.getSuperclass();
+            }
+        }
+
         return interfaces;
     }
 
@@ -175,11 +186,12 @@ public class ClassUtil
     {
         if( !interfaces.contains( type ) )
         {
-            if (type instanceof ParameterizedType) {
+            if( type instanceof ParameterizedType )
+            {
                 final ParameterizedType parameterizedType = (ParameterizedType) type;
-                addInterfaces( parameterizedType.getRawType() , interfaces);
-            } else
-            if( type instanceof Class )
+                addInterfaces( parameterizedType.getRawType(), interfaces );
+            }
+            else if( type instanceof Class )
             {
                 Class clazz = (Class) type;
 

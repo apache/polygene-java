@@ -11,28 +11,26 @@
  * limitations under the License.
  *
  */
-package org.qi4j.object;
+package org.qi4j.composite;
 
-import org.qi4j.composite.InvalidApplicationException;
-
-public class ObjectNotRegisteredException extends InvalidApplicationException
+public class NoSuchCompositeException extends InvalidApplicationException
 {
-    private static final long serialVersionUID = -1121690536365682511L;
+    private static final long serialVersionUID = 1L;
 
-    private Class<?> objectType;
+    private String compositeType;
     private String moduleName;
 
-    public ObjectNotRegisteredException( Class<?> type, String moduleName )
+    public NoSuchCompositeException( String compositeType, String moduleName )
     {
-        super( "Trying to find unregistered object of type [" + type.getName() + "] in module [" +
+        super( "Could not find any visible Composite of type [" + compositeType + "] in module [" +
                moduleName + "]." );
-        this.objectType = type;
+        this.compositeType = compositeType;
         this.moduleName = moduleName;
     }
 
-    public Class<?> objectType()
+    public String compositeType()
     {
-        return objectType;
+        return compositeType;
     }
 
     public String moduleName()

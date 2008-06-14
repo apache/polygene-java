@@ -18,7 +18,6 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-import org.qi4j.composite.Composite;
 import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
@@ -29,24 +28,24 @@ import org.qi4j.runtime.structure.ModuleInstance;
 public final class MethodSideEffectsModel
     implements Binder
 {
-    private final List<MethodSideEffectModel> sideEffectsForMethod = new ArrayList<MethodSideEffectModel>();
+    private Method method;
+    private List<MethodSideEffectModel> sideEffectModels = null;
 
-    public MethodSideEffectsModel( Method method, Class<? extends Composite> compositeType, List<SideEffectDeclaration> sideEffectDeclarations )
+    public MethodSideEffectsModel( Method method, List<MethodSideEffectModel> sideEffectModels )
     {
-        for( SideEffectDeclaration sideEffectDeclaration : sideEffectDeclarations )
-        {
-            if( sideEffectDeclaration.appliesTo( method, compositeType ) )
-            {
-                Class sideEffectClass = sideEffectDeclaration.type();
-                sideEffectsForMethod.add( new MethodSideEffectModel( sideEffectClass ) );
-            }
-        }
+        this.method = method;
+        this.sideEffectModels = sideEffectModels;
+    }
+
+    public Method method()
+    {
+        return method;
     }
 
     // Binding
     public void bind( Resolution resolution ) throws BindingException
     {
-        for( MethodSideEffectModel methodSideEffectModel : sideEffectsForMethod )
+        for( MethodSideEffectModel methodSideEffectModel : sideEffectModels )
         {
             methodSideEffectModel.bind( resolution );
         }
@@ -57,8 +56,8 @@ public final class MethodSideEffectsModel
     {
         ProxyReferenceInvocationHandler proxyHandler = new ProxyReferenceInvocationHandler();
         SideEffectInvocationHandlerResult result = new SideEffectInvocationHandlerResult();
-        List<InvocationHandler> sideEffects = new ArrayList<InvocationHandler>( sideEffectsForMethod.size() );
-        for( MethodSideEffectModel sideEffectModel : sideEffectsForMethod )
+        List<InvocationHandler> sideEffects = new ArrayList<InvocationHandler>( sideEffectModels.size() );
+        for( MethodSideEffectModel sideEffectModel : sideEffectModels )
         {
             Object sideEffect = sideEffectModel.newInstance( moduleInstance, result, proxyHandler );
             if( sideEffectModel.isGeneric() )
@@ -76,10 +75,18 @@ public final class MethodSideEffectsModel
 
     public void visitModel( ModelVisitor modelVisitor )
     {
-        for( MethodSideEffectModel methodSideEffectModel : sideEffectsForMethod )
+        for( MethodSideEffectModel methodSideEffectModel : sideEffectModels )
         {
             methodSideEffectModel.visitModel( modelVisitor );
         }
+    }
+
+    public MethodSideEffectsModel combineWith( MethodSideEffectsModel mixinMethodSideEffectsModel )
+    {
+        List<MethodSideEffectModel> combinedModels = new ArrayList<MethodSideEffectModel>( sideEffectModels.size() + mixinMethodSideEffectsModel.sideEffectModels.size() );
+        combinedModels.addAll( sideEffectModels );
+        combinedModels.addAll( mixinMethodSideEffectsModel.sideEffectModels );
+        return new MethodSideEffectsModel( method, combinedModels );
     }
 
 }

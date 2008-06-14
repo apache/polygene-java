@@ -20,11 +20,11 @@ import java.util.Stack;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.CompositeBuilderFactory;
-import org.qi4j.composite.InvalidApplicationException;
-import org.qi4j.composite.MixinTypeNotAvailableException;
+import org.qi4j.composite.NoSuchCompositeException;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkFactory;
+import org.qi4j.object.NoSuchObjectException;
 import org.qi4j.object.ObjectBuilder;
 import org.qi4j.object.ObjectBuilderFactory;
 import org.qi4j.runtime.composite.CompositeModel;
@@ -244,17 +244,19 @@ public class ModuleInstance
     private class CompositeBuilderFactoryInstance
         implements CompositeBuilderFactory
     {
-        public <T> CompositeBuilder<T> newCompositeBuilder( Class<T> mixinType ) throws InvalidApplicationException
+        public <T> CompositeBuilder<T> newCompositeBuilder( Class<T> mixinType )
+            throws NoSuchCompositeException
         {
             ModuleInstance realModuleInstance = findModuleForComposite( mixinType );
             if( realModuleInstance == null )
             {
-                throw new MixinTypeNotAvailableException( mixinType, name() );
+                throw new NoSuchCompositeException( mixinType.getName(), name() );
             }
             return realModuleInstance.composites().newCompositeBuilder( mixinType );
         }
 
-        public <T> T newComposite( Class<T> compositeType ) throws InvalidApplicationException, org.qi4j.composite.InstantiationException
+        public <T> T newComposite( Class<T> compositeType )
+            throws NoSuchCompositeException, org.qi4j.composite.InstantiationException
         {
             return newCompositeBuilder( compositeType ).newInstance();
         }
@@ -264,12 +266,18 @@ public class ModuleInstance
         implements ObjectBuilderFactory
     {
         public <T> ObjectBuilder<T> newObjectBuilder( Class<T> type )
+            throws NoSuchObjectException
         {
             ModuleInstance realModuleInstance = findModuleForObject( type );
+            if( realModuleInstance == null )
+            {
+                throw new NoSuchObjectException( type.getName(), name() );
+            }
             return realModuleInstance.objects().newObjectBuilder( type );
         }
 
         public <T> T newObject( Class<T> type )
+            throws NoSuchObjectException
         {
             return newObjectBuilder( type ).newInstance();
         }

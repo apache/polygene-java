@@ -20,13 +20,13 @@ import org.qi4j.composite.AppliesToFilter;
 /**
  * TODO
  */
-final class ChainedAppliesToFilter
+final class OrAppliesToFilter
     implements AppliesToFilter
 {
     private AppliesToFilter left;
     private AppliesToFilter right;
 
-    ChainedAppliesToFilter( AppliesToFilter left, AppliesToFilter right )
+    OrAppliesToFilter( AppliesToFilter left, AppliesToFilter right )
     {
         this.left = left;
         this.right = right;
@@ -34,7 +34,7 @@ final class ChainedAppliesToFilter
 
     public boolean appliesTo( Method method, Class<?> mixin, Class<?> compositeType, Class<?> fragmentClass )
     {
-        return left.appliesTo( method, mixin, compositeType, fragmentClass ) &&
+        return left.appliesTo( method, mixin, compositeType, fragmentClass ) ||
                right.appliesTo( method, mixin, compositeType, fragmentClass );
     }
 }

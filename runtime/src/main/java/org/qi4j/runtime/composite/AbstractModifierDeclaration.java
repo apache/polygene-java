@@ -93,7 +93,7 @@ public abstract class AbstractModifierDeclaration
                 }
                 else
                 {
-                    appliesToFilter = new ChainedAppliesToFilter( appliesToFilter, filter );
+                    appliesToFilter = new AndAppliesToFilter( appliesToFilter, filter );
                 }
             }
 

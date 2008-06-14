@@ -14,6 +14,8 @@
  */
 package org.qi4j.object;
 
+import org.qi4j.composite.NoSuchCompositeException;
+
 /**
  * This factory creates builders for POJO's.
  */
@@ -27,7 +29,9 @@ public interface ObjectBuilderFactory
      * @throws org.qi4j.composite.InstantiationException
      *          thrown if instantiation fails
      */
-    <T> ObjectBuilder<T> newObjectBuilder( Class<T> type );
+    <T> ObjectBuilder<T> newObjectBuilder( Class<T> type )
+        throws NoSuchObjectException;
 
-    <T> T newObject( Class<T> type );
+    <T> T newObject( Class<T> type )
+        throws NoSuchCompositeException, org.qi4j.composite.InstantiationException;
 }

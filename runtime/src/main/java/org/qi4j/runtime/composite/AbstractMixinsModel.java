@@ -56,15 +56,14 @@ public class AbstractMixinsModel
     }
 
     // Model
-    public void implementMethod( Method method )
+    public MixinModel implementMethod( Method method )
     {
         if( !methodImplementation.containsKey( method ) )
         {
             Class mixinClass = findImplementation( method, mixins );
             if( mixinClass != null )
             {
-                implementMethodWithClass( method, mixinClass );
-                return;
+                return implementMethodWithClass( method, mixinClass );
             }
 
             // Check declaring interface of method
@@ -73,11 +72,16 @@ public class AbstractMixinsModel
             mixinClass = findImplementation( method, interfaceDeclarations );
             if( mixinClass != null )
             {
-                implementMethodWithClass( method, mixinClass );
-                return;
+                return implementMethodWithClass( method, mixinClass );
             }
 
             throw new InvalidCompositeException( "No implementation found for method " + method.toGenericString(), compositeType );
+        }
+        else
+        {
+            Class mixinClass = methodImplementation.get( method );
+            Integer index = mixinIndex.get( mixinClass );
+            return mixinModels.get( index );
         }
     }
 
@@ -85,7 +89,15 @@ public class AbstractMixinsModel
     {
         for( MixinDeclaration mixin : mixins )
         {
-            if( mixin.appliesTo( method, compositeType ) )
+            if( !mixin.isGeneric() && mixin.appliesTo( method, compositeType ) )
+            {
+                Class mixinClass = mixin.mixinClass();
+                return mixinClass;
+            }
+        }
+        for( MixinDeclaration mixin : mixins )
+        {
+            if( mixin.isGeneric() && mixin.appliesTo( method, compositeType ) )
             {
                 Class mixinClass = mixin.mixinClass();
                 return mixinClass;
@@ -94,19 +106,25 @@ public class AbstractMixinsModel
         return null;
     }
 
-    private void implementMethodWithClass( Method method, Class mixinClass )
+    private MixinModel implementMethodWithClass( Method method, Class mixinClass )
     {
         methodImplementation.put( method, mixinClass );
         Integer index = mixinIndex.get( mixinClass );
+        MixinModel mixinModel;
         if( index == null )
         {
             index = mixinIndex.size();
             mixinIndex.put( mixinClass, index );
 
-            MixinModel mixinModel = new MixinModel( mixinClass );
+            mixinModel = new MixinModel( mixinClass );
             mixinModels.add( mixinModel );
         }
+        else
+        {
+            mixinModel = mixinModels.get( index );
+        }
         methodIndex.put( method, index );
+        return mixinModel;
     }
 
     private void addMixinDeclarations( Type type, Set<MixinDeclaration> declarations )

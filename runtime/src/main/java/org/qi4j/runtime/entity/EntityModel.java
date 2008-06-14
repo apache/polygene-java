@@ -26,11 +26,11 @@ import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.CompositeMethodInstance;
 import org.qi4j.runtime.composite.CompositeMethodsModel;
 import org.qi4j.runtime.composite.CompositeModel;
-import org.qi4j.runtime.composite.ConcernsModel;
+import org.qi4j.runtime.composite.ConcernsDeclaration;
 import org.qi4j.runtime.composite.ConstraintsModel;
 import org.qi4j.runtime.composite.MixinsInstance;
 import org.qi4j.runtime.composite.Resolution;
-import org.qi4j.runtime.composite.SideEffectsModel;
+import org.qi4j.runtime.composite.SideEffectsDeclaration;
 import org.qi4j.runtime.entity.association.AssociationsModel;
 import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.ModelVisitor;
@@ -60,11 +60,11 @@ public class EntityModel
         EntityPropertiesModel entityPropertiesModel = new EntityPropertiesModel( constraintsModel );
         AssociationsModel associationsModel = new AssociationsModel( constraintsModel );
         EntityStateModel stateModel = new EntityStateModel( entityPropertiesModel, associationsModel );
-        ConcernsModel concernsModel = new ConcernsModel( type );
-        SideEffectsModel sideEffectsModel = new SideEffectsModel( type );
+        ConcernsDeclaration concernsDeclaration = new ConcernsDeclaration( type );
+        SideEffectsDeclaration sideEffectsModel = new SideEffectsDeclaration( type );
         CompositeMethodsModel compositeMethodsModel = new CompositeMethodsModel( type,
                                                                                  constraintsModel,
-                                                                                 concernsModel,
+                                                                                 concernsDeclaration,
                                                                                  sideEffectsModel,
                                                                                  mixinsModel );
 
@@ -73,7 +73,7 @@ public class EntityModel
                                 info,
                                 moduleModel,
                                 constraintsModel,
-                                concernsModel,
+                                concernsDeclaration,
                                 sideEffectsModel,
                                 mixinsModel,
                                 stateModel,
@@ -85,8 +85,8 @@ public class EntityModel
     private MetaInfo info;
     private ModuleModel moduleModel;
     private ConstraintsModel constraintsModel;
-    private ConcernsModel concernsModel;
-    private SideEffectsModel sideEffectsModel;
+    private ConcernsDeclaration concernsModel;
+    private SideEffectsDeclaration sideEffectsModel;
     private EntityMixinsModel mixinsModel;
     private EntityStateModel stateModel;
     private CompositeMethodsModel compositeMethodsModel;
@@ -98,8 +98,8 @@ public class EntityModel
                         MetaInfo info,
                         ModuleModel moduleModel,
                         ConstraintsModel constraintsModel,
-                        ConcernsModel concernsModel,
-                        SideEffectsModel sideEffectsModel,
+                        ConcernsDeclaration concernsModel,
+                        SideEffectsDeclaration sideEffectsModel,
                         EntityMixinsModel mixinsModel,
                         EntityStateModel stateModel,
                         CompositeMethodsModel compositeMethodsModel

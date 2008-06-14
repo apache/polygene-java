@@ -25,13 +25,17 @@ public interface UnitOfWork
 {
     UnitOfWork newUnitOfWork();
 
-    <T> T newEntity( Class<T> type );
+    <T> T newEntity( Class<T> type )
+        throws NoSuchEntityException;
 
-    <T> T newEntity( String identity, Class<T> type );
+    <T> T newEntity( String identity, Class<T> type )
+        throws NoSuchEntityException;
 
-    <T> EntityBuilder<T> newEntityBuilder( Class<T> type );
+    <T> EntityBuilder<T> newEntityBuilder( Class<T> type )
+        throws NoSuchEntityException;
 
-    <T> EntityBuilder<T> newEntityBuilder( String identity, Class<T> type );
+    <T> EntityBuilder<T> newEntityBuilder( String identity, Class<T> type )
+        throws NoSuchEntityException;
 
     <T> T find( String identity, Class<T> type )
         throws EntityCompositeNotFoundException;

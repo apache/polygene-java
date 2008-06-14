@@ -22,8 +22,8 @@ import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.ModelVisitor;
-import static org.qi4j.util.AnnotationUtil.getInjectionAnnotation;
-import static org.qi4j.util.ClassUtil.fieldsOf;
+import static org.qi4j.util.AnnotationUtil.*;
+import static org.qi4j.util.ClassUtil.*;
 
 /**
  * TODO
@@ -47,7 +47,7 @@ public final class InjectedFieldsModel
 
     private void addModel( Class fragmentClass, Field field, Annotation injectionAnnotation )
     {
-        DependencyModel dependencyModel = new DependencyModel( injectionAnnotation, field.getGenericType(), fragmentClass, false );
+        DependencyModel dependencyModel = new DependencyModel( injectionAnnotation, field.getGenericType(), fragmentClass );
         InjectedFieldModel injectedFieldModel = new InjectedFieldModel( field, dependencyModel );
         this.fields.add( injectedFieldModel );
     }

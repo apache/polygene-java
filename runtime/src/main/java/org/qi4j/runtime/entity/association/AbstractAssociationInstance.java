@@ -4,7 +4,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import org.qi4j.entity.EntityComposite;
-import org.qi4j.entity.EntityNotRegisteredException;
+import org.qi4j.entity.NoSuchEntityException;
 import org.qi4j.entity.association.AbstractAssociation;
 import org.qi4j.entity.association.AssociationInfo;
 import org.qi4j.runtime.entity.UnitOfWorkInstance;
@@ -134,7 +134,7 @@ public class AbstractAssociationInstance<T>
         }
         catch( ClassNotFoundException e )
         {
-            throw new EntityNotRegisteredException( entityId.type(), unitOfWork.module() );
+            throw new NoSuchEntityException( entityId.type(), unitOfWork.module().name() );
         }
     }
 

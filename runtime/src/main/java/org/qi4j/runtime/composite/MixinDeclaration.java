@@ -30,10 +30,12 @@ public final class MixinDeclaration
     private Type declaredIn;
 
     private AppliesToFilter appliesToFilter;
+    private boolean generic;
 
     public MixinDeclaration( Class mixinClass, Type declaredIn )
     {
         this.mixinClass = mixinClass;
+        this.generic = InvocationHandler.class.isAssignableFrom( mixinClass );
         this.declaredIn = declaredIn;
 
         if( !InvocationHandler.class.isAssignableFrom( mixinClass ) )
@@ -42,13 +44,15 @@ public final class MixinDeclaration
 
             if( Modifier.isAbstract( mixinClass.getModifiers() ) )
             {
-                appliesToFilter = new ChainedAppliesToFilter( appliesToFilter, new ImplementsMethodAppliesToFilter() );
+                appliesToFilter = new AndAppliesToFilter( appliesToFilter, new ImplementsMethodAppliesToFilter() );
             }
         }
 
         AppliesTo appliesTo = (AppliesTo) mixinClass.getAnnotation( AppliesTo.class );
         if( appliesTo != null )
         {
+            // Use "or" for all filters specified in the annotation
+            AppliesToFilter appliesToAnnotation = null;
             for( Class<?> appliesToClass : appliesTo.value() )
             {
                 AppliesToFilter filter;
@@ -68,16 +72,25 @@ public final class MixinDeclaration
                     filter = new TypeCheckAppliesToFilter( appliesToClass );
                 }
 
-                if( appliesToFilter == null )
+                if( appliesToAnnotation == null )
                 {
-                    appliesToFilter = filter;
+                    appliesToAnnotation = filter;
                 }
                 else
                 {
-                    appliesToFilter = new ChainedAppliesToFilter( appliesToFilter, filter );
+                    appliesToAnnotation = new OrAppliesToFilter( appliesToAnnotation, filter );
                 }
             }
 
+            // Add to the rest of the rules using "and"
+            if( appliesToFilter == null )
+            {
+                appliesToFilter = appliesToAnnotation;
+            }
+            else
+            {
+                appliesToFilter = new AndAppliesToFilter( appliesToFilter, appliesToAnnotation );
+            }
         }
 
         if( appliesToFilter == null )
@@ -94,6 +107,11 @@ public final class MixinDeclaration
     public Type declaredIn()
     {
         return declaredIn;
+    }
+
+    public boolean isGeneric()
+    {
+        return generic;
     }
 
     public boolean appliesTo( Method method, Class<?> compositeType )
