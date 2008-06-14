@@ -233,7 +233,7 @@ public final class DependencyModel
         return getInjectedValue( injectedValue );
     }
 
-    private <K> Object getInjectedValue( Object injectionResult )
+    private Object getInjectedValue( Object injectionResult )
     {
         if( injectionResult == null )
         {
