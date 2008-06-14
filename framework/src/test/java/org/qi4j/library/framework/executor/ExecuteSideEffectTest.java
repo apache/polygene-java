@@ -12,9 +12,9 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.Mixins;
 import org.qi4j.composite.SideEffects;
-import org.qi4j.library.framework.sideeffect.ExecuteService;
-import org.qi4j.library.framework.sideeffect.ExecuteSideEffect;
-import org.qi4j.library.framework.sideeffect.ExecutorSideEffect;
+import org.qi4j.library.framework.executor.ExecuteService;
+import org.qi4j.library.framework.executor.ExecuteSideEffect;
+import org.qi4j.library.framework.executor.ExecutorSideEffect;
 import org.qi4j.test.AbstractQi4jTest;
 
 /**

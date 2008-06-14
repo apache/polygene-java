@@ -12,7 +12,7 @@
  *
  */
 
-package org.qi4j.library.framework.sideeffect;
+package org.qi4j.library.framework.executor;
 
 import java.util.concurrent.Executor;
 import org.qi4j.composite.Mixins;

@@ -12,7 +12,7 @@
  *
  */
 
-package org.qi4j.library.framework.sideeffect;
+package org.qi4j.library.framework.executor;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
