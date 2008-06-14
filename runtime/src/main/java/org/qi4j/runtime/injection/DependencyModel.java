@@ -18,6 +18,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
+import java.lang.reflect.WildcardType;
 import java.util.Collections;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.Resolution;
@@ -145,6 +146,11 @@ public final class DependencyModel
         else if( type instanceof ParameterizedType )
         {
             return (Class<?>) ( (ParameterizedType) type ).getRawType();
+        } else if( type instanceof WildcardType )
+        {
+            // To handle for instance Class<? extends Habba>, which will then return habba
+            WildcardType wcType = (WildcardType) type;
+            return (Class) wcType.getUpperBounds()[ 0 ];
         }
         throw new IllegalArgumentException( "Could not extract injectionClass of Type " + parameterizedType );
     }
