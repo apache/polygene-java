@@ -132,13 +132,13 @@ public final class ConstructorsModel
         return parameterAnnotations;
     }
 
-    private Class instantiationClass( Class mixinClass )
+    private Class instantiationClass( Class fragmentClass )
     {
-        Class instantiationClass = mixinClass;
-        if( Modifier.isAbstract( mixinClass.getModifiers() ) )
+        Class instantiationClass = fragmentClass;
+        if( Modifier.isAbstract( fragmentClass.getModifiers() ) )
         {
             Enhancer enhancer = new Enhancer();
-            enhancer.setSuperclass( mixinClass );
+            enhancer.setSuperclass( fragmentClass );
             enhancer.setCallbackTypes( new Class[]{ NoOp.class } );
             enhancer.setCallbackFilter( new CallbackFilter()
             {
