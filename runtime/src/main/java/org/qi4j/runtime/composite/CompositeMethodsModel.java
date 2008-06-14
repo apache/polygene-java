@@ -15,8 +15,7 @@
 package org.qi4j.runtime.composite;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import org.qi4j.composite.Composite;
 import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.ModelVisitor;
@@ -28,7 +27,7 @@ import org.qi4j.runtime.structure.ModuleInstance;
 public final class CompositeMethodsModel
     implements Binder
 {
-    private Map<Method, CompositeMethodModel> methods = new HashMap<Method, CompositeMethodModel>();
+    private ConcurrentHashMap<Method, CompositeMethodModel> methods = new ConcurrentHashMap<Method, CompositeMethodModel>( 1024 );
     private ConstraintsModel constraintsModel;
     private ConcernsModel concernsModel;
     private SideEffectsModel sideEffectsModel;

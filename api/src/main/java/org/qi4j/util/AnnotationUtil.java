@@ -18,6 +18,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Set;
+import org.qi4j.composite.ConstraintDeclaration;
 import org.qi4j.injection.InjectionScope;
 
 /**
@@ -40,6 +41,11 @@ public class AnnotationUtil
     public static boolean isDependencyAnnotation( Annotation annotation )
     {
         return annotation.annotationType().getAnnotation( InjectionScope.class ) != null;
+    }
+
+    public static boolean isConstraintAnnotation( Annotation annotation )
+    {
+        return annotation.annotationType().getAnnotation( ConstraintDeclaration.class ) != null;
     }
 
     public static Set<Field> fieldsWithAnnotation( Set<Field> fields, Class<? extends Annotation> annotationType )

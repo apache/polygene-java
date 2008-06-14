@@ -12,6 +12,7 @@
 package org.qi4j.runtime.composite;
 
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
 
 /**
  * TODO
@@ -19,6 +20,14 @@ import java.lang.reflect.InvocationHandler;
 public abstract class FragmentInvocationHandler
     implements InvocationHandler
 {
+    private static final String COMPACT_TRACE = "qi4j.compacttrace";
+    private static CompactLevel compactLevel = CompactLevel.proxy;
+
+    static
+    {
+        compactLevel = CompactLevel.valueOf( System.getProperty( COMPACT_TRACE, "proxy" ) );
+    }
+
     protected Object fragment;
 
     public FragmentInvocationHandler()
@@ -34,4 +43,73 @@ public abstract class FragmentInvocationHandler
     {
         this.fragment = fragment;
     }
+
+    protected Throwable cleanStackTrace( Throwable throwable, Object proxy, Method method )
+    {
+        if( compactLevel == CompactLevel.off )
+        {
+            return throwable;
+        }
+
+        StackTraceElement[] trace = throwable.getStackTrace();
+        int count = 0;
+        for( int i = 0; i < trace.length; i++ )
+        {
+            StackTraceElement stackTraceElement = trace[ i ];
+            if( !isApplicationClass( stackTraceElement.getClassName() ) )
+            {
+                trace[ i ] = null;
+                count++;
+            }
+            else
+            {
+                boolean classOrigin = stackTraceElement.getClassName().equals( proxy.getClass().getSimpleName() );
+                boolean methodOrigin = stackTraceElement.getMethodName().equals( method.getName() );
+                if( classOrigin && methodOrigin && compactLevel == CompactLevel.proxy )
+                {
+                    // Stop removing if the originating method call has been located in the stack.
+                    // For 'semi' and 'extensive' compaction, we don't and do the entire stack instead.
+                    trace[ i ] = new StackTraceElement( proxy.getClass().getInterfaces()[ 0 ].getName(), method.getName(), null, -1 );
+                    break; // Stop compacting this trace
+                }
+            }
+        }
+
+        // Create new trace array
+        int idx = 0;
+        StackTraceElement[] newTrace = new StackTraceElement[trace.length - count];
+        for( StackTraceElement stackTraceElement : trace )
+        {
+            if( stackTraceElement != null )
+            {
+                newTrace[ idx++ ] = stackTraceElement;
+            }
+        }
+        throwable.setStackTrace( newTrace );
+
+        Throwable nested = throwable.getCause();
+        if( nested != null )
+        {
+            cleanStackTrace( nested, proxy, method );
+        }
+
+        return throwable;
+    }
+
+    private boolean isApplicationClass( String className )
+    {
+        if( compactLevel == CompactLevel.semi )
+        {
+            return !isJdkInternals( className );
+        }
+        return !( className.startsWith( "org.qi4j.runtime" ) ||
+                  isJdkInternals( className ) );
+    }
+
+    private boolean isJdkInternals( String className )
+    {
+        return className.startsWith( "java.lang.reflect" ) ||
+               className.startsWith( "sun.reflect" );
+    }
+
 }

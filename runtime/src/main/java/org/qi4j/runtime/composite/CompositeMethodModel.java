@@ -72,14 +72,24 @@ public final class CompositeMethodModel
     public Object invoke( Object composite, Object[] params, MixinsInstance mixins, ModuleInstance moduleInstance ) throws Throwable
     {
         methodConstraintsInstance.checkValid( params );
-
         CompositeMethodInstance methodInstance = getInstance( moduleInstance );
-        return mixins.invoke( composite, params, methodInstance );
+        try
+        {
+            return mixins.invoke( composite, params, methodInstance );
+        }
+        finally
+        {
+            instancePool.returnInstance( methodInstance );
+        }
     }
 
     private CompositeMethodInstance getInstance( ModuleInstance moduleInstance )
     {
-        CompositeMethodInstance methodInstance = newCompositeMethodInstance( moduleInstance );
+        CompositeMethodInstance methodInstance = instancePool.getInstance();
+        if( methodInstance == null )
+        {
+            methodInstance = newCompositeMethodInstance( moduleInstance );
+        }
 
         return methodInstance;
     }

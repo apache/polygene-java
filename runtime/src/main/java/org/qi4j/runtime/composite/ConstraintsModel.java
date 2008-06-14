@@ -22,7 +22,8 @@ import java.util.Set;
 import org.qi4j.composite.Constraint;
 import org.qi4j.composite.ConstraintImplementationNotFoundException;
 import org.qi4j.composite.Constraints;
-import static org.qi4j.util.ClassUtil.interfacesOf;
+import static org.qi4j.util.AnnotationUtil.*;
+import static org.qi4j.util.ClassUtil.*;
 
 /**
  * TODO
@@ -51,6 +52,12 @@ public final class ConstraintsModel
         nextConstraint:
         for( Annotation constraintAnnotation : constraintAnnotations )
         {
+            // Is this a constraint annotation
+            if( !isConstraintAnnotation( constraintAnnotation ) )
+            {
+                continue;
+            }
+
             // Check composite declarations first
             Class<? extends Annotation> annotationType = constraintAnnotation.annotationType();
             for( ConstraintDeclaration constraint : constraints )

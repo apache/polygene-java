@@ -18,6 +18,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -32,7 +33,7 @@ import org.qi4j.util.ClassUtil;
  */
 public class AbstractMixinsModel
 {
-    protected List<MixinDeclaration> mixins = new ArrayList<MixinDeclaration>();
+    protected Set<MixinDeclaration> mixins = new LinkedHashSet<MixinDeclaration>();
 
     private Map<Method, Class> methodImplementation = new HashMap<Method, Class>();
     protected List<MixinModel> mixinModels = new ArrayList<MixinModel>();
@@ -50,7 +51,7 @@ public class AbstractMixinsModel
 
         for( Type anInterface : interfaces )
         {
-            addMixinDeclarations( anInterface );
+            addMixinDeclarations( anInterface, mixins );
         }
     }
 
@@ -59,17 +60,38 @@ public class AbstractMixinsModel
     {
         if( !methodImplementation.containsKey( method ) )
         {
-            for( MixinDeclaration mixin : mixins )
+            Class mixinClass = findImplementation( method, mixins );
+            if( mixinClass != null )
             {
-                if( mixin.appliesTo( method, compositeType ) )
-                {
-                    Class mixinClass = mixin.mixinClass();
-                    implementMethodWithClass( method, mixinClass );
-                    return;
-                }
+                implementMethodWithClass( method, mixinClass );
+                return;
             }
+
+            // Check declaring interface of method
+            Set<MixinDeclaration> interfaceDeclarations = new LinkedHashSet<MixinDeclaration>();
+            addMixinDeclarations( method.getDeclaringClass(), interfaceDeclarations );
+            mixinClass = findImplementation( method, interfaceDeclarations );
+            if( mixinClass != null )
+            {
+                implementMethodWithClass( method, mixinClass );
+                return;
+            }
+
             throw new InvalidCompositeException( "No implementation found for method " + method.toGenericString(), compositeType );
         }
+    }
+
+    private Class findImplementation( Method method, Set<MixinDeclaration> mixins )
+    {
+        for( MixinDeclaration mixin : mixins )
+        {
+            if( mixin.appliesTo( method, compositeType ) )
+            {
+                Class mixinClass = mixin.mixinClass();
+                return mixinClass;
+            }
+        }
+        return null;
     }
 
     private void implementMethodWithClass( Method method, Class mixinClass )
@@ -87,7 +109,7 @@ public class AbstractMixinsModel
         methodIndex.put( method, index );
     }
 
-    private void addMixinDeclarations( Type type )
+    private void addMixinDeclarations( Type type, Set<MixinDeclaration> declarations )
     {
         if( type instanceof Class )
         {
@@ -97,7 +119,7 @@ public class AbstractMixinsModel
                 Class[] mixinClasses = annotation.value();
                 for( Class mixinClass : mixinClasses )
                 {
-                    mixins.add( new MixinDeclaration( mixinClass, type ) );
+                    declarations.add( new MixinDeclaration( mixinClass, type ) );
                 }
             }
         }

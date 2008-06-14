@@ -21,9 +21,10 @@ import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.InvalidApplicationException;
+import org.qi4j.composite.MixinTypeNotAvailableException;
+import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkFactory;
-import org.qi4j.entity.EntityComposite;
 import org.qi4j.object.ObjectBuilder;
 import org.qi4j.object.ObjectBuilderFactory;
 import org.qi4j.runtime.composite.CompositeModel;
@@ -246,6 +247,10 @@ public class ModuleInstance
         public <T> CompositeBuilder<T> newCompositeBuilder( Class<T> mixinType ) throws InvalidApplicationException
         {
             ModuleInstance realModuleInstance = findModuleForComposite( mixinType );
+            if( realModuleInstance == null )
+            {
+                throw new MixinTypeNotAvailableException( mixinType, name() );
+            }
             return realModuleInstance.composites().newCompositeBuilder( mixinType );
         }
 

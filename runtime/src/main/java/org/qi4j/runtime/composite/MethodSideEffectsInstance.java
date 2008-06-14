@@ -27,6 +27,7 @@ public final class MethodSideEffectsInstance
     private List<InvocationHandler> sideEffects;
     private SideEffectInvocationHandlerResult resultInvocationHandler;
     private ProxyReferenceInvocationHandler proxyHandler;
+    private boolean hasSideEffects;
 
     public MethodSideEffectsInstance( Method method, List<InvocationHandler> sideEffects, SideEffectInvocationHandlerResult resultInvocationHandler, ProxyReferenceInvocationHandler proxyHandler )
     {
@@ -34,25 +35,30 @@ public final class MethodSideEffectsInstance
         this.sideEffects = sideEffects;
         this.resultInvocationHandler = resultInvocationHandler;
         this.proxyHandler = proxyHandler;
+        this.hasSideEffects = !sideEffects.isEmpty();
     }
 
     public void invoke( Object proxy, Object[] params, Object result, Throwable throwable )
         throws Throwable
     {
-        proxyHandler.setProxy( proxy );
-        resultInvocationHandler.setResult( result, throwable );
+        if( hasSideEffects )
+        {
+            proxyHandler.setProxy( proxy );
+            resultInvocationHandler.setResult( result, throwable );
 
-        try
-        {
-            for( InvocationHandler sideEffect : sideEffects )
+            try
             {
-                invokeSideEffect( proxy, params, sideEffect );
+                for( int i = 0; i < sideEffects.size(); i++ )
+                {
+                    InvocationHandler sideEffect = sideEffects.get( i );
+                    invokeSideEffect( proxy, params, sideEffect );
+                }
             }
-        }
-        finally
-        {
-            proxyHandler.clearProxy();
-            resultInvocationHandler.setResult( null, null );
+            finally
+            {
+                proxyHandler.clearProxy();
+                resultInvocationHandler.setResult( null, null );
+            }
         }
     }
 

@@ -39,7 +39,11 @@ public class GenericFragmentInvocationHandler
         }
         catch( InvocationTargetException throwable )
         {
-            throw throwable.getTargetException();
+            throw cleanStackTrace( throwable.getTargetException(), proxy, method );
+        }
+        catch( Throwable throwable )
+        {
+            throw cleanStackTrace( throwable, proxy, method );
         }
     }
 }

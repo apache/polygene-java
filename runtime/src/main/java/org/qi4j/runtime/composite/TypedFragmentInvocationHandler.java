@@ -35,14 +35,13 @@ public class TypedFragmentInvocationHandler
         {
             return method.invoke( fragment, args );
         }
-        catch( NullPointerException e )
-        {
-            e.printStackTrace();
-            throw e;
-        }
         catch( InvocationTargetException e )
         {
-            throw e.getTargetException();
+            throw cleanStackTrace( e.getTargetException(), proxy, method );
+        }
+        catch( Throwable e )
+        {
+            throw cleanStackTrace( e, proxy, method );
         }
     }
 }
