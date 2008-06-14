@@ -94,7 +94,7 @@ public final class DefaultCompositeInstance
             {
                 if( oldMixin.getClass().equals( newMixin.getClass() ) )
                 {
-                    newMixins[ i ] = oldMixin;
+                    mixins[ i ] = newMixin;
                     break;
                 }
             }

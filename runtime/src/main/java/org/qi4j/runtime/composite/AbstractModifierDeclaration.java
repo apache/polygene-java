@@ -17,6 +17,7 @@ package org.qi4j.runtime.composite;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import org.qi4j.composite.AppliesTo;
 import org.qi4j.composite.AppliesToFilter;
@@ -59,6 +60,11 @@ public abstract class AbstractModifierDeclaration
         if( !InvocationHandler.class.isAssignableFrom( modifierClass ) )
         {
             appliesToFilter = new TypedModifierAppliesToFilter();
+
+            if( Modifier.isAbstract( modifierClass.getModifiers() ) )
+            {
+                appliesToFilter = new AndAppliesToFilter( appliesToFilter, new ImplementsMethodAppliesToFilter() );
+            }
         }
 
         AppliesTo appliesTo = modifierClass.getAnnotation( AppliesTo.class );
