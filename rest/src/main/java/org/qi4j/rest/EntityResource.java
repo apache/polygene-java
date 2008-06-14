@@ -225,7 +225,7 @@ public class EntityResource extends Resource
             {
                 entity = unitOfWork.find( identity, compositeType );
             }
-            CompositeDescriptor binding = spi.getCompositeDescriptor( entity );
+//            CompositeDescriptor binding = spi.getCompositeDescriptor( entity );
             Element properties = (Element) rootElement.getElementsByTagName( "properties" ).item( 0 );
             NodeList propertyNodes = properties.getChildNodes();
             for( int i = 0; i < propertyNodes.getLength(); i++ )
