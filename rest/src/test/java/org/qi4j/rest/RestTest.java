@@ -74,7 +74,7 @@ public class RestTest extends AbstractQi4jTest
         throws AssemblyException
     {
         module.addObjects( RestTester.class );
-        module.addComposites( PersonEntity.class );
+        module.addEntities( PersonEntity.class );
         module.addServices( IndexedMemoryEntityStoreService.class ).identifiedBy( "store" );
         module.addServices( UuidIdentityGeneratorService.class );
     }
