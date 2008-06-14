@@ -107,6 +107,10 @@ public final class Energy4Java
 
     public CompositeDescriptor getCompositeDescriptor( Class mixinType, Module module )
     {
+        if( EntityComposite.class.isAssignableFrom( mixinType )  )
+        {
+            return ( (ModuleInstance) module ).findEntityCompositeFor( mixinType );
+        }
         return ( (ModuleInstance) module ).findCompositeFor( mixinType );
     }
 
