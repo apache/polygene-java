@@ -31,47 +31,63 @@ import org.qi4j.object.ObjectBuilderFactory;
 @AppliesTo( ExecuteSideEffect.class )
 public class ExecutorSideEffect extends GenericSideEffect
 {
-    @Structure ObjectBuilderFactory obf;
+    @Structure ObjectBuilderFactory objectBuilderFactory;
     @Service Executor executor;
 
     @Invocation ExecuteSideEffect execute;
 
-    @Override public Object invoke( final Object o, final Method method, final Object[] objects ) throws Throwable
+    @Override public Object invoke( final Object target, final Method method, final Object[] objects ) throws Throwable
     {
-        executor.execute( new Runnable()
+        executor.execute( new SideEffectRunnable( target, method, objects ) );
+
+        return super.invoke( target, method, objects );
+    }
+
+    private class SideEffectRunnable implements Runnable
+    {
+        private final Object target;
+        private final Method method;
+        private final Object[] objects;
+
+        public SideEffectRunnable( Object target, Method method, Object[] objects )
         {
-            public void run()
+            this.target = target;
+            this.method = method;
+            this.objects = objects;
+        }
+
+        public void run()
+        {
+            try
             {
-                Object executed = obf.newObject( execute.value() );
-                if( executed instanceof InvocationHandler )
+                try
                 {
-                    try
-                    {
-                        ( (InvocationHandler) executed ).invoke( o, method, objects );
-                    }
-                    catch( Throwable throwable )
-                    {
-                        throwable.printStackTrace();
-                    }
+                    Object executed = objectBuilderFactory.newObject( execute.value() );
+                    runSideEffect( executed );
                 }
-                else
+                catch( InvocationTargetException e )
                 {
-                    try
-                    {
-                        method.invoke( executed, objects );
-                    }
-                    catch( IllegalAccessException e )
-                    {
-                        e.printStackTrace();
-                    }
-                    catch( InvocationTargetException e )
-                    {
-                        e.printStackTrace();
-                    }
+                    throw e.getTargetException();
                 }
             }
-        } );
+            catch( Throwable t )
+            {
+                t.printStackTrace();
+            }
+        }
 
-        return super.invoke( o, method, objects );
+        private void runSideEffect( Object executed )
+            throws Throwable
+        {
+            if( executed instanceof InvocationHandler )
+            {
+                InvocationHandler handler = (InvocationHandler) executed;
+                handler.invoke( target, method, objects );
+            }
+            else
+            {
+                method.invoke( executed, objects );
+            }
+        }
     }
 }

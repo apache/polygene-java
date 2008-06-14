@@ -1,16 +1,20 @@
 package org.qi4j.library.framework.executor;
 
-import executor.ExecuteService;
-import executor.ExecuteSideEffect;
-import executor.ExecutorSideEffect;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.concurrent.CountDownLatch;
+import static org.junit.Assert.*;
 import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.Mixins;
 import org.qi4j.composite.SideEffects;
+import org.qi4j.library.framework.sideeffect.ExecuteService;
+import org.qi4j.library.framework.sideeffect.ExecuteSideEffect;
+import org.qi4j.library.framework.sideeffect.ExecutorSideEffect;
 import org.qi4j.test.AbstractQi4jTest;
 
 /**
@@ -19,6 +23,8 @@ import org.qi4j.test.AbstractQi4jTest;
 public class ExecuteSideEffectTest
     extends AbstractQi4jTest
 {
+    private static final CountDownLatch latch = new CountDownLatch( 1 );
+
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
         module.addComposites( TestComposite.class );
@@ -27,11 +33,12 @@ public class ExecuteSideEffectTest
     }
 
     @Test
-    public void givenMethodWithAnnotationWhenCallThenExecuteSideEffect()
+    public void givenMethodWithAnnotationWhenCallThenExecuteSideEffect() throws InterruptedException
     {
         TestComposite instance = compositeBuilderFactory.newComposite( TestComposite.class );
-
         System.out.println( instance.doStuff() );
+        latch.await();
+        assertTrue( "doStuff sideeffect called", LogCall.methodsCalled.contains( "doStuff" ) );
     }
 
     @SideEffects( ExecutorSideEffect.class )
@@ -54,9 +61,13 @@ public class ExecuteSideEffectTest
     public static class LogCall
         implements InvocationHandler
     {
+        static Collection<String> methodsCalled = new ArrayList<String>();
+
         public Object invoke( Object o, Method method, Object[] objects ) throws Throwable
         {
-            System.out.println( "Called " + method.getName() );
+            methodsCalled.add( method.getName() );
+            System.out.println( "method = " + method );
+            latch.countDown();
             return null;
         }
     }
