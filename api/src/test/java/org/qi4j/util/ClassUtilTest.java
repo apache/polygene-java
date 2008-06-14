@@ -12,7 +12,7 @@
  *
  */
 
-package org.qi4j;
+package org.qi4j.util;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;

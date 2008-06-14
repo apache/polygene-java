@@ -16,6 +16,7 @@ package org.qi4j.util;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.Set;
 import org.qi4j.composite.ConstraintDeclaration;
@@ -84,5 +85,11 @@ public class AnnotationUtil
         }
 
         return false;
+    }
+
+    public static <T extends Annotation> T getAnnotation( Type type, Class<T> annotationType )
+    {
+        if ( !( type instanceof Class ) ) return null;
+        return annotationType.cast(( (Class)type ).getAnnotation( annotationType ) );
     }
 }

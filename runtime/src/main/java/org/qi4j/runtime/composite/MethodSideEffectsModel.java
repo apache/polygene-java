@@ -18,6 +18,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Collection;
 import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
@@ -89,4 +90,14 @@ public final class MethodSideEffectsModel
         return new MethodSideEffectsModel( method, combinedModels );
     }
 
+    static MethodSideEffectsModel createForMethod( Method method, Collection<Class> sideEffectClasses )
+    {
+        List<MethodSideEffectModel> sideEffects = new ArrayList<MethodSideEffectModel>();
+        for( Class sideEffectClass : sideEffectClasses )
+        {
+            sideEffects.add( new MethodSideEffectModel( sideEffectClass ) );
+        }
+
+        return new MethodSideEffectsModel( method, sideEffects );
+    }
 }
