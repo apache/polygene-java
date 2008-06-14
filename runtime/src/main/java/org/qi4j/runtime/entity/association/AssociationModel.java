@@ -203,8 +203,12 @@ public class AssociationModel
             else
             {
                 Association<Composite> assoc = (Association<Composite>) association;
-                EntityInstance instance = EntityInstance.getEntityInstance( assoc.get() );
-                entityState.setAssociation( qualifiedName, instance.identity() );
+                Composite composite = assoc.get();
+                if( composite != null )
+                {
+                    EntityInstance instance = EntityInstance.getEntityInstance( composite );
+                    entityState.setAssociation( qualifiedName, instance.identity() );
+                }
             }
         }
     }
