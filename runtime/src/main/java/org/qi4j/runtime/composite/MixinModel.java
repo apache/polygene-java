@@ -20,11 +20,11 @@ import java.util.Set;
 import org.qi4j.composite.State;
 import org.qi4j.injection.scope.This;
 import org.qi4j.runtime.injection.DependencyModel;
-import org.qi4j.runtime.structure.DependencyVisitor;
 import org.qi4j.runtime.injection.InjectedFieldsModel;
 import org.qi4j.runtime.injection.InjectedMethodsModel;
 import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.structure.Binder;
+import org.qi4j.runtime.structure.DependencyVisitor;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.spi.composite.CompositeInstance;
 
@@ -85,11 +85,11 @@ public final class MixinModel
     {
         final Set<Class> mixinTypes = new HashSet<Class>();
 
-        DependencyVisitor visitor = new DependencyVisitor( new DependencyModel.ScopeSpecification(This.class) )
+        DependencyVisitor visitor = new DependencyVisitor( new DependencyModel.ScopeSpecification( This.class ) )
         {
             public void visitDependency( DependencyModel dependencyModel )
             {
-                mixinTypes.add( dependencyModel.injectionClass() );
+                mixinTypes.add( dependencyModel.rawInjectionType() );
             }
         };
 

@@ -23,8 +23,8 @@ import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.injection.provider.InvalidInjectionException;
 import org.qi4j.runtime.structure.Binder;
-import static org.qi4j.runtime.util.CollectionUtils.*;
 import org.qi4j.runtime.structure.Specification;
+import static org.qi4j.runtime.util.CollectionUtils.*;
 
 /**
  * TODO
@@ -69,7 +69,7 @@ public final class DependencyModel
         {
             return extractRawInjectionClass( injectedClass, (TypeVariable<?>) injectionType );
         }
-        throw new IllegalArgumentException( "Could not extract the rawInjectionClass of "+injectedClass+" and "+injectionType);
+        throw new IllegalArgumentException( "Could not extract the rawInjectionClass of " + injectedClass + " and " + injectionType );
     }
 
     private Class<?> extractRawInjectionClass( Class<?> injectedClass, TypeVariable<?> injectionTypeVariable )
@@ -83,7 +83,7 @@ public final class DependencyModel
             }
             index++;
         }
-        throw new IllegalArgumentException( "Could not extract the rawInjectionClass of "+injectedClass+" and "+injectionTypeVariable);
+        throw new IllegalArgumentException( "Could not extract the rawInjectionClass of " + injectedClass + " and " + injectionTypeVariable );
     }
 
     // todo continue refactoring
@@ -146,7 +146,7 @@ public final class DependencyModel
         {
             return (Class<?>) ( (ParameterizedType) type ).getRawType();
         }
-        throw new IllegalArgumentException( "Could not extract injectionClass of Type "+parameterizedType);
+        throw new IllegalArgumentException( "Could not extract injectionClass of Type " + parameterizedType );
     }
 
     // Model
@@ -165,11 +165,29 @@ public final class DependencyModel
         return injectedClass;
     }
 
+    /**
+     * Get the raw dependency type. If the dependency uses generics this is the raw type,
+     * and otherwise it is the type of the field. Examples:
+     *
+     * @return raw injection type
+     * @Service MyService service -> MyService
+     * @Entity Iterable<Foo> fooList -> Iterable
+     * @Entity Query<Foo> fooQuery -> Query
+     */
     public Class<?> rawInjectionType()
     {
         return rawInjectionClass;
     }
 
+    /**
+     * Get the injection class. If the injection uses generics this is the parameter type,
+     * and otherwise it is the raw type. Examples:
+     *
+     * @return injection class
+     * @Service MyService service -> MyService
+     * @Entity Iterable<Foo> fooList -> Foo
+     * @Entity Query<Foo> fooQuery -> Foo
+     */
     public Class<?> injectionClass()
     {
         return injectionClass;
@@ -249,7 +267,10 @@ public final class DependencyModel
 
     private Class<?> mapPrimitiveTypes( Class<?> rawInjectionType )
     {
-        if (rawInjectionType==null || !rawInjectionType.isPrimitive()) return rawInjectionType;
+        if( rawInjectionType == null || !rawInjectionType.isPrimitive() )
+        {
+            return rawInjectionType;
+        }
         for( int i = 0; i < primitiveTypeMapping.length; i += 2 )
         {
             if( primitiveTypeMapping[ i ].equals( rawInjectionType ) )
@@ -268,7 +289,10 @@ public final class DependencyModel
 
     public Class<? extends Annotation> injectionAnnotationType()
     {
-        if (injectionAnnotation==null) return null;
+        if( injectionAnnotation == null )
+        {
+            return null;
+        }
         return injectionAnnotation.annotationType();
     }
 
