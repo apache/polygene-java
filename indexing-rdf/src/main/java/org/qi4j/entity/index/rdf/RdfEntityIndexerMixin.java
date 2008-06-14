@@ -129,7 +129,7 @@ public class RdfEntityIndexerMixin
             final Object propValue = entityState.getProperty( propName );
             if( propValue != null )
             {
-                final PropertyDescriptor propertyDescriptor = compositeDescriptor.state().getPropertyByName( propName );
+                final PropertyDescriptor propertyDescriptor = compositeDescriptor.state().getPropertyByQualifiedName( propName );
                 final URI propURI = valueFactory.createURI( propertyDescriptor.toURI() );
                 connection.add( entityURI, propURI, valueFactory.createLiteral( propValue.toString() ) );
             }
@@ -140,7 +140,7 @@ public class RdfEntityIndexerMixin
             final QualifiedIdentity assocEntityId = entityState.getAssociation( assocName );
             if( assocEntityId != null )
             {
-                final AssociationDescriptor associationDescriptor = compositeDescriptor.state().getAssociationByName( assocName );
+                final AssociationDescriptor associationDescriptor = compositeDescriptor.state().getAssociationByQualifiedName( assocName );
                 final URI assocURI = valueFactory.createURI( associationDescriptor.toURI() );
 
                 final Class assocCompositeClass = module.classLoader().loadClass( assocEntityId.type() );
