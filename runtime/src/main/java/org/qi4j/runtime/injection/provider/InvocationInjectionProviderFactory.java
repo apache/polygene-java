@@ -4,6 +4,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import org.qi4j.runtime.composite.Resolution;
+import org.qi4j.runtime.composite.CompositeMethodModel;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.injection.InjectionProvider;
@@ -44,19 +45,27 @@ public final class InvocationInjectionProviderFactory
         public Object provideInjection( InjectionContext context ) throws InjectionProviderException
         {
             Class injectedClass = dependencyModel.injectedClass();
+            final CompositeMethodModel methodModel = resolution.method();
             if( injectedClass.equals( Method.class ) )
             {
                 // This needs to be updated to handle Apply and annotation aggregation correctly
-                return resolution.method().method();
+                return methodModel.method();
             }
-            else if( injectedClass.equals( AnnotatedElement.class ) )
+
+            final AnnotatedElement method = methodModel.annotatedElement();
+            if( injectedClass.equals( AnnotatedElement.class ) )
             {
-                return resolution.method().annotatedElement();
+                return method;
             }
-            else
+            final Annotation annotation = method.getAnnotation( injectedClass );
+            if ( annotation !=null)
             {
-                return resolution.method().annotatedElement().getAnnotation( injectedClass );
+                return annotation;
             }
+            if (dependencyModel.injectionType() instanceof Class<?>) {
+                return method.getAnnotation( (Class<Annotation>) dependencyModel.injectionType() );
+            }
+            return null;
         }
     }
 }

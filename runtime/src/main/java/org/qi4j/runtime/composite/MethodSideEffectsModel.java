@@ -29,11 +29,10 @@ import org.qi4j.runtime.structure.ModuleInstance;
 public final class MethodSideEffectsModel
     implements Binder
 {
-    private List<MethodSideEffectModel> sideEffectsForMethod;
+    private final List<MethodSideEffectModel> sideEffectsForMethod = new ArrayList<MethodSideEffectModel>();
 
     public MethodSideEffectsModel( Method method, Class<? extends Composite> compositeType, List<SideEffectDeclaration> sideEffectDeclarations )
     {
-        sideEffectsForMethod = new ArrayList<MethodSideEffectModel>();
         for( SideEffectDeclaration sideEffectDeclaration : sideEffectDeclarations )
         {
             if( sideEffectDeclaration.appliesTo( method, compositeType ) )
