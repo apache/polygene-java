@@ -195,14 +195,18 @@ public class ModuleInstance
     {
         //TODO Cache this result
         ModuleInstance realModuleInstance = findModuleForComposite( compositeType );
-        return realModuleInstance.composites().model().getCompositeModelFor( compositeType );
+        CompositesInstance compositesInstance = realModuleInstance.composites();
+        CompositesModel compositesModel = compositesInstance.model();
+        return compositesModel.getCompositeModelFor( compositeType );
     }
 
     public EntityModel findEntityCompositeFor( Class<? extends EntityComposite> entityCompositeType )
     {
         //TODO Cache this result
         ModuleInstance realModuleInstance = findModuleForEntity( entityCompositeType );
-        return realModuleInstance.entities().model().getEntityModelFor( entityCompositeType );
+        EntitiesInstance entitiesInstance = realModuleInstance.entities();
+        EntitiesModel entitiesModel = entitiesInstance.model();
+        return entitiesModel.getEntityModelFor( entityCompositeType );
     }
 
     public Class findClassForName( String type )
