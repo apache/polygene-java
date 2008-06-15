@@ -35,7 +35,7 @@ public class RdfEntityIndexerTest
         {
             public void assemble( ModuleAssembly module ) throws AssemblyException
             {
-                module.addComposites(
+                module.addEntities(
                     MaleComposite.class,
                     FemaleComposite.class,
                     CityComposite.class,

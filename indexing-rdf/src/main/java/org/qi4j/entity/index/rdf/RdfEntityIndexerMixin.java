@@ -35,6 +35,7 @@ import org.qi4j.injection.scope.This;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.composite.MixinTypeModel;
+import org.qi4j.spi.composite.StateDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
@@ -124,12 +125,13 @@ public class RdfEntityIndexerMixin
         connection.add( entityURI, RDF.TYPE, compositeURI );
         connection.add( entityURI, compositeClassURI, valueFactory.createLiteral( compositeClass.getName() ) );
         // index properties
+        final StateDescriptor state = compositeDescriptor.state();
         for( String propName : entityState.getPropertyNames() )
         {
             final Object propValue = entityState.getProperty( propName );
             if( propValue != null )
             {
-                final PropertyDescriptor propertyDescriptor = compositeDescriptor.state().getPropertyByQualifiedName( propName );
+                final PropertyDescriptor propertyDescriptor = state.getPropertyByQualifiedName( propName );
                 final URI propURI = valueFactory.createURI( propertyDescriptor.toURI() );
                 connection.add( entityURI, propURI, valueFactory.createLiteral( propValue.toString() ) );
             }
@@ -140,7 +142,7 @@ public class RdfEntityIndexerMixin
             final QualifiedIdentity assocEntityId = entityState.getAssociation( assocName );
             if( assocEntityId != null )
             {
-                final AssociationDescriptor associationDescriptor = compositeDescriptor.state().getAssociationByQualifiedName( assocName );
+                final AssociationDescriptor associationDescriptor = state.getAssociationByQualifiedName( assocName );
                 final URI assocURI = valueFactory.createURI( associationDescriptor.toURI() );
 
                 final Class assocCompositeClass = module.classLoader().loadClass( assocEntityId.type() );
@@ -156,7 +158,7 @@ public class RdfEntityIndexerMixin
             final Collection<QualifiedIdentity> assocEntityIds = entityState.getManyAssociation( qualifiedName );
             if( assocEntityIds != null )
             {
-                final AssociationDescriptor associationDescriptor = compositeDescriptor.state().getAssociationByName( qualifiedName );
+                final AssociationDescriptor associationDescriptor = state.getAssociationByQualifiedName( qualifiedName );
                 final URI assocURI = valueFactory.createURI( associationDescriptor.toURI() );
                 BNode prevAssocEntityBNode = null;
 
