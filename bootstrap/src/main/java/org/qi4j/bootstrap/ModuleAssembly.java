@@ -200,7 +200,7 @@ public final class ModuleAssembly
 
         for( ServiceDeclaration serviceDeclaration : serviceDeclarations )
         {
-            serviceDeclaration.addServices( moduleModel, serviceModels );
+            serviceDeclaration.addServices( serviceModels );
         }
 
         Set<String> identities = new HashSet<String>();

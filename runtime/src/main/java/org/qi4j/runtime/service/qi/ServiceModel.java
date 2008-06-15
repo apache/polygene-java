@@ -17,7 +17,6 @@ package org.qi4j.runtime.service.qi;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 import org.qi4j.runtime.service.ServiceInstance;
-import org.qi4j.runtime.structure.ModuleModel;
 import org.qi4j.service.ServiceDescriptor;
 import org.qi4j.service.ServiceInstanceFactory;
 import org.qi4j.structure.Module;
@@ -38,7 +37,6 @@ public class ServiceModel
 
     public ServiceModel( Class compositeType,
                          Visibility visibility,
-                         ModuleModel moduleModel,
                          Class<? extends ServiceInstanceFactory> serviceFactory,
                          String identity,
                          boolean instantiateOnStartup, MetaInfo metaInfo )

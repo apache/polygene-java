@@ -17,7 +17,6 @@ package org.qi4j.bootstrap;
 import java.io.Serializable;
 import java.util.List;
 import org.qi4j.runtime.service.qi.ServiceModel;
-import org.qi4j.runtime.structure.ModuleModel;
 import org.qi4j.service.ServiceInstanceFactory;
 import org.qi4j.spi.service.provider.DefaultServiceInstanceFactory;
 import org.qi4j.structure.Visibility;
@@ -70,7 +69,7 @@ public final class ServiceDeclaration
         return this;
     }
 
-    void addServices( ModuleModel moduleModel, List<ServiceModel> serviceModels )
+    void addServices( List<ServiceModel> serviceModels )
     {
         for( Class serviceType : serviceTypes )
         {
@@ -82,7 +81,6 @@ public final class ServiceDeclaration
 
             ServiceModel serviceModel = new ServiceModel( serviceType,
                                                           visibility,
-                                                          moduleModel,
                                                           serviceProvider,
                                                           id,
                                                           instantiateOnStartup,
