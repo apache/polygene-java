@@ -19,9 +19,9 @@ public class ConstraintImplementationNotFoundException extends InvalidApplicatio
 {
     private static final long serialVersionUID = 1L;
 
-    private Class compositeType;
-    private Class constraintType;
-    private Type valueType;
+    private final Class compositeType;
+    private final Class constraintType;
+    private final Type valueType;
 
     public ConstraintImplementationNotFoundException( Class compositeType, Class constraintType, Type valueType )
     {

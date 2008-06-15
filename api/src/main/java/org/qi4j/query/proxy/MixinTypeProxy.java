@@ -39,7 +39,7 @@ public class MixinTypeProxy
     /**
      * Class of template this proxy is for.
      */
-    private Class templateClass;
+    private final Class templateClass;
     /**
      * Traversed association.
      */

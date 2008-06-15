@@ -121,7 +121,7 @@ public abstract class AbstractPropertyInstance<T>
         return "urn:qi4j:property:" + ComputedPropertyInstance.getDeclaringClassName( accessor ) + ":";
     }
 
-    protected PropertyInfo propertyInfo;
+    protected final PropertyInfo propertyInfo;
 
     /**
      * Construct an instance of {@code ComputedPropertyInstance}.

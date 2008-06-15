@@ -25,14 +25,16 @@ import java.util.Set;
  */
 public final class MetaInfo
 {
-    private Map<Class<?>, Serializable> metaInfoMap = new LinkedHashMap<Class<?>, Serializable>();
+    private final Map<Class<?>, Serializable> metaInfoMap;
 
     public MetaInfo()
     {
+        metaInfoMap = new LinkedHashMap<Class<?>, Serializable>();
     }
 
     public MetaInfo( MetaInfo metaInfo )
     {
+        this();
         metaInfoMap.putAll( metaInfo.metaInfoMap );
     }
 

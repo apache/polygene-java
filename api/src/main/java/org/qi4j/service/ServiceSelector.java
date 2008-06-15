@@ -63,8 +63,8 @@ public class ServiceSelector<T>
         };
     }
 
-    private Iterable<ServiceReference<T>> services;
-    private Selector selector;
+    private final Iterable<ServiceReference<T>> services;
+    private final Selector selector;
 
     public ServiceSelector( Iterable<ServiceReference<T>> services, Selector selector )
     {

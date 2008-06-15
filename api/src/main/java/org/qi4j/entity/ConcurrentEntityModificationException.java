@@ -21,7 +21,7 @@ public class ConcurrentEntityModificationException extends UnitOfWorkCompletionE
 {
     private static final long serialVersionUID = 3872723845064767689L;
 
-    private Iterable<EntityComposite> alreadyModifiedEntities;
+    private final Iterable<EntityComposite> alreadyModifiedEntities;
 
     public ConcurrentEntityModificationException( Iterable<EntityComposite> concurrentlyModifiedEntities )
     {

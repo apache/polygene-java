@@ -23,8 +23,8 @@ import java.lang.annotation.Annotation;
  */
 public class ConstraintViolation
 {
-    private Annotation constraint;
-    private Object value;
+    private final Annotation constraint;
+    private final Object value;
 
     public ConstraintViolation( Annotation constraint, Object value )
     {

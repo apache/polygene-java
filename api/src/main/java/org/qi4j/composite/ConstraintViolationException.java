@@ -44,7 +44,7 @@ public class ConstraintViolationException extends IllegalArgumentException
     private static final long serialVersionUID = 1L;
 
     private final Method method;
-    private Collection<ConstraintViolation> constraintViolations;
+    private final Collection<ConstraintViolation> constraintViolations;
 
     public ConstraintViolationException( Method method,
                                          Collection<ConstraintViolation> constraintViolations )

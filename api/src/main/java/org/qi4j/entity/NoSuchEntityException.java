@@ -19,8 +19,8 @@ public class NoSuchEntityException extends InvalidApplicationException
 {
     private static final long serialVersionUID = 7185723686654157891L;
 
-    private String entityType;
-    private String moduleName;
+    private final String entityType;
+    private final String moduleName;
 
     public NoSuchEntityException( String entityType, String moduleName )
     {

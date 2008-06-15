@@ -19,8 +19,8 @@ public class NoSuchObjectException extends InvalidApplicationException
 {
     private static final long serialVersionUID = -1121690536365682511L;
 
-    private String objectType;
-    private String moduleName;
+    private final String objectType;
+    private final String moduleName;
 
     public NoSuchObjectException( String type, String moduleName )
     {

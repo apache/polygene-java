@@ -45,10 +45,10 @@ public class ParameterConstraintViolationException extends ConstraintViolationEx
 {
     private static final long serialVersionUID = -7526075395778399932L;
 
-    private String instanceName;
-    private String compositeType;
-    private boolean isEntity;
-    private boolean isService;
+    private final String instanceName;
+    private final String compositeType;
+    private final boolean isEntity;
+    private final boolean isService;
 
     public ParameterConstraintViolationException( Composite instance, Method method,
                                                   Collection<ConstraintViolation> constraintViolations )

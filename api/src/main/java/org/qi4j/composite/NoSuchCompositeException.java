@@ -17,8 +17,8 @@ public class NoSuchCompositeException extends InvalidApplicationException
 {
     private static final long serialVersionUID = 1L;
 
-    private String compositeType;
-    private String moduleName;
+    private final String compositeType;
+    private final String moduleName;
 
     public NoSuchCompositeException( String compositeType, String moduleName )
     {

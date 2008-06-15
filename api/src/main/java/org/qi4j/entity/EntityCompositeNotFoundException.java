@@ -23,8 +23,8 @@ public class EntityCompositeNotFoundException extends UnitOfWorkException
 {
     private static final long serialVersionUID = 1L;
 
-    private String identity;
-    private Class compositeType;
+    private final String identity;
+    private final Class compositeType;
 
     public EntityCompositeNotFoundException( String identity, Class compositeType )
     {

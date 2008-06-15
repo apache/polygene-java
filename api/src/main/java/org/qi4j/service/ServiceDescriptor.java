@@ -25,12 +25,12 @@ import org.qi4j.util.MetaInfo;
  */
 public final class ServiceDescriptor
 {
-    private Class<?> serviceType;
-    private Class<? extends ServiceInstanceFactory> serviceFactory;
-    private String identity;
-    private Visibility visibility;
-    private boolean instantiateOnStartup;
-    private MetaInfo metaInfo;
+    private final Class<?> serviceType;
+    private final Class<? extends ServiceInstanceFactory> serviceFactory;
+    private final String identity;
+    private final Visibility visibility;
+    private final boolean instantiateOnStartup;
+    private final MetaInfo metaInfo;
 
     public ServiceDescriptor( Class serviceType,
                               Class<? extends ServiceInstanceFactory> serviceFactory,

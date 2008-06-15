@@ -26,8 +26,8 @@ public class EntityCompositeAlreadyExistsException
 {
     private static final long serialVersionUID = -7297710939536508481L;
 
-    private String identity;
-    private String type;
+    private final String identity;
+    private final String type;
 
     public EntityCompositeAlreadyExistsException( String identity, String type )
     {

@@ -18,7 +18,7 @@ import org.qi4j.composite.Composite;
 
 public class ServiceNotRegisteredException extends InvalidApplicationException
 {
-    private Class<? extends ServiceComposite> serviceType;
+    private final Class<? extends ServiceComposite> serviceType;
 
     public ServiceNotRegisteredException( Class<? extends ServiceComposite> serviceType, String message )
     {
