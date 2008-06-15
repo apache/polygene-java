@@ -65,15 +65,21 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
     }
 
     @Test public final void createNewEntityStateWithoutPersisting()
-        throws SQLException, UnitOfWorkCompletionException
+        throws UnitOfWorkCompletionException
     {
         final UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
-        final CompositeDescriptor personCompositeDescriptor = getCompositeDescriptor( PersonComposite.class );
+        try
+        {
+            final CompositeDescriptor personCompositeDescriptor = getCompositeDescriptor( PersonComposite.class );
 
-        final EntityState state = entityStore.newEntityState( personCompositeDescriptor, id( NEW_TEST_ID ) );
-        assertNotNull( state );
-        checkEntityStateProperties( getCompositeDescriptor( PersonComposite.class ), state, false );
-        uow.complete();
+            final EntityState state = entityStore.newEntityState( personCompositeDescriptor, id( NEW_TEST_ID ) );
+            assertNotNull( state );
+            checkEntityStateProperties( getCompositeDescriptor( PersonComposite.class ), state, false );
+            uow.complete();
+        } catch( RuntimeException e )
+        {
+            uow.discard();
+        }
     }
 
     @Test public final void newEntityStateIsPersistedToDatabase()
@@ -171,7 +177,7 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
     {
         module.addEntities( PersonComposite.class );
         module.addEntities( AccountComposite.class );
-        module.addServices( UuidIdentityGeneratorService.class );
+        module.addServices( UuidIdentityGeneratorService.class ).visibleIn( Visibility.layer );
         module.addServices( IBatisEntityStoreService.class );
 
         final ModuleAssembly config = module.getLayerAssembly().newModuleAssembly();

@@ -54,12 +54,6 @@ public abstract class AbstractTestCase extends AbstractQi4jTest
         {
             derbyDatabaseHandler.shutdown();
         }
-
-        if( unitOfWorkFactory != null && unitOfWorkFactory.currentUnitOfWork() != null )
-        {
-            unitOfWorkFactory.currentUnitOfWork().discard();
-        }
-
         super.tearDown();
     }
 
