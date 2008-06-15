@@ -103,7 +103,7 @@ public final class ApplicationFactory
             }
             UsedLayersModel usedLayersModel = new UsedLayersModel( usedLayers );
             List<ModuleModel> moduleModels = new ArrayList<ModuleModel>();
-            LayerModel layerModel = new LayerModel( layerAssembly.getName(), applicationModel, usedLayersModel, moduleModels );
+            LayerModel layerModel = new LayerModel( layerAssembly.getName(), usedLayersModel, moduleModels );
 
             for( ModuleAssembly moduleAssembly : layerAssembly.getModuleAssemblies() )
             {

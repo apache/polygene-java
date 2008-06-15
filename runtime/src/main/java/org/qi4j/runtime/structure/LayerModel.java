@@ -27,14 +27,14 @@ public final class LayerModel
 {
     // Model
     private String name;
-    private ApplicationModel applicationComposite;
     private UsedLayersModel usedLayersModel;
     private List<ModuleModel> modules;
 
-    public LayerModel( String name, ApplicationModel applicationComposite, UsedLayersModel usedLayersModel, List<ModuleModel> modules )
+    public LayerModel( String name,
+                       UsedLayersModel usedLayersModel,
+                       List<ModuleModel> modules )
     {
         this.name = name;
-        this.applicationComposite = applicationComposite;
         this.usedLayersModel = usedLayersModel;
         this.modules = modules;
     }
