@@ -24,7 +24,7 @@ import org.qi4j.spi.entity.EntityState;
 /**
  * TODO
  */
-public class AssociationsInstance
+public final class AssociationsInstance
 {
     private Map<Method, AbstractAssociation> associations;
     private final AssociationsModel associationsModel;

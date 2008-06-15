@@ -21,8 +21,7 @@ import org.qi4j.entity.association.SetAssociation;
 /**
  * TODO
  */
-public class EntityBuilderSetAssociation<T>
-    extends LinkedHashSet<T>
+public final class EntityBuilderSetAssociation<T> extends LinkedHashSet<T>
     implements SetAssociation<T>
 {
     public <T> T metaInfo( Class<T> infoType )

@@ -39,7 +39,7 @@ import org.qi4j.util.MetaInfo;
 /**
  * TODO
  */
-public class AssociationModel
+public final class AssociationModel
     implements AssociationDescriptor
 {
     private final MetaInfo metaInfo;

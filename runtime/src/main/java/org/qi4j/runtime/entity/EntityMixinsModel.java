@@ -27,8 +27,7 @@ import org.qi4j.runtime.composite.UsesInstance;
 /**
  * TODO
  */
-public class EntityMixinsModel
-    extends AbstractMixinsModel
+public final class EntityMixinsModel extends AbstractMixinsModel
 {
     public EntityMixinsModel( Class<? extends Composite> compositeType )
     {

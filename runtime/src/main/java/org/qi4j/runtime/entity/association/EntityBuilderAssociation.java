@@ -20,7 +20,7 @@ import org.qi4j.entity.association.Association;
 /**
  * TODO
  */
-public class EntityBuilderAssociation<T>
+public final class EntityBuilderAssociation<T>
     implements Association<T>
 {
     private T associated;

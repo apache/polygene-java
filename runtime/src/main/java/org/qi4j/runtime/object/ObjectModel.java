@@ -30,7 +30,7 @@ import org.qi4j.util.MetaInfo;
 /**
  * TODO
  */
-public class ObjectModel
+public final class ObjectModel
     implements Binder
 {
     private final Class objectType;

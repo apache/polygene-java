@@ -80,7 +80,14 @@ public abstract class AbstractQi4jTest
             UnitOfWork current;
             while( ( current = unitOfWorkFactory.currentUnitOfWork() ) != null )
             {
-                current.discard();
+                if( current.isOpen() )
+                {
+                    current.discard();
+                }
+                else
+                {
+                    System.out.println( "Internal Error" );
+                }
             }
 
             throw new Exception( "UnitOfWork not properly cleaned up" );

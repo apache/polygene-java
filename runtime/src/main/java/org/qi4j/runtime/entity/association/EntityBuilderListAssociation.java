@@ -21,8 +21,7 @@ import org.qi4j.entity.association.ListAssociation;
 /**
  * TODO
  */
-public class EntityBuilderListAssociation<T>
-    extends ArrayList<T>
+public final class EntityBuilderListAssociation<T> extends ArrayList<T>
     implements ListAssociation<T>
 {
     public <T> T metaInfo( Class<T> infoType )

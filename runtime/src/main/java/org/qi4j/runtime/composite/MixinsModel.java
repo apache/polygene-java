@@ -23,7 +23,7 @@ import org.qi4j.spi.composite.CompositeInstance;
 /**
  * TODO
  */
-public class MixinsModel
+public final class MixinsModel
     extends AbstractMixinsModel
 {
     public MixinsModel( Class<? extends Composite> compositeType )

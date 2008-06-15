@@ -29,7 +29,7 @@ import org.qi4j.spi.property.PropertyDescriptor;
 /**
  * TODO
  */
-public class StateModel
+public final class StateModel
     implements StateDescriptor
 {
     private final PropertiesModel propertiesModel;

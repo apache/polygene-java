@@ -136,7 +136,7 @@ public final class EntityBuilderInstance<T>
         uow.createEntity( (EntityComposite) proxy );
 
         // Invoke lifecycle create() method
-        if( instance instanceof Lifecycle )
+        if( Lifecycle.class.isAssignableFrom( instance.type() ) )
         {
 //            context.invokeCreate( instance, compositeInstance );
         }

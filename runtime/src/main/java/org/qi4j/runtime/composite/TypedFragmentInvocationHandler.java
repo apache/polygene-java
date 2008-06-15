@@ -17,7 +17,7 @@ import java.lang.reflect.Method;
 /**
  * TODO
  */
-public class TypedFragmentInvocationHandler
+public final class TypedFragmentInvocationHandler
     extends FragmentInvocationHandler
 {
     public TypedFragmentInvocationHandler()

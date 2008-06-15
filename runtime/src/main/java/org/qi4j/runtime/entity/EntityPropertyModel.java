@@ -25,8 +25,7 @@ import org.qi4j.util.MetaInfo;
 /**
  * TODO
  */
-public class EntityPropertyModel
-    extends PropertyModel
+public final class EntityPropertyModel extends PropertyModel
 {
     public EntityPropertyModel( Method anAccessor, ValueConstraintsInstance constraints, MetaInfo metaInfo, Object defaultValue )
     {

@@ -34,7 +34,7 @@ import org.qi4j.util.ClassUtil;
 /**
  * TODO
  */
-public class AbstractMixinsModel
+public abstract class AbstractMixinsModel
 {
     protected final Set<MixinDeclaration> mixins = new LinkedHashSet<MixinDeclaration>();
 

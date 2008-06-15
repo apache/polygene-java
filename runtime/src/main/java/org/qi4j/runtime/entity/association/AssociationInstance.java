@@ -25,8 +25,7 @@ import org.qi4j.spi.entity.QualifiedIdentity;
 /**
  * Implementation of Association to a single Entity.
  */
-public class AssociationInstance<T>
-    extends AbstractAssociationInstance<T>
+public final class AssociationInstance<T> extends AbstractAssociationInstance<T>
     implements Association<T>
 {
     private static final Object UNSET = new Object();

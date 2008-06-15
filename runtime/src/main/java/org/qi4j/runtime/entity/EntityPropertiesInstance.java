@@ -23,7 +23,7 @@ import org.qi4j.spi.entity.EntityState;
 /**
  * TODO
  */
-public class EntityPropertiesInstance
+public final class EntityPropertiesInstance
 {
     private final EntityPropertiesModel entityPropertiesModel;
     private final EntityState entityState;

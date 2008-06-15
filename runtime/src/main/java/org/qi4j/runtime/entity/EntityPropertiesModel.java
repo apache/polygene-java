@@ -37,7 +37,7 @@ import org.qi4j.util.MetaInfo;
 /**
  * TODO
  */
-public class EntityPropertiesModel
+public final class EntityPropertiesModel
 {
     private final Set<Class> mixinTypes = new HashSet<Class>();
     private final List<EntityPropertyModel> propertyModels = new ArrayList<EntityPropertyModel>();

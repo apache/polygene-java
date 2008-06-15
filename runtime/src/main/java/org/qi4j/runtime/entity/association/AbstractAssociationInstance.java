@@ -13,7 +13,7 @@ import org.qi4j.spi.entity.QualifiedIdentity;
 /**
  * Implementation of AbstractAssociation. Includes helper methods for subclasses
  */
-public class AbstractAssociationInstance<T>
+public abstract class AbstractAssociationInstance<T>
     implements AbstractAssociation
 {
     public static String getName( String qualifiedName )

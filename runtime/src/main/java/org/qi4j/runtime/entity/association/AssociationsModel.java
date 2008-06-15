@@ -33,7 +33,7 @@ import org.qi4j.util.MetaInfo;
 /**
  * TODO
  */
-public class AssociationsModel
+public final class AssociationsModel
 {
     private final Set<Class> mixinTypes = new HashSet<Class>();
     private final List<AssociationModel> associationModels = new ArrayList<AssociationModel>();

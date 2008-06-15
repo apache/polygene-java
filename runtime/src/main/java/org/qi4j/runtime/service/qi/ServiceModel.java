@@ -26,7 +26,7 @@ import org.qi4j.util.MetaInfo;
 /**
  * TODO
  */
-public class ServiceModel
+public final class ServiceModel
 {
     private final Class type;
     private final Visibility visibility;

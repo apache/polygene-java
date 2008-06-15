@@ -49,7 +49,7 @@ import org.qi4j.util.MetaInfo;
 /**
  * TODO
  */
-public class EntityModel
+public final class EntityModel
     implements Binder, CompositeDescriptor
 {
     public static EntityModel newModel( Class<? extends EntityComposite> type,

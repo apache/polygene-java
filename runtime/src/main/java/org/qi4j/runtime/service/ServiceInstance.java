@@ -20,7 +20,7 @@ import org.qi4j.service.ServiceInstanceFactory;
 /**
  * TODO
  */
-public class ServiceInstance<T>
+public final class ServiceInstance<T>
 {
     private final T instance;
     private final ServiceInstanceFactory factory;

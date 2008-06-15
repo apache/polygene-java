@@ -12,8 +12,7 @@ import org.qi4j.spi.entity.QualifiedIdentity;
 /**
  * TODO
  */
-public class ManyAssociationInstance<T>
-    extends AbstractAssociationInstance<T>
+public class ManyAssociationInstance<T> extends AbstractAssociationInstance<T>
     implements ManyAssociation<T>
 {
     private Collection<QualifiedIdentity> associated;

@@ -23,7 +23,7 @@ import org.qi4j.runtime.structure.ModuleInstance;
 /**
  * TODO
  */
-public class ObjectBuilderInstance<T>
+public final class ObjectBuilderInstance<T>
     implements ObjectBuilder<T>
 {
 

@@ -411,25 +411,24 @@ public final class UnitOfWorkInstance
         {
             committer.commit();
         }
-
-        cache.clear();
-        open = false;
-        current.get().pop();
-
+        close();
         // Call synchronizations
         notifySynchronizations( COMPLETED );
     }
 
     public void discard()
     {
-        checkOpen();
-        open = false;
-        cache.clear();
-
-        current.get().pop();
-
+        close();
         // Call synchronizations
         notifySynchronizations( DISCARDED );
+    }
+
+    private void close()
+    {
+        checkOpen();
+        current.get().pop();
+        open = false;
+        cache.clear();
     }
 
     public boolean isOpen()

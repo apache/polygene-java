@@ -22,7 +22,7 @@ import org.qi4j.spi.entity.EntityState;
 /**
  * TODO
  */
-public class PropertiesInstance
+public final class PropertiesInstance
 {
     protected final Map<Method, Property> properties;
 

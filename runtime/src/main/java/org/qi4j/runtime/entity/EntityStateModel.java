@@ -33,7 +33,7 @@ import org.qi4j.spi.property.PropertyDescriptor;
 /**
  * TODO
  */
-public class EntityStateModel
+public final class EntityStateModel
     implements StateDescriptor
 {
     private final EntityPropertiesModel propertiesModel;

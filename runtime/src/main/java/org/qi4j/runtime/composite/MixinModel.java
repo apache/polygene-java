@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.State;
+import org.qi4j.composite.Initializable;
 import org.qi4j.injection.scope.This;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectedFieldsModel;
@@ -88,6 +89,10 @@ public final class MixinModel
         Object mixin = constructorsModel.newInstance( injectionContext );
         injectedFieldsModel.inject( injectionContext, mixin );
         injectedMethodsModel.inject( injectionContext, mixin );
+        if( mixin instanceof Initializable )
+        {
+            (( Initializable) mixin).initialize();
+        }
         return mixin;
     }
 

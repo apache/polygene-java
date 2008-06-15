@@ -36,7 +36,7 @@ import org.qi4j.util.MetaInfo;
 /**
  * TODO
  */
-public class EntityInstance
+public final class EntityInstance
     implements CompositeInstance, MixinsInstance, State
 {
     public static EntityInstance getEntityInstance( Composite composite )
