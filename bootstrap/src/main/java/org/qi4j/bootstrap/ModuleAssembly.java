@@ -185,7 +185,7 @@ public final class ModuleAssembly
 
         for( CompositeDeclaration compositeDeclaration : compositeDeclarations )
         {
-            compositeDeclaration.addComposites( moduleModel, compositeModels );
+            compositeDeclaration.addComposites( compositeModels );
         }
 
         for( EntityDeclaration entityDeclaration : entityDeclarations )
@@ -209,7 +209,9 @@ public final class ModuleAssembly
             String identity = serviceModel.identity();
             if( identities.contains( identity ) )
             {
-                throw new DuplicateServiceIdentityException( "Duplicated service identity: " + identity + " in module " + moduleModel.name() );
+                throw new DuplicateServiceIdentityException(
+                    "Duplicated service identity: " + identity + " in module " + moduleModel.name()
+                );
             }
             identities.add( identity );
         }
@@ -232,7 +234,9 @@ public final class ModuleAssembly
                 // Auto-add implementation as Composite with Module visibility.
                 if( !found )
                 {
-                    compositeModels.add( CompositeModel.newModel( serviceModel.type(), Visibility.module, new MetaInfo(), moduleModel ) );
+                    compositeModels.add(
+                        CompositeModel.newModel( serviceModel.type(), Visibility.module, new MetaInfo() )
+                    );
                 }
             }
 
@@ -247,7 +251,9 @@ public final class ModuleAssembly
             }
             if( !found )
             {
-                objectModels.add( new ObjectModel( serviceModel.serviceFactory(), Visibility.module, new MetaInfo() ) );
+                objectModels.add(
+                    new ObjectModel( serviceModel.serviceFactory(), Visibility.module, new MetaInfo() )
+                );
             }
         }
 

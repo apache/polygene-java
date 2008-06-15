@@ -18,7 +18,6 @@ import java.io.Serializable;
 import java.util.List;
 import org.qi4j.composite.Composite;
 import org.qi4j.runtime.composite.CompositeModel;
-import org.qi4j.runtime.structure.ModuleModel;
 import org.qi4j.structure.Visibility;
 import org.qi4j.util.MetaInfo;
 
@@ -49,14 +48,13 @@ public final class CompositeDeclaration
         return this;
     }
 
-    void addComposites( ModuleModel moduleModel, List<CompositeModel> composites )
+    void addComposites( List<CompositeModel> composites )
     {
         for( Class<? extends Composite> compositeType : compositeTypes )
         {
             CompositeModel compositeModel = CompositeModel.newModel( compositeType,
                                                                      visibility,
-                                                                     new MetaInfo( metaInfo ),
-                                                                     moduleModel );
+                                                                     new MetaInfo( metaInfo ) );
             composites.add( compositeModel );
         }
     }

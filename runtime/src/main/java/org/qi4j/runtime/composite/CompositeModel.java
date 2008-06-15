@@ -25,7 +25,6 @@ import org.qi4j.runtime.property.PropertiesModel;
 import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
-import org.qi4j.runtime.structure.ModuleModel;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.composite.CompositeInstance;
 import org.qi4j.spi.composite.StateDescriptor;
@@ -63,7 +62,9 @@ public class CompositeModel
         return "urn:qi4j:" + className;
     }
 
-    public static CompositeModel newModel( Class<? extends Composite> type, Visibility visibility, MetaInfo info, ModuleModel moduleModel )
+    public static CompositeModel newModel( Class<? extends Composite> type,
+                                           Visibility visibility,
+                                           MetaInfo info )
     {
         ConstraintsModel constraintsModel = new ConstraintsModel( type );
         MixinsModel mixinsModel = new MixinsModel( type );
@@ -75,34 +76,22 @@ public class CompositeModel
         return new CompositeModel( type,
                                    visibility,
                                    info,
-                                   moduleModel,
-                                   constraintsModel,
-                                   concernsModel,
-                                   sideEffectsModel,
                                    mixinsModel,
                                    stateModel,
                                    compositeMethodsModel );
     }
 
-    private ConstraintsModel constraintsModel;
-    private ConcernsDeclaration concernsDeclaration;
-    private SideEffectsDeclaration sideEffectsModel;
     private MixinsModel mixinsModel;
     private CompositeMethodsModel compositeMethodsModel;
     private Class<? extends Composite> compositeType;
     private Visibility visibility;
     private MetaInfo metaInfo;
-    private ModuleModel moduleModel;
     private StateModel stateModel;
     private Class<? extends Composite> proxyClass;
 
     public CompositeModel( Class<? extends Composite> compositeType,
                            Visibility visibility,
                            MetaInfo metaInfo,
-                           ModuleModel moduleModel,
-                           ConstraintsModel constraintsModel,
-                           ConcernsDeclaration concernsDeclaration,
-                           SideEffectsDeclaration sideEffectsModel,
                            MixinsModel mixinsModel,
                            StateModel stateModel,
                            CompositeMethodsModel compositeMethodsModel
@@ -111,15 +100,11 @@ public class CompositeModel
         this.compositeType = compositeType;
         this.visibility = visibility;
         this.metaInfo = metaInfo;
-        this.moduleModel = moduleModel;
         this.stateModel = stateModel;
 
         // Create proxy class
         this.proxyClass = createProxyClass( compositeType );
 
-        this.constraintsModel = constraintsModel;
-        this.concernsDeclaration = concernsDeclaration;
-        this.sideEffectsModel = sideEffectsModel;
         this.mixinsModel = mixinsModel;
 
         this.compositeMethodsModel = compositeMethodsModel;
