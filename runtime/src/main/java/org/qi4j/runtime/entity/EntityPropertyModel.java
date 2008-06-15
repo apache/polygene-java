@@ -17,7 +17,6 @@ package org.qi4j.runtime.entity;
 import java.lang.reflect.Method;
 import org.qi4j.property.Property;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
-import org.qi4j.runtime.property.EntityPropertyInstance;
 import org.qi4j.runtime.property.PropertyModel;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.property.ImmutablePropertyInstance;
