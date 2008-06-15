@@ -190,7 +190,7 @@ public final class ModuleAssembly
 
         for( EntityDeclaration entityDeclaration : entityDeclarations )
         {
-            entityDeclaration.addEntities( moduleModel, entityModels );
+            entityDeclaration.addEntities( entityModels );
         }
 
         for( ObjectDeclaration objectDeclaration : objectDeclarations )

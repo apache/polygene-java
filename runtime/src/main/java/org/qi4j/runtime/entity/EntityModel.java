@@ -53,7 +53,9 @@ import org.qi4j.util.MetaInfo;
 public class EntityModel
     implements Binder, CompositeDescriptor
 {
-    public static EntityModel newModel( Class<? extends EntityComposite> type, Visibility visibility, MetaInfo info, ModuleModel moduleModel )
+    public static EntityModel newModel( Class<? extends EntityComposite> type,
+                                        Visibility visibility,
+                                        MetaInfo info )
     {
         ConstraintsModel constraintsModel = new ConstraintsModel( type );
         EntityMixinsModel mixinsModel = new EntityMixinsModel( type );
@@ -71,10 +73,6 @@ public class EntityModel
         return new EntityModel( type,
                                 visibility,
                                 info,
-                                moduleModel,
-                                constraintsModel,
-                                concernsDeclaration,
-                                sideEffectsModel,
                                 mixinsModel,
                                 stateModel,
                                 compositeMethodsModel );
@@ -83,10 +81,6 @@ public class EntityModel
     private Class<? extends EntityComposite> type;
     private Visibility visibility;
     private MetaInfo info;
-    private ModuleModel moduleModel;
-    private ConstraintsModel constraintsModel;
-    private ConcernsDeclaration concernsModel;
-    private SideEffectsDeclaration sideEffectsModel;
     private EntityMixinsModel mixinsModel;
     private EntityStateModel stateModel;
     private CompositeMethodsModel compositeMethodsModel;
@@ -96,10 +90,6 @@ public class EntityModel
     public EntityModel( Class<? extends EntityComposite> type,
                         Visibility visibility,
                         MetaInfo info,
-                        ModuleModel moduleModel,
-                        ConstraintsModel constraintsModel,
-                        ConcernsDeclaration concernsModel,
-                        SideEffectsDeclaration sideEffectsModel,
                         EntityMixinsModel mixinsModel,
                         EntityStateModel stateModel,
                         CompositeMethodsModel compositeMethodsModel
@@ -108,10 +98,6 @@ public class EntityModel
         this.type = type;
         this.visibility = visibility;
         this.info = info;
-        this.moduleModel = moduleModel;
-        this.constraintsModel = constraintsModel;
-        this.concernsModel = concernsModel;
-        this.sideEffectsModel = sideEffectsModel;
         this.mixinsModel = mixinsModel;
         this.stateModel = stateModel;
         this.compositeMethodsModel = compositeMethodsModel;

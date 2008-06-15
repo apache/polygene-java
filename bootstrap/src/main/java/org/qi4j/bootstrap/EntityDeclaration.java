@@ -48,14 +48,13 @@ public final class EntityDeclaration
         return this;
     }
 
-    void addEntities( ModuleModel moduleModel, List<EntityModel> entities )
+    void addEntities( List<EntityModel> entities )
     {
         for( Class<? extends EntityComposite> compositeType : compositeTypes )
         {
             EntityModel compositeModel = EntityModel.newModel( compositeType,
                                                                visibility,
-                                                               new MetaInfo( metaInfo ),
-                                                               moduleModel );
+                                                               new MetaInfo( metaInfo ) );
             entities.add( compositeModel );
         }
     }
