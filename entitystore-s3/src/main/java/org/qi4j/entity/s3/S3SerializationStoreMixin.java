@@ -37,9 +37,9 @@ import org.qi4j.library.framework.locking.WriteLock;
 import org.qi4j.service.Activatable;
 import org.qi4j.service.Configuration;
 import org.qi4j.spi.composite.CompositeDescriptor;
+import org.qi4j.spi.entity.DefaultEntityState;
 import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.EntityStateInstance;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreException;
@@ -101,7 +101,7 @@ public class S3SerializationStoreMixin
     {
         // Skip existence check
 
-        return new EntityStateInstance( 0, identity, EntityStatus.NEW, new HashMap<String, Object>(), new HashMap<String, QualifiedIdentity>(), new HashMap<String, Collection<QualifiedIdentity>>() );
+        return new DefaultEntityState( 0, identity, EntityStatus.NEW, new HashMap<String, Object>(), new HashMap<String, QualifiedIdentity>(), new HashMap<String, Collection<QualifiedIdentity>>() );
     }
 
     @WriteLock
@@ -116,12 +116,12 @@ public class S3SerializationStoreMixin
             ObjectInputStream stream = new ObjectInputStream( inputStream );
             SerializableState serializableState = (SerializableState) stream.readObject();
 
-            return new EntityStateInstance( serializableState.entityVersion(),
-                                            identity,
-                                            EntityStatus.LOADED,
-                                            serializableState.properties(),
-                                            serializableState.associations(),
-                                            serializableState.manyAssociations() );
+            return new DefaultEntityState( serializableState.entityVersion(),
+                                           identity,
+                                           EntityStatus.LOADED,
+                                           serializableState.properties(),
+                                           serializableState.associations(),
+                                           serializableState.manyAssociations() );
         }
         catch( S3ServiceException e )
         {
@@ -149,7 +149,7 @@ public class S3SerializationStoreMixin
         {
             for( EntityState entityState : newStates )
             {
-                EntityStateInstance entityStateInstance = (EntityStateInstance) entityState;
+                DefaultEntityState entityStateInstance = (DefaultEntityState) entityState;
                 SerializableState state = new SerializableState( entityState.getIdentity(),
                                                                  entityState.getEntityVersion(),
                                                                  entityStateInstance.getProperties(),
@@ -160,7 +160,7 @@ public class S3SerializationStoreMixin
 
             for( EntityState entityState : loadedStates )
             {
-                EntityStateInstance entityStateInstance = (EntityStateInstance) entityState;
+                DefaultEntityState entityStateInstance = (DefaultEntityState) entityState;
                 SerializableState state = new SerializableState( entityState.getIdentity(),
                                                                  entityState.getEntityVersion(),
                                                                  entityStateInstance.getProperties(),

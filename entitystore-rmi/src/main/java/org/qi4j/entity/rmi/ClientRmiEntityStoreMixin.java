@@ -23,8 +23,8 @@ import java.util.Iterator;
 import org.qi4j.library.framework.locking.WriteLock;
 import org.qi4j.service.Activatable;
 import org.qi4j.spi.composite.CompositeDescriptor;
+import org.qi4j.spi.entity.DefaultEntityState;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.EntityStateInstance;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.QualifiedIdentity;
@@ -54,7 +54,7 @@ public class ClientRmiEntityStoreMixin
     // EntityStore implementation
     public EntityState newEntityState( CompositeDescriptor compositeDescriptor, QualifiedIdentity identity ) throws EntityStoreException
     {
-        return new EntityStateInstance( identity );
+        return new DefaultEntityState( identity );
     }
 
     @WriteLock

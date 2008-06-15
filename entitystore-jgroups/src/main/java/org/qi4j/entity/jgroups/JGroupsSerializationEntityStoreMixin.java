@@ -31,10 +31,10 @@ import org.qi4j.library.framework.locking.WriteLock;
 import org.qi4j.service.Activatable;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.composite.CompositeDescriptor;
+import org.qi4j.spi.entity.DefaultEntityState;
 import org.qi4j.spi.entity.EntityAlreadyExistsException;
 import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.EntityStateInstance;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreException;
@@ -79,7 +79,7 @@ public class JGroupsSerializationEntityStoreMixin
             throw new EntityAlreadyExistsException( "JGroups store", identity.identity() );
         }
 
-        return new EntityStateInstance( 0, identity, EntityStatus.NEW, new HashMap<String, Object>(), new HashMap<String, QualifiedIdentity>(), new HashMap<String, Collection<QualifiedIdentity>>() );
+        return new DefaultEntityState( 0, identity, EntityStatus.NEW, new HashMap<String, Object>(), new HashMap<String, QualifiedIdentity>(), new HashMap<String, Collection<QualifiedIdentity>>() );
     }
 
     @ReadLock
@@ -97,12 +97,12 @@ public class JGroupsSerializationEntityStoreMixin
 
             SerializableState serializableState = serializableObject.getObject( (CompositeBuilderFactory) null, null );
 
-            return new EntityStateInstance( serializableState.entityVersion(),
-                                            identity,
-                                            EntityStatus.LOADED,
-                                            serializableState.properties(),
-                                            serializableState.associations(),
-                                            serializableState.manyAssociations() );
+            return new DefaultEntityState( serializableState.entityVersion(),
+                                           identity,
+                                           EntityStatus.LOADED,
+                                           serializableState.properties(),
+                                           serializableState.associations(),
+                                           serializableState.manyAssociations() );
         }
         catch( ClassNotFoundException e )
         {
@@ -118,7 +118,7 @@ public class JGroupsSerializationEntityStoreMixin
         {
             for( EntityState entityState : newStates )
             {
-                EntityStateInstance entityStateInstance = (EntityStateInstance) entityState;
+                DefaultEntityState entityStateInstance = (DefaultEntityState) entityState;
                 SerializableState state = new SerializableState( entityState.getIdentity(),
                                                                  entityState.getEntityVersion(),
                                                                  entityStateInstance.getProperties(),
@@ -130,7 +130,7 @@ public class JGroupsSerializationEntityStoreMixin
 
             for( EntityState entityState : loadedStates )
             {
-                EntityStateInstance entityStateInstance = (EntityStateInstance) entityState;
+                DefaultEntityState entityStateInstance = (DefaultEntityState) entityState;
                 SerializableState state = new SerializableState( entityState.getIdentity(),
                                                                  entityState.getEntityVersion() + 1,
                                                                  entityStateInstance.getProperties(),

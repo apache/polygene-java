@@ -34,8 +34,8 @@ import org.qi4j.injection.scope.Uses;
 import org.qi4j.library.framework.locking.WriteLock;
 import org.qi4j.service.Activatable;
 import org.qi4j.service.ServiceDescriptor;
+import org.qi4j.spi.entity.DefaultEntityState;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.EntityStateInstance;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.structure.Module;
@@ -116,12 +116,12 @@ public class ServerRemoteEntityStoreMixin
             }
         }
 
-        EntityStateInstance entityState = new EntityStateInstance( state.getEntityVersion(),
-                                                                   identity,
-                                                                   state.getStatus(),
-                                                                   properties,
-                                                                   associations,
-                                                                   manyAssociations );
+        DefaultEntityState entityState = new DefaultEntityState( state.getEntityVersion(),
+                                                                 identity,
+                                                                 state.getStatus(),
+                                                                 properties,
+                                                                 associations,
+                                                                 manyAssociations );
         return entityState;
     }
 
