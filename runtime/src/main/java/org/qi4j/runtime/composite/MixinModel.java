@@ -37,14 +37,13 @@ import org.qi4j.spi.composite.CompositeInstance;
 public final class MixinModel
     implements Binder
 {
-    // Model
     private final Class mixinClass;
     private final ConstructorsModel constructorsModel;
     private final InjectedFieldsModel injectedFieldsModel;
     private final InjectedMethodsModel injectedMethodsModel;
     private final ConcernsDeclaration concernsDeclaration;
     private final SideEffectsDeclaration sideEffectsDeclaration;
-    private Set<Class> thisMixinTypes = Collections.EMPTY_SET;
+    private final Set<Class> thisMixinTypes;
 
     public MixinModel( Class mixinClass )
     {
@@ -57,17 +56,7 @@ public final class MixinModel
         concernsDeclaration = new ConcernsDeclaration( mixinClass );
         sideEffectsDeclaration = new SideEffectsDeclaration( mixinClass );
 
-        visitModel( new DependencyVisitor( new DependencyModel.ScopeSpecification( This.class ) )
-        {
-            public void visitDependency( DependencyModel dependencyModel )
-            {
-                if( thisMixinTypes == Collections.EMPTY_SET )
-                {
-                    thisMixinTypes = new HashSet<Class>();
-                }
-                thisMixinTypes.add( dependencyModel.rawInjectionType() );
-            }
-        } );
+        thisMixinTypes = buildThisMixinTypes();
     }
 
     public Class mixinClass()
@@ -105,6 +94,28 @@ public final class MixinModel
     public Set<Class> thisMixinTypes()
     {
         return thisMixinTypes;
+    }
+
+    private Set<Class> buildThisMixinTypes()
+    {
+        final Set<Class> thisDependencies = new HashSet<Class>();
+        visitModel(
+            new DependencyVisitor( new DependencyModel.ScopeSpecification( This.class ) )
+            {
+                public void visitDependency( DependencyModel dependencyModel )
+                {
+                    thisDependencies.add( dependencyModel.rawInjectionType() );
+                }
+            }
+        );
+        if( thisDependencies.isEmpty() )
+        {
+            return Collections.emptySet();
+        }
+        else
+        {
+            return thisDependencies;
+        }
     }
 
     protected FragmentInvocationHandler newInvocationHandler( Class methodClass )
