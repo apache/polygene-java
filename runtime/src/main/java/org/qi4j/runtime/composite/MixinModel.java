@@ -38,12 +38,12 @@ public final class MixinModel
     implements Binder
 {
     // Model
-    private Class mixinClass;
-    private ConstructorsModel constructorsModel;
-    private InjectedFieldsModel injectedFieldsModel;
-    private InjectedMethodsModel injectedMethodsModel;
-    private ConcernsDeclaration concernsDeclaration;
-    private SideEffectsDeclaration sideEffectsDeclaration;
+    private final Class mixinClass;
+    private final ConstructorsModel constructorsModel;
+    private final InjectedFieldsModel injectedFieldsModel;
+    private final InjectedMethodsModel injectedMethodsModel;
+    private final ConcernsDeclaration concernsDeclaration;
+    private final SideEffectsDeclaration sideEffectsDeclaration;
     private Set<Class> thisMixinTypes = Collections.EMPTY_SET;
 
     public MixinModel( Class mixinClass )

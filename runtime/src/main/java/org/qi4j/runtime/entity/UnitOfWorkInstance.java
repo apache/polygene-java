@@ -53,15 +53,15 @@ import org.qi4j.structure.Module;
 public final class UnitOfWorkInstance
     implements UnitOfWork
 {
-    public static ThreadLocal<Stack<UnitOfWork>> current;
+    public static final ThreadLocal<Stack<UnitOfWork>> current;
 
-    private HashMap<Class<? extends EntityComposite>, Map<String, EntityComposite>> cache;
+    private final HashMap<Class<? extends EntityComposite>, Map<String, EntityComposite>> cache;
 
     private boolean open;
 
     private boolean paused;
 
-    private ModuleInstance moduleInstance;
+    private final ModuleInstance moduleInstance;
 
     /**
      * Lazy query builder factory.
@@ -550,7 +550,7 @@ public final class UnitOfWorkInstance
     private class UnitOfWorkStore
         implements EntityStore
     {
-        Map<String, Class<? extends EntityComposite>> entityTypes = new HashMap<String, Class<? extends EntityComposite>>();
+        final Map<String, Class<? extends EntityComposite>> entityTypes = new HashMap<String, Class<? extends EntityComposite>>();
 
         public EntityState newEntityState( CompositeDescriptor compositeDescriptor, QualifiedIdentity identity ) throws EntityStoreException
         {
@@ -686,8 +686,8 @@ public final class UnitOfWorkInstance
     private static class UnitOfWorkEntityState
         extends DefaultEntityState
     {
-        private EntityState parentState;
-        private long entityVersion;
+        private final EntityState parentState;
+        private final long entityVersion;
 
         private UnitOfWorkEntityState( long entityVersion,
                                        QualifiedIdentity identity,
@@ -751,9 +751,9 @@ public final class UnitOfWorkInstance
 
     private static class StoreCompletion
     {
-        List<EntityState> newState;
-        List<EntityState> updatedState;
-        List<QualifiedIdentity> removedState;
+        final List<EntityState> newState;
+        final List<EntityState> updatedState;
+        final List<QualifiedIdentity> removedState;
 
         private StoreCompletion()
         {

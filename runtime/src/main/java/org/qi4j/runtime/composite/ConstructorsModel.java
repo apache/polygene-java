@@ -39,7 +39,7 @@ import static org.qi4j.util.AnnotationUtil.*;
 public final class ConstructorsModel
     implements Binder
 {
-    List<ConstructorModel> constructorModels;
+    private final List<ConstructorModel> constructorModels;
 
     ConstructorModel boundConstructor;
 

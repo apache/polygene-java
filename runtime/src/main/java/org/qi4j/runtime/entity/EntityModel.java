@@ -77,14 +77,14 @@ public class EntityModel
                                 compositeMethodsModel );
     }
 
-    private Class<? extends EntityComposite> type;
-    private Visibility visibility;
-    private MetaInfo info;
-    private EntityMixinsModel mixinsModel;
-    private EntityStateModel stateModel;
-    private CompositeMethodsModel compositeMethodsModel;
+    private final Class<? extends EntityComposite> type;
+    private final Visibility visibility;
+    private final MetaInfo info;
+    private final EntityMixinsModel mixinsModel;
+    private final EntityStateModel stateModel;
+    private final CompositeMethodsModel compositeMethodsModel;
 
-    private Class<? extends Composite> proxyClass;
+    private final Class<? extends Composite> proxyClass;
 
     public EntityModel( Class<? extends EntityComposite> type,
                         Visibility visibility,
