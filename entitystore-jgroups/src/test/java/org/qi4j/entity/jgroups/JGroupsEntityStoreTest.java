@@ -57,11 +57,11 @@ public class JGroupsEntityStoreTest
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
         module.addServices( UuidIdentityGeneratorService.class );
-        module.addComposites( TestEntity.class, TestValue.class );
+        module.addEntities( TestEntity.class );
+        module.addComposites( TestValue.class );
         module.addServices( JGroupsEntityStoreService.class );
     }
 
-    @Ignore
     @Test
     public void whenNewEntityThenFindInReplica()
         throws Exception
@@ -72,7 +72,7 @@ public class JGroupsEntityStoreTest
             public void assemble( ModuleAssembly module ) throws AssemblyException
             {
                 module.addServices( JGroupsEntityStoreService.class, UuidIdentityGeneratorService.class ).instantiateOnStartup();
-                module.addComposites( TestEntity.class );
+                module.addEntities( TestEntity.class );
             }
         };
 
@@ -82,7 +82,7 @@ public class JGroupsEntityStoreTest
             public void assemble( ModuleAssembly module ) throws AssemblyException
             {
                 module.addServices( JGroupsEntityStoreService.class, UuidIdentityGeneratorService.class ).instantiateOnStartup();
-                module.addComposites( TestEntity.class );
+                module.addEntities( TestEntity.class );
             }
         };
 
@@ -105,7 +105,6 @@ public class JGroupsEntityStoreTest
 
     }
 
-    @Ignore
     @Test
     public void whenNewEntityThenCanFindEntity()
         throws Exception
@@ -113,24 +112,42 @@ public class JGroupsEntityStoreTest
         try
         {
             UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
-            TestEntity instance = createEntity( unitOfWork );
-            unitOfWork.complete();
+            try
+            {
+                TestEntity instance = createEntity( unitOfWork );
+                unitOfWork.complete();
 
-            // Find entity
-            unitOfWork = unitOfWorkFactory.newUnitOfWork();
-            instance = unitOfWork.dereference( instance );
+                // Find entity
+                unitOfWork = unitOfWorkFactory.newUnitOfWork();
+                instance = unitOfWork.dereference( instance );
 
-            // Check state
-            assertThat( "property has correct value", instance.name().get(), equalTo( "Test" ) );
-            assertThat( "property has correct value", instance.unsetName().get(), equalTo( null ) );
-            assertThat( "association has correct value", instance.association().get(), equalTo( instance ) );
-            assertThat( "manyAssociation has correct value", instance.manyAssociation().iterator().next(), equalTo( instance ) );
-            assertThat( "listAssociation has correct value", instance.listAssociation().iterator().next(), equalTo( instance ) );
-            assertThat( "setAssociation has correct value", instance.setAssociation().iterator().next(), equalTo( instance ) );
-            assertThat( "setAssociation has correct size", instance.setAssociation().size(), equalTo( 1 ) );
-            assertThat( "listAssociation has correct size", instance.listAssociation().size(), equalTo( 3 ) );
+                // Check state
+                assertThat( "property has correct value", instance.name().get(), equalTo( "Test" ) );
+                assertThat( "property has correct value", instance.unsetName().get(), equalTo( null ) );
+                assertThat( "association has correct value", instance.association().get(), equalTo( instance ) );
+                assertThat( "manyAssociation has correct value", instance.manyAssociation().iterator().next(), equalTo( instance ) );
+                assertThat( "listAssociation has correct value", instance.listAssociation().iterator().next(), equalTo( instance ) );
+                assertThat( "setAssociation has correct value", instance.setAssociation().iterator().next(), equalTo( instance ) );
+                assertThat( "setAssociation has correct size", instance.setAssociation().size(), equalTo( 1 ) );
+                assertThat( "listAssociation has correct size", instance.listAssociation().size(), equalTo( 3 ) );
+                unitOfWork.discard();
+            }
+            catch( UnitOfWorkCompletionException e )
+            {
+                unitOfWork.discard();
+                throw e;
+            }
+            catch( EntityCompositeNotFoundException e )
+            {
+                unitOfWork.discard();
+                throw e;
+            }
+            catch( RuntimeException e )
+            {
+                unitOfWork.discard();
+                throw e;
+            }
 
-            unitOfWork.discard();
         }
         catch( Exception e )
         {
@@ -138,34 +155,51 @@ public class JGroupsEntityStoreTest
         }
     }
 
-    @Ignore
     @Test
     public void whenRemovedEntityThenCannotFindEntity()
         throws Exception
     {
         UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
-        TestEntity newInstance = createEntity( unitOfWork );
-        String identity = newInstance.identity().get();
-        unitOfWork.complete();
-
-        // Remove entity
-        unitOfWork = unitOfWorkFactory.newUnitOfWork();
-        TestEntity instance = unitOfWork.dereference( newInstance );
-        unitOfWork.remove( instance );
-        unitOfWork.complete();
-
-        // Find entity
-        unitOfWork = unitOfWorkFactory.newUnitOfWork();
         try
         {
+            TestEntity newInstance = createEntity( unitOfWork );
+            String identity = newInstance.identity().get();
+            unitOfWork.complete();
+
+            // Remove entity
+            unitOfWork = unitOfWorkFactory.newUnitOfWork();
+            TestEntity instance = unitOfWork.dereference( newInstance );
+            unitOfWork.remove( instance );
+            unitOfWork.complete();
+
+            // Find entity
+            unitOfWork = unitOfWorkFactory.newUnitOfWork();
+            try
+        {
             instance = unitOfWork.find( identity, TestEntity.class );
-            fail( "Should not be able to find entity" );
+                fail( "Should not be able to find entity" );
+            }
+            catch( EntityCompositeNotFoundException e )
+            {
+                // Ok!
+            }
+            unitOfWork.discard();
+        }
+        catch( UnitOfWorkCompletionException e )
+        {
+            unitOfWork.discard();
+            throw e;
         }
         catch( EntityCompositeNotFoundException e )
         {
-            // Ok!
+            unitOfWork.discard();
+            throw e;
         }
-        unitOfWork.discard();
+        catch( RuntimeException e )
+        {
+            unitOfWork.discard();
+            throw e;
+        }
     }
 
     protected TestEntity createEntity( UnitOfWork unitOfWork )
