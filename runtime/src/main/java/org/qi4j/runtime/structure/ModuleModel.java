@@ -29,17 +29,14 @@ public class ModuleModel
     private ServicesModel servicesModel;
 
     private String name;
-    private LayerModel layerComposite;
 
     public ModuleModel( String name,
-                        LayerModel layerComposite,
                         CompositesModel compositesModel,
                         EntitiesModel entitiesModel,
                         ObjectsModel objectsModel,
                         ServicesModel servicesModel )
     {
         this.name = name;
-        this.layerComposite = layerComposite;
         this.compositesModel = compositesModel;
         this.entitiesModel = entitiesModel;
         this.objectsModel = objectsModel;

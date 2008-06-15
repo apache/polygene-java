@@ -107,7 +107,7 @@ public final class ApplicationFactory
 
             for( ModuleAssembly moduleAssembly : layerAssembly.getModuleAssemblies() )
             {
-                moduleModels.add( moduleAssembly.assembleModule( layerModel ) );
+                moduleModels.add( moduleAssembly.assembleModule() );
             }
             mapAssemblyModel.put( layerAssembly, layerModel );
             layerModels.add( layerModel );

@@ -170,14 +170,13 @@ public final class ModuleAssembly
         return declaration;
     }
 
-    ModuleModel assembleModule( LayerModel layerModel )
+    ModuleModel assembleModule( )
     {
         List<CompositeModel> compositeModels = new ArrayList<CompositeModel>();
         List<EntityModel> entityModels = new ArrayList<EntityModel>();
         List<ObjectModel> objectModels = new ArrayList<ObjectModel>();
         List<ServiceModel> serviceModels = new ArrayList<ServiceModel>();
         ModuleModel moduleModel = new ModuleModel( name,
-                                                   layerModel,
                                                    new CompositesModel( compositeModels ),
                                                    new EntitiesModel( entityModels ),
                                                    new ObjectsModel( objectModels ),
