@@ -80,7 +80,8 @@ public class MemorySerializationEntityStoreMixin
         return new DefaultEntityState( 0, identity, EntityStatus.NEW, properties, new HashMap<String, QualifiedIdentity>(), manyAssociations );
     }
 
-    public EntityState getEntityState( CompositeDescriptor compositeDescriptor, QualifiedIdentity identity ) throws EntityStoreException
+    public EntityState getEntityState( CompositeDescriptor compositeDescriptor, QualifiedIdentity identity )
+        throws EntityStoreException
     {
         try
         {

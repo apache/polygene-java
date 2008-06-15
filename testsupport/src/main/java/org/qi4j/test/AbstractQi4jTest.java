@@ -86,7 +86,7 @@ public abstract class AbstractQi4jTest
                 }
                 else
                 {
-                    System.out.println( "Internal Error" );
+                    throw new InternalError( "I have seen a case where a UoW is on the stack, but not opened." );
                 }
             }
 
