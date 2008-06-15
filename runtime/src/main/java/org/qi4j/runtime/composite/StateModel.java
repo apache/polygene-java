@@ -87,7 +87,7 @@ public final class StateModel
         return Collections.EMPTY_LIST;
     }
 
-    private static final class StateInstance
+    public final class StateInstance
         implements State
     {
         private final PropertiesInstance properties;

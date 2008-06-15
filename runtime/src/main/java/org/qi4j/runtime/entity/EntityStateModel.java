@@ -22,6 +22,7 @@ import org.qi4j.composite.ConstraintViolationException;
 import org.qi4j.composite.State;
 import org.qi4j.entity.association.AbstractAssociation;
 import org.qi4j.property.Property;
+import org.qi4j.runtime.entity.association.AssociationInstance;
 import org.qi4j.runtime.entity.association.AssociationsInstance;
 import org.qi4j.runtime.entity.association.AssociationsModel;
 import org.qi4j.runtime.property.PropertiesInstance;
@@ -52,7 +53,7 @@ public final class EntityStateModel
         return new StateInstance( properties, associations );
     }
 
-    public State newInstance( UnitOfWorkInstance uow, EntityState entityState )
+    public EntityStateModel.EntityStateInstance newInstance( UnitOfWorkInstance uow, EntityState entityState )
     {
         return new EntityStateInstance( propertiesModel, associationsModel, entityState, uow );
     }
@@ -125,7 +126,7 @@ public final class EntityStateModel
         }
     }
 
-    private static final class EntityStateInstance
+    public static final class EntityStateInstance
         implements State
     {
         private Map<Method, Property> properties;
@@ -178,6 +179,33 @@ public final class EntityStateModel
             }
 
             return association;
+        }
+
+        public void refresh( EntityState entityState )
+        {
+            if( properties != null )
+            {
+                for( Property property : properties.values() )
+                {
+                    if( property instanceof EntityPropertyInstance )
+                    {
+                        EntityPropertyInstance entityProperty = (EntityPropertyInstance) property;
+                        entityProperty.refresh( entityState );
+                    }
+                }
+            }
+
+            if( associations != null )
+            {
+                for( AbstractAssociation abstractAssociation : associations.values() )
+                {
+                    if( abstractAssociation instanceof AssociationInstance )
+                    {
+                        AssociationInstance associationInstance = (AssociationInstance) abstractAssociation;
+                        associationInstance.refresh( entityState );
+                    }
+                }
+            }
         }
     }
 

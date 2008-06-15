@@ -30,6 +30,11 @@ public final class UsedLayersModel
         this.usedLayers = usedLayers;
     }
 
+    public Iterable<LayerModel> layers()
+    {
+        return usedLayers;
+    }
+
     public UsedLayersInstance newInstance( Map<LayerModel, LayerInstance> layerInstanceMap )
     {
         List<LayerInstance> usedLayerInstances = new ArrayList<LayerInstance>();

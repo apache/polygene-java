@@ -177,8 +177,8 @@ public final class EntityModel
     {
         Object[] mixins = mixinsModel.newMixinHolder();
 
-        State state = stateModel.newInstance( uow, entityState );
-
+        EntityStateModel.EntityStateInstance state = stateModel.newInstance( uow, entityState );
+        entityInstance.setEntityState( state );
         mixinsModel.newMixins( entityInstance, state, mixins );
         return mixins;
     }

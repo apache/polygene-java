@@ -25,7 +25,7 @@ import java.util.List;
 public final class ApplicationAssembly
 {
     private List<LayerAssembly> layerAssemblies = new ArrayList<LayerAssembly>();
-    private String name;
+    private String name = "Application";
 
     public LayerAssembly newLayerAssembly()
     {

@@ -49,25 +49,40 @@ public class EntitiesInstance
         return entities;
     }
 
-    public <T> EntityBuilder<T> newEntityBuilder( Class<T> mixinType, UnitOfWorkInstance uow )
+    public <T> EntityBuilder<T> newEntityBuilder( Class<T> mixinType, UnitOfWorkInstance uow, EntityStore entityStore )
     {
-        return new EntityBuilderInstance<T>( moduleInstance, entities.getEntityModelFor( mixinType ), uow, getStore(), getIdentityGenerator() );
+        if( entityStore == null )
+        {
+            entityStore = getStore();
+        }
+
+        return new EntityBuilderInstance<T>( moduleInstance, entities.getEntityModelFor( mixinType ), uow, entityStore, getIdentityGenerator() );
     }
 
-    public EntityInstance loadEntityInstance( String identity, EntityModel entityModel, UnitOfWorkInstance uow )
+    public EntityInstance loadEntityInstance( String identity, EntityModel entityModel, UnitOfWorkInstance uow, EntityStore entityStore )
     {
         QualifiedIdentity qid = entityModel.newQualifiedIdentity( identity );
 
-        EntityState state = getStore().getEntityState( entityModel, qid );
+        if( entityStore == null )
+        {
+            entityStore = getStore();
+        }
 
-        return entityModel.loadInstance( uow, getStore(), qid, moduleInstance, state );
+        EntityState state = entityStore.getEntityState( entityModel, qid );
+
+        return entityModel.loadInstance( uow, entityStore, qid, moduleInstance, state );
     }
 
-    public EntityInstance getEntityInstance( String identity, EntityModel entityModel, UnitOfWorkInstance unitOfWorkInstance )
+    public EntityInstance getEntityInstance( String identity, EntityModel entityModel, UnitOfWorkInstance unitOfWorkInstance, EntityStore entityStore )
     {
         QualifiedIdentity qid = entityModel.newQualifiedIdentity( identity );
 
-        return entityModel.getInstance( unitOfWorkInstance, getStore(), qid, moduleInstance );
+        if( entityStore == null )
+        {
+            entityStore = getStore();
+        }
+
+        return entityModel.getInstance( unitOfWorkInstance, entityStore, qid, moduleInstance );
     }
 
     // todo DCL??

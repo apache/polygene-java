@@ -52,10 +52,11 @@ public final class EntityInstance
     private final QualifiedIdentity identity;
 
     private Object[] mixins;
-    private EntityState state;
+    private EntityState entityState;
     private EntityStatus status;
+    private EntityStateModel.EntityStateInstance state;
 
-    public EntityInstance( UnitOfWorkInstance uow, EntityStore store, EntityModel entity, ModuleInstance moduleInstance, QualifiedIdentity identity, EntityStatus status, EntityState state )
+    public EntityInstance( UnitOfWorkInstance uow, EntityStore store, EntityModel entity, ModuleInstance moduleInstance, QualifiedIdentity identity, EntityStatus status, EntityState entityState )
     {
         this.uow = uow;
         this.store = store;
@@ -63,7 +64,7 @@ public final class EntityInstance
         this.moduleInstance = moduleInstance;
         this.identity = identity;
         this.status = status;
-        this.state = state;
+        this.entityState = entityState;
 
         proxy = entity.newProxy( this );
     }
@@ -110,14 +111,24 @@ public final class EntityInstance
         return store;
     }
 
-    public EntityState state()
+    public EntityState entityState()
+    {
+        return entityState;
+    }
+
+    public EntityStateModel.EntityStateInstance state()
     {
         return state;
     }
 
+    public void setEntityState( EntityStateModel.EntityStateInstance state )
+    {
+        this.state = state;
+    }
+
     public EntityStatus status()
     {
-        return state!=null ? state.getStatus() : status;
+        return entityState != null ? entityState.getStatus() : status;
     }
 
     public Object invoke( Object composite, Object[] params, CompositeMethodInstance methodInstance ) throws Throwable
@@ -128,11 +139,11 @@ public final class EntityInstance
             {
                 throw new EntityCompositeNotFoundException( identity.identity(), entity.type() );
             }
-            if( state == null )
+            if( entityState == null )
             {
-                state = store.getEntityState( entity, identity );
+                entityState = store.getEntityState( entity, identity );
             }
-            mixins = entity.newMixins( uow, state, this );
+            mixins = entity.newMixins( uow, entityState, this );
         }
 
         return entity.invoke( composite, params, mixins, methodInstance );
@@ -155,49 +166,15 @@ public final class EntityInstance
 
     public void refresh()
     {
-        state = store.getEntityState( entity, identity );
-        refresh( state );
-
-/* TODO Fix this
-        // Reset values
-        if( properties != null )
-        {
-            for( Property property : properties.values() )
-            {
-                if( property instanceof EntityPropertyInstance )
-                {
-                    ( (EntityPropertyInstance) property ).refresh( state );
-                }
-            }
-        }
-
-        if( associations != null )
-        {
-            for( Map.Entry<Method, AbstractAssociation> methodAbstractAssociationEntry : associations.entrySet() )
-            {
-                AbstractAssociation abstractAssociation = methodAbstractAssociationEntry.getValue();
-
-                if( abstractAssociation instanceof AssociationInstance )
-                {
-                    ( (AssociationInstance) abstractAssociation ).refresh( state );
-                }
-                else if( abstractAssociation instanceof ListAssociationInstance )
-                {
-                    ( (ListAssociationInstance) abstractAssociation ).refresh( (List<QualifiedIdentity>) state.getManyAssociation( AssociationModel.getQualifiedName( methodAbstractAssociationEntry.getKey() ) ) );
-                }
-                else if( abstractAssociation instanceof SetAssociationInstance )
-                {
-                    ( (SetAssociationInstance) abstractAssociation ).refresh( (Set<QualifiedIdentity>) state.getManyAssociation( AssociationModel.getQualifiedName( methodAbstractAssociationEntry.getKey() ) ) );
-                }
-            }
-        }
-*/
+        entityState = store.getEntityState( entity, identity );
+        refresh( entityState );
     }
 
     public void refresh( EntityState newState )
     {
-        // TODO is this correct or too much ??
-        mixins = entity.newMixins( uow, state, this );
+        entityState = newState;
+
+        state.refresh( newState );
     }
 
 
@@ -251,16 +228,16 @@ public final class EntityInstance
 
     public void load()
     {
-        if( state == null && status() == EntityStatus.LOADED )
+        if( entityState == null && status() == EntityStatus.LOADED )
         {
-            state = store.getEntityState( entity, identity );
+            entityState = store.getEntityState( entity, identity );
         }
     }
 
     public void remove()
     {
         status = EntityStatus.REMOVED;
-        state = null;
+        entityState = null;
         mixins = null;
     }
 }
