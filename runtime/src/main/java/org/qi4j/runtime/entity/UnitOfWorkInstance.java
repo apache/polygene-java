@@ -333,20 +333,6 @@ public final class UnitOfWorkInstance
         return queryBuilderFactory;
     }
 
-    public Query getNamedQuery( String name )
-    {
-        checkOpen();
-
-        return null;
-    }
-
-    public Query newQuery( String expression, Class compositeType )
-    {
-        checkOpen();
-
-        return null;
-    }
-
     public void complete()
         throws UnitOfWorkCompletionException
     {
