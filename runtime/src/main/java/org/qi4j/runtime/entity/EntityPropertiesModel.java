@@ -70,6 +70,7 @@ public class EntityPropertiesModel
                     mapMethodPropertyModel.put( method, propertyModel );
                 }
             }
+            mixinTypes.add( mixinType );
         }
     }
 

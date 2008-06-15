@@ -66,6 +66,7 @@ public class AssociationsModel
                     accessors.put( associationModel.qualifiedName(), associationModel.accessor() );
                 }
             }
+            mixinTypes.add( mixinType );
         }
     }
 
