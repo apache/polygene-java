@@ -59,11 +59,11 @@ public final class ObjectDeclaration
         return this;
     }
 
-    public void addObjects( ModuleModel moduleModel, List<ObjectModel> objectModels )
+    public void addObjects( List<ObjectModel> objectModels )
     {
         for( Class objectType : objectTypes )
         {
-            ObjectModel objectModel = new ObjectModel( objectType, visibility, metaInfo, moduleModel );
+            ObjectModel objectModel = new ObjectModel( objectType, visibility, metaInfo );
             objectModels.add( objectModel );
         }
     }

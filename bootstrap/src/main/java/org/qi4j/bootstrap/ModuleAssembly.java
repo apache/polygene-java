@@ -195,7 +195,7 @@ public final class ModuleAssembly
 
         for( ObjectDeclaration objectDeclaration : objectDeclarations )
         {
-            objectDeclaration.addObjects( moduleModel, objectModels );
+            objectDeclaration.addObjects( objectModels );
         }
 
         for( ServiceDeclaration serviceDeclaration : serviceDeclarations )
@@ -247,7 +247,7 @@ public final class ModuleAssembly
             }
             if( !found )
             {
-                objectModels.add( new ObjectModel( serviceModel.serviceFactory(), Visibility.module, new MetaInfo(), moduleModel ) );
+                objectModels.add( new ObjectModel( serviceModel.serviceFactory(), Visibility.module, new MetaInfo() ) );
             }
         }
 

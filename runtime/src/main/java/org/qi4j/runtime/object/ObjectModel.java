@@ -15,7 +15,6 @@
 package org.qi4j.runtime.object;
 
 import org.qi4j.runtime.composite.BindingException;
-import org.qi4j.runtime.composite.ConstraintsModel;
 import org.qi4j.runtime.composite.ConstructorsModel;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.composite.UsesInstance;
@@ -25,7 +24,6 @@ import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
-import org.qi4j.runtime.structure.ModuleModel;
 import org.qi4j.structure.Visibility;
 import org.qi4j.util.MetaInfo;
 
@@ -38,22 +36,17 @@ public class ObjectModel
     private Class objectType;
     private Visibility visibility;
     private MetaInfo metaInfo;
-    private ModuleModel moduleModel;
-    private ConstraintsModel constraintsModel;
     private ConstructorsModel constructorsModel;
     private InjectedFieldsModel injectedFieldsModel;
     private InjectedMethodsModel injectedMethodsModel;
 
     public ObjectModel( Class objectType,
                         Visibility visibility,
-                        MetaInfo metaInfo,
-                        ModuleModel moduleModel
-    )
+                        MetaInfo metaInfo )
     {
         this.objectType = objectType;
         this.visibility = visibility;
         this.metaInfo = metaInfo;
-        this.moduleModel = moduleModel;
 
         constructorsModel = new ConstructorsModel( objectType );
         injectedFieldsModel = new InjectedFieldsModel( objectType );
