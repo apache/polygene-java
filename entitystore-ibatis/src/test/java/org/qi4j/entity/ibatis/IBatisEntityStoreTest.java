@@ -167,9 +167,20 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
     @Test public void findExistingPersonComposite() throws UnitOfWorkCompletionException
     {
         final UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+        try
+        {
         final PersonComposite person = uow.find( JOHN_SMITH_ID, PersonComposite.class );
         assertPersonEquals( JOHN_SMITH_ID, "John", "Smith", person );
         uow.complete();
+        } catch( UnitOfWorkCompletionException e )
+        {
+            uow.discard();
+            throw e;
+        } catch( RuntimeException e )
+        {
+            uow.discard();
+            throw e;
+        }
     }
 
     public final void assemble( final ModuleAssembly module )

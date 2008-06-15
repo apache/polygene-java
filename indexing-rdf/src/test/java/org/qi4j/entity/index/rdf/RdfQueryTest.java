@@ -24,10 +24,12 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.After;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
 import org.qi4j.entity.UnitOfWorkCompletionException;
+import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.index.rdf.memory.MemoryRepositoryService;
 import org.qi4j.entity.memory.IndexedMemoryEntityStoreService;
 import org.qi4j.query.Query;
@@ -53,6 +55,7 @@ public class RdfQueryTest
 
     private SingletonAssembler assembler;
     private QueryBuilderFactory qbf;
+    private UnitOfWork unitOfWork;
 
     @Before
     public void setUp() throws UnitOfWorkCompletionException
@@ -77,7 +80,14 @@ public class RdfQueryTest
             }
         };
         Network.populate( assembler.unitOfWorkFactory().newUnitOfWork() );
-        qbf = assembler.unitOfWorkFactory().newUnitOfWork().queryBuilderFactory();
+        unitOfWork = assembler.unitOfWorkFactory().newUnitOfWork();
+        qbf = unitOfWork.queryBuilderFactory();
+    }
+
+    @After
+    public void tearDown()
+    {
+        unitOfWork.discard();
     }
 
     @Test
