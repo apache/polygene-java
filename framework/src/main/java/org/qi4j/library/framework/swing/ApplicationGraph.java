@@ -15,6 +15,8 @@
 package org.qi4j.library.framework.swing;
 
 import java.awt.Color;
+import java.awt.event.WindowStateListener;
+import java.awt.event.WindowEvent;
 import java.awt.geom.Rectangle2D;
 import java.util.HashMap;
 import java.util.Map;
@@ -44,9 +46,7 @@ public class ApplicationGraph
     public void show( ApplicationModel applicationModel )
     {
         GraphModel model = new DefaultGraphModel();
-        final GraphLayoutCache view = new GraphLayoutCache( model,
-                                                            new
-                                                                DefaultCellViewFactory() );
+        final GraphLayoutCache view = new GraphLayoutCache( model, new DefaultCellViewFactory() );
         JGraph graph = new JGraph( model, view );
 
         final DefaultGraphCell applicationCell = new DefaultGraphCell( applicationModel.name() );
@@ -68,13 +68,10 @@ public class ApplicationGraph
                 GraphConstants.setVerticalAlignment( attributes, SwingConstants.TOP );
                 GraphConstants.setInset( attributes, 30 );
 
-                GraphConstants.setBounds( attributes, new
-                    Rectangle2D.Double( 100, 20, 300, 200 ) );
+                GraphConstants.setBounds( attributes, new Rectangle2D.Double( 100, 20, 300, 200 ) );
                 GraphConstants.setGroupOpaque( attributes, true );
                 GraphConstants.setOpaque( attributes, true );
-                GraphConstants.setGradientColor(
-                    attributes,
-                    Color.yellow );
+                GraphConstants.setGradientColor( attributes, Color.yellow );
             }
 
             @Override public void visit( LayerModel layerModel )
@@ -86,11 +83,8 @@ public class ApplicationGraph
                 GraphConstants.setHorizontalAlignment( attributes, SwingConstants.LEFT );
                 GraphConstants.setVerticalAlignment( attributes, SwingConstants.TOP );
                 GraphConstants.setInset( attributes, 30 );
-                GraphConstants.setBounds( attributes, new
-                    Rectangle2D.Double( 20, 300 - ( 20 + layerCount * 100 ), 500, 80 ) );
-                GraphConstants.setBackground(
-                    attributes,
-                    Color.green );
+                GraphConstants.setBounds( attributes, new Rectangle2D.Double( 20, 300 - ( 20 + layerCount * 100 ), 500, 80 ) );
+                GraphConstants.setBackground( attributes, Color.green );
                 GraphConstants.setGroupOpaque( attributes, true );
                 GraphConstants.setOpaque( attributes, true );
                 DefaultPort port0 = new DefaultPort();
@@ -122,9 +116,7 @@ public class ApplicationGraph
                 AttributeMap attributes = moduleCell.getAttributes();
                 //            GraphConstants.setInset( attributes, 30 );
                 GraphConstants.setAutoSize( attributes, true );
-                GraphConstants.setBackground(
-                    attributes,
-                    Color.blue );
+                GraphConstants.setBackground( attributes, Color.blue );
                 GraphConstants.setOpaque( attributes, true );
 /*
                 DefaultPort port0 = new DefaultPort();
@@ -169,6 +161,7 @@ public class ApplicationGraph
 */
 
         JFrame frame = new JFrame();
+        frame.setDefaultCloseOperation( JFrame.DISPOSE_ON_CLOSE );
         frame.getContentPane().add( new JScrollPane( graph ) );
         frame.setSize( 600, 400 );
         frame.setVisible( true );
