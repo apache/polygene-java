@@ -30,9 +30,9 @@ public final class ValueConstraintsModel
         this.constraintModels = constraintModels;
     }
 
-    public ValueConstraintsInstance newInstance( Method method )
+    public ValueConstraintsInstance newInstance()
     {
-        return new ValueConstraintsInstance( method, constraintModels );
+        return new ValueConstraintsInstance( constraintModels );
     }
 
     public boolean isConstrained()

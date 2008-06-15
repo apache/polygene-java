@@ -14,7 +14,6 @@
 
 package org.qi4j.runtime.composite;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -25,13 +24,10 @@ import org.qi4j.composite.ConstraintViolation;
  */
 public final class ValueConstraintsInstance
 {
-    private Method method;
     private List<ConstraintInstance> constraints;
 
-    public ValueConstraintsInstance( Method method, List<ConstraintModel> constraintModels )
+    public ValueConstraintsInstance( List<ConstraintModel> constraintModels )
     {
-        this.method = method;
-
         constraints = new ArrayList<ConstraintInstance>();
         for( ConstraintModel constraintModel : constraintModels )
         {

@@ -39,7 +39,7 @@ public final class MethodConstraintsInstance
         valueConstraintsInstances = new ArrayList<ValueConstraintsInstance>();
         for( ValueConstraintsModel parameterConstraintModel : parameterConstraintsModels )
         {
-            ValueConstraintsInstance valueConstraintsInstance = parameterConstraintModel.newInstance( method );
+            ValueConstraintsInstance valueConstraintsInstance = parameterConstraintModel.newInstance();
             valueConstraintsInstances.add( valueConstraintsInstance );
         }
     }

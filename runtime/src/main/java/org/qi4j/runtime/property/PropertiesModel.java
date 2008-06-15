@@ -57,7 +57,7 @@ public class PropertiesModel
                     ValueConstraintsInstance valueConstraintsInstance = null;
                     if( valueConstraintsModel.isConstrained() )
                     {
-                        valueConstraintsInstance = valueConstraintsModel.newInstance( method );
+                        valueConstraintsInstance = valueConstraintsModel.newInstance();
                     }
                     PropertyModel propertyModel = new PropertyModel( method, valueConstraintsInstance, new MetaInfo(), null ); //TODO Take default value from assembly
                     propertyModels.add( propertyModel );

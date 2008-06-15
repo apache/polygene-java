@@ -58,7 +58,7 @@ public class AssociationsModel
                     ValueConstraintsInstance valueConstraintsInstance = null;
                     if( valueConstraintsModel.isConstrained() )
                     {
-                        valueConstraintsInstance = valueConstraintsModel.newInstance( method );
+                        valueConstraintsInstance = valueConstraintsModel.newInstance();
                     }
                     AssociationModel associationModel = new AssociationModel( method, valueConstraintsInstance, new MetaInfo() ); //TODO Take default value from assembly
                     associationModels.add( associationModel );
