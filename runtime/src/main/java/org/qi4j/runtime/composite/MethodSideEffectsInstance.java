@@ -48,9 +48,8 @@ public final class MethodSideEffectsInstance
 
             try
             {
-                for( int i = 0; i < sideEffects.size(); i++ )
+                for( InvocationHandler sideEffect : sideEffects )
                 {
-                    InvocationHandler sideEffect = sideEffects.get( i );
                     invokeSideEffect( proxy, params, sideEffect );
                 }
             }
