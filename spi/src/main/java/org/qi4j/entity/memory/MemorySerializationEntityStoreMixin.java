@@ -13,10 +13,10 @@ import org.qi4j.entity.association.ListAssociation;
 import org.qi4j.entity.association.ManyAssociation;
 import org.qi4j.entity.association.SetAssociation;
 import org.qi4j.spi.composite.CompositeDescriptor;
+import org.qi4j.spi.entity.DefaultEntityState;
 import org.qi4j.spi.entity.EntityAlreadyExistsException;
 import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.EntityStateInstance;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreException;
@@ -77,7 +77,7 @@ public class MemorySerializationEntityStoreMixin
                 manyAssociations.put( associationDescriptor.qualifiedName(), new HashSet<QualifiedIdentity>() );
             }
         }
-        return new EntityStateInstance( 0, identity, EntityStatus.NEW, properties, new HashMap<String, QualifiedIdentity>(), manyAssociations );
+        return new DefaultEntityState( 0, identity, EntityStatus.NEW, properties, new HashMap<String, QualifiedIdentity>(), manyAssociations );
     }
 
     public EntityState getEntityState( CompositeDescriptor compositeDescriptor, QualifiedIdentity identity ) throws EntityStoreException
@@ -107,7 +107,7 @@ public class MemorySerializationEntityStoreMixin
 
             SerializableState serializableState = serializableObject.getObject( (CompositeBuilderFactory) null, null );
 
-            return new EntityStateInstance( serializableState.entityVersion(), identity, EntityStatus.LOADED, serializableState.properties(), serializableState.associations(), serializableState.manyAssociations() );
+            return new DefaultEntityState( serializableState.entityVersion(), identity, EntityStatus.LOADED, serializableState.properties(), serializableState.associations(), serializableState.manyAssociations() );
         }
         catch( ClassNotFoundException e )
         {
@@ -122,7 +122,7 @@ public class MemorySerializationEntityStoreMixin
 
         for( EntityState entityState : newStates )
         {
-            EntityStateInstance entityStateInstance = (EntityStateInstance) entityState;
+            DefaultEntityState entityStateInstance = (DefaultEntityState) entityState;
             SerializableState state = new SerializableState( entityState.getIdentity(), entityState.getEntityVersion(), entityStateInstance.getProperties(), entityStateInstance.getAssociations(), entityStateInstance.getManyAssociations() );
             SerializedObject<SerializableState> serializedObject = new SerializedObject<SerializableState>( state );
             updatedState.put( entityState.getIdentity(), serializedObject );
@@ -130,7 +130,7 @@ public class MemorySerializationEntityStoreMixin
 
         for( EntityState entityState : loadedStates )
         {
-            EntityStateInstance entityStateInstance = (EntityStateInstance) entityState;
+            DefaultEntityState entityStateInstance = (DefaultEntityState) entityState;
             SerializableState state = new SerializableState( entityState.getIdentity(), entityState.getEntityVersion(), entityStateInstance.getProperties(), entityStateInstance.getAssociations(), entityStateInstance.getManyAssociations() );
             SerializedObject<SerializableState> serializedObject = new SerializedObject<SerializableState>( state );
             updatedState.put( entityState.getIdentity(), serializedObject );

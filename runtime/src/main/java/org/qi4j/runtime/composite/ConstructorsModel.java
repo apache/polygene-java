@@ -31,7 +31,7 @@ import org.qi4j.runtime.injection.InjectedParametersModel;
 import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.ModelVisitor;
-import org.qi4j.util.AnnotationUtil;
+import static org.qi4j.util.AnnotationUtil.*;
 
 /**
  * TODO
@@ -49,6 +49,7 @@ public final class ConstructorsModel
 
         constructorModels = new ArrayList<ConstructorModel>();
         Constructor[] constructors = fragmentClass.getDeclaredConstructors();
+        nextConstructor:
         for( Constructor constructor : constructors )
         {
             int idx = 0;
@@ -57,7 +58,12 @@ public final class ConstructorsModel
             parameterAnnotations = getConstructorAnnotations( fragmentClass, constructor );
             for( Type type : constructor.getGenericParameterTypes() )
             {
-                DependencyModel dependencyModel = new DependencyModel( AnnotationUtil.getInjectionAnnotation( parameterAnnotations[ idx ] ), type, fragmentClass );
+                Annotation annotation = getInjectionAnnotation( parameterAnnotations[ idx ] );
+                if( annotation == null )
+                {
+                    continue nextConstructor; // All parameters must be injected
+                }
+                DependencyModel dependencyModel = new DependencyModel( annotation, type, fragmentClass );
                 parameters.addDependency( dependencyModel );
                 idx++;
             }

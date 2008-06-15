@@ -41,8 +41,8 @@ import org.qi4j.query.QueryBuilderFactory;
 import org.qi4j.runtime.query.QueryBuilderFactoryImpl;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.CompositeDescriptor;
+import org.qi4j.spi.entity.DefaultEntityState;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.EntityStateInstance;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreException;
@@ -380,7 +380,11 @@ public final class UnitOfWorkInstance
 
                 if( instance.status() == EntityStatus.LOADED )
                 {
-                    storeCompletionList.getUpdatedState().add( instance.state() );
+                    EntityState entityState = instance.state();
+                    if( entityState != null )
+                    {
+                        storeCompletionList.getUpdatedState().add( entityState );
+                    }
                 }
                 else if( instance.status() == EntityStatus.NEW )
                 {
@@ -680,7 +684,7 @@ public final class UnitOfWorkInstance
     }
 
     private static class UnitOfWorkEntityState
-        extends EntityStateInstance
+        extends DefaultEntityState
     {
         private EntityState parentState;
         private long entityVersion;

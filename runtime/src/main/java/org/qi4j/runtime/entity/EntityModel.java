@@ -35,7 +35,6 @@ import org.qi4j.runtime.entity.association.AssociationsModel;
 import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
-import org.qi4j.runtime.structure.ModuleModel;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.composite.StateDescriptor;
 import org.qi4j.spi.entity.EntityAlreadyExistsException;
@@ -158,7 +157,7 @@ public class EntityModel
 
     public EntityInstance loadInstance( UnitOfWorkInstance uow, EntityStore entityStore, QualifiedIdentity identity, ModuleInstance moduleInstance, EntityState state )
     {
-        EntityInstance instance = new EntityInstance( uow, entityStore, this, moduleInstance, identity, EntityStatus.NEW, state );
+        EntityInstance instance = new EntityInstance( uow, entityStore, this, moduleInstance, identity, EntityStatus.LOADED, state );
         return instance;
     }
 

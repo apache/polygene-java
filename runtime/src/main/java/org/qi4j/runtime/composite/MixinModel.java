@@ -16,6 +16,7 @@ package org.qi4j.runtime.composite;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import org.qi4j.composite.Composite;
@@ -43,6 +44,7 @@ public final class MixinModel
     private InjectedMethodsModel injectedMethodsModel;
     private ConcernsDeclaration concernsDeclaration;
     private SideEffectsDeclaration sideEffectsDeclaration;
+    private Set<Class> thisMixinTypes = Collections.EMPTY_SET;
 
     public MixinModel( Class mixinClass )
     {
@@ -54,6 +56,18 @@ public final class MixinModel
 
         concernsDeclaration = new ConcernsDeclaration( mixinClass );
         sideEffectsDeclaration = new SideEffectsDeclaration( mixinClass );
+
+        visitModel( new DependencyVisitor( new DependencyModel.ScopeSpecification( This.class ) )
+        {
+            public void visitDependency( DependencyModel dependencyModel )
+            {
+                if( thisMixinTypes == Collections.EMPTY_SET )
+                {
+                    thisMixinTypes = new HashSet<Class>();
+                }
+                thisMixinTypes.add( dependencyModel.rawInjectionType() );
+            }
+        } );
     }
 
     public Class mixinClass()
@@ -90,19 +104,7 @@ public final class MixinModel
 
     public Set<Class> thisMixinTypes()
     {
-        final Set<Class> mixinTypes = new HashSet<Class>();
-
-        DependencyVisitor visitor = new DependencyVisitor( new DependencyModel.ScopeSpecification( This.class ) )
-        {
-            public void visitDependency( DependencyModel dependencyModel )
-            {
-                mixinTypes.add( dependencyModel.rawInjectionType() );
-            }
-        };
-
-        visitModel( visitor );
-
-        return mixinTypes;
+        return thisMixinTypes;
     }
 
     protected FragmentInvocationHandler newInvocationHandler( Class methodClass )
@@ -127,5 +129,10 @@ public final class MixinModel
     public MethodSideEffectsModel sideEffectsFor( Method method, Class<? extends Composite> type )
     {
         return sideEffectsDeclaration.sideEffectsFor( method, type );
+    }
+
+    @Override public String toString()
+    {
+        return mixinClass.getName();
     }
 }

@@ -24,7 +24,7 @@ import java.util.Map;
 /**
  * Standard implementation of EntityState.
  */
-public class EntityStateInstance
+public class DefaultEntityState
     implements EntityState, Serializable
 {
     private final long entityVersion;
@@ -35,17 +35,17 @@ public class EntityStateInstance
     protected final Map<String, QualifiedIdentity> associations;
     protected final Map<String, Collection<QualifiedIdentity>> manyAssociations;
 
-    public EntityStateInstance( QualifiedIdentity identity )
+    public DefaultEntityState( QualifiedIdentity identity )
     {
         this( 0, identity, EntityStatus.NEW, new HashMap<String, Object>(), new HashMap<String, QualifiedIdentity>(), new HashMap<String, Collection<QualifiedIdentity>>() );
     }
 
-    public EntityStateInstance( long entityVersion,
-                                QualifiedIdentity identity,
-                                EntityStatus status,
-                                Map<String, Object> properties,
-                                Map<String, QualifiedIdentity> associations,
-                                Map<String, Collection<QualifiedIdentity>> manyAssociations )
+    public DefaultEntityState( long entityVersion,
+                               QualifiedIdentity identity,
+                               EntityStatus status,
+                               Map<String, Object> properties,
+                               Map<String, QualifiedIdentity> associations,
+                               Map<String, Collection<QualifiedIdentity>> manyAssociations )
     {
         this.entityVersion = entityVersion;
         this.identity = identity;

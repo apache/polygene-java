@@ -17,7 +17,10 @@ package org.qi4j.runtime.composite;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +38,7 @@ public class AbstractMixinsModel
 {
     protected Set<MixinDeclaration> mixins = new LinkedHashSet<MixinDeclaration>();
 
-    private Map<Method, Class> methodImplementation = new HashMap<Method, Class>();
+    private Map<Method, MixinModel> methodImplementation = new HashMap<Method, MixinModel>();
     protected List<MixinModel> mixinModels = new ArrayList<MixinModel>();
     private Map<Class, Integer> mixinIndex = new HashMap<Class, Integer>();
     private Map<Method, Integer> methodIndex = new HashMap<Method, Integer>();
@@ -79,9 +82,7 @@ public class AbstractMixinsModel
         }
         else
         {
-            Class mixinClass = methodImplementation.get( method );
-            Integer index = mixinIndex.get( mixinClass );
-            return mixinModels.get( index );
+            return methodImplementation.get( method );
         }
     }
 
@@ -108,23 +109,26 @@ public class AbstractMixinsModel
 
     private MixinModel implementMethodWithClass( Method method, Class mixinClass )
     {
-        methodImplementation.put( method, mixinClass );
-        Integer index = mixinIndex.get( mixinClass );
-        MixinModel mixinModel;
-        if( index == null )
-        {
-            index = mixinIndex.size();
-            mixinIndex.put( mixinClass, index );
+        MixinModel foundMixinModel = null;
 
-            mixinModel = new MixinModel( mixinClass );
-            mixinModels.add( mixinModel );
-        }
-        else
+        for( MixinModel mixinModel : mixinModels )
         {
-            mixinModel = mixinModels.get( index );
+            if( mixinModel.mixinClass().equals( mixinClass ) )
+            {
+                foundMixinModel = mixinModel;
+                break;
+            }
         }
-        methodIndex.put( method, index );
-        return mixinModel;
+
+        if( foundMixinModel == null )
+        {
+            foundMixinModel = new MixinModel( mixinClass );
+            mixinModels.add( foundMixinModel );
+        }
+
+        methodImplementation.put( method, foundMixinModel );
+
+        return foundMixinModel;
     }
 
     private void addMixinDeclarations( Type type, Set<MixinDeclaration> declarations )
@@ -154,6 +158,46 @@ public class AbstractMixinsModel
     // Binding
     public void bind( Resolution resolution ) throws BindingException
     {
+        // Order mixins based on @This usages
+        Collections.sort( mixinModels, new Comparator<MixinModel>()
+        {
+            public int compare( MixinModel mixinModel, MixinModel mixinModel1 )
+            {
+                if( thisUses( mixinModel, mixinModel1 ) )
+                {
+                    if( thisUses( mixinModel1, mixinModel ) )
+                    {
+                        throw new InvalidCompositeException( "Cyclic @This injection dependencies between " + mixinModel.mixinClass().getName() + " and " + mixinModel1.mixinClass().getName(), compositeType );
+                    }
+                    else
+                    {
+                        return 1;
+                    }
+                }
+                else if( thisUses( mixinModel1, mixinModel ) )
+                {
+                    return -1;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+        } );
+
+        // Populate mappings
+        for( int i = 0; i < mixinModels.size(); i++ )
+        {
+            MixinModel mixinModel = mixinModels.get( i );
+            mixinIndex.put( mixinModel.mixinClass(), i );
+        }
+
+        for( Map.Entry<Method, MixinModel> methodClassEntry : methodImplementation.entrySet() )
+        {
+            methodIndex.put( methodClassEntry.getKey(), mixinIndex.get( methodClassEntry.getValue().mixinClass() ) );
+        }
+
+
         for( MixinModel mixinComposite : mixinModels )
         {
             mixinComposite.bind( resolution );
@@ -184,4 +228,18 @@ public class AbstractMixinsModel
         return mixinModels.get( integer );
     }
 
+    private boolean thisUses( MixinModel mixinModel, MixinModel mixinModel1 )
+    {
+        Set<Class> thisMixinTypes = mixinModel.thisMixinTypes();
+        Set<Class> usedMixinClasses = new HashSet<Class>();
+        for( Class thisMixinType : thisMixinTypes )
+        {
+            for( Method method : thisMixinType.getMethods() )
+            {
+                usedMixinClasses.add( methodImplementation.get( method ).mixinClass() );
+            }
+        }
+
+        return ( usedMixinClasses.contains( mixinModel1.mixinClass() ) );
+    }
 }
