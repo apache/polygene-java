@@ -51,8 +51,6 @@ public class ApplicationXmlTest extends AbstractQi4jTest
     {
         LayerAssembly layerAssembly = module.getLayerAssembly();
         layerAssembly.getApplicationAssembly().setName( "testapp" );
-        layerAssembly.setName( "testlayer" );
-        module.setName( "testmodule" );
         module.addComposites( TestComposite.class );
     }
 

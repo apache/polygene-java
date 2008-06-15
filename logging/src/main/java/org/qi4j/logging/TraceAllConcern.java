@@ -49,7 +49,5 @@ public final class TraceAllConcern extends AbstractTraceConcern
     protected boolean doTrace()
     {
         return true;
-//        return logService.traceLevel().get() > Trace.OFF;
     }
-
 }

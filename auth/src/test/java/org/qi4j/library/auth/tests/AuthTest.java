@@ -18,8 +18,7 @@
 package org.qi4j.library.auth.tests;
 
 import java.util.Date;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -53,12 +52,12 @@ public class AuthTest
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
         module.addEntities( UserComposite.class,
-                              GroupEntity.class,
-                              RoleEntity.class,
-                              NamedPermissionEntity.class,
-                              RoleAssignmentEntity.class,
-                              SecuredRoom.class );
-        module.addComposites(  AuthorizationContextComposite.class );
+                            GroupEntity.class,
+                            RoleEntity.class,
+                            NamedPermissionEntity.class,
+                            RoleAssignmentEntity.class,
+                            SecuredRoom.class );
+        module.addComposites( AuthorizationContextComposite.class );
         module.addServices( AuthorizationService.class, MemoryEntityStoreService.class, UuidIdentityGeneratorService.class );
     }
 
@@ -67,63 +66,67 @@ public class AuthTest
         throws Exception
     {
         UnitOfWork unit = unitOfWorkFactory.newUnitOfWork();
+        try
+        {
+            // Create resource
+            SecuredRoom room = unit.newEntityBuilder( SecuredRoom.class ).newInstance();
 
-        // Create resource
-        SecuredRoom room = unit.newEntityBuilder( SecuredRoom.class ).newInstance();
+            // Create user
+            User user = unit.newEntityBuilder( User.class ).newInstance();
 
-        // Create user
-        User user = unit.newEntityBuilder( User.class ).newInstance();
+            // Create permission
+            NamedPermission permission = unit.newEntityBuilder( NamedPermission.class ).newInstance();
+            permission.name().set( "Enter room" );
 
-        // Create permission
-        NamedPermission permission = unit.newEntityBuilder( NamedPermission.class ).newInstance();
-        permission.name().set( "Enter room" );
+            // Create role
+            Role role = unit.newEntityBuilder( Role.class ).newInstance();
 
-        // Create role
-        Role role = unit.newEntityBuilder( Role.class ).newInstance();
+            role.permissions().add( permission );
 
-        role.permissions().add( permission );
+            // Create authorization service
+            Authorization authorization = serviceLocator.findService( Authorization.class ).get();
 
-        // Create authorization service
-        Authorization authorization = serviceLocator.findService( Authorization.class ).get();
+            // Create authorization context
+            CompositeBuilder<AuthorizationContext> accb = compositeBuilderFactory.newCompositeBuilder( AuthorizationContext.class );
+            accb.stateOfComposite().user().set( user );
+            accb.stateOfComposite().time().set( new Date() );
+            AuthorizationContext context = accb.newInstance();
 
-        // Create authorization context
-        CompositeBuilder<AuthorizationContext> accb = compositeBuilderFactory.newCompositeBuilder( AuthorizationContext.class );
-        accb.stateOfComposite().user().set( user );
-        accb.stateOfComposite().time().set( new Date() );
-        AuthorizationContext context = accb.newInstance();
+            // Check permission
+            assertFalse( authorization.hasPermission( permission, room, context ) );
 
-        // Check permission
-        assertFalse( authorization.hasPermission( permission, room, context ) );
+            // Create role assignment
+            RoleAssignment roleAssignment = unit.newEntityBuilder( RoleAssignment.class ).newInstance();
+            roleAssignment.assignee().set( user );
+            roleAssignment.role().set( role );
+            roleAssignment.roleType().set( RoleAssignment.RoleType.ALLOW );
+            room.roleAssignments().add( roleAssignment );
 
-        // Create role assignment
-        RoleAssignment roleAssignment = unit.newEntityBuilder( RoleAssignment.class ).newInstance();
-        roleAssignment.assignee().set( user );
-        roleAssignment.role().set( role );
-        roleAssignment.roleType().set( RoleAssignment.RoleType.ALLOW );
-        room.roleAssignments().add( roleAssignment );
+            // Check permission
+            assertTrue( authorization.hasPermission( permission, room, context ) );
 
-        // Check permission
-        assertTrue( authorization.hasPermission( permission, room, context ) );
+            // Create group
+            Group group = unit.newEntityBuilder( Group.class ).newInstance();
+            group.members().add( user );
+            user.groups().add( group );
 
-        // Create group
-        Group group = unit.newEntityBuilder( Group.class ).newInstance();
-        group.members().add( user );
-        user.groups().add( group );
+            // Create role assignment
+            RoleAssignment groupRoleAssignment = unit.newEntityBuilder( RoleAssignment.class ).newInstance();
+            groupRoleAssignment.assignee().set( group );
+            groupRoleAssignment.role().set( role );
+            groupRoleAssignment.roleType().set( RoleAssignment.RoleType.ALLOW );
+            room.roleAssignments().add( groupRoleAssignment );
 
-        // Create role assignment
-        RoleAssignment groupRoleAssignment = unit.newEntityBuilder( RoleAssignment.class ).newInstance();
-        groupRoleAssignment.assignee().set( group );
-        groupRoleAssignment.role().set( role );
-        groupRoleAssignment.roleType().set( RoleAssignment.RoleType.ALLOW );
-        room.roleAssignments().add( groupRoleAssignment );
+            room.roleAssignments().add( groupRoleAssignment );
+            room.roleAssignments().remove( roleAssignment );
 
-        room.roleAssignments().add( groupRoleAssignment );
-        room.roleAssignments().remove( roleAssignment );
-
-        // Check permission - user should still be allowed
-        assertTrue( authorization.hasPermission( permission, room, context ) );
-
-        unit.discard();
+            // Check permission - user should still be allowed
+            assertTrue( authorization.hasPermission( permission, room, context ) );
+        }
+        finally
+        {
+            unit.discard();
+        }
     }
 
     public interface SecuredRoom
