@@ -12,11 +12,12 @@
  * limitations under the License.
  *
  */
-package org.qi4j.runtime.property;
+package org.qi4j.runtime.entity;
 
 import org.qi4j.property.PropertyInfo;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.property.ImmutablePropertyInstance;
+import org.qi4j.runtime.property.PropertyInstance;
 
 /**
  * {@code EntityPropertyInstance} represents a mutable property whose value should be backed by an EntityState.
