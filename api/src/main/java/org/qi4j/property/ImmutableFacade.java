@@ -83,12 +83,8 @@ public class ImmutableFacade<T>
 
         ImmutableFacade<?> that = (ImmutableFacade<?>) o;
 
-        if( !target.equals( that.target ) )
-        {
-            return false;
-        }
+        return target.equals( that.target );
 
-        return true;
     }
 
     public int hashCode()

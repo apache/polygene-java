@@ -138,7 +138,7 @@ public class PropertyMapper
 
                 try
                 {
-                    Method propertyMethod = composite.getClass().getMethod( o.toString(), new Class[]{ Object.class } );
+                    Method propertyMethod = composite.getClass().getMethod( o.toString(), Object.class );
                     propertyMethod.invoke( composite, o1 );
                 }
                 catch( NoSuchMethodException e )

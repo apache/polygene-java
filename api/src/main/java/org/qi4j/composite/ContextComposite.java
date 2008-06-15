@@ -57,14 +57,6 @@ public class ContextComposite<T extends Composite>
             {
                 return method.invoke( get(), objects );
             }
-            catch( IllegalAccessException e )
-            {
-                throw e;
-            }
-            catch( IllegalArgumentException e )
-            {
-                throw e;
-            }
             catch( InvocationTargetException e )
             {
                 throw e.getTargetException();
