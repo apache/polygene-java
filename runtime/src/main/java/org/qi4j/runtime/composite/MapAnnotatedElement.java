@@ -25,7 +25,7 @@ import java.util.Map;
 public final class MapAnnotatedElement
     implements AnnotatedElement
 {
-    Map<Class<? extends Annotation>, Annotation> annotations;
+    final Map<Class<? extends Annotation>, Annotation> annotations;
 
     public MapAnnotatedElement( Map<Class<? extends Annotation>, Annotation> annotations )
     {

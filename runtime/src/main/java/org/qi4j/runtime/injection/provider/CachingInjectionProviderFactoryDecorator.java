@@ -25,7 +25,7 @@ import org.qi4j.runtime.injection.InjectionProviderFactory;
 public class CachingInjectionProviderFactoryDecorator
     implements InjectionProviderFactory
 {
-    private InjectionProviderFactory decoratedFactory;
+    private final InjectionProviderFactory decoratedFactory;
 
     public CachingInjectionProviderFactoryDecorator( InjectionProviderFactory decoratedFactory )
     {

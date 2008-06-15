@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.AtomicReference;
 public final class AtomicCompositeMethodInstancePool
     implements CompositeMethodInstancePool
 {
-    private AtomicReference<CompositeMethodInstance> first = new AtomicReference<CompositeMethodInstance>();
+    private final AtomicReference<CompositeMethodInstance> first = new AtomicReference<CompositeMethodInstance>();
 
     public CompositeMethodInstance getInstance()
     {

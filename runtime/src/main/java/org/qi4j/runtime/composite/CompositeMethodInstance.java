@@ -21,13 +21,15 @@ import java.lang.reflect.Method;
  */
 public final class CompositeMethodInstance
 {
-    private MethodConcernsInstance concerns;
-    private MethodSideEffectsInstance sideEffects;
-    private Method method;
+    private final MethodConcernsInstance concerns;
+    private final MethodSideEffectsInstance sideEffects;
+    private final Method method;
 
     private CompositeMethodInstance next;
 
-    public CompositeMethodInstance( MethodConcernsInstance concerns, MethodSideEffectsInstance sideEffects, Method method )
+    public CompositeMethodInstance( MethodConcernsInstance concerns,
+                                    MethodSideEffectsInstance sideEffects,
+                                    Method method )
     {
         this.concerns = concerns;
         this.sideEffects = sideEffects;

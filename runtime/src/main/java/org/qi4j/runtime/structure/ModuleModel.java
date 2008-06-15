@@ -23,12 +23,12 @@ import org.qi4j.runtime.composite.Resolution;
 public class ModuleModel
     implements Binder
 {
-    private CompositesModel compositesModel;
-    private EntitiesModel entitiesModel;
-    private ObjectsModel objectsModel;
-    private ServicesModel servicesModel;
+    private final CompositesModel compositesModel;
+    private final EntitiesModel entitiesModel;
+    private final ObjectsModel objectsModel;
+    private final ServicesModel servicesModel;
 
-    private String name;
+    private final String name;
 
     public ModuleModel( String name,
                         CompositesModel compositesModel,

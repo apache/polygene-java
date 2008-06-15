@@ -21,7 +21,8 @@ public abstract class FragmentInvocationHandler
     implements InvocationHandler
 {
     private static final String COMPACT_TRACE = "qi4j.compacttrace";
-    private static CompactLevel compactLevel = CompactLevel.proxy;
+    
+    private static final CompactLevel compactLevel;
 
     static
     {

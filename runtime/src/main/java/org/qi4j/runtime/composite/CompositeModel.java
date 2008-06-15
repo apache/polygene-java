@@ -34,7 +34,7 @@ import org.qi4j.util.MetaInfo;
 /**
  * TODO
  */
-public class CompositeModel
+public final class CompositeModel
     implements Binder, CompositeDescriptor
 {
     private static final Method LIFECYCLE_CREATE;
@@ -62,39 +62,39 @@ public class CompositeModel
         return "urn:qi4j:" + className;
     }
 
-    public static CompositeModel newModel( Class<? extends Composite> type,
-                                           Visibility visibility,
-                                           MetaInfo info )
+    public static CompositeModel newModel( final Class<? extends Composite> compositeType,
+                                           final Visibility visibility,
+                                           final MetaInfo metaInfo )
     {
-        ConstraintsModel constraintsModel = new ConstraintsModel( type );
-        MixinsModel mixinsModel = new MixinsModel( type );
+        ConstraintsModel constraintsModel = new ConstraintsModel( compositeType );
+        MixinsModel mixinsModel = new MixinsModel( compositeType );
         StateModel stateModel = new StateModel( new PropertiesModel( constraintsModel ) );
-        ConcernsDeclaration concernsModel = new ConcernsDeclaration( type );
-        SideEffectsDeclaration sideEffectsModel = new SideEffectsDeclaration( type );
-        CompositeMethodsModel compositeMethodsModel = new CompositeMethodsModel( type, constraintsModel, concernsModel, sideEffectsModel, mixinsModel );
+        ConcernsDeclaration concernsModel = new ConcernsDeclaration( compositeType );
+        SideEffectsDeclaration sideEffectsModel = new SideEffectsDeclaration( compositeType );
+        CompositeMethodsModel compositeMethodsModel = new CompositeMethodsModel( compositeType, constraintsModel, concernsModel, sideEffectsModel, mixinsModel );
 
-        return new CompositeModel( type,
+        return new CompositeModel( compositeType,
                                    visibility,
-                                   info,
+                                   metaInfo,
                                    mixinsModel,
                                    stateModel,
                                    compositeMethodsModel );
     }
 
-    private MixinsModel mixinsModel;
-    private CompositeMethodsModel compositeMethodsModel;
-    private Class<? extends Composite> compositeType;
-    private Visibility visibility;
-    private MetaInfo metaInfo;
-    private StateModel stateModel;
-    private Class<? extends Composite> proxyClass;
+    private final MixinsModel mixinsModel;
+    private final CompositeMethodsModel compositeMethodsModel;
+    private final Class<? extends Composite> compositeType;
+    private final Visibility visibility;
+    private final MetaInfo metaInfo;
+    private final StateModel stateModel;
+    private final Class<? extends Composite> proxyClass;
 
-    public CompositeModel( Class<? extends Composite> compositeType,
-                           Visibility visibility,
-                           MetaInfo metaInfo,
-                           MixinsModel mixinsModel,
-                           StateModel stateModel,
-                           CompositeMethodsModel compositeMethodsModel
+    private CompositeModel( final Class<? extends Composite> compositeType,
+                           final Visibility visibility,
+                           final MetaInfo metaInfo,
+                           final MixinsModel mixinsModel,
+                           final StateModel stateModel,
+                           final CompositeMethodsModel compositeMethodsModel
     )
     {
         this.compositeType = compositeType;

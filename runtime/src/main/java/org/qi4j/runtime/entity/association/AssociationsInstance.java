@@ -27,9 +27,9 @@ import org.qi4j.spi.entity.EntityState;
 public class AssociationsInstance
 {
     private Map<Method, AbstractAssociation> associations;
-    private AssociationsModel associationsModel;
-    private UnitOfWorkInstance uow;
-    private EntityState state;
+    private final AssociationsModel associationsModel;
+    private final UnitOfWorkInstance uow;
+    private final EntityState state;
 
     public AssociationsInstance( AssociationsModel associationsModel, UnitOfWorkInstance uow, EntityState state )
     {

@@ -31,8 +31,8 @@ import static org.qi4j.util.ClassUtil.*;
  */
 public final class ConcernsDeclaration
 {
-    private List<ConcernDeclaration> concerns = new ArrayList<ConcernDeclaration>();
-    private Map<Method, MethodConcernsModel> methodConcernsModels = new HashMap<Method, MethodConcernsModel>();
+    private final List<ConcernDeclaration> concerns = new ArrayList<ConcernDeclaration>();
+    private final Map<Method, MethodConcernsModel> methodConcernsModels = new HashMap<Method, MethodConcernsModel>();
 
     public ConcernsDeclaration( Class type )
     {

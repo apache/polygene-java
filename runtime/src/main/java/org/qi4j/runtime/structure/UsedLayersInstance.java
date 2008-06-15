@@ -24,7 +24,7 @@ import org.qi4j.structure.Visibility;
  */
 public final class UsedLayersInstance
 {
-    private List<LayerInstance> usedLayerInstances;
+    private final List<LayerInstance> usedLayerInstances;
 
     public UsedLayersInstance( List<LayerInstance> usedLayerInstances )
     {

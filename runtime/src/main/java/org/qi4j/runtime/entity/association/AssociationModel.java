@@ -42,12 +42,12 @@ import org.qi4j.util.MetaInfo;
 public class AssociationModel
     implements AssociationDescriptor
 {
-    private MetaInfo metaInfo;
-    private String name;
-    private Type type;
-    private Method accessor;
-    private String qualifiedName;
-    private ValueConstraintsInstance constraints;
+    private final MetaInfo metaInfo;
+    private final String name;
+    private final Type type;
+    private final Method accessor;
+    private final String qualifiedName;
+    private final ValueConstraintsInstance constraints;
 
     public AssociationModel( Method accessor, ValueConstraintsInstance valueConstraintsInstance, MetaInfo metaInfo )
     {

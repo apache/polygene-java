@@ -22,9 +22,9 @@ import org.qi4j.service.ServiceInstanceFactory;
  */
 public class ServiceInstance<T>
 {
-    private T instance;
-    private ServiceInstanceFactory factory;
-    private ServiceDescriptor serviceDescriptor;
+    private final T instance;
+    private final ServiceInstanceFactory factory;
+    private final ServiceDescriptor serviceDescriptor;
 
     public ServiceInstance( T instance,
                             ServiceInstanceFactory factory,

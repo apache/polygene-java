@@ -22,8 +22,8 @@ import org.qi4j.runtime.composite.CompositeBuilderInstance;
  */
 public class CompositesInstance
 {
-    private CompositesModel composites;
-    private ModuleInstance moduleInstance;
+    private final CompositesModel composites;
+    private final ModuleInstance moduleInstance;
 
     public CompositesInstance( CompositesModel composites, ModuleInstance moduleInstance )
     {

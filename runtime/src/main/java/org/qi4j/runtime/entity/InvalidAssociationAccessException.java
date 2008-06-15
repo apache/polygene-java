@@ -18,7 +18,7 @@ import java.lang.reflect.Method;
 
 public class InvalidAssociationAccessException extends InvalidApplicationException
 {
-    private Method accessor;
+    private final Method accessor;
 
     public InvalidAssociationAccessException( Method accessor )
     {

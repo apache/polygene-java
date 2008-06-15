@@ -43,18 +43,18 @@ import org.qi4j.structure.Visibility;
 public class ModuleInstance
     implements Module, Activatable
 {
-    private ModuleModel moduleModel;
-    private LayerInstance layerInstance;
-    private CompositesInstance composites;
-    private EntitiesInstance entities;
-    private ObjectsInstance objects;
-    private ServicesInstance services;
+    private final ModuleModel moduleModel;
+    private final LayerInstance layerInstance;
+    private final CompositesInstance composites;
+    private final EntitiesInstance entities;
+    private final ObjectsInstance objects;
+    private final ServicesInstance services;
 
-    private CompositeBuilderFactory compositeBuilderFactory;
-    private ObjectBuilderFactory objectBuilderFactory;
-    private UnitOfWorkFactory unitOfWorkFactory;
-    private ServiceFinder serviceFinder;
-    private ClassLoader classLoader;
+    private final CompositeBuilderFactory compositeBuilderFactory;
+    private final ObjectBuilderFactory objectBuilderFactory;
+    private final UnitOfWorkFactory unitOfWorkFactory;
+    private final ServiceFinder serviceFinder;
+    private final ClassLoader classLoader;
 
     public ModuleInstance( ModuleModel moduleModel, LayerInstance layerInstance, CompositesModel compositesModel, EntitiesModel entitiesModel, ObjectsModel objectsModel, ServicesModel servicesModel )
     {

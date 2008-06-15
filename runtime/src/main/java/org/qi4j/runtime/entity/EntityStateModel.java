@@ -36,8 +36,8 @@ import org.qi4j.spi.property.PropertyDescriptor;
 public class EntityStateModel
     implements StateDescriptor
 {
-    private EntityPropertiesModel propertiesModel;
-    private AssociationsModel associationsModel;
+    private final EntityPropertiesModel propertiesModel;
+    private final AssociationsModel associationsModel;
 
     public EntityStateModel( EntityPropertiesModel propertiesModel, AssociationsModel associationsModel )
     {
@@ -105,8 +105,8 @@ public class EntityStateModel
     private static final class StateInstance
         implements State
     {
-        private PropertiesInstance properties;
-        private AssociationsInstance associations;
+        private final PropertiesInstance properties;
+        private final AssociationsInstance associations;
 
         private StateInstance( PropertiesInstance properties, AssociationsInstance associations )
         {
@@ -131,10 +131,10 @@ public class EntityStateModel
         private Map<Method, Property> properties;
         private Map<Method, AbstractAssociation> associations;
 
-        private EntityPropertiesModel entityPropertiesModel;
-        private AssociationsModel associationsModel;
-        private EntityState entityState;
-        private UnitOfWorkInstance uow;
+        private final EntityPropertiesModel entityPropertiesModel;
+        private final AssociationsModel associationsModel;
+        private final EntityState entityState;
+        private final UnitOfWorkInstance uow;
 
         private EntityStateInstance( EntityPropertiesModel entityPropertiesModel, AssociationsModel associationsModel, EntityState entityState, UnitOfWorkInstance uow )
         {

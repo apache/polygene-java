@@ -37,12 +37,12 @@ public final class DependencyModel
     implements Binder
 {
     // Model
-    private Annotation injectionAnnotation;
-    private Type injectionType;
-    private Class<?> injectedClass;
-    private Class<?> rawInjectionClass;
-    private Class<?> injectionClass;
-    private boolean optional;
+    private final Annotation injectionAnnotation;
+    private final Type injectionType;
+    private final Class<?> injectedClass;
+    private final Class<?> rawInjectionClass;
+    private final Class<?> injectionClass;
+    private final boolean optional;
 
     // Binding
     private InjectionProvider injectionProvider;
@@ -338,7 +338,7 @@ public final class DependencyModel
     public static class ScopeSpecification
         implements Specification<DependencyModel>
     {
-        private Class<? extends Annotation> scope;
+        private final Class<? extends Annotation> scope;
 
         public ScopeSpecification( Class<? extends Annotation> scope )
         {

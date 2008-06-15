@@ -26,7 +26,7 @@ import org.qi4j.runtime.structure.ModelVisitor;
 public final class MethodConstraintsModel
 {
     private List<ValueConstraintsModel> parameterConstraintModels;
-    private Method method;
+    private final Method method;
 
     public MethodConstraintsModel( Method method, ConstraintsModel constraintsModel )
     {

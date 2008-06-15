@@ -30,10 +30,10 @@ import org.qi4j.structure.Visibility;
 public class ServicesInstance
     implements Activatable
 {
-    private ServicesModel servicesModel;
-    private List<ServiceReferenceInstance> serviceReferences;
-    private Activator activator;
-    private Map<String, ServiceReferenceInstance> mapIdentityServiceReference = new HashMap<String, ServiceReferenceInstance>();
+    private final ServicesModel servicesModel;
+    private final List<ServiceReferenceInstance> serviceReferences;
+    private final Activator activator;
+    private final Map<String, ServiceReferenceInstance> mapIdentityServiceReference = new HashMap<String, ServiceReferenceInstance>();
 
     public ServicesInstance( ServicesModel servicesModel, List<ServiceReferenceInstance> serviceReferences )
     {

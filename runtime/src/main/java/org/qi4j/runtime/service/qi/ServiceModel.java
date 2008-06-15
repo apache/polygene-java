@@ -28,12 +28,12 @@ import org.qi4j.util.MetaInfo;
  */
 public class ServiceModel
 {
-    private Class type;
-    private Visibility visibility;
-    private Class<? extends ServiceInstanceFactory> serviceFactory;
-    private String identity;
-    private boolean instantiateOnStartup;
-    private MetaInfo metaInfo;
+    private final Class type;
+    private final Visibility visibility;
+    private final Class<? extends ServiceInstanceFactory> serviceFactory;
+    private final String identity;
+    private final boolean instantiateOnStartup;
+    private final MetaInfo metaInfo;
 
     public ServiceModel( Class compositeType,
                          Visibility visibility,

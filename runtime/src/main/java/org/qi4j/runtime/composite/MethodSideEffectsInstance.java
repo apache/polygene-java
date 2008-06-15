@@ -23,11 +23,11 @@ import java.util.List;
  */
 public final class MethodSideEffectsInstance
 {
-    private Method method;
-    private List<InvocationHandler> sideEffects;
-    private SideEffectInvocationHandlerResult resultInvocationHandler;
-    private ProxyReferenceInvocationHandler proxyHandler;
-    private boolean hasSideEffects;
+    private final Method method;
+    private final List<InvocationHandler> sideEffects;
+    private final SideEffectInvocationHandlerResult resultInvocationHandler;
+    private final ProxyReferenceInvocationHandler proxyHandler;
+    private final boolean hasSideEffects;
 
     public MethodSideEffectsInstance( Method method, List<InvocationHandler> sideEffects, SideEffectInvocationHandlerResult resultInvocationHandler, ProxyReferenceInvocationHandler proxyHandler )
     {

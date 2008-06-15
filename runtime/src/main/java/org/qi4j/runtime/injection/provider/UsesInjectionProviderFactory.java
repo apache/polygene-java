@@ -24,7 +24,7 @@ public final class UsesInjectionProviderFactory
 
     private class UsesInjectionProvider implements InjectionProvider
     {
-        private DependencyModel dependency;
+        private final DependencyModel dependency;
 
         public UsesInjectionProvider( DependencyModel dependency )
         {

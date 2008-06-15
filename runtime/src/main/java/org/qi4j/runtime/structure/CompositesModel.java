@@ -27,7 +27,7 @@ import org.qi4j.structure.Visibility;
 public class CompositesModel
     implements Binder
 {
-    private List<CompositeModel> compositeModels;
+    private final List<CompositeModel> compositeModels;
 
     public CompositesModel( List<CompositeModel> compositeModels )
     {

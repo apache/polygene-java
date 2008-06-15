@@ -39,7 +39,7 @@ public class PropertyModel
 {
     private static final long serialVersionUID = 1L;
 
-    private static Map<Type, Object> defaultValues;
+    private static final Map<Type, Object> defaultValues;
 
     static
     {
@@ -57,15 +57,15 @@ public class PropertyModel
         return defaultValues.get( type );
     }
 
-    private String name;
-    private Type type;
-    private Method accessor; // Interface accessor
-    private String qualifiedName;
+    private final String name;
+    private final Type type;
+    private final Method accessor; // Interface accessor
+    private final String qualifiedName;
 
-    private ValueConstraintsInstance constraints; // May be null
-    private MetaInfo metaInfo;
-    private Object defaultValue;
-    private boolean immutable;
+    private final ValueConstraintsInstance constraints; // May be null
+    private final MetaInfo metaInfo;
+    private final Object defaultValue;
+    private final boolean immutable;
 
     public PropertyModel( Method anAccessor, ValueConstraintsInstance constraints, MetaInfo metaInfo, Object defaultValue )
     {

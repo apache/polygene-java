@@ -27,9 +27,9 @@ import org.qi4j.runtime.structure.ModelVisitor;
 public final class ConstructorModel
     implements Binder
 {
-    private Constructor constructor;
+    private final Constructor constructor;
 
-    private InjectedParametersModel parameters;
+    private final InjectedParametersModel parameters;
 
     public ConstructorModel( Constructor constructor, InjectedParametersModel parameters )
     {

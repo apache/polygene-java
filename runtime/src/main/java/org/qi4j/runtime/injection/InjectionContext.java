@@ -26,12 +26,12 @@ import org.qi4j.structure.Module;
  */
 public final class InjectionContext
 {
-    private CompositeInstance compositeInstance;
-    private UsesInstance uses;
-    private State state;
-    private Module moduleInstance;
-    private Object next;
-    private ProxyReferenceInvocationHandler proxyHandler;
+    private final CompositeInstance compositeInstance;
+    private final Module moduleInstance;
+    private final UsesInstance uses;
+    private final State state;
+    private final Object next;
+    private final ProxyReferenceInvocationHandler proxyHandler;
 
     // For mixins
     public InjectionContext( CompositeInstance compositeInstance, UsesInstance uses, State state )
@@ -40,20 +40,29 @@ public final class InjectionContext
         this.moduleInstance = compositeInstance.module();
         this.uses = uses;
         this.state = state;
+        this.next = null;
+        this.proxyHandler = null;
     }
 
     // For concerns and side-effects
     public InjectionContext( ModuleInstance moduleInstance, Object next, ProxyReferenceInvocationHandler proxyHandler )
     {
+        this.compositeInstance = null;
         this.moduleInstance = moduleInstance;
+        this.uses = null;
         this.next = next;
+        this.state = null;
         this.proxyHandler = proxyHandler;
     }
 
     public InjectionContext( ModuleInstance moduleInstance, UsesInstance uses )
     {
+        this.compositeInstance = null;
         this.moduleInstance = moduleInstance;
         this.uses = uses;
+        this.state = null;
+        this.next = null;
+        this.proxyHandler = null;
     }
 
     public Module moduleInstance()

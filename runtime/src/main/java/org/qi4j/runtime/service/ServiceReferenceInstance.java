@@ -39,11 +39,11 @@ public final class ServiceReferenceInstance<T>
 {
     private volatile ServiceInstance<T> serviceInstance;
     private Object instance;
-    private T serviceProxy;
+    private final T serviceProxy;
     private int referenceCounter = 0;
-    private Module module;
-    private ServiceModel serviceModel;
-    private Activator activator = new Activator();
+    private final Module module;
+    private final ServiceModel serviceModel;
+    private final Activator activator = new Activator();
 
     public ServiceReferenceInstance( ServiceModel serviceModel, Module module )
     {

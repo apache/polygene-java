@@ -25,7 +25,7 @@ public final class UsesInstance
 {
     public static final UsesInstance NO_USES = new UsesInstance();
 
-    private Set<Object> uses = new HashSet<Object>();
+    private final Set<Object> uses = new HashSet<Object>();
 
     public void use( Object... objects )
     {

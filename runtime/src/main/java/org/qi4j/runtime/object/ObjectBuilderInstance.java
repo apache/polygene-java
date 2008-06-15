@@ -27,10 +27,10 @@ public class ObjectBuilderInstance<T>
     implements ObjectBuilder<T>
 {
 
-    protected ModuleInstance moduleInstance;
-    protected ObjectModel objectModel;
+    protected final ModuleInstance moduleInstance;
+    protected final ObjectModel objectModel;
     private UsesInstance uses;
-    private Class<T> objectType;
+    private final Class<T> objectType;
 
     public ObjectBuilderInstance( ModuleInstance moduleInstance, ObjectModel objectModel )
     {

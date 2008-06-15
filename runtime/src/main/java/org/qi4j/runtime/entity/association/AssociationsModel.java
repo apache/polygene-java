@@ -35,11 +35,11 @@ import org.qi4j.util.MetaInfo;
  */
 public class AssociationsModel
 {
-    private Set<Class> mixinTypes = new HashSet<Class>();
-    private List<AssociationModel> associationModels = new ArrayList<AssociationModel>();
-    private Map<Method, AssociationModel> mapMethodAssociationModel = new HashMap<Method, AssociationModel>();
-    private Map<String, Method> accessors = new HashMap<String, Method>();
-    private ConstraintsModel constraints;
+    private final Set<Class> mixinTypes = new HashSet<Class>();
+    private final List<AssociationModel> associationModels = new ArrayList<AssociationModel>();
+    private final Map<Method, AssociationModel> mapMethodAssociationModel = new HashMap<Method, AssociationModel>();
+    private final Map<String, Method> accessors = new HashMap<String, Method>();
+    private final ConstraintsModel constraints;
 
     public AssociationsModel( ConstraintsModel constraints )
     {

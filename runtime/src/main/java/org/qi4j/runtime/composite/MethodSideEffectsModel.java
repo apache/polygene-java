@@ -29,7 +29,7 @@ import org.qi4j.runtime.structure.ModuleInstance;
 public final class MethodSideEffectsModel
     implements Binder
 {
-    private Method method;
+    private final Method method;
     private List<MethodSideEffectModel> sideEffectModels = null;
 
     public MethodSideEffectsModel( Method method, List<MethodSideEffectModel> sideEffectModels )

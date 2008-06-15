@@ -22,8 +22,8 @@ import org.qi4j.runtime.object.ObjectBuilderInstance;
  */
 public class ObjectsInstance
 {
-    private ModuleInstance moduleInstance;
-    private ObjectsModel objects;
+    private final ModuleInstance moduleInstance;
+    private final ObjectsModel objects;
 
     public ObjectsInstance( ObjectsModel objectsModel, ModuleInstance moduleInstance )
     {

@@ -23,7 +23,7 @@ import java.util.Map;
  */
 public final class UsedLayersModel
 {
-    private List<LayerModel> usedLayers;
+    private final List<LayerModel> usedLayers;
 
     public UsedLayersModel( List<LayerModel> usedLayers )
     {

@@ -25,7 +25,7 @@ import org.qi4j.runtime.structure.Specification;
 public abstract class DependencyVisitor
     extends ModelVisitor
 {
-    Specification<DependencyModel> specification;
+    private final Specification<DependencyModel> specification;
 
     public DependencyVisitor( Specification<DependencyModel> specification )
     {

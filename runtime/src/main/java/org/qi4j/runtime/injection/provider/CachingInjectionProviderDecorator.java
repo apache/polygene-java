@@ -24,7 +24,7 @@ import org.qi4j.runtime.injection.InjectionProvider;
 public final class CachingInjectionProviderDecorator
     implements InjectionProvider
 {
-    private InjectionProvider decoratedProvider;
+    private final InjectionProvider decoratedProvider;
     private volatile Object singletonInstance;
 
     public CachingInjectionProviderDecorator( InjectionProvider injectionProvider )

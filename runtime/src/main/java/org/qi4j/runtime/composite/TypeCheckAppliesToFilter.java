@@ -23,7 +23,7 @@ import org.qi4j.composite.AppliesToFilter;
 final class TypeCheckAppliesToFilter
     implements AppliesToFilter
 {
-    private Class type;
+    private final Class type;
 
     TypeCheckAppliesToFilter( Class type )
     {

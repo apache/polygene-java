@@ -26,11 +26,11 @@ import org.qi4j.composite.AppliesToFilter;
  */
 public final class MixinDeclaration
 {
-    private Class mixinClass;
-    private Type declaredIn;
+    private final Class mixinClass;
+    private final Type declaredIn;
 
     private AppliesToFilter appliesToFilter;
-    private boolean generic;
+    private final boolean generic;
 
     public MixinDeclaration( Class mixinClass, Type declaredIn )
     {

@@ -31,7 +31,7 @@ import org.qi4j.util.ClassUtil;
 public final class InjectedMethodsModel
 {
     // Model
-    private List<InjectedMethodModel> methodModels = new ArrayList<InjectedMethodModel>();
+    private final List<InjectedMethodModel> methodModels = new ArrayList<InjectedMethodModel>();
 
     public InjectedMethodsModel( Class fragmentClass )
     {

@@ -120,7 +120,7 @@ public final class ListAssociationInstance<T>
     private class ListAssociationListIterator
         implements ListIterator<T>
     {
-        private ListIterator<QualifiedIdentity> idIterator;
+        private final ListIterator<QualifiedIdentity> idIterator;
 
         public ListAssociationListIterator( ListIterator<QualifiedIdentity> idIterator )
         {

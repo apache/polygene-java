@@ -25,8 +25,9 @@ import org.qi4j.spi.entity.EntityState;
  */
 public class EntityPropertiesInstance
 {
-    private EntityPropertiesModel entityPropertiesModel;
-    private EntityState entityState;
+    private final EntityPropertiesModel entityPropertiesModel;
+    private final EntityState entityState;
+    
     private Map<Method, Property> properties;
 
     public EntityPropertiesInstance( EntityPropertiesModel entityPropertiesModel, EntityState entityState )

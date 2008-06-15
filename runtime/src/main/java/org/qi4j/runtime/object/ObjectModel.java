@@ -33,12 +33,12 @@ import org.qi4j.util.MetaInfo;
 public class ObjectModel
     implements Binder
 {
-    private Class objectType;
-    private Visibility visibility;
-    private MetaInfo metaInfo;
-    private ConstructorsModel constructorsModel;
-    private InjectedFieldsModel injectedFieldsModel;
-    private InjectedMethodsModel injectedMethodsModel;
+    private final Class objectType;
+    private final Visibility visibility;
+    private final MetaInfo metaInfo;
+    private final ConstructorsModel constructorsModel;
+    private final InjectedFieldsModel injectedFieldsModel;
+    private final InjectedMethodsModel injectedMethodsModel;
 
     public ObjectModel( Class objectType,
                         Visibility visibility,

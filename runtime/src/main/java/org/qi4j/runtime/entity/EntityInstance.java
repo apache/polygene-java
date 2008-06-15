@@ -44,13 +44,14 @@ public class EntityInstance
         return (EntityInstance) Proxy.getInvocationHandler( composite );
     }
 
-    private EntityComposite proxy;
+    private final EntityComposite proxy;
+    private final UnitOfWorkInstance uow;
+    private final EntityStore store;
+    private final EntityModel entity;
+    private final ModuleInstance moduleInstance;
+    private final QualifiedIdentity identity;
+
     private Object[] mixins;
-    private UnitOfWorkInstance uow;
-    private EntityStore store;
-    private EntityModel entity;
-    private ModuleInstance moduleInstance;
-    private QualifiedIdentity identity;
     private EntityState state;
     private EntityStatus status;
 

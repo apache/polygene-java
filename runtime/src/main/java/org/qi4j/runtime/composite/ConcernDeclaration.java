@@ -29,6 +29,6 @@ public final class ConcernDeclaration
 
     @Override public String toString()
     {
-        return "Concern " + modifierClass.getName() + " declared in " + declaredIn;
+        return "Concern " + super.toString();
     }
 }

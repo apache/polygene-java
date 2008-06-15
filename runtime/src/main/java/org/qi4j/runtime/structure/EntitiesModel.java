@@ -27,7 +27,7 @@ import org.qi4j.structure.Visibility;
 public class EntitiesModel
     implements Binder
 {
-    private List<EntityModel> entityModels;
+    private final List<EntityModel> entityModels;
 
     public EntitiesModel( List<EntityModel> entityModels )
     {

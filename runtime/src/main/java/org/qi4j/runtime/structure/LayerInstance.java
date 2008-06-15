@@ -30,11 +30,11 @@ import org.qi4j.structure.Visibility;
 public class LayerInstance
     implements Activatable
 {
-    private LayerModel model;
-    private ApplicationInstance applicationInstance;
-    private List<ModuleInstance> moduleInstances;
-    private Activator moduleActivator;
-    private UsedLayersInstance usedLayersInstance;
+    private final LayerModel model;
+    private final ApplicationInstance applicationInstance;
+    private final List<ModuleInstance> moduleInstances;
+    private final Activator moduleActivator;
+    private final UsedLayersInstance usedLayersInstance;
 
     public LayerInstance( LayerModel model, ApplicationInstance applicationInstance, List<ModuleInstance> moduleInstances, UsedLayersInstance usedLayersInstance )
     {

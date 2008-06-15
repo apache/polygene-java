@@ -64,7 +64,7 @@ public final class PropertyInjectionProviderFactory
 
     private class PropertyInjectionProvider implements InjectionProvider
     {
-        private PropertyDescriptor propertyDescriptor;
+        private final PropertyDescriptor propertyDescriptor;
 
         public PropertyInjectionProvider( PropertyDescriptor propertyDescriptor )
         {

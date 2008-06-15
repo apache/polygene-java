@@ -35,10 +35,10 @@ import org.qi4j.util.MetaInfo;
  */
 public class PropertiesModel
 {
-    Set<Class> mixinTypes = new HashSet<Class>();
-    List<PropertyModel> propertyModels = new ArrayList<PropertyModel>();
-    Map<String, Method> accessors = new HashMap<String, Method>();
-    private ConstraintsModel constraints;
+    final Set<Class> mixinTypes = new HashSet<Class>();
+    final List<PropertyModel> propertyModels = new ArrayList<PropertyModel>();
+    final Map<String, Method> accessors = new HashMap<String, Method>();
+    private final ConstraintsModel constraints;
 
     public PropertiesModel( ConstraintsModel constraints )
     {

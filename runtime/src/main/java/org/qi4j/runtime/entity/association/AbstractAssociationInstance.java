@@ -90,8 +90,8 @@ public class AbstractAssociationInstance<T>
         return "urn:qi4j:association:" + getQualifiedName( accessor );
     }
 
-    protected AssociationInfo associationInfo;
-    protected UnitOfWorkInstance unitOfWork;
+    protected final AssociationInfo associationInfo;
+    protected final UnitOfWorkInstance unitOfWork;
 
     public AbstractAssociationInstance( AssociationInfo associationInfo, UnitOfWorkInstance unitOfWork )
     {

@@ -24,7 +24,7 @@ import org.qi4j.spi.entity.EntityState;
  */
 public class PropertiesInstance
 {
-    protected Map<Method, Property> properties;
+    protected final Map<Method, Property> properties;
 
     public PropertiesInstance( Map<Method, Property> properties )
     {

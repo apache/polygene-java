@@ -27,16 +27,15 @@ public final class CompositeMethodModel
     implements Binder
 {
     // Model
-    private Method method;
-    private MethodConstraintsModel methodConstraints;
-    private MethodConcernsModel methodConcerns;
-    private MethodSideEffectsModel methodSideEffects;
+    private final Method method;
+    private final MethodConstraintsModel methodConstraints;
+    private final MethodConcernsModel methodConcerns;
+    private final MethodSideEffectsModel methodSideEffects;
+    private final AbstractMixinsModel mixins;
 
     // Context
-    private CompositeMethodInstancePool instancePool = new SynchronizedCompositeMethodInstancePool();
+    private final CompositeMethodInstancePool instancePool = new SynchronizedCompositeMethodInstancePool();
     private MethodConstraintsInstance methodConstraintsInstance;
-
-    private AbstractMixinsModel mixins;
 
     public CompositeMethodModel( Method method,
                                  MethodConstraintsModel methodConstraintsModel,
@@ -60,7 +59,13 @@ public final class CompositeMethodModel
     // Binding
     public void bind( Resolution resolution ) throws BindingException
     {
-        resolution = new Resolution( resolution.application(), resolution.layer(), resolution.module(), resolution.composite(), this, null );
+        resolution = new Resolution( resolution.application(),
+                                     resolution.layer(),
+                                     resolution.module(),
+                                     resolution.composite(),
+                                     this,
+                                     null //no field
+        );
 
         methodConcerns.bind( resolution );
         methodSideEffects.bind( resolution );

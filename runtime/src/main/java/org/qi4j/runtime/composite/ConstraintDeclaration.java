@@ -24,10 +24,10 @@ import org.qi4j.composite.Constraint;
  */
 public final class ConstraintDeclaration
 {
-    private Class<? extends Constraint<?, ?>> constraintClass;
-    private Type declaredIn;
-    private Class constraintAnnotationType;
-    private Class constraintValueType;
+    private final Class<? extends Constraint<?, ?>> constraintClass;
+    private final Type declaredIn;
+    private final Class constraintAnnotationType;
+    private final Class constraintValueType;
 
     public ConstraintDeclaration( Class<? extends Constraint<?, ?>> constraintClass, Type type )
     {

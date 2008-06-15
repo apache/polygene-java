@@ -27,8 +27,8 @@ import org.qi4j.runtime.structure.Specification;
  */
 public final class InjectedFieldModel
 {
-    private DependencyModel dependencyModel;
-    private Field injectedField;
+    private final DependencyModel dependencyModel;
+    private final Field injectedField;
 
     public InjectedFieldModel( Field injectedField, DependencyModel dependencyModel )
     {

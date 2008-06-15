@@ -34,10 +34,10 @@ public final class DefaultCompositeInstance
         return (DefaultCompositeInstance) Proxy.getInvocationHandler( composite );
     }
 
-    private Composite proxy;
-    private Object[] mixins;
-    private CompositeModel compositeModel;
-    private ModuleInstance moduleInstance;
+    private final Composite proxy;
+    private final Object[] mixins;
+    private final CompositeModel compositeModel;
+    private final ModuleInstance moduleInstance;
 
     public DefaultCompositeInstance( CompositeModel compositeModel, ModuleInstance moduleInstance, Object[] mixins )
     {

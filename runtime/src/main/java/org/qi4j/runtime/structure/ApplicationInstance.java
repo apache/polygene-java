@@ -28,11 +28,11 @@ import org.qi4j.structure.Module;
 public class ApplicationInstance
     implements Application
 {
-    private ApplicationModel model;
-    private Qi4jRuntime runtime;
-    private List<LayerInstance> layerInstances;
-    private Activator layerActivator;
-    private String uri;
+    private final ApplicationModel model;
+    private final Qi4jRuntime runtime;
+    private final List<LayerInstance> layerInstances;
+    private final Activator layerActivator;
+    private final String uri;
 
     public ApplicationInstance( ApplicationModel model, Qi4jRuntime runtime, List<LayerInstance> layerInstances )
     {

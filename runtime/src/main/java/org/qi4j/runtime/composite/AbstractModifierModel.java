@@ -31,12 +31,13 @@ import static org.qi4j.util.ClassUtil.toClassArray;
 public abstract class AbstractModifierModel
     implements Binder
 {
-    private Class modifierClass;
-    protected ConstructorsModel constructorsModel;
-    protected InjectedFieldsModel injectedFieldsModel;
-    protected InjectedMethodsModel injectedMethodsModel;
+    private final Class modifierClass;
 
-    private Class[] nextInterfaces;
+    private final ConstructorsModel constructorsModel;
+    private final InjectedFieldsModel injectedFieldsModel;
+    private final InjectedMethodsModel injectedMethodsModel;
+
+    private final Class[] nextInterfaces;
 
     public AbstractModifierModel( Class modifierClass )
     {

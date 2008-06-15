@@ -31,9 +31,11 @@ import org.qi4j.spi.entity.QualifiedIdentity;
  */
 public class EntitiesInstance
 {
-    private EntitiesModel entities;
-    private ModuleInstance moduleInstance;
+    private final EntitiesModel entities;
+    private final ModuleInstance moduleInstance;
+    //lazy assigned on accessor
     private EntityStore store;
+    //lazy assigned on accessor
     private IdentityGenerator generator;
 
     public EntitiesInstance( EntitiesModel entities, ModuleInstance moduleInstance )

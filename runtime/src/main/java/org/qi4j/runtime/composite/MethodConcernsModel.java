@@ -28,8 +28,8 @@ import org.qi4j.runtime.structure.ModuleInstance;
 public final class MethodConcernsModel
     implements Binder
 {
-    private List<MethodConcernModel> concernsForMethod;
-    private Method method;
+    private final List<MethodConcernModel> concernsForMethod;
+    private final Method method;
 
     public MethodConcernsModel( Method method, List<MethodConcernModel> concernsForMethod )
     {

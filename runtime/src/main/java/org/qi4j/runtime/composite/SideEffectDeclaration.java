@@ -29,6 +29,6 @@ public final class SideEffectDeclaration
 
     @Override public String toString()
     {
-        return "Side-effect " + modifierClass.getName() + " declared in " + declaredIn;
+        return "Side-effect " + super.toString();
     }
 }

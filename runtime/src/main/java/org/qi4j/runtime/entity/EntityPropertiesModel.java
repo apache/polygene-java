@@ -39,11 +39,11 @@ import org.qi4j.util.MetaInfo;
  */
 public class EntityPropertiesModel
 {
-    private Set<Class> mixinTypes = new HashSet<Class>();
-    private List<EntityPropertyModel> propertyModels = new ArrayList<EntityPropertyModel>();
-    private Map<Method, EntityPropertyModel> mapMethodPropertyModel = new HashMap<Method, EntityPropertyModel>();
-    private Map<String, Method> accessors = new HashMap<String, Method>();
-    private ConstraintsModel constraints;
+    private final Set<Class> mixinTypes = new HashSet<Class>();
+    private final List<EntityPropertyModel> propertyModels = new ArrayList<EntityPropertyModel>();
+    private final Map<Method, EntityPropertyModel> mapMethodPropertyModel = new HashMap<Method, EntityPropertyModel>();
+    private final Map<String, Method> accessors = new HashMap<String, Method>();
+    private final ConstraintsModel constraints;
 
     public EntityPropertiesModel( ConstraintsModel constraints )
     {

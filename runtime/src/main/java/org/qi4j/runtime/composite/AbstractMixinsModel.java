@@ -36,13 +36,13 @@ import org.qi4j.util.ClassUtil;
  */
 public class AbstractMixinsModel
 {
-    protected Set<MixinDeclaration> mixins = new LinkedHashSet<MixinDeclaration>();
+    protected final Set<MixinDeclaration> mixins = new LinkedHashSet<MixinDeclaration>();
 
-    private Map<Method, MixinModel> methodImplementation = new HashMap<Method, MixinModel>();
-    protected List<MixinModel> mixinModels = new ArrayList<MixinModel>();
-    private Map<Class, Integer> mixinIndex = new HashMap<Class, Integer>();
-    private Map<Method, Integer> methodIndex = new HashMap<Method, Integer>();
-    private Class<? extends Composite> compositeType;
+    private final Map<Method, MixinModel> methodImplementation = new HashMap<Method, MixinModel>();
+    protected final List<MixinModel> mixinModels = new ArrayList<MixinModel>();
+    private final Map<Class, Integer> mixinIndex = new HashMap<Class, Integer>();
+    private final Map<Method, Integer> methodIndex = new HashMap<Method, Integer>();
+    private final Class<? extends Composite> compositeType;
 
     public AbstractMixinsModel( Class<? extends Composite> compositeType )
     {

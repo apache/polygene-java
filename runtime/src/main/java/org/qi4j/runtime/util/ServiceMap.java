@@ -28,9 +28,9 @@ import org.qi4j.service.ServiceReference;
  */
 public final class ServiceMap<T>
 {
-    private ModuleInstance moduleInstance;
-    private Class<T> serviceClass;
-    private Map<Class<? extends Composite>, ServiceReference> instances = new HashMap<Class<? extends Composite>, ServiceReference>();
+    private final ModuleInstance moduleInstance;
+    private final Class<T> serviceClass;
+    private final Map<Class<? extends Composite>, ServiceReference> instances = new HashMap<Class<? extends Composite>, ServiceReference>();
 
     public ServiceMap( ModuleInstance moduleInstance, Class<T> serviceClass )
     {

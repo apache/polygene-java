@@ -27,8 +27,8 @@ import org.qi4j.composite.AppliesToFilter;
  */
 public abstract class AbstractModifierDeclaration
 {
-    protected Class modifierClass;
-    protected Type declaredIn;
+    private final Class modifierClass;
+    private final Type declaredIn;
 
     private AppliesToFilter appliesToFilter;
 
@@ -110,4 +110,10 @@ public abstract class AbstractModifierDeclaration
             appliesToFilter = AppliesToFilter.ALWAYS;
         }
     }
+
+    @Override public String toString()
+    {
+        return modifierClass.getName() + " declared in " + declaredIn;
+    }
+
 }

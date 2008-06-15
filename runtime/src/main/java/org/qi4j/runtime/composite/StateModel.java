@@ -32,7 +32,7 @@ import org.qi4j.spi.property.PropertyDescriptor;
 public class StateModel
     implements StateDescriptor
 {
-    private PropertiesModel propertiesModel;
+    private final PropertiesModel propertiesModel;
 
     public StateModel( PropertiesModel propertiesModel )
     {
@@ -90,7 +90,7 @@ public class StateModel
     private static final class StateInstance
         implements State
     {
-        private PropertiesInstance properties;
+        private final PropertiesInstance properties;
 
         private StateInstance( PropertiesInstance properties )
         {

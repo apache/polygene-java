@@ -23,10 +23,10 @@ import java.lang.reflect.Method;
  */
 public final class MethodConcernsInstance
 {
-    private Method method;
-    private InvocationHandler firstConcern;
-    private FragmentInvocationHandler mixinInvocationHandler;
-    private ProxyReferenceInvocationHandler proxyHandler;
+    private final Method method;
+    private final InvocationHandler firstConcern;
+    private final FragmentInvocationHandler mixinInvocationHandler;
+    private final ProxyReferenceInvocationHandler proxyHandler;
 
     public MethodConcernsInstance( Method method, InvocationHandler firstConcern, FragmentInvocationHandler mixinInvocationHandler, ProxyReferenceInvocationHandler proxyHandler )
     {

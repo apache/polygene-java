@@ -32,8 +32,8 @@ import static org.qi4j.util.ClassUtil.*;
  */
 public final class SideEffectsDeclaration
 {
-    private List<SideEffectDeclaration> sideEffectDeclarations = new ArrayList<SideEffectDeclaration>();
-    private Map<Method, MethodSideEffectsModel> methodSideEffects = new HashMap<Method, MethodSideEffectsModel>();
+    private final List<SideEffectDeclaration> sideEffectDeclarations = new ArrayList<SideEffectDeclaration>();
+    private final Map<Method, MethodSideEffectsModel> methodSideEffects = new HashMap<Method, MethodSideEffectsModel>();
 
     public SideEffectsDeclaration( Class type )
     {

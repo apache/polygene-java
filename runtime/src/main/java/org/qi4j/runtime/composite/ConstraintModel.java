@@ -23,8 +23,8 @@ import org.qi4j.runtime.structure.ModelVisitor;
  */
 public final class ConstraintModel
 {
-    private Annotation annotation;
-    private Class<? extends Constraint<?, ?>> constraintClass;
+    private final Annotation annotation;
+    private final Class<? extends Constraint<?, ?>> constraintClass;
 
     public ConstraintModel( Annotation annotation, Class<? extends Constraint<?, ?>> constraintClass )
     {

@@ -52,7 +52,7 @@ public final class AssociationInjectionProviderFactory
 
     private class AssociationInjectionProvider implements InjectionProvider
     {
-        private AssociationDescriptor associationDescriptor;
+        private final AssociationDescriptor associationDescriptor;
 
         public AssociationInjectionProvider( AssociationDescriptor associationDescriptor )
         {

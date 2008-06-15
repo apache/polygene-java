@@ -23,7 +23,7 @@ import org.qi4j.runtime.structure.ModelVisitor;
  */
 public final class ValueConstraintsModel
 {
-    private List<ConstraintModel> constraintModels;
+    private final List<ConstraintModel> constraintModels;
 
     public ValueConstraintsModel( List<ConstraintModel> constraintModels )
     {

@@ -30,8 +30,8 @@ import static org.qi4j.util.ClassUtil.*;
  */
 public final class ConstraintsModel
 {
-    private List<ConstraintDeclaration> constraints = new ArrayList<ConstraintDeclaration>();
-    private Class declaringType;
+    private final List<ConstraintDeclaration> constraints = new ArrayList<ConstraintDeclaration>();
+    private final Class declaringType;
 
     public ConstraintsModel( Class declaringType )
     {

@@ -174,7 +174,7 @@ public class ManyAssociationInstance<T>
     protected class ManyAssociationIterator
         implements Iterator<T>
     {
-        private Iterator<QualifiedIdentity> idIterator;
+        private final Iterator<QualifiedIdentity> idIterator;
 
         public ManyAssociationIterator( Iterator<QualifiedIdentity> idIterator )
         {

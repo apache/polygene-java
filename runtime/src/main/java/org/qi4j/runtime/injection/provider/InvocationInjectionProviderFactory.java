@@ -33,8 +33,8 @@ public final class InvocationInjectionProviderFactory
 
     private class InvocationDependencyResolution implements InjectionProvider
     {
-        private Resolution resolution;
-        private DependencyModel dependencyModel;
+        private final Resolution resolution;
+        private final DependencyModel dependencyModel;
 
         public InvocationDependencyResolution( Resolution resolution, DependencyModel dependencyModel )
         {

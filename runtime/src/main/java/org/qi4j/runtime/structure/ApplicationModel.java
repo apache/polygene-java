@@ -27,12 +27,11 @@ import org.qi4j.runtime.injection.provider.InjectionProviderFactoryStrategy;
 /**
  * TODO
  */
-public class ApplicationModel
+public final class ApplicationModel
 {
-    private String name;
-    private List<LayerModel> layers;
-
-    private InjectionProviderFactory ipf;
+    private final String name;
+    private final List<LayerModel> layers;
+    private final InjectionProviderFactory ipf;
 
     public ApplicationModel( String name, List<LayerModel> layers )
     {

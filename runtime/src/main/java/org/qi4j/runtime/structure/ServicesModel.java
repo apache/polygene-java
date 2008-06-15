@@ -26,7 +26,7 @@ import org.qi4j.structure.Visibility;
  */
 public class ServicesModel
 {
-    private Iterable<ServiceModel> serviceModels;
+    private final Iterable<ServiceModel> serviceModels;
 
     public ServicesModel( Iterable<ServiceModel> serviceModels )
     {

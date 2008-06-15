@@ -24,7 +24,7 @@ import org.qi4j.composite.ConstraintViolation;
  */
 public final class ValueConstraintsInstance
 {
-    private List<ConstraintInstance> constraints;
+    private final List<ConstraintInstance> constraints;
 
     public ValueConstraintsInstance( List<ConstraintModel> constraintModels )
     {

@@ -44,8 +44,8 @@ public final class StructureInjectionProviderFactory
     private static class StructureInjectionProvider
         implements InjectionProvider
     {
-        Resolution resolution;
-        private DependencyModel dependencyModel;
+        final Resolution resolution;
+        private final DependencyModel dependencyModel;
 
         private StructureInjectionProvider( Resolution resolution, DependencyModel dependencyModel )
         {

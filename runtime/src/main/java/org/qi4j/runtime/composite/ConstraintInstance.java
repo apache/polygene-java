@@ -22,8 +22,8 @@ import org.qi4j.composite.Constraint;
  */
 public final class ConstraintInstance<A extends Annotation, T>
 {
-    private Constraint<A, T> constraint;
-    private A annotation;
+    private final Constraint<A, T> constraint;
+    private final A annotation;
 
     public ConstraintInstance( Constraint<A, T> constraint, A annotation )
     {

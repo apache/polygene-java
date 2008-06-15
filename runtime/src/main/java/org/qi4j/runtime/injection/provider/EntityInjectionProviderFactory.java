@@ -18,9 +18,9 @@ import org.qi4j.runtime.injection.InjectionProviderFactory;
 public final class EntityInjectionProviderFactory
     implements InjectionProviderFactory
 {
-    Map<String, QueryBuilderFactory> queries = new HashMap<String, QueryBuilderFactory>();
+    private final Map<String, QueryBuilderFactory> queries = new HashMap<String, QueryBuilderFactory>();
 
-    UnitOfWork unitOfWork;
+    private final UnitOfWork unitOfWork;
 
     public EntityInjectionProviderFactory( UnitOfWork unitOfWork )
     {
@@ -39,7 +39,7 @@ public final class EntityInjectionProviderFactory
 
     private class EntityDependencyResolution implements InjectionProvider
     {
-        DependencyModel dependencyModel;
+        private final DependencyModel dependencyModel;
 
         private EntityDependencyResolution( DependencyModel key )
         {

@@ -40,11 +40,13 @@ public final class EntityBuilderInstance<T>
     implements EntityBuilder<T>
 {
     private static final Method IDENTITY_METHOD;
-    private ModuleInstance moduleInstance;
-    private EntityModel entityModel;
-    private UnitOfWorkInstance uow;
-    private EntityStore store;
-    private IdentityGenerator identityGenerator;
+
+    private final ModuleInstance moduleInstance;
+    private final EntityModel entityModel;
+    private final UnitOfWorkInstance uow;
+    private final EntityStore store;
+    private final IdentityGenerator identityGenerator;
+    
     private T stateProxy;
     private State state;
 

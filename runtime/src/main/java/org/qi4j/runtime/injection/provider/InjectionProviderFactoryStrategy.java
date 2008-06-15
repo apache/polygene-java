@@ -39,7 +39,7 @@ import org.qi4j.runtime.injection.InjectionProviderFactory;
 public final class InjectionProviderFactoryStrategy
     implements InjectionProviderFactory
 {
-    private Map<Class<? extends Annotation>, InjectionProviderFactory> providerFactories = new HashMap<Class<? extends Annotation>, InjectionProviderFactory>();
+    private final Map<Class<? extends Annotation>, InjectionProviderFactory> providerFactories = new HashMap<Class<? extends Annotation>, InjectionProviderFactory>();
 
     public InjectionProviderFactoryStrategy()
     {

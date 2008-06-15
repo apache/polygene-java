@@ -25,14 +25,19 @@ import org.qi4j.spi.composite.CompositeDescriptor;
  */
 public final class Resolution
 {
-    private ApplicationModel application;
-    private LayerModel layer;
-    private ModuleModel module;
-    private CompositeDescriptor compositeDescriptor;
-    private CompositeMethodModel method;
-    private Field field;
+    private final ApplicationModel application;
+    private final LayerModel layer;
+    private final ModuleModel module;
+    private final CompositeDescriptor compositeDescriptor;
+    private final CompositeMethodModel method;
+    private final Field field;
 
-    public Resolution( ApplicationModel application, LayerModel layer, ModuleModel module, CompositeDescriptor compositeDescriptor, CompositeMethodModel method, Field field )
+    public Resolution( ApplicationModel application,
+                       LayerModel layer,
+                       ModuleModel module,
+                       CompositeDescriptor compositeDescriptor,
+                       CompositeMethodModel method,
+                       Field field )
     {
         this.application = application;
         this.layer = layer;

@@ -31,11 +31,15 @@ import org.qi4j.spi.composite.CompositeInstance;
 public class CompositeBuilderInstance<T>
     implements CompositeBuilder<T>
 {
-    protected ModuleInstance moduleInstance;
-    protected CompositeModel compositeModel;
+    private final ModuleInstance moduleInstance;
+    private final CompositeModel compositeModel;
+    private final Class<T> compositeType;
+
+    // lazy initialized in accessor
     private UsesInstance uses;
-    private Class<T> compositeType;
+    // lazy initialized in accessor
     private T stateProxy;
+    // lazy initialized in accessor
     private State state;
 
     public CompositeBuilderInstance( ModuleInstance moduleInstance, CompositeModel compositeModel )

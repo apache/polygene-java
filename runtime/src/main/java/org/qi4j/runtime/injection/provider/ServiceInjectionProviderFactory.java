@@ -65,7 +65,7 @@ public final class ServiceInjectionProviderFactory
     static class IterableServiceReferenceProvider
         implements InjectionProvider
     {
-        private Class<?> serviceType;
+        private final Class<?> serviceType;
 
         public IterableServiceReferenceProvider( Class serviceType )
         {
@@ -81,7 +81,7 @@ public final class ServiceInjectionProviderFactory
     private static class IterableServiceProvider
         implements InjectionProvider
     {
-        private Class serviceType;
+        private final Class serviceType;
 
         private IterableServiceProvider( Class serviceType )
         {
@@ -103,7 +103,7 @@ public final class ServiceInjectionProviderFactory
     private static class ServiceReferenceProvider
         implements InjectionProvider
     {
-        private Class<?> serviceType;
+        private final Class<?> serviceType;
 
         private ServiceReferenceProvider( Class serviceType )
         {
@@ -119,7 +119,7 @@ public final class ServiceInjectionProviderFactory
     private static class ServiceProvider
         implements InjectionProvider
     {
-        private Class<?> serviceType;
+        private final Class<?> serviceType;
 
         private ServiceProvider( Class serviceType )
         {

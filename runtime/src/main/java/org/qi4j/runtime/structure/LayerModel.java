@@ -26,9 +26,9 @@ public final class LayerModel
     implements Binder
 {
     // Model
-    private String name;
-    private UsedLayersModel usedLayersModel;
-    private List<ModuleModel> modules;
+    private final String name;
+    private final UsedLayersModel usedLayersModel;
+    private final List<ModuleModel> modules;
 
     public LayerModel( String name,
                        UsedLayersModel usedLayersModel,

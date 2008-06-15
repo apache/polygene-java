@@ -23,8 +23,8 @@ import org.qi4j.composite.AppliesToFilter;
 final class OrAppliesToFilter
     implements AppliesToFilter
 {
-    private AppliesToFilter left;
-    private AppliesToFilter right;
+    private final AppliesToFilter left;
+    private final AppliesToFilter right;
 
     OrAppliesToFilter( AppliesToFilter left, AppliesToFilter right )
     {
