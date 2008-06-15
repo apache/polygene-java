@@ -52,13 +52,13 @@ public class AuthTest
 
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
-        module.addComposites( UserComposite.class,
+        module.addEntities( UserComposite.class,
                               GroupEntity.class,
                               RoleEntity.class,
-                              AuthorizationContextComposite.class,
                               NamedPermissionEntity.class,
                               RoleAssignmentEntity.class,
                               SecuredRoom.class );
+        module.addComposites(  AuthorizationContextComposite.class );
         module.addServices( AuthorizationService.class, MemoryEntityStoreService.class, UuidIdentityGeneratorService.class );
     }
 

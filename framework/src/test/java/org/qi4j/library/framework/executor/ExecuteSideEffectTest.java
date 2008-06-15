@@ -33,7 +33,8 @@ public class ExecuteSideEffectTest
     }
 
     @Test
-    public void givenMethodWithAnnotationWhenCallThenExecuteSideEffect() throws InterruptedException
+    public void givenMethodWithAnnotationWhenCallThenExecuteSideEffect()
+        throws InterruptedException
     {
         TestComposite instance = compositeBuilderFactory.newComposite( TestComposite.class );
         System.out.println( instance.doStuff() );

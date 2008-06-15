@@ -18,8 +18,7 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
 
-public class GroovyMixinTest
-    extends AbstractQi4jTest
+public class GroovyMixinTest extends AbstractQi4jTest
 {
     public void assemble( ModuleAssembly module )
         throws AssemblyException
@@ -28,7 +27,7 @@ public class GroovyMixinTest
     }
 
     @Test
-    public void testInvoke() throws Throwable
+    public void testInvoke()
     {
         GroovyComposite domain1 = compositeBuilderFactory.newComposite( GroovyComposite.class );
         GroovyComposite domain2 = compositeBuilderFactory.newComposite( GroovyComposite.class );

@@ -43,8 +43,7 @@ import org.qi4j.test.AbstractQi4jTest;
 /**
  * TODO
  */
-public class ApplicationXmlTest
-    extends AbstractQi4jTest
+public class ApplicationXmlTest extends AbstractQi4jTest
 {
 
     public void assemble( ModuleAssembly module )
