@@ -28,4 +28,6 @@ public interface PropertyDescriptor
     String toURI();
 
     Object defaultValue();
+
+    boolean isImmutable();
 }

@@ -75,7 +75,7 @@ public final class ImmutablePropertyInstance<T> extends ComputedPropertyInstance
     public void set( T newValue )
         throws IllegalArgumentException
     {
-        if( this.value != UNSET && newValue != UNSET )
+        if( this.value != UNSET && newValue != UNSET && newValue != this.value )
         {
             super.set( newValue );
         }
