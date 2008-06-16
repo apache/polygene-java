@@ -211,12 +211,10 @@ public class RdfEntityIndexerMixin
         // first add the composite type as rdfs:Class
         connection.add( compositeURI, RDF.TYPE, RDFS.CLASS );
         // add all subclasses as rdfs:subClassOf
-/* TODO Fix this!
-        for( MixinTypeModel mixinTypeModel : compositeDescriptor.type().getMixinTypeModels() )
+        for( Class mixinType : compositeDescriptor.mixinTypes() )
         {
-            connection.add( compositeURI, RDFS.SUBCLASSOF, valueFactory.createURI( mixinTypeModel.toURI() ) );
+            connection.add( compositeURI, RDFS.SUBCLASSOF, valueFactory.createURI( MixinTypeModel.toURI( mixinType ) ) );
         }
-*/
     }
 
     private boolean abortIfInternalConfigurationEntity( Iterable<EntityState> newStates )
