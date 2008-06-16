@@ -23,6 +23,7 @@ import org.qi4j.quikit.application.QuikItFilter;
 import org.qi4j.quikit.application.QuikItServlet;
 import org.qi4j.quikit.application.QuikitSession;
 import org.qi4j.quikit.application.ServletInfo;
+import org.qi4j.quikit.application.ServletService;
 import org.qi4j.quikit.application.jetty.JettyService;
 import org.qi4j.quikit.assembly.composites.QuikItApplicationFactoryComposite;
 import org.qi4j.quikit.assembly.composites.QuikItPageFactoryComposite;
@@ -55,7 +56,7 @@ public class QuikitAssembler implements Assembler
             .identifiedBy( jettyIdentity( aModule ) );
 
         // Add the quikit servlet
-        aModule.addServices( Servlet.class )
+        aModule.addServices( ServletService.class )
             .providedBy( QuikItServletProviderComposite.class )
             .setMetaInfo( new ServletInfo( "/quikit/*" ) );
 

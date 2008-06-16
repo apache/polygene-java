@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2008, Rickard �berg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -11,17 +11,11 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.quikit.application;
 
 import javax.servlet.Servlet;
-import org.qi4j.composite.Mixins;
 import org.qi4j.service.ServiceComposite;
 
-/**
- * TODO
- */
-@Mixins( WelcomeServlet.class )
-public interface WelcomeServletService extends ServletService
+public interface ServletService extends Servlet, ServiceComposite
 {
 }
