@@ -35,7 +35,7 @@ public class RmiEntityStoreTest
 
         ModuleAssembly remote = module.getLayerAssembly().newModuleAssembly();
         remote.setName( "Server" );
-        remote.addComposites( TestEntity.class, RegistryConfiguration.class );
+        remote.addEntities( TestEntity.class, RegistryConfiguration.class );
         remote.addServices( ServerRmiEntityStoreService.class,
                             RegistryService.class,
                             MemoryEntityStoreService.class ).instantiateOnStartup();
