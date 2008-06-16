@@ -8,8 +8,6 @@ import static org.junit.Assert.fail;
 import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.composite.Composite;
-import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.Mixins;
 import org.qi4j.entity.EntityBuilder;
@@ -17,6 +15,7 @@ import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.EntityCompositeNotFoundException;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkCompletionException;
+import org.qi4j.entity.UnitOfWorkFactory;
 import org.qi4j.entity.association.Association;
 import org.qi4j.entity.association.ListAssociation;
 import org.qi4j.entity.association.ManyAssociation;
@@ -27,6 +26,7 @@ import org.qi4j.property.ImmutableProperty;
 import org.qi4j.property.Property;
 import org.qi4j.spi.entity.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.runtime.entity.EntityStorageException;
 
 /**
  * Abstract test with tests for the EntityStore interface.
@@ -56,7 +56,7 @@ public abstract class AbstractEntityStoreTest
 
             // Check state
             assertThat( "property has correct value", instance.name().get(), equalTo( "Test" ) );
-            assertThat( "property has correct value", instance.unsetName().get(), equalTo( null ) );
+            assertThat( "property has correct value", instance.unsetName().get(), equalTo( "UNSET" ) );
             assertThat( "association has correct value", instance.association().get(), equalTo( instance ) );
             assertThat( "manyAssociation has correct value", instance.manyAssociation().iterator().next(), equalTo( instance ) );
             assertThat( "listAssociation has correct value", instance.listAssociation().iterator().next(), equalTo( instance ) );
@@ -97,8 +97,9 @@ public abstract class AbstractEntityStoreTest
         catch( EntityCompositeNotFoundException e )
         {
             // Ok!
+        } finally {
+            unitOfWork.discard();
         }
-        unitOfWork.discard();
     }
 
     protected TestEntity createEntity( UnitOfWork unitOfWork )
@@ -112,7 +113,7 @@ public abstract class AbstractEntityStoreTest
         instance.name().set( "Test" );
         instance.association().set( instance );
 
-        CompositeBuilder<TestValue> testValue = compositeBuilderFactory.newCompositeBuilder( TestValue.class );
+        EntityBuilder<TestValue> testValue = unitOfWork.newEntityBuilder( TestValue.class );
         TestValue state = testValue.stateOfComposite();
         state.someValue().set( "Foo" );
         state.otherValue().set( 5 );
@@ -161,7 +162,7 @@ public abstract class AbstractEntityStoreTest
     }
 
     public interface Mutable<T> {
-        CompositeBuilder<T> mutate();
+        EntityBuilder<T> mutate();
 
     }
     @Mixins( ValueComposite.ValueCompositeMixin.class )
@@ -172,13 +173,15 @@ public abstract class AbstractEntityStoreTest
         public abstract class ValueCompositeMixin<T>
             implements Mutable<T>
         {
-            @This Composite composite;
+            @This EntityComposite entity;
             @Structure CompositeBuilderFactory cbf;
+            @Structure UnitOfWorkFactory uowf;
 
-            public CompositeBuilder<T> mutate()
+            public EntityBuilder<T> mutate()
             {
-                CompositeBuilder<T> builder = (CompositeBuilder<T>) cbf.newCompositeBuilder( composite.type() );
-                T state = builder.stateOfComposite();
+                final EntityBuilder<T> entityBuilder = (EntityBuilder<T>) uowf.currentUnitOfWork().newEntityBuilder( entity.type() );
+                //CompositeBuilder<T> builder = (CompositeBuilder<T>) cbf.newCompositeBuilder( entity.type() );
+                T state = entityBuilder.stateOfComposite();
 
                 // Copy current state
                 Method[] methods = state.getClass().getMethods();
@@ -188,7 +191,7 @@ public abstract class AbstractEntityStoreTest
                     {
                         try
                         {
-                            Property<Object> oldProperty = (Property<Object>) method.invoke( composite );
+                            Property<Object> oldProperty = (Property<Object>) method.invoke( entity );
                             Property<Object> newProperty = (Property<Object>) method.invoke( state );
                             newProperty.set( oldProperty.get() );
                         }
@@ -203,7 +206,7 @@ public abstract class AbstractEntityStoreTest
                     }
                 }
 
-                return builder;
+                return entityBuilder;
             }
         }
     }

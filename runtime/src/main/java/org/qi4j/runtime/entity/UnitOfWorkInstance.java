@@ -197,14 +197,14 @@ public final class UnitOfWorkInstance
     {
         checkOpen();
 
-        ModuleInstance moduleInstance = this.moduleInstance.findModuleForEntity( mixinType );
-        EntityModel entityModel = moduleInstance.entities().model().getEntityModelFor( mixinType );
+        ModuleInstance entityModuleInstance = this.moduleInstance.findModuleForEntity( mixinType );
+        EntityModel entityModel = entityModuleInstance.entities().model().getEntityModelFor( mixinType );
 
         EntityComposite entity = getCachedEntity( identity, entityModel.type() );
         if( entity == null )
         {
             // Create entity moduleInstance
-            EntityInstance compositeInstance = this.moduleInstance.entities().getEntityInstance( identity, entityModel, this, unitOfWorkStore );
+            EntityInstance compositeInstance = entityModuleInstance.entities().getEntityInstance( identity, entityModel, this, unitOfWorkStore );
             entity = compositeInstance.proxy();
             Map<String, EntityComposite> entityCache = getEntityCache( entityModel.type() );
             entityCache.put( identity, entity );

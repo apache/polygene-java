@@ -20,6 +20,7 @@ public class ManyAssociationInstance<T> extends AbstractAssociationInstance<T>
     public ManyAssociationInstance( AssociationInfo associationInfo, UnitOfWorkInstance unitOfWork, Collection<QualifiedIdentity> associated )
     {
         super( associationInfo, unitOfWork );
+        if (associated==null) throw new IllegalArgumentException( "ManyAssociation must be a valid collection, shared with state");
         this.associated = associated;
     }
 

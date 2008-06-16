@@ -19,6 +19,8 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.ArrayList;
+import java.util.HashSet;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.ConstraintViolation;
 import org.qi4j.composite.ConstraintViolationException;
@@ -98,15 +100,15 @@ public final class AssociationModel
     public AbstractAssociation newDefaultInstance()
     {
         AbstractAssociation instance;
-        if( ListAssociation.class.isAssignableFrom( accessor.getReturnType() ) )
+        if( isListAssociation( accessor.getReturnType() ) )
         {
             instance = new EntityBuilderListAssociation<Object>();
         }
-        else if( SetAssociation.class.isAssignableFrom( accessor.getReturnType() ) )
+        else if( isSetAssociation( accessor.getReturnType() ) )
         {
             instance = new EntityBuilderSetAssociation<Object>();
         }
-        else if( ManyAssociation.class.isAssignableFrom( accessor.getReturnType() ) )
+        else if( isManyAssociation( accessor.getReturnType() ) )
         {
             instance = new EntityBuilderListAssociation<Object>();
         }
@@ -119,27 +121,53 @@ public final class AssociationModel
 
     public AbstractAssociation newInstance( UnitOfWorkInstance uow, EntityState state )
     {
-        AbstractAssociation instance;
-        if( ListAssociation.class.isAssignableFrom( accessor.getReturnType() ) )
+        final Class<?> associationType = accessor.getReturnType();
+        if( !isManyAssociation( associationType ) )
         {
-            List<QualifiedIdentity> list = (List<QualifiedIdentity>) state.getManyAssociation( qualifiedName );
-            instance = new ListAssociationInstance<Object>( this, uow, list );
+            return new AssociationInstance<Object>( this, uow, state );
         }
-        else if( SetAssociation.class.isAssignableFrom( accessor.getReturnType() ) )
+
+        Collection<QualifiedIdentity> manyAssociation = getManyAssociation( state, associationType );
+
+        if( isListAssociation( associationType ) )
         {
-            Set<QualifiedIdentity> set = (Set<QualifiedIdentity>) state.getManyAssociation( qualifiedName );
-            instance = new SetAssociationInstance<Object>( this, uow, set );
+            return new ListAssociationInstance<Object>( this, uow, (List<QualifiedIdentity>) manyAssociation );
         }
-        else if( ManyAssociation.class.isAssignableFrom( accessor.getReturnType() ) )
+        if( isSetAssociation( associationType ) )
         {
-            Collection<QualifiedIdentity> collection = state.getManyAssociation( qualifiedName );
-            instance = new ManyAssociationInstance<Object>( this, uow, collection );
+            return new SetAssociationInstance<Object>( this, uow, (Set<QualifiedIdentity>) manyAssociation );
         }
-        else
+        return new ManyAssociationInstance<Object>( this, uow, manyAssociation );
+    }
+
+    private boolean isManyAssociation( Class<?> associationType )
+    {
+        return ManyAssociation.class.isAssignableFrom( associationType );
+    }
+
+    private boolean isListAssociation( Class<?> associationType )
+    {
+        return ListAssociation.class.isAssignableFrom( associationType );
+    }
+
+    private Collection<QualifiedIdentity> getManyAssociation( EntityState state, Class<?> associationType )
+    {
+        Collection<QualifiedIdentity> manyAssociation = state.getManyAssociation( qualifiedName );
+        if( manyAssociation != null )
         {
-            instance = new AssociationInstance<Object>( this, uow, state );
+            return manyAssociation;
         }
-        return instance;
+
+        if ( isSetAssociation( associationType ) ) {
+            return state.setManyAssociation( qualifiedName, new HashSet<QualifiedIdentity>() );
+        } else {
+            return state.setManyAssociation( qualifiedName, new ArrayList<QualifiedIdentity>() );
+        }
+    }
+
+    private boolean isSetAssociation( Class<?> associationType )
+    {
+        return SetAssociation.class.isAssignableFrom( associationType );
     }
 
     public void checkConstraints( Object value )
@@ -190,7 +218,7 @@ public final class AssociationModel
     {
         if( association != null )
         {
-            if( ManyAssociation.class.isAssignableFrom( accessor.getReturnType() ) )
+            if( isManyAssociation( accessor.getReturnType() ) )
             {
                 ManyAssociation<Composite> manyAssociation = (ManyAssociation<Composite>) association;
                 Collection<QualifiedIdentity> stateCollection = entityState.getManyAssociation( qualifiedName );
