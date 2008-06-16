@@ -16,13 +16,17 @@
  */
 package org.qi4j.entity.neo4j.test;
 
+import org.junit.Assert;
+import org.junit.Test;
+import org.qi4j.entity.EntityBuilder;
+import org.qi4j.entity.neo4j.Configuration;
+
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
  */
 public class DirectNeoEntityStoreTest
-    // extends TestBase
+    extends TestBase
 {
-    /*
     public DirectNeoEntityStoreTest()
     {
         this( Configuration.DIRECT );
@@ -125,7 +129,7 @@ public class DirectNeoEntityStoreTest
             protected void setup() throws Exception
             {
                 // Create entity
-                CompositeBuilder<MakeBelieveEntity> builder = newEntityBuilder( MakeBelieveEntity.class );
+                EntityBuilder<MakeBelieveEntity> builder = newEntityBuilder( MakeBelieveEntity.class );
                 {
                     MakeBelieveEntity prototype = builder.stateOfComposite();
                     prototype.imaginaryName().set( "Arne banan" );
@@ -159,5 +163,4 @@ public class DirectNeoEntityStoreTest
             }
         } );
     }
-    */
 }

@@ -16,13 +16,16 @@
  */
 package org.qi4j.entity.neo4j.test;
 
+import java.util.Set;
+import org.junit.Test;
+import org.qi4j.entity.neo4j.Configuration;
+
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
  */
 public class DirectIdentitySetTest
-    // extends TestBase
+    extends TestBase
 {
-    /*
     public DirectIdentitySetTest()
     {
         this( Configuration.DIRECT );
@@ -89,5 +92,4 @@ public class DirectIdentitySetTest
             }
         } );
     }
-    */
 }

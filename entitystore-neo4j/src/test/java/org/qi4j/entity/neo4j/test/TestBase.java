@@ -22,7 +22,7 @@ import org.neo4j.api.core.Transaction;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.composite.Composite;
+import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkCompletionException;
 import org.qi4j.entity.neo4j.Configuration;
@@ -40,10 +40,10 @@ public abstract class TestBase extends AbstractQi4jTest
     private NeoTransactionService txFactory;
     private final boolean useTxService;
     private final Assembler serviceAssembler;
-    private final Class<? extends Composite>[] composites;
+    private final Class<? extends EntityComposite>[] composites;
     private final boolean useIdGenerator;
 
-    protected TestBase( Configuration config, boolean useTxService, boolean useIdGenerator, Class<? extends Composite>... composites )
+    protected TestBase( Configuration config, boolean useTxService, boolean useIdGenerator, Class<? extends EntityComposite>... composites )
     {
         assert ( config == Configuration.DIRECT || config == Configuration.INDIRECT ) : "Unsuported Configuration";
         if( config == Configuration.INDIRECT && !useTxService )
@@ -254,10 +254,10 @@ public abstract class TestBase extends AbstractQi4jTest
         {
             Configuration.IDENTITY_GENERATOR.assemble( module );
         }
-        module.addComposites( ElementOwnerComposite.class, ContainedElementComposite.class );
+        module.addEntities( ElementOwnerComposite.class, ContainedElementComposite.class );
         if( composites.length != 0 )
         {
-            module.addComposites( composites );
+            module.addEntities( composites );
         }
     }
 
