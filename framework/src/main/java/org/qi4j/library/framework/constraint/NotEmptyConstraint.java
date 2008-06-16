@@ -34,7 +34,7 @@ public class NotEmptyConstraint
 
     public boolean isValid( NotEmpty annotation, String value )
     {
-        return (null != value) && (value.trim().length() > 0);
+        return value.trim().length() > 0;
     }
 
 }
