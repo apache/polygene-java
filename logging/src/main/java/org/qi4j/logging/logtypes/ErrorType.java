@@ -27,14 +27,14 @@ public final class ErrorType
 {
     public static final LogType INSTANCE = new ErrorType();
 
-    private static Property PROPERTY;
+    private static Property<String> PROPERTY;
 
     static
     {
         try
         {
             GenericPropertyInfo info = new GenericPropertyInfo( LogType.class.getMethod( "logTypeName" ) );
-            PROPERTY = new ImmutablePropertyInstance( info, "WARN" );
+            PROPERTY = new ImmutablePropertyInstance<String>( info, "WARN" );
         }
         catch( NoSuchMethodException e )
         {

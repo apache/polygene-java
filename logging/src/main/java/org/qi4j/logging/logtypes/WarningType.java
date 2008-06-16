@@ -26,14 +26,14 @@ public final class WarningType
     implements LogType
 {
     public static final LogType INSTANCE = new WarningType();
-    private static Property PROPERTY;
+    private static Property<String> PROPERTY;
 
     static
     {
         try
         {
             GenericPropertyInfo info = new GenericPropertyInfo( LogType.class.getMethod( "logTypeName" ) );
-            PROPERTY = new ImmutablePropertyInstance( info, "WARN" );
+            PROPERTY = new ImmutablePropertyInstance<String>( info, "WARN" );
         }
         catch( NoSuchMethodException e )
         {

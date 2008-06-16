@@ -26,14 +26,14 @@ public final class InfoType
     implements LogType
 {
     public static final LogType INSTANCE = new InfoType();
-    private static Property PROPERTY;
+    private static Property<String> PROPERTY;
 
     static
     {
         try
         {
             GenericPropertyInfo info = new GenericPropertyInfo( LogType.class.getMethod( "logTypeName" ) );
-            PROPERTY = new ImmutablePropertyInstance( info, "INFO" );
+            PROPERTY = new ImmutablePropertyInstance<String>( info, "INFO" );
         }
         catch( NoSuchMethodException e )
         {
