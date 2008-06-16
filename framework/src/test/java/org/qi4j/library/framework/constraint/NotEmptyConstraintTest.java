@@ -21,24 +21,23 @@ import org.qi4j.test.AbstractQi4jTest;
 
 public class NotEmptyConstraintTest extends AbstractQi4jTest
 {
-    public void assemble(ModuleAssembly module) throws AssemblyException
+    public void assemble( ModuleAssembly module ) throws AssemblyException
     {
-        module.addComposites(TestCaseComposite.class);
+        module.addComposites( TestCaseComposite.class );
     }
 
-    @Test (expected=ConstraintViolationException.class)
+    @Test( expected = ConstraintViolationException.class )
     public void testNotNull()
     {
-        CompositeBuilder<TestCase> cb = compositeBuilderFactory.newCompositeBuilder(TestCase.class);
-        
-        cb.stateFor(TestCase.class).aNonEmptyProperty().set(null);
+        CompositeBuilder<TestCase> cb = compositeBuilderFactory.newCompositeBuilder( TestCase.class );
+        cb.stateFor( TestCase.class ).aNonEmptyProperty().set( null );
     }
 
-    @Test (expected=ConstraintViolationException.class)
+    @Test( expected = ConstraintViolationException.class )
     public void testNotEmpty()
     {
-        CompositeBuilder<TestCase> cb = compositeBuilderFactory.newCompositeBuilder(TestCase.class);
-        
-        cb.stateFor(TestCase.class).aNonEmptyProperty().set("");
+        CompositeBuilder<TestCase> cb = compositeBuilderFactory.newCompositeBuilder( TestCase.class );
+
+        cb.stateFor( TestCase.class ).aNonEmptyProperty().set( "" );
     }
 }
