@@ -90,11 +90,11 @@ public final class CompositeModel
     private final Class<? extends Composite> proxyClass;
 
     private CompositeModel( final Class<? extends Composite> compositeType,
-                           final Visibility visibility,
-                           final MetaInfo metaInfo,
-                           final MixinsModel mixinsModel,
-                           final StateModel stateModel,
-                           final CompositeMethodsModel compositeMethodsModel
+                            final Visibility visibility,
+                            final MetaInfo metaInfo,
+                            final MixinsModel mixinsModel,
+                            final StateModel stateModel,
+                            final CompositeMethodsModel compositeMethodsModel
     )
     {
         this.compositeType = compositeType;
@@ -138,6 +138,11 @@ public final class CompositeModel
     public Class<? extends Composite> proxyClass()
     {
         return proxyClass;
+    }
+
+    public Iterable<Class> mixinTypes()
+    {
+        return mixinsModel.mixinTypes();
     }
 
     private Class<? extends Composite> createProxyClass( Class<? extends Composite> compositeType )

@@ -128,6 +128,10 @@ public final class EntityModel
         return stateModel;
     }
 
+    public Iterable<Class> mixinTypes()
+    {
+        return mixinsModel.mixinTypes();
+    }
 
     public void visitModel( ModelVisitor modelVisitor )
     {

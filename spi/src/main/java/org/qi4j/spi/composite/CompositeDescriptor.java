@@ -26,4 +26,6 @@ public interface CompositeDescriptor
     StateDescriptor state();
 
     String toURI();
+
+    Iterable<Class> mixinTypes();
 }

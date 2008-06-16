@@ -43,6 +43,7 @@ public abstract class AbstractMixinsModel
     private final Map<Class, Integer> mixinIndex = new HashMap<Class, Integer>();
     private final Map<Method, Integer> methodIndex = new HashMap<Method, Integer>();
     private final Class<? extends Composite> compositeType;
+    private Set<Class> mixinTypes = new HashSet<Class>();
 
     public AbstractMixinsModel( Class<? extends Composite> compositeType )
     {
@@ -55,14 +56,22 @@ public abstract class AbstractMixinsModel
         for( Type anInterface : interfaces )
         {
             addMixinDeclarations( anInterface, mixins );
+            mixinTypes.add( (Class) anInterface );
         }
     }
 
     // Model
+    public Iterable<Class> mixinTypes()
+    {
+        return mixinTypes;
+    }
+
     public MixinModel implementMethod( Method method )
     {
         if( !methodImplementation.containsKey( method ) )
         {
+            mixinTypes.add( method.getDeclaringClass() );
+
             Class mixinClass = findImplementation( method, mixins );
             if( mixinClass != null )
             {

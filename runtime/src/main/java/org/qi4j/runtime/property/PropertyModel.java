@@ -126,7 +126,7 @@ public class PropertyModel
     {
         Object value;
 
-        if( property == null )
+        if( property == null || property.get() == ImmutablePropertyInstance.UNSET )
         {
             value = defaultValue;
         }

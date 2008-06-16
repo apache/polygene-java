@@ -207,7 +207,8 @@ final class QueryImpl<T>
 
     @Override public String toString()
     {
-        return whereClause.toString();
+        return "Find all " + resultType.getName() +
+               ( whereClause != null ? " where " + whereClause.toString() : "" );
     }
 
     public long count()
