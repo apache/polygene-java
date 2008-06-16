@@ -17,22 +17,19 @@ package org.qi4j.bootstrap;
 import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.Map;
 import org.qi4j.property.Property;
+import org.qi4j.util.MetaInfo;
 
 /**
  * Declaration of a Property. Created by {@link ModuleAssembly#addProperty()}.
  */
 public final class PropertyDeclaration
 {
-    private Class valueType;
-    private Map<Class, Serializable> propertyInfos = new HashMap<Class, Serializable>();
-    private Object defaultValue;
-    private Method accessor;
+    MetaInfo metaInfo = new MetaInfo();
+    Object defaultValue;
+    Method accessor;
 
     public PropertyDeclaration()
     {
@@ -43,9 +40,9 @@ public final class PropertyDeclaration
         return mixinType.cast( Proxy.newProxyInstance( mixinType.getClassLoader(), new Class[]{ mixinType }, new AccessorInvocationHandler() ) );
     }
 
-    public <T extends Serializable> PropertyDeclaration setPropertyInfo( Class<T> infoType, T propertyInfo )
+    public <T extends Serializable> PropertyDeclaration setMetaInfo( Serializable info )
     {
-        this.propertyInfos.put( infoType, propertyInfo );
+        metaInfo.set( info );
         return this;
     }
 
@@ -57,32 +54,8 @@ public final class PropertyDeclaration
         {
             accessor = method;
             Type methodReturnType = method.getGenericReturnType();
-            valueType = getPropertyType( methodReturnType );
 
             return Proxy.newProxyInstance( method.getReturnType().getClassLoader(), new Class[]{ method.getReturnType() }, new PropertyInvocationHandler() );
-        }
-
-        private Class getPropertyType( Type methodReturnType )
-        {
-            if( methodReturnType instanceof ParameterizedType )
-            {
-                ParameterizedType parameterizedType = (ParameterizedType) methodReturnType;
-                if( Property.class.isAssignableFrom( (Class<?>) parameterizedType.getRawType() ) )
-                {
-                    return (Class) parameterizedType.getActualTypeArguments()[ 0 ];
-                }
-            }
-
-            Type[] interfaces = ( (Class) methodReturnType ).getInterfaces();
-            for( Type anInterface : interfaces )
-            {
-                Class propertyType = getPropertyType( anInterface );
-                if( propertyType != null )
-                {
-                    return propertyType;
-                }
-            }
-            return null;
         }
     }
 

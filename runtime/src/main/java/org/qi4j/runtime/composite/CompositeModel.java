@@ -22,6 +22,7 @@ import org.qi4j.composite.Composite;
 import org.qi4j.composite.State;
 import org.qi4j.entity.Lifecycle;
 import org.qi4j.runtime.property.PropertiesModel;
+import org.qi4j.runtime.property.PropertyDeclarations;
 import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
@@ -64,11 +65,12 @@ public final class CompositeModel
 
     public static CompositeModel newModel( final Class<? extends Composite> compositeType,
                                            final Visibility visibility,
-                                           final MetaInfo metaInfo )
+                                           final MetaInfo metaInfo,
+                                           final PropertyDeclarations propertyDeclarations )
     {
         ConstraintsModel constraintsModel = new ConstraintsModel( compositeType );
         MixinsModel mixinsModel = new MixinsModel( compositeType );
-        StateModel stateModel = new StateModel( new PropertiesModel( constraintsModel ) );
+        StateModel stateModel = new StateModel( new PropertiesModel( constraintsModel, propertyDeclarations ) );
         ConcernsDeclaration concernsModel = new ConcernsDeclaration( compositeType );
         SideEffectsDeclaration sideEffectsModel = new SideEffectsDeclaration( compositeType );
         CompositeMethodsModel compositeMethodsModel = new CompositeMethodsModel( compositeType, constraintsModel, concernsModel, sideEffectsModel, mixinsModel );

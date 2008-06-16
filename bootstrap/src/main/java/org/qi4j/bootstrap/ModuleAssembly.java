@@ -14,20 +14,26 @@
 
 package org.qi4j.bootstrap;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.qi4j.composite.Composite;
 import org.qi4j.entity.EntityComposite;
+import org.qi4j.property.AbstractPropertyInstance;
 import org.qi4j.runtime.composite.CompositeModel;
 import org.qi4j.runtime.entity.EntityModel;
+import org.qi4j.runtime.entity.association.AssociationDeclarations;
 import org.qi4j.runtime.object.ObjectModel;
+import org.qi4j.runtime.property.PropertyDeclarations;
 import org.qi4j.runtime.service.qi.ServiceModel;
 import org.qi4j.runtime.structure.CompositesModel;
 import org.qi4j.runtime.structure.EntitiesModel;
-import org.qi4j.runtime.structure.LayerModel;
 import org.qi4j.runtime.structure.ModuleModel;
 import org.qi4j.runtime.structure.ObjectsModel;
 import org.qi4j.runtime.structure.ServicesModel;
@@ -45,6 +51,25 @@ import org.qi4j.util.MetaInfo;
  */
 public final class ModuleAssembly
 {
+    private static final Map<Type, Object> defaultValues;
+
+    static
+    {
+        defaultValues = new HashMap<Type, Object>();
+        defaultValues.put( Integer.class, 0 );
+        defaultValues.put( Long.class, 0L );
+        defaultValues.put( Double.class, 0.0D );
+        defaultValues.put( Float.class, 0.0F );
+        defaultValues.put( Boolean.class, false );
+    }
+
+    // Better default values for primitives
+    private static Object getDefaultValue( Type type )
+    {
+        return defaultValues.get( type );
+    }
+
+
     private LayerAssembly layerAssembly;
     private String name;
     private List<CompositeDeclaration> compositeDeclarations;
@@ -170,7 +195,7 @@ public final class ModuleAssembly
         return declaration;
     }
 
-    ModuleModel assembleModule( )
+    ModuleModel assembleModule()
     {
         List<CompositeModel> compositeModels = new ArrayList<CompositeModel>();
         List<EntityModel> entityModels = new ArrayList<EntityModel>();
@@ -182,14 +207,16 @@ public final class ModuleAssembly
                                                    new ObjectsModel( objectModels ),
                                                    new ServicesModel( serviceModels ) );
 
+        PropertyDeclarationsImpl propertyDecs = new PropertyDeclarationsImpl();
         for( CompositeDeclaration compositeDeclaration : compositeDeclarations )
         {
-            compositeDeclaration.addComposites( compositeModels );
+            compositeDeclaration.addComposites( compositeModels, propertyDecs );
         }
 
+        AssociationDeclarationsImpl associationDecs = new AssociationDeclarationsImpl();
         for( EntityDeclaration entityDeclaration : entityDeclarations )
         {
-            entityDeclaration.addEntities( entityModels );
+            entityDeclaration.addEntities( entityModels, propertyDecs, associationDecs );
         }
 
         for( ObjectDeclaration objectDeclaration : objectDeclarations )
@@ -234,7 +261,7 @@ public final class ModuleAssembly
                 if( !found )
                 {
                     compositeModels.add(
-                        CompositeModel.newModel( serviceModel.type(), Visibility.module, new MetaInfo() )
+                        CompositeModel.newModel( serviceModel.type(), Visibility.module, new MetaInfo(), new PropertyDeclarationsImpl() )
                     );
                 }
             }
@@ -257,5 +284,58 @@ public final class ModuleAssembly
         }
 
         return moduleModel;
+    }
+
+    private class PropertyDeclarationsImpl
+        implements PropertyDeclarations
+    {
+        public MetaInfo getMetaInfo( Method accessor )
+        {
+            for( PropertyDeclaration propertyDeclaration : propertyDeclarations )
+            {
+                if( propertyDeclaration.accessor.equals( accessor ) )
+                {
+                    return propertyDeclaration.metaInfo;
+                }
+            }
+
+            return new MetaInfo();
+        }
+
+        public Object getDefaultValue( Method accessor )
+        {
+            Object defaultValue = null;
+            for( PropertyDeclaration propertyDeclaration : propertyDeclarations )
+            {
+                if( propertyDeclaration.accessor.equals( accessor ) )
+                {
+                    defaultValue = propertyDeclaration.defaultValue;
+                }
+            }
+
+            if( defaultValue == null )
+            {
+                defaultValue = ModuleAssembly.getDefaultValue( AbstractPropertyInstance.getPropertyType( accessor ) );
+            }
+
+            return defaultValue;
+        }
+    }
+
+    private class AssociationDeclarationsImpl
+        implements AssociationDeclarations
+    {
+        public MetaInfo getMetaInfo( Method accessor )
+        {
+            for( PropertyDeclaration propertyDeclaration : propertyDeclarations )
+            {
+                if( propertyDeclaration.accessor.equals( accessor ) )
+                {
+                    return propertyDeclaration.metaInfo;
+                }
+            }
+
+            return new MetaInfo();
+        }
     }
 }

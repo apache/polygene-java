@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,20 +12,17 @@
  *
  */
 
-package org.qi4j.spi.property;
+package org.qi4j.runtime.property;
 
 import java.lang.reflect.Method;
-import org.qi4j.property.PropertyInfo;
+import org.qi4j.util.MetaInfo;
 
 /**
  * TODO
  */
-public interface PropertyDescriptor
-    extends PropertyInfo
+public interface PropertyDeclarations
 {
-    Method accessor();
+    MetaInfo getMetaInfo( Method accessor );
 
-    String toURI();
-
-    Object defaultValue();
+    Object getDefaultValue( Method accessor );
 }

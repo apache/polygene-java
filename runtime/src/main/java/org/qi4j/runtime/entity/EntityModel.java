@@ -31,7 +31,9 @@ import org.qi4j.runtime.composite.ConstraintsModel;
 import org.qi4j.runtime.composite.MixinsInstance;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.composite.SideEffectsDeclaration;
+import org.qi4j.runtime.entity.association.AssociationDeclarations;
 import org.qi4j.runtime.entity.association.AssociationsModel;
+import org.qi4j.runtime.property.PropertyDeclarations;
 import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
@@ -54,12 +56,12 @@ public final class EntityModel
 {
     public static EntityModel newModel( Class<? extends EntityComposite> type,
                                         Visibility visibility,
-                                        MetaInfo info )
+                                        MetaInfo info, PropertyDeclarations propertyDecs, AssociationDeclarations associationDecs )
     {
         ConstraintsModel constraintsModel = new ConstraintsModel( type );
         EntityMixinsModel mixinsModel = new EntityMixinsModel( type );
-        EntityPropertiesModel entityPropertiesModel = new EntityPropertiesModel( constraintsModel );
-        AssociationsModel associationsModel = new AssociationsModel( constraintsModel );
+        EntityPropertiesModel entityPropertiesModel = new EntityPropertiesModel( constraintsModel, propertyDecs );
+        AssociationsModel associationsModel = new AssociationsModel( constraintsModel, associationDecs );
         EntityStateModel stateModel = new EntityStateModel( entityPropertiesModel, associationsModel );
         ConcernsDeclaration concernsDeclaration = new ConcernsDeclaration( type );
         SideEffectsDeclaration sideEffectsModel = new SideEffectsDeclaration( type );

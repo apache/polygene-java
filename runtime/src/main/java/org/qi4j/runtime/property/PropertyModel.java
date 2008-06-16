@@ -17,9 +17,7 @@ package org.qi4j.runtime.property;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.qi4j.composite.ConstraintViolation;
 import org.qi4j.composite.ConstraintViolationException;
 import org.qi4j.property.AbstractPropertyInstance;
@@ -39,24 +37,6 @@ public class PropertyModel
 {
     private static final long serialVersionUID = 1L;
 
-    private static final Map<Type, Object> defaultValues;
-
-    static
-    {
-        defaultValues = new HashMap<Type, Object>();
-        defaultValues.put( Integer.class, 0 );
-        defaultValues.put( Long.class, 0L );
-        defaultValues.put( Double.class, 0.0D );
-        defaultValues.put( Float.class, 0.0F );
-        defaultValues.put( Boolean.class, false );
-    }
-
-    // Better default values for primitives
-    private static Object getDefaultValue( Type type )
-    {
-        return defaultValues.get( type );
-    }
-
     private final String name;
     private final Type type;
     private final Method accessor; // Interface accessor
@@ -75,10 +55,6 @@ public class PropertyModel
         accessor = anAccessor;
         qualifiedName = AbstractPropertyInstance.getQualifiedName( anAccessor );
 
-        if( defaultValue == null )
-        {
-            defaultValue = getDefaultValue( type );
-        }
         this.defaultValue = defaultValue;
 
         this.constraints = constraints;
@@ -114,6 +90,11 @@ public class PropertyModel
     public boolean isImmutable()
     {
         return immutable;
+    }
+
+    public Object defaultValue()
+    {
+        return defaultValue;
     }
 
     public String toURI()

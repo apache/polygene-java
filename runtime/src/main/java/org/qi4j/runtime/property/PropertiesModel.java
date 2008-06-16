@@ -39,10 +39,12 @@ public final class PropertiesModel
     final List<PropertyModel> propertyModels = new ArrayList<PropertyModel>();
     final Map<String, Method> accessors = new HashMap<String, Method>();
     private final ConstraintsModel constraints;
+    private PropertyDeclarations propertyDeclarations;
 
-    public PropertiesModel( ConstraintsModel constraints )
+    public PropertiesModel( ConstraintsModel constraints, PropertyDeclarations propertyDeclarations )
     {
         this.constraints = constraints;
+        this.propertyDeclarations = propertyDeclarations;
     }
 
     public void addPropertiesFor( Class mixinType )
@@ -59,7 +61,9 @@ public final class PropertiesModel
                     {
                         valueConstraintsInstance = valueConstraintsModel.newInstance();
                     }
-                    PropertyModel propertyModel = new PropertyModel( method, valueConstraintsInstance, new MetaInfo(), null ); //TODO Take default value from assembly
+                    MetaInfo metaInfo = propertyDeclarations.getMetaInfo( method );
+                    Object defaultValue = propertyDeclarations.getDefaultValue( method );
+                    PropertyModel propertyModel = new PropertyModel( method, valueConstraintsInstance, metaInfo, defaultValue ); //TODO Take default value from assembly
                     propertyModels.add( propertyModel );
                     accessors.put( propertyModel.qualifiedName(), propertyModel.accessor() );
                 }

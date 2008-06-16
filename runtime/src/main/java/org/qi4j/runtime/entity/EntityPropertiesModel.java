@@ -28,6 +28,7 @@ import org.qi4j.runtime.composite.ConstraintsModel;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.composite.ValueConstraintsModel;
 import org.qi4j.runtime.property.PropertiesInstance;
+import org.qi4j.runtime.property.PropertyDeclarations;
 import org.qi4j.runtime.property.PropertyModel;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.property.ImmutablePropertyInstance;
@@ -44,10 +45,12 @@ public final class EntityPropertiesModel
     private final Map<Method, EntityPropertyModel> mapMethodPropertyModel = new HashMap<Method, EntityPropertyModel>();
     private final Map<String, Method> accessors = new HashMap<String, Method>();
     private final ConstraintsModel constraints;
+    private PropertyDeclarations propertyDeclarations;
 
-    public EntityPropertiesModel( ConstraintsModel constraints )
+    public EntityPropertiesModel( ConstraintsModel constraints, PropertyDeclarations propertyDeclarations )
     {
         this.constraints = constraints;
+        this.propertyDeclarations = propertyDeclarations;
     }
 
     public void addPropertiesFor( Class mixinType )
@@ -64,7 +67,9 @@ public final class EntityPropertiesModel
                     {
                         valueConstraintsInstance = valueConstraintsModel.newInstance();
                     }
-                    EntityPropertyModel propertyModel = new EntityPropertyModel( method, valueConstraintsInstance, new MetaInfo(), null ); //TODO Take default value from assembly
+                    MetaInfo metaInfo = propertyDeclarations.getMetaInfo( method );
+                    Object defaultValue = propertyDeclarations.getDefaultValue( method );
+                    EntityPropertyModel propertyModel = new EntityPropertyModel( method, valueConstraintsInstance, metaInfo, defaultValue );
                     propertyModels.add( propertyModel );
                     accessors.put( propertyModel.qualifiedName(), propertyModel.accessor() );
                     mapMethodPropertyModel.put( method, propertyModel );

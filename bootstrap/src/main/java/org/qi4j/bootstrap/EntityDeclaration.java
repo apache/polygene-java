@@ -18,7 +18,8 @@ import java.io.Serializable;
 import java.util.List;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.runtime.entity.EntityModel;
-import org.qi4j.runtime.structure.ModuleModel;
+import org.qi4j.runtime.entity.association.AssociationDeclarations;
+import org.qi4j.runtime.property.PropertyDeclarations;
 import org.qi4j.structure.Visibility;
 import org.qi4j.util.MetaInfo;
 
@@ -48,13 +49,15 @@ public final class EntityDeclaration
         return this;
     }
 
-    void addEntities( List<EntityModel> entities )
+    void addEntities( List<EntityModel> entities, PropertyDeclarations propertyDecs, AssociationDeclarations associationDecs )
     {
         for( Class<? extends EntityComposite> compositeType : compositeTypes )
         {
             EntityModel compositeModel = EntityModel.newModel( compositeType,
                                                                visibility,
-                                                               new MetaInfo( metaInfo ) );
+                                                               new MetaInfo( metaInfo ),
+                                                               propertyDecs,
+                                                               associationDecs );
             entities.add( compositeModel );
         }
     }

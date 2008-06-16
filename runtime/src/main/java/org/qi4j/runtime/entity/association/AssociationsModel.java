@@ -40,10 +40,12 @@ public final class AssociationsModel
     private final Map<Method, AssociationModel> mapMethodAssociationModel = new HashMap<Method, AssociationModel>();
     private final Map<String, Method> accessors = new HashMap<String, Method>();
     private final ConstraintsModel constraints;
+    private AssociationDeclarations associationDeclarations;
 
-    public AssociationsModel( ConstraintsModel constraints )
+    public AssociationsModel( ConstraintsModel constraints, AssociationDeclarations associationDeclarations )
     {
         this.constraints = constraints;
+        this.associationDeclarations = associationDeclarations;
     }
 
     public void addAssociationsFor( Class mixinType )
@@ -60,7 +62,8 @@ public final class AssociationsModel
                     {
                         valueConstraintsInstance = valueConstraintsModel.newInstance();
                     }
-                    AssociationModel associationModel = new AssociationModel( method, valueConstraintsInstance, new MetaInfo() ); //TODO Take default value from assembly
+                    MetaInfo metaInfo = associationDeclarations.getMetaInfo( method );
+                    AssociationModel associationModel = new AssociationModel( method, valueConstraintsInstance, metaInfo );
                     associationModels.add( associationModel );
                     mapMethodAssociationModel.put( method, associationModel );
                     accessors.put( associationModel.qualifiedName(), associationModel.accessor() );
