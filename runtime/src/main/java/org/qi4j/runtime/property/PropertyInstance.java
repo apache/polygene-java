@@ -55,6 +55,7 @@ public class PropertyInstance<T> extends AbstractPropertyInstance<T>
         throws IllegalArgumentException
     {
         super( aPropertyInfo );
+        value = (T) ImmutablePropertyInstance.UNSET;
     }
 
     /**

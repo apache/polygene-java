@@ -40,7 +40,7 @@ public class EntityPropertyInstance<T> extends PropertyInstance<T>
     public EntityPropertyInstance( PropertyInfo aPropertyInfo, EntityState entityState )
         throws IllegalArgumentException
     {
-        super( aPropertyInfo, (T) ImmutablePropertyInstance.UNSET );
+        super( aPropertyInfo );
         this.entityState = entityState;
     }
 

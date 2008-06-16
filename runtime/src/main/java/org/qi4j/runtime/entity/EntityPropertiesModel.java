@@ -84,7 +84,7 @@ public final class EntityPropertiesModel
         Map<Method, Property> properties = new HashMap<Method, Property>();
         for( PropertyModel propertyModel : propertyModels )
         {
-            Property property = propertyModel.newInstance( ImmutablePropertyInstance.UNSET );
+            Property property = propertyModel.newInstance();
             properties.put( propertyModel.accessor(), property );
         }
 
