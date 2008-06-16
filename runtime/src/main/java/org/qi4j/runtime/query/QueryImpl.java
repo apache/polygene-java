@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import org.qi4j.query.Query;
+import org.qi4j.query.QueryExecutionException;
 import org.qi4j.query.grammar.BooleanExpression;
 import org.qi4j.query.grammar.OrderBy;
 import org.qi4j.query.grammar.SingleValueExpression;
@@ -185,24 +186,35 @@ final class QueryImpl<T>
         final List<T> entities = new ArrayList<T>();
         try
         {
-            final Iterable<QualifiedIdentity> foundEntities = entityFinder.findEntities(
+            final Iterator<QualifiedIdentity> foundEntities = entityFinder.findEntities(
                 resultType, whereClause, orderBySegments, firstResult, maxResults
-            );
+            ).iterator();
 
-            for( final QualifiedIdentity foundEntity : foundEntities )
+            return new Iterator<T>()
             {
-                final Class<T> entityType = unitOfWorkInstance.module().findClassForName( foundEntity.type() );
-                // TODO shall we throw an exception if class cannot be found?
-                final T entity = unitOfWorkInstance.getReference( foundEntity.identity(), entityType );
-                entities.add( entity );
-            }
+                public boolean hasNext()
+                {
+                    return foundEntities.hasNext();
+                }
+
+                public T next()
+                {
+                    QualifiedIdentity foundEntity = foundEntities.next();
+                    final Class<T> entityType = unitOfWorkInstance.module().findClassForName( foundEntity.type() );
+                    // TODO shall we throw an exception if class cannot be found?
+                    final T entity = unitOfWorkInstance.getReference( foundEntity.identity(), entityType );
+                    return entity;
+                }
+
+                public void remove()
+                {
+                }
+            };
         }
         catch( EntityFinderException e )
         {
-            // TODO what shall we do? return null / throw runtime exception?
-            e.printStackTrace();
+            throw (QueryExecutionException) new QueryExecutionException( "Query '" + toString() + "' could not be executed" ).initCause( e );
         }
-        return entities.iterator();
     }
 
     @Override public String toString()
