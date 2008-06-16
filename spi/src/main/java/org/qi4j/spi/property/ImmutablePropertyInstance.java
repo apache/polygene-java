@@ -28,7 +28,9 @@ public final class ImmutablePropertyInstance<T> extends ComputedPropertyInstance
 {
     // During initialization of the property the value will be set to this
     // As long as this value is used the value can be changed.
-    public static final Object UNSET = "UNSET";
+    enum DEFAULT {UNSET}
+    
+    public static final Object UNSET = DEFAULT.UNSET;
 
     protected T value;
 
