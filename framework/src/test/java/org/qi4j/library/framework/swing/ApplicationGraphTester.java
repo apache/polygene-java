@@ -23,7 +23,7 @@ import org.qi4j.runtime.structure.ApplicationInstance;
 /**
  * TODO
  */
-public class ApplicationGraphTest
+public class ApplicationGraphTester
 {
     public static void main( String[] args )
         throws Exception
