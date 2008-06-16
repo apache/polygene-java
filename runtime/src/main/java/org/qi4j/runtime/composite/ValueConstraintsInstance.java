@@ -41,7 +41,18 @@ public final class ValueConstraintsInstance
         List<ConstraintViolation> violations = null;
         for( ConstraintInstance constraint : constraints )
         {
-            if( !constraint.isValid( value ) )
+            boolean valid;
+            try
+            {
+                valid = !constraint.isValid( value );
+            }
+            catch( NullPointerException e )
+            {
+                // A NPE is the same as a failing constraint
+                valid = false;
+            }
+
+            if( valid )
             {
                 if( violations == null )
                 {
