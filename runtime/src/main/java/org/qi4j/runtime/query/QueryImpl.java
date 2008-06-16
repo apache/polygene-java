@@ -18,10 +18,8 @@
  */
 package org.qi4j.runtime.query;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import org.qi4j.query.Query;
 import org.qi4j.query.QueryExecutionException;
@@ -183,7 +181,6 @@ final class QueryImpl<T>
      */
     public Iterator<T> iterator()
     {
-        final List<T> entities = new ArrayList<T>();
         try
         {
             final Iterator<QualifiedIdentity> foundEntities = entityFinder.findEntities(
