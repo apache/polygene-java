@@ -43,7 +43,7 @@ public abstract class AbstractMixinsModel
     private final Map<Class, Integer> mixinIndex = new HashMap<Class, Integer>();
     private final Map<Method, Integer> methodIndex = new HashMap<Method, Integer>();
     private final Class<? extends Composite> compositeType;
-    private Set<Class> mixinTypes = new HashSet<Class>();
+    private final Set<Class> mixinTypes = new HashSet<Class>();
 
     public AbstractMixinsModel( Class<? extends Composite> compositeType )
     {
