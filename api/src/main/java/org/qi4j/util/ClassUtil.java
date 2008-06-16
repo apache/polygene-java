@@ -208,4 +208,21 @@ public class ClassUtil
             }
         }
     }
+
+    /**
+     * Get URI for a class.
+     *
+     * @param clazz  class
+     * @return  URI
+     */
+    public static String toURI( final Class clazz )
+    {
+        if( clazz == null )
+        {
+            return null;
+        }
+        String className = clazz.getName();
+        className = className.replace( '$', '&' );
+        return "urn:qi4j:" + className;
+    }
 }
