@@ -15,22 +15,17 @@
 package org.qi4j.bootstrap;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import org.qi4j.composite.Composite;
 import org.qi4j.entity.EntityComposite;
-import org.qi4j.property.AbstractPropertyInstance;
 import org.qi4j.runtime.composite.CompositeModel;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.entity.association.AssociationDeclarations;
 import org.qi4j.runtime.object.ObjectModel;
-import org.qi4j.runtime.property.PropertyDeclarations;
 import org.qi4j.runtime.service.qi.ServiceModel;
 import org.qi4j.runtime.structure.CompositesModel;
 import org.qi4j.runtime.structure.EntitiesModel;
@@ -51,43 +46,18 @@ import org.qi4j.util.MetaInfo;
  */
 public final class ModuleAssembly
 {
-    private static final Map<Type, Object> defaultValues;
-
-    static
-    {
-        defaultValues = new HashMap<Type, Object>();
-        defaultValues.put( Integer.class, 0 );
-        defaultValues.put( Long.class, 0L );
-        defaultValues.put( Double.class, 0.0D );
-        defaultValues.put( Float.class, 0.0F );
-        defaultValues.put( Boolean.class, false );
-    }
-
-    // Better default values for primitives
-    private static Object getDefaultValue( Type type )
-    {
-        return defaultValues.get( type );
-    }
 
 
     private LayerAssembly layerAssembly;
     private String name;
-    private List<CompositeDeclaration> compositeDeclarations;
-    private List<EntityDeclaration> entityDeclarations;
-    private List<ObjectDeclaration> objectDeclarations;
-    private List<ServiceDeclaration> serviceDeclarations;
-    private List<PropertyDeclaration> propertyDeclarations;
-    private List<AssociationDeclaration> associationDeclarations;
-
+    private final List<CompositeDeclaration> compositeDeclarations = new ArrayList<CompositeDeclaration>();
+    private final List<EntityDeclaration> entityDeclarations = new ArrayList<EntityDeclaration>();
+    private final List<ObjectDeclaration> objectDeclarations = new ArrayList<ObjectDeclaration>();
+    private final List<ServiceDeclaration> serviceDeclarations = new ArrayList<ServiceDeclaration>();
+    private final MetaInfoDeclaration metaInfoDeclaration = new MetaInfoDeclaration();
     public ModuleAssembly( LayerAssembly layerAssembly )
     {
         this.layerAssembly = layerAssembly;
-        compositeDeclarations = new ArrayList<CompositeDeclaration>();
-        entityDeclarations = new ArrayList<EntityDeclaration>();
-        objectDeclarations = new ArrayList<ObjectDeclaration>();
-        serviceDeclarations = new ArrayList<ServiceDeclaration>();
-        propertyDeclarations = new ArrayList<PropertyDeclaration>();
-        associationDeclarations = new ArrayList<AssociationDeclaration>();
     }
 
     public void addAssembler( Assembler assembler )
@@ -183,18 +153,8 @@ public final class ModuleAssembly
         return serviceDeclaration;
     }
 
-    public PropertyDeclaration addProperty()
-    {
-        PropertyDeclaration declaration = new PropertyDeclaration();
-        propertyDeclarations.add( declaration );
-        return declaration;
-    }
-
-    public AssociationDeclaration addAssociation()
-    {
-        AssociationDeclaration declaration = new AssociationDeclaration();
-        associationDeclarations.add( declaration );
-        return declaration;
+    public <T> InfoDeclaration<T> on(Class<T> mixinType) {
+        return metaInfoDeclaration.on( mixinType );
     }
 
     ModuleModel assembleModule()
@@ -209,16 +169,14 @@ public final class ModuleAssembly
                                                    new ObjectsModel( objectModels ),
                                                    new ServicesModel( serviceModels ) );
 
-        PropertyDeclarationsImpl propertyDecs = new PropertyDeclarationsImpl();
         for( CompositeDeclaration compositeDeclaration : compositeDeclarations )
         {
-            compositeDeclaration.addComposites( compositeModels, propertyDecs );
+            compositeDeclaration.addComposites( compositeModels, metaInfoDeclaration );
         }
 
-        AssociationDeclarationsImpl associationDecs = new AssociationDeclarationsImpl();
         for( EntityDeclaration entityDeclaration : entityDeclarations )
         {
-            entityDeclaration.addEntities( entityModels, propertyDecs, associationDecs );
+            entityDeclaration.addEntities( entityModels, metaInfoDeclaration, metaInfoDeclaration );
         }
 
         for( ObjectDeclaration objectDeclaration : objectDeclarations )
@@ -262,7 +220,7 @@ public final class ModuleAssembly
                 if( !found )
                 {
                     compositeModels.add(
-                        CompositeModel.newModel( serviceModel.type(), Visibility.module, new MetaInfo(), new PropertyDeclarationsImpl() )
+                        CompositeModel.newModel( serviceModel.type(), Visibility.module, new MetaInfo(), metaInfoDeclaration )
                     );
                 }
             }
@@ -285,58 +243,5 @@ public final class ModuleAssembly
         }
 
         return moduleModel;
-    }
-
-    private class PropertyDeclarationsImpl
-        implements PropertyDeclarations
-    {
-        public MetaInfo getMetaInfo( Method accessor )
-        {
-            for( PropertyDeclaration propertyDeclaration : propertyDeclarations )
-            {
-                if( propertyDeclaration.accessor.equals( accessor ) )
-                {
-                    return propertyDeclaration.metaInfo;
-                }
-            }
-
-            return new MetaInfo();
-        }
-
-        public Object getDefaultValue( Method accessor )
-        {
-            Object defaultValue = null;
-            for( PropertyDeclaration propertyDeclaration : propertyDeclarations )
-            {
-                if( propertyDeclaration.accessor.equals( accessor ) )
-                {
-                    defaultValue = propertyDeclaration.defaultValue;
-                }
-            }
-
-            if( defaultValue == null )
-            {
-                defaultValue = ModuleAssembly.getDefaultValue( AbstractPropertyInstance.getPropertyType( accessor ) );
-            }
-
-            return defaultValue;
-        }
-    }
-
-    private class AssociationDeclarationsImpl
-        implements AssociationDeclarations
-    {
-        public MetaInfo getMetaInfo( Method accessor )
-        {
-            for( PropertyDeclaration propertyDeclaration : propertyDeclarations )
-            {
-                if( propertyDeclaration.accessor.equals( accessor ) )
-                {
-                    return propertyDeclaration.metaInfo;
-                }
-            }
-
-            return new MetaInfo();
-        }
     }
 }
