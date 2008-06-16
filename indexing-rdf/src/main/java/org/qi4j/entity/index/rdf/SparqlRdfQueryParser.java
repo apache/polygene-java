@@ -99,7 +99,7 @@ class SparqlRdfQueryParser
         triples.add(
             new Triple(
                 "?entity",
-                addNamespace( AbstractPropertyInstance.toNamespace( getAccessor( Identity.class, "identity" ) ) ) + ":identity",
+                addNamespace( AbstractPropertyInstance.toNamespace( getIdentityAccessor( Identity.class ) ) ) + ":identity",
                 "?identity",
                 false
             )
@@ -313,11 +313,10 @@ class SparqlRdfQueryParser
         return ns;
     }
 
-    private String addNamespace( final String prefix,
+    private void addNamespace( final String prefix,
                                  final String namespace )
     {
         namespaces.put( namespace, prefix );
-        return prefix;
     }
 
     private Triple addTriple( final PropertyReference propertyReference,
@@ -385,12 +384,11 @@ class SparqlRdfQueryParser
         return "urn:qi4j:association:" + ComputedPropertyInstance.getDeclaringClassName( accessor ) + ":";
     }
 
-    private static Method getAccessor( final Class declaringClass,
-                                       final String accessorName )
+    private static Method getIdentityAccessor( final Class declaringClass )
     {
         try
         {
-            return declaringClass.getMethod( accessorName );
+            return declaringClass.getMethod( "identity" );
         }
         catch( NoSuchMethodException e )
         {
@@ -400,9 +398,9 @@ class SparqlRdfQueryParser
 
     private static class Triple
     {
-        String subject;
-        String predicate;
-        String value;
+        final String subject;
+        final String predicate;
+        final String value;
         boolean optional;
 
         private Triple( final String subject,

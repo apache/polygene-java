@@ -51,7 +51,7 @@ public class RdfEntityIndexerMixin
 {
     @Structure private Qi4jSPI spi;
 
-    @This RdfQueryContext queryContext;
+    @This private RdfQueryContext queryContext;
 
     public void index( final Iterable<EntityState> newStates,
                        final Iterable<EntityState> changedStates,
