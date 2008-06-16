@@ -34,7 +34,6 @@ import org.qi4j.injection.scope.Structure;
 import org.qi4j.injection.scope.This;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.composite.CompositeDescriptor;
-import org.qi4j.spi.composite.MixinTypeModel;
 import org.qi4j.spi.composite.StateDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.QualifiedIdentity;
@@ -42,6 +41,7 @@ import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.spi.query.EntityIndexer;
 import org.qi4j.structure.Module;
+import org.qi4j.util.ClassUtil;
 
 /**
  * TODO Add JavaDoc
@@ -119,7 +119,7 @@ public class RdfEntityIndexerMixin
         final Class compositeClass = module.classLoader().loadClass( entityState.getIdentity().type() );
         final CompositeDescriptor compositeDescriptor = spi.getCompositeDescriptor( compositeClass, module );
         final URI compositeURI = valueFactory.createURI( compositeDescriptor.toURI() );
-        final URI compositeClassURI = valueFactory.createURI( MixinTypeModel.toURI( Composite.class ) + ":entityType" );
+        final URI compositeClassURI = valueFactory.createURI( ClassUtil.toURI( Composite.class ) + ":entityType" );
         final URI entityURI = valueFactory.createURI( compositeDescriptor.toURI()
                                                       + "/" + entityState.getIdentity().identity() );
         connection.add( entityURI, RDF.TYPE, compositeURI );
@@ -213,7 +213,7 @@ public class RdfEntityIndexerMixin
         // add all subclasses as rdfs:subClassOf
         for( Class mixinType : compositeDescriptor.mixinTypes() )
         {
-            connection.add( compositeURI, RDFS.SUBCLASSOF, valueFactory.createURI( MixinTypeModel.toURI( mixinType ) ) );
+            connection.add( compositeURI, RDFS.SUBCLASSOF, valueFactory.createURI( ClassUtil.toURI( mixinType ) ) );
         }
     }
 

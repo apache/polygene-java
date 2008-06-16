@@ -42,7 +42,7 @@ import org.qi4j.query.grammar.PropertyNullPredicate;
 import org.qi4j.query.grammar.PropertyReference;
 import org.qi4j.query.grammar.SingleValueExpression;
 import org.qi4j.query.grammar.ValueExpression;
-import org.qi4j.spi.composite.MixinTypeModel;
+import org.qi4j.util.ClassUtil;
 
 /**
  * TODO Add JavaDoc
@@ -86,13 +86,13 @@ class SparqlRdfQueryParser
             new Triple(
                 "?entity",
                 "rdf:type",
-                "<" + MixinTypeModel.toURI( resultType ) + ">",
+                "<" + ClassUtil.toURI( resultType ) + ">",
                 false )
         );
         triples.add(
             new Triple(
                 "?entity",
-                addNamespace( MixinTypeModel.toURI( Composite.class ) + ":" ) + ":entityType",
+                addNamespace( ClassUtil.toURI( Composite.class ) + ":" ) + ":entityType",
                 "?entityType",
                 false )
         );
