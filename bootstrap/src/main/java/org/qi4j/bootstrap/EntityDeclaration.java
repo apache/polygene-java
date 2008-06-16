@@ -37,7 +37,7 @@ public final class EntityDeclaration
         this.compositeTypes = compositeTypes;
     }
 
-    public <T extends Serializable> EntityDeclaration setMetaInfo( Serializable info )
+    public EntityDeclaration setMetaInfo( Serializable info )
     {
         metaInfo.set( info );
         return this;

@@ -73,7 +73,7 @@ class PropertyReferenceProxy
             return propertyReference.toString();
         }
         // TODO handle equals/hashcode?
-        throw new UnsupportedOperationException( "Only property methods can be used" );
+        throw new UnsupportedOperationException( "Only property methods can be used. Not " + method.getName() + "()." );
     }
 
     @Override public String toString()

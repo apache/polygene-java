@@ -79,13 +79,16 @@ public abstract class AbstractPropertyInstance<T>
             }
         }
 
-        Type[] interfaces = ( (Class<?>) methodReturnType ).getInterfaces();
-        for( Type anInterface : interfaces )
+        if( methodReturnType instanceof Class<?> )
         {
-            Type propertyType = getPropertyType( anInterface );
-            if( propertyType != null )
+            Type[] interfaces = ( (Class<?>) methodReturnType ).getInterfaces();
+            for( Type anInterface : interfaces )
             {
-                return propertyType;
+                Type propertyType = getPropertyType( anInterface );
+                if( propertyType != null )
+                {
+                    return propertyType;
+                }
             }
         }
         return null;

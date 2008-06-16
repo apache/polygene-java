@@ -21,6 +21,7 @@ import org.qi4j.service.ServiceInstanceFactory;
 import org.qi4j.spi.service.provider.DefaultServiceInstanceFactory;
 import org.qi4j.structure.Visibility;
 import org.qi4j.util.MetaInfo;
+import org.qi4j.composite.Composite;
 
 /**
  * Declaration of a Service. Created by {@link org.qi4j.bootstrap.ModuleAssembly#addServices(Class[])}.
@@ -28,13 +29,13 @@ import org.qi4j.util.MetaInfo;
 public final class ServiceDeclaration
 {
     private Class<? extends ServiceInstanceFactory> serviceProvider = DefaultServiceInstanceFactory.class;
-    private Iterable<Class> serviceTypes;
+    private Iterable<Class<? extends Composite>> serviceTypes;
     private String identity;
     private boolean instantiateOnStartup = false;
     private MetaInfo metaInfo = new MetaInfo();
     private Visibility visibility = Visibility.module;
 
-    public ServiceDeclaration( Iterable<Class> serviceTypes )
+    public ServiceDeclaration( Iterable<Class<? extends Composite>> serviceTypes )
     {
         this.serviceTypes = serviceTypes;
     }
@@ -63,7 +64,7 @@ public final class ServiceDeclaration
         return this;
     }
 
-    public <K extends Serializable> ServiceDeclaration setMetaInfo( Serializable serviceAttribute )
+    public ServiceDeclaration setMetaInfo( Serializable serviceAttribute )
     {
         metaInfo.set( serviceAttribute );
         return this;
@@ -71,7 +72,7 @@ public final class ServiceDeclaration
 
     void addServices( List<ServiceModel> serviceModels )
     {
-        for( Class serviceType : serviceTypes )
+        for( Class<? extends Composite> serviceType : serviceTypes )
         {
             String id = identity;
             if( id == null )

@@ -37,7 +37,7 @@ public final class CompositeDeclaration
         this.compositeTypes = compositeTypes;
     }
 
-    public <T extends Serializable> CompositeDeclaration setMetaInfo( Serializable info )
+    public CompositeDeclaration setMetaInfo( Serializable info )
     {
         metaInfo.set( info );
         return this;

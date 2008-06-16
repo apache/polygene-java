@@ -16,6 +16,8 @@ package org.qi4j.runtime.property;
 
 import org.qi4j.property.AbstractPropertyInstance;
 import org.qi4j.property.PropertyInfo;
+import org.qi4j.spi.property.ImmutablePropertyInstance;
+import org.qi4j.spi.property.PropertyDescriptor;
 
 /**
  * {@code PropertyInstance} represents a mutable property.
@@ -61,8 +63,13 @@ public class PropertyInstance<T> extends AbstractPropertyInstance<T>
      * @return This property value.
      * @since 0.1.0
      */
+    @SuppressWarnings( { "unchecked" } )
     public T get()
     {
+        if( value == ImmutablePropertyInstance.UNSET )
+        {
+            return (T) ( (PropertyDescriptor) propertyInfo ).defaultValue();
+        }
         return value;
     }
 

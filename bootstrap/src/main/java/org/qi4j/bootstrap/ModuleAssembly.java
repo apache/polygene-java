@@ -161,7 +161,8 @@ public final class ModuleAssembly
         return objectDeclaration;
     }
 
-    public ServiceDeclaration addServices( Class... serviceTypes ) throws AssemblyException
+    public ServiceDeclaration addServices( Class<? extends Composite>... serviceTypes )
+        throws AssemblyException
     {
         for( Class serviceType : serviceTypes )
         {
@@ -176,7 +177,8 @@ public final class ModuleAssembly
             }
         }
 
-        ServiceDeclaration serviceDeclaration = new ServiceDeclaration( Arrays.asList( serviceTypes ) );
+        List<Class<? extends Composite>> classes = Arrays.asList( serviceTypes );
+        ServiceDeclaration serviceDeclaration = new ServiceDeclaration( classes );
         serviceDeclarations.add( serviceDeclaration );
         return serviceDeclaration;
     }
@@ -242,7 +244,6 @@ public final class ModuleAssembly
             identities.add( identity );
         }
 
-        nextService:
         for( ServiceModel serviceModel : serviceModels )
         {
             if( Composite.class.isAssignableFrom( serviceModel.type() ) )

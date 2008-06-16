@@ -22,20 +22,21 @@ import org.qi4j.service.ServiceInstanceFactory;
 import org.qi4j.structure.Module;
 import org.qi4j.structure.Visibility;
 import org.qi4j.util.MetaInfo;
+import org.qi4j.composite.Composite;
 
 /**
  * TODO
  */
 public final class ServiceModel
 {
-    private final Class type;
+    private final Class<? extends Composite> type;
     private final Visibility visibility;
     private final Class<? extends ServiceInstanceFactory> serviceFactory;
     private final String identity;
     private final boolean instantiateOnStartup;
     private final MetaInfo metaInfo;
 
-    public ServiceModel( Class compositeType,
+    public ServiceModel( Class<? extends Composite> compositeType,
                          Visibility visibility,
                          Class<? extends ServiceInstanceFactory> serviceFactory,
                          String identity,
@@ -49,7 +50,7 @@ public final class ServiceModel
         this.metaInfo = metaInfo;
     }
 
-    public Class type()
+    public Class<? extends Composite> type()
     {
         return type;
     }

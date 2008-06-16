@@ -73,13 +73,16 @@ public final class AssociationDeclaration
                 }
             }
 
-            Type[] interfaces = ( (Class) methodReturnType ).getInterfaces();
-            for( Type anInterface : interfaces )
+            if( methodReturnType instanceof Class )
             {
-                Class associationType = getAssociatedType( anInterface );
-                if( associationType != null )
+                Type[] interfaces = ( (Class) methodReturnType ).getInterfaces();
+                for( Type anInterface : interfaces )
                 {
-                    return associationType;
+                    Class associationType = getAssociatedType( anInterface );
+                    if( associationType != null )
+                    {
+                        return associationType;
+                    }
                 }
             }
             return null;
@@ -95,14 +98,16 @@ public final class AssociationDeclaration
                     return (Class) parameterizedType.getRawType();
                 }
             }
-
-            Type[] interfaces = ( (Class) methodReturnType ).getInterfaces();
-            for( Type anInterface : interfaces )
+            if( methodReturnType instanceof Class )
             {
-                Class associationType = getAssociationType( anInterface );
-                if( associationType != null )
+                Type[] interfaces = ( (Class) methodReturnType ).getInterfaces();
+                for( Type anInterface : interfaces )
                 {
-                    return associationType;
+                    Class associationType = getAssociationType( anInterface );
+                    if( associationType != null )
+                    {
+                        return associationType;
+                    }
                 }
             }
             return null;

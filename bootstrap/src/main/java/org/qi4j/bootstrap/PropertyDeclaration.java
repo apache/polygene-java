@@ -40,7 +40,7 @@ public final class PropertyDeclaration
         return mixinType.cast( Proxy.newProxyInstance( mixinType.getClassLoader(), new Class[]{ mixinType }, new AccessorInvocationHandler() ) );
     }
 
-    public <T extends Serializable> PropertyDeclaration setMetaInfo( Serializable info )
+    public PropertyDeclaration setMetaInfo( Serializable info )
     {
         metaInfo.set( info );
         return this;
@@ -53,6 +53,7 @@ public final class PropertyDeclaration
             throws Throwable
         {
             accessor = method;
+            // TODO: Unused variable. Why!!???
             Type methodReturnType = method.getGenericReturnType();
 
             return Proxy.newProxyInstance( method.getReturnType().getClassLoader(), new Class[]{ method.getReturnType() }, new PropertyInvocationHandler() );

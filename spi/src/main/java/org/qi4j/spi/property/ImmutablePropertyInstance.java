@@ -48,14 +48,20 @@ public final class ImmutablePropertyInstance<T> extends ComputedPropertyInstance
         this.value = value;
     }
 
+    @SuppressWarnings( { "unchecked" } )
     public ImmutablePropertyInstance( PropertyInfo info )
     {
         super( info );
         this.value = (T) UNSET;
     }
 
+    @SuppressWarnings( { "unchecked" } )
     public T get()
     {
+        if( value == UNSET )
+        {
+            return (T) ( (PropertyDescriptor) propertyInfo ).defaultValue();
+        }
         return value;
     }
 
@@ -105,15 +111,8 @@ public final class ImmutablePropertyInstance<T> extends ComputedPropertyInstance
         {
             return false;
         }
-
         ImmutablePropertyInstance that = (ImmutablePropertyInstance) o;
-
-        if( value != null ? !value.equals( that.value ) : that.value != null )
-        {
-            return false;
-        }
-
-        return true;
+        return !( value != null ? !value.equals( that.value ) : that.value != null );
     }
 
     @Override public int hashCode()

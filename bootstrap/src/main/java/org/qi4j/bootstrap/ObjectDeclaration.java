@@ -19,7 +19,6 @@ import java.lang.reflect.Modifier;
 import java.util.List;
 import org.qi4j.composite.Composite;
 import org.qi4j.runtime.object.ObjectModel;
-import org.qi4j.runtime.structure.ModuleModel;
 import org.qi4j.structure.Visibility;
 import org.qi4j.util.MetaInfo;
 
@@ -46,7 +45,7 @@ public final class ObjectDeclaration
         this.objectTypes = classes;
     }
 
-    public <T extends Serializable> ObjectDeclaration setMetaInfo( Serializable info )
+    public ObjectDeclaration setMetaInfo( Serializable info )
     {
         metaInfo.set( info );
         return this;
