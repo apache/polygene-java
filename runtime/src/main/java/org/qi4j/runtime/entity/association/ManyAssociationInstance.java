@@ -165,9 +165,10 @@ public class ManyAssociationInstance<T> extends AbstractAssociationInstance<T>
         return list;
     }
 
-    public void refresh( Collection<QualifiedIdentity> newSet )
+    public void refresh( Collection<QualifiedIdentity> newAssociations )
     {
-        associated = newSet;
+        if (newAssociations==null) throw new IllegalArgumentException( "ManyAssociation must be a valid collection, shared with state");
+        associated = newAssociations;
     }
 
 
