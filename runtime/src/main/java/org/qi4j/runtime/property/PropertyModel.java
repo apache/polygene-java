@@ -124,7 +124,7 @@ public class PropertyModel
 
     public Property<?> newInstance()
     {
-        return newInstance( defaultValue );
+        return newInstance( ImmutablePropertyInstance.UNSET );
     }
 
     public Property<?> newInstance( Object value )

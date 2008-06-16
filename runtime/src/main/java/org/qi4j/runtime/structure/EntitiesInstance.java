@@ -108,7 +108,7 @@ public class EntitiesInstance
             ServiceReference<IdentityGenerator> service = moduleInstance.findService( IdentityGenerator.class );
             if( service == null )
             {
-                throw new UnitOfWorkException( "No IdentityGenerator service available in module " + moduleInstance.name() );
+                return null;
             }
             generator = service.get();
         }

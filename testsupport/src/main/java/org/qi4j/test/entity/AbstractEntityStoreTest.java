@@ -2,9 +2,8 @@ package org.qi4j.test.entity;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -26,7 +25,6 @@ import org.qi4j.property.ImmutableProperty;
 import org.qi4j.property.Property;
 import org.qi4j.spi.entity.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
-import org.qi4j.runtime.entity.EntityStorageException;
 
 /**
  * Abstract test with tests for the EntityStore interface.
@@ -56,7 +54,7 @@ public abstract class AbstractEntityStoreTest
 
             // Check state
             assertThat( "property has correct value", instance.name().get(), equalTo( "Test" ) );
-            assertThat( "property has correct value", instance.unsetName().get(), equalTo( "UNSET" ) );
+            assertThat( "property has correct value", instance.unsetName().get(), equalTo( null ) );
             assertThat( "association has correct value", instance.association().get(), equalTo( instance ) );
             assertThat( "manyAssociation has correct value", instance.manyAssociation().iterator().next(), equalTo( instance ) );
             assertThat( "listAssociation has correct value", instance.listAssociation().iterator().next(), equalTo( instance ) );
@@ -97,7 +95,9 @@ public abstract class AbstractEntityStoreTest
         catch( EntityCompositeNotFoundException e )
         {
             // Ok!
-        } finally {
+        }
+        finally
+        {
             unitOfWork.discard();
         }
     }
@@ -161,10 +161,12 @@ public abstract class AbstractEntityStoreTest
         ImmutableProperty<Integer> otherValue();
     }
 
-    public interface Mutable<T> {
+    public interface Mutable<T>
+    {
         EntityBuilder<T> mutate();
 
     }
+
     @Mixins( ValueComposite.ValueCompositeMixin.class )
     public interface ValueComposite<T>
         extends Mutable<T>

@@ -72,7 +72,7 @@ public abstract class AbstractMixinsModel
         {
             mixinTypes.add( method.getDeclaringClass() );
 
-            Class mixinClass = findImplementation( method, mixins );
+            Class mixinClass = findTypedImplementation( method, mixins );
             if( mixinClass != null )
             {
                 return implementMethodWithClass( method, mixinClass );
@@ -81,7 +81,21 @@ public abstract class AbstractMixinsModel
             // Check declaring interface of method
             Set<MixinDeclaration> interfaceDeclarations = new LinkedHashSet<MixinDeclaration>();
             addMixinDeclarations( method.getDeclaringClass(), interfaceDeclarations );
-            mixinClass = findImplementation( method, interfaceDeclarations );
+            mixinClass = findTypedImplementation( method, interfaceDeclarations );
+            if( mixinClass != null )
+            {
+                return implementMethodWithClass( method, mixinClass );
+            }
+
+            // Check generic implementations
+            mixinClass = findGenericImplementation( method, mixins );
+            if( mixinClass != null )
+            {
+                return implementMethodWithClass( method, mixinClass );
+            }
+
+            // Check declaring interface of method
+            mixinClass = findGenericImplementation( method, interfaceDeclarations );
             if( mixinClass != null )
             {
                 return implementMethodWithClass( method, mixinClass );
@@ -95,7 +109,7 @@ public abstract class AbstractMixinsModel
         }
     }
 
-    private Class findImplementation( Method method, Set<MixinDeclaration> mixins )
+    private Class findTypedImplementation( Method method, Set<MixinDeclaration> mixins )
     {
         for( MixinDeclaration mixin : mixins )
         {
@@ -105,6 +119,11 @@ public abstract class AbstractMixinsModel
                 return mixinClass;
             }
         }
+        return null;
+    }
+
+    private Class findGenericImplementation( Method method, Set<MixinDeclaration> mixins )
+    {
         for( MixinDeclaration mixin : mixins )
         {
             if( mixin.isGeneric() && mixin.appliesTo( method, compositeType ) )
