@@ -58,7 +58,7 @@ public class DefaultIbatisEntityStoreTest
         config.addEntities( IBatisConfigurationComposite.class).visibleIn( Visibility.layer );
         config.addEntities( DBInitializerConfigurationComposite.class ).visibleIn( Visibility.layer );
         config.addServices( MemoryEntityStoreService.class );
-        config.addProperty().withAccessor( IBatisConfigurationComposite.class ).sqlMapConfigURL().set( derbyDatabaseHandler.getUrlString( TEST_VALUE_SQLMAP ));
+        config.on( IBatisConfigurationComposite.class ).to().sqlMapConfigURL().set( derbyDatabaseHandler.getUrlString( TEST_VALUE_SQLMAP ));
         derbyDatabaseHandler.initDbInitializerInfo( config );
     }
 

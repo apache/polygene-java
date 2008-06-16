@@ -88,11 +88,11 @@ public class DerbyDatabaseHandler
 
     public void initDbInitializerInfo( final ModuleAssembly module, final String schemaFile, final String dataFile )
     {
-        final Class<DBInitializerConfiguration> configType = DBInitializerConfiguration.class;
-        module.addProperty().withAccessor( configType ).dbUrl().set( JDBC_URL );
-        module.addProperty().withAccessor( configType ).connectionProperties().set( createConnectionProperties() );
-        module.addProperty().withAccessor( configType ).schemaUrl().set( getUrlString( schemaFile ) );
-        module.addProperty().withAccessor( configType ).dataUrl().set( getUrlString( dataFile ) );
+        final DBInitializerConfiguration configuration = module.on( DBInitializerConfiguration.class ).to();
+        configuration.dbUrl().set( JDBC_URL );
+        configuration.connectionProperties().set( createConnectionProperties() );
+        configuration.schemaUrl().set( getUrlString( schemaFile ) );
+        configuration.dataUrl().set( getUrlString( dataFile ) );
     }
 
     public String getUrlString( final String file )

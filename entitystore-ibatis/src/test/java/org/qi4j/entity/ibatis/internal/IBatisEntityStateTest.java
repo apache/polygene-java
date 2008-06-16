@@ -163,10 +163,7 @@ public final class IBatisEntityStateTest extends AbstractTestCase
         aModule.addComposites( PersonComposite.class );
 
         // Has Name
-        final HasFirstName hasFirstName = aModule.addProperty().withAccessor( HasFirstName.class );
-        hasFirstName.firstName().set( DEFAULT_FIRST_NAME );
-
-        final HasLastName hasLastName = aModule.addProperty().withAccessor( HasLastName.class );
-        hasLastName.lastName().set( DEFAULT_LAST_NAME );
+        aModule.on(HasFirstName.class ).to().firstName().set( DEFAULT_FIRST_NAME );
+        aModule.on(HasLastName.class ).to().lastName().set( DEFAULT_LAST_NAME );
     }
 }

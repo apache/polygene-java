@@ -16,7 +16,6 @@ package org.qi4j.quikit.assembly;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.bootstrap.PropertyDeclaration;
 import org.qi4j.quikit.assembly.composites.HttpConfiguration;
 import static org.qi4j.structure.Visibility.application;
 
@@ -26,9 +25,7 @@ public class HttpConfigurationAssembler
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        PropertyDeclaration httpConfigurationProperty = module.addProperty();
-        HttpConfiguration httpConfiguration = httpConfigurationProperty.withAccessor( HttpConfiguration.class );
-        httpConfiguration.hostPort().set( 8080 );
+        module.on(HttpConfiguration.class ).to().hostPort().set( 8080 );
 
         module.addComposites( HttpConfiguration.class ).visibleIn( application );
     }

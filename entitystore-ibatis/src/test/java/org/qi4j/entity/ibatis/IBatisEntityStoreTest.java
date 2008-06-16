@@ -212,7 +212,7 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
         config.addEntities( IBatisConfigurationComposite.class ).visibleIn( Visibility.layer );
         config.addEntities( DBInitializerConfigurationComposite.class ).visibleIn( Visibility.layer );
         config.addServices( MemoryEntityStoreService.class );
-        config.addProperty().withAccessor( IBatisConfigurationComposite.class ).sqlMapConfigURL().set( getSqlMapConfigUrl() );
+        config.on( IBatisConfiguration.class ).to().sqlMapConfigURL().set( getSqlMapConfigUrl() );
         derbyDatabaseHandler.initDbInitializerInfo( config, SCHEMA_FILE, DATA_FILE );
     }
 

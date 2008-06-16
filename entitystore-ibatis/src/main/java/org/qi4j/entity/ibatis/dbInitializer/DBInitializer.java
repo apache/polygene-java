@@ -27,6 +27,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
+import org.qi4j.property.Property;
 
 /**
  * {@code DBIntializer} initialize the db.
@@ -65,7 +66,9 @@ public final class DBInitializer
     public final void initialize()
         throws SQLException, IOException
     {
-        runScript( dBInitializerInfo.schemaUrl().get() );
+        final Property<String> schemaUrlProperty = dBInitializerInfo.schemaUrl();
+        final String schemaUrl = schemaUrlProperty.get();
+        runScript( schemaUrl );
         runScript( dBInitializerInfo.dataUrl().get() );
     }
 
@@ -119,7 +122,8 @@ public final class DBInitializer
         throws SQLException
     {
         final String dbURL = dBInitializerInfo.dbUrl().get();
-        final Properties dbProperties = dBInitializerInfo.connectionProperties().get();
+        final Property<Properties> connectionPropertiesProperty = dBInitializerInfo.connectionProperties();
+        final Properties dbProperties = connectionPropertiesProperty.get();
         return DriverManager.getConnection( dbURL, dbProperties );
     }
 }
