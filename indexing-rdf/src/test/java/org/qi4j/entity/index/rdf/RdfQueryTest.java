@@ -416,10 +416,11 @@ public class RdfQueryTest
     public void script21() throws EntityFinderException
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
-        // should return all Persons sorted by name of the city they were born
+        // should return all Persons sorted by name of the city they were born, and then by year they were born
         Person person = templateFor( Person.class );
         Query<Person> query = qb.newQuery();
-        query.orderBy( orderBy( person.placeOfBirth().get().name() ) );
+        query.orderBy( orderBy( person.placeOfBirth().get().name() ),
+                       orderBy( person.yearOfBirth() ));
         verifyOrderedResults(
             query,
             "Ann Doe", "Joe Doe", "Jack Doe"
