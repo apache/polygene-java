@@ -19,7 +19,7 @@
     <orderEntry type="module" module-name="qi4j-core-api" exported="" />
     <orderEntry type="module" module-name="qi4j-core-spi" exported="" />
     <orderEntry type="module" module-name="qi4j-core-runtime" exported="" />
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library name="cglib:cglib-nodep:2.1_3">
         <CLASSES>
           <root url="jar://$M2_REPO$/cglib/cglib-nodep/2.1_3/cglib-nodep-2.1_3.jar!/" />
