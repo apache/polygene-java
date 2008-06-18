@@ -64,9 +64,12 @@ public final class AssociationsModel
                     }
                     MetaInfo metaInfo = associationDeclarations.getMetaInfo( method );
                     AssociationModel associationModel = new AssociationModel( method, valueConstraintsInstance, metaInfo );
-                    associationModels.add( associationModel );
-                    mapMethodAssociationModel.put( method, associationModel );
-                    accessors.put( associationModel.qualifiedName(), associationModel.accessor() );
+                    if( !accessors.containsKey( associationModel.qualifiedName() ) )
+                    {
+                        associationModels.add( associationModel );
+                        mapMethodAssociationModel.put( method, associationModel );
+                        accessors.put( associationModel.qualifiedName(), associationModel.accessor() );
+                    }
                 }
             }
             mixinTypes.add( mixinType );

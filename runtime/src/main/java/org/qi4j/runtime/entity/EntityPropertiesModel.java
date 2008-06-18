@@ -70,9 +70,13 @@ public final class EntityPropertiesModel
                     MetaInfo metaInfo = propertyDeclarations.getMetaInfo( method );
                     Object defaultValue = propertyDeclarations.getDefaultValue( method );
                     EntityPropertyModel propertyModel = new EntityPropertyModel( method, valueConstraintsInstance, metaInfo, defaultValue );
-                    propertyModels.add( propertyModel );
-                    accessors.put( propertyModel.qualifiedName(), propertyModel.accessor() );
-                    mapMethodPropertyModel.put( method, propertyModel );
+                    final String qualifiedName = propertyModel.qualifiedName();
+                    if( !accessors.containsKey( qualifiedName ) )
+                    {
+                        accessors.put( qualifiedName, propertyModel.accessor() );
+                        propertyModels.add( propertyModel );
+                        mapMethodPropertyModel.put( method, propertyModel );
+                    }
                 }
             }
             mixinTypes.add( mixinType );
