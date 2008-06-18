@@ -21,7 +21,6 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -33,10 +32,9 @@ import org.qi4j.injection.scope.Structure;
 import org.qi4j.injection.scope.This;
 import org.qi4j.injection.scope.Uses;
 import org.qi4j.library.framework.locking.WriteLock;
-import org.qi4j.runtime.structure.ModuleInstance;
-import org.qi4j.runtime.util.ServiceMap;
 import org.qi4j.service.Activatable;
 import org.qi4j.service.ServiceDescriptor;
+import org.qi4j.service.ServiceReference;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.entity.DefaultEntityState;
@@ -45,7 +43,6 @@ import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.StateCommitter;
-import org.qi4j.spi.util.ListMap;
 import org.qi4j.structure.Module;
 
 /**
@@ -60,18 +57,21 @@ public class ServerRemoteEntityStoreMixin
     private @Structure Module module;
     private @Structure Qi4jSPI spi;
     private @Service EntityStore entityStore;
-    private @Service Registry registry;
+    private @Service ServiceReference<Registry> registry;
 
     // Activatable implementation
     public void activate() throws Exception
     {
         RemoteEntityStore stub = (RemoteEntityStore) UnicastRemoteObject.exportObject( remote, 0 );
-        registry.bind( descriptor.identity(), stub );
+        registry.get().bind( descriptor.identity(), stub );
     }
 
     public void passivate() throws Exception
     {
-        // registry.unbind( descriptor.identity() );
+        if( registry.isActive() )
+        {
+            registry.get().unbind( descriptor.identity() );
+        }
         UnicastRemoteObject.unexportObject( remote, true );
     }
 
@@ -142,12 +142,14 @@ public class ServerRemoteEntityStoreMixin
     private Class<?> getCompositeTypeClass( QualifiedIdentity identity )
     {
         final String typeName = identity.type();
-        final Class type = ( (ModuleInstance) module ).findClassForName( typeName );
-        if( type == null )
+        try
         {
-            throw new EntityStoreException( "Error accessing CompositeType for type " + typeName );
+            return Class.forName( typeName );
         }
-        return type;
+        catch( ClassNotFoundException e )
+        {
+            throw new EntityStoreException( "Error accessing CompositeType for type " + typeName, e );
+        }
     }
 
     public void prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, Iterable<QualifiedIdentity> removedStates )
@@ -155,79 +157,22 @@ public class ServerRemoteEntityStoreMixin
         lock.writeLock().lock();
         try
         {
-            ServiceMap<EntityStore> storeMap = new ServiceMap<EntityStore>( (ModuleInstance) module, EntityStore.class );
-
-            ListMap<EntityStore, EntityState> newStoreState = new ListMap<EntityStore, EntityState>();
-            for( EntityState newState : newStates )
-            {
-                EntityStore store = getStoreForState( storeMap, newState );
-                newStoreState.add( store, newState );
-            }
-
-            ListMap<EntityStore, EntityState> loadedStoreState = new ListMap<EntityStore, EntityState>();
-            for( EntityState loadedState : loadedStates )
-            {
-                EntityStore store = getStoreForState( storeMap, loadedState );
-                loadedStoreState.add( store, loadedState );
-            }
-
-            ListMap<EntityStore, QualifiedIdentity> removedStoreState = new ListMap<EntityStore, QualifiedIdentity>();
-            for( QualifiedIdentity removedIdentity : removedStates )
-            {
-                final EntityStore store = getStoreForIdentity( storeMap, removedIdentity );
-                removedStoreState.add( store, removedIdentity );
-            }
-
-            Set<EntityStore> stores = new HashSet<EntityStore>( newStoreState.keySet() );
-            stores.addAll( loadedStoreState.keySet() );
-            stores.addAll( removedStoreState.keySet() );
-
-            // Call all stores with their respective subsets
-            List<StateCommitter> committers = new ArrayList<StateCommitter>();
+            final StateCommitter committer = entityStore.prepare( newStates, loadedStates, removedStates, module );
             try
             {
-                for( EntityStore store : stores )
-                {
-                    Iterable<EntityState> newState = newStoreState.get( store );
-                    Iterable<EntityState> loadedState = loadedStoreState.get( store );
-                    Iterable<QualifiedIdentity> removedState = removedStoreState.get( store );
-
-                    committers.add( store.prepare( newState == null ? Collections.<EntityState>emptyList() : newState,
-                                                   loadedState == null ? Collections.<EntityState>emptyList() : loadedState,
-                                                   removedState == null ? Collections.<QualifiedIdentity>emptyList() : removedState,
-                                                   module ) );
-                }
-
-                for( StateCommitter committer : committers )
-                {
-                    committer.commit();
-                }
+                committer.commit();
             }
             catch( EntityStoreException e )
             {
-                for( StateCommitter committer : committers )
-                {
-                    committer.cancel();
-                }
-
+                committer.cancel();
                 throw e;
             }
+
         }
+
         finally
         {
             lock.writeLock().unlock();
         }
-    }
-
-    private EntityStore getStoreForState( ServiceMap<EntityStore> storeMap, EntityState state )
-    {
-        QualifiedIdentity id = state.getIdentity();
-        return getStoreForIdentity( storeMap, id );
-    }
-
-    private EntityStore getStoreForIdentity( ServiceMap<EntityStore> storeMap, QualifiedIdentity id )
-    {
-        Class compositeType = getCompositeTypeClass( id );
-        return storeMap.getService( compositeType );
     }
 }

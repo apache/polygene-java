@@ -19,6 +19,7 @@ package org.qi4j.entity.rmi;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entity.memory.MemoryEntityStoreService;
+import org.qi4j.structure.Visibility;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
 
 /**
@@ -35,7 +36,8 @@ public class RmiEntityStoreTest
 
         ModuleAssembly remote = module.getLayerAssembly().newModuleAssembly();
         remote.setName( "Server" );
-        remote.addEntities( TestEntity.class, TestValue.class, RegistryConfiguration.class );
+        remote.addEntities( TestEntity.class, TestValue.class ).visibleIn( Visibility.module );
+        remote.addEntities( RegistryConfiguration.class );
         remote.addServices( ServerRmiEntityStoreService.class,
                             RegistryService.class,
                             MemoryEntityStoreService.class ).instantiateOnStartup();
