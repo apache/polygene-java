@@ -37,6 +37,10 @@ public class RegistryMixin
 
     public void passivate() throws Exception
     {
+        for( String boundService : registry.list() )
+        {
+            registry.unbind( boundService );
+        }
         UnicastRemoteObject.unexportObject( registry, true );
     }
 

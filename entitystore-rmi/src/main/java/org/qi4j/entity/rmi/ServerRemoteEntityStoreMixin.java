@@ -21,6 +21,7 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -32,12 +33,19 @@ import org.qi4j.injection.scope.Structure;
 import org.qi4j.injection.scope.This;
 import org.qi4j.injection.scope.Uses;
 import org.qi4j.library.framework.locking.WriteLock;
+import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.runtime.util.ServiceMap;
 import org.qi4j.service.Activatable;
 import org.qi4j.service.ServiceDescriptor;
+import org.qi4j.spi.Qi4jSPI;
+import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.entity.DefaultEntityState;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
+import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.spi.entity.StateCommitter;
+import org.qi4j.spi.util.ListMap;
 import org.qi4j.structure.Module;
 
 /**
@@ -50,6 +58,7 @@ public class ServerRemoteEntityStoreMixin
     private @This RemoteEntityStore remote;
     private @This ReadWriteLock lock;
     private @Structure Module module;
+    private @Structure Qi4jSPI spi;
     private @Service EntityStore entityStore;
     private @Service Registry registry;
 
@@ -57,12 +66,12 @@ public class ServerRemoteEntityStoreMixin
     public void activate() throws Exception
     {
         RemoteEntityStore stub = (RemoteEntityStore) UnicastRemoteObject.exportObject( remote, 0 );
-        registry.rebind( descriptor.identity(), stub );
+        registry.bind( descriptor.identity(), stub );
     }
 
     public void passivate() throws Exception
     {
-        registry.unbind( descriptor.identity() );
+        // registry.unbind( descriptor.identity() );
         UnicastRemoteObject.unexportObject( remote, true );
     }
 
@@ -71,35 +80,25 @@ public class ServerRemoteEntityStoreMixin
     public EntityState getEntityState( QualifiedIdentity identity )
         throws IOException
     {
-        try
-        {
-            Class compositeType = Class.forName( identity.type() ); // TODO module.findClass( identity.getCompositeType() );
-        }
-        catch( ClassNotFoundException e )
-        {
-            throw (IOException) new IOException().initCause( e );
-        }
+        final Class<?> compositeType = getCompositeTypeClass( identity );
 
-        // TODO How should we get ahold of the CompositeDescriptor?
-        EntityState state = entityStore.getEntityState( null, identity );
+        final CompositeDescriptor compositeDescriptor = spi.getCompositeDescriptor( compositeType, module );
+        EntityState state = entityStore.getEntityState( compositeDescriptor, identity );
 
-        // Copy properties
-        Map<String, Object> properties = new HashMap<String, Object>();
-        for( String propertyName : state.getPropertyNames() )
-        {
-            Object value = state.getProperty( propertyName );
-            properties.put( propertyName, value );
-        }
+        Map<String, Object> properties = copyProperties( state );
+        Map<String, QualifiedIdentity> associations = copyAssociations( state );
+        Map<String, Collection<QualifiedIdentity>> manyAssociations = copyManyAssociations( state );
 
-        // Copy associations
-        Map<String, QualifiedIdentity> associations = new HashMap<String, QualifiedIdentity>();
-        for( String associationName : state.getAssociationNames() )
-        {
-            QualifiedIdentity id = state.getAssociation( associationName );
-            associations.put( associationName, id );
-        }
+        return new DefaultEntityState( state.getEntityVersion(),
+                                       identity,
+                                       state.getStatus(),
+                                       properties,
+                                       associations,
+                                       manyAssociations );
+    }
 
-        // Copy manyassociations
+    private Map<String, Collection<QualifiedIdentity>> copyManyAssociations( EntityState state )
+    {
         Map<String, Collection<QualifiedIdentity>> manyAssociations = new HashMap<String, Collection<QualifiedIdentity>>();
         for( String associationName : state.getManyAssociationNames() )
         {
@@ -115,53 +114,73 @@ public class ServerRemoteEntityStoreMixin
                 manyAssociations.put( associationName, collectionCopy );
             }
         }
+        return manyAssociations;
+    }
 
-        DefaultEntityState entityState = new DefaultEntityState( state.getEntityVersion(),
-                                                                 identity,
-                                                                 state.getStatus(),
-                                                                 properties,
-                                                                 associations,
-                                                                 manyAssociations );
-        return entityState;
+    private Map<String, QualifiedIdentity> copyAssociations( EntityState state )
+    {
+        Map<String, QualifiedIdentity> associations = new HashMap<String, QualifiedIdentity>();
+        for( String associationName : state.getAssociationNames() )
+        {
+            QualifiedIdentity id = state.getAssociation( associationName );
+            associations.put( associationName, id );
+        }
+        return associations;
+    }
+
+    private Map<String, Object> copyProperties( EntityState state )
+    {
+        Map<String, Object> properties = new HashMap<String, Object>();
+        for( String propertyName : state.getPropertyNames() )
+        {
+            Object value = state.getProperty( propertyName );
+            properties.put( propertyName, value );
+        }
+        return properties;
+    }
+
+    private Class<?> getCompositeTypeClass( QualifiedIdentity identity )
+    {
+        final String typeName = identity.type();
+        final Class type = ( (ModuleInstance) module ).findClassForName( typeName );
+        if( type == null )
+        {
+            throw new EntityStoreException( "Error accessing CompositeType for type " + typeName );
+        }
+        return type;
     }
 
     public void prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, Iterable<QualifiedIdentity> removedStates )
     {
-/*
         lock.writeLock().lock();
         try
         {
-            ServiceMap<EntityStore> storeMap = new ServiceMap<EntityStore>( null, EntityStore.class );
-            Set<EntityStore> stores = new HashSet<EntityStore>();
+            ServiceMap<EntityStore> storeMap = new ServiceMap<EntityStore>( (ModuleInstance) module, EntityStore.class );
 
             ListMap<EntityStore, EntityState> newStoreState = new ListMap<EntityStore, EntityState>();
             for( EntityState newState : newStates )
             {
-                QualifiedIdentity id = newState.getIdentity();
-                Class compositeType = module.findClass( id.getCompositeType() );
-                EntityStore compositeStore = storeMap.getService( compositeType );
-                newStoreState.add( compositeStore, newState );
-                stores.add( compositeStore );
+                EntityStore store = getStoreForState( storeMap, newState );
+                newStoreState.add( store, newState );
             }
 
             ListMap<EntityStore, EntityState> loadedStoreState = new ListMap<EntityStore, EntityState>();
             for( EntityState loadedState : loadedStates )
             {
-                QualifiedIdentity id = loadedState.getIdentity();
-                Class compositeType = module.findClass( id.getCompositeType() );
-                EntityStore compositeStore = storeMap.getService( compositeType );
-                loadedStoreState.add( compositeStore, loadedState );
-                stores.add( compositeStore );
+                EntityStore store = getStoreForState( storeMap, loadedState );
+                loadedStoreState.add( store, loadedState );
             }
 
             ListMap<EntityStore, QualifiedIdentity> removedStoreState = new ListMap<EntityStore, QualifiedIdentity>();
-            for( QualifiedIdentity removedState : removedStates )
+            for( QualifiedIdentity removedIdentity : removedStates )
             {
-                Class compositeType = module.findClass( removedState.getCompositeType() );
-                EntityStore compositeStore = storeMap.getService( compositeType );
-                removedStoreState.add( compositeStore, removedState );
-                stores.add( compositeStore );
+                final EntityStore store = getStoreForIdentity( storeMap, removedIdentity );
+                removedStoreState.add( store, removedIdentity );
             }
+
+            Set<EntityStore> stores = new HashSet<EntityStore>( newStoreState.keySet() );
+            stores.addAll( loadedStoreState.keySet() );
+            stores.addAll( removedStoreState.keySet() );
 
             // Call all stores with their respective subsets
             List<StateCommitter> committers = new ArrayList<StateCommitter>();
@@ -173,9 +192,9 @@ public class ServerRemoteEntityStoreMixin
                     Iterable<EntityState> loadedState = loadedStoreState.get( store );
                     Iterable<QualifiedIdentity> removedState = removedStoreState.get( store );
 
-                    committers.add( store.prepare( newState == null ? Collections.EMPTY_LIST : newState,
-                                                   loadedState == null ? Collections.EMPTY_LIST : loadedState,
-                                                   removedState == null ? Collections.EMPTY_LIST : removedState,
+                    committers.add( store.prepare( newState == null ? Collections.<EntityState>emptyList() : newState,
+                                                   loadedState == null ? Collections.<EntityState>emptyList() : loadedState,
+                                                   removedState == null ? Collections.<QualifiedIdentity>emptyList() : removedState,
                                                    module ) );
                 }
 
@@ -194,14 +213,21 @@ public class ServerRemoteEntityStoreMixin
                 throw e;
             }
         }
-        catch( ClassNotFoundException e )
-        {
-            throw new EntityStoreException( e );
-        }
         finally
         {
             lock.writeLock().unlock();
         }
-*/
+    }
+
+    private EntityStore getStoreForState( ServiceMap<EntityStore> storeMap, EntityState state )
+    {
+        QualifiedIdentity id = state.getIdentity();
+        return getStoreForIdentity( storeMap, id );
+    }
+
+    private EntityStore getStoreForIdentity( ServiceMap<EntityStore> storeMap, QualifiedIdentity id )
+    {
+        Class compositeType = getCompositeTypeClass( id );
+        return storeMap.getService( compositeType );
     }
 }

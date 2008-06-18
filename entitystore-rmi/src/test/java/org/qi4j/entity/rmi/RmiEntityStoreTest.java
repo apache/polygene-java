@@ -30,12 +30,12 @@ public class RmiEntityStoreTest
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
         super.assemble( module );
-        module.setName( "Client" );
+        module.setName( "Module 1" );
         module.addServices( ClientRmiEntityStoreService.class );
 
         ModuleAssembly remote = module.getLayerAssembly().newModuleAssembly();
         remote.setName( "Server" );
-        remote.addEntities( TestEntity.class, RegistryConfiguration.class );
+        remote.addEntities( TestEntity.class, TestValue.class, RegistryConfiguration.class );
         remote.addServices( ServerRmiEntityStoreService.class,
                             RegistryService.class,
                             MemoryEntityStoreService.class ).instantiateOnStartup();
