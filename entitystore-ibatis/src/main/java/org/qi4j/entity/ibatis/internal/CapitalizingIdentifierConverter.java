@@ -14,6 +14,9 @@
 
 package org.qi4j.entity.ibatis.internal;
 
+import java.util.HashMap;
+import java.util.Map;
+import static java.lang.String.format;
 import org.qi4j.entity.ibatis.IdentifierConverter;
 
 /**
@@ -25,7 +28,10 @@ public class CapitalizingIdentifierConverter implements IdentifierConverter
     public String convertIdentifier( final String qualifiedIdentifier )
     {
         final String name = unqualify( qualifiedIdentifier );
-        if (name.equalsIgnoreCase( "identity" )) return "ID";
+        if( name.equalsIgnoreCase( "identity" ) )
+        {
+            return "ID";
+        }
         return name.toUpperCase();
     }
 
@@ -42,4 +48,26 @@ public class CapitalizingIdentifierConverter implements IdentifierConverter
         }
     }
 
+    public Object getValueFromData( final Map<String, Object> rawData, final String qualifiedName )
+    {
+        final String convertedIdentifier = convertIdentifier( qualifiedName );
+        if( rawData.containsKey( convertedIdentifier ) )
+        {
+            return rawData.remove( convertedIdentifier );
+        }
+        return null;
+    }
+
+    public Map<String, Object> convertKeys( Map<String, Object> rawData )
+    {
+        Map<String, Object> result = new HashMap<String, Object>( rawData.size() );
+        for( Map.Entry<String, Object> entry : rawData.entrySet() )
+        {
+            final String convertedIdentifier = convertIdentifier( entry.getKey() );
+            if (result.containsKey( convertedIdentifier ))
+                throw new IllegalArgumentException( format("Duplicate Key: %s -> %s",entry.getKey(),convertedIdentifier));
+            result.put( convertedIdentifier, entry.getValue() );
+        }
+        return result;
+    }
 }

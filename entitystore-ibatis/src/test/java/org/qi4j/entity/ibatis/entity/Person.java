@@ -18,7 +18,9 @@ package org.qi4j.entity.ibatis.entity;
 
 import org.qi4j.entity.ibatis.entity.HasFirstName;
 import org.qi4j.entity.ibatis.entity.HasLastName;
+import org.qi4j.entity.association.ManyAssociation;
 
 public interface Person extends HasFirstName, HasLastName
 {
+     ManyAssociation<Account> accounts();
 }

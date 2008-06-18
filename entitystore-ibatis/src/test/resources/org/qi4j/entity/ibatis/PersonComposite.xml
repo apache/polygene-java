@@ -2,12 +2,28 @@
 <!DOCTYPE sqlMap
   PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
   "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
 <sqlMap namespace="org.qi4j.entity.ibatis.entity.PersonComposite">
-  <select id="load" resultClass="java.util.HashMap">
+
+  <resultMap id="personResult" class="java.util.HashMap" groupBy="id">
+    <result property="id"/>
+    <result property="firstName"/>
+    <result property="lastName"/>
+    <result property="accounts" javaType="java.util.ArrayList" column="ID" select="org.qi4j.entity.ibatis.entity.PersonComposite.loadAccounts"/>
+  </resultMap>
+
+  <select id="loadAccounts" resultClass="string">
+    SELECT ID as id
+    FROM ACCOUNT
+    WHERE CONTACT_ID = #PERSON_ID#
+  </select>
+
+  <select id="load" resultMap="personResult">
     SELECT ID as id, FIRST_NAME as firstName, LAST_NAME as lastName
     FROM PERSON
     WHERE ID = #id#
   </select>
+  
   <delete id="delete" parameterClass="string">
     DELETE
     FROM PERSON

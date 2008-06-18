@@ -17,18 +17,29 @@
 package org.qi4j.entity.ibatis.internal;
 
 import java.io.Serializable;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
-import static org.qi4j.composite.NullArgumentException.validateNotNull;
+import static org.qi4j.composite.NullArgumentException.*;
+import org.qi4j.entity.association.ImmutableAssociation;
+import org.qi4j.entity.association.ManyAssociation;
+import org.qi4j.entity.association.SetAssociation;
+import org.qi4j.entity.ibatis.IbatisCompositeBuilder;
 import org.qi4j.entity.ibatis.IdentifierConverter;
+import org.qi4j.entity.EntityComposite;
 import org.qi4j.spi.composite.CompositeDescriptor;
+import org.qi4j.spi.composite.StateDescriptor;
 import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
-import static org.qi4j.spi.entity.EntityStatus.REMOVED;
+import static org.qi4j.spi.entity.EntityStatus.*;
 import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.spi.entity.association.AssociationDescriptor;
+import org.qi4j.spi.property.PropertyDescriptor;
 
 /**
  * {@code IBatisEntityState} represents {@code IBatis} version of {@link org.qi4j.spi.entity.EntityState}.
@@ -51,89 +62,143 @@ public final class IBatisEntityState
     /**
      * Construct an instance of {@code IBatisEntityState}.
      *
-     * @param aDescriptor The composite descriptor. This argument must not be {@code null}.
-     * @param anIdentity  The identity of the composite that this {@code IBatisEntityState} represents.
-     *                    This argument must not be {@code null}.
-     * @param rawData     The field values of this entity state. This argument must not be {@code null}.
-     * @param aVersion    The version.
-     * @param aStatus     The initial entity state status. This argument must not be {@code null}.
-     * @throws IllegalArgumentException Thrown if one or some or all arguments are {@code null}.
-     * @since 0.1.0
+     * @param descriptor
+     * @param identity
+     * @param rawData                The field values of this entity state. This argument must not be {@code null}.
+     * @param version
+     * @param status
+     * @param ibatisCompositeBuilder
      */
     public IBatisEntityState(
-        final CompositeDescriptor aDescriptor, final QualifiedIdentity anIdentity,
-        final Map<String, Object> rawData, final Long aVersion, final EntityStatus aStatus
-    )
+        final CompositeDescriptor descriptor, final QualifiedIdentity identity,
+        final Map<String, Object> rawData, final Long version, final EntityStatus status,
+        final IbatisCompositeBuilder ibatisCompositeBuilder )
         throws IllegalArgumentException
     {
-        validateNotNull( "aDescriptor", aDescriptor );
-        validateNotNull( "anIdentity", anIdentity );
+        validateNotNull( "aDescriptor", descriptor );
+        validateNotNull( "anIdentity", identity );
         validateNotNull( "propertyValuez", rawData );
-        validateNotNull( "aStatus", aStatus );
+        validateNotNull( "aStatus", status );
         // TODO validateNotNull( "aVersion", aVersion );
 
-        descriptor = aDescriptor;
-        identity = anIdentity;
-        status = aStatus;
-        mapData( aDescriptor, rawData );
-        version = aVersion;
-
+        this.descriptor = descriptor;
+        this.identity = identity;
+        this.status = status;
+        mapData( descriptor, rawData, ibatisCompositeBuilder );
+        this.version = version;
     }
 
-    private void mapData( final CompositeDescriptor compositeDescriptor, final Map<String, Object> rawData )
+    private void mapData( final CompositeDescriptor compositeDescriptor, final Map<String, Object> rawData, final IbatisCompositeBuilder ibatisCompositeBuilder )
     {
-/*
-        final CompositeModel compositeModel = null; // TODO compositeDescriptor.getCompositeModel();
-        for( final PropertyModel propertyModel : compositeModel.getPropertyModels() )
-        {
-            final String qualifiedName = propertyModel.getQualifiedName();
-            final String convertedIdentifier = convertIdentifier( qualifiedName );
-            if( rawData.containsKey( convertedIdentifier ) )
-            {
-                setProperty( qualifiedName, rawData.remove( convertedIdentifier ) );
-            }
-        }
-        for( final AssociationModel associationModel : compositeModel.getAssociationModels() )
-        {
-            final String qualifiedName = associationModel.getQualifiedName();
-            final String convertedIdentifier = convertIdentifier( qualifiedName );
-            if( rawData.containsKey( convertedIdentifier ) )
-            {
-                final String associationId = (String) rawData.remove( convertedIdentifier );
-                setAssociation( qualifiedName, new QualifiedIdentity( associationId, getTypeName( associationModel ) ) );
-            }
-        }
-*/
+        final StateDescriptor stateDescriptor = compositeDescriptor.state();
+        Map<String, Object> convertedData = identifierConverter.convertKeys( rawData );
+        System.err.println( rawData );
+        System.err.println( convertedData );
+        mapProperties( convertedData, stateDescriptor, ibatisCompositeBuilder );
+        mapAssociations( convertedData, stateDescriptor );
     }
 
-/*
-    private String getTypeName( final AssociationModel associationModel )
+    private void mapAssociations( final Map<String, Object> rawData, final StateDescriptor stateDescriptor )
     {
-        final Type associationType = associationModel.getType();
+
+        for( final AssociationDescriptor associationDescriptor : stateDescriptor.associations() )
+        {
+            final String qualifiedName = associationDescriptor.qualifiedName();
+            final String typeName = getTypeName( associationDescriptor );
+            final Class<?> associationType = associationDescriptor.accessor().getReturnType();
+            if( ManyAssociation.class.isAssignableFrom( associationType ) )
+            {
+                Collection<String> identifiers = (Collection<String>) identifierConverter.getValueFromData( rawData, qualifiedName );
+                if( identifiers != null && !identifiers.isEmpty() )
+                {
+                    setManyAssociation( qualifiedName, createQualifiedIdentities( identifiers, typeName, associationType ) );
+                }
+            }
+            else
+            {
+                final String associationId = (String) identifierConverter.getValueFromData( rawData, qualifiedName );
+                if( associationId != null )
+                {
+                    setAssociation( qualifiedName, new QualifiedIdentity( associationId, typeName ) );
+                }
+            }
+        }
+    }
+
+    private Collection<QualifiedIdentity> createQualifiedIdentities( final Collection<String> identifiers, final String typeName, Class<?> associationType )
+    {
+        final int size = identifiers.size();
+        final Collection<QualifiedIdentity> qualifiedIdentities = createManyAssociationCollection( size, associationType );
+        for( String identifier : identifiers )
+        {
+            qualifiedIdentities.add( new QualifiedIdentity( identifier, typeName ) );
+        }
+        if( ImmutableAssociation.class.isAssignableFrom( associationType ) )
+        {
+            return Collections.unmodifiableCollection( qualifiedIdentities );
+        }
+        return qualifiedIdentities;
+    }
+
+    private Collection<QualifiedIdentity> createManyAssociationCollection( int size, Class<?> associationType )
+    {
+        if( SetAssociation.class.isAssignableFrom( associationType ) )
+        {
+            return new HashSet<QualifiedIdentity>( size );
+        }
+        return new ArrayList<QualifiedIdentity>( size );
+    }
+
+    private void mapProperties( final Map<String, Object> rawData, final StateDescriptor compositeModel, final IbatisCompositeBuilder ibatisCompositeBuilder )
+    {
+        for( final PropertyDescriptor propertyDescriptor : compositeModel.properties() )
+        {
+            final String qualifiedName = propertyDescriptor.qualifiedName();
+            final Object value = identifierConverter.getValueFromData( rawData, qualifiedName );
+            if( value != null )
+            {
+                setProperty( qualifiedName, convertValue( propertyDescriptor, value, ibatisCompositeBuilder ) );
+            } else {
+                setProperty( qualifiedName, propertyDescriptor.defaultValue() );
+            }
+        }
+    }
+
+    private Object convertValue( final PropertyDescriptor propertyDescriptor, final Object value, final IbatisCompositeBuilder ibatisCompositeBuilder )
+    {
+        final Class propertyClass = getPropertyTypeClass( propertyDescriptor );
+        if( propertyClass == null || value == null || propertyClass.isInstance( value ) )
+        {
+            return value;
+        }
+        if( Map.class.isAssignableFrom( value.getClass() ) && EntityComposite.class.isAssignableFrom( propertyClass ) )
+        {
+
+            return ibatisCompositeBuilder.createEntityComposite( (Map<String, Object>) value, propertyClass );
+
+        }
+        return propertyClass.cast( value );
+    }
+
+    private Class getPropertyTypeClass( final PropertyDescriptor propertyModel )
+    {
+        if( propertyModel.type() instanceof Class )
+        {
+            return (Class) propertyModel.type();
+
+        }
+        return null;
+    }
+
+    private String getTypeName( final AssociationDescriptor associationModel )
+    {
+        final Type associationType = associationModel.type();
         if( associationType instanceof Class )
         {
             final Class type = (Class) associationType;
             return type.getName();
         }
         return associationType.toString();
-    }
-*/
-
-    /**
-     * Capitalize keys of the values. This is needed to ensure that regardless the backing database it will return
-     * the right property names.
-     *
-     * @param columnValueMap
-     * @since 0.1.0
-     */
-    private <T> Map<String, T> convertKeys( final Map<String, T> columnValueMap )
-    {
-        final Map<String, T> result = new HashMap<String, T>( columnValueMap.size() );
-        for( final Map.Entry<String, T> entry : columnValueMap.entrySet() )
-        {
-            result.put( convertIdentifier( entry.getKey() ), entry.getValue() );
-        }
-        return result;
     }
 
     /**
@@ -196,12 +261,12 @@ public final class IBatisEntityState
         }
 
         final String convertedIdentifier = convertIdentifier( qualifiedName );
-        final QualifiedIdentity qualifiedIdentity = associations.get( convertedIdentifier );
-        if( qualifiedIdentity == null )
+        if( !associations.containsKey( convertedIdentifier ) )
         {
-            return QualifiedIdentity.NULL; // todo mandatory
+            return null;
         }
-        return associations.get( convertedIdentifier );
+        final QualifiedIdentity qualifiedIdentity = associations.get( convertedIdentifier );
+        return qualifiedIdentity == null ? QualifiedIdentity.NULL : qualifiedIdentity;
     }
 
     public void setAssociation( final String qualifiedName, final QualifiedIdentity qualifiedIdentity )
@@ -223,12 +288,7 @@ public final class IBatisEntityState
             return null;
         }
 
-        final Collection<QualifiedIdentity> identities = manyAssociations.get( convertIdentifier( qualifiedName ) );
-        if( identities == null )
-        {
-            return Collections.emptyList();
-        }
-        return identities;
+        return manyAssociations.get( convertIdentifier( qualifiedName ) );
     }
 
     public Collection<QualifiedIdentity> setManyAssociation(
@@ -240,11 +300,6 @@ public final class IBatisEntityState
             throw new EntityNotFoundException( "IbatisEntityStore", getIdentity().identity() );
         }
         final String convertedIdentifier = convertIdentifier( qualifiedName );
-        if( newManyAssociations == null )
-        {
-            manyAssociations.put( convertedIdentifier, Collections.singletonList( QualifiedIdentity.NULL ) ); // todo ??
-        }
-
         return manyAssociations.put( convertedIdentifier, newManyAssociations );
     }
 

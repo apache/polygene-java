@@ -91,8 +91,14 @@ public class DerbyDatabaseHandler
         final DBInitializerConfiguration configuration = module.on( DBInitializerConfiguration.class ).to();
         configuration.dbUrl().set( JDBC_URL );
         configuration.connectionProperties().set( createConnectionProperties() );
-        configuration.schemaUrl().set( getUrlString( schemaFile ) );
-        configuration.dataUrl().set( getUrlString( dataFile ) );
+        if (schemaFile!=null)
+        {
+            configuration.schemaUrl().set( getUrlString( schemaFile ) );
+        }
+        if (dataFile!=null)
+        {
+            configuration.dataUrl().set( getUrlString( dataFile ) );
+        }
     }
 
     public String getUrlString( final String file )

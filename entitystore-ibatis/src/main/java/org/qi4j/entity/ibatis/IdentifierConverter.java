@@ -13,7 +13,13 @@
  */
 package org.qi4j.entity.ibatis;
 
+import java.util.Map;
+
 public interface IdentifierConverter
 {
     String convertIdentifier( String qualifiedIdentifier );
+
+    Map<String, Object> convertKeys( Map<String, Object> rawData );
+
+    Object getValueFromData( Map<String, Object> rawData, String qualifiedName );
 }

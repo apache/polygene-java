@@ -17,17 +17,21 @@
 package org.qi4j.entity.ibatis.test;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.Map;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.qi4j.composite.Composite;
 import org.qi4j.entity.ibatis.DerbyDatabaseHandler;
 import org.qi4j.entity.ibatis.entity.PersonComposite;
-import org.qi4j.entity.ibatis.internal.IBatisEntityState;
 import org.qi4j.entity.EntityComposite;
+import org.qi4j.property.Property;
 import org.qi4j.spi.composite.CompositeDescriptor;
-import org.qi4j.spi.entity.EntityStatus;
+import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.test.AbstractQi4jTest;
 
 public abstract class AbstractTestCase extends AbstractQi4jTest
@@ -54,20 +58,15 @@ public abstract class AbstractTestCase extends AbstractQi4jTest
         {
             derbyDatabaseHandler.shutdown();
         }
+
+        if( unitOfWorkFactory != null && unitOfWorkFactory.currentUnitOfWork() != null )
+        {
+            unitOfWorkFactory.currentUnitOfWork().discard();
+        }
+
         super.tearDown();
     }
 
-    protected IBatisEntityState newPersonEntityState( final Map<String, Object> initialValues )
-    {
-        final CompositeDescriptor compositeDescriptor = getCompositeDescriptor( PersonComposite.class );
-
-        return new IBatisEntityState( compositeDescriptor,
-                                      new QualifiedIdentity( "1", PersonComposite.class.getName() ),
-                                      initialValues,
-                                      0L,
-                                      EntityStatus.NEW );
-        // return new IBatisEntityState( new QualifiedIdentity( "1", PersonComposite.class.getName() ), getCompositeBinding( PersonComposite.class ), initialValues, EntityStatus.NEW, statusNew, unitOfWork, dao );
-    }
 
     protected CompositeDescriptor getCompositeDescriptor( final Class<? extends EntityComposite> compositeType )
     {
@@ -78,5 +77,88 @@ public abstract class AbstractTestCase extends AbstractQi4jTest
     {
         derbyDatabaseHandler = new DerbyDatabaseHandler();
         super.setUp();
+    }
+
+    protected Map<String, String> createTestData( final String firstName, final String lastName )
+    {
+        final Map<String, String> data = new HashMap<String, String>();
+        data.put( "FIRST_NAME", firstName );
+        data.put( "LAST_NAME", lastName );
+        return data;
+    }
+
+    protected void assertPersonEqualsInDatabase( final String identity, final Map<String, ?> values )
+    {
+        final int count = derbyDatabaseHandler.executeStatement( "select * from person where id = '" + identity + "'", new DerbyDatabaseHandler.ResultSetCallback()
+        {
+            public void row( final ResultSet rs ) throws SQLException
+            {
+                org.junit.Assert.assertEquals( "id", identity, rs.getString( "id" ) );
+                assertContainsValues( rs, values );
+            }
+        } );
+        org.junit.Assert.assertEquals( "Person with Id " + identity, 1, count );
+    }
+
+    private void assertContainsValues( final ResultSet rs, final Map<String, ?> values )
+        throws SQLException
+    {
+        if( values == null )
+        {
+            return;
+        }
+
+        for( final Map.Entry<String, ?> entry : values.entrySet() )
+        {
+            final String name = entry.getKey();
+            org.junit.Assert.assertEquals( name, entry.getValue(), rs.getString( name ) );
+        }
+    }
+
+    protected static void checkEntityStateProperties( final CompositeDescriptor compositeBinding, final EntityState state, final boolean checkAll )
+    {
+        assertNotNull( "identity", state.getIdentity() );
+        assertNotNull( "identity", state.getIdentity().identity() );
+        if( !checkAll )
+        {
+            return;
+        }
+
+        for( final PropertyDescriptor propertyDescriptor : compositeBinding.state().properties() )
+        {
+            final String propertyName = propertyDescriptor.name();
+            if( "identity".equals( propertyName ) )
+            {
+                continue;
+            }
+            final Property property = (Property) state.getProperty( propertyDescriptor.qualifiedName() );
+
+            assertNotNull( "Property [" + propertyName + ": " + propertyDescriptor.type() + "] is not found.", property );
+        }
+    }
+
+    protected void assertPersonEntityStateEquals( final String id, final String firstName, final String lastName, final EntityState state )
+    {
+        assertNotNull( state );
+        final QualifiedIdentity qualifiedIdentity = state.getIdentity();
+
+        assertNotNull( "identity", qualifiedIdentity );
+        org.junit.Assert.assertEquals( "identity", id, qualifiedIdentity.identity() );
+
+        org.junit.Assert.assertEquals( "identity", id, state.getProperty( "identity" ) );
+        org.junit.Assert.assertEquals( "firstName", firstName, state.getProperty( "firstName" ) );
+        org.junit.Assert.assertEquals( "lastName", lastName, state.getProperty( "lastName" ) );
+    }
+
+    protected void assertPersonEquals( final String id, final String firstName, final String lastName, final PersonComposite person )
+    {
+        org.junit.Assert.assertEquals( "identity", id, person.identity().get() );
+        org.junit.Assert.assertEquals( "firstName", firstName, person.firstName().get() );
+        org.junit.Assert.assertEquals( "lastName", lastName, person.lastName().get() );
+    }
+
+    protected QualifiedIdentity id( final String id )
+    {
+        return new QualifiedIdentity( id, PersonComposite.class.getName() );
     }
 }

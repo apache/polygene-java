@@ -23,18 +23,18 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import static org.qi4j.composite.NullArgumentException.validateNotNull;
+import static org.qi4j.composite.NullArgumentException.*;
 import org.qi4j.entity.ibatis.dbInitializer.DBInitializer;
-import org.qi4j.entity.ibatis.dbInitializer.DBInitializerConfiguration;
 import org.qi4j.entity.ibatis.internal.IBatisEntityState;
+import org.qi4j.injection.scope.Structure;
 import org.qi4j.injection.scope.This;
 import org.qi4j.service.Activatable;
 import org.qi4j.service.Configuration;
+import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityState;
-import static org.qi4j.spi.entity.EntityStatus.LOADED;
-import static org.qi4j.spi.entity.EntityStatus.NEW;
+import static org.qi4j.spi.entity.EntityStatus.*;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.QualifiedIdentity;
@@ -48,27 +48,30 @@ import org.qi4j.structure.Module;
 public class IBatisEntityStore
     implements EntityStore, Activatable
 {
+    @Structure private Qi4jSPI spi;
+    @Structure private Module module;
+
     @This private Configuration<IBatisConfiguration> iBatisConfiguration;
     private IbatisClient config;
+    private final IbatisCompositeBuilder compositeBuilder = new IbatisCompositeBuilder( spi, module );
 
     /**
      * Construct a new instance of entity state.
      *
-     * @param aCompositeDescriptor The composite descriptor. This argument must not be {@code null}.
-     * @param anIdentity           The identity. This argument must not be {@code null}.
+     * @param compositeDescriptor The composite descriptor. This argument must not be {@code null}.
+     * @param identity            The identity. This argument must not be {@code null}.
      * @return The new entity state given the arguments.
      * @throws EntityStoreException Thrown if this service is not active.
      * @since 0.2.0
      */
-    public final EntityState newEntityState( final CompositeDescriptor aCompositeDescriptor, final QualifiedIdentity anIdentity )
+    public final EntityState newEntityState( final CompositeDescriptor compositeDescriptor, final QualifiedIdentity identity )
         throws EntityStoreException
     {
-        validateNotNull( "aCompositeDescriptor", aCompositeDescriptor );
-        validateNotNull( "anIdentity", anIdentity );
+        validateNotNull( "aCompositeDescriptor", compositeDescriptor );
+        validateNotNull( "anIdentity", identity );
 
         checkActivation();
-
-        return new IBatisEntityState( aCompositeDescriptor, anIdentity, new HashMap<String, Object>(), 0L, NEW );
+        return new IBatisEntityState( compositeDescriptor, identity, new HashMap<String, Object>(), 0L, NEW, compositeBuilder );
     }
 
     /**
@@ -97,13 +100,14 @@ public class IBatisEntityStore
      * @throws EntityNotFoundException Thrown if the entity does not exists.
      * @since 0.2.0
      */
-    public final EntityState getEntityState( final CompositeDescriptor aDescriptor, final QualifiedIdentity anIdentity )
+    public final EntityState
+    getEntityState( final CompositeDescriptor aDescriptor, final QualifiedIdentity anIdentity )
         throws EntityStoreException
     {
         checkActivation();
         final Map<String, Object> rawData = getRawData( aDescriptor, anIdentity );
         final Long version = (Long) rawData.get( "VERSION" );
-        return new IBatisEntityState( aDescriptor, anIdentity, rawData, version, LOADED );
+        return new IBatisEntityState( aDescriptor, anIdentity, rawData, version, LOADED, compositeBuilder );
     }
 
 
@@ -209,7 +213,7 @@ public class IBatisEntityStore
     public final void activate()
         throws Exception
     {
-        final IBatisConfiguration configuration = iBatisConfiguration.configuration();
+        final IBatisConfiguration configuration = getUpdatedConfiguration();
 
         initializeDatabase( configuration );
 
@@ -217,7 +221,13 @@ public class IBatisEntityStore
         config.activate();
     }
 
-    private void initializeDatabase( final DBInitializerConfiguration configuration )
+    private IBatisConfiguration getUpdatedConfiguration()
+    {
+        iBatisConfiguration.refresh();
+        return iBatisConfiguration.configuration();
+    }
+
+    private void initializeDatabase( final IBatisConfiguration configuration )
         throws SQLException, IOException
     {
         final DBInitializer dbInitializer = new DBInitializer( configuration );

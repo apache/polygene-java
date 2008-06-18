@@ -39,6 +39,9 @@ public class DefaultIbatisEntityStoreTest
 {
     private DerbyDatabaseHandler derbyDatabaseHandler;
     private static final String TEST_VALUE_SQLMAP = "SqlMapConfig.xml";
+    private static final String SQLMAP_FILE = "test/SqlMapConfig.xml";
+    private static final String SCHEMA_FILE = "test/testDbSchema.sql";
+    private static final String DATA_FILE = null;
 
     @Before public void setUp() throws Exception
     {
@@ -49,17 +52,15 @@ public class DefaultIbatisEntityStoreTest
     public final void assemble( final ModuleAssembly module )
         throws AssemblyException
     {
-        module.addComposites( PersonComposite.class );
-        module.addServices( UuidIdentityGeneratorService.class );
+        super.assemble( module );
         module.addServices( IBatisEntityStoreService.class );
 
         final ModuleAssembly config = module.getLayerAssembly().newModuleAssembly();
         config.setName( "config" );
         config.addEntities( IBatisConfigurationComposite.class).visibleIn( Visibility.layer );
-        config.addEntities( DBInitializerConfigurationComposite.class ).visibleIn( Visibility.layer );
         config.addServices( MemoryEntityStoreService.class );
-        config.on( IBatisConfigurationComposite.class ).to().sqlMapConfigURL().set( derbyDatabaseHandler.getUrlString( TEST_VALUE_SQLMAP ));
-        derbyDatabaseHandler.initDbInitializerInfo( config );
+        config.on( IBatisConfigurationComposite.class ).to().sqlMapConfigURL().set( derbyDatabaseHandler.getUrlString( SQLMAP_FILE ));
+        derbyDatabaseHandler.initDbInitializerInfo( config, SCHEMA_FILE, DATA_FILE  );
     }
 
     @Override @After public void tearDown() throws Exception

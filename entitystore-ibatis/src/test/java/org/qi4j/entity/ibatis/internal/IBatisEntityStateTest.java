@@ -17,153 +17,100 @@
 package org.qi4j.entity.ibatis.internal;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.fail;
-import org.junit.Ignore;
+import static junit.framework.Assert.*;
 import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entity.ibatis.entity.HasFirstName;
 import org.qi4j.entity.ibatis.entity.HasLastName;
 import org.qi4j.entity.ibatis.entity.PersonComposite;
-import org.qi4j.entity.ibatis.test.AbstractTestCase;
-import static org.qi4j.property.ComputedPropertyInstance.getQualifiedName;
+import org.qi4j.entity.EntityComposite;
+import static org.qi4j.property.ComputedPropertyInstance.*;
 import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.spi.entity.EntityStatus;
+import org.qi4j.spi.composite.CompositeDescriptor;
+import org.qi4j.test.AbstractQi4jTest;
 
-@Ignore
-public final class IBatisEntityStateTest extends AbstractTestCase
+public final class IBatisEntityStateTest extends AbstractQi4jTest
 {
     private static final String DEFAULT_FIRST_NAME = "Edward";
     private static final String DEFAULT_LAST_NAME = "Yakop";
 
-    /**
-     * Test constructor of entity state.
-     */
-    @SuppressWarnings( "unchecked" )
-    @Test
-    public void testGetProperty()
+
+    @Test public void usesDefaultLastNameProperty()
+        throws NoSuchMethodException
     {
-        // =======================
-        // Test with default value
-        // =======================
-        final Map<String, Object> initialValues1 = new HashMap<String, Object>();
-        final EntityState personEntityState1 = newPersonEntityState( initialValues1 );
+        final Map<String, Object> janeValues = Collections.<String, Object>singletonMap( "firstName", "Jane" );
 
-        // ----------
-        // First name
-        // ----------
-        try
-        {
-            final Method firstNamePropertyAccessor = HasFirstName.class.getMethod( "firstName" );
+        final EntityState jane = newPersonEntityState( janeValues );
+        final String lastNameProperty = getPropertyValue( jane, HasLastName.class, "lastName" );
+        assertNotNull( lastNameProperty );
 
-            final String firstNameProperty = (String) personEntityState1.getProperty( getQualifiedName( firstNamePropertyAccessor ) );
-            assertNotNull( firstNameProperty );
+        assertEquals( DEFAULT_LAST_NAME, lastNameProperty );
+    }
 
-            assertEquals( DEFAULT_FIRST_NAME, firstNameProperty );
+    @Test public void usesGivenFirstNameProperty()
+        throws NoSuchMethodException
+    {
+        final Map<String, Object> janeValues = Collections.<String, Object>singletonMap( "firstName", "Jane" );
+        final EntityState jane = newPersonEntityState( janeValues );
+        final String firstNameProperty = getPropertyValue( jane, HasFirstName.class, "firstName" );
+        assertNotNull( firstNameProperty );
 
-        }
-        catch( NoSuchMethodException e )
-        {
-            fail( "HasFirstName must have [firstName] method." );
-        }
+        assertEquals( janeValues.get( "firstName" ), firstNameProperty );
+    }
 
-        // ---------
-        // Last name
-        // ---------
-        try
-        {
-            final Method lastNamePropertyAccessor = HasLastName.class.getMethod( "lastName" );
+    private String getPropertyValue( final EntityState person, final Class<?> type, final String propertyName )
+        throws NoSuchMethodException
+    {
+        final Method method = type.getMethod( propertyName );
+        return (String) person.getProperty( getQualifiedName( method ) );
+    }
 
-            final String lastNameProperty = (String) personEntityState1.getProperty( getQualifiedName( lastNamePropertyAccessor ) );
-            assertNotNull( lastNameProperty );
+    @Test public void hasDefaultLastNameProperty()
+        throws NoSuchMethodException
+    {
+        final EntityState emptyPerson = newPersonEntityState( Collections.<String, Object>emptyMap() );
 
-            assertEquals( DEFAULT_LAST_NAME, lastNameProperty );
+        final String lastNameProperty = getPropertyValue( emptyPerson, HasLastName.class, "lastName" );
 
-        }
-        catch( NoSuchMethodException e )
-        {
-            fail( "HasFirstName must have [firstName] method." );
-        }
-
-        // ==================================
-        // Test with initialzed default value
-        // ==================================
-        final HashMap<String, Object> initialValues2 = new HashMap<String, Object>();
-        final String expectedFirstNameValue = "Jane";
-        initialValues2.put( "firstName", expectedFirstNameValue );
-        final EntityState personEntityState2 = newPersonEntityState( initialValues2 );
-
-        // ----------
-        // First name
-        // ----------
-        try
-        {
-            final Method firstNamePropertyAccessor = HasFirstName.class.getMethod( "firstName" );
-
-            final String firstNameProperty = (String) personEntityState2.getProperty( getQualifiedName( firstNamePropertyAccessor ) );
-            assertNotNull( firstNameProperty );
-
-            assertEquals( expectedFirstNameValue, firstNameProperty );
-        }
-        catch( NoSuchMethodException e )
-        {
-            fail( "HasFirstName must have [firstName] method." );
-        }
-
-        // ---------
-        // Last name
-        // ---------
-        try
-        {
-            final Method lastNamePropertyAccessor = HasLastName.class.getMethod( "lastName" );
-
-            final String lastNameProperty = (String) personEntityState2.getProperty( getQualifiedName( lastNamePropertyAccessor ) );
-            assertNotNull( lastNameProperty );
-
-            assertEquals( DEFAULT_LAST_NAME, lastNameProperty );
-
-        }
-        catch( NoSuchMethodException e )
-        {
-            fail( "HasFirstName must have [firstName] method." );
-        }
-
-        // Test get first name on 
+        assertEquals( "default last name", DEFAULT_LAST_NAME, lastNameProperty );
     }
 
 
-    /**
-     * Returns all person composite property bindings.
-     *
-     * @return All person composite property bindings.
-     * @since 0.1.0
-     */
-/*
-    private Map<String, PropertyBinding> getPersonCompositePropertyBindings()
+    @Test public void hasDefaultFirstNameProperty() throws NoSuchMethodException
     {
-        final CompositeBuilderFactory builderFactory = moduleInstance.compositeBuilderFactory();
-        final PersonComposite composite = builderFactory.newComposite( PersonComposite.class );
-        final CompositeBinding personBinding = runtime.getCompositeDescriptor( composite );
-        final Iterable<PropertyBinding> propertyBindings = personBinding.getPropertyBindings();
-        final Map<String, PropertyBinding> properties = new HashMap<String, PropertyBinding>();
-        for( final PropertyBinding aBinding : propertyBindings )
-        {
-            final String propertyName = aBinding.getPropertyResolution().getPropertyModel().getName();
-            properties.put( propertyName, aBinding );
-        }
-        assertFalse( "Properties must not be empty.", properties.isEmpty() );
-        return properties;
-    }
-*/
-    public final void assemble( final ModuleAssembly aModule ) throws AssemblyException
-    {
-        aModule.addComposites( PersonComposite.class );
+        final EntityState emptyPerson = newPersonEntityState( Collections.<String, Object>emptyMap() );
 
-        // Has Name
-        aModule.on(HasFirstName.class ).to().firstName().set( DEFAULT_FIRST_NAME );
-        aModule.on(HasLastName.class ).to().lastName().set( DEFAULT_LAST_NAME );
+        final String firstNameProperty = getPropertyValue( emptyPerson, HasFirstName.class, "firstName" );
+
+        assertEquals( "default first name", DEFAULT_FIRST_NAME, firstNameProperty );
+    }
+
+
+    public final void assemble( final ModuleAssembly module ) throws AssemblyException
+    {
+        module.addEntities( PersonComposite.class );
+
+        module.on( HasFirstName.class ).to().firstName().set( DEFAULT_FIRST_NAME );
+        module.on( HasLastName.class ).to().lastName().set( DEFAULT_LAST_NAME );
+    }
+
+    protected IBatisEntityState newPersonEntityState( final Map<String, Object> initialValues )
+    {
+
+        return new IBatisEntityState( getCompositeDescriptor( PersonComposite.class ),
+                                      new QualifiedIdentity( "1", PersonComposite.class.getName() ),
+                                      initialValues,
+                                      0L,
+                                      EntityStatus.NEW, null );
+    }
+
+    private CompositeDescriptor getCompositeDescriptor( final Class<? extends EntityComposite> mixinType )
+    {
+        return moduleInstance.model().entities().getEntityModelFor( mixinType );
     }
 }
