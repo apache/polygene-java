@@ -18,31 +18,26 @@ package org.qi4j.entity.ibatis;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Map;
 import java.util.Collection;
-import java.util.HashMap;
-import java.net.URL;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import java.util.Map;
+import static org.junit.Assert.*;
 import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entity.EntityBuilder;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkCompletionException;
+import static org.qi4j.entity.ibatis.TestConfig.*;
+import org.qi4j.entity.ibatis.entity.Account;
 import org.qi4j.entity.ibatis.entity.AccountComposite;
 import org.qi4j.entity.ibatis.entity.PersonComposite;
-import org.qi4j.entity.ibatis.entity.Account;
 import org.qi4j.entity.ibatis.test.AbstractTestCase;
-import static org.qi4j.entity.ibatis.TestConfig.JANE_SMITH_ID;
-import static org.qi4j.entity.ibatis.TestConfig.JOHN_SMITH_ID;
 import org.qi4j.entity.memory.MemoryEntityStoreService;
+import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.UuidIdentityGeneratorService;
-import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.structure.Visibility;
 
 /**
@@ -59,7 +54,7 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
     @Test public void isThereDataInTheDatabaseAfterInitialization()
         throws Exception
     {
-        entityStore.toString();
+        entityStore.iterator();
         derbyDatabaseHandler.checkDataInitialization();
     }
 
@@ -115,6 +110,7 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
         uow.getReference( JOHN_SMITH_ID, PersonComposite.class );
         uow.complete();
     }
+
     @Test public final void existingEntityIsUpdatedInPersistentStore()
         throws SQLException, UnitOfWorkCompletionException
     {
@@ -167,17 +163,17 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
     {
         final EntityState state = loadEntity( JANE_SMITH_ID );
         assertPersonEntityStateEquals( JANE_SMITH_ID, "Jane", "Smith", state );
-        assertEquals( "ACCOUNTS", state.getManyAssociationNames().iterator().next());
-        assertEquals( "no association accounts",null, state.getAssociation("ACCOUNTS"));
+        assertEquals( "ACCOUNTS", state.getManyAssociationNames().iterator().next() );
+        assertEquals( "no association accounts", null, state.getAssociation( "ACCOUNTS" ) );
         final Collection<QualifiedIdentity> manyAssociation = state.getManyAssociation( "ACCOUNTS" );
-        assertEquals( "many association accounts",2, manyAssociation.size() );
-        assertTrue( "account reference 1", manyAssociation.contains( createId( "1", Account.class ) ));
-        assertTrue( "account reference 2", manyAssociation.contains( createId( "2", Account.class ) ));
+        assertEquals( "many association accounts", 2, manyAssociation.size() );
+        assertTrue( "account reference 1", manyAssociation.contains( createId( "1", Account.class ) ) );
+        assertTrue( "account reference 2", manyAssociation.contains( createId( "2", Account.class ) ) );
     }
 
     private QualifiedIdentity createId( String id, Class<?> compositeClass )
     {
-        return new QualifiedIdentity( id, compositeClass.getName());
+        return new QualifiedIdentity( id, compositeClass.getName() );
     }
 
     @Test public void findExistingPersonComposite() throws UnitOfWorkCompletionException
@@ -191,7 +187,7 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
     public final void assemble( final ModuleAssembly module )
         throws AssemblyException
     {
-        module.addEntities( PersonComposite.class , AccountComposite.class );
+        module.addEntities( PersonComposite.class, AccountComposite.class );
         module.addServices( UuidIdentityGeneratorService.class );
         module.addServices( IBatisEntityStoreService.class );
 
@@ -199,7 +195,7 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
         config.setName( "config" );
         config.addEntities( IBatisConfigurationComposite.class ).visibleIn( Visibility.layer );
         config.addServices( MemoryEntityStoreService.class );
-        config.on(IBatisConfiguration.class ).to().sqlMapConfigURL().set( derbyDatabaseHandler.getUrlString( TestConfig.SQL_MAP_CONFIG_XML ) );
+        config.on( IBatisConfiguration.class ).to().sqlMapConfigURL().set( derbyDatabaseHandler.getUrlString( TestConfig.SQL_MAP_CONFIG_XML ) );
         derbyDatabaseHandler.initDbInitializerInfo( config, TestConfig.SCHEMA_FILE, TestConfig.DATA_FILE );
     }
 
