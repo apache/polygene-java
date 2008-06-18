@@ -44,7 +44,7 @@ public final class ValueConstraintsInstance
             boolean valid;
             try
             {
-                valid = !constraint.isValid( value );
+                valid = constraint.isValid( value );
             }
             catch( NullPointerException e )
             {
@@ -52,7 +52,7 @@ public final class ValueConstraintsInstance
                 valid = false;
             }
 
-            if( valid )
+            if( !valid )
             {
                 if( violations == null )
                 {
