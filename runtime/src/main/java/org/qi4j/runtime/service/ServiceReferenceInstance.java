@@ -110,7 +110,6 @@ public final class ServiceReferenceInstance<T>
         if( serviceInstance != null )
         {
             activator.passivate();
-
             // Release the instance
             try
             {
@@ -194,6 +193,10 @@ public final class ServiceReferenceInstance<T>
     {
         public Object invoke( Object object, Method method, Object[] objects ) throws Throwable
         {
+            if( method.getName().equals( "toString" ) )
+            {
+                return serviceModel.toString();
+            }
             Object instance = getInstance();
 
             if( instance instanceof InvocationHandler )

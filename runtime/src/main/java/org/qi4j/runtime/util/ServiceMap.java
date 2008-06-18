@@ -17,6 +17,7 @@ package org.qi4j.runtime.util;
 import java.util.HashMap;
 import java.util.Map;
 import org.qi4j.composite.Composite;
+import org.qi4j.entity.EntityComposite;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.service.ServiceReference;
 
@@ -43,7 +44,11 @@ public final class ServiceMap<T>
         ServiceReference serviceReference = instances.get( compositeType );
         if( serviceReference == null )
         {
-            ModuleInstance realModule = moduleInstance.findModuleForComposite( compositeType );
+            ModuleInstance realModule = getRealModule( compositeType );
+            if( realModule == null )
+            {
+                return null; // todo is that ok?
+            }
             serviceReference = realModule.findService( serviceClass );
             if( serviceReference == null )
             {
@@ -52,6 +57,15 @@ public final class ServiceMap<T>
             instances.put( compositeType, serviceReference );
         }
         return (T) serviceReference.get();
+    }
+
+    private ModuleInstance getRealModule( Class<? extends Composite> compositeType )
+    {
+        if( EntityComposite.class.isAssignableFrom( compositeType ) )
+        {
+            return moduleInstance.findModuleForEntity( compositeType );
+        }
+        return moduleInstance.findModuleForComposite( compositeType );
     }
 
     public void release()
