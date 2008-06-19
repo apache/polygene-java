@@ -175,6 +175,11 @@ public final class DependencyModel
             WildcardType wcType = (WildcardType) type;
             return (Class) wcType.getUpperBounds()[ 0 ];
         }
+        else if( type instanceof TypeVariable )
+        {
+            TypeVariable tv = (TypeVariable) type;
+            return (Class) tv.getBounds()[0];
+        }
         throw new IllegalArgumentException( "Could not extract injectionClass of Type " + parameterizedType );
     }
 
