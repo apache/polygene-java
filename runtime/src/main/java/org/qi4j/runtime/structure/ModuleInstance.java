@@ -325,6 +325,13 @@ public class ModuleInstance
             }
 
             layerInstance.getServiceReferencesFor( serviceType, Visibility.layer, serviceReferences );
+            if( !serviceReferences.isEmpty() )
+            {
+                return serviceReferences.get( 0 );
+            }
+
+            UsedLayersInstance userLayers = layerInstance.usedLayersInstance();
+            userLayers.getServiceReferencesFor( serviceType, serviceReferences );
 
             if( !serviceReferences.isEmpty() )
             {
@@ -338,6 +345,10 @@ public class ModuleInstance
         {
             List<ServiceReference<T>> serviceReferences = new ArrayList<ServiceReference<T>>();
             services.getServiceReferencesFor( serviceType, Visibility.module, serviceReferences );
+            layerInstance.getServiceReferencesFor( serviceType, Visibility.layer, serviceReferences );
+
+            UsedLayersInstance usedLayers = layerInstance.usedLayersInstance();
+            usedLayers.getServiceReferencesFor( serviceType, serviceReferences );
             return serviceReferences;
         }
     }
