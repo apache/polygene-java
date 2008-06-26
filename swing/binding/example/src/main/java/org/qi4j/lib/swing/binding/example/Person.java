@@ -30,4 +30,6 @@ public interface Person extends HasAddress
     ListAssociation<Car> cars();
 
     Property<Boolean> expertGroupMember();
+
+    Property<Gender> gender();
 }

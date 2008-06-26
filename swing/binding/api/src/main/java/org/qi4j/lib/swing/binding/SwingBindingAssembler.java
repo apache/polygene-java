@@ -20,6 +20,7 @@ package org.qi4j.lib.swing.binding;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.lib.swing.binding.adapters.BooleanToToggleButtonAdapterService;
 import org.qi4j.lib.swing.binding.adapters.StringToTextFieldAdapterService;
 import org.qi4j.lib.swing.binding.internal.StateInvocationHandler;
 import org.qi4j.lib.swing.binding.internal.association.BoundAssociation;
@@ -57,6 +58,7 @@ public class SwingBindingAssembler
     protected void addStringToTextFieldAdapter( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addServices( StringToTextFieldAdapterService.class );
+        module.addServices( StringToTextFieldAdapterService.class,
+                            BooleanToToggleButtonAdapterService.class );
     }
 }

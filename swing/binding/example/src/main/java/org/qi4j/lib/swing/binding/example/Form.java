@@ -21,8 +21,10 @@ import java.awt.Dimension;
 import java.util.Vector;
 import javax.swing.BoxLayout;
 import static javax.swing.BoxLayout.Y_AXIS;
+import javax.swing.ButtonGroup;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -47,6 +49,10 @@ public class Form<T extends BoundPersonEntityComposite> extends JPanel
         add( userAddressLine1Field );
         JPanel userAddressLine2Field = newUserSecondLineAddressField( aModel, state );
         add( userAddressLine2Field );
+
+        JPanel genderField = newGenderField( aModel, state );
+        add( genderField );
+
         JPanel userCityField = newUserCityField( aModel, state );
         add( userCityField );
         JPanel userCountryField = newUserCountryField( aModel, state );
@@ -55,10 +61,31 @@ public class Form<T extends BoundPersonEntityComposite> extends JPanel
         JTable carTable = newCarTable( aModel, state );
         add( new JScrollPane( carTable ) );
 
-        JTable carTable2 = newCarTable( aModel, state );
-        add( new JScrollPane( carTable2 ) );
-
         setLayout( new BoxLayout( this, Y_AXIS ) );
+    }
+
+    private JPanel newGenderField( StateModel<T> aModel, T state )
+    {
+        JPanel panel = new JPanel();
+
+        JLabel label = new JLabel( "Gender:" );
+        label.setPreferredSize( new Dimension( 100, 20 ) );
+        panel.add( label );
+
+        JRadioButton maleRadio = new JRadioButton( "Male" );
+        JRadioButton femaleRadio = new JRadioButton( "Female" );
+
+        ButtonGroup buttonGroup = new ButtonGroup();
+
+        buttonGroup.add( maleRadio );
+        buttonGroup.add( femaleRadio );
+
+        panel.add( maleRadio );
+        panel.add( femaleRadio );
+
+        //TODO do binding
+
+        return panel;
     }
 
     @SuppressWarnings( "unchecked" )

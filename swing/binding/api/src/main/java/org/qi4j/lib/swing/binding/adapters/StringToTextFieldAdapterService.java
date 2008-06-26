@@ -17,7 +17,6 @@
  */
 package org.qi4j.lib.swing.binding.adapters;
 
-import java.util.HashSet;
 import java.util.Set;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -26,6 +25,7 @@ import javax.swing.JTextField;
 import javax.swing.text.JTextComponent;
 import org.qi4j.composite.Mixins;
 import org.qi4j.lib.swing.binding.SwingAdapter;
+import org.qi4j.lib.swing.binding.adapters.AbstractSwingAdapter;
 import org.qi4j.property.Property;
 import org.qi4j.service.ServiceComposite;
 
@@ -33,23 +33,13 @@ import org.qi4j.service.ServiceComposite;
 public interface StringToTextFieldAdapterService extends SwingAdapter, ServiceComposite
 {
 
-    abstract class StringToTextFieldAdapterMixin
-        implements SwingAdapter
+    abstract class StringToTextFieldAdapterMixin extends AbstractSwingAdapter
     {
-
-        private HashSet<Capabilities> canHandle;
-
-        public StringToTextFieldAdapterMixin()
+        protected void canHandle( Set<Capabilities> canHandle )
         {
-            canHandle = new HashSet<Capabilities>();
             canHandle.add( new Capabilities( JTextArea.class, String.class, true, false, false, false ) );
             canHandle.add( new Capabilities( JTextField.class, String.class, true, false, false, false ) );
             canHandle.add( new Capabilities( JLabel.class, String.class, true, false, false, false ) );
-        }
-
-        public final Set<Capabilities> canHandle()
-        {
-            return canHandle;
         }
 
         @SuppressWarnings( "unchecked" )
