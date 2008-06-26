@@ -34,9 +34,9 @@ import org.qi4j.lib.swing.binding.internal.association.BoundListAssociation;
 import org.qi4j.lib.swing.binding.internal.association.BoundManyAssociation;
 import org.qi4j.lib.swing.binding.internal.association.BoundManyAssociationTableDelegate;
 import org.qi4j.lib.swing.binding.internal.association.BoundSetAssociation;
-import org.qi4j.lib.swing.binding.internal.association.DefaultListAssociationDelegate;
-import org.qi4j.lib.swing.binding.internal.association.DefaultManyAssociationDelegate;
-import org.qi4j.lib.swing.binding.internal.association.DefaultSetAssociationDelegate;
+import org.qi4j.lib.swing.binding.internal.association.DefaultBoundListAssociationDelegate;
+import org.qi4j.lib.swing.binding.internal.association.DefaultBoundManyAssociationDelegate;
+import org.qi4j.lib.swing.binding.internal.association.DefaultBoundSetAssociationDelegate;
 import org.qi4j.lib.swing.binding.internal.property.BoundProperty;
 import org.qi4j.object.ObjectBuilder;
 import org.qi4j.object.ObjectBuilderFactory;
@@ -119,13 +119,19 @@ public final class StateModel<T>
         throw new IllegalArgumentException( "Unknown association template: " + anAssociation );
     }
 
+    public <T> ToggleButtonBinding<T> bindToggleButton( Property<T> aProperty )
+    {
+        //TODO
+        return null;
+    }
+
     public <T> SwingBinding<T> bind( SetAssociation<T> anAssociation )
     {
         validateNotNull( "anAssociation", anAssociation );
 
         if( anAssociation instanceof BoundSetAssociation )
         {
-            return bind( anAssociation, DefaultSetAssociationDelegate.class );
+            return bind( anAssociation, DefaultBoundSetAssociationDelegate.class );
         }
 
         throw new IllegalArgumentException( "Unknown many association template: " + anAssociation );
@@ -137,7 +143,7 @@ public final class StateModel<T>
 
         if( anAssociation instanceof BoundListAssociation )
         {
-            return bind( anAssociation, DefaultListAssociationDelegate.class );
+            return bind( anAssociation, DefaultBoundListAssociationDelegate.class );
         }
 
         throw new IllegalArgumentException( "Unknown many association template: " + anAssociation );
@@ -145,18 +151,18 @@ public final class StateModel<T>
 
     @SuppressWarnings( "unchecked" )
     private <T> SwingBinding<T> bind( ManyAssociation<T> anAssociation,
-                                      Class<? extends DefaultManyAssociationDelegate> classType )
+                                      Class<? extends DefaultBoundManyAssociationDelegate> classType )
     {
         BoundManyAssociation association = (BoundManyAssociation) anAssociation;
 
         // Create new delegate
-        ObjectBuilder<DefaultManyAssociationDelegate> delegateBuilder =
-            (ObjectBuilder<DefaultManyAssociationDelegate>) obf.newObjectBuilder( classType );
+        ObjectBuilder<DefaultBoundManyAssociationDelegate> delegateBuilder =
+            (ObjectBuilder<DefaultBoundManyAssociationDelegate>) obf.newObjectBuilder( classType );
 
         Map<Class<? extends JComponent>, SwingAdapter> adapters = association.adapters();
         delegateBuilder.use( adapters );
 
-        DefaultManyAssociationDelegate delegate = delegateBuilder.newInstance();
+        DefaultBoundManyAssociationDelegate delegate = delegateBuilder.newInstance();
 
         association.delegate( delegate );
 

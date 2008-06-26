@@ -9,10 +9,10 @@ import org.qi4j.lib.swing.binding.SwingAdapter;
 /**
  * @author Lan Boon Ping
  */
-public class DefaultListAssociationDelegate<T> extends DefaultManyAssociationDelegate<T, ListAssociation<T>>
+public class DefaultBoundListAssociationDelegate<T> extends DefaultBoundManyAssociationDelegate<T, ListAssociation<T>>
 {
 
-    public DefaultListAssociationDelegate( @Uses Map<Class<? extends JComponent>, SwingAdapter> adapters )
+    public DefaultBoundListAssociationDelegate( @Uses Map<Class<? extends JComponent>, SwingAdapter> adapters )
         throws IllegalArgumentException
     {
         super( adapters );

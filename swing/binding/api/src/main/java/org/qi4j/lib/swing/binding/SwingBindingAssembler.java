@@ -26,8 +26,8 @@ import org.qi4j.lib.swing.binding.internal.StateInvocationHandler;
 import org.qi4j.lib.swing.binding.internal.association.BoundAssociation;
 import org.qi4j.lib.swing.binding.internal.association.BoundListAssociation;
 import org.qi4j.lib.swing.binding.internal.association.BoundSetAssociation;
-import org.qi4j.lib.swing.binding.internal.association.DefaultListAssociationDelegate;
-import org.qi4j.lib.swing.binding.internal.association.DefaultSetAssociationDelegate;
+import org.qi4j.lib.swing.binding.internal.association.DefaultBoundListAssociationDelegate;
+import org.qi4j.lib.swing.binding.internal.association.DefaultBoundSetAssociationDelegate;
 import org.qi4j.lib.swing.binding.internal.property.BoundProperty;
 import static org.qi4j.structure.Visibility.application;
 
@@ -47,8 +47,8 @@ public class SwingBindingAssembler
             BoundProperty.class,
             BoundSetAssociation.class,
             BoundListAssociation.class,
-            DefaultListAssociationDelegate.class,
-            DefaultSetAssociationDelegate.class,
+            DefaultBoundListAssociationDelegate.class,
+            DefaultBoundSetAssociationDelegate.class,
             StateInvocationHandler.class
         );
 

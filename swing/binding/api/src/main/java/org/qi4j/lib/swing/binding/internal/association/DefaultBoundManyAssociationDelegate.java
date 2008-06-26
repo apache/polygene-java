@@ -29,8 +29,8 @@ import org.qi4j.lib.swing.binding.StateModel;
 import org.qi4j.lib.swing.binding.SwingAdapter;
 import org.qi4j.lib.swing.binding.SwingBinding;
 
-public abstract class DefaultManyAssociationDelegate<T, K extends ManyAssociation<T>>
-    implements ManyAssociationDelegate<T, K>
+public abstract class DefaultBoundManyAssociationDelegate<T, K extends ManyAssociation<T>>
+    implements BoundManyAssociationDelegate<T, K>
 {
 
     private K manyAssociation;
@@ -40,7 +40,7 @@ public abstract class DefaultManyAssociationDelegate<T, K extends ManyAssociatio
     private WeakHashMap<JComponent, FocusLostListener> components;
 
     @SuppressWarnings( "unchecked" )
-    public DefaultManyAssociationDelegate(
+    public DefaultBoundManyAssociationDelegate(
         @Uses Map<Class<? extends JComponent>, SwingAdapter> adapters )
 
         throws IllegalArgumentException
@@ -86,7 +86,7 @@ public abstract class DefaultManyAssociationDelegate<T, K extends ManyAssociatio
 
     public void stateToUse( K aNewState )
     {
-        // Update components
+       // Update components
         for( Map.Entry<JComponent, FocusLostListener> entry : components.entrySet() )
         {
             JComponent component = entry.getKey();

@@ -19,7 +19,7 @@ import org.qi4j.property.Property;
  * @author Lan Boon Ping
  */
 public class BoundManyAssociationTableDelegate<T>
-    implements TableBinding<T>, ManyAssociationDelegate<T, ManyAssociation<T>>
+    implements TableBinding<T>, BoundManyAssociationDelegate<T, ManyAssociation<T>>
 {
 
     private StateModel<T> stateModel;

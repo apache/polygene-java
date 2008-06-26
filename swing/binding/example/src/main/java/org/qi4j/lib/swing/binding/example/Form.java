@@ -83,6 +83,9 @@ public class Form<T extends BoundPersonEntityComposite> extends JPanel
         panel.add( maleRadio );
         panel.add( femaleRadio );
 
+//        aModel.bindToggleButton( state.gender() ).to( maleRadio ).withValue( Gender.female );
+//        aModel.bindToggleButton( state.gender() ).to( femaleRadio ).withValue( Gender.male );
+
         //TODO do binding
 
         return panel;

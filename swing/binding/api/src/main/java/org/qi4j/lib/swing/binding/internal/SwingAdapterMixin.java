@@ -21,7 +21,6 @@ import java.util.Set;
 import javax.swing.JComponent;
 import org.qi4j.entity.association.Association;
 import org.qi4j.entity.association.ListAssociation;
-import org.qi4j.entity.association.ManyAssociation;
 import org.qi4j.entity.association.SetAssociation;
 import org.qi4j.lib.swing.binding.SwingAdapter;
 import org.qi4j.property.Property;
@@ -81,16 +80,6 @@ public abstract class SwingAdapterMixin
     }
 
     public void fromListAssociationToSwing( JComponent component, ListAssociation listAssociation )
-    {
-        // Do nothing
-    }
-
-    public void fromManyAssociationToSwing( JComponent aComponent, ManyAssociation aManyAssociation )
-    {
-        // Do nothing
-    }
-
-    public void fromSwingToManyAssociation( JComponent aComponent, ManyAssociation aManyAssociation )
     {
         // Do nothing
     }

@@ -25,7 +25,7 @@ public abstract class BoundManyAssociation<T> extends AbstractBinding<T, ManyAss
     implements ManyAssociation<T>
 {
 
-    private List<ManyAssociationDelegate> delegates;
+    private List<BoundManyAssociationDelegate> delegates;
 
     @SuppressWarnings( "unchecked" )
     public BoundManyAssociation(
@@ -35,7 +35,7 @@ public abstract class BoundManyAssociation<T> extends AbstractBinding<T, ManyAss
     {
         super( anAssociationMethod, objectBuilderFactory, allAdapters );
 
-        delegates = new ArrayList<ManyAssociationDelegate>();
+        delegates = new ArrayList<BoundManyAssociationDelegate>();
     }
 
     public final Map<Class<? extends JComponent>, SwingAdapter> adapters()
@@ -43,7 +43,7 @@ public abstract class BoundManyAssociation<T> extends AbstractBinding<T, ManyAss
         return adapters;
     }
 
-    public void delegate( ManyAssociationDelegate delegate )
+    public void delegate( BoundManyAssociationDelegate delegate )
     {
         delegates.add( delegate );
     }
@@ -145,7 +145,7 @@ public abstract class BoundManyAssociation<T> extends AbstractBinding<T, ManyAss
 
     public void stateToUse( ManyAssociation<T> aNewState )
     {
-        for( ManyAssociationDelegate delegate : delegates )
+        for( BoundManyAssociationDelegate delegate : delegates )
         {
             delegate.stateToUse( aNewState );
         }
@@ -153,7 +153,7 @@ public abstract class BoundManyAssociation<T> extends AbstractBinding<T, ManyAss
 
     public void fieldToUse( ManyAssociation<T> anActualField )
     {
-        for( ManyAssociationDelegate delegate : delegates )
+        for( BoundManyAssociationDelegate delegate : delegates )
         {
             delegate.fieldToUse( anActualField );
         }
