@@ -84,7 +84,7 @@ public abstract class DefaultManyAssociationDelegate<T, K extends ManyAssociatio
     protected abstract void handleFromSwingToManyAssociation( SwingAdapter adapter, JComponent component,
                                                               K manyAssociation );
 
-    public void stateInUse( K aNewState )
+    public void stateToUse( K aNewState )
     {
         // Update components
         for( Map.Entry<JComponent, FocusLostListener> entry : components.entrySet() )
@@ -100,10 +100,10 @@ public abstract class DefaultManyAssociationDelegate<T, K extends ManyAssociatio
         }
     }
 
-    public void fieldInUse( K anActualField )
+    public void fieldToUse( K anActualField )
     {
         manyAssociation = anActualField;
-        stateInUse( anActualField );
+        stateToUse( anActualField );
     }
 
     private class FocusLostListener
@@ -128,7 +128,7 @@ public abstract class DefaultManyAssociationDelegate<T, K extends ManyAssociatio
                 JComponent component = (JComponent) e.getComponent();
                 handleFromSwingToManyAssociation( adapter, component, manyAssociation );
 
-                stateInUse( manyAssociation );
+                stateToUse( manyAssociation );
             }
         }
     }

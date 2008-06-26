@@ -16,11 +16,9 @@
  */
 package org.qi4j.lib.swing.binding.domain;
 
-import org.qi4j.composite.Composite;
-
 /**
  * @author edward.yakop@gmail.com
  */
-public interface PersonComposite extends Person, Composite
+public interface Cat extends HasName
 {
 }

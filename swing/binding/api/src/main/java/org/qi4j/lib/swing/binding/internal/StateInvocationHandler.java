@@ -99,8 +99,8 @@ public final class StateInvocationHandler<T>
                 field = (BoundField) objectBuilder.newInstance();
 
                 // Initialized value if possible
-                Object actualField = getActualField( actualData, aMethod );
-                field.fieldInUse( actualField );
+                Object actualField = actualField( actualData, aMethod );
+                field.fieldToUse( actualField );
 
                 fields.put( aMethod, field );
             }
@@ -115,17 +115,18 @@ public final class StateInvocationHandler<T>
     public void use( T anActualData )
     {
         actualData = anActualData;
+
         for( Map.Entry<Method, BoundField> entry : fields.entrySet() )
         {
             Method methodToActualField = entry.getKey();
 
             BoundField field = entry.getValue();
-            Object actualField = getActualField( anActualData, methodToActualField );
-            field.fieldInUse( actualField );
+            Object actualField = actualField( anActualData, methodToActualField );
+            field.fieldToUse( actualField );
         }
     }
 
-    private Object getActualField( T anActualData, Method aMethodToActualField )
+    private Object actualField( T anActualData, Method aMethodToActualField )
     {
         Object actualField = null;
         if( anActualData != null )
@@ -136,10 +137,12 @@ public final class StateInvocationHandler<T>
             }
             catch( IllegalAccessException e )
             {
-                e.printStackTrace();  //TODO: Auto-generated, need attention.
+                // Shouldn't happened.
+                e.printStackTrace();
             }
             catch( InvocationTargetException e )
             {
+                // Shouldn't happened.
                 e.printStackTrace();  //TODO: Auto-generated, need attention.
             }
         }

@@ -70,7 +70,7 @@ public class BoundManyAssociationTableDelegate<T>
     }
 
     @SuppressWarnings( "unchecked" )
-    public void stateInUse( ManyAssociation<T> aNewAssociation )
+    public void stateToUse( ManyAssociation<T> aNewAssociation )
     {
 
         DefaultTableModel model = (DefaultTableModel) table.getModel();
@@ -144,8 +144,8 @@ public class BoundManyAssociationTableDelegate<T>
         return null;
     }
 
-    public void fieldInUse( ManyAssociation<T> aNewAssociation )
+    public void fieldToUse( ManyAssociation<T> aNewAssociation )
     {
-        stateInUse( aNewAssociation );
+        stateToUse( aNewAssociation );
     }
 }

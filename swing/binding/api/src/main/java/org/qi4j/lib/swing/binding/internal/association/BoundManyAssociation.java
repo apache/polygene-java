@@ -143,19 +143,19 @@ public abstract class BoundManyAssociation<T> extends AbstractBinding<T, ManyAss
         return delegates.get( delegates.size() - 1 );
     }
 
-    public void stateInUse( ManyAssociation<T> aNewState )
+    public void stateToUse( ManyAssociation<T> aNewState )
     {
         for( ManyAssociationDelegate delegate : delegates )
         {
-            delegate.stateInUse( aNewState );
+            delegate.stateToUse( aNewState );
         }
     }
 
-    public void fieldInUse( ManyAssociation<T> anActualField )
+    public void fieldToUse( ManyAssociation<T> anActualField )
     {
         for( ManyAssociationDelegate delegate : delegates )
         {
-            delegate.fieldInUse( anActualField );
+            delegate.fieldToUse( anActualField );
         }
     }
 

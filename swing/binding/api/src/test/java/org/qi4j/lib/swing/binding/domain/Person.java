@@ -19,6 +19,6 @@ package org.qi4j.lib.swing.binding.domain;
 /**
  * @author edward.yakop@gmail.com
  */
-public interface Person extends HasName
+public interface Person extends HasName, HasCat
 {
 }

@@ -21,6 +21,7 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.lang.reflect.Method;
 import java.util.Map;
+import java.util.Set;
 import java.util.WeakHashMap;
 import javax.swing.JComponent;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
@@ -68,7 +69,7 @@ public final class BoundProperty<T> extends AbstractBinding<T, T, Property<T>>
     }
 
     @Override
-    protected boolean requiredCapabilitySatisfied( SwingAdapter.Capabilities capabilities )
+    protected final boolean requiredCapabilitySatisfied( SwingAdapter.Capabilities capabilities )
     {
         return capabilities.property;
     }
@@ -94,55 +95,42 @@ public final class BoundProperty<T> extends AbstractBinding<T, T, Property<T>>
         return type;
     }
 
-    public void set( T newValue )
+    public final void set( T newValue )
         throws IllegalArgumentException
     {
-        throw new IllegalArgumentException( "set() is not allowed in binding templates." );
+        throw new UnsupportedOperationException( "set() is not allowed in binding templates." );
     }
 
-    public <K> K metaInfo( Class<K> infoType )
+    public final <K> K metaInfo( Class<K> infoType )
+    {
+        return propertyInfo().metaInfo( infoType );
+    }
+
+    private PropertyInfo propertyInfo()
     {
         if( propertyInfo == null )
         {
-            createPropertyInfo();
+            propertyInfo = new GenericPropertyInfo( fieldMethod );
         }
-        return propertyInfo.metaInfo( infoType );
+        return propertyInfo;
     }
 
-    public String name()
+    public final String name()
     {
-        if( propertyInfo == null )
-        {
-            createPropertyInfo();
-        }
-        return propertyInfo.name();
+        return propertyInfo().name();
     }
 
-    public String qualifiedName()
+    public final String qualifiedName()
     {
-        if( propertyInfo == null )
-        {
-            createPropertyInfo();
-        }
-        return propertyInfo.qualifiedName();
-    }
-
-    private void createPropertyInfo()
-    {
-        propertyInfo = new GenericPropertyInfo( this.fieldMethod );
-    }
-
-    @Override
-    public final String toString()
-    {
-        return name + "[" + type.getSimpleName() + "] -> " + stateModel.toString();
+        return propertyInfo().qualifiedName();
     }
 
     @SuppressWarnings( "unchecked" )
-    public final void stateInUse( T aNewStateInUse )
+    public final void stateToUse( T aNewStateInUse )
     {
         // Update components
-        for( Map.Entry<JComponent, FocusLostListener> entry : components.entrySet() )
+        Set<Map.Entry<JComponent, FocusLostListener>> entries = components.entrySet();
+        for( Map.Entry<JComponent, FocusLostListener> entry : entries )
         {
             JComponent component = entry.getKey();
 
@@ -168,7 +156,7 @@ public final class BoundProperty<T> extends AbstractBinding<T, T, Property<T>>
         stateModel.use( aNewStateInUse );
     }
 
-    public final void fieldInUse( Property<T> anActualProperty )
+    public final void fieldToUse( Property<T> anActualProperty )
     {
         actualProperty = anActualProperty;
 
@@ -192,7 +180,6 @@ public final class BoundProperty<T> extends AbstractBinding<T, T, Property<T>>
             // Sets the adapter for focus listener to use
             Class<? extends JComponent> componentClass = aComponent.getClass();
             SwingAdapter adapter = adapters.get( componentClass );
-
             if( adapter == null )
             {
                 throw new IllegalBindingException( aComponent, type );
@@ -212,12 +199,11 @@ public final class BoundProperty<T> extends AbstractBinding<T, T, Property<T>>
     private class FocusLostListener
         implements FocusListener
     {
-
         private SwingAdapter adapter;
 
-        private void setAdapter( SwingAdapter adapterToUse )
+        private void setAdapter( SwingAdapter anAdapterToUse )
         {
-            adapter = adapterToUse;
+            adapter = anAdapterToUse;
         }
 
         public final void focusGained( FocusEvent e )
@@ -225,7 +211,7 @@ public final class BoundProperty<T> extends AbstractBinding<T, T, Property<T>>
             // Do nothing
         }
 
-        public void focusLost( FocusEvent e )
+        public final void focusLost( FocusEvent e )
         {
             if( adapter != null && actualProperty != null )
             {
@@ -233,7 +219,7 @@ public final class BoundProperty<T> extends AbstractBinding<T, T, Property<T>>
 
                 adapter.fromSwingToProperty( component, actualProperty );
 
-                stateInUse( actualProperty.get() );
+                stateToUse( actualProperty.get() );
             }
         }
     }

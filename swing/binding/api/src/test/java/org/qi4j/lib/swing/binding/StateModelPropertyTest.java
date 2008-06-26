@@ -16,37 +16,23 @@
  */
 package org.qi4j.lib.swing.binding;
 
-import javax.swing.JFrame;
-import javax.swing.JTextField;
 import static junit.framework.Assert.assertEquals;
-import org.fest.swing.fixture.FrameFixture;
 import org.fest.swing.fixture.JTextComponentFixture;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.lib.swing.binding.domain.Person;
-import org.qi4j.lib.swing.binding.domain.PersonComposite;
-import org.qi4j.object.ObjectBuilder;
-import org.qi4j.test.AbstractQi4jTest;
 
 /**
  * @author edward.yakop@gmail.com
  */
-public class StateModelPropertyTest extends AbstractQi4jTest
+public class StateModelPropertyTest extends AbstractStateModelTest
 {
-    private FrameFixture window;
-    private StateModel<Person> personModel;
-
-
     @Test
-    public final void testNameBinding()
+    public final void testPropertyBinding()
     {
-        JTextComponentFixture nameTextBox = window.textBox( "name" );
+        JTextComponentFixture nameTextBox = window.textBox( "personName" );
         assertEquals( "", nameTextBox.text() );
 
-        Person person = compositeBuilderFactory.newComposite( Person.class );
+        Person person = uow.newEntity( Person.class );
         personModel.use( person );
 
         assertEquals( "", nameTextBox.text() );
@@ -68,66 +54,5 @@ public class StateModelPropertyTest extends AbstractQi4jTest
 
         assertEquals( expectedName2, person.name().get() );
         assertEquals( expectedName2, nameTextBox.text() );
-    }
-
-    @Before
-    @Override
-    @SuppressWarnings( "unchecked" )
-    public void setUp()
-        throws Exception
-    {
-        super.setUp();
-
-        ObjectBuilder<StateModel> personModelBuilder = objectBuilderFactory.newObjectBuilder( StateModel.class );
-        personModelBuilder.use( Person.class );
-        personModel = personModelBuilder.newInstance();
-
-        window = new FrameFixture( new PersonFrame( personModel ) );
-        window.show();
-    }
-
-    public final void assemble( ModuleAssembly aModuleAssembly )
-        throws AssemblyException
-    {
-        aModuleAssembly.addAssembler( new SwingBindingAssembler() );
-        aModuleAssembly.addComposites( PersonComposite.class );
-    }
-
-    @Override @After
-    public void tearDown()
-        throws Exception
-    {
-        window.cleanUp();
-        super.tearDown();
-    }
-
-    private static class PersonFrame extends JFrame
-    {
-        public PersonFrame( StateModel<Person> aPersonModel )
-        {
-            super();
-
-            JTextField nameField = createNameField();
-            add( nameField );
-
-            Person template = aPersonModel.state();
-            aPersonModel.bind( template.name() ).to( nameField );
-
-            add( createLostFocusField() );
-        }
-
-        private JTextField createLostFocusField()
-        {
-            JTextField lostFocusField = new JTextField();
-            lostFocusField.setName( "lostFocus" );
-            return lostFocusField;
-        }
-
-        private JTextField createNameField()
-        {
-            JTextField nameField = new JTextField();
-            nameField.setName( "name" );
-            return nameField;
-        }
     }
 }

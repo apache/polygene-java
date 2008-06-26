@@ -14,26 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.lib.swing.binding.internal;
+package org.qi4j.lib.swing.binding.domain.entities;
+
+import org.qi4j.composite.Composite;
+import org.qi4j.lib.swing.binding.domain.Person;
+import org.qi4j.entity.EntityComposite;
 
 /**
  * @author edward.yakop@gmail.com
  */
-public interface BoundField<T, K>
+public interface PersonEntity extends Person, EntityComposite
 {
-
-    /**
-     * Sets the field value.
-     *
-     * @param aNewState The field value.
-     */
-    void stateToUse( T aNewState );
-
-    /**
-     * Sets the actual field (not field value).
-     *
-     * @param anActualField The actual field.
-     * @since 0.1.0
-     */
-    void fieldToUse( K anActualField );
 }

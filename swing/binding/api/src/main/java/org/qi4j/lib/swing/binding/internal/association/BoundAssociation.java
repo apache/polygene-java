@@ -12,6 +12,7 @@ import org.qi4j.entity.association.ImmutableAssociation;
 import org.qi4j.injection.scope.Service;
 import org.qi4j.injection.scope.Structure;
 import org.qi4j.injection.scope.Uses;
+import org.qi4j.lib.swing.binding.IllegalBindingException;
 import org.qi4j.lib.swing.binding.StateModel;
 import org.qi4j.lib.swing.binding.SwingAdapter;
 import org.qi4j.lib.swing.binding.SwingBinding;
@@ -104,7 +105,7 @@ public final class BoundAssociation<T> extends AbstractBinding<T, T, Association
     }
 
     @SuppressWarnings( "unchecked" )
-    public final void stateInUse( T aNewStateInUse )
+    public final void stateToUse( T aNewStateInUse )
     {
         // Update components
         for( Map.Entry<JComponent, FocusLostListener> entry : components.entrySet() )
@@ -133,7 +134,7 @@ public final class BoundAssociation<T> extends AbstractBinding<T, T, Association
         stateModel.use( aNewStateInUse );
     }
 
-    public final void fieldInUse( Association<T> anActualAssociation )
+    public final void fieldToUse( Association<T> anActualAssociation )
     {
         actualAssociation = anActualAssociation;
 
@@ -156,6 +157,11 @@ public final class BoundAssociation<T> extends AbstractBinding<T, T, Association
             // Sets the adapter for focus listener to use
             Class<? extends JComponent> componentClass = aComponent.getClass();
             SwingAdapter adapter = adapters.get( componentClass );
+
+            if( adapter == null )
+            {
+                throw new IllegalBindingException( aComponent, type );
+            }
             focusListener.setAdapter( adapter );
 
             // Initialized component initial value
@@ -197,7 +203,7 @@ public final class BoundAssociation<T> extends AbstractBinding<T, T, Association
 
                 adapter.fromSwingToAssociation( component, actualAssociation );
 
-                stateInUse( actualAssociation.get() );
+                stateToUse( actualAssociation.get() );
             }
         }
     }

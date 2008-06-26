@@ -75,7 +75,7 @@ public final class StateModel<T>
     {
         if( fieldOwnedThis != null )
         {
-            fieldOwnedThis.stateInUse( aData );
+            fieldOwnedThis.stateToUse( aData );
         }
 
         currentData = aData;
