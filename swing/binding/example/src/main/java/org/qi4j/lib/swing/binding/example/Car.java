@@ -1,0 +1,16 @@
+package org.qi4j.lib.swing.binding.example;
+
+import org.qi4j.property.Property;
+
+/**
+ * @author Lan Boon Ping
+ */
+public interface Car
+{
+
+    Property<String> model();
+
+    Property<String> capacity();
+
+    Property<String> price();
+}

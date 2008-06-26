@@ -5,20 +5,15 @@
     <artifactId>qi4j</artifactId>
     <version>0.3-SNAPSHOT</version>
   </parent>
-  <groupId>org.qi4j</groupId>
-  <artifactId>qi4j-library</artifactId>
-  <name>Qi4J Library (Build POM)</name>
+
+  <groupId>org.qi4j.library</groupId>
+  <artifactId>swing</artifactId>
   <version>0.3-SNAPSHOT</version>
   <packaging>pom</packaging>
-  <!-- This POM is ONLY to initiate the modules to be built. -->
+
+  <name>Qi4J Library - Swing</name>
+
   <modules>
-    <module>auth</module>
-    <module>general</module>
-    <module>business</module>
-    <module>framework</module>
-    <module>logging</module>
-    <module>rdf</module>
-    <module>scripting</module>
-    <module>swing</module>
+    <module>binding</module>
   </modules>
 </project>
