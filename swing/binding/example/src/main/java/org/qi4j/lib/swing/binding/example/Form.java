@@ -20,7 +20,7 @@ package org.qi4j.lib.swing.binding.example;
 import java.awt.Dimension;
 import java.util.Vector;
 import javax.swing.BoxLayout;
-import static javax.swing.BoxLayout.*;
+import static javax.swing.BoxLayout.Y_AXIS;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;

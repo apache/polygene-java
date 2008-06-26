@@ -6,7 +6,7 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entity.index.rdf.memory.MemoryRepositoryService;
 import org.qi4j.entity.memory.IndexedMemoryEntityStoreService;
 import org.qi4j.spi.entity.UuidIdentityGeneratorService;
-import static org.qi4j.structure.Visibility.*;
+import static org.qi4j.structure.Visibility.application;
 
 /**
  * @author Lan Boon Ping

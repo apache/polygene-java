@@ -17,10 +17,10 @@
  */
 package org.qi4j.lib.swing.binding;
 
-import static java.lang.reflect.Proxy.*;
+import static java.lang.reflect.Proxy.newProxyInstance;
 import java.util.Map;
 import javax.swing.JComponent;
-import static org.qi4j.composite.NullArgumentException.*;
+import static org.qi4j.composite.NullArgumentException.validateNotNull;
 import org.qi4j.entity.association.Association;
 import org.qi4j.entity.association.ListAssociation;
 import org.qi4j.entity.association.ManyAssociation;
@@ -60,8 +60,7 @@ public final class StateModel<T>
         type = aType;
         obf = anObjectBuilderFactory;
 
-        ObjectBuilder<StateInvocationHandler> objectBuilder =
-            obf.newObjectBuilder( StateInvocationHandler.class );
+        ObjectBuilder<StateInvocationHandler> objectBuilder = obf.newObjectBuilder( StateInvocationHandler.class );
         objectBuilder.use( aType );
         childModel = objectBuilder.newInstance();
     }

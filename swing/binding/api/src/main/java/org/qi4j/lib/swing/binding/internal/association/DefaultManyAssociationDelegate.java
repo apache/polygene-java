@@ -22,7 +22,7 @@ import java.awt.event.FocusListener;
 import java.util.Map;
 import java.util.WeakHashMap;
 import javax.swing.JComponent;
-import static org.qi4j.composite.NullArgumentException.*;
+import static org.qi4j.composite.NullArgumentException.validateNotNull;
 import org.qi4j.entity.association.ManyAssociation;
 import org.qi4j.injection.scope.Uses;
 import org.qi4j.lib.swing.binding.StateModel;

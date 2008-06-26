@@ -28,7 +28,7 @@ import org.qi4j.lib.swing.binding.internal.association.BoundSetAssociation;
 import org.qi4j.lib.swing.binding.internal.association.DefaultListAssociationDelegate;
 import org.qi4j.lib.swing.binding.internal.association.DefaultSetAssociationDelegate;
 import org.qi4j.lib.swing.binding.internal.property.BoundProperty;
-import static org.qi4j.structure.Visibility.*;
+import static org.qi4j.structure.Visibility.application;
 
 public class SwingBindingAssembler
     implements Assembler

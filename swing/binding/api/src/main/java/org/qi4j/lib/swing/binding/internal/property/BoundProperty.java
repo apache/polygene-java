@@ -23,7 +23,7 @@ import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.WeakHashMap;
 import javax.swing.JComponent;
-import static org.qi4j.composite.NullArgumentException.*;
+import static org.qi4j.composite.NullArgumentException.validateNotNull;
 import org.qi4j.injection.scope.Service;
 import org.qi4j.injection.scope.Structure;
 import org.qi4j.injection.scope.Uses;
