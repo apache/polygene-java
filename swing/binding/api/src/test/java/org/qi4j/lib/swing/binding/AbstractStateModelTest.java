@@ -18,6 +18,7 @@ package org.qi4j.lib.swing.binding;
 
 import java.awt.FlowLayout;
 import static java.awt.FlowLayout.CENTER;
+import static java.lang.System.setProperty;
 import java.util.HashSet;
 import java.util.Set;
 import javax.swing.JComponent;
@@ -57,6 +58,8 @@ public abstract class AbstractStateModelTest extends AbstractQi4jTest
         throws Exception
     {
         super.setUp();
+
+        setProperty( "java.awt.headless", "true" );
 
         ObjectBuilder<StateModel> personModelBuilder = objectBuilderFactory.newObjectBuilder( StateModel.class );
         personModelBuilder.use( Person.class );
