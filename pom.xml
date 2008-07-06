@@ -18,6 +18,7 @@
     <module>framework</module>
     <module>logging</module>
     <module>rdf</module>
+    <module>requirements</module>
     <module>scripting</module>
     <module>swing</module>
   </modules>
