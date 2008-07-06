@@ -88,12 +88,12 @@ public final class EntityModel
 
     private final Class<? extends Composite> proxyClass;
 
-    public EntityModel( Class<? extends EntityComposite> type,
-                        Visibility visibility,
-                        MetaInfo info,
-                        EntityMixinsModel mixinsModel,
-                        EntityStateModel stateModel,
-                        CompositeMethodsModel compositeMethodsModel
+    private EntityModel( Class<? extends EntityComposite> type,
+                         Visibility visibility,
+                         MetaInfo info,
+                         EntityMixinsModel mixinsModel,
+                         EntityStateModel stateModel,
+                         CompositeMethodsModel compositeMethodsModel
     )
     {
         this.type = type;
