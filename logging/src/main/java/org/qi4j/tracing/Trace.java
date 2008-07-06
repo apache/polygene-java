@@ -41,13 +41,13 @@ import org.qi4j.injection.InjectionScope;
 @InjectionScope
 public @interface Trace
 {
-    int OFF = Integer.MIN_VALUE;
-    int ALL = Integer.MAX_VALUE;
-    int LOWLOW = 100;
-    int LOW = 50;
+    int ALL = Integer.MIN_VALUE;
+    int LOWLOW = -100;
+    int LOW = -50;
     int NORMAL = 0;
-    int HIGH = -50;
-    int HIGHHIGH = -100;
+    int HIGH = 50;
+    int HIGHHIGH = 100;
+    int OFF = Integer.MAX_VALUE;
 
     /**
      * The value is the threshold level required to enable the tracing.

@@ -17,7 +17,10 @@
  */
 package org.qi4j.logging;
 
-public interface Log
+import org.qi4j.composite.Concerns;
+
+@Concerns( StandardLogConcern.class )
+public interface StandardLog
 {
     void log( LogType type, String category, String message );
 

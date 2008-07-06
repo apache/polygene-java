@@ -52,6 +52,6 @@ public final class TraceConcern extends AbstractTraceConcern
 
     protected boolean doTrace()
     {
-        return traceService.traceLevel() >= trace.level();
+        return traceService.traceLevel() <= trace.level();
     }
 }
