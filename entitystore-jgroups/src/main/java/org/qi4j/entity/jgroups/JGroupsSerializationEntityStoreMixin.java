@@ -24,12 +24,10 @@ import java.util.concurrent.locks.ReadWriteLock;
 import org.jgroups.JChannel;
 import org.jgroups.blocks.ReplicatedHashMap;
 import org.qi4j.composite.CompositeBuilderFactory;
-import org.qi4j.injection.scope.Structure;
 import org.qi4j.injection.scope.This;
 import org.qi4j.library.framework.locking.ReadLock;
 import org.qi4j.library.framework.locking.WriteLock;
 import org.qi4j.service.Activatable;
-import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.entity.DefaultEntityState;
 import org.qi4j.spi.entity.EntityAlreadyExistsException;
@@ -50,7 +48,6 @@ import org.qi4j.structure.Module;
 public class JGroupsSerializationEntityStoreMixin
     implements EntityStore, Activatable
 {
-    private @Structure Qi4jSPI spi;
     private @This ReadWriteLock lock;
 
     private ReplicatedHashMap<String, SerializedObject<SerializableState>> replicatedMap;
