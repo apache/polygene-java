@@ -17,28 +17,16 @@
  */
 package org.qi4j.logging.service;
 
-import java.lang.reflect.Method;
 import org.qi4j.composite.Composite;
-import org.qi4j.logging.LogService;
+import org.qi4j.entity.UnitOfWorkFactory;
+import org.qi4j.injection.scope.Structure;
+import org.qi4j.logging.service.LogService;
 import org.qi4j.logging.LogType;
-import org.qi4j.property.Property;
 
 public abstract class LogServiceMixin
     implements LogService
 {
-    public void traceEntry( Class compositeType, Composite object, Method method, Object[] args )
-    {
-    }
-
-    public void traceExit( Class compositeType, Composite object, Method method, Object[] args, Object result )
-    {
-
-    }
-
-    public void traceException( Class compositeType, Composite object, Method method, Object[] args, Throwable t )
-    {
-
-    }
+    @Structure private UnitOfWorkFactory unitOfWorkFactory;
 
     public void debug( Composite composite, String message )
     {
@@ -79,4 +67,5 @@ public abstract class LogServiceMixin
     {
 
     }
+
 }

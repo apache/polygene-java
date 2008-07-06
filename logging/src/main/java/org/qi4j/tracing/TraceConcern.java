@@ -15,13 +15,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.logging;
+package org.qi4j.tracing;
 
 import java.lang.reflect.InvocationHandler;
 import org.qi4j.composite.AppliesTo;
 import org.qi4j.composite.Composite;
 import org.qi4j.injection.scope.Invocation;
 import org.qi4j.injection.scope.This;
+import org.qi4j.tracing.internal.AbstractTraceConcern;
 
 /**
  * The TraceConcern will call the traceEntry(), traceExit() and traceException() methods in the
@@ -49,8 +50,8 @@ public final class TraceConcern extends AbstractTraceConcern
         super( thisComposite );
     }
 
-    protected boolean doTrace2()
+    protected boolean doTrace()
     {
-        return logService.traceLevel().get() >= trace.level();
+        return traceService.traceLevel() >= trace.level();
     }
 }

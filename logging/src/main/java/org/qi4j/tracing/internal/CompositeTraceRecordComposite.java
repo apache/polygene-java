@@ -15,12 +15,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.logging.records;
+package org.qi4j.tracing.internal;
 
-import org.qi4j.composite.Composite;
-import org.qi4j.property.Property;
+import org.qi4j.entity.EntityComposite;
 
-public interface CompositeTraceRecord
+public interface CompositeTraceRecordComposite extends CompositeTraceRecord, EntityComposite
 {
-    Property<Composite> source();
 }

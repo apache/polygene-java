@@ -1,5 +1,5 @@
 /*
- * Copyright 2006 Niclas Hedhman.
+ * Copyright 2008 Niclas Hedhman. All rights Reserved.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -15,25 +15,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.logging.records;
+
+package org.qi4j.tracing.internal;
 
 import org.qi4j.property.Property;
-import java.io.Serializable;
-import java.util.List;
+import org.qi4j.composite.Composite;
+import java.lang.reflect.Method;
 
-public interface TraceRecord
+public interface TraceService
 {
-    Property<String> methodName();
+    int traceLevel();
 
-    Property<String> compositeTypeName();
+    void traceSuccess( Class compositeType, Composite object, Method method, Object[] args, Object result, long entryTime, long durationNano );
 
-    Property<String> threadName();
+    void traceException( Class compositeType, Composite object, Method method, Object[] args, Throwable t, long entryTime, long durationNano );
 
-    Property<Long> entryTime();
-
-    Property<Long> exitTime();
-
-    Property<Throwable> exception();
-
-    Property<List<Serializable>> arguments();
 }

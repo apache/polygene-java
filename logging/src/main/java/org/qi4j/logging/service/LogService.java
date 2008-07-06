@@ -15,26 +15,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.logging;
+package org.qi4j.logging.service;
 
 import java.lang.reflect.Method;
 import org.qi4j.composite.Composite;
 import org.qi4j.property.Property;
+import org.qi4j.logging.Formatter;
+import org.qi4j.logging.LogType;
 
 public interface LogService
 {
-    Property<Integer> traceLevel();
-
-    void traceEntry( Class compositeType, Composite object, Method method, Object[] args );
-
-    void traceExit( Class compositeType, Composite object, Method method, Object[] args, Object result );
-
-    void traceException( Class compositeType, Composite object, Method method, Object[] args, Throwable t );
-
-
     Property<Integer> debugLevel();
 
-    Property<String> debugFormat();
+    Property<Formatter> debugFormatter();
 
     void debug( Composite composite, String message );
 
@@ -45,7 +38,7 @@ public interface LogService
     void debug( Composite composite, String message, Object... params );
 
 
-    Property<String> logFormat();
+    Property<Formatter> logFormatter();
 
     void log( LogType type, Composite composite, String category, String message );
 

@@ -24,7 +24,7 @@ import java.util.ResourceBundle;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.SideEffectOf;
 import org.qi4j.injection.scope.Invocation;
-import org.qi4j.logging.LogService;
+import org.qi4j.logging.service.LogService;
 import org.qi4j.logging.LogType;
 
 /**
@@ -41,32 +41,6 @@ public abstract class ConsoleViewSideEffect extends SideEffectOf<LogService>
     public ConsoleViewSideEffect( @Invocation Method thisMethod )
     {
         bundle = ResourceBundle.getBundle( thisMethod.getDeclaringClass().getName() );
-    }
-
-    public void traceEntry( Class compositeType, Composite object, Method method, Object[] args )
-    {
-        StringBuffer buf = new StringBuffer();
-        buf.append( "ENTRY: " );
-        formatMethod( buf, compositeType, method, args );
-        OUT.println( buf.toString() );
-    }
-
-    public void traceExit( Class compositeType, Composite object, Method method, Object[] args, Object result )
-    {
-        StringBuffer buf = new StringBuffer();
-        buf.append( "EXIT: " );
-        formatMethod( buf, compositeType, method, args );
-        OUT.println( buf.toString() );
-        OUT.println( result );
-    }
-
-    public void traceException( Class compositeType, Composite object, Method method, Object[] args, Throwable t )
-    {
-        StringBuffer buf = new StringBuffer();
-        buf.append( "EXCEPTION: " );
-        formatMethod( buf, compositeType, method, args );
-        OUT.println( buf.toString() );
-        t.printStackTrace( OUT );
     }
 
     public void debug( Composite composite, String message )

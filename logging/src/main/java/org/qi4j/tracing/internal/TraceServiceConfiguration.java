@@ -1,5 +1,5 @@
 /*
- * Copyright 2006 Niclas Hedhman.
+ * Copyright 2008 Niclas Hedhman. All rights Reserved.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -15,10 +15,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.logging.records;
 
+package org.qi4j.tracing.internal;
+
+import org.qi4j.property.Property;
+import org.qi4j.logging.Formatter;
 import org.qi4j.entity.EntityComposite;
 
-public interface EntityTraceRecordComposite extends EntityComposite, EntityTraceRecord
+public interface TraceServiceConfiguration extends EntityComposite
 {
+    Property<Integer> traceLevel();
+
+    Property<Formatter> formatter();
 }

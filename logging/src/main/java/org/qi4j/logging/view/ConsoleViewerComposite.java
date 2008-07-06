@@ -21,7 +21,7 @@ import org.qi4j.composite.Composite;
 import org.qi4j.composite.Mixins;
 import org.qi4j.service.Activatable;
 
-@Mixins( {ConsoleViewerMixin.class} )
+@Mixins( { ConsoleViewerMixin.class } )
 public interface ConsoleViewerComposite extends Composite, Activatable
 {
 }

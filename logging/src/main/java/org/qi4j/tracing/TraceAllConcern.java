@@ -15,12 +15,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.logging;
+package org.qi4j.tracing;
 
 import java.lang.reflect.InvocationHandler;
 import org.qi4j.composite.AppliesTo;
 import org.qi4j.composite.Composite;
 import org.qi4j.injection.scope.This;
+import org.qi4j.logging.ExcludeCompositeFilter;
+import org.qi4j.tracing.internal.AbstractTraceConcern;
 
 /**
  * The TraceAllConcern will call the traceEntry(), traceExit() and traceException() methods in the
@@ -35,7 +37,7 @@ import org.qi4j.injection.scope.This;
  * the LogService has turned off tracing.
  * </p>
  *
- * @see org.qi4j.logging.TraceConcern
+ * @see TraceConcern
  */
 @AppliesTo( ExcludeCompositeFilter.class )
 public final class TraceAllConcern extends AbstractTraceConcern

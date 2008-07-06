@@ -15,23 +15,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.logging;
+package org.qi4j.logging.tracing;
 
 import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
-import org.qi4j.composite.CompositeBuilder;
-import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.ConcernOf;
 import org.qi4j.composite.Concerns;
 import org.qi4j.composite.Mixins;
-import org.qi4j.injection.scope.Structure;
-import org.qi4j.logging.service.LogServiceComposite;
-import org.qi4j.service.ServiceDescriptor;
-import org.qi4j.service.ServiceInstanceFactory;
-import org.qi4j.service.ServiceInstanceProviderException;
+import org.qi4j.tracing.internal.TraceServiceConfiguration;
+import org.qi4j.tracing.assemblies.StandardTraceServiceComposite;
 import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.entity.memory.MemoryEntityStoreService;
+import org.qi4j.tracing.TraceAllConcern;
+import org.qi4j.tracing.Trace;
 
 public class TracingTest
     extends AbstractQi4jTest
@@ -40,7 +38,9 @@ public class TracingTest
         throws AssemblyException
     {
         module.addComposites( SomeComposite.class );
-        module.addServices( LogServiceComposite.class );
+        module.addEntities( TraceServiceConfiguration.class );
+        module.addServices( StandardTraceServiceComposite.class );
+        module.addServices( MemoryEntityStoreService.class );
     }
 
     @Test
@@ -54,7 +54,7 @@ public class TracingTest
 
     @Mixins( SomeMixin.class )
     @Concerns( { SomeConcern.class, TraceAllConcern.class } )
-    public interface SomeComposite extends Composite, Some
+    public interface SomeComposite extends Some, Composite
     {
     }
 
@@ -95,25 +95,6 @@ public class TracingTest
         {
             System.out.println( "---- doSomethingLessImportant()" );
             return 456;
-        }
-    }
-
-    public static class LogServiceProvider
-        implements ServiceInstanceFactory
-    {
-        @Structure CompositeBuilderFactory factory;
-
-        public Object newInstance( ServiceDescriptor serviceDescriptor ) throws ServiceInstanceProviderException
-        {
-            CompositeBuilder<LogServiceComposite> builder = factory.newCompositeBuilder( LogServiceComposite.class );
-            LogService props = builder.stateFor( LogService.class );
-            props.traceLevel().set( Trace.NORMAL );
-            props.debugLevel().set( Debug.NORMAL );
-            return builder.newInstance();
-        }
-
-        public void releaseInstance( Object instance )
-        {
         }
     }
 }

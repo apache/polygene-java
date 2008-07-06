@@ -1,5 +1,5 @@
 /*
- * Copyright 2006 Niclas Hedhman.
+ * Copyright 2008 Niclas Hedhman. All rights Reserved.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -15,12 +15,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.logging.records;
 
-import org.qi4j.property.Property;
+package org.qi4j.tracing.assemblies;
+
+import org.qi4j.composite.Mixins;
+import org.qi4j.composite.SideEffects;
 import org.qi4j.service.ServiceComposite;
+import org.qi4j.tracing.internal.ConsoleViewSideEffect;
+import org.qi4j.tracing.internal.TraceServiceMixin;
+import org.qi4j.tracing.internal.TraceService;
 
-public interface ServiceTraceRecord extends TraceRecord
+@SideEffects( ConsoleViewSideEffect.class )
+@Mixins( TraceServiceMixin.class )
+public interface StandardTraceServiceComposite extends TraceService, ServiceComposite
 {
-    Property<ServiceComposite> source();
 }

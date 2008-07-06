@@ -18,6 +18,7 @@
 package org.qi4j.logging;
 
 import org.qi4j.composite.Concerns;
+import org.qi4j.logging.service.SimpleLogConcern;
 
 @Concerns( { SimpleLogConcern.class } )
 public interface CategoryLog

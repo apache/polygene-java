@@ -15,11 +15,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.logging.service;
+package org.qi4j.tracing.internal;
 
-import org.qi4j.property.Property;
+import org.qi4j.entity.EntityComposite;
 
-public interface HasLogSettings
+public interface ServiceTraceRecordComposite extends ServiceTraceRecord, EntityComposite
 {
-    Property<LogSettings> logSettings();
 }

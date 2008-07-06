@@ -19,11 +19,11 @@ package org.qi4j.logging.service;
 
 import org.qi4j.composite.Mixins;
 import org.qi4j.composite.SideEffects;
-import org.qi4j.logging.LogService;
+import org.qi4j.logging.service.LogService;
 import org.qi4j.service.ServiceComposite;
 
 @SideEffects( { ConsoleViewSideEffect.class } )
 @Mixins( { LogServiceMixin.class } )
-public interface LogServiceComposite extends LogService, HasLogSettings, ServiceComposite
+public interface LogServiceComposite extends LogService, ServiceComposite
 {
 }

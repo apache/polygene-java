@@ -19,9 +19,9 @@ package org.qi4j.logging.view;
 
 import javax.swing.JFrame;
 import org.qi4j.injection.scope.Service;
-import org.qi4j.logging.LogService;
+import org.qi4j.logging.service.LogService;
 
 public class SwingViewer extends JFrame
 {
-    @Service LogService service;
+    @Service private Iterable<LogService> services;
 }

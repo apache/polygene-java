@@ -17,28 +17,61 @@
  */
 package org.qi4j.logging;
 
+import java.lang.reflect.Method;
 import org.qi4j.Qi4j;
 import org.qi4j.composite.Composite;
 import org.qi4j.injection.scope.Service;
 import org.qi4j.injection.scope.Structure;
 import org.qi4j.injection.scope.This;
+import org.qi4j.logging.service.LogService;
+import org.qi4j.property.ComputedPropertyInstance;
 import org.qi4j.property.Property;
 
 public final class DebugConcern
     implements Debug
 {
-    @Structure Qi4j api;
-    @Service private LogService logService;
+    private static final Property<Integer> OFF_PROPERTY;
+
+    @Structure private Qi4j api;
+    @Service( optional = true ) private LogService logService;
     @This private Composite composite;
 
+    static
+    {
+        Method method = null;
+        try
+        {
+            method = DebugConcern.class.getMethod( "debugLevel" );
+        }
+        catch( NoSuchMethodException e )
+        {
+            // Can not happen.
+            throw new InternalError();
+        }
+        OFF_PROPERTY = new ComputedPropertyInstance<Integer>( method )
+        {
+            public Integer get()
+            {
+                return OFF;
+            }
+        };
+    }
 
     public Property<Integer> debugLevel()
     {
-        return logService.debugLevel();
+        if( logService != null )
+        {
+            return logService.debugLevel();
+        }
+        return OFF_PROPERTY;
     }
 
     public void debug( int priority, String message )
     {
+        if( logService == null )
+        {
+            return;
+        }
         if( priority >= logService.debugLevel().get() )
         {
             logService.debug( api.dereference( composite ), message );
@@ -47,6 +80,10 @@ public final class DebugConcern
 
     public void debug( int priority, String message, Object param1 )
     {
+        if( logService == null )
+        {
+            return;
+        }
         if( priority >= logService.debugLevel().get() )
         {
             logService.debug( api.dereference( composite ), message, param1 );
@@ -55,6 +92,10 @@ public final class DebugConcern
 
     public void debug( int priority, String message, Object param1, Object param2 )
     {
+        if( logService == null )
+        {
+            return;
+        }
         if( priority >= logService.debugLevel().get() )
         {
             logService.debug( api.dereference( composite ), message, param1, param2 );
@@ -63,6 +104,10 @@ public final class DebugConcern
 
     public void debug( int priority, String message, Object... params )
     {
+        if( logService == null )
+        {
+            return;
+        }
         if( priority >= logService.debugLevel().get() )
         {
             logService.debug( api.dereference( composite ), message, params );

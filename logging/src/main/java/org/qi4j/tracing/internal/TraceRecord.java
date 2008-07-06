@@ -15,10 +15,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.logging.records;
+package org.qi4j.tracing.internal;
 
-import org.qi4j.composite.Composite;
+import org.qi4j.property.Property;
+import java.io.Serializable;
+import java.util.List;
 
-public interface ServiceTraceRecordComposite extends Composite, ServiceTraceRecord
+public interface TraceRecord
 {
+    Property<String> methodName();
+
+    Property<String> compositeTypeName();
+
+    Property<String> threadName();
+
+    Property<Long> entryTime();
+
+    Property<Long> duration();
+
+    Property<Throwable> exception();
+
+    Property<String[]> arguments();
 }

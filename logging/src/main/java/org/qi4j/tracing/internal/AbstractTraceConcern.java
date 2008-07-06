@@ -15,11 +15,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.logging;
+package org.qi4j.tracing.internal;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import org.qi4j.Qi4j;
+import org.qi4j.tracing.internal.TraceService;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.ConcernOf;
 import org.qi4j.injection.scope.Service;
@@ -30,7 +31,7 @@ public abstract class AbstractTraceConcern extends ConcernOf<InvocationHandler>
     implements InvocationHandler
 {
     @Structure Qi4j api;
-    @Service protected LogService logService;
+    @Service( optional = true ) protected TraceService traceService;
     private Composite thisComposite;
     private Class compositeType;
 
@@ -43,32 +44,37 @@ public abstract class AbstractTraceConcern extends ConcernOf<InvocationHandler>
     public Object invoke( Object proxy, Method method, Object[] args )
         throws Throwable
     {
-        boolean doTrace = doTrace2();
+        boolean doTrace = traceService != null && doTrace();
         Object result;
+        long entryTime = 0;
+        long timeStamp = 0;
         try
         {
             if( doTrace )
             {
-                logService.traceEntry( compositeType, api.dereference( thisComposite ), method, args );
+                entryTime = System.currentTimeMillis();
+                timeStamp = System.nanoTime();
             }
             result = next.invoke( proxy, method, args );
             if( doTrace )
             {
-                logService.traceExit( compositeType, api.dereference( thisComposite ), method, args, result );
+                long duration = System.nanoTime() - timeStamp;
+                traceService.traceSuccess( compositeType, api.dereference( thisComposite ), method, args, result, entryTime, duration );
             }
         }
         catch( Throwable t )
         {
             if( doTrace )
             {
-                logService.traceException( compositeType, api.dereference( thisComposite ), method, args, t );
+                long duration = System.nanoTime() - timeStamp;
+                traceService.traceException( compositeType, api.dereference( thisComposite ), method, args, t, entryTime, duration );
             }
             throw t;
         }
         return result;
     }
 
-    protected boolean doTrace2()
+    protected boolean doTrace()
     {
         return true;
     }

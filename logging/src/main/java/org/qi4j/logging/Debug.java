@@ -26,6 +26,7 @@ import org.qi4j.property.Property;
 @Mixins( NoopMixin.class )
 public interface Debug
 {
+    int OFF = Integer.MIN_VALUE;
     int LOWLOW = -100;
     int LOW = -50;
     int NORMAL = 0;

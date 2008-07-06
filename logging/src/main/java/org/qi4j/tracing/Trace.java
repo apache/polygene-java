@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.logging;
+package org.qi4j.tracing;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -58,5 +58,5 @@ public @interface Trace
      *
      * @return the Trace Level of this Trace annotation.
      */
-    int level() default 100;
+    int level() default NORMAL;
 }

@@ -15,25 +15,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.logging.view;
+package org.qi4j.logging.service;
 
-import org.qi4j.injection.scope.Service;
-import org.qi4j.logging.service.LogService;
-import org.qi4j.service.Activatable;
+import java.lang.reflect.Method;
+import org.qi4j.composite.Composite;
+import org.qi4j.property.Property;
+import org.qi4j.logging.Formatter;
+import org.qi4j.logging.LogType;
 
-public class ConsoleViewerMixin
-    implements Activatable, LogServiceListener
+public interface LogServiceConfiguration
 {
-    @Service private LogService service;
+    Property<Integer> debugLevel();
 
-    public void activate() throws Exception
-    {
-        //TODO: Auto-generated, need attention.
-    }
+    Property<Formatter> debugFormatter();
 
-    public void passivate() throws Exception
-    {
-        //TODO: Auto-generated, need attention.
-
-    }
+    Property<Formatter> logFormatter();
 }
