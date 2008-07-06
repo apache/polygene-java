@@ -27,26 +27,26 @@ import org.qi4j.lib.swing.binding.internal.SwingAdapterMixin;
 import org.qi4j.property.Property;
 
 @Mixins( SwingAdapterMixin.class )
-public interface SwingAdapter
+public interface SwingAdapter<T>
 {
 
     Set<Capabilities> canHandle();
 
-    void fromSwingToProperty( JComponent aComponent, Property aProperty );
+    void fromSwingToData( JComponent aComponent, T data );
 
-    void fromPropertyToSwing( JComponent aComponent, Property aProperty );
-
-    void fromSwingToAssociation( JComponent aComponent, Association anAssociation );
-
-    void fromAssociationToSwing( JComponent aComponent, Association anAssociation );
-
-    void fromSwingToSetAssociation( JComponent component, SetAssociation setAssociation );
-
-    void fromSetAssociationToSwing( JComponent component, SetAssociation setAssociation );
-
-    void fromSwingToListAssociation( JComponent component, ListAssociation listAssociation );
-
-    void fromListAssociationToSwing( JComponent component, ListAssociation listAssociation );
+    void fromDataToSwing( JComponent aComponent, T data );
+//
+//    void fromSwingToAssociation( JComponent aComponent, Association anAssociation );
+//
+//    void fromAssociationToSwing( JComponent aComponent, Association anAssociation );
+//
+//    void fromSwingToSetAssociation( JComponent component, SetAssociation setAssociation );
+//
+//    void fromSetAssociationToSwing( JComponent component, SetAssociation setAssociation );
+//
+//    void fromSwingToListAssociation( JComponent component, ListAssociation listAssociation );
+//
+//    void fromListAssociationToSwing( JComponent component, ListAssociation listAssociation );
 
     public class Capabilities
     {

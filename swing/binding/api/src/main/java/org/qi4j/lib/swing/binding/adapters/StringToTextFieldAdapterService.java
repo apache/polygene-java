@@ -24,26 +24,31 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.text.JTextComponent;
 import org.qi4j.composite.Mixins;
+import org.qi4j.composite.ConcernOf;
+import org.qi4j.composite.Concerns;
 import org.qi4j.lib.swing.binding.SwingAdapter;
 import org.qi4j.lib.swing.binding.adapters.AbstractSwingAdapter;
 import org.qi4j.property.Property;
 import org.qi4j.service.ServiceComposite;
 
-@Mixins( StringToTextFieldAdapterService.StringToTextFieldAdapterMixin.class )
+@Concerns( StringToTextFieldAdapterService.StringToTextFieldAdapterMixin.class )
 public interface StringToTextFieldAdapterService extends SwingAdapter, ServiceComposite
 {
 
-    abstract class StringToTextFieldAdapterMixin extends AbstractSwingAdapter
+    class StringToTextFieldAdapterMixin extends ConcernOf<SwingAdapter>
+        implements SwingAdapter<Property>
     {
-        protected void canHandle( Set<Capabilities> canHandle )
+        public Set<Capabilities> canHandle()
         {
+            Set<Capabilities> canHandle = next.canHandle();
             canHandle.add( new Capabilities( JTextArea.class, String.class, true, false, false, false ) );
             canHandle.add( new Capabilities( JTextField.class, String.class, true, false, false, false ) );
             canHandle.add( new Capabilities( JLabel.class, String.class, true, false, false, false ) );
+            return canHandle;
         }
 
         @SuppressWarnings( "unchecked" )
-        public final void fromSwingToProperty( JComponent component, Property property )
+        public final void fromSwingToData( JComponent component, Property property )
         {
             if( property == null )
             {
@@ -62,7 +67,7 @@ public interface StringToTextFieldAdapterService extends SwingAdapter, ServiceCo
         }
 
         @SuppressWarnings( "unchecked" )
-        public final void fromPropertyToSwing( JComponent component, Property property )
+        public final void fromDataToSwing( JComponent component, Property property )
         {
             String value;
             if( property == null )

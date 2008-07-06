@@ -3,6 +3,8 @@ package org.qi4j.lib.swing.binding.internal.association;
 import java.util.Map;
 import javax.swing.JComponent;
 import org.qi4j.entity.association.ListAssociation;
+import org.qi4j.entity.association.SetAssociation;
+import org.qi4j.entity.association.ManyAssociation;
 import org.qi4j.injection.scope.Uses;
 import org.qi4j.lib.swing.binding.SwingAdapter;
 
@@ -19,16 +21,16 @@ public class DefaultBoundListAssociationDelegate<T> extends DefaultBoundManyAsso
     }
 
     @Override
-    protected void handleFromManyAssociationToSwing( SwingAdapter adapter, JComponent component,
+    protected void handleFromManyAssociationToSwing( SwingAdapter<ManyAssociation> adapter, JComponent component,
                                                      ListAssociation<T> manyAssociation )
     {
-        adapter.fromListAssociationToSwing( component, manyAssociation );
+        adapter.fromDataToSwing( component, manyAssociation );
     }
 
     @Override
-    protected void handleFromSwingToManyAssociation( SwingAdapter adapter, JComponent component,
+    protected void handleFromSwingToManyAssociation( SwingAdapter<ManyAssociation> adapter, JComponent component,
                                                      ListAssociation<T> manyAssociation )
     {
-        adapter.fromSwingToListAssociation( component, manyAssociation );
+        adapter.fromSwingToData( component, manyAssociation );
     }
 }

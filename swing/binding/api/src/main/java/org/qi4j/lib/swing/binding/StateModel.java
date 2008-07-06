@@ -53,9 +53,7 @@ public final class StateModel<T>
 
     private T currentData;
 
-    public StateModel(
-        @Uses Class<T> aType,
-        @Structure ObjectBuilderFactory anObjectBuilderFactory )
+    public StateModel( @Uses Class<T> aType, @Structure ObjectBuilderFactory anObjectBuilderFactory )
     {
         type = aType;
         obf = anObjectBuilderFactory;
@@ -94,6 +92,11 @@ public final class StateModel<T>
         Class[] typeInterfaces = new Class[]{ type };
         return (T) newProxyInstance( loader, typeInterfaces, childModel );
     }
+
+//    public <T,K extends SwingAdapter<T>> K bind( Property<T> aProperty, Class<K> bindingType )
+//    {
+//
+//    }
 
     @SuppressWarnings( "unchecked" )
     public <T> SwingBinding<T> bind( Property<T> aProperty )

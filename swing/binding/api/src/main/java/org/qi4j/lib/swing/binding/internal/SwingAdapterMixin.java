@@ -28,8 +28,8 @@ import org.qi4j.property.Property;
 /**
  * @author edward.yakop@gmail.com
  */
-public abstract class SwingAdapterMixin
-    implements SwingAdapter
+public abstract class SwingAdapterMixin<T>
+    implements SwingAdapter<T>
 {
 
     private HashSet<Capabilities> capabilitiesSet;
@@ -40,47 +40,46 @@ public abstract class SwingAdapterMixin
         {
             capabilitiesSet = new HashSet<Capabilities>();
         }
-
         return capabilitiesSet;
     }
 
-    public void fromSwingToProperty( JComponent component, Property property )
+    public void fromSwingToData( JComponent component, T data )
     {
         // Do nothing
     }
 
-    public void fromPropertyToSwing( JComponent component, Property property )
+    public void fromDataToSwing( JComponent component, T data )
     {
         // Do nothing
     }
-
-    public void fromSwingToAssociation( JComponent component, Association anAssociation )
-    {
-        // Do nothing
-    }
-
-    public void fromAssociationToSwing( JComponent aComponent, Association anAssociation )
-    {
-        // Do nothing
-    }
-
-    public void fromSwingToSetAssociation( JComponent component, SetAssociation setAssociation )
-    {
-        // Do nothing
-    }
-
-    public void fromSetAssociationToSwing( JComponent component, SetAssociation setAssociation )
-    {
-        // Do nothing
-    }
-
-    public void fromSwingToListAssociation( JComponent component, ListAssociation listAssociation )
-    {
-        // Do nothing
-    }
-
-    public void fromListAssociationToSwing( JComponent component, ListAssociation listAssociation )
-    {
-        // Do nothing
-    }
+//
+//    public void fromSwingToAssociation( JComponent component, Association anAssociation )
+//    {
+//        // Do nothing
+//    }
+//
+//    public void fromAssociationToSwing( JComponent aComponent, Association anAssociation )
+//    {
+//        // Do nothing
+//    }
+//
+//    public void fromSwingToSetAssociation( JComponent component, SetAssociation setAssociation )
+//    {
+//        // Do nothing
+//    }
+//
+//    public void fromSetAssociationToSwing( JComponent component, SetAssociation setAssociation )
+//    {
+//        // Do nothing
+//    }
+//
+//    public void fromSwingToListAssociation( JComponent component, ListAssociation listAssociation )
+//    {
+//        // Do nothing
+//    }
+//
+//    public void fromListAssociationToSwing( JComponent component, ListAssociation listAssociation )
+//    {
+//        // Do nothing
+//    }
 }

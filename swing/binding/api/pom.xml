@@ -33,5 +33,10 @@
       <artifactId>qi4j-lib-framework</artifactId>
       <version>0.3-SNAPSHOT</version>
     </dependency>
+    <dependency>
+      <groupId>org.qi4j.library</groupId>
+      <artifactId>qi4j-lib-requirements</artifactId>
+      <version>0.3-SNAPSHOT</version>
+    </dependency>
   </dependencies>
 </project>

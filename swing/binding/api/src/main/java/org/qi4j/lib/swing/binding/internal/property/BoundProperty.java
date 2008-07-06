@@ -136,7 +136,7 @@ public final class BoundProperty<T> extends AbstractBinding<T, T, Property<T>>
 
             Class<? extends JComponent> componentClass = component.getClass();
             SwingAdapter adapter = adapters.get( componentClass );
-            adapter.fromPropertyToSwing( component, actualProperty );
+            adapter.fromDataToSwing( component, actualProperty );
 
             FocusLostListener focusListener = entry.getValue();
             focusListener.setAdapter( adapter );
@@ -187,7 +187,7 @@ public final class BoundProperty<T> extends AbstractBinding<T, T, Property<T>>
             focusListener.setAdapter( adapter );
 
             // Initialized component initial value
-            adapter.fromPropertyToSwing( aComponent, actualProperty );
+            adapter.fromDataToSwing( aComponent, actualProperty );
 
             aComponent.addFocusListener( focusListener );
             components.put( aComponent, focusListener );
@@ -217,7 +217,7 @@ public final class BoundProperty<T> extends AbstractBinding<T, T, Property<T>>
             {
                 JComponent component = (JComponent) e.getComponent();
 
-                adapter.fromSwingToProperty( component, actualProperty );
+                adapter.fromSwingToData( component, actualProperty );
 
                 stateToUse( actualProperty.get() );
             }

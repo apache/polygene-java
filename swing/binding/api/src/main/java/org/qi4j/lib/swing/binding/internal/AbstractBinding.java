@@ -31,10 +31,8 @@ public abstract class AbstractBinding<T, Y, K> implements SwingBinding<T>, Bound
     protected Map<Class<? extends JComponent>, SwingAdapter> adapters;
 
     @SuppressWarnings( "unchecked" )
-    public AbstractBinding(
-        @Uses Method aFieldMethod,
-        @Structure ObjectBuilderFactory anOBF,
-        @Service Iterable<SwingAdapter> allAdapters )
+    public AbstractBinding( @Uses Method aFieldMethod, @Structure ObjectBuilderFactory anOBF,
+                            @Service Iterable<SwingAdapter> allAdapters )
     {
         fieldMethod = aFieldMethod;
         ParameterizedType propertyType = (ParameterizedType) aFieldMethod.getGenericReturnType();

@@ -113,8 +113,8 @@ public final class BoundAssociation<T> extends AbstractBinding<T, T, Association
             JComponent component = entry.getKey();
 
             Class<? extends JComponent> componentClass = component.getClass();
-            SwingAdapter adapter = adapters.get( componentClass );
-            adapter.fromAssociationToSwing( component, actualAssociation );
+            SwingAdapter<Association> adapter = adapters.get( componentClass );
+            adapter.fromDataToSwing( component, actualAssociation );
 
             FocusLostListener focusListener = entry.getValue();
             focusListener.setAdapter( adapter );
@@ -156,7 +156,7 @@ public final class BoundAssociation<T> extends AbstractBinding<T, T, Association
 
             // Sets the adapter for focus listener to use
             Class<? extends JComponent> componentClass = aComponent.getClass();
-            SwingAdapter adapter = adapters.get( componentClass );
+            SwingAdapter<Association> adapter = adapters.get( componentClass );
 
             if( adapter == null )
             {
@@ -165,7 +165,7 @@ public final class BoundAssociation<T> extends AbstractBinding<T, T, Association
             focusListener.setAdapter( adapter );
 
             // Initialized component initial value
-            adapter.fromAssociationToSwing( aComponent, actualAssociation );
+            adapter.fromDataToSwing( aComponent, actualAssociation );
 
             aComponent.addFocusListener( focusListener );
             components.put( aComponent, focusListener );
@@ -184,7 +184,7 @@ public final class BoundAssociation<T> extends AbstractBinding<T, T, Association
         implements FocusListener
     {
 
-        private SwingAdapter adapter;
+        private SwingAdapter<Association> adapter;
 
         private void setAdapter( SwingAdapter adapterToUse )
         {
@@ -200,9 +200,7 @@ public final class BoundAssociation<T> extends AbstractBinding<T, T, Association
             if( adapter != null && actualAssociation != null )
             {
                 JComponent component = (JComponent) e.getComponent();
-
-                adapter.fromSwingToAssociation( component, actualAssociation );
-
+                adapter.fromSwingToData( component, actualAssociation );
                 stateToUse( actualAssociation.get() );
             }
         }

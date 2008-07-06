@@ -2,6 +2,7 @@ package org.qi4j.lib.swing.binding.internal.association;
 
 import java.lang.reflect.Method;
 import org.qi4j.entity.association.SetAssociation;
+import org.qi4j.entity.association.ManyAssociation;
 import org.qi4j.injection.scope.Service;
 import org.qi4j.injection.scope.Structure;
 import org.qi4j.injection.scope.Uses;

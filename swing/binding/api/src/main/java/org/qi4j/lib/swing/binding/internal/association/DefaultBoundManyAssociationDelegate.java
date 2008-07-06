@@ -24,6 +24,7 @@ import java.util.WeakHashMap;
 import javax.swing.JComponent;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
 import org.qi4j.entity.association.ManyAssociation;
+import org.qi4j.entity.association.SetAssociation;
 import org.qi4j.injection.scope.Uses;
 import org.qi4j.lib.swing.binding.StateModel;
 import org.qi4j.lib.swing.binding.SwingAdapter;
@@ -78,10 +79,10 @@ public abstract class DefaultBoundManyAssociationDelegate<T, K extends ManyAssoc
         return this;
     }
 
-    protected abstract void handleFromManyAssociationToSwing( SwingAdapter adapter, JComponent component,
+    protected abstract void handleFromManyAssociationToSwing( SwingAdapter<ManyAssociation> adapter, JComponent component,
                                                               K manyAssociation );
 
-    protected abstract void handleFromSwingToManyAssociation( SwingAdapter adapter, JComponent component,
+    protected abstract void handleFromSwingToManyAssociation( SwingAdapter<ManyAssociation> adapter, JComponent component,
                                                               K manyAssociation );
 
     public void stateToUse( K aNewState )

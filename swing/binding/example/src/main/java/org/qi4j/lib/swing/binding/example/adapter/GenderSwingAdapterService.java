@@ -37,12 +37,12 @@ public interface GenderSwingAdapterService extends SwingAdapter, ServiceComposit
             canHandle.add( new Capabilities( JRadioButton.class, Gender.class, true, false, false, false ) );
         }
 
-        public void fromSwingToProperty( JComponent aComponent, Property aProperty )
+        public void fromSwingToData( JComponent aComponent, Property aProperty )
         {
             //TODO
         }
 
-        public void fromPropertyToSwing( JComponent aComponent, Property aProperty )
+        public void fromDataToSwing( JComponent aComponent, Property aProperty )
         {
             //TODO
         }

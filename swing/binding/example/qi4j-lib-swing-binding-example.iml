@@ -9,8 +9,6 @@
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/resources" isTestSource="true" />
-      <excludeFolder url="file://$MODULE_DIR$/target/classes" />
-      <excludeFolder url="file://$MODULE_DIR$/target/maven-archiver" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
@@ -119,9 +117,10 @@
       </library>
     </orderEntry>
     <orderEntry type="module" module-name="qi4j-lib-swing-binding-api" exported="" />
+    <orderEntry type="module" module-name="qi4j-ext-indexing-rdf" exported="" />
+    <orderEntry type="module" module-name="qi4j-core-spi" exported="" />
     <orderEntry type="module" module-name="qi4j-core-api" exported="" />
     <orderEntry type="module" module-name="qi4j-core-bootstrap" exported="" />
-    <orderEntry type="module" module-name="qi4j-core-spi" exported="" />
     <orderEntry type="module" module-name="qi4j-core-runtime" exported="" />
     <orderEntry type="module-library" exported="">
       <library name="cglib:cglib-nodep:2.1_3">
@@ -136,34 +135,6 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module" module-name="qi4j-lib-framework" exported="" />
-    <orderEntry type="module-library" exported="">
-      <library name="javax.transaction:jta:1.1">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/javax/transaction/jta/1.1/jta-1.1.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/javax/transaction/jta/1.1/jta-1.1-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/javax/transaction/jta/1.1/jta-1.1-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library name="jgraph:jgraph:5.8.3.1">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/jgraph/jgraph/5.8.3.1/jgraph-5.8.3.1.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/jgraph/jgraph/5.8.3.1/jgraph-5.8.3.1-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/jgraph/jgraph/5.8.3.1/jgraph-5.8.3.1-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module" module-name="qi4j-ext-indexing-rdf" exported="" />
     <orderEntry type="module-library" exported="">
       <library name="org.openrdf:openrdf-model:2.0.1">
         <CLASSES>

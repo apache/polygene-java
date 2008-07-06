@@ -23,42 +23,44 @@ import javax.swing.JComponent;
 import javax.swing.JRadioButton;
 import javax.swing.JToggleButton;
 import org.qi4j.composite.Mixins;
+import org.qi4j.composite.Concerns;
+import org.qi4j.composite.ConcernOf;
 import org.qi4j.lib.swing.binding.SwingAdapter;
 import org.qi4j.lib.swing.binding.adapters.AbstractSwingAdapter;
 import org.qi4j.property.Property;
 import org.qi4j.service.ServiceComposite;
 
-@Mixins( BooleanToToggleButtonAdapterService.BooleanToToggleButtonAdapterServiceMixin.class )
+@Concerns( BooleanToToggleButtonAdapterService.BooleanToToggleButtonAdapterServiceMixin.class )
 public interface BooleanToToggleButtonAdapterService extends SwingAdapter, ServiceComposite
 {
-    abstract class BooleanToToggleButtonAdapterServiceMixin extends AbstractSwingAdapter
+    class BooleanToToggleButtonAdapterServiceMixin extends ConcernOf<SwingAdapter>
+        implements SwingAdapter<Property>
     {
-        protected void canHandle( Set<Capabilities> canHandle )
+        public Set<Capabilities> canHandle()
         {
+            Set<Capabilities> canHandle = next.canHandle();
             canHandle.add( new Capabilities( JCheckBox.class, Boolean.class, true, false, false, false ) );
             canHandle.add( new Capabilities( JRadioButton.class, Boolean.class, true, false, false, false ) );
+            return canHandle;
         }
 
         @SuppressWarnings( "unchecked" )
-        public void fromSwingToProperty( JComponent aComponent, Property aProperty )
+        public void fromSwingToData( JComponent aComponent, Property aProperty )
         {
             if( aProperty != null )
             {
                 JToggleButton button = (JToggleButton) aComponent;
-
                 aProperty.set( button.isSelected() );
             }
         }
 
         @SuppressWarnings( "unchecked" )
-        public void fromPropertyToSwing( JComponent aComponent, Property aProperty )
+        public void fromDataToSwing( JComponent aComponent, Property aProperty )
         {
             if( aProperty != null )
             {
                 JToggleButton button = (JToggleButton) aComponent;
-
                 Boolean newValue = (Boolean) aProperty.get();
-
                 button.setSelected( newValue );
             }
         }
