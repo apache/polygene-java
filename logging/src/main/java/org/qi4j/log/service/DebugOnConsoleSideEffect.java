@@ -24,7 +24,6 @@ import java.util.ResourceBundle;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.SideEffectOf;
 import org.qi4j.injection.scope.Invocation;
-import org.qi4j.log.service.LoggingService;
 
 /**
  * The ConsoleViewSideEffect is just a temporary solution for logging output, until a more

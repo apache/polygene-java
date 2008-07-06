@@ -23,7 +23,6 @@ import org.qi4j.composite.Composite;
 import org.qi4j.injection.scope.Service;
 import org.qi4j.injection.scope.Structure;
 import org.qi4j.injection.scope.This;
-import org.qi4j.log.service.LoggingService;
 import org.qi4j.log.service.DebuggingService;
 import org.qi4j.property.ComputedPropertyInstance;
 import org.qi4j.property.Property;

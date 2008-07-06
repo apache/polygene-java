@@ -22,11 +22,10 @@ import org.qi4j.composite.Composite;
 import org.qi4j.injection.scope.Service;
 import org.qi4j.injection.scope.Structure;
 import org.qi4j.injection.scope.This;
+import org.qi4j.log.SimpleLog;
 import org.qi4j.log.logtypes.ErrorType;
 import org.qi4j.log.logtypes.InfoType;
 import org.qi4j.log.logtypes.WarningType;
-import org.qi4j.log.SimpleLog;
-import org.qi4j.log.service.LoggingService;
 
 public final class SimpleLogConcern
     implements SimpleLog

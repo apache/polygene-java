@@ -19,7 +19,6 @@ package org.qi4j.trace.records;
 
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.association.Association;
-import org.qi4j.trace.records.TraceRecord;
 
 public interface EntityTraceRecord extends TraceRecord
 {

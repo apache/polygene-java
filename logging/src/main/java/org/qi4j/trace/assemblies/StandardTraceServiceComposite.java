@@ -22,8 +22,8 @@ import org.qi4j.composite.Mixins;
 import org.qi4j.composite.SideEffects;
 import org.qi4j.service.ServiceComposite;
 import org.qi4j.trace.TraceOnConsoleSideEffect;
-import org.qi4j.trace.service.TraceServiceMixin;
 import org.qi4j.trace.service.TraceService;
+import org.qi4j.trace.service.TraceServiceMixin;
 
 @SideEffects( TraceOnConsoleSideEffect.class )
 @Mixins( TraceServiceMixin.class )

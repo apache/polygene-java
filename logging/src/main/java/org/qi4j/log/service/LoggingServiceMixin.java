@@ -20,7 +20,6 @@ package org.qi4j.log.service;
 import org.qi4j.composite.Composite;
 import org.qi4j.entity.UnitOfWorkFactory;
 import org.qi4j.injection.scope.Structure;
-import org.qi4j.log.service.LoggingService;
 import org.qi4j.log.LogType;
 
 public abstract class LoggingServiceMixin

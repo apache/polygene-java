@@ -18,8 +18,8 @@
 
 package org.qi4j.trace.service;
 
-import org.qi4j.composite.Composite;
 import java.lang.reflect.Method;
+import org.qi4j.composite.Composite;
 
 public interface TraceService
 {

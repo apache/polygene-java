@@ -19,7 +19,6 @@ package org.qi4j.trace.records;
 
 import org.qi4j.property.Property;
 import org.qi4j.service.ServiceComposite;
-import org.qi4j.trace.records.TraceRecord;
 
 public interface ServiceTraceRecord extends TraceRecord
 {

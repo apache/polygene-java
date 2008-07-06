@@ -19,10 +19,9 @@
 package org.qi4j.trace.assemblies;
 
 import org.qi4j.bootstrap.Assembler;
-import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.trace.service.TraceServiceConfiguration;
-import org.qi4j.trace.assemblies.StandardTraceServiceComposite;
 
 public class TracingAssembler
     implements Assembler

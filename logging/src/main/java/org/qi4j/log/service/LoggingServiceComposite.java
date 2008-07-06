@@ -19,7 +19,6 @@ package org.qi4j.log.service;
 
 import org.qi4j.composite.Mixins;
 import org.qi4j.composite.SideEffects;
-import org.qi4j.log.service.LoggingService;
 import org.qi4j.service.ServiceComposite;
 
 @SideEffects( { LogOnConsoleSideEffect.class } )

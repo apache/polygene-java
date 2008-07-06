@@ -17,8 +17,8 @@
  */
 package org.qi4j.log.service;
 
-import org.qi4j.property.Property;
 import org.qi4j.log.Formatter;
+import org.qi4j.property.Property;
 
 public interface LogServiceConfiguration
 {

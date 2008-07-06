@@ -28,11 +28,11 @@ import org.qi4j.entity.UnitOfWorkCompletionException;
 import org.qi4j.entity.UnitOfWorkFactory;
 import org.qi4j.injection.scope.Structure;
 import org.qi4j.injection.scope.This;
+import org.qi4j.service.ServiceComposite;
 import org.qi4j.trace.records.CompositeTraceRecord;
 import org.qi4j.trace.records.EntityTraceRecord;
 import org.qi4j.trace.records.ServiceTraceRecord;
 import org.qi4j.trace.records.TraceRecord;
-import org.qi4j.service.ServiceComposite;
 
 public class TraceServiceMixin
     implements TraceService
