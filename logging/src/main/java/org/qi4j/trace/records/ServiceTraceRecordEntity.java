@@ -19,6 +19,6 @@ package org.qi4j.trace.records;
 
 import org.qi4j.entity.EntityComposite;
 
-public interface EntityTraceRecordComposite extends EntityTraceRecord, EntityComposite
+public interface ServiceTraceRecordEntity extends ServiceTraceRecord, EntityComposite
 {
 }

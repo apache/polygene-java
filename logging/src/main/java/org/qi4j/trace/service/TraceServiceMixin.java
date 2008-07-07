@@ -40,14 +40,13 @@ public class TraceServiceMixin
     @Structure private UnitOfWorkFactory unitOfWorkFactory;
     private int traceLevel;
     private int counter = 0;
-    @This TraceServiceConfiguration configuration;
 
     public int traceLevel()
     {
         if( counter % 100 == 0 )
         {
             counter = 0;
-            traceLevel = configuration.traceLevel().get();
+            traceLevel = 0;
         }
         return traceLevel;
     }
@@ -134,6 +133,10 @@ public class TraceServiceMixin
 
     private String[] convertArguments( Object[] args )
     {
+        if( args == null )
+        {
+            return new String[0];
+        }
         String[] result = new String[args.length];
         for( int i = 0; i < result.length; i++ )
         {

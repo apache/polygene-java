@@ -24,12 +24,16 @@ import org.qi4j.composite.Composite;
 import org.qi4j.composite.ConcernOf;
 import org.qi4j.composite.Concerns;
 import org.qi4j.composite.Mixins;
-import org.qi4j.tracing.internal.TraceServiceConfiguration;
-import org.qi4j.tracing.assemblies.StandardTraceServiceComposite;
-import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.entity.memory.MemoryEntityStoreService;
-import org.qi4j.tracing.TraceAllConcern;
-import org.qi4j.tracing.Trace;
+import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.trace.Trace;
+import org.qi4j.trace.TraceAllConcern;
+import org.qi4j.trace.records.CompositeTraceRecordEntity;
+import org.qi4j.trace.records.EntityTraceRecordEntity;
+import org.qi4j.trace.records.ServiceTraceRecordEntity;
+import org.qi4j.trace.assemblies.StandardTraceServiceComposite;
+import org.qi4j.trace.service.TraceServiceConfiguration;
+import org.qi4j.spi.entity.UuidIdentityGeneratorService;
 
 public class TracingTest
     extends AbstractQi4jTest
@@ -38,9 +42,12 @@ public class TracingTest
         throws AssemblyException
     {
         module.addComposites( SomeComposite.class );
-        module.addEntities( TraceServiceConfiguration.class );
         module.addServices( StandardTraceServiceComposite.class );
         module.addServices( MemoryEntityStoreService.class );
+        module.addServices( UuidIdentityGeneratorService.class );
+        module.addEntities( CompositeTraceRecordEntity.class );
+        module.addEntities( EntityTraceRecordEntity.class );
+        module.addEntities( ServiceTraceRecordEntity.class );
     }
 
     @Test
