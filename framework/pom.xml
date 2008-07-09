@@ -42,9 +42,9 @@
       <version>1.1</version>
     </dependency>
     <dependency>
-      <groupId>jgraph</groupId>
-      <artifactId>jgraph</artifactId>
-      <version>5.8.3.1</version>
+      <groupId>org.prefuse</groupId>
+      <artifactId>prefuse</artifactId>
+      <version>beta-20060220</version>
     </dependency>
   </dependencies>
 </project>

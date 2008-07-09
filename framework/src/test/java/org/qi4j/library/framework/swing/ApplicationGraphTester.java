@@ -18,7 +18,10 @@ import org.qi4j.bootstrap.ApplicationFactory;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.LayerName;
 import org.qi4j.bootstrap.ModuleName;
+import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.runtime.structure.ApplicationInstance;
+import org.qi4j.composite.Composite;
 
 /**
  * TODO
@@ -39,13 +42,21 @@ public class ApplicationGraphTester
                         new ModuleName( "Plugin 1" )
                     },
                     {
-                        new ModuleName( "Plugin 2" )
+                        new ModuleName( "Plugin 2" ),
+                        new Assembler()
+                        {
+                            public void assemble( ModuleAssembly module ) throws AssemblyException
+                            {
+                                module.addComposites( UIComposite.class );
+                            }
+                        }
                     }
                 },
                 {
                     {
                         new LayerName( "Domain" ),
-                        new ModuleName( "Some domain" )
+                        new ModuleName( "Some domain" ),
+                        new DomainAssembler(),
                     }
                 },
                 {
@@ -59,5 +70,29 @@ public class ApplicationGraphTester
         ApplicationInstance app = (ApplicationInstance) new ApplicationFactory().newApplication( assemblers );
 
         new ApplicationGraph().show( app.model() );
+    }
+
+    private static class DomainAssembler implements Assembler
+    {
+        public void assemble( ModuleAssembly module ) throws AssemblyException
+        {
+            module.addComposites( ADomainComposite.class );
+            module.addComposites( BDomainComposite.class );
+        }
+    }
+
+    private static interface ADomainComposite extends Composite
+    {
+        
+    }
+
+    private static interface BDomainComposite extends Composite
+    {
+
+    }
+
+    private static interface UIComposite extends Composite
+    {
+
     }
 }

@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2008, Sonny Gill. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -11,159 +12,159 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.library.framework.swing;
 
-import java.awt.Color;
-import java.awt.event.WindowStateListener;
-import java.awt.event.WindowEvent;
-import java.awt.geom.Rectangle2D;
-import java.util.HashMap;
-import java.util.Map;
-import javax.swing.JFrame;
-import javax.swing.JScrollPane;
-import javax.swing.SwingConstants;
-import org.jgraph.JGraph;
-import org.jgraph.graph.AttributeMap;
-import org.jgraph.graph.DefaultCellViewFactory;
-import org.jgraph.graph.DefaultEdge;
-import org.jgraph.graph.DefaultGraphCell;
-import org.jgraph.graph.DefaultGraphModel;
-import org.jgraph.graph.DefaultPort;
-import org.jgraph.graph.GraphConstants;
-import org.jgraph.graph.GraphLayoutCache;
-import org.jgraph.graph.GraphModel;
 import org.qi4j.runtime.structure.ApplicationModel;
-import org.qi4j.runtime.structure.LayerModel;
 import org.qi4j.runtime.structure.ModelVisitor;
+import org.qi4j.runtime.structure.LayerModel;
 import org.qi4j.runtime.structure.ModuleModel;
+import org.qi4j.runtime.composite.CompositeModel;
+import prefuse.data.Graph;
+import prefuse.data.Node;
+import prefuse.Visualization;
+import prefuse.Constants;
+import prefuse.Display;
+import prefuse.controls.PanControl;
+import prefuse.controls.ZoomControl;
+import prefuse.controls.DragControl;
+import prefuse.visual.VisualItem;
+import prefuse.util.ColorLib;
+import prefuse.render.LabelRenderer;
+import prefuse.render.DefaultRendererFactory;
+import prefuse.action.assignment.ColorAction;
+import prefuse.action.assignment.DataColorAction;
+import prefuse.action.layout.graph.NodeLinkTreeLayout;
+import prefuse.action.ActionList;
+import prefuse.action.RepaintAction;
+import javax.swing.JFrame;
 
 /**
  * TODO
  */
 public class ApplicationGraph
 {
+    private static final int APPLICATION = 0;
+    private static final int LAYER = 1;
+    private static final int MODULE = 2;
+    private static final int COMPOSITE = 3;
+
+    private static final String NAME = "name";
+    private static final String TYPE = "type";
+
+//    private static final int ENTITY_COMPOSITE = 4;
+//    private static final int SERVICE_COMPOSITE = 5;
+
     public void show( ApplicationModel applicationModel )
     {
-        GraphModel model = new DefaultGraphModel();
-        final GraphLayoutCache view = new GraphLayoutCache( model, new DefaultCellViewFactory() );
-        JGraph graph = new JGraph( model, view );
 
-        final DefaultGraphCell applicationCell = new DefaultGraphCell( applicationModel.name() );
+        final Graph graph = new Graph();
+        graph.addColumn( NAME, String.class);
+        graph.addColumn( TYPE, int.class);
+
+        final Node root = graph.addNode();
+        root.setString( NAME, "Application");
+        root.setInt( TYPE, APPLICATION );
 
         applicationModel.visitModel( new ModelVisitor()
         {
-            Map<LayerModel, DefaultGraphCell> layerCells = new HashMap<LayerModel, DefaultGraphCell>();
 
-            private DefaultGraphCell layerCell;
-            private DefaultGraphCell moduleCell;
-
-            private int layerCount = 0;
-            private int moduleCount = 0;
-
-            @Override public void visit( ApplicationModel applicationModel )
-            {
-                AttributeMap attributes = applicationCell.getAttributes();
-                GraphConstants.setHorizontalAlignment( attributes, SwingConstants.LEFT );
-                GraphConstants.setVerticalAlignment( attributes, SwingConstants.TOP );
-                GraphConstants.setInset( attributes, 30 );
-
-                GraphConstants.setBounds( attributes, new Rectangle2D.Double( 100, 20, 300, 200 ) );
-                GraphConstants.setGroupOpaque( attributes, true );
-                GraphConstants.setOpaque( attributes, true );
-                GraphConstants.setGradientColor( attributes, Color.yellow );
-            }
+            Node layerNode;
+            Node moduleNode;
 
             @Override public void visit( LayerModel layerModel )
             {
-                layerCell = new DefaultGraphCell( layerModel.name() );
-                layerCells.put( layerModel, layerCell );
-
-                AttributeMap attributes = layerCell.getAttributes();
-                GraphConstants.setHorizontalAlignment( attributes, SwingConstants.LEFT );
-                GraphConstants.setVerticalAlignment( attributes, SwingConstants.TOP );
-                GraphConstants.setInset( attributes, 30 );
-                GraphConstants.setBounds( attributes, new Rectangle2D.Double( 20, 300 - ( 20 + layerCount * 100 ), 500, 80 ) );
-                GraphConstants.setBackground( attributes, Color.green );
-                GraphConstants.setGroupOpaque( attributes, true );
-                GraphConstants.setOpaque( attributes, true );
-                DefaultPort port0 = new DefaultPort();
-                layerCell.add( port0 );
-
-                applicationCell.add( layerCell );
-
-                // Edges
-                Iterable<LayerModel> usedLayers = layerModel.usedLayers().layers();
-                for( LayerModel usedLayer : usedLayers )
-                {
-                    DefaultEdge edge = new DefaultEdge();
-                    edge.setSource( layerCell.getChildAt( 0 ) );
-                    edge.setTarget( layerCells.get( usedLayer ).getChildAt( 0 ) );
-                    int arrow = GraphConstants.ARROW_CLASSIC;
-                    GraphConstants.setLineEnd( edge.getAttributes(), arrow );
-                    GraphConstants.setEndFill( edge.getAttributes(), true );
-                    applicationCell.add( edge );
-                }
-
-                layerCount++;
-                moduleCount = 0;
+                layerNode = graph.addNode();
+                layerNode.setString( NAME, layerModel.name() );
+                layerNode.setInt( TYPE, LAYER );
+                graph.addEdge( root, layerNode );
             }
 
             @Override public void visit( ModuleModel moduleModel )
-            {
-                moduleCell = new DefaultGraphCell( moduleModel.name() );
-
-                AttributeMap attributes = moduleCell.getAttributes();
-                //            GraphConstants.setInset( attributes, 30 );
-                GraphConstants.setAutoSize( attributes, true );
-                GraphConstants.setBackground( attributes, Color.blue );
-                GraphConstants.setOpaque( attributes, true );
-/*
-                DefaultPort port0 = new DefaultPort();
-                moduleCell.add( port0 );
-*/
-
-                layerCell.add( moduleCell );
-                moduleCount++;
+            {   
+                moduleNode = graph.addNode();
+                moduleNode.setString( NAME, moduleModel.name() );
+                moduleNode.setInt( TYPE, MODULE);
+                graph.addEdge( layerNode, moduleNode );
             }
+
+            public void visit( CompositeModel compositeModel )
+            {
+                Node node = graph.addNode();
+                node.setString( NAME, compositeModel.type().getSimpleName() );
+                node.setInt( TYPE, COMPOSITE );
+                graph.addEdge( moduleNode, node );
+            }
+
         } );
 
+        // add the graph to the visualization as the data group "graph"
+        // nodes and edges are accessible as "graph.nodes" and "graph.edges"
+        Visualization vis = new Visualization();
+        vis.add( "graph", graph );
+        vis.setInteractive( "graph.edges", null, false );
 
-        view.insert( applicationCell );
-/*
-        DefaultGraphCell[] cells = new DefaultGraphCell[3];
-        cells[ 0 ] = new DefaultGraphCell( new String( "Hello" ) );
-        GraphConstants.setBounds( cells[ 0 ].getAttributes(), new
-            Rectangle2D.Double( 20, 20, 40, 20 ) );
-        GraphConstants.setGradientColor(
-            cells[ 0 ].getAttributes(),
-            Color.orange );
-        GraphConstants.setOpaque( cells[ 0 ].getAttributes(), true );
-        DefaultPort port0 = new DefaultPort();
-        cells[ 0 ].add( port0 );
-        cells[ 1 ] = new DefaultGraphCell( new String( "World" ) );
-        GraphConstants.setBounds( cells[ 1 ].getAttributes(), new
-            Rectangle2D.Double( 140, 140, 40, 20 ) );
-        GraphConstants.setGradientColor(
-            cells[ 1 ].getAttributes(),
-            Color.red );
-        GraphConstants.setOpaque( cells[ 1 ].getAttributes(), true );
-        DefaultPort port1 = new DefaultPort();
-        cells[ 1 ].add( port1 );
-        DefaultEdge edge = new DefaultEdge();
-        edge.setSource( cells[ 0 ].getChildAt( 0 ) );
-        edge.setTarget( cells[ 1 ].getChildAt( 0 ) );
-        cells[ 2 ] = edge;
-        int arrow = GraphConstants.ARROW_CLASSIC;
-        GraphConstants.setLineEnd( edge.getAttributes(), arrow );
-        GraphConstants.setEndFill( edge.getAttributes(), true );
-        graph.getGraphLayoutCache().insert( cells );
-*/
+        // draw the "name" label for NodeItems
+        LabelRenderer r = new LabelRenderer( NAME );
+        r.setRoundedCorner(8, 8);
+        r.setHorizontalPadding( 5 );
+        r.setVerticalPadding( 5 );
 
-        JFrame frame = new JFrame();
-        frame.setDefaultCloseOperation( JFrame.DISPOSE_ON_CLOSE );
-        frame.getContentPane().add( new JScrollPane( graph ) );
-        frame.setSize( 600, 400 );
-        frame.setVisible( true );
+        // create a new default renderer factory
+        // return our name label renderer as the default for all non-EdgeItems
+        // includes straight line edges for EdgeItems by default
+        vis.setRendererFactory(new DefaultRendererFactory(r));
+
+
+        // create our nominal color palette
+        int[] palette = new int[] {
+            ColorLib.rgb( 240, 240, 240 ), // Application node
+            ColorLib.rgb( 255, 230, 230 ), // layers
+            ColorLib.rgb( 220, 220, 255 ), // modules
+            ColorLib.rgb( 255, 250, 205 )  // composites
+        };
+        // map nominal data values to colors using our provided palette
+        DataColorAction fill = new DataColorAction("graph.nodes", TYPE, Constants.NOMINAL,
+                                                   VisualItem.FILLCOLOR, palette);
+
+        // color for node text
+        ColorAction text = new ColorAction( "graph.nodes", VisualItem.TEXTCOLOR, ColorLib.gray(0) );
+        // color for edges
+        ColorAction edges = new ColorAction( "graph.edges", VisualItem.STROKECOLOR, ColorLib.gray(200) );
+
+        // an action list containing all color assignments
+        ActionList color = new ActionList();
+        color.add(fill);
+        color.add(text);
+        color.add(edges);
+
+        // an action list with the layout
+        ActionList layout = new ActionList();
+        layout.add(new NodeLinkTreeLayout("graph", Constants.ORIENT_TOP_BOTTOM, 10, 10, 10 ));
+        layout.add(new RepaintAction());
+
+        // add the actions to the visualization
+        vis.putAction("color", color);
+        vis.putAction("layout", layout);
+
+        Display display = new Display(vis);
+        display.setSize( 640, 480 );
+
+        // drag, pan and zoom controls
+        display.addControlListener(new DragControl());
+        display.addControlListener(new PanControl());
+        display.addControlListener(new ZoomControl());
+
+        JFrame frame = new JFrame( "Qi4j Application Graph - " + applicationModel.name() );
+        frame.add(display);
+        frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE);
+        frame.pack();
+        frame.setVisible(true);
+
+        // assign the colors
+        vis.run("color");
+        // start up the layout
+        vis.run("layout");
+
     }
+
 }
