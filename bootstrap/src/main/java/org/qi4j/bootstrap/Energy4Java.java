@@ -90,6 +90,11 @@ public class Energy4Java
         throw new BootstrapException( "No Application Factory providers found." );
     }
 
+    public ApplicationAssembly newApplicationAssembly()
+    {
+        return factory.newApplicationAssembly();
+    }
+
     private static class ServiceLoader
     {
 

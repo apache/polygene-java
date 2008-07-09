@@ -30,4 +30,6 @@ public interface ApplicationFactory
 
     Application newApplication( ApplicationAssembly applicationAssembly )
         throws AssemblyException;
+
+    ApplicationAssembly newApplicationAssembly();
 }

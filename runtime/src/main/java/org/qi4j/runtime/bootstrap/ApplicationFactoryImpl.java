@@ -19,13 +19,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.qi4j.bootstrap.ApplicationAssemblyFactory;
+import org.qi4j.bootstrap.ApplicationAssembly;
+import org.qi4j.bootstrap.ApplicationFactory;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.ApplicationAssembly;
 import org.qi4j.bootstrap.LayerAssembly;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.bootstrap.ApplicationFactory;
 import org.qi4j.runtime.Qi4jRuntime;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.structure.ApplicationModel;
@@ -42,12 +41,10 @@ public final class ApplicationFactoryImpl
     implements ApplicationFactory
 {
     private Qi4jSPI runtime;
-    private ApplicationAssemblyFactory applicationAssemblyFactory;
 
     public ApplicationFactoryImpl()
     {
         this.runtime = new Qi4jRuntime();
-        this.applicationAssemblyFactory = new ApplicationAssemblyFactoryImpl();
     }
 
     public Application newApplication( Assembler assembler )
@@ -59,7 +56,7 @@ public final class ApplicationFactoryImpl
     public Application newApplication( Assembler[][][] assemblers )
         throws AssemblyException
     {
-        ApplicationAssembly applicationAssembly = applicationAssemblyFactory.newApplicationAssembly();
+        ApplicationAssembly applicationAssembly = newApplicationAssembly();
         applicationAssembly.setName( "Application" );
 
         // Build all layers bottom-up
@@ -127,5 +124,10 @@ public final class ApplicationFactoryImpl
         }
 
         return applicationModel.newInstance( runtime );
+    }
+
+    public ApplicationAssembly newApplicationAssembly()
+    {
+        return new ApplicationAssemblyImpl();
     }
 }
