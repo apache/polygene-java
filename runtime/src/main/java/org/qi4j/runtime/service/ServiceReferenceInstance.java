@@ -19,7 +19,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import org.qi4j.composite.Composite;
-import org.qi4j.runtime.service.qi.ServiceModel;
 import org.qi4j.service.Activatable;
 import org.qi4j.service.ServiceInstanceProviderException;
 import org.qi4j.service.ServiceReference;

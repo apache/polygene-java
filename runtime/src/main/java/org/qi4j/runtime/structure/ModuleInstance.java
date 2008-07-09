@@ -36,6 +36,7 @@ import org.qi4j.service.ServiceFinder;
 import org.qi4j.service.ServiceReference;
 import org.qi4j.structure.Module;
 import org.qi4j.structure.Visibility;
+import org.qi4j.spi.composite.CompositeDescriptor;
 
 /**
  * TODO
@@ -191,7 +192,7 @@ public class ModuleInstance
         services.passivate();
     }
 
-    public CompositeModel findCompositeFor( Class<? extends Composite> compositeType )
+    public CompositeDescriptor findCompositeFor( Class<? extends Composite> compositeType )
     {
         //TODO Cache this result
         ModuleInstance realModuleInstance = findModuleForComposite( compositeType );

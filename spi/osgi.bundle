@@ -1,0 +1,16 @@
+Bundle-Activator:
+
+Private-Package: org.qi4j.spi.service.provider
+
+Import-Package: *
+
+Export-Package: org.qi4j.spi, \
+                org.qi4j.spi.composite, \
+                org.qi4j.spi.entity, \
+                org.qi4j.spi.entity.association, \
+                org.qi4j.spi.object, \
+                org.qi4j.spi.property, \
+                org.qi4j.spi.query, \
+                org.qi4j.spi.serialization, \
+                org.qi4j.spi.service, \
+                org.qi4j.entity.memory

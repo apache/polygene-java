@@ -12,17 +12,16 @@
  *
  */
 
-package org.qi4j.runtime.service.qi;
+package org.qi4j.runtime.service;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
-import org.qi4j.runtime.service.ServiceInstance;
+import org.qi4j.composite.Composite;
 import org.qi4j.service.ServiceDescriptor;
 import org.qi4j.service.ServiceInstanceFactory;
 import org.qi4j.structure.Module;
 import org.qi4j.structure.Visibility;
 import org.qi4j.util.MetaInfo;
-import org.qi4j.composite.Composite;
 
 /**
  * TODO

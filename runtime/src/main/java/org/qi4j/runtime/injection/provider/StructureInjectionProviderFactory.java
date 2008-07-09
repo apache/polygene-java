@@ -22,7 +22,6 @@ import org.qi4j.Qi4j;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.entity.UnitOfWorkFactory;
 import org.qi4j.object.ObjectBuilderFactory;
-import org.qi4j.runtime.Qi4jRuntime;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectionContext;
@@ -77,7 +76,7 @@ public final class StructureInjectionProviderFactory
             {
                 return context.moduleInstance();
             }
-            else if( type.equals( Qi4j.class ) || type.equals( Qi4jSPI.class ) || type.equals( Qi4jRuntime.class ) )
+            else if( type.equals( Qi4j.class ) || type.equals( Qi4jSPI.class ) )
             {
                 return ( (ModuleInstance) context.moduleInstance() ).layerInstance().applicationInstance().runtime();
             }

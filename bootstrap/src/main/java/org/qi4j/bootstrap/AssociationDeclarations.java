@@ -12,7 +12,7 @@
  *
  */
 
-package org.qi4j.runtime.entity.association;
+package org.qi4j.bootstrap;
 
 import java.lang.reflect.Method;
 import org.qi4j.util.MetaInfo;

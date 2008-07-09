@@ -29,6 +29,7 @@ import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.composite.ValueConstraintsModel;
 import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.util.MetaInfo;
+import org.qi4j.bootstrap.PropertyDeclarations;
 
 /**
  * TODO

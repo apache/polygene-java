@@ -22,7 +22,6 @@ import org.qi4j.composite.Composite;
 import org.qi4j.composite.State;
 import org.qi4j.entity.Lifecycle;
 import org.qi4j.runtime.property.PropertiesModel;
-import org.qi4j.runtime.property.PropertyDeclarations;
 import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
@@ -31,6 +30,7 @@ import org.qi4j.spi.composite.CompositeInstance;
 import org.qi4j.spi.composite.StateDescriptor;
 import org.qi4j.structure.Visibility;
 import org.qi4j.util.MetaInfo;
+import org.qi4j.bootstrap.PropertyDeclarations;
 
 /**
  * TODO

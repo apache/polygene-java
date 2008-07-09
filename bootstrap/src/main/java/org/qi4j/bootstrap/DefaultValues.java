@@ -18,7 +18,7 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DefaultValues
+public final class DefaultValues
 {
     private static final Map<Type, Object> defaultValues = createDefaultValues();
 

@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.qi4j.runtime.service.ServiceReferenceInstance;
-import org.qi4j.runtime.service.qi.ServiceModel;
+import org.qi4j.runtime.service.ServiceModel;
 import org.qi4j.service.Activatable;
 import org.qi4j.service.ServiceReference;
 import org.qi4j.spi.service.Activator;

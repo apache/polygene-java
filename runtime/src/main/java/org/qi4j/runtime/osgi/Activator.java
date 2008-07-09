@@ -16,17 +16,19 @@
  * limitations under the License. 
  */
 
-package org.qi4j.bootstrap;
+package org.qi4j.runtime.osgi;
 
-public interface LayerAssembly
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+
+public class Activator
+    implements BundleActivator
 {
-    ModuleAssembly newModuleAssembly();
+    public void start( BundleContext bundleContext ) throws Exception
+    {
+    }
 
-    ApplicationAssembly getApplicationAssembly();
-
-    String getName();
-
-    void setName( String name );
-
-    void uses( LayerAssembly layerAssembly );
+    public void stop( BundleContext bundleContext ) throws Exception
+    {
+    }
 }

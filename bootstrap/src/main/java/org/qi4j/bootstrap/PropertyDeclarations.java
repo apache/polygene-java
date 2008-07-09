@@ -12,20 +12,17 @@
  *
  */
 
-package org.qi4j.structure;
+package org.qi4j.bootstrap;
 
-import org.qi4j.service.Activatable;
-import org.qi4j.Qi4j;
+import java.lang.reflect.Method;
+import org.qi4j.util.MetaInfo;
 
 /**
  * TODO
  */
-public interface Application
-    extends Activatable
+public interface PropertyDeclarations
 {
-    String toURI();
+    MetaInfo getMetaInfo( Method accessor );
 
-    Module findModule( String layerName, String moduleName );
-
-    Qi4j runtime();
+    Object getDefaultValue( Method accessor );
 }

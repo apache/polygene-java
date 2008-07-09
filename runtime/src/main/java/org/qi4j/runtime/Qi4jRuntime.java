@@ -14,13 +14,111 @@
 
 package org.qi4j.runtime;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
+import java.util.ArrayList;
+import java.util.List;
+import org.qi4j.composite.Composite;
+import org.qi4j.entity.EntityComposite;
+import org.qi4j.injection.scope.This;
+import org.qi4j.runtime.composite.CompositeModel;
+import org.qi4j.runtime.composite.DefaultCompositeInstance;
+import org.qi4j.runtime.composite.ProxyReferenceInvocationHandler;
+import org.qi4j.runtime.injection.DependencyModel;
+import org.qi4j.runtime.structure.DependencyVisitor;
+import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.service.Configuration;
+import org.qi4j.service.ServiceComposite;
+import org.qi4j.spi.composite.CompositeDescriptor;
+import org.qi4j.spi.composite.CompositeInstance;
 import org.qi4j.spi.Qi4jSPI;
+import org.qi4j.structure.Module;
 
 /**
- * Encapsulation of the Qi4j runtime. The Qi4jRuntime holds references
- * to all the runtime objects in a Qi4j runtime.
+ * Incarnation of Qi4j.
  */
-public interface Qi4jRuntime
-    extends Qi4jSPI
+public final class Qi4jRuntime
+    implements Qi4jSPI
 {
+    public Qi4jRuntime()
+    {
+    }
+
+    // API
+    public Composite dereference( Composite composite )
+    {
+        InvocationHandler handler = Proxy.getInvocationHandler( composite );
+        if( handler instanceof ProxyReferenceInvocationHandler )
+        {
+            return (Composite) ( (ProxyReferenceInvocationHandler) handler ).proxy();
+        }
+        if( handler instanceof CompositeInstance )
+        {
+            return composite;
+        }
+        return null;
+    }
+
+    @SuppressWarnings( "unchecked" )
+    public <S extends Composite, T extends S> Class<S> getSuperComposite( Class<T> compositeClass )
+    {
+        Class<?>[] extendedInterfaces = compositeClass.getInterfaces();
+        for( Class<?> extendedInterface : extendedInterfaces )
+        {
+            if( Composite.class.isAssignableFrom( extendedInterface ) &&
+                !Composite.class.equals( extendedInterface ) &&
+                !EntityComposite.class.equals( extendedInterface ) &&
+                !ServiceComposite.class.equals( extendedInterface )
+                )
+            {
+                return (Class<S>) extendedInterface;
+            }
+        }
+        return null; // No super Composite type found
+    }
+
+    public Class<?> getConfigurationType( Composite serviceComposite )
+    {
+        CompositeModel descriptor = (CompositeModel) getCompositeDescriptor( serviceComposite );
+        final List<DependencyModel> dependencyModels = new ArrayList<DependencyModel>();
+        descriptor.visitModel( new DependencyVisitor( new DependencyModel.ScopeSpecification( This.class ) )
+        {
+            public void visitDependency( DependencyModel dependencyModel )
+            {
+                dependencyModels.add( dependencyModel );
+            }
+        } );
+
+        for( DependencyModel dependencyModel : dependencyModels )
+        {
+            if( dependencyModel.rawInjectionType().equals( Configuration.class ) )
+            {
+                return dependencyModel.injectionClass();
+            }
+        }
+
+        return null;
+    }
+
+    // SPI
+    public CompositeDescriptor getCompositeDescriptor( Composite composite )
+    {
+        return DefaultCompositeInstance.getCompositeInstance( composite ).compositeModel();
+    }
+
+    public CompositeDescriptor getCompositeDescriptor( Class mixinType, Module module )
+    {
+        if( EntityComposite.class.isAssignableFrom( mixinType )  )
+        {
+            return ( (ModuleInstance) module ).findEntityCompositeFor( mixinType );
+        }
+        return ( (ModuleInstance) module ).findCompositeFor( mixinType );
+    }
+
+    public void setMixins( Composite composite, Object[] mixins )
+    {
+        DefaultCompositeInstance instance = DefaultCompositeInstance.getCompositeInstance( composite );
+
+        instance.setMixins( mixins );
+    }
 }

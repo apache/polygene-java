@@ -18,11 +18,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.qi4j.runtime.Qi4jRuntime;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.injection.InjectionProviderFactory;
 import org.qi4j.runtime.injection.provider.InjectionProviderFactoryStrategy;
+import org.qi4j.spi.Qi4jSPI;
 
 /**
  * TODO
@@ -66,7 +66,7 @@ public final class ApplicationModel
     }
 
     // Context
-    public ApplicationInstance newInstance( Qi4jRuntime runtime )
+    public ApplicationInstance newInstance( Qi4jSPI runtime )
     {
         List<LayerInstance> layerInstances = new ArrayList<LayerInstance>();
         ApplicationInstance applicationInstance = new ApplicationInstance( this, runtime, layerInstances );

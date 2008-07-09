@@ -21,11 +21,5 @@ public interface Layer
 {
     String name();
 
-    Iterable<Layer> usesLayers();
-
-    Iterable<Layer> usedByLayers();
-
-    Iterable<Module> modules();
-
     boolean isPublic( Class<?> compositeOrObject );
 }

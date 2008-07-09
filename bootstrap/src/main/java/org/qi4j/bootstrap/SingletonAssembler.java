@@ -18,8 +18,6 @@ import org.qi4j.Qi4j;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.entity.UnitOfWorkFactory;
 import org.qi4j.object.ObjectBuilderFactory;
-import org.qi4j.runtime.Energy4Java;
-import org.qi4j.runtime.Qi4jRuntime;
 import org.qi4j.service.ServiceFinder;
 import org.qi4j.structure.Application;
 import org.qi4j.structure.Module;
@@ -35,10 +33,8 @@ import org.qi4j.structure.Module;
 public abstract class SingletonAssembler
     implements Assembler
 {
-    private Qi4j is = new Energy4Java();
+    private Energy4Java is = new Energy4Java();
 
-    private Qi4jRuntime runtime = (Qi4jRuntime) is;
-    private ApplicationFactory applicationFactory = new ApplicationFactory();
     private Application applicationInstance;
     private Module moduleInstance;
 
@@ -47,7 +43,7 @@ public abstract class SingletonAssembler
     {
         try
         {
-            applicationInstance = applicationFactory.newApplication( this );
+            applicationInstance = is.newApplication( this );
         }
         catch( AssemblyException e )
         {
@@ -66,9 +62,9 @@ public abstract class SingletonAssembler
         moduleInstance = applicationInstance.findModule( "Layer 1", "Module 1" );
     }
 
-    public final Qi4jRuntime runtime()
+    public final Qi4j runtime()
     {
-        return runtime;
+        return applicationInstance.runtime();
     }
 
     public final Application application()

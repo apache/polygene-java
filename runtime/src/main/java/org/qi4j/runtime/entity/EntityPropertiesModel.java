@@ -28,12 +28,11 @@ import org.qi4j.runtime.composite.ConstraintsModel;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.composite.ValueConstraintsModel;
 import org.qi4j.runtime.property.PropertiesInstance;
-import org.qi4j.runtime.property.PropertyDeclarations;
 import org.qi4j.runtime.property.PropertyModel;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.property.ImmutablePropertyInstance;
 import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.util.MetaInfo;
+import org.qi4j.bootstrap.PropertyDeclarations;
 
 /**
  * TODO

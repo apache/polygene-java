@@ -22,12 +22,10 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 import org.qi4j.property.AbstractPropertyInstance;
-import org.qi4j.runtime.entity.association.AssociationDeclarations;
-import org.qi4j.runtime.property.PropertyDeclarations;
 import org.qi4j.util.MetaInfo;
 
 /**
- * Declaration of a Property. Created by {@link org.qi4j.bootstrap.ModuleAssembly#addProperty()}.
+ * Declaration of a Property.
  */
 public final class MetaInfoDeclaration
     implements PropertyDeclarations, AssociationDeclarations

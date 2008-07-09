@@ -1,0 +1,17 @@
+Bundle-Activator:
+
+Private-Package: org.qi4j.runtime.composite, \
+                 org.qi4j.runtime.entity, \
+                 org.qi4j.runtime.entity.association, \
+                 org.qi4j.runtime.injection, \
+                 org.qi4j.runtime.injection.provider, \
+                 org.qi4j.runtime.object, \
+                 org.qi4j.runtime.property, \
+                 org.qi4j.runtime.query, \
+                 org.qi4j.runtime.service, \
+                 org.qi4j.runtime.structure, \
+                 org.qi4j.runtime.util
+
+Import-Package: *
+
+Export-Package:

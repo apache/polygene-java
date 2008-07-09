@@ -18,15 +18,15 @@
 
 package org.qi4j.bootstrap;
 
-public interface LayerAssembly
+public class BootstrapException extends RuntimeException
 {
-    ModuleAssembly newModuleAssembly();
+    public BootstrapException( String message )
+    {
+        super( message );
+    }
 
-    ApplicationAssembly getApplicationAssembly();
-
-    String getName();
-
-    void setName( String name );
-
-    void uses( LayerAssembly layerAssembly );
+    public BootstrapException( String message, Throwable cause )
+    {
+        super( message, cause );
+    }
 }

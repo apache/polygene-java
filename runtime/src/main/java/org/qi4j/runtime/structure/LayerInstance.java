@@ -15,6 +15,7 @@
 package org.qi4j.runtime.structure;
 
 import java.util.List;
+import java.util.ArrayList;
 import org.qi4j.composite.AmbiguousTypeException;
 import org.qi4j.runtime.composite.CompositeModel;
 import org.qi4j.runtime.entity.EntityModel;
@@ -23,12 +24,14 @@ import org.qi4j.service.Activatable;
 import org.qi4j.service.ServiceReference;
 import org.qi4j.spi.service.Activator;
 import org.qi4j.structure.Visibility;
+import org.qi4j.structure.Layer;
+import org.qi4j.structure.Module;
 
 /**
  * TODO
  */
 public class LayerInstance
-    implements Activatable
+    implements Layer, Activatable
 {
     private final LayerModel model;
     private final ApplicationInstance applicationInstance;
@@ -55,9 +58,39 @@ public class LayerInstance
         return applicationInstance;
     }
 
-    public List<ModuleInstance> modules()
+    public String name()
     {
-        return moduleInstances;
+        return model.name();
+    }
+
+    public boolean isPublic( Class<?> compositeOrObject )
+    {
+        ModuleInstance module1 = findModuleForComposite( compositeOrObject, Visibility.layer );
+        if( module1 != null )
+        {
+            return true;
+        }
+        ModuleInstance module2 = findModuleForEntity( compositeOrObject, Visibility.layer );
+        if( module2 != null )
+        {
+            return true;
+        }
+        ModuleInstance module3 = findModuleForObject( compositeOrObject, Visibility.layer );
+        if( module3 != null )
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public List<Module> modules()
+    {
+        List<Module> result = new ArrayList<Module>();
+        for( ModuleInstance moduleInstance : moduleInstances )
+        {
+            result.add( moduleInstance );
+        }
+        return result;
     }
 
     public UsedLayersInstance usedLayersInstance()

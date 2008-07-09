@@ -17,20 +17,17 @@ package org.qi4j.test;
 import org.junit.After;
 import org.junit.Before;
 import org.qi4j.Qi4j;
-import org.qi4j.bootstrap.ApplicationAssemblyFactory;
-import org.qi4j.bootstrap.ApplicationFactory;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.Energy4Java;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkFactory;
 import org.qi4j.object.ObjectBuilderFactory;
-import org.qi4j.runtime.Energy4Java;
-import org.qi4j.runtime.Qi4jRuntime;
-import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.service.ServiceFinder;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.structure.Application;
+import org.qi4j.structure.Module;
 
 /**
  * Base class for Composite tests.
@@ -40,9 +37,8 @@ public abstract class AbstractQi4jTest
 {
     protected Qi4j api;
     protected Qi4jSPI spi;
-    protected Qi4jRuntime runtime;
 
-    protected ApplicationFactory applicationFactory;
+    protected Energy4Java qi4j;
     protected Application application;
 
     protected CompositeBuilderFactory compositeBuilderFactory;
@@ -50,17 +46,17 @@ public abstract class AbstractQi4jTest
     protected UnitOfWorkFactory unitOfWorkFactory;
     protected ServiceFinder serviceLocator;
 
-    protected ModuleInstance moduleInstance;
+    protected Module moduleInstance;
 
     @Before public void setUp() throws Exception
     {
-        api = spi = runtime = new Energy4Java();
-        applicationFactory = new ApplicationFactory( runtime, new ApplicationAssemblyFactory() );
+        qi4j = new Energy4Java();
         application = newApplication();
+        api = spi = (Qi4jSPI) application.runtime();
         application.activate();
 
         // Assume only one module
-        moduleInstance = (ModuleInstance) application.findModule( "Layer 1", "Module 1" );
+        moduleInstance = application.findModule( "Layer 1", "Module 1" );
         compositeBuilderFactory = moduleInstance.compositeBuilderFactory();
         objectBuilderFactory = moduleInstance.objectBuilderFactory();
         unitOfWorkFactory = moduleInstance.unitOfWorkFactory();
@@ -70,7 +66,7 @@ public abstract class AbstractQi4jTest
     protected Application newApplication()
         throws AssemblyException
     {
-        return applicationFactory.newApplication( this );
+        return qi4j.newApplication( this );
     }
 
     @After public void tearDown() throws Exception

@@ -28,6 +28,7 @@ import org.qi4j.runtime.composite.ValueConstraintsModel;
 import org.qi4j.runtime.entity.UnitOfWorkInstance;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
+import org.qi4j.bootstrap.AssociationDeclarations;
 import org.qi4j.util.MetaInfo;
 
 /**

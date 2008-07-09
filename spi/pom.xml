@@ -9,6 +9,7 @@
   <artifactId>qi4j-core-spi</artifactId>
   <name>Qi4J Core - SPI</name>
   <version>0.3-SNAPSHOT</version>
+  <packaging>bundle</packaging>
   <dependencies>
     <dependency>
       <groupId>org.qi4j.core</groupId>

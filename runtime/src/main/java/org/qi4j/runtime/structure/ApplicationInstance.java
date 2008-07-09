@@ -17,8 +17,8 @@ package org.qi4j.runtime.structure;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.List;
-import org.qi4j.runtime.Qi4jRuntime;
 import org.qi4j.spi.service.Activator;
+import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.structure.Application;
 import org.qi4j.structure.Module;
 
@@ -29,12 +29,12 @@ public class ApplicationInstance
     implements Application
 {
     private final ApplicationModel model;
-    private final Qi4jRuntime runtime;
+    private final Qi4jSPI runtime;
     private final List<LayerInstance> layerInstances;
     private final Activator layerActivator;
     private final String uri;
 
-    public ApplicationInstance( ApplicationModel model, Qi4jRuntime runtime, List<LayerInstance> layerInstances )
+    public ApplicationInstance( ApplicationModel model, Qi4jSPI runtime, List<LayerInstance> layerInstances )
     {
         this.model = model;
         this.runtime = runtime;
@@ -48,7 +48,7 @@ public class ApplicationInstance
         return model;
     }
 
-    public Qi4jRuntime runtime()
+    public Qi4jSPI runtime()
     {
         return runtime;
     }
@@ -109,5 +109,4 @@ public class ApplicationInstance
         }
         return "urn:qi4j:instance:" + hostname + jvminstance + ":" + model.name();
     }
-
 }

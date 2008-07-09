@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,17 +12,23 @@
  *
  */
 
-package org.qi4j.runtime.property;
+package org.qi4j.runtime.bootstrap;
 
-import java.lang.reflect.Method;
-import org.qi4j.util.MetaInfo;
+import org.qi4j.bootstrap.ApplicationAssembly;
+import org.qi4j.bootstrap.ApplicationAssemblyFactory;
 
 /**
- * TODO
+ * A factory for {@link org.qi4j.bootstrap.ApplicationAssembly}
  */
-public interface PropertyDeclarations
+public final class ApplicationAssemblyFactoryImpl
+    implements ApplicationAssemblyFactory
 {
-    MetaInfo getMetaInfo( Method accessor );
+    public ApplicationAssemblyFactoryImpl()
+    {
+    }
 
-    Object getDefaultValue( Method accessor );
+    public ApplicationAssembly newApplicationAssembly()
+    {
+        return new ApplicationAssemblyImpl();
+    }
 }

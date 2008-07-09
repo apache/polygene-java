@@ -10,7 +10,7 @@
   <groupId>org.qi4j.core</groupId>
   <artifactId>qi4j-core-runtime</artifactId>
   <version>0.3-SNAPSHOT</version>
-
+  <packaging>bundle</packaging>
   <name>Qi4J Core - Runtime</name>
 
   <dependencies>
@@ -25,9 +25,20 @@
       <version>0.3-SNAPSHOT</version>
     </dependency>
     <dependency>
+      <groupId>org.qi4j.core</groupId>
+      <artifactId>qi4j-core-bootstrap</artifactId>
+      <version>0.3-SNAPSHOT</version>
+    </dependency>
+    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>osgi_R4_core</artifactId>
+      <version>1.0</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>cglib</groupId>
