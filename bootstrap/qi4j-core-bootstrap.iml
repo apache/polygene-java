@@ -10,7 +10,6 @@
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/resources" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/target/classes" />
-      <excludeFolder url="file://$MODULE_DIR$/target/maven-archiver" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
@@ -29,6 +28,19 @@
     </orderEntry>
     <orderEntry type="module" module-name="qi4j-core-api" exported="" />
     <orderEntry type="module" module-name="qi4j-core-spi" exported="" />
+    <orderEntry type="module-library">
+      <library name="org.osgi:osgi_R4_core:1.0">
+        <CLASSES>
+          <root url="jar://$M2_REPO$/org/osgi/osgi_R4_core/1.0/osgi_R4_core-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$M2_REPO$/org/osgi/osgi_R4_core/1.0/osgi_R4_core-1.0-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$M2_REPO$/org/osgi/osgi_R4_core/1.0/osgi_R4_core-1.0-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
     <orderEntryProperties />
   </component>
 </module>
