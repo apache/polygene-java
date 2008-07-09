@@ -18,19 +18,53 @@
 
 package org.qi4j.bootstrap.osgi;
 
+import java.net.URL;
+import java.util.HashMap;
+import java.util.List;
+import org.ops4j.pax.swissbox.core.BundleClassLoader;
+import org.ops4j.pax.swissbox.extender.BundleObserver;
+import org.ops4j.pax.swissbox.extender.BundleURLScanner;
+import org.ops4j.pax.swissbox.extender.BundleWatcher;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.qi4j.bootstrap.ApplicationFactory;
+import org.qi4j.bootstrap.internal.ServiceLoader;
 
 public class Activator
     implements BundleActivator
 {
+    private BundleWatcher<URL> urlBundleWatcher;
+
     public void start( BundleContext bundleContext ) throws Exception
     {
-
+        BundleURLScanner urlScanner =
+            new BundleURLScanner( "META-INF/services", ApplicationFactory.class.getName(), false );
+        urlBundleWatcher = new BundleWatcher<URL>( bundleContext, urlScanner, new Qi4jBundleObserver() );
+        urlBundleWatcher.start();
     }
 
     public void stop( BundleContext bundleContext ) throws Exception
     {
-        
+        urlBundleWatcher.stop();
+    }
+
+    private static class Qi4jBundleObserver
+        implements BundleObserver<URL>
+    {
+        private HashMap<Bundle, ClassLoader> loaders = new HashMap<Bundle, ClassLoader>();
+
+        public void addingEntries( Bundle bundle, List<URL> entries )
+        {
+            BundleClassLoader classloader = new BundleClassLoader( bundle );
+            ServiceLoader.addClassloader( classloader );
+            loaders.put( bundle, classloader );
+        }
+
+        public void removingEntries( Bundle bundle, List<URL> entries )
+        {
+            ClassLoader classloader = loaders.get( bundle );
+            ServiceLoader.removeClassloader( classloader );
+        }
     }
 }

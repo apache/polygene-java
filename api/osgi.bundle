@@ -1,12 +1,13 @@
 Bundle-Activator:
 
-Private-Package: org.qi4j.composite.internal, \
-                 org.qi4j.query.grammar.impl
+Private-Package:
 
 Import-Package: *
 
 Export-Package: org.qi4j, \
-                org.qi4j.composite, \
+                org.qi4j.composite.internal, \
+                 org.qi4j.query.grammar.impl, \
+                 org.qi4j.composite, \
                 org.qi4j.entity, \
                 org.qi4j.entity.association, \
                 org.qi4j.injection, \

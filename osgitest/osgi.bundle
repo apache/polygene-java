@@ -1,0 +1,7 @@
+Bundle-Activator: org.qi4j.core.test.osgi.Activator
+
+Private-Package:  org.qi4j.core.test.osgi
+
+Import-Package: *, net.sf.cglib.proxy
+
+Export-Package:

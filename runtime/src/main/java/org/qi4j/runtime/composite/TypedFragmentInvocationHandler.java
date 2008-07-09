@@ -33,6 +33,7 @@ public final class TypedFragmentInvocationHandler
     {
         try
         {
+            method.setAccessible( true );
             return method.invoke( fragment, args );
         }
         catch( InvocationTargetException e )

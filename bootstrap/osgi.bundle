@@ -1,6 +1,7 @@
 Bundle-Activator: org.qi4j.bootstrap.osgi.Activator
 
-Private-Package: org.qi4j.bootstrap.osgi
+Private-Package: org.qi4j.bootstrap.osgi, \
+                 org.qi4j.bootstrap.internal
 
 Import-Package: *
 

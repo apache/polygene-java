@@ -17,5 +17,6 @@
     <module>runtime</module>
     <module>spi</module>
     <module>testsupport</module>
+    <module>osgitest</module>
   </modules>
 </project>
