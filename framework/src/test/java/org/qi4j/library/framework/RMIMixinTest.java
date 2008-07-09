@@ -36,7 +36,6 @@ public class RMIMixinTest
         module.addComposites( RemoteInterfaceComposite.class );
     }
 
-    // Public --------------------------------------------------------
     @Test
     public void testRMIMixin()
         throws Exception

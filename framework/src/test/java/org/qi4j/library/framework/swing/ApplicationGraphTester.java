@@ -14,14 +14,15 @@
 
 package org.qi4j.library.framework.swing;
 
-import org.qi4j.bootstrap.ApplicationFactory;
 import org.qi4j.bootstrap.Assembler;
-import org.qi4j.bootstrap.LayerName;
-import org.qi4j.bootstrap.ModuleName;
-import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.runtime.structure.ApplicationInstance;
+import org.qi4j.bootstrap.Energy4Java;
+import org.qi4j.bootstrap.LayerName;
+import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.bootstrap.ModuleName;
 import org.qi4j.composite.Composite;
+import org.qi4j.runtime.structure.ApplicationInstance;
+import org.qi4j.structure.Application;
 
 /**
  * TODO
@@ -67,9 +68,8 @@ public class ApplicationGraphTester
                 }
             };
 
-        ApplicationInstance app = (ApplicationInstance) new ApplicationFactory().newApplication( assemblers );
-
-        new ApplicationGraph().show( app.model() );
+        Application app = new Energy4Java().newApplication( assemblers );
+        new ApplicationGraph().show( ( (ApplicationInstance) app ).model() );
     }
 
     private static class DomainAssembler implements Assembler
@@ -83,7 +83,7 @@ public class ApplicationGraphTester
 
     private static interface ADomainComposite extends Composite
     {
-        
+
     }
 
     private static interface BDomainComposite extends Composite

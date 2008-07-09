@@ -18,9 +18,9 @@
 package org.qi4j.library.rdf;
 
 import org.openrdf.model.Graph;
-import org.qi4j.runtime.structure.ApplicationModel;
+import org.qi4j.structure.Application;
 
 public interface Parser
 {
-    Graph parse( ApplicationModel binding, String applicationURI );
+    Graph parse( Application application, String applicationURI );
 }

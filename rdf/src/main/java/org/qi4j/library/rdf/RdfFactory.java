@@ -22,7 +22,7 @@ import org.qi4j.library.rdf.parse.StructureParser;
 import org.qi4j.library.rdf.serializer.N3Serializer;
 import org.qi4j.library.rdf.serializer.RdfXmlSerializer;
 import org.qi4j.library.rdf.serializer.TurtleSerializer;
-import org.qi4j.runtime.structure.ApplicationModel;
+import org.qi4j.structure.Application;
 
 public class RdfFactory
 {
@@ -70,7 +70,7 @@ public class RdfFactory
         return serializer;
     }
 
-    public void serialize( ApplicationModel applicationModel, String applicationUri, RdfFormat format, Writer out )
+    public void serialize( Application applicationModel, String applicationUri, RdfFormat format, Writer out )
         throws IOException
     {
         RdfFactory factory = RdfFactory.getInstance();

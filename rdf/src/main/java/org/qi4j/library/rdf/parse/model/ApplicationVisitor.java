@@ -18,25 +18,23 @@ import org.openrdf.model.Resource;
 import org.openrdf.model.URI;
 import org.qi4j.library.rdf.Qi4jRdf;
 import org.qi4j.library.rdf.parse.ParseContext;
-import org.qi4j.runtime.composite.CompositeMethodModel;
-import org.qi4j.runtime.composite.CompositeModel;
-import org.qi4j.runtime.structure.ApplicationModel;
-import org.qi4j.runtime.structure.LayerModel;
-import org.qi4j.runtime.structure.ModelVisitor;
-import org.qi4j.runtime.structure.ModuleModel;
+import org.qi4j.structure.Layer;
+import org.qi4j.structure.Application;
+import org.qi4j.structure.Module;
+import org.qi4j.composite.Composite;
 
 /**
  * TODO
  */
 public class ApplicationVisitor
-    extends ModelVisitor
+//    extends ModelVisitor
 {
     private ParseContext context;
 
     private URI appUri;
     private URI layerUri;
-    private LayerModel layerModel;
-    private ModuleModel moduleModel;
+    private Layer layerModel;
+    private Module moduleModel;
     private URI moduleUri;
     private URI compositeUri;
     private Resource compositeMethodUri;
@@ -47,14 +45,14 @@ public class ApplicationVisitor
         appUri = context.getApplicationURI();
     }
 
-    @Override public void visit( ApplicationModel applicationModel )
+    public void visit( Application applicationModel )
     {
-        String name = applicationModel.name();
+        String name = applicationModel.toURI();
         context.addName( appUri, name );
         context.addType( appUri, Qi4jRdf.TYPE_APPLICATION );
     }
 
-    @Override public void visit( LayerModel layerModel )
+    public void visit( Layer layerModel )
     {
         this.layerModel = layerModel;
         layerUri = context.createLayerUri( layerModel );
@@ -64,7 +62,7 @@ public class ApplicationVisitor
         context.addRelationship( appUri, Qi4jRdf.RELATIONSHIP_LAYER, layerUri );
     }
 
-    @Override public void visit( ModuleModel moduleModel )
+    public void visit( Module moduleModel )
     {
         this.moduleModel = moduleModel;
         moduleUri = context.createModuleUri( layerModel, moduleModel );
@@ -74,7 +72,7 @@ public class ApplicationVisitor
         context.addRelationship( layerUri, Qi4jRdf.RELATIONSHIP_MODULE, moduleUri );
     }
 
-    @Override public void visit( CompositeModel compositeModel )
+    public void visit( Composite compositeModel )
     {
         compositeUri = context.createCompositeUri( layerModel, moduleModel, compositeModel.type() );
 
@@ -83,12 +81,12 @@ public class ApplicationVisitor
         context.addRelationship( moduleUri, Qi4jRdf.RELATIONSHIP_COMPOSITE, compositeUri );
     }
 
-    @Override public void visit( CompositeMethodModel compositeMethodModel )
-    {
-        compositeMethodUri = context.getValueFactory().createBNode( compositeMethodModel.method().getName() );
-
-        context.addName( compositeMethodUri, compositeMethodModel.method().getName() );
-
-        context.addRelationship( compositeUri, Qi4jRdf.RELATION_METHOD, compositeMethodUri );
-    }
+//    @Override public void visit( CompositeMethodModel compositeMethodModel )
+//    {
+//        compositeMethodUri = context.getValueFactory().createBNode( compositeMethodModel.method().getName() );
+//
+//        context.addName( compositeMethodUri, compositeMethodModel.method().getName() );
+//
+//        context.addRelationship( compositeUri, Qi4jRdf.RELATION_METHOD, compositeMethodUri );
+//    }
 }

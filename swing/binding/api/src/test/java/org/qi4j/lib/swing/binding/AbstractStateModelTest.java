@@ -92,8 +92,14 @@ public abstract class AbstractStateModelTest extends AbstractQi4jTest
     public final void tearDown()
         throws Exception
     {
-        window.cleanUp();
-        uow.complete();
+        if( window != null )
+        {
+            window.cleanUp();
+        }
+        if( uow != null )
+        {
+            uow.complete();
+        }
         super.tearDown();
     }
 

@@ -26,8 +26,8 @@ import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
 import org.qi4j.library.rdf.Qi4jRdf;
 import org.qi4j.library.rdf.Rdfs;
-import org.qi4j.runtime.structure.LayerModel;
-import org.qi4j.runtime.structure.ModuleModel;
+import org.qi4j.structure.Layer;
+import org.qi4j.structure.Module;
 
 public final class ParseContext
 {
@@ -65,7 +65,7 @@ public final class ParseContext
         return applicationURI;
     }
 
-    public URI createServiceUri( LayerModel layer, ModuleModel module, Class type, String identity )
+    public URI createServiceUri( Layer layer, Module module, Class type, String identity )
     {
         String serviceType = normalizeClassToURI( type );
         URI moduleUri = createModuleUri( layer, module );
@@ -74,7 +74,7 @@ public final class ParseContext
         return uri;
     }
 
-    public URI createCompositeUri( LayerModel layer, ModuleModel module, Class composite )
+    public URI createCompositeUri( Layer layer, Module module, Class composite )
     {
         String compositeName = normalizeClassToURI( composite );
         URI uri = valueFactory.createURI( createModuleUri( layer, module ) + "/" + compositeName );
@@ -82,7 +82,7 @@ public final class ParseContext
         return uri;
     }
 
-    public URI createModuleUri( LayerModel layer, ModuleModel module )
+    public URI createModuleUri( Layer layer, Module module )
     {
         String moduleName = module.name();
         URI uri = valueFactory.createURI( createLayerUri( layer ).toString() + "/" + moduleName );
@@ -90,7 +90,7 @@ public final class ParseContext
         return uri;
     }
 
-    public URI createLayerUri( LayerModel layer )
+    public URI createLayerUri( Layer layer )
     {
         String layerName = layer.name();
         URI uri = valueFactory.createURI( applicationURI.toString() + "/" + layerName );
