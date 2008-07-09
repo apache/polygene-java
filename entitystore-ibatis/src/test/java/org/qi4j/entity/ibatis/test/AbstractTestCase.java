@@ -21,13 +21,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
-import org.qi4j.composite.Composite;
+import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.ibatis.DerbyDatabaseHandler;
 import org.qi4j.entity.ibatis.entity.PersonComposite;
-import org.qi4j.entity.EntityComposite;
 import org.qi4j.property.Property;
+import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.QualifiedIdentity;
@@ -70,7 +70,7 @@ public abstract class AbstractTestCase extends AbstractQi4jTest
 
     protected CompositeDescriptor getCompositeDescriptor( final Class<? extends EntityComposite> compositeType )
     {
-        return moduleInstance.findEntityCompositeFor( compositeType );
+        return ( (ModuleInstance) moduleInstance ).findEntityCompositeFor( compositeType );
     }
 
     @Before public void setUp() throws Exception

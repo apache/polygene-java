@@ -33,6 +33,7 @@ import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.runtime.structure.ModuleInstance;
 
 public final class IBatisEntityStateTest extends AbstractQi4jTest
 {
@@ -111,6 +112,6 @@ public final class IBatisEntityStateTest extends AbstractQi4jTest
 
     private CompositeDescriptor getCompositeDescriptor( final Class<? extends EntityComposite> mixinType )
     {
-        return moduleInstance.model().entities().getEntityModelFor( mixinType );
+        return ((ModuleInstance) moduleInstance).model().entities().getEntityModelFor( mixinType );
     }
 }

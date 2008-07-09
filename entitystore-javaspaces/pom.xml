@@ -19,12 +19,6 @@
 		</dependency>
 		<dependency>
 			<groupId>org.qi4j.core</groupId>
-			<artifactId>qi4j-core-runtime</artifactId>
-			<version>0.2.0-SNAPSHOT</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.qi4j.core</groupId>
 			<artifactId>qi4j-core-testsupport</artifactId>
 			<version>0.2.0-SNAPSHOT</version>
 			<scope>test</scope>

@@ -14,8 +14,8 @@
 
 package org.qi4j.entity.ibatis.test;
 
-import org.qi4j.property.Property;
 import java.lang.reflect.Type;
+import org.qi4j.property.Property;
 
 public class TestProperty<T> implements Property<T>
 {

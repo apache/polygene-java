@@ -37,6 +37,11 @@
   <dependencies>
     <dependency>
       <groupId>org.qi4j.core</groupId>
+      <artifactId>qi4j-core-api</artifactId>
+      <version>0.3-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.qi4j.core</groupId>
       <artifactId>qi4j-core-spi</artifactId>
       <version>0.3-SNAPSHOT</version>
     </dependency>
@@ -45,6 +50,7 @@
       <artifactId>qi4j-core-runtime</artifactId>
       <version>0.3-SNAPSHOT</version>
     </dependency>
+
     <dependency>
       <groupId>org.apache.ibatis</groupId>
       <artifactId>ibatis-sqlmap</artifactId>

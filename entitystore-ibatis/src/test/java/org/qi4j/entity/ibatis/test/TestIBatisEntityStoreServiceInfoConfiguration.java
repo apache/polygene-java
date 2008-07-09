@@ -14,8 +14,8 @@
 
 package org.qi4j.entity.ibatis.test;
 
-import org.qi4j.service.Configuration;
 import org.qi4j.entity.ibatis.IBatisConfiguration;
+import org.qi4j.service.Configuration;
 
 class TestIBatisEntityStoreServiceInfoConfiguration implements Configuration<IBatisConfiguration>
 {

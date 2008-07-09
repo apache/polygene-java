@@ -65,7 +65,7 @@ public class RestTest extends AbstractQi4jTest
                     }
                 }
             };
-        return applicationFactory.newApplication( assemblers );
+        return qi4j.newApplication( assemblers );
     }
 
     public void assemble( ModuleAssembly module )
