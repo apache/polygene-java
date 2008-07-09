@@ -1,6 +1,7 @@
 Bundle-Activator:
 
-Private-Package: org.qi4j.runtime.composite, \
+Private-Package: org.qi4j.runtime, \
+                 org.qi4j.runtime.composite, \
                  org.qi4j.runtime.bootstrap, \
                  org.qi4j.runtime.entity, \
                  org.qi4j.runtime.entity.association, \
