@@ -15,7 +15,7 @@
 package org.qi4j.runtime;
 
 import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Proxy;
+import static java.lang.reflect.Proxy.getInvocationHandler;
 import java.util.ArrayList;
 import java.util.List;
 import org.qi4j.composite.Composite;
@@ -23,15 +23,22 @@ import org.qi4j.entity.EntityComposite;
 import org.qi4j.injection.scope.This;
 import org.qi4j.runtime.composite.CompositeModel;
 import org.qi4j.runtime.composite.DefaultCompositeInstance;
+import static org.qi4j.runtime.composite.DefaultCompositeInstance.getCompositeInstance;
 import org.qi4j.runtime.composite.ProxyReferenceInvocationHandler;
+import org.qi4j.runtime.entity.EntityInstance;
+import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.injection.DependencyModel;
+import org.qi4j.runtime.structure.CompositesInstance;
+import org.qi4j.runtime.structure.CompositesModel;
 import org.qi4j.runtime.structure.DependencyVisitor;
+import org.qi4j.runtime.structure.EntitiesInstance;
+import org.qi4j.runtime.structure.EntitiesModel;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.service.Configuration;
 import org.qi4j.service.ServiceComposite;
+import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.composite.CompositeInstance;
-import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.structure.Module;
 
 /**
@@ -47,7 +54,7 @@ public final class Qi4jRuntime
     // API
     public Composite dereference( Composite composite )
     {
-        InvocationHandler handler = Proxy.getInvocationHandler( composite );
+        InvocationHandler handler = getInvocationHandler( composite );
         if( handler instanceof ProxyReferenceInvocationHandler )
         {
             return (Composite) ( (ProxyReferenceInvocationHandler) handler ).proxy();
@@ -103,21 +110,50 @@ public final class Qi4jRuntime
     // SPI
     public CompositeDescriptor getCompositeDescriptor( Composite composite )
     {
-        return DefaultCompositeInstance.getCompositeInstance( composite ).compositeModel();
+        Class<? extends Composite> compositeClass = composite.getClass();
+        if( EntityComposite.class.isAssignableFrom( compositeClass ) )
+        {
+            EntityInstance entityInstance = (EntityInstance) getInvocationHandler( composite );
+            return entityInstance.entityModel();
+        }
+        else
+        {
+            DefaultCompositeInstance defaultCompositeInstance = getCompositeInstance( composite );
+            return defaultCompositeInstance.compositeModel();
+        }
     }
 
+    @SuppressWarnings( "unchecked" )
     public CompositeDescriptor getCompositeDescriptor( Class mixinType, Module module )
     {
-        if( EntityComposite.class.isAssignableFrom( mixinType )  )
+        ModuleInstance moduleInstance = (ModuleInstance) module;
+        if( !Composite.class.isAssignableFrom( mixinType ) )
         {
-            return ( (ModuleInstance) module ).findEntityCompositeFor( mixinType );
+            EntitiesInstance entitiesInstance = moduleInstance.entities();
+            EntitiesModel entitiesModel = entitiesInstance.model();
+            EntityModel entityModel = entitiesModel.getEntityModelFor( mixinType );
+
+            if( entityModel != null )
+            {
+                return entityModel;
+            }
+
+            // It's not entities, let's try composite
+            CompositesInstance compositesInstance = moduleInstance.composites();
+            CompositesModel compositesModel = compositesInstance.model();
+            return compositesModel.getCompositeModelFor( mixinType );
         }
+        else if( EntityComposite.class.isAssignableFrom( mixinType ) )
+        {
+            return moduleInstance.findEntityCompositeFor( mixinType );
+        }
+
         return ( (ModuleInstance) module ).findCompositeFor( mixinType );
     }
 
     public void setMixins( Composite composite, Object[] mixins )
     {
-        DefaultCompositeInstance instance = DefaultCompositeInstance.getCompositeInstance( composite );
+        DefaultCompositeInstance instance = getCompositeInstance( composite );
 
         instance.setMixins( mixins );
     }

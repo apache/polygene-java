@@ -240,4 +240,9 @@ public final class EntityInstance
         entityState = null;
         mixins = null;
     }
+
+    public EntityModel entityModel()
+    {
+        return entity;
+    }
 }
