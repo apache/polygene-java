@@ -25,7 +25,7 @@ public final class QuikItFactoryMixin
     implements IPageFactory
 {
     @Structure
-    private ObjectBuilderFactory objectBuilderFactory;
+    private ObjectBuilderFactory obf;
 
     public final Page newPage( Class<? extends Page> pageClass )
     {
@@ -35,7 +35,7 @@ public final class QuikItFactoryMixin
     @SuppressWarnings( "unchecked" )
     public final Page newPage( Class<? extends Page> pageClass, PageParameters pageParameters )
     {
-        ObjectBuilder<? extends Page> builder = objectBuilderFactory.newObjectBuilder( pageClass );
+        ObjectBuilder<? extends Page> builder = obf.newObjectBuilder( pageClass );
         builder.use( pageParameters );
         return builder.newInstance();
     }

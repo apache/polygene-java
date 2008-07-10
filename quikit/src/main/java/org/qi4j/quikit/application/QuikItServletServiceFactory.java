@@ -11,16 +11,15 @@
  * limitations under the License.
  *
  */
-package org.qi4j.quikit.application.mixins;
+package org.qi4j.quikit.application;
 
 import org.qi4j.injection.scope.Structure;
 import org.qi4j.object.ObjectBuilderFactory;
-import org.qi4j.quikit.application.QuikItServlet;
 import org.qi4j.service.ServiceDescriptor;
 import org.qi4j.service.ServiceInstanceFactory;
 import org.qi4j.service.ServiceInstanceProviderException;
 
-public final class QuikItServletProviderMixin
+public final class QuikItServletServiceFactory
     implements ServiceInstanceFactory
 {
     @Structure ObjectBuilderFactory objectBuilderFactory;

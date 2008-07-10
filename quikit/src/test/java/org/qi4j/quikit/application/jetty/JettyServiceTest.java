@@ -16,33 +16,45 @@
  */
 package org.qi4j.quikit.application.jetty;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.Iterator;
+import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
+import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.quikit.application.ServletInfo;
-import org.qi4j.quikit.assembly.composites.HttpConfiguration;
 import org.qi4j.service.ServiceReference;
 import org.qi4j.test.AbstractQi4jTest;
-import org.junit.Test;
 
 /**
  * @author edward.yakop@gmail.com
  */
-public class JettyServiceTest extends AbstractQi4jTest
+public final class JettyServiceTest extends AbstractQi4jTest
 {
-    public void assemble( ModuleAssembly aModule )
+    protected final static int JETTY_PORT = 2020;
+
+    public final void assemble( ModuleAssembly aModule )
         throws AssemblyException
     {
-        aModule.addServices( JettyService.class );
-        aModule.addEntities( HttpConfiguration.class );
-        aModule.on( HttpConfiguration.class ).to()
-            .hostPort().set( 8080 );
+        HttpConfiguration configuration = new HttpConfiguration( JETTY_PORT );
+        aModule.addAssembler( new JettyServiceAssembler( configuration ) );
+
+        // Hello world servlet related assembly
+        aModule.addServices( HelloWorldServletService.class )
+            .providedBy( HelloWorldServletServiceFactory.class )
+            .setMetaInfo( new ServletInfo( "/helloWorld" ) )
+            .instantiateOnStartup();
     }
 
     @Test
     public final void testInstantiation()
+        throws Throwable
     {
         Iterable<ServiceReference<JettyService>> services =
             serviceLocator.findServices( JettyService.class );
@@ -56,5 +68,13 @@ public class JettyServiceTest extends AbstractQi4jTest
 
         JettyService jettyService = serviceRef.get();
         assertNotNull( jettyService );
+
+        URL url = new URL( "http://localhost:2020/helloWorld" );
+        URLConnection urlConnection = url.openConnection();
+        InputStream inputStream = urlConnection.getInputStream();
+        BufferedReader bufferedReader = new BufferedReader( new InputStreamReader( inputStream ) );
+        String output = bufferedReader.readLine();
+
+        assertEquals( "Hello World", output );
     }
 }

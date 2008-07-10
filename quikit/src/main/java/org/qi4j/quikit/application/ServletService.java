@@ -14,8 +14,10 @@
 package org.qi4j.quikit.application;
 
 import javax.servlet.Servlet;
+import org.qi4j.composite.Mixins;
 import org.qi4j.service.ServiceComposite;
 
+@Mixins( QuikItServlet.class )
 public interface ServletService extends Servlet, ServiceComposite
 {
 }

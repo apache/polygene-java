@@ -15,6 +15,9 @@
 package org.qi4j.quikit.application.jetty;
 
 import java.io.File;
+import java.net.URL;
+import java.security.CodeSource;
+import java.security.ProtectionDomain;
 import javax.servlet.Servlet;
 import org.mortbay.jetty.Connector;
 import org.mortbay.jetty.Server;
@@ -23,47 +26,47 @@ import static org.mortbay.jetty.servlet.Context.SESSIONS;
 import org.mortbay.jetty.servlet.DefaultServlet;
 import org.mortbay.jetty.servlet.ServletHolder;
 import org.qi4j.injection.scope.Service;
-import org.qi4j.injection.scope.This;
-import org.qi4j.property.Property;
+import org.qi4j.injection.scope.Uses;
 import org.qi4j.quikit.application.ServletInfo;
-import org.qi4j.quikit.assembly.composites.HttpConfiguration;
 import org.qi4j.service.Activatable;
-import org.qi4j.service.Configuration;
+import org.qi4j.service.ServiceDescriptor;
 import org.qi4j.service.ServiceReference;
 
 /**
  * TODO
  */
-public class JettyMixin
+class JettyMixin
     implements Activatable
 {
     private Server server;
-    private Configuration<HttpConfiguration> config;
+    private HttpConfiguration configuration;
 
-    public JettyMixin( @Service Iterable<ServiceReference<Servlet>> servlets,
-                       @This Configuration<HttpConfiguration> aConfig )
+    public JettyMixin(
+        @Service Iterable<ServiceReference<Servlet>> servlets,
+        @Uses ServiceDescriptor descriptor )
     {
-        config = aConfig;
+        configuration = descriptor.metaInfo( HttpConfiguration.class );
+        if( configuration == null )
+        {
+            throw new IllegalArgumentException( "Jetty service requires HttpConfiguration." );
+        }
 
         // Create a server given the host port
-        HttpConfiguration configuration = aConfig.configuration();
-        int port = configuration.hostPort().get();
+        int port = configuration.getHostPort();
         server = new Server( port );
 
         // Sets the context root
-        Property<String> rootContextPathProperty = configuration.rootContextPath();
-        String contextRoot = rootContextPathProperty.get();
+        String contextRoot = configuration.getRootContextPath();
         if( contextRoot == null )
         {
             contextRoot = "/";
-            rootContextPathProperty.set( contextRoot );
+            configuration.setRootContextPath( contextRoot );
         }
 
         Context root = new Context( server, contextRoot, SESSIONS );
-        File base = new File( getClass().getProtectionDomain().getCodeSource().getLocation().getPath() );
 
         // Sets the resource
-        root.setResourceBase( base.getAbsolutePath() );
+        root.setResourceBase( rootResourceBase() );
 
         // Sets the default servlet for default context
         root.addServlet( DefaultServlet.class, "/" );
@@ -72,27 +75,35 @@ public class JettyMixin
         for( ServiceReference<Servlet> servlet : servlets )
         {
             ServletInfo servletInfo = servlet.metaInfo( ServletInfo.class );
-            String path = servletInfo.getPath();
+            String servletPath = servletInfo.getPath();
+
             Servlet servletInstance = servlet.get();
             ServletHolder holder = new ServletHolder( servletInstance );
-            root.addServlet( holder, path );
+            root.addServlet( holder, servletPath );
         }
     }
 
-    public void activate() throws Exception
+    private String rootResourceBase()
     {
-        config.refresh();
+        ProtectionDomain domain = getClass().getProtectionDomain();
+        CodeSource source = domain.getCodeSource();
+        URL location = source.getLocation();
+        String basePath = location.getPath();
+        File base = new File( basePath );
+        return base.getAbsolutePath();
+    }
 
+    public final void activate() throws Exception
+    {
         Connector[] connectors = server.getConnectors();
         Connector connector = connectors[ 0 ];
 
-        HttpConfiguration configuration = config.configuration();
-        Integer hostPort = configuration.hostPort().get();
+        int hostPort = configuration.getHostPort();
         connector.setPort( hostPort );
         server.start();
     }
 
-    public void passivate() throws Exception
+    public final void passivate() throws Exception
     {
         server.stop();
     }
