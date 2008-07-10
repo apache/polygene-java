@@ -26,7 +26,7 @@ import prefuse.Constants;
 import prefuse.Display;
 import prefuse.controls.PanControl;
 import prefuse.controls.ZoomControl;
-import prefuse.controls.DragControl;
+import prefuse.controls.SubtreeDragControl;
 import prefuse.visual.VisualItem;
 import prefuse.util.ColorLib;
 import prefuse.render.LabelRenderer;
@@ -37,6 +37,8 @@ import prefuse.action.layout.graph.NodeLinkTreeLayout;
 import prefuse.action.ActionList;
 import prefuse.action.RepaintAction;
 import javax.swing.JFrame;
+import java.util.Map;
+import java.util.HashMap;
 
 /**
  * TODO
@@ -57,14 +59,15 @@ public class ApplicationGraph
     public void show( ApplicationModel applicationModel )
     {
 
-        final Graph graph = new Graph();
-        graph.addColumn( NAME, String.class);
-        graph.addColumn( TYPE, int.class);
+        final Graph graph = new Graph( true );
+        graph.addColumn( NAME, String.class );
+        graph.addColumn( TYPE, int.class );
 
         final Node root = graph.addNode();
-        root.setString( NAME, "Application");
+        root.setString( NAME, "Application" );
         root.setInt( TYPE, APPLICATION );
 
+        final Map<LayerModel, Node> layerNodes = new HashMap<LayerModel, Node>();
         applicationModel.visitModel( new ModelVisitor()
         {
 
@@ -73,17 +76,35 @@ public class ApplicationGraph
 
             @Override public void visit( LayerModel layerModel )
             {
-                layerNode = graph.addNode();
+                layerNode = layerNodes.get( layerModel );
+                if( layerNode == null )
+                {
+                    layerNode = graph.addNode();
+                    layerNodes.put( layerModel, layerNode );
+                }
+
+                Iterable<LayerModel> layers = layerModel.usedLayers().layers();
+                for( LayerModel layer : layers )
+                {
+                    Node usedLayerNode = layerNodes.get( layer );
+                    if( usedLayerNode == null )
+                    {
+                        usedLayerNode = graph.addNode();
+                        layerNodes.put( layer, usedLayerNode );
+                    }
+                    graph.addEdge( layerNode, usedLayerNode );
+                }
+
                 layerNode.setString( NAME, layerModel.name() );
                 layerNode.setInt( TYPE, LAYER );
                 graph.addEdge( root, layerNode );
             }
 
             @Override public void visit( ModuleModel moduleModel )
-            {   
+            {
                 moduleNode = graph.addNode();
                 moduleNode.setString( NAME, moduleModel.name() );
-                moduleNode.setInt( TYPE, MODULE);
+                moduleNode.setInt( TYPE, MODULE );
                 graph.addEdge( layerNode, moduleNode );
             }
 
@@ -104,66 +125,67 @@ public class ApplicationGraph
         vis.setInteractive( "graph.edges", null, false );
 
         // draw the "name" label for NodeItems
-        LabelRenderer r = new LabelRenderer( NAME );
-        r.setRoundedCorner(8, 8);
-        r.setHorizontalPadding( 5 );
-        r.setVerticalPadding( 5 );
+        LabelRenderer labelRenderer = new LabelRenderer( NAME );
+        labelRenderer.setRoundedCorner( 8, 8 );
+        labelRenderer.setHorizontalPadding( 5 );
+        labelRenderer.setVerticalPadding( 5 );
 
         // create a new default renderer factory
         // return our name label renderer as the default for all non-EdgeItems
         // includes straight line edges for EdgeItems by default
-        vis.setRendererFactory(new DefaultRendererFactory(r));
-
+        vis.setRendererFactory( new DefaultRendererFactory( labelRenderer ) );
 
         // create our nominal color palette
-        int[] palette = new int[] {
+        int[] palette = new int[]{
             ColorLib.rgb( 240, 240, 240 ), // Application node
             ColorLib.rgb( 255, 230, 230 ), // layers
             ColorLib.rgb( 220, 220, 255 ), // modules
             ColorLib.rgb( 255, 250, 205 )  // composites
         };
         // map nominal data values to colors using our provided palette
-        DataColorAction fill = new DataColorAction("graph.nodes", TYPE, Constants.NOMINAL,
-                                                   VisualItem.FILLCOLOR, palette);
+        DataColorAction fill = new DataColorAction( "graph.nodes", TYPE, Constants.NOMINAL,
+                                                    VisualItem.FILLCOLOR, palette );
 
         // color for node text
-        ColorAction text = new ColorAction( "graph.nodes", VisualItem.TEXTCOLOR, ColorLib.gray(0) );
+        ColorAction text = new ColorAction( "graph.nodes", VisualItem.TEXTCOLOR, ColorLib.gray( 0 ) );
         // color for edges
-        ColorAction edges = new ColorAction( "graph.edges", VisualItem.STROKECOLOR, ColorLib.gray(200) );
+        ColorAction edgesStroke = new ColorAction( "graph.edges", VisualItem.STROKECOLOR, ColorLib.gray( 200 ) );
+        ColorAction edgesFill = new ColorAction( "graph.edges", VisualItem.FILLCOLOR, ColorLib.gray( 200 ) );
 
         // an action list containing all color assignments
         ActionList color = new ActionList();
-        color.add(fill);
-        color.add(text);
-        color.add(edges);
+        color.add( fill );
+        color.add( text );
+        color.add( edgesStroke );
+        color.add( edgesFill );
 
         // an action list with the layout
         ActionList layout = new ActionList();
-        layout.add(new NodeLinkTreeLayout("graph", Constants.ORIENT_TOP_BOTTOM, 10, 10, 10 ));
-        layout.add(new RepaintAction());
+        layout.add( new NodeLinkTreeLayout( "graph", Constants.ORIENT_TOP_BOTTOM, 20, 20, 20 ) );
+        layout.add( new RepaintAction() );
 
         // add the actions to the visualization
-        vis.putAction("color", color);
-        vis.putAction("layout", layout);
+        vis.putAction( "color", color );
+        vis.putAction( "layout", layout );
 
-        Display display = new Display(vis);
+        Display display = new Display( vis );
         display.setSize( 640, 480 );
 
         // drag, pan and zoom controls
-        display.addControlListener(new DragControl());
-        display.addControlListener(new PanControl());
-        display.addControlListener(new ZoomControl());
+        display.addControlListener( new SubtreeDragControl() );
+        display.addControlListener( new PanControl() );
+        display.addControlListener( new ZoomControl() );
 
         JFrame frame = new JFrame( "Qi4j Application Graph - " + applicationModel.name() );
-        frame.add(display);
-        frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE);
+        frame.add( display );
+        frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
         frame.pack();
-        frame.setVisible(true);
+        frame.setVisible( true );
 
         // assign the colors
-        vis.run("color");
+        vis.run( "color" );
         // start up the layout
-        vis.run("layout");
+        vis.run( "layout" );
 
     }
 

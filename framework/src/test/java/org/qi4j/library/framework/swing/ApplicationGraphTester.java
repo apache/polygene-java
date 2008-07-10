@@ -14,12 +14,10 @@
 
 package org.qi4j.library.framework.swing;
 
-import org.qi4j.bootstrap.Assembler;
-import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.Energy4Java;
-import org.qi4j.bootstrap.LayerName;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.bootstrap.ModuleName;
+import org.qi4j.bootstrap.ApplicationAssembly;
+import org.qi4j.bootstrap.LayerAssembly;
 import org.qi4j.composite.Composite;
 import org.qi4j.runtime.structure.ApplicationInstance;
 import org.qi4j.structure.Application;
@@ -32,53 +30,40 @@ public class ApplicationGraphTester
     public static void main( String[] args )
         throws Exception
     {
-        Assembler[][][] assemblers = new Assembler[][][]
-            {
-                {
-                    {
-                        new LayerName( "UI" ),
-                        new ModuleName( "Swing" )
-                    },
-                    {
-                        new ModuleName( "Plugin 1" )
-                    },
-                    {
-                        new ModuleName( "Plugin 2" ),
-                        new Assembler()
-                        {
-                            public void assemble( ModuleAssembly module ) throws AssemblyException
-                            {
-                                module.addComposites( UIComposite.class );
-                            }
-                        }
-                    }
-                },
-                {
-                    {
-                        new LayerName( "Domain" ),
-                        new ModuleName( "Some domain" ),
-                        new DomainAssembler(),
-                    }
-                },
-                {
-                    {
-                        new LayerName( "Infrastructure" ),
-                        new ModuleName( "Database" )
-                    }
-                }
-            };
+        Energy4Java qi4j = new Energy4Java();
 
-        Application app = new Energy4Java().newApplication( assemblers );
+        ApplicationAssembly assembly = qi4j.newApplicationAssembly();
+
+        LayerAssembly domainLayer = assembly.newLayerAssembly();
+        domainLayer.setName( "Domain" );
+
+        ModuleAssembly someDomain = domainLayer.newModuleAssembly();
+        someDomain.setName( "Some domain" );
+        someDomain.addComposites( ADomainComposite.class, BDomainComposite.class );
+
+        LayerAssembly infrastructureLayer = assembly.newLayerAssembly();
+        infrastructureLayer.setName( "Infrastructure" );
+        ModuleAssembly database = infrastructureLayer.newModuleAssembly();
+        database.setName( "Database" );
+
+        LayerAssembly guiLayer = assembly.newLayerAssembly();
+        guiLayer.setName( "UI" );
+
+        ModuleAssembly swingModule = guiLayer.newModuleAssembly();
+        swingModule.setName( "Swing" );
+
+        ModuleAssembly plugin1 = guiLayer.newModuleAssembly();
+        plugin1.setName( "Plugin 1" );
+
+        ModuleAssembly plugin2 = guiLayer.newModuleAssembly();
+        plugin2.setName( "Plugin 2" );
+        plugin2.addComposites( UIComposite.class );
+
+        guiLayer.uses( domainLayer );
+        guiLayer.uses( infrastructureLayer );
+
+        Application app = qi4j.newApplication( assembly );
         new ApplicationGraph().show( ( (ApplicationInstance) app ).model() );
-    }
-
-    private static class DomainAssembler implements Assembler
-    {
-        public void assemble( ModuleAssembly module ) throws AssemblyException
-        {
-            module.addComposites( ADomainComposite.class );
-            module.addComposites( BDomainComposite.class );
-        }
     }
 
     private static interface ADomainComposite extends Composite
