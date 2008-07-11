@@ -28,8 +28,11 @@ import org.apache.commons.httpclient.methods.DeleteMethod;
 import org.apache.commons.httpclient.methods.PutMethod;
 import org.apache.commons.httpclient.methods.RequestEntity;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.anyOf;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -166,9 +169,12 @@ public class RestTest extends AbstractQi4jTest
     {
         final RestTester restTester = objectBuilderFactory.newObject( RestTester.class );
         final String result = restTester.getEntities( PersonEntity.class );
-        assertThat( "Returned XML",
-                    result,
-                    is( equalTo( "<?xml version=\"1.0\" encoding=\"UTF-8\"?><entities><entity href=\"/entity/org.qi4j.rest.RestTest$PersonEntity/P1\">P1</entity><entity href=\"/entity/org.qi4j.rest.RestTest$PersonEntity/P2\">P2</entity></entities>" ) ) );
+        assertThat(
+            "Returned XML", result,
+            anyOf(
+                equalTo( "<?xml version=\"1.0\" encoding=\"UTF-8\"?><entities><entity href=\"/entity/org.qi4j.rest.RestTest$PersonEntity/P1\">P1</entity><entity href=\"/entity/org.qi4j.rest.RestTest$PersonEntity/P2\">P2</entity></entities>" ),
+                equalTo( "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><entities><entity href=\"/entity/org.qi4j.rest.RestTest$PersonEntity/P1\">P1</entity><entity href=\"/entity/org.qi4j.rest.RestTest$PersonEntity/P2\">P2</entity></entities>" ) )
+        );
     }
 
     public static class RestTester
