@@ -10,7 +10,7 @@
 
   <groupId>org.qi4j.extension</groupId>
   <artifactId>qi4j-ext-indexing-rdf</artifactId>
-  <packaging>jar</packaging>
+  <packaging>bundle</packaging>
 
   <name>Qi4J Extension - Indexing - RDF</name>
   <version>0.3-SNAPSHOT</version>
@@ -21,16 +21,19 @@
       <groupId>org.qi4j.core</groupId>
       <artifactId>qi4j-core-api</artifactId>
       <version>0.3-SNAPSHOT</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.qi4j.core</groupId>
       <artifactId>qi4j-core-spi</artifactId>
       <version>0.3-SNAPSHOT</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.qi4j.core</groupId>
       <artifactId>qi4j-core-bootstrap</artifactId>
       <version>0.3-SNAPSHOT</version>
+      <scope>provided</scope>
     </dependency>
     <!-- Implementation dependencies -->
     <dependency>
@@ -61,7 +64,7 @@
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>
+      <artifactId>slf4j-simple</artifactId>
       <scope>runtime</scope>
     </dependency>
     <!-- Test dependencies -->

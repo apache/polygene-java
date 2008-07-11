@@ -1,0 +1,44 @@
+
+Bundle-Activator:
+
+Export-Package: org.qi4j.entity.index.rdf, \
+                org.qi4j.entity.index.rdf.assembly, \
+                org.qi4j.entity.index.rdf.http, \
+                org.qi4j.entity.index.rdf.memory, \
+                org.qi4j.entity.index.rdf.natiive
+
+Import-Package: org.osgi.framework, \
+                org.qi4j.entity.index.rdf, \
+                org.qi4j.entity.index.rdf.assembly, \
+                org.qi4j.entity.index.rdf.http, \
+                org.qi4j.entity.index.rdf.memory, \
+                org.qi4j.entity.index.rdf.natiive, \
+                org.qi4j.bootstrap, \
+                org.qi4j.composite, \
+                org.qi4j.entity, \
+                org.qi4j.injection.scope, \
+                org.qi4j.property, \
+                org.qi4j.query.grammar, \
+                org.qi4j.service, \
+                org.qi4j.spi, \
+                org.qi4j.spi.composite, \
+                org.qi4j.spi.entity, \
+                org.qi4j.spi.entity.association, \
+                org.qi4j.spi.property, \
+                org.qi4j.spi.query, \
+                org.qi4j.structure, \
+                org.qi4j.util
+
+Private-Package:
+
+Ignore-Package: org.apache.log4j.net, \
+                org.apache.log4j.lf5, \
+                org.apache.avalon.framework.logger, \
+                org.apache.log, \
+                org.w3c.dom, \
+                org.xml.sax, \
+                org.xml.sax.helpers, \
+
+Embed-Dependency: *;scope=compile|runtime
+
+Embed-Transitive:  true
