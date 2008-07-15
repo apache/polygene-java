@@ -11,6 +11,6 @@ public class GreaterThanConstraint
 {
     public boolean isValid( GreaterThan annotation, Number argument )
     {
-        return argument.doubleValue() < annotation.value();
+        return argument.doubleValue() > annotation.value();
     }
 }
