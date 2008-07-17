@@ -12,7 +12,7 @@
   <version>0.3-SNAPSHOT</version>
 
   <properties>
-    <version.wicket>1.4-m1</version.wicket>
+    <version.wicket>1.4-m3</version.wicket>
   </properties>
 
   <dependencies>
@@ -65,14 +65,4 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-
-  <repositories>
-    <repository>
-      <id>wicket</id>
-      <url>http://maven2.mirrors.skynet.be/pub/maven2/</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-  </repositories>
 </project>

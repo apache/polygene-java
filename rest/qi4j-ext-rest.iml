@@ -12,6 +12,7 @@
       <excludeFolder url="file://$MODULE_DIR$/target/classes" />
       <excludeFolder url="file://$MODULE_DIR$/target/dependency-maven-plugin-markers" />
       <excludeFolder url="file://$MODULE_DIR$/target/maven-archiver" />
+      <excludeFolder url="file://$MODULE_DIR$/target/surefire-reports" />
       <excludeFolder url="file://$MODULE_DIR$/target/test-classes" />
     </content>
     <orderEntry type="inheritedJdk" />
@@ -594,28 +595,15 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="org.slf4j:slf4j-log4j12:1.4.2">
+      <library name="org.slf4j:slf4j-simple:1.4.2">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/slf4j/slf4j-log4j12/1.4.2/slf4j-log4j12-1.4.2.jar!/" />
+          <root url="jar://$M2_REPO$/org/slf4j/slf4j-simple/1.4.2/slf4j-simple-1.4.2.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/slf4j/slf4j-log4j12/1.4.2/slf4j-log4j12-1.4.2-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/slf4j/slf4j-simple/1.4.2/slf4j-simple-1.4.2-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/slf4j/slf4j-log4j12/1.4.2/slf4j-log4j12-1.4.2-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="log4j:log4j:1.2.14">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/log4j/log4j/1.2.14/log4j-1.2.14.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/log4j/log4j/1.2.14/log4j-1.2.14-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/log4j/log4j/1.2.14/log4j-1.2.14-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/slf4j/slf4j-simple/1.4.2/slf4j-simple-1.4.2-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
@@ -656,6 +644,19 @@
         </JAVADOC>
         <SOURCES>
           <root url="jar://$M2_REPO$/com/noelios/restlet/com.noelios.restlet/1.1-M3/com.noelios.restlet-1.1-M3-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="log4j:log4j:1.2.14">
+        <CLASSES>
+          <root url="jar://$M2_REPO$/log4j/log4j/1.2.14/log4j-1.2.14.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$M2_REPO$/log4j/log4j/1.2.14/log4j-1.2.14-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$M2_REPO$/log4j/log4j/1.2.14/log4j-1.2.14-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
