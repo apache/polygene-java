@@ -27,16 +27,15 @@ public final class QuikItFactoryMixin
     @Structure
     private ObjectBuilderFactory obf;
 
-    public final Page newPage( Class<? extends Page> pageClass )
+    public final <C extends Page> Page newPage( final Class<C> pageClass )
     {
         return newPage( pageClass, NULL );
     }
 
-    @SuppressWarnings( "unchecked" )
-    public final Page newPage( Class<? extends Page> pageClass, PageParameters pageParameters )
+    public final <C extends Page> Page newPage( final Class<C> pageClass, final PageParameters parameters )
     {
         ObjectBuilder<? extends Page> builder = obf.newObjectBuilder( pageClass );
-        builder.use( pageParameters );
+        builder.use( parameters );
         return builder.newInstance();
     }
 }

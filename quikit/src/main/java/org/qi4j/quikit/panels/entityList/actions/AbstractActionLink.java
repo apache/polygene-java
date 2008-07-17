@@ -40,6 +40,6 @@ public abstract class AbstractActionLink<T> extends AjaxLink<T>
         setOutputMarkupId( true );
 
         // Action label
-        add( new Label<String>( WICKET_ID_ACTION_LABEL, aLabelModel ) );
+        add( new Label( WICKET_ID_ACTION_LABEL, aLabelModel ) );
     }
 }

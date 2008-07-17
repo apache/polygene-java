@@ -34,7 +34,7 @@ import static org.qi4j.quikit.panels.entityList.EntityPropertyValueDataProvider.
 import org.qi4j.quikit.panels.entityList.actions.add.AddCompositeLink;
 
 public class EntityListViewPanel<T extends EntityComposite>
-    extends Panel<Class<T>>
+    extends Panel
 {
     private static final long serialVersionUID = 1L;
 
@@ -47,7 +47,7 @@ public class EntityListViewPanel<T extends EntityComposite>
     {
         super( aWicketId, new Model<Class<T>>( anEntityCompositeClass ) );
 
-        IModel<Class<T>> model = getModel();
+        IModel<Class<T>> model = (IModel<Class<T>>) getDefaultModel();
 
         // Add headers
         HeadersDataView headersDataView = newEntityHeadersDataView( anOBF, model );
@@ -105,7 +105,7 @@ public class EntityListViewPanel<T extends EntityComposite>
         protected final void populateItem( Item<PropertyLabel> item )
         {
             IModel<PropertyLabel> propertyLabelModel = item.getModel();
-            Label<PropertyLabel> label = new Label<PropertyLabel>( WICKET_ID_HEADER, propertyLabelModel );
+            Label label = new Label( WICKET_ID_HEADER, propertyLabelModel );
             item.add( label );
         }
     }
@@ -179,7 +179,7 @@ public class EntityListViewPanel<T extends EntityComposite>
             protected final void populateItem( Item<EntityFieldValue> item )
             {
                 IModel<EntityFieldValue> fieldValueModel = item.getModel();
-                Label<EntityFieldValue> label = new Label<EntityFieldValue>( WICKET_ID_COLUMN, fieldValueModel );
+                Label label = new Label( WICKET_ID_COLUMN, fieldValueModel );
                 item.add( label );
             }
         }
