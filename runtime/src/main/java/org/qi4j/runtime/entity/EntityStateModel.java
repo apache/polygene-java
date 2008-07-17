@@ -137,7 +137,9 @@ public final class EntityStateModel
         private final EntityState entityState;
         private final UnitOfWorkInstance uow;
 
-        private EntityStateInstance( EntityPropertiesModel entityPropertiesModel, AssociationsModel associationsModel, EntityState entityState, UnitOfWorkInstance uow )
+        private EntityStateInstance(
+            EntityPropertiesModel entityPropertiesModel, AssociationsModel associationsModel, EntityState entityState,
+            UnitOfWorkInstance uow )
         {
             this.entityPropertiesModel = entityPropertiesModel;
             this.associationsModel = associationsModel;

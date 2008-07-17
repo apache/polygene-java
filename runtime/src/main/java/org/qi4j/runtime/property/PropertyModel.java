@@ -21,6 +21,8 @@ import java.util.List;
 import org.qi4j.composite.ConstraintViolation;
 import org.qi4j.composite.ConstraintViolationException;
 import org.qi4j.property.AbstractPropertyInstance;
+import static org.qi4j.property.AbstractPropertyInstance.getPropertyType;
+import static org.qi4j.property.AbstractPropertyInstance.getQualifiedName;
 import org.qi4j.property.ImmutableProperty;
 import org.qi4j.property.Property;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
@@ -47,15 +49,15 @@ public class PropertyModel
     private final Object defaultValue;
     private final boolean immutable;
 
-    public PropertyModel( Method anAccessor, ValueConstraintsInstance constraints, MetaInfo metaInfo, Object defaultValue )
+    public PropertyModel(
+        Method anAccessor, ValueConstraintsInstance constraints, MetaInfo aMetaInfo, Object aPropertyDefaultValue )
     {
-        this.metaInfo = metaInfo;
+        metaInfo = aMetaInfo;
         name = anAccessor.getName();
-        type = AbstractPropertyInstance.getPropertyType( anAccessor );
+        type = getPropertyType( anAccessor );
         accessor = anAccessor;
-        qualifiedName = AbstractPropertyInstance.getQualifiedName( anAccessor );
-
-        this.defaultValue = defaultValue;
+        qualifiedName = getQualifiedName( anAccessor );
+        defaultValue = aPropertyDefaultValue;
 
         this.constraints = constraints;
 
@@ -127,6 +129,7 @@ public class PropertyModel
         return newInstance( ImmutablePropertyInstance.UNSET );
     }
 
+    @SuppressWarnings( "unchecked" )
     public Property<?> newInstance( Object value )
     {
         if( immutable )
@@ -151,6 +154,7 @@ public class PropertyModel
         }
     }
 
+    @Override
     public boolean equals( Object o )
     {
         if( this == o )
@@ -172,12 +176,14 @@ public class PropertyModel
         return true;
     }
 
+    @Override
     public int hashCode()
     {
         return accessor.hashCode();
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return accessor.toGenericString();
     }

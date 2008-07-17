@@ -90,6 +90,7 @@ public final class Qi4jRuntime
         final List<DependencyModel> dependencyModels = new ArrayList<DependencyModel>();
         descriptor.visitModel( new DependencyVisitor( new DependencyModel.ScopeSpecification( This.class ) )
         {
+            @Override
             public void visitDependency( DependencyModel dependencyModel )
             {
                 dependencyModels.add( dependencyModel );
@@ -148,7 +149,7 @@ public final class Qi4jRuntime
             return moduleInstance.findEntityCompositeFor( mixinType );
         }
 
-        return ( (ModuleInstance) module ).findCompositeFor( mixinType );
+        return moduleInstance.findCompositeFor( mixinType );
     }
 
     public void setMixins( Composite composite, Object[] mixins )

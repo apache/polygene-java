@@ -39,9 +39,9 @@ public class Energy4Java
         return serviceLoader;
     }
 
-    public static void setServiceLoader( ServiceLoader serviceLoader )
+    public static void setServiceLoader( ServiceLoader aServiceLoader )
     {
-        Energy4Java.serviceLoader = serviceLoader;
+        serviceLoader = aServiceLoader;
     }
 
     public Energy4Java()

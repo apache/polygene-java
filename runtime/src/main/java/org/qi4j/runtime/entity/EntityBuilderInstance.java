@@ -46,7 +46,7 @@ public final class EntityBuilderInstance<T>
     private final UnitOfWorkInstance uow;
     private final EntityStore store;
     private final IdentityGenerator identityGenerator;
-    
+
     private T stateProxy;
     private State state;
 
@@ -62,7 +62,9 @@ public final class EntityBuilderInstance<T>
         }
     }
 
-    public EntityBuilderInstance( ModuleInstance moduleInstance, EntityModel entityModel, UnitOfWorkInstance uow, EntityStore store, IdentityGenerator identityGenerator )
+    public EntityBuilderInstance(
+        ModuleInstance moduleInstance, EntityModel entityModel, UnitOfWorkInstance uow, EntityStore store,
+        IdentityGenerator identityGenerator )
     {
         this.moduleInstance = moduleInstance;
         this.entityModel = entityModel;
@@ -71,6 +73,7 @@ public final class EntityBuilderInstance<T>
         this.identityGenerator = identityGenerator;
     }
 
+    @SuppressWarnings( "unchecked" )
     public T stateOfComposite()
     {
         // Instantiate proxy for given composite interface
@@ -184,9 +187,6 @@ public final class EntityBuilderInstance<T>
     protected class StateInvocationHandler
         implements InvocationHandler
     {
-        public StateInvocationHandler()
-        {
-        }
 
         public Object invoke( Object o, Method method, Object[] objects ) throws Throwable
         {
