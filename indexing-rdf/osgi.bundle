@@ -7,7 +7,8 @@ Export-Package: org.qi4j.entity.index.rdf, \
                 org.qi4j.entity.index.rdf.memory, \
                 org.qi4j.entity.index.rdf.natiive
 
-Import-Package: org.osgi.framework, \
+Import-Package: javax.*, \
+                org.osgi.framework, \
                 org.qi4j.entity.index.rdf, \
                 org.qi4j.entity.index.rdf.assembly, \
                 org.qi4j.entity.index.rdf.http, \
@@ -31,13 +32,13 @@ Import-Package: org.osgi.framework, \
 
 Private-Package:
 
-Ignore-Package: org.apache.log4j.net, \
-                org.apache.log4j.lf5, \
-                org.apache.avalon.framework.logger, \
+Ignore-Package: org.apache.avalon.framework.logger, \
                 org.apache.log, \
+                org.apache.log4j, \
+                org.apache.log4j.*, \
                 org.w3c.dom, \
                 org.xml.sax, \
-                org.xml.sax.helpers, \
+                org.xml.sax.helpers
 
 Embed-Dependency: *;scope=compile|runtime
 
