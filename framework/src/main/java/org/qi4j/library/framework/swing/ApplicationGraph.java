@@ -100,7 +100,8 @@ public class ApplicationGraph
                 graph.addEdge( root, layerNode );
             }
 
-            @Override public void visit( ModuleModel moduleModel )
+            @Override
+            public void visit( ModuleModel moduleModel )
             {
                 moduleNode = graph.addNode();
                 moduleNode.setString( NAME, moduleModel.name() );
@@ -108,7 +109,7 @@ public class ApplicationGraph
                 graph.addEdge( layerNode, moduleNode );
             }
 
-            public void visit( CompositeModel compositeModel )
+            @Override public void visit( CompositeModel compositeModel )
             {
                 Node node = graph.addNode();
                 node.setString( NAME, compositeModel.type().getSimpleName() );
@@ -186,7 +187,5 @@ public class ApplicationGraph
         vis.run( "color" );
         // start up the layout
         vis.run( "layout" );
-
     }
-
 }
