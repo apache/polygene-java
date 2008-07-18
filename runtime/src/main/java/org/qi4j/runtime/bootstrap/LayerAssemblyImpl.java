@@ -18,9 +18,10 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.bootstrap.LayerAssembly;
 import org.qi4j.bootstrap.ApplicationAssembly;
+import org.qi4j.bootstrap.LayerAssembly;
+import org.qi4j.bootstrap.ModuleAssembly;
+import static org.qi4j.composite.NullArgumentException.validateNotNull;
 
 /**
  * Assembly of a Layer. From here you can create more ModuleAssemblies for
@@ -31,14 +32,17 @@ public final class LayerAssemblyImpl
     implements LayerAssembly
 {
     private ApplicationAssembly applicationAssembly;
-    private List<ModuleAssemblyImpl> moduleAssemblies = new ArrayList<ModuleAssemblyImpl>();
-    private Set<LayerAssembly> uses = new LinkedHashSet<LayerAssembly>();
+    private List<ModuleAssemblyImpl> moduleAssemblies;
+    private Set<LayerAssembly> uses;
 
     private String name;
 
     public LayerAssemblyImpl( ApplicationAssembly applicationAssembly )
     {
         this.applicationAssembly = applicationAssembly;
+
+        moduleAssemblies = new ArrayList<ModuleAssemblyImpl>();
+        uses = new LinkedHashSet<LayerAssembly>();
     }
 
     public ModuleAssembly newModuleAssembly()
@@ -59,7 +63,9 @@ public final class LayerAssemblyImpl
     }
 
     public void uses( LayerAssembly layerAssembly )
+        throws IllegalArgumentException
     {
+        validateNotNull( "layerAssembly", layerAssembly );
         uses.add( layerAssembly );
     }
 
@@ -76,5 +82,11 @@ public final class LayerAssemblyImpl
     public String getName()
     {
         return name;
+    }
+
+    @Override
+    public final String toString()
+    {
+        return "LayerAssembly [" + name + "]";
     }
 }

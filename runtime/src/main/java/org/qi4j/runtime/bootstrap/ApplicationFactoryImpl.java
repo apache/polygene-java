@@ -100,7 +100,8 @@ public final class ApplicationFactoryImpl
             List<LayerModel> usedLayers = new ArrayList<LayerModel>();
             for( LayerAssembly usesLayer : usesLayers )
             {
-                usedLayers.add( mapAssemblyModel.get( usesLayer ) );
+                LayerModel layerModel = mapAssemblyModel.get( usesLayer );
+                usedLayers.add( layerModel );
             }
             UsedLayersModel usedLayersModel = new UsedLayersModel( usedLayers );
             List<ModuleModel> moduleModels = new ArrayList<ModuleModel>();
