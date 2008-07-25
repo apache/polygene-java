@@ -1,45 +1,28 @@
+Export-Package:
+ org.qi4j.entity.index.rdf;version="1.0.0", \
+ org.qi4j.entity.index.rdf.assembly;version="1.0.0", \
+ org.qi4j.entity.index.rdf.http;version="1.0.0", \
+ org.qi4j.entity.index.rdf.memory;version="1.0.0", \
+ org.qi4j.entity.index.rdf.natiive;version="1.0.0"
 
-Bundle-Activator:
-
-Export-Package: org.qi4j.entity.index.rdf, \
-                org.qi4j.entity.index.rdf.assembly, \
-                org.qi4j.entity.index.rdf.http, \
-                org.qi4j.entity.index.rdf.memory, \
-                org.qi4j.entity.index.rdf.natiive
-
-Import-Package: javax.*, \
-                org.osgi.framework, \
-                org.qi4j.entity.index.rdf, \
-                org.qi4j.entity.index.rdf.assembly, \
-                org.qi4j.entity.index.rdf.http, \
-                org.qi4j.entity.index.rdf.memory, \
-                org.qi4j.entity.index.rdf.natiive, \
-                org.qi4j.bootstrap, \
-                org.qi4j.composite, \
-                org.qi4j.entity, \
-                org.qi4j.injection.scope, \
-                org.qi4j.property, \
-                org.qi4j.query.grammar, \
-                org.qi4j.service, \
-                org.qi4j.spi, \
-                org.qi4j.spi.composite, \
-                org.qi4j.spi.entity, \
-                org.qi4j.spi.entity.association, \
-                org.qi4j.spi.property, \
-                org.qi4j.spi.query, \
-                org.qi4j.structure, \
-                org.qi4j.util
+Import-Package: \
+ javax.*, \
+ org.apache.commons.logging.*, \
+ org.apache.log4j.*, \
+ org.osgi.*;version="1.0.0", \
+ org.slf4j.*, \
+ org.qi4j.*, \
+ org.xml.*, \
+ org.w3c.dom
 
 Private-Package:
 
-Ignore-Package: org.apache.avalon.framework.logger, \
-                org.apache.log, \
-                org.apache.log4j, \
-                org.apache.log4j.*, \
-                org.w3c.dom, \
-                org.xml.sax, \
-                org.xml.sax.helpers
+Ignore-Package:
+ org.apache.commons.logging.*, \
+ org.apache.log4j.*, \
+ org.slf4j.*
 
-Embed-Dependency: *;scope=compile|runtime
+Embed-Dependency: \
+ *;scope=compile|runtime;groupId=!org.slf4j*
 
 Embed-Transitive:  true

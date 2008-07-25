@@ -10,6 +10,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/resources" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/target/classes" />
+      <excludeFolder url="file://$MODULE_DIR$/target/surefire-reports" />
       <excludeFolder url="file://$MODULE_DIR$/target/test-classes" />
     </content>
     <orderEntry type="inheritedJdk" />
@@ -33,41 +34,41 @@
     </orderEntry>
     <orderEntry type="module" module-name="qi4j-ext-indexing-rdf" exported="" />
     <orderEntry type="module-library">
-      <library name="org.openrdf:openrdf-model:2.0.1">
+      <library name="org.openrdf.sesame:sesame-model:2.1.3">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-model/2.0.1/openrdf-model-2.0.1.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-model/2.1.3/sesame-model-2.1.3.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-model/2.0.1/openrdf-model-2.0.1-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-model/2.1.3/sesame-model-2.1.3-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-model/2.0.1/openrdf-model-2.0.1-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-model/2.1.3/sesame-model-2.1.3-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="info.aduna:aduna-collections:1.4">
+      <library name="info.aduna.commons:aduna-commons-collections:2.1">
         <CLASSES>
-          <root url="jar://$M2_REPO$/info/aduna/aduna-collections/1.4/aduna-collections-1.4.jar!/" />
+          <root url="jar://$M2_REPO$/info/aduna/commons/aduna-commons-collections/2.1/aduna-commons-collections-2.1.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/info/aduna/aduna-collections/1.4/aduna-collections-1.4-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/info/aduna/commons/aduna-commons-collections/2.1/aduna-commons-collections-2.1-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/info/aduna/aduna-collections/1.4/aduna-collections-1.4-sources.jar!/" />
+          <root url="jar://$M2_REPO$/info/aduna/commons/aduna-commons-collections/2.1/aduna-commons-collections-2.1-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="info.aduna:aduna-concurrent:1.4">
+      <library name="info.aduna.commons:aduna-commons-concurrent:2.1">
         <CLASSES>
-          <root url="jar://$M2_REPO$/info/aduna/aduna-concurrent/1.4/aduna-concurrent-1.4.jar!/" />
+          <root url="jar://$M2_REPO$/info/aduna/commons/aduna-commons-concurrent/2.1/aduna-commons-concurrent-2.1.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/info/aduna/aduna-concurrent/1.4/aduna-concurrent-1.4-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/info/aduna/commons/aduna-commons-concurrent/2.1/aduna-commons-concurrent-2.1-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/info/aduna/aduna-concurrent/1.4/aduna-concurrent-1.4-sources.jar!/" />
+          <root url="jar://$M2_REPO$/info/aduna/commons/aduna-commons-concurrent/2.1/aduna-commons-concurrent-2.1-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
@@ -85,379 +86,379 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="info.aduna:aduna-iteration:1.5">
+      <library name="info.aduna.commons:aduna-commons-iteration:2.1">
         <CLASSES>
-          <root url="jar://$M2_REPO$/info/aduna/aduna-iteration/1.5/aduna-iteration-1.5.jar!/" />
+          <root url="jar://$M2_REPO$/info/aduna/commons/aduna-commons-iteration/2.1/aduna-commons-iteration-2.1.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/info/aduna/aduna-iteration/1.5/aduna-iteration-1.5-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/info/aduna/commons/aduna-commons-iteration/2.1/aduna-commons-iteration-2.1-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/info/aduna/aduna-iteration/1.5/aduna-iteration-1.5-sources.jar!/" />
+          <root url="jar://$M2_REPO$/info/aduna/commons/aduna-commons-iteration/2.1/aduna-commons-iteration-2.1-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="org.openrdf:openrdf-query:2.0.1">
+      <library name="org.openrdf.sesame:sesame-query:2.1.3">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-query/2.0.1/openrdf-query-2.0.1.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-query/2.1.3/sesame-query-2.1.3.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-query/2.0.1/openrdf-query-2.0.1-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-query/2.1.3/sesame-query-2.1.3-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-query/2.0.1/openrdf-query-2.0.1-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-query/2.1.3/sesame-query-2.1.3-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="org.openrdf:openrdf-rio-api:2.0.1">
+      <library name="org.openrdf.sesame:sesame-rio-api:2.1.3">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-rio-api/2.0.1/openrdf-rio-api-2.0.1.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-rio-api/2.1.3/sesame-rio-api-2.1.3.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-rio-api/2.0.1/openrdf-rio-api-2.0.1-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-rio-api/2.1.3/sesame-rio-api-2.1.3-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-rio-api/2.0.1/openrdf-rio-api-2.0.1-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-rio-api/2.1.3/sesame-rio-api-2.1.3-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="info.aduna:aduna-lang:1.4">
+      <library name="info.aduna.commons:aduna-commons-lang:2.1">
         <CLASSES>
-          <root url="jar://$M2_REPO$/info/aduna/aduna-lang/1.4/aduna-lang-1.4.jar!/" />
+          <root url="jar://$M2_REPO$/info/aduna/commons/aduna-commons-lang/2.1/aduna-commons-lang-2.1.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/info/aduna/aduna-lang/1.4/aduna-lang-1.4-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/info/aduna/commons/aduna-commons-lang/2.1/aduna-commons-lang-2.1-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/info/aduna/aduna-lang/1.4/aduna-lang-1.4-sources.jar!/" />
+          <root url="jar://$M2_REPO$/info/aduna/commons/aduna-commons-lang/2.1/aduna-commons-lang-2.1-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="info.aduna:aduna-net:1.5">
+      <library name="info.aduna.commons:aduna-commons-net:2.1">
         <CLASSES>
-          <root url="jar://$M2_REPO$/info/aduna/aduna-net/1.5/aduna-net-1.5.jar!/" />
+          <root url="jar://$M2_REPO$/info/aduna/commons/aduna-commons-net/2.1/aduna-commons-net-2.1.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/info/aduna/aduna-net/1.5/aduna-net-1.5-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/info/aduna/commons/aduna-commons-net/2.1/aduna-commons-net-2.1-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/info/aduna/aduna-net/1.5/aduna-net-1.5-sources.jar!/" />
+          <root url="jar://$M2_REPO$/info/aduna/commons/aduna-commons-net/2.1/aduna-commons-net-2.1-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="info.aduna:aduna-text:1.3">
+      <library name="info.aduna.commons:aduna-commons-text:2.1">
         <CLASSES>
-          <root url="jar://$M2_REPO$/info/aduna/aduna-text/1.3/aduna-text-1.3.jar!/" />
+          <root url="jar://$M2_REPO$/info/aduna/commons/aduna-commons-text/2.1/aduna-commons-text-2.1.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/info/aduna/aduna-text/1.3/aduna-text-1.3-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/info/aduna/commons/aduna-commons-text/2.1/aduna-commons-text-2.1-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/info/aduna/aduna-text/1.3/aduna-text-1.3-sources.jar!/" />
+          <root url="jar://$M2_REPO$/info/aduna/commons/aduna-commons-text/2.1/aduna-commons-text-2.1-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="org.openrdf:openrdf-queryparser-api:2.0.1">
+      <library name="org.openrdf.sesame:sesame-queryalgebra-model:2.1.3">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-queryparser-api/2.0.1/openrdf-queryparser-api-2.0.1.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-queryalgebra-model/2.1.3/sesame-queryalgebra-model-2.1.3.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-queryparser-api/2.0.1/openrdf-queryparser-api-2.0.1-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-queryalgebra-model/2.1.3/sesame-queryalgebra-model-2.1.3-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-queryparser-api/2.0.1/openrdf-queryparser-api-2.0.1-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-queryalgebra-model/2.1.3/sesame-queryalgebra-model-2.1.3-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="org.openrdf:openrdf-queryalgebra-model:2.0.1">
+      <library name="org.openrdf.sesame:sesame-queryparser-api:2.1.3">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-queryalgebra-model/2.0.1/openrdf-queryalgebra-model-2.0.1.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-queryparser-api/2.1.3/sesame-queryparser-api-2.1.3.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-queryalgebra-model/2.0.1/openrdf-queryalgebra-model-2.0.1-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-queryparser-api/2.1.3/sesame-queryparser-api-2.1.3-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-queryalgebra-model/2.0.1/openrdf-queryalgebra-model-2.0.1-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-queryparser-api/2.1.3/sesame-queryparser-api-2.1.3-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="org.openrdf:openrdf-queryparser-serql:2.0.1">
+      <library name="org.openrdf.sesame:sesame-queryparser-serql:2.1.3">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-queryparser-serql/2.0.1/openrdf-queryparser-serql-2.0.1.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-queryparser-serql/2.1.3/sesame-queryparser-serql-2.1.3.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-queryparser-serql/2.0.1/openrdf-queryparser-serql-2.0.1-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-queryparser-serql/2.1.3/sesame-queryparser-serql-2.1.3-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-queryparser-serql/2.0.1/openrdf-queryparser-serql-2.0.1-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-queryparser-serql/2.1.3/sesame-queryparser-serql-2.1.3-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="org.openrdf:openrdf-queryparser-sparql:2.0.1">
+      <library name="org.openrdf.sesame:sesame-queryparser-sparql:2.1.3">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-queryparser-sparql/2.0.1/openrdf-queryparser-sparql-2.0.1.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-queryparser-sparql/2.1.3/sesame-queryparser-sparql-2.1.3.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-queryparser-sparql/2.0.1/openrdf-queryparser-sparql-2.0.1-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-queryparser-sparql/2.1.3/sesame-queryparser-sparql-2.1.3-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-queryparser-sparql/2.0.1/openrdf-queryparser-sparql-2.0.1-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-queryparser-sparql/2.1.3/sesame-queryparser-sparql-2.1.3-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="org.openrdf:openrdf-queryresultio-api:2.0.1">
+      <library name="org.openrdf.sesame:sesame-queryresultio-api:2.1.3">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-queryresultio-api/2.0.1/openrdf-queryresultio-api-2.0.1.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-queryresultio-api/2.1.3/sesame-queryresultio-api-2.1.3.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-queryresultio-api/2.0.1/openrdf-queryresultio-api-2.0.1-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-queryresultio-api/2.1.3/sesame-queryresultio-api-2.1.3-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-queryresultio-api/2.0.1/openrdf-queryresultio-api-2.0.1-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-queryresultio-api/2.1.3/sesame-queryresultio-api-2.1.3-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="org.openrdf:openrdf-queryresultio-binary:2.0.1">
+      <library name="org.openrdf.sesame:sesame-queryresultio-binary:2.1.3">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-queryresultio-binary/2.0.1/openrdf-queryresultio-binary-2.0.1.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-queryresultio-binary/2.1.3/sesame-queryresultio-binary-2.1.3.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-queryresultio-binary/2.0.1/openrdf-queryresultio-binary-2.0.1-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-queryresultio-binary/2.1.3/sesame-queryresultio-binary-2.1.3-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-queryresultio-binary/2.0.1/openrdf-queryresultio-binary-2.0.1-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-queryresultio-binary/2.1.3/sesame-queryresultio-binary-2.1.3-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="info.aduna:aduna-io:1.3">
+      <library name="info.aduna.commons:aduna-commons-io:2.2">
         <CLASSES>
-          <root url="jar://$M2_REPO$/info/aduna/aduna-io/1.3/aduna-io-1.3.jar!/" />
+          <root url="jar://$M2_REPO$/info/aduna/commons/aduna-commons-io/2.2/aduna-commons-io-2.2.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/info/aduna/aduna-io/1.3/aduna-io-1.3-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/info/aduna/commons/aduna-commons-io/2.2/aduna-commons-io-2.2-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/info/aduna/aduna-io/1.3/aduna-io-1.3-sources.jar!/" />
+          <root url="jar://$M2_REPO$/info/aduna/commons/aduna-commons-io/2.2/aduna-commons-io-2.2-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="org.openrdf:openrdf-queryresultio-sparqljson:2.0.1">
+      <library name="org.openrdf.sesame:sesame-queryresultio-sparqljson:2.1.3">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-queryresultio-sparqljson/2.0.1/openrdf-queryresultio-sparqljson-2.0.1.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-queryresultio-sparqljson/2.1.3/sesame-queryresultio-sparqljson-2.1.3.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-queryresultio-sparqljson/2.0.1/openrdf-queryresultio-sparqljson-2.0.1-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-queryresultio-sparqljson/2.1.3/sesame-queryresultio-sparqljson-2.1.3-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-queryresultio-sparqljson/2.0.1/openrdf-queryresultio-sparqljson-2.0.1-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-queryresultio-sparqljson/2.1.3/sesame-queryresultio-sparqljson-2.1.3-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="org.openrdf:openrdf-queryresultio-sparqlxml:2.0.1">
+      <library name="org.openrdf.sesame:sesame-queryresultio-sparqlxml:2.1.3">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-queryresultio-sparqlxml/2.0.1/openrdf-queryresultio-sparqlxml-2.0.1.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-queryresultio-sparqlxml/2.1.3/sesame-queryresultio-sparqlxml-2.1.3.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-queryresultio-sparqlxml/2.0.1/openrdf-queryresultio-sparqlxml-2.0.1-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-queryresultio-sparqlxml/2.1.3/sesame-queryresultio-sparqlxml-2.1.3-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-queryresultio-sparqlxml/2.0.1/openrdf-queryresultio-sparqlxml-2.0.1-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-queryresultio-sparqlxml/2.1.3/sesame-queryresultio-sparqlxml-2.1.3-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="info.aduna:aduna-xml:1.5">
+      <library name="info.aduna.commons:aduna-commons-xml:2.1">
         <CLASSES>
-          <root url="jar://$M2_REPO$/info/aduna/aduna-xml/1.5/aduna-xml-1.5.jar!/" />
+          <root url="jar://$M2_REPO$/info/aduna/commons/aduna-commons-xml/2.1/aduna-commons-xml-2.1.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/info/aduna/aduna-xml/1.5/aduna-xml-1.5-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/info/aduna/commons/aduna-commons-xml/2.1/aduna-commons-xml-2.1-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/info/aduna/aduna-xml/1.5/aduna-xml-1.5-sources.jar!/" />
+          <root url="jar://$M2_REPO$/info/aduna/commons/aduna-commons-xml/2.1/aduna-commons-xml-2.1-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="org.openrdf:openrdf-queryresultio-text:2.0.1">
+      <library name="org.openrdf.sesame:sesame-queryresultio-text:2.1.3">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-queryresultio-text/2.0.1/openrdf-queryresultio-text-2.0.1.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-queryresultio-text/2.1.3/sesame-queryresultio-text-2.1.3.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-queryresultio-text/2.0.1/openrdf-queryresultio-text-2.0.1-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-queryresultio-text/2.1.3/sesame-queryresultio-text-2.1.3-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-queryresultio-text/2.0.1/openrdf-queryresultio-text-2.0.1-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-queryresultio-text/2.1.3/sesame-queryresultio-text-2.1.3-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="org.openrdf:openrdf-repository-api:2.0.1">
+      <library name="org.openrdf.sesame:sesame-repository-api:2.1.3">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-repository-api/2.0.1/openrdf-repository-api-2.0.1.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-repository-api/2.1.3/sesame-repository-api-2.1.3.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-repository-api/2.0.1/openrdf-repository-api-2.0.1-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-repository-api/2.1.3/sesame-repository-api-2.1.3-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-repository-api/2.0.1/openrdf-repository-api-2.0.1-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-repository-api/2.1.3/sesame-repository-api-2.1.3-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="org.openrdf:openrdf-repository-manager:2.0.1">
+      <library name="org.openrdf.sesame:sesame-repository-manager:2.1.3">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-repository-manager/2.0.1/openrdf-repository-manager-2.0.1.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-repository-manager/2.1.3/sesame-repository-manager-2.1.3.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-repository-manager/2.0.1/openrdf-repository-manager-2.0.1-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-repository-manager/2.1.3/sesame-repository-manager-2.1.3-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-repository-manager/2.0.1/openrdf-repository-manager-2.0.1-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-repository-manager/2.1.3/sesame-repository-manager-2.1.3-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="org.openrdf:openrdf-repository-event:2.0.1">
+      <library name="org.openrdf.sesame:sesame-repository-event:2.1.3">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-repository-event/2.0.1/openrdf-repository-event-2.0.1.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-repository-event/2.1.3/sesame-repository-event-2.1.3.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-repository-event/2.0.1/openrdf-repository-event-2.0.1-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-repository-event/2.1.3/sesame-repository-event-2.1.3-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-repository-event/2.0.1/openrdf-repository-event-2.0.1-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-repository-event/2.1.3/sesame-repository-event-2.1.3-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="org.openrdf:openrdf-repository-sail:2.0.1">
+      <library name="org.openrdf.sesame:sesame-repository-sail:2.1.3">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-repository-sail/2.0.1/openrdf-repository-sail-2.0.1.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-repository-sail/2.1.3/sesame-repository-sail-2.1.3.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-repository-sail/2.0.1/openrdf-repository-sail-2.0.1-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-repository-sail/2.1.3/sesame-repository-sail-2.1.3-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-repository-sail/2.0.1/openrdf-repository-sail-2.0.1-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-repository-sail/2.1.3/sesame-repository-sail-2.1.3-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="org.openrdf:openrdf-sail-api:2.0.1">
+      <library name="org.openrdf.sesame:sesame-sail-api:2.1.3">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-sail-api/2.0.1/openrdf-sail-api-2.0.1.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-sail-api/2.1.3/sesame-sail-api-2.1.3.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-sail-api/2.0.1/openrdf-sail-api-2.0.1-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-sail-api/2.1.3/sesame-sail-api-2.1.3-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-sail-api/2.0.1/openrdf-sail-api-2.0.1-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-sail-api/2.1.3/sesame-sail-api-2.1.3-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="org.openrdf:openrdf-sail-memory:2.0.1">
+      <library name="org.openrdf.sesame:sesame-sail-memory:2.1.3">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-sail-memory/2.0.1/openrdf-sail-memory-2.0.1.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-sail-memory/2.1.3/sesame-sail-memory-2.1.3.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-sail-memory/2.0.1/openrdf-sail-memory-2.0.1-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-sail-memory/2.1.3/sesame-sail-memory-2.1.3-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-sail-memory/2.0.1/openrdf-sail-memory-2.0.1-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-sail-memory/2.1.3/sesame-sail-memory-2.1.3-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="org.openrdf:openrdf-sail-inferencer:2.0.1">
+      <library name="org.openrdf.sesame:sesame-sail-inferencer:2.1.3">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-sail-inferencer/2.0.1/openrdf-sail-inferencer-2.0.1.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-sail-inferencer/2.1.3/sesame-sail-inferencer-2.1.3.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-sail-inferencer/2.0.1/openrdf-sail-inferencer-2.0.1-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-sail-inferencer/2.1.3/sesame-sail-inferencer-2.1.3-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-sail-inferencer/2.0.1/openrdf-sail-inferencer-2.0.1-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-sail-inferencer/2.1.3/sesame-sail-inferencer-2.1.3-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="org.openrdf:openrdf-queryalgebra-evaluation:2.0.1">
+      <library name="org.openrdf.sesame:sesame-queryalgebra-evaluation:2.1.3">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-queryalgebra-evaluation/2.0.1/openrdf-queryalgebra-evaluation-2.0.1.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-queryalgebra-evaluation/2.1.3/sesame-queryalgebra-evaluation-2.1.3.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-queryalgebra-evaluation/2.0.1/openrdf-queryalgebra-evaluation-2.0.1-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-queryalgebra-evaluation/2.1.3/sesame-queryalgebra-evaluation-2.1.3-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-queryalgebra-evaluation/2.0.1/openrdf-queryalgebra-evaluation-2.0.1-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-queryalgebra-evaluation/2.1.3/sesame-queryalgebra-evaluation-2.1.3-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="org.openrdf:openrdf-repository-http:2.0.1">
+      <library name="org.openrdf.sesame:sesame-repository-http:2.1.3">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-repository-http/2.0.1/openrdf-repository-http-2.0.1.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-repository-http/2.1.3/sesame-repository-http-2.1.3.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-repository-http/2.0.1/openrdf-repository-http-2.0.1-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-repository-http/2.1.3/sesame-repository-http-2.1.3-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-repository-http/2.0.1/openrdf-repository-http-2.0.1-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-repository-http/2.1.3/sesame-repository-http-2.1.3-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="org.openrdf:openrdf-http-client:2.0.1">
+      <library name="org.openrdf.sesame:sesame-http-client:2.1.3">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-http-client/2.0.1/openrdf-http-client-2.0.1.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-http-client/2.1.3/sesame-http-client-2.1.3.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-http-client/2.0.1/openrdf-http-client-2.0.1-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-http-client/2.1.3/sesame-http-client-2.1.3-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-http-client/2.0.1/openrdf-http-client-2.0.1-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-http-client/2.1.3/sesame-http-client-2.1.3-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="org.openrdf:openrdf-http-protocol:2.0.1">
+      <library name="org.openrdf.sesame:sesame-http-protocol:2.1.3">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-http-protocol/2.0.1/openrdf-http-protocol-2.0.1.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-http-protocol/2.1.3/sesame-http-protocol-2.1.3.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-http-protocol/2.0.1/openrdf-http-protocol-2.0.1-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-http-protocol/2.1.3/sesame-http-protocol-2.1.3-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-http-protocol/2.0.1/openrdf-http-protocol-2.0.1-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-http-protocol/2.1.3/sesame-http-protocol-2.1.3-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="org.openrdf:openrdf-rio-ntriples:2.0.1">
+      <library name="org.openrdf.sesame:sesame-rio-ntriples:2.1.3">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-rio-ntriples/2.0.1/openrdf-rio-ntriples-2.0.1.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-rio-ntriples/2.1.3/sesame-rio-ntriples-2.1.3.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-rio-ntriples/2.0.1/openrdf-rio-ntriples-2.0.1-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-rio-ntriples/2.1.3/sesame-rio-ntriples-2.1.3-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-rio-ntriples/2.0.1/openrdf-rio-ntriples-2.0.1-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-rio-ntriples/2.1.3/sesame-rio-ntriples-2.1.3-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
@@ -488,119 +489,145 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="commons-logging:commons-logging:1.1">
+      <library name="org.slf4j:jcl104-over-slf4j:1.5.0">
         <CLASSES>
-          <root url="jar://$M2_REPO$/commons-logging/commons-logging/1.1/commons-logging-1.1.jar!/" />
+          <root url="jar://$M2_REPO$/org/slf4j/jcl104-over-slf4j/1.5.0/jcl104-over-slf4j-1.5.0.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/commons-logging/commons-logging/1.1/commons-logging-1.1-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/slf4j/jcl104-over-slf4j/1.5.0/jcl104-over-slf4j-1.5.0-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/commons-logging/commons-logging/1.1/commons-logging-1.1-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/slf4j/jcl104-over-slf4j/1.5.0/jcl104-over-slf4j-1.5.0-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="org.openrdf:openrdf-repository-dataset:2.0.1">
+      <library name="org.openrdf.sesame:sesame-repository-dataset:2.1.3">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-repository-dataset/2.0.1/openrdf-repository-dataset-2.0.1.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-repository-dataset/2.1.3/sesame-repository-dataset-2.1.3.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-repository-dataset/2.0.1/openrdf-repository-dataset-2.0.1-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-repository-dataset/2.1.3/sesame-repository-dataset-2.1.3-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-repository-dataset/2.0.1/openrdf-repository-dataset-2.0.1-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-repository-dataset/2.1.3/sesame-repository-dataset-2.1.3-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="org.openrdf:openrdf-rio-n3:2.0.1">
+      <library name="org.openrdf.sesame:sesame-rio-n3:2.1.3">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-rio-n3/2.0.1/openrdf-rio-n3-2.0.1.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-rio-n3/2.1.3/sesame-rio-n3-2.1.3.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-rio-n3/2.0.1/openrdf-rio-n3-2.0.1-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-rio-n3/2.1.3/sesame-rio-n3-2.1.3-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-rio-n3/2.0.1/openrdf-rio-n3-2.0.1-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-rio-n3/2.1.3/sesame-rio-n3-2.1.3-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="org.openrdf:openrdf-rio-turtle:2.0.1">
+      <library name="org.openrdf.sesame:sesame-rio-turtle:2.1.3">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-rio-turtle/2.0.1/openrdf-rio-turtle-2.0.1.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-rio-turtle/2.1.3/sesame-rio-turtle-2.1.3.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-rio-turtle/2.0.1/openrdf-rio-turtle-2.0.1-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-rio-turtle/2.1.3/sesame-rio-turtle-2.1.3-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-rio-turtle/2.0.1/openrdf-rio-turtle-2.0.1-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-rio-turtle/2.1.3/sesame-rio-turtle-2.1.3-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="org.openrdf:openrdf-rio-rdfxml:2.0.1">
+      <library name="org.openrdf.sesame:sesame-rio-rdfxml:2.1.3">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-rio-rdfxml/2.0.1/openrdf-rio-rdfxml-2.0.1.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-rio-rdfxml/2.1.3/sesame-rio-rdfxml-2.1.3.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-rio-rdfxml/2.0.1/openrdf-rio-rdfxml-2.0.1-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-rio-rdfxml/2.1.3/sesame-rio-rdfxml-2.1.3-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-rio-rdfxml/2.0.1/openrdf-rio-rdfxml-2.0.1-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-rio-rdfxml/2.1.3/sesame-rio-rdfxml-2.1.3-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="org.openrdf:openrdf-rio-trix:2.0.1">
+      <library name="org.openrdf.sesame:sesame-rio-trix:2.1.3">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-rio-trix/2.0.1/openrdf-rio-trix-2.0.1.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-rio-trix/2.1.3/sesame-rio-trix-2.1.3.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-rio-trix/2.0.1/openrdf-rio-trix-2.0.1-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-rio-trix/2.1.3/sesame-rio-trix-2.1.3-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-rio-trix/2.0.1/openrdf-rio-trix-2.0.1-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-rio-trix/2.1.3/sesame-rio-trix-2.1.3-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="org.openrdf:openrdf-rio-trig:2.0.1">
+      <library name="org.openrdf.sesame:sesame-rio-trig:2.1.3">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-rio-trig/2.0.1/openrdf-rio-trig-2.0.1.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-rio-trig/2.1.3/sesame-rio-trig-2.1.3.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-rio-trig/2.0.1/openrdf-rio-trig-2.0.1-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-rio-trig/2.1.3/sesame-rio-trig-2.1.3-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-rio-trig/2.0.1/openrdf-rio-trig-2.0.1-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-rio-trig/2.1.3/sesame-rio-trig-2.1.3-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="org.openrdf:openrdf-sail-nativerdf:2.0.1">
+      <library name="org.openrdf.sesame:sesame-sail-nativerdf:2.1.3">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-sail-nativerdf/2.0.1/openrdf-sail-nativerdf-2.0.1.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-sail-nativerdf/2.1.3/sesame-sail-nativerdf-2.1.3.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-sail-nativerdf/2.0.1/openrdf-sail-nativerdf-2.0.1-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-sail-nativerdf/2.1.3/sesame-sail-nativerdf-2.1.3-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-sail-nativerdf/2.0.1/openrdf-sail-nativerdf-2.0.1-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-sail-nativerdf/2.1.3/sesame-sail-nativerdf-2.1.3-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="org.slf4j:slf4j-simple:1.4.2">
+      <library name="org.openrdf.sesame:sesame-sail-rdbms:2.1.3">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/slf4j/slf4j-simple/1.4.2/slf4j-simple-1.4.2.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-sail-rdbms/2.1.3/sesame-sail-rdbms-2.1.3.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/slf4j/slf4j-simple/1.4.2/slf4j-simple-1.4.2-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-sail-rdbms/2.1.3/sesame-sail-rdbms-2.1.3-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/slf4j/slf4j-simple/1.4.2/slf4j-simple-1.4.2-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-sail-rdbms/2.1.3/sesame-sail-rdbms-2.1.3-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="commons-dbcp:commons-dbcp:1.2.2">
+        <CLASSES>
+          <root url="jar://$M2_REPO$/commons-dbcp/commons-dbcp/1.2.2/commons-dbcp-1.2.2.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$M2_REPO$/commons-dbcp/commons-dbcp/1.2.2/commons-dbcp-1.2.2-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$M2_REPO$/commons-dbcp/commons-dbcp/1.2.2/commons-dbcp-1.2.2-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="commons-pool:commons-pool:1.3">
+        <CLASSES>
+          <root url="jar://$M2_REPO$/commons-pool/commons-pool/1.3/commons-pool-1.3.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$M2_REPO$/commons-pool/commons-pool/1.3/commons-pool-1.3-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$M2_REPO$/commons-pool/commons-pool/1.3/commons-pool-1.3-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
@@ -641,6 +668,19 @@
         </JAVADOC>
         <SOURCES>
           <root url="jar://$M2_REPO$/com/noelios/restlet/com.noelios.restlet/1.1-M3/com.noelios.restlet-1.1-M3-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="commons-logging:commons-logging:1.1">
+        <CLASSES>
+          <root url="jar://$M2_REPO$/commons-logging/commons-logging/1.1/commons-logging-1.1.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$M2_REPO$/commons-logging/commons-logging/1.1/commons-logging-1.1-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$M2_REPO$/commons-logging/commons-logging/1.1/commons-logging-1.1-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>

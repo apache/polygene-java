@@ -15,9 +15,9 @@ package org.qi4j.entity.index.rdf.memory;
 
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.sail.SailRepository;
-import org.openrdf.sail.memory.MemoryStore;
-import org.openrdf.sail.inferencer.fc.ForwardChainingRDFSInferencer;
 import org.openrdf.sail.Sail;
+import org.openrdf.sail.inferencer.fc.ForwardChainingRDFSInferencer;
+import org.openrdf.sail.memory.MemoryStore;
 import org.qi4j.service.Activatable;
 
 public class MemoryRepositoryMixin extends SailRepository
@@ -25,7 +25,7 @@ public class MemoryRepositoryMixin extends SailRepository
 {
     public MemoryRepositoryMixin()
     {
-        super( new ForwardChainingRDFSInferencer(new MemoryStore()) );
+        super( new ForwardChainingRDFSInferencer( new MemoryStore() ) );
     }
 
     public void activate() throws Exception

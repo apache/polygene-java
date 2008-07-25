@@ -43,17 +43,19 @@ public class RdfEntityFinderMixin
 
     @This RdfQueryContext queryContext;
 
-    public Iterable<QualifiedIdentity> findEntities( final Class resultType,
-                                                     final BooleanExpression whereClause,
-                                                     final OrderBy[] orderBySegments,
-                                                     final Integer firstResult,
-                                                     final Integer maxResults )
+    public Iterable<QualifiedIdentity> findEntities(
+        final Class resultType,
+        final BooleanExpression whereClause,
+        final OrderBy[] orderBySegments,
+        final Integer firstResult,
+        final Integer maxResults )
         throws EntityFinderException
     {
         final Collection<QualifiedIdentity> entities = new ArrayList<QualifiedIdentity>();
         try
         {
             final RepositoryConnection connection = queryContext.getRepository().getConnection();
+
             // TODO shall we support different implementation as SERQL?
             final RdfQueryParser parser = new SparqlRdfQueryParser();
             final TupleQuery tupleQuery = connection.prepareTupleQuery(
