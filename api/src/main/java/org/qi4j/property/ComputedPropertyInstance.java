@@ -28,7 +28,7 @@ import java.lang.reflect.Method;
  */
 public abstract class ComputedPropertyInstance<T>
     extends AbstractPropertyInstance<T>
-    implements ImmutableProperty<T>
+    implements ComputedProperty<T>
 {
     /**
      * Construct an instance of {@code ComputedPropertyInstance}.

@@ -15,6 +15,7 @@
 package org.qi4j.runtime.entity;
 
 import java.lang.reflect.Method;
+import org.qi4j.composite.ConstraintViolationException;
 import org.qi4j.property.Property;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.property.PropertyModel;
@@ -38,9 +39,34 @@ public final class EntityPropertyModel extends PropertyModel
         {
             return new ImmutablePropertyInstance( this, state.getProperty( qualifiedName() ) );
         }
+        else if( isComputed() )
+        {
+            return super.newInstance();
+        }
         else
         {
             return new EntityPropertyInstance( this, state );
         }
     }
+
+    public void setState( Property property, EntityState entityState )
+        throws ConstraintViolationException
+    {
+        Object value;
+
+        if( property == null || property.get() == ImmutablePropertyInstance.UNSET )
+        {
+            value = defaultValue();
+        }
+        else
+        {
+            value = property.get();
+        }
+
+        // Check constraints
+        checkConstraints( value );
+
+        entityState.setProperty( qualifiedName(), value );
+    }
+
 }

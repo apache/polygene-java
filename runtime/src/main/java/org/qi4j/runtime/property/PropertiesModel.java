@@ -137,7 +137,10 @@ public final class PropertiesModel
         for( PropertyModel propertyModel : propertyModels )
         {
             Property property = properties.propertyFor( propertyModel.accessor() );
-            propertyModel.checkConstraints( property.get() );
+            if( !propertyModel.isComputed() )
+            {
+                propertyModel.checkConstraints( property.get() );
+            }
         }
     }
 }

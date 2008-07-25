@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.composite.ConstraintViolationException;
 import org.qi4j.property.AbstractPropertyInstance;
 import org.qi4j.property.Property;
@@ -32,7 +33,6 @@ import org.qi4j.runtime.property.PropertyModel;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.util.MetaInfo;
-import org.qi4j.bootstrap.PropertyDeclarations;
 
 /**
  * TODO
@@ -129,7 +129,10 @@ public final class EntityPropertiesModel
         for( Map.Entry<Method, EntityPropertyModel> methodEntityPropertyModelEntry : mapMethodPropertyModel.entrySet() )
         {
             Property property = properties.propertyFor( methodEntityPropertyModelEntry.getKey() );
-            methodEntityPropertyModelEntry.getValue().setState( property, entityState );
+            if( !methodEntityPropertyModelEntry.getValue().isComputed() )
+            {
+                methodEntityPropertyModelEntry.getValue().setState( property, entityState );
+            }
         }
     }
 

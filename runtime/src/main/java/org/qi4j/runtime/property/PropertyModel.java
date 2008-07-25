@@ -23,10 +23,12 @@ import org.qi4j.composite.ConstraintViolationException;
 import org.qi4j.property.AbstractPropertyInstance;
 import static org.qi4j.property.AbstractPropertyInstance.getPropertyType;
 import static org.qi4j.property.AbstractPropertyInstance.getQualifiedName;
+import org.qi4j.property.ComputedProperty;
+import org.qi4j.property.ComputedPropertyInstance;
 import org.qi4j.property.ImmutableProperty;
 import org.qi4j.property.Property;
+import org.qi4j.property.PropertyInfo;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
-import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.property.ImmutablePropertyInstance;
 import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.util.MetaInfo;
@@ -48,6 +50,7 @@ public class PropertyModel
     private final MetaInfo metaInfo;
     private final Object defaultValue;
     private final boolean immutable;
+    private final boolean computed;
 
     public PropertyModel(
         Method anAccessor, ValueConstraintsInstance constraints, MetaInfo aMetaInfo, Object aPropertyDefaultValue )
@@ -62,6 +65,7 @@ public class PropertyModel
         this.constraints = constraints;
 
         immutable = ImmutableProperty.class.isAssignableFrom( anAccessor.getReturnType() );
+        computed = ComputedProperty.class.isAssignableFrom( anAccessor.getReturnType() );
     }
 
     public <T> T metaInfo( Class<T> infoType )
@@ -94,6 +98,11 @@ public class PropertyModel
         return immutable;
     }
 
+    public boolean isComputed()
+    {
+        return computed;
+    }
+
     public Object defaultValue()
     {
         return defaultValue;
@@ -102,26 +111,6 @@ public class PropertyModel
     public String toURI()
     {
         return AbstractPropertyInstance.toURI( accessor );
-    }
-
-    public void setState( Property property, EntityState entityState )
-        throws ConstraintViolationException
-    {
-        Object value;
-
-        if( property == null || property.get() == ImmutablePropertyInstance.UNSET )
-        {
-            value = defaultValue;
-        }
-        else
-        {
-            value = property.get();
-        }
-
-        // Check constraints
-        checkConstraints( value );
-
-        entityState.setProperty( qualifiedName, value );
     }
 
     public Property<?> newInstance()
@@ -135,6 +124,10 @@ public class PropertyModel
         if( immutable )
         {
             return new ImmutablePropertyInstance( this, value );
+        }
+        else if( computed )
+        {
+            return new ComputedPropertyInfo( this );
         }
         else
         {
@@ -186,6 +179,21 @@ public class PropertyModel
     public String toString()
     {
         return accessor.toGenericString();
+    }
+
+    private static class ComputedPropertyInfo
+        extends ComputedPropertyInstance
+    {
+        private ComputedPropertyInfo( PropertyInfo aPropertyInfo )
+            throws IllegalArgumentException
+        {
+            super( aPropertyInfo );
+        }
+
+        public Object get()
+        {
+            throw new IllegalStateException( "Property [" + name() + "] must be computed" );
+        }
     }
 
 }
