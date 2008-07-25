@@ -10,6 +10,7 @@
   <artifactId>qi4j-lib-rdf</artifactId>
   <name>Qi4J Library - RDF</name>
   <version>0.3-SNAPSHOT</version>
+  <packaging>bundle</packaging>
 
   <properties>
     <version.openrdf>2.1.3</version.openrdf>

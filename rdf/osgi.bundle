@@ -1,0 +1,14 @@
+Export-Package: \
+ org.qi4j.library.rdf.*;version="1"
+
+Import-Package: \
+ javax.*, \
+ org.qi4j.*, \
+ org.slf4j;version="1.3", \
+ org.w3c.dom, \
+ org.xml.*
+
+Embed-Dependency: \
+ *;scope=compile|runtime;groupId=!org.slf4j*
+
+Embed-Transitive:  true
