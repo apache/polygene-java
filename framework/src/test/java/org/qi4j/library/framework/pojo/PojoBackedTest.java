@@ -19,13 +19,13 @@
 package org.qi4j.library.framework.pojo;
 
 import static org.junit.Assert.assertEquals;
+import org.junit.Test;
+import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.property.Property;
 import org.qi4j.test.AbstractQi4jTest;
-import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.bootstrap.AssemblyException;
-import org.junit.Test;
 
 public class PojoBackedTest extends AbstractQi4jTest
 {
@@ -39,12 +39,13 @@ public class PojoBackedTest extends AbstractQi4jTest
     public void givenPersonPojoWhenDataIsOkThenExpectCorrectResult()
         throws Exception
     {
-        CountryPojo malaysia = new CountryPojo( "Malaysia");
+        CountryPojo malaysia = new CountryPojo( "Malaysia" );
         PersonPojo pojo = new PersonPojo( "Niclas Hedhman", malaysia );
         CompositeBuilder<Person> builder = compositeBuilderFactory.newCompositeBuilder( Person.class );
         builder.use( pojo );
         Person person = builder.newInstance();
-        assertEquals( "Name match.", "Niclas Hedhman", person.name().get() );
+        Property<String> stringProperty = person.name();
+        assertEquals( "Name match.", "Niclas Hedhman", stringProperty.get() );
         assertEquals( "Country match.", "Malaysia", person.country().get().name().get() );
 
     }
@@ -57,11 +58,13 @@ public class PojoBackedTest extends AbstractQi4jTest
     public interface Person
     {
         Property<String> name();
+
         Property<Country> country();
     }
 
     public interface CountryComposite extends Country, PojoBacked, Composite
-    {}
+    {
+    }
 
     public interface Country
     {
