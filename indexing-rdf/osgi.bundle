@@ -1,9 +1,5 @@
-Export-Package:
- org.qi4j.entity.index.rdf;version="1.0.0", \
- org.qi4j.entity.index.rdf.assembly;version="1.0.0", \
- org.qi4j.entity.index.rdf.http;version="1.0.0", \
- org.qi4j.entity.index.rdf.memory;version="1.0.0", \
- org.qi4j.entity.index.rdf.natiive;version="1.0.0"
+Export-Package: \
+ org.qi4j.entity.index.rdf.*;version="1"
 
 Import-Package: \
  javax.*, \
@@ -14,13 +10,6 @@ Import-Package: \
  org.qi4j.*, \
  org.xml.*, \
  org.w3c.dom
-
-Private-Package:
-
-Ignore-Package:
- org.apache.commons.logging.*, \
- org.apache.log4j.*, \
- org.slf4j.*
 
 Embed-Dependency: \
  *;scope=compile|runtime;groupId=!org.slf4j*
