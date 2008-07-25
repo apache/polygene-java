@@ -24,8 +24,14 @@ import java.util.Map;
 import org.qi4j.query.Query;
 import org.qi4j.query.QueryExecutionException;
 import org.qi4j.query.grammar.BooleanExpression;
+import org.qi4j.query.grammar.ComparisonPredicate;
+import org.qi4j.query.grammar.Conjunction;
+import org.qi4j.query.grammar.Disjunction;
+import org.qi4j.query.grammar.Negation;
 import org.qi4j.query.grammar.OrderBy;
 import org.qi4j.query.grammar.SingleValueExpression;
+import org.qi4j.query.grammar.ValueExpression;
+import org.qi4j.query.grammar.impl.VariableValueExpression;
 import org.qi4j.runtime.entity.UnitOfWorkInstance;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.query.EntityFinder;
@@ -40,6 +46,7 @@ import org.qi4j.spi.query.EntityFinderException;
 final class QueryImpl<T>
     implements Query<T>
 {
+    private static final long serialVersionUID = 1L;
 
     /**
      * Parent unit of work.
@@ -92,7 +99,39 @@ final class QueryImpl<T>
         this.resultType = resultType;
         this.whereClause = whereClause;
         this.variables = new HashMap<String, SingleValueExpression>();
-        // TODO initialize variables map by finding them into the whereClause clause
+        initializeVariables( whereClause );
+    }
+
+    private void initializeVariables( BooleanExpression anExpression )
+    {
+        if( anExpression instanceof Negation )
+        {
+            Negation negation = (Negation) anExpression;
+            initializeVariables( negation.expression() );
+        }
+        else if( anExpression instanceof Disjunction )
+        {
+            Disjunction disjunction = (Disjunction) anExpression;
+            initializeVariables( disjunction.leftSideExpression() );
+            initializeVariables( disjunction.rightSideExpression() );
+        }
+        else if( anExpression instanceof Conjunction )
+        {
+            Conjunction conjunction = (Conjunction) anExpression;
+            initializeVariables( conjunction.leftSideExpression() );
+            initializeVariables( conjunction.rightSideExpression() );
+        }
+        else if( anExpression instanceof ComparisonPredicate )
+        {
+            ComparisonPredicate predicate = (ComparisonPredicate) anExpression;
+            ValueExpression valueExpression = predicate.valueExpression();
+
+            if( valueExpression instanceof VariableValueExpression )
+            {
+                VariableValueExpression variableValueExpression = (VariableValueExpression) valueExpression;
+                variables.put( variableValueExpression.getName(), variableValueExpression );
+            }
+        }
     }
 
     /**
@@ -155,11 +194,16 @@ final class QueryImpl<T>
     /**
      * @see Query#setVariable(String, Object)
      */
-    public void setVariable( final String name,
-                             final Object value )
+    @SuppressWarnings( "unchecked" )
+    public void setVariable( final String name, final Object value )
     {
-        // TODO implement variable set
-        throw new UnsupportedOperationException();
+        // TODO: Casting to VariableValueExpression
+        VariableValueExpression variable = getVariable( name );
+        if( variable == null )
+        {
+            throw new IllegalArgumentException( "Variable [" + name + "] is not found." );
+        }
+        variable.setValue( value );
     }
 
     /**
