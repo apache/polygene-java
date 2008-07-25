@@ -93,11 +93,6 @@ public final class StateModel<T>
         return (T) newProxyInstance( loader, typeInterfaces, childModel );
     }
 
-//    public <T,K extends SwingAdapter<T>> K bind( Property<T> aProperty, Class<K> bindingType )
-//    {
-//
-//    }
-
     @SuppressWarnings( "unchecked" )
     public <T> SwingBinding<T> bind( Property<T> aProperty )
     {

@@ -104,7 +104,7 @@ public abstract class AbstractStateModelTest extends AbstractQi4jTest
     }
 
     @Mixins( TextFieldToCatAdapter.TextFieldToCatAdapterMixin.class )
-    private static interface TextFieldToCatAdapter extends SwingAdapter, ServiceComposite
+    private static interface TextFieldToCatAdapter extends SwingAdapter<Association<Cat>>, ServiceComposite
     {
         abstract class TextFieldToCatAdapterMixin
             implements TextFieldToCatAdapter
@@ -118,27 +118,11 @@ public abstract class AbstractStateModelTest extends AbstractQi4jTest
                 return capabilitieses;
             }
 
-            public final void fromAssociationToSwing( JComponent aComponent, Association anAssociation )
+            public void fromSwingToData( JComponent aComponent, Association<Cat> anAssociation )
             {
                 if( anAssociation != null )
                 {
-                    Cat cat = (Cat) anAssociation.get();
-
-                    String catName = null;
-                    if( cat != null )
-                    {
-                        catName = cat.name().get();
-                    }
-                    JTextField textField = (JTextField) aComponent;
-                    textField.setText( catName );
-                }
-            }
-
-            public void fromSwingToAssociation( JComponent aComponent, Association anAssociation )
-            {
-                if( anAssociation != null )
-                {
-                    Cat cat = (Cat) anAssociation.get();
+                    Cat cat = anAssociation.get();
 
                     if( cat != null )
                     {
@@ -147,6 +131,28 @@ public abstract class AbstractStateModelTest extends AbstractQi4jTest
 
                         cat.name().set( newCatName );
                     }
+                }
+            }
+
+            public void fromDataToSwing( JComponent aComponent, Association<Cat> anAssociation )
+            {
+                JTextField textField = (JTextField) aComponent;
+                if( anAssociation != null )
+                {
+                    Cat cat = anAssociation.get();
+
+                    String catName = null;
+                    if( cat != null )
+                    {
+                        catName = cat.name().get();
+                    }
+                    textField.setText( catName );
+                    textField.setEnabled( true );
+                }
+                else
+                {
+                    textField.setText( null );
+                    textField.setEnabled( false );
                 }
             }
         }

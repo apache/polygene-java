@@ -28,7 +28,7 @@ import org.qi4j.lib.swing.binding.domain.Person;
  */
 public final class StateModelAssociationTest extends AbstractStateModelTest
 {
-    @Test @Ignore
+    @Test
     public final void testAssociationBinding()
     {
         JTextComponentFixture catNameTextBox = window.textBox( "catName" );

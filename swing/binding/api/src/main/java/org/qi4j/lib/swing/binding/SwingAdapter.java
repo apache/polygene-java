@@ -20,11 +20,7 @@ package org.qi4j.lib.swing.binding;
 import java.util.Set;
 import javax.swing.JComponent;
 import org.qi4j.composite.Mixins;
-import org.qi4j.entity.association.Association;
-import org.qi4j.entity.association.ListAssociation;
-import org.qi4j.entity.association.SetAssociation;
 import org.qi4j.lib.swing.binding.internal.SwingAdapterMixin;
-import org.qi4j.property.Property;
 
 @Mixins( SwingAdapterMixin.class )
 public interface SwingAdapter<T>
@@ -35,18 +31,6 @@ public interface SwingAdapter<T>
     void fromSwingToData( JComponent aComponent, T data );
 
     void fromDataToSwing( JComponent aComponent, T data );
-//
-//    void fromSwingToAssociation( JComponent aComponent, Association anAssociation );
-//
-//    void fromAssociationToSwing( JComponent aComponent, Association anAssociation );
-//
-//    void fromSwingToSetAssociation( JComponent component, SetAssociation setAssociation );
-//
-//    void fromSetAssociationToSwing( JComponent component, SetAssociation setAssociation );
-//
-//    void fromSwingToListAssociation( JComponent component, ListAssociation listAssociation );
-//
-//    void fromListAssociationToSwing( JComponent component, ListAssociation listAssociation );
 
     public class Capabilities
     {
