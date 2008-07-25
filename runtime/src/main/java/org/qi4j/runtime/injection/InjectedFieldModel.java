@@ -15,8 +15,8 @@
 package org.qi4j.runtime.injection;
 
 import java.lang.reflect.Field;
-import java.util.Collections;
 import java.util.Collection;
+import java.util.Collections;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.structure.ModelVisitor;
@@ -65,7 +65,7 @@ public final class InjectedFieldModel
         }
         catch( IllegalArgumentException e )
         {
-            throw new InjectionException( e );
+            throw new InjectionException( "Cannot inject field of type " + injectedField.getType().getName() + " with value '" + value + "' of type " + value.getClass().getName(), e );
         }
     }
 
