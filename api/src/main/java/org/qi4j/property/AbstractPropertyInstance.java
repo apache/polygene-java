@@ -22,7 +22,7 @@ package org.qi4j.property;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import static org.qi4j.composite.NullArgumentException.*;
+import static org.qi4j.composite.NullArgumentException.validateNotNull;
 
 /**
  * {@code AbstractPropertyInstance} is the base implementation of {@link org.qi4j.property.Property}.
@@ -41,7 +41,7 @@ public abstract class AbstractPropertyInstance<T>
     public static String getDeclaringClassName( String qualifiedName )
     {
         int idx = qualifiedName.lastIndexOf( ":" );
-        return qualifiedName.substring( 0, idx + 1 );
+        return qualifiedName.substring( 0, idx );
     }
 
     public static String getDeclaringClassName( Method accessor )
