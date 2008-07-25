@@ -117,17 +117,17 @@ public class ParameterConstraintViolationException extends ConstraintViolationEx
         String pattern;
         if( isEntity )
         {
-            pattern = "Constraint violation in {2}.{3} with constraint {4}, in entity {1}[id={0}] for value '{5}'";
+            pattern = "Constraint violation in {2}.{3} with constraint {4}, in entity {1}[id={0}] for value ''{5}''";
         }
         else
         {
             if( isService )
             {
-                pattern = "Constraint violation in {2}.{3} with constraint {4}, in service {0} for value '{5}'";
+                pattern = "Constraint violation in {2}.{3} with constraint {4}, in service {0} for value ''{5}''";
             }
             else
             {
-                pattern = "Constraint violation in {2}.{3} with constraint {4}, in composite \n{0} of type {1} for value '{5}'";
+                pattern = "Constraint violation in {2}.{3} with constraint {4}, in composite \n{0} of type {1} for value ''{5}''";
             }
         }
         ArrayList<String> list = new ArrayList<String>();
