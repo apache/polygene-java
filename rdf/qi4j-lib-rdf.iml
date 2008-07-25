@@ -9,8 +9,6 @@
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/resources" isTestSource="true" />
-      <excludeFolder url="file://$MODULE_DIR$/target/classes" />
-      <excludeFolder url="file://$MODULE_DIR$/target/test-classes" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
@@ -46,41 +44,41 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
-      <library name="org.openrdf:openrdf-model:2.0-rc2">
+      <library name="org.openrdf.sesame:sesame-model:2.1.3">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-model/2.0-rc2/openrdf-model-2.0-rc2.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-model/2.1.3/sesame-model-2.1.3.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-model/2.0-rc2/openrdf-model-2.0-rc2-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-model/2.1.3/sesame-model-2.1.3-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-model/2.0-rc2/openrdf-model-2.0-rc2-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-model/2.1.3/sesame-model-2.1.3-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
-      <library name="info.aduna:aduna-collections:1.4">
+      <library name="info.aduna.commons:aduna-commons-collections:2.1">
         <CLASSES>
-          <root url="jar://$M2_REPO$/info/aduna/aduna-collections/1.4/aduna-collections-1.4.jar!/" />
+          <root url="jar://$M2_REPO$/info/aduna/commons/aduna-commons-collections/2.1/aduna-commons-collections-2.1.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/info/aduna/aduna-collections/1.4/aduna-collections-1.4-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/info/aduna/commons/aduna-commons-collections/2.1/aduna-commons-collections-2.1-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/info/aduna/aduna-collections/1.4/aduna-collections-1.4-sources.jar!/" />
+          <root url="jar://$M2_REPO$/info/aduna/commons/aduna-commons-collections/2.1/aduna-commons-collections-2.1-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
-      <library name="info.aduna:aduna-concurrent:1.4">
+      <library name="info.aduna.commons:aduna-commons-concurrent:2.1">
         <CLASSES>
-          <root url="jar://$M2_REPO$/info/aduna/aduna-concurrent/1.4/aduna-concurrent-1.4.jar!/" />
+          <root url="jar://$M2_REPO$/info/aduna/commons/aduna-commons-concurrent/2.1/aduna-commons-concurrent-2.1.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/info/aduna/aduna-concurrent/1.4/aduna-concurrent-1.4-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/info/aduna/commons/aduna-commons-concurrent/2.1/aduna-commons-concurrent-2.1-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/info/aduna/aduna-concurrent/1.4/aduna-concurrent-1.4-sources.jar!/" />
+          <root url="jar://$M2_REPO$/info/aduna/commons/aduna-commons-concurrent/2.1/aduna-commons-concurrent-2.1-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
@@ -98,132 +96,132 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
-      <library name="info.aduna:aduna-iteration:1.4">
+      <library name="info.aduna.commons:aduna-commons-iteration:2.1">
         <CLASSES>
-          <root url="jar://$M2_REPO$/info/aduna/aduna-iteration/1.4/aduna-iteration-1.4.jar!/" />
+          <root url="jar://$M2_REPO$/info/aduna/commons/aduna-commons-iteration/2.1/aduna-commons-iteration-2.1.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/info/aduna/aduna-iteration/1.4/aduna-iteration-1.4-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/info/aduna/commons/aduna-commons-iteration/2.1/aduna-commons-iteration-2.1-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/info/aduna/aduna-iteration/1.4/aduna-iteration-1.4-sources.jar!/" />
+          <root url="jar://$M2_REPO$/info/aduna/commons/aduna-commons-iteration/2.1/aduna-commons-iteration-2.1-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
-      <library name="org.openrdf:openrdf-rio-n3:2.0-rc2">
+      <library name="org.openrdf.sesame:sesame-rio-n3:2.1.3">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-rio-n3/2.0-rc2/openrdf-rio-n3-2.0-rc2.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-rio-n3/2.1.3/sesame-rio-n3-2.1.3.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-rio-n3/2.0-rc2/openrdf-rio-n3-2.0-rc2-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-rio-n3/2.1.3/sesame-rio-n3-2.1.3-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-rio-n3/2.0-rc2/openrdf-rio-n3-2.0-rc2-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-rio-n3/2.1.3/sesame-rio-n3-2.1.3-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
-      <library name="org.openrdf:openrdf-rio-api:2.0-rc2">
+      <library name="org.openrdf.sesame:sesame-rio-api:2.1.3">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-rio-api/2.0-rc2/openrdf-rio-api-2.0-rc2.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-rio-api/2.1.3/sesame-rio-api-2.1.3.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-rio-api/2.0-rc2/openrdf-rio-api-2.0-rc2-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-rio-api/2.1.3/sesame-rio-api-2.1.3-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-rio-api/2.0-rc2/openrdf-rio-api-2.0-rc2-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-rio-api/2.1.3/sesame-rio-api-2.1.3-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
-      <library name="info.aduna:aduna-lang:1.4">
+      <library name="info.aduna.commons:aduna-commons-lang:2.1">
         <CLASSES>
-          <root url="jar://$M2_REPO$/info/aduna/aduna-lang/1.4/aduna-lang-1.4.jar!/" />
+          <root url="jar://$M2_REPO$/info/aduna/commons/aduna-commons-lang/2.1/aduna-commons-lang-2.1.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/info/aduna/aduna-lang/1.4/aduna-lang-1.4-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/info/aduna/commons/aduna-commons-lang/2.1/aduna-commons-lang-2.1-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/info/aduna/aduna-lang/1.4/aduna-lang-1.4-sources.jar!/" />
+          <root url="jar://$M2_REPO$/info/aduna/commons/aduna-commons-lang/2.1/aduna-commons-lang-2.1-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
-      <library name="info.aduna:aduna-net:1.4">
+      <library name="info.aduna.commons:aduna-commons-net:2.1">
         <CLASSES>
-          <root url="jar://$M2_REPO$/info/aduna/aduna-net/1.4/aduna-net-1.4.jar!/" />
+          <root url="jar://$M2_REPO$/info/aduna/commons/aduna-commons-net/2.1/aduna-commons-net-2.1.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/info/aduna/aduna-net/1.4/aduna-net-1.4-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/info/aduna/commons/aduna-commons-net/2.1/aduna-commons-net-2.1-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/info/aduna/aduna-net/1.4/aduna-net-1.4-sources.jar!/" />
+          <root url="jar://$M2_REPO$/info/aduna/commons/aduna-commons-net/2.1/aduna-commons-net-2.1-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
-      <library name="info.aduna:aduna-text:1.3">
+      <library name="info.aduna.commons:aduna-commons-text:2.1">
         <CLASSES>
-          <root url="jar://$M2_REPO$/info/aduna/aduna-text/1.3/aduna-text-1.3.jar!/" />
+          <root url="jar://$M2_REPO$/info/aduna/commons/aduna-commons-text/2.1/aduna-commons-text-2.1.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/info/aduna/aduna-text/1.3/aduna-text-1.3-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/info/aduna/commons/aduna-commons-text/2.1/aduna-commons-text-2.1-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/info/aduna/aduna-text/1.3/aduna-text-1.3-sources.jar!/" />
+          <root url="jar://$M2_REPO$/info/aduna/commons/aduna-commons-text/2.1/aduna-commons-text-2.1-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
-      <library name="org.openrdf:openrdf-rio-turtle:2.0-rc2">
+      <library name="org.openrdf.sesame:sesame-rio-turtle:2.1.3">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-rio-turtle/2.0-rc2/openrdf-rio-turtle-2.0-rc2.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-rio-turtle/2.1.3/sesame-rio-turtle-2.1.3.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-rio-turtle/2.0-rc2/openrdf-rio-turtle-2.0-rc2-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-rio-turtle/2.1.3/sesame-rio-turtle-2.1.3-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-rio-turtle/2.0-rc2/openrdf-rio-turtle-2.0-rc2-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-rio-turtle/2.1.3/sesame-rio-turtle-2.1.3-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
-      <library name="info.aduna:aduna-io:1.3">
+      <library name="info.aduna.commons:aduna-commons-io:2.2">
         <CLASSES>
-          <root url="jar://$M2_REPO$/info/aduna/aduna-io/1.3/aduna-io-1.3.jar!/" />
+          <root url="jar://$M2_REPO$/info/aduna/commons/aduna-commons-io/2.2/aduna-commons-io-2.2.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/info/aduna/aduna-io/1.3/aduna-io-1.3-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/info/aduna/commons/aduna-commons-io/2.2/aduna-commons-io-2.2-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/info/aduna/aduna-io/1.3/aduna-io-1.3-sources.jar!/" />
+          <root url="jar://$M2_REPO$/info/aduna/commons/aduna-commons-io/2.2/aduna-commons-io-2.2-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
-      <library name="org.openrdf:openrdf-rio-rdfxml:2.0-rc2">
+      <library name="org.openrdf.sesame:sesame-rio-rdfxml:2.1.3">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-rio-rdfxml/2.0-rc2/openrdf-rio-rdfxml-2.0-rc2.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-rio-rdfxml/2.1.3/sesame-rio-rdfxml-2.1.3.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-rio-rdfxml/2.0-rc2/openrdf-rio-rdfxml-2.0-rc2-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-rio-rdfxml/2.1.3/sesame-rio-rdfxml-2.1.3-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/openrdf/openrdf-rio-rdfxml/2.0-rc2/openrdf-rio-rdfxml-2.0-rc2-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-rio-rdfxml/2.1.3/sesame-rio-rdfxml-2.1.3-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
-      <library name="info.aduna:aduna-xml:1.5">
+      <library name="info.aduna.commons:aduna-commons-xml:2.1">
         <CLASSES>
-          <root url="jar://$M2_REPO$/info/aduna/aduna-xml/1.5/aduna-xml-1.5.jar!/" />
+          <root url="jar://$M2_REPO$/info/aduna/commons/aduna-commons-xml/2.1/aduna-commons-xml-2.1.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/info/aduna/aduna-xml/1.5/aduna-xml-1.5-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/info/aduna/commons/aduna-commons-xml/2.1/aduna-commons-xml-2.1-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/info/aduna/aduna-xml/1.5/aduna-xml-1.5-sources.jar!/" />
+          <root url="jar://$M2_REPO$/info/aduna/commons/aduna-commons-xml/2.1/aduna-commons-xml-2.1-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
