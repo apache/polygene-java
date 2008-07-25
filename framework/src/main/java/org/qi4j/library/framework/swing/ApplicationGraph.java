@@ -1,6 +1,7 @@
 /*
  * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
  * Copyright (c) 2008, Sonny Gill. All Rights Reserved.
+ * Copyright (c) 2008, Niclas Hedhman. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,43 +15,42 @@
  */
 package org.qi4j.library.framework.swing;
 
-import org.qi4j.runtime.structure.ApplicationModel;
-import org.qi4j.runtime.structure.ModelVisitor;
-import org.qi4j.runtime.structure.LayerModel;
-import org.qi4j.runtime.structure.ModuleModel;
+import java.util.HashMap;
+import java.util.Map;
+import javax.swing.JFrame;
 import org.qi4j.runtime.composite.CompositeModel;
-import prefuse.data.Graph;
-import prefuse.data.Node;
-import prefuse.Visualization;
+import org.qi4j.runtime.structure.ApplicationModel;
+import org.qi4j.runtime.structure.LayerModel;
+import org.qi4j.runtime.structure.ModelVisitor;
+import org.qi4j.runtime.structure.ModuleModel;
 import prefuse.Constants;
 import prefuse.Display;
-import prefuse.controls.PanControl;
-import prefuse.controls.ZoomControl;
-import prefuse.controls.SubtreeDragControl;
-import prefuse.visual.VisualItem;
-import prefuse.util.ColorLib;
-import prefuse.render.LabelRenderer;
-import prefuse.render.DefaultRendererFactory;
-import prefuse.action.assignment.ColorAction;
-import prefuse.action.assignment.DataColorAction;
-import prefuse.action.layout.graph.NodeLinkTreeLayout;
+import prefuse.Visualization;
 import prefuse.action.ActionList;
 import prefuse.action.RepaintAction;
-import javax.swing.JFrame;
-import java.util.Map;
-import java.util.HashMap;
+import prefuse.action.assignment.ColorAction;
+import prefuse.action.assignment.DataColorAction;
+import prefuse.controls.PanControl;
+import prefuse.controls.ZoomControl;
+import prefuse.data.Graph;
+import prefuse.data.Node;
+import prefuse.data.Edge;
+import prefuse.render.DefaultRendererFactory;
+import prefuse.util.ColorLib;
+import prefuse.visual.VisualItem;
 
 /**
  * TODO
  */
 public class ApplicationGraph
 {
-    private static final int APPLICATION = 0;
-    private static final int LAYER = 1;
-    private static final int MODULE = 2;
-    private static final int COMPOSITE = 3;
+    private static final int TYPE_APPLICATION = 0;
+    private static final int TYPE_LAYER = 1;
+    private static final int TYPE_MODULE = 2;
+    private static final int TYPE_COMPOSITE = 3;
 
-    private static final String NAME = "name";
+    private static final int TYPE_HIDDEN = 100;
+
     private static final String TYPE = "type";
 
 //    private static final int ENTITY_COMPOSITE = 4;
@@ -58,125 +58,16 @@ public class ApplicationGraph
 
     public void show( ApplicationModel applicationModel )
     {
+        Graph graph = createData( applicationModel );
+        Visualization visualization = createVisualization( graph );
+        createRenderers( visualization );
+        createProcessingActions( visualization );
+        Display display = createDisplay( visualization );
+        launchDisplay( applicationModel, visualization, display );
+    }
 
-        final Graph graph = new Graph( true );
-        graph.addColumn( NAME, String.class );
-        graph.addColumn( TYPE, int.class );
-
-        final Node root = graph.addNode();
-        root.setString( NAME, "Application" );
-        root.setInt( TYPE, APPLICATION );
-
-        final Map<LayerModel, Node> layerNodes = new HashMap<LayerModel, Node>();
-        applicationModel.visitModel( new ModelVisitor()
-        {
-
-            Node layerNode;
-            Node moduleNode;
-
-            @Override public void visit( LayerModel layerModel )
-            {
-                layerNode = layerNodes.get( layerModel );
-                if( layerNode == null )
-                {
-                    layerNode = graph.addNode();
-                    layerNodes.put( layerModel, layerNode );
-                }
-
-                Iterable<LayerModel> layers = layerModel.usedLayers().layers();
-                for( LayerModel layer : layers )
-                {
-                    Node usedLayerNode = layerNodes.get( layer );
-                    if( usedLayerNode == null )
-                    {
-                        usedLayerNode = graph.addNode();
-                        layerNodes.put( layer, usedLayerNode );
-                    }
-                    graph.addEdge( layerNode, usedLayerNode );
-                }
-
-                layerNode.setString( NAME, layerModel.name() );
-                layerNode.setInt( TYPE, LAYER );
-                graph.addEdge( root, layerNode );
-            }
-
-            @Override
-            public void visit( ModuleModel moduleModel )
-            {
-                moduleNode = graph.addNode();
-                moduleNode.setString( NAME, moduleModel.name() );
-                moduleNode.setInt( TYPE, MODULE );
-                graph.addEdge( layerNode, moduleNode );
-            }
-
-            @Override public void visit( CompositeModel compositeModel )
-            {
-                Node node = graph.addNode();
-                node.setString( NAME, compositeModel.type().getSimpleName() );
-                node.setInt( TYPE, COMPOSITE );
-                graph.addEdge( moduleNode, node );
-            }
-
-        } );
-
-        // add the graph to the visualization as the data group "graph"
-        // nodes and edges are accessible as "graph.nodes" and "graph.edges"
-        Visualization vis = new Visualization();
-        vis.add( "graph", graph );
-        vis.setInteractive( "graph.edges", null, false );
-
-        // draw the "name" label for NodeItems
-        LabelRenderer labelRenderer = new LabelRenderer( NAME );
-        labelRenderer.setRoundedCorner( 8, 8 );
-        labelRenderer.setHorizontalPadding( 5 );
-        labelRenderer.setVerticalPadding( 5 );
-
-        // create a new default renderer factory
-        // return our name label renderer as the default for all non-EdgeItems
-        // includes straight line edges for EdgeItems by default
-        vis.setRendererFactory( new DefaultRendererFactory( labelRenderer ) );
-
-        // create our nominal color palette
-        int[] palette = new int[]{
-            ColorLib.rgb( 240, 240, 240 ), // Application node
-            ColorLib.rgb( 255, 230, 230 ), // layers
-            ColorLib.rgb( 220, 220, 255 ), // modules
-            ColorLib.rgb( 255, 250, 205 )  // composites
-        };
-        // map nominal data values to colors using our provided palette
-        DataColorAction fill = new DataColorAction( "graph.nodes", TYPE, Constants.NOMINAL,
-                                                    VisualItem.FILLCOLOR, palette );
-
-        // color for node text
-        ColorAction text = new ColorAction( "graph.nodes", VisualItem.TEXTCOLOR, ColorLib.gray( 0 ) );
-        // color for edges
-        ColorAction edgesStroke = new ColorAction( "graph.edges", VisualItem.STROKECOLOR, ColorLib.gray( 200 ) );
-        ColorAction edgesFill = new ColorAction( "graph.edges", VisualItem.FILLCOLOR, ColorLib.gray( 200 ) );
-
-        // an action list containing all color assignments
-        ActionList color = new ActionList();
-        color.add( fill );
-        color.add( text );
-        color.add( edgesStroke );
-        color.add( edgesFill );
-
-        // an action list with the layout
-        ActionList layout = new ActionList();
-        layout.add( new NodeLinkTreeLayout( "graph", Constants.ORIENT_TOP_BOTTOM, 20, 20, 20 ) );
-        layout.add( new RepaintAction() );
-
-        // add the actions to the visualization
-        vis.putAction( "color", color );
-        vis.putAction( "layout", layout );
-
-        Display display = new Display( vis );
-        display.setSize( 640, 480 );
-
-        // drag, pan and zoom controls
-        display.addControlListener( new SubtreeDragControl() );
-        display.addControlListener( new PanControl() );
-        display.addControlListener( new ZoomControl() );
-
+    private void launchDisplay( ApplicationModel applicationModel, Visualization visualization, Display display )
+    {
         JFrame frame = new JFrame( "Qi4j Application Graph - " + applicationModel.name() );
         frame.add( display );
         frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
@@ -184,8 +75,162 @@ public class ApplicationGraph
         frame.setVisible( true );
 
         // assign the colors
-        vis.run( "color" );
+        visualization.run( "color" );
         // start up the layout
-        vis.run( "layout" );
+        visualization.run( "layout" );
+//        visualization.run( "hideEdges" );
+//        visualization.run("repaint");
     }
+
+    private Display createDisplay( Visualization visualization )
+    {
+        Display display = new Display( visualization );
+        display.setSize( 800, 600 );
+//        display.setItemSorter( new TreeDepthItemSorter() );
+        // drag, pan and zoom controls
+//        display.addControlListener( new SubtreeDragControl() );
+        display.addControlListener( new PanControl() );
+        display.addControlListener( new ZoomControl() );
+        return display;
+    }
+
+    private void createProcessingActions( Visualization visualization )
+    {
+        ActionList color = establishColors();
+        ApplicationLayout layout = new ApplicationLayout( "graph" );
+
+        visualization.putAction( "color", color );
+        visualization.putAction( "layout", layout );
+        visualization.putAction( "repaint", new RepaintAction() );
+    }
+
+    private void createRenderers( Visualization visualization )
+    {
+
+        DefaultRendererFactory rendererFactory = new DefaultRendererFactory();
+
+        rendererFactory.add( "type = 0", new ApplicationRenderer() );
+        rendererFactory.add( "type = 1", new LayerRenderer() );
+        rendererFactory.add( "type = 2", new ModuleRenderer() );
+        rendererFactory.add( "type = 3", new CompositeRenderer() );
+
+        visualization.setRendererFactory( rendererFactory );
+    }
+
+    private Graph createData( ApplicationModel applicationModel )
+    {
+        final Graph graph = new Graph( true );
+        graph.addColumn( GraphConstants.NAME, String.class );
+        graph.addColumn( TYPE, int.class );
+
+        final Node root = graph.addNode();
+        root.setString( GraphConstants.NAME, "Application" );
+        root.setInt( TYPE, TYPE_APPLICATION );
+
+        applicationModel.visitModel( new AppModelVisitor( graph, root ) );
+        return graph;
+    }
+
+    private Visualization createVisualization( Graph graph )
+    {
+        // add the graph to the visualization as the data group "graph"
+        // nodes and edges are accessible as "graph.nodes" and "graph.edges"
+        Visualization visualization = new Visualization();
+        visualization.add( "graph", graph );
+        return visualization;
+    }
+
+    private ActionList establishColors()
+    {
+        // create our nominal color palette
+        int[] palette = new int[]{
+            ColorLib.rgb( 100, 200, 100 ), // Application node
+            ColorLib.rgb( 255, 60, 60 ), // layers
+            ColorLib.rgb( 230, 230, 255 ), // modules
+            ColorLib.rgb( 230, 180, 180 ),  // composites
+        };
+        // map nominal data values to colors using our provided palette
+        DataColorAction fill = new DataColorAction( "graph.nodes", TYPE, Constants.ORDINAL,
+                                                    VisualItem.FILLCOLOR, palette );
+
+        // color for node text
+        ColorAction text = new ColorAction( "graph.nodes", VisualItem.TEXTCOLOR, ColorLib.gray( 0 ) );
+        // color for edges
+//        ColorAction edgesStroke = new ColorAction( "graph.edges", VisualItem.STROKECOLOR, ColorLib.gray( 100 ) );
+//        ColorAction edgesFill = new ColorAction( "graph.edges", VisualItem.FILLCOLOR, ColorLib.gray( 100 ) );
+
+        // an action list containing all color assignments
+        ActionList color = new ActionList();
+        color.add( fill );
+        color.add( text );
+//        color.add( edgesStroke );
+//        color.add( edgesFill );
+        return color;
+    }
+
+
+    private static class AppModelVisitor extends ModelVisitor
+    {
+        private Node layerNode;
+        private Node moduleNode;
+        private final Map<LayerModel, Node> layerNodes;
+        private final Graph graph;
+        private final Node root;
+
+        public AppModelVisitor( Graph graph, Node root )
+        {
+            this.layerNodes = new HashMap<LayerModel, Node>();
+            this.graph = graph;
+            this.root = root;
+        }
+
+        @Override public void visit( LayerModel layerModel )
+        {
+            layerNode = layerNodes.get( layerModel );
+            if( layerNode == null )
+            {
+                layerNode = graph.addNode();
+                layerNodes.put( layerModel, layerNode );
+            }
+
+            Iterable<LayerModel> layers = layerModel.usedLayers().layers();
+            for( LayerModel layer : layers )
+            {
+                Node usedLayerNode = layerNodes.get( layer );
+                if( usedLayerNode == null )
+                {
+                    usedLayerNode = graph.addNode();
+                    layerNodes.put( layer, usedLayerNode );
+                }
+                graph.addEdge( layerNode, usedLayerNode );
+            }
+
+            layerNode.setString( GraphConstants.NAME, layerModel.name() );
+            layerNode.setInt( TYPE, TYPE_LAYER );
+            graph.addEdge( root, layerNode );
+            System.out.println( "Root: " + root.getChildCount() );
+        }
+
+        @Override public void visit( ModuleModel moduleModel )
+        {
+            moduleNode = graph.addNode();
+            moduleNode.setString( GraphConstants.NAME, moduleModel.name() );
+            moduleNode.setInt( TYPE, TYPE_MODULE );
+            Edge edge = graph.addEdge( layerNode, moduleNode );
+            edge.setInt( TYPE, TYPE_HIDDEN );
+            System.out.println( "Layer " + layerNode.get( GraphConstants.NAME ) + " : " + layerNode.getChildCount() );
+        }
+
+        public void visit( CompositeModel compositeModel )
+        {
+            Node node = graph.addNode();
+            node.setString( GraphConstants.NAME, compositeModel.type().getSimpleName() );
+            node.setInt( TYPE, TYPE_COMPOSITE );
+            Edge edge = graph.addEdge( moduleNode, node );
+            edge.setInt( TYPE, TYPE_HIDDEN );
+            System.out.println( "Module " + moduleNode.get( GraphConstants.NAME ) + " : " + moduleNode.getChildCount() );
+        }
+
+    }
+
 }
