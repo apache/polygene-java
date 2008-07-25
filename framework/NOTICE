@@ -20,5 +20,7 @@ Communications Corporation. Portions created by the Initial Developer are
 Copyright (C) 1997-1999 the Initial Developer. All Rights Reserved.
 Additional Contributor(s): Norris Boyd, Igor Bukanov, David P. Caldwell
 
+This module uses Prefuse, Copyright (c) 2004-2007 Regents of the University of California.
+All rights reserved. See licenses/prefuse.license
 
 END OF NOTICE
