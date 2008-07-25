@@ -25,6 +25,10 @@ import java.awt.Rectangle;
 import java.awt.Point;
 import java.awt.Dimension;
 import java.util.Iterator;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.HashSet;
+import java.util.Collection;
 import prefuse.action.layout.graph.TreeLayout;
 import prefuse.render.Renderer;
 import prefuse.visual.NodeItem;
@@ -46,6 +50,25 @@ public class ApplicationLayout extends TreeLayout
         root.setBounds( topLeft.x, topLeft.y, size.width, size.height );
     }
 
+    Collection<Set<NodeItem>> resolveLayerDependencies( Iterator nodes )
+    {
+        TreeMap<Integer, Set<NodeItem>> map = new TreeMap<Integer, Set<NodeItem>>();
+        while( nodes.hasNext() )
+        {
+            NodeItem layer = (NodeItem) nodes.next();
+            int level = layer.getInt( FIELD_LAYER_LEVEL );
+            Set<NodeItem> set = map.get( level );
+            if( set == null )
+            {
+                set = new HashSet<NodeItem>();
+                map.put( level, set );
+            }
+            set.add( layer );
+        }
+
+        return map.values();
+    }
+
     private Rectangle computeApplicationBounds( NodeItem application, Point location )
     {
 
@@ -53,11 +76,39 @@ public class ApplicationLayout extends TreeLayout
         int x = location.x + paddingLeft;
         int y = location.y + paddingTop + dimesion.height + vSpace;
 
-        Iterator children = application.children();
-        int maxLayerHeight = 0;
-        while( children.hasNext() )
+        Collection<Set<NodeItem>> layeredNodeGroups = resolveLayerDependencies( application.children() );
+
+        int maxLayerGroupWidth = 0;
+        for( Set<NodeItem> nodeGroup : layeredNodeGroups )
         {
-            NodeItem layer = (NodeItem) children.next();
+            Point layerGroupLocation = new Point( x, y );
+            Rectangle bounds = computeLayerGroupBounds( nodeGroup, layerGroupLocation );
+
+            y += bounds.height + vSpace;
+            if( bounds.width > maxLayerGroupWidth )
+            {
+                maxLayerGroupWidth = bounds.width;
+            }
+        }
+
+        int width = ( x + maxLayerGroupWidth + paddingRight ) - location.x;
+        int height = y - location.y;
+
+        Rectangle bounds = new Rectangle( location.x, location.y, width, height );
+//        System.out.println( getName( application ) + " - " + bounds );
+        return bounds;
+    }
+
+    private Rectangle computeLayerGroupBounds( Set<NodeItem> layers, Point location )
+    {
+        int x = location.x + paddingLeft;
+//        int y = location.y + paddingTop + vSpace;
+        int y = location.y + vSpace;
+
+        int maxLayerHeight = 0;
+        for( NodeItem layer : layers )
+        {
+
             Point layerLocation = new Point( x, y );
             Rectangle bounds = computeLayerBounds( layer, layerLocation );
             layer.setBounds( bounds.x, bounds.y, bounds.width, bounds.height );
@@ -74,7 +125,7 @@ public class ApplicationLayout extends TreeLayout
         int height = ( y + maxLayerHeight + paddingBottom ) - location.y;
 
         Rectangle bounds = new Rectangle( location.x, location.y, width, height );
-        System.out.println( getName( application ) + " - " + bounds );
+//        System.out.println( getName( application ) + " - " + bounds );
         return bounds;
     }
 
@@ -111,7 +162,7 @@ public class ApplicationLayout extends TreeLayout
         int width = x - location.x;
         int height = ( y + maxModuleHeight + paddingBottom ) - location.y;
         Rectangle bounds = new Rectangle( location.x, location.y, width, height );
-        System.out.println( getName( layer ) + " - " + bounds );
+//        System.out.println( getName( layer ) + " - " + bounds );
         return bounds;
     }
 
@@ -152,7 +203,7 @@ public class ApplicationLayout extends TreeLayout
         int width = ( x + maxCompositeWidth + paddingRight ) - location.x;
         int height = ( y + paddingBottom ) - location.y;
         Rectangle bounds = new Rectangle( location.x, location.y, width, height );
-        System.out.println( getName( module ) + " - " + bounds );
+//        System.out.println( getName( module ) + " - " + bounds );
         return bounds;
     }
 
@@ -160,13 +211,13 @@ public class ApplicationLayout extends TreeLayout
     {
         Dimension dimension = getNodeLabelSize( composite );
         Rectangle bounds = new Rectangle( location.x, location.y, dimension.width + paddingLeft, dimension.height + paddingTop );
-        System.out.println( getName( composite ) + " - " + bounds );
+//        System.out.println( getName( composite ) + " - " + bounds );
         return bounds;
     }
 
     private String getName( NodeItem node )
     {
-        return (String) node.get( NAME );
+        return (String) node.get( FIELD_NAME );
     }
 
     private Dimension getNodeLabelSize( NodeItem node )

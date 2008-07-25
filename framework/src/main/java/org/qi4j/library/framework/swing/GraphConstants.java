@@ -30,5 +30,8 @@ public class GraphConstants
     static int hSpace = 10;
     static int vSpace = 10;
 
-    static final String NAME = "name";
+    static final String FIELD_NAME = "name";
+    static final String FIELD_TYPE = "type";
+    static final String FIELD_LAYER_LEVEL = "layer_level";
+//    static final String FIELD_OBJECT = "object";
 }

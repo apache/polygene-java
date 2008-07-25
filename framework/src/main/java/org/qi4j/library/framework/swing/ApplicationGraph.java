@@ -39,6 +39,8 @@ import prefuse.render.DefaultRendererFactory;
 import prefuse.util.ColorLib;
 import prefuse.visual.VisualItem;
 
+import static org.qi4j.library.framework.swing.GraphConstants.*;
+
 /**
  * TODO
  */
@@ -51,9 +53,7 @@ public class ApplicationGraph
 
     private static final int TYPE_HIDDEN = 100;
 
-    private static final String TYPE = "type";
-
-//    private static final int ENTITY_COMPOSITE = 4;
+    //    private static final int ENTITY_COMPOSITE = 4;
 //    private static final int SERVICE_COMPOSITE = 5;
 
     public void show( ApplicationModel applicationModel )
@@ -120,12 +120,13 @@ public class ApplicationGraph
     private Graph createData( ApplicationModel applicationModel )
     {
         final Graph graph = new Graph( true );
-        graph.addColumn( GraphConstants.NAME, String.class );
-        graph.addColumn( TYPE, int.class );
+        graph.addColumn( FIELD_NAME, String.class );
+        graph.addColumn( FIELD_TYPE, int.class );
+        graph.addColumn( FIELD_LAYER_LEVEL, int.class );
 
         final Node root = graph.addNode();
-        root.setString( GraphConstants.NAME, "Application" );
-        root.setInt( TYPE, TYPE_APPLICATION );
+        root.setString( FIELD_NAME, "Application" );
+        root.setInt( FIELD_TYPE, TYPE_APPLICATION );
 
         applicationModel.visitModel( new AppModelVisitor( graph, root ) );
         return graph;
@@ -150,7 +151,7 @@ public class ApplicationGraph
             ColorLib.rgb( 230, 180, 180 ),  // composites
         };
         // map nominal data values to colors using our provided palette
-        DataColorAction fill = new DataColorAction( "graph.nodes", TYPE, Constants.ORDINAL,
+        DataColorAction fill = new DataColorAction( "graph.nodes", FIELD_TYPE, Constants.ORDINAL,
                                                     VisualItem.FILLCOLOR, palette );
 
         // color for node text
@@ -186,49 +187,58 @@ public class ApplicationGraph
 
         @Override public void visit( LayerModel layerModel )
         {
-            layerNode = layerNodes.get( layerModel );
-            if( layerNode == null )
-            {
-                layerNode = graph.addNode();
-                layerNodes.put( layerModel, layerNode );
-            }
+            layerNode = getLayerNode( layerModel );
 
-            Iterable<LayerModel> layers = layerModel.usedLayers().layers();
-            for( LayerModel layer : layers )
+            Iterable<LayerModel> usedLayers = layerModel.usedLayers().layers();
+            for( LayerModel usedLayerModel : usedLayers )
             {
-                Node usedLayerNode = layerNodes.get( layer );
-                if( usedLayerNode == null )
-                {
-                    usedLayerNode = graph.addNode();
-                    layerNodes.put( layer, usedLayerNode );
-                }
+                Node usedLayerNode = getLayerNode( usedLayerModel );
                 graph.addEdge( layerNode, usedLayerNode );
+                incrementLayerLevel( usedLayerNode );
             }
 
-            layerNode.setString( GraphConstants.NAME, layerModel.name() );
-            layerNode.setInt( TYPE, TYPE_LAYER );
             graph.addEdge( root, layerNode );
-            System.out.println( "Root: " + root.getChildCount() );
+        }
+
+        private Node getLayerNode( LayerModel layerModel )
+        {
+            Node layer = layerNodes.get( layerModel );
+            if( layer == null )
+            {
+                layer = graph.addNode();
+                String name = layerModel.name();
+                layer.setString( FIELD_NAME, name );
+                layer.setInt( FIELD_TYPE, TYPE_LAYER );
+                layer.setInt( FIELD_LAYER_LEVEL, 1 );
+
+                layerNodes.put( layerModel, layer );
+            }
+
+            return layer;
+        }
+
+        private void incrementLayerLevel( Node layer )
+        {
+            int level = layer.getInt( FIELD_LAYER_LEVEL );
+            layer.setInt( FIELD_LAYER_LEVEL, ++level );
         }
 
         @Override public void visit( ModuleModel moduleModel )
         {
             moduleNode = graph.addNode();
-            moduleNode.setString( GraphConstants.NAME, moduleModel.name() );
-            moduleNode.setInt( TYPE, TYPE_MODULE );
+            moduleNode.setString( FIELD_NAME, moduleModel.name() );
+            moduleNode.setInt( FIELD_TYPE, TYPE_MODULE );
             Edge edge = graph.addEdge( layerNode, moduleNode );
-            edge.setInt( TYPE, TYPE_HIDDEN );
-            System.out.println( "Layer " + layerNode.get( GraphConstants.NAME ) + " : " + layerNode.getChildCount() );
+            edge.setInt( FIELD_TYPE, TYPE_HIDDEN );
         }
 
         public void visit( CompositeModel compositeModel )
         {
             Node node = graph.addNode();
-            node.setString( GraphConstants.NAME, compositeModel.type().getSimpleName() );
-            node.setInt( TYPE, TYPE_COMPOSITE );
+            node.setString( FIELD_NAME, compositeModel.type().getSimpleName() );
+            node.setInt( FIELD_TYPE, TYPE_COMPOSITE );
             Edge edge = graph.addEdge( moduleNode, node );
-            edge.setInt( TYPE, TYPE_HIDDEN );
-            System.out.println( "Module " + moduleNode.get( GraphConstants.NAME ) + " : " + moduleNode.getChildCount() );
+            edge.setInt( FIELD_TYPE, TYPE_HIDDEN );
         }
 
     }

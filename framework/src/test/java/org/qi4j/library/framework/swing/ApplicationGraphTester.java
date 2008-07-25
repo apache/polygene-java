@@ -34,17 +34,17 @@ public class ApplicationGraphTester
 
         ApplicationAssembly assembly = qi4j.newApplicationAssembly();
 
+        LayerAssembly infrastructureLayer = assembly.newLayerAssembly();
+        infrastructureLayer.setName( "Infrastructure" );
+        ModuleAssembly database = infrastructureLayer.newModuleAssembly();
+        database.setName( "Database" );
+
         LayerAssembly domainLayer = assembly.newLayerAssembly();
         domainLayer.setName( "Domain" );
 
         ModuleAssembly someDomain = domainLayer.newModuleAssembly();
         someDomain.setName( "Some domain" );
         someDomain.addComposites( ADomainComposite.class, BDomainComposite.class );
-
-        LayerAssembly infrastructureLayer = assembly.newLayerAssembly();
-        infrastructureLayer.setName( "Infrastructure" );
-        ModuleAssembly database = infrastructureLayer.newModuleAssembly();
-        database.setName( "Database" );
 
         LayerAssembly guiLayer = assembly.newLayerAssembly();
         guiLayer.setName( "UI" );
@@ -61,6 +61,7 @@ public class ApplicationGraphTester
 
         guiLayer.uses( domainLayer );
         guiLayer.uses( infrastructureLayer );
+        domainLayer.uses( infrastructureLayer );
 
         Application app = qi4j.newApplication( assembly );
         new ApplicationGraph().show( ( (ApplicationInstance) app ).model() );
