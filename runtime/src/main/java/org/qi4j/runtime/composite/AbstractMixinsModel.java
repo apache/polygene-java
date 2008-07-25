@@ -27,7 +27,7 @@ import java.util.Collection;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.Mixins;
 import org.qi4j.runtime.structure.ModelVisitor;
-import org.qi4j.runtime.util.UsageGraph;
+import org.qi4j.util.UsageGraph;
 import org.qi4j.spi.composite.InvalidCompositeException;
 import org.qi4j.util.ClassUtil;
 
