@@ -17,17 +17,17 @@ package org.qi4j.runtime.composite;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Collection;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.Mixins;
 import org.qi4j.runtime.structure.ModelVisitor;
+import org.qi4j.runtime.util.UsageGraph;
 import org.qi4j.spi.composite.InvalidCompositeException;
 import org.qi4j.util.ClassUtil;
 
@@ -39,7 +39,7 @@ public abstract class AbstractMixinsModel
     protected final Set<MixinDeclaration> mixins = new LinkedHashSet<MixinDeclaration>();
 
     private final Map<Method, MixinModel> methodImplementation = new HashMap<Method, MixinModel>();
-    protected final List<MixinModel> mixinModels = new ArrayList<MixinModel>();
+    protected List<MixinModel> mixinModels = new ArrayList<MixinModel>();
     private final Map<Class, Integer> mixinIndex = new HashMap<Class, Integer>();
     private final Map<Method, Integer> methodIndex = new HashMap<Method, Integer>();
     private final Class<? extends Composite> compositeType;
@@ -187,31 +187,8 @@ public abstract class AbstractMixinsModel
     public void bind( Resolution resolution ) throws BindingException
     {
         // Order mixins based on @This usages
-        Collections.sort( mixinModels, new Comparator<MixinModel>()
-        {
-            public int compare( MixinModel mixinModel, MixinModel mixinModel1 )
-            {
-                if( thisUses( mixinModel, mixinModel1 ) )
-                {
-                    if( thisUses( mixinModel1, mixinModel ) )
-                    {
-                        throw new InvalidCompositeException( "Cyclic @This injection dependencies between " + mixinModel.mixinClass().getName() + " and " + mixinModel1.mixinClass().getName(), compositeType );
-                    }
-                    else
-                    {
-                        return 1;
-                    }
-                }
-                else if( thisUses( mixinModel1, mixinModel ) )
-                {
-                    return -1;
-                }
-                else
-                {
-                    return 0;
-                }
-            }
-        } );
+        UsageGraph<MixinModel> deps = new UsageGraph<MixinModel>( mixinModels, new Uses(), true );
+        mixinModels = deps.resolveOrder();
 
         // Populate mappings
         for( int i = 0; i < mixinModels.size(); i++ )
@@ -256,18 +233,21 @@ public abstract class AbstractMixinsModel
         return mixinModels.get( integer );
     }
 
-    private boolean thisUses( MixinModel mixinModel, MixinModel mixinModel1 )
+    private class Uses
+        implements UsageGraph.Use<MixinModel>
     {
-        Set<Class> thisMixinTypes = mixinModel.thisMixinTypes();
-        Set<Class> usedMixinClasses = new HashSet<Class>();
-        for( Class thisMixinType : thisMixinTypes )
+        public Collection<MixinModel> uses( MixinModel source )
         {
-            for( Method method : thisMixinType.getMethods() )
+            Set<Class> thisMixinTypes = source.thisMixinTypes();
+            List<MixinModel> usedMixinClasses = new ArrayList<MixinModel>();
+            for( Class thisMixinType : thisMixinTypes )
             {
-                usedMixinClasses.add( methodImplementation.get( method ).mixinClass() );
+                for( Method method : thisMixinType.getMethods() )
+                {
+                    usedMixinClasses.add( methodImplementation.get( method ) );
+                }
             }
+            return usedMixinClasses;
         }
-
-        return ( usedMixinClasses.contains( mixinModel1.mixinClass() ) );
     }
 }
