@@ -100,7 +100,6 @@ public class UsageGraph<K>
                         break;
                     }
                 }
-                System.out.println( "  " + "pos: " + pos + " -> " + item );
                 resolved.add( pos, item );
             }
         }

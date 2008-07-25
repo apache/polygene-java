@@ -1,6 +1,13 @@
 Bundle-Activator:
 
-Private-Package: org.qi4j.runtime, \
+Ignore-Package:  net.sf.cglib.asm.util
+
+Private-Package: net.sf.cglib.proxy, \
+                 net.sf.cglib.asm, \
+                 net.sf.cglib.core, \
+                 net.sf.cglib.reflect, \
+                 net.sf.cglib.asm.util, \
+                 org.qi4j.runtime, \
                  org.qi4j.runtime.composite, \
                  org.qi4j.runtime.bootstrap, \
                  org.qi4j.runtime.entity, \
@@ -14,6 +21,34 @@ Private-Package: org.qi4j.runtime, \
                  org.qi4j.runtime.structure, \
                  org.qi4j.runtime.util
 
-Import-Package: *
+Import-Package: org.qi4j, \
+                org.qi4j.bootstrap, \
+                org.qi4j.composite, \
+                org.qi4j.composite.internal, \
+                org.qi4j.entity, \
+                org.qi4j.entity.association, \
+                org.qi4j.injection, \
+                org.qi4j.injection.scope, \
+                org.qi4j.object, \
+                org.qi4j.property, \
+                org.qi4j.query, \
+                org.qi4j.query.grammar, \
+                org.qi4j.query.grammar.impl, \
+                org.qi4j.service, \
+                org.qi4j.spi, \
+                org.qi4j.spi.composite, \
+                org.qi4j.spi.entity, \
+                org.qi4j.spi.entity.association, \
+                org.qi4j.spi.property, \
+                org.qi4j.spi.query, \
+                org.qi4j.spi.service, \
+                org.qi4j.spi.service.provider, \
+                org.qi4j.structure, \
+                org.qi4j.util
 
 Export-Package:
+
+Embed-Dependency: net.sf.cglib;scope=compile|runtime, \
+                  net.sf.cglib.*;scope=compile|runtime
+
+Embed-Transitive: true

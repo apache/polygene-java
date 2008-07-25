@@ -2,7 +2,17 @@ Bundle-Activator:
 
 Private-Package:
 
-Import-Package: *
+Import-Package: org.qi4j, \
+                org.qi4j.composite, \
+                org.qi4j.entity, \
+                org.qi4j.entity.association, \
+                org.qi4j.injection.scope, \
+                org.qi4j.object, \
+                org.qi4j.property, \
+                org.qi4j.query.grammar, \
+                org.qi4j.service, \
+                org.qi4j.structure, \
+                org.qi4j.util
 
 Export-Package: org.qi4j.spi, \
                 org.qi4j.spi.composite, \

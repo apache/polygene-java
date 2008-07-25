@@ -2,7 +2,7 @@ Bundle-Activator:
 
 Private-Package:
 
-Import-Package: *
+Import-Package: 
 
 Export-Package: org.qi4j, \
                 org.qi4j.composite.internal, \

@@ -3,6 +3,16 @@ Bundle-Activator: org.qi4j.bootstrap.osgi.Activator
 Private-Package: org.qi4j.bootstrap.osgi, \
                  org.qi4j.bootstrap.internal
 
-Import-Package: *
+Import-Package: org.ops4j.pax.swissbox.core, \
+                org.ops4j.pax.swissbox.extender, \
+                org.osgi.framework, \
+                org.qi4j, \
+                org.qi4j.composite, \
+                org.qi4j.entity, \
+                org.qi4j.object, \
+                org.qi4j.property, \
+                org.qi4j.service, \
+                org.qi4j.structure, \
+                org.qi4j.util
 
 Export-Package: org.qi4j.bootstrap
