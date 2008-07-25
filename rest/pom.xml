@@ -9,6 +9,7 @@
   <artifactId>qi4j-ext-rest</artifactId>
   <name>Qi4J Extension - REST Support</name>
   <version>0.3-SNAPSHOT</version>
+  <packaging>bundle</packaging>
   <dependencies>
     <dependency>
       <groupId>org.qi4j.core</groupId>

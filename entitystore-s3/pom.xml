@@ -9,6 +9,7 @@
   <artifactId>qi4j-ext-entitystore-s3</artifactId>
   <name>Qi4J Extension - Entity Store - Amazon S3</name>
   <version>0.3-SNAPSHOT</version>
+  <packaging>bundle</packaging>
   <dependencies>
     <dependency>
       <groupId>org.qi4j.core</groupId>

@@ -9,6 +9,8 @@
   <artifactId>qi4j-ext-entitystore-jgroups</artifactId>
   <name>Qi4J Extension - Entity Store - JGroups</name>
   <version>0.3-SNAPSHOT</version>
+  <packaging>bundle</packaging>
+  
   <build>
     <plugins>
       <plugin>

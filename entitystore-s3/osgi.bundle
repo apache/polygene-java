@@ -1,0 +1,20 @@
+Bundle-Activator:
+
+Private-Package:
+
+Import-Package: org.jets3t.service, \
+                org.jets3t.service.impl.rest.httpclient, \
+                org.jets3t.service.model, \
+                org.jets3t.service.security, \
+                org.qi4j.composite, \
+                org.qi4j.entity, \
+                org.qi4j.injection.scope, \
+                org.qi4j.library.framework.locking, \
+                org.qi4j.property, \
+                org.qi4j.service, \
+                org.qi4j.spi.composite, \
+                org.qi4j.spi.entity, \
+                org.qi4j.spi.serialization, \
+                org.qi4j.structure
+
+Export-Package: org.qi4j.entity.s3

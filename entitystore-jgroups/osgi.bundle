@@ -1,0 +1,50 @@
+Bundle-Activator:
+
+Private-Package:
+
+Ignore-Package: bsh, \
+                junit.framework, \
+                junit.textui, \
+                org.jgroups.tests, \
+                org.jgroups.debug, \
+                org.bouncycastle.jce.provider
+
+Import-Package: javax.crypto, \
+                javax.crypto.spec, \
+                javax.jms, \
+                javax.management, \
+                javax.naming, \
+                javax.net, \
+                javax.net.ssl, \
+                javax.xml.parsers, \
+                org.apache.commons.logging, \
+                org.jgroups, \
+                org.jgroups.blocks, \
+                org.qi4j, \
+                org.qi4j.composite, \
+                org.qi4j.injection.scope, \
+                org.qi4j.library.framework.locking, \
+                org.qi4j.service, \
+                org.qi4j.spi.composite, \
+                org.qi4j.spi.entity, \
+                org.qi4j.spi.serialization, \
+                org.qi4j.structure,\
+                org.w3c.dom
+
+Export-Package: org.qi4j.entity.jgroups, \
+                org.jgroups, \
+                org.jgroups.blocks, \
+                org.jgroups.conf, \
+                org.jgroups.jmx, \
+                org.jgroups.mux, \
+                org.jgroups.persistence, \
+                org.jgroups.stack, \
+                org.jgroups.util, \
+                org.jgroups.auth, \
+                org.jgroups.protocols, \
+                org.jgroups.protocols.pbcast
+
+Embed-Dependency: org.jgroups;scope=compile|runtime, \
+                  org.jgroups.*;scope=compile|runtime
+
+Embed-Transitive:  true

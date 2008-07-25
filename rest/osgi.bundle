@@ -1,0 +1,30 @@
+
+Bundle-Activator:
+
+Export-Package: org.qi4j.rest, \
+                org.qi4j.rest.assembly
+
+Import-Package: javax.crypto, \
+                javax.crypto.spec, \
+                javax.security.auth.login, \
+                javax.xml.namespace, \
+                javax.xml.parsers, \
+                javax.xml.transform, \
+                javax.xml.transform.dom, \
+                javax.xml.transform.sax, \
+                javax.xml.transform.stream, \
+                javax.xml.validation, \
+                javax.xml.xpath, \
+                org.ops4j.pax.swissbox.core, \
+                org.ops4j.pax.swissbox.extender, \
+                org.osgi.framework, \
+                org.w3c.dom, org.xml.sax, \
+                org.xml.sax.helpers
+
+Private-Package:
+
+Ignore-Package:
+
+Embed-Dependency: *;scope=compile|runtime
+
+Embed-Transitive:  true

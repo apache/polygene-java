@@ -9,7 +9,7 @@
   <artifactId>qi4j-ext-entitystore-ibatis</artifactId>
   <name>Qi4J Extension - Entity Store - IBatis</name>
   <version>0.3-SNAPSHOT</version>
-
+  
   <properties>
     <dependency.version.derby>10.3.2.1</dependency.version.derby>
   </properties>
@@ -85,6 +85,7 @@
     <dependency>
       <groupId>org.jmock</groupId>
       <artifactId>jmock</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 </project>

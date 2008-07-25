@@ -1,0 +1,8 @@
+Bundle-Activator:
+
+Private-Package:
+
+Import-Package: org.qi4j.composite, \
+                org.qi4j.entity
+
+Export-Package: org.qi4j.entity.quick
