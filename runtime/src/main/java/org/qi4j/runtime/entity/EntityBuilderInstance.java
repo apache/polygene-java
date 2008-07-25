@@ -18,6 +18,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Iterator;
+import org.qi4j.composite.Composite;
 import org.qi4j.composite.InstantiationException;
 import org.qi4j.composite.State;
 import org.qi4j.entity.EntityBuilder;
@@ -40,6 +41,8 @@ public final class EntityBuilderInstance<T>
     implements EntityBuilder<T>
 {
     private static final Method IDENTITY_METHOD;
+    private static final Method TYPE_METHOD;
+    private static final Method METAINFO_METHOD;
 
     private final ModuleInstance moduleInstance;
     private final EntityModel entityModel;
@@ -55,6 +58,8 @@ public final class EntityBuilderInstance<T>
         try
         {
             IDENTITY_METHOD = Identity.class.getMethod( "identity" );
+            TYPE_METHOD = Composite.class.getMethod( "type" );
+            METAINFO_METHOD = Composite.class.getMethod( "metaInfo", Class.class );
         }
         catch( NoSuchMethodException e )
         {
@@ -197,6 +202,14 @@ public final class EntityBuilderInstance<T>
             else if( AbstractAssociation.class.isAssignableFrom( method.getReturnType() ) )
             {
                 return getState().getAssociation( method );
+            }
+            else if( method.equals( TYPE_METHOD ) )
+            {
+                return entityModel.type();
+            }
+            else if( method.equals( METAINFO_METHOD ) )
+            {
+                return entityModel.metaInfo().get( (Class<? extends Object>) objects[ 0 ] );
             }
             else
             {

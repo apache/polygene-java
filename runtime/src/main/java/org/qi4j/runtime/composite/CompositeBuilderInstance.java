@@ -18,6 +18,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Iterator;
+import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.InstantiationException;
 import org.qi4j.composite.State;
@@ -31,6 +32,22 @@ import org.qi4j.spi.composite.CompositeInstance;
 public final class CompositeBuilderInstance<T>
     implements CompositeBuilder<T>
 {
+    private static final Method TYPE_METHOD;
+    private static final Method METAINFO_METHOD;
+
+    static
+    {
+        try
+        {
+            TYPE_METHOD = Composite.class.getMethod( "type" );
+            METAINFO_METHOD = Composite.class.getMethod( "metaInfo", Class.class );
+        }
+        catch( NoSuchMethodException e )
+        {
+            throw new InternalError( "Qi4j Core Runtime codebase is corrupted. Contact Qi4j team: EntityBuilderInstance" );
+        }
+    }
+
     private final ModuleInstance moduleInstance;
     private final CompositeModel compositeModel;
     private final Class<T> compositeType;
@@ -168,6 +185,14 @@ public final class CompositeBuilderInstance<T>
             if( Property.class.isAssignableFrom( method.getReturnType() ) )
             {
                 return getState().getProperty( method );
+            }
+            else if( method.equals( TYPE_METHOD ) )
+            {
+                return compositeModel.type();
+            }
+            else if( method.equals( METAINFO_METHOD ) )
+            {
+                return compositeModel.metaInfo().get( (Class<? extends Object>) objects[ 0 ] );
             }
             else
             {
