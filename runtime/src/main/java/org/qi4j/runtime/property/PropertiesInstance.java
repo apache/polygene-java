@@ -17,7 +17,6 @@ package org.qi4j.runtime.property;
 import java.lang.reflect.Method;
 import java.util.Map;
 import org.qi4j.property.Property;
-import org.qi4j.spi.entity.EntityState;
 
 /**
  * TODO
@@ -34,10 +33,5 @@ public final class PropertiesInstance
     public Property<?> propertyFor( Method accessor )
     {
         return properties.get( accessor );
-    }
-
-    public void setState( EntityState entityState )
-    {
-
     }
 }

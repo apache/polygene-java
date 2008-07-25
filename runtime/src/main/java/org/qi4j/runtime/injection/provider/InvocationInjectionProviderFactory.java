@@ -3,7 +3,6 @@ package org.qi4j.runtime.injection.provider;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 import org.qi4j.runtime.composite.CompositeMethodModel;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.injection.DependencyModel;
@@ -45,31 +44,27 @@ public final class InvocationInjectionProviderFactory
 
         public Object provideInjection( InjectionContext context ) throws InjectionProviderException
         {
-            final Class injectedClass = dependencyModel.injectedClass();
-            final Type injectionType = dependencyModel.injectionType();
+            Class injectionClass = dependencyModel.injectionClass();
             final CompositeMethodModel methodModel = resolution.method();
-
-            if( injectionType.equals( Method.class ) )
+            if( injectionClass.equals( Method.class ) )
             {
                 // This needs to be updated to handle Apply and annotation aggregation correctly
                 return methodModel.method();
             }
 
             final AnnotatedElement method = methodModel.annotatedElement();
-            if( injectedClass.equals( AnnotatedElement.class ) )
+            if( injectionClass.equals( AnnotatedElement.class ) )
             {
                 return method;
             }
-
-            final Annotation annotation = method.getAnnotation( injectedClass );
+            final Annotation annotation = method.getAnnotation( injectionClass );
             if( annotation != null )
             {
                 return annotation;
             }
-
-            if( injectionType instanceof Class<?> )
+            if( dependencyModel.injectionType() instanceof Class<?> )
             {
-                return method.getAnnotation( (Class<Annotation>) injectionType );
+                return method.getAnnotation( (Class<Annotation>) dependencyModel.injectionType() );
             }
             return null;
         }

@@ -72,7 +72,7 @@ public final class StructureInjectionProviderFactory
             {
                 return context.moduleInstance().serviceFinder();
             }
-            else if( type.equals( Module.class ) )
+            else if( Module.class.isAssignableFrom( (Class<?>) type ) )
             {
                 return context.moduleInstance();
             }

@@ -2,8 +2,9 @@ package org.qi4j.test.entity;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -113,14 +114,16 @@ public abstract class AbstractEntityStoreTest
         instance.name().set( "Test" );
         instance.association().set( instance );
 
+/*
         EntityBuilder<TestValue> testValue = unitOfWork.newEntityBuilder( TestValue.class );
         TestValue state = testValue.stateOfComposite();
         state.someValue().set( "Foo" );
         state.otherValue().set( 5 );
 
         TestValue value = testValue.newInstance();
-        //instance.valueProperty().set( value );
+        instance.valueProperty().set( value );
         value.mutate();
+*/
 
         instance.manyAssociation().add( instance );
 

@@ -17,6 +17,8 @@ package org.qi4j.runtime.entity;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import org.qi4j.bootstrap.AssociationDeclarations;
+import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.ConstraintViolationException;
 import org.qi4j.composite.State;
@@ -31,8 +33,6 @@ import org.qi4j.runtime.composite.ConstraintsModel;
 import org.qi4j.runtime.composite.MixinsInstance;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.composite.SideEffectsDeclaration;
-import org.qi4j.bootstrap.AssociationDeclarations;
-import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.runtime.entity.association.AssociationsModel;
 import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.ModelVisitor;
@@ -246,4 +246,8 @@ public final class EntityModel
         return CompositeModel.toURI( type );
     }
 
+    @Override public String toString()
+    {
+        return type.getName();
+    }
 }

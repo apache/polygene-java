@@ -18,6 +18,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.State;
 import org.qi4j.entity.Lifecycle;
@@ -30,7 +31,6 @@ import org.qi4j.spi.composite.CompositeInstance;
 import org.qi4j.spi.composite.StateDescriptor;
 import org.qi4j.structure.Visibility;
 import org.qi4j.util.MetaInfo;
-import org.qi4j.bootstrap.PropertyDeclarations;
 
 /**
  * TODO
@@ -203,6 +203,8 @@ public final class CompositeModel
                                                    UsesInstance uses,
                                                    State state )
     {
+        stateModel.checkConstraints( state );
+
         Object[] mixins = mixinsModel.newMixinHolder();
         DefaultCompositeInstance compositeInstance = new DefaultCompositeInstance( this, moduleInstance, mixins );
 

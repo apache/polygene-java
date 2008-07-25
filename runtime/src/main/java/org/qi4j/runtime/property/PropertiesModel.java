@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.composite.State;
 import org.qi4j.property.AbstractPropertyInstance;
 import org.qi4j.property.Property;
@@ -29,7 +30,6 @@ import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.composite.ValueConstraintsModel;
 import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.util.MetaInfo;
-import org.qi4j.bootstrap.PropertyDeclarations;
 
 /**
  * TODO
@@ -130,5 +130,14 @@ public final class PropertiesModel
             }
         }
         return null;
+    }
+
+    public void checkConstraints( PropertiesInstance properties )
+    {
+        for( PropertyModel propertyModel : propertyModels )
+        {
+            Property property = properties.propertyFor( propertyModel.accessor() );
+            propertyModel.checkConstraints( property.get() );
+        }
     }
 }

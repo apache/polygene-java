@@ -87,6 +87,12 @@ public final class StateModel
         return Collections.EMPTY_LIST;
     }
 
+    public void checkConstraints( State state )
+    {
+        StateInstance stateInstance = (StateModel.StateInstance) state;
+        stateInstance.checkConstraints();
+    }
+
     public final class StateInstance
         implements State
     {
@@ -105,6 +111,11 @@ public final class StateModel
         public AbstractAssociation getAssociation( Method associationMethod )
         {
             return null;
+        }
+
+        public void checkConstraints()
+        {
+            propertiesModel.checkConstraints( properties );
         }
     }
 }

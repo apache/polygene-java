@@ -34,9 +34,9 @@ import org.qi4j.runtime.object.ObjectModel;
 import org.qi4j.service.Activatable;
 import org.qi4j.service.ServiceFinder;
 import org.qi4j.service.ServiceReference;
+import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.structure.Module;
 import org.qi4j.structure.Visibility;
-import org.qi4j.spi.composite.CompositeDescriptor;
 
 /**
  * TODO
@@ -196,6 +196,10 @@ public class ModuleInstance
     {
         //TODO Cache this result
         ModuleInstance realModuleInstance = findModuleForComposite( compositeType );
+        if( realModuleInstance == null )
+        {
+            return null;
+        }
         CompositesInstance compositesInstance = realModuleInstance.composites();
         CompositesModel compositesModel = compositesInstance.model();
         return compositesModel.getCompositeModelFor( compositeType );
@@ -205,6 +209,10 @@ public class ModuleInstance
     {
         //TODO Cache this result
         ModuleInstance realModuleInstance = findModuleForEntity( entityCompositeType );
+        if( realModuleInstance == null )
+        {
+            return null;
+        }
         EntitiesInstance entitiesInstance = realModuleInstance.entities();
         EntitiesModel entitiesModel = entitiesInstance.model();
         return entitiesModel.getEntityModelFor( entityCompositeType );
