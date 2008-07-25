@@ -27,7 +27,7 @@ import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.injection.provider.InvalidInjectionException;
 import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.Specification;
-import static org.qi4j.runtime.util.CollectionUtils.*;
+import static org.qi4j.runtime.util.CollectionUtils.firstElementOrNull;
 
 /**
  * TODO
@@ -137,6 +137,12 @@ public final class DependencyModel
                 }
             }
         }
+
+        if( type == null )
+        {
+            type = Object.class; // Generic type with no constraints so Object is fine
+        }
+
         return type;
     }
 
@@ -178,7 +184,7 @@ public final class DependencyModel
         else if( type instanceof TypeVariable )
         {
             TypeVariable tv = (TypeVariable) type;
-            return (Class) tv.getBounds()[0];
+            return (Class) tv.getBounds()[ 0 ];
         }
         throw new IllegalArgumentException( "Could not extract injectionClass of Type " + parameterizedType );
     }
