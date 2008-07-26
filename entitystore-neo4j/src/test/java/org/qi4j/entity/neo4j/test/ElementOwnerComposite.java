@@ -17,12 +17,11 @@
 package org.qi4j.entity.neo4j.test;
 
 import org.qi4j.entity.EntityComposite;
-import org.qi4j.library.framework.GenericMixinsAbstractComposite;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
  */
 public interface ElementOwnerComposite
-    extends ElementOwner, EntityComposite, GenericMixinsAbstractComposite
+    extends ElementOwner, EntityComposite
 {
 }
