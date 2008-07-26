@@ -9,6 +9,9 @@
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/resources" isTestSource="true" />
+      <excludeFolder url="file://$MODULE_DIR$/target/classes" />
+      <excludeFolder url="file://$MODULE_DIR$/target/maven-archiver" />
+      <excludeFolder url="file://$MODULE_DIR$/target/test-classes" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
@@ -19,13 +22,13 @@
     <orderEntry type="module-library">
       <library name="cglib:cglib-nodep:2.1_3">
         <CLASSES>
-          <root url="jar://$M2_REPO$/cglib/cglib-nodep/2.1_3/cglib-nodep-2.1_3.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../../../../../../.m2/repository/cglib/cglib-nodep/2.1_3/cglib-nodep-2.1_3.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/cglib/cglib-nodep/2.1_3/cglib-nodep-2.1_3-javadoc.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../../../../../../.m2/repository/cglib/cglib-nodep/2.1_3/cglib-nodep-2.1_3-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/cglib/cglib-nodep/2.1_3/cglib-nodep-2.1_3-sources.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../../../../../../.m2/repository/cglib/cglib-nodep/2.1_3/cglib-nodep-2.1_3-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
@@ -33,26 +36,65 @@
     <orderEntry type="module-library">
       <library name="junit:junit:4.4">
         <CLASSES>
-          <root url="jar://$M2_REPO$/junit/junit/4.4/junit-4.4.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../../../../../../.m2/repository/junit/junit/4.4/junit-4.4.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/junit/junit/4.4/junit-4.4-javadoc.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../../../../../../.m2/repository/junit/junit/4.4/junit-4.4-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/junit/junit/4.4/junit-4.4-sources.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../../../../../../.m2/repository/junit/junit/4.4/junit-4.4-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
-      <library name="org.codehaus.groovy:groovy-all-minimal:1.5.5">
+      <library name="org.codehaus.groovy:groovy-all:1.5.6">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/codehaus/groovy/groovy-all-minimal/1.5.5/groovy-all-minimal-1.5.5.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../../../../../../.m2/repository/org/codehaus/groovy/groovy-all/1.5.6/groovy-all-1.5.6.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/codehaus/groovy/groovy-all-minimal/1.5.5/groovy-all-minimal-1.5.5-javadoc.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../../../../../../.m2/repository/org/codehaus/groovy/groovy-all/1.5.6/groovy-all-1.5.6-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/codehaus/groovy/groovy-all-minimal/1.5.5/groovy-all-minimal-1.5.5-sources.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../../../../../../.m2/repository/org/codehaus/groovy/groovy-all/1.5.6/groovy-all-1.5.6-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library name="org.apache.ant:ant:1.7.0">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../../../../../../.m2/repository/org/apache/ant/ant/1.7.0/ant-1.7.0.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$MODULE_DIR$/../../../../../../../.m2/repository/org/apache/ant/ant/1.7.0/ant-1.7.0-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/../../../../../../../.m2/repository/org/apache/ant/ant/1.7.0/ant-1.7.0-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library name="org.apache.ant:ant-launcher:1.7.0">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../../../../../../.m2/repository/org/apache/ant/ant-launcher/1.7.0/ant-launcher-1.7.0.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$MODULE_DIR$/../../../../../../../.m2/repository/org/apache/ant/ant-launcher/1.7.0/ant-launcher-1.7.0-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/../../../../../../../.m2/repository/org/apache/ant/ant-launcher/1.7.0/ant-launcher-1.7.0-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library name="jline:jline:0.9.94">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../../../../../../.m2/repository/jline/jline/0.9.94/jline-0.9.94.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$MODULE_DIR$/../../../../../../../.m2/repository/jline/jline/0.9.94/jline-0.9.94-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/../../../../../../../.m2/repository/jline/jline/0.9.94/jline-0.9.94-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>

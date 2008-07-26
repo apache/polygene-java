@@ -1,0 +1,59 @@
+
+Bundle-Activator:
+
+Private-Package:
+
+Import-Package: javax.management, \
+                javax.print.attribute.standard, \
+                javax.servlet, \
+                javax.servlet.http, \
+                javax.servlet.jsp, \
+                javax.sql, \
+                javax.swing, \
+                javax.swing.border, \
+                javax.swing.event, \
+                javax.swing.plaf, \
+                javax.swing.plaf.metal, \
+                javax.swing.table, \
+                javax.swing.text, \
+                javax.swing.tree, \
+                javax.swing.undo, \
+                javax.xml.parsers, \
+                javax.xml.transform, \
+                javax.xml.transform.dom, \
+                javax.xml.transform.stream, \
+                org.qi4j.composite, \
+                org.qi4j.injection.scope, \
+                org.w3c.dom, \
+                org.xml.sax, \
+                org.xml.sax.ext, \
+                org.xml.sax.helpers
+
+Ignore-Package: com.thoughtworks.xstream, \
+                org.apache.commons.cli, \
+                org.apache.commons.lang, \
+                groovy.runtime.metaclass, \
+                groovyjarjarasm.asm.tree.analysis, \
+                groovyjarjarasm.asm.util, \
+                jline, \
+                com.mockobjects, \
+                com.mockobjects.constraint, \
+                com.mockobjects.dynamic, \
+                junit.framework, \
+                junit.textui, \
+                org.apache.bsf, \
+                org.apache.bsf.util, \
+                org.apache.tools.ant, \
+                org.apache.tools.ant.helper, \
+                org.apache.tools.ant.input, \
+                org.apache.tools.ant.listener, \
+                org.apache.tools.ant.taskdefs, \
+                org.apache.tools.ant.types, \
+                org.apache.tools.ant.util
+
+                
+Export-Package: org.qi4j.scripting.groovy
+
+Embed-Dependency: groovy-all;scope=compile|runtime
+
+Embed-Transitive:  true

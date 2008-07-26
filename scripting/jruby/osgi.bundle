@@ -1,0 +1,21 @@
+
+Bundle-Activator:
+
+Private-Package:
+
+Ignore-Package: org.apache.bsf, \
+                org.apache.bsf.util, \
+                sun.misc
+
+Import-Package: javax.swing, \
+                javax.swing.border, \
+                javax.swing.plaf.basic, \
+                javax.swing.text
+
+Export-Package: org.qi4j.scripting.jruby
+
+Embed-Dependency: *;scope=compile|runtime
+
+Embed-Transitive:  true
+
+  

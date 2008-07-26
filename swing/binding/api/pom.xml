@@ -36,7 +36,7 @@
     </dependency>
     <dependency>
       <groupId>org.qi4j.library</groupId>
-      <artifactId>qi4j-lib-framework</artifactId>
+      <artifactId>qi4j-lib-constraints</artifactId>
       <version>0.3-SNAPSHOT</version>
     </dependency>
     <dependency>

@@ -1,0 +1,14 @@
+
+Bundle-Activator:
+
+Private-Package:
+
+Import-Package:
+
+Ignore-Package:
+
+Export-Package: org.qi4j.scripting.beanshell
+
+Embed-Dependency: *;scope=compile|runtime
+
+Embed-Transitive:  true

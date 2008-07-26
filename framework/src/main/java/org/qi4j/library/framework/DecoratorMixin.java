@@ -32,7 +32,8 @@ public class DecoratorMixin
 {
     @Uses Object delegate;
 
-    public Object invoke( Object object, Method method, Object[] args ) throws Throwable
+    public Object invoke( Object object, Method method, Object[] args )
+        throws Throwable
     {
         if( delegate instanceof InvocationHandler )
         {

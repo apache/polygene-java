@@ -13,13 +13,23 @@
   <!-- This POM is ONLY to initiate the modules to be built. -->
   <modules>
     <module>auth</module>
-    <module>general</module>
+    <module>beans</module>
     <module>business</module>
+    <module>cache</module>
+    <module>constraints</module>
+    <module>exception</module>
+    <module>executor</module>
     <module>framework</module>
+    <module>general</module>
+    <module>locking</module>
     <module>logging</module>
     <module>rdf</module>
+    <module>registry</module>
     <module>requirements</module>
+    <module>rmi</module>
     <module>scripting</module>
     <module>swing</module>
+    <module>thread</module>
+    <module>validation</module>
   </modules>
 </project>

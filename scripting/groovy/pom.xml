@@ -9,6 +9,7 @@
   <artifactId>qi4j-script-groovy</artifactId>
   <name>Qi4J Script Library - Groovy</name>
   <version>0.3-SNAPSHOT</version>
+  <packaging>bundle</packaging>
   <dependencies>
     <dependency>
       <groupId>org.qi4j.core</groupId>
@@ -35,11 +36,12 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.codehaus.groovy</groupId>
-      <artifactId>groovy-all-minimal</artifactId>
-      <version>1.5.5</version>
+      <artifactId>groovy-all</artifactId>
+      <version>1.5.6</version>
     </dependency>
   </dependencies>
   <repositories>

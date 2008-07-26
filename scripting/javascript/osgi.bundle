@@ -1,0 +1,23 @@
+
+Bundle-Activator:
+
+Private-Package:
+
+Import-Package: javax.swing, \
+                javax.swing.border, \
+                javax.swing.event, \
+                javax.swing.filechooser, \
+                javax.swing.table, \
+                javax.swing.text, \
+                javax.swing.tree, \
+                javax.xml.namespace, \
+                org.apache.xmlbeans
+
+Ignore-Package:
+
+Export-Package: org.qi4j.scripting.javascript
+
+Embed-Dependency: *;scope=compile|runtime
+
+Embed-Transitive:  true
+
