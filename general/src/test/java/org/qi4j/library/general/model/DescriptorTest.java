@@ -12,14 +12,17 @@
  */
 package org.qi4j.library.general.model;
 
-import static org.junit.Assert.*;
+import java.lang.reflect.Method;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
-import org.qi4j.composite.Concerns;
-import org.qi4j.library.general.test.model.DescriptorConcern;
+import org.qi4j.composite.Mixins;
+import org.qi4j.injection.scope.PropertyField;
+import org.qi4j.property.ComputedProperty;
+import org.qi4j.property.ComputedPropertyInstance;
 import org.qi4j.property.Property;
 import org.qi4j.test.AbstractQi4jTest;
 
@@ -29,7 +32,7 @@ public class DescriptorTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addComposites( DummyComposite.class, DummyComposite2.class );
+        module.addComposites( DummyComposite.class );
     }
 
     @Test
@@ -38,30 +41,41 @@ public class DescriptorTest
     {
         CompositeBuilder<DummyComposite> builder = compositeBuilderFactory.newCompositeBuilder( DummyComposite.class );
         DummyComposite composite = builder.newInstance();
+        composite.internalName().set( "Sianny" );
 
-        Property<String> displayValueProperty = composite.displayValue();
-        String value = "Sianny";
-        displayValueProperty.set( value );
-
-        String displayValue = displayValueProperty.get();
-        assertEquals( value, displayValue );
-    }
-
-    @Test
-    public void testDescriptorWithModifier() throws Exception
-    {
-        DummyComposite2 composite = compositeBuilderFactory.newCompositeBuilder( DummyComposite2.class ).newInstance();
-        composite.displayValue().set( "Sianny" );
         String displayValue = composite.displayValue().get();
-        assertEquals( displayValue, "My name is Sianny" );
+        assertEquals( "Sianny", displayValue );
     }
 
+    @Mixins( DisplayValueMixin.class )
     private interface DummyComposite extends Descriptor, HasName, Composite
     {
+        Property<String> internalName();
     }
 
-    @Concerns( DescriptorConcern.class )
-    private interface DummyComposite2 extends Descriptor, HasName, Composite
+    private static class DisplayValueMixin
+        implements Descriptor
     {
+        @PropertyField private Property<String> internalName;
+
+        public ComputedProperty<String> displayValue()
+        {
+            Method method = null;
+            try
+            {
+                method = Descriptor.class.getMethod( "displayValue" );
+            }
+            catch( NoSuchMethodException e )
+            {
+                throw new InternalError();
+            }
+            return new ComputedPropertyInstance<String>( method )
+            {
+                public String get()
+                {
+                    return internalName.get();
+                }
+            };
+        }
     }
 }
