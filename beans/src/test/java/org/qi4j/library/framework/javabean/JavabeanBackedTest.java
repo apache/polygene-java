@@ -18,12 +18,21 @@
 
 package org.qi4j.library.framework.javabean;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
+import org.qi4j.entity.association.Association;
+import org.qi4j.entity.association.ListAssociation;
+import org.qi4j.entity.association.SetAssociation;
 import org.qi4j.property.Property;
 import org.qi4j.test.AbstractQi4jTest;
 
@@ -32,7 +41,7 @@ public class JavabeanBackedTest extends AbstractQi4jTest
 
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
-        module.addComposites( PersonComposite.class, CountryComposite.class );
+        module.addComposites( PersonComposite.class, CountryComposite.class, CityComposite.class );
     }
 
     @Test
@@ -40,18 +49,57 @@ public class JavabeanBackedTest extends AbstractQi4jTest
         throws Exception
     {
         CountryPojo malaysia = new CountryPojo( "Malaysia" );
-        PersonPojo pojo = new PersonPojo( "Niclas Hedhman", malaysia );
-        CompositeBuilder<Person> builder = compositeBuilderFactory.newCompositeBuilder( Person.class );
-        builder.use( pojo );
-        Person person = builder.newInstance();
-        Property<String> stringProperty = person.name();
-        assertEquals( "Name match.", "Niclas Hedhman", stringProperty.get() );
-        assertEquals( "Country match.", "Malaysia", person.country().get().name().get() );
+        Set cities = new HashSet();
+        CityPojo kl = new CityPojo( "Kuala Lumpur", malaysia );
+        cities.add( kl );
+        CityPojo jb = new CityPojo( "Johor Bahru", malaysia );
+        cities.add( jb );
+        CityPojo penang = new CityPojo( "Penang", malaysia );
+        cities.add( penang );
+        CityPojo kk = new CityPojo( "Kota Kinabalu", malaysia );
+        cities.add( kk );
+        malaysia.setCities( cities );
 
+        List<PersonPojo> friendsNiclas = new ArrayList<PersonPojo>();
+        List<PersonPojo> friendsMakas = new ArrayList<PersonPojo>();
+        List<PersonPojo> friendsEdward = new ArrayList<PersonPojo>();
+        PersonPojo niclasPojo = new PersonPojo( "Niclas Hedhman", kl, friendsNiclas );
+        PersonPojo makasPojo = new PersonPojo( "Makas Lau", kl, friendsMakas );
+        PersonPojo edwardPojo = new PersonPojo( "Edward Yakop", kl, friendsEdward );
+        friendsEdward.add( makasPojo );
+        friendsEdward.add( niclasPojo );
+        friendsMakas.add( edwardPojo );
+        friendsMakas.add( niclasPojo );
+        friendsNiclas.add( makasPojo );
+        friendsNiclas.add( edwardPojo );
+
+        CompositeBuilder<Person> builder = compositeBuilderFactory.newCompositeBuilder( Person.class );
+        builder.use( niclasPojo );
+        Person niclas = builder.newInstance();
+        Property<String> stringProperty = niclas.name();
+        assertEquals( "Name match.", "Niclas Hedhman", stringProperty.get() );
+        Property<City> cityProperty = niclas.city();
+        City cityValue = cityProperty.get();
+        Association<Country> countryAssociation = cityValue.country();
+        Country country = countryAssociation.get();
+        assertEquals( "Country match.", "Malaysia", country.name().get() );
+        SetAssociation citylist = country.cities();
+        Iterator iterator = citylist.iterator();
+        while( iterator.hasNext() )
+        {
+            City city = (City) iterator.next();
+            String name = city.name().get();
+            assertTrue( name.equals( "Kuala Lumpur" ) ||
+                        name.equals( "Johor Bahru" ) ||
+                        name.equals( "Kota Kinabalu" ) ||
+                        name.equals( "Penang" )
+            );
+        }
+        assertEquals( 4, country.cities().size() );
     }
 
 
-    public interface PersonComposite extends Person, JavabeanBacked, Composite
+    public interface PersonComposite extends Person, JavabeanSupport, Composite
     {
     }
 
@@ -59,24 +107,94 @@ public class JavabeanBackedTest extends AbstractQi4jTest
     {
         Property<String> name();
 
-        Property<Country> country();
+        Property<City> city();
+
+        ListAssociation<Person> friends();
     }
 
-    public interface CountryComposite extends Country, JavabeanBacked, Composite
+    public interface CityComposite extends City, JavabeanSupport, Composite
     {
+    }
+
+    public interface CountryComposite extends Country, JavabeanSupport, Composite
+    {
+    }
+
+    public interface City
+    {
+        Property<String> name();
+
+        Association<Country> country();
     }
 
     public interface Country
     {
         Property<String> name();
+
+        SetAssociation<City> cities();
     }
 
     public class PersonPojo
     {
         private String name;
-        private CountryPojo country;
+        private CityPojo city;
+        private List<PersonPojo> friends;
 
-        public PersonPojo( String name, CountryPojo country )
+        public PersonPojo( String name, CityPojo city, List<PersonPojo> friends )
+        {
+            this.name = name;
+            this.city = city;
+            this.friends = friends;
+        }
+
+        public String getName()
+        {
+            return name;
+        }
+
+        public CityPojo getCity()
+        {
+            return city;
+        }
+
+        public List<PersonPojo> getFriends()
+        {
+            return friends;
+        }
+    }
+
+    public class CountryPojo
+    {
+        private String countryName;
+        private Set cities;
+
+        public CountryPojo( String countryName )
+        {
+            this.countryName = countryName;
+        }
+
+        public String getName()
+        {
+            return countryName;
+        }
+
+        public Set<CityPojo> getCities()
+        {
+            return cities;
+        }
+
+        public void setCities( Set<CityPojo> cities )
+        {
+            this.cities = cities;
+        }
+    }
+
+    public class CityPojo
+    {
+        private final String name;
+        private final CountryPojo country;
+
+        public CityPojo( String name, CountryPojo country )
         {
             this.name = name;
             this.country = country;
@@ -90,21 +208,6 @@ public class JavabeanBackedTest extends AbstractQi4jTest
         public CountryPojo getCountry()
         {
             return country;
-        }
-    }
-
-    public class CountryPojo
-    {
-        private String countryName;
-
-        public CountryPojo( String countryName )
-        {
-            this.countryName = countryName;
-        }
-
-        public String getName()
-        {
-            return countryName;
         }
     }
 }

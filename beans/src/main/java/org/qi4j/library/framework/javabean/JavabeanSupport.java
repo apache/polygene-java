@@ -24,7 +24,7 @@ import org.qi4j.composite.Mixins;
  * of the mixin state.
   */
 @Mixins( JavabeanMixin.class )
-public interface JavabeanBacked<T>
+public interface JavabeanSupport<T>
 {
     T getJavabean();
 

@@ -25,7 +25,6 @@ import org.qi4j.object.ObjectBuilderFactory;
 public final class BoundAssociation<T> extends AbstractBinding<T, T, Association<T>>
     implements ImmutableAssociation<T>
 {
-
     private Association<T> actualAssociation;
     private WeakHashMap<JComponent, FocusLostListener> components;
 

@@ -10,7 +10,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/resources" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/target/classes" />
-      <excludeFolder url="file://$MODULE_DIR$/target/test-classes" />
+      <excludeFolder url="file://$MODULE_DIR$/target/maven-archiver" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
@@ -32,6 +32,7 @@
       </library>
     </orderEntry>
     <orderEntry type="module" module-name="qi4j-lib-cache" exported="" />
+    <orderEntry type="module" module-name="qi4j-lib-beans" exported="" />
     <orderEntryProperties />
   </component>
 </module>

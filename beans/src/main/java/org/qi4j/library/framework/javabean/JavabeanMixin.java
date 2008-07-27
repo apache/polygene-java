@@ -19,40 +19,41 @@
 package org.qi4j.library.framework.javabean;
 
 import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.UndeclaredThrowableException;
 import java.util.HashMap;
 import org.qi4j.composite.AppliesTo;
 import org.qi4j.composite.AppliesToFilter;
 import org.qi4j.composite.Composite;
-import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.CompositeBuilderFactory;
+import org.qi4j.entity.association.Association;
+import org.qi4j.entity.association.ListAssociation;
+import org.qi4j.entity.association.ManyAssociation;
+import org.qi4j.entity.association.SetAssociation;
 import org.qi4j.injection.scope.Structure;
 import org.qi4j.injection.scope.This;
 import org.qi4j.injection.scope.Uses;
-import org.qi4j.property.ComputedPropertyInstance;
 import org.qi4j.property.Property;
 
-@AppliesTo( { JavabeanMixin.PojoBackedFilter.class } )
+@AppliesTo( { JavabeanMixin.JavabeanSupportFilter.class } )
 public class JavabeanMixin
-    implements JavabeanBacked, InvocationHandler
+    implements JavabeanSupport, InvocationHandler
 {
-    @Structure private CompositeBuilderFactory cbf;
-    private HashMap<Method, Property> properties;
-    private Object pojo;
+    private HashMap<Method, Object> handlers;
+
+    @Structure CompositeBuilderFactory cbf;
+    Object pojo;
 
     public JavabeanMixin( @This Composite thisComposite, @Uses Object pojo )
     {
         this.pojo = pojo;
-        properties = new HashMap<Method, Property>();
+        handlers = new HashMap<Method, Object>();
         Class<? extends Composite> type = thisComposite.type();
         for( Method method : type.getMethods() )
         {
             Class<?> returnType = method.getReturnType();
             if( Property.class.isAssignableFrom( returnType ) )
             {
-                PojoProperty prop = new PojoProperty( method );
+                JavabeanProperty prop = new JavabeanProperty( this, method );
                 String methodName = computePojoMethodName( prop.name() );
                 Method pojoMethod;
                 try
@@ -63,8 +64,57 @@ public class JavabeanMixin
                 {
                     throw new IllegalArgumentException( methodName + " is not present in " + pojo.getClass() );
                 }
-                prop.pojoMethod = pojoMethod;
-                properties.put( method, prop );
+                prop.setPojoMethod( pojoMethod );
+                handlers.put( method, prop );
+            }
+            else if( SetAssociation.class.isAssignableFrom( returnType ) )
+            {
+                JavabeanSetAssociation association = new JavabeanSetAssociation( this, method );
+                String methodName = computePojoMethodName( association.name() );
+                Method pojoMethod;
+                try
+                {
+                    pojoMethod = pojo.getClass().getMethod( methodName );
+                }
+                catch( NoSuchMethodException e )
+                {
+                    throw new IllegalArgumentException( methodName + " is not present in " + pojo.getClass() );
+                }
+                association.setPojoMethod( pojoMethod );
+                handlers.put( method, association );
+            }
+            else if( ListAssociation.class.isAssignableFrom( returnType ) ||
+                     ManyAssociation.class.isAssignableFrom( returnType ) )
+            {
+                JavabeanListAssociation association = new JavabeanListAssociation( this, method );
+                String methodName = computePojoMethodName( association.name() );
+                Method pojoMethod;
+                try
+                {
+                    pojoMethod = pojo.getClass().getMethod( methodName );
+                }
+                catch( NoSuchMethodException e )
+                {
+                    throw new IllegalArgumentException( methodName + " is not present in " + pojo.getClass() );
+                }
+                association.setPojoMethod( pojoMethod );
+                handlers.put( method, association );
+            }
+            else if( Association.class.isAssignableFrom( returnType ) )
+            {
+                JavabeanAssociation association = new JavabeanAssociation( this, method );
+                String methodName = computePojoMethodName( association.name() );
+                Method pojoMethod;
+                try
+                {
+                    pojoMethod = pojo.getClass().getMethod( methodName );
+                }
+                catch( NoSuchMethodException e )
+                {
+                    throw new IllegalArgumentException( methodName + " is not present in " + pojo.getClass() );
+                }
+                association.pojoMethod = pojoMethod;
+                handlers.put( method, association );
             }
         }
     }
@@ -79,11 +129,12 @@ public class JavabeanMixin
         pojo = data;
     }
 
-    public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
+    public Object invoke( Object proxy, Method method, Object[] args )
+        throws Throwable
     {
         synchronized( this )
         {
-            return properties.get( method );
+            return handlers.get( method );
         }
     }
 
@@ -92,47 +143,18 @@ public class JavabeanMixin
         return "get" + Character.toUpperCase( propertyName.charAt( 0 ) ) + propertyName.substring( 1 );
     }
 
-    public class PojoProperty extends ComputedPropertyInstance
-    {
-        private Method pojoMethod;
-
-        public PojoProperty( Method qi4jPropertyMethod )
-        {
-            super( qi4jPropertyMethod );
-        }
-
-        public Object get()
-        {
-            try
-            {
-                Object resultObject = pojoMethod.invoke( pojo );
-                Class type = (Class) type();
-                if( type.isInterface() )
-                {
-                    CompositeBuilder<?> builder = cbf.newCompositeBuilder( type );
-                    builder.use( resultObject );
-                    return builder.newInstance();
-                }
-                return resultObject;
-            }
-            catch( IllegalAccessException e )
-            {
-                throw new IllegalArgumentException( "POJO is not compatible with JavaBeans specification. Method must be public: " + pojoMethod );
-            }
-            catch( InvocationTargetException e )
-            {
-                throw new UndeclaredThrowableException( e.getTargetException() );
-            }
-        }
-    }
-
-    public static class PojoBackedFilter
+    public static class JavabeanSupportFilter
         implements AppliesToFilter
     {
         public boolean appliesTo( Method method, Class<?> mixin, Class<?> compositeType, Class<?> modifierClass )
         {
             String methodName = method.getName();
-            return Property.class.isAssignableFrom( method.getReturnType() ) ||
+            Class<?> retType = method.getReturnType();
+            return Property.class.isAssignableFrom( retType ) ||
+                   Association.class.isAssignableFrom( retType ) ||
+                   SetAssociation.class.isAssignableFrom( retType ) ||
+                   ListAssociation.class.isAssignableFrom( retType ) ||
+                   ManyAssociation.class.isAssignableFrom( retType ) ||
                    "getJavabean".equals( methodName ) || "setJavabean".equals( methodName );
         }
     }
