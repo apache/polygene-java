@@ -28,7 +28,6 @@ import org.qi4j.composite.AppliesToFilter;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.CompositeBuilderFactory;
-import org.qi4j.composite.NoSuchCompositeException;
 import org.qi4j.injection.scope.Structure;
 import org.qi4j.injection.scope.This;
 import org.qi4j.injection.scope.Uses;
@@ -39,7 +38,7 @@ import org.qi4j.property.Property;
 public class JavabeanMixin
     implements JavabeanBacked, InvocationHandler
 {
-    @Structure CompositeBuilderFactory factory;
+    @Structure private CompositeBuilderFactory cbf;
     private HashMap<Method, Property> properties;
     private Object pojo;
 
@@ -110,16 +109,9 @@ public class JavabeanMixin
                 Class type = (Class) type();
                 if( type.isInterface() )
                 {
-                    try
-                    {
-                        CompositeBuilder<?> builder = factory.newCompositeBuilder( type );
-                        builder.use( resultObject );
-                        return builder.newInstance();
-                    }
-                    catch( NoSuchCompositeException e )
-                    {
-                        // ignore
-                    }
+                    CompositeBuilder<?> builder = cbf.newCompositeBuilder( type );
+                    builder.use( resultObject );
+                    return builder.newInstance();
                 }
                 return resultObject;
             }
