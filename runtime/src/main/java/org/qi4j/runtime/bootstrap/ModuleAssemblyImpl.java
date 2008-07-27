@@ -42,6 +42,7 @@ import org.qi4j.runtime.structure.ObjectsModel;
 import org.qi4j.runtime.structure.ServicesModel;
 import org.qi4j.service.DuplicateServiceIdentityException;
 import org.qi4j.service.ServiceComposite;
+import org.qi4j.service.ServiceInstanceFactory;
 import org.qi4j.structure.Visibility;
 import org.qi4j.util.MetaInfo;
 
@@ -228,9 +229,9 @@ public final class ModuleAssemblyImpl
                 // Auto-add implementation as Composite with Module visibility.
                 if( !found )
                 {
-                    compositeModels.add(
-                        CompositeModel.newModel( serviceModel.type(), Visibility.module, new MetaInfo(), metaInfoDeclaration )
-                    );
+                    Class<? extends Composite> serviceModelType = serviceModel.type();
+                    CompositeModel compositeModel = CompositeModel.newModel( serviceModelType, Visibility.module, new MetaInfo(), metaInfoDeclaration );
+                    compositeModels.add( compositeModel );
                 }
             }
 
@@ -245,9 +246,9 @@ public final class ModuleAssemblyImpl
             }
             if( !found )
             {
-                objectModels.add(
-                    new ObjectModel( serviceModel.serviceFactory(), Visibility.module, new MetaInfo() )
-                );
+                Class<? extends ServiceInstanceFactory> serviceFactoryType = serviceModel.serviceFactory();
+                ObjectModel objectModel = new ObjectModel( serviceFactoryType, Visibility.module, new MetaInfo() );
+                objectModels.add( objectModel );
             }
         }
 

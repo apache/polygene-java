@@ -27,8 +27,6 @@ import org.qi4j.query.grammar.impl.AssociationReferenceImpl;
 /**
  * TODO Add JavaDoc
  *
- * @author Alin Dreghiciu
- * @since March 25, 2008
  */
 public class AssociationReferenceProxy
     implements InvocationHandler

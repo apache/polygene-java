@@ -134,6 +134,11 @@ public class ModuleInstance
         return classLoader;
     }
 
+    public boolean isEntity( Class mixinType )
+    {
+        return entities.model().getEntityModelFor( mixinType ) != null;
+    }
+
     public ModuleInstance findModuleForComposite( Class mixinType )
     {
         // Check local first

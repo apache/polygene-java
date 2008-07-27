@@ -39,4 +39,6 @@ public interface Module
     ServiceFinder serviceFinder();
 
     ClassLoader classLoader();
+
+    boolean isEntity( Class mixinType );
 }

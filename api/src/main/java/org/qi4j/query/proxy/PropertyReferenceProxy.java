@@ -27,8 +27,6 @@ import org.qi4j.query.grammar.impl.PropertyReferenceImpl;
 /**
  * TODO Add JavaDoc
  *
- * @author Alin Dreghiciu
- * @since March 26, 2008
  */
 class PropertyReferenceProxy
     implements InvocationHandler

@@ -64,10 +64,9 @@ public interface EntityStore
      * @return an implementation of StateCommitter
      * @throws EntityStoreException if the state could not be sent to the datastore
      */
-    StateCommitter prepare(
-        Iterable<EntityState> newStates,
-        Iterable<EntityState> loadedStates,
-        Iterable<QualifiedIdentity> removedStates,
-        Module aModule )
+    StateCommitter prepare( Iterable<EntityState> newStates,
+                            Iterable<EntityState> loadedStates,
+                            Iterable<QualifiedIdentity> removedStates,
+                            Module aModule )
         throws EntityStoreException;
 }
