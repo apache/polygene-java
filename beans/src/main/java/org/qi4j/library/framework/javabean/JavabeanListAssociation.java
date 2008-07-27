@@ -26,7 +26,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
-import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.entity.association.GenericAssociationInfo;
 import org.qi4j.entity.association.ListAssociation;
 import org.qi4j.util.MetaInfo;
@@ -227,17 +226,5 @@ public class JavabeanListAssociation
         {
             throw new UndeclaredThrowableException( e.getTargetException() );
         }
-    }
-
-    private Object wrap( Object resultObject )
-    {
-        Class type = (Class) type();
-        if( type.isInterface() )
-        {
-            CompositeBuilder<?> builder = javabeanMixin.cbf.newCompositeBuilder( type );
-            builder.use( resultObject );
-            return builder.newInstance();
-        }
-        return resultObject;
     }
 }
