@@ -33,6 +33,12 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <version>1.4.2</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.qi4j.extension</groupId>
       <artifactId>qi4j-ext-indexing-rdf</artifactId>
       <version>0.3-SNAPSHOT</version>

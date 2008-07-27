@@ -10,6 +10,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/resources" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/target/classes" />
+      <excludeFolder url="file://$MODULE_DIR$/target/surefire-reports" />
       <excludeFolder url="file://$MODULE_DIR$/target/test-classes" />
     </content>
     <orderEntry type="inheritedJdk" />
@@ -28,6 +29,32 @@
         </JAVADOC>
         <SOURCES>
           <root url="jar://$MODULE_DIR$/../../../../../../.m2/repository/cglib/cglib-nodep/2.1_3/cglib-nodep-2.1_3-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="org.slf4j:slf4j-simple:1.4.2">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../../../../../.m2/repository/org/slf4j/slf4j-simple/1.4.2/slf4j-simple-1.4.2.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$MODULE_DIR$/../../../../../../.m2/repository/org/slf4j/slf4j-simple/1.4.2/slf4j-simple-1.4.2-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/../../../../../../.m2/repository/org/slf4j/slf4j-simple/1.4.2/slf4j-simple-1.4.2-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="org.slf4j:slf4j-api:1.4.2">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../../../../../.m2/repository/org/slf4j/slf4j-api/1.4.2/slf4j-api-1.4.2.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$MODULE_DIR$/../../../../../../.m2/repository/org/slf4j/slf4j-api/1.4.2/slf4j-api-1.4.2-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/../../../../../../.m2/repository/org/slf4j/slf4j-api/1.4.2/slf4j-api-1.4.2-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
@@ -68,19 +95,6 @@
         </JAVADOC>
         <SOURCES>
           <root url="jar://$MODULE_DIR$/../../../../../../.m2/repository/info/aduna/commons/aduna-commons-concurrent/2.1/aduna-commons-concurrent-2.1-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="org.slf4j:slf4j-api:1.4.2">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../../../../../.m2/repository/org/slf4j/slf4j-api/1.4.2/slf4j-api-1.4.2.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$MODULE_DIR$/../../../../../../.m2/repository/org/slf4j/slf4j-api/1.4.2/slf4j-api-1.4.2-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$MODULE_DIR$/../../../../../../.m2/repository/org/slf4j/slf4j-api/1.4.2/slf4j-api-1.4.2-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
