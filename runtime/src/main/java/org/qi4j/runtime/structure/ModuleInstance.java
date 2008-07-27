@@ -21,6 +21,7 @@ import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.NoSuchCompositeException;
+import org.qi4j.composite.ConstructionException;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkFactory;
@@ -274,7 +275,7 @@ public class ModuleInstance
         }
 
         public <T> T newComposite( Class<T> compositeType )
-            throws NoSuchCompositeException, org.qi4j.composite.InstantiationException
+            throws NoSuchCompositeException, ConstructionException
         {
             return newCompositeBuilder( compositeType ).newInstance();
         }

@@ -21,6 +21,7 @@ import java.lang.reflect.Proxy;
 import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.State;
+import org.qi4j.composite.ConstructionException;
 import org.qi4j.entity.Lifecycle;
 import org.qi4j.runtime.property.PropertiesModel;
 import org.qi4j.runtime.structure.Binder;
@@ -186,7 +187,7 @@ public final class CompositeModel
     }
 
     public Composite newProxy( InvocationHandler invocationHandler )
-        throws org.qi4j.composite.InstantiationException
+        throws ConstructionException
     {
         // Instantiate proxy for given composite interface
         try
@@ -195,7 +196,7 @@ public final class CompositeModel
         }
         catch( Exception e )
         {
-            throw new org.qi4j.composite.InstantiationException( e );
+            throw new ConstructionException( e );
         }
     }
 

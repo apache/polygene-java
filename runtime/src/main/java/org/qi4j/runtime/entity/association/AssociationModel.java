@@ -54,11 +54,10 @@ public final class AssociationModel
     public AssociationModel( Method accessor, ValueConstraintsInstance valueConstraintsInstance, MetaInfo metaInfo )
     {
         this.metaInfo = metaInfo;
-        name = accessor.getName();
-        type = AbstractAssociationInstance.getAssociationType( accessor );
+        this.name = accessor.getName();
+        this.type = AbstractAssociationInstance.getAssociationType( accessor );
         this.accessor = accessor;
-        qualifiedName = AbstractAssociationInstance.getQualifiedName( accessor );
-
+        this.qualifiedName = AbstractAssociationInstance.getQualifiedName( accessor );
         this.constraints = valueConstraintsInstance;
     }
 

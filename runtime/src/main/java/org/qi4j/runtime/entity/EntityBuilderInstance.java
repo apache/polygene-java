@@ -19,7 +19,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Iterator;
 import org.qi4j.composite.Composite;
-import org.qi4j.composite.InstantiationException;
+import org.qi4j.composite.ConstructionException;
 import org.qi4j.composite.State;
 import org.qi4j.entity.EntityBuilder;
 import org.qi4j.entity.EntityComposite;
@@ -93,7 +93,7 @@ public final class EntityBuilderInstance<T>
             }
             catch( Exception e )
             {
-                throw new InstantiationException( e );
+                throw new ConstructionException( e );
             }
         }
 
@@ -112,7 +112,7 @@ public final class EntityBuilderInstance<T>
         }
         catch( Exception e )
         {
-            throw new InstantiationException( e );
+            throw new ConstructionException( e );
         }
     }
 

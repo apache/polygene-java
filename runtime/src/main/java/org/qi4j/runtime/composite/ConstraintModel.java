@@ -16,6 +16,7 @@ package org.qi4j.runtime.composite;
 
 import java.lang.annotation.Annotation;
 import org.qi4j.composite.Constraint;
+import org.qi4j.composite.ConstructionException;
 import org.qi4j.runtime.structure.ModelVisitor;
 
 /**
@@ -41,7 +42,7 @@ public final class ConstraintModel
         }
         catch( Exception e )
         {
-            throw new org.qi4j.composite.InstantiationException( "Could not instantiate constraint implementation", e );
+            throw new ConstructionException( "Could not instantiate constraint implementation", e );
         }
     }
 

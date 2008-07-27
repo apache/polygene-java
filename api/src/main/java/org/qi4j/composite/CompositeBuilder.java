@@ -44,8 +44,8 @@ public interface CompositeBuilder<T>
      * Create a new Composite instance.
      *
      * @return a new Composite instance
-     * @throws InstantiationException thrown if it was not possible to instantiate the Composite
+     * @throws ConstructionException thrown if it was not possible to instantiate the Composite
      */
     T newInstance()
-        throws InstantiationException;
+        throws ConstructionException;
 }

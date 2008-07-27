@@ -36,5 +36,5 @@ public interface CompositeBuilderFactory
      * @return a new Composite instance
      */
     <T> T newComposite( Class<T> compositeType )
-        throws NoSuchCompositeException, InstantiationException;
+        throws NoSuchCompositeException, ConstructionException;
 }

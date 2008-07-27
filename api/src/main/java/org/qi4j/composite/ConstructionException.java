@@ -17,26 +17,26 @@ package org.qi4j.composite;
 /**
  * Thrown when a Fragment or object could not be instantiated.
  */
-public class InstantiationException
+public class ConstructionException
     extends RuntimeException
 {
-    private static final long serialVersionUID = 6256204509469620412L;
+    private static final long serialVersionUID = 1L;
 
-    public InstantiationException()
+    public ConstructionException()
     {
     }
 
-    public InstantiationException( String message )
+    public ConstructionException( String message )
     {
         super( message );
     }
 
-    public InstantiationException( String message, Throwable cause )
+    public ConstructionException( String message, Throwable cause )
     {
         super( message, cause );
     }
 
-    public InstantiationException( Throwable cause )
+    public ConstructionException( Throwable cause )
     {
         super( cause );
     }

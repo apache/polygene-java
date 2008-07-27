@@ -22,6 +22,7 @@ import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.ConstraintViolationException;
 import org.qi4j.composite.State;
+import org.qi4j.composite.ConstructionException;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.EntityCompositeAlreadyExistsException;
 import org.qi4j.runtime.composite.BindingException;
@@ -198,7 +199,7 @@ public final class EntityModel
         }
         catch( Exception e )
         {
-            throw new org.qi4j.composite.InstantiationException( e );
+            throw new ConstructionException( e );
         }
     }
 
@@ -237,7 +238,7 @@ public final class EntityModel
         }
         catch( EntityStoreException e )
         {
-            throw new org.qi4j.composite.InstantiationException( "Could not create new entity in store", e );
+            throw new ConstructionException( "Could not create new entity in store", e );
         }
     }
 

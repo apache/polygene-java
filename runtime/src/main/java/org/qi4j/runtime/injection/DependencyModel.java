@@ -28,6 +28,7 @@ import org.qi4j.runtime.injection.provider.InvalidInjectionException;
 import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.Specification;
 import static org.qi4j.runtime.util.CollectionUtils.firstElementOrNull;
+import org.qi4j.composite.ConstructionException;
 
 /**
  * TODO
@@ -250,7 +251,7 @@ public final class DependencyModel
 
             if( injectionProvider == null && !optional )
             {
-                throw new org.qi4j.composite.InstantiationException( "Non-optional @" + rawInjectionClass.getName() + " was null in " + injectedClass.getName() );
+                throw new ConstructionException( "Non-optional @" + rawInjectionClass.getName() + " was null in " + injectedClass.getName() );
             }
         }
         catch( InvalidInjectionException e )
@@ -271,7 +272,7 @@ public final class DependencyModel
 
         if( injectedValue == null && !optional )
         {
-            throw new org.qi4j.composite.InstantiationException( "Non-optional @" + rawInjectionClass.getName() + " was null in " + injectedClass.getName() );
+            throw new ConstructionException( "Non-optional @" + rawInjectionClass.getName() + " was null in " + injectedClass.getName() );
         }
 
         return getInjectedValue( injectedValue );

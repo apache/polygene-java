@@ -20,6 +20,7 @@ import org.qi4j.runtime.injection.InjectedParametersModel;
 import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.ModelVisitor;
+import org.qi4j.composite.ConstructionException;
 
 /**
  * TODO
@@ -54,7 +55,7 @@ public final class ConstructorModel
 
     // Context
     public Object newInstance( InjectionContext context )
-        throws org.qi4j.composite.InstantiationException
+        throws ConstructionException
     {
         // Create parameters
         Object[] parametersInstance = parameters.newParametersInstance( context );
@@ -66,11 +67,11 @@ public final class ConstructorModel
         }
         catch( InvocationTargetException e )
         {
-            throw new org.qi4j.composite.InstantiationException( "Could not instantiate " + constructor.getDeclaringClass(), e.getTargetException() );
+            throw new ConstructionException( "Could not instantiate " + constructor.getDeclaringClass(), e.getTargetException() );
         }
         catch( Exception e )
         {
-            throw new org.qi4j.composite.InstantiationException( "Could not instantiate " + constructor.getDeclaringClass(), e );
+            throw new ConstructionException( "Could not instantiate " + constructor.getDeclaringClass(), e );
         }
     }
 }

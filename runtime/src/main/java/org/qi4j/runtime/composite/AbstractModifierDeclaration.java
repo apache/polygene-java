@@ -21,6 +21,7 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import org.qi4j.composite.AppliesTo;
 import org.qi4j.composite.AppliesToFilter;
+import org.qi4j.composite.ConstructionException;
 
 /**
  * TODO
@@ -81,7 +82,7 @@ public abstract class AbstractModifierDeclaration
                     }
                     catch( Exception e )
                     {
-                        throw new org.qi4j.composite.InstantiationException( e );
+                        throw new ConstructionException( e );
                     }
                 }
                 else if( Annotation.class.isAssignableFrom( appliesToClass ) )

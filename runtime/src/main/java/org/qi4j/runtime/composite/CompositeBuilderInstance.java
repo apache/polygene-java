@@ -20,7 +20,7 @@ import java.lang.reflect.Proxy;
 import java.util.Iterator;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
-import org.qi4j.composite.InstantiationException;
+import org.qi4j.composite.ConstructionException;
 import org.qi4j.composite.State;
 import org.qi4j.property.Property;
 import org.qi4j.runtime.structure.ModuleInstance;
@@ -93,7 +93,7 @@ public final class CompositeBuilderInstance<T>
             }
             catch( Exception e )
             {
-                throw new InstantiationException( e );
+                throw new ConstructionException( e );
             }
         }
 
@@ -112,11 +112,11 @@ public final class CompositeBuilderInstance<T>
         }
         catch( Exception e )
         {
-            throw new InstantiationException( e );
+            throw new ConstructionException( e );
         }
     }
 
-    public T newInstance() throws org.qi4j.composite.InstantiationException
+    public T newInstance() throws ConstructionException
     {
         State instanceState;
         if( state == null )

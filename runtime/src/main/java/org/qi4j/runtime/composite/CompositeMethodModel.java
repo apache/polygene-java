@@ -19,6 +19,7 @@ import java.lang.reflect.Method;
 import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.composite.ConstructionException;
 
 /**
  * TODO
@@ -101,7 +102,7 @@ public final class CompositeMethodModel
     }
 
     private CompositeMethodInstance newCompositeMethodInstance( ModuleInstance moduleInstance )
-        throws org.qi4j.composite.InstantiationException
+        throws ConstructionException
     {
         FragmentInvocationHandler mixinInvocationHandler = mixins.newInvocationHandler( method );
 

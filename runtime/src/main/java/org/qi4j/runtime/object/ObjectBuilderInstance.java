@@ -15,7 +15,7 @@
 package org.qi4j.runtime.object;
 
 import java.util.Iterator;
-import org.qi4j.composite.InstantiationException;
+import org.qi4j.composite.ConstructionException;
 import org.qi4j.object.ObjectBuilder;
 import org.qi4j.runtime.composite.UsesInstance;
 import org.qi4j.runtime.structure.ModuleInstance;
@@ -52,13 +52,13 @@ public final class ObjectBuilderInstance<T>
         return this;
     }
 
-    public T newInstance() throws InstantiationException
+    public T newInstance() throws ConstructionException
     {
         Object instance = objectModel.newInstance( moduleInstance, uses == null ? UsesInstance.NO_USES : uses );
         return objectType.cast( instance );
     }
 
-    public void injectTo( T instance ) throws InstantiationException
+    public void injectTo( T instance ) throws ConstructionException
     {
         objectModel.inject( moduleInstance, uses == null ? UsesInstance.NO_USES : uses, instance );
     }

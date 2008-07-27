@@ -16,7 +16,7 @@
  */
 package org.qi4j.object;
 
-import org.qi4j.composite.InstantiationException;
+import org.qi4j.composite.ConstructionException;
 
 /**
  * TODO for Rickard; Explanation needed on how to use for Templating, Strategy and Builder patterns.
@@ -45,12 +45,12 @@ public interface ObjectBuilder<T>
      * Creates a new instance from this ObjectBuilder.
      *
      * @return An object of type <code><i>T</i></code>.
-     * @throws org.qi4j.composite.InstantiationException
+     * @throws org.qi4j.composite.ConstructionException
      *          If the object class is not compatible with the
      */
     T newInstance()
-        throws org.qi4j.composite.InstantiationException;
+        throws ConstructionException;
 
     void injectTo( T instance )
-        throws InstantiationException;
+        throws ConstructionException;
 }
