@@ -29,6 +29,7 @@
     <module>rmi</module>
     <module>scripting</module>
     <module>swing</module>
+    <module>transaction</module>
     <module>thread</module>
     <module>validation</module>
   </modules>

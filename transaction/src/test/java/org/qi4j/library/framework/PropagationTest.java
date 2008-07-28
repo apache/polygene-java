@@ -12,8 +12,8 @@
 */
 package org.qi4j.library.framework;
 
-import static org.junit.Assert.fail;
 import org.junit.Test;
+import org.junit.Assert;
 
 public class PropagationTest
 {
@@ -35,7 +35,7 @@ public class PropagationTest
             case SUPPORTS:
                 break;
             default:
-                fail( "unsupported type: " + propagation );
+                Assert.fail( "unsupported type: " + propagation );
             }
         }
     }
