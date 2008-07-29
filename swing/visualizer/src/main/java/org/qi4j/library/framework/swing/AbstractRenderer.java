@@ -65,7 +65,7 @@ abstract class AbstractRenderer
     public void setBounds( VisualItem item )
     {
         //todo ??
-        System.out.println( "setBounds: " + item );
+//        System.out.println( "setBounds: " + item ); // causes NPE
     }
 
 }

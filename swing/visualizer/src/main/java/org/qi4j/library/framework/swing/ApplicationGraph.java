@@ -17,6 +17,8 @@ package org.qi4j.library.framework.swing;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.HashSet;
 import javax.swing.JFrame;
 import org.qi4j.runtime.composite.CompositeModel;
 import org.qi4j.runtime.structure.ApplicationModel;
@@ -123,6 +125,7 @@ public class ApplicationGraph
         graph.addColumn( FIELD_NAME, String.class );
         graph.addColumn( FIELD_TYPE, int.class );
         graph.addColumn( FIELD_LAYER_LEVEL, int.class );
+        graph.addColumn( FIELD_USED_LAYERS, Set.class );
 
         final Node root = graph.addNode();
         root.setString( FIELD_NAME, "Application" );
@@ -193,6 +196,7 @@ public class ApplicationGraph
             for( LayerModel usedLayerModel : usedLayers )
             {
                 Node usedLayerNode = getLayerNode( usedLayerModel );
+                addUsedLayer( layerNode, usedLayerNode );
                 graph.addEdge( layerNode, usedLayerNode );
                 incrementLayerLevel( usedLayerNode );
             }
@@ -210,15 +214,27 @@ public class ApplicationGraph
                 layer.setString( FIELD_NAME, name );
                 layer.setInt( FIELD_TYPE, TYPE_LAYER );
                 layer.setInt( FIELD_LAYER_LEVEL, 1 );
-
+                layer.set( FIELD_USED_LAYERS, new HashSet() );
                 layerNodes.put( layerModel, layer );
             }
 
             return layer;
         }
 
+        private void addUsedLayer( Node layer, Node usedLayer )
+        {
+            Set usedLayers = (Set) layer.get( FIELD_USED_LAYERS );
+            usedLayers.add( usedLayer );
+        }
+
         private void incrementLayerLevel( Node layer )
         {
+            Set<Node> usedLayers = (Set<Node>) layer.get( FIELD_USED_LAYERS );
+            for( Node usedLayer : usedLayers )
+            {
+                incrementLayerLevel( usedLayer );
+            }
+
             int level = layer.getInt( FIELD_LAYER_LEVEL );
             layer.setInt( FIELD_LAYER_LEVEL, ++level );
         }
