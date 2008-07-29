@@ -16,7 +16,7 @@
  * limitations under the License. 
  */
 
-package org.qi4j.library.framework.javabean;
+package org.qi4j.library.beans.support;
 
 import org.qi4j.composite.Mixins;
 

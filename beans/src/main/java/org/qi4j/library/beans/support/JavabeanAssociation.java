@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.library.framework.javabean;
+package org.qi4j.library.beans.support;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

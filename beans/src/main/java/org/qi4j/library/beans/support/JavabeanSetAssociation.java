@@ -15,29 +15,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.library.framework.javabean;
+package org.qi4j.library.beans.support;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.lang.reflect.UndeclaredThrowableException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
+import java.util.Set;
 import org.qi4j.entity.association.GenericAssociationInfo;
-import org.qi4j.entity.association.ListAssociation;
+import org.qi4j.entity.association.SetAssociation;
 import org.qi4j.util.MetaInfo;
 
-public class JavabeanListAssociation
-    implements ListAssociation
+public class JavabeanSetAssociation
+    implements SetAssociation
 {
     private Method pojoMethod;
-    private final GenericAssociationInfo delegate;
-    private JavabeanMixin javabeanMixin;
+    private GenericAssociationInfo delegate;
+    private final JavabeanMixin javabeanMixin;
 
-    public JavabeanListAssociation( JavabeanMixin javabeanMixin, Method method )
+    public JavabeanSetAssociation( JavabeanMixin javabeanMixin, Method method )
     {
         this.javabeanMixin = javabeanMixin;
         delegate = new GenericAssociationInfo( method, new MetaInfo() );
@@ -114,65 +112,9 @@ public class JavabeanListAssociation
         throw new UnsupportedOperationException( "Read/only." );
     }
 
-    public boolean addAll( int index, Collection collection )
-    {
-        throw new UnsupportedOperationException( "Read/only." );
-    }
-
     public void clear()
     {
         throw new UnsupportedOperationException( "Read/only." );
-    }
-
-    public Object get( int index )
-    {
-        return Wrapper.wrap( delegate().get( index ), this, javabeanMixin.cbf );
-    }
-
-    public Object set( int index, Object element )
-    {
-        throw new UnsupportedOperationException( "Read/only." );
-    }
-
-    public void add( int index, Object element )
-    {
-        throw new UnsupportedOperationException( "Read/only." );
-    }
-
-    public Object remove( int index )
-    {
-        throw new UnsupportedOperationException( "Read/only." );
-    }
-
-    public int indexOf( Object object )
-    {
-        return delegate().indexOf( Wrapper.unwrap( object ) );
-    }
-
-    public int lastIndexOf( Object object )
-    {
-        return delegate().lastIndexOf( Wrapper.unwrap( object ) );
-    }
-
-    public ListIterator listIterator()
-    {
-        return new DelegatingListIterator( delegate().listIterator(), this, javabeanMixin.cbf );
-    }
-
-    public ListIterator listIterator( int index )
-    {
-        return new DelegatingListIterator( delegate().listIterator( index ), this, javabeanMixin.cbf );
-    }
-
-    public List subList( int fromIndex, int toIndex )
-    {
-        ArrayList list = new ArrayList();
-        List source = delegate().subList( fromIndex, toIndex );
-        for( Object obj : source )
-        {
-            list.add( Wrapper.wrap( obj, this, javabeanMixin.cbf ) );
-        }
-        return list;
     }
 
     public boolean retainAll( Collection collection )
@@ -207,12 +149,12 @@ public class JavabeanListAssociation
         return array;
     }
 
-    private List delegate()
+    private Set delegate()
     {
         try
         {
             Object resultObject = pojoMethod.invoke( javabeanMixin.pojo );
-            return (List) resultObject;
+            return (Set) resultObject;
         }
         catch( IllegalAccessException e )
         {
@@ -220,11 +162,13 @@ public class JavabeanListAssociation
         }
         catch( ClassCastException e )
         {
-            throw new IllegalArgumentException( "Javabean and Qi4j model are not compatible. Expected a java.util.List in return type of " + pojoMethod );
+            throw new IllegalArgumentException( "Javabean and Qi4j models are not compatible. Expected a java.util.Set in return type of " + pojoMethod );
         }
         catch( InvocationTargetException e )
         {
             throw new UndeclaredThrowableException( e.getTargetException() );
         }
     }
+
+
 }

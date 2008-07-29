@@ -16,7 +16,7 @@
  * limitations under the License. 
  */
 
-package org.qi4j.library.framework.javabean;
+package org.qi4j.library.beans.support;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;

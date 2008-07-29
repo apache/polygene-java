@@ -15,20 +15,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.library.framework.javabean;
+package org.qi4j.library.beans.support;
 
-import java.util.ListIterator;
-import org.qi4j.composite.CompositeBuilderFactory;
+import java.util.Iterator;
 import org.qi4j.entity.association.AssociationInfo;
+import org.qi4j.composite.CompositeBuilderFactory;
 
-public class DelegatingListIterator
-    implements ListIterator
+public class DelegatingIterator
+    implements Iterator
 {
-    private ListIterator source;
+    private Iterator source;
     private final AssociationInfo info;
     private final CompositeBuilderFactory cbf;
 
-    public DelegatingListIterator( ListIterator source, AssociationInfo info, CompositeBuilderFactory cbf )
+    public DelegatingIterator( Iterator source, AssociationInfo info, CompositeBuilderFactory cbf )
     {
         this.source = source;
         this.info = info;
@@ -45,38 +45,8 @@ public class DelegatingListIterator
         return Wrapper.wrap( source.next(), info, cbf );
     }
 
-    public boolean hasPrevious()
-    {
-        return source.hasPrevious();
-    }
-
-    public Object previous()
-    {
-        return Wrapper.wrap( source.previous(), info, cbf );
-    }
-
-    public int nextIndex()
-    {
-        return source.nextIndex();
-    }
-
-    public int previousIndex()
-    {
-        return source.previousIndex();
-    }
-
     public void remove()
     {
         source.remove();
-    }
-
-    public void set( Object o )
-    {
-        throw new UnsupportedOperationException( "Read Only." );
-    }
-
-    public void add( Object o )
-    {
-        throw new UnsupportedOperationException( "Read Only." );
     }
 }
