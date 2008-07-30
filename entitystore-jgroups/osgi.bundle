@@ -23,7 +23,7 @@ Import-Package: javax.crypto, \
                 org.qi4j, \
                 org.qi4j.composite, \
                 org.qi4j.injection.scope, \
-                org.qi4j.library.framework.locking, \
+                org.qi4j.library.locking, \
                 org.qi4j.service, \
                 org.qi4j.spi.composite, \
                 org.qi4j.spi.entity, \

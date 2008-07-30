@@ -31,7 +31,7 @@ import org.qi4j.injection.scope.Service;
 import org.qi4j.injection.scope.Structure;
 import org.qi4j.injection.scope.This;
 import org.qi4j.injection.scope.Uses;
-import org.qi4j.library.framework.locking.WriteLock;
+import org.qi4j.library.locking.WriteLock;
 import org.qi4j.service.Activatable;
 import org.qi4j.service.ServiceDescriptor;
 import org.qi4j.service.ServiceReference;

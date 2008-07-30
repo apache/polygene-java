@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.Iterator;
-import org.qi4j.library.framework.locking.WriteLock;
+import org.qi4j.library.locking.WriteLock;
 import org.qi4j.service.Activatable;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.entity.DefaultEntityState;

@@ -14,7 +14,7 @@
 package org.qi4j.quikit.application.jetty;
 
 import java.io.Serializable;
-import org.qi4j.library.framework.constraint.annotation.Range;
+import org.qi4j.library.constraints.annotation.Range;
 
 /**
  * Configuration entity for the Jetty Http Server.

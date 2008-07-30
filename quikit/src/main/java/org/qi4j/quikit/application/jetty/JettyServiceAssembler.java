@@ -20,7 +20,7 @@ import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
-import org.qi4j.library.framework.constraint.annotation.NotNull;
+import org.qi4j.library.constraints.annotation.NotNull;
 import org.qi4j.quikit.application.jetty.HttpConfiguration;
 import org.qi4j.quikit.application.jetty.JettyService;
 

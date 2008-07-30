@@ -17,7 +17,7 @@
 package org.qi4j.entity.rmi;
 
 import org.qi4j.composite.Mixins;
-import org.qi4j.library.framework.locking.LockingAbstractComposite;
+import org.qi4j.library.locking.LockingAbstractComposite;
 import org.qi4j.service.Activatable;
 import org.qi4j.service.ServiceComposite;
 import org.qi4j.spi.entity.EntityStore;

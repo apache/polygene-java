@@ -41,7 +41,7 @@ import jdbm.helper.Tuple;
 import jdbm.helper.TupleBrowser;
 import org.qi4j.injection.scope.Structure;
 import org.qi4j.injection.scope.This;
-import org.qi4j.library.framework.locking.WriteLock;
+import org.qi4j.library.locking.WriteLock;
 import org.qi4j.service.Activatable;
 import org.qi4j.service.Configuration;
 import org.qi4j.spi.Qi4jSPI;
