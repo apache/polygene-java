@@ -23,6 +23,7 @@
     <module>general</module>
     <module>locking</module>
     <module>logging</module>
+    <module>quikit</module>
     <module>rdf</module>
     <module>registry</module>
     <module>requirements</module>
