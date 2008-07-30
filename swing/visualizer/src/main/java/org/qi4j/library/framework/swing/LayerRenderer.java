@@ -19,18 +19,18 @@
 
 package org.qi4j.library.framework.swing;
 
-import prefuse.render.Renderer;
 import prefuse.visual.VisualItem;
-import prefuse.util.ColorLib;
 import java.awt.Graphics2D;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.geom.Point2D;
+import java.awt.Color;
 import java.awt.geom.Rectangle2D;
 
 public class LayerRenderer
     extends AbstractRenderer
 {
+
+    private Color fillColor = new Color( 161, 219, 124 );
+    private Color textColor = new Color( 85, 85, 85 );
+
     public void render( Graphics2D g, VisualItem item )
     {
         Rectangle2D rect = item.getBounds();
@@ -40,10 +40,10 @@ public class LayerRenderer
         int width = (int) rect.getWidth();
         int height = (int) rect.getHeight();
 
-        int color = item.getFillColor();
-        g.setPaint( ColorLib.getColor( color ) );
+        g.setPaint( fillColor );
         g.fillRect( x, y, width, height );
 
+        g.setPaint( textColor );
         drawName( g, item, x, y );
     }
 

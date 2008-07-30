@@ -19,6 +19,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.awt.Graphics2D;
 import javax.swing.JFrame;
 import org.qi4j.runtime.composite.CompositeModel;
 import org.qi4j.runtime.structure.ApplicationModel;
@@ -30,16 +32,19 @@ import prefuse.Display;
 import prefuse.Visualization;
 import prefuse.action.ActionList;
 import prefuse.action.RepaintAction;
+import prefuse.action.Action;
 import prefuse.action.assignment.ColorAction;
-import prefuse.action.assignment.DataColorAction;
 import prefuse.controls.PanControl;
 import prefuse.controls.ZoomControl;
 import prefuse.data.Graph;
 import prefuse.data.Node;
 import prefuse.data.Edge;
 import prefuse.render.DefaultRendererFactory;
+import prefuse.render.EdgeRenderer;
 import prefuse.util.ColorLib;
 import prefuse.visual.VisualItem;
+import prefuse.visual.EdgeItem;
+import prefuse.visual.sort.ItemSorter;
 
 import static org.qi4j.library.framework.swing.GraphConstants.*;
 
@@ -53,7 +58,7 @@ public class ApplicationGraph
     private static final int TYPE_MODULE = 2;
     private static final int TYPE_COMPOSITE = 3;
 
-    private static final int TYPE_HIDDEN = 100;
+    private static final int TYPE_EDGE_HIDDEN = 100;
 
     //    private static final int ENTITY_COMPOSITE = 4;
 //    private static final int SERVICE_COMPOSITE = 5;
@@ -80,7 +85,7 @@ public class ApplicationGraph
         visualization.run( "color" );
         // start up the layout
         visualization.run( "layout" );
-//        visualization.run( "hideEdges" );
+        visualization.run( "hideEdges" );
 //        visualization.run("repaint");
     }
 
@@ -93,6 +98,25 @@ public class ApplicationGraph
 //        display.addControlListener( new SubtreeDragControl() );
         display.addControlListener( new PanControl() );
         display.addControlListener( new ZoomControl() );
+        display.setItemSorter( new ItemSorter()
+        {
+            public int score( VisualItem item )
+            {
+                // First draw the Application box, then the edges, then other nodes
+                if( item.getInt( FIELD_TYPE ) == TYPE_APPLICATION )
+                {
+                    return 0;
+                }
+                else if( item instanceof EdgeItem )
+                {
+                    return 1;
+                }
+                else
+                {
+                    return 2;
+                }
+            }
+        } );
         return display;
     }
 
@@ -104,6 +128,19 @@ public class ApplicationGraph
         visualization.putAction( "color", color );
         visualization.putAction( "layout", layout );
         visualization.putAction( "repaint", new RepaintAction() );
+        visualization.putAction( "hideEdges", new Action()
+        {
+
+            public void run( double frac )
+            {
+                Iterator itr = m_vis.items( "graph.edges", "type=100" );
+                while( itr.hasNext() )
+                {
+                    VisualItem item = (VisualItem) itr.next();
+                    item.setVisible( false );
+                }
+            }
+        } );
     }
 
     private void createRenderers( Visualization visualization )
@@ -115,6 +152,19 @@ public class ApplicationGraph
         rendererFactory.add( "type = 1", new LayerRenderer() );
         rendererFactory.add( "type = 2", new ModuleRenderer() );
         rendererFactory.add( "type = 3", new CompositeRenderer() );
+
+        rendererFactory.setDefaultEdgeRenderer(
+            new EdgeRenderer()
+            {
+                {
+                    m_yAlign1 = Constants.BOTTOM;
+                }
+
+                public void render( Graphics2D g, VisualItem item )
+                {
+                    super.render( g, item );
+                }
+            } );
 
         visualization.setRendererFactory( rendererFactory );
     }
@@ -146,29 +196,14 @@ public class ApplicationGraph
 
     private ActionList establishColors()
     {
-        // create our nominal color palette
-        int[] palette = new int[]{
-            ColorLib.rgb( 100, 200, 100 ), // Application node
-            ColorLib.rgb( 255, 60, 60 ), // layers
-            ColorLib.rgb( 230, 230, 255 ), // modules
-            ColorLib.rgb( 230, 180, 180 ),  // composites
-        };
-        // map nominal data values to colors using our provided palette
-        DataColorAction fill = new DataColorAction( "graph.nodes", FIELD_TYPE, Constants.ORDINAL,
-                                                    VisualItem.FILLCOLOR, palette );
-
-        // color for node text
-        ColorAction text = new ColorAction( "graph.nodes", VisualItem.TEXTCOLOR, ColorLib.gray( 0 ) );
         // color for edges
-//        ColorAction edgesStroke = new ColorAction( "graph.edges", VisualItem.STROKECOLOR, ColorLib.gray( 100 ) );
-//        ColorAction edgesFill = new ColorAction( "graph.edges", VisualItem.FILLCOLOR, ColorLib.gray( 100 ) );
+        ColorAction edgesStroke = new ColorAction( "graph.edges", VisualItem.STROKECOLOR, ColorLib.gray( 100 ) );
+        ColorAction edgesFill = new ColorAction( "graph.edges", VisualItem.FILLCOLOR, ColorLib.gray( 100 ) );
 
         // an action list containing all color assignments
         ActionList color = new ActionList();
-        color.add( fill );
-        color.add( text );
-//        color.add( edgesStroke );
-//        color.add( edgesFill );
+        color.add( edgesStroke );
+        color.add( edgesFill );
         return color;
     }
 
@@ -201,7 +236,8 @@ public class ApplicationGraph
                 incrementLayerLevel( usedLayerNode );
             }
 
-            graph.addEdge( root, layerNode );
+            Edge edge = graph.addEdge( root, layerNode );
+            edge.setInt( FIELD_TYPE, TYPE_EDGE_HIDDEN );
         }
 
         private Node getLayerNode( LayerModel layerModel )
@@ -245,7 +281,7 @@ public class ApplicationGraph
             moduleNode.setString( FIELD_NAME, moduleModel.name() );
             moduleNode.setInt( FIELD_TYPE, TYPE_MODULE );
             Edge edge = graph.addEdge( layerNode, moduleNode );
-            edge.setInt( FIELD_TYPE, TYPE_HIDDEN );
+            edge.setInt( FIELD_TYPE, TYPE_EDGE_HIDDEN );
         }
 
         public void visit( CompositeModel compositeModel )
@@ -254,7 +290,7 @@ public class ApplicationGraph
             node.setString( FIELD_NAME, compositeModel.type().getSimpleName() );
             node.setInt( FIELD_TYPE, TYPE_COMPOSITE );
             Edge edge = graph.addEdge( moduleNode, node );
-            edge.setInt( FIELD_TYPE, TYPE_HIDDEN );
+            edge.setInt( FIELD_TYPE, TYPE_EDGE_HIDDEN );
         }
 
     }

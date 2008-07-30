@@ -210,7 +210,8 @@ public class ApplicationLayout extends TreeLayout
     private Rectangle computeCompositeBounds( NodeItem composite, Point location )
     {
         Dimension dimension = getNodeLabelSize( composite );
-        Rectangle bounds = new Rectangle( location.x, location.y, dimension.width + paddingLeft, dimension.height + paddingTop );
+        Rectangle bounds = new Rectangle( location.x, location.y, dimension.width + paddingLeft,
+                                          dimension.height + paddingTop + paddingBottom );
 //        System.out.println( getName( composite ) + " - " + bounds );
         return bounds;
     }

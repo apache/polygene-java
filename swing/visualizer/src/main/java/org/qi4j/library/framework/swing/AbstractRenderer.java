@@ -24,7 +24,6 @@ import java.awt.geom.Rectangle2D;
 import java.awt.geom.Point2D;
 import prefuse.visual.VisualItem;
 import prefuse.render.Renderer;
-import prefuse.util.ColorLib;
 
 /**
  * @author Sonny Gill
@@ -43,8 +42,6 @@ abstract class AbstractRenderer
         y = y + GraphConstants.paddingTop + fm.getHeight();
         String name = (String) item.get( GraphConstants.FIELD_NAME );
 
-        int color = item.getTextColor();
-        g.setPaint( ColorLib.getColor( color ) );
         g.drawString( name, x, y );
 
         if( debug )

@@ -19,15 +19,11 @@
 
 package org.qi4j.library.framework.swing;
 
-import java.awt.Font;
-import java.awt.FontMetrics;
 import java.awt.Graphics2D;
-import java.awt.geom.Point2D;
+import java.awt.Color;
+import java.awt.BasicStroke;
 import java.awt.geom.Rectangle2D;
-import java.awt.geom.RoundRectangle2D;
-import prefuse.render.Renderer;
 import prefuse.visual.VisualItem;
-import prefuse.util.ColorLib;
 
 /**
  * This renderer only draws the Application box.
@@ -35,6 +31,12 @@ import prefuse.util.ColorLib;
 public class ApplicationRenderer
     extends AbstractRenderer
 {
+
+    private Color borderColor = Color.black;
+    private BasicStroke borderStroke = new BasicStroke( 6 );
+    private Color fillColor = new Color( 98, 195, 37 );
+    private Color textColor = Color.white;
+
     public void render( Graphics2D g, VisualItem item )
     {
         Rectangle2D rect = item.getBounds();
@@ -44,10 +46,14 @@ public class ApplicationRenderer
         int width = (int) rect.getWidth();
         int height = (int) rect.getHeight();
 
-        int color = item.getFillColor();
-        g.setPaint( ColorLib.getColor( color ) );
-        g.fillRoundRect( x, y, width, height, 4, 4 );
+        g.setPaint( borderColor );
+        g.setStroke( borderStroke );
+        g.drawRect( x, y, width, height );
 
+        g.setPaint( fillColor );
+        g.fillRoundRect( x + 3, y + 3, width - 6, height - 6, 5, 5 );
+
+        g.setPaint( textColor );
         drawName( g, item, x, y );
     }
 

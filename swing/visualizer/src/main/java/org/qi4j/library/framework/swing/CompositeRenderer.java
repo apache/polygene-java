@@ -19,18 +19,18 @@
 
 package org.qi4j.library.framework.swing;
 
-import prefuse.render.Renderer;
 import prefuse.visual.VisualItem;
-import prefuse.util.ColorLib;
 import java.awt.Graphics2D;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.geom.Point2D;
+import java.awt.Color;
 import java.awt.geom.Rectangle2D;
 
 public class CompositeRenderer
     extends AbstractRenderer
 {
+
+    private Color fillColor = new Color( 123, 205, 72 );
+    private Color textColor = Color.white;
+
     public void render( Graphics2D g, VisualItem item )
     {
         Rectangle2D rect = item.getBounds();
@@ -39,10 +39,10 @@ public class CompositeRenderer
         int width = (int) rect.getWidth();
         int height = (int) rect.getHeight();
 
-        int color = item.getFillColor();
-        g.setPaint( ColorLib.getColor( color ) );
-        g.fillRoundRect( x, y, width, height, 4, 4 );
+        g.setPaint( fillColor );
+        g.fillRoundRect( x, y, width, height, 3, 3 );
 
+        g.setPaint( textColor );
         drawName( g, item, x, y );
     }
 
