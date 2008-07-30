@@ -15,26 +15,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.lib.swing.binding;
+package org.qi4j.library.exception;
 
-import javax.swing.JComponent;
-import org.qi4j.library.constraints.annotation.NotNull;
+import org.qi4j.composite.Concerns;
+import org.qi4j.composite.Mixins;
+import org.qi4j.service.ServiceComposite;
 
-public interface SwingBinding<T>
+
+@Concerns( { ExceptionHandlingNotificationConcern.class } )
+@Mixins( { ExceptionObservableMixin.class, NullExceptionHandling.class } )
+public interface ObservableExceptionHandlingService extends ExceptionHandling, ExceptionObservable, ServiceComposite
 {
-
-    /**
-     * Bind the specific component to this binding.
-     *
-     * @param aComponent The component. This argument must not be {@code null}.
-     * @return this.
-     * @throws IllegalBindingException Thrown if adapter for the specified {@code aComponent} is not found.
-     */
-    SwingBinding<T> to( @NotNull JComponent aComponent )
-        throws IllegalBindingException;
-
-    /**
-     * @return The state model for this binding.
-     */
-    StateModel<T> stateModel();
 }

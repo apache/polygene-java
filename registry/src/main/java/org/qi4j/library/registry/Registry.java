@@ -15,26 +15,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.lib.swing.binding;
+package org.qi4j.library.registry;
 
-import javax.swing.JComponent;
-import org.qi4j.library.constraints.annotation.NotNull;
-
-public interface SwingBinding<T>
+public interface Registry<K, V>
 {
+    V lookup( K key );
 
-    /**
-     * Bind the specific component to this binding.
-     *
-     * @param aComponent The component. This argument must not be {@code null}.
-     * @return this.
-     * @throws IllegalBindingException Thrown if adapter for the specified {@code aComponent} is not found.
-     */
-    SwingBinding<T> to( @NotNull JComponent aComponent )
-        throws IllegalBindingException;
+    void register( K key, V value );
 
-    /**
-     * @return The state model for this binding.
-     */
-    StateModel<T> stateModel();
+    void unregister( K key );
+
+    void addRegistryObserver( RegistryObserver<K, V> observer );
+
+    void removeRegistryObserver( RegistryObserver<K, V> observer );
 }

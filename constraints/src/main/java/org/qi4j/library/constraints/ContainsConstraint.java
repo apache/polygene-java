@@ -1,0 +1,16 @@
+package org.qi4j.library.constraints;
+
+import org.qi4j.composite.Constraint;
+import org.qi4j.library.constraints.annotation.Contains;
+
+/**
+ * TODO
+ */
+public class ContainsConstraint
+    implements Constraint<Contains, String>
+{
+    public boolean isValid( Contains annotation, String argument )
+    {
+        return argument.contains( annotation.value() );
+    }
+}

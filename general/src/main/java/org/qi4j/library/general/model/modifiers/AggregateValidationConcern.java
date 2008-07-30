@@ -3,8 +3,8 @@ package org.qi4j.library.general.model.modifiers;
 import java.util.List;
 import org.qi4j.composite.ConcernOf;
 import org.qi4j.injection.scope.This;
-import org.qi4j.library.framework.validation.Validatable;
-import org.qi4j.library.framework.validation.ValidationMessage;
+import org.qi4j.library.validation.Validatable;
+import org.qi4j.library.validation.ValidationMessage;
 import org.qi4j.library.general.model.Aggregated;
 
 /**
