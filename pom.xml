@@ -14,7 +14,6 @@
   <!-- This POM is ONLY to initiate the modules to be built. -->
   <modules>
     <module>indexing-rdf</module>
-    <module>quikit</module>
     <module>rest</module>
     <module>entitystore-neo4j</module>
     <module>entitystore-ibatis</module>
