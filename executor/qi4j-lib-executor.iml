@@ -9,10 +9,6 @@
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/resources" isTestSource="true" />
-      <excludeFolder url="file://$MODULE_DIR$/target/classes" />
-      <excludeFolder url="file://$MODULE_DIR$/target/maven-archiver" />
-      <excludeFolder url="file://$MODULE_DIR$/target/surefire-reports" />
-      <excludeFolder url="file://$MODULE_DIR$/target/test-classes" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
@@ -23,13 +19,13 @@
     <orderEntry type="module-library">
       <library name="junit:junit:4.4">
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../../../../../.m2/repository/junit/junit/4.4/junit-4.4.jar!/" />
+          <root url="jar://$M2_REPO$/junit/junit/4.4/junit-4.4.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$MODULE_DIR$/../../../../../../.m2/repository/junit/junit/4.4/junit-4.4-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/junit/junit/4.4/junit-4.4-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$MODULE_DIR$/../../../../../../.m2/repository/junit/junit/4.4/junit-4.4-sources.jar!/" />
+          <root url="jar://$M2_REPO$/junit/junit/4.4/junit-4.4-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
@@ -37,13 +33,13 @@
     <orderEntry type="module-library">
       <library name="cglib:cglib-nodep:2.1_3">
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../../../../../.m2/repository/cglib/cglib-nodep/2.1_3/cglib-nodep-2.1_3.jar!/" />
+          <root url="jar://$M2_REPO$/cglib/cglib-nodep/2.1_3/cglib-nodep-2.1_3.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$MODULE_DIR$/../../../../../../.m2/repository/cglib/cglib-nodep/2.1_3/cglib-nodep-2.1_3-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/cglib/cglib-nodep/2.1_3/cglib-nodep-2.1_3-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$MODULE_DIR$/../../../../../../.m2/repository/cglib/cglib-nodep/2.1_3/cglib-nodep-2.1_3-sources.jar!/" />
+          <root url="jar://$M2_REPO$/cglib/cglib-nodep/2.1_3/cglib-nodep-2.1_3-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
