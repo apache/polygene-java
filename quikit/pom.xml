@@ -8,7 +8,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.qi4j.library</groupId>
   <artifactId>qi4j-lib-quikit</artifactId>
-  <name>Qi4J Extension - Quikit</name>
+  <name>Qi4J Library - Quikit</name>
   <version>0.3-SNAPSHOT</version>
 
   <properties>
