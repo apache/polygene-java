@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.qi4j.bootstrap.PropertyDeclarations;
+import org.qi4j.composite.ConstraintViolationException;
 import org.qi4j.composite.State;
 import org.qi4j.property.AbstractPropertyInstance;
 import org.qi4j.property.Property;
@@ -133,6 +134,7 @@ public final class PropertiesModel
     }
 
     public void checkConstraints( PropertiesInstance properties )
+        throws ConstraintViolationException
     {
         for( PropertyModel propertyModel : propertyModels )
         {

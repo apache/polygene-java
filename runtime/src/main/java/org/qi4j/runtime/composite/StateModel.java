@@ -17,6 +17,7 @@ package org.qi4j.runtime.composite;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
+import org.qi4j.composite.ConstraintViolationException;
 import org.qi4j.composite.State;
 import org.qi4j.entity.association.AbstractAssociation;
 import org.qi4j.property.Property;
@@ -88,6 +89,7 @@ public final class StateModel
     }
 
     public void checkConstraints( State state )
+        throws ConstraintViolationException
     {
         StateInstance stateInstance = (StateModel.StateInstance) state;
         stateInstance.checkConstraints();
@@ -114,6 +116,7 @@ public final class StateModel
         }
 
         public void checkConstraints()
+            throws ConstraintViolationException
         {
             propertiesModel.checkConstraints( properties );
         }

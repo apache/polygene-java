@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.qi4j.composite.Composite;
 import org.qi4j.entity.EntityComposite;
+import org.qi4j.service.ServiceComposite;
 import org.qi4j.spi.composite.CompositeInstance;
 import org.qi4j.spi.entity.QualifiedIdentity;
 
@@ -48,6 +49,10 @@ public final class CompositeOutputStream extends ObjectOutputStream
             {
                 String id = ( (EntityComposite) composite ).identity().get();
                 return new QualifiedIdentity( id, compositeInterface.toString() );
+            }
+            else if( obj instanceof ServiceComposite )
+            {
+                return null; // Don't serialize service references
             }
             else
             {

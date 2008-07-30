@@ -136,6 +136,7 @@ public class PropertyModel
     }
 
     public void checkConstraints( Object value )
+        throws ConstraintViolationException
     {
         if( constraints != null )
         {

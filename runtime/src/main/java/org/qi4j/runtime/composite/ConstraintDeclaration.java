@@ -27,7 +27,7 @@ public final class ConstraintDeclaration
     private final Class<? extends Constraint<?, ?>> constraintClass;
     private final Type declaredIn;
     private final Class constraintAnnotationType;
-    private final Class constraintValueType;
+    private final Type constraintValueType;
 
     public ConstraintDeclaration( Class<? extends Constraint<?, ?>> constraintClass, Type type )
     {
@@ -35,7 +35,7 @@ public final class ConstraintDeclaration
         declaredIn = type;
 
         constraintAnnotationType = (Class<? extends Annotation>) ( (ParameterizedType) constraintClass.getGenericInterfaces()[ 0 ] ).getActualTypeArguments()[ 0 ];
-        constraintValueType = (Class) ( (ParameterizedType) constraintClass.getGenericInterfaces()[ 0 ] ).getActualTypeArguments()[ 1 ];
+        constraintValueType = ( (ParameterizedType) constraintClass.getGenericInterfaces()[ 0 ] ).getActualTypeArguments()[ 1 ];
     }
 
     public Class<? extends Constraint<?, ?>> constraintClass()
@@ -50,7 +50,36 @@ public final class ConstraintDeclaration
 
     public boolean appliesTo( Class annotationType, Type valueType )
     {
-        return constraintAnnotationType.equals( annotationType ) && constraintValueType.isAssignableFrom( (Class<?>) valueType );
+        if( constraintValueType instanceof Class )
+        {
+            Class constraintValueClass = (Class) constraintValueType;
+            Class valueClass = extractRawInjectionClass( valueType );
+            return constraintAnnotationType.equals( annotationType ) && constraintValueClass.isAssignableFrom( valueClass );
+        }
+        else if( constraintValueType instanceof ParameterizedType )
+        {
+            // TODO Handle nested generics
+            Class constraintValueClass = extractRawInjectionClass( constraintValueType );
+            Class valueClass = extractRawInjectionClass( valueType );
+            return constraintAnnotationType.equals( annotationType ) && constraintValueClass.isAssignableFrom( valueClass );
+        }
+        else
+        {
+            return false; // TODO Handles more cases. What are they?
+        }
+    }
 
+    private Class<?> extractRawInjectionClass( final Type injectionType )
+    {
+        // Calculate raw injection type
+        if( injectionType instanceof Class )
+        {
+            return (Class<?>) injectionType;
+        }
+        else if( injectionType instanceof ParameterizedType )
+        {
+            return (Class<?>) ( (ParameterizedType) injectionType ).getRawType();
+        }
+        throw new IllegalArgumentException( "Could not extract the raw class of " + injectionType );
     }
 }

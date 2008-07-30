@@ -10,20 +10,19 @@
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/resources" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/target/classes" />
-      <excludeFolder url="file://$MODULE_DIR$/target/test-classes" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module-library">
       <library name="junit:junit:4.4">
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../../../../../.m2/repository/junit/junit/4.4/junit-4.4.jar!/" />
+          <root url="jar://$M2_REPO$/junit/junit/4.4/junit-4.4.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$MODULE_DIR$/../../../../../../.m2/repository/junit/junit/4.4/junit-4.4-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/junit/junit/4.4/junit-4.4-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$MODULE_DIR$/../../../../../../.m2/repository/junit/junit/4.4/junit-4.4-sources.jar!/" />
+          <root url="jar://$M2_REPO$/junit/junit/4.4/junit-4.4-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
@@ -32,78 +31,78 @@
     <orderEntry type="module-library">
       <library name="org.osgi:osgi_R4_core:1.0">
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../../../../../.m2/repository/org/osgi/osgi_R4_core/1.0/osgi_R4_core-1.0.jar!/" />
+          <root url="jar://$M2_REPO$/org/osgi/osgi_R4_core/1.0/osgi_R4_core-1.0.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$MODULE_DIR$/../../../../../../.m2/repository/org/osgi/osgi_R4_core/1.0/osgi_R4_core-1.0-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/osgi/osgi_R4_core/1.0/osgi_R4_core-1.0-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$MODULE_DIR$/../../../../../../.m2/repository/org/osgi/osgi_R4_core/1.0/osgi_R4_core-1.0-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/osgi/osgi_R4_core/1.0/osgi_R4_core-1.0-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
       <library name="org.ops4j.pax.swissbox:pax-swissbox-extender:0.2.0">
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../../../../../.m2/repository/org/ops4j/pax/swissbox/pax-swissbox-extender/0.2.0/pax-swissbox-extender-0.2.0.jar!/" />
+          <root url="jar://$M2_REPO$/org/ops4j/pax/swissbox/pax-swissbox-extender/0.2.0/pax-swissbox-extender-0.2.0.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$MODULE_DIR$/../../../../../../.m2/repository/org/ops4j/pax/swissbox/pax-swissbox-extender/0.2.0/pax-swissbox-extender-0.2.0-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/ops4j/pax/swissbox/pax-swissbox-extender/0.2.0/pax-swissbox-extender-0.2.0-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$MODULE_DIR$/../../../../../../.m2/repository/org/ops4j/pax/swissbox/pax-swissbox-extender/0.2.0/pax-swissbox-extender-0.2.0-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/ops4j/pax/swissbox/pax-swissbox-extender/0.2.0/pax-swissbox-extender-0.2.0-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
       <library name="org.ops4j.pax.swissbox:pax-swissbox-lifecycle:0.2.0">
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../../../../../.m2/repository/org/ops4j/pax/swissbox/pax-swissbox-lifecycle/0.2.0/pax-swissbox-lifecycle-0.2.0.jar!/" />
+          <root url="jar://$M2_REPO$/org/ops4j/pax/swissbox/pax-swissbox-lifecycle/0.2.0/pax-swissbox-lifecycle-0.2.0.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$MODULE_DIR$/../../../../../../.m2/repository/org/ops4j/pax/swissbox/pax-swissbox-lifecycle/0.2.0/pax-swissbox-lifecycle-0.2.0-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/ops4j/pax/swissbox/pax-swissbox-lifecycle/0.2.0/pax-swissbox-lifecycle-0.2.0-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$MODULE_DIR$/../../../../../../.m2/repository/org/ops4j/pax/swissbox/pax-swissbox-lifecycle/0.2.0/pax-swissbox-lifecycle-0.2.0-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/ops4j/pax/swissbox/pax-swissbox-lifecycle/0.2.0/pax-swissbox-lifecycle-0.2.0-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
       <library name="org.ops4j.pax.swissbox:pax-swissbox-optional-jcl:0.2.0">
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../../../../../.m2/repository/org/ops4j/pax/swissbox/pax-swissbox-optional-jcl/0.2.0/pax-swissbox-optional-jcl-0.2.0.jar!/" />
+          <root url="jar://$M2_REPO$/org/ops4j/pax/swissbox/pax-swissbox-optional-jcl/0.2.0/pax-swissbox-optional-jcl-0.2.0.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$MODULE_DIR$/../../../../../../.m2/repository/org/ops4j/pax/swissbox/pax-swissbox-optional-jcl/0.2.0/pax-swissbox-optional-jcl-0.2.0-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/ops4j/pax/swissbox/pax-swissbox-optional-jcl/0.2.0/pax-swissbox-optional-jcl-0.2.0-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$MODULE_DIR$/../../../../../../.m2/repository/org/ops4j/pax/swissbox/pax-swissbox-optional-jcl/0.2.0/pax-swissbox-optional-jcl-0.2.0-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/ops4j/pax/swissbox/pax-swissbox-optional-jcl/0.2.0/pax-swissbox-optional-jcl-0.2.0-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
       <library name="org.ops4j.base:ops4j-base-lang:0.5.0">
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../../../../../.m2/repository/org/ops4j/base/ops4j-base-lang/0.5.0/ops4j-base-lang-0.5.0.jar!/" />
+          <root url="jar://$M2_REPO$/org/ops4j/base/ops4j-base-lang/0.5.0/ops4j-base-lang-0.5.0.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$MODULE_DIR$/../../../../../../.m2/repository/org/ops4j/base/ops4j-base-lang/0.5.0/ops4j-base-lang-0.5.0-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/ops4j/base/ops4j-base-lang/0.5.0/ops4j-base-lang-0.5.0-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$MODULE_DIR$/../../../../../../.m2/repository/org/ops4j/base/ops4j-base-lang/0.5.0/ops4j-base-lang-0.5.0-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/ops4j/base/ops4j-base-lang/0.5.0/ops4j-base-lang-0.5.0-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
       <library name="org.ops4j.pax.swissbox:pax-swissbox-core:0.2.0">
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../../../../../.m2/repository/org/ops4j/pax/swissbox/pax-swissbox-core/0.2.0/pax-swissbox-core-0.2.0.jar!/" />
+          <root url="jar://$M2_REPO$/org/ops4j/pax/swissbox/pax-swissbox-core/0.2.0/pax-swissbox-core-0.2.0.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$MODULE_DIR$/../../../../../../.m2/repository/org/ops4j/pax/swissbox/pax-swissbox-core/0.2.0/pax-swissbox-core-0.2.0-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/ops4j/pax/swissbox/pax-swissbox-core/0.2.0/pax-swissbox-core-0.2.0-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$MODULE_DIR$/../../../../../../.m2/repository/org/ops4j/pax/swissbox/pax-swissbox-core/0.2.0/pax-swissbox-core-0.2.0-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/ops4j/pax/swissbox/pax-swissbox-core/0.2.0/pax-swissbox-core-0.2.0-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>

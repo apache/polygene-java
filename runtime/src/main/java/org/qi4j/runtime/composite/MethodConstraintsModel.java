@@ -16,6 +16,7 @@ package org.qi4j.runtime.composite;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import org.qi4j.runtime.structure.ModelVisitor;
@@ -33,7 +34,7 @@ public final class MethodConstraintsModel
         this.method = method;
         parameterConstraintModels = null;
         Annotation[][] parameterAnnotations = method.getParameterAnnotations();
-        Class<?>[] parameterTypes = method.getParameterTypes();
+        Type[] parameterTypes = method.getGenericParameterTypes();
         boolean constrained = false;
         for( int i = 0; i < parameterAnnotations.length; i++ )
         {
