@@ -19,6 +19,10 @@ package org.qi4j.lib.struts2;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import javax.servlet.ServletException;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.qi4j.bootstrap.ApplicationAssembly;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
@@ -33,10 +37,14 @@ import org.qi4j.structure.Module;
 public abstract class Qi4jApplicationBootstrapListener
     implements ServletContextListener
 {
+    private static final Log LOG = LogFactory.getLog( Qi4jApplicationBootstrapListener.class );
+
     private Application application;
 
     public final void contextInitialized( ServletContextEvent sce )
     {
+        LOG.info( "Qi4j Plugin: Initializing" );
+
         ServletContext context = sce.getServletContext();
         application = createNewApplication( context );
 
@@ -54,6 +62,11 @@ public abstract class Qi4jApplicationBootstrapListener
                 throw new IllegalStateException( e );
             }
         }
+        else
+        {
+            throw new IllegalStateException( "None of the assembly creation methods returned a non-null assembler");
+        }
+        LOG.info( "... initialized qi4j-struts integration successfully" );
     }
 
     /**
@@ -77,7 +90,7 @@ public abstract class Qi4jApplicationBootstrapListener
             }
             catch( AssemblyException e )
             {
-                aContext.setAttribute( SERVLET_ATTRIBUTE, e );
+                throw new IllegalStateException(e);
             }
         }
 
@@ -91,7 +104,7 @@ public abstract class Qi4jApplicationBootstrapListener
             }
             catch( AssemblyException e )
             {
-                aContext.setAttribute( SERVLET_ATTRIBUTE, e );
+                throw new IllegalStateException(e);
             }
         }
 
@@ -105,7 +118,7 @@ public abstract class Qi4jApplicationBootstrapListener
             }
             catch( AssemblyException e )
             {
-                aContext.setAttribute( SERVLET_ATTRIBUTE, e );
+                throw new IllegalStateException(e);
             }
         }
 

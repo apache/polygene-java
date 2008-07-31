@@ -16,26 +16,27 @@
  */
 package org.qi4j.lib.struts2;
 
-import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.ObjectFactory;
-import com.opensymphony.xwork2.inject.Inject;
-import java.util.HashMap;
-import java.util.Map;
-import javax.servlet.ServletContext;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.struts2.util.ObjectFactoryDestroyable;
-import org.qi4j.composite.CompositeBuilderFactory;
-import org.qi4j.composite.ConstructionException;
-import org.qi4j.composite.NoSuchCompositeException;
-import org.qi4j.injection.scope.Structure;
 import static org.qi4j.lib.struts2.Constants.SERVLET_ATTRIBUTE;
 import static org.qi4j.lib.struts2.Qi4jObjectFactory.ClassType.object;
 import static org.qi4j.lib.struts2.Qi4jObjectFactory.ClassType.qi4jComposite;
 import static org.qi4j.lib.struts2.Qi4jObjectFactory.ClassType.qi4jObject;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.ServletContext;
+
+import org.apache.struts2.util.ObjectFactoryDestroyable;
+import org.qi4j.composite.CompositeBuilderFactory;
+import org.qi4j.composite.ConstructionException;
+import org.qi4j.composite.NoSuchCompositeException;
 import org.qi4j.object.NoSuchObjectException;
 import org.qi4j.object.ObjectBuilderFactory;
 import org.qi4j.structure.Module;
+
+import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.ObjectFactory;
+import com.opensymphony.xwork2.inject.Inject;
 
 /**
  * Qi4j implementation of struts object factory.
@@ -47,17 +48,15 @@ public class Qi4jObjectFactory extends ObjectFactory
 {
     private static final long serialVersionUID = 1L;
 
-    private static final Log LOG = LogFactory.getLog( Qi4jObjectFactory.class );
-
     static enum ClassType
     {
         qi4jComposite,
         qi4jObject,
         object
     }
-
-    @Structure
-    private Module module;
+    
+    private ObjectBuilderFactory obf;
+    private CompositeBuilderFactory cbf;
 
     private final Map<Class, ClassType> types;
 
@@ -65,29 +64,13 @@ public class Qi4jObjectFactory extends ObjectFactory
     {
         types = new HashMap<Class, ClassType>();
     }
-
+    
     @Inject
-    public void setServletContext( ServletContext aServletContext )
+    public void setServletContext( ServletContext aServletContext ) 
     {
-        LOG.info( "Qi4j Plugin: Initializing" );
-
-        Object appInitializer = aServletContext.getAttribute( SERVLET_ATTRIBUTE );
-        if( appInitializer instanceof RuntimeException )
-        {
-            throw (RuntimeException) appInitializer;
-        }
-        if( appInitializer instanceof Error )
-        {
-            throw (Error) appInitializer;
-        }
-        if( !( appInitializer instanceof Module ) )
-        {
-            throw new IllegalStateException( "No Qi4jStrutsApplicationBootstrap found:" );
-        }
-
-        module = (Module) appInitializer;
-
-        LOG.info( "... initialized qi4j-struts integration successfully" );
+        Module module = (Module) aServletContext.getAttribute( SERVLET_ATTRIBUTE );
+        obf = module.objectBuilderFactory();
+        cbf = module.compositeBuilderFactory();
     }
 
     /**
@@ -167,12 +150,11 @@ public class Qi4jObjectFactory extends ObjectFactory
     private Object createQi4jObject( Class aClass, boolean isAddToTypes )
     {
         ConstructionException exception = null;
-        ObjectBuilderFactory builderFactory = module.objectBuilderFactory();
         Object obj = null;
 
         try
         {
-            obj = builderFactory.newObject( aClass );
+            obj = obf.newObject( aClass );
         }
         catch( NoSuchObjectException e )
         {
@@ -201,7 +183,6 @@ public class Qi4jObjectFactory extends ObjectFactory
     {
         Object obj = null;
         ConstructionException exception = null;
-        CompositeBuilderFactory cbf = module.compositeBuilderFactory();
         try
         {
             obj = cbf.newComposite( aClass );
@@ -250,6 +231,7 @@ public class Qi4jObjectFactory extends ObjectFactory
     public final void destroy()
     {
         types.clear();
-        module = null;
+        obf = null;
+        cbf = null;
     }
 }
