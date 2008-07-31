@@ -47,7 +47,7 @@ public class StateModelPropertyTest extends AbstractStateModelTest
 
         // Update name by using UI
         String expectedName2 = "Foo " + expectedName;
-        nameTextBox.enterText( "Foo Bar" );
+        nameTextBox.enterText( "Foo " );
 
         JTextComponentFixture lostFocusField = window.textBox( "lostFocus" );
         lostFocusField.focus();
