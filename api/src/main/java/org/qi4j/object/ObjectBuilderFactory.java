@@ -14,7 +14,6 @@
  */
 package org.qi4j.object;
 
-import org.qi4j.composite.NoSuchCompositeException;
 import org.qi4j.composite.ConstructionException;
 
 /**
@@ -25,14 +24,22 @@ public interface ObjectBuilderFactory
     /**
      * Create a builder for creating new objects of the given type.
      *
-     * @param type an object class which will be instantiated
-     * @return a ObjectBuilder for creation of objects of the given type
-     * @throws org.qi4j.composite.ConstructionException
-     *          thrown if instantiation fails
+     * @param type an object class which will be instantiated.
+     * @return an {@code ObjectBuilder} for creation of objects of the given type.
+     * @throws ConstructionException Thrown if instantiation fails.
+     * @throws NoSuchObjectException Thrown if {@code type} class is not an object.
      */
     <T> ObjectBuilder<T> newObjectBuilder( Class<T> type )
-        throws NoSuchObjectException;
+        throws NoSuchObjectException, ConstructionException;
 
+    /**
+     * Create new objects of the given type.
+     *
+     * @param type an object class which will be instantiated.
+     * @return new objects.
+     * @throws ConstructionException Thrown if instantiation fails.
+     * @throws NoSuchObjectException Thrown if {@code type} class is not an object.
+     */
     <T> T newObject( Class<T> type )
-        throws NoSuchCompositeException, ConstructionException;
+        throws NoSuchObjectException, ConstructionException;
 }
