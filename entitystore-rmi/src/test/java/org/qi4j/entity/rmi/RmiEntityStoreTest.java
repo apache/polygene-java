@@ -34,8 +34,7 @@ public class RmiEntityStoreTest
         module.setName( "Module 1" );
         module.addServices( ClientRmiEntityStoreService.class );
 
-        ModuleAssembly remote = module.getLayerAssembly().newModuleAssembly();
-        remote.setName( "Server" );
+        ModuleAssembly remote = module.getLayerAssembly().newModuleAssembly( "Server" );
         remote.addEntities( TestEntity.class, TestValue.class ).visibleIn( Visibility.module );
         remote.addEntities( RegistryConfiguration.class );
         remote.addServices( ServerRmiEntityStoreService.class,

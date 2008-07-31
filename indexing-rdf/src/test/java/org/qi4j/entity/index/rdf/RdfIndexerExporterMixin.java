@@ -54,7 +54,7 @@ public abstract class RdfIndexerExporterMixin
             {
                 if( connection != null )
                 {
-                    connection.commit();
+                    connection.close();
                 }
             }
         }

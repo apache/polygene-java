@@ -22,13 +22,8 @@ import org.junit.Ignore;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entity.memory.MemoryEntityStoreService;
-import org.qi4j.entity.ibatis.dbInitializer.DBInitializerConfiguration;
-import org.qi4j.entity.ibatis.dbInitializer.DBInitializerConfigurationComposite;
-import org.qi4j.entity.ibatis.entity.PersonComposite;
-import org.qi4j.entity.ibatis.DerbyDatabaseHandler;
 import org.qi4j.structure.Visibility;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
-import org.qi4j.spi.entity.UuidIdentityGeneratorService;
 
 /**
  * TODO
@@ -55,18 +50,19 @@ public class DefaultIbatisEntityStoreTest
         super.assemble( module );
         module.addServices( IBatisEntityStoreService.class );
 
-        final ModuleAssembly config = module.getLayerAssembly().newModuleAssembly();
-        config.setName( "config" );
-        config.addEntities( IBatisConfigurationComposite.class).visibleIn( Visibility.layer );
+        final ModuleAssembly config = module.getLayerAssembly().newModuleAssembly( "config" );
+        config.addEntities( IBatisConfigurationComposite.class ).visibleIn( Visibility.layer );
         config.addServices( MemoryEntityStoreService.class );
-        config.on( IBatisConfigurationComposite.class ).to().sqlMapConfigURL().set( derbyDatabaseHandler.getUrlString( SQLMAP_FILE ));
-        derbyDatabaseHandler.initDbInitializerInfo( config, SCHEMA_FILE, DATA_FILE  );
+        config.on( IBatisConfigurationComposite.class ).to().sqlMapConfigURL().set( derbyDatabaseHandler.getUrlString( SQLMAP_FILE ) );
+        derbyDatabaseHandler.initDbInitializerInfo( config, SCHEMA_FILE, DATA_FILE );
     }
 
     @Override @After public void tearDown() throws Exception
     {
-        if (derbyDatabaseHandler!=null)
+        if( derbyDatabaseHandler != null )
+        {
             derbyDatabaseHandler.shutdown();
+        }
         super.tearDown();
     }
 }

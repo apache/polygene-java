@@ -81,6 +81,7 @@ public class RdfEntityFinderMixin
             finally
             {
                 result.close();
+                connection.close();
             }
         }
         catch( RepositoryException e )
@@ -131,6 +132,7 @@ public class RdfEntityFinderMixin
             finally
             {
                 result.close();
+                connection.close();
             }
         }
         catch( RepositoryException e )
@@ -173,6 +175,7 @@ public class RdfEntityFinderMixin
             finally
             {
                 result.close();
+                connection.close();
             }
         }
         catch( RepositoryException e )

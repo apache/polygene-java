@@ -21,11 +21,9 @@ import org.junit.After;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entity.memory.MemoryEntityStoreService;
+import org.qi4j.spi.entity.UuidIdentityGeneratorService;
 import org.qi4j.structure.Visibility;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
-import org.qi4j.spi.entity.EntityStore;
-import org.qi4j.spi.entity.UuidIdentityGeneratorService;
-import org.qi4j.service.ServiceReference;
 
 /**
  * TODO
@@ -38,8 +36,7 @@ public class JdbmEntityStoreTest
         super.assemble( module );
         module.addServices( JdbmEntityStoreService.class );
 
-        ModuleAssembly config = module.getLayerAssembly().newModuleAssembly();
-        config.setName( "config" );
+        ModuleAssembly config = module.getLayerAssembly().newModuleAssembly( "config" );
         config.addEntities( JdbmConfigurationComposite.class ).visibleIn( Visibility.layer );
         config.addServices( MemoryEntityStoreService.class, UuidIdentityGeneratorService.class );
     }

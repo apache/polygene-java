@@ -100,6 +100,7 @@ public class RdfEntityIndexerMixin
                 if( connection != null )
                 {
                     connection.commit();
+                    connection.close();
                 }
             }
         }

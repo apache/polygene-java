@@ -19,21 +19,21 @@ package org.qi4j.entity.ibatis.internal;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Map;
-import static junit.framework.Assert.*;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
 import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.ibatis.entity.HasFirstName;
 import org.qi4j.entity.ibatis.entity.HasLastName;
 import org.qi4j.entity.ibatis.entity.PersonComposite;
-import org.qi4j.entity.EntityComposite;
-import static org.qi4j.property.ComputedPropertyInstance.*;
-import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.spi.entity.EntityStatus;
+import static org.qi4j.property.ComputedPropertyInstance.getQualifiedName;
 import org.qi4j.spi.composite.CompositeDescriptor;
+import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.EntityStatus;
+import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.test.AbstractQi4jTest;
-import org.qi4j.runtime.structure.ModuleInstance;
 
 public final class IBatisEntityStateTest extends AbstractQi4jTest
 {
@@ -112,6 +112,6 @@ public final class IBatisEntityStateTest extends AbstractQi4jTest
 
     private CompositeDescriptor getCompositeDescriptor( final Class<? extends EntityComposite> mixinType )
     {
-        return ((ModuleInstance) moduleInstance).model().entities().getEntityModelFor( mixinType );
+        return spi.getCompositeDescriptor( mixinType, moduleInstance );
     }
 }

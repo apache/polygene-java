@@ -20,8 +20,7 @@ public abstract class JdbmEntityStorePerformanceTest
         super.assemble( module );
         module.addServices( JdbmEntityStoreService.class );
 
-        ModuleAssembly config = module.getLayerAssembly().newModuleAssembly();
-        config.setName( "config" );
+        ModuleAssembly config = module.getLayerAssembly().newModuleAssembly( "config" );
         config.addComposites( JdbmConfigurationComposite.class ).visibleIn( Visibility.layer );
         config.addServices( MemoryEntityStoreService.class );
     }
