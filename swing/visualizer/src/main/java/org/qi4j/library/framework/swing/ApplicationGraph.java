@@ -17,9 +17,9 @@ package org.qi4j.library.framework.swing;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.awt.Graphics2D;
 import javax.swing.JFrame;
 import org.qi4j.runtime.composite.CompositeModel;
@@ -175,7 +175,8 @@ public class ApplicationGraph
         graph.addColumn( FIELD_NAME, String.class );
         graph.addColumn( FIELD_TYPE, int.class );
         graph.addColumn( FIELD_LAYER_LEVEL, int.class );
-        graph.addColumn( FIELD_USED_LAYERS, Set.class );
+        graph.addColumn( FIELD_USED_LAYERS, Collection.class );
+        graph.addColumn( FIELD_USED_BY_LAYERS, Collection.class );
 
         final Node root = graph.addNode();
         root.setString( FIELD_NAME, "Application" );
@@ -250,7 +251,8 @@ public class ApplicationGraph
                 layer.setString( FIELD_NAME, name );
                 layer.setInt( FIELD_TYPE, TYPE_LAYER );
                 layer.setInt( FIELD_LAYER_LEVEL, 1 );
-                layer.set( FIELD_USED_LAYERS, new HashSet() );
+                layer.set( FIELD_USED_LAYERS, new ArrayList() );
+                layer.set( FIELD_USED_BY_LAYERS, new ArrayList() );
                 layerNodes.put( layerModel, layer );
             }
 
@@ -259,13 +261,15 @@ public class ApplicationGraph
 
         private void addUsedLayer( Node layer, Node usedLayer )
         {
-            Set usedLayers = (Set) layer.get( FIELD_USED_LAYERS );
+            Collection<Node> usedLayers = (Collection<Node>) layer.get( FIELD_USED_LAYERS );
             usedLayers.add( usedLayer );
+            Collection<Node> usedByLayers = (Collection<Node>) usedLayer.get( FIELD_USED_BY_LAYERS );
+            usedByLayers.add( layer );
         }
 
         private void incrementLayerLevel( Node layer )
         {
-            Set<Node> usedLayers = (Set<Node>) layer.get( FIELD_USED_LAYERS );
+            Collection<Node> usedLayers = (Collection<Node>) layer.get( FIELD_USED_LAYERS );
             for( Node usedLayer : usedLayers )
             {
                 incrementLayerLevel( usedLayer );

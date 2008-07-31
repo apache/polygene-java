@@ -34,5 +34,6 @@ public class GraphConstants
     static final String FIELD_TYPE = "type";
     static final String FIELD_LAYER_LEVEL = "layer_level";
     static final String FIELD_USED_LAYERS = "used_layers";
+    static final String FIELD_USED_BY_LAYERS = "used_by_layers";
 //    static final String FIELD_OBJECT = "object";
 }

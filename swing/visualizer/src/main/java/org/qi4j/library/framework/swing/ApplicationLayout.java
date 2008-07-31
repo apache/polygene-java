@@ -24,14 +24,17 @@ import java.awt.FontMetrics;
 import java.awt.Rectangle;
 import java.awt.Point;
 import java.awt.Dimension;
+import java.awt.geom.Rectangle2D;
 import java.util.Iterator;
-import java.util.Set;
 import java.util.TreeMap;
-import java.util.HashSet;
 import java.util.Collection;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.ArrayList;
 import prefuse.action.layout.graph.TreeLayout;
 import prefuse.render.Renderer;
 import prefuse.visual.NodeItem;
+import prefuse.data.Node;
 import static org.qi4j.library.framework.swing.GraphConstants.*;
 
 public class ApplicationLayout extends TreeLayout
@@ -50,20 +53,20 @@ public class ApplicationLayout extends TreeLayout
         root.setBounds( topLeft.x, topLeft.y, size.width, size.height );
     }
 
-    Collection<Set<NodeItem>> resolveLayerDependencies( Iterator nodes )
+    Collection<Collection<NodeItem>> resolveLayerDependencies( Iterator nodes )
     {
-        TreeMap<Integer, Set<NodeItem>> map = new TreeMap<Integer, Set<NodeItem>>();
+        TreeMap<Integer, Collection<NodeItem>> map = new TreeMap<Integer, Collection<NodeItem>>();
         while( nodes.hasNext() )
         {
             NodeItem layer = (NodeItem) nodes.next();
             int level = layer.getInt( FIELD_LAYER_LEVEL );
-            Set<NodeItem> set = map.get( level );
-            if( set == null )
+            Collection<NodeItem> layers = map.get( level );
+            if( layers == null )
             {
-                set = new HashSet<NodeItem>();
-                map.put( level, set );
+                layers = new ArrayList<NodeItem>();
+                map.put( level, layers );
             }
-            set.add( layer );
+            layers.add( layer );
         }
 
         return map.values();
@@ -71,15 +74,14 @@ public class ApplicationLayout extends TreeLayout
 
     private Rectangle computeApplicationBounds( NodeItem application, Point location )
     {
-
         Dimension dimesion = getNodeLabelSize( application );
         int x = location.x + paddingLeft;
         int y = location.y + paddingTop + dimesion.height + vSpace;
 
-        Collection<Set<NodeItem>> layeredNodeGroups = resolveLayerDependencies( application.children() );
+        Collection<Collection<NodeItem>> layeredNodeGroups = resolveLayerDependencies( application.children() );
 
         int maxLayerGroupWidth = 0;
-        for( Set<NodeItem> nodeGroup : layeredNodeGroups )
+        for( Collection<NodeItem> nodeGroup : layeredNodeGroups )
         {
             Point layerGroupLocation = new Point( x, y );
             Rectangle bounds = computeLayerGroupBounds( nodeGroup, layerGroupLocation );
@@ -94,26 +96,63 @@ public class ApplicationLayout extends TreeLayout
         int width = ( x + maxLayerGroupWidth + paddingRight ) - location.x;
         int height = y - location.y;
 
-        Rectangle bounds = new Rectangle( location.x, location.y, width, height );
-//        System.out.println( getName( application ) + " - " + bounds );
-        return bounds;
+        return new Rectangle( location.x, location.y, width, height );
     }
 
-    private Rectangle computeLayerGroupBounds( Set<NodeItem> layers, Point location )
+    private Map<Integer, NodeItem> nodeToVisualNodeItemMap = new HashMap<Integer, NodeItem>();
+
+    /**
+     * Tries to suggest a suitable x position and width, if there is only 1 layer in this group.
+     * The position and width is based on the layers in higher group that use this layer
+     */
+    private Rectangle getSuggestedBounds( Collection<NodeItem> layers, NodeItem layer, int x, int y )
+    {
+        // todo - try to find a better way of getting the node associated with the visual node item
+        nodeToVisualNodeItemMap.put( layer.getRow(), layer );
+
+        Collection<Node> usedByLayers = (Collection<Node>) layer.get( FIELD_USED_BY_LAYERS );
+        if( usedByLayers.isEmpty() || layers.size() > 1 )
+        {
+            return new Rectangle( x, y, 0, 0 );
+        }
+
+        int left = Integer.MAX_VALUE;
+        int right = Integer.MIN_VALUE;
+        int width = 0;
+        for( Node usedByLayer : usedByLayers )
+        {
+            NodeItem item = nodeToVisualNodeItemMap.get( usedByLayer.getRow() );
+            Rectangle2D bounds = item.getBounds();
+            if( bounds.getX() < left )
+            {
+                left = (int) bounds.getX();
+            }
+            if( ( bounds.getX() + bounds.getWidth() ) > right )
+            {
+                right = (int) ( bounds.getX() + bounds.getWidth() );
+            }
+        }
+
+        width = right - left;
+        return new Rectangle( left, y, width, 0 );
+    }
+
+    private Rectangle computeLayerGroupBounds( Collection<NodeItem> layers, Point location )
     {
         int x = location.x + paddingLeft;
-//        int y = location.y + paddingTop + vSpace;
         int y = location.y + vSpace;
 
         int maxLayerHeight = 0;
         for( NodeItem layer : layers )
         {
+            Rectangle suggestedBounds = getSuggestedBounds( layers, layer, x, y );
+            Point layerLocation = new Point( suggestedBounds.x, y );
 
-            Point layerLocation = new Point( x, y );
             Rectangle bounds = computeLayerBounds( layer, layerLocation );
-            layer.setBounds( bounds.x, bounds.y, bounds.width, bounds.height );
+            int width = Math.max( bounds.width, suggestedBounds.width );
+            layer.setBounds( bounds.x, bounds.y, width, bounds.height );
 
-            x += bounds.width + hSpace;
+            x += width + hSpace;
             if( bounds.height > maxLayerHeight )
             {
                 maxLayerHeight = bounds.height;
@@ -124,15 +163,11 @@ public class ApplicationLayout extends TreeLayout
         int width = x - location.x;
         int height = ( y + maxLayerHeight + paddingBottom ) - location.y;
 
-        Rectangle bounds = new Rectangle( location.x, location.y, width, height );
-//        System.out.println( getName( application ) + " - " + bounds );
-        return bounds;
+        return new Rectangle( location.x, location.y, width, height );
     }
 
     private Rectangle computeLayerBounds( NodeItem layer, Point location )
     {
-        // TODO; Now placed side-by-side. Should possibly allow more clever layout.
-
         Dimension dimension = getNodeLabelSize( layer );
         int x = location.x + paddingLeft;
         int y = location.y + paddingTop + dimension.height + vSpace;
@@ -160,10 +195,9 @@ public class ApplicationLayout extends TreeLayout
         }
 
         int width = x - location.x;
-        int height = ( y + maxModuleHeight + paddingBottom ) - location.y;
-        Rectangle bounds = new Rectangle( location.x, location.y, width, height );
-//        System.out.println( getName( layer ) + " - " + bounds );
-        return bounds;
+        int height = ( y + maxModuleHeight + paddingBottom + vSpace ) - location.y;
+
+        return new Rectangle( location.x, location.y, width, height );
     }
 
     private Rectangle computeModuleBounds( NodeItem module, Point location )
@@ -202,18 +236,14 @@ public class ApplicationLayout extends TreeLayout
 
         int width = ( x + maxCompositeWidth + paddingRight ) - location.x;
         int height = ( y + paddingBottom ) - location.y;
-        Rectangle bounds = new Rectangle( location.x, location.y, width, height );
-//        System.out.println( getName( module ) + " - " + bounds );
-        return bounds;
+        return new Rectangle( location.x, location.y, width, height );
     }
 
     private Rectangle computeCompositeBounds( NodeItem composite, Point location )
     {
         Dimension dimension = getNodeLabelSize( composite );
-        Rectangle bounds = new Rectangle( location.x, location.y, dimension.width + paddingLeft,
-                                          dimension.height + paddingTop + paddingBottom );
-//        System.out.println( getName( composite ) + " - " + bounds );
-        return bounds;
+        return new Rectangle( location.x, location.y, dimension.width + paddingLeft,
+                              dimension.height + paddingTop + paddingBottom );
     }
 
     private String getName( NodeItem node )

@@ -60,8 +60,8 @@ public class ApplicationGraphTester
         plugin2.addComposites( UIComposite.class );
 
 //        guiLayer.uses( domainLayer );
-//        guiLayer.uses( infrastructureLayer );
-//        domainLayer.uses( infrastructureLayer );
+        guiLayer.uses( infrastructureLayer );
+        domainLayer.uses( infrastructureLayer );
 
         Application app = qi4j.newApplication( assembly );
         new ApplicationGraph().show( ( (ApplicationInstance) app ).model() );
