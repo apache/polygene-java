@@ -18,11 +18,13 @@ import java.lang.annotation.Annotation;
 import org.qi4j.composite.Constraint;
 import org.qi4j.composite.ConstructionException;
 import org.qi4j.runtime.structure.ModelVisitor;
+import org.qi4j.spi.composite.ConstraintDescriptor;
 
 /**
  * TODO
  */
 public final class ConstraintModel
+    implements ConstraintDescriptor
 {
     private final Annotation annotation;
     private final Class<? extends Constraint<?, ?>> constraintClass;

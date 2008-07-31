@@ -58,10 +58,10 @@ public final class EntityStateModel
         return new EntityStateInstance( propertiesModel, associationsModel, entityState, uow );
     }
 
-    public void addStateFor( Class mixinType )
+    public void addStateFor( Method method )
     {
-        propertiesModel.addPropertiesFor( mixinType );
-        associationsModel.addAssociationsFor( mixinType );
+        propertiesModel.addPropertyFor( method );
+        associationsModel.addAssociationFor( method );
     }
 
     public PropertyDescriptor getPropertyByName( String name )

@@ -23,11 +23,13 @@ import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.injection.InjectionProviderFactory;
 import org.qi4j.runtime.injection.provider.InjectionProviderFactoryStrategy;
 import org.qi4j.spi.Qi4jSPI;
+import org.qi4j.spi.structure.ApplicationDescriptor;
 
 /**
  * TODO
  */
 public final class ApplicationModel
+    implements ApplicationDescriptor
 {
     private final String name;
     private final List<LayerModel> layers;

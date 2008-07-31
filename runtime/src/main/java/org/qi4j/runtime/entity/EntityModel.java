@@ -21,8 +21,8 @@ import org.qi4j.bootstrap.AssociationDeclarations;
 import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.ConstraintViolationException;
-import org.qi4j.composite.State;
 import org.qi4j.composite.ConstructionException;
+import org.qi4j.composite.State;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.EntityCompositeAlreadyExistsException;
 import org.qi4j.runtime.composite.BindingException;
@@ -41,6 +41,7 @@ import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.composite.StateDescriptor;
 import org.qi4j.spi.entity.EntityAlreadyExistsException;
+import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityStore;
@@ -53,17 +54,17 @@ import org.qi4j.util.MetaInfo;
  * TODO
  */
 public final class EntityModel
-    implements Binder, CompositeDescriptor
+    implements Binder, CompositeDescriptor, EntityDescriptor
 {
     public static EntityModel newModel( Class<? extends EntityComposite> type,
                                         Visibility visibility,
                                         MetaInfo info, PropertyDeclarations propertyDecs, AssociationDeclarations associationDecs )
     {
         ConstraintsModel constraintsModel = new ConstraintsModel( type );
-        EntityMixinsModel mixinsModel = new EntityMixinsModel( type );
         EntityPropertiesModel entityPropertiesModel = new EntityPropertiesModel( constraintsModel, propertyDecs );
         AssociationsModel associationsModel = new AssociationsModel( constraintsModel, associationDecs );
         EntityStateModel stateModel = new EntityStateModel( entityPropertiesModel, associationsModel );
+        EntityMixinsModel mixinsModel = new EntityMixinsModel( type, stateModel );
         ConcernsDeclaration concernsDeclaration = new ConcernsDeclaration( type );
         SideEffectsDeclaration sideEffectsModel = new SideEffectsDeclaration( type );
         CompositeMethodsModel compositeMethodsModel = new CompositeMethodsModel( type,
@@ -105,10 +106,6 @@ public final class EntityModel
         this.compositeMethodsModel = compositeMethodsModel;
 
         this.proxyClass = createProxyClass( type );
-
-        stateModel.addStateFor( type );
-
-        mixinsModel.implementThisUsing( this );
     }
 
     public Class<? extends EntityComposite> type()
@@ -201,12 +198,6 @@ public final class EntityModel
         {
             throw new ConstructionException( e );
         }
-    }
-
-    public void implementMixinType( Class mixinType )
-    {
-        compositeMethodsModel.implementMixinType( mixinType );
-        stateModel.addStateFor( mixinType );
     }
 
     public State newDefaultState()

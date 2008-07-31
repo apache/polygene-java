@@ -12,12 +12,12 @@
  *
  */
 
-package org.qi4j.structure;
+package org.qi4j.spi.structure;
 
 /**
  * TODO
  */
-public interface Layer
+public interface UsedLayersDescriptor
 {
-    String name();
+    Iterable<? extends LayerDescriptor> layers();
 }

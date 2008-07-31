@@ -20,8 +20,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.composite.Composite;
-import org.qi4j.composite.State;
 import org.qi4j.composite.ConstructionException;
+import org.qi4j.composite.State;
 import org.qi4j.entity.Lifecycle;
 import org.qi4j.runtime.property.PropertiesModel;
 import org.qi4j.runtime.structure.Binder;
@@ -70,8 +70,8 @@ public final class CompositeModel
                                            final PropertyDeclarations propertyDeclarations )
     {
         ConstraintsModel constraintsModel = new ConstraintsModel( compositeType );
-        MixinsModel mixinsModel = new MixinsModel( compositeType );
         StateModel stateModel = new StateModel( new PropertiesModel( constraintsModel, propertyDeclarations ) );
+        MixinsModel mixinsModel = new MixinsModel( compositeType, stateModel );
         ConcernsDeclaration concernsModel = new ConcernsDeclaration( compositeType );
         SideEffectsDeclaration sideEffectsModel = new SideEffectsDeclaration( compositeType );
         CompositeMethodsModel compositeMethodsModel = new CompositeMethodsModel( compositeType, constraintsModel, concernsModel, sideEffectsModel, mixinsModel );
@@ -111,10 +111,6 @@ public final class CompositeModel
         this.mixinsModel = mixinsModel;
 
         this.compositeMethodsModel = compositeMethodsModel;
-
-        stateModel.addStateFor( compositeType );
-
-        mixinsModel.implementThisUsing( this );
     }
 
     // Model
@@ -240,12 +236,6 @@ public final class CompositeModel
         {
             e.printStackTrace();
         }
-    }
-
-    public void implementMixinType( Class mixinType )
-    {
-        compositeMethodsModel.implementMixinType( mixinType );
-        stateModel.addStateFor( mixinType );
     }
 
     public State newDefaultState()

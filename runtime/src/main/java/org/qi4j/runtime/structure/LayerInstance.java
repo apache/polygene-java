@@ -14,8 +14,8 @@
 
 package org.qi4j.runtime.structure;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 import org.qi4j.composite.AmbiguousTypeException;
 import org.qi4j.runtime.composite.CompositeModel;
 import org.qi4j.runtime.entity.EntityModel;
@@ -23,9 +23,9 @@ import org.qi4j.runtime.object.ObjectModel;
 import org.qi4j.service.Activatable;
 import org.qi4j.service.ServiceReference;
 import org.qi4j.spi.service.Activator;
-import org.qi4j.structure.Visibility;
 import org.qi4j.structure.Layer;
 import org.qi4j.structure.Module;
+import org.qi4j.structure.Visibility;
 
 /**
  * TODO
@@ -61,26 +61,6 @@ public class LayerInstance
     public String name()
     {
         return model.name();
-    }
-
-    public boolean isPublic( Class<?> compositeOrObject )
-    {
-        ModuleInstance module1 = findModuleForComposite( compositeOrObject, Visibility.layer );
-        if( module1 != null )
-        {
-            return true;
-        }
-        ModuleInstance module2 = findModuleForEntity( compositeOrObject, Visibility.layer );
-        if( module2 != null )
-        {
-            return true;
-        }
-        ModuleInstance module3 = findModuleForObject( compositeOrObject, Visibility.layer );
-        if( module3 != null )
-        {
-            return true;
-        }
-        return false;
     }
 
     public List<Module> modules()

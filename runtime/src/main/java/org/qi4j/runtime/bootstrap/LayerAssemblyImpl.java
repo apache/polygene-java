@@ -37,17 +37,18 @@ public final class LayerAssemblyImpl
 
     private String name;
 
-    public LayerAssemblyImpl( ApplicationAssembly applicationAssembly )
+    public LayerAssemblyImpl( ApplicationAssembly applicationAssembly, String name )
     {
         this.applicationAssembly = applicationAssembly;
+        this.name = name;
 
         moduleAssemblies = new ArrayList<ModuleAssemblyImpl>();
         uses = new LinkedHashSet<LayerAssembly>();
     }
 
-    public ModuleAssembly newModuleAssembly()
+    public ModuleAssembly newModuleAssembly( String name )
     {
-        ModuleAssemblyImpl moduleAssembly = new ModuleAssemblyImpl( this );
+        ModuleAssemblyImpl moduleAssembly = new ModuleAssemblyImpl( this, name );
         moduleAssemblies.add( moduleAssembly );
         return moduleAssembly;
     }

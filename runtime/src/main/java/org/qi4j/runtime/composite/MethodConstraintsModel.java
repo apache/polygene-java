@@ -20,11 +20,13 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import org.qi4j.runtime.structure.ModelVisitor;
+import org.qi4j.spi.composite.MethodConstraintsDescriptor;
 
 /**
  * TODO
  */
 public final class MethodConstraintsModel
+    implements MethodConstraintsDescriptor
 {
     private List<ValueConstraintsModel> parameterConstraintModels;
     private final Method method;

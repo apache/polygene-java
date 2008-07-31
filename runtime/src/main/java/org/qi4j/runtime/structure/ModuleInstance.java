@@ -20,8 +20,8 @@ import java.util.Stack;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.CompositeBuilderFactory;
-import org.qi4j.composite.NoSuchCompositeException;
 import org.qi4j.composite.ConstructionException;
+import org.qi4j.composite.NoSuchCompositeException;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkFactory;
@@ -362,8 +362,6 @@ public class ModuleInstance
             services.getServiceReferencesFor( serviceType, Visibility.module, serviceReferences );
             layerInstance.getServiceReferencesFor( serviceType, Visibility.layer, serviceReferences );
 
-            UsedLayersInstance usedLayers = layerInstance.usedLayersInstance();
-            usedLayers.getServiceReferencesFor( serviceType, serviceReferences );
             return serviceReferences;
         }
     }

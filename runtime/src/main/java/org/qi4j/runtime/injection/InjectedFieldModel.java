@@ -21,11 +21,13 @@ import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.Specification;
+import org.qi4j.spi.composite.InjectedFieldDescriptor;
 
 /**
  * TODO
  */
 public final class InjectedFieldModel
+    implements InjectedFieldDescriptor
 {
     private final DependencyModel dependencyModel;
     private final Field injectedField;

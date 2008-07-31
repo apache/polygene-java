@@ -12,12 +12,11 @@
  *
  */
 
-package org.qi4j.structure;
+package org.qi4j.spi.entity;
 
 /**
  * TODO
  */
-public interface Layer
+public interface EntityDescriptor
 {
-    String name();
 }

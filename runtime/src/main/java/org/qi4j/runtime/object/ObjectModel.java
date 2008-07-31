@@ -24,6 +24,7 @@ import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.spi.object.ObjectDescriptor;
 import org.qi4j.structure.Visibility;
 import org.qi4j.util.MetaInfo;
 
@@ -31,7 +32,7 @@ import org.qi4j.util.MetaInfo;
  * TODO
  */
 public final class ObjectModel
-    implements Binder
+    implements Binder, ObjectDescriptor
 {
     private final Class objectType;
     private final Visibility visibility;

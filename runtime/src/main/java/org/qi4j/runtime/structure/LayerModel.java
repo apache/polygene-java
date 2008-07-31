@@ -18,12 +18,13 @@ import java.util.ArrayList;
 import java.util.List;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.Resolution;
+import org.qi4j.spi.structure.LayerDescriptor;
 
 /**
  * TODO
  */
 public final class LayerModel
-    implements Binder
+    implements Binder, LayerDescriptor
 {
     // Model
     private final String name;

@@ -64,9 +64,10 @@ public final class ModuleAssemblyImpl
     private final List<ServiceDeclarationImpl> serviceDeclarations = new ArrayList<ServiceDeclarationImpl>();
     private final MetaInfoDeclaration metaInfoDeclaration = new MetaInfoDeclaration();
 
-    public ModuleAssemblyImpl( LayerAssembly layerAssembly )
+    public ModuleAssemblyImpl( LayerAssembly layerAssembly, String name )
     {
         this.layerAssembly = layerAssembly;
+        this.name = name;
     }
 
     public void addAssembler( Assembler assembler )
@@ -168,11 +169,18 @@ public final class ModuleAssemblyImpl
     }
 
     ModuleModel assembleModule()
+        throws AssemblyException
     {
         List<CompositeModel> compositeModels = new ArrayList<CompositeModel>();
         List<EntityModel> entityModels = new ArrayList<EntityModel>();
         List<ObjectModel> objectModels = new ArrayList<ObjectModel>();
         List<ServiceModel> serviceModels = new ArrayList<ServiceModel>();
+
+        if( name == null )
+        {
+            throw new AssemblyException( "Module must have name set" );
+        }
+
         ModuleModel moduleModel = new ModuleModel( name,
                                                    new CompositesModel( compositeModels ),
                                                    new EntitiesModel( entityModels ),

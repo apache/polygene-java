@@ -15,12 +15,14 @@
 package org.qi4j.runtime.composite;
 
 import org.qi4j.runtime.structure.ModelVisitor;
+import org.qi4j.spi.composite.MethodConcernDescriptor;
 
 /**
  * TODO
  */
 public final class MethodConcernModel
     extends AbstractModifierModel
+    implements MethodConcernDescriptor
 {
     public MethodConcernModel( Class concernClass )
     {

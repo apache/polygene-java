@@ -24,4 +24,5 @@ Export-Package: org.qi4j.spi, \
                 org.qi4j.spi.serialization, \
                 org.qi4j.spi.service, \
                 org.qi4j.spi.service.provider, \
+                org.qi4j.spi.structure, \
                 org.qi4j.entity.memory

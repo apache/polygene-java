@@ -23,9 +23,10 @@ import org.junit.Assert;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
-import org.qi4j.util.UsageGraph;
 import org.qi4j.util.CyclicUsageException;
+import org.qi4j.util.UsageGraph;
 
 
 public class UsageGraphTest
@@ -41,13 +42,13 @@ public class UsageGraphTest
     public void verifyRandomDoesNotAffect()
         throws Exception
     {
-        for( int i=0 ; i < 100 ; i++ )
+        for( int i = 0; i < 100; i++ )
         {
             whenGraphIsOpenEndedGivenNotAllowCyclicDependenciesThenNoError();
             whenGraphIsCyclicGivenAllowCyclicDependencyThenNoError();
         }
     }
-    
+
     @Test
     public void whenGraphIsOpenEndedGivenNotAllowCyclicDependenciesThenNoError()
         throws Exception
@@ -148,15 +149,15 @@ public class UsageGraphTest
 
     private void randomize( List<Thing> data )
     {
-        int n = (int) (Math.random() * 100 );
-        for( int i=0 ; i < n; i ++ )
+        int n = (int) ( Math.random() * 100 );
+        for( int i = 0; i < n; i++ )
         {
             int pos1 = 0;
             int pos2 = 0;
             while( pos1 == pos2 )
             {
-                pos1 = (int) (Math.floor(Math.random() * data.size()));
-                pos2 = (int) (Math.floor( Math.random() * data.size() ));
+                pos1 = (int) ( Math.floor( Math.random() * data.size() ) );
+                pos2 = (int) ( Math.floor( Math.random() * data.size() ) );
             }
             if( pos1 < pos2 )
             {
@@ -347,6 +348,7 @@ public class UsageGraphTest
     }
 
     @Test
+    @Ignore
     public void when100LevelsOfNodesWith100NodesOnEachLevelThenTakeLessThanOneMilliSecond()
         throws Exception
     {
@@ -380,7 +382,7 @@ public class UsageGraphTest
         String countText = "" + ( Thing.counter - 1 );
         System.out.print( countText );
         int len = countText.length();
-        for( int i = 20 - (len < 20 ? len : 20 ) ; i > 0; i-- )
+        for( int i = 20 - ( len < 20 ? len : 20 ); i > 0; i-- )
         {
             System.out.print( " " );
         }

@@ -45,6 +45,7 @@ public class ServiceIdFilter
                 {
                     serviceRef = service;
                     instance = service.get();
+                    break;
                 }
             }
         }

@@ -30,9 +30,9 @@ public final class ApplicationAssemblyImpl
     private List<LayerAssemblyImpl> layerAssemblies = new ArrayList<LayerAssemblyImpl>();
     private String name = "Application";
 
-    public LayerAssembly newLayerAssembly()
+    public LayerAssembly newLayerAssembly( String name )
     {
-        LayerAssemblyImpl layerAssembly = new LayerAssemblyImpl( this );
+        LayerAssemblyImpl layerAssembly = new LayerAssemblyImpl( this, name );
         layerAssemblies.add( layerAssembly );
         return layerAssembly;
     }

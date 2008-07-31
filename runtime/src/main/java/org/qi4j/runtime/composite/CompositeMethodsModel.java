@@ -15,6 +15,8 @@
 package org.qi4j.runtime.composite;
 
 import java.lang.reflect.Method;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import org.qi4j.composite.Composite;
 import org.qi4j.runtime.structure.Binder;
@@ -76,6 +78,7 @@ public final class CompositeMethodsModel
 
     public void implementMixinType( Class mixinType )
     {
+        final Set<Class> thisDependencies = new HashSet<Class>();
         for( Method method : mixinType.getMethods() )
         {
             if( methods.get( method ) == null )
@@ -95,8 +98,18 @@ public final class CompositeMethodsModel
                                                                                  methodSideEffectsModel1,
                                                                                  mixinsModel );
 
+                // Implement @This references
+                methodComposite.addThisInjections( thisDependencies );
+                mixinModel.addThisInjections( thisDependencies );
+
                 methods.put( method, methodComposite );
             }
+        }
+
+        // Implement all @This dependencies that were found
+        for( Class thisDependency : thisDependencies )
+        {
+            implementMixinType( thisDependency );
         }
     }
 

@@ -31,12 +31,13 @@ import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.DependencyVisitor;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.spi.composite.CompositeInstance;
+import org.qi4j.spi.composite.MixinDescriptor;
 
 /**
  * TODO
  */
 public final class MixinModel
-    implements Binder
+    implements Binder, MixinDescriptor
 {
     private final Class mixinClass;
     private final ConstructorsModel constructorsModel;
@@ -150,5 +151,18 @@ public final class MixinModel
     @Override public String toString()
     {
         return mixinClass.getName();
+    }
+
+    public void addThisInjections( final Set<Class> thisDependencies )
+    {
+        visitModel(
+            new DependencyVisitor( new DependencyModel.ScopeSpecification( This.class ) )
+            {
+                public void visitDependency( DependencyModel dependencyModel )
+                {
+                    thisDependencies.add( dependencyModel.rawInjectionType() );
+                }
+            }
+        );
     }
 }

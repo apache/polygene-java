@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.qi4j.bootstrap.AssociationDeclarations;
 import org.qi4j.entity.association.AbstractAssociation;
 import org.qi4j.runtime.composite.ConstraintsModel;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
@@ -28,7 +29,6 @@ import org.qi4j.runtime.composite.ValueConstraintsModel;
 import org.qi4j.runtime.entity.UnitOfWorkInstance;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
-import org.qi4j.bootstrap.AssociationDeclarations;
 import org.qi4j.util.MetaInfo;
 
 /**
@@ -36,7 +36,7 @@ import org.qi4j.util.MetaInfo;
  */
 public final class AssociationsModel
 {
-    private final Set<Class> mixinTypes = new HashSet<Class>();
+    private final Set<Method> methods = new HashSet<Method>();
     private final List<AssociationModel> associationModels = new ArrayList<AssociationModel>();
     private final Map<Method, AssociationModel> mapMethodAssociationModel = new HashMap<Method, AssociationModel>();
     private final Map<String, Method> accessors = new HashMap<String, Method>();
@@ -49,31 +49,28 @@ public final class AssociationsModel
         this.associationDeclarations = associationDeclarations;
     }
 
-    public void addAssociationsFor( Class mixinType )
+    public void addAssociationFor( Method method )
     {
-        if( !mixinTypes.contains( mixinType ) )
+        if( !methods.contains( method ) )
         {
-            for( Method method : mixinType.getMethods() )
+            if( AbstractAssociation.class.isAssignableFrom( method.getReturnType() ) )
             {
-                if( AbstractAssociation.class.isAssignableFrom( method.getReturnType() ) )
+                ValueConstraintsModel valueConstraintsModel = constraints.constraintsFor( method.getAnnotations(), AbstractAssociationInstance.getAssociationType( method ) );
+                ValueConstraintsInstance valueConstraintsInstance = null;
+                if( valueConstraintsModel.isConstrained() )
                 {
-                    ValueConstraintsModel valueConstraintsModel = constraints.constraintsFor( method.getAnnotations(), AbstractAssociationInstance.getAssociationType( method ) );
-                    ValueConstraintsInstance valueConstraintsInstance = null;
-                    if( valueConstraintsModel.isConstrained() )
-                    {
-                        valueConstraintsInstance = valueConstraintsModel.newInstance();
-                    }
-                    MetaInfo metaInfo = associationDeclarations.getMetaInfo( method );
-                    AssociationModel associationModel = new AssociationModel( method, valueConstraintsInstance, metaInfo );
-                    if( !accessors.containsKey( associationModel.qualifiedName() ) )
-                    {
-                        associationModels.add( associationModel );
-                        mapMethodAssociationModel.put( method, associationModel );
-                        accessors.put( associationModel.qualifiedName(), associationModel.accessor() );
-                    }
+                    valueConstraintsInstance = valueConstraintsModel.newInstance();
+                }
+                MetaInfo metaInfo = associationDeclarations.getMetaInfo( method );
+                AssociationModel associationModel = new AssociationModel( method, valueConstraintsInstance, metaInfo );
+                if( !accessors.containsKey( associationModel.qualifiedName() ) )
+                {
+                    associationModels.add( associationModel );
+                    mapMethodAssociationModel.put( method, associationModel );
+                    accessors.put( associationModel.qualifiedName(), associationModel.accessor() );
                 }
             }
-            mixinTypes.add( mixinType );
+            methods.add( method );
         }
     }
 

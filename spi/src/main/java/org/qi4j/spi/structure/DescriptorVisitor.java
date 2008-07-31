@@ -1,0 +1,100 @@
+/*
+ * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
+package org.qi4j.spi.structure;
+
+import org.qi4j.spi.composite.CompositeDescriptor;
+import org.qi4j.spi.composite.CompositeMethodDescriptor;
+import org.qi4j.spi.composite.ConstraintDescriptor;
+import org.qi4j.spi.composite.ConstructorDescriptor;
+import org.qi4j.spi.composite.InjectedFieldDescriptor;
+import org.qi4j.spi.composite.InjectedMethodDescriptor;
+import org.qi4j.spi.composite.InjectedParametersDescriptor;
+import org.qi4j.spi.composite.MethodConcernDescriptor;
+import org.qi4j.spi.composite.MethodConstraintsDescriptor;
+import org.qi4j.spi.composite.MethodSideEffectDescriptor;
+import org.qi4j.spi.composite.MixinDescriptor;
+import org.qi4j.spi.entity.EntityDescriptor;
+import org.qi4j.spi.object.ObjectDescriptor;
+
+/**
+ * Extend and override this class in order to introspect a Qi4j model.
+ * Call {@link ApplicationSPI#visitDescriptor(DescriptorVisitor)} to use.
+ */
+public class DescriptorVisitor
+{
+    public void visit( ApplicationDescriptor applicationDescriptor )
+    {
+    }
+
+    public void visit( LayerDescriptor layerDescriptor )
+    {
+    }
+
+    public void visit( ModuleDescriptor moduleDescriptor )
+    {
+    }
+
+    public void visit( CompositeDescriptor compositeDescriptor )
+    {
+    }
+
+    public void visit( EntityDescriptor entityDescriptor )
+    {
+    }
+
+    public void visit( ObjectDescriptor objectDescriptor )
+    {
+    }
+
+    public void visit( CompositeMethodDescriptor compositeMethodDescriptor )
+    {
+    }
+
+    public void visit( MethodConstraintsDescriptor methodConstraintsDescriptor )
+    {
+    }
+
+    public void visit( ConstraintDescriptor constraintDescriptor )
+    {
+    }
+
+    public void visit( MethodConcernDescriptor methodConcernDescriptor )
+    {
+    }
+
+    public void visit( MethodSideEffectDescriptor methodSideEffectDescriptor )
+    {
+    }
+
+    public void visit( ConstructorDescriptor constructorDescriptor )
+    {
+    }
+
+    public void visit( InjectedParametersDescriptor injectedParametersDescriptor )
+    {
+    }
+
+    public void visit( InjectedFieldDescriptor injectedFieldDescriptor )
+    {
+    }
+
+    public void visit( InjectedMethodDescriptor injectedMethodDescriptor )
+    {
+    }
+
+    public void visit( MixinDescriptor mixinDescriptor )
+    {
+    }
+}

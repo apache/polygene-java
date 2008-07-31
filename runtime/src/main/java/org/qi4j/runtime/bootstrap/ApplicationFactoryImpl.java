@@ -64,24 +64,22 @@ public final class ApplicationFactoryImpl
         for( int layer = assemblers.length - 1; layer >= 0; layer-- )
         {
             // Create Layer
-            LayerAssembly lb = applicationAssembly.newLayerAssembly();
-            lb.setName( "Layer " + ( layer + 1 ) );
+            LayerAssembly layerAssembly = applicationAssembly.newLayerAssembly( "Layer " + ( layer + 1 ) );
             for( int module = 0; module < assemblers[ layer ].length; module++ )
             {
                 // Create Module
-                ModuleAssembly mb = lb.newModuleAssembly();
-                mb.setName( "Module " + ( module + 1 ) );
+                ModuleAssembly moduleAssembly = layerAssembly.newModuleAssembly( "Module " + ( module + 1 ) );
                 for( int assembly = 0; assembly < assemblers[ layer ][ module ].length; assembly++ )
                 {
                     // Register Assembler
-                    mb.addAssembler( assemblers[ layer ][ module ][ assembly ] );
+                    moduleAssembly.addAssembler( assemblers[ layer ][ module ][ assembly ] );
                 }
             }
             if( below != null )
             {
-                lb.uses( below ); // Link layers
+                layerAssembly.uses( below ); // Link layers
             }
-            below = lb;
+            below = layerAssembly;
         }
         return newApplication( applicationAssembly );
     }
@@ -92,20 +90,33 @@ public final class ApplicationFactoryImpl
         ApplicationAssemblyImpl applicationAssembly = (ApplicationAssemblyImpl) assembly;
         List<LayerModel> layerModels = new ArrayList<LayerModel>();
         ApplicationModel applicationModel = new ApplicationModel( applicationAssembly.getName(), layerModels );
-        List<LayerAssemblyImpl> layerAssemblies = applicationAssembly.getLayerAssemblies();
+        List<LayerAssemblyImpl> layerAssemblies = new ArrayList<LayerAssemblyImpl>( applicationAssembly.getLayerAssemblies() );
         Map<LayerAssembly, LayerModel> mapAssemblyModel = new HashMap<LayerAssembly, LayerModel>();
-        for( LayerAssemblyImpl layerAssembly : layerAssemblies )
+        nextLayer:
+        while( layerAssemblies.size() > 0 )
         {
+            LayerAssemblyImpl layerAssembly = layerAssemblies.remove( 0 );
             Set<LayerAssembly> usesLayers = layerAssembly.getUses();
             List<LayerModel> usedLayers = new ArrayList<LayerModel>();
             for( LayerAssembly usesLayer : usesLayers )
             {
                 LayerModel layerModel = mapAssemblyModel.get( usesLayer );
+                if( layerModel == null )
+                {
+                    // Used layer not done yet - reevaluate this layer later
+                    layerAssemblies.add( layerAssembly );
+                    continue nextLayer;
+                }
                 usedLayers.add( layerModel );
             }
             UsedLayersModel usedLayersModel = new UsedLayersModel( usedLayers );
             List<ModuleModel> moduleModels = new ArrayList<ModuleModel>();
-            LayerModel layerModel = new LayerModel( layerAssembly.getName(), usedLayersModel, moduleModels );
+            String name = layerAssembly.getName();
+            if( name == null )
+            {
+                throw new AssemblyException( "Layer must have name set" );
+            }
+            LayerModel layerModel = new LayerModel( name, usedLayersModel, moduleModels );
 
             for( ModuleAssemblyImpl moduleAssembly : layerAssembly.getModuleAssemblies() )
             {

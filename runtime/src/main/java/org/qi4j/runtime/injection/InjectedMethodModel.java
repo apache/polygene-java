@@ -19,11 +19,13 @@ import java.lang.reflect.Method;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.structure.ModelVisitor;
+import org.qi4j.spi.composite.InjectedMethodDescriptor;
 
 /**
  * TODO
  */
 public final class InjectedMethodModel
+    implements InjectedMethodDescriptor
 {
     // Model
     private final Method method;

@@ -14,70 +14,12 @@
 
 package org.qi4j.spi.object;
 
-import java.io.Serializable;
-import java.util.Map;
-import org.qi4j.structure.Visibility;
+import org.qi4j.composite.Composite;
 
 /**
  * TODO
  */
-public final class ObjectDescriptor
+public interface ObjectDescriptor
 {
-    private Class objectModel;
-    private Map<Class, Serializable> objectInfos;
-    private Visibility visibility;
-
-    public ObjectDescriptor( Class objectModel, Map<Class, Serializable> objectInfos, Visibility visibility )
-    {
-        this.objectModel = objectModel;
-        this.objectInfos = objectInfos;
-        this.visibility = visibility;
-    }
-
-    public Class getObjectModel()
-    {
-        return objectModel;
-    }
-
-    public Map<Class, Serializable> getObjectInfos()
-    {
-        return objectInfos;
-    }
-
-    public Visibility getVisibility()
-    {
-        return visibility;
-    }
-
-
-    public boolean equals( Object o )
-    {
-        if( this == o )
-        {
-            return true;
-        }
-        if( o == null || getClass() != o.getClass() )
-        {
-            return false;
-        }
-
-        ObjectDescriptor that = (ObjectDescriptor) o;
-
-        if( !objectModel.equals( that.objectModel ) )
-        {
-            return false;
-        }
-
-        return true;
-    }
-
-    public int hashCode()
-    {
-        return objectModel.hashCode();
-    }
-
-    public String toString()
-    {
-        return "descriptor[" + objectModel.getName() + "]";
-    }
+    Class<? extends Composite> type();
 }

@@ -12,12 +12,15 @@
  *
  */
 
-package org.qi4j.structure;
+package org.qi4j.spi.structure;
+
+import org.qi4j.service.Activatable;
 
 /**
  * TODO
  */
-public interface Layer
+public interface ApplicationSPI
+    extends Activatable
 {
-    String name();
+    void visitDescriptor( DescriptorVisitor visitor );
 }

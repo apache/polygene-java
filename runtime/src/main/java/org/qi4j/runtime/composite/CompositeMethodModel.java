@@ -16,16 +16,21 @@ package org.qi4j.runtime.composite;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
+import java.util.Set;
+import org.qi4j.composite.ConstructionException;
+import org.qi4j.injection.scope.This;
+import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.structure.Binder;
+import org.qi4j.runtime.structure.DependencyVisitor;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
-import org.qi4j.composite.ConstructionException;
+import org.qi4j.spi.composite.CompositeMethodDescriptor;
 
 /**
  * TODO
  */
 public final class CompositeMethodModel
-    implements Binder
+    implements Binder, CompositeMethodDescriptor
 {
     // Model
     private final Method method;
@@ -124,5 +129,18 @@ public final class CompositeMethodModel
         methodConstraints.visitModel( modelVisitor );
         methodConcerns.visitModel( modelVisitor );
         methodSideEffects.visitModel( modelVisitor );
+    }
+
+    public void addThisInjections( final Set<Class> thisDependencies )
+    {
+        visitModel(
+            new DependencyVisitor( new DependencyModel.ScopeSpecification( This.class ) )
+            {
+                public void visitDependency( DependencyModel dependencyModel )
+                {
+                    thisDependencies.add( dependencyModel.rawInjectionType() );
+                }
+            }
+        );
     }
 }

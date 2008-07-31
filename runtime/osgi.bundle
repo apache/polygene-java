@@ -39,10 +39,12 @@ Import-Package: org.qi4j, \
                 org.qi4j.spi.composite, \
                 org.qi4j.spi.entity, \
                 org.qi4j.spi.entity.association, \
+                org.qi4j.spi.object, \
                 org.qi4j.spi.property, \
                 org.qi4j.spi.query, \
                 org.qi4j.spi.service, \
                 org.qi4j.spi.service.provider, \
+                org.qi4j.spi.structure, \
                 org.qi4j.structure, \
                 org.qi4j.util
 

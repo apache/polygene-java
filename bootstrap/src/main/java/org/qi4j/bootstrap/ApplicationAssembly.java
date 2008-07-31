@@ -20,7 +20,7 @@ package org.qi4j.bootstrap;
 
 public interface ApplicationAssembly
 {
-    LayerAssembly newLayerAssembly();
+    LayerAssembly newLayerAssembly( String name );
 
     void setName( String name );
 }

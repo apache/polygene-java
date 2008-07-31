@@ -81,8 +81,11 @@ public class PropertyInstance<T> extends AbstractPropertyInstance<T>
      */
     public void set( T aNewValue )
     {
-        PropertyModel propertyContext = (PropertyModel) propertyInfo;
-        propertyContext.checkConstraints( aNewValue );
+        if( propertyInfo instanceof PropertyModel )
+        {
+            PropertyModel propertyModel = (PropertyModel) propertyInfo;
+            propertyModel.checkConstraints( aNewValue );
+        }
         value = aNewValue;
     }
 

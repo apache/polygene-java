@@ -17,8 +17,8 @@ package org.qi4j.runtime.structure;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.qi4j.runtime.service.ServiceReferenceInstance;
 import org.qi4j.runtime.service.ServiceModel;
+import org.qi4j.runtime.service.ServiceReferenceInstance;
 import org.qi4j.service.Activatable;
 import org.qi4j.service.ServiceReference;
 import org.qi4j.spi.service.Activator;
@@ -68,4 +68,15 @@ public class ServicesInstance
         }
     }
 
+    @Override public String toString()
+    {
+        String str = "{";
+        String sep = "";
+        for( ServiceReferenceInstance serviceReference : serviceReferences )
+        {
+            str += sep + serviceReference.identity() + ",active=" + serviceReference.isActive();
+            sep = ", ";
+        }
+        return str += "}";
+    }
 }

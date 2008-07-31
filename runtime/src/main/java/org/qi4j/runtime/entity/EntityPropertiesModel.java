@@ -39,7 +39,7 @@ import org.qi4j.util.MetaInfo;
  */
 public final class EntityPropertiesModel
 {
-    private final Set<Class> mixinTypes = new HashSet<Class>();
+    private final Set<Method> methods = new HashSet<Method>();
     private final List<EntityPropertyModel> propertyModels = new ArrayList<EntityPropertyModel>();
     private final Map<Method, EntityPropertyModel> mapMethodPropertyModel = new HashMap<Method, EntityPropertyModel>();
     private final Map<String, Method> accessors = new HashMap<String, Method>();
@@ -52,33 +52,30 @@ public final class EntityPropertiesModel
         this.propertyDeclarations = propertyDeclarations;
     }
 
-    public void addPropertiesFor( Class mixinType )
+    public void addPropertyFor( Method method )
     {
-        if( !mixinTypes.contains( mixinType ) )
+        if( !methods.contains( method ) )
         {
-            for( Method method : mixinType.getMethods() )
+            if( Property.class.isAssignableFrom( method.getReturnType() ) )
             {
-                if( Property.class.isAssignableFrom( method.getReturnType() ) )
+                ValueConstraintsModel valueConstraintsModel = constraints.constraintsFor( method.getAnnotations(), AbstractPropertyInstance.getPropertyType( method ) );
+                ValueConstraintsInstance valueConstraintsInstance = null;
+                if( valueConstraintsModel.isConstrained() )
                 {
-                    ValueConstraintsModel valueConstraintsModel = constraints.constraintsFor( method.getAnnotations(), AbstractPropertyInstance.getPropertyType( method ) );
-                    ValueConstraintsInstance valueConstraintsInstance = null;
-                    if( valueConstraintsModel.isConstrained() )
-                    {
-                        valueConstraintsInstance = valueConstraintsModel.newInstance();
-                    }
-                    MetaInfo metaInfo = propertyDeclarations.getMetaInfo( method );
-                    Object defaultValue = propertyDeclarations.getDefaultValue( method );
-                    EntityPropertyModel propertyModel = new EntityPropertyModel( method, valueConstraintsInstance, metaInfo, defaultValue );
-                    final String qualifiedName = propertyModel.qualifiedName();
-                    if( !accessors.containsKey( qualifiedName ) )
-                    {
-                        accessors.put( qualifiedName, propertyModel.accessor() );
-                        propertyModels.add( propertyModel );
-                        mapMethodPropertyModel.put( method, propertyModel );
-                    }
+                    valueConstraintsInstance = valueConstraintsModel.newInstance();
+                }
+                MetaInfo metaInfo = propertyDeclarations.getMetaInfo( method );
+                Object defaultValue = propertyDeclarations.getDefaultValue( method );
+                EntityPropertyModel propertyModel = new EntityPropertyModel( method, valueConstraintsInstance, metaInfo, defaultValue );
+                final String qualifiedName = propertyModel.qualifiedName();
+                if( !accessors.containsKey( qualifiedName ) )
+                {
+                    accessors.put( qualifiedName, propertyModel.accessor() );
+                    propertyModels.add( propertyModel );
+                    mapMethodPropertyModel.put( method, propertyModel );
                 }
             }
-            mixinTypes.add( mixinType );
+            methods.add( method );
         }
     }
 

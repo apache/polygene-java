@@ -12,12 +12,11 @@
  *
  */
 
-package org.qi4j.structure;
+package org.qi4j.spi.composite;
 
 /**
  * TODO
  */
-public interface Layer
+public interface InjectedFieldDescriptor
 {
-    String name();
 }

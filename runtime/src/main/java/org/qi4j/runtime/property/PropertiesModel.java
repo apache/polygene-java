@@ -37,7 +37,7 @@ import org.qi4j.util.MetaInfo;
  */
 public final class PropertiesModel
 {
-    final Set<Class> mixinTypes = new HashSet<Class>();
+    final Set<Method> methods = new HashSet<Method>();
     final List<PropertyModel> propertyModels = new ArrayList<PropertyModel>();
     final Map<String, Method> accessors = new HashMap<String, Method>();
     private final ConstraintsModel constraints;
@@ -49,26 +49,23 @@ public final class PropertiesModel
         this.propertyDeclarations = propertyDeclarations;
     }
 
-    public void addPropertiesFor( Class mixinType )
+    public void addPropertyFor( Method method )
     {
-        if( !mixinTypes.contains( mixinType ) )
+        if( !methods.contains( method ) )
         {
-            for( Method method : mixinType.getMethods() )
+            if( Property.class.isAssignableFrom( method.getReturnType() ) )
             {
-                if( Property.class.isAssignableFrom( method.getReturnType() ) )
+                ValueConstraintsModel valueConstraintsModel = constraints.constraintsFor( method.getAnnotations(), AbstractPropertyInstance.getPropertyType( method ) );
+                ValueConstraintsInstance valueConstraintsInstance = null;
+                if( valueConstraintsModel.isConstrained() )
                 {
-                    ValueConstraintsModel valueConstraintsModel = constraints.constraintsFor( method.getAnnotations(), AbstractPropertyInstance.getPropertyType( method ) );
-                    ValueConstraintsInstance valueConstraintsInstance = null;
-                    if( valueConstraintsModel.isConstrained() )
-                    {
-                        valueConstraintsInstance = valueConstraintsModel.newInstance();
-                    }
-                    MetaInfo metaInfo = propertyDeclarations.getMetaInfo( method );
-                    Object defaultValue = propertyDeclarations.getDefaultValue( method );
-                    PropertyModel propertyModel = new PropertyModel( method, valueConstraintsInstance, metaInfo, defaultValue ); //TODO Take default value from assembly
-                    propertyModels.add( propertyModel );
-                    accessors.put( propertyModel.qualifiedName(), propertyModel.accessor() );
+                    valueConstraintsInstance = valueConstraintsModel.newInstance();
                 }
+                MetaInfo metaInfo = propertyDeclarations.getMetaInfo( method );
+                Object defaultValue = propertyDeclarations.getDefaultValue( method );
+                PropertyModel propertyModel = new PropertyModel( method, valueConstraintsInstance, metaInfo, defaultValue ); //TODO Take default value from assembly
+                propertyModels.add( propertyModel );
+                accessors.put( propertyModel.qualifiedName(), propertyModel.accessor() );
             }
         }
     }

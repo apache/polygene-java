@@ -52,9 +52,9 @@ public final class StateModel
         return new StateInstance( properties );
     }
 
-    public void addStateFor( Class mixinType )
+    public void addStateFor( Method method )
     {
-        propertiesModel.addPropertiesFor( mixinType );
+        propertiesModel.addPropertyFor( method );
     }
 
     public PropertyDescriptor getPropertyByName( String name )
