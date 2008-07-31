@@ -20,7 +20,7 @@ public class JettyLauncher
 
         web.setContextPath( "/example" );
 
-        web.setWar( "example/src/main/webapp/" );
+        web.setWar( "libraries/struts2/example/src/main/webapp/" );
         server.addHandler( web );
 
         try
