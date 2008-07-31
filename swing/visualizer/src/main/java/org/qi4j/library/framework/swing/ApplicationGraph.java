@@ -20,14 +20,12 @@ import java.util.Map;
 import java.util.Iterator;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.awt.Graphics2D;
 import javax.swing.JFrame;
 import org.qi4j.runtime.composite.CompositeModel;
 import org.qi4j.runtime.structure.ApplicationModel;
 import org.qi4j.runtime.structure.LayerModel;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleModel;
-import prefuse.Constants;
 import prefuse.Display;
 import prefuse.Visualization;
 import prefuse.action.ActionList;
@@ -40,13 +38,17 @@ import prefuse.data.Graph;
 import prefuse.data.Node;
 import prefuse.data.Edge;
 import prefuse.render.DefaultRendererFactory;
-import prefuse.render.EdgeRenderer;
 import prefuse.util.ColorLib;
 import prefuse.visual.VisualItem;
 import prefuse.visual.EdgeItem;
 import prefuse.visual.sort.ItemSorter;
 
 import static org.qi4j.library.framework.swing.GraphConstants.*;
+import org.qi4j.library.framework.swing.render.ApplicationRenderer;
+import org.qi4j.library.framework.swing.render.CompositeRenderer;
+import org.qi4j.library.framework.swing.render.LayerRenderer;
+import org.qi4j.library.framework.swing.render.ModuleRenderer;
+import org.qi4j.library.framework.swing.render.VerticalEdgeRenderer;
 
 /**
  * TODO
@@ -153,19 +155,7 @@ public class ApplicationGraph
         rendererFactory.add( "type = 2", new ModuleRenderer() );
         rendererFactory.add( "type = 3", new CompositeRenderer() );
 
-        rendererFactory.setDefaultEdgeRenderer(
-            new EdgeRenderer()
-            {
-                {
-                    m_yAlign1 = Constants.BOTTOM;
-                }
-
-                public void render( Graphics2D g, VisualItem item )
-                {
-                    super.render( g, item );
-                }
-            } );
-
+        rendererFactory.setDefaultEdgeRenderer( new VerticalEdgeRenderer() );
         visualization.setRendererFactory( rendererFactory );
     }
 

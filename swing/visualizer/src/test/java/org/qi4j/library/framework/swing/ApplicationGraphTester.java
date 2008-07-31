@@ -59,12 +59,11 @@ public class ApplicationGraphTester
         plugin2.setName( "Plugin 2" );
         plugin2.addComposites( UIComposite.class );
 
-//        guiLayer.uses( domainLayer );
         guiLayer.uses( infrastructureLayer );
-        domainLayer.uses( infrastructureLayer );
+        guiLayer.uses( domainLayer );
 
-        Application app = qi4j.newApplication( assembly );
-        new ApplicationGraph().show( ( (ApplicationInstance) app ).model() );
+        Application app1 = qi4j.newApplication( assembly );
+        new ApplicationGraph().show( ( (ApplicationInstance) app1 ).model() );
     }
 
     private static interface ADomainComposite extends Composite
