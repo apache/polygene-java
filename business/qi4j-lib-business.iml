@@ -45,19 +45,6 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
-      <library name="javax.transaction:jta:1.1">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/javax/transaction/jta/1.1/jta-1.1.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/javax/transaction/jta/1.1/jta-1.1-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/javax/transaction/jta/1.1/jta-1.1-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
       <library name="org.prefuse:prefuse:beta-20060220">
         <CLASSES>
           <root url="jar://$M2_REPO$/org/prefuse/prefuse/beta-20060220/prefuse-beta-20060220.jar!/" />

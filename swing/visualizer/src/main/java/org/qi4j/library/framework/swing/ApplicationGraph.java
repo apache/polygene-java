@@ -15,40 +15,45 @@
  */
 package org.qi4j.library.framework.swing;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Iterator;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import javax.swing.JFrame;
-import org.qi4j.runtime.composite.CompositeModel;
-import org.qi4j.runtime.structure.ApplicationModel;
-import org.qi4j.runtime.structure.LayerModel;
-import org.qi4j.runtime.structure.ModelVisitor;
-import org.qi4j.runtime.structure.ModuleModel;
-import prefuse.Display;
-import prefuse.Visualization;
-import prefuse.action.ActionList;
-import prefuse.action.RepaintAction;
-import prefuse.action.Action;
-import prefuse.action.assignment.ColorAction;
-import prefuse.controls.PanControl;
-import prefuse.controls.ZoomControl;
-import prefuse.data.Graph;
-import prefuse.data.Node;
-import prefuse.data.Edge;
-import prefuse.render.DefaultRendererFactory;
-import prefuse.util.ColorLib;
-import prefuse.visual.VisualItem;
-import prefuse.visual.EdgeItem;
-import prefuse.visual.sort.ItemSorter;
-
-import static org.qi4j.library.framework.swing.GraphConstants.*;
+import static org.qi4j.library.framework.swing.GraphConstants.FIELD_LAYER_LEVEL;
+import static org.qi4j.library.framework.swing.GraphConstants.FIELD_NAME;
+import static org.qi4j.library.framework.swing.GraphConstants.FIELD_TYPE;
+import static org.qi4j.library.framework.swing.GraphConstants.FIELD_USED_BY_LAYERS;
+import static org.qi4j.library.framework.swing.GraphConstants.FIELD_USED_LAYERS;
 import org.qi4j.library.framework.swing.render.ApplicationRenderer;
 import org.qi4j.library.framework.swing.render.CompositeRenderer;
 import org.qi4j.library.framework.swing.render.LayerRenderer;
 import org.qi4j.library.framework.swing.render.ModuleRenderer;
 import org.qi4j.library.framework.swing.render.VerticalEdgeRenderer;
+import org.qi4j.spi.composite.CompositeDescriptor;
+import org.qi4j.spi.structure.ApplicationDescriptor;
+import org.qi4j.spi.structure.ApplicationSPI;
+import org.qi4j.spi.structure.DescriptorVisitor;
+import org.qi4j.spi.structure.LayerDescriptor;
+import org.qi4j.spi.structure.ModuleDescriptor;
+import org.qi4j.structure.Application;
+import prefuse.Display;
+import prefuse.Visualization;
+import prefuse.action.Action;
+import prefuse.action.ActionList;
+import prefuse.action.RepaintAction;
+import prefuse.action.assignment.ColorAction;
+import prefuse.controls.PanControl;
+import prefuse.controls.ZoomControl;
+import prefuse.data.Edge;
+import prefuse.data.Graph;
+import prefuse.data.Node;
+import prefuse.render.DefaultRendererFactory;
+import prefuse.util.ColorLib;
+import prefuse.visual.EdgeItem;
+import prefuse.visual.VisualItem;
+import prefuse.visual.sort.ItemSorter;
 
 /**
  * TODO
@@ -65,19 +70,21 @@ public class ApplicationGraph
     //    private static final int ENTITY_COMPOSITE = 4;
 //    private static final int SERVICE_COMPOSITE = 5;
 
-    public void show( ApplicationModel applicationModel )
+    String applicationName;
+
+    public void show( Application applicationModel )
     {
         Graph graph = createData( applicationModel );
         Visualization visualization = createVisualization( graph );
         createRenderers( visualization );
         createProcessingActions( visualization );
         Display display = createDisplay( visualization );
-        launchDisplay( applicationModel, visualization, display );
+        launchDisplay( visualization, display );
     }
 
-    private void launchDisplay( ApplicationModel applicationModel, Visualization visualization, Display display )
+    private void launchDisplay( Visualization visualization, Display display )
     {
-        JFrame frame = new JFrame( "Qi4j Application Graph - " + applicationModel.name() );
+        JFrame frame = new JFrame( "Qi4j Application Graph - " + applicationName );
         frame.add( display );
         frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
         frame.pack();
@@ -159,7 +166,7 @@ public class ApplicationGraph
         visualization.setRendererFactory( rendererFactory );
     }
 
-    private Graph createData( ApplicationModel applicationModel )
+    private Graph createData( Application applicationModel )
     {
         final Graph graph = new Graph( true );
         graph.addColumn( FIELD_NAME, String.class );
@@ -172,7 +179,7 @@ public class ApplicationGraph
         root.setString( FIELD_NAME, "Application" );
         root.setInt( FIELD_TYPE, TYPE_APPLICATION );
 
-        applicationModel.visitModel( new AppModelVisitor( graph, root ) );
+        ( (ApplicationSPI) applicationModel ).visitDescriptor( new AppModelVisitor( graph, root ) );
         return graph;
     }
 
@@ -199,27 +206,32 @@ public class ApplicationGraph
     }
 
 
-    private static class AppModelVisitor extends ModelVisitor
+    private class AppModelVisitor extends DescriptorVisitor
     {
         private Node layerNode;
         private Node moduleNode;
-        private final Map<LayerModel, Node> layerNodes;
+        private final Map<LayerDescriptor, Node> layerNodes;
         private final Graph graph;
         private final Node root;
 
         public AppModelVisitor( Graph graph, Node root )
         {
-            this.layerNodes = new HashMap<LayerModel, Node>();
+            this.layerNodes = new HashMap<LayerDescriptor, Node>();
             this.graph = graph;
             this.root = root;
         }
 
-        @Override public void visit( LayerModel layerModel )
+        @Override public void visit( ApplicationDescriptor applicationDescriptor )
+        {
+            applicationName = applicationDescriptor.name();
+        }
+
+        @Override public void visit( LayerDescriptor layerModel )
         {
             layerNode = getLayerNode( layerModel );
 
-            Iterable<LayerModel> usedLayers = layerModel.usedLayers().layers();
-            for( LayerModel usedLayerModel : usedLayers )
+            Iterable<? extends LayerDescriptor> usedLayers = layerModel.usedLayers().layers();
+            for( LayerDescriptor usedLayerModel : usedLayers )
             {
                 Node usedLayerNode = getLayerNode( usedLayerModel );
                 addUsedLayer( layerNode, usedLayerNode );
@@ -231,7 +243,7 @@ public class ApplicationGraph
             edge.setInt( FIELD_TYPE, TYPE_EDGE_HIDDEN );
         }
 
-        private Node getLayerNode( LayerModel layerModel )
+        private Node getLayerNode( LayerDescriptor layerModel )
         {
             Node layer = layerNodes.get( layerModel );
             if( layer == null )
@@ -269,7 +281,7 @@ public class ApplicationGraph
             layer.setInt( FIELD_LAYER_LEVEL, ++level );
         }
 
-        @Override public void visit( ModuleModel moduleModel )
+        @Override public void visit( ModuleDescriptor moduleModel )
         {
             moduleNode = graph.addNode();
             moduleNode.setString( FIELD_NAME, moduleModel.name() );
@@ -278,7 +290,7 @@ public class ApplicationGraph
             edge.setInt( FIELD_TYPE, TYPE_EDGE_HIDDEN );
         }
 
-        public void visit( CompositeModel compositeModel )
+        public void visit( CompositeDescriptor compositeModel )
         {
             Node node = graph.addNode();
             node.setString( FIELD_NAME, compositeModel.type().getSimpleName() );

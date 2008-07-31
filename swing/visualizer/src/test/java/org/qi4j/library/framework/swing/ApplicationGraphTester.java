@@ -14,12 +14,11 @@
 
 package org.qi4j.library.framework.swing;
 
-import org.qi4j.bootstrap.Energy4Java;
-import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.ApplicationAssembly;
+import org.qi4j.bootstrap.Energy4Java;
 import org.qi4j.bootstrap.LayerAssembly;
+import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
-import org.qi4j.runtime.structure.ApplicationInstance;
 import org.qi4j.structure.Application;
 
 /**
@@ -34,36 +33,28 @@ public class ApplicationGraphTester
 
         ApplicationAssembly assembly = qi4j.newApplicationAssembly();
 
-        LayerAssembly infrastructureLayer = assembly.newLayerAssembly();
-        infrastructureLayer.setName( "Infrastructure" );
-        ModuleAssembly database = infrastructureLayer.newModuleAssembly();
-        database.setName( "Database" );
+        LayerAssembly infrastructureLayer = assembly.newLayerAssembly( "Infrastructure" );
+        ModuleAssembly database = infrastructureLayer.newModuleAssembly( "Database" );
 
-        LayerAssembly domainLayer = assembly.newLayerAssembly();
-        domainLayer.setName( "Domain" );
+        LayerAssembly domainLayer = assembly.newLayerAssembly( "Domain" );
 
-        ModuleAssembly someDomain = domainLayer.newModuleAssembly();
-        someDomain.setName( "Some domain" );
+        ModuleAssembly someDomain = domainLayer.newModuleAssembly( "Some domain" );
         someDomain.addComposites( ADomainComposite.class, BDomainComposite.class );
 
-        LayerAssembly guiLayer = assembly.newLayerAssembly();
-        guiLayer.setName( "UI" );
+        LayerAssembly guiLayer = assembly.newLayerAssembly( "UI" );
 
-        ModuleAssembly swingModule = guiLayer.newModuleAssembly();
-        swingModule.setName( "Swing" );
+        ModuleAssembly swingModule = guiLayer.newModuleAssembly( "Swing" );
 
-        ModuleAssembly plugin1 = guiLayer.newModuleAssembly();
-        plugin1.setName( "Plugin 1" );
+        ModuleAssembly plugin1 = guiLayer.newModuleAssembly( "Plugin 1" );
 
-        ModuleAssembly plugin2 = guiLayer.newModuleAssembly();
-        plugin2.setName( "Plugin 2" );
+        ModuleAssembly plugin2 = guiLayer.newModuleAssembly( "Plugin 2" );
         plugin2.addComposites( UIComposite.class );
 
         guiLayer.uses( infrastructureLayer );
         guiLayer.uses( domainLayer );
 
-        Application app1 = qi4j.newApplication( assembly );
-        new ApplicationGraph().show( ( (ApplicationInstance) app1 ).model() );
+        Application app = qi4j.newApplication( assembly );
+        new ApplicationGraph().show( app );
     }
 
     private static interface ADomainComposite extends Composite
