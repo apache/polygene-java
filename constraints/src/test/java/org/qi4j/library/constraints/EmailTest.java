@@ -19,7 +19,7 @@ import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.ConstraintViolationException;
 import org.qi4j.test.AbstractQi4jTest;
 
-public class NotEmptyConstraintTest extends AbstractQi4jTest
+public class EmailTest extends AbstractQi4jTest
 {
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
@@ -27,17 +27,19 @@ public class NotEmptyConstraintTest extends AbstractQi4jTest
     }
 
     @Test( expected = ConstraintViolationException.class )
-    public void testNotNull()
+    public void testEmailFail()
     {
-        CompositeBuilder<TestCase> cb = compositeBuilderFactory.newCompositeBuilder( TestCase.class );
-        cb.stateFor( TestCase.class ).aNonEmptyProperty().set( null );
+        CompositeBuilder<TestCaseComposite> cb = compositeBuilderFactory.newCompositeBuilder( TestCaseComposite.class );
+
+        cb.stateOfComposite().email().set( "foo.com" );
     }
 
-    @Test( expected = ConstraintViolationException.class )
-    public void testNotEmpty()
+    @Test
+    public void testEmailOk()
     {
-        CompositeBuilder<TestCase> cb = compositeBuilderFactory.newCompositeBuilder( TestCase.class );
+        CompositeBuilder<TestCaseComposite> cb = compositeBuilderFactory.newCompositeBuilder( TestCaseComposite.class );
 
-        cb.stateFor( TestCase.class ).aNonEmptyProperty().set( "" );
+        cb.stateOfComposite().notNullObject().set( "rickard@gmail.com" );
     }
+
 }

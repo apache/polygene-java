@@ -12,11 +12,26 @@
 */
 package org.qi4j.library.constraints;
 
+import java.util.Collection;
+import java.util.List;
 import org.qi4j.composite.Composite;
-import org.qi4j.composite.Mixins;
+import org.qi4j.library.constraints.annotation.Contains;
+import org.qi4j.library.constraints.annotation.Email;
+import org.qi4j.library.constraints.annotation.NotEmpty;
+import org.qi4j.library.constraints.annotation.NotNull;
+import org.qi4j.property.Property;
 
-@Mixins (TestCaseMixin.class)
-public interface TestCaseComposite extends TestCase, Composite
+public interface TestCaseComposite extends Composite
 {
+    @Contains( "foo" ) Property<String> containsString();
 
+    @Email Property<String> email();
+
+    @NotEmpty Property<String> notEmptyString();
+
+    @NotEmpty Property<Collection> notEmptyCollection();
+
+    @NotEmpty Property<List> notEmptyList();
+
+    @NotNull Property<Object> notNullObject();
 }

@@ -1,5 +1,4 @@
 /*
- * Copyright 2008 Rickard Oberg
  * Copyright 2008 Richard Wallace
  * Copyright 2008 Alin Dreghiciu.
  *
@@ -17,28 +16,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.library.constraints.annotation;
+package org.qi4j.library.constraints;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import org.qi4j.composite.ConstraintDeclaration;
-import org.qi4j.composite.Constraints;
-import org.qi4j.library.constraints.NotEmptyCollectionConstraint;
-import org.qi4j.library.constraints.NotEmptyStringConstraint;
+import org.qi4j.composite.Constraint;
+import org.qi4j.library.constraints.annotation.NotEmpty;
 
 /**
- * Marks a property as being a string, non null, non empty.
+ * Constraints that a string is non empty.
  *
- * @author Rickard Oberg
  * @author Richard Wallace
  * @author Alin Dreghiciu
  * @since 09 May, 2008
  */
-@ConstraintDeclaration
-@Retention( RetentionPolicy.RUNTIME )
-@NotNull
-@InstanceOf( String.class )
-@Constraints( { NotEmptyStringConstraint.class, NotEmptyCollectionConstraint.class } )
-public @interface NotEmpty
+public class NotEmptyStringConstraint
+    implements Constraint<NotEmpty, String>
 {
+
+    public boolean isValid( NotEmpty annotation, String value )
+    {
+        return value.trim().length() > 0;
+    }
+
 }

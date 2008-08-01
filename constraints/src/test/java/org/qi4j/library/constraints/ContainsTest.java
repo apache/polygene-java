@@ -19,19 +19,28 @@ import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.ConstraintViolationException;
 import org.qi4j.test.AbstractQi4jTest;
 
-public class NotNullConstraintTest extends AbstractQi4jTest
+public class ContainsTest extends AbstractQi4jTest
 {
-    public void assemble(ModuleAssembly module) throws AssemblyException
+    public void assemble( ModuleAssembly module ) throws AssemblyException
     {
-        module.addComposites(TestCaseComposite.class);
+        module.addComposites( TestCaseComposite.class );
     }
 
-    @Test (expected=ConstraintViolationException.class)
-    public void testNotNull()
+    @Test( expected = ConstraintViolationException.class )
+    public void testContainsFail()
     {
-        CompositeBuilder<TestCase> cb = compositeBuilderFactory.newCompositeBuilder(TestCase.class);
-        
-        cb.stateFor(TestCase.class).aNonNullProperty().set(null);
+        CompositeBuilder<TestCaseComposite> cb = compositeBuilderFactory.newCompositeBuilder( TestCaseComposite.class );
+
+        cb.stateOfComposite().containsString().set( "bar" );
+    }
+
+    @Test
+    public void testContainsOk()
+    {
+        CompositeBuilder<TestCaseComposite> cb = compositeBuilderFactory.newCompositeBuilder( TestCaseComposite.class );
+
+        cb.stateOfComposite().notNullObject().set( "foo" );
+        cb.stateOfComposite().notNullObject().set( "xxxfooyyy" );
     }
 
 }
