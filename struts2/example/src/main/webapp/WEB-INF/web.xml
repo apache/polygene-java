@@ -9,7 +9,7 @@
 
   <!-- Listeners -->
   <listener>
-    <listener-class>org.qi4j.lib.struts2.example.listener.ExampleBoostrapListener</listener-class>
+    <listener-class>org.qi4j.lib.struts2.example.listener.ExampleBootstrapListener</listener-class>
   </listener>
 
   <!-- Filters -->

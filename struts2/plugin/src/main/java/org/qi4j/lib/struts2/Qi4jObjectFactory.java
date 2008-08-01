@@ -16,27 +16,23 @@
  */
 package org.qi4j.lib.struts2;
 
-import static org.qi4j.lib.struts2.Constants.SERVLET_ATTRIBUTE;
-import static org.qi4j.lib.struts2.Qi4jObjectFactory.ClassType.object;
-import static org.qi4j.lib.struts2.Qi4jObjectFactory.ClassType.qi4jComposite;
-import static org.qi4j.lib.struts2.Qi4jObjectFactory.ClassType.qi4jObject;
-
+import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.ObjectFactory;
+import com.opensymphony.xwork2.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.servlet.ServletContext;
-
 import org.apache.struts2.util.ObjectFactoryDestroyable;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.ConstructionException;
 import org.qi4j.composite.NoSuchCompositeException;
+import static org.qi4j.lib.struts2.Constants.SERVLET_ATTRIBUTE;
+import static org.qi4j.lib.struts2.Qi4jObjectFactory.ClassType.object;
+import static org.qi4j.lib.struts2.Qi4jObjectFactory.ClassType.qi4jComposite;
+import static org.qi4j.lib.struts2.Qi4jObjectFactory.ClassType.qi4jObject;
 import org.qi4j.object.NoSuchObjectException;
 import org.qi4j.object.ObjectBuilderFactory;
 import org.qi4j.structure.Module;
-
-import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.ObjectFactory;
-import com.opensymphony.xwork2.inject.Inject;
 
 /**
  * Qi4j implementation of struts object factory.
@@ -54,7 +50,7 @@ public class Qi4jObjectFactory extends ObjectFactory
         qi4jObject,
         object
     }
-    
+
     private ObjectBuilderFactory obf;
     private CompositeBuilderFactory cbf;
 
@@ -64,9 +60,9 @@ public class Qi4jObjectFactory extends ObjectFactory
     {
         types = new HashMap<Class, ClassType>();
     }
-    
+
     @Inject
-    public void setServletContext( ServletContext aServletContext ) 
+    public void setServletContext( ServletContext aServletContext )
     {
         Module module = (Module) aServletContext.getAttribute( SERVLET_ATTRIBUTE );
         obf = module.objectBuilderFactory();
