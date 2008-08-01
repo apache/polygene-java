@@ -14,7 +14,8 @@
   <artifactId>qi4j-struts2-example</artifactId>
   <version>0.3-SNAPSHOT</version>
   <packaging>war</packaging>
-
+  <name>Qi4j Library - Struts Example</name>
+  
   <build>
     <finalName>qi4j-struts2-example</finalName>
     <plugins>

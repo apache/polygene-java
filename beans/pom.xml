@@ -8,7 +8,7 @@
   </parent>
   <groupId>org.qi4j.library</groupId>
   <artifactId>qi4j-lib-beans</artifactId>
-  <name>Qi4J Library - Beans</name>
+  <name>Qi4j Library - Beans</name>
   <version>0.3-SNAPSHOT</version>
   <dependencies>
     <dependency>

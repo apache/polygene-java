@@ -8,7 +8,7 @@
   </parent>
   <groupId>org.qi4j.library</groupId>
   <artifactId>qi4j-lib-registry</artifactId>
-  <name>Qi4J Library - Registry</name>
+  <name>Qi4j Library - Registry</name>
   <version>0.3-SNAPSHOT</version>
   <dependencies>
     <dependency>

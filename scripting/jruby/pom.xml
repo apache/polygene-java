@@ -7,7 +7,7 @@
   </parent>
   <groupId>org.qi4j.library</groupId>
   <artifactId>qi4j-script-jruby</artifactId>
-  <name>Qi4J Script Library - JRuby</name>
+  <name>Qi4j Script Library - JRuby</name>
   <version>0.3-SNAPSHOT</version>
   <packaging>bundle</packaging>
   <dependencies>

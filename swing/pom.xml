@@ -13,7 +13,7 @@
   <version>0.3-SNAPSHOT</version>
   <packaging>pom</packaging>
 
-  <name>Qi4J Library - Swing</name>
+  <name>Qi4j Library - Swing</name>
 
   <modules>
     <module>binding</module>

@@ -13,6 +13,7 @@
   <artifactId>qi4j-struts2</artifactId>
   <version>0.3-SNAPSHOT</version>
   <packaging>pom</packaging>
+  <name>Qi4j Library - Struts Support</name>
 
   <properties>
     <version.struts2>2.0.11.2</version.struts2>

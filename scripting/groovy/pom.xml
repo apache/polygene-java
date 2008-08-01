@@ -7,7 +7,7 @@
   </parent>
   <groupId>org.qi4j.library</groupId>
   <artifactId>qi4j-script-groovy</artifactId>
-  <name>Qi4J Script Library - Groovy</name>
+  <name>Qi4j Script Library - Groovy</name>
   <version>0.3-SNAPSHOT</version>
   <packaging>bundle</packaging>
   <dependencies>

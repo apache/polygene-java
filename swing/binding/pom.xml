@@ -11,8 +11,7 @@
   <artifactId>binding</artifactId>
   <version>0.3-SNAPSHOT</version>
   <packaging>pom</packaging>
-
-  <name>Qi4J Library - Swing binding</name>
+  <name>Qi4j Library - Swing binding</name>
 
   <modules>
     <module>api</module>

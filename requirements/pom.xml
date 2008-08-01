@@ -11,7 +11,7 @@
   <groupId>org.qi4j.library</groupId>
   <artifactId>qi4j-lib-requirements</artifactId>
   <version>0.3-SNAPSHOT</version>
-  <name>Qi4J Library - Requirements</name>
+  <name>Qi4j Library - Requirements</name>
 
   <dependencies>
     <dependency>

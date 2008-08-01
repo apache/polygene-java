@@ -7,7 +7,7 @@
   </parent>
   <groupId>org.qi4j.library</groupId>
   <artifactId>qi4j-lib-auth</artifactId>
-  <name>Qi4J Library - Authentication/Authorization</name>
+  <name>Qi4j Library - Authentication/Authorization</name>
   <version>0.3-SNAPSHOT</version>
   <dependencies>
     <dependency>

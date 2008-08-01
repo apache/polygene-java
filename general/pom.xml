@@ -7,7 +7,7 @@
   </parent>
   <groupId>org.qi4j.library</groupId>
   <artifactId>qi4j-lib-general</artifactId>
-  <name>Qi4J Library - General</name>
+  <name>Qi4j Library - General</name>
   <version>0.3-SNAPSHOT</version>
 
   <dependencies>

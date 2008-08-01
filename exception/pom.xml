@@ -8,7 +8,7 @@
   </parent>
   <groupId>org.qi4j.library</groupId>
   <artifactId>qi4j-lib-exception</artifactId>
-  <name>Qi4J Library - Exception Handling</name>
+  <name>Qi4j Library - Exception Handling</name>
   <version>0.3-SNAPSHOT</version>
   <dependencies>
     <dependency>
