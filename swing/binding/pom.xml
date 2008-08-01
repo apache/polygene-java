@@ -3,15 +3,15 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.qi4j.library</groupId>
-    <artifactId>swing</artifactId>
+    <artifactId>qi4j-lib-swing</artifactId>
     <version>0.3-SNAPSHOT</version>
   </parent>
 
   <groupId>org.qi4j.library.swing</groupId>
-  <artifactId>binding</artifactId>
+  <artifactId>qi4j-lib-swing-binding</artifactId>
   <version>0.3-SNAPSHOT</version>
   <packaging>pom</packaging>
-  <name>Qi4j Library - Swing binding</name>
+  <name>Qi4j Library - Swing Binding (Build POM)</name>
 
   <modules>
     <module>api</module>
