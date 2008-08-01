@@ -22,8 +22,9 @@ import java.util.Set;
 import org.qi4j.composite.Constraint;
 import org.qi4j.composite.ConstraintImplementationNotFoundException;
 import org.qi4j.composite.Constraints;
-import static org.qi4j.util.AnnotationUtil.*;
-import static org.qi4j.util.ClassUtil.*;
+import static org.qi4j.util.AnnotationUtil.isCompositeConstraintAnnotation;
+import static org.qi4j.util.AnnotationUtil.isConstraintAnnotation;
+import static org.qi4j.util.ClassUtil.interfacesOf;
 
 /**
  * TODO
@@ -46,9 +47,9 @@ public final class ConstraintsModel
 
     }
 
-    public ValueConstraintsModel constraintsFor( Annotation[] constraintAnnotations, Type valueType )
+    public ValueConstraintsModel constraintsFor( Annotation[] constraintAnnotations, Type valueType, String name )
     {
-        List<ConstraintModel> constraintModels = new ArrayList<ConstraintModel>();
+        List<AbstractConstraintModel> constraintModels = new ArrayList<AbstractConstraintModel>();
         nextConstraint:
         for( Annotation constraintAnnotation : constraintAnnotations )
         {
@@ -85,10 +86,20 @@ public final class ConstraintsModel
             }
 
             // No implementation found!
+
+            // Check if if it's a composite constraints
+            if( isCompositeConstraintAnnotation( constraintAnnotation ) )
+            {
+                ValueConstraintsModel valueConstraintsModel = constraintsFor( constraintAnnotation.annotationType().getAnnotations(), valueType, name );
+                CompositeConstraintModel compositeConstraintModel = new CompositeConstraintModel( constraintAnnotation, valueConstraintsModel );
+                constraintModels.add( compositeConstraintModel );
+                continue nextConstraint;
+            }
+
             throw new ConstraintImplementationNotFoundException( declaringType, constraintAnnotation.annotationType(), valueType );
         }
 
-        return new ValueConstraintsModel( constraintModels );
+        return new ValueConstraintsModel( constraintModels, name );
     }
 
     private void addConstraintDeclarations( Type type )

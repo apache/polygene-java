@@ -18,18 +18,25 @@ import java.lang.annotation.Annotation;
 
 /**
  * When a constraint violation has occurred it is registered as a ConstraintViolation
- * and exposed through the @link{org.qi4j.composite.InvocationContext} for concerns and 
+ * and exposed through the @link{org.qi4j.composite.InvocationContext} for concerns and
  * mixins to use.
  */
 public class ConstraintViolation
 {
+    private String name;
     private final Annotation constraint;
     private final Object value;
 
-    public ConstraintViolation( Annotation constraint, Object value )
+    public ConstraintViolation( String name, Annotation constraint, Object value )
     {
+        this.name = name;
         this.constraint = constraint;
         this.value = value;
+    }
+
+    public String name()
+    {
+        return name;
     }
 
     public Annotation constraint()

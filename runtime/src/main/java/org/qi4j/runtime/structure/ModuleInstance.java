@@ -23,6 +23,7 @@ import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.ConstructionException;
 import org.qi4j.composite.NoSuchCompositeException;
 import org.qi4j.entity.EntityComposite;
+import org.qi4j.entity.LoadingPolicy;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkFactory;
 import org.qi4j.object.NoSuchObjectException;
@@ -312,6 +313,19 @@ public class ModuleInstance
         public UnitOfWork newUnitOfWork()
         {
             return new UnitOfWorkInstance( ModuleInstance.this );
+        }
+
+        public UnitOfWork newUnitOfWork( LoadingPolicy loadingPolicy, String name )
+        {
+            if( loadingPolicy == null )
+            {
+                loadingPolicy = new LoadingPolicy( name, true );
+            }
+            else
+            {
+                loadingPolicy.setName( name );
+            }
+            return new UnitOfWorkInstance( ModuleInstance.this, loadingPolicy );
         }
 
         public UnitOfWork currentUnitOfWork()

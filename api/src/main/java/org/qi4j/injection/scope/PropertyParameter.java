@@ -20,7 +20,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import org.qi4j.injection.InjectionScope;
-import org.qi4j.injection.Name;
 
 /**
  * Annotation to denote the injection of a property into a parameter (either constructor or method)
@@ -31,5 +30,5 @@ import org.qi4j.injection.Name;
 @InjectionScope
 public @interface PropertyParameter
 {
-    @Name String value(); // Name of the property
+    String value(); // Name of the property
 }

@@ -14,9 +14,9 @@
 
 package org.qi4j.runtime.structure;
 
+import org.qi4j.runtime.composite.AbstractConstraintModel;
 import org.qi4j.runtime.composite.CompositeMethodModel;
 import org.qi4j.runtime.composite.CompositeModel;
-import org.qi4j.runtime.composite.ConstraintModel;
 import org.qi4j.runtime.composite.ConstructorModel;
 import org.qi4j.runtime.composite.MethodConcernModel;
 import org.qi4j.runtime.composite.MethodConstraintsModel;
@@ -73,7 +73,7 @@ public class DescriptorModelVisitor extends ModelVisitor
         visitor.visit( methodConstraintsModel );
     }
 
-    @Override public void visit( ConstraintModel constraintModel )
+    @Override public void visit( AbstractConstraintModel constraintModel )
     {
         visitor.visit( constraintModel );
     }

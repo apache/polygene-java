@@ -19,8 +19,10 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import org.qi4j.injection.Name;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.spi.composite.MethodConstraintsDescriptor;
+import org.qi4j.util.AnnotationUtil;
 
 /**
  * TODO
@@ -41,7 +43,11 @@ public final class MethodConstraintsModel
         for( int i = 0; i < parameterAnnotations.length; i++ )
         {
             Annotation[] parameterAnnotation = parameterAnnotations[ i ];
-            ValueConstraintsModel parameterConstraintsModel = constraintsModel.constraintsFor( parameterAnnotation, parameterTypes[ i ] );
+
+            Name nameAnnotation = AnnotationUtil.getAnnotationOfType( parameterAnnotation, Name.class );
+            String name = nameAnnotation == null ? "param" + ( i + 1 ) : nameAnnotation.value();
+
+            ValueConstraintsModel parameterConstraintsModel = constraintsModel.constraintsFor( parameterAnnotation, parameterTypes[ i ], name );
             if( parameterConstraintsModel.isConstrained() )
             {
                 constrained = true;

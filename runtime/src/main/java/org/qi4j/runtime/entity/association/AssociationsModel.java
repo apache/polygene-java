@@ -55,7 +55,7 @@ public final class AssociationsModel
         {
             if( AbstractAssociation.class.isAssignableFrom( method.getReturnType() ) )
             {
-                ValueConstraintsModel valueConstraintsModel = constraints.constraintsFor( method.getAnnotations(), AbstractAssociationInstance.getAssociationType( method ) );
+                ValueConstraintsModel valueConstraintsModel = constraints.constraintsFor( method.getAnnotations(), AbstractAssociationInstance.getAssociationType( method ), method.getName() );
                 ValueConstraintsInstance valueConstraintsInstance = null;
                 if( valueConstraintsModel.isConstrained() )
                 {

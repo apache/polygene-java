@@ -39,6 +39,18 @@ public class AnnotationUtil
         return null;
     }
 
+    public static <T extends Annotation> T getAnnotationOfType( Annotation[] annotations, Class<T> annotationType )
+    {
+        for( Annotation annotation : annotations )
+        {
+            if( annotationType.equals( annotation.annotationType() ) )
+            {
+                return annotationType.cast( annotation );
+            }
+        }
+        return null;
+    }
+
     public static boolean isDependencyAnnotation( Annotation annotation )
     {
         return annotation.annotationType().getAnnotation( InjectionScope.class ) != null;
@@ -47,6 +59,18 @@ public class AnnotationUtil
     public static boolean isConstraintAnnotation( Annotation annotation )
     {
         return annotation.annotationType().getAnnotation( ConstraintDeclaration.class ) != null;
+    }
+
+    public static boolean isCompositeConstraintAnnotation( Annotation annotation )
+    {
+        for( Annotation annotation1 : annotation.annotationType().getAnnotations() )
+        {
+            if( isConstraintAnnotation( annotation1 ) )
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static Set<Field> fieldsWithAnnotation( Set<Field> fields, Class<? extends Annotation> annotationType )
@@ -89,7 +113,10 @@ public class AnnotationUtil
 
     public static <T extends Annotation> T getAnnotation( Type type, Class<T> annotationType )
     {
-        if ( !( type instanceof Class ) ) return null;
-        return annotationType.cast(( (Class)type ).getAnnotation( annotationType ) );
+        if( !( type instanceof Class ) )
+        {
+            return null;
+        }
+        return annotationType.cast( ( (Class) type ).getAnnotation( annotationType ) );
     }
 }

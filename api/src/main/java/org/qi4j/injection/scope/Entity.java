@@ -20,7 +20,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import org.qi4j.injection.InjectionScope;
-import org.qi4j.injection.Name;
 
 /**
  * Annotation to denote the injection of a Query, QueryBuilder, or Entity prototype dependency into a Fragment.
@@ -41,5 +40,5 @@ import org.qi4j.injection.Name;
 @InjectionScope
 public @interface Entity
 {
-    @Name String value() default ""; // This name can be used for lookups of named queries
+    String value() default ""; // This name can be used for lookups of named queries
 }

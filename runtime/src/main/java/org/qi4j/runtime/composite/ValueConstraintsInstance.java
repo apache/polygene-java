@@ -25,11 +25,13 @@ import org.qi4j.composite.ConstraintViolation;
 public final class ValueConstraintsInstance
 {
     private final List<ConstraintInstance> constraints;
+    private String name;
 
-    public ValueConstraintsInstance( List<ConstraintModel> constraintModels )
+    public ValueConstraintsInstance( List<AbstractConstraintModel> constraintModels, String name )
     {
+        this.name = name;
         constraints = new ArrayList<ConstraintInstance>();
-        for( ConstraintModel constraintModel : constraintModels )
+        for( AbstractConstraintModel constraintModel : constraintModels )
         {
             ConstraintInstance instance = constraintModel.newInstance();
             constraints.add( instance );
@@ -58,7 +60,7 @@ public final class ValueConstraintsInstance
                 {
                     violations = new ArrayList<ConstraintViolation>();
                 }
-                ConstraintViolation violation = new ConstraintViolation( constraint.annotation(), value );
+                ConstraintViolation violation = new ConstraintViolation( name, constraint.annotation(), value );
                 violations.add( violation );
             }
         }

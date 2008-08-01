@@ -14,38 +14,27 @@
 
 package org.qi4j.runtime.composite;
 
-import java.util.List;
+import java.lang.annotation.Annotation;
 import org.qi4j.runtime.structure.ModelVisitor;
+import org.qi4j.spi.composite.ConstraintDescriptor;
 
 /**
  * TODO
  */
-public final class ValueConstraintsModel
+public abstract class AbstractConstraintModel
+    implements ConstraintDescriptor
 {
-    private final List<AbstractConstraintModel> constraintModels;
-    private String name;
+    protected final Annotation annotation;
 
-    public ValueConstraintsModel( List<AbstractConstraintModel> constraintModels, String name )
+    public AbstractConstraintModel( Annotation annotation )
     {
-        this.constraintModels = constraintModels;
-        this.name = name;
+        this.annotation = annotation;
     }
 
-    public ValueConstraintsInstance newInstance()
-    {
-        return new ValueConstraintsInstance( constraintModels, name );
-    }
-
-    public boolean isConstrained()
-    {
-        return !constraintModels.isEmpty();
-    }
+    public abstract ConstraintInstance<?, ?> newInstance();
 
     public void visitModel( ModelVisitor modelVisitor )
     {
-        for( AbstractConstraintModel constraintModel : constraintModels )
-        {
-            constraintModel.visitModel( modelVisitor );
-        }
+        modelVisitor.visit( this );
     }
 }

@@ -21,27 +21,44 @@ import org.qi4j.composite.ConstructionException;
 /**
  * TODO
  */
-public final class ConstraintModel
+public final class CompositeConstraintModel
     extends AbstractConstraintModel
 {
-    private final Class<? extends Constraint<?, ?>> constraintClass;
+    private ValueConstraintsModel constraintsModel;
 
-    public ConstraintModel( Annotation annotation, Class<? extends Constraint<?, ?>> constraintClass )
+    public CompositeConstraintModel( Annotation annotation, ValueConstraintsModel constraintsModel )
     {
         super( annotation );
-        this.constraintClass = constraintClass;
+        this.constraintsModel = constraintsModel;
     }
 
     public ConstraintInstance<?, ?> newInstance()
     {
         try
         {
-            Constraint<?, ?> constraint = constraintClass.newInstance();
+            ValueConstraintsInstance compositeConstraintsInstance = constraintsModel.newInstance();
+            Constraint<?, ?> constraint = new CompositeConstraintInstance( compositeConstraintsInstance );
             return new ConstraintInstance( constraint, annotation );
         }
         catch( Exception e )
         {
             throw new ConstructionException( "Could not instantiate constraint implementation", e );
+        }
+    }
+
+    private static class CompositeConstraintInstance
+        implements Constraint<Annotation, Object>
+    {
+        private ValueConstraintsInstance valueConstraintsInstance;
+
+        private CompositeConstraintInstance( ValueConstraintsInstance valueConstraintsInstance )
+        {
+            this.valueConstraintsInstance = valueConstraintsInstance;
+        }
+
+        public boolean isValid( Annotation annotation, Object value ) throws NullPointerException
+        {
+            return valueConstraintsInstance.checkConstraints( value ).size() == 0;
         }
     }
 }

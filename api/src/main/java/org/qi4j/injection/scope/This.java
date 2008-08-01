@@ -38,5 +38,5 @@ import org.qi4j.injection.Optional;
 @InjectionScope
 public @interface This
 {
-    @Optional public abstract boolean optional() default false; // True if the dependency is optional, only fail if this is false
+    @Optional boolean optional() default false; // True if the dependency is optional, only fail if this is false
 }

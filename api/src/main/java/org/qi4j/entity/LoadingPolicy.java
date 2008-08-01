@@ -15,7 +15,11 @@
 package org.qi4j.entity;
 
 import java.io.Serializable;
+import java.lang.reflect.Method;
+import java.util.HashSet;
 import java.util.Set;
+import org.qi4j.property.AbstractPropertyInstance;
+import org.qi4j.property.Property;
 
 /**
  * TODO
@@ -25,19 +29,18 @@ public final class LoadingPolicy
 {
     private static final long serialVersionUID = 1L;
 
-    private Set<Class<? extends EntityComposite>> loadCompositeTypes;
-    private Set<Class<?>> loadMixinTypes;
-    private Set<String> loadProperties;
+    private Set<String> loadProperties = new HashSet<String>(); // Qualified names of properties to load
+    private String name;
     private boolean recording;
 
-    public Set<Class<? extends EntityComposite>> loadCompositeTypes()
+    public LoadingPolicy()
     {
-        return loadCompositeTypes;
     }
 
-    public Set<Class<?>> loadMixinTypes()
+    public LoadingPolicy( String name, boolean recording )
     {
-        return loadMixinTypes;
+        this.name = name;
+        this.recording = recording;
     }
 
     public Set<String> loadProperties()
@@ -45,13 +48,46 @@ public final class LoadingPolicy
         return loadProperties;
     }
 
-    public void setRecording( boolean isRecording )
+    public LoadingPolicy setRecording( boolean isRecording )
     {
         recording = isRecording;
+        return this;
     }
 
     public boolean isRecording()
     {
         return recording;
+    }
+
+    public String name()
+    {
+        return name;
+    }
+
+    public LoadingPolicy setName( String name )
+    {
+        this.name = name;
+        return this;
+    }
+
+    public LoadingPolicy usesProperty( String qualifiedName )
+    {
+        loadProperties.add( qualifiedName );
+        return this;
+    }
+
+    public LoadingPolicy usesMixinType( Class<?> mixinType )
+    {
+        for( Method mixinMethod : mixinType.getMethods() )
+        {
+            if( Property.class.isAssignableFrom( mixinMethod.getReturnType() ) )
+            {
+                ;
+            }
+            {
+                loadProperties.add( AbstractPropertyInstance.getQualifiedName( mixinMethod ) );
+            }
+        }
+        return this;
     }
 }

@@ -21,6 +21,8 @@ public interface UnitOfWorkFactory
 {
     UnitOfWork newUnitOfWork();
 
+    UnitOfWork newUnitOfWork( LoadingPolicy loadingPolicy, String name );
+
     /**
      * Returns the UnitOfWork that is currently associated with the executing thread.
      *

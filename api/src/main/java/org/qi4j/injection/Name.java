@@ -21,11 +21,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation to denote that an annotation defines whether the result is optional or not
+ * Annotation for parameter names. This is used to add extra information for constraint exception.
  */
 @Retention( RetentionPolicy.RUNTIME )
-@Target( { ElementType.METHOD } )
+@Target( { ElementType.PARAMETER } )
 @Documented
 public @interface Name
 {
+    String value();
 }

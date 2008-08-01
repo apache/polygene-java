@@ -19,7 +19,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import org.qi4j.injection.InjectionScope;
-import org.qi4j.injection.Name;
 import org.qi4j.injection.Optional;
 
 /**
@@ -31,7 +30,7 @@ import org.qi4j.injection.Optional;
 @InjectionScope
 public @interface PropertyField
 {
-    @Name String value() default ""; // Name of the property. If not set then name will be name of field
+    String value() default ""; // Name of the property. If not set then name will be name of field
 
     @Optional boolean optional() default true; // Whether or not the property is optional. If optional then the default value will be used
 }

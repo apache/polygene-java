@@ -34,7 +34,8 @@ import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkCompletionException;
 import org.qi4j.entity.UnitOfWorkException;
 import org.qi4j.entity.UnitOfWorkSynchronization;
-import static org.qi4j.entity.UnitOfWorkSynchronization.UnitOfWorkStatus.*;
+import static org.qi4j.entity.UnitOfWorkSynchronization.UnitOfWorkStatus.COMPLETED;
+import static org.qi4j.entity.UnitOfWorkSynchronization.UnitOfWorkStatus.DISCARDED;
 import org.qi4j.object.ObjectBuilderFactory;
 import org.qi4j.query.QueryBuilderFactory;
 import org.qi4j.runtime.query.QueryBuilderFactoryImpl;
@@ -97,6 +98,12 @@ public final class UnitOfWorkInstance
     {
         this( moduleInstance );
         this.unitOfWorkStore = unitOfWorkStore;
+    }
+
+    public UnitOfWorkInstance( ModuleInstance moduleInstance, LoadingPolicy loadingPolicy )
+    {
+        this( moduleInstance );
+        this.loadingPolicy = loadingPolicy;
     }
 
     public <T> T newEntity( Class<T> compositeType )

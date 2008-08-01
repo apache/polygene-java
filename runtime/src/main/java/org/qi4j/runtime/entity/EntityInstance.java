@@ -21,6 +21,7 @@ import org.qi4j.composite.State;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.EntityCompositeNotFoundException;
 import org.qi4j.entity.Identity;
+import org.qi4j.entity.LoadingPolicy;
 import org.qi4j.entity.association.AbstractAssociation;
 import org.qi4j.property.Property;
 import org.qi4j.runtime.composite.CompositeMethodInstance;
@@ -64,6 +65,14 @@ public final class EntityInstance
         this.moduleInstance = moduleInstance;
         this.identity = identity;
         this.status = status;
+
+        // If we have a recording LoadingPolicy, wrap the EntityState
+        LoadingPolicy loadingPolicy = uow.loadingPolicy();
+        if( loadingPolicy != null && loadingPolicy.isRecording() )
+        {
+            entityState = new RecordingEntityState( entityState, loadingPolicy );
+        }
+
         this.entityState = entityState;
 
         proxy = entity.newProxy( this );
