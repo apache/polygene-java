@@ -17,15 +17,37 @@ import java.util.List;
 import org.qi4j.composite.Composite;
 import org.qi4j.library.constraints.annotation.Contains;
 import org.qi4j.library.constraints.annotation.Email;
+import org.qi4j.library.constraints.annotation.GreaterThan;
+import org.qi4j.library.constraints.annotation.InstanceOf;
+import org.qi4j.library.constraints.annotation.LessThan;
+import org.qi4j.library.constraints.annotation.Matches;
+import org.qi4j.library.constraints.annotation.MaxLength;
+import org.qi4j.library.constraints.annotation.MinLength;
 import org.qi4j.library.constraints.annotation.NotEmpty;
 import org.qi4j.library.constraints.annotation.NotNull;
+import org.qi4j.library.constraints.annotation.Range;
 import org.qi4j.property.Property;
 
+/**
+ * Test composite with all the constraints
+ */
 public interface TestCaseComposite extends Composite
 {
     @Contains( "foo" ) Property<String> containsString();
 
     @Email Property<String> email();
+
+    @GreaterThan( 10 ) Property<Integer> greaterThan();
+
+    @InstanceOf( List.class ) Property<Collection> instanceOf();
+
+    @LessThan( 10 ) Property<Integer> lessThan();
+
+    @Matches( "a*b*c*" ) Property<String> matches();
+
+    @MaxLength( 3 ) Property<String> maxLength();
+
+    @MinLength( 3 ) Property<String> minLength();
 
     @NotEmpty Property<String> notEmptyString();
 
@@ -34,4 +56,6 @@ public interface TestCaseComposite extends Composite
     @NotEmpty Property<List> notEmptyList();
 
     @NotNull Property<Object> notNullObject();
+
+    @Range( min = 0, max = 100 ) Property<Integer> range();
 }
