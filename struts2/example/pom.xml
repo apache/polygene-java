@@ -36,10 +36,27 @@
       <version>0.3-SNAPSHOT</version>
     </dependency>
 
+    <dependency>
+      <groupId>org.qi4j.extension</groupId>
+      <artifactId>qi4j-ext-indexing-rdf</artifactId>
+      <version>0.3-SNAPSHOT</version>
+    </dependency>
+        
+    <dependency>
+      <groupId>org.qi4j.library</groupId>
+      <artifactId>qi4j-lib-constraints</artifactId>
+      <version>0.3-SNAPSHOT</version>
+    </dependency>
+
     <!-- Struts2 -->
     <dependency>
       <groupId>org.apache.struts</groupId>
       <artifactId>struts2-sitemesh-plugin</artifactId>
+      <version>${version.struts2}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.struts</groupId>
+      <artifactId>struts2-codebehind-plugin</artifactId>
       <version>${version.struts2}</version>
     </dependency>
 
@@ -68,6 +85,11 @@
       <groupId>org.directwebremoting</groupId>
       <artifactId>dwr</artifactId>
       <version>2.0.3</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
     </dependency>
 
     <!-- Test -->

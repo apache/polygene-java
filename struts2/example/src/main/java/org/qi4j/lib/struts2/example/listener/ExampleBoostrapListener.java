@@ -19,9 +19,18 @@ package org.qi4j.lib.struts2.example.listener;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.entity.index.rdf.RdfQueryService;
+import org.qi4j.entity.index.rdf.memory.MemoryRepositoryService;
+import org.qi4j.entity.memory.IndexedMemoryEntityStoreService;
 import org.qi4j.lib.struts2.Qi4jApplicationBootstrapListener;
+import org.qi4j.lib.struts2.UnitOfWorkInterceptor;
+import org.qi4j.lib.struts2.example.Item;
+import org.qi4j.lib.struts2.example.actions.AddItem;
+import org.qi4j.lib.struts2.example.actions.EditItem;
 import org.qi4j.lib.struts2.example.actions.HelloWorldAction;
 import org.qi4j.lib.struts2.example.actions.IndexAction;
+import org.qi4j.lib.struts2.example.actions.ListItems;
+import org.qi4j.spi.entity.UuidIdentityGeneratorService;
 import org.qi4j.structure.Application;
 import org.qi4j.structure.Module;
 
@@ -38,7 +47,15 @@ public class ExampleBoostrapListener extends Qi4jApplicationBootstrapListener
             public void assemble( ModuleAssembly aModule )
                 throws AssemblyException
             {
-                aModule.addObjects( HelloWorldAction.class, IndexAction.class );
+                aModule.addEntities( Item.class );
+                aModule.addObjects( HelloWorldAction.class, IndexAction.class, UnitOfWorkInterceptor.class );
+                aModule.addComposites( AddItem.class, EditItem.class, ListItems.class );
+                aModule.addServices(
+                    IndexedMemoryEntityStoreService.class,
+                    UuidIdentityGeneratorService.class,
+                    MemoryRepositoryService.class,
+                    RdfQueryService.class
+                );
             }
         };
     }

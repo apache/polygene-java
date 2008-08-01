@@ -1,0 +1,51 @@
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+  <package name="example-base" extends="struts-default">
+    <interceptors>
+      <interceptor name="constraintViolation" class="org.qi4j.lib.struts2.ConstraintViolationInterceptor" />
+      <interceptor name="unitOfWork" class="org.qi4j.lib.struts2.UnitOfWorkInterceptor" />
+      
+      <interceptor-stack name="exampleStack">
+          <interceptor-ref name="exception" />
+          <interceptor-ref name="params" />
+          <interceptor-ref name="servletConfig" />
+          <interceptor-ref name="unitOfWork" />
+          <interceptor-ref name="prepare" />
+          <interceptor-ref name="i18n" />
+          <interceptor-ref name="debugging" />
+          <interceptor-ref name="profiling" />
+          <interceptor-ref name="checkbox" />
+          <interceptor-ref name="staticParams" />
+          <interceptor-ref name="params" />
+          <interceptor-ref name="conversionError" />
+          <interceptor-ref name="constraintViolation" />
+          <interceptor-ref name="validation">
+            <param name="excludeMethods">input,back,cancel,browse</param>
+          </interceptor-ref>
+          <interceptor-ref name="workflow">
+            <param name="excludeMethods">input,back,cancel,browse</param>
+          </interceptor-ref>
+      </interceptor-stack>
+    </interceptors>
+    
+    <default-interceptor-ref name="exampleStack" />
+
+    <action name="listItems" class="org.qi4j.lib.struts2.example.actions.ListItems">
+      <result name="success">/jsp/listItems.jsp</result>
+    </action>
+
+    <action name="addItem" class="org.qi4j.lib.struts2.example.actions.AddItem">
+      <result name="input">/jsp/addItem.jsp</result>
+      <result name="error">/jsp/addItem.jsp</result>
+      <result name="success" type="redirect">listItems</result>
+    </action>
+
+    <action name="editItem" class="org.qi4j.lib.struts2.example.actions.EditItem">
+      <result name="input">/jsp/editItem.jsp</result>
+      <result name="error">/jsp/editItem.jsp</result>
+      <result name="success" type="redirect">listItems</result>
+    </action>
+  </package>
+</struts>
