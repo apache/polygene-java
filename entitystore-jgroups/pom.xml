@@ -7,7 +7,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.qi4j.extension</groupId>
   <artifactId>qi4j-ext-entitystore-jgroups</artifactId>
-  <name>Qi4J Extension - JGroups Store</name>
+  <name>Qi4j Extension - JGroups Store</name>
   <version>0.3-SNAPSHOT</version>
   <packaging>bundle</packaging>
   

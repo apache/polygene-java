@@ -10,7 +10,7 @@
 	<groupId>org.qi4j.extension</groupId>
 	<artifactId>qi4j-ext-entitystore-javaspaces</artifactId>
 	<packaging>jar</packaging>
-	<name>Qi4J Extension - Entity Store - Java Spaces</name>
+	<name>Qi4j Extension - Entity Store - Java Spaces</name>
 	<dependencies>
 		<dependency>
 			<groupId>org.qi4j.core</groupId>

@@ -13,7 +13,7 @@
   <artifactId>qi4j-ext-indexing-rdf</artifactId>
   <packaging>bundle</packaging>
 
-  <name>Qi4J Extension - RDF Indexing</name>
+  <name>Qi4j Extension - RDF Indexing</name>
   <version>0.3-SNAPSHOT</version>
 
   <properties>

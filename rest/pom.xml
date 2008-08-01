@@ -7,7 +7,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.qi4j.extension</groupId>
   <artifactId>qi4j-ext-rest</artifactId>
-  <name>Qi4J Extension - REST Interface</name>
+  <name>Qi4j Extension - REST Interface</name>
   <version>0.3-SNAPSHOT</version>
   <packaging>bundle</packaging>
   <dependencies>
