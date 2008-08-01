@@ -25,7 +25,7 @@ import java.lang.reflect.Proxy;
  * based on identity of the service, which you can do this way:
  * new ServiceSelector<MyService>(services, ServiceSelector.id("someId"))
  */
-public class ServiceSelector<T>
+public final class ServiceSelector<T>
 {
     public static Selector<Object> id( final String anId )
     {

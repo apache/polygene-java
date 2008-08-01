@@ -7,7 +7,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.qi4j.core</groupId>
   <artifactId>qi4j-core-testsupport</artifactId>
-  <name>Qi4J Core - Test Support</name>
+  <name>Qi4j Core - Test Support</name>
   <version>0.3-SNAPSHOT</version>
   <dependencies>
     <dependency>

@@ -11,7 +11,7 @@
   <artifactId>qi4j-core-runtime</artifactId>
   <version>0.3-SNAPSHOT</version>
   <packaging>bundle</packaging>
-  <name>Qi4J Core - Runtime</name>
+  <name>Qi4j Core - Runtime</name>
 
   <dependencies>
     <dependency>

@@ -24,7 +24,7 @@ import org.qi4j.injection.scope.AssociationField;
 /**
  * Generic mixin for associations.
  */
-@AppliesTo( { AssociationMixin.AssocationFilter.class } )
+@AppliesTo( { AssociationMixin.AssociationFilter.class } )
 public class AssociationMixin
     implements InvocationHandler
 {
@@ -35,7 +35,7 @@ public class AssociationMixin
         return associations.getAssociation( method );
     }
 
-    public static class AssocationFilter
+    public static class AssociationFilter
         implements AppliesToFilter
     {
         public boolean appliesTo( Method method, Class<?> mixin, Class<?> compositeType, Class<?> modifierClass )

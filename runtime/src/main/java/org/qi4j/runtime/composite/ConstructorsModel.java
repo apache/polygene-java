@@ -32,6 +32,7 @@ import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.util.AnnotationUtil;
+import org.qi4j.spi.composite.CompositeDescriptor;
 
 /**
  * TODO
@@ -107,7 +108,13 @@ public final class ConstructorsModel
 
         if( boundConstructor == null )
         {
-            throw new BindingException( "Found no constructor that could be bound" );
+            String toString = resolution.composite().toString();
+            String message = "Found no constructor that could be bound: " + toString;
+            if( toString.indexOf( '$' ) >= 0 )
+            {
+                message = message + "\nNon-static inner classes can not be used as Mixin implementations.";
+            }
+            throw new BindingException( message );
         }
     }
 

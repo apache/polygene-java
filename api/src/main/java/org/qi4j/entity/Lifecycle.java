@@ -19,7 +19,7 @@ import org.qi4j.composite.Mixins;
 /**
  * Lifecycle interface for all Composites.
  * <p/>
- * This Lifecycle interface is a built-in feature of the Qi4J runtime, which will establish
+ * This Lifecycle interface is a built-in feature of the Qi4j runtime, which will establish
  * any Invocation stack against Lifecycle.class, but the Composite interface should never expose
  * it to client code.
  * <p/>
@@ -85,7 +85,7 @@ public interface Lifecycle
     /**
      * Creation callback method.
      * <p/>
-     * Called by the Qi4J runtime before the newInstance of the composite completes, allowing
+     * Called by the Qi4j runtime before the newInstance of the composite completes, allowing
      * for additional initialization.
      */
     void create();
@@ -93,7 +93,7 @@ public interface Lifecycle
     /**
      * Removal callback method.
      * <p/>
-     * Called by the Qi4J runtime before the composite is removed from the system, allowing
+     * Called by the Qi4j runtime before the composite is removed from the system, allowing
      * for clean-up operations.
      */
     void remove();

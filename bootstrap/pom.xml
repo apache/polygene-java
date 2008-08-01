@@ -12,7 +12,7 @@
   <artifactId>qi4j-core-bootstrap</artifactId>
   <version>0.3-SNAPSHOT</version>
   <packaging>bundle</packaging>
-  <name>Qi4J Core - Bootstrap</name>
+  <name>Qi4j Core - Bootstrap</name>
 
   <contributors>
     <contributor>

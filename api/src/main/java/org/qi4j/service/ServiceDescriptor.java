@@ -20,8 +20,6 @@ import org.qi4j.util.MetaInfo;
 /**
  * {@code ServiceDescriptor} provides meta informations of a service.
  *
- * @author Rickard Öberg
- * @since 0.1.0
  */
 public final class ServiceDescriptor
 {

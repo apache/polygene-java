@@ -31,8 +31,9 @@ import org.qi4j.property.PropertyMapper;
 /**
  * Provide Configurations for Services. A Service that wants to be configurable
  * should inject a reference to Configuration with the Configuration type:
- *
- * @This Configuration<MyServiceConfiguration> config;
+ * <code><pre>
+ * &#64;This Configuration&#60;MyServiceConfiguration&#62; config;
+ * </pre></code>
  * where MyServiceConfiguration extends EntityComposite. The Configuration implementation
  * will either locate an instance of the given Configuration type in the
  * persistent store using the identity of the Service, or create a new such instance
@@ -82,7 +83,8 @@ public interface Configuration<T>
             uow = uowf.newUnitOfWork();
             try
             {
-                configuration = (T) uow.find( descriptor.identity(), configurationType );
+                String identity = descriptor.identity();
+                configuration = (T) uow.find( identity, configurationType );
             }
             catch( EntityCompositeNotFoundException e )
             {
@@ -90,7 +92,7 @@ public interface Configuration<T>
                 configuration = (T) uow.newEntityBuilder( descriptor.identity(), configurationType ).newInstance();
 
                 // Check for defaults
-                InputStream asStream = getClass().getResourceAsStream( "/" + descriptor.identity() + ".properties" );
+                InputStream asStream = descriptor.type().getResourceAsStream( descriptor.identity() + ".properties" );
                 if( asStream != null )
                 {
                     PropertyMapper.map( asStream, (Composite) configuration );
@@ -99,7 +101,10 @@ public interface Configuration<T>
                 uow = uowf.newUnitOfWork();
                 configuration = uow.dereference( configuration );
             }
-            uow.pause();
+            finally
+            {
+                uow.pause();
+            }
         }
 
         public T configuration()
