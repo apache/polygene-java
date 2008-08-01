@@ -2,11 +2,11 @@ package org.qi4j.lib.struts2;
 
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkFactory;
+import org.qi4j.injection.scope.Structure;
 
 import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.XWorkException;
-import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
 import com.opensymphony.xwork2.interceptor.PreResultListener;
 
@@ -27,13 +27,9 @@ import com.opensymphony.xwork2.interceptor.PreResultListener;
  */
 public class UnitOfWorkInterceptor extends AbstractInterceptor {
 
+    @Structure
     private UnitOfWorkFactory uowf;
-    
-    @Inject
-    public void setUnitOfWorkFactory(UnitOfWorkFactory uowf) {
-        this.uowf = uowf;
-    }
-    
+        
     @Override
     public String intercept(ActionInvocation invocation) throws Exception {
         boolean createdUnitOfWork = false;

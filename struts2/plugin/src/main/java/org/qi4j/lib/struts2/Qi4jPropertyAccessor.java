@@ -17,7 +17,7 @@ import org.qi4j.composite.ConstraintViolationException;
 import org.qi4j.lib.struts2.ConstraintViolationInterceptor.FieldConstraintViolations;
 import org.qi4j.property.Property;
 
-import com.opensymphony.xwork2.util.XWorkConverter;
+import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
 
 /**
  * <p>An implementation of the ObjectPropertyAccessor that provides conversion for Qi4j properties.  The typical way that

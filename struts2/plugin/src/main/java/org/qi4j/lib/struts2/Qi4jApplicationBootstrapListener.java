@@ -16,20 +16,21 @@
  */
 package org.qi4j.lib.struts2;
 
+import static org.qi4j.lib.struts2.Constants.SERVLET_ATTRIBUTE;
+
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-import javax.servlet.ServletException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.qi4j.bootstrap.ApplicationAssembly;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.Energy4Java;
-import static org.qi4j.lib.struts2.Constants.SERVLET_ATTRIBUTE;
 import org.qi4j.structure.Application;
 import org.qi4j.structure.Module;
+
+import com.opensymphony.xwork2.util.logging.Logger;
+import com.opensymphony.xwork2.util.logging.LoggerFactory;
 
 /**
  * @author edward.yakop@gmail.com
@@ -37,7 +38,7 @@ import org.qi4j.structure.Module;
 public abstract class Qi4jApplicationBootstrapListener
     implements ServletContextListener
 {
-    private static final Log LOG = LogFactory.getLog( Qi4jApplicationBootstrapListener.class );
+    private static final Logger LOG = LoggerFactory.getLogger( Qi4jApplicationBootstrapListener.class );
 
     private Application application;
 
