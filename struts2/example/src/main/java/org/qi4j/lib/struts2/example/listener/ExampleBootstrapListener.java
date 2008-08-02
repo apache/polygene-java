@@ -22,6 +22,7 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entity.index.rdf.RdfQueryService;
 import org.qi4j.entity.index.rdf.memory.MemoryRepositoryService;
 import org.qi4j.entity.memory.IndexedMemoryEntityStoreService;
+import org.qi4j.lib.struts2.ActionConfiguration;
 import org.qi4j.lib.struts2.Qi4jApplicationBootstrapListener;
 import org.qi4j.lib.struts2.bootstrap.Struts2PluginAssembler;
 import org.qi4j.lib.struts2.example.Item;
@@ -47,11 +48,13 @@ public class ExampleBootstrapListener extends Qi4jApplicationBootstrapListener
             public void assemble( ModuleAssembly aModule )
                 throws AssemblyException
             {
-                aModule.addAssembler( new Struts2PluginAssembler() );
+                ActionConfiguration actionConfiguration = new ActionConfiguration( "org.qi4j.lib.struts2.example.actions" );
+                actionConfiguration.addObjects( HelloWorldAction.class, IndexAction.class );
+                actionConfiguration.addComposites( AddItem.class, EditItem.class, ListItems.class );
+                
+                aModule.addAssembler( new Struts2PluginAssembler( actionConfiguration ) );
 
                 aModule.addEntities( Item.class );
-                aModule.addObjects( HelloWorldAction.class, IndexAction.class );
-                aModule.addComposites( AddItem.class, EditItem.class, ListItems.class );
                 aModule.addServices(
                     IndexedMemoryEntityStoreService.class,
                     UuidIdentityGeneratorService.class,

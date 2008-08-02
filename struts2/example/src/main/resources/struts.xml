@@ -2,6 +2,9 @@
     "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
     "http://struts.apache.org/dtds/struts-2.0.dtd">
 <struts>
+  <constant name="struts.configuration.classpath.disableActionScanning" value="true" />
+  <constant name="struts.configuration.classpath.defaultParentPackage" value="example-base" />
+  
   <package name="example-base" extends="struts-default">
     <interceptors>
       <interceptor name="constraintViolation" class="org.qi4j.lib.struts2.ConstraintViolationInterceptor" />
@@ -32,6 +35,7 @@
     
     <default-interceptor-ref name="exampleStack" />
 
+<!--
     <action name="listItems" class="org.qi4j.lib.struts2.example.actions.ListItems">
       <result name="success">/jsp/listItems.jsp</result>
     </action>
@@ -47,5 +51,6 @@
       <result name="error">/jsp/editItem.jsp</result>
       <result name="success" type="redirect">listItems</result>
     </action>
+-->
   </package>
 </struts>

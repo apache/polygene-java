@@ -23,7 +23,7 @@
   </filter>
   <filter>
     <filter-name>action2</filter-name>
-    <filter-class>org.apache.struts2.dispatcher.FilterDispatcher</filter-class>
+    <filter-class>org.qi4j.lib.struts2.Qi4jFilterDispatcher</filter-class>
     <init-param>
       <param-name>actionPackages</param-name>
       <param-value>org.qi4j.lib.struts2.example.actions</param-value>

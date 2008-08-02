@@ -19,7 +19,11 @@ package org.qi4j.lib.struts2.bootstrap;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.lib.struts2.ActionConfiguration;
+import org.qi4j.lib.struts2.ActionService;
+import org.qi4j.lib.struts2.Qi4jPackageProvider;
 import org.qi4j.lib.struts2.UnitOfWorkInterceptor;
+import org.qi4j.structure.Visibility;
 
 /**
  * @author edward.yakop@gmail.com
@@ -27,11 +31,21 @@ import org.qi4j.lib.struts2.UnitOfWorkInterceptor;
 public class Struts2PluginAssembler
     implements Assembler
 {
+    private final ActionConfiguration actionConfiguration;
+    
+    public Struts2PluginAssembler( ActionConfiguration actionConfiguration )
+    {
+        this.actionConfiguration = actionConfiguration;
+    }
+
     public void assemble( ModuleAssembly aModuleAssembly )
         throws AssemblyException
     {
         aModuleAssembly.addObjects(
             UnitOfWorkInterceptor.class
-        );
+        ).visibleIn( Visibility.module );
+        aModuleAssembly.addObjects( Qi4jPackageProvider.class ).visibleIn( Visibility.module );
+        aModuleAssembly.addServices( ActionService.class ).setMetaInfo( actionConfiguration ).visibleIn( Visibility.module );
+        actionConfiguration.assemble( aModuleAssembly );
     }
 }

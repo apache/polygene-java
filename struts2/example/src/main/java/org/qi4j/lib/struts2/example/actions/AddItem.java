@@ -3,6 +3,10 @@ package org.qi4j.lib.struts2.example.actions;
 import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.Preparable;
+
+import org.apache.struts2.config.Result;
+import org.apache.struts2.config.Results;
+import org.apache.struts2.dispatcher.ServletActionRedirectResult;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.Mixins;
 import org.qi4j.entity.EntityBuilder;
@@ -12,6 +16,11 @@ import org.qi4j.injection.scope.Structure;
 import org.qi4j.lib.struts2.example.Item;
 
 @Mixins( AddItem.Mixin.class )
+@Results({
+    @Result(name="input", value="/jsp/addItem.jsp"),
+    @Result(name="error", value="/jsp/addItem.jsp"),    
+    @Result(name="success", value="listItems", type=ServletActionRedirectResult.class)
+})
 public interface AddItem extends Preparable, Action, Composite
 {
 

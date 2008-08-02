@@ -1,22 +1,25 @@
 package org.qi4j.lib.struts2;
 
-import static com.opensymphony.xwork2.util.XWorkConverter.CONVERSION_PROPERTY_FULLNAME;
+import static com.opensymphony.xwork2.conversion.impl.XWorkConverter.CONVERSION_PROPERTY_FULLNAME;
+import static ognl.OgnlRuntime.getConvertedType;
+import static ognl.OgnlRuntime.getFieldValue;
+import static org.qi4j.lib.struts2.ConstraintViolationInterceptor.CONTEXT_CONSTRAINT_VIOLATIONS;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
 import ognl.MethodFailedException;
 import ognl.ObjectMethodAccessor;
 import ognl.ObjectPropertyAccessor;
 import ognl.OgnlContext;
 import ognl.OgnlException;
-import static ognl.OgnlRuntime.getConvertedType;
-import static ognl.OgnlRuntime.getFieldValue;
+
 import org.qi4j.composite.ConstraintViolation;
 import org.qi4j.composite.ConstraintViolationException;
 import org.qi4j.entity.association.Association;
 import org.qi4j.entity.association.ManyAssociation;
-import static org.qi4j.lib.struts2.ConstraintViolationInterceptor.CONTEXT_CONSTRAINT_VIOLATIONS;
-import static org.qi4j.lib.struts2.ConstraintViolationInterceptor.FieldConstraintViolations;
+import org.qi4j.lib.struts2.ConstraintViolationInterceptor.FieldConstraintViolations;
 import org.qi4j.property.Property;
 
 /**

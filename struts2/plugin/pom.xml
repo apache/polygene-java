@@ -27,6 +27,11 @@
       <artifactId>struts2-core</artifactId>
       <version>${version.struts2}</version>
     </dependency>
+    <dependency>
+      <groupId>org.apache.struts</groupId>
+      <artifactId>struts2-codebehind-plugin</artifactId>
+      <version>${version.struts2}</version>
+    </dependency>
 
     <!-- servlet. The version must be the same with struts2-core dependency -->
     <dependency>

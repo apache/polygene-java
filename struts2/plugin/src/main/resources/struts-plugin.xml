@@ -32,4 +32,5 @@
 
   <bean type="ognl.PropertyAccessor" name="org.qi4j.composite.Composite"
         class="org.qi4j.lib.struts2.Qi4jPropertyAccessor"/>
+  <bean type="com.opensymphony.xwork2.config.PackageProvider" name="qi4j" class="org.qi4j.lib.struts2.Qi4jPackageProvider" />
 </struts>

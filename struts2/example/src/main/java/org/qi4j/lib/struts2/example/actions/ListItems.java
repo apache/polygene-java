@@ -3,6 +3,8 @@ package org.qi4j.lib.struts2.example.actions;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.struts2.config.Result;
+import org.apache.struts2.config.Results;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.Mixins;
 import org.qi4j.entity.UnitOfWork;
@@ -16,6 +18,9 @@ import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionSupport;
 
 @Mixins({ListItems.Mixin.class})
+@Results({
+    @Result(name="success", value="/jsp/listItems.jsp")
+})
 public interface ListItems extends Action, Composite {
 
     List<Item> list();
