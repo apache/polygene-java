@@ -1,4 +1,4 @@
-package org.qi4j.lib.struts2.example.actions;
+package org.qi4j.library.struts2.example.actions;
 
 import org.apache.struts2.config.Result;
 import org.apache.struts2.config.Results;
@@ -8,7 +8,7 @@ import org.qi4j.composite.Mixins;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkFactory;
 import org.qi4j.injection.scope.Structure;
-import org.qi4j.lib.struts2.example.Item;
+import org.qi4j.library.struts2.example.Item;
 
 import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionSupport;

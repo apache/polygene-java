@@ -1,4 +1,4 @@
-package org.qi4j.lib.struts2;
+package org.qi4j.library.struts2;
 
 import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionInvocation;

@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.lib.struts2.example.converters;
+package org.qi4j.library.struts2.example.converters;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

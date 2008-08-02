@@ -1,9 +1,9 @@
-package org.qi4j.lib.struts2;
+package org.qi4j.library.struts2;
 
 import static com.opensymphony.xwork2.conversion.impl.XWorkConverter.CONVERSION_PROPERTY_FULLNAME;
 import static ognl.OgnlRuntime.getConvertedType;
 import static ognl.OgnlRuntime.getFieldValue;
-import static org.qi4j.lib.struts2.ConstraintViolationInterceptor.CONTEXT_CONSTRAINT_VIOLATIONS;
+import static org.qi4j.library.struts2.ConstraintViolationInterceptor.CONTEXT_CONSTRAINT_VIOLATIONS;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -19,7 +19,7 @@ import org.qi4j.composite.ConstraintViolation;
 import org.qi4j.composite.ConstraintViolationException;
 import org.qi4j.entity.association.Association;
 import org.qi4j.entity.association.ManyAssociation;
-import org.qi4j.lib.struts2.ConstraintViolationInterceptor.FieldConstraintViolations;
+import org.qi4j.library.struts2.ConstraintViolationInterceptor.FieldConstraintViolations;
 import org.qi4j.property.Property;
 
 /**

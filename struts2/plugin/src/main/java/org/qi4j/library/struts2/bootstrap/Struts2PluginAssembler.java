@@ -14,15 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.lib.struts2.bootstrap;
+package org.qi4j.library.struts2.bootstrap;
 
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.lib.struts2.ActionConfiguration;
-import org.qi4j.lib.struts2.ActionService;
-import org.qi4j.lib.struts2.Qi4jPackageProvider;
-import org.qi4j.lib.struts2.UnitOfWorkInterceptor;
+import org.qi4j.library.struts2.ActionConfiguration;
+import org.qi4j.library.struts2.ActionService;
+import org.qi4j.library.struts2.Qi4jPackageProvider;
+import org.qi4j.library.struts2.UnitOfWorkInterceptor;
 import org.qi4j.structure.Visibility;
 
 /**

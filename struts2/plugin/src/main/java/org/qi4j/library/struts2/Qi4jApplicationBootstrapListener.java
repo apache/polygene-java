@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.lib.struts2;
+package org.qi4j.library.struts2;
 
 import java.util.logging.Logger;
 import javax.servlet.ServletContext;
@@ -24,7 +24,9 @@ import org.qi4j.bootstrap.ApplicationAssembly;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.Energy4Java;
-import static org.qi4j.lib.struts2.Constants.SERVLET_ATTRIBUTE;
+
+import static org.qi4j.library.struts2.Constants.SERVLET_ATTRIBUTE;
+
 import org.qi4j.structure.Application;
 import org.qi4j.structure.Module;
 

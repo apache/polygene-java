@@ -7,8 +7,8 @@
   
   <package name="example-base" extends="struts-default">
     <interceptors>
-      <interceptor name="constraintViolation" class="org.qi4j.lib.struts2.ConstraintViolationInterceptor" />
-      <interceptor name="unitOfWork" class="org.qi4j.lib.struts2.UnitOfWorkInterceptor" />
+      <interceptor name="constraintViolation" class="org.qi4j.library.struts2.ConstraintViolationInterceptor" />
+      <interceptor name="unitOfWork" class="org.qi4j.library.struts2.UnitOfWorkInterceptor" />
       
       <interceptor-stack name="exampleStack">
           <interceptor-ref name="exception" />
@@ -36,17 +36,17 @@
     <default-interceptor-ref name="exampleStack" />
 
 <!--
-    <action name="listItems" class="org.qi4j.lib.struts2.example.actions.ListItems">
+    <action name="listItems" class="org.qi4j.library.struts2.example.actions.ListItems">
       <result name="success">/jsp/listItems.jsp</result>
     </action>
 
-    <action name="addItem" class="org.qi4j.lib.struts2.example.actions.AddItem">
+    <action name="addItem" class="org.qi4j.library.struts2.example.actions.AddItem">
       <result name="input">/jsp/addItem.jsp</result>
       <result name="error">/jsp/addItem.jsp</result>
       <result name="success" type="redirect">listItems</result>
     </action>
 
-    <action name="editItem" class="org.qi4j.lib.struts2.example.actions.EditItem">
+    <action name="editItem" class="org.qi4j.library.struts2.example.actions.EditItem">
       <result name="input">/jsp/editItem.jsp</result>
       <result name="error">/jsp/editItem.jsp</result>
       <result name="success" type="redirect">listItems</result>

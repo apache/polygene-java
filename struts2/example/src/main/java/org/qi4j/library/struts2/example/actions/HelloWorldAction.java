@@ -15,49 +15,56 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.lib.struts2.example.actions;
+package org.qi4j.library.struts2.example.actions;
 
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.conversion.annotations.Conversion;
 import com.opensymphony.xwork2.conversion.annotations.TypeConversion;
+import com.opensymphony.xwork2.validator.annotations.RequiredFieldValidator;
+import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
+import com.opensymphony.xwork2.validator.annotations.Validation;
 import java.util.Date;
 import org.apache.struts2.config.Result;
-import org.qi4j.injection.scope.Structure;
-import org.qi4j.structure.Layer;
-import org.qi4j.structure.Module;
+import org.apache.struts2.config.Results;
 
+@Validation
 @Conversion
-@Result( value = "/jsp/index.jsp" )
-public class IndexAction extends ActionSupport
+@Results( { @Result( name = "input", value = "/jsp/index.jsp" ), @Result( value = "/jsp/helloWorld.jsp" ) } )
+public class HelloWorldAction extends ActionSupport
 {
 
     private static final long serialVersionUID = 1L;
 
-    @Structure private Module module;
-
     private Date now;
+    private String name;
 
-    public IndexAction()
+    @TypeConversion( converter = "org.qi4j.library.struts2.example.converters.DateConverter" )
+    @RequiredFieldValidator( message = "Please enter the date" )
+    public void setDateNow( Date dateNow )
     {
-        now = new Date();
+        now = dateNow;
     }
 
-    @TypeConversion( converter = "org.qi4j.lib.struts2.example.converters.DateConverter" )
     public Date getDateNow()
     {
         return now;
     }
 
-    public String getModuleName()
+    @RequiredStringValidator( message = "Please enter a name", trim = true )
+    public void setName( String userName )
     {
-        return module.name();
+        name = userName;
+    }
+
+    public String getName()
+    {
+        return name;
     }
 
     @Override
     public String execute()
         throws Exception
     {
-        now = new Date();
         return SUCCESS;
     }
 }

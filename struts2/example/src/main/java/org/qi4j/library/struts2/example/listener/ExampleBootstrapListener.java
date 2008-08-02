@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.lib.struts2.example.listener;
+package org.qi4j.library.struts2.example.listener;
 
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
@@ -22,15 +22,15 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entity.index.rdf.RdfQueryService;
 import org.qi4j.entity.index.rdf.memory.MemoryRepositoryService;
 import org.qi4j.entity.memory.IndexedMemoryEntityStoreService;
-import org.qi4j.lib.struts2.ActionConfiguration;
-import org.qi4j.lib.struts2.Qi4jApplicationBootstrapListener;
-import org.qi4j.lib.struts2.bootstrap.Struts2PluginAssembler;
-import org.qi4j.lib.struts2.example.Item;
-import org.qi4j.lib.struts2.example.actions.AddItem;
-import org.qi4j.lib.struts2.example.actions.EditItem;
-import org.qi4j.lib.struts2.example.actions.HelloWorldAction;
-import org.qi4j.lib.struts2.example.actions.IndexAction;
-import org.qi4j.lib.struts2.example.actions.ListItems;
+import org.qi4j.library.struts2.ActionConfiguration;
+import org.qi4j.library.struts2.Qi4jApplicationBootstrapListener;
+import org.qi4j.library.struts2.bootstrap.Struts2PluginAssembler;
+import org.qi4j.library.struts2.example.Item;
+import org.qi4j.library.struts2.example.actions.AddItem;
+import org.qi4j.library.struts2.example.actions.EditItem;
+import org.qi4j.library.struts2.example.actions.HelloWorldAction;
+import org.qi4j.library.struts2.example.actions.IndexAction;
+import org.qi4j.library.struts2.example.actions.ListItems;
 import org.qi4j.spi.entity.UuidIdentityGeneratorService;
 import org.qi4j.structure.Application;
 import org.qi4j.structure.Module;

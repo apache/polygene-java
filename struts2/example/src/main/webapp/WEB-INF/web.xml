@@ -9,7 +9,7 @@
 
   <!-- Listeners -->
   <listener>
-    <listener-class>org.qi4j.lib.struts2.example.listener.ExampleBootstrapListener</listener-class>
+    <listener-class>org.qi4j.library.struts2.example.listener.ExampleBootstrapListener</listener-class>
   </listener>
 
   <!-- Filters -->
@@ -23,10 +23,10 @@
   </filter>
   <filter>
     <filter-name>action2</filter-name>
-    <filter-class>org.qi4j.lib.struts2.Qi4jFilterDispatcher</filter-class>
+    <filter-class>org.qi4j.library.struts2.Qi4jFilterDispatcher</filter-class>
     <init-param>
       <param-name>actionPackages</param-name>
-      <param-value>org.qi4j.lib.struts2.example.actions</param-value>
+      <param-value>org.qi4j.library.struts2.example.actions</param-value>
     </init-param>
   </filter>
 

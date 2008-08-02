@@ -1,4 +1,4 @@
-package org.qi4j.lib.struts2.example.actions;
+package org.qi4j.library.struts2.example.actions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +10,7 @@ import org.qi4j.composite.Mixins;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkFactory;
 import org.qi4j.injection.scope.Structure;
-import org.qi4j.lib.struts2.example.Item;
+import org.qi4j.library.struts2.example.Item;
 import org.qi4j.query.QueryBuilder;
 import org.qi4j.query.QueryBuilderFactory;
 

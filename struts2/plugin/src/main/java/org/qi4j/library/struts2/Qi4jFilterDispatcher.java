@@ -1,6 +1,6 @@
-package org.qi4j.lib.struts2;
+package org.qi4j.library.struts2;
 
-import static org.qi4j.lib.struts2.Constants.SERVLET_ATTRIBUTE;
+import static org.qi4j.library.struts2.Constants.SERVLET_ATTRIBUTE;
 
 import javax.servlet.FilterConfig;
 
@@ -26,6 +26,13 @@ public class Qi4jFilterDispatcher extends FilterDispatcher
     protected Dispatcher createDispatcher( final FilterConfig filterConfig )
     {
         Dispatcher dispatcher = super.createDispatcher( filterConfig );
+        ConfigurationManager configurationManager = createConfigurationManager( filterConfig );
+        dispatcher.setConfigurationManager(configurationManager);
+        return dispatcher;
+    }
+
+    protected ConfigurationManager createConfigurationManager( final FilterConfig filterConfig )
+    {
         ConfigurationManager configurationManager = new ConfigurationManager( BeanSelectionProvider.DEFAULT_BEAN_NAME );
         configurationManager.addContainerProvider(new ContainerProvider() {
             private boolean registered = false;
@@ -56,8 +63,7 @@ public class Qi4jFilterDispatcher extends FilterDispatcher
             public void init(com.opensymphony.xwork2.config.Configuration configuration) throws ConfigurationException {}
             public void destroy() {}
         });
-        dispatcher.setConfigurationManager(configurationManager);
-        return dispatcher;
+        return configurationManager;
     }
         
     private UnitOfWorkFactory getUnitOfWorkFactory(FilterConfig filterConfig ) {

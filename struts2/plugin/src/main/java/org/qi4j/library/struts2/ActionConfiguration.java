@@ -1,4 +1,4 @@
-package org.qi4j.lib.struts2;
+package org.qi4j.library.struts2;
 
 import java.io.Serializable;
 import java.util.Collections;

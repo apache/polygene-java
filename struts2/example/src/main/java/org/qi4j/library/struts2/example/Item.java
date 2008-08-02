@@ -1,4 +1,4 @@
-package org.qi4j.lib.struts2.example;
+package org.qi4j.library.struts2.example;
 
 import org.qi4j.entity.EntityComposite;
 

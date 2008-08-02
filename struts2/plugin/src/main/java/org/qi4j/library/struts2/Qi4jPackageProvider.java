@@ -1,4 +1,4 @@
-package org.qi4j.lib.struts2;
+package org.qi4j.library.struts2;
 
 import java.lang.annotation.Annotation;
 import java.net.MalformedURLException;

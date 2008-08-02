@@ -1,4 +1,4 @@
-package org.qi4j.lib.struts2.example.actions;
+package org.qi4j.library.struts2.example.actions;
 
 import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionSupport;
@@ -13,7 +13,7 @@ import org.qi4j.entity.EntityBuilder;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkFactory;
 import org.qi4j.injection.scope.Structure;
-import org.qi4j.lib.struts2.example.Item;
+import org.qi4j.library.struts2.example.Item;
 
 @Mixins( AddItem.Mixin.class )
 @Results({
