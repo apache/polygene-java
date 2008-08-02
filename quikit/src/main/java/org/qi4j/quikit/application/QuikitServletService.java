@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2008, Rickard �berg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -11,28 +11,13 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.quikit.application;
 
-import java.io.Serializable;
+import javax.servlet.Servlet;
+import org.qi4j.composite.Mixins;
+import org.qi4j.service.ServiceComposite;
 
-/**
- * TODO
- */
-public class ServletInfo
-    implements Serializable
+@Mixins( QuikItServlet.class )
+public interface QuikitServletService extends Servlet, ServiceComposite
 {
-    private static final long serialVersionUID = 1L;
-
-    private final String path;
-
-    public ServletInfo( String aPath )
-    {
-        path = aPath;
-    }
-
-    public String getPath()
-    {
-        return path;
-    }
 }

@@ -11,7 +11,7 @@
  * limitations under the License.
  *
  */
-package org.qi4j.quikit.application.jetty;
+package org.qi4j.library.http;
 
 import java.io.Serializable;
 import org.qi4j.library.constraints.annotation.Range;

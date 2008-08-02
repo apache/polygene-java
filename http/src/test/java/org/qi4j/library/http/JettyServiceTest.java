@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.quikit.application.jetty;
+package org.qi4j.library.http;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -28,7 +28,6 @@ import static junit.framework.Assert.assertTrue;
 import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.quikit.application.ServletInfo;
 import org.qi4j.service.ServiceReference;
 import org.qi4j.test.AbstractQi4jTest;
 

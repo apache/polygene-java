@@ -14,15 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.quikit.application.jetty;
+package org.qi4j.library.http;
 
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
 import org.qi4j.library.constraints.annotation.NotNull;
-import org.qi4j.quikit.application.jetty.HttpConfiguration;
-import org.qi4j.quikit.application.jetty.JettyService;
+import org.qi4j.library.http.HttpConfiguration;
+import org.qi4j.library.http.JettyService;
 
 /**
  * @author edward.yakop@gmail.com

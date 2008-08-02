@@ -1,20 +1,18 @@
-/*  Copyright 2008 Edward Yakop.
+/*
+ * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
- * implied.
- *
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
  */
-package org.qi4j.quikit.application.jetty;
+
+package org.qi4j.library.http;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -24,17 +22,21 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * @author edward.yakop@gmail.com
+ * TODO
  */
-public final class HelloWorldServlet extends HttpServlet
+public class WelcomeServlet
+    extends HttpServlet
 {
     private static final long serialVersionUID = 1L;
 
-    @Override
-    protected final void doGet( HttpServletRequest req, HttpServletResponse resp )
-        throws ServletException, IOException
+    @Override public void init() throws ServletException
     {
-        PrintWriter writer = resp.getWriter();
-        writer.append( "Hello World" );
+        super.init();
+    }
+
+    @Override protected void doGet( HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse ) throws ServletException, IOException
+    {
+        PrintWriter writer = httpServletResponse.getWriter();
+        writer.println( "Welcome!" );
     }
 }

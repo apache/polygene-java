@@ -12,7 +12,7 @@
  *
  */
 
-package org.qi4j.quikit.application.jetty;
+package org.qi4j.library.http;
 
 import java.io.File;
 import java.net.URL;
@@ -27,7 +27,6 @@ import org.mortbay.jetty.servlet.DefaultServlet;
 import org.mortbay.jetty.servlet.ServletHolder;
 import org.qi4j.injection.scope.Service;
 import org.qi4j.injection.scope.Uses;
-import org.qi4j.quikit.application.ServletInfo;
 import org.qi4j.service.Activatable;
 import org.qi4j.service.ServiceDescriptor;
 import org.qi4j.service.ServiceReference;

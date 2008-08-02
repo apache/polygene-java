@@ -22,8 +22,7 @@ import org.qi4j.quikit.application.QuikItFilter;
 import org.qi4j.quikit.application.QuikItServlet;
 import org.qi4j.quikit.application.QuikItServletServiceFactory;
 import org.qi4j.quikit.application.QuikitSession;
-import org.qi4j.quikit.application.ServletInfo;
-import org.qi4j.quikit.application.ServletService;
+import org.qi4j.quikit.application.QuikitServletService;
 import org.qi4j.quikit.assembly.composites.QuikItApplicationFactoryComposite;
 import org.qi4j.quikit.assembly.composites.QuikItPageFactoryComposite;
 import org.qi4j.quikit.pages.EntityFormEditPage;
@@ -35,6 +34,7 @@ import org.qi4j.quikit.panels.EntityFormViewPanel;
 import org.qi4j.quikit.panels.EntityTypeListViewPanel;
 import org.qi4j.quikit.panels.entityList.EntityListViewPanelAssembler;
 import static org.qi4j.structure.Visibility.layer;
+import org.qi4j.library.http.ServletInfo;
 
 /**
  * TODO
@@ -48,7 +48,7 @@ public class QuikitAssembler implements Assembler
         aModule.addComposites( QuikItApplicationFactoryComposite.class );
 
         // Add the quikit servlet
-        aModule.addServices( ServletService.class )
+        aModule.addServices( QuikitServletService.class )
             .providedBy( QuikItServletServiceFactory.class )
             .setMetaInfo( new ServletInfo( "/quikit/" ) )
             .visibleIn( layer );

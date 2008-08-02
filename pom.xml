@@ -22,6 +22,7 @@
     <module>executor</module>
     <module>framework</module>
     <module>general</module>
+    <module>http</module>
     <module>locking</module>
     <module>logging</module>
     <module>quikit</module>

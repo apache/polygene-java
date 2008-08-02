@@ -12,16 +12,16 @@
  *
  */
 
-package org.qi4j.quikit.application;
+package org.qi4j.library.http;
 
-import javax.servlet.Servlet;
 import org.qi4j.composite.Mixins;
+import org.qi4j.service.Activatable;
 import org.qi4j.service.ServiceComposite;
 
 /**
  * TODO
  */
-@Mixins( WelcomeServlet.class )
-public interface WelcomeServletService extends ServletService
+@Mixins( JettyMixin.class )
+interface JettyService extends Activatable, ServiceComposite
 {
 }
