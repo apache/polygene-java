@@ -16,25 +16,23 @@
  */
 package org.qi4j.library.struts2;
 
-import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.ObjectFactory;
-import com.opensymphony.xwork2.inject.Inject;
-import java.util.HashMap;
-import java.util.Map;
-import javax.servlet.ServletContext;
-import org.apache.struts2.util.ObjectFactoryDestroyable;
-import org.qi4j.composite.CompositeBuilderFactory;
-import org.qi4j.composite.ConstructionException;
-import org.qi4j.composite.NoSuchCompositeException;
-
-import static org.qi4j.library.struts2.Constants.SERVLET_ATTRIBUTE;
 import static org.qi4j.library.struts2.Qi4jObjectFactory.ClassType.object;
 import static org.qi4j.library.struts2.Qi4jObjectFactory.ClassType.qi4jComposite;
 import static org.qi4j.library.struts2.Qi4jObjectFactory.ClassType.qi4jObject;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.struts2.util.ObjectFactoryDestroyable;
+import org.qi4j.composite.CompositeBuilderFactory;
+import org.qi4j.composite.ConstructionException;
+import org.qi4j.composite.NoSuchCompositeException;
 import org.qi4j.object.NoSuchObjectException;
 import org.qi4j.object.ObjectBuilderFactory;
-import org.qi4j.structure.Module;
+
+import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.ObjectFactory;
+import com.opensymphony.xwork2.inject.Inject;
 
 /**
  * Qi4j implementation of struts object factory.
@@ -52,23 +50,27 @@ public class Qi4jObjectFactory extends ObjectFactory
         qi4jObject,
         object
     }
-
-    private ObjectBuilderFactory obf;
-    private CompositeBuilderFactory cbf;
-
+    
     private final Map<Class, ClassType> types;
 
+    private ObjectBuilderFactory objectBuilderFactory;
+    private CompositeBuilderFactory compositeBuilderFactory;
+    
     public Qi4jObjectFactory()
     {
         types = new HashMap<Class, ClassType>();
     }
 
     @Inject
-    public void setServletContext( ServletContext aServletContext )
+    public void setObjectBuilderFactory( ObjectBuilderFactory objectBuilderFactory )
     {
-        Module module = (Module) aServletContext.getAttribute( SERVLET_ATTRIBUTE );
-        obf = module.objectBuilderFactory();
-        cbf = module.compositeBuilderFactory();
+        this.objectBuilderFactory = objectBuilderFactory;
+    }
+    
+    @Inject
+    public void setCompositeBuilderFactory( CompositeBuilderFactory compositeBuilderFactory )
+    {
+        this.compositeBuilderFactory = compositeBuilderFactory;
     }
 
     /**
@@ -152,7 +154,7 @@ public class Qi4jObjectFactory extends ObjectFactory
 
         try
         {
-            obj = obf.newObject( aClass );
+            obj = objectBuilderFactory.newObject( aClass );
         }
         catch( NoSuchObjectException e )
         {
@@ -183,7 +185,7 @@ public class Qi4jObjectFactory extends ObjectFactory
         ConstructionException exception = null;
         try
         {
-            obj = cbf.newComposite( aClass );
+            obj = compositeBuilderFactory.newComposite( aClass );
         }
         catch( NoSuchCompositeException e )
         {
@@ -214,7 +216,7 @@ public class Qi4jObjectFactory extends ObjectFactory
             types.put( aClass, aClassType );
         }
     }
-
+    
     /**
      * Allows for ObjectFactory implementations that support Actions without no-arg constructors.
      *
@@ -229,7 +231,5 @@ public class Qi4jObjectFactory extends ObjectFactory
     public final void destroy()
     {
         types.clear();
-        obf = null;
-        cbf = null;
     }
 }

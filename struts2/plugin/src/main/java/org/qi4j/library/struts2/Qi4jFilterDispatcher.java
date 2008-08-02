@@ -9,6 +9,7 @@ import org.apache.struts2.dispatcher.Dispatcher;
 import org.apache.struts2.dispatcher.FilterDispatcher;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.entity.UnitOfWorkFactory;
+import org.qi4j.object.ObjectBuilderFactory;
 import org.qi4j.structure.Module;
 
 import com.opensymphony.xwork2.config.ConfigurationException;
@@ -43,6 +44,11 @@ public class Qi4jFilterDispatcher extends FilterDispatcher
                         return getUnitOfWorkFactory(filterConfig);
                     }
                 }, Scope.SINGLETON);
+                builder.factory(ObjectBuilderFactory.class, new Factory<ObjectBuilderFactory>() {
+                    public ObjectBuilderFactory create(Context context) throws Exception {
+                        return getObjectBuilderFactory(filterConfig);
+                    }
+                }, Scope.SINGLETON);
                 builder.factory(CompositeBuilderFactory.class, new Factory<CompositeBuilderFactory>() {
                     public CompositeBuilderFactory create(Context context) throws Exception {
                         return getCompositeBuilderFactory(filterConfig);
@@ -70,6 +76,10 @@ public class Qi4jFilterDispatcher extends FilterDispatcher
         return getModule(filterConfig).unitOfWorkFactory();
     }
     
+    private ObjectBuilderFactory getObjectBuilderFactory(FilterConfig filterConfig) {
+        return getModule(filterConfig).objectBuilderFactory();
+    }
+
     private CompositeBuilderFactory getCompositeBuilderFactory(FilterConfig filterConfig) {
         return getModule(filterConfig).compositeBuilderFactory();
     }
