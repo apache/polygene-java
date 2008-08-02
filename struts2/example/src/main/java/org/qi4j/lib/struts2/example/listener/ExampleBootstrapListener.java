@@ -48,7 +48,7 @@ public class ExampleBootstrapListener extends Qi4jApplicationBootstrapListener
             public void assemble( ModuleAssembly aModule )
                 throws AssemblyException
             {
-                ActionConfiguration actionConfiguration = new ActionConfiguration( "org.qi4j.lib.struts2.example.actions" );
+                ActionConfiguration actionConfiguration = new ActionConfiguration();
                 actionConfiguration.addObjects( HelloWorldAction.class, IndexAction.class );
                 actionConfiguration.addComposites( AddItem.class, EditItem.class, ListItems.class );
                 

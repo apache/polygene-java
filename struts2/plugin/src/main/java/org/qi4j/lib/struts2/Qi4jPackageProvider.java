@@ -118,6 +118,8 @@ public class Qi4jPackageProvider implements PackageProvider {
      */
     private Configuration configuration;
 
+    private String actionPackages;
+
     private ServletContext servletContext;
 
     /**
@@ -134,6 +136,11 @@ public class Qi4jPackageProvider implements PackageProvider {
         public URL locate(String path) {
             return ClassLoaderUtil.getResource(path, getClass());
         }
+    }
+
+    @Inject("actionPackages")
+    public void setActionPackages(String packages) {
+        this.actionPackages = packages;
     }
 
     @Inject
@@ -211,10 +218,18 @@ public class Qi4jPackageProvider implements PackageProvider {
      */
     public void loadPackages() throws ConfigurationException {
         packageLoader = new PackageLoader();
-        setPageLocator(new ServletContextPageLocator(servletContext));
-
+        String[] names = actionPackages.split("\\s*[,]\\s*");
+        // Initialize the classloader scanner with the configured packages
+        if (names.length > 0) {
+            setPageLocator(new ServletContextPageLocator(servletContext));
+        }
+        loadPackages(names);
+        initialized = true;
+    }
+    
+    protected void loadPackages(String[] pkgs) throws ConfigurationException {
         for (Class cls : actionConfiguration.getClasses()) {
-           processActionClass(cls, actionConfiguration.getActionPackages());
+           processActionClass(cls, pkgs);
         }
 
         for (PackageConfig config : packageLoader.createPackageConfigs()) {
