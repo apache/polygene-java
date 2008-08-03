@@ -14,19 +14,25 @@
 
 package org.qi4j.library.http;
 
+import static org.mortbay.jetty.servlet.Context.SESSIONS;
+
 import java.io.File;
 import java.net.URL;
 import java.security.CodeSource;
 import java.security.ProtectionDomain;
+
+import javax.servlet.Filter;
 import javax.servlet.Servlet;
+
 import org.mortbay.jetty.Connector;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.servlet.Context;
-import static org.mortbay.jetty.servlet.Context.SESSIONS;
 import org.mortbay.jetty.servlet.DefaultServlet;
+import org.mortbay.jetty.servlet.FilterHolder;
 import org.mortbay.jetty.servlet.ServletHolder;
 import org.qi4j.injection.scope.Service;
 import org.qi4j.injection.scope.Uses;
+import org.qi4j.library.http.Dispatchers.Dispatcher;
 import org.qi4j.service.Activatable;
 import org.qi4j.service.ServiceDescriptor;
 import org.qi4j.service.ServiceReference;
@@ -42,6 +48,7 @@ class JettyMixin
 
     public JettyMixin(
         @Service Iterable<ServiceReference<Servlet>> servlets,
+        @Service Iterable<ServiceReference<Filter>> filters,
         @Uses ServiceDescriptor descriptor )
     {
         configuration = descriptor.metaInfo( HttpConfiguration.class );
@@ -65,11 +72,17 @@ class JettyMixin
         Context root = new Context( server, contextRoot, SESSIONS );
 
         // Sets the resource
-        root.setResourceBase( rootResourceBase() );
+        root.setResourceBase( rootResourceBase( configuration ) );
 
         // Sets the default servlet for default context
         root.addServlet( DefaultServlet.class, "/" );
 
+        addServlets( root, servlets );
+        addFilters( root, filters );
+    }
+
+    private void addServlets( Context root, Iterable<ServiceReference<Servlet>> servlets )
+    {
         // Iterate the available servlets and add it to the server
         for( ServiceReference<Servlet> servlet : servlets )
         {
@@ -82,14 +95,49 @@ class JettyMixin
         }
     }
 
-    private String rootResourceBase()
+    private void addFilters( Context root, Iterable<ServiceReference<Filter>> filters )
+    {
+        // Iterate the available filters and add it to the server
+        for( ServiceReference<Filter> filter : filters )
+        {
+            FilterInfo filterInfo = filter.metaInfo( FilterInfo.class );
+            String filterPath = filterInfo.getPath();
+
+            Filter filterInstance = filter.get();
+            FilterHolder holder = new FilterHolder( filterInstance );
+            holder.setInitParameters( filterInfo.initParameters() );
+            root.addFilter( holder, filterPath, toInt( filterInfo.dispatchers() ) );
+        }
+    }
+
+    private int toInt( Dispatchers dispatches )
+    {
+        int value = 0;
+        for ( Dispatcher dispatcher : dispatches )
+        {
+            value |= FilterHolder.dispatch( dispatcher.name().toLowerCase() );
+        }
+        return value;
+    }
+
+    private String rootResourceBase( HttpConfiguration configuration )
     {
         ProtectionDomain domain = getClass().getProtectionDomain();
         CodeSource source = domain.getCodeSource();
         URL location = source.getLocation();
         String basePath = location.getPath();
         File base = new File( basePath );
-        return base.getAbsolutePath();
+
+        String resourceBase;
+        if (base.isFile()) {
+            resourceBase = "jar:file:" + base.getAbsolutePath() + "!/";
+        } else {
+            resourceBase = base.getAbsolutePath();
+        }
+        
+        resourceBase += resourceBase.endsWith("/") ? "" : "/";
+        resourceBase += configuration.getResourcePath();
+        return resourceBase;
     }
 
     public final void activate() throws Exception

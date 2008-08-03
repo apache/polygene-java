@@ -15,6 +15,8 @@
 package org.qi4j.library.http;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.Map;
 
 /**
  * TODO
@@ -25,14 +27,26 @@ public class ServletInfo
     private static final long serialVersionUID = 1L;
 
     private final String path;
+    private final Map<String, String> initParams;
 
     public ServletInfo( String aPath )
     {
+        this( aPath, Collections.<String, String>emptyMap() );
+    }
+    
+    public ServletInfo( String aPath, Map<String, String> initParams )
+    {
         path = aPath;
+        this.initParams = initParams;
     }
 
     public String getPath()
     {
         return path;
+    }
+    
+    public Map<String, String> initParams()
+    {
+        return initParams;
     }
 }
