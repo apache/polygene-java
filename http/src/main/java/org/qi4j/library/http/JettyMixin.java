@@ -93,6 +93,7 @@ class JettyMixin
 
             Servlet servletInstance = servlet.get();
             ServletHolder holder = new ServletHolder( servletInstance );
+            holder.setInitParameters( servletInfo.initParams() );
             root.addServlet( holder, servletPath );
         }
     }
