@@ -37,8 +37,6 @@ import org.qi4j.service.Activatable;
 import org.qi4j.service.ServiceDescriptor;
 import org.qi4j.service.ServiceReference;
 
-import com.sun.xml.internal.ws.util.StringUtils;
-
 /**
  * TODO
  */
