@@ -37,6 +37,8 @@ import org.qi4j.service.Activatable;
 import org.qi4j.service.ServiceDescriptor;
 import org.qi4j.service.ServiceReference;
 
+import com.sun.xml.internal.ws.util.StringUtils;
+
 /**
  * TODO
  */
@@ -122,22 +124,17 @@ class JettyMixin
 
     private String rootResourceBase( HttpConfiguration configuration )
     {
-        ProtectionDomain domain = getClass().getProtectionDomain();
-        CodeSource source = domain.getCodeSource();
-        URL location = source.getLocation();
-        String basePath = location.getPath();
-        File base = new File( basePath );
-
-        String resourceBase;
-        if (base.isFile()) {
-            resourceBase = "jar:file:" + base.getAbsolutePath() + "!/";
-        } else {
-            resourceBase = base.getAbsolutePath();
+        if ( configuration.getResourcePath() == null )
+        {
+            ProtectionDomain domain = getClass().getProtectionDomain();
+            CodeSource source = domain.getCodeSource();
+            URL location = source.getLocation();
+            String basePath = location.getPath();
+            File base = new File( basePath );
+            return base.getAbsolutePath();
         }
-        
-        resourceBase += resourceBase.endsWith("/") ? "" : "/";
-        resourceBase += configuration.getResourcePath();
-        return resourceBase;
+        else
+            return configuration.getResourcePath();
     }
 
     public final void activate() throws Exception
