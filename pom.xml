@@ -15,7 +15,7 @@
   <modules>
     <module>indexing-rdf</module>
     <module>rest</module>
-    <module>entitystore-neo4j</module>
+<!--    <module>entitystore-neo4j</module>  Neo4j has not non-snapshot releases. -->
     <module>entitystore-ibatis</module>
     <module>entitystore-jdbm</module>
     <module>entitystore-jgroups</module>
