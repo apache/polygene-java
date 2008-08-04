@@ -39,6 +39,7 @@ import org.qi4j.service.ServiceComposite;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.composite.CompositeInstance;
+import org.qi4j.spi.object.ObjectDescriptor;
 import org.qi4j.structure.Module;
 
 /**
@@ -150,6 +151,13 @@ public final class Qi4jRuntime
         }
 
         return moduleInstance.findCompositeFor( mixinType );
+    }
+
+    @SuppressWarnings( "unchecked" )
+    public ObjectDescriptor getObjectDescriptor( Class objectType, Module module )
+    {
+        ModuleInstance moduleInstance = (ModuleInstance) module;
+        return moduleInstance.findObjectFor( objectType );
     }
 
     public void setMixins( Composite composite, Object[] mixins )
