@@ -32,6 +32,7 @@ public class ApplicationGraphTester
         Energy4Java qi4j = new Energy4Java();
 
         ApplicationAssembly assembly = qi4j.newApplicationAssembly();
+        assembly.setName( "My Qi4j App" );
 
         LayerAssembly infrastructureLayer = assembly.newLayerAssembly( "Infrastructure" );
         ModuleAssembly database = infrastructureLayer.newModuleAssembly( "Database" );
@@ -52,6 +53,7 @@ public class ApplicationGraphTester
 
         guiLayer.uses( infrastructureLayer );
         guiLayer.uses( domainLayer );
+        domainLayer.uses( infrastructureLayer );
 
         Application app = qi4j.newApplication( assembly );
         new ApplicationGraph().show( app );
