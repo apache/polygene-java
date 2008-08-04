@@ -18,7 +18,9 @@ package org.qi4j.library.framework.swing;
 import java.util.Collection;
 import java.util.Iterator;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.awt.geom.Point2D;
+import java.awt.geom.AffineTransform;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Color;
@@ -28,6 +30,7 @@ import javax.swing.AbstractAction;
 import javax.swing.KeyStroke;
 import javax.swing.InputMap;
 import javax.swing.ActionMap;
+import javax.swing.Action;
 import static org.qi4j.library.framework.swing.GraphConstants.FIELD_LAYER_LEVEL;
 import static org.qi4j.library.framework.swing.GraphConstants.FIELD_NAME;
 import static org.qi4j.library.framework.swing.GraphConstants.FIELD_TYPE;
@@ -42,14 +45,12 @@ import org.qi4j.spi.structure.ApplicationSPI;
 import org.qi4j.structure.Application;
 import prefuse.Display;
 import prefuse.Visualization;
-import prefuse.action.Action;
 import prefuse.action.ActionList;
 import prefuse.action.RepaintAction;
 import prefuse.action.assignment.ColorAction;
 import prefuse.controls.PanControl;
 import prefuse.controls.ZoomControl;
 import prefuse.data.Graph;
-import prefuse.data.Node;
 import prefuse.render.DefaultRendererFactory;
 import prefuse.util.ColorLib;
 import prefuse.visual.EdgeItem;
@@ -68,8 +69,8 @@ public class ApplicationPanel extends JPanel
 
     static final int TYPE_EDGE_HIDDEN = 100;
 
-    private String zoomInKey = "zoomIn";
-    private String zoomOutKey = "zoomOut";
+    private Action zoomIn;
+    private Action zoomOut;
 
     public ApplicationPanel( Application application )
     {
@@ -81,9 +82,7 @@ public class ApplicationPanel extends JPanel
         createProcessingActions( visualization );
         Display display = createDisplay( visualization );
         launchDisplay( visualization, display );
-
-        ZoomInAction zoomIn = new ZoomInAction( display );
-        ZoomOutAction zoomOut = new ZoomOutAction( display );
+        createDisplayActions( display );
 
         JPanel controlsPanel = new JPanel( new FlowLayout( FlowLayout.LEFT ) );
         JButton zoomInBtn = new JButton( zoomIn );
@@ -99,13 +98,36 @@ public class ApplicationPanel extends JPanel
         add( controlsPanel, BorderLayout.NORTH );
         add( display, BorderLayout.CENTER );
 
-        InputMap inputMap = getInputMap( WHEN_ANCESTOR_OF_FOCUSED_COMPONENT );
-        inputMap.put( KeyStroke.getKeyStroke( '+' ), zoomInKey );
-        inputMap.put( KeyStroke.getKeyStroke( '-' ), zoomOutKey );
+    }
 
+    private void createDisplayActions( Display display )
+    {
+        InputMap inputMap = getInputMap( WHEN_ANCESTOR_OF_FOCUSED_COMPONENT );
         ActionMap actionMap = getActionMap();
-        actionMap.put( zoomInKey, zoomIn );
-        actionMap.put( zoomOutKey, zoomOut );
+
+        zoomIn = new ZoomInAction( display );
+        inputMap.put( KeyStroke.getKeyStroke( '+' ), "zoomIn" );
+        actionMap.put( "zoomIn", zoomIn );
+
+        zoomOut = new ZoomOutAction( display );
+        inputMap.put( KeyStroke.getKeyStroke( '-' ), "zoomOut" );
+        actionMap.put( "zoomOut", zoomOut );
+
+        Action panLeft = new PanLeftAction( display );
+        inputMap.put( KeyStroke.getKeyStroke( KeyEvent.VK_LEFT, 0 ), "panLeft" );
+        actionMap.put( "panLeft", panLeft );
+
+        Action panRight = new PanRightAction( display );
+        inputMap.put( KeyStroke.getKeyStroke( KeyEvent.VK_RIGHT, 0 ), "panRight" );
+        actionMap.put( "panRight", panRight );
+
+        Action panUp = new PanUpAction( display );
+        inputMap.put( KeyStroke.getKeyStroke( KeyEvent.VK_UP, 0 ), "panUp" );
+        actionMap.put( "panUp", panUp );
+
+        Action panDown = new PanDownAction( display );
+        inputMap.put( KeyStroke.getKeyStroke( KeyEvent.VK_DOWN, 0 ), "panDown" );
+        actionMap.put( "panDown", panDown );
     }
 
     private void launchDisplay( Visualization visualization, Display display )
@@ -159,7 +181,7 @@ public class ApplicationPanel extends JPanel
         visualization.putAction( "color", color );
         visualization.putAction( "layout", layout );
         visualization.putAction( "repaint", new RepaintAction() );
-        visualization.putAction( "hideEdges", new Action()
+        visualization.putAction( "hideEdges", new prefuse.action.Action()
         {
 
             public void run( double frac )
@@ -255,6 +277,81 @@ public class ApplicationPanel extends JPanel
         {
             Point2D p = new Point2D.Float( display.getWidth() / 2, display.getHeight() / 2 );
             display.zoom( p, 0.9 );
+            display.repaint();
+        }
+    }
+
+
+    private int panMovement = 10;
+
+    private class PanLeftAction extends AbstractAction
+    {
+        private Display display;
+
+        private PanLeftAction( Display display )
+        {
+            super( "Pan Left" );
+            this.display = display;
+        }
+
+        public void actionPerformed( ActionEvent e )
+        {
+            AffineTransform at = display.getTransform();
+            display.pan( at.getShearX() - panMovement, at.getShearY() );
+            display.repaint();
+        }
+    }
+
+    private class PanRightAction extends AbstractAction
+    {
+        private Display display;
+
+        private PanRightAction( Display display )
+        {
+            super( "Pan Right" );
+            this.display = display;
+        }
+
+        public void actionPerformed( ActionEvent e )
+        {
+            AffineTransform at = display.getTransform();
+            display.pan( at.getShearX() + panMovement, at.getShearY() );
+            display.repaint();
+        }
+    }
+
+    private class PanUpAction extends AbstractAction
+    {
+        private Display display;
+
+        private PanUpAction( Display display )
+        {
+            super( "Pan Up" );
+            this.display = display;
+        }
+
+        public void actionPerformed( ActionEvent e )
+        {
+            AffineTransform at = display.getTransform();
+            display.pan( at.getShearX(), at.getShearY() - panMovement );
+            display.repaint();
+        }
+    }
+
+    private class PanDownAction extends AbstractAction
+    {
+        private Display display;
+
+        private PanDownAction( Display display )
+        {
+            super( "Pan Down" );
+            this.display = display;
+        }
+
+        public void actionPerformed( ActionEvent e )
+        {
+            AffineTransform at = display.getTransform();
+            display.pan( at.getShearX(), at.getShearY() + panMovement );
             display.repaint();
         }
     }
