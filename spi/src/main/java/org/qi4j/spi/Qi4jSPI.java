@@ -17,6 +17,7 @@ package org.qi4j.spi;
 import org.qi4j.Qi4j;
 import org.qi4j.composite.Composite;
 import org.qi4j.spi.composite.CompositeDescriptor;
+import org.qi4j.spi.object.ObjectDescriptor;
 import org.qi4j.structure.Module;
 
 /**
@@ -29,6 +30,8 @@ public interface Qi4jSPI
     CompositeDescriptor getCompositeDescriptor( Composite composite );
 
     CompositeDescriptor getCompositeDescriptor( Class mixinType, Module module );
+
+    ObjectDescriptor getObjectDescriptor( Class mixinType, Module module );
 
     void setMixins( Composite composite, Object[] mixins );
 }
