@@ -37,6 +37,7 @@ import org.qi4j.service.Activatable;
 import org.qi4j.service.ServiceFinder;
 import org.qi4j.service.ServiceReference;
 import org.qi4j.spi.composite.CompositeDescriptor;
+import org.qi4j.spi.object.ObjectDescriptor;
 import org.qi4j.structure.Module;
 import org.qi4j.structure.Visibility;
 
@@ -223,6 +224,19 @@ public class ModuleInstance
         EntitiesInstance entitiesInstance = realModuleInstance.entities();
         EntitiesModel entitiesModel = entitiesInstance.model();
         return entitiesModel.getEntityModelFor( entityCompositeType );
+    }
+
+    public ObjectDescriptor findObjectFor( Class objectType )
+    {
+        //TODO Cache this result
+        ModuleInstance realModuleInstance = findModuleForObject( objectType );
+        if( realModuleInstance == null )
+        {
+            return null;
+        }
+        ObjectsInstance objectsInstance = realModuleInstance.objects();
+        ObjectsModel objectsModel = objectsInstance.model();
+        return objectsModel.getObjectModelFor( objectType );
     }
 
     public Class findClassForName( String type )
