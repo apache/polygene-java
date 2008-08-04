@@ -68,7 +68,8 @@ public class ApplicationPanel extends JPanel
 
     static final int TYPE_EDGE_HIDDEN = 100;
 
-    private Display display;
+    private String zoomInKey = "zoomIn";
+    private String zoomOutKey = "zoomOut";
 
     public ApplicationPanel( Application application )
     {
@@ -78,7 +79,7 @@ public class ApplicationPanel extends JPanel
         Visualization visualization = createVisualization( graph );
         createRenderers( visualization );
         createProcessingActions( visualization );
-        display = createDisplay( visualization );
+        Display display = createDisplay( visualization );
         launchDisplay( visualization, display );
 
         ZoomInAction zoomIn = new ZoomInAction( display );
@@ -99,12 +100,12 @@ public class ApplicationPanel extends JPanel
         add( display, BorderLayout.CENTER );
 
         InputMap inputMap = getInputMap( WHEN_ANCESTOR_OF_FOCUSED_COMPONENT );
-        inputMap.put( KeyStroke.getKeyStroke( '+' ), "zoomIn" );
-        inputMap.put( KeyStroke.getKeyStroke( '-' ), "zoomOut" );
+        inputMap.put( KeyStroke.getKeyStroke( '+' ), zoomInKey );
+        inputMap.put( KeyStroke.getKeyStroke( '-' ), zoomOutKey );
 
         ActionMap actionMap = getActionMap();
-        actionMap.put( "zoomIn", zoomIn );
-        actionMap.put( "zoomOut", zoomOut );
+        actionMap.put( zoomInKey, zoomIn );
+        actionMap.put( zoomOutKey, zoomOut );
     }
 
     private void launchDisplay( Visualization visualization, Display display )
@@ -187,7 +188,7 @@ public class ApplicationPanel extends JPanel
         visualization.setRendererFactory( rendererFactory );
     }
 
-    private Graph createData( Application applicationModel )
+    private Graph createData( Application application )
     {
         final Graph graph = new Graph( true );
         graph.addColumn( FIELD_NAME, String.class );
@@ -196,11 +197,7 @@ public class ApplicationPanel extends JPanel
         graph.addColumn( FIELD_USED_LAYERS, Collection.class );
         graph.addColumn( FIELD_USED_BY_LAYERS, Collection.class );
 
-        final Node root = graph.addNode();
-        root.setString( FIELD_NAME, "Application" );
-        root.setInt( FIELD_TYPE, TYPE_APPLICATION );
-
-        ( (ApplicationSPI) applicationModel ).visitDescriptor( new ApplicationModelVisitor( graph, root ) );
+        ( (ApplicationSPI) application ).visitDescriptor( new ApplicationGraphVisitor( graph ) );
         return graph;
     }
 
@@ -224,11 +221,6 @@ public class ApplicationPanel extends JPanel
         color.add( edgesStroke );
         color.add( edgesFill );
         return color;
-    }
-
-    public Display getDisplay()
-    {
-        return display;
     }
 
     private class ZoomInAction extends AbstractAction
