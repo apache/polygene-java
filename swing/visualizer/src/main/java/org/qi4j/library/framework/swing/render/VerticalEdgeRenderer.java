@@ -25,9 +25,8 @@ import java.awt.geom.Rectangle2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
-import java.util.Set;
-import java.util.HashSet;
-import org.qi4j.library.framework.swing.GraphConstants;
+import java.util.Map;
+import java.util.HashMap;
 
 /**
  * @author Sonny Gill
@@ -36,20 +35,15 @@ public class VerticalEdgeRenderer
     extends EdgeRenderer
 {
 
-    private Set<Rectangle2D> drawnEdges = new HashSet<Rectangle2D>();
+    private Map<EdgeItem, Rectangle2D> drawnEdges = new HashMap<EdgeItem, Rectangle2D>();
+
+    // horizontal space for the rectangle that will contain each edge
+    private static final int edgeRectWidth = 10;
+    private static final int halfWidth = edgeRectWidth / 2;
 
     protected Shape getRawShape( VisualItem item )
     {
-
-        EdgeItem edge = (EdgeItem) item;
-        VisualItem sourceNode = edge.getSourceItem();
-        VisualItem targetNode = edge.getTargetItem();
-
-        String edgeName = sourceNode.get( GraphConstants.FIELD_NAME ) + " - " + targetNode.get( GraphConstants.FIELD_NAME );
-
-        Rectangle2D bounds1 = sourceNode.getBounds();
-        Rectangle2D bounds2 = targetNode.getBounds();
-        Line2D line = getConnectingLine( bounds1, bounds2 );
+        Line2D line = getConnectingLine( (EdgeItem) item );
         if( line != null )
         {
             // create the arrow head
@@ -67,8 +61,14 @@ public class VerticalEdgeRenderer
         return super.getRawShape( item );
     }
 
-    private Line2D getConnectingLine( Rectangle2D bounds1, Rectangle2D bounds2 )
+    private Line2D getConnectingLine( EdgeItem edge )
     {
+        VisualItem sourceNode = edge.getSourceItem();
+        VisualItem targetNode = edge.getTargetItem();
+
+        Rectangle2D bounds1 = sourceNode.getBounds();
+        Rectangle2D bounds2 = targetNode.getBounds();
+
         int left1 = (int) bounds1.getX();
         int right1 = (int) ( left1 + bounds1.getWidth() );
         int left2 = (int) bounds2.getX();
@@ -109,22 +109,10 @@ public class VerticalEdgeRenderer
 
         if( x != -1 )
         {
-            return getLine( x, y1, y2, minX, maxX );
+            return getLine( edge, x, y1, y2, minX, maxX );
         }
 
         return null;
-    }
-
-    private boolean edgeIntersectsAlreadyDrawnEdges( Rectangle2D rect )
-    {
-        for( Rectangle2D edge : drawnEdges )
-        {
-            if( rect.intersects( edge ) )
-            {
-                return true;
-            }
-        }
-        return false;
     }
 
     private Rectangle2D getRectangleAround( Line2D line )
@@ -132,21 +120,33 @@ public class VerticalEdgeRenderer
         double x = line.getX1();
         double y1 = line.getY1();
         double y2 = line.getY2();
-        return new Rectangle2D.Double( x - 5, y1, 10, y2 - y1 );
+        return new Rectangle2D.Double( x - halfWidth, y1, edgeRectWidth, y2 - y1 );
     }
 
-    private Line2D getLine( final double x, final double y1, final double y2, double minX, double maxX )
+    private boolean edgeIntersectsAlreadyDrawnEdges( EdgeItem edge, Rectangle2D rect )
+    {
+        for( Map.Entry<EdgeItem, Rectangle2D> entry : drawnEdges.entrySet() )
+        {
+            if( !( entry.getKey().equals( edge ) ) && rect.intersects( entry.getValue() ) )
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private Line2D getLine( EdgeItem edge, final double x, final double y1, final double y2, double minX, double maxX )
     {
         Line2D.Double line = new Line2D.Double( x, y1, x, y2 );
         Rectangle2D rect = getRectangleAround( line );
         boolean goLeft = true;
         int tries = 0;
         double acceptedX = x;
-        while( edgeIntersectsAlreadyDrawnEdges( rect ) )
+        while( edgeIntersectsAlreadyDrawnEdges( edge, rect ) )
         {
             ++tries;
-            double nextLeft = x - tries * 10;
-            double nextRight = x + tries * 10;
+            double nextLeft = x - tries * edgeRectWidth;
+            double nextRight = x + tries * edgeRectWidth;
             if( nextLeft < minX && nextRight > maxX )
             {
                 return null;
@@ -158,7 +158,7 @@ public class VerticalEdgeRenderer
             rect.setRect( acceptedX, rect.getY(), rect.getWidth(), rect.getHeight() );
         }
 
-        drawnEdges.add( rect );
+        drawnEdges.put( edge, rect );
         line.setLine( acceptedX, y1, acceptedX, y2 );
         return line;
     }
