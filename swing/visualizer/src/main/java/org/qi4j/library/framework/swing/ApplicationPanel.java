@@ -24,6 +24,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.AbstractAction;
@@ -98,6 +99,16 @@ public class ApplicationPanel extends JPanel
         add( controlsPanel, BorderLayout.NORTH );
         add( display, BorderLayout.CENTER );
 
+//        Rectangle2D bounds = visualization.getBounds( Visualization.ALL_ITEMS );
+//        System.out.println( bounds );
+//        DisplayLib.fitViewToBounds( display, bounds, 0);
+//        display.setSize( (int) bounds.getWidth(), (int) bounds.getHeight() );
+
+//        display.setSize( 400, 600 );
+
+        Dimension d = new Dimension( 400, 600 );
+        setMinimumSize( d );
+        setPreferredSize( d );
     }
 
     private void createDisplayActions( Display display )
@@ -136,16 +147,11 @@ public class ApplicationPanel extends JPanel
         visualization.run( "layout" );
         visualization.run( "hideEdges" );
         visualization.run( "repaint" );
-//        Rectangle2D bounds = visualization.getBounds( Visualization.ALL_ITEMS );
-//        System.out.println( bounds );
-//        DisplayLib.fitViewToBounds( display, bounds, 0);
-//        display.setSize( (int) bounds.getWidth(), (int) bounds.getHeight() );
     }
 
     private Display createDisplay( Visualization visualization )
     {
         Display display = new Display( visualization );
-        display.setSize( 800, 600 );
 
         display.addControlListener( new PanControl() );
         display.addControlListener( new ZoomControl() );

@@ -48,7 +48,7 @@ public class ApplicationLayout extends TreeLayout
     public void run( double frac )
     {
         NodeItem root = getLayoutRoot();
-        Point topLeft = new Point( 100, 100 );
+        Point topLeft = new Point( 50, 50 );
         Rectangle size = computeApplicationBounds( root, topLeft );
         root.setBounds( topLeft.x, topLeft.y, size.width, size.height );
     }

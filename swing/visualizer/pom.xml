@@ -45,7 +45,18 @@
     <dependency>
       <groupId>org.prefuse</groupId>
       <artifactId>prefuse</artifactId>
-      <version>beta-20060220</version>
+      <version>20071021</version>
     </dependency>
   </dependencies>
+
+  <repositories>
+    <repository>
+      <id>complexitymap</id>
+      <url>http://complexitymap.com/repository/</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+
 </project>

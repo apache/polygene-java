@@ -15,10 +15,13 @@
  */
 package org.qi4j.library.framework.swing;
 
-import java.awt.BorderLayout;
+import java.awt.Dimension;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
+import javax.swing.JComponent;
+import javax.swing.JSplitPane;
+import javax.swing.JScrollPane;
 import org.qi4j.structure.Application;
 
 /**
@@ -41,14 +44,15 @@ public class ApplicationGraph
 
         ApplicationPanel applicationPanel = new ApplicationPanel( application );
 
-        JPanel leftPanel = createLeftPanel( applicationPanel );
-
         JPanel detailsPanel = new JPanel();
         detailsPanel.add( new JLabel( "Details go here" ) );
+        detailsPanel.setPreferredSize( new Dimension( 400, 600 ) );
 
-        frame.getContentPane();
-        frame.add( leftPanel, BorderLayout.WEST );
-        frame.add( detailsPanel, BorderLayout.CENTER );
+        JComponent leftPane = createLeftPane( applicationPanel );
+        JSplitPane splitPane = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT,
+                                               leftPane, new JScrollPane( detailsPanel ) );
+//        splitPane.set
+        frame.add( splitPane );
 
         frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
         frame.pack();
@@ -56,17 +60,16 @@ public class ApplicationGraph
 
     }
 
-    private JPanel createLeftPanel( JPanel applicationPanel )
+    private JComponent createLeftPane( JPanel applicationPanel )
     {
-        JPanel panel = new JPanel( new BorderLayout() );
+        JPanel panel = new JPanel();
+        panel.add( new JLabel( "Composite goes here" ) );
+        panel.setMinimumSize( new Dimension( 400, 200 ) );
+        panel.setPreferredSize( new Dimension( 400, 200 ) );
 
-        JPanel compositePanel = new JPanel();
-        compositePanel.add( new JLabel( "Composite goes here" ) );
-
-        panel.add( applicationPanel, BorderLayout.CENTER );
-        panel.add( compositePanel, BorderLayout.SOUTH );
-
-        return panel;
+        return new JSplitPane( JSplitPane.VERTICAL_SPLIT,
+                               new JScrollPane( applicationPanel ),
+                               new JScrollPane( panel ) );
     }
 
 }
