@@ -31,6 +31,11 @@ public abstract class AbstractConstraintModel
         this.annotation = annotation;
     }
 
+    public Annotation annotation()
+    {
+        return annotation;
+    }
+
     public abstract ConstraintInstance<?, ?> newInstance();
 
     public void visitModel( ModelVisitor modelVisitor )

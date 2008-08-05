@@ -20,6 +20,7 @@ import org.qi4j.composite.Composite;
 import org.qi4j.composite.ConcernOf;
 import org.qi4j.composite.Concerns;
 import org.qi4j.composite.Mixins;
+import org.qi4j.entity.EntityBuilder;
 import org.qi4j.entity.EntityCompositeNotFoundException;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkFactory;
@@ -89,14 +90,16 @@ public interface Configuration<T>
             catch( EntityCompositeNotFoundException e )
             {
 
-                configuration = (T) uow.newEntityBuilder( descriptor.identity(), configurationType ).newInstance();
-
+                EntityBuilder configBuilder = uow.newEntityBuilder( descriptor.identity(), configurationType );
                 // Check for defaults
-                InputStream asStream = descriptor.type().getResourceAsStream( descriptor.identity() + ".properties" );
+                String s = descriptor.identity() + ".properties";
+                InputStream asStream = descriptor.type().getResourceAsStream( s );
                 if( asStream != null )
                 {
-                    PropertyMapper.map( asStream, (Composite) configuration );
+                    PropertyMapper.map( asStream, (Composite) configBuilder.stateOfComposite() );
                 }
+                configuration = (T) configBuilder.newInstance();
+
                 uow.complete();
                 uow = uowf.newUnitOfWork();
                 configuration = uow.dereference( configuration );

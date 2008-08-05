@@ -28,7 +28,6 @@ import org.qi4j.entity.EntityCompositeAlreadyExistsException;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.CompositeMethodInstance;
 import org.qi4j.runtime.composite.CompositeMethodsModel;
-import org.qi4j.runtime.composite.CompositeModel;
 import org.qi4j.runtime.composite.ConcernsDeclaration;
 import org.qi4j.runtime.composite.ConstraintsModel;
 import org.qi4j.runtime.composite.MixinsInstance;
@@ -48,6 +47,7 @@ import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.structure.Visibility;
+import org.qi4j.util.ClassUtil;
 import org.qi4j.util.MetaInfo;
 
 /**
@@ -235,7 +235,7 @@ public final class EntityModel
 
     public String toURI()
     {
-        return CompositeModel.toURI( type );
+        return ClassUtil.toURI( type );
     }
 
     @Override public String toString()

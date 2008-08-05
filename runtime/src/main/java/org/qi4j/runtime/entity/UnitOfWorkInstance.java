@@ -39,9 +39,9 @@ import static org.qi4j.entity.UnitOfWorkSynchronization.UnitOfWorkStatus.DISCARD
 import org.qi4j.object.ObjectBuilderFactory;
 import org.qi4j.query.QueryBuilderFactory;
 import org.qi4j.runtime.query.QueryBuilderFactoryImpl;
-import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.structure.EntitiesInstance;
 import org.qi4j.runtime.structure.EntitiesModel;
+import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.entity.DefaultEntityState;
 import org.qi4j.spi.entity.EntityState;
@@ -163,7 +163,7 @@ public final class UnitOfWorkInstance
         final ModuleInstance realModule = moduleInstance.findModuleForEntity( mixinType );
         if( realModule == null )
         {
-            throw new EntityCompositeNotFoundException(identity, mixinType );
+            throw new EntityCompositeNotFoundException( identity, mixinType );
         }
         EntitiesInstance entitiesInstance = realModule.entities();
         EntitiesModel entitiesModel = entitiesInstance.model();
@@ -213,6 +213,11 @@ public final class UnitOfWorkInstance
         checkOpen();
 
         ModuleInstance entityModuleInstance = this.moduleInstance.findModuleForEntity( mixinType );
+        if( entityModuleInstance == null )
+        {
+            throw new EntityCompositeNotFoundException( "Entity type " + mixinType.getName() + " not visible in module " + moduleInstance.name(), mixinType );
+        }
+
         EntityModel entityModel = entityModuleInstance.entities().model().getEntityModelFor( mixinType );
 
         EntityComposite entity = getCachedEntity( identity, entityModel.type() );
@@ -566,7 +571,7 @@ public final class UnitOfWorkInstance
                 entityTypes.put( identity.type(), (Class<? extends EntityComposite>) compositeDescriptor.type() );
             }
 
-            UnitOfWorkEntityState entityState = new UnitOfWorkEntityState( 0, identity, EntityStatus.NEW, new HashMap<String, Object>(), new HashMap<String, QualifiedIdentity>(), new HashMap<String, Collection<QualifiedIdentity>>(), null );
+            UnitOfWorkEntityState entityState = new UnitOfWorkEntityState( 0, System.currentTimeMillis(), identity, EntityStatus.NEW, new HashMap<String, Object>(), new HashMap<String, QualifiedIdentity>(), new HashMap<String, Collection<QualifiedIdentity>>(), null );
             return entityState;
         }
 
@@ -584,7 +589,8 @@ public final class UnitOfWorkInstance
                 parentState = EntityInstance.getEntityInstance( find( identity.identity(), compositeDescriptor.type() ) ).entityState();
             }
 
-            UnitOfWorkEntityState unitOfWorkEntityState = new UnitOfWorkEntityState( parentState.getEntityVersion(),
+            UnitOfWorkEntityState unitOfWorkEntityState = new UnitOfWorkEntityState( parentState.version(),
+                                                                                     parentState.lastModified(),
                                                                                      identity,
                                                                                      EntityStatus.LOADED,
                                                                                      new HashMap<String, Object>(),
@@ -600,21 +606,21 @@ public final class UnitOfWorkInstance
             for( EntityState newState : newStates )
             {
                 UnitOfWorkEntityState uowState = (UnitOfWorkEntityState) newState;
-                Class<? extends EntityComposite> type = entityTypes.get( uowState.getIdentity().type() );
-                EntityComposite entityInstance = newEntityBuilder( uowState.getIdentity().identity(), type ).newInstance();
+                Class<? extends EntityComposite> type = entityTypes.get( uowState.qualifiedIdentity().type() );
+                EntityComposite entityInstance = newEntityBuilder( uowState.qualifiedIdentity().identity(), type ).newInstance();
 
                 EntityState parentState = EntityInstance.getEntityInstance( entityInstance ).entityState();
-                Iterable<String> propertyNames = uowState.getPropertyNames();
+                Iterable<String> propertyNames = uowState.propertyNames();
                 for( String propertyName : propertyNames )
                 {
                     parentState.setProperty( propertyName, uowState.getProperty( propertyName ) );
                 }
-                Iterable<String> associationNames = uowState.getAssociationNames();
+                Iterable<String> associationNames = uowState.associationNames();
                 for( String associationName : associationNames )
                 {
                     parentState.setAssociation( associationName, uowState.getAssociation( associationName ) );
                 }
-                Iterable<String> manyAssociationNames = uowState.getManyAssociationNames();
+                Iterable<String> manyAssociationNames = uowState.manyAssociationNames();
                 for( String manyAssociationName : manyAssociationNames )
                 {
                     Collection<QualifiedIdentity> collection = parentState.getManyAssociation( manyAssociationName );
@@ -633,24 +639,24 @@ public final class UnitOfWorkInstance
                 UnitOfWorkEntityState uowState = (UnitOfWorkEntityState) loadedState;
                 if( uowState.isChanged() )
                 {
-                    Class<? extends EntityComposite> type = entityTypes.get( uowState.getIdentity().type() );
-                    EntityComposite instance = find( uowState.getIdentity().identity(), type );
+                    Class<? extends EntityComposite> type = entityTypes.get( uowState.qualifiedIdentity().type() );
+                    EntityComposite instance = find( uowState.qualifiedIdentity().identity(), type );
                     EntityInstance entityInstance = EntityInstance.getEntityInstance( instance );
 
                     EntityState parentState = uowState.getParentState();
-                    Iterable<String> propertyNames = uowState.getPropertyNames();
+                    Iterable<String> propertyNames = uowState.propertyNames();
                     for( String propertyName : propertyNames )
                     {
                         Object value = uowState.getProperty( propertyName );
                         parentState.setProperty( propertyName, value );
                     }
-                    Iterable<String> associationNames = uowState.getAssociationNames();
+                    Iterable<String> associationNames = uowState.associationNames();
                     for( String associationName : associationNames )
                     {
                         QualifiedIdentity value = uowState.getAssociation( associationName );
                         parentState.setAssociation( associationName, value );
                     }
-                    Iterable<String> manyAssociationNames = uowState.getManyAssociationNames();
+                    Iterable<String> manyAssociationNames = uowState.manyAssociationNames();
                     for( String manyAssociationName : manyAssociationNames )
                     {
                         Collection<QualifiedIdentity> collection = parentState.getManyAssociation( manyAssociationName );
@@ -700,7 +706,7 @@ public final class UnitOfWorkInstance
         private final EntityState parentState;
         private final long entityVersion;
 
-        private UnitOfWorkEntityState( long entityVersion,
+        private UnitOfWorkEntityState( long entityVersion, long lastModified,
                                        QualifiedIdentity identity,
                                        EntityStatus status,
                                        Map<String, Object> properties,
@@ -708,12 +714,12 @@ public final class UnitOfWorkInstance
                                        Map<String, Collection<QualifiedIdentity>> manyAssociations,
                                        EntityState parentState )
         {
-            super( entityVersion, identity, status, properties, associations, manyAssociations );
+            super( entityVersion, lastModified, identity, status, properties, associations, manyAssociations );
             this.parentState = parentState;
             this.entityVersion = entityVersion;
         }
 
-        public long getEntityVersion()
+        public long version()
         {
             return entityVersion;
         }

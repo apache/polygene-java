@@ -26,18 +26,24 @@ import org.qi4j.spi.entity.QualifiedIdentity;
 public final class SerializableState
     implements Serializable
 {
-    private static final long serialVersionUID = 2L;
+    private static final long serialVersionUID = 3L;
 
     private final QualifiedIdentity identity;
     private final long entityVersion;
+    private final long lastModified;
     private final Map<String, Object> properties;
     private final Map<String, QualifiedIdentity> associations;
     private final Map<String, Collection<QualifiedIdentity>> manyAssociations;
 
-    public SerializableState( QualifiedIdentity identity, long entityVersion, Map<String, Object> properties, Map<String, QualifiedIdentity> associations, Map<String, Collection<QualifiedIdentity>> manyAssociations )
+    public SerializableState( QualifiedIdentity identity,
+                              long entityVersion, long lastModified,
+                              Map<String, Object> properties,
+                              Map<String, QualifiedIdentity> associations,
+                              Map<String, Collection<QualifiedIdentity>> manyAssociations )
     {
         this.identity = identity;
         this.entityVersion = entityVersion;
+        this.lastModified = lastModified;
         this.properties = properties;
         this.associations = associations;
         this.manyAssociations = manyAssociations;
@@ -48,9 +54,14 @@ public final class SerializableState
         return identity;
     }
 
-    public long entityVersion()
+    public long version()
     {
         return entityVersion;
+    }
+
+    public long lastModified()
+    {
+        return lastModified;
     }
 
     public Map<String, Object> properties()

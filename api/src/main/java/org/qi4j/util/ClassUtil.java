@@ -22,7 +22,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import static java.util.Arrays.*;
+import static java.util.Arrays.asList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -212,17 +212,58 @@ public class ClassUtil
     /**
      * Get URI for a class.
      *
-     * @param clazz  class
-     * @return  URI
+     * @param clazz class
+     * @return URI
+     * @throws NullPointerException if clazz is null
      */
     public static String toURI( final Class clazz )
+        throws NullPointerException
     {
-        if( clazz == null )
-        {
-            return null;
-        }
-        String className = clazz.getName();
-        className = className.replace( '$', '&' );
+        return toURI( clazz.getName() );
+    }
+
+    /**
+     * Get URI for a class name.
+     *
+     * Example:
+     * Class name com.example.Foo$Bar
+     * is converted to
+     * URI urn:qi4j:com.example.Foo-Bar
+     *
+     * @param className class name
+     * @return URI
+     * @throws NullPointerException if className is null
+     */
+    public static String toURI( String className )
+        throws NullPointerException
+    {
+        className = normalizeClassToURI( className );
         return "urn:qi4j:" + className;
     }
+
+    /**
+     * Get class name from a URI
+     *
+     * @param uri URI
+     * @return class name
+     * @throws NullPointerException if uri is null
+     */
+    public static String toClassName( String uri )
+        throws NullPointerException
+    {
+        uri = uri.substring( "urn:qi4j:".length() );
+        uri = denormalizeURIToClass( uri );
+        return uri;
+    }
+
+    public static String normalizeClassToURI( String className )
+    {
+        return className.replace( '$', '-' );
+    }
+
+    public static String denormalizeURIToClass( String uriPart )
+    {
+        return uriPart.replace( '-', '$' );
+    }
+
 }

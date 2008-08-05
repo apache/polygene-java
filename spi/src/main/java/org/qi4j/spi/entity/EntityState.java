@@ -39,16 +39,34 @@ public interface EntityState
      *
      * @return the identity of the entity that this EntityState represents.
      */
-    QualifiedIdentity getIdentity();
+    QualifiedIdentity qualifiedIdentity();
 
-    long getEntityVersion();
+    /**
+     * Version of the entity. This is managed by the EntityStore.
+     *
+     * If the underlying EntityStore does not support versioning, then version
+     * must always be set to 0.
+     *
+     * @return version of the entity
+     */
+    long version();
+
+    /**
+     * Last modified timestamp of the entity. This is managed by the EntityStore.
+     *
+     * If the underlying EntityStore does not support timestamping, then last modified
+     * must always be set to the current time.
+     *
+     * @return last modified timestamp of the entity, as defined by System.currentTimeMillis()
+     */
+    long lastModified();
 
     /**
      * Remove the entity represented by this EntityState when the unit of work is completed.
      */
     void remove();
 
-    EntityStatus getStatus();
+    EntityStatus status();
 
     Object getProperty( String qualifiedName );
 
@@ -62,9 +80,9 @@ public interface EntityState
 
     Collection<QualifiedIdentity> setManyAssociation( String qualifiedName, Collection<QualifiedIdentity> newManyAssociation );
 
-    Iterable<String> getPropertyNames();
+    Iterable<String> propertyNames();
 
-    Iterable<String> getAssociationNames();
+    Iterable<String> associationNames();
 
-    Iterable<String> getManyAssociationNames();
+    Iterable<String> manyAssociationNames();
 }

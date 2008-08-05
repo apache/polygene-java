@@ -14,16 +14,15 @@
 
 package org.qi4j.util;
 
+import java.lang.reflect.Type;
+import java.util.HashSet;
+import java.util.Set;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import org.junit.Test;
 import static org.qi4j.util.ClassUtil.interfacesOf;
 import static org.qi4j.util.ClassUtil.interfacesWithMethods;
-import java.util.HashSet;
-import java.util.Set;
-import java.lang.reflect.Type;
 
 /**
  * Tests for ClassUtil
@@ -54,6 +53,18 @@ public class ClassUtilTest
         Set<Type> types = interfacesWithMethods( interfacesOf( C.class ) );
         assertThat( "one interface returned", types.size(), equalTo( 1 ) );
         assertThat( "correct interface returned", types.contains( B.class ), is( true ) );
+    }
+
+    @Test
+    public void givenClassNameWhenToUriThenUriIsReturned()
+    {
+        assertThat( "URI is correct", ClassUtil.toURI( A.class ), equalTo( "urn:qi4j:org.qi4j.util.ClassUtilTest-A" ) );
+    }
+
+    @Test
+    public void givenUriWhenToClassNameThenClassNameIsReturned()
+    {
+        assertThat( "Class name is correct", ClassUtil.toClassName( "urn:qi4j:org.qi4j.util.ClassUtilTest-A" ), equalTo( "org.qi4j.util.ClassUtilTest$A" ) );
     }
 
     interface A

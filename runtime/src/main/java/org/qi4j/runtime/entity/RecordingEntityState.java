@@ -35,14 +35,19 @@ public class RecordingEntityState
         this.loadingPolicy = loadingPolicy;
     }
 
-    public QualifiedIdentity getIdentity()
+    public QualifiedIdentity qualifiedIdentity()
     {
-        return entityState.getIdentity();
+        return entityState.qualifiedIdentity();
     }
 
-    public long getEntityVersion()
+    public long version()
     {
-        return entityState.getEntityVersion();
+        return entityState.version();
+    }
+
+    public long lastModified()
+    {
+        return entityState.lastModified();
     }
 
     public void remove()
@@ -50,9 +55,9 @@ public class RecordingEntityState
         entityState.remove();
     }
 
-    public EntityStatus getStatus()
+    public EntityStatus status()
     {
-        return entityState.getStatus();
+        return entityState.status();
     }
 
     public Object getProperty( String qualifiedName )
@@ -86,18 +91,18 @@ public class RecordingEntityState
         return entityState.setManyAssociation( qualifiedName, newManyAssociation );
     }
 
-    public Iterable<String> getPropertyNames()
+    public Iterable<String> propertyNames()
     {
-        return entityState.getPropertyNames();
+        return entityState.propertyNames();
     }
 
-    public Iterable<String> getAssociationNames()
+    public Iterable<String> associationNames()
     {
-        return entityState.getAssociationNames();
+        return entityState.associationNames();
     }
 
-    public Iterable<String> getManyAssociationNames()
+    public Iterable<String> manyAssociationNames()
     {
-        return entityState.getManyAssociationNames();
+        return entityState.manyAssociationNames();
     }
 }

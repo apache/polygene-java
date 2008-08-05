@@ -14,9 +14,12 @@
 
 package org.qi4j.spi.composite;
 
+import java.lang.annotation.Annotation;
+
 /**
  * TODO
  */
 public interface ConstraintDescriptor
 {
+    Annotation annotation();
 }

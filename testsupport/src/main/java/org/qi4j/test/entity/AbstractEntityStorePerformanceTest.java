@@ -29,7 +29,7 @@ public abstract class AbstractEntityStorePerformanceTest
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
         module.addServices( UuidIdentityGeneratorService.class );
-        module.addComposites( TestComposite.class );
+        module.addEntities( TestComposite.class );
     }
 
     @Test

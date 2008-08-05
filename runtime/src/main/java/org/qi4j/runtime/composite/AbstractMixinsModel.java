@@ -66,6 +66,12 @@ public abstract class AbstractMixinsModel
         return mixinTypes;
     }
 
+    public MixinModel mixinFor( Method method )
+    {
+        Integer integer = methodIndex.get( method );
+        return mixinModels.get( integer );
+    }
+
     public MixinModel implementMethod( Method method )
     {
         if( !methodImplementation.containsKey( method ) )
@@ -225,12 +231,6 @@ public abstract class AbstractMixinsModel
     public FragmentInvocationHandler newInvocationHandler( final Method method )
     {
         return mixinFor( method ).newInvocationHandler( method.getDeclaringClass() );
-    }
-
-    private MixinModel mixinFor( Method method )
-    {
-        Integer integer = methodIndex.get( method );
-        return mixinModels.get( integer );
     }
 
     private class Uses

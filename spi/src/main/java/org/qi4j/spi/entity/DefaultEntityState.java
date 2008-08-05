@@ -27,7 +27,8 @@ import java.util.Map;
 public class DefaultEntityState
     implements EntityState, Serializable
 {
-    private final long entityVersion;
+    private final long version;
+    private final long lastModified;
     private final QualifiedIdentity identity;
     private EntityStatus status;
 
@@ -37,17 +38,19 @@ public class DefaultEntityState
 
     public DefaultEntityState( QualifiedIdentity identity )
     {
-        this( 0, identity, EntityStatus.NEW, new HashMap<String, Object>(), new HashMap<String, QualifiedIdentity>(), new HashMap<String, Collection<QualifiedIdentity>>() );
+        this( 0, System.currentTimeMillis(), identity, EntityStatus.NEW, new HashMap<String, Object>(), new HashMap<String, QualifiedIdentity>(), new HashMap<String, Collection<QualifiedIdentity>>() );
     }
 
-    public DefaultEntityState( long entityVersion,
+    public DefaultEntityState( long version,
+                               long lastModified,
                                QualifiedIdentity identity,
                                EntityStatus status,
                                Map<String, Object> properties,
                                Map<String, QualifiedIdentity> associations,
                                Map<String, Collection<QualifiedIdentity>> manyAssociations )
     {
-        this.entityVersion = entityVersion;
+        this.version = version;
+        this.lastModified = lastModified;
         this.identity = identity;
         this.status = status;
         this.properties = properties;
@@ -56,12 +59,17 @@ public class DefaultEntityState
     }
 
     // EntityState implementation
-    public long getEntityVersion()
+    public long version()
     {
-        return entityVersion;
+        return version;
     }
 
-    public QualifiedIdentity getIdentity()
+    public long lastModified()
+    {
+        return lastModified;
+    }
+
+    public QualifiedIdentity qualifiedIdentity()
     {
         return identity;
     }
@@ -103,22 +111,22 @@ public class DefaultEntityState
         status = EntityStatus.REMOVED;
     }
 
-    public EntityStatus getStatus()
+    public EntityStatus status()
     {
         return status;
     }
 
-    public Iterable<String> getPropertyNames()
+    public Iterable<String> propertyNames()
     {
         return properties.keySet();
     }
 
-    public Iterable<String> getAssociationNames()
+    public Iterable<String> associationNames()
     {
         return associations.keySet();
     }
 
-    public Iterable<String> getManyAssociationNames()
+    public Iterable<String> manyAssociationNames()
     {
         return manyAssociations.keySet();
     }

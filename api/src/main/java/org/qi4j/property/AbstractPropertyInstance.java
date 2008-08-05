@@ -51,15 +51,13 @@ public abstract class AbstractPropertyInstance<T>
 
     public static String getQualifiedName( Method accessor )
     {
-        String className = accessor.getDeclaringClass().getName();
-        className = className.replace( '$', '&' );
-        return className + ":" + accessor.getName();
+        return getQualifiedName( accessor.getDeclaringClass(), accessor.getName() );
     }
 
     public static String getQualifiedName( Class<?> declaringClass, String name )
     {
         String className = declaringClass.getName();
-        className = className.replace( '$', '&' );
+        className = className.replace( '$', '-' );
         return className + ":" + name;
     }
 
@@ -102,11 +100,41 @@ public abstract class AbstractPropertyInstance<T>
      */
     public static String toURI( final Method accessor )
     {
-        if( accessor == null )
-        {
-            return null;
-        }
         return "urn:qi4j:property:" + ComputedPropertyInstance.getQualifiedName( accessor );
+    }
+
+    /**
+     * Get URI for a property.
+     *
+     * @param declaringClass
+     * @param name
+     * @return property URI
+     */
+    public static String toURI( final Class declaringClass, String name )
+    {
+        return "urn:qi4j:property:" + ComputedPropertyInstance.getQualifiedName( declaringClass, name );
+    }
+
+    /**
+     * Get URI for a qualified property name.
+     *
+     * @param qualifiedName
+     * @return property URI
+     */
+    public static String toURI( final String qualifiedName )
+    {
+        return "urn:qi4j:property:" + qualifiedName;
+    }
+
+    /**
+     * Get URI for a qualified property name.
+     *
+     * @param uri
+     * @return property qualified property name
+     */
+    public static String toQualifiedName( final String uri )
+    {
+        return uri.substring( "urn:qi4j:property:".length() );
     }
 
     /**

@@ -15,6 +15,7 @@
 package org.qi4j.spi.object;
 
 import org.qi4j.composite.Composite;
+import org.qi4j.util.MetaInfo;
 
 /**
  * TODO
@@ -22,4 +23,8 @@ import org.qi4j.composite.Composite;
 public interface ObjectDescriptor
 {
     Class<? extends Composite> type();
+
+    String toURI();
+
+    MetaInfo metaInfo();
 }

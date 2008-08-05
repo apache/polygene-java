@@ -15,6 +15,7 @@
 package org.qi4j.spi.composite;
 
 import org.qi4j.composite.Composite;
+import org.qi4j.util.MetaInfo;
 
 /**
  * TODO
@@ -28,4 +29,6 @@ public interface CompositeDescriptor
     String toURI();
 
     Iterable<Class> mixinTypes();
+
+    MetaInfo metaInfo();
 }

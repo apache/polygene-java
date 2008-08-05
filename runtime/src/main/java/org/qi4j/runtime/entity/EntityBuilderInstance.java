@@ -138,7 +138,7 @@ public final class EntityBuilderInstance<T>
         // Transfer state
         EntityState entityState = entityModel.newEntityState( store, identity.toString(), state );
 
-        EntityInstance instance = entityModel.loadInstance( uow, store, entityState.getIdentity(), moduleInstance, entityState );
+        EntityInstance instance = entityModel.loadInstance( uow, store, entityState.qualifiedIdentity(), moduleInstance, entityState );
 
         Object proxy = instance.proxy();
         uow.createEntity( (EntityComposite) proxy );

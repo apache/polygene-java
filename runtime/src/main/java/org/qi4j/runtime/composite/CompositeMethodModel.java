@@ -62,6 +62,11 @@ public final class CompositeMethodModel
         return method;
     }
 
+    public MixinModel mixin()
+    {
+        return mixins.mixinFor( method );
+    }
+
     // Binding
     public void bind( Resolution resolution ) throws BindingException
     {

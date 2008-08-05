@@ -77,7 +77,7 @@ public class MemorySerializationEntityStoreMixin
                 manyAssociations.put( associationDescriptor.qualifiedName(), new HashSet<QualifiedIdentity>() );
             }
         }
-        return new DefaultEntityState( 0, identity, EntityStatus.NEW, properties, new HashMap<String, QualifiedIdentity>(), manyAssociations );
+        return new DefaultEntityState( 0, System.currentTimeMillis(), identity, EntityStatus.NEW, properties, new HashMap<String, QualifiedIdentity>(), manyAssociations );
     }
 
     public EntityState getEntityState( CompositeDescriptor compositeDescriptor, QualifiedIdentity identity )
@@ -108,7 +108,8 @@ public class MemorySerializationEntityStoreMixin
 
             SerializableState serializableState = serializableObject.getObject( (CompositeBuilderFactory) null, null );
 
-            return new DefaultEntityState( serializableState.entityVersion(), identity, EntityStatus.LOADED, serializableState.properties(), serializableState.associations(), serializableState.manyAssociations() );
+            return new DefaultEntityState( serializableState.version(), serializableState.lastModified(),
+                                           identity, EntityStatus.LOADED, serializableState.properties(), serializableState.associations(), serializableState.manyAssociations() );
         }
         catch( ClassNotFoundException e )
         {
@@ -120,21 +121,21 @@ public class MemorySerializationEntityStoreMixin
     {
         final Map<QualifiedIdentity, SerializedObject<SerializableState>> updatedState = new HashMap<QualifiedIdentity, SerializedObject<SerializableState>>();
 
-
+        long currentTime = System.currentTimeMillis();
         for( EntityState entityState : newStates )
         {
             DefaultEntityState entityStateInstance = (DefaultEntityState) entityState;
-            SerializableState state = new SerializableState( entityState.getIdentity(), entityState.getEntityVersion(), entityStateInstance.getProperties(), entityStateInstance.getAssociations(), entityStateInstance.getManyAssociations() );
+            SerializableState state = new SerializableState( entityState.qualifiedIdentity(), entityState.version(), currentTime, entityStateInstance.getProperties(), entityStateInstance.getAssociations(), entityStateInstance.getManyAssociations() );
             SerializedObject<SerializableState> serializedObject = new SerializedObject<SerializableState>( state );
-            updatedState.put( entityState.getIdentity(), serializedObject );
+            updatedState.put( entityState.qualifiedIdentity(), serializedObject );
         }
 
         for( EntityState entityState : loadedStates )
         {
             DefaultEntityState entityStateInstance = (DefaultEntityState) entityState;
-            SerializableState state = new SerializableState( entityState.getIdentity(), entityState.getEntityVersion(), entityStateInstance.getProperties(), entityStateInstance.getAssociations(), entityStateInstance.getManyAssociations() );
+            SerializableState state = new SerializableState( entityState.qualifiedIdentity(), entityState.version() + 1, currentTime, entityStateInstance.getProperties(), entityStateInstance.getAssociations(), entityStateInstance.getManyAssociations() );
             SerializedObject<SerializableState> serializedObject = new SerializedObject<SerializableState>( state );
-            updatedState.put( entityState.getIdentity(), serializedObject );
+            updatedState.put( entityState.qualifiedIdentity(), serializedObject );
         }
 
         return new StateCommitter()

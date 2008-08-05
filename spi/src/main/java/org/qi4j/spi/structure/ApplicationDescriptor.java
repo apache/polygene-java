@@ -20,4 +20,7 @@ package org.qi4j.spi.structure;
 public interface ApplicationDescriptor
 {
     String name();
+
+    String toURI();
+
 }

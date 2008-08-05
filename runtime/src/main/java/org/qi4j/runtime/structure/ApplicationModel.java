@@ -47,6 +47,11 @@ public final class ApplicationModel
         return name;
     }
 
+    public String toURI()
+    {
+        return "urn:qi4j:model:application:" + name;
+    }
+
     public void visitModel( ModelVisitor modelVisitor )
     {
         modelVisitor.visit( this );

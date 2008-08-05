@@ -31,6 +31,7 @@ import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.composite.CompositeInstance;
 import org.qi4j.spi.composite.StateDescriptor;
 import org.qi4j.structure.Visibility;
+import org.qi4j.util.ClassUtil;
 import org.qi4j.util.MetaInfo;
 
 /**
@@ -51,17 +52,6 @@ public final class CompositeModel
         {
             throw new InternalError( "Qi4j Core Runtime codebase is corrupted. Contact Qi4j team: Lifeycle" );
         }
-    }
-
-    public static String toURI( final Class<? extends Composite> compositeClass )
-    {
-        if( compositeClass == null )
-        {
-            return null;
-        }
-        String className = compositeClass.getName();
-        className = className.replace( '$', '&' );
-        return "urn:qi4j:" + className;
     }
 
     public static CompositeModel newModel( final Class<? extends Composite> compositeType,
@@ -245,7 +235,7 @@ public final class CompositeModel
 
     public String toURI()
     {
-        return toURI( compositeType );
+        return ClassUtil.toURI( compositeType );
     }
 
     @Override public String toString()

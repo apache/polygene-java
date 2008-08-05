@@ -137,7 +137,7 @@ public final class EntityInstance
 
     public EntityStatus status()
     {
-        return entityState != null ? entityState.getStatus() : status;
+        return entityState != null ? entityState.status() : status;
     }
 
     public Object invoke( Object composite, Object[] params, CompositeMethodInstance methodInstance ) throws Throwable

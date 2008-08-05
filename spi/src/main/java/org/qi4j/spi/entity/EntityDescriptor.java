@@ -14,9 +14,12 @@
 
 package org.qi4j.spi.entity;
 
+import org.qi4j.entity.EntityComposite;
+
 /**
  * TODO
  */
 public interface EntityDescriptor
 {
+    Class<? extends EntityComposite> type();
 }

@@ -117,9 +117,4 @@ public final class DefaultCompositeInstance
     {
         return method.invoke( this, args );
     }
-
-    public String toURI()
-    {
-        return ""; // "urn:qi4j:composite:" + context.getCompositeModel().getCompositeType().getName();
-    }
 }
