@@ -15,25 +15,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.library.rdf.parse;
+package org.qi4j.library.rdf.serializer;
 
 import org.openrdf.model.Graph;
 import org.openrdf.model.impl.GraphImpl;
-import org.qi4j.library.rdf.Parser;
-import org.qi4j.library.rdf.parse.model.ApplicationVisitor;
+import org.qi4j.spi.structure.ApplicationSPI;
 import org.qi4j.structure.Application;
 
-public final class StructureParser
-    implements Parser
+public class ApplicationSerializer
 {
-    public Graph parse( Application app, String applicationURI )
+    public Graph serialize( Application app )
     {
         Graph graph = new GraphImpl();
-        ParserFactoryImpl factory = new ParserFactoryImpl();
-        ParseContext context = new ParseContext( graph, factory, applicationURI );
-        factory.setParseContext( context );
-        ApplicationVisitor applicationVisitor = new ApplicationVisitor( context );
-//        app.visitModel( applicationVisitor );
+        SerializerContext context = new SerializerContext( graph );
+        ApplicationSerializerVisitor applicationVisitor = new ApplicationSerializerVisitor( context );
+        ( (ApplicationSPI) app ).visitDescriptor( applicationVisitor );
         return graph;
     }
 }

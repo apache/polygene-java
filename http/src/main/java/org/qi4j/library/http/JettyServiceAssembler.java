@@ -19,38 +19,19 @@ package org.qi4j.library.http;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import static org.qi4j.composite.NullArgumentException.validateNotNull;
-import org.qi4j.library.constraints.annotation.NotNull;
-import org.qi4j.library.http.HttpConfiguration;
-import org.qi4j.library.http.JettyService;
 
 /**
  * @author edward.yakop@gmail.com
+ * @author rickardoberg@gmail.com
  */
 public final class JettyServiceAssembler
     implements Assembler
 {
-    private final HttpConfiguration configuration;
-
-    public JettyServiceAssembler( @NotNull HttpConfiguration aConfiguration )
-        throws IllegalArgumentException
-    {
-        validateNotNull( "aConfiguration", aConfiguration );
-        configuration = aConfiguration;
-    }
-
     public final void assemble( ModuleAssembly aModule )
         throws AssemblyException
     {
+        aModule.addEntities( JettyConfiguration.class );
         aModule.addServices( JettyService.class )
-            .identifiedBy( jettyIdentity( aModule ) )
-            .setMetaInfo( configuration )
             .instantiateOnStartup();
-    }
-
-    private String jettyIdentity( ModuleAssembly module )
-    {
-        String moduleName = module.name();
-        return moduleName + ":" + JettyService.class.getName();
     }
 }

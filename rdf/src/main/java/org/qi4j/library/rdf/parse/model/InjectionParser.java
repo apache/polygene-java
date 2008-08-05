@@ -17,13 +17,13 @@
  */
 package org.qi4j.library.rdf.parse.model;
 
-import org.qi4j.library.rdf.parse.ParseContext;
+import org.qi4j.library.rdf.serializer.SerializerContext;
 
 public class InjectionParser
 {
-    private final ParseContext context;
+    private final SerializerContext context;
 
-    public InjectionParser( ParseContext context )
+    public InjectionParser( SerializerContext context )
     {
         this.context = context;
     }

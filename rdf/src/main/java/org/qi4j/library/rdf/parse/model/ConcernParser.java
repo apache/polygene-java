@@ -17,13 +17,13 @@
  */
 package org.qi4j.library.rdf.parse.model;
 
-import org.qi4j.library.rdf.parse.ParseContext;
+import org.qi4j.library.rdf.serializer.SerializerContext;
 
 public final class ConcernParser
 {
-    private final ParseContext context;
+    private final SerializerContext context;
 
-    public ConcernParser( ParseContext context )
+    public ConcernParser( SerializerContext context )
     {
         this.context = context;
     }

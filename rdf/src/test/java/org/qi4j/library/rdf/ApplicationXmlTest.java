@@ -37,7 +37,7 @@ import org.qi4j.composite.Mixins;
 import org.qi4j.composite.SideEffectOf;
 import org.qi4j.composite.SideEffects;
 import org.qi4j.injection.scope.This;
-import org.qi4j.library.rdf.parse.StructureParser;
+import org.qi4j.library.rdf.serializer.ApplicationSerializer;
 import org.qi4j.test.AbstractQi4jTest;
 
 /**
@@ -59,8 +59,8 @@ public class ApplicationXmlTest extends AbstractQi4jTest
         throws Exception
     {
         String name = "application";
-        StructureParser parser = new StructureParser();
-        Graph graph = parser.parse( application, "urn:qi4j:dev/tests/application" ); // TODO Fix this
+        ApplicationSerializer parser = new ApplicationSerializer();
+        Graph graph = parser.serialize( application ); // TODO Fix this
         writeN3( graph, name );
         writeXml( graph, name );
     }

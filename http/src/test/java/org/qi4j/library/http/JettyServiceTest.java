@@ -16,22 +16,24 @@
  */
 package org.qi4j.library.http;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertTrue;
-import static org.qi4j.library.http.Servlets.addServlets;
-import static org.qi4j.library.http.Servlets.serve;
-
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Iterator;
-
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertTrue;
 import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.entity.memory.MemoryEntityStoreService;
+import static org.qi4j.library.http.Dispatchers.Dispatcher.REQUEST;
+import static org.qi4j.library.http.Servlets.addFilters;
+import static org.qi4j.library.http.Servlets.addServlets;
+import static org.qi4j.library.http.Servlets.filter;
+import static org.qi4j.library.http.Servlets.serve;
 import org.qi4j.service.ServiceReference;
 import org.qi4j.test.AbstractQi4jTest;
 
@@ -40,16 +42,15 @@ import org.qi4j.test.AbstractQi4jTest;
  */
 public final class JettyServiceTest extends AbstractQi4jTest
 {
-    protected final static int JETTY_PORT = 2020;
-
     public final void assemble( ModuleAssembly aModule )
         throws AssemblyException
     {
-        HttpConfiguration configuration = new HttpConfiguration( JETTY_PORT );
-        aModule.addAssembler( new JettyServiceAssembler( configuration ) );
+        aModule.addServices( MemoryEntityStoreService.class );
+        aModule.addAssembler( new JettyServiceAssembler() );
 
         // Hello world servlet related assembly
         addServlets( serve( "/helloWorld" ).with( HelloWorldServletService.class ) ).to( aModule );
+        addFilters( filter( "/*" ).through( UnitOfWorkFilterService.class ).on( REQUEST ) ).to( aModule );
     }
 
     @Test
@@ -69,7 +70,7 @@ public final class JettyServiceTest extends AbstractQi4jTest
         JettyService jettyService = serviceRef.get();
         assertNotNull( jettyService );
 
-        URL url = new URL( "http://localhost:2020/helloWorld" );
+        URL url = new URL( "http://localhost:8080/helloWorld" );
         URLConnection urlConnection = url.openConnection();
         InputStream inputStream = urlConnection.getInputStream();
         BufferedReader bufferedReader = new BufferedReader( new InputStreamReader( inputStream ) );
