@@ -31,6 +31,7 @@ public class IndirectEntityState implements CommittableEntityState
     // Cached state
     private final DirectEntityState state;
     private final long version;
+    private final long lastModified;
     private EntityStatus status;
 
     // Properties and associations
@@ -42,8 +43,9 @@ public class IndirectEntityState implements CommittableEntityState
     public IndirectEntityState( DirectEntityState state )
     {
         this.state = state;
-        this.version = state.getEntityVersion();
-        this.status = state.getStatus();
+        this.version = state.version();
+        this.lastModified = state.lastModified();
+        this.status = state.status();
     }
 
     // CommittableEntityState implementation
@@ -53,11 +55,11 @@ public class IndirectEntityState implements CommittableEntityState
         if( !loaded )
         {
             loaded = true;
-            for( String qName : getPropertyNames() )
+            for( String qName : propertyNames() )
             {
                 properties.put( qName, new Holder<Object>( state.getProperty( qName ) ) );
             }
-            for( String qName : getAssociationNames() )
+            for( String qName : associationNames() )
             {
                 associations.put( qName, new Holder<QualifiedIdentity>( state.getAssociation( qName ) ) );
             }
@@ -81,9 +83,9 @@ public class IndirectEntityState implements CommittableEntityState
             state.remove();
             return;
         }
-        if( version != state.getEntityVersion() )
+        if( version != state.version() )
         {
-            throw new EntityStoreException( "Conflicting versions, the underlying representation has been modified. For :" + getIdentity() );
+            throw new EntityStoreException( "Conflicting versions, the underlying representation has been modified. For :" + qualifiedIdentity() );
         }
         for( Map.Entry<String, Holder<Object>> property : properties.entrySet() )
         {
@@ -125,14 +127,19 @@ public class IndirectEntityState implements CommittableEntityState
 
     // EntityState implementation
 
-    public QualifiedIdentity getIdentity()
+    public QualifiedIdentity qualifiedIdentity()
     {
-        return state.getIdentity();
+        return state.qualifiedIdentity();
     }
 
-    public long getEntityVersion()
+    public long version()
     {
         return version;
+    }
+
+    public long lastModified()
+    {
+        return lastModified;
     }
 
     public void remove()
@@ -140,24 +147,24 @@ public class IndirectEntityState implements CommittableEntityState
         status = EntityStatus.REMOVED;
     }
 
-    public EntityStatus getStatus()
+    public EntityStatus status()
     {
         return status;
     }
 
-    public Iterable<String> getPropertyNames()
+    public Iterable<String> propertyNames()
     {
-        return state.getPropertyNames();
+        return state.propertyNames();
     }
 
-    public Iterable<String> getAssociationNames()
+    public Iterable<String> associationNames()
     {
-        return state.getAssociationNames();
+        return state.associationNames();
     }
 
-    public Iterable<String> getManyAssociationNames()
+    public Iterable<String> manyAssociationNames()
     {
-        return state.getManyAssociationNames();
+        return state.manyAssociationNames();
     }
 
     public Object getProperty( String qualifiedName )

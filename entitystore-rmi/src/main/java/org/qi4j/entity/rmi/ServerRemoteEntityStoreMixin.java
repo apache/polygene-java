@@ -89,9 +89,10 @@ public class ServerRemoteEntityStoreMixin
         Map<String, QualifiedIdentity> associations = copyAssociations( state );
         Map<String, Collection<QualifiedIdentity>> manyAssociations = copyManyAssociations( state );
 
-        return new DefaultEntityState( state.getEntityVersion(),
+        return new DefaultEntityState( state.version(),
+                                       state.lastModified(),
                                        identity,
-                                       state.getStatus(),
+                                       state.status(),
                                        properties,
                                        associations,
                                        manyAssociations );
@@ -100,7 +101,7 @@ public class ServerRemoteEntityStoreMixin
     private Map<String, Collection<QualifiedIdentity>> copyManyAssociations( EntityState state )
     {
         Map<String, Collection<QualifiedIdentity>> manyAssociations = new HashMap<String, Collection<QualifiedIdentity>>();
-        for( String associationName : state.getManyAssociationNames() )
+        for( String associationName : state.manyAssociationNames() )
         {
             Collection<QualifiedIdentity> idCollection = state.getManyAssociation( associationName );
             if( idCollection instanceof Set )
@@ -120,7 +121,7 @@ public class ServerRemoteEntityStoreMixin
     private Map<String, QualifiedIdentity> copyAssociations( EntityState state )
     {
         Map<String, QualifiedIdentity> associations = new HashMap<String, QualifiedIdentity>();
-        for( String associationName : state.getAssociationNames() )
+        for( String associationName : state.associationNames() )
         {
             QualifiedIdentity id = state.getAssociation( associationName );
             associations.put( associationName, id );
@@ -131,7 +132,7 @@ public class ServerRemoteEntityStoreMixin
     private Map<String, Object> copyProperties( EntityState state )
     {
         Map<String, Object> properties = new HashMap<String, Object>();
-        for( String propertyName : state.getPropertyNames() )
+        for( String propertyName : state.propertyNames() )
         {
             Object value = state.getProperty( propertyName );
             properties.put( propertyName, value );

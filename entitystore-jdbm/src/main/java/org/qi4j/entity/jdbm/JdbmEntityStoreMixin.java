@@ -118,7 +118,11 @@ public class JdbmEntityStoreMixin
             throw new EntityStoreException( e );
         }
 
-        return new DefaultEntityState( 0, identity, EntityStatus.NEW, new HashMap<String, Object>(), new HashMap<String, QualifiedIdentity>(), new HashMap<String, Collection<QualifiedIdentity>>() );
+        return new DefaultEntityState( 0, System.currentTimeMillis(),
+                                       identity, EntityStatus.NEW,
+                                       new HashMap<String, Object>(),
+                                       new HashMap<String, QualifiedIdentity>(),
+                                       new HashMap<String, Collection<QualifiedIdentity>>() );
     }
 
     @WriteLock
@@ -146,7 +150,8 @@ public class JdbmEntityStoreMixin
             try
             {
                 SerializableState serializableState = (SerializableState) oin.readObject();
-                return new DefaultEntityState( serializableState.entityVersion(), identity, EntityStatus.LOADED, serializableState.properties(), serializableState.associations(), serializableState.manyAssociations() );
+                return new DefaultEntityState( serializableState.version(), serializableState.lastModified(),
+                                               identity, EntityStatus.LOADED, serializableState.properties(), serializableState.associations(), serializableState.manyAssociations() );
             }
             catch( ClassNotFoundException e )
             {
@@ -163,14 +168,16 @@ public class JdbmEntityStoreMixin
     {
         lock.writeLock().lock();
 
+        long lastModified = System.currentTimeMillis();
         try
         {
             ByteArrayOutputStream bout = new ByteArrayOutputStream();
             for( EntityState entityState : newStates )
             {
                 DefaultEntityState entityStateInstance = (DefaultEntityState) entityState;
-                SerializableState state = new SerializableState( entityState.getIdentity(),
-                                                                 entityState.getEntityVersion(),
+                SerializableState state = new SerializableState( entityState.qualifiedIdentity(),
+                                                                 entityState.version(),
+                                                                 lastModified,
                                                                  entityStateInstance.getProperties(),
                                                                  entityStateInstance.getAssociations(),
                                                                  entityStateInstance.getManyAssociations() );
@@ -179,22 +186,23 @@ public class JdbmEntityStoreMixin
                 out.close();
                 long stateIndex = recordManager.insert( bout.toByteArray(), serializer );
                 bout.reset();
-                String indexKey = entityState.getIdentity().identity();
+                String indexKey = entityState.qualifiedIdentity().identity();
                 index.insert( indexKey.getBytes(), stateIndex, false );
             }
 
             for( EntityState entityState : loadedStates )
             {
                 DefaultEntityState entityStateInstance = (DefaultEntityState) entityState;
-                SerializableState state = new SerializableState( entityState.getIdentity(),
-                                                                 entityState.getEntityVersion() + 1,
+                SerializableState state = new SerializableState( entityState.qualifiedIdentity(),
+                                                                 entityState.version() + 1,
+                                                                 lastModified,
                                                                  entityStateInstance.getProperties(),
                                                                  entityStateInstance.getAssociations(),
                                                                  entityStateInstance.getManyAssociations() );
                 ObjectOutputStream out = new FastObjectOutputStream( bout );
                 out.writeObject( state );
                 out.close();
-                String indexKey = entityState.getIdentity().identity();
+                String indexKey = entityState.qualifiedIdentity().identity();
                 Long stateIndex = (Long) index.find( indexKey.getBytes() );
                 recordManager.update( stateIndex, bout.toByteArray(), serializer );
             }
@@ -212,7 +220,7 @@ public class JdbmEntityStoreMixin
             throw new EntityStoreException( e );
         }
 
-        long end = System.currentTimeMillis();
+        long end = lastModified;
 
         return new StateCommitter()
         {

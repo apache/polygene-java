@@ -107,6 +107,7 @@ public final class IBatisEntityStateTest extends AbstractQi4jTest
                                       new QualifiedIdentity( "1", PersonComposite.class.getName() ),
                                       initialValues,
                                       0L,
+                                      System.currentTimeMillis(),
                                       EntityStatus.NEW, null );
     }
 

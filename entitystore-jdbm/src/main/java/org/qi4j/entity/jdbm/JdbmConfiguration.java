@@ -7,6 +7,7 @@ import org.qi4j.property.Property;
  * TODO
  */
 public interface JdbmConfiguration
+    extends EntityComposite
 {
     Property<String> file();
 }

@@ -37,7 +37,7 @@ public class JdbmEntityStoreTest
         module.addServices( JdbmEntityStoreService.class );
 
         ModuleAssembly config = module.getLayerAssembly().newModuleAssembly( "config" );
-        config.addEntities( JdbmConfigurationComposite.class ).visibleIn( Visibility.layer );
+        config.addEntities( JdbmConfiguration.class ).visibleIn( Visibility.layer );
         config.addServices( MemoryEntityStoreService.class, UuidIdentityGeneratorService.class );
     }
 

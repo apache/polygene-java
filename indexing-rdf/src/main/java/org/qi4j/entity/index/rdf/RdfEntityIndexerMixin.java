@@ -72,13 +72,13 @@ public class RdfEntityIndexerMixin
                 final Set<String> entityTypes = new HashSet<String>();
                 for( EntityState entityState : newStates )
                 {
-                    entityTypes.add( entityState.getIdentity().type() );
+                    entityTypes.add( entityState.qualifiedIdentity().type() );
                     indexEntityState( entityState, moduleBinding, connection, valueFactory );
                 }
                 for( EntityState entityState : changedStates )
                 {
-                    entityTypes.add( entityState.getIdentity().type() );
-                    removeEntityState( entityState.getIdentity(), moduleBinding, connection, valueFactory );
+                    entityTypes.add( entityState.qualifiedIdentity().type() );
+                    removeEntityState( entityState.qualifiedIdentity(), moduleBinding, connection, valueFactory );
                     indexEntityState( entityState, moduleBinding, connection, valueFactory );
                 }
                 for( QualifiedIdentity entityId : removedStates )
@@ -117,17 +117,17 @@ public class RdfEntityIndexerMixin
                                    final ValueFactory valueFactory )
         throws RepositoryException, ClassNotFoundException
     {
-        final Class compositeClass = module.classLoader().loadClass( entityState.getIdentity().type() );
+        final Class compositeClass = module.classLoader().loadClass( entityState.qualifiedIdentity().type() );
         final CompositeDescriptor compositeDescriptor = spi.getCompositeDescriptor( compositeClass, module );
         final URI compositeURI = valueFactory.createURI( compositeDescriptor.toURI() );
         final URI compositeClassURI = valueFactory.createURI( ClassUtil.toURI( Composite.class ) + ":entityType" );
         final URI entityURI = valueFactory.createURI( compositeDescriptor.toURI()
-                                                      + "/" + entityState.getIdentity().identity() );
+                                                      + "/" + entityState.qualifiedIdentity().identity() );
         connection.add( entityURI, RDF.TYPE, compositeURI );
         connection.add( entityURI, compositeClassURI, valueFactory.createLiteral( compositeClass.getName() ) );
         // index properties
         final StateDescriptor state = compositeDescriptor.state();
-        for( String propName : entityState.getPropertyNames() )
+        for( String propName : entityState.propertyNames() )
         {
             final Object propValue = entityState.getProperty( propName );
             if( propValue != null )
@@ -138,7 +138,7 @@ public class RdfEntityIndexerMixin
             }
         }
         // index associations
-        for( String assocName : entityState.getAssociationNames() )
+        for( String assocName : entityState.associationNames() )
         {
             final QualifiedIdentity assocEntityId = entityState.getAssociation( assocName );
             if( assocEntityId != null )
@@ -154,7 +154,7 @@ public class RdfEntityIndexerMixin
             }
         }
         // index many associations
-        for( String qualifiedName : entityState.getManyAssociationNames() )
+        for( String qualifiedName : entityState.manyAssociationNames() )
         {
             final Collection<QualifiedIdentity> assocEntityIds = entityState.getManyAssociation( qualifiedName );
             if( assocEntityIds != null )
@@ -223,7 +223,7 @@ public class RdfEntityIndexerMixin
         Iterator<EntityState> entityStateIterator = newStates.iterator();
         if( entityStateIterator.hasNext() )
         {
-            String compositeTypeName = entityStateIterator.next().getIdentity().type();
+            String compositeTypeName = entityStateIterator.next().qualifiedIdentity().type();
             if( NativeRdfConfiguration.class.getName().equals( compositeTypeName ) )
             {
                 return true;

@@ -17,8 +17,6 @@
 
 package org.qi4j.entity.jgroups;
 
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.concurrent.locks.ReadWriteLock;
 import org.jgroups.JChannel;
@@ -76,7 +74,7 @@ public class JGroupsSerializationEntityStoreMixin
             throw new EntityAlreadyExistsException( "JGroups store", identity.identity() );
         }
 
-        return new DefaultEntityState( 0, identity, EntityStatus.NEW, new HashMap<String, Object>(), new HashMap<String, QualifiedIdentity>(), new HashMap<String, Collection<QualifiedIdentity>>() );
+        return new DefaultEntityState( identity );
     }
 
     @ReadLock
@@ -94,7 +92,8 @@ public class JGroupsSerializationEntityStoreMixin
 
             SerializableState serializableState = serializableObject.getObject( (CompositeBuilderFactory) null, null );
 
-            return new DefaultEntityState( serializableState.entityVersion(),
+            return new DefaultEntityState( serializableState.version(),
+                                           serializableState.lastModified(),
                                            identity,
                                            EntityStatus.LOADED,
                                            serializableState.properties(),
@@ -113,28 +112,31 @@ public class JGroupsSerializationEntityStoreMixin
         lock.writeLock().lock();
         try
         {
+            long lastModified = System.currentTimeMillis();
             for( EntityState entityState : newStates )
             {
                 DefaultEntityState entityStateInstance = (DefaultEntityState) entityState;
-                SerializableState state = new SerializableState( entityState.getIdentity(),
-                                                                 entityState.getEntityVersion(),
+                SerializableState state = new SerializableState( entityState.qualifiedIdentity(),
+                                                                 entityState.version(),
+                                                                 lastModified,
                                                                  entityStateInstance.getProperties(),
                                                                  entityStateInstance.getAssociations(),
                                                                  entityStateInstance.getManyAssociations() );
                 SerializedObject<SerializableState> serializedObject = new SerializedObject<SerializableState>( state );
-                replicatedMap.put( entityState.getIdentity().toString(), serializedObject );
+                replicatedMap.put( entityState.qualifiedIdentity().toString(), serializedObject );
             }
 
             for( EntityState entityState : loadedStates )
             {
                 DefaultEntityState entityStateInstance = (DefaultEntityState) entityState;
-                SerializableState state = new SerializableState( entityState.getIdentity(),
-                                                                 entityState.getEntityVersion() + 1,
+                SerializableState state = new SerializableState( entityState.qualifiedIdentity(),
+                                                                 entityState.version() + 1,
+                                                                 lastModified,
                                                                  entityStateInstance.getProperties(),
                                                                  entityStateInstance.getAssociations(),
                                                                  entityStateInstance.getManyAssociations() );
                 SerializedObject<SerializableState> serializedObject = new SerializedObject<SerializableState>( state );
-                replicatedMap.put( entityState.getIdentity().toString(), serializedObject );
+                replicatedMap.put( entityState.qualifiedIdentity().toString(), serializedObject );
             }
 
             for( QualifiedIdentity removedState : removedStates )

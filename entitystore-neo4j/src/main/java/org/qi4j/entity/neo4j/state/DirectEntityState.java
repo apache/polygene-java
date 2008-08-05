@@ -39,6 +39,7 @@ public class DirectEntityState implements CommittableEntityState
     public static final String ASSOCIATION_OF_PROPERTY_KEY = "<association of>";
     public static final RelationshipType PROXY_FOR = LinkType.UNQUALIFIED.getRelationshipType( "<PROXY FOR>" );
     private static final String VERSION_PROPERTY_KEY = "<entity version>";
+    private static final String LASTMODIFIED_PROPERTY_KEY = "<last modified>";
     private static String COLLECTION_SIZE_PROPERTY_PREFIX = "size of::";
     private static final RelationshipType ENTITY_TYPE_RELATIONSHIP_TYPE = LinkType.UNQUALIFIED.getRelationshipType( "<ENTITY TYPE>" );
 
@@ -94,7 +95,8 @@ public class DirectEntityState implements CommittableEntityState
 
     public void prepareCommit()
     {
-        underlyingNode.setProperty( VERSION_PROPERTY_KEY, getEntityVersion() + 1 );
+        underlyingNode.setProperty( VERSION_PROPERTY_KEY, version() + 1 );
+        underlyingNode.setProperty( LASTMODIFIED_PROPERTY_KEY, System.currentTimeMillis() );
     }
 
     private void storeIdentity()
@@ -167,32 +169,37 @@ public class DirectEntityState implements CommittableEntityState
         status = EntityStatus.REMOVED;
     }
 
-    public QualifiedIdentity getIdentity()
+    public QualifiedIdentity qualifiedIdentity()
     {
         return identity;
     }
 
-    public long getEntityVersion()
+    public long version()
     {
         return (Long) underlyingNode.getProperty( VERSION_PROPERTY_KEY, 0L );
     }
 
-    public EntityStatus getStatus()
+    public long lastModified()
+    {
+        return (Long) underlyingNode.getProperty( LASTMODIFIED_PROPERTY_KEY, System.currentTimeMillis() );
+    }
+
+    public EntityStatus status()
     {
         return status;
     }
 
-    public Iterable<String> getPropertyNames()
+    public Iterable<String> propertyNames()
     {
         return descriptor.getPropertyNames();
     }
 
-    public Iterable<String> getAssociationNames()
+    public Iterable<String> associationNames()
     {
         return descriptor.getAssociationNames();
     }
 
-    public Iterable<String> getManyAssociationNames()
+    public Iterable<String> manyAssociationNames()
     {
         return descriptor.getManyAssociationNames();
     }

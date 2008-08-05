@@ -2,6 +2,7 @@ package org.qi4j.entity.jdbm;
 
 import java.io.File;
 import org.junit.After;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -12,7 +13,8 @@ import org.qi4j.test.entity.AbstractEntityStorePerformanceTest;
 /**
  * Performance test for JdbmEntityStoreComposite
  */
-public abstract class JdbmEntityStorePerformanceTest
+@Ignore
+public class JdbmEntityStorePerformanceTest
     extends AbstractEntityStorePerformanceTest
 {
     public void assemble( ModuleAssembly module ) throws AssemblyException
@@ -21,7 +23,7 @@ public abstract class JdbmEntityStorePerformanceTest
         module.addServices( JdbmEntityStoreService.class );
 
         ModuleAssembly config = module.getLayerAssembly().newModuleAssembly( "config" );
-        config.addComposites( JdbmConfigurationComposite.class ).visibleIn( Visibility.layer );
+        config.addEntities( JdbmConfiguration.class ).visibleIn( Visibility.layer );
         config.addServices( MemoryEntityStoreService.class );
     }
 

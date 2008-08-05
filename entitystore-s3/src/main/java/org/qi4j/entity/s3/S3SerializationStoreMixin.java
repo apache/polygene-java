@@ -22,8 +22,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.concurrent.locks.ReadWriteLock;
 import org.jets3t.service.S3Service;
@@ -100,8 +98,7 @@ public class S3SerializationStoreMixin
     public EntityState newEntityState( CompositeDescriptor compositeDescriptor, QualifiedIdentity identity ) throws EntityStoreException
     {
         // Skip existence check
-
-        return new DefaultEntityState( 0, identity, EntityStatus.NEW, new HashMap<String, Object>(), new HashMap<String, QualifiedIdentity>(), new HashMap<String, Collection<QualifiedIdentity>>() );
+        return new DefaultEntityState( identity );
     }
 
     @WriteLock
@@ -116,7 +113,8 @@ public class S3SerializationStoreMixin
             ObjectInputStream stream = new ObjectInputStream( inputStream );
             SerializableState serializableState = (SerializableState) stream.readObject();
 
-            return new DefaultEntityState( serializableState.entityVersion(),
+            return new DefaultEntityState( serializableState.version(),
+                                           serializableState.lastModified(),
                                            identity,
                                            EntityStatus.LOADED,
                                            serializableState.properties(),
@@ -147,26 +145,29 @@ public class S3SerializationStoreMixin
 
         try
         {
+            long lastModified = System.currentTimeMillis();
             for( EntityState entityState : newStates )
             {
                 DefaultEntityState entityStateInstance = (DefaultEntityState) entityState;
-                SerializableState state = new SerializableState( entityState.getIdentity(),
-                                                                 entityState.getEntityVersion(),
+                SerializableState state = new SerializableState( entityState.qualifiedIdentity(),
+                                                                 entityState.version(),
+                                                                 lastModified,
                                                                  entityStateInstance.getProperties(),
                                                                  entityStateInstance.getAssociations(),
                                                                  entityStateInstance.getManyAssociations() );
-                uploadObject( entityState.getIdentity(), state );
+                uploadObject( entityState.qualifiedIdentity(), state );
             }
 
             for( EntityState entityState : loadedStates )
             {
                 DefaultEntityState entityStateInstance = (DefaultEntityState) entityState;
-                SerializableState state = new SerializableState( entityState.getIdentity(),
-                                                                 entityState.getEntityVersion(),
+                SerializableState state = new SerializableState( entityState.qualifiedIdentity(),
+                                                                 entityState.version(),
+                                                                 lastModified,
                                                                  entityStateInstance.getProperties(),
                                                                  entityStateInstance.getAssociations(),
                                                                  entityStateInstance.getManyAssociations() );
-                uploadObject( entityState.getIdentity(), state );
+                uploadObject( entityState.qualifiedIdentity(), state );
             }
 
             for( QualifiedIdentity removedState : removedStates )

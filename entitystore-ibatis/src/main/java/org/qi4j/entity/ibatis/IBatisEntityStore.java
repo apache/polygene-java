@@ -23,7 +23,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import static org.qi4j.composite.NullArgumentException.*;
+import static org.qi4j.composite.NullArgumentException.validateNotNull;
 import org.qi4j.entity.ibatis.dbInitializer.DBInitializer;
 import org.qi4j.entity.ibatis.internal.IBatisEntityState;
 import org.qi4j.injection.scope.Structure;
@@ -34,7 +34,8 @@ import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityState;
-import static org.qi4j.spi.entity.EntityStatus.*;
+import static org.qi4j.spi.entity.EntityStatus.LOADED;
+import static org.qi4j.spi.entity.EntityStatus.NEW;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.QualifiedIdentity;
@@ -48,6 +49,10 @@ import org.qi4j.structure.Module;
 public class IBatisEntityStore
     implements EntityStore, Activatable
 {
+    private static final String VERSION = "VERSION";
+    private static final String LASTMODIFIED = "LASTMODIFIED";
+
+
     @Structure private Qi4jSPI spi;
     @Structure private Module module;
 
@@ -71,7 +76,7 @@ public class IBatisEntityStore
         validateNotNull( "anIdentity", identity );
 
         checkActivation();
-        return new IBatisEntityState( compositeDescriptor, identity, new HashMap<String, Object>(), 0L, NEW, compositeBuilder );
+        return new IBatisEntityState( compositeDescriptor, identity, new HashMap<String, Object>(), 0L, System.currentTimeMillis(), NEW, compositeBuilder );
     }
 
     /**
@@ -106,8 +111,19 @@ public class IBatisEntityStore
     {
         checkActivation();
         final Map<String, Object> rawData = getRawData( aDescriptor, anIdentity );
-        final Long version = (Long) rawData.get( "VERSION" );
-        return new IBatisEntityState( aDescriptor, anIdentity, rawData, version, LOADED, compositeBuilder );
+        Long version = (Long) rawData.get( VERSION );
+        if( version == null )
+        {
+            version = new Long( 0 );
+        }
+
+        Long lastModified = (Long) rawData.get( LASTMODIFIED );
+        if( lastModified == null )
+        {
+            lastModified = System.currentTimeMillis();
+        }
+
+        return new IBatisEntityState( aDescriptor, anIdentity, rawData, version, lastModified, LOADED, compositeBuilder );
     }
 
 
@@ -149,11 +165,17 @@ public class IBatisEntityStore
 
         for( final EntityState state : newStates )
         {
-            config.executeUpdate( "insert", state.getIdentity(), getProperties( state ) );
+            Map<String, Object> properties = getProperties( state );
+            properties.put( VERSION, 1 );
+            properties.put( LASTMODIFIED, System.currentTimeMillis() );
+            config.executeUpdate( "insert", state.qualifiedIdentity(), properties );
         }
         for( final EntityState state : loadedStates )
         {
-            config.executeUpdate( "update", state.getIdentity(), getProperties( state ) );
+            Map<String, Object> properties = getProperties( state );
+            properties.put( VERSION, state.version() + 1 );
+            properties.put( LASTMODIFIED, System.currentTimeMillis() );
+            config.executeUpdate( "update", state.qualifiedIdentity(), properties );
         }
         for( final QualifiedIdentity identity : removedStates )
         {
@@ -167,15 +189,15 @@ public class IBatisEntityStore
     private Map<String, Object> getProperties( final EntityState state )
     {
         final Map<String, Object> result = new HashMap<String, Object>();
-        for( final String propertyName : state.getPropertyNames() )
+        for( final String propertyName : state.propertyNames() )
         {
             result.put( propertyName, state.getProperty( propertyName ) );
         }
-        for( final String assocName : state.getAssociationNames() )
+        for( final String assocName : state.associationNames() )
         {
             result.put( assocName, state.getAssociation( assocName ).identity() );
         }
-        for( final String manyAssocName : state.getManyAssociationNames() )
+        for( final String manyAssocName : state.manyAssociationNames() )
         {
             final Collection<QualifiedIdentity> manyAssociation = state.getManyAssociation( manyAssocName );
             result.put( manyAssocName, stringIdentifiersOf( manyAssociation ) );

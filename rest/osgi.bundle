@@ -19,12 +19,53 @@ Import-Package: javax.crypto, \
                 org.ops4j.pax.swissbox.extender, \
                 org.osgi.framework, \
                 org.w3c.dom, org.xml.sax, \
-                org.xml.sax.helpers
+                org.xml.sax.helpers, \
+                org.apache.abdera.protocol.server.servlet, \
+                org.apache.abdera.protocol.server, \
+                org.apache.abdera.protocol.server.impl
 
 Private-Package:
 
-Ignore-Package:
+Ignore-Package: com.sun.msv.grammar, \
+                com.sun.msv.grammar.trex, \
+                com.sun.msv.reader, \
+                com.sun.msv.reader.trex.ng, \
+                com.sun.msv.reader.util, \
+                com.sun.msv.util, \
+                com.sun.msv.verifier, \
+                com.sun.msv.verifier.regexp, \
+                javax.imageio, \
+                javax.imageio.spi, \
+                javax.mail, \
+                javax.mail.internet, \
+                javax.net.ssl, \
+                javax.security.auth, \
+                javax.security.cert, \
+                javax.swing, \
+                junit.framework, \
+                nu.xom, \
+                org.apache.commons.codec, \
+                org.apache.commons.codec.binary, \
+                org.apache.commons.codec.net, \
+                org.apache.commons.httpclient, \
+                org.apache.commons.httpclient.auth, \
+                org.apache.commons.httpclient.methods, \
+                org.apache.commons.httpclient.params, \
+                org.apache.commons.httpclient.protocol, \
+                org.apache.commons.httpclient.util, \
+                org.apache.commons.logging, \
+                org.apache.xml.resolver, \
+                org.apache.xml.resolver.readers, \
+                org.dom4j, \
+                org.dom4j.io, \
+                org.jdom, \
+                org.jdom.input, \
+                org.relaxng.datatype, \
+                org.slf4j.impl, \
+                sun.io
 
 Embed-Dependency: *;scope=compile|runtime
 
 Embed-Transitive:  true
+
+

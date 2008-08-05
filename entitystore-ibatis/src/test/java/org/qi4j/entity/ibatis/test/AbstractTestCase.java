@@ -116,8 +116,8 @@ public abstract class AbstractTestCase extends AbstractQi4jTest
 
     protected static void checkEntityStateProperties( final CompositeDescriptor compositeBinding, final EntityState state, final boolean checkAll )
     {
-        assertNotNull( "identity", state.getIdentity() );
-        assertNotNull( "identity", state.getIdentity().identity() );
+        assertNotNull( "identity", state.qualifiedIdentity() );
+        assertNotNull( "identity", state.qualifiedIdentity().identity() );
         if( !checkAll )
         {
             return;
@@ -139,7 +139,7 @@ public abstract class AbstractTestCase extends AbstractQi4jTest
     protected void assertPersonEntityStateEquals( final String id, final String firstName, final String lastName, final EntityState state )
     {
         assertNotNull( state );
-        final QualifiedIdentity qualifiedIdentity = state.getIdentity();
+        final QualifiedIdentity qualifiedIdentity = state.qualifiedIdentity();
 
         assertNotNull( "identity", qualifiedIdentity );
         org.junit.Assert.assertEquals( "identity", id, qualifiedIdentity.identity() );
