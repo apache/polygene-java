@@ -19,6 +19,8 @@
 package org.qi4j.trace.service;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 import org.qi4j.composite.Composite;
 import org.qi4j.entity.ConcurrentEntityModificationException;
 import org.qi4j.entity.EntityBuilder;
@@ -27,7 +29,6 @@ import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkCompletionException;
 import org.qi4j.entity.UnitOfWorkFactory;
 import org.qi4j.injection.scope.Structure;
-import org.qi4j.injection.scope.This;
 import org.qi4j.service.ServiceComposite;
 import org.qi4j.trace.records.CompositeTraceRecord;
 import org.qi4j.trace.records.EntityTraceRecord;
@@ -131,23 +132,23 @@ public class TraceServiceMixin
         state.exception().set( exception );
     }
 
-    private String[] convertArguments( Object[] args )
+    private List<String> convertArguments( Object[] args )
     {
         if( args == null )
         {
-            return new String[0];
+            return new ArrayList<String>( 0 );
         }
-        String[] result = new String[args.length];
-        for( int i = 0; i < result.length; i++ )
+        List<String> result = new ArrayList<String>( args.length );
+        for( int i = 0; i < args.length; i++ )
         {
             Object arg = args[ i ];
             if( arg == null )
             {
-                result[ i ] = null;
+                result.add( null );
             }
             else
             {
-                result[ i ] = arg.toString();
+                result.add( arg.toString() );
             }
         }
         return result;

@@ -14,10 +14,6 @@
 
 package org.qi4j.library.rdf.entity;
 
-import static java.util.Collections.EMPTY_LIST;
-import static java.util.Collections.singleton;
-import java.util.HashMap;
-import java.util.Map;
 import org.openrdf.model.Graph;
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
@@ -54,7 +50,7 @@ public class EntitySerializerMixin
 
     public Iterable<Statement> serialize( QualifiedIdentity qid )
     {
-        EntityState entityState = entityStore.getEntityState( null, qid );
+        EntityState entityState = entityStore.getEntityState( qid );
 
         Graph graph = new GraphImpl();
         ValueFactory values = graph.getValueFactory();
@@ -72,42 +68,5 @@ public class EntitySerializerMixin
         }
 
         return graph;
-    }
-
-    public void parse( Iterable<Statement> entityGraph )
-    {
-        Map<String, String> propertyValues = new HashMap<String, String>();
-        String className = null;
-        String id = null;
-        for( Statement statement : entityGraph )
-        {
-            if( statement.getPredicate().equals( Rdfs.TYPE ) )
-            {
-                className = ClassUtil.toClassName( statement.getObject().toString() );
-            }
-            else if( statement.getPredicate().equals( identityUri ) )
-            {
-                id = statement.getObject().stringValue();
-            }
-            else
-            {
-                String qualifiedName = AbstractPropertyInstance.toQualifiedName( statement.getPredicate().toString() );
-                propertyValues.put( qualifiedName, statement.getObject().stringValue() );
-            }
-        }
-
-        if( className == null || id == null )
-        {
-            return;
-        }
-
-        QualifiedIdentity qid = new QualifiedIdentity( id, className );
-        EntityState entityState = entityStore.getEntityState( null, qid );
-        for( Map.Entry<String, String> propertyEntry : propertyValues.entrySet() )
-        {
-            entityState.setProperty( propertyEntry.getKey(), propertyEntry.getValue() );
-        }
-
-        entityStore.prepare( EMPTY_LIST, singleton( entityState ), EMPTY_LIST, module ).commit();
     }
 }

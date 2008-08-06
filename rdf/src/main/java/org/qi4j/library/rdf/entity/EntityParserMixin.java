@@ -28,6 +28,7 @@ import org.qi4j.injection.scope.Service;
 import org.qi4j.injection.scope.Structure;
 import org.qi4j.library.rdf.Rdfs;
 import org.qi4j.property.AbstractPropertyInstance;
+import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.QualifiedIdentity;
@@ -42,6 +43,7 @@ public class EntityParserMixin
 {
     private @Service EntityStore entityStore;
     private @Structure Module module;
+    private @Structure Qi4jSPI spi;
 
     private URI identityUri;
 
@@ -80,12 +82,16 @@ public class EntityParserMixin
         }
 
         QualifiedIdentity qid = new QualifiedIdentity( id, className );
-        EntityState entityState = entityStore.getEntityState( null, qid );
+/* TODO Should we assume this has been done already?
+        EntityType entityType = spi.getEntityDescriptor( module.classLoader().loadClass( qid.type() ), module).entityType();
+        entityStore.registerEntityType( entityType );
+*/
+        EntityState entityState = entityStore.getEntityState( qid );
         for( Map.Entry<String, String> propertyEntry : propertyValues.entrySet() )
         {
             entityState.setProperty( propertyEntry.getKey(), propertyEntry.getValue() );
         }
 
-        entityStore.prepare( EMPTY_LIST, singleton( entityState ), EMPTY_LIST, module ).commit();
+        entityStore.prepare( EMPTY_LIST, singleton( entityState ), EMPTY_LIST ).commit();
     }
 }

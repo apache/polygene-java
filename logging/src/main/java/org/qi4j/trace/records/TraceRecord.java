@@ -17,6 +17,7 @@
  */
 package org.qi4j.trace.records;
 
+import java.util.List;
 import org.qi4j.property.Property;
 
 public interface TraceRecord
@@ -33,5 +34,5 @@ public interface TraceRecord
 
     Property<Throwable> exception();
 
-    Property<String[]> arguments();
+    Property<List<String>> arguments();
 }
