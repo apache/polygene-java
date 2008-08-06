@@ -47,15 +47,15 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
-      <library name="org.prefuse:prefuse:beta-20060220">
+      <library name="org.prefuse:prefuse:20071021">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/prefuse/prefuse/beta-20060220/prefuse-beta-20060220.jar!/" />
+          <root url="jar://$M2_REPO$/org/prefuse/prefuse/20071021/prefuse-20071021.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/prefuse/prefuse/beta-20060220/prefuse-beta-20060220-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/prefuse/prefuse/20071021/prefuse-20071021-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/prefuse/prefuse/beta-20060220/prefuse-beta-20060220-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/prefuse/prefuse/20071021/prefuse-20071021-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>

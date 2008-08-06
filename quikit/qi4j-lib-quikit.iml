@@ -47,45 +47,7 @@
       </library>
     </orderEntry>
     <orderEntry type="module" module-name="qi4j-lib-constraints" exported="" />
-    <orderEntry type="module-library" exported="">
-      <library name="org.apache.wicket:wicket:1.4-m3">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/org/apache/wicket/wicket/1.4-m3/wicket-1.4-m3.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/org/apache/wicket/wicket/1.4-m3/wicket-1.4-m3-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/org/apache/wicket/wicket/1.4-m3/wicket-1.4-m3-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library name="org.slf4j:slf4j-api:1.4.2">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/org/slf4j/slf4j-api/1.4.2/slf4j-api-1.4.2.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/org/slf4j/slf4j-api/1.4.2/slf4j-api-1.4.2-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/org/slf4j/slf4j-api/1.4.2/slf4j-api-1.4.2-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library name="javax.servlet:servlet-api:2.4">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/javax/servlet/servlet-api/2.4/servlet-api-2.4.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/javax/servlet/servlet-api/2.4/servlet-api-2.4-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/javax/servlet/servlet-api/2.4/servlet-api-2.4-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
+    <orderEntry type="module" module-name="qi4j-lib-http" exported="" />
     <orderEntry type="module-library" exported="">
       <library name="org.mortbay.jetty:jetty:6.1.11">
         <CLASSES>
@@ -122,6 +84,45 @@
         </JAVADOC>
         <SOURCES>
           <root url="jar://$M2_REPO$/org/mortbay/jetty/servlet-api-2.5/6.1.11/servlet-api-2.5-6.1.11-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library name="javax.servlet:servlet-api:2.4">
+        <CLASSES>
+          <root url="jar://$M2_REPO$/javax/servlet/servlet-api/2.4/servlet-api-2.4.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$M2_REPO$/javax/servlet/servlet-api/2.4/servlet-api-2.4-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$M2_REPO$/javax/servlet/servlet-api/2.4/servlet-api-2.4-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library name="org.apache.wicket:wicket:1.4-m3">
+        <CLASSES>
+          <root url="jar://$M2_REPO$/org/apache/wicket/wicket/1.4-m3/wicket-1.4-m3.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$M2_REPO$/org/apache/wicket/wicket/1.4-m3/wicket-1.4-m3-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$M2_REPO$/org/apache/wicket/wicket/1.4-m3/wicket-1.4-m3-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library name="org.slf4j:slf4j-api:1.4.2">
+        <CLASSES>
+          <root url="jar://$M2_REPO$/org/slf4j/slf4j-api/1.4.2/slf4j-api-1.4.2.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$M2_REPO$/org/slf4j/slf4j-api/1.4.2/slf4j-api-1.4.2-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$M2_REPO$/org/slf4j/slf4j-api/1.4.2/slf4j-api-1.4.2-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
