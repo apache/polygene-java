@@ -134,6 +134,20 @@ public class ClassUtil
         return null;
     }
 
+    public static Class<?> getRawClass( final Type injectionType )
+    {
+        // Calculate raw type
+        if( injectionType instanceof Class )
+        {
+            return (Class<?>) injectionType;
+        }
+        else if( injectionType instanceof ParameterizedType )
+        {
+            return (Class<?>) ( (ParameterizedType) injectionType ).getRawType();
+        }
+        throw new IllegalArgumentException( "Could not extract the raw class of " + injectionType );
+    }
+
     public static List<Constructor> constructorsOf( Class clazz )
     {
         List<Constructor> constructors = new ArrayList<Constructor>();

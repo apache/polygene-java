@@ -14,13 +14,42 @@
 
 package org.qi4j.spi.entity;
 
-import org.qi4j.spi.composite.CompositeDescriptor;
+import java.io.Serializable;
 
 /**
  * TODO
  */
-public interface EntityDescriptor
-    extends CompositeDescriptor
+public class AssociationType
+    implements Serializable
 {
-    EntityType entityType();
+    private String qualifiedName;
+    private String type;
+
+    public AssociationType( String qualifiedName, String type )
+    {
+        this.qualifiedName = qualifiedName;
+        this.type = type;
+    }
+
+    public String qualifiedName()
+    {
+        return qualifiedName;
+    }
+
+    public String type()
+    {
+        return type;
+    }
+
+    public String toURI()
+    {
+        return "urn:qi4j:association:" + qualifiedName;
+
+    }
+
+    @Override public String toString()
+    {
+        return qualifiedName + "(" + type + ")";
+    }
+
 }

@@ -68,6 +68,8 @@ public interface EntityState
 
     EntityStatus status();
 
+    EntityType entityType();
+
     Object getProperty( String qualifiedName );
 
     void setProperty( String qualifiedName, Object newValue );

@@ -27,7 +27,9 @@ import org.qi4j.runtime.composite.ConstraintsModel;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.composite.ValueConstraintsModel;
 import org.qi4j.runtime.entity.UnitOfWorkInstance;
+import org.qi4j.spi.entity.AssociationType;
 import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.ManyAssociationType;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.util.MetaInfo;
 
@@ -146,4 +148,29 @@ public final class AssociationsModel
         }
     }
 
+    public Iterable<AssociationType> associationTypes()
+    {
+        List<AssociationType> associationTypes = new ArrayList<AssociationType>();
+        for( AssociationModel associationModel : associationModels )
+        {
+            if( associationModel.isAssociation() )
+            {
+                associationTypes.add( associationModel.associationType() );
+            }
+        }
+        return associationTypes;
+    }
+
+    public Iterable<ManyAssociationType> manyAssociationTypes()
+    {
+        List<ManyAssociationType> associationTypes = new ArrayList<ManyAssociationType>();
+        for( AssociationModel associationModel : associationModels )
+        {
+            if( !associationModel.isAssociation() )
+            {
+                associationTypes.add( associationModel.manyAssociationType() );
+            }
+        }
+        return associationTypes;
+    }
 }

@@ -83,11 +83,30 @@ public abstract class AbstractAssociationInstance<T>
      */
     public static String toURI( final Method accessor )
     {
-        if( accessor == null )
-        {
-            return null;
-        }
         return "urn:qi4j:association:" + getQualifiedName( accessor );
+    }
+
+    /**
+     * Get URI for a property.
+     *
+     * @param declaringClass
+     * @param name
+     * @return property URI
+     */
+    public static String toURI( final Class declaringClass, String name )
+    {
+        return "urn:qi4j:association:" + AbstractAssociationInstance.getQualifiedName( declaringClass, name );
+    }
+
+    /**
+     * Get URI for a qualified property name.
+     *
+     * @param qualifiedName
+     * @return property URI
+     */
+    public static String toURI( final String qualifiedName )
+    {
+        return "urn:qi4j:association:" + qualifiedName;
     }
 
     protected final AssociationInfo associationInfo;

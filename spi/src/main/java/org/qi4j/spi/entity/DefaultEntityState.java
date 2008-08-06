@@ -32,19 +32,21 @@ public class DefaultEntityState
     private final QualifiedIdentity identity;
     private EntityStatus status;
 
+    private EntityType entityType;
     protected final Map<String, Object> properties;
     protected final Map<String, QualifiedIdentity> associations;
     protected final Map<String, Collection<QualifiedIdentity>> manyAssociations;
 
-    public DefaultEntityState( QualifiedIdentity identity )
+    public DefaultEntityState( QualifiedIdentity identity, EntityType entityType )
     {
-        this( 0, System.currentTimeMillis(), identity, EntityStatus.NEW, new HashMap<String, Object>(), new HashMap<String, QualifiedIdentity>(), new HashMap<String, Collection<QualifiedIdentity>>() );
+        this( 0, System.currentTimeMillis(), identity, EntityStatus.NEW, entityType, new HashMap<String, Object>(), new HashMap<String, QualifiedIdentity>(), new HashMap<String, Collection<QualifiedIdentity>>() );
     }
 
     public DefaultEntityState( long version,
                                long lastModified,
                                QualifiedIdentity identity,
                                EntityStatus status,
+                               EntityType entityType,
                                Map<String, Object> properties,
                                Map<String, QualifiedIdentity> associations,
                                Map<String, Collection<QualifiedIdentity>> manyAssociations )
@@ -53,6 +55,7 @@ public class DefaultEntityState
         this.lastModified = lastModified;
         this.identity = identity;
         this.status = status;
+        this.entityType = entityType;
         this.properties = properties;
         this.associations = associations;
         this.manyAssociations = manyAssociations;
@@ -114,6 +117,11 @@ public class DefaultEntityState
     public EntityStatus status()
     {
         return status;
+    }
+
+    public EntityType entityType()
+    {
+        return entityType;
     }
 
     public Iterable<String> propertyNames()

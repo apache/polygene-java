@@ -20,7 +20,9 @@ import org.qi4j.property.Property;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.property.PropertyModel;
 import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.PropertyType;
 import org.qi4j.spi.property.ImmutablePropertyInstance;
+import org.qi4j.util.ClassUtil;
 import org.qi4j.util.MetaInfo;
 
 /**
@@ -69,4 +71,8 @@ public final class EntityPropertyModel extends PropertyModel
         entityState.setProperty( qualifiedName(), value );
     }
 
+    public PropertyType propertyType()
+    {
+        return new PropertyType( qualifiedName(), ClassUtil.getRawClass( type() ).getName() );
+    }
 }

@@ -19,7 +19,6 @@ package org.qi4j.spi.query;
 
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.structure.Module;
 
 /**
  * TODO Add JavaDoc
@@ -31,6 +30,5 @@ public interface EntityIndexer
 {
     void index( Iterable<EntityState> newStates,
                 Iterable<EntityState> changedStates,
-                Iterable<QualifiedIdentity> removedStates,
-                Module module );
+                Iterable<QualifiedIdentity> removedStates );
 }

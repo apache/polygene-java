@@ -27,7 +27,10 @@ import org.qi4j.runtime.entity.association.AssociationsInstance;
 import org.qi4j.runtime.entity.association.AssociationsModel;
 import org.qi4j.runtime.property.PropertiesInstance;
 import org.qi4j.spi.composite.StateDescriptor;
+import org.qi4j.spi.entity.AssociationType;
 import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.ManyAssociationType;
+import org.qi4j.spi.entity.PropertyType;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.property.PropertyDescriptor;
 
@@ -101,6 +104,21 @@ public final class EntityStateModel
 
         propertiesModel.setState( stateInstance.properties, entityState );
         associationsModel.setState( stateInstance.associations, entityState );
+    }
+
+    public Iterable<PropertyType> propertyTypes()
+    {
+        return propertiesModel.propertyTypes();
+    }
+
+    public Iterable<AssociationType> associationTypes()
+    {
+        return associationsModel.associationTypes();
+    }
+
+    public Iterable<ManyAssociationType> manyAssociationTypes()
+    {
+        return associationsModel.manyAssociationTypes();
     }
 
     private static final class StateInstance

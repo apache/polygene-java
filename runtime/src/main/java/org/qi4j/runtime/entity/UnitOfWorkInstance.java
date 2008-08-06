@@ -42,15 +42,15 @@ import org.qi4j.runtime.query.QueryBuilderFactoryImpl;
 import org.qi4j.runtime.structure.EntitiesInstance;
 import org.qi4j.runtime.structure.EntitiesModel;
 import org.qi4j.runtime.structure.ModuleInstance;
-import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.entity.DefaultEntityState;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreException;
+import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.StateCommitter;
-import org.qi4j.structure.Module;
+import org.qi4j.spi.entity.UnknownEntityTypeException;
 
 public final class UnitOfWorkInstance
     implements UnitOfWork
@@ -419,7 +419,7 @@ public final class UnitOfWorkInstance
 
             try
             {
-                committers.add( entityStore.prepare( completion.getNewState(), completion.getUpdatedState(), completion.getRemovedState(), moduleInstance ) );
+                committers.add( entityStore.prepare( completion.getNewState(), completion.getUpdatedState(), completion.getRemovedState() ) );
             }
             catch( EntityStoreException e )
             {
@@ -562,37 +562,54 @@ public final class UnitOfWorkInstance
     private class UnitOfWorkStore
         implements EntityStore
     {
-        final Map<String, Class<? extends EntityComposite>> entityTypes = new HashMap<String, Class<? extends EntityComposite>>();
+        final Map<String, EntityType> entityTypes = new HashMap<String, EntityType>();
 
-        public EntityState newEntityState( CompositeDescriptor compositeDescriptor, QualifiedIdentity identity ) throws EntityStoreException
+        public void registerEntityType( EntityType entityType )
         {
-            if( entityTypes.get( identity.type() ) == null )
+            entityTypes.put( entityType.type(), entityType );
+        }
+
+        public EntityState newEntityState( QualifiedIdentity identity ) throws EntityStoreException
+        {
+            EntityType entityType = entityTypes.get( identity.type() );
+            if( entityType == null )
             {
-                entityTypes.put( identity.type(), (Class<? extends EntityComposite>) compositeDescriptor.type() );
+                throw new UnknownEntityTypeException( identity.type() );
             }
 
-            UnitOfWorkEntityState entityState = new UnitOfWorkEntityState( 0, System.currentTimeMillis(), identity, EntityStatus.NEW, new HashMap<String, Object>(), new HashMap<String, QualifiedIdentity>(), new HashMap<String, Collection<QualifiedIdentity>>(), null );
+            UnitOfWorkEntityState entityState = new UnitOfWorkEntityState( 0, System.currentTimeMillis(), identity, EntityStatus.NEW, entityType,
+                                                                           new HashMap<String, Object>(), new HashMap<String, QualifiedIdentity>(), new HashMap<String, Collection<QualifiedIdentity>>(), null );
             return entityState;
         }
 
-        public EntityState getEntityState( CompositeDescriptor compositeDescriptor, QualifiedIdentity identity ) throws EntityStoreException
+        public EntityState getEntityState( QualifiedIdentity identity ) throws EntityStoreException
         {
-            if( entityTypes.get( identity.type() ) == null )
+            EntityType entityType = entityTypes.get( identity.type() );
+            if( entityType == null )
             {
-                entityTypes.put( identity.type(), (Class<? extends EntityComposite>) compositeDescriptor.type() );
+                throw new UnknownEntityTypeException( identity.type() );
             }
 
             EntityState parentState = getCachedState( identity );
             if( parentState == null )
             {
                 // Force load into parent
-                parentState = EntityInstance.getEntityInstance( find( identity.identity(), compositeDescriptor.type() ) ).entityState();
+                try
+                {
+                    Class<? extends EntityComposite> entityClass = (Class<? extends EntityComposite>) moduleInstance.classLoader().loadClass( identity.type() );
+                    parentState = EntityInstance.getEntityInstance( find( identity.identity(), entityClass ) ).entityState();
+                }
+                catch( ClassNotFoundException e )
+                {
+                    throw new EntityStoreException( e );
+                }
             }
 
             UnitOfWorkEntityState unitOfWorkEntityState = new UnitOfWorkEntityState( parentState.version(),
                                                                                      parentState.lastModified(),
                                                                                      identity,
                                                                                      EntityStatus.LOADED,
+                                                                                     entityType,
                                                                                      new HashMap<String, Object>(),
                                                                                      new HashMap<String, QualifiedIdentity>(),
                                                                                      new HashMap<String, Collection<QualifiedIdentity>>(),
@@ -600,13 +617,21 @@ public final class UnitOfWorkInstance
             return unitOfWorkEntityState;
         }
 
-        public StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, Iterable<QualifiedIdentity> removedStates, Module module ) throws EntityStoreException
+        public StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, Iterable<QualifiedIdentity> removedStates ) throws EntityStoreException
         {
             // Create new entity and transfer state
             for( EntityState newState : newStates )
             {
                 UnitOfWorkEntityState uowState = (UnitOfWorkEntityState) newState;
-                Class<? extends EntityComposite> type = entityTypes.get( uowState.qualifiedIdentity().type() );
+                Class<? extends EntityComposite> type = null;
+                try
+                {
+                    type = (Class<? extends EntityComposite>) moduleInstance.classLoader().loadClass( uowState.qualifiedIdentity().type() );
+                }
+                catch( ClassNotFoundException e )
+                {
+                    throw new EntityStoreException( e );
+                }
                 EntityComposite entityInstance = newEntityBuilder( uowState.qualifiedIdentity().identity(), type ).newInstance();
 
                 EntityState parentState = EntityInstance.getEntityInstance( entityInstance ).entityState();
@@ -639,7 +664,15 @@ public final class UnitOfWorkInstance
                 UnitOfWorkEntityState uowState = (UnitOfWorkEntityState) loadedState;
                 if( uowState.isChanged() )
                 {
-                    Class<? extends EntityComposite> type = entityTypes.get( uowState.qualifiedIdentity().type() );
+                    Class<? extends EntityComposite> type = null;
+                    try
+                    {
+                        type = (Class<? extends EntityComposite>) moduleInstance.classLoader().loadClass( uowState.qualifiedIdentity().type() );
+                    }
+                    catch( ClassNotFoundException e )
+                    {
+                        throw new EntityStoreException( e );
+                    }
                     EntityComposite instance = find( uowState.qualifiedIdentity().identity(), type );
                     EntityInstance entityInstance = EntityInstance.getEntityInstance( instance );
 
@@ -709,12 +742,13 @@ public final class UnitOfWorkInstance
         private UnitOfWorkEntityState( long entityVersion, long lastModified,
                                        QualifiedIdentity identity,
                                        EntityStatus status,
+                                       EntityType entityType,
                                        Map<String, Object> properties,
                                        Map<String, QualifiedIdentity> associations,
                                        Map<String, Collection<QualifiedIdentity>> manyAssociations,
                                        EntityState parentState )
         {
-            super( entityVersion, lastModified, identity, status, properties, associations, manyAssociations );
+            super( entityVersion, lastModified, identity, status, entityType, properties, associations, manyAssociations );
             this.parentState = parentState;
             this.entityVersion = entityVersion;
         }

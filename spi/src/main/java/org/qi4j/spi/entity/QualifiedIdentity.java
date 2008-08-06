@@ -16,6 +16,7 @@ package org.qi4j.spi.entity;
 
 import java.io.Serializable;
 import org.qi4j.entity.EntityComposite;
+import org.qi4j.util.ClassUtil;
 
 /**
  * TODO
@@ -57,6 +58,11 @@ public final class QualifiedIdentity
     public String type()
     {
         return compositeType;
+    }
+
+    public String toURI()
+    {
+        return ClassUtil.toURI( compositeType ) + "/" + identity;
     }
 
     public boolean equals( Object o )

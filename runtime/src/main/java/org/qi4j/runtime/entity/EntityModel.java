@@ -17,6 +17,8 @@ package org.qi4j.runtime.entity;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.ArrayList;
+import java.util.List;
 import org.qi4j.bootstrap.AssociationDeclarations;
 import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.composite.Composite;
@@ -45,7 +47,9 @@ import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreException;
+import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.spi.entity.UnknownEntityTypeException;
 import org.qi4j.structure.Visibility;
 import org.qi4j.util.ClassUtil;
 import org.qi4j.util.MetaInfo;
@@ -87,7 +91,6 @@ public final class EntityModel
     private final EntityMixinsModel mixinsModel;
     private final EntityStateModel stateModel;
     private final CompositeMethodsModel compositeMethodsModel;
-
     private final Class<? extends Composite> proxyClass;
 
     private EntityModel( Class<? extends EntityComposite> type,
@@ -131,6 +134,17 @@ public final class EntityModel
     public Iterable<Class> mixinTypes()
     {
         return mixinsModel.mixinTypes();
+    }
+
+    public EntityType entityType()
+    {
+        List<String> mixinTypes = new ArrayList<String>();
+        for( Class mixinType : mixinsModel.mixinTypes() )
+        {
+            mixinTypes.add( mixinType.getName() );
+        }
+
+        return new EntityType( type, toURI(), mixinTypes, stateModel.propertyTypes(), stateModel.associationTypes(), stateModel.manyAssociationTypes() );
     }
 
     public void visitModel( ModelVisitor modelVisitor )
@@ -213,12 +227,34 @@ public final class EntityModel
     }
 
     public EntityState newEntityState( EntityStore store, String identity, State state )
-        throws ConstraintViolationException
+        throws ConstraintViolationException, EntityStoreException
     {
         QualifiedIdentity qid = newQualifiedIdentity( identity );
         try
         {
-            EntityState entityState = store.newEntityState( this, qid );
+            EntityState entityState = null;
+            do
+            {
+                try
+                {
+                    entityState = store.newEntityState( qid );
+                }
+                catch( UnknownEntityTypeException e )
+                {
+                    // Check if it is this type that the store doesn't understand
+                    EntityType entityType = entityType();
+                    if( e.getMessage().equals( entityType.type() ) )
+                    {
+                        store.registerEntityType( entityType );
+                        // Try again
+                    }
+                    else
+                    {
+                        throw e; // ???
+                    }
+                }
+            }
+            while( entityState == null );
 
             stateModel.setState( state, entityState );
             return entityState;
@@ -233,6 +269,36 @@ public final class EntityModel
         }
     }
 
+    public EntityState getEntityState( EntityStore entityStore, QualifiedIdentity qid )
+        throws EntityStoreException
+    {
+        EntityState entityState = null;
+        do
+        {
+            try
+            {
+                entityState = entityStore.getEntityState( qid );
+            }
+            catch( UnknownEntityTypeException e )
+            {
+                // Check if it is this type that the store doesn't understand
+                EntityType entityType = entityType();
+                if( e.getMessage().equals( entityType.type() ) )
+                {
+                    entityStore.registerEntityType( entityType );
+                    // Try again
+                }
+                else
+                {
+                    throw e; // ???
+                }
+            }
+        }
+        while( entityState == null );
+
+        return entityState;
+    }
+
     public String toURI()
     {
         return ClassUtil.toURI( type );
@@ -242,4 +308,5 @@ public final class EntityModel
     {
         return type.getName();
     }
+
 }

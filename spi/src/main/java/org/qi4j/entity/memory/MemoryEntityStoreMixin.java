@@ -1,6 +1,5 @@
 package org.qi4j.entity.memory;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -9,38 +8,35 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import org.qi4j.composite.CompositeBuilderFactory;
-import org.qi4j.entity.association.ListAssociation;
-import org.qi4j.entity.association.ManyAssociation;
-import org.qi4j.entity.association.SetAssociation;
-import org.qi4j.spi.composite.CompositeDescriptor;
+import org.qi4j.spi.entity.AbstractEntityStoreMixin;
 import org.qi4j.spi.entity.DefaultEntityState;
 import org.qi4j.spi.entity.EntityAlreadyExistsException;
 import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
-import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreException;
+import org.qi4j.spi.entity.EntityType;
+import org.qi4j.spi.entity.ManyAssociationType;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.StateCommitter;
-import org.qi4j.spi.entity.association.AssociationDescriptor;
+import org.qi4j.spi.entity.UnknownEntityTypeException;
 import org.qi4j.spi.serialization.SerializableState;
 import org.qi4j.spi.serialization.SerializedObject;
-import org.qi4j.structure.Module;
 
 /**
  * In-memory implementation of EntityStore
  */
-public class MemorySerializationEntityStoreMixin
-    implements EntityStore
+public class MemoryEntityStoreMixin
+    extends AbstractEntityStoreMixin
 {
     private final Map<String, Map<QualifiedIdentity, SerializedObject<SerializableState>>> store;
 
-    public MemorySerializationEntityStoreMixin()
+    public MemoryEntityStoreMixin()
     {
         store = new HashMap<String, Map<QualifiedIdentity, SerializedObject<SerializableState>>>();
     }
 
-    public EntityState newEntityState( CompositeDescriptor compositeDescriptor, QualifiedIdentity identity ) throws EntityStoreException
+    public EntityState newEntityState( QualifiedIdentity identity ) throws EntityStoreException
     {
         Map<QualifiedIdentity, SerializedObject<SerializableState>> typeStore;
         synchronized( store )
@@ -59,30 +55,43 @@ public class MemorySerializationEntityStoreMixin
             }
         }
 
+        EntityType entityType = getEntityType( identity );
+
         HashMap<String, Object> properties = new HashMap<String, Object>();
         HashMap<String, Collection<QualifiedIdentity>> manyAssociations = new HashMap<String, Collection<QualifiedIdentity>>();
-        for( AssociationDescriptor associationDescriptor : compositeDescriptor.state().associations() )
+        for( ManyAssociationType associationDescriptor : entityType.manyAssociations() )
         {
-            Method accessor = associationDescriptor.accessor();
-            if( ListAssociation.class.isAssignableFrom( accessor.getReturnType() ) )
+            switch( associationDescriptor.associationType() )
+            {
+            case LIST:
             {
                 manyAssociations.put( associationDescriptor.qualifiedName(), new ArrayList<QualifiedIdentity>() );
+                break;
             }
-            else if( SetAssociation.class.isAssignableFrom( accessor.getReturnType() ) )
+            case SET:
             {
                 manyAssociations.put( associationDescriptor.qualifiedName(), new LinkedHashSet<QualifiedIdentity>() );
+                break;
             }
-            else if( ManyAssociation.class.isAssignableFrom( accessor.getReturnType() ) )
+            case MANY:
             {
                 manyAssociations.put( associationDescriptor.qualifiedName(), new HashSet<QualifiedIdentity>() );
+                break;
+            }
             }
         }
-        return new DefaultEntityState( 0, System.currentTimeMillis(), identity, EntityStatus.NEW, properties, new HashMap<String, QualifiedIdentity>(), manyAssociations );
+        return new DefaultEntityState( 0, System.currentTimeMillis(), identity, EntityStatus.NEW, entityType, properties, new HashMap<String, QualifiedIdentity>(), manyAssociations );
     }
 
-    public EntityState getEntityState( CompositeDescriptor compositeDescriptor, QualifiedIdentity identity )
+    public EntityState getEntityState( QualifiedIdentity identity )
         throws EntityStoreException
     {
+        EntityType entityType = getEntityType( identity );
+        if( entityType == null )
+        {
+            throw new UnknownEntityTypeException( identity.type() );
+        }
+
         try
         {
             Map<QualifiedIdentity, SerializedObject<SerializableState>> typeStore;
@@ -109,7 +118,7 @@ public class MemorySerializationEntityStoreMixin
             SerializableState serializableState = serializableObject.getObject( (CompositeBuilderFactory) null, null );
 
             return new DefaultEntityState( serializableState.version(), serializableState.lastModified(),
-                                           identity, EntityStatus.LOADED, serializableState.properties(), serializableState.associations(), serializableState.manyAssociations() );
+                                           identity, EntityStatus.LOADED, entityType, serializableState.properties(), serializableState.associations(), serializableState.manyAssociations() );
         }
         catch( ClassNotFoundException e )
         {
@@ -117,7 +126,7 @@ public class MemorySerializationEntityStoreMixin
         }
     }
 
-    public StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, final Iterable<QualifiedIdentity> removedStates, Module module ) throws EntityStoreException
+    public StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, final Iterable<QualifiedIdentity> removedStates ) throws EntityStoreException
     {
         final Map<QualifiedIdentity, SerializedObject<SerializableState>> updatedState = new HashMap<QualifiedIdentity, SerializedObject<SerializableState>>();
 

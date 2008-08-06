@@ -18,6 +18,7 @@ import java.util.Collection;
 import org.qi4j.entity.LoadingPolicy;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
+import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.QualifiedIdentity;
 
 /**
@@ -58,6 +59,11 @@ public class RecordingEntityState
     public EntityStatus status()
     {
         return entityState.status();
+    }
+
+    public EntityType entityType()
+    {
+        return entityState.entityType();
     }
 
     public Object getProperty( String qualifiedName )

@@ -21,7 +21,7 @@ import org.qi4j.spi.entity.EntityStore;
 /**
  * TODO
  */
-@Mixins( { MemorySerializationEntityStoreMixin.class } )
+@Mixins( { MemoryEntityStoreMixin.class } )
 public interface MemoryEntityStoreService
     extends EntityStore, ServiceComposite
 {

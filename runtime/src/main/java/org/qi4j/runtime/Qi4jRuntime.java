@@ -39,6 +39,7 @@ import org.qi4j.service.ServiceComposite;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.composite.CompositeInstance;
+import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.object.ObjectDescriptor;
 import org.qi4j.structure.Module;
 
@@ -151,6 +152,21 @@ public final class Qi4jRuntime
         }
 
         return moduleInstance.findCompositeFor( mixinType );
+    }
+
+    public EntityDescriptor getEntityDescriptor( EntityComposite composite )
+    {
+        EntityInstance entityInstance = (EntityInstance) getInvocationHandler( composite );
+        return entityInstance.entityModel();
+    }
+
+    @SuppressWarnings( "unchecked" )
+    public EntityDescriptor getEntityDescriptor( Class mixinType, Module module )
+    {
+        ModuleInstance moduleInstance = (ModuleInstance) module;
+        EntitiesInstance entitiesInstance = moduleInstance.entities();
+        EntitiesModel entitiesModel = entitiesInstance.model();
+        return entitiesModel.getEntityModelFor( mixinType );
     }
 
     @SuppressWarnings( "unchecked" )

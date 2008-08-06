@@ -150,7 +150,7 @@ public final class EntityInstance
             }
             if( entityState == null )
             {
-                entityState = store.getEntityState( entity, identity );
+                entityState = entity.getEntityState( store, identity );
             }
             mixins = entity.newMixins( uow, entityState, this );
         }
@@ -175,8 +175,10 @@ public final class EntityInstance
 
     public void refresh()
     {
-        entityState = store.getEntityState( entity, identity );
-        refresh( entityState );
+        if( status() == EntityStatus.LOADED )
+        {
+            refresh( store.getEntityState( identity ) );
+        }
     }
 
     public void refresh( EntityState newState )
@@ -239,7 +241,7 @@ public final class EntityInstance
     {
         if( entityState == null && status() == EntityStatus.LOADED )
         {
-            entityState = store.getEntityState( entity, identity );
+            entityState = entity.getEntityState( store, identity );
         }
     }
 

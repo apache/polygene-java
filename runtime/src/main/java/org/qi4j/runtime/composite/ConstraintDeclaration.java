@@ -18,6 +18,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import org.qi4j.composite.Constraint;
+import static org.qi4j.util.ClassUtil.getRawClass;
 
 /**
  * TODO
@@ -53,33 +54,19 @@ public final class ConstraintDeclaration
         if( constraintValueType instanceof Class )
         {
             Class constraintValueClass = (Class) constraintValueType;
-            Class valueClass = extractRawInjectionClass( valueType );
+            Class valueClass = getRawClass( valueType );
             return constraintAnnotationType.equals( annotationType ) && constraintValueClass.isAssignableFrom( valueClass );
         }
         else if( constraintValueType instanceof ParameterizedType )
         {
             // TODO Handle nested generics
-            Class constraintValueClass = extractRawInjectionClass( constraintValueType );
-            Class valueClass = extractRawInjectionClass( valueType );
+            Class constraintValueClass = getRawClass( constraintValueType );
+            Class valueClass = getRawClass( valueType );
             return constraintAnnotationType.equals( annotationType ) && constraintValueClass.isAssignableFrom( valueClass );
         }
         else
         {
             return false; // TODO Handles more cases. What are they?
         }
-    }
-
-    private Class<?> extractRawInjectionClass( final Type injectionType )
-    {
-        // Calculate raw injection type
-        if( injectionType instanceof Class )
-        {
-            return (Class<?>) injectionType;
-        }
-        else if( injectionType instanceof ParameterizedType )
-        {
-            return (Class<?>) ( (ParameterizedType) injectionType ).getRawType();
-        }
-        throw new IllegalArgumentException( "Could not extract the raw class of " + injectionType );
     }
 }

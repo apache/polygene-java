@@ -23,7 +23,13 @@ import org.qi4j.entity.association.Association;
 public final class EntityBuilderAssociation<T>
     implements Association<T>
 {
+    private final AssociationModel model;
     private T associated;
+
+    public EntityBuilderAssociation( AssociationModel aModel )
+    {
+        model = aModel;
+    }
 
     public T get()
     {
@@ -37,21 +43,21 @@ public final class EntityBuilderAssociation<T>
 
     public <T> T metaInfo( Class<T> infoType )
     {
-        return null;
+        return model.metaInfo( infoType );
     }
 
     public String name()
     {
-        return null;
+        return model.name();
     }
 
     public String qualifiedName()
     {
-        return null;
+        return model.qualifiedName();
     }
 
     public Type type()
     {
-        return null;
+        return model.type();
     }
 }

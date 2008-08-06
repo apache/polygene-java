@@ -31,6 +31,7 @@ import org.qi4j.runtime.composite.ValueConstraintsModel;
 import org.qi4j.runtime.property.PropertiesInstance;
 import org.qi4j.runtime.property.PropertyModel;
 import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.PropertyType;
 import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.util.MetaInfo;
 
@@ -136,5 +137,15 @@ public final class EntityPropertiesModel
     public List<PropertyDescriptor> properties()
     {
         return new ArrayList<PropertyDescriptor>( propertyModels );
+    }
+
+    public Iterable<PropertyType> propertyTypes()
+    {
+        List<PropertyType> propertyTypes = new ArrayList<PropertyType>();
+        for( EntityPropertyModel propertyModel : propertyModels )
+        {
+            propertyTypes.add( propertyModel.propertyType() );
+        }
+        return propertyTypes;
     }
 }

@@ -14,13 +14,16 @@
 
 package org.qi4j.spi.entity;
 
-import org.qi4j.spi.composite.CompositeDescriptor;
-
 /**
- * TODO
+ * This is thrown by an EntityStore if it is invoked with
+ * a QualifiedIdentity whose type is not known by the EntityStore.
+ * The client must first register the type.
  */
-public interface EntityDescriptor
-    extends CompositeDescriptor
+public class UnknownEntityTypeException
+    extends EntityStoreException
 {
-    EntityType entityType();
+    public UnknownEntityTypeException( String type )
+    {
+        super( type );
+    }
 }

@@ -53,7 +53,7 @@ public class AmbiguousTypeException extends MixinMappingException
 
     public AmbiguousTypeException( Class<?> mixinType )
     {
-        super( "More than one visible CompositeType implements MixinType: " + mixinType.getName() );
+        super( "More than one visible CompositeType implements mixintype: " + mixinType.getName() );
         this.mixinType = mixinType;
     }
 

@@ -24,7 +24,6 @@ import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.StateCommitter;
-import org.qi4j.structure.Module;
 
 /**
  * TODO Add JavaDoc
@@ -39,11 +38,11 @@ public abstract class IndexingSideEffect extends SideEffectOf<EntityStore>
 
     public StateCommitter prepare( Iterable<EntityState> newStates,
                                    Iterable<EntityState> loadedStates,
-                                   Iterable<QualifiedIdentity> removedStates,
-                                   Module module )
+                                   Iterable<QualifiedIdentity> removedStates
+    )
         throws EntityStoreException
     {
-        indexer.index( newStates, loadedStates, removedStates, module );
+        indexer.index( newStates, loadedStates, removedStates );
         return null;
     }
 }
