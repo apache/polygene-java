@@ -25,18 +25,16 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
-import org.qi4j.entity.EntityComposite;
-import org.qi4j.entity.association.ImmutableAssociation;
-import org.qi4j.entity.association.ManyAssociation;
-import org.qi4j.entity.association.SetAssociation;
 import org.qi4j.entity.ibatis.IbatisCompositeBuilder;
 import org.qi4j.entity.ibatis.IdentifierConverter;
-import org.qi4j.spi.composite.CompositeDescriptor;
-import org.qi4j.spi.composite.StateDescriptor;
+import org.qi4j.spi.entity.AssociationType;
 import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import static org.qi4j.spi.entity.EntityStatus.REMOVED;
+import org.qi4j.spi.entity.EntityType;
+import org.qi4j.spi.entity.ManyAssociationType;
+import org.qi4j.spi.entity.PropertyType;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.property.PropertyDescriptor;
@@ -49,7 +47,7 @@ public final class IBatisEntityState
 {
     private static final long serialVersionUID = 1L;
 
-    private final CompositeDescriptor descriptor;
+    private final EntityType entityType;
     private final QualifiedIdentity identity;
 
     private final Map<String, Object> propertyValues = new HashMap<String, Object>();
@@ -63,7 +61,7 @@ public final class IBatisEntityState
     /**
      * Construct an instance of {@code IBatisEntityState}.
      *
-     * @param descriptor
+     * @param entityType
      * @param identity
      * @param rawData                The field values of this entity state. This argument must not be {@code null}.
      * @param version
@@ -71,63 +69,62 @@ public final class IBatisEntityState
      * @param ibatisCompositeBuilder
      */
     public IBatisEntityState(
-        final CompositeDescriptor descriptor, final QualifiedIdentity identity,
-        final Map<String, Object> rawData, final long version, final long lastModified, final EntityStatus status,
+        final EntityType entityType, final QualifiedIdentity identity,
+        final Map<String, Object> rawData,
+        final long version, final long lastModified,
+        final EntityStatus status,
         final IbatisCompositeBuilder ibatisCompositeBuilder )
         throws IllegalArgumentException
     {
-        validateNotNull( "aDescriptor", descriptor );
+        validateNotNull( "aDescriptor", entityType );
         validateNotNull( "anIdentity", identity );
         validateNotNull( "propertyValuez", rawData );
         validateNotNull( "aStatus", status );
         // TODO validateNotNull( "aVersion", aVersion );
 
-        this.descriptor = descriptor;
+        this.entityType = entityType;
         this.identity = identity;
         this.status = status;
-        mapData( descriptor, rawData, ibatisCompositeBuilder );
+        mapData( entityType, rawData, ibatisCompositeBuilder );
         this.version = version;
         this.lastModified = lastModified;
     }
 
-    private void mapData( final CompositeDescriptor compositeDescriptor, final Map<String, Object> rawData, final IbatisCompositeBuilder ibatisCompositeBuilder )
+    private void mapData( final EntityType entityType, final Map<String, Object> rawData, final IbatisCompositeBuilder ibatisCompositeBuilder )
     {
-        final StateDescriptor stateDescriptor = compositeDescriptor.state();
         Map<String, Object> convertedData = identifierConverter.convertKeys( rawData );
         System.err.println( rawData );
         System.err.println( convertedData );
-        mapProperties( convertedData, stateDescriptor, ibatisCompositeBuilder );
-        mapAssociations( convertedData, stateDescriptor );
+        mapProperties( convertedData, entityType, ibatisCompositeBuilder );
+        mapAssociations( convertedData, entityType );
     }
 
-    private void mapAssociations( final Map<String, Object> rawData, final StateDescriptor stateDescriptor )
+    private void mapAssociations( final Map<String, Object> rawData, final EntityType stateDescriptor )
     {
-
-        for( final AssociationDescriptor associationDescriptor : stateDescriptor.associations() )
+        for( final AssociationType associationDescriptor : stateDescriptor.associations() )
         {
             final String qualifiedName = associationDescriptor.qualifiedName();
-            final String typeName = getTypeName( associationDescriptor );
-            final Class<?> associationType = associationDescriptor.accessor().getReturnType();
-            if( ManyAssociation.class.isAssignableFrom( associationType ) )
+            final String typeName = associationDescriptor.type();
+            final String associationId = (String) identifierConverter.getValueFromData( rawData, qualifiedName );
+            if( associationId != null )
             {
-                Collection<String> identifiers = (Collection<String>) identifierConverter.getValueFromData( rawData, qualifiedName );
-                if( identifiers != null && !identifiers.isEmpty() )
-                {
-                    setManyAssociation( qualifiedName, createQualifiedIdentities( identifiers, typeName, associationType ) );
-                }
+                setAssociation( qualifiedName, new QualifiedIdentity( associationId, typeName ) );
             }
-            else
+        }
+
+        for( final ManyAssociationType associationDescriptor : stateDescriptor.manyAssociations() )
+        {
+            final String qualifiedName = associationDescriptor.qualifiedName();
+            final String typeName = associationDescriptor.type();
+            Collection<String> identifiers = (Collection<String>) identifierConverter.getValueFromData( rawData, qualifiedName );
+            if( identifiers != null && !identifiers.isEmpty() )
             {
-                final String associationId = (String) identifierConverter.getValueFromData( rawData, qualifiedName );
-                if( associationId != null )
-                {
-                    setAssociation( qualifiedName, new QualifiedIdentity( associationId, typeName ) );
-                }
+                setManyAssociation( qualifiedName, createQualifiedIdentities( identifiers, typeName, associationDescriptor ) );
             }
         }
     }
 
-    private Collection<QualifiedIdentity> createQualifiedIdentities( final Collection<String> identifiers, final String typeName, Class<?> associationType )
+    private Collection<QualifiedIdentity> createQualifiedIdentities( final Collection<String> identifiers, final String typeName, ManyAssociationType associationType )
     {
         final int size = identifiers.size();
         final Collection<QualifiedIdentity> qualifiedIdentities = createManyAssociationCollection( size, associationType );
@@ -135,53 +132,34 @@ public final class IBatisEntityState
         {
             qualifiedIdentities.add( new QualifiedIdentity( identifier, typeName ) );
         }
-        if( ImmutableAssociation.class.isAssignableFrom( associationType ) )
-        {
-            return Collections.unmodifiableCollection( qualifiedIdentities );
-        }
         return qualifiedIdentities;
     }
 
-    private Collection<QualifiedIdentity> createManyAssociationCollection( int size, Class<?> associationType )
+    private Collection<QualifiedIdentity> createManyAssociationCollection( int size, ManyAssociationType associationType )
     {
-        if( SetAssociation.class.isAssignableFrom( associationType ) )
+        if( associationType.associationType() == ManyAssociationType.ManyAssociationTypeEnum.SET )
         {
             return new HashSet<QualifiedIdentity>( size );
         }
-        return new ArrayList<QualifiedIdentity>( size );
+        else
+        {
+            return new ArrayList<QualifiedIdentity>( size );
+        }
     }
 
-    private void mapProperties( final Map<String, Object> rawData, final StateDescriptor compositeModel, final IbatisCompositeBuilder ibatisCompositeBuilder )
+    private void mapProperties( final Map<String, Object> rawData, final EntityType compositeModel, final IbatisCompositeBuilder ibatisCompositeBuilder )
     {
-        for( final PropertyDescriptor propertyDescriptor : compositeModel.properties() )
+        for( final PropertyType propertyDescriptor : compositeModel.properties() )
         {
             final String qualifiedName = propertyDescriptor.qualifiedName();
             final Object value = identifierConverter.getValueFromData( rawData, qualifiedName );
-            if( value != null )
-            {
-                setProperty( qualifiedName, convertValue( propertyDescriptor, value, ibatisCompositeBuilder ) );
-            }
-            else
-            {
-                setProperty( qualifiedName, propertyDescriptor.defaultValue() );
-            }
+            setProperty( qualifiedName, convertValue( propertyDescriptor, value, ibatisCompositeBuilder ) );
         }
     }
 
-    private Object convertValue( final PropertyDescriptor propertyDescriptor, final Object value, final IbatisCompositeBuilder ibatisCompositeBuilder )
+    private Object convertValue( final PropertyType propertyDescriptor, final Object value, final IbatisCompositeBuilder ibatisCompositeBuilder )
     {
-        final Class propertyClass = getPropertyTypeClass( propertyDescriptor );
-        if( propertyClass == null || value == null || propertyClass.isInstance( value ) )
-        {
-            return value;
-        }
-        if( Map.class.isAssignableFrom( value.getClass() ) && EntityComposite.class.isAssignableFrom( propertyClass ) )
-        {
-
-            return ibatisCompositeBuilder.createEntityComposite( (Map<String, Object>) value, propertyClass );
-
-        }
-        return propertyClass.cast( value );
+        return value; // TODO Implement value conversion
     }
 
     private Class getPropertyTypeClass( final PropertyDescriptor propertyModel )
@@ -240,6 +218,11 @@ public final class IBatisEntityState
     public final EntityStatus status()
     {
         return status;
+    }
+
+    public EntityType entityType()
+    {
+        return entityType;
     }
 
     /**

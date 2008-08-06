@@ -45,24 +45,24 @@ import org.qi4j.library.locking.WriteLock;
 import org.qi4j.service.Activatable;
 import org.qi4j.service.Configuration;
 import org.qi4j.spi.Qi4jSPI;
-import org.qi4j.spi.composite.CompositeDescriptor;
+import org.qi4j.spi.entity.AbstractEntityStoreMixin;
 import org.qi4j.spi.entity.DefaultEntityState;
 import org.qi4j.spi.entity.EntityAlreadyExistsException;
 import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
-import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreException;
+import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.serialization.SerializableState;
-import org.qi4j.structure.Module;
 
 /**
  * JDBM implementation of SerializationStore
  */
 public class JdbmEntityStoreMixin
-    implements EntityStore, Activatable
+    extends AbstractEntityStoreMixin
+    implements Activatable
 {
     private @Structure Qi4jSPI spi;
     private @This ReadWriteLock lock;
@@ -102,8 +102,10 @@ public class JdbmEntityStoreMixin
 
     // EntityStore implementation
     @WriteLock
-    public EntityState newEntityState( CompositeDescriptor compositeDescriptor, QualifiedIdentity identity ) throws EntityStoreException
+    public EntityState newEntityState( QualifiedIdentity identity ) throws EntityStoreException
     {
+        EntityType entityType = getEntityType( identity );
+
         try
         {
             Long stateIndex = (Long) index.find( identity.identity().getBytes() );
@@ -120,14 +122,17 @@ public class JdbmEntityStoreMixin
 
         return new DefaultEntityState( 0, System.currentTimeMillis(),
                                        identity, EntityStatus.NEW,
+                                       entityType,
                                        new HashMap<String, Object>(),
                                        new HashMap<String, QualifiedIdentity>(),
                                        new HashMap<String, Collection<QualifiedIdentity>>() );
     }
 
     @WriteLock
-    public EntityState getEntityState( CompositeDescriptor compositeDescriptor, QualifiedIdentity identity ) throws EntityStoreException
+    public EntityState getEntityState( QualifiedIdentity identity ) throws EntityStoreException
     {
+        EntityType entityType = getEntityType( identity );
+
         try
         {
             Long stateIndex = (Long) index.find( identity.identity().getBytes() );
@@ -151,7 +156,9 @@ public class JdbmEntityStoreMixin
             {
                 SerializableState serializableState = (SerializableState) oin.readObject();
                 return new DefaultEntityState( serializableState.version(), serializableState.lastModified(),
-                                               identity, EntityStatus.LOADED, serializableState.properties(), serializableState.associations(), serializableState.manyAssociations() );
+                                               identity, EntityStatus.LOADED,
+                                               entityType,
+                                               serializableState.properties(), serializableState.associations(), serializableState.manyAssociations() );
             }
             catch( ClassNotFoundException e )
             {
@@ -164,7 +171,7 @@ public class JdbmEntityStoreMixin
         }
     }
 
-    public StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, final Iterable<QualifiedIdentity> removedStates, Module module ) throws EntityStoreException
+    public StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, final Iterable<QualifiedIdentity> removedStates ) throws EntityStoreException
     {
         lock.writeLock().lock();
 

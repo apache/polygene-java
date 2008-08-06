@@ -26,25 +26,25 @@ import org.qi4j.injection.scope.This;
 import org.qi4j.library.locking.ReadLock;
 import org.qi4j.library.locking.WriteLock;
 import org.qi4j.service.Activatable;
-import org.qi4j.spi.composite.CompositeDescriptor;
+import org.qi4j.spi.entity.AbstractEntityStoreMixin;
 import org.qi4j.spi.entity.DefaultEntityState;
 import org.qi4j.spi.entity.EntityAlreadyExistsException;
 import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
-import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreException;
+import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.serialization.SerializableState;
 import org.qi4j.spi.serialization.SerializedObject;
-import org.qi4j.structure.Module;
 
 /**
  * JGroups implementation of EntityStore
  */
 public class JGroupsSerializationEntityStoreMixin
-    implements EntityStore, Activatable
+    extends AbstractEntityStoreMixin
+    implements Activatable
 {
     private @This ReadWriteLock lock;
 
@@ -67,19 +67,21 @@ public class JGroupsSerializationEntityStoreMixin
 
     // EntityStore implementation
     @WriteLock
-    public EntityState newEntityState( CompositeDescriptor compositeDescriptor, QualifiedIdentity identity ) throws EntityStoreException
+    public EntityState newEntityState( QualifiedIdentity identity ) throws EntityStoreException
     {
         if( replicatedMap.containsKey( identity.toString() ) )
         {
             throw new EntityAlreadyExistsException( "JGroups store", identity.identity() );
         }
 
-        return new DefaultEntityState( identity );
+        return new DefaultEntityState( identity, getEntityType( identity ) );
     }
 
     @ReadLock
-    public EntityState getEntityState( CompositeDescriptor compositeDescriptor, QualifiedIdentity identity ) throws EntityStoreException
+    public EntityState getEntityState( QualifiedIdentity identity ) throws EntityStoreException
     {
+        EntityType entityType = getEntityType( identity );
+
         try
         {
             SerializedObject<SerializableState> serializableObject;
@@ -96,6 +98,7 @@ public class JGroupsSerializationEntityStoreMixin
                                            serializableState.lastModified(),
                                            identity,
                                            EntityStatus.LOADED,
+                                           entityType,
                                            serializableState.properties(),
                                            serializableState.associations(),
                                            serializableState.manyAssociations() );
@@ -107,7 +110,7 @@ public class JGroupsSerializationEntityStoreMixin
     }
 
 
-    public StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, final Iterable<QualifiedIdentity> removedStates, Module module ) throws EntityStoreException
+    public StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, final Iterable<QualifiedIdentity> removedStates ) throws EntityStoreException
     {
         lock.writeLock().lock();
         try

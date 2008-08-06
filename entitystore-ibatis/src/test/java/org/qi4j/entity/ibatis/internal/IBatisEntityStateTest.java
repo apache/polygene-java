@@ -24,12 +24,10 @@ import static junit.framework.Assert.assertNotNull;
 import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.ibatis.entity.HasFirstName;
 import org.qi4j.entity.ibatis.entity.HasLastName;
 import org.qi4j.entity.ibatis.entity.PersonComposite;
 import static org.qi4j.property.ComputedPropertyInstance.getQualifiedName;
-import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.QualifiedIdentity;
@@ -40,18 +38,6 @@ public final class IBatisEntityStateTest extends AbstractQi4jTest
     private static final String DEFAULT_FIRST_NAME = "Edward";
     private static final String DEFAULT_LAST_NAME = "Yakop";
 
-
-    @Test public void usesDefaultLastNameProperty()
-        throws NoSuchMethodException
-    {
-        final Map<String, Object> janeValues = Collections.<String, Object>singletonMap( "firstName", "Jane" );
-
-        final EntityState jane = newPersonEntityState( janeValues );
-        final String lastNameProperty = getPropertyValue( jane, HasLastName.class, "lastName" );
-        assertNotNull( lastNameProperty );
-
-        assertEquals( DEFAULT_LAST_NAME, lastNameProperty );
-    }
 
     @Test public void usesGivenFirstNameProperty()
         throws NoSuchMethodException
@@ -71,27 +57,6 @@ public final class IBatisEntityStateTest extends AbstractQi4jTest
         return (String) person.getProperty( getQualifiedName( method ) );
     }
 
-    @Test public void hasDefaultLastNameProperty()
-        throws NoSuchMethodException
-    {
-        final EntityState emptyPerson = newPersonEntityState( Collections.<String, Object>emptyMap() );
-
-        final String lastNameProperty = getPropertyValue( emptyPerson, HasLastName.class, "lastName" );
-
-        assertEquals( "default last name", DEFAULT_LAST_NAME, lastNameProperty );
-    }
-
-
-    @Test public void hasDefaultFirstNameProperty() throws NoSuchMethodException
-    {
-        final EntityState emptyPerson = newPersonEntityState( Collections.<String, Object>emptyMap() );
-
-        final String firstNameProperty = getPropertyValue( emptyPerson, HasFirstName.class, "firstName" );
-
-        assertEquals( "default first name", DEFAULT_FIRST_NAME, firstNameProperty );
-    }
-
-
     public final void assemble( final ModuleAssembly module ) throws AssemblyException
     {
         module.addEntities( PersonComposite.class );
@@ -103,16 +68,11 @@ public final class IBatisEntityStateTest extends AbstractQi4jTest
     protected IBatisEntityState newPersonEntityState( final Map<String, Object> initialValues )
     {
 
-        return new IBatisEntityState( getCompositeDescriptor( PersonComposite.class ),
+        return new IBatisEntityState( spi.getEntityDescriptor( PersonComposite.class, moduleInstance ).entityType(),
                                       new QualifiedIdentity( "1", PersonComposite.class.getName() ),
                                       initialValues,
                                       0L,
                                       System.currentTimeMillis(),
                                       EntityStatus.NEW, null );
-    }
-
-    private CompositeDescriptor getCompositeDescriptor( final Class<? extends EntityComposite> mixinType )
-    {
-        return spi.getCompositeDescriptor( mixinType, moduleInstance );
     }
 }

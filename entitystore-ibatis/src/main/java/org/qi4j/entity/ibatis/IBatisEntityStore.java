@@ -31,15 +31,16 @@ import org.qi4j.injection.scope.This;
 import org.qi4j.service.Activatable;
 import org.qi4j.service.Configuration;
 import org.qi4j.spi.Qi4jSPI;
-import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityState;
 import static org.qi4j.spi.entity.EntityStatus.LOADED;
 import static org.qi4j.spi.entity.EntityStatus.NEW;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreException;
+import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.StateCommitter;
+import org.qi4j.spi.entity.UnknownEntityTypeException;
 import org.qi4j.structure.Module;
 
 /**
@@ -60,23 +61,30 @@ public class IBatisEntityStore
     private IbatisClient config;
     private final IbatisCompositeBuilder compositeBuilder = new IbatisCompositeBuilder( spi, module );
 
+    private Map<String, EntityType> entityTypes = new HashMap<String, EntityType>();
+
+    public void registerEntityType( EntityType entityType )
+    {
+        entityTypes.put( entityType.type(), entityType );
+    }
+
     /**
      * Construct a new instance of entity state.
      *
-     * @param compositeDescriptor The composite descriptor. This argument must not be {@code null}.
-     * @param identity            The identity. This argument must not be {@code null}.
+     * @param identity The identity. This argument must not be {@code null}.
      * @return The new entity state given the arguments.
      * @throws EntityStoreException Thrown if this service is not active.
      * @since 0.2.0
      */
-    public final EntityState newEntityState( final CompositeDescriptor compositeDescriptor, final QualifiedIdentity identity )
+    public final EntityState newEntityState( final QualifiedIdentity identity )
         throws EntityStoreException
     {
-        validateNotNull( "aCompositeDescriptor", compositeDescriptor );
         validateNotNull( "anIdentity", identity );
 
         checkActivation();
-        return new IBatisEntityState( compositeDescriptor, identity, new HashMap<String, Object>(), 0L, System.currentTimeMillis(), NEW, compositeBuilder );
+
+        EntityType type = getEntityType( identity );
+        return new IBatisEntityState( type, identity, new HashMap<String, Object>(), 0L, System.currentTimeMillis(), NEW, compositeBuilder );
     }
 
     /**
@@ -98,19 +106,18 @@ public class IBatisEntityStore
     /**
      * Get the entity state given the composite descriptor and identity.
      *
-     * @param aDescriptor The entity composite descriptor. This argument must not be {@code null}.
-     * @param anIdentity  The entity identity. This argument must not be {@code null}.
+     * @param anIdentity The entity identity. This argument must not be {@code null}.
      * @return The entity state given the descriptor and identity.
      * @throws EntityStoreException    Thrown if retrieval failed.
      * @throws EntityNotFoundException Thrown if the entity does not exists.
      * @since 0.2.0
      */
     public final EntityState
-    getEntityState( final CompositeDescriptor aDescriptor, final QualifiedIdentity anIdentity )
+    getEntityState( final QualifiedIdentity anIdentity )
         throws EntityStoreException
     {
         checkActivation();
-        final Map<String, Object> rawData = getRawData( aDescriptor, anIdentity );
+        final Map<String, Object> rawData = getRawData( anIdentity );
         Long version = (Long) rawData.get( VERSION );
         if( version == null )
         {
@@ -123,24 +130,22 @@ public class IBatisEntityStore
             lastModified = System.currentTimeMillis();
         }
 
-        return new IBatisEntityState( aDescriptor, anIdentity, rawData, version, lastModified, LOADED, compositeBuilder );
+        return new IBatisEntityState( getEntityType( anIdentity ), anIdentity, rawData, version, lastModified, LOADED, compositeBuilder );
     }
 
 
     /**
      * Returns raw data given the composite class.
      *
-     * @param aDescriptor The descriptor. This argument must not be {@code null}.
-     * @param anIdentity  The identity. This argument must not be {@code null}.
+     * @param anIdentity The identity. This argument must not be {@code null}.
      * @return The raw data given input.
      * @throws EntityStoreException Thrown if retrieval failed.
      * @since 0.1.0
      */
-    private Map<String, Object> getRawData( final CompositeDescriptor aDescriptor, final QualifiedIdentity anIdentity )
+    private Map<String, Object> getRawData( final QualifiedIdentity anIdentity )
         throws EntityStoreException
     {
         validateNotNull( "anIdentity", anIdentity );
-        validateNotNull( "aCompositeBinding", aDescriptor );
         checkActivation();
         final Map<String, Object> compositePropertyValues = config.executeLoad( anIdentity );
         if( compositePropertyValues == null )
@@ -151,12 +156,22 @@ public class IBatisEntityStore
         return compositePropertyValues;
     }
 
+    private EntityType getEntityType( QualifiedIdentity identity )
+        throws UnknownEntityTypeException
+    {
+        EntityType type = entityTypes.get( identity.type() );
+        if( type == null )
+        {
+            throw new UnknownEntityTypeException( identity.type() );
+        }
+        return type;
+    }
+
 
     public final StateCommitter prepare(
         final Iterable<EntityState> newStates,
         final Iterable<EntityState> loadedStates,
-        final Iterable<QualifiedIdentity> removedStates,
-        final Module module )
+        final Iterable<QualifiedIdentity> removedStates )
         throws EntityStoreException
     {
         checkActivation();

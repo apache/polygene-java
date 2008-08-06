@@ -25,9 +25,10 @@ import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.query.TupleQuery;
 import org.openrdf.query.TupleQueryResult;
+import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
-import org.qi4j.injection.scope.This;
+import org.qi4j.injection.scope.Service;
 import org.qi4j.query.grammar.BooleanExpression;
 import org.qi4j.query.grammar.OrderBy;
 import org.qi4j.spi.entity.QualifiedIdentity;
@@ -40,8 +41,7 @@ import org.qi4j.spi.query.EntityFinderException;
 public class RdfEntityFinderMixin
     implements EntityFinder
 {
-
-    @This RdfQueryContext queryContext;
+    @Service Repository repository;
 
     public Iterable<QualifiedIdentity> findEntities(
         final Class resultType,
@@ -54,13 +54,14 @@ public class RdfEntityFinderMixin
         final Collection<QualifiedIdentity> entities = new ArrayList<QualifiedIdentity>();
         try
         {
-            final RepositoryConnection connection = queryContext.getRepository().getConnection();
+            final RepositoryConnection connection = repository.getConnection();
 
             // TODO shall we support different implementation as SERQL?
             final RdfQueryParser parser = new SparqlRdfQueryParser();
+            String query = parser.getQuery( resultType, whereClause, orderBySegments, firstResult, maxResults );
             final TupleQuery tupleQuery = connection.prepareTupleQuery(
                 parser.getQueryLanguage(),
-                parser.getQuery( resultType, whereClause, orderBySegments, firstResult, maxResults )
+                query
             );
             final TupleQueryResult result = tupleQuery.evaluate();
             try
@@ -104,7 +105,7 @@ public class RdfEntityFinderMixin
     {
         try
         {
-            final RepositoryConnection connection = queryContext.getRepository().getConnection();
+            final RepositoryConnection connection = repository.getConnection();
             // TODO shall we support different implementation as SERQL?
             final RdfQueryParser parser = new SparqlRdfQueryParser();
             final TupleQuery tupleQuery = connection.prepareTupleQuery(
@@ -155,7 +156,7 @@ public class RdfEntityFinderMixin
         long entityCount = 0;
         try
         {
-            final RepositoryConnection connection = queryContext.getRepository().getConnection();
+            final RepositoryConnection connection = repository.getConnection();
             // TODO shall we support different implementation as SERQL?
             final RdfQueryParser parser = new SparqlRdfQueryParser();
             final TupleQuery tupleQuery = connection.prepareTupleQuery(

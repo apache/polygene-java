@@ -22,20 +22,19 @@ import java.rmi.registry.Registry;
 import java.util.Iterator;
 import org.qi4j.library.locking.WriteLock;
 import org.qi4j.service.Activatable;
-import org.qi4j.spi.composite.CompositeDescriptor;
+import org.qi4j.spi.entity.AbstractEntityStoreMixin;
 import org.qi4j.spi.entity.DefaultEntityState;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.StateCommitter;
-import org.qi4j.structure.Module;
 
 /**
  * RMI client implementation of Entity
  */
 public class ClientRmiEntityStoreMixin
-    implements EntityStore, Activatable
+    extends AbstractEntityStoreMixin
+    implements Activatable
 {
     private RemoteEntityStore remote;
 
@@ -52,13 +51,13 @@ public class ClientRmiEntityStoreMixin
     }
 
     // EntityStore implementation
-    public EntityState newEntityState( CompositeDescriptor compositeDescriptor, QualifiedIdentity identity ) throws EntityStoreException
+    public EntityState newEntityState( QualifiedIdentity identity ) throws EntityStoreException
     {
-        return new DefaultEntityState( identity );
+        return new DefaultEntityState( identity, getEntityType( identity ) );
     }
 
     @WriteLock
-    public EntityState getEntityState( CompositeDescriptor compositeDescriptor, QualifiedIdentity identity ) throws EntityStoreException
+    public EntityState getEntityState( QualifiedIdentity identity ) throws EntityStoreException
     {
         try
         {
@@ -81,7 +80,7 @@ public class ClientRmiEntityStoreMixin
     }
 
     @WriteLock
-    public StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, Iterable<QualifiedIdentity> removedStates, Module module ) throws EntityStoreException
+    public StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, Iterable<QualifiedIdentity> removedStates ) throws EntityStoreException
     {
         try
         {

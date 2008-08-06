@@ -34,17 +34,16 @@ import org.qi4j.injection.scope.This;
 import org.qi4j.library.locking.WriteLock;
 import org.qi4j.service.Activatable;
 import org.qi4j.service.Configuration;
-import org.qi4j.spi.composite.CompositeDescriptor;
+import org.qi4j.spi.entity.AbstractEntityStoreMixin;
 import org.qi4j.spi.entity.DefaultEntityState;
 import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
-import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreException;
+import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.serialization.SerializableState;
-import org.qi4j.structure.Module;
 
 /**
  * Amazon S3 implementation of SerializationStore.
@@ -52,7 +51,8 @@ import org.qi4j.structure.Module;
  * To use this you must supply your own access key and secret key for your Amazon S3 account.
  */
 public class S3SerializationStoreMixin
-    implements EntityStore, Activatable
+    extends AbstractEntityStoreMixin
+    implements Activatable
 {
     private @This ReadWriteLock lock;
     private @This Configuration<S3Configuration> configuration;
@@ -94,16 +94,21 @@ public class S3SerializationStoreMixin
     }
 
     // EntityStore implementation
-    @WriteLock
-    public EntityState newEntityState( CompositeDescriptor compositeDescriptor, QualifiedIdentity identity ) throws EntityStoreException
+    public void registerEntityType( EntityType entityType )
     {
-        // Skip existence check
-        return new DefaultEntityState( identity );
     }
 
     @WriteLock
-    public EntityState getEntityState( CompositeDescriptor compositeDescriptor, QualifiedIdentity identity ) throws EntityStoreException
+    public EntityState newEntityState( QualifiedIdentity identity ) throws EntityStoreException
     {
+        // Skip existence check
+        return new DefaultEntityState( identity, getEntityType( identity ) );
+    }
+
+    @WriteLock
+    public EntityState getEntityState( QualifiedIdentity identity ) throws EntityStoreException
+    {
+        EntityType entityType = getEntityType( identity );
         try
         {
             S3Object objectComplete = s3Service.getObject( entityBucket, identity.identity() );
@@ -117,6 +122,7 @@ public class S3SerializationStoreMixin
                                            serializableState.lastModified(),
                                            identity,
                                            EntityStatus.LOADED,
+                                           entityType,
                                            serializableState.properties(),
                                            serializableState.associations(),
                                            serializableState.manyAssociations() );
@@ -139,7 +145,7 @@ public class S3SerializationStoreMixin
         }
     }
 
-    public StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, Iterable<QualifiedIdentity> removedStates, Module module ) throws EntityStoreException
+    public StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, Iterable<QualifiedIdentity> removedStates ) throws EntityStoreException
     {
         lock.writeLock().lock();
 

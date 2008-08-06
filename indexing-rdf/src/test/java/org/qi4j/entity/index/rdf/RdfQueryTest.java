@@ -20,16 +20,16 @@ package org.qi4j.entity.index.rdf;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.junit.After;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.After;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
-import org.qi4j.entity.UnitOfWorkCompletionException;
 import org.qi4j.entity.UnitOfWork;
+import org.qi4j.entity.UnitOfWorkCompletionException;
 import org.qi4j.entity.index.rdf.memory.MemoryRepositoryService;
 import org.qi4j.entity.memory.IndexedMemoryEntityStoreService;
 import org.qi4j.query.Query;
@@ -72,10 +72,10 @@ public class RdfQueryTest
                     CatComposite.class
                 );
                 module.addServices(
+                    MemoryRepositoryService.class,
                     IndexedMemoryEntityStoreService.class,
                     UuidIdentityGeneratorService.class,
-                    RdfIndexerExporterComposite.class,
-                    MemoryRepositoryService.class
+                    RdfIndexerExporterComposite.class
                 );
             }
         };
@@ -148,6 +148,7 @@ public class RdfQueryTest
     {
         final QueryBuilder<PersonComposite> qb = qbf.newQueryBuilder( PersonComposite.class );
         final Query<PersonComposite> query = qb.newQuery();
+        System.out.println( query );
         verifyUnorderedResults( query, "Joe Doe", "Ann Doe", "Jack Doe" );
     }
 
@@ -420,7 +421,7 @@ public class RdfQueryTest
         Person person = templateFor( Person.class );
         Query<Person> query = qb.newQuery();
         query.orderBy( orderBy( person.placeOfBirth().get().name() ),
-                       orderBy( person.yearOfBirth() ));
+                       orderBy( person.yearOfBirth() ) );
         verifyOrderedResults(
             query,
             "Ann Doe", "Joe Doe", "Jack Doe"

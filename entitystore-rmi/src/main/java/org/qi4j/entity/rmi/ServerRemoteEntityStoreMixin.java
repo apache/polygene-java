@@ -36,13 +36,14 @@ import org.qi4j.service.Activatable;
 import org.qi4j.service.ServiceDescriptor;
 import org.qi4j.service.ServiceReference;
 import org.qi4j.spi.Qi4jSPI;
-import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.entity.DefaultEntityState;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreException;
+import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.StateCommitter;
+import org.qi4j.spi.entity.UnknownEntityTypeException;
 import org.qi4j.structure.Module;
 
 /**
@@ -80,10 +81,7 @@ public class ServerRemoteEntityStoreMixin
     public EntityState getEntityState( QualifiedIdentity identity )
         throws IOException
     {
-        final Class<?> compositeType = getCompositeTypeClass( identity );
-
-        final CompositeDescriptor compositeDescriptor = spi.getCompositeDescriptor( compositeType, module );
-        EntityState state = entityStore.getEntityState( compositeDescriptor, identity );
+        EntityState state = getEntityState( entityStore, identity );
 
         Map<String, Object> properties = copyProperties( state );
         Map<String, QualifiedIdentity> associations = copyAssociations( state );
@@ -93,6 +91,7 @@ public class ServerRemoteEntityStoreMixin
                                        state.lastModified(),
                                        identity,
                                        state.status(),
+                                       getEntityType( identity ),
                                        properties,
                                        associations,
                                        manyAssociations );
@@ -140,12 +139,12 @@ public class ServerRemoteEntityStoreMixin
         return properties;
     }
 
-    private Class<?> getCompositeTypeClass( QualifiedIdentity identity )
+    private EntityType getEntityType( QualifiedIdentity identity )
     {
         final String typeName = identity.type();
         try
         {
-            return Class.forName( typeName );
+            return spi.getEntityDescriptor( module.classLoader().loadClass( typeName ), module ).entityType();
         }
         catch( ClassNotFoundException e )
         {
@@ -158,7 +157,7 @@ public class ServerRemoteEntityStoreMixin
         lock.writeLock().lock();
         try
         {
-            final StateCommitter committer = entityStore.prepare( newStates, loadedStates, removedStates, module );
+            final StateCommitter committer = entityStore.prepare( newStates, loadedStates, removedStates );
             try
             {
                 committer.commit();
@@ -175,5 +174,35 @@ public class ServerRemoteEntityStoreMixin
         {
             lock.writeLock().unlock();
         }
+    }
+
+    public EntityState getEntityState( EntityStore entityStore, QualifiedIdentity qid )
+        throws EntityStoreException
+    {
+        EntityState entityState = null;
+        do
+        {
+            try
+            {
+                entityState = entityStore.getEntityState( qid );
+            }
+            catch( UnknownEntityTypeException e )
+            {
+                // Check if it is this type that the store doesn't understand
+                EntityType entityType = getEntityType( qid );
+                if( e.getMessage().equals( entityType.type() ) )
+                {
+                    entityStore.registerEntityType( entityType );
+                    // Try again
+                }
+                else
+                {
+                    throw e; // ???
+                }
+            }
+        }
+        while( entityState == null );
+
+        return entityState;
     }
 }

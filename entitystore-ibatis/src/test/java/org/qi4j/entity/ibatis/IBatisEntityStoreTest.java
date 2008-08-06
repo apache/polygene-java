@@ -36,7 +36,6 @@ import org.qi4j.entity.ibatis.entity.AccountComposite;
 import org.qi4j.entity.ibatis.entity.PersonComposite;
 import org.qi4j.entity.ibatis.test.AbstractTestCase;
 import org.qi4j.entity.memory.MemoryEntityStoreService;
-import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.QualifiedIdentity;
@@ -65,9 +64,8 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
         throws SQLException, UnitOfWorkCompletionException
     {
         final UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
-        final CompositeDescriptor personCompositeDescriptor = getCompositeDescriptor( PersonComposite.class );
 
-        final EntityState state = entityStore.newEntityState( personCompositeDescriptor, id( NEW_TEST_ID ) );
+        final EntityState state = entityStore.newEntityState( id( NEW_TEST_ID ) );
         assertNotNull( state );
         checkEntityStateProperties( getCompositeDescriptor( PersonComposite.class ), state, false );
         uow.complete();
@@ -204,7 +202,7 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
     private EntityState loadEntity( final String id )
     {
         final QualifiedIdentity qualifiedIdentity = id( id );
-        return this.entityStore.getEntityState( getCompositeDescriptor( PersonComposite.class ), qualifiedIdentity );
+        return this.entityStore.getEntityState( qualifiedIdentity );
     }
 
 
@@ -213,6 +211,8 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
     {
         super.setUp();
         entityStore = getEntityStore();
+        entityStore.registerEntityType( spi.getEntityDescriptor( PersonComposite.class, moduleInstance ).entityType() );
+        entityStore.registerEntityType( spi.getEntityDescriptor( AccountComposite.class, moduleInstance ).entityType() );
     }
 
     private IBatisEntityStoreService getEntityStore() throws Exception

@@ -73,7 +73,7 @@ public class Qi4jEntityAdapter
     public EntityState getEntry( String s, RequestContext requestContext ) throws ResponseContextException
     {
         QualifiedIdentity qid = new QualifiedIdentity( requestContext.getTargetPath() );
-        return store.getEntityState( null, qid );
+        return store.getEntityState( qid );
     }
 
     public String getId( EntityState o ) throws ResponseContextException

@@ -26,37 +26,42 @@ import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.model.vocabulary.RDFS;
+import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.qi4j.composite.Composite;
+import org.qi4j.composite.ConstructionException;
+import org.qi4j.composite.Initializable;
 import org.qi4j.entity.index.rdf.natiive.NativeRdfConfiguration;
-import org.qi4j.injection.scope.Structure;
-import org.qi4j.injection.scope.This;
-import org.qi4j.spi.Qi4jSPI;
-import org.qi4j.spi.composite.CompositeDescriptor;
-import org.qi4j.spi.composite.StateDescriptor;
+import org.qi4j.injection.scope.Service;
+import org.qi4j.spi.entity.AssociationType;
 import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.EntityType;
+import org.qi4j.spi.entity.ManyAssociationType;
+import org.qi4j.spi.entity.PropertyType;
 import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.spi.entity.association.AssociationDescriptor;
-import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.spi.query.EntityIndexer;
-import org.qi4j.structure.Module;
 import org.qi4j.util.ClassUtil;
 
 /**
  * TODO Add JavaDoc
  */
 public class RdfEntityIndexerMixin
-    implements EntityIndexer
+    implements EntityIndexer, Initializable
 {
-    @Structure private Qi4jSPI spi;
+    private @Service Repository repository;
 
-    @This private RdfQueryContext queryContext;
+    private Set<EntityType> indexedEntityTypes = new HashSet<EntityType>();
+    private ValueFactory valueFactory;
+
+    public void initialize() throws ConstructionException
+    {
+        valueFactory = repository.getValueFactory();
+    }
 
     public void index( final Iterable<EntityState> newStates,
                        final Iterable<EntityState> changedStates,
-                       final Iterable<QualifiedIdentity> removedStates,
-                       final Module moduleBinding )
+                       final Iterable<QualifiedIdentity> removedStates )
     {
         try
         {
@@ -65,35 +70,35 @@ public class RdfEntityIndexerMixin
             {
                 return;
             }
-            final RepositoryConnection connection = queryContext.getRepository().getConnection();
-            final ValueFactory valueFactory = queryContext.getRepository().getValueFactory();
+            final RepositoryConnection connection = repository.getConnection();
             try
             {
-                final Set<String> entityTypes = new HashSet<String>();
+                // Update index
+                final Set<EntityType> entityTypes = new HashSet<EntityType>();
                 for( EntityState entityState : newStates )
                 {
-                    entityTypes.add( entityState.qualifiedIdentity().type() );
-                    indexEntityState( entityState, moduleBinding, connection, valueFactory );
+                    entityTypes.add( entityState.entityType() );
+                    indexEntityState( entityState, connection );
                 }
                 for( EntityState entityState : changedStates )
                 {
-                    entityTypes.add( entityState.qualifiedIdentity().type() );
-                    removeEntityState( entityState.qualifiedIdentity(), moduleBinding, connection, valueFactory );
-                    indexEntityState( entityState, moduleBinding, connection, valueFactory );
+                    removeEntityState( entityState.qualifiedIdentity(), connection );
+                    indexEntityState( entityState, connection );
                 }
                 for( QualifiedIdentity entityId : removedStates )
                 {
-                    removeEntityState( entityId, moduleBinding, connection, valueFactory );
+                    removeEntityState( entityId, connection );
                 }
-                for( String entityType : entityTypes )
+
+                // Index new types
+                for( EntityType entityType : entityTypes )
                 {
-                    indexEntityType( entityType, moduleBinding, connection, valueFactory );
+                    if( !indexedEntityTypes.contains( entityType ) )
+                    {
+                        indexEntityType( entityType, connection );
+                        indexedEntityTypes.add( entityType );
+                    }
                 }
-            }
-            catch( ClassNotFoundException e )
-            {
-                e.printStackTrace();
-                //TODO What shall we do with the exception?
             }
             finally
             {
@@ -112,109 +117,91 @@ public class RdfEntityIndexerMixin
     }
 
     private void indexEntityState( final EntityState entityState,
-                                   final Module module,
-                                   final RepositoryConnection connection,
-                                   final ValueFactory valueFactory )
-        throws RepositoryException, ClassNotFoundException
+                                   final RepositoryConnection connection )
+        throws RepositoryException
     {
-        final Class compositeClass = module.classLoader().loadClass( entityState.qualifiedIdentity().type() );
-        final CompositeDescriptor compositeDescriptor = spi.getCompositeDescriptor( compositeClass, module );
-        final URI compositeURI = valueFactory.createURI( compositeDescriptor.toURI() );
+        final URI compositeURI = valueFactory.createURI( ClassUtil.toURI( entityState.qualifiedIdentity().type() ) );
         final URI compositeClassURI = valueFactory.createURI( ClassUtil.toURI( Composite.class ) + ":entityType" );
-        final URI entityURI = valueFactory.createURI( compositeDescriptor.toURI()
-                                                      + "/" + entityState.qualifiedIdentity().identity() );
-        connection.add( entityURI, RDF.TYPE, compositeURI );
-        connection.add( entityURI, compositeClassURI, valueFactory.createLiteral( compositeClass.getName() ) );
+        final URI entityURI = valueFactory.createURI( entityState.qualifiedIdentity().toURI() );
+        connection.add( entityURI, RDF.TYPE, compositeURI, entityURI );
+        connection.add( entityURI, compositeClassURI, valueFactory.createLiteral( entityState.qualifiedIdentity().type() ), entityURI );
+
         // index properties
-        final StateDescriptor state = compositeDescriptor.state();
-        for( String propName : entityState.propertyNames() )
+        final EntityType state = entityState.entityType();
+        for( PropertyType property : state.properties() )
         {
-            final Object propValue = entityState.getProperty( propName );
+            final Object propValue = entityState.getProperty( property.qualifiedName() );
             if( propValue != null )
             {
-                final PropertyDescriptor propertyDescriptor = state.getPropertyByQualifiedName( propName );
-                final URI propURI = valueFactory.createURI( propertyDescriptor.toURI() );
-                connection.add( entityURI, propURI, valueFactory.createLiteral( propValue.toString() ) );
+                final URI propURI = valueFactory.createURI( property.toURI() );
+                connection.add( entityURI, propURI, valueFactory.createLiteral( propValue.toString() ), entityURI );
             }
         }
+
         // index associations
-        for( String assocName : entityState.associationNames() )
+        for( AssociationType association : state.associations() )
         {
-            final QualifiedIdentity assocEntityId = entityState.getAssociation( assocName );
+            final QualifiedIdentity assocEntityId = entityState.getAssociation( association.qualifiedName() );
             if( assocEntityId != null )
             {
-                final AssociationDescriptor associationDescriptor = state.getAssociationByQualifiedName( assocName );
-                final URI assocURI = valueFactory.createURI( associationDescriptor.toURI() );
+                final URI assocURI = valueFactory.createURI( association.toURI() );
 
-                final Class assocCompositeClass = module.classLoader().loadClass( assocEntityId.type() );
-                final CompositeDescriptor descriptor = spi.getCompositeDescriptor( assocCompositeClass, module );
-                final URI assocEntityURI = valueFactory.createURI( descriptor.toURI()
-                                                                   + "/" + assocEntityId.identity() );
-                connection.add( entityURI, assocURI, assocEntityURI );
+                final URI assocEntityURI = valueFactory.createURI( assocEntityId.toURI() );
+                connection.add( entityURI, assocURI, assocEntityURI, entityURI );
             }
         }
+
         // index many associations
-        for( String qualifiedName : entityState.manyAssociationNames() )
+        for( ManyAssociationType manyAssociation : state.manyAssociations() )
         {
-            final Collection<QualifiedIdentity> assocEntityIds = entityState.getManyAssociation( qualifiedName );
+            final Collection<QualifiedIdentity> assocEntityIds = entityState.getManyAssociation( manyAssociation.qualifiedName() );
             if( assocEntityIds != null )
             {
-                final AssociationDescriptor associationDescriptor = state.getAssociationByQualifiedName( qualifiedName );
-                final URI assocURI = valueFactory.createURI( associationDescriptor.toURI() );
+                final URI assocURI = valueFactory.createURI( manyAssociation.toURI() );
                 BNode prevAssocEntityBNode = null;
 
                 for( QualifiedIdentity assocEntityId : assocEntityIds )
                 {
-                    final Class assocCompositeClass = module.classLoader().loadClass( assocEntityId.type() );
-                    final CompositeDescriptor descriptor = spi.getCompositeDescriptor( assocCompositeClass, module );
-                    final URI assocEntityURI = valueFactory.createURI( descriptor.toURI()
-                                                                       + "/" + assocEntityId.identity() );
+                    final URI assocEntityURI = valueFactory.createURI( assocEntityId.toURI() );
                     final BNode assocEntityBNode = valueFactory.createBNode();
                     if( prevAssocEntityBNode == null )
                     {
-                        connection.add( entityURI, assocURI, assocEntityBNode );
+                        connection.add( entityURI, assocURI, assocEntityBNode, entityURI );
                     }
                     else
                     {
-                        connection.add( prevAssocEntityBNode, RDF.REST, assocEntityBNode );
+                        connection.add( prevAssocEntityBNode, RDF.REST, assocEntityBNode, entityURI );
                     }
-                    connection.add( assocEntityBNode, RDF.FIRST, assocEntityURI );
+                    connection.add( assocEntityBNode, RDF.FIRST, assocEntityURI, entityURI );
                     prevAssocEntityBNode = assocEntityBNode;
                 }
             }
         }
     }
 
-    private void removeEntityState( final QualifiedIdentity entityId,
-                                    final Module module,
-                                    final RepositoryConnection connection,
-                                    final ValueFactory valueFactory )
-        throws RepositoryException, ClassNotFoundException
+    private void removeEntityState( final QualifiedIdentity qualifiedIdentity,
+                                    final RepositoryConnection connection )
+        throws RepositoryException
     {
-        final Class compositeClass = module.classLoader().loadClass( entityId.type() );
-        final CompositeDescriptor compositeDescriptor = spi.getCompositeDescriptor( compositeClass, module );
-        final URI entityURI = valueFactory.createURI( compositeDescriptor.toURI() + "/" + entityId.identity() );
-        connection.remove( entityURI, null, null );
+        final URI entityURI = valueFactory.createURI( qualifiedIdentity.toURI() );
+        connection.clear( entityURI );
     }
 
-    private void indexEntityType( final String entityType,
-                                  final Module module,
-                                  final RepositoryConnection connection,
-                                  final ValueFactory valueFactory )
-        throws RepositoryException, ClassNotFoundException
+    private void indexEntityType( final EntityType entityType,
+                                  final RepositoryConnection connection )
+        throws RepositoryException
     {
-
-        final Class compositeClass = module.classLoader().loadClass( entityType );
-        final CompositeDescriptor compositeDescriptor = spi.getCompositeDescriptor( compositeClass, module );
-        final URI compositeURI = valueFactory.createURI( compositeDescriptor.toURI() );
+        final URI compositeURI = valueFactory.createURI( entityType.toURI() );
         // remove composite type if already present
-        connection.remove( compositeURI, null, null );
+        connection.clear( compositeURI );
         // first add the composite type as rdfs:Class
-        connection.add( compositeURI, RDF.TYPE, RDFS.CLASS );
+        connection.add( compositeURI, RDF.TYPE, RDFS.CLASS, compositeURI );
+
         // add all subclasses as rdfs:subClassOf
-        for( Class mixinType : compositeDescriptor.mixinTypes() )
+        Iterable<String> mixinTypeNames = entityType.mixinTypes();
+        for( String mixinType : mixinTypeNames )
         {
-            connection.add( compositeURI, RDFS.SUBCLASSOF, valueFactory.createURI( ClassUtil.toURI( mixinType ) ) );
+            connection.add( compositeURI, RDFS.SUBCLASSOF, valueFactory.createURI( ClassUtil.toURI( mixinType ) ), compositeURI );
         }
     }
 
@@ -231,6 +218,5 @@ public class RdfEntityIndexerMixin
         }
         return false;
     }
-
 
 }

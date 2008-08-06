@@ -19,11 +19,12 @@ package org.qi4j.entity.index.rdf;
 
 import java.io.OutputStream;
 import org.openrdf.query.QueryLanguage;
+import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.rio.RDFWriter;
 import org.openrdf.rio.rdfxml.util.RDFXMLPrettyWriter;
-import org.qi4j.injection.scope.This;
+import org.qi4j.injection.scope.Service;
 
 /**
  * TODO Add JavaDoc
@@ -34,14 +35,14 @@ import org.qi4j.injection.scope.This;
 public abstract class RdfIndexerExporterMixin
     implements RdfIndexerExporterComposite
 {
-    @This RdfQueryContext state;
+    @Service Repository repository;
 
     public void toRDF( final OutputStream outputStream )
     {
         RDFWriter rdfWriter = new RDFXMLPrettyWriter( outputStream );
         try
         {
-            final RepositoryConnection connection = state.getRepository().getConnection();
+            final RepositoryConnection connection = repository.getConnection();
             try
             {
                 connection.prepareGraphQuery( QueryLanguage.SERQL, "CONSTRUCT * FROM {x} p {y}" ).evaluate( rdfWriter );
@@ -52,10 +53,7 @@ public abstract class RdfIndexerExporterMixin
             }
             finally
             {
-                if( connection != null )
-                {
-                    connection.close();
-                }
+                connection.close();
             }
         }
         catch( RepositoryException e )

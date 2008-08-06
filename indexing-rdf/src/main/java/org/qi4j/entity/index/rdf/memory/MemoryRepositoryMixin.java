@@ -30,7 +30,7 @@ public class MemoryRepositoryMixin extends SailRepository
 
     public void activate() throws Exception
     {
-        getSail().initialize();
+        initialize();
     }
 
     public void passivate() throws Exception
