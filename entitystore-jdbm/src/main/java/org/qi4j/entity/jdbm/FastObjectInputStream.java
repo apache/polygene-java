@@ -11,20 +11,26 @@ import java.io.ObjectStreamClass;
 public class FastObjectInputStream
     extends ObjectInputStream
 {
-    public FastObjectInputStream( InputStream inputStream )
+    private final boolean usesReadObjectMethod;
+
+    public FastObjectInputStream( InputStream inputStream, boolean usesReadObjectMethod )
         throws IOException
     {
         super( inputStream );
+        this.usesReadObjectMethod = usesReadObjectMethod;
     }
 
-    public FastObjectInputStream()
-        throws IOException, SecurityException
+    @Override protected ObjectStreamClass readClassDescriptor()
+        throws IOException, ClassNotFoundException
     {
-    }
-
-    @Override protected ObjectStreamClass readClassDescriptor() throws IOException, ClassNotFoundException
-    {
-        String className = readUTF();
-        return ObjectStreamClass.lookup( Class.forName( className ) );
+        if( usesReadObjectMethod )
+        {
+            return super.readClassDescriptor();
+        }
+        else
+        {
+            String className = readUTF();
+            return ObjectStreamClass.lookup( Class.forName( className ) );
+        }
     }
 }

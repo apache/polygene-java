@@ -11,18 +11,25 @@ import java.io.OutputStream;
 public class FastObjectOutputStream
     extends ObjectOutputStream
 {
-    public FastObjectOutputStream( OutputStream outputStream ) throws IOException
+    private final boolean usesWriteObjectMethod;
+
+    public FastObjectOutputStream( OutputStream outputStream, boolean usesWriteObjectMethod )
+        throws IOException
     {
         super( outputStream );
+        this.usesWriteObjectMethod = usesWriteObjectMethod;
     }
 
-    protected FastObjectOutputStream() throws IOException, SecurityException
+    @Override protected void writeClassDescriptor( ObjectStreamClass objectStreamClass )
+        throws IOException
     {
-        super();
-    }
-
-    @Override protected void writeClassDescriptor( ObjectStreamClass objectStreamClass ) throws IOException
-    {
-        writeUTF( objectStreamClass.getName() );
+        if( usesWriteObjectMethod )
+        {
+            super.writeClassDescriptor( objectStreamClass );
+        }
+        else
+        {
+            writeUTF( objectStreamClass.getName() );
+        }
     }
 }
