@@ -29,16 +29,16 @@ import org.qi4j.spi.entity.QualifiedIdentity;
  */
 public interface EntityFinder
 {
-    Iterable<QualifiedIdentity> findEntities( Class resultType,
+    Iterable<QualifiedIdentity> findEntities( String resultType,
                                               BooleanExpression whereClause,
                                               OrderBy[] orderBySegments,
                                               Integer firstResult,
                                               Integer maxResults )
         throws EntityFinderException;
 
-    QualifiedIdentity findEntity( Class resultType, BooleanExpression whereClause )
+    QualifiedIdentity findEntity( String resultType, BooleanExpression whereClause )
         throws EntityFinderException;
 
-    long countEntities( Class resultType, BooleanExpression whereClause )
+    long countEntities( String resultType, BooleanExpression whereClause )
         throws EntityFinderException;
 }
