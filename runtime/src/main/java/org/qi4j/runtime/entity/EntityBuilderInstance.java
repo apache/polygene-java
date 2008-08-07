@@ -26,6 +26,7 @@ import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.Identity;
 import org.qi4j.entity.IdentityGenerator;
 import org.qi4j.entity.Lifecycle;
+import org.qi4j.entity.LifecycleException;
 import org.qi4j.entity.UnitOfWorkException;
 import org.qi4j.entity.association.AbstractAssociation;
 import org.qi4j.property.Property;
@@ -119,6 +120,7 @@ public final class EntityBuilderInstance<T>
     }
 
     public T newInstance()
+        throws LifecycleException
     {
 
         // Figure out whether to use given or generated identity
@@ -152,9 +154,13 @@ public final class EntityBuilderInstance<T>
             {
                 instance.invoke( null, CREATE_METHOD, new Object[0] );
             }
+            catch( LifecycleException throwable )
+            {
+                throw throwable;
+            }
             catch( Throwable throwable )
             {
-                throw new ConstructionException( throwable );
+                throw new LifecycleException( throwable );
             }
         }
 

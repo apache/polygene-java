@@ -26,10 +26,10 @@ public interface UnitOfWork
     UnitOfWork newUnitOfWork();
 
     <T> T newEntity( Class<T> type )
-        throws NoSuchEntityException;
+        throws NoSuchEntityException, LifecycleException;
 
     <T> T newEntity( String identity, Class<T> type )
-        throws NoSuchEntityException;
+        throws NoSuchEntityException, LifecycleException;
 
     <T> EntityBuilder<T> newEntityBuilder( Class<T> type )
         throws NoSuchEntityException;
@@ -55,7 +55,8 @@ public interface UnitOfWork
 
     void reset();
 
-    void remove( Object entity );
+    void remove( Object entity )
+        throws LifecycleException;
 
     void complete()
         throws UnitOfWorkCompletionException, ConcurrentEntityModificationException;

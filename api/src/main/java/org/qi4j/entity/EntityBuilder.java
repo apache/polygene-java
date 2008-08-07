@@ -41,5 +41,5 @@ public interface EntityBuilder<T>
      *          thrown if it was not possible to instantiate the Composite
      */
     T newInstance()
-        throws ConstructionException;
+        throws ConstructionException, LifecycleException;
 }
