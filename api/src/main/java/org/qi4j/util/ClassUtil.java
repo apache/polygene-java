@@ -21,6 +21,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import static java.util.Arrays.asList;
 import java.util.LinkedHashSet;
@@ -144,6 +145,10 @@ public class ClassUtil
         else if( injectionType instanceof ParameterizedType )
         {
             return (Class<?>) ( (ParameterizedType) injectionType ).getRawType();
+        }
+        else if( injectionType instanceof TypeVariable )
+        {
+            return (Class<?>) ( (TypeVariable) injectionType ).getGenericDeclaration();
         }
         throw new IllegalArgumentException( "Could not extract the raw class of " + injectionType );
     }
