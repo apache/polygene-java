@@ -20,9 +20,9 @@ import org.qi4j.composite.Composite;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.EntityCompositeNotFoundException;
 import org.qi4j.entity.Identity;
+import org.qi4j.entity.Lifecycle;
+import org.qi4j.entity.LifecycleException;
 import org.qi4j.entity.LoadingPolicy;
-import org.qi4j.entity.association.AbstractAssociation;
-import org.qi4j.property.Property;
 import org.qi4j.runtime.composite.CompositeMethodInstance;
 import org.qi4j.runtime.composite.MixinsInstance;
 import org.qi4j.runtime.structure.ModuleInstance;
@@ -39,6 +39,22 @@ import org.qi4j.util.MetaInfo;
 public final class EntityInstance
     implements CompositeInstance, MixinsInstance
 {
+    private static final Method REMOVE_METHOD;
+
+
+    static
+    {
+        try
+        {
+            REMOVE_METHOD = Lifecycle.class.getMethod( "remove" );
+        }
+        catch( NoSuchMethodException e )
+        {
+            throw new InternalError( "Qi4j Core Runtime codebase is corrupted. Contact Qi4j team: EntityInstance" );
+        }
+    }
+
+
     public static EntityInstance getEntityInstance( Composite composite )
     {
         return (EntityInstance) Proxy.getInvocationHandler( composite );
@@ -80,7 +96,7 @@ public final class EntityInstance
     public Object invoke( Object proxy, Method method, Object[] args )
         throws Throwable
     {
-        return entity.invoke( this, proxy, method, args, moduleInstance );
+        return entity.invoke( this, this.proxy, method, args, moduleInstance );
     }
 
     public QualifiedIdentity identity()
@@ -162,16 +178,6 @@ public final class EntityInstance
         return method.invoke( this, args );
     }
 
-    public Property<?> getProperty( Method propertyMethod )
-    {
-        return null;
-    }
-
-    public AbstractAssociation getAssociation( Method associationMethod )
-    {
-        return null;
-    }
-
     public void refresh()
     {
         if( status() == EntityStatus.LOADED )
@@ -245,7 +251,24 @@ public final class EntityInstance
     }
 
     public void remove()
+        throws LifecycleException
     {
+        if( entity.hasMixinType( Lifecycle.class ) )
+        {
+            try
+            {
+                invoke( proxy, REMOVE_METHOD, new Object[0] );
+            }
+            catch( LifecycleException throwable )
+            {
+                throw throwable;
+            }
+            catch( Throwable throwable )
+            {
+                throw new LifecycleException( throwable );
+            }
+        }
+
         status = EntityStatus.REMOVED;
         entityState = null;
         mixins = null;

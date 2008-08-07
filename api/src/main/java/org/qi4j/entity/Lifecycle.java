@@ -85,18 +85,21 @@ public interface Lifecycle
     /**
      * Creation callback method.
      * <p/>
-     * Called by the Qi4j runtime before the newInstance of the composite completes, allowing
+     * Called by the Qi4j runtime before the newInstance of the entity completes, allowing
      * for additional initialization.
      */
-    void create();
+    void create()
+        throws LifecycleException;
 
     /**
      * Removal callback method.
      * <p/>
-     * Called by the Qi4j runtime before the composite is removed from the system, allowing
+     * Called by the Qi4j runtime before the entity is removed from the system, allowing
      * for clean-up operations.
      */
-    void remove();
+    void remove()
+        throws LifecycleException;
+
 
     // Default implementation
     public final class LifecycleMixin
@@ -105,10 +108,12 @@ public interface Lifecycle
         public static final Lifecycle INSTANCE = new LifecycleMixin();
 
         public void create()
+            throws LifecycleException
         {
         }
 
         public void remove()
+            throws LifecycleException
         {
         }
     }

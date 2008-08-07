@@ -66,6 +66,11 @@ public abstract class AbstractMixinsModel
         return mixinTypes;
     }
 
+    public boolean hasMixinType( Class<?> mixinType )
+    {
+        return mixinTypes.contains( mixinType );
+    }
+
     public MixinModel mixinFor( Method method )
     {
         Integer integer = methodIndex.get( method );

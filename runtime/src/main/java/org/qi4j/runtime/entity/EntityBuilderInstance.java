@@ -43,6 +43,7 @@ public final class EntityBuilderInstance<T>
     private static final Method IDENTITY_METHOD;
     private static final Method TYPE_METHOD;
     private static final Method METAINFO_METHOD;
+    private static final Method CREATE_METHOD;
 
     private final ModuleInstance moduleInstance;
     private final EntityModel entityModel;
@@ -60,6 +61,7 @@ public final class EntityBuilderInstance<T>
             IDENTITY_METHOD = Identity.class.getMethod( "identity" );
             TYPE_METHOD = Composite.class.getMethod( "type" );
             METAINFO_METHOD = Composite.class.getMethod( "metaInfo", Class.class );
+            CREATE_METHOD = Lifecycle.class.getMethod( "create" );
         }
         catch( NoSuchMethodException e )
         {
@@ -144,9 +146,16 @@ public final class EntityBuilderInstance<T>
         uow.createEntity( (EntityComposite) proxy );
 
         // Invoke lifecycle create() method
-        if( Lifecycle.class.isAssignableFrom( instance.type() ) )
+        if( instance.entityModel().hasMixinType( Lifecycle.class ) )
         {
-//            context.invokeCreate( instance, compositeInstance );
+            try
+            {
+                instance.invoke( null, CREATE_METHOD, new Object[0] );
+            }
+            catch( Throwable throwable )
+            {
+                throw new ConstructionException( throwable );
+            }
         }
 
         if( prototypePattern )

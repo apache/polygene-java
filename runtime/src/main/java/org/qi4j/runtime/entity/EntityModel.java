@@ -147,6 +147,11 @@ public final class EntityModel
         return new EntityType( type.getName(), toURI(), mixinTypes, stateModel.propertyTypes(), stateModel.associationTypes(), stateModel.manyAssociationTypes() );
     }
 
+    public boolean hasMixinType( Class<?> mixinType )
+    {
+        return mixinsModel.hasMixinType( mixinType );
+    }
+
     public void visitModel( ModelVisitor modelVisitor )
     {
         modelVisitor.visit( this );
