@@ -21,25 +21,24 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import org.neo4j.api.core.NeoService;
 import org.qi4j.entity.neo4j.NeoIdentityIndex;
+import org.qi4j.spi.entity.ManyAssociationType;
 import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.spi.entity.association.AssociationDescriptor;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
  */
 enum CollectionFactory implements BackendFactory
 {
-    SET( Set.class, Duplicates.NOT_ALLOWED )
+    SET( ManyAssociationType.ManyAssociationTypeEnum.SET, Duplicates.NOT_ALLOWED )
         {
             public <E> Collection<E> createBackend( Class<E> elementType )
             {
                 return new HashSet<E>();
             }
         },
-    LIST( List.class )
+    LIST( ManyAssociationType.ManyAssociationTypeEnum.LIST )
         {
             @Override Collection<QualifiedIdentity> createNodeCollection( ManyAssociationFactory factory, DirectEntityState state, NeoService neo, NeoIdentityIndex idIndex )
             {
@@ -56,7 +55,7 @@ enum CollectionFactory implements BackendFactory
                 return new ArrayList<E>();
             }
         },
-    GENERIC( Collection.class, Duplicates.ALLOWED )
+    GENERIC( ManyAssociationType.ManyAssociationTypeEnum.MANY, Duplicates.ALLOWED )
         {
             public <E> Collection<E> createBackend( Class<E> elementType )
             {
@@ -89,15 +88,15 @@ enum CollectionFactory implements BackendFactory
             }
     }
 
-    private final Class<? extends Collection> type;
+    private final ManyAssociationType.ManyAssociationTypeEnum type;
     private final DuplicationChecker checker;
 
-    private CollectionFactory( Class<? extends Collection> type )
+    private CollectionFactory( ManyAssociationType.ManyAssociationTypeEnum type )
     {
         this( type, null );
     }
 
-    CollectionFactory( Class<? extends Collection> type, DuplicationChecker checker )
+    CollectionFactory( ManyAssociationType.ManyAssociationTypeEnum type, DuplicationChecker checker )
     {
         this.type = type;
         this.checker = checker;
@@ -105,32 +104,24 @@ enum CollectionFactory implements BackendFactory
 
     String typeString()
     {
-        return type.getName();
+        return type.name();
     }
 
-    static CollectionFactory getFactoryFor( AssociationDescriptor model )
+    static CollectionFactory getFactoryFor( ManyAssociationType model )
     {
-        Class<?> targetType = model.accessor().getReturnType();
-        return getFactoryFor( targetType );
+        return getFactoryFor( model.associationType() );
     }
 
     static CollectionFactory getFactoryFor( String typeString )
     {
-        try
-        {
-            return getFactoryFor( Class.forName( typeString ) );
-        }
-        catch( ClassNotFoundException e )
-        {
-            throw new IllegalArgumentException( "Unknown Association type." );
-        }
+        return getFactoryFor( ManyAssociationType.ManyAssociationTypeEnum.valueOf( typeString ) );
     }
 
-    private static CollectionFactory getFactoryFor( Class<?> targetType )
+    private static CollectionFactory getFactoryFor( ManyAssociationType.ManyAssociationTypeEnum targetType )
     {
         for( CollectionFactory factory : values() )
         {
-            if( factory.type.isAssignableFrom( targetType ) )
+            if( factory.type == targetType )
             {
                 return factory;
             }

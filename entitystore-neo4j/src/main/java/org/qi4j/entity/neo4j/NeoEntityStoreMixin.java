@@ -26,19 +26,19 @@ import org.qi4j.entity.neo4j.state.IndirectEntityStateFactory;
 import org.qi4j.entity.neo4j.state.LoadedDescriptor;
 import org.qi4j.entity.neo4j.state.NeoEntityStateFactory;
 import org.qi4j.injection.scope.Service;
-import org.qi4j.spi.composite.CompositeDescriptor;
+import org.qi4j.spi.entity.AbstractEntityStoreMixin;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
-import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreException;
+import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.StateCommitter;
-import org.qi4j.structure.Module;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
  */
-public class NeoEntityStoreMixin implements EntityStore
+public class NeoEntityStoreMixin
+    extends AbstractEntityStoreMixin
 {
     // Dependancies
     private @Service NeoIdentityIndexService idService;
@@ -48,21 +48,23 @@ public class NeoEntityStoreMixin implements EntityStore
 
     // EntityStore implementation
 
-    public EntityState newEntityState( CompositeDescriptor compositeDescriptor, QualifiedIdentity identity ) throws EntityStoreException
+    public EntityState newEntityState( QualifiedIdentity identity ) throws EntityStoreException
     {
-        CommittableEntityState state = factory().createEntityState( idService, load( compositeDescriptor, identity ), identity, EntityStatus.NEW );
+        EntityType type = getEntityType( identity );
+        CommittableEntityState state = factory().createEntityState( idService, load( type, identity ), identity, EntityStatus.NEW );
         state.preloadState();
         return state;
     }
 
-    public EntityState getEntityState( CompositeDescriptor compositeDescriptor, QualifiedIdentity identity ) throws EntityStoreException
+    public EntityState getEntityState( QualifiedIdentity identity ) throws EntityStoreException
     {
-        CommittableEntityState state = factory().createEntityState( idService, load( compositeDescriptor, identity ), identity, EntityStatus.LOADED );
+        EntityType type = getEntityType( identity );
+        CommittableEntityState state = factory().createEntityState( idService, load( type, identity ), identity, EntityStatus.LOADED );
         state.preloadState();
         return state;
     }
 
-    public StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, Iterable<QualifiedIdentity> removedStates, Module module ) throws EntityStoreException
+    public StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, Iterable<QualifiedIdentity> removedStates ) throws EntityStoreException
     {
         List<CommittableEntityState> updated = new ArrayList<CommittableEntityState>();
         for( EntityState state : newStates )
@@ -104,12 +106,12 @@ public class NeoEntityStoreMixin implements EntityStore
 
     // Implementation details
 
-    private LoadedDescriptor load( CompositeDescriptor compositeDescriptor, QualifiedIdentity identity )
+    private LoadedDescriptor load( EntityType entityType, QualifiedIdentity identity )
     {
         Transaction tx = neo.beginTx();
         try
         {
-            LoadedDescriptor descriptor = LoadedDescriptor.loadDescriptor( compositeDescriptor, idService.getTypeNode( identity.type() ) );
+            LoadedDescriptor descriptor = LoadedDescriptor.loadDescriptor( entityType, idService.getTypeNode( identity.type() ) );
             tx.success();
             return descriptor;
         }

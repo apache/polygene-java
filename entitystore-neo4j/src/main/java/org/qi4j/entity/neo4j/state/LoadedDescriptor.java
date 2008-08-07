@@ -23,9 +23,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.neo4j.api.core.Node;
-import org.qi4j.spi.composite.CompositeDescriptor;
-import org.qi4j.spi.entity.association.AssociationDescriptor;
-import org.qi4j.spi.property.PropertyDescriptor;
+import org.qi4j.spi.entity.AssociationType;
+import org.qi4j.spi.entity.EntityType;
+import org.qi4j.spi.entity.ManyAssociationType;
+import org.qi4j.spi.entity.PropertyType;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
@@ -38,7 +39,7 @@ public class LoadedDescriptor
     private static final String PROPERTIES_PROPERTY_KEY = "<qualified property names>";
     private static final String MANY_ASSOCIATIONS_PROPERTY_KEY = "<qualified many association names>";
 
-    public static LoadedDescriptor loadDescriptor( CompositeDescriptor descriptor, Node descriptionNode )
+    public static LoadedDescriptor loadDescriptor( EntityType entityType, Node descriptionNode )
     {
         LoadedDescriptor result = cache.get( descriptionNode );
         if( result == null )
@@ -48,12 +49,12 @@ public class LoadedDescriptor
                 result = cache.get( descriptionNode );
                 if( result == null )
                 {
-                    result = new LoadedDescriptor( descriptor, descriptionNode );
+                    result = new LoadedDescriptor( entityType, descriptionNode );
                     cache.put( descriptionNode, result );
                 }
             }
         }
-        result.verify( descriptor );
+        result.verify( entityType );
         return result;
     }
 
@@ -80,21 +81,18 @@ public class LoadedDescriptor
     private final List<String> associations = new LinkedList<String>();
     private final List<String> properties = new LinkedList<String>();
 
-    private LoadedDescriptor( CompositeDescriptor descriptor, Node descriptionNode )
+    private LoadedDescriptor( EntityType descriptor, Node descriptionNode )
     {
         this.descriptionNode = descriptionNode;
-        for( AssociationDescriptor model : descriptor.state().associations() )
+        for( AssociationType model : descriptor.associations() )
         {
-            if( ManyAssociationFactory.isManyAssociation( model ) )
-            {
-                manyAssociations.add( ManyAssociationFactory.getFactory( model ) );
-            }
-            else
-            {
-                associations.add( model.qualifiedName() );
-            }
+            associations.add( model.qualifiedName() );
         }
-        for( PropertyDescriptor model : descriptor.state().properties() )
+        for( ManyAssociationType model : descriptor.manyAssociations() )
+        {
+            manyAssociations.add( ManyAssociationFactory.getFactory( model ) );
+        }
+        for( PropertyType model : descriptor.properties() )
         {
             properties.add( model.qualifiedName() );
         }
@@ -140,9 +138,9 @@ public class LoadedDescriptor
         descriptionNode.setProperty( MANY_ASSOCIATIONS_PROPERTY_KEY, manyAssociations );
     }
 
-    private void verify( CompositeDescriptor descriptor )
+    private void verify( EntityType descriptor )
     {
-        // TODO: implement means of verifying that the loaded descriprot matches the composite descriptor
+        // TODO: implement means of verifying that the loaded descriprot matches the entity type
     }
 
     Iterable<ManyAssociationFactory> getManyAssociationFactories()

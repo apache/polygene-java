@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityStoreException;
+import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.QualifiedIdentity;
 
 /**
@@ -150,6 +151,11 @@ public class IndirectEntityState implements CommittableEntityState
     public EntityStatus status()
     {
         return status;
+    }
+
+    public EntityType entityType()
+    {
+        return null;
     }
 
     public Iterable<String> propertyNames()

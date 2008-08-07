@@ -23,6 +23,7 @@ import org.neo4j.api.core.NeoService;
 import org.neo4j.api.core.RelationshipType;
 import org.qi4j.entity.association.ManyAssociation;
 import org.qi4j.entity.neo4j.NeoIdentityIndex;
+import org.qi4j.spi.entity.ManyAssociationType;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
 
@@ -34,14 +35,9 @@ class ManyAssociationFactory
     private static final Map<String, ManyAssociationFactory> cache = new HashMap<String, ManyAssociationFactory>();
 
 
-    static ManyAssociationFactory getFactory( AssociationDescriptor model )
+    static ManyAssociationFactory getFactory( ManyAssociationType model )
     {
         String qName = model.qualifiedName();
-        if( !isManyAssociation( model ) )
-        {
-            throw new IllegalArgumentException(
-                "Unable to get ManyAssociationFactory for an AssociationModel not representing a many association." );
-        }
         ManyAssociationFactory value = cache.get( qName );
         if( value == null )
         {
@@ -77,7 +73,7 @@ class ManyAssociationFactory
     private final String qName;
     private final CollectionFactory factory;
 
-    private ManyAssociationFactory( AssociationDescriptor model )
+    private ManyAssociationFactory( ManyAssociationType model )
     {
         this.qName = model.qualifiedName();
         this.factory = CollectionFactory.getFactoryFor( model );

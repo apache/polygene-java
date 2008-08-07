@@ -24,9 +24,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Properties;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -39,12 +37,10 @@ import jdbm.helper.LongSerializer;
 import jdbm.helper.Serializer;
 import jdbm.helper.Tuple;
 import jdbm.helper.TupleBrowser;
-import org.qi4j.injection.scope.Structure;
 import org.qi4j.injection.scope.This;
 import org.qi4j.library.locking.WriteLock;
 import org.qi4j.service.Activatable;
 import org.qi4j.service.Configuration;
-import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.entity.AbstractEntityStoreMixin;
 import org.qi4j.spi.entity.DefaultEntityState;
 import org.qi4j.spi.entity.EntityAlreadyExistsException;
@@ -119,12 +115,7 @@ public class JdbmEntityStoreMixin
             throw new EntityStoreException( e );
         }
 
-        return new DefaultEntityState( 0, System.currentTimeMillis(),
-                                       identity, EntityStatus.NEW,
-                                       entityType,
-                                       new HashMap<String, Object>(),
-                                       new HashMap<String, QualifiedIdentity>(),
-                                       new HashMap<String, Collection<QualifiedIdentity>>() );
+        return new DefaultEntityState( identity, entityType );
     }
 
     @WriteLock

@@ -26,6 +26,7 @@ import org.neo4j.api.core.Relationship;
 import org.neo4j.api.core.RelationshipType;
 import org.qi4j.entity.neo4j.NeoIdentityIndex;
 import org.qi4j.spi.entity.EntityStatus;
+import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.QualifiedIdentity;
 
 /**
@@ -48,6 +49,7 @@ public class DirectEntityState implements CommittableEntityState
     private final NeoIdentityIndex idIndex;
     private final QualifiedIdentity identity;
     private EntityStatus status;
+    private EntityType entityType;
     private final LoadedDescriptor descriptor;
     private final Map<String, Collection<QualifiedIdentity>> manyAssociations = new HashMap<String, Collection<QualifiedIdentity>>();
     private boolean loaded = false;
@@ -58,6 +60,7 @@ public class DirectEntityState implements CommittableEntityState
         this.underlyingNode = underlyingNode;
         this.identity = identity;
         this.status = status;
+        this.entityType = null; // TODO Generate from descriptor?
         this.descriptor = descriptor;
         populateManyAssociations( neo );
     }
@@ -187,6 +190,11 @@ public class DirectEntityState implements CommittableEntityState
     public EntityStatus status()
     {
         return status;
+    }
+
+    public EntityType entityType()
+    {
+        return entityType;
     }
 
     public Iterable<String> propertyNames()
