@@ -16,9 +16,7 @@ package org.qi4j.runtime.entity.association;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.qi4j.composite.Composite;
@@ -143,41 +141,22 @@ public final class AssociationModel
 
     public AbstractAssociation newInstance( UnitOfWorkInstance uow, EntityState state )
     {
-        final Class<?> associationType = accessor.getReturnType();
         if( !isManyAssociation() )
         {
             return new AssociationInstance<Object>( this, uow, state );
         }
 
-        Collection<QualifiedIdentity> manyAssociation = getManyAssociation( state, associationType );
+        Collection<QualifiedIdentity> manyAssociation = state.getManyAssociation( qualifiedName );
 
         if( isListAssociation() )
         {
             return new ListAssociationInstance<Object>( this, uow, (List<QualifiedIdentity>) manyAssociation );
         }
-        if( isSetAssociation() )
+        else if( isSetAssociation() )
         {
             return new SetAssociationInstance<Object>( this, uow, (Set<QualifiedIdentity>) manyAssociation );
         }
         return new ManyAssociationInstance<Object>( this, uow, manyAssociation );
-    }
-
-    private Collection<QualifiedIdentity> getManyAssociation( EntityState state, Class<?> associationType )
-    {
-        Collection<QualifiedIdentity> manyAssociation = state.getManyAssociation( qualifiedName );
-        if( manyAssociation != null )
-        {
-            return manyAssociation;
-        }
-
-        if( isSetAssociation() )
-        {
-            return state.setManyAssociation( qualifiedName, new HashSet<QualifiedIdentity>() );
-        }
-        else
-        {
-            return state.setManyAssociation( qualifiedName, new ArrayList<QualifiedIdentity>() );
-        }
     }
 
     public void checkConstraints( Object value )

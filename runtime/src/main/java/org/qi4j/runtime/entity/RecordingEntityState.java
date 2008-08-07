@@ -92,11 +92,6 @@ public class RecordingEntityState
         return entityState.getManyAssociation( qualifiedName );
     }
 
-    public Collection<QualifiedIdentity> setManyAssociation( String qualifiedName, Collection<QualifiedIdentity> newManyAssociation )
-    {
-        return entityState.setManyAssociation( qualifiedName, newManyAssociation );
-    }
-
     public Iterable<String> propertyNames()
     {
         return entityState.propertyNames();

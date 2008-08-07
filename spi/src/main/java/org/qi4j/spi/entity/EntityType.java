@@ -15,7 +15,6 @@
 package org.qi4j.spi.entity;
 
 import java.io.Serializable;
-import org.qi4j.entity.EntityComposite;
 
 /**
  * TODO
@@ -31,7 +30,7 @@ public class EntityType
     private Iterable<ManyAssociationType> manyAssociations;
     private Iterable<String> mixinTypes;
 
-    public EntityType( Class<? extends EntityComposite> entityType, String uri, Iterable<String> mixinTypes,
+    public EntityType( String entityType, String uri, Iterable<String> mixinTypes,
                        Iterable<PropertyType> properties, Iterable<AssociationType> associations, Iterable<ManyAssociationType> manyAssociations )
     {
         this.uri = uri;
@@ -39,7 +38,7 @@ public class EntityType
         this.properties = properties;
         this.associations = associations;
         this.manyAssociations = manyAssociations;
-        type = entityType.getName();
+        type = entityType;
     }
 
     public String type()
@@ -65,19 +64,16 @@ public class EntityType
     public Iterable<PropertyType> properties()
     {
         return properties;
-
     }
 
     public Iterable<AssociationType> associations()
     {
         return associations;
-
     }
 
     public Iterable<ManyAssociationType> manyAssociations()
     {
         return manyAssociations;
-
     }
 
     @Override public String toString()

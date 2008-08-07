@@ -17,8 +17,11 @@
 package org.qi4j.spi.entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
 
 /**
@@ -27,6 +30,33 @@ import java.util.Map;
 public class DefaultEntityState
     implements EntityState, Serializable
 {
+    private static Map<String, Collection<QualifiedIdentity>> newManyCollections( EntityType entityType )
+    {
+        Map<String, Collection<QualifiedIdentity>> manyAssociations = new HashMap<String, Collection<QualifiedIdentity>>();
+        for( ManyAssociationType manyAssociationType : entityType.manyAssociations() )
+        {
+            switch( manyAssociationType.associationType() )
+            {
+            case LIST:
+            {
+                manyAssociations.put( manyAssociationType.qualifiedName(), new ArrayList<QualifiedIdentity>() );
+                break;
+            }
+            case SET:
+            {
+                manyAssociations.put( manyAssociationType.qualifiedName(), new LinkedHashSet<QualifiedIdentity>() );
+                break;
+            }
+            case MANY:
+            {
+                manyAssociations.put( manyAssociationType.qualifiedName(), new HashSet<QualifiedIdentity>() );
+                break;
+            }
+            }
+        }
+        return manyAssociations;
+    }
+
     private final long version;
     private final long lastModified;
     private final QualifiedIdentity identity;
@@ -39,7 +69,7 @@ public class DefaultEntityState
 
     public DefaultEntityState( QualifiedIdentity identity, EntityType entityType )
     {
-        this( 0, System.currentTimeMillis(), identity, EntityStatus.NEW, entityType, new HashMap<String, Object>(), new HashMap<String, QualifiedIdentity>(), new HashMap<String, Collection<QualifiedIdentity>>() );
+        this( 0, System.currentTimeMillis(), identity, EntityStatus.NEW, entityType, new HashMap<String, Object>(), new HashMap<String, QualifiedIdentity>(), newManyCollections( entityType ) );
     }
 
     public DefaultEntityState( long version,

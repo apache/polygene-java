@@ -80,8 +80,6 @@ public interface EntityState
 
     Collection<QualifiedIdentity> getManyAssociation( String qualifiedName );
 
-    Collection<QualifiedIdentity> setManyAssociation( String qualifiedName, Collection<QualifiedIdentity> newManyAssociation );
-
     Iterable<String> propertyNames();
 
     Iterable<String> associationNames();

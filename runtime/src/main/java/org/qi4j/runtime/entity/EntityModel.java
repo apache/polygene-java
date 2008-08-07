@@ -144,7 +144,7 @@ public final class EntityModel
             mixinTypes.add( mixinType.getName() );
         }
 
-        return new EntityType( type, toURI(), mixinTypes, stateModel.propertyTypes(), stateModel.associationTypes(), stateModel.manyAssociationTypes() );
+        return new EntityType( type.getName(), toURI(), mixinTypes, stateModel.propertyTypes(), stateModel.associationTypes(), stateModel.manyAssociationTypes() );
     }
 
     public void visitModel( ModelVisitor modelVisitor )

@@ -1,11 +1,7 @@
 package org.qi4j.entity.memory;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.Map;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.spi.entity.AbstractEntityStoreMixin;
@@ -16,7 +12,6 @@ import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.EntityType;
-import org.qi4j.spi.entity.ManyAssociationType;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.entity.UnknownEntityTypeException;
@@ -57,30 +52,7 @@ public class MemoryEntityStoreMixin
 
         EntityType entityType = getEntityType( identity );
 
-        HashMap<String, Object> properties = new HashMap<String, Object>();
-        HashMap<String, Collection<QualifiedIdentity>> manyAssociations = new HashMap<String, Collection<QualifiedIdentity>>();
-        for( ManyAssociationType associationDescriptor : entityType.manyAssociations() )
-        {
-            switch( associationDescriptor.associationType() )
-            {
-            case LIST:
-            {
-                manyAssociations.put( associationDescriptor.qualifiedName(), new ArrayList<QualifiedIdentity>() );
-                break;
-            }
-            case SET:
-            {
-                manyAssociations.put( associationDescriptor.qualifiedName(), new LinkedHashSet<QualifiedIdentity>() );
-                break;
-            }
-            case MANY:
-            {
-                manyAssociations.put( associationDescriptor.qualifiedName(), new HashSet<QualifiedIdentity>() );
-                break;
-            }
-            }
-        }
-        return new DefaultEntityState( 0, System.currentTimeMillis(), identity, EntityStatus.NEW, entityType, properties, new HashMap<String, QualifiedIdentity>(), manyAssociations );
+        return new DefaultEntityState( identity, entityType );
     }
 
     public EntityState getEntityState( QualifiedIdentity identity )

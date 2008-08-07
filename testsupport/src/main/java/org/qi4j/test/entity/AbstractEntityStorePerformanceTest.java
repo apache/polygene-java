@@ -17,7 +17,7 @@ import org.qi4j.spi.entity.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
 
 /**
- * Test for MemoryEntityStoreComposite
+ * Test for EntityStore
  */
 public abstract class AbstractEntityStorePerformanceTest
     extends AbstractQi4jTest
@@ -63,7 +63,7 @@ public abstract class AbstractEntityStorePerformanceTest
             // Create entity
             builder.newInstance();
 
-            if( i % 4000 == 0 )
+            if( i % 400 == 0 )
             {
                 unitOfWork.complete();
                 unitOfWork = unitOfWorkFactory.newUnitOfWork();

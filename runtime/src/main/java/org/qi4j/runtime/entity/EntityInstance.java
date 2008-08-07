@@ -17,7 +17,6 @@ package org.qi4j.runtime.entity;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import org.qi4j.composite.Composite;
-import org.qi4j.composite.State;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.EntityCompositeNotFoundException;
 import org.qi4j.entity.Identity;
@@ -38,7 +37,7 @@ import org.qi4j.util.MetaInfo;
  * TODO
  */
 public final class EntityInstance
-    implements CompositeInstance, MixinsInstance, State
+    implements CompositeInstance, MixinsInstance
 {
     public static EntityInstance getEntityInstance( Composite composite )
     {
