@@ -75,7 +75,7 @@ class SparqlRdfQueryParser
         return QueryLanguage.SPARQL;
     }
 
-    public String getQuery( final Class resultType,
+    public String getQuery( final String resultType,
                             final BooleanExpression whereClause,
                             final OrderBy[] orderBySegments,
                             final Integer firstResult,
@@ -314,7 +314,7 @@ class SparqlRdfQueryParser
     }
 
     private void addNamespace( final String prefix,
-                                 final String namespace )
+                               final String namespace )
     {
         namespaces.put( namespace, prefix );
     }

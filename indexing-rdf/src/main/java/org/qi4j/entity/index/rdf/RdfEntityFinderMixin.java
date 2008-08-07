@@ -44,7 +44,7 @@ public class RdfEntityFinderMixin
     @Service Repository repository;
 
     public Iterable<QualifiedIdentity> findEntities(
-        final Class resultType,
+        final String resultType,
         final BooleanExpression whereClause,
         final OrderBy[] orderBySegments,
         final Integer firstResult,
@@ -100,7 +100,7 @@ public class RdfEntityFinderMixin
         return entities;
     }
 
-    public QualifiedIdentity findEntity( Class resultType, BooleanExpression whereClause )
+    public QualifiedIdentity findEntity( String resultType, BooleanExpression whereClause )
         throws EntityFinderException
     {
         try
@@ -150,7 +150,7 @@ public class RdfEntityFinderMixin
         }
     }
 
-    public long countEntities( Class resultType, BooleanExpression whereClause )
+    public long countEntities( String resultType, BooleanExpression whereClause )
         throws EntityFinderException
     {
         long entityCount = 0;

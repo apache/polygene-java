@@ -23,13 +23,12 @@ import org.qi4j.query.grammar.OrderBy;
 
 /**
  * TODO Add JavaDoc
- *
  */
 public interface RdfQueryParser
 {
     QueryLanguage getQueryLanguage();
 
-    String getQuery( Class resultType,
+    String getQuery( String resultType,
                      BooleanExpression whereClause,
                      OrderBy[] orderBySegments,
                      Integer firstResult,
