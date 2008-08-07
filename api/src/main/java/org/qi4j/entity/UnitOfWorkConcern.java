@@ -16,10 +16,9 @@
  */
 package org.qi4j.entity;
 
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import org.qi4j.composite.AppliesTo;
-import org.qi4j.composite.ConcernOf;
+import org.qi4j.composite.GenericConcern;
 import org.qi4j.injection.scope.Invocation;
 import org.qi4j.injection.scope.Structure;
 
@@ -32,8 +31,7 @@ import org.qi4j.injection.scope.Structure;
  * @since 0.2.0
  */
 @AppliesTo( UnitOfWorkPropagation.class )
-public class UnitOfWorkConcern extends ConcernOf<InvocationHandler>
-    implements InvocationHandler
+public class UnitOfWorkConcern extends GenericConcern
 {
     private static final Class<?>[] DEFAULT_DISCARD_CLASSES = new Class[]{ Throwable.class };
 
