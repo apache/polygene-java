@@ -24,6 +24,12 @@ import org.qi4j.spi.structure.LayerDescriptor;
 import org.qi4j.spi.structure.ApplicationDescriptor;
 import org.qi4j.spi.structure.ModuleDescriptor;
 import org.qi4j.spi.composite.CompositeDescriptor;
+import org.qi4j.spi.composite.CompositeMethodDescriptor;
+import org.qi4j.spi.composite.MixinDescriptor;
+import org.qi4j.spi.composite.MethodConstraintsDescriptor;
+import org.qi4j.spi.composite.MethodConcernDescriptor;
+import org.qi4j.spi.composite.MethodSideEffectDescriptor;
+import org.qi4j.spi.composite.ConstraintDescriptor;
 import static org.qi4j.library.framework.swing.GraphConstants.FIELD_USED_LAYERS;
 import static org.qi4j.library.framework.swing.GraphConstants.FIELD_USED_BY_LAYERS;
 import static org.qi4j.library.framework.swing.GraphConstants.FIELD_NAME;
@@ -36,6 +42,8 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.lang.reflect.Method;
 
 /**
  * @author Sonny Gill
@@ -46,13 +54,20 @@ class ApplicationGraphVisitor extends DescriptorVisitor
     private final Node root;
     private Node layerNode;
     private Node moduleNode;
-    private final Map<LayerDescriptor, Node> layerNodes;
+
+    private final Map<LayerDescriptor, Node> layerDescriptorToNodeMap = new HashMap<LayerDescriptor, Node>();
+    private final Map<Node, CompositeDescriptor> compositeDescriptorsMap = new HashMap<Node, CompositeDescriptor>();
 
     public ApplicationGraphVisitor( Graph graph )
     {
-        this.layerNodes = new HashMap<LayerDescriptor, Node>();
         this.graph = graph;
-        this.root = graph.addNode();
+
+        graph.addColumn( FIELD_NAME, String.class );
+        graph.addColumn( FIELD_TYPE, int.class );
+        graph.addColumn( FIELD_LAYER_LEVEL, int.class );
+        graph.addColumn( FIELD_USED_LAYERS, Collection.class );
+        graph.addColumn( FIELD_USED_BY_LAYERS, Collection.class );
+        root = graph.addNode();
         root.setInt( FIELD_TYPE, ApplicationGraph.TYPE_APPLICATION );
     }
 
@@ -80,7 +95,7 @@ class ApplicationGraphVisitor extends DescriptorVisitor
 
     private Node getLayerNode( LayerDescriptor layerDescriptor )
     {
-        Node layer = layerNodes.get( layerDescriptor );
+        Node layer = layerDescriptorToNodeMap.get( layerDescriptor );
         if( layer == null )
         {
             layer = graph.addNode();
@@ -90,7 +105,7 @@ class ApplicationGraphVisitor extends DescriptorVisitor
             layer.setInt( FIELD_LAYER_LEVEL, 1 );
             layer.set( FIELD_USED_LAYERS, new ArrayList() );
             layer.set( FIELD_USED_BY_LAYERS, new ArrayList() );
-            layerNodes.put( layerDescriptor, layer );
+            layerDescriptorToNodeMap.put( layerDescriptor, layer );
         }
 
         return layer;
@@ -132,6 +147,61 @@ class ApplicationGraphVisitor extends DescriptorVisitor
         node.setInt( FIELD_TYPE, ApplicationGraph.TYPE_COMPOSITE );
         Edge edge = graph.addEdge( moduleNode, node );
         edge.setInt( FIELD_TYPE, ApplicationGraph.TYPE_EDGE_HIDDEN );
+
+        compositeDescriptorsMap.put( node, compositeDescriptor );
     }
 
+    private Map<Method, Map<String, List>> methodAttributesMap = new HashMap<Method, Map<String, List>>();
+    private Method currentMethod;
+    private Map<String, List> currentMethodAttributesMap;
+
+    public void visit( CompositeMethodDescriptor compositeMethodDescriptor )
+    {
+        currentMethod = compositeMethodDescriptor.method();
+        currentMethodAttributesMap = new HashMap<String, List>();
+
+        currentMethodAttributesMap.put( "constraints", new ArrayList() );
+        currentMethodAttributesMap.put( "concerns", new ArrayList() );
+        currentMethodAttributesMap.put( "sideEffects", new ArrayList() );
+
+        methodAttributesMap.put( currentMethod, currentMethodAttributesMap );
+    }
+
+    public void visit( ConstraintDescriptor constraintDescriptor )
+    {
+        super.visit( constraintDescriptor );    //To change body of overridden methods use File | Settings | File Templates.
+    }
+
+    public void visit( MethodConstraintsDescriptor methodConstraintsDescriptor )
+    {
+        List list = currentMethodAttributesMap.get( "constraints" );
+        list.add( methodConstraintsDescriptor.hashCode() ); // todo
+    }
+
+    public void visit( MethodConcernDescriptor methodConcernDescriptor )
+    {
+        List list = currentMethodAttributesMap.get( "concerns" );
+        list.add( methodConcernDescriptor.hashCode() ); // todo
+    }
+
+    public void visit( MethodSideEffectDescriptor methodSideEffectDescriptor )
+    {
+        List list = currentMethodAttributesMap.get( "sideEffects" );
+        list.add( methodSideEffectDescriptor.hashCode() ); // todo
+    }
+
+    public void visit( MixinDescriptor mixinDescriptor )
+    {
+        // for each composite // todo
+    }
+
+    public CompositeDescriptor getCompositeDescriptor( Node node )
+    {
+        return compositeDescriptorsMap.get( node );
+    }
+
+    public Map<String, List> getMethodAttributes( Method m )
+    {
+        return methodAttributesMap.get( m );
+    }
 }

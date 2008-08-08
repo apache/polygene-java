@@ -1,5 +1,4 @@
 /*
- * Copyright 2008 Niclas Hedhman. All rights Reserved.
  * Copyright 2008 Sonny Gill. All Rights Reserved.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
@@ -16,34 +15,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-
 package org.qi4j.library.framework.swing;
 
 import prefuse.visual.VisualItem;
-import java.awt.Graphics2D;
-import java.awt.Color;
-import java.awt.geom.Rectangle2D;
 
-public class CompositeRenderer
-    extends AbstractRenderer
+/**
+ * @author Sonny Gill
+ */
+public class GraphUtils
 {
 
-    private Color fillColor = new Color( 123, 205, 72 );
-    private Color textColor = Color.white;
-
-    public void render( Graphics2D g, VisualItem item )
+    public static boolean isComposite( VisualItem item )
     {
-        Rectangle2D rect = item.getBounds();
-        int x = (int) rect.getX();
-        int y = (int) rect.getY();
-        int width = (int) rect.getWidth();
-        int height = (int) rect.getHeight();
-
-        g.setPaint( fillColor );
-        g.fillRoundRect( x, y, width, height, 3, 3 );
-
-        g.setPaint( textColor );
-        drawName( g, item, x, y );
+        return item.getInt( GraphConstants.FIELD_TYPE ) == ApplicationGraph.TYPE_COMPOSITE;
     }
 
+    public static String getItemName( VisualItem item )
+    {
+        return item.getString( GraphConstants.FIELD_NAME );
+    }
 }

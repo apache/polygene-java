@@ -19,7 +19,9 @@ import org.qi4j.bootstrap.Energy4Java;
 import org.qi4j.bootstrap.LayerAssembly;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
+import org.qi4j.composite.Mixins;
 import org.qi4j.structure.Application;
+import org.qi4j.property.Property;
 
 /**
  * TODO
@@ -55,11 +57,51 @@ public class ApplicationGraphTester
         guiLayer.uses( domainLayer );
         domainLayer.uses( infrastructureLayer );
 
+        addMoreLayers( assembly );
+
         Application app = qi4j.newApplication( assembly );
         new ApplicationGraph().show( app );
     }
 
-    private static interface ADomainComposite extends Composite
+    private static void addMoreLayers( ApplicationAssembly assembly )
+    {
+/*
+        LayerAssembly layer = assembly.newLayerAssembly( "Layer 1" );
+        for( int i = 1; i < 5; i++ )
+        {
+            LayerAssembly anotherLayer =  assembly.newLayerAssembly( "Layer 1." + i );
+            layer.uses( anotherLayer );
+            layer = anotherLayer;
+        }
+
+*/
+        for( int i = 1; i < 6; i++ )
+        {
+            LayerAssembly newLayer = assembly.newLayerAssembly( "Layer " + i );
+            for( int k = 1; k < 5; k++ )
+            {
+                newLayer.newModuleAssembly( "Module " + k );
+            }
+        }
+    }
+
+    @Mixins( A.AMixin.class )
+    private static interface A
+    {
+        Property<String> a();
+
+        void a( String s );
+
+        public abstract class AMixin implements A
+        {
+            public void a( String s )
+            {
+                System.out.println( s );
+            }
+        }
+    }
+
+    private static interface ADomainComposite extends A, Composite
     {
 
     }

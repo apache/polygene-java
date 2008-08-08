@@ -15,16 +15,16 @@
  */
 package org.qi4j.library.framework.swing;
 
-import java.util.Collection;
 import java.util.Iterator;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
+import java.awt.event.AdjustmentListener;
+import java.awt.event.AdjustmentEvent;
 import java.awt.geom.Point2D;
 import java.awt.geom.AffineTransform;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Color;
-import java.awt.Dimension;
+import java.awt.Graphics2D;
 import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.AbstractAction;
@@ -32,28 +32,27 @@ import javax.swing.KeyStroke;
 import javax.swing.InputMap;
 import javax.swing.ActionMap;
 import javax.swing.Action;
-import static org.qi4j.library.framework.swing.GraphConstants.FIELD_LAYER_LEVEL;
-import static org.qi4j.library.framework.swing.GraphConstants.FIELD_NAME;
+import javax.swing.JScrollBar;
+import javax.swing.BoundedRangeModel;
+import javax.swing.DefaultBoundedRangeModel;
 import static org.qi4j.library.framework.swing.GraphConstants.FIELD_TYPE;
-import static org.qi4j.library.framework.swing.GraphConstants.FIELD_USED_BY_LAYERS;
-import static org.qi4j.library.framework.swing.GraphConstants.FIELD_USED_LAYERS;
 import org.qi4j.library.framework.swing.render.ApplicationRenderer;
 import org.qi4j.library.framework.swing.render.CompositeRenderer;
 import org.qi4j.library.framework.swing.render.LayerRenderer;
 import org.qi4j.library.framework.swing.render.ModuleRenderer;
 import org.qi4j.library.framework.swing.render.VerticalEdgeRenderer;
-import org.qi4j.spi.structure.ApplicationSPI;
-import org.qi4j.structure.Application;
 import prefuse.Display;
 import prefuse.Visualization;
 import prefuse.action.ActionList;
 import prefuse.action.RepaintAction;
 import prefuse.action.assignment.ColorAction;
-import prefuse.controls.PanControl;
-import prefuse.controls.ZoomControl;
+import prefuse.controls.Control;
 import prefuse.data.Graph;
+import prefuse.data.Node;
 import prefuse.render.DefaultRendererFactory;
 import prefuse.util.ColorLib;
+import prefuse.util.display.DisplayLib;
+import prefuse.util.display.PaintListener;
 import prefuse.visual.EdgeItem;
 import prefuse.visual.VisualItem;
 import prefuse.visual.sort.ItemSorter;
@@ -70,45 +69,91 @@ public class ApplicationPanel extends JPanel
 
     static final int TYPE_EDGE_HIDDEN = 100;
 
+    private Visualization visualization;
+    private Display display;
+    private VisualItem applicationNodeItem;
+
     private Action zoomIn;
     private Action zoomOut;
+    private Control compositeSelectionControl;
 
-    public ApplicationPanel( Application application )
+    private BoundedRangeModel hBarModel = new DefaultBoundedRangeModel( 0, 5, 0, 10 );
+    private BoundedRangeModel vBarModel = new DefaultBoundedRangeModel( 1, 0, 0, 1 );
+
+    public ApplicationPanel( Graph graph, Control compositeSelectionControl )
     {
         super( new BorderLayout() );
+        this.compositeSelectionControl = compositeSelectionControl;
 
-        Graph graph = createData( application );
-        Visualization visualization = createVisualization( graph );
+        visualization = createVisualization( graph );
         createRenderers( visualization );
         createProcessingActions( visualization );
-        Display display = createDisplay( visualization );
+        display = createDisplay( visualization );
         launchDisplay( visualization, display );
         createDisplayActions( display );
+
+        Node applicationNode = graph.getNode( 0 );
+        applicationNodeItem = visualization.getVisualItem( "graph.nodes", applicationNode );
 
         JPanel controlsPanel = new JPanel( new FlowLayout( FlowLayout.LEFT ) );
         JButton zoomInBtn = new JButton( zoomIn );
         JButton zoomOutBtn = new JButton( zoomOut );
+        JButton zoomToFitBtn = new JButton( new ZoomToFitAction() );
+        JButton actualSizeButton = new JButton( new ActualSizeAction() );
 
         controlsPanel.setBackground( Color.white );
         zoomInBtn.setBackground( Color.white );
         zoomOutBtn.setBackground( Color.white );
+        zoomToFitBtn.setBackground( Color.white );
+        actualSizeButton.setBackground( Color.white );
 
         controlsPanel.add( zoomInBtn );
         controlsPanel.add( zoomOutBtn );
+        controlsPanel.add( zoomToFitBtn );
+        controlsPanel.add( actualSizeButton );
+
+/*
+        final JTextField xField = new JTextField( 4 );
+        final JTextField yField = new JTextField( 4 );
+        JButton jButton = new JButton( "Pan" );
+        jButton.addActionListener( new ActionListener()
+        {
+            public void actionPerformed( ActionEvent e )
+            {
+                double x = Double.valueOf( xField.getText() );
+                double y = Double.valueOf( yField.getText() );
+                display.panAbs( x, y );
+                display.repaint();
+            }
+        } );
+
+        for( Object o :  Arrays.asList( xField, yField, jButton ) )
+        {
+            controlsPanel.add( (Component) o );
+        }
+*/
+
+        final JScrollBar hBar = new JScrollBar( JScrollBar.HORIZONTAL, 0, 5, 0, 10 );
+        hBar.setUnitIncrement( 10 );
+        hBar.setBlockIncrement( 100 );
+        hBar.setModel( hBarModel );
+        final JScrollBar vBar = new JScrollBar( JScrollBar.VERTICAL );
+        vBar.setModel( vBarModel );
+
+        hBar.addAdjustmentListener(
+            new AdjustmentListener()
+            {
+                public void adjustmentValueChanged( AdjustmentEvent e )
+                {
+                    pan( display, hBar.getValue(), vBar.getValue() );
+                }
+            } );
 
         add( controlsPanel, BorderLayout.NORTH );
         add( display, BorderLayout.CENTER );
+        add( hBar, BorderLayout.SOUTH );
+        add( vBar, BorderLayout.EAST );
 
-//        Rectangle2D bounds = visualization.getBounds( Visualization.ALL_ITEMS );
-//        System.out.println( bounds );
-//        DisplayLib.fitViewToBounds( display, bounds, 0);
-//        display.setSize( (int) bounds.getWidth(), (int) bounds.getHeight() );
-
-//        display.setSize( 400, 600 );
-
-        Dimension d = new Dimension( 400, 600 );
-        setMinimumSize( d );
-        setPreferredSize( d );
     }
 
     private void createDisplayActions( Display display )
@@ -124,6 +169,7 @@ public class ApplicationPanel extends JPanel
         inputMap.put( KeyStroke.getKeyStroke( '-' ), "zoomOut" );
         actionMap.put( "zoomOut", zoomOut );
 
+/*
         Action panLeft = new PanLeftAction( display );
         inputMap.put( KeyStroke.getKeyStroke( KeyEvent.VK_LEFT, 0 ), "panLeft" );
         actionMap.put( "panLeft", panLeft );
@@ -139,6 +185,7 @@ public class ApplicationPanel extends JPanel
         Action panDown = new PanDownAction( display );
         inputMap.put( KeyStroke.getKeyStroke( KeyEvent.VK_DOWN, 0 ), "panDown" );
         actionMap.put( "panDown", panDown );
+*/
     }
 
     private void launchDisplay( Visualization visualization, Display display )
@@ -153,8 +200,8 @@ public class ApplicationPanel extends JPanel
     {
         Display display = new Display( visualization );
 
-        display.addControlListener( new PanControl() );
-        display.addControlListener( new ZoomControl() );
+//        display.addControlListener( new PanControl() );
+//        display.addControlListener( new ZoomControl() );
 
         display.setItemSorter( new ItemSorter()
         {
@@ -176,7 +223,54 @@ public class ApplicationPanel extends JPanel
             }
         } );
 
+        display.addControlListener( compositeSelectionControl );
+
+        display.addPaintListener( new PaintListener()
+        {
+            double previousScale = 1.0D;
+
+            public void prePaint( Display d, Graphics2D g )
+            {
+            }
+
+            public void postPaint( Display d, Graphics2D g )
+            {
+                double scale = d.getScale();
+
+                if( scale != previousScale )
+                {
+                    int width = (int) applicationNodeItem.getBounds().getWidth();
+                    int height = d.getHeight();
+
+                    int extent = (int) ( d.getWidth() / scale );
+                    int wValue = ( width - extent ) / 2;
+
+//                    System.out.println( "width - " + width + ", wValue - " + wValue + ", extent - " + extent );
+                    hBarModel.setRangeProperties( wValue, extent, 0, width, false );
+                    vBarModel.setRangeProperties( height, height, height, height, false );
+
+                    previousScale = scale;
+                }
+            }
+        } );
         return display;
+    }
+
+    private int prevX;
+    private int prevY;
+
+    private void pan( Display display, int x, int y )
+    {
+/*
+        System.out.println( "prevX = " + prevX );
+        System.out.println( "x = " + x );
+        System.out.println( "panning x by : " + (prevX - x) );
+        //todo not worrying about vertical scrolling at the moment
+*/
+
+        display.panAbs( prevX - x, 0 );
+        prevX = x;
+        display.repaint();
     }
 
     private void createProcessingActions( Visualization visualization )
@@ -216,19 +310,6 @@ public class ApplicationPanel extends JPanel
         visualization.setRendererFactory( rendererFactory );
     }
 
-    private Graph createData( Application application )
-    {
-        final Graph graph = new Graph( true );
-        graph.addColumn( FIELD_NAME, String.class );
-        graph.addColumn( FIELD_TYPE, int.class );
-        graph.addColumn( FIELD_LAYER_LEVEL, int.class );
-        graph.addColumn( FIELD_USED_LAYERS, Collection.class );
-        graph.addColumn( FIELD_USED_BY_LAYERS, Collection.class );
-
-        ( (ApplicationSPI) application ).visitDescriptor( new ApplicationGraphVisitor( graph ) );
-        return graph;
-    }
-
     private Visualization createVisualization( Graph graph )
     {
         // add the graph to the visualization as the data group "graph"
@@ -251,6 +332,47 @@ public class ApplicationPanel extends JPanel
         return color;
     }
 
+    public void graphShown()
+    {
+        zoomToFit();
+    }
+
+    private Point2D getDisplayCenter()
+    {
+        return new Point2D.Float( display.getWidth() / 2, display.getHeight() / 2 );
+    }
+
+    private void zoomToFit()
+    {
+        DisplayLib.fitViewToBounds( display, applicationNodeItem.getBounds(), 2000 );
+    }
+
+    private class ZoomToFitAction extends AbstractAction
+    {
+        private ZoomToFitAction()
+        {
+            super( "Zoom To Fit" );
+        }
+
+        public void actionPerformed( ActionEvent e )
+        {
+            zoomToFit();
+        }
+    }
+
+    private class ActualSizeAction extends AbstractAction
+    {
+        private ActualSizeAction()
+        {
+            super( "Actual Size" );
+        }
+
+        public void actionPerformed( ActionEvent e )
+        {
+            display.animateZoom( getDisplayCenter(), 1 / display.getScale(), 2000 );
+        }
+    }
+
     private class ZoomInAction extends AbstractAction
     {
         private Display display;
@@ -263,10 +385,10 @@ public class ApplicationPanel extends JPanel
 
         public void actionPerformed( ActionEvent e )
         {
-            Point2D p = new Point2D.Float( display.getWidth() / 2, display.getHeight() / 2 );
-            display.zoom( p, 1.1 );
-            display.repaint();
+            Point2D p = getDisplayCenter();
+            display.animateZoom( p, 1.1, 1000 );
         }
+
     }
 
     private class ZoomOutAction extends AbstractAction
@@ -282,11 +404,9 @@ public class ApplicationPanel extends JPanel
         public void actionPerformed( ActionEvent e )
         {
             Point2D p = new Point2D.Float( display.getWidth() / 2, display.getHeight() / 2 );
-            display.zoom( p, 0.9 );
-            display.repaint();
+            display.animateZoom( p, 0.91, 1000 );
         }
     }
-
 
     private int panMovement = 10;
 
