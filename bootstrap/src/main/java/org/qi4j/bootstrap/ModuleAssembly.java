@@ -20,6 +20,7 @@ package org.qi4j.bootstrap;
 
 import org.qi4j.composite.Composite;
 import org.qi4j.entity.EntityComposite;
+import org.qi4j.service.ServiceComposite;
 
 public interface ModuleAssembly
 {
@@ -41,7 +42,7 @@ public interface ModuleAssembly
     ObjectDeclaration addObjects( Class... objectTypes )
         throws AssemblyException;
 
-    ServiceDeclaration addServices( Class<? extends Composite>... serviceTypes )
+    ServiceDeclaration addServices( Class<? extends ServiceComposite>... serviceTypes )
         throws AssemblyException;
 
     <T> InfoDeclaration<T> on( Class<T> mixinType );

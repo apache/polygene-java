@@ -169,7 +169,7 @@ final class QueryImpl<T>
         try
         {
             final QualifiedIdentity foundEntity = entityFinder.findEntity(
-                resultType, whereClause
+                resultType.getName(), whereClause
             );
 
             if( foundEntity != null )
@@ -228,7 +228,7 @@ final class QueryImpl<T>
         try
         {
             final Iterator<QualifiedIdentity> foundEntities = entityFinder.findEntities(
-                resultType, whereClause, orderBySegments, firstResult, maxResults
+                resultType.getName(), whereClause, orderBySegments, firstResult, maxResults
             ).iterator();
 
             return new Iterator<T>()
@@ -268,7 +268,7 @@ final class QueryImpl<T>
     {
         try
         {
-            return entityFinder.countEntities( resultType, whereClause );
+            return entityFinder.countEntities( resultType.getName(), whereClause );
         }
         catch( EntityFinderException e )
         {

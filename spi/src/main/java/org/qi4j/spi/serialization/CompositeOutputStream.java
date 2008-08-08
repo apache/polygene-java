@@ -48,7 +48,7 @@ public final class CompositeOutputStream extends ObjectOutputStream
             if( obj instanceof EntityComposite )
             {
                 String id = ( (EntityComposite) composite ).identity().get();
-                return new QualifiedIdentity( id, compositeInterface.toString() );
+                return new QualifiedIdentity( id, compositeInterface );
             }
             else if( obj instanceof ServiceComposite )
             {

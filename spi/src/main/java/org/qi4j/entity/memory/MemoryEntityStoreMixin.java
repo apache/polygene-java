@@ -158,6 +158,37 @@ public class MemoryEntityStoreMixin
 
     public Iterator<EntityState> iterator()
     {
-        return null;
+        final Iterator<Map<QualifiedIdentity, SerializedObject<SerializableState>>> typeIterator = store.values().iterator();
+
+        return new Iterator<EntityState>()
+        {
+            Iterator<QualifiedIdentity> qidIterator = null;
+
+            public boolean hasNext()
+            {
+                if( qidIterator == null )
+                {
+                    if( typeIterator.hasNext() )
+                    {
+                        qidIterator = typeIterator.next().keySet().iterator();
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+
+                return qidIterator.hasNext();
+            }
+
+            public EntityState next()
+            {
+                return getEntityState( qidIterator.next() );
+            }
+
+            public void remove()
+            {
+            }
+        };
     }
 }

@@ -38,7 +38,7 @@ public class EntityType
         this.properties = properties;
         this.associations = associations;
         this.manyAssociations = manyAssociations;
-        type = entityType;
+        type = entityType.toLowerCase();
     }
 
     public String type()

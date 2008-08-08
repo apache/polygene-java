@@ -30,6 +30,7 @@ import org.qi4j.object.NoSuchObjectException;
 import org.qi4j.object.ObjectBuilder;
 import org.qi4j.object.ObjectBuilderFactory;
 import org.qi4j.runtime.composite.CompositeModel;
+import org.qi4j.runtime.composite.UsesInstance;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.entity.UnitOfWorkInstance;
 import org.qi4j.runtime.object.ObjectModel;
@@ -289,10 +290,17 @@ public class ModuleInstance
             return realModuleInstance.composites().newCompositeBuilder( mixinType );
         }
 
-        public <T> T newComposite( Class<T> compositeType )
+        public <T> T newComposite( Class<T> mixinType )
             throws NoSuchCompositeException, ConstructionException
         {
-            return newCompositeBuilder( compositeType ).newInstance();
+            ModuleInstance realModuleInstance = findModuleForComposite( mixinType );
+            if( realModuleInstance == null )
+            {
+                throw new NoSuchCompositeException( mixinType.getName(), name() );
+            }
+
+            CompositeModel compositeModel = realModuleInstance.composites().model().getCompositeModelFor( mixinType );
+            return mixinType.cast( compositeModel.newCompositeInstance( realModuleInstance, UsesInstance.NO_USES, compositeModel.newDefaultState() ) );
         }
     }
 
@@ -313,7 +321,13 @@ public class ModuleInstance
         public <T> T newObject( Class<T> type )
             throws NoSuchObjectException
         {
-            return newObjectBuilder( type ).newInstance();
+            ModuleInstance realModuleInstance = findModuleForObject( type );
+            if( realModuleInstance == null )
+            {
+                throw new NoSuchObjectException( type.getName(), name() );
+            }
+            ObjectModel objectModel = realModuleInstance.objects().model().getObjectModelFor( type );
+            return type.cast( objectModel.newInstance( realModuleInstance, UsesInstance.NO_USES ) );
         }
     }
 

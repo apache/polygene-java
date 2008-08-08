@@ -36,14 +36,14 @@ public abstract class AbstractAssociationInstance<T>
     public static String getQualifiedName( Method accessor )
     {
         String className = accessor.getDeclaringClass().getName();
-        className = className.replace( '$', '&' );
+        className = className.replace( '$', '-' );
         return className + ":" + accessor.getName();
     }
 
     public static String getQualifiedName( Class<?> declaringClass, String name )
     {
         String className = declaringClass.getName();
-        className = className.replace( '$', '&' );
+        className = className.replace( '$', '-' );
         return className + ":" + name;
     }
 
@@ -165,6 +165,6 @@ public abstract class AbstractAssociationInstance<T>
         }
 
         EntityComposite entityComposite = (EntityComposite) composite;
-        return new QualifiedIdentity( entityComposite.identity().get(), entityComposite.type().getName() );
+        return new QualifiedIdentity( entityComposite.identity().get(), entityComposite.type() );
     }
 }

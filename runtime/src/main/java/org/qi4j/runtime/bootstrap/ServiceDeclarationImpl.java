@@ -16,13 +16,14 @@ package org.qi4j.runtime.bootstrap;
 
 import java.io.Serializable;
 import java.util.List;
+import org.qi4j.bootstrap.ServiceDeclaration;
+import org.qi4j.composite.Composite;
 import org.qi4j.runtime.service.ServiceModel;
+import org.qi4j.service.ServiceComposite;
 import org.qi4j.service.ServiceInstanceFactory;
 import org.qi4j.spi.service.provider.DefaultServiceInstanceFactory;
 import org.qi4j.structure.Visibility;
 import org.qi4j.util.MetaInfo;
-import org.qi4j.composite.Composite;
-import org.qi4j.bootstrap.ServiceDeclaration;
 
 /**
  * Declaration of a Service. Created by {@link org.qi4j.runtime.bootstrap.ModuleAssemblyImpl#addServices(Class[])}.
@@ -31,15 +32,17 @@ public final class ServiceDeclarationImpl
     implements ServiceDeclaration
 {
     private Class<? extends ServiceInstanceFactory> serviceProvider = DefaultServiceInstanceFactory.class;
-    private Iterable<Class<? extends Composite>> serviceTypes;
+    private Iterable<Class<? extends ServiceComposite>> serviceTypes;
+    private ModuleAssemblyImpl moduleAssembly;
     private String identity;
     private boolean instantiateOnStartup = false;
     private MetaInfo metaInfo = new MetaInfo();
     private Visibility visibility = Visibility.module;
 
-    public ServiceDeclarationImpl( Iterable<Class<? extends Composite>> serviceTypes )
+    public ServiceDeclarationImpl( Iterable<Class<? extends ServiceComposite>> serviceTypes, ModuleAssemblyImpl moduleAssembly )
     {
         this.serviceTypes = serviceTypes;
+        this.moduleAssembly = moduleAssembly;
     }
 
     public ServiceDeclaration visibleIn( Visibility visibility )
@@ -87,7 +90,8 @@ public final class ServiceDeclarationImpl
                                                           serviceProvider,
                                                           id,
                                                           instantiateOnStartup,
-                                                          new MetaInfo( metaInfo ) );
+                                                          new MetaInfo( metaInfo ),
+                                                          moduleAssembly.name() );
             serviceModels.add( serviceModel );
         }
     }

@@ -178,7 +178,7 @@ public final class ServiceReferenceInstance<T>
 
     @Override public String toString()
     {
-        return serviceModel.identity() + ", active=" + ( serviceInstance != null );
+        return serviceModel.identity() + ", active=" + ( serviceInstance != null ) + ", module='" + serviceModel.moduleName() + "'";
     }
 
 
@@ -214,6 +214,11 @@ public final class ServiceReferenceInstance<T>
                     throw e.getTargetException();
                 }
             }
+        }
+
+        @Override public String toString()
+        {
+            return serviceModel.toString();
         }
     }
 }

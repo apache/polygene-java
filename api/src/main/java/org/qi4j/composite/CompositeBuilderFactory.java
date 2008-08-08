@@ -23,18 +23,18 @@ public interface CompositeBuilderFactory
     /**
      * Create a builder for creating new Composites that implements the given Composite type.
      *
-     * @param compositeType an interface that describes the Composite to be instantiated
+     * @param mixinType an interface that describes the Composite to be instantiated
      * @return a CompositeBuilder for creation of Composites implementing the interface
      */
-    <T> CompositeBuilder<T> newCompositeBuilder( Class<T> compositeType )
+    <T> CompositeBuilder<T> newCompositeBuilder( Class<T> mixinType )
         throws NoSuchCompositeException;
 
     /**
      * Instantiate a Composite of the given type.
      *
-     * @param compositeType the Composite type to instantiate
+     * @param mixinType the Composite type to instantiate
      * @return a new Composite instance
      */
-    <T> T newComposite( Class<T> compositeType )
+    <T> T newComposite( Class<T> mixinType )
         throws NoSuchCompositeException, ConstructionException;
 }

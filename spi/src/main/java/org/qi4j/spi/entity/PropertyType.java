@@ -29,7 +29,7 @@ public class PropertyType
     public PropertyType( String qualifiedName, String type )
     {
         this.qualifiedName = qualifiedName;
-        this.type = type;
+        this.type = type.toLowerCase();
     }
 
     public String qualifiedName()

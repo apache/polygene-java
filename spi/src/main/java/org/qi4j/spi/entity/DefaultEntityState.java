@@ -30,7 +30,7 @@ import java.util.Map;
 public class DefaultEntityState
     implements EntityState, Serializable
 {
-    private static Map<String, Collection<QualifiedIdentity>> newManyCollections( EntityType entityType )
+    public static Map<String, Collection<QualifiedIdentity>> newManyCollections( EntityType entityType )
     {
         Map<String, Collection<QualifiedIdentity>> manyAssociations = new HashMap<String, Collection<QualifiedIdentity>>();
         for( ManyAssociationType manyAssociationType : entityType.manyAssociations() )

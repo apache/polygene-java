@@ -37,6 +37,12 @@ public final class QualifiedIdentity
         this( entityComposite.identity().get(), entityComposite.type().getName() );
     }
 
+    public QualifiedIdentity( String identity, Class clazz )
+    {
+        this.identity = identity;
+        this.compositeType = clazz.getName();
+    }
+
     public QualifiedIdentity( String identity, String clazz )
     {
         this.identity = identity;
@@ -46,8 +52,12 @@ public final class QualifiedIdentity
     public QualifiedIdentity( String qualifiedIdentity )
     {
         int separatorIndex = qualifiedIdentity.indexOf( ":" );
-        this.identity = qualifiedIdentity.substring( 0, separatorIndex );
-        this.compositeType = qualifiedIdentity.substring( separatorIndex + 1 );
+        if( separatorIndex == -1 )
+        {
+            throw new IllegalArgumentException( "Supplied string is not a qualified identity: " + qualifiedIdentity );
+        }
+        this.compositeType = qualifiedIdentity.substring( 0, separatorIndex );
+        this.identity = qualifiedIdentity.substring( separatorIndex + 1 );
     }
 
     public String identity()

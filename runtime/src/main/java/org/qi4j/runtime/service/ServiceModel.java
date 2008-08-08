@@ -34,12 +34,13 @@ public final class ServiceModel
     private final String identity;
     private final boolean instantiateOnStartup;
     private final MetaInfo metaInfo;
+    private String moduleName;
 
     public ServiceModel( Class<? extends Composite> compositeType,
                          Visibility visibility,
                          Class<? extends ServiceInstanceFactory> serviceFactory,
                          String identity,
-                         boolean instantiateOnStartup, MetaInfo metaInfo )
+                         boolean instantiateOnStartup, MetaInfo metaInfo, String moduleName )
     {
         type = compositeType;
         this.visibility = visibility;
@@ -47,6 +48,7 @@ public final class ServiceModel
         this.identity = identity;
         this.instantiateOnStartup = instantiateOnStartup;
         this.metaInfo = metaInfo;
+        this.moduleName = moduleName;
     }
 
     public Class<? extends Composite> type()
@@ -69,14 +71,6 @@ public final class ServiceModel
         return instantiateOnStartup;
     }
 
-    public ServiceInstance<?> newInstance( Module module )
-    {
-        ServiceDescriptor serviceDescriptor = new ServiceDescriptor( type, serviceFactory, identity, visibility, instantiateOnStartup, metaInfo );
-        ServiceInstanceFactory instanceFactory = module.objectBuilderFactory().newObject( serviceFactory );
-        Object instance = instanceFactory.newInstance( serviceDescriptor );
-        return new ServiceInstance<Object>( instance, instanceFactory, serviceDescriptor );
-    }
-
     public Class<? extends ServiceInstanceFactory> serviceFactory()
     {
         return serviceFactory;
@@ -85,6 +79,19 @@ public final class ServiceModel
     public String identity()
     {
         return identity;
+    }
+
+    public String moduleName()
+    {
+        return moduleName;
+    }
+
+    public ServiceInstance<?> newInstance( Module module )
+    {
+        ServiceDescriptor serviceDescriptor = new ServiceDescriptor( type, serviceFactory, identity, visibility, instantiateOnStartup, metaInfo );
+        ServiceInstanceFactory instanceFactory = module.objectBuilderFactory().newObject( serviceFactory );
+        Object instance = instanceFactory.newInstance( serviceDescriptor );
+        return new ServiceInstance<Object>( instance, instanceFactory, serviceDescriptor );
     }
 
     public Object newProxy( InvocationHandler serviceInvocationHandler )

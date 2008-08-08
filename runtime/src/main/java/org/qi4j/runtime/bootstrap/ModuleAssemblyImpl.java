@@ -141,7 +141,7 @@ public final class ModuleAssemblyImpl
         return objectDeclaration;
     }
 
-    public ServiceDeclaration addServices( Class<? extends Composite>... serviceTypes )
+    public ServiceDeclaration addServices( Class<? extends ServiceComposite>... serviceTypes )
         throws AssemblyException
     {
         for( Class serviceType : serviceTypes )
@@ -157,8 +157,8 @@ public final class ModuleAssemblyImpl
             }
         }
 
-        List<Class<? extends Composite>> classes = Arrays.asList( serviceTypes );
-        ServiceDeclarationImpl serviceDeclaration = new ServiceDeclarationImpl( classes );
+        List<Class<? extends ServiceComposite>> classes = Arrays.asList( serviceTypes );
+        ServiceDeclarationImpl serviceDeclaration = new ServiceDeclarationImpl( classes, this );
         serviceDeclarations.add( serviceDeclaration );
         return serviceDeclaration;
     }
