@@ -288,7 +288,7 @@ public final class EntityModel
             {
                 // Check if it is this type that the store doesn't understand
                 EntityType entityType = entityType();
-                if( e.getMessage().equals( entityType.type().toLowerCase() ) )
+                if( e.getMessage().equals( entityType.type() ) )
                 {
                     entityStore.registerEntityType( entityType );
                     // Try again
