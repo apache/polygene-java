@@ -23,6 +23,7 @@ import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.impl.GraphImpl;
 import org.qi4j.entity.Identity;
+import org.qi4j.entity.association.GenericAssociationInfo;
 import org.qi4j.injection.scope.Structure;
 import org.qi4j.library.rdf.Rdfs;
 import org.qi4j.property.GenericPropertyInfo;
@@ -69,10 +70,10 @@ public class EntityParserMixin
             else
             {
                 URI predicate = statement.getPredicate();
-                String qualifiedName = GenericPropertyInfo.toQualifiedName( predicate.toString() );
                 Value object = statement.getObject();
                 if( object instanceof URI )
                 {
+                    String qualifiedName = GenericAssociationInfo.toQualifiedName( predicate.toString() );
                     String str = object.stringValue().substring( "urn:qi4j:".length() );
                     String[] strings = str.split( "/" );
                     String type = strings[ 0 ].replace( "-", "$" );
@@ -82,6 +83,7 @@ public class EntityParserMixin
                 }
                 else
                 {
+                    String qualifiedName = GenericPropertyInfo.toQualifiedName( predicate.toString() );
                     propertyValues.put( qualifiedName, object.stringValue() );
                 }
             }

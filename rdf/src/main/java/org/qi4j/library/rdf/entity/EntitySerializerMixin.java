@@ -51,7 +51,6 @@ public class EntitySerializerMixin
         URI entityUri = values.createURI( "urn:qi4j:" + qid.identity() );
 
         graph.add( entityUri, Rdfs.TYPE, values.createURI( ClassUtil.toURI( qid.type() ) ) );
-        graph.add( entityUri, identityUri, values.createLiteral( qid.identity() ) );
 
         // Properties
         for( String propertyName : entityState.propertyNames() )
