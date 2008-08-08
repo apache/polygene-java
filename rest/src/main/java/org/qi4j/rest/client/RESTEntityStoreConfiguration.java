@@ -12,17 +12,16 @@
  *
  */
 
-package org.qi4j.rest.abdera;
+package org.qi4j.rest.client;
 
-import javax.servlet.Servlet;
-import org.qi4j.composite.Mixins;
-import org.qi4j.service.ServiceComposite;
+import org.qi4j.entity.EntityComposite;
+import org.qi4j.property.Property;
 
 /**
  * TODO
  */
-@Mixins( Qi4jAbderaServlet.class )
-public interface Qi4jAbderaServletService
-    extends Servlet, ServiceComposite
+public interface RESTEntityStoreConfiguration
+    extends EntityComposite
 {
+    Property<String> host();
 }

@@ -12,16 +12,16 @@
  *
  */
 
-package org.qi4j.rest.abdera;
+package org.qi4j.rest;
 
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.Energy4Java;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.ModuleName;
-import org.qi4j.entity.memory.MemoryEntityStoreService;
 import org.qi4j.library.http.JettyServiceAssembler;
 import org.qi4j.library.rdf.entity.EntitySerializerService;
+import org.qi4j.rest.assembly.RestAssembler;
 import org.qi4j.structure.Application;
 import org.qi4j.structure.Visibility;
 
@@ -43,8 +43,8 @@ public class Main
                         new MemoryEntityStoreServiceAssembler(),
                     },
                     {
-                        new ModuleName( "Abdera servlet" ),
-                        new AbderaServletAssembler(),
+                        new ModuleName( "Restlet servlet" ),
+                        new RestletServletAssembler(),
                     },
                     {
                         new ModuleName( "Jetty" ),
@@ -54,8 +54,8 @@ public class Main
                 // Domain
                 {
                     {
-                        new ModuleName( "Abdera adapter" ),
-                        new AbderaAdapterAssembler(),
+                        new ModuleName( "Restlet application" ),
+                        new RestAssembler(),
                     },
                     {
                         new ModuleName( "RDF" ),
@@ -75,15 +75,6 @@ public class Main
                 }
             } );
         app.activate();
-    }
-}
-
-class MemoryEntityStoreServiceAssembler
-    implements Assembler
-{
-    public void assemble( ModuleAssembly module ) throws AssemblyException
-    {
-        module.addServices( MemoryEntityStoreService.class ).visibleIn( Visibility.application );
     }
 }
 

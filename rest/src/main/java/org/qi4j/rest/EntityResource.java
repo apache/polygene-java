@@ -17,71 +17,68 @@
  */
 package org.qi4j.rest;
 
-import java.io.IOException;
-import java.lang.reflect.Method;
+import java.io.StringWriter;
+import java.util.Collections;
+import java.util.Date;
 import java.util.Map;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import org.qi4j.entity.EntityComposite;
-import org.qi4j.entity.UnitOfWork;
-import org.qi4j.entity.UnitOfWorkFactory;
+import org.openrdf.model.Statement;
+import org.openrdf.rio.RDFHandlerException;
+import org.qi4j.injection.scope.Service;
 import org.qi4j.injection.scope.Structure;
 import org.qi4j.injection.scope.Uses;
+import org.qi4j.library.rdf.entity.EntitySerializer;
+import org.qi4j.library.rdf.serializer.RdfXmlSerializer;
 import org.qi4j.spi.Qi4jSPI;
-import org.qi4j.spi.composite.CompositeDescriptor;
-import org.qi4j.structure.Module;
+import org.qi4j.spi.entity.EntityNotFoundException;
+import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.EntityStore;
+import org.qi4j.spi.entity.PropertyType;
+import org.qi4j.spi.entity.QualifiedIdentity;
 import org.restlet.Context;
+import org.restlet.data.Form;
+import org.restlet.data.Language;
 import org.restlet.data.MediaType;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
-import org.restlet.resource.DomRepresentation;
+import org.restlet.data.Tag;
 import org.restlet.resource.Representation;
 import org.restlet.resource.Resource;
 import org.restlet.resource.ResourceException;
+import org.restlet.resource.StringRepresentation;
 import org.restlet.resource.Variant;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 public class EntityResource extends Resource
 {
-    @Structure private UnitOfWorkFactory unitOfWorkFactory;
+    @Service private EntityStore entityStore;
     @Structure private Qi4jSPI spi;
+    @Service EntitySerializer entitySerializer;
 
-    private String identity;
-    private EntityComposite entity;
-    private Class<? extends EntityComposite> compositeType;
 
-    public EntityResource( @Uses Context context, @Uses Request request, @Uses Response response,
-                           @Structure Module module )
+    private EntityState entity;
+    private QualifiedIdentity qualifiedIdentity;
+
+    public EntityResource( @Uses Context context, @Uses Request request, @Uses Response response )
         throws ClassNotFoundException
     {
         super( context, request, response );
 
         // Define the supported variant.
-        getVariants().add( new Variant( MediaType.TEXT_XML ) );
+        getVariants().add( new Variant( MediaType.TEXT_HTML ) );
+        getVariants().add( new Variant( MediaType.APPLICATION_RDF_XML ) );
         setModifiable( true );
 
         // Get the "itemName" attribute value taken from the URI template
         // /entity/{identity}.
         Map<String, Object> attributes = getRequest().getAttributes();
-        this.identity = (String) attributes.get( "identity" );
+        String identity = (String) attributes.get( "identity" );
         String type = (String) attributes.get( "type" );
-        try
+        String ext = request.getResourceRef().getExtensions();
+        if( ext != null )
         {
-            compositeType = (Class<? extends EntityComposite>) module.classLoader().loadClass( type );
+            identity = identity.substring( 0, identity.length() - ext.length() - 1 );
         }
-        catch( ClassNotFoundException e )
-        {
-            // TODO Errorhandling
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            throw e;
-        }
-
+        qualifiedIdentity = new QualifiedIdentity( identity, type );
     }
 
     /**
@@ -91,14 +88,12 @@ public class EntityResource extends Resource
     public void removeRepresentations()
         throws ResourceException
     {
-        UnitOfWork unitOfWork = unitOfWorkFactory.currentUnitOfWork();
-        entity = unitOfWork.getReference( identity, compositeType );
-        if( entity != null )
+        try
         {
-            unitOfWork.remove( entity );
+            entityStore.prepare( Collections.EMPTY_LIST, Collections.EMPTY_LIST, Collections.singleton( qualifiedIdentity ) ).commit();
             getResponse().setStatus( Status.SUCCESS_NO_CONTENT );
         }
-        else
+        catch( EntityNotFoundException e )
         {
             getResponse().setStatus( Status.CLIENT_ERROR_NOT_FOUND );
         }
@@ -110,92 +105,90 @@ public class EntityResource extends Resource
     {
         if( entity == null )
         {
-            retrieveEntity();
+            entity = entityStore.getEntityState( qualifiedIdentity );
         }
-        // Generate the right representation according to its media type.
-        if( MediaType.TEXT_XML.equals( variant.getMediaType() ) )
+
+        // Check modification date
+        Date lastModified = getRequest().getConditions().getModifiedSince();
+        if( lastModified != null )
         {
-            try
+            if( lastModified.getTime() / 1000 == entity.lastModified() / 1000 )
             {
-                DomRepresentation representation = new DomRepresentation( MediaType.TEXT_XML );
-                // Generate a DOM document representing the item.
-                Document d = representation.getDocument();
-
-                Element entityElement = d.createElement( "entity" );
-                d.appendChild( entityElement );
-                Element typeElement = d.createElement( "type" );
-                entityElement.appendChild( typeElement );
-                typeElement.appendChild( d.createTextNode( compositeType.getName() ) );
-                Element identityElement = d.createElement( "identity" );
-                identityElement.appendChild( d.createTextNode( entity.identity().get() ) );
-                entityElement.appendChild( identityElement );
-                Element propertiesElement = d.createElement( "properties" );
-                entityElement.appendChild( propertiesElement );
-/* TODO Fix this!
-                CompositeDescriptor compositeDescriptor = spi.getCompositeDescriptor( entity );
-                for( PropertyBinding propertyBinding : compositeDescriptor.state().getPropertyBindings() )
-                {
-                    Property property = getProperty( propertyBinding );
-                    Object value = property.get();
-                    String name = property.name();
-                    Element propertyElement = d.createElement( name );
-                    if( value == null )
-                    {
-                        value = "[null]";
-                    }
-                    propertyElement.appendChild( d.createTextNode( value.toString() ) );
-                    propertiesElement.appendChild( propertyElement );
-                }
-                Element associationsElement = null;
-                for( AssociationBinding associationBinding : compositeDescriptor.getAssociationBindings() )
-                {
-                    final Association<?> association = getAssociation( associationBinding );
-                    Object value = association.get();
-                    if( value != null && !( value instanceof EntityComposite ) )
-                    {
-                        //TODO what to do in the case that association is not an entity composite
-                        throw new InternalError( "Association is not an EntitityComposite" );
-                    }
-                    final EntityComposite entityComposite = (EntityComposite) value;
-                    if( associationsElement == null )
-                    {
-                        associationsElement = d.createElement( "associations" );
-                        entityElement.appendChild( associationsElement );
-                    }
-                    final Element associationElement = d.createElement( association.name() );
-                    associationsElement.appendChild( associationElement );
-                    if( entityComposite != null )
-                    {
-                        associationElement.setAttribute( "href", "/entity/" + entityComposite.type().getName() + "/" + entityComposite.identity().get() );
-                        associationElement.appendChild( d.createTextNode( entityComposite.identity().get() ) );
-                    }
-                }
-*/
-                d.normalizeDocument();
-
-                // Returns the XML representation of this document.
-                return representation;
-            }
-            catch( IOException e )
-            {
-                e.printStackTrace();
+                throw new ResourceException( Status.REDIRECTION_NOT_MODIFIED );
             }
         }
 
-        return null;
+        // Generate the right representation according to its media type.
+        String ext = getRequest().getResourceRef().getExtensions();
+        if( "rdf".equals( ext ) ||
+            MediaType.APPLICATION_RDF_XML.equals( variant.getMediaType() ) )
+        {
+            return entityHeaders( representRdfXml( entity ) );
+        }
+        else if( "html".equals( ext ) ||
+                 MediaType.TEXT_HTML.equals( variant.getMediaType() ) )
+        {
+            return entityHeaders( representHtml( entity ) );
+        }
+
+        throw new
+
+            ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
     }
 
-    private void retrieveEntity()
+    private Representation entityHeaders( Representation representation )
     {
-        // Get the item directly from the "persistence layer".
-        UnitOfWork unitOfWork = unitOfWorkFactory.currentUnitOfWork();
-        entity = unitOfWork.find( identity, compositeType );
+        representation.setModificationDate( new Date( entity.lastModified() ) );
+        representation.setTag( new Tag( "" + entity.version() ) );
 
-        if( entity == null )
+        return representation;
+    }
+
+
+    private Representation representHtml( EntityState entity )
+    {
+        StringBuffer buf = new StringBuffer();
+        buf.append( "<html><body><h1>" + entity.qualifiedIdentity().identity() + "</h1><ul>" );
+
+        buf.append( "<form method=\"POST\" action=\"" + getRequest().getResourceRef().getPath() + "\">" );
+        buf.append( "<h2>Properties</h2><ul>" );
+        for( PropertyType propertyType : entity.entityType().properties() )
         {
-            // This resource is not available.
-            setAvailable( false );
+            if( propertyType.propertyType() == PropertyType.PropertyTypeEnum.MUTABLE )
+            {
+                buf.append( "<li>" + propertyType.qualifiedName() + "<input type=\"text\" name=\"" + propertyType.qualifiedName() + "\" value=\"" + entity.getProperty( propertyType.qualifiedName() ) + "\">" );
+            }
+            else if( propertyType.propertyType() == PropertyType.PropertyTypeEnum.IMMUTABLE )
+            {
+                buf.append( "<li>" + propertyType.qualifiedName() + ":" + entity.getProperty( propertyType.qualifiedName() ) + "</li>" );
+            }
         }
+        buf.append( "</ul><input type=\"submit\" value=\"Update\"/></form></body></html>" );
+
+// Returns the XML representation of this document.
+        return new StringRepresentation( buf, MediaType.TEXT_HTML, Language.ENGLISH );
+    }
+
+    private Representation representRdfXml( EntityState entity ) throws ResourceException
+    {
+        try
+        {
+            Iterable<Statement> statements = entitySerializer.serialize( entity );
+            StringWriter out = new StringWriter();
+            new RdfXmlSerializer().serialize( statements, out );
+
+            return new StringRepresentation( out.toString(), MediaType.APPLICATION_RDF_XML );
+        }
+        catch( RDFHandlerException e )
+        {
+            throw new ResourceException( Status.SERVER_ERROR_INTERNAL, e );
+        }
+    }
+
+    @Override @SuppressWarnings( "unused" )
+    public void acceptRepresentation( Representation entity ) throws ResourceException
+    {
+        storeRepresentation( entity );
     }
 
     /**
@@ -205,108 +198,49 @@ public class EntityResource extends Resource
     public void storeRepresentation( Representation entityRepresentation )
         throws ResourceException
     {
-        UnitOfWork unitOfWork = unitOfWorkFactory.currentUnitOfWork();
+        entity = entityStore.getEntityState( qualifiedIdentity );
 
-        try
-        {
-            // Tells if the item is to be created of not.
-            boolean creation = entityRepresentation == null;
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            Document document = builder.parse( entityRepresentation.getStream() );
-            Element rootElement = document.getDocumentElement();
+        Form form = new Form( entityRepresentation );
+        Map<String, String> values = form.getValuesMap();
 
-            // The PUT request updates or creates the resource.
-            if( creation )
-            {
-                entity = unitOfWork.newEntity( identity, compositeType );
-            }
-            else
-            {
-                entity = unitOfWork.find( identity, compositeType );
-            }
-//            CompositeDescriptor binding = spi.getCompositeDescriptor( entity );
-            Element properties = (Element) rootElement.getElementsByTagName( "properties" ).item( 0 );
-            NodeList propertyNodes = properties.getChildNodes();
-            for( int i = 0; i < propertyNodes.getLength(); i++ )
-            {
-                Node propertyNode = propertyNodes.item( i );
-                String propertyName = propertyNode.getNodeName();
-                // TODO: Handle Read/Only and no need to check for identity() explicitly
-                if( !"identity".equals( propertyName ) )
-                {
-/* TODO Fix this!
-                    Method method = compositeType.getMethod( propertyName );
-                    String name = getQualifiedPropertyName( method );
-                    PropertyBinding propertyBinding = binding.getPropertyBinding( name );
-                    PropertyResolution propertyResolution = propertyBinding.getPropertyResolution();
-                    PropertyModel propertyModel = propertyResolution.getPropertyModel();
-                    // TODO: Need handling of different types.
-                    String propertyValue = propertyNode.getTextContent();
-                    ( (Property) method.invoke( entity ) ).set( propertyValue );
-*/
-                }
-            }
-            if( creation )
-            {
-                getResponse().setStatus( Status.SUCCESS_CREATED );
-            }
-            else
-            {
-                getResponse().setStatus( Status.SUCCESS_OK );
-            }
-        }
-/*
-        catch( InvocationTargetException e )
+        for( Map.Entry<String, String> formEntry : values.entrySet() )
         {
-            throw new ResourceException( Status.SERVER_ERROR_INTERNAL, "Internal Error?", e );
+            entity.setProperty( formEntry.getKey(), formEntry.getValue() );
         }
-        catch( IllegalAccessException e )
-        {
-            throw new ResourceException( Status.SERVER_ERROR_INTERNAL, "Internal Error?", e );
-        }
-        catch( NoSuchMethodException e )
-        {
-            throw new ResourceException( Status.CLIENT_ERROR_BAD_REQUEST, e );
-        }
-*/
-        catch( IOException e )
-        {
-            throw new ResourceException( Status.CLIENT_ERROR_BAD_REQUEST, e );
-        }
-        catch( SAXException e )
-        {
-            throw new ResourceException( Status.CLIENT_ERROR_BAD_REQUEST, "Invalid XML in request.", e );
-        }
-        catch( ParserConfigurationException e )
-        {
-            throw new ResourceException( Status.SERVER_ERROR_INTERNAL, "Internal Error?", e );
-        }
+
+        entityStore.prepare( Collections.EMPTY_LIST, Collections.singleton( entity ), Collections.EMPTY_LIST ).commit();
+
+        getResponse().setStatus( Status.SUCCESS_RESET_CONTENT );
     }
 
-/*
-    private Property getProperty( PropertyBinding propertyBinding )
+    @Override public boolean isModifiable()
     {
-        Method method = propertyBinding.getPropertyResolution().getPropertyModel().getAccessor();
-        Property property;
-        try
-        {
-            property = (Property) method.invoke( entity );
-        }
-        catch( IllegalAccessException e )
-        {
-            // Can not happen.
-            throw new InternalError();
-        }
-        catch( InvocationTargetException e )
-        {
-            //TODO  What to do?
-            e.printStackTrace();
-            throw new InternalError();
-        }
-        return property;
+        return true;
     }
-*/
+
+    /*
+        private Property getProperty( PropertyBinding propertyBinding )
+        {
+            Method method = propertyBinding.getPropertyResolution().getPropertyModel().getAccessor();
+            Property property;
+            try
+            {
+                property = (Property) method.invoke( entity );
+            }
+            catch( IllegalAccessException e )
+            {
+                // Can not happen.
+                throw new InternalError();
+            }
+            catch( InvocationTargetException e )
+            {
+                //TODO  What to do?
+                e.printStackTrace();
+                throw new InternalError();
+            }
+            return property;
+        }
+    */
 
 /*
     private Association<?> getAssociation( final AssociationBinding associationBinding )
@@ -331,6 +265,7 @@ public class EntityResource extends Resource
         return association;
     }
 */
+/*
 
     private String getQualifiedPropertyName( Method accessor )
     {
@@ -338,4 +273,5 @@ public class EntityResource extends Resource
         className = className.replace( '$', '&' );
         return className + ":" + accessor.getName();
     }
+*/
 }

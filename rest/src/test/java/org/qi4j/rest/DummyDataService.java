@@ -12,7 +12,7 @@
  *
  */
 
-package org.qi4j.rest.abdera;
+package org.qi4j.rest;
 
 import org.qi4j.composite.Mixins;
 import org.qi4j.entity.EntityBuilder;
@@ -45,9 +45,9 @@ public interface DummyDataService
                 TestEntity testEntity = builder.newInstance();
 
                 EntityBuilder<TestEntity> builder2 = unitOfWork.newEntityBuilder( "test2", TestEntity.class );
-                builder.stateOfComposite().test1().set( "Xyzzy" );
-                builder.stateOfComposite().association().set( testEntity );
-                TestEntity testEntity2 = builder.newInstance();
+                builder2.stateOfComposite().test1().set( "Xyzzy" );
+                builder2.stateOfComposite().association().set( testEntity );
+                TestEntity testEntity2 = builder2.newInstance();
 
                 unitOfWork.complete();
             }

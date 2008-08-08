@@ -28,6 +28,7 @@ import org.qi4j.object.ObjectBuilder;
 import org.qi4j.object.ObjectBuilderFactory;
 import org.restlet.Application;
 import org.restlet.Context;
+import org.restlet.Finder;
 import org.restlet.Restlet;
 import org.restlet.Router;
 import org.restlet.data.Request;
@@ -89,9 +90,9 @@ public class RestApplication extends Application
         return router;
     }
 
-    private EntityFinder createFinder( Class<? extends Resource> resource )
+    private Finder createFinder( Class<? extends Resource> resource )
     {
-        ObjectBuilder<EntityFinder> builder = factory.newObjectBuilder( EntityFinder.class );
+        ObjectBuilder<Finder> builder = factory.newObjectBuilder( Finder.class );
         builder.use( getContext() );
         builder.use( resource );
         return builder.newInstance();

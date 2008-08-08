@@ -14,14 +14,14 @@
 package org.qi4j.rest.assembly;
 
 import org.qi4j.bootstrap.Assembler;
-import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.rest.RestServerComposite;
+import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.rest.EntityIdentitiesResource;
 import org.qi4j.rest.EntityResource;
 import org.qi4j.rest.EntityTypesResource;
+import org.qi4j.rest.Qi4jEntityFinder;
 import org.qi4j.rest.RestApplication;
-import org.qi4j.rest.EntityIdentitiesResource;
-import org.qi4j.rest.EntityFinder;
+import org.qi4j.structure.Visibility;
 
 public class RestAssembler
     implements Assembler
@@ -29,11 +29,10 @@ public class RestAssembler
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addObjects( RestApplication.class );
-        module.addObjects( EntityFinder.class );
+        module.addObjects( RestApplication.class ).visibleIn( Visibility.application );
+        module.addObjects( Qi4jEntityFinder.class );
         module.addObjects( EntityResource.class );
         module.addObjects( EntityTypesResource.class );
         module.addObjects( EntityIdentitiesResource.class );
-        module.addServices( RestServerComposite.class ).instantiateOnStartup().identifiedBy( "rest" );
     }
 }

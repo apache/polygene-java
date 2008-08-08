@@ -15,33 +15,34 @@ package org.qi4j.rest;
 
 import java.io.IOException;
 import java.util.Map;
-import org.qi4j.entity.EntityComposite;
-import org.qi4j.entity.UnitOfWork;
-import org.qi4j.entity.UnitOfWorkFactory;
+import org.qi4j.injection.scope.Service;
 import org.qi4j.injection.scope.Structure;
 import org.qi4j.injection.scope.Uses;
-import org.qi4j.query.Query;
-import org.qi4j.query.QueryBuilder;
-import org.qi4j.query.QueryBuilderFactory;
+import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.spi.query.EntityFinder;
+import org.qi4j.spi.query.EntityFinderException;
 import org.qi4j.structure.Module;
 import org.restlet.Context;
+import org.restlet.data.Language;
 import org.restlet.data.MediaType;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
+import org.restlet.data.Status;
 import org.restlet.resource.DomRepresentation;
 import org.restlet.resource.Representation;
 import org.restlet.resource.Resource;
 import org.restlet.resource.ResourceException;
+import org.restlet.resource.StringRepresentation;
 import org.restlet.resource.Variant;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 public class EntityIdentitiesResource extends Resource
 {
+    @Service private EntityFinder entityFinder;
 
-    @Structure private UnitOfWorkFactory unitOfWorkFactory;
-
-    private Class type;
+    private String type;
+    private Request request;
 
     public EntityIdentitiesResource( @Uses Context context,
                                      @Uses Request request,
@@ -50,61 +51,83 @@ public class EntityIdentitiesResource extends Resource
         throws ClassNotFoundException
     {
         super( context, request, response );
+        this.request = request;
 
         // Define the supported variant.
+        getVariants().add( new Variant( MediaType.TEXT_HTML ) );
         getVariants().add( new Variant( MediaType.TEXT_XML ) );
         setModifiable( false );
 
         final Map<String, Object> attributes = getRequest().getAttributes();
-        String typeAttr = (String) attributes.get( "type" );
-        try
-        {
-            type = module.classLoader().loadClass( typeAttr );
-        }
-        catch( ClassNotFoundException e )
-        {
-            // TODO Errorhandling 
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            throw e;
-        }
+        type = (String) attributes.get( "type" );
     }
 
     @Override public Representation represent( final Variant variant )
         throws ResourceException
     {
-        final UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
-        final QueryBuilderFactory qbf = unitOfWork.queryBuilderFactory();
-        final QueryBuilder queryBuilder = qbf.newQueryBuilder( type );
-        Query query = queryBuilder.newQuery();
-        // Generate the right representation according to its media type.
-        if( MediaType.TEXT_XML.equals( variant.getMediaType() ) )
+        try
         {
-            try
+            final Iterable<QualifiedIdentity> query = entityFinder.findEntities( type, null, null, null, null );
+            // Generate the right representation according to its media type.
+            if( MediaType.TEXT_XML.equals( variant.getMediaType() ) )
             {
-                DomRepresentation representation = new DomRepresentation( MediaType.TEXT_XML );
-                // Generate a DOM document representing the item.
-                Document d = representation.getDocument();
-
-                Element entitiesElement = d.createElement( "entities" );
-                d.appendChild( entitiesElement );
-                for( Object entity : query )
-                {
-                    EntityComposite entityComposite = (EntityComposite) entity;
-                    Element entityElement = d.createElement( "entity" );
-                    entitiesElement.appendChild( entityElement );
-                    entityElement.setAttribute( "href", "/entity/" + entityComposite.type().getName() + "/" + entityComposite.identity().get() );
-                    entityElement.appendChild( d.createTextNode( entityComposite.identity().get() ) );
-                }
-                d.normalizeDocument();
-
-                // Returns the XML representation of this document.
-                return representation;
+                return representXml( query );
             }
-            catch( IOException e )
+            else if( MediaType.TEXT_HTML.equals( variant.getMediaType() ) )
             {
-                e.printStackTrace();
+                return representHtml( query );
             }
+
+            throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
         }
-        return null;
+        catch( EntityFinderException e )
+        {
+            throw new ResourceException( Status.SERVER_ERROR_INTERNAL, e );
+        }
+    }
+
+    private Representation representXml( Iterable<QualifiedIdentity> query )
+        throws ResourceException
+    {
+        try
+        {
+            DomRepresentation representation = new DomRepresentation( MediaType.TEXT_XML );
+            // Generate a DOM document representing the item.
+            Document d = representation.getDocument();
+
+            Element entitiesElement = d.createElement( "entities" );
+            d.appendChild( entitiesElement );
+            for( QualifiedIdentity entity : query )
+            {
+                Element entityElement = d.createElement( "entity" );
+                entitiesElement.appendChild( entityElement );
+                entityElement.setAttribute( "href", request.getResourceRef().getPath() + "/" + entity.identity() );
+                entityElement.appendChild( d.createTextNode( entity.identity() ) );
+            }
+            d.normalizeDocument();
+
+            // Returns the XML representation of this document.
+            return representation;
+        }
+        catch( IOException e )
+        {
+            throw new ResourceException( e );
+        }
+    }
+
+    private Representation representHtml( Iterable<QualifiedIdentity> query )
+        throws ResourceException
+    {
+        StringBuffer buf = new StringBuffer();
+        buf.append( "<html><body><h1>Entities</h1><ul>" );
+
+        for( QualifiedIdentity entity : query )
+        {
+            buf.append( "<li><a href=\"" + request.getResourceRef().getPath() + "/" + entity.identity() + "\">" + entity.identity() + "</a></li>" );
+        }
+        buf.append( "</ul></body></html>" );
+
+        // Returns the XML representation of this document.
+        return new StringRepresentation( buf, MediaType.TEXT_HTML, Language.ENGLISH );
     }
 }

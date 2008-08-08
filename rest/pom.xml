@@ -11,6 +11,11 @@
   <name>Qi4j Extension - REST Interface</name>
   <version>0.4-SNAPSHOT</version>
   <packaging>bundle</packaging>
+
+  <properties>
+    <version.restlet>1.1-M4</version.restlet>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.qi4j.core</groupId>
@@ -69,12 +74,17 @@
     <dependency>
       <groupId>org.restlet</groupId>
       <artifactId>org.restlet</artifactId>
-      <version>1.1-M3</version>
+      <version>${version.restlet}</version>
     </dependency>
     <dependency>
       <groupId>com.noelios.restlet</groupId>
       <artifactId>com.noelios.restlet</artifactId>
-      <version>1.1-M3</version>
+      <version>${version.restlet}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.noelios.restlet</groupId>
+      <artifactId>com.noelios.restlet.ext.servlet</artifactId>
+      <version>${version.restlet}</version>
     </dependency>
     <dependency>
       <groupId>commons-httpclient</groupId>

@@ -14,23 +14,20 @@
 
 package org.qi4j.rest.client;
 
-import java.io.StringReader;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
-import org.apache.abdera.Abdera;
-import org.apache.abdera.model.Document;
-import org.apache.abdera.model.Entry;
-import org.apache.abdera.protocol.client.AbderaClient;
-import org.apache.abdera.protocol.client.ClientResponse;
 import org.openrdf.model.Statement;
 import org.openrdf.rio.RDFParser;
 import org.openrdf.rio.helpers.StatementCollector;
 import org.openrdf.rio.rdfxml.RDFXMLParserFactory;
 import org.qi4j.injection.scope.Service;
+import org.qi4j.injection.scope.This;
 import org.qi4j.library.rdf.entity.EntityParser;
 import org.qi4j.service.Activatable;
+import org.qi4j.service.Configuration;
 import org.qi4j.spi.entity.AbstractEntityStoreMixin;
 import org.qi4j.spi.entity.DefaultEntityState;
 import org.qi4j.spi.entity.EntityState;
@@ -39,6 +36,10 @@ import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.StateCommitter;
+import org.restlet.Client;
+import org.restlet.data.Protocol;
+import org.restlet.data.Reference;
+import org.restlet.data.Response;
 
 /**
  * TODO
@@ -48,13 +49,15 @@ public class RESTEntityStoreServiceMixin
     implements Activatable
 {
     @Service EntityParser parser;
+    @This Configuration<RESTEntityStoreConfiguration> config;
 
-    private AbderaClient client;
+    private Client client;
+    private Reference baseRef;
 
     public void activate() throws Exception
     {
-        Abdera abdera = new Abdera();
-        client = new AbderaClient( abdera );
+        client = new Client( Protocol.HTTP );
+        baseRef = new Reference( config.configuration().host().get() + "/entity/" );
     }
 
     public void passivate() throws Exception
@@ -72,31 +75,38 @@ public class RESTEntityStoreServiceMixin
 
         try
         {
-            String uri = "http://localhost:8080/entity/" + anIdentity.type() + "_" + anIdentity.identity();
-            ClientResponse response = client.get( uri );
-            Document<Entry> feed = response.getDocument();
-            Entry entry = feed.getRoot();
-            String content = entry.getContent();
-            RDFParser rdfParser = new RDFXMLParserFactory().getParser();
-            Collection<Statement> statements = new ArrayList<Statement>();
-            StatementCollector statementCollector = new StatementCollector( statements );
-            rdfParser.setRDFHandler( statementCollector );
-            rdfParser.parse( new StringReader( content ), uri );
+            String uri = anIdentity.type() + "/" + anIdentity.identity() + ".rdf";
+            Reference ref = new Reference( baseRef.toString() + uri );
+            Response response = client.get( ref );
+            if( response.getStatus().isSuccess() )
+            {
+                if( response.isEntityAvailable() )
+                {
+                    Reader reader = response.getEntity().getReader();
+                    RDFParser rdfParser = new RDFXMLParserFactory().getParser();
+                    Collection<Statement> statements = new ArrayList<Statement>();
+                    StatementCollector statementCollector = new StatementCollector( statements );
+                    rdfParser.setRDFHandler( statementCollector );
+                    rdfParser.parse( reader, uri );
 
-            long modified = entry.getUpdated().getTime();
-            EntityState entityState = new DefaultEntityState( 0, modified,
-                                                              anIdentity, EntityStatus.LOADED,
-                                                              entityType,
-                                                              new HashMap<String, Object>(),
-                                                              new HashMap<String, QualifiedIdentity>(),
-                                                              DefaultEntityState.newManyCollections( entityType ) );
-            parser.parse( statements, entityState );
-            return entityState;
+                    long modified = response.getEntity().getModificationDate().getTime();
+                    long version = Long.parseLong( response.getEntity().getTag().getName() );
+                    EntityState entityState = new DefaultEntityState( version, modified,
+                                                                      anIdentity, EntityStatus.LOADED,
+                                                                      entityType,
+                                                                      new HashMap<String, Object>(),
+                                                                      new HashMap<String, QualifiedIdentity>(),
+                                                                      DefaultEntityState.newManyCollections( entityType ) );
+                    parser.parse( statements, entityState );
+                    return entityState;
+                }
+            }
         }
         catch( Exception e )
         {
             throw new EntityStoreException( e );
         }
+        throw new EntityStoreException();
     }
 
     public StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, Iterable<QualifiedIdentity> removedStates ) throws EntityStoreException

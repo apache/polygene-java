@@ -12,19 +12,17 @@
  *
  */
 
-package org.qi4j.rest.abdera;
+package org.qi4j.rest;
 
-import org.qi4j.entity.EntityComposite;
-import org.qi4j.entity.association.Association;
-import org.qi4j.property.Property;
+import javax.servlet.Servlet;
+import org.qi4j.composite.Mixins;
+import org.qi4j.service.ServiceComposite;
 
 /**
  * TODO
  */
-public interface TestEntity
-    extends EntityComposite
+@Mixins( Qi4jServerServlet.class )
+public interface Qi4jServerServletService
+    extends Servlet, ServiceComposite
 {
-    Property<String> test1();
-
-    Association<TestEntity> association();
 }

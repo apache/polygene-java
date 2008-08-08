@@ -12,16 +12,22 @@
  *
  */
 
-package org.qi4j.rest.abdera;
+package org.qi4j.rest;
 
-import org.qi4j.entity.EntityComposite;
-import org.qi4j.property.Property;
+import org.qi4j.bootstrap.Assembler;
+import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.entity.memory.MemoryEntityStoreService;
+import org.qi4j.structure.Visibility;
 
 /**
  * TODO
  */
-public interface Qi4jEntityAdapterConfiguration
-    extends EntityComposite
+class MemoryEntityStoreServiceAssembler
+    implements Assembler
 {
-    Property<String> href();
+    public void assemble( ModuleAssembly module ) throws AssemblyException
+    {
+        module.addServices( MemoryEntityStoreService.class ).visibleIn( Visibility.application );
+    }
 }

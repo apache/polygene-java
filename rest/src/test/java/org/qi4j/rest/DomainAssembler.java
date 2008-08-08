@@ -12,7 +12,7 @@
  *
  */
 
-package org.qi4j.rest.abdera;
+package org.qi4j.rest;
 
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;

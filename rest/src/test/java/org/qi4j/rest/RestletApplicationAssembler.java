@@ -12,26 +12,21 @@
  *
  */
 
-package org.qi4j.rest.abdera;
+package org.qi4j.rest;
 
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import static org.qi4j.library.http.Dispatchers.Dispatcher.REQUEST;
-import static org.qi4j.library.http.Servlets.addFilters;
-import static org.qi4j.library.http.Servlets.addServlets;
-import static org.qi4j.library.http.Servlets.filter;
-import static org.qi4j.library.http.Servlets.serve;
-import org.qi4j.library.http.UnitOfWorkFilterService;
+import org.qi4j.structure.Visibility;
 
 /**
  * TODO
  */
-public class AbderaServletAssembler implements Assembler
+public class RestletApplicationAssembler implements Assembler
 {
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
-        addServlets( serve( "/*" ).with( Qi4jAbderaServletService.class ) ).to( module );
-        addFilters( filter( "/*" ).through( UnitOfWorkFilterService.class ).on( REQUEST ) ).to( module );
+        module.addObjects( RestApplication.class ).visibleIn( Visibility.application );
+        module.addObjects( Qi4jEntityFinder.class );
     }
 }

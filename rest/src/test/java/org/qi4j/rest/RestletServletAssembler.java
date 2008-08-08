@@ -12,24 +12,22 @@
  *
  */
 
-package org.qi4j.rest.abdera;
+package org.qi4j.rest;
 
-import org.apache.abdera.protocol.server.CollectionAdapter;
-import org.apache.abdera.protocol.server.CollectionInfo;
-import org.apache.abdera.protocol.server.MediaCollectionAdapter;
-import org.apache.abdera.protocol.server.Transactional;
-import org.qi4j.composite.Mixins;
-import org.qi4j.service.Activatable;
-import org.qi4j.service.ServiceComposite;
+import org.qi4j.bootstrap.Assembler;
+import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.ModuleAssembly;
+import static org.qi4j.library.http.Servlets.addServlets;
+import static org.qi4j.library.http.Servlets.serve;
 
 /**
  * TODO
  */
-@Mixins( Qi4jEntityAdapterMixin.class )
-public interface Qi4jEntityAdapterService
-    extends CollectionAdapter,
-            MediaCollectionAdapter,
-            Transactional,
-            CollectionInfo, ServiceComposite, Activatable
+public class RestletServletAssembler implements Assembler
 {
+    public void assemble( ModuleAssembly module ) throws AssemblyException
+    {
+        addServlets( serve( "/*" ).with( Qi4jServerServletService.class ) ).to( module );
+//        addFilters( filter( "/*" ).through( UnitOfWorkFilterService.class ).on( REQUEST ) ).to( module );
+    }
 }

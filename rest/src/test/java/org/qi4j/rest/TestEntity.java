@@ -12,21 +12,19 @@
  *
  */
 
-package org.qi4j.rest.abdera;
+package org.qi4j.rest;
 
-import org.qi4j.bootstrap.Assembler;
-import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.structure.Visibility;
+import org.qi4j.entity.EntityComposite;
+import org.qi4j.entity.association.Association;
+import org.qi4j.property.Property;
 
 /**
  * TODO
  */
-public class AbderaAdapterAssembler implements Assembler
+public interface TestEntity
+    extends EntityComposite
 {
-    public void assemble( ModuleAssembly module ) throws AssemblyException
-    {
-        module.addEntities( Qi4jEntityAdapterConfiguration.class );
-        module.addServices( Qi4jEntityAdapterService.class ).visibleIn( Visibility.application );
-    }
+    Property<String> test1();
+
+    Association<TestEntity> association();
 }

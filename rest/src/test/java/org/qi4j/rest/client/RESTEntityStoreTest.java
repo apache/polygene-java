@@ -18,8 +18,10 @@ import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entity.UnitOfWork;
+import org.qi4j.entity.memory.MemoryEntityStoreService;
 import org.qi4j.library.rdf.entity.EntityParserService;
-import org.qi4j.rest.abdera.TestEntity;
+import org.qi4j.rest.TestEntity;
+import org.qi4j.structure.Visibility;
 import org.qi4j.test.AbstractQi4jTest;
 
 /**
@@ -31,7 +33,11 @@ public class RESTEntityStoreTest
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
         module.addEntities( TestEntity.class );
-        module.addServices( RESTEntityStoreService.class, EntityParserService.class );
+
+        ModuleAssembly store = module.getLayerAssembly().newModuleAssembly( "REST Store" );
+        store.addEntities( RESTEntityStoreConfiguration.class );
+        store.addServices( MemoryEntityStoreService.class, EntityParserService.class );
+        store.addServices( RESTEntityStoreService.class ).visibleIn( Visibility.layer );
     }
 
     @Test
@@ -41,8 +47,10 @@ public class RESTEntityStoreTest
             UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
             try
             {
-                TestEntity entity = unitOfWork.find( "test1", TestEntity.class );
+                TestEntity entity = unitOfWork.find( "test2", TestEntity.class );
                 System.out.println( entity.test1().get() );
+                TestEntity testEntity = entity.association().get();
+                System.out.println( testEntity.test1().get() );
 
                 unitOfWork.discard();
             }
@@ -56,8 +64,9 @@ public class RESTEntityStoreTest
             UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
             try
             {
-                TestEntity entity = unitOfWork.find( "test1", TestEntity.class );
+                TestEntity entity = unitOfWork.find( "test2", TestEntity.class );
                 System.out.println( entity.test1().get() );
+                System.out.println( entity.association().get().test1().get() );
 
                 unitOfWork.discard();
             }
