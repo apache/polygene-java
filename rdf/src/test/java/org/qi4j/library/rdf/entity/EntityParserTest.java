@@ -14,7 +14,9 @@
 
 package org.qi4j.library.rdf.entity;
 
-import java.io.PrintWriter;
+import java.util.Collections;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
 import org.junit.Before;
 import org.junit.Test;
 import org.openrdf.model.Statement;
@@ -28,7 +30,6 @@ import org.qi4j.entity.association.Association;
 import org.qi4j.entity.memory.MemoryEntityStoreService;
 import org.qi4j.injection.scope.Service;
 import org.qi4j.library.constraints.annotation.NotEmpty;
-import org.qi4j.library.rdf.serializer.RdfXmlSerializer;
 import org.qi4j.property.Property;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
@@ -38,17 +39,18 @@ import org.qi4j.test.AbstractQi4jTest;
 /**
  * TODO
  */
-public class EntitySerializerTest
+public class EntityParserTest
     extends AbstractQi4jTest
 {
     @Service EntityStore entityStore;
     @Service EntitySerializer serializer;
+    @Service EntityParser parser;
 
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
-        module.addServices( MemoryEntityStoreService.class, EntitySerializerService.class );
+        module.addServices( MemoryEntityStoreService.class, EntitySerializerService.class, EntityParserService.class );
         module.addEntities( TestEntity.class );
-        module.addObjects( EntitySerializerTest.class );
+        module.addObjects( EntityParserTest.class );
     }
 
     @Override @Before public void setUp() throws Exception
@@ -59,16 +61,34 @@ public class EntitySerializerTest
     }
 
     @Test
-    public void testEntitySerializer() throws RDFHandlerException
+    public void testEntityParser() throws RDFHandlerException
     {
-        objectBuilderFactory.newObjectBuilder( EntitySerializerTest.class ).injectTo( this );
+        objectBuilderFactory.newObjectBuilder( EntityParserTest.class ).injectTo( this );
 
         QualifiedIdentity qualifiedIdentity = new QualifiedIdentity( "test1", TestEntity.class );
         EntityState entityState = entityStore.getEntityState( qualifiedIdentity );
 
         Iterable<Statement> graph = serializer.serialize( entityState );
 
-        new RdfXmlSerializer().serialize( graph, new PrintWriter( System.out ) );
+        parser.parse( graph, entityState );
+
+        entityStore.prepare( Collections.EMPTY_LIST, Collections.singleton( entityState ), Collections.EMPTY_LIST ).commit();
+
+        UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
+        try
+        {
+            TestEntity entity = unitOfWork.find( "test1", TestEntity.class );
+            TestEntity entity2 = unitOfWork.find( "test2", TestEntity.class );
+            assertThat( "values are ok", entity2.name().get(), equalTo( "Niclas" ) );
+            assertThat( "values are ok", entity2.association().get(), equalTo( entity ) );
+
+            unitOfWork.complete();
+        }
+        catch( Exception e )
+        {
+            unitOfWork.discard();
+        }
+
     }
 
     void createDummyData()
@@ -81,9 +101,9 @@ public class EntitySerializerTest
             TestEntity testEntity = builder.newInstance();
 
             EntityBuilder<TestEntity> builder2 = unitOfWork.newEntityBuilder( "test2", TestEntity.class );
-            builder.stateOfComposite().name().set( "Niclas" );
-            builder.stateOfComposite().association().set( testEntity );
-            TestEntity testEntity2 = builder.newInstance();
+            builder2.stateOfComposite().name().set( "Niclas" );
+            builder2.stateOfComposite().association().set( testEntity );
+            TestEntity testEntity2 = builder2.newInstance();
             unitOfWork.complete();
         }
         catch( Exception e )

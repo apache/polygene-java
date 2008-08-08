@@ -14,23 +14,20 @@
 
 package org.qi4j.library.rdf.entity;
 
-import static java.util.Collections.EMPTY_LIST;
-import static java.util.Collections.singleton;
 import java.util.HashMap;
 import java.util.Map;
 import org.openrdf.model.Graph;
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
+import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.impl.GraphImpl;
 import org.qi4j.entity.Identity;
-import org.qi4j.injection.scope.Service;
 import org.qi4j.injection.scope.Structure;
 import org.qi4j.library.rdf.Rdfs;
 import org.qi4j.property.AbstractPropertyInstance;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.structure.Module;
 import org.qi4j.util.ClassUtil;
@@ -41,7 +38,6 @@ import org.qi4j.util.ClassUtil;
 public class EntityParserMixin
     implements EntityParser
 {
-    private @Service EntityStore entityStore;
     private @Structure Module module;
     private @Structure Qi4jSPI spi;
 
@@ -54,9 +50,10 @@ public class EntityParserMixin
         identityUri = values.createURI( AbstractPropertyInstance.toURI( Identity.class, "identity" ) );
     }
 
-    public void parse( Iterable<Statement> entityGraph )
+    public void parse( Iterable<Statement> entityGraph, EntityState entityState )
     {
         Map<String, String> propertyValues = new HashMap<String, String>();
+        Map<String, QualifiedIdentity> associationValues = new HashMap<String, QualifiedIdentity>();
         String className = null;
         String id = null;
         for( Statement statement : entityGraph )
@@ -71,8 +68,22 @@ public class EntityParserMixin
             }
             else
             {
-                String qualifiedName = AbstractPropertyInstance.toQualifiedName( statement.getPredicate().toString() );
-                propertyValues.put( qualifiedName, statement.getObject().stringValue() );
+                URI predicate = statement.getPredicate();
+                String qualifiedName = AbstractPropertyInstance.toQualifiedName( predicate.toString() );
+                Value object = statement.getObject();
+                if( object instanceof URI )
+                {
+                    String str = object.stringValue().substring( "urn:qi4j:".length() );
+                    String[] strings = str.split( "/" );
+                    String type = strings[ 0 ].replace( "-", "$" );
+                    String identity = strings[ 1 ];
+                    QualifiedIdentity qid = new QualifiedIdentity( identity, type );
+                    associationValues.put( qualifiedName, qid );
+                }
+                else
+                {
+                    propertyValues.put( qualifiedName, object.stringValue() );
+                }
             }
         }
 
@@ -81,17 +92,14 @@ public class EntityParserMixin
             return;
         }
 
-        QualifiedIdentity qid = new QualifiedIdentity( id, className );
-/* TODO Should we assume this has been done already?
-        EntityType entityType = spi.getEntityDescriptor( module.classLoader().loadClass( qid.type() ), module).entityType();
-        entityStore.registerEntityType( entityType );
-*/
-        EntityState entityState = entityStore.getEntityState( qid );
         for( Map.Entry<String, String> propertyEntry : propertyValues.entrySet() )
         {
             entityState.setProperty( propertyEntry.getKey(), propertyEntry.getValue() );
         }
 
-        entityStore.prepare( EMPTY_LIST, singleton( entityState ), EMPTY_LIST ).commit();
+        for( Map.Entry<String, QualifiedIdentity> associationEntry : associationValues.entrySet() )
+        {
+            entityState.setAssociation( associationEntry.getKey(), associationEntry.getValue() );
+        }
     }
 }

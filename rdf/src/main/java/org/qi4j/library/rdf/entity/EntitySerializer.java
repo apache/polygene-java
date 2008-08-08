@@ -16,12 +16,12 @@ package org.qi4j.library.rdf.entity;
 
 import org.openrdf.model.Statement;
 import org.qi4j.library.constraints.annotation.NotNull;
-import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.spi.entity.EntityState;
 
 /**
  * TODO
  */
 public interface EntitySerializer
 {
-    Iterable<Statement> serialize( @NotNull QualifiedIdentity qid );
+    Iterable<Statement> serialize( @NotNull EntityState entityState );
 }

@@ -15,19 +15,17 @@
 package org.qi4j.library.rdf.entity;
 
 import org.openrdf.model.Graph;
+import org.openrdf.model.Literal;
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.impl.GraphImpl;
 import org.qi4j.entity.Identity;
-import org.qi4j.injection.scope.Service;
-import org.qi4j.injection.scope.Structure;
 import org.qi4j.library.rdf.Rdfs;
 import org.qi4j.property.AbstractPropertyInstance;
+import org.qi4j.runtime.entity.association.AbstractAssociationInstance;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.structure.Module;
 import org.qi4j.util.ClassUtil;
 
 /**
@@ -36,9 +34,6 @@ import org.qi4j.util.ClassUtil;
 public class EntitySerializerMixin
     implements EntitySerializer
 {
-    private @Service EntityStore entityStore;
-    private @Structure Module module;
-
     private URI identityUri;
 
     public EntitySerializerMixin()
@@ -48,10 +43,9 @@ public class EntitySerializerMixin
         identityUri = values.createURI( AbstractPropertyInstance.toURI( Identity.class, "identity" ) );
     }
 
-    public Iterable<Statement> serialize( QualifiedIdentity qid )
+    public Iterable<Statement> serialize( EntityState entityState )
     {
-        EntityState entityState = entityStore.getEntityState( qid );
-
+        QualifiedIdentity qid = entityState.qualifiedIdentity();
         Graph graph = new GraphImpl();
         ValueFactory values = graph.getValueFactory();
         URI entityUri = values.createURI( "urn:qi4j:" + qid.identity() );
@@ -64,7 +58,17 @@ public class EntitySerializerMixin
         {
             Object value = entityState.getProperty( propertyName );
             URI propertyUri = values.createURI( AbstractPropertyInstance.toURI( propertyName ) );
-            graph.add( entityUri, propertyUri, values.createLiteral( value.toString() ) );
+            Literal rdfValue = values.createLiteral( value.toString() );
+            graph.add( entityUri, propertyUri, rdfValue );
+        }
+
+        // Associations
+        for( String associationName : entityState.associationNames() )
+        {
+            QualifiedIdentity associatedId = entityState.getAssociation( associationName );
+            URI associationURI = values.createURI( AbstractAssociationInstance.toURI( associationName ) );
+            URI associatedURI = values.createURI( associatedId.toURI() );
+            graph.add( entityUri, associationURI, associatedURI );
         }
 
         return graph;

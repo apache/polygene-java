@@ -16,11 +16,12 @@ package org.qi4j.library.rdf.entity;
 
 import org.openrdf.model.Statement;
 import org.qi4j.library.constraints.annotation.NotNull;
+import org.qi4j.spi.entity.EntityState;
 
 /**
  * TODO
  */
 public interface EntityParser
 {
-    void parse( @NotNull Iterable<Statement> graph );
+    void parse( @NotNull Iterable<Statement> entityGraph, EntityState entityState );
 }
