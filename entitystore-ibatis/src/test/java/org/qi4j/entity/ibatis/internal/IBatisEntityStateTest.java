@@ -27,7 +27,7 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entity.ibatis.entity.HasFirstName;
 import org.qi4j.entity.ibatis.entity.HasLastName;
 import org.qi4j.entity.ibatis.entity.PersonComposite;
-import static org.qi4j.property.ComputedPropertyInstance.getQualifiedName;
+import org.qi4j.property.GenericPropertyInfo;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.QualifiedIdentity;
@@ -54,7 +54,7 @@ public final class IBatisEntityStateTest extends AbstractQi4jTest
         throws NoSuchMethodException
     {
         final Method method = type.getMethod( propertyName );
-        return (String) person.getProperty( getQualifiedName( method ) );
+        return (String) person.getProperty( GenericPropertyInfo.getQualifiedName( method ) );
     }
 
     public final void assemble( final ModuleAssembly module ) throws AssemblyException

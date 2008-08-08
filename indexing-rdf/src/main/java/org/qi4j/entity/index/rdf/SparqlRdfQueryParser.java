@@ -25,8 +25,7 @@ import java.util.Map;
 import org.openrdf.query.QueryLanguage;
 import org.qi4j.composite.Composite;
 import org.qi4j.entity.Identity;
-import org.qi4j.property.AbstractPropertyInstance;
-import org.qi4j.property.ComputedPropertyInstance;
+import org.qi4j.property.GenericPropertyInfo;
 import org.qi4j.query.grammar.AssociationIsNullPredicate;
 import org.qi4j.query.grammar.AssociationNullPredicate;
 import org.qi4j.query.grammar.AssociationReference;
@@ -99,7 +98,7 @@ class SparqlRdfQueryParser
         triples.add(
             new Triple(
                 "?entity",
-                addNamespace( AbstractPropertyInstance.toNamespace( getIdentityAccessor( Identity.class ) ) ) + ":identity",
+                addNamespace( GenericPropertyInfo.toNamespace( getIdentityAccessor( Identity.class ) ) ) + ":identity",
                 "?identity",
                 false
             )
@@ -327,7 +326,7 @@ class SparqlRdfQueryParser
         {
             subject = addTriple( propertyReference.traversedAssociation(), false ).value;
         }
-        String ns = addNamespace( AbstractPropertyInstance.toNamespace( propertyReference.propertyAccessor() ) );
+        String ns = addNamespace( GenericPropertyInfo.toNamespace( propertyReference.propertyAccessor() ) );
         return addTriple( subject, ns + ":" + propertyReference.propertyName(), optional );
     }
 
@@ -381,7 +380,7 @@ class SparqlRdfQueryParser
         {
             return null;
         }
-        return "urn:qi4j:association:" + ComputedPropertyInstance.getDeclaringClassName( accessor ) + ":";
+        return "urn:qi4j:association:" + GenericPropertyInfo.getDeclaringClassName( accessor ) + ":";
     }
 
     private static Method getIdentityAccessor( final Class declaringClass )
