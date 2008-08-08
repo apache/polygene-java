@@ -21,9 +21,9 @@ import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.impl.GraphImpl;
 import org.qi4j.entity.Identity;
+import org.qi4j.entity.association.GenericAssociationInfo;
 import org.qi4j.library.rdf.Rdfs;
-import org.qi4j.property.AbstractPropertyInstance;
-import org.qi4j.runtime.entity.association.AbstractAssociationInstance;
+import org.qi4j.property.GenericPropertyInfo;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.util.ClassUtil;
@@ -40,7 +40,7 @@ public class EntitySerializerMixin
     {
         Graph graph = new GraphImpl();
         ValueFactory values = graph.getValueFactory();
-        identityUri = values.createURI( AbstractPropertyInstance.toURI( Identity.class, "identity" ) );
+        identityUri = values.createURI( GenericPropertyInfo.toURI( Identity.class, "identity" ) );
     }
 
     public Iterable<Statement> serialize( EntityState entityState )
@@ -57,7 +57,7 @@ public class EntitySerializerMixin
         for( String propertyName : entityState.propertyNames() )
         {
             Object value = entityState.getProperty( propertyName );
-            URI propertyUri = values.createURI( AbstractPropertyInstance.toURI( propertyName ) );
+            URI propertyUri = values.createURI( GenericPropertyInfo.toURI( propertyName ) );
             Literal rdfValue = values.createLiteral( value.toString() );
             graph.add( entityUri, propertyUri, rdfValue );
         }
@@ -66,7 +66,7 @@ public class EntitySerializerMixin
         for( String associationName : entityState.associationNames() )
         {
             QualifiedIdentity associatedId = entityState.getAssociation( associationName );
-            URI associationURI = values.createURI( AbstractAssociationInstance.toURI( associationName ) );
+            URI associationURI = values.createURI( GenericAssociationInfo.toURI( associationName ) );
             URI associatedURI = values.createURI( associatedId.toURI() );
             graph.add( entityUri, associationURI, associatedURI );
         }

@@ -25,7 +25,7 @@ import org.openrdf.model.impl.GraphImpl;
 import org.qi4j.entity.Identity;
 import org.qi4j.injection.scope.Structure;
 import org.qi4j.library.rdf.Rdfs;
-import org.qi4j.property.AbstractPropertyInstance;
+import org.qi4j.property.GenericPropertyInfo;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.QualifiedIdentity;
@@ -47,7 +47,7 @@ public class EntityParserMixin
     {
         Graph graph = new GraphImpl();
         ValueFactory values = graph.getValueFactory();
-        identityUri = values.createURI( AbstractPropertyInstance.toURI( Identity.class, "identity" ) );
+        identityUri = values.createURI( GenericPropertyInfo.toURI( Identity.class, "identity" ) );
     }
 
     public void parse( Iterable<Statement> entityGraph, EntityState entityState )
@@ -69,7 +69,7 @@ public class EntityParserMixin
             else
             {
                 URI predicate = statement.getPredicate();
-                String qualifiedName = AbstractPropertyInstance.toQualifiedName( predicate.toString() );
+                String qualifiedName = GenericPropertyInfo.toQualifiedName( predicate.toString() );
                 Value object = statement.getObject();
                 if( object instanceof URI )
                 {
