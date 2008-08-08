@@ -20,11 +20,9 @@ import java.lang.reflect.Type;
 import java.util.List;
 import org.qi4j.composite.ConstraintViolation;
 import org.qi4j.composite.ConstraintViolationException;
-import org.qi4j.property.AbstractPropertyInstance;
-import static org.qi4j.property.AbstractPropertyInstance.getPropertyType;
-import static org.qi4j.property.AbstractPropertyInstance.getQualifiedName;
 import org.qi4j.property.ComputedProperty;
 import org.qi4j.property.ComputedPropertyInstance;
+import org.qi4j.property.GenericPropertyInfo;
 import org.qi4j.property.ImmutableProperty;
 import org.qi4j.property.Property;
 import org.qi4j.property.PropertyInfo;
@@ -57,9 +55,9 @@ public class PropertyModel
     {
         metaInfo = aMetaInfo;
         name = anAccessor.getName();
-        type = getPropertyType( anAccessor );
+        type = GenericPropertyInfo.getPropertyType( anAccessor );
         accessor = anAccessor;
-        qualifiedName = getQualifiedName( anAccessor );
+        qualifiedName = GenericPropertyInfo.getQualifiedName( anAccessor );
         defaultValue = aPropertyDefaultValue;
 
         this.constraints = constraints;
@@ -110,7 +108,7 @@ public class PropertyModel
 
     public String toURI()
     {
-        return AbstractPropertyInstance.toURI( accessor );
+        return GenericPropertyInfo.toURI( accessor );
     }
 
     public Property<?> newInstance()

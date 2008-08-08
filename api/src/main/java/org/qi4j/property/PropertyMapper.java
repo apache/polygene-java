@@ -28,11 +28,11 @@ public class PropertyMapper
             {
                 Method propertyMethod = composite.getClass().getInterfaces()[ 0 ].getMethod( objectObjectEntry.getKey().toString() );
                 Object value = objectObjectEntry.getValue();
-                Type propertyType = ComputedPropertyInstance.getPropertyType( propertyMethod );
+                Type propertyType = GenericPropertyInfo.getPropertyType( propertyMethod );
 
                 value = mapToType( propertyType, value.toString() );
 
-                @SuppressWarnings("unchecked")
+                @SuppressWarnings( "unchecked" )
                 Property<Object> property = (Property<Object>) propertyMethod.invoke( composite );
                 property.set( value );
             }

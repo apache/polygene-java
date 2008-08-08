@@ -24,10 +24,11 @@ import org.qi4j.composite.ConstraintViolation;
 import org.qi4j.composite.ConstraintViolationException;
 import org.qi4j.entity.association.AbstractAssociation;
 import org.qi4j.entity.association.Association;
+import org.qi4j.entity.association.GenericAssociationInfo;
 import org.qi4j.entity.association.ListAssociation;
 import org.qi4j.entity.association.ManyAssociation;
 import org.qi4j.entity.association.SetAssociation;
-import org.qi4j.property.ComputedPropertyInstance;
+import org.qi4j.property.GenericPropertyInfo;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.entity.UnitOfWorkInstance;
@@ -56,9 +57,9 @@ public final class AssociationModel
     {
         this.metaInfo = metaInfo;
         this.name = accessor.getName();
-        this.type = AbstractAssociationInstance.getAssociationType( accessor );
+        this.type = GenericAssociationInfo.getAssociationType( accessor );
         this.accessor = accessor;
-        this.qualifiedName = AbstractAssociationInstance.getQualifiedName( accessor );
+        this.qualifiedName = GenericAssociationInfo.getQualifiedName( accessor );
         this.constraints = valueConstraintsInstance;
     }
 
@@ -89,12 +90,12 @@ public final class AssociationModel
 
     public String toURI()
     {
-        return AbstractAssociationInstance.toURI( accessor );
+        return GenericAssociationInfo.toURI( accessor );
     }
 
     public String toNameSpace()
     {
-        return "urn:qi4j:association:" + ComputedPropertyInstance.getDeclaringClassName( accessor ) + ":";
+        return "urn:qi4j:association:" + GenericPropertyInfo.getDeclaringClassName( accessor ) + ":";
     }
 
     public boolean isManyAssociation()

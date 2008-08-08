@@ -31,7 +31,7 @@ public class ManyAssociationType
     {
         this.qualifiedName = qualifiedName;
         this.associationType = associationType;
-        this.type = type.toLowerCase();
+        this.type = type;
     }
 
     private String qualifiedName;

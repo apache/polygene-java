@@ -28,7 +28,7 @@ public class AssociationType
     public AssociationType( String qualifiedName, String type )
     {
         this.qualifiedName = qualifiedName;
-        this.type = type.toLowerCase();
+        this.type = type;
     }
 
     public String qualifiedName()

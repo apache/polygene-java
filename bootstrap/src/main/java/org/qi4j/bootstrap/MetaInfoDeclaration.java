@@ -21,7 +21,7 @@ import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
-import org.qi4j.property.AbstractPropertyInstance;
+import org.qi4j.property.GenericPropertyInfo;
 import org.qi4j.util.MetaInfo;
 
 /**
@@ -71,7 +71,7 @@ public final class MetaInfoDeclaration
             }
         }
         // todo move to a util class
-        final Type type = AbstractPropertyInstance.getPropertyType( accessor );
+        final Type type = GenericPropertyInfo.getPropertyType( accessor );
         return DefaultValues.getDefaultValue( type );
     }
 

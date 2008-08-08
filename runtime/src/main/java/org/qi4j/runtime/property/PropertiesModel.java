@@ -24,7 +24,7 @@ import java.util.Set;
 import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.composite.ConstraintViolationException;
 import org.qi4j.composite.State;
-import org.qi4j.property.AbstractPropertyInstance;
+import org.qi4j.property.GenericPropertyInfo;
 import org.qi4j.property.Property;
 import org.qi4j.runtime.composite.ConstraintsModel;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
@@ -55,7 +55,7 @@ public final class PropertiesModel
         {
             if( Property.class.isAssignableFrom( method.getReturnType() ) )
             {
-                ValueConstraintsModel valueConstraintsModel = constraints.constraintsFor( method.getAnnotations(), AbstractPropertyInstance.getPropertyType( method ), method.getName() );
+                ValueConstraintsModel valueConstraintsModel = constraints.constraintsFor( method.getAnnotations(), GenericPropertyInfo.getPropertyType( method ), method.getName() );
                 ValueConstraintsInstance valueConstraintsInstance = null;
                 if( valueConstraintsModel.isConstrained() )
                 {

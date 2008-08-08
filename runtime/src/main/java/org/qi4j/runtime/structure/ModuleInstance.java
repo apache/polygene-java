@@ -300,7 +300,7 @@ public class ModuleInstance
             }
 
             CompositeModel compositeModel = realModuleInstance.composites().model().getCompositeModelFor( mixinType );
-            return mixinType.cast( compositeModel.newCompositeInstance( realModuleInstance, UsesInstance.NO_USES, compositeModel.newDefaultState() ) );
+            return mixinType.cast( compositeModel.newCompositeInstance( realModuleInstance, UsesInstance.NO_USES, compositeModel.newDefaultState() ).proxy() );
         }
     }
 

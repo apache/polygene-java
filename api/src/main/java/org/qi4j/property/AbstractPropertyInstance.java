@@ -19,8 +19,6 @@
  */
 package org.qi4j.property;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
 
@@ -32,126 +30,6 @@ import static org.qi4j.composite.NullArgumentException.validateNotNull;
 public abstract class AbstractPropertyInstance<T>
     implements Property<T>
 {
-    public static String getName( String qualifiedName )
-    {
-        int idx = qualifiedName.lastIndexOf( ":" );
-        return qualifiedName.substring( idx + 1 );
-    }
-
-    public static String getDeclaringClassName( String qualifiedName )
-    {
-        int idx = qualifiedName.lastIndexOf( ":" );
-        return qualifiedName.substring( 0, idx );
-    }
-
-    public static String getDeclaringClassName( Method accessor )
-    {
-        return accessor.getDeclaringClass().getName();
-    }
-
-    public static String getQualifiedName( Method accessor )
-    {
-        return getQualifiedName( accessor.getDeclaringClass(), accessor.getName() );
-    }
-
-    public static String getQualifiedName( Class<?> declaringClass, String name )
-    {
-        String className = declaringClass.getName();
-        className = className.replace( '$', '-' );
-        return className + ":" + name;
-    }
-
-    public static Type getPropertyType( Method accessor )
-    {
-        return getPropertyType( accessor.getGenericReturnType() );
-    }
-
-    public static Type getPropertyType( Type methodReturnType )
-    {
-        if( methodReturnType instanceof ParameterizedType )
-        {
-            ParameterizedType parameterizedType = (ParameterizedType) methodReturnType;
-            if( Property.class.isAssignableFrom( (Class<?>) parameterizedType.getRawType() ) )
-            {
-                return parameterizedType.getActualTypeArguments()[ 0 ];
-            }
-        }
-
-        if( methodReturnType instanceof Class<?> )
-        {
-            Type[] interfaces = ( (Class<?>) methodReturnType ).getInterfaces();
-            for( Type anInterface : interfaces )
-            {
-                Type propertyType = getPropertyType( anInterface );
-                if( propertyType != null )
-                {
-                    return propertyType;
-                }
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Get URI for a property.
-     *
-     * @param accessor accessor method
-     * @return property URI
-     */
-    public static String toURI( final Method accessor )
-    {
-        return "urn:qi4j:property:" + ComputedPropertyInstance.getQualifiedName( accessor );
-    }
-
-    /**
-     * Get URI for a property.
-     *
-     * @param declaringClass
-     * @param name
-     * @return property URI
-     */
-    public static String toURI( final Class declaringClass, String name )
-    {
-        return "urn:qi4j:property:" + ComputedPropertyInstance.getQualifiedName( declaringClass, name );
-    }
-
-    /**
-     * Get URI for a qualified property name.
-     *
-     * @param qualifiedName
-     * @return property URI
-     */
-    public static String toURI( final String qualifiedName )
-    {
-        return "urn:qi4j:property:" + qualifiedName;
-    }
-
-    /**
-     * Get URI for a qualified property name.
-     *
-     * @param uri
-     * @return property qualified property name
-     */
-    public static String toQualifiedName( final String uri )
-    {
-        return uri.substring( "urn:qi4j:property:".length() );
-    }
-
-    /**
-     * Get namespace for a property.
-     *
-     * @param accessor accessor method
-     * @return property namespace
-     */
-    public static String toNamespace( final Method accessor )
-    {
-        if( accessor == null )
-        {
-            return null;
-        }
-        return "urn:qi4j:property:" + ComputedPropertyInstance.getDeclaringClassName( accessor ) + ":";
-    }
-
     protected final PropertyInfo propertyInfo;
 
     /**

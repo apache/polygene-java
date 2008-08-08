@@ -18,7 +18,7 @@ import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
-import org.qi4j.property.AbstractPropertyInstance;
+import org.qi4j.property.GenericPropertyInfo;
 import org.qi4j.property.Property;
 
 /**
@@ -85,7 +85,7 @@ public final class LoadingPolicy
                 ;
             }
             {
-                loadProperties.add( AbstractPropertyInstance.getQualifiedName( mixinMethod ) );
+                loadProperties.add( GenericPropertyInfo.getQualifiedName( mixinMethod ) );
             }
         }
         return this;

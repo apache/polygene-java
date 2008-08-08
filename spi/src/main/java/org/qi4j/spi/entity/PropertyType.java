@@ -15,7 +15,7 @@
 package org.qi4j.spi.entity;
 
 import java.io.Serializable;
-import org.qi4j.property.AbstractPropertyInstance;
+import org.qi4j.property.GenericPropertyInfo;
 
 /**
  * TODO
@@ -29,7 +29,7 @@ public class PropertyType
     public PropertyType( String qualifiedName, String type )
     {
         this.qualifiedName = qualifiedName;
-        this.type = type.toLowerCase();
+        this.type = type;
     }
 
     public String qualifiedName()
@@ -44,7 +44,7 @@ public class PropertyType
 
     public String toURI()
     {
-        return AbstractPropertyInstance.toURI( qualifiedName );
+        return GenericPropertyInfo.toURI( qualifiedName );
     }
 
     @Override public String toString()

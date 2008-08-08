@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Set;
 import org.qi4j.bootstrap.AssociationDeclarations;
 import org.qi4j.entity.association.AbstractAssociation;
+import org.qi4j.entity.association.GenericAssociationInfo;
 import org.qi4j.runtime.composite.ConstraintsModel;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.composite.ValueConstraintsModel;
@@ -57,7 +58,7 @@ public final class AssociationsModel
         {
             if( AbstractAssociation.class.isAssignableFrom( method.getReturnType() ) )
             {
-                ValueConstraintsModel valueConstraintsModel = constraints.constraintsFor( method.getAnnotations(), AbstractAssociationInstance.getAssociationType( method ), method.getName() );
+                ValueConstraintsModel valueConstraintsModel = constraints.constraintsFor( method.getAnnotations(), GenericAssociationInfo.getAssociationType( method ), method.getName() );
                 ValueConstraintsInstance valueConstraintsInstance = null;
                 if( valueConstraintsModel.isConstrained() )
                 {
