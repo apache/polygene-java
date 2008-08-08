@@ -6,9 +6,9 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
+import static java.util.Arrays.asList;
 import java.util.Collection;
 import java.util.Map;
-import static java.util.Arrays.asList;
 import org.junit.After;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -30,7 +30,7 @@ public class IBatisClientTest
 
     @Test public void loadExisingPerson() throws Exception
     {
-        final QualifiedIdentity id = new QualifiedIdentity( TEST_ID, PersonComposite.class.getName() );
+        final QualifiedIdentity id = new QualifiedIdentity( TEST_ID, PersonComposite.class );
         assertEquals( "id", TEST_ID, id.identity() );
         final Map<String, Object> rawData = client.executeLoad( id );
         System.out.println( "rawData = " + rawData );
@@ -40,7 +40,7 @@ public class IBatisClientTest
         assertTrue( "accounts", accountsValue instanceof Collection );
         final Collection accounts = (Collection) accountsValue;
         assertEquals( "one account ", 2, accounts.size() );
-        assertEquals( "accounts", asList("1","2"), accounts );
+        assertEquals( "accounts", asList( "1", "2" ), accounts );
     }
 
     @Before

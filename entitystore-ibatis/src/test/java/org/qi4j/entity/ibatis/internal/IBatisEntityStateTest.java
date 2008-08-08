@@ -69,7 +69,7 @@ public final class IBatisEntityStateTest extends AbstractQi4jTest
     {
 
         return new IBatisEntityState( spi.getEntityDescriptor( PersonComposite.class, moduleInstance ).entityType(),
-                                      new QualifiedIdentity( "1", PersonComposite.class.getName() ),
+                                      new QualifiedIdentity( "1", PersonComposite.class ),
                                       initialValues,
                                       0L,
                                       System.currentTimeMillis(),

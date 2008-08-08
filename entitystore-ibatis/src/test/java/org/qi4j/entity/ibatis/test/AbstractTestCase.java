@@ -158,6 +158,6 @@ public abstract class AbstractTestCase extends AbstractQi4jTest
 
     protected QualifiedIdentity id( final String id )
     {
-        return new QualifiedIdentity( id, PersonComposite.class.getName() );
+        return new QualifiedIdentity( id, PersonComposite.class );
     }
 }

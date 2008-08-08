@@ -12,19 +12,18 @@
  *
  */
 
-package org.qi4j.rest.abdera;
+package org.qi4j.rest.client;
 
-import org.qi4j.entity.EntityComposite;
-import org.qi4j.entity.association.Association;
-import org.qi4j.property.Property;
+import org.qi4j.composite.Mixins;
+import org.qi4j.service.Activatable;
+import org.qi4j.service.ServiceComposite;
+import org.qi4j.spi.entity.EntityStore;
 
 /**
  * TODO
  */
-public interface TestEntity
-    extends EntityComposite
+@Mixins( RESTEntityStoreServiceMixin.class )
+public interface RESTEntityStoreService
+    extends EntityStore, ServiceComposite, Activatable
 {
-    Property<String> test1();
-
-    Association<TestEntity> association();
 }

@@ -14,17 +14,22 @@
 
 package org.qi4j.rest.abdera;
 
-import org.qi4j.entity.EntityComposite;
-import org.qi4j.entity.association.Association;
-import org.qi4j.property.Property;
+import org.apache.abdera.protocol.server.CollectionAdapter;
+import org.apache.abdera.protocol.server.CollectionInfo;
+import org.apache.abdera.protocol.server.MediaCollectionAdapter;
+import org.apache.abdera.protocol.server.Transactional;
+import org.qi4j.composite.Mixins;
+import org.qi4j.service.Activatable;
+import org.qi4j.service.ServiceComposite;
 
 /**
  * TODO
  */
-public interface TestEntity
-    extends EntityComposite
+@Mixins( Qi4jEntityAdapterMixin.class )
+public interface Qi4jEntityAdapterService
+    extends CollectionAdapter,
+            MediaCollectionAdapter,
+            Transactional,
+            CollectionInfo, ServiceComposite, Activatable
 {
-    Property<String> test1();
-
-    Association<TestEntity> association();
 }

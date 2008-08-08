@@ -43,6 +43,12 @@ public interface DummyDataService
                 EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder( "test1", TestEntity.class );
                 builder.stateOfComposite().test1().set( "Foo bar" );
                 TestEntity testEntity = builder.newInstance();
+
+                EntityBuilder<TestEntity> builder2 = unitOfWork.newEntityBuilder( "test2", TestEntity.class );
+                builder.stateOfComposite().test1().set( "Xyzzy" );
+                builder.stateOfComposite().association().set( testEntity );
+                TestEntity testEntity2 = builder.newInstance();
+
                 unitOfWork.complete();
             }
             catch( Exception e )

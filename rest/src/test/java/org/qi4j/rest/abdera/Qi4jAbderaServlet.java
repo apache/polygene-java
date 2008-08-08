@@ -18,12 +18,12 @@ import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.abdera.protocol.server.CollectionInfo;
 import org.apache.abdera.protocol.server.Provider;
 import org.apache.abdera.protocol.server.impl.DefaultProvider;
 import org.apache.abdera.protocol.server.impl.SimpleWorkspaceInfo;
 import org.apache.abdera.protocol.server.servlet.AbderaServlet;
-import org.qi4j.injection.scope.Structure;
-import org.qi4j.object.ObjectBuilderFactory;
+import org.qi4j.injection.scope.Service;
 
 /**
  * TODO
@@ -31,16 +31,16 @@ import org.qi4j.object.ObjectBuilderFactory;
 public class Qi4jAbderaServlet
     extends AbderaServlet
 {
-    @Structure ObjectBuilderFactory obf;
+    @Service Iterable<CollectionInfo> adapters;
 
     @Override protected Provider createProvider()
     {
-        Qi4jEntityAdapter entityAdapter = obf.newObject( Qi4jEntityAdapter.class );
-        entityAdapter.setHref( "entity" );
-
         SimpleWorkspaceInfo wi = new SimpleWorkspaceInfo();
         wi.setTitle( "Entity Directory Workspace" );
-        wi.addCollection( entityAdapter );
+        for( CollectionInfo adapter : adapters )
+        {
+            wi.addCollection( adapter );
+        }
 
         DefaultProvider provider = new DefaultProvider( "/" );
         provider.addWorkspace( wi );

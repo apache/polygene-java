@@ -14,7 +14,7 @@
 
 package org.qi4j.rest.abdera;
 
-import java.util.ArrayList;
+import java.io.StringWriter;
 import java.util.Date;
 import java.util.List;
 import org.apache.abdera.i18n.iri.IRI;
@@ -22,29 +22,48 @@ import org.apache.abdera.model.Content;
 import org.apache.abdera.protocol.server.RequestContext;
 import org.apache.abdera.protocol.server.context.ResponseContextException;
 import org.apache.abdera.protocol.server.impl.AbstractEntityCollectionAdapter;
-import org.qi4j.entity.EntityComposite;
-import org.qi4j.entity.UnitOfWork;
+import org.openrdf.model.Statement;
+import org.openrdf.rio.RDFHandlerException;
 import org.qi4j.entity.UnitOfWorkFactory;
 import org.qi4j.injection.scope.Service;
 import org.qi4j.injection.scope.Structure;
+import org.qi4j.injection.scope.This;
 import org.qi4j.library.rdf.entity.EntitySerializer;
+import org.qi4j.library.rdf.serializer.RdfXmlSerializer;
+import org.qi4j.service.Activatable;
+import org.qi4j.service.Configuration;
+import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
+import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.structure.Module;
+import org.qi4j.util.ClassUtil;
 
 
 /**
  * TODO
  */
-public class Qi4jEntityAdapter
+public class Qi4jEntityAdapterMixin
     extends AbstractEntityCollectionAdapter<EntityState>
+    implements Activatable
 {
     @Structure UnitOfWorkFactory uowf;
     @Structure Module module;
 
     @Service EntitySerializer serializer;
     @Service EntityStore store;
+
+    @This Configuration<Qi4jEntityAdapterConfiguration> config;
+
+    public void activate() throws Exception
+    {
+        setHref( config.configuration().href().get() );
+    }
+
+    public void passivate() throws Exception
+    {
+    }
 
     public EntityState postEntry( String s, IRI iri, String s1, Date date, List list, Content content, RequestContext requestContext ) throws ResponseContextException
     {
@@ -57,34 +76,57 @@ public class Qi4jEntityAdapter
 
     public Object getContent( EntityState o, RequestContext requestContext ) throws ResponseContextException
     {
-        return serializer.serialize( o.qualifiedIdentity() );
+        Iterable<Statement> graph = serializer.serialize( o );
+
+        try
+        {
+            StringWriter stringWriter = new StringWriter();
+            new RdfXmlSerializer().serialize( graph, stringWriter );
+            Content content = requestContext.getAbdera().getFactory().newContent( Content.Type.XML );
+            content.setValue( stringWriter.toString() );
+            return content;
+        }
+        catch( RDFHandlerException e )
+        {
+            throw new ResponseContextException( 500, e );
+        }
     }
 
     public Iterable<EntityState> getEntries( RequestContext requestContext ) throws ResponseContextException
     {
-        UnitOfWork unitOfWork = uowf.currentUnitOfWork();
-        List entities = new ArrayList<EntityComposite>();
-        for( EntityComposite entityComposite : unitOfWork.queryBuilderFactory().newQueryBuilder( EntityComposite.class ).newQuery() )
-        {
-            entities.add( entityComposite );
-        }
-        return entities;
+        return store;
     }
 
     public EntityState getEntry( String s, RequestContext requestContext ) throws ResponseContextException
     {
-        QualifiedIdentity qid = new QualifiedIdentity( requestContext.getTargetPath() );
-        return store.getEntityState( qid );
+        try
+        {
+            String[] qidString = s.split( "_" );
+            QualifiedIdentity qid = new QualifiedIdentity( qidString[ 1 ], qidString[ 0 ] );
+            return store.getEntityState( qid );
+        }
+        catch( EntityNotFoundException e )
+        {
+            throw new ResponseContextException( e.getMessage(), 404 );
+        }
+        catch( IllegalArgumentException e )
+        {
+            throw new ResponseContextException( 500, e );
+        }
+        catch( EntityStoreException e )
+        {
+            throw new ResponseContextException( 500, e );
+        }
     }
 
     public String getId( EntityState o ) throws ResponseContextException
     {
-        return o.qualifiedIdentity().identity();
+        return o.qualifiedIdentity().toString();
     }
 
     public String getName( EntityState o ) throws ResponseContextException
     {
-        return o.qualifiedIdentity().identity();
+        return ClassUtil.normalizeClassToURI( o.qualifiedIdentity().type() ) + "_" + o.qualifiedIdentity().identity();
     }
 
     public String getTitle( EntityState o ) throws ResponseContextException

@@ -21,6 +21,7 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.ModuleName;
 import org.qi4j.entity.memory.MemoryEntityStoreService;
 import org.qi4j.library.http.JettyServiceAssembler;
+import org.qi4j.library.rdf.entity.EntitySerializerService;
 import org.qi4j.structure.Application;
 import org.qi4j.structure.Visibility;
 
@@ -42,7 +43,7 @@ public class Main
                         new MemoryEntityStoreServiceAssembler(),
                     },
                     {
-                        new ModuleName( "Abdera" ),
+                        new ModuleName( "Abdera servlet" ),
                         new AbderaServletAssembler(),
                     },
                     {
@@ -52,6 +53,14 @@ public class Main
                 },
                 // Domain
                 {
+                    {
+                        new ModuleName( "Abdera adapter" ),
+                        new AbderaAdapterAssembler(),
+                    },
+                    {
+                        new ModuleName( "RDF" ),
+                        new RDFAssembler(),
+                    },
                     {
                         new ModuleName( "Domain" ),
                         new DomainAssembler(),
@@ -74,6 +83,15 @@ class MemoryEntityStoreServiceAssembler
 {
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
-        module.addServices( MemoryEntityStoreService.class ).visibleIn( Visibility.layer );
+        module.addServices( MemoryEntityStoreService.class ).visibleIn( Visibility.application );
+    }
+}
+
+class RDFAssembler
+    implements Assembler
+{
+    public void assemble( ModuleAssembly module ) throws AssemblyException
+    {
+        module.addServices( EntitySerializerService.class ).visibleIn( Visibility.layer );
     }
 }

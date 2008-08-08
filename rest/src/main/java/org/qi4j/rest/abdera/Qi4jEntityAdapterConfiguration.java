@@ -15,16 +15,13 @@
 package org.qi4j.rest.abdera;
 
 import org.qi4j.entity.EntityComposite;
-import org.qi4j.entity.association.Association;
 import org.qi4j.property.Property;
 
 /**
  * TODO
  */
-public interface TestEntity
+public interface Qi4jEntityAdapterConfiguration
     extends EntityComposite
 {
-    Property<String> test1();
-
-    Association<TestEntity> association();
+    Property<String> href();
 }

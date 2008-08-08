@@ -174,7 +174,7 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
 
     private QualifiedIdentity createId( String id, Class<?> compositeClass )
     {
-        return new QualifiedIdentity( id, compositeClass.getName() );
+        return new QualifiedIdentity( id, compositeClass );
     }
 
     @Test public void findExistingPersonComposite() throws UnitOfWorkCompletionException
