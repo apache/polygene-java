@@ -87,6 +87,8 @@ public final class ObjectModel
 
     public void bind( Resolution resolution ) throws BindingException
     {
+        resolution = new Resolution( resolution.application(), resolution.layer(), resolution.module(), null, this, null, null );
+
         constructorsModel.bind( resolution );
         injectedFieldsModel.bind( resolution );
         injectedMethodsModel.bind( resolution );
@@ -107,4 +109,10 @@ public final class ObjectModel
         injectedFieldsModel.inject( injectionContext, instance );
         injectedMethodsModel.inject( injectionContext, instance );
     }
+
+    @Override public String toString()
+    {
+        return objectType.getName();
+    }
+
 }

@@ -121,7 +121,7 @@ public final class GenericPropertyInfo
     }
 
     /**
-     * Get URI for a qualified property name.
+     * Get qualified property name from a URI
      *
      * @param uri
      * @return property qualified property name

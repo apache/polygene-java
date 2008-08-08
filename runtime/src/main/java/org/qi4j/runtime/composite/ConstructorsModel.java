@@ -32,7 +32,6 @@ import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.util.AnnotationUtil;
-import org.qi4j.spi.composite.CompositeDescriptor;
 
 /**
  * TODO
@@ -53,8 +52,10 @@ public final class ConstructorsModel
         for( Constructor constructor : constructors )
         {
             ConstructorModel constructorModel = newConstructorModel( fragmentClass, constructor );
-            if (constructorModel!=null)
+            if( constructorModel != null )
+            {
                 constructorModels.add( constructorModel );
+            }
         }
     }
 
@@ -66,7 +67,10 @@ public final class ConstructorsModel
         for( Type type : constructor.getGenericParameterTypes() )
         {
             final Annotation injectionAnnotation = AnnotationUtil.getInjectionAnnotation( parameterAnnotations[ idx ] );
-            if (injectionAnnotation==null) return null; // invalid constructor parameter
+            if( injectionAnnotation == null )
+            {
+                return null; // invalid constructor parameter
+            }
             DependencyModel dependencyModel = new DependencyModel( injectionAnnotation, type, fragmentClass );
             parameters.addDependency( dependencyModel );
             idx++;
@@ -108,7 +112,7 @@ public final class ConstructorsModel
 
         if( boundConstructor == null )
         {
-            String toString = resolution.composite().toString();
+            String toString = resolution.composite() == null ? resolution.object().toString() : resolution.composite().toString();
             String message = "Found no constructor that could be bound: " + toString;
             if( toString.indexOf( '$' ) >= 0 )
             {

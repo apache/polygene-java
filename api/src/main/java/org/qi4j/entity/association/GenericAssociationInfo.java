@@ -111,11 +111,22 @@ public class GenericAssociationInfo
      * Get URI for a qualified property name.
      *
      * @param qualifiedName
-     * @return property URI
+     * @return association URI
      */
     public static String toURI( final String qualifiedName )
     {
         return "urn:qi4j:association:" + qualifiedName;
+    }
+
+    /**
+     * Get qualified association name from a URI
+     *
+     * @param uri
+     * @return qualified association name
+     */
+    public static String toQualifiedName( final String uri )
+    {
+        return uri.substring( "urn:qi4j:association:".length() );
     }
 
     private Method accessor;

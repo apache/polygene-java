@@ -74,6 +74,7 @@ public final class CompositeMethodModel
                                      resolution.layer(),
                                      resolution.module(),
                                      resolution.composite(),
+                                     resolution.object(),
                                      this,
                                      null //no field
         );

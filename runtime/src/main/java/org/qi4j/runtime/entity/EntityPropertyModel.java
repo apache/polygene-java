@@ -73,6 +73,20 @@ public final class EntityPropertyModel extends PropertyModel
 
     public PropertyType propertyType()
     {
-        return new PropertyType( qualifiedName(), ClassUtil.getRawClass( type() ).getName() );
+        PropertyType.PropertyTypeEnum type;
+        if( isComputed() )
+        {
+            type = PropertyType.PropertyTypeEnum.COMPUTED;
+        }
+        else if( isImmutable() )
+        {
+            type = PropertyType.PropertyTypeEnum.COMPUTED;
+        }
+        else
+        {
+            type = PropertyType.PropertyTypeEnum.MUTABLE;
+        }
+
+        return new PropertyType( qualifiedName(), ClassUtil.getRawClass( type() ).getName(), type );
     }
 }

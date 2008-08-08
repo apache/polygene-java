@@ -153,7 +153,7 @@ public final class CompositeModel
     // Binding
     public void bind( Resolution resolution ) throws BindingException
     {
-        resolution = new Resolution( resolution.application(), resolution.layer(), resolution.module(), this, null, null );
+        resolution = new Resolution( resolution.application(), resolution.layer(), resolution.module(), this, null, null, null );
         compositeMethodsModel.bind( resolution );
         mixinsModel.bind( resolution );
     }

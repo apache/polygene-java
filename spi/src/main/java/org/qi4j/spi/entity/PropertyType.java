@@ -23,13 +23,20 @@ import org.qi4j.property.GenericPropertyInfo;
 public class PropertyType
     implements Serializable
 {
+    public enum PropertyTypeEnum
+    {
+        MUTABLE, IMMUTABLE, COMPUTED
+    }
+
     private String qualifiedName;
     private String type;
+    private PropertyTypeEnum propertyType;
 
-    public PropertyType( String qualifiedName, String type )
+    public PropertyType( String qualifiedName, String type, PropertyTypeEnum propertyType )
     {
         this.qualifiedName = qualifiedName;
         this.type = type;
+        this.propertyType = propertyType;
     }
 
     public String qualifiedName()
@@ -40,6 +47,11 @@ public class PropertyType
     public String type()
     {
         return type;
+    }
+
+    public PropertyTypeEnum propertyType()
+    {
+        return propertyType;
     }
 
     public String toURI()

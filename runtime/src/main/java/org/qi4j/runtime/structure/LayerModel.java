@@ -63,7 +63,7 @@ public final class LayerModel
     // Binding
     public void bind( Resolution resolution ) throws BindingException
     {
-        resolution = new Resolution( resolution.application(), this, null, null, null, null );
+        resolution = new Resolution( resolution.application(), this, null, null, null, null, null );
         for( ModuleModel module : modules )
         {
             module.bind( resolution );
