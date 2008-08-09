@@ -21,13 +21,13 @@ limitations under the License.
   <parent>
     <groupId>org.qi4j</groupId>
     <artifactId>qi4j</artifactId>
-    <version>0.3-SNAPSHOT</version>
+    <version>0.4-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.qi4j.extensions</groupId>
   <artifactId>qi4j-ext-entitystore-neo4j</artifactId>
   <name>Qi4j Extension - Neo4j Store</name>
-  <version>0.3-SNAPSHOT</version>
+  <version>0.4-SNAPSHOT</version>
   <packaging>bundle</packaging>
   <licenses>
     <license>
@@ -72,7 +72,7 @@ limitations under the License.
       <groupId>org.neo4j</groupId>
       <artifactId>index-util</artifactId>
       <!-- TODO: check if this is the apropriate version -->
-      <version>0.3-SNAPSHOT</version>
+      <version>0.4-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.neo4j</groupId>
