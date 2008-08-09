@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Arrays;
 import org.qi4j.entity.association.GenericAssociationInfo;
 import org.qi4j.entity.association.ListAssociation;
 import org.qi4j.util.MetaInfo;
@@ -212,6 +213,10 @@ public class JavabeanListAssociation
         try
         {
             Object resultObject = pojoMethod.invoke( javabeanMixin.pojo );
+            if( resultObject.getClass().isArray() )
+            {
+                return Arrays.asList( (Object[]) resultObject );
+            }
             return (List) resultObject;
         }
         catch( IllegalAccessException e )
@@ -220,7 +225,7 @@ public class JavabeanListAssociation
         }
         catch( ClassCastException e )
         {
-            throw new IllegalArgumentException( "Javabean and Qi4j model are not compatible. Expected a java.util.List in return type of " + pojoMethod );
+            throw new IllegalArgumentException( "Javabean and Qi4j model are not compatible. Expected either an array or a java.util.List in return type of " + pojoMethod );
         }
         catch( InvocationTargetException e )
         {

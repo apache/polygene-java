@@ -16,7 +16,7 @@ import org.qi4j.composite.Composite;
 import org.qi4j.composite.ConstraintViolation;
 
 /**
- * <p>ConstraintViolationInterceptor adds constraint violations from the ActionContext to the Action's field errors.</p>
+ * <p>ConstrqaintViolationInterceptor adds constraint violations from the ActionContext to the Action's field errors.</p>
  *
  * <p>This interceptor adds any error found in the {@link ActionContext}'s constraint violations map as a field error
  * (provided that the action implements {@link ValidationAware}). In addition, any field that contains a constraint
