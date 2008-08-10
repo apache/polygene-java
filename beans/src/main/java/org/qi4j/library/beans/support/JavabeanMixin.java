@@ -54,32 +54,14 @@ public class JavabeanMixin
             if( Property.class.isAssignableFrom( returnType ) )
             {
                 JavabeanProperty prop = new JavabeanProperty( this, method );
-                String methodName = computePojoMethodName( prop.name() );
-                Method pojoMethod;
-                try
-                {
-                    pojoMethod = pojo.getClass().getMethod( methodName );
-                }
-                catch( NoSuchMethodException e )
-                {
-                    throw new IllegalArgumentException( methodName + " is not present in " + pojo.getClass() );
-                }
+                Method pojoMethod = findMethod( pojo, prop.name() );
                 prop.setPojoMethod( pojoMethod );
                 handlers.put( method, prop );
             }
             else if( SetAssociation.class.isAssignableFrom( returnType ) )
             {
                 JavabeanSetAssociation association = new JavabeanSetAssociation( this, method );
-                String methodName = computePojoMethodName( association.name() );
-                Method pojoMethod;
-                try
-                {
-                    pojoMethod = pojo.getClass().getMethod( methodName );
-                }
-                catch( NoSuchMethodException e )
-                {
-                    throw new IllegalArgumentException( methodName + " is not present in " + pojo.getClass() );
-                }
+                Method pojoMethod = findMethod( pojo, association.name() );
                 association.setPojoMethod( pojoMethod );
                 handlers.put( method, association );
             }
@@ -87,36 +69,41 @@ public class JavabeanMixin
                      ManyAssociation.class.isAssignableFrom( returnType ) )
             {
                 JavabeanListAssociation association = new JavabeanListAssociation( this, method );
-                String methodName = computePojoMethodName( association.name() );
-                Method pojoMethod;
-                try
-                {
-                    pojoMethod = pojo.getClass().getMethod( methodName );
-                }
-                catch( NoSuchMethodException e )
-                {
-                    throw new IllegalArgumentException( methodName + " is not present in " + pojo.getClass() );
-                }
+                Method pojoMethod = findMethod( pojo, association.name() );
                 association.setPojoMethod( pojoMethod );
                 handlers.put( method, association );
             }
             else if( Association.class.isAssignableFrom( returnType ) )
             {
                 JavabeanAssociation association = new JavabeanAssociation( this, method );
-                String methodName = computePojoMethodName( association.name() );
-                Method pojoMethod;
-                try
-                {
-                    pojoMethod = pojo.getClass().getMethod( methodName );
-                }
-                catch( NoSuchMethodException e )
-                {
-                    throw new IllegalArgumentException( methodName + " is not present in " + pojo.getClass() );
-                }
+                Method pojoMethod = findMethod( pojo, association.name() );
                 association.pojoMethod = pojoMethod;
                 handlers.put( method, association );
             }
         }
+    }
+
+    private Method findMethod( Object pojo, String name )
+    {
+        String methodName = "get" + Character.toUpperCase( name.charAt( 0 ) ) + name.substring( 1 );
+        Method pojoMethod;
+        try
+        {
+            pojoMethod = pojo.getClass().getMethod( methodName );
+        }
+        catch( NoSuchMethodException e )
+        {
+            methodName = "is" + Character.toUpperCase( name.charAt( 0 ) ) + name.substring( 1 );
+            try
+            {
+                pojoMethod = pojo.getClass().getMethod( methodName );
+            }
+            catch( NoSuchMethodException e1 )
+            {
+                throw new IllegalArgumentException( methodName + " is not present in " + pojo.getClass() );
+            }
+        }
+        return pojoMethod;
     }
 
     public Object getJavabean()
@@ -136,11 +123,6 @@ public class JavabeanMixin
         {
             return handlers.get( method );
         }
-    }
-
-    private String computePojoMethodName( String propertyName )
-    {
-        return "get" + Character.toUpperCase( propertyName.charAt( 0 ) ) + propertyName.substring( 1 );
     }
 
     public static class JavabeanSupportFilter

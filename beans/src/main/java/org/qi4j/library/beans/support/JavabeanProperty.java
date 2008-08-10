@@ -17,12 +17,16 @@
  */
 package org.qi4j.library.beans.support;
 
-import org.qi4j.property.ComputedPropertyInstance;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.UndeclaredThrowableException;
+import java.util.Arrays;
+import java.util.List;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.CompositeBuilderFactory;
-import java.lang.reflect.Method;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.UndeclaredThrowableException;
+import org.qi4j.property.ComputedPropertyInstance;
 
 public class JavabeanProperty extends ComputedPropertyInstance
 {
@@ -54,12 +58,52 @@ public class JavabeanProperty extends ComputedPropertyInstance
 
     private Object wrap( CompositeBuilderFactory factory, Object resultObject )
     {
-        Class type = (Class) type();
-        if( type.isInterface() )
+        Type type = type();
+        if( type instanceof Class )
         {
-            CompositeBuilder<?> builder = factory.newCompositeBuilder( type );
-            builder.use( resultObject );
-            return builder.newInstance();
+            Class clazz = (Class) type;
+            if( clazz.isInterface() )
+            {
+                if( clazz.equals( List.class ) )
+                {
+                    if( resultObject.getClass().isArray() )
+                    {
+                        resultObject = Arrays.asList( (Object[]) resultObject );
+                    }
+                }
+                if( clazz.isArray() )
+                {
+                    if( List.class.isAssignableFrom( resultObject.getClass() ) )
+                    {
+                        resultObject = ( (List) resultObject ).toArray();
+                    }
+                }
+                CompositeBuilder<?> builder = factory.newCompositeBuilder( clazz );
+                builder.use( resultObject );
+                return builder.newInstance();
+            }
+        }
+        if( type instanceof ParameterizedType )
+        {
+            if( !resultObject.getClass().equals( type ) )
+            {
+                ParameterizedType paramtype = (ParameterizedType) type;
+                Type rawType = paramtype.getRawType();
+                Type actType = paramtype.getActualTypeArguments()[ 0 ];
+                if( List.class.isAssignableFrom( (Class<?>) rawType ) )
+                {
+                    if( !( actType instanceof Class ) ||
+                        ( (Class) actType ).isInstance( resultObject ) )
+                    {
+                        String message = "The type " + paramtype + " is not compatible with " + resultObject.getClass();
+                        throw new IllegalArgumentException( message );
+                    }
+                    if( resultObject.getClass().isArray() )
+                    {
+                        resultObject = Arrays.asList( (Object[]) resultObject );
+                    }
+                }
+            }
         }
         return resultObject;
     }

@@ -22,11 +22,11 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Arrays;
 import org.qi4j.entity.association.GenericAssociationInfo;
 import org.qi4j.entity.association.ListAssociation;
 import org.qi4j.util.MetaInfo;
@@ -213,6 +213,10 @@ public class JavabeanListAssociation
         try
         {
             Object resultObject = pojoMethod.invoke( javabeanMixin.pojo );
+            if( resultObject == null )
+            {
+                return null;
+            }
             if( resultObject.getClass().isArray() )
             {
                 return Arrays.asList( (Object[]) resultObject );
