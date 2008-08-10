@@ -31,8 +31,8 @@ import org.qi4j.query.grammar.Negation;
 import org.qi4j.query.grammar.OrderBy;
 import org.qi4j.query.grammar.SingleValueExpression;
 import org.qi4j.query.grammar.ValueExpression;
-import org.qi4j.query.grammar.impl.VariableValueExpression;
 import org.qi4j.runtime.entity.UnitOfWorkInstance;
+import org.qi4j.runtime.query.grammar.impl.VariableValueExpressionImpl;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
@@ -126,9 +126,9 @@ final class QueryImpl<T>
             ComparisonPredicate predicate = (ComparisonPredicate) anExpression;
             ValueExpression valueExpression = predicate.valueExpression();
 
-            if( valueExpression instanceof VariableValueExpression )
+            if( valueExpression instanceof VariableValueExpressionImpl )
             {
-                VariableValueExpression variableValueExpression = (VariableValueExpression) valueExpression;
+                VariableValueExpressionImpl variableValueExpression = (VariableValueExpressionImpl) valueExpression;
                 variables.put( variableValueExpression.getName(), variableValueExpression );
             }
         }
@@ -198,7 +198,7 @@ final class QueryImpl<T>
     public void setVariable( final String name, final Object value )
     {
         // TODO: Casting to VariableValueExpression
-        VariableValueExpression variable = getVariable( name );
+        VariableValueExpressionImpl variable = getVariable( name );
         if( variable == null )
         {
             throw new IllegalArgumentException( "Variable [" + name + "] is not found." );

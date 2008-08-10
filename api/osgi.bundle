@@ -6,8 +6,7 @@ Import-Package:
 
 Export-Package: org.qi4j, \
                 org.qi4j.composite.internal, \
-                 org.qi4j.query.grammar.impl, \
-                 org.qi4j.composite, \
+                org.qi4j.composite, \
                 org.qi4j.entity, \
                 org.qi4j.entity.association, \
                 org.qi4j.injection, \
@@ -16,7 +15,6 @@ Export-Package: org.qi4j, \
                 org.qi4j.property, \
                 org.qi4j.query, \
                 org.qi4j.query.grammar, \
-                org.qi4j.query.proxy, \
                 org.qi4j.scripting, \
                 org.qi4j.service, \
                 org.qi4j.structure, \

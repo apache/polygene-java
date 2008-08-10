@@ -6,7 +6,6 @@ Private-Package: net.sf.cglib.proxy, \
                  net.sf.cglib.asm, \
                  net.sf.cglib.core, \
                  net.sf.cglib.reflect, \
-                 net.sf.cglib.asm.util, \
                  org.qi4j.runtime, \
                  org.qi4j.runtime.composite, \
                  org.qi4j.runtime.bootstrap, \
@@ -17,6 +16,8 @@ Private-Package: net.sf.cglib.proxy, \
                  org.qi4j.runtime.object, \
                  org.qi4j.runtime.property, \
                  org.qi4j.runtime.query, \
+                 org.qi4j.runtime.query.grammar.impl, \
+                 org.qi4j.runtime.query.proxy, \
                  org.qi4j.runtime.service, \
                  org.qi4j.runtime.structure, \
                  org.qi4j.runtime.util
@@ -33,7 +34,6 @@ Import-Package: org.qi4j, \
                 org.qi4j.property, \
                 org.qi4j.query, \
                 org.qi4j.query.grammar, \
-                org.qi4j.query.grammar.impl, \
                 org.qi4j.service, \
                 org.qi4j.spi, \
                 org.qi4j.spi.composite, \

@@ -84,6 +84,7 @@ public final class UnitOfWorkInstance
                 return new Stack<UnitOfWork>();
             }
         };
+        QueryBuilderFactoryImpl.initialize();
     }
 
     public UnitOfWorkInstance( ModuleInstance moduleInstance )

@@ -12,7 +12,7 @@
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
- * implied.
+ * ied.
  *
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -20,7 +20,6 @@
  */
 package org.qi4j.query;
 
-import java.lang.reflect.Proxy;
 import org.qi4j.entity.association.Association;
 import org.qi4j.property.Property;
 import org.qi4j.query.grammar.AssociationIsNotNullPredicate;
@@ -41,30 +40,22 @@ import org.qi4j.query.grammar.OrderBy;
 import org.qi4j.query.grammar.PropertyIsNotNullPredicate;
 import org.qi4j.query.grammar.PropertyIsNullPredicate;
 import org.qi4j.query.grammar.PropertyReference;
-import org.qi4j.query.grammar.impl.AssociationIsNotNullPredicateImpl;
-import org.qi4j.query.grammar.impl.AssociationIsNullPredicateImpl;
-import org.qi4j.query.grammar.impl.ConjunctionImpl;
-import org.qi4j.query.grammar.impl.DisjunctionImpl;
-import org.qi4j.query.grammar.impl.EqualsPredicateImpl;
-import org.qi4j.query.grammar.impl.GreaterOrEqualPredicateImpl;
-import org.qi4j.query.grammar.impl.GreaterThanPredicateImpl;
-import org.qi4j.query.grammar.impl.LessOrEqualPredicateImpl;
-import org.qi4j.query.grammar.impl.LessThanPredicateImpl;
-import org.qi4j.query.grammar.impl.MatchesPredicateImpl;
-import org.qi4j.query.grammar.impl.NegationImpl;
-import org.qi4j.query.grammar.impl.NotEqualsPredicateImpl;
-import org.qi4j.query.grammar.impl.OrderByImpl;
-import org.qi4j.query.grammar.impl.PropertyIsNotNullPredicateImpl;
-import org.qi4j.query.grammar.impl.PropertyIsNullPredicateImpl;
-import org.qi4j.query.grammar.impl.StaticValueExpression;
-import org.qi4j.query.grammar.impl.VariableValueExpression;
-import org.qi4j.query.proxy.MixinTypeProxy;
+import org.qi4j.query.grammar.SingleValueExpression;
+import org.qi4j.query.grammar.VariableValueExpression;
 
 /**
  * Static factory methods for query expressions and operators.
  */
 public final class QueryExpressions
 {
+
+    private static QueryExpressionsProvider provider;
+
+
+    public static void setProvider( QueryExpressionsProvider provider )
+    {
+        QueryExpressions.provider = provider;
+    }
 
     /**
      * Creates a template for the a mixin type to be used to access properties in type safe fashion.
@@ -75,71 +66,67 @@ public final class QueryExpressions
     @SuppressWarnings( "unchecked" )
     public static <T> T templateFor( final Class<T> mixinType )
     {
-        return (T) Proxy.newProxyInstance(
-            QueryExpressions.class.getClassLoader(),
-            new Class[]{ mixinType },
-            new MixinTypeProxy( mixinType )
-        );
+        return provider.templateFor( mixinType );
     }
 
     /**
-     * {@link org.qi4j.query.grammar.impl.VariableValueExpression} factory method.
+     * {@link org.qi4j.query.grammar.VariableValueExpression} factory method.
      *
      * @param name variable name; cannot be null
-     * @return an {@link org.qi4j.query.grammar.impl.VariableValueExpression} expression
+     * @return an {@link org.qi4j.query.grammar.VariableValueExpression} expression
      * @throws IllegalArgumentException - If name is null or empty
      */
-    public static <T> VariableValueExpression<T> variable( final String name )
+    public static VariableValueExpression variable( final String name )
     {
-        return new VariableValueExpression<T>( name );
+        return provider.newVariableValueExpression( name );
     }
 
     /**
-     * {@link org.qi4j.query.grammar.impl.PropertyIsNullPredicateImpl} factory method.
+     * {@link org.qi4j.query.grammar.PropertyIsNullPredicate} factory method.
      *
      * @param property filtered property; cannot be null
-     * @return an {@link org.qi4j.query.grammar.impl.PropertyIsNullPredicateImpl} expression
+     * @return an {@link org.qi4j.query.grammar.PropertyIsNullPredicate} expression
      * @throws IllegalArgumentException - If property is null
      */
     public static <T> PropertyIsNullPredicate<T> isNull( final Property<T> property )
     {
-        return new PropertyIsNullPredicateImpl<T>( asPropertyExpression( property ) );
+        return provider.newPropertyIsNullPredicate( asPropertyExpression( property ) );
     }
 
     /**
-     * {@link org.qi4j.query.grammar.impl.AssociationIsNullPredicateImpl} factory method.
+     * {@link org.qi4j.query.grammar.AssociationIsNullPredicate} factory method.
      *
      * @param association filtered association; cannot be null
-     * @return an {@link org.qi4j.query.grammar.impl.AssociationIsNullPredicateImpl} expression
+     * @return an {@link org.qi4j.query.grammar.AssociationIsNullPredicate} expression
      * @throws IllegalArgumentException - If association is null
      */
     public static AssociationIsNullPredicate isNull( final Association<?> association )
     {
-        return new AssociationIsNullPredicateImpl( asAssociationExpression( association ) );
+        return provider.newAssociationIsNullPredicate( asAssociationExpression( association ) );
     }
 
     /**
-     * {@link org.qi4j.query.grammar.impl.PropertyIsNotNullPredicateImpl} factory method.
+     * {@link org.qi4j.query.grammar.PropertyIsNotNullPredicate} factory method.
      *
      * @param property filtered property; cannot be null
-     * @return an {@link org.qi4j.query.grammar.impl.PropertyIsNotNullPredicateImpl} expression
+     * @return an {@link org.qi4j.query.grammar.PropertyIsNotNullPredicate} expression
      * @throws IllegalArgumentException - If property is null
      */
     public static <T> PropertyIsNotNullPredicate<T> isNotNull( final Property<T> property )
     {
-        return new PropertyIsNotNullPredicateImpl<T>( asPropertyExpression( property ) );
+        return provider.newPropertyIsNotNullPredicate( asPropertyExpression( property ) );
     }
 
     /**
-     * {@link org.qi4j.query.grammar.impl.AssociationIsNotNullPredicateImpl} factory method.
+     * {@link org.qi4j.query.grammar.AssociationIsNotNullPredicate} factory method.
      *
      * @param association filtered association; cannot be null
-     * @return an {@link org.qi4j.query.grammar.impl.AssociationIsNotNullPredicateImpl} expression
+     * @return an {@link org.qi4j.query.grammar.AssociationIsNotNullPredicate} expression
      * @throws IllegalArgumentException - If association is null
      */
     public static AssociationIsNotNullPredicate isNotNull( final Association<?> association )
     {
-        return new AssociationIsNotNullPredicateImpl( asAssociationExpression( association ) );
+        return provider.newAssociationIsNotNullPredicate( asAssociationExpression( association ) );
     }
 
     /**
@@ -153,7 +140,7 @@ public final class QueryExpressions
     public static <T> EqualsPredicate<T> eq( final Property<T> property,
                                              final T value )
     {
-        return new EqualsPredicateImpl<T>( asPropertyExpression( property ), asTypedValueExpression( value ) );
+        return provider.newEqualsPredicate( asPropertyExpression( property ), asTypedValueExpression( value ) );
     }
 
     /**
@@ -167,148 +154,148 @@ public final class QueryExpressions
     public static <T> EqualsPredicate<T> eq( final Property<T> property,
                                              final VariableValueExpression<T> valueExpression )
     {
-        return new EqualsPredicateImpl<T>( asPropertyExpression( property ), valueExpression );
+        return provider.newEqualsPredicate( asPropertyExpression( property ), valueExpression );
     }
 
     /**
-     * {@link org.qi4j.query.grammar.impl.NotEqualsPredicateImpl} factory method.
+     * {@link org.qi4j.query.grammar.NotEqualsPredicate} factory method.
      *
      * @param property filtered property; cannot be null
      * @param value    expected value that property is not equal to; cannot be null
-     * @return an {@link org.qi4j.query.grammar.impl.NotEqualsPredicateImpl} expression
+     * @return an {@link org.qi4j.query.grammar.NotEqualsPredicate} expression
      * @throws IllegalArgumentException - If property or value are null
      */
     public static <T> NotEqualsPredicate<T> notEq( final Property<T> property,
                                                    final T value )
     {
-        return new NotEqualsPredicateImpl<T>( asPropertyExpression( property ), asTypedValueExpression( value ) );
+        return provider.newNotEqualsPredicate( asPropertyExpression( property ), asTypedValueExpression( value ) );
     }
 
     /**
-     * {@link org.qi4j.query.grammar.impl.NotEqualsPredicateImpl} factory method.
+     * {@link org.qi4j.query.grammar.NotEqualsPredicate} factory method.
      *
      * @param property        filtered property; cannot be null
      * @param valueExpression expected value that property is not equal to; cannot be null
-     * @return an {@link org.qi4j.query.grammar.impl.NotEqualsPredicateImpl} expression
+     * @return an {@link org.qi4j.query.grammar.NotEqualsPredicate} expression
      * @throws IllegalArgumentException - If property or value are null
      */
     public static <T> NotEqualsPredicate<T> notEq( final Property<T> property,
                                                    final VariableValueExpression<T> valueExpression )
     {
-        return new NotEqualsPredicateImpl<T>( asPropertyExpression( property ), valueExpression );
+        return provider.newNotEqualsPredicate( asPropertyExpression( property ), valueExpression );
     }
 
 
     /**
-     * {@link org.qi4j.query.grammar.impl.LessThanPredicateImpl} factory method.
+     * {@link org.qi4j.query.grammar.LessThanPredicate} factory method.
      *
      * @param property filtered property; cannot be null
      * @param value    expected value that property is less than; cannot be null
-     * @return an {@link org.qi4j.query.grammar.impl.LessThanPredicateImpl} expression
+     * @return an {@link org.qi4j.query.grammar.LessThanPredicate} expression
      * @throws IllegalArgumentException - If property or value are null
      */
     public static <T> LessThanPredicate<T> lt( final Property<T> property,
                                                final T value )
     {
-        return new LessThanPredicateImpl<T>( asPropertyExpression( property ), asTypedValueExpression( value ) );
+        return provider.newLessThanPredicate( asPropertyExpression( property ), asTypedValueExpression( value ) );
     }
 
     /**
-     * {@link org.qi4j.query.grammar.impl.LessThanPredicateImpl} factory method.
+     * {@link org.qi4j.query.grammar.LessThanPredicate} factory method.
      *
      * @param property        filtered property; cannot be null
      * @param valueExpression expected value that property is less than; cannot be null
-     * @return an {@link org.qi4j.query.grammar.impl.LessThanPredicateImpl} expression
+     * @return an {@link org.qi4j.query.grammar.LessThanPredicate} expression
      * @throws IllegalArgumentException - If property or value are null
      */
     public static <T> LessThanPredicate<T> lt( final Property<T> property,
                                                final VariableValueExpression<T> valueExpression )
     {
-        return new LessThanPredicateImpl<T>( asPropertyExpression( property ), valueExpression );
+        return provider.newLessThanPredicate( asPropertyExpression( property ), valueExpression );
     }
 
     /**
-     * {@link org.qi4j.query.grammar.impl.LessOrEqualPredicateImpl} factory method.
+     * {@link org.qi4j.query.grammar.LessOrEqualPredicate} factory method.
      *
      * @param property filtered property; cannot be null
      * @param value    expected value that property is less than or equal to; cannot be null
-     * @return an {@link org.qi4j.query.grammar.impl.LessOrEqualPredicateImpl} expression
+     * @return an {@link org.qi4j.query.grammar.LessOrEqualPredicate} expression
      * @throws IllegalArgumentException - If property or value are null
      */
     public static <T> LessOrEqualPredicate<T> le( final Property<T> property,
                                                   final T value )
     {
-        return new LessOrEqualPredicateImpl<T>( asPropertyExpression( property ), asTypedValueExpression( value ) );
+        return provider.newLessOrEqualPredicate( asPropertyExpression( property ), asTypedValueExpression( value ) );
     }
 
     /**
-     * {@link org.qi4j.query.grammar.impl.LessOrEqualPredicateImpl} factory method.
+     * {@link org.qi4j.query.grammar.LessOrEqualPredicate} factory method.
      *
      * @param property        filtered property; cannot be null
      * @param valueExpression expected value that property is less than or equal to; cannot be null
-     * @return an {@link org.qi4j.query.grammar.impl.LessOrEqualPredicateImpl} expression
+     * @return an {@link org.qi4j.query.grammar.LessOrEqualPredicate} expression
      * @throws IllegalArgumentException - If property or value are null
      */
     public static <T> LessOrEqualPredicate<T> le( final Property<T> property,
                                                   final VariableValueExpression<T> valueExpression )
     {
-        return new LessOrEqualPredicateImpl<T>( asPropertyExpression( property ), valueExpression );
+        return provider.newLessOrEqualPredicate( asPropertyExpression( property ), valueExpression );
     }
 
     /**
-     * {@link org.qi4j.query.grammar.impl.GreaterThanPredicateImpl} factory method.
+     * {@link org.qi4j.query.grammar.GreaterThanPredicate} factory method.
      *
      * @param property filtered property; cannot be null
      * @param value    expected value that property is greater than; cannot be null
-     * @return an {@link org.qi4j.query.grammar.impl.GreaterThanPredicateImpl} expression
+     * @return an {@link org.qi4j.query.grammar.GreaterThanPredicate} expression
      * @throws IllegalArgumentException - If property or value are null
      */
     public static <T> GreaterThanPredicate<T> gt( final Property<T> property,
                                                   final T value )
     {
-        return new GreaterThanPredicateImpl<T>( asPropertyExpression( property ), asTypedValueExpression( value ) );
+        return provider.newGreaterThanPredicate( asPropertyExpression( property ), asTypedValueExpression( value ) );
     }
 
     /**
-     * {@link org.qi4j.query.grammar.impl.GreaterThanPredicateImpl} factory method.
+     * {@link org.qi4j.query.grammar.GreaterThanPredicate} factory method.
      *
      * @param property        filtered property; cannot be null
      * @param valueExpression expected value that property is greater than; cannot be null
-     * @return an {@link org.qi4j.query.grammar.impl.GreaterThanPredicateImpl} expression
+     * @return an {@link org.qi4j.query.grammar.GreaterThanPredicate} expression
      * @throws IllegalArgumentException - If property or value are null
      */
     public static <T> GreaterThanPredicate<T> gt( final Property<T> property,
                                                   final VariableValueExpression<T> valueExpression )
     {
-        return new GreaterThanPredicateImpl<T>( asPropertyExpression( property ), valueExpression );
+        return provider.newGreaterThanPredicate( asPropertyExpression( property ), valueExpression );
     }
 
     /**
-     * {@link org.qi4j.query.grammar.impl.GreaterOrEqualPredicateImpl} factory method.
+     * {@link org.qi4j.query.grammar.GreaterOrEqualPredicate} factory method.
      *
      * @param property filtered property; cannot be null
      * @param value    expected value that property is greater than or equal; cannot be null
-     * @return an {@link org.qi4j.query.grammar.impl.GreaterOrEqualPredicateImpl} expression
+     * @return an {@link org.qi4j.query.grammar.GreaterOrEqualPredicate} expression
      * @throws IllegalArgumentException - If property or value are null
      */
     public static <T> GreaterOrEqualPredicate<T> ge( final Property<T> property,
                                                      final T value )
     {
-        return new GreaterOrEqualPredicateImpl<T>( asPropertyExpression( property ), asTypedValueExpression( value ) );
+        return provider.newGreaterOrEqualPredicate( asPropertyExpression( property ), asTypedValueExpression( value ) );
     }
 
     /**
-     * {@link org.qi4j.query.grammar.impl.GreaterOrEqualPredicateImpl} factory method.
+     * {@link org.qi4j.query.grammar.GreaterOrEqualPredicate} factory method.
      *
      * @param property        filtered property; cannot be null
      * @param valueExpression expected value that property is greater than or equal; cannot be null
-     * @return an {@link org.qi4j.query.grammar.impl.GreaterOrEqualPredicateImpl} expression
+     * @return an {@link org.qi4j.query.grammar.GreaterOrEqualPredicate} expression
      * @throws IllegalArgumentException - If property or value are null
      */
     public static <T> GreaterOrEqualPredicate<T> ge( final Property<T> property,
                                                      final VariableValueExpression<T> valueExpression )
     {
-        return new GreaterOrEqualPredicateImpl<T>( asPropertyExpression( property ), valueExpression );
+        return provider.newGreaterOrEqualPredicate( asPropertyExpression( property ), valueExpression );
     }
 
     /**
@@ -322,47 +309,47 @@ public final class QueryExpressions
     public static MatchesPredicate matches( final Property<String> property,
                                             final String regexp )
     {
-        return new MatchesPredicateImpl( asPropertyExpression( property ), asTypedValueExpression( regexp ) );
+        return provider.newMatchesPredicate( asPropertyExpression( property ), asTypedValueExpression( regexp ) );
     }
 
     /**
-     * {@link org.qi4j.query.grammar.impl.ConjunctionImpl} factory method. Apply a logical "AND" between two boolean expressions. Also known as "conjunction".
+     * {@link org.qi4j.query.grammar.Conjunction} factory method. Apply a logical "AND" between two boolean expressions. Also known as "conjunction".
      *
      * @param left  left side boolean expression; cannot be null
      * @param right right side boolean expression; cannot be null
-     * @return an {@link org.qi4j.query.grammar.impl.ConjunctionImpl} operator
+     * @return an {@link org.qi4j.query.grammar.Conjunction} operator
      * @throws IllegalArgumentException - If left or right expressions are null
      */
     public static Conjunction and( final BooleanExpression left,
                                    final BooleanExpression right )
     {
-        return new ConjunctionImpl( left, right );
+        return provider.newConjunction( left, right );
     }
 
     /**
-     * {@link org.qi4j.query.grammar.impl.DisjunctionImpl} factory method. Apply a logical "OR" between two boolean expressions. Also known as disjunction.
+     * {@link org.qi4j.query.grammar.Disjunction} factory method. Apply a logical "OR" between two boolean expressions. Also known as disjunction.
      *
      * @param left  left side boolean expression; cannot be null
      * @param right right side boolean expression; cannot be null
-     * @return an {@link org.qi4j.query.grammar.impl.DisjunctionImpl} operator
+     * @return an {@link org.qi4j.query.grammar.Disjunction} operator
      * @throws IllegalArgumentException - If left or right expressions are null
      */
     public static Disjunction or( final BooleanExpression left,
                                   final BooleanExpression right )
     {
-        return new DisjunctionImpl( left, right );
+        return provider.newDisjunction( left, right );
     }
 
     /**
-     * {@link org.qi4j.query.grammar.impl.NegationImpl} factory method. Apply a logical "NOT" to a boolean expression.
+     * {@link org.qi4j.query.grammar.Negation} factory method. Apply a logical "NOT" to a boolean expression.
      *
      * @param expression boolean expression; cannot be null; cannot be null
-     * @return an {@link org.qi4j.query.grammar.impl.NegationImpl} operator
+     * @return an {@link org.qi4j.query.grammar.Negation} operator
      * @throws IllegalArgumentException - If expression is null
      */
     public static Negation not( final BooleanExpression expression )
     {
-        return new NegationImpl( expression );
+        return provider.newNegation( expression );
     }
 
     /**
@@ -388,7 +375,7 @@ public final class QueryExpressions
     public static <T> OrderBy orderBy( final Property<T> property,
                                        final OrderBy.Order order )
     {
-        return new OrderByImpl( asPropertyExpression( property ), order );
+        return provider.newOrderBy( asPropertyExpression( property ), order );
     }
 
     /**
@@ -443,13 +430,13 @@ public final class QueryExpressions
      * @return created expression
      * @throws IllegalArgumentException - If value is null
      */
-    private static <T> StaticValueExpression<T> asTypedValueExpression( final T value )
+    private static <T> SingleValueExpression<T> asTypedValueExpression( final T value )
     {
         if( value == null )
         {
             throw new IllegalArgumentException( "Value cannot be null" );
         }
-        return new StaticValueExpression<T>( value );
+        return provider.newSingleValueExpression( value );
     }
 
 

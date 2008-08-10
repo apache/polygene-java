@@ -1,5 +1,5 @@
 /*
- * Copyright 2007 Niclas Hedhman.
+ * Copyright 2007-2008 Niclas Hedhman.
  * Copyright 2008 Alin Dreghiciu.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
@@ -22,6 +22,7 @@ import org.qi4j.composite.NullArgumentException;
 import org.qi4j.query.MissingIndexingSystemException;
 import org.qi4j.query.QueryBuilder;
 import org.qi4j.query.QueryBuilderFactory;
+import org.qi4j.query.QueryExpressions;
 import org.qi4j.runtime.entity.UnitOfWorkInstance;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.service.ServiceFinder;
@@ -42,6 +43,11 @@ public final class QueryBuilderFactoryImpl
      * Parent unit of work.
      */
     private final UnitOfWorkInstance unitOfWorkInstance;
+
+    public static void initialize()
+    {
+        QueryExpressions.setProvider( new QueryExpressionsProviderImpl() );
+    }
 
     /**
      * Constructor.
@@ -75,5 +81,4 @@ public final class QueryBuilderFactoryImpl
             serviceReference.releaseService();
         }
     }
-
 }
