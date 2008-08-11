@@ -17,6 +17,7 @@ package org.qi4j.library.rdf.entity;
 import org.openrdf.model.Statement;
 import org.qi4j.library.constraints.annotation.NotNull;
 import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.EntityType;
 
 /**
  * TODO
@@ -24,4 +25,6 @@ import org.qi4j.spi.entity.EntityState;
 public interface EntitySerializer
 {
     Iterable<Statement> serialize( @NotNull EntityState entityState );
+
+    Iterable<Statement> serialize( @NotNull EntityType entityType );
 }
