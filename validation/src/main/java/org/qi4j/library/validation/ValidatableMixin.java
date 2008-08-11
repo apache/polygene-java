@@ -19,9 +19,9 @@ package org.qi4j.library.validation;
 import java.util.ArrayList;
 import java.util.List;
 import org.qi4j.entity.UnitOfWork;
+import org.qi4j.entity.UnitOfWorkCallback;
 import org.qi4j.entity.UnitOfWorkCompletionException;
 import org.qi4j.entity.UnitOfWorkFactory;
-import org.qi4j.entity.UnitOfWorkSynchronization;
 import org.qi4j.injection.scope.Structure;
 import org.qi4j.injection.scope.This;
 
@@ -35,7 +35,7 @@ public class ValidatableMixin
         UnitOfWork unitOfWork = uowf.currentUnitOfWork();
         if( unitOfWork != null )
         {
-            UnitOfWorkSynchronization synch = new UnitOfWorkSynchronization()
+            UnitOfWorkCallback callback = new UnitOfWorkCallback()
             {
                 public void beforeCompletion() throws UnitOfWorkCompletionException
                 {
@@ -54,7 +54,7 @@ public class ValidatableMixin
                 }
             };
 
-            unitOfWork.registerUnitOfWorkSynchronization( synch );
+            unitOfWork.registerUnitOfWorkCallback( callback );
         }
     }
 
