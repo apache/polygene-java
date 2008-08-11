@@ -41,12 +41,17 @@ public interface DummyDataService
             try
             {
                 EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder( "test1", TestEntity.class );
-                builder.stateOfComposite().test1().set( "Foo bar" );
+                builder.stateOfComposite().name().set( "Foo bar" );
+                builder.stateOfComposite().age().set( 42 );
                 TestEntity testEntity = builder.newInstance();
 
                 EntityBuilder<TestEntity> builder2 = unitOfWork.newEntityBuilder( "test2", TestEntity.class );
-                builder2.stateOfComposite().test1().set( "Xyzzy" );
+                builder2.stateOfComposite().name().set( "Xyzzy" );
+                builder2.stateOfComposite().age().set( 12 );
                 builder2.stateOfComposite().association().set( testEntity );
+                builder2.stateOfComposite().manyAssociation().add( testEntity );
+                builder2.stateOfComposite().manyAssociation().add( testEntity );
+
                 TestEntity testEntity2 = builder2.newInstance();
 
                 unitOfWork.complete();

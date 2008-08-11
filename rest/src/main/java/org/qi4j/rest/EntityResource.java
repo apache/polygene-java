@@ -17,21 +17,29 @@
  */
 package org.qi4j.rest;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
 import org.openrdf.model.Statement;
 import org.openrdf.rio.RDFHandlerException;
+import org.qi4j.entity.association.GenericAssociationInfo;
 import org.qi4j.injection.scope.Service;
 import org.qi4j.injection.scope.Structure;
 import org.qi4j.injection.scope.Uses;
 import org.qi4j.library.rdf.entity.EntitySerializer;
 import org.qi4j.library.rdf.serializer.RdfXmlSerializer;
+import org.qi4j.property.GenericPropertyInfo;
 import org.qi4j.spi.Qi4jSPI;
+import org.qi4j.spi.entity.AssociationType;
 import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
+import org.qi4j.spi.entity.ManyAssociationType;
 import org.qi4j.spi.entity.PropertyType;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.UnknownEntityTypeException;
@@ -55,8 +63,6 @@ public class EntityResource extends Resource
     @Structure private Qi4jSPI spi;
     @Service EntitySerializer entitySerializer;
 
-
-    private EntityState entity;
     private QualifiedIdentity qualifiedIdentity;
 
     public EntityResource( @Uses Context context, @Uses Request request, @Uses Response response )
@@ -74,11 +80,6 @@ public class EntityResource extends Resource
         Map<String, Object> attributes = getRequest().getAttributes();
         String identity = (String) attributes.get( "identity" );
         String type = (String) attributes.get( "type" );
-        String ext = request.getResourceRef().getExtensions();
-        if( ext != null )
-        {
-            identity = identity.substring( 0, identity.length() - ext.length() - 1 );
-        }
         qualifiedIdentity = new QualifiedIdentity( identity, type );
     }
 
@@ -104,76 +105,127 @@ public class EntityResource extends Resource
     public Representation represent( Variant variant )
         throws ResourceException
     {
-        if( entity == null )
-        {
-            try
-            {
-                entity = entityStore.getEntityState( qualifiedIdentity );
-            }
-            catch( UnknownEntityTypeException e )
-            {
-                throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
-            }
-        }
+        EntityState entityState = getEntityState();
 
         // Check modification date
         Date lastModified = getRequest().getConditions().getModifiedSince();
         if( lastModified != null )
         {
-            if( lastModified.getTime() / 1000 == entity.lastModified() / 1000 )
+            if( lastModified.getTime() / 1000 == entityState.lastModified() / 1000 )
             {
                 throw new ResourceException( Status.REDIRECTION_NOT_MODIFIED );
             }
         }
 
         // Generate the right representation according to its media type.
-        String ext = getRequest().getResourceRef().getExtensions();
-        if( "rdf".equals( ext ) ||
-            MediaType.APPLICATION_RDF_XML.equals( variant.getMediaType() ) )
+        if( MediaType.APPLICATION_RDF_XML.equals( variant.getMediaType() ) )
         {
-            return entityHeaders( representRdfXml( entity ) );
+            return entityHeaders( representRdfXml( entityState ), entityState );
         }
-        else if( "html".equals( ext ) ||
-                 MediaType.TEXT_HTML.equals( variant.getMediaType() ) )
+        else if( MediaType.TEXT_HTML.equals( variant.getMediaType() ) )
         {
-            return entityHeaders( representHtml( entity ) );
+            return entityHeaders( representHtml( entityState ), entityState );
         }
 
-        throw new
-
-            ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
+        throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
     }
 
-    private Representation entityHeaders( Representation representation )
+    private EntityState getEntityState()
+        throws ResourceException
     {
-        representation.setModificationDate( new Date( entity.lastModified() ) );
-        representation.setTag( new Tag( "" + entity.version() ) );
+        EntityState entityState;
+        try
+        {
+            entityState = entityStore.getEntityState( qualifiedIdentity );
+        }
+        catch( UnknownEntityTypeException e )
+        {
+            throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
+        }
+        return entityState;
+    }
+
+    private Representation entityHeaders( Representation representation, EntityState entityState )
+    {
+        representation.setModificationDate( new Date( entityState.lastModified() ) );
+        representation.setTag( new Tag( "" + entityState.version() ) );
 
         return representation;
     }
 
-
     private Representation representHtml( EntityState entity )
     {
         StringBuffer buf = new StringBuffer();
-        buf.append( "<html><body><h1>" + entity.qualifiedIdentity().identity() + "</h1><ul>" );
+        buf.append( "<html><head><title>" + entity.qualifiedIdentity().identity() + "</title><link rel=\"alternate\" type=\"application/rdf+xml\" href=\"" + entity.qualifiedIdentity().identity() + ".rdf\"/></head><body><h1>" + entity.qualifiedIdentity().identity() + "</h1>\n" );
 
-        buf.append( "<form method=\"POST\" action=\"" + getRequest().getResourceRef().getPath() + "\">" );
-        buf.append( "<h2>Properties</h2><ul>" );
+        buf.append( "<form method=\"post\" action=\"" + getRequest().getResourceRef().getPath() + "\">\n" );
+        buf.append( "<fieldset><legend>Properties</legend>\n<table>" );
         for( PropertyType propertyType : entity.entityType().properties() )
         {
-            if( propertyType.propertyType() == PropertyType.PropertyTypeEnum.MUTABLE )
+            Object value = entity.getProperty( propertyType.qualifiedName() );
+            if( value == null )
             {
-                buf.append( "<li>" + propertyType.qualifiedName() + "<input type=\"text\" name=\"" + propertyType.qualifiedName() + "\" value=\"" + entity.getProperty( propertyType.qualifiedName() ) + "\">" );
+                value = "";
             }
-            else if( propertyType.propertyType() == PropertyType.PropertyTypeEnum.IMMUTABLE )
-            {
-                buf.append( "<li>" + propertyType.qualifiedName() + ":" + entity.getProperty( propertyType.qualifiedName() ) + "</li>" );
-            }
+            buf.append( "<tr><td>" +
+                        "<label for=\"" + propertyType.qualifiedName() + "\" >" +
+                        GenericPropertyInfo.getName( propertyType.qualifiedName() ) +
+                        "</label></td>\n" +
+                        "<td><input " +
+                        "type=\"text\" " +
+                        ( propertyType.propertyType() != PropertyType.PropertyTypeEnum.MUTABLE ? "readonly=\"true\" " : "" ) +
+                        "name=\"" + propertyType.qualifiedName() + "\" " +
+                        "value=\"" + value + "\"></td></tr>" );
         }
-        buf.append( "</ul><input type=\"submit\" value=\"Update\"/></form></body></html>" );
+        buf.append( "</table></fieldset>\n" );
 
-// Returns the XML representation of this document.
+        buf.append( "<fieldset><legend>Associations</legend>\n<table>" );
+        for( AssociationType associationType : entity.entityType().associations() )
+        {
+            Object value = entity.getAssociation( associationType.qualifiedName() );
+            if( value == null )
+            {
+                value = "";
+            }
+            buf.append( "<tr><td>" +
+                        "<label for=\"" + associationType.qualifiedName() + "\" >" +
+                        GenericAssociationInfo.getName( associationType.qualifiedName() ) +
+                        "</label></td>\n" +
+                        "<td><input " +
+                        "type=\"text\" " +
+                        "size=\"40\" " +
+                        "name=\"" + associationType.qualifiedName() + "\" " +
+                        "value=\"" + value + "\"></td></tr>" );
+        }
+        buf.append( "</table></fieldset>\n" );
+
+        buf.append( "<fieldset><legend>Many associations</legend>\n<table>" );
+        for( ManyAssociationType associationType : entity.entityType().manyAssociations() )
+        {
+            Collection<QualifiedIdentity> identities = entity.getManyAssociation( associationType.qualifiedName() );
+            String value = "";
+            for( QualifiedIdentity identity : identities )
+            {
+                value += identity.toString() + "\n";
+            }
+
+            buf.append( "<tr><td>" +
+                        "<label for=\"" + associationType.qualifiedName() + "\" >" +
+                        GenericAssociationInfo.getName( associationType.qualifiedName() ) +
+                        "</label></td>\n" +
+                        "<td><textarea " +
+                        "type=\"text\" " +
+                        "rows=\"10\" " +
+                        "cols=\"40\" " +
+                        "name=\"" + associationType.qualifiedName() + "\" >" +
+                        value +
+                        "</textarea></td></tr>" );
+        }
+        buf.append( "</table></fieldset>\n" );
+        buf.append( "<input type=\"submit\" value=\"Update\"/></form>\n" );
+
+        buf.append( "</body></html>\n" );
+
         return new StringRepresentation( buf, MediaType.TEXT_HTML, Language.ENGLISH );
     }
 
@@ -206,14 +258,61 @@ public class EntityResource extends Resource
     public void storeRepresentation( Representation entityRepresentation )
         throws ResourceException
     {
-        entity = entityStore.getEntityState( qualifiedIdentity );
+        EntityState entity = getEntityState();
 
         Form form = new Form( entityRepresentation );
-        Map<String, String> values = form.getValuesMap();
 
-        for( Map.Entry<String, String> formEntry : values.entrySet() )
+        try
         {
-            entity.setProperty( formEntry.getKey(), formEntry.getValue() );
+            for( PropertyType propertyType : entity.entityType().properties() )
+            {
+                if( propertyType.propertyType() == PropertyType.PropertyTypeEnum.MUTABLE )
+                {
+                    String newStringValue = form.getFirstValue( propertyType.qualifiedName() );
+                    Object newValue = convertValue( newStringValue, propertyType.type() );
+                    entity.setProperty( propertyType.qualifiedName(), newValue );
+                }
+            }
+            for( AssociationType associationType : entity.entityType().associations() )
+            {
+                String newStringAssociation = form.getFirstValue( associationType.qualifiedName() );
+                if( newStringAssociation == null || newStringAssociation.equals( "" ) )
+                {
+                    entity.setAssociation( associationType.qualifiedName(), null );
+                }
+                else
+                {
+                    entity.setAssociation( associationType.qualifiedName(), new QualifiedIdentity( newStringAssociation ) );
+                }
+            }
+            for( ManyAssociationType associationType : entity.entityType().manyAssociations() )
+            {
+                String newStringAssociation = form.getFirstValue( associationType.qualifiedName() );
+                Collection<QualifiedIdentity> manyAssociation = entity.getManyAssociation( associationType.qualifiedName() );
+                if( newStringAssociation == null )
+                {
+                    continue;
+                }
+
+                manyAssociation.clear();
+                BufferedReader bufferedReader = new BufferedReader( new StringReader( newStringAssociation ) );
+                String qualifiedIdentity;
+                try
+                {
+                    while( ( qualifiedIdentity = bufferedReader.readLine() ) != null )
+                    {
+                        manyAssociation.add( new QualifiedIdentity( qualifiedIdentity ) );
+                    }
+                }
+                catch( IOException e )
+                {
+                    // Ignore
+                }
+            }
+        }
+        catch( IllegalArgumentException e )
+        {
+            throw new ResourceException( Status.SERVER_ERROR_INTERNAL, e.getMessage() );
         }
 
         entityStore.prepare( Collections.EMPTY_LIST, Collections.singleton( entity ), Collections.EMPTY_LIST ).commit();
@@ -221,65 +320,33 @@ public class EntityResource extends Resource
         getResponse().setStatus( Status.SUCCESS_RESET_CONTENT );
     }
 
+    private Object convertValue( String newStringValue, String propertyType )
+        throws IllegalArgumentException
+    {
+        Object newValue = null;
+        try
+        {
+// TODO A ton of more types need to be added here. Converter registration mechanism needed?
+            newValue = null;
+            if( propertyType.equals( String.class.getName() ) )
+            {
+                newValue = newStringValue;
+            }
+            else if( propertyType.equals( Integer.class.getName() ) )
+            {
+                newValue = Integer.parseInt( newStringValue );
+            }
+        }
+        catch( Exception e )
+        {
+            throw new IllegalArgumentException( "Value '" + newStringValue + "' is not of type " + propertyType );
+        }
+
+        return newValue;
+    }
+
     @Override public boolean isModifiable()
     {
         return true;
     }
-
-    /*
-        private Property getProperty( PropertyBinding propertyBinding )
-        {
-            Method method = propertyBinding.getPropertyResolution().getPropertyModel().getAccessor();
-            Property property;
-            try
-            {
-                property = (Property) method.invoke( entity );
-            }
-            catch( IllegalAccessException e )
-            {
-                // Can not happen.
-                throw new InternalError();
-            }
-            catch( InvocationTargetException e )
-            {
-                //TODO  What to do?
-                e.printStackTrace();
-                throw new InternalError();
-            }
-            return property;
-        }
-    */
-
-/*
-    private Association<?> getAssociation( final AssociationBinding associationBinding )
-    {
-        final Method accessor = associationBinding.getAssociationResolution().getAssociationModel().getAccessor();
-        Association<?> association;
-        try
-        {
-            association = (Association<?>) accessor.invoke( entity );
-        }
-        catch( IllegalAccessException e )
-        {
-            // Can not happen.
-            throw new InternalError();
-        }
-        catch( InvocationTargetException e )
-        {
-            //TODO  What to do?
-            e.printStackTrace();
-            throw new InternalError();
-        }
-        return association;
-    }
-*/
-/*
-
-    private String getQualifiedPropertyName( Method accessor )
-    {
-        String className = accessor.getDeclaringClass().getName();
-        className = className.replace( '$', '&' );
-        return className + ":" + accessor.getName();
-    }
-*/
 }

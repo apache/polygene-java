@@ -16,6 +16,9 @@ package org.qi4j.rest;
 
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.association.Association;
+import org.qi4j.entity.association.ListAssociation;
+import org.qi4j.entity.association.ManyAssociation;
+import org.qi4j.entity.association.SetAssociation;
 import org.qi4j.property.Property;
 
 /**
@@ -24,7 +27,19 @@ import org.qi4j.property.Property;
 public interface TestEntity
     extends EntityComposite
 {
-    Property<String> test1();
+    Property<String> name();
+
+    Property<Integer> age();
+
+    Property<String> unsetName();
 
     Association<TestEntity> association();
+
+    Association<TestEntity> unsetAssociation();
+
+    ManyAssociation<TestEntity> manyAssociation();
+
+    ListAssociation<TestEntity> listAssociation();
+
+    SetAssociation<TestEntity> setAssociation();
 }

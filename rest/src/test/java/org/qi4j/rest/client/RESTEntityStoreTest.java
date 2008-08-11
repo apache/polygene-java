@@ -50,9 +50,9 @@ public class RESTEntityStoreTest
             try
             {
                 TestEntity entity = unitOfWork.find( "test2", TestEntity.class );
-                System.out.println( entity.test1().get() );
+                System.out.println( entity.name().get() );
                 TestEntity testEntity = entity.association().get();
-                System.out.println( testEntity.test1().get() );
+                System.out.println( testEntity.name().get() );
 
                 unitOfWork.discard();
             }
@@ -67,8 +67,8 @@ public class RESTEntityStoreTest
             try
             {
                 TestEntity entity = unitOfWork.find( "test2", TestEntity.class );
-                System.out.println( entity.test1().get() );
-                System.out.println( entity.association().get().test1().get() );
+                System.out.println( entity.name().get() );
+                System.out.println( entity.association().get().name().get() );
 
                 unitOfWork.discard();
             }

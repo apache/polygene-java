@@ -13,10 +13,17 @@
  */
 package org.qi4j.rest;
 
+import java.io.StringWriter;
 import java.util.Map;
+import org.openrdf.model.Statement;
 import org.qi4j.injection.scope.Service;
 import org.qi4j.injection.scope.Structure;
 import org.qi4j.injection.scope.Uses;
+import org.qi4j.library.rdf.entity.EntitySerializer;
+import org.qi4j.library.rdf.serializer.RdfXmlSerializer;
+import org.qi4j.spi.Qi4jSPI;
+import org.qi4j.spi.entity.EntityDescriptor;
+import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
@@ -39,6 +46,10 @@ import org.w3c.dom.Element;
 public class EntityTypeResource extends Resource
 {
     @Service private EntityFinder entityFinder;
+    @Service EntitySerializer entitySerializer;
+
+    @Structure Module module;
+    @Structure Qi4jSPI spi;
 
     private String type;
     private Request request;
@@ -60,13 +71,6 @@ public class EntityTypeResource extends Resource
 
         final Map<String, Object> attributes = getRequest().getAttributes();
         type = (String) attributes.get( "type" );
-
-        String ext = getRequest().getResourceRef().getExtensions();
-
-        if( ext != null )
-        {
-            type = type.substring( 0, type.length() - ext.length() - 1 );
-        }
     }
 
     @Override public Representation represent( final Variant variant )
@@ -124,27 +128,30 @@ public class EntityTypeResource extends Resource
     private Representation representRdf()
         throws ResourceException
     {
+        EntityDescriptor entityDescriptor;
         try
         {
-            final Iterable<QualifiedIdentity> query = entityFinder.findEntities( type, null, null, null, null );
-
-            DomRepresentation representation = new DomRepresentation( MediaType.TEXT_XML );
-            // Generate a DOM document representing the item.
-            Document d = representation.getDocument();
-
-            Element entitiesElement = d.createElement( "entities" );
-            d.appendChild( entitiesElement );
-            for( QualifiedIdentity entity : query )
+            entityDescriptor = spi.getEntityDescriptor( module.classLoader().loadClass( type ), module );
+            if( entityDescriptor == null )
             {
-                Element entityElement = d.createElement( "entity" );
-                entitiesElement.appendChild( entityElement );
-                entityElement.setAttribute( "href", request.getResourceRef().getPath() + "/" + entity.identity() );
-                entityElement.appendChild( d.createTextNode( entity.identity() ) );
+                throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
             }
-            d.normalizeDocument();
+        }
+        catch( ClassNotFoundException e )
+        {
+            throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
+        }
 
-            // Returns the XML representation of this document.
-            return representation;
+        try
+        {
+
+            EntityType entityType = entityDescriptor.entityType();
+            Iterable<Statement> statements = entitySerializer.serialize( entityType );
+
+            StringWriter out = new StringWriter();
+            new RdfXmlSerializer().serialize( statements, out );
+
+            return new StringRepresentation( out.toString(), MediaType.APPLICATION_RDF_XML );
         }
         catch( Exception e )
         {
