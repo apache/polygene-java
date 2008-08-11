@@ -184,7 +184,7 @@ public final class EntityInstance
         {
             // Only refresh if the state has actually changed
             EntityState newEntityState = store.getEntityState( identity );
-            if( newEntityState.version() != newEntityState.version() )
+            if( newEntityState.version() != entityState.version() )
             {
                 refresh( newEntityState );
             }
