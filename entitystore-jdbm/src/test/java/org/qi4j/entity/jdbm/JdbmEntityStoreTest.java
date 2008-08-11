@@ -212,7 +212,6 @@ public class JdbmEntityStoreTest
             assertThat( "version is correct", spi.getEntityState( testEntity1 ).version(), equalTo( 2L ) );
             unitOfWork1.discard();
         }
-
     }
 
     @Override @After public void tearDown() throws Exception

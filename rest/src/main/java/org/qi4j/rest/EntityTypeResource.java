@@ -65,36 +65,29 @@ public class EntityTypeResource extends Resource
 
         if( ext != null )
         {
-            type = type.substring( 0, type.length() - ext.length() - 1 ));
+            type = type.substring( 0, type.length() - ext.length() - 1 );
         }
     }
 
     @Override public Representation represent( final Variant variant )
         throws ResourceException
     {
-        try
+        String ext = getRequest().getResourceRef().getExtensions();
+        // Generate the right representation according to its media type.
+        if( MediaType.TEXT_XML.equals( variant.getMediaType() ) )
         {
-            String ext = getRequest().getResourceRef().getExtensions();
-            // Generate the right representation according to its media type.
-            if( MediaType.TEXT_XML.equals( variant.getMediaType() ) )
-            {
-                return representXml();
-            }
-            else if( MediaType.APPLICATION_RDF_XML.equals( variant.getMediaType() ) )
-            {
-                return representRdf();
-            }
-            else if( MediaType.TEXT_HTML.equals( variant.getMediaType() ) )
-            {
-                return representHtml();
-            }
+            return representXml();
+        }
+        else if( MediaType.APPLICATION_RDF_XML.equals( variant.getMediaType() ) )
+        {
+            return representRdf();
+        }
+        else if( MediaType.TEXT_HTML.equals( variant.getMediaType() ) )
+        {
+            return representHtml();
+        }
 
-            throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
-        }
-        catch( EntityFinderException e )
-        {
-            throw new ResourceException( Status.SERVER_ERROR_INTERNAL, e );
-        }
+        throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
     }
 
     private Representation representXml()
@@ -128,21 +121,59 @@ public class EntityTypeResource extends Resource
         }
     }
 
+    private Representation representRdf()
+        throws ResourceException
+    {
+        try
+        {
+            final Iterable<QualifiedIdentity> query = entityFinder.findEntities( type, null, null, null, null );
+
+            DomRepresentation representation = new DomRepresentation( MediaType.TEXT_XML );
+            // Generate a DOM document representing the item.
+            Document d = representation.getDocument();
+
+            Element entitiesElement = d.createElement( "entities" );
+            d.appendChild( entitiesElement );
+            for( QualifiedIdentity entity : query )
+            {
+                Element entityElement = d.createElement( "entity" );
+                entitiesElement.appendChild( entityElement );
+                entityElement.setAttribute( "href", request.getResourceRef().getPath() + "/" + entity.identity() );
+                entityElement.appendChild( d.createTextNode( entity.identity() ) );
+            }
+            d.normalizeDocument();
+
+            // Returns the XML representation of this document.
+            return representation;
+        }
+        catch( Exception e )
+        {
+            throw new ResourceException( e );
+        }
+    }
+
     private Representation representHtml()
         throws ResourceException
     {
-        final Iterable<QualifiedIdentity> query = entityFinder.findEntities( type, null, null, null, null );
-
-        StringBuffer buf = new StringBuffer();
-        buf.append( "<html><body><h1>Entities</h1><ul>" );
-
-        for( QualifiedIdentity entity : query )
+        try
         {
-            buf.append( "<li><a href=\"" + request.getResourceRef().getPath() + "/" + entity.identity() + "\">" + entity.identity() + "</a></li>" );
-        }
-        buf.append( "</ul></body></html>" );
+            final Iterable<QualifiedIdentity> query = entityFinder.findEntities( type, null, null, null, null );
 
-        // Returns the XML representation of this document.
-        return new StringRepresentation( buf, MediaType.TEXT_HTML, Language.ENGLISH );
+            StringBuffer buf = new StringBuffer();
+            buf.append( "<html><body><h1>Entities</h1><ul>" );
+
+            for( QualifiedIdentity entity : query )
+            {
+                buf.append( "<li><a href=\"" + request.getResourceRef().getPath() + "/" + entity.identity() + "\">" + entity.identity() + "</a></li>" );
+            }
+            buf.append( "</ul></body></html>" );
+
+            // Returns the XML representation of this document.
+            return new StringRepresentation( buf, MediaType.TEXT_HTML, Language.ENGLISH );
+        }
+        catch( EntityFinderException e )
+        {
+            throw new ResourceException( e );
+        }
     }
 }

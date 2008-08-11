@@ -17,6 +17,7 @@
  */
 package org.qi4j.rest;
 
+import java.util.Map;
 import org.qi4j.entity.ConcurrentEntityModificationException;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkCompletionException;
@@ -31,10 +32,12 @@ import org.restlet.Context;
 import org.restlet.Finder;
 import org.restlet.Restlet;
 import org.restlet.Router;
+import org.restlet.data.Metadata;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
 import org.restlet.resource.Resource;
+import org.restlet.service.MetadataService;
 
 public class RestApplication extends Application
 {
@@ -44,6 +47,12 @@ public class RestApplication extends Application
     public RestApplication( @Uses Context parentContext )
     {
         super( parentContext );
+
+        MetadataService metadata = getMetadataService();
+        for( Map.Entry<String, Metadata> entry : metadata.getMappings().entrySet() )
+        {
+            System.out.println( entry.getKey() + ":" + entry.getValue().getName() );
+        }
     }
 
     @Override

@@ -42,7 +42,7 @@ import org.restlet.data.Reference;
 import org.restlet.data.Response;
 
 /**
- * TODO
+ * EntityStore implementation that uses REST to access EntityState from a server.
  */
 public class RESTEntityStoreServiceMixin
     extends AbstractEntityStoreMixin

@@ -34,6 +34,7 @@ import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.PropertyType;
 import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.spi.entity.UnknownEntityTypeException;
 import org.restlet.Context;
 import org.restlet.data.Form;
 import org.restlet.data.Language;
@@ -105,7 +106,14 @@ public class EntityResource extends Resource
     {
         if( entity == null )
         {
-            entity = entityStore.getEntityState( qualifiedIdentity );
+            try
+            {
+                entity = entityStore.getEntityState( qualifiedIdentity );
+            }
+            catch( UnknownEntityTypeException e )
+            {
+                throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
+            }
         }
 
         // Check modification date

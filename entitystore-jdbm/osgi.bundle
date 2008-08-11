@@ -8,6 +8,7 @@ Import-Package: org.qi4j.composite, \
                 org.qi4j.library.locking, \
                 org.qi4j.property, \
                 org.qi4j.service, \
+                org.qi4j.entity.memory, \
                 org.qi4j.spi, \
                 org.qi4j.spi.composite, \
                 org.qi4j.spi.entity, \
