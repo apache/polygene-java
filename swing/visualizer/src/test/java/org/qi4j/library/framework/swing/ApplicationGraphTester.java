@@ -65,17 +65,15 @@ public class ApplicationGraphTester
 
     private static void addMoreLayers( ApplicationAssembly assembly )
     {
-/*
         LayerAssembly layer = assembly.newLayerAssembly( "Layer 1" );
         for( int i = 1; i < 5; i++ )
         {
-            LayerAssembly anotherLayer =  assembly.newLayerAssembly( "Layer 1." + i );
+            LayerAssembly anotherLayer = assembly.newLayerAssembly( "Layer 1." + i );
             layer.uses( anotherLayer );
             layer = anotherLayer;
         }
 
-*/
-        for( int i = 1; i < 6; i++ )
+        for( int i = 2; i < 6; i++ )
         {
             LayerAssembly newLayer = assembly.newLayerAssembly( "Layer " + i );
             for( int k = 1; k < 5; k++ )

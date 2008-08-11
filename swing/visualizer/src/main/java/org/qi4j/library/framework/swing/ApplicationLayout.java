@@ -31,6 +31,8 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.ArrayList;
+import java.util.Set;
+import java.util.HashSet;
 import prefuse.action.layout.graph.TreeLayout;
 import prefuse.render.Renderer;
 import prefuse.visual.NodeItem;
@@ -99,7 +101,7 @@ public class ApplicationLayout extends TreeLayout
         return new Rectangle( location.x, location.y, width, height );
     }
 
-    private Map<Integer, NodeItem> nodeToVisualNodeItemMap = new HashMap<Integer, NodeItem>();
+    private Map<Node, NodeItem> nodeToVisualNodeItemMap = new HashMap<Node, NodeItem>();
 
     /**
      * Tries to suggest a suitable x position and width, if there is only 1 layer in this group.
@@ -107,21 +109,20 @@ public class ApplicationLayout extends TreeLayout
      */
     private Rectangle getSuggestedBounds( Collection<NodeItem> layers, NodeItem layer, int x, int y )
     {
-        // todo - try to find a better way of getting the node associated with the visual node item
-        nodeToVisualNodeItemMap.put( layer.getRow(), layer );
+        nodeToVisualNodeItemMap.put( (Node) layer.getSourceTuple(), layer );
 
         Collection<Node> usedByLayers = (Collection<Node>) layer.get( FIELD_USED_BY_LAYERS );
-        if( usedByLayers.isEmpty() || layers.size() > 1 )
+        if( usedByLayers.isEmpty() )
         {
             return new Rectangle( x, y, 0, 0 );
         }
 
         int left = Integer.MAX_VALUE;
         int right = Integer.MIN_VALUE;
-        int width = 0;
+        int width;
         for( Node usedByLayer : usedByLayers )
         {
-            NodeItem item = nodeToVisualNodeItemMap.get( usedByLayer.getRow() );
+            NodeItem item = nodeToVisualNodeItemMap.get( usedByLayer );
             Rectangle2D bounds = item.getBounds();
             if( bounds.getX() < left )
             {
@@ -134,7 +135,24 @@ public class ApplicationLayout extends TreeLayout
         }
 
         width = right - left;
-        return new Rectangle( left, y, width, 0 );
+        Rectangle suggestedBounds = new Rectangle( left, y, width, 0 );
+
+        // If there are other layers on this level, and the calculated suggested bounds intersect with
+        // any layer's bounds, return the default bounds
+        if( layers.size() > 1 )
+        {
+            Set<NodeItem> otherLayers = new HashSet<NodeItem>( layers );
+            otherLayers.remove( layer );
+            for( NodeItem otherLayer : otherLayers )
+            {
+                if( otherLayer.getBounds().intersects( suggestedBounds ) )
+                {
+                    return new Rectangle( x, y, 0, 0 );
+                }
+            }
+        }
+
+        return suggestedBounds;
     }
 
     private Rectangle computeLayerGroupBounds( Collection<NodeItem> layers, Point location )
