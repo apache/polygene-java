@@ -180,13 +180,18 @@ public final class EntityInstance
 
     public void refresh()
     {
-        if( status() == EntityStatus.LOADED )
+        if( status() == EntityStatus.LOADED && entityState != null )
         {
-            refresh( store.getEntityState( identity ) );
+            // Only refresh if the state has actually changed
+            EntityState newEntityState = store.getEntityState( identity );
+            if( newEntityState.version() != newEntityState.version() )
+            {
+                refresh( newEntityState );
+            }
         }
     }
 
-    public void refresh( EntityState newState )
+    private void refresh( EntityState newState )
     {
         entityState = newState;
 
@@ -242,12 +247,14 @@ public final class EntityInstance
         return mixins == null;
     }
 
-    public void load()
+    public EntityState load()
     {
         if( entityState == null && status() == EntityStatus.LOADED )
         {
             entityState = entity.getEntityState( store, identity );
         }
+
+        return entityState;
     }
 
     public void remove()

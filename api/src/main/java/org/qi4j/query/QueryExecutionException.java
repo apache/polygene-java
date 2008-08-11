@@ -24,4 +24,9 @@ public final class QueryExecutionException extends QueryException
     {
         super( message );
     }
+
+    public QueryExecutionException( String message, Throwable cause )
+    {
+        super( message, cause );
+    }
 }

@@ -19,12 +19,12 @@ import org.qi4j.composite.Composite;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.entity.EntityDescriptor;
+import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.object.ObjectDescriptor;
 import org.qi4j.structure.Module;
 
 /**
- * Encapsulation of the Qi4j SPI. The Qi4jSPI holds references
- * to all the SPI objects in a Qi4j runtime.
+ * Encapsulation of the Qi4j SPI. This is implemented by the runtime.
  */
 public interface Qi4jSPI
     extends Qi4j
@@ -36,6 +36,8 @@ public interface Qi4jSPI
     EntityDescriptor getEntityDescriptor( EntityComposite composite );
 
     EntityDescriptor getEntityDescriptor( Class mixinType, Module module );
+
+    EntityState getEntityState( EntityComposite composite );
 
     ObjectDescriptor getObjectDescriptor( Class mixinType, Module module );
 

@@ -19,7 +19,7 @@ import org.qi4j.spi.serialization.SerializableState;
 import org.qi4j.spi.serialization.SerializedObject;
 
 /**
- * In-memory implementation of EntityStore
+ * In-memory implementation of EntityStore.
  */
 public class MemoryEntityStoreMixin
     extends AbstractEntityStoreMixin
@@ -45,7 +45,7 @@ public class MemoryEntityStoreMixin
             {
                 if( typeStore.containsKey( identity ) )
                 {
-                    throw new EntityAlreadyExistsException( "Serialization store", identity.identity() );
+                    throw new EntityAlreadyExistsException( "Serialization store", identity );
                 }
             }
         }
@@ -72,7 +72,7 @@ public class MemoryEntityStoreMixin
                 typeStore = store.get( identity.type() );
                 if( typeStore == null )
                 {
-                    throw new EntityNotFoundException( "Serialization store", identity.identity() );
+                    throw new EntityNotFoundException( "Serialization store", identity );
                 }
             }
 
@@ -84,7 +84,7 @@ public class MemoryEntityStoreMixin
 
             if( serializableObject == null )
             {
-                throw new EntityNotFoundException( "Serialization store", identity.identity() );
+                throw new EntityNotFoundException( "Serialization store", identity );
             }
 
             SerializableState serializableState = serializableObject.getObject( (CompositeBuilderFactory) null, null );
@@ -114,9 +114,12 @@ public class MemoryEntityStoreMixin
         for( EntityState entityState : loadedStates )
         {
             DefaultEntityState entityStateInstance = (DefaultEntityState) entityState;
-            SerializableState state = new SerializableState( entityState.qualifiedIdentity(), entityState.version() + 1, currentTime, entityStateInstance.getProperties(), entityStateInstance.getAssociations(), entityStateInstance.getManyAssociations() );
-            SerializedObject<SerializableState> serializedObject = new SerializedObject<SerializableState>( state );
-            updatedState.put( entityState.qualifiedIdentity(), serializedObject );
+            if( entityStateInstance.isModified() )
+            {
+                SerializableState state = new SerializableState( entityState.qualifiedIdentity(), entityState.version() + 1, currentTime, entityStateInstance.getProperties(), entityStateInstance.getAssociations(), entityStateInstance.getManyAssociations() );
+                SerializedObject<SerializableState> serializedObject = new SerializedObject<SerializableState>( state );
+                updatedState.put( entityState.qualifiedIdentity(), serializedObject );
+            }
         }
 
         return new StateCommitter()

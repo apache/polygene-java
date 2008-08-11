@@ -14,13 +14,16 @@
 
 package org.qi4j.entity.memory;
 
+import org.qi4j.composite.Concerns;
 import org.qi4j.composite.Mixins;
 import org.qi4j.service.ServiceComposite;
 import org.qi4j.spi.entity.EntityStore;
 
 /**
- * TODO
+ * In-memory EntityStore service. Useful for testing
+ * and non-persistent entities.
  */
+@Concerns( ConcurrentModificationCheckConcern.class )
 @Mixins( { MemoryEntityStoreMixin.class } )
 public interface MemoryEntityStoreService
     extends EntityStore, ServiceComposite

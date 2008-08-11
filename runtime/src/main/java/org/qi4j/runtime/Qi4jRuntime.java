@@ -40,6 +40,7 @@ import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.composite.CompositeInstance;
 import org.qi4j.spi.entity.EntityDescriptor;
+import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.object.ObjectDescriptor;
 import org.qi4j.structure.Module;
 
@@ -99,15 +100,26 @@ public final class Qi4jRuntime
             }
         } );
 
+        Class injectionClass = null;
         for( DependencyModel dependencyModel : dependencyModels )
         {
             if( dependencyModel.rawInjectionType().equals( Configuration.class ) )
             {
-                return dependencyModel.injectionClass();
+                if( injectionClass == null )
+                {
+                    injectionClass = dependencyModel.injectionClass();
+                }
+                else
+                {
+                    if( injectionClass.isAssignableFrom( dependencyModel.injectionClass() ) )
+                    {
+                        injectionClass = dependencyModel.injectionClass();
+                    }
+                }
             }
         }
 
-        return null;
+        return injectionClass;
     }
 
     // SPI
@@ -167,6 +179,11 @@ public final class Qi4jRuntime
         EntitiesInstance entitiesInstance = moduleInstance.entities();
         EntitiesModel entitiesModel = entitiesInstance.model();
         return entitiesModel.getEntityModelFor( mixinType );
+    }
+
+    public EntityState getEntityState( EntityComposite composite )
+    {
+        return EntityInstance.getEntityInstance( composite ).load();
     }
 
     @SuppressWarnings( "unchecked" )

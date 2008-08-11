@@ -15,11 +15,26 @@
 package org.qi4j.service;
 
 import org.qi4j.composite.Composite;
+import org.qi4j.composite.Mixins;
+import org.qi4j.injection.scope.Uses;
 
 /**
  * All Composites being used to implement Services
  * must extend this interface.
  */
+@Mixins( ServiceComposite.ServiceCompositeMixin.class )
 public interface ServiceComposite extends Composite
 {
+    ServiceDescriptor serviceDescriptor();
+
+    static abstract class ServiceCompositeMixin
+        implements ServiceComposite
+    {
+        @Uses ServiceDescriptor serviceDescriptor;
+
+        public ServiceDescriptor serviceDescriptor()
+        {
+            return serviceDescriptor;
+        }
+    }
 }

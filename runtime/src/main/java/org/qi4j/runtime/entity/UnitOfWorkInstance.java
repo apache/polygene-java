@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 import org.qi4j.composite.CompositeBuilderFactory;
+import org.qi4j.entity.ConcurrentEntityModificationException;
 import org.qi4j.entity.EntityBuilder;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.EntityCompositeNotFoundException;
@@ -31,17 +32,18 @@ import org.qi4j.entity.Identity;
 import org.qi4j.entity.LoadingPolicy;
 import org.qi4j.entity.NoSuchEntityException;
 import org.qi4j.entity.UnitOfWork;
+import org.qi4j.entity.UnitOfWorkCallback;
+import static org.qi4j.entity.UnitOfWorkCallback.UnitOfWorkStatus.COMPLETED;
+import static org.qi4j.entity.UnitOfWorkCallback.UnitOfWorkStatus.DISCARDED;
 import org.qi4j.entity.UnitOfWorkCompletionException;
 import org.qi4j.entity.UnitOfWorkException;
-import org.qi4j.entity.UnitOfWorkSynchronization;
-import static org.qi4j.entity.UnitOfWorkSynchronization.UnitOfWorkStatus.COMPLETED;
-import static org.qi4j.entity.UnitOfWorkSynchronization.UnitOfWorkStatus.DISCARDED;
 import org.qi4j.object.ObjectBuilderFactory;
 import org.qi4j.query.QueryBuilderFactory;
 import org.qi4j.runtime.query.QueryBuilderFactoryImpl;
 import org.qi4j.runtime.structure.EntitiesInstance;
 import org.qi4j.runtime.structure.EntitiesModel;
 import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.spi.entity.ConcurrentEntityStateModificationException;
 import org.qi4j.spi.entity.DefaultEntityState;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
@@ -72,7 +74,7 @@ public final class UnitOfWorkInstance
 
     private LoadingPolicy loadingPolicy;
 
-    private List<UnitOfWorkSynchronization> synchronizations;
+    private List<UnitOfWorkCallback> callbacks;
     private UnitOfWorkStore unitOfWorkStore;
 
     static
@@ -293,7 +295,14 @@ public final class UnitOfWorkInstance
         {
             for( EntityComposite entity : map.values() )
             {
-                refresh( entity );
+                try
+                {
+                    refresh( entity );
+                }
+                catch( EntityCompositeNotFoundException e )
+                {
+                    // Ignore
+                }
             }
         }
     }
@@ -366,14 +375,8 @@ public final class UnitOfWorkInstance
     {
         checkOpen();
 
-        // Check synchronizations
-        if( synchronizations != null )
-        {
-            for( UnitOfWorkSynchronization synchronization : synchronizations )
-            {
-                synchronization.beforeCompletion();
-            }
-        }
+        // Check callbacks
+        notifyBeforeCompletion();
 
         // Create complete lists
         Map<EntityStore, StoreCompletion> storeCompletion = new HashMap<EntityStore, StoreCompletion>();
@@ -422,7 +425,7 @@ public final class UnitOfWorkInstance
             {
                 committers.add( entityStore.prepare( completion.getNewState(), completion.getUpdatedState(), completion.getRemovedState() ) );
             }
-            catch( EntityStoreException e )
+            catch( Exception e )
             {
                 // Cancel all previously prepared stores
                 for( StateCommitter committer : committers )
@@ -430,7 +433,22 @@ public final class UnitOfWorkInstance
                     committer.cancel();
                 }
 
-                throw new UnitOfWorkCompletionException( e );
+                if( e instanceof ConcurrentEntityStateModificationException )
+                {
+                    // If we cancelled due to concurrent modification, then create the proper exception for it!
+                    ConcurrentEntityStateModificationException mee = (ConcurrentEntityStateModificationException) e;
+                    Collection<QualifiedIdentity> modifiedEntityIdentities = mee.modifiedEntities();
+                    Collection<EntityComposite> modifiedEntities = new ArrayList<EntityComposite>();
+                    for( QualifiedIdentity modifiedEntityIdentity : modifiedEntityIdentities )
+                    {
+                        modifiedEntities.add( getCachedEntity( modifiedEntityIdentity ) );
+                    }
+                    throw new ConcurrentEntityModificationException( modifiedEntities );
+                }
+                else
+                {
+                    throw new UnitOfWorkCompletionException( e );
+                }
             }
         }
 
@@ -440,15 +458,16 @@ public final class UnitOfWorkInstance
             committer.commit();
         }
         close();
-        // Call synchronizations
-        notifySynchronizations( COMPLETED );
+
+        // Call callbacks
+        notifyAfterCompletion( COMPLETED );
     }
 
     public void discard()
     {
         close();
-        // Call synchronizations
-        notifySynchronizations( DISCARDED );
+        // Call callbacks
+        notifyAfterCompletion( DISCARDED );
     }
 
     private void close()
@@ -478,14 +497,14 @@ public final class UnitOfWorkInstance
         return moduleInstance;
     }
 
-    public void registerUnitOfWorkSynchronization( UnitOfWorkSynchronization synchronization )
+    public void registerUnitOfWorkCallback( UnitOfWorkCallback callback )
     {
-        if( synchronizations == null )
+        if( callbacks == null )
         {
-            synchronizations = new ArrayList<UnitOfWorkSynchronization>();
+            callbacks = new ArrayList<UnitOfWorkCallback>();
         }
 
-        synchronizations.add( synchronization );
+        callbacks.add( callback );
     }
 
     void createEntity( EntityComposite instance )
@@ -495,7 +514,7 @@ public final class UnitOfWorkInstance
         entityCache.put( instance.identity().get(), instance );
     }
 
-    Map<String, EntityComposite> getEntityCache( Class<? extends EntityComposite> compositeType )
+    private Map<String, EntityComposite> getEntityCache( Class<? extends EntityComposite> compositeType )
     {
         Map<String, EntityComposite> entityCache = cache.get( compositeType );
 
@@ -508,13 +527,25 @@ public final class UnitOfWorkInstance
         return entityCache;
     }
 
-    private void notifySynchronizations( UnitOfWorkSynchronization.UnitOfWorkStatus status )
+    private void notifyBeforeCompletion()
+        throws UnitOfWorkCompletionException
     {
-        if( synchronizations != null )
+        if( callbacks != null )
         {
-            for( UnitOfWorkSynchronization synchronization : synchronizations )
+            for( UnitOfWorkCallback callback : callbacks )
             {
-                synchronization.afterCompletion( status );
+                callback.beforeCompletion();
+            }
+        }
+    }
+
+    private void notifyAfterCompletion( UnitOfWorkCallback.UnitOfWorkStatus status )
+    {
+        if( callbacks != null )
+        {
+            for( UnitOfWorkCallback callback : callbacks )
+            {
+                callback.afterCompletion( status );
             }
         }
     }
@@ -533,6 +564,19 @@ public final class UnitOfWorkInstance
 
     private EntityState getCachedState( QualifiedIdentity entityId )
     {
+        EntityComposite composite = getCachedEntity( entityId );
+        if( composite != null )
+        {
+            return EntityInstance.getEntityInstance( composite ).entityState();
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    private EntityComposite getCachedEntity( QualifiedIdentity entityId )
+    {
         String type = entityId.type();
         Class compositeType = moduleInstance.findClassForName( type );
         Map<String, EntityComposite> entityCache = cache.get( compositeType );
@@ -542,14 +586,7 @@ public final class UnitOfWorkInstance
         }
 
         EntityComposite composite = entityCache.get( entityId.identity() );
-        if( composite != null )
-        {
-            return EntityInstance.getEntityInstance( composite ).entityState();
-        }
-        else
-        {
-            return null;
-        }
+        return composite;
     }
 
     private void checkOpen()

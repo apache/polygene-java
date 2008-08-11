@@ -16,9 +16,9 @@ package org.qi4j.entity;
 
 /**
  * Callback interface for UnitOfWork completion or discard. Implementations
- * of this interface can be registered through {@link UnitOfWork#registerUnitOfWorkSynchronization(UnitOfWorkSynchronization)}.
+ * of this interface can be registered through {@link UnitOfWork#registerUnitOfWorkCallback(UnitOfWorkCallback)}.
  */
-public interface UnitOfWorkSynchronization
+public interface UnitOfWorkCallback
 {
     /**
      * This is called before the completion of the UnitOfWork.

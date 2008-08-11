@@ -54,14 +54,21 @@ public interface EntityStore
      * to the underlying datastore. The method returns a StateCommitter that the unit of work
      * will invoke once all EntityStore's have been prepared.
      *
+     * To ensure that the committed state is consistent it should (if able) compare the version of the loaded/removed states
+     * and compare them to the versions currently in the store. If the store has different versions that means that
+     * a concurrent modification was done, and the store should throw ConcurrentEntityModificationException so that
+     * the client can do a refresh() of those entities and try again.
+     *
      * @param newStates     The new states. This argument must not be {@code null}.
      * @param loadedStates  The loaded states. This argument must not be {@code null}.
      * @param removedStates The removed states. This argument must not be {@code null}.
      * @return an implementation of StateCommitter
      * @throws EntityStoreException if the state could not be sent to the datastore
+     * @throws ConcurrentEntityStateModificationException
+     *                              if the prepared state has changed in the store
      */
     StateCommitter prepare( Iterable<EntityState> newStates,
                             Iterable<EntityState> loadedStates,
                             Iterable<QualifiedIdentity> removedStates )
-        throws EntityStoreException;
+        throws EntityStoreException, ConcurrentEntityStateModificationException;
 }

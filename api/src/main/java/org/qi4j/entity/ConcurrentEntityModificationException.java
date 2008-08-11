@@ -21,15 +21,28 @@ public class ConcurrentEntityModificationException extends UnitOfWorkCompletionE
 {
     private static final long serialVersionUID = 3872723845064767689L;
 
-    private final Iterable<EntityComposite> alreadyModifiedEntities;
+    private final Iterable<EntityComposite> concurrentlyModifiedEntities;
 
     public ConcurrentEntityModificationException( Iterable<EntityComposite> concurrentlyModifiedEntities )
     {
-        this.alreadyModifiedEntities = concurrentlyModifiedEntities;
+        this.concurrentlyModifiedEntities = concurrentlyModifiedEntities;
     }
 
-    public Iterable<EntityComposite> alreadyModifiedEntities()
+    public Iterable<EntityComposite> concurrentlyModifiedEntities()
     {
-        return alreadyModifiedEntities;
+        return concurrentlyModifiedEntities;
+    }
+
+    public String getMessage()
+    {
+        return "Entities changed concurrently :" + concurrentlyModifiedEntities;
+    }
+
+    public void refreshEntities( UnitOfWork unitOfWork )
+    {
+        for( EntityComposite concurrentlyModifiedEntity : concurrentlyModifiedEntities )
+        {
+            unitOfWork.refresh( concurrentlyModifiedEntity );
+        }
     }
 }

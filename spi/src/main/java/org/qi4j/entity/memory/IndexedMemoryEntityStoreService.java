@@ -30,5 +30,4 @@ import org.qi4j.spi.query.IndexingSideEffect;
 public interface IndexedMemoryEntityStoreService
     extends MemoryEntityStoreService
 {
-
 }

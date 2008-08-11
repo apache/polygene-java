@@ -166,27 +166,32 @@ final class QueryImpl<T>
      */
     public T find()
     {
+        QualifiedIdentity foundEntity;
         try
         {
-            final QualifiedIdentity foundEntity = entityFinder.findEntity(
-                resultType.getName(), whereClause
-            );
-
-            if( foundEntity != null )
-            {
-                final Class<T> entityType = unitOfWorkInstance.module().findClassForName( foundEntity.type() );
-                // TODO shall we throw an exception if class cannot be found?
-                final T entity = unitOfWorkInstance.getReference( foundEntity.identity(), entityType );
-                return entity;
-            }
-            else
-            {
-                return null;
-            }
+            foundEntity = entityFinder.findEntity( resultType.getName(), whereClause );
         }
         catch( EntityFinderException e )
         {
-            e.printStackTrace();
+            throw new QueryExecutionException( "Finder caused exception", e );
+        }
+
+        if( foundEntity != null )
+        {
+            try
+            {
+                final Class<T> entityType = (Class<T>) unitOfWorkInstance.module().classLoader().loadClass( foundEntity.type() );
+                final T entity = unitOfWorkInstance.getReference( foundEntity.identity(), entityType );
+                return entity;
+            }
+            catch( ClassNotFoundException e )
+            {
+                throw new QueryExecutionException( "Entity type not found", e );
+            }
+        }
+        else
+        {
+            // No entity was found
             return null;
         }
     }

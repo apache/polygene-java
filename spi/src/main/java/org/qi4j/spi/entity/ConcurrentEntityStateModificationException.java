@@ -16,15 +16,21 @@
  */
 package org.qi4j.spi.entity;
 
-public class EntityAlreadyExistsException extends EntityStoreException
+import java.util.Collection;
+
+/**
+ * This exception should be thrown from {@link EntityStore#prepare(Iterable, Iterable, Iterable)} if the EntityStore
+ * detects that the entities being saved have been changed since they were created.
+ */
+public class ConcurrentEntityStateModificationException extends EntityStoreException
 {
     private String storeName;
-    private QualifiedIdentity qualifiedIdentity;
+    private Collection<QualifiedIdentity> modifiedEntities;
 
-    public EntityAlreadyExistsException( String storeName, QualifiedIdentity qualifiedIdentity )
+    public ConcurrentEntityStateModificationException( String storeName, Collection<QualifiedIdentity> modifiedEntities )
     {
         this.storeName = storeName;
-        this.qualifiedIdentity = qualifiedIdentity;
+        this.modifiedEntities = modifiedEntities;
     }
 
     public String storeId()
@@ -32,14 +38,13 @@ public class EntityAlreadyExistsException extends EntityStoreException
         return storeName;
     }
 
-    public QualifiedIdentity qualifiedIdentity()
+    public Collection<QualifiedIdentity> modifiedEntities()
     {
-        return qualifiedIdentity;
+        return modifiedEntities;
     }
-
 
     public String getMessage()
     {
-        return "Entity " + qualifiedIdentity + " already existed in the '" + storeName + "' store.";
+        return "Entities changed concurrently in the '" + storeName + "' store:" + modifiedEntities;
     }
 }

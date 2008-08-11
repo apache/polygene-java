@@ -21,8 +21,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Standard implementation of EntityState.
@@ -61,6 +65,7 @@ public class DefaultEntityState
     private final long lastModified;
     private final QualifiedIdentity identity;
     private EntityStatus status;
+    private boolean modified;
 
     private EntityType entityType;
     protected final Map<String, Object> properties;
@@ -115,6 +120,7 @@ public class DefaultEntityState
     public void setProperty( String qualifiedName, Object newValue )
     {
         properties.put( qualifiedName, newValue );
+        modified = true;
     }
 
     public QualifiedIdentity getAssociation( String qualifiedName )
@@ -125,18 +131,30 @@ public class DefaultEntityState
     public void setAssociation( String qualifiedName, QualifiedIdentity newEntity )
     {
         associations.put( qualifiedName, newEntity );
+        modified = true;
     }
 
     public Collection<QualifiedIdentity> getManyAssociation( String qualifiedName )
     {
         Collection<QualifiedIdentity> manyAssociation = manyAssociations.get( qualifiedName );
-        return manyAssociation;
-    }
 
-    public Collection<QualifiedIdentity> setManyAssociation( String qualifiedName, Collection<QualifiedIdentity> newManyAssociation )
-    {
-        manyAssociations.put( qualifiedName, newManyAssociation );
-        return newManyAssociation;
+        if( status == EntityStatus.LOADED )
+        {
+            if( manyAssociation instanceof List )
+            {
+                manyAssociation = new ModificationTrackerList( (List<QualifiedIdentity>) manyAssociation );
+            }
+            else if( manyAssociation instanceof Set )
+            {
+                manyAssociation = new ModificationTrackerSet( (Set<QualifiedIdentity>) manyAssociation );
+            }
+            else
+            {
+                manyAssociation = new ModificationTrackerCollection<Collection<QualifiedIdentity>>( manyAssociation );
+            }
+        }
+
+        return manyAssociation;
     }
 
     public void remove()
@@ -169,6 +187,11 @@ public class DefaultEntityState
         return manyAssociations.keySet();
     }
 
+    public boolean isModified()
+    {
+        return modified;
+    }
+
     public Map<String, Object> getProperties()
     {
         return properties;
@@ -187,5 +210,251 @@ public class DefaultEntityState
     @Override public String toString()
     {
         return identity + "(" + properties.size() + " properties, " + associations.size() + " associations, " + manyAssociations.size() + " many-associations)";
+    }
+
+    protected class ModificationTrackerCollection<T extends Collection<QualifiedIdentity>>
+        implements Collection<QualifiedIdentity>
+    {
+        protected T collection;
+
+        public ModificationTrackerCollection( T collection )
+        {
+            this.collection = collection;
+        }
+
+        public int size()
+        {
+            return collection.size();
+        }
+
+        public boolean isEmpty()
+        {
+            return collection.isEmpty();
+        }
+
+        public boolean contains( Object o )
+        {
+            return collection.contains( o );
+        }
+
+        public Iterator<QualifiedIdentity> iterator()
+        {
+            return new Iterator<QualifiedIdentity>()
+            {
+                Iterator<QualifiedIdentity> iterator = collection.iterator();
+
+                public boolean hasNext()
+                {
+                    return iterator.hasNext();
+                }
+
+                public QualifiedIdentity next()
+                {
+                    return iterator.next();
+                }
+
+                public void remove()
+                {
+                    modified = true;
+                    iterator.remove();
+                }
+            };
+        }
+
+        public Object[] toArray()
+        {
+            return collection.toArray();
+        }
+
+        public <T> T[] toArray( T[] ts )
+        {
+            return collection.toArray( ts );
+        }
+
+        public boolean add( QualifiedIdentity qualifiedIdentity )
+        {
+            boolean added = collection.add( qualifiedIdentity );
+            if( added )
+            {
+                modified = true;
+            }
+            return added;
+        }
+
+        public boolean remove( Object o )
+        {
+            boolean removed = collection.remove( o );
+            if( removed )
+            {
+                modified = true;
+            }
+            return removed;
+        }
+
+        public boolean containsAll( Collection<?> objects )
+        {
+            return collection.containsAll( objects );
+        }
+
+        public boolean addAll( Collection<? extends QualifiedIdentity> qualifiedIdentities )
+        {
+            modified = true;
+            return collection.addAll( qualifiedIdentities );
+        }
+
+        public boolean removeAll( Collection<?> objects )
+        {
+            modified = true;
+            return false;
+        }
+
+        public boolean retainAll( Collection<?> objects )
+        {
+            modified = true;
+            return false;
+        }
+
+        public void clear()
+        {
+            modified = true;
+        }
+    }
+
+    protected class ModificationTrackerList
+        extends ModificationTrackerCollection<List<QualifiedIdentity>>
+        implements List<QualifiedIdentity>
+    {
+        public ModificationTrackerList( List<QualifiedIdentity> collection )
+        {
+            super( collection );
+        }
+
+        public boolean addAll( int i, Collection<? extends QualifiedIdentity> qualifiedIdentities )
+        {
+            modified = true;
+            return collection.addAll( i, qualifiedIdentities );
+        }
+
+        public QualifiedIdentity get( int i )
+        {
+            return collection.get( i );
+        }
+
+        public QualifiedIdentity set( int i, QualifiedIdentity qualifiedIdentity )
+        {
+            QualifiedIdentity old = collection.set( i, qualifiedIdentity );
+            if( old != qualifiedIdentity )
+            {
+                modified = true;
+            }
+            return old;
+        }
+
+        public void add( int i, QualifiedIdentity qualifiedIdentity )
+        {
+            modified = true;
+            collection.add( i, qualifiedIdentity );
+        }
+
+        public QualifiedIdentity remove( int i )
+        {
+            modified = true;
+            return collection.remove( i );
+        }
+
+        public int indexOf( Object o )
+        {
+            return collection.indexOf( o );
+        }
+
+        public int lastIndexOf( Object o )
+        {
+            return collection.lastIndexOf( o );
+        }
+
+        public ListIterator<QualifiedIdentity> listIterator()
+        {
+            final ListIterator<QualifiedIdentity> iterator = collection.listIterator();
+
+            return new ModificationTrackerListIterator( iterator );
+        }
+
+        public ListIterator<QualifiedIdentity> listIterator( int i )
+        {
+            return new ModificationTrackerListIterator( collection.listIterator( i ) );
+        }
+
+        public List<QualifiedIdentity> subList( int i, int i1 )
+        {
+            return new ModificationTrackerList( collection.subList( i, i1 ) );
+        }
+
+        private class ModificationTrackerListIterator implements ListIterator<QualifiedIdentity>
+        {
+            private final ListIterator<QualifiedIdentity> iterator;
+
+            public ModificationTrackerListIterator( ListIterator<QualifiedIdentity> iterator )
+            {
+                this.iterator = iterator;
+            }
+
+            public boolean hasNext()
+            {
+                return iterator.hasNext();
+            }
+
+            public QualifiedIdentity next()
+            {
+                return iterator.next();
+            }
+
+            public boolean hasPrevious()
+            {
+                return iterator.hasPrevious();
+            }
+
+            public QualifiedIdentity previous()
+            {
+                return iterator.previous();
+            }
+
+            public int nextIndex()
+            {
+                return iterator.nextIndex();
+            }
+
+            public int previousIndex()
+            {
+                return iterator.previousIndex();
+            }
+
+            public void remove()
+            {
+                modified = true;
+                iterator.remove();
+            }
+
+            public void set( QualifiedIdentity qualifiedIdentity )
+            {
+                modified = true;
+                iterator.set( qualifiedIdentity );
+            }
+
+            public void add( QualifiedIdentity qualifiedIdentity )
+            {
+                modified = true;
+                iterator.add( qualifiedIdentity );
+            }
+        }
+    }
+
+    protected class ModificationTrackerSet
+        extends ModificationTrackerCollection<Set<QualifiedIdentity>>
+        implements Set<QualifiedIdentity>
+    {
+        public ModificationTrackerSet( Set<QualifiedIdentity> collection )
+        {
+            super( collection );
+        }
     }
 }
