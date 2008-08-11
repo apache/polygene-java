@@ -305,18 +305,19 @@ public class DefaultEntityState
         public boolean removeAll( Collection<?> objects )
         {
             modified = true;
-            return false;
+            return collection.removeAll( objects );
         }
 
         public boolean retainAll( Collection<?> objects )
         {
             modified = true;
-            return false;
+            return collection.retainAll( objects );
         }
 
         public void clear()
         {
             modified = true;
+            collection.clear();
         }
     }
 

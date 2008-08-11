@@ -176,9 +176,7 @@ public final class Qi4jRuntime
     public EntityDescriptor getEntityDescriptor( Class mixinType, Module module )
     {
         ModuleInstance moduleInstance = (ModuleInstance) module;
-        EntitiesInstance entitiesInstance = moduleInstance.entities();
-        EntitiesModel entitiesModel = entitiesInstance.model();
-        return entitiesModel.getEntityModelFor( mixinType );
+        return moduleInstance.findEntityCompositeFor( mixinType );
     }
 
     public EntityState getEntityState( EntityComposite composite )
