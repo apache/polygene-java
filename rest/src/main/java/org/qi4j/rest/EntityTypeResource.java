@@ -13,7 +13,6 @@
  */
 package org.qi4j.rest;
 
-import java.io.IOException;
 import java.util.Map;
 import org.qi4j.injection.scope.Service;
 import org.qi4j.injection.scope.Structure;
@@ -37,17 +36,17 @@ import org.restlet.resource.Variant;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class EntityIdentitiesResource extends Resource
+public class EntityTypeResource extends Resource
 {
     @Service private EntityFinder entityFinder;
 
     private String type;
     private Request request;
 
-    public EntityIdentitiesResource( @Uses Context context,
-                                     @Uses Request request,
-                                     @Uses Response response,
-                                     @Structure Module module )
+    public EntityTypeResource( @Uses Context context,
+                               @Uses Request request,
+                               @Uses Response response,
+                               @Structure Module module )
         throws ClassNotFoundException
     {
         super( context, request, response );
@@ -56,10 +55,18 @@ public class EntityIdentitiesResource extends Resource
         // Define the supported variant.
         getVariants().add( new Variant( MediaType.TEXT_HTML ) );
         getVariants().add( new Variant( MediaType.TEXT_XML ) );
+        getVariants().add( new Variant( MediaType.APPLICATION_RDF_XML ) );
         setModifiable( false );
 
         final Map<String, Object> attributes = getRequest().getAttributes();
         type = (String) attributes.get( "type" );
+
+        String ext = getRequest().getResourceRef().getExtensions();
+
+        if( ext != null )
+        {
+            type = type.substring( 0, type.length() - ext.length() - 1 ));
+        }
     }
 
     @Override public Representation represent( final Variant variant )
@@ -67,15 +74,19 @@ public class EntityIdentitiesResource extends Resource
     {
         try
         {
-            final Iterable<QualifiedIdentity> query = entityFinder.findEntities( type, null, null, null, null );
+            String ext = getRequest().getResourceRef().getExtensions();
             // Generate the right representation according to its media type.
             if( MediaType.TEXT_XML.equals( variant.getMediaType() ) )
             {
-                return representXml( query );
+                return representXml();
+            }
+            else if( MediaType.APPLICATION_RDF_XML.equals( variant.getMediaType() ) )
+            {
+                return representRdf();
             }
             else if( MediaType.TEXT_HTML.equals( variant.getMediaType() ) )
             {
-                return representHtml( query );
+                return representHtml();
             }
 
             throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
@@ -86,11 +97,13 @@ public class EntityIdentitiesResource extends Resource
         }
     }
 
-    private Representation representXml( Iterable<QualifiedIdentity> query )
+    private Representation representXml()
         throws ResourceException
     {
         try
         {
+            final Iterable<QualifiedIdentity> query = entityFinder.findEntities( type, null, null, null, null );
+
             DomRepresentation representation = new DomRepresentation( MediaType.TEXT_XML );
             // Generate a DOM document representing the item.
             Document d = representation.getDocument();
@@ -109,15 +122,17 @@ public class EntityIdentitiesResource extends Resource
             // Returns the XML representation of this document.
             return representation;
         }
-        catch( IOException e )
+        catch( Exception e )
         {
             throw new ResourceException( e );
         }
     }
 
-    private Representation representHtml( Iterable<QualifiedIdentity> query )
+    private Representation representHtml()
         throws ResourceException
     {
+        final Iterable<QualifiedIdentity> query = entityFinder.findEntities( type, null, null, null, null );
+
         StringBuffer buf = new StringBuffer();
         buf.append( "<html><body><h1>Entities</h1><ul>" );
 

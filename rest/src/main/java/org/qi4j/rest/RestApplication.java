@@ -85,7 +85,7 @@ public class RestApplication extends Application
     {
         Router router = new Router( getContext() );
         router.attach( "/entity", createFinder( EntityTypesResource.class ) );
-        router.attach( "/entity/{type}", createFinder( EntityIdentitiesResource.class ) );
+        router.attach( "/entity/{type}", createFinder( EntityTypeResource.class ) );
         router.attach( "/entity/{type}/{identity}", createFinder( EntityResource.class ) );
         return router;
     }

@@ -16,17 +16,20 @@
  */
 package org.qi4j.entity.jdbm;
 
+import org.qi4j.composite.Concerns;
 import org.qi4j.composite.Mixins;
+import org.qi4j.entity.memory.ConcurrentModificationCheckConcern;
 import org.qi4j.library.locking.LockingAbstractComposite;
 import org.qi4j.service.Activatable;
-import org.qi4j.service.ServiceComposite;
 import org.qi4j.service.Configuration;
+import org.qi4j.service.ServiceComposite;
 import org.qi4j.spi.entity.EntityStore;
 
 /**
  * EntityStore service backed by JDBM store.
  */
 
+@Concerns( ConcurrentModificationCheckConcern.class )
 @Mixins( { JdbmEntityStoreMixin.class } )
 public interface JdbmEntityStoreService
     extends EntityStore, ServiceComposite, Activatable, LockingAbstractComposite, Configuration

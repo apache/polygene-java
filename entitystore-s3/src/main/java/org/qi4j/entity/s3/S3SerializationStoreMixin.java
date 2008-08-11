@@ -131,7 +131,7 @@ public class S3SerializationStoreMixin
         {
             if( e.getS3ErrorCode().equals( "NoSuchKey" ) )
             {
-                throw new EntityNotFoundException( "S3 store", identity.identity() );
+                throw new EntityNotFoundException( "S3 store", identity );
             }
             throw new EntityStoreException( e );
         }

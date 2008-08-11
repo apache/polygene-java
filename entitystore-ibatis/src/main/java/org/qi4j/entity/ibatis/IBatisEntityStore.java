@@ -150,7 +150,7 @@ public class IBatisEntityStore
         final Map<String, Object> compositePropertyValues = config.executeLoad( anIdentity );
         if( compositePropertyValues == null )
         {
-            throw new EntityNotFoundException( this.toString(), anIdentity.identity() );
+            throw new EntityNotFoundException( this.toString(), anIdentity );
         }
 
         return compositePropertyValues;

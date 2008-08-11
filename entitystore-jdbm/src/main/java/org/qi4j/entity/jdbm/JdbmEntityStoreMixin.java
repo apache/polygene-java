@@ -38,9 +38,11 @@ import jdbm.helper.Serializer;
 import jdbm.helper.Tuple;
 import jdbm.helper.TupleBrowser;
 import org.qi4j.injection.scope.This;
+import org.qi4j.injection.scope.Uses;
 import org.qi4j.library.locking.WriteLock;
 import org.qi4j.service.Activatable;
 import org.qi4j.service.Configuration;
+import org.qi4j.service.ServiceDescriptor;
 import org.qi4j.spi.entity.AbstractEntityStoreMixin;
 import org.qi4j.spi.entity.DefaultEntityState;
 import org.qi4j.spi.entity.EntityAlreadyExistsException;
@@ -62,6 +64,7 @@ public class JdbmEntityStoreMixin
 {
     private @This ReadWriteLock lock;
     private @This Configuration<JdbmConfiguration> config;
+    private @Uses ServiceDescriptor descriptor;
 
     private RecordManager recordManager;
     private BTree index;
@@ -107,7 +110,7 @@ public class JdbmEntityStoreMixin
 
             if( stateIndex != null )
             {
-                throw new EntityAlreadyExistsException( "JDBM store", identity.identity() );
+                throw new EntityAlreadyExistsException( descriptor.identity(), identity );
             }
         }
         catch( IOException e )
@@ -125,26 +128,10 @@ public class JdbmEntityStoreMixin
 
         try
         {
-            Long stateIndex = getStateIndex( identity );
-
-            if( stateIndex == null )
-            {
-                throw new EntityNotFoundException( "JDBM Store", identity.identity() );
-            }
-
-            byte[] serializedState = (byte[]) recordManager.fetch( stateIndex, serializer );
-
-            if( serializedState == null )
-            {
-                throw new EntityNotFoundException( "JDBM Store", identity.identity() );
-            }
-
-            ByteArrayInputStream bin = new ByteArrayInputStream( serializedState );
-            ObjectInputStream oin = new FastObjectInputStream( bin, config.configuration().turboMode().get() );
 
             try
             {
-                SerializableState serializableState = (SerializableState) oin.readObject();
+                SerializableState serializableState = loadSerializableState( identity );
                 DefaultEntityState state = new DefaultEntityState( serializableState.version(),
                                                                    serializableState.lastModified(),
                                                                    identity,
@@ -175,54 +162,23 @@ public class JdbmEntityStoreMixin
         try
         {
             ByteArrayOutputStream bout = new ByteArrayOutputStream();
-            for( EntityState entityState : newStates )
-            {
-                DefaultEntityState entityStateInstance = (DefaultEntityState) entityState;
-                SerializableState state = new SerializableState( entityState.qualifiedIdentity(),
-                                                                 entityState.version(),
-                                                                 lastModified,
-                                                                 entityStateInstance.getProperties(),
-                                                                 entityStateInstance.getAssociations(),
-                                                                 entityStateInstance.getManyAssociations() );
-                ObjectOutputStream out = new FastObjectOutputStream( bout, turbo );
-                out.writeObject( state );
-                out.close();
-                byte[] stateArray = bout.toByteArray();
-                long stateIndex = recordManager.insert( stateArray, serializer );
-                bout.reset();
-                String indexKey = entityState.qualifiedIdentity().identity();
-                index.insert( indexKey.getBytes(), stateIndex, false );
-            }
+            storeNewStates( newStates, turbo, lastModified, bout );
 
-            for( EntityState entityState : loadedStates )
-            {
-                DefaultEntityState entityStateInstance = (DefaultEntityState) entityState;
-                SerializableState state = new SerializableState( entityState.qualifiedIdentity(),
-                                                                 entityState.version() + 1,
-                                                                 lastModified,
-                                                                 entityStateInstance.getProperties(),
-                                                                 entityStateInstance.getAssociations(),
-                                                                 entityStateInstance.getManyAssociations() );
-                ObjectOutputStream out = new FastObjectOutputStream( bout, turbo );
-                out.writeObject( state );
-                out.close();
-                Long stateIndex = getStateIndex( entityState.qualifiedIdentity() );
-                byte[] stateArray = bout.toByteArray();
-                bout.reset();
-                recordManager.update( stateIndex, stateArray, serializer );
-            }
+            storeLoadedStates( loadedStates, turbo, lastModified, bout );
 
-            for( QualifiedIdentity removedState : removedStates )
-            {
-                Long stateIndex = getStateIndex( removedState );
-                recordManager.delete( stateIndex );
-                index.remove( removedState.identity().getBytes() );
-            }
+            removeStates( removedStates );
         }
-        catch( IOException e )
+        catch( Throwable e )
         {
             lock.writeLock().unlock();
-            throw new EntityStoreException( e );
+            if( e instanceof EntityStoreException )
+            {
+                throw (EntityStoreException) e;
+            }
+            else
+            {
+                throw new EntityStoreException( e );
+            }
         }
 
         return new StateCommitter()
@@ -261,6 +217,67 @@ public class JdbmEntityStoreMixin
                 }
             }
         };
+    }
+
+    private void removeStates( Iterable<QualifiedIdentity> removedStates )
+        throws IOException
+    {
+        for( QualifiedIdentity removedState : removedStates )
+        {
+            Long stateIndex = getStateIndex( removedState );
+            recordManager.delete( stateIndex );
+            index.remove( removedState.identity().getBytes() );
+        }
+    }
+
+    private void storeLoadedStates( Iterable<EntityState> loadedStates, boolean turbo, long lastModified, ByteArrayOutputStream bout )
+        throws IOException
+    {
+        for( EntityState entityState : loadedStates )
+        {
+            DefaultEntityState entityStateInstance = (DefaultEntityState) entityState;
+
+            if( entityStateInstance.isModified() )
+            {
+                long newVersion = entityState.version() + 1;
+                SerializableState state = new SerializableState( entityState.qualifiedIdentity(),
+                                                                 newVersion,
+                                                                 lastModified,
+                                                                 entityStateInstance.getProperties(),
+                                                                 entityStateInstance.getAssociations(),
+                                                                 entityStateInstance.getManyAssociations() );
+                ObjectOutputStream out = new FastObjectOutputStream( bout, turbo );
+                out.writeObject( state );
+                out.close();
+                Long stateIndex = getStateIndex( entityState.qualifiedIdentity() );
+                byte[] stateArray = bout.toByteArray();
+                bout.reset();
+                recordManager.update( stateIndex, stateArray, serializer );
+            }
+        }
+    }
+
+    private void storeNewStates( Iterable<EntityState> newStates, boolean turbo, long lastModified, ByteArrayOutputStream bout )
+        throws IOException
+    {
+        for( EntityState entityState : newStates )
+        {
+            DefaultEntityState entityStateInstance = (DefaultEntityState) entityState;
+            SerializableState state = new SerializableState( entityState.qualifiedIdentity(),
+                                                             entityState.version(),
+                                                             lastModified,
+                                                             entityStateInstance.getProperties(),
+                                                             entityStateInstance.getAssociations(),
+                                                             entityStateInstance.getManyAssociations() );
+            ObjectOutputStream out = new FastObjectOutputStream( bout, turbo );
+            out.writeObject( state );
+            out.close();
+            byte[] stateArray = bout.toByteArray();
+            long stateIndex = recordManager.insert( stateArray, serializer );
+            bout.reset();
+            String indexKey = entityState.qualifiedIdentity().identity();
+            index.insert( indexKey.getBytes(), stateIndex, false );
+        }
     }
 
     public Iterator<EntityState> iterator()
@@ -350,5 +367,27 @@ public class JdbmEntityStoreMixin
             index = BTree.createInstance( recordManager, new ByteArrayComparator(), new ByteArraySerializer(), new LongSerializer(), 16 );
             recordManager.setNamedObject( "index", index.getRecid() );
         }
+    }
+
+    private SerializableState loadSerializableState( QualifiedIdentity identity )
+        throws IOException, ClassNotFoundException
+    {
+        Long stateIndex = getStateIndex( identity );
+
+        if( stateIndex == null )
+        {
+            throw new EntityNotFoundException( descriptor.identity(), identity );
+        }
+
+        byte[] serializedState = (byte[]) recordManager.fetch( stateIndex, serializer );
+
+        if( serializedState == null )
+        {
+            throw new EntityNotFoundException( descriptor.identity(), identity );
+        }
+
+        ByteArrayInputStream bin = new ByteArrayInputStream( serializedState );
+        ObjectInputStream oin = new FastObjectInputStream( bin, config.configuration().turboMode().get() );
+        return (SerializableState) oin.readObject();
     }
 }

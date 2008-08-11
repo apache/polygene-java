@@ -14,6 +14,7 @@
 
 package org.qi4j.rest.client;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -27,6 +28,7 @@ import org.qi4j.test.AbstractQi4jTest;
 /**
  * TODO
  */
+@Ignore
 public class RESTEntityStoreTest
     extends AbstractQi4jTest
 {

@@ -2,11 +2,13 @@
 Bundle-Activator:
 
 Export-Package: org.qi4j.rest, \
-                org.qi4j.rest.assembly
+                org.qi4j.rest.assembly, \
+                org.qi4j.rest.client
 
 Import-Package: javax.crypto, \
                 javax.crypto.spec, \
                 javax.security.auth.login, \
+                javax.xml.datatype, \
                 javax.xml.namespace, \
                 javax.xml.parsers, \
                 javax.xml.transform, \
@@ -19,10 +21,7 @@ Import-Package: javax.crypto, \
                 org.ops4j.pax.swissbox.extender, \
                 org.osgi.framework, \
                 org.w3c.dom, org.xml.sax, \
-                org.xml.sax.helpers, \
-                org.apache.abdera.protocol.server.servlet, \
-                org.apache.abdera.protocol.server, \
-                org.apache.abdera.protocol.server.impl
+                org.xml.sax.helpers
 
 Private-Package:
 

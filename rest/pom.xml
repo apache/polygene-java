@@ -104,41 +104,12 @@
       <version>1.3</version>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.apache.abdera</groupId>
-      <artifactId>abdera-client</artifactId>
-      <version>0.4.0-incubating</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.abdera</groupId>
-      <artifactId>abdera-server</artifactId>
-      <version>0.4.0-incubating</version>
-    </dependency>
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.mortbay.jetty</groupId>
-      <artifactId>jetty</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.mortbay.jetty</groupId>
-      <artifactId>jetty-util</artifactId>
-    </dependency>
   </dependencies>
   <repositories>
     <repository>
       <id>maven-restlet</id>
       <name>Public online Restlet repository</name>
       <url>http://maven.restlet.org</url>
-    </repository>
-    <repository>
-      <id>apache-incubating</id>
-      <name>Apache Incubating Repository</name>
-      <url>http://people.apache.org/repo/m2-incubating-repository/</url>
     </repository>
   </repositories>
 </project>

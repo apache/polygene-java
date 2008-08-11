@@ -266,7 +266,7 @@ public final class IBatisEntityState
         validateNotNull( "qualifiedName", qualifiedName );
         if( status == REMOVED )
         {
-            throw new EntityNotFoundException( "IbatisEntityStore", qualifiedIdentity().identity() );
+            throw new EntityNotFoundException( "IbatisEntityStore", qualifiedIdentity() );
         }
         final String convertedIdentifier = convertIdentifier( qualifiedName );
         associations.put( convertedIdentifier, qualifiedIdentity != null ? qualifiedIdentity : QualifiedIdentity.NULL );
@@ -289,7 +289,7 @@ public final class IBatisEntityState
         validateNotNull( "qualifiedName", qualifiedName );
         if( status == REMOVED )
         {
-            throw new EntityNotFoundException( "IbatisEntityStore", qualifiedIdentity().identity() );
+            throw new EntityNotFoundException( "IbatisEntityStore", qualifiedIdentity() );
         }
         final String convertedIdentifier = convertIdentifier( qualifiedName );
         return manyAssociations.put( convertedIdentifier, newManyAssociations );

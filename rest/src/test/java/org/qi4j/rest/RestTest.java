@@ -51,8 +51,8 @@ import org.qi4j.rest.assembly.RestAssembler;
 import org.qi4j.spi.entity.UuidIdentityGeneratorService;
 import org.qi4j.structure.Application;
 import org.qi4j.test.AbstractQi4jTest;
-import org.qi4j.library.http.Servlets;
 
+@Ignore
 public class RestTest extends AbstractQi4jTest
 {
 
@@ -137,7 +137,7 @@ public class RestTest extends AbstractQi4jTest
         }
     }
 
-    @Test  @Ignore
+    @Test @Ignore
     public void givenExistingIdentityWhenExecutingDeleteCommandThenEntityIsRemoved()
         throws Throwable
     {
@@ -165,7 +165,7 @@ public class RestTest extends AbstractQi4jTest
         }
     }
 
-    @Test  @Ignore
+    @Test @Ignore
     public void givenAnTypeWhenExecutingGetCommandThenExpectTheCorrectXml()
         throws Exception
     {

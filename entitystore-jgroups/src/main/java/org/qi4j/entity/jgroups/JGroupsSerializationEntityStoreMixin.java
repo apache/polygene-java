@@ -71,7 +71,7 @@ public class JGroupsSerializationEntityStoreMixin
     {
         if( replicatedMap.containsKey( identity.toString() ) )
         {
-            throw new EntityAlreadyExistsException( "JGroups store", identity.identity() );
+            throw new EntityAlreadyExistsException( "JGroups store", identity );
         }
 
         return new DefaultEntityState( identity, getEntityType( identity ) );
@@ -89,7 +89,7 @@ public class JGroupsSerializationEntityStoreMixin
 
             if( serializableObject == null )
             {
-                throw new EntityNotFoundException( "JGroups store", identity.identity() );
+                throw new EntityNotFoundException( "JGroups store", identity );
             }
 
             SerializableState serializableState = serializableObject.getObject( (CompositeBuilderFactory) null, null );
