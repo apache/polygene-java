@@ -94,14 +94,16 @@ public class VerticalEdgeRenderer
             minX = left2;
             maxX = right2;
         }
-        else if( right1 > left2 )
+        else if( right1 > left2 && right2 > left1 )
         {
+            // overlap between the left side of the top rectangle, and right side of the bottom rectangle
             x = left2 + ( ( right1 - left2 ) / 2 );
             minX = left2;
             maxX = right1;
         }
-        else if( right2 > left1 )
+        else if( right2 > left1 && right1 > left2 )
         {
+            // overlap between the right side of the top rectangle, and the left side of the bottom rectangle
             x = left1 + ( ( right2 - left1 ) / 2 );
             minX = left1;
             maxX = right2;
