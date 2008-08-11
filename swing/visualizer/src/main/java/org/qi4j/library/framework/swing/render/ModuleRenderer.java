@@ -29,10 +29,10 @@ public class ModuleRenderer
     extends AbstractRenderer
 {
 
-    private Color borderColor = new Color( 71, 143, 27 );
+    private Color borderColor = new Color( 207, 202, 188 );
     private BasicStroke borderStroke = new BasicStroke( 2 );
-    private Color fillColor = new Color( 199, 233, 176 );
-    private Color textColor = borderColor;
+    private Color fillColor = new Color( 247, 245, 239 );
+    private Color textColor = new Color( 129, 127, 121 );
 
     public void render( Graphics2D g, VisualItem item )
     {

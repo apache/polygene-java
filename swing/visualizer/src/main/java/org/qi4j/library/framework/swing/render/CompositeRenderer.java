@@ -28,7 +28,7 @@ public class CompositeRenderer
     extends AbstractRenderer
 {
 
-    private Color fillColor = new Color( 123, 205, 72 );
+    private Color fillColor = new Color( 129, 127, 121 );
     private Color textColor = Color.white;
 
     public void render( Graphics2D g, VisualItem item )

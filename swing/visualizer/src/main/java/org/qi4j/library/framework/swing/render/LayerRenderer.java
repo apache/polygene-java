@@ -28,8 +28,10 @@ public class LayerRenderer
     extends AbstractRenderer
 {
 
-    private Color fillColor = new Color( 161, 219, 124 );
-    private Color textColor = new Color( 85, 85, 85 );
+    private Color fillColor = new Color( 242, 238, 229 );
+    private Color textColor = new Color( 129, 127, 121 );
+
+    // todo drop shadow
 
     public void render( Graphics2D g, VisualItem item )
     {

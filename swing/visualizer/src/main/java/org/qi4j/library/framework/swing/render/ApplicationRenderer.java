@@ -34,8 +34,9 @@ public class ApplicationRenderer
 
     private Color borderColor = Color.black;
     private BasicStroke borderStroke = new BasicStroke( 6 );
-    private Color fillColor = new Color( 98, 195, 37 );
-    private Color textColor = Color.white;
+
+    private Color fillColor = new Color( 233, 227, 211 );
+    private Color textColor = new Color( 129, 127, 121 );
 
     public void render( Graphics2D g, VisualItem item )
     {
@@ -46,9 +47,10 @@ public class ApplicationRenderer
         int width = (int) rect.getWidth();
         int height = (int) rect.getHeight();
 
-        g.setPaint( borderColor );
-        g.setStroke( borderStroke );
-        g.drawRect( x, y, width, height );
+        // todo draw drop shadow
+//        g.setPaint( borderColor );
+//        g.setStroke( borderStroke );
+//        g.drawRect( x, y, width, height );
 
         g.setPaint( fillColor );
         g.fillRoundRect( x + 3, y + 3, width - 6, height - 6, 5, 5 );
