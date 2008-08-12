@@ -80,7 +80,7 @@ public final class EntityPropertyModel extends PropertyModel
         }
         else if( isImmutable() )
         {
-            type = PropertyType.PropertyTypeEnum.COMPUTED;
+            type = PropertyType.PropertyTypeEnum.IMMUTABLE;
         }
         else
         {
