@@ -17,22 +17,19 @@
  * limitations under the License. 
  */
 
-package org.qi4j.library.framework.swing.render;
+package org.qi4j.library.swing.visualizer.render;
 
 import prefuse.visual.VisualItem;
 import java.awt.Graphics2D;
 import java.awt.Color;
-import java.awt.BasicStroke;
 import java.awt.geom.Rectangle2D;
 
-public class ModuleRenderer
+public class CompositeRenderer
     extends AbstractRenderer
 {
 
-    private Color borderColor = new Color( 207, 202, 188 );
-    private BasicStroke borderStroke = new BasicStroke( 2 );
-    private Color fillColor = new Color( 247, 245, 239 );
-    private Color textColor = new Color( 129, 127, 121 );
+    private Color fillColor = new Color( 129, 127, 121 );
+    private Color textColor = Color.white;
 
     public void render( Graphics2D g, VisualItem item )
     {
@@ -42,12 +39,8 @@ public class ModuleRenderer
         int width = (int) rect.getWidth();
         int height = (int) rect.getHeight();
 
-        g.setPaint( borderColor );
-        g.setStroke( borderStroke );
-        g.drawRoundRect( x, y, width, height, 3, 3 );
-
         g.setPaint( fillColor );
-        g.fillRoundRect( x + 1, y + 1, width - 2, height - 2, 3, 3 );
+        g.fillRoundRect( x, y, width, height, 3, 3 );
 
         g.setPaint( textColor );
         drawName( g, item, x, y );

@@ -12,7 +12,7 @@
  *
  */
 
-package org.qi4j.library.framework.swing;
+package org.qi4j.library.swing.visualizer;
 
 import org.qi4j.bootstrap.ApplicationAssembly;
 import org.qi4j.bootstrap.Energy4Java;
@@ -22,6 +22,7 @@ import org.qi4j.composite.Composite;
 import org.qi4j.composite.Mixins;
 import org.qi4j.structure.Application;
 import org.qi4j.property.Property;
+import org.qi4j.library.swing.visualizer.ApplicationGraph;
 
 /**
  * TODO

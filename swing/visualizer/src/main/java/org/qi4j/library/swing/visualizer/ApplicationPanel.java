@@ -13,18 +13,16 @@
  * limitations under the License.
  *
  */
-package org.qi4j.library.framework.swing;
+package org.qi4j.library.swing.visualizer;
 
 import java.util.Iterator;
+import java.util.Collections;
 import java.awt.event.ActionEvent;
-import java.awt.event.AdjustmentListener;
-import java.awt.event.AdjustmentEvent;
 import java.awt.geom.Point2D;
 import java.awt.geom.AffineTransform;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Color;
-import java.awt.Graphics2D;
 import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.AbstractAction;
@@ -32,15 +30,11 @@ import javax.swing.KeyStroke;
 import javax.swing.InputMap;
 import javax.swing.ActionMap;
 import javax.swing.Action;
-import javax.swing.JScrollBar;
-import javax.swing.BoundedRangeModel;
-import javax.swing.DefaultBoundedRangeModel;
-import static org.qi4j.library.framework.swing.GraphConstants.FIELD_TYPE;
-import org.qi4j.library.framework.swing.render.ApplicationRenderer;
-import org.qi4j.library.framework.swing.render.CompositeRenderer;
-import org.qi4j.library.framework.swing.render.LayerRenderer;
-import org.qi4j.library.framework.swing.render.ModuleRenderer;
-import org.qi4j.library.framework.swing.render.VerticalEdgeRenderer;
+import org.qi4j.library.swing.visualizer.render.ApplicationRenderer;
+import org.qi4j.library.swing.visualizer.render.CompositeRenderer;
+import org.qi4j.library.swing.visualizer.render.LayerRenderer;
+import org.qi4j.library.swing.visualizer.render.ModuleRenderer;
+import org.qi4j.library.swing.visualizer.render.VerticalEdgeRenderer;
 import prefuse.Display;
 import prefuse.Visualization;
 import prefuse.action.ActionList;
@@ -52,7 +46,6 @@ import prefuse.data.Node;
 import prefuse.render.DefaultRendererFactory;
 import prefuse.util.ColorLib;
 import prefuse.util.display.DisplayLib;
-import prefuse.util.display.PaintListener;
 import prefuse.visual.EdgeItem;
 import prefuse.visual.VisualItem;
 import prefuse.visual.sort.ItemSorter;
@@ -76,9 +69,6 @@ public class ApplicationPanel extends JPanel
     private Action zoomIn;
     private Action zoomOut;
     private Control compositeSelectionControl;
-
-    private BoundedRangeModel hBarModel = new DefaultBoundedRangeModel( 0, 5, 0, 10 );
-    private BoundedRangeModel vBarModel = new DefaultBoundedRangeModel( 1, 0, 0, 1 );
 
     public ApplicationPanel( Graph graph, Control compositeSelectionControl )
     {
@@ -112,47 +102,8 @@ public class ApplicationPanel extends JPanel
         controlsPanel.add( zoomToFitBtn );
         controlsPanel.add( actualSizeButton );
 
-/*
-        final JTextField xField = new JTextField( 4 );
-        final JTextField yField = new JTextField( 4 );
-        JButton jButton = new JButton( "Pan" );
-        jButton.addActionListener( new ActionListener()
-        {
-            public void actionPerformed( ActionEvent e )
-            {
-                double x = Double.valueOf( xField.getText() );
-                double y = Double.valueOf( yField.getText() );
-                display.panAbs( x, y );
-                display.repaint();
-            }
-        } );
-
-        for( Object o :  Arrays.asList( xField, yField, jButton ) )
-        {
-            controlsPanel.add( (Component) o );
-        }
-*/
-
-        final JScrollBar hBar = new JScrollBar( JScrollBar.HORIZONTAL, 0, 5, 0, 10 );
-        hBar.setUnitIncrement( 10 );
-        hBar.setBlockIncrement( 100 );
-        hBar.setModel( hBarModel );
-        final JScrollBar vBar = new JScrollBar( JScrollBar.VERTICAL );
-        vBar.setModel( vBarModel );
-
-        hBar.addAdjustmentListener(
-            new AdjustmentListener()
-            {
-                public void adjustmentValueChanged( AdjustmentEvent e )
-                {
-                    pan( display, hBar.getValue(), vBar.getValue() );
-                }
-            } );
-
         add( controlsPanel, BorderLayout.NORTH );
-        add( display, BorderLayout.CENTER );
-        add( hBar, BorderLayout.SOUTH );
-        add( vBar, BorderLayout.EAST );
+        add( new PrefuseJScrollPane( display ), BorderLayout.CENTER );
 
     }
 
@@ -208,7 +159,7 @@ public class ApplicationPanel extends JPanel
             public int score( VisualItem item )
             {
                 // First draw the Application box, then the edges, then other nodes
-                if( item.getInt( FIELD_TYPE ) == TYPE_APPLICATION )
+                if( item.getInt( GraphConstants.FIELD_TYPE ) == TYPE_APPLICATION )
                 {
                     return 0;
                 }
@@ -225,52 +176,7 @@ public class ApplicationPanel extends JPanel
 
         display.addControlListener( compositeSelectionControl );
 
-        display.addPaintListener( new PaintListener()
-        {
-            double previousScale = 1.0D;
-
-            public void prePaint( Display d, Graphics2D g )
-            {
-            }
-
-            public void postPaint( Display d, Graphics2D g )
-            {
-                double scale = d.getScale();
-
-                if( scale != previousScale )
-                {
-                    int width = (int) applicationNodeItem.getBounds().getWidth();
-                    int height = d.getHeight();
-
-                    int extent = (int) ( d.getWidth() / scale );
-                    int wValue = ( width - extent ) / 2;
-
-//                    System.out.println( "width - " + width + ", wValue - " + wValue + ", extent - " + extent );
-                    hBarModel.setRangeProperties( wValue, extent, 0, width, false );
-                    vBarModel.setRangeProperties( height, height, height, height, false );
-
-                    previousScale = scale;
-                }
-            }
-        } );
         return display;
-    }
-
-    private int prevX;
-    private int prevY;
-
-    private void pan( Display display, int x, int y )
-    {
-/*
-        System.out.println( "prevX = " + prevX );
-        System.out.println( "x = " + x );
-        System.out.println( "panning x by : " + (prevX - x) );
-        //todo not worrying about vertical scrolling at the moment
-*/
-
-        display.panAbs( prevX - x, 0 );
-        prevX = x;
-        display.repaint();
     }
 
     private void createProcessingActions( Visualization visualization )

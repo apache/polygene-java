@@ -13,7 +13,7 @@
  * limitations under the License.
  *
  */
-package org.qi4j.library.framework.swing;
+package org.qi4j.library.swing.visualizer;
 
 import java.awt.Dimension;
 import java.awt.Color;

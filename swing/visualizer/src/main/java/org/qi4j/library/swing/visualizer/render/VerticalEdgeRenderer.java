@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.library.framework.swing.render;
+package org.qi4j.library.swing.visualizer.render;
 
 import prefuse.render.EdgeRenderer;
 import prefuse.visual.VisualItem;

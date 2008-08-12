@@ -119,7 +119,7 @@ public class PrefuseJScrollPane extends JPanel
         barH.addAdjustmentListener( new ScrollbarListener()
         {
 
-            @Override public void adjustmentValueChanged( AdjustmentEvent e )
+            public void adjustmentValueChanged( AdjustmentEvent e )
             {
 
                 // This is kind of an ugly work around. I tried to modify the ScrollBar
@@ -145,7 +145,7 @@ public class PrefuseJScrollPane extends JPanel
         barV.addAdjustmentListener( new ScrollbarListener()
         {
 
-            @Override public void adjustmentValueChanged( AdjustmentEvent e )
+            public void adjustmentValueChanged( AdjustmentEvent e )
             {
 
                 // This is kind of an ugly work around. I tried to modify the ScrollBar
@@ -524,7 +524,7 @@ public class PrefuseJScrollPane extends JPanel
          * @param d the Display about to paint itself
          * @param g the Graphics context for the Display
          */
-        @Override public void postPaint( Display d, Graphics2D g )
+        public void postPaint( Display d, Graphics2D g )
         {
             notifyPane();
         }
@@ -535,7 +535,7 @@ public class PrefuseJScrollPane extends JPanel
          * @param d the Display about to paint itself
          * @param g the Graphics context for the Display
          */
-        @Override public void prePaint( Display d, Graphics2D g )
+        public void prePaint( Display d, Graphics2D g )
         {
         }
 
