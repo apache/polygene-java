@@ -17,8 +17,7 @@
 package org.qi4j.library.swing.visualizer;
 
 import java.awt.Graphics2D;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.AdjustmentEvent;
@@ -112,7 +111,6 @@ public class PrefuseJScrollPane extends JPanel
     protected void initialize()
     {
 
-        // Scrollbar: _
         barH = new JScrollBar( JScrollBar.HORIZONTAL );
         barH.setEnabled( false );
         barH.setMaximum( 0 );
@@ -129,16 +127,11 @@ public class PrefuseJScrollPane extends JPanel
                     m_display.repaint();
                     lastH = e.getValue();
                 }
-                else
-                {
-                    System.out.println( "forwardScollpaneChanges is false" );
-                }
 
             }
 
         } );
 
-        // Scrollbar: |
         barV = new JScrollBar( JScrollBar.VERTICAL );
         barV.setEnabled( false );
         barV.setMaximum( 0 );
@@ -155,18 +148,13 @@ public class PrefuseJScrollPane extends JPanel
                     m_display.repaint();
                     lastV = e.getValue();
                 }
-                else
-                {
-                    System.out.println( "forwardScollpaneChanges is false" );
-                }
 
             }
 
         } );
 
-        // Use GridBagLayout
         // Maybe use BorderLayout
-        setLayout( new GridBagLayout() );
+        setLayout( new BorderLayout() );
 
     }
 
@@ -178,26 +166,16 @@ public class PrefuseJScrollPane extends JPanel
     public void addDisplay( Display display )
     {
 
-        GridBagConstraints c = new GridBagConstraints();
-
         // Initially the scrollbars are not yet added to the layout
         if( this.m_display != null )
         {
-
             // If there was an old display, remove it from the pane
             remove( this.m_display );
         }
         else
         {
-            c.fill = GridBagConstraints.VERTICAL;
-            c.gridx = 1;
-            c.gridy = 0;
-            add( barV, c );
-
-            c.fill = GridBagConstraints.HORIZONTAL;
-            c.gridx = 0;
-            c.gridy = 1;
-            add( barH, c );
+            add( barV, BorderLayout.EAST );
+            add( barH, BorderLayout.SOUTH );
         }
 
         this.m_display = display;
@@ -205,10 +183,7 @@ public class PrefuseJScrollPane extends JPanel
         // Add the paint listener that notifies us when the pane is repainted
         this.m_display.addPaintListener( new DisplayPaintListener( this ) );
 
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.gridx = 0;
-        c.gridy = 0;
-        add( this.m_display, c );
+        add( this.m_display, BorderLayout.CENTER );
 
         // Fit the scrollbars
         checkScrollbarState();
