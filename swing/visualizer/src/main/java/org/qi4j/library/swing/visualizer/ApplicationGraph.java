@@ -18,9 +18,10 @@ package org.qi4j.library.swing.visualizer;
 import java.awt.Dimension;
 import java.awt.Color;
 import java.awt.event.MouseEvent;
+import java.lang.reflect.Method;
+import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.Map;
-import java.lang.reflect.Method;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
@@ -112,7 +113,7 @@ public class ApplicationGraph
                         Method[] methods = mixinType.getMethods();
                         for( Method method : methods )
                         {
-                            DefaultMutableTreeNode methodNode = new DefaultMutableTreeNode( method );
+                            MethodNode methodNode = new MethodNode( method );
                             mixinNode.add( methodNode );
                         }
                     }
@@ -122,11 +123,18 @@ public class ApplicationGraph
                     {
                         public void valueChanged( TreeSelectionEvent e )
                         {
-                            Object object = ( (DefaultMutableTreeNode) tree.getLastSelectedPathComponent() ).getUserObject();
-                            if( object instanceof Method )
+                            Object o = tree.getLastSelectedPathComponent();
+                            if( o instanceof MethodNode )
                             {
-                                Method m = (Method) object;
-                                Map<String, List> map = appGraphVisitor.getMethodAttributes( m );
+                                Method method = ( (MethodNode) o ).getMethod();
+
+                                Annotation[] annotations = method.getAnnotations();
+                                for( Annotation annotation : annotations )
+                                {
+                                    System.out.println( annotation.annotationType() + ", " + annotation.toString() + "\n" );
+                                }
+
+                                Map<String, List> map = appGraphVisitor.getMethodAttributes( method );
 
                                 StringBuilder buf = new StringBuilder();
 
@@ -151,7 +159,6 @@ public class ApplicationGraph
                                     buf.append( sideEffect.toString() ).append( "\n" );
                                 }
 
-//                                JLabel label = new JLabel( buf.toString() );
                                 JTextPane textPane = new JTextPane();
                                 textPane.setText( buf.toString() );
                                 JPanel panel = new JPanel();
@@ -159,12 +166,55 @@ public class ApplicationGraph
                                 panel.add( textPane );
 
                                 mainPane.setRightComponent( panel );
+
                             }
+
                         }
                     } );
 
                     leftPane.setRightComponent( new JScrollPane( tree ) );
                 }
+            }
+        }
+
+        private class MethodNode extends DefaultMutableTreeNode
+        {
+            private Method method;
+
+            private MethodNode( Method method )
+            {
+                if( method == null )
+                {
+                    throw new NullPointerException( "Method is null" );
+                }
+                this.method = method;
+            }
+
+            public String toString()
+            {
+                StringBuilder buf = new StringBuilder();
+                buf.append( method.getReturnType().getSimpleName() ).append( " " ).
+                    append( method.getName() );
+
+                Class<?>[] paramTypes = method.getParameterTypes();
+                buf.append( "( " );
+                for( Class<?> type : paramTypes )
+                {
+                    buf.append( type.getSimpleName() ).append( ", " );
+                }
+                if( paramTypes.length > 0 )
+                {
+                    buf.delete( buf.length() - 2, buf.length() );
+                }
+
+                buf.append( " )" );
+
+                return buf.toString();
+            }
+
+            public Method getMethod()
+            {
+                return method;
             }
         }
     }
