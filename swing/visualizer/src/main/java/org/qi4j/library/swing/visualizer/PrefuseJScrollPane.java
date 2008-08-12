@@ -112,7 +112,7 @@ public class PrefuseJScrollPane extends JPanel
     {
 
         barH = new JScrollBar( JScrollBar.HORIZONTAL );
-        barH.setEnabled( false );
+//        barH.setEnabled( false );
         barH.setMaximum( 0 );
         barH.addAdjustmentListener( new ScrollbarListener()
         {
@@ -133,7 +133,7 @@ public class PrefuseJScrollPane extends JPanel
         } );
 
         barV = new JScrollBar( JScrollBar.VERTICAL );
-        barV.setEnabled( false );
+//        barV.setEnabled( false );
         barV.setMaximum( 0 );
         barV.addAdjustmentListener( new ScrollbarListener()
         {
@@ -301,9 +301,11 @@ public class PrefuseJScrollPane extends JPanel
         {
 
             // Show bar if the graph does not fit on the screen
+//            barV.setEnabled( true );
+            add( barV, BorderLayout.EAST );
+            revalidate();
 
             forwardScollpaneChanges = false;
-            barV.setEnabled( true );
             barV.setMaximum( newHeight );
             barV.setVisibleAmount( newVisibleAmount );
             barV.setValue( newValue );
@@ -314,12 +316,13 @@ public class PrefuseJScrollPane extends JPanel
         else
         {
 
-            // Disable bar if the graph fits on the screen
-
-            barV.setEnabled( false );
-            barV.setMaximum( 0 );
+            remove( barV );
+            revalidate();
+//            barV.setEnabled( false );
+//            barV.setMaximum( 0 );
 
         }
+
     }
 
     /**
@@ -395,9 +398,11 @@ public class PrefuseJScrollPane extends JPanel
         {
 
             // Show bar if the graph does not fit on the screen
+//            barH.setEnabled( true );
+            add( barH, BorderLayout.SOUTH );
+            revalidate();
 
             forwardScollpaneChanges = false;
-            barH.setEnabled( true );
             barH.setMaximum( newWidth );
             barH.setVisibleAmount( newVisibleAmount );
             barH.setValue( newValue );
@@ -409,9 +414,10 @@ public class PrefuseJScrollPane extends JPanel
         {
 
             // Disable bar if the graph fits on the screen
-
-            barH.setEnabled( false );
-            barH.setMaximum( 0 );
+            remove( barH );
+            revalidate();
+//            barH.setEnabled( false );
+//            barH.setMaximum( 0 );
 
         }
     }
