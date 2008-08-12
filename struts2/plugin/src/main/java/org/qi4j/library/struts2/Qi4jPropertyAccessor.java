@@ -14,6 +14,7 @@ import ognl.ObjectMethodAccessor;
 import ognl.ObjectPropertyAccessor;
 import ognl.OgnlContext;
 import ognl.OgnlException;
+import ognl.OgnlRuntime;
 
 import org.qi4j.composite.ConstraintViolation;
 import org.qi4j.composite.ConstraintViolationException;
@@ -32,23 +33,24 @@ import org.qi4j.property.Property;
  * it can be processed and by the ConstraintViolationInterceptor, similar to how conversion exceptions are handled by
  * the ConversionErrorInterceptor</p>
  *
+ * <p>When setting Association values, we attempt to convert the value to the association type using the normal XWork
+ * converter mechanisms.  If the type is an EntityComposite, we already have a converter registered 
+ * {@link EntityCompositeConverter} to handle conversion from a string identity to an object.  If the type is not an 
+ * EntityComposite, but the actual values are EntityComposites, you can register the {@link EntityCompositeConverter}
+ * for your type in your xwork-conversion.properties file.</p>
+ * 
  * <p>NOTE: We can't do this as a regular converter because Qi4j composites doesn't (nor should it be) following the
  * JavaBean standard.  We might be able to only override the getProperty() method here and have regular converters for
  * Property, Association and SetAssociation but I haven't tried that yet so it may not work as expected.</>
  *
- * <p>TODO: Doesn't yet handle the Association or SetAssociation, but these should be easy to add</p>
+ * <p>TODO: Doesn't yet handle ManyAssociations, but these shouldn't be too hard to add</p>
  */
 public class Qi4jPropertyAccessor extends ObjectPropertyAccessor
 {
     private static final Object[] BLANK_ARGUMENTS = new Object[0];
 
-    private ObjectMethodAccessor methodAccessor;
-
-    public Qi4jPropertyAccessor()
-    {
-        methodAccessor = new ObjectMethodAccessor();
-    }
-
+    private final ObjectMethodAccessor methodAccessor = new ObjectMethodAccessor();
+    
     @Override
     public final Object getProperty( Map aContext, Object aTarget, Object aPropertyName )
         throws OgnlException
@@ -144,9 +146,17 @@ public class Qi4jPropertyAccessor extends ObjectPropertyAccessor
             else if( Association.class.isAssignableFrom( memberClass ) )
             {
                 Association association = (Association) qi4jField;
+                OgnlContext ognlContext = (OgnlContext) aContext;
+                Class associationType = (Class) association.type();
+                Object convertedValue = getConvertedType(
+                    ognlContext, aTarget, null, fieldName, aPropertyValue, associationType );
+                if( convertedValue == OgnlRuntime.NoConversionPossible )
+                {
+                    throw new OgnlException("Could not convert value to association type");
+                }
                 try
                 {
-                    association.set( aPropertyValue );
+                    association.set( convertedValue );
                 }
                 catch( ConstraintViolationException e )
                 {
@@ -164,7 +174,7 @@ public class Qi4jPropertyAccessor extends ObjectPropertyAccessor
 
         super.setProperty( aContext, aTarget, aPropertyName, aPropertyValue );
     }
-
+    
     @SuppressWarnings( "unchecked" )
     protected final void handleConstraintViolation(
         Map aContext, Object aTarget, String aPropertyName, Object aPropertyValue,
