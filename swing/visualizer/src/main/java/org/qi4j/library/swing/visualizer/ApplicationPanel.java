@@ -292,7 +292,7 @@ public class ApplicationPanel extends JPanel
         public void actionPerformed( ActionEvent e )
         {
             Point2D p = getDisplayCenter();
-            display.animateZoom( p, 1.1, 1000 );
+            display.animateZoom( p, 1.2, 1000 );
         }
 
     }
@@ -310,7 +310,7 @@ public class ApplicationPanel extends JPanel
         public void actionPerformed( ActionEvent e )
         {
             Point2D p = new Point2D.Float( display.getWidth() / 2, display.getHeight() / 2 );
-            display.animateZoom( p, 0.91, 1000 );
+            display.animateZoom( p, 0.8, 1000 );
         }
     }
 

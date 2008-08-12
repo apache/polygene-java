@@ -83,6 +83,9 @@ public class PrefuseJScrollPane extends JPanel
      */
     protected Display m_display = null;
 
+    private static int UNIT_INCREMENT = 20;
+    private static int PREVIOUSLY_VISIBLE_AREA_WHEN_SCROLLING = 20;
+
     /**
      * Initializes an empty pane
      */
@@ -112,8 +115,8 @@ public class PrefuseJScrollPane extends JPanel
     {
 
         barH = new JScrollBar( JScrollBar.HORIZONTAL );
-//        barH.setEnabled( false );
         barH.setMaximum( 0 );
+        barH.setUnitIncrement( UNIT_INCREMENT );
         barH.addAdjustmentListener( new ScrollbarListener()
         {
 
@@ -121,9 +124,9 @@ public class PrefuseJScrollPane extends JPanel
             {
 
                 // This is kind of an ugly work around. I tried to modify the ScrollBar
-                if( forwardScollpaneChanges )
+                if( forwardScollpaneChanges && !e.getValueIsAdjusting() )
                 {
-                    m_display.pan( lastH - e.getValue(), 0 );
+                    m_display.animatePan( lastH - e.getValue(), 0, 500 );
                     m_display.repaint();
                     lastH = e.getValue();
                 }
@@ -133,8 +136,8 @@ public class PrefuseJScrollPane extends JPanel
         } );
 
         barV = new JScrollBar( JScrollBar.VERTICAL );
-//        barV.setEnabled( false );
         barV.setMaximum( 0 );
+        barV.setUnitIncrement( UNIT_INCREMENT );
         barV.addAdjustmentListener( new ScrollbarListener()
         {
 
@@ -142,9 +145,9 @@ public class PrefuseJScrollPane extends JPanel
             {
 
                 // This is kind of an ugly work around. I tried to modify the ScrollBar
-                if( forwardScollpaneChanges )
+                if( forwardScollpaneChanges && !e.getValueIsAdjusting() )
                 {
-                    m_display.pan( 0, lastV - e.getValue() );
+                    m_display.animatePan( 0, lastV - e.getValue(), 500 );
                     m_display.repaint();
                     lastV = e.getValue();
                 }
@@ -153,7 +156,6 @@ public class PrefuseJScrollPane extends JPanel
 
         } );
 
-        // Maybe use BorderLayout
         setLayout( new BorderLayout() );
 
     }
@@ -309,6 +311,7 @@ public class PrefuseJScrollPane extends JPanel
             barV.setMaximum( newHeight );
             barV.setVisibleAmount( newVisibleAmount );
             barV.setValue( newValue );
+            barV.setBlockIncrement( newVisibleAmount - PREVIOUSLY_VISIBLE_AREA_WHEN_SCROLLING );
             lastV = newValue;
             forwardScollpaneChanges = true;
 
@@ -406,6 +409,7 @@ public class PrefuseJScrollPane extends JPanel
             barH.setMaximum( newWidth );
             barH.setVisibleAmount( newVisibleAmount );
             barH.setValue( newValue );
+            barH.setBlockIncrement( newVisibleAmount - PREVIOUSLY_VISIBLE_AREA_WHEN_SCROLLING );
             lastH = newValue;
             forwardScollpaneChanges = true;
 
