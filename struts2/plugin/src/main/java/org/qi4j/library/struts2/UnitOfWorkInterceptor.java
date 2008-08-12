@@ -1,13 +1,12 @@
 package org.qi4j.library.struts2;
 
-import com.opensymphony.xwork2.Action;
-import com.opensymphony.xwork2.ActionInvocation;
-import com.opensymphony.xwork2.XWorkException;
-import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
-import com.opensymphony.xwork2.interceptor.PreResultListener;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkFactory;
 import org.qi4j.injection.scope.Structure;
+
+import com.opensymphony.xwork2.Action;
+import com.opensymphony.xwork2.ActionInvocation;
+import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
 
 /**
  * <p>An interceptor to be used to start a UnitOfWork if one has not yet been started.  If this interceptor creates a
@@ -40,59 +39,33 @@ public class UnitOfWorkInterceptor extends AbstractInterceptor
         if( uow == null )
         {
             uow = uowf.newUnitOfWork();
-            invocation.addPreResultListener( new UnitOfWorkCloser( uow ) );
             createdUnitOfWork = true;
         }
 
+        String resultCode = null;
         try
         {
-            return invocation.invoke();
+            resultCode = invocation.invoke();
         }
         finally
         {
             if( createdUnitOfWork && uow.isOpen() )
             {
-                uow.discard();
-            }
-        }
-    }
-
-    private class UnitOfWorkCloser implements PreResultListener
-    {
-        final UnitOfWork uow;
-
-        UnitOfWorkCloser( UnitOfWork uow )
-        {
-            this.uow = uow;
-        }
-
-        public void beforeResult( ActionInvocation invocation, String resultCode )
-        {
-            if( !uow.isOpen() )
-            {
-                return;
-            }
-
-            if( shouldComplete( invocation, resultCode ) )
-            {
-                try
+                if( shouldComplete( invocation, resultCode ) )
                 {
                     uow.complete();
                 }
-                catch( Exception e )
+                else
                 {
-                    throw new XWorkException( e );
+                    uow.discard();
                 }
             }
-            else
-            {
-                uow.discard();
-            }
         }
+        return resultCode;
+    }
 
-        protected boolean shouldComplete( ActionInvocation invocation, String resultCode )
-        {
-            return Action.SUCCESS.equals( resultCode );
-        }
+    protected boolean shouldComplete( ActionInvocation invocation, String resultCode )
+    {
+        return Action.SUCCESS.equals( resultCode );
     }
 }
