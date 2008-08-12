@@ -19,8 +19,9 @@ package org.qi4j.rest;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.StringReader;
-import java.io.StringWriter;
+import java.io.Writer;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -39,11 +40,13 @@ import org.qi4j.spi.entity.AssociationType;
 import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
+import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.ManyAssociationType;
 import org.qi4j.spi.entity.PropertyType;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.UnknownEntityTypeException;
 import org.restlet.Context;
+import org.restlet.data.CharacterSet;
 import org.restlet.data.Form;
 import org.restlet.data.Language;
 import org.restlet.data.MediaType;
@@ -54,11 +57,49 @@ import org.restlet.data.Tag;
 import org.restlet.resource.Representation;
 import org.restlet.resource.Resource;
 import org.restlet.resource.ResourceException;
-import org.restlet.resource.StringRepresentation;
 import org.restlet.resource.Variant;
+import org.restlet.resource.WriterRepresentation;
 
 public class EntityResource extends Resource
 {
+    public static Object toValue( String newStringValue, String propertyName, String propertyType )
+        throws IllegalArgumentException
+    {
+        Object newValue = null;
+        try
+        {
+            // TODO A ton of more types need to be added here. Converter registration mechanism needed?
+            newValue = null;
+            if( propertyType.equals( String.class.getName() ) )
+            {
+                newValue = newStringValue;
+            }
+            else if( propertyType.equals( Integer.class.getName() ) )
+            {
+                newValue = Integer.parseInt( newStringValue );
+            }
+        }
+        catch( Exception e )
+        {
+            throw new IllegalArgumentException( "Value '" + newStringValue + "' is not of type " + propertyType );
+        }
+
+        return newValue;
+    }
+
+    public static Object toString( Object newValue, String propertyName )
+        throws IllegalArgumentException
+    {
+        if( newValue == null )
+        {
+            return "";
+        }
+        else
+        {
+            return newValue.toString();
+        }
+    }
+
     @Service private EntityStore entityStore;
     @Structure private Qi4jSPI spi;
     @Service EntitySerializer entitySerializer;
@@ -137,6 +178,10 @@ public class EntityResource extends Resource
         {
             entityState = entityStore.getEntityState( qualifiedIdentity );
         }
+        catch( EntityNotFoundException e )
+        {
+            throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
+        }
         catch( UnknownEntityTypeException e )
         {
             throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
@@ -148,99 +193,116 @@ public class EntityResource extends Resource
     {
         representation.setModificationDate( new Date( entityState.lastModified() ) );
         representation.setTag( new Tag( "" + entityState.version() ) );
+        representation.setCharacterSet( CharacterSet.UTF_8 );
+        representation.setLanguages( Collections.singletonList( Language.ENGLISH ) );
 
         return representation;
     }
 
-    private Representation representHtml( EntityState entity )
+    private Representation representHtml( final EntityState entity )
     {
-        StringBuffer buf = new StringBuffer();
-        buf.append( "<html><head><title>" + entity.qualifiedIdentity().identity() + "</title><link rel=\"alternate\" type=\"application/rdf+xml\" href=\"" + entity.qualifiedIdentity().identity() + ".rdf\"/></head><body><h1>" + entity.qualifiedIdentity().identity() + "</h1>\n" );
-
-        buf.append( "<form method=\"post\" action=\"" + getRequest().getResourceRef().getPath() + "\">\n" );
-        buf.append( "<fieldset><legend>Properties</legend>\n<table>" );
-        for( PropertyType propertyType : entity.entityType().properties() )
+        return new WriterRepresentation( MediaType.TEXT_HTML )
         {
-            Object value = entity.getProperty( propertyType.qualifiedName() );
-            if( value == null )
+            public void write( Writer writer ) throws IOException
             {
-                value = "";
+                PrintWriter out = new PrintWriter( writer );
+                EntityType entityType = entity.entityType();
+                out.println( "<html><head><title>" + entity.qualifiedIdentity().identity() + "</title><link rel=\"alternate\" type=\"application/rdf+xml\" href=\"" + entity.qualifiedIdentity().identity() + ".rdf\"/></head><body>" );
+                out.println( "<h1>" + entity.qualifiedIdentity().identity() + "(<a href=\"../" + entity.qualifiedIdentity().type() + "\">" + entity.qualifiedIdentity().type() + "</a>)</h1>" );
+
+                out.println( "<form method=\"post\" action=\"" + getRequest().getResourceRef().getPath() + "\">\n" );
+                out.println( "<fieldset><legend>Properties</legend>\n<table>" );
+                for( PropertyType propertyType : entityType.properties() )
+                {
+                    Object value = entity.getProperty( propertyType.qualifiedName() );
+                    if( value == null )
+                    {
+                        value = "";
+                    }
+                    out.println( "<tr><td>" +
+                                 "<label for=\"" + propertyType.qualifiedName() + "\" >" +
+                                 GenericPropertyInfo.getName( propertyType.qualifiedName() ) +
+                                 "</label></td>\n" +
+                                 "<td><input " +
+                                 "type=\"text\" " +
+                                 ( propertyType.propertyType() != PropertyType.PropertyTypeEnum.MUTABLE ? "readonly=\"true\" " : "" ) +
+                                 "name=\"" + propertyType.qualifiedName() + "\" " +
+                                 "value=\"" + EntityResource.toString( value, propertyType.qualifiedName() ) + "\"></td></tr>" );
+                }
+                out.println( "</table></fieldset>\n" );
+
+                out.println( "<fieldset><legend>Associations</legend>\n<table>" );
+                for( AssociationType associationType : entityType.associations() )
+                {
+                    Object value = entity.getAssociation( associationType.qualifiedName() );
+                    if( value == null )
+                    {
+                        value = "";
+                    }
+                    out.println( "<tr><td>" +
+                                 "<label for=\"" + associationType.qualifiedName() + "\" >" +
+                                 GenericAssociationInfo.getName( associationType.qualifiedName() ) +
+                                 "</label></td>\n" +
+                                 "<td><input " +
+                                 "type=\"text\" " +
+                                 "size=\"40\" " +
+                                 "name=\"" + associationType.qualifiedName() + "\" " +
+                                 "value=\"" + value + "\"></td></tr>" );
+                }
+                out.println( "</table></fieldset>\n" );
+
+                out.println( "<fieldset><legend>Many associations</legend>\n<table>" );
+                for( ManyAssociationType associationType : entityType.manyAssociations() )
+                {
+                    Collection<QualifiedIdentity> identities = entity.getManyAssociation( associationType.qualifiedName() );
+                    String value = "";
+                    for( QualifiedIdentity identity : identities )
+                    {
+                        value += identity.toString() + "\n";
+                    }
+
+                    out.println( "<tr><td>" +
+                                 "<label for=\"" + associationType.qualifiedName() + "\" >" +
+                                 GenericAssociationInfo.getName( associationType.qualifiedName() ) +
+                                 "</label></td>\n" +
+                                 "<td><textarea " +
+                                 "rows=\"10\" " +
+                                 "cols=\"40\" " +
+                                 "name=\"" + associationType.qualifiedName() + "\" >" +
+                                 value +
+                                 "</textarea></td></tr>" );
+                }
+                out.println( "</table></fieldset>\n" );
+                out.println( "<input type=\"submit\" value=\"Update\"/></form>\n" );
+
+                out.println( "</body></html>\n" );
+                out.close();
             }
-            buf.append( "<tr><td>" +
-                        "<label for=\"" + propertyType.qualifiedName() + "\" >" +
-                        GenericPropertyInfo.getName( propertyType.qualifiedName() ) +
-                        "</label></td>\n" +
-                        "<td><input " +
-                        "type=\"text\" " +
-                        ( propertyType.propertyType() != PropertyType.PropertyTypeEnum.MUTABLE ? "readonly=\"true\" " : "" ) +
-                        "name=\"" + propertyType.qualifiedName() + "\" " +
-                        "value=\"" + value + "\"></td></tr>" );
-        }
-        buf.append( "</table></fieldset>\n" );
-
-        buf.append( "<fieldset><legend>Associations</legend>\n<table>" );
-        for( AssociationType associationType : entity.entityType().associations() )
-        {
-            Object value = entity.getAssociation( associationType.qualifiedName() );
-            if( value == null )
-            {
-                value = "";
-            }
-            buf.append( "<tr><td>" +
-                        "<label for=\"" + associationType.qualifiedName() + "\" >" +
-                        GenericAssociationInfo.getName( associationType.qualifiedName() ) +
-                        "</label></td>\n" +
-                        "<td><input " +
-                        "type=\"text\" " +
-                        "size=\"40\" " +
-                        "name=\"" + associationType.qualifiedName() + "\" " +
-                        "value=\"" + value + "\"></td></tr>" );
-        }
-        buf.append( "</table></fieldset>\n" );
-
-        buf.append( "<fieldset><legend>Many associations</legend>\n<table>" );
-        for( ManyAssociationType associationType : entity.entityType().manyAssociations() )
-        {
-            Collection<QualifiedIdentity> identities = entity.getManyAssociation( associationType.qualifiedName() );
-            String value = "";
-            for( QualifiedIdentity identity : identities )
-            {
-                value += identity.toString() + "\n";
-            }
-
-            buf.append( "<tr><td>" +
-                        "<label for=\"" + associationType.qualifiedName() + "\" >" +
-                        GenericAssociationInfo.getName( associationType.qualifiedName() ) +
-                        "</label></td>\n" +
-                        "<td><textarea " +
-                        "rows=\"10\" " +
-                        "cols=\"40\" " +
-                        "name=\"" + associationType.qualifiedName() + "\" >" +
-                        value +
-                        "</textarea></td></tr>" );
-        }
-        buf.append( "</table></fieldset>\n" );
-        buf.append( "<input type=\"submit\" value=\"Update\"/></form>\n" );
-
-        buf.append( "</body></html>\n" );
-
-        return new StringRepresentation( buf, MediaType.TEXT_HTML, Language.ENGLISH );
+        };
     }
 
-    private Representation representRdfXml( EntityState entity ) throws ResourceException
+    private Representation representRdfXml( final EntityState entity ) throws ResourceException
     {
-        try
+        Representation representation = new WriterRepresentation( MediaType.APPLICATION_RDF_XML )
         {
-            Iterable<Statement> statements = entitySerializer.serialize( entity );
-            StringWriter out = new StringWriter();
-            new RdfXmlSerializer().serialize( statements, out );
+            public void write( Writer writer ) throws IOException
+            {
+                try
+                {
+                    Iterable<Statement> statements = entitySerializer.serialize( entity );
+                    new RdfXmlSerializer().serialize( statements, writer );
+                }
+                catch( RDFHandlerException e )
+                {
+                    throw (IOException) new IOException().initCause( e );
+                }
 
-            return new StringRepresentation( out.toString(), MediaType.APPLICATION_RDF_XML );
-        }
-        catch( RDFHandlerException e )
-        {
-            throw new ResourceException( Status.SERVER_ERROR_INTERNAL, e );
-        }
+                writer.close();
+            }
+        };
+        representation.setCharacterSet( CharacterSet.UTF_8 );
+        return representation;
+
     }
 
     @Override @SuppressWarnings( "unused" )
@@ -267,7 +329,7 @@ public class EntityResource extends Resource
                 if( propertyType.propertyType() == PropertyType.PropertyTypeEnum.MUTABLE )
                 {
                     String newStringValue = form.getFirstValue( propertyType.qualifiedName() );
-                    Object newValue = convertValue( newStringValue, propertyType.type() );
+                    Object newValue = toValue( newStringValue, propertyType.qualifiedName(), propertyType.type() );
                     entity.setProperty( propertyType.qualifiedName(), newValue );
                 }
             }
@@ -316,31 +378,6 @@ public class EntityResource extends Resource
         entityStore.prepare( Collections.EMPTY_LIST, Collections.singleton( entity ), Collections.EMPTY_LIST ).commit();
 
         getResponse().setStatus( Status.SUCCESS_RESET_CONTENT );
-    }
-
-    private Object convertValue( String newStringValue, String propertyType )
-        throws IllegalArgumentException
-    {
-        Object newValue = null;
-        try
-        {
-// TODO A ton of more types need to be added here. Converter registration mechanism needed?
-            newValue = null;
-            if( propertyType.equals( String.class.getName() ) )
-            {
-                newValue = newStringValue;
-            }
-            else if( propertyType.equals( Integer.class.getName() ) )
-            {
-                newValue = Integer.parseInt( newStringValue );
-            }
-        }
-        catch( Exception e )
-        {
-            throw new IllegalArgumentException( "Value '" + newStringValue + "' is not of type " + propertyType );
-        }
-
-        return newValue;
     }
 
     @Override public boolean isModifiable()

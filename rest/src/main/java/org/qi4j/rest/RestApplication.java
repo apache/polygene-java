@@ -91,6 +91,8 @@ public class RestApplication extends Application
         router.attach( "/entity/{type}", createFinder( EntitiesResource.class ) );
         router.attach( "/entity/{type}/{identity}", createFinder( EntityResource.class ) );
 
+        router.attach( "/index", createFinder( IndexResource.class ) );
+
         // Add filters
         return new ExtensionMediaTypeFilter( getContext(), router );
     }

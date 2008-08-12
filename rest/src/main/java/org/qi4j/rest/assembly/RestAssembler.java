@@ -21,6 +21,7 @@ import org.qi4j.rest.EntitiesResource;
 import org.qi4j.rest.EntityResource;
 import org.qi4j.rest.EntityTypeResource;
 import org.qi4j.rest.EntityTypesResource;
+import org.qi4j.rest.IndexResource;
 import org.qi4j.rest.Qi4jEntityFinder;
 import org.qi4j.rest.RestApplication;
 import org.qi4j.structure.Visibility;
@@ -37,6 +38,7 @@ public class RestAssembler
                            EntitiesResource.class,
                            EntityResource.class,
                            EntityTypesResource.class,
-                           EntityTypeResource.class );
+                           EntityTypeResource.class,
+                           IndexResource.class );
     }
 }

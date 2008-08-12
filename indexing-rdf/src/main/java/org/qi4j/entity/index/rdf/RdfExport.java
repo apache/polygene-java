@@ -12,22 +12,15 @@
  *
  */
 
-package org.qi4j.rest;
+package org.qi4j.entity.index.rdf;
 
-import org.qi4j.bootstrap.Assembler;
-import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.ModuleAssembly;
-import static org.qi4j.library.http.Servlets.addServlets;
-import static org.qi4j.library.http.Servlets.serve;
+import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * TODO
  */
-public class RestletServletAssembler implements Assembler
+public interface RdfExport
 {
-    public void assemble( ModuleAssembly module ) throws AssemblyException
-    {
-        addServlets( serve( "/qi4j/*" ).with( Qi4jServerServletService.class ) ).to( module );
-//        addFilters( filter( "/*" ).through( UnitOfWorkFilterService.class ).on( REQUEST ) ).to( module );
-    }
+    public void toRDF( final OutputStream outputStream ) throws IOException;
 }

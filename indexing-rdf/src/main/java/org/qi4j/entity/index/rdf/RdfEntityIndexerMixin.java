@@ -109,7 +109,7 @@ public class RdfEntityIndexerMixin
                 }
             }
         }
-        catch( RepositoryException e )
+        catch( Throwable e )
         {
             e.printStackTrace();
             //TODO What shall we do with the exception?

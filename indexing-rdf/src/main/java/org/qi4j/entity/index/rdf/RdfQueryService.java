@@ -25,8 +25,8 @@ import org.qi4j.spi.query.EntityIndexer;
 /**
  * TODO Add JavaDoc
  */
-@Mixins( { RdfEntityIndexerMixin.class, RdfEntityFinderMixin.class } )
+@Mixins( { RdfEntityIndexerMixin.class, RdfEntityFinderMixin.class, RdfExportMixin.class } )
 public interface RdfQueryService
-    extends EntityIndexer, EntityFinder, ServiceComposite
+    extends EntityIndexer, EntityFinder, RdfExport, ServiceComposite
 {
 }

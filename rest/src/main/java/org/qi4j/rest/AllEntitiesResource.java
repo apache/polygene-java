@@ -14,8 +14,8 @@
 package org.qi4j.rest;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.io.Writer;
 import org.qi4j.entity.Entity;
 import org.qi4j.injection.scope.Service;
 import org.qi4j.injection.scope.Uses;
@@ -23,18 +23,17 @@ import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
 import org.restlet.Context;
-import org.restlet.data.Language;
+import org.restlet.data.CharacterSet;
 import org.restlet.data.MediaType;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
 import org.restlet.resource.DomRepresentation;
-import org.restlet.resource.OutputRepresentation;
 import org.restlet.resource.Representation;
 import org.restlet.resource.Resource;
 import org.restlet.resource.ResourceException;
-import org.restlet.resource.StringRepresentation;
 import org.restlet.resource.Variant;
+import org.restlet.resource.WriterRepresentation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -119,25 +118,27 @@ public class AllEntitiesResource extends Resource
         {
             final Iterable<QualifiedIdentity> query = entityFinder.findEntities( Entity.class.getName(), null, null, null, null );
 
-            OutputRepresentation representation = new OutputRepresentation( MediaType.APPLICATION_RDF_XML )
+            WriterRepresentation representation = new WriterRepresentation( MediaType.APPLICATION_RDF_XML )
             {
-                public void write( OutputStream outputStream ) throws IOException
+                public void write( Writer writer ) throws IOException
                 {
-                    PrintWriter writer = new PrintWriter( outputStream );
-                    writer.println( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                                    "<rdf:RDF\n" +
-                                    "\txmlns=\"urn:qi4j:\"\n" +
-                                    "\txmlns:qi4j=\"http://www.qi4j.org/rdf/model/1.0/\"\n" +
-                                    "\txmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n" +
-                                    "\txmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">" );
+                    PrintWriter out = new PrintWriter( writer );
+                    out.println( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                                 "<rdf:RDF\n" +
+                                 "\txmlns=\"urn:qi4j:\"\n" +
+                                 "\txmlns:qi4j=\"http://www.qi4j.org/rdf/model/1.0/\"\n" +
+                                 "\txmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n" +
+                                 "\txmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">" );
                     for( QualifiedIdentity qualifiedIdentity : query )
                     {
-                        writer.println( "<" + qualifiedIdentity.type() + " rdf:about=\"urn:qi4j:" + qualifiedIdentity.identity() + "\"/>" );
+                        out.println( "<" + qualifiedIdentity.type() + " rdf:about=\"urn:qi4j:" + qualifiedIdentity.identity() + "\"/>" );
                     }
 
-                    writer.println( "</rdf:RDF>" );
+                    out.println( "</rdf:RDF>" );
+                    out.close();
                 }
             };
+            representation.setCharacterSet( CharacterSet.UTF_8 );
 
             return representation;
         }
@@ -153,18 +154,23 @@ public class AllEntitiesResource extends Resource
         try
         {
             final Iterable<QualifiedIdentity> query = entityFinder.findEntities( Entity.class.getName(), null, null, null, null );
-
-            StringBuffer buf = new StringBuffer();
-            buf.append( "<html><head><title>All entities</title</head><body><h1>All entities</h1><ul>" );
-
-            for( QualifiedIdentity entity : query )
+            Representation representation = new WriterRepresentation( MediaType.TEXT_HTML )
             {
-                buf.append( "<li><a href=\"" + getRequest().getResourceRef().getPath() + "/" + entity.type() + "/" + entity.identity() + ".html\">" + entity.identity() + "</a></li>" );
-            }
-            buf.append( "</ul></body></html>" );
+                public void write( Writer buf ) throws IOException
+                {
+                    PrintWriter out = new PrintWriter( buf );
+                    out.println( "<html><head><title>All entities</title</head><body><h1>All entities</h1><ul>" );
 
-            // Returns the XML representation of this document.
-            return new StringRepresentation( buf, MediaType.TEXT_HTML, Language.ENGLISH );
+                    for( QualifiedIdentity entity : query )
+                    {
+                        out.println( "<li><a href=\"" + getRequest().getResourceRef().getPath() + "/" + entity.type() + "/" + entity.identity() + ".html\">" + entity.identity() + "</a></li>" );
+                    }
+                    out.println( "</ul></body></html>" );
+                    out.close();
+                }
+            };
+            representation.setCharacterSet( CharacterSet.UTF_8 );
+            return representation;
         }
         catch( EntityFinderException e )
         {
