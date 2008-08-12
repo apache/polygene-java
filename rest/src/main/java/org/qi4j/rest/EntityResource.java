@@ -75,8 +75,7 @@ public class EntityResource extends Resource
         getVariants().add( new Variant( MediaType.APPLICATION_RDF_XML ) );
         setModifiable( true );
 
-        // Get the "itemName" attribute value taken from the URI template
-        // /entity/{identity}.
+        // /entity/{type}/{identity}
         Map<String, Object> attributes = getRequest().getAttributes();
         String identity = (String) attributes.get( "identity" );
         String type = (String) attributes.get( "type" );
@@ -214,7 +213,6 @@ public class EntityResource extends Resource
                         GenericAssociationInfo.getName( associationType.qualifiedName() ) +
                         "</label></td>\n" +
                         "<td><textarea " +
-                        "type=\"text\" " +
                         "rows=\"10\" " +
                         "cols=\"40\" " +
                         "name=\"" + associationType.qualifiedName() + "\" >" +

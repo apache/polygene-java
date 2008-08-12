@@ -16,17 +16,19 @@ package org.qi4j.rest;
 import java.io.StringWriter;
 import java.util.Map;
 import org.openrdf.model.Statement;
+import org.qi4j.entity.association.GenericAssociationInfo;
 import org.qi4j.injection.scope.Service;
 import org.qi4j.injection.scope.Structure;
 import org.qi4j.injection.scope.Uses;
 import org.qi4j.library.rdf.entity.EntitySerializer;
 import org.qi4j.library.rdf.serializer.RdfXmlSerializer;
+import org.qi4j.property.GenericPropertyInfo;
 import org.qi4j.spi.Qi4jSPI;
+import org.qi4j.spi.entity.AssociationType;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityType;
-import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.spi.query.EntityFinder;
-import org.qi4j.spi.query.EntityFinderException;
+import org.qi4j.spi.entity.ManyAssociationType;
+import org.qi4j.spi.entity.PropertyType;
 import org.qi4j.structure.Module;
 import org.restlet.Context;
 import org.restlet.data.Language;
@@ -34,38 +36,30 @@ import org.restlet.data.MediaType;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
-import org.restlet.resource.DomRepresentation;
 import org.restlet.resource.Representation;
 import org.restlet.resource.Resource;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.StringRepresentation;
 import org.restlet.resource.Variant;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 public class EntityTypeResource extends Resource
 {
-    @Service private EntityFinder entityFinder;
     @Service EntitySerializer entitySerializer;
 
     @Structure Module module;
     @Structure Qi4jSPI spi;
 
     private String type;
-    private Request request;
 
     public EntityTypeResource( @Uses Context context,
                                @Uses Request request,
-                               @Uses Response response,
-                               @Structure Module module )
+                               @Uses Response response )
         throws ClassNotFoundException
     {
         super( context, request, response );
-        this.request = request;
 
         // Define the supported variant.
         getVariants().add( new Variant( MediaType.TEXT_HTML ) );
-        getVariants().add( new Variant( MediaType.TEXT_XML ) );
         getVariants().add( new Variant( MediaType.APPLICATION_RDF_XML ) );
         setModifiable( false );
 
@@ -76,13 +70,8 @@ public class EntityTypeResource extends Resource
     @Override public Representation represent( final Variant variant )
         throws ResourceException
     {
-        String ext = getRequest().getResourceRef().getExtensions();
         // Generate the right representation according to its media type.
-        if( MediaType.TEXT_XML.equals( variant.getMediaType() ) )
-        {
-            return representXml();
-        }
-        else if( MediaType.APPLICATION_RDF_XML.equals( variant.getMediaType() ) )
+        if( MediaType.APPLICATION_RDF_XML.equals( variant.getMediaType() ) )
         {
             return representRdf();
         }
@@ -92,37 +81,6 @@ public class EntityTypeResource extends Resource
         }
 
         throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
-    }
-
-    private Representation representXml()
-        throws ResourceException
-    {
-        try
-        {
-            final Iterable<QualifiedIdentity> query = entityFinder.findEntities( type, null, null, null, null );
-
-            DomRepresentation representation = new DomRepresentation( MediaType.TEXT_XML );
-            // Generate a DOM document representing the item.
-            Document d = representation.getDocument();
-
-            Element entitiesElement = d.createElement( "entities" );
-            d.appendChild( entitiesElement );
-            for( QualifiedIdentity entity : query )
-            {
-                Element entityElement = d.createElement( "entity" );
-                entitiesElement.appendChild( entityElement );
-                entityElement.setAttribute( "href", request.getResourceRef().getPath() + "/" + entity.identity() );
-                entityElement.appendChild( d.createTextNode( entity.identity() ) );
-            }
-            d.normalizeDocument();
-
-            // Returns the XML representation of this document.
-            return representation;
-        }
-        catch( Exception e )
-        {
-            throw new ResourceException( e );
-        }
     }
 
     private Representation representRdf()
@@ -159,28 +117,75 @@ public class EntityTypeResource extends Resource
         }
     }
 
-    private Representation representHtml()
-        throws ResourceException
+    private Representation representHtml() throws ResourceException
     {
+        EntityDescriptor entityDescriptor;
         try
         {
-            final Iterable<QualifiedIdentity> query = entityFinder.findEntities( type, null, null, null, null );
-
-            StringBuffer buf = new StringBuffer();
-            buf.append( "<html><body><h1>Entities</h1><ul>" );
-
-            for( QualifiedIdentity entity : query )
+            entityDescriptor = spi.getEntityDescriptor( module.classLoader().loadClass( type ), module );
+            if( entityDescriptor == null )
             {
-                buf.append( "<li><a href=\"" + request.getResourceRef().getPath() + "/" + entity.identity() + "\">" + entity.identity() + "</a></li>" );
+                throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
             }
-            buf.append( "</ul></body></html>" );
-
-            // Returns the XML representation of this document.
-            return new StringRepresentation( buf, MediaType.TEXT_HTML, Language.ENGLISH );
         }
-        catch( EntityFinderException e )
+        catch( ClassNotFoundException e )
         {
-            throw new ResourceException( e );
+            throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
         }
+
+        EntityType entityType = entityDescriptor.entityType();
+        StringBuffer buf = new StringBuffer();
+        buf.append( "<html><head><title>" + entityType.type() + "</title><link rel=\"alternate\" type=\"application/rdf+xml\" href=\"" + entityType.type() + ".rdf\"/></head><body><h1>" + entityType.type() + "</h1>\n" );
+
+        buf.append( "<form method=\"post\" action=\"" + getRequest().getResourceRef().getPath() + "\">\n" );
+        buf.append( "<fieldset><legend>Properties</legend>\n<table>" );
+        for( PropertyType propertyType : entityType.properties() )
+        {
+            buf.append( "<tr><td>" +
+                        "<label for=\"" + propertyType.qualifiedName() + "\" >" +
+                        GenericPropertyInfo.getName( propertyType.qualifiedName() ) +
+                        "</label></td>\n" +
+                        "<td><input " +
+                        "type=\"text\" " +
+                        "readonly=\"true\" " +
+                        "name=\"" + propertyType.qualifiedName() + "\" " +
+                        "value=\"" + propertyType.type() + "\"></td></tr>" );
+        }
+        buf.append( "</table></fieldset>\n" );
+
+        buf.append( "<fieldset><legend>Associations</legend>\n<table>" );
+        for( AssociationType associationType : entityType.associations() )
+        {
+            buf.append( "<tr><td>" +
+                        "<label for=\"" + associationType.qualifiedName() + "\" >" +
+                        GenericAssociationInfo.getName( associationType.qualifiedName() ) +
+                        "</label></td>\n" +
+                        "<td><input " +
+                        "type=\"text\" " +
+                        "readonly=\"true\" " +
+                        "size=\"40\" " +
+                        "name=\"" + associationType.qualifiedName() + "\" " +
+                        "value=\"" + associationType.type() + "\"></td></tr>" );
+        }
+        buf.append( "</table></fieldset>\n" );
+
+        buf.append( "<fieldset><legend>Many associations</legend>\n<table>" );
+        for( ManyAssociationType associationType : entityType.manyAssociations() )
+        {
+            buf.append( "<tr><td>" +
+                        "<label for=\"" + associationType.qualifiedName() + "\" >" +
+                        GenericAssociationInfo.getName( associationType.qualifiedName() ) +
+                        "</label></td>\n" +
+                        "<td><input " +
+                        "type=\"text\" " +
+                        "name=\"" + associationType.qualifiedName() + "\" " +
+                        "value=\"" + associationType.type() + "\"></td></tr>" );
+        }
+        buf.append( "</table></fieldset>\n" );
+
+        buf.append( "</body></html>\n" );
+
+        return new StringRepresentation( buf, MediaType.TEXT_HTML, Language.ENGLISH );
     }
+
 }

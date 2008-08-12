@@ -84,8 +84,11 @@ public class RestApplication extends Application
     public synchronized Restlet createRoot()
     {
         Router router = new Router( getContext() );
-        router.attach( "/entity", createFinder( EntityTypesResource.class ) );
-        router.attach( "/entity/{type}", createFinder( EntityTypeResource.class ) );
+        router.attach( "/type", createFinder( EntityTypesResource.class ) );
+        router.attach( "/type/{type}", createFinder( EntityTypeResource.class ) );
+
+        router.attach( "/entity", createFinder( AllEntitiesResource.class ) );
+        router.attach( "/entity/{type}", createFinder( EntitiesResource.class ) );
         router.attach( "/entity/{type}/{identity}", createFinder( EntityResource.class ) );
 
         // Add filters

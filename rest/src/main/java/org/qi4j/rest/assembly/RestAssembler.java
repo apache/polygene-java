@@ -16,6 +16,8 @@ package org.qi4j.rest.assembly;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.rest.AllEntitiesResource;
+import org.qi4j.rest.EntitiesResource;
 import org.qi4j.rest.EntityResource;
 import org.qi4j.rest.EntityTypeResource;
 import org.qi4j.rest.EntityTypesResource;
@@ -30,9 +32,11 @@ public class RestAssembler
         throws AssemblyException
     {
         module.addObjects( RestApplication.class ).visibleIn( Visibility.application );
-        module.addObjects( Qi4jEntityFinder.class );
-        module.addObjects( EntityResource.class );
-        module.addObjects( EntityTypesResource.class );
-        module.addObjects( EntityTypeResource.class );
+        module.addObjects( Qi4jEntityFinder.class,
+                           AllEntitiesResource.class,
+                           EntitiesResource.class,
+                           EntityResource.class,
+                           EntityTypesResource.class,
+                           EntityTypeResource.class );
     }
 }
