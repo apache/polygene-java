@@ -149,9 +149,14 @@ public class Qi4jObjectFactory extends ObjectFactory
     @SuppressWarnings( "unchecked" )
     private Object createQi4jObject( Class aClass, boolean isAddToTypes )
     {
+        if( objectBuilderFactory == null )
+        {
+            return null;
+        }
+
         ConstructionException exception = null;
         Object obj = null;
-
+        
         try
         {
             obj = objectBuilderFactory.newObject( aClass );
@@ -181,8 +186,14 @@ public class Qi4jObjectFactory extends ObjectFactory
     @SuppressWarnings( "unchecked" )
     private Object createQi4jComposite( Class aClass, boolean isAddToTypes )
     {
+        if( compositeBuilderFactory == null )
+        {
+            return null;
+        }
+
         Object obj = null;
         ConstructionException exception = null;
+        
         try
         {
             obj = compositeBuilderFactory.newComposite( aClass );
