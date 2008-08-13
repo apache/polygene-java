@@ -24,11 +24,13 @@ import java.util.List;
 import java.util.Map;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JLabel;
 import javax.swing.JSplitPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.JTextPane;
+import javax.swing.JTextArea;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.JComponent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -66,14 +68,9 @@ public class ApplicationGraph
         ( (ApplicationSPI) application ).visitDescriptor( appGraphVisitor );
         ApplicationPanel applicationPanel = new ApplicationPanel( graph, new CompositeSelectionControl() );
 
-        JPanel detailsPanel = new JPanel();
-        detailsPanel.setBackground( Color.white );
-        detailsPanel.add( new JLabel( "Details go here" ) );
-        detailsPanel.setPreferredSize( new Dimension( 400, 800 ) );
-
         leftPane = createLeftPane( applicationPanel );
         mainPane = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT,
-                                   leftPane, new JScrollPane( detailsPanel ) );
+                                   leftPane, getDetailsPane() );
 
         frame.add( mainPane );
 
@@ -83,6 +80,25 @@ public class ApplicationGraph
 
         applicationPanel.graphShown();
 
+    }
+
+    private JComponent getDetailsPane()
+    {
+        JPanel detailsPanel = new JPanel();
+        detailsPanel.setBackground( Color.white );
+
+        StringBuilder buf = new StringBuilder();
+        buf.append( "Controls - \n" );
+        buf.append( "1. Zoom with mouse scroll wheel\n" );
+        buf.append( "2. Pan with mouse\n" );
+        buf.append( "3. Zoom with Ctrl + drag mouse pointer up or down. On Apple, use Command key\n" );
+        JTextArea textArea = new JTextArea();
+        textArea.setText( buf.toString() );
+
+        JScrollPane pane = new JScrollPane( textArea );
+        pane.setHorizontalScrollBarPolicy( ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER );
+
+        return pane;
     }
 
     private JSplitPane createLeftPane( JPanel applicationPanel )
@@ -133,6 +149,7 @@ public class ApplicationGraph
                                 {
                                     System.out.println( annotation.annotationType() + ", " + annotation.toString() + "\n" );
                                 }
+//                                method.getParameterAnnotations();
 
                                 Map<String, List> map = appGraphVisitor.getMethodAttributes( method );
 

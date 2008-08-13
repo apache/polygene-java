@@ -22,7 +22,7 @@ import org.qi4j.composite.Composite;
 import org.qi4j.composite.Mixins;
 import org.qi4j.structure.Application;
 import org.qi4j.property.Property;
-import org.qi4j.library.swing.visualizer.ApplicationGraph;
+import org.qi4j.library.constraints.annotation.NotNull;
 
 /**
  * TODO
@@ -87,13 +87,13 @@ public class ApplicationGraphTester
     @Mixins( A.AMixin.class )
     private static interface A
     {
-        Property<String> a();
+        @NotNull Property<String> a();
 
         void a( String s );
 
         public abstract class AMixin implements A
         {
-            public void a( String s )
+            public void a( @NotNull String s )
             {
                 System.out.println( s );
             }

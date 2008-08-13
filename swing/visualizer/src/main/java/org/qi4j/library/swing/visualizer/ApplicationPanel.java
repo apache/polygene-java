@@ -16,7 +16,6 @@
 package org.qi4j.library.swing.visualizer;
 
 import java.util.Iterator;
-import java.util.Collections;
 import java.awt.event.ActionEvent;
 import java.awt.geom.Point2D;
 import java.awt.geom.AffineTransform;
@@ -41,6 +40,9 @@ import prefuse.action.ActionList;
 import prefuse.action.RepaintAction;
 import prefuse.action.assignment.ColorAction;
 import prefuse.controls.Control;
+import prefuse.controls.WheelZoomControl;
+import prefuse.controls.PanControl;
+import prefuse.controls.ZoomControl;
 import prefuse.data.Graph;
 import prefuse.data.Node;
 import prefuse.render.DefaultRendererFactory;
@@ -151,8 +153,9 @@ public class ApplicationPanel extends JPanel
     {
         Display display = new Display( visualization );
 
-//        display.addControlListener( new PanControl() );
-//        display.addControlListener( new ZoomControl() );
+        display.addControlListener( new ZoomControl() );
+        display.addControlListener( new PanControl( true ) );
+        display.addControlListener( new WheelZoomControl() );
 
         display.setItemSorter( new ItemSorter()
         {
