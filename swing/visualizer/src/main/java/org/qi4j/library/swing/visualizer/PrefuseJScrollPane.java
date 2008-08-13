@@ -79,12 +79,38 @@ public class PrefuseJScrollPane extends JPanel
     protected int lastV = 0;
 
     /**
+     * Indicates that a panning action caused by moving the horizontal scrollbar is still in progress
+     */
+    private boolean barHAdjustmentInProgress = false;
+
+    /**
+     * Indicates that a panning action caused by moving the vertical scrollbar is still in progress
+     */
+    private boolean barVAdjustmentInProgress = false;
+
+    /**
+     * The value the horizontal scrollbar was moved to. Used to determine when panning to that position has completed
+     */
+    private int nextH = 0;
+
+    /**
+     * The value the vertical scrollbar was moved to. Used to determine when panning to that position has completed
+     */
+    private int nextV = 0;
+
+    /**
+     * The acceptable difference between the scrollbar value and the value calculated from the Display affine transform.
+     * If the difference is less than this value then the scrollbar adjustment is considered complete
+     */
+    private int acceptableProximity = 10;
+
+    /**
      * The prefuse <code>display</code>.
      */
     protected Display m_display = null;
 
     private static int UNIT_INCREMENT = 20;
-    private static int PREVIOUSLY_VISIBLE_AREA_WHEN_SCROLLING = 20;
+    private static int PREVIOUSLY_VISIBLE_AREA_WHEN_SCROLLING = 50;
 
     /**
      * Initializes an empty pane
@@ -126,6 +152,9 @@ public class PrefuseJScrollPane extends JPanel
                 // This is kind of an ugly work around. I tried to modify the ScrollBar
                 if( forwardScollpaneChanges && !e.getValueIsAdjusting() )
                 {
+                    barHAdjustmentInProgress = true;
+                    nextH = e.getValue();
+
                     m_display.animatePan( lastH - e.getValue(), 0, 500 );
                     m_display.repaint();
                     lastH = e.getValue();
@@ -147,6 +176,9 @@ public class PrefuseJScrollPane extends JPanel
                 // This is kind of an ugly work around. I tried to modify the ScrollBar
                 if( forwardScollpaneChanges && !e.getValueIsAdjusting() )
                 {
+                    barVAdjustmentInProgress = true;
+                    nextV = e.getValue();
+
                     m_display.animatePan( 0, lastV - e.getValue(), 500 );
                     m_display.repaint();
                     lastV = e.getValue();
@@ -298,12 +330,23 @@ public class PrefuseJScrollPane extends JPanel
 
         }
 
+        if( barVAdjustmentInProgress )
+        {
+            // This is required because the movement of scrollbar causes as an animated pan
+            // Hence this method will be called many times while the animated pan action is completed
+            // During this time, the scrollbar value, extent etc. must not be updated
+            // IMPORTANT : Note that this might cause problems when the pan action is initiated by some other control
+            // instead of the scrollbars
+            int remainingToNextH = Math.abs( newValue - nextV );
+            barVAdjustmentInProgress = remainingToNextH > acceptableProximity;
+            return;
+        }
+
         // Set the values
         if( newHeight > m_display.getHeight() )
         {
 
             // Show bar if the graph does not fit on the screen
-//            barV.setEnabled( true );
             add( barV, BorderLayout.EAST );
             revalidate();
 
@@ -321,8 +364,6 @@ public class PrefuseJScrollPane extends JPanel
 
             remove( barV );
             revalidate();
-//            barV.setEnabled( false );
-//            barV.setMaximum( 0 );
 
         }
 
@@ -396,12 +437,23 @@ public class PrefuseJScrollPane extends JPanel
 
         }
 
+        if( barHAdjustmentInProgress )
+        {
+            // This is required because the movement of scrollbar causes as an animated pan
+            // Hence this method will be called many times while the animated pan action is completed
+            // During this time, the scrollbar value, extent etc. must not be updated
+            // IMPORTANT : Note that this might cause problems when the pan action is initiated by some other control
+            // instead of the scrollbars
+            int remainingToNextH = Math.abs( newValue - nextH );
+            barHAdjustmentInProgress = remainingToNextH > acceptableProximity;
+            return;
+        }
+
         // Set the values
         if( newWidth > m_display.getWidth() )
         {
 
             // Show bar if the graph does not fit on the screen
-//            barH.setEnabled( true );
             add( barH, BorderLayout.SOUTH );
             revalidate();
 
@@ -417,11 +469,9 @@ public class PrefuseJScrollPane extends JPanel
         else
         {
 
-            // Disable bar if the graph fits on the screen
+            // Remove bar if the graph fits on the screen
             remove( barH );
             revalidate();
-//            barH.setEnabled( false );
-//            barH.setMaximum( 0 );
 
         }
     }
