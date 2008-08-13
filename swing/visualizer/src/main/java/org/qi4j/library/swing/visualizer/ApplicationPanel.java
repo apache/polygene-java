@@ -17,11 +17,13 @@ package org.qi4j.library.swing.visualizer;
 
 import java.util.Iterator;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.awt.geom.AffineTransform;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Color;
+import java.awt.Point;
 import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.AbstractAction;
@@ -43,6 +45,7 @@ import prefuse.controls.Control;
 import prefuse.controls.WheelZoomControl;
 import prefuse.controls.PanControl;
 import prefuse.controls.ZoomControl;
+import prefuse.controls.ControlAdapter;
 import prefuse.data.Graph;
 import prefuse.data.Node;
 import prefuse.render.DefaultRendererFactory;
@@ -63,6 +66,8 @@ public class ApplicationPanel extends JPanel
     static final int TYPE_COMPOSITE = 3;
 
     static final int TYPE_EDGE_HIDDEN = 100;
+
+    private int animatedZoomDuration = 1000;
 
     private Visualization visualization;
     private Display display;
@@ -156,6 +161,7 @@ public class ApplicationPanel extends JPanel
         display.addControlListener( new ZoomControl() );
         display.addControlListener( new PanControl( true ) );
         display.addControlListener( new WheelZoomControl() );
+        display.addControlListener( new DoubleClickZoomControl() );
 
         display.setItemSorter( new ItemSorter()
         {
@@ -295,7 +301,7 @@ public class ApplicationPanel extends JPanel
         public void actionPerformed( ActionEvent e )
         {
             Point2D p = getDisplayCenter();
-            display.animateZoom( p, 1.2, 1000 );
+            display.animateZoom( p, 1.2, animatedZoomDuration );
         }
 
     }
@@ -313,7 +319,7 @@ public class ApplicationPanel extends JPanel
         public void actionPerformed( ActionEvent e )
         {
             Point2D p = new Point2D.Float( display.getWidth() / 2, display.getHeight() / 2 );
-            display.animateZoom( p, 0.8, 1000 );
+            display.animateZoom( p, 0.8, animatedZoomDuration );
         }
     }
 
@@ -391,4 +397,32 @@ public class ApplicationPanel extends JPanel
         }
     }
 
+    private class DoubleClickZoomControl extends ControlAdapter
+    {
+        public void itemClicked( VisualItem item, MouseEvent e )
+        {
+            zoom( e );
+        }
+
+        public void mouseClicked( MouseEvent e )
+        {
+            zoom( e );
+        }
+
+        private void zoom( MouseEvent e )
+        {
+            if( !display.isTranformInProgress() )
+            {
+
+                int count = e.getClickCount();
+                if( count == 2 )
+                {
+                    Point p = new Point( e.getX(), e.getY() );
+                    double zoom = e.isShiftDown() ? 0.8 : 1.2;
+                    display.animateZoom( p, zoom, animatedZoomDuration );
+                }
+
+            }
+        }
+    }
 }
