@@ -18,6 +18,8 @@
 package org.qi4j.library.swing.visualizer;
 
 import prefuse.visual.VisualItem;
+import prefuse.Display;
+import java.awt.geom.Rectangle2D;
 
 /**
  * @author Sonny Gill
@@ -34,4 +36,17 @@ public class GraphUtils
     {
         return item.getString( GraphConstants.FIELD_NAME );
     }
+
+    public static boolean displaySizeFitsScaledBounds( Display display, Rectangle2D bounds )
+    {
+        double scale = display.getScale();
+        return ( bounds.getWidth() * scale == display.getWidth() ) && ( bounds.getHeight() * scale == display.getHeight() );
+    }
+
+    public static boolean displaySizeContainsScaledBounds( Display display, Rectangle2D bounds )
+    {
+        double scale = display.getScale();
+        return ( display.getWidth() > bounds.getWidth() * scale ) && ( display.getHeight() > bounds.getHeight() * scale );
+    }
 }
+

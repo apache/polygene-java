@@ -18,12 +18,15 @@ package org.qi4j.library.swing.visualizer;
 import java.util.Iterator;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
 import java.awt.geom.Point2D;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Rectangle2D;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Color;
 import java.awt.Point;
+import java.awt.Graphics2D;
 import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.AbstractAction;
@@ -42,15 +45,14 @@ import prefuse.action.ActionList;
 import prefuse.action.RepaintAction;
 import prefuse.action.assignment.ColorAction;
 import prefuse.controls.Control;
-import prefuse.controls.WheelZoomControl;
 import prefuse.controls.PanControl;
-import prefuse.controls.ZoomControl;
 import prefuse.controls.ControlAdapter;
 import prefuse.data.Graph;
 import prefuse.data.Node;
 import prefuse.render.DefaultRendererFactory;
 import prefuse.util.ColorLib;
 import prefuse.util.display.DisplayLib;
+import prefuse.util.display.PaintListener;
 import prefuse.visual.EdgeItem;
 import prefuse.visual.VisualItem;
 import prefuse.visual.sort.ItemSorter;
@@ -158,11 +160,6 @@ public class ApplicationPanel extends JPanel
     {
         Display display = new Display( visualization );
 
-        display.addControlListener( new ZoomControl() );
-        display.addControlListener( new PanControl( true ) );
-        display.addControlListener( new WheelZoomControl() );
-        display.addControlListener( new DoubleClickZoomControl() );
-
         display.setItemSorter( new ItemSorter()
         {
             public int score( VisualItem item )
@@ -183,7 +180,11 @@ public class ApplicationPanel extends JPanel
             }
         } );
 
+        display.addControlListener( new PanControl( true ) );
+        display.addControlListener( new MouseWheelZoomControl() );
+        display.addControlListener( new DoubleClickZoomControl() );
         display.addControlListener( compositeSelectionControl );
+        display.addPaintListener( new DisplayExpansionListener() );
 
         return display;
     }
@@ -262,6 +263,37 @@ public class ApplicationPanel extends JPanel
         DisplayLib.fitViewToBounds( display, applicationNodeItem.getBounds(), 2000 );
     }
 
+    private void zoomOut( Point2D p, Double scale )
+    {
+        Rectangle2D bounds = applicationNodeItem.getBounds();
+        if( GraphUtils.displaySizeFitsScaledBounds( display, bounds ) )
+        {
+            return;
+        }
+
+        double zoomScale = scale == null ? 0.8 : scale;
+        double displayScale = display.getScale();
+
+        int widthAfterZoom = (int) ( bounds.getWidth() * displayScale * zoomScale );
+        int heightAfterZoom = (int) ( bounds.getHeight() * displayScale * zoomScale );
+
+        if( widthAfterZoom <= display.getWidth() && heightAfterZoom <= display.getHeight() )
+        {
+            zoomToFit();
+        }
+        else
+        {
+            if( scale != null )
+            {
+                display.zoom( p, zoomScale );
+            }
+            else
+            {
+                display.animateZoom( p, zoomScale, animatedZoomDuration );
+            }
+        }
+    }
+
     private class ZoomToFitAction extends AbstractAction
     {
         private ZoomToFitAction()
@@ -319,7 +351,7 @@ public class ApplicationPanel extends JPanel
         public void actionPerformed( ActionEvent e )
         {
             Point2D p = new Point2D.Float( display.getWidth() / 2, display.getHeight() / 2 );
-            display.animateZoom( p, 0.8, animatedZoomDuration );
+            zoomOut( p, null );
         }
     }
 
@@ -401,15 +433,10 @@ public class ApplicationPanel extends JPanel
     {
         public void itemClicked( VisualItem item, MouseEvent e )
         {
-            zoom( e );
+            mouseClicked( e );
         }
 
         public void mouseClicked( MouseEvent e )
-        {
-            zoom( e );
-        }
-
-        private void zoom( MouseEvent e )
         {
             if( !display.isTranformInProgress() )
             {
@@ -418,10 +445,77 @@ public class ApplicationPanel extends JPanel
                 if( count == 2 )
                 {
                     Point p = new Point( e.getX(), e.getY() );
-                    double zoom = e.isShiftDown() ? 0.8 : 1.2;
-                    display.animateZoom( p, zoom, animatedZoomDuration );
+                    if( e.isShiftDown() )
+                    {
+                        zoomOut( p, null );
+                    }
+                    else
+                    {
+                        display.animateZoom( p, 1.2, animatedZoomDuration );
+                    }
                 }
 
+            }
+        }
+
+    }
+
+    private class MouseWheelZoomControl extends ControlAdapter
+    {
+        public void itemWheelMoved( VisualItem item, MouseWheelEvent e )
+        {
+            mouseWheelMoved( e );
+        }
+
+        public void mouseWheelMoved( MouseWheelEvent e )
+        {
+            if( !display.isTranformInProgress() )
+            {
+                int clicks = e.getWheelRotation();
+                Point2D p = getDisplayCenter();
+                double zoom = Math.pow( 1.1, clicks );
+                if( clicks < 0 )
+                {
+                    zoomOut( p, zoom );
+                    display.repaint();
+                }
+                else
+                {
+                    display.zoom( p, zoom );
+                    display.repaint();
+                }
+            }
+        }
+    }
+
+    /**
+     * Listens for increase in the size of the display, and fits the graph to the new size if needed
+     */
+    private class DisplayExpansionListener implements PaintListener
+    {
+        int lastWidth = 0;
+        int lastHeight = 0;
+
+        public void prePaint( Display d, Graphics2D g )
+        {
+            // nothing doing
+        }
+
+        public void postPaint( Display d, Graphics2D g )
+        {
+            if( !d.isTranformInProgress() )
+            {
+                int width = d.getWidth();
+                int height = d.getHeight();
+                if( width > lastWidth || height > lastHeight )
+                {
+                    if( GraphUtils.displaySizeContainsScaledBounds( d, applicationNodeItem.getBounds() ) )
+                    {
+                        zoomToFit();
+                    }
+                }
+                lastWidth = width;
+                lastHeight = height;
             }
         }
     }
