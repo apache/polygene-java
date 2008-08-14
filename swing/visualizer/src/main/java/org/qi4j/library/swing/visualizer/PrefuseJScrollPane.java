@@ -269,9 +269,9 @@ public class PrefuseJScrollPane extends JPanel
         {
 
             // Calculate values for the JScrollBar
-            int scaledTopYOfBB = (int) ( rect.getY() * at.getScaleY() );    // Left bound of BB
-            int scaledBottomYOfBB = (int) ( rect.getMaxY() * at.getScaleY() );    // Right bound of BB
-            int scaledHeightBB = (int) ( rect.getHeight() * at.getScaleY() );    // ScaledWidth of the BB
+            int scaledTopYOfBB = (int) ( rect.getY() * at.getScaleY() );    // Top bound of BB
+            int scaledBottomYOfBB = (int) ( rect.getMaxY() * at.getScaleY() );    // Bottom bound of BB
+            int scaledHeightBB = (int) ( rect.getHeight() * at.getScaleY() );    // Scaled height of the BB
             int scaledTranslatedTopY = (int) at.getTranslateY();    // If 0 -> root is at left side
 
             // This is the offset that has to be added when the graph is dragged out of the pane to the bottom

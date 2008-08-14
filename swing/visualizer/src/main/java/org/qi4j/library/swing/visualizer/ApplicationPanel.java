@@ -33,7 +33,6 @@ import javax.swing.AbstractAction;
 import javax.swing.KeyStroke;
 import javax.swing.InputMap;
 import javax.swing.ActionMap;
-import javax.swing.Action;
 import org.qi4j.library.swing.visualizer.render.ApplicationRenderer;
 import org.qi4j.library.swing.visualizer.render.CompositeRenderer;
 import org.qi4j.library.swing.visualizer.render.LayerRenderer;
@@ -75,8 +74,6 @@ public class ApplicationPanel extends JPanel
     private Display display;
     private VisualItem applicationNodeItem;
 
-    private Action zoomIn;
-    private Action zoomOut;
     private Control compositeSelectionControl;
 
     public ApplicationPanel( Graph graph, Control compositeSelectionControl )
@@ -95,19 +92,13 @@ public class ApplicationPanel extends JPanel
         applicationNodeItem = visualization.getVisualItem( "graph.nodes", applicationNode );
 
         JPanel controlsPanel = new JPanel( new FlowLayout( FlowLayout.LEFT ) );
-        JButton zoomInBtn = new JButton( zoomIn );
-        JButton zoomOutBtn = new JButton( zoomOut );
         JButton zoomToFitBtn = new JButton( new ZoomToFitAction() );
         JButton actualSizeButton = new JButton( new ActualSizeAction() );
 
         controlsPanel.setBackground( Color.white );
-        zoomInBtn.setBackground( Color.white );
-        zoomOutBtn.setBackground( Color.white );
         zoomToFitBtn.setBackground( Color.white );
         actualSizeButton.setBackground( Color.white );
 
-        controlsPanel.add( zoomInBtn );
-        controlsPanel.add( zoomOutBtn );
         controlsPanel.add( zoomToFitBtn );
         controlsPanel.add( actualSizeButton );
 
@@ -121,13 +112,11 @@ public class ApplicationPanel extends JPanel
         InputMap inputMap = getInputMap( WHEN_ANCESTOR_OF_FOCUSED_COMPONENT );
         ActionMap actionMap = getActionMap();
 
-        zoomIn = new ZoomInAction( display );
         inputMap.put( KeyStroke.getKeyStroke( '+' ), "zoomIn" );
-        actionMap.put( "zoomIn", zoomIn );
+        actionMap.put( "zoomIn", new ZoomInAction() );
 
-        zoomOut = new ZoomOutAction( display );
         inputMap.put( KeyStroke.getKeyStroke( '-' ), "zoomOut" );
-        actionMap.put( "zoomOut", zoomOut );
+        actionMap.put( "zoomOut", new ZoomOutAction() );
 
 /*
         Action panLeft = new PanLeftAction( display );
@@ -261,35 +250,80 @@ public class ApplicationPanel extends JPanel
     private void zoomToFit()
     {
         DisplayLib.fitViewToBounds( display, applicationNodeItem.getBounds(), 2000 );
+        display.repaint();
+    }
+
+    private void zoomToActualSize()
+    {
+        display.animateZoom( getDisplayCenter(), 1 / display.getScale(), 2000 );
+        display.repaint();
+    }
+
+    private void zoomIn( Point2D p, Double scale )
+    {
+        if( !display.isTranformInProgress() )
+        {
+
+            double displayScale = display.getScale();
+
+            if( displayScale == 1 )
+            {
+                return;
+            }
+
+            double zoomScale = scale == null ? 1.2 : scale;
+            if( displayScale * zoomScale > 1 )
+            {
+                zoomToActualSize();
+            }
+            else
+            {
+                if( scale != null )
+                {
+                    display.zoom( p, zoomScale );
+                }
+                else
+                {
+                    display.animateZoom( p, zoomScale, animatedZoomDuration );
+                }
+                display.repaint();
+            }
+
+        }
     }
 
     private void zoomOut( Point2D p, Double scale )
     {
-        Rectangle2D bounds = applicationNodeItem.getBounds();
-        if( GraphUtils.displaySizeFitsScaledBounds( display, bounds ) )
+        if( !display.isTranformInProgress() )
         {
-            return;
-        }
 
-        double zoomScale = scale == null ? 0.8 : scale;
-        double displayScale = display.getScale();
-
-        int widthAfterZoom = (int) ( bounds.getWidth() * displayScale * zoomScale );
-        int heightAfterZoom = (int) ( bounds.getHeight() * displayScale * zoomScale );
-
-        if( widthAfterZoom <= display.getWidth() && heightAfterZoom <= display.getHeight() )
-        {
-            zoomToFit();
-        }
-        else
-        {
-            if( scale != null )
+            Rectangle2D bounds = applicationNodeItem.getBounds();
+            if( GraphUtils.displaySizeFitsScaledBounds( display, bounds ) )
             {
-                display.zoom( p, zoomScale );
+                return;
+            }
+
+            double zoomScale = scale == null ? 0.8 : scale;
+            double displayScale = display.getScale();
+
+            int widthAfterZoom = (int) ( bounds.getWidth() * displayScale * zoomScale );
+            int heightAfterZoom = (int) ( bounds.getHeight() * displayScale * zoomScale );
+
+            if( widthAfterZoom <= display.getWidth() && heightAfterZoom <= display.getHeight() )
+            {
+                zoomToFit();
             }
             else
             {
-                display.animateZoom( p, zoomScale, animatedZoomDuration );
+                if( scale != null )
+                {
+                    display.zoom( p, zoomScale );
+                }
+                else
+                {
+                    display.animateZoom( p, zoomScale, animatedZoomDuration );
+                }
+                display.repaint();
             }
         }
     }
@@ -316,42 +350,35 @@ public class ApplicationPanel extends JPanel
 
         public void actionPerformed( ActionEvent e )
         {
-            display.animateZoom( getDisplayCenter(), 1 / display.getScale(), 2000 );
+            zoomToActualSize();
         }
+
     }
 
     private class ZoomInAction extends AbstractAction
     {
-        private Display display;
-
-        private ZoomInAction( Display display )
+        private ZoomInAction()
         {
             super( "Zoom In" );
-            this.display = display;
         }
 
         public void actionPerformed( ActionEvent e )
         {
-            Point2D p = getDisplayCenter();
-            display.animateZoom( p, 1.2, animatedZoomDuration );
+            zoomIn( getDisplayCenter(), null );
         }
 
     }
 
     private class ZoomOutAction extends AbstractAction
     {
-        private Display display;
-
-        private ZoomOutAction( Display display )
+        private ZoomOutAction()
         {
             super( "Zoom Out" );
-            this.display = display;
         }
 
         public void actionPerformed( ActionEvent e )
         {
-            Point2D p = new Point2D.Float( display.getWidth() / 2, display.getHeight() / 2 );
-            zoomOut( p, null );
+            zoomOut( getDisplayCenter(), null );
         }
     }
 
@@ -455,7 +482,7 @@ public class ApplicationPanel extends JPanel
                     }
                     else
                     {
-                        display.animateZoom( p, 1.2, animatedZoomDuration );
+                        zoomIn( p, null );
                     }
                 }
 
@@ -481,12 +508,10 @@ public class ApplicationPanel extends JPanel
                 if( clicks < 0 )
                 {
                     zoomOut( p, zoom );
-                    display.repaint();
                 }
                 else
                 {
-                    display.zoom( p, zoom );
-                    display.repaint();
+                    zoomIn( p, zoom );
                 }
             }
         }
@@ -523,4 +548,5 @@ public class ApplicationPanel extends JPanel
             }
         }
     }
+
 }

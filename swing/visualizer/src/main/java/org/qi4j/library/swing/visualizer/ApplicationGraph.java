@@ -91,8 +91,8 @@ public class ApplicationGraph
         buf.append( "Controls - \n" );
         buf.append( "1. Zoom with mouse scroll wheel\n" );
         buf.append( "2. Pan with mouse\n" );
-        buf.append( "3. Zoom with Ctrl + drag mouse pointer up or down. On Apple, use Command key\n" );
-        buf.append( "4. Double click to zoom in, Shift + Double click to zoom out\n" );
+        buf.append( "3. Double click to zoom in, Shift + Double click to zoom out\n" );
+        buf.append( "4. + key to zoom in, - key to zoom out\n" );
         JTextArea textArea = new JTextArea();
         textArea.setText( buf.toString() );
 
