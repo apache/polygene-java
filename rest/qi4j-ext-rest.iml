@@ -9,32 +9,21 @@
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/resources" isTestSource="true" />
+      <excludeFolder url="file://$MODULE_DIR$/target/META-INF" />
       <excludeFolder url="file://$MODULE_DIR$/target/classes" />
+      <excludeFolder url="file://$MODULE_DIR$/target/dependency-maven-plugin-markers" />
+      <excludeFolder url="file://$MODULE_DIR$/target/org" />
       <excludeFolder url="file://$MODULE_DIR$/target/surefire-reports" />
       <excludeFolder url="file://$MODULE_DIR$/target/test-classes" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="qi4j-core-bootstrap" exported="" />
     <orderEntry type="module" module-name="qi4j-core-api" exported="" />
     <orderEntry type="module" module-name="qi4j-core-spi" exported="" />
-    <orderEntry type="module" module-name="qi4j-core-bootstrap" exported="" />
-    <orderEntry type="module" module-name="qi4j-core-runtime" exported="" />
-    <orderEntry type="module-library">
-      <library name="cglib:cglib-nodep:2.1_3">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/cglib/cglib-nodep/2.1_3/cglib-nodep-2.1_3.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/cglib/cglib-nodep/2.1_3/cglib-nodep-2.1_3-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/cglib/cglib-nodep/2.1_3/cglib-nodep-2.1_3-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
     <orderEntry type="module" module-name="qi4j-lib-rdf" exported="" />
     <orderEntry type="module" module-name="qi4j-lib-constraints" exported="" />
-    <orderEntry type="module" module-name="qi4j-core-testsupport" exported="" />
+    <orderEntry type="module" module-name="qi4j-core-testsupport" />
     <orderEntry type="module-library">
       <library name="junit:junit:4.4">
         <CLASSES>
@@ -230,74 +219,8 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module" module-name="qi4j-lib-http" exported="" />
-    <orderEntry type="module-library" exported="">
-      <library name="org.mortbay.jetty:jetty:6.1.11">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/org/mortbay/jetty/jetty/6.1.11/jetty-6.1.11.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/org/mortbay/jetty/jetty/6.1.11/jetty-6.1.11-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/org/mortbay/jetty/jetty/6.1.11/jetty-6.1.11-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library name="org.mortbay.jetty:jetty-util:6.1.11">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/org/mortbay/jetty/jetty-util/6.1.11/jetty-util-6.1.11.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/org/mortbay/jetty/jetty-util/6.1.11/jetty-util-6.1.11-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/org/mortbay/jetty/jetty-util/6.1.11/jetty-util-6.1.11-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library name="org.mortbay.jetty:servlet-api-2.5:6.1.11">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/org/mortbay/jetty/servlet-api-2.5/6.1.11/servlet-api-2.5-6.1.11.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/org/mortbay/jetty/servlet-api-2.5/6.1.11/servlet-api-2.5-6.1.11-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/org/mortbay/jetty/servlet-api-2.5/6.1.11/servlet-api-2.5-6.1.11-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library name="javax.servlet:servlet-api:2.4">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/javax/servlet/servlet-api/2.4/servlet-api-2.4.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/javax/servlet/servlet-api/2.4/servlet-api-2.4-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/javax/servlet/servlet-api/2.4/servlet-api-2.4-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="org.slf4j:slf4j-simple:1.4.2">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/org/slf4j/slf4j-simple/1.4.2/slf4j-simple-1.4.2.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/org/slf4j/slf4j-simple/1.4.2/slf4j-simple-1.4.2-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/org/slf4j/slf4j-simple/1.4.2/slf4j-simple-1.4.2-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
     <orderEntry type="module" module-name="qi4j-ext-indexing-rdf" exported="" />
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library name="org.openrdf.sesame:sesame-query:2.1.3">
         <CLASSES>
           <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-query/2.1.3/sesame-query-2.1.3.jar!/" />
@@ -310,7 +233,7 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library name="org.openrdf.sesame:sesame-queryalgebra-model:2.1.3">
         <CLASSES>
           <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-queryalgebra-model/2.1.3/sesame-queryalgebra-model-2.1.3.jar!/" />
@@ -323,7 +246,7 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library name="org.openrdf.sesame:sesame-queryparser-api:2.1.3">
         <CLASSES>
           <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-queryparser-api/2.1.3/sesame-queryparser-api-2.1.3.jar!/" />
@@ -336,7 +259,7 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library name="org.openrdf.sesame:sesame-queryparser-serql:2.1.3">
         <CLASSES>
           <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-queryparser-serql/2.1.3/sesame-queryparser-serql-2.1.3.jar!/" />
@@ -349,7 +272,7 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library name="org.openrdf.sesame:sesame-queryparser-sparql:2.1.3">
         <CLASSES>
           <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-queryparser-sparql/2.1.3/sesame-queryparser-sparql-2.1.3.jar!/" />
@@ -362,7 +285,7 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library name="org.openrdf.sesame:sesame-queryresultio-api:2.1.3">
         <CLASSES>
           <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-queryresultio-api/2.1.3/sesame-queryresultio-api-2.1.3.jar!/" />
@@ -375,7 +298,7 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library name="org.openrdf.sesame:sesame-queryresultio-binary:2.1.3">
         <CLASSES>
           <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-queryresultio-binary/2.1.3/sesame-queryresultio-binary-2.1.3.jar!/" />
@@ -388,7 +311,7 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library name="org.openrdf.sesame:sesame-queryresultio-sparqljson:2.1.3">
         <CLASSES>
           <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-queryresultio-sparqljson/2.1.3/sesame-queryresultio-sparqljson-2.1.3.jar!/" />
@@ -401,7 +324,7 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library name="org.openrdf.sesame:sesame-queryresultio-sparqlxml:2.1.3">
         <CLASSES>
           <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-queryresultio-sparqlxml/2.1.3/sesame-queryresultio-sparqlxml-2.1.3.jar!/" />
@@ -414,7 +337,7 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library name="org.openrdf.sesame:sesame-queryresultio-text:2.1.3">
         <CLASSES>
           <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-queryresultio-text/2.1.3/sesame-queryresultio-text-2.1.3.jar!/" />
@@ -427,7 +350,7 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library name="org.openrdf.sesame:sesame-repository-api:2.1.3">
         <CLASSES>
           <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-repository-api/2.1.3/sesame-repository-api-2.1.3.jar!/" />
@@ -440,7 +363,7 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library name="org.openrdf.sesame:sesame-repository-manager:2.1.3">
         <CLASSES>
           <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-repository-manager/2.1.3/sesame-repository-manager-2.1.3.jar!/" />
@@ -453,7 +376,7 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library name="org.openrdf.sesame:sesame-repository-event:2.1.3">
         <CLASSES>
           <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-repository-event/2.1.3/sesame-repository-event-2.1.3.jar!/" />
@@ -466,7 +389,7 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library name="org.openrdf.sesame:sesame-repository-sail:2.1.3">
         <CLASSES>
           <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-repository-sail/2.1.3/sesame-repository-sail-2.1.3.jar!/" />
@@ -479,7 +402,7 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library name="org.openrdf.sesame:sesame-sail-api:2.1.3">
         <CLASSES>
           <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-sail-api/2.1.3/sesame-sail-api-2.1.3.jar!/" />
@@ -492,7 +415,7 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library name="org.openrdf.sesame:sesame-sail-memory:2.1.3">
         <CLASSES>
           <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-sail-memory/2.1.3/sesame-sail-memory-2.1.3.jar!/" />
@@ -505,7 +428,7 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library name="org.openrdf.sesame:sesame-sail-inferencer:2.1.3">
         <CLASSES>
           <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-sail-inferencer/2.1.3/sesame-sail-inferencer-2.1.3.jar!/" />
@@ -518,7 +441,7 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library name="org.openrdf.sesame:sesame-queryalgebra-evaluation:2.1.3">
         <CLASSES>
           <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-queryalgebra-evaluation/2.1.3/sesame-queryalgebra-evaluation-2.1.3.jar!/" />
@@ -531,7 +454,7 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library name="org.openrdf.sesame:sesame-repository-http:2.1.3">
         <CLASSES>
           <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-repository-http/2.1.3/sesame-repository-http-2.1.3.jar!/" />
@@ -544,7 +467,7 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library name="org.openrdf.sesame:sesame-http-client:2.1.3">
         <CLASSES>
           <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-http-client/2.1.3/sesame-http-client-2.1.3.jar!/" />
@@ -557,7 +480,7 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library name="org.openrdf.sesame:sesame-http-protocol:2.1.3">
         <CLASSES>
           <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-http-protocol/2.1.3/sesame-http-protocol-2.1.3.jar!/" />
@@ -570,7 +493,7 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library name="org.openrdf.sesame:sesame-rio-ntriples:2.1.3">
         <CLASSES>
           <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-rio-ntriples/2.1.3/sesame-rio-ntriples-2.1.3.jar!/" />
@@ -609,7 +532,7 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library name="org.slf4j:jcl104-over-slf4j:1.5.0">
         <CLASSES>
           <root url="jar://$M2_REPO$/org/slf4j/jcl104-over-slf4j/1.5.0/jcl104-over-slf4j-1.5.0.jar!/" />
@@ -622,7 +545,7 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library name="org.openrdf.sesame:sesame-repository-dataset:2.1.3">
         <CLASSES>
           <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-repository-dataset/2.1.3/sesame-repository-dataset-2.1.3.jar!/" />
@@ -635,7 +558,7 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library name="org.openrdf.sesame:sesame-rio-trix:2.1.3">
         <CLASSES>
           <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-rio-trix/2.1.3/sesame-rio-trix-2.1.3.jar!/" />
@@ -648,7 +571,7 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library name="org.openrdf.sesame:sesame-rio-trig:2.1.3">
         <CLASSES>
           <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-rio-trig/2.1.3/sesame-rio-trig-2.1.3.jar!/" />
@@ -661,7 +584,7 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library name="org.openrdf.sesame:sesame-sail-nativerdf:2.1.3">
         <CLASSES>
           <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-sail-nativerdf/2.1.3/sesame-sail-nativerdf-2.1.3.jar!/" />
@@ -674,7 +597,7 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library name="org.openrdf.sesame:sesame-sail-rdbms:2.1.3">
         <CLASSES>
           <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-sail-rdbms/2.1.3/sesame-sail-rdbms-2.1.3.jar!/" />
@@ -687,7 +610,7 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library name="commons-dbcp:commons-dbcp:1.2.2">
         <CLASSES>
           <root url="jar://$M2_REPO$/commons-dbcp/commons-dbcp/1.2.2/commons-dbcp-1.2.2.jar!/" />
@@ -700,7 +623,7 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library name="commons-pool:commons-pool:1.3">
         <CLASSES>
           <root url="jar://$M2_REPO$/commons-pool/commons-pool/1.3/commons-pool-1.3.jar!/" />
@@ -714,28 +637,108 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
-      <library name="org.restlet:org.restlet:1.1-M3">
+      <library name="org.restlet:org.restlet:1.1-M4">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/restlet/org.restlet/1.1-M3/org.restlet-1.1-M3.jar!/" />
+          <root url="jar://$M2_REPO$/org/restlet/org.restlet/1.1-M4/org.restlet-1.1-M4.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/restlet/org.restlet/1.1-M3/org.restlet-1.1-M3-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/restlet/org.restlet/1.1-M4/org.restlet-1.1-M4-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/restlet/org.restlet/1.1-M3/org.restlet-1.1-M3-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/restlet/org.restlet/1.1-M4/org.restlet-1.1-M4-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
-      <library name="com.noelios.restlet:com.noelios.restlet:1.1-M3">
+      <library name="com.noelios.restlet:com.noelios.restlet:1.1-M4">
         <CLASSES>
-          <root url="jar://$M2_REPO$/com/noelios/restlet/com.noelios.restlet/1.1-M3/com.noelios.restlet-1.1-M3.jar!/" />
+          <root url="jar://$M2_REPO$/com/noelios/restlet/com.noelios.restlet/1.1-M4/com.noelios.restlet-1.1-M4.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/com/noelios/restlet/com.noelios.restlet/1.1-M3/com.noelios.restlet-1.1-M3-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/com/noelios/restlet/com.noelios.restlet/1.1-M4/com.noelios.restlet-1.1-M4-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/com/noelios/restlet/com.noelios.restlet/1.1-M3/com.noelios.restlet-1.1-M3-sources.jar!/" />
+          <root url="jar://$M2_REPO$/com/noelios/restlet/com.noelios.restlet/1.1-M4/com.noelios.restlet-1.1-M4-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library name="com.noelios.restlet:com.noelios.restlet.ext.servlet:1.1-M4">
+        <CLASSES>
+          <root url="jar://$M2_REPO$/com/noelios/restlet/com.noelios.restlet.ext.servlet/1.1-M4/com.noelios.restlet.ext.servlet-1.1-M4.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$M2_REPO$/com/noelios/restlet/com.noelios.restlet.ext.servlet/1.1-M4/com.noelios.restlet.ext.servlet-1.1-M4-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$M2_REPO$/com/noelios/restlet/com.noelios.restlet.ext.servlet/1.1-M4/com.noelios.restlet.ext.servlet-1.1-M4-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library name="javax.servlet:servlet-api:2.4">
+        <CLASSES>
+          <root url="jar://$M2_REPO$/javax/servlet/servlet-api/2.4/servlet-api-2.4.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$M2_REPO$/javax/servlet/servlet-api/2.4/servlet-api-2.4-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$M2_REPO$/javax/servlet/servlet-api/2.4/servlet-api-2.4-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module" module-name="qi4j-lib-http" />
+    <orderEntry type="module-library">
+      <library name="org.mortbay.jetty:jetty:6.1.11">
+        <CLASSES>
+          <root url="jar://$M2_REPO$/org/mortbay/jetty/jetty/6.1.11/jetty-6.1.11.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$M2_REPO$/org/mortbay/jetty/jetty/6.1.11/jetty-6.1.11-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$M2_REPO$/org/mortbay/jetty/jetty/6.1.11/jetty-6.1.11-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="org.mortbay.jetty:jetty-util:6.1.11">
+        <CLASSES>
+          <root url="jar://$M2_REPO$/org/mortbay/jetty/jetty-util/6.1.11/jetty-util-6.1.11.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$M2_REPO$/org/mortbay/jetty/jetty-util/6.1.11/jetty-util-6.1.11-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$M2_REPO$/org/mortbay/jetty/jetty-util/6.1.11/jetty-util-6.1.11-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="org.mortbay.jetty:servlet-api-2.5:6.1.11">
+        <CLASSES>
+          <root url="jar://$M2_REPO$/org/mortbay/jetty/servlet-api-2.5/6.1.11/servlet-api-2.5-6.1.11.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$M2_REPO$/org/mortbay/jetty/servlet-api-2.5/6.1.11/servlet-api-2.5-6.1.11-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$M2_REPO$/org/mortbay/jetty/servlet-api-2.5/6.1.11/servlet-api-2.5-6.1.11-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module" module-name="qi4j-core-runtime" />
+    <orderEntry type="module-library">
+      <library name="cglib:cglib-nodep:2.1_3">
+        <CLASSES>
+          <root url="jar://$M2_REPO$/cglib/cglib-nodep/2.1_3/cglib-nodep-2.1_3.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$M2_REPO$/cglib/cglib-nodep/2.1_3/cglib-nodep-2.1_3-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$M2_REPO$/cglib/cglib-nodep/2.1_3/cglib-nodep-2.1_3-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
@@ -788,175 +791,6 @@
         </JAVADOC>
         <SOURCES>
           <root url="jar://$M2_REPO$/avalon-framework/avalon-framework/4.1.3/avalon-framework-4.1.3-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library name="org.apache.abdera:abdera-client:0.4.0-incubating">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/org/apache/abdera/abdera-client/0.4.0-incubating/abdera-client-0.4.0-incubating.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/org/apache/abdera/abdera-client/0.4.0-incubating/abdera-client-0.4.0-incubating-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/org/apache/abdera/abdera-client/0.4.0-incubating/abdera-client-0.4.0-incubating-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library name="org.apache.abdera:abdera-core:0.4.0-incubating">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/org/apache/abdera/abdera-core/0.4.0-incubating/abdera-core-0.4.0-incubating.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/org/apache/abdera/abdera-core/0.4.0-incubating/abdera-core-0.4.0-incubating-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/org/apache/abdera/abdera-core/0.4.0-incubating/abdera-core-0.4.0-incubating-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library name="org.apache.abdera:abdera-i18n:0.4.0-incubating">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/org/apache/abdera/abdera-i18n/0.4.0-incubating/abdera-i18n-0.4.0-incubating.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/org/apache/abdera/abdera-i18n/0.4.0-incubating/abdera-i18n-0.4.0-incubating-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/org/apache/abdera/abdera-i18n/0.4.0-incubating/abdera-i18n-0.4.0-incubating-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library name="org.apache.geronimo.specs:geronimo-activation_1.0.2_spec:1.1">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/org/apache/geronimo/specs/geronimo-activation_1.0.2_spec/1.1/geronimo-activation_1.0.2_spec-1.1.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/org/apache/geronimo/specs/geronimo-activation_1.0.2_spec/1.1/geronimo-activation_1.0.2_spec-1.1-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/org/apache/geronimo/specs/geronimo-activation_1.0.2_spec/1.1/geronimo-activation_1.0.2_spec-1.1-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library name="org.apache.abdera:abdera-parser:0.4.0-incubating">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/org/apache/abdera/abdera-parser/0.4.0-incubating/abdera-parser-0.4.0-incubating.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/org/apache/abdera/abdera-parser/0.4.0-incubating/abdera-parser-0.4.0-incubating-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/org/apache/abdera/abdera-parser/0.4.0-incubating/abdera-parser-0.4.0-incubating-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library name="org.apache.ws.commons.axiom:axiom-impl:1.2.5">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/org/apache/ws/commons/axiom/axiom-impl/1.2.5/axiom-impl-1.2.5.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/org/apache/ws/commons/axiom/axiom-impl/1.2.5/axiom-impl-1.2.5-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/org/apache/ws/commons/axiom/axiom-impl/1.2.5/axiom-impl-1.2.5-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library name="org.apache.ws.commons.axiom:axiom-api:1.2.5">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/org/apache/ws/commons/axiom/axiom-api/1.2.5/axiom-api-1.2.5.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/org/apache/ws/commons/axiom/axiom-api/1.2.5/axiom-api-1.2.5-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/org/apache/ws/commons/axiom/axiom-api/1.2.5/axiom-api-1.2.5-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library name="jaxen:jaxen:1.1.1">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/jaxen/jaxen/1.1.1/jaxen-1.1.1.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/jaxen/jaxen/1.1.1/jaxen-1.1.1-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/jaxen/jaxen/1.1.1/jaxen-1.1.1-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library name="xerces:xercesImpl:2.6.2">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/xerces/xercesImpl/2.6.2/xercesImpl-2.6.2.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/xerces/xercesImpl/2.6.2/xercesImpl-2.6.2-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/xerces/xercesImpl/2.6.2/xercesImpl-2.6.2-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library name="xml-apis:xml-apis:1.3.02">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/xml-apis/xml-apis/1.3.02/xml-apis-1.3.02.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/xml-apis/xml-apis/1.3.02/xml-apis-1.3.02-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/xml-apis/xml-apis/1.3.02/xml-apis-1.3.02-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library name="org.apache.geronimo.specs:geronimo-stax-api_1.0_spec:1.0.1">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/org/apache/geronimo/specs/geronimo-stax-api_1.0_spec/1.0.1/geronimo-stax-api_1.0_spec-1.0.1.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/org/apache/geronimo/specs/geronimo-stax-api_1.0_spec/1.0.1/geronimo-stax-api_1.0_spec-1.0.1-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/org/apache/geronimo/specs/geronimo-stax-api_1.0_spec/1.0.1/geronimo-stax-api_1.0_spec-1.0.1-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library name="org.codehaus.woodstox:wstx-asl:3.2.1">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/org/codehaus/woodstox/wstx-asl/3.2.1/wstx-asl-3.2.1.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/org/codehaus/woodstox/wstx-asl/3.2.1/wstx-asl-3.2.1-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/org/codehaus/woodstox/wstx-asl/3.2.1/wstx-asl-3.2.1-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library name="org.apache.abdera:abdera-server:0.4.0-incubating">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/org/apache/abdera/abdera-server/0.4.0-incubating/abdera-server-0.4.0-incubating.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/org/apache/abdera/abdera-server/0.4.0-incubating/abdera-server-0.4.0-incubating-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/org/apache/abdera/abdera-server/0.4.0-incubating/abdera-server-0.4.0-incubating-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>

@@ -19,24 +19,8 @@
   <dependencies>
     <dependency>
       <groupId>org.qi4j.core</groupId>
-      <artifactId>qi4j-core-api</artifactId>
-      <version>0.4-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.qi4j.core</groupId>
-      <artifactId>qi4j-core-spi</artifactId>
-      <version>0.4-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.qi4j.core</groupId>
       <artifactId>qi4j-core-bootstrap</artifactId>
       <version>0.4-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.qi4j.core</groupId>
-      <artifactId>qi4j-core-runtime</artifactId>
-      <version>0.4-SNAPSHOT</version>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.qi4j.library</groupId>
@@ -44,32 +28,9 @@
       <version>0.4-SNAPSHOT</version>
     </dependency>
     <dependency>
-      <groupId>org.qi4j.library</groupId>
-      <artifactId>qi4j-lib-constraints</artifactId>
-      <version>0.4-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.qi4j.library</groupId>
-      <artifactId>qi4j-lib-http</artifactId>
-      <version>0.4-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-simple</artifactId>
-      <version>1.4.2</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.qi4j.extension</groupId>
       <artifactId>qi4j-ext-indexing-rdf</artifactId>
       <version>0.4-SNAPSHOT</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.qi4j.core</groupId>
-      <artifactId>qi4j-core-testsupport</artifactId>
-      <version>0.4-SNAPSHOT</version>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.restlet</groupId>
@@ -85,6 +46,26 @@
       <groupId>com.noelios.restlet</groupId>
       <artifactId>com.noelios.restlet.ext.servlet</artifactId>
       <version>${version.restlet}</version>
+    </dependency>
+
+    <!-- Test scope -->
+    <dependency>
+      <groupId>org.qi4j.core</groupId>
+      <artifactId>qi4j-core-testsupport</artifactId>
+      <version>0.4-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.qi4j.library</groupId>
+      <artifactId>qi4j-lib-http</artifactId>
+      <version>0.4-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.qi4j.core</groupId>
+      <artifactId>qi4j-core-runtime</artifactId>
+      <version>0.4-SNAPSHOT</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>commons-httpclient</groupId>
@@ -105,6 +86,7 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
   <repositories>
     <repository>
       <id>maven-restlet</id>

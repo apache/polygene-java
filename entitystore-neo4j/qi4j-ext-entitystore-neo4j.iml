@@ -30,20 +30,20 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
-      <library name="org.neo4j:index-util:0.3-20080428.100332-22">
+      <library name="org.neo4j:index-util:0.4-SNAPSHOT">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/neo4j/index-util/0.3-SNAPSHOT/index-util-0.3-SNAPSHOT.jar!/" />
+          <root url="jar://$M2_REPO$/org/neo4j/index-util/0.4-SNAPSHOT/index-util-0.4-SNAPSHOT.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/neo4j/index-util/0.3-SNAPSHOT/index-util-0.3-SNAPSHOT-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/neo4j/index-util/0.4-SNAPSHOT/index-util-0.4-SNAPSHOT-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/neo4j/index-util/0.3-SNAPSHOT/index-util-0.3-SNAPSHOT-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/neo4j/index-util/0.4-SNAPSHOT/index-util-0.4-SNAPSHOT-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
-      <library name="org.neo4j:neo:1.0-rc1-20080612.151156-35">
+      <library name="org.neo4j:neo:1.0-rc1-SNAPSHOT">
         <CLASSES>
           <root url="jar://$M2_REPO$/org/neo4j/neo/1.0-rc1-SNAPSHOT/neo-1.0-rc1-SNAPSHOT.jar!/" />
         </CLASSES>
@@ -69,7 +69,7 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
-      <library name="org.neo4j:shell:1.0-rc1-20080516.100216-10">
+      <library name="org.neo4j:shell:1.0-rc1-SNAPSHOT">
         <CLASSES>
           <root url="jar://$M2_REPO$/org/neo4j/shell/1.0-rc1-SNAPSHOT/shell-1.0-rc1-SNAPSHOT.jar!/" />
         </CLASSES>
@@ -97,8 +97,8 @@
     <orderEntry type="module" module-name="qi4j-core-bootstrap" exported="" />
     <orderEntry type="module" module-name="qi4j-core-api" exported="" />
     <orderEntry type="module" module-name="qi4j-core-spi" exported="" />
-    <orderEntry type="module" module-name="qi4j-core-testsupport" exported="" />
-    <orderEntry type="module" module-name="qi4j-core-runtime" exported="" />
+    <orderEntry type="module" module-name="qi4j-core-testsupport" />
+    <orderEntry type="module" module-name="qi4j-core-runtime" />
     <orderEntry type="module-library">
       <library name="cglib:cglib-nodep:2.1_3">
         <CLASSES>
