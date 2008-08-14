@@ -27,6 +27,7 @@ import org.qi4j.runtime.injection.InjectedFieldModel;
 import org.qi4j.runtime.injection.InjectedMethodModel;
 import org.qi4j.runtime.injection.InjectedParametersModel;
 import org.qi4j.runtime.object.ObjectModel;
+import org.qi4j.runtime.service.ServiceModel;
 
 /**
  * TODO
@@ -90,6 +91,10 @@ public class ModelVisitor
     }
 
     public void visit( EntityModel entityModel )
+    {
+    }
+
+    public void visit( ServiceModel serviceModel )
     {
     }
 

@@ -28,7 +28,7 @@ public class SingletonInstanceFactory
 
     public Object newInstance( ServiceDescriptor serviceDescriptor ) throws ServiceInstanceProviderException
     {
-        return serviceDescriptor.metaInfo( Singleton.class ).instance();
+        return serviceDescriptor.metaInfo().get( Singleton.class ).instance();
     }
 
     public void releaseInstance( Object instance )

@@ -16,8 +16,8 @@ package org.qi4j.runtime.structure;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.qi4j.runtime.service.ServiceReferenceInstance;
 import org.qi4j.runtime.service.ServiceModel;
+import org.qi4j.runtime.service.ServiceReferenceInstance;
 import org.qi4j.structure.Module;
 import org.qi4j.structure.Visibility;
 
@@ -56,5 +56,13 @@ public class ServicesModel
         }
 
         return new ServicesInstance( this, serviceReferences );
+    }
+
+    public void visitModel( ModelVisitor modelVisitor )
+    {
+        for( ServiceModel serviceModel : serviceModels )
+        {
+            serviceModel.visitModel( modelVisitor );
+        }
     }
 }

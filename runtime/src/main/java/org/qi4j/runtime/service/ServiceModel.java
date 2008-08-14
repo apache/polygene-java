@@ -17,6 +17,7 @@ package org.qi4j.runtime.service;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 import org.qi4j.composite.Composite;
+import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.service.ServiceDescriptor;
 import org.qi4j.service.ServiceInstanceFactory;
 import org.qi4j.structure.Module;
@@ -27,6 +28,7 @@ import org.qi4j.util.MetaInfo;
  * TODO
  */
 public final class ServiceModel
+    implements ServiceDescriptor
 {
     private final Class<? extends Composite> type;
     private final Visibility visibility;
@@ -86,12 +88,16 @@ public final class ServiceModel
         return moduleName;
     }
 
+    public void visitModel( ModelVisitor modelVisitor )
+    {
+        modelVisitor.visit( this );
+    }
+
     public ServiceInstance<?> newInstance( Module module )
     {
-        ServiceDescriptor serviceDescriptor = new ServiceDescriptor( type, serviceFactory, identity, visibility, instantiateOnStartup, metaInfo );
         ServiceInstanceFactory instanceFactory = module.objectBuilderFactory().newObject( serviceFactory );
-        Object instance = instanceFactory.newInstance( serviceDescriptor );
-        return new ServiceInstance<Object>( instance, instanceFactory, serviceDescriptor );
+        Object instance = instanceFactory.newInstance( this );
+        return new ServiceInstance<Object>( instance, instanceFactory, this );
     }
 
     public Object newProxy( InvocationHandler serviceInvocationHandler )
@@ -116,4 +122,5 @@ public final class ServiceModel
     {
         return type.getName() + ":" + identity;
     }
+
 }

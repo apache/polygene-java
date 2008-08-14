@@ -19,64 +19,18 @@ import org.qi4j.util.MetaInfo;
 
 /**
  * {@code ServiceDescriptor} provides meta informations of a service.
- *
  */
-public final class ServiceDescriptor
+public interface ServiceDescriptor
 {
-    private final Class<?> serviceType;
-    private final Class<? extends ServiceInstanceFactory> serviceFactory;
-    private final String identity;
-    private final Visibility visibility;
-    private final boolean instantiateOnStartup;
-    private final MetaInfo metaInfo;
+    public Class<?> type();
 
-    public ServiceDescriptor( Class serviceType,
-                              Class<? extends ServiceInstanceFactory> serviceFactory,
-                              String identity,
-                              Visibility visibility,
-                              boolean instantiateOnStartup,
-                              MetaInfo metaInfo )
-    {
-        this.serviceType = serviceType;
-        this.serviceFactory = serviceFactory;
-        this.identity = identity;
-        this.visibility = visibility;
-        this.instantiateOnStartup = instantiateOnStartup;
-        this.metaInfo = metaInfo;
-    }
+    public Class<? extends ServiceInstanceFactory> serviceFactory();
 
-    public Class<?> type()
-    {
-        return serviceType;
-    }
+    public String identity();
 
-    public Class<? extends ServiceInstanceFactory> serviceFactory()
-    {
-        return serviceFactory;
-    }
+    public Visibility visibility();
 
-    public String identity()
-    {
-        return identity;
-    }
+    public boolean isInstantiateOnStartup();
 
-    public Visibility visibility()
-    {
-        return visibility;
-    }
-
-    public boolean isInstantiateOnStartup()
-    {
-        return instantiateOnStartup;
-    }
-
-    public <K> K metaInfo( Class<K> infoType )
-    {
-        return metaInfo.get( infoType );
-    }
-
-    @Override public String toString()
-    {
-        return identity + "(" + serviceType.getName() + ", visible in " + visibility + ")";
-    }
+    public MetaInfo metaInfo();
 }

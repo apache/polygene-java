@@ -75,6 +75,7 @@ public class ModuleModel
 
         compositesModel.visitModel( modelVisitor );
         entitiesModel.visitModel( modelVisitor );
+        servicesModel.visitModel( modelVisitor );
         objectsModel.visitModel( modelVisitor );
     }
 
