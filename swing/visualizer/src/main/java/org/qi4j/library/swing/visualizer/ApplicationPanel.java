@@ -433,10 +433,15 @@ public class ApplicationPanel extends JPanel
     {
         public void itemClicked( VisualItem item, MouseEvent e )
         {
-            mouseClicked( e );
+            zoom( e, new Point( e.getX(), e.getY() ) );
         }
 
         public void mouseClicked( MouseEvent e )
+        {
+            zoom( e, getDisplayCenter() );
+        }
+
+        private void zoom( MouseEvent e, Point2D p )
         {
             if( !display.isTranformInProgress() )
             {
@@ -444,7 +449,6 @@ public class ApplicationPanel extends JPanel
                 int count = e.getClickCount();
                 if( count == 2 )
                 {
-                    Point p = new Point( e.getX(), e.getY() );
                     if( e.isShiftDown() )
                     {
                         zoomOut( p, null );
