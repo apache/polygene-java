@@ -52,7 +52,7 @@ public class DerbyDatabaseHandler
 
     private static final String SCHEMA_FILE = "testDbSchema.sql";
     private static final String DATA_FILE = "testDbData.sql";
-    private static final int PING_COUNT = 5;
+    private static final int PING_COUNT = 10;
     private static final int PING_SLEEP_MILLIS = 50;
     private final NetworkServerControl nsc;
 
