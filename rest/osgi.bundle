@@ -27,6 +27,8 @@ Import-Package: com.noelios.restlet.ext.servlet, \
                 org.xml.sax, \
                 org.xml.sax.helpers, \
                 info.aduna.xml, \
+                info.aduna.io, \
+                info.aduna.text, \
                 org.openrdf.http.protocol, \
                 info.aduna.net, \
                 org.openrdf.model.vocabulary

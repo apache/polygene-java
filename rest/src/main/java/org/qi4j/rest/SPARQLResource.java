@@ -99,110 +99,120 @@ public class SPARQLResource
 
             RepositoryConnection conn = repository.getConnection();
 
-            String queryStr = form.getFirstValue( "query" );
-
-            if( queryStr == null )
+            try
             {
-                return new InputRepresentation( getClass().getResourceAsStream( "sparqlform.html" ), MediaType.TEXT_HTML );
-            }
+                String queryStr = form.getFirstValue( "query" );
 
-            Query query = getQuery( repository, conn, queryStr );
-
-            if( query instanceof TupleQuery )
-            {
-                TupleQuery tQuery = (TupleQuery) query;
-
-                final TupleQueryResult queryResult = tQuery.evaluate();
-
-                if( variant.getMediaType().equals( MediaType.TEXT_HTML ) )
+                if( queryStr == null )
                 {
-                    return new OutputRepresentation( MediaType.TEXT_XML )
+                    return new InputRepresentation( getClass().getResourceAsStream( "sparqlform.html" ), MediaType.TEXT_HTML );
+                }
+
+                Query query = getQuery( repository, conn, queryStr );
+
+                if( query instanceof TupleQuery )
+                {
+                    TupleQuery tQuery = (TupleQuery) query;
+
+                    final TupleQueryResult queryResult = tQuery.evaluate();
+
+                    if( variant.getMediaType().equals( MediaType.TEXT_HTML ) )
                     {
-                        public void write( OutputStream outputStream ) throws IOException
+                        return new OutputRepresentation( MediaType.TEXT_XML )
                         {
-                            try
+                            public void write( OutputStream outputStream ) throws IOException
                             {
-                                PrintWriter out = new PrintWriter( outputStream );
-                                out.println( "<?xml version='1.0' encoding='UTF-8'?>" );
-                                out.println( "<?xml-stylesheet type=\"text/xsl\" href=\"query/sparqlhtml.xsl\"?>" );
-                                out.flush();
-                                TupleQueryResultWriter qrWriter = new SPARQLResultsXMLWriter( new XMLWriter( outputStream )
+                                try
                                 {
-                                    @Override public void startDocument() throws IOException
+                                    PrintWriter out = new PrintWriter( outputStream );
+                                    out.println( "<?xml version='1.0' encoding='UTF-8'?>" );
+                                    out.println( "<?xml-stylesheet type=\"text/xsl\" href=\"query/sparqlhtml.xsl\"?>" );
+                                    out.flush();
+                                    TupleQueryResultWriter qrWriter = new SPARQLResultsXMLWriter( new XMLWriter( outputStream )
                                     {
-                                        // Ignore
-                                    }
-                                } );
-                                QueryResultUtil.report( queryResult, qrWriter );
+                                        @Override public void startDocument() throws IOException
+                                        {
+                                            // Ignore
+                                        }
+                                    } );
+                                    QueryResultUtil.report( queryResult, qrWriter );
+                                }
+                                catch( Exception e )
+                                {
+                                    throw (IOException) new IOException().initCause( e );
+                                }
                             }
-                            catch( Exception e )
-                            {
-                                throw (IOException) new IOException().initCause( e );
-                            }
-                        }
-                    };
-                }
-                else if( variant.getMediaType().equals( MediaType.APPLICATION_RDF_XML ) )
-                {
-                    return new OutputRepresentation( MediaType.APPLICATION_XML )
+                        };
+                    }
+                    else if( variant.getMediaType().equals( MediaType.APPLICATION_RDF_XML ) )
                     {
-                        public void write( OutputStream outputStream ) throws IOException
+                        return new OutputRepresentation( MediaType.APPLICATION_XML )
                         {
-                            try
+                            public void write( OutputStream outputStream ) throws IOException
                             {
-                                TupleQueryResultWriter qrWriter = new SPARQLResultsXMLWriter( new XMLWriter( outputStream ) );
-                                QueryResultUtil.report( queryResult, qrWriter );
+                                try
+                                {
+                                    TupleQueryResultWriter qrWriter = new SPARQLResultsXMLWriter( new XMLWriter( outputStream ) );
+                                    QueryResultUtil.report( queryResult, qrWriter );
+                                }
+                                catch( Exception e )
+                                {
+                                    throw (IOException) new IOException().initCause( e );
+                                }
                             }
-                            catch( Exception e )
-                            {
-                                throw (IOException) new IOException().initCause( e );
-                            }
-                        }
-                    };
-                }
-                else if( variant.getMediaType().equals( RestApplication.APPLICATION_SPARQL_JSON ) )
-                {
-                    return new OutputRepresentation( RestApplication.APPLICATION_SPARQL_JSON )
+                        };
+                    }
+                    else if( variant.getMediaType().equals( RestApplication.APPLICATION_SPARQL_JSON ) )
                     {
-                        public void write( OutputStream outputStream ) throws IOException
+                        return new OutputRepresentation( RestApplication.APPLICATION_SPARQL_JSON )
                         {
-                            try
+                            public void write( OutputStream outputStream ) throws IOException
                             {
-                                TupleQueryResultWriter qrWriter = new SPARQLResultsJSONWriterFactory().getWriter( outputStream );
-                                QueryResultUtil.report( queryResult, qrWriter );
+                                try
+                                {
+                                    TupleQueryResultWriter qrWriter = new SPARQLResultsJSONWriterFactory().getWriter( outputStream );
+                                    QueryResultUtil.report( queryResult, qrWriter );
+                                }
+                                catch( Exception e )
+                                {
+                                    throw (IOException) new IOException().initCause( e );
+                                }
                             }
-                            catch( Exception e )
-                            {
-                                throw (IOException) new IOException().initCause( e );
-                            }
-                        }
-                    };
+                        };
+                    }
+                }
+                else if( query instanceof GraphQuery )
+                {
+                    GraphQuery gQuery = (GraphQuery) query;
+
+                    /*
+                                    queryResult = gQuery.evaluate();
+                                    registry = RDFWriterRegistry.getInstance();
+                                    view = GraphQueryResultView.getInstance();
+                    */
+                }
+                else if( query instanceof BooleanQuery )
+                {
+                    BooleanQuery bQuery = (BooleanQuery) query;
+
+                    /*
+                                    queryResult = bQuery.evaluate();
+                                    registry = BooleanQueryResultWriterRegistry.getInstance();
+                                    view = BooleanQueryResultView.getInstance();
+                    */
+                }
+                else
+                {
+                    throw new ResourceException( Status.CLIENT_ERROR_BAD_REQUEST, "Unsupported query type: "
+                                                                                  + query.getClass().getName() );
                 }
             }
-            else if( query instanceof GraphQuery )
+            finally
             {
-                GraphQuery gQuery = (GraphQuery) query;
-
-/*
-                queryResult = gQuery.evaluate();
-                registry = RDFWriterRegistry.getInstance();
-                view = GraphQueryResultView.getInstance();
-*/
-            }
-            else if( query instanceof BooleanQuery )
-            {
-                BooleanQuery bQuery = (BooleanQuery) query;
-
-/*
-                queryResult = bQuery.evaluate();
-                registry = BooleanQueryResultWriterRegistry.getInstance();
-                view = BooleanQueryResultView.getInstance();
-*/
-            }
-            else
-            {
-                throw new ResourceException( Status.CLIENT_ERROR_BAD_REQUEST, "Unsupported query type: "
-                                                                              + query.getClass().getName() );
+                if( conn != null )
+                {
+                    conn.close();
+                }
             }
 
         }

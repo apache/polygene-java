@@ -54,6 +54,16 @@
       <version>${version.openrdf}</version>
     </dependency>
     <dependency>
+      <groupId>org.openrdf.sesame</groupId>
+      <artifactId>sesame-queryresultio-sparqlxml</artifactId>
+      <version>${version.openrdf}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.openrdf.sesame</groupId>
+      <artifactId>sesame-queryresultio-sparqljson</artifactId>
+      <version>${version.openrdf}</version>
+    </dependency>
+    <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
       <scope>provided</scope>
