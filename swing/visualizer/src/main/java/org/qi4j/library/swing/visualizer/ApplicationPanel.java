@@ -19,6 +19,7 @@ import java.util.Iterator;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.awt.event.KeyEvent;
 import java.awt.geom.Point2D;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
@@ -88,7 +89,7 @@ public class ApplicationPanel extends JPanel
         createProcessingActions( visualization );
         display = createDisplay( visualization );
         launchDisplay( visualization, display );
-        createDisplayActions( display );
+        createPanningAndZoomingActions();
 
         Node applicationNode = graph.getNode( 0 );
         applicationNodeItem = visualization.getVisualItem( "graph.nodes", applicationNode );
@@ -109,34 +110,66 @@ public class ApplicationPanel extends JPanel
 
     }
 
-    private void createDisplayActions( Display display )
+    private void createPanningAndZoomingActions()
     {
+        final int PREVIOUSLY_VISIBLE_AREA_WHEN_SCROLLING = 50;
+
         InputMap inputMap = getInputMap( WHEN_ANCESTOR_OF_FOCUSED_COMPONENT );
         ActionMap actionMap = getActionMap();
 
         inputMap.put( KeyStroke.getKeyStroke( '+' ), "zoomIn" );
-        actionMap.put( "zoomIn", new ZoomInAction() );
+        actionMap.put( "zoomIn", new AbstractAction( "Zoom In" )
+        {
+            public void actionPerformed( ActionEvent e )
+            {
+                zoomIn( getDisplayCenter(), null );
+            }
+        } );
 
         inputMap.put( KeyStroke.getKeyStroke( '-' ), "zoomOut" );
-        actionMap.put( "zoomOut", new ZoomOutAction() );
+        actionMap.put( "zoomOut", new AbstractAction( "Zoom Out" )
+        {
+            public void actionPerformed( ActionEvent e )
+            {
+                zoomOut( getDisplayCenter(), null );
+            }
+        } );
 
-/*
-        Action panLeft = new PanLeftAction( display );
         inputMap.put( KeyStroke.getKeyStroke( KeyEvent.VK_LEFT, 0 ), "panLeft" );
-        actionMap.put( "panLeft", panLeft );
+        actionMap.put( "panLeft", new AbstractAction( "Pan Left" )
+        {
+            public void actionPerformed( ActionEvent e )
+            {
+                pan( display.getWidth() - PREVIOUSLY_VISIBLE_AREA_WHEN_SCROLLING, 0, true );
+            }
+        } );
 
-        Action panRight = new PanRightAction( display );
         inputMap.put( KeyStroke.getKeyStroke( KeyEvent.VK_RIGHT, 0 ), "panRight" );
-        actionMap.put( "panRight", panRight );
+        actionMap.put( "panRight", new AbstractAction( "Pan Right" )
+        {
+            public void actionPerformed( ActionEvent e )
+            {
+                pan( PREVIOUSLY_VISIBLE_AREA_WHEN_SCROLLING - display.getWidth(), 0, true );
+            }
+        } );
 
-        Action panUp = new PanUpAction( display );
         inputMap.put( KeyStroke.getKeyStroke( KeyEvent.VK_UP, 0 ), "panUp" );
-        actionMap.put( "panUp", panUp );
+        actionMap.put( "panUp", new AbstractAction( "Pan Up" )
+        {
+            public void actionPerformed( ActionEvent e )
+            {
+                pan( 0, display.getHeight() - PREVIOUSLY_VISIBLE_AREA_WHEN_SCROLLING, true );
+            }
+        } );
 
-        Action panDown = new PanDownAction( display );
         inputMap.put( KeyStroke.getKeyStroke( KeyEvent.VK_DOWN, 0 ), "panDown" );
-        actionMap.put( "panDown", panDown );
-*/
+        actionMap.put( "panDown", new AbstractAction( "Pan Down" )
+        {
+            public void actionPerformed( ActionEvent e )
+            {
+                pan( 0, PREVIOUSLY_VISIBLE_AREA_WHEN_SCROLLING - display.getHeight(), true );
+            }
+        } );
     }
 
     private void launchDisplay( Visualization visualization, Display display )
@@ -330,43 +363,55 @@ public class ApplicationPanel extends JPanel
         }
     }
 
-    private void pan( double x, double y )
+    private void pan( double x, double y, boolean animate )
     {
-        Rectangle2D bounds = applicationNodeItem.getBounds();
-        AffineTransform at = display.getTransform();
-
-        double scaledLeftX = bounds.getX() * at.getScaleX();    // Left bound of Bounding Box
-        int scaledRightX = (int) ( bounds.getMaxX() * at.getScaleX() );    // Right bound of BB
-
-        int scaledTopY = (int) ( bounds.getY() * at.getScaleY() );    // Top bound of BB
-        int scaledBottom = (int) ( bounds.getMaxY() * at.getScaleY() );    // Bottom bound of BB
-
-        // Instead of setting values to 0, we can calculate the new value to satisify both conditions,
-        // but this works for now
-        boolean canPanLeft = scaledLeftX + at.getTranslateX() + x <= 0;
-        if( !canPanLeft )
+        if( !display.isTranformInProgress() )
         {
-            x = Math.min( x, 0 );
-        }
-        boolean canPanRight = scaledRightX + at.getTranslateX() + x >= display.getWidth();
-        if( !canPanRight )
-        {
-            x = Math.max( x, 0 );
-        }
-        boolean canPanUp = scaledTopY + at.getTranslateY() + y <= 0;
-        if( !canPanUp )
-        {
-            y = Math.min( y, 0 );
-        }
-        boolean canPanDown = scaledBottom + at.getTranslateY() + y >= display.getHeight();
-        if( !canPanDown )
-        {
-            y = Math.max( y, 0 );
-        }
 
-        display.pan( x, y );
-        display.repaint();
+            Rectangle2D bounds = applicationNodeItem.getBounds();
+            AffineTransform at = display.getTransform();
 
+            if( x > 0 )
+            {
+                // panning left, mouse movement to right
+                double scaledLeftX = bounds.getX() * at.getScaleX();    // Left bound of Bounding Box
+                double distanceToLeftEdge = -( at.getTranslateX() ) - scaledLeftX;
+                x = Math.min( x, distanceToLeftEdge );
+            }
+            else if( x < 0 )
+            {
+                //panning right, mouse movement to left
+                int scaledRightX = (int) ( bounds.getMaxX() * at.getScaleX() );    // Right bound of BB
+                double distanceToRightEdge = display.getWidth() - scaledRightX - at.getTranslateX();
+                x = Math.max( x, distanceToRightEdge );
+            }
+
+            if( y > 0 )
+            {
+                // panning up, mouse movement towards the bottom of the panel
+                int scaledTopY = (int) ( bounds.getY() * at.getScaleY() );    // Top bound of BB
+                double distanceToTopEdge = -( at.getTranslateY() ) - scaledTopY;
+                y = Math.min( y, distanceToTopEdge );
+
+            }
+            else if( y < 0 )
+            {
+                // panning down, mouse movement towards the top of the panel
+                int scaledBottomY = (int) ( bounds.getMaxY() * at.getScaleY() );    // Bottom bound of BB
+                double distanceToBottomEdge = display.getHeight() - scaledBottomY - at.getTranslateY();
+                y = Math.max( y, distanceToBottomEdge );
+            }
+
+            if( animate )
+            {
+                display.animatePan( x, y, 500 );
+            }
+            else
+            {
+                display.pan( x, y );
+            }
+            display.repaint();
+        }
     }
 
     private class ZoomToFitAction extends AbstractAction
@@ -394,107 +439,6 @@ public class ApplicationPanel extends JPanel
             zoomToActualSize();
         }
 
-    }
-
-    private class ZoomInAction extends AbstractAction
-    {
-        private ZoomInAction()
-        {
-            super( "Zoom In" );
-        }
-
-        public void actionPerformed( ActionEvent e )
-        {
-            zoomIn( getDisplayCenter(), null );
-        }
-
-    }
-
-    private class ZoomOutAction extends AbstractAction
-    {
-        private ZoomOutAction()
-        {
-            super( "Zoom Out" );
-        }
-
-        public void actionPerformed( ActionEvent e )
-        {
-            zoomOut( getDisplayCenter(), null );
-        }
-    }
-
-    private int panMovement = 10;
-
-    private class PanLeftAction extends AbstractAction
-    {
-        private Display display;
-
-        private PanLeftAction( Display display )
-        {
-            super( "Pan Left" );
-            this.display = display;
-        }
-
-        public void actionPerformed( ActionEvent e )
-        {
-            AffineTransform at = display.getTransform();
-            display.pan( at.getShearX() - panMovement, at.getShearY() );
-            display.repaint();
-        }
-    }
-
-    private class PanRightAction extends AbstractAction
-    {
-        private Display display;
-
-        private PanRightAction( Display display )
-        {
-            super( "Pan Right" );
-            this.display = display;
-        }
-
-        public void actionPerformed( ActionEvent e )
-        {
-            AffineTransform at = display.getTransform();
-            display.pan( at.getShearX() + panMovement, at.getShearY() );
-            display.repaint();
-        }
-    }
-
-    private class PanUpAction extends AbstractAction
-    {
-        private Display display;
-
-        private PanUpAction( Display display )
-        {
-            super( "Pan Up" );
-            this.display = display;
-        }
-
-        public void actionPerformed( ActionEvent e )
-        {
-            AffineTransform at = display.getTransform();
-            display.pan( at.getShearX(), at.getShearY() - panMovement );
-            display.repaint();
-        }
-    }
-
-    private class PanDownAction extends AbstractAction
-    {
-        private Display display;
-
-        private PanDownAction( Display display )
-        {
-            super( "Pan Down" );
-            this.display = display;
-        }
-
-        public void actionPerformed( ActionEvent e )
-        {
-            AffineTransform at = display.getTransform();
-            display.pan( at.getShearX(), at.getShearY() + panMovement );
-            display.repaint();
-        }
     }
 
     private class DoubleClickZoomControl extends ControlAdapter
@@ -617,7 +561,7 @@ public class ApplicationPanel extends JPanel
                 int x = e.getX(), y = e.getY();
                 int dx = x - m_xDown, dy = y - m_yDown;
 
-                pan( dx, dy );
+                pan( dx, dy, false );
 
                 m_xDown = x;
                 m_yDown = y;
