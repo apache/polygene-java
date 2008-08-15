@@ -15,4 +15,4 @@ Import-Package: org.ops4j.pax.swissbox.core, \
                 org.qi4j.structure, \
                 org.qi4j.util
 
-Export-Package: org.qi4j.bootstrap
+Export-Package: org.qi4j.bootstrap;version=${pom.version}
