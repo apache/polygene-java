@@ -1,0 +1,91 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <groupId>org.qi4j</groupId>
+    <artifactId>qi4j</artifactId>
+    <version>0.4-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.qi4j.extension</groupId>
+  <artifactId>qi4j-ext-camel</artifactId>
+  <name>Qi4j Extension - Apache Camel integration</name>
+  <version>0.4-SNAPSHOT</version>
+  <packaging>bundle</packaging>
+
+  <properties>
+    <version.restlet>1.1-M4</version.restlet>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.qi4j.core</groupId>
+      <artifactId>qi4j-core-api</artifactId>
+      <version>0.4-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.qi4j.core</groupId>
+      <artifactId>qi4j-core-spi</artifactId>
+      <version>0.4-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.qi4j.core</groupId>
+      <artifactId>qi4j-core-bootstrap</artifactId>
+      <version>0.4-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.qi4j.core</groupId>
+      <artifactId>qi4j-core-runtime</artifactId>
+      <version>0.4-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.qi4j.library</groupId>
+      <artifactId>qi4j-lib-constraints</artifactId>
+      <version>0.4-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.qi4j.core</groupId>
+      <artifactId>qi4j-core-testsupport</artifactId>
+      <version>0.4-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- Camel dependencies -->
+    <dependency>
+      <groupId>org.apache.camel</groupId>
+      <artifactId>camel-core</artifactId>
+      <version>1.4.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.camel</groupId>
+      <artifactId>camel-mail</artifactId>
+      <version>1.4.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.mail</groupId>
+      <artifactId>mail</artifactId>
+      <version>1.4</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  <repositories>
+    <repository>
+      <id>apache.snapshots</id>
+      <name>Apache Repository</name>
+      <url>http://people.apache.org/repo/m2-ibiblio-rsync-repository/</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>ibiblio</id>
+      <name>Ibiblio</name>
+      <url>http://mirrors.ibiblio.org/pub/mirrors/maven2/</url>
+    </repository>
+  </repositories>
+</project>
