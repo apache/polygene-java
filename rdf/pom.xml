@@ -67,27 +67,26 @@
       <version>${version.openrdf}</version>
       <type>pom</type>
     </dependency>
-    <!--    <dependency>
-          <groupId>org.openrdf.sesame</groupId>
-          <artifactId>sesame-sail-nativerdf</artifactId>
-          <version>${version.openrdf}</version>
-        </dependency>
-        <dependency>
-          <groupId>org.openrdf.sesame</groupId>
-          <artifactId>sesame-repository-http</artifactId>
-          <version>${version.openrdf}</version>
-        </dependency>
-        <dependency>
-          <groupId>org.openrdf.sesame</groupId>
-          <artifactId>sesame-repository-dataset</artifactId>
-          <version>${version.openrdf}</version>
-        </dependency>
-        <dependency>
-          <groupId>org.openrdf.sesame</groupId>
-          <artifactId>sesame-rio-rdfxml</artifactId>
-          <version>${version.openrdf}</version>
-        </dependency>
-    -->
+    <dependency>
+      <groupId>org.openrdf.sesame</groupId>
+      <artifactId>sesame-sail-nativerdf</artifactId>
+      <version>${version.openrdf}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.openrdf.sesame</groupId>
+      <artifactId>sesame-repository-http</artifactId>
+      <version>${version.openrdf}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.openrdf.sesame</groupId>
+      <artifactId>sesame-repository-dataset</artifactId>
+      <version>${version.openrdf}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.openrdf.sesame</groupId>
+      <artifactId>sesame-rio-rdfxml</artifactId>
+      <version>${version.openrdf}</version>
+    </dependency>
 
     <dependency>
       <groupId>org.slf4j</groupId>

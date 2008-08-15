@@ -44,7 +44,7 @@ public class NativeRepositoryTest
     }
 
     @Test
-    public void testMemoryRepository() throws RepositoryException
+    public void testNativeRepository() throws RepositoryException
     {
         objectBuilderFactory.newObjectBuilder( NativeRepositoryTest.class ).injectTo( this );
 
