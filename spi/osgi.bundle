@@ -1,7 +1,3 @@
-Bundle-Activator:
-
-Private-Package:
-
 Import-Package: org.qi4j, \
                 org.qi4j.composite, \
                 org.qi4j.entity, \
@@ -14,15 +10,15 @@ Import-Package: org.qi4j, \
                 org.qi4j.structure, \
                 org.qi4j.util
 
-Export-Package: org.qi4j.spi, \
-                org.qi4j.spi.composite, \
-                org.qi4j.spi.entity, \
-                org.qi4j.spi.entity.association, \
-                org.qi4j.spi.object, \
-                org.qi4j.spi.property, \
-                org.qi4j.spi.query, \
-                org.qi4j.spi.serialization, \
-                org.qi4j.spi.service, \
-                org.qi4j.spi.service.provider, \
-                org.qi4j.spi.structure, \
-                org.qi4j.entity.memory
+Export-Package: org.qi4j.spi;version=${pom.version}, \
+                org.qi4j.spi.composite;version=${pom.version}, \
+                org.qi4j.spi.entity;version=${pom.version}, \
+                org.qi4j.spi.entity.association;version=${pom.version}, \
+                org.qi4j.spi.object;version=${pom.version}, \
+                org.qi4j.spi.property;version=${pom.version}, \
+                org.qi4j.spi.query;version=${pom.version}, \
+                org.qi4j.spi.serialization;version=${pom.version}, \
+                org.qi4j.spi.service;version=${pom.version}, \
+                org.qi4j.spi.service.provider;version=${pom.version}, \
+                org.qi4j.spi.structure;version=${pom.version}, \
+                org.qi4j.entity.memory;version=${pom.version}
