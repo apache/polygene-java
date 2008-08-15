@@ -27,6 +27,7 @@ import java.awt.FlowLayout;
 import java.awt.Color;
 import java.awt.Point;
 import java.awt.Graphics2D;
+import java.awt.Cursor;
 import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.AbstractAction;
@@ -50,6 +51,7 @@ import prefuse.data.Graph;
 import prefuse.data.Node;
 import prefuse.render.DefaultRendererFactory;
 import prefuse.util.ColorLib;
+import prefuse.util.ui.UILib;
 import prefuse.util.display.DisplayLib;
 import prefuse.util.display.PaintListener;
 import prefuse.visual.EdgeItem;
@@ -169,7 +171,7 @@ public class ApplicationPanel extends JPanel
             }
         } );
 
-        display.addControlListener( new PanControl( true ) );
+        display.addControlListener( new MousePanControl( true ) );
         display.addControlListener( new MouseWheelZoomControl() );
         display.addControlListener( new DoubleClickZoomControl() );
         display.addControlListener( compositeSelectionControl );
@@ -326,6 +328,45 @@ public class ApplicationPanel extends JPanel
                 display.repaint();
             }
         }
+    }
+
+    private void pan( double x, double y )
+    {
+        Rectangle2D bounds = applicationNodeItem.getBounds();
+        AffineTransform at = display.getTransform();
+
+        double scaledLeftX = bounds.getX() * at.getScaleX();    // Left bound of Bounding Box
+        int scaledRightX = (int) ( bounds.getMaxX() * at.getScaleX() );    // Right bound of BB
+
+        int scaledTopY = (int) ( bounds.getY() * at.getScaleY() );    // Top bound of BB
+        int scaledBottom = (int) ( bounds.getMaxY() * at.getScaleY() );    // Bottom bound of BB
+
+        // Instead of setting values to 0, we can calculate the new value to satisify both conditions,
+        // but this works for now
+        boolean canPanLeft = scaledLeftX + at.getTranslateX() + x <= 0;
+        if( !canPanLeft )
+        {
+            x = Math.min( x, 0 );
+        }
+        boolean canPanRight = scaledRightX + at.getTranslateX() + x >= display.getWidth();
+        if( !canPanRight )
+        {
+            x = Math.max( x, 0 );
+        }
+        boolean canPanUp = scaledTopY + at.getTranslateY() + y <= 0;
+        if( !canPanUp )
+        {
+            y = Math.min( y, 0 );
+        }
+        boolean canPanDown = scaledBottom + at.getTranslateY() + y >= display.getHeight();
+        if( !canPanDown )
+        {
+            y = Math.max( y, 0 );
+        }
+
+        display.pan( x, y );
+        display.repaint();
+
     }
 
     private class ZoomToFitAction extends AbstractAction
@@ -549,4 +590,48 @@ public class ApplicationPanel extends JPanel
         }
     }
 
+    private class MousePanControl extends PanControl
+    {
+
+        private int m_xDown, m_yDown;
+
+        public MousePanControl( boolean b )
+        {
+            super( b );
+        }
+
+        public void mousePressed( MouseEvent e )
+        {
+            if( UILib.isButtonPressed( e, LEFT_MOUSE_BUTTON ) )
+            {
+                e.getComponent().setCursor( Cursor.getPredefinedCursor( Cursor.MOVE_CURSOR ) );
+                m_xDown = e.getX();
+                m_yDown = e.getY();
+            }
+        }
+
+        public void mouseDragged( MouseEvent e )
+        {
+            if( UILib.isButtonPressed( e, LEFT_MOUSE_BUTTON ) )
+            {
+                int x = e.getX(), y = e.getY();
+                int dx = x - m_xDown, dy = y - m_yDown;
+
+                pan( dx, dy );
+
+                m_xDown = x;
+                m_yDown = y;
+            }
+        }
+
+        public void mouseReleased( MouseEvent e )
+        {
+            if( UILib.isButtonPressed( e, LEFT_MOUSE_BUTTON ) )
+            {
+                e.getComponent().setCursor( Cursor.getDefaultCursor() );
+                m_xDown = -1;
+                m_yDown = -1;
+            }
+        }
+    }
 }
