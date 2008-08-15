@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Niclas Hedhman. All Rights Reserved.
+ * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -11,14 +11,35 @@
  * limitations under the License.
  *
  */
-package org.qi4j.entity.index.rdf.natiive;
 
-import org.openrdf.repository.Repository;
-import org.qi4j.service.ServiceComposite;
+package org.qi4j.rest.client;
+
 import org.qi4j.service.Activatable;
-import org.qi4j.composite.Mixins;
+import org.qi4j.service.Wrapper;
+import org.restlet.Client;
+import org.restlet.data.Protocol;
 
-@Mixins( { NativeRdfRepositoryMixin.class} )
-public interface NativeRdfRepositoryService extends Repository, ServiceComposite, Activatable
+/**
+ * Wrapper for the Restlet client
+ */
+public class RestletClientMixin
+    implements Wrapper<Client>, Activatable
 {
+    Client client;
+
+    public Client get()
+    {
+        return client;
+    }
+
+    public void activate() throws Exception
+    {
+        client = new Client( Protocol.HTTP );
+        client.start();
+    }
+
+    public void passivate() throws Exception
+    {
+        client.stop();
+    }
 }

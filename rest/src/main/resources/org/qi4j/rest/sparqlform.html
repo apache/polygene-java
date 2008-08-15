@@ -1,0 +1,18 @@
+<html>
+<head>
+    <title>
+        SPARQL Query
+    </title>
+</head>
+<body>
+<form method="GET" action="">
+    <label>Query:</label><br/>
+    <textarea rows="10" cols="60" name="query">PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        SELECT ?s ?p ?o
+        WHERE { ?s ?p ?o }
+    </textarea> <br/>
+    <input type="submit" value="Query"/>
+</form>
+</body>
+</html>

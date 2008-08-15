@@ -18,9 +18,10 @@ import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entity.index.rdf.RdfQueryService;
-import org.qi4j.entity.index.rdf.memory.MemoryRepositoryService;
 import org.qi4j.entity.memory.IndexedMemoryEntityStoreService;
+import org.qi4j.library.rdf.repository.MemoryRepositoryService;
 import org.qi4j.spi.entity.UuidIdentityGeneratorService;
+import org.qi4j.structure.Visibility;
 import static org.qi4j.structure.Visibility.application;
 
 /**
@@ -36,7 +37,7 @@ public class DomainAssembler
             UuidIdentityGeneratorService.class,
             RdfQueryService.class
         ).visibleIn( application );
-        module.addServices( MemoryRepositoryService.class ).identifiedBy( "rdf-indexing" );
+        module.addServices( MemoryRepositoryService.class ).identifiedBy( "rdf-indexing" ).visibleIn( Visibility.layer );
 
         module.addEntities( TestEntity.class ).visibleIn( application );
         module.addServices( DummyDataService.class ).instantiateOnStartup();

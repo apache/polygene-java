@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Niclas Hedhman. All Rights Reserved.
+ * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -11,14 +11,18 @@
  * limitations under the License.
  *
  */
-package org.qi4j.entity.index.rdf.natiive;
 
-import org.qi4j.entity.EntityComposite;
-import org.qi4j.property.Property;
+package org.qi4j.rest.client;
 
-public interface NativeRdfConfiguration extends EntityComposite
+import org.qi4j.composite.Mixins;
+import org.qi4j.service.ServiceComposite;
+import org.qi4j.spi.query.EntityFinder;
+
+/**
+ * TODO
+ */
+@Mixins( SPARQLEntityFinderMixin.class )
+public interface SPARQLEntityFinderService
+    extends EntityFinder, ServiceComposite
 {
-    Property<String> tripleIndexes();
-    Property<String> dataDirectory();
-    Property<Boolean> forceSync();
 }

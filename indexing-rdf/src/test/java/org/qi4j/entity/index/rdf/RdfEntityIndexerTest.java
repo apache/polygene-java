@@ -22,8 +22,8 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
 import org.qi4j.entity.UnitOfWorkCompletionException;
-import org.qi4j.entity.index.rdf.memory.MemoryRepositoryService;
 import org.qi4j.entity.memory.IndexedMemoryEntityStoreService;
+import org.qi4j.library.rdf.repository.MemoryRepositoryService;
 import org.qi4j.spi.entity.UuidIdentityGeneratorService;
 
 public class RdfEntityIndexerTest

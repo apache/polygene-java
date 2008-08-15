@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Niclas Hedhman. All Rights Reserved.
+ * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -11,14 +11,20 @@
  * limitations under the License.
  *
  */
-package org.qi4j.entity.index.rdf.memory;
 
-import org.openrdf.repository.Repository;
+package org.qi4j.rest.client;
+
 import org.qi4j.composite.Mixins;
-import org.qi4j.service.ServiceComposite;
 import org.qi4j.service.Activatable;
+import org.qi4j.service.ServiceComposite;
+import org.qi4j.service.Wrapper;
+import org.restlet.Client;
 
-@Mixins( MemoryRepositoryMixin.class )
-public interface MemoryRepositoryService extends Repository, ServiceComposite, Activatable
+/**
+ * TODO
+ */
+@Mixins( RestletClientMixin.class )
+public interface RestletClientService
+    extends Wrapper<Client>, ServiceComposite, Activatable
 {
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2008, Niclas Hedhman. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -11,49 +11,34 @@
  * limitations under the License.
  *
  */
+package org.qi4j.rest.type;
 
-package org.qi4j.rest;
-
-import java.io.IOException;
-import java.io.OutputStream;
-import org.qi4j.entity.index.rdf.RdfExport;
-import org.qi4j.injection.scope.Service;
 import org.qi4j.injection.scope.Uses;
 import org.restlet.Context;
 import org.restlet.data.MediaType;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
-import org.restlet.resource.OutputRepresentation;
 import org.restlet.resource.Representation;
 import org.restlet.resource.Resource;
 import org.restlet.resource.ResourceException;
+import org.restlet.resource.StringRepresentation;
 import org.restlet.resource.Variant;
 
-/**
- * Show RDF index
- */
-public class IndexResource
-    extends Resource
+public class EntityTypesResource extends Resource
 {
-    @Service RdfExport export;
-
-    public IndexResource( @Uses Context context, @Uses Request request, @Uses Response response )
-        throws ClassNotFoundException
+    public EntityTypesResource( @Uses Context context, @Uses Request request, @Uses Response response )
     {
         super( context, request, response );
 
-        getVariants().add( new Variant( MediaType.APPLICATION_RDF_XML ) );
+        getVariants().add( new Variant( MediaType.TEXT_PLAIN ) );
     }
 
-    @Override @SuppressWarnings( "unused" )
+    @Override
     public Representation represent( Variant variant ) throws ResourceException
     {
-        return new OutputRepresentation( MediaType.APPLICATION_RDF_XML )
-        {
-            public void write( OutputStream outputStream ) throws IOException
-            {
-                export.toRDF( outputStream );
-            }
-        };
+        Representation representation = new StringRepresentation(
+            "hello, world", MediaType.TEXT_PLAIN );
+        return representation;
     }
+
 }

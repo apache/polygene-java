@@ -10,8 +10,6 @@
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/resources" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/target/classes" />
-      <excludeFolder url="file://$MODULE_DIR$/target/neo" />
-      <excludeFolder url="file://$MODULE_DIR$/target/surefire-reports" />
       <excludeFolder url="file://$MODULE_DIR$/target/test-classes" />
     </content>
     <orderEntry type="inheritedJdk" />
@@ -30,7 +28,7 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
-      <library name="org.neo4j:index-util:0.4-SNAPSHOT">
+      <library name="org.neo4j:index-util:0.4-20080530.151342-13">
         <CLASSES>
           <root url="jar://$M2_REPO$/org/neo4j/index-util/0.4-SNAPSHOT/index-util-0.4-SNAPSHOT.jar!/" />
         </CLASSES>
@@ -43,7 +41,7 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
-      <library name="org.neo4j:neo:1.0-rc1-SNAPSHOT">
+      <library name="org.neo4j:neo:1.0-rc1-20080612.151156-35">
         <CLASSES>
           <root url="jar://$M2_REPO$/org/neo4j/neo/1.0-rc1-SNAPSHOT/neo-1.0-rc1-SNAPSHOT.jar!/" />
         </CLASSES>
@@ -69,7 +67,7 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
-      <library name="org.neo4j:shell:1.0-rc1-SNAPSHOT">
+      <library name="org.neo4j:shell:1.0-rc1-20080516.100216-10">
         <CLASSES>
           <root url="jar://$M2_REPO$/org/neo4j/shell/1.0-rc1-SNAPSHOT/shell-1.0-rc1-SNAPSHOT.jar!/" />
         </CLASSES>
@@ -97,8 +95,8 @@
     <orderEntry type="module" module-name="qi4j-core-bootstrap" exported="" />
     <orderEntry type="module" module-name="qi4j-core-api" exported="" />
     <orderEntry type="module" module-name="qi4j-core-spi" exported="" />
-    <orderEntry type="module" module-name="qi4j-core-testsupport" />
-    <orderEntry type="module" module-name="qi4j-core-runtime" />
+    <orderEntry type="module" module-name="qi4j-core-testsupport" exported="" />
+    <orderEntry type="module" module-name="qi4j-core-runtime" exported="" />
     <orderEntry type="module-library">
       <library name="cglib:cglib-nodep:2.1_3">
         <CLASSES>

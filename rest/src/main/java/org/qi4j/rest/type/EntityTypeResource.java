@@ -11,7 +11,7 @@
  * limitations under the License.
  *
  */
-package org.qi4j.rest;
+package org.qi4j.rest.type;
 
 import java.io.StringWriter;
 import java.util.Map;

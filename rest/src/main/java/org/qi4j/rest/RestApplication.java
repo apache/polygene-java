@@ -26,11 +26,18 @@ import org.qi4j.injection.scope.Structure;
 import org.qi4j.injection.scope.Uses;
 import org.qi4j.object.ObjectBuilder;
 import org.qi4j.object.ObjectBuilderFactory;
+import org.qi4j.rest.entity.AllEntitiesResource;
+import org.qi4j.rest.entity.EntitiesResource;
+import org.qi4j.rest.entity.EntityResource;
+import org.qi4j.rest.index.IndexResource;
+import org.qi4j.rest.type.EntityTypeResource;
+import org.qi4j.rest.type.EntityTypesResource;
 import org.restlet.Application;
 import org.restlet.Context;
 import org.restlet.Finder;
 import org.restlet.Restlet;
 import org.restlet.Router;
+import org.restlet.data.MediaType;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
@@ -38,12 +45,16 @@ import org.restlet.resource.Resource;
 
 public class RestApplication extends Application
 {
+    public static final MediaType APPLICATION_SPARQL_JSON = new MediaType( "application/sparql-results+json", "SPARQL JSON" );
+
     @Structure ObjectBuilderFactory factory;
     @Structure UnitOfWorkFactory unitOfWorkFactory;
 
     public RestApplication( @Uses Context parentContext )
     {
         super( parentContext );
+
+        getMetadataService().addExtension( "srj", APPLICATION_SPARQL_JSON );
     }
 
     @Override
@@ -91,7 +102,8 @@ public class RestApplication extends Application
         router.attach( "/entity/{type}", createFinder( EntitiesResource.class ) );
         router.attach( "/entity/{type}/{identity}", createFinder( EntityResource.class ) );
 
-        router.attach( "/index", createFinder( IndexResource.class ) );
+        router.attach( "/query", createFinder( SPARQLResource.class ) );
+        router.attach( "/query/index", createFinder( IndexResource.class ) );
 
         // Add filters
         return new ExtensionMediaTypeFilter( getContext(), router );

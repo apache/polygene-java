@@ -30,11 +30,18 @@ import org.qi4j.structure.Visibility;
  */
 public class Main
 {
+    private Application application;
+
     public static void main( String[] args )
         throws Exception
     {
+        new Main();
+    }
+
+    public Main() throws Exception
+    {
         Energy4Java qi4j = new Energy4Java();
-        Application app = qi4j.newApplication( new Assembler[][][]
+        application = qi4j.newApplication( new Assembler[][][]
             {
                 // UI
                 {
@@ -74,7 +81,12 @@ public class Main
                     }
                 }
             } );
-        app.activate();
+        application.activate();
+    }
+
+    public Application application()
+    {
+        return application;
     }
 }
 

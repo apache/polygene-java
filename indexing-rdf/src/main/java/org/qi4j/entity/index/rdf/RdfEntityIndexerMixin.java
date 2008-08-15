@@ -32,8 +32,8 @@ import org.openrdf.repository.RepositoryException;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.ConstructionException;
 import org.qi4j.composite.Initializable;
-import org.qi4j.entity.index.rdf.natiive.NativeRdfConfiguration;
 import org.qi4j.injection.scope.Service;
+import org.qi4j.library.rdf.repository.NativeConfiguration;
 import org.qi4j.spi.entity.AssociationType;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityType;
@@ -211,7 +211,7 @@ public class RdfEntityIndexerMixin
         if( entityStateIterator.hasNext() )
         {
             String compositeTypeName = entityStateIterator.next().qualifiedIdentity().type();
-            if( NativeRdfConfiguration.class.getName().equals( compositeTypeName ) )
+            if( NativeConfiguration.class.getName().equals( compositeTypeName ) )
             {
                 return true;
             }

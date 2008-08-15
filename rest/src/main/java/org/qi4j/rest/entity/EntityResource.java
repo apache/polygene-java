@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.rest;
+package org.qi4j.rest.entity;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -37,6 +37,7 @@ import org.qi4j.library.rdf.serializer.RdfXmlSerializer;
 import org.qi4j.property.GenericPropertyInfo;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.entity.AssociationType;
+import org.qi4j.spi.entity.ConcurrentEntityStateModificationException;
 import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
@@ -375,7 +376,18 @@ public class EntityResource extends Resource
             throw new ResourceException( Status.SERVER_ERROR_INTERNAL, e.getMessage() );
         }
 
-        entityStore.prepare( Collections.EMPTY_LIST, Collections.singleton( entity ), Collections.EMPTY_LIST ).commit();
+        try
+        {
+            entityStore.prepare( Collections.EMPTY_LIST, Collections.singleton( entity ), Collections.EMPTY_LIST ).commit();
+        }
+        catch( ConcurrentEntityStateModificationException e )
+        {
+            throw new ResourceException( Status.CLIENT_ERROR_CONFLICT );
+        }
+        catch( EntityNotFoundException e )
+        {
+            throw new ResourceException( Status.CLIENT_ERROR_GONE );
+        }
 
         getResponse().setStatus( Status.SUCCESS_RESET_CONTENT );
     }

@@ -14,6 +14,7 @@
 
   <properties>
     <version.restlet>1.1-M4</version.restlet>
+    <version.openrdf>2.1.3</version.openrdf>
   </properties>
 
   <dependencies>
@@ -46,6 +47,16 @@
       <groupId>com.noelios.restlet</groupId>
       <artifactId>com.noelios.restlet.ext.servlet</artifactId>
       <version>${version.restlet}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.openrdf.sesame</groupId>
+      <artifactId>sesame-rio-rdfxml</artifactId>
+      <version>${version.openrdf}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <!-- Test scope -->

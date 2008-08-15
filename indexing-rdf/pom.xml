@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
@@ -45,38 +46,12 @@
       <version>0.4-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
-    <!-- Implementation dependencies -->
     <dependency>
-      <groupId>org.openrdf.sesame</groupId>
-      <artifactId>sesame-runtime</artifactId>
-      <version>${version.openrdf}</version>
-      <type>pom</type>
+      <groupId>org.qi4j.library</groupId>
+      <artifactId>qi4j-lib-rdf</artifactId>
+      <version>0.4-SNAPSHOT</version>
     </dependency>
-    <dependency>
-      <groupId>org.openrdf.sesame</groupId>
-      <artifactId>sesame-sail-nativerdf</artifactId>
-      <version>${version.openrdf}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.openrdf.sesame</groupId>
-      <artifactId>sesame-repository-http</artifactId>
-      <version>${version.openrdf}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.openrdf.sesame</groupId>
-      <artifactId>sesame-repository-dataset</artifactId>
-      <version>${version.openrdf}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.openrdf.sesame</groupId>
-      <artifactId>sesame-rio-rdfxml</artifactId>
-      <version>${version.openrdf}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-simple</artifactId>
-      <scope>provided</scope>
-    </dependency>
+
     <!-- Test dependencies -->
     <dependency>
       <groupId>org.qi4j.core</groupId>

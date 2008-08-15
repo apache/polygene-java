@@ -10,7 +10,7 @@ Import-Package: \
  org.qi4j.*, \
  org.xml.*, \
  org.w3c.dom
-
+ 
 Embed-Dependency: \
  *;scope=compile|runtime;groupId=!org.slf4j*
 

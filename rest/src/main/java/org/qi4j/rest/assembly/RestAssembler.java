@@ -16,14 +16,15 @@ package org.qi4j.rest.assembly;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.rest.AllEntitiesResource;
-import org.qi4j.rest.EntitiesResource;
-import org.qi4j.rest.EntityResource;
-import org.qi4j.rest.EntityTypeResource;
-import org.qi4j.rest.EntityTypesResource;
-import org.qi4j.rest.IndexResource;
 import org.qi4j.rest.Qi4jEntityFinder;
 import org.qi4j.rest.RestApplication;
+import org.qi4j.rest.SPARQLResource;
+import org.qi4j.rest.entity.AllEntitiesResource;
+import org.qi4j.rest.entity.EntitiesResource;
+import org.qi4j.rest.entity.EntityResource;
+import org.qi4j.rest.index.IndexResource;
+import org.qi4j.rest.type.EntityTypeResource;
+import org.qi4j.rest.type.EntityTypesResource;
 import org.qi4j.structure.Visibility;
 
 public class RestAssembler
@@ -39,6 +40,7 @@ public class RestAssembler
                            EntityResource.class,
                            EntityTypesResource.class,
                            EntityTypeResource.class,
-                           IndexResource.class );
+                           IndexResource.class,
+                           SPARQLResource.class );
     }
 }

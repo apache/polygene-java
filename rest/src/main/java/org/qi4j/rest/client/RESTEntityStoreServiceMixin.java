@@ -28,6 +28,7 @@ import org.qi4j.injection.scope.This;
 import org.qi4j.library.rdf.entity.EntityParser;
 import org.qi4j.service.Activatable;
 import org.qi4j.service.Configuration;
+import org.qi4j.service.Wrapper;
 import org.qi4j.spi.entity.AbstractEntityStoreMixin;
 import org.qi4j.spi.entity.DefaultEntityState;
 import org.qi4j.spi.entity.EntityState;
@@ -37,7 +38,6 @@ import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.StateCommitter;
 import org.restlet.Client;
-import org.restlet.data.Protocol;
 import org.restlet.data.Reference;
 import org.restlet.data.Response;
 
@@ -51,13 +51,12 @@ public class RESTEntityStoreServiceMixin
     @Service EntityParser parser;
     @This Configuration<RESTEntityStoreConfiguration> config;
 
-    private Client client;
+    @Service private Wrapper<Client> client;
     private Reference baseRef;
 
     public void activate() throws Exception
     {
-        client = new Client( Protocol.HTTP );
-        baseRef = new Reference( config.configuration().host().get() + "/entity/" );
+        baseRef = new Reference( config.configuration().host().get() + "/qi4j/entity/" );
     }
 
     public void passivate() throws Exception
@@ -77,7 +76,7 @@ public class RESTEntityStoreServiceMixin
         {
             String uri = anIdentity.type() + "/" + anIdentity.identity() + ".rdf";
             Reference ref = new Reference( baseRef.toString() + uri );
-            Response response = client.get( ref );
+            Response response = client.get().get( ref );
             if( response.getStatus().isSuccess() )
             {
                 if( response.isEntityAvailable() )

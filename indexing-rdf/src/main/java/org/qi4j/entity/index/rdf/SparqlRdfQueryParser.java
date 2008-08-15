@@ -46,7 +46,7 @@ import org.qi4j.util.ClassUtil;
 /**
  * TODO Add JavaDoc
  */
-class SparqlRdfQueryParser
+public class SparqlRdfQueryParser
     implements RdfQueryParser
 {
     private int namespaceCounter = 0;
@@ -61,7 +61,7 @@ class SparqlRdfQueryParser
     /**
      * Constructor.
      */
-    SparqlRdfQueryParser()
+    public SparqlRdfQueryParser()
     {
         namespaces = new HashMap<String, String>();
         addNamespace( "rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#" );

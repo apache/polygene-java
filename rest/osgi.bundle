@@ -1,6 +1,9 @@
 Export-Package: org.qi4j.rest;version="${pom.version}", \
                 org.qi4j.rest.assembly;version="${pom.version}", \
-                org.qi4j.rest.client;version="${pom.version}"
+                org.qi4j.rest.client;version="${pom.version}", \
+                org.qi4j.rest.entity;version="${pom.version}", \
+                org.qi4j.rest.index;version="${pom.version}", \
+                org.qi4j.rest.type;version="${pom.version}"
 
 Import-Package: com.noelios.restlet.ext.servlet, \
                 javax.servlet, \
@@ -13,7 +16,20 @@ Import-Package: com.noelios.restlet.ext.servlet, \
                 org.restlet.resource, \
                 org.restlet.service, \
                 org.restlet.util, \
-                org.w3c.dom
+                org.w3c.dom, \
+                org.openrdf.model, \
+                org.openrdf.query, \
+                org.openrdf.query.impl, \
+                org.openrdf.query.resultio, \
+                org.openrdf.query.resultio.sparqljson, \
+                org.openrdf.query.resultio.sparqlxml, \
+                org.openrdf.repository, \
+                org.xml.sax, \
+                org.xml.sax.helpers, \
+                info.aduna.xml, \
+                org.openrdf.http.protocol, \
+                info.aduna.net, \
+                org.openrdf.model.vocabulary
 
 Embed-Dependency: \
     *;scope=compile|runtime;groupId=!org.qi4j.*|org.restlet|com.noelios.*

@@ -11,7 +11,7 @@
  * limitations under the License.
  *
  */
-package org.qi4j.rest;
+package org.qi4j.rest.entity;
 
 import java.io.IOException;
 import java.io.PrintWriter;
