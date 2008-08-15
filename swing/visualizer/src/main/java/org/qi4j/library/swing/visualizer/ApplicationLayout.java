@@ -134,7 +134,8 @@ public class ApplicationLayout extends TreeLayout
         }
 
         width = right - left;
-        Rectangle suggestedBounds = new Rectangle( left, y, width, 0 );
+        // Use a height of 1 instead of 0 for correct operation of Rectangle2D.intersects call later
+        Rectangle suggestedBounds = new Rectangle( left, y, width, 1 );
 
         // If there are other layers on this level, and the calculated suggested bounds intersect with
         // any layer's bounds, return the default bounds
