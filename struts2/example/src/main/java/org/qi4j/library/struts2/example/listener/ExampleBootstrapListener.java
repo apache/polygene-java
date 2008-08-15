@@ -20,8 +20,8 @@ import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entity.index.rdf.RdfQueryService;
-import org.qi4j.entity.index.rdf.memory.MemoryRepositoryService;
 import org.qi4j.entity.memory.IndexedMemoryEntityStoreService;
+import org.qi4j.library.rdf.repository.MemoryRepositoryService;
 import org.qi4j.library.struts2.ActionConfiguration;
 import org.qi4j.library.struts2.Qi4jApplicationBootstrapListener;
 import org.qi4j.library.struts2.bootstrap.Struts2PluginAssembler;
@@ -51,7 +51,7 @@ public class ExampleBootstrapListener extends Qi4jApplicationBootstrapListener
                 ActionConfiguration actionConfiguration = new ActionConfiguration();
                 actionConfiguration.addObjects( HelloWorldAction.class, IndexAction.class );
                 actionConfiguration.addComposites( AddItem.class, EditItem.class, ListItems.class );
-                
+
                 aModule.addAssembler( new Struts2PluginAssembler( actionConfiguration ) );
 
                 aModule.addEntities( Item.class );

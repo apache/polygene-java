@@ -50,10 +50,7 @@
       <artifactId>qi4j-lib-constraints</artifactId>
       <version>0.4-SNAPSHOT</version>
     </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-    </dependency>
+
     <dependency>
       <groupId>org.openrdf.sesame</groupId>
       <artifactId>sesame-model</artifactId>
@@ -66,8 +63,41 @@
     </dependency>
     <dependency>
       <groupId>org.openrdf.sesame</groupId>
-      <artifactId>sesame-rio-rdfxml</artifactId>
+      <artifactId>sesame-runtime</artifactId>
       <version>${version.openrdf}</version>
+      <type>pom</type>
+    </dependency>
+    <!--    <dependency>
+          <groupId>org.openrdf.sesame</groupId>
+          <artifactId>sesame-sail-nativerdf</artifactId>
+          <version>${version.openrdf}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.openrdf.sesame</groupId>
+          <artifactId>sesame-repository-http</artifactId>
+          <version>${version.openrdf}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.openrdf.sesame</groupId>
+          <artifactId>sesame-repository-dataset</artifactId>
+          <version>${version.openrdf}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.openrdf.sesame</groupId>
+          <artifactId>sesame-rio-rdfxml</artifactId>
+          <version>${version.openrdf}</version>
+        </dependency>
+    -->
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 
