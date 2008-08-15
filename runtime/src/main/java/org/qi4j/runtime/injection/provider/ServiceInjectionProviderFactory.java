@@ -57,7 +57,7 @@ public final class ServiceInjectionProviderFactory
         else
         {
             // @Service MyService service
-            Class serviceType = dependencyModel.injectionClass();
+            Class serviceType = dependencyModel.rawInjectionType();
             return new ServiceProvider( serviceType );
         }
     }
