@@ -77,6 +77,18 @@
             <attribute name="method" value="5" />
             <attribute name="URI" value="/WEB-INF/lib/qi4j-ext-indexing-rdf-0.4-SNAPSHOT.jar" />
           </containerElement>
+          <containerElement type="module" name="qi4j-lib-rdf">
+            <attribute name="method" value="5" />
+            <attribute name="URI" value="/WEB-INF/lib/qi4j-lib-rdf-0.4-SNAPSHOT.jar" />
+          </containerElement>
+          <containerElement type="module" name="qi4j-lib-constraints">
+            <attribute name="method" value="5" />
+            <attribute name="URI" value="/WEB-INF/lib/qi4j-lib-constraints-0.4-SNAPSHOT.jar" />
+          </containerElement>
+          <containerElement type="module" name="qi4j-core-testsupport">
+            <attribute name="method" value="5" />
+            <attribute name="URI" value="/WEB-INF/lib/qi4j-core-testsupport-0.4-SNAPSHOT.jar" />
+          </containerElement>
           <containerElement type="library" name="org.openrdf.sesame:sesame-model:2.1.3" level="module">
             <attribute name="method" value="1" />
             <attribute name="URI" value="/WEB-INF/lib/sesame-model-2.1.3.jar" />
@@ -97,9 +109,9 @@
             <attribute name="method" value="1" />
             <attribute name="URI" value="/WEB-INF/lib/aduna-commons-iteration-2.1.jar" />
           </containerElement>
-          <containerElement type="library" name="org.openrdf.sesame:sesame-query:2.1.3" level="module">
+          <containerElement type="library" name="org.openrdf.sesame:sesame-rio-n3:2.1.3" level="module">
             <attribute name="method" value="1" />
-            <attribute name="URI" value="/WEB-INF/lib/sesame-query-2.1.3.jar" />
+            <attribute name="URI" value="/WEB-INF/lib/sesame-rio-n3-2.1.3.jar" />
           </containerElement>
           <containerElement type="library" name="org.openrdf.sesame:sesame-rio-api:2.1.3" level="module">
             <attribute name="method" value="1" />
@@ -116,6 +128,18 @@
           <containerElement type="library" name="info.aduna.commons:aduna-commons-text:2.1" level="module">
             <attribute name="method" value="1" />
             <attribute name="URI" value="/WEB-INF/lib/aduna-commons-text-2.1.jar" />
+          </containerElement>
+          <containerElement type="library" name="org.openrdf.sesame:sesame-rio-turtle:2.1.3" level="module">
+            <attribute name="method" value="1" />
+            <attribute name="URI" value="/WEB-INF/lib/sesame-rio-turtle-2.1.3.jar" />
+          </containerElement>
+          <containerElement type="library" name="info.aduna.commons:aduna-commons-io:2.2" level="module">
+            <attribute name="method" value="1" />
+            <attribute name="URI" value="/WEB-INF/lib/aduna-commons-io-2.2.jar" />
+          </containerElement>
+          <containerElement type="library" name="org.openrdf.sesame:sesame-query:2.1.3" level="module">
+            <attribute name="method" value="1" />
+            <attribute name="URI" value="/WEB-INF/lib/sesame-query-2.1.3.jar" />
           </containerElement>
           <containerElement type="library" name="org.openrdf.sesame:sesame-queryalgebra-model:2.1.3" level="module">
             <attribute name="method" value="1" />
@@ -140,10 +164,6 @@
           <containerElement type="library" name="org.openrdf.sesame:sesame-queryresultio-binary:2.1.3" level="module">
             <attribute name="method" value="1" />
             <attribute name="URI" value="/WEB-INF/lib/sesame-queryresultio-binary-2.1.3.jar" />
-          </containerElement>
-          <containerElement type="library" name="info.aduna.commons:aduna-commons-io:2.2" level="module">
-            <attribute name="method" value="1" />
-            <attribute name="URI" value="/WEB-INF/lib/aduna-commons-io-2.2.jar" />
           </containerElement>
           <containerElement type="library" name="org.openrdf.sesame:sesame-queryresultio-sparqljson:2.1.3" level="module">
             <attribute name="method" value="1" />
@@ -225,14 +245,6 @@
             <attribute name="method" value="1" />
             <attribute name="URI" value="/WEB-INF/lib/sesame-repository-dataset-2.1.3.jar" />
           </containerElement>
-          <containerElement type="library" name="org.openrdf.sesame:sesame-rio-n3:2.1.3" level="module">
-            <attribute name="method" value="1" />
-            <attribute name="URI" value="/WEB-INF/lib/sesame-rio-n3-2.1.3.jar" />
-          </containerElement>
-          <containerElement type="library" name="org.openrdf.sesame:sesame-rio-turtle:2.1.3" level="module">
-            <attribute name="method" value="1" />
-            <attribute name="URI" value="/WEB-INF/lib/sesame-rio-turtle-2.1.3.jar" />
-          </containerElement>
           <containerElement type="library" name="org.openrdf.sesame:sesame-rio-rdfxml:2.1.3" level="module">
             <attribute name="method" value="1" />
             <attribute name="URI" value="/WEB-INF/lib/sesame-rio-rdfxml-2.1.3.jar" />
@@ -261,13 +273,9 @@
             <attribute name="method" value="1" />
             <attribute name="URI" value="/WEB-INF/lib/commons-pool-1.3.jar" />
           </containerElement>
-          <containerElement type="module" name="qi4j-lib-constraints">
-            <attribute name="method" value="5" />
-            <attribute name="URI" value="/WEB-INF/lib/qi4j-lib-constraints-0.4-SNAPSHOT.jar" />
-          </containerElement>
-          <containerElement type="module" name="qi4j-core-testsupport">
-            <attribute name="method" value="5" />
-            <attribute name="URI" value="/WEB-INF/lib/qi4j-core-testsupport-0.4-SNAPSHOT.jar" />
+          <containerElement type="library" name="org.slf4j:slf4j-simple:1.4.2" level="module">
+            <attribute name="method" value="1" />
+            <attribute name="URI" value="/WEB-INF/lib/slf4j-simple-1.4.2.jar" />
           </containerElement>
           <containerElement type="library" name="org.apache.struts:struts2-sitemesh-plugin:2.1.2" level="module">
             <attribute name="method" value="1" />
@@ -280,10 +288,6 @@
           <containerElement type="library" name="org.directwebremoting:dwr:2.0.3" level="module">
             <attribute name="method" value="1" />
             <attribute name="URI" value="/WEB-INF/lib/dwr-2.0.3.jar" />
-          </containerElement>
-          <containerElement type="library" name="org.slf4j:slf4j-simple:1.4.2" level="module">
-            <attribute name="method" value="1" />
-            <attribute name="URI" value="/WEB-INF/lib/slf4j-simple-1.4.2.jar" />
           </containerElement>
           <containerElement type="module" name="qi4j-struts2-example">
             <attribute name="method" value="1" />
@@ -302,6 +306,9 @@
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/resources" isTestSource="true" />
+      <excludeFolder url="file://$MODULE_DIR$/target/classes" />
+      <excludeFolder url="file://$MODULE_DIR$/target/qi4j-struts2-example" />
+      <excludeFolder url="file://$MODULE_DIR$/target/war" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
@@ -401,6 +408,19 @@
         </SOURCES>
       </library>
     </orderEntry>
+    <orderEntry type="module-library">
+      <library name="com.sun:tools:1.5.0">
+        <CLASSES>
+          <root url="jar:///usr/lib/jvm/java-6-sun-1.6.0.07/jre/../lib/tools.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar:///usr/lib/jvm/java-6-sun-1.6.0.07/jre/../lib/tools-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar:///usr/lib/jvm/java-6-sun-1.6.0.07/jre/../lib/tools-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
     <orderEntry type="module-library" exported="">
       <library name="org.apache.struts:struts2-codebehind-plugin:2.1.2">
         <CLASSES>
@@ -415,6 +435,22 @@
       </library>
     </orderEntry>
     <orderEntry type="module" module-name="qi4j-ext-indexing-rdf" exported="" />
+    <orderEntry type="module" module-name="qi4j-lib-rdf" exported="" />
+    <orderEntry type="module" module-name="qi4j-lib-constraints" exported="" />
+    <orderEntry type="module" module-name="qi4j-core-testsupport" exported="" />
+    <orderEntry type="module-library">
+      <library name="junit:junit:4.4">
+        <CLASSES>
+          <root url="jar://$M2_REPO$/junit/junit/4.4/junit-4.4.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$M2_REPO$/junit/junit/4.4/junit-4.4-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$M2_REPO$/junit/junit/4.4/junit-4.4-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
     <orderEntry type="module-library" exported="">
       <library name="org.openrdf.sesame:sesame-model:2.1.3">
         <CLASSES>
@@ -481,15 +517,15 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
-      <library name="org.openrdf.sesame:sesame-query:2.1.3">
+      <library name="org.openrdf.sesame:sesame-rio-n3:2.1.3">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-query/2.1.3/sesame-query-2.1.3.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-rio-n3/2.1.3/sesame-rio-n3-2.1.3.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-query/2.1.3/sesame-query-2.1.3-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-rio-n3/2.1.3/sesame-rio-n3-2.1.3-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-query/2.1.3/sesame-query-2.1.3-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-rio-n3/2.1.3/sesame-rio-n3-2.1.3-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
@@ -542,6 +578,45 @@
         </JAVADOC>
         <SOURCES>
           <root url="jar://$M2_REPO$/info/aduna/commons/aduna-commons-text/2.1/aduna-commons-text-2.1-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library name="org.openrdf.sesame:sesame-rio-turtle:2.1.3">
+        <CLASSES>
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-rio-turtle/2.1.3/sesame-rio-turtle-2.1.3.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-rio-turtle/2.1.3/sesame-rio-turtle-2.1.3-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-rio-turtle/2.1.3/sesame-rio-turtle-2.1.3-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library name="info.aduna.commons:aduna-commons-io:2.2">
+        <CLASSES>
+          <root url="jar://$M2_REPO$/info/aduna/commons/aduna-commons-io/2.2/aduna-commons-io-2.2.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$M2_REPO$/info/aduna/commons/aduna-commons-io/2.2/aduna-commons-io-2.2-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$M2_REPO$/info/aduna/commons/aduna-commons-io/2.2/aduna-commons-io-2.2-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library name="org.openrdf.sesame:sesame-query:2.1.3">
+        <CLASSES>
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-query/2.1.3/sesame-query-2.1.3.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-query/2.1.3/sesame-query-2.1.3-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-query/2.1.3/sesame-query-2.1.3-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
@@ -620,19 +695,6 @@
         </JAVADOC>
         <SOURCES>
           <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-queryresultio-binary/2.1.3/sesame-queryresultio-binary-2.1.3-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library name="info.aduna.commons:aduna-commons-io:2.2">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/info/aduna/commons/aduna-commons-io/2.2/aduna-commons-io-2.2.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/info/aduna/commons/aduna-commons-io/2.2/aduna-commons-io-2.2-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/info/aduna/commons/aduna-commons-io/2.2/aduna-commons-io-2.2-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
@@ -897,32 +959,6 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
-      <library name="org.openrdf.sesame:sesame-rio-n3:2.1.3">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-rio-n3/2.1.3/sesame-rio-n3-2.1.3.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-rio-n3/2.1.3/sesame-rio-n3-2.1.3-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-rio-n3/2.1.3/sesame-rio-n3-2.1.3-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library name="org.openrdf.sesame:sesame-rio-turtle:2.1.3">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-rio-turtle/2.1.3/sesame-rio-turtle-2.1.3.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-rio-turtle/2.1.3/sesame-rio-turtle-2.1.3-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-rio-turtle/2.1.3/sesame-rio-turtle-2.1.3-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
       <library name="org.openrdf.sesame:sesame-rio-rdfxml:2.1.3">
         <CLASSES>
           <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-rio-rdfxml/2.1.3/sesame-rio-rdfxml-2.1.3.jar!/" />
@@ -1013,18 +1049,16 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module" module-name="qi4j-lib-constraints" exported="" />
-    <orderEntry type="module" module-name="qi4j-core-testsupport" exported="" />
-    <orderEntry type="module-library">
-      <library name="junit:junit:4.4">
+    <orderEntry type="module-library" exported="">
+      <library name="org.slf4j:slf4j-simple:1.4.2">
         <CLASSES>
-          <root url="jar://$M2_REPO$/junit/junit/4.4/junit-4.4.jar!/" />
+          <root url="jar://$M2_REPO$/org/slf4j/slf4j-simple/1.4.2/slf4j-simple-1.4.2.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/junit/junit/4.4/junit-4.4-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/slf4j/slf4j-simple/1.4.2/slf4j-simple-1.4.2-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/junit/junit/4.4/junit-4.4-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/slf4j/slf4j-simple/1.4.2/slf4j-simple-1.4.2-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
@@ -1155,19 +1189,6 @@
         </JAVADOC>
         <SOURCES>
           <root url="jar://$M2_REPO$/org/directwebremoting/dwr/2.0.3/dwr-2.0.3-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library name="org.slf4j:slf4j-simple:1.4.2">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/org/slf4j/slf4j-simple/1.4.2/slf4j-simple-1.4.2.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/org/slf4j/slf4j-simple/1.4.2/slf4j-simple-1.4.2-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/org/slf4j/slf4j-simple/1.4.2/slf4j-simple-1.4.2-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>

@@ -33,7 +33,7 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module" module-name="qi4j-core-runtime" exported="" />
+    <orderEntry type="module" module-name="qi4j-core-runtime" />
     <orderEntry type="module-library">
       <library name="cglib:cglib-nodep:2.1_3">
         <CLASSES>
