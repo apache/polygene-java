@@ -14,37 +14,56 @@
 
 package org.qi4j.rest.client;
 
-import org.junit.Ignore;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.memory.MemoryEntityStoreService;
 import org.qi4j.library.rdf.entity.EntityParserService;
+import org.qi4j.rest.Main;
 import org.qi4j.rest.TestEntity;
+import org.qi4j.structure.Application;
 import org.qi4j.structure.Visibility;
 import org.qi4j.test.AbstractQi4jTest;
 
 /**
  * TODO
  */
-@Ignore
 public class RESTEntityStoreTest
     extends AbstractQi4jTest
 {
+    Application server;
+
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
         module.addEntities( TestEntity.class );
 
         ModuleAssembly store = module.getLayerAssembly().newModuleAssembly( "REST Store" );
         store.addEntities( RESTEntityStoreConfiguration.class );
-        store.addServices( MemoryEntityStoreService.class, EntityParserService.class );
+        store.addServices( MemoryEntityStoreService.class, EntityParserService.class, RestletClientService.class );
         store.addServices( RESTEntityStoreService.class ).visibleIn( Visibility.layer );
+    }
+
+    @Override @Before public void setUp() throws Exception
+    {
+        server = new Main().application();
+
+        super.setUp();
+    }
+
+    @Override @After public void tearDown() throws Exception
+    {
+        super.tearDown();
+
+        server.passivate();
     }
 
     @Test
     public void testEntityStore()
     {
+        // Load state
         {
             UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
             try
@@ -62,6 +81,22 @@ public class RESTEntityStoreTest
             }
         }
 
+        // Change state
+        {
+            UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
+            try
+            {
+                TestEntity entity = unitOfWork.find( "test2", TestEntity.class );
+                entity.name().set( "Foo bar" );
+                unitOfWork.complete();
+            }
+            catch( Exception e )
+            {
+                unitOfWork.discard();
+            }
+        }
+
+        // Load it again
         {
             UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
             try

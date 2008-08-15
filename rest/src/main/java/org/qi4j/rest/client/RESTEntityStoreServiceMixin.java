@@ -14,6 +14,10 @@
 
 package org.qi4j.rest.client;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,11 +29,14 @@ import org.openrdf.rio.helpers.StatementCollector;
 import org.openrdf.rio.rdfxml.RDFXMLParserFactory;
 import org.qi4j.injection.scope.Service;
 import org.qi4j.injection.scope.This;
+import org.qi4j.injection.scope.Uses;
 import org.qi4j.library.rdf.entity.EntityParser;
 import org.qi4j.service.Activatable;
 import org.qi4j.service.Configuration;
+import org.qi4j.service.ServiceDescriptor;
 import org.qi4j.service.Wrapper;
 import org.qi4j.spi.entity.AbstractEntityStoreMixin;
+import org.qi4j.spi.entity.ConcurrentEntityStateModificationException;
 import org.qi4j.spi.entity.DefaultEntityState;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
@@ -38,8 +45,15 @@ import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.StateCommitter;
 import org.restlet.Client;
+import org.restlet.data.MediaType;
+import org.restlet.data.Method;
+import org.restlet.data.Preference;
 import org.restlet.data.Reference;
+import org.restlet.data.Request;
 import org.restlet.data.Response;
+import org.restlet.data.Status;
+import org.restlet.resource.OutputRepresentation;
+import org.restlet.resource.Representation;
 
 /**
  * EntityStore implementation that uses REST to access EntityState from a server.
@@ -50,6 +64,7 @@ public class RESTEntityStoreServiceMixin
 {
     @Service EntityParser parser;
     @This Configuration<RESTEntityStoreConfiguration> config;
+    @Uses ServiceDescriptor descriptor;
 
     @Service private Wrapper<Client> client;
     private Reference baseRef;
@@ -74,30 +89,43 @@ public class RESTEntityStoreServiceMixin
 
         try
         {
-            String uri = anIdentity.type() + "/" + anIdentity.identity() + ".rdf";
+            String uri = anIdentity.type() + "/" + anIdentity.identity();
             Reference ref = new Reference( baseRef.toString() + uri );
-            Response response = client.get().get( ref );
+            Request request = new Request( Method.GET, ref );
+            request.getClientInfo().getAcceptedMediaTypes().add( new Preference<MediaType>( MediaType.APPLICATION_JAVA_OBJECT ) );
+            Response response = client.get().handle( request );
             if( response.getStatus().isSuccess() )
             {
                 if( response.isEntityAvailable() )
                 {
-                    Reader reader = response.getEntity().getReader();
-                    RDFParser rdfParser = new RDFXMLParserFactory().getParser();
-                    Collection<Statement> statements = new ArrayList<Statement>();
-                    StatementCollector statementCollector = new StatementCollector( statements );
-                    rdfParser.setRDFHandler( statementCollector );
-                    rdfParser.parse( reader, uri );
+                    Representation entity = response.getEntity();
+                    if( entity.getMediaType().equals( MediaType.APPLICATION_RDF_XML ) )
+                    {
+                        Reader reader = entity.getReader();
+                        RDFParser rdfParser = new RDFXMLParserFactory().getParser();
+                        Collection<Statement> statements = new ArrayList<Statement>();
+                        StatementCollector statementCollector = new StatementCollector( statements );
+                        rdfParser.setRDFHandler( statementCollector );
+                        rdfParser.parse( reader, uri );
 
-                    long modified = response.getEntity().getModificationDate().getTime();
-                    long version = Long.parseLong( response.getEntity().getTag().getName() );
-                    EntityState entityState = new DefaultEntityState( version, modified,
-                                                                      anIdentity, EntityStatus.LOADED,
-                                                                      entityType,
-                                                                      new HashMap<String, Object>(),
-                                                                      new HashMap<String, QualifiedIdentity>(),
-                                                                      DefaultEntityState.newManyCollections( entityType ) );
-                    parser.parse( statements, entityState );
-                    return entityState;
+                        long modified = response.getEntity().getModificationDate().getTime();
+                        long version = Long.parseLong( response.getEntity().getTag().getName() );
+                        EntityState entityState = new DefaultEntityState( version, modified,
+                                                                          anIdentity, EntityStatus.LOADED,
+                                                                          entityType,
+                                                                          new HashMap<String, Object>(),
+                                                                          new HashMap<String, QualifiedIdentity>(),
+                                                                          DefaultEntityState.newManyCollections( entityType ) );
+                        parser.parse( statements, entityState );
+                        return entityState;
+                    }
+                    else
+                    {
+                        ObjectInputStream oin = new ObjectInputStream( entity.getStream() );
+                        EntityState state = (EntityState) oin.readObject();
+                        oin.close();
+                        return state;
+                    }
                 }
             }
         }
@@ -108,9 +136,47 @@ public class RESTEntityStoreServiceMixin
         throw new EntityStoreException();
     }
 
-    public StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, Iterable<QualifiedIdentity> removedStates ) throws EntityStoreException
+    public StateCommitter prepare( final Iterable<EntityState> newStates, final Iterable<EntityState> loadedStates, final Iterable<QualifiedIdentity> removedStates ) throws EntityStoreException
     {
-        return null;
+        Reference ref = new Reference( baseRef.toString() );
+
+        Response response = client.get().post( ref, new OutputRepresentation( MediaType.APPLICATION_JAVA_OBJECT )
+        {
+            public void write( OutputStream outputStream ) throws IOException
+            {
+                ObjectOutputStream oout = new ObjectOutputStream( outputStream );
+                oout.writeObject( newStates );
+                oout.writeObject( loadedStates );
+                oout.writeObject( removedStates );
+                oout.close();
+            }
+        } );
+
+        if( response.getStatus() == Status.CLIENT_ERROR_CONFLICT )
+        {
+            // TODO Figure out which ones were changed
+            Collection<QualifiedIdentity> modifiedIdentities = new ArrayList<QualifiedIdentity>();
+            for( EntityState loadedState : loadedStates )
+            {
+                modifiedIdentities.add( loadedState.qualifiedIdentity() );
+            }
+            throw new ConcurrentEntityStateModificationException( descriptor.identity(), modifiedIdentities );
+        }
+        else if( !response.getStatus().isSuccess() )
+        {
+            throw new EntityStoreException( response.getStatus().toString() );
+        }
+
+        return new StateCommitter()
+        {
+            public void commit()
+            {
+            }
+
+            public void cancel()
+            {
+            }
+        };
     }
 
     public Iterator<EntityState> iterator()

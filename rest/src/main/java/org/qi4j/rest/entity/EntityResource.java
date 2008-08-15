@@ -19,6 +19,8 @@ package org.qi4j.rest.entity;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.Writer;
@@ -55,6 +57,7 @@ import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
 import org.restlet.data.Tag;
+import org.restlet.resource.OutputRepresentation;
 import org.restlet.resource.Representation;
 import org.restlet.resource.Resource;
 import org.restlet.resource.ResourceException;
@@ -115,6 +118,7 @@ public class EntityResource extends Resource
         // Define the supported variant.
         getVariants().add( new Variant( MediaType.TEXT_HTML ) );
         getVariants().add( new Variant( MediaType.APPLICATION_RDF_XML ) );
+        getVariants().add( new Variant( MediaType.APPLICATION_JAVA_OBJECT ) );
         setModifiable( true );
 
         // /entity/{type}/{identity}
@@ -166,6 +170,10 @@ public class EntityResource extends Resource
         else if( MediaType.TEXT_HTML.equals( variant.getMediaType() ) )
         {
             return entityHeaders( representHtml( entityState ), entityState );
+        }
+        else if( MediaType.APPLICATION_JAVA_OBJECT.equals( variant.getMediaType() ) )
+        {
+            return entityHeaders( representJava( entityState ), entityState );
         }
 
         throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
@@ -304,6 +312,19 @@ public class EntityResource extends Resource
         representation.setCharacterSet( CharacterSet.UTF_8 );
         return representation;
 
+    }
+
+    private Representation representJava( final EntityState entity ) throws ResourceException
+    {
+        return new OutputRepresentation( MediaType.APPLICATION_JAVA_OBJECT )
+        {
+            public void write( OutputStream outputStream ) throws IOException
+            {
+                ObjectOutputStream oout = new ObjectOutputStream( outputStream );
+                oout.writeObject( entity );
+                oout.close();
+            }
+        };
     }
 
     @Override @SuppressWarnings( "unused" )

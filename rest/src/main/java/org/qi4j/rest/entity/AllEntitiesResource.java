@@ -14,11 +14,16 @@
 package org.qi4j.rest.entity;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
 import java.io.PrintWriter;
 import java.io.Writer;
 import org.qi4j.entity.Entity;
 import org.qi4j.injection.scope.Service;
 import org.qi4j.injection.scope.Uses;
+import org.qi4j.spi.entity.ConcurrentEntityStateModificationException;
+import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
@@ -45,6 +50,7 @@ import org.w3c.dom.Element;
 public class AllEntitiesResource extends Resource
 {
     @Service private EntityFinder entityFinder;
+    @Service private EntityStore entityStore;
 
     public AllEntitiesResource( @Uses Context context,
                                 @Uses Request request,
@@ -57,7 +63,8 @@ public class AllEntitiesResource extends Resource
         getVariants().add( new Variant( MediaType.TEXT_HTML ) );
         getVariants().add( new Variant( MediaType.APPLICATION_RDF_XML ) );
         getVariants().add( new Variant( MediaType.TEXT_XML ) );
-        setModifiable( false );
+        getVariants().add( new Variant( MediaType.APPLICATION_JAVA_OBJECT ) );
+        setModifiable( true );
     }
 
     @Override public Representation represent( final Variant variant )
@@ -173,6 +180,31 @@ public class AllEntitiesResource extends Resource
             return representation;
         }
         catch( EntityFinderException e )
+        {
+            throw new ResourceException( e );
+        }
+    }
+
+    public void acceptRepresentation( Representation entity ) throws ResourceException
+    {
+        try
+        {
+            InputStream in = entity.getStream();
+            ObjectInputStream oin = new ObjectInputStream( in );
+            Iterable<EntityState> newState = (Iterable<EntityState>) oin.readObject();
+            Iterable<EntityState> loadedState = (Iterable<EntityState>) oin.readObject();
+            Iterable<QualifiedIdentity> removedState = (Iterable<QualifiedIdentity>) oin.readObject();
+
+            try
+            {
+                entityStore.prepare( newState, loadedState, removedState ).commit();
+            }
+            catch( ConcurrentEntityStateModificationException e )
+            {
+                throw new ResourceException( Status.CLIENT_ERROR_CONFLICT );
+            }
+        }
+        catch( Exception e )
         {
             throw new ResourceException( e );
         }
