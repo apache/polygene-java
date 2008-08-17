@@ -24,6 +24,11 @@
       <version>0.4-SNAPSHOT</version>
     </dependency>
     <dependency>
+      <groupId>org.qi4j.core</groupId>
+      <artifactId>qi4j-core-api</artifactId>
+      <version>0.4-SNAPSHOT</version>
+    </dependency>
+    <dependency>
       <groupId>org.qi4j.library</groupId>
       <artifactId>qi4j-lib-rdf</artifactId>
       <version>0.4-SNAPSHOT</version>
