@@ -22,5 +22,11 @@
       <artifactId>qi4j-ext-indexing-rdf</artifactId>
       <version>0.4-SNAPSHOT</version>
     </dependency>
+    <dependency>
+      <groupId>org.qi4j.library</groupId>
+      <artifactId>qi4j-lib-rdf</artifactId>
+      <version>0.4-SNAPSHOT</version>
+    </dependency>
+
   </dependencies>
 </project>
