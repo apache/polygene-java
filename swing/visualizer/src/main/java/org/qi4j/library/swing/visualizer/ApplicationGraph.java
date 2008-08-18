@@ -56,8 +56,7 @@ public class ApplicationGraph
 
     private String applicationName;
     private ApplicationGraphVisitor appGraphVisitor;
-    private JSplitPane leftPane;
-    private JSplitPane mainPane;
+    private JSplitPane bottomPane;
 
     public void show( Application application )
     {
@@ -68,10 +67,15 @@ public class ApplicationGraph
         ( (ApplicationSPI) application ).visitDescriptor( appGraphVisitor );
         ApplicationPanel applicationPanel = new ApplicationPanel( graph, new CompositeSelectionControl() );
 
-        leftPane = createLeftPane( applicationPanel );
-        mainPane = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT,
-                                   leftPane, getDetailsPane() );
+//        applicationPanel.setMinimumSize( new Dimension( 400, 400 ) );
+        applicationPanel.setPreferredSize( new Dimension( 800, 600 ) );
+        JPanel panel = new JPanel();
+        panel.setPreferredSize( new Dimension( 300, 100 ) );
+        panel.setBackground( Color.white );
+        bottomPane = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT, panel, getDetailsPane() );
 
+        JSplitPane mainPane = new JSplitPane( JSplitPane.VERTICAL_SPLIT, applicationPanel, bottomPane );
+        mainPane.setOneTouchExpandable( true );
         frame.add( mainPane );
 
         frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
@@ -100,14 +104,6 @@ public class ApplicationGraph
         pane.setHorizontalScrollBarPolicy( ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER );
 
         return pane;
-    }
-
-    private JSplitPane createLeftPane( JPanel applicationPanel )
-    {
-        applicationPanel.setMinimumSize( new Dimension( 400, 400 ) );
-        JPanel panel = new JPanel();
-        panel.setBackground( Color.white );
-        return new JSplitPane( JSplitPane.VERTICAL_SPLIT, applicationPanel, panel );
     }
 
     private class CompositeSelectionControl extends ControlAdapter
@@ -183,14 +179,14 @@ public class ApplicationGraph
                                 panel.setBackground( Color.white );
                                 panel.add( textPane );
 
-                                mainPane.setRightComponent( panel );
+                                bottomPane.setRightComponent( panel );
 
                             }
 
                         }
                     } );
 
-                    leftPane.setRightComponent( new JScrollPane( tree ) );
+                    bottomPane.setLeftComponent( new JScrollPane( tree ) );
                 }
             }
         }
