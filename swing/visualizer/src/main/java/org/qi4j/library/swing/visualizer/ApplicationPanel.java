@@ -51,6 +51,7 @@ import prefuse.controls.ControlAdapter;
 import prefuse.data.Graph;
 import prefuse.data.Node;
 import prefuse.render.DefaultRendererFactory;
+import prefuse.render.NullRenderer;
 import prefuse.util.ColorLib;
 import prefuse.util.ui.UILib;
 import prefuse.util.display.DisplayLib;
@@ -245,7 +246,7 @@ public class ApplicationPanel extends JPanel
         rendererFactory.add( "type = 1", new LayerRenderer() );
         rendererFactory.add( "type = 2", new ModuleRenderer() );
         rendererFactory.add( "type = 3", new CompositeRenderer() );
-
+        rendererFactory.add( "type = 100", new NullRenderer() );
         rendererFactory.setDefaultEdgeRenderer( new VerticalEdgeRenderer() );
         visualization.setRendererFactory( rendererFactory );
     }

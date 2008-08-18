@@ -58,6 +58,8 @@ public class ApplicationGraph
     private ApplicationGraphVisitor appGraphVisitor;
     private JSplitPane bottomPane;
 
+    private Dimension methodsPaneSize = new Dimension( 300, 200 );
+
     public void show( Application application )
     {
         JFrame frame = new JFrame( "Qi4j Application Graph" );
@@ -70,7 +72,7 @@ public class ApplicationGraph
 //        applicationPanel.setMinimumSize( new Dimension( 400, 400 ) );
         applicationPanel.setPreferredSize( new Dimension( 800, 600 ) );
         JPanel panel = new JPanel();
-        panel.setPreferredSize( new Dimension( 300, 100 ) );
+        panel.setPreferredSize( methodsPaneSize );
         panel.setBackground( Color.white );
         bottomPane = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT, panel, getDetailsPane() );
 
@@ -108,7 +110,6 @@ public class ApplicationGraph
 
     private class CompositeSelectionControl extends ControlAdapter
     {
-
         public void itemClicked( VisualItem visualItem, MouseEvent event )
         {
             if( GraphUtils.isComposite( visualItem ) )
@@ -146,7 +147,6 @@ public class ApplicationGraph
                                 {
                                     System.out.println( annotation.annotationType() + ", " + annotation.toString() + "\n" );
                                 }
-//                                method.getParameterAnnotations();
 
                                 Map<String, List> map = appGraphVisitor.getMethodAttributes( method );
 
@@ -186,7 +186,9 @@ public class ApplicationGraph
                         }
                     } );
 
-                    bottomPane.setLeftComponent( new JScrollPane( tree ) );
+                    JScrollPane pane = new JScrollPane( tree );
+                    pane.setPreferredSize( methodsPaneSize );
+                    bottomPane.setLeftComponent( pane );
                 }
             }
         }
@@ -210,10 +212,17 @@ public class ApplicationGraph
                 buf.append( method.getReturnType().getSimpleName() ).append( " " ).
                     append( method.getName() );
 
-                Class<?>[] paramTypes = method.getParameterTypes();
                 buf.append( "( " );
-                for( Class<?> type : paramTypes )
+                Class<?>[] paramTypes = method.getParameterTypes();
+                Annotation[][] paramAnnotations = method.getParameterAnnotations();
+                for( int i = 0; i < paramTypes.length; i++ )
                 {
+                    Annotation[] annotations = paramAnnotations[ i ];
+                    for( Annotation annotation : annotations )
+                    {
+                        buf.append( "@" ).append( annotation.annotationType().getSimpleName() ).append( " " );
+                    }
+                    Class<?> type = paramTypes[ i ];
                     buf.append( type.getSimpleName() ).append( ", " );
                 }
                 if( paramTypes.length > 0 )

@@ -89,11 +89,11 @@ public class ApplicationGraphTester
     {
         @NotNull Property<String> a();
 
-        void a( String s );
+        void a( @NotNull String s, int i );
 
         public abstract class AMixin implements A
         {
-            public void a( @NotNull String s )
+            public void a( @NotNull String s, int i )
             {
                 System.out.println( s );
             }
