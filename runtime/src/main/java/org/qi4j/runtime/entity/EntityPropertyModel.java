@@ -87,6 +87,6 @@ public final class EntityPropertyModel extends PropertyModel
             type = PropertyType.PropertyTypeEnum.MUTABLE;
         }
 
-        return new PropertyType( qualifiedName(), ClassUtil.getRawClass( type() ).getName(), type );
+        return new PropertyType( qualifiedName(), ClassUtil.getRawClass( type() ).getName(), toURI(), type );
     }
 }

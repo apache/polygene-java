@@ -15,7 +15,6 @@
 package org.qi4j.spi.entity;
 
 import java.io.Serializable;
-import org.qi4j.property.GenericPropertyInfo;
 
 /**
  * TODO
@@ -30,12 +29,14 @@ public class PropertyType
 
     private String qualifiedName;
     private String type;
+    private String uri;
     private PropertyTypeEnum propertyType;
 
-    public PropertyType( String qualifiedName, String type, PropertyTypeEnum propertyType )
+    public PropertyType( String qualifiedName, String type, String uri, PropertyTypeEnum propertyType )
     {
         this.qualifiedName = qualifiedName;
         this.type = type;
+        this.uri = uri;
         this.propertyType = propertyType;
     }
 
@@ -54,13 +55,13 @@ public class PropertyType
         return propertyType;
     }
 
-    public String toURI()
+    public String uri()
     {
-        return GenericPropertyInfo.toURI( qualifiedName );
+        return uri;
     }
 
     @Override public String toString()
     {
-        return qualifiedName + "(" + type + ")";
+        return qualifiedName + "(" + type + "," + uri + ")";
     }
 }

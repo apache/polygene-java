@@ -27,6 +27,7 @@ import org.qi4j.composite.ConstructionException;
 import org.qi4j.composite.State;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.EntityCompositeAlreadyExistsException;
+import org.qi4j.entity.RDF;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.CompositeMethodInstance;
 import org.qi4j.runtime.composite.CompositeMethodsModel;
@@ -92,6 +93,7 @@ public final class EntityModel
     private final EntityStateModel stateModel;
     private final CompositeMethodsModel compositeMethodsModel;
     private final Class<? extends Composite> proxyClass;
+    private final String uri;
 
     private EntityModel( Class<? extends EntityComposite> type,
                          Visibility visibility,
@@ -109,6 +111,8 @@ public final class EntityModel
         this.compositeMethodsModel = compositeMethodsModel;
 
         this.proxyClass = createProxyClass( type );
+        RDF uri = type.getAnnotation( RDF.class );
+        this.uri = uri == null ? ClassUtil.toURI( type ) : uri.value();
     }
 
     public Class<? extends EntityComposite> type()
@@ -227,7 +231,7 @@ public final class EntityModel
     private Class<? extends Composite> createProxyClass( Class<? extends Composite> compositeType )
     {
         ClassLoader proxyClassloader = compositeType.getClassLoader();
-        Class[] interfaces = new Class[]{ compositeType };
+        Class<?>[] interfaces = new Class<?>[]{ compositeType };
         return (Class<? extends Composite>) Proxy.getProxyClass( proxyClassloader, interfaces );
     }
 
@@ -306,7 +310,7 @@ public final class EntityModel
 
     public String toURI()
     {
-        return ClassUtil.toURI( type );
+        return uri;
     }
 
     @Override public String toString()

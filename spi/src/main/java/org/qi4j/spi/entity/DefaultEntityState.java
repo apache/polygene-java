@@ -212,6 +212,11 @@ public class DefaultEntityState
         return identity + "(" + properties.size() + " properties, " + associations.size() + " associations, " + manyAssociations.size() + " many-associations)";
     }
 
+    public void clearModified()
+    {
+        modified = false;
+    }
+
     protected class ModificationTrackerCollection<T extends Collection<QualifiedIdentity>>
         implements Collection<QualifiedIdentity>
     {

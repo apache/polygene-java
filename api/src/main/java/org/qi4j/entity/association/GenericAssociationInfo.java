@@ -92,7 +92,7 @@ public class GenericAssociationInfo
      */
     public static String toURI( final Method accessor )
     {
-        return "urn:qi4j:association:" + getQualifiedName( accessor );
+        return "urn:qi4j:entity:" + getQualifiedName( accessor );
     }
 
     /**
@@ -104,7 +104,7 @@ public class GenericAssociationInfo
      */
     public static String toURI( final Class declaringClass, String name )
     {
-        return "urn:qi4j:association:" + getQualifiedName( declaringClass, name );
+        return "urn:qi4j:entity:" + getQualifiedName( declaringClass, name );
     }
 
     /**
@@ -115,7 +115,7 @@ public class GenericAssociationInfo
      */
     public static String toURI( final String qualifiedName )
     {
-        return "urn:qi4j:association:" + qualifiedName;
+        return "urn:qi4j:entity:" + qualifiedName;
     }
 
     /**
@@ -126,7 +126,7 @@ public class GenericAssociationInfo
      */
     public static String toQualifiedName( final String uri )
     {
-        return uri.substring( "urn:qi4j:association:".length() );
+        return uri.substring( "urn:qi4j:entity:".length() );
     }
 
     private Method accessor;

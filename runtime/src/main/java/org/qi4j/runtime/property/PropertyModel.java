@@ -20,6 +20,7 @@ import java.lang.reflect.Type;
 import java.util.List;
 import org.qi4j.composite.ConstraintViolation;
 import org.qi4j.composite.ConstraintViolationException;
+import org.qi4j.entity.RDF;
 import org.qi4j.property.ComputedProperty;
 import org.qi4j.property.ComputedPropertyInstance;
 import org.qi4j.property.GenericPropertyInfo;
@@ -43,6 +44,7 @@ public class PropertyModel
     private final Type type;
     private final Method accessor; // Interface accessor
     private final String qualifiedName;
+    private final String uri;
 
     private final ValueConstraintsInstance constraints; // May be null
     private final MetaInfo metaInfo;
@@ -59,6 +61,9 @@ public class PropertyModel
         accessor = anAccessor;
         qualifiedName = GenericPropertyInfo.getQualifiedName( anAccessor );
         defaultValue = aPropertyDefaultValue;
+
+        RDF uriAnnotation = accessor().getAnnotation( RDF.class );
+        uri = uriAnnotation == null ? GenericPropertyInfo.toURI( qualifiedName() ) : uriAnnotation.value();
 
         this.constraints = constraints;
 
@@ -108,7 +113,7 @@ public class PropertyModel
 
     public String toURI()
     {
-        return GenericPropertyInfo.toURI( accessor );
+        return uri;
     }
 
     public Property<?> newInstance()

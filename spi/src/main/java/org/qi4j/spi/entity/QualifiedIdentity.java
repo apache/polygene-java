@@ -24,6 +24,15 @@ import org.qi4j.util.ClassUtil;
 public final class QualifiedIdentity
     implements Serializable
 {
+    public static QualifiedIdentity parseURI( String uri )
+    {
+        String str = uri.substring( "urn:qi4j:entity:".length() );
+        int idx = str.indexOf( "/" );
+        String type = str.substring( 0, idx ).replace( "-", "$" );
+        String identity = str.substring( idx + 1 );
+        return new QualifiedIdentity( identity, type );
+    }
+
     private static final long serialVersionUID = 1L;
 
     // Associations who have been set to "null" should use this as the representation in the EntityState
@@ -72,7 +81,7 @@ public final class QualifiedIdentity
 
     public String toURI()
     {
-        return ClassUtil.toURI( compositeType ) + "/" + identity;
+        return "urn:qi4j:entity:" + ClassUtil.normalizeClassToURI( compositeType ) + "/" + identity;
     }
 
     public boolean equals( Object o )

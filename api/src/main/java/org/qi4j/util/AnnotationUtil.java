@@ -117,6 +117,6 @@ public class AnnotationUtil
         {
             return null;
         }
-        return annotationType.cast( ( (Class) type ).getAnnotation( annotationType ) );
+        return annotationType.cast( ( (Class<?>) type ).getAnnotation( annotationType ) );
     }
 }

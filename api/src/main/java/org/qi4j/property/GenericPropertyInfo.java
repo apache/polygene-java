@@ -94,7 +94,7 @@ public final class GenericPropertyInfo
      */
     public static String toURI( final Method accessor )
     {
-        return "urn:qi4j:property:" + getQualifiedName( accessor );
+        return "urn:qi4j:entity:" + getQualifiedName( accessor );
     }
 
     /**
@@ -106,7 +106,7 @@ public final class GenericPropertyInfo
      */
     public static String toURI( final Class declaringClass, String name )
     {
-        return "urn:qi4j:property:" + getQualifiedName( declaringClass, name );
+        return "urn:qi4j:entity:" + getQualifiedName( declaringClass, name );
     }
 
     /**
@@ -117,7 +117,7 @@ public final class GenericPropertyInfo
      */
     public static String toURI( final String qualifiedName )
     {
-        return "urn:qi4j:property:" + qualifiedName;
+        return "urn:qi4j:entity:" + qualifiedName;
     }
 
     /**
@@ -128,7 +128,7 @@ public final class GenericPropertyInfo
      */
     public static String toQualifiedName( final String uri )
     {
-        return uri.substring( "urn:qi4j:property:".length() );
+        return uri.substring( "urn:qi4j:entity:".length() );
     }
 
     /**
@@ -143,7 +143,7 @@ public final class GenericPropertyInfo
         {
             return null;
         }
-        return "urn:qi4j:property:" + getDeclaringClassName( accessor ) + ":";
+        return "urn:qi4j:entity:" + getDeclaringClassName( accessor ) + ":";
     }
 
     private HashMap<Class<?>, Serializable> infos;

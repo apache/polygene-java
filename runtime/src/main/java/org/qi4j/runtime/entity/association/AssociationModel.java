@@ -22,6 +22,7 @@ import java.util.Set;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.ConstraintViolation;
 import org.qi4j.composite.ConstraintViolationException;
+import org.qi4j.entity.RDF;
 import org.qi4j.entity.association.AbstractAssociation;
 import org.qi4j.entity.association.Association;
 import org.qi4j.entity.association.GenericAssociationInfo;
@@ -51,6 +52,7 @@ public final class AssociationModel
     private final Type type;
     private final Method accessor;
     private final String qualifiedName;
+    private final String uri;
     private final ValueConstraintsInstance constraints;
 
     public AssociationModel( Method accessor, ValueConstraintsInstance valueConstraintsInstance, MetaInfo metaInfo )
@@ -60,6 +62,8 @@ public final class AssociationModel
         this.type = GenericAssociationInfo.getAssociationType( accessor );
         this.accessor = accessor;
         this.qualifiedName = GenericAssociationInfo.getQualifiedName( accessor );
+        RDF uriAnnotation = accessor().getAnnotation( RDF.class );
+        this.uri = uriAnnotation == null ? GenericAssociationInfo.toURI( qualifiedName() ) : uriAnnotation.value();
         this.constraints = valueConstraintsInstance;
     }
 
@@ -90,7 +94,7 @@ public final class AssociationModel
 
     public String toURI()
     {
-        return GenericAssociationInfo.toURI( accessor );
+        return uri;
     }
 
     public String toNameSpace()
@@ -233,7 +237,7 @@ public final class AssociationModel
 
     public AssociationType associationType()
     {
-        return new AssociationType( qualifiedName, getRawClass( type ).getName() );
+        return new AssociationType( qualifiedName, getRawClass( type ).getName(), uri );
     }
 
     public ManyAssociationType manyAssociationType()
@@ -251,6 +255,6 @@ public final class AssociationModel
         {
             manyAssocType = ManyAssociationType.ManyAssociationTypeEnum.MANY;
         }
-        return new ManyAssociationType( qualifiedName, manyAssocType, getRawClass( type ).getName() );
+        return new ManyAssociationType( qualifiedName, manyAssocType, getRawClass( type ).getName(), uri );
     }
 }

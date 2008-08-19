@@ -27,16 +27,18 @@ public class ManyAssociationType
         MANY, LIST, SET
     }
 
-    public ManyAssociationType( String qualifiedName, ManyAssociationTypeEnum associationType, String type )
+    public ManyAssociationType( String qualifiedName, ManyAssociationTypeEnum associationType, String type, String uri )
     {
         this.qualifiedName = qualifiedName;
         this.associationType = associationType;
         this.type = type;
+        this.uri = uri;
     }
 
     private String qualifiedName;
     private ManyAssociationTypeEnum associationType;
     private String type;
+    private String uri;
 
     public String qualifiedName()
     {
@@ -53,15 +55,15 @@ public class ManyAssociationType
         return type;
     }
 
-    public String toURI()
+    public String uri()
     {
-        return "urn:qi4j:association:" + qualifiedName;
+        return uri;
 
     }
 
     @Override public String toString()
     {
-        return qualifiedName + "(" + type + ")";
+        return qualifiedName + "(" + type + "," + uri + ")";
     }
 
 }

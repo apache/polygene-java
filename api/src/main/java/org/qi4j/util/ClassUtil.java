@@ -257,7 +257,7 @@ public class ClassUtil
         throws NullPointerException
     {
         className = normalizeClassToURI( className );
-        return "urn:qi4j:" + className;
+        return "urn:qi4j:entity:" + className;
     }
 
     /**
@@ -270,7 +270,7 @@ public class ClassUtil
     public static String toClassName( String uri )
         throws NullPointerException
     {
-        uri = uri.substring( "urn:qi4j:".length() );
+        uri = uri.substring( "urn:qi4j:entity:".length() );
         uri = denormalizeURIToClass( uri );
         return uri;
     }

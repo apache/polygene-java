@@ -24,11 +24,13 @@ public class AssociationType
 {
     private String qualifiedName;
     private String type;
+    private String uri;
 
-    public AssociationType( String qualifiedName, String type )
+    public AssociationType( String qualifiedName, String type, String uri )
     {
         this.qualifiedName = qualifiedName;
         this.type = type;
+        this.uri = uri;
     }
 
     public String qualifiedName()
@@ -41,15 +43,15 @@ public class AssociationType
         return type;
     }
 
-    public String toURI()
+    public String uri()
     {
-        return "urn:qi4j:association:" + qualifiedName;
+        return uri;
 
     }
 
     @Override public String toString()
     {
-        return qualifiedName + "(" + type + ")";
+        return qualifiedName + "(" + type + "," + uri + ")";
     }
 
 }
