@@ -387,9 +387,10 @@ public class RdfEntityFinderTest
                      entityFinder.findEntities(
                          Person.class.getName(),
                          ALL,
-                         new OrderBy[]{ orderBy( person.placeOfBirth().get().name() ) },
+                         new OrderBy[]{ orderBy( person.placeOfBirth().get().name() ),
+                                        orderBy( person.name() ) },
                          NO_FIRST_RESULT, NO_MAX_RESULTS
-                     ), JOE, ANN, JACK );
+                     ), ANN, JOE, JACK );
     }
 
     @Test
