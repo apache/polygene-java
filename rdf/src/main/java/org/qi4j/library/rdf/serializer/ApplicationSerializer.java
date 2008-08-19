@@ -18,13 +18,14 @@
 package org.qi4j.library.rdf.serializer;
 
 import org.openrdf.model.Graph;
+import org.openrdf.model.Statement;
 import org.openrdf.model.impl.GraphImpl;
 import org.qi4j.spi.structure.ApplicationSPI;
 import org.qi4j.structure.Application;
 
 public class ApplicationSerializer
 {
-    public Graph serialize( Application app )
+    public Iterable<Statement> serialize( Application app )
     {
         Graph graph = new GraphImpl();
         SerializerContext context = new SerializerContext( graph );

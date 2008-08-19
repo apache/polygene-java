@@ -23,5 +23,5 @@ import org.qi4j.spi.entity.EntityState;
  */
 public interface EntityParser
 {
-    void parse( @NotNull Iterable<Statement> entityGraph, EntityState entityState );
+    void parse( @NotNull Iterable<Statement> entityGraph, @NotNull EntityState entityState );
 }

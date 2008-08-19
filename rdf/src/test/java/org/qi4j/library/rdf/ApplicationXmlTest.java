@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import org.junit.Test;
-import org.openrdf.model.Graph;
 import org.openrdf.model.Statement;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFWriter;
@@ -60,12 +59,12 @@ public class ApplicationXmlTest extends AbstractQi4jTest
     {
         String name = "application";
         ApplicationSerializer parser = new ApplicationSerializer();
-        Graph graph = parser.serialize( application ); // TODO Fix this
+        Iterable<Statement> graph = parser.serialize( application ); // TODO Fix this
         writeN3( graph, name );
         writeXml( graph, name );
     }
 
-    private void writeN3( Graph graph, String name )
+    private void writeN3( Iterable<Statement> graph, String name )
         throws RDFHandlerException, IOException
     {
         File file = new File( name + ".rdfn3" );
@@ -77,7 +76,7 @@ public class ApplicationXmlTest extends AbstractQi4jTest
         System.out.println( "RDF/N3 written to " + file.getAbsolutePath() );
     }
 
-    private void writeXml( Graph graph, String name )
+    private void writeXml( Iterable<Statement> graph, String name )
         throws RDFHandlerException, IOException
     {
         File file = new File( name + ".rdfxml" );
@@ -89,7 +88,7 @@ public class ApplicationXmlTest extends AbstractQi4jTest
         System.out.println( "RDF/XML written to " + file.getAbsolutePath() );
     }
 
-    private void writeOutput( RDFWriter writer, Graph graph )
+    private void writeOutput( RDFWriter writer, Iterable<Statement> graph )
         throws RDFHandlerException
     {
         writer.startRDF();

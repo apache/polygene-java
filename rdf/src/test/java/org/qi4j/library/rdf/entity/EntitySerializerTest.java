@@ -22,14 +22,13 @@ import org.openrdf.rio.RDFHandlerException;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entity.EntityBuilder;
-import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.UnitOfWork;
-import org.qi4j.entity.association.Association;
 import org.qi4j.entity.memory.MemoryEntityStoreService;
 import org.qi4j.injection.scope.Service;
-import org.qi4j.library.constraints.annotation.NotEmpty;
+import org.qi4j.library.rdf.DcRdf;
+import org.qi4j.library.rdf.Rdfs;
 import org.qi4j.library.rdf.serializer.RdfXmlSerializer;
-import org.qi4j.property.Property;
+import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.QualifiedIdentity;
@@ -56,19 +55,38 @@ public class EntitySerializerTest
         super.setUp();
 
         createDummyData();
+
+        objectBuilderFactory.newObjectBuilder( EntitySerializerTest.class ).injectTo( this );
     }
 
     @Test
     public void testEntitySerializer() throws RDFHandlerException
     {
-        objectBuilderFactory.newObjectBuilder( EntitySerializerTest.class ).injectTo( this );
-
-        QualifiedIdentity qualifiedIdentity = new QualifiedIdentity( "test1", TestEntity.class );
+        QualifiedIdentity qualifiedIdentity = new QualifiedIdentity( "test2", TestEntity.class );
         EntityState entityState = entityStore.getEntityState( qualifiedIdentity );
 
         Iterable<Statement> graph = serializer.serialize( entityState );
 
-        new RdfXmlSerializer().serialize( graph, new PrintWriter( System.out ) );
+        String[] prefixes = new String[]{ "rdf", "dc", " vc" };
+        String[] namespaces = new String[]{ Rdfs.RDF, DcRdf.DC, "http://www.w3.org/2001/vcard-rdf/3.0#" };
+
+
+        new RdfXmlSerializer().serialize( graph, new PrintWriter( System.out ), prefixes, namespaces );
+    }
+
+    @Test
+    public void testEntityTypeSerializer() throws RDFHandlerException
+    {
+
+        EntityDescriptor entityDescriptor = spi.getEntityDescriptor( TestEntity.class, moduleInstance );
+
+        Iterable<Statement> graph = serializer.serialize( entityDescriptor.entityType() );
+
+        String[] prefixes = new String[]{ "rdf", "dc", " vc" };
+        String[] namespaces = new String[]{ Rdfs.RDF, DcRdf.DC, "http://www.w3.org/2001/vcard-rdf/3.0#" };
+
+
+        new RdfXmlSerializer().serialize( graph, new PrintWriter( System.out ), prefixes, namespaces );
     }
 
     void createDummyData()
@@ -81,9 +99,13 @@ public class EntitySerializerTest
             TestEntity testEntity = builder.newInstance();
 
             EntityBuilder<TestEntity> builder2 = unitOfWork.newEntityBuilder( "test2", TestEntity.class );
-            builder.stateOfComposite().name().set( "Niclas" );
-            builder.stateOfComposite().association().set( testEntity );
-            TestEntity testEntity2 = builder.newInstance();
+            builder2.stateOfComposite().name().set( "Niclas" );
+            builder2.stateOfComposite().association().set( testEntity );
+            builder2.stateOfComposite().manyAssoc().add( testEntity );
+            builder2.stateOfComposite().group().add( testEntity );
+            builder2.stateOfComposite().group().add( testEntity );
+            builder2.stateOfComposite().group().add( testEntity );
+            TestEntity testEntity2 = builder2.newInstance();
             unitOfWork.complete();
         }
         catch( Exception e )
@@ -92,12 +114,6 @@ public class EntitySerializerTest
         }
 
     }
-
-    public interface TestEntity
-        extends EntityComposite
-    {
-        @NotEmpty Property<String> name();
-
-        Association<TestEntity> association();
-    }
 }
+
+

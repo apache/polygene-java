@@ -37,6 +37,7 @@ public interface Rdfs
     URI CONTAINER = new URIImpl( RDFS + "Container" );
     URI CONTAINER_MEMBERSHIP_PROPERTY = new URIImpl( RDFS + "ContainerMembershipProperty" );
     URI LIST = new URIImpl( RDF + "List" );
+    URI LIST_ITEM = new URIImpl( RDF + "li" );
 
     // Properties
     URI TYPE = new URIImpl( RDF + "type" );
