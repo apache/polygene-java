@@ -19,6 +19,7 @@ import java.awt.Dimension;
 import java.awt.Color;
 import java.awt.event.MouseEvent;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +38,8 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import org.qi4j.structure.Application;
 import org.qi4j.spi.structure.ApplicationSPI;
 import org.qi4j.spi.composite.CompositeDescriptor;
+import org.qi4j.entity.association.AbstractAssociation;
+import org.qi4j.entity.association.GenericAssociationInfo;
 import prefuse.data.Graph;
 import prefuse.data.Node;
 import prefuse.controls.ControlAdapter;
@@ -57,6 +60,7 @@ public class ApplicationGraph
 
     private String applicationName;
     private ApplicationGraphVisitor appGraphVisitor;
+    private ApplicationPanel applicationPanel;
     private JSplitPane bottomPane;
 
     private Dimension methodsPaneSize = new Dimension( 300, 200 );
@@ -68,7 +72,7 @@ public class ApplicationGraph
         Graph graph = new Graph( true );
         appGraphVisitor = new ApplicationGraphVisitor( graph );
         ( (ApplicationSPI) application ).visitDescriptor( appGraphVisitor );
-        ApplicationPanel applicationPanel = new ApplicationPanel( graph, new CompositeSelectionControl() );
+        applicationPanel = new ApplicationPanel( graph, new CompositeSelectionControl() );
 
 //        applicationPanel.setMinimumSize( new Dimension( 400, 400 ) );
         applicationPanel.setPreferredSize( new Dimension( 800, 600 ) );
@@ -141,13 +145,20 @@ public class ApplicationGraph
                         public void valueChanged( TreeSelectionEvent e )
                         {
                             Object o = tree.getLastSelectedPathComponent();
+                            applicationPanel.clearComposites();
                             if( o instanceof MethodNode )
                             {
                                 Method method = ( (MethodNode) o ).getMethod();
 
                                 Class<?> returnType = method.getReturnType();
-                                System.out.println( returnType );
+                                if( AbstractAssociation.class.isAssignableFrom( returnType ) )
+                                {
+                                    Type type = GenericAssociationInfo.getAssociationType( method );
+                                    String name = GraphUtils.getCompositeName( (Class) type );
+                                    applicationPanel.selectComposite( name );
+                                }
                                 //todo show link to other composites if the return type is an association
+
 
                                 Annotation[] annotations = method.getAnnotations();
                                 for( Annotation annotation : annotations )

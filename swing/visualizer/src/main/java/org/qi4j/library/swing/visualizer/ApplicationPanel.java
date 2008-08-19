@@ -51,6 +51,10 @@ import prefuse.controls.PanControl;
 import prefuse.controls.ControlAdapter;
 import prefuse.data.Graph;
 import prefuse.data.Node;
+import prefuse.data.Tuple;
+import prefuse.data.tuple.TupleSet;
+import prefuse.data.expression.parser.ExpressionParser;
+import prefuse.data.expression.Predicate;
 import prefuse.render.DefaultRendererFactory;
 import prefuse.render.NullRenderer;
 import prefuse.util.ColorLib;
@@ -417,6 +421,30 @@ public class ApplicationPanel extends JPanel
             }
             display.repaint();
         }
+    }
+
+    public void clearComposites()
+    {
+        TupleSet focusGroup = visualization.getGroup( Visualization.FOCUS_ITEMS );
+        focusGroup.clear();
+        repaint();
+    }
+
+    public void selectComposite( String name )
+    {
+        String query = GraphConstants.FIELD_NAME + " = '" + name + "'";
+        Predicate predicate = (Predicate) ExpressionParser.parse( query );
+
+        TupleSet focusGroup = visualization.getGroup( Visualization.FOCUS_ITEMS );
+        focusGroup.clear();
+        Iterator iterator = visualization.items( predicate );
+        while( iterator.hasNext() )
+        {
+            Object o = iterator.next();
+            focusGroup.addTuple( (Tuple) o );
+        }
+
+        System.out.println( visualization.run( "color" ) );
     }
 
     private class ZoomToFitAction extends AbstractAction
