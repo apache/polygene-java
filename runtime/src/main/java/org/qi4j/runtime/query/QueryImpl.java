@@ -33,6 +33,7 @@ import org.qi4j.query.grammar.SingleValueExpression;
 import org.qi4j.query.grammar.ValueExpression;
 import org.qi4j.runtime.entity.UnitOfWorkInstance;
 import org.qi4j.runtime.query.grammar.impl.VariableValueExpressionImpl;
+import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
@@ -245,10 +246,15 @@ final class QueryImpl<T>
 
                 public T next()
                 {
-                    QualifiedIdentity foundEntity = foundEntities.next();
-                    final Class<T> entityType = unitOfWorkInstance.module().findClassForName( foundEntity.type() );
+                    final QualifiedIdentity foundEntity = foundEntities.next();
+
+                    final ModuleInstance moduleInstance = unitOfWorkInstance.module();
+                    final String entityTypeAsString = foundEntity.type();
+                    final Class<T> entityType = moduleInstance.findClassForName( entityTypeAsString );
+
                     // TODO shall we throw an exception if class cannot be found?
-                    final T entity = unitOfWorkInstance.getReference( foundEntity.identity(), entityType );
+                    final String entityIdentity = foundEntity.identity();
+                    final T entity = unitOfWorkInstance.getReference( entityIdentity, entityType );
                     return entity;
                 }
 

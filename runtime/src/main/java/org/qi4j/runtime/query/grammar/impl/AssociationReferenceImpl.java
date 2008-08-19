@@ -133,12 +133,15 @@ public final class AssociationReferenceImpl
 
     @Override public String toString()
     {
-        return new StringBuilder()
-            .append( traversed == null ? "" : traversed.toString() + "." )
-            .append( declaringType.getSimpleName() )
-            .append( ":" )
-            .append( name )
-            .toString();
+        StringBuilder fragment = new StringBuilder();
+        if( traversed != null )
+        {
+            fragment.append( traversed.toString() ).append( "." );
+        }
+        fragment.append( declaringType.getSimpleName() );
+        fragment.append( ":" );
+        fragment.append( name );
+        return fragment.toString();
     }
 
 }

@@ -17,7 +17,11 @@
  */
 package org.qi4j.runtime.query;
 
-import java.lang.reflect.Proxy;
+import static java.lang.reflect.Proxy.getInvocationHandler;
+import static java.lang.reflect.Proxy.isProxyClass;
+import static java.lang.reflect.Proxy.newProxyInstance;
+import static org.qi4j.composite.NullArgumentException.validateNotNull;
+import org.qi4j.entity.association.ManyAssociation;
 import org.qi4j.query.QueryExpressions;
 import org.qi4j.query.QueryExpressionsProvider;
 import org.qi4j.query.grammar.AssociationIsNotNullPredicate;
@@ -57,6 +61,7 @@ import org.qi4j.runtime.query.grammar.impl.PropertyIsNotNullPredicateImpl;
 import org.qi4j.runtime.query.grammar.impl.PropertyIsNullPredicateImpl;
 import org.qi4j.runtime.query.grammar.impl.SingleValueExpressionImpl;
 import org.qi4j.runtime.query.grammar.impl.VariableValueExpressionImpl;
+import org.qi4j.runtime.query.proxy.ManyAssociationReferenceProxy;
 import org.qi4j.runtime.query.proxy.MixinTypeProxy;
 
 public class QueryExpressionsProviderImpl
@@ -72,7 +77,7 @@ public class QueryExpressionsProviderImpl
     @SuppressWarnings( "unchecked" )
     public <T> T templateFor( final Class<T> mixinType )
     {
-        return (T) Proxy.newProxyInstance(
+        return (T) newProxyInstance(
             QueryExpressions.class.getClassLoader(),
             new Class[]{ mixinType },
             new MixinTypeProxy( mixinType )
@@ -192,5 +197,22 @@ public class QueryExpressionsProviderImpl
     public <T> SingleValueExpression<T> newSingleValueExpression( T value )
     {
         return new SingleValueExpressionImpl<T>( value );
+    }
+
+    @SuppressWarnings( "unchecked" )
+    public <T> T oneOf( ManyAssociation<T> association )
+    {
+        validateNotNull( "association", association );
+
+        Class<? extends ManyAssociation> associationClass = association.getClass();
+        if( !isProxyClass( associationClass ) )
+        {
+            throw new IllegalArgumentException( "Argument [association] is not a proxy." );
+        }
+
+        ManyAssociationReferenceProxy manyAssociationReferenceProxy =
+            (ManyAssociationReferenceProxy) getInvocationHandler( association );
+
+        return (T) manyAssociationReferenceProxy.getAnyProxy();
     }
 }

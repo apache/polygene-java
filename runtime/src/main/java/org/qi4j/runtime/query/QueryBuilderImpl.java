@@ -86,7 +86,6 @@ final class QueryBuilderImpl<T>
         {
             this.whereClause = QueryExpressions.and( this.whereClause, whereClause );
         }
-        System.out.println( this.whereClause );
         return this;
     }
 

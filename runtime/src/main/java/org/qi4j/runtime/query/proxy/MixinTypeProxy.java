@@ -20,8 +20,9 @@ package org.qi4j.runtime.query.proxy;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
+import static java.lang.reflect.Proxy.newProxyInstance;
 import org.qi4j.entity.association.Association;
+import org.qi4j.entity.association.ManyAssociation;
 import org.qi4j.property.Property;
 import org.qi4j.query.grammar.AssociationReference;
 import org.qi4j.query.grammar.PropertyReference;
@@ -71,27 +72,39 @@ public final class MixinTypeProxy
     {
         if( args == null )
         {
-            if( Property.class.isAssignableFrom( method.getReturnType() ) )
+            Class<?> methodReturnType = method.getReturnType();
+            if( Property.class.isAssignableFrom( methodReturnType ) )
             {
-                return Proxy.newProxyInstance(
-                    this.getClass().getClassLoader(),
-                    new Class[]{ method.getReturnType(), PropertyReference.class },
+                return newProxyInstance(
+                    getClass().getClassLoader(),
+                    new Class[]{ methodReturnType, PropertyReference.class },
                     new PropertyReferenceProxy( method, traversedAssociation )
                 );
             }
-            else if( Association.class.isAssignableFrom( method.getReturnType() ) )
+            else if( Association.class.isAssignableFrom( methodReturnType ) )
             {
-                return Proxy.newProxyInstance(
-                    this.getClass().getClassLoader(),
-                    new Class[]{ method.getReturnType(), AssociationReference.class },
+                return newProxyInstance(
+                    getClass().getClassLoader(),
+                    new Class[]{ methodReturnType, AssociationReference.class },
                     new AssociationReferenceProxy( method, traversedAssociation )
                 );
             }
+            else if( ManyAssociation.class.isAssignableFrom( methodReturnType ) )
+            {
+                return newProxyInstance(
+                    getClass().getClassLoader(),
+                    new Class[]{ methodReturnType, AssociationReference.class },
+                    new ManyAssociationReferenceProxy( method, traversedAssociation )
+                );
+            }
         }
-        throw new UnsupportedOperationException( "Only property and association methods can be used" );
+
+        throw new UnsupportedOperationException(
+            "Only property, association and many associations methods can be used" );
     }
 
-    @Override public String toString()
+    @Override
+    public final String toString()
     {
         return "Template for " + templateClass.getName();
     }

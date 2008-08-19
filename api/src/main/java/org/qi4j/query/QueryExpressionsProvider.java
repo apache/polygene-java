@@ -18,26 +18,27 @@
  */
 package org.qi4j.query;
 
-import org.qi4j.query.grammar.PropertyReference;
-import org.qi4j.query.grammar.PropertyIsNullPredicate;
-import org.qi4j.query.grammar.AssociationReference;
-import org.qi4j.query.grammar.AssociationIsNullPredicate;
-import org.qi4j.query.grammar.PropertyIsNotNullPredicate;
 import org.qi4j.query.grammar.AssociationIsNotNullPredicate;
-import org.qi4j.query.grammar.EqualsPredicate;
-import org.qi4j.query.grammar.NotEqualsPredicate;
-import org.qi4j.query.grammar.LessThanPredicate;
-import org.qi4j.query.grammar.LessOrEqualPredicate;
-import org.qi4j.query.grammar.GreaterThanPredicate;
-import org.qi4j.query.grammar.GreaterOrEqualPredicate;
-import org.qi4j.query.grammar.MatchesPredicate;
+import org.qi4j.query.grammar.AssociationIsNullPredicate;
+import org.qi4j.query.grammar.AssociationReference;
 import org.qi4j.query.grammar.BooleanExpression;
 import org.qi4j.query.grammar.Conjunction;
 import org.qi4j.query.grammar.Disjunction;
+import org.qi4j.query.grammar.EqualsPredicate;
+import org.qi4j.query.grammar.GreaterOrEqualPredicate;
+import org.qi4j.query.grammar.GreaterThanPredicate;
+import org.qi4j.query.grammar.LessOrEqualPredicate;
+import org.qi4j.query.grammar.LessThanPredicate;
+import org.qi4j.query.grammar.MatchesPredicate;
 import org.qi4j.query.grammar.Negation;
+import org.qi4j.query.grammar.NotEqualsPredicate;
 import org.qi4j.query.grammar.OrderBy;
+import org.qi4j.query.grammar.PropertyIsNotNullPredicate;
+import org.qi4j.query.grammar.PropertyIsNullPredicate;
+import org.qi4j.query.grammar.PropertyReference;
 import org.qi4j.query.grammar.SingleValueExpression;
 import org.qi4j.query.grammar.VariableValueExpression;
+import org.qi4j.entity.association.ManyAssociation;
 
 public interface QueryExpressionsProvider
 {
@@ -88,5 +89,7 @@ public interface QueryExpressionsProvider
     OrderBy newOrderBy( PropertyReference<?> tPropertyReference, OrderBy.Order order );
 
     <T> SingleValueExpression<T> newSingleValueExpression( T value );
+
+    <T> T oneOf( ManyAssociation<T> association );
 }
 

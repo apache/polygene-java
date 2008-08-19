@@ -58,13 +58,13 @@ public class ClassUtilTest
     @Test
     public void givenClassNameWhenToUriThenUriIsReturned()
     {
-        assertThat( "URI is correct", ClassUtil.toURI( A.class ), equalTo( "urn:qi4j:org.qi4j.util.ClassUtilTest-A" ) );
+        assertThat( "URI is correct", ClassUtil.toURI( A.class ), equalTo( "urn:qi4j:entity:org.qi4j.util.ClassUtilTest-A" ) );
     }
 
     @Test
     public void givenUriWhenToClassNameThenClassNameIsReturned()
     {
-        assertThat( "Class name is correct", ClassUtil.toClassName( "urn:qi4j:org.qi4j.util.ClassUtilTest-A" ), equalTo( "org.qi4j.util.ClassUtilTest$A" ) );
+        assertThat( "Class name is correct", ClassUtil.toClassName( "urn:qi4j:entity:org.qi4j.util.ClassUtilTest-A" ), equalTo( "org.qi4j.util.ClassUtilTest$A" ) );
     }
 
     interface A

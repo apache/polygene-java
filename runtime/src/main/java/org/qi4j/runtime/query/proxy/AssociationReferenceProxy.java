@@ -20,7 +20,7 @@ package org.qi4j.runtime.query.proxy;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
+import static java.lang.reflect.Proxy.newProxyInstance;
 import org.qi4j.query.grammar.AssociationReference;
 import org.qi4j.runtime.query.grammar.impl.AssociationReferenceImpl;
 
@@ -70,10 +70,11 @@ public final class AssociationReferenceProxy
         }
         if( args == null && "get".equals( method.getName() ) )
         {
-            return Proxy.newProxyInstance(
+            Class<?> associationType = associationReference.associationType();
+            return newProxyInstance(
                 this.getClass().getClassLoader(),
-                new Class[]{ associationReference.associationType() },
-                new MixinTypeProxy( associationReference.associationType(), associationReference )
+                new Class[]{ associationType },
+                new MixinTypeProxy( associationType, associationReference )
             );
         }
         if( "toString".equals( method.getName() ) )
@@ -84,7 +85,8 @@ public final class AssociationReferenceProxy
         throw new UnsupportedOperationException( "Only association methods can be used" );
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return associationReference.toString();
     }

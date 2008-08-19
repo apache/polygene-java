@@ -22,6 +22,8 @@ import java.io.Serializable;
 public class ManyAssociationType
     implements Serializable
 {
+    private static final long serialVersionUID = 1L;
+
     public enum ManyAssociationTypeEnum
     {
         MANY, LIST, SET
