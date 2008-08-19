@@ -90,27 +90,33 @@ public class EntitySerializerTest
     }
 
     void createDummyData()
+        throws Exception
     {
         UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
         try
         {
             EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder( "test1", TestEntity.class );
-            builder.stateOfComposite().name().set( "Rickard" );
+            TestEntity rickardTemplate = builder.stateOfComposite();
+            rickardTemplate.name().set( "Rickard" );
+            rickardTemplate.title().set( "Mr" );
             TestEntity testEntity = builder.newInstance();
 
             EntityBuilder<TestEntity> builder2 = unitOfWork.newEntityBuilder( "test2", TestEntity.class );
-            builder2.stateOfComposite().name().set( "Niclas" );
-            builder2.stateOfComposite().association().set( testEntity );
-            builder2.stateOfComposite().manyAssoc().add( testEntity );
-            builder2.stateOfComposite().group().add( testEntity );
-            builder2.stateOfComposite().group().add( testEntity );
-            builder2.stateOfComposite().group().add( testEntity );
+            TestEntity niclasTemplate = builder2.stateOfComposite();
+            niclasTemplate.name().set( "Niclas" );
+            niclasTemplate.title().set( "Mr" );
+            niclasTemplate.association().set( testEntity );
+            niclasTemplate.manyAssoc().add( testEntity );
+            niclasTemplate.group().add( testEntity );
+            niclasTemplate.group().add( testEntity );
+            niclasTemplate.group().add( testEntity );
             TestEntity testEntity2 = builder2.newInstance();
             unitOfWork.complete();
         }
         catch( Exception e )
         {
             unitOfWork.discard();
+            throw e;
         }
 
     }
