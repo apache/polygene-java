@@ -17,18 +17,10 @@
  */
 package org.qi4j.entity.index.rdf;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import static java.lang.String.format;
 import org.openrdf.query.QueryLanguage;
-import org.qi4j.composite.Composite;
-import org.qi4j.entity.Identity;
-import org.qi4j.property.GenericPropertyInfo;
 import org.qi4j.query.grammar.AssociationIsNullPredicate;
 import org.qi4j.query.grammar.AssociationNullPredicate;
-import org.qi4j.query.grammar.AssociationReference;
 import org.qi4j.query.grammar.BooleanExpression;
 import org.qi4j.query.grammar.ComparisonPredicate;
 import org.qi4j.query.grammar.Conjunction;
@@ -38,10 +30,8 @@ import org.qi4j.query.grammar.Negation;
 import org.qi4j.query.grammar.OrderBy;
 import org.qi4j.query.grammar.PropertyIsNullPredicate;
 import org.qi4j.query.grammar.PropertyNullPredicate;
-import org.qi4j.query.grammar.PropertyReference;
 import org.qi4j.query.grammar.SingleValueExpression;
 import org.qi4j.query.grammar.ValueExpression;
-import org.qi4j.util.ClassUtil;
 
 /**
  * TODO Add JavaDoc
@@ -49,25 +39,13 @@ import org.qi4j.util.ClassUtil;
 public class SparqlRdfQueryParser
     implements RdfQueryParser
 {
-    private int namespaceCounter = 0;
-    private int valueCounter = 0;
+    Namespaces namespaces = new Namespaces();
+    Triples triples = new Triples( namespaces );
 
-    /**
-     * Mapping between namespace and prefix.
-     */
-    private final Map<String, String> namespaces;
-    private final List<Triple> triples;
-
-    /**
-     * Constructor.
-     */
     public SparqlRdfQueryParser()
     {
-        namespaces = new HashMap<String, String>();
-        addNamespace( "rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#" );
-        addNamespace( "rdfs", "http://www.w3.org/2000/01/rdf-schema#" );
-        triples = new ArrayList<Triple>();
     }
+
 
     public QueryLanguage getQueryLanguage()
     {
@@ -80,47 +58,34 @@ public class SparqlRdfQueryParser
                             final Integer firstResult,
                             final Integer maxResults )
     {
-        StringBuilder query = new StringBuilder();
-        triples.add(
-            new Triple(
-                "?entity",
-                "rdf:type",
-                "<" + ClassUtil.toURI( resultType ) + ">",
-                false )
-        );
-        triples.add(
-            new Triple(
-                "?entity",
-                addNamespace( ClassUtil.toURI( Composite.class ) + ":" ) + ":entityType",
-                "?entityType",
-                false )
-        );
-        triples.add(
-            new Triple(
-                "?entity",
-                addNamespace( GenericPropertyInfo.toNamespace( getIdentityAccessor( Identity.class ) ) ) + ":identity",
-                "?identity",
-                false
-            )
-        );
+        triples.addDefaultTriples( resultType );
+
+        // and collect namespaces
         final String filter = processFilter( whereClause );
         final String orderBy = processOrderBy( orderBySegments );
-        for( Map.Entry<String, String> nsEntry : namespaces.entrySet() )
+
+        StringBuilder query = new StringBuilder();
+        // alternatively namespaces.toSparql
+        for( String namespace : namespaces.getNamespaces() )
         {
-            query
-                .append( "PREFIX " )
-                .append( nsEntry.getValue() )
-                .append( ": <" )
-                .append( nsEntry.getKey() )
-                .append( "> " );
+            query.append( format( "PREFIX %s: <%s> ", namespaces.getNamespacePrefix( namespace ), namespace ) );
         }
         query.append( "SELECT DISTINCT ?entityType ?identity " );
-        if( !triples.isEmpty() )
+        if( triples.hasTriples() )
         {
             query.append( "WHERE {" );
-            for( Triple triple : triples )
+            // alternatively triples.toSparql
+            for( Triples.Triple triple : triples )
             {
-                query.append( triple ).append( " " );
+                // alternatively triple.toSparql
+                if( triple.isOptional() )
+                {
+                    query.append( format( "OPTIONAL {%s %s %s}. ", triple.getSubject(), triple.getPredicate(), triple.getValue() ) );
+                }
+                else
+                {
+                    query.append( format( "%s %s %s. ", triple.getSubject(), triple.getPredicate(), triple.getValue() ) );
+                }
             }
             if( filter.length() > 0 )
             {
@@ -144,77 +109,58 @@ public class SparqlRdfQueryParser
         return query.toString();
     }
 
+
     private String processFilter( final BooleanExpression expression )
     {
         if( expression == null )
         {
             return "";
         }
-        final StringBuilder filter = new StringBuilder();
         if( expression instanceof Conjunction )
         {
-            filter
-                .append( "(" )
-                .append( processFilter( ( (Conjunction) expression ).leftSideExpression() ) )
-                .append( " && " )
-                .append( processFilter( ( (Conjunction) expression ).rightSideExpression() ) )
-                .append( ")" );
+            final Conjunction conjunction = (Conjunction) expression;
+            return format( "(%s && %s)",
+                           processFilter( conjunction.leftSideExpression() ),
+                           processFilter( conjunction.rightSideExpression() ) );
         }
-        else if( expression instanceof Disjunction )
+        if( expression instanceof Disjunction )
         {
-            filter
-                .append( "(" )
-                .append( processFilter( ( (Disjunction) expression ).leftSideExpression() ) )
-                .append( " || " )
-                .append( processFilter( ( (Disjunction) expression ).rightSideExpression() ) )
-                .append( ")" );
+            final Disjunction disjunction = (Disjunction) expression;
+            return format( "(%s || %s)",
+                           processFilter( disjunction.leftSideExpression() ),
+                           processFilter( disjunction.rightSideExpression() ) );
         }
-        else if( expression instanceof Negation )
+        if( expression instanceof Negation )
         {
-            filter
-                .append( "(!" )
-                .append( processFilter( ( (Negation) expression ).expression() ) )
-                .append( ")" );
+            return format( "(!%s)", processFilter( ( (Negation) expression ).expression() ) );
         }
-        else if( expression instanceof MatchesPredicate )
+        if( expression instanceof MatchesPredicate )
         {
-            processMatchesPredicate( (MatchesPredicate) expression, filter );
-
+            return processMatchesPredicate( (MatchesPredicate) expression );
         }
-        else if( expression instanceof ComparisonPredicate )
+        if( expression instanceof ComparisonPredicate )
         {
-            processComparisonPredicate( (ComparisonPredicate) expression, filter );
-
+            return processComparisonPredicate( (ComparisonPredicate) expression );
         }
-        else if( expression instanceof PropertyNullPredicate )
+        if( expression instanceof PropertyNullPredicate )
         {
-            processNullPredicate( (PropertyNullPredicate) expression, filter );
+            return processNullPredicate( (PropertyNullPredicate) expression );
         }
-        else if( expression instanceof AssociationNullPredicate )
+        if( expression instanceof AssociationNullPredicate )
         {
-            processNullPredicate( (AssociationNullPredicate) expression, filter );
+            return processNullPredicate( (AssociationNullPredicate) expression );
         }
-        else
-        {
-            throw new UnsupportedOperationException( "Expression " + expression + " is not supported" );
-        }
-        return filter.toString();
+        throw new UnsupportedOperationException( "Expression " + expression + " is not supported" );
     }
 
-    private void processMatchesPredicate( final MatchesPredicate predicate,
-                                          final StringBuilder filter )
+    private String processMatchesPredicate( final MatchesPredicate predicate )
     {
-        String valueVariable = addTriple( predicate.propertyReference(), false ).value;
         ValueExpression valueExpression = predicate.valueExpression();
         if( valueExpression instanceof SingleValueExpression )
         {
-            filter
-                .append( "regex(" )
-                .append( valueVariable )
-                .append( "," )
-                .append( " \"" )
-                .append( ( (SingleValueExpression) valueExpression ).value() )
-                .append( "\")" );
+            String valueVariable = triples.addTriple( predicate.propertyReference(), false ).getValue();
+            final SingleValueExpression singleValueExpression = (SingleValueExpression) valueExpression;
+            return format( "regex(%s,\"%s\")", valueVariable, singleValueExpression.value() );
         }
         else
         {
@@ -222,21 +168,15 @@ public class SparqlRdfQueryParser
         }
     }
 
-    private void processComparisonPredicate( final ComparisonPredicate predicate,
-                                             final StringBuilder filter )
+    private String processComparisonPredicate( final ComparisonPredicate predicate )
     {
-        String valueVariable = addTriple( predicate.propertyReference(), false ).value;
         ValueExpression valueExpression = predicate.valueExpression();
         if( valueExpression instanceof SingleValueExpression )
         {
-            filter
-                .append( "(" )
-                .append( valueVariable )
-                .append( " " )
-                .append( Operators.getOperator( predicate.getClass() ) )
-                .append( " \"" )
-                .append( ( (SingleValueExpression) valueExpression ).value() )
-                .append( "\")" );
+            String valueVariable = triples.addTriple( predicate.propertyReference(), false ).getValue();
+            final SingleValueExpression singleValueExpression = (SingleValueExpression) valueExpression;
+            return format( "(%s %s \"%s\")", valueVariable, Operators.getOperator( predicate.getClass() ),
+                           singleValueExpression.value() );
         }
         else
         {
@@ -244,32 +184,30 @@ public class SparqlRdfQueryParser
         }
     }
 
-    private void processNullPredicate( final PropertyNullPredicate predicate,
-                                       final StringBuilder filter )
+    private String processNullPredicate( final PropertyNullPredicate predicate )
     {
-        filter.append( "(" );
+        final String value = triples.addTriple( predicate.propertyReference(), true ).getValue();
         if( predicate instanceof PropertyIsNullPredicate )
         {
-            filter.append( "!" );
+            return format( "(! bound(%s))", value );
         }
-        filter
-            .append( "bound(" )
-            .append( addTriple( predicate.propertyReference(), true ).value )
-            .append( "))" );
+        else
+        {
+            return format( "(bound(%s))", value );
+        }
     }
 
-    private void processNullPredicate( final AssociationNullPredicate predicate,
-                                       final StringBuilder filter )
+    private String processNullPredicate( final AssociationNullPredicate predicate )
     {
-        filter.append( "(" );
+        final String value = triples.addTriple( predicate.associationReference(), true ).getValue();
         if( predicate instanceof AssociationIsNullPredicate )
         {
-            filter.append( "!" );
+            return format( "(! bound(%s))", value );
         }
-        filter
-            .append( "bound(" )
-            .append( addTriple( predicate.associationReference(), true ).value )
-            .append( "))" );
+        else
+        {
+            return format( "(bound(%s))", value );
+        }
     }
 
     private String processOrderBy( OrderBy[] orderBySegments )
@@ -281,195 +219,19 @@ public class SparqlRdfQueryParser
             {
                 if( orderBySegment != null )
                 {
-                    final String valueVariable = addTriple( orderBySegment.propertyReference(), false ).value;
+                    final String valueVariable = triples.addTriple( orderBySegment.propertyReference(), false ).getValue();
                     if( orderBySegment.order() == OrderBy.Order.ASCENDING )
                     {
-                        orderBy.append( "ASC" );
+                        orderBy.append( format( "ASC(%s)", valueVariable ) );
                     }
                     else
                     {
-                        orderBy.append( "DESC" );
+                        orderBy.append( format( "DESC(%s)", valueVariable ) );
                     }
-                    orderBy
-                        .append( "(" )
-                        .append( valueVariable )
-                        .append( ")" );
                 }
             }
-            return orderBy.toString();
+            return orderBy.length() > 0 ? orderBy.toString() : null;
         }
         return null;
     }
-
-    private String addNamespace( final String namespace )
-    {
-        String ns = namespaces.get( namespace );
-        if( ns == null )
-        {
-            ns = "ns" + namespaceCounter++;
-            namespaces.put( namespace, ns );
-        }
-        return ns;
-    }
-
-    private void addNamespace( final String prefix,
-                               final String namespace )
-    {
-        namespaces.put( namespace, prefix );
-    }
-
-    private Triple addTriple( final PropertyReference propertyReference,
-                              boolean optional )
-    {
-        String subject = "?entity";
-        if( propertyReference.traversedAssociation() != null )
-        {
-            subject = addTriple( propertyReference.traversedAssociation(), false ).value;
-        }
-        String ns = addNamespace( GenericPropertyInfo.toNamespace( propertyReference.propertyAccessor() ) );
-        return addTriple( subject, ns + ":" + propertyReference.propertyName(), optional );
-    }
-
-    private Triple addTriple( final AssociationReference associationReference,
-                              final boolean optional )
-    {
-        String subject = "?entity";
-        if( associationReference.traversedAssociation() != null )
-        {
-            subject = addTriple( associationReference.traversedAssociation(), false ).value;
-        }
-        String ns = addNamespace( toNamespace( associationReference.associationAccessor() ) );
-        return addTriple( subject, ns + ":" + associationReference.associationName(), optional );
-    }
-
-    private Triple addTriple( final String subject,
-                              final String predicate,
-                              final boolean optional )
-    {
-        Triple triple = getTriple( subject, predicate );
-        if( triple == null )
-        {
-            final String value = "?v" + valueCounter++;
-            triple = new Triple( subject, predicate, value, optional );
-            triples.add( triple );
-        }
-        if( !optional && triple.optional )
-        {
-            triple.optional = false;
-        }
-        return triple;
-    }
-
-    private Triple getTriple( final String subject,
-                              final String predicate )
-    {
-        for( Triple triple : triples )
-        {
-            if( triple.subject.equals( subject )
-                && triple.predicate.equals( predicate ) )
-            {
-                return triple;
-            }
-        }
-        return null;
-    }
-
-    private String toNamespace( final Method accessor )
-    {
-        if( accessor == null )
-        {
-            return null;
-        }
-        return "urn:qi4j:association:" + GenericPropertyInfo.getDeclaringClassName( accessor ) + ":";
-    }
-
-    private static Method getIdentityAccessor( final Class declaringClass )
-    {
-        try
-        {
-            return declaringClass.getMethod( "identity" );
-        }
-        catch( NoSuchMethodException e )
-        {
-            throw new RuntimeException( "Internal error", e );
-        }
-    }
-
-    private static class Triple
-    {
-        final String subject;
-        final String predicate;
-        final String value;
-        boolean optional;
-
-        private Triple( final String subject,
-                        final String predicate,
-                        final String value,
-                        final boolean optional )
-        {
-            this.subject = subject;
-            this.predicate = predicate;
-            this.value = value;
-            this.optional = optional;
-        }
-
-        @Override public boolean equals( Object otherObject )
-        {
-            if( this == otherObject )
-            {
-                return true;
-            }
-            if( otherObject == null || getClass() != otherObject.getClass() )
-            {
-                return false;
-            }
-
-            Triple other = (Triple) otherObject;
-
-            if( predicate != null ? !predicate.equals( other.predicate ) : other.predicate != null )
-            {
-                return false;
-            }
-            if( subject != null ? !subject.equals( other.subject ) : other.subject != null )
-            {
-                return false;
-            }
-            if( value != null )
-            {
-                return value.equals( other.value );
-            }
-            else
-            {
-                return other.value == null;
-            }
-        }
-
-        @Override public int hashCode()
-        {
-            int result;
-            result = ( subject != null ? subject.hashCode() : 0 );
-            result = 31 * result + ( predicate != null ? predicate.hashCode() : 0 );
-            result = 31 * result + ( value != null ? value.hashCode() : 0 );
-            return result;
-        }
-
-        @Override public String toString()
-        {
-            final StringBuilder triple = new StringBuilder()
-                .append( subject )
-                .append( " " )
-                .append( predicate )
-                .append( " " )
-                .append( value );
-            if( optional )
-            {
-                triple
-                    .insert( 0, "OPTIONAL {" )
-                    .append( "}" );
-            }
-            triple.append( "." );
-            return triple.toString();
-        }
-    }
-
 }
