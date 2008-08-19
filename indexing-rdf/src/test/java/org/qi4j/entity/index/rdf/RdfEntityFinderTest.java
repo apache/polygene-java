@@ -17,12 +17,19 @@
  */
 package org.qi4j.entity.index.rdf;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
 import org.qi4j.entity.UnitOfWorkCompletionException;
+import static org.qi4j.entity.index.rdf.NameableAssert.assertNames;
+import static org.qi4j.entity.index.rdf.NameableAssert.toList;
 import org.qi4j.entity.memory.IndexedMemoryEntityStoreService;
 import org.qi4j.library.rdf.repository.MemoryRepositoryService;
 import static org.qi4j.query.QueryExpressions.and;
@@ -38,6 +45,8 @@ import static org.qi4j.query.QueryExpressions.orderBy;
 import static org.qi4j.query.QueryExpressions.templateFor;
 import org.qi4j.query.grammar.BooleanExpression;
 import org.qi4j.query.grammar.OrderBy;
+import org.qi4j.service.ServiceReference;
+import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.UuidIdentityGeneratorService;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
@@ -51,6 +60,9 @@ public class RdfEntityFinderTest
 
     private SingletonAssembler assembler;
     private EntityFinder entityFinder;
+    private static final String JACK = "Jack Doe";
+    private static final String JOE = "Joe Doe";
+    private static final String ANN = "Ann Doe";
 
     @Before
     public void setUp() throws UnitOfWorkCompletionException
@@ -83,18 +95,22 @@ public class RdfEntityFinderTest
     @Test
     public void showNetwork()
     {
-        assembler.serviceFinder().findService( RdfIndexerExporterComposite.class ).get().toRDF( System.out );
+        final ServiceReference<RdfIndexerExporterComposite> indexerService = assembler.serviceFinder().findService( RdfIndexerExporterComposite.class );
+        final RdfIndexerExporterComposite exporter = indexerService.get();
+        exporter.toRDF( System.out );
+        // todo asserts
     }
 
     @Test
     public void script01() throws EntityFinderException
     {
         // should return all persons (Joe, Ann, Jack Doe)
-        entityFinder.findEntities(
+        assertNames( entityFinder.findEntities(
             PersonComposite.class.getName(),
             ALL,
             NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS
-        );
+        )
+            , JOE, JACK, ANN );
     }
 
     @Test
@@ -102,22 +118,22 @@ public class RdfEntityFinderTest
     {
         Nameable nameable = templateFor( Nameable.class );
         // should return Gaming domain
-        entityFinder.findEntities(
+        assertNames( entityFinder.findEntities(
             Domain.class.getName(),
             eq( nameable.name(), "Gaming" ),
             NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS
-        );
+        ), "Gaming" );
     }
 
     @Test
     public void script03() throws EntityFinderException
     {
         // should return all entities
-        entityFinder.findEntities(
+        assertNames( entityFinder.findEntities(
             Nameable.class.getName(),
             ALL,
             NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS
-        );
+        ), NameableAssert.allNames() );
     }
 
     @Test
@@ -125,11 +141,12 @@ public class RdfEntityFinderTest
     {
         Person person = templateFor( Person.class );
         // should return Joe and Ann Doe
-        entityFinder.findEntities(
+        assertNames( entityFinder.findEntities(
             Person.class.getName(),
             eq( person.placeOfBirth().get().name(), "Kuala Lumpur" ),
             NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS
-        );
+        ),
+                     JOE, ANN );
     }
 
     @Test
@@ -137,11 +154,11 @@ public class RdfEntityFinderTest
     {
         Person person = templateFor( Person.class );
         // should return Joe Doe
-        entityFinder.findEntities(
+        assertNames( entityFinder.findEntities(
             Person.class.getName(),
             eq( person.mother().get().placeOfBirth().get().name(), "Kuala Lumpur" ),
             NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS
-        );
+        ), JOE );
     }
 
     @Test
@@ -149,11 +166,11 @@ public class RdfEntityFinderTest
     {
         Person person = templateFor( Person.class );
         // should return Joe and Ann Doe
-        entityFinder.findEntities(
+        assertNames( entityFinder.findEntities(
             Person.class.getName(),
             ge( person.yearOfBirth(), 1973 ),
             NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS
-        );
+        ), JOE, ANN );
     }
 
     @Test
@@ -161,14 +178,14 @@ public class RdfEntityFinderTest
     {
         Person person = templateFor( Person.class );
         // should return Jack Doe
-        entityFinder.findEntities(
+        assertNames( entityFinder.findEntities(
             Nameable.class.getName(),
             and(
                 ge( person.yearOfBirth(), 1900 ),
                 eq( person.placeOfBirth().get().name(), "Penang" )
             ),
             NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS
-        );
+        ), JACK );
     }
 
     @Test
@@ -176,14 +193,15 @@ public class RdfEntityFinderTest
     {
         Person person = templateFor( Person.class );
         // should return Jack and Ann Doe
-        entityFinder.findEntities(
-            Person.class.getName(),
-            or(
-                eq( person.yearOfBirth(), 1970 ),
-                eq( person.yearOfBirth(), 1975 )
-            ),
-            NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS
-        );
+        assertNames(
+            entityFinder.findEntities(
+                Person.class.getName(),
+                or(
+                    eq( person.yearOfBirth(), 1970 ),
+                    eq( person.yearOfBirth(), 1975 )
+                ),
+                NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS
+            ), JACK, ANN );
     }
 
     @Test
@@ -191,14 +209,15 @@ public class RdfEntityFinderTest
     {
         Person person = templateFor( Person.class );
         // should return Ann Doe
-        entityFinder.findEntities(
-            Female.class.getName(),
-            or(
-                eq( person.yearOfBirth(), 1970 ),
-                eq( person.yearOfBirth(), 1975 )
-            ),
-            NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS
-        );
+        assertNames(
+            entityFinder.findEntities(
+                Female.class.getName(),
+                or(
+                    eq( person.yearOfBirth(), 1970 ),
+                    eq( person.yearOfBirth(), 1975 )
+                ),
+                NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS
+            ), ANN );
     }
 
     @Test
@@ -206,13 +225,14 @@ public class RdfEntityFinderTest
     {
         Person person = templateFor( Person.class );
         // should return Joe and Jack Doe
-        entityFinder.findEntities(
-            Person.class.getName(),
-            not(
-                eq( person.yearOfBirth(), 1975 )
-            ),
-            NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS
-        );
+        assertNames(
+            entityFinder.findEntities(
+                Person.class.getName(),
+                not(
+                    eq( person.yearOfBirth(), 1975 )
+                ),
+                NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS
+            ), JOE, JACK );
     }
 
     @Test
@@ -220,11 +240,12 @@ public class RdfEntityFinderTest
     {
         Person person = templateFor( Person.class );
         // should return Joe Doe
-        entityFinder.findEntities(
-            Person.class.getName(),
-            isNotNull( person.email() ),
-            NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS
-        );
+        assertNames(
+            entityFinder.findEntities(
+                Person.class.getName(),
+                isNotNull( person.email() ),
+                NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS
+            ), JOE );
     }
 
     @Test
@@ -232,11 +253,12 @@ public class RdfEntityFinderTest
     {
         Person person = templateFor( Person.class );
         // should return Ann and Jack Doe
-        entityFinder.findEntities(
-            Person.class.getName(),
-            isNull( person.email() ),
-            NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS
-        );
+        assertNames(
+            entityFinder.findEntities(
+                Person.class.getName(),
+                isNull( person.email() ),
+                NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS
+            ), ANN, JACK );
     }
 
     @Test
@@ -244,11 +266,12 @@ public class RdfEntityFinderTest
     {
         Male person = templateFor( Male.class );
         // should return Jack Doe
-        entityFinder.findEntities(
-            Person.class.getName(),
-            isNotNull( person.wife() ),
-            NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS
-        );
+        assertNames(
+            entityFinder.findEntities(
+                Person.class.getName(),
+                isNotNull( person.wife() ),
+                NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS
+            ), JACK );
     }
 
     @Test
@@ -256,11 +279,12 @@ public class RdfEntityFinderTest
     {
         Male person = templateFor( Male.class );
         // should return Joe Doe
-        entityFinder.findEntities(
-            Male.class.getName(),
-            isNull( person.wife() ),
-            NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS
-        );
+        assertNames(
+            entityFinder.findEntities(
+                Male.class.getName(),
+                isNull( person.wife() ),
+                NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS
+            ), JOE );
     }
 
     @Test
@@ -268,33 +292,36 @@ public class RdfEntityFinderTest
     {
         Male person = templateFor( Male.class );
         // should return Ann and Joe Doe
-        entityFinder.findEntities(
-            Person.class.getName(),
-            isNull( person.wife() ),
-            NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS
-        );
+        assertNames(
+            entityFinder.findEntities(
+                Person.class.getName(),
+                isNull( person.wife() ),
+                NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS
+            ), ANN, JOE );
     }
 
     @Test
     public void script16() throws EntityFinderException
     {
         // should return only 2 entities
-        entityFinder.findEntities(
+        final List<QualifiedIdentity> identities = toList( entityFinder.findEntities(
             Nameable.class.getName(),
             ALL,
             NO_SORTING, NO_FIRST_RESULT, 2
-        );
+        ) );
+        assertEquals( "2 identitities", 2, identities.size() );
     }
 
     @Test
     public void script17() throws EntityFinderException
     {
         // should return only 2 entities starting with third one
-        entityFinder.findEntities(
+        final List<QualifiedIdentity> identities = toList( entityFinder.findEntities(
             Nameable.class.getName(),
             ALL,
             NO_SORTING, 3, 2
-        );
+        ) );
+        assertEquals( "2 identitities", 2, identities.size() );
     }
 
     @Test
@@ -302,12 +329,16 @@ public class RdfEntityFinderTest
     {
         // should return all Nameable entities sorted by name
         Nameable nameable = templateFor( Nameable.class );
-        entityFinder.findEntities(
-            Nameable.class.getName(),
-            ALL,
-            new OrderBy[]{ orderBy( nameable.name() ) },
-            NO_FIRST_RESULT, NO_MAX_RESULTS
-        );
+        final String[] allNames = NameableAssert.allNames();
+        Arrays.sort( allNames );
+
+        assertNames( false,
+                     entityFinder.findEntities(
+                         Nameable.class.getName(),
+                         ALL,
+                         new OrderBy[]{ orderBy( nameable.name() ) },
+                         NO_FIRST_RESULT, NO_MAX_RESULTS
+                     ), allNames );
     }
 
     @Test
@@ -315,12 +346,22 @@ public class RdfEntityFinderTest
     {
         // should return all Nameable entities with a name > "B" sorted by name
         Nameable nameable = templateFor( Nameable.class );
-        entityFinder.findEntities(
-            Nameable.class.getName(),
-            gt( nameable.name(), "B" ),
-            new OrderBy[]{ orderBy( nameable.name() ) },
-            NO_FIRST_RESULT, NO_MAX_RESULTS
-        );
+        List<String> largerThanB = new ArrayList<String>();
+        for( String name : NameableAssert.allNames() )
+        {
+            if( name.compareTo( "B" ) > 0 )
+            {
+                largerThanB.add( name );
+            }
+        }
+        Collections.sort( largerThanB );
+        assertNames( false,
+                     entityFinder.findEntities(
+                         Nameable.class.getName(),
+                         gt( nameable.name(), "B" ),
+                         new OrderBy[]{ orderBy( nameable.name() ) },
+                         NO_FIRST_RESULT, NO_MAX_RESULTS
+                     ), largerThanB.toArray( new String[largerThanB.size()] ) );
     }
 
     @Test
@@ -328,12 +369,13 @@ public class RdfEntityFinderTest
     {
         // should return all Persons born after 1973 (Ann and Joe Doe) sorted descending by name
         Person person = templateFor( Person.class );
-        entityFinder.findEntities(
-            Person.class.getName(),
-            gt( person.yearOfBirth(), 1973 ),
-            new OrderBy[]{ orderBy( person.name(), OrderBy.Order.DESCENDING ) },
-            NO_FIRST_RESULT, NO_MAX_RESULTS
-        );
+        assertNames( false,
+                     entityFinder.findEntities(
+                         Person.class.getName(),
+                         gt( person.yearOfBirth(), 1973 ),
+                         new OrderBy[]{ orderBy( person.name(), OrderBy.Order.DESCENDING ) },
+                         NO_FIRST_RESULT, NO_MAX_RESULTS
+                     ), JOE, ANN );
     }
 
     @Test
@@ -341,12 +383,13 @@ public class RdfEntityFinderTest
     {
         // should return all Persons sorted name of the city they were born
         Person person = templateFor( Person.class );
-        entityFinder.findEntities(
-            Person.class.getName(),
-            ALL,
-            new OrderBy[]{ orderBy( person.placeOfBirth().get().name() ) },
-            NO_FIRST_RESULT, NO_MAX_RESULTS
-        );
+        assertNames( false,
+                     entityFinder.findEntities(
+                         Person.class.getName(),
+                         ALL,
+                         new OrderBy[]{ orderBy( person.placeOfBirth().get().name() ) },
+                         NO_FIRST_RESULT, NO_MAX_RESULTS
+                     ), JOE, ANN, JACK );
     }
 
     @Test
@@ -354,11 +397,12 @@ public class RdfEntityFinderTest
     {
         Nameable nameable = templateFor( Nameable.class );
         // should return Jack and Joe Doe
-        entityFinder.findEntities(
-            Nameable.class.getName(),
-            matches( nameable.name(), "J.*Doe" ),
-            NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS
-        );
+        assertNames(
+            entityFinder.findEntities(
+                Nameable.class.getName(),
+                matches( nameable.name(), "J.*Doe" ),
+                NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS
+            ), JACK, JOE );
     }
 
 }

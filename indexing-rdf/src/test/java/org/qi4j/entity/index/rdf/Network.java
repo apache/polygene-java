@@ -32,31 +32,32 @@ class Network
     static void populate( UnitOfWork unitOfWork )
         throws UnitOfWorkCompletionException
     {
+        NameableAssert.clear();
         EntityBuilder<DomainComposite> domainBuilder = unitOfWork.newEntityBuilder( DomainComposite.class );
         Domain gaming = domainBuilder.newInstance();
-        gaming.name().set( "Gaming" );
+        setName( gaming, "Gaming" );
         gaming.description().set( "Gaming domain" );
 
         Domain programming = domainBuilder.newInstance();
-        programming.name().set( "Programming" );
+        setName( programming, "Programming" );
         programming.description().set( "Programing domain" );
 
         Domain cooking = domainBuilder.newInstance();
-        cooking.name().set( "Cooking" );
+        setName( cooking, "Cooking" );
         cooking.description().set( "Cooking domain" );
 
         Domain cars = domainBuilder.newInstance();
-        cars.name().set( "Cars" );
+        setName( cars, "Cars" );
         cars.description().set( "Cars" );
 
         EntityBuilder<CityComposite> cityBuilder = unitOfWork.newEntityBuilder( CityComposite.class );
         City kualaLumpur = cityBuilder.newInstance();
-        kualaLumpur.name().set( "Kuala Lumpur" );
+        setName( kualaLumpur, "Kuala Lumpur" );
         kualaLumpur.country().set( "Malaysia" );
         kualaLumpur.county().set( "Some Jaya" );
 
         City penang = cityBuilder.newInstance();
-        penang.name().set( "Penang" );
+        setName( penang, "Penang" );
         penang.country().set( "Malaysia" );
         penang.county().set( "Some Other Jaya" );
 
@@ -64,13 +65,13 @@ class Network
         EntityBuilder<FemaleComposite> femaleBuilder = unitOfWork.newEntityBuilder( FemaleComposite.class );
 
         Female annDoe = femaleBuilder.newInstance();
-        annDoe.name().set( "Ann Doe" );
+        setName( annDoe, "Ann Doe" );
         annDoe.placeOfBirth().set( kualaLumpur );
         annDoe.yearOfBirth().set( 1975 );
         annDoe.interests().add( cooking );
 
         Male joeDoe = maleBuilder.newInstance();
-        joeDoe.name().set( "Joe Doe" );
+        setName( joeDoe, "Joe Doe" );
         joeDoe.placeOfBirth().set( kualaLumpur );
         joeDoe.yearOfBirth().set( 1990 );
         joeDoe.mother().set( annDoe );
@@ -79,7 +80,7 @@ class Network
         joeDoe.email().set( "joe@thedoes.net" );
 
         Male jackDoe = maleBuilder.newInstance();
-        jackDoe.name().set( "Jack Doe" );
+        setName( jackDoe, "Jack Doe" );
         jackDoe.placeOfBirth().set( penang );
         jackDoe.yearOfBirth().set( 1970 );
         jackDoe.interests().add( cars );
@@ -88,8 +89,15 @@ class Network
         EntityBuilder<CatComposite> catBuilder = unitOfWork.newEntityBuilder( CatComposite.class );
 
         Cat felix = catBuilder.newInstance();
-        felix.name().set( "Felix" );
+        setName( felix, "Felix" );
 
         unitOfWork.complete();
     }
+
+    private static void setName( Nameable nameable, String name )
+    {
+        nameable.name().set( name );
+        NameableAssert.trace( nameable );
+    }
+
 }
