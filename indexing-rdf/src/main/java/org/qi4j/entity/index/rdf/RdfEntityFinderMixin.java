@@ -17,9 +17,6 @@
  */
 package org.qi4j.entity.index.rdf;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import org.openrdf.model.Value;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.QueryEvaluationException;
@@ -28,6 +25,11 @@ import org.openrdf.query.TupleQueryResult;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
+import org.qi4j.entity.index.rdf.callback.CollectingQualifiedIdentityResultCallback;
+import org.qi4j.entity.index.rdf.callback.QualifiedIdentityResultCallback;
+import org.qi4j.entity.index.rdf.callback.SingleQualifiedIdentityResultCallback;
+import org.qi4j.entity.index.rdf.callback.TupleQueryQualifiedIdentityResultCallback;
+import org.qi4j.entity.index.rdf.callback.TupleQueryResultCallback;
 import org.qi4j.injection.scope.Service;
 import org.qi4j.query.grammar.BooleanExpression;
 import org.qi4j.query.grammar.OrderBy;
@@ -37,146 +39,71 @@ import org.qi4j.spi.query.EntityFinderException;
 
 /**
  * TODO Add JavaDoc
+ * TODO shall we support different implementation as SERQL?
  */
 public class RdfEntityFinderMixin
     implements EntityFinder
 {
     @Service Repository repository;
 
-    public Iterable<QualifiedIdentity> findEntities(
-        final String resultType,
-        final BooleanExpression whereClause,
-        final OrderBy[] orderBySegments,
-        final Integer firstResult,
-        final Integer maxResults )
+    public Iterable<QualifiedIdentity> findEntities( String resultType, BooleanExpression whereClause,
+                                                     OrderBy[] orderBySegments, Integer firstResult, Integer maxResults )
         throws EntityFinderException
     {
-        final Collection<QualifiedIdentity> entities = new ArrayList<QualifiedIdentity>();
-        try
-        {
-            final RepositoryConnection connection = repository.getConnection();
-
-            // TODO shall we support different implementation as SERQL?
-            final RdfQueryParser parser = new SparqlRdfQueryParser();
-            String query = parser.getQuery( resultType, whereClause, orderBySegments, firstResult, maxResults );
-            final TupleQuery tupleQuery = connection.prepareTupleQuery(
-                parser.getQueryLanguage(),
-                query
-            );
-            final TupleQueryResult result = tupleQuery.evaluate();
-            try
-            {
-                while( result.hasNext() )
-                {
-                    final BindingSet bindingSet = result.next();
-                    final Value identifier = bindingSet.getValue( "identity" );
-                    final Value entityClass = bindingSet.getValue( "entityType" );
-                    //TODO Shall we throw an exception if there is no binding for identifier = query parser is not right
-                    if( identifier != null )
-                    {
-                        System.out.println( entityClass.stringValue() + " -> " + identifier.stringValue() );
-                        entities.add( new QualifiedIdentity( identifier.stringValue(), entityClass.stringValue() ) );
-                    }
-                }
-            }
-            finally
-            {
-                result.close();
-                connection.close();
-            }
-        }
-        catch( RepositoryException e )
-        {
-            throw new EntityFinderException( e );
-        }
-        catch( MalformedQueryException e )
-        {
-            throw new EntityFinderException( e );
-        }
-        catch( QueryEvaluationException e )
-        {
-            throw new EntityFinderException( e );
-        }
-        return entities;
+        CollectingQualifiedIdentityResultCallback collectingCallback = new CollectingQualifiedIdentityResultCallback();
+        performTupleQuery( resultType, whereClause, orderBySegments, firstResult, maxResults, new SparqlRdfQueryParser(), collectingCallback );
+        return collectingCallback.getEntities();
     }
 
     public QualifiedIdentity findEntity( String resultType, BooleanExpression whereClause )
         throws EntityFinderException
     {
-        try
-        {
-            final RepositoryConnection connection = repository.getConnection();
-            // TODO shall we support different implementation as SERQL?
-            final RdfQueryParser parser = new SparqlRdfQueryParser();
-            final TupleQuery tupleQuery = connection.prepareTupleQuery(
-                parser.getQueryLanguage(),
-                parser.getQuery( resultType, whereClause, null, null, null )
-            );
-            final TupleQueryResult result = tupleQuery.evaluate();
-            try
-            {
-                while( result.hasNext() )
-                {
-                    final BindingSet bindingSet = result.next();
-                    final Value identifier = bindingSet.getValue( "identity" );
-                    final Value entityClass = bindingSet.getValue( "entityType" );
-                    //TODO Shall we throw an exception if there is no binding for identifier = query parser is not right
-                    if( identifier != null )
-                    {
-                        System.out.println( entityClass.stringValue() + " -> " + identifier.stringValue() );
-                        return new QualifiedIdentity( identifier.stringValue(), entityClass.stringValue() );
-                    }
-                }
-
-                return null;
-            }
-            finally
-            {
-                result.close();
-                connection.close();
-            }
-        }
-        catch( RepositoryException e )
-        {
-            throw new EntityFinderException( e );
-        }
-        catch( MalformedQueryException e )
-        {
-            throw new EntityFinderException( e );
-        }
-        catch( QueryEvaluationException e )
-        {
-            throw new EntityFinderException( e );
-        }
+        final SingleQualifiedIdentityResultCallback singleCallback = new SingleQualifiedIdentityResultCallback();
+        performTupleQuery( resultType, whereClause, null, null, null, new SparqlRdfQueryParser(), singleCallback );
+        return singleCallback.getQualifiedIdentity();
     }
 
-    public long countEntities( String resultType, BooleanExpression whereClause )
+    public long countEntities( String resultType, BooleanExpression whereClause ) throws EntityFinderException
+    {
+        return performTupleQuery( resultType, whereClause, null, null, null, new SparqlRdfQueryParser(), null );
+    }
+
+
+    private int performTupleQuery( String resultType, BooleanExpression whereClause, OrderBy[] orderBySegments,
+                                   Integer firstResult, Integer maxResults, RdfQueryParser parser, QualifiedIdentityResultCallback qualifiedIdentityResultCallback )
         throws EntityFinderException
     {
-        long entityCount = 0;
         try
         {
-            final RepositoryConnection connection = repository.getConnection();
-            // TODO shall we support different implementation as SERQL?
-            final RdfQueryParser parser = new SparqlRdfQueryParser();
-            final TupleQuery tupleQuery = connection.prepareTupleQuery(
-                parser.getQueryLanguage(),
-                parser.getQuery( resultType, whereClause, null, null, null )
-            );
-            final TupleQueryResult result = tupleQuery.evaluate();
+            RepositoryConnection connection = repository.getConnection();
+            String query = parser.getQuery( resultType, whereClause, orderBySegments, firstResult, maxResults );
+            TupleQuery tupleQuery = connection.prepareTupleQuery( parser.getQueryLanguage(), query );
+            TupleQueryResult result = tupleQuery.evaluate();
+            TupleQueryResultCallback tupleQueryResultCallback = new TupleQueryQualifiedIdentityResultCallback( qualifiedIdentityResultCallback );
             try
             {
+                int row = 0;
                 while( result.hasNext() )
                 {
-                    result.next();
-                    entityCount++;
+                    BindingSet bindingSet = result.next();
+                    if( !tupleQueryResultCallback.processRow( row, bindingSet ) )
+                    {
+                        break;
+                    }
+                    row++;
                 }
-                return entityCount;
+                return row;
             }
             finally
             {
-                result.close();
-                connection.close();
+                if( result != null )
+                {
+                    result.close();
+                }
+                if( connection != null )
+                {
+                    connection.close();
+                }
             }
         }
         catch( RepositoryException e )
@@ -188,6 +115,10 @@ public class RdfEntityFinderMixin
             throw new EntityFinderException( e );
         }
         catch( QueryEvaluationException e )
+        {
+            throw new EntityFinderException( e );
+        }
+        catch( Exception e )
         {
             throw new EntityFinderException( e );
         }

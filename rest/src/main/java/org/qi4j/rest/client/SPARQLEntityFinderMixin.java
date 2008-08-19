@@ -18,10 +18,11 @@
 package org.qi4j.rest.client;
 
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Collection;
 import org.qi4j.entity.index.rdf.RdfQueryParser;
 import org.qi4j.entity.index.rdf.SparqlRdfQueryParser;
+import org.qi4j.entity.index.rdf.callback.CollectingQualifiedIdentityResultCallback;
+import org.qi4j.entity.index.rdf.callback.QualifiedIdentityResultCallback;
+import org.qi4j.entity.index.rdf.callback.SingleQualifiedIdentityResultCallback;
 import org.qi4j.injection.scope.Service;
 import org.qi4j.query.grammar.BooleanExpression;
 import org.qi4j.query.grammar.OrderBy;
@@ -44,15 +45,91 @@ public class SPARQLEntityFinderMixin
 {
     @Service Wrapper<Client> client;
 
-    public Iterable<QualifiedIdentity> findEntities(
-        final String resultType,
-        final BooleanExpression whereClause,
-        final OrderBy[] orderBySegments,
-        final Integer firstResult,
-        final Integer maxResults )
+    public Iterable<QualifiedIdentity> findEntities( String resultType, BooleanExpression whereClause,
+                                                     OrderBy[] orderBySegments, Integer firstResult, Integer maxResults )
         throws EntityFinderException
     {
-        final Collection<QualifiedIdentity> entities = new ArrayList<QualifiedIdentity>();
+        CollectingQualifiedIdentityResultCallback callback = new CollectingQualifiedIdentityResultCallback();
+        performQuery( resultType, whereClause, orderBySegments, firstResult, maxResults, callback );
+        return callback.getEntities();
+    }
+
+
+    public QualifiedIdentity findEntity( String resultType, BooleanExpression whereClause )
+        throws EntityFinderException
+    {
+        final SingleQualifiedIdentityResultCallback callback = new SingleQualifiedIdentityResultCallback();
+        performQuery( resultType, whereClause, null, null, null, callback );
+        return callback.getQualifiedIdentity();
+    }
+
+    public long countEntities( String resultType, BooleanExpression whereClause )
+        throws EntityFinderException
+    {
+        return performQuery( resultType, whereClause, null, null, null, null );
+    }
+
+    private static class EntityResultXMLReaderAdapter extends XMLReaderAdapter
+    {
+        private String element;
+        private String id;
+        private String type;
+        private final QualifiedIdentityResultCallback callback;
+        private int row = 0;
+        private boolean done = false;
+
+        public EntityResultXMLReaderAdapter( QualifiedIdentityResultCallback callback )
+            throws SAXException
+        {
+            this.callback = callback;
+        }
+
+        @Override public void startElement( String uri, String localName, String qName, Attributes atts ) throws SAXException
+        {
+            element = localName;
+        }
+
+        @Override public void characters( char ch[], int start, int length ) throws SAXException
+        {
+            if( "literal".equals( element ) )
+            {
+                String value = String.valueOf( ch, start, length );
+                if( type == null )
+                {
+                    type = value;
+                }
+                else
+                {
+                    id = value;
+                }
+            }
+        }
+
+        @Override public void endElement( String uri, String localName, String qName ) throws SAXException
+        {
+            element = null;
+
+            if( localName.equals( "result" ) )
+            {
+                if( !done && callback != null )
+                {
+                    final QualifiedIdentity qualifiedIdentity = new QualifiedIdentity( id, type );
+                    // todo could also throw flow control exception
+                    done = !callback.processRow( row, qualifiedIdentity );
+                }
+                row++;
+            }
+        }
+
+        public int getRows()
+        {
+            return row;
+        }
+    }
+
+    public int performQuery( String resultType, BooleanExpression whereClause, OrderBy[] orderBySegments, Integer firstResult, Integer maxResults, QualifiedIdentityResultCallback callback )
+        throws EntityFinderException
+    {
         try
         {
             // TODO shall we support different implementation as SERQL?
@@ -61,148 +138,14 @@ public class SPARQLEntityFinderMixin
 
             Response response = client.get().get( "http://localhost:8040/qi4j/query.rdf?query=" + URLEncoder.encode( query, "UTF-8" ) );
             SaxRepresentation sax = response.getEntityAsSax();
-            sax.parse( new XMLReaderAdapter()
-            {
-                String element;
-                String id;
-                String type;
-
-                @Override public void startElement( String uri, String localName, String qName, Attributes atts ) throws SAXException
-                {
-                    element = localName;
-                }
-
-                @Override public void characters( char ch[], int start, int length ) throws SAXException
-                {
-                    String value = new String( ch, start, length );
-                    if( "literal".equals( element ) )
-                    {
-                        if( type == null )
-                        {
-                            type = value;
-                        }
-                        else
-                        {
-                            id = value;
-                        }
-                    }
-                }
-
-                @Override public void endElement( String uri, String localName, String qName ) throws SAXException
-                {
-                    element = null;
-
-                    if( localName.equals( "result" ) )
-                    {
-                        entities.add( new QualifiedIdentity( id, type ) );
-                    }
-                }
-            } );
+            final EntityResultXMLReaderAdapter xmlReaderAdapter = new EntityResultXMLReaderAdapter( callback );
+            sax.parse( xmlReaderAdapter );
+            return xmlReaderAdapter.getRows();
         }
         catch( Exception e )
         {
-            e.printStackTrace();
+            throw new EntityFinderException( e );
         }
-
-        return entities;
     }
 
-    public QualifiedIdentity findEntity( String resultType, BooleanExpression whereClause )
-        throws EntityFinderException
-    {
-/*
-        try
-        {
-            final RepositoryConnection connection = repository.getConnection();
-            // TODO shall we support different implementation as SERQL?
-            final RdfQueryParser parser = new SparqlRdfQueryParser();
-            final TupleQuery tupleQuery = connection.prepareTupleQuery(
-                parser.getQueryLanguage(),
-                parser.getQuery( resultType, whereClause, null, null, null )
-            );
-            final TupleQueryResult result = tupleQuery.evaluate();
-            try
-            {
-                while( result.hasNext() )
-                {
-                    final BindingSet bindingSet = result.next();
-                    final Value identifier = bindingSet.getValue( "identity" );
-                    final Value entityClass = bindingSet.getValue( "entityType" );
-                    //TODO Shall we throw an exception if there is no binding for identifier = query parser is not right
-                    if( identifier != null )
-                    {
-                        System.out.println( entityClass.stringValue() + " -> " + identifier.stringValue() );
-                        return new QualifiedIdentity( identifier.stringValue(), entityClass.stringValue() );
-                    }
-                }
-
-                return null;
-            }
-            finally
-            {
-                result.close();
-                connection.close();
-            }
-        }
-        catch( RepositoryException e )
-        {
-            throw new EntityFinderException( e );
-        }
-        catch( MalformedQueryException e )
-        {
-            throw new EntityFinderException( e );
-        }
-        catch( QueryEvaluationException e )
-        {
-            throw new EntityFinderException( e );
-        }
-*/
-        return null;
-    }
-
-    public long countEntities( String resultType, BooleanExpression whereClause )
-        throws EntityFinderException
-    {
-        long entityCount = 0;
-/*
-        try
-        {
-            final RepositoryConnection connection = repository.getConnection();
-            // TODO shall we support different implementation as SERQL?
-            final RdfQueryParser parser = new SparqlRdfQueryParser();
-            final TupleQuery tupleQuery = connection.prepareTupleQuery(
-                parser.getQueryLanguage(),
-                parser.getQuery( resultType, whereClause, null, null, null )
-            );
-            final TupleQueryResult result = tupleQuery.evaluate();
-            try
-            {
-                while( result.hasNext() )
-                {
-                    result.next();
-                    entityCount++;
-                }
-                return entityCount;
-            }
-            finally
-            {
-                result.close();
-                connection.close();
-            }
-        }
-        catch( RepositoryException e )
-        {
-            throw new EntityFinderException( e );
-        }
-        catch( MalformedQueryException e )
-        {
-            throw new EntityFinderException( e );
-        }
-        catch( QueryEvaluationException e )
-        {
-            throw new EntityFinderException( e );
-        }
-*/
-        return entityCount;
-    }
 }
