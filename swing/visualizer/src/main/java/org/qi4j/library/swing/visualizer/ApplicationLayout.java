@@ -184,25 +184,25 @@ public class ApplicationLayout extends TreeLayout
         return new Rectangle( location.x, location.y, width, height );
     }
 
-    private Rectangle computeLayerBounds( NodeItem layer, Point location )
+    private Rectangle arrangeChildrenHorizontallyAndComputeBounds( NodeItem nodeItem, Point location, BoundsComputer childBoundsComputer )
     {
-        Dimension dimension = getNodeLabelSize( layer );
+        Dimension dimension = getNodeLabelSize( nodeItem );
         int x = location.x + GraphConstants.paddingLeft;
         int y = location.y + GraphConstants.paddingTop + dimension.height + GraphConstants.vSpace;
 
-        Iterator children = layer.children();
-        int maxModuleHeight = 0;
+        Iterator children = nodeItem.children();
+        int maxChildHeight = 0;
         while( children.hasNext() )
         {
-            NodeItem module = (NodeItem) children.next();
+            NodeItem child = (NodeItem) children.next();
             Point moduleLocation = new Point( x, y );
-            Rectangle bounds = computeModuleBounds( module, moduleLocation );
-            module.setBounds( bounds.x, bounds.y, bounds.width, bounds.height );
+            Rectangle bounds = childBoundsComputer.computeBounds( child, moduleLocation );
+            child.setBounds( bounds.x, bounds.y, bounds.width, bounds.height );
 
             x += bounds.width + GraphConstants.hSpace;
-            if( bounds.height > maxModuleHeight )
+            if( bounds.height > maxChildHeight )
             {
-                maxModuleHeight = bounds.height;
+                maxChildHeight = bounds.height;
             }
 
         }
@@ -213,19 +213,41 @@ public class ApplicationLayout extends TreeLayout
         }
 
         int width = x - location.x;
-        int height = ( y + maxModuleHeight + GraphConstants.paddingBottom + GraphConstants.vSpace ) - location.y;
+        int height = ( y + maxChildHeight + GraphConstants.paddingBottom + GraphConstants.vSpace ) - location.y;
 
         return new Rectangle( location.x, location.y, width, height );
     }
 
+    private Rectangle computeLayerBounds( NodeItem layer, Point location )
+    {
+        return arrangeChildrenHorizontallyAndComputeBounds( layer, location, new BoundsComputer()
+        {
+            public Rectangle computeBounds( NodeItem node, Point location )
+            {
+                return computeModuleBounds( node, location );
+            }
+        } );
+    }
+
     private Rectangle computeModuleBounds( NodeItem module, Point location )
     {
+        return arrangeChildrenHorizontallyAndComputeBounds( module, location, new BoundsComputer()
+        {
+            public Rectangle computeBounds( NodeItem node, Point location )
+            {
+                return createCompositeGroupBounds( node, location );
+            }
+        } );
+    }
 
-        Dimension dimension = getNodeLabelSize( module );
+    private Rectangle createCompositeGroupBounds( NodeItem nodeItem, Point location )
+    {
+
+        Dimension dimension = getNodeLabelSize( nodeItem );
         int x = location.x + GraphConstants.paddingLeft;
         int y = location.y + GraphConstants.paddingTop + dimension.height + GraphConstants.vSpace;
 
-        Iterator children = module.children();
+        Iterator children = nodeItem.children();
         int maxCompositeWidth = 0;
         while( children.hasNext() )
         {
@@ -278,5 +300,10 @@ public class ApplicationLayout extends TreeLayout
         int width = fm.stringWidth( getName( node ) ) + 40;
         int height = fm.getHeight() + 2;
         return new Dimension( width, height );
+    }
+
+    private interface BoundsComputer
+    {
+        public Rectangle computeBounds( NodeItem node, Point location );
     }
 }

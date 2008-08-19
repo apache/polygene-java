@@ -51,6 +51,7 @@ public class ApplicationGraph
     static final int TYPE_LAYER = 1;
     static final int TYPE_MODULE = 2;
     static final int TYPE_COMPOSITE = 3;
+    static final int TYPE_GROUP = 4;
 
     static final int TYPE_EDGE_HIDDEN = 100;
 
@@ -115,10 +116,12 @@ public class ApplicationGraph
             if( GraphUtils.isComposite( visualItem ) )
             {
                 Node node = (Node) visualItem.getSourceTuple();
-                CompositeDescriptor descriptor = appGraphVisitor.getCompositeDescriptor( node );
-                if( descriptor != null )
+                Object o = appGraphVisitor.getCompositeDescriptor( node );
+                if( o != null && o instanceof CompositeDescriptor )
                 {
-                    DefaultMutableTreeNode root = new DefaultMutableTreeNode( descriptor.type().getSimpleName() );
+                    CompositeDescriptor descriptor = (CompositeDescriptor) o;
+
+                    DefaultMutableTreeNode root = new DefaultMutableTreeNode( GraphUtils.getCompositeName( descriptor.type() ) );
                     Iterable<Class> mixinTypes = descriptor.mixinTypes();
                     for( Class mixinType : mixinTypes )
                     {
@@ -142,15 +145,20 @@ public class ApplicationGraph
                             {
                                 Method method = ( (MethodNode) o ).getMethod();
 
+                                Class<?> returnType = method.getReturnType();
+                                System.out.println( returnType );
+                                //todo show link to other composites if the return type is an association
+
                                 Annotation[] annotations = method.getAnnotations();
                                 for( Annotation annotation : annotations )
                                 {
-                                    System.out.println( annotation.annotationType() + ", " + annotation.toString() + "\n" );
+//                                    System.out.println( annotation.annotationType() + ", " + annotation.toString() + "\n" );
                                 }
 
                                 Map<String, List> map = appGraphVisitor.getMethodAttributes( method );
 
                                 StringBuilder buf = new StringBuilder();
+                                buf.append( o.toString() ).append( "\n\n" );
 
                                 List constraints = map.get( "constraints" );
                                 buf.append( "Constraints\n" );
@@ -206,11 +214,24 @@ public class ApplicationGraph
                 this.method = method;
             }
 
+            private void appendAnnoation( StringBuilder buf, Annotation annotation )
+            {
+                buf.append( "@" ).append( annotation.annotationType().getSimpleName() ).append( " " );
+            }
+
             public String toString()
             {
                 StringBuilder buf = new StringBuilder();
-                buf.append( method.getReturnType().getSimpleName() ).append( " " ).
-                    append( method.getName() );
+
+                for( Annotation annotation : method.getAnnotations() )
+                {
+                    appendAnnoation( buf, annotation );
+                }
+                Class<?> returnType = method.getReturnType();
+
+                // todo add the 'Type' if the returnType is Property<T>
+
+                buf.append( returnType.getSimpleName() ).append( " " ).append( method.getName() );
 
                 buf.append( "( " );
                 Class<?>[] paramTypes = method.getParameterTypes();
@@ -220,7 +241,7 @@ public class ApplicationGraph
                     Annotation[] annotations = paramAnnotations[ i ];
                     for( Annotation annotation : annotations )
                     {
-                        buf.append( "@" ).append( annotation.annotationType().getSimpleName() ).append( " " );
+                        appendAnnoation( buf, annotation );
                     }
                     Class<?> type = paramTypes[ i ];
                     buf.append( type.getSimpleName() ).append( ", " );

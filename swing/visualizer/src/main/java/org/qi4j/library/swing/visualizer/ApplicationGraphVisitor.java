@@ -30,6 +30,9 @@ import org.qi4j.spi.composite.MethodConstraintsDescriptor;
 import org.qi4j.spi.composite.MethodConcernDescriptor;
 import org.qi4j.spi.composite.MethodSideEffectDescriptor;
 import org.qi4j.spi.composite.ConstraintDescriptor;
+import org.qi4j.spi.entity.EntityDescriptor;
+import org.qi4j.spi.object.ObjectDescriptor;
+import org.qi4j.service.ServiceDescriptor;
 import prefuse.data.Node;
 import prefuse.data.Graph;
 import prefuse.data.Edge;
@@ -50,8 +53,13 @@ class ApplicationGraphVisitor extends DescriptorVisitor
     private Node layerNode;
     private Node moduleNode;
 
+    private Node servicesNode;
+    private Node entitiesNode;
+    private Node compositesNode;
+    private Node objectsNode;
+
     private final Map<LayerDescriptor, Node> layerDescriptorToNodeMap = new HashMap<LayerDescriptor, Node>();
-    private final Map<Node, CompositeDescriptor> compositeDescriptorsMap = new HashMap<Node, CompositeDescriptor>();
+    private final Map<Node, Object> descriptorsMap = new HashMap<Node, Object>();
 
     public ApplicationGraphVisitor( Graph graph )
     {
@@ -84,8 +92,7 @@ class ApplicationGraphVisitor extends DescriptorVisitor
             incrementLayerLevel( usedLayerNode );
         }
 
-        Edge edge = graph.addEdge( root, layerNode );
-        edge.setInt( GraphConstants.FIELD_TYPE, ApplicationGraph.TYPE_EDGE_HIDDEN );
+        addHiddenEdge( root, layerNode );
     }
 
     private Node getLayerNode( LayerDescriptor layerDescriptor )
@@ -131,19 +138,87 @@ class ApplicationGraphVisitor extends DescriptorVisitor
         moduleNode = graph.addNode();
         moduleNode.setString( GraphConstants.FIELD_NAME, moduleDescriptor.name() );
         moduleNode.setInt( GraphConstants.FIELD_TYPE, ApplicationGraph.TYPE_MODULE );
-        Edge edge = graph.addEdge( layerNode, moduleNode );
-        edge.setInt( GraphConstants.FIELD_TYPE, ApplicationGraph.TYPE_EDGE_HIDDEN );
+
+        addHiddenEdge( layerNode, moduleNode );
+
+        servicesNode = null;
+        entitiesNode = null;
+        compositesNode = null;
+        objectsNode = null;
+
+    }
+
+    public void visit( ServiceDescriptor serviceDescriptor )
+    {
+        if( servicesNode == null )
+        {
+            servicesNode = graph.addNode();
+            servicesNode.setString( GraphConstants.FIELD_NAME, "Services" );
+            servicesNode.setInt( GraphConstants.FIELD_TYPE, ApplicationGraph.TYPE_GROUP );
+            addHiddenEdge( moduleNode, servicesNode );
+        }
+
+        Node node = graph.addNode();
+        node.setString( GraphConstants.FIELD_NAME, GraphUtils.getCompositeName( serviceDescriptor.type() ) );
+        node.setInt( GraphConstants.FIELD_TYPE, ApplicationGraph.TYPE_COMPOSITE );
+        addHiddenEdge( servicesNode, node );
+
+        descriptorsMap.put( node, serviceDescriptor );
+    }
+
+    public void visit( EntityDescriptor entityDescriptor )
+    {
+        if( entitiesNode == null )
+        {
+            entitiesNode = graph.addNode();
+            entitiesNode.setString( GraphConstants.FIELD_NAME, "Entities" );
+            entitiesNode.setInt( GraphConstants.FIELD_TYPE, ApplicationGraph.TYPE_GROUP );
+            addHiddenEdge( moduleNode, entitiesNode );
+        }
+
+        Node node = graph.addNode();
+        node.setString( GraphConstants.FIELD_NAME, GraphUtils.getCompositeName( entityDescriptor.type() ) );
+        node.setInt( GraphConstants.FIELD_TYPE, ApplicationGraph.TYPE_COMPOSITE );
+        addHiddenEdge( entitiesNode, node );
+
+        descriptorsMap.put( node, entityDescriptor );
     }
 
     public void visit( CompositeDescriptor compositeDescriptor )
     {
-        Node node = graph.addNode();
-        node.setString( GraphConstants.FIELD_NAME, compositeDescriptor.type().getSimpleName() );
-        node.setInt( GraphConstants.FIELD_TYPE, ApplicationGraph.TYPE_COMPOSITE );
-        Edge edge = graph.addEdge( moduleNode, node );
-        edge.setInt( GraphConstants.FIELD_TYPE, ApplicationGraph.TYPE_EDGE_HIDDEN );
+        if( compositesNode == null )
+        {
+            compositesNode = graph.addNode();
+            compositesNode.setString( GraphConstants.FIELD_NAME, "Composites" );
+            compositesNode.setInt( GraphConstants.FIELD_TYPE, ApplicationGraph.TYPE_GROUP );
+            addHiddenEdge( moduleNode, compositesNode );
+        }
 
-        compositeDescriptorsMap.put( node, compositeDescriptor );
+        Node node = graph.addNode();
+        node.setString( GraphConstants.FIELD_NAME, GraphUtils.getCompositeName( compositeDescriptor.type() ) );
+        node.setInt( GraphConstants.FIELD_TYPE, ApplicationGraph.TYPE_COMPOSITE );
+        addHiddenEdge( compositesNode, node );
+
+        descriptorsMap.put( node, compositeDescriptor );
+    }
+
+    public void visit( ObjectDescriptor objectDescriptor )
+    {
+        if( objectsNode == null )
+        {
+            System.out.println( "Creating objects node. Descriptor - " + objectDescriptor.toURI() );
+            objectsNode = graph.addNode();
+            objectsNode.setString( GraphConstants.FIELD_NAME, "Objects" );
+            objectsNode.setInt( GraphConstants.FIELD_TYPE, ApplicationGraph.TYPE_GROUP );
+            addHiddenEdge( moduleNode, objectsNode );
+        }
+
+        Node node = graph.addNode();
+        node.setString( GraphConstants.FIELD_NAME, GraphUtils.getCompositeName( objectDescriptor.type() ) );
+        node.setInt( GraphConstants.FIELD_TYPE, ApplicationGraph.TYPE_COMPOSITE );
+        addHiddenEdge( objectsNode, node );
+
+        descriptorsMap.put( node, objectDescriptor );
     }
 
     private Map<Method, Map<String, List>> methodAttributesMap = new HashMap<Method, Map<String, List>>();
@@ -190,13 +265,19 @@ class ApplicationGraphVisitor extends DescriptorVisitor
         // for each composite // todo
     }
 
-    public CompositeDescriptor getCompositeDescriptor( Node node )
+    public Object getCompositeDescriptor( Node node )
     {
-        return compositeDescriptorsMap.get( node );
+        return descriptorsMap.get( node );
     }
 
     public Map<String, List> getMethodAttributes( Method m )
     {
         return methodAttributesMap.get( m );
+    }
+
+    private void addHiddenEdge( Node source, Node target )
+    {
+        Edge edge = graph.addEdge( source, target );
+        edge.setInt( GraphConstants.FIELD_TYPE, ApplicationGraph.TYPE_EDGE_HIDDEN );
     }
 }

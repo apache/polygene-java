@@ -37,6 +37,11 @@ public class GraphUtils
         return item.getString( GraphConstants.FIELD_NAME );
     }
 
+    public static String getCompositeName( Class type )
+    {
+        return type.getSimpleName();
+    }
+
     public static boolean displaySizeFitsScaledBounds( Display display, Rectangle2D bounds )
     {
         double scale = display.getScale();

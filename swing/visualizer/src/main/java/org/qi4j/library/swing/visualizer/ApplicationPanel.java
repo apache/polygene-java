@@ -40,6 +40,7 @@ import org.qi4j.library.swing.visualizer.render.CompositeRenderer;
 import org.qi4j.library.swing.visualizer.render.LayerRenderer;
 import org.qi4j.library.swing.visualizer.render.ModuleRenderer;
 import org.qi4j.library.swing.visualizer.render.VerticalEdgeRenderer;
+import org.qi4j.library.swing.visualizer.render.GroupRenderer;
 import prefuse.Display;
 import prefuse.Visualization;
 import prefuse.action.ActionList;
@@ -246,8 +247,11 @@ public class ApplicationPanel extends JPanel
         rendererFactory.add( "type = 1", new LayerRenderer() );
         rendererFactory.add( "type = 2", new ModuleRenderer() );
         rendererFactory.add( "type = 3", new CompositeRenderer() );
+        rendererFactory.add( "type = 4", new GroupRenderer() );
         rendererFactory.add( "type = 100", new NullRenderer() );
+
         rendererFactory.setDefaultEdgeRenderer( new VerticalEdgeRenderer() );
+
         visualization.setRendererFactory( rendererFactory );
     }
 

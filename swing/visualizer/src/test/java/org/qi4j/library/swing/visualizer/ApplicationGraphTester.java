@@ -23,6 +23,10 @@ import org.qi4j.composite.Mixins;
 import org.qi4j.structure.Application;
 import org.qi4j.property.Property;
 import org.qi4j.library.constraints.annotation.NotNull;
+import org.qi4j.entity.association.Association;
+import org.qi4j.entity.association.AssociationMixin;
+import org.qi4j.entity.memory.IndexedMemoryEntityStoreService;
+import org.qi4j.entity.EntityComposite;
 
 /**
  * TODO
@@ -43,6 +47,8 @@ public class ApplicationGraphTester
         LayerAssembly domainLayer = assembly.newLayerAssembly( "Domain" );
 
         ModuleAssembly someDomain = domainLayer.newModuleAssembly( "Some domain" );
+        someDomain.addServices( IndexedMemoryEntityStoreService.class );
+        someDomain.addEntities( MyEntity.class );
         someDomain.addComposites( ADomainComposite.class, BDomainComposite.class );
 
         LayerAssembly guiLayer = assembly.newLayerAssembly( "UI" );
@@ -58,7 +64,7 @@ public class ApplicationGraphTester
         guiLayer.uses( domainLayer );
         domainLayer.uses( infrastructureLayer );
 
-        addMoreLayers( assembly );
+//        addMoreLayers( assembly );
 
         Application app = qi4j.newApplication( assembly );
         new ApplicationGraph().show( app );
@@ -105,13 +111,18 @@ public class ApplicationGraphTester
 
     }
 
+    @Mixins( AssociationMixin.class )
     private static interface BDomainComposite extends Composite
     {
-
+        Association<ADomainComposite> aComposites();
     }
+
+    private static interface MyEntity extends EntityComposite
+    {
+    }
+
 
     private static interface UIComposite extends Composite
     {
-
     }
 }
