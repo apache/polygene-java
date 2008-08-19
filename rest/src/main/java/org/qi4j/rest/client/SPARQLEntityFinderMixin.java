@@ -54,7 +54,6 @@ public class SPARQLEntityFinderMixin
         return callback.getEntities();
     }
 
-
     public QualifiedIdentity findEntity( String resultType, BooleanExpression whereClause )
         throws EntityFinderException
     {

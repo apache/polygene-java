@@ -30,6 +30,16 @@ import org.qi4j.bootstrap.SingletonAssembler;
 import org.qi4j.entity.UnitOfWorkCompletionException;
 import static org.qi4j.entity.index.rdf.NameableAssert.assertNames;
 import static org.qi4j.entity.index.rdf.NameableAssert.toList;
+import org.qi4j.entity.index.rdf.model.Domain;
+import org.qi4j.entity.index.rdf.model.Female;
+import org.qi4j.entity.index.rdf.model.Male;
+import org.qi4j.entity.index.rdf.model.Nameable;
+import org.qi4j.entity.index.rdf.model.Person;
+import org.qi4j.entity.index.rdf.model.entities.CatEntity;
+import org.qi4j.entity.index.rdf.model.entities.CityEntity;
+import org.qi4j.entity.index.rdf.model.entities.DomainEntity;
+import org.qi4j.entity.index.rdf.model.entities.FemaleEntity;
+import org.qi4j.entity.index.rdf.model.entities.MaleEntity;
 import org.qi4j.entity.memory.IndexedMemoryEntityStoreService;
 import org.qi4j.library.rdf.repository.MemoryRepositoryService;
 import static org.qi4j.query.QueryExpressions.and;
@@ -72,11 +82,11 @@ public class RdfEntityFinderTest
             public void assemble( ModuleAssembly module ) throws AssemblyException
             {
                 module.addEntities(
-                    MaleComposite.class,
-                    FemaleComposite.class,
-                    CityComposite.class,
-                    DomainComposite.class,
-                    CatComposite.class
+                    MaleEntity.class,
+                    FemaleEntity.class,
+                    CityEntity.class,
+                    DomainEntity.class,
+                    CatEntity.class
                 );
                 module.addServices(
                     IndexedMemoryEntityStoreService.class,
@@ -106,7 +116,7 @@ public class RdfEntityFinderTest
     {
         // should return all persons (Joe, Ann, Jack Doe)
         assertNames( entityFinder.findEntities(
-            PersonComposite.class.getName(),
+            Person.class.getName(),
             ALL,
             NO_SORTING, NO_FIRST_RESULT, NO_MAX_RESULTS
         )

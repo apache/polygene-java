@@ -15,7 +15,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.entity.index.rdf;
+package org.qi4j.entity.index.rdf.model.entities;
+
+import org.qi4j.entity.EntityComposite;
+import org.qi4j.entity.index.rdf.model.Female;
 
 /**
  * TODO Add JavaDoc
@@ -23,7 +26,7 @@ package org.qi4j.entity.index.rdf;
  * @author Alin Dreghiciu
  * @since April 09, 2008
  */
-public interface FemaleComposite
-    extends Female, PersonComposite
+public interface FemaleEntity
+    extends Female, EntityComposite
 {
 }

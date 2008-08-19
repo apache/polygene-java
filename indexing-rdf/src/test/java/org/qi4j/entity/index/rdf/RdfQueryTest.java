@@ -25,17 +25,31 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.Ignore;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkCompletionException;
+import org.qi4j.entity.association.ManyAssociation;
+import org.qi4j.entity.index.rdf.model.City;
+import org.qi4j.entity.index.rdf.model.Domain;
+import org.qi4j.entity.index.rdf.model.Female;
+import org.qi4j.entity.index.rdf.model.Male;
+import org.qi4j.entity.index.rdf.model.Nameable;
+import org.qi4j.entity.index.rdf.model.Person;
+import org.qi4j.entity.index.rdf.model.entities.CatEntity;
+import org.qi4j.entity.index.rdf.model.entities.CityEntity;
+import org.qi4j.entity.index.rdf.model.entities.DomainEntity;
+import org.qi4j.entity.index.rdf.model.entities.FemaleEntity;
+import org.qi4j.entity.index.rdf.model.entities.MaleEntity;
 import org.qi4j.entity.memory.IndexedMemoryEntityStoreService;
 import org.qi4j.library.rdf.repository.MemoryRepositoryService;
 import org.qi4j.query.Query;
 import org.qi4j.query.QueryBuilder;
 import org.qi4j.query.QueryBuilderFactory;
 import static org.qi4j.query.QueryExpressions.and;
+import static org.qi4j.query.QueryExpressions.oneOf;
 import static org.qi4j.query.QueryExpressions.eq;
 import static org.qi4j.query.QueryExpressions.ge;
 import static org.qi4j.query.QueryExpressions.gt;
@@ -47,6 +61,7 @@ import static org.qi4j.query.QueryExpressions.or;
 import static org.qi4j.query.QueryExpressions.orderBy;
 import static org.qi4j.query.QueryExpressions.templateFor;
 import org.qi4j.query.grammar.OrderBy;
+import org.qi4j.service.ServiceFinder;
 import org.qi4j.spi.entity.UuidIdentityGeneratorService;
 import org.qi4j.spi.query.EntityFinderException;
 
@@ -65,11 +80,11 @@ public class RdfQueryTest
             public void assemble( ModuleAssembly module ) throws AssemblyException
             {
                 module.addEntities(
-                    MaleComposite.class,
-                    FemaleComposite.class,
-                    CityComposite.class,
-                    DomainComposite.class,
-                    CatComposite.class
+                    MaleEntity.class,
+                    FemaleEntity.class,
+                    CityEntity.class,
+                    DomainEntity.class,
+                    CatEntity.class
                 );
                 module.addServices(
                     MemoryRepositoryService.class,
@@ -93,7 +108,10 @@ public class RdfQueryTest
     @Test
     public void showNetwork()
     {
-        assembler.serviceFinder().findService( RdfIndexerExporterComposite.class ).get().toRDF( System.out );
+        ServiceFinder serviceFinder = assembler.serviceFinder();
+        RdfIndexerExporterComposite rdfIndexerExporter =
+            serviceFinder.findService( RdfIndexerExporterComposite.class ).get();
+        rdfIndexerExporter.toRDF( System.out );
     }
 
     private static void verifyUnorderedResults( final Iterable<? extends Nameable> results,
@@ -103,10 +121,10 @@ public class RdfQueryTest
 
         for( Nameable entity : results )
         {
-            assertTrue( entity.name().get() + " returned but not expected",
-                        expected.remove( entity.name().get() )
-            );
+            String name = entity.name().get();
+            assertTrue( name + " returned but not expected", expected.remove( name ) );
         }
+
         for( String notReturned : expected )
         {
             fail( notReturned + " was expected but not returned" );
@@ -146,8 +164,8 @@ public class RdfQueryTest
     @Test
     public void script01() throws EntityFinderException
     {
-        final QueryBuilder<PersonComposite> qb = qbf.newQueryBuilder( PersonComposite.class );
-        final Query<PersonComposite> query = qb.newQuery();
+        final QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
+        final Query<Person> query = qb.newQuery();
         System.out.println( query );
         verifyUnorderedResults( query, "Joe Doe", "Ann Doe", "Jack Doe" );
     }
@@ -182,10 +200,12 @@ public class RdfQueryTest
     public void script04() throws EntityFinderException
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
-        Person person = templateFor( Person.class );
+        Person personTemplate = templateFor( Person.class );
+        City placeOfBirth = personTemplate.placeOfBirth().get();
         qb.where(
-            eq( person.placeOfBirth().get().name(), "Kuala Lumpur" )
+            eq( placeOfBirth.name(), "Kuala Lumpur" )
         );
+
         Query<Person> query = qb.newQuery();
         verifyUnorderedResults( query, "Joe Doe", "Ann Doe" );
     }
@@ -429,7 +449,8 @@ public class RdfQueryTest
     }
 
     @Test
-    public void script22() throws EntityFinderException
+    public void script22()
+        throws EntityFinderException
     {
         QueryBuilder<Nameable> qb = qbf.newQueryBuilder( Nameable.class );
         Nameable nameable = templateFor( Nameable.class );
@@ -442,6 +463,22 @@ public class RdfQueryTest
             query,
             "Jack Doe", "Joe Doe"
         );
+    }
+
+    @Test
+    @Ignore
+    public void script23()
+        throws EntityFinderException
+    {
+        QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
+        Person personTmpl = templateFor( Person.class );
+        Domain personInterestsTmpl = oneOf( personTmpl.interests() );
+        qb.where( eq( personInterestsTmpl.name(), "Cars" ) );
+
+        // should return all Persons sorted by name of the city they were born, and then by year they were born
+        Query<Person> query = qb.newQuery();
+
+        verifyOrderedResults( query, "Jack Doe" );
     }
 
 }

@@ -17,6 +17,8 @@
  */
 package org.qi4j.entity.index.rdf;
 
+import org.qi4j.entity.index.rdf.model.Person;
+
 /**
  * TODO Add JavaDoc
  *

@@ -20,6 +20,7 @@ package org.qi4j.entity.index.rdf;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.QueryEvaluationException;
+import org.openrdf.query.QueryLanguage;
 import org.openrdf.query.TupleQuery;
 import org.openrdf.query.TupleQueryResult;
 import org.openrdf.repository.Repository;
@@ -69,17 +70,26 @@ public class RdfEntityFinderMixin
     }
 
 
-    private int performTupleQuery( String resultType, BooleanExpression whereClause, OrderBy[] orderBySegments,
-                                   Integer firstResult, Integer maxResults, RdfQueryParser parser, QualifiedIdentityResultCallback qualifiedIdentityResultCallback )
+    private int performTupleQuery( String resultType,
+                                   BooleanExpression whereClause,
+                                   OrderBy[] orderBySegments,
+                                   Integer firstResult,
+                                   Integer maxResults,
+                                   RdfQueryParser parser,
+                                   QualifiedIdentityResultCallback qualifiedIdentityResultCallback )
         throws EntityFinderException
     {
         try
         {
             RepositoryConnection connection = repository.getConnection();
+
+            QueryLanguage queryLanguage = parser.getQueryLanguage();
             String query = parser.getQuery( resultType, whereClause, orderBySegments, firstResult, maxResults );
-            TupleQuery tupleQuery = connection.prepareTupleQuery( parser.getQueryLanguage(), query );
+            TupleQuery tupleQuery = connection.prepareTupleQuery( queryLanguage, query );
+
             TupleQueryResult result = tupleQuery.evaluate();
-            TupleQueryResultCallback tupleQueryResultCallback = new TupleQueryQualifiedIdentityResultCallback( qualifiedIdentityResultCallback );
+            TupleQueryResultCallback tupleQueryResultCallback =
+                new TupleQueryQualifiedIdentityResultCallback( qualifiedIdentityResultCallback );
             try
             {
                 int row = 0;

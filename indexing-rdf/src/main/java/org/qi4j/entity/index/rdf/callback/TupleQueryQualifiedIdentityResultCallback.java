@@ -21,13 +21,14 @@ import org.openrdf.model.Value;
 import org.openrdf.query.BindingSet;
 import org.qi4j.spi.entity.QualifiedIdentity;
 
-public class TupleQueryQualifiedIdentityResultCallback implements TupleQueryResultCallback
+public class TupleQueryQualifiedIdentityResultCallback
+    implements TupleQueryResultCallback
 {
     QualifiedIdentityResultCallback qualifiedIdentityResultCallback;
 
-    public TupleQueryQualifiedIdentityResultCallback( QualifiedIdentityResultCallback qualifiedIdentityResultCallback )
+    public TupleQueryQualifiedIdentityResultCallback( QualifiedIdentityResultCallback aCallback )
     {
-        this.qualifiedIdentityResultCallback = qualifiedIdentityResultCallback;
+        qualifiedIdentityResultCallback = aCallback;
     }
 
     public boolean processRow( int row, BindingSet bindingSet )
@@ -36,17 +37,22 @@ public class TupleQueryQualifiedIdentityResultCallback implements TupleQueryResu
         {
             return true;
         }
+
         final Value identifier = bindingSet.getValue( "identity" );
+
         //TODO Shall we throw an exception if there is no binding for identifier = query parser is not right
         if( identifier != null )
         {
             final Value entityClass = bindingSet.getValue( "entityType" );
+            final String identity = identifier.stringValue();
+            final String entityType = entityClass.stringValue();
+
             // todo remove
-            System.out.println( entityClass.stringValue() + " -> " + identifier.stringValue() );
-            final QualifiedIdentity qualifiedIdentity = new QualifiedIdentity( identifier.stringValue(), entityClass.stringValue() );
+            System.out.println( entityType + " -> " + identity );
+            final QualifiedIdentity qualifiedIdentity = new QualifiedIdentity( identity, entityType );
             return qualifiedIdentityResultCallback.processRow( row, qualifiedIdentity );
         }
+
         return true;
     }
-
 }

@@ -20,6 +20,17 @@ package org.qi4j.entity.index.rdf;
 import org.qi4j.entity.EntityBuilder;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkCompletionException;
+import org.qi4j.entity.index.rdf.model.Nameable;
+import org.qi4j.entity.index.rdf.model.Male;
+import org.qi4j.entity.index.rdf.model.Cat;
+import org.qi4j.entity.index.rdf.model.City;
+import org.qi4j.entity.index.rdf.model.Domain;
+import org.qi4j.entity.index.rdf.model.Female;
+import org.qi4j.entity.index.rdf.model.entities.CatEntity;
+import org.qi4j.entity.index.rdf.model.entities.DomainEntity;
+import org.qi4j.entity.index.rdf.model.entities.CityEntity;
+import org.qi4j.entity.index.rdf.model.entities.MaleEntity;
+import org.qi4j.entity.index.rdf.model.entities.FemaleEntity;
 
 /**
  * TODO Add JavaDoc
@@ -33,7 +44,7 @@ class Network
         throws UnitOfWorkCompletionException
     {
         NameableAssert.clear();
-        EntityBuilder<DomainComposite> domainBuilder = unitOfWork.newEntityBuilder( DomainComposite.class );
+        EntityBuilder<Domain> domainBuilder = unitOfWork.newEntityBuilder( Domain.class );
         Domain gaming = domainBuilder.newInstance();
         setName( gaming, "Gaming" );
         gaming.description().set( "Gaming domain" );
@@ -50,7 +61,7 @@ class Network
         setName( cars, "Cars" );
         cars.description().set( "Cars" );
 
-        EntityBuilder<CityComposite> cityBuilder = unitOfWork.newEntityBuilder( CityComposite.class );
+        EntityBuilder<City> cityBuilder = unitOfWork.newEntityBuilder( City.class );
         City kualaLumpur = cityBuilder.newInstance();
         setName( kualaLumpur, "Kuala Lumpur" );
         kualaLumpur.country().set( "Malaysia" );
@@ -61,8 +72,8 @@ class Network
         penang.country().set( "Malaysia" );
         penang.county().set( "Some Other Jaya" );
 
-        EntityBuilder<MaleComposite> maleBuilder = unitOfWork.newEntityBuilder( MaleComposite.class );
-        EntityBuilder<FemaleComposite> femaleBuilder = unitOfWork.newEntityBuilder( FemaleComposite.class );
+        EntityBuilder<MaleEntity> maleBuilder = unitOfWork.newEntityBuilder( MaleEntity.class );
+        EntityBuilder<FemaleEntity> femaleBuilder = unitOfWork.newEntityBuilder( FemaleEntity.class );
 
         Female annDoe = femaleBuilder.newInstance();
         setName( annDoe, "Ann Doe" );
@@ -86,7 +97,7 @@ class Network
         jackDoe.interests().add( cars );
         jackDoe.wife().set( annDoe );
 
-        EntityBuilder<CatComposite> catBuilder = unitOfWork.newEntityBuilder( CatComposite.class );
+        EntityBuilder<CatEntity> catBuilder = unitOfWork.newEntityBuilder( CatEntity.class );
 
         Cat felix = catBuilder.newInstance();
         setName( felix, "Felix" );

@@ -15,17 +15,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.entity.index.rdf;
-
-import org.qi4j.entity.EntityComposite;
+package org.qi4j.entity.index.rdf.model;
 
 /**
  * TODO Add JavaDoc
  *
  * @author Alin Dreghiciu
- * @since March 20, 2008
+ * @since March 31, 2008
  */
-public interface PersonComposite
-    extends Person, EntityComposite
+public interface Alive
 {
 }

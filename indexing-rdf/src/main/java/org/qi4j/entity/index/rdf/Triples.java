@@ -135,7 +135,7 @@ public class Triples implements Iterable<Triples.Triple>
         {
             return null;
         }
-        return "urn:qi4j:association:" + GenericPropertyInfo.getDeclaringClassName( accessor ) + ":";
+        return "urn:qi4j:entity:" + GenericPropertyInfo.getDeclaringClassName( accessor ) + ":";
     }
 
     private static Method getIdentityAccessor( final Class declaringClass )

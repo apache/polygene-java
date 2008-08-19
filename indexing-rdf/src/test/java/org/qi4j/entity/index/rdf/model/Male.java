@@ -15,14 +15,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.entity.index.rdf;
+package org.qi4j.entity.index.rdf.model;
+
+import org.qi4j.entity.association.Association;
 
 /**
  * TODO Add JavaDoc
  *
  * @author Alin Dreghiciu
- * @since March 31, 2008
+ * @since April 09, 2008
  */
-public interface Alive
+public interface Male
+    extends Person
 {
+    Association<Female> wife();
 }

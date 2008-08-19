@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import org.openrdf.model.BNode;
+import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.vocabulary.RDF;
@@ -38,6 +39,7 @@ import org.qi4j.spi.entity.AssociationType;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.ManyAssociationType;
+import static org.qi4j.spi.entity.ManyAssociationType.ManyAssociationTypeEnum.LIST;
 import org.qi4j.spi.entity.PropertyType;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.query.EntityIndexer;
@@ -80,11 +82,13 @@ public class RdfEntityIndexerMixin
                     entityTypes.add( entityState.entityType() );
                     indexEntityState( entityState, connection );
                 }
+
                 for( EntityState entityState : changedStates )
                 {
                     removeEntityState( entityState.qualifiedIdentity(), connection );
                     indexEntityState( entityState, connection );
                 }
+
                 for( QualifiedIdentity entityId : removedStates )
                 {
                     removeEntityState( entityId, connection );
@@ -120,15 +124,30 @@ public class RdfEntityIndexerMixin
                                    final RepositoryConnection connection )
         throws RepositoryException
     {
-        final URI compositeURI = valueFactory.createURI( ClassUtil.toURI( entityState.qualifiedIdentity().type() ) );
+        final QualifiedIdentity qualifiedIdentity = entityState.qualifiedIdentity();
+        final String compositeType = qualifiedIdentity.type();
+        final URI compositeURI = valueFactory.createURI( ClassUtil.toURI( compositeType ) );
         final URI compositeClassURI = valueFactory.createURI( ClassUtil.toURI( Composite.class ) + ":entityType" );
-        final URI entityURI = valueFactory.createURI( entityState.qualifiedIdentity().toURI() );
+        final URI entityURI = valueFactory.createURI( qualifiedIdentity.toURI() );
+
         connection.add( entityURI, RDF.TYPE, compositeURI, entityURI );
-        connection.add( entityURI, compositeClassURI, valueFactory.createLiteral( entityState.qualifiedIdentity().type() ), entityURI );
+        connection.add( entityURI, compositeClassURI, valueFactory.createLiteral( compositeType ), entityURI );
 
         // index properties
         final EntityType state = entityState.entityType();
-        for( PropertyType property : state.properties() )
+        indexProperties( entityState, connection, entityURI, state );
+        indexAssociations( entityState, connection, entityURI, state );
+        indexManyAssociations( entityState, connection, entityURI, state );
+    }
+
+    private void indexProperties( final EntityState entityState,
+                                  final RepositoryConnection connection,
+                                  final URI entityURI,
+                                  final EntityType state )
+        throws RepositoryException
+    {
+        final Iterable<PropertyType> properties = state.properties();
+        for( PropertyType property : properties )
         {
             final Object propValue = entityState.getProperty( property.qualifiedName() );
             if( propValue != null )
@@ -137,45 +156,101 @@ public class RdfEntityIndexerMixin
                 connection.add( entityURI, propURI, valueFactory.createLiteral( propValue.toString() ), entityURI );
             }
         }
+    }
 
-        // index associations
-        for( AssociationType association : state.associations() )
+    private void indexAssociations( final EntityState entityState,
+                                    final RepositoryConnection connection,
+                                    final URI entityURI,
+                                    final EntityType state )
+        throws RepositoryException
+    {
+        final Iterable<AssociationType> associations = state.associations();
+        for( AssociationType association : associations )
         {
             final QualifiedIdentity assocEntityId = entityState.getAssociation( association.qualifiedName() );
             if( assocEntityId != null )
             {
                 final URI assocURI = valueFactory.createURI( association.uri() );
-
                 final URI assocEntityURI = valueFactory.createURI( assocEntityId.toURI() );
                 connection.add( entityURI, assocURI, assocEntityURI, entityURI );
             }
         }
+    }
 
-        // index many associations
-        for( ManyAssociationType manyAssociation : state.manyAssociations() )
+    private void indexManyAssociations( final EntityState entityState,
+                                        final RepositoryConnection connection,
+                                        final URI entityURI,
+                                        final EntityType state )
+        throws RepositoryException
+    {
+        final Iterable<ManyAssociationType> manyAssociations = state.manyAssociations();
+        for( ManyAssociationType manyAssociation : manyAssociations )
         {
-            final Collection<QualifiedIdentity> assocEntityIds = entityState.getManyAssociation( manyAssociation.qualifiedName() );
-            if( assocEntityIds != null )
-            {
-                final URI assocURI = valueFactory.createURI( manyAssociation.uri() );
-                BNode prevAssocEntityBNode = null;
+            final String associationQualifiedName = manyAssociation.qualifiedName();
+            final Collection<QualifiedIdentity> assocEntityIds =
+                entityState.getManyAssociation( associationQualifiedName );
 
-                for( QualifiedIdentity assocEntityId : assocEntityIds )
-                {
-                    final URI assocEntityURI = valueFactory.createURI( assocEntityId.toURI() );
-                    final BNode assocEntityBNode = valueFactory.createBNode();
-                    if( prevAssocEntityBNode == null )
-                    {
-                        connection.add( entityURI, assocURI, assocEntityBNode, entityURI );
-                    }
-                    else
-                    {
-                        connection.add( prevAssocEntityBNode, RDF.REST, assocEntityBNode, entityURI );
-                    }
-                    connection.add( assocEntityBNode, RDF.FIRST, assocEntityURI, entityURI );
-                    prevAssocEntityBNode = assocEntityBNode;
-                }
+            if( assocEntityIds != null && !assocEntityIds.isEmpty() )
+            {
+//                indexManyAssociationItemOrginal( connection, entityURI, manyAssociation, assocEntityIds );
+                indexManyAssociationItem( connection, entityURI, manyAssociation, assocEntityIds );
             }
+        }
+    }
+
+    private void indexManyAssociationItemOrginal( final RepositoryConnection connection,
+                                                  final URI entityURI,
+                                                  final ManyAssociationType manyAssociation,
+                                                  final Collection<QualifiedIdentity> assocEntityIds )
+        throws RepositoryException
+    {
+        final URI assocURI = valueFactory.createURI( manyAssociation.uri() );
+        BNode prevAssocEntityBNode = null;
+
+        for( QualifiedIdentity assocEntityId : assocEntityIds )
+        {
+            final URI assocEntityURI = valueFactory.createURI( assocEntityId.toURI() );
+            final BNode assocEntityBNode = valueFactory.createBNode();
+            if( prevAssocEntityBNode == null )
+            {
+                connection.add( entityURI, assocURI, assocEntityBNode, entityURI );
+            }
+            else
+            {
+                connection.add( prevAssocEntityBNode, RDF.REST, assocEntityBNode, entityURI );
+            }
+            connection.add( assocEntityBNode, RDF.FIRST, assocEntityURI, entityURI );
+            prevAssocEntityBNode = assocEntityBNode;
+        }
+    }
+
+    private void indexManyAssociationItem( final RepositoryConnection connection,
+                                           final URI entityURI,
+                                           final ManyAssociationType manyAssociation,
+                                           final Collection<QualifiedIdentity> assocEntityIds )
+        throws RepositoryException
+    {
+        final URI assocURI = valueFactory.createURI( manyAssociation.uri() );
+
+        final ManyAssociationType.ManyAssociationTypeEnum typeEnum = manyAssociation.associationType();
+        final BNode collectionNode = valueFactory.createBNode();
+
+        Statement collectionTypeStatement;
+        if( typeEnum == LIST )
+        {
+            collectionTypeStatement = valueFactory.createStatement( collectionNode, RDF.TYPE, RDF.LIST );
+        }
+        else
+        {
+            collectionTypeStatement = valueFactory.createStatement( collectionNode, RDF.TYPE, RDF.BAG );
+        }
+        connection.add( entityURI, assocURI, collectionNode );
+        connection.add( collectionTypeStatement );
+
+        for( QualifiedIdentity assocEntityId : assocEntityIds )
+        {
+            final URI assocEntityURI = valueFactory.createURI( assocEntityId.toURI() );
+            connection.add( collectionNode, RDF.LI, assocEntityURI );
         }
     }
 
@@ -201,7 +276,8 @@ public class RdfEntityIndexerMixin
         Iterable<String> mixinTypeNames = entityType.mixinTypes();
         for( String mixinType : mixinTypeNames )
         {
-            connection.add( compositeURI, RDFS.SUBCLASSOF, valueFactory.createURI( ClassUtil.toURI( mixinType ) ), compositeURI );
+            URI mixinURI = valueFactory.createURI( ClassUtil.toURI( mixinType ) );
+            connection.add( compositeURI, RDFS.SUBCLASSOF, mixinURI, compositeURI );
         }
     }
 

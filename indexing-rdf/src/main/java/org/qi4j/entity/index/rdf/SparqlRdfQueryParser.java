@@ -65,48 +65,53 @@ public class SparqlRdfQueryParser
         final String orderBy = processOrderBy( orderBySegments );
 
         StringBuilder query = new StringBuilder();
-        // alternatively namespaces.toSparql
-        for( String namespace : namespaces.getNamespaces() )
-        {
-            query.append( format( "PREFIX %s: <%s> ", namespaces.getNamespacePrefix( namespace ), namespace ) );
-        }
-        query.append( "SELECT DISTINCT ?entityType ?identity " );
+        namespaces.toSparql( query );
+        query.append( "SELECT DISTINCT ?entityType ?identity\n" );
         if( triples.hasTriples() )
         {
-            query.append( "WHERE {" );
+            query.append( "WHERE {\n" );
             // alternatively triples.toSparql
             for( Triples.Triple triple : triples )
             {
                 // alternatively triple.toSparql
+                final String subject = triple.getSubject();
+                final String predicate = triple.getPredicate();
+                final String object = triple.getValue();
+
                 if( triple.isOptional() )
                 {
-                    query.append( format( "OPTIONAL {%s %s %s}. ", triple.getSubject(), triple.getPredicate(), triple.getValue() ) );
+                    query.append( format( "OPTIONAL {%s %s %s}. ", subject, predicate, object ) );
                 }
                 else
                 {
-                    query.append( format( "%s %s %s. ", triple.getSubject(), triple.getPredicate(), triple.getValue() ) );
+                    query.append( format( "%s %s %s. ", subject, predicate, object ) );
                 }
+                query.append( '\n' );
             }
+
             if( filter.length() > 0 )
             {
-                query.append( " FILTER " ).append( filter );
+                query.append( "FILTER " ).append( filter );
             }
-            query.append( "}" );
+            query.append( "\n}" );
         }
         if( orderBy != null )
         {
-            query.append( " ORDER BY " ).append( orderBy );
+            query.append( "\nORDER BY " ).append( orderBy );
         }
         if( firstResult != null )
         {
-            query.append( " OFFSET " ).append( firstResult );
+            query.append( "\nOFFSET " ).append( firstResult );
         }
         if( maxResults != null )
         {
-            query.append( " LIMIT " ).append( maxResults );
+            query.append( "\nLIMIT " ).append( maxResults );
         }
-        System.out.println( "Query: " + query );
-        return query.toString();
+
+        String queryString = query.toString();
+
+        System.out.println( "Query:\n" + queryString );
+        return queryString;
     }
 
 

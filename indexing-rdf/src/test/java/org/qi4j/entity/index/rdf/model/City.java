@@ -15,10 +15,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.entity.index.rdf;
+package org.qi4j.entity.index.rdf.model;
 
-import org.qi4j.entity.association.Association;
-import org.qi4j.entity.association.ManyAssociation;
 import org.qi4j.property.Property;
 
 /**
@@ -27,18 +25,10 @@ import org.qi4j.property.Property;
  * @author Alin Dreghiciu
  * @since March 20, 2008
  */
-public interface Person
-    extends Nameable, Alive
+public interface City
+    extends Nameable
 {
-    Association<City> placeOfBirth();
+    Property<String> country();
 
-    Property<Integer> yearOfBirth();
-
-    Association<Female> mother();
-
-    Association<Male> father();
-
-    ManyAssociation<Domain> interests();
-
-    Property<String> email();
+    Property<String> county();
 }

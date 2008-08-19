@@ -22,6 +22,12 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
 import org.qi4j.entity.UnitOfWorkCompletionException;
+import static org.qi4j.entity.index.rdf.Network.populate;
+import org.qi4j.entity.index.rdf.model.entities.CatEntity;
+import org.qi4j.entity.index.rdf.model.entities.CityEntity;
+import org.qi4j.entity.index.rdf.model.entities.DomainEntity;
+import org.qi4j.entity.index.rdf.model.entities.FemaleEntity;
+import org.qi4j.entity.index.rdf.model.entities.MaleEntity;
 import org.qi4j.entity.memory.IndexedMemoryEntityStoreService;
 import org.qi4j.library.rdf.repository.MemoryRepositoryService;
 import org.qi4j.spi.entity.UuidIdentityGeneratorService;
@@ -36,11 +42,11 @@ public class RdfEntityIndexerTest
             public void assemble( ModuleAssembly module ) throws AssemblyException
             {
                 module.addEntities(
-                    MaleComposite.class,
-                    FemaleComposite.class,
-                    CityComposite.class,
-                    DomainComposite.class,
-                    CatComposite.class
+                    MaleEntity.class,
+                    FemaleEntity.class,
+                    CityEntity.class,
+                    DomainEntity.class,
+                    CatEntity.class
                 );
                 module.addServices(
                     IndexedMemoryEntityStoreService.class,
@@ -50,9 +56,7 @@ public class RdfEntityIndexerTest
                 );
             }
         };
-        Network.populate( assembler.unitOfWorkFactory().newUnitOfWork() );
+        populate( assembler.unitOfWorkFactory().newUnitOfWork() );
         assembler.serviceFinder().findService( RdfIndexerExporterComposite.class ).get().toRDF( System.out );
     }
-
-
 }

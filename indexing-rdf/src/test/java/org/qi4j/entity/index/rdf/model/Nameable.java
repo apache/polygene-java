@@ -15,9 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.entity.index.rdf;
+package org.qi4j.entity.index.rdf.model;
 
-import org.qi4j.entity.EntityComposite;
+import org.qi4j.property.Property;
 
 /**
  * TODO Add JavaDoc
@@ -25,7 +25,7 @@ import org.qi4j.entity.EntityComposite;
  * @author Alin Dreghiciu
  * @since March 20, 2008
  */
-public interface DomainComposite
-    extends Domain, EntityComposite
+public interface Nameable
 {
+    Property<String> name();
 }

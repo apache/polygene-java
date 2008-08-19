@@ -15,8 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.entity.index.rdf;
+package org.qi4j.entity.index.rdf.model.entities;
 
+import org.qi4j.entity.index.rdf.model.Dog;
 import org.qi4j.entity.EntityComposite;
 
 /**
@@ -25,7 +26,7 @@ import org.qi4j.entity.EntityComposite;
  * @author Alin Dreghiciu
  * @since March 31, 2008
  */
-public interface PetComposite
-    extends Pet, EntityComposite
+public interface DogEntity
+    extends Dog, EntityComposite
 {
 }

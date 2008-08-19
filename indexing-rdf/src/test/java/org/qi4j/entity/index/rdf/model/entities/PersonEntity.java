@@ -15,9 +15,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.entity.index.rdf;
+package org.qi4j.entity.index.rdf.model.entities;
 
-import org.qi4j.property.Property;
+import org.qi4j.entity.EntityComposite;
+import org.qi4j.entity.index.rdf.model.Person;
 
 /**
  * TODO Add JavaDoc
@@ -25,10 +26,7 @@ import org.qi4j.property.Property;
  * @author Alin Dreghiciu
  * @since March 20, 2008
  */
-public interface City
-    extends Nameable
+public interface PersonEntity
+    extends Person, EntityComposite
 {
-    Property<String> country();
-
-    Property<String> county();
 }

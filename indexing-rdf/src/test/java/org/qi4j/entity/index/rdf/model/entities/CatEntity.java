@@ -15,18 +15,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.entity.index.rdf;
+package org.qi4j.entity.index.rdf.model.entities;
 
-import org.qi4j.property.Property;
+import org.qi4j.entity.index.rdf.model.Cat;
+import org.qi4j.entity.EntityComposite;
 
 /**
  * TODO Add JavaDoc
  *
  * @author Alin Dreghiciu
- * @since March 20, 2008
+ * @since March 31, 2008
  */
-public interface Domain
-    extends Nameable
+public interface CatEntity
+    extends Cat, EntityComposite
 {
-    Property<String> description();
 }

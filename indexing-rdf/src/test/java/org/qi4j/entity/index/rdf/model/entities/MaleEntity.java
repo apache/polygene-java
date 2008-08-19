@@ -15,15 +15,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.entity.index.rdf;
+package org.qi4j.entity.index.rdf.model.entities;
+
+import org.qi4j.entity.index.rdf.model.Male;
+import org.qi4j.entity.EntityComposite;
 
 /**
  * TODO Add JavaDoc
  *
  * @author Alin Dreghiciu
- * @since March 31, 2008
+ * @since April 09, 2008
  */
-public interface CatComposite
-    extends Cat, PetComposite
+public interface MaleEntity
+    extends Male, EntityComposite
 {
 }

@@ -46,7 +46,6 @@ public class Namespaces
         return namespaces.keySet();
     }
 
-
     public String addNamespace( final String namespace )
     {
         String prefix = getNamespacePrefix( namespace );
@@ -70,17 +69,17 @@ public class Namespaces
         return prefix;
     }
 
-    public String toSparql()
+    public void toSparql( StringBuilder sparql )
     {
-        StringBuilder sparql = new StringBuilder();
         for( String namespace : getNamespaces() )
         {
             sparql.append( format( "PREFIX %s: <%s> ", getNamespacePrefix( namespace ), namespace ) );
+            sparql.append( '\n' );
         }
-        return sparql.toString();
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return namespaces.toString();
     }

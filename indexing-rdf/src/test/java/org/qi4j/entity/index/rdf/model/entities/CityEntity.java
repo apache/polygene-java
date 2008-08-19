@@ -15,18 +15,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.entity.index.rdf;
+package org.qi4j.entity.index.rdf.model.entities;
 
-import org.qi4j.entity.association.Association;
+import org.qi4j.entity.EntityComposite;
+import org.qi4j.entity.index.rdf.model.City;
 
 /**
  * TODO Add JavaDoc
  *
  * @author Alin Dreghiciu
- * @since April 09, 2008
+ * @since March 18, 2008
  */
-public interface Male
-    extends Person
+public interface CityEntity
+    extends City, EntityComposite
 {
-    Association<Female> wife();
 }
