@@ -136,7 +136,8 @@ public class SPARQLEntityFinderMixin
             final RdfQueryParser parser = new SparqlRdfQueryParser();
             String query = parser.getQuery( resultType, whereClause, orderBySegments, firstResult, maxResults );
 
-            Response response = client.get().get( "http://localhost:8040/qi4j/query.rdf?query=" + URLEncoder.encode( query, "UTF-8" ) );
+            String url = "http://localhost:8040/qi4j/query.rdf?query=" + URLEncoder.encode( query, "UTF-8" );
+            Response response = client.get().get( url );
             SaxRepresentation sax = response.getEntityAsSax();
             final EntityResultXMLReaderAdapter xmlReaderAdapter = new EntityResultXMLReaderAdapter( callback );
             sax.parse( xmlReaderAdapter );

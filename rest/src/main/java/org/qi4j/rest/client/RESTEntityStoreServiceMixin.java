@@ -110,13 +110,14 @@ public class RESTEntityStoreServiceMixin
 
                         long modified = response.getEntity().getModificationDate().getTime();
                         long version = Long.parseLong( response.getEntity().getTag().getName() );
-                        EntityState entityState = new DefaultEntityState( version, modified,
-                                                                          anIdentity, EntityStatus.LOADED,
-                                                                          entityType,
-                                                                          new HashMap<String, Object>(),
-                                                                          new HashMap<String, QualifiedIdentity>(),
-                                                                          DefaultEntityState.newManyCollections( entityType ) );
+                        DefaultEntityState entityState = new DefaultEntityState( version, modified,
+                                                                                 anIdentity, EntityStatus.LOADED,
+                                                                                 entityType,
+                                                                                 new HashMap<String, Object>(),
+                                                                                 new HashMap<String, QualifiedIdentity>(),
+                                                                                 DefaultEntityState.newManyCollections( entityType ) );
                         parser.parse( statements, entityState );
+                        entityState.clearModified();
                         return entityState;
                     }
                     else

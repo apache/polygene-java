@@ -20,6 +20,7 @@ import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entity.UnitOfWork;
+import org.qi4j.entity.UnitOfWorkCompletionException;
 import org.qi4j.entity.memory.MemoryEntityStoreService;
 import org.qi4j.library.rdf.entity.EntityParserService;
 import org.qi4j.rest.Main;
@@ -61,39 +62,27 @@ public class RESTEntityStoreTest
     }
 
     @Test
-    public void testEntityStore()
+    public void testEntityStore() throws UnitOfWorkCompletionException
     {
         // Load state
         {
             UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
-            try
-            {
-                TestEntity entity = unitOfWork.find( "test2", TestEntity.class );
-                System.out.println( entity.name().get() );
-                TestEntity testEntity = entity.association().get();
-                System.out.println( testEntity.name().get() );
+            TestEntity entity = unitOfWork.find( "test2", TestEntity.class );
+            System.out.println( entity.name().get() );
+            TestEntity testEntity = entity.association().get();
+            System.out.println( testEntity.name().get() );
 
-                unitOfWork.discard();
-            }
-            catch( Exception e )
-            {
-                unitOfWork.discard();
-            }
+            unitOfWork.discard();
         }
 
         // Change state
         {
             UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
-            try
-            {
-                TestEntity entity = unitOfWork.find( "test2", TestEntity.class );
-                entity.name().set( "Foo bar" );
-                unitOfWork.complete();
-            }
-            catch( Exception e )
-            {
-                unitOfWork.discard();
-            }
+            TestEntity entity = unitOfWork.find( "test2", TestEntity.class );
+            entity.name().set( "Foo bar" );
+            System.out.println( entity.listAssociation().contains( entity ) );
+            entity.listAssociation().add( entity );
+            unitOfWork.complete();
         }
 
         // Load it again
@@ -104,10 +93,9 @@ public class RESTEntityStoreTest
                 TestEntity entity = unitOfWork.find( "test2", TestEntity.class );
                 System.out.println( entity.name().get() );
                 System.out.println( entity.association().get().name().get() );
-
-                unitOfWork.discard();
+                System.out.println( entity.listAssociation().contains( entity ) );
             }
-            catch( Exception e )
+            finally
             {
                 unitOfWork.discard();
             }

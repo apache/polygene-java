@@ -23,11 +23,11 @@ import org.restlet.Handler;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 
-public class Qi4jEntityFinder extends Finder
+public class Qi4jFinder extends Finder
 {
     @Structure private ObjectBuilderFactory factory;
 
-    public Qi4jEntityFinder( @Uses Context context, @Uses Class<? extends Handler> targetClass )
+    public Qi4jFinder( @Uses Context context, @Uses Class<? extends Handler> targetClass )
     {
         super( context, targetClass );
     }

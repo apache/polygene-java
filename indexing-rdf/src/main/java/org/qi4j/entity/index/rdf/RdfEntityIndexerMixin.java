@@ -133,7 +133,7 @@ public class RdfEntityIndexerMixin
             final Object propValue = entityState.getProperty( property.qualifiedName() );
             if( propValue != null )
             {
-                final URI propURI = valueFactory.createURI( property.toURI() );
+                final URI propURI = valueFactory.createURI( property.uri() );
                 connection.add( entityURI, propURI, valueFactory.createLiteral( propValue.toString() ), entityURI );
             }
         }
@@ -144,7 +144,7 @@ public class RdfEntityIndexerMixin
             final QualifiedIdentity assocEntityId = entityState.getAssociation( association.qualifiedName() );
             if( assocEntityId != null )
             {
-                final URI assocURI = valueFactory.createURI( association.toURI() );
+                final URI assocURI = valueFactory.createURI( association.uri() );
 
                 final URI assocEntityURI = valueFactory.createURI( assocEntityId.toURI() );
                 connection.add( entityURI, assocURI, assocEntityURI, entityURI );
@@ -157,7 +157,7 @@ public class RdfEntityIndexerMixin
             final Collection<QualifiedIdentity> assocEntityIds = entityState.getManyAssociation( manyAssociation.qualifiedName() );
             if( assocEntityIds != null )
             {
-                final URI assocURI = valueFactory.createURI( manyAssociation.toURI() );
+                final URI assocURI = valueFactory.createURI( manyAssociation.uri() );
                 BNode prevAssocEntityBNode = null;
 
                 for( QualifiedIdentity assocEntityId : assocEntityIds )

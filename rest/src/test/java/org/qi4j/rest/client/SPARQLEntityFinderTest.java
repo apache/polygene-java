@@ -14,7 +14,9 @@
 
 package org.qi4j.rest.client;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
@@ -41,8 +43,8 @@ public class SPARQLEntityFinderTest
     {
         module.addEntities( TestEntity.class );
 
-        ModuleAssembly store = module.getLayerAssembly().newModuleAssembly( "REST Store" );
-        store.addEntities( RESTEntityStoreConfiguration.class );
+        ModuleAssembly store = module.getLayerAssembly().newModuleAssembly( "REST Store/Finder" );
+        store.addEntities( RESTEntityStoreConfiguration.class, SPARQLEntityFinderConfiguration.class );
         store.addServices( MemoryEntityStoreService.class, EntityParserService.class, RestletClientService.class );
         store.addServices( RESTEntityStoreService.class, SPARQLEntityFinderService.class ).visibleIn( Visibility.layer );
     }
@@ -73,6 +75,7 @@ public class SPARQLEntityFinderTest
                 {
                     System.out.println( testEntity.name().get() );
                 }
+                Assert.assertThat( "result size is correct", query.count(), equalTo( 2L ) );
             }
             finally
             {

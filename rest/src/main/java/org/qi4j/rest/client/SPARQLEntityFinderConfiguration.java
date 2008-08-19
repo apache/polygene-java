@@ -12,21 +12,16 @@
  *
  */
 
-package org.qi4j.rest;
+package org.qi4j.rest.client;
 
-import org.qi4j.bootstrap.Assembler;
-import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.structure.Visibility;
+import org.qi4j.entity.EntityComposite;
+import org.qi4j.property.Property;
 
 /**
  * TODO
  */
-public class RestletApplicationAssembler implements Assembler
+public interface SPARQLEntityFinderConfiguration
+    extends EntityComposite
 {
-    public void assemble( ModuleAssembly module ) throws AssemblyException
-    {
-        module.addObjects( RestApplication.class ).visibleIn( Visibility.application );
-        module.addObjects( Qi4jFinder.class );
-    }
+    Property<String> host();
 }

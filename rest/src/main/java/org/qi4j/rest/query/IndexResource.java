@@ -12,7 +12,7 @@
  *
  */
 
-package org.qi4j.rest.index;
+package org.qi4j.rest.query;
 
 import java.io.IOException;
 import java.io.OutputStream;
