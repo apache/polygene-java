@@ -474,9 +474,7 @@ public class RdfQueryTest
         Domain personInterestsTmpl = oneOf( personTmpl.interests() );
         qb.where( eq( personInterestsTmpl.name(), "Cars" ) );
 
-        // should return all Persons sorted by name of the city they were born, and then by year they were born
         Query<Person> query = qb.newQuery();
-
         verifyOrderedResults( query, "Jack Doe" );
     }
 
