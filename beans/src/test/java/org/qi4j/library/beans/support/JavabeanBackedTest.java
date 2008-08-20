@@ -20,7 +20,6 @@ package org.qi4j.library.beans.support;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import static org.junit.Assert.assertEquals;
@@ -49,7 +48,7 @@ public class JavabeanBackedTest extends AbstractQi4jTest
         throws Exception
     {
         CountryPojo malaysia = new CountryPojo( "Malaysia" );
-        Set cities = new HashSet();
+        Set<CityPojo> cities = new HashSet<CityPojo>();
         CityPojo kl = new CityPojo( "Kuala Lumpur", malaysia );
         cities.add( kl );
         CityPojo jb = new CityPojo( "Johor Bahru", malaysia );
@@ -84,10 +83,9 @@ public class JavabeanBackedTest extends AbstractQi4jTest
         Country country = countryAssociation.get();
         assertEquals( "Country match.", "Malaysia", country.name().get() );
         SetAssociation citylist = country.cities();
-        Iterator iterator = citylist.iterator();
-        while( iterator.hasNext() )
+        for( Object aCitylist : citylist )
         {
-            City city = (City) iterator.next();
+            City city = (City) aCitylist;
             String name = city.name().get();
             assertTrue( name.equals( "Kuala Lumpur" ) ||
                         name.equals( "Johor Bahru" ) ||
@@ -166,7 +164,7 @@ public class JavabeanBackedTest extends AbstractQi4jTest
     public class CountryPojo
     {
         private String countryName;
-        private Set cities;
+        private Set<CityPojo> cities;
 
         public CountryPojo( String countryName )
         {

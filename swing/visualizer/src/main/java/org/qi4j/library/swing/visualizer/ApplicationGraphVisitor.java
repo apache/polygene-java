@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Rickard …berg. All Rights Reserved.
+ * Copyright (c) 2008, Rickard Ã–berg. All Rights Reserved.
  * Copyright (c) 2008, Sonny Gill. All Rights Reserved.
  * Copyright (c) 2008, Niclas Hedhman. All Rights Reserved.
  *

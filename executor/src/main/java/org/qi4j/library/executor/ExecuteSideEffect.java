@@ -26,5 +26,5 @@ import java.lang.annotation.Target;
 @Target( { ElementType.METHOD } )
 public @interface ExecuteSideEffect
 {
-    Class value();
+    Class<?> value();
 }
