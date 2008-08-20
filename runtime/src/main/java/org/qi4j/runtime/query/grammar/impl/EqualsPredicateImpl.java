@@ -46,7 +46,8 @@ public final class EqualsPredicateImpl<T>
         super( propertyReference, valueExpression );
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return new StringBuilder()
             .append( "( " )

@@ -20,7 +20,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import static java.lang.reflect.Proxy.newProxyInstance;
 import org.qi4j.query.grammar.AssociationReference;
-import org.qi4j.runtime.query.grammar.impl.AssociationReferenceImpl;
+import org.qi4j.runtime.query.grammar.impl.ManyAssociationReferenceImpl;
 
 /**
  * TODO: Add javadoc
@@ -51,8 +51,8 @@ public class ManyAssociationReferenceProxy
     ManyAssociationReferenceProxy( final Method accessor,
                                    final AssociationReference traversedAssociation )
     {
-        // TODO: This doesn't sounds right
-        AssociationReference associationReference = new AssociationReferenceImpl( accessor, traversedAssociation );
+        ManyAssociationReferenceImpl associationReference =
+            new ManyAssociationReferenceImpl( accessor, traversedAssociation );
 
         // Create any proxy
         ClassLoader loader = ManyAssociationReferenceProxy.class.getClassLoader();

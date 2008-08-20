@@ -29,7 +29,7 @@ import org.qi4j.query.grammar.AssociationReference;
  * @author Alin Dreghiciu
  * @since March 28, 2008
  */
-public final class AssociationReferenceImpl
+public class AssociationReferenceImpl
     implements AssociationReference
 {
 
@@ -131,7 +131,8 @@ public final class AssociationReferenceImpl
         return traversed;
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         StringBuilder fragment = new StringBuilder();
         if( traversed != null )
@@ -143,5 +144,4 @@ public final class AssociationReferenceImpl
         fragment.append( name );
         return fragment.toString();
     }
-
 }

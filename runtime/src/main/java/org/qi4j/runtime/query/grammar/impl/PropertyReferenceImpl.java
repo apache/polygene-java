@@ -132,7 +132,8 @@ public final class PropertyReferenceImpl<T>
         return traversed;
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return new StringBuilder()
             .append( traversed == null ? "" : traversed.toString() + "." )
