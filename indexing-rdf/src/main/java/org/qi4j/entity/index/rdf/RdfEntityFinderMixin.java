@@ -17,6 +17,7 @@
  */
 package org.qi4j.entity.index.rdf;
 
+import org.openrdf.model.Value;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.QueryEvaluationException;
@@ -29,8 +30,6 @@ import org.openrdf.repository.RepositoryException;
 import org.qi4j.entity.index.rdf.callback.CollectingQualifiedIdentityResultCallback;
 import org.qi4j.entity.index.rdf.callback.QualifiedIdentityResultCallback;
 import org.qi4j.entity.index.rdf.callback.SingleQualifiedIdentityResultCallback;
-import org.qi4j.entity.index.rdf.callback.TupleQueryQualifiedIdentityResultCallback;
-import org.qi4j.entity.index.rdf.callback.TupleQueryResultCallback;
 import org.qi4j.injection.scope.Service;
 import org.qi4j.query.grammar.BooleanExpression;
 import org.qi4j.query.grammar.OrderBy;
@@ -88,17 +87,18 @@ public class RdfEntityFinderMixin
             TupleQuery tupleQuery = connection.prepareTupleQuery( queryLanguage, query );
 
             TupleQueryResult result = tupleQuery.evaluate();
-            TupleQueryResultCallback tupleQueryResultCallback =
-                new TupleQueryQualifiedIdentityResultCallback( qualifiedIdentityResultCallback );
             try
             {
                 int row = 0;
                 while( result.hasNext() )
                 {
                     BindingSet bindingSet = result.next();
-                    if( !tupleQueryResultCallback.processRow( row, bindingSet ) )
+                    if( qualifiedIdentityResultCallback != null )
                     {
-                        break;
+                        if( !processRow( row, bindingSet, qualifiedIdentityResultCallback ) )
+                        {
+                            break;
+                        }
                     }
                     row++;
                 }
@@ -132,5 +132,23 @@ public class RdfEntityFinderMixin
         {
             throw new EntityFinderException( e );
         }
+    }
+
+    private boolean processRow( int row, BindingSet bindingSet, QualifiedIdentityResultCallback qualifiedIdentityResultCallback )
+    {
+        final Value identifier = bindingSet.getValue( "identity" );
+
+        //TODO Shall we throw an exception if there is no binding for identifier = query parser is not right
+        if( identifier == null )
+        {
+            return true;
+        }
+
+        final Value entityClass = bindingSet.getValue( "entityType" );
+        final String identity = identifier.stringValue();
+        final String entityType = entityClass.stringValue();
+
+        final QualifiedIdentity qualifiedIdentity = new QualifiedIdentity( identity, entityType );
+        return qualifiedIdentityResultCallback.processRow( row, qualifiedIdentity );
     }
 }
