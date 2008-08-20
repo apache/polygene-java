@@ -24,8 +24,9 @@ import java.util.Iterator;
 import java.util.List;
 import org.qi4j.composite.Composite;
 import org.qi4j.entity.Identity;
-import org.qi4j.property.GenericPropertyInfo;
+import static org.qi4j.property.GenericPropertyInfo.getDeclaringClassName;
 import org.qi4j.query.grammar.AssociationReference;
+import org.qi4j.query.grammar.ManyAssociationReference;
 import org.qi4j.query.grammar.PropertyReference;
 import org.qi4j.util.ClassUtil;
 
@@ -59,7 +60,7 @@ public class Triples implements Iterable<Triples.Triple>
         triples.add(
             new Triple(
                 "?entity",
-                addNamespace( GenericPropertyInfo.toNamespace( getIdentityAccessor( Identity.class ) ) ) + ":identity",
+                addNamespace( toNamespace( getIdentityAccessor( Identity.class ) ) ) + ":identity",
                 "?identity",
                 false
             )
@@ -80,12 +81,25 @@ public class Triples implements Iterable<Triples.Triple>
         {
             subject = addTriple( propertyReference.traversedAssociation(), false ).value;
         }
-        String prefix = addNamespace( GenericPropertyInfo.toNamespace( propertyReference.propertyAccessor() ) );
+        String prefix = addNamespace( toNamespace( propertyReference.propertyAccessor() ) );
         return addTriple( subject, prefix + ":" + propertyReference.propertyName(), optional );
     }
 
     public Triple addTriple( final AssociationReference associationReference,
                              final boolean optional )
+    {
+        if( associationReference instanceof ManyAssociationReference )
+        {
+            ManyAssociationReference manyAssociation = (ManyAssociationReference) associationReference;
+            return addTripleManyAssociation( manyAssociation, optional );
+        }
+        else
+        {
+            return addTripleAssociation( associationReference, optional );
+        }
+    }
+
+    private Triple addTripleAssociation( AssociationReference associationReference, boolean optional )
     {
         String subject = "?entity";
         if( associationReference.traversedAssociation() != null )
@@ -94,6 +108,23 @@ public class Triples implements Iterable<Triples.Triple>
         }
         String prefix = addNamespace( toNamespace( associationReference.associationAccessor() ) );
         return addTriple( subject, prefix + ":" + associationReference.associationName(), optional );
+    }
+
+    private Triple addTripleManyAssociation( final ManyAssociationReference manyAssociationReference,
+                                             final boolean optional )
+    {
+        AssociationReference traversedAssociation = manyAssociationReference.traversedAssociation();
+        String subject = "?entity";
+        if( traversedAssociation != null )
+        {
+            subject = addTriple( traversedAssociation, false ).value;
+        }
+        String predicatePrefix = addNamespace( toNamespace( manyAssociationReference.associationAccessor() ) );
+        String predicate = predicatePrefix + ":" + manyAssociationReference.associationName();
+        Triple collectionTriple = addTriple( subject, predicate, optional );
+
+        String liSubject = collectionTriple.value;
+        return addTriple( liSubject, "rdf:li", false );
     }
 
     private Triple addTriple( final String subject,
@@ -135,7 +166,7 @@ public class Triples implements Iterable<Triples.Triple>
         {
             return null;
         }
-        return "urn:qi4j:entity:" + GenericPropertyInfo.getDeclaringClassName( accessor ) + ":";
+        return "urn:qi4j:entity:" + getDeclaringClassName( accessor ) + ":";
     }
 
     private static Method getIdentityAccessor( final Class declaringClass )
@@ -188,7 +219,8 @@ public class Triples implements Iterable<Triples.Triple>
             this.optional = optional;
         }
 
-        @Override public boolean equals( Object otherObject )
+        @Override
+        public boolean equals( Object otherObject )
         {
             if( this == otherObject )
             {
@@ -219,7 +251,8 @@ public class Triples implements Iterable<Triples.Triple>
             }
         }
 
-        @Override public int hashCode()
+        @Override
+        public int hashCode()
         {
             int result;
             result = ( subject != null ? subject.hashCode() : 0 );

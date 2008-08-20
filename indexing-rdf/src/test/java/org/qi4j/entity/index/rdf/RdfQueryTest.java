@@ -466,7 +466,6 @@ public class RdfQueryTest
     }
 
     @Test
-    @Ignore
     public void script23()
         throws EntityFinderException
     {

@@ -114,7 +114,6 @@ public class SparqlRdfQueryParser
         return query.toString();
     }
 
-
     private String processFilter( final BooleanExpression expression )
     {
         if( expression == null )
