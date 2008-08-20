@@ -104,7 +104,7 @@ class JettyMixin
 
     private String rootResourceBase( String resourcePath )
     {
-        if( resourcePath.equals( "" ) )
+        if( resourcePath.length() == 0 )
         {
             ProtectionDomain domain = getClass().getProtectionDomain();
             CodeSource source = domain.getCodeSource();
