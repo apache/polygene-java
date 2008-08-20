@@ -54,7 +54,7 @@ public class NameableAssert
             Collections.sort( sortedNames );
             Collections.sort( expectedSorted );
         }
-        org.junit.Assert.assertEquals( "names", expectedSorted, sortedNames );
+        assertEquals( "names", expectedSorted, sortedNames );
     }
 
     public static <T> List<T> toList( final Iterable<T> iterable )
