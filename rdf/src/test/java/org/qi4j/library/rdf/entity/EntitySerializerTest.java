@@ -23,6 +23,7 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entity.EntityBuilder;
 import org.qi4j.entity.UnitOfWork;
+import org.qi4j.entity.UnitOfWorkCompletionException;
 import org.qi4j.entity.memory.MemoryEntityStoreService;
 import org.qi4j.injection.scope.Service;
 import org.qi4j.library.rdf.DcRdf;
@@ -50,7 +51,8 @@ public class EntitySerializerTest
         module.addObjects( EntitySerializerTest.class );
     }
 
-    @Override @Before public void setUp() throws Exception
+    @Override @Before
+    public void setUp() throws Exception
     {
         super.setUp();
 
@@ -89,8 +91,7 @@ public class EntitySerializerTest
         new RdfXmlSerializer().serialize( graph, new PrintWriter( System.out ), prefixes, namespaces );
     }
 
-    void createDummyData()
-        throws Exception
+    void createDummyData() throws UnitOfWorkCompletionException
     {
         UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
         try
@@ -113,7 +114,12 @@ public class EntitySerializerTest
             TestEntity testEntity2 = builder2.newInstance();
             unitOfWork.complete();
         }
-        catch( Exception e )
+        catch( RuntimeException e )
+        {
+            unitOfWork.discard();
+            throw e;
+        }
+        catch( UnitOfWorkCompletionException e )
         {
             unitOfWork.discard();
             throw e;
