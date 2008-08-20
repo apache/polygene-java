@@ -21,6 +21,8 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Collections;
+import java.util.Comparator;
 import net.sf.cglib.proxy.Callback;
 import net.sf.cglib.proxy.CallbackFilter;
 import net.sf.cglib.proxy.Enhancer;
@@ -32,6 +34,7 @@ import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.util.AnnotationUtil;
+import org.qi4j.composite.ConstructionException;
 
 /**
  * TODO
@@ -41,7 +44,7 @@ public final class ConstructorsModel
 {
     private final List<ConstructorModel> constructorModels;
 
-    ConstructorModel boundConstructor;
+    private List<ConstructorModel> boundConstructors;
 
     public ConstructorsModel( Class fragmentClass )
     {
@@ -80,9 +83,12 @@ public final class ConstructorsModel
 
     public void visitModel( ModelVisitor modelVisitor )
     {
-        if( boundConstructor != null )
+        if( boundConstructors != null )
         {
-            boundConstructor.visitModel( modelVisitor );
+            for( ConstructorModel constructorModel : boundConstructors )
+            {
+                constructorModel.visitModel( modelVisitor );
+            }
         }
         else
         {
@@ -96,12 +102,13 @@ public final class ConstructorsModel
     // Binding
     public void bind( Resolution resolution ) throws BindingException
     {
+        boundConstructors = new ArrayList<ConstructorModel>( );
         for( ConstructorModel constructorModel : constructorModels )
         {
             try
             {
                 constructorModel.bind( resolution );
-                boundConstructor = constructorModel;
+                boundConstructors.add(constructorModel);
             }
             catch( Exception e )
             {
@@ -110,7 +117,7 @@ public final class ConstructorsModel
             }
         }
 
-        if( boundConstructor == null )
+        if( boundConstructors.size() == 0)
         {
             String toString = resolution.composite() == null ? resolution.object().toString() : resolution.composite().toString();
             String message = "Found no constructor that could be bound: " + toString;
@@ -120,11 +127,34 @@ public final class ConstructorsModel
             }
             throw new BindingException( message );
         }
+
+        // Sort based on parameter count
+        Collections.sort( boundConstructors, new Comparator<ConstructorModel>()
+        {
+            public int compare( ConstructorModel o1, ConstructorModel o2 )
+            {
+                return ((Integer)o2.constructor().getParameterTypes().length).compareTo( o1.constructor().getParameterTypes().length );
+            }
+        } );
     }
 
     public Object newInstance( InjectionContext injectionContext )
     {
-        return boundConstructor.newInstance( injectionContext );
+        // Try all bound constructors, in order
+        ConstructionException exception = null;
+        for( ConstructorModel constructorModel : boundConstructors )
+        {
+            try
+            {
+                return constructorModel.newInstance( injectionContext );
+            }
+            catch( ConstructionException e )
+            {
+                exception = e;
+            }
+        }
+
+        throw exception;
     }
 
     private Annotation[][] getConstructorAnnotations( Class fragmentClass, Constructor constructor )

@@ -41,6 +41,10 @@ public final class ConstructorModel
         this.parameters = parameters;
     }
 
+    public Constructor constructor()
+    {
+        return constructor;
+    }
 
     public void visitModel( ModelVisitor modelVisitor )
     {
@@ -74,5 +78,10 @@ public final class ConstructorModel
         {
             throw new ConstructionException( "Could not instantiate " + constructor.getDeclaringClass(), e );
         }
+    }
+
+    @Override public String toString()
+    {
+        return constructor.toGenericString();
     }
 }

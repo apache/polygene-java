@@ -82,7 +82,7 @@ public final class QueryExpressions
      * @return an {@link org.qi4j.query.grammar.VariableValueExpression} expression
      * @throws IllegalArgumentException - If name is null or empty
      */
-    public static VariableValueExpression variable( final String name )
+    public static <T> VariableValueExpression<T> variable( final String name )
     {
         return provider.newVariableValueExpression( name );
     }

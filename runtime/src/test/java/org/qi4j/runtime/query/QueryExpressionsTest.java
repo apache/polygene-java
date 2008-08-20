@@ -18,13 +18,14 @@
  */
 package org.qi4j.runtime.query;
 
-import static org.easymock.EasyMock.*;
 import org.easymock.EasyMock;
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
-import org.junit.Test;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 import org.junit.Before;
+import org.junit.Test;
 import org.qi4j.property.Property;
+import org.qi4j.query.QueryExpressions;
 import org.qi4j.query.grammar.BooleanExpression;
 import org.qi4j.query.grammar.Conjunction;
 import org.qi4j.query.grammar.Disjunction;
@@ -33,7 +34,6 @@ import org.qi4j.query.grammar.Negation;
 import org.qi4j.query.grammar.PropertyReference;
 import org.qi4j.query.grammar.SingleValueExpression;
 import org.qi4j.query.grammar.VariableValueExpression;
-import org.qi4j.query.QueryExpressions;
 import org.qi4j.runtime.query.grammar.impl.VariableValueExpressionImpl;
 
 /**
