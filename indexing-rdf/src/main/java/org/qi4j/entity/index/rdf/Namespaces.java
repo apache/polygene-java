@@ -69,18 +69,14 @@ public class Namespaces
         return prefix;
     }
 
-    public void toSparql( StringBuilder sparql )
-    {
-        for( String namespace : getNamespaces() )
-        {
-            sparql.append( format( "PREFIX %s: <%s> ", getNamespacePrefix( namespace ), namespace ) );
-            sparql.append( '\n' );
-        }
-    }
-
     @Override
     public String toString()
     {
-        return namespaces.toString();
+        StringBuilder sb = new StringBuilder();
+        for( String namespace : getNamespaces() )
+        {
+            sb.append( format( "%s:%s%n", getNamespacePrefix( namespace ), namespace ) );
+        }
+        return sb.toString();
     }
 }

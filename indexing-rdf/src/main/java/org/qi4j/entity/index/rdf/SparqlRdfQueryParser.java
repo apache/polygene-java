@@ -65,26 +65,28 @@ public class SparqlRdfQueryParser
         final String orderBy = processOrderBy( orderBySegments );
 
         StringBuilder query = new StringBuilder();
-        namespaces.toSparql( query );
+
+        for( String namespace : namespaces.getNamespaces() )
+        {
+            query.append( format( "PREFIX %s: <%s> %n", namespaces.getNamespacePrefix( namespace ), namespace ) );
+        }
         query.append( "SELECT DISTINCT ?entityType ?identity\n" );
         if( triples.hasTriples() )
         {
             query.append( "WHERE {\n" );
-            // alternatively triples.toSparql
             for( Triples.Triple triple : triples )
             {
-                // alternatively triple.toSparql
                 final String subject = triple.getSubject();
                 final String predicate = triple.getPredicate();
-                final String object = triple.getValue();
+                final String value = triple.getValue();
 
                 if( triple.isOptional() )
                 {
-                    query.append( format( "OPTIONAL {%s %s %s}. ", subject, predicate, object ) );
+                    query.append( format( "OPTIONAL {%s %s %s}. ", subject, predicate, value ) );
                 }
                 else
                 {
-                    query.append( format( "%s %s %s. ", subject, predicate, object ) );
+                    query.append( format( "%s %s %s. ", subject, predicate, value ) );
                 }
                 query.append( '\n' );
             }
@@ -108,10 +110,8 @@ public class SparqlRdfQueryParser
             query.append( "\nLIMIT " ).append( maxResults );
         }
 
-        String queryString = query.toString();
-
-        System.out.println( "Query:\n" + queryString );
-        return queryString;
+        System.out.println( "Query:\n" + query );
+        return query.toString();
     }
 
 
