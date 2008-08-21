@@ -37,7 +37,7 @@ public final class ConcernsDeclaration
     public ConcernsDeclaration( Class type )
     {
         // Find concern declarations
-        Set<Type> types = type.isInterface() ? interfacesOf( type ) : Collections.singleton( (Type) type );
+        Set<Type> types = ( type.isInterface() ? genericInterfacesOf( type ) : Collections.singleton( (Type) type ) );
 
         for( Type aType : types )
         {

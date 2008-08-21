@@ -27,7 +27,7 @@ import org.qi4j.structure.Module;
 public final class InjectionContext
 {
     private final CompositeInstance compositeInstance;
-    private final Module moduleInstance;
+    private final ModuleInstance moduleInstance;
     private final UsesInstance uses;
     private final State state;
     private final Object next;
@@ -37,7 +37,7 @@ public final class InjectionContext
     public InjectionContext( CompositeInstance compositeInstance, UsesInstance uses, State state )
     {
         this.compositeInstance = compositeInstance;
-        this.moduleInstance = compositeInstance.module();
+        this.moduleInstance = (ModuleInstance) compositeInstance.module();
         this.uses = uses;
         this.state = state;
         this.next = null;
@@ -65,7 +65,7 @@ public final class InjectionContext
         this.proxyHandler = null;
     }
 
-    public Module moduleInstance()
+    public ModuleInstance moduleInstance()
     {
         return moduleInstance;
     }

@@ -24,6 +24,8 @@ import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
 import static org.qi4j.util.ClassUtil.interfacesOf;
 import static org.qi4j.util.ClassUtil.toClassArray;
+import static org.qi4j.util.ClassUtil.genericInterfacesOf;
+import org.qi4j.util.ClassUtil;
 
 /**
  * TODO

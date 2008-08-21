@@ -16,6 +16,7 @@ package org.qi4j.runtime.structure;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.lang.reflect.Type;
 import org.qi4j.runtime.service.ServiceModel;
 import org.qi4j.runtime.service.ServiceReferenceInstance;
 import org.qi4j.structure.Module;
@@ -33,12 +34,12 @@ public class ServicesModel
         this.serviceModels = serviceModels;
     }
 
-    public Iterable<ServiceModel> getServiceModelsFor( Class<?> serviceType, Visibility visibility )
+    public Iterable<ServiceModel> getServiceModelsFor( Type serviceType, Visibility visibility )
     {
         List<ServiceModel> foundServices = new ArrayList<ServiceModel>();
         for( ServiceModel serviceModel : serviceModels )
         {
-            if( serviceType.isAssignableFrom( serviceModel.type() ) && serviceModel.visibility() == visibility )
+            if( serviceModel.isServiceFor(serviceType, visibility) )
             {
                 foundServices.add( serviceModel );
             }

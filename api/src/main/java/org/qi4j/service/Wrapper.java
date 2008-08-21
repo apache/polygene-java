@@ -14,11 +14,31 @@
 
 package org.qi4j.service;
 
+import org.qi4j.composite.Mixins;
+import org.qi4j.injection.scope.Uses;
+
 /**
  * Services which simply wraps some resource should extend this interface
  * and specify the type of resource.
  */
+@Mixins( Wrapper.WrapperMixin.class)
 public interface Wrapper<T>
 {
     T get();
+
+    public final class WrapperMixin<T>
+        implements Wrapper<T>
+    {
+        T wrapped;
+
+        public WrapperMixin(@Uses ServiceDescriptor descriptor)
+        {
+            wrapped = (T) descriptor.metaInfo().get( Object.class );
+        }
+
+        public T get()
+        {
+            return wrapped;
+        }
+    }
 }

@@ -51,12 +51,12 @@ public abstract class AbstractMixinsModel
 
         // Find mixin declarations
         mixins.add( new MixinDeclaration( CompositeMixin.class, Composite.class ) );
-        Set<Type> interfaces = ClassUtil.interfacesOf( compositeType );
+        Set<Class> interfaces = ClassUtil.interfacesOf( compositeType );
 
-        for( Type anInterface : interfaces )
+        for( Class anInterface : interfaces )
         {
             addMixinDeclarations( anInterface, mixins );
-            mixinTypes.add( (Class) anInterface );
+            mixinTypes.add( anInterface );
         }
     }
 

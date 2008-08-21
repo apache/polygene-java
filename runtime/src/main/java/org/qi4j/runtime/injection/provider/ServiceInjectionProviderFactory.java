@@ -36,7 +36,7 @@ public final class ServiceInjectionProviderFactory
             {
                 // @Service Iterable<ServiceReference<MyService>> serviceRefs
                 Type[] arguments = ( (ParameterizedType) dependencyModel.injectionType() ).getActualTypeArguments();
-                Class serviceType = (Class) ( (ParameterizedType) arguments[ 0 ] ).getActualTypeArguments()[ 0 ];
+                Type serviceType = ( (ParameterizedType) arguments[ 0 ] ).getActualTypeArguments()[ 0 ];
                 return new IterableServiceReferenceProvider( serviceType );
 
             }
@@ -51,13 +51,13 @@ public final class ServiceInjectionProviderFactory
         else if( dependencyModel.rawInjectionType().equals( ServiceReference.class ) )
         {
             // @Service ServiceReference<MyService> serviceRef
-            Class serviceType = dependencyModel.injectionClass();
+            Type serviceType = dependencyModel.injectionClass();
             return new ServiceReferenceProvider( serviceType );
         }
         else
         {
             // @Service MyService service
-            Class serviceType = dependencyModel.rawInjectionType();
+            Type serviceType = dependencyModel.injectionType();
             return new ServiceProvider( serviceType );
         }
     }
@@ -65,32 +65,32 @@ public final class ServiceInjectionProviderFactory
     static class IterableServiceReferenceProvider
         implements InjectionProvider
     {
-        private final Class<?> serviceType;
+        private final Type serviceType;
 
-        public IterableServiceReferenceProvider( Class serviceType )
+        public IterableServiceReferenceProvider( Type serviceType )
         {
             this.serviceType = serviceType;
         }
 
         public Object provideInjection( InjectionContext context ) throws InjectionProviderException
         {
-            return context.moduleInstance().serviceFinder().findServices( serviceType );
+            return context.moduleInstance().findServices( serviceType );
         }
     }
 
     private static class IterableServiceProvider
         implements InjectionProvider
     {
-        private final Class serviceType;
+        private final Type serviceType;
 
-        private IterableServiceProvider( Class serviceType )
+        private IterableServiceProvider( Type serviceType )
         {
             this.serviceType = serviceType;
         }
 
         public Object provideInjection( InjectionContext context ) throws InjectionProviderException
         {
-            Iterable<ServiceReference<?>> serviceReferences = context.moduleInstance().serviceFinder().findServices( serviceType );
+            Iterable<ServiceReference<Object>> serviceReferences = context.moduleInstance().findServices( serviceType );
             List<Object> serviceInstances = new ArrayList<Object>();
             for( ServiceReference<?> serviceReference : serviceReferences )
             {
@@ -103,32 +103,32 @@ public final class ServiceInjectionProviderFactory
     private static class ServiceReferenceProvider
         implements InjectionProvider
     {
-        private final Class<?> serviceType;
+        private final Type serviceType;
 
-        private ServiceReferenceProvider( Class serviceType )
+        private ServiceReferenceProvider( Type serviceType )
         {
             this.serviceType = serviceType;
         }
 
         public Object provideInjection( InjectionContext context ) throws InjectionProviderException
         {
-            return context.moduleInstance().serviceFinder().findServices( serviceType );
+            return context.moduleInstance().findService( serviceType );
         }
     }
 
     private static class ServiceProvider
         implements InjectionProvider
     {
-        private final Class<?> serviceType;
+        private final Type serviceType;
 
-        private ServiceProvider( Class serviceType )
+        private ServiceProvider( Type serviceType )
         {
             this.serviceType = serviceType;
         }
 
         public Object provideInjection( InjectionContext context ) throws InjectionProviderException
         {
-            ServiceReference serviceReference = context.moduleInstance().serviceFinder().findService( serviceType );
+            ServiceReference<Object> serviceReference = context.moduleInstance().findService( serviceType );
             if( serviceReference == null )
             {
                 return null;

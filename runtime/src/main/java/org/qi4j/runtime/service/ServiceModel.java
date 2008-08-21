@@ -16,6 +16,9 @@ package org.qi4j.runtime.service;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
+import java.lang.reflect.Type;
+import java.lang.reflect.ParameterizedType;
+import java.util.Set;
 import org.qi4j.composite.Composite;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.service.ServiceDescriptor;
@@ -23,6 +26,7 @@ import org.qi4j.service.ServiceInstanceFactory;
 import org.qi4j.structure.Module;
 import org.qi4j.structure.Visibility;
 import org.qi4j.util.MetaInfo;
+import org.qi4j.util.ClassUtil;
 
 /**
  * TODO
@@ -93,6 +97,52 @@ public final class ServiceModel
         modelVisitor.visit( this );
     }
 
+
+    public boolean isServiceFor( Type serviceType, Visibility visibility )
+    {
+        // Check visibility
+        if (visibility != this.visibility)
+            return false;
+
+        // Check types
+        if (serviceType instanceof Class)
+        {
+            // Plain class check
+            Class serviceClass = ( Class) serviceType;
+            return serviceClass.isAssignableFrom( type );
+        } else if (serviceType instanceof ParameterizedType )
+        {
+            // Parameterized type check. This is useful for example Wrapper<Foo> usages
+            ParameterizedType paramType = ( ParameterizedType) serviceType;
+            Class rawClass = (Class) paramType.getRawType();
+            Set<Type> types = ClassUtil.genericInterfacesOf( type );
+            for( Type type1 : types )
+            {
+                if (type1 instanceof ParameterizedType && rawClass.isAssignableFrom( ClassUtil.getRawClass( type1 )))
+                {
+                    // Check params
+                    Type[] actualTypes = paramType.getActualTypeArguments();
+                    Type[] actualServiceTypes = ((ParameterizedType)type1).getActualTypeArguments();
+                    for( int i = 0; i < actualTypes.length; i++ )
+                    {
+                        Type actualType = actualTypes[ i ];
+                        if (actualType instanceof Class)
+                        {
+                            Class actualClass = ( Class) actualType;
+                            Class actualServiceType = ( Class) actualServiceTypes[i];
+                            if (!actualClass.isAssignableFrom( actualServiceType ))
+                                return false;
+                        }
+                    }
+
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     public ServiceInstance<?> newInstance( Module module )
     {
         ServiceInstanceFactory instanceFactory = module.objectBuilderFactory().newObject( serviceFactory );
@@ -122,5 +172,4 @@ public final class ServiceModel
     {
         return type.getName() + ":" + identity;
     }
-
 }

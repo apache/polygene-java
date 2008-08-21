@@ -25,6 +25,8 @@ import org.qi4j.composite.Constraints;
 import static org.qi4j.util.AnnotationUtil.isCompositeConstraintAnnotation;
 import static org.qi4j.util.AnnotationUtil.isConstraintAnnotation;
 import static org.qi4j.util.ClassUtil.interfacesOf;
+import static org.qi4j.util.ClassUtil.genericInterfacesOf;
+import org.qi4j.util.ClassUtil;
 
 /**
  * TODO
@@ -38,7 +40,7 @@ public final class ConstraintsModel
     {
         this.declaringType = declaringType;
         // Find constraint declarations
-        Set<Type> interfaces = interfacesOf( declaringType );
+        Set<Type> interfaces = genericInterfacesOf( declaringType );
 
         for( Type anInterface : interfaces )
         {

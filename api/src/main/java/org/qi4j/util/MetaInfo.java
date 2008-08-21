@@ -38,7 +38,7 @@ public final class MetaInfo
 
     public void set( Serializable metaInfo )
     {
-        Set<Type> types = ClassUtil.typesOf( metaInfo.getClass() );
+        Set<Class> types = ClassUtil.classesOf( metaInfo.getClass() );
         for( Type type : types )
         {
             if( type instanceof Class )

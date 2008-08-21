@@ -21,6 +21,7 @@ package org.qi4j.bootstrap;
 import org.qi4j.composite.Composite;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.service.ServiceComposite;
+import java.lang.reflect.Type;
 
 public interface ModuleAssembly
 {

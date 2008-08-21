@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import static java.util.Collections.singleton;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.SideEffects;
 import org.qi4j.util.AnnotationUtil;
@@ -51,11 +52,11 @@ public final class SideEffectsDeclaration
         // Find side-effect declarations
         if( type.isInterface() )
         {
-            return interfacesOf( type );
+            return genericInterfacesOf( type );
         }
         else
         {
-            return Collections.singleton( (Type) type );
+            return singleton( (Type) type );
         }
     }
 

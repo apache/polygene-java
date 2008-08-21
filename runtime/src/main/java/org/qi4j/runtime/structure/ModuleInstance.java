@@ -17,6 +17,7 @@ package org.qi4j.runtime.structure;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
+import java.lang.reflect.Type;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.CompositeBuilderFactory;
@@ -271,9 +272,40 @@ public class ModuleInstance
         return clazz;
     }
 
-    public <T> ServiceReference<T> findService( Class<T> serviceClass )
+    public <T> ServiceReference<T> findService( Type serviceType )
     {
-        return serviceFinder().findService( serviceClass );
+        List<ServiceReference<T>> serviceReferences = new ArrayList<ServiceReference<T>>();
+
+        services.getServiceReferencesFor( serviceType, Visibility.module, serviceReferences );
+        if( !serviceReferences.isEmpty() )
+        {
+            return serviceReferences.get( 0 );
+        }
+
+        layerInstance.getServiceReferencesFor( serviceType, Visibility.layer, serviceReferences );
+        if( !serviceReferences.isEmpty() )
+        {
+            return serviceReferences.get( 0 );
+        }
+
+        UsedLayersInstance userLayers = layerInstance.usedLayersInstance();
+        userLayers.getServiceReferencesFor( serviceType, serviceReferences );
+
+        if( !serviceReferences.isEmpty() )
+        {
+            return serviceReferences.get( 0 );
+        }
+
+        return null; // TODO Throw exception?
+    }
+
+    public <T> Iterable<ServiceReference<T>> findServices( Type serviceType )
+    {
+        List<ServiceReference<T>> serviceReferences = new ArrayList<ServiceReference<T>>();
+        services.getServiceReferencesFor( serviceType, Visibility.module, serviceReferences );
+        layerInstance.getServiceReferencesFor( serviceType, Visibility.layer, serviceReferences );
+
+        return serviceReferences;
     }
 
     private class CompositeBuilderFactoryInstance
@@ -373,38 +405,12 @@ public class ModuleInstance
     {
         public <T> ServiceReference<T> findService( Class<T> serviceType )
         {
-            List<ServiceReference<T>> serviceReferences = new ArrayList<ServiceReference<T>>();
-
-            services.getServiceReferencesFor( serviceType, Visibility.module, serviceReferences );
-            if( !serviceReferences.isEmpty() )
-            {
-                return serviceReferences.get( 0 );
-            }
-
-            layerInstance.getServiceReferencesFor( serviceType, Visibility.layer, serviceReferences );
-            if( !serviceReferences.isEmpty() )
-            {
-                return serviceReferences.get( 0 );
-            }
-
-            UsedLayersInstance userLayers = layerInstance.usedLayersInstance();
-            userLayers.getServiceReferencesFor( serviceType, serviceReferences );
-
-            if( !serviceReferences.isEmpty() )
-            {
-                return serviceReferences.get( 0 );
-            }
-
-            return null; // TODO Throw exception?
+            return ModuleInstance.this.findService( serviceType );
         }
 
         public <T> Iterable<ServiceReference<T>> findServices( Class<T> serviceType )
         {
-            List<ServiceReference<T>> serviceReferences = new ArrayList<ServiceReference<T>>();
-            services.getServiceReferencesFor( serviceType, Visibility.module, serviceReferences );
-            layerInstance.getServiceReferencesFor( serviceType, Visibility.layer, serviceReferences );
-
-            return serviceReferences;
+            return ModuleInstance.this.findServices( serviceType );
         }
     }
 

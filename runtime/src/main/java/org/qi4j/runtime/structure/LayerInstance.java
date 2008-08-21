@@ -16,6 +16,7 @@ package org.qi4j.runtime.structure;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.lang.reflect.Type;
 import org.qi4j.composite.AmbiguousTypeException;
 import org.qi4j.runtime.composite.CompositeModel;
 import org.qi4j.runtime.entity.EntityModel;
@@ -266,7 +267,7 @@ public class LayerInstance
         return model.toString();
     }
 
-    public <T> void getServiceReferencesFor( Class<T> serviceType, Visibility visibility, List<ServiceReference<T>> serviceReferences )
+    public <T> void getServiceReferencesFor( Type serviceType, Visibility visibility, List<ServiceReference<T>> serviceReferences )
     {
         // Check this layer
         for( ModuleInstance moduleInstance : moduleInstances )

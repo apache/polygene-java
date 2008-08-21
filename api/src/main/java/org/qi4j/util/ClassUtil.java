@@ -59,9 +59,9 @@ public class ClassUtil
      * @param type to extract interfaces from
      * @return set of interfaces of given type
      */
-    public static Set<Type> interfacesOf( Type type )
+    public static Set<Class> interfacesOf( Type type )
     {
-        Set<Type> interfaces = new LinkedHashSet<Type>();
+        Set<Class> interfaces = new LinkedHashSet<Class>();
         addInterfaces( type, interfaces );
 
         if( type instanceof Class )
@@ -77,12 +77,38 @@ public class ClassUtil
         return interfaces;
     }
 
-    public static Set<Type> interfacesWithMethods( Set<Type> interfaces )
+    /**
+     * Get all interfaces for the given type,
+     * including the provided type. No type
+     * is included twice in the list.
+     *
+     * @param type to extract interfaces from
+     * @return set of interfaces of given type
+     */
+    public static Set<Type> genericInterfacesOf( Type type )
     {
-        Set<Type> newSet = new LinkedHashSet<Type>();
-        for( Type type : interfaces )
+        Set<Type> interfaces = new LinkedHashSet<Type>();
+        addGenericInterfaces( type, interfaces );
+
+        if( type instanceof Class )
         {
-            if( type instanceof Class && ( (Class) type ).isInterface() && ( (Class) type ).getDeclaredMethods().length > 0 )
+            Class current = (Class) type;
+            while( current != null )
+            {
+                addGenericInterfaces( current, interfaces );
+                current = current.getSuperclass();
+            }
+        }
+
+        return interfaces;
+    }
+
+    public static Set<Class> interfacesWithMethods( Set<Class> interfaces )
+    {
+        Set<Class> newSet = new LinkedHashSet<Class>();
+        for( Class type : interfaces )
+        {
+            if( type.isInterface() && type.getDeclaredMethods().length > 0 )
             {
                 newSet.add( type );
             }
@@ -91,9 +117,9 @@ public class ClassUtil
         return newSet;
     }
 
-    public static Set<Type> typesOf( Type type )
+    public static Set<Class> classesOf( Type type )
     {
-        Set<Type> types = new LinkedHashSet<Type>();
+        Set<Class> types = new LinkedHashSet<Class>();
         addInterfaces( type, types );
 
         if( type instanceof Class )
@@ -110,13 +136,13 @@ public class ClassUtil
     }
 
 
-    public static Class[] toClassArray( Set<Type> types )
+    public static Class[] toClassArray( Set<Class> types )
     {
         Class[] array = new Class[types.size()];
         int idx = 0;
-        for( Type type : types )
+        for( Class type : types )
         {
-            array[ idx++ ] = (Class) type;
+            array[ idx++ ] = type;
         }
 
         return array;
@@ -124,7 +150,7 @@ public class ClassUtil
 
     public static Type actualTypeOf( Type type )
     {
-        Set<Type> types = interfacesOf( type );
+        Set<Class> types = interfacesOf( type );
         for( Type type1 : types )
         {
             if( type1 instanceof ParameterizedType )
@@ -201,7 +227,7 @@ public class ClassUtil
         }
     }
 
-    private static void addInterfaces( Type type, Set<Type> interfaces )
+    private static void addInterfaces( Type type, Set<Class> interfaces )
     {
         if( !interfaces.contains( type ) )
         {
@@ -223,6 +249,32 @@ public class ClassUtil
                 for( Type subType : subTypes )
                 {
                     addInterfaces( subType, interfaces );
+                }
+            }
+        }
+    }
+
+    private static void addGenericInterfaces( Type type, Set<Type> interfaces )
+    {
+        if( !interfaces.contains( type ) )
+        {
+            if( type instanceof ParameterizedType )
+            {
+                interfaces.add( type );
+            }
+            else if( type instanceof Class )
+            {
+                Class clazz = (Class) type;
+
+                if( clazz.isInterface() )
+                {
+                    interfaces.add( clazz );
+                }
+
+                Type[] subTypes = clazz.getGenericInterfaces();
+                for( Type subType : subTypes )
+                {
+                    addGenericInterfaces( subType, interfaces );
                 }
             }
         }

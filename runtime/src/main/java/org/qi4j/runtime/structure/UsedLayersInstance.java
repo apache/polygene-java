@@ -15,6 +15,7 @@
 package org.qi4j.runtime.structure;
 
 import java.util.List;
+import java.lang.reflect.Type;
 import org.qi4j.composite.AmbiguousTypeException;
 import org.qi4j.service.ServiceReference;
 import org.qi4j.structure.Visibility;
@@ -89,7 +90,7 @@ public final class UsedLayersInstance
     }
 
 
-    public <T> void getServiceReferencesFor( Class<T> serviceType, List<ServiceReference<T>> serviceReferences )
+    public <T> void getServiceReferencesFor( Type serviceType, List<ServiceReference<T>> serviceReferences )
     {
         for( LayerInstance usedLayerInstance : usedLayerInstances )
         {
