@@ -58,6 +58,10 @@ public class JavabeanProperty extends ComputedPropertyInstance
 
     private Object wrap( CompositeBuilderFactory factory, Object resultObject )
     {
+        if( resultObject == null )
+        {
+            return null;
+        }
         Type type = type();
         if( type instanceof Class )
         {
