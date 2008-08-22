@@ -1,6 +1,0 @@
-Export-Package: org.qi4j.camel;version=${pom.version}
-
-Import-Package: *
-
-Embed-Dependency: \
-    *;scope=compile|runtime;groupId=!org.qi4j.*
