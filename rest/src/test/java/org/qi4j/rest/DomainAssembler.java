@@ -21,8 +21,8 @@ import org.qi4j.entity.index.rdf.RdfQueryService;
 import org.qi4j.entity.memory.IndexedMemoryEntityStoreService;
 import org.qi4j.library.rdf.repository.MemoryRepositoryService;
 import org.qi4j.spi.entity.UuidIdentityGeneratorService;
-import org.qi4j.structure.Visibility;
 import static org.qi4j.structure.Visibility.application;
+import static org.qi4j.structure.Visibility.layer;
 
 /**
  * TODO
@@ -37,7 +37,7 @@ public class DomainAssembler
             UuidIdentityGeneratorService.class,
             RdfQueryService.class
         ).visibleIn( application );
-        module.addServices( MemoryRepositoryService.class ).identifiedBy( "rdf-indexing" ).visibleIn( Visibility.layer );
+        module.addServices( MemoryRepositoryService.class ).identifiedBy( "rdf-indexing" ).visibleIn( layer );
 
         module.addEntities( TestEntity.class ).visibleIn( application );
         module.addServices( DummyDataService.class ).instantiateOnStartup();
