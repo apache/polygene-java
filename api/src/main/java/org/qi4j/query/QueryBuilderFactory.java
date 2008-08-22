@@ -18,9 +18,19 @@
 package org.qi4j.query;
 
 /**
- * TODO Add JavaDoc
+ * This is used to create QueryBuilders.
+ *
+ * @see QueryBuilder
  */
 public interface QueryBuilderFactory
 {
-    <T> QueryBuilder<T> newQueryBuilder( Class<T> resultType );
+    /**
+     * Create a new QueryBuilder.
+     *
+     * @param resultType the type of the result that you want
+     * @return a QueryBuilder
+     * @throws MissingIndexingSystemException if there is no EntityFinder service available
+     */
+    <T> QueryBuilder<T> newQueryBuilder( Class<T> resultType )
+        throws MissingIndexingSystemException;
 }

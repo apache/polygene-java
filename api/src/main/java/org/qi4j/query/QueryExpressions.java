@@ -52,7 +52,11 @@ public final class QueryExpressions
 
     private static QueryExpressionsProvider provider;
 
-
+    /**
+     * Set the provider to be used
+     *
+     * @param provider the QueryExpressionsProvider
+     */
     public static void setProvider( QueryExpressionsProvider provider )
     {
         QueryExpressions.provider = provider;

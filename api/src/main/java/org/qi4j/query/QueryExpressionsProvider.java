@@ -40,6 +40,9 @@ import org.qi4j.query.grammar.SingleValueExpression;
 import org.qi4j.query.grammar.VariableValueExpression;
 import org.qi4j.entity.association.ManyAssociation;
 
+/**
+ * SPI interface for QueryExpressionsProviders
+ */
 public interface QueryExpressionsProvider
 {
     <T> T templateFor( Class<T> mixinType );

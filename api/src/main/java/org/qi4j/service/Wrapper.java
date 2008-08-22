@@ -20,6 +20,10 @@ import org.qi4j.injection.scope.Uses;
 /**
  * Services which simply wraps some resource should extend this interface
  * and specify the type of resource.
+ * <p/>
+ * If the default WrapperMixin is used, then register the wrapped object
+ * as meta-info for the service using:<br/>
+ * assembly.addService(YouService.class).setMetaInfo(wrappedObject);
  */
 @Mixins( Wrapper.WrapperMixin.class)
 public interface Wrapper<T>

@@ -17,11 +17,18 @@ package org.qi4j;
 import org.qi4j.composite.Composite;
 
 /**
- * Encapsulation of the Qi4j API. The Qi4j holds references
- * to all the API objects in a Qi4j runtime.
+ * Encapsulation of the Qi4j API.
  */
 public interface Qi4j
 {
+    /**
+     * If a Modified gets a reference to the Composite using @This,
+     * then that reference must be dereferenced using this method
+     * before handing it out for others to use.
+     *
+     * @param composite instance reference injected in Modified using @This
+     * @return the dereferenced Composite
+     */
     Composite dereference( Composite composite );
 
     /**
@@ -37,5 +44,12 @@ public interface Qi4j
      */
     <S extends Composite, T extends S> Class<S> getSuperComposite( Class<T> compositeClass );
 
+    /**
+     * This is used by ConfigurationMixin to figure out the configuration type used by
+     * a Service using {@link org.qi4j.service.Configuration}.
+     *
+     * @param serviceComposite
+     * @return
+     */
     Class<?> getConfigurationType( Composite serviceComposite );
 }

@@ -22,16 +22,30 @@ package org.qi4j.query;
 import org.qi4j.query.grammar.BooleanExpression;
 
 /**
- * TODO Add JavaDoc.
+ * QueryBuilders are used to create {@link Query} instances.
+ * Iteratively add where() clauses to the query, and then use
+ * {@link QueryBuilder#newQuery()} to instantiate the Query.
+ *
+ * DDD tip: Query objects are not executed immediately, so they
+ * should be constructed in the domain model and handed over to
+ * the UI, which can then further constrain it before actual
+ * execution.
  */
 public interface QueryBuilder<T>
 {
-
+    /**
+     * Add a where-clause to the Query. Use {@link QueryExpressions}
+     * to create the expression.
+     *
+     * @param expressions the where clause
+     * @return the builder itself
+     */
     QueryBuilder<T> where( BooleanExpression expressions );
 
-    //<K> QueryBuilder<K> resultSet( K property );
-
-    //<K> QueryBuilder<K> resultList( K property );
-
+    /**
+     * Create a new query with the declared where-clauses.
+     *
+     * @return a new Query instance
+     */
     Query<T> newQuery();
 }

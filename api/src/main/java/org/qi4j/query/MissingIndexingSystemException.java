@@ -22,6 +22,6 @@ public final class MissingIndexingSystemException extends QueryException
 
     public MissingIndexingSystemException()
     {
-        super( "No QueryService has been declared in the assembly of the application." );
+        super( "No EntityFinder has been declared in the assembly of the application." );
     }
 }
