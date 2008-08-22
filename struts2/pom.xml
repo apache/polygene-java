@@ -19,7 +19,11 @@
   </properties>
 
   <modules>
-    <module>example</module>
     <module>plugin</module>
+    <module>codebehind</module>
+<!--
+    <module>convention</module>
+-->
+    <module>example</module>
   </modules>
 </project>

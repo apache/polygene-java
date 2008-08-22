@@ -49,7 +49,7 @@ public class ConstraintViolationInterceptor extends AbstractInterceptor
         if( action instanceof ValidationAware )
         {
             ValidationAware va = (ValidationAware) action;
-            HashMap<String, Object> propertyOverrides = new HashMap<String, Object>();
+            HashMap<Object, Object> propertyOverrides = new HashMap<Object, Object>();
             for( Map.Entry<String, FieldConstraintViolations> fieldViolations : fieldConstraintViolations( invocationContext ).entrySet() )
             {
                 addConstraintViolationFieldErrors( stack, va, fieldViolations.getKey(), fieldViolations.getValue() );
@@ -66,7 +66,7 @@ public class ConstraintViolationInterceptor extends AbstractInterceptor
     }
 
     private void overrideActionValues(
-        ActionInvocation invocation, ValueStack stack, final HashMap<String, Object> propertyOverrides )
+        ActionInvocation invocation, ValueStack stack, final HashMap<Object, Object> propertyOverrides )
     {
         invocation.addPreResultListener( new PreResultListener()
         {

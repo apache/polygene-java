@@ -34,23 +34,5 @@
     </interceptors>
     
     <default-interceptor-ref name="exampleStack" />
-
-<!--
-    <action name="listItems" class="org.qi4j.library.struts2.example.actions.ListItems">
-      <result name="success">/jsp/listItems.jsp</result>
-    </action>
-
-    <action name="addItem" class="org.qi4j.library.struts2.example.actions.AddItem">
-      <result name="input">/jsp/addItem.jsp</result>
-      <result name="error">/jsp/addItem.jsp</result>
-      <result name="success" type="redirect">listItems</result>
-    </action>
-
-    <action name="editItem" class="org.qi4j.library.struts2.example.actions.EditItem">
-      <result name="input">/jsp/editItem.jsp</result>
-      <result name="error">/jsp/editItem.jsp</result>
-      <result name="success" type="redirect">listItems</result>
-    </action>
--->
   </package>
 </struts>

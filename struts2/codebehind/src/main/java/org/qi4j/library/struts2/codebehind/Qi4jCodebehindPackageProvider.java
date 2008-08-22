@@ -1,4 +1,4 @@
-package org.qi4j.library.struts2;
+package org.qi4j.library.struts2.codebehind;
 
 import java.lang.annotation.Annotation;
 import java.net.MalformedURLException;
@@ -17,6 +17,7 @@ import org.apache.struts2.config.NullResult;
 import org.apache.struts2.config.ParentPackage;
 import org.apache.struts2.config.Result;
 import org.apache.struts2.config.Results;
+import org.qi4j.library.struts2.ActionConfiguration;
 
 import com.opensymphony.xwork2.config.Configuration;
 import com.opensymphony.xwork2.config.ConfigurationException;
@@ -36,7 +37,7 @@ import com.opensymphony.xwork2.util.logging.LoggerFactory;
  * is directly copied from the 2.1.1 version of the plugin but modified to only look for the @Action annotation
  * and to accept interfaces as well as classes.
  */
-public class Qi4jPackageProvider implements PackageProvider {
+public class Qi4jCodebehindPackageProvider implements PackageProvider {
 
     private ActionConfiguration actionConfiguration;
     
@@ -109,7 +110,7 @@ public class Qi4jPackageProvider implements PackageProvider {
     /**
      * Logging instance for this class.
      */
-    private static final Logger LOG = LoggerFactory.getLogger(Qi4jPackageProvider.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Qi4jCodebehindPackageProvider.class);
 
     /**
      * The XWork Configuration for this application.

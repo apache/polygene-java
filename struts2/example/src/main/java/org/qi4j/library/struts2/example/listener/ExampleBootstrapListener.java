@@ -25,6 +25,7 @@ import org.qi4j.library.rdf.repository.MemoryRepositoryService;
 import org.qi4j.library.struts2.ActionConfiguration;
 import org.qi4j.library.struts2.Qi4jApplicationBootstrapListener;
 import org.qi4j.library.struts2.bootstrap.Struts2PluginAssembler;
+import org.qi4j.library.struts2.codebehind.bootstrap.CodebehindAssembler;
 import org.qi4j.library.struts2.example.Item;
 import org.qi4j.library.struts2.example.actions.AddItem;
 import org.qi4j.library.struts2.example.actions.EditItem;
@@ -53,6 +54,7 @@ public class ExampleBootstrapListener extends Qi4jApplicationBootstrapListener
                 actionConfiguration.addComposites( AddItem.class, EditItem.class, ListItems.class );
 
                 aModule.addAssembler( new Struts2PluginAssembler( actionConfiguration ) );
+                aModule.addAssembler( new CodebehindAssembler() );
 
                 aModule.addEntities( Item.class );
                 aModule.addServices(

@@ -21,7 +21,6 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.library.struts2.ActionConfiguration;
 import org.qi4j.library.struts2.ActionService;
-import org.qi4j.library.struts2.Qi4jPackageProvider;
 import org.qi4j.library.struts2.UnitOfWorkInterceptor;
 import org.qi4j.structure.Visibility;
 
@@ -44,7 +43,6 @@ public class Struts2PluginAssembler
         aModuleAssembly.addObjects(
             UnitOfWorkInterceptor.class
         ).visibleIn( Visibility.module );
-        aModuleAssembly.addObjects( Qi4jPackageProvider.class ).visibleIn( Visibility.module );
         aModuleAssembly.addServices( ActionService.class ).setMetaInfo( actionConfiguration ).visibleIn( Visibility.module );
         actionConfiguration.assemble( aModuleAssembly );
     }
