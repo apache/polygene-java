@@ -23,6 +23,7 @@ import org.qi4j.query.MissingIndexingSystemException;
 import org.qi4j.query.QueryBuilder;
 import org.qi4j.query.QueryBuilderFactory;
 import org.qi4j.query.QueryExpressions;
+import org.qi4j.query.Query;
 import org.qi4j.runtime.entity.UnitOfWorkInstance;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.service.ServiceFinder;
@@ -80,5 +81,10 @@ public final class QueryBuilderFactoryImpl
         {
             serviceReference.releaseService();
         }
+    }
+
+    public <T> Query<T> newQuery( Class<T> resultType, Iterable<T> iterable )
+    {
+        return new QueryIterableImpl<T>(iterable, resultType);
     }
 }
