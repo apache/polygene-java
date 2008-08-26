@@ -24,7 +24,6 @@
     <module>http</module>
     <module>locking</module>
     <module>logging</module>
-    <module>messaging</module>
     <module>quikit</module>
     <module>rdf</module>
     <module>registry</module>
