@@ -68,6 +68,11 @@ public class IterableQuery<T>
      */
     public Iterator<T> iterator()
     {
+        return list().iterator();
+    }
+
+    private List<T> list()
+    {
         // Ensure it's a list first
         List<T> list = filter( toList() );
 
@@ -83,8 +88,7 @@ public class IterableQuery<T>
         {
             if( firstResult > list.size() )
             {
-                list = Collections.emptyList();
-                return list.iterator();
+                return Collections.emptyList();
             }
 
             int toIdx;
@@ -114,7 +118,7 @@ public class IterableQuery<T>
             list = list.subList( 0, toIdx );
         }
 
-        return list.iterator();
+        return list;
     }
 
     private List<T> filter( final List<T> list )
@@ -134,60 +138,13 @@ public class IterableQuery<T>
     }
 
     /**
+     * TODO not very effcient as caling count more times will rerun the query
+     *
      * @see Query#count()
      */
     public long count()
     {
-        long count = 0;
-        if( iterable instanceof Collection )
-        {
-            Collection collection = (Collection) iterable;
-
-            count = collection.size();
-
-            if( firstResult != null )
-            {
-                if( firstResult < count )
-                {
-                    count = count - firstResult;
-                }
-                else
-                {
-                    count = 0;
-                }
-            }
-
-            if( maxResults != null )
-            {
-                count = Math.min( count, maxResults );
-            }
-        }
-        else
-        {
-            for( T t : iterable )
-            {
-                count++;
-            }
-
-            if( firstResult != null )
-            {
-                if( firstResult < count )
-                {
-                    count = count - firstResult;
-                }
-                else
-                {
-                    count = 0;
-                }
-            }
-
-            if( maxResults != null )
-            {
-                count = Math.min( count, maxResults );
-            }
-        }
-
-        return count;
+        return list().size();
     }
 
     private List<T> toList()
@@ -280,5 +237,5 @@ public class IterableQuery<T>
             return 0;
         }
     }
-    
+
 }
