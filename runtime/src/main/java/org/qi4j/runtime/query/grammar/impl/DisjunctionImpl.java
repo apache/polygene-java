@@ -45,6 +45,14 @@ public final class DisjunctionImpl
         super( leftSideExpression, rightSideExpression );
     }
 
+    /**
+     * @see org.qi4j.query.grammar.BooleanExpression#eval(Object)
+     */    
+    public boolean eval( final Object target )
+    {
+        return leftSideExpression().eval( target ) || rightSideExpression().eval( target );
+    }
+
     @Override public String toString()
     {
         return new StringBuilder()

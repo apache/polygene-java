@@ -23,7 +23,8 @@ import org.qi4j.query.grammar.ManyAssociationReference;
 /**
  * @author edward.yakop@gmail.com
  */
-public class ManyAssociationReferenceImpl extends AssociationReferenceImpl
+public class ManyAssociationReferenceImpl
+    extends AssociationReferenceImpl
     implements ManyAssociationReference
 {
     public ManyAssociationReferenceImpl( final Method accessor )

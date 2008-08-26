@@ -18,6 +18,7 @@
  */
 package org.qi4j.runtime.query;
 
+import org.qi4j.query.MissingIndexingSystemException;
 import org.qi4j.query.Query;
 import org.qi4j.query.QueryBuilder;
 import org.qi4j.query.QueryExpressions;
@@ -94,7 +95,19 @@ final class QueryBuilderImpl<T>
      */
     public Query<T> newQuery()
     {
-        return new QueryImpl<T>( unitOfWorkInstance, entityFinder, resultType, whereClause );
+        if( entityFinder == null )
+        {
+            throw new MissingIndexingSystemException();
+        }
+        return new EntityQuery<T>( unitOfWorkInstance, entityFinder, resultType, whereClause );
+    }
+
+    /**
+     * @see QueryBuilder#newQuery(Iterable)
+     */
+    public Query<T> newQuery( Iterable<T> iterable )
+    {
+        return new IterableQuery<T>( iterable, resultType, whereClause );
     }
 
 }

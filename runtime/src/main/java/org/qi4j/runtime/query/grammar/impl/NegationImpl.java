@@ -54,6 +54,14 @@ public final class NegationImpl
         return expression;
     }
 
+    /**
+     * @see org.qi4j.query.grammar.BooleanExpression#eval(Object)
+     */    
+    public boolean eval( final Object target )
+    {
+        return !expression().eval( target );
+    }
+
     @Override public String toString()
     {
         return new StringBuilder()

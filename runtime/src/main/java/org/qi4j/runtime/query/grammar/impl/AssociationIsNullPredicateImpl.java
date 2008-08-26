@@ -17,6 +17,7 @@
  */
 package org.qi4j.runtime.query.grammar.impl;
 
+import org.qi4j.entity.association.Association;
 import org.qi4j.query.grammar.AssociationIsNullPredicate;
 import org.qi4j.query.grammar.AssociationReference;
 
@@ -40,6 +41,15 @@ public final class AssociationIsNullPredicateImpl
     public AssociationIsNullPredicateImpl( final AssociationReference associationReference )
     {
         super( associationReference );
+    }
+
+    /**
+     * @see org.qi4j.query.grammar.BooleanExpression#eval(Object)
+     */
+    public boolean eval( final Object target )
+    {
+        final Association association = associationReference().eval( target );
+        return association == null || association.get() == null;
     }
 
     @Override public String toString()

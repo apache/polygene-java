@@ -48,4 +48,13 @@ public interface QueryBuilder<T>
      * @return a new Query instance
      */
     Query<T> newQuery();
+
+    /**
+     * Create a new query with the declared where-clauses that will be evaluated against the iterable entries.
+     *
+     * @param iterable collection of objects (composites?)
+     * @return a new Query instance
+     */
+    Query<T> newQuery( Iterable<T> iterable );
+    
 }

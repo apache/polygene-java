@@ -34,5 +34,4 @@ public interface QueryBuilderFactory
     <T> QueryBuilder<T> newQueryBuilder( Class<T> resultType )
         throws MissingIndexingSystemException;
 
-    <T> Query<T> newQuery(Class<T> resultType, Iterable<T> iterable);
 }

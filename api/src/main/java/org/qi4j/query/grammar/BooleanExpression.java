@@ -24,4 +24,12 @@ package org.qi4j.query.grammar;
  */
 public interface BooleanExpression
 {
+    /**
+     * Evaluates the boolean expression agains a target object (composite?)
+     *
+     * @param target target object
+     * @return true if boolean expression evaluates to TRUE for the target object
+     */
+    boolean eval( Object target );
+
 }

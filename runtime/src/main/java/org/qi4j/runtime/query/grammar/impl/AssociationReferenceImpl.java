@@ -21,6 +21,7 @@ package org.qi4j.runtime.query.grammar.impl;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import org.qi4j.entity.association.Association;
 import org.qi4j.query.grammar.AssociationReference;
 
 /**
@@ -131,6 +132,34 @@ public class AssociationReferenceImpl
         return traversed;
     }
 
+    /**
+     * @see AssociationReference#eval(Object)
+     */
+    public Association eval( final Object target )
+    {
+        Object actual = target;
+        if( traversedAssociation() != null )
+        {
+            final Association assoc = traversedAssociation().eval( target );
+            if( assoc != null )
+            {
+                actual = assoc.get();
+            }
+        }
+        if( actual != null )
+        {
+            try
+            {
+                return (Association) associationAccessor().invoke( actual );
+            }
+            catch( Exception e )
+            {
+                return null;
+            }
+        }
+        return null;
+    }
+
     @Override
     public String toString()
     {
@@ -144,4 +173,5 @@ public class AssociationReferenceImpl
         fragment.append( name );
         return fragment.toString();
     }
+
 }

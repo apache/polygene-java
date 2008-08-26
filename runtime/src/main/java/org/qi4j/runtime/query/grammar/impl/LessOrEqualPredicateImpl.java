@@ -46,6 +46,14 @@ public final class LessOrEqualPredicateImpl<T>
         super( propertyReference, valueExpression );
     }
 
+    /**
+     * @see ComparisonPredicateImpl#eval(Comparable, Object)
+     */
+    protected boolean eval( final Comparable<T> propertyValue, final T expressionValue )
+    {
+        return propertyValue.compareTo( expressionValue ) <= 0;
+    }
+
     @Override public String toString()
     {
         return new StringBuilder()

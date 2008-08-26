@@ -21,6 +21,7 @@ package org.qi4j.query.grammar;
  *
  * @author edward.yakop@gmail.com
  */
-public interface ManyAssociationReference extends AssociationReference
+public interface ManyAssociationReference
+    extends AssociationReference
 {
 }

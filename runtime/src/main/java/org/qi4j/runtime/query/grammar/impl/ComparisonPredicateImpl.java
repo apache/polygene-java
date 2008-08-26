@@ -17,8 +17,10 @@
  */
 package org.qi4j.runtime.query.grammar.impl;
 
+import org.qi4j.property.Property;
 import org.qi4j.query.grammar.ComparisonPredicate;
 import org.qi4j.query.grammar.PropertyReference;
+import org.qi4j.query.grammar.SingleValueExpression;
 import org.qi4j.query.grammar.ValueExpression;
 
 /**
@@ -78,5 +80,43 @@ abstract class ComparisonPredicateImpl<T>
     {
         return valueExpression;
     }
+
+    /**
+     * @see org.qi4j.query.grammar.BooleanExpression#eval(Object)
+     */
+    public boolean eval( final Object target )
+    {
+        if( !( valueExpression() instanceof SingleValueExpression ) )
+        {
+            throw new UnsupportedOperationException( "Value " + valueExpression() + " is not supported" );
+        }
+        final T value = ( (SingleValueExpression<T>) valueExpression() ).value();
+        final Property<T> prop = propertyReference().eval( target );
+        if( prop == null )
+        {
+            return value == null;
+        }
+        final T propValue = prop.get();
+        if( propValue == null )
+        {
+            return value == null;
+        }
+        if( !( propValue instanceof Comparable ) )
+        {
+            throw new UnsupportedOperationException(
+                "Cannot use type " + value.getClass().getSimpleName() + " for comparations"
+            );
+        }
+        return eval( (Comparable<T>) propValue, value );
+    }
+
+    /**
+     * Implemented by subclasses in order to perform the actual comparison.
+     *
+     * @param propertyValue   property value
+     * @param expressionValue expression value
+     * @return true if the comparison is TRUE
+     */
+    abstract protected boolean eval( final Comparable<T> propertyValue, final T expressionValue );
 
 }

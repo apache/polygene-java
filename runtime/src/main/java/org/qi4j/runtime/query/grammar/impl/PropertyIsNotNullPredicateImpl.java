@@ -17,6 +17,7 @@
  */
 package org.qi4j.runtime.query.grammar.impl;
 
+import org.qi4j.property.Property;
 import org.qi4j.query.grammar.PropertyIsNotNullPredicate;
 import org.qi4j.query.grammar.PropertyReference;
 
@@ -40,6 +41,15 @@ public final class PropertyIsNotNullPredicateImpl<T>
     public PropertyIsNotNullPredicateImpl( final PropertyReference<T> propertyReference )
     {
         super( propertyReference );
+    }
+
+    /**
+     * @see org.qi4j.query.grammar.BooleanExpression#eval(Object)
+     */    
+    public boolean eval( final Object target )
+    {
+        final Property<T> prop = propertyReference().eval( target );
+        return prop != null && prop.get() != null;
     }
 
     @Override public String toString()

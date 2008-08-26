@@ -46,6 +46,19 @@ public final class MatchesPredicateImpl
         super( propertyReference, valueExpression );
     }
 
+    /**
+     * @see ComparisonPredicateImpl#eval(Comparable, Object)
+     */
+    protected boolean eval( final Comparable<String> propertyValue, final String expressionValue )
+    {
+        final String stringValue = propertyValue.toString();
+        if( stringValue == null )
+        {
+            return expressionValue == null;
+        }
+        return stringValue.matches( expressionValue );
+    }
+
     @Override public String toString()
     {
         return new StringBuilder()

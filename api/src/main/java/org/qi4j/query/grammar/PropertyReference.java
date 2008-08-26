@@ -19,6 +19,7 @@
 package org.qi4j.query.grammar;
 
 import java.lang.reflect.Method;
+import org.qi4j.property.Property;
 
 /**
  * An expression related to {@link org.qi4j.property.Property}.
@@ -60,5 +61,13 @@ public interface PropertyReference<T>
      * @return traversed association used to get to this property.
      */
     AssociationReference traversedAssociation();
+
+    /**
+     * Evaluates the property reference against a target object.
+     *
+     * @param target target object
+     * @return property instance from the target
+     */
+    Property<T> eval( Object target );
 
 }

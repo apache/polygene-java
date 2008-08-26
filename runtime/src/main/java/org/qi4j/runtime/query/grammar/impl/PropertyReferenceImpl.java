@@ -21,6 +21,8 @@ package org.qi4j.runtime.query.grammar.impl;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import org.qi4j.entity.association.Association;
+import org.qi4j.property.Property;
 import org.qi4j.query.grammar.AssociationReference;
 import org.qi4j.query.grammar.PropertyReference;
 
@@ -130,6 +132,34 @@ public final class PropertyReferenceImpl<T>
     public AssociationReference traversedAssociation()
     {
         return traversed;
+    }
+
+    /**
+     * @see org.qi4j.query.grammar.PropertyReference#eval(Object)
+     */
+    public Property<T> eval( final Object target )
+    {
+        Object actual = target;
+        if( traversedAssociation() != null )
+        {
+            final Association assoc = traversedAssociation().eval( target );
+            if( assoc != null )
+            {
+                actual = assoc.get();
+            }
+        }
+        if( actual != null )
+        {
+            try
+            {
+                return (Property) propertyAccessor().invoke( actual );
+            }
+            catch( Exception e )
+            {
+                return null;
+            }
+        }
+        return null;
     }
 
     @Override

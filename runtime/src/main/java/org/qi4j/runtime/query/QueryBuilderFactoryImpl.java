@@ -19,11 +19,9 @@
 package org.qi4j.runtime.query;
 
 import org.qi4j.composite.NullArgumentException;
-import org.qi4j.query.MissingIndexingSystemException;
 import org.qi4j.query.QueryBuilder;
 import org.qi4j.query.QueryBuilderFactory;
 import org.qi4j.query.QueryExpressions;
-import org.qi4j.query.Query;
 import org.qi4j.runtime.entity.UnitOfWorkInstance;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.service.ServiceFinder;
@@ -71,7 +69,7 @@ public final class QueryBuilderFactoryImpl
         final ServiceReference<EntityFinder> serviceReference = serviceLocator.findService( EntityFinder.class );
         if( serviceReference == null )
         {
-            throw new MissingIndexingSystemException();
+            return new QueryBuilderImpl<T>( unitOfWorkInstance, null, resultType );
         }
         try
         {
@@ -83,8 +81,4 @@ public final class QueryBuilderFactoryImpl
         }
     }
 
-    public <T> Query<T> newQuery( Class<T> resultType, Iterable<T> iterable )
-    {
-        return new QueryIterableImpl<T>(iterable, resultType);
-    }
 }

@@ -19,6 +19,7 @@
 package org.qi4j.query.grammar;
 
 import java.lang.reflect.Method;
+import org.qi4j.entity.association.Association;
 
 /**
  * An expression related to {@link org.qi4j.entity.association.Association}.
@@ -60,5 +61,13 @@ public interface AssociationReference
      * @return traversed association used to get to this association.
      */
     AssociationReference traversedAssociation();
+
+    /**
+     * Evaluates the association reference against a target object.
+     *
+     * @param target target object
+     * @return association instance from the target
+     */
+    Association eval( Object target );
 
 }
