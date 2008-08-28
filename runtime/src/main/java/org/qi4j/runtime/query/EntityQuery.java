@@ -29,7 +29,7 @@ import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
 
 /**
- * Default implementation of {@link Query}
+ * Default implementation of {@link Query}.
  *
  * @author Alin Dreghiciu
  * @since 0.2.0, April 14, 2008
@@ -57,9 +57,9 @@ final class EntityQuery<T>
      * @param whereClause        where clause
      */
     EntityQuery( final UnitOfWorkInstance unitOfWorkInstance,
-                   final EntityFinder entityFinder,
-                   final Class<T> resultType,
-                   final BooleanExpression whereClause )
+                 final EntityFinder entityFinder,
+                 final Class<T> resultType,
+                 final BooleanExpression whereClause )
     {
         super( resultType, whereClause );
         this.unitOfWorkInstance = unitOfWorkInstance;
@@ -71,33 +71,19 @@ final class EntityQuery<T>
      */
     public T find()
     {
-        QualifiedIdentity foundEntity;
         try
         {
-            foundEntity = entityFinder.findEntity( resultType.getName(), whereClause );
+            final QualifiedIdentity foundEntity = entityFinder.findEntity( resultType.getName(), whereClause );
+            if( foundEntity != null )
+            {
+                return loadEntity( foundEntity );
+            }
+            // No entity was found
+            return null;
         }
         catch( EntityFinderException e )
         {
             throw new QueryExecutionException( "Finder caused exception", e );
-        }
-
-        if( foundEntity != null )
-        {
-            try
-            {
-                final Class<T> entityType = (Class<T>) unitOfWorkInstance.module().classLoader().loadClass( foundEntity.type() );
-                final T entity = unitOfWorkInstance.getReference( foundEntity.identity(), entityType );
-                return entity;
-            }
-            catch( ClassNotFoundException e )
-            {
-                throw new QueryExecutionException( "Entity type not found", e );
-            }
-        }
-        else
-        {
-            // No entity was found
-            return null;
         }
     }
 
@@ -122,19 +108,12 @@ final class EntityQuery<T>
                 public T next()
                 {
                     final QualifiedIdentity foundEntity = foundEntities.next();
-
-                    final ModuleInstance moduleInstance = unitOfWorkInstance.module();
-                    final String entityTypeAsString = foundEntity.type();
-                    final Class<T> entityType = moduleInstance.findClassForName( entityTypeAsString );
-
-                    // TODO shall we throw an exception if class cannot be found?
-                    final String entityIdentity = foundEntity.identity();
-                    final T entity = unitOfWorkInstance.getReference( entityIdentity, entityType );
-                    return entity;
+                    return loadEntity( foundEntity );
                 }
 
                 public void remove()
                 {
+                    throw new UnsupportedOperationException();
                 }
             };
         }
@@ -144,12 +123,9 @@ final class EntityQuery<T>
         }
     }
 
-    @Override public String toString()
-    {
-        return "Find all " + resultType.getName() +
-               ( whereClause != null ? " where " + whereClause.toString() : "" );
-    }
-
+    /**
+     * @see Query#count()
+     */
     public long count()
     {
         try
@@ -162,4 +138,29 @@ final class EntityQuery<T>
             return 0;
         }
     }
+
+    @Override public String toString()
+    {
+        return "Find all " + resultType.getName() +
+               ( whereClause != null ? " where " + whereClause.toString() : "" );
+    }
+
+    /**
+     * Loads an entity (reference) based on qualified identity of that entity.
+     *
+     * @param qualifiedIdentity to be loaded
+     * @return corresponding entity
+     */
+    private T loadEntity( final QualifiedIdentity qualifiedIdentity )
+    {
+        final ModuleInstance moduleInstance = unitOfWorkInstance.module();
+        final String entityTypeAsString = qualifiedIdentity.type();
+        final Class<T> entityType = moduleInstance.findClassForName( entityTypeAsString );
+        if( entityType == null )
+        {
+            throw new QueryExecutionException( String.format( "Entity type %s not found", entityTypeAsString ) );
+        }
+        return unitOfWorkInstance.getReference( qualifiedIdentity.identity(), entityType );
+    }
+
 }
