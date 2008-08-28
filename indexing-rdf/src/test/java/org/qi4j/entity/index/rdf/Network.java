@@ -20,6 +20,7 @@ package org.qi4j.entity.index.rdf;
 import org.qi4j.entity.EntityBuilder;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkCompletionException;
+import org.qi4j.entity.index.rdf.model.Account;
 import org.qi4j.entity.index.rdf.model.Cat;
 import org.qi4j.entity.index.rdf.model.City;
 import org.qi4j.entity.index.rdf.model.Domain;
@@ -70,6 +71,13 @@ class Network
         penang.country().set( "Malaysia" );
         penang.county().set( "Some Other Jaya" );
 
+        EntityBuilder<Account> accountBuilder = unitOfWork.newEntityBuilder( Account.class );
+        Account annsAccount = accountBuilder.newInstance();
+        annsAccount.number().set( "accountOfAnnDoe" );
+
+        Account jacksAccount = accountBuilder.newInstance();
+        jacksAccount.number().set( "accountOfJackDoe" );
+
         EntityBuilder<MaleEntity> maleBuilder = unitOfWork.newEntityBuilder( MaleEntity.class );
         EntityBuilder<FemaleEntity> femaleBuilder = unitOfWork.newEntityBuilder( FemaleEntity.class );
 
@@ -78,6 +86,10 @@ class Network
         annDoe.placeOfBirth().set( kualaLumpur );
         annDoe.yearOfBirth().set( 1975 );
         annDoe.interests().add( cooking );
+        annDoe.password().set( "passwordOfAnnDoe" );
+        annDoe.mainAccount().set( annsAccount );
+        annDoe.accounts().add( annsAccount );
+        annDoe.accounts().add( jacksAccount );
 
         Male joeDoe = maleBuilder.newInstance();
         setName( joeDoe, "Joe Doe" );
@@ -87,6 +99,7 @@ class Network
         joeDoe.interests().add( programming );
         joeDoe.interests().add( gaming );
         joeDoe.email().set( "joe@thedoes.net" );
+        joeDoe.password().set( "passwordOfJoeDoe" );
 
         Male jackDoe = maleBuilder.newInstance();
         setName( jackDoe, "Jack Doe" );
@@ -94,6 +107,10 @@ class Network
         jackDoe.yearOfBirth().set( 1970 );
         jackDoe.interests().add( cars );
         jackDoe.wife().set( annDoe );
+        jackDoe.password().set( "passwordOfJohnDoe" );
+        jackDoe.mainAccount().set( jacksAccount );
+        jackDoe.accounts().add( annsAccount );
+        jackDoe.accounts().add( jacksAccount );
 
         EntityBuilder<CatEntity> catBuilder = unitOfWork.newEntityBuilder( CatEntity.class );
 

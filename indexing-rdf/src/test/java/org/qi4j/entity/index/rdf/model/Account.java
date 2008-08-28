@@ -17,35 +17,15 @@
  */
 package org.qi4j.entity.index.rdf.model;
 
-import org.qi4j.entity.Queryable;
-import org.qi4j.entity.association.Association;
-import org.qi4j.entity.association.ManyAssociation;
 import org.qi4j.property.Property;
 
 /**
  * TODO Add JavaDoc
  *
  * @author Alin Dreghiciu
- * @since March 20, 2008
+ * @since 0.4.0, August 28, 2008
  */
-public interface Person
-    extends Nameable, Alive
+public interface Account
 {
-    Association<City> placeOfBirth();
-
-    Property<Integer> yearOfBirth();
-
-    Association<Female> mother();
-
-    Association<Male> father();
-
-    ManyAssociation<Domain> interests();
-
-    Property<String> email();
-
-    @Queryable( false ) Property<String> password();
-
-    @Queryable( false ) Association<Account> mainAccount();
-
-    @Queryable( false ) ManyAssociation<Account> accounts();
+    Property<String> number();
 }

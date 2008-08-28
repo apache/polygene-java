@@ -155,11 +155,14 @@ public class RdfEntityIndexerMixin
         final Iterable<PropertyType> properties = state.properties();
         for( PropertyType property : properties )
         {
-            final Object propValue = entityState.getProperty( property.qualifiedName() );
-            if( propValue != null )
+            if( property.queryable() )
             {
-                final URI propURI = valueFactory.createURI( property.uri() );
-                connection.add( entityURI, propURI, valueFactory.createLiteral( propValue.toString() ), entityURI );
+                final Object propValue = entityState.getProperty( property.qualifiedName() );
+                if( propValue != null )
+                {
+                    final URI propURI = valueFactory.createURI( property.uri() );
+                    connection.add( entityURI, propURI, valueFactory.createLiteral( propValue.toString() ), entityURI );
+                }
             }
         }
     }
@@ -173,12 +176,15 @@ public class RdfEntityIndexerMixin
         final Iterable<AssociationType> associations = state.associations();
         for( AssociationType association : associations )
         {
-            final QualifiedIdentity assocEntityId = entityState.getAssociation( association.qualifiedName() );
-            if( assocEntityId != null )
+            if( association.queryable() )
             {
-                final URI assocURI = valueFactory.createURI( association.uri() );
-                final URI assocEntityURI = valueFactory.createURI( assocEntityId.toURI() );
-                connection.add( entityURI, assocURI, assocEntityURI, entityURI );
+                final QualifiedIdentity assocEntityId = entityState.getAssociation( association.qualifiedName() );
+                if( assocEntityId != null )
+                {
+                    final URI assocURI = valueFactory.createURI( association.uri() );
+                    final URI assocEntityURI = valueFactory.createURI( assocEntityId.toURI() );
+                    connection.add( entityURI, assocURI, assocEntityURI, entityURI );
+                }
             }
         }
     }
@@ -192,14 +198,17 @@ public class RdfEntityIndexerMixin
         final Iterable<ManyAssociationType> manyAssociations = state.manyAssociations();
         for( ManyAssociationType manyAssociation : manyAssociations )
         {
-            final String associationQualifiedName = manyAssociation.qualifiedName();
-            final Collection<QualifiedIdentity> assocEntityIds =
-                entityState.getManyAssociation( associationQualifiedName );
-
-            if( assocEntityIds != null && !assocEntityIds.isEmpty() )
+            if( manyAssociation.queryable() )
             {
-//                indexManyAssociationItemOrginal( connection, entityURI, manyAssociation, assocEntityIds );
-                indexManyAssociationItem( connection, entityURI, manyAssociation, assocEntityIds );
+                final String associationQualifiedName = manyAssociation.qualifiedName();
+                final Collection<QualifiedIdentity> assocEntityIds =
+                    entityState.getManyAssociation( associationQualifiedName );
+
+                if( assocEntityIds != null && !assocEntityIds.isEmpty() )
+                {
+    //                indexManyAssociationItemOrginal( connection, entityURI, manyAssociation, assocEntityIds );
+                    indexManyAssociationItem( connection, entityURI, manyAssociation, assocEntityIds );
+                }
             }
         }
     }

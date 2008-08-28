@@ -44,6 +44,7 @@ import org.qi4j.entity.index.rdf.model.entities.CityEntity;
 import org.qi4j.entity.index.rdf.model.entities.DomainEntity;
 import org.qi4j.entity.index.rdf.model.entities.FemaleEntity;
 import org.qi4j.entity.index.rdf.model.entities.MaleEntity;
+import org.qi4j.entity.index.rdf.model.entities.AccountEntity;
 import org.qi4j.entity.memory.IndexedMemoryEntityStoreService;
 import org.qi4j.library.rdf.repository.MemoryRepositoryService;
 import org.qi4j.query.Query;
@@ -85,6 +86,7 @@ public class RdfQueryTest
                     FemaleEntity.class,
                     CityEntity.class,
                     DomainEntity.class,
+                    AccountEntity.class,
                     CatEntity.class
                 );
                 module.addServices(
