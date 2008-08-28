@@ -14,11 +14,16 @@
 package org.qi4j.entity.index.rdf.http;
 
 import org.qi4j.entity.EntityComposite;
+import org.qi4j.entity.Queryable;
 import org.qi4j.property.Property;
 
+/**
+ * TODO Add JavaDoc
+ */
+@Queryable( false )
 public interface HttpRepositoryConfiguration extends EntityComposite
 {
     Property<String> repositoryUrl();
-    
+
     Property<String> repositoryId();
 }
