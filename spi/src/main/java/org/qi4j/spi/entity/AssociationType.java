@@ -22,15 +22,20 @@ import java.io.Serializable;
 public class AssociationType
     implements Serializable
 {
-    private String qualifiedName;
-    private String type;
-    private String uri;
+    private final String qualifiedName;
+    private final String type;
+    private final String uri;
+    private final boolean queryable;
 
-    public AssociationType( String qualifiedName, String type, String uri )
+    public AssociationType( final String qualifiedName,
+                            final String type,
+                            final String uri,
+                            final boolean queryable )
     {
         this.qualifiedName = qualifiedName;
         this.type = type;
         this.uri = uri;
+        this.queryable = queryable;
     }
 
     public String qualifiedName()
@@ -47,6 +52,11 @@ public class AssociationType
     {
         return uri;
 
+    }
+
+    public boolean queryable()
+    {
+        return queryable;
     }
 
     @Override public String toString()

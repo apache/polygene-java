@@ -22,6 +22,7 @@ import java.util.Set;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.ConstraintViolation;
 import org.qi4j.composite.ConstraintViolationException;
+import org.qi4j.entity.Queryable;
 import org.qi4j.entity.RDF;
 import org.qi4j.entity.association.AbstractAssociation;
 import org.qi4j.entity.association.Association;
@@ -54,6 +55,7 @@ public final class AssociationModel
     private final String qualifiedName;
     private final String uri;
     private final ValueConstraintsInstance constraints;
+    private final boolean queryable;
 
     public AssociationModel( Method accessor, ValueConstraintsInstance valueConstraintsInstance, MetaInfo metaInfo )
     {
@@ -65,6 +67,9 @@ public final class AssociationModel
         RDF uriAnnotation = accessor().getAnnotation( RDF.class );
         this.uri = uriAnnotation == null ? GenericAssociationInfo.toURI( qualifiedName() ) : uriAnnotation.value();
         this.constraints = valueConstraintsInstance;
+
+        final Queryable queryable = accessor.getAnnotation( Queryable.class );
+        this.queryable = queryable == null || queryable.value();
     }
 
     public <T> T metaInfo( Class<T> infoType )
@@ -237,7 +242,7 @@ public final class AssociationModel
 
     public AssociationType associationType()
     {
-        return new AssociationType( qualifiedName, getRawClass( type ).getName(), uri );
+        return new AssociationType( qualifiedName, getRawClass( type ).getName(), uri, queryable );
     }
 
     public ManyAssociationType manyAssociationType()
@@ -255,6 +260,6 @@ public final class AssociationModel
         {
             manyAssocType = ManyAssociationType.ManyAssociationTypeEnum.MANY;
         }
-        return new ManyAssociationType( qualifiedName, manyAssocType, getRawClass( type ).getName(), uri );
+        return new ManyAssociationType( qualifiedName, manyAssocType, getRawClass( type ).getName(), uri, queryable );
     }
 }

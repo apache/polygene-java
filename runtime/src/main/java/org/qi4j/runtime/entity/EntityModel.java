@@ -27,6 +27,7 @@ import org.qi4j.composite.ConstructionException;
 import org.qi4j.composite.State;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.EntityCompositeAlreadyExistsException;
+import org.qi4j.entity.Queryable;
 import org.qi4j.entity.RDF;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.CompositeMethodInstance;
@@ -94,6 +95,7 @@ public final class EntityModel
     private final CompositeMethodsModel compositeMethodsModel;
     private final Class<? extends Composite> proxyClass;
     private final String uri;
+    private final boolean queryable;
 
     private EntityModel( Class<? extends EntityComposite> type,
                          Visibility visibility,
@@ -113,6 +115,9 @@ public final class EntityModel
         this.proxyClass = createProxyClass( type );
         RDF uri = type.getAnnotation( RDF.class );
         this.uri = uri == null ? ClassUtil.toURI( type ) : uri.value();
+
+        final Queryable queryable = type.getAnnotation( Queryable.class );
+        this.queryable = queryable == null || queryable.value();
     }
 
     public Class<? extends EntityComposite> type()
@@ -148,7 +153,10 @@ public final class EntityModel
             mixinTypes.add( mixinType.getName() );
         }
 
-        return new EntityType( type.getName(), toURI(), mixinTypes, stateModel.propertyTypes(), stateModel.associationTypes(), stateModel.manyAssociationTypes() );
+        return new EntityType(
+            type.getName(), toURI(), queryable,
+            mixinTypes, stateModel.propertyTypes(), stateModel.associationTypes(), stateModel.manyAssociationTypes()
+        );
     }
 
     public boolean hasMixinType( Class<?> mixinType )

@@ -27,16 +27,22 @@ public class PropertyType
         MUTABLE, IMMUTABLE, COMPUTED
     }
 
-    private String qualifiedName;
-    private String type;
-    private String uri;
-    private PropertyTypeEnum propertyType;
+    private final String qualifiedName;
+    private final String type;
+    private final String uri;
+    private final boolean queryable;
+    private final PropertyTypeEnum propertyType;
 
-    public PropertyType( String qualifiedName, String type, String uri, PropertyTypeEnum propertyType )
+    public PropertyType( final String qualifiedName,
+                         final String type,
+                         final String uri,
+                         final boolean queryable,
+                         final PropertyTypeEnum propertyType )
     {
         this.qualifiedName = qualifiedName;
         this.type = type;
         this.uri = uri;
+        this.queryable = queryable;
         this.propertyType = propertyType;
     }
 
@@ -58,6 +64,11 @@ public class PropertyType
     public String uri()
     {
         return uri;
+    }
+
+    public boolean queryable()
+    {
+        return queryable;
     }
 
     @Override public String toString()

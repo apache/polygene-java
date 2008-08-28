@@ -29,18 +29,24 @@ public class ManyAssociationType
         MANY, LIST, SET
     }
 
-    public ManyAssociationType( String qualifiedName, ManyAssociationTypeEnum associationType, String type, String uri )
+    private final String qualifiedName;
+    private final ManyAssociationTypeEnum associationType;
+    private final String type;
+    private final String uri;
+    private final boolean queryable;
+
+    public ManyAssociationType( final String qualifiedName,
+                                final ManyAssociationTypeEnum associationType,
+                                final String type,
+                                final String uri,
+                                final boolean queryable )
     {
         this.qualifiedName = qualifiedName;
         this.associationType = associationType;
         this.type = type;
         this.uri = uri;
+        this.queryable = queryable;
     }
-
-    private String qualifiedName;
-    private ManyAssociationTypeEnum associationType;
-    private String type;
-    private String uri;
 
     public String qualifiedName()
     {
@@ -61,6 +67,11 @@ public class ManyAssociationType
     {
         return uri;
 
+    }
+
+    public boolean queryable()
+    {
+        return queryable;
     }
 
     @Override public String toString()

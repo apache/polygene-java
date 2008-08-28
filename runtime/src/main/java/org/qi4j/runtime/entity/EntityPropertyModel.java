@@ -16,6 +16,7 @@ package org.qi4j.runtime.entity;
 
 import java.lang.reflect.Method;
 import org.qi4j.composite.ConstraintViolationException;
+import org.qi4j.entity.Queryable;
 import org.qi4j.property.Property;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.property.PropertyModel;
@@ -30,9 +31,14 @@ import org.qi4j.util.MetaInfo;
  */
 public final class EntityPropertyModel extends PropertyModel
 {
+
+    private final boolean queryable;
+
     public EntityPropertyModel( Method anAccessor, ValueConstraintsInstance constraints, MetaInfo metaInfo, Object defaultValue )
     {
         super( anAccessor, constraints, metaInfo, defaultValue );
+        final Queryable queryable = anAccessor.getAnnotation( Queryable.class );
+        this.queryable = queryable == null || queryable.value();
     }
 
     public Property newEntityInstance( EntityState state )
@@ -87,6 +93,6 @@ public final class EntityPropertyModel extends PropertyModel
             type = PropertyType.PropertyTypeEnum.MUTABLE;
         }
 
-        return new PropertyType( qualifiedName(), ClassUtil.getRawClass( type() ).getName(), toURI(), type );
+        return new PropertyType( qualifiedName(), ClassUtil.getRawClass( type() ).getName(), toURI(), queryable, type );
     }
 }

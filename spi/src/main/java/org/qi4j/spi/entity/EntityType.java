@@ -22,23 +22,30 @@ import java.io.Serializable;
 public class EntityType
     implements Serializable
 {
-    private String type;
-    private long version = 0L; // TODO How to compute this?
-    private String uri;
-    private Iterable<PropertyType> properties;
-    private Iterable<AssociationType> associations;
-    private Iterable<ManyAssociationType> manyAssociations;
-    private Iterable<String> mixinTypes;
+    private final String type;
+    private final long version = 0L; // TODO How to compute this?
+    private final String uri;
+    private final boolean queryable;
+    private final Iterable<PropertyType> properties;
+    private final Iterable<AssociationType> associations;
+    private final Iterable<ManyAssociationType> manyAssociations;
+    private final Iterable<String> mixinTypes;
 
-    public EntityType( String entityType, String uri, Iterable<String> mixinTypes,
-                       Iterable<PropertyType> properties, Iterable<AssociationType> associations, Iterable<ManyAssociationType> manyAssociations )
+    public EntityType( final String entityType,
+                       final String uri,
+                       final boolean queryable,
+                       final Iterable<String> mixinTypes,
+                       final Iterable<PropertyType> properties,
+                       final Iterable<AssociationType> associations,
+                       final Iterable<ManyAssociationType> manyAssociations )
     {
+        this.type = entityType;
         this.uri = uri;
+        this.queryable = queryable;
         this.mixinTypes = mixinTypes;
         this.properties = properties;
         this.associations = associations;
         this.manyAssociations = manyAssociations;
-        type = entityType;
     }
 
     public String type()
@@ -59,6 +66,11 @@ public class EntityType
     public String toURI()
     {
         return uri;
+    }
+
+    public boolean queryable()
+    {
+        return queryable;
     }
 
     public Iterable<PropertyType> properties()
