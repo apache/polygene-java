@@ -192,8 +192,7 @@ public class RdfQueryTest
             query,
             "Joe Doe", "Ann Doe", "Jack Doe",
             "Penang", "Kuala Lumpur",
-            "Cooking", "Gaming", "Programming", "Cars",
-            "Felix"
+            "Cooking", "Gaming", "Programming", "Cars"
         );
     }
 
@@ -381,7 +380,7 @@ public class RdfQueryTest
         query.maxResults( 3 );
         verifyOrderedResults(
             query,
-            "Felix", "Gaming", "Jack Doe"
+            "Gaming", "Jack Doe", "Joe Doe"
         );
     }
 
@@ -395,8 +394,7 @@ public class RdfQueryTest
         query.orderBy( orderBy( nameable.name() ) );
         verifyOrderedResults(
             query,
-            "Ann Doe", "Cars", "Cooking", "Felix", "Gaming", "Jack Doe", "Joe Doe", "Kuala Lumpur", "Penang",
-            "Programming"
+            "Ann Doe", "Cars", "Cooking", "Gaming", "Jack Doe", "Joe Doe", "Kuala Lumpur", "Penang", "Programming"
         );
     }
 
@@ -413,7 +411,7 @@ public class RdfQueryTest
         query.orderBy( orderBy( nameable.name() ) );
         verifyOrderedResults(
             query,
-            "Felix", "Gaming", "Jack Doe", "Joe Doe", "Kuala Lumpur", "Penang", "Programming"
+            "Gaming", "Jack Doe", "Joe Doe", "Kuala Lumpur", "Penang", "Programming"
         );
     }
 

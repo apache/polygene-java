@@ -79,14 +79,20 @@ public class RdfEntityIndexerMixin
                 final Set<EntityType> entityTypes = new HashSet<EntityType>();
                 for( EntityState entityState : newStates )
                 {
-                    entityTypes.add( entityState.entityType() );
-                    indexEntityState( entityState, connection );
+                    if( entityState.entityType().queryable() )
+                    {
+                        entityTypes.add( entityState.entityType() );
+                        indexEntityState( entityState, connection );
+                    }
                 }
 
                 for( EntityState entityState : changedStates )
                 {
                     removeEntityState( entityState.qualifiedIdentity(), connection );
-                    indexEntityState( entityState, connection );
+                    if( entityState.entityType().queryable() )
+                    {
+                        indexEntityState( entityState, connection );
+                    }
                 }
 
                 for( QualifiedIdentity entityId : removedStates )

@@ -17,8 +17,9 @@
  */
 package org.qi4j.entity.index.rdf.model.entities;
 
-import org.qi4j.entity.index.rdf.model.Cat;
 import org.qi4j.entity.EntityComposite;
+import org.qi4j.entity.Queryable;
+import org.qi4j.entity.index.rdf.model.Cat;
 
 /**
  * TODO Add JavaDoc
@@ -26,6 +27,7 @@ import org.qi4j.entity.EntityComposite;
  * @author Alin Dreghiciu
  * @since March 31, 2008
  */
+@Queryable( false )
 public interface CatEntity
     extends Cat, EntityComposite
 {

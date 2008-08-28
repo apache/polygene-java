@@ -20,17 +20,15 @@ package org.qi4j.entity.index.rdf;
 import org.qi4j.entity.EntityBuilder;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkCompletionException;
-import org.qi4j.entity.index.rdf.model.Nameable;
-import org.qi4j.entity.index.rdf.model.Male;
 import org.qi4j.entity.index.rdf.model.Cat;
 import org.qi4j.entity.index.rdf.model.City;
 import org.qi4j.entity.index.rdf.model.Domain;
 import org.qi4j.entity.index.rdf.model.Female;
+import org.qi4j.entity.index.rdf.model.Male;
+import org.qi4j.entity.index.rdf.model.Nameable;
 import org.qi4j.entity.index.rdf.model.entities.CatEntity;
-import org.qi4j.entity.index.rdf.model.entities.DomainEntity;
-import org.qi4j.entity.index.rdf.model.entities.CityEntity;
-import org.qi4j.entity.index.rdf.model.entities.MaleEntity;
 import org.qi4j.entity.index.rdf.model.entities.FemaleEntity;
+import org.qi4j.entity.index.rdf.model.entities.MaleEntity;
 
 /**
  * TODO Add JavaDoc
@@ -100,7 +98,7 @@ class Network
         EntityBuilder<CatEntity> catBuilder = unitOfWork.newEntityBuilder( CatEntity.class );
 
         Cat felix = catBuilder.newInstance();
-        setName( felix, "Felix" );
+        felix.name().set( "Felix" );
 
         unitOfWork.complete();
     }
