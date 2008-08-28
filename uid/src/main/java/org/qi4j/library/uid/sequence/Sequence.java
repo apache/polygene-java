@@ -17,9 +17,13 @@
  */
 package org.qi4j.library.uid.sequence;
 
-import org.qi4j.composite.Mixins;
+import org.qi4j.entity.Queryable;
 import org.qi4j.property.Property;
 
+/**
+ * TODO Add JavaDoc
+ */
+@Queryable( false )
 public interface Sequence
 {
     Property<Long> currentValue();

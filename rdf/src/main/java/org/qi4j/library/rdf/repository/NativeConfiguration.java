@@ -14,9 +14,14 @@
 package org.qi4j.library.rdf.repository;
 
 import org.qi4j.entity.EntityComposite;
+import org.qi4j.entity.Queryable;
 import org.qi4j.library.constraints.annotation.Matches;
 import org.qi4j.property.Property;
 
+/**
+ * TODO Add JavaDoc
+ */
+@Queryable( false )
 public interface NativeConfiguration extends EntityComposite
 {
     @Matches( "([spoc][spoc][spoc][spoc],?)*" ) Property<String> tripleIndexes();

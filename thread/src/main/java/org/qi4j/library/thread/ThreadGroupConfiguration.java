@@ -17,8 +17,13 @@
  */
 package org.qi4j.library.thread;
 
+import org.qi4j.entity.Queryable;
 import org.qi4j.property.Property;
 
+/**
+ * TODO Add JavaDoc
+ */
+@Queryable( false )
 public interface ThreadGroupConfiguration
 {
     Property<String> rootGroupName();

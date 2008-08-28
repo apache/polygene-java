@@ -15,6 +15,7 @@
 package org.qi4j.library.http;
 
 import org.qi4j.entity.EntityComposite;
+import org.qi4j.entity.Queryable;
 import org.qi4j.library.constraints.annotation.NotEmpty;
 import org.qi4j.library.constraints.annotation.Range;
 import org.qi4j.property.Property;
@@ -22,6 +23,7 @@ import org.qi4j.property.Property;
 /**
  * TODO
  */
+@Queryable( false )
 public interface JettyConfiguration
     extends EntityComposite
 {
