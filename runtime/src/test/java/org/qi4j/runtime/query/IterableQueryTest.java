@@ -453,9 +453,9 @@ public class IterableQueryTest
         throws EntityFinderException
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
-        Person personTmpl = templateFor( Person.class );
-        Domain personInterestsTmpl = oneOf( personTmpl.interests() );
-        qb.where( eq( personInterestsTmpl.name(), "Cars" ) );
+        Person person = templateFor( Person.class );
+        Domain interests = oneOf( person.interests() );
+        qb.where( eq( interests.name(), "Cars" ) );
 
         Query<Person> query = qb.newQuery( Network.persons() );
         verifyOrderedResults( query, "Jack Doe" );
