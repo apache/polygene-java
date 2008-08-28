@@ -20,18 +20,19 @@ package org.qi4j.entity.index.rdf;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 import org.junit.After;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.Ignore;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkCompletionException;
-import org.qi4j.entity.association.ManyAssociation;
 import org.qi4j.entity.index.rdf.model.City;
 import org.qi4j.entity.index.rdf.model.Domain;
 import org.qi4j.entity.index.rdf.model.Female;
@@ -49,7 +50,6 @@ import org.qi4j.query.Query;
 import org.qi4j.query.QueryBuilder;
 import org.qi4j.query.QueryBuilderFactory;
 import static org.qi4j.query.QueryExpressions.and;
-import static org.qi4j.query.QueryExpressions.oneOf;
 import static org.qi4j.query.QueryExpressions.eq;
 import static org.qi4j.query.QueryExpressions.ge;
 import static org.qi4j.query.QueryExpressions.gt;
@@ -57,6 +57,7 @@ import static org.qi4j.query.QueryExpressions.isNotNull;
 import static org.qi4j.query.QueryExpressions.isNull;
 import static org.qi4j.query.QueryExpressions.matches;
 import static org.qi4j.query.QueryExpressions.not;
+import static org.qi4j.query.QueryExpressions.oneOf;
 import static org.qi4j.query.QueryExpressions.or;
 import static org.qi4j.query.QueryExpressions.orderBy;
 import static org.qi4j.query.QueryExpressions.templateFor;
@@ -476,6 +477,18 @@ public class RdfQueryTest
 
         Query<Person> query = qb.newQuery();
         verifyOrderedResults( query, "Jack Doe" );
+    }
+
+    @Test
+    public void script24() throws EntityFinderException
+    {
+        final QueryBuilder<Domain> qb = qbf.newQueryBuilder( Domain.class );
+        final Nameable nameable = templateFor( Nameable.class );
+        qb.where(
+            eq( nameable.name(), "Gaming" )
+        );
+        final Query<Domain> query = qb.newQuery();
+        assertThat( query.find().name().get(), is( equalTo( "Gaming" ) ) );
     }
 
 }
