@@ -50,7 +50,7 @@ public class DefaultIbatisEntityStoreTest
         super.assemble( module );
         module.addServices( IBatisEntityStoreService.class );
 
-        final ModuleAssembly config = module.getLayerAssembly().newModuleAssembly( "config" );
+        final ModuleAssembly config = module.layerAssembly().newModuleAssembly( "config" );
         config.addEntities( IBatisConfigurationComposite.class ).visibleIn( Visibility.layer );
         config.addServices( MemoryEntityStoreService.class );
         config.on( IBatisConfigurationComposite.class ).to().sqlMapConfigURL().set( derbyDatabaseHandler.getUrlString( SQLMAP_FILE ) );

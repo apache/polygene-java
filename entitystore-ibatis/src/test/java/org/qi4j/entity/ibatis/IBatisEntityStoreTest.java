@@ -192,7 +192,7 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
         module.addServices( UuidIdentityGeneratorService.class );
         module.addServices( IBatisEntityStoreService.class );
 
-        final ModuleAssembly config = module.getLayerAssembly().newModuleAssembly( "config" );
+        final ModuleAssembly config = module.layerAssembly().newModuleAssembly( "config" );
         config.addEntities( IBatisConfigurationComposite.class ).visibleIn( Visibility.layer );
         config.addServices( MemoryEntityStoreService.class );
         config.on( IBatisConfiguration.class ).to().sqlMapConfigURL().set( derbyDatabaseHandler.getUrlString( TestConfig.SQL_MAP_CONFIG_XML ) );

@@ -42,14 +42,14 @@ import org.qi4j.spi.entity.ManyAssociationType;
 import static org.qi4j.spi.entity.ManyAssociationType.ManyAssociationTypeEnum.LIST;
 import org.qi4j.spi.entity.PropertyType;
 import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.spi.query.EntityIndexer;
+import org.qi4j.spi.entity.EntityStoreListener;
 import org.qi4j.util.ClassUtil;
 
 /**
  * TODO Add JavaDoc
  */
 public class RdfEntityIndexerMixin
-    implements EntityIndexer, Initializable
+    implements EntityStoreListener, Initializable
 {
     private @Service Repository repository;
 
@@ -58,12 +58,9 @@ public class RdfEntityIndexerMixin
 
     public void initialize() throws ConstructionException
     {
-        valueFactory = repository.getValueFactory();
     }
 
-    public void index( final Iterable<EntityState> newStates,
-                       final Iterable<EntityState> changedStates,
-                       final Iterable<QualifiedIdentity> removedStates )
+    public synchronized void notifyChanges( Iterable<EntityState> newStates, Iterable<EntityState> changedStates, Iterable<QualifiedIdentity> removedStates )
     {
         try
         {
@@ -73,6 +70,7 @@ public class RdfEntityIndexerMixin
                 return;
             }
             final RepositoryConnection connection = repository.getConnection();
+            connection.setAutoCommit( false );
             try
             {
                 // Update index
@@ -132,12 +130,12 @@ public class RdfEntityIndexerMixin
     {
         final QualifiedIdentity qualifiedIdentity = entityState.qualifiedIdentity();
         final String compositeType = qualifiedIdentity.type();
-        final URI compositeURI = valueFactory.createURI( ClassUtil.toURI( compositeType ) );
-        final URI compositeClassURI = valueFactory.createURI( ClassUtil.toURI( Composite.class ) + ":entityType" );
-        final URI entityURI = valueFactory.createURI( qualifiedIdentity.toURI() );
+        final URI compositeURI = getValueFactory().createURI( ClassUtil.toURI( compositeType ) );
+        final URI compositeClassURI = getValueFactory().createURI( ClassUtil.toURI( Composite.class ) + ":entityType" );
+        final URI entityURI = getValueFactory().createURI( qualifiedIdentity.toURI() );
 
         connection.add( entityURI, RDF.TYPE, compositeURI, entityURI );
-        connection.add( entityURI, compositeClassURI, valueFactory.createLiteral( compositeType ), entityURI );
+        connection.add( entityURI, compositeClassURI, getValueFactory().createLiteral( compositeType ), entityURI );
 
         // index properties
         final EntityType state = entityState.entityType();
@@ -160,8 +158,8 @@ public class RdfEntityIndexerMixin
                 final Object propValue = entityState.getProperty( property.qualifiedName() );
                 if( propValue != null )
                 {
-                    final URI propURI = valueFactory.createURI( property.uri() );
-                    connection.add( entityURI, propURI, valueFactory.createLiteral( propValue.toString() ), entityURI );
+                    final URI propURI = getValueFactory().createURI( property.uri() );
+                    connection.add( entityURI, propURI, getValueFactory().createLiteral( propValue.toString() ), entityURI );
                 }
             }
         }
@@ -181,8 +179,8 @@ public class RdfEntityIndexerMixin
                 final QualifiedIdentity assocEntityId = entityState.getAssociation( association.qualifiedName() );
                 if( assocEntityId != null )
                 {
-                    final URI assocURI = valueFactory.createURI( association.uri() );
-                    final URI assocEntityURI = valueFactory.createURI( assocEntityId.toURI() );
+                    final URI assocURI = getValueFactory().createURI( association.uri() );
+                    final URI assocEntityURI = getValueFactory().createURI( assocEntityId.toURI() );
                     connection.add( entityURI, assocURI, assocEntityURI, entityURI );
                 }
             }
@@ -219,13 +217,13 @@ public class RdfEntityIndexerMixin
                                                   final Collection<QualifiedIdentity> assocEntityIds )
         throws RepositoryException
     {
-        final URI assocURI = valueFactory.createURI( manyAssociation.uri() );
+        final URI assocURI = getValueFactory().createURI( manyAssociation.uri() );
         BNode prevAssocEntityBNode = null;
 
         for( QualifiedIdentity assocEntityId : assocEntityIds )
         {
-            final URI assocEntityURI = valueFactory.createURI( assocEntityId.toURI() );
-            final BNode assocEntityBNode = valueFactory.createBNode();
+            final URI assocEntityURI = getValueFactory().createURI( assocEntityId.toURI() );
+            final BNode assocEntityBNode = getValueFactory().createBNode();
             if( prevAssocEntityBNode == null )
             {
                 connection.add( entityURI, assocURI, assocEntityBNode, entityURI );
@@ -245,26 +243,26 @@ public class RdfEntityIndexerMixin
                                            final Collection<QualifiedIdentity> assocEntityIds )
         throws RepositoryException
     {
-        final URI assocURI = valueFactory.createURI( manyAssociation.uri() );
+        final URI assocURI = getValueFactory().createURI( manyAssociation.uri() );
 
         final ManyAssociationType.ManyAssociationTypeEnum typeEnum = manyAssociation.associationType();
-        final BNode collectionNode = valueFactory.createBNode();
+        final BNode collectionNode = getValueFactory().createBNode();
 
         Statement collectionTypeStatement;
         if( typeEnum == LIST )
         {
-            collectionTypeStatement = valueFactory.createStatement( collectionNode, RDF.TYPE, RDF.LIST );
+            collectionTypeStatement = getValueFactory().createStatement( collectionNode, RDF.TYPE, RDF.LIST );
         }
         else
         {
-            collectionTypeStatement = valueFactory.createStatement( collectionNode, RDF.TYPE, RDF.BAG );
+            collectionTypeStatement = getValueFactory().createStatement( collectionNode, RDF.TYPE, RDF.BAG );
         }
         connection.add( entityURI, assocURI, collectionNode );
         connection.add( collectionTypeStatement );
 
         for( QualifiedIdentity assocEntityId : assocEntityIds )
         {
-            final URI assocEntityURI = valueFactory.createURI( assocEntityId.toURI() );
+            final URI assocEntityURI = getValueFactory().createURI( assocEntityId.toURI() );
             connection.add( collectionNode, RDF.LI, assocEntityURI );
         }
     }
@@ -273,7 +271,7 @@ public class RdfEntityIndexerMixin
                                     final RepositoryConnection connection )
         throws RepositoryException
     {
-        final URI entityURI = valueFactory.createURI( qualifiedIdentity.toURI() );
+        final URI entityURI = getValueFactory().createURI( qualifiedIdentity.toURI() );
         connection.clear( entityURI );
     }
 
@@ -281,7 +279,7 @@ public class RdfEntityIndexerMixin
                                   final RepositoryConnection connection )
         throws RepositoryException
     {
-        final URI compositeURI = valueFactory.createURI( entityType.toURI() );
+        final URI compositeURI = getValueFactory().createURI( entityType.toURI() );
         // remove composite type if already present
         connection.clear( compositeURI );
         // first add the composite type as rdfs:Class
@@ -291,7 +289,7 @@ public class RdfEntityIndexerMixin
         Iterable<String> mixinTypeNames = entityType.mixinTypes();
         for( String mixinType : mixinTypeNames )
         {
-            URI mixinURI = valueFactory.createURI( ClassUtil.toURI( mixinType ) );
+            URI mixinURI = getValueFactory().createURI( ClassUtil.toURI( mixinType ) );
             connection.add( compositeURI, RDFS.SUBCLASSOF, mixinURI, compositeURI );
         }
     }
@@ -310,4 +308,11 @@ public class RdfEntityIndexerMixin
         return false;
     }
 
+    private ValueFactory getValueFactory()
+    {
+        if (valueFactory == null)
+            valueFactory = repository.getValueFactory();
+
+        return valueFactory;
+    }
 }

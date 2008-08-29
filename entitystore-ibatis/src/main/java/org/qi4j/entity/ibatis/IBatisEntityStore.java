@@ -68,6 +68,11 @@ public class IBatisEntityStore
         entityTypes.put( entityType.type(), entityType );
     }
 
+    public EntityType getEntityType( String aEntityType )
+    {
+        return entityTypes.get( aEntityType );
+    }
+
     /**
      * Construct a new instance of entity state.
      *

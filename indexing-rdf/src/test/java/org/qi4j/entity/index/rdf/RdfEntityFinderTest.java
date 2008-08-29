@@ -41,7 +41,7 @@ import org.qi4j.entity.index.rdf.model.entities.DomainEntity;
 import org.qi4j.entity.index.rdf.model.entities.FemaleEntity;
 import org.qi4j.entity.index.rdf.model.entities.MaleEntity;
 import org.qi4j.entity.index.rdf.model.entities.AccountEntity;
-import org.qi4j.entity.memory.IndexedMemoryEntityStoreService;
+import org.qi4j.entity.memory.MemoryEntityStoreService;
 import org.qi4j.library.rdf.repository.MemoryRepositoryService;
 import static org.qi4j.query.QueryExpressions.and;
 import static org.qi4j.query.QueryExpressions.eq;
@@ -91,7 +91,7 @@ public class RdfEntityFinderTest
                     CatEntity.class
                 );
                 module.addServices(
-                    IndexedMemoryEntityStoreService.class,
+                    MemoryEntityStoreService.class,
                     UuidIdentityGeneratorService.class,
                     RdfIndexerExporterComposite.class
                 );

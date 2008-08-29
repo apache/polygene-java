@@ -24,10 +24,15 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Properties;
+import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.concurrent.locks.ReadWriteLock;
+import java.nio.charset.Charset;
 import jdbm.RecordManager;
 import jdbm.RecordManagerFactory;
 import jdbm.btree.BTree;
@@ -43,7 +48,7 @@ import org.qi4j.library.locking.WriteLock;
 import org.qi4j.service.Activatable;
 import org.qi4j.service.Configuration;
 import org.qi4j.service.ServiceDescriptor;
-import org.qi4j.spi.entity.AbstractEntityStoreMixin;
+import org.qi4j.spi.entity.EntityTypeRegistryMixin;
 import org.qi4j.spi.entity.DefaultEntityState;
 import org.qi4j.spi.entity.EntityAlreadyExistsException;
 import org.qi4j.spi.entity.EntityNotFoundException;
@@ -59,7 +64,7 @@ import org.qi4j.spi.serialization.SerializableState;
  * JDBM implementation of SerializationStore
  */
 public class JdbmEntityStoreMixin
-    extends AbstractEntityStoreMixin
+    extends EntityTypeRegistryMixin
     implements Activatable
 {
     private @This ReadWriteLock lock;
@@ -69,6 +74,7 @@ public class JdbmEntityStoreMixin
     private RecordManager recordManager;
     private BTree index;
     private Serializer serializer;
+    private long registryId;
 
     // Activatable implementation
     public void activate() throws Exception
@@ -91,10 +97,12 @@ public class JdbmEntityStoreMixin
         serializer = new ByteArraySerializer();
 
         initializeIndex();
+        initializeRegistry();
     }
 
     public void passivate() throws Exception
     {
+        saveRegistry();
         recordManager.close();
     }
 
@@ -102,11 +110,11 @@ public class JdbmEntityStoreMixin
     @WriteLock
     public EntityState newEntityState( QualifiedIdentity identity ) throws EntityStoreException
     {
-        EntityType entityType = getEntityType( identity );
+        EntityType entityType = getEntityType( identity.type() );
 
         try
         {
-            Long stateIndex = getStateIndex( identity );
+            Long stateIndex = getStateIndex( identity .identity());
 
             if( stateIndex != null )
             {
@@ -124,14 +132,17 @@ public class JdbmEntityStoreMixin
     @WriteLock
     public EntityState getEntityState( QualifiedIdentity identity ) throws EntityStoreException
     {
-        EntityType entityType = getEntityType( identity );
+        EntityType entityType = getEntityType( identity.type() );
 
         try
         {
 
             try
             {
-                SerializableState serializableState = loadSerializableState( identity );
+                SerializableState serializableState = loadSerializableState( identity.identity() );
+                if (serializableState == null)
+                    throw new EntityNotFoundException( descriptor.identity(), identity );
+
                 DefaultEntityState state = new DefaultEntityState( serializableState.version(),
                                                                    serializableState.lastModified(),
                                                                    identity,
@@ -224,10 +235,16 @@ public class JdbmEntityStoreMixin
     {
         for( QualifiedIdentity removedState : removedStates )
         {
-            Long stateIndex = getStateIndex( removedState );
-            recordManager.delete( stateIndex );
-            index.remove( removedState.identity().getBytes() );
+            removeState( removedState.identity() );
         }
+    }
+
+    private void removeState( String removedState )
+        throws IOException
+    {
+        Long stateIndex = getStateIndex( removedState );
+        recordManager.delete( stateIndex );
+        index.remove( removedState.getBytes("UTF-8") );
     }
 
     private void storeLoadedStates( Iterable<EntityState> loadedStates, boolean turbo, long lastModified, ByteArrayOutputStream bout )
@@ -249,7 +266,7 @@ public class JdbmEntityStoreMixin
                 ObjectOutputStream out = new FastObjectOutputStream( bout, turbo );
                 out.writeObject( state );
                 out.close();
-                Long stateIndex = getStateIndex( entityState.qualifiedIdentity() );
+                Long stateIndex = getStateIndex( entityState.qualifiedIdentity().identity() );
                 byte[] stateArray = bout.toByteArray();
                 bout.reset();
                 recordManager.update( stateIndex, stateArray, serializer );
@@ -276,7 +293,7 @@ public class JdbmEntityStoreMixin
             long stateIndex = recordManager.insert( stateArray, serializer );
             bout.reset();
             String indexKey = entityState.qualifiedIdentity().identity();
-            index.insert( indexKey.getBytes(), stateIndex, false );
+            index.insert( indexKey.getBytes( "UTF-8"), stateIndex, false );
         }
     }
 
@@ -303,10 +320,27 @@ public class JdbmEntityStoreMixin
 
                 public EntityState next()
                 {
-                    String qid = (String) tuple.getKey();
+                    try
+                    {
+                        String id = new String((byte[])tuple.getKey(), "UTF-8");
+                        SerializableState serializableState = loadSerializableState( id );
+                        if (serializableState == null)
+                            throw new EntityNotFoundException( descriptor.identity(), new QualifiedIdentity( id, "") );
 
-//                    tuple.
-                    return null;
+                        DefaultEntityState state = new DefaultEntityState( serializableState.version(),
+                                                                           serializableState.lastModified(),
+                                                                           serializableState.qualifiedIdentity(),
+                                                                           EntityStatus.LOADED,
+                                                                           getEntityType( serializableState.qualifiedIdentity().type() ),
+                                                                           serializableState.properties(),
+                                                                           serializableState.associations(),
+                                                                           serializableState.manyAssociations() );
+                        return state;
+                    }
+                    catch( Exception e )
+                    {
+                        throw new EntityStoreException( e );
+                    }
                 }
 
                 public void remove()
@@ -345,10 +379,10 @@ public class JdbmEntityStoreMixin
         return properties;
     }
 
-    private Long getStateIndex( QualifiedIdentity identity )
+    private Long getStateIndex( String identity )
         throws IOException
     {
-        Long stateIndex = (Long) index.find( identity.identity().getBytes() );
+        Long stateIndex = (Long) index.find( identity.getBytes("UTF-8") );
         return stateIndex;
     }
 
@@ -369,21 +403,51 @@ public class JdbmEntityStoreMixin
         }
     }
 
-    private SerializableState loadSerializableState( QualifiedIdentity identity )
+    private void initializeRegistry()
+        throws IOException
+    {
+        registryId = recordManager.getNamedObject( "registry" );
+        if( registryId != 0 )
+        {
+            System.out.println( "Using existing registry" );
+            List<EntityType> registry = (List) recordManager.fetch( registryId );
+            for( EntityType entityType : registry )
+            {
+
+                registerEntityType( entityType );
+            }
+        }
+        else
+        {
+            System.out.println( "Creating new registry" );
+            registryId = recordManager.insert( new ArrayList() );
+            recordManager.setNamedObject( "registry", registryId );
+        }
+    }
+
+    private void saveRegistry()
+        throws IOException
+    {
+        List<EntityType> registry = new ArrayList(super.entityTypes.values());
+        recordManager.update( registryId, registry );
+        recordManager.commit();
+    }
+
+    private SerializableState loadSerializableState( String identity )
         throws IOException, ClassNotFoundException
     {
         Long stateIndex = getStateIndex( identity );
 
         if( stateIndex == null )
         {
-            throw new EntityNotFoundException( descriptor.identity(), identity );
+            return null;
         }
 
         byte[] serializedState = (byte[]) recordManager.fetch( stateIndex, serializer );
 
         if( serializedState == null )
         {
-            throw new EntityNotFoundException( descriptor.identity(), identity );
+            return null;
         }
 
         ByteArrayInputStream bin = new ByteArrayInputStream( serializedState );

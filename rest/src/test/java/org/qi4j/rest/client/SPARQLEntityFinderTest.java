@@ -43,7 +43,7 @@ public class SPARQLEntityFinderTest
     {
         module.addEntities( TestEntity.class );
 
-        ModuleAssembly store = module.getLayerAssembly().newModuleAssembly( "REST Store/Finder" );
+        ModuleAssembly store = module.layerAssembly().newModuleAssembly( "REST Store/Finder" );
         store.addEntities( RESTEntityStoreConfiguration.class, SPARQLEntityFinderConfiguration.class );
         store.addServices( MemoryEntityStoreService.class, EntityParserService.class, RestletClientService.class );
         store.addServices( RESTEntityStoreService.class, SPARQLEntityFinderService.class ).visibleIn( Visibility.layer );

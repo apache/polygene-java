@@ -26,7 +26,7 @@ import org.qi4j.entity.neo4j.state.IndirectEntityStateFactory;
 import org.qi4j.entity.neo4j.state.LoadedDescriptor;
 import org.qi4j.entity.neo4j.state.NeoEntityStateFactory;
 import org.qi4j.injection.scope.Service;
-import org.qi4j.spi.entity.AbstractEntityStoreMixin;
+import org.qi4j.spi.entity.EntityTypeRegistryMixin;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityStoreException;
@@ -38,7 +38,7 @@ import org.qi4j.spi.entity.StateCommitter;
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
  */
 public class NeoEntityStoreMixin
-    extends AbstractEntityStoreMixin
+    extends EntityTypeRegistryMixin
 {
     // Dependancies
     private @Service NeoIdentityIndexService idService;
@@ -50,7 +50,7 @@ public class NeoEntityStoreMixin
 
     public EntityState newEntityState( QualifiedIdentity identity ) throws EntityStoreException
     {
-        EntityType type = getEntityType( identity );
+        EntityType type = getEntityType( identity.type() );
         CommittableEntityState state = factory().createEntityState( idService, load( type, identity ), identity, EntityStatus.NEW );
         state.preloadState();
         return state;
@@ -58,7 +58,7 @@ public class NeoEntityStoreMixin
 
     public EntityState getEntityState( QualifiedIdentity identity ) throws EntityStoreException
     {
-        EntityType type = getEntityType( identity );
+        EntityType type = getEntityType( identity.type() );
         CommittableEntityState state = factory().createEntityState( idService, load( type, identity ), identity, EntityStatus.LOADED );
         state.preloadState();
         return state;

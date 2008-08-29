@@ -26,7 +26,7 @@ import org.qi4j.injection.scope.This;
 import org.qi4j.library.locking.ReadLock;
 import org.qi4j.library.locking.WriteLock;
 import org.qi4j.service.Activatable;
-import org.qi4j.spi.entity.AbstractEntityStoreMixin;
+import org.qi4j.spi.entity.EntityTypeRegistryMixin;
 import org.qi4j.spi.entity.DefaultEntityState;
 import org.qi4j.spi.entity.EntityAlreadyExistsException;
 import org.qi4j.spi.entity.EntityNotFoundException;
@@ -43,7 +43,7 @@ import org.qi4j.spi.serialization.SerializedObject;
  * JGroups implementation of EntityStore
  */
 public class JGroupsSerializationEntityStoreMixin
-    extends AbstractEntityStoreMixin
+    extends EntityTypeRegistryMixin
     implements Activatable
 {
     private @This ReadWriteLock lock;
@@ -74,13 +74,13 @@ public class JGroupsSerializationEntityStoreMixin
             throw new EntityAlreadyExistsException( "JGroups store", identity );
         }
 
-        return new DefaultEntityState( identity, getEntityType( identity ) );
+        return new DefaultEntityState( identity, getEntityType( identity.type() ) );
     }
 
     @ReadLock
     public EntityState getEntityState( QualifiedIdentity identity ) throws EntityStoreException
     {
-        EntityType entityType = getEntityType( identity );
+        EntityType entityType = getEntityType( identity.type() );
 
         try
         {

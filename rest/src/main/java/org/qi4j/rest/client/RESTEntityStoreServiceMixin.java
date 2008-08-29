@@ -35,7 +35,7 @@ import org.qi4j.service.Activatable;
 import org.qi4j.service.Configuration;
 import org.qi4j.service.ServiceDescriptor;
 import org.qi4j.service.Wrapper;
-import org.qi4j.spi.entity.AbstractEntityStoreMixin;
+import org.qi4j.spi.entity.EntityTypeRegistryMixin;
 import org.qi4j.spi.entity.ConcurrentEntityStateModificationException;
 import org.qi4j.spi.entity.DefaultEntityState;
 import org.qi4j.spi.entity.EntityState;
@@ -59,7 +59,7 @@ import org.restlet.resource.Representation;
  * EntityStore implementation that uses REST to access EntityState from a server.
  */
 public class RESTEntityStoreServiceMixin
-    extends AbstractEntityStoreMixin
+    extends EntityTypeRegistryMixin
     implements Activatable
 {
     @Service EntityParser parser;
@@ -80,12 +80,12 @@ public class RESTEntityStoreServiceMixin
 
     public EntityState newEntityState( QualifiedIdentity anIdentity ) throws EntityStoreException
     {
-        return new DefaultEntityState( anIdentity, getEntityType( anIdentity ) );
+        return new DefaultEntityState( anIdentity, getEntityType( anIdentity.type() ) );
     }
 
     public EntityState getEntityState( QualifiedIdentity anIdentity ) throws EntityStoreException
     {
-        EntityType entityType = getEntityType( anIdentity );
+        EntityType entityType = getEntityType( anIdentity.type() );
 
         try
         {

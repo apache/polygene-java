@@ -20,20 +20,22 @@ import java.io.IOException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.Iterator;
+import java.util.Collections;
 import org.qi4j.library.locking.WriteLock;
 import org.qi4j.service.Activatable;
-import org.qi4j.spi.entity.AbstractEntityStoreMixin;
+import org.qi4j.spi.entity.EntityTypeRegistryMixin;
 import org.qi4j.spi.entity.DefaultEntityState;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.StateCommitter;
+import org.qi4j.spi.entity.NoopStateCommitter;
 
 /**
  * RMI client implementation of Entity
  */
 public class ClientRmiEntityStoreMixin
-    extends AbstractEntityStoreMixin
+    extends EntityTypeRegistryMixin
     implements Activatable
 {
     private RemoteEntityStore remote;
@@ -53,7 +55,7 @@ public class ClientRmiEntityStoreMixin
     // EntityStore implementation
     public EntityState newEntityState( QualifiedIdentity identity ) throws EntityStoreException
     {
-        return new DefaultEntityState( identity, getEntityType( identity ) );
+        return new DefaultEntityState( identity, getEntityType( identity.type() ) );
     }
 
     @WriteLock
@@ -91,20 +93,11 @@ public class ClientRmiEntityStoreMixin
             throw new EntityStoreException( e );
         }
 
-        return new StateCommitter()
-        {
-            public void commit()
-            {
-            }
-
-            public void cancel()
-            {
-            }
-        };
+        return new NoopStateCommitter();
     }
 
     public Iterator<EntityState> iterator()
     {
-        return null;
+        return Collections.EMPTY_LIST.iterator();
     }
 }

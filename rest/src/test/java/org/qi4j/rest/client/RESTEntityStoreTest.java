@@ -41,7 +41,7 @@ public class RESTEntityStoreTest
     {
         module.addEntities( TestEntity.class );
 
-        ModuleAssembly store = module.getLayerAssembly().newModuleAssembly( "REST Store" );
+        ModuleAssembly store = module.layerAssembly().newModuleAssembly( "REST Store" );
         store.addEntities( RESTEntityStoreConfiguration.class );
         store.addServices( MemoryEntityStoreService.class, EntityParserService.class, RestletClientService.class );
         store.addServices( RESTEntityStoreService.class ).visibleIn( Visibility.layer );

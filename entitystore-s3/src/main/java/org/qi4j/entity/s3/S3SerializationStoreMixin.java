@@ -34,7 +34,7 @@ import org.qi4j.injection.scope.This;
 import org.qi4j.library.locking.WriteLock;
 import org.qi4j.service.Activatable;
 import org.qi4j.service.Configuration;
-import org.qi4j.spi.entity.AbstractEntityStoreMixin;
+import org.qi4j.spi.entity.EntityTypeRegistryMixin;
 import org.qi4j.spi.entity.DefaultEntityState;
 import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityState;
@@ -51,7 +51,7 @@ import org.qi4j.spi.serialization.SerializableState;
  * To use this you must supply your own access key and secret key for your Amazon S3 account.
  */
 public class S3SerializationStoreMixin
-    extends AbstractEntityStoreMixin
+    extends EntityTypeRegistryMixin
     implements Activatable
 {
     private @This ReadWriteLock lock;
@@ -102,13 +102,13 @@ public class S3SerializationStoreMixin
     public EntityState newEntityState( QualifiedIdentity identity ) throws EntityStoreException
     {
         // Skip existence check
-        return new DefaultEntityState( identity, getEntityType( identity ) );
+        return new DefaultEntityState( identity, getEntityType( identity.type() ) );
     }
 
     @WriteLock
     public EntityState getEntityState( QualifiedIdentity identity ) throws EntityStoreException
     {
-        EntityType entityType = getEntityType( identity );
+        EntityType entityType = getEntityType( identity.type() );
         try
         {
             S3Object objectComplete = s3Service.getObject( entityBucket, identity.identity() );
