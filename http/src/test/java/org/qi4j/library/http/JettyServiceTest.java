@@ -26,6 +26,7 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
 import org.junit.Test;
+import org.qi4j.bootstrap.ApplicationName;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entity.memory.MemoryEntityStoreService;
@@ -45,6 +46,7 @@ public final class JettyServiceTest extends AbstractQi4jTest
     public final void assemble( ModuleAssembly aModule )
         throws AssemblyException
     {
+        aModule.addAssembler( new ApplicationName("Jetty test") );
         aModule.addServices( MemoryEntityStoreService.class );
         aModule.addAssembler( new JettyServiceAssembler() );
 

@@ -25,7 +25,7 @@ import org.qi4j.property.Property;
 import org.qi4j.library.constraints.annotation.NotNull;
 import org.qi4j.entity.association.Association;
 import org.qi4j.entity.association.AssociationMixin;
-import org.qi4j.entity.memory.IndexedMemoryEntityStoreService;
+import org.qi4j.entity.memory.MemoryEntityStoreService;
 import org.qi4j.entity.EntityComposite;
 
 /**
@@ -47,7 +47,7 @@ public class ApplicationGraphTester
         LayerAssembly domainLayer = assembly.newLayerAssembly( "Domain" );
 
         ModuleAssembly someDomain = domainLayer.newModuleAssembly( "Some domain" );
-        someDomain.addServices( IndexedMemoryEntityStoreService.class );
+        someDomain.addServices( MemoryEntityStoreService.class );
         someDomain.addEntities( MyEntity.class );
         someDomain.addComposites( ADomainComposite.class, BDomainComposite.class );
 
