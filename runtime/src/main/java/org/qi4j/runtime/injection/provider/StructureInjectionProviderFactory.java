@@ -31,6 +31,8 @@ import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.service.ServiceFinder;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.structure.Module;
+import org.qi4j.structure.Layer;
+import org.qi4j.structure.Application;
 
 public final class StructureInjectionProviderFactory
     implements InjectionProviderFactory
@@ -75,6 +77,14 @@ public final class StructureInjectionProviderFactory
             else if( Module.class.isAssignableFrom( (Class<?>) type ) )
             {
                 return context.moduleInstance();
+            }
+            else if( Layer.class.isAssignableFrom( (Class<?>) type ) )
+            {
+                return context.moduleInstance().layerInstance();
+            }
+            else if( Application.class.isAssignableFrom( (Class<?>) type ) )
+            {
+                return context.moduleInstance().layerInstance().applicationInstance();
             }
             else if( type.equals( Qi4j.class ) || type.equals( Qi4jSPI.class ) )
             {

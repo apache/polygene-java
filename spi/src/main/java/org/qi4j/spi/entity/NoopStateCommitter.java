@@ -12,22 +12,19 @@
  *
  */
 
-package org.qi4j.structure;
-
-import org.qi4j.service.Activatable;
-import org.qi4j.Qi4j;
+package org.qi4j.spi.entity;
 
 /**
- * TODO
+ * Implement StateCommitter, but do nothing.
  */
-public interface Application
-    extends Activatable
+public class NoopStateCommitter
+    implements StateCommitter
 {
-    String name();
+    public void commit()
+    {
+    }
 
-    String toURI();
-
-    Module findModule( String layerName, String moduleName );
-
-    Qi4j runtime();
+    public void cancel()
+    {
+    }
 }

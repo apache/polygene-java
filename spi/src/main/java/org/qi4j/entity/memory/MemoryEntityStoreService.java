@@ -16,14 +16,17 @@ package org.qi4j.entity.memory;
 
 import org.qi4j.composite.Concerns;
 import org.qi4j.composite.Mixins;
+import org.qi4j.composite.SideEffects;
 import org.qi4j.service.ServiceComposite;
 import org.qi4j.spi.entity.EntityStore;
+import org.qi4j.spi.entity.EntityStoreListenerNotificationSideEffect;
 
 /**
  * In-memory EntityStore service. Useful for testing
  * and non-persistent entities.
  */
 @Concerns( ConcurrentModificationCheckConcern.class )
+@SideEffects( EntityStoreListenerNotificationSideEffect.class )
 @Mixins( { MemoryEntityStoreMixin.class } )
 public interface MemoryEntityStoreService
     extends EntityStore, ServiceComposite

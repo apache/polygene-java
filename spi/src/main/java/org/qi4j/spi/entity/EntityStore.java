@@ -23,6 +23,7 @@ public interface EntityStore
     extends Iterable<EntityState>
 {
     void registerEntityType( EntityType entityType );
+    EntityType getEntityType(String aEntityType);
 
     /**
      * Create new EntityState for a given identity.
@@ -43,10 +44,11 @@ public interface EntityStore
      *
      * @param anIdentity The entity identity. This argument must not be {@code null}.
      * @return Entity state given the composite descriptor and identity.
-     * @throws EntityStoreException Thrown if retrieval failed.
+     * @throws EntityStoreException thrown if retrieval failed.
+     * @throws EntityNotFoundException thrown if wanted entity does not exist
      */
     EntityState getEntityState( QualifiedIdentity anIdentity )
-        throws EntityStoreException;
+        throws EntityStoreException, EntityNotFoundException;
 
     /**
      * This method is called by {@link org.qi4j.entity.UnitOfWork#complete()}.
@@ -60,7 +62,7 @@ public interface EntityStore
      * the client can do a refresh() of those entities and try again.
      *
      * @param newStates     The new states. This argument must not be {@code null}.
-     * @param loadedStates  The loaded states. This argument must not be {@code null}.
+     * @param updatedStates  The loaded states. This argument must not be {@code null}.
      * @param removedStates The removed states. This argument must not be {@code null}.
      * @return an implementation of StateCommitter
      * @throws EntityStoreException if the state could not be sent to the datastore
@@ -68,7 +70,7 @@ public interface EntityStore
      *                              if the prepared state has changed in the store
      */
     StateCommitter prepare( Iterable<EntityState> newStates,
-                            Iterable<EntityState> loadedStates,
+                            Iterable<EntityState> updatedStates,
                             Iterable<QualifiedIdentity> removedStates )
         throws EntityStoreException, ConcurrentEntityStateModificationException;
 }

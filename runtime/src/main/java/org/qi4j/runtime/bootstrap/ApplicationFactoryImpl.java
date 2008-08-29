@@ -89,7 +89,7 @@ public final class ApplicationFactoryImpl
     {
         ApplicationAssemblyImpl applicationAssembly = (ApplicationAssemblyImpl) assembly;
         List<LayerModel> layerModels = new ArrayList<LayerModel>();
-        ApplicationModel applicationModel = new ApplicationModel( applicationAssembly.getName(), layerModels );
+        ApplicationModel applicationModel = new ApplicationModel( applicationAssembly.name(), layerModels );
         List<LayerAssemblyImpl> layerAssemblies = new ArrayList<LayerAssemblyImpl>( applicationAssembly.getLayerAssemblies() );
         Map<LayerAssembly, LayerModel> mapAssemblyModel = new HashMap<LayerAssembly, LayerModel>();
         nextLayer:
@@ -111,7 +111,7 @@ public final class ApplicationFactoryImpl
             }
             UsedLayersModel usedLayersModel = new UsedLayersModel( usedLayers );
             List<ModuleModel> moduleModels = new ArrayList<ModuleModel>();
-            String name = layerAssembly.getName();
+            String name = layerAssembly.name();
             if( name == null )
             {
                 throw new AssemblyException( "Layer must have name set" );

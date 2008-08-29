@@ -12,22 +12,15 @@
  *
  */
 
-package org.qi4j.structure;
-
-import org.qi4j.service.Activatable;
-import org.qi4j.Qi4j;
+package org.qi4j.spi.entity;
 
 /**
- * TODO
+ * Implement this interface in a Service if you want it to listen
+ * to changes from EntityStores.
  */
-public interface Application
-    extends Activatable
+public interface EntityStoreListener
 {
-    String name();
-
-    String toURI();
-
-    Module findModule( String layerName, String moduleName );
-
-    Qi4j runtime();
+    void notifyChanges( Iterable<EntityState> newStates,
+                        Iterable<EntityState> changedStates,
+                        Iterable<QualifiedIdentity> removedStates );
 }

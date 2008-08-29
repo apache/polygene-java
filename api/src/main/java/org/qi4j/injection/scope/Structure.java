@@ -31,6 +31,8 @@ import org.qi4j.injection.InjectionScope;
  * &#64;Structure UnitOfWorkFactory uowf
  * &#64;Structure ServiceLocator serviceLocator
  * &#64;Structure Module module
+ * &#64;Structure Layer layer
+ * &#64;Structure Application application
  * &#64;Structure Qi4j qi4j
  * &#64;Structure Qi4jSPI qi4jSpi
  * &#64;Structure Qi4jRuntime qi4jRuntime

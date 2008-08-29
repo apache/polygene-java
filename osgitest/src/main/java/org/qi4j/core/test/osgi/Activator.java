@@ -47,7 +47,7 @@ public class Activator
         {
             public void assemble( ModuleAssembly module ) throws AssemblyException
             {
-                module.getLayerAssembly().setName( LAYER_NAME );
+                module.layerAssembly().setName( LAYER_NAME );
                 module.setName( MODULE_NAME );
                 module.addComposites( SimpleComposite.class );
             }

@@ -77,7 +77,7 @@ public final class ModuleAssemblyImpl
         assembler.assemble( this );
     }
 
-    public LayerAssembly getLayerAssembly()
+    public LayerAssembly layerAssembly()
     {
         return layerAssembly;
     }

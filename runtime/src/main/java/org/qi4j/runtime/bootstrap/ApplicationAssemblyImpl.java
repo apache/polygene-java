@@ -47,7 +47,7 @@ public final class ApplicationAssemblyImpl
         return layerAssemblies;
     }
 
-    public String getName()
+    public String name()
     {
         return name;
     }

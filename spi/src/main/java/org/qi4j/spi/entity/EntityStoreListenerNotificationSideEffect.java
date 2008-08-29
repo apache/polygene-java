@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.spi.query;
+package org.qi4j.spi.entity;
 
 import org.qi4j.composite.SideEffectOf;
 import org.qi4j.injection.scope.Service;
@@ -26,23 +26,29 @@ import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.StateCommitter;
 
 /**
- * TODO Add JavaDoc
+ * Notify all EntityStoreListeners that a change occurred in EntityState
  *
  * @author Alin Dreghiciu
  * @since March 18, 2008
  */
-public abstract class IndexingSideEffect extends SideEffectOf<EntityStore>
+public abstract class EntityStoreListenerNotificationSideEffect extends SideEffectOf<EntityStore>
     implements EntityStore
 {
-    @Service private EntityIndexer indexer;
+    @Service private Iterable<EntityStoreListener> listeners;
 
     public StateCommitter prepare( Iterable<EntityState> newStates,
-                                   Iterable<EntityState> loadedStates,
+                                   Iterable<EntityState> updatedStates,
                                    Iterable<QualifiedIdentity> removedStates
     )
         throws EntityStoreException
     {
-        indexer.index( newStates, loadedStates, removedStates );
+        next.prepare( newStates, updatedStates, removedStates );
+
+        // Only do this if no exception was thrown
+        for( EntityStoreListener listener : listeners )
+        {
+            listener.notifyChanges( newStates, updatedStates, removedStates );
+        }
         return null;
     }
 }

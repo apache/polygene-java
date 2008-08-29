@@ -50,7 +50,7 @@ public final class MethodSideEffectsInstance
             {
                 for( InvocationHandler sideEffect : sideEffects )
                 {
-                    invokeSideEffect( proxy, params, sideEffect );
+                    invokeSideEffect( proxy, params, throwable, sideEffect );
                 }
             }
             finally
@@ -61,7 +61,7 @@ public final class MethodSideEffectsInstance
         }
     }
 
-    private void invokeSideEffect( Object proxy, Object[] params, InvocationHandler sideEffect )
+    private void invokeSideEffect( Object proxy, Object[] params, Throwable originalThrowable, InvocationHandler sideEffect )
     {
         try
         {
@@ -69,7 +69,8 @@ public final class MethodSideEffectsInstance
         }
         catch( Throwable throwable )
         {
-            throwable.printStackTrace();
+            if (throwable != originalThrowable)
+                throwable.printStackTrace();
         }
     }
 }

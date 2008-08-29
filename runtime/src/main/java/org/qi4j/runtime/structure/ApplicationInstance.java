@@ -55,6 +55,11 @@ public class ApplicationInstance
         return runtime;
     }
 
+    public String name()
+    {
+        return model.name();
+    }
+
     public String toURI()
     {
         return uri;

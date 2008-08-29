@@ -18,27 +18,25 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Base implementation of EntityStore.
- *
- * It provides management of EntityTypes.
+ * EntityType registry mixin which helps EntityStore implementations.
  */
-public abstract class AbstractEntityStoreMixin
+public abstract class EntityTypeRegistryMixin
     implements EntityStore
 {
-    private Map<String, EntityType> entityTypes = new ConcurrentHashMap<String, EntityType>();
+    protected Map<String, EntityType> entityTypes = new ConcurrentHashMap<String, EntityType>();
 
     public void registerEntityType( EntityType entityType )
     {
         entityTypes.put( entityType.type(), entityType );
     }
 
-    protected EntityType getEntityType( QualifiedIdentity identity )
+    public EntityType getEntityType( String aEntityType )
         throws UnknownEntityTypeException
     {
-        EntityType entityType = entityTypes.get( identity.type() );
+        EntityType entityType = entityTypes.get( aEntityType );
         if( entityType == null )
         {
-            throw new UnknownEntityTypeException( identity.type() );
+            throw new UnknownEntityTypeException( aEntityType );
         }
         return entityType;
     }

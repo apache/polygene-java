@@ -21,4 +21,5 @@ Export-Package: org.qi4j.spi;version=${pom.version}, \
                 org.qi4j.spi.service;version=${pom.version}, \
                 org.qi4j.spi.service.provider;version=${pom.version}, \
                 org.qi4j.spi.structure;version=${pom.version}, \
-                org.qi4j.entity.memory;version=${pom.version}
+                org.qi4j.entity.memory;version=${pom.version}, \
+                org.qi4j.entity.prefs;version=${pom.version}

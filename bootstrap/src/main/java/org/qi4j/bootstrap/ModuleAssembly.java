@@ -28,7 +28,7 @@ public interface ModuleAssembly
     void addAssembler( Assembler assembler )
         throws AssemblyException;
 
-    LayerAssembly getLayerAssembly();
+    LayerAssembly layerAssembly();
 
     void setName( String name );
 

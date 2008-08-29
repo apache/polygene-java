@@ -607,6 +607,11 @@ public final class UnitOfWorkInstance
             entityTypes.put( entityType.type(), entityType );
         }
 
+        public EntityType getEntityType( String aEntityType )
+        {
+            return entityTypes.get( aEntityType );
+        }
+
         public EntityState newEntityState( QualifiedIdentity identity ) throws EntityStoreException
         {
             EntityType entityType = entityTypes.get( identity.type() );

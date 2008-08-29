@@ -29,6 +29,6 @@ public final class LayerName
 
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
-        module.getLayerAssembly().setName( name );
+        module.layerAssembly().setName( name );
     }
 }

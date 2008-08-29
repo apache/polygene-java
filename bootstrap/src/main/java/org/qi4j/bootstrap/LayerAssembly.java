@@ -22,9 +22,9 @@ public interface LayerAssembly
 {
     ModuleAssembly newModuleAssembly( String name );
 
-    ApplicationAssembly getApplicationAssembly();
+    ApplicationAssembly applicationAssembly();
 
-    String getName();
+    String name();
 
     void setName( String name );
 

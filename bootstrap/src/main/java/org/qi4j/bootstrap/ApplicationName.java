@@ -12,22 +12,23 @@
  *
  */
 
-package org.qi4j.structure;
-
-import org.qi4j.service.Activatable;
-import org.qi4j.Qi4j;
+package org.qi4j.bootstrap;
 
 /**
- * TODO
+ * Set the name of the application
  */
-public interface Application
-    extends Activatable
+public final class ApplicationName
+    implements Assembler
 {
-    String name();
+    private String name;
 
-    String toURI();
+    public ApplicationName( String name )
+    {
+        this.name = name;
+    }
 
-    Module findModule( String layerName, String moduleName );
-
-    Qi4j runtime();
+    public void assemble( ModuleAssembly module ) throws AssemblyException
+    {
+        module.layerAssembly().applicationAssembly().setName( name );
+    }
 }

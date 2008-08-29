@@ -22,5 +22,7 @@ public interface ApplicationAssembly
 {
     LayerAssembly newLayerAssembly( String name );
 
+    String name();
+
     void setName( String name );
 }

@@ -2,10 +2,14 @@ package org.qi4j.test.entity;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Collections;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import org.junit.Test;
+import org.junit.After;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.CompositeBuilderFactory;
@@ -22,9 +26,13 @@ import org.qi4j.entity.association.ManyAssociation;
 import org.qi4j.entity.association.SetAssociation;
 import org.qi4j.injection.scope.Structure;
 import org.qi4j.injection.scope.This;
+import org.qi4j.injection.scope.Service;
 import org.qi4j.property.ImmutableProperty;
 import org.qi4j.property.Property;
 import org.qi4j.spi.entity.UuidIdentityGeneratorService;
+import org.qi4j.spi.entity.EntityStore;
+import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.spi.entity.EntityState;
 import org.qi4j.test.AbstractQi4jTest;
 
 /**
@@ -33,10 +41,28 @@ import org.qi4j.test.AbstractQi4jTest;
 public abstract class AbstractEntityStoreTest
     extends AbstractQi4jTest
 {
+    @Service EntityStore store;
+
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
         module.addServices( UuidIdentityGeneratorService.class );
         module.addEntities( TestEntity.class, TestValue.class );
+        module.addObjects( getClass() );
+    }
+
+    @Override @After public void tearDown() throws Exception
+    {
+        // Remove all state that was created
+        objectBuilderFactory.newObjectBuilder( AbstractEntityStoreTest.class ).injectTo( this );
+
+        List<QualifiedIdentity> stateToRemove = new ArrayList<QualifiedIdentity>( );
+        for( EntityState entityState : store )
+        {
+            stateToRemove.add( entityState.qualifiedIdentity() );
+        }
+        store.prepare( Collections.EMPTY_LIST, Collections.EMPTY_LIST, stateToRemove ).commit();
+
+        super.tearDown();
     }
 
     @Test

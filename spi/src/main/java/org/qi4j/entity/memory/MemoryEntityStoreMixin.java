@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import org.qi4j.composite.CompositeBuilderFactory;
-import org.qi4j.spi.entity.AbstractEntityStoreMixin;
+import org.qi4j.spi.entity.EntityTypeRegistryMixin;
 import org.qi4j.spi.entity.DefaultEntityState;
 import org.qi4j.spi.entity.EntityAlreadyExistsException;
 import org.qi4j.spi.entity.EntityNotFoundException;
@@ -22,7 +22,7 @@ import org.qi4j.spi.serialization.SerializedObject;
  * In-memory implementation of EntityStore.
  */
 public class MemoryEntityStoreMixin
-    extends AbstractEntityStoreMixin
+    extends EntityTypeRegistryMixin
 {
     private final Map<String, Map<QualifiedIdentity, SerializedObject<SerializableState>>> store;
 
@@ -50,7 +50,7 @@ public class MemoryEntityStoreMixin
             }
         }
 
-        EntityType entityType = getEntityType( identity );
+        EntityType entityType = getEntityType( identity.type() );
 
         return new DefaultEntityState( identity, entityType );
     }
@@ -58,7 +58,7 @@ public class MemoryEntityStoreMixin
     public EntityState getEntityState( QualifiedIdentity identity )
         throws EntityStoreException
     {
-        EntityType entityType = getEntityType( identity );
+        EntityType entityType = getEntityType( identity.type() );
         if( entityType == null )
         {
             throw new UnknownEntityTypeException( identity.type() );

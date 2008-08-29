@@ -53,7 +53,7 @@ public final class LayerAssemblyImpl
         return moduleAssembly;
     }
 
-    public ApplicationAssembly getApplicationAssembly()
+    public ApplicationAssembly applicationAssembly()
     {
         return applicationAssembly;
     }
@@ -80,7 +80,7 @@ public final class LayerAssemblyImpl
         return uses;
     }
 
-    public String getName()
+    public String name()
     {
         return name;
     }
