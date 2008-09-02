@@ -23,7 +23,7 @@ import org.junit.Test;
 import org.qi4j.entity.neo4j.Configuration;
 
 /**
- * @author Peter Neubuaer (peter@neubauer.se)
+ * @author Peter Neubauer (peter@neubauer.se)
  */
 public class IndirectNeoEntityStorePerformanceTest extends TestBase {
 
@@ -40,43 +40,8 @@ public class IndirectNeoEntityStorePerformanceTest extends TestBase {
 	}
 
 	@Test
-	public void measure5000EntitiesInOneUoW() throws Exception {
-		perform(new TestExecutor() {
-			String identity;
-			int number = 500;
-
-			protected void setup() throws Exception {
-				before = new Date();
-				for (int i = 0; i < number; i++) {
-					// Create entity
-					MakeBelieveEntity believe = newEntity(MakeBelieveEntity.class);
-					// identity = believe.identity().get();
-					// Set up
-					believe.imaginaryName().set("George Lucas");
-					believe.imaginaryNumber().set(17);
-					believe.realNumber().set(42.0);
-				}
-				printResult("Populating up UoW with " + number
-						+ " entities in Qi4j't\t", before, new Date());
-				before = new Date();
-			}
-
-			protected void verify() throws Exception {
-				after = new Date();
-				printResult("Neo4j persisting a UoW with " + number
-						+ " entities without reading\t", before, after);
-			}
-
-			private void printResult(String name, Date before, Date after) {
-				System.out.println(name + ": "
-						+ (after.getTime() - before.getTime()) + "ms");
-			}
-		});
-	}
-	
-	@Test
-	public void measure5000EntitiesReading() throws Exception {
-		final int number = 500;
+	public void measureEntitiesWritingBeforeReading() throws Exception {
+		final int number = 5000;
 		final String[] identities = new String[number];
 		//first, insert
 		perform(new TestExecutor() {
@@ -92,7 +57,7 @@ public class IndirectNeoEntityStorePerformanceTest extends TestBase {
 					believe.imaginaryNumber().set(number);
 					believe.realNumber().set(42.0);
 				}
-				printResult("Populating up UoW with " + number
+				printResult("Populating UoW with " + number
 						+ " entities in Qi4j't\t", before, new Date());
 				before = new Date();
 			}
@@ -100,7 +65,7 @@ public class IndirectNeoEntityStorePerformanceTest extends TestBase {
 			protected void verify() throws Exception {
 				after = new Date();
 				printResult("Neo4j persisting a UoW with " + number
-						+ " entities without reading\t", before, after);
+						+ " entities\t", before, after);
 			}
 
 		});
@@ -113,10 +78,13 @@ public class IndirectNeoEntityStorePerformanceTest extends TestBase {
 				{
 					MakeBelieveEntity entity = getReference(identity, MakeBelieveEntity.class);
 					Assert.assertNotNull(entity);
+					entity.imaginaryName().get();
+					entity.imaginaryNumber().get();
+					entity.realNumber().get();
 					//System.out.println(identity);
 				}
 				after = new Date();
-				printResult("Reading in " + number + " entities:", before, after);
+				printResult("Reading in " + number + " entities from Neo4j:\t\t", before, after);
 			}
 
 			@Override
