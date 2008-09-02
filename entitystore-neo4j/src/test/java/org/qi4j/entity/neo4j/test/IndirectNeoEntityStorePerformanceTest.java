@@ -40,7 +40,7 @@ public class IndirectNeoEntityStorePerformanceTest extends TestBase {
 	}
 
 	@Test
-	public void measureEntitiesWritingBeforeReading() throws Exception {
+	public void measureUnassociatedEntitiesWritingBeforeReading() throws Exception {
 		final int number = 5000;
 		final String[] identities = new String[number];
 		//first, insert
@@ -66,13 +66,6 @@ public class IndirectNeoEntityStorePerformanceTest extends TestBase {
 				after = new Date();
 				printResult("Neo4j persisting a UoW with " + number
 						+ " entities\t", before, after);
-			}
-
-		});
-		perform(new TestExecutor() {
-
-			@Override
-			protected void setup() throws Exception {
 				before = new Date();
 				for(String identity : identities)
 				{
@@ -87,12 +80,58 @@ public class IndirectNeoEntityStorePerformanceTest extends TestBase {
 				printResult("Reading in " + number + " entities from Neo4j:\t\t", before, after);
 			}
 
-			@Override
-			protected void verify() throws Exception {
-				// TODO Auto-generated method stub
-				
+		});
+		
+	}
+	
+	@Test
+	public void measureAssociatedEntitiesWritingBeforeReading() throws Exception {
+		final int number = 5000;
+		final String[] identities = new String[number];
+		//first, insert
+		perform(new TestExecutor() {
+		
+			protected void setup() throws Exception {
+				before = new Date();
+				MakeBelieveEntity believe = newEntity(MakeBelieveEntity.class);
+				int i = 0;
+				identities[i++ ] = believe.identity().get();
+				for (;i < number; i++) {
+					// Create entity
+					believe = newEntity(MakeBelieveEntity.class);
+					identities[i] = believe.identity().get();
+					// Set up
+					believe.imaginaryName().set(NAME1);
+					believe.imaginaryNumber().set(number);
+					believe.realNumber().set(42.0);
+					believe.archNemesis().set(getReference(identities[i-1], MakeBelieveEntity.class));
+				}
+				printResult("Populating UoW with " + number
+						+ " entities in Qi4j't\t", before, new Date());
+				before = new Date();
 			}
-			});
+
+			protected void verify() throws Exception {
+				after = new Date();
+				printResult("Neo4j persisting a UoW with " + number
+						+ " entities\t", before, after);
+				before = new Date();
+				for(String identity : identities)
+				{
+					MakeBelieveEntity entity = getReference(identity, MakeBelieveEntity.class);
+					Assert.assertNotNull(entity);
+					entity.imaginaryName().get();
+					entity.imaginaryNumber().get();
+					entity.realNumber().get();
+					entity.archNemesis().get();
+					//System.out.println(identity);
+				}
+				after = new Date();
+				printResult("Reading in " + number + " entities from Neo4j:\t\t", before, after);
+			}
+
+		});
+		
 	}
 
 	private static void printResult(String name, Date before, Date after) {
