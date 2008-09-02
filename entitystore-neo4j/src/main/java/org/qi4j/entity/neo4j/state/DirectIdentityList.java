@@ -320,26 +320,12 @@ public class DirectIdentityList extends AbstractSequentialList<QualifiedIdentity
 
         private Node proxy( Node original )
         {
-            Node proxy = neo.createNode();
-            proxy.createRelationshipTo( original, DirectEntityState.PROXY_FOR );
-            return proxy;
+            return DirectEntityState.proxy(neo, original);
         }
 
         private Node unproxy( Node listed )
         {
-            if( listed == null )
-            {
-                return null;
-            }
-            Relationship proxyRelation = listed.getSingleRelationship( DirectEntityState.PROXY_FOR, Direction.OUTGOING );
-            if( proxyRelation != null )
-            {
-                return proxyRelation.getEndNode();
-            }
-            else
-            {
-                return listed;
-            }
+            return DirectEntityState.unproxy(listed);
         }
 
         private Relationship getRelation( Node node, RelationshipType edgeType, Direction direction )

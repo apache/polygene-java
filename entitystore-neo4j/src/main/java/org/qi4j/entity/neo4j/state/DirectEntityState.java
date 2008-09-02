@@ -53,9 +53,11 @@ public class DirectEntityState implements CommittableEntityState
     private final LoadedDescriptor descriptor;
     private final Map<String, Collection<QualifiedIdentity>> manyAssociations = new HashMap<String, Collection<QualifiedIdentity>>();
     private boolean loaded = false;
+    private final NeoService neo;
 
     public DirectEntityState( NeoService neo, NeoIdentityIndex idIndex, Node underlyingNode, QualifiedIdentity identity, EntityStatus status, LoadedDescriptor descriptor )
     {
+        this.neo = neo;
         this.idIndex = idIndex;
         this.underlyingNode = underlyingNode;
         this.identity = identity;
@@ -235,7 +237,7 @@ public class DirectEntityState implements CommittableEntityState
         Relationship relation = underlyingNode.getSingleRelationship( associationType, Direction.OUTGOING );
         if( relation != null )
         {
-            return getIdentityFromNode( relation.getEndNode() );
+            return getIdentityFromNode( unproxy( relation.getEndNode() ) );
         }
         else
         {
@@ -251,7 +253,15 @@ public class DirectEntityState implements CommittableEntityState
         {
             relation.delete();
         }
-        underlyingNode.createRelationshipTo( idIndex.getNode( newEntity.identity() ), associationType );
+        if( newEntity != null )
+        {
+            Node otherNode = idIndex.getNode( newEntity.identity() );
+            if( underlyingNode.equals( otherNode ) )
+            {
+                otherNode = proxy( neo, otherNode );
+            }
+            underlyingNode.createRelationshipTo( otherNode, associationType );
+        }
     }
 
     public Collection<QualifiedIdentity> getManyAssociation( String qualifiedName )
@@ -287,5 +297,29 @@ public class DirectEntityState implements CommittableEntityState
     public void setSizeOfCollection( String qualifiedName, int size )
     {
         underlyingNode.setProperty( COLLECTION_SIZE_PROPERTY_PREFIX + qualifiedName, size );
+    }
+
+    public static Node proxy( NeoService neo, Node original )
+    {
+        Node proxy = neo.createNode();
+        proxy.createRelationshipTo( original, DirectEntityState.PROXY_FOR );
+        return proxy;
+    }
+
+    public static Node unproxy( Node listed )
+    {
+        if( listed == null )
+        {
+            return null;
+        }
+        Relationship proxyRelation = listed.getSingleRelationship( DirectEntityState.PROXY_FOR, Direction.OUTGOING );
+        if( proxyRelation != null )
+        {
+            return proxyRelation.getEndNode();
+        }
+        else
+        {
+            return listed;
+        }
     }
 }
