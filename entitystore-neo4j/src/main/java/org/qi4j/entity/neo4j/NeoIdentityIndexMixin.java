@@ -29,7 +29,7 @@ public class NeoIdentityIndexMixin implements NeoIdentityIndex
     private static final String TYPE_INDEX = "<ENTITY TYPES>";
     private static final String ENTITY_INDEX = "<QI4J ENTITIES>";
 
-    // Dependancies
+    // Dependencies
     private @Service NeoCoreService neo;
     private @Service NeoTransactionService txService;
     private @Service( optional = true ) NeoIdentityGeneratorService idGenerator;

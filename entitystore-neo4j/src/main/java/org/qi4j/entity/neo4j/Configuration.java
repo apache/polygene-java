@@ -39,6 +39,14 @@ public enum Configuration implements Assembler
             {
                 module.addServices( NeoIdentityGeneratorService.class );
             }
+        },
+    INDIRECT_AND_IDENTITY_GENERATOR
+        {
+            public void assemble( ModuleAssembly module ) throws AssemblyException
+            {
+                INDIRECT.assemble(module);
+                IDENTITY_GENERATOR.assemble(module);
+            }
         };
 
     public abstract void assemble( ModuleAssembly module ) throws AssemblyException;

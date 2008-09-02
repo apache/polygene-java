@@ -10,6 +10,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/resources" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/target/classes" />
+      <excludeFolder url="file://$MODULE_DIR$/target/surefire-reports" />
       <excludeFolder url="file://$MODULE_DIR$/target/test-classes" />
     </content>
     <orderEntry type="inheritedJdk" />
@@ -31,6 +32,9 @@
       <library name="org.neo4j:index-util:0.4-SNAPSHOT">
         <CLASSES>
           <root url="jar://$M2_REPO$/org/neo4j/index-util/0.4-SNAPSHOT/index-util-0.4-SNAPSHOT.jar!/" />
+          <root url="jar://$M2_REPO$/org/neo4j/index-util/0.4-SNAPSHOT/index-util-0.4-SNAPSHOT.jar!/" />
+          <root url="jar://$M2_REPO$/org/neo4j/index-util/0.4-SNAPSHOT/index-util-0.4-SNAPSHOT.jar!/" />
+          <root url="jar://$M2_REPO$/org/neo4j/index-util/0.4-SNAPSHOT/index-util-0.4-20080530.151342-13.jar!/" />
         </CLASSES>
         <JAVADOC>
           <root url="jar://$M2_REPO$/org/neo4j/index-util/0.4-SNAPSHOT/index-util-0.4-SNAPSHOT-javadoc.jar!/" />

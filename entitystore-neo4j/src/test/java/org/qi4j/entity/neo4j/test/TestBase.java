@@ -27,6 +27,7 @@ import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkCompletionException;
 import org.qi4j.entity.neo4j.Configuration;
 import org.qi4j.entity.neo4j.NeoTransactionService;
+import org.qi4j.query.QueryBuilderFactory;
 import org.qi4j.test.AbstractQi4jTest;
 
 /**
@@ -42,10 +43,12 @@ public abstract class TestBase extends AbstractQi4jTest
     private final Assembler serviceAssembler;
     private final Class<? extends EntityComposite>[] composites;
     private final boolean useIdGenerator;
+	protected UnitOfWork uow;
+	protected QueryBuilderFactory qbf;
 
     protected TestBase( Configuration config, boolean useTxService, boolean useIdGenerator, Class<? extends EntityComposite>... composites )
     {
-        assert ( config == Configuration.DIRECT || config == Configuration.INDIRECT ) : "Unsuported Configuration";
+        assert ( config == Configuration.DIRECT || config == Configuration.INDIRECT  || config == Configuration.INDIRECT_AND_IDENTITY_GENERATOR ) : "Unsuported Configuration";
         if( config == Configuration.INDIRECT && !useTxService )
         {
             throw new IllegalArgumentException( "The Indirect Neo Entity Store needs a transaction manager." );
@@ -90,7 +93,8 @@ public abstract class TestBase extends AbstractQi4jTest
 
     private void setup( TestExecutor executor ) throws Exception
     {
-        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+        uow = unitOfWorkFactory.newUnitOfWork();
+        qbf = uow.queryBuilderFactory();
         try
         {
             TestExecutor.setup( uow, executor );
