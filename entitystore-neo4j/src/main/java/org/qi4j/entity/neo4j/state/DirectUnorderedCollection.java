@@ -64,7 +64,7 @@ public class DirectUnorderedCollection extends AbstractCollection<QualifiedIdent
                 if( relations.hasNext() )
                 {
                     last = relations.next();
-                    return DirectEntityState.getIdentityFromNode( last.getEndNode() );
+                    return DirectEntityState.getIdentityFromNode( DirectEntityState.unproxy(last.getEndNode()) );
                 }
                 else
                 {
@@ -76,6 +76,7 @@ public class DirectUnorderedCollection extends AbstractCollection<QualifiedIdent
             {
                 if( last != null )
                 {
+                	DirectEntityState.removeProxy(last.getEndNode());
                     last.delete();
                     changeSize( -1 );
                     last = null;
@@ -103,6 +104,9 @@ public class DirectUnorderedCollection extends AbstractCollection<QualifiedIdent
         if( checker.goodToAdd( this, qualifiedIdentity ) )
         {
             Node node = idIndex.getNode( qualifiedIdentity.identity() );
+            if (state.underlyingNode.equals(node)) {
+            	node = DirectEntityState.proxy(state.neo, node);
+            }
             state.underlyingNode.createRelationshipTo( node, associationType );
             changeSize( 1 );
             return true;

@@ -106,6 +106,11 @@ public class UncreatedNode implements Node
     }
 
 
+    @Override
+    public boolean equals(Object obj) {
+    	
+    	return obj instanceof Node && ((Node)obj).getId() == getId();
+    }
     public long getId()
     {
         return node().getId();

@@ -315,6 +315,10 @@ public class DirectIdentityList extends AbstractSequentialList<QualifiedIdentity
             {
                 return true;
             }
+            else if( state.underlyingNode.equals(node) )
+            {
+            	return true;
+            }
             return false;
         }
 

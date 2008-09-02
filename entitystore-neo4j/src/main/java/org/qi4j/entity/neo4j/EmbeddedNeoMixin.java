@@ -26,6 +26,7 @@ import javax.transaction.TransactionManager;
 import org.neo4j.api.core.EmbeddedNeo;
 import org.neo4j.api.core.NeoService;
 import org.neo4j.api.core.Node;
+import org.neo4j.api.core.Relationship;
 import org.neo4j.api.core.Transaction;
 import org.neo4j.util.index.IndexService;
 import org.neo4j.util.index.Isolation;
@@ -160,4 +161,8 @@ public class EmbeddedNeoMixin implements Activatable, NeoService, IndexService, 
     {
         passivationListeners.add( new WeakReference<PassivationListener>( listener ) );
     }
+
+	public Relationship getRelationshipById(long arg0) {
+		return neoImpl.getRelationshipById(arg0);
+	}
 }

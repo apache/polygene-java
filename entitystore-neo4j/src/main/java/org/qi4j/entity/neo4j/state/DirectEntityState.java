@@ -53,7 +53,7 @@ public class DirectEntityState implements CommittableEntityState
     private final LoadedDescriptor descriptor;
     private final Map<String, Collection<QualifiedIdentity>> manyAssociations = new HashMap<String, Collection<QualifiedIdentity>>();
     private boolean loaded = false;
-    private final NeoService neo;
+    final NeoService neo;
 
     public DirectEntityState( NeoService neo, NeoIdentityIndex idIndex, Node underlyingNode, QualifiedIdentity identity, EntityStatus status, LoadedDescriptor descriptor )
     {
@@ -251,6 +251,7 @@ public class DirectEntityState implements CommittableEntityState
         Relationship relation = underlyingNode.getSingleRelationship( associationType, Direction.OUTGOING );
         if( relation != null )
         {
+            removeProxy(relation.getEndNode());
             relation.delete();
         }
         if( newEntity != null )
@@ -322,4 +323,17 @@ public class DirectEntityState implements CommittableEntityState
             return listed;
         }
     }
+
+	static void removeProxy(Node listed) {
+		if (listed == null)
+		{
+			return;
+		}
+        Relationship proxyRelation = listed.getSingleRelationship( DirectEntityState.PROXY_FOR, Direction.OUTGOING );
+        if( proxyRelation != null )
+        {
+        	proxyRelation.delete();
+        	listed.delete();
+        }		
+	}
 }
