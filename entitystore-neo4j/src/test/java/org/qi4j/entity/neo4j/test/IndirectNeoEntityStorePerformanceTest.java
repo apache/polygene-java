@@ -16,17 +16,14 @@
  */
 package org.qi4j.entity.neo4j.test;
 
+import java.util.Date;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.qi4j.entity.neo4j.Configuration;
-import org.qi4j.query.Query;
-import org.qi4j.query.QueryBuilder;
-import org.qi4j.query.QueryBuilderFactory;
-
-import java.util.Date;
 
 /**
- * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
+ * @author Peter Neubuaer (peter@neubauer.se)
  */
 public class IndirectNeoEntityStorePerformanceTest extends TestBase {
 
