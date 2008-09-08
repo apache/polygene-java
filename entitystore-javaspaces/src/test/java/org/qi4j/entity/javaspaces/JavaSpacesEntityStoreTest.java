@@ -35,19 +35,19 @@ public class JavaSpacesEntityStoreTest extends AbstractEntityStoreTest
     @SuppressWarnings("unchecked")
     public void assemble(ModuleAssembly module) throws AssemblyException
     {
+        super.assemble( module );
+
         module.addServices(UuidIdentityGeneratorService.class, JavaSpacesEntityStoreService.class);
-        module.addComposites(TestEntity.class);
-        ModuleAssembly config = module.getLayerAssembly().newModuleAssembly();
+        ModuleAssembly config = module.layerAssembly().newModuleAssembly("Config");
         config.setName("config");
-        config.addComposites(JavaSpacesConfiguration.class).visibleIn(Visibility.layer);
+        config.addEntities(JavaSpacesConfiguration.class).visibleIn(Visibility.layer);
         config.addServices(MemoryEntityStoreService.class);
     }
 
     protected TestEntity createEntity(UnitOfWork unitOfWork) throws UnitOfWorkCompletionException
     {
         // Create entity
-        CompositeBuilder<TestEntity> builder = unitOfWork.newEntityBuilder(TestEntity.class);
-        TestEntity instance = builder.newInstance();
+        TestEntity instance = unitOfWork.newEntity(TestEntity.class);
         instance.identity().get();
 
         instance.name().set("Test");
@@ -65,6 +65,19 @@ public class JavaSpacesEntityStoreTest extends AbstractEntityStoreTest
     }
     
     @Test
-    public void enableTests() {
+    public void enableTests()
+    {
+    }
+
+    @Override @Test
+    public void whenNewEntityThenCanFindEntity() throws Exception
+    {
+        super.whenNewEntityThenCanFindEntity();
+    }
+
+    @Override @Test
+    public void whenRemovedEntityThenCannotFindEntity() throws Exception
+    {
+        super.whenRemovedEntityThenCannotFindEntity();
     }
 }
