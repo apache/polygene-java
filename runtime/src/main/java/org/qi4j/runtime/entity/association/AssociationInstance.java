@@ -57,10 +57,7 @@ public final class AssociationInstance<T> extends AbstractAssociationInstance<T>
     public void set( T newValue )
         throws IllegalArgumentException
     {
-        if( newValue != null && !( newValue instanceof EntityComposite ) )
-        {
-            throw new IllegalArgumentException( "Associated value must be an EntityComposite" );
-        }
+        checkType( newValue );
 
         AssociationModel associationModel = (AssociationModel) associationInfo;
         associationModel.checkConstraints( newValue );

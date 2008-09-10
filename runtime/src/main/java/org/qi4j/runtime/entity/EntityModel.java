@@ -211,7 +211,7 @@ public final class EntityModel
     public Object[] newMixins( UnitOfWorkInstance uow, EntityState entityState, EntityInstance entityInstance )
     {
         Object[] mixins = mixinsModel.newMixinHolder();
-
+        entityInstance.setMixins( mixins );
         EntityStateModel.EntityStateInstance state = stateModel.newInstance( uow, entityState );
         entityInstance.setEntityState( state );
         mixinsModel.newMixins( entityInstance, state, mixins );

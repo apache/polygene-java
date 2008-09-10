@@ -202,17 +202,17 @@ public class ModuleInstance
         services.passivate();
     }
 
-    public CompositeDescriptor findCompositeFor( Class<? extends Composite> compositeType )
+    public CompositeDescriptor findCompositeFor( Class mixinType )
     {
         //TODO Cache this result
-        ModuleInstance realModuleInstance = findModuleForComposite( compositeType );
+        ModuleInstance realModuleInstance = findModuleForComposite( mixinType );
         if( realModuleInstance == null )
         {
             return null;
         }
         CompositesInstance compositesInstance = realModuleInstance.composites();
         CompositesModel compositesModel = compositesInstance.model();
-        return compositesModel.getCompositeModelFor( compositeType );
+        return compositesModel.getCompositeModelFor( mixinType );
     }
 
     public EntityModel findEntityCompositeFor( Class<? extends EntityComposite> entityCompositeType )

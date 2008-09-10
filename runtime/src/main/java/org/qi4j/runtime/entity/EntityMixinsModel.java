@@ -28,6 +28,7 @@ import org.qi4j.runtime.composite.UsesInstance;
  */
 public final class EntityMixinsModel extends AbstractMixinsModel
 {
+    private static Object IN_PROGRESS = new Object(); // Temporary object to denote that instantiation is in progress
     private EntityStateModel entityStateModel;
 
     public EntityMixinsModel( Class<? extends Composite> compositeType, EntityStateModel entityStateModel )
@@ -49,7 +50,12 @@ public final class EntityMixinsModel extends AbstractMixinsModel
         int i = 0;
         for( MixinModel mixinModel : mixinModels )
         {
-            mixins[ i++ ] = mixinModel.newInstance( entityInstance, UsesInstance.NO_USES, state );
+            if (mixins[i] == null) // This method might be called due to dependencies between mixins - don't go into infinite loop!
+            {
+                mixins[ i ] = IN_PROGRESS;
+                mixins[ i ] = mixinModel.newInstance( entityInstance, UsesInstance.NO_USES, state );
+            }
+            i++;
         }
     }
 }

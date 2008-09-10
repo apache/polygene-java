@@ -30,18 +30,21 @@ public class PropertyType
     private final String qualifiedName;
     private final String type;
     private final String uri;
+    private String rdf;
     private final boolean queryable;
     private final PropertyTypeEnum propertyType;
 
     public PropertyType( final String qualifiedName,
                          final String type,
                          final String uri,
+                         final String rdf,
                          final boolean queryable,
                          final PropertyTypeEnum propertyType )
     {
         this.qualifiedName = qualifiedName;
         this.type = type;
         this.uri = uri;
+        this.rdf = rdf;
         this.queryable = queryable;
         this.propertyType = propertyType;
     }
@@ -64,6 +67,11 @@ public class PropertyType
     public String uri()
     {
         return uri;
+    }
+
+    public String rdf()
+    {
+        return rdf;
     }
 
     public boolean queryable()

@@ -347,6 +347,11 @@ public final class DependencyModel
         return injectionAnnotation.annotationType();
     }
 
+    @Override public String toString()
+    {
+        return injectionAnnotation+" for "+injectionType+" in "+injectedClass.getName();
+    }
+
     public static class ScopeSpecification
         implements Specification<DependencyModel>
     {

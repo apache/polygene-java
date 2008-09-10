@@ -19,13 +19,17 @@
 package org.qi4j.query.grammar;
 
 import java.lang.reflect.Method;
-import org.qi4j.entity.association.Association;
+import java.lang.reflect.Type;
 
 /**
  * An expression related to {@link org.qi4j.entity.association.Association}.
  */
 public interface AssociationReference
 {
+    enum ReferenceType
+    {
+        NONE,ASSOCIATION,ROLE
+    }
 
     /**
      * Get the name of the association, which is equal to the name of the method that declared it.
@@ -53,7 +57,7 @@ public interface AssociationReference
      *
      * @return the association type
      */
-    Class<?> associationType();
+    Type associationType();
 
     /**
      * Gets the traversed association used to get to this association or null if there was no traversal involved.
@@ -66,8 +70,9 @@ public interface AssociationReference
      * Evaluates the association reference against a target object.
      *
      * @param target target object
-     * @return association instance from the target
+     * @return associated instance from the target
      */
-    Association eval( Object target );
+    Object eval( Object target );
 
+    ReferenceType roleType();
 }

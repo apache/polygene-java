@@ -161,22 +161,22 @@ public class ClassUtil
         return null;
     }
 
-    public static Class<?> getRawClass( final Type injectionType )
+    public static Class<?> getRawClass( final Type genericType )
     {
         // Calculate raw type
-        if( injectionType instanceof Class )
+        if( genericType instanceof Class )
         {
-            return (Class<?>) injectionType;
+            return (Class<?>) genericType;
         }
-        else if( injectionType instanceof ParameterizedType )
+        else if( genericType instanceof ParameterizedType )
         {
-            return (Class<?>) ( (ParameterizedType) injectionType ).getRawType();
+            return (Class<?>) ( (ParameterizedType) genericType ).getRawType();
         }
-        else if( injectionType instanceof TypeVariable )
+        else if( genericType instanceof TypeVariable )
         {
-            return (Class<?>) ( (TypeVariable) injectionType ).getGenericDeclaration();
+            return (Class<?>) ( (TypeVariable) genericType ).getGenericDeclaration();
         }
-        throw new IllegalArgumentException( "Could not extract the raw class of " + injectionType );
+        throw new IllegalArgumentException( "Could not extract the raw class of " + genericType );
     }
 
     public static List<Constructor> constructorsOf( Class clazz )

@@ -22,7 +22,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import org.qi4j.entity.association.Association;
+import org.qi4j.entity.association.Qualifier;
 import org.qi4j.query.grammar.AssociationReference;
+import org.qi4j.util.ClassUtil;
 
 /**
  * Default {@link AssociationReference}.
@@ -46,25 +48,21 @@ public class AssociationReferenceImpl
      * Association accessor method.
      */
     private final Method accessor;
+
     /**
      * Association type.
      */
-    private final Class<?> type;
+    private final Type type;
+
     /**
      * Traversed association.
      */
     private final AssociationReference traversed;
 
     /**
-     * Constructor.
-     *
-     * @param accessor method that acts as association
+     * If an association role was traversed or not, and if so, whether the association or role was accessed
      */
-    public AssociationReferenceImpl( final Method accessor )
-    {
-        this( accessor, null );
-    }
-
+    private final ReferenceType referenceType;
 
     /**
      * Constructor.
@@ -73,9 +71,11 @@ public class AssociationReferenceImpl
      * @param traversed traversed association
      */
     public AssociationReferenceImpl( final Method accessor,
-                                     final AssociationReference traversed )
+                                     final AssociationReference traversed,
+                                     final ReferenceType referenceType )
     {
         this.accessor = accessor;
+        this.referenceType = referenceType;
         name = accessor.getName();
         declaringType = accessor.getDeclaringClass();
         Type returnType = accessor.getGenericReturnType();
@@ -84,11 +84,11 @@ public class AssociationReferenceImpl
             throw new UnsupportedOperationException( "Unsupported association type:" + returnType );
         }
         Type associationTypeAsType = ( (ParameterizedType) returnType ).getActualTypeArguments()[ 0 ];
-        if( !( associationTypeAsType instanceof Class ) )
+        if( !( associationTypeAsType instanceof Class ) && !ClassUtil.getRawClass( associationTypeAsType ).equals( Qualifier.class ))
         {
             throw new UnsupportedOperationException( "Unsupported association type:" + associationTypeAsType );
         }
-        type = (Class<?>) associationTypeAsType;
+        type = associationTypeAsType;
         this.traversed = traversed;
     }
 
@@ -119,7 +119,7 @@ public class AssociationReferenceImpl
     /**
      * @see AssociationReference#associationType()
      */
-    public Class<?> associationType()
+    public Type associationType()
     {
         return type;
     }
@@ -132,25 +132,37 @@ public class AssociationReferenceImpl
         return traversed;
     }
 
+    public ReferenceType roleType()
+    {
+        return referenceType;
+    }
+
+    public AssociationReference withQualifier( ReferenceType type)
+    {
+        return new AssociationReferenceImpl(accessor, traversed, type );
+    }
+
     /**
      * @see AssociationReference#eval(Object)
      */
-    public Association eval( final Object target )
+    public Object eval( final Object target )
     {
         Object actual = target;
         if( traversedAssociation() != null )
         {
-            final Association assoc = traversedAssociation().eval( target );
-            if( assoc != null )
-            {
-                actual = assoc.get();
-            }
+            actual = traversedAssociation().eval( target );
         }
         if( actual != null )
         {
             try
             {
-                return (Association) associationAccessor().invoke( actual );
+                Association assoc = (Association) associationAccessor().invoke( actual );
+                if ( referenceType == ReferenceType.NONE)
+                    return assoc.get();
+                else if ( referenceType == ReferenceType.ASSOCIATION)
+                    return ((Qualifier)assoc.get()).entity();
+                else if ( referenceType == ReferenceType.ROLE)
+                    return ((Qualifier)assoc.get()).qualifier();
             }
             catch( Exception e )
             {

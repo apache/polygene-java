@@ -48,8 +48,7 @@ public final class AssociationIsNotNullPredicateImpl
      */
     public boolean eval( final Object target )
     {
-        final Association association = associationReference().eval( target );
-        return association != null && association.get() != null;
+        return associationReference().eval( target ) != null;
     }
 
     @Override public String toString()

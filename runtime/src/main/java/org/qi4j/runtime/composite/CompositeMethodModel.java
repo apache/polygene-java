@@ -149,4 +149,9 @@ public final class CompositeMethodModel
             }
         );
     }
+
+    @Override public String toString()
+    {
+        return method.toGenericString();
+    }
 }

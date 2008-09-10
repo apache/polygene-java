@@ -54,6 +54,7 @@ public final class AssociationModel
     private final Method accessor;
     private final String qualifiedName;
     private final String uri;
+    private final String rdf;
     private final ValueConstraintsInstance constraints;
     private final boolean queryable;
 
@@ -64,8 +65,9 @@ public final class AssociationModel
         this.type = GenericAssociationInfo.getAssociationType( accessor );
         this.accessor = accessor;
         this.qualifiedName = GenericAssociationInfo.getQualifiedName( accessor );
+        this.uri = GenericAssociationInfo.toURI( qualifiedName() );
         RDF uriAnnotation = accessor().getAnnotation( RDF.class );
-        this.uri = uriAnnotation == null ? GenericAssociationInfo.toURI( qualifiedName() ) : uriAnnotation.value();
+        this.rdf = uriAnnotation == null ? null : uriAnnotation.value();
         this.constraints = valueConstraintsInstance;
 
         final Queryable queryable = accessor.getAnnotation( Queryable.class );
@@ -219,22 +221,20 @@ public final class AssociationModel
         {
             if( isManyAssociation() )
             {
-                ManyAssociation<Composite> manyAssociation = (ManyAssociation<Composite>) association;
+                ManyAssociation<?> manyAssociation = (ManyAssociation<?>) association;
                 Collection<QualifiedIdentity> stateCollection = entityState.getManyAssociation( qualifiedName );
-                for( Composite entity : manyAssociation )
+                for( Object associated : manyAssociation )
                 {
-                    EntityInstance instance = EntityInstance.getEntityInstance( entity );
-                    stateCollection.add( instance.identity() );
+                    stateCollection.add( QualifiedIdentity.getQualifiedIdentity( associated ) );
                 }
             }
             else
             {
-                Association<Composite> assoc = (Association<Composite>) association;
-                Composite composite = assoc.get();
-                if( composite != null )
+                Association<?> assoc = (Association<?>) association;
+                Object associated = assoc.get();
+                if( associated != null )
                 {
-                    EntityInstance instance = EntityInstance.getEntityInstance( composite );
-                    entityState.setAssociation( qualifiedName, instance.identity() );
+                    entityState.setAssociation( qualifiedName, QualifiedIdentity.getQualifiedIdentity( associated ) );
                 }
             }
         }
@@ -242,7 +242,7 @@ public final class AssociationModel
 
     public AssociationType associationType()
     {
-        return new AssociationType( qualifiedName, getRawClass( type ).getName(), uri, queryable );
+        return new AssociationType( qualifiedName, getRawClass( type ).getName(), uri, rdf, queryable );
     }
 
     public ManyAssociationType manyAssociationType()
@@ -260,6 +260,6 @@ public final class AssociationModel
         {
             manyAssocType = ManyAssociationType.ManyAssociationTypeEnum.MANY;
         }
-        return new ManyAssociationType( qualifiedName, manyAssocType, getRawClass( type ).getName(), uri, queryable );
+        return new ManyAssociationType( qualifiedName, manyAssocType, getRawClass( type ).getName(), uri, rdf, queryable );
     }
 }

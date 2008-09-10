@@ -3,7 +3,6 @@ package org.qi4j.runtime.entity.association;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.association.AssociationInfo;
 import org.qi4j.entity.association.ManyAssociation;
 import org.qi4j.runtime.entity.UnitOfWorkInstance;
@@ -36,14 +35,10 @@ public class ManyAssociationInstance<T> extends AbstractAssociationInstance<T>
 
     public boolean contains( Object o )
     {
-        if( !( o instanceof EntityComposite ) )
-        {
-            throw new IllegalArgumentException( "Object must be an EntityComposite" );
-        }
+        checkType( o );
 
         return associated.contains( getEntityId( o ) );
     }
-
 
     public Object[] toArray()
     {
@@ -70,20 +65,14 @@ public class ManyAssociationInstance<T> extends AbstractAssociationInstance<T>
 
     public boolean add( T t )
     {
-        if( !( t instanceof EntityComposite ) )
-        {
-            throw new IllegalArgumentException( "Associated object must be an EntityComposite" );
-        }
+        checkType( t );
 
         return associated.add( getEntityId( t ) );
     }
 
     public boolean remove( Object o )
     {
-        if( !( o instanceof EntityComposite ) )
-        {
-            throw new IllegalArgumentException( "Associated object must be an EntityComposite" );
-        }
+        checkType(o);
 
         return associated.remove( getEntityId( o ) );
     }
@@ -198,4 +187,13 @@ public class ManyAssociationInstance<T> extends AbstractAssociationInstance<T>
         }
     }
 
+    @Override protected void checkType( Object instance )
+    {
+        if( instance == null)
+        {
+            throw new NullPointerException( "Associated object may not be null" );
+        }
+
+        super.checkType( instance );
+    }
 }

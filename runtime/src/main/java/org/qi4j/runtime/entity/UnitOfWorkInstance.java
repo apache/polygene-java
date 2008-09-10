@@ -250,7 +250,7 @@ public final class UnitOfWorkInstance
     {
         EntityComposite entityComposite = (EntityComposite) entity;
         EntityInstance compositeInstance = EntityInstance.getEntityInstance( entityComposite );
-        String id = compositeInstance.identity().identity();
+        String id = compositeInstance.qualifiedIdentity().identity();
         Class<? extends EntityComposite> type = compositeInstance.type();
         return (T) getReference( id, type );
     }
@@ -267,7 +267,7 @@ public final class UnitOfWorkInstance
             EntityStatus entityStatus = entityInstance.status();
             if( entityStatus == EntityStatus.REMOVED )
             {
-                throw new EntityCompositeNotFoundException( entityInstance.identity().identity(), entityInstance.type() );
+                throw new EntityCompositeNotFoundException( entityInstance.qualifiedIdentity().identity(), entityInstance.type() );
             }
             else if( entityStatus == EntityStatus.NEW )
             {
@@ -409,7 +409,7 @@ public final class UnitOfWorkInstance
                 }
                 if( instance.status() == EntityStatus.REMOVED )
                 {
-                    storeCompletionList.getRemovedState().add( instance.identity() );
+                    storeCompletionList.getRemovedState().add( instance.qualifiedIdentity() );
                 }
             }
         }

@@ -22,6 +22,8 @@ import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.injection.InjectionProvider;
 import org.qi4j.runtime.injection.InjectionProviderFactory;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
+import org.qi4j.injection.scope.AssociationField;
+import org.qi4j.injection.scope.AssociationParameter;
 
 /**
  * TODO
@@ -37,8 +39,18 @@ public final class AssociationInjectionProviderFactory
         }
         else
         {
-            // @AssociationField Association<String> name;
-            AssociationDescriptor model = resolution.composite().state().getAssociationByName( resolution.field().getName() );
+            AssociationDescriptor model;
+
+            if (dependencyModel.injectionAnnotation().annotationType().equals( AssociationField.class))
+            {
+                // @AssociationField Association<String> name;
+                model = resolution.composite().state().getAssociationByName( resolution.field().getName() );
+
+            } else
+            {
+                AssociationParameter param = (AssociationParameter) dependencyModel.injectionAnnotation();
+                model = resolution.composite().state().getAssociationByName( param.value() );
+            }
 
             // No such association found
             if( model == null )

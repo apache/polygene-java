@@ -21,13 +21,31 @@ import java.lang.reflect.Proxy;
 /**
  * This class helps you select a particular service
  * from a list. Provide a Selector which does the actual
- * selection fro the list. A common case is to select
+ * selection from the list. A common case is to select
  * based on identity of the service, which you can do this way:
- * new ServiceSelector<MyService>(services, ServiceSelector.id("someId"))
+ * new ServiceSelector<MyService>(services, ServiceSelector.withIdd("someId"))
+ *
+ * Many selectors can be combined by using firstOf. Example:
+ * new ServiceSelector<MyService>(services, firstOf(withTags("sometag"), firstActive()))
+ * This will pick a service that has the tag "sometag", or if none is found take the first active one.
  */
 public final class ServiceSelector<T>
 {
-    public static Selector<Object> id( final String anId )
+    public static <T> ServiceSelector<T> select(Iterable<ServiceReference<T>> services, Selector selector)
+    {
+        return new ServiceSelector<T>(services, selector);
+    }
+
+    public static <T> T service(Iterable<ServiceReference<T>> services, Selector selector)
+    {
+        ServiceSelector<T> serviceSelector = select( services, selector );
+        if (serviceSelector != null)
+            return serviceSelector.get();
+        else
+            return null;
+    }
+
+    public static Selector<Object> withId( final String anId )
     {
         return new Selector<Object>()
         {
@@ -57,6 +75,43 @@ public final class ServiceSelector<T>
                     {
                         return service;
                     }
+                }
+                return null;
+            }
+        };
+    }
+
+    public static Selector<Object> withTags(final String... tags)
+    {
+        return new Selector<Object>()
+        {
+            public ServiceReference<Object> select( Iterable<ServiceReference<Object>> services )
+            {
+                for( ServiceReference<Object> service : services )
+                {
+                    ServiceTags serviceTags = service.metaInfo( ServiceTags.class );
+
+                    if( tags != null && serviceTags.hasTags( tags ))
+                    {
+                        return service;
+                    }
+                }
+                return null;
+            }
+        };
+    }
+
+    public static Selector<Object> firstOf(final Selector<Object>... selectors)
+    {
+        return new Selector<Object>()
+        {
+            public ServiceReference<Object> select( Iterable<ServiceReference<Object>> services )
+            {
+                for( Selector<Object> selector : selectors )
+                {
+                    ServiceReference<Object> serviceRef = selector.select( services );
+                    if (serviceRef != null)
+                        return serviceRef;
                 }
                 return null;
             }

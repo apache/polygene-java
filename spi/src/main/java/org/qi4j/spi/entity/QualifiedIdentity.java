@@ -16,12 +16,13 @@ package org.qi4j.spi.entity;
 
 import java.io.Serializable;
 import org.qi4j.entity.EntityComposite;
+import org.qi4j.entity.association.Qualifier;
 import org.qi4j.util.ClassUtil;
 
 /**
  * TODO
  */
-public final class QualifiedIdentity
+public class QualifiedIdentity
     implements Serializable
 {
     public static QualifiedIdentity parseURI( String uri )
@@ -31,6 +32,31 @@ public final class QualifiedIdentity
         String type = str.substring( 0, idx ).replace( "-", "$" );
         String identity = str.substring( idx + 1 );
         return new QualifiedIdentity( identity, type );
+    }
+
+    public static QualifiedIdentity parseQualifiedIdentity(String id)
+    {
+        // Check if it's a Qualifier
+        int idx = id.indexOf( '/' );
+        if (idx == -1)
+        {
+            return new QualifiedIdentity( id );
+        } else
+        {
+            return new QualifierQualifiedIdentity(parseQualifiedIdentity(id.substring( 0, idx )), id.substring( idx+1 ));
+        }
+    }
+
+    public static QualifiedIdentity getQualifiedIdentity(Object o)
+    {
+        if (o instanceof Qualifier )
+        {
+            QualifierQualifiedIdentity arqi = new QualifierQualifiedIdentity( (Qualifier) o);
+            return arqi;
+        } else
+        {
+            return new QualifiedIdentity( ( EntityComposite) o);
+        }
     }
 
     private static final long serialVersionUID = 1L;
@@ -58,7 +84,7 @@ public final class QualifiedIdentity
         this.compositeType = clazz;
     }
 
-    public QualifiedIdentity( String qualifiedIdentity )
+    protected QualifiedIdentity( String qualifiedIdentity )
     {
         int separatorIndex = qualifiedIdentity.indexOf( ":" );
         if( separatorIndex == -1 )

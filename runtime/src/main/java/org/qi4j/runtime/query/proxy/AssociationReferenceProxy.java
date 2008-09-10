@@ -20,9 +20,13 @@ package org.qi4j.runtime.query.proxy;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.lang.reflect.ParameterizedType;
 import static java.lang.reflect.Proxy.newProxyInstance;
 import org.qi4j.query.grammar.AssociationReference;
 import org.qi4j.runtime.query.grammar.impl.AssociationReferenceImpl;
+import org.qi4j.util.ClassUtil;
+import org.qi4j.entity.association.Qualifier;
 
 /**
  * TODO Add JavaDoc
@@ -34,7 +38,7 @@ public final class AssociationReferenceProxy
     /**
      * Traversed association.
      */
-    private final AssociationReference associationReference;
+    private final AssociationReferenceImpl associationReference;
 
     /**
      * Constructor.
@@ -55,7 +59,7 @@ public final class AssociationReferenceProxy
     AssociationReferenceProxy( final Method accessor,
                                final AssociationReference traversedAssociation )
     {
-        associationReference = new AssociationReferenceImpl( accessor, traversedAssociation );
+        associationReference = new AssociationReferenceImpl( accessor, traversedAssociation, AssociationReference.ReferenceType.NONE );
     }
 
     public Object invoke( final Object proxy,
@@ -70,12 +74,35 @@ public final class AssociationReferenceProxy
         }
         if( args == null && "get".equals( method.getName() ) )
         {
-            Class<?> associationType = associationReference.associationType();
-            return newProxyInstance(
-                this.getClass().getClassLoader(),
-                new Class[]{ associationType },
-                new MixinTypeProxy( associationType, associationReference )
-            );
+            Type associationType = associationReference.associationType();
+            if( ClassUtil.getRawClass( associationType ).equals( Qualifier.class ) )
+            {
+                ParameterizedType associatedRoleType = (ParameterizedType) associationType;
+                Class associatedType = (Class) associatedRoleType.getActualTypeArguments()[ 0 ];
+                Object associated = newProxyInstance(
+                    this.getClass().getClassLoader(),
+                    new Class[]{ associatedType },
+                    new MixinTypeProxy( associatedType, associationReference.withQualifier( AssociationReference.ReferenceType.ASSOCIATION )));
+
+                Class roleType = (Class) associatedRoleType.getActualTypeArguments()[ 1 ];
+                Object role = newProxyInstance(
+                    this.getClass().getClassLoader(),
+                    new Class[]{ roleType },
+                    new MixinTypeProxy( roleType, associationReference.withQualifier( AssociationReference.ReferenceType.ROLE )));
+
+                Qualifier associationQualifier = Qualifier.qualifier( associated, role );
+                return associationQualifier;
+            }
+            else
+            {
+
+                Class<?> associationClass = (Class<?>) associationType;
+                return newProxyInstance(
+                    this.getClass().getClassLoader(),
+                    new Class[]{ associationClass },
+                    new MixinTypeProxy( associationClass, associationReference )
+                );
+            }
         }
         if( "toString".equals( method.getName() ) )
         {

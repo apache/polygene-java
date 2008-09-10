@@ -72,7 +72,7 @@ public class GenericAssociationInfo
             }
         }
 
-        Type[] interfaces = ( (Class<?>) methodReturnType ).getInterfaces();
+        Type[] interfaces = ( (Class<?>) methodReturnType ).getGenericInterfaces();
         for( Type anInterface : interfaces )
         {
             Type associationType = getAssociationType( anInterface );
@@ -92,7 +92,7 @@ public class GenericAssociationInfo
      */
     public static String toURI( final Method accessor )
     {
-        return "urn:qi4j:entity:" + getQualifiedName( accessor );
+        return toURI(getQualifiedName( accessor ));
     }
 
     /**
@@ -104,7 +104,7 @@ public class GenericAssociationInfo
      */
     public static String toURI( final Class declaringClass, String name )
     {
-        return "urn:qi4j:entity:" + getQualifiedName( declaringClass, name );
+        return toURI(getQualifiedName( declaringClass, name ));
     }
 
     /**
@@ -115,7 +115,7 @@ public class GenericAssociationInfo
      */
     public static String toURI( final String qualifiedName )
     {
-        return "urn:qi4j:entity:" + qualifiedName;
+        return "urn:qi4j:entity:" + qualifiedName.replace( ':','#' );
     }
 
     /**
@@ -126,7 +126,22 @@ public class GenericAssociationInfo
      */
     public static String toQualifiedName( final String uri )
     {
-        return uri.substring( "urn:qi4j:entity:".length() );
+        return uri.substring( "urn:qi4j:entity:".length() ).replace( '#',':' );
+    }
+
+    /**
+     * Get namespace for an association.
+     *
+     * @param accessor accessor method
+     * @return association namespace
+     */
+    public static String toNamespace( final Method accessor )
+    {
+        if( accessor == null )
+        {
+            return null;
+        }
+        return "urn:qi4j:entity:" + getDeclaringClassName( accessor ) + "#";
     }
 
     private Method accessor;

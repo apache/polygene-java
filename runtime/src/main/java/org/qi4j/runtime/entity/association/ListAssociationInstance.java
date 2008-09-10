@@ -46,20 +46,14 @@ public final class ListAssociationInstance<T>
 
     public T set( int i, T t )
     {
-        if( !( t instanceof EntityComposite ) )
-        {
-            throw new IllegalArgumentException( "Associated object must be an EntityComposite" );
-        }
+        checkType( t );
 
         return getEntity( associated.set( i, getEntityId( t ) ) );
     }
 
     public void add( int i, T t )
     {
-        if( !( t instanceof EntityComposite ) )
-        {
-            throw new IllegalArgumentException( "Associated object must be an EntityComposite" );
-        }
+        checkType( t );
 
         associated.add( i, getEntityId( t ) );
     }
@@ -71,20 +65,14 @@ public final class ListAssociationInstance<T>
 
     public int indexOf( Object o )
     {
-        if( !( o instanceof EntityComposite ) )
-        {
-            throw new IllegalArgumentException( "Object must be an EntityComposite" );
-        }
+        checkType( o );
 
         return associated.indexOf( getEntityId( o ) );
     }
 
     public int lastIndexOf( Object o )
     {
-        if( !( o instanceof EntityComposite ) )
-        {
-            throw new IllegalArgumentException( "Object must be an EntityComposite" );
-        }
+        checkType( o );
 
         return associated.lastIndexOf( o );
     }

@@ -33,18 +33,21 @@ public class ManyAssociationType
     private final ManyAssociationTypeEnum associationType;
     private final String type;
     private final String uri;
+    private final String rdf;
     private final boolean queryable;
 
     public ManyAssociationType( final String qualifiedName,
                                 final ManyAssociationTypeEnum associationType,
                                 final String type,
                                 final String uri,
+                                final String rdf,
                                 final boolean queryable )
     {
         this.qualifiedName = qualifiedName;
         this.associationType = associationType;
         this.type = type;
         this.uri = uri;
+        this.rdf = rdf;
         this.queryable = queryable;
     }
 
@@ -67,6 +70,11 @@ public class ManyAssociationType
     {
         return uri;
 
+    }
+
+    public String rdf()
+    {
+        return rdf;
     }
 
     public boolean queryable()

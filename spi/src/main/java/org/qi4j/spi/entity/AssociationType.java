@@ -25,16 +25,19 @@ public class AssociationType
     private final String qualifiedName;
     private final String type;
     private final String uri;
+    private final String rdf;
     private final boolean queryable;
 
     public AssociationType( final String qualifiedName,
                             final String type,
                             final String uri,
+                            final String rdf,
                             final boolean queryable )
     {
         this.qualifiedName = qualifiedName;
         this.type = type;
         this.uri = uri;
+        this.rdf = rdf;
         this.queryable = queryable;
     }
 
@@ -51,6 +54,12 @@ public class AssociationType
     public String uri()
     {
         return uri;
+
+    }
+
+    public String rdf()
+    {
+        return rdf;
 
     }
 

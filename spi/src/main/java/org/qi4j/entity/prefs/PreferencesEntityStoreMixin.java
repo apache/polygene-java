@@ -182,7 +182,7 @@ public class PreferencesEntityStoreMixin
                 String value = preferences.get( name, null );
 
                 if (value != null)
-                    associations.put( associationType.qualifiedName(), new QualifiedIdentity( value) );
+                    associations.put( associationType.qualifiedName(), QualifiedIdentity.parseQualifiedIdentity( value) );
             }
         }
         catch( Exception e )
@@ -208,7 +208,7 @@ public class PreferencesEntityStoreMixin
                     String qidString;
                     while ((qidString = reader.readLine()) != null)
                     {
-                        QualifiedIdentity qid = new QualifiedIdentity( qidString);
+                        QualifiedIdentity qid = QualifiedIdentity.parseQualifiedIdentity( qidString);
                         collection.add( qid );
                     }
                 }

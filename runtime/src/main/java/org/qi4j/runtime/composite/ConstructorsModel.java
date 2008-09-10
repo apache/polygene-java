@@ -42,19 +42,19 @@ import org.qi4j.composite.ConstructionException;
 public final class ConstructorsModel
     implements Binder
 {
+    private final Class fragmentClass;
     private final List<ConstructorModel> constructorModels;
-
     private List<ConstructorModel> boundConstructors;
 
     public ConstructorsModel( Class fragmentClass )
     {
-        fragmentClass = instantiationClass( fragmentClass );
+        this.fragmentClass = instantiationClass( fragmentClass );
 
         constructorModels = new ArrayList<ConstructorModel>();
-        Constructor[] constructors = fragmentClass.getDeclaredConstructors();
+        Constructor[] constructors = this.fragmentClass.getDeclaredConstructors();
         for( Constructor constructor : constructors )
         {
-            ConstructorModel constructorModel = newConstructorModel( fragmentClass, constructor );
+            ConstructorModel constructorModel = newConstructorModel( this.fragmentClass, constructor );
             if( constructorModel != null )
             {
                 constructorModels.add( constructorModel );
@@ -119,7 +119,7 @@ public final class ConstructorsModel
 
         if( boundConstructors.size() == 0)
         {
-            String toString = resolution.composite() == null ? resolution.object().toString() : resolution.composite().toString();
+            String toString = resolution.composite() == null ? resolution.object().toString() : fragmentClass.getName()+" in "+resolution.composite().toString();
             String message = "Found no constructor that could be bound: " + toString;
             if( toString.indexOf( '$' ) >= 0 )
             {

@@ -24,6 +24,7 @@ import org.qi4j.entity.association.Association;
 import org.qi4j.entity.association.ListAssociation;
 import org.qi4j.entity.association.ManyAssociation;
 import org.qi4j.entity.association.SetAssociation;
+import org.qi4j.entity.association.Qualifier;
 import org.qi4j.injection.scope.Structure;
 import org.qi4j.injection.scope.This;
 import org.qi4j.injection.scope.Service;
@@ -69,9 +70,10 @@ public abstract class AbstractEntityStoreTest
     public void whenNewEntityThenCanFindEntity()
         throws Exception
     {
+        UnitOfWork unitOfWork = null;
         try
         {
-            UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
+            unitOfWork = unitOfWorkFactory.newUnitOfWork();
             TestEntity instance = createEntity( unitOfWork );
             unitOfWork.complete();
 
@@ -93,7 +95,7 @@ public abstract class AbstractEntityStoreTest
         }
         catch( Exception e )
         {
-            e.printStackTrace();
+            unitOfWork.discard();
         }
     }
 
@@ -180,6 +182,8 @@ public abstract class AbstractEntityStoreTest
         ListAssociation<TestEntity> listAssociation();
 
         SetAssociation<TestEntity> setAssociation();
+
+        Association<Qualifier<TestEntity, TestEntity>> qualifier();
     }
 
     public interface TestValue

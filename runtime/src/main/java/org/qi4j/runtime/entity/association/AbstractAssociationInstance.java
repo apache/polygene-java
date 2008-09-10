@@ -5,8 +5,10 @@ import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.NoSuchEntityException;
 import org.qi4j.entity.association.AbstractAssociation;
 import org.qi4j.entity.association.AssociationInfo;
+import org.qi4j.entity.association.Qualifier;
 import org.qi4j.runtime.entity.UnitOfWorkInstance;
 import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.spi.entity.QualifierQualifiedIdentity;
 
 /**
  * Implementation of AbstractAssociation. Includes helper methods for subclasses
@@ -54,8 +56,21 @@ public abstract class AbstractAssociationInstance<T>
 
         try
         {
-            Class<? extends EntityComposite> entityCompositeType = (Class<? extends EntityComposite>) unitOfWork.module().classLoader().loadClass( entityId.type() );
-            return (T) unitOfWork.getReference( entityId.identity(), entityCompositeType );
+            if (entityId instanceof QualifierQualifiedIdentity )
+            {
+                QualifierQualifiedIdentity qualifierId = (QualifierQualifiedIdentity) entityId;
+                Class<? extends EntityComposite> entityCompositeType = (Class<? extends EntityComposite>) unitOfWork.module().classLoader().loadClass( entityId.type() );
+                EntityComposite association = unitOfWork.getReference( entityId.identity(), entityCompositeType );
+
+                Class<? extends EntityComposite> roleCompositeType = (Class<? extends EntityComposite>) unitOfWork.module().classLoader().loadClass( qualifierId.role().type() );
+                EntityComposite role = unitOfWork.getReference( qualifierId.role().identity(), roleCompositeType );
+
+                return (T) Qualifier.qualifier( association, role );
+            } else
+            {
+                Class<? extends EntityComposite> entityCompositeType = (Class<? extends EntityComposite>) unitOfWork.module().classLoader().loadClass( entityId.type() );
+                return (T) unitOfWork.getReference( entityId.identity(), entityCompositeType );
+            }
         }
         catch( ClassNotFoundException e )
         {
@@ -70,7 +85,27 @@ public abstract class AbstractAssociationInstance<T>
             return QualifiedIdentity.NULL;
         }
 
-        EntityComposite entityComposite = (EntityComposite) composite;
-        return new QualifiedIdentity( entityComposite.identity().get(), entityComposite.type() );
+        if (composite instanceof Qualifier )
+        {
+            Qualifier qualifier = (Qualifier) composite;
+            return new QualifierQualifiedIdentity( qualifier );
+        }
+        else
+        {
+            EntityComposite entityComposite = (EntityComposite) composite;
+            return new QualifiedIdentity( entityComposite.identity().get(), entityComposite.type() );
+        }
+    }
+
+
+    protected void checkType( Object instance )
+    {
+        if (instance != null)
+        {
+            if( !( instance instanceof EntityComposite || instance instanceof Qualifier ) )
+            {
+                throw new IllegalArgumentException( "Object must be an EntityComposite or Qualifier" );
+            }
+        }
     }
 }

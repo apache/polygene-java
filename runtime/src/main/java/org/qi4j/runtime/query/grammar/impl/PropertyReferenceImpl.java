@@ -142,11 +142,7 @@ public final class PropertyReferenceImpl<T>
         Object actual = target;
         if( traversedAssociation() != null )
         {
-            final Association assoc = traversedAssociation().eval( target );
-            if( assoc != null )
-            {
-                actual = assoc.get();
-            }
+            actual = traversedAssociation().eval( target );
         }
         if( actual != null )
         {

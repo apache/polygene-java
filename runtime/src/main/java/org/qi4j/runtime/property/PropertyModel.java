@@ -45,6 +45,7 @@ public class PropertyModel
     private final Method accessor; // Interface accessor
     private final String qualifiedName;
     private final String uri;
+    private final String rdf;
 
     private final ValueConstraintsInstance constraints; // May be null
     private final MetaInfo metaInfo;
@@ -62,8 +63,9 @@ public class PropertyModel
         qualifiedName = GenericPropertyInfo.getQualifiedName( anAccessor );
         defaultValue = aPropertyDefaultValue;
 
+        uri = GenericPropertyInfo.toURI( qualifiedName() );
         RDF uriAnnotation = accessor().getAnnotation( RDF.class );
-        uri = uriAnnotation == null ? GenericPropertyInfo.toURI( qualifiedName() ) : uriAnnotation.value();
+        rdf = uriAnnotation == null ? null : uriAnnotation.value();
 
         this.constraints = constraints;
 
@@ -114,6 +116,11 @@ public class PropertyModel
     public String toURI()
     {
         return uri;
+    }
+
+    public String toRDF()
+    {
+        return rdf;
     }
 
     public Property<?> newInstance()

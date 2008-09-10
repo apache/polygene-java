@@ -99,7 +99,7 @@ public final class EntityInstance
         return entity.invoke( this, this.proxy, method, args, moduleInstance );
     }
 
-    public QualifiedIdentity identity()
+    public QualifiedIdentity qualifiedIdentity()
     {
         return identity;
     }
@@ -122,6 +122,11 @@ public final class EntityInstance
     public Object[] mixins()
     {
         return mixins;
+    }
+
+    public void setMixins( Object[] mixins )
+    {
+        this.mixins = mixins;
     }
 
     public ModuleInstance module()
