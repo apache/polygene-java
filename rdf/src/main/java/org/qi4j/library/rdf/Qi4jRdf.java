@@ -37,6 +37,7 @@ public interface Qi4jRdf
     URI TYPE_LAYER = new URIImpl( QI4JMODEL_TYPES + "layer" );
     URI TYPE_MODULE = new URIImpl( QI4JMODEL_TYPES + "module" );
     URI TYPE_ENTITY = new URIImpl( QI4JMODEL_TYPES + "entity" );
+    URI TYPE_QUALIFIER = new URIImpl( QI4JMODEL_TYPES + "qualifier" );
     URI TYPE_COMPOSITE = new URIImpl( QI4JMODEL_TYPES + "composite" );
     URI TYPE_SERVICE = new URIImpl( QI4JMODEL_TYPES + "service" );
     URI TYPE_METHOD = new URIImpl( QI4JMODEL_TYPES + "method" );
@@ -77,8 +78,4 @@ public interface Qi4jRdf
     URI RELATIONSHIP_MIXIN = new URIImpl( QI4JMODEL_RELATIONSHIPS + "mixin" );
     URI RELATIONSHIP_LAYER = new URIImpl( QI4JMODEL_RELATIONSHIPS + "layer" );
     URI RELATIONSHIP_MODULE = new URIImpl( QI4JMODEL_RELATIONSHIPS + "module" );
-
-
-    // BINDING
-    String QI4JBINDING = "http://www.qi4j.org/rdf/binding/1.0/";
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,16 +12,21 @@
  *
  */
 
-package org.qi4j.library.rdf.entity;
+package org.qi4j.library.rdf;
 
-import org.qi4j.composite.Mixins;
-import org.qi4j.service.ServiceComposite;
+import org.openrdf.model.URI;
+import org.openrdf.model.impl.URIImpl;
+
 
 /**
- * TODO
+ * This is the RDF vocabulary for Qi4j Entity data.
  */
-@Mixins( EntityParserMixin.class )
-public interface EntityParserService
-    extends EntityParser, ServiceComposite
+public interface Qi4jEntity
 {
+    // MODEL
+    String QI4JENTITY = "http://www.qi4j.org/rdf/entity/1.0/";
+
+    // Types
+    URI ENTITY = new URIImpl( QI4JENTITY + "entity" );
+    URI QUALIFIER = new URIImpl( QI4JENTITY + "qualifier" );
 }

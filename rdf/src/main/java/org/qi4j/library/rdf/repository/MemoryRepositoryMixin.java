@@ -24,7 +24,8 @@ public class MemoryRepositoryMixin extends SailRepository
 {
     public MemoryRepositoryMixin()
     {
-        super( new ForwardChainingRDFSInferencer( new MemoryStore() ) );
+//        super( new ForwardChainingRDFSInferencer( new MemoryStore() ) );
+        super( new MemoryStore() );
     }
 
     public void activate() throws Exception

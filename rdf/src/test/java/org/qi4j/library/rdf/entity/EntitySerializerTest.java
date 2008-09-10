@@ -26,6 +26,7 @@ import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkCompletionException;
 import org.qi4j.entity.memory.MemoryEntityStoreService;
 import org.qi4j.injection.scope.Service;
+import org.qi4j.injection.scope.Uses;
 import org.qi4j.library.rdf.DcRdf;
 import org.qi4j.library.rdf.Rdfs;
 import org.qi4j.library.rdf.serializer.RdfXmlSerializer;
@@ -42,13 +43,13 @@ public class EntitySerializerTest
     extends AbstractQi4jTest
 {
     @Service EntityStore entityStore;
-    @Service EntitySerializer serializer;
+    @Uses EntitySerializer serializer;
 
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
-        module.addServices( MemoryEntityStoreService.class, EntitySerializerService.class );
+        module.addServices( MemoryEntityStoreService.class );
         module.addEntities( TestEntity.class );
-        module.addObjects( EntitySerializerTest.class );
+        module.addObjects( EntitySerializer.class, EntitySerializerTest.class );
     }
 
     @Override @Before

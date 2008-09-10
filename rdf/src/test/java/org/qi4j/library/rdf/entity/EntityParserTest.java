@@ -28,6 +28,7 @@ import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkCompletionException;
 import org.qi4j.entity.memory.MemoryEntityStoreService;
 import org.qi4j.injection.scope.Service;
+import org.qi4j.injection.scope.Uses;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.QualifiedIdentity;
@@ -40,14 +41,14 @@ public class EntityParserTest
     extends AbstractQi4jTest
 {
     @Service EntityStore entityStore;
-    @Service EntitySerializer serializer;
-    @Service EntityParser parser;
+    @Uses EntitySerializer serializer;
+    @Uses EntityParser parser;
 
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
-        module.addServices( MemoryEntityStoreService.class, EntitySerializerService.class, EntityParserService.class );
+        module.addServices( MemoryEntityStoreService.class );
         module.addEntities( TestEntity.class );
-        module.addObjects( EntityParserTest.class );
+        module.addObjects( EntitySerializer.class, EntityParser.class, EntityParserTest.class );
     }
 
     @Override @Before public void setUp() throws Exception
