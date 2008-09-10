@@ -36,6 +36,7 @@ import org.qi4j.query.grammar.OrderBy;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
+import org.qi4j.util.ClassUtil;
 
 /**
  * TODO Add JavaDoc
@@ -85,6 +86,7 @@ public class RdfEntityFinderMixin
             QueryLanguage queryLanguage = parser.getQueryLanguage();
             String query = parser.getQuery( resultType, whereClause, orderBySegments, firstResult, maxResults );
             TupleQuery tupleQuery = connection.prepareTupleQuery( queryLanguage, query );
+            tupleQuery.setIncludeInferred( false );
 
             TupleQueryResult result = tupleQuery.evaluate();
             try
@@ -146,7 +148,7 @@ public class RdfEntityFinderMixin
 
         final Value entityClass = bindingSet.getValue( "entityType" );
         final String identity = identifier.stringValue();
-        final String entityType = entityClass.stringValue();
+        final String entityType = ClassUtil.toClassName( entityClass.stringValue());
 
         final QualifiedIdentity qualifiedIdentity = new QualifiedIdentity( identity, entityType );
         return qualifiedIdentityResultCallback.processRow( row, qualifiedIdentity );

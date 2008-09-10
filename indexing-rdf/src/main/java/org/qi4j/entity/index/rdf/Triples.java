@@ -24,7 +24,9 @@ import java.util.Iterator;
 import java.util.List;
 import org.qi4j.composite.Composite;
 import org.qi4j.entity.Identity;
+import org.qi4j.entity.association.GenericAssociationInfo;
 import static org.qi4j.property.GenericPropertyInfo.getDeclaringClassName;
+import org.qi4j.property.GenericPropertyInfo;
 import org.qi4j.query.grammar.AssociationReference;
 import org.qi4j.query.grammar.ManyAssociationReference;
 import org.qi4j.query.grammar.PropertyReference;
@@ -45,22 +47,22 @@ public class Triples implements Iterable<Triples.Triple>
     {
         triples.add(
             new Triple(
-                "?entity",
-                "rdf:type",
+                "?entityType",
+                "rdfs:subClassOf",
                 "<" + ClassUtil.toURI( resultType ) + ">",
                 false )
         );
         triples.add(
             new Triple(
                 "?entity",
-                addNamespace( ClassUtil.toURI( Composite.class ) + ":" ) + ":entityType",
+                "rdf:type",
                 "?entityType",
                 false )
         );
         triples.add(
             new Triple(
                 "?entity",
-                addNamespace( toNamespace( getIdentityAccessor( Identity.class ) ) ) + ":identity",
+                addNamespace( GenericPropertyInfo.toNamespace( getIdentityAccessor( Identity.class ) ) ) + ":identity",
                 "?identity",
                 false
             )
@@ -81,7 +83,7 @@ public class Triples implements Iterable<Triples.Triple>
         {
             subject = addTriple( propertyReference.traversedAssociation(), false ).value;
         }
-        String prefix = addNamespace( toNamespace( propertyReference.propertyAccessor() ) );
+        String prefix = addNamespace( GenericPropertyInfo.toNamespace( propertyReference.propertyAccessor() ) );
         return addTriple( subject, prefix + ":" + propertyReference.propertyName(), optional );
     }
 
@@ -106,7 +108,7 @@ public class Triples implements Iterable<Triples.Triple>
         {
             subject = addTriple( associationReference.traversedAssociation(), false ).value;
         }
-        String prefix = addNamespace( toNamespace( associationReference.associationAccessor() ) );
+        String prefix = addNamespace( GenericAssociationInfo.toNamespace( associationReference.associationAccessor() ) );
         return addTriple( subject, prefix + ":" + associationReference.associationName(), optional );
     }
 
@@ -119,7 +121,7 @@ public class Triples implements Iterable<Triples.Triple>
         {
             subject = addTriple( traversedAssociation, false ).value;
         }
-        String predicatePrefix = addNamespace( toNamespace( manyAssociationReference.associationAccessor() ) );
+        String predicatePrefix = addNamespace( GenericAssociationInfo.toNamespace( manyAssociationReference.associationAccessor() ) );
         String predicate = predicatePrefix + ":" + manyAssociationReference.associationName();
         Triple collectionTriple = addTriple( subject, predicate, optional );
 
@@ -157,16 +159,6 @@ public class Triples implements Iterable<Triples.Triple>
             }
         }
         return null;
-    }
-
-    // todo move to GenericAssociationInfo
-    private String toNamespace( final Method accessor )
-    {
-        if( accessor == null )
-        {
-            return null;
-        }
-        return "urn:qi4j:entity:" + getDeclaringClassName( accessor ) + ":";
     }
 
     private static Method getIdentityAccessor( final Class declaringClass )

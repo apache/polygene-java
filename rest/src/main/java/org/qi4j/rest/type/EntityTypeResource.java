@@ -44,7 +44,7 @@ import org.restlet.resource.Variant;
 
 public class EntityTypeResource extends Resource
 {
-    @Service EntitySerializer entitySerializer;
+    @Uses EntitySerializer entitySerializer;
 
     @Structure Module module;
     @Structure Qi4jSPI spi;

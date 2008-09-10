@@ -20,6 +20,7 @@ import org.qi4j.entity.association.Association;
 import org.qi4j.entity.association.ListAssociation;
 import org.qi4j.entity.association.ManyAssociation;
 import org.qi4j.entity.association.SetAssociation;
+import org.qi4j.entity.association.Qualifier;
 import org.qi4j.library.rdf.DcRdf;
 import org.qi4j.property.Property;
 
@@ -44,4 +45,6 @@ public interface TestEntity
     @RDF( "http://www.w3.org/2001/vcard-rdf/3.0#GROUP" ) ListAssociation<TestEntity> listAssociation();
 
     SetAssociation<TestEntity> setAssociation();
+
+    ManyAssociation<Qualifier<TestEntity,TestRole>> manyAssociationQualifier();
 }

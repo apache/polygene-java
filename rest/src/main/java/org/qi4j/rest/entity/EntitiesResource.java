@@ -215,7 +215,7 @@ public class EntitiesResource extends Resource
                 }
                 else
                 {
-                    entityState.setAssociation( associationType.qualifiedName(), new QualifiedIdentity( newStringAssociation ) );
+                    entityState.setAssociation( associationType.qualifiedName(), QualifiedIdentity.parseQualifiedIdentity( newStringAssociation ) );
                 }
             }
             for( ManyAssociationType associationType : entityType.manyAssociations() )
@@ -234,7 +234,7 @@ public class EntitiesResource extends Resource
                 {
                     while( ( qualifiedIdentity = bufferedReader.readLine() ) != null )
                     {
-                        manyAssociation.add( new QualifiedIdentity( qualifiedIdentity ) );
+                        manyAssociation.add( QualifiedIdentity.parseQualifiedIdentity( qualifiedIdentity ) );
                     }
                 }
                 catch( IOException e )

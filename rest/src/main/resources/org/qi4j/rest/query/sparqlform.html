@@ -7,10 +7,15 @@
 <body>
 <form method="GET" action="">
     <label>Query:</label><br/>
-    <textarea rows="10" cols="60" name="query">PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        SELECT ?s ?p ?o
-        WHERE { ?s ?p ?o }
+    <textarea rows="20" cols="80" name="query">PREFIX ns0: &lt;urn:qi4j:entity:org.qi4j.entity.Identity#&gt;
+PREFIX rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;
+PREFIX rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;
+SELECT DISTINCT ?entityType ?identity
+WHERE {
+?entityType rdfs:subClassOf &lt;urn:qi4j:entity:org.qi4j.entity.Entity&gt;.
+?entity rdf:type ?entityType.
+?entity ns0:identity ?identity.
+}
     </textarea> <br/>
     <input type="submit" value="Query"/>
 </form>

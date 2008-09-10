@@ -44,6 +44,7 @@ import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.StateCommitter;
+import org.qi4j.spi.entity.EntityNotFoundException;
 import org.restlet.Client;
 import org.restlet.data.MediaType;
 import org.restlet.data.Method;
@@ -62,7 +63,7 @@ public class RESTEntityStoreServiceMixin
     extends EntityTypeRegistryMixin
     implements Activatable
 {
-    @Service EntityParser parser;
+    @Uses EntityParser parser;
     @This Configuration<RESTEntityStoreConfiguration> config;
     @Uses ServiceDescriptor descriptor;
 
@@ -129,6 +130,14 @@ public class RESTEntityStoreServiceMixin
                     }
                 }
             }
+            else if( response.getStatus().equals( Status.CLIENT_ERROR_NOT_FOUND ) )
+            {
+                throw new EntityNotFoundException( descriptor.identity(), anIdentity );
+            }
+        }
+        catch( EntityStoreException e )
+        {
+            throw e;
         }
         catch( Exception e )
         {

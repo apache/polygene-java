@@ -18,6 +18,7 @@ import org.qi4j.composite.Mixins;
 import org.qi4j.entity.EntityBuilder;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkFactory;
+import static org.qi4j.entity.association.Qualifier.qualifier;
 import org.qi4j.injection.scope.Structure;
 import org.qi4j.service.Activatable;
 import org.qi4j.service.ServiceComposite;
@@ -52,6 +53,12 @@ public interface DummyDataService
                 builder2.stateOfComposite().manyAssociation().add( testEntity );
                 builder2.stateOfComposite().manyAssociation().add( testEntity );
 
+                EntityBuilder<TestRole> builder3 = unitOfWork.newEntityBuilder(TestRole.class);
+                builder3.stateOfComposite().name().set( "A role" );
+                TestRole testRole = builder3.newInstance();
+
+                builder2.stateOfComposite().manyAssociationQualifier().add( qualifier( testEntity, testRole ));
+
                 TestEntity testEntity2 = builder2.newInstance();
 
                 unitOfWork.complete();
@@ -59,6 +66,7 @@ public interface DummyDataService
             catch( Exception e )
             {
                 unitOfWork.discard();
+                throw e;
             }
 
         }

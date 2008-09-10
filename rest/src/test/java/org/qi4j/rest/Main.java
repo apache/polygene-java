@@ -20,7 +20,7 @@ import org.qi4j.bootstrap.Energy4Java;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.ModuleName;
 import org.qi4j.library.http.JettyServiceAssembler;
-import org.qi4j.library.rdf.entity.EntitySerializerService;
+import org.qi4j.library.rdf.entity.EntitySerializer;
 import org.qi4j.rest.assembly.RestAssembler;
 import org.qi4j.structure.Application;
 import org.qi4j.structure.Visibility;
@@ -95,6 +95,6 @@ class RDFAssembler
 {
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
-        module.addServices( EntitySerializerService.class ).visibleIn( Visibility.layer );
+        module.addObjects( EntitySerializer.class ).visibleIn( Visibility.layer );
     }
 }

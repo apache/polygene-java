@@ -106,7 +106,7 @@ public class EntityResource extends Resource
 
     @Service private EntityStore entityStore;
     @Structure private Qi4jSPI spi;
-    @Service EntitySerializer entitySerializer;
+    @Uses EntitySerializer entitySerializer;
 
     private QualifiedIdentity qualifiedIdentity;
 
@@ -254,7 +254,7 @@ public class EntityResource extends Resource
                                  "</label></td>\n" +
                                  "<td><input " +
                                  "type=\"text\" " +
-                                 "size=\"40\" " +
+                                 "size=\"80\" " +
                                  "name=\"" + associationType.qualifiedName() + "\" " +
                                  "value=\"" + value + "\"></td></tr>" );
                 }
@@ -276,7 +276,7 @@ public class EntityResource extends Resource
                                  "</label></td>\n" +
                                  "<td><textarea " +
                                  "rows=\"10\" " +
-                                 "cols=\"40\" " +
+                                 "cols=\"80\" " +
                                  "name=\"" + associationType.qualifiedName() + "\" >" +
                                  value +
                                  "</textarea></td></tr>" );
@@ -364,7 +364,7 @@ public class EntityResource extends Resource
                 }
                 else
                 {
-                    entity.setAssociation( associationType.qualifiedName(), new QualifiedIdentity( newStringAssociation ) );
+                    entity.setAssociation( associationType.qualifiedName(), QualifiedIdentity.parseQualifiedIdentity( newStringAssociation ) );
                 }
             }
             for( ManyAssociationType associationType : entity.entityType().manyAssociations() )
@@ -383,7 +383,7 @@ public class EntityResource extends Resource
                 {
                     while( ( qualifiedIdentity = bufferedReader.readLine() ) != null )
                     {
-                        manyAssociation.add( new QualifiedIdentity( qualifiedIdentity ) );
+                        manyAssociation.add( QualifiedIdentity.parseQualifiedIdentity( qualifiedIdentity ) );
                     }
                 }
                 catch( IOException e )

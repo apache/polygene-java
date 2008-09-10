@@ -23,6 +23,7 @@ import org.qi4j.entity.index.rdf.SparqlRdfQueryParser;
 import org.qi4j.entity.index.rdf.callback.CollectingQualifiedIdentityResultCallback;
 import org.qi4j.entity.index.rdf.callback.QualifiedIdentityResultCallback;
 import org.qi4j.entity.index.rdf.callback.SingleQualifiedIdentityResultCallback;
+import org.qi4j.entity.association.GenericAssociationInfo;
 import org.qi4j.injection.scope.Service;
 import org.qi4j.query.grammar.BooleanExpression;
 import org.qi4j.query.grammar.OrderBy;
@@ -90,17 +91,14 @@ public class SPARQLEntityFinderMixin
 
         @Override public void characters( char ch[], int start, int length ) throws SAXException
         {
-            if( "literal".equals( element ) )
+            if( "uri".equals( element ) )
             {
                 String value = String.valueOf( ch, start, length );
-                if( type == null )
-                {
-                    type = value;
-                }
-                else
-                {
-                    id = value;
-                }
+                type = GenericAssociationInfo.toQualifiedName( value);
+            } else if( "literal".equals( element ) )
+            {
+                String value = String.valueOf( ch, start, length );
+                id = value;
             }
         }
 
@@ -115,6 +113,7 @@ public class SPARQLEntityFinderMixin
                     final QualifiedIdentity qualifiedIdentity = new QualifiedIdentity( id, type );
                     // todo could also throw flow control exception
                     done = !callback.processRow( row, qualifiedIdentity );
+                    id = type = null;
                 }
                 row++;
             }

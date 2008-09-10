@@ -22,7 +22,7 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkCompletionException;
 import org.qi4j.entity.memory.MemoryEntityStoreService;
-import org.qi4j.library.rdf.entity.EntityParserService;
+import org.qi4j.library.rdf.entity.EntityParser;
 import org.qi4j.rest.Main;
 import org.qi4j.rest.TestEntity;
 import org.qi4j.structure.Application;
@@ -42,8 +42,9 @@ public class RESTEntityStoreTest
         module.addEntities( TestEntity.class );
 
         ModuleAssembly store = module.layerAssembly().newModuleAssembly( "REST Store" );
+        store.addObjects( EntityParser.class );
         store.addEntities( RESTEntityStoreConfiguration.class );
-        store.addServices( MemoryEntityStoreService.class, EntityParserService.class, RestletClientService.class );
+        store.addServices( MemoryEntityStoreService.class, RestletClientService.class );
         store.addServices( RESTEntityStoreService.class ).visibleIn( Visibility.layer );
     }
 
