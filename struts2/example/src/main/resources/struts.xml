@@ -34,5 +34,7 @@
     </interceptors>
     
     <default-interceptor-ref name="exampleStack" />
+    
+    <default-action-ref name="index" />
   </package>
 </struts>
