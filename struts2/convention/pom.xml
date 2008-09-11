@@ -12,6 +12,12 @@
   <artifactId>qi4j-struts2-convention-plugin</artifactId>
   <version>0.4-SNAPSHOT</version>
   <name>Qi4j Library - Struts Convention Plugin</name>
+
+  <build>
+    <plugins>
+    </plugins>
+  </build>
+
   <dependencies>
     <dependency>
         <groupId>${pom.groupId}</groupId>

@@ -1,19 +1,23 @@
 package org.qi4j.library.struts2;
 
+import static java.util.Collections.emptyMap;
+import static org.qi4j.library.struts2.util.ClassNameFilters.removeSuffixes;
+import static org.qi4j.library.struts2.util.ClassUtil.classNameInDotNotation;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.qi4j.composite.Composite;
+import org.qi4j.composite.ConstraintViolation;
+import org.qi4j.library.struts2.util.ClassNameFilter;
+
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.ValidationAware;
 import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
 import com.opensymphony.xwork2.interceptor.PreResultListener;
 import com.opensymphony.xwork2.util.ValueStack;
-import static java.lang.Character.isLowerCase;
-import static java.lang.Character.toLowerCase;
-import java.util.Collection;
-import static java.util.Collections.emptyMap;
-import java.util.HashMap;
-import java.util.Map;
-import org.qi4j.composite.Composite;
-import org.qi4j.composite.ConstraintViolation;
 
 /**
  * <p>ConstrqaintViolationInterceptor adds constraint violations from the ActionContext to the Action's field errors.</p>
@@ -189,66 +193,5 @@ public class ConstraintViolationInterceptor extends AbstractInterceptor
         {
             return constraintViolations;
         }
-    }
-
-    public static String classNameInDotNotation( Class<?> type )
-    {
-        return classNameInDotNotation( type, NO_ADDITIONAL_CLASSNAME_FILTERING );
-    }
-
-    public static String classNameInDotNotation( Class<?> type, ClassNameFilter filter )
-    {
-        return camelCaseToDotNotation( filter.filter( type.getSimpleName() ) );
-    }
-
-    public static String camelCaseToDotNotation( String name )
-    {
-        StringBuilder sb = new StringBuilder( name.length() );
-        sb.append( toLowerCase( name.charAt( 0 ) ) );
-        for( int i = 1; i < name.length(); i++ )
-        {
-            char c = name.charAt( i );
-            if( isLowerCase( c ) )
-            {
-                sb.append( c );
-            }
-            else
-            {
-                sb.append( '.' );
-                sb.append( toLowerCase( c ) );
-            }
-        }
-        return sb.toString();
-    }
-
-    public interface ClassNameFilter
-    {
-        String filter( String className );
-    }
-
-    public static ClassNameFilter NO_ADDITIONAL_CLASSNAME_FILTERING = new ClassNameFilter()
-    {
-        public String filter( String className )
-        {
-            return className;
-        }
-    };
-
-    public static ClassNameFilter removeSuffixes( final String... suffixes )
-    {
-        return new ClassNameFilter()
-        {
-            public String filter( String className )
-            {
-                for( String suffix : suffixes )
-                {
-                    if( className.endsWith( suffix ) )
-                    {
-                        return className.substring( 0, className.length() - suffix.length() );
-                    }
-                }
-                return className;
-            }
-        };
     }
 }

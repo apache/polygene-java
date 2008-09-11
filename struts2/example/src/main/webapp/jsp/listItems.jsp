@@ -7,7 +7,7 @@
 <body>
 Items:
 <ul>
-    <s:iterator value="list()">
+    <s:iterator value="list().iterator()">
         <li>
             <s:property value="name()"/>
             <a href="<s:url action="editItem" method="input"><s:param name="id" value="identity().get()" /></s:url>">Edit</a>

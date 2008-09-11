@@ -6,7 +6,7 @@
 </head>
 <body>
 <s:form>
-    <s:textfield name="item.name"/>
+    <s:textfield name="entity.name"/>
     <s:hidden name="id"/>
     <s:submit/>
 </s:form>

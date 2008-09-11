@@ -6,7 +6,7 @@
 </head>
 <body>
 <s:form>
-    <s:textfield name="item.name"/>
+    <s:textfield name="state.name"/>
     <s:submit/>
 </s:form>
 </body>
