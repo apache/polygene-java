@@ -18,13 +18,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 import java.lang.reflect.Type;
-import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.ConstructionException;
 import org.qi4j.composite.NoSuchCompositeException;
 import org.qi4j.entity.EntityComposite;
-import org.qi4j.entity.LoadingPolicy;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkFactory;
 import org.qi4j.object.NoSuchObjectException;
@@ -42,6 +40,7 @@ import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.object.ObjectDescriptor;
 import org.qi4j.structure.Module;
 import org.qi4j.structure.Visibility;
+import org.qi4j.usecase.Usecase;
 
 /**
  * TODO
@@ -372,20 +371,12 @@ public class ModuleInstance
 
         public UnitOfWork newUnitOfWork()
         {
-            return new UnitOfWorkInstance( ModuleInstance.this );
+            return newUnitOfWork( Usecase.DEFAULT );
         }
 
-        public UnitOfWork newUnitOfWork( LoadingPolicy loadingPolicy, String name )
+        public UnitOfWork newUnitOfWork( Usecase usecase )
         {
-            if( loadingPolicy == null )
-            {
-                loadingPolicy = new LoadingPolicy( name, true );
-            }
-            else
-            {
-                loadingPolicy.setName( name );
-            }
-            return new UnitOfWorkInstance( ModuleInstance.this, loadingPolicy );
+            return new UnitOfWorkInstance( ModuleInstance.this, usecase );
         }
 
         public UnitOfWork currentUnitOfWork()

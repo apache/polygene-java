@@ -48,23 +48,22 @@ public final class InvocationInjectionProviderFactory
             final CompositeMethodModel methodModel = resolution.method();
             if( injectionClass.equals( Method.class ) )
             {
-                // This needs to be updated to handle Apply and annotation aggregation correctly
                 return methodModel.method();
             }
 
-            final AnnotatedElement method = methodModel.annotatedElement();
+            final AnnotatedElement annotatedElement = methodModel.annotatedElement();
             if( injectionClass.equals( AnnotatedElement.class ) )
             {
-                return method;
+                return annotatedElement;
             }
-            final Annotation annotation = method.getAnnotation( injectionClass );
+            final Annotation annotation = annotatedElement.getAnnotation( injectionClass );
             if( annotation != null )
             {
                 return annotation;
             }
             if( dependencyModel.injectionType() instanceof Class<?> )
             {
-                return method.getAnnotation( (Class<Annotation>) dependencyModel.injectionType() );
+                return annotatedElement.getAnnotation( (Class<Annotation>) dependencyModel.injectionType() );
             }
             return null;
         }

@@ -15,7 +15,7 @@
 package org.qi4j.runtime.entity;
 
 import java.util.Collection;
-import org.qi4j.entity.LoadingPolicy;
+import org.qi4j.usecase.StateUsage;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityType;
@@ -28,12 +28,17 @@ public class RecordingEntityState
     implements EntityState
 {
     private EntityState entityState;
-    private LoadingPolicy loadingPolicy;
+    private StateUsage stateUsage;
 
-    public RecordingEntityState( EntityState entityState, LoadingPolicy loadingPolicy )
+    public RecordingEntityState( EntityState entityState, StateUsage stateUsage )
     {
         this.entityState = entityState;
-        this.loadingPolicy = loadingPolicy;
+        this.stateUsage = stateUsage;
+    }
+
+    public EntityState wrappedEntityState()
+    {
+        return entityState;
     }
 
     public QualifiedIdentity qualifiedIdentity()
@@ -68,7 +73,7 @@ public class RecordingEntityState
 
     public Object getProperty( String qualifiedName )
     {
-        loadingPolicy.usesProperty( qualifiedName );
+        stateUsage.usesProperty( qualifiedName );
         return entityState.getProperty( qualifiedName );
     }
 

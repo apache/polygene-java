@@ -68,7 +68,7 @@ public class EntitiesInstance
             entityStore = getStore();
         }
 
-        EntityState state = entityModel.getEntityState( store, qid );
+        EntityState state = entityModel.getEntityState( entityStore, qid );
 
         return entityModel.loadInstance( uow, entityStore, qid, moduleInstance, state );
     }

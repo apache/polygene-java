@@ -17,12 +17,15 @@ package org.qi4j.entity;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.object.ObjectBuilderFactory;
 import org.qi4j.query.QueryBuilderFactory;
+import org.qi4j.usecase.Usecase;
 
 /**
  * All operations on entities goes through an UnitOfWork. <TODO Muuuch longer explanation needed>
  */
 public interface UnitOfWork
 {
+    Usecase usecase();
+
     UnitOfWork newUnitOfWork();
 
     <T> T newEntity( Class<T> type )
@@ -87,8 +90,4 @@ public interface UnitOfWork
     ObjectBuilderFactory objectBuilderFactory();
 
     void registerUnitOfWorkCallback( UnitOfWorkCallback callback );
-
-    LoadingPolicy loadingPolicy();
-
-    void setLoadingPolicy( LoadingPolicy loadingPolicy );
 }

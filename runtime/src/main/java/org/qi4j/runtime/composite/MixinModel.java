@@ -66,6 +66,11 @@ public final class MixinModel
         return mixinClass;
     }
 
+    public boolean isGeneric()
+    {
+        return InvocationHandler.class.isAssignableFrom( mixinClass );
+    }
+
     public void visitModel( ModelVisitor modelVisitor )
     {
         modelVisitor.visit( this );

@@ -16,7 +16,10 @@ package org.qi4j.runtime.composite;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
+import java.lang.annotation.Annotation;
 import java.util.Set;
+import java.util.List;
+import java.util.ArrayList;
 import org.qi4j.composite.ConstructionException;
 import org.qi4j.injection.scope.This;
 import org.qi4j.runtime.injection.DependencyModel;
@@ -38,6 +41,7 @@ public final class CompositeMethodModel
     private final MethodConcernsModel methodConcerns;
     private final MethodSideEffectsModel methodSideEffects;
     private final AbstractMixinsModel mixins;
+    private final AnnotatedElement annotations;
 
     // Context
     private final CompositeMethodInstancePool instancePool = new SynchronizedCompositeMethodInstancePool();
@@ -54,6 +58,7 @@ public final class CompositeMethodModel
         methodConcerns = methodConcernsModel;
         methodSideEffects = methodSideEffectsModel;
         methodConstraints = methodConstraintsModel;
+        annotations = new CompositeMethodAnnotatedElement();
     }
 
     // Model
@@ -124,8 +129,7 @@ public final class CompositeMethodModel
 
     public AnnotatedElement annotatedElement()
     {
-        // TODO Calc sum of composite + mixin
-        return method;
+        return annotations;
     }
 
     public void visitModel( ModelVisitor modelVisitor )
@@ -153,5 +157,87 @@ public final class CompositeMethodModel
     @Override public String toString()
     {
         return method.toGenericString();
+    }
+
+    public class CompositeMethodAnnotatedElement
+        implements AnnotatedElement
+    {
+        public boolean isAnnotationPresent( Class<? extends Annotation> annotationClass )
+        {
+            // Check method
+            if (method.isAnnotationPresent( annotationClass ))
+                return true;
+
+            // Check mixin
+            try
+            {
+                MixinModel model = mixins.mixinFor( method );
+                if (model.isGeneric())
+                    return false;
+                return ( model.mixinClass().getMethod( method.getName(), method.getParameterTypes() ).isAnnotationPresent( annotationClass ));
+            }
+            catch( NoSuchMethodException e )
+            {
+                return false;
+            }
+        }
+
+        public <T extends Annotation> T getAnnotation( Class<T> annotationClass )
+        {
+            // Check mixin
+            try
+            {
+                MixinModel model = mixins.mixinFor( method );
+                if (!model.isGeneric())
+                {
+                    T annotation = annotationClass.cast( model.mixinClass().getMethod( method.getName(), method.getParameterTypes() ).getAnnotation( annotationClass ));
+                    if (annotation != null)
+                        return annotation;
+                }
+            }
+            catch( NoSuchMethodException e )
+            {
+                // Ignore
+            }
+
+            // Check method
+            return method.getAnnotation( annotationClass );
+        }
+
+        public Annotation[] getAnnotations()
+        {
+            // Add mixin annotations
+            List<Annotation> annotations = new ArrayList<Annotation>( );
+            MixinModel model = mixins.mixinFor( method );
+            Annotation[] mixinAnnotations = new Annotation[0];
+            if (!model.isGeneric())
+            {
+                mixinAnnotations = model.mixinClass().getAnnotations();
+                for( int i = 0; i < mixinAnnotations.length; i++ )
+                {
+                    annotations.add( mixinAnnotations[i] );
+                }
+            }
+
+            // Add method annotations, but don't include duplicates
+            Annotation[] methodAnnotations = method.getAnnotations();
+            next: for( Annotation methodAnnotation : methodAnnotations )
+            {
+                for( int i = 0; i < mixinAnnotations.length; i++ )
+                {
+                    if (annotations.get( i ).annotationType().equals(methodAnnotation.annotationType()))
+                        continue next;
+                }
+
+                annotations.add( methodAnnotation );
+            }
+
+            return annotations.toArray( new Annotation[annotations.size()] );
+        }
+
+        public Annotation[] getDeclaredAnnotations()
+        {
+            return new Annotation[0];
+        }
     }
 }

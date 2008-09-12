@@ -29,7 +29,6 @@ import org.qi4j.entity.EntityBuilder;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.EntityCompositeNotFoundException;
 import org.qi4j.entity.Identity;
-import org.qi4j.entity.LoadingPolicy;
 import org.qi4j.entity.NoSuchEntityException;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkCallback;
@@ -53,6 +52,7 @@ import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.entity.UnknownEntityTypeException;
+import org.qi4j.usecase.Usecase;
 
 public final class UnitOfWorkInstance
     implements UnitOfWork
@@ -72,7 +72,7 @@ public final class UnitOfWorkInstance
      */
     private QueryBuilderFactory queryBuilderFactory;
 
-    private LoadingPolicy loadingPolicy;
+    private Usecase usecase;
 
     private List<UnitOfWorkCallback> callbacks;
     private UnitOfWorkStore unitOfWorkStore;
@@ -105,10 +105,11 @@ public final class UnitOfWorkInstance
         this.unitOfWorkStore = unitOfWorkStore;
     }
 
-    public UnitOfWorkInstance( ModuleInstance moduleInstance, LoadingPolicy loadingPolicy )
+
+    public UnitOfWorkInstance( ModuleInstance moduleInstance, Usecase usecase )
     {
         this( moduleInstance );
-        this.loadingPolicy = loadingPolicy;
+        this.usecase = usecase;
     }
 
     public <T> T newEntity( Class<T> compositeType )
@@ -332,14 +333,9 @@ public final class UnitOfWorkInstance
         return moduleInstance.objectBuilderFactory();
     }
 
-    public LoadingPolicy loadingPolicy()
+    public Usecase usecase()
     {
-        return loadingPolicy;
-    }
-
-    public void setLoadingPolicy( LoadingPolicy loadingPolicy )
-    {
-        this.loadingPolicy = loadingPolicy;
+        return usecase;
     }
 
     public void pause()
@@ -476,6 +472,10 @@ public final class UnitOfWorkInstance
         current.get().pop();
         open = false;
         cache.clear();
+
+        // Turn off recording for the state usage
+        if (usecase.stateUsage().isRecording())
+            usecase.stateUsage().setRecording( false );
     }
 
     public boolean isOpen()

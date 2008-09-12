@@ -22,7 +22,7 @@ import org.qi4j.entity.EntityCompositeNotFoundException;
 import org.qi4j.entity.Identity;
 import org.qi4j.entity.Lifecycle;
 import org.qi4j.entity.LifecycleException;
-import org.qi4j.entity.LoadingPolicy;
+import org.qi4j.usecase.StateUsage;
 import org.qi4j.runtime.composite.CompositeMethodInstance;
 import org.qi4j.runtime.composite.MixinsInstance;
 import org.qi4j.runtime.structure.ModuleInstance;
@@ -81,14 +81,7 @@ public final class EntityInstance
         this.identity = identity;
         this.status = status;
 
-        // If we have a recording LoadingPolicy, wrap the EntityState
-        LoadingPolicy loadingPolicy = uow.loadingPolicy();
-        if( loadingPolicy != null && loadingPolicy.isRecording() )
-        {
-            entityState = new RecordingEntityState( entityState, loadingPolicy );
-        }
-
-        this.entityState = entityState;
+        this.entityState = wrapEntityState( entityState);
 
         proxy = entity.newProxy( this );
     }
@@ -142,7 +135,10 @@ public final class EntityInstance
 
     public EntityState entityState()
     {
-        return entityState;
+        if (entityState instanceof RecordingEntityState)
+            return ((RecordingEntityState)entityState).wrappedEntityState();
+        else
+            return entityState;
     }
 
     public EntityStateModel.EntityStateInstance state()
@@ -157,7 +153,7 @@ public final class EntityInstance
 
     public EntityStatus status()
     {
-        return entityState != null ? entityState.status() : status;
+        return entityState() != null ? entityState.status() : status;
     }
 
     public Object invoke( Object composite, Object[] params, CompositeMethodInstance methodInstance ) throws Throwable
@@ -168,7 +164,7 @@ public final class EntityInstance
             {
                 throw new EntityCompositeNotFoundException( identity.identity(), entity.type() );
             }
-            if( entityState == null )
+            if( entityState() == null )
             {
                 entityState = entity.getEntityState( store, identity );
             }
@@ -256,7 +252,19 @@ public final class EntityInstance
     {
         if( entityState == null && status() == EntityStatus.LOADED )
         {
-            entityState = entity.getEntityState( store, identity );
+            entityState = wrapEntityState(entity.getEntityState( store, identity ));
+        }
+
+        return entityState;
+    }
+
+    private EntityState wrapEntityState( EntityState entityState )
+    {
+        // If we have a recording LoadingPolicy, wrap the EntityState
+        StateUsage stateUsage = uow.usecase().stateUsage();
+        if( stateUsage != null && stateUsage.isRecording() )
+        {
+            entityState = new RecordingEntityState( entityState, stateUsage );
         }
 
         return entityState;

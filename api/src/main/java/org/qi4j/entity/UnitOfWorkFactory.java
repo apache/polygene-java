@@ -14,6 +14,8 @@
  */
 package org.qi4j.entity;
 
+import org.qi4j.usecase.Usecase;
+
 /**
  * Factory for UnitOfWork.
  */
@@ -21,7 +23,7 @@ public interface UnitOfWorkFactory
 {
     UnitOfWork newUnitOfWork();
 
-    UnitOfWork newUnitOfWork( LoadingPolicy loadingPolicy, String name );
+    UnitOfWork newUnitOfWork( Usecase usecase );
 
     /**
      * Returns the UnitOfWork that is currently associated with the executing thread.
