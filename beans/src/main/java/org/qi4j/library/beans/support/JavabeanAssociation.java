@@ -23,11 +23,11 @@ import java.lang.reflect.Type;
 import java.lang.reflect.UndeclaredThrowableException;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.entity.association.GenericAssociationInfo;
-import org.qi4j.entity.association.ImmutableAssociation;
+import org.qi4j.entity.association.Association;
 import org.qi4j.util.MetaInfo;
 
 public class JavabeanAssociation
-    implements ImmutableAssociation
+    implements Association
 {
     public Method pojoMethod;
     private GenericAssociationInfo delegate;

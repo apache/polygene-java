@@ -8,7 +8,6 @@ import java.util.WeakHashMap;
 import javax.swing.JComponent;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
 import org.qi4j.entity.association.Association;
-import org.qi4j.entity.association.ImmutableAssociation;
 import org.qi4j.injection.scope.Service;
 import org.qi4j.injection.scope.Structure;
 import org.qi4j.injection.scope.Uses;
@@ -23,7 +22,7 @@ import org.qi4j.object.ObjectBuilderFactory;
  * @author Lan Boon Ping
  */
 public final class BoundAssociation<T> extends AbstractBinding<T, T, Association<T>>
-    implements ImmutableAssociation<T>
+    implements Association<T>
 {
     private Association<T> actualAssociation;
     private WeakHashMap<JComponent, FocusLostListener> components;
