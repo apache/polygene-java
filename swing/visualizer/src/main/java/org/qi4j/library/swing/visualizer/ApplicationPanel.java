@@ -423,7 +423,7 @@ public class ApplicationPanel extends JPanel
         }
     }
 
-    public void clearComposites()
+    public void clearCompositeSelection()
     {
         TupleSet focusGroup = visualization.getGroup( Visualization.FOCUS_ITEMS );
         focusGroup.clear();

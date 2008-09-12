@@ -145,7 +145,7 @@ public class ApplicationGraph
                         public void valueChanged( TreeSelectionEvent e )
                         {
                             Object o = tree.getLastSelectedPathComponent();
-                            applicationPanel.clearComposites();
+                            applicationPanel.clearCompositeSelection();
                             if( o instanceof MethodNode )
                             {
                                 Method method = ( (MethodNode) o ).getMethod();
