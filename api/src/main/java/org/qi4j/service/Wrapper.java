@@ -16,6 +16,7 @@ package org.qi4j.service;
 
 import org.qi4j.composite.Mixins;
 import org.qi4j.injection.scope.Uses;
+import java.io.Serializable;
 
 /**
  * Services which simply wraps some resource should extend this interface
@@ -23,7 +24,7 @@ import org.qi4j.injection.scope.Uses;
  * <p/>
  * If the default WrapperMixin is used, then register the wrapped object
  * as meta-info for the service using:<br/>
- * assembly.addService(YouService.class).setMetaInfo(wrappedObject);
+ * assembly.addService(YouService.class).setMetaInfo(new WrappedObject(wrappedObject));
  */
 @Mixins( Wrapper.WrapperMixin.class)
 public interface Wrapper<T>
@@ -37,10 +38,26 @@ public interface Wrapper<T>
 
         public WrapperMixin(@Uses ServiceDescriptor descriptor)
         {
-            wrapped = (T) descriptor.metaInfo().get( Object.class );
+            wrapped = (T) descriptor.metaInfo().get( WrappedObject.class ).get();
         }
 
         public T get()
+        {
+            return wrapped;
+        }
+    }
+
+    public final class WrappedObject
+        implements Serializable, Wrapper<Object>
+    {
+        Object wrapped;
+
+        public WrappedObject( Object wrapped )
+        {
+            this.wrapped = wrapped;
+        }
+
+        public Object get()
         {
             return wrapped;
         }

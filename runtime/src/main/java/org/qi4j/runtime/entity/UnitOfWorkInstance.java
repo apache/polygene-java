@@ -36,6 +36,7 @@ import static org.qi4j.entity.UnitOfWorkCallback.UnitOfWorkStatus.COMPLETED;
 import static org.qi4j.entity.UnitOfWorkCallback.UnitOfWorkStatus.DISCARDED;
 import org.qi4j.entity.UnitOfWorkCompletionException;
 import org.qi4j.entity.UnitOfWorkException;
+import org.qi4j.entity.AggregateEntity;
 import org.qi4j.object.ObjectBuilderFactory;
 import org.qi4j.query.QueryBuilderFactory;
 import org.qi4j.runtime.query.QueryBuilderFactoryImpl;
@@ -89,27 +90,21 @@ public final class UnitOfWorkInstance
         QueryBuilderFactoryImpl.initialize();
     }
 
-    public UnitOfWorkInstance( ModuleInstance moduleInstance )
+    public UnitOfWorkInstance( ModuleInstance moduleInstance, Usecase usecase )
     {
         this.moduleInstance = moduleInstance;
         this.open = true;
         cache = new HashMap<Class<? extends EntityComposite>, Map<String, EntityComposite>>();
         current.get().push( this );
         paused = false;
+        this.usecase = usecase;
     }
 
     // Nested unit of work
-    public UnitOfWorkInstance( ModuleInstance moduleInstance, UnitOfWorkStore unitOfWorkStore )
+    public UnitOfWorkInstance( ModuleInstance moduleInstance, UnitOfWorkStore unitOfWorkStore, Usecase nestedUsecase )
     {
-        this( moduleInstance );
+        this( moduleInstance, nestedUsecase );
         this.unitOfWorkStore = unitOfWorkStore;
-    }
-
-
-    public UnitOfWorkInstance( ModuleInstance moduleInstance, Usecase usecase )
-    {
-        this( moduleInstance );
-        this.usecase = usecase;
     }
 
     public <T> T newEntity( Class<T> compositeType )
@@ -156,6 +151,15 @@ public final class UnitOfWorkInstance
         EntityComposite entityComposite = (EntityComposite) entity;
 
         EntityInstance compositeInstance = EntityInstance.getEntityInstance( entityComposite );
+
+        // Check if Aggregate
+        if (entity instanceof AggregateEntity )
+        {
+            // Find all aggregated entities and remove them
+            // TODO
+        }
+
+
         compositeInstance.remove();
     }
 
@@ -487,7 +491,14 @@ public final class UnitOfWorkInstance
     {
         checkOpen();
 
-        return new UnitOfWorkInstance( moduleInstance, new UnitOfWorkStore() );
+        return new UnitOfWorkInstance( moduleInstance, new UnitOfWorkStore(), Usecase.DEFAULT );
+    }
+
+    public UnitOfWork newUnitOfWork(Usecase usecase)
+    {
+        checkOpen();
+
+        return new UnitOfWorkInstance( moduleInstance, new UnitOfWorkStore(), usecase );
     }
 
     public ModuleInstance module()

@@ -35,6 +35,7 @@ Import-Package: org.qi4j, \
                 org.qi4j.query, \
                 org.qi4j.query.grammar, \
                 org.qi4j.service, \
+                org.qi4j.usecase, \
                 org.qi4j.spi, \
                 org.qi4j.spi.composite, \
                 org.qi4j.spi.entity, \

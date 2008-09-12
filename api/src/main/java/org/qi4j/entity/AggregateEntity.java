@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2007, Niclas Hedhman. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -11,13 +12,16 @@
  * limitations under the License.
  *
  */
+package org.qi4j.entity;
 
-package org.qi4j.entity.association;
+import org.qi4j.composite.Composite;
+import org.qi4j.composite.Mixins;
+import org.qi4j.composite.SideEffects;
+import org.qi4j.entity.association.AssociationMixin;
 
 /**
- * TODO
+ * Entity domain objects must implement this interface.
  */
-public interface ImmutableAssociation<T>
-    extends Association<T>
+public interface AggregateEntity extends EntityComposite
 {
 }

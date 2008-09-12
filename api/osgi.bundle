@@ -14,4 +14,5 @@ Export-Package: org.qi4j;version=${pom.version}, \
                 org.qi4j.scripting;version=${pom.version}, \
                 org.qi4j.service;version=${pom.version}, \
                 org.qi4j.structure;version=${pom.version}, \
+                org.qi4j.usecase;version=${pom.version}, \
                 org.qi4j.util;version=${pom.version}
