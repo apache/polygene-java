@@ -2,7 +2,7 @@ package org.qi4j.library.struts2;
 
 import static java.util.Collections.emptyMap;
 import static org.qi4j.library.struts2.util.ClassNameFilters.removeSuffixes;
-import static org.qi4j.library.struts2.util.ClassUtil.classNameInDotNotation;
+import static org.qi4j.library.struts2.util.ClassNames.classNameInDotNotation;
 
 import java.util.Collection;
 import java.util.HashMap;

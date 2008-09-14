@@ -1,11 +1,8 @@
-/**
- * 
- */
 package org.qi4j.library.struts2.support.add;
 
-import static org.qi4j.library.struts2.util.ClassUtil.classNameInDotNotation;
+import static org.qi4j.library.struts2.util.ClassNames.classNameInDotNotation;
+import static org.qi4j.library.struts2.util.ParameterizedTypes.findTypeVariables;
 
-import org.qi4j.composite.Composite;
 import org.qi4j.entity.EntityBuilder;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkFactory;
@@ -16,7 +13,7 @@ import com.opensymphony.xwork2.ActionSupport;
 
 public abstract class ProvidesAddingOfMixin<T> extends ActionSupport implements ProvidesAddingOf<T> {
 
-    @This Composite action;
+    @This ProvidesAddingOf<T> action;
     @Structure UnitOfWorkFactory uowf;
 
     UnitOfWork uow;
@@ -45,10 +42,7 @@ public abstract class ProvidesAddingOfMixin<T> extends ActionSupport implements 
 
     @SuppressWarnings("unchecked")
     protected Class<T> typeToAdd() {
-        if (action.type().getAnnotation(Adds.class) == null) {
-            throw new AddsAnnotationMissingException(action.type());
-        }
-        return (Class<T>) action.type().getAnnotation(Adds.class).value();
+        return (Class<T>) findTypeVariables(action.getClass(), ProvidesAddingOf.class)[0];
     }
     
     protected void addSuccessMessage() {

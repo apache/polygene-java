@@ -1,13 +1,7 @@
-/**
- * 
- */
 package org.qi4j.library.struts2.support.list;
 
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import static org.qi4j.library.struts2.util.ParameterizedTypes.findTypeVariables;
 
-import org.qi4j.composite.Composite;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkFactory;
 import org.qi4j.injection.scope.Structure;
@@ -19,7 +13,7 @@ import com.opensymphony.xwork2.ActionSupport;
 
 public abstract class ProvidesListOfMixin<T> extends ActionSupport implements ProvidesListOf<T> {
 
-    @This Composite action;
+    @This ProvidesListOf<T> action;
     @Structure UnitOfWorkFactory uowf;
     
     Iterable<T> results;
@@ -44,9 +38,6 @@ public abstract class ProvidesListOfMixin<T> extends ActionSupport implements Pr
     }
             
     private Class<T> typeToList() {
-        if (action.type().getAnnotation(ListOf.class) == null) {
-            throw new ListOfAnnotationMissingException(action.type());
-        }
-        return (Class<T>) action.type().getAnnotation(ListOf.class).value();
+        return (Class<T>) findTypeVariables(action.getClass(), ProvidesListOf.class)[0];
     }
 }

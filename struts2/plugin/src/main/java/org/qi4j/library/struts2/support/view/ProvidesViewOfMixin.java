@@ -1,17 +1,13 @@
-/**
- * 
- */
 package org.qi4j.library.struts2.support.view;
 
-import org.qi4j.composite.Composite;
+import static org.qi4j.library.struts2.util.ParameterizedTypes.findTypeVariables;
+
 import org.qi4j.injection.scope.This;
 import org.qi4j.library.struts2.support.ProvidesEntityOfMixin;
-import org.qi4j.library.struts2.support.edit.EditsAnnotationMissingException;
-
 
 public abstract class ProvidesViewOfMixin<T> extends ProvidesEntityOfMixin<T> implements ProvidesViewOf<T> {
 
-    @This Composite action;
+    @This ProvidesViewOf<T> action;
 
     public String execute() {
         loadEntity();
@@ -19,9 +15,6 @@ public abstract class ProvidesViewOfMixin<T> extends ProvidesEntityOfMixin<T> im
     }
     
     protected Class<T> typeToLoad() {
-        if (action.type().getAnnotation(ViewOf.class) == null) {
-            throw new EditsAnnotationMissingException(action.type());
-        }
-        return (Class<T>) action.type().getAnnotation(ViewOf.class).value();
+        return (Class<T>) findTypeVariables(action.getClass(), ProvidesViewOf.class)[0];
     }
 }

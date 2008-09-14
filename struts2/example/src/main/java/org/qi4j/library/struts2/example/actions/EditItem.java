@@ -7,13 +7,11 @@ import org.qi4j.composite.Composite;
 import org.qi4j.composite.Mixins;
 import org.qi4j.library.struts2.example.Item;
 import org.qi4j.library.struts2.support.ProvidesEntityOfMixin;
-import org.qi4j.library.struts2.support.edit.Edits;
 import org.qi4j.library.struts2.support.edit.ProvidesEditingOf;
 import org.qi4j.library.struts2.support.edit.ProvidesEditingOfMixin;
 
 import com.opensymphony.xwork2.ActionSupport;
 
-@Edits(Item.class)
 @Results({
     @Result(name="input", value="/jsp/editItem.jsp"),
     @Result(name="error", value="/jsp/editItem.jsp"),    

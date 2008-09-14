@@ -1,16 +1,13 @@
-/**
- * 
- */
 package org.qi4j.library.struts2.support.edit;
 
-import org.qi4j.composite.Composite;
+import static org.qi4j.library.struts2.util.ParameterizedTypes.findTypeVariables;
+
 import org.qi4j.injection.scope.This;
 import org.qi4j.library.struts2.support.ProvidesEntityOfMixin;
 
-
 public abstract class ProvidesEditingOfMixin<T> extends ProvidesEntityOfMixin<T> implements ProvidesEditingOf<T> {
-
-    @This Composite action;
+    
+    @This ProvidesEditingOf<T> action;
     
     public void prepare() throws Exception {
         loadEntity();
@@ -26,12 +23,9 @@ public abstract class ProvidesEditingOfMixin<T> extends ProvidesEntityOfMixin<T>
         }
         return INPUT;
     }
-    
+
     @Override
     protected Class<T> typeToLoad() {
-        if (action.type().getAnnotation(Edits.class) == null) {
-            throw new EditsAnnotationMissingException(action.type());
-        }
-        return (Class<T>) action.type().getAnnotation(Edits.class).value();
+        return (Class<T>) findTypeVariables(action.getClass(), ProvidesEditingOf.class)[0];
     }
 }

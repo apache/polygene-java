@@ -4,18 +4,19 @@ import static java.lang.Character.isLowerCase;
 import static java.lang.Character.toLowerCase;
 
 
-public final class ClassUtil
+
+public final class ClassNames
 {
-    private ClassUtil() {}
+    private ClassNames() {}
 
     public static String classNameInDotNotation( Class<?> type )
     {
-        return ClassUtil.classNameInDotNotation( type, ClassNameFilters.passThruFilter );
+        return ClassNames.classNameInDotNotation( type, ClassNameFilters.passThruFilter );
     }
 
     public static String classNameInDotNotation( Class<?> type, ClassNameFilter filter )
     {
-        return ClassUtil.camelCaseToDotNotation( filter.filter( type.getSimpleName() ) );
+        return ClassNames.camelCaseToDotNotation( filter.filter( type.getSimpleName() ) );
     }
 
     public static String camelCaseToDotNotation( String name )
@@ -37,6 +38,4 @@ public final class ClassUtil
         }
         return sb.toString();
     }
-    
-    
 }

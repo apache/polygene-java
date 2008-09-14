@@ -1,7 +1,6 @@
-/**
- * 
- */
 package org.qi4j.library.struts2.support;
+
+import static org.qi4j.library.struts2.util.ParameterizedTypes.findTypeVariables;
 
 import org.qi4j.entity.EntityCompositeNotFoundException;
 import org.qi4j.entity.UnitOfWork;
@@ -40,5 +39,7 @@ public abstract class ProvidesEntityOfMixin<T> implements ProvidesEntityOf<T>, S
         }
     }
 
-    protected abstract Class<T> typeToLoad();
+    protected Class<T> typeToLoad() {
+        return (Class<T>) findTypeVariables(entityProvider.getClass(), ProvidesEntityOf.class)[0];
+    }
 }
