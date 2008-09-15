@@ -19,4 +19,5 @@ package org.qi4j.spi.composite;
  */
 public interface MethodConcernDescriptor
 {
+    Class modifierClass();
 }

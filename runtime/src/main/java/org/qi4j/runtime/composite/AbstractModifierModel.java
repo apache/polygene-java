@@ -52,6 +52,11 @@ public abstract class AbstractModifierModel
         nextInterfaces = toClassArray( interfacesOf( modifierClass ) );
     }
 
+    public Class modifierClass()
+    {
+        return modifierClass;
+    }
+
     public boolean isGeneric()
     {
         return InvocationHandler.class.isAssignableFrom( modifierClass );
