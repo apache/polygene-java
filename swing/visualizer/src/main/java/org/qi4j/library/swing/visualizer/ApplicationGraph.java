@@ -17,6 +17,7 @@ package org.qi4j.library.swing.visualizer;
 
 import java.awt.Dimension;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.event.MouseEvent;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -33,11 +34,14 @@ import javax.swing.JTree;
 import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.JComponent;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
 import org.qi4j.structure.Application;
 import org.qi4j.spi.structure.ApplicationSPI;
 import org.qi4j.spi.composite.CompositeDescriptor;
@@ -120,6 +124,7 @@ public class ApplicationGraph
     {
         public void itemClicked( VisualItem visualItem, MouseEvent event )
         {
+            // ATM this is not fired for Services and Objects because they are not of type CompositeDescriptor
             if( GraphUtils.isComposite( visualItem ) )
             {
                 Node node = (Node) visualItem.getSourceTuple();
@@ -184,6 +189,24 @@ public class ApplicationGraph
 
                         }
                     } );
+                    tree.setCellRenderer( new DefaultTreeCellRenderer()
+                    {
+                        private Icon compositeIcon = new ImageIcon( "composites.png" );
+                        private Icon methodIcon = new ImageIcon( "methods.png" );
+                        public Component getTreeCellRendererComponent( JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus )
+                        {
+                            super.getTreeCellRendererComponent( tree, value, sel, expanded, leaf, row, hasFocus );
+                            if( value instanceof MethodNode )
+                            {
+                                setIcon( methodIcon );
+                            }
+                            else
+                            {
+                                setIcon( compositeIcon );
+                            }
+                            return this;
+                        }
+                    });
 
                     JScrollPane pane = new JScrollPane( tree );
                     pane.setPreferredSize( methodsPaneSize );
@@ -221,12 +244,35 @@ public class ApplicationGraph
     {
         public MixinTree( Class mixinClass, List constraints, List concerns, List sideEffects )
         {
-            DefaultMutableTreeNode root = new DefaultMutableTreeNode( mixinClass.getName() );
+            final DefaultMutableTreeNode root = new DefaultMutableTreeNode( mixinClass.getName() );
             addFields( root, mixinClass );
             addConstructors( root, mixinClass );
             addMethods( root, mixinClass, constraints, concerns, sideEffects );
             DefaultTreeModel model = new DefaultTreeModel( root );
             setModel( model );
+
+            setCellRenderer( new DefaultTreeCellRenderer()
+            {
+                private Icon groupIcon = new ImageIcon( "group.png" );
+                private Icon itemIcon = new ImageIcon( "item.png" );
+                private Icon mixinIcon = new ImageIcon( "mixin.png" );
+
+                {
+                    setOpenIcon( groupIcon );
+                    setClosedIcon( groupIcon );
+                    setLeafIcon( itemIcon );
+                }
+
+                public Component getTreeCellRendererComponent( JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus )
+                {
+                    super.getTreeCellRendererComponent( tree, value, sel, expanded, leaf, row, hasFocus );
+                    if( value == root )
+                    {
+                        setIcon( mixinIcon );
+                    }
+                    return this;
+                }
+            });
         }
 
         private void addFields( DefaultMutableTreeNode rootNode, Class mixinClass )
