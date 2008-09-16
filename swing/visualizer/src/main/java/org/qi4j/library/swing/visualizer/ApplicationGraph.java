@@ -20,6 +20,8 @@ import java.awt.Color;
 import java.awt.event.MouseEvent;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.Map;
@@ -28,13 +30,14 @@ import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
-import javax.swing.JTextPane;
 import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.JComponent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.MutableTreeNode;
 import org.qi4j.structure.Application;
 import org.qi4j.spi.structure.ApplicationSPI;
 import org.qi4j.spi.composite.CompositeDescriptor;
@@ -159,46 +162,23 @@ public class ApplicationGraph
                                 }
                                 //todo show link to other composites if the return type is an association
 
-
                                 Annotation[] annotations = method.getAnnotations();
                                 for( Annotation annotation : annotations )
                                 {
-//                                    System.out.println( annotation.annotationType() + ", " + annotation.toString() + "\n" );
+                                    System.out.println( annotation.annotationType() + ", " + annotation.toString() + "\n" );
                                 }
 
                                 Map<String, List> map = appGraphVisitor.getMethodAttributes( method );
 
-                                StringBuilder buf = new StringBuilder();
-                                buf.append( o.toString() ).append( "\n\n" );
-
                                 List constraints = map.get( "constraints" );
-                                buf.append( "Constraints\n" );
-                                for( Object constraint : constraints )
-                                {
-                                    buf.append( constraint.toString() ).append( "\n" );
-                                }
-
                                 List concerns = map.get( "concerns" );
-                                buf.append( "\n\nConcerns\n" );
-                                for( Object concern : concerns )
-                                {
-                                    buf.append( concern.toString() ).append( "\n" );
-                                }
-
                                 List sideEffects = map.get( "sideEffects" );
-                                buf.append( "\n\nSide Effects\n" );
-                                for( Object sideEffect : sideEffects )
-                                {
-                                    buf.append( sideEffect.toString() ).append( "\n" );
-                                }
+                                List mixins = map.get( "mixins" );
+                                Class mixinClass = (Class) mixins.get( 0 ); // todo sometimes more than 1 mixin classes are returned
 
-                                JTextPane textPane = new JTextPane();
-                                textPane.setText( buf.toString() );
-                                JPanel panel = new JPanel();
-                                panel.setBackground( Color.white );
-                                panel.add( textPane );
-
-                                bottomPane.setRightComponent( panel );
+                                JTree mixinTree = new MixinTree( mixinClass, constraints, concerns, sideEffects );
+                                JScrollPane scrollPane = new JScrollPane( mixinTree );
+                                bottomPane.setRightComponent( scrollPane );
 
                             }
 
@@ -225,46 +205,9 @@ public class ApplicationGraph
                 this.method = method;
             }
 
-            private void appendAnnoation( StringBuilder buf, Annotation annotation )
-            {
-                buf.append( "@" ).append( annotation.annotationType().getSimpleName() ).append( " " );
-            }
-
             public String toString()
             {
-                StringBuilder buf = new StringBuilder();
-
-                for( Annotation annotation : method.getAnnotations() )
-                {
-                    appendAnnoation( buf, annotation );
-                }
-                Class<?> returnType = method.getReturnType();
-
-                // todo add the 'Type' if the returnType is Property<T>
-
-                buf.append( returnType.getSimpleName() ).append( " " ).append( method.getName() );
-
-                buf.append( "( " );
-                Class<?>[] paramTypes = method.getParameterTypes();
-                Annotation[][] paramAnnotations = method.getParameterAnnotations();
-                for( int i = 0; i < paramTypes.length; i++ )
-                {
-                    Annotation[] annotations = paramAnnotations[ i ];
-                    for( Annotation annotation : annotations )
-                    {
-                        appendAnnoation( buf, annotation );
-                    }
-                    Class<?> type = paramTypes[ i ];
-                    buf.append( type.getSimpleName() ).append( ", " );
-                }
-                if( paramTypes.length > 0 )
-                {
-                    buf.delete( buf.length() - 2, buf.length() );
-                }
-
-                buf.append( " )" );
-
-                return buf.toString();
+                return methodToString( method );
             }
 
             public Method getMethod()
@@ -272,6 +215,175 @@ public class ApplicationGraph
                 return method;
             }
         }
+    }
+
+    private class MixinTree extends JTree
+    {
+        public MixinTree( Class mixinClass, List constraints, List concerns, List sideEffects )
+        {
+            DefaultMutableTreeNode root = new DefaultMutableTreeNode( mixinClass.getName() );
+            addFields( root, mixinClass );
+            addConstructors( root, mixinClass );
+            addMethods( root, mixinClass, constraints, concerns, sideEffects );
+            DefaultTreeModel model = new DefaultTreeModel( root );
+            setModel( model );
+        }
+
+        private void addFields( DefaultMutableTreeNode rootNode, Class mixinClass )
+        {
+            DefaultMutableTreeNode node = new DefaultMutableTreeNode( "Fields" );
+            Field[] fields = mixinClass.getDeclaredFields();
+            for( Field field : fields )
+            {
+                node.add( new DefaultMutableTreeNode( field.getName() ) );
+            }
+            if( node.getChildCount() > 0 )
+            {
+                rootNode.add( node );
+            }
+        }
+
+        private void addConstructors( DefaultMutableTreeNode rootNode, Class mixinClass )
+        {
+            DefaultMutableTreeNode node = new DefaultMutableTreeNode( "Constructors" );
+            Constructor[] allConstructors = mixinClass.getDeclaredConstructors();
+            for( Constructor constructor : allConstructors )
+            {
+                StringBuilder buf = new StringBuilder();
+                buf.append( constructor.toGenericString() );
+                node.add( new DefaultMutableTreeNode( buf.toString() ) );
+            }
+            if( node.getChildCount() > 0)
+            {
+                rootNode.add( node );
+            }
+        }
+
+        private void addMethods( DefaultMutableTreeNode rootNode, Class mixinClass, List constraints, List concerns, List sideEffects )
+        {
+            DefaultMutableTreeNode node = new DefaultMutableTreeNode( "Methods" );
+            Method[] methods = mixinClass.getDeclaredMethods();
+            for( Method method : methods )
+            {
+                // access$000 is a synthetic method generated to allow access to private fields from anon inner classes
+                if( !method.getName().equals( "access$000" ) )
+                {
+                    node.add( getMethodNode( method, constraints, concerns, sideEffects ) );
+                }
+            }
+            if( node.getChildCount() > 0 )
+            {
+                rootNode.add( node );
+            }
+        }
+
+        private MutableTreeNode getMethodNode( Method method, List constraints, List concerns, List sideEffects )
+        {
+            DefaultMutableTreeNode node = new DefaultMutableTreeNode( methodToString( method ));
+            addConstraints( method, node, constraints );
+            addConcerns( method, node, concerns );
+            addSideEffects( method, node, sideEffects );
+            return node;
+        }
+
+        private void addConstraints( Method method, DefaultMutableTreeNode methodNode, List constraints )
+        {
+            DefaultMutableTreeNode node = new DefaultMutableTreeNode( "Constraints" );
+            for( Object constraint : constraints )
+            {
+                node.add( new DefaultMutableTreeNode( constraint ) );
+            }
+        }
+
+        private void addConcerns( Method method, DefaultMutableTreeNode methodNode, List concerns )
+        {
+            DefaultMutableTreeNode node = new DefaultMutableTreeNode( "Concerns" );
+            for( Object concern : concerns )
+            {
+                Class clazz = (Class) concern;
+                try
+                {
+                    clazz.getDeclaredMethod( method.getName(), method.getParameterTypes() );
+                    // The concern applies to this method
+                    node.add( new DefaultMutableTreeNode( clazz.getName() ) );
+                }
+                catch( NoSuchMethodException e )
+                {
+                    // ignore, the concern does not implement this method
+                }
+            }
+            if( node.getChildCount() > 0 )
+            {
+                methodNode.add( node );
+            }
+        }
+
+        private void addSideEffects( Method method, DefaultMutableTreeNode methodNode, List sideEffects )
+        {
+            DefaultMutableTreeNode node = new DefaultMutableTreeNode( "Side Effects" );
+            for( Object sideEffect : sideEffects )
+            {
+                Class clazz = (Class) sideEffect;
+                try
+                {
+                    clazz.getDeclaredMethod( method.getName(), method.getParameterTypes() );
+                    // The side effect applies to this method
+                    node.add( new DefaultMutableTreeNode( clazz.getName() ) );
+                }
+                catch( NoSuchMethodException e )
+                {
+                    // ignore, the side effect does not implement this method
+                }
+            }
+            if( node.getChildCount() > 0 )
+            {
+                methodNode.add( node );
+            }
+        }
+
+
+    }
+
+    private static void appendAnnoation( StringBuilder buf, Annotation annotation )
+    {
+        buf.append( "@" ).append( annotation.annotationType().getSimpleName() ).append( " " );
+    }
+
+    public static String methodToString( Method method )
+    {
+        StringBuilder buf = new StringBuilder();
+
+        for( Annotation annotation : method.getAnnotations() )
+        {
+            appendAnnoation( buf, annotation );
+        }
+        Class<?> returnType = method.getReturnType();
+
+        // todo add the 'Type' if the returnType is Property<T>
+
+        buf.append( returnType.getSimpleName() ).append( " " ).append( method.getName() );
+
+        buf.append( "( " );
+        Class<?>[] paramTypes = method.getParameterTypes();
+        Annotation[][] paramAnnotations = method.getParameterAnnotations();
+        for( int i = 0; i < paramTypes.length; i++ )
+        {
+            Annotation[] annotations = paramAnnotations[ i ];
+            for( Annotation annotation : annotations )
+            {
+                appendAnnoation( buf, annotation );
+            }
+            Class<?> type = paramTypes[ i ];
+            buf.append( type.getSimpleName() ).append( ", " );
+        }
+        if( paramTypes.length > 0 )
+        {
+            buf.delete( buf.length() - 2, buf.length() );
+        }
+
+        buf.append( " )" );
+
+        return buf.toString();
     }
 
 }

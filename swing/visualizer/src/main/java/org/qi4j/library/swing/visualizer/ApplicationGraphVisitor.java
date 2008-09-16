@@ -41,6 +41,7 @@ import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Collections;
 import java.lang.reflect.Method;
 
 /**
@@ -233,13 +234,14 @@ class ApplicationGraphVisitor extends DescriptorVisitor
         currentMethodAttributesMap.put( "constraints", new ArrayList() );
         currentMethodAttributesMap.put( "concerns", new ArrayList() );
         currentMethodAttributesMap.put( "sideEffects", new ArrayList() );
+        currentMethodAttributesMap.put( "mixins", Collections.singletonList( compositeMethodDescriptor.mixin().mixinClass() ) );
 
         methodAttributesMap.put( currentMethod, currentMethodAttributesMap );
     }
 
     public void visit( ConstraintDescriptor constraintDescriptor )
     {
-        super.visit( constraintDescriptor );    //To change body of overridden methods use File | Settings | File Templates.
+        super.visit( constraintDescriptor );
     }
 
     public void visit( MethodConstraintsDescriptor methodConstraintsDescriptor )
@@ -251,18 +253,13 @@ class ApplicationGraphVisitor extends DescriptorVisitor
     public void visit( MethodConcernDescriptor methodConcernDescriptor )
     {
         List list = currentMethodAttributesMap.get( "concerns" );
-        list.add( methodConcernDescriptor.hashCode() ); // todo
+        list.add( methodConcernDescriptor.modifierClass() );
     }
 
     public void visit( MethodSideEffectDescriptor methodSideEffectDescriptor )
     {
         List list = currentMethodAttributesMap.get( "sideEffects" );
-        list.add( methodSideEffectDescriptor.hashCode() ); // todo
-    }
-
-    public void visit( MixinDescriptor mixinDescriptor )
-    {
-        // for each composite // todo
+        list.add( methodSideEffectDescriptor.modifierClass() );
     }
 
     public Object getCompositeDescriptor( Node node )
