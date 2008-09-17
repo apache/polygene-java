@@ -133,7 +133,7 @@ public class ApplicationGraph
                 {
                     CompositeDescriptor descriptor = (CompositeDescriptor) o;
 
-                    DefaultMutableTreeNode root = new DefaultMutableTreeNode( GraphUtils.getCompositeName( descriptor.type() ) );
+                    final DefaultMutableTreeNode root = new DefaultMutableTreeNode( GraphUtils.getCompositeName( descriptor.type() ) );
                     Iterable<Class> mixinTypes = descriptor.mixinTypes();
                     for( Class mixinType : mixinTypes )
                     {
@@ -179,7 +179,7 @@ public class ApplicationGraph
                                 List concerns = map.get( "concerns" );
                                 List sideEffects = map.get( "sideEffects" );
                                 List mixins = map.get( "mixins" );
-                                Class mixinClass = (Class) mixins.get( 0 ); // todo sometimes more than 1 mixin classes are returned
+                                Class mixinClass = (Class) mixins.get( 0 );
 
                                 JTree mixinTree = new MixinTree( mixinClass, constraints, concerns, sideEffects );
                                 JScrollPane scrollPane = new JScrollPane( mixinTree );
@@ -192,17 +192,22 @@ public class ApplicationGraph
                     tree.setCellRenderer( new DefaultTreeCellRenderer()
                     {
                         private Icon compositeIcon = new ImageIcon( "composites.png" );
+                        private Icon interfaceIcon = new ImageIcon( "interface.png" );
                         private Icon methodIcon = new ImageIcon( "methods.png" );
                         public Component getTreeCellRendererComponent( JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus )
                         {
                             super.getTreeCellRendererComponent( tree, value, sel, expanded, leaf, row, hasFocus );
-                            if( value instanceof MethodNode )
+                            if( value == root )
+                            {
+                                setIcon( compositeIcon );
+                            }
+                            else if( value instanceof MethodNode )
                             {
                                 setIcon( methodIcon );
                             }
                             else
                             {
-                                setIcon( compositeIcon );
+                                setIcon( interfaceIcon );
                             }
                             return this;
                         }
