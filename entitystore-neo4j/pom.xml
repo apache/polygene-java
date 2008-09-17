@@ -71,13 +71,12 @@ limitations under the License.
     <dependency>
       <groupId>org.neo4j</groupId>
       <artifactId>index-util</artifactId>
-      <!-- TODO: check if this is the apropriate version -->
-      <version>0.5-SNAPSHOT</version>
+      <version>0.5</version>
     </dependency>
     <dependency>
       <groupId>org.neo4j</groupId>
       <artifactId>neo</artifactId>
-      <version>1.0-b7-SNAPSHOT</version>
+      <version>1.0-b7-pre1</version>
     </dependency>
     <dependency>
       <groupId>org.qi4j.core</groupId>
