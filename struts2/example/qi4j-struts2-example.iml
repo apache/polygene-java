@@ -69,6 +69,10 @@
             <attribute name="method" value="1" />
             <attribute name="URI" value="/WEB-INF/lib/commons-io-1.3.2.jar" />
           </containerElement>
+          <containerElement type="module" name="qi4j-struts2-codebehind-plugin">
+            <attribute name="method" value="5" />
+            <attribute name="URI" value="/WEB-INF/lib/qi4j-struts2-codebehind-plugin-0.4-SNAPSHOT.jar" />
+          </containerElement>
           <containerElement type="library" name="org.apache.struts:struts2-codebehind-plugin:2.1.2" level="module">
             <attribute name="method" value="1" />
             <attribute name="URI" value="/WEB-INF/lib/struts2-codebehind-plugin-2.1.2.jar" />
@@ -421,6 +425,7 @@
         </SOURCES>
       </library>
     </orderEntry>
+    <orderEntry type="module" module-name="qi4j-struts2-codebehind-plugin" exported="" />
     <orderEntry type="module-library" exported="">
       <library name="org.apache.struts:struts2-codebehind-plugin:2.1.2">
         <CLASSES>
