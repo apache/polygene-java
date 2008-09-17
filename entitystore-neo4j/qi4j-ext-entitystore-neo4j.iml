@@ -29,70 +29,28 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
-      <library name="org.neo4j:index-util:0.4-SNAPSHOT">
+      <library name="org.neo4j:index-util:0.5-SNAPSHOT">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/neo4j/index-util/0.4-SNAPSHOT/index-util-0.4-SNAPSHOT.jar!/" />
-          <root url="jar://$M2_REPO$/org/neo4j/index-util/0.4-SNAPSHOT/index-util-0.4-SNAPSHOT.jar!/" />
-          <root url="jar://$M2_REPO$/org/neo4j/index-util/0.4-SNAPSHOT/index-util-0.4-SNAPSHOT.jar!/" />
-          <root url="jar://$M2_REPO$/org/neo4j/index-util/0.4-SNAPSHOT/index-util-0.4-20080530.151342-13.jar!/" />
+          <root url="jar://$M2_REPO$/org/neo4j/index-util/0.5-SNAPSHOT/index-util-0.5-SNAPSHOT.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/neo4j/index-util/0.4-SNAPSHOT/index-util-0.4-SNAPSHOT-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/neo4j/index-util/0.5-SNAPSHOT/index-util-0.5-SNAPSHOT-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/neo4j/index-util/0.4-SNAPSHOT/index-util-0.4-SNAPSHOT-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/neo4j/index-util/0.5-SNAPSHOT/index-util-0.5-SNAPSHOT-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
-      <library name="org.neo4j:neo:1.0-rc1-SNAPSHOT">
+      <library name="org.neo4j:neo:1.0-b7-SNAPSHOT">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/neo4j/neo/1.0-rc1-SNAPSHOT/neo-1.0-rc1-SNAPSHOT.jar!/" />
+          <root url="jar://$M2_REPO$/org/neo4j/neo/1.0-b7-SNAPSHOT/neo-1.0-b7-SNAPSHOT.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/neo4j/neo/1.0-rc1-SNAPSHOT/neo-1.0-rc1-SNAPSHOT-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/neo4j/neo/1.0-b7-SNAPSHOT/neo-1.0-b7-SNAPSHOT-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/neo4j/neo/1.0-rc1-SNAPSHOT/neo-1.0-rc1-SNAPSHOT-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library name="javax.transaction:jta:1.0.1">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/javax/transaction/jta/1.0.1/jta-1.0.1.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/javax/transaction/jta/1.0.1/jta-1.0.1-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/javax/transaction/jta/1.0.1/jta-1.0.1-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library name="org.neo4j:shell:1.0-rc1-SNAPSHOT">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/org/neo4j/shell/1.0-rc1-SNAPSHOT/shell-1.0-rc1-SNAPSHOT.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/org/neo4j/shell/1.0-rc1-SNAPSHOT/shell-1.0-rc1-SNAPSHOT-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/org/neo4j/shell/1.0-rc1-SNAPSHOT/shell-1.0-rc1-SNAPSHOT-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library name="org.apache.lucene:lucene-core:2.3.1">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/org/apache/lucene/lucene-core/2.3.1/lucene-core-2.3.1.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/org/apache/lucene/lucene-core/2.3.1/lucene-core-2.3.1-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/org/apache/lucene/lucene-core/2.3.1/lucene-core-2.3.1-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/neo4j/neo/1.0-b7-SNAPSHOT/neo-1.0-b7-SNAPSHOT-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
