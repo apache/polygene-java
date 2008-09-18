@@ -36,12 +36,13 @@ public class ServiceIdFilter
     {
         if( serviceRef == null )
         {
-            String identityFilter = serviceDescriptor.metaInfo().get( ServiceId.class ).id();
+            ServiceId id = serviceDescriptor.metaInfo().get( ServiceId.class );
+            String identityFilter = id == null ? null : id.id();
             Class serviceType = serviceDescriptor.type();
             Iterable<ServiceReference<?>> services = locator.findServices( serviceType );
             for( ServiceReference<?> service : services )
             {
-                if( service.identity().equals( identityFilter ) )
+                if( identityFilter == null || service.identity().equals( identityFilter ) )
                 {
                     serviceRef = service;
                     instance = service.get();
@@ -55,8 +56,11 @@ public class ServiceIdFilter
 
     public void releaseInstance( Object instance ) throws ServiceInstanceProviderException
     {
-        serviceRef.releaseService();
-        serviceRef = null;
-        instance = null;
+        if (serviceRef != null)
+        {
+            serviceRef.releaseService();
+            serviceRef = null;
+            instance = null;
+        }
     }
 }
