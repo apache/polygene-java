@@ -42,6 +42,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.TreePath;
 import org.qi4j.structure.Application;
 import org.qi4j.spi.structure.ApplicationSPI;
 import org.qi4j.spi.composite.CompositeDescriptor;
@@ -100,6 +101,33 @@ public class ApplicationGraph
 
     }
 
+    public void setTreeState( JTree tree, boolean expanded )
+    {
+        Object root = tree.getModel().getRoot();
+        setTreeState( tree, new TreePath( root ), expanded );
+    }
+
+    public void setTreeState( JTree tree, TreePath path, boolean expanded )
+    {
+        Object lastNode = path.getLastPathComponent();
+        for( int i = 0; i < tree.getModel().getChildCount( lastNode ); i++ )
+        {
+            Object child = tree.getModel().getChild( lastNode, i );
+            TreePath pathToChild = path.pathByAddingChild( child );
+            setTreeState( tree, pathToChild, expanded );
+        }
+        if( expanded )
+        {
+            tree.expandPath( path );
+        }
+        else
+        {
+            tree.collapsePath( path );
+        }
+
+
+    }
+
     private JComponent getDetailsPane()
     {
         JPanel detailsPanel = new JPanel();
@@ -139,7 +167,7 @@ public class ApplicationGraph
                     {
                         DefaultMutableTreeNode mixinNode = new DefaultMutableTreeNode( mixinType.getSimpleName() );
                         root.add( mixinNode );
-                        Method[] methods = mixinType.getMethods();
+                        Method[] methods = mixinType.getDeclaredMethods();
                         for( Method method : methods )
                         {
                             MethodNode methodNode = new MethodNode( method );
@@ -194,6 +222,7 @@ public class ApplicationGraph
                         private Icon compositeIcon = new ImageIcon( "composites.png" );
                         private Icon interfaceIcon = new ImageIcon( "interface.png" );
                         private Icon methodIcon = new ImageIcon( "methods.png" );
+
                         public Component getTreeCellRendererComponent( JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus )
                         {
                             super.getTreeCellRendererComponent( tree, value, sel, expanded, leaf, row, hasFocus );
@@ -211,8 +240,9 @@ public class ApplicationGraph
                             }
                             return this;
                         }
-                    });
+                    } );
 
+                    setTreeState( tree, true );
                     JScrollPane pane = new JScrollPane( tree );
                     pane.setPreferredSize( methodsPaneSize );
                     bottomPane.setLeftComponent( pane );
@@ -277,7 +307,9 @@ public class ApplicationGraph
                     }
                     return this;
                 }
-            });
+            } );
+
+            setTreeState( this, true );
         }
 
         private void addFields( DefaultMutableTreeNode rootNode, Class mixinClass )
@@ -286,7 +318,15 @@ public class ApplicationGraph
             Field[] fields = mixinClass.getDeclaredFields();
             for( Field field : fields )
             {
-                node.add( new DefaultMutableTreeNode( field.getName() ) );
+                String fieldStr = "";
+                for( Annotation annotation : field.getAnnotations() )
+                {
+                    fieldStr += annotation.toString()+" ";
+                }
+
+                fieldStr += field.getType().getSimpleName()+" "+field.getName();
+
+                node.add( new DefaultMutableTreeNode( fieldStr ) );
             }
             if( node.getChildCount() > 0 )
             {
@@ -304,7 +344,7 @@ public class ApplicationGraph
                 buf.append( constructor.toGenericString() );
                 node.add( new DefaultMutableTreeNode( buf.toString() ) );
             }
-            if( node.getChildCount() > 0)
+            if( node.getChildCount() > 0 )
             {
                 rootNode.add( node );
             }
@@ -330,7 +370,7 @@ public class ApplicationGraph
 
         private MutableTreeNode getMethodNode( Method method, List constraints, List concerns, List sideEffects )
         {
-            DefaultMutableTreeNode node = new DefaultMutableTreeNode( methodToString( method ));
+            DefaultMutableTreeNode node = new DefaultMutableTreeNode( methodToString( method ) );
             addConstraints( method, node, constraints );
             addConcerns( method, node, concerns );
             addSideEffects( method, node, sideEffects );
