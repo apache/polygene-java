@@ -38,6 +38,7 @@ import org.qi4j.service.ServiceDescriptor;
 import org.qi4j.spi.entity.AssociationType;
 import org.qi4j.spi.entity.ConcurrentEntityStateModificationException;
 import org.qi4j.spi.entity.DefaultEntityState;
+import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityStoreException;
@@ -47,8 +48,8 @@ import org.qi4j.spi.entity.ManyAssociationType;
 import org.qi4j.spi.entity.PropertyType;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.StateCommitter;
-import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.structure.Application;
+import org.qi4j.util.MetaInfo;
 
 /**
  * Implementation of EntityStore that is backed by the Preferences API.
@@ -64,22 +65,46 @@ public class PreferencesEntityStoreMixin
 
     private Preferences root;
 
-    public void activate() throws Exception
+    public void activate()
+        throws Exception
     {
+        root = getApplicationRoot();
+    }
+
+    private Preferences getApplicationRoot()
+    {
+        MetaInfo metaInfo = descriptor.metaInfo();
+        PreferenceEntityStoreInfo storeInfo = metaInfo.get( PreferenceEntityStoreInfo.class );
+
+        Preferences preferences;
+        if( storeInfo == null )
+        {
+            // Default to use system root
+            preferences = Preferences.systemRoot();
+        }
+        else
+        {
+            PreferenceEntityStoreInfo.PreferenceNode rootNode = storeInfo.getRootNode();
+            preferences = rootNode.getNode();
+        }
+
         String name = application.name();
-        root = Preferences.systemRoot().node( name );
+        return preferences.node( name );
     }
 
-    public void passivate() throws Exception
+    public void passivate()
+        throws Exception
     {
     }
 
-    public EntityState newEntityState( QualifiedIdentity anIdentity ) throws EntityStoreException
+    public EntityState newEntityState( QualifiedIdentity anIdentity )
+        throws EntityStoreException
     {
         return new DefaultEntityState( anIdentity, getEntityType( anIdentity.type() ) );
     }
 
-    public EntityState getEntityState( QualifiedIdentity anIdentity ) throws EntityStoreException
+    public EntityState getEntityState( QualifiedIdentity anIdentity )
+        throws EntityStoreException
     {
         Map<String, Object> properties = new HashMap<String, Object>();
         Map<String, QualifiedIdentity> associations = new HashMap<String, QualifiedIdentity>();
@@ -88,9 +113,9 @@ public class PreferencesEntityStoreMixin
 
         try
         {
-            if (!root.nodeExists( anIdentity.identity() ))
+            if( !root.nodeExists( anIdentity.identity() ) )
             {
-                throw new EntityNotFoundException(descriptor.identity(), anIdentity);
+                throw new EntityNotFoundException( descriptor.identity(), anIdentity );
             }
         }
         catch( BackingStoreException e )
@@ -102,13 +127,9 @@ public class PreferencesEntityStoreMixin
         loadAssociations( preferences, associations, entityType );
         loadManyAssociations( preferences, manyAssociations, entityType );
 
-        DefaultEntityState entityState = new DefaultEntityState( 0, System.currentTimeMillis(),
-                                                                 anIdentity,
-                                                                 EntityStatus.LOADED,
-                                                                 entityType,
-                                                                 properties,
-                                                                 associations,
-                                                                 manyAssociations );
+        DefaultEntityState entityState = new DefaultEntityState(
+            0, System.currentTimeMillis(), anIdentity, EntityStatus.LOADED, entityType,
+            properties, associations, manyAssociations );
 
         return entityState;
     }
@@ -154,10 +175,10 @@ public class PreferencesEntityStoreMixin
                 else
                 {
                     byte[] bytes = preferences.getByteArray( name, null );
-                    if (bytes != null)
+                    if( bytes != null )
                     {
                         ByteArrayInputStream bin = new ByteArrayInputStream( bytes );
-                        ObjectInputStream oin = new ObjectInputStream(bin );
+                        ObjectInputStream oin = new ObjectInputStream( bin );
                         value = oin.readObject();
                     }
                 }
@@ -166,11 +187,14 @@ public class PreferencesEntityStoreMixin
         }
         catch( Exception e )
         {
-            throw new EntityStoreException(e);
+            throw new EntityStoreException( e );
         }
     }
 
-    private void loadAssociations( Preferences preferences, Map<String, QualifiedIdentity> associations, EntityType type )
+    private void loadAssociations(
+        Preferences preferences,
+        Map<String, QualifiedIdentity> associations,
+        EntityType type )
         throws EntityStoreException
     {
         try
@@ -181,17 +205,22 @@ public class PreferencesEntityStoreMixin
 
                 String value = preferences.get( name, null );
 
-                if (value != null)
-                    associations.put( associationType.qualifiedName(), QualifiedIdentity.parseQualifiedIdentity( value) );
+                if( value != null )
+                {
+                    associations.put( associationType.qualifiedName(), QualifiedIdentity.parseQualifiedIdentity( value ) );
+                }
             }
         }
         catch( Exception e )
         {
-            throw new EntityStoreException(e);
+            throw new EntityStoreException( e );
         }
     }
 
-    private void loadManyAssociations( Preferences preferences, Map<String, Collection<QualifiedIdentity>> associations, EntityType type )
+    private void loadManyAssociations(
+        Preferences preferences,
+        Map<String, Collection<QualifiedIdentity>> associations,
+        EntityType type )
         throws EntityStoreException
     {
         try
@@ -202,13 +231,13 @@ public class PreferencesEntityStoreMixin
                 Collection<QualifiedIdentity> collection = associations.get( manyAssociationType.qualifiedName() );
                 String value = preferences.get( name, null );
 
-                if (value != null)
+                if( value != null )
                 {
-                    BufferedReader reader = new BufferedReader(new StringReader(value));
+                    BufferedReader reader = new BufferedReader( new StringReader( value ) );
                     String qidString;
-                    while ((qidString = reader.readLine()) != null)
+                    while( ( qidString = reader.readLine() ) != null )
                     {
-                        QualifiedIdentity qid = QualifiedIdentity.parseQualifiedIdentity( qidString);
+                        QualifiedIdentity qid = QualifiedIdentity.parseQualifiedIdentity( qidString );
                         collection.add( qid );
                     }
                 }
@@ -216,11 +245,15 @@ public class PreferencesEntityStoreMixin
         }
         catch( Exception e )
         {
-            throw new EntityStoreException(e);
+            throw new EntityStoreException( e );
         }
     }
 
-    public StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> updatedStates, Iterable<QualifiedIdentity> removedStates ) throws EntityStoreException, ConcurrentEntityStateModificationException
+    public StateCommitter prepare(
+        Iterable<EntityState> newStates,
+        Iterable<EntityState> updatedStates,
+        Iterable<QualifiedIdentity> removedStates )
+        throws EntityStoreException
     {
         for( EntityState newState : newStates )
         {
@@ -272,7 +305,7 @@ public class PreferencesEntityStoreMixin
                 catch( BackingStoreException e )
                 {
                     // Ignore
-                    root = Preferences.systemRoot();
+                    root = getApplicationRoot();
                 }
             }
         };
@@ -285,10 +318,11 @@ public class PreferencesEntityStoreMixin
         {
             Object value = state.getProperty( property.qualifiedName() );
             String propertyName = GenericPropertyInfo.getName( property.qualifiedName() );
-            if (value == null)
+            if( value == null )
             {
                 node.remove( propertyName );
-            } else if( value instanceof String )
+            }
+            else if( value instanceof String )
             {
                 node.put( propertyName, (String) value );
             }
@@ -334,10 +368,14 @@ public class PreferencesEntityStoreMixin
         {
             QualifiedIdentity qid = state.getAssociation( associationType.qualifiedName() );
             String associationName = GenericAssociationInfo.getName( associationType.qualifiedName() );
-            if (qid == null)
+            if( qid == null )
+            {
                 node.remove( associationName );
+            }
             else
+            {
                 node.put( associationName, qid.toString() );
+            }
         }
 
         // ManyAssociations
@@ -345,14 +383,16 @@ public class PreferencesEntityStoreMixin
         {
             String associationName = GenericAssociationInfo.getName( manyAssociationType.qualifiedName() );
             Collection<QualifiedIdentity> qids = state.getManyAssociation( manyAssociationType.qualifiedName() );
-            StringBuilder qidsString = new StringBuilder( );
+            StringBuilder qidsString = new StringBuilder();
             for( QualifiedIdentity qid : qids )
             {
-                if (!(qidsString.length() == 0))
+                if( !( qidsString.length() == 0 ) )
+                {
                     qidsString.append( '\n' );
+                }
                 qidsString.append( qid.toString() );
             }
-            node.put(associationName, qidsString.toString());
+            node.put( associationName, qidsString.toString() );
         }
     }
 
@@ -360,13 +400,13 @@ public class PreferencesEntityStoreMixin
     {
         try
         {
-            List<EntityState> states = new ArrayList<EntityState>( );
-            addStates(states, root);
+            List<EntityState> states = new ArrayList<EntityState>();
+            addStates( states, root );
             return states.iterator();
         }
         catch( BackingStoreException e )
         {
-            throw new EntityStoreException(e);
+            throw new EntityStoreException( e );
         }
     }
 
@@ -374,18 +414,18 @@ public class PreferencesEntityStoreMixin
         throws BackingStoreException
     {
         String identity = root.get( "identity", null );
-        if (identity != null)
+        if( identity != null )
         {
-            QualifiedIdentity qid = new QualifiedIdentity( identity, root.get( "type", null ));
+            QualifiedIdentity qid = new QualifiedIdentity( identity, root.get( "type", null ) );
             EntityState state = getEntityState( qid );
-            states.add(state);
+            states.add( state );
         }
 
         // Add children
         for( String nodeName : root.childrenNames() )
         {
             Preferences node = root.node( nodeName );
-            addStates(states, node);
+            addStates( states, node );
         }
     }
 }

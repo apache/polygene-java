@@ -14,15 +14,15 @@
 
 package org.qi4j.entity.prefs;
 
-import org.qi4j.composite.Mixins;
 import org.qi4j.composite.Concerns;
+import org.qi4j.composite.Mixins;
 import org.qi4j.composite.SideEffects;
+import org.qi4j.entity.memory.ConcurrentModificationCheckConcern;
 import org.qi4j.service.Activatable;
-import org.qi4j.service.ServiceComposite;
 import org.qi4j.service.Configuration;
+import org.qi4j.service.ServiceComposite;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreListenerNotificationSideEffect;
-import org.qi4j.entity.memory.ConcurrentModificationCheckConcern;
 
 /**
  * EntityStore backed by Preferences API.
@@ -39,15 +39,14 @@ import org.qi4j.entity.memory.ConcurrentModificationCheckConcern;
  * per line), and Associations are stored as the stringified QualifiedIdentity
  * of the referenced Entity.
  * <p/>
- * The main use of the EntityStore is for storage of ServiceComposite
- * Configurations.
+ * The main use of the EntityStore is for storage of ServiceComposite Configurations.
  *
  * @see ServiceComposite
  * @see Configuration
  */
 @Concerns( ConcurrentModificationCheckConcern.class )
 @SideEffects( EntityStoreListenerNotificationSideEffect.class )
-@Mixins(PreferencesEntityStoreMixin.class)
+@Mixins( PreferencesEntityStoreMixin.class )
 public interface PreferencesEntityStoreService
     extends EntityStore, ServiceComposite, Activatable
 {
