@@ -375,8 +375,11 @@ public final class UnitOfWorkInstance
     {
         checkOpen();
 
+        // Copy list so that it cannot be modified during completion
+        List<UnitOfWorkCallback> currentCallbacks = callbacks == null ? null : new ArrayList<UnitOfWorkCallback>(callbacks);
+
         // Check callbacks
-        notifyBeforeCompletion();
+        notifyBeforeCompletion(currentCallbacks);
 
         // Create complete lists
         Map<EntityStore, StoreCompletion> storeCompletion = new HashMap<EntityStore, StoreCompletion>();
@@ -460,14 +463,22 @@ public final class UnitOfWorkInstance
         close();
 
         // Call callbacks
-        notifyAfterCompletion( COMPLETED );
+        notifyAfterCompletion( currentCallbacks, COMPLETED );
+
+        callbacks = currentCallbacks;
     }
 
     public void discard()
     {
         close();
+
+        // Copy list so that it cannot be modified during completion
+        List<UnitOfWorkCallback> currentCallbacks = callbacks == null ? null : new ArrayList<UnitOfWorkCallback>(callbacks);
+
         // Call callbacks
-        notifyAfterCompletion( DISCARDED );
+        notifyAfterCompletion( currentCallbacks, DISCARDED );
+
+        callbacks = currentCallbacks;
     }
 
     private void close()
@@ -538,7 +549,7 @@ public final class UnitOfWorkInstance
         return entityCache;
     }
 
-    private void notifyBeforeCompletion()
+    private void notifyBeforeCompletion(List<UnitOfWorkCallback> callbacks)
         throws UnitOfWorkCompletionException
     {
         if( callbacks != null )
@@ -550,7 +561,7 @@ public final class UnitOfWorkInstance
         }
     }
 
-    private void notifyAfterCompletion( UnitOfWorkCallback.UnitOfWorkStatus status )
+    private void notifyAfterCompletion( List<UnitOfWorkCallback> callbacks, UnitOfWorkCallback.UnitOfWorkStatus status )
     {
         if( callbacks != null )
         {
