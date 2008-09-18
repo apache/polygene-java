@@ -41,10 +41,5 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.prefuse</groupId>
-      <artifactId>prefuse</artifactId>
-      <version>beta-20060220</version>
-    </dependency>
   </dependencies>
 </project>
