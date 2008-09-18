@@ -1,24 +1,3 @@
-Bundle-Activator:
-
-Private-Package: org.neo4j.api.core, \
-                 org.neo4j.impl.cache, \
-                 org.neo4j.impl.core, \
-                 org.neo4j.impl.event, \
-                 org.neo4j.impl.nioneo.store, \
-                 org.neo4j.impl.nioneo.xa, \
-                 org.neo4j.impl.persistence, \
-                 org.neo4j.impl.shell, \
-                 org.neo4j.impl.shell.apps, \
-                 org.neo4j.impl.transaction, \
-                 org.neo4j.impl.transaction.xaframework, \
-                 org.neo4j.impl.traversal, \
-                 org.neo4j.impl.util, \
-                 org.neo4j.util.btree, \
-                 org.neo4j.util.index, \
-                 org.neo4j.util.shell, \
-                 org.neo4j.util.shell.apps, \
-                 org.neo4j.util.shell.apps.extra
-                 
 Ignore-Package: sun.misc
 
 Import-Package: javax.transaction,\
@@ -44,6 +23,4 @@ Import-Package: javax.transaction,\
 
 Export-Package: org.qi4j.entity.neo4j
 
-Embed-Dependency: org.neo4j.*;scope=compile|runtime
-
-Embed-Transitive:  true
+Embed-Dependency: *;groupId=org.neo4j

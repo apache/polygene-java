@@ -66,7 +66,6 @@ limitations under the License.
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.neo4j</groupId>
@@ -77,6 +76,12 @@ limitations under the License.
       <groupId>org.neo4j</groupId>
       <artifactId>neo</artifactId>
       <version>1.0-b7-pre1</version>
+    </dependency>
+    <dependency>
+        <groupId>org.neo4j</groupId>
+        <artifactId>shell</artifactId>
+        <version>1.0-b7-pre1</version>
+        <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.qi4j.core</groupId>
