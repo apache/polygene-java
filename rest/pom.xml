@@ -1,15 +1,14 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <parent>
     <groupId>org.qi4j</groupId>
     <artifactId>qi4j</artifactId>
-    <version>0.4-SNAPSHOT</version>
+    <version>0.4</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.qi4j.extension</groupId>
   <artifactId>qi4j-ext-rest</artifactId>
   <name>Qi4j Extension - REST Interface</name>
-  <version>0.4-SNAPSHOT</version>
+  <version>0.4</version>
   <packaging>bundle</packaging>
 
   <properties>
@@ -21,22 +20,22 @@
     <dependency>
       <groupId>org.qi4j.core</groupId>
       <artifactId>qi4j-core-bootstrap</artifactId>
-      <version>0.4-SNAPSHOT</version>
+      <version>0.4</version>
     </dependency>
     <dependency>
       <groupId>org.qi4j.core</groupId>
       <artifactId>qi4j-core-api</artifactId>
-      <version>0.4-SNAPSHOT</version>
+      <version>0.4</version>
     </dependency>
     <dependency>
       <groupId>org.qi4j.library</groupId>
       <artifactId>qi4j-lib-rdf</artifactId>
-      <version>0.4-SNAPSHOT</version>
+      <version>0.4</version>
     </dependency>
     <dependency>
       <groupId>org.qi4j.extension</groupId>
       <artifactId>qi4j-ext-indexing-rdf</artifactId>
-      <version>0.4-SNAPSHOT</version>
+      <version>0.4</version>
     </dependency>
     <dependency>
       <groupId>org.restlet</groupId>
@@ -78,19 +77,19 @@
     <dependency>
       <groupId>org.qi4j.core</groupId>
       <artifactId>qi4j-core-testsupport</artifactId>
-      <version>0.4-SNAPSHOT</version>
+      <version>0.4</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.qi4j.library</groupId>
       <artifactId>qi4j-lib-http</artifactId>
-      <version>0.4-SNAPSHOT</version>
+      <version>0.4</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.qi4j.core</groupId>
       <artifactId>qi4j-core-runtime</artifactId>
-      <version>0.4-SNAPSHOT</version>
+      <version>0.4</version>
       <scope>test</scope>
     </dependency>
     <dependency>
