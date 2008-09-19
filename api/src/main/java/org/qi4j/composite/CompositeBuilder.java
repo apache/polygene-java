@@ -36,8 +36,22 @@ public interface CompositeBuilder<T>
      */
     CompositeBuilder<T> use( Object... usedObjects );
 
+    /**
+     * Get a representation of the state for the new Composite.
+     * It is possible to access and update properties and associations,
+     * even immutable ones since the builder represents the initial state.
+     *
+     * @return a proxy implementing the Composite type
+     */
     T stateOfComposite();
 
+    /**
+     * Get a representation of the state of the given type for the new Composite.
+     * This is primarily used if you want to provide state for a private mixin type.
+     *
+     * @param mixinType the mixin which you want to provide state for
+     * @return a proxy implementing the given mixin type
+     */
     <K> K stateFor( Class<K> mixinType );
 
     /**

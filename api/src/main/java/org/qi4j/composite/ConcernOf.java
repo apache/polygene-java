@@ -28,5 +28,10 @@ import org.qi4j.composite.internal.ConcernFor;
  */
 public abstract class ConcernOf<T>
 {
-    @ConcernFor protected T next;
+    /**
+     * The "next" pointer. This points to
+     * the next concern in the chain or the mixin
+     * to be invoked.
+     */
+    final @ConcernFor protected T next = null;
 }

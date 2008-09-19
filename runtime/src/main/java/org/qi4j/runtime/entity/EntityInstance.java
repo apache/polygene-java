@@ -143,6 +143,9 @@ public final class EntityInstance
 
     public EntityStateModel.EntityStateInstance state()
     {
+        if (state == null)
+            initState();
+        
         return state;
     }
 
@@ -160,15 +163,7 @@ public final class EntityInstance
     {
         if( mixins == null )
         {
-            if( status() == EntityStatus.REMOVED )
-            {
-                throw new EntityCompositeNotFoundException( identity.identity(), entity.type() );
-            }
-            if( entityState() == null )
-            {
-                entityState = entity.getEntityState( store, identity );
-            }
-            mixins = entity.newMixins( uow, entityState, this );
+            initState();
         }
 
         return entity.invoke( composite, params, mixins, methodInstance );
@@ -190,6 +185,19 @@ public final class EntityInstance
                 refresh( newEntityState );
             }
         }
+    }
+
+    private void initState()
+    {
+        if( status() == EntityStatus.REMOVED )
+        {
+            throw new EntityCompositeNotFoundException( identity.identity(), entity.type() );
+        }
+        if( entityState() == null )
+        {
+            entityState = entity.getEntityState( store, identity );
+        }
+        mixins = entity.newMixins( uow, entityState, this );
     }
 
     private void refresh( EntityState newState )

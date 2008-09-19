@@ -79,7 +79,7 @@ public final class PropertiesModel
 
     public PropertiesInstance newDefaultInstance()
     {
-        Map<Method, Property> properties = new HashMap<Method, Property>();
+        Map<Method, Property<?>> properties = new HashMap<Method, Property<?>>();
         for( PropertyModel propertyModel : propertyModels )
         {
             Property property = propertyModel.newInstance();
@@ -91,7 +91,7 @@ public final class PropertiesModel
 
     public PropertiesInstance newInstance( State state )
     {
-        Map<Method, Property> properties = new HashMap<Method, Property>();
+        Map<Method, Property<?>> properties = new HashMap<Method, Property<?>>();
         for( PropertyModel propertyModel : propertyModels )
         {
             Property property = propertyModel.newInstance( state.getProperty( propertyModel.accessor() ).get() );

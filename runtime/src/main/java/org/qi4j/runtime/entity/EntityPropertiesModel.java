@@ -82,7 +82,7 @@ public final class EntityPropertiesModel
 
     public PropertiesInstance newDefaultInstance()
     {
-        Map<Method, Property> properties = new HashMap<Method, Property>();
+        Map<Method, Property<?>> properties = new HashMap<Method, Property<?>>();
         for( PropertyModel propertyModel : propertyModels )
         {
             Property property = propertyModel.newInstance();
