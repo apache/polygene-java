@@ -19,6 +19,7 @@ import static java.lang.reflect.Proxy.getInvocationHandler;
 import java.util.ArrayList;
 import java.util.List;
 import org.qi4j.composite.Composite;
+import org.qi4j.composite.State;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.injection.scope.This;
 import org.qi4j.runtime.composite.CompositeModel;
@@ -166,6 +167,11 @@ public final class Qi4jRuntime
         return moduleInstance.findCompositeFor( mixinType );
     }
 
+    public State getState( Composite composite )
+    {
+        return DefaultCompositeInstance.getCompositeInstance( composite ).state();
+    }
+
     public EntityDescriptor getEntityDescriptor( EntityComposite composite )
     {
         EntityInstance entityInstance = (EntityInstance) getInvocationHandler( composite );
@@ -182,6 +188,11 @@ public final class Qi4jRuntime
     public EntityState getEntityState( EntityComposite composite )
     {
         return EntityInstance.getEntityInstance( composite ).load();
+    }
+
+    public State getState(EntityComposite composite)
+    {
+        return EntityInstance.getEntityInstance( composite ).state();
     }
 
     @SuppressWarnings( "unchecked" )

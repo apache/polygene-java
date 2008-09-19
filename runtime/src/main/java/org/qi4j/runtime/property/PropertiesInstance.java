@@ -23,9 +23,9 @@ import org.qi4j.property.Property;
  */
 public final class PropertiesInstance
 {
-    protected final Map<Method, Property> properties;
+    protected final Map<Method, Property<?>> properties;
 
-    public PropertiesInstance( Map<Method, Property> properties )
+    public PropertiesInstance( Map<Method, Property<?>> properties )
     {
         this.properties = properties;
     }

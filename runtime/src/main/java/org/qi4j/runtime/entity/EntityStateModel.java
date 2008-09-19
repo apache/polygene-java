@@ -147,7 +147,7 @@ public final class EntityStateModel
     public static final class EntityStateInstance
         implements State
     {
-        private Map<Method, Property> properties;
+        private Map<Method, Property<?>> properties;
         private Map<Method, AbstractAssociation> associations;
 
         private final EntityPropertiesModel entityPropertiesModel;
@@ -169,7 +169,7 @@ public final class EntityStateModel
         {
             if( properties == null )
             {
-                properties = new HashMap<Method, Property>();
+                properties = new HashMap<Method, Property<?>>();
             }
 
             Property<?> property = properties.get( accessor );

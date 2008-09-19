@@ -16,6 +16,7 @@ package org.qi4j.spi;
 
 import org.qi4j.Qi4j;
 import org.qi4j.composite.Composite;
+import org.qi4j.composite.State;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.entity.EntityDescriptor;
@@ -33,11 +34,15 @@ public interface Qi4jSPI
 
     CompositeDescriptor getCompositeDescriptor( Class mixinType, Module module );
 
+    State getState( Composite composite );
+
     EntityDescriptor getEntityDescriptor( EntityComposite composite );
 
     EntityDescriptor getEntityDescriptor( Class mixinType, Module module );
 
     EntityState getEntityState( EntityComposite composite );
+
+    State getState( EntityComposite composite );
 
     ObjectDescriptor getObjectDescriptor( Class mixinType, Module module );
 

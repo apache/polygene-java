@@ -193,7 +193,7 @@ public final class CompositeModel
         stateModel.checkConstraints( state );
 
         Object[] mixins = mixinsModel.newMixinHolder();
-        DefaultCompositeInstance compositeInstance = new DefaultCompositeInstance( this, moduleInstance, mixins );
+        DefaultCompositeInstance compositeInstance = new DefaultCompositeInstance( this, moduleInstance, mixins, state );
 
         // Instantiate all mixins
         mixinsModel.newMixins( compositeInstance,

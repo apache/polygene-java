@@ -20,7 +20,7 @@ import org.qi4j.composite.SideEffects;
 import org.qi4j.entity.association.AssociationMixin;
 
 /**
- * Entity domain objects must implement this interface.
+ * Aggregate Entity Composites must extends this interface.
  */
 public interface AggregateEntity extends EntityComposite
 {

@@ -23,7 +23,19 @@ import org.qi4j.property.Property;
  */
 public interface State
 {
+    /**
+     * Get a property for a specific accessor method
+     *
+     * @param propertyMethod
+     * @return the property
+     */
     Property<?> getProperty( Method propertyMethod );
 
+    /**
+     * Get an association for a specific accessor method
+     *
+     * @param associationMethod
+     * @return the association
+     */
     AbstractAssociation getAssociation( Method associationMethod );
 }
