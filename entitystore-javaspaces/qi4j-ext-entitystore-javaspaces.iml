@@ -59,8 +59,6 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="library" name="JavaSpaces" level="application" />
-    <orderEntry type="library" name="Jini" level="application" />
     <orderEntryProperties />
   </component>
 </module>

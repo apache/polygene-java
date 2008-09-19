@@ -73,7 +73,7 @@ public class JdbmEntityStoreMixin
 
     private RecordManager recordManager;
     private BTree index;
-    private Serializer serializer;
+    private @Uses(optional=true) Serializer serializer;
     private long registryId;
 
     // Activatable implementation
