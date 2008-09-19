@@ -3,12 +3,12 @@
   <parent>
     <groupId>org.qi4j</groupId>
     <artifactId>qi4j</artifactId>
-    <version>0.4</version>
+    <version>0.5-SNAPSHOT</version>
   </parent>
   <groupId>org.qi4j</groupId>
   <artifactId>qi4j-core</artifactId>
   <name>Qi4j Core (Build POM)</name>
-  <version>0.4</version>
+  <version>0.5-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <!-- This POM is ONLY to initiate the modules to be built. -->
