@@ -3,12 +3,12 @@
   <parent>
     <groupId>org.qi4j</groupId>
     <artifactId>qi4j</artifactId>
-    <version>0.4</version>
+    <version>0.5-SNAPSHOT</version>
   </parent>
 
   <groupId>org.qi4j.library</groupId>
   <artifactId>qi4j-lib-swing</artifactId>
-  <version>0.4</version>
+  <version>0.5-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Qi4j Library - Swing (Build POM)</name>
