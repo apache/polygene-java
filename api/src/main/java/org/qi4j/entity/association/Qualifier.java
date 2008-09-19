@@ -36,21 +36,29 @@ public final class Qualifier<E, Q>
     }
 
     private E entity;
-    private Q role;
+    private Q qualifier;
 
-    private Qualifier( E entity, Q role )
+    private Qualifier( E entity, Q qualifier )
     {
         this.entity = entity;
-        this.role = role;
+        this.qualifier = qualifier;
     }
 
+    /**
+     * Get the Entity of the Qualifier
+     * @return
+     */
     public E entity()
     {
         return entity;
     }
 
+    /**
+     * Get the Qualifier part of this Qualifier
+     * @return
+     */
     public Q qualifier()
     {
-        return role;
+        return qualifier;
     }
 }

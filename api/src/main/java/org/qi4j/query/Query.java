@@ -36,21 +36,70 @@ import org.qi4j.query.grammar.OrderBy;
 public interface Query<T>
     extends Iterable<T>, Serializable
 {
+    /**
+     * Set the ordering rules. If many segments are used for ordering
+     * then they will be applied in order.
+     *
+     * @param segments the segments to order by
+     * @return the Query
+     */
     Query<T> orderBy( OrderBy... segments );
 
+    /**
+     * Set the index of the first result. Default is 0 (zero).
+     *
+     * @param firstResult which index to use as the first one
+     * @return
+     */
     Query<T> firstResult( int firstResult );
 
+    /**
+     * Set how many results should be returned. Default is that
+     * there is no limit set.
+     *
+     * @param maxResults
+     * @return
+     */
     Query<T> maxResults( int maxResults );
 
+    /**
+     * Get the first Entity that matches the criteria. This
+     * executes the Query.
+     *
+     * @return
+     * @throws QueryExecutionException
+     */
     T find()
         throws QueryExecutionException;
 
+    /**
+     * Set the value of a named variable.
+     * @param name
+     * @param value
+     */
     void setVariable( String name, Object value );
 
+    /**
+     * Get the value of a named variable.
+     *
+     * @param name
+     * @return
+     */
     <V> V getVariable( String name );
 
+    /**
+     * Get the result type of this Query
+     * @return
+     */
     Class<T> resultType();
 
+    /**
+     * Count how many results would be returned by this Query.
+     * This executes the Query.
+     *
+     * @return
+     * @throws QueryExecutionException
+     */
     long count()
         throws QueryExecutionException;
 }

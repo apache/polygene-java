@@ -13,6 +13,10 @@
  */
 package org.qi4j.composite;
 
+/**
+ * This exception is thrown if client code tries to create a non-existing Composite type
+ *
+ */
 public class NoSuchCompositeException extends InvalidApplicationException
 {
     private static final long serialVersionUID = 1L;

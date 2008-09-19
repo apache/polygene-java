@@ -51,5 +51,10 @@ public interface AssociationInfo
      */
     String qualifiedName();
 
+    /**
+     * Get the type of the associated Entities
+     *
+     * @return the type of the associated Entities
+     */
     Type type();
 }

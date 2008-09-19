@@ -51,6 +51,11 @@ public interface ObjectBuilder<T>
     T newInstance()
         throws ConstructionException;
 
+    /**
+     * Inject an existing instance. Only fields and methods will be called.
+     * @param instance
+     * @throws ConstructionException
+     */
     void injectTo( T instance )
         throws ConstructionException;
 }

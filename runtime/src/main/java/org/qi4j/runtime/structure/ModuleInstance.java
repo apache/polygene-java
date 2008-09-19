@@ -22,6 +22,7 @@ import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.ConstructionException;
 import org.qi4j.composite.NoSuchCompositeException;
+import org.qi4j.composite.AmbiguousTypeException;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkFactory;
@@ -164,6 +165,7 @@ public class ModuleInstance
 
 
     public ModuleInstance findModuleForEntity( Class mixinType )
+        throws AmbiguousTypeException
     {
         // Check local first
         EntityModel model = entities.model().getEntityModelFor( mixinType, Visibility.module );
@@ -178,6 +180,7 @@ public class ModuleInstance
     }
 
     public ModuleInstance findModuleForObject( Class type )
+        throws AmbiguousTypeException
     {
         // Check local first
         ObjectModel model = objects().model().getObjectModelFor( type, Visibility.module );

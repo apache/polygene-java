@@ -15,10 +15,17 @@
 package org.qi4j.composite;
 
 /**
- * TODO
+ * Fragments which want to be initialized can implement
+ * this callback interface. It will be invoked after
+ * the fragment has bee instantiated and all injections have been done.
  */
 public interface Initializable
 {
+    /**
+     * Initialize the fragment
+     *
+     * @throws ConstructionException if something went wrong
+     */
     void initialize()
         throws ConstructionException;
 }

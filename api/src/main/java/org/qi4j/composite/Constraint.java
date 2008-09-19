@@ -22,6 +22,17 @@ import java.lang.annotation.Annotation;
  */
 public interface Constraint<A extends Annotation, P>
 {
+    /**
+     * For each value or parameter which should be checked this method will be invoked.
+     * If the method returns true the value is valid. If it returns false the value
+     * is considered invalid. When all constraints have been checked a ConstraintViolationException
+     * will be thrown with all the constraint violations that were found.
+     *
+     * @param annotation the annotation to match
+     * @param value the value to be checked
+     * @return true if valid, false if invalid
+     * @throws NullPointerException NPE can be thrown if the value was null
+     */
     boolean isValid( A annotation, P value )
         throws NullPointerException;
 }

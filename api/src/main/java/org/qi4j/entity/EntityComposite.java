@@ -19,7 +19,7 @@ import org.qi4j.composite.Mixins;
 import org.qi4j.entity.association.AssociationMixin;
 
 /**
- * Entity domain objects must implement this interface.
+ * Entity Composites must extend this interface.
  */
 @Mixins( AssociationMixin.class )
 public interface EntityComposite extends Identity, Lifecycle, Entity, Composite

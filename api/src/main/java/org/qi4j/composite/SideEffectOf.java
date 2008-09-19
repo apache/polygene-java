@@ -27,5 +27,5 @@ import org.qi4j.composite.internal.SideEffectFor;
  */
 public abstract class SideEffectOf<T>
 {
-    @SideEffectFor protected T next;
+    final @SideEffectFor protected T next = null;
 }

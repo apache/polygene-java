@@ -23,7 +23,7 @@ import org.qi4j.composite.ConstraintDeclaration;
 import org.qi4j.injection.InjectionScope;
 
 /**
- * TODO
+ * Useful methods for handling Annotations.
  */
 public class AnnotationUtil
 {

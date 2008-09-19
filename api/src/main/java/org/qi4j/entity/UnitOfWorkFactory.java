@@ -21,8 +21,23 @@ import org.qi4j.usecase.Usecase;
  */
 public interface UnitOfWorkFactory
 {
+    /**
+     * Create a new UnitOfWork and associate
+     * it with the current thread.
+     *
+     * The UnitOfWork will use the default Usecase settings.
+     *
+     * @return a new UnitOfWork
+     */
     UnitOfWork newUnitOfWork();
 
+    /**
+     * Create a new UnitOfWork for the given Usecase and
+     * associate it with the current thread.
+     *
+     * @param usecase the Usecase for this UnitOfWork
+     * @return a new UnitOfWork
+     */
     UnitOfWork newUnitOfWork( Usecase usecase );
 
     /**

@@ -17,9 +17,8 @@ package org.qi4j.composite;
 import java.lang.annotation.Annotation;
 
 /**
- * When a constraint violation has occurred it is registered as a ConstraintViolation
- * and exposed through the @link{org.qi4j.composite.InvocationContext} for concerns and
- * mixins to use.
+ * When a constraint violation has occurred (i.e. Constraint.isValid has returned false) it
+ * is put in a collection of all violations that have occurred for this value check.
  */
 public class ConstraintViolation
 {

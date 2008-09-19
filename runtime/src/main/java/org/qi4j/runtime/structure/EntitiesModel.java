@@ -51,7 +51,7 @@ public class EntitiesModel
         }
     }
 
-    public EntityModel getEntityModelFor( Class mixinType, Visibility visibility )
+    public EntityModel getEntityModelFor( Class mixinType, Visibility visibility ) throws AmbiguousTypeException
     {
         EntityModel foundModel = null;
         for( EntityModel entityModel : entityModels )

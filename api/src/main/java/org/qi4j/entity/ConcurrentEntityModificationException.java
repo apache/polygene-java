@@ -15,7 +15,8 @@
 package org.qi4j.entity;
 
 /**
- * TODO
+ * This exception is thrown by UnitOfWork.complete() if any entities that are being committed
+ * had been changed while the UnitOfWork was being executed.
  */
 public class ConcurrentEntityModificationException extends UnitOfWorkCompletionException
 {
@@ -38,6 +39,12 @@ public class ConcurrentEntityModificationException extends UnitOfWorkCompletionE
         return "Entities changed concurrently :" + concurrentlyModifiedEntities;
     }
 
+    /**
+     * Convenience method to refresh all antities that had been modified.
+     *
+     * @param unitOfWork the UoW to refresh the entities in. This has to be the same UoW
+     * as the one they originaly came from.
+     */
     public void refreshEntities( UnitOfWork unitOfWork )
     {
         for( EntityComposite concurrentlyModifiedEntity : concurrentlyModifiedEntities )

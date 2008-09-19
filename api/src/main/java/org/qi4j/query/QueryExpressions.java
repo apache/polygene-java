@@ -53,7 +53,7 @@ public final class QueryExpressions
     private static QueryExpressionsProvider provider;
 
     /**
-     * Set the provider to be used
+     * Set the provider to be used. This is typically called by the runtime.
      *
      * @param provider the QueryExpressionsProvider
      */

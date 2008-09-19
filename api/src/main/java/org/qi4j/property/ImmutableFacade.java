@@ -20,6 +20,10 @@ package org.qi4j.property;
 import java.lang.reflect.Type;
 import org.qi4j.composite.NullArgumentException;
 
+/**
+ * Use the ImmutableFacade if you have a Property that you want to
+ * expose as an ImmutableProperty.
+ */
 public class ImmutableFacade<T>
     implements ImmutableProperty<T>
 {
