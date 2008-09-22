@@ -17,37 +17,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.library.swing.visualizer;
+package org.qi4j.library.swing.visualizer.internal;
 
-import org.qi4j.spi.structure.DescriptorVisitor;
-import org.qi4j.spi.structure.LayerDescriptor;
-import org.qi4j.spi.structure.ApplicationDescriptor;
-import org.qi4j.spi.structure.ModuleDescriptor;
-import org.qi4j.spi.composite.CompositeDescriptor;
-import org.qi4j.spi.composite.CompositeMethodDescriptor;
-import org.qi4j.spi.composite.MixinDescriptor;
-import org.qi4j.spi.composite.MethodConstraintsDescriptor;
-import org.qi4j.spi.composite.MethodConcernDescriptor;
-import org.qi4j.spi.composite.MethodSideEffectDescriptor;
-import org.qi4j.spi.composite.ConstraintDescriptor;
-import org.qi4j.spi.entity.EntityDescriptor;
-import org.qi4j.spi.object.ObjectDescriptor;
-import org.qi4j.service.ServiceDescriptor;
-import prefuse.data.Node;
-import prefuse.data.Graph;
-import prefuse.data.Edge;
-import java.util.Map;
-import java.util.HashMap;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Collections;
-import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.qi4j.service.ServiceDescriptor;
+import org.qi4j.spi.composite.CompositeDescriptor;
+import org.qi4j.spi.composite.CompositeMethodDescriptor;
+import org.qi4j.spi.composite.ConstraintDescriptor;
+import org.qi4j.spi.composite.MethodConcernDescriptor;
+import org.qi4j.spi.composite.MethodConstraintsDescriptor;
+import org.qi4j.spi.composite.MethodSideEffectDescriptor;
+import org.qi4j.spi.entity.EntityDescriptor;
+import org.qi4j.spi.object.ObjectDescriptor;
+import org.qi4j.spi.structure.ApplicationDescriptor;
+import org.qi4j.spi.structure.DescriptorVisitor;
+import org.qi4j.spi.structure.LayerDescriptor;
+import org.qi4j.spi.structure.ModuleDescriptor;
+import org.qi4j.library.swing.visualizer.ApplicationGraph;
+import prefuse.data.Edge;
+import prefuse.data.Graph;
+import prefuse.data.Node;
 
 /**
  * @author Sonny Gill
  */
-class ApplicationGraphVisitor extends DescriptorVisitor
+public class ApplicationGraphVisitor extends DescriptorVisitor
 {
     private final Graph graph;
     private final Node root;

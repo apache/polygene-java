@@ -15,11 +15,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.library.swing.visualizer;
+package org.qi4j.library.swing.visualizer.internal;
 
-import prefuse.visual.VisualItem;
-import prefuse.Display;
 import java.awt.geom.Rectangle2D;
+import prefuse.Display;
+import prefuse.visual.VisualItem;
+import org.qi4j.library.swing.visualizer.ApplicationGraph;
 
 /**
  * @author Sonny Gill

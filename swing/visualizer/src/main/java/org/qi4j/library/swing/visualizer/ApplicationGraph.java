@@ -15,42 +15,45 @@
  */
 package org.qi4j.library.swing.visualizer;
 
-import java.awt.Dimension;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.event.MouseEvent;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JSplitPane;
-import javax.swing.JScrollPane;
-import javax.swing.JTree;
-import javax.swing.JTextArea;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.JComponent;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.event.TreeSelectionListener;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTextArea;
+import javax.swing.JTree;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
-import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreePath;
-import org.qi4j.structure.Application;
-import org.qi4j.spi.structure.ApplicationSPI;
-import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.entity.association.AbstractAssociation;
 import org.qi4j.entity.association.GenericAssociationInfo;
+import org.qi4j.spi.composite.CompositeDescriptor;
+import org.qi4j.spi.structure.ApplicationSPI;
+import org.qi4j.structure.Application;
+import org.qi4j.library.swing.visualizer.internal.ApplicationGraphVisitor;
+import org.qi4j.library.swing.visualizer.internal.ApplicationPanel;
+import org.qi4j.library.swing.visualizer.internal.GraphUtils;
+import prefuse.controls.ControlAdapter;
 import prefuse.data.Graph;
 import prefuse.data.Node;
-import prefuse.controls.ControlAdapter;
 import prefuse.visual.VisualItem;
 
 /**
@@ -58,13 +61,13 @@ import prefuse.visual.VisualItem;
  */
 public class ApplicationGraph
 {
-    static final int TYPE_APPLICATION = 0;
-    static final int TYPE_LAYER = 1;
-    static final int TYPE_MODULE = 2;
-    static final int TYPE_COMPOSITE = 3;
-    static final int TYPE_GROUP = 4;
+    public static final int TYPE_APPLICATION = 0;
+    public static final int TYPE_LAYER = 1;
+    public static final int TYPE_MODULE = 2;
+    public static final int TYPE_COMPOSITE = 3;
+    public static final int TYPE_GROUP = 4;
 
-    static final int TYPE_EDGE_HIDDEN = 100;
+    public static final int TYPE_EDGE_HIDDEN = 100;
 
     private String applicationName;
     private ApplicationGraphVisitor appGraphVisitor;
@@ -321,10 +324,10 @@ public class ApplicationGraph
                 String fieldStr = "";
                 for( Annotation annotation : field.getAnnotations() )
                 {
-                    fieldStr += annotation.toString()+" ";
+                    fieldStr += annotation.toString() + " ";
                 }
 
-                fieldStr += field.getType().getSimpleName()+" "+field.getName();
+                fieldStr += field.getType().getSimpleName() + " " + field.getName();
 
                 node.add( new DefaultMutableTreeNode( fieldStr ) );
             }

@@ -15,16 +15,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.library.swing.visualizer.render;
+package org.qi4j.library.swing.visualizer.internal.render;
 
-import java.awt.Graphics2D;
 import java.awt.Font;
 import java.awt.FontMetrics;
-import java.awt.geom.Rectangle2D;
+import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
-import prefuse.visual.VisualItem;
+import java.awt.geom.Rectangle2D;
+import org.qi4j.library.swing.visualizer.internal.GraphConstants;
 import prefuse.render.Renderer;
-import org.qi4j.library.swing.visualizer.GraphConstants;
+import prefuse.visual.VisualItem;
 
 /**
  * @author Sonny Gill

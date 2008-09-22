@@ -17,12 +17,12 @@
  * limitations under the License. 
  */
 
-package org.qi4j.library.swing.visualizer.render;
+package org.qi4j.library.swing.visualizer.internal.render;
 
-import prefuse.visual.VisualItem;
-import java.awt.Graphics2D;
 import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
+import prefuse.visual.VisualItem;
 
 public class LayerRenderer
     extends AbstractRenderer

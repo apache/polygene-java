@@ -17,26 +17,26 @@
  * limitations under the License. 
  */
 
-package org.qi4j.library.swing.visualizer;
+package org.qi4j.library.swing.visualizer.internal;
 
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
-import java.awt.Rectangle;
 import java.awt.Point;
-import java.awt.Dimension;
+import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
-import java.util.Iterator;
-import java.util.TreeMap;
-import java.util.Collection;
-import java.util.Map;
-import java.util.HashMap;
 import java.util.ArrayList;
-import java.util.Set;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 import prefuse.action.layout.graph.TreeLayout;
+import prefuse.data.Node;
 import prefuse.render.Renderer;
 import prefuse.visual.NodeItem;
-import prefuse.data.Node;
 
 public class ApplicationLayout extends TreeLayout
 {

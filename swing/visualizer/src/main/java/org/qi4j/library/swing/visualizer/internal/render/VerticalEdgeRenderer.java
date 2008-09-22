@@ -15,18 +15,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.library.swing.visualizer.render;
+package org.qi4j.library.swing.visualizer.internal.render;
 
-import prefuse.render.EdgeRenderer;
-import prefuse.visual.VisualItem;
-import prefuse.visual.EdgeItem;
 import java.awt.Shape;
-import java.awt.geom.Rectangle2D;
-import java.awt.geom.Point2D;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
-import java.util.Map;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.util.HashMap;
+import java.util.Map;
+import prefuse.render.EdgeRenderer;
+import prefuse.visual.EdgeItem;
+import prefuse.visual.VisualItem;
 
 /**
  * @author Sonny Gill

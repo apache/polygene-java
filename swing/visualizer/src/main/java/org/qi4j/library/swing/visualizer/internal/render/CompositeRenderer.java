@@ -1,4 +1,5 @@
 /*
+ * Copyright 2008 Niclas Hedhman. All rights Reserved.
  * Copyright 2008 Sonny Gill. All Rights Reserved.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
@@ -15,24 +16,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.library.swing.visualizer.render;
+
+package org.qi4j.library.swing.visualizer.internal.render;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
+import prefuse.Visualization;
 import prefuse.visual.VisualItem;
 
-/**
- * @author Sonny Gill
- */
-public class GroupRenderer extends AbstractRenderer
+public class CompositeRenderer
+    extends AbstractRenderer
 {
-    private Color textColor = new Color( 129, 127, 121 );
+
+    private Color fillColor = new Color( 129, 127, 121 );
+    private Color textColor = Color.white;
+    private Color focusColor = new Color( 129, 200, 121 );
 
     public void render( Graphics2D g, VisualItem item )
     {
         Rectangle2D rect = item.getBounds();
+        int x = (int) rect.getX();
+        int y = (int) rect.getY();
+        int width = (int) rect.getWidth();
+        int height = (int) rect.getHeight();
+
+        if( item.isInGroup( Visualization.FOCUS_ITEMS ) )
+        {
+            g.setPaint( focusColor );
+        }
+        else
+        {
+            g.setPaint( fillColor );
+        }
+        g.fillRoundRect( x, y, width, height, 3, 3 );
+
         g.setPaint( textColor );
-        drawName( g, item, (int) rect.getX(), (int) rect.getY() );
+        drawName( g, item, x, y );
     }
+
 }

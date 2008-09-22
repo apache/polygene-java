@@ -20,13 +20,13 @@ import org.qi4j.bootstrap.LayerAssembly;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.Mixins;
-import org.qi4j.structure.Application;
-import org.qi4j.property.Property;
-import org.qi4j.library.constraints.annotation.NotNull;
+import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.association.Association;
 import org.qi4j.entity.association.AssociationMixin;
 import org.qi4j.entity.memory.MemoryEntityStoreService;
-import org.qi4j.entity.EntityComposite;
+import org.qi4j.library.constraints.annotation.NotNull;
+import org.qi4j.property.Property;
+import org.qi4j.structure.Application;
 
 /**
  * TODO
