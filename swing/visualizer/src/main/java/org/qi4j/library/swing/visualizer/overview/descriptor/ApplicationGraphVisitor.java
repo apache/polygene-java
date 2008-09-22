@@ -17,36 +17,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.library.swing.visualizer.application;
+package org.qi4j.library.swing.visualizer.overview.descriptor;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import org.qi4j.library.swing.visualizer.common.GraphConstants;
-import static org.qi4j.library.swing.visualizer.common.GraphConstants.FIELD_DESCRIPTOR;
-import static org.qi4j.library.swing.visualizer.common.GraphConstants.FIELD_LAYER_LEVEL;
-import static org.qi4j.library.swing.visualizer.common.GraphConstants.FIELD_NAME;
-import static org.qi4j.library.swing.visualizer.common.GraphConstants.FIELD_TYPE;
-import static org.qi4j.library.swing.visualizer.common.GraphConstants.FIELD_USED_BY_LAYERS;
-import static org.qi4j.library.swing.visualizer.common.GraphConstants.FIELD_USED_LAYERS;
-import static org.qi4j.library.swing.visualizer.common.GraphConstants.NodeType.APPLICATION;
-import static org.qi4j.library.swing.visualizer.common.GraphConstants.NodeType.COMPOSITE;
-import static org.qi4j.library.swing.visualizer.common.GraphConstants.NodeType.EDGE_HIDDEN;
-import static org.qi4j.library.swing.visualizer.common.GraphConstants.NodeType.GROUP;
-import static org.qi4j.library.swing.visualizer.common.GraphConstants.NodeType.LAYER;
-import static org.qi4j.library.swing.visualizer.common.GraphConstants.NodeType.MODULE;
-import org.qi4j.library.swing.visualizer.common.GraphUtils;
+import org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.FIELD_DESCRIPTOR;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.FIELD_LAYER_LEVEL;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.FIELD_NAME;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.FIELD_TYPE;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.FIELD_USED_BY_LAYERS;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.FIELD_USED_LAYERS;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.NodeType.APPLICATION;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.NodeType.COMPOSITE;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.NodeType.EDGE_HIDDEN;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.NodeType.ENTITY;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.NodeType.GROUP;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.NodeType.LAYER;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.NodeType.MODULE;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.NodeType.OBJECT;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.NodeType.SERVICE;
 import org.qi4j.service.ServiceDescriptor;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.composite.CompositeMethodDescriptor;
-import org.qi4j.spi.composite.ConstraintDescriptor;
 import org.qi4j.spi.composite.MethodConcernDescriptor;
 import org.qi4j.spi.composite.MethodConstraintsDescriptor;
 import org.qi4j.spi.composite.MethodSideEffectDescriptor;
+import org.qi4j.spi.composite.MixinDescriptor;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.object.ObjectDescriptor;
 import org.qi4j.spi.structure.ApplicationDescriptor;
@@ -58,11 +57,11 @@ import prefuse.data.Graph;
 import prefuse.data.Node;
 
 /**
- * TODO: Makes this package protected
+ * TODO: Makes this internal
  *
  * @author Sonny Gill
  */
-public class ApplicationGraphVisitor extends DescriptorVisitor
+public final class ApplicationGraphVisitor extends DescriptorVisitor
 {
     private final Graph graph;
 
@@ -82,12 +81,11 @@ public class ApplicationGraphVisitor extends DescriptorVisitor
     // Cache to lookup layer descriptor -> node
     private final Map<LayerDescriptor, Node> layerDescriptorToNodeMap = new HashMap<LayerDescriptor, Node>();
 
-    // Cache to lookup node -> descriptor
-    private final Map<Node, Object> descriptorsMap = new HashMap<Node, Object>();
+    // Cache of current composite descriptor
+    private CompositeDetailDescriptor currCompositeDescriptor;
 
-    private Map<Method, Map<String, List<Class>>> methodAttributesMap = new HashMap<Method, Map<String, List<Class>>>();
-    private Method currentMethod;
-    private Map<String, List<Class>> currentMethodAttributesMap;
+    // Cache of current composite method descriptor
+    private CompositeMethodDetailDescriptor currMethodDesciptor;
 
     public ApplicationGraphVisitor( Graph aGraph )
     {
@@ -198,12 +196,10 @@ public class ApplicationGraphVisitor extends DescriptorVisitor
         }
 
         Node node = graph.addNode();
-        node.setString( FIELD_NAME, GraphUtils.getCompositeName( aDescriptor.type() ) );
-        node.set( FIELD_TYPE, COMPOSITE );
+        node.setString( FIELD_NAME, aDescriptor.type().getSimpleName() );
+        node.set( FIELD_TYPE, SERVICE );
         node.set( FIELD_DESCRIPTOR, aDescriptor );
         addHiddenEdge( servicesNode, node );
-
-        descriptorsMap.put( node, aDescriptor );
     }
 
     public void visit( EntityDescriptor aDescriptor )
@@ -217,12 +213,10 @@ public class ApplicationGraphVisitor extends DescriptorVisitor
         }
 
         Node node = graph.addNode();
-        node.setString( FIELD_NAME, GraphUtils.getCompositeName( aDescriptor.type() ) );
-        node.set( FIELD_TYPE, COMPOSITE );
-        node.set( FIELD_DESCRIPTOR, aDescriptor );
+        node.setString( FIELD_NAME, aDescriptor.type().getSimpleName() );
+        node.set( FIELD_TYPE, ENTITY );
+        node.set( FIELD_DESCRIPTOR, new EntityDetailDescriptor( aDescriptor ) );
         addHiddenEdge( entitiesNode, node );
-
-        descriptorsMap.put( node, aDescriptor );
     }
 
     public void visit( CompositeDescriptor aDescriptor )
@@ -236,12 +230,38 @@ public class ApplicationGraphVisitor extends DescriptorVisitor
         }
 
         Node node = graph.addNode();
-        node.setString( FIELD_NAME, GraphUtils.getCompositeName( aDescriptor.type() ) );
+        node.setString( FIELD_NAME, aDescriptor.type().getSimpleName() );
         node.set( FIELD_TYPE, COMPOSITE );
-        node.set( FIELD_DESCRIPTOR, aDescriptor );
-        addHiddenEdge( compositesNode, node );
 
-        descriptorsMap.put( node, aDescriptor );
+        currCompositeDescriptor = new CompositeDetailDescriptor<CompositeDescriptor>( aDescriptor );
+        node.set( FIELD_DESCRIPTOR, currCompositeDescriptor );
+        addHiddenEdge( compositesNode, node );
+    }
+
+    public void visit( CompositeMethodDescriptor aDescriptor )
+    {
+        currMethodDesciptor = new CompositeMethodDetailDescriptor( aDescriptor );
+        currCompositeDescriptor.addMethod( currMethodDesciptor );
+    }
+
+    public void visit( MethodConstraintsDescriptor methodConstraintsDescriptor )
+    {
+        currMethodDesciptor.addConstraint( methodConstraintsDescriptor );
+    }
+
+    public void visit( MethodConcernDescriptor methodConcernDescriptor )
+    {
+        currMethodDesciptor.addConcern( methodConcernDescriptor );
+    }
+
+    public void visit( MethodSideEffectDescriptor methodSideEffectDescriptor )
+    {
+        currMethodDesciptor.addSideEffect( methodSideEffectDescriptor );
+    }
+
+    public void visit( MixinDescriptor mixinDescriptor )
+    {
+        currCompositeDescriptor.addMixin( mixinDescriptor );
     }
 
     public void visit( ObjectDescriptor aDescriptor )
@@ -256,59 +276,10 @@ public class ApplicationGraphVisitor extends DescriptorVisitor
         }
 
         Node node = graph.addNode();
-        node.setString( FIELD_NAME, GraphUtils.getCompositeName( aDescriptor.type() ) );
-        node.set( FIELD_TYPE, COMPOSITE );
+        node.setString( FIELD_NAME, aDescriptor.type().getSimpleName() );
+        node.set( FIELD_TYPE, OBJECT );
         node.set( FIELD_DESCRIPTOR, aDescriptor );
         addHiddenEdge( objectsNode, node );
-
-        descriptorsMap.put( node, aDescriptor );
-    }
-
-
-    public void visit( CompositeMethodDescriptor aDescriptor )
-    {
-        currentMethod = aDescriptor.method();
-        currentMethodAttributesMap = new HashMap<String, List<Class>>();
-
-        currentMethodAttributesMap.put( "constraints", new ArrayList<Class>() );
-        currentMethodAttributesMap.put( "concerns", new ArrayList<Class>() );
-        currentMethodAttributesMap.put( "sideEffects", new ArrayList<Class>() );
-        currentMethodAttributesMap.put( "mixins", Collections.singletonList( aDescriptor.mixin().mixinClass() ) );
-
-        methodAttributesMap.put( currentMethod, currentMethodAttributesMap );
-    }
-
-    public void visit( ConstraintDescriptor constraintDescriptor )
-    {
-        super.visit( constraintDescriptor );
-    }
-
-    public void visit( MethodConstraintsDescriptor methodConstraintsDescriptor )
-    {
-        List list = currentMethodAttributesMap.get( "constraints" );
-        list.add( methodConstraintsDescriptor.hashCode() ); // todo
-    }
-
-    public void visit( MethodConcernDescriptor methodConcernDescriptor )
-    {
-        List<Class> list = currentMethodAttributesMap.get( "concerns" );
-        list.add( methodConcernDescriptor.modifierClass() );
-    }
-
-    public void visit( MethodSideEffectDescriptor methodSideEffectDescriptor )
-    {
-        List<Class> list = currentMethodAttributesMap.get( "sideEffects" );
-        list.add( methodSideEffectDescriptor.modifierClass() );
-    }
-
-    public Object getCompositeDescriptor( Node node )
-    {
-        return descriptorsMap.get( node );
-    }
-
-    public Map<String, List<Class>> getMethodAttributes( Method m )
-    {
-        return methodAttributesMap.get( m );
     }
 
     private void addHiddenEdge( Node source, Node target )

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.qi4j.library.swing.visualizer.application;
+package org.qi4j.library.swing.visualizer.overview.internal;
 
 import java.awt.BorderLayout;
 import java.awt.Graphics2D;
@@ -48,7 +48,7 @@ import prefuse.util.display.PaintListener;
  * the eventhandler *NOT* to forward any changes to prefuse as long as set to false.
  */
 
-final class PrefuseJScrollPane extends JPanel
+public final class PrefuseJScrollPane extends JPanel
 {
     private static final long serialVersionUID = 1L;
 
@@ -100,7 +100,7 @@ final class PrefuseJScrollPane extends JPanel
     /**
      * Initializes an empty pane
      */
-    PrefuseJScrollPane()
+    public PrefuseJScrollPane()
     {
         super();
         initialize();
@@ -111,7 +111,7 @@ final class PrefuseJScrollPane extends JPanel
      *
      * @param display The prefuse <code>display</code>.
      */
-    PrefuseJScrollPane( Display display )
+    public PrefuseJScrollPane( Display display )
     {
         super();
         initialize();

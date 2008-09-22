@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.library.swing.visualizer.common;
+package org.qi4j.library.swing.visualizer.overview.internal.common;
 
 /**
  * @author Sonny Gill
@@ -33,7 +33,7 @@ public class GraphConstants
     public static final String FIELD_NAME = "name";
 
     /**
-     * @see org.qi4j.library.swing.visualizer.common.GraphConstants.NodeType
+     * @see GraphConstants.NodeType
      */
     public static final String FIELD_TYPE = "type";
 
@@ -45,7 +45,7 @@ public class GraphConstants
 //    public static final String FIELD_OBJECT = "object";
 
     /**
-     * @see org.qi4j.library.swing.visualizer.common.GraphConstants#FIELD_TYPE
+     * @see GraphConstants#FIELD_TYPE
      */
     public static enum NodeType
     {
@@ -53,6 +53,11 @@ public class GraphConstants
         LAYER,
         MODULE,
         COMPOSITE,
+        ENTITY,
+        SERVICE,
+        OBJECT,
+
+        // Internal usage
         GROUP,
         EDGE_HIDDEN
     }

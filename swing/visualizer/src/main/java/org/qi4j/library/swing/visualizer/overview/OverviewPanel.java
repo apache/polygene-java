@@ -13,7 +13,7 @@
  * limitations under the License.
  *
  */
-package org.qi4j.library.swing.visualizer.application;
+package org.qi4j.library.swing.visualizer.overview;
 
 import java.awt.BorderLayout;
 import static java.awt.BorderLayout.CENTER;
@@ -39,24 +39,20 @@ import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
-import org.qi4j.library.swing.visualizer.application.render.ApplicationRenderer;
-import org.qi4j.library.swing.visualizer.application.render.CompositeRenderer;
-import org.qi4j.library.swing.visualizer.application.render.GroupRenderer;
-import org.qi4j.library.swing.visualizer.application.render.LayerRenderer;
-import org.qi4j.library.swing.visualizer.application.render.ModuleRenderer;
-import org.qi4j.library.swing.visualizer.application.render.VerticalEdgeRenderer;
-import static org.qi4j.library.swing.visualizer.common.GraphConstants.FIELD_NAME;
-import static org.qi4j.library.swing.visualizer.common.GraphConstants.FIELD_TYPE;
-import static org.qi4j.library.swing.visualizer.common.GraphConstants.NodeType;
-import static org.qi4j.library.swing.visualizer.common.GraphConstants.NodeType.APPLICATION;
-import static org.qi4j.library.swing.visualizer.common.GraphConstants.NodeType.COMPOSITE;
-import static org.qi4j.library.swing.visualizer.common.GraphConstants.NodeType.EDGE_HIDDEN;
-import static org.qi4j.library.swing.visualizer.common.GraphConstants.NodeType.GROUP;
-import static org.qi4j.library.swing.visualizer.common.GraphConstants.NodeType.LAYER;
-import static org.qi4j.library.swing.visualizer.common.GraphConstants.NodeType.MODULE;
-import org.qi4j.library.swing.visualizer.common.GraphUtils;
+import org.qi4j.library.swing.visualizer.overview.descriptor.ApplicationGraphVisitor;
+import org.qi4j.library.swing.visualizer.overview.internal.ApplicationLayout;
+import org.qi4j.library.swing.visualizer.overview.internal.ItemSelectionControl;
+import org.qi4j.library.swing.visualizer.overview.internal.PrefuseJScrollPane;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.FIELD_NAME;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.FIELD_TYPE;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.NodeType;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.NodeType.APPLICATION;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.NodeType.EDGE_HIDDEN;
+import org.qi4j.library.swing.visualizer.overview.internal.render.RendererFactory;
+import org.qi4j.spi.structure.ApplicationSPI;
 import prefuse.Display;
 import prefuse.Visualization;
+import static prefuse.Visualization.FOCUS_ITEMS;
 import prefuse.action.Action;
 import prefuse.action.ActionList;
 import prefuse.action.RepaintAction;
@@ -74,8 +70,6 @@ import prefuse.data.expression.ObjectLiteral;
 import prefuse.data.expression.Predicate;
 import prefuse.data.expression.parser.ExpressionParser;
 import prefuse.data.tuple.TupleSet;
-import prefuse.render.DefaultRendererFactory;
-import prefuse.render.NullRenderer;
 import prefuse.util.ColorLib;
 import prefuse.util.display.DisplayLib;
 import prefuse.util.display.PaintListener;
@@ -87,7 +81,7 @@ import prefuse.visual.sort.ItemSorter;
 /**
  * TODO
  */
-public class ApplicationPanel extends JPanel
+public class OverviewPanel extends JPanel
 {
     private int animatedZoomDuration = 1000;
 
@@ -97,20 +91,27 @@ public class ApplicationPanel extends JPanel
 
     private Control selectionControl;
 
-    public ApplicationPanel( Graph aGraph, SelectionListener aListener )
+    public OverviewPanel( ApplicationSPI anApplication, SelectionListener aListener )
     {
         super( new BorderLayout() );
 
         selectionControl = new ItemSelectionControl( aListener );
 
-        visualization = createVisualization( aGraph );
-        createRenderers( visualization );
+        Graph graph = new Graph( true );
+        ApplicationGraphVisitor appGraphVisitor = new ApplicationGraphVisitor( graph );
+        anApplication.visitDescriptor( appGraphVisitor );
+
+        visualization = createVisualization( graph );
+
+        RendererFactory rendererFactory = new RendererFactory();
+        visualization.setRendererFactory( rendererFactory );
+
         createProcessingActions( visualization );
         display = createDisplay( visualization );
         launchDisplay( visualization );
         createPanningAndZoomingActions();
 
-        Node applicationNode = aGraph.getNode( 0 );
+        Node applicationNode = graph.getNode( 0 );
         applicationNodeItem = visualization.getVisualItem( "graph.nodes", applicationNode );
 
         JPanel controlsPanel = new JPanel( new FlowLayout( LEFT ) );
@@ -261,28 +262,6 @@ public class ApplicationPanel extends JPanel
         } );
     }
 
-    private void createRenderers( Visualization visualization )
-    {
-
-        DefaultRendererFactory rendererFactory = new DefaultRendererFactory();
-
-        rendererFactory.add( createPredicate( APPLICATION ), new ApplicationRenderer() );
-        rendererFactory.add( createPredicate( LAYER ), new LayerRenderer() );
-        rendererFactory.add( createPredicate( MODULE ), new ModuleRenderer() );
-        rendererFactory.add( createPredicate( COMPOSITE ), new CompositeRenderer() );
-        rendererFactory.add( createPredicate( GROUP ), new GroupRenderer() );
-        rendererFactory.add( createPredicate( EDGE_HIDDEN ), new NullRenderer() );
-
-        rendererFactory.setDefaultEdgeRenderer( new VerticalEdgeRenderer() );
-
-        visualization.setRendererFactory( rendererFactory );
-    }
-
-    private ComparisonPredicate createPredicate( NodeType value )
-    {
-        return new ComparisonPredicate( EQ, new ColumnExpression( FIELD_TYPE ), new ObjectLiteral( value ) );
-    }
-
     private Visualization createVisualization( Graph graph )
     {
         // add the graph to the visualization as the data group "graph"
@@ -366,7 +345,7 @@ public class ApplicationPanel extends JPanel
         {
 
             Rectangle2D bounds = applicationNodeItem.getBounds();
-            if( GraphUtils.displaySizeFitsScaledBounds( display, bounds ) )
+            if( displaySizeFitsScaledBounds( display, bounds ) )
             {
                 return;
             }
@@ -449,7 +428,7 @@ public class ApplicationPanel extends JPanel
 
     public void clearCompositeSelection()
     {
-        TupleSet focusGroup = visualization.getGroup( Visualization.FOCUS_ITEMS );
+        TupleSet focusGroup = visualization.getGroup( FOCUS_ITEMS );
         focusGroup.clear();
         repaint();
     }
@@ -459,7 +438,7 @@ public class ApplicationPanel extends JPanel
         String query = FIELD_NAME + " = '" + name + "'";
         Predicate predicate = (Predicate) ExpressionParser.parse( query );
 
-        TupleSet focusGroup = visualization.getGroup( Visualization.FOCUS_ITEMS );
+        TupleSet focusGroup = visualization.getGroup( FOCUS_ITEMS );
         focusGroup.clear();
         Iterator iterator = visualization.items( predicate );
         while( iterator.hasNext() )
@@ -580,7 +559,7 @@ public class ApplicationPanel extends JPanel
                 int height = d.getHeight();
                 if( width > lastWidth || height > lastHeight )
                 {
-                    if( GraphUtils.displaySizeContainsScaledBounds( d, applicationNodeItem.getBounds() ) )
+                    if( displaySizeContainsScaledBounds( d, applicationNodeItem.getBounds() ) )
                     {
                         zoomToFit();
                     }
@@ -634,5 +613,17 @@ public class ApplicationPanel extends JPanel
                 m_yDown = -1;
             }
         }
+    }
+
+    public static boolean displaySizeFitsScaledBounds( Display display, Rectangle2D bounds )
+    {
+        double scale = display.getScale();
+        return ( bounds.getWidth() * scale == display.getWidth() ) && ( bounds.getHeight() * scale == display.getHeight() );
+    }
+
+    public static boolean displaySizeContainsScaledBounds( Display display, Rectangle2D bounds )
+    {
+        double scale = display.getScale();
+        return ( display.getWidth() > bounds.getWidth() * scale ) && ( display.getHeight() > bounds.getHeight() * scale );
     }
 }

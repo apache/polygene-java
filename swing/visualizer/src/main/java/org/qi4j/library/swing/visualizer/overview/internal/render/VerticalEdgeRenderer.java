@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.library.swing.visualizer.application.render;
+package org.qi4j.library.swing.visualizer.overview.internal.render;
 
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
@@ -31,7 +31,7 @@ import prefuse.visual.VisualItem;
 /**
  * @author Sonny Gill
  */
-public class VerticalEdgeRenderer
+final class VerticalEdgeRenderer
     extends EdgeRenderer
 {
 
@@ -41,7 +41,7 @@ public class VerticalEdgeRenderer
     private static final int edgeRectWidth = 10;
     private static final int halfWidth = edgeRectWidth / 2;
 
-    protected Shape getRawShape( VisualItem item )
+    protected final Shape getRawShape( VisualItem item )
     {
         Line2D line = getConnectingLine( (EdgeItem) item );
         if( line != null )

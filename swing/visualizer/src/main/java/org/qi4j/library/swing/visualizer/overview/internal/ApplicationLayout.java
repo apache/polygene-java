@@ -17,7 +17,7 @@
  * limitations under the License. 
  */
 
-package org.qi4j.library.swing.visualizer.application;
+package org.qi4j.library.swing.visualizer.overview.internal;
 
 import java.awt.Dimension;
 import java.awt.Font;
@@ -33,13 +33,13 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-import org.qi4j.library.swing.visualizer.common.GraphConstants;
+import org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants;
 import prefuse.action.layout.graph.TreeLayout;
 import prefuse.data.Node;
 import prefuse.render.Renderer;
 import prefuse.visual.NodeItem;
 
-final class ApplicationLayout extends TreeLayout
+public final class ApplicationLayout extends TreeLayout
 {
 
     public ApplicationLayout( String group )

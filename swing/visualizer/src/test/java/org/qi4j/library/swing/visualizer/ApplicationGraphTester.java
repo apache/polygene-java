@@ -114,6 +114,7 @@ public class ApplicationGraphTester
     @Mixins( AssociationMixin.class )
     private static interface BDomainComposite extends Composite
     {
+        @NotNull
         Association<ADomainComposite> aComposites();
     }
 

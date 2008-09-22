@@ -14,14 +14,18 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.qi4j.library.swing.visualizer.application;
+package org.qi4j.library.swing.visualizer.overview.internal;
 
 import java.awt.event.MouseEvent;
 import org.qi4j.composite.NullArgumentException;
-import org.qi4j.library.swing.visualizer.common.GraphConstants;
-import static org.qi4j.library.swing.visualizer.common.GraphConstants.FIELD_TYPE;
-import static org.qi4j.library.swing.visualizer.common.GraphConstants.NodeType;
-import org.qi4j.spi.composite.CompositeDescriptor;
+import org.qi4j.library.swing.visualizer.overview.SelectionListener;
+import org.qi4j.library.swing.visualizer.overview.descriptor.CompositeDetailDescriptor;
+import org.qi4j.library.swing.visualizer.overview.descriptor.EntityDetailDescriptor;
+import org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.FIELD_TYPE;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.NodeType;
+import org.qi4j.service.ServiceDescriptor;
+import org.qi4j.spi.object.ObjectDescriptor;
 import org.qi4j.spi.structure.ApplicationDescriptor;
 import org.qi4j.spi.structure.LayerDescriptor;
 import org.qi4j.spi.structure.ModuleDescriptor;
@@ -31,11 +35,11 @@ import prefuse.visual.VisualItem;
 /**
  * @author edward.yakop@gmail.com
  */
-final class ItemSelectionControl extends ControlAdapter
+public final class ItemSelectionControl extends ControlAdapter
 {
     private final SelectionListener listener;
 
-    ItemSelectionControl( SelectionListener aListener )
+    public ItemSelectionControl( SelectionListener aListener )
         throws IllegalArgumentException
     {
         NullArgumentException.validateNotNull( "aListener", aListener );
@@ -50,19 +54,31 @@ final class ItemSelectionControl extends ControlAdapter
         {
         case APPLICATION:
             ApplicationDescriptor appDesc = (ApplicationDescriptor) descriptor;
-            listener.onSelected( appDesc );
-            break;
-        case COMPOSITE:
-            CompositeDescriptor compDesc = (CompositeDescriptor) descriptor;
-            listener.onSelected( compDesc );
+            listener.onApplicationSelected( appDesc );
             break;
         case LAYER:
             LayerDescriptor layerDesc = (LayerDescriptor) descriptor;
-            listener.onSelected( layerDesc );
+            listener.onLayerSelected( layerDesc );
             break;
         case MODULE:
             ModuleDescriptor moduleDesc = (ModuleDescriptor) descriptor;
-            listener.onSelected( moduleDesc );
+            listener.onModuleSelected( moduleDesc );
+            break;
+        case COMPOSITE:
+            CompositeDetailDescriptor compDesc = (CompositeDetailDescriptor) descriptor;
+            listener.onCompositeSelected( compDesc );
+            break;
+        case ENTITY:
+            EntityDetailDescriptor entDesc = (EntityDetailDescriptor) descriptor;
+            listener.onEntitySelected( entDesc );
+            break;
+        case SERVICE:
+            ServiceDescriptor srvDesc = (ServiceDescriptor) descriptor;
+            listener.onServiceSelected( srvDesc );
+            break;
+        case OBJECT:
+            ObjectDescriptor objDesc = (ObjectDescriptor) descriptor;
+            listener.onObjectSelected( objDesc );
             break;
         }
     }
