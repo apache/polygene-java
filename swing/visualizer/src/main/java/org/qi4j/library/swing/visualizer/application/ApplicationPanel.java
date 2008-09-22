@@ -13,11 +13,12 @@
  * limitations under the License.
  *
  */
-package org.qi4j.library.swing.visualizer.internal;
+package org.qi4j.library.swing.visualizer.application;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -35,14 +36,20 @@ import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
-import org.qi4j.library.swing.visualizer.internal.render.ApplicationRenderer;
-import org.qi4j.library.swing.visualizer.internal.render.CompositeRenderer;
-import org.qi4j.library.swing.visualizer.internal.render.GroupRenderer;
-import org.qi4j.library.swing.visualizer.internal.render.LayerRenderer;
-import org.qi4j.library.swing.visualizer.internal.render.ModuleRenderer;
-import org.qi4j.library.swing.visualizer.internal.render.VerticalEdgeRenderer;
+import org.qi4j.library.swing.visualizer.application.render.ApplicationRenderer;
+import org.qi4j.library.swing.visualizer.application.render.CompositeRenderer;
+import org.qi4j.library.swing.visualizer.application.render.GroupRenderer;
+import org.qi4j.library.swing.visualizer.application.render.LayerRenderer;
+import org.qi4j.library.swing.visualizer.application.render.ModuleRenderer;
+import org.qi4j.library.swing.visualizer.application.render.VerticalEdgeRenderer;
+import static org.qi4j.library.swing.visualizer.common.GraphConstants.FIELD_NAME;
+import static org.qi4j.library.swing.visualizer.common.GraphConstants.FIELD_TYPE;
+import static org.qi4j.library.swing.visualizer.common.GraphConstants.NodeType;
+import static org.qi4j.library.swing.visualizer.common.GraphConstants.NodeType.APPLICATION;
+import org.qi4j.library.swing.visualizer.common.GraphUtils;
 import prefuse.Display;
 import prefuse.Visualization;
+import prefuse.action.Action;
 import prefuse.action.ActionList;
 import prefuse.action.RepaintAction;
 import prefuse.action.assignment.ColorAction;
@@ -70,13 +77,6 @@ import prefuse.visual.sort.ItemSorter;
  */
 public class ApplicationPanel extends JPanel
 {
-    static final int TYPE_APPLICATION = 0;
-    static final int TYPE_LAYER = 1;
-    static final int TYPE_MODULE = 2;
-    static final int TYPE_COMPOSITE = 3;
-
-    static final int TYPE_EDGE_HIDDEN = 100;
-
     private int animatedZoomDuration = 1000;
 
     private Visualization visualization;
@@ -85,19 +85,19 @@ public class ApplicationPanel extends JPanel
 
     private Control compositeSelectionControl;
 
-    public ApplicationPanel( Graph graph, Control compositeSelectionControl )
+    public ApplicationPanel( Graph aGraph, Control aControl )
     {
         super( new BorderLayout() );
-        this.compositeSelectionControl = compositeSelectionControl;
+        compositeSelectionControl = aControl;
 
-        visualization = createVisualization( graph );
+        visualization = createVisualization( aGraph );
         createRenderers( visualization );
         createProcessingActions( visualization );
         display = createDisplay( visualization );
         launchDisplay( visualization, display );
         createPanningAndZoomingActions();
 
-        Node applicationNode = graph.getNode( 0 );
+        Node applicationNode = aGraph.getNode( 0 );
         applicationNodeItem = visualization.getVisualItem( "graph.nodes", applicationNode );
 
         JPanel controlsPanel = new JPanel( new FlowLayout( FlowLayout.LEFT ) );
@@ -114,6 +114,7 @@ public class ApplicationPanel extends JPanel
         add( controlsPanel, BorderLayout.NORTH );
         add( new PrefuseJScrollPane( display ), BorderLayout.CENTER );
 
+        setPreferredSize( new Dimension( 800, 600 ) );
     }
 
     private void createPanningAndZoomingActions()
@@ -195,7 +196,8 @@ public class ApplicationPanel extends JPanel
             public int score( VisualItem item )
             {
                 // First draw the Application box, then the edges, then other nodes
-                if( item.getInt( GraphConstants.FIELD_TYPE ) == TYPE_APPLICATION )
+                NodeType type = NodeType.valueOf( item.getInt( FIELD_TYPE ) );
+                if( APPLICATION.equals( type ) )
                 {
                     return 0;
                 }
@@ -227,7 +229,7 @@ public class ApplicationPanel extends JPanel
         visualization.putAction( "color", color );
         visualization.putAction( "layout", layout );
         visualization.putAction( "repaint", new RepaintAction() );
-        visualization.putAction( "hideEdges", new prefuse.action.Action()
+        visualization.putAction( "hideEdges", new Action()
         {
 
             public void run( double frac )
@@ -432,7 +434,7 @@ public class ApplicationPanel extends JPanel
 
     public void selectComposite( String name )
     {
-        String query = GraphConstants.FIELD_NAME + " = '" + name + "'";
+        String query = FIELD_NAME + " = '" + name + "'";
         Predicate predicate = (Predicate) ExpressionParser.parse( query );
 
         TupleSet focusGroup = visualization.getGroup( Visualization.FOCUS_ITEMS );

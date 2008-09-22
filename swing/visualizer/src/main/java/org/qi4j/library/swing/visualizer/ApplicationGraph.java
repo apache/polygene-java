@@ -15,7 +15,7 @@
  */
 package org.qi4j.library.swing.visualizer;
 
-import java.awt.Color;
+import static java.awt.Color.white;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.MouseEvent;
@@ -33,9 +33,11 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import static javax.swing.JSplitPane.HORIZONTAL_SPLIT;
+import static javax.swing.JSplitPane.VERTICAL_SPLIT;
 import javax.swing.JTextArea;
 import javax.swing.JTree;
-import javax.swing.ScrollPaneConstants;
+import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -45,12 +47,12 @@ import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreePath;
 import org.qi4j.entity.association.AbstractAssociation;
 import org.qi4j.entity.association.GenericAssociationInfo;
+import org.qi4j.library.swing.visualizer.application.ApplicationPanel;
+import org.qi4j.library.swing.visualizer.common.ApplicationGraphVisitor;
+import org.qi4j.library.swing.visualizer.common.GraphUtils;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.structure.ApplicationSPI;
 import org.qi4j.structure.Application;
-import org.qi4j.library.swing.visualizer.internal.ApplicationGraphVisitor;
-import org.qi4j.library.swing.visualizer.internal.ApplicationPanel;
-import org.qi4j.library.swing.visualizer.internal.GraphUtils;
 import prefuse.controls.ControlAdapter;
 import prefuse.data.Graph;
 import prefuse.data.Node;
@@ -61,38 +63,39 @@ import prefuse.visual.VisualItem;
  */
 public class ApplicationGraph
 {
-    public static final int TYPE_APPLICATION = 0;
-    public static final int TYPE_LAYER = 1;
-    public static final int TYPE_MODULE = 2;
-    public static final int TYPE_COMPOSITE = 3;
-    public static final int TYPE_GROUP = 4;
-
-    public static final int TYPE_EDGE_HIDDEN = 100;
-
-    private String applicationName;
     private ApplicationGraphVisitor appGraphVisitor;
     private ApplicationPanel applicationPanel;
-    private JSplitPane bottomPane;
+    private JSplitPane bottomPanel;
 
-    private Dimension methodsPaneSize = new Dimension( 300, 200 );
+    private static Dimension methodsPaneSize = new Dimension( 300, 200 );
 
-    public void show( Application application )
+    public void show( Application anApplication )
+        throws IllegalArgumentException
     {
-        JFrame frame = new JFrame( "Qi4j Application Graph" );
+        if( !( anApplication instanceof ApplicationSPI ) )
+        {
+            String className = ApplicationSPI.class.getName();
+            throw new IllegalArgumentException(
+                "Argument [anApplication] must not be an instance of [" + className + "]"
+            );
 
+        }
+
+        // Application Panel
         Graph graph = new Graph( true );
         appGraphVisitor = new ApplicationGraphVisitor( graph );
-        ( (ApplicationSPI) application ).visitDescriptor( appGraphVisitor );
+
+        ApplicationSPI appSPI = (ApplicationSPI) anApplication;
+        appSPI.visitDescriptor( appGraphVisitor );
         applicationPanel = new ApplicationPanel( graph, new CompositeSelectionControl() );
 
-//        applicationPanel.setMinimumSize( new Dimension( 400, 400 ) );
-        applicationPanel.setPreferredSize( new Dimension( 800, 600 ) );
-        JPanel panel = new JPanel();
-        panel.setPreferredSize( methodsPaneSize );
-        panel.setBackground( Color.white );
-        bottomPane = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT, panel, getDetailsPane() );
+        // Bottom panel
+        bottomPanel = createBottomPanel();
 
-        JSplitPane mainPane = new JSplitPane( JSplitPane.VERTICAL_SPLIT, applicationPanel, bottomPane );
+        // Assemble the frame
+        String applicatioName = anApplication.name();
+        JFrame frame = new JFrame( "Application [" + applicatioName + "] Graph" );
+        JSplitPane mainPane = new JSplitPane( VERTICAL_SPLIT, applicationPanel, bottomPanel );
         mainPane.setOneTouchExpandable( true );
         frame.add( mainPane );
 
@@ -101,40 +104,24 @@ public class ApplicationGraph
         frame.setVisible( true );
 
         applicationPanel.graphShown();
-
     }
 
-    public void setTreeState( JTree tree, boolean expanded )
+    private JSplitPane createBottomPanel()
     {
-        Object root = tree.getModel().getRoot();
-        setTreeState( tree, new TreePath( root ), expanded );
+        // Left panel
+        JPanel leftPanel = new JPanel();
+        leftPanel.setPreferredSize( methodsPaneSize );
+        leftPanel.setBackground( white );
+
+        // right panel
+        JComponent rightPanel = createDetailsPanel();
+        return new JSplitPane( HORIZONTAL_SPLIT, leftPanel, rightPanel );
     }
 
-    public void setTreeState( JTree tree, TreePath path, boolean expanded )
-    {
-        Object lastNode = path.getLastPathComponent();
-        for( int i = 0; i < tree.getModel().getChildCount( lastNode ); i++ )
-        {
-            Object child = tree.getModel().getChild( lastNode, i );
-            TreePath pathToChild = path.pathByAddingChild( child );
-            setTreeState( tree, pathToChild, expanded );
-        }
-        if( expanded )
-        {
-            tree.expandPath( path );
-        }
-        else
-        {
-            tree.collapsePath( path );
-        }
-
-
-    }
-
-    private JComponent getDetailsPane()
+    private JComponent createDetailsPanel()
     {
         JPanel detailsPanel = new JPanel();
-        detailsPanel.setBackground( Color.white );
+        detailsPanel.setBackground( white );
 
         StringBuilder buf = new StringBuilder();
         buf.append( "Controls - \n" );
@@ -146,10 +133,37 @@ public class ApplicationGraph
         textArea.setText( buf.toString() );
 
         JScrollPane pane = new JScrollPane( textArea );
-        pane.setHorizontalScrollBarPolicy( ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER );
-
+        pane.setHorizontalScrollBarPolicy( HORIZONTAL_SCROLLBAR_NEVER );
         return pane;
     }
+
+
+    private void setTreeState( JTree tree, boolean expanded )
+    {
+        Object root = tree.getModel().getRoot();
+        setTreeState( tree, new TreePath( root ), expanded );
+    }
+
+    private void setTreeState( JTree tree, TreePath path, boolean expanded )
+    {
+        Object lastNode = path.getLastPathComponent();
+        for( int i = 0; i < tree.getModel().getChildCount( lastNode ); i++ )
+        {
+            Object child = tree.getModel().getChild( lastNode, i );
+            TreePath pathToChild = path.pathByAddingChild( child );
+            setTreeState( tree, pathToChild, expanded );
+        }
+
+        if( expanded )
+        {
+            tree.expandPath( path );
+        }
+        else
+        {
+            tree.collapsePath( path );
+        }
+    }
+
 
     private class CompositeSelectionControl extends ControlAdapter
     {
@@ -204,7 +218,7 @@ public class ApplicationGraph
                                     System.out.println( annotation.annotationType() + ", " + annotation.toString() + "\n" );
                                 }
 
-                                Map<String, List> map = appGraphVisitor.getMethodAttributes( method );
+                                Map<String, List<Class>> map = appGraphVisitor.getMethodAttributes( method );
 
                                 List constraints = map.get( "constraints" );
                                 List concerns = map.get( "concerns" );
@@ -214,7 +228,7 @@ public class ApplicationGraph
 
                                 JTree mixinTree = new MixinTree( mixinClass, constraints, concerns, sideEffects );
                                 JScrollPane scrollPane = new JScrollPane( mixinTree );
-                                bottomPane.setRightComponent( scrollPane );
+                                bottomPanel.setRightComponent( scrollPane );
 
                             }
 
@@ -248,7 +262,7 @@ public class ApplicationGraph
                     setTreeState( tree, true );
                     JScrollPane pane = new JScrollPane( tree );
                     pane.setPreferredSize( methodsPaneSize );
-                    bottomPane.setLeftComponent( pane );
+                    bottomPanel.setLeftComponent( pane );
                 }
             }
         }

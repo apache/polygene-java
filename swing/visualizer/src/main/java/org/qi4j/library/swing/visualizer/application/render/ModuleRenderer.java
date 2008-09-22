@@ -17,33 +17,37 @@
  * limitations under the License. 
  */
 
-package org.qi4j.library.swing.visualizer.internal.render;
+package org.qi4j.library.swing.visualizer.application.render;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 import prefuse.visual.VisualItem;
 
-public class LayerRenderer
+public class ModuleRenderer
     extends AbstractRenderer
 {
 
-    private Color fillColor = new Color( 242, 238, 229 );
+    private Color borderColor = new Color( 207, 202, 188 );
+    private BasicStroke borderStroke = new BasicStroke( 2 );
+    private Color fillColor = new Color( 247, 245, 239 );
     private Color textColor = new Color( 129, 127, 121 );
-
-    // todo drop shadow
 
     public void render( Graphics2D g, VisualItem item )
     {
         Rectangle2D rect = item.getBounds();
-
         int x = (int) rect.getX();
         int y = (int) rect.getY();
         int width = (int) rect.getWidth();
         int height = (int) rect.getHeight();
 
+        g.setPaint( borderColor );
+        g.setStroke( borderStroke );
+        g.drawRoundRect( x, y, width, height, 3, 3 );
+
         g.setPaint( fillColor );
-        g.fillRect( x, y, width, height );
+        g.fillRoundRect( x + 1, y + 1, width - 2, height - 2, 3, 3 );
 
         g.setPaint( textColor );
         drawName( g, item, x, y );

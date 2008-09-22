@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.qi4j.library.swing.visualizer.internal;
+package org.qi4j.library.swing.visualizer.application;
 
 import java.awt.BorderLayout;
 import java.awt.Graphics2D;

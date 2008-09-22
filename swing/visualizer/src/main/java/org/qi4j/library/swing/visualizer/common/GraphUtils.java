@@ -15,12 +15,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.library.swing.visualizer.internal;
+package org.qi4j.library.swing.visualizer.common;
 
 import java.awt.geom.Rectangle2D;
+import static org.qi4j.library.swing.visualizer.common.GraphConstants.FIELD_NAME;
+import static org.qi4j.library.swing.visualizer.common.GraphConstants.FIELD_TYPE;
+import static org.qi4j.library.swing.visualizer.common.GraphConstants.NodeType.COMPOSITE;
 import prefuse.Display;
 import prefuse.visual.VisualItem;
-import org.qi4j.library.swing.visualizer.ApplicationGraph;
 
 /**
  * @author Sonny Gill
@@ -30,12 +32,13 @@ public class GraphUtils
 
     public static boolean isComposite( VisualItem item )
     {
-        return item.getInt( GraphConstants.FIELD_TYPE ) == ApplicationGraph.TYPE_COMPOSITE;
+        int itemType = item.getInt( FIELD_TYPE );
+        return itemType == COMPOSITE.code();
     }
 
     public static String getItemName( VisualItem item )
     {
-        return item.getString( GraphConstants.FIELD_NAME );
+        return item.getString( FIELD_NAME );
     }
 
     public static String getCompositeName( Class type )

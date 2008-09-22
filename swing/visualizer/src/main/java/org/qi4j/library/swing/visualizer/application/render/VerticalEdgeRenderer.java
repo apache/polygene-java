@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.library.swing.visualizer.internal.render;
+package org.qi4j.library.swing.visualizer.application.render;
 
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;

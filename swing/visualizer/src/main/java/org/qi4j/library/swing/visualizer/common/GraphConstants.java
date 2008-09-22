@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.library.swing.visualizer.internal;
+package org.qi4j.library.swing.visualizer.common;
 
 /**
  * @author Sonny Gill
@@ -36,4 +36,53 @@ public class GraphConstants
     public static final String FIELD_USED_LAYERS = "used_layers";
     public static final String FIELD_USED_BY_LAYERS = "used_by_layers";
 //    public static final String FIELD_OBJECT = "object";
+
+    public static enum NodeType
+    {
+        APPLICATION( 0 ),
+        LAYER( 1 ),
+        MODULE( 2 ),
+        COMPOSITE( 3 ),
+        GROUP( 4 ),
+        EDGE_HIDDEN( 100 );
+
+        private final int code;
+
+        private NodeType( int aCode )
+        {
+            code = aCode;
+        }
+
+        /**
+         * @return Integer representation of {@code NodeType}.
+         */
+        public int code()
+        {
+            return code;
+        }
+
+        /**
+         * Convert the specied {@code aCode} to node type.
+         * Returns {@code null} if not found.
+         *
+         * @param aCode code to convert.
+         * @return Node type given specified code.
+         */
+        public static NodeType valueOf( int aCode )
+        {
+            NodeType[] values = values();
+            for( NodeType value : values )
+            {
+                if( value.code == aCode )
+                {
+                    return value;
+                }
+            }
+            return null;
+        }
+    }
+
+    private GraphConstants()
+    {
+    }
 }

@@ -17,7 +17,7 @@
  * limitations under the License. 
  */
 
-package org.qi4j.library.swing.visualizer.internal.render;
+package org.qi4j.library.swing.visualizer.application.render;
 
 import java.awt.BasicStroke;
 import java.awt.Color;

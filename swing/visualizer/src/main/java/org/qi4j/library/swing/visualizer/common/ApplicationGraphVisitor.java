@@ -17,7 +17,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.library.swing.visualizer.internal;
+package org.qi4j.library.swing.visualizer.common;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -26,6 +26,17 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import static org.qi4j.library.swing.visualizer.common.GraphConstants.FIELD_LAYER_LEVEL;
+import static org.qi4j.library.swing.visualizer.common.GraphConstants.FIELD_NAME;
+import static org.qi4j.library.swing.visualizer.common.GraphConstants.FIELD_TYPE;
+import static org.qi4j.library.swing.visualizer.common.GraphConstants.FIELD_USED_BY_LAYERS;
+import static org.qi4j.library.swing.visualizer.common.GraphConstants.FIELD_USED_LAYERS;
+import static org.qi4j.library.swing.visualizer.common.GraphConstants.NodeType.APPLICATION;
+import static org.qi4j.library.swing.visualizer.common.GraphConstants.NodeType.COMPOSITE;
+import static org.qi4j.library.swing.visualizer.common.GraphConstants.NodeType.EDGE_HIDDEN;
+import static org.qi4j.library.swing.visualizer.common.GraphConstants.NodeType.GROUP;
+import static org.qi4j.library.swing.visualizer.common.GraphConstants.NodeType.LAYER;
+import static org.qi4j.library.swing.visualizer.common.GraphConstants.NodeType.MODULE;
 import org.qi4j.service.ServiceDescriptor;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.composite.CompositeMethodDescriptor;
@@ -39,7 +50,6 @@ import org.qi4j.spi.structure.ApplicationDescriptor;
 import org.qi4j.spi.structure.DescriptorVisitor;
 import org.qi4j.spi.structure.LayerDescriptor;
 import org.qi4j.spi.structure.ModuleDescriptor;
-import org.qi4j.library.swing.visualizer.ApplicationGraph;
 import prefuse.data.Edge;
 import prefuse.data.Graph;
 import prefuse.data.Node;
@@ -50,37 +60,52 @@ import prefuse.data.Node;
 public class ApplicationGraphVisitor extends DescriptorVisitor
 {
     private final Graph graph;
-    private final Node root;
-    private Node layerNode;
-    private Node moduleNode;
 
+    // Root node
+    private final Node root;
+
+    // Layer node
+    private Node layerNode;
+
+    // Module related temp variables
+    private Node moduleNode;
     private Node servicesNode;
     private Node entitiesNode;
     private Node compositesNode;
     private Node objectsNode;
 
+    // Cache to lookup layer descriptor -> node
     private final Map<LayerDescriptor, Node> layerDescriptorToNodeMap = new HashMap<LayerDescriptor, Node>();
+
+    // Cache to lookup node -> descriptor
     private final Map<Node, Object> descriptorsMap = new HashMap<Node, Object>();
+
+    private Map<Method, Map<String, List<Class>>> methodAttributesMap = new HashMap<Method, Map<String, List<Class>>>();
+    private Method currentMethod;
+    private Map<String, List<Class>> currentMethodAttributesMap;
 
     public ApplicationGraphVisitor( Graph graph )
     {
         this.graph = graph;
 
-        graph.addColumn( GraphConstants.FIELD_NAME, String.class );
-        graph.addColumn( GraphConstants.FIELD_TYPE, int.class );
-        graph.addColumn( GraphConstants.FIELD_LAYER_LEVEL, int.class );
-        graph.addColumn( GraphConstants.FIELD_USED_LAYERS, Collection.class );
-        graph.addColumn( GraphConstants.FIELD_USED_BY_LAYERS, Collection.class );
+        graph.addColumn( FIELD_NAME, String.class );
+        graph.addColumn( FIELD_TYPE, int.class );
+        graph.addColumn( FIELD_LAYER_LEVEL, int.class );
+        graph.addColumn( FIELD_USED_LAYERS, Collection.class );
+        graph.addColumn( FIELD_USED_BY_LAYERS, Collection.class );
+
         root = graph.addNode();
-        root.setInt( GraphConstants.FIELD_TYPE, ApplicationGraph.TYPE_APPLICATION );
+        root.setInt( FIELD_TYPE, APPLICATION.code() );
     }
 
-    @Override public void visit( ApplicationDescriptor applicationDescriptor )
+    @Override
+    public void visit( ApplicationDescriptor applicationDescriptor )
     {
-        root.setString( GraphConstants.FIELD_NAME, applicationDescriptor.name() );
+        root.setString( FIELD_NAME, applicationDescriptor.name() );
     }
 
-    @Override public void visit( LayerDescriptor layerDescriptor )
+    @Override
+    public void visit( LayerDescriptor layerDescriptor )
     {
         layerNode = getLayerNode( layerDescriptor );
 
@@ -103,50 +128,54 @@ public class ApplicationGraphVisitor extends DescriptorVisitor
         {
             layer = graph.addNode();
             String name = layerDescriptor.name();
-            layer.setString( GraphConstants.FIELD_NAME, name );
-            layer.setInt( GraphConstants.FIELD_TYPE, ApplicationGraph.TYPE_LAYER );
-            layer.setInt( GraphConstants.FIELD_LAYER_LEVEL, 1 );
-            layer.set( GraphConstants.FIELD_USED_LAYERS, new ArrayList() );
-            layer.set( GraphConstants.FIELD_USED_BY_LAYERS, new ArrayList() );
+            layer.setString( FIELD_NAME, name );
+            layer.setInt( FIELD_TYPE, LAYER.code() );
+            layer.setInt( FIELD_LAYER_LEVEL, 1 );
+            layer.set( FIELD_USED_LAYERS, new ArrayList<Node>() );
+            layer.set( FIELD_USED_BY_LAYERS, new ArrayList<Node>() );
             layerDescriptorToNodeMap.put( layerDescriptor, layer );
         }
 
         return layer;
     }
 
+    @SuppressWarnings( "unchecked" )
     private void addUsedLayer( Node layer, Node usedLayer )
     {
-        Collection<Node> usedLayers = (Collection<Node>) layer.get( GraphConstants.FIELD_USED_LAYERS );
+        Collection<Node> usedLayers = (Collection<Node>) layer.get( FIELD_USED_LAYERS );
         usedLayers.add( usedLayer );
-        Collection<Node> usedByLayers = (Collection<Node>) usedLayer.get( GraphConstants.FIELD_USED_BY_LAYERS );
+
+        Collection<Node> usedByLayers = (Collection<Node>) usedLayer.get( FIELD_USED_BY_LAYERS );
         usedByLayers.add( layer );
     }
 
+    @SuppressWarnings( "unchecked" )
     private void incrementLayerLevel( Node layer )
     {
-        Collection<Node> usedLayers = (Collection<Node>) layer.get( GraphConstants.FIELD_USED_LAYERS );
+        Collection<Node> usedLayers = (Collection<Node>) layer.get( FIELD_USED_LAYERS );
         for( Node usedLayer : usedLayers )
         {
             incrementLayerLevel( usedLayer );
         }
 
-        int level = layer.getInt( GraphConstants.FIELD_LAYER_LEVEL );
-        layer.setInt( GraphConstants.FIELD_LAYER_LEVEL, ++level );
+        int level = layer.getInt( FIELD_LAYER_LEVEL );
+        layer.setInt( FIELD_LAYER_LEVEL, ++level );
     }
 
-    @Override public void visit( ModuleDescriptor moduleDescriptor )
+    @Override
+    public void visit( ModuleDescriptor moduleDescriptor )
     {
         moduleNode = graph.addNode();
-        moduleNode.setString( GraphConstants.FIELD_NAME, moduleDescriptor.name() );
-        moduleNode.setInt( GraphConstants.FIELD_TYPE, ApplicationGraph.TYPE_MODULE );
+        moduleNode.setString( FIELD_NAME, moduleDescriptor.name() );
+        moduleNode.setInt( FIELD_TYPE, MODULE.code() );
 
         addHiddenEdge( layerNode, moduleNode );
 
+        // Reset module related temp variables
         servicesNode = null;
         entitiesNode = null;
         compositesNode = null;
         objectsNode = null;
-
     }
 
     public void visit( ServiceDescriptor serviceDescriptor )
@@ -154,14 +183,14 @@ public class ApplicationGraphVisitor extends DescriptorVisitor
         if( servicesNode == null )
         {
             servicesNode = graph.addNode();
-            servicesNode.setString( GraphConstants.FIELD_NAME, "Services" );
-            servicesNode.setInt( GraphConstants.FIELD_TYPE, ApplicationGraph.TYPE_GROUP );
+            servicesNode.setString( FIELD_NAME, "Services" );
+            servicesNode.setInt( FIELD_TYPE, GROUP.code() );
             addHiddenEdge( moduleNode, servicesNode );
         }
 
         Node node = graph.addNode();
-        node.setString( GraphConstants.FIELD_NAME, GraphUtils.getCompositeName( serviceDescriptor.type() ) );
-        node.setInt( GraphConstants.FIELD_TYPE, ApplicationGraph.TYPE_COMPOSITE );
+        node.setString( FIELD_NAME, GraphUtils.getCompositeName( serviceDescriptor.type() ) );
+        node.setInt( FIELD_TYPE, COMPOSITE.code() );
         addHiddenEdge( servicesNode, node );
 
         descriptorsMap.put( node, serviceDescriptor );
@@ -172,14 +201,14 @@ public class ApplicationGraphVisitor extends DescriptorVisitor
         if( entitiesNode == null )
         {
             entitiesNode = graph.addNode();
-            entitiesNode.setString( GraphConstants.FIELD_NAME, "Entities" );
-            entitiesNode.setInt( GraphConstants.FIELD_TYPE, ApplicationGraph.TYPE_GROUP );
+            entitiesNode.setString( FIELD_NAME, "Entities" );
+            entitiesNode.setInt( FIELD_TYPE, GROUP.code() );
             addHiddenEdge( moduleNode, entitiesNode );
         }
 
         Node node = graph.addNode();
-        node.setString( GraphConstants.FIELD_NAME, GraphUtils.getCompositeName( entityDescriptor.type() ) );
-        node.setInt( GraphConstants.FIELD_TYPE, ApplicationGraph.TYPE_COMPOSITE );
+        node.setString( FIELD_NAME, GraphUtils.getCompositeName( entityDescriptor.type() ) );
+        node.setInt( FIELD_TYPE, COMPOSITE.code() );
         addHiddenEdge( entitiesNode, node );
 
         descriptorsMap.put( node, entityDescriptor );
@@ -190,14 +219,14 @@ public class ApplicationGraphVisitor extends DescriptorVisitor
         if( compositesNode == null )
         {
             compositesNode = graph.addNode();
-            compositesNode.setString( GraphConstants.FIELD_NAME, "Composites" );
-            compositesNode.setInt( GraphConstants.FIELD_TYPE, ApplicationGraph.TYPE_GROUP );
+            compositesNode.setString( FIELD_NAME, "Composites" );
+            compositesNode.setInt( FIELD_TYPE, GROUP.code() );
             addHiddenEdge( moduleNode, compositesNode );
         }
 
         Node node = graph.addNode();
-        node.setString( GraphConstants.FIELD_NAME, GraphUtils.getCompositeName( compositeDescriptor.type() ) );
-        node.setInt( GraphConstants.FIELD_TYPE, ApplicationGraph.TYPE_COMPOSITE );
+        node.setString( FIELD_NAME, GraphUtils.getCompositeName( compositeDescriptor.type() ) );
+        node.setInt( FIELD_TYPE, COMPOSITE.code() );
         addHiddenEdge( compositesNode, node );
 
         descriptorsMap.put( node, compositeDescriptor );
@@ -209,31 +238,28 @@ public class ApplicationGraphVisitor extends DescriptorVisitor
         {
             System.out.println( "Creating objects node. Descriptor - " + objectDescriptor.toURI() );
             objectsNode = graph.addNode();
-            objectsNode.setString( GraphConstants.FIELD_NAME, "Objects" );
-            objectsNode.setInt( GraphConstants.FIELD_TYPE, ApplicationGraph.TYPE_GROUP );
+            objectsNode.setString( FIELD_NAME, "Objects" );
+            objectsNode.setInt( FIELD_TYPE, GROUP.code() );
             addHiddenEdge( moduleNode, objectsNode );
         }
 
         Node node = graph.addNode();
-        node.setString( GraphConstants.FIELD_NAME, GraphUtils.getCompositeName( objectDescriptor.type() ) );
-        node.setInt( GraphConstants.FIELD_TYPE, ApplicationGraph.TYPE_COMPOSITE );
+        node.setString( FIELD_NAME, GraphUtils.getCompositeName( objectDescriptor.type() ) );
+        node.setInt( FIELD_TYPE, COMPOSITE.code() );
         addHiddenEdge( objectsNode, node );
 
         descriptorsMap.put( node, objectDescriptor );
     }
 
-    private Map<Method, Map<String, List>> methodAttributesMap = new HashMap<Method, Map<String, List>>();
-    private Method currentMethod;
-    private Map<String, List> currentMethodAttributesMap;
 
     public void visit( CompositeMethodDescriptor compositeMethodDescriptor )
     {
         currentMethod = compositeMethodDescriptor.method();
-        currentMethodAttributesMap = new HashMap<String, List>();
+        currentMethodAttributesMap = new HashMap<String, List<Class>>();
 
-        currentMethodAttributesMap.put( "constraints", new ArrayList() );
-        currentMethodAttributesMap.put( "concerns", new ArrayList() );
-        currentMethodAttributesMap.put( "sideEffects", new ArrayList() );
+        currentMethodAttributesMap.put( "constraints", new ArrayList<Class>() );
+        currentMethodAttributesMap.put( "concerns", new ArrayList<Class>() );
+        currentMethodAttributesMap.put( "sideEffects", new ArrayList<Class>() );
         currentMethodAttributesMap.put( "mixins", Collections.singletonList( compositeMethodDescriptor.mixin().mixinClass() ) );
 
         methodAttributesMap.put( currentMethod, currentMethodAttributesMap );
@@ -252,13 +278,13 @@ public class ApplicationGraphVisitor extends DescriptorVisitor
 
     public void visit( MethodConcernDescriptor methodConcernDescriptor )
     {
-        List list = currentMethodAttributesMap.get( "concerns" );
+        List<Class> list = currentMethodAttributesMap.get( "concerns" );
         list.add( methodConcernDescriptor.modifierClass() );
     }
 
     public void visit( MethodSideEffectDescriptor methodSideEffectDescriptor )
     {
-        List list = currentMethodAttributesMap.get( "sideEffects" );
+        List<Class> list = currentMethodAttributesMap.get( "sideEffects" );
         list.add( methodSideEffectDescriptor.modifierClass() );
     }
 
@@ -267,7 +293,7 @@ public class ApplicationGraphVisitor extends DescriptorVisitor
         return descriptorsMap.get( node );
     }
 
-    public Map<String, List> getMethodAttributes( Method m )
+    public Map<String, List<Class>> getMethodAttributes( Method m )
     {
         return methodAttributesMap.get( m );
     }
@@ -275,6 +301,6 @@ public class ApplicationGraphVisitor extends DescriptorVisitor
     private void addHiddenEdge( Node source, Node target )
     {
         Edge edge = graph.addEdge( source, target );
-        edge.setInt( GraphConstants.FIELD_TYPE, ApplicationGraph.TYPE_EDGE_HIDDEN );
+        edge.setInt( FIELD_TYPE, EDGE_HIDDEN.code() );
     }
 }
