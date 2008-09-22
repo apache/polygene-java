@@ -18,6 +18,9 @@ package org.qi4j.library.swing.visualizer.overview;
 
 import org.qi4j.library.swing.visualizer.overview.descriptor.CompositeDetailDescriptor;
 import org.qi4j.library.swing.visualizer.overview.descriptor.EntityDetailDescriptor;
+import org.qi4j.library.swing.visualizer.overview.descriptor.ApplicationDetailDescriptor;
+import org.qi4j.library.swing.visualizer.overview.descriptor.LayerDetailDescriptor;
+import org.qi4j.library.swing.visualizer.overview.descriptor.ModuleDetailDescriptor;
 import org.qi4j.spi.structure.ApplicationDescriptor;
 import org.qi4j.spi.structure.LayerDescriptor;
 import org.qi4j.spi.structure.ModuleDescriptor;
@@ -36,7 +39,7 @@ public interface SelectionListener
      * @param aDescriptor The selected application descriptor. This argument must not be {@code null}.
      * @since 0.5
      */
-    void onApplicationSelected( ApplicationDescriptor aDescriptor );
+    void onApplicationSelected( ApplicationDetailDescriptor aDescriptor );
 
     /**
      * Invoked when a layer node is selected.
@@ -44,7 +47,7 @@ public interface SelectionListener
      * @param aDescriptor The selected layer descriptor. This argument must not be {@code null}.
      * @since 0.5
      */
-    void onLayerSelected( LayerDescriptor aDescriptor );
+    void onLayerSelected( LayerDetailDescriptor aDescriptor );
 
     /**
      * Invoked when a module node is selected.
@@ -52,7 +55,7 @@ public interface SelectionListener
      * @param aDescriptor The selected module descriptor. This argument must not be {@code null}.
      * @since 0.5
      */
-    void onModuleSelected( ModuleDescriptor aDescriptor );
+    void onModuleSelected( ModuleDetailDescriptor aDescriptor );
 
     /**
      * Invoked when a composite node is selected.

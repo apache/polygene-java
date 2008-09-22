@@ -19,15 +19,16 @@ package org.qi4j.library.swing.visualizer.overview.internal;
 import java.awt.event.MouseEvent;
 import org.qi4j.composite.NullArgumentException;
 import org.qi4j.library.swing.visualizer.overview.SelectionListener;
+import org.qi4j.library.swing.visualizer.overview.descriptor.ApplicationDetailDescriptor;
 import org.qi4j.library.swing.visualizer.overview.descriptor.CompositeDetailDescriptor;
 import org.qi4j.library.swing.visualizer.overview.descriptor.EntityDetailDescriptor;
+import org.qi4j.library.swing.visualizer.overview.descriptor.LayerDetailDescriptor;
+import org.qi4j.library.swing.visualizer.overview.descriptor.ModuleDetailDescriptor;
 import org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.FIELD_TYPE;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.NodeType;
 import org.qi4j.service.ServiceDescriptor;
 import org.qi4j.spi.object.ObjectDescriptor;
-import org.qi4j.spi.structure.ApplicationDescriptor;
-import org.qi4j.spi.structure.LayerDescriptor;
 import org.qi4j.spi.structure.ModuleDescriptor;
 import prefuse.controls.ControlAdapter;
 import prefuse.visual.VisualItem;
@@ -46,6 +47,7 @@ public final class ItemSelectionControl extends ControlAdapter
         listener = aListener;
     }
 
+    @Override
     public final void itemClicked( VisualItem anItem, MouseEvent anEvent )
     {
         NodeType selectedNode = (NodeType) anItem.get( FIELD_TYPE );
@@ -53,15 +55,15 @@ public final class ItemSelectionControl extends ControlAdapter
         switch( selectedNode )
         {
         case APPLICATION:
-            ApplicationDescriptor appDesc = (ApplicationDescriptor) descriptor;
+            ApplicationDetailDescriptor appDesc = (ApplicationDetailDescriptor) descriptor;
             listener.onApplicationSelected( appDesc );
             break;
         case LAYER:
-            LayerDescriptor layerDesc = (LayerDescriptor) descriptor;
+            LayerDetailDescriptor layerDesc = (LayerDetailDescriptor) descriptor;
             listener.onLayerSelected( layerDesc );
             break;
         case MODULE:
-            ModuleDescriptor moduleDesc = (ModuleDescriptor) descriptor;
+            ModuleDetailDescriptor moduleDesc = (ModuleDetailDescriptor) descriptor;
             listener.onModuleSelected( moduleDesc );
             break;
         case COMPOSITE:

@@ -21,14 +21,14 @@ import static javax.swing.JSplitPane.VERTICAL_SPLIT;
 import org.qi4j.library.swing.visualizer.detailPanel.DetailPanel;
 import org.qi4j.library.swing.visualizer.overview.OverviewPanel;
 import org.qi4j.library.swing.visualizer.overview.SelectionListener;
+import org.qi4j.library.swing.visualizer.overview.descriptor.ApplicationDetailDescriptor;
 import org.qi4j.library.swing.visualizer.overview.descriptor.CompositeDetailDescriptor;
 import org.qi4j.library.swing.visualizer.overview.descriptor.EntityDetailDescriptor;
+import org.qi4j.library.swing.visualizer.overview.descriptor.LayerDetailDescriptor;
+import org.qi4j.library.swing.visualizer.overview.descriptor.ModuleDetailDescriptor;
 import org.qi4j.service.ServiceDescriptor;
 import org.qi4j.spi.object.ObjectDescriptor;
-import org.qi4j.spi.structure.ApplicationDescriptor;
 import org.qi4j.spi.structure.ApplicationSPI;
-import org.qi4j.spi.structure.LayerDescriptor;
-import org.qi4j.spi.structure.ModuleDescriptor;
 import org.qi4j.structure.Application;
 
 /**
@@ -92,17 +92,17 @@ public class ApplicationGraph
             // TODO
         }
 
-        public void onApplicationSelected( ApplicationDescriptor aDescriptor )
+        public void onApplicationSelected( ApplicationDetailDescriptor aDescriptor )
         {
             // TODO
         }
 
-        public void onLayerSelected( LayerDescriptor aDescriptor )
+        public void onLayerSelected( LayerDetailDescriptor aDescriptor )
         {
             // TODO
         }
 
-        public void onModuleSelected( ModuleDescriptor aDescriptor )
+        public void onModuleSelected( ModuleDetailDescriptor aDescriptor )
         {
             // TODO
         }

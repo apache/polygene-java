@@ -20,10 +20,11 @@ import org.qi4j.spi.entity.EntityDescriptor;
 
 /**
  * @author edward.yakop@gmail.com
+ * @since 0.5
  */
 public final class EntityDetailDescriptor extends CompositeDetailDescriptor<EntityDescriptor>
 {
-    public EntityDetailDescriptor( EntityDescriptor aDescriptor )
+    EntityDetailDescriptor( EntityDescriptor aDescriptor )
     {
         super( aDescriptor );
     }
