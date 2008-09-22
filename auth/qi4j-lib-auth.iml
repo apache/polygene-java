@@ -10,6 +10,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/resources" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/target/maven-archiver" />
+      <excludeFolder url="file://$MODULE_DIR$/target/surefire-reports" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
@@ -17,19 +18,6 @@
     <orderEntry type="module" module-name="qi4j-lib-framework" exported="" />
     <orderEntry type="module" module-name="qi4j-core-spi" exported="" />
     <orderEntry type="module" module-name="qi4j-core-bootstrap" exported="" />
-    <orderEntry type="module-library" exported="">
-      <library name="org.prefuse:prefuse:beta-20060220">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/org/prefuse/prefuse/beta-20060220/prefuse-beta-20060220.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/org/prefuse/prefuse/beta-20060220/prefuse-beta-20060220-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/org/prefuse/prefuse/beta-20060220/prefuse-beta-20060220-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
     <orderEntry type="module" module-name="qi4j-core-testsupport" />
     <orderEntry type="module-library">
       <library name="junit:junit:4.4">
