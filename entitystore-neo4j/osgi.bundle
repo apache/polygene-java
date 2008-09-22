@@ -11,16 +11,17 @@ Import-Package: javax.transaction,\
                 org.qi4j.bootstrap, \
                 org.qi4j.composite, \
                 org.qi4j.entity, \
-                org.qi4j.entity.neo4j.state, \
+                org.qi4j.entity.association, \
                 org.qi4j.injection.scope, \
                 org.qi4j.property, \
                 org.qi4j.service, \
                 org.qi4j.spi.composite, \
                 org.qi4j.spi.entity, \
+                org.qi4j.spi.entity.association, \
                 org.qi4j.structure, \
                 org.w3c.dom, \
                 org.xml.sax
 
-Export-Package: org.qi4j.entity.neo4j,org.qi4j.entity.state
+Export-Package: org.qi4j.entity.neo4j,org.qi4j.entity.neo4j.state
 
 Embed-Dependency: *;groupId=org.neo4j
