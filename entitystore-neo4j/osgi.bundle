@@ -21,6 +21,6 @@ Import-Package: javax.transaction,\
                 org.w3c.dom, \
                 org.xml.sax
 
-Export-Package: org.qi4j.entity.neo4j
+Export-Package: org.qi4j.entity.neo4j,org.qi4j.entity.state
 
 Embed-Dependency: *;groupId=org.neo4j
