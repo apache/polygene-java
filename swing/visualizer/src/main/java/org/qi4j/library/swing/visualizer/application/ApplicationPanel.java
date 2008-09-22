@@ -16,10 +16,13 @@
 package org.qi4j.library.swing.visualizer.application;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
+import static java.awt.BorderLayout.CENTER;
+import static java.awt.BorderLayout.NORTH;
+import static java.awt.Color.white;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import static java.awt.FlowLayout.LEFT;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -76,7 +79,7 @@ import prefuse.render.NullRenderer;
 import prefuse.util.ColorLib;
 import prefuse.util.display.DisplayLib;
 import prefuse.util.display.PaintListener;
-import prefuse.util.ui.UILib;
+import static prefuse.util.ui.UILib.isButtonPressed;
 import prefuse.visual.EdgeItem;
 import prefuse.visual.VisualItem;
 import prefuse.visual.sort.ItemSorter;
@@ -92,36 +95,37 @@ public class ApplicationPanel extends JPanel
     private Display display;
     private VisualItem applicationNodeItem;
 
-    private Control compositeSelectionControl;
+    private Control selectionControl;
 
-    public ApplicationPanel( Graph aGraph, Control aControl )
+    public ApplicationPanel( Graph aGraph, SelectionListener aListener )
     {
         super( new BorderLayout() );
-        compositeSelectionControl = aControl;
+
+        selectionControl = new ItemSelectionControl( aListener );
 
         visualization = createVisualization( aGraph );
         createRenderers( visualization );
         createProcessingActions( visualization );
         display = createDisplay( visualization );
-        launchDisplay( visualization, display );
+        launchDisplay( visualization );
         createPanningAndZoomingActions();
 
         Node applicationNode = aGraph.getNode( 0 );
         applicationNodeItem = visualization.getVisualItem( "graph.nodes", applicationNode );
 
-        JPanel controlsPanel = new JPanel( new FlowLayout( FlowLayout.LEFT ) );
+        JPanel controlsPanel = new JPanel( new FlowLayout( LEFT ) );
         JButton zoomToFitBtn = new JButton( new ZoomToFitAction() );
         JButton actualSizeButton = new JButton( new ActualSizeAction() );
 
-        controlsPanel.setBackground( Color.white );
-        zoomToFitBtn.setBackground( Color.white );
-        actualSizeButton.setBackground( Color.white );
+        controlsPanel.setBackground( white );
+        zoomToFitBtn.setBackground( white );
+        actualSizeButton.setBackground( white );
 
         controlsPanel.add( zoomToFitBtn );
         controlsPanel.add( actualSizeButton );
 
-        add( controlsPanel, BorderLayout.NORTH );
-        add( new PrefuseJScrollPane( display ), BorderLayout.CENTER );
+        add( controlsPanel, NORTH );
+        add( new PrefuseJScrollPane( display ), CENTER );
 
         setPreferredSize( new Dimension( 800, 600 ) );
     }
@@ -188,7 +192,7 @@ public class ApplicationPanel extends JPanel
         } );
     }
 
-    private void launchDisplay( Visualization visualization, Display display )
+    private void launchDisplay( Visualization visualization )
     {
         visualization.run( "color" );
         visualization.run( "layout" );
@@ -224,7 +228,7 @@ public class ApplicationPanel extends JPanel
         display.addControlListener( new MousePanControl( true ) );
         display.addControlListener( new MouseWheelZoomControl() );
         display.addControlListener( new DoubleClickZoomControl() );
-        display.addControlListener( compositeSelectionControl );
+        display.addControlListener( selectionControl );
         display.addPaintListener( new DisplayExpansionListener() );
 
         return display;
@@ -592,26 +596,26 @@ public class ApplicationPanel extends JPanel
 
         private int m_xDown, m_yDown;
 
-        public MousePanControl( boolean b )
+        public MousePanControl( boolean isPanOverItem )
         {
-            super( b );
+            super( isPanOverItem );
         }
 
-        public void mousePressed( MouseEvent e )
+        public void mousePressed( MouseEvent anEvent )
         {
-            if( UILib.isButtonPressed( e, LEFT_MOUSE_BUTTON ) )
+            if( isButtonPressed( anEvent, LEFT_MOUSE_BUTTON ) )
             {
-                e.getComponent().setCursor( Cursor.getPredefinedCursor( Cursor.MOVE_CURSOR ) );
-                m_xDown = e.getX();
-                m_yDown = e.getY();
+                anEvent.getComponent().setCursor( Cursor.getPredefinedCursor( Cursor.MOVE_CURSOR ) );
+                m_xDown = anEvent.getX();
+                m_yDown = anEvent.getY();
             }
         }
 
-        public void mouseDragged( MouseEvent e )
+        public void mouseDragged( MouseEvent anEvent )
         {
-            if( UILib.isButtonPressed( e, LEFT_MOUSE_BUTTON ) )
+            if( isButtonPressed( anEvent, LEFT_MOUSE_BUTTON ) )
             {
-                int x = e.getX(), y = e.getY();
+                int x = anEvent.getX(), y = anEvent.getY();
                 int dx = x - m_xDown, dy = y - m_yDown;
 
                 pan( dx, dy, false );
@@ -621,11 +625,11 @@ public class ApplicationPanel extends JPanel
             }
         }
 
-        public void mouseReleased( MouseEvent e )
+        public void mouseReleased( MouseEvent anEvent )
         {
-            if( UILib.isButtonPressed( e, LEFT_MOUSE_BUTTON ) )
+            if( isButtonPressed( anEvent, LEFT_MOUSE_BUTTON ) )
             {
-                e.getComponent().setCursor( Cursor.getDefaultCursor() );
+                anEvent.getComponent().setCursor( Cursor.getDefaultCursor() );
                 m_xDown = -1;
                 m_yDown = -1;
             }

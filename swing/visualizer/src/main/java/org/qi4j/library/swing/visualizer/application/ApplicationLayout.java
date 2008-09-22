@@ -39,7 +39,7 @@ import prefuse.data.Node;
 import prefuse.render.Renderer;
 import prefuse.visual.NodeItem;
 
-public class ApplicationLayout extends TreeLayout
+final class ApplicationLayout extends TreeLayout
 {
 
     public ApplicationLayout( String group )

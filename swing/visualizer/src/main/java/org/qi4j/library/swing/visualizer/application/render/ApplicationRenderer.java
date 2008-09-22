@@ -48,9 +48,9 @@ public class ApplicationRenderer
         int height = (int) rect.getHeight();
 
         // todo draw drop shadow
-//        g.setPaint( borderColor );
-//        g.setStroke( borderStroke );
-//        g.drawRect( x, y, width, height );
+        g.setPaint( borderColor );
+        g.setStroke( borderStroke );
+        g.drawRect( x, y, width, height );
 
         g.setPaint( fillColor );
         g.fillRoundRect( x + 3, y + 3, width - 6, height - 6, 5, 5 );

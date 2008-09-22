@@ -40,6 +40,8 @@ public class GraphConstants
     public static final String FIELD_LAYER_LEVEL = "layer_level";
     public static final String FIELD_USED_LAYERS = "used_layers";
     public static final String FIELD_USED_BY_LAYERS = "used_by_layers";
+    public static final String FIELD_DESCRIPTOR = "fieldDescriptors";
+
 //    public static final String FIELD_OBJECT = "object";
 
     /**

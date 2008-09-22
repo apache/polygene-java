@@ -48,7 +48,7 @@ import prefuse.util.display.PaintListener;
  * the eventhandler *NOT* to forward any changes to prefuse as long as set to false.
  */
 
-public class PrefuseJScrollPane extends JPanel
+final class PrefuseJScrollPane extends JPanel
 {
     private static final long serialVersionUID = 1L;
 
@@ -100,7 +100,7 @@ public class PrefuseJScrollPane extends JPanel
     /**
      * Initializes an empty pane
      */
-    public PrefuseJScrollPane()
+    PrefuseJScrollPane()
     {
         super();
         initialize();
@@ -111,7 +111,7 @@ public class PrefuseJScrollPane extends JPanel
      *
      * @param display The prefuse <code>display</code>.
      */
-    public PrefuseJScrollPane( Display display )
+    PrefuseJScrollPane( Display display )
     {
         super();
         initialize();

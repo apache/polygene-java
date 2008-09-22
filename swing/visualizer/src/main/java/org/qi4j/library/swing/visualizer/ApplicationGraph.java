@@ -18,7 +18,6 @@ package org.qi4j.library.swing.visualizer;
 import static java.awt.Color.white;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.event.MouseEvent;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -47,16 +46,17 @@ import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreePath;
 import org.qi4j.entity.association.AbstractAssociation;
 import org.qi4j.entity.association.GenericAssociationInfo;
+import org.qi4j.library.swing.visualizer.application.ApplicationGraphVisitor;
 import org.qi4j.library.swing.visualizer.application.ApplicationPanel;
-import org.qi4j.library.swing.visualizer.common.ApplicationGraphVisitor;
+import org.qi4j.library.swing.visualizer.application.SelectionListener;
 import org.qi4j.library.swing.visualizer.common.GraphUtils;
 import org.qi4j.spi.composite.CompositeDescriptor;
+import org.qi4j.spi.structure.ApplicationDescriptor;
 import org.qi4j.spi.structure.ApplicationSPI;
+import org.qi4j.spi.structure.LayerDescriptor;
+import org.qi4j.spi.structure.ModuleDescriptor;
 import org.qi4j.structure.Application;
-import prefuse.controls.ControlAdapter;
 import prefuse.data.Graph;
-import prefuse.data.Node;
-import prefuse.visual.VisualItem;
 
 /**
  * TODO
@@ -165,107 +165,99 @@ public class ApplicationGraph
     }
 
 
-    private class CompositeSelectionControl extends ControlAdapter
+    private class CompositeSelectionControl
+        implements SelectionListener
     {
-        public void itemClicked( VisualItem visualItem, MouseEvent event )
+        public void onSelected( CompositeDescriptor aDescriptor )
         {
-            // ATM this is not fired for Services and Objects because they are not of type CompositeDescriptor
-            if( GraphUtils.isComposite( visualItem ) )
+            final DefaultMutableTreeNode root = new DefaultMutableTreeNode( GraphUtils.getCompositeName( aDescriptor.type() ) );
+            Iterable<Class> mixinTypes = aDescriptor.mixinTypes();
+            for( Class mixinType : mixinTypes )
             {
-                Node node = (Node) visualItem.getSourceTuple();
-                Object o = appGraphVisitor.getCompositeDescriptor( node );
-                if( o != null && o instanceof CompositeDescriptor )
+                DefaultMutableTreeNode mixinNode = new DefaultMutableTreeNode( mixinType.getSimpleName() );
+                root.add( mixinNode );
+                Method[] methods = mixinType.getDeclaredMethods();
+                for( Method method : methods )
                 {
-                    CompositeDescriptor descriptor = (CompositeDescriptor) o;
-
-                    final DefaultMutableTreeNode root = new DefaultMutableTreeNode( GraphUtils.getCompositeName( descriptor.type() ) );
-                    Iterable<Class> mixinTypes = descriptor.mixinTypes();
-                    for( Class mixinType : mixinTypes )
-                    {
-                        DefaultMutableTreeNode mixinNode = new DefaultMutableTreeNode( mixinType.getSimpleName() );
-                        root.add( mixinNode );
-                        Method[] methods = mixinType.getDeclaredMethods();
-                        for( Method method : methods )
-                        {
-                            MethodNode methodNode = new MethodNode( method );
-                            mixinNode.add( methodNode );
-                        }
-                    }
-
-                    final JTree tree = new JTree( root );
-                    tree.addTreeSelectionListener( new TreeSelectionListener()
-                    {
-                        public void valueChanged( TreeSelectionEvent e )
-                        {
-                            Object o = tree.getLastSelectedPathComponent();
-                            applicationPanel.clearCompositeSelection();
-                            if( o instanceof MethodNode )
-                            {
-                                Method method = ( (MethodNode) o ).getMethod();
-
-                                Class<?> returnType = method.getReturnType();
-                                if( AbstractAssociation.class.isAssignableFrom( returnType ) )
-                                {
-                                    Type type = GenericAssociationInfo.getAssociationType( method );
-                                    String name = GraphUtils.getCompositeName( (Class) type );
-                                    applicationPanel.selectComposite( name );
-                                }
-                                //todo show link to other composites if the return type is an association
-
-                                Annotation[] annotations = method.getAnnotations();
-                                for( Annotation annotation : annotations )
-                                {
-                                    System.out.println( annotation.annotationType() + ", " + annotation.toString() + "\n" );
-                                }
-
-                                Map<String, List<Class>> map = appGraphVisitor.getMethodAttributes( method );
-
-                                List constraints = map.get( "constraints" );
-                                List concerns = map.get( "concerns" );
-                                List sideEffects = map.get( "sideEffects" );
-                                List mixins = map.get( "mixins" );
-                                Class mixinClass = (Class) mixins.get( 0 );
-
-                                JTree mixinTree = new MixinTree( mixinClass, constraints, concerns, sideEffects );
-                                JScrollPane scrollPane = new JScrollPane( mixinTree );
-                                bottomPanel.setRightComponent( scrollPane );
-
-                            }
-
-                        }
-                    } );
-                    tree.setCellRenderer( new DefaultTreeCellRenderer()
-                    {
-                        private Icon compositeIcon = new ImageIcon( "composites.png" );
-                        private Icon interfaceIcon = new ImageIcon( "interface.png" );
-                        private Icon methodIcon = new ImageIcon( "methods.png" );
-
-                        public Component getTreeCellRendererComponent( JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus )
-                        {
-                            super.getTreeCellRendererComponent( tree, value, sel, expanded, leaf, row, hasFocus );
-                            if( value == root )
-                            {
-                                setIcon( compositeIcon );
-                            }
-                            else if( value instanceof MethodNode )
-                            {
-                                setIcon( methodIcon );
-                            }
-                            else
-                            {
-                                setIcon( interfaceIcon );
-                            }
-                            return this;
-                        }
-                    } );
-
-                    setTreeState( tree, true );
-                    JScrollPane pane = new JScrollPane( tree );
-                    pane.setPreferredSize( methodsPaneSize );
-                    bottomPanel.setLeftComponent( pane );
+                    MethodNode methodNode = new MethodNode( method );
+                    mixinNode.add( methodNode );
                 }
             }
+
+            final JTree tree = new JTree( root );
+            tree.addTreeSelectionListener( new TreeSelectionListener()
+            {
+                public void valueChanged( TreeSelectionEvent e )
+                {
+                    Object o = tree.getLastSelectedPathComponent();
+                    applicationPanel.clearCompositeSelection();
+                    if( o instanceof MethodNode )
+                    {
+                        Method method = ( (MethodNode) o ).getMethod();
+
+                        Class<?> returnType = method.getReturnType();
+                        if( AbstractAssociation.class.isAssignableFrom( returnType ) )
+                        {
+                            Type type = GenericAssociationInfo.getAssociationType( method );
+                            String name = GraphUtils.getCompositeName( (Class) type );
+                            applicationPanel.selectComposite( name );
+                        }
+                        //todo show link to other composites if the return type is an association
+
+                        Annotation[] annotations = method.getAnnotations();
+                        for( Annotation annotation : annotations )
+                        {
+                            System.out.println( annotation.annotationType() + ", " + annotation.toString() + "\n" );
+                        }
+
+                        Map<String, List<Class>> map = appGraphVisitor.getMethodAttributes( method );
+
+                        List constraints = map.get( "constraints" );
+                        List concerns = map.get( "concerns" );
+                        List sideEffects = map.get( "sideEffects" );
+                        List mixins = map.get( "mixins" );
+                        Class mixinClass = (Class) mixins.get( 0 );
+
+                        JTree mixinTree = new MixinTree( mixinClass, constraints, concerns, sideEffects );
+                        JScrollPane scrollPane = new JScrollPane( mixinTree );
+                        bottomPanel.setRightComponent( scrollPane );
+
+                    }
+
+                }
+            } );
+            tree.setCellRenderer( new DefaultTreeCellRenderer()
+            {
+                private Icon compositeIcon = new ImageIcon( "composites.png" );
+                private Icon interfaceIcon = new ImageIcon( "interface.png" );
+                private Icon methodIcon = new ImageIcon( "methods.png" );
+
+                public Component getTreeCellRendererComponent(
+                    JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus )
+                {
+                    super.getTreeCellRendererComponent( tree, value, sel, expanded, leaf, row, hasFocus );
+                    if( value == root )
+                    {
+                        setIcon( compositeIcon );
+                    }
+                    else if( value instanceof MethodNode )
+                    {
+                        setIcon( methodIcon );
+                    }
+                    else
+                    {
+                        setIcon( interfaceIcon );
+                    }
+                    return this;
+                }
+            } );
+
+            setTreeState( tree, true );
+            JScrollPane pane = new JScrollPane( tree );
+            pane.setPreferredSize( methodsPaneSize );
+            bottomPanel.setLeftComponent( pane );
         }
+
 
         private class MethodNode extends DefaultMutableTreeNode
         {
@@ -289,6 +281,21 @@ public class ApplicationGraph
             {
                 return method;
             }
+        }
+
+        public void onSelected( ApplicationDescriptor aDescriptor )
+        {
+            // Do nothing
+        }
+
+        public void onSelected( LayerDescriptor aDescriptor )
+        {
+            // Do nothing
+        }
+
+        public void onSelected( ModuleDescriptor aDescriptor )
+        {
+            // Do nothing
         }
     }
 
