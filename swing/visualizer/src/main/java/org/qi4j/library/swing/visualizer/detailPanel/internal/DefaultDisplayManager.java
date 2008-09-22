@@ -30,5 +30,6 @@ public class DefaultDisplayManager
     public void display( DetailPanel aPanel, CompositeDetailDescriptor aDescriptor )
     {
         aPanel.setLeftComponent( new CompositeOverviewPanel( aPanel, aDescriptor ) );
+        aPanel.setRightComponent( aPanel.createHelpPanel() );
     }
 }

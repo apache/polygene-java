@@ -64,7 +64,7 @@ public final class DetailPanel extends JSplitPane
     }
 
     // TODO: This should be localized
-    private JComponent createHelpPanel()
+    public JComponent createHelpPanel()
     {
         JPanel detailsPanel = new JPanel();
         detailsPanel.setBackground( white );
