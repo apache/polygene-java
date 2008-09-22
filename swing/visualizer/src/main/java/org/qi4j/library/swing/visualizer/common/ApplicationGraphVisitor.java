@@ -89,13 +89,13 @@ public class ApplicationGraphVisitor extends DescriptorVisitor
         this.graph = graph;
 
         graph.addColumn( FIELD_NAME, String.class );
-        graph.addColumn( FIELD_TYPE, int.class );
+        graph.addColumn( FIELD_TYPE, GraphConstants.NodeType.class );
         graph.addColumn( FIELD_LAYER_LEVEL, int.class );
         graph.addColumn( FIELD_USED_LAYERS, Collection.class );
         graph.addColumn( FIELD_USED_BY_LAYERS, Collection.class );
 
         root = graph.addNode();
-        root.setInt( FIELD_TYPE, APPLICATION.code() );
+        root.set( FIELD_TYPE, APPLICATION );
     }
 
     @Override
@@ -129,7 +129,7 @@ public class ApplicationGraphVisitor extends DescriptorVisitor
             layer = graph.addNode();
             String name = layerDescriptor.name();
             layer.setString( FIELD_NAME, name );
-            layer.setInt( FIELD_TYPE, LAYER.code() );
+            layer.set( FIELD_TYPE, LAYER );
             layer.setInt( FIELD_LAYER_LEVEL, 1 );
             layer.set( FIELD_USED_LAYERS, new ArrayList<Node>() );
             layer.set( FIELD_USED_BY_LAYERS, new ArrayList<Node>() );
@@ -167,7 +167,7 @@ public class ApplicationGraphVisitor extends DescriptorVisitor
     {
         moduleNode = graph.addNode();
         moduleNode.setString( FIELD_NAME, moduleDescriptor.name() );
-        moduleNode.setInt( FIELD_TYPE, MODULE.code() );
+        moduleNode.set( FIELD_TYPE, MODULE );
 
         addHiddenEdge( layerNode, moduleNode );
 
@@ -184,13 +184,13 @@ public class ApplicationGraphVisitor extends DescriptorVisitor
         {
             servicesNode = graph.addNode();
             servicesNode.setString( FIELD_NAME, "Services" );
-            servicesNode.setInt( FIELD_TYPE, GROUP.code() );
+            servicesNode.set( FIELD_TYPE, GROUP );
             addHiddenEdge( moduleNode, servicesNode );
         }
 
         Node node = graph.addNode();
         node.setString( FIELD_NAME, GraphUtils.getCompositeName( serviceDescriptor.type() ) );
-        node.setInt( FIELD_TYPE, COMPOSITE.code() );
+        node.set( FIELD_TYPE, COMPOSITE );
         addHiddenEdge( servicesNode, node );
 
         descriptorsMap.put( node, serviceDescriptor );
@@ -202,13 +202,13 @@ public class ApplicationGraphVisitor extends DescriptorVisitor
         {
             entitiesNode = graph.addNode();
             entitiesNode.setString( FIELD_NAME, "Entities" );
-            entitiesNode.setInt( FIELD_TYPE, GROUP.code() );
+            entitiesNode.set( FIELD_TYPE, GROUP );
             addHiddenEdge( moduleNode, entitiesNode );
         }
 
         Node node = graph.addNode();
         node.setString( FIELD_NAME, GraphUtils.getCompositeName( entityDescriptor.type() ) );
-        node.setInt( FIELD_TYPE, COMPOSITE.code() );
+        node.set( FIELD_TYPE, COMPOSITE );
         addHiddenEdge( entitiesNode, node );
 
         descriptorsMap.put( node, entityDescriptor );
@@ -220,13 +220,13 @@ public class ApplicationGraphVisitor extends DescriptorVisitor
         {
             compositesNode = graph.addNode();
             compositesNode.setString( FIELD_NAME, "Composites" );
-            compositesNode.setInt( FIELD_TYPE, GROUP.code() );
+            compositesNode.set( FIELD_TYPE, GROUP );
             addHiddenEdge( moduleNode, compositesNode );
         }
 
         Node node = graph.addNode();
         node.setString( FIELD_NAME, GraphUtils.getCompositeName( compositeDescriptor.type() ) );
-        node.setInt( FIELD_TYPE, COMPOSITE.code() );
+        node.set( FIELD_TYPE, COMPOSITE );
         addHiddenEdge( compositesNode, node );
 
         descriptorsMap.put( node, compositeDescriptor );
@@ -239,13 +239,13 @@ public class ApplicationGraphVisitor extends DescriptorVisitor
             System.out.println( "Creating objects node. Descriptor - " + objectDescriptor.toURI() );
             objectsNode = graph.addNode();
             objectsNode.setString( FIELD_NAME, "Objects" );
-            objectsNode.setInt( FIELD_TYPE, GROUP.code() );
+            objectsNode.set( FIELD_TYPE, GROUP );
             addHiddenEdge( moduleNode, objectsNode );
         }
 
         Node node = graph.addNode();
         node.setString( FIELD_NAME, GraphUtils.getCompositeName( objectDescriptor.type() ) );
-        node.setInt( FIELD_TYPE, COMPOSITE.code() );
+        node.set( FIELD_TYPE, COMPOSITE );
         addHiddenEdge( objectsNode, node );
 
         descriptorsMap.put( node, objectDescriptor );
@@ -301,6 +301,6 @@ public class ApplicationGraphVisitor extends DescriptorVisitor
     private void addHiddenEdge( Node source, Node target )
     {
         Edge edge = graph.addEdge( source, target );
-        edge.setInt( FIELD_TYPE, EDGE_HIDDEN.code() );
+        edge.set( FIELD_TYPE, EDGE_HIDDEN );
     }
 }

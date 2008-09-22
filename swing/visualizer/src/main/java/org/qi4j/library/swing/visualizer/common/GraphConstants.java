@@ -31,55 +31,28 @@ public class GraphConstants
     public static final int vSpace = 10;
 
     public static final String FIELD_NAME = "name";
+
+    /**
+     * @see org.qi4j.library.swing.visualizer.common.GraphConstants.NodeType
+     */
     public static final String FIELD_TYPE = "type";
+
     public static final String FIELD_LAYER_LEVEL = "layer_level";
     public static final String FIELD_USED_LAYERS = "used_layers";
     public static final String FIELD_USED_BY_LAYERS = "used_by_layers";
 //    public static final String FIELD_OBJECT = "object";
 
+    /**
+     * @see org.qi4j.library.swing.visualizer.common.GraphConstants#FIELD_TYPE
+     */
     public static enum NodeType
     {
-        APPLICATION( 0 ),
-        LAYER( 1 ),
-        MODULE( 2 ),
-        COMPOSITE( 3 ),
-        GROUP( 4 ),
-        EDGE_HIDDEN( 100 );
-
-        private final int code;
-
-        private NodeType( int aCode )
-        {
-            code = aCode;
-        }
-
-        /**
-         * @return Integer representation of {@code NodeType}.
-         */
-        public int code()
-        {
-            return code;
-        }
-
-        /**
-         * Convert the specied {@code aCode} to node type.
-         * Returns {@code null} if not found.
-         *
-         * @param aCode code to convert.
-         * @return Node type given specified code.
-         */
-        public static NodeType valueOf( int aCode )
-        {
-            NodeType[] values = values();
-            for( NodeType value : values )
-            {
-                if( value.code == aCode )
-                {
-                    return value;
-                }
-            }
-            return null;
-        }
+        APPLICATION,
+        LAYER,
+        MODULE,
+        COMPOSITE,
+        GROUP,
+        EDGE_HIDDEN
     }
 
     private GraphConstants()

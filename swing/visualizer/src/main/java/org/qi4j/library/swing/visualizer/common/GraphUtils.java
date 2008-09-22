@@ -32,8 +32,7 @@ public class GraphUtils
 
     public static boolean isComposite( VisualItem item )
     {
-        int itemType = item.getInt( FIELD_TYPE );
-        return itemType == COMPOSITE.code();
+        return COMPOSITE.equals( item.get( FIELD_TYPE ) );
     }
 
     public static String getItemName( VisualItem item )

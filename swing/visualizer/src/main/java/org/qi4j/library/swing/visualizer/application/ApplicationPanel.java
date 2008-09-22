@@ -46,6 +46,11 @@ import static org.qi4j.library.swing.visualizer.common.GraphConstants.FIELD_NAME
 import static org.qi4j.library.swing.visualizer.common.GraphConstants.FIELD_TYPE;
 import static org.qi4j.library.swing.visualizer.common.GraphConstants.NodeType;
 import static org.qi4j.library.swing.visualizer.common.GraphConstants.NodeType.APPLICATION;
+import static org.qi4j.library.swing.visualizer.common.GraphConstants.NodeType.COMPOSITE;
+import static org.qi4j.library.swing.visualizer.common.GraphConstants.NodeType.EDGE_HIDDEN;
+import static org.qi4j.library.swing.visualizer.common.GraphConstants.NodeType.GROUP;
+import static org.qi4j.library.swing.visualizer.common.GraphConstants.NodeType.LAYER;
+import static org.qi4j.library.swing.visualizer.common.GraphConstants.NodeType.MODULE;
 import org.qi4j.library.swing.visualizer.common.GraphUtils;
 import prefuse.Display;
 import prefuse.Visualization;
@@ -59,6 +64,10 @@ import prefuse.controls.PanControl;
 import prefuse.data.Graph;
 import prefuse.data.Node;
 import prefuse.data.Tuple;
+import prefuse.data.expression.ColumnExpression;
+import prefuse.data.expression.ComparisonPredicate;
+import static prefuse.data.expression.ComparisonPredicate.EQ;
+import prefuse.data.expression.ObjectLiteral;
 import prefuse.data.expression.Predicate;
 import prefuse.data.expression.parser.ExpressionParser;
 import prefuse.data.tuple.TupleSet;
@@ -196,7 +205,7 @@ public class ApplicationPanel extends JPanel
             public int score( VisualItem item )
             {
                 // First draw the Application box, then the edges, then other nodes
-                NodeType type = NodeType.valueOf( item.getInt( FIELD_TYPE ) );
+                NodeType type = (NodeType) item.get( FIELD_TYPE );
                 if( APPLICATION.equals( type ) )
                 {
                     return 0;
@@ -234,7 +243,11 @@ public class ApplicationPanel extends JPanel
 
             public void run( double frac )
             {
-                Iterator itr = m_vis.items( "graph.edges", "type=100" );
+                ComparisonPredicate edgePredicate = new ComparisonPredicate(
+                    EQ, new ColumnExpression( FIELD_TYPE ), new ObjectLiteral( EDGE_HIDDEN )
+                );
+
+                Iterator itr = m_vis.items( "graph.edges", edgePredicate );
                 while( itr.hasNext() )
                 {
                     VisualItem item = (VisualItem) itr.next();
@@ -249,16 +262,21 @@ public class ApplicationPanel extends JPanel
 
         DefaultRendererFactory rendererFactory = new DefaultRendererFactory();
 
-        rendererFactory.add( "type = 0", new ApplicationRenderer() );
-        rendererFactory.add( "type = 1", new LayerRenderer() );
-        rendererFactory.add( "type = 2", new ModuleRenderer() );
-        rendererFactory.add( "type = 3", new CompositeRenderer() );
-        rendererFactory.add( "type = 4", new GroupRenderer() );
-        rendererFactory.add( "type = 100", new NullRenderer() );
+        rendererFactory.add( createPredicate( APPLICATION ), new ApplicationRenderer() );
+        rendererFactory.add( createPredicate( LAYER ), new LayerRenderer() );
+        rendererFactory.add( createPredicate( MODULE ), new ModuleRenderer() );
+        rendererFactory.add( createPredicate( COMPOSITE ), new CompositeRenderer() );
+        rendererFactory.add( createPredicate( GROUP ), new GroupRenderer() );
+        rendererFactory.add( createPredicate( EDGE_HIDDEN ), new NullRenderer() );
 
         rendererFactory.setDefaultEdgeRenderer( new VerticalEdgeRenderer() );
 
         visualization.setRendererFactory( rendererFactory );
+    }
+
+    private ComparisonPredicate createPredicate( NodeType value )
+    {
+        return new ComparisonPredicate( EQ, new ColumnExpression( FIELD_TYPE ), new ObjectLiteral( value ) );
     }
 
     private Visualization createVisualization( Graph graph )
