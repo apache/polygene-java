@@ -14,16 +14,13 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.qi4j.library.swing.visualizer.overview.internal.buttons;
+package org.qi4j.library.swing.visualizer.overview.internal.toolbar;
 
 import java.awt.event.ActionEvent;
-import java.awt.geom.Rectangle2D;
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
-import prefuse.Display;
-import static prefuse.util.display.DisplayLib.fitViewToBounds;
-import prefuse.visual.VisualItem;
+import org.qi4j.library.swing.visualizer.overview.internal.visualization.Qi4jApplicationDisplay;
 
 /**
  * TODO: Localization
@@ -32,34 +29,31 @@ import prefuse.visual.VisualItem;
  * @author edward.yakop@gmail.com
  * @since 0.5
  */
-public final class ZoomToFitButton extends JButton
+final class ZoomToFitButton extends JButton
 {
-    public ZoomToFitButton( Display aDisplay, VisualItem anAppVisualItem )
+    ZoomToFitButton( Qi4jApplicationDisplay aDisplay )
         throws IllegalArgumentException
     {
         validateNotNull( "aDisplay", aDisplay );
-        validateNotNull( "anAppVisualItem", anAppVisualItem );
 
-        addActionListener( new ZoomToFitAction( aDisplay, anAppVisualItem ) );
+        addActionListener( new ZoomToFitAction( aDisplay ) );
         setText( "Zoom to fit" );
     }
 
-    private final class ZoomToFitAction extends AbstractAction
+    private static final class ZoomToFitAction extends AbstractAction
     {
-        private final Display display;
-        private final VisualItem appVisualItem;
+        private static final long serialVersionUID = 1L;
 
-        private ZoomToFitAction( Display aDisplay, VisualItem anAppVisualItem )
+        private final Qi4jApplicationDisplay display;
+
+        private ZoomToFitAction( Qi4jApplicationDisplay aDisplay )
         {
             display = aDisplay;
-            appVisualItem = anAppVisualItem;
         }
 
         public final void actionPerformed( ActionEvent e )
         {
-            Rectangle2D bounds = appVisualItem.getBounds();
-            fitViewToBounds( display, bounds, 2000 );
-            display.repaint();
+            display.zoomToFitContainer();
         }
     }
 }

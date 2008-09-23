@@ -33,7 +33,7 @@ public class GraphConstants
     public static final String FIELD_NAME = "name";
 
     /**
-     * @see GraphConstants.NodeType
+     * @see NodeType
      */
     public static final String FIELD_TYPE = "type";
 
@@ -41,26 +41,6 @@ public class GraphConstants
     public static final String FIELD_USED_LAYERS = "used_layers";
     public static final String FIELD_USED_BY_LAYERS = "used_by_layers";
     public static final String FIELD_DESCRIPTOR = "fieldDescriptors";
-
-//    public static final String FIELD_OBJECT = "object";
-
-    /**
-     * @see GraphConstants#FIELD_TYPE
-     */
-    public static enum NodeType
-    {
-        APPLICATION,
-        LAYER,
-        MODULE,
-        COMPOSITE,
-        ENTITY,
-        SERVICE,
-        OBJECT,
-
-        // Internal usage
-        GROUP,
-        EDGE_HIDDEN
-    }
 
     private GraphConstants()
     {

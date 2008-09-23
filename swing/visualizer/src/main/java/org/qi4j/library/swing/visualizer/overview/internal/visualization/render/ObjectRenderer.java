@@ -17,35 +17,41 @@
  * limitations under the License. 
  */
 
-package org.qi4j.library.swing.visualizer.overview.internal.render;
+package org.qi4j.library.swing.visualizer.overview.internal.visualization.render;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
+import prefuse.Visualization;
 import prefuse.visual.VisualItem;
 
-final class LayerRenderer
+final class ObjectRenderer
     extends AbstractRenderer
 {
-    private Color fillColor = new Color( 242, 238, 229 );
-    private Color textColor = new Color( 129, 127, 121 );
 
-    // todo drop shadow
+    private Color fillColor = new Color( 129, 127, 121 );
+    private Color textColor = Color.white;
+    private Color focusColor = new Color( 129, 200, 121 );
 
     public final void render( Graphics2D g, VisualItem item )
     {
         Rectangle2D rect = item.getBounds();
-
         int x = (int) rect.getX();
         int y = (int) rect.getY();
         int width = (int) rect.getWidth();
         int height = (int) rect.getHeight();
 
-        g.setPaint( fillColor );
-        g.fillRect( x, y, width, height );
+        if( item.isInGroup( Visualization.FOCUS_ITEMS ) )
+        {
+            g.setPaint( focusColor );
+        }
+        else
+        {
+            g.setPaint( fillColor );
+        }
+        g.fillRoundRect( x, y, width, height, 3, 3 );
 
         g.setPaint( textColor );
         drawName( g, item, x, y );
     }
-
 }

@@ -14,7 +14,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.qi4j.library.swing.visualizer.overview.internal.buttons;
+package org.qi4j.library.swing.visualizer.overview.internal.toolbar;
 
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
@@ -31,9 +31,9 @@ import static javax.swing.JOptionPane.showMessageDialog;
  * @author edward.yakop@gmail.com
  * @since 0.5
  */
-public final class DisplayHelpButton extends JButton
+final class DisplayHelpButton extends JButton
 {
-    public DisplayHelpButton()
+    DisplayHelpButton()
     {
         setText( "Help" );
 
@@ -42,6 +42,8 @@ public final class DisplayHelpButton extends JButton
 
     private static final class DisplayHelpAction extends AbstractAction
     {
+        private static final long serialVersionUID = 1L;
+
         public final void actionPerformed( ActionEvent anEvent )
         {
             JFrame.getFrames();

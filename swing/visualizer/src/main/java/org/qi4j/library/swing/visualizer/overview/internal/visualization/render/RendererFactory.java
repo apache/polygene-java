@@ -14,19 +14,19 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.qi4j.library.swing.visualizer.overview.internal.render;
+package org.qi4j.library.swing.visualizer.overview.internal.visualization.render;
 
-import org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.FIELD_TYPE;
-import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.NodeType.APPLICATION;
-import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.NodeType.COMPOSITE;
-import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.NodeType.EDGE_HIDDEN;
-import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.NodeType.ENTITY;
-import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.NodeType.GROUP;
-import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.NodeType.LAYER;
-import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.NodeType.MODULE;
-import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.NodeType.OBJECT;
-import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.NodeType.SERVICE;
+import org.qi4j.library.swing.visualizer.overview.internal.common.NodeType;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.NodeType.APPLICATION;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.NodeType.COMPOSITE;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.NodeType.EDGE_HIDDEN;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.NodeType.ENTITY;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.NodeType.GROUP;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.NodeType.LAYER;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.NodeType.MODULE;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.NodeType.OBJECT;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.NodeType.SERVICE;
 import prefuse.data.expression.ColumnExpression;
 import prefuse.data.expression.ComparisonPredicate;
 import static prefuse.data.expression.ComparisonPredicate.EQ;
@@ -56,8 +56,8 @@ public final class RendererFactory extends DefaultRendererFactory
         setDefaultEdgeRenderer( new VerticalEdgeRenderer() );
     }
 
-    private static ComparisonPredicate createPredicate( GraphConstants.NodeType value )
+    private static ComparisonPredicate createPredicate( NodeType aType )
     {
-        return new ComparisonPredicate( EQ, new ColumnExpression( FIELD_TYPE ), new ObjectLiteral( value ) );
+        return new ComparisonPredicate( EQ, new ColumnExpression( FIELD_TYPE ), new ObjectLiteral( aType ) );
     }
 }

@@ -14,14 +14,13 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.qi4j.library.swing.visualizer.overview.internal.buttons;
+package org.qi4j.library.swing.visualizer.overview.internal.toolbar;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.geom.Point2D;
 import javax.swing.JButton;
-import prefuse.Display;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
+import org.qi4j.library.swing.visualizer.overview.internal.visualization.Qi4jApplicationDisplay;
 
 /**
  * TODO: Localization
@@ -31,9 +30,9 @@ import static org.qi4j.composite.NullArgumentException.validateNotNull;
  * @author Sonny Gill
  * @since 0.5
  */
-public final class ZoomToActualSizeButton extends JButton
+final class ZoomToActualSizeButton extends JButton
 {
-    public ZoomToActualSizeButton( Display aDisplay )
+    ZoomToActualSizeButton( Qi4jApplicationDisplay aDisplay )
         throws IllegalArgumentException
     {
         validateNotNull( "aDisplay", aDisplay );
@@ -41,20 +40,19 @@ public final class ZoomToActualSizeButton extends JButton
         addActionListener( new ZoomToActualSizeAction( aDisplay ) );
     }
 
-    private static class ZoomToActualSizeAction implements ActionListener
+    private static class ZoomToActualSizeAction
+        implements ActionListener
     {
-        private final Display display;
+        private final Qi4jApplicationDisplay display;
 
-        public ZoomToActualSizeAction( Display aDisplay )
+        public ZoomToActualSizeAction( Qi4jApplicationDisplay aDisplay )
         {
             display = aDisplay;
         }
 
-        public void actionPerformed( ActionEvent e )
+        public void actionPerformed( ActionEvent anEvent )
         {
-            Point2D center = new Point2D.Float( display.getWidth() / 2, display.getHeight() / 2 );
-            display.animateZoom( center, 1 / display.getScale(), 2000 );
-            display.repaint();
+            display.zoomToActualSize();
         }
     }
 }

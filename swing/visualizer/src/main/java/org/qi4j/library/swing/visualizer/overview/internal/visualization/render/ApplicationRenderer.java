@@ -17,7 +17,7 @@
  * limitations under the License. 
  */
 
-package org.qi4j.library.swing.visualizer.overview.internal.render;
+package org.qi4j.library.swing.visualizer.overview.internal.visualization.render;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -25,29 +25,35 @@ import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 import prefuse.visual.VisualItem;
 
-final class ModuleRenderer
+/**
+ * This renderer only draws the Application box.
+ */
+final class ApplicationRenderer
     extends AbstractRenderer
 {
 
-    private Color borderColor = new Color( 207, 202, 188 );
-    private BasicStroke borderStroke = new BasicStroke( 2 );
-    private Color fillColor = new Color( 247, 245, 239 );
+    private Color borderColor = Color.black;
+    private BasicStroke borderStroke = new BasicStroke( 6 );
+
+    private Color fillColor = new Color( 233, 227, 211 );
     private Color textColor = new Color( 129, 127, 121 );
 
     public final void render( Graphics2D g, VisualItem item )
     {
         Rectangle2D rect = item.getBounds();
+
         int x = (int) rect.getX();
         int y = (int) rect.getY();
         int width = (int) rect.getWidth();
         int height = (int) rect.getHeight();
 
-        g.setPaint( borderColor );
-        g.setStroke( borderStroke );
-        g.drawRoundRect( x, y, width, height, 3, 3 );
+        // todo draw drop shadow
+//        g.setPaint( borderColor );
+//        g.setStroke( borderStroke );
+//        g.drawRect( x, y, width, height );
 
         g.setPaint( fillColor );
-        g.fillRoundRect( x + 1, y + 1, width - 2, height - 2, 3, 3 );
+        g.fillRoundRect( x + 3, y + 3, width - 6, height - 6, 5, 5 );
 
         g.setPaint( textColor );
         drawName( g, item, x, y );

@@ -14,7 +14,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.qi4j.library.swing.visualizer.overview.internal;
+package org.qi4j.library.swing.visualizer.overview.internal.visualization;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,22 +28,22 @@ import org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.EntityDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.LayerDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ModuleDetailDescriptor;
-import org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.FIELD_DESCRIPTOR;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.FIELD_LAYER_LEVEL;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.FIELD_NAME;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.FIELD_TYPE;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.FIELD_USED_BY_LAYERS;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.FIELD_USED_LAYERS;
-import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.NodeType.APPLICATION;
-import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.NodeType.COMPOSITE;
-import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.NodeType.EDGE_HIDDEN;
-import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.NodeType.ENTITY;
-import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.NodeType.GROUP;
-import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.NodeType.LAYER;
-import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.NodeType.MODULE;
-import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.NodeType.OBJECT;
-import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.NodeType.SERVICE;
+import org.qi4j.library.swing.visualizer.overview.internal.common.NodeType;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.NodeType.APPLICATION;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.NodeType.COMPOSITE;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.NodeType.EDGE_HIDDEN;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.NodeType.ENTITY;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.NodeType.GROUP;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.NodeType.LAYER;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.NodeType.MODULE;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.NodeType.OBJECT;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.NodeType.SERVICE;
 import org.qi4j.service.ServiceDescriptor;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.entity.EntityDescriptor;
@@ -62,7 +62,7 @@ import prefuse.data.Node;
  * @author edward.yakop@gmail.com
  * @since 0.5
  */
-public final class ApplicationGraphBuilder
+final class ApplicationGraphBuilder
 {
     // Temp application descriptor
     private ApplicationDetailDescriptor appDetailDescriptor;
@@ -87,7 +87,7 @@ public final class ApplicationGraphBuilder
         layerDescriptorToNodeMap.clear();
 
         aGraph.addColumn( FIELD_NAME, String.class );
-        aGraph.addColumn( FIELD_TYPE, GraphConstants.NodeType.class );
+        aGraph.addColumn( FIELD_TYPE, NodeType.class );
         aGraph.addColumn( FIELD_LAYER_LEVEL, int.class );
         aGraph.addColumn( FIELD_USED_LAYERS, Collection.class );
         aGraph.addColumn( FIELD_USED_BY_LAYERS, Collection.class );

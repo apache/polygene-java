@@ -16,8 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-
-package org.qi4j.library.swing.visualizer.overview.internal;
+package org.qi4j.library.swing.visualizer.overview.internal.visualization;
 
 import java.awt.Dimension;
 import java.awt.Font;
@@ -33,21 +32,29 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-import org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.FIELD_LAYER_LEVEL;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.FIELD_NAME;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.FIELD_USED_BY_LAYERS;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.hSpace;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.paddingBottom;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.paddingLeft;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.paddingRight;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.paddingTop;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.vSpace;
 import prefuse.action.layout.graph.TreeLayout;
 import prefuse.data.Node;
 import prefuse.render.Renderer;
 import prefuse.visual.NodeItem;
 
-public final class ApplicationLayout extends TreeLayout
+final class Qi4jApplicationLayout extends TreeLayout
 {
-
-    public ApplicationLayout( String group )
+    Qi4jApplicationLayout( String aGroup )
     {
-        super( group );
+        super( aGroup );
     }
 
-    public void run( double frac )
+    @Override
+    public final void run( double frac )
     {
         NodeItem root = getLayoutRoot();
         Point topLeft = new Point( 50, 50 );
@@ -61,7 +68,7 @@ public final class ApplicationLayout extends TreeLayout
         while( nodes.hasNext() )
         {
             NodeItem layer = (NodeItem) nodes.next();
-            int level = layer.getInt( GraphConstants.FIELD_LAYER_LEVEL );
+            int level = layer.getInt( FIELD_LAYER_LEVEL );
             Collection<NodeItem> layers = map.get( level );
             if( layers == null )
             {
@@ -74,13 +81,13 @@ public final class ApplicationLayout extends TreeLayout
         return map.values();
     }
 
-    private Rectangle computeApplicationBounds( NodeItem application, Point location )
+    private Rectangle computeApplicationBounds( NodeItem anApplicationItem, Point aLocation )
     {
-        Dimension dimesion = getNodeLabelSize( application );
-        int x = location.x + GraphConstants.paddingLeft;
-        int y = location.y + GraphConstants.paddingTop + dimesion.height + GraphConstants.vSpace;
+        Dimension dimesion = getNodeLabelSize( anApplicationItem );
+        int x = aLocation.x + paddingLeft;
+        int y = aLocation.y + paddingTop + dimesion.height + vSpace;
 
-        Collection<Collection<NodeItem>> layeredNodeGroups = resolveLayerDependencies( application.children() );
+        Collection<Collection<NodeItem>> layeredNodeGroups = resolveLayerDependencies( anApplicationItem.children() );
 
         int maxLayerGroupWidth = 0;
         for( Collection<NodeItem> nodeGroup : layeredNodeGroups )
@@ -88,17 +95,17 @@ public final class ApplicationLayout extends TreeLayout
             Point layerGroupLocation = new Point( x, y );
             Rectangle bounds = computeLayerGroupBounds( nodeGroup, layerGroupLocation );
 
-            y += bounds.height + GraphConstants.vSpace;
+            y += bounds.height + vSpace;
             if( bounds.width > maxLayerGroupWidth )
             {
                 maxLayerGroupWidth = bounds.width;
             }
         }
 
-        int width = ( x + maxLayerGroupWidth + GraphConstants.paddingRight ) - location.x;
-        int height = y - location.y;
+        int width = ( x + maxLayerGroupWidth + paddingRight ) - aLocation.x;
+        int height = y - aLocation.y;
 
-        return new Rectangle( location.x, location.y, width, height );
+        return new Rectangle( aLocation.x, aLocation.y, width, height );
     }
 
     private Map<Node, NodeItem> nodeToVisualNodeItemMap = new HashMap<Node, NodeItem>();
@@ -106,15 +113,22 @@ public final class ApplicationLayout extends TreeLayout
     /**
      * Tries to suggest a suitable x position and width, if there is only 1 layer in this group.
      * The position and width is based on the layers in higher group that use this layer
+     *
+     * @param layers layers. This argument must not be {@code null}.
+     * @param aLayer layer. This argument must not be {@code null}.
+     * @param xLoc   x position.
+     * @param yLoc   y position.
+     * @return Suggested bounds.
      */
-    private Rectangle getSuggestedBounds( Collection<NodeItem> layers, NodeItem layer, int x, int y )
+    @SuppressWarnings( "unchecked" )
+    private Rectangle getSuggestedBounds( Collection<NodeItem> layers, NodeItem aLayer, int xLoc, int yLoc )
     {
-        nodeToVisualNodeItemMap.put( (Node) layer.getSourceTuple(), layer );
+        nodeToVisualNodeItemMap.put( (Node) aLayer.getSourceTuple(), aLayer );
 
-        Collection<Node> usedByLayers = (Collection<Node>) layer.get( GraphConstants.FIELD_USED_BY_LAYERS );
+        Collection<Node> usedByLayers = (Collection<Node>) aLayer.get( FIELD_USED_BY_LAYERS );
         if( usedByLayers.isEmpty() )
         {
-            return new Rectangle( x, y, 0, 0 );
+            return new Rectangle( xLoc, yLoc, 0, 0 );
         }
 
         int left = Integer.MAX_VALUE;
@@ -136,19 +150,19 @@ public final class ApplicationLayout extends TreeLayout
 
         width = right - left;
         // Use a height of 1 instead of 0 for correct operation of Rectangle2D.intersects call later
-        Rectangle suggestedBounds = new Rectangle( left, y, width, 1 );
+        Rectangle suggestedBounds = new Rectangle( left, yLoc, width, 1 );
 
         // If there are other layers on this level, and the calculated suggested bounds intersect with
         // any layer's bounds, return the default bounds
         if( layers.size() > 1 )
         {
             Set<NodeItem> otherLayers = new HashSet<NodeItem>( layers );
-            otherLayers.remove( layer );
+            otherLayers.remove( aLayer );
             for( NodeItem otherLayer : otherLayers )
             {
                 if( otherLayer.getBounds().intersects( suggestedBounds ) )
                 {
-                    return new Rectangle( x, y, 0, 0 );
+                    return new Rectangle( xLoc, yLoc, 0, 0 );
                 }
             }
         }
@@ -156,10 +170,10 @@ public final class ApplicationLayout extends TreeLayout
         return suggestedBounds;
     }
 
-    private Rectangle computeLayerGroupBounds( Collection<NodeItem> layers, Point location )
+    private Rectangle computeLayerGroupBounds( Collection<NodeItem> layers, Point aLocation )
     {
-        int x = location.x + GraphConstants.paddingLeft;
-        int y = location.y + GraphConstants.vSpace;
+        int x = aLocation.x + paddingLeft;
+        int y = aLocation.y + vSpace;
 
         int maxLayerHeight = 0;
         for( NodeItem layer : layers )
@@ -171,7 +185,7 @@ public final class ApplicationLayout extends TreeLayout
             int width = Math.max( bounds.width, suggestedBounds.width );
             layer.setBounds( bounds.x, bounds.y, width, bounds.height );
 
-            x += width + GraphConstants.hSpace;
+            x += width + hSpace;
             if( bounds.height > maxLayerHeight )
             {
                 maxLayerHeight = bounds.height;
@@ -179,17 +193,18 @@ public final class ApplicationLayout extends TreeLayout
 
         }
 
-        int width = x - location.x;
-        int height = ( y + maxLayerHeight + GraphConstants.paddingBottom ) - location.y;
+        int width = x - aLocation.x;
+        int height = ( y + maxLayerHeight + paddingBottom ) - aLocation.y;
 
-        return new Rectangle( location.x, location.y, width, height );
+        return new Rectangle( aLocation.x, aLocation.y, width, height );
     }
 
-    private Rectangle arrangeChildrenHorizontallyAndComputeBounds( NodeItem nodeItem, Point location, BoundsComputer childBoundsComputer )
+    private Rectangle arrangeChildrenHorizontallyAndComputeBounds(
+        NodeItem nodeItem, Point location, BoundsComputer childBoundsComputer )
     {
         Dimension dimension = getNodeLabelSize( nodeItem );
-        int x = location.x + GraphConstants.paddingLeft;
-        int y = location.y + GraphConstants.paddingTop + dimension.height + GraphConstants.vSpace;
+        int x = location.x + paddingLeft;
+        int y = location.y + paddingTop + dimension.height + vSpace;
 
         Iterator children = nodeItem.children();
         int maxChildHeight = 0;
@@ -200,7 +215,7 @@ public final class ApplicationLayout extends TreeLayout
             Rectangle bounds = childBoundsComputer.computeBounds( child, moduleLocation );
             child.setBounds( bounds.x, bounds.y, bounds.width, bounds.height );
 
-            x += bounds.width + GraphConstants.hSpace;
+            x += bounds.width + hSpace;
             if( bounds.height > maxChildHeight )
             {
                 maxChildHeight = bounds.height;
@@ -214,7 +229,7 @@ public final class ApplicationLayout extends TreeLayout
         }
 
         int width = x - location.x;
-        int height = ( y + maxChildHeight + GraphConstants.paddingBottom + GraphConstants.vSpace ) - location.y;
+        int height = ( y + maxChildHeight + paddingBottom + vSpace ) - location.y;
 
         return new Rectangle( location.x, location.y, width, height );
     }
@@ -245,8 +260,8 @@ public final class ApplicationLayout extends TreeLayout
     {
 
         Dimension dimension = getNodeLabelSize( nodeItem );
-        int x = location.x + GraphConstants.paddingLeft;
-        int y = location.y + GraphConstants.paddingTop + dimension.height + GraphConstants.vSpace;
+        int x = location.x + paddingLeft;
+        int y = location.y + paddingTop + dimension.height + vSpace;
 
         Iterator children = nodeItem.children();
         int maxCompositeWidth = 0;
@@ -257,7 +272,7 @@ public final class ApplicationLayout extends TreeLayout
             Rectangle bounds = computeCompositeBounds( composite, compositeLocation );
             composite.setBounds( bounds.x, bounds.y, bounds.width, bounds.height );
 
-            y += bounds.height + GraphConstants.paddingBottom;
+            y += bounds.height + paddingBottom;
             if( bounds.width > maxCompositeWidth )
             {
                 maxCompositeWidth = bounds.width;
@@ -275,21 +290,21 @@ public final class ApplicationLayout extends TreeLayout
             y = location.y + dimension.height;
         }
 
-        int width = ( x + maxCompositeWidth + GraphConstants.paddingRight ) - location.x;
-        int height = ( y + GraphConstants.paddingBottom ) - location.y;
+        int width = ( x + maxCompositeWidth + paddingRight ) - location.x;
+        int height = ( y + paddingBottom ) - location.y;
         return new Rectangle( location.x, location.y, width, height );
     }
 
     private Rectangle computeCompositeBounds( NodeItem composite, Point location )
     {
         Dimension dimension = getNodeLabelSize( composite );
-        return new Rectangle( location.x, location.y, dimension.width + GraphConstants.paddingLeft,
-                              dimension.height + GraphConstants.paddingTop + GraphConstants.paddingBottom );
+        return new Rectangle( location.x, location.y, dimension.width + paddingLeft,
+                              dimension.height + paddingTop + paddingBottom );
     }
 
     private String getName( NodeItem node )
     {
-        return (String) node.get( GraphConstants.FIELD_NAME );
+        return (String) node.get( FIELD_NAME );
     }
 
     private Dimension getNodeLabelSize( NodeItem node )

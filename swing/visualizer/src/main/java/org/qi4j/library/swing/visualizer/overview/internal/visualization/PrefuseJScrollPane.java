@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.qi4j.library.swing.visualizer.overview.internal;
+package org.qi4j.library.swing.visualizer.overview.internal.visualization;
 
 import java.awt.BorderLayout;
 import java.awt.Graphics2D;
@@ -113,7 +113,6 @@ public final class PrefuseJScrollPane extends JPanel
      */
     public PrefuseJScrollPane( Display display )
     {
-        super();
         initialize();
         addDisplay( display );
     }
@@ -124,7 +123,6 @@ public final class PrefuseJScrollPane extends JPanel
      */
     protected void initialize()
     {
-
         barH = new JScrollBar( JScrollBar.HORIZONTAL );
         barH.setMaximum( 0 );
         barH.setUnitIncrement( UNIT_INCREMENT );
@@ -182,12 +180,11 @@ public final class PrefuseJScrollPane extends JPanel
      */
     public void addDisplay( Display display )
     {
-
         // Initially the scrollbars are not yet added to the layout
-        if( this.m_display != null )
+        if( m_display != null )
         {
             // If there was an old display, remove it from the pane
-            remove( this.m_display );
+            remove( m_display );
         }
         else
         {
@@ -195,12 +192,12 @@ public final class PrefuseJScrollPane extends JPanel
             add( barH, BorderLayout.SOUTH );
         }
 
-        this.m_display = display;
+        m_display = display;
 
         // Add the paint listener that notifies us when the pane is repainted
-        this.m_display.addPaintListener( new DisplayPaintListener( this ) );
+        m_display.addPaintListener( new DisplayPaintListener( this ) );
 
-        add( this.m_display, BorderLayout.CENTER );
+        add( m_display, BorderLayout.CENTER );
 
         // Fit the scrollbars
         checkScrollbarState();
@@ -212,7 +209,7 @@ public final class PrefuseJScrollPane extends JPanel
      */
     public void checkScrollbarState()
     {
-        if( this.m_display != null )
+        if( m_display != null )
         {
 
             // Get the BoundingBox around all items
@@ -525,8 +522,8 @@ public final class PrefuseJScrollPane extends JPanel
          */
         public DisplayPaintListener( PrefuseJScrollPane pane, int acceptDelay )
         {
-            this.m_pane = pane;
-            this.timerDelay = acceptDelay;
+            m_pane = pane;
+            timerDelay = acceptDelay;
             timerAcceptChanges = new Timer( timerDelay, taskPerformer );
         }
 
@@ -576,7 +573,8 @@ public final class PrefuseJScrollPane extends JPanel
      *
      * @author <a href="http://www.msdevelopment.org">marcus staender</a>
      */
-    public abstract class ScrollbarListener implements AdjustmentListener
+    public abstract class ScrollbarListener
+        implements AdjustmentListener
     {
         public ScrollbarListener()
         {
