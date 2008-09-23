@@ -39,10 +39,12 @@ import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
-import org.qi4j.library.swing.visualizer.overview.descriptor.ApplicationGraphVisitor;
+import org.qi4j.library.swing.visualizer.model.ApplicationDetailDescriptorBuilder;
+import org.qi4j.library.swing.visualizer.model.ApplicationDetailDescriptor;
 import org.qi4j.library.swing.visualizer.overview.internal.ApplicationLayout;
 import org.qi4j.library.swing.visualizer.overview.internal.ItemSelectionControl;
 import org.qi4j.library.swing.visualizer.overview.internal.PrefuseJScrollPane;
+import org.qi4j.library.swing.visualizer.overview.internal.ApplicationGraphBuilder;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.FIELD_NAME;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.FIELD_TYPE;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.NodeType;
@@ -97,9 +99,12 @@ public class OverviewPanel extends JPanel
 
         selectionControl = new ItemSelectionControl( aListener );
 
+        ApplicationDetailDescriptorBuilder descriptorBuilder = new ApplicationDetailDescriptorBuilder();
+        ApplicationDetailDescriptor descriptor = descriptorBuilder.createApplicationDetailDescriptor( anApplication );
+
+        ApplicationGraphBuilder builder = new ApplicationGraphBuilder( descriptor );
         Graph graph = new Graph( true );
-        ApplicationGraphVisitor appGraphVisitor = new ApplicationGraphVisitor( graph );
-        anApplication.visitDescriptor( appGraphVisitor );
+        builder.populate( graph );
 
         visualization = createVisualization( graph );
 

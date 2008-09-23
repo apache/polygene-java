@@ -16,14 +16,11 @@
 */
 package org.qi4j.library.swing.visualizer.overview;
 
-import org.qi4j.library.swing.visualizer.overview.descriptor.CompositeDetailDescriptor;
-import org.qi4j.library.swing.visualizer.overview.descriptor.EntityDetailDescriptor;
-import org.qi4j.library.swing.visualizer.overview.descriptor.ApplicationDetailDescriptor;
-import org.qi4j.library.swing.visualizer.overview.descriptor.LayerDetailDescriptor;
-import org.qi4j.library.swing.visualizer.overview.descriptor.ModuleDetailDescriptor;
-import org.qi4j.spi.structure.ApplicationDescriptor;
-import org.qi4j.spi.structure.LayerDescriptor;
-import org.qi4j.spi.structure.ModuleDescriptor;
+import org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.EntityDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.ApplicationDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.LayerDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.ModuleDetailDescriptor;
 import org.qi4j.spi.object.ObjectDescriptor;
 import org.qi4j.service.ServiceDescriptor;
 

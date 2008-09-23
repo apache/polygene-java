@@ -26,7 +26,7 @@ import javax.swing.JTextArea;
 import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER;
 import org.qi4j.composite.NullArgumentException;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.DefaultDisplayManager;
-import org.qi4j.library.swing.visualizer.overview.descriptor.CompositeDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor;
 
 /**
  * @author edward.yakop@gmail.com

@@ -31,8 +31,8 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import org.qi4j.composite.Composite;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
 import org.qi4j.library.swing.visualizer.detailPanel.DetailPanel;
-import org.qi4j.library.swing.visualizer.overview.descriptor.CompositeDetailDescriptor;
-import org.qi4j.library.swing.visualizer.overview.descriptor.CompositeMethodDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.CompositeMethodDetailDescriptor;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.composite.CompositeMethodDescriptor;
 

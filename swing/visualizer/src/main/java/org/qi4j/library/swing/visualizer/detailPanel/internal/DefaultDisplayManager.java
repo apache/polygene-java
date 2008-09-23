@@ -19,7 +19,7 @@ package org.qi4j.library.swing.visualizer.detailPanel.internal;
 import org.qi4j.library.swing.visualizer.detailPanel.DisplayManager;
 import org.qi4j.library.swing.visualizer.detailPanel.DetailPanel;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.composite.CompositeOverviewPanel;
-import org.qi4j.library.swing.visualizer.overview.descriptor.CompositeDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor;
 
 /**
  * @author edward.yakop@gmail.com

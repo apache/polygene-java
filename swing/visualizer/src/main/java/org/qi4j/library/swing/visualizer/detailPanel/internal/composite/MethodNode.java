@@ -20,7 +20,7 @@ import java.lang.reflect.Method;
 import javax.swing.tree.DefaultMutableTreeNode;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
 import static org.qi4j.library.swing.visualizer.detailPanel.internal.common.Util.methodToString;
-import org.qi4j.library.swing.visualizer.overview.descriptor.CompositeMethodDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.CompositeMethodDetailDescriptor;
 
 /**
  * @author Sonny Gill

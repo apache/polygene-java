@@ -14,7 +14,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.qi4j.library.swing.visualizer.overview.descriptor;
+package org.qi4j.library.swing.visualizer.model;
 
 import org.qi4j.spi.entity.EntityDescriptor;
 

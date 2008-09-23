@@ -30,7 +30,7 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.common.Util;
-import org.qi4j.library.swing.visualizer.overview.descriptor.CompositeMethodDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.CompositeMethodDetailDescriptor;
 import org.qi4j.spi.composite.MethodConcernDescriptor;
 import org.qi4j.spi.composite.MethodConstraintsDescriptor;
 import org.qi4j.spi.composite.MethodSideEffectDescriptor;

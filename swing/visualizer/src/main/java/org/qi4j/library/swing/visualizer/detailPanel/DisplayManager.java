@@ -16,7 +16,7 @@
 */
 package org.qi4j.library.swing.visualizer.detailPanel;
 
-import org.qi4j.library.swing.visualizer.overview.descriptor.CompositeDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor;
 
 /**
  * @author edward.yakop@gmail.com
