@@ -74,6 +74,7 @@ public final class TogglePanButton extends JButton
         {
             display = aDisplay;
             panControl = new MousePanControl();
+            panControl.setEnabled( false );
             display.addControlListener( panControl );
         }
 

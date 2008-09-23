@@ -17,10 +17,20 @@
 package org.qi4j.library.swing.visualizer.detailPanel;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.LayoutManager;
 import javax.swing.JPanel;
+import javax.swing.JComponent;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.DefaultDisplayManager;
+import org.qi4j.library.swing.visualizer.detailPanel.internal.composite.CompositeDetailPanel;
+import org.qi4j.library.swing.visualizer.model.ApplicationDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.EntityDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.LayerDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.ModuleDetailDescriptor;
+import org.qi4j.service.ServiceDescriptor;
+import org.qi4j.spi.object.ObjectDescriptor;
 
 /**
  * @author edward.yakop@gmail.com
@@ -30,11 +40,14 @@ import org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor;
 public final class DetailPanel extends JPanel
 {
     private DisplayManager manager;
+    private Component component;
 
     public DetailPanel()
     {
         super( new BorderLayout() );
+
         manager = new DefaultDisplayManager();
+        component = null;
     }
 
     public final void setDisplayManager( DisplayManager aManager )
@@ -44,8 +57,81 @@ public final class DetailPanel extends JPanel
         manager = aManager;
     }
 
-    public final void display( CompositeDetailDescriptor aDescriptor )
+    public void displayApplication( ApplicationDetailDescriptor aDescriptor )
+        throws IllegalArgumentException
     {
-        manager.display( this, aDescriptor );
+        validateNotNull( "aDescriptor", aDescriptor );
+        manager.displayApplication( this, aDescriptor );
+    }
+
+    public final void displayLayer( LayerDetailDescriptor aDescriptor )
+        throws IllegalArgumentException
+    {
+        validateNotNull( "aDescriptor", aDescriptor );
+        manager.displayLayer( this, aDescriptor );
+    }
+
+    public final void displayModule( ModuleDetailDescriptor aDescriptor )
+        throws IllegalArgumentException
+    {
+        validateNotNull( "aDescriptor", aDescriptor );
+        manager.displayModule( this, aDescriptor );
+    }
+
+    public final void displayService( ServiceDescriptor aDescriptor )
+        throws IllegalArgumentException
+    {
+        validateNotNull( "aDescriptor", aDescriptor );
+
+        manager.displayService( this, aDescriptor );
+    }
+
+    public final void displayEntity( EntityDetailDescriptor aDescriptor )
+        throws IllegalArgumentException
+    {
+        validateNotNull( "aDescriptor", aDescriptor );
+
+        manager.displayEntity( this, aDescriptor );
+    }
+
+    public final void displayComposite( CompositeDetailDescriptor aDescriptor )
+        throws IllegalArgumentException
+    {
+        validateNotNull( "aDescriptor", aDescriptor );
+
+        manager.displayComposite( this, aDescriptor );
+    }
+
+    public final void displayObject( ObjectDescriptor aDescriptor )
+        throws IllegalArgumentException
+    {
+        validateNotNull( "aDescriptor", aDescriptor );
+
+        manager.displayObject( this, aDescriptor );
+    }
+
+    public final void updateContent( Component aComponent )
+    {
+        boolean isChange = false;
+
+        if( aComponent != null )
+        {
+            add( aComponent, BorderLayout.CENTER );
+            isChange = true;
+        }
+
+        if( component != null )
+        {
+            remove( component );
+            isChange = true;
+        }
+
+        component = aComponent;
+
+        if( isChange )
+        {
+            revalidate();
+            repaint();
+        }
     }
 }

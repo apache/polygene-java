@@ -19,19 +19,54 @@ package org.qi4j.library.swing.visualizer.detailPanel.internal;
 import org.qi4j.library.swing.visualizer.detailPanel.DetailPanel;
 import org.qi4j.library.swing.visualizer.detailPanel.DisplayManager;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.composite.CompositeDetailPanel;
+import org.qi4j.library.swing.visualizer.model.ApplicationDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.EntityDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.LayerDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.ModuleDetailDescriptor;
+import org.qi4j.service.ServiceDescriptor;
+import org.qi4j.spi.object.ObjectDescriptor;
 
 /**
  * @author edward.yakop@gmail.com
  */
-public class DefaultDisplayManager
+public final class DefaultDisplayManager
     implements DisplayManager
 {
-    public void display( DetailPanel aDetailPanel, CompositeDetailDescriptor aDescriptor )
+    public final void displayApplication( DetailPanel aDetailPanel, ApplicationDetailDescriptor aDescriptor )
     {
-        aDetailPanel.removeAll();
+        System.err.println( "Application" );
+    }
 
+    public final void displayLayer( DetailPanel aDetailPanel, LayerDetailDescriptor aDescriptor )
+    {
+        System.err.println( "Layer" );
+    }
+
+    public final void displayModule( DetailPanel aDetailPanel, ModuleDetailDescriptor aDescriptor )
+    {
+        System.err.println( "Module" );
+    }
+
+    public final void displayService( DetailPanel aDetailPanel, ServiceDescriptor aDescriptor )
+    {
+        System.err.println( "Service" );
+    }
+
+    public final void displayEntity( DetailPanel aDetailPanel, EntityDetailDescriptor aDescriptor )
+    {
         CompositeDetailPanel panel = new CompositeDetailPanel( aDescriptor );
-        aDetailPanel.add( panel );
+        aDetailPanel.updateContent( panel );
+    }
+
+    public final void displayComposite( DetailPanel aDetailPanel, CompositeDetailDescriptor aDescriptor )
+    {
+        CompositeDetailPanel panel = new CompositeDetailPanel( aDescriptor );
+        aDetailPanel.updateContent( panel );
+    }
+
+    public final void displayObject( DetailPanel aDetailPanel, ObjectDescriptor aDescriptor )
+    {
+        System.err.println( "Object" );
     }
 }

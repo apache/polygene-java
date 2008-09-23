@@ -17,6 +17,12 @@
 package org.qi4j.library.swing.visualizer.detailPanel;
 
 import org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.ApplicationDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.EntityDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.LayerDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.ModuleDetailDescriptor;
+import org.qi4j.service.ServiceDescriptor;
+import org.qi4j.spi.object.ObjectDescriptor;
 
 /**
  * @author edward.yakop@gmail.com
@@ -24,6 +30,14 @@ import org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor;
  */
 public interface DisplayManager
 {
+    void displayApplication( DetailPanel aDetailPanel, ApplicationDetailDescriptor aDescriptor );
+
+    void displayLayer( DetailPanel aDetailPanel, LayerDetailDescriptor aDescriptor );
+
+    void displayModule( DetailPanel aDetailPanel, ModuleDetailDescriptor aDescriptor );
+
+    void displayService( DetailPanel aDetailPanel, ServiceDescriptor aDescriptor );
+
     /**
      * Invoked when the specified detail panel is displaying a composite.
      *
@@ -31,5 +45,9 @@ public interface DisplayManager
      * @param aDescriptor  composite to display. This argument must not be {@code null}.
      * @since 0.5
      */
-    void display( DetailPanel aDetailPanel, CompositeDetailDescriptor aDescriptor );
+    void displayComposite( DetailPanel aDetailPanel, CompositeDetailDescriptor aDescriptor );
+
+    void displayEntity( DetailPanel aDetailPanel, EntityDetailDescriptor aDescriptor );
+
+    void displayObject( DetailPanel aDetailPanel, ObjectDescriptor aDescriptor );
 }

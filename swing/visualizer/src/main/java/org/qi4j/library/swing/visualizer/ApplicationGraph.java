@@ -79,37 +79,37 @@ public class ApplicationGraph
     {
         public void onApplicationSelected( ApplicationDetailDescriptor aDescriptor )
         {
-            // TODO
+            detailPanel.displayApplication( aDescriptor );
         }
 
         public void onLayerSelected( LayerDetailDescriptor aDescriptor )
         {
-            // TODO
+            detailPanel.displayLayer( aDescriptor );
         }
 
         public void onModuleSelected( ModuleDetailDescriptor aDescriptor )
         {
-            // TODO
+            detailPanel.displayModule( aDescriptor );
         }
 
         public void onServiceSelected( ServiceDescriptor aDescriptor )
         {
-            // TODO
+            detailPanel.displayService( aDescriptor );
         }
 
         public void onEntitySelected( EntityDetailDescriptor aDescriptor )
         {
-            onCompositeSelected( aDescriptor );
+            detailPanel.displayEntity( aDescriptor );
         }
 
         public void onCompositeSelected( CompositeDetailDescriptor aDescriptor )
         {
-            detailPanel.display( aDescriptor );
+            detailPanel.displayComposite( aDescriptor );
         }
 
         public void onObjectSelected( ObjectDescriptor aDescriptor )
         {
-            // TODO
+            detailPanel.displayObject( aDescriptor );
         }
     }
 }
