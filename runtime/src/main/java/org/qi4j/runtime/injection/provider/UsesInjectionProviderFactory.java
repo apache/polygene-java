@@ -6,9 +6,12 @@ import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.injection.InjectionProvider;
 import org.qi4j.runtime.injection.InjectionProviderFactory;
+import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.composite.NoSuchCompositeException;
 import org.qi4j.composite.ConstructionException;
+import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.object.NoSuchObjectException;
+import org.qi4j.object.ObjectBuilderFactory;
 
 /**
  * TODO
@@ -34,34 +37,58 @@ public final class UsesInjectionProviderFactory
             this.dependency = dependency;
         }
 
-        public Object provideInjection( InjectionContext context ) throws InjectionProviderException
+        @SuppressWarnings( "unchecked" )
+        public Object provideInjection( InjectionContext context )
+            throws InjectionProviderException
         {
             UsesInstance uses = context.uses();
 
             Class injectionType = dependency.rawInjectionType();
             Object usesObject = uses.useForType( injectionType );
 
-            if (usesObject == null)
+            if( usesObject == null )
             {
                 // No @Uses object provided
                 // Try instantiating a Composite or Object for the given type
+                ModuleInstance moduleInstance = context.moduleInstance();
                 try
                 {
-                    return context.moduleInstance().compositeBuilderFactory().newComposite( injectionType );
+                    CompositeBuilderFactory compositeBF = moduleInstance.compositeBuilderFactory();
+                    return compositeBF.newComposite( injectionType );
                 }
                 catch( NoSuchCompositeException e )
                 {
-                    try
-                    {
-                        return context.moduleInstance().objectBuilderFactory().newObject( injectionType );
-                    }
-                    catch( NoSuchObjectException e1 )
-                    {
-                        return null;
-                    }
+                    // Retry for object
+                    return createObject( injectionType, moduleInstance );
                 }
-            } else
+                catch( ConstructionException e )
+                {
+                    // Retry for object
+                    return createObject( injectionType, moduleInstance );
+                }
+            }
+            else
+            {
                 return usesObject;
+            }
+        }
+
+        @SuppressWarnings( "unchecked" )
+        private Object createObject( Class injectionType, ModuleInstance moduleInstance )
+        {
+            try
+            {
+                ObjectBuilderFactory objectBuilderFactory = moduleInstance.objectBuilderFactory();
+                return objectBuilderFactory.newObject( injectionType );
+            }
+            catch( NoSuchObjectException e1 )
+            {
+                return null;
+            }
+            catch( ConstructionException e2 )
+            {
+                return null;
+            }
         }
     }
 }
