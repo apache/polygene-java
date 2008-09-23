@@ -71,32 +71,12 @@ public class ApplicationGraph
         frame.pack();
         frame.setVisible( true );
 
-        overviewPanel.graphShown();
+        overviewPanel.showGraph();
     }
 
     private class CompositeSelectionControl
         implements SelectionListener
     {
-        public void onCompositeSelected( CompositeDetailDescriptor aDescriptor )
-        {
-            detailPanel.display( aDescriptor );
-        }
-
-        public void onEntitySelected( EntityDetailDescriptor aDescriptor )
-        {
-            onCompositeSelected( aDescriptor );
-        }
-
-        public void onServiceSelected( ServiceDescriptor aDescriptor )
-        {
-            // TODO
-        }
-
-        public void onObjectSelected( ObjectDescriptor aDescriptor )
-        {
-            // TODO
-        }
-
         public void onApplicationSelected( ApplicationDetailDescriptor aDescriptor )
         {
             // TODO
@@ -108,6 +88,26 @@ public class ApplicationGraph
         }
 
         public void onModuleSelected( ModuleDetailDescriptor aDescriptor )
+        {
+            // TODO
+        }
+
+        public void onServiceSelected( ServiceDescriptor aDescriptor )
+        {
+            // TODO
+        }
+
+        public void onEntitySelected( EntityDetailDescriptor aDescriptor )
+        {
+            onCompositeSelected( aDescriptor );
+        }
+
+        public void onCompositeSelected( CompositeDetailDescriptor aDescriptor )
+        {
+            detailPanel.display( aDescriptor );
+        }
+
+        public void onObjectSelected( ObjectDescriptor aDescriptor )
         {
             // TODO
         }

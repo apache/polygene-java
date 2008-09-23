@@ -16,9 +16,9 @@
 */
 package org.qi4j.library.swing.visualizer.detailPanel.internal;
 
-import org.qi4j.library.swing.visualizer.detailPanel.DisplayManager;
 import org.qi4j.library.swing.visualizer.detailPanel.DetailPanel;
-import org.qi4j.library.swing.visualizer.detailPanel.internal.composite.CompositeOverviewPanel;
+import org.qi4j.library.swing.visualizer.detailPanel.DisplayManager;
+import org.qi4j.library.swing.visualizer.detailPanel.internal.composite.CompositeDetailPanel;
 import org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor;
 
 /**
@@ -27,9 +27,11 @@ import org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor;
 public class DefaultDisplayManager
     implements DisplayManager
 {
-    public void display( DetailPanel aPanel, CompositeDetailDescriptor aDescriptor )
+    public void display( DetailPanel aDetailPanel, CompositeDetailDescriptor aDescriptor )
     {
-        aPanel.setLeftComponent( new CompositeOverviewPanel( aPanel, aDescriptor ) );
-        aPanel.setRightComponent( aPanel.createHelpPanel() );
+        aDetailPanel.removeAll();
+
+        CompositeDetailPanel panel = new CompositeDetailPanel( aDescriptor );
+        aDetailPanel.add( panel );
     }
 }

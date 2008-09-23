@@ -39,6 +39,7 @@ abstract class AbstractRenderer
     {
         Font font = item.getFont();
         FontMetrics fm = DEFAULT_GRAPHICS.getFontMetrics( font );
+
         x = x + GraphConstants.paddingLeft;
         y = y + GraphConstants.paddingTop + fm.getHeight();
         String name = (String) item.get( GraphConstants.FIELD_NAME );

@@ -20,15 +20,16 @@ import org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor;
 
 /**
  * @author edward.yakop@gmail.com
+ * @since 0.5
  */
 public interface DisplayManager
 {
     /**
      * Invoked when the specified detail panel is displaying a composite.
      *
-     * @param aPanel      Detail panel. This argument must not be {@code null}.
-     * @param aDescriptor composite to display. This argument must not be {@code null}.
+     * @param aDetailPanel Detail panel. This argument must not be {@code null}.
+     * @param aDescriptor  composite to display. This argument must not be {@code null}.
      * @since 0.5
      */
-    void display( DetailPanel aPanel, CompositeDetailDescriptor aDescriptor );
+    void display( DetailPanel aDetailPanel, CompositeDetailDescriptor aDescriptor );
 }

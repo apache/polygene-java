@@ -23,6 +23,7 @@ import java.lang.reflect.Method;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
@@ -30,7 +31,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import org.qi4j.composite.Composite;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
-import org.qi4j.library.swing.visualizer.detailPanel.DetailPanel;
 import org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.CompositeMethodDetailDescriptor;
 import org.qi4j.spi.composite.CompositeDescriptor;
@@ -41,17 +41,14 @@ import org.qi4j.spi.composite.CompositeMethodDescriptor;
  * @author edward.yakop@gmail.com
  * @since 0.5
  */
-public final class CompositeOverviewPanel extends JScrollPane
+public final class CompositeDetailPanel extends JSplitPane
 {
-    private final DetailPanel detailPanel;
-
-    public CompositeOverviewPanel( DetailPanel aPanel, CompositeDetailDescriptor aDescriptor )
+    public CompositeDetailPanel( CompositeDetailDescriptor aDescriptor )
         throws IllegalArgumentException
     {
-        validateNotNull( "aPanel", aPanel );
-        validateNotNull( "aDescriptor", aDescriptor );
+        super( HORIZONTAL_SPLIT );
 
-        detailPanel = aPanel;
+        validateNotNull( "aDescriptor", aDescriptor );
 
         CompositeDescriptor descriptor = aDescriptor.descriptor();
         Class<? extends Composite> compositeType = descriptor.type();
@@ -84,10 +81,12 @@ public final class CompositeOverviewPanel extends JScrollPane
             }
         }
 
-        final JTree tree = new JTree( root );
+        JTree tree = new JTree( root );
         tree.addTreeSelectionListener( new CompositeTreeSelectionListener( tree ) );
         tree.setCellRenderer( new CompositeCellRenderer( root ) );
-        setViewportView( tree );
+
+        JScrollPane scrollPane = new JScrollPane( tree );
+        setLeftComponent( scrollPane );
     }
 
 
@@ -113,7 +112,6 @@ public final class CompositeOverviewPanel extends JScrollPane
                 if( methodDetailDescriptor == null )
                 {
                     // TODO: This means, Invocation handler implements the method
-                    detailPanel.setRightComponent( null );
                     return;
                 }
 
@@ -137,7 +135,7 @@ public final class CompositeOverviewPanel extends JScrollPane
 
                 JTree mixinTree = new MixinTree( methodDetailDescriptor );
                 JScrollPane scrollPane = new JScrollPane( mixinTree );
-                detailPanel.setRightComponent( scrollPane );
+                setRightComponent( scrollPane );
             }
         }
     }

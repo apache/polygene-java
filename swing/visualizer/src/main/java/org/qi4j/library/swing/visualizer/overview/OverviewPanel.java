@@ -18,13 +18,12 @@ package org.qi4j.library.swing.visualizer.overview;
 import java.awt.BorderLayout;
 import static java.awt.BorderLayout.CENTER;
 import static java.awt.BorderLayout.PAGE_START;
-import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.Graphics2D;
-import java.awt.Point;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
+import static java.awt.event.KeyEvent.VK_DOWN;
+import static java.awt.event.KeyEvent.VK_LEFT;
+import static java.awt.event.KeyEvent.VK_RIGHT;
+import static java.awt.event.KeyEvent.VK_UP;
 import java.awt.event.MouseWheelEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
@@ -33,15 +32,19 @@ import java.util.Iterator;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
-import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
+import static org.qi4j.composite.NullArgumentException.validateNotNull;
 import org.qi4j.library.swing.visualizer.model.ApplicationDetailDescriptor;
 import org.qi4j.library.swing.visualizer.overview.internal.ApplicationGraphBuilder;
 import org.qi4j.library.swing.visualizer.overview.internal.ApplicationLayout;
 import org.qi4j.library.swing.visualizer.overview.internal.ItemSelectionControl;
 import org.qi4j.library.swing.visualizer.overview.internal.PrefuseJScrollPane;
+import org.qi4j.library.swing.visualizer.overview.internal.buttons.DisplayHelpButton;
+import org.qi4j.library.swing.visualizer.overview.internal.buttons.TogglePanButton;
+import org.qi4j.library.swing.visualizer.overview.internal.buttons.ZoomToActualSizeButton;
+import org.qi4j.library.swing.visualizer.overview.internal.buttons.ZoomToFitButton;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.FIELD_NAME;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.FIELD_TYPE;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.NodeType;
@@ -57,7 +60,6 @@ import prefuse.action.RepaintAction;
 import prefuse.action.assignment.ColorAction;
 import prefuse.controls.Control;
 import prefuse.controls.ControlAdapter;
-import prefuse.controls.PanControl;
 import prefuse.data.Graph;
 import prefuse.data.Node;
 import prefuse.data.Tuple;
@@ -69,11 +71,11 @@ import prefuse.data.expression.Predicate;
 import prefuse.data.expression.parser.ExpressionParser;
 import prefuse.data.tuple.TupleSet;
 import prefuse.util.ColorLib;
-import prefuse.util.display.DisplayLib;
-import prefuse.util.display.PaintListener;
-import static prefuse.util.ui.UILib.isButtonPressed;
+import static prefuse.util.display.DisplayLib.fitViewToBounds;
 import prefuse.visual.EdgeItem;
 import prefuse.visual.VisualItem;
+import static prefuse.visual.VisualItem.FILLCOLOR;
+import static prefuse.visual.VisualItem.STROKECOLOR;
 import prefuse.visual.sort.ItemSorter;
 
 /**
@@ -97,9 +99,6 @@ public class OverviewPanel extends JPanel
 
         selectionControl = new ItemSelectionControl( aListener );
 
-        // Toolbar
-        JToolBar toolbar = createToolbar();
-        add( toolbar, PAGE_START );
 
         Graph graph = new Graph( true );
         visualization = createVisualization( graph, anAppDescriptor );
@@ -107,12 +106,16 @@ public class OverviewPanel extends JPanel
         display = createDisplay( visualization );
         PrefuseJScrollPane displayScrollPane = new PrefuseJScrollPane( display );
         add( displayScrollPane, CENTER );
-        createPanningAndZoomingActions( displayScrollPane );
+        createPanningAndZoomingActions( display );
 
         launchDisplay( visualization );
 
         Node applicationNode = graph.getNode( 0 );
         applicationNodeItem = visualization.getVisualItem( "graph.nodes", applicationNode );
+
+        // Toolbar
+        JToolBar toolbar = createToolbar( display, applicationNodeItem );
+        add( toolbar, PAGE_START );
     }
 
     private Visualization createVisualization( Graph graph, ApplicationDetailDescriptor anAppDescriptor )
@@ -133,25 +136,35 @@ public class OverviewPanel extends JPanel
         return visualization;
     }
 
-    private JToolBar createToolbar()
+    private JToolBar createToolbar( Display aDisplay, VisualItem anApplicationNodeItem )
+        throws IllegalArgumentException
     {
+        validateNotNull( "aDisplay", aDisplay );
+        validateNotNull( "anApplicationNodeItem", anApplicationNodeItem );
+
         JToolBar toolBar = new JToolBar();
 
-        JButton zoomToFitBtn = new JButton( new ZoomToFitAction() );
+        TogglePanButton togglePanButton = new TogglePanButton( aDisplay );
+        toolBar.add( togglePanButton );
+
+        ZoomToFitButton zoomToFitBtn = new ZoomToFitButton( aDisplay, anApplicationNodeItem );
         toolBar.add( zoomToFitBtn );
 
-        JButton actualSizeButton = new JButton( new ActualSizeAction() );
+        ZoomToActualSizeButton actualSizeButton = new ZoomToActualSizeButton( aDisplay );
         toolBar.add( actualSizeButton );
+
+        DisplayHelpButton helpButton = new DisplayHelpButton();
+        toolBar.add( helpButton );
 
         return toolBar;
     }
 
-    private void createPanningAndZoomingActions( PrefuseJScrollPane scrollPane )
+    private void createPanningAndZoomingActions( Display component )
     {
         final int PREVIOUSLY_VISIBLE_AREA_WHEN_SCROLLING = 50;
 
-        InputMap inputMap = scrollPane.getInputMap( WHEN_ANCESTOR_OF_FOCUSED_COMPONENT );
-        ActionMap actionMap = scrollPane.getActionMap();
+        InputMap inputMap = component.getInputMap( WHEN_ANCESTOR_OF_FOCUSED_COMPONENT );
+        ActionMap actionMap = component.getActionMap();
 
         inputMap.put( KeyStroke.getKeyStroke( '+' ), "zoomIn" );
         actionMap.put( "zoomIn", new AbstractAction( "Zoom In" )
@@ -171,7 +184,7 @@ public class OverviewPanel extends JPanel
             }
         } );
 
-        inputMap.put( KeyStroke.getKeyStroke( KeyEvent.VK_LEFT, 0 ), "panLeft" );
+        inputMap.put( KeyStroke.getKeyStroke( VK_LEFT, 0 ), "panLeft" );
         actionMap.put( "panLeft", new AbstractAction( "Pan Left" )
         {
             public void actionPerformed( ActionEvent e )
@@ -180,7 +193,7 @@ public class OverviewPanel extends JPanel
             }
         } );
 
-        inputMap.put( KeyStroke.getKeyStroke( KeyEvent.VK_RIGHT, 0 ), "panRight" );
+        inputMap.put( KeyStroke.getKeyStroke( VK_RIGHT, 0 ), "panRight" );
         actionMap.put( "panRight", new AbstractAction( "Pan Right" )
         {
             public void actionPerformed( ActionEvent e )
@@ -189,7 +202,7 @@ public class OverviewPanel extends JPanel
             }
         } );
 
-        inputMap.put( KeyStroke.getKeyStroke( KeyEvent.VK_UP, 0 ), "panUp" );
+        inputMap.put( KeyStroke.getKeyStroke( VK_UP, 0 ), "panUp" );
         actionMap.put( "panUp", new AbstractAction( "Pan Up" )
         {
             public void actionPerformed( ActionEvent e )
@@ -198,7 +211,7 @@ public class OverviewPanel extends JPanel
             }
         } );
 
-        inputMap.put( KeyStroke.getKeyStroke( KeyEvent.VK_DOWN, 0 ), "panDown" );
+        inputMap.put( KeyStroke.getKeyStroke( VK_DOWN, 0 ), "panDown" );
         actionMap.put( "panDown", new AbstractAction( "Pan Down" )
         {
             public void actionPerformed( ActionEvent e )
@@ -241,11 +254,8 @@ public class OverviewPanel extends JPanel
             }
         } );
 
-        display.addControlListener( new MousePanControl( true ) );
         display.addControlListener( new MouseWheelZoomControl() );
-        display.addControlListener( new DoubleClickZoomControl() );
         display.addControlListener( selectionControl );
-        display.addPaintListener( new DisplayExpansionListener() );
 
         return display;
     }
@@ -280,8 +290,8 @@ public class OverviewPanel extends JPanel
     private ActionList establishColors()
     {
         // color for edges
-        ColorAction edgesStroke = new ColorAction( "graph.edges", VisualItem.STROKECOLOR, ColorLib.gray( 100 ) );
-        ColorAction edgesFill = new ColorAction( "graph.edges", VisualItem.FILLCOLOR, ColorLib.gray( 100 ) );
+        ColorAction edgesStroke = new ColorAction( "graph.edges", STROKECOLOR, ColorLib.gray( 100 ) );
+        ColorAction edgesFill = new ColorAction( "graph.edges", FILLCOLOR, ColorLib.gray( 100 ) );
 
         // an action list containing all color assignments
         ActionList color = new ActionList();
@@ -290,7 +300,7 @@ public class OverviewPanel extends JPanel
         return color;
     }
 
-    public void graphShown()
+    public void showGraph()
     {
         zoomToFit();
     }
@@ -302,14 +312,12 @@ public class OverviewPanel extends JPanel
 
     private void zoomToFit()
     {
-        DisplayLib.fitViewToBounds( display, applicationNodeItem.getBounds(), 2000 );
-        display.repaint();
+        fitViewToBounds( display, applicationNodeItem.getBounds(), 0 );
     }
 
     private void zoomToActualSize()
     {
-        display.animateZoom( getDisplayCenter(), 1 / display.getScale(), 2000 );
-        display.repaint();
+        display.animateZoom( getDisplayCenter(), 1 / display.getScale(), 0 );
     }
 
     private void zoomIn( Point2D p, Double scale )
@@ -385,7 +393,6 @@ public class OverviewPanel extends JPanel
     {
         if( !display.isTranformInProgress() )
         {
-
             Rectangle2D bounds = applicationNodeItem.getBounds();
             AffineTransform at = display.getTransform();
 
@@ -456,19 +463,6 @@ public class OverviewPanel extends JPanel
         System.out.println( visualization.run( "color" ) );
     }
 
-    private class ZoomToFitAction extends AbstractAction
-    {
-        private ZoomToFitAction()
-        {
-            super( "Zoom To Fit" );
-        }
-
-        public void actionPerformed( ActionEvent e )
-        {
-            zoomToFit();
-        }
-    }
-
     private class ActualSizeAction extends AbstractAction
     {
         private ActualSizeAction()
@@ -479,41 +473,6 @@ public class OverviewPanel extends JPanel
         public void actionPerformed( ActionEvent e )
         {
             zoomToActualSize();
-        }
-
-    }
-
-    private class DoubleClickZoomControl extends ControlAdapter
-    {
-        public void itemClicked( VisualItem item, MouseEvent e )
-        {
-            zoom( e, new Point( e.getX(), e.getY() ) );
-        }
-
-        public void mouseClicked( MouseEvent e )
-        {
-            zoom( e, getDisplayCenter() );
-        }
-
-        private void zoom( MouseEvent e, Point2D p )
-        {
-            if( !display.isTranformInProgress() )
-            {
-
-                int count = e.getClickCount();
-                if( count == 2 )
-                {
-                    if( e.isShiftDown() )
-                    {
-                        zoomOut( p, null );
-                    }
-                    else
-                    {
-                        zoomIn( p, null );
-                    }
-                }
-
-            }
         }
 
     }
@@ -540,83 +499,6 @@ public class OverviewPanel extends JPanel
                 {
                     zoomIn( p, zoom );
                 }
-            }
-        }
-    }
-
-    /**
-     * Listens for increase in the size of the display, and fits the graph to the new size if needed
-     */
-    private class DisplayExpansionListener implements PaintListener
-    {
-        int lastWidth = 0;
-        int lastHeight = 0;
-
-        public void prePaint( Display d, Graphics2D g )
-        {
-            // nothing doing
-        }
-
-        public void postPaint( Display d, Graphics2D g )
-        {
-            if( !d.isTranformInProgress() )
-            {
-                int width = d.getWidth();
-                int height = d.getHeight();
-                if( width > lastWidth || height > lastHeight )
-                {
-                    if( displaySizeContainsScaledBounds( d, applicationNodeItem.getBounds() ) )
-                    {
-                        zoomToFit();
-                    }
-                }
-                lastWidth = width;
-                lastHeight = height;
-            }
-        }
-    }
-
-    private class MousePanControl extends PanControl
-    {
-
-        private int m_xDown, m_yDown;
-
-        public MousePanControl( boolean isPanOverItem )
-        {
-            super( isPanOverItem );
-        }
-
-        public void mousePressed( MouseEvent anEvent )
-        {
-            if( isButtonPressed( anEvent, LEFT_MOUSE_BUTTON ) )
-            {
-                anEvent.getComponent().setCursor( Cursor.getPredefinedCursor( Cursor.MOVE_CURSOR ) );
-                m_xDown = anEvent.getX();
-                m_yDown = anEvent.getY();
-            }
-        }
-
-        public void mouseDragged( MouseEvent anEvent )
-        {
-            if( isButtonPressed( anEvent, LEFT_MOUSE_BUTTON ) )
-            {
-                int x = anEvent.getX(), y = anEvent.getY();
-                int dx = x - m_xDown, dy = y - m_yDown;
-
-                pan( dx, dy, false );
-
-                m_xDown = x;
-                m_yDown = y;
-            }
-        }
-
-        public void mouseReleased( MouseEvent anEvent )
-        {
-            if( isButtonPressed( anEvent, LEFT_MOUSE_BUTTON ) )
-            {
-                anEvent.getComponent().setCursor( Cursor.getDefaultCursor() );
-                m_xDown = -1;
-                m_yDown = -1;
             }
         }
     }
