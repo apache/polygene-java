@@ -18,12 +18,10 @@ package org.qi4j.library.swing.visualizer.detailPanel;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.LayoutManager;
+import java.awt.Dimension;
 import javax.swing.JPanel;
-import javax.swing.JComponent;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.DefaultDisplayManager;
-import org.qi4j.library.swing.visualizer.detailPanel.internal.composite.CompositeDetailPanel;
 import org.qi4j.library.swing.visualizer.model.ApplicationDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.EntityDetailDescriptor;

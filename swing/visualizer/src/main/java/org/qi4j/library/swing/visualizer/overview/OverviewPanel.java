@@ -37,15 +37,11 @@ import org.qi4j.library.swing.visualizer.overview.internal.visualization.Qi4jApp
  */
 public class OverviewPanel extends JPanel
 {
-    private static final Dimension PREFERRED_SIZE = new Dimension( 800, 600 );
-
     private final Qi4jApplicationDisplay display;
 
     public OverviewPanel( ApplicationDetailDescriptor anAppDescriptor, SelectionListener aListener )
     {
         super( new BorderLayout() );
-
-        setPreferredSize( PREFERRED_SIZE );
 
         display = new Qi4jApplicationDisplay( anAppDescriptor, aListener );
         PrefuseJScrollPane displayScrollPane = new PrefuseJScrollPane( display );

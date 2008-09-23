@@ -29,7 +29,7 @@ import java.io.Serializable;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
-import javax.swing.KeyStroke;
+import static javax.swing.KeyStroke.getKeyStroke;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
 import org.qi4j.library.swing.visualizer.model.ApplicationDetailDescriptor;
 import org.qi4j.library.swing.visualizer.overview.SelectionListener;
@@ -79,7 +79,7 @@ public final class Qi4jApplicationDisplay extends Display
         InputMap inputMap = getInputMap( WHEN_ANCESTOR_OF_FOCUSED_COMPONENT );
         ActionMap actionMap = getActionMap();
 
-        inputMap.put( KeyStroke.getKeyStroke( '+' ), "zoomIn" );
+        inputMap.put( getKeyStroke( '+' ), "zoomIn" );
         actionMap.put( "zoomIn", new AbstractAction( "Zoom In" )
         {
             private static final long serialVersionUID = 1L;
@@ -90,7 +90,7 @@ public final class Qi4jApplicationDisplay extends Display
             }
         } );
 
-        inputMap.put( KeyStroke.getKeyStroke( '-' ), "zoomOut" );
+        inputMap.put( getKeyStroke( '-' ), "zoomOut" );
         actionMap.put( "zoomOut", new AbstractAction( "Zoom Out" )
         {
             private static final long serialVersionUID = 1L;
@@ -101,7 +101,7 @@ public final class Qi4jApplicationDisplay extends Display
             }
         } );
 
-        inputMap.put( KeyStroke.getKeyStroke( VK_LEFT, 0 ), "panLeft" );
+        inputMap.put( getKeyStroke( VK_LEFT, 0 ), "panLeft" );
         actionMap.put( "panLeft", new AbstractAction( "Pan Left" )
         {
             private static final long serialVersionUID = 1L;
@@ -112,7 +112,7 @@ public final class Qi4jApplicationDisplay extends Display
             }
         } );
 
-        inputMap.put( KeyStroke.getKeyStroke( VK_RIGHT, 0 ), "panRight" );
+        inputMap.put( getKeyStroke( VK_RIGHT, 0 ), "panRight" );
         actionMap.put( "panRight", new AbstractAction( "Pan Right" )
         {
             private static final long serialVersionUID = 1L;
@@ -123,7 +123,7 @@ public final class Qi4jApplicationDisplay extends Display
             }
         } );
 
-        inputMap.put( KeyStroke.getKeyStroke( VK_UP, 0 ), "panUp" );
+        inputMap.put( getKeyStroke( VK_UP, 0 ), "panUp" );
         actionMap.put( "panUp", new AbstractAction( "Pan Up" )
         {
             private static final long serialVersionUID = 1L;
@@ -134,7 +134,7 @@ public final class Qi4jApplicationDisplay extends Display
             }
         } );
 
-        inputMap.put( KeyStroke.getKeyStroke( VK_DOWN, 0 ), "panDown" );
+        inputMap.put( getKeyStroke( VK_DOWN, 0 ), "panDown" );
         actionMap.put( "panDown", new AbstractAction( "Pan Down" )
         {
             private static final long serialVersionUID = 1L;
@@ -199,7 +199,7 @@ public final class Qi4jApplicationDisplay extends Display
         }
     }
 
-    private void zoomOut( Point2D p, Double scale )
+    public final void zoomOut( Point2D p, Double scale )
     {
         if( !isTranformInProgress() )
         {
@@ -237,7 +237,14 @@ public final class Qi4jApplicationDisplay extends Display
         }
     }
 
-    public void pan( double dx, double dy, boolean isAnimate )
+    private static boolean displaySizeFitsScaledBounds( Display display, Rectangle2D bounds )
+    {
+        double scale = display.getScale();
+        return ( bounds.getWidth() * scale == display.getWidth() ) &&
+               ( bounds.getHeight() * scale == display.getHeight() );
+    }
+
+    public final void pan( double dx, double dy, boolean isAnimate )
     {
         if( !isTranformInProgress() )
         {
@@ -289,32 +296,6 @@ public final class Qi4jApplicationDisplay extends Display
         }
     }
 
-
-    private static class OverviewItemSorter extends ItemSorter
-        implements Serializable
-    {
-        private static final long serialVersionUID = 1L;
-
-        @Override
-        public int score( VisualItem item )
-        {
-            // First draw the Application box, then the edges, then other nodes
-            NodeType type = (NodeType) item.get( FIELD_TYPE );
-            if( APPLICATION.equals( type ) )
-            {
-                return 0;
-            }
-            else if( item instanceof EdgeItem )
-            {
-                return 1;
-            }
-            else
-            {
-                return 2;
-            }
-        }
-    }
-
     public final Point2D getDisplayCenter()
     {
         float midWidth = getWidth() / 2;
@@ -350,18 +331,28 @@ public final class Qi4jApplicationDisplay extends Display
         }
     }
 
-    public static boolean displaySizeFitsScaledBounds( Display display, Rectangle2D bounds )
+    private static class OverviewItemSorter extends ItemSorter
+        implements Serializable
     {
-        double scale = display.getScale();
-        return ( bounds.getWidth() * scale == display.getWidth() ) &&
-               ( bounds.getHeight() * scale == display.getHeight() );
-    }
+        private static final long serialVersionUID = 1L;
 
-    public static boolean displaySizeContainsScaledBounds( Display display, Rectangle2D bounds )
-    {
-        double scale = display.getScale();
-        return ( display.getWidth() > bounds.getWidth() * scale ) &&
-               ( display.getHeight() > bounds.getHeight() * scale );
+        @Override
+        public int score( VisualItem item )
+        {
+            // First draw the Application box, then the edges, then other nodes
+            NodeType type = (NodeType) item.get( FIELD_TYPE );
+            if( APPLICATION.equals( type ) )
+            {
+                return 0;
+            }
+            else if( item instanceof EdgeItem )
+            {
+                return 1;
+            }
+            else
+            {
+                return 2;
+            }
+        }
     }
-
 }

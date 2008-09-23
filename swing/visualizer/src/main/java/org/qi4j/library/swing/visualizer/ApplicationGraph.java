@@ -15,6 +15,7 @@
  */
 package org.qi4j.library.swing.visualizer;
 
+import java.awt.Dimension;
 import javax.swing.JFrame;
 import javax.swing.JSplitPane;
 import static javax.swing.JSplitPane.VERTICAL_SPLIT;
@@ -34,6 +35,10 @@ import org.qi4j.structure.Application;
 
 /**
  * TODO
+ *
+ * @author Sonny Gill
+ * @author edward.yakop@gmail.com
+ * @since 0.4
  */
 public class ApplicationGraph
 {
@@ -56,22 +61,27 @@ public class ApplicationGraph
             appDescBuilder.createApplicationDetailDescriptor( applicationSPI );
 
         OverviewPanel overviewPanel = new OverviewPanel( appDetailDescriptor, new CompositeSelectionControl() );
+        overviewPanel.setPreferredSize( new Dimension( 800, 400 ) );
 
         // detail panel
         detailPanel = new DetailPanel();
+        // Default display the application
+        detailPanel.displayApplication( appDetailDescriptor );
+        detailPanel.setPreferredSize( new Dimension( 800, 300 ) );
 
         // Assemble the frame
         String applicatioName = anApplication.name();
         JFrame frame = new JFrame( "Application [" + applicatioName + "] Graph" );
+
         JSplitPane mainPane = new JSplitPane( VERTICAL_SPLIT, overviewPanel, detailPanel );
-        mainPane.setOneTouchExpandable( true );
         frame.add( mainPane );
+        mainPane.setOneTouchExpandable( true );
+
+        overviewPanel.showGraph();
 
         frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
         frame.pack();
         frame.setVisible( true );
-
-        overviewPanel.showGraph();
     }
 
     private class CompositeSelectionControl

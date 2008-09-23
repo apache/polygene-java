@@ -19,6 +19,7 @@ package org.qi4j.library.swing.visualizer.detailPanel.internal;
 import org.qi4j.library.swing.visualizer.detailPanel.DetailPanel;
 import org.qi4j.library.swing.visualizer.detailPanel.DisplayManager;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.composite.CompositeDetailPanel;
+import org.qi4j.library.swing.visualizer.detailPanel.internal.application.ApplicationDetailPanel;
 import org.qi4j.library.swing.visualizer.model.ApplicationDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.EntityDetailDescriptor;
@@ -35,7 +36,8 @@ public final class DefaultDisplayManager
 {
     public final void displayApplication( DetailPanel aDetailPanel, ApplicationDetailDescriptor aDescriptor )
     {
-        System.err.println( "Application" );
+        ApplicationDetailPanel panel = new ApplicationDetailPanel( aDescriptor );
+        aDetailPanel.updateContent( panel );
     }
 
     public final void displayLayer( DetailPanel aDetailPanel, LayerDetailDescriptor aDescriptor )

@@ -27,6 +27,8 @@ import org.qi4j.entity.memory.MemoryEntityStoreService;
 import org.qi4j.library.constraints.annotation.NotNull;
 import org.qi4j.property.Property;
 import org.qi4j.structure.Application;
+import org.qi4j.structure.Visibility;
+import static org.qi4j.structure.Visibility.*;
 
 /**
  * TODO
@@ -47,8 +49,8 @@ public class ApplicationGraphTester
         LayerAssembly domainLayer = assembly.newLayerAssembly( "Domain" );
 
         ModuleAssembly someDomain = domainLayer.newModuleAssembly( "Some domain" );
-        someDomain.addServices( MemoryEntityStoreService.class );
-        someDomain.addEntities( MyEntity.class );
+        someDomain.addServices( MemoryEntityStoreService.class ).visibleIn( application );
+        someDomain.addEntities( MyEntity.class ).visibleIn( application );
         someDomain.addComposites( ADomainComposite.class, BDomainComposite.class );
 
         LayerAssembly guiLayer = assembly.newLayerAssembly( "UI" );
