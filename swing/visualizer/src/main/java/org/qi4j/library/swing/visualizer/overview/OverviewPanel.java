@@ -17,12 +17,9 @@ package org.qi4j.library.swing.visualizer.overview;
 
 import java.awt.BorderLayout;
 import static java.awt.BorderLayout.CENTER;
-import static java.awt.BorderLayout.NORTH;
-import static java.awt.Color.white;
+import static java.awt.BorderLayout.PAGE_START;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
-import static java.awt.FlowLayout.LEFT;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -38,20 +35,19 @@ import javax.swing.ActionMap;
 import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
-import org.qi4j.library.swing.visualizer.model.ApplicationDetailDescriptorBuilder;
 import org.qi4j.library.swing.visualizer.model.ApplicationDetailDescriptor;
+import org.qi4j.library.swing.visualizer.overview.internal.ApplicationGraphBuilder;
 import org.qi4j.library.swing.visualizer.overview.internal.ApplicationLayout;
 import org.qi4j.library.swing.visualizer.overview.internal.ItemSelectionControl;
 import org.qi4j.library.swing.visualizer.overview.internal.PrefuseJScrollPane;
-import org.qi4j.library.swing.visualizer.overview.internal.ApplicationGraphBuilder;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.FIELD_NAME;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.FIELD_TYPE;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.NodeType;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.NodeType.APPLICATION;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.NodeType.EDGE_HIDDEN;
 import org.qi4j.library.swing.visualizer.overview.internal.render.RendererFactory;
-import org.qi4j.spi.structure.ApplicationSPI;
 import prefuse.Display;
 import prefuse.Visualization;
 import static prefuse.Visualization.FOCUS_ITEMS;
@@ -93,55 +89,69 @@ public class OverviewPanel extends JPanel
 
     private Control selectionControl;
 
-    public OverviewPanel( ApplicationSPI anApplication, SelectionListener aListener )
+    public OverviewPanel( ApplicationDetailDescriptor anAppDescriptor, SelectionListener aListener )
     {
         super( new BorderLayout() );
 
+        setPreferredSize( new Dimension( 800, 600 ) );
+
         selectionControl = new ItemSelectionControl( aListener );
 
-        ApplicationDetailDescriptorBuilder descriptorBuilder = new ApplicationDetailDescriptorBuilder();
-        ApplicationDetailDescriptor descriptor = descriptorBuilder.createApplicationDetailDescriptor( anApplication );
+        // Toolbar
+        JToolBar toolbar = createToolbar();
+        add( toolbar, PAGE_START );
 
-        ApplicationGraphBuilder builder = new ApplicationGraphBuilder( descriptor );
         Graph graph = new Graph( true );
+        visualization = createVisualization( graph, anAppDescriptor );
+
+        display = createDisplay( visualization );
+        PrefuseJScrollPane displayScrollPane = new PrefuseJScrollPane( display );
+        add( displayScrollPane, CENTER );
+        createPanningAndZoomingActions( displayScrollPane );
+
+        launchDisplay( visualization );
+
+        Node applicationNode = graph.getNode( 0 );
+        applicationNodeItem = visualization.getVisualItem( "graph.nodes", applicationNode );
+    }
+
+    private Visualization createVisualization( Graph graph, ApplicationDetailDescriptor anAppDescriptor )
+    {
+        ApplicationGraphBuilder builder = new ApplicationGraphBuilder( anAppDescriptor );
         builder.populate( graph );
 
-        visualization = createVisualization( graph );
+        // add the graph to the visualization as the data group "graph"
+        // nodes and edges are accessible as "graph.nodes" and "graph.edges"
+        Visualization visualization = new Visualization();
+        visualization.add( "graph", graph );
 
         RendererFactory rendererFactory = new RendererFactory();
         visualization.setRendererFactory( rendererFactory );
 
         createProcessingActions( visualization );
-        display = createDisplay( visualization );
-        launchDisplay( visualization );
-        createPanningAndZoomingActions();
 
-        Node applicationNode = graph.getNode( 0 );
-        applicationNodeItem = visualization.getVisualItem( "graph.nodes", applicationNode );
-
-        JPanel controlsPanel = new JPanel( new FlowLayout( LEFT ) );
-        JButton zoomToFitBtn = new JButton( new ZoomToFitAction() );
-        JButton actualSizeButton = new JButton( new ActualSizeAction() );
-
-        controlsPanel.setBackground( white );
-        zoomToFitBtn.setBackground( white );
-        actualSizeButton.setBackground( white );
-
-        controlsPanel.add( zoomToFitBtn );
-        controlsPanel.add( actualSizeButton );
-
-        add( controlsPanel, NORTH );
-        add( new PrefuseJScrollPane( display ), CENTER );
-
-        setPreferredSize( new Dimension( 800, 600 ) );
+        return visualization;
     }
 
-    private void createPanningAndZoomingActions()
+    private JToolBar createToolbar()
+    {
+        JToolBar toolBar = new JToolBar();
+
+        JButton zoomToFitBtn = new JButton( new ZoomToFitAction() );
+        toolBar.add( zoomToFitBtn );
+
+        JButton actualSizeButton = new JButton( new ActualSizeAction() );
+        toolBar.add( actualSizeButton );
+
+        return toolBar;
+    }
+
+    private void createPanningAndZoomingActions( PrefuseJScrollPane scrollPane )
     {
         final int PREVIOUSLY_VISIBLE_AREA_WHEN_SCROLLING = 50;
 
-        InputMap inputMap = getInputMap( WHEN_ANCESTOR_OF_FOCUSED_COMPONENT );
-        ActionMap actionMap = getActionMap();
+        InputMap inputMap = scrollPane.getInputMap( WHEN_ANCESTOR_OF_FOCUSED_COMPONENT );
+        ActionMap actionMap = scrollPane.getActionMap();
 
         inputMap.put( KeyStroke.getKeyStroke( '+' ), "zoomIn" );
         actionMap.put( "zoomIn", new AbstractAction( "Zoom In" )
@@ -265,15 +275,6 @@ public class OverviewPanel extends JPanel
                 }
             }
         } );
-    }
-
-    private Visualization createVisualization( Graph graph )
-    {
-        // add the graph to the visualization as the data group "graph"
-        // nodes and edges are accessible as "graph.nodes" and "graph.edges"
-        Visualization visualization = new Visualization();
-        visualization.add( "graph", graph );
-        return visualization;
     }
 
     private ActionList establishColors()

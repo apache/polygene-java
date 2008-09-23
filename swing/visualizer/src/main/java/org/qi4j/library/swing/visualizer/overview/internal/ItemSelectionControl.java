@@ -27,6 +27,7 @@ import org.qi4j.library.swing.visualizer.model.ModuleDetailDescriptor;
 import org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.FIELD_TYPE;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.NodeType;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.*;
 import org.qi4j.service.ServiceDescriptor;
 import org.qi4j.spi.object.ObjectDescriptor;
 import prefuse.controls.ControlAdapter;
@@ -50,7 +51,12 @@ public final class ItemSelectionControl extends ControlAdapter
     public final void itemClicked( VisualItem anItem, MouseEvent anEvent )
     {
         NodeType selectedNode = (NodeType) anItem.get( FIELD_TYPE );
-        Object descriptor = anItem.get( GraphConstants.FIELD_DESCRIPTOR );
+        if( selectedNode == null )
+        {
+            return;
+        }
+
+        Object descriptor = anItem.get( FIELD_DESCRIPTOR );
         switch( selectedNode )
         {
         case APPLICATION:

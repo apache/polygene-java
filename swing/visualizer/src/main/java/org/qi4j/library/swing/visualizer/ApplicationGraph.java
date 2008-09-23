@@ -19,13 +19,14 @@ import javax.swing.JFrame;
 import javax.swing.JSplitPane;
 import static javax.swing.JSplitPane.VERTICAL_SPLIT;
 import org.qi4j.library.swing.visualizer.detailPanel.DetailPanel;
-import org.qi4j.library.swing.visualizer.overview.OverviewPanel;
-import org.qi4j.library.swing.visualizer.overview.SelectionListener;
 import org.qi4j.library.swing.visualizer.model.ApplicationDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.ApplicationDetailDescriptorBuilder;
 import org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.EntityDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.LayerDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ModuleDetailDescriptor;
+import org.qi4j.library.swing.visualizer.overview.OverviewPanel;
+import org.qi4j.library.swing.visualizer.overview.SelectionListener;
 import org.qi4j.service.ServiceDescriptor;
 import org.qi4j.spi.object.ObjectDescriptor;
 import org.qi4j.spi.structure.ApplicationSPI;
@@ -50,7 +51,11 @@ public class ApplicationGraph
             );
         }
         ApplicationSPI applicationSPI = (ApplicationSPI) anApplication;
-        OverviewPanel overviewPanel = new OverviewPanel( applicationSPI, new CompositeSelectionControl() );
+        ApplicationDetailDescriptorBuilder appDescBuilder = new ApplicationDetailDescriptorBuilder();
+        ApplicationDetailDescriptor appDetailDescriptor =
+            appDescBuilder.createApplicationDetailDescriptor( applicationSPI );
+
+        OverviewPanel overviewPanel = new OverviewPanel( appDetailDescriptor, new CompositeSelectionControl() );
 
         // detail panel
         detailPanel = new DetailPanel();
