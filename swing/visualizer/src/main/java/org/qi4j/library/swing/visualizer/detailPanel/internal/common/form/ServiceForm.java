@@ -152,7 +152,7 @@ public final class ServiceForm extends JPanel
         moduleField.setEditable( false );
     }
 
-    void display( ServiceDetailDescriptor aDescriptor )
+    public final void updateModel( ServiceDetailDescriptor aDescriptor )
     {
         populateLocationFields( aDescriptor );
         populateServiceFields( aDescriptor );

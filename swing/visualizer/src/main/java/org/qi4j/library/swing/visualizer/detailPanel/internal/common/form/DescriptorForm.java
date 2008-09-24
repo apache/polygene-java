@@ -50,7 +50,7 @@ public final class DescriptorForm extends JPanel
             {
                 ServiceDetailDescriptor descriptor = (ServiceDetailDescriptor) aModel;
                 ServiceForm form = new ServiceForm();
-                form.display( descriptor );
+                form.updateModel( descriptor );
                 add( form, CENTER );
             }
             else
