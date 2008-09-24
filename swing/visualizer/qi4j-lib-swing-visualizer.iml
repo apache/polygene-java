@@ -151,6 +151,19 @@
         </SOURCES>
       </library>
     </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library name="com.jgoodies:forms:1.2.1">
+        <CLASSES>
+          <root url="jar://$M2_REPO$/com/jgoodies/forms/1.2.1/forms-1.2.1.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$M2_REPO$/com/jgoodies/forms/1.2.1/forms-1.2.1-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$M2_REPO$/com/jgoodies/forms/1.2.1/forms-1.2.1-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
     <orderEntryProperties />
   </component>
 </module>
