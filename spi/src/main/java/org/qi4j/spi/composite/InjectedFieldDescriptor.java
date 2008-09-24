@@ -14,9 +14,12 @@
 
 package org.qi4j.spi.composite;
 
+import java.lang.reflect.Field;
+
 /**
  * TODO
  */
 public interface InjectedFieldDescriptor
 {
+    Field field();
 }
