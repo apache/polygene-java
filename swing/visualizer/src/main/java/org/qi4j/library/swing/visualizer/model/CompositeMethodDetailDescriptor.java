@@ -21,17 +21,17 @@ import java.util.List;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
 import org.qi4j.spi.composite.CompositeMethodDescriptor;
 import org.qi4j.spi.composite.MethodConcernDescriptor;
-import org.qi4j.spi.composite.MethodConstraintsDescriptor;
 import org.qi4j.spi.composite.MethodSideEffectDescriptor;
 
 /**
  * @author edward.yakop@gmail.com
+ * @see CompositeMethodDescriptor
  * @since 0.5
  */
 public final class CompositeMethodDetailDescriptor
 {
     private final CompositeMethodDescriptor descriptor;
-    private final List<MethodConstraintsDescriptor> constraints;
+    private final List<CompositeMethodConstrainsDetailDescriptor> constraints;
     private final List<MethodConcernDescriptor> concerns;
     private final List<MethodSideEffectDescriptor> sideEffects;
 
@@ -42,13 +42,13 @@ public final class CompositeMethodDetailDescriptor
         validateNotNull( "aDescriptor", aDescriptor );
         descriptor = aDescriptor;
 
-        constraints = new LinkedList<MethodConstraintsDescriptor>();
+        constraints = new LinkedList<CompositeMethodConstrainsDetailDescriptor>();
         concerns = new LinkedList<MethodConcernDescriptor>();
         sideEffects = new LinkedList<MethodSideEffectDescriptor>();
     }
 
     /**
-     * @return Composite method descriptor.
+     * @return Descriptor of this {@code CompositeMethodDetailDescriptor}. Never return {@code null}.
      * @since 0.5
      */
     public final CompositeMethodDescriptor descriptor()
@@ -57,16 +57,16 @@ public final class CompositeMethodDetailDescriptor
     }
 
     /**
-     * @return method constraints.
+     * @return Constraints of this {@code CompositeMethodDetailDescriptor}. Never return {@code null}.
      * @since 0.5
      */
-    public final Iterable<MethodConstraintsDescriptor> constraints()
+    public final Iterable<CompositeMethodConstrainsDetailDescriptor> constraints()
     {
         return constraints;
     }
 
     /**
-     * @return method concerns.
+     * @return Concerns of this {@code CompositeMethodDetailDescriptor}. concerns. Never return {@code null}.
      * @since 0.5
      */
     public final Iterable<MethodConcernDescriptor> concerns()
@@ -75,7 +75,7 @@ public final class CompositeMethodDetailDescriptor
     }
 
     /**
-     * @return method side-effects.
+     * @return Side-effects of this {@code CompositeMethodDetailDescriptor}. Never return {@code null}.
      * @since 0.5
      */
     public final Iterable<MethodSideEffectDescriptor> sideEffects()
@@ -83,7 +83,7 @@ public final class CompositeMethodDetailDescriptor
         return sideEffects;
     }
 
-    final void addConstraint( MethodConstraintsDescriptor aDescriptor )
+    final void addConstraint( CompositeMethodConstrainsDetailDescriptor aDescriptor )
         throws IllegalArgumentException
     {
         validateNotNull( "aDescriptor", aDescriptor );

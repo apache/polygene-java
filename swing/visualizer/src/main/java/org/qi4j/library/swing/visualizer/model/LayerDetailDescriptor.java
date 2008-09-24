@@ -23,6 +23,7 @@ import org.qi4j.spi.structure.LayerDescriptor;
 
 /**
  * @author edward.yakop@gmail.com
+ * @see LayerDescriptor
  * @since 0.5
  */
 public final class LayerDetailDescriptor
@@ -42,7 +43,7 @@ public final class LayerDetailDescriptor
     }
 
     /**
-     * @return Layer descriptor. This argument must not be {@code null}.
+     * @return Descriptor of this {@code LayerDetailDescriptor}. Never return {@code null}..
      * @since 0.5
      */
     public final LayerDescriptor descriptor()
@@ -51,7 +52,7 @@ public final class LayerDetailDescriptor
     }
 
     /**
-     * @return Used layers of this layer. Must not return {@code null}.
+     * @return Used layers of this {@code LayerDetailDescriptor}. Never return {@code null}..
      * @since 0.5
      */
     public final Iterable<LayerDetailDescriptor> usedLayers()
@@ -60,7 +61,7 @@ public final class LayerDetailDescriptor
     }
 
     /**
-     * @return modules of this layer. Must not return {@code null}.
+     * @return Modules of this {@code LayerDetailDescriptor}. Never return {@code null}..
      * @since 0.5
      */
     public final Iterable<ModuleDetailDescriptor> modules()

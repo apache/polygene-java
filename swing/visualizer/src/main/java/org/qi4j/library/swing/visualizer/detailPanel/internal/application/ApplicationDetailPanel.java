@@ -18,8 +18,8 @@ package org.qi4j.library.swing.visualizer.detailPanel.internal.application;
 
 import javax.swing.JScrollPane;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
-import org.qi4j.library.swing.visualizer.model.ApplicationDetailDescriptor;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.common.Qi4jDescriptorTree;
+import org.qi4j.library.swing.visualizer.model.ApplicationDetailDescriptor;
 
 /**
  * TODO Javadoc

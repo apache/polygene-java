@@ -21,8 +21,8 @@ import org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.EntityDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.LayerDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ModuleDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.ObjectDetailDescriptor;
 import org.qi4j.service.ServiceDescriptor;
-import org.qi4j.spi.object.ObjectDescriptor;
 
 /**
  * @author edward.yakop@gmail.com
@@ -84,5 +84,5 @@ public interface SelectionListener
      * @param aDescriptor The selected object descriptor. This argument must not be {@code null}.
      * @since 0.5
      */
-    void onObjectSelected( ObjectDescriptor aDescriptor );
+    void onObjectSelected( ObjectDetailDescriptor aDescriptor );
 }

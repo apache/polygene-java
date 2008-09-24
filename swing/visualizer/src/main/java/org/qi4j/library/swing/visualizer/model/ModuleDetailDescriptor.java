@@ -20,11 +20,11 @@ import java.util.LinkedList;
 import java.util.List;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
 import org.qi4j.service.ServiceDescriptor;
-import org.qi4j.spi.object.ObjectDescriptor;
 import org.qi4j.spi.structure.ModuleDescriptor;
 
 /**
  * @author edward.yakop@gmail.com
+ * @see ModuleDescriptor
  * @since 0.5
  */
 public final class ModuleDetailDescriptor
@@ -34,7 +34,7 @@ public final class ModuleDetailDescriptor
     private final List<ServiceDescriptor> services;
     private final List<EntityDetailDescriptor> entities;
     private final List<CompositeDetailDescriptor> composites;
-    private final List<ObjectDescriptor> objects;
+    private final List<ObjectDetailDescriptor> objects;
 
     ModuleDetailDescriptor( ModuleDescriptor aDescriptor )
         throws IllegalArgumentException
@@ -46,11 +46,11 @@ public final class ModuleDetailDescriptor
         services = new LinkedList<ServiceDescriptor>();
         entities = new LinkedList<EntityDetailDescriptor>();
         composites = new LinkedList<CompositeDetailDescriptor>();
-        objects = new LinkedList<ObjectDescriptor>();
+        objects = new LinkedList<ObjectDetailDescriptor>();
     }
 
     /**
-     * @return Descriptor of this module. Must not return {@code null}.
+     * @return Descriptor of this {@code ModuleDetailDescriptor}. Never return {@code null}.
      * @since 0.5
      */
     public final ModuleDescriptor descriptor()
@@ -59,7 +59,7 @@ public final class ModuleDetailDescriptor
     }
 
     /**
-     * @return services of this module. Must not return {@code null}.
+     * @return Services of this {@code ModuleDetailDescriptor}. Never return {@code null}.
      * @since 0.5
      */
     public final Iterable<ServiceDescriptor> services()
@@ -68,7 +68,7 @@ public final class ModuleDetailDescriptor
     }
 
     /**
-     * @return entities of this module. Must not return {@code null}.
+     * @return Entities of this {@code ModuleDetailDescriptor}. Never return {@code null}.
      * @since 0.5
      */
     public final Iterable<EntityDetailDescriptor> entities()
@@ -77,7 +77,7 @@ public final class ModuleDetailDescriptor
     }
 
     /**
-     * @return composites of this module. Must not return {@code null}.
+     * @return Composites of this {@code ModuleDetailDescriptor}. Never return {@code null}.
      * @since 0.5
      */
     public final Iterable<CompositeDetailDescriptor> composites()
@@ -86,10 +86,10 @@ public final class ModuleDetailDescriptor
     }
 
     /**
-     * @return objects of this module. Must not return {@code null}.
+     * @return Objects of this {@code ModuleDetailDescriptor}. Never return {@code null}.
      * @since 0.5
      */
-    public final Iterable<ObjectDescriptor> objects()
+    public final Iterable<ObjectDetailDescriptor> objects()
     {
         return objects;
     }
@@ -114,7 +114,7 @@ public final class ModuleDetailDescriptor
         composites.add( aDescriptor );
     }
 
-    public void addObject( ObjectDescriptor aDescriptor )
+    final void addObject( ObjectDetailDescriptor aDescriptor )
     {
         validateNotNull( "aDescriptor", aDescriptor );
         objects.add( aDescriptor );

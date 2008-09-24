@@ -18,7 +18,6 @@ package org.qi4j.library.swing.visualizer.overview;
 import java.awt.BorderLayout;
 import static java.awt.BorderLayout.CENTER;
 import static java.awt.BorderLayout.PAGE_START;
-import java.awt.Dimension;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;

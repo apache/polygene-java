@@ -30,9 +30,9 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.common.Util;
+import org.qi4j.library.swing.visualizer.model.CompositeMethodConstrainsDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.CompositeMethodDetailDescriptor;
 import org.qi4j.spi.composite.MethodConcernDescriptor;
-import org.qi4j.spi.composite.MethodConstraintsDescriptor;
 import org.qi4j.spi.composite.MethodSideEffectDescriptor;
 
 /**
@@ -52,7 +52,7 @@ final class MixinTree extends JTree
         methodDetailDescriptor = aDescriptor;
 
         Class mixinClass = aDescriptor.descriptor().mixin().mixinClass();
-        Iterable<MethodConstraintsDescriptor> constraints = aDescriptor.constraints();
+        Iterable<CompositeMethodConstrainsDetailDescriptor> constraints = aDescriptor.constraints();
         Iterable<MethodConcernDescriptor> concerns = aDescriptor.concerns();
         Iterable<MethodSideEffectDescriptor> sideEffects = aDescriptor.sideEffects();
 
@@ -108,7 +108,7 @@ final class MixinTree extends JTree
     private void addMethods(
         DefaultMutableTreeNode rootNode,
         Class mixinClass,
-        Iterable<MethodConstraintsDescriptor> constraints,
+        Iterable<CompositeMethodConstrainsDetailDescriptor> constraints,
         Iterable<MethodConcernDescriptor> concerns,
         Iterable<MethodSideEffectDescriptor> sideEffects )
     {
@@ -131,7 +131,7 @@ final class MixinTree extends JTree
 
     private MutableTreeNode getMethodNode(
         Method method,
-        Iterable<MethodConstraintsDescriptor> constraints,
+        Iterable<CompositeMethodConstrainsDetailDescriptor> constraints,
         Iterable<MethodConcernDescriptor> concerns,
         Iterable<MethodSideEffectDescriptor> sideEffects )
     {
@@ -145,10 +145,10 @@ final class MixinTree extends JTree
     private void addConstraints(
         Method method,
         DefaultMutableTreeNode methodNode,
-        Iterable<MethodConstraintsDescriptor> constraints )
+        Iterable<CompositeMethodConstrainsDetailDescriptor> constraints )
     {
         DefaultMutableTreeNode node = new DefaultMutableTreeNode( "Constraints" );
-        for( MethodConstraintsDescriptor constraint : constraints )
+        for( CompositeMethodConstrainsDetailDescriptor constraint : constraints )
         {
             node.add( new DefaultMutableTreeNode( constraint ) );
         }

@@ -16,8 +16,8 @@
 */
 package org.qi4j.library.swing.visualizer.detailPanel.internal.common;
 
-import java.lang.reflect.Method;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 
 /**
  * @author edward.yakop@gmail.com

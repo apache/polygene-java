@@ -28,6 +28,7 @@ import org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.EntityDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.LayerDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ModuleDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.ObjectDetailDescriptor;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.FIELD_DESCRIPTOR;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.FIELD_LAYER_LEVEL;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.FIELD_NAME;
@@ -289,10 +290,10 @@ final class ApplicationGraphBuilder
 
     private void addObjectNodes( Graph aGraph, Node aModuleNode, ModuleDetailDescriptor aDetailDescriptor )
     {
-        Iterable<ObjectDescriptor> objectDescriptors = aDetailDescriptor.objects();
+        Iterable<ObjectDetailDescriptor> objectDetailDescriptors = aDetailDescriptor.objects();
 
         Node objectsNode = null;
-        for( ObjectDescriptor objectDescriptor : objectDescriptors )
+        for( ObjectDetailDescriptor objectDetailDescriptor : objectDetailDescriptors )
         {
             // Add object nodes if not exists
             if( objectsNode == null )
@@ -307,10 +308,11 @@ final class ApplicationGraphBuilder
             Node objectNode = aGraph.addNode();
             addHiddenEdge( aGraph, objectsNode, objectNode );
 
+            ObjectDescriptor objectDescriptor = objectDetailDescriptor.descriptor();
             Class<? extends Composite> objectClassName = objectDescriptor.type();
             objectNode.setString( FIELD_NAME, objectClassName.getSimpleName() );
             objectNode.set( FIELD_TYPE, OBJECT );
-            objectNode.set( FIELD_DESCRIPTOR, objectDescriptor );
+            objectNode.set( FIELD_DESCRIPTOR, objectDetailDescriptor );
         }
     }
 

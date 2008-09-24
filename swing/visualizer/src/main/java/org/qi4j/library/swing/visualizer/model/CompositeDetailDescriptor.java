@@ -22,17 +22,17 @@ import java.util.List;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.composite.CompositeMethodDescriptor;
-import org.qi4j.spi.composite.MixinDescriptor;
 
 /**
  * @author edward.yakop@gmail.com
+ * @see CompositeDescriptor
  * @since 0.5
  */
 public class CompositeDetailDescriptor<T extends CompositeDescriptor>
 {
     private final T descriptor;
     private final List<CompositeMethodDetailDescriptor> methods;
-    private final List<MixinDescriptor> mixins;
+    private final List<MixinDetailDescriptor> mixins;
 
     CompositeDetailDescriptor( T aDescriptor )
     {
@@ -40,11 +40,11 @@ public class CompositeDetailDescriptor<T extends CompositeDescriptor>
 
         descriptor = aDescriptor;
         methods = new LinkedList<CompositeMethodDetailDescriptor>();
-        mixins = new LinkedList<MixinDescriptor>();
+        mixins = new LinkedList<MixinDetailDescriptor>();
     }
 
     /**
-     * @return standard composite descriptor.
+     * @return Descriptor of this {@code CompositeDetailDescriptor}. Never return {@code null}.
      * @since 0.5
      */
     public final T descriptor()
@@ -53,12 +53,21 @@ public class CompositeDetailDescriptor<T extends CompositeDescriptor>
     }
 
     /**
-     * @return methods of composite represented by this descriptor.
+     * @return Methods of this {@code CompositeDetailDescriptor}. Never return {@code null}.
      * @since 0.5
      */
     public final Iterable<CompositeMethodDetailDescriptor> methods()
     {
         return methods;
+    }
+
+    /**
+     * @return Mixins of this {@code CompositeDetailDescriptor}. Never return {@code null}.
+     * @since 0.5
+     */
+    public final Iterable<MixinDetailDescriptor> mixins()
+    {
+        return mixins;
     }
 
     /**
@@ -68,7 +77,7 @@ public class CompositeDetailDescriptor<T extends CompositeDescriptor>
      * @return method detail descriptor of the requested method.
      * @since 0.5
      */
-    public CompositeMethodDetailDescriptor getMethodDescriptor( Method aMethod )
+    public final CompositeMethodDetailDescriptor getMethodDescriptor( Method aMethod )
     {
         for( CompositeMethodDetailDescriptor descriptor : methods )
         {
@@ -83,15 +92,6 @@ public class CompositeDetailDescriptor<T extends CompositeDescriptor>
         return null;
     }
 
-    /**
-     * @return mixins of composite represented by this descriptor.
-     * @since 0.5
-     */
-    public final Iterable<MixinDescriptor> mixins()
-    {
-        return mixins;
-    }
-
     final void addMethod( CompositeMethodDetailDescriptor aDescriptor )
         throws IllegalArgumentException
     {
@@ -99,12 +99,10 @@ public class CompositeDetailDescriptor<T extends CompositeDescriptor>
         methods.add( aDescriptor );
     }
 
-    final void addMixin( MixinDescriptor aDescriptor )
+    final void addMixin( MixinDetailDescriptor aDescriptor )
         throws IllegalArgumentException
     {
         validateNotNull( "aDescriptor", aDescriptor );
-
         mixins.add( aDescriptor );
     }
-
 }

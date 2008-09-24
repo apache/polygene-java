@@ -23,6 +23,7 @@ import org.qi4j.spi.structure.ApplicationDescriptor;
 
 /**
  * @author edward.yakop@gmail.com
+ * @see ApplicationDescriptor
  * @since 0.5
  */
 public final class ApplicationDetailDescriptor
@@ -40,7 +41,7 @@ public final class ApplicationDetailDescriptor
     }
 
     /**
-     * @return application descriptor.
+     * @return Descriptor of this {@code ApplicationDetailDescriptor}. Never return {@code null}.
      * @since 0.5
      */
     public final ApplicationDescriptor descriptor()
@@ -49,7 +50,7 @@ public final class ApplicationDetailDescriptor
     }
 
     /**
-     * @return Layers of this application. Must not return {@code null}.
+     * @return Layers of this {@code ApplicationDetailDescriptor}. Never return {@code null}.
      * @since 0.5
      */
     public final Iterable<LayerDetailDescriptor> layers()

@@ -16,13 +16,13 @@
 */
 package org.qi4j.library.swing.visualizer.detailPanel;
 
-import org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ApplicationDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.EntityDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.LayerDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ModuleDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.ObjectDetailDescriptor;
 import org.qi4j.service.ServiceDescriptor;
-import org.qi4j.spi.object.ObjectDescriptor;
 
 /**
  * @author edward.yakop@gmail.com
@@ -49,5 +49,5 @@ public interface DisplayManager
 
     void displayEntity( DetailPanel aDetailPanel, EntityDetailDescriptor aDescriptor );
 
-    void displayObject( DetailPanel aDetailPanel, ObjectDescriptor aDescriptor );
+    void displayObject( DetailPanel aDetailPanel, ObjectDetailDescriptor aDescriptor );
 }

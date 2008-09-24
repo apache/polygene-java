@@ -24,6 +24,11 @@ import java.util.Map;
 import org.qi4j.service.ServiceDescriptor;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.composite.CompositeMethodDescriptor;
+import org.qi4j.spi.composite.ConstraintDescriptor;
+import org.qi4j.spi.composite.ConstructorDescriptor;
+import org.qi4j.spi.composite.InjectedFieldDescriptor;
+import org.qi4j.spi.composite.InjectedMethodDescriptor;
+import org.qi4j.spi.composite.InjectedParametersDescriptor;
 import org.qi4j.spi.composite.MethodConcernDescriptor;
 import org.qi4j.spi.composite.MethodConstraintsDescriptor;
 import org.qi4j.spi.composite.MethodSideEffectDescriptor;
@@ -54,26 +59,52 @@ public final class ApplicationDetailDescriptorBuilder
 
     static final class ApplicationDescriptorVisitor extends DescriptorVisitor
     {
-        // Temp application descriptor
+        // Temp: application
         private ApplicationDetailDescriptor applicationDescriptor;
 
-        // Temp Layer variables
+        // Temp: Layer variables
         private LayerDetailDescriptor currLayerDescriptor;
         // Cache to lookup layer descriptor -> node
         private final Map<LayerDescriptor, LayerDetailDescriptor> layerDescToDetail;
 
-        // Module related temp variables
+        // Temp: current module
         private ModuleDetailDescriptor currModuleDescriptor;
 
-        // Cache of current composite
+        // Temp: current composite
         private CompositeDetailDescriptor currCompositeDescriptor;
 
-        // Cache of current composite method descriptor
+        // Temp: curr mixin
+        private MixinDetailDescriptor currMixinDescriptor;
+
+        // Temp: current constructor
+        private ConstructorDetailDescriptor currConstructorDescriptor;
+
+        // Temp: current injected method
+        private InjectedMethodDetailDescriptor currInjectedMethodDescriptor;
+
+        // Temp: current composite method
         private CompositeMethodDetailDescriptor currMethodDesciptor;
+
+        // Temp: current composite method constraint
+        private CompositeMethodConstrainsDetailDescriptor currMethodConstraintDescriptor;
+
+        // Temp: current object
+        private ObjectDetailDescriptor currObjectDescriptor;
+
 
         private ApplicationDescriptorVisitor()
         {
+            applicationDescriptor = null;
+            currLayerDescriptor = null;
             layerDescToDetail = new HashMap<LayerDescriptor, LayerDetailDescriptor>();
+            currModuleDescriptor = null;
+            currCompositeDescriptor = null;
+            currMixinDescriptor = null;
+            currConstructorDescriptor = null;
+            currMethodDesciptor = null;
+            currInjectedMethodDescriptor = null;
+            currObjectDescriptor = null;
+            currMethodConstraintDescriptor = null;
         }
 
         @Override
@@ -145,33 +176,133 @@ public final class ApplicationDetailDescriptorBuilder
         }
 
         @Override
-        public final void visit( MethodConstraintsDescriptor methodConstraintsDescriptor )
+        public final void visit( MethodConstraintsDescriptor aDescriptor )
         {
-            currMethodDesciptor.addConstraint( methodConstraintsDescriptor );
+            currMethodConstraintDescriptor =
+                new CompositeMethodConstrainsDetailDescriptor( aDescriptor );
+            currMethodDesciptor.addConstraint( currMethodConstraintDescriptor );
         }
 
         @Override
-        public final void visit( MethodConcernDescriptor methodConcernDescriptor )
+        public final void visit( MethodConcernDescriptor aDescriptor )
         {
-            currMethodDesciptor.addConcern( methodConcernDescriptor );
+            currMethodDesciptor.addConcern( aDescriptor );
         }
 
         @Override
-        public final void visit( MethodSideEffectDescriptor methodSideEffectDescriptor )
+        public final void visit( MethodSideEffectDescriptor aDescriptor )
         {
-            currMethodDesciptor.addSideEffect( methodSideEffectDescriptor );
+            currMethodDesciptor.addSideEffect( aDescriptor );
         }
 
         @Override
-        public final void visit( MixinDescriptor mixinDescriptor )
+        public final void visit( MixinDescriptor aDescriptor )
         {
-            currCompositeDescriptor.addMixin( mixinDescriptor );
+            currObjectDescriptor = null;
+            currMixinDescriptor = new MixinDetailDescriptor( aDescriptor );
+            currCompositeDescriptor.addMixin( currMixinDescriptor );
         }
 
         @Override
         public final void visit( ObjectDescriptor aDescriptor )
         {
-            currModuleDescriptor.addObject( aDescriptor );
+            currMixinDescriptor = null;
+            currObjectDescriptor = new ObjectDetailDescriptor( aDescriptor );
+
+            currModuleDescriptor.addObject( currObjectDescriptor );
+        }
+
+        @Override
+        public final void visit( ConstraintDescriptor aDescriptor )
+        {
+            currMethodConstraintDescriptor.addConstraint( aDescriptor );
+        }
+
+        @Override
+        public void visit( ConstructorDescriptor aDescriptor )
+        {
+            currConstructorDescriptor = new ConstructorDetailDescriptor( aDescriptor );
+            currInjectedMethodDescriptor = null;
+
+            // Invoked for mixin and object
+            if( currMixinDescriptor != null )
+            {
+                currMixinDescriptor.addConstructor( currConstructorDescriptor );
+            }
+            else if( currObjectDescriptor != null )
+            {
+                currObjectDescriptor.addConstructor( currConstructorDescriptor );
+            }
+            else
+            {
+                throw new IllegalStateException(
+                    "ConstructorDescriptor is only valid for mixin and object."
+                );
+            }
+        }
+
+        @Override
+        public void visit( InjectedParametersDescriptor aDescriptor )
+        {
+            // Invoked for constructor and injected method
+            if( currConstructorDescriptor != null )
+            {
+                currConstructorDescriptor.addInjectedParameter( aDescriptor );
+            }
+            else if( currInjectedMethodDescriptor != null )
+            {
+                currInjectedMethodDescriptor.addInjectedParameter( aDescriptor );
+            }
+            else
+            {
+                throw new IllegalStateException(
+                    "InjectedParametersDescriptor is only valid for constructor and injector method descriptor."
+                );
+            }
+        }
+
+        @Override
+        public void visit( InjectedMethodDescriptor aDescriptor )
+        {
+            // Invoked for mixin and object
+            currInjectedMethodDescriptor = new InjectedMethodDetailDescriptor( aDescriptor );
+            currConstructorDescriptor = null;
+
+            // Invoked for mixin and object
+            if( currMixinDescriptor != null )
+            {
+                currMixinDescriptor.addInjectedMethod( currInjectedMethodDescriptor );
+            }
+            else if( currObjectDescriptor != null )
+            {
+                currObjectDescriptor.addInjectedMethod( currInjectedMethodDescriptor );
+            }
+            else
+            {
+                throw new IllegalStateException(
+                    "InjectedMethodDescriptor is only valid for mixin and object."
+                );
+            }
+        }
+
+        @Override
+        public void visit( InjectedFieldDescriptor aDescriptor )
+        {
+            // Invoked for mixin and object
+            if( currMixinDescriptor != null )
+            {
+                currMixinDescriptor.addInjectedField( aDescriptor );
+            }
+            else if( currObjectDescriptor != null )
+            {
+                currObjectDescriptor.addInjectedField( aDescriptor );
+            }
+            else
+            {
+                throw new IllegalStateException(
+                    "InjectedFieldDescriptor is only valid for mixin and object."
+                );
+            }
         }
     }
 }

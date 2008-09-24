@@ -18,15 +18,15 @@ package org.qi4j.library.swing.visualizer.detailPanel.internal;
 
 import org.qi4j.library.swing.visualizer.detailPanel.DetailPanel;
 import org.qi4j.library.swing.visualizer.detailPanel.DisplayManager;
-import org.qi4j.library.swing.visualizer.detailPanel.internal.composite.CompositeDetailPanel;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.application.ApplicationDetailPanel;
+import org.qi4j.library.swing.visualizer.detailPanel.internal.composite.CompositeDetailPanel;
 import org.qi4j.library.swing.visualizer.model.ApplicationDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.EntityDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.LayerDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ModuleDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.ObjectDetailDescriptor;
 import org.qi4j.service.ServiceDescriptor;
-import org.qi4j.spi.object.ObjectDescriptor;
 
 /**
  * @author edward.yakop@gmail.com
@@ -67,7 +67,7 @@ public final class DefaultDisplayManager
         aDetailPanel.updateContent( panel );
     }
 
-    public final void displayObject( DetailPanel aDetailPanel, ObjectDescriptor aDescriptor )
+    public final void displayObject( DetailPanel aDetailPanel, ObjectDetailDescriptor aDescriptor )
     {
         System.err.println( "Object" );
     }

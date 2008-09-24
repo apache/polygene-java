@@ -23,6 +23,7 @@ import org.qi4j.composite.Composite;
 import org.qi4j.library.swing.visualizer.model.ApplicationDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.EntityDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.ObjectDetailDescriptor;
 import org.qi4j.service.ServiceDescriptor;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.entity.EntityDescriptor;
@@ -99,9 +100,10 @@ public final class Qi4jDescriptorTree extends JTree
             Class<? extends Composite> compositeClass = descriptor.type();
             return compositeClass.getName();
         }
-        else if( ObjectDescriptor.class.isAssignableFrom( valueClass ) )
+        else if( ObjectDetailDescriptor.class.isAssignableFrom( valueClass ) )
         {
-            ObjectDescriptor descriptor = (ObjectDescriptor) value;
+            ObjectDetailDescriptor detailDescriptor = (ObjectDetailDescriptor) value;
+            ObjectDescriptor descriptor = detailDescriptor.descriptor();
             Class<? extends Composite> objectClassName = descriptor.type();
             return objectClassName.getName();
         }
