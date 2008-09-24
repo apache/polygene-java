@@ -29,6 +29,7 @@ import org.qi4j.library.swing.visualizer.model.EntityDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.LayerDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ModuleDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ObjectDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.ServiceDetailDescriptor;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.FIELD_DESCRIPTOR;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.FIELD_LAYER_LEVEL;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.FIELD_NAME;
@@ -203,10 +204,10 @@ final class ApplicationGraphBuilder
 
     private void addServiceNodes( Graph aGraph, Node aModuleNode, ModuleDetailDescriptor aDetailDescriptor )
     {
-        Iterable<ServiceDescriptor> serviceDescriptors = aDetailDescriptor.services();
+        Iterable<ServiceDetailDescriptor> serviceDescriptors = aDetailDescriptor.services();
 
         Node servicesNode = null;
-        for( ServiceDescriptor serviceDescriptor : serviceDescriptors )
+        for( ServiceDetailDescriptor detailDescriptor : serviceDescriptors )
         {
             // Add service group if not exists
             if( servicesNode == null )
@@ -222,11 +223,12 @@ final class ApplicationGraphBuilder
             Node serviceNode = aGraph.addNode();
             addHiddenEdge( aGraph, servicesNode, serviceNode );
 
-            Class<?> serviceClass = serviceDescriptor.type();
+            ServiceDescriptor descriptor = detailDescriptor.descriptor();
+            Class<?> serviceClass = descriptor.type();
             String nodeName = serviceClass.getSimpleName();
             serviceNode.setString( FIELD_NAME, nodeName );
             serviceNode.set( FIELD_TYPE, SERVICE );
-            serviceNode.set( FIELD_DESCRIPTOR, serviceDescriptor );
+            serviceNode.set( FIELD_DESCRIPTOR, detailDescriptor );
         }
     }
 

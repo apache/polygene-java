@@ -27,7 +27,7 @@ import org.qi4j.library.swing.visualizer.model.EntityDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.LayerDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ModuleDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ObjectDetailDescriptor;
-import org.qi4j.service.ServiceDescriptor;
+import org.qi4j.library.swing.visualizer.model.ServiceDetailDescriptor;
 
 /**
  * @author edward.yakop@gmail.com
@@ -75,7 +75,7 @@ public final class DetailPanel extends JPanel
         manager.displayModule( this, aDescriptor );
     }
 
-    public final void displayService( ServiceDescriptor aDescriptor )
+    public final void displayService( ServiceDetailDescriptor aDescriptor )
         throws IllegalArgumentException
     {
         validateNotNull( "aDescriptor", aDescriptor );

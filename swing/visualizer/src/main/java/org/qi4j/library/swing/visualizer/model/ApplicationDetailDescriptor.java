@@ -62,6 +62,8 @@ public final class ApplicationDetailDescriptor
         throws IllegalArgumentException
     {
         validateNotNull( "aDescriptor", aDescriptor );
+
+        aDescriptor.setApplication( this );
         layers.add( aDescriptor );
     }
 }

@@ -26,7 +26,7 @@ import org.qi4j.library.swing.visualizer.model.EntityDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.LayerDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ModuleDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ObjectDetailDescriptor;
-import org.qi4j.service.ServiceDescriptor;
+import org.qi4j.library.swing.visualizer.model.ServiceDetailDescriptor;
 
 /**
  * @author edward.yakop@gmail.com
@@ -50,7 +50,7 @@ public final class DefaultDisplayManager
         System.err.println( "Module" );
     }
 
-    public final void displayService( DetailPanel aDetailPanel, ServiceDescriptor aDescriptor )
+    public final void displayService( DetailPanel aDetailPanel, ServiceDetailDescriptor aDescriptor )
     {
         System.err.println( "Service" );
     }

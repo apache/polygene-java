@@ -30,8 +30,10 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.common.Util;
-import org.qi4j.library.swing.visualizer.model.CompositeMethodConstrainsDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.CompositeMethodDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.MethodConcernDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.MethodConstraintsDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.MethodSideEffectDetailDescriptor;
 import org.qi4j.spi.composite.MethodConcernDescriptor;
 import org.qi4j.spi.composite.MethodSideEffectDescriptor;
 
@@ -52,9 +54,9 @@ final class MixinTree extends JTree
         methodDetailDescriptor = aDescriptor;
 
         Class mixinClass = aDescriptor.descriptor().mixin().mixinClass();
-        Iterable<CompositeMethodConstrainsDetailDescriptor> constraints = aDescriptor.constraints();
-        Iterable<MethodConcernDescriptor> concerns = aDescriptor.concerns();
-        Iterable<MethodSideEffectDescriptor> sideEffects = aDescriptor.sideEffects();
+        Iterable<MethodConstraintsDetailDescriptor> constraints = aDescriptor.constraints();
+        Iterable<MethodConcernDetailDescriptor> concerns = aDescriptor.concerns();
+        Iterable<MethodSideEffectDetailDescriptor> sideEffects = aDescriptor.sideEffects();
 
         final DefaultMutableTreeNode root = new DefaultMutableTreeNode( mixinClass.getName() );
         addFields( root, mixinClass );
@@ -108,9 +110,9 @@ final class MixinTree extends JTree
     private void addMethods(
         DefaultMutableTreeNode rootNode,
         Class mixinClass,
-        Iterable<CompositeMethodConstrainsDetailDescriptor> constraints,
-        Iterable<MethodConcernDescriptor> concerns,
-        Iterable<MethodSideEffectDescriptor> sideEffects )
+        Iterable<MethodConstraintsDetailDescriptor> constraints,
+        Iterable<MethodConcernDetailDescriptor> concerns,
+        Iterable<MethodSideEffectDetailDescriptor> sideEffects )
     {
         DefaultMutableTreeNode node = new DefaultMutableTreeNode( "Methods" );
         Method[] methods = mixinClass.getDeclaredMethods();
@@ -131,9 +133,9 @@ final class MixinTree extends JTree
 
     private MutableTreeNode getMethodNode(
         Method method,
-        Iterable<CompositeMethodConstrainsDetailDescriptor> constraints,
-        Iterable<MethodConcernDescriptor> concerns,
-        Iterable<MethodSideEffectDescriptor> sideEffects )
+        Iterable<MethodConstraintsDetailDescriptor> constraints,
+        Iterable<MethodConcernDetailDescriptor> concerns,
+        Iterable<MethodSideEffectDetailDescriptor> sideEffects )
     {
         DefaultMutableTreeNode node = new DefaultMutableTreeNode( Util.methodToString( method ) );
         addConstraints( method, node, constraints );
@@ -145,10 +147,10 @@ final class MixinTree extends JTree
     private void addConstraints(
         Method method,
         DefaultMutableTreeNode methodNode,
-        Iterable<CompositeMethodConstrainsDetailDescriptor> constraints )
+        Iterable<MethodConstraintsDetailDescriptor> constraints )
     {
         DefaultMutableTreeNode node = new DefaultMutableTreeNode( "Constraints" );
-        for( CompositeMethodConstrainsDetailDescriptor constraint : constraints )
+        for( MethodConstraintsDetailDescriptor constraint : constraints )
         {
             node.add( new DefaultMutableTreeNode( constraint ) );
         }
@@ -163,12 +165,13 @@ final class MixinTree extends JTree
     private void addConcerns(
         Method method,
         DefaultMutableTreeNode methodNode,
-        Iterable<MethodConcernDescriptor> concerns )
+        Iterable<MethodConcernDetailDescriptor> concerns )
     {
         DefaultMutableTreeNode node = new DefaultMutableTreeNode( "Concerns" );
-        for( MethodConcernDescriptor concern : concerns )
+        for( MethodConcernDetailDescriptor concern : concerns )
         {
-            Class clazz = concern.modifierClass();
+            MethodConcernDescriptor descriptor = concern.descriptor();
+            Class clazz = descriptor.modifierClass();
             String className = clazz.getName();
             node.add( new DefaultMutableTreeNode( className ) );
         }
@@ -182,12 +185,13 @@ final class MixinTree extends JTree
     private void addSideEffects(
         Method method,
         DefaultMutableTreeNode methodNode,
-        Iterable<MethodSideEffectDescriptor> sideEffects )
+        Iterable<MethodSideEffectDetailDescriptor> sideEffects )
     {
         DefaultMutableTreeNode node = new DefaultMutableTreeNode( "Side Effects" );
-        for( MethodSideEffectDescriptor sideEffect : sideEffects )
+        for( MethodSideEffectDetailDescriptor sideEffect : sideEffects )
         {
-            Class clazz = sideEffect.modifierClass();
+            MethodSideEffectDescriptor descriptor = sideEffect.descriptor();
+            Class clazz = descriptor.modifierClass();
             String className = clazz.getName();
             node.add( new DefaultMutableTreeNode( className ) );
         }

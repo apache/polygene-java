@@ -16,53 +16,38 @@
 */
 package org.qi4j.library.swing.visualizer.model;
 
-import java.util.LinkedList;
-import java.util.List;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
-import org.qi4j.spi.composite.ConstructorDescriptor;
+import org.qi4j.spi.composite.InjectedFieldDescriptor;
 
 /**
  * @author edward.yakop@gmail.com
- * @see ConstructorDescriptor
  * @since 0.5
  */
-public final class ConstructorDetailDescriptor
+public final class InjectedFieldDetailDescriptor
 {
-    private final ConstructorDescriptor descriptor;
+    private final InjectedFieldDescriptor descriptor;
     private ObjectDetailDescriptor object;
     private MixinDetailDescriptor mixin;
-    private final List<InjectedParametersDetailDescriptor> parameters;
 
-    ConstructorDetailDescriptor( ConstructorDescriptor aDescriptor )
+    InjectedFieldDetailDescriptor( InjectedFieldDescriptor aDescriptor )
         throws IllegalArgumentException
     {
         validateNotNull( "aDescriptor", aDescriptor );
-
         descriptor = aDescriptor;
-        parameters = new LinkedList<InjectedParametersDetailDescriptor>();
     }
 
     /**
-     * @return Descriptor of this {@code ConstructorDetailDescriptor}. Never return {@code null}.
+     * @return Descriptor of this {@code InjectedFieldDetailDescriptor}. Never returns {@code null}.
      * @since 0.5
      */
-    public final ConstructorDescriptor descriptor()
+    public final InjectedFieldDescriptor getDescriptor()
     {
         return descriptor;
     }
 
     /**
-     * @return Constructor parameters of this {@code ConstructorDetailDescriptor}. Never return {@code null}.
-     * @since 0.5
-     */
-    public final Iterable<InjectedParametersDetailDescriptor> parameters()
-    {
-        return parameters;
-    }
-
-    /**
-     * @return Object that own this {@code ConstructorDetailDescriptor}.
-     *         If {@code null} this constructor is owned by a mixin.
+     * @return Object that own this {@code InjectedFieldDetailDescriptor}.
+     *         If {@code null}, this {@code InjectedFieldDetailDescriptor} is owned by a mixin.
      * @see #mixin()
      * @since 0.5
      */
@@ -72,8 +57,8 @@ public final class ConstructorDetailDescriptor
     }
 
     /**
-     * @return Mixin that own this {@code ConstructorDetailDescriptor}.
-     *         If {@code null} this constructor is owned by an object.
+     * @return Mixin that own this {@code InjectedFieldDetailDescriptor}.
+     *         If {@code null}, this {@code InjectedFieldDetailDescriptor} is owned by an object.
      * @see #object()
      * @since 0.5
      */
@@ -96,14 +81,5 @@ public final class ConstructorDetailDescriptor
         validateNotNull( "aDescriptor", aDescriptor );
 
         mixin = aDescriptor;
-    }
-
-    final void addInjectedParameter( InjectedParametersDetailDescriptor aDescriptor )
-        throws IllegalArgumentException
-    {
-        validateNotNull( "aDescriptor", aDescriptor );
-
-        aDescriptor.setConstructor( this );
-        parameters.add( aDescriptor );
     }
 }

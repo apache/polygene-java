@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.library.swing.visualizer.detailPanel.internal.common;
+package org.qi4j.library.swing.visualizer.detailPanel.internal.application;
 
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -24,6 +24,7 @@ import org.qi4j.library.swing.visualizer.model.ApplicationDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.EntityDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ObjectDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.ServiceDetailDescriptor;
 import org.qi4j.service.ServiceDescriptor;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.entity.EntityDescriptor;
@@ -79,9 +80,10 @@ public final class Qi4jDescriptorTree extends JTree
             ApplicationDescriptor descriptor = detailDescriptor.descriptor();
             return descriptor.name();
         }
-        else if( ServiceDescriptor.class.isAssignableFrom( valueClass ) )
+        else if( ServiceDetailDescriptor.class.isAssignableFrom( valueClass ) )
         {
-            ServiceDescriptor descriptor = (ServiceDescriptor) value;
+            ServiceDetailDescriptor detailDescriptor = (ServiceDetailDescriptor) value;
+            ServiceDescriptor descriptor = detailDescriptor.descriptor();
             Class<?> serviceClass = descriptor.type();
             String serviceClassName = serviceClass.getSimpleName();
             return serviceClassName + ":" + descriptor.identity();

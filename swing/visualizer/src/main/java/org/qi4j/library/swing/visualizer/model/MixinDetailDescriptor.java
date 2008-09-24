@@ -19,7 +19,6 @@ package org.qi4j.library.swing.visualizer.model;
 import java.util.LinkedList;
 import java.util.List;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
-import org.qi4j.spi.composite.InjectedFieldDescriptor;
 import org.qi4j.spi.composite.MixinDescriptor;
 
 /**
@@ -30,9 +29,10 @@ import org.qi4j.spi.composite.MixinDescriptor;
 public final class MixinDetailDescriptor
 {
     private final MixinDescriptor descriptor;
+    private CompositeDetailDescriptor composite;
     private final List<ConstructorDetailDescriptor> constructors;
     private final List<InjectedMethodDetailDescriptor> injectedMethods;
-    private final List<InjectedFieldDescriptor> injectedFields;
+    private final List<InjectedFieldDetailDescriptor> injectedFields;
 
     MixinDetailDescriptor( MixinDescriptor aDescriptor )
         throws IllegalArgumentException
@@ -42,7 +42,7 @@ public final class MixinDetailDescriptor
         descriptor = aDescriptor;
         constructors = new LinkedList<ConstructorDetailDescriptor>();
         injectedMethods = new LinkedList<InjectedMethodDetailDescriptor>();
-        injectedFields = new LinkedList<InjectedFieldDescriptor>();
+        injectedFields = new LinkedList<InjectedFieldDetailDescriptor>();
     }
 
     /**
@@ -76,15 +76,32 @@ public final class MixinDetailDescriptor
      * @return Injected fields of this {@code MixinDetailDescriptor}. Never return {@code null}.
      * @since 0.5
      */
-    public final Iterable<InjectedFieldDescriptor> getInjectedFields()
+    public final Iterable<InjectedFieldDetailDescriptor> injectedFields()
     {
         return injectedFields;
+    }
+
+    /**
+     * @return Composite that owns this {@code MixinDetailDescriptor}. Never return {@code null}.
+     */
+    public final CompositeDetailDescriptor composite()
+    {
+        return composite;
+    }
+
+    final void setComposite( CompositeDetailDescriptor aDescriptor )
+        throws IllegalArgumentException
+    {
+        validateNotNull( "aDescriptor", aDescriptor );
+        composite = aDescriptor;
     }
 
     final void addConstructor( ConstructorDetailDescriptor aDescriptor )
         throws IllegalArgumentException
     {
         validateNotNull( "aDescriptor", aDescriptor );
+
+        aDescriptor.setMixin( this );
         constructors.add( aDescriptor );
     }
 
@@ -92,13 +109,17 @@ public final class MixinDetailDescriptor
         throws IllegalArgumentException
     {
         validateNotNull( "aDescriptor", aDescriptor );
+
+        aDescriptor.setMixin( this );
         injectedMethods.add( aDescriptor );
     }
 
-    final void addInjectedField( InjectedFieldDescriptor aDescriptor )
+    final void addInjectedField( InjectedFieldDetailDescriptor aDescriptor )
         throws IllegalArgumentException
     {
         validateNotNull( "aDescriptor", aDescriptor );
+
+        aDescriptor.setMixin( this );
         injectedFields.add( aDescriptor );
     }
 }

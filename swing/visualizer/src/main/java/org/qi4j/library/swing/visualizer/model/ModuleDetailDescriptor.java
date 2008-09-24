@@ -19,7 +19,6 @@ package org.qi4j.library.swing.visualizer.model;
 import java.util.LinkedList;
 import java.util.List;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
-import org.qi4j.service.ServiceDescriptor;
 import org.qi4j.spi.structure.ModuleDescriptor;
 
 /**
@@ -30,8 +29,8 @@ import org.qi4j.spi.structure.ModuleDescriptor;
 public final class ModuleDetailDescriptor
 {
     private final ModuleDescriptor descriptor;
-
-    private final List<ServiceDescriptor> services;
+    private LayerDetailDescriptor layer;
+    private final List<ServiceDetailDescriptor> services;
     private final List<EntityDetailDescriptor> entities;
     private final List<CompositeDetailDescriptor> composites;
     private final List<ObjectDetailDescriptor> objects;
@@ -43,7 +42,7 @@ public final class ModuleDetailDescriptor
 
         descriptor = aDescriptor;
 
-        services = new LinkedList<ServiceDescriptor>();
+        services = new LinkedList<ServiceDetailDescriptor>();
         entities = new LinkedList<EntityDetailDescriptor>();
         composites = new LinkedList<CompositeDetailDescriptor>();
         objects = new LinkedList<ObjectDetailDescriptor>();
@@ -62,7 +61,7 @@ public final class ModuleDetailDescriptor
      * @return Services of this {@code ModuleDetailDescriptor}. Never return {@code null}.
      * @since 0.5
      */
-    public final Iterable<ServiceDescriptor> services()
+    public final Iterable<ServiceDetailDescriptor> services()
     {
         return services;
     }
@@ -94,10 +93,28 @@ public final class ModuleDetailDescriptor
         return objects;
     }
 
-    final void addService( ServiceDescriptor aDescriptor )
+    /**
+     * @return Layer that own this {@code ModuleDetailDescriptor}. Never return {@code null}.
+     * @since 0.5
+     */
+    public final LayerDetailDescriptor layer()
+    {
+        return layer;
+    }
+
+    final void setLayer( LayerDetailDescriptor aDescriptor )
         throws IllegalArgumentException
     {
         validateNotNull( "aDescriptor", aDescriptor );
+        layer = aDescriptor;
+    }
+
+    final void addService( ServiceDetailDescriptor aDescriptor )
+        throws IllegalArgumentException
+    {
+        validateNotNull( "aDescriptor", aDescriptor );
+
+        aDescriptor.setModule( this );
         services.add( aDescriptor );
     }
 
@@ -105,18 +122,24 @@ public final class ModuleDetailDescriptor
         throws IllegalArgumentException
     {
         validateNotNull( "aDescriptor", aDescriptor );
+
+        aDescriptor.setModule( this );
         entities.add( aDescriptor );
     }
 
     final void addComposite( CompositeDetailDescriptor aDescriptor )
     {
         validateNotNull( "aDescriptor", aDescriptor );
+
+        aDescriptor.setModule( this );
         composites.add( aDescriptor );
     }
 
     final void addObject( ObjectDetailDescriptor aDescriptor )
     {
         validateNotNull( "aDescriptor", aDescriptor );
+
+        aDescriptor.setModule( this );
         objects.add( aDescriptor );
     }
 }

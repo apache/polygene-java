@@ -19,7 +19,6 @@ package org.qi4j.library.swing.visualizer.model;
 import java.util.LinkedList;
 import java.util.List;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
-import org.qi4j.spi.composite.InjectedFieldDescriptor;
 import org.qi4j.spi.object.ObjectDescriptor;
 
 /**
@@ -30,9 +29,10 @@ import org.qi4j.spi.object.ObjectDescriptor;
 public final class ObjectDetailDescriptor
 {
     private final ObjectDescriptor descriptor;
+    private ModuleDetailDescriptor module;
     private final List<ConstructorDetailDescriptor> constructors;
     private final List<InjectedMethodDetailDescriptor> injectedMethods;
-    private final List<InjectedFieldDescriptor> injectedFields;
+    private final List<InjectedFieldDetailDescriptor> injectedFields;
 
     ObjectDetailDescriptor( ObjectDescriptor aDescriptor )
         throws IllegalArgumentException
@@ -42,7 +42,7 @@ public final class ObjectDetailDescriptor
         descriptor = aDescriptor;
         constructors = new LinkedList<ConstructorDetailDescriptor>();
         injectedMethods = new LinkedList<InjectedMethodDetailDescriptor>();
-        injectedFields = new LinkedList<InjectedFieldDescriptor>();
+        injectedFields = new LinkedList<InjectedFieldDetailDescriptor>();
     }
 
     /**
@@ -76,15 +76,33 @@ public final class ObjectDetailDescriptor
      * @return Injected fields of this {@code ObjectDetailDescriptor}. Never return {@code null}.
      * @since 0.5
      */
-    public final Iterable<InjectedFieldDescriptor> getInjectedFields()
+    public final Iterable<InjectedFieldDetailDescriptor> getInjectedFields()
     {
         return injectedFields;
+    }
+
+    /**
+     * @return Module that own this {@code ObjectDetailDescriptor}. Never return {@code null}.
+     * @since 0.5
+     */
+    public final ModuleDetailDescriptor module()
+    {
+        return module;
+    }
+
+    final void setModule( ModuleDetailDescriptor aDescriptor )
+        throws IllegalArgumentException
+    {
+        validateNotNull( "aDescriptor", aDescriptor );
+        module = aDescriptor;
     }
 
     final void addConstructor( ConstructorDetailDescriptor aDescriptor )
         throws IllegalArgumentException
     {
         validateNotNull( "aDescriptor", aDescriptor );
+
+        aDescriptor.setObject( this );
         constructors.add( aDescriptor );
     }
 
@@ -92,12 +110,16 @@ public final class ObjectDetailDescriptor
         throws IllegalArgumentException
     {
         validateNotNull( "aDescriptor", aDescriptor );
+
+        aDescriptor.setObject( this );
         injectedMethods.add( aDescriptor );
     }
 
-    final void addInjectedField( InjectedFieldDescriptor aDescriptor )
+    final void addInjectedField( InjectedFieldDetailDescriptor aDescriptor )
     {
         validateNotNull( "aDescriptor", aDescriptor );
+
+        aDescriptor.setObject( this );
         injectedFields.add( aDescriptor );
     }
 }

@@ -16,52 +16,50 @@
 */
 package org.qi4j.library.swing.visualizer.model;
 
-import java.util.LinkedList;
-import java.util.List;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
 import org.qi4j.spi.composite.ConstraintDescriptor;
-import org.qi4j.spi.composite.MethodConstraintsDescriptor;
 
 /**
  * @author edward.yakop@gmail.com
- * @see MethodConstraintsDescriptor
+ * @see ConstraintDescriptor
  * @since 0.5
  */
-public final class CompositeMethodConstrainsDetailDescriptor
+public final class ConstraintDetailDescriptor
 {
-    private final MethodConstraintsDescriptor descriptor;
-    private final List<ConstraintDescriptor> constraints;
+    private final ConstraintDescriptor descriptor;
+    private MethodConstraintsDetailDescriptor constraints;
 
-    CompositeMethodConstrainsDetailDescriptor( MethodConstraintsDescriptor aDescriptor )
+    ConstraintDetailDescriptor( ConstraintDescriptor aDescriptor )
         throws IllegalArgumentException
     {
         validateNotNull( "aDescriptor", aDescriptor );
 
         descriptor = aDescriptor;
-        constraints = new LinkedList<ConstraintDescriptor>();
     }
 
     /**
-     * @return Descriptor of this {@code CompositeMethodConstrainsDetailDescriptor}. Never return {@code null}.
+     * @return Descriptor of this {@code ConstraintDetailDescriptor}. Never returns {@code null}.
      * @since 0.5
      */
-    public final MethodConstraintsDescriptor descriptor()
+    public final ConstraintDescriptor descriptor()
     {
         return descriptor;
     }
 
     /**
-     * @return Constraints of this {@code CompositeMethodConstrainsDetailDescriptor}. Never return {@code null}.
+     * @return Constraints that own this {@code ConstraintDetailDescriptor}. Never return {@code null}.
      * @since 0.5
      */
-    public final Iterable<ConstraintDescriptor> constraints()
+    public final MethodConstraintsDetailDescriptor constraints()
     {
         return constraints;
     }
 
-    final void addConstraint( ConstraintDescriptor aDescriptor )
+    final void setConstraints( MethodConstraintsDetailDescriptor aDescriptor )
+        throws IllegalArgumentException
     {
         validateNotNull( "aDescriptor", aDescriptor );
-        constraints.add( aDescriptor );
+
+        constraints = aDescriptor;
     }
 }

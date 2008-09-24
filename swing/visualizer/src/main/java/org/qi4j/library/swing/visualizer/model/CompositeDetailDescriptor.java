@@ -31,6 +31,7 @@ import org.qi4j.spi.composite.CompositeMethodDescriptor;
 public class CompositeDetailDescriptor<T extends CompositeDescriptor>
 {
     private final T descriptor;
+    private ModuleDetailDescriptor module;
     private final List<CompositeMethodDetailDescriptor> methods;
     private final List<MixinDetailDescriptor> mixins;
 
@@ -92,10 +93,28 @@ public class CompositeDetailDescriptor<T extends CompositeDescriptor>
         return null;
     }
 
+    /**
+     * @return Module that own this {@code CompositeDetailDescriptor}.
+     * @since 0.5
+     */
+    public final ModuleDetailDescriptor module()
+    {
+        return module;
+    }
+
+    final void setModule( ModuleDetailDescriptor aDescriptor )
+        throws IllegalArgumentException
+    {
+        validateNotNull( "aDescriptor", aDescriptor );
+        module = aDescriptor;
+    }
+
     final void addMethod( CompositeMethodDetailDescriptor aDescriptor )
         throws IllegalArgumentException
     {
         validateNotNull( "aDescriptor", aDescriptor );
+
+        aDescriptor.setComposite( this );
         methods.add( aDescriptor );
     }
 
@@ -103,6 +122,9 @@ public class CompositeDetailDescriptor<T extends CompositeDescriptor>
         throws IllegalArgumentException
     {
         validateNotNull( "aDescriptor", aDescriptor );
+
+        aDescriptor.setComposite( this );
         mixins.add( aDescriptor );
     }
+
 }

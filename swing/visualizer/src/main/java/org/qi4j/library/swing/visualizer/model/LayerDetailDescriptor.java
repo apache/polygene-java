@@ -29,6 +29,7 @@ import org.qi4j.spi.structure.LayerDescriptor;
 public final class LayerDetailDescriptor
 {
     private final LayerDescriptor descriptor;
+    private ApplicationDetailDescriptor application;
     private final List<LayerDetailDescriptor> usedLayers;
     private final List<ModuleDetailDescriptor> modules;
 
@@ -43,7 +44,7 @@ public final class LayerDetailDescriptor
     }
 
     /**
-     * @return Descriptor of this {@code LayerDetailDescriptor}. Never return {@code null}..
+     * @return Descriptor of this {@code LayerDetailDescriptor}. Never return {@code null}.
      * @since 0.5
      */
     public final LayerDescriptor descriptor()
@@ -52,7 +53,7 @@ public final class LayerDetailDescriptor
     }
 
     /**
-     * @return Used layers of this {@code LayerDetailDescriptor}. Never return {@code null}..
+     * @return Used layers of this {@code LayerDetailDescriptor}. Never return {@code null}.
      * @since 0.5
      */
     public final Iterable<LayerDetailDescriptor> usedLayers()
@@ -61,12 +62,28 @@ public final class LayerDetailDescriptor
     }
 
     /**
-     * @return Modules of this {@code LayerDetailDescriptor}. Never return {@code null}..
+     * @return Modules of this {@code LayerDetailDescriptor}. Never return {@code null}.
      * @since 0.5
      */
     public final Iterable<ModuleDetailDescriptor> modules()
     {
         return modules;
+    }
+
+    /**
+     * @return Application that owns this {@code LayerDetailDescriptor}. Never return {@code null}.
+     * @since 0.5
+     */
+    final ApplicationDetailDescriptor application()
+    {
+        return application;
+    }
+
+    final void setApplication( ApplicationDetailDescriptor aDescriptor )
+        throws IllegalArgumentException
+    {
+        validateNotNull( "aDescriptor", aDescriptor );
+        application = aDescriptor;
     }
 
     final void addUsedLayer( LayerDetailDescriptor aDescriptor )
@@ -80,6 +97,8 @@ public final class LayerDetailDescriptor
         throws IllegalArgumentException
     {
         validateNotNull( "aDescriptor", aDescriptor );
+
+        aDescriptor.setLayer( this );
         modules.add( aDescriptor );
     }
 }

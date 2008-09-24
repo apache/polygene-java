@@ -86,7 +86,7 @@ public final class ApplicationDetailDescriptorBuilder
         private CompositeMethodDetailDescriptor currMethodDesciptor;
 
         // Temp: current composite method constraint
-        private CompositeMethodConstrainsDetailDescriptor currMethodConstraintDescriptor;
+        private MethodConstraintsDetailDescriptor currMethodConstraintDescriptor;
 
         // Temp: current object
         private ObjectDetailDescriptor currObjectDescriptor;
@@ -150,7 +150,8 @@ public final class ApplicationDetailDescriptorBuilder
         @Override
         public final void visit( ServiceDescriptor aDescriptor )
         {
-            currModuleDescriptor.addService( aDescriptor );
+            ServiceDetailDescriptor detailDescriptor = new ServiceDetailDescriptor( aDescriptor );
+            currModuleDescriptor.addService( detailDescriptor );
         }
 
         @Override
@@ -179,20 +180,22 @@ public final class ApplicationDetailDescriptorBuilder
         public final void visit( MethodConstraintsDescriptor aDescriptor )
         {
             currMethodConstraintDescriptor =
-                new CompositeMethodConstrainsDetailDescriptor( aDescriptor );
+                new MethodConstraintsDetailDescriptor( aDescriptor );
             currMethodDesciptor.addConstraint( currMethodConstraintDescriptor );
         }
 
         @Override
         public final void visit( MethodConcernDescriptor aDescriptor )
         {
-            currMethodDesciptor.addConcern( aDescriptor );
+            MethodConcernDetailDescriptor detailDescriptor = new MethodConcernDetailDescriptor( aDescriptor );
+            currMethodDesciptor.addConcern( detailDescriptor );
         }
 
         @Override
         public final void visit( MethodSideEffectDescriptor aDescriptor )
         {
-            currMethodDesciptor.addSideEffect( aDescriptor );
+            MethodSideEffectDetailDescriptor detailDescriptor = new MethodSideEffectDetailDescriptor( aDescriptor );
+            currMethodDesciptor.addSideEffect( detailDescriptor );
         }
 
         @Override
@@ -215,7 +218,8 @@ public final class ApplicationDetailDescriptorBuilder
         @Override
         public final void visit( ConstraintDescriptor aDescriptor )
         {
-            currMethodConstraintDescriptor.addConstraint( aDescriptor );
+            ConstraintDetailDescriptor detailDescriptor = new ConstraintDetailDescriptor( aDescriptor );
+            currMethodConstraintDescriptor.addConstraint( detailDescriptor );
         }
 
         @Override
@@ -244,14 +248,16 @@ public final class ApplicationDetailDescriptorBuilder
         @Override
         public void visit( InjectedParametersDescriptor aDescriptor )
         {
+            InjectedParametersDetailDescriptor detailDescriptor = new InjectedParametersDetailDescriptor( aDescriptor );
+
             // Invoked for constructor and injected method
             if( currConstructorDescriptor != null )
             {
-                currConstructorDescriptor.addInjectedParameter( aDescriptor );
+                currConstructorDescriptor.addInjectedParameter( detailDescriptor );
             }
             else if( currInjectedMethodDescriptor != null )
             {
-                currInjectedMethodDescriptor.addInjectedParameter( aDescriptor );
+                currInjectedMethodDescriptor.addInjectedParameter( detailDescriptor );
             }
             else
             {
@@ -288,14 +294,16 @@ public final class ApplicationDetailDescriptorBuilder
         @Override
         public void visit( InjectedFieldDescriptor aDescriptor )
         {
+            InjectedFieldDetailDescriptor detailDescriptor = new InjectedFieldDetailDescriptor( aDescriptor );
+
             // Invoked for mixin and object
             if( currMixinDescriptor != null )
             {
-                currMixinDescriptor.addInjectedField( aDescriptor );
+                currMixinDescriptor.addInjectedField( detailDescriptor );
             }
             else if( currObjectDescriptor != null )
             {
-                currObjectDescriptor.addInjectedField( aDescriptor );
+                currObjectDescriptor.addInjectedField( detailDescriptor );
             }
             else
             {

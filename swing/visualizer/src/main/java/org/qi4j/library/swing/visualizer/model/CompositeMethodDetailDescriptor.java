@@ -20,8 +20,6 @@ import java.util.LinkedList;
 import java.util.List;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
 import org.qi4j.spi.composite.CompositeMethodDescriptor;
-import org.qi4j.spi.composite.MethodConcernDescriptor;
-import org.qi4j.spi.composite.MethodSideEffectDescriptor;
 
 /**
  * @author edward.yakop@gmail.com
@@ -31,9 +29,10 @@ import org.qi4j.spi.composite.MethodSideEffectDescriptor;
 public final class CompositeMethodDetailDescriptor
 {
     private final CompositeMethodDescriptor descriptor;
-    private final List<CompositeMethodConstrainsDetailDescriptor> constraints;
-    private final List<MethodConcernDescriptor> concerns;
-    private final List<MethodSideEffectDescriptor> sideEffects;
+    private CompositeDetailDescriptor composite;
+    private final List<MethodConstraintsDetailDescriptor> constraints;
+    private final List<MethodConcernDetailDescriptor> concerns;
+    private final List<MethodSideEffectDetailDescriptor> sideEffects;
 
 
     CompositeMethodDetailDescriptor( CompositeMethodDescriptor aDescriptor )
@@ -42,9 +41,9 @@ public final class CompositeMethodDetailDescriptor
         validateNotNull( "aDescriptor", aDescriptor );
         descriptor = aDescriptor;
 
-        constraints = new LinkedList<CompositeMethodConstrainsDetailDescriptor>();
-        concerns = new LinkedList<MethodConcernDescriptor>();
-        sideEffects = new LinkedList<MethodSideEffectDescriptor>();
+        constraints = new LinkedList<MethodConstraintsDetailDescriptor>();
+        concerns = new LinkedList<MethodConcernDetailDescriptor>();
+        sideEffects = new LinkedList<MethodSideEffectDetailDescriptor>();
     }
 
     /**
@@ -60,7 +59,7 @@ public final class CompositeMethodDetailDescriptor
      * @return Constraints of this {@code CompositeMethodDetailDescriptor}. Never return {@code null}.
      * @since 0.5
      */
-    public final Iterable<CompositeMethodConstrainsDetailDescriptor> constraints()
+    public final Iterable<MethodConstraintsDetailDescriptor> constraints()
     {
         return constraints;
     }
@@ -69,7 +68,7 @@ public final class CompositeMethodDetailDescriptor
      * @return Concerns of this {@code CompositeMethodDetailDescriptor}. concerns. Never return {@code null}.
      * @since 0.5
      */
-    public final Iterable<MethodConcernDescriptor> concerns()
+    public final Iterable<MethodConcernDetailDescriptor> concerns()
     {
         return concerns;
     }
@@ -78,28 +77,50 @@ public final class CompositeMethodDetailDescriptor
      * @return Side-effects of this {@code CompositeMethodDetailDescriptor}. Never return {@code null}.
      * @since 0.5
      */
-    public final Iterable<MethodSideEffectDescriptor> sideEffects()
+    public final Iterable<MethodSideEffectDetailDescriptor> sideEffects()
     {
         return sideEffects;
     }
 
-    final void addConstraint( CompositeMethodConstrainsDetailDescriptor aDescriptor )
+    /**
+     * @return Composite that owns this {@code CompositeMethodDetailDescriptor}. Never return {@code null}.
+     * @since 0.5
+     */
+    public final CompositeDetailDescriptor composite()
+    {
+        return composite;
+    }
+
+    final void setComposite( CompositeDetailDescriptor aDescriptor )
         throws IllegalArgumentException
     {
         validateNotNull( "aDescriptor", aDescriptor );
+        composite = aDescriptor;
+    }
+
+    final void addConstraint( MethodConstraintsDetailDescriptor aDescriptor )
+        throws IllegalArgumentException
+    {
+        validateNotNull( "aDescriptor", aDescriptor );
+
+        aDescriptor.setMethod( this );
         constraints.add( aDescriptor );
     }
 
-    final void addConcern( MethodConcernDescriptor aDescriptor )
+    final void addConcern( MethodConcernDetailDescriptor aDescriptor )
         throws IllegalArgumentException
     {
         validateNotNull( "aDescriptor", aDescriptor );
+
+        aDescriptor.setMethod( this );
         concerns.add( aDescriptor );
     }
 
-    final void addSideEffect( MethodSideEffectDescriptor aDescriptor )
+    final void addSideEffect( MethodSideEffectDetailDescriptor aDescriptor )
     {
         validateNotNull( "aDescriptor", aDescriptor );
+
+        aDescriptor.setMethod( this );
         sideEffects.add( aDescriptor );
     }
 }

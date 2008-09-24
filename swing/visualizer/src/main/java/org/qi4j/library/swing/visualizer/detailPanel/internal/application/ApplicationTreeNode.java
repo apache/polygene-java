@@ -25,6 +25,7 @@ import org.qi4j.library.swing.visualizer.model.EntityDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.LayerDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ModuleDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ObjectDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.ServiceDetailDescriptor;
 import org.qi4j.service.ServiceDescriptor;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.entity.EntityDescriptor;
@@ -82,10 +83,11 @@ final class ApplicationTreeNode extends DefaultMutableTreeNode
 
     private void addServiceNodes( DefaultMutableTreeNode aServicesNode, ModuleDetailDescriptor aModule )
     {
-        Iterable<ServiceDescriptor> services = aModule.services();
-        for( ServiceDescriptor service : services )
+        Iterable<ServiceDetailDescriptor> services = aModule.services();
+        for( ServiceDetailDescriptor service : services )
         {
-            Visibility visibility = service.visibility();
+            ServiceDescriptor descriptor = service.descriptor();
+            Visibility visibility = descriptor.visibility();
             if( visibility == application )
             {
                 aServicesNode.add( new DefaultMutableTreeNode( service ) );

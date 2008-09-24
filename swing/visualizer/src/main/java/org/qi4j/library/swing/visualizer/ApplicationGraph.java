@@ -27,9 +27,9 @@ import org.qi4j.library.swing.visualizer.model.EntityDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.LayerDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ModuleDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ObjectDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.ServiceDetailDescriptor;
 import org.qi4j.library.swing.visualizer.overview.OverviewPanel;
 import org.qi4j.library.swing.visualizer.overview.SelectionListener;
-import org.qi4j.service.ServiceDescriptor;
 import org.qi4j.spi.structure.ApplicationSPI;
 import org.qi4j.structure.Application;
 
@@ -102,7 +102,7 @@ public class ApplicationGraph
             detailPanel.displayModule( aDescriptor );
         }
 
-        public void onServiceSelected( ServiceDescriptor aDescriptor )
+        public void onServiceSelected( ServiceDetailDescriptor aDescriptor )
         {
             detailPanel.displayService( aDescriptor );
         }

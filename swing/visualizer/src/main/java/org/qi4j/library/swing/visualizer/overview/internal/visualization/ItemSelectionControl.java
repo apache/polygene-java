@@ -24,11 +24,11 @@ import org.qi4j.library.swing.visualizer.model.EntityDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.LayerDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ModuleDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ObjectDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.ServiceDetailDescriptor;
 import org.qi4j.library.swing.visualizer.overview.SelectionListener;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.FIELD_DESCRIPTOR;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.FIELD_TYPE;
 import org.qi4j.library.swing.visualizer.overview.internal.common.NodeType;
-import org.qi4j.service.ServiceDescriptor;
 import prefuse.controls.ControlAdapter;
 import prefuse.visual.VisualItem;
 
@@ -80,7 +80,7 @@ final class ItemSelectionControl extends ControlAdapter
             listener.onEntitySelected( entDesc );
             break;
         case SERVICE:
-            ServiceDescriptor srvDesc = (ServiceDescriptor) descriptor;
+            ServiceDetailDescriptor srvDesc = (ServiceDetailDescriptor) descriptor;
             listener.onServiceSelected( srvDesc );
             break;
         case OBJECT:

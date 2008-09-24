@@ -22,7 +22,7 @@ import org.qi4j.library.swing.visualizer.model.EntityDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.LayerDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ModuleDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ObjectDetailDescriptor;
-import org.qi4j.service.ServiceDescriptor;
+import org.qi4j.library.swing.visualizer.model.ServiceDetailDescriptor;
 
 /**
  * @author edward.yakop@gmail.com
@@ -36,7 +36,7 @@ public interface DisplayManager
 
     void displayModule( DetailPanel aDetailPanel, ModuleDetailDescriptor aDescriptor );
 
-    void displayService( DetailPanel aDetailPanel, ServiceDescriptor aDescriptor );
+    void displayService( DetailPanel aDetailPanel, ServiceDetailDescriptor aDescriptor );
 
     /**
      * Invoked when the specified detail panel is displaying a composite.

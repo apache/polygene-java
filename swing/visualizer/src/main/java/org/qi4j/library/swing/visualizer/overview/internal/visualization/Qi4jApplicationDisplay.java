@@ -45,6 +45,7 @@ import prefuse.visual.sort.ItemSorter;
 
 /**
  * TODO: Javadoc
+ * TODO: Auto center when the window is resized
  *
  * @author Sonny Gill
  * @author edward.yakop@gmail.com
@@ -163,7 +164,9 @@ public final class Qi4jApplicationDisplay extends Display
 
     public final void zoomToActualSize()
     {
-        animateZoom( getDisplayCenter(), 1 / getScale(), DEFAULT_ZOOM_ANIMATION_DURATION );
+        // TODO: Need to calculate boundary
+        float scaleToActualSize = (float) ( 1 / getScale() );
+        animateZoom( getDisplayCenter(), scaleToActualSize, DEFAULT_ZOOM_ANIMATION_DURATION );
     }
 
     public final void zoomIn( Point2D p, Double scale )
