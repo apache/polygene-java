@@ -208,12 +208,12 @@ public final class DependencyModel
 
     /**
      * Get the raw dependency type. If the dependency uses generics this is the raw type,
-     * and otherwise it is the type of the field. Examples:
+     * and otherwise it is the type of the field. Examples:<br/>
+     * {@code @Service MyService service} -> MyService<br/>
+     * {@code @Entity Iterable<Foo> fooList} -> Iterable<br/>
+     * {@code @Entity Query<Foo> fooQuery} -> Query<br/>
      *
-     * @return raw injection type
-     * @Service MyService service -> MyService
-     * @Entity Iterable<Foo> fooList -> Iterable
-     * @Entity Query<Foo> fooQuery -> Query
+     * @return raw injection type.
      */
     public Class<?> rawInjectionType()
     {
@@ -222,12 +222,12 @@ public final class DependencyModel
 
     /**
      * Get the injection class. If the injection uses generics this is the parameter type,
-     * and otherwise it is the raw type. Examples:
+     * and otherwise it is the raw type. Examples:<br/>
+     * {@code @Service MyService service} -> MyService<br/>
+     * {@code @Entity Iterable<Foo> fooList} -> Foo<br/>
+     * {@code @Entity Query<Foo> fooQuery} -> Foo<br/>
      *
      * @return injection class
-     * @Service MyService service -> MyService
-     * @Entity Iterable<Foo> fooList -> Foo
-     * @Entity Query<Foo> fooQuery -> Foo
      */
     public Class<?> injectionClass()
     {
@@ -306,14 +306,15 @@ public final class DependencyModel
         return injectionResult;
     }
 
-    private final static Class<?>[] primitiveTypeMapping = { boolean.class, Boolean.class,
-                                                             byte.class, Byte.class,
-                                                             short.class, Short.class,
-                                                             char.class, Character.class,
-                                                             long.class, Long.class,
-                                                             double.class, Double.class,
-                                                             float.class, Float.class,
-                                                             int.class, Integer.class,
+    private final static Class<?>[] primitiveTypeMapping = {
+        boolean.class, Boolean.class,
+        byte.class, Byte.class,
+        short.class, Short.class,
+        char.class, Character.class,
+        long.class, Long.class,
+        double.class, Double.class,
+        float.class, Float.class,
+        int.class, Integer.class,
     };
 
     private Class<?> mapPrimitiveTypes( Class<?> rawInjectionType )
@@ -349,7 +350,7 @@ public final class DependencyModel
 
     @Override public String toString()
     {
-        return injectionAnnotation+" for "+injectionType+" in "+injectedClass.getName();
+        return injectionAnnotation + " for " + injectionType + " in " + injectedClass.getName();
     }
 
     public static class ScopeSpecification
