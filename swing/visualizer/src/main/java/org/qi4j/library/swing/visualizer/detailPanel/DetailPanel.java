@@ -17,6 +17,7 @@
 package org.qi4j.library.swing.visualizer.detailPanel;
 
 import java.awt.BorderLayout;
+import static java.awt.BorderLayout.CENTER;
 import java.awt.Component;
 import javax.swing.JPanel;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
@@ -111,12 +112,6 @@ public final class DetailPanel extends JPanel
     {
         boolean isChange = false;
 
-        if( aComponent != null )
-        {
-            add( aComponent, BorderLayout.CENTER );
-            isChange = true;
-        }
-
         if( component != null )
         {
             remove( component );
@@ -124,6 +119,12 @@ public final class DetailPanel extends JPanel
         }
 
         component = aComponent;
+
+        if( aComponent != null )
+        {
+            add( aComponent, CENTER );
+            isChange = true;
+        }
 
         if( isChange )
         {

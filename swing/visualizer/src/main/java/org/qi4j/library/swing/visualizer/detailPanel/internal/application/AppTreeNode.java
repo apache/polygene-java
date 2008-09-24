@@ -38,11 +38,11 @@ import static org.qi4j.structure.Visibility.application;
  * @author edward.yakop@gmail.com
  * @since 0.5
  */
-final class ApplicationTreeNode extends DefaultMutableTreeNode
+final class AppTreeNode extends DefaultMutableTreeNode
 {
     private static final long serialVersionUID = 1L;
 
-    ApplicationTreeNode( ApplicationDetailDescriptor aDetailDescriptor )
+    AppTreeNode( ApplicationDetailDescriptor aDetailDescriptor )
         throws IllegalArgumentException
     {
         super( aDetailDescriptor );
