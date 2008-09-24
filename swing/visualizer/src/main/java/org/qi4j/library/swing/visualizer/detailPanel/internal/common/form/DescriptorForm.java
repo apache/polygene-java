@@ -17,7 +17,7 @@
 package org.qi4j.library.swing.visualizer.detailPanel.internal.common.form;
 
 import java.awt.BorderLayout;
-import static java.awt.BorderLayout.*;
+import static java.awt.BorderLayout.CENTER;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import org.qi4j.library.swing.visualizer.model.ServiceDetailDescriptor;
@@ -55,7 +55,7 @@ public final class DescriptorForm extends JPanel
             }
             else
             {
-                tobeRemoved.setText( modelClass.getName() + " " + aModel );
+                tobeRemoved.setText( "TODO: " + modelClass.getName() + " " + aModel );
                 add( tobeRemoved, CENTER );
             }
         }
