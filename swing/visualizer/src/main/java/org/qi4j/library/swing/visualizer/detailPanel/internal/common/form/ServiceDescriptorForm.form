@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="org.qi4j.library.swing.visualizer.detailPanel.internal.common.form.ServiceDescriptorForm">
+  <grid id="27dc6" binding="placeHolder" custom-create="true" layout-manager="FormLayout">
+    <rowspec value="center:max(d;4px):noGrow"/>
+    <rowspec value="top:4dlu:noGrow"/>
+    <rowspec value="center:35px:noGrow"/>
+    <rowspec value="top:5dlu:noGrow"/>
+    <rowspec value="center:35px:noGrow"/>
+    <rowspec value="top:4dlu:noGrow"/>
+    <rowspec value="center:35px:noGrow"/>
+    <rowspec value="top:4dlu:noGrow"/>
+    <rowspec value="center:35px:noGrow"/>
+    <rowspec value="top:5dlu:noGrow"/>
+    <rowspec value="center:max(d;4px):noGrow"/>
+    <rowspec value="top:4dlu:noGrow"/>
+    <rowspec value="center:23px:noGrow"/>
+    <rowspec value="top:4dlu:noGrow"/>
+    <rowspec value="center:max(d;4px):noGrow"/>
+    <colspec value="fill:5dlu:noGrow"/>
+    <colspec value="fill:p:noGrow"/>
+    <colspec value="fill:max(d;4px):noGrow"/>
+    <colspec value="fill:229px:grow"/>
+    <colspec value="left:m:grow"/>
+    <rowgroup>
+      <member index="3"/>
+      <member index="5"/>
+      <member index="7"/>
+      <member index="9"/>
+    </rowgroup>
+    <rowgroup>
+      <member index="1"/>
+      <member index="11"/>
+    </rowgroup>
+    <rowgroup>
+      <member index="13"/>
+      <member index="15"/>
+    </rowgroup>
+    <constraints>
+      <xy x="20" y="20" width="538" height="325"/>
+    </constraints>
+    <properties/>
+    <border type="none"/>
+    <children>
+      <component id="e9a1f" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <forms/>
+        </constraints>
+        <properties>
+          <labelFor value="b4e23"/>
+          <text value="Id"/>
+        </properties>
+      </component>
+      <component id="b4e23" class="javax.swing.JTextField" binding="serviceId">
+        <constraints>
+          <grid row="2" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="150" height="-1"/>
+          </grid>
+          <forms/>
+        </constraints>
+        <properties>
+          <editable value="false"/>
+        </properties>
+      </component>
+      <component id="ce852" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <forms/>
+        </constraints>
+        <properties>
+          <labelFor value="d6053"/>
+          <text value="Class name"/>
+        </properties>
+      </component>
+      <component id="b5deb" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="8" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <forms/>
+        </constraints>
+        <properties>
+          <labelFor value="23c49"/>
+          <text value="Is instatiate at startup"/>
+        </properties>
+      </component>
+      <component id="23c49" class="javax.swing.JCheckBox" binding="serviceIsInstantiateAtStartup">
+        <constraints>
+          <grid row="8" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="0" indent="0" use-parent-layout="false">
+            <preferred-size width="150" height="-1"/>
+          </grid>
+          <forms defaultalign-horz="false"/>
+        </constraints>
+        <properties>
+          <enabled value="false"/>
+          <text value=""/>
+        </properties>
+      </component>
+      <component id="d6053" class="javax.swing.JTextField" binding="serviceType">
+        <constraints>
+          <grid row="4" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="150" height="-1"/>
+          </grid>
+          <forms/>
+        </constraints>
+        <properties>
+          <editable value="false"/>
+        </properties>
+      </component>
+      <component id="6b793" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="6" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <forms/>
+        </constraints>
+        <properties>
+          <labelFor value="5c46d"/>
+          <text value="Visiblity"/>
+        </properties>
+      </component>
+      <component id="5c46d" class="javax.swing.JTextField" binding="serviceVisibility">
+        <constraints>
+          <grid row="6" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="150" height="-1"/>
+          </grid>
+          <forms/>
+        </constraints>
+        <properties>
+          <editable value="false"/>
+        </properties>
+      </component>
+      <component id="ef3e8" class="javax.swing.JLabel" binding="serviceSeparator" custom-create="true">
+        <constraints>
+          <grid row="0" column="1" row-span="1" col-span="3" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <forms/>
+        </constraints>
+        <properties/>
+      </component>
+      <component id="398d7" class="javax.swing.JLabel" binding="locationSeparator" custom-create="true">
+        <constraints>
+          <grid row="10" column="1" row-span="1" col-span="3" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <forms/>
+        </constraints>
+        <properties/>
+      </component>
+      <component id="9736f" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="12" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <forms/>
+        </constraints>
+        <properties>
+          <labelFor value="9070a"/>
+          <text value="Layer"/>
+        </properties>
+      </component>
+      <component id="9070a" class="javax.swing.JTextField" binding="layer">
+        <constraints>
+          <grid row="12" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="150" height="-1"/>
+          </grid>
+          <forms/>
+        </constraints>
+        <properties>
+          <editable value="false"/>
+        </properties>
+      </component>
+      <component id="9b547" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="14" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <forms/>
+        </constraints>
+        <properties>
+          <labelFor value="467c0"/>
+          <text value="Module"/>
+        </properties>
+      </component>
+      <component id="467c0" class="javax.swing.JTextField" binding="module">
+        <constraints>
+          <grid row="14" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="150" height="-1"/>
+          </grid>
+          <forms/>
+        </constraints>
+        <properties>
+          <editable value="false"/>
+        </properties>
+      </component>
+    </children>
+  </grid>
+</form>

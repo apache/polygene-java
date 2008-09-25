@@ -49,7 +49,7 @@ public final class DescriptorForm extends JPanel
             if( ServiceDetailDescriptor.class.isAssignableFrom( modelClass ) )
             {
                 ServiceDetailDescriptor descriptor = (ServiceDetailDescriptor) aModel;
-                ServiceForm form = new ServiceForm();
+                ServiceDescriptorForm form = new ServiceDescriptorForm();
                 form.updateModel( descriptor );
                 add( form, CENTER );
             }
