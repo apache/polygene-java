@@ -16,8 +16,11 @@
 */
 package org.qi4j.library.swing.visualizer.model;
 
+import java.util.LinkedList;
+import java.util.List;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
 import org.qi4j.service.ServiceDescriptor;
+import org.qi4j.structure.Visibility;
 
 /**
  * @author edward.yakop@gmail.com
@@ -43,6 +46,31 @@ public final class ServiceDetailDescriptor
     public final ServiceDescriptor descriptor()
     {
         return descriptor;
+    }
+
+    /**
+     * @return layers that can access this service. Never return {@code null}.
+     * @since 0.5
+     */
+    public final List<LayerDetailDescriptor> accessibleToLayers()
+    {
+        Visibility visibility = descriptor.visibility();
+        if( visibility == Visibility.module )
+        {
+            return new LinkedList<LayerDetailDescriptor>();
+        }
+
+        LayerDetailDescriptor layer = module.layer();
+        if( visibility == Visibility.layer )
+        {
+            List<LayerDetailDescriptor> layers = new LinkedList<LayerDetailDescriptor>();
+            layers.add( layer );
+            return layers;
+        }
+        else
+        {
+            return layer.usedBy();
+        }
     }
 
     /**

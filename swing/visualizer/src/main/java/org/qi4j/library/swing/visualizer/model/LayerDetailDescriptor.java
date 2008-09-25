@@ -62,6 +62,27 @@ public final class LayerDetailDescriptor
     }
 
     /**
+     * @return Layers that used this layer.
+     * @since 0.5
+     */
+    public final List<LayerDetailDescriptor> usedBy()
+    {
+        List<LayerDetailDescriptor> usedBy = new LinkedList<LayerDetailDescriptor>();
+
+        Iterable<LayerDetailDescriptor> layers = application.layers();
+        for( LayerDetailDescriptor layer : layers )
+        {
+            List<LayerDetailDescriptor> layerUsedLayers = layer.usedLayers;
+            if( layerUsedLayers.contains( this ) )
+            {
+                usedBy.add( layer );
+            }
+        }
+
+        return usedBy;
+    }
+
+    /**
      * @return Modules of this {@code LayerDetailDescriptor}. Never return {@code null}.
      * @since 0.5
      */
@@ -100,5 +121,11 @@ public final class LayerDetailDescriptor
 
         aDescriptor.setLayer( this );
         modules.add( aDescriptor );
+    }
+
+    @Override
+    public final String toString()
+    {
+        return descriptor.name();
     }
 }
