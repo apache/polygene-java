@@ -25,7 +25,7 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreeSelectionModel;
 import static javax.swing.tree.TreeSelectionModel.SINGLE_TREE_SELECTION;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
-import static org.qi4j.library.swing.visualizer.detailPanel.internal.common.Util.objectToString;
+import static org.qi4j.library.swing.visualizer.detailPanel.internal.common.ToStringUtils.objectToString;
 
 /**
  * @author edward.yakop@gmail.com

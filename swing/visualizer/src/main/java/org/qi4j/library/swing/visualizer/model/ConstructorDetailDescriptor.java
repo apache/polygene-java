@@ -16,8 +16,6 @@
 */
 package org.qi4j.library.swing.visualizer.model;
 
-import java.util.LinkedList;
-import java.util.List;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
 import org.qi4j.spi.composite.ConstructorDescriptor;
 
@@ -31,7 +29,7 @@ public final class ConstructorDetailDescriptor
     private final ConstructorDescriptor descriptor;
     private ObjectDetailDescriptor object;
     private MixinDetailDescriptor mixin;
-    private final List<InjectedParametersDetailDescriptor> parameters;
+    private InjectedParametersDetailDescriptor parameters;
 
     ConstructorDetailDescriptor( ConstructorDescriptor aDescriptor )
         throws IllegalArgumentException
@@ -39,7 +37,7 @@ public final class ConstructorDetailDescriptor
         validateNotNull( "aDescriptor", aDescriptor );
 
         descriptor = aDescriptor;
-        parameters = new LinkedList<InjectedParametersDetailDescriptor>();
+        parameters = null;
     }
 
     /**
@@ -55,7 +53,7 @@ public final class ConstructorDetailDescriptor
      * @return Constructor parameters of this {@code ConstructorDetailDescriptor}. Never return {@code null}.
      * @since 0.5
      */
-    public final Iterable<InjectedParametersDetailDescriptor> parameters()
+    public final InjectedParametersDetailDescriptor parameters()
     {
         return parameters;
     }
@@ -98,12 +96,17 @@ public final class ConstructorDetailDescriptor
         mixin = aDescriptor;
     }
 
-    final void addInjectedParameter( InjectedParametersDetailDescriptor aDescriptor )
+    final void setInjectedParameter( InjectedParametersDetailDescriptor aDescriptor )
         throws IllegalArgumentException
     {
         validateNotNull( "aDescriptor", aDescriptor );
 
         aDescriptor.setConstructor( this );
-        parameters.add( aDescriptor );
+        parameters = aDescriptor;
+    }
+
+    public String toString()
+    {
+        return descriptor.constructor().getDeclaringClass().getSimpleName();
     }
 }

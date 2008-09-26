@@ -29,7 +29,7 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
-import org.qi4j.library.swing.visualizer.detailPanel.internal.common.Util;
+import org.qi4j.library.swing.visualizer.detailPanel.internal.common.ToStringUtils;
 import org.qi4j.library.swing.visualizer.model.CompositeMethodDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.MethodConcernDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.MethodConstraintsDetailDescriptor;
@@ -137,7 +137,7 @@ final class MixinTree extends JTree
         Iterable<MethodConcernDetailDescriptor> concerns,
         Iterable<MethodSideEffectDetailDescriptor> sideEffects )
     {
-        DefaultMutableTreeNode node = new DefaultMutableTreeNode( Util.methodToString( method ) );
+        DefaultMutableTreeNode node = new DefaultMutableTreeNode( ToStringUtils.methodToString( method ) );
         addConstraints( method, node, constraints );
         addConcerns( method, node, concerns );
         addSideEffects( method, node, sideEffects );

@@ -122,4 +122,9 @@ public final class MixinDetailDescriptor
         aDescriptor.setMixin( this );
         injectedFields.add( aDescriptor );
     }
+
+    public String toString()
+    {
+        return descriptor.mixinClass().getSimpleName();
+    }
 }

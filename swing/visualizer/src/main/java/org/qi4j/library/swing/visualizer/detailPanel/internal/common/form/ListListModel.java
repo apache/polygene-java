@@ -28,6 +28,8 @@ public final class ListListModel<T> extends AbstractListModel
 {
     private static final long serialVersionUID = 1L;
 
+    public static ListListModel EMPTY_MODEL = new ListListModel( Collections.emptyList() );
+
     private final List<T> elements;
 
     public ListListModel( List<T> contents )

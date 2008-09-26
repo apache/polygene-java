@@ -16,8 +16,6 @@
 */
 package org.qi4j.library.swing.visualizer.model;
 
-import java.util.LinkedList;
-import java.util.List;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
 import org.qi4j.spi.composite.InjectedMethodDescriptor;
 
@@ -31,14 +29,14 @@ public final class InjectedMethodDetailDescriptor
     private final InjectedMethodDescriptor descriptor;
     private ObjectDetailDescriptor object;
     private MixinDetailDescriptor mixin;
-    private final List<InjectedParametersDetailDescriptor> parameters;
+    private InjectedParametersDetailDescriptor parameters;
 
     InjectedMethodDetailDescriptor( InjectedMethodDescriptor aDescriptor )
         throws IllegalArgumentException
     {
         validateNotNull( "aDescriptor", aDescriptor );
         descriptor = aDescriptor;
-        parameters = new LinkedList<InjectedParametersDetailDescriptor>();
+        parameters = null;
     }
 
     /**
@@ -54,7 +52,7 @@ public final class InjectedMethodDetailDescriptor
      * @return Method parameters of this {@code InjectedMethodDetailDescriptor}. Never return {@code null}.
      * @since 0.5
      */
-    public final Iterable<InjectedParametersDetailDescriptor> parameters()
+    public final InjectedParametersDetailDescriptor parameters()
     {
         return parameters;
     }
@@ -95,12 +93,12 @@ public final class InjectedMethodDetailDescriptor
         mixin = aDescriptor;
     }
 
-    final void addInjectedParameter( InjectedParametersDetailDescriptor aDescriptor )
+    final void setInjectedParameter( InjectedParametersDetailDescriptor aDescriptor )
         throws IllegalArgumentException
     {
         validateNotNull( "aDescriptor", aDescriptor );
 
         aDescriptor.setMethod( this );
-        parameters.add( aDescriptor );
+        parameters = aDescriptor;
     }
 }

@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="org.qi4j.library.swing.visualizer.detailPanel.internal.common.form.composite.mixin.DepedencyDescriptorPanel">
+  <grid id="27dc6" binding="form" layout-manager="FormLayout">
+    <rowspec value="center:max(d;4px):noGrow"/>
+    <rowspec value="top:4dlu:noGrow"/>
+    <rowspec value="center:d:noGrow"/>
+    <rowspec value="center:p:noGrow"/>
+    <rowspec value="top:4dlu:noGrow"/>
+    <rowspec value="center:p:noGrow"/>
+    <rowspec value="top:4dlu:noGrow"/>
+    <rowspec value="center:p:noGrow"/>
+    <rowspec value="top:4dlu:noGrow"/>
+    <rowspec value="center:p:noGrow"/>
+    <rowspec value="top:4dlu:noGrow"/>
+    <rowspec value="center:p:noGrow"/>
+    <rowspec value="top:4dlu:noGrow"/>
+    <rowspec value="center:p:noGrow"/>
+    <rowspec value="top:4dlu:noGrow"/>
+    <rowspec value="center:p:noGrow"/>
+    <colspec value="fill:p:noGrow"/>
+    <colspec value="left:4dlu:noGrow"/>
+    <colspec value="fill:max(m;100dlu):grow"/>
+    <rowgroup>
+      <member index="4"/>
+      <member index="6"/>
+      <member index="10"/>
+      <member index="12"/>
+      <member index="14"/>
+      <member index="16"/>
+    </rowgroup>
+    <rowgroup>
+      <member index="1"/>
+      <member index="8"/>
+    </rowgroup>
+    <constraints>
+      <xy x="20" y="20" width="317" height="211"/>
+    </constraints>
+    <properties/>
+    <border type="none"/>
+    <children>
+      <component id="d39ea" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <forms/>
+        </constraints>
+        <properties>
+          <labelFor value="36a19"/>
+          <text value="Class Name"/>
+        </properties>
+      </component>
+      <component id="57bde" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <forms/>
+        </constraints>
+        <properties>
+          <text value="Optional"/>
+        </properties>
+      </component>
+      <component id="36a19" class="javax.swing.JTextField" binding="injectedClassName">
+        <constraints>
+          <grid row="3" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="150" height="-1"/>
+          </grid>
+          <forms defaultalign-horz="false"/>
+        </constraints>
+        <properties/>
+      </component>
+      <component id="82e7d" class="javax.swing.JCheckBox" binding="isOptional">
+        <constraints>
+          <grid row="5" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <forms/>
+        </constraints>
+        <properties>
+          <text value=""/>
+        </properties>
+      </component>
+      <component id="3300b" class="javax.swing.JLabel" binding="injectionSeparator" custom-create="true">
+        <constraints>
+          <grid row="7" column="0" row-span="1" col-span="3" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <forms/>
+        </constraints>
+        <properties/>
+      </component>
+      <component id="702de" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="9" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <forms/>
+        </constraints>
+        <properties>
+          <text value="Annotation"/>
+        </properties>
+      </component>
+      <component id="505d8" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="11" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <forms/>
+        </constraints>
+        <properties>
+          <text value="Injection class"/>
+        </properties>
+      </component>
+      <component id="94de" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="13" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <forms/>
+        </constraints>
+        <properties>
+          <text value="injectionType"/>
+        </properties>
+      </component>
+      <component id="2b125" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="15" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <forms/>
+        </constraints>
+        <properties>
+          <text value="Raw injection type"/>
+        </properties>
+      </component>
+      <component id="14c01" class="javax.swing.JTextField" binding="injectionAnnotation">
+        <constraints>
+          <grid row="9" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="150" height="-1"/>
+          </grid>
+          <forms defaultalign-horz="false"/>
+        </constraints>
+        <properties/>
+      </component>
+      <component id="99074" class="javax.swing.JTextField" binding="injectionClassName">
+        <constraints>
+          <grid row="11" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="150" height="-1"/>
+          </grid>
+          <forms defaultalign-horz="false"/>
+        </constraints>
+        <properties/>
+      </component>
+      <component id="9bdee" class="javax.swing.JTextField" binding="injectionType">
+        <constraints>
+          <grid row="13" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="150" height="-1"/>
+          </grid>
+          <forms defaultalign-horz="false"/>
+        </constraints>
+        <properties>
+          <text value=""/>
+        </properties>
+      </component>
+      <component id="39d52" class="javax.swing.JTextField" binding="injectionRawType">
+        <constraints>
+          <grid row="15" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="150" height="-1"/>
+          </grid>
+          <forms defaultalign-horz="false"/>
+        </constraints>
+        <properties/>
+      </component>
+      <component id="3a36b" class="javax.swing.JLabel" binding="injectedSeparator" custom-create="true">
+        <constraints>
+          <grid row="0" column="0" row-span="1" col-span="3" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <forms/>
+        </constraints>
+        <properties/>
+      </component>
+    </children>
+  </grid>
+</form>

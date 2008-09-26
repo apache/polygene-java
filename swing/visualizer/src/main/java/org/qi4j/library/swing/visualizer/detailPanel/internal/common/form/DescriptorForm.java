@@ -22,6 +22,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import org.qi4j.library.swing.visualizer.model.ServiceDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor;
+import org.qi4j.library.swing.visualizer.detailPanel.internal.common.form.composite.CompositeDescriptorForm;
 
 /**
  * @author edward.yakop@gmail.com

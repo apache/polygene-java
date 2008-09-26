@@ -14,16 +14,19 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.qi4j.library.swing.visualizer.detailPanel.internal.common.form;
+package org.qi4j.library.swing.visualizer.detailPanel.internal.common.form.composite;
 
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.JLabel;
-import javax.swing.JComponent;
-import org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor;
-import org.qi4j.spi.composite.CompositeDescriptor;
-import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextField;
+import org.qi4j.library.swing.visualizer.detailPanel.internal.common.form.composite.mixin.MixinPanel;
+import org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.MixinDetailDescriptor;
+import org.qi4j.spi.composite.CompositeDescriptor;
 
 /**
  * @author edward.yakop@gmail.com
@@ -32,13 +35,22 @@ import com.jgoodies.forms.layout.CellConstraints;
  */
 public class CompositeDescriptorForm extends JPanel
 {
-    private JPanel form;
-
     private JTextField compositeClassName;
+
     private JTextField compositeURI;
     private JTextField compositeVisibility;
 
-    public final void updateModel( CompositeDetailDescriptor aDescriptor )
+    private MixinsPanel mixinTabbedPanel;
+
+    private JPanel compositePanel;
+
+    public final void updateModel( CompositeDetailDescriptor<CompositeDescriptor> aDescriptor )
+    {
+        updateGeneralFields( aDescriptor );
+        populateTabbedPanels( aDescriptor );
+    }
+
+    private void updateGeneralFields( CompositeDetailDescriptor<CompositeDescriptor> aDescriptor )
     {
         String className = null;
         String uri = null;
@@ -46,6 +58,7 @@ public class CompositeDescriptorForm extends JPanel
 
         if( aDescriptor != null )
         {
+            // Basic properties
             CompositeDescriptor descriptor = aDescriptor.descriptor();
             className = descriptor.type().getName();
             uri = descriptor.toURI();
@@ -57,9 +70,21 @@ public class CompositeDescriptorForm extends JPanel
         compositeVisibility.setText( visibility );
     }
 
+    private void populateTabbedPanels( CompositeDetailDescriptor<CompositeDescriptor> aDescriptor )
+    {
+        Iterable<MixinDetailDescriptor> mixins = null;
+
+        if( aDescriptor != null )
+        {
+            mixins = aDescriptor.mixins();
+        }
+
+        mixinTabbedPanel.updateModel( mixins );
+    }
+
     private void createUIComponents()
     {
-        form = this;
+        compositePanel = this;
     }
 
     {
@@ -79,26 +104,33 @@ public class CompositeDescriptorForm extends JPanel
     private void $$$setupUI$$$()
     {
         createUIComponents();
-        form.setLayout( new FormLayout( "fill:max(d;4px):noGrow,left:m:noGrow,left:4dlu:noGrow,fill:d:grow", "center:max(d;4px):noGrow,center:d:noGrow,top:4dlu:noGrow,center:p:noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow" ) );
+        compositePanel.setLayout( new FormLayout( "left:m:noGrow,left:4dlu:noGrow,fill:d:grow", "center:d:noGrow,top:4dlu:noGrow,center:p:noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow,fill:p:grow" ) );
         final JLabel label1 = new JLabel();
         label1.setText( "Composite" );
         CellConstraints cc = new CellConstraints();
-        form.add( label1, cc.xy( 2, 2 ) );
+        compositePanel.add( label1, cc.xy( 1, 1 ) );
         final JLabel label2 = new JLabel();
         label2.setText( "Class name" );
-        form.add( label2, cc.xy( 2, 4 ) );
+        compositePanel.add( label2, cc.xy( 1, 3 ) );
         final JLabel label3 = new JLabel();
         label3.setText( "URI" );
-        form.add( label3, cc.xy( 2, 6 ) );
+        compositePanel.add( label3, cc.xy( 1, 5 ) );
         final JLabel label4 = new JLabel();
         label4.setText( "Visibility" );
-        form.add( label4, cc.xy( 2, 8 ) );
+        compositePanel.add( label4, cc.xy( 1, 7 ) );
         compositeClassName = new JTextField();
-        form.add( compositeClassName, cc.xy( 4, 4, CellConstraints.FILL, CellConstraints.DEFAULT ) );
+        compositePanel.add( compositeClassName, cc.xy( 3, 3, CellConstraints.FILL, CellConstraints.DEFAULT ) );
         compositeURI = new JTextField();
-        form.add( compositeURI, cc.xy( 4, 6, CellConstraints.FILL, CellConstraints.DEFAULT ) );
+        compositePanel.add( compositeURI, cc.xy( 3, 5, CellConstraints.FILL, CellConstraints.DEFAULT ) );
         compositeVisibility = new JTextField();
-        form.add( compositeVisibility, cc.xy( 4, 8, CellConstraints.FILL, CellConstraints.DEFAULT ) );
+        compositePanel.add( compositeVisibility, cc.xy( 3, 7, CellConstraints.FILL, CellConstraints.DEFAULT ) );
+        final JTabbedPane tabbedPane1 = new JTabbedPane();
+        compositePanel.add( tabbedPane1, cc.xyw( 1, 9, 3 ) );
+        final JPanel panel1 = new JPanel();
+        panel1.setLayout( new FormLayout( "fill:d:grow", "center:d:grow" ) );
+        tabbedPane1.addTab( "Mixins", panel1 );
+        mixinTabbedPanel = new MixinsPanel();
+        panel1.add( mixinTabbedPanel.$$$getRootComponent$$$(), cc.xy( 1, 1 ) );
     }
 
     /**
@@ -106,6 +138,6 @@ public class CompositeDescriptorForm extends JPanel
      */
     public JComponent $$$getRootComponent$$$()
     {
-        return form;
+        return compositePanel;
     }
 }

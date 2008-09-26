@@ -253,11 +253,11 @@ public final class ApplicationDetailDescriptorBuilder
             // Invoked for constructor and injected method
             if( currConstructorDescriptor != null )
             {
-                currConstructorDescriptor.addInjectedParameter( detailDescriptor );
+                currConstructorDescriptor.setInjectedParameter( detailDescriptor );
             }
             else if( currInjectedMethodDescriptor != null )
             {
-                currInjectedMethodDescriptor.addInjectedParameter( detailDescriptor );
+                currInjectedMethodDescriptor.setInjectedParameter( detailDescriptor );
             }
             else
             {
