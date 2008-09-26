@@ -3,21 +3,21 @@
   <grid id="27dc6" binding="placeHolder" custom-create="true" layout-manager="FormLayout">
     <rowspec value="center:max(d;4px):noGrow"/>
     <rowspec value="top:4dlu:noGrow"/>
-    <rowspec value="center:35px:noGrow"/>
+    <rowspec value="center:p:noGrow"/>
     <rowspec value="top:5dlu:noGrow"/>
-    <rowspec value="center:35px:noGrow"/>
+    <rowspec value="center:p:noGrow"/>
     <rowspec value="top:4dlu:noGrow"/>
-    <rowspec value="center:35px:noGrow"/>
+    <rowspec value="center:p:noGrow"/>
     <rowspec value="top:4dlu:noGrow"/>
-    <rowspec value="center:35px:noGrow"/>
+    <rowspec value="center:p:noGrow"/>
     <rowspec value="top:4dlu:noGrow"/>
     <rowspec value="top:max(m;50dlu):noGrow"/>
     <rowspec value="top:5dlu:noGrow"/>
     <rowspec value="center:max(d;4px):noGrow"/>
     <rowspec value="top:4dlu:noGrow"/>
-    <rowspec value="center:23px:noGrow"/>
+    <rowspec value="center:p:noGrow"/>
     <rowspec value="top:4dlu:noGrow"/>
-    <rowspec value="center:max(d;4px):noGrow"/>
+    <rowspec value="center:max(p;4px):noGrow"/>
     <colspec value="fill:5dlu:noGrow"/>
     <colspec value="fill:p:noGrow"/>
     <colspec value="fill:max(d;4px):noGrow"/>

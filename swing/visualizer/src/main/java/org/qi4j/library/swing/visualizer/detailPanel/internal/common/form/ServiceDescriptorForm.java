@@ -34,8 +34,10 @@ import org.qi4j.service.ServiceDescriptor;
 
 /**
  * @author edward.yakop@gmail.com
+ * @see org.qi4j.library.swing.visualizer.model.ServiceDetailDescriptor
+ * @since 0.5
  */
-public class ServiceDescriptorForm extends JPanel
+public final class ServiceDescriptorForm extends JPanel
 {
     private JPanel placeHolder;
 
@@ -127,7 +129,7 @@ public class ServiceDescriptorForm extends JPanel
     private void $$$setupUI$$$()
     {
         createUIComponents();
-        placeHolder.setLayout( new FormLayout( "fill:5dlu:noGrow,fill:p:noGrow,fill:max(d;4px):noGrow,fill:max(m;100px):grow,left:m:grow", "center:max(d;4px):noGrow,top:4dlu:noGrow,center:35px:noGrow,top:5dlu:noGrow,center:35px:noGrow,top:4dlu:noGrow,center:35px:noGrow,top:4dlu:noGrow,center:35px:noGrow,top:4dlu:noGrow,top:max(m;50dlu):noGrow,top:5dlu:noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow,center:23px:noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow" ) );
+        placeHolder.setLayout( new FormLayout( "fill:5dlu:noGrow,fill:p:noGrow,fill:max(d;4px):noGrow,fill:max(m;100px):grow,left:m:grow", "center:max(d;4px):noGrow,top:4dlu:noGrow,center:p:noGrow,top:5dlu:noGrow,center:p:noGrow,top:4dlu:noGrow,center:p:noGrow,top:4dlu:noGrow,center:p:noGrow,top:4dlu:noGrow,top:max(m;50dlu):noGrow,top:5dlu:noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow,center:p:noGrow,top:4dlu:noGrow,center:max(p;4px):noGrow" ) );
         ( (FormLayout) placeHolder.getLayout() ).setRowGroups( new int[][]{ new int[]{ 3, 5, 7, 9 }, new int[]{ 1, 13 }, new int[]{ 15, 17 } } );
         final JLabel label1 = new JLabel();
         label1.setText( "Id" );
