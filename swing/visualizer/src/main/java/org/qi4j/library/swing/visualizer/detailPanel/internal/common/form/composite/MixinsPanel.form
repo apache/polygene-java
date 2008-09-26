@@ -6,26 +6,36 @@
     <colspec value="left:4dlu:noGrow"/>
     <colspec value="fill:max(p;4px):grow"/>
     <constraints>
-      <xy x="20" y="20" width="702" height="400"/>
+      <xy x="20" y="20" width="753" height="400"/>
     </constraints>
     <properties/>
     <border type="none"/>
     <children>
-      <component id="434a2" class="javax.swing.JList" binding="mixinList">
+      <splitpane id="4c235">
         <constraints>
-          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="2" anchor="0" fill="3" indent="0" use-parent-layout="false">
-            <preferred-size width="150" height="50"/>
+          <grid row="0" column="0" row-span="1" col-span="3" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
+            <preferred-size width="200" height="200"/>
           </grid>
-          <forms defaultalign-vert="false"/>
-        </constraints>
-        <properties/>
-      </component>
-      <nested-form id="2423b" form-file="org/qi4j/library/swing/visualizer/detailPanel/internal/common/form/composite/mixin/MixinPanel.form" binding="mixinPanel">
-        <constraints>
-          <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
           <forms/>
         </constraints>
-      </nested-form>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="434a2" class="javax.swing.JList" binding="mixinList">
+            <constraints>
+              <splitpane position="left"/>
+            </constraints>
+            <properties>
+              <minimumSize width="60" height="0"/>
+            </properties>
+          </component>
+          <nested-form id="2423b" form-file="org/qi4j/library/swing/visualizer/detailPanel/internal/common/form/composite/mixin/MixinPanel.form" binding="mixinPanel">
+            <constraints>
+              <splitpane position="right"/>
+            </constraints>
+          </nested-form>
+        </children>
+      </splitpane>
     </children>
   </grid>
 </form>

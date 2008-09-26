@@ -62,7 +62,9 @@
           </grid>
           <forms defaultalign-horz="false"/>
         </constraints>
-        <properties/>
+        <properties>
+          <editable value="false"/>
+        </properties>
       </component>
       <component id="fa01c" class="javax.swing.JTextField" binding="compositeURI">
         <constraints>
@@ -71,7 +73,9 @@
           </grid>
           <forms defaultalign-horz="false"/>
         </constraints>
-        <properties/>
+        <properties>
+          <editable value="false"/>
+        </properties>
       </component>
       <component id="55429" class="javax.swing.JTextField" binding="compositeVisibility">
         <constraints>
@@ -80,7 +84,9 @@
           </grid>
           <forms defaultalign-horz="false"/>
         </constraints>
-        <properties/>
+        <properties>
+          <editable value="false"/>
+        </properties>
       </component>
       <tabbedpane id="53cd7" default-binding="true">
         <constraints>
@@ -103,8 +109,8 @@
             <children>
               <nested-form id="2a82" form-file="org/qi4j/library/swing/visualizer/detailPanel/internal/common/form/composite/MixinsPanel.form" binding="mixinTabbedPanel">
                 <constraints>
-                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
-                  <forms/>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+                  <forms defaultalign-vert="false"/>
                 </constraints>
               </nested-form>
             </children>

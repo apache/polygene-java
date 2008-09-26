@@ -20,16 +20,18 @@ import com.jgoodies.forms.factories.DefaultComponentFactory;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 import java.lang.reflect.Constructor;
+import java.awt.Dimension;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.JSplitPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import static org.qi4j.library.swing.visualizer.detailPanel.internal.common.CollectionUtils.toList;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.common.form.ListListModel;
-import static org.qi4j.library.swing.visualizer.detailPanel.internal.common.form.ListListModel.*;
+import static org.qi4j.library.swing.visualizer.detailPanel.internal.common.form.ListListModel.EMPTY_MODEL;
 import org.qi4j.library.swing.visualizer.model.ConstructorDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.InjectedParametersDetailDescriptor;
 import org.qi4j.spi.composite.ConstructorDescriptor;
@@ -76,6 +78,7 @@ public final class ConstructorsPanel
         }
 
         constructors.setModel( constructorsModel );
+        constructors.setSelectedIndex( 0 );
     }
 
     private void createUIComponents()
@@ -97,11 +100,17 @@ public final class ConstructorsPanel
         createUIComponents();
         constructorsPanel = new JPanel();
         constructorsPanel.setLayout( new FormLayout( "fill:max(p;60dlu):noGrow,left:4dlu:noGrow,fill:d:noGrow,fill:p:grow", "center:d:noGrow,fill:p:grow,fill:p:noGrow" ) );
-        final JPanel panel1 = new JPanel();
-        panel1.setLayout( new FormLayout( "fill:max(p;60dlu):noGrow,left:4dlu:noGrow,fill:max(m;150dlu):noGrow,left:m:grow", "center:d:noGrow,top:4dlu:noGrow,center:18px:noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow,top:7dlu:noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow,fill:p:grow" ) );
-        ( (FormLayout) panel1.getLayout() ).setRowGroups( new int[][]{ new int[]{ 3, 5 } } );
+        final JSplitPane splitPane1 = new JSplitPane();
+        splitPane1.setOneTouchExpandable( true );
         CellConstraints cc = new CellConstraints();
-        constructorsPanel.add( panel1, cc.xywh( 3, 1, 2, 3 ) );
+        constructorsPanel.add( splitPane1, cc.xywh( 1, 1, 4, 3 ) );
+        constructors = new JList();
+        constructors.setMinimumSize( new Dimension( 60, 0 ) );
+        splitPane1.setLeftComponent( constructors );
+        final JPanel panel1 = new JPanel();
+        panel1.setLayout( new FormLayout( "fill:max(p;60dlu):noGrow,left:4dlu:noGrow,fill:max(m;150dlu):noGrow,left:m:grow", "center:d:noGrow,top:4dlu:noGrow,center:18px:noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow,top:8dlu:noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow,fill:p:grow" ) );
+        ( (FormLayout) panel1.getLayout() ).setRowGroups( new int[][]{ new int[]{ 3, 5 }, new int[]{ 1, 7 } } );
+        splitPane1.setRightComponent( panel1 );
         panel1.add( constructorSeparator, cc.xyw( 1, 1, 4 ) );
         final JLabel label1 = new JLabel();
         label1.setText( "Name" );
@@ -110,17 +119,23 @@ public final class ConstructorsPanel
         label2.setText( "Class name" );
         panel1.add( label2, cc.xy( 1, 5 ) );
         constructorName = new JTextField();
+        constructorName.setEditable( false );
         panel1.add( constructorName, cc.xy( 3, 3, CellConstraints.FILL, CellConstraints.DEFAULT ) );
         constructorClassName = new JTextField();
+        constructorClassName.setEditable( false );
+        constructorClassName.setText( "" );
         panel1.add( constructorClassName, cc.xy( 3, 5, CellConstraints.FILL, CellConstraints.DEFAULT ) );
-        panel1.add( parametersSeparator, cc.xyw( 1, 7, 3 ) );
+        parametersSeparator.setRequestFocusEnabled( false );
+        panel1.add( parametersSeparator, cc.xyw( 1, 7, 4 ) );
+        final JSplitPane splitPane2 = new JSplitPane();
+        splitPane2.setOneTouchExpandable( true );
+        panel1.add( splitPane2, cc.xyw( 1, 9, 4 ) );
         constructorParameters = new JList();
+        constructorParameters.setMinimumSize( new Dimension( 60, 0 ) );
         constructorParameters.setSelectionMode( 0 );
-        panel1.add( constructorParameters, cc.xy( 1, 9, CellConstraints.DEFAULT, CellConstraints.FILL ) );
+        splitPane2.setLeftComponent( constructorParameters );
         dependencyDescriptor = new DepedencyDescriptorPanel();
-        panel1.add( dependencyDescriptor.$$$getRootComponent$$$(), cc.xyw( 3, 9, 2 ) );
-        constructors = new JList();
-        constructorsPanel.add( constructors, cc.xy( 1, 2, CellConstraints.DEFAULT, CellConstraints.FILL ) );
+        splitPane2.setRightComponent( dependencyDescriptor.$$$getRootComponent$$$() );
         label1.setLabelFor( constructorName );
         label2.setLabelFor( constructorClassName );
     }
@@ -169,6 +184,7 @@ public final class ConstructorsPanel
 
             constructorClassName.setText( constructorNameStr );
             constructorParameters.setModel( paramsModel );
+            constructorParameters.setSelectedIndex( 0 );
         }
     }
 }

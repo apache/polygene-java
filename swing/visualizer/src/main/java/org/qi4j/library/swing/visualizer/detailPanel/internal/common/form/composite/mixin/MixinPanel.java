@@ -107,12 +107,14 @@ public final class MixinPanel
         label1.setText( "Class Name" );
         mixinPanel.add( label1, cc.xy( 1, 3 ) );
         mixinClassName = new JTextField();
+        mixinClassName.setEditable( false );
         mixinClassName.setText( "" );
         mixinPanel.add( mixinClassName, cc.xy( 3, 3, CellConstraints.FILL, CellConstraints.DEFAULT ) );
         final JLabel label2 = new JLabel();
         label2.setText( "Composite" );
         mixinPanel.add( label2, cc.xy( 1, 5 ) );
         compositeClassName = new JTextField();
+        compositeClassName.setEditable( false );
         compositeClassName.setText( "" );
         mixinPanel.add( compositeClassName, cc.xy( 3, 5, CellConstraints.FILL, CellConstraints.DEFAULT ) );
         final JTabbedPane tabbedPane1 = new JTabbedPane();

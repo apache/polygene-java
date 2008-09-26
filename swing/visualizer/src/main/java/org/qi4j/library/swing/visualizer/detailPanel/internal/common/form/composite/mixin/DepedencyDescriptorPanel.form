@@ -64,7 +64,9 @@
           </grid>
           <forms defaultalign-horz="false"/>
         </constraints>
-        <properties/>
+        <properties>
+          <editable value="false"/>
+        </properties>
       </component>
       <component id="82e7d" class="javax.swing.JCheckBox" binding="isOptional">
         <constraints>
@@ -72,6 +74,7 @@
           <forms/>
         </constraints>
         <properties>
+          <enabled value="false"/>
           <text value=""/>
         </properties>
       </component>
@@ -125,7 +128,9 @@
           </grid>
           <forms defaultalign-horz="false"/>
         </constraints>
-        <properties/>
+        <properties>
+          <editable value="false"/>
+        </properties>
       </component>
       <component id="99074" class="javax.swing.JTextField" binding="injectionClassName">
         <constraints>
@@ -134,7 +139,9 @@
           </grid>
           <forms defaultalign-horz="false"/>
         </constraints>
-        <properties/>
+        <properties>
+          <editable value="false"/>
+        </properties>
       </component>
       <component id="9bdee" class="javax.swing.JTextField" binding="injectionType">
         <constraints>
@@ -144,6 +151,7 @@
           <forms defaultalign-horz="false"/>
         </constraints>
         <properties>
+          <editable value="false"/>
           <text value=""/>
         </properties>
       </component>
@@ -154,7 +162,9 @@
           </grid>
           <forms defaultalign-horz="false"/>
         </constraints>
-        <properties/>
+        <properties>
+          <editable value="false"/>
+        </properties>
       </component>
       <component id="3a36b" class="javax.swing.JLabel" binding="injectedSeparator" custom-create="true">
         <constraints>

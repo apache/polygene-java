@@ -119,10 +119,13 @@ public class CompositeDescriptorForm extends JPanel
         label4.setText( "Visibility" );
         compositePanel.add( label4, cc.xy( 1, 7 ) );
         compositeClassName = new JTextField();
+        compositeClassName.setEditable( false );
         compositePanel.add( compositeClassName, cc.xy( 3, 3, CellConstraints.FILL, CellConstraints.DEFAULT ) );
         compositeURI = new JTextField();
+        compositeURI.setEditable( false );
         compositePanel.add( compositeURI, cc.xy( 3, 5, CellConstraints.FILL, CellConstraints.DEFAULT ) );
         compositeVisibility = new JTextField();
+        compositeVisibility.setEditable( false );
         compositePanel.add( compositeVisibility, cc.xy( 3, 7, CellConstraints.FILL, CellConstraints.DEFAULT ) );
         final JTabbedPane tabbedPane1 = new JTabbedPane();
         compositePanel.add( tabbedPane1, cc.xyw( 1, 9, 3 ) );
@@ -130,7 +133,7 @@ public class CompositeDescriptorForm extends JPanel
         panel1.setLayout( new FormLayout( "fill:d:grow", "center:d:grow" ) );
         tabbedPane1.addTab( "Mixins", panel1 );
         mixinTabbedPanel = new MixinsPanel();
-        panel1.add( mixinTabbedPanel.$$$getRootComponent$$$(), cc.xy( 1, 1 ) );
+        panel1.add( mixinTabbedPanel.$$$getRootComponent$$$(), cc.xy( 1, 1, CellConstraints.DEFAULT, CellConstraints.FILL ) );
     }
 
     /**

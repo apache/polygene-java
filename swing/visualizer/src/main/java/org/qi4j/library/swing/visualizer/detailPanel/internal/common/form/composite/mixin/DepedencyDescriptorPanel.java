@@ -123,8 +123,10 @@ public class DepedencyDescriptorPanel
         label2.setText( "Optional" );
         form.add( label2, cc.xy( 1, 6 ) );
         injectedClassName = new JTextField();
+        injectedClassName.setEditable( false );
         form.add( injectedClassName, cc.xy( 3, 4, CellConstraints.FILL, CellConstraints.DEFAULT ) );
         isOptional = new JCheckBox();
+        isOptional.setEnabled( false );
         isOptional.setText( "" );
         form.add( isOptional, cc.xy( 3, 6 ) );
         form.add( injectionSeparator, cc.xyw( 1, 8, 3 ) );
@@ -141,13 +143,17 @@ public class DepedencyDescriptorPanel
         label6.setText( "Raw injection type" );
         form.add( label6, cc.xy( 1, 16 ) );
         injectionAnnotation = new JTextField();
+        injectionAnnotation.setEditable( false );
         form.add( injectionAnnotation, cc.xy( 3, 10, CellConstraints.FILL, CellConstraints.DEFAULT ) );
         injectionClassName = new JTextField();
+        injectionClassName.setEditable( false );
         form.add( injectionClassName, cc.xy( 3, 12, CellConstraints.FILL, CellConstraints.DEFAULT ) );
         injectionType = new JTextField();
+        injectionType.setEditable( false );
         injectionType.setText( "" );
         form.add( injectionType, cc.xy( 3, 14, CellConstraints.FILL, CellConstraints.DEFAULT ) );
         injectionRawType = new JTextField();
+        injectionRawType.setEditable( false );
         form.add( injectionRawType, cc.xy( 3, 16, CellConstraints.FILL, CellConstraints.DEFAULT ) );
         form.add( injectedSeparator, cc.xyw( 1, 1, 3 ) );
         label1.setLabelFor( injectedClassName );

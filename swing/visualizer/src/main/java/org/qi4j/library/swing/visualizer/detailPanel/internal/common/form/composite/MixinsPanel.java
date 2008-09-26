@@ -22,12 +22,15 @@ import javax.swing.JComponent;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListModel;
+import javax.swing.JSplitPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import static org.qi4j.library.swing.visualizer.detailPanel.internal.common.CollectionUtils.toList;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.common.form.ListListModel;
+import static org.qi4j.library.swing.visualizer.detailPanel.internal.common.form.ListListModel.*;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.common.form.composite.mixin.MixinPanel;
 import org.qi4j.library.swing.visualizer.model.MixinDetailDescriptor;
+import java.awt.Dimension;
 
 /**
  * @author edward.yakop@gmail.com
@@ -47,7 +50,7 @@ final class MixinsPanel
     @SuppressWarnings( "unchecked" )
     public final void updateModel( Iterable<MixinDetailDescriptor> mixins )
     {
-        ListModel mixinListModel = ListListModel.EMPTY_MODEL;
+        ListModel mixinListModel = EMPTY_MODEL;
 
         if( mixins != null )
         {
@@ -55,6 +58,7 @@ final class MixinsPanel
         }
 
         mixinList.setModel( mixinListModel );
+        mixinList.setSelectedIndex( 0 );
     }
 
     {
@@ -75,11 +79,14 @@ final class MixinsPanel
     {
         mixinsPanel = new JPanel();
         mixinsPanel.setLayout( new FormLayout( "fill:101px:noGrow,left:4dlu:noGrow,fill:max(p;4px):grow", "fill:p:grow" ) );
-        mixinList = new JList();
+        final JSplitPane splitPane1 = new JSplitPane();
         CellConstraints cc = new CellConstraints();
-        mixinsPanel.add( mixinList, cc.xy( 1, 1, CellConstraints.DEFAULT, CellConstraints.FILL ) );
+        mixinsPanel.add( splitPane1, cc.xyw( 1, 1, 3 ) );
+        mixinList = new JList();
+        mixinList.setMinimumSize( new Dimension( 60, 0 ) );
+        splitPane1.setLeftComponent( mixinList );
         mixinPanel = new MixinPanel();
-        mixinsPanel.add( mixinPanel.$$$getRootComponent$$$(), cc.xy( 3, 1 ) );
+        splitPane1.setRightComponent( mixinPanel.$$$getRootComponent$$$() );
     }
 
     /**
