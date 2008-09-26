@@ -22,6 +22,7 @@ import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphCo
 import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.FIELD_TYPE;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.NodeType.EDGE_HIDDEN;
 import org.qi4j.library.swing.visualizer.overview.internal.visualization.render.RendererFactory;
+import prefuse.Display;
 import prefuse.Visualization;
 import prefuse.action.Action;
 import prefuse.action.ActionList;
@@ -56,17 +57,42 @@ public final class Qi4jApplicationVisualization extends Visualization
 
     private static final String GROUP_GRAPH = "graph";
 
-    private final Graph graph;
+    private Graph graph;
 
-    Qi4jApplicationVisualization( ApplicationDetailDescriptor anAppDescriptor )
+    Qi4jApplicationVisualization()
     {
-        graph = new Graph( true );
-        ApplicationGraphBuilder builder = new ApplicationGraphBuilder( anAppDescriptor );
-        builder.populate( graph );
-
-        add( GROUP_GRAPH, graph );
         setRendererFactory( new RendererFactory() );
         addProcessingActions();
+    }
+
+    /**
+     * Repopulate visualization with the specified {@code aDescriptor}.
+     *
+     * @param aDescriptor Application descriptor.
+     * @since 0.5
+     */
+    final void populate( ApplicationDetailDescriptor aDescriptor )
+    {
+        reset();
+
+        graph = new Graph( true );
+
+        if( aDescriptor != null )
+        {
+            ApplicationGraphBuilder builder = new ApplicationGraphBuilder( aDescriptor );
+            builder.populate( graph );
+        }
+
+        removeGroup( GROUP_GRAPH );
+        add( GROUP_GRAPH, graph );
+
+        int count = getDisplayCount();
+        for( int i = 0; i < count; i++ )
+        {
+            Display display = getDisplay( i );
+            display.invalidate();
+            display.repaint();
+        }
     }
 
     final void launch()
@@ -133,6 +159,7 @@ public final class Qi4jApplicationVisualization extends Visualization
         color.add( edgesFill );
         return color;
     }
+
 
     private static class HideHiddenEdges extends Action
     {

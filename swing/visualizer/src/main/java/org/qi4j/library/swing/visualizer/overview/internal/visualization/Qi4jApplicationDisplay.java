@@ -56,20 +56,31 @@ public final class Qi4jApplicationDisplay extends Display
     private static final int DEFAULT_ZOOM_ANIMATION_DURATION = 1000;
     private static final double DEFAULT_ZOOM_SCALE = 0.8;
 
-    public Qi4jApplicationDisplay( ApplicationDetailDescriptor anAppDescriptor, SelectionListener aListener )
+    private Qi4jApplicationVisualization visualization;
+
+    public Qi4jApplicationDisplay( SelectionListener aListener )
         throws IllegalArgumentException
     {
-        validateNotNull( "anAppDescriptor", anAppDescriptor );
         validateNotNull( "aListener", aListener );
 
-        Qi4jApplicationVisualization visualization = new Qi4jApplicationVisualization( anAppDescriptor );
+        visualization = new Qi4jApplicationVisualization();
         setVisualization( visualization );
 
         setItemSorter( new OverviewItemSorter() );
         addControlListener( new MouseWheelZoomControl() );
         addControlListener( new ItemSelectionControl( aListener ) );
         addKeyboardActions();
+    }
 
+    /**
+     * Display the specified application descriptor.
+     *
+     * @param aDescriptor application descriptor.
+     * @since 0.5
+     */
+    public final void display( ApplicationDetailDescriptor aDescriptor )
+    {
+        visualization.populate( aDescriptor );
         visualization.launch();
     }
 
@@ -305,6 +316,7 @@ public final class Qi4jApplicationDisplay extends Display
         float midHeight = getHeight() / 2;
         return new Point2D.Float( midWidth, midHeight );
     }
+
 
     private class MouseWheelZoomControl extends ControlAdapter
     {

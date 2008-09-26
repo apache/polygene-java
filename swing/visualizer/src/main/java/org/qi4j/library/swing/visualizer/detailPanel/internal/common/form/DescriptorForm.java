@@ -21,6 +21,7 @@ import static java.awt.BorderLayout.CENTER;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import org.qi4j.library.swing.visualizer.model.ServiceDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor;
 
 /**
  * @author edward.yakop@gmail.com
@@ -50,6 +51,13 @@ public final class DescriptorForm extends JPanel
             {
                 ServiceDetailDescriptor descriptor = (ServiceDetailDescriptor) aModel;
                 ServiceDescriptorForm form = new ServiceDescriptorForm();
+                form.updateModel( descriptor );
+                add( form, CENTER );
+            }
+            else if( CompositeDetailDescriptor.class.isAssignableFrom( modelClass ) )
+            {
+                CompositeDetailDescriptor descriptor = (CompositeDetailDescriptor) aModel;
+                CompositeDescriptorForm form = new CompositeDescriptorForm();
                 form.updateModel( descriptor );
                 add( form, CENTER );
             }
