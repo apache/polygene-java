@@ -22,11 +22,14 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
+import java.lang.reflect.GenericArrayType;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import static java.util.Arrays.asList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.Arrays;
 import org.qi4j.property.ComputedPropertyInstance;
 
 /**
@@ -175,6 +178,11 @@ public class ClassUtil
         else if( genericType instanceof TypeVariable )
         {
             return (Class<?>) ( (TypeVariable) genericType ).getGenericDeclaration();
+        }
+        else if( genericType instanceof GenericArrayType )
+        {
+            Object temp = Array.newInstance( (Class<?>)((GenericArrayType) genericType).getGenericComponentType(), 0 );
+            return  temp.getClass();
         }
         throw new IllegalArgumentException( "Could not extract the raw class of " + genericType );
     }
