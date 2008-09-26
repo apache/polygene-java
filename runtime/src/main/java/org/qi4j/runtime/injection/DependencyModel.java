@@ -29,13 +29,14 @@ import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.Specification;
 import static org.qi4j.runtime.util.CollectionUtils.firstElementOrNull;
 import org.qi4j.composite.ConstructionException;
+import org.qi4j.spi.composite.DependencyDescriptor;
 
 /**
  * TODO
  * move all the extraction code to a TypeUtils class
  */
 public final class DependencyModel
-    implements Binder
+    implements Binder, DependencyDescriptor
 {
     // Model
     private final Annotation injectionAnnotation;

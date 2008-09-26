@@ -16,12 +16,15 @@ package org.qi4j.runtime.structure;
 
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.Resolution;
+import org.qi4j.runtime.injection.DependencyModel;
+import java.util.List;
 
 /**
  * TODO
  */
 public interface Binder
 {
-    public void bind( Resolution resolution )
+    void bind( Resolution resolution )
         throws BindingException;
+
 }

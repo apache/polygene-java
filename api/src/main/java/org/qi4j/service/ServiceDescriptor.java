@@ -22,15 +22,15 @@ import org.qi4j.util.MetaInfo;
  */
 public interface ServiceDescriptor
 {
-    public Class<?> type();
+    Class<?> type();
 
-    public Class<? extends ServiceInstanceFactory> serviceFactory();
+    Class<? extends ServiceInstanceFactory> serviceFactory();
 
-    public String identity();
+    String identity();
 
-    public Visibility visibility();
+    Visibility visibility();
 
-    public boolean isInstantiateOnStartup();
+    boolean isInstantiateOnStartup();
 
-    public MetaInfo metaInfo();
+    MetaInfo metaInfo();
 }
