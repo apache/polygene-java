@@ -90,8 +90,7 @@ public final class Qi4jApplicationVisualization extends Visualization
         for( int i = 0; i < count; i++ )
         {
             Display display = getDisplay( i );
-            display.invalidate();
-            display.repaint();
+            display.setDamageRedraw( false );
         }
     }
 
@@ -100,7 +99,7 @@ public final class Qi4jApplicationVisualization extends Visualization
         run( ACTION_COLOR );
         run( ACTION_LAYOUT );
         run( ACTION_HIDE_EDGES );
-        run( ACTION_HIDE_EDGES );
+        run( ACTION_REPAINT );
     }
 
     public final void clearAllNodeSelections()

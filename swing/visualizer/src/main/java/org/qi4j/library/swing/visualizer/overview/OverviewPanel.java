@@ -51,7 +51,6 @@ public class OverviewPanel
     public void displayApplication( ApplicationDetailDescriptor aDescriptor )
     {
         display.display( aDescriptor );
-        display.zoomToFitContainer();
     }
 
     @Deprecated
