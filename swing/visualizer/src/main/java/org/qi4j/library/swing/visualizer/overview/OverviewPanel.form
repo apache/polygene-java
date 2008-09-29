@@ -2,7 +2,6 @@
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="org.qi4j.library.swing.visualizer.overview.OverviewPanel">
   <grid id="27dc6" binding="form" default-binding="true" layout-manager="FormLayout">
     <rowspec value="bottom:m:noGrow"/>
-    <rowspec value="top:5dlu:noGrow"/>
     <rowspec value="fill:p:grow"/>
     <colspec value="fill:d:grow"/>
     <constraints>
@@ -26,7 +25,7 @@
         <rowspec value="center:d:grow"/>
         <colspec value="fill:d:grow"/>
         <constraints>
-          <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
           <forms/>
         </constraints>
         <properties/>

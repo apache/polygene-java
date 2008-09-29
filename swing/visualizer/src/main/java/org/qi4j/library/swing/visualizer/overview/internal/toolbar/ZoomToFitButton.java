@@ -19,8 +19,11 @@ package org.qi4j.library.swing.visualizer.overview.internal.toolbar;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
 import org.qi4j.library.swing.visualizer.overview.internal.visualization.Qi4jApplicationDisplay;
+import org.qi4j.library.swing.visualizer.overview.internal.visualization.PrefuseJScrollPane;
 
 /**
  * TODO: Localization
@@ -31,13 +34,17 @@ import org.qi4j.library.swing.visualizer.overview.internal.visualization.Qi4jApp
  */
 final class ZoomToFitButton extends JButton
 {
-    ZoomToFitButton( Qi4jApplicationDisplay aDisplay )
+      private static final Icon ZOOM_TO_FIT =
+        new ImageIcon( ZoomToFitButton.class.getResource( "zoom-fit.png" ) );
+
+    ZoomToFitButton( PrefuseJScrollPane aScrollPane )
         throws IllegalArgumentException
     {
-        validateNotNull( "aDisplay", aDisplay );
+        validateNotNull( "aScrollPane", aScrollPane );
 
-        addActionListener( new ZoomToFitAction( aDisplay ) );
-        setText( "Zoom to fit" );
+        Qi4jApplicationDisplay display = aScrollPane.getDisplay();
+        addActionListener( new ZoomToFitAction( display ) );
+        setIcon( ZOOM_TO_FIT );
     }
 
     private static final class ZoomToFitAction extends AbstractAction

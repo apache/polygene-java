@@ -25,29 +25,30 @@ import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
+import javax.swing.BoundedRangeModel;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.Timer;
 import prefuse.Display;
-import prefuse.Visualization;
+import static prefuse.Visualization.ALL_ITEMS;
 import prefuse.util.display.PaintListener;
+import prefuse.visual.VisualItem;
 
 /**
  * This class wraps a prefuse <code>display</code> into a JScrollPane that
  * also handles dragging the graph/tree out of the pane.
  *
- * @author <a href="http://www.msdevelopment.org">marcus staender</a>
- */
-
-/* A notice to a workaround: forwardScollpaneChanges If the prefuse display notifies the scrollpane about a changes
+ * A notice to a workaround: forwardScollpaneChanges If the prefuse display notifies the scrollpane about a changes
  * the scrollpane would instantly report that value back to the pane, which reports it back to the scrollpane...
  * To face this I tried to overwrite methods of JScrollBar *not* to fire events if I don't want it.
  * Since it's not the JScrollBar that fires the events I get (even if it has the possibilities,
  * but it is the model behind) and I didn't want to change the model I implemented a boolean
  * variable forwardScollpaneChanges. This is set to false if prefuse reports changes and it causes
  * the eventhandler *NOT* to forward any changes to prefuse as long as set to false.
+ *
+ * @author <a href="http://www.msdevelopment.org">marcus staender</a>
+ * @since 0.4
  */
-
 public final class PrefuseJScrollPane extends JPanel
 {
     private static final long serialVersionUID = 1L;
@@ -92,29 +93,20 @@ public final class PrefuseJScrollPane extends JPanel
     /**
      * The prefuse <code>display</code>.
      */
-    protected Display m_display = null;
+    protected Qi4jApplicationDisplay m_display = null;
 
     private static int UNIT_INCREMENT = 20;
     private static int PREVIOUSLY_VISIBLE_AREA_WHEN_SCROLLING = 50;
-
-    /**
-     * Initializes an empty pane
-     */
-    public PrefuseJScrollPane()
-    {
-        super();
-        initialize();
-    }
 
     /**
      * Creates a scrollpane and ads the display.
      *
      * @param display The prefuse <code>display</code>.
      */
-    public PrefuseJScrollPane( Display display )
+    public PrefuseJScrollPane( Qi4jApplicationDisplay display )
     {
         initialize();
-        addDisplay( display );
+        setDisplay( display );
     }
 
 
@@ -137,7 +129,7 @@ public final class PrefuseJScrollPane extends JPanel
                 {
                     barHAdjustmentInProgress = true;
 
-                    m_display.animatePan( lastH - e.getValue(), 0, 500 );
+                    m_display.pan( lastH - e.getValue(), 0 );
                     m_display.repaint();
                     lastH = e.getValue();
                 }
@@ -160,17 +152,14 @@ public final class PrefuseJScrollPane extends JPanel
                 {
                     barVAdjustmentInProgress = true;
 
-                    m_display.animatePan( 0, lastV - e.getValue(), 500 );
+                    m_display.pan( 0, lastV - e.getValue() );
                     m_display.repaint();
                     lastV = e.getValue();
                 }
-
             }
-
         } );
 
         setLayout( new BorderLayout() );
-
     }
 
     /**
@@ -178,7 +167,7 @@ public final class PrefuseJScrollPane extends JPanel
      *
      * @param display The prefuse <code>display</code> that should be used.
      */
-    public void addDisplay( Display display )
+    public void setDisplay( Qi4jApplicationDisplay display )
     {
         // Initially the scrollbars are not yet added to the layout
         if( m_display != null )
@@ -201,7 +190,42 @@ public final class PrefuseJScrollPane extends JPanel
 
         // Fit the scrollbars
         checkScrollbarState();
+    }
 
+    public final Qi4jApplicationDisplay getDisplay()
+    {
+        return m_display;
+    }
+
+    public final void scroll( int dx, int dy )
+    {
+        BoundedRangeModel horizontalScrollModel = barH.getModel();
+        scrollBy( -dx, horizontalScrollModel );
+
+        BoundedRangeModel verticalScrollModel = barV.getModel();
+        scrollBy( -dy, verticalScrollModel );
+    }
+
+    private void scrollBy( int diff, BoundedRangeModel scrollModel )
+    {
+        int oriScrollValue = scrollModel.getValue();
+        int newScrollValue = oriScrollValue + diff;
+        int minimumValue = scrollModel.getMinimum();
+        if( newScrollValue < minimumValue )
+        {
+            newScrollValue = minimumValue;
+        }
+
+        int maximumValue = scrollModel.getMaximum();
+        if( newScrollValue > maximumValue )
+        {
+            newScrollValue = maximumValue;
+        }
+
+        if( oriScrollValue != newScrollValue )
+        {
+            scrollModel.setValue( newScrollValue );
+        }
     }
 
     /**
@@ -212,8 +236,18 @@ public final class PrefuseJScrollPane extends JPanel
         if( m_display != null )
         {
 
-            // Get the BoundingBox around all items
-            Rectangle2D rect = m_display.getVisualization().getBounds( Visualization.ALL_ITEMS );
+            // Get the BoundingBox around application item node
+            Qi4jApplicationVisualization visualization = m_display.getVisualization();
+            VisualItem nodeItem = visualization.getApplicationNodeItem();
+            Rectangle2D rect;
+            if( nodeItem != null )
+            {
+                rect = nodeItem.getBounds();
+            }
+            else
+            {
+                rect = visualization.getBounds( ALL_ITEMS );
+            }
 
             /*
              * Only some personal thoughts: might contain mistakes since I had to do correct some bugs when testing!
@@ -235,10 +269,8 @@ public final class PrefuseJScrollPane extends JPanel
              *     => at.getTranslateX()+(rect.getMaxX()*at.getScaleX())
              *  - The barH.setVisibleAmount is the current size of the view panel
              */
-
             checkHorizontalScrollbar( rect );
             checkVerticalScrollbar( rect );
-
         }
     }
 
@@ -338,10 +370,8 @@ public final class PrefuseJScrollPane extends JPanel
         }
         else
         {
-
             remove( barV );
             revalidate();
-
         }
 
     }
@@ -427,7 +457,6 @@ public final class PrefuseJScrollPane extends JPanel
         // Set the values
         if( newWidth > m_display.getWidth() )
         {
-
             // Show bar if the graph does not fit on the screen
             add( barH, BorderLayout.SOUTH );
             revalidate();
@@ -439,15 +468,12 @@ public final class PrefuseJScrollPane extends JPanel
             barH.setBlockIncrement( newVisibleAmount - PREVIOUSLY_VISIBLE_AREA_WHEN_SCROLLING );
             lastH = newValue;
             forwardScollpaneChanges = true;
-
         }
         else
         {
-
             // Remove bar if the graph fits on the screen
             remove( barH );
             revalidate();
-
         }
     }
 

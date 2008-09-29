@@ -21,12 +21,12 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
+import org.qi4j.library.swing.visualizer.listener.SelectionListener;
 import org.qi4j.library.swing.visualizer.model.ApplicationDetailDescriptor;
 import org.qi4j.library.swing.visualizer.overview.internal.toolbar.OverviewToolbar;
 import org.qi4j.library.swing.visualizer.overview.internal.visualization.PrefuseJScrollPane;
 import org.qi4j.library.swing.visualizer.overview.internal.visualization.Qi4jApplicationDisplay;
 import org.qi4j.library.swing.visualizer.overview.internal.visualization.Qi4jApplicationVisualization;
-import org.qi4j.library.swing.visualizer.listener.SelectionListener;
 
 /**
  * TODO
@@ -39,9 +39,10 @@ public class OverviewPanel
 {
     private final Qi4jApplicationDisplay display;
 
-    private JPanel form;
     private JToolBar toolbar;
     private JPanel graphPanel;
+
+    private JPanel form;
 
     public OverviewPanel( SelectionListener aListener )
     {
@@ -73,9 +74,11 @@ public class OverviewPanel
 
     private void createUIComponents()
     {
+        PrefuseJScrollPane scrollPanel = new PrefuseJScrollPane( display );
+        graphPanel = scrollPanel;
+
         // Toolbar
-        toolbar = new OverviewToolbar( display );
-        graphPanel = new PrefuseJScrollPane( display );
+        toolbar = new OverviewToolbar( scrollPanel );
     }
 
     /**
@@ -89,10 +92,10 @@ public class OverviewPanel
     {
         createUIComponents();
         form = new JPanel();
-        form.setLayout( new FormLayout( "fill:d:grow", "bottom:m:noGrow,top:5dlu:noGrow,fill:p:grow" ) );
+        form.setLayout( new FormLayout( "fill:d:grow", "bottom:m:noGrow,fill:p:grow" ) );
         CellConstraints cc = new CellConstraints();
         form.add( toolbar, cc.xy( 1, 1, CellConstraints.FILL, CellConstraints.DEFAULT ) );
-        form.add( graphPanel, cc.xy( 1, 3 ) );
+        form.add( graphPanel, cc.xy( 1, 2 ) );
     }
 
     /**
@@ -102,5 +105,4 @@ public class OverviewPanel
     {
         return form;
     }
-
 }

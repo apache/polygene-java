@@ -130,8 +130,15 @@ public final class Qi4jApplicationVisualization extends Visualization
      */
     public final VisualItem getApplicationNodeItem()
     {
-        Node applicationNode = graph.getNode( 0 );
-        return getVisualItem( "graph.nodes", applicationNode );
+        if( graph != null )
+        {
+            Node applicationNode = graph.getNode( 0 );
+            return getVisualItem( "graph.nodes", applicationNode );
+        }
+        else
+        {
+            return null;
+        }
     }
 
     private void addProcessingActions()

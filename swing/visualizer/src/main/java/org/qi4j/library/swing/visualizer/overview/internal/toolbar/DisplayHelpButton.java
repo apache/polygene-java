@@ -18,6 +18,7 @@ package org.qi4j.library.swing.visualizer.overview.internal.toolbar;
 
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
@@ -33,9 +34,11 @@ import static javax.swing.JOptionPane.showMessageDialog;
  */
 final class DisplayHelpButton extends JButton
 {
+    private static final ImageIcon HELP_ICON = new ImageIcon( DisplayHelpButton.class.getResource( "help.png" ) );
+
     DisplayHelpButton()
     {
-        setText( "Help" );
+        setIcon( HELP_ICON );
 
         addActionListener( new DisplayHelpAction() );
     }

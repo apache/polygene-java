@@ -24,8 +24,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
+import javax.swing.ImageIcon;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
 import org.qi4j.library.swing.visualizer.overview.internal.visualization.Qi4jApplicationDisplay;
+import org.qi4j.library.swing.visualizer.overview.internal.visualization.PrefuseJScrollPane;
 import prefuse.Display;
 import prefuse.controls.PanControl;
 
@@ -39,30 +41,30 @@ import prefuse.controls.PanControl;
  */
 final class TogglePanButton extends JButton
 {
-    private static final String SELECT_TEXT = "select";
-    private static final String PAN_TEXT = "pan";
+    private static final ImageIcon SELECT_TEXT = new ImageIcon( TogglePanButton.class.getResource( "pointer.png" ) );
+    private static final ImageIcon PAN_TEXT = new ImageIcon( TogglePanButton.class.getResource( "hand.png" ) );
 
     private boolean isPan;
 
-    TogglePanButton( Qi4jApplicationDisplay aDisplay )
+    TogglePanButton( PrefuseJScrollPane scrollPane )
         throws IllegalArgumentException
     {
-        validateNotNull( "aDisplay", aDisplay );
+        validateNotNull( "scrollPane", scrollPane );
 
         isPan = false;
         updateText();
-        addActionListener( new TogglePanAction( aDisplay ) );
+        addActionListener( new TogglePanAction( scrollPane ) );
     }
 
     private void updateText()
     {
         if( !isPan )
         {
-            setText( PAN_TEXT );
+            setIcon( PAN_TEXT );
         }
         else
         {
-            setText( SELECT_TEXT );
+            setIcon( SELECT_TEXT );
         }
     }
 
@@ -73,10 +75,10 @@ final class TogglePanButton extends JButton
         private final PanControl panControl;
         private final Qi4jApplicationDisplay display;
 
-        public TogglePanAction( Qi4jApplicationDisplay aDisplay )
+        public TogglePanAction( PrefuseJScrollPane aScrollPane )
         {
-            display = aDisplay;
-            panControl = new MousePanControl( aDisplay );
+            display = aScrollPane.getDisplay();
+            panControl = new MousePanControl( aScrollPane );
             panControl.setEnabled( false );
             display.addControlListener( panControl );
         }
@@ -100,24 +102,21 @@ final class TogglePanButton extends JButton
 
     private static class MousePanControl extends PanControl
     {
-        private final Qi4jApplicationDisplay display;
+        private final PrefuseJScrollPane scrollPane;
 
         private int xLoc;
         private int yLoc;
 
-        private MousePanControl( Qi4jApplicationDisplay aDisplay )
+        private MousePanControl( PrefuseJScrollPane aDisplay )
         {
             super( true );
-            display = aDisplay;
+            scrollPane = aDisplay;
         }
 
         @Override
         public void mousePressed( MouseEvent anEvent )
         {
-            // TODO: Figure out boundary of TOP, LEFT, RIGHT, BOTTOM for valid drag
-
-            Display display = this.display;
-            display.setCursor( getPredefinedCursor( MOVE_CURSOR ) );
+            scrollPane.setCursor( getPredefinedCursor( MOVE_CURSOR ) );
 
             xLoc = anEvent.getX();
             yLoc = anEvent.getY();
@@ -129,20 +128,18 @@ final class TogglePanButton extends JButton
             int x = anEvent.getX(), y = anEvent.getY();
             int dx = x - xLoc, dy = y - yLoc;
 
-            display.pan( dx, dy );
-//            display.pan( dx, dy, false );
-
+            scrollPane.scroll( dx, dy );
 
             xLoc = x;
             yLoc = y;
 
-            display.repaint();
+            scrollPane.repaint();
         }
 
         @Override
         public void mouseReleased( MouseEvent e )
         {
-            display.setCursor( getPredefinedCursor( HAND_CURSOR ) );
+            scrollPane.setCursor( getPredefinedCursor( HAND_CURSOR ) );
             xLoc = -1;
             yLoc = -1;
         }

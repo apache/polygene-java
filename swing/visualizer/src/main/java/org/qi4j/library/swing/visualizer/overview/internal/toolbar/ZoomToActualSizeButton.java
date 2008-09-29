@@ -19,7 +19,10 @@ package org.qi4j.library.swing.visualizer.overview.internal.toolbar;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
+import org.qi4j.library.swing.visualizer.overview.internal.visualization.PrefuseJScrollPane;
 import org.qi4j.library.swing.visualizer.overview.internal.visualization.Qi4jApplicationDisplay;
 
 /**
@@ -32,12 +35,17 @@ import org.qi4j.library.swing.visualizer.overview.internal.visualization.Qi4jApp
  */
 final class ZoomToActualSizeButton extends JButton
 {
-    ZoomToActualSizeButton( Qi4jApplicationDisplay aDisplay )
+    private static final Icon ZOOM_TO_ACTUAL_SIZE =
+        new ImageIcon( ZoomToActualSizeButton.class.getResource( "zoom-actual-size.png" ) );
+
+    ZoomToActualSizeButton( PrefuseJScrollPane aScrollPane )
         throws IllegalArgumentException
     {
-        validateNotNull( "aDisplay", aDisplay );
-        setText( "Zoom to actual" );
-        addActionListener( new ZoomToActualSizeAction( aDisplay ) );
+        validateNotNull( "aScrollPane", aScrollPane );
+        setIcon( ZOOM_TO_ACTUAL_SIZE );
+
+        Qi4jApplicationDisplay display = aScrollPane.getDisplay();
+        addActionListener( new ZoomToActualSizeAction( display ) );
     }
 
     private static class ZoomToActualSizeAction

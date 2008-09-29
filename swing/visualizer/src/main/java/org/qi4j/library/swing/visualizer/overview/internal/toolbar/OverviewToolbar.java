@@ -19,6 +19,7 @@ package org.qi4j.library.swing.visualizer.overview.internal.toolbar;
 import javax.swing.JToolBar;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
 import org.qi4j.library.swing.visualizer.overview.internal.visualization.Qi4jApplicationDisplay;
+import org.qi4j.library.swing.visualizer.overview.internal.visualization.PrefuseJScrollPane;
 
 /**
  * @author edward.yakop@gmail.com
@@ -26,7 +27,7 @@ import org.qi4j.library.swing.visualizer.overview.internal.visualization.Qi4jApp
  */
 public final class OverviewToolbar extends JToolBar
 {
-    public OverviewToolbar( Qi4jApplicationDisplay aDisplay )
+    public OverviewToolbar( PrefuseJScrollPane aDisplay )
     {
         validateNotNull( "aDisplay", aDisplay );
 

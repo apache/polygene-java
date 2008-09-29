@@ -31,8 +31,8 @@ import javax.swing.ActionMap;
 import javax.swing.InputMap;
 import static javax.swing.KeyStroke.getKeyStroke;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
-import org.qi4j.library.swing.visualizer.model.ApplicationDetailDescriptor;
 import org.qi4j.library.swing.visualizer.listener.SelectionListener;
+import org.qi4j.library.swing.visualizer.model.ApplicationDetailDescriptor;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.FIELD_TYPE;
 import org.qi4j.library.swing.visualizer.overview.internal.common.NodeType;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.NodeType.APPLICATION;
@@ -272,7 +272,11 @@ public final class Qi4jApplicationDisplay extends Display
                 // panning left, mouse movement to right
                 double scaledLeftX = bounds.getX() * at.getScaleX();    // Left bound of Bounding Box
                 double distanceToLeftEdge = -( at.getTranslateX() ) - scaledLeftX;
-                dx = Math.min( dx, distanceToLeftEdge );
+
+                if( dx < distanceToLeftEdge )
+                {
+                    dx = distanceToLeftEdge;
+                }
             }
             else if( dx < 0 )
             {
@@ -298,14 +302,20 @@ public final class Qi4jApplicationDisplay extends Display
                 dy = Math.max( dy, distanceToBottomEdge );
             }
 
-            if( isAnimate )
+            System.err.println( "Bound [" + bounds.getX() + ", " + bounds.getY() + "] dx,y [" + dx + ", " + dy + "]" );
+
+            if( dx != 0 && dy != 0 )
             {
-                animatePan( dx, dy, 500 );
+                if( isAnimate )
+                {
+                    animatePan( dx, dy, 500 );
+                }
+                else
+                {
+                    pan( dx, dy );
+                }
             }
-            else
-            {
-                pan( dx, dy );
-            }
+
             repaint();
         }
     }
