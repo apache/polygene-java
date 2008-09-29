@@ -66,4 +66,10 @@ public final class ApplicationDetailDescriptor
         aDescriptor.setApplication( this );
         layers.add( aDescriptor );
     }
+
+    @Override
+    public final String toString()
+    {
+        return descriptor.name();
+    }
 }

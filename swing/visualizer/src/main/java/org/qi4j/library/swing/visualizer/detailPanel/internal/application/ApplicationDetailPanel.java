@@ -25,6 +25,8 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.common.form.DescriptorForm;
+import org.qi4j.library.swing.visualizer.detailPanel.internal.tree.ApplicationTree;
+import org.qi4j.library.swing.visualizer.detailPanel.internal.tree.TreeModelBuilder;
 import org.qi4j.library.swing.visualizer.model.ApplicationDetailDescriptor;
 
 /**
@@ -49,17 +51,19 @@ public final class ApplicationDetailPanel extends JSplitPane
         setRightComponent( rightComponent );
 
         // Left component
-        AppTree descriptorTree = createLeftComponent( aDescriptor, form );
+        ApplicationTree descriptorTree = createLeftComponent( aDescriptor, form );
         JScrollPane leftComponent = new JScrollPane( descriptorTree );
         leftComponent.setPreferredSize( PREFERRED_SIZE_LEFT_COMPONENT );
         setLeftComponent( leftComponent );
     }
 
-    private AppTree createLeftComponent( ApplicationDetailDescriptor aDescriptor, DescriptorForm aForm )
+    private ApplicationTree createLeftComponent( ApplicationDetailDescriptor aDescriptor, DescriptorForm aForm )
     {
-        AppTreeNode treeNode = new AppTreeNode( aDescriptor );
+        TreeModelBuilder builder = new TreeModelBuilder();
+        DefaultMutableTreeNode root = builder.populate( aDescriptor );
+
         AppTreeSelectionListener selectionListener = new AppTreeSelectionListener( aForm );
-        return new AppTree( treeNode, selectionListener );
+        return new ApplicationTree( root, selectionListener );
     }
 
     private static class AppTreeSelectionListener

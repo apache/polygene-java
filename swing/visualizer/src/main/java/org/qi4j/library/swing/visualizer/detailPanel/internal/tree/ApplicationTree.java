@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.library.swing.visualizer.detailPanel.internal.application;
+package org.qi4j.library.swing.visualizer.detailPanel.internal.tree;
 
 import javax.swing.JTree;
 import javax.swing.event.TreeSelectionListener;
@@ -31,9 +31,9 @@ import static org.qi4j.library.swing.visualizer.detailPanel.internal.common.ToSt
  * @author edward.yakop@gmail.com
  * @since 0.5
  */
-final class AppTree extends JTree
+public final class ApplicationTree extends JTree
 {
-    AppTree( TreeNode aRootNode, TreeSelectionListener aListener )
+    public ApplicationTree( TreeNode aRootNode, TreeSelectionListener aListener )
         throws IllegalArgumentException
     {
         super( aRootNode );
