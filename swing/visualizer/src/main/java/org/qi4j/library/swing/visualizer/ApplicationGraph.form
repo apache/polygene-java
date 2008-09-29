@@ -27,7 +27,7 @@
               <splitpane position="left"/>
             </constraints>
           </nested-form>
-          <nested-form id="d03f5" form-file="org/qi4j/library/swing/visualizer/detailPanel/DetailPanel.form" binding="detailPanel">
+          <nested-form id="d03f5" form-file="org/qi4j/library/swing/visualizer/detailPanel/DetailPanel.form" binding="detailPanel" custom-create="true">
             <constraints>
               <splitpane position="right"/>
             </constraints>

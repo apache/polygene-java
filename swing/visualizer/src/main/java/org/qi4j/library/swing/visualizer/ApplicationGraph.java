@@ -24,14 +24,7 @@ import javax.swing.JSplitPane;
 import org.qi4j.library.swing.visualizer.detailPanel.DetailPanel;
 import org.qi4j.library.swing.visualizer.model.ApplicationDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ApplicationDetailDescriptorBuilder;
-import org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor;
-import org.qi4j.library.swing.visualizer.model.EntityDetailDescriptor;
-import org.qi4j.library.swing.visualizer.model.LayerDetailDescriptor;
-import org.qi4j.library.swing.visualizer.model.ModuleDetailDescriptor;
-import org.qi4j.library.swing.visualizer.model.ObjectDetailDescriptor;
-import org.qi4j.library.swing.visualizer.model.ServiceDetailDescriptor;
 import org.qi4j.library.swing.visualizer.overview.OverviewPanel;
-import org.qi4j.library.swing.visualizer.overview.SelectionListener;
 import org.qi4j.spi.structure.ApplicationSPI;
 import org.qi4j.structure.Application;
 
@@ -79,12 +72,13 @@ public class ApplicationGraph
 
         // Default display the application
         overviewPanel.displayApplication( appDetailDescriptor );
-        detailPanel.displayApplication( appDetailDescriptor );
+        detailPanel.onApplicationSelected( appDetailDescriptor );
     }
 
     private void createUIComponents()
     {
-        overviewPanel = new OverviewPanel( new CompositeSelectionControl() );
+        detailPanel = new DetailPanel();
+        overviewPanel = new OverviewPanel( detailPanel );
     }
 
     {
@@ -112,7 +106,6 @@ public class ApplicationGraph
         CellConstraints cc = new CellConstraints();
         form.add( splitPane1, cc.xy( 1, 1 ) );
         splitPane1.setLeftComponent( overviewPanel.$$$getRootComponent$$$() );
-        detailPanel = new DetailPanel();
         splitPane1.setRightComponent( detailPanel.$$$getRootComponent$$$() );
     }
 
@@ -123,45 +116,4 @@ public class ApplicationGraph
     {
         return form;
     }
-
-    private class CompositeSelectionControl
-        implements SelectionListener
-    {
-        public void onApplicationSelected( ApplicationDetailDescriptor aDescriptor )
-        {
-            detailPanel.displayApplication( aDescriptor );
-        }
-
-        public void onLayerSelected( LayerDetailDescriptor aDescriptor )
-        {
-            detailPanel.displayLayer( aDescriptor );
-        }
-
-        public void onModuleSelected( ModuleDetailDescriptor aDescriptor )
-        {
-            detailPanel.displayModule( aDescriptor );
-        }
-
-        public void onServiceSelected( ServiceDetailDescriptor aDescriptor )
-        {
-            detailPanel.displayService( aDescriptor );
-        }
-
-        public void onEntitySelected( EntityDetailDescriptor aDescriptor )
-        {
-            detailPanel.displayEntity( aDescriptor );
-        }
-
-        public void onCompositeSelected( CompositeDetailDescriptor aDescriptor )
-        {
-            detailPanel.displayComposite( aDescriptor );
-        }
-
-        public void onObjectSelected( ObjectDetailDescriptor aDescriptor )
-        {
-            detailPanel.displayObject( aDescriptor );
-        }
-    }
-
-
 }

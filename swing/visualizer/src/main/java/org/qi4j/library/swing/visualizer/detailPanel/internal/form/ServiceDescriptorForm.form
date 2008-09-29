@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="org.qi4j.library.swing.visualizer.detailPanel.internal.common.form.ServiceDescriptorForm">
-  <grid id="27dc6" binding="placeHolder" custom-create="true" layout-manager="FormLayout">
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="org.qi4j.library.swing.visualizer.detailPanel.internal.form.ServiceDescriptorForm">
+  <grid id="27dc6" binding="placeHolder" layout-manager="FormLayout">
     <rowspec value="center:max(d;4px):noGrow"/>
     <rowspec value="top:4dlu:noGrow"/>
     <rowspec value="center:p:noGrow"/>

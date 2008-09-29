@@ -89,4 +89,10 @@ public final class ServiceDetailDescriptor
 
         module = aDescriptor;
     }
+
+    @Override
+    public final String toString()
+    {
+        return descriptor.type().getSimpleName();
+    }
 }

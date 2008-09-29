@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="org.qi4j.library.swing.visualizer.detailPanel.internal.common.form.composite.MixinsPanel">
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="org.qi4j.library.swing.visualizer.detailPanel.internal.form.composite.MixinsPanel">
   <grid id="27dc6" binding="mixinsPanel" layout-manager="FormLayout">
     <rowspec value="fill:p:grow"/>
     <colspec value="fill:101px:noGrow"/>
@@ -29,7 +29,7 @@
               <minimumSize width="60" height="0"/>
             </properties>
           </component>
-          <nested-form id="2423b" form-file="org/qi4j/library/swing/visualizer/detailPanel/internal/common/form/composite/mixin/MixinPanel.form" binding="mixinPanel">
+          <nested-form id="2423b" form-file="org/qi4j/library/swing/visualizer/detailPanel/internal/form/composite/mixin/MixinPanel.form" binding="mixinPanel">
             <constraints>
               <splitpane position="right"/>
             </constraints>

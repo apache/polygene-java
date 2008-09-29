@@ -127,4 +127,8 @@ public class CompositeDetailDescriptor<T extends CompositeDescriptor>
         mixins.add( aDescriptor );
     }
 
+    public String toString()
+    {
+        return descriptor.type().getSimpleName();
+    }
 }

@@ -123,4 +123,10 @@ public final class CompositeMethodDetailDescriptor
         aDescriptor.setMethod( this );
         sideEffects.add( aDescriptor );
     }
+
+    @Override
+    public final String toString()
+    {
+        return descriptor.method().getName();
+    }
 }

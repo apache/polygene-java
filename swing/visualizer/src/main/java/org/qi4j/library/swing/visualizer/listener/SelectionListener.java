@@ -14,7 +14,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.qi4j.library.swing.visualizer.overview;
+package org.qi4j.library.swing.visualizer.listener;
 
 import org.qi4j.library.swing.visualizer.model.ApplicationDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor;
@@ -85,4 +85,11 @@ public interface SelectionListener
      * @since 0.5
      */
     void onObjectSelected( ObjectDetailDescriptor aDescriptor );
+
+    /**
+     * Invoked when the component reset selection.
+     *
+     * @since 0.5
+     */
+    void resetSelection();
 }

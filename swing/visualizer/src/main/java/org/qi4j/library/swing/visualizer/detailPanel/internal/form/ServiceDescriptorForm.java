@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.library.swing.visualizer.detailPanel.internal.common.form;
+package org.qi4j.library.swing.visualizer.detailPanel.internal.form;
 
 import com.jgoodies.forms.factories.DefaultComponentFactory;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -37,7 +37,7 @@ import org.qi4j.service.ServiceDescriptor;
  * @see org.qi4j.library.swing.visualizer.model.ServiceDetailDescriptor
  * @since 0.5
  */
-public final class ServiceDescriptorForm extends JPanel
+public final class ServiceDescriptorForm
 {
     private JPanel placeHolder;
 
@@ -108,8 +108,6 @@ public final class ServiceDescriptorForm extends JPanel
         DefaultComponentFactory cmpFactory = DefaultComponentFactory.getInstance();
         serviceSeparator = cmpFactory.createSeparator( "Service" );
         locationSeparator = cmpFactory.createSeparator( "Location" );
-
-        placeHolder = this;
     }
 
     {
@@ -129,6 +127,7 @@ public final class ServiceDescriptorForm extends JPanel
     private void $$$setupUI$$$()
     {
         createUIComponents();
+        placeHolder = new JPanel();
         placeHolder.setLayout( new FormLayout( "fill:5dlu:noGrow,fill:p:noGrow,fill:max(d;4px):noGrow,fill:max(m;100px):grow,left:m:grow", "center:max(d;4px):noGrow,top:4dlu:noGrow,center:p:noGrow,top:5dlu:noGrow,center:p:noGrow,top:4dlu:noGrow,center:p:noGrow,top:4dlu:noGrow,center:p:noGrow,top:4dlu:noGrow,top:max(m;50dlu):noGrow,top:5dlu:noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow,center:p:noGrow,top:4dlu:noGrow,center:max(p;4px):noGrow" ) );
         ( (FormLayout) placeHolder.getLayout() ).setRowGroups( new int[][]{ new int[]{ 3, 5, 7, 9 }, new int[]{ 1, 13 }, new int[]{ 15, 17 } } );
         final JLabel label1 = new JLabel();

@@ -14,7 +14,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.qi4j.library.swing.visualizer.detailPanel.internal.common.form.composite.mixin;
+package org.qi4j.library.swing.visualizer.detailPanel.internal.form.composite.mixin;
 
 import com.jgoodies.forms.factories.DefaultComponentFactory;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -30,8 +30,8 @@ import javax.swing.JSplitPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import static org.qi4j.library.swing.visualizer.detailPanel.internal.common.CollectionUtils.toList;
-import org.qi4j.library.swing.visualizer.detailPanel.internal.common.form.ListListModel;
-import static org.qi4j.library.swing.visualizer.detailPanel.internal.common.form.ListListModel.EMPTY_MODEL;
+import org.qi4j.library.swing.visualizer.detailPanel.internal.form.ListListModel;
+import static org.qi4j.library.swing.visualizer.detailPanel.internal.form.ListListModel.EMPTY_MODEL;
 import org.qi4j.library.swing.visualizer.model.ConstructorDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.InjectedParametersDetailDescriptor;
 import org.qi4j.spi.composite.ConstructorDescriptor;

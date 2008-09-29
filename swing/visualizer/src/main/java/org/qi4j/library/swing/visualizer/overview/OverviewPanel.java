@@ -26,6 +26,7 @@ import org.qi4j.library.swing.visualizer.overview.internal.toolbar.OverviewToolb
 import org.qi4j.library.swing.visualizer.overview.internal.visualization.PrefuseJScrollPane;
 import org.qi4j.library.swing.visualizer.overview.internal.visualization.Qi4jApplicationDisplay;
 import org.qi4j.library.swing.visualizer.overview.internal.visualization.Qi4jApplicationVisualization;
+import org.qi4j.library.swing.visualizer.listener.SelectionListener;
 
 /**
  * TODO

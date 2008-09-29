@@ -25,7 +25,7 @@ import org.qi4j.library.swing.visualizer.model.LayerDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ModuleDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ObjectDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ServiceDetailDescriptor;
-import org.qi4j.library.swing.visualizer.overview.SelectionListener;
+import org.qi4j.library.swing.visualizer.listener.SelectionListener;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.FIELD_DESCRIPTOR;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.FIELD_TYPE;
 import org.qi4j.library.swing.visualizer.overview.internal.common.NodeType;
