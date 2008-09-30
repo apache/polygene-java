@@ -99,6 +99,7 @@ public class LayerDescriptorForm
         CellConstraints cc = new CellConstraints();
         layerForm.add( label1, cc.xy( 2, 3 ) );
         layerName = new JTextField();
+        layerName.setEditable( false );
         layerForm.add( layerName, cc.xy( 4, 3, CellConstraints.FILL, CellConstraints.DEFAULT ) );
         final JLabel label2 = new JLabel();
         label2.setText( "Depends on" );
@@ -120,5 +121,4 @@ public class LayerDescriptorForm
     {
         return layerForm;
     }
-
 }

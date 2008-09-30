@@ -22,6 +22,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.form.ServiceDescriptorForm;
+import org.qi4j.library.swing.visualizer.detailPanel.internal.form.module.ModuleDescriptorForm;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.form.layer.LayerDescriptorForm;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.form.composite.CompositeDescriptorForm;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.tree.ApplicationTreePanel;
@@ -66,20 +67,25 @@ public final class DetailPanel
     {
         treePanel.onLayerSelected( aDescriptor );
 
-        LayerDescriptorForm layerDescriptorForm = new LayerDescriptorForm();
-        layerDescriptorForm.updateModel( aDescriptor );
-        detailScrollPanel.setViewportView( layerDescriptorForm.$$$getRootComponent$$$() );
+        LayerDescriptorForm layerForm = new LayerDescriptorForm();
+        layerForm.updateModel( aDescriptor );
+        detailScrollPanel.setViewportView( layerForm.$$$getRootComponent$$$() );
     }
 
     public void onModuleSelected( ModuleDetailDescriptor aDescriptor )
     {
         treePanel.onModuleSelected( aDescriptor );
+
+        ModuleDescriptorForm moduleForm = new ModuleDescriptorForm();
+        moduleForm.updateModel( aDescriptor );
+        detailScrollPanel.setViewportView( moduleForm.$$$getRootComponent$$$() );
     }
 
     @SuppressWarnings( "unchecked" )
     public void onCompositeSelected( CompositeDetailDescriptor aDescriptor )
     {
         treePanel.onCompositeSelected( aDescriptor );
+
         CompositeDescriptorForm descriptor = new CompositeDescriptorForm();
         descriptor.updateModel( aDescriptor );
         detailScrollPanel.setViewportView( descriptor );
@@ -93,6 +99,7 @@ public final class DetailPanel
     public void onServiceSelected( ServiceDetailDescriptor aDescriptor )
     {
         treePanel.onServiceSelected( aDescriptor );
+
         ServiceDescriptorForm descriptorForm = new ServiceDescriptorForm();
         descriptorForm.updateModel( aDescriptor );
         detailScrollPanel.setViewportView( descriptorForm.$$$getRootComponent$$$() );

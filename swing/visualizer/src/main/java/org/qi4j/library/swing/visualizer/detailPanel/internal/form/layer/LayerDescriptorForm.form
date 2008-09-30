@@ -38,7 +38,9 @@
           </grid>
           <forms defaultalign-horz="false"/>
         </constraints>
-        <properties/>
+        <properties>
+          <editable value="false"/>
+        </properties>
       </component>
       <component id="bc845" class="javax.swing.JLabel">
         <constraints>
