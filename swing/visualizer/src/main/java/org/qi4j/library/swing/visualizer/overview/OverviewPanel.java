@@ -20,6 +20,7 @@ import com.jgoodies.forms.layout.FormLayout;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
+import javax.swing.JButton;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
 import org.qi4j.library.swing.visualizer.listener.SelectionListener;
 import org.qi4j.library.swing.visualizer.model.ApplicationDetailDescriptor;
@@ -92,9 +93,10 @@ public class OverviewPanel
     {
         createUIComponents();
         form = new JPanel();
-        form.setLayout( new FormLayout( "fill:d:grow", "bottom:m:noGrow,fill:p:grow" ) );
+        form.setLayout( new FormLayout( "fill:d:grow", "fill:d:noGrow,fill:p:grow" ) );
+        toolbar.setFloatable( false );
         CellConstraints cc = new CellConstraints();
-        form.add( toolbar, cc.xy( 1, 1, CellConstraints.FILL, CellConstraints.DEFAULT ) );
+        form.add( toolbar, cc.xy( 1, 1, CellConstraints.FILL, CellConstraints.FILL ) );
         form.add( graphPanel, cc.xy( 1, 2 ) );
     }
 

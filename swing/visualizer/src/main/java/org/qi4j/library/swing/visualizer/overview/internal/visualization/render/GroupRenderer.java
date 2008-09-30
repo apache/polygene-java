@@ -29,10 +29,10 @@ final class GroupRenderer extends AbstractRenderer
 {
     private Color textColor = new Color( 129, 127, 121 );
 
-    public final void render( Graphics2D g, VisualItem item )
+    public final void render( Graphics2D graphic, VisualItem item )
     {
         Rectangle2D rect = item.getBounds();
-        g.setPaint( textColor );
-        drawName( g, item, (int) rect.getX(), (int) rect.getY() );
+        graphic.setPaint( textColor );
+        drawName( graphic, item, (int) rect.getX(), (int) rect.getY() );
     }
 }

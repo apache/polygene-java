@@ -21,8 +21,10 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import org.qi4j.library.swing.visualizer.detailPanel.internal.tree.ApplicationTreePanel;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.form.ServiceDescriptorForm;
+import org.qi4j.library.swing.visualizer.detailPanel.internal.form.layer.LayerDescriptorForm;
+import org.qi4j.library.swing.visualizer.detailPanel.internal.form.composite.CompositeDescriptorForm;
+import org.qi4j.library.swing.visualizer.detailPanel.internal.tree.ApplicationTreePanel;
 import org.qi4j.library.swing.visualizer.listener.SelectionListener;
 import org.qi4j.library.swing.visualizer.model.ApplicationDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor;
@@ -63,7 +65,10 @@ public final class DetailPanel
     public void onLayerSelected( LayerDetailDescriptor aDescriptor )
     {
         treePanel.onLayerSelected( aDescriptor );
-        detailScrollPanel.setViewportView( null );
+
+        LayerDescriptorForm layerDescriptorForm = new LayerDescriptorForm();
+        layerDescriptorForm.updateModel( aDescriptor );
+        detailScrollPanel.setViewportView( layerDescriptorForm.$$$getRootComponent$$$() );
     }
 
     public void onModuleSelected( ModuleDetailDescriptor aDescriptor )
@@ -71,9 +76,13 @@ public final class DetailPanel
         treePanel.onModuleSelected( aDescriptor );
     }
 
+    @SuppressWarnings( "unchecked" )
     public void onCompositeSelected( CompositeDetailDescriptor aDescriptor )
     {
-        //To change body of implemented methods use File | Settings | File Templates.
+        treePanel.onCompositeSelected( aDescriptor );
+        CompositeDescriptorForm descriptor = new CompositeDescriptorForm();
+        descriptor.updateModel( aDescriptor );
+        detailScrollPanel.setViewportView( descriptor );
     }
 
     public void onEntitySelected( EntityDetailDescriptor aDescriptor )

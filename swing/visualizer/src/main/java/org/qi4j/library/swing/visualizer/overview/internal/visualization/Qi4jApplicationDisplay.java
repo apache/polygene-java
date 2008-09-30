@@ -302,8 +302,6 @@ public final class Qi4jApplicationDisplay extends Display
                 dy = Math.max( dy, distanceToBottomEdge );
             }
 
-            System.err.println( "Bound [" + bounds.getX() + ", " + bounds.getY() + "] dx,y [" + dx + ", " + dy + "]" );
-
             if( dx != 0 && dy != 0 )
             {
                 if( isAnimate )

@@ -62,25 +62,6 @@ final class Qi4jApplicationLayout extends TreeLayout
         root.setBounds( topLeft.x, topLeft.y, size.width, size.height );
     }
 
-    Collection<Collection<NodeItem>> resolveLayerDependencies( Iterator nodes )
-    {
-        TreeMap<Integer, Collection<NodeItem>> map = new TreeMap<Integer, Collection<NodeItem>>();
-        while( nodes.hasNext() )
-        {
-            NodeItem layer = (NodeItem) nodes.next();
-            int level = layer.getInt( FIELD_LAYER_LEVEL );
-            Collection<NodeItem> layers = map.get( level );
-            if( layers == null )
-            {
-                layers = new ArrayList<NodeItem>();
-                map.put( level, layers );
-            }
-            layers.add( layer );
-        }
-
-        return map.values();
-    }
-
     private Rectangle computeApplicationBounds( NodeItem anApplicationItem, Point aLocation )
     {
         Dimension dimesion = getNodeLabelSize( anApplicationItem );
@@ -106,6 +87,25 @@ final class Qi4jApplicationLayout extends TreeLayout
         int height = y - aLocation.y;
 
         return new Rectangle( aLocation.x, aLocation.y, width, height );
+    }
+
+    Collection<Collection<NodeItem>> resolveLayerDependencies( Iterator nodes )
+    {
+        TreeMap<Integer, Collection<NodeItem>> map = new TreeMap<Integer, Collection<NodeItem>>();
+        while( nodes.hasNext() )
+        {
+            NodeItem layer = (NodeItem) nodes.next();
+            int level = layer.getInt( FIELD_LAYER_LEVEL );
+            Collection<NodeItem> layers = map.get( level );
+            if( layers == null )
+            {
+                layers = new ArrayList<NodeItem>();
+                map.put( level, layers );
+            }
+            layers.add( layer );
+        }
+
+        return map.values();
     }
 
     private Map<Node, NodeItem> nodeToVisualNodeItemMap = new HashMap<Node, NodeItem>();

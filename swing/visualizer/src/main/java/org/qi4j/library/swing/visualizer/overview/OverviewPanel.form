@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="org.qi4j.library.swing.visualizer.overview.OverviewPanel">
   <grid id="27dc6" binding="form" default-binding="true" layout-manager="FormLayout">
-    <rowspec value="bottom:m:noGrow"/>
+    <rowspec value="fill:d:noGrow"/>
     <rowspec value="fill:p:grow"/>
     <colspec value="fill:d:grow"/>
     <constraints>
@@ -12,12 +12,14 @@
     <children>
       <toolbar id="f8925" binding="toolbar" custom-create="true">
         <constraints>
-          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false">
+          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
             <preferred-size width="-1" height="20"/>
           </grid>
-          <forms defaultalign-horz="false"/>
+          <forms defaultalign-horz="false" defaultalign-vert="false"/>
         </constraints>
-        <properties/>
+        <properties>
+          <floatable value="false"/>
+        </properties>
         <border type="none"/>
         <children/>
       </toolbar>

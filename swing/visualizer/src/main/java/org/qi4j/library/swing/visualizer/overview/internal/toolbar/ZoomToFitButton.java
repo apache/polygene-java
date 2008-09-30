@@ -18,12 +18,12 @@ package org.qi4j.library.swing.visualizer.overview.internal.toolbar;
 
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
-import javax.swing.JButton;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
-import org.qi4j.library.swing.visualizer.overview.internal.visualization.Qi4jApplicationDisplay;
 import org.qi4j.library.swing.visualizer.overview.internal.visualization.PrefuseJScrollPane;
+import org.qi4j.library.swing.visualizer.overview.internal.visualization.Qi4jApplicationDisplay;
 
 /**
  * TODO: Localization
@@ -34,7 +34,7 @@ import org.qi4j.library.swing.visualizer.overview.internal.visualization.Prefuse
  */
 final class ZoomToFitButton extends JButton
 {
-      private static final Icon ZOOM_TO_FIT =
+    private static final Icon ZOOM_TO_FIT =
         new ImageIcon( ZoomToFitButton.class.getResource( "zoom-fit.png" ) );
 
     ZoomToFitButton( PrefuseJScrollPane aScrollPane )

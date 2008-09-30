@@ -27,6 +27,7 @@ import org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.EntityDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ObjectDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ServiceDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.LayerDetailDescriptor;
 
 /**
  * @author edward.yakop@gmail.com
@@ -85,6 +86,11 @@ final class ApplicationTreeSelectionListener
             {
                 ObjectDetailDescriptor detailDescriptor = (ObjectDetailDescriptor) userObject;
                 listener.onObjectSelected( detailDescriptor );
+            }
+            else if( LayerDetailDescriptor.class.isAssignableFrom( userObjectClass ) )
+            {
+                LayerDetailDescriptor detailDescriptor = (LayerDetailDescriptor) userObject;
+                listener.onLayerSelected( detailDescriptor );
             }
             else
             {

@@ -23,12 +23,11 @@ import static java.awt.Cursor.getPredefinedCursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import javax.swing.AbstractAction;
-import javax.swing.JButton;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
-import org.qi4j.library.swing.visualizer.overview.internal.visualization.Qi4jApplicationDisplay;
 import org.qi4j.library.swing.visualizer.overview.internal.visualization.PrefuseJScrollPane;
-import prefuse.Display;
+import org.qi4j.library.swing.visualizer.overview.internal.visualization.Qi4jApplicationDisplay;
 import prefuse.controls.PanControl;
 
 /**
