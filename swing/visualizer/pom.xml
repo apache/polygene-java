@@ -74,7 +74,6 @@
       <version>0.5-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
-
   </dependencies>
 
   <repositories>
