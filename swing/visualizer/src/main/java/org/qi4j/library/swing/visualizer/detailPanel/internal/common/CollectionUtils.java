@@ -18,6 +18,10 @@ package org.qi4j.library.swing.visualizer.detailPanel.internal.common;
 
 import java.util.LinkedList;
 import java.util.List;
+import org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.ObjectDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.ServiceDetailDescriptor;
+import org.qi4j.structure.Visibility;
 
 /**
  * @author edward.yakop@gmail.com
@@ -49,5 +53,56 @@ public final class CollectionUtils
         }
 
         return list;
+    }
+
+    public static List<ObjectDetailDescriptor> filterObjects(
+        Iterable<ObjectDetailDescriptor> objects, Visibility filterBy )
+    {
+        List<ObjectDetailDescriptor> filteredObjects = new LinkedList<ObjectDetailDescriptor>();
+
+        for( ObjectDetailDescriptor object : objects )
+        {
+            Visibility serviceVisibility = object.descriptor().visibility();
+            if( filterBy == null || filterBy.equals( serviceVisibility ) )
+            {
+                filteredObjects.add( object );
+            }
+        }
+
+        return filteredObjects;
+    }
+
+    public static List<ServiceDetailDescriptor> filterServices(
+        Iterable<ServiceDetailDescriptor> services, Visibility filter )
+    {
+        List<ServiceDetailDescriptor> filteredServices = new LinkedList<ServiceDetailDescriptor>();
+
+        for( ServiceDetailDescriptor service : services )
+        {
+            Visibility serviceVisibility = service.descriptor().visibility();
+            if( filter == null || filter.equals( serviceVisibility ) )
+            {
+                filteredServices.add( service );
+            }
+        }
+
+        return filteredServices;
+    }
+
+    public static <T extends CompositeDetailDescriptor> List<T> filterComposites(
+        Iterable<T> composites, Visibility filter )
+    {
+        List<T> filteredComposites = new LinkedList<T>();
+
+        for( T composite : composites )
+        {
+            Visibility compositeVisibility = composite.descriptor().visibility();
+            if( filter == null || filter.equals( compositeVisibility ) )
+            {
+                filteredComposites.add( composite );
+            }
+        }
+
+        return filteredComposites;
     }
 }

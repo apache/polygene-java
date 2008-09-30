@@ -6,13 +6,21 @@
     <rowspec value="top:4dlu:noGrow"/>
     <rowspec value="center:max(d;4px):noGrow"/>
     <rowspec value="top:4dlu:noGrow"/>
-    <rowspec value="fill:p:grow"/>
+    <rowspec value="center:max(d;4px):noGrow"/>
+    <rowspec value="fill:max(p;80dlu):grow"/>
     <colspec value="fill:max(d;4px):noGrow"/>
     <colspec value="fill:d:noGrow"/>
     <colspec value="left:4dlu:noGrow"/>
-    <colspec value="fill:d:grow"/>
+    <colspec value="fill:max(p;160dlu):noGrow"/>
+    <colspec value="fill:max(d;4px):noGrow"/>
+    <colspec value="left:4dlu:grow"/>
+    <colspec value="fill:max(d;4px):noGrow"/>
+    <rowgroup>
+      <member index="4"/>
+      <member index="6"/>
+    </rowgroup>
     <constraints>
-      <xy x="20" y="20" width="500" height="400"/>
+      <xy x="20" y="20" width="540" height="384"/>
     </constraints>
     <properties/>
     <border type="none"/>
@@ -62,7 +70,7 @@
           <member index="7"/>
         </colgroup>
         <constraints>
-          <grid row="5" column="1" row-span="1" col-span="3" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <grid row="6" column="1" row-span="1" col-span="5" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
           <forms/>
         </constraints>
         <properties/>
@@ -142,6 +150,22 @@
           </component>
         </children>
       </grid>
+      <component id="fa4f9" class="javax.swing.JComboBox" binding="filterVisibility" custom-create="true">
+        <constraints>
+          <grid row="5" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+          <forms/>
+        </constraints>
+        <properties/>
+      </component>
+      <component id="62b89" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="5" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <forms/>
+        </constraints>
+        <properties>
+          <text value="Filter"/>
+        </properties>
+      </component>
     </children>
   </grid>
 </form>
