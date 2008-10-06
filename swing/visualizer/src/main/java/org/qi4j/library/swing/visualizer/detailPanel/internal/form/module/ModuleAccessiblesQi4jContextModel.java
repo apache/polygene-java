@@ -21,6 +21,7 @@ import java.util.Collection;
 import static java.util.Collections.addAll;
 import static java.util.Collections.singletonList;
 import java.util.List;
+import java.util.LinkedList;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.event.ListDataEvent;
@@ -42,6 +43,7 @@ import org.qi4j.structure.Visibility;
 import static org.qi4j.structure.Visibility.application;
 import static org.qi4j.structure.Visibility.layer;
 import static org.qi4j.structure.Visibility.module;
+import static org.qi4j.structure.Visibility.*;
 
 /**
  * @author edward.yakop@gmail.com
@@ -97,12 +99,27 @@ final class ModuleAccessiblesQi4jContextModel
         }
         else
         {
-            List<ServiceDetailDescriptor> services = toList( aDescriptor.services() );
-            List<EntityDetailDescriptor> entities = toList( aDescriptor.entities() );
-            List<CompositeDetailDescriptor> composites = toList( aDescriptor.composites() );
-            List<ObjectDetailDescriptor> objects = toList( aDescriptor.objects() );
-
             Visibility visibility = (Visibility) filterModel.getSelectedItem();
+
+            List<ServiceDetailDescriptor> services;
+            List<EntityDetailDescriptor> entities;
+            List<CompositeDetailDescriptor> composites;
+            List<ObjectDetailDescriptor> objects;
+            if( visibility == null || visibility == module )
+            {
+                services = toList( aDescriptor.services() );
+                entities = toList( aDescriptor.entities() );
+                composites = toList( aDescriptor.composites() );
+                objects = toList( aDescriptor.objects() );
+            }
+            else
+            {
+                services = new LinkedList<ServiceDetailDescriptor>();
+                entities = new LinkedList<EntityDetailDescriptor>();
+                composites = new LinkedList<CompositeDetailDescriptor>();
+                objects = new LinkedList<ObjectDetailDescriptor>();
+            }
+
             if( visibility == null || visibility == layer )
             {
                 List<Visibility> layerFilter = singletonList( layer );
