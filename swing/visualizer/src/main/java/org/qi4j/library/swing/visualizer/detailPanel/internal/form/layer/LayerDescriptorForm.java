@@ -32,7 +32,8 @@ import javax.swing.event.ChangeListener;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.common.CollectionUtils;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.form.common.ListListModel;
 import static org.qi4j.library.swing.visualizer.detailPanel.internal.form.common.ListListModel.EMPTY_MODEL;
-import org.qi4j.library.swing.visualizer.detailPanel.internal.form.common.ModuleProvidesForm;
+import org.qi4j.library.swing.visualizer.detailPanel.internal.form.common.context.ProvidesQi4jContextModel;
+import org.qi4j.library.swing.visualizer.detailPanel.internal.form.common.context.Qi4jContextForm;
 import org.qi4j.library.swing.visualizer.model.LayerDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ModuleDetailDescriptor;
 import org.qi4j.spi.structure.LayerDescriptor;
@@ -56,7 +57,8 @@ public class LayerDescriptorForm
     private JList usedBy;
 
     private JTabbedPane tabbedPane;
-    private ModuleProvidesForm provides;
+    private ProvidesQi4jContextModel providersModel;
+    private Qi4jContextForm provides;
 
     private JPanel layerForm;
 
@@ -84,7 +86,8 @@ public class LayerDescriptorForm
             {
                 modules = layerDescriptor.modules();
             }
-            provides.updateModel( modules );
+            providersModel.updateModel( modules );
+            provides.refreshView();
             break;
         }
     }
@@ -108,6 +111,10 @@ public class LayerDescriptorForm
 
             usedLayerModel = new ListListModel( aDescriptor.usedBy() );
         }
+        else
+        {
+            providersModel.updateModel( null );
+        }
 
         layerName.setText( layerNameStr );
         dependsOn.setModel( dependsOnModel );
@@ -121,7 +128,8 @@ public class LayerDescriptorForm
         DefaultComponentFactory cmpFactory = DefaultComponentFactory.getInstance();
         layerSeparator = cmpFactory.createSeparator( "Layer" );
 
-        provides = new ModuleProvidesForm( null, NULL_FILTER_MEANS );
+        providersModel = new ProvidesQi4jContextModel( null, NULL_FILTER_MEANS );
+        provides = new Qi4jContextForm( providersModel );
     }
 
     /**

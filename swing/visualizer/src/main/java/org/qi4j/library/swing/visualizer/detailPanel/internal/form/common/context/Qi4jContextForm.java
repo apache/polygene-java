@@ -14,41 +14,26 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.qi4j.library.swing.visualizer.detailPanel.internal.form.common;
+package org.qi4j.library.swing.visualizer.detailPanel.internal.form.common.context;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Collection;
-import static java.util.Collections.singletonList;
-import java.util.LinkedList;
-import java.util.List;
-import javax.swing.DefaultComboBoxModel;
+import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
-import static org.qi4j.library.swing.visualizer.detailPanel.internal.common.CollectionUtils.filterComposites;
-import static org.qi4j.library.swing.visualizer.detailPanel.internal.common.CollectionUtils.filterObjects;
-import static org.qi4j.library.swing.visualizer.detailPanel.internal.common.CollectionUtils.filterServices;
-import org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor;
-import org.qi4j.library.swing.visualizer.model.EntityDetailDescriptor;
-import org.qi4j.library.swing.visualizer.model.ModuleDetailDescriptor;
-import org.qi4j.library.swing.visualizer.model.ObjectDetailDescriptor;
-import org.qi4j.library.swing.visualizer.model.ServiceDetailDescriptor;
-import org.qi4j.structure.Visibility;
+import static org.qi4j.composite.NullArgumentException.validateNotNull;
 
 /**
  * @author edward.yakop@gmail.com
  * @since 0.5
  */
-public final class ModuleProvidesForm
+public final class Qi4jContextForm
 {
-    private Iterable<ModuleDetailDescriptor> descriptors;
-
-    private final Collection<Visibility> nullFilterMeans;
     private JLabel filterLabel;
     private JComboBox visibilityFilter;
 
@@ -58,22 +43,27 @@ public final class ModuleProvidesForm
     private JList objects;
 
     private JPanel contextForm;
+    private final Qi4jContextModel model;
 
-    public ModuleProvidesForm( Visibility[] filters, Collection<Visibility> nullFilterMeans )
+    public Qi4jContextForm( Qi4jContextModel aModel )
         throws IllegalArgumentException
     {
+        validateNotNull( "aModel", aModel );
+
+        model = aModel;
+
         $$$setupUI$$$();
 
-        this.nullFilterMeans = nullFilterMeans;
-        if( filters != null )
+        ComboBoxModel filterModel = aModel.filterModel();
+        if( filterModel.getSize() > 0 )
         {
-            visibilityFilter.setModel( new DefaultComboBoxModel( filters ) );
+            visibilityFilter.setModel( filterModel );
             visibilityFilter.addActionListener(
                 new ActionListener()
                 {
                     public void actionPerformed( ActionEvent e )
                     {
-                        updateModel( descriptors );
+                        refreshView();
                     }
                 }
             );
@@ -85,60 +75,12 @@ public final class ModuleProvidesForm
         }
     }
 
-    @SuppressWarnings( "unchecked" )
-    public final void updateModel( Iterable<ModuleDetailDescriptor> descriptors )
+    public final void refreshView()
     {
-        ListListModel servicesModel = ListListModel.EMPTY_MODEL;
-        ListListModel entitiesModel = ListListModel.EMPTY_MODEL;
-        ListListModel compositesModel = ListListModel.EMPTY_MODEL;
-        ListListModel objectsModel = ListListModel.EMPTY_MODEL;
-
-        this.descriptors = descriptors;
-
-        boolean isDescriptorNotNull = false;
-        if( descriptors != null )
-        {
-            Collection<Visibility> filterBy = getFilterBy();
-
-            List<ServiceDetailDescriptor> serviceList = new LinkedList<ServiceDetailDescriptor>();
-            List<EntityDetailDescriptor> entityList = new LinkedList<EntityDetailDescriptor>();
-            List<CompositeDetailDescriptor> compositeLists = new LinkedList<CompositeDetailDescriptor>();
-            List<ObjectDetailDescriptor> objectList = new LinkedList<ObjectDetailDescriptor>();
-
-            for( ModuleDetailDescriptor descriptor : descriptors )
-            {
-                isDescriptorNotNull = true;
-
-                serviceList.addAll( filterServices( descriptor.services(), filterBy ) );
-                entityList.addAll( filterComposites( descriptor.entities(), filterBy ) );
-                compositeLists.addAll( filterComposites( descriptor.composites(), filterBy ) );
-                objectList.addAll( filterObjects( descriptor.objects(), filterBy ) );
-            }
-
-            servicesModel = new ListListModel( serviceList );
-            entitiesModel = new ListListModel( entityList );
-            compositesModel = new ListListModel( compositeLists );
-            objectsModel = new ListListModel( objectList );
-        }
-        visibilityFilter.setEnabled( isDescriptorNotNull );
-
-        services.setModel( servicesModel );
-        entities.setModel( entitiesModel );
-        composites.setModel( compositesModel );
-        objects.setModel( objectsModel );
-    }
-
-    private Collection<Visibility> getFilterBy()
-    {
-        Visibility visibility = (Visibility) visibilityFilter.getSelectedItem();
-        if( visibility == null )
-        {
-            return nullFilterMeans;
-        }
-        else
-        {
-            return singletonList( visibility );
-        }
+        services.setModel( model.servicesModel() );
+        entities.setModel( model.entitiesModel() );
+        composites.setModel( model.compositesModel() );
+        objects.setModel( model.objectsModel() );
     }
 
     /**
@@ -181,7 +123,6 @@ public final class ModuleProvidesForm
         filterLabel.setText( "Filter" );
         contextForm.add( filterLabel, cc.xy( 2, 2 ) );
         visibilityFilter = new JComboBox();
-        visibilityFilter.setEnabled( false );
         contextForm.add( visibilityFilter, cc.xy( 4, 2 ) );
         filterLabel.setLabelFor( visibilityFilter );
     }

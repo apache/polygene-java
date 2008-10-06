@@ -22,6 +22,7 @@ import com.jgoodies.forms.layout.FormLayout;
 import java.util.ArrayList;
 import static java.util.Collections.addAll;
 import static java.util.Collections.singletonList;
+import java.util.List;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -29,7 +30,8 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import org.qi4j.library.swing.visualizer.detailPanel.internal.form.common.ModuleProvidesForm;
+import org.qi4j.library.swing.visualizer.detailPanel.internal.form.common.context.ProvidesQi4jContextModel;
+import org.qi4j.library.swing.visualizer.detailPanel.internal.form.common.context.Qi4jContextForm;
 import org.qi4j.library.swing.visualizer.model.ModuleDetailDescriptor;
 import org.qi4j.structure.Visibility;
 import static org.qi4j.structure.Visibility.application;
@@ -42,21 +44,21 @@ import static org.qi4j.structure.Visibility.layer;
  */
 public final class ModuleDescriptorForm
 {
-    private static final Visibility[] FILTER_VISIBILITY_MODEL;
-    private static final ArrayList<Visibility> NULL_FILTER_MEANS;
+    private static final Visibility[] FILTER_PROVIDES_MODEL;
+    private static final ArrayList<Visibility> PROVIDES_NULL_FILTER_MEANS;
 
     static
     {
-        FILTER_VISIBILITY_MODEL = new Visibility[]
+        FILTER_PROVIDES_MODEL = new Visibility[]
             {
                 null,
                 layer,
                 application
             };
 
-        NULL_FILTER_MEANS = new ArrayList<Visibility>();
-        addAll( NULL_FILTER_MEANS, layer, application );
-        NULL_FILTER_MEANS.trimToSize();
+        PROVIDES_NULL_FILTER_MEANS = new ArrayList<Visibility>();
+        addAll( PROVIDES_NULL_FILTER_MEANS, layer, application );
+        PROVIDES_NULL_FILTER_MEANS.trimToSize();
     }
 
     private ModuleDetailDescriptor descriptor;
@@ -65,7 +67,10 @@ public final class ModuleDescriptorForm
     private JTextField moduleName;
 
     private JTabbedPane tabbedpane;
-    private ModuleProvidesForm providesForm;
+    private ProvidesQi4jContextModel providesModel;
+    private Qi4jContextForm providesForm;
+    private ModuleAccessiblesQi4jContextModel accessibleModel;
+    private Qi4jContextForm accessiblesForm;
 
     private JPanel moduleForm;
 
@@ -86,10 +91,17 @@ public final class ModuleDescriptorForm
     private void updateSelectedTabPanelComponent()
     {
         int selectedIndex = tabbedpane.getSelectedIndex();
+
         switch( selectedIndex )
         {
         case 0:
-            providesForm.updateModel( singletonList( descriptor ) );
+            List<ModuleDetailDescriptor> modules = descriptor != null ? singletonList( descriptor ) : null;
+            providesModel.updateModel( modules );
+            providesForm.refreshView();
+            break;
+        case 1:
+            accessibleModel.updateModel( descriptor );
+            accessiblesForm.refreshView();
             break;
         }
     }
@@ -116,7 +128,11 @@ public final class ModuleDescriptorForm
         DefaultComponentFactory cmpFactory = DefaultComponentFactory.getInstance();
         moduleSeparator = cmpFactory.createSeparator( "Module" );
 
-        providesForm = new ModuleProvidesForm( FILTER_VISIBILITY_MODEL, NULL_FILTER_MEANS );
+        providesModel = new ProvidesQi4jContextModel( FILTER_PROVIDES_MODEL, PROVIDES_NULL_FILTER_MEANS );
+        providesForm = new Qi4jContextForm( providesModel );
+
+        accessibleModel = new ModuleAccessiblesQi4jContextModel();
+        accessiblesForm = new Qi4jContextForm( accessibleModel );
     }
 
     /**
@@ -145,6 +161,10 @@ public final class ModuleDescriptorForm
         panel1.setLayout( new FormLayout( "fill:p:grow", "fill:p:grow" ) );
         tabbedpane.addTab( "Provides", panel1 );
         panel1.add( providesForm.$$$getRootComponent$$$(), cc.xy( 1, 1 ) );
+        final JPanel panel2 = new JPanel();
+        panel2.setLayout( new FormLayout( "fill:p:grow", "fill:p:grow" ) );
+        tabbedpane.addTab( "Accessibles", panel2 );
+        panel2.add( accessiblesForm.$$$getRootComponent$$$(), cc.xy( 1, 1 ) );
     }
 
     /**

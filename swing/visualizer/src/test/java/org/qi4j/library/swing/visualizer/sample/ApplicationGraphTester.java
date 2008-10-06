@@ -14,6 +14,8 @@
 
 package org.qi4j.library.swing.visualizer.sample;
 
+import com.jgoodies.looks.plastic.Plastic3DLookAndFeel;
+import javax.swing.UIManager;
 import org.qi4j.bootstrap.ApplicationAssembly;
 import org.qi4j.bootstrap.Energy4Java;
 import org.qi4j.bootstrap.LayerAssembly;
@@ -28,8 +30,7 @@ import org.qi4j.library.constraints.annotation.NotNull;
 import org.qi4j.library.swing.visualizer.ApplicationGraph;
 import org.qi4j.property.Property;
 import org.qi4j.structure.Application;
-import org.qi4j.structure.Visibility;
-import static org.qi4j.structure.Visibility.*;
+import static org.qi4j.structure.Visibility.application;
 
 /**
  * TODO
@@ -37,8 +38,10 @@ import static org.qi4j.structure.Visibility.*;
 public class ApplicationGraphTester
 {
     public static void main( String[] args )
-        throws Exception
+        throws Throwable
     {
+        UIManager.setLookAndFeel( new Plastic3DLookAndFeel() );
+
         Energy4Java qi4j = new Energy4Java();
 
         ApplicationAssembly assembly = qi4j.newApplicationAssembly();
@@ -117,8 +120,7 @@ public class ApplicationGraphTester
     @Mixins( AssociationMixin.class )
     private static interface BDomainComposite extends Composite
     {
-        @NotNull
-        Association<ADomainComposite> aComposites();
+        @NotNull Association<ADomainComposite> aComposites();
     }
 
     private static interface MyEntity extends EntityComposite

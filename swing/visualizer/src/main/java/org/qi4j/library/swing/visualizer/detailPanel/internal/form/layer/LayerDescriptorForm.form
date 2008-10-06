@@ -109,7 +109,7 @@
             <properties/>
             <border type="none"/>
             <children>
-              <nested-form id="883fb" form-file="org/qi4j/library/swing/visualizer/detailPanel/internal/form/common/ModuleProvidesForm.form" binding="provides" custom-create="true">
+              <nested-form id="883fb" form-file="org/qi4j/library/swing/visualizer/detailPanel/internal/form/common/context/Qi4jContextForm.form" binding="provides" custom-create="true">
                 <constraints>
                   <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                   <forms/>

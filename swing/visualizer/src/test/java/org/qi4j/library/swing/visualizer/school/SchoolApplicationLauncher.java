@@ -16,6 +16,8 @@
 */
 package org.qi4j.library.swing.visualizer.school;
 
+import com.jgoodies.looks.plastic.Plastic3DLookAndFeel;
+import javax.swing.UIManager;
 import org.qi4j.bootstrap.ApplicationAssembly;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.Energy4Java;
@@ -39,8 +41,10 @@ public final class SchoolApplicationLauncher
     }
 
     public final Application launch()
-        throws AssemblyException
+        throws Throwable
     {
+        UIManager.setLookAndFeel( new Plastic3DLookAndFeel() );
+
         Energy4Java energy4Java = new Energy4Java();
         ApplicationAssembly appAssembly = energy4Java.newApplicationAssembly();
         appAssembly.setName( "School" );
