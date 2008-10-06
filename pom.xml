@@ -80,7 +80,7 @@
       <roles>
         <role>Developer</role>
       </roles>
-      <timezone>UTC+2</timezone>
+      <timezone>UTC+1</timezone>
     </developer>
   </developers>
 
