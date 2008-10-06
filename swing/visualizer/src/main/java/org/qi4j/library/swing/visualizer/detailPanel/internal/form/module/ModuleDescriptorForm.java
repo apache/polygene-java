@@ -19,94 +19,96 @@ package org.qi4j.library.swing.visualizer.detailPanel.internal.form.module;
 import com.jgoodies.forms.factories.DefaultComponentFactory;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.JComboBox;
+import java.util.ArrayList;
+import static java.util.Collections.addAll;
+import static java.util.Collections.singletonList;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
-import static org.qi4j.library.swing.visualizer.detailPanel.internal.common.CollectionUtils.filterComposites;
-import static org.qi4j.library.swing.visualizer.detailPanel.internal.common.CollectionUtils.filterObjects;
-import static org.qi4j.library.swing.visualizer.detailPanel.internal.common.CollectionUtils.filterServices;
-import org.qi4j.library.swing.visualizer.detailPanel.internal.form.ListListModel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import org.qi4j.library.swing.visualizer.detailPanel.internal.form.common.ModuleProvidesForm;
 import org.qi4j.library.swing.visualizer.model.ModuleDetailDescriptor;
 import org.qi4j.structure.Visibility;
-import static org.qi4j.structure.Visibility.*;
-import prefuse.data.query.ListModel;
+import static org.qi4j.structure.Visibility.application;
+import static org.qi4j.structure.Visibility.layer;
 
 /**
  * @author edward.yakop@gmail.com
  * @see org.qi4j.library.swing.visualizer.model.ModuleDetailDescriptor
  * @since 0.5
  */
-public class ModuleDescriptorForm
+public final class ModuleDescriptorForm
 {
-    private static final Visibility[] VISIBILITY_CHOICES = new Visibility[]{
-        null,
-        application,
-        layer,
-        module
-    };
+    private static final Visibility[] FILTER_VISIBILITY_MODEL;
+    private static final ArrayList<Visibility> NULL_FILTER_MEANS;
+
+    static
+    {
+        FILTER_VISIBILITY_MODEL = new Visibility[]
+            {
+                null,
+                layer,
+                application
+            };
+
+        NULL_FILTER_MEANS = new ArrayList<Visibility>();
+        addAll( NULL_FILTER_MEANS, layer, application );
+        NULL_FILTER_MEANS.trimToSize();
+    }
+
+    private ModuleDetailDescriptor descriptor;
 
     private JComponent moduleSeparator;
     private JTextField moduleName;
 
-    private JComboBox filterVisibility;
-    private JList moduleServices;
-    private JList moduleEntities;
-    private JList moduleComposites;
-    private JList moduleObjects;
+    private JTabbedPane tabbedpane;
+    private ModuleProvidesForm providesForm;
 
     private JPanel moduleForm;
 
-    private ModuleDetailDescriptor descriptor;
 
     public ModuleDescriptorForm()
     {
         $$$setupUI$$$();
-        filterVisibility.addActionListener(
-            new ActionListener()
+
+        tabbedpane.addChangeListener( new ChangeListener()
+        {
+            public void stateChanged( ChangeEvent e )
             {
-                public void actionPerformed( ActionEvent e )
-                {
-                    updateModel( descriptor );
-                }
+                updateSelectedTabPanelComponent();
             }
-        );
+        } );
+    }
+
+    private void updateSelectedTabPanelComponent()
+    {
+        int selectedIndex = tabbedpane.getSelectedIndex();
+        switch( selectedIndex )
+        {
+        case 0:
+            providesForm.updateModel( singletonList( descriptor ) );
+            break;
+        }
     }
 
     @SuppressWarnings( "unchecked" )
     public final void updateModel( ModuleDetailDescriptor aDescriptor )
     {
         String moduleNameStr = null;
-        ListListModel servicesModel = ListListModel.EMPTY_MODEL;
-        ListListModel entitiesModel = ListListModel.EMPTY_MODEL;
-        ListListModel compositesModel = ListListModel.EMPTY_MODEL;
-        ListListModel objectsModel = ListListModel.EMPTY_MODEL;
-
         descriptor = aDescriptor;
 
         boolean isDescriptorNotNull = aDescriptor != null;
         if( isDescriptorNotNull )
         {
             moduleNameStr = aDescriptor.descriptor().name();
-
-            Visibility filterBy = (Visibility) filterVisibility.getSelectedItem();
-
-            servicesModel = new ListListModel( filterServices( aDescriptor.services(), filterBy ) );
-            entitiesModel = new ListListModel( filterComposites( aDescriptor.entities(), filterBy ) );
-            compositesModel = new ListListModel( filterComposites( aDescriptor.composites(), filterBy ) );
-            objectsModel = new ListListModel( filterObjects( aDescriptor.objects(), filterBy ) );
         }
-        filterVisibility.setEditable( isDescriptorNotNull );
 
         moduleName.setText( moduleNameStr );
-        moduleServices.setModel( servicesModel );
-        moduleEntities.setModel( entitiesModel );
-        moduleComposites.setModel( compositesModel );
-        moduleObjects.setModel( objectsModel );
+
+        updateSelectedTabPanelComponent();
     }
 
     private void createUIComponents()
@@ -114,8 +116,7 @@ public class ModuleDescriptorForm
         DefaultComponentFactory cmpFactory = DefaultComponentFactory.getInstance();
         moduleSeparator = cmpFactory.createSeparator( "Module" );
 
-        filterVisibility = new JComboBox();
-        filterVisibility.setModel( new ListModel( VISIBILITY_CHOICES ) );
+        providesForm = new ModuleProvidesForm( FILTER_VISIBILITY_MODEL, NULL_FILTER_MEANS );
     }
 
     /**
@@ -129,44 +130,21 @@ public class ModuleDescriptorForm
     {
         createUIComponents();
         moduleForm = new JPanel();
-        moduleForm.setLayout( new FormLayout( "fill:max(d;4px):noGrow,fill:d:noGrow,left:4dlu:noGrow,fill:max(p;160dlu):noGrow,fill:max(d;4px):noGrow,left:4dlu:grow,fill:max(d;4px):noGrow", "center:max(d;4px):noGrow,center:d:noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow,fill:max(p;80dlu):grow" ) );
-        ( (FormLayout) moduleForm.getLayout() ).setRowGroups( new int[][]{ new int[]{ 4, 6 } } );
+        moduleForm.setLayout( new FormLayout( "fill:max(d;4px):noGrow,fill:d:noGrow,left:4dlu:noGrow,fill:max(p;75dlu):noGrow,left:4px:noGrow,fill:max(d;4px):grow,fill:max(d;4px):noGrow", "center:max(d;4px):noGrow,center:d:noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow,top:4dlu:noGrow,fill:p:grow" ) );
         CellConstraints cc = new CellConstraints();
-        moduleForm.add( moduleSeparator, cc.xyw( 2, 2, 3 ) );
+        moduleForm.add( moduleSeparator, cc.xyw( 2, 2, 5 ) );
         final JLabel label1 = new JLabel();
         label1.setText( "Name" );
         moduleForm.add( label1, cc.xy( 2, 4 ) );
         moduleName = new JTextField();
         moduleName.setEditable( false );
         moduleForm.add( moduleName, cc.xy( 4, 4, CellConstraints.FILL, CellConstraints.DEFAULT ) );
+        tabbedpane = new JTabbedPane();
+        moduleForm.add( tabbedpane, cc.xyw( 2, 7, 5 ) );
         final JPanel panel1 = new JPanel();
-        panel1.setLayout( new FormLayout( "fill:p:grow,left:4dlu:noGrow,fill:p:grow,left:4dlu:noGrow,fill:p:grow,left:4dlu:noGrow,fill:p:grow", "top:p:noGrow,top:4dlu:noGrow,center:d:grow" ) );
-        ( (FormLayout) panel1.getLayout() ).setColumnGroups( new int[][]{ new int[]{ 1, 3, 5, 7 } } );
-        moduleForm.add( panel1, cc.xyw( 2, 7, 5 ) );
-        final JLabel label2 = new JLabel();
-        label2.setText( "Serivces" );
-        panel1.add( label2, cc.xy( 1, 1, CellConstraints.CENTER, CellConstraints.DEFAULT ) );
-        final JLabel label3 = new JLabel();
-        label3.setText( "Entities" );
-        panel1.add( label3, cc.xy( 3, 1, CellConstraints.CENTER, CellConstraints.DEFAULT ) );
-        final JLabel label4 = new JLabel();
-        label4.setText( "Composites" );
-        panel1.add( label4, cc.xy( 5, 1, CellConstraints.CENTER, CellConstraints.DEFAULT ) );
-        final JLabel label5 = new JLabel();
-        label5.setText( "Objects" );
-        panel1.add( label5, cc.xy( 7, 1, CellConstraints.CENTER, CellConstraints.DEFAULT ) );
-        moduleServices = new JList();
-        panel1.add( moduleServices, cc.xy( 1, 3, CellConstraints.DEFAULT, CellConstraints.FILL ) );
-        moduleEntities = new JList();
-        panel1.add( moduleEntities, cc.xy( 3, 3, CellConstraints.DEFAULT, CellConstraints.FILL ) );
-        moduleComposites = new JList();
-        panel1.add( moduleComposites, cc.xy( 5, 3, CellConstraints.DEFAULT, CellConstraints.FILL ) );
-        moduleObjects = new JList();
-        panel1.add( moduleObjects, cc.xy( 7, 3, CellConstraints.DEFAULT, CellConstraints.FILL ) );
-        moduleForm.add( filterVisibility, cc.xy( 4, 6 ) );
-        final JLabel label6 = new JLabel();
-        label6.setText( "Filter" );
-        moduleForm.add( label6, cc.xy( 2, 6 ) );
+        panel1.setLayout( new FormLayout( "fill:p:grow", "fill:p:grow" ) );
+        tabbedpane.addTab( "Provides", panel1 );
+        panel1.add( providesForm.$$$getRootComponent$$$(), cc.xy( 1, 1 ) );
     }
 
     /**

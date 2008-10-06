@@ -18,6 +18,7 @@ package org.qi4j.library.swing.visualizer.overview.internal.visualization;
 
 import java.awt.event.MouseEvent;
 import org.qi4j.composite.NullArgumentException;
+import org.qi4j.library.swing.visualizer.listener.SelectionListener;
 import org.qi4j.library.swing.visualizer.model.ApplicationDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.EntityDetailDescriptor;
@@ -25,7 +26,6 @@ import org.qi4j.library.swing.visualizer.model.LayerDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ModuleDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ObjectDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ServiceDetailDescriptor;
-import org.qi4j.library.swing.visualizer.listener.SelectionListener;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.FIELD_DESCRIPTOR;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.FIELD_TYPE;
 import org.qi4j.library.swing.visualizer.overview.internal.common.NodeType;

@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.library.swing.visualizer.detailPanel.internal.form;
+package org.qi4j.library.swing.visualizer.detailPanel.internal.form.common;
 
 import com.jgoodies.forms.factories.DefaultComponentFactory;
 import com.jgoodies.forms.layout.CellConstraints;

@@ -16,6 +16,7 @@
 */
 package org.qi4j.library.swing.visualizer.detailPanel.internal.common;
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor;
@@ -30,7 +31,6 @@ public final class CollectionUtils
 {
     private CollectionUtils()
     {
-
     }
 
     /**
@@ -56,14 +56,14 @@ public final class CollectionUtils
     }
 
     public static List<ObjectDetailDescriptor> filterObjects(
-        Iterable<ObjectDetailDescriptor> objects, Visibility filterBy )
+        Iterable<ObjectDetailDescriptor> objects, Collection<Visibility> filterBy )
     {
         List<ObjectDetailDescriptor> filteredObjects = new LinkedList<ObjectDetailDescriptor>();
 
         for( ObjectDetailDescriptor object : objects )
         {
             Visibility serviceVisibility = object.descriptor().visibility();
-            if( filterBy == null || filterBy.equals( serviceVisibility ) )
+            if( filterBy.contains( serviceVisibility ) )
             {
                 filteredObjects.add( object );
             }
@@ -73,14 +73,14 @@ public final class CollectionUtils
     }
 
     public static List<ServiceDetailDescriptor> filterServices(
-        Iterable<ServiceDetailDescriptor> services, Visibility filter )
+        Iterable<ServiceDetailDescriptor> services, Collection<Visibility> filterBy )
     {
         List<ServiceDetailDescriptor> filteredServices = new LinkedList<ServiceDetailDescriptor>();
 
         for( ServiceDetailDescriptor service : services )
         {
             Visibility serviceVisibility = service.descriptor().visibility();
-            if( filter == null || filter.equals( serviceVisibility ) )
+            if( filterBy.contains( serviceVisibility ) )
             {
                 filteredServices.add( service );
             }
@@ -90,14 +90,14 @@ public final class CollectionUtils
     }
 
     public static <T extends CompositeDetailDescriptor> List<T> filterComposites(
-        Iterable<T> composites, Visibility filter )
+        Iterable<T> composites, Collection<Visibility> filterBy )
     {
         List<T> filteredComposites = new LinkedList<T>();
 
         for( T composite : composites )
         {
             Visibility compositeVisibility = composite.descriptor().visibility();
-            if( filter == null || filter.equals( compositeVisibility ) )
+            if( filterBy.contains( compositeVisibility ) )
             {
                 filteredComposites.add( composite );
             }

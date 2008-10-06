@@ -18,19 +18,19 @@ package org.qi4j.library.swing.visualizer.detailPanel.internal.form.composite;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
+import java.awt.Dimension;
 import javax.swing.JComponent;
 import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.ListModel;
 import javax.swing.JSplitPane;
+import javax.swing.ListModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import static org.qi4j.library.swing.visualizer.detailPanel.internal.common.CollectionUtils.toList;
-import org.qi4j.library.swing.visualizer.detailPanel.internal.form.ListListModel;
-import static org.qi4j.library.swing.visualizer.detailPanel.internal.form.ListListModel.*;
+import org.qi4j.library.swing.visualizer.detailPanel.internal.form.common.ListListModel;
+import static org.qi4j.library.swing.visualizer.detailPanel.internal.form.common.ListListModel.EMPTY_MODEL;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.form.composite.mixin.MixinPanel;
 import org.qi4j.library.swing.visualizer.model.MixinDetailDescriptor;
-import java.awt.Dimension;
 
 /**
  * @author edward.yakop@gmail.com
