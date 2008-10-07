@@ -28,8 +28,6 @@ import org.qi4j.library.swing.visualizer.model.ModuleDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ObjectDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ServiceDetailDescriptor;
 import org.qi4j.spi.composite.CompositeDescriptor;
-import org.qi4j.spi.object.ObjectDescriptor;
-import org.qi4j.structure.Visibility;
 
 /**
  * TODO: localization
@@ -99,7 +97,7 @@ final class TreeModelBuilder
         addIfNotEmpty( moduleNode, composites );
 
         DefaultMutableTreeNode objects = new DefaultMutableTreeNode( "objects" );
-        addObjectNodes( objects, aModule, null );
+        addObjectNodes( objects, aModule );
         addIfNotEmpty( moduleNode, objects );
     }
 
@@ -134,26 +132,29 @@ final class TreeModelBuilder
 
     private void addCompositeNode(
         DefaultMutableTreeNode aCompositesNode,
-        CompositeDetailDescriptor<CompositeDescriptor> aCompositeDetailDescriptor )
+        CompositeDetailDescriptor<CompositeDescriptor> aDescriptor )
     {
-        DefaultMutableTreeNode compositeNode = new DefaultMutableTreeNode( aCompositeDetailDescriptor );
+        DefaultMutableTreeNode compositeNode = new DefaultMutableTreeNode( aDescriptor );
         aCompositesNode.add( compositeNode );
 
-        addMixinsNode( compositeNode, aCompositeDetailDescriptor );
-        addMethodsNode( compositeNode, aCompositeDetailDescriptor );
+        DefaultMutableTreeNode mixinsNode = new DefaultMutableTreeNode( "mixins" );
+        addMixinNodes( mixinsNode, aDescriptor );
+        addIfNotEmpty( compositeNode, mixinsNode );
+
+        DefaultMutableTreeNode methodsNode = new DefaultMutableTreeNode( "methods" );
+        addMethodsNode( methodsNode, aDescriptor );
+        addIfNotEmpty( compositeNode, methodsNode );
     }
 
-    private void addMixinsNode(
-        DefaultMutableTreeNode aCompositeNode,
+    private void addMixinNodes(
+        DefaultMutableTreeNode mixinsNode,
         CompositeDetailDescriptor<CompositeDescriptor> aCompositeDetailDescriptor )
     {
-        DefaultMutableTreeNode mixinsNode = new DefaultMutableTreeNode( "mixins" );
         Iterable<MixinDetailDescriptor> mixins = aCompositeDetailDescriptor.mixins();
         for( MixinDetailDescriptor mixin : mixins )
         {
             addMixinNode( mixinsNode, mixin );
         }
-        addIfNotEmpty( aCompositeNode, mixinsNode );
     }
 
     private void addMixinNode( DefaultMutableTreeNode mixinsNode, MixinDetailDescriptor aMixin )
@@ -187,33 +188,44 @@ final class TreeModelBuilder
     }
 
     private void addMethodsNode(
-        DefaultMutableTreeNode aCompositeNode,
+        DefaultMutableTreeNode methodsNode,
         CompositeDetailDescriptor<CompositeDescriptor> aCompositeDetailDescriptor )
     {
-        DefaultMutableTreeNode methodsNode = new DefaultMutableTreeNode( "methods" );
         Iterable<CompositeMethodDetailDescriptor> methods = aCompositeDetailDescriptor.methods();
         for( CompositeMethodDetailDescriptor method : methods )
         {
             DefaultMutableTreeNode methodNode = new DefaultMutableTreeNode( method );
             methodsNode.add( methodNode );
         }
-        addIfNotEmpty( aCompositeNode, methodsNode );
     }
 
-    private void addObjectNodes(
-        DefaultMutableTreeNode aObjectsNode,
-        ModuleDetailDescriptor aModule,
-        Visibility aVisibilityFilter )
+    private void addObjectNodes( DefaultMutableTreeNode aObjectsNode, ModuleDetailDescriptor aModule )
     {
         Iterable<ObjectDetailDescriptor> objects = aModule.objects();
         for( ObjectDetailDescriptor object : objects )
         {
-            ObjectDescriptor descriptor = object.descriptor();
-            Visibility visibility = descriptor.visibility();
-            if( aVisibilityFilter == null || visibility == aVisibilityFilter )
-            {
-                aObjectsNode.add( new DefaultMutableTreeNode( object ) );
-            }
+            addObjectNode( aObjectsNode, object );
         }
+    }
+
+    private void addObjectNode( DefaultMutableTreeNode aObjectsNode, ObjectDetailDescriptor aDescriptor )
+    {
+        DefaultMutableTreeNode objectNode = new DefaultMutableTreeNode( aDescriptor );
+        aObjectsNode.add( objectNode );
+
+        // Constructors
+        DefaultMutableTreeNode constructorsNode = new DefaultMutableTreeNode( "constructors" );
+        addIterableItemNodes( constructorsNode, aDescriptor.constructors() );
+        addIfNotEmpty( objectNode, constructorsNode );
+
+        // Injected fields
+        DefaultMutableTreeNode fieldsNode = new DefaultMutableTreeNode( "injected fields" );
+        addIterableItemNodes( fieldsNode, aDescriptor.injectedFields() );
+        addIfNotEmpty( objectNode, fieldsNode );
+
+        // Injected methods
+        DefaultMutableTreeNode methodsNode = new DefaultMutableTreeNode( "injected methods" );
+        addIterableItemNodes( methodsNode, aDescriptor.injectedMethods() );
+        addIfNotEmpty( objectNode, methodsNode );
     }
 }

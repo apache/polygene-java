@@ -76,7 +76,7 @@ public final class ObjectDetailDescriptor
      * @return Injected fields of this {@code ObjectDetailDescriptor}. Never return {@code null}.
      * @since 0.5
      */
-    public final Iterable<InjectedFieldDetailDescriptor> getInjectedFields()
+    public final Iterable<InjectedFieldDetailDescriptor> injectedFields()
     {
         return injectedFields;
     }
