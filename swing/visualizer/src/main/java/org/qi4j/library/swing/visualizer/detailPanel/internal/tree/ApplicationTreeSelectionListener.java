@@ -32,6 +32,7 @@ import org.qi4j.library.swing.visualizer.model.ServiceDetailDescriptor;
 
 /**
  * @author edward.yakop@gmail.com
+ * @since 0.5
  */
 final class ApplicationTreeSelectionListener
     implements TreeSelectionListener
