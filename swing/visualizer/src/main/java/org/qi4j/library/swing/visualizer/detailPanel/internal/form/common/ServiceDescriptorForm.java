@@ -128,7 +128,7 @@ public final class ServiceDescriptorForm
     {
         createUIComponents();
         placeHolder = new JPanel();
-        placeHolder.setLayout( new FormLayout( "fill:max(d;4px):noGrow,fill:p:noGrow,fill:max(d;4px):noGrow,fill:max(m;160dlu):noGrow", "center:max(d;4px):noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow,center:p:noGrow,top:5dlu:noGrow,center:p:noGrow,top:4dlu:noGrow,center:p:noGrow,top:4dlu:noGrow,center:p:noGrow,top:4dlu:noGrow,top:max(m;50dlu):noGrow,top:5dlu:noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow,center:p:noGrow,top:4dlu:noGrow,center:max(p;4px):noGrow" ) );
+        placeHolder.setLayout( new FormLayout( "fill:max(d;4px):noGrow,fill:p:noGrow,fill:max(d;4px):noGrow,fill:max(p;160dlu):noGrow", "center:max(d;4px):noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow,center:p:noGrow,top:5dlu:noGrow,center:p:noGrow,top:4dlu:noGrow,center:p:noGrow,top:4dlu:noGrow,center:p:noGrow,top:4dlu:noGrow,top:max(m;50dlu):noGrow,top:5dlu:noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow,center:p:noGrow,top:4dlu:noGrow,center:max(p;4px):noGrow" ) );
         ( (FormLayout) placeHolder.getLayout() ).setRowGroups( new int[][]{ new int[]{ 4, 6, 8, 10 }, new int[]{ 2, 14 }, new int[]{ 16, 18 } } );
         final JLabel label1 = new JLabel();
         label1.setText( "Id" );

@@ -22,7 +22,7 @@
     <colspec value="fill:max(d;4px):noGrow"/>
     <colspec value="fill:p:noGrow"/>
     <colspec value="fill:max(d;4px):noGrow"/>
-    <colspec value="fill:max(m;160dlu):noGrow"/>
+    <colspec value="fill:max(p;160dlu):noGrow"/>
     <rowgroup>
       <member index="4"/>
       <member index="6"/>
