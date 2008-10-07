@@ -139,8 +139,8 @@ public class LayerDescriptorForm
     {
         createUIComponents();
         layerForm = new JPanel();
-        layerForm.setLayout( new FormLayout( "fill:max(d;4px):noGrow,fill:p:noGrow,left:4dlu:noGrow,fill:322px:noGrow,left:4dlu:noGrow,fill:d:grow,left:max(d;4px):noGrow", "center:p:noGrow,center:max(d;4px):noGrow,center:p:noGrow,top:4dlu:noGrow,center:50px:noGrow,top:4dlu:noGrow,center:50px:noGrow,top:4dlu:noGrow,fill:p:grow" ) );
-        ( (FormLayout) layerForm.getLayout() ).setRowGroups( new int[][]{ new int[]{ 5, 7 } } );
+        layerForm.setLayout( new FormLayout( "fill:max(d;4px):noGrow,fill:83px:noGrow,left:4dlu:noGrow,fill:max(p;80dlu):noGrow,left:4dlu:noGrow,fill:83px:noGrow,left:4dlu:noGrow,fill:max(p;75dlu):noGrow,left:5dlu:noGrow,fill:d:grow,left:max(d;4px):noGrow", "center:p:noGrow,center:max(d;4px):noGrow,center:p:noGrow,top:4dlu:noGrow,center:50px:noGrow,top:4dlu:noGrow,fill:p:grow" ) );
+        ( (FormLayout) layerForm.getLayout() ).setColumnGroups( new int[][]{ new int[]{ 2, 6 }, new int[]{ 4, 8 }, new int[]{ 3, 5, 7, 9 } } );
         final JLabel label1 = new JLabel();
         label1.setText( "Name" );
         CellConstraints cc = new CellConstraints();
@@ -153,14 +153,9 @@ public class LayerDescriptorForm
         layerForm.add( label2, cc.xy( 2, 5 ) );
         dependsOn = new JList();
         layerForm.add( dependsOn, cc.xy( 4, 5, CellConstraints.DEFAULT, CellConstraints.FILL ) );
-        final JLabel label3 = new JLabel();
-        label3.setText( "Used by" );
-        layerForm.add( label3, cc.xy( 2, 7 ) );
-        usedBy = new JList();
-        layerForm.add( usedBy, cc.xy( 4, 7, CellConstraints.DEFAULT, CellConstraints.FILL ) );
-        layerForm.add( layerSeparator, cc.xyw( 2, 1, 5 ) );
+        layerForm.add( layerSeparator, cc.xyw( 2, 1, 9 ) );
         tabbedPane = new JTabbedPane();
-        layerForm.add( tabbedPane, cc.xyw( 2, 9, 5 ) );
+        layerForm.add( tabbedPane, cc.xyw( 2, 7, 9 ) );
         final JPanel panel1 = new JPanel();
         panel1.setLayout( new FormLayout( "fill:p:grow", "fill:p:grow" ) );
         tabbedPane.addTab( "Provides", panel1 );
@@ -169,6 +164,11 @@ public class LayerDescriptorForm
         panel2.setLayout( new FormLayout( "fill:d:grow", "fill:d:grow" ) );
         tabbedPane.addTab( "Accessibles", panel2 );
         panel2.add( accessibles.$$$getRootComponent$$$(), cc.xy( 1, 1 ) );
+        final JLabel label3 = new JLabel();
+        label3.setText( "Used by" );
+        layerForm.add( label3, cc.xy( 6, 5 ) );
+        usedBy = new JList();
+        layerForm.add( usedBy, cc.xy( 8, 5, CellConstraints.DEFAULT, CellConstraints.FILL ) );
     }
 
     /**
