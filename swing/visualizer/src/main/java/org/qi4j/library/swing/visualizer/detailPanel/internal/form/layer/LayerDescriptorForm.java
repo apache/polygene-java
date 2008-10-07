@@ -19,8 +19,6 @@ package org.qi4j.library.swing.visualizer.detailPanel.internal.form.layer;
 import com.jgoodies.forms.factories.DefaultComponentFactory;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
-import static java.util.Collections.singletonList;
-import java.util.List;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -32,13 +30,9 @@ import javax.swing.event.ChangeListener;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.common.CollectionUtils;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.form.common.ListListModel;
 import static org.qi4j.library.swing.visualizer.detailPanel.internal.form.common.ListListModel.EMPTY_MODEL;
-import org.qi4j.library.swing.visualizer.detailPanel.internal.form.common.context.ProvidesQi4jContextModel;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.form.common.context.Qi4jContextForm;
 import org.qi4j.library.swing.visualizer.model.LayerDetailDescriptor;
-import org.qi4j.library.swing.visualizer.model.ModuleDetailDescriptor;
 import org.qi4j.spi.structure.LayerDescriptor;
-import org.qi4j.structure.Visibility;
-import static org.qi4j.structure.Visibility.application;
 
 /**
  * @author edward.yakop@gmail.com
@@ -46,8 +40,6 @@ import static org.qi4j.structure.Visibility.application;
  */
 public class LayerDescriptorForm
 {
-    private static final List<Visibility> NULL_FILTER_MEANS = singletonList( application );
-
     private LayerDetailDescriptor layerDescriptor;
 
     private JComponent layerSeparator;
@@ -59,6 +51,8 @@ public class LayerDescriptorForm
     private JTabbedPane tabbedPane;
     private ProvidesQi4jContextModel providersModel;
     private Qi4jContextForm provides;
+    private AccessiblesQi4jContextModel accessiblesModel;
+    private Qi4jContextForm accessibles;
 
     private JPanel layerForm;
 
@@ -81,13 +75,12 @@ public class LayerDescriptorForm
         switch( selectedIndex )
         {
         case 0:
-            Iterable<ModuleDetailDescriptor> modules = null;
-            if( layerDescriptor != null )
-            {
-                modules = layerDescriptor.modules();
-            }
-            providersModel.updateModel( modules );
+            providersModel.updateModel( layerDescriptor );
             provides.refreshView();
+            break;
+        case 1:
+            accessiblesModel.updateModel( layerDescriptor );
+            accessibles.refreshView();
             break;
         }
     }
@@ -128,8 +121,11 @@ public class LayerDescriptorForm
         DefaultComponentFactory cmpFactory = DefaultComponentFactory.getInstance();
         layerSeparator = cmpFactory.createSeparator( "Layer" );
 
-        providersModel = new ProvidesQi4jContextModel( null, NULL_FILTER_MEANS );
+        providersModel = new ProvidesQi4jContextModel();
         provides = new Qi4jContextForm( providersModel );
+
+        accessiblesModel = new AccessiblesQi4jContextModel();
+        accessibles = new Qi4jContextForm( accessiblesModel );
     }
 
     /**
@@ -169,6 +165,10 @@ public class LayerDescriptorForm
         panel1.setLayout( new FormLayout( "fill:p:grow", "fill:p:grow" ) );
         tabbedPane.addTab( "Provides", panel1 );
         panel1.add( provides.$$$getRootComponent$$$(), cc.xy( 1, 1 ) );
+        final JPanel panel2 = new JPanel();
+        panel2.setLayout( new FormLayout( "fill:d:grow", "fill:d:grow" ) );
+        tabbedPane.addTab( "Accessibles", panel2 );
+        panel2.add( accessibles.$$$getRootComponent$$$(), cc.xy( 1, 1 ) );
     }
 
     /**

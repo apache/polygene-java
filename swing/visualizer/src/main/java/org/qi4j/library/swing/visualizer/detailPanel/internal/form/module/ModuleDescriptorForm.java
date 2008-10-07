@@ -19,8 +19,6 @@ package org.qi4j.library.swing.visualizer.detailPanel.internal.form.module;
 import com.jgoodies.forms.factories.DefaultComponentFactory;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
-import java.util.ArrayList;
-import static java.util.Collections.addAll;
 import static java.util.Collections.singletonList;
 import java.util.List;
 import javax.swing.JComponent;
@@ -30,12 +28,8 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import org.qi4j.library.swing.visualizer.detailPanel.internal.form.common.context.ProvidesQi4jContextModel;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.form.common.context.Qi4jContextForm;
 import org.qi4j.library.swing.visualizer.model.ModuleDetailDescriptor;
-import org.qi4j.structure.Visibility;
-import static org.qi4j.structure.Visibility.application;
-import static org.qi4j.structure.Visibility.layer;
 
 /**
  * @author edward.yakop@gmail.com
@@ -44,23 +38,6 @@ import static org.qi4j.structure.Visibility.layer;
  */
 public final class ModuleDescriptorForm
 {
-    private static final Visibility[] FILTER_PROVIDES_MODEL;
-    private static final ArrayList<Visibility> PROVIDES_NULL_FILTER_MEANS;
-
-    static
-    {
-        FILTER_PROVIDES_MODEL = new Visibility[]
-            {
-                null,
-                layer,
-                application
-            };
-
-        PROVIDES_NULL_FILTER_MEANS = new ArrayList<Visibility>();
-        addAll( PROVIDES_NULL_FILTER_MEANS, layer, application );
-        PROVIDES_NULL_FILTER_MEANS.trimToSize();
-    }
-
     private ModuleDetailDescriptor descriptor;
 
     private JComponent moduleSeparator;
@@ -69,7 +46,7 @@ public final class ModuleDescriptorForm
     private JTabbedPane tabbedpane;
     private ProvidesQi4jContextModel providesModel;
     private Qi4jContextForm providesForm;
-    private ModuleAccessiblesQi4jContextModel accessibleModel;
+    private AccessiblesQi4jContextModel accessibleModel;
     private Qi4jContextForm accessiblesForm;
 
     private JPanel moduleForm;
@@ -128,10 +105,10 @@ public final class ModuleDescriptorForm
         DefaultComponentFactory cmpFactory = DefaultComponentFactory.getInstance();
         moduleSeparator = cmpFactory.createSeparator( "Module" );
 
-        providesModel = new ProvidesQi4jContextModel( FILTER_PROVIDES_MODEL, PROVIDES_NULL_FILTER_MEANS );
+        providesModel = new ProvidesQi4jContextModel();
         providesForm = new Qi4jContextForm( providesModel );
 
-        accessibleModel = new ModuleAccessiblesQi4jContextModel();
+        accessibleModel = new AccessiblesQi4jContextModel();
         accessiblesForm = new Qi4jContextForm( accessibleModel );
     }
 

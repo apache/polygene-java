@@ -16,12 +16,9 @@
 */
 package org.qi4j.library.swing.visualizer.detailPanel.internal.form.module;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import static java.util.Collections.addAll;
 import static java.util.Collections.singletonList;
-import java.util.List;
 import java.util.LinkedList;
+import java.util.List;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.event.ListDataEvent;
@@ -43,18 +40,15 @@ import org.qi4j.structure.Visibility;
 import static org.qi4j.structure.Visibility.application;
 import static org.qi4j.structure.Visibility.layer;
 import static org.qi4j.structure.Visibility.module;
-import static org.qi4j.structure.Visibility.*;
 
 /**
  * @author edward.yakop@gmail.com
  * @since 0.5
  */
-final class ModuleAccessiblesQi4jContextModel
+final class AccessiblesQi4jContextModel
     implements Qi4jContextModel
 {
     private static final Visibility[] FILTER_VISIBILITY;
-
-    private static final Collection<Visibility> FILTER_NULL;
 
     static
     {
@@ -65,9 +59,6 @@ final class ModuleAccessiblesQi4jContextModel
                 layer,
                 application
             };
-
-        FILTER_NULL = new ArrayList<Visibility>();
-        addAll( FILTER_NULL, layer, application );
     }
 
     private ModuleDetailDescriptor descriptor;
@@ -79,10 +70,15 @@ final class ModuleAccessiblesQi4jContextModel
     private ListListModel compositesModel;
     private ListListModel objectsModel;
 
-    public ModuleAccessiblesQi4jContextModel()
+    public AccessiblesQi4jContextModel()
     {
         filterModel = new DefaultComboBoxModel( FILTER_VISIBILITY );
         filterModel.addListDataListener( new FilterSelectionListener() );
+
+        servicesModel = EMPTY_MODEL;
+        entitiesModel = EMPTY_MODEL;
+        compositesModel = EMPTY_MODEL;
+        objectsModel = EMPTY_MODEL;
     }
 
     @SuppressWarnings( "unchecked" )

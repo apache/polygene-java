@@ -42,12 +42,12 @@ public final class ListListModel<T> extends AbstractListModel
         elements = contents;
     }
 
-    public int getSize()
+    public final int getSize()
     {
         return elements.size();
     }
 
-    public T getElementAt( int index )
+    public final T getElementAt( int index )
     {
         return elements.get( index );
     }

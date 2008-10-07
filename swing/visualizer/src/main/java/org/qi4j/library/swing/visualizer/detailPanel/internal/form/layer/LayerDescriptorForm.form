@@ -117,6 +117,23 @@
               </nested-form>
             </children>
           </grid>
+          <grid id="72f62" layout-manager="FormLayout">
+            <rowspec value="fill:d:grow"/>
+            <colspec value="fill:d:grow"/>
+            <constraints>
+              <tabbedpane title="Accessibles"/>
+            </constraints>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <nested-form id="2c50a" form-file="org/qi4j/library/swing/visualizer/detailPanel/internal/form/common/context/Qi4jContextForm.form" binding="accessibles" custom-create="true">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                  <forms/>
+                </constraints>
+              </nested-form>
+            </children>
+          </grid>
         </children>
       </tabbedpane>
     </children>
