@@ -28,7 +28,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.ListModel;
 import org.qi4j.library.swing.visualizer.model.LayerDetailDescriptor;
-import org.qi4j.library.swing.visualizer.model.ModuleDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ServiceDetailDescriptor;
 import org.qi4j.service.ServiceDescriptor;
 
@@ -46,16 +45,11 @@ public final class ServiceDescriptorForm
     private JTextField serviceType;
     private JCheckBox serviceIsInstantiateAtStartup;
     private JTextField serviceVisibility;
-    private JComponent locationSeparator;
     private JList serviceAccessibleBy;
-
-    private JTextField layer;
-    private JTextField module;
 
     public final void updateModel( ServiceDetailDescriptor aDescriptor )
     {
         populateServiceFields( aDescriptor );
-        populateLocationFields( aDescriptor );
     }
 
     @SuppressWarnings( "unchecked" )
@@ -86,28 +80,10 @@ public final class ServiceDescriptorForm
         serviceAccessibleBy.setModel( accessibleToLayers );
     }
 
-    private void populateLocationFields( ServiceDetailDescriptor aDescriptor )
-    {
-        String moduleName = null;
-        String layerName = null;
-
-        if( aDescriptor != null )
-        {
-            ModuleDetailDescriptor moduleDD = aDescriptor.module();
-            moduleName = moduleDD.descriptor().name();
-            LayerDetailDescriptor layerDD = moduleDD.layer();
-            layerName = layerDD.descriptor().name();
-        }
-
-        module.setText( moduleName );
-        layer.setText( layerName );
-    }
-
     private void createUIComponents()
     {
         DefaultComponentFactory cmpFactory = DefaultComponentFactory.getInstance();
         serviceSeparator = cmpFactory.createSeparator( "Service" );
-        locationSeparator = cmpFactory.createSeparator( "Location" );
     }
 
     {
@@ -128,8 +104,9 @@ public final class ServiceDescriptorForm
     {
         createUIComponents();
         placeHolder = new JPanel();
-        placeHolder.setLayout( new FormLayout( "fill:max(d;4px):noGrow,fill:p:noGrow,fill:max(d;4px):noGrow,fill:max(p;160dlu):noGrow", "center:max(d;4px):noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow,center:p:noGrow,top:5dlu:noGrow,center:p:noGrow,top:4dlu:noGrow,center:p:noGrow,top:4dlu:noGrow,center:p:noGrow,top:4dlu:noGrow,top:max(m;50dlu):noGrow,top:5dlu:noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow,center:p:noGrow,top:4dlu:noGrow,center:max(p;4px):noGrow" ) );
-        ( (FormLayout) placeHolder.getLayout() ).setRowGroups( new int[][]{ new int[]{ 4, 6, 8, 10 }, new int[]{ 2, 14 }, new int[]{ 16, 18 } } );
+        placeHolder.setLayout( new FormLayout( "left:4px:noGrow,fill:p:noGrow,left:4dlu:noGrow,fill:max(p;75dlu):noGrow,left:4dlu:noGrow,fill:d:grow,left:4px:noGrow", "center:max(d;4px):noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow,center:p:noGrow,top:5dlu:noGrow,center:p:noGrow,top:4dlu:noGrow,center:p:noGrow,top:4dlu:noGrow,center:p:noGrow,top:4dlu:noGrow,top:max(m;50dlu):noGrow,top:4px:noGrow" ) );
+        ( (FormLayout) placeHolder.getLayout() ).setRowGroups( new int[][]{ new int[]{ 4, 6, 8, 10 }, new int[]{ 5, 7, 9, 11 }, new int[]{ 1, 13 } } );
+        ( (FormLayout) placeHolder.getLayout() ).setColumnGroups( new int[][]{ new int[]{ 1, 7 }, new int[]{ 3, 5 } } );
         final JLabel label1 = new JLabel();
         label1.setText( "Id" );
         CellConstraints cc = new CellConstraints();
@@ -156,23 +133,10 @@ public final class ServiceDescriptorForm
         serviceVisibility = new JTextField();
         serviceVisibility.setEditable( false );
         placeHolder.add( serviceVisibility, cc.xy( 4, 8 ) );
-        placeHolder.add( serviceSeparator, cc.xyw( 2, 2, 3 ) );
-        placeHolder.add( locationSeparator, cc.xyw( 2, 14, 3 ) );
+        placeHolder.add( serviceSeparator, cc.xyw( 2, 2, 5 ) );
         final JLabel label5 = new JLabel();
-        label5.setText( "Layer" );
-        placeHolder.add( label5, cc.xy( 2, 16 ) );
-        layer = new JTextField();
-        layer.setEditable( false );
-        placeHolder.add( layer, cc.xy( 4, 16 ) );
-        final JLabel label6 = new JLabel();
-        label6.setText( "Module" );
-        placeHolder.add( label6, cc.xy( 2, 18 ) );
-        module = new JTextField();
-        module.setEditable( false );
-        placeHolder.add( module, cc.xy( 4, 18 ) );
-        final JLabel label7 = new JLabel();
-        label7.setText( "Accessible by (layer)" );
-        placeHolder.add( label7, cc.xy( 2, 12 ) );
+        label5.setText( "Accessible by (layer)" );
+        placeHolder.add( label5, cc.xy( 2, 12 ) );
         serviceAccessibleBy = new JList();
         serviceAccessibleBy.setSelectionMode( 0 );
         serviceAccessibleBy.setVisibleRowCount( 5 );
@@ -181,8 +145,6 @@ public final class ServiceDescriptorForm
         label2.setLabelFor( serviceType );
         label3.setLabelFor( serviceIsInstantiateAtStartup );
         label4.setLabelFor( serviceVisibility );
-        label5.setLabelFor( layer );
-        label6.setLabelFor( module );
     }
 
     /**
