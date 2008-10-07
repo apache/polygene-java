@@ -9,7 +9,10 @@
     <children>
       <splitpane id="650bf">
         <constraints border-constraint="Center"/>
-        <properties/>
+        <properties>
+          <dividerLocation value="200"/>
+          <oneTouchExpandable value="true"/>
+        </properties>
         <border type="none"/>
         <children>
           <nested-form id="19f5b" form-file="org/qi4j/library/swing/visualizer/detailPanel/internal/tree/ApplicationTreePanel.form" binding="treePanel" custom-create="true">

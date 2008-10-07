@@ -43,11 +43,12 @@ import org.qi4j.library.swing.visualizer.model.ServiceDetailDescriptor;
 public final class DetailPanel
     implements SelectionListener
 {
-    private JPanel detailPanel;
+    private Object descriptorForm;
+
     private ApplicationTreePanel treePanel;
     private JScrollPane detailScrollPanel;
 
-    private Object form;
+    private JPanel detailPanel;
 
     public DetailPanel()
     {
@@ -61,7 +62,7 @@ public final class DetailPanel
 
     public final void onApplicationSelected( ApplicationDetailDescriptor aDescriptor )
     {
-        form = null;
+        descriptorForm = null;
         detailScrollPanel.setViewportView( null );
 
         treePanel.onApplicationSelected( aDescriptor );
@@ -70,16 +71,16 @@ public final class DetailPanel
     public final void onLayerSelected( LayerDetailDescriptor aDescriptor )
     {
         LayerDescriptorForm layerForm;
-        if( !( form instanceof LayerDescriptorForm ) )
+        if( !( descriptorForm instanceof LayerDescriptorForm ) )
         {
             layerForm = new LayerDescriptorForm();
             detailScrollPanel.setViewportView( layerForm.$$$getRootComponent$$$() );
         }
         else
         {
-            layerForm = (LayerDescriptorForm) form;
+            layerForm = (LayerDescriptorForm) descriptorForm;
         }
-        form = layerForm;
+        descriptorForm = layerForm;
         layerForm.updateModel( aDescriptor );
 
         treePanel.onLayerSelected( aDescriptor );
@@ -89,16 +90,16 @@ public final class DetailPanel
     {
         ModuleDescriptorForm moduleForm;
 
-        if( !( form instanceof ModuleDescriptorForm ) )
+        if( !( descriptorForm instanceof ModuleDescriptorForm ) )
         {
             moduleForm = new ModuleDescriptorForm();
             detailScrollPanel.setViewportView( moduleForm.$$$getRootComponent$$$() );
         }
         else
         {
-            moduleForm = (ModuleDescriptorForm) form;
+            moduleForm = (ModuleDescriptorForm) descriptorForm;
         }
-        form = moduleForm;
+        descriptorForm = moduleForm;
         moduleForm.updateModel( aDescriptor );
 
         treePanel.onModuleSelected( aDescriptor );
@@ -108,16 +109,16 @@ public final class DetailPanel
     {
         ServiceDescriptorForm serviceForm;
 
-        if( !( form instanceof ServiceDescriptorForm ) )
+        if( !( descriptorForm instanceof ServiceDescriptorForm ) )
         {
             serviceForm = new ServiceDescriptorForm();
             detailScrollPanel.setViewportView( serviceForm.$$$getRootComponent$$$() );
         }
         else
         {
-            serviceForm = (ServiceDescriptorForm) form;
+            serviceForm = (ServiceDescriptorForm) descriptorForm;
         }
-        form = serviceForm;
+        descriptorForm = serviceForm;
         serviceForm.updateModel( aDescriptor );
 
         treePanel.onServiceSelected( aDescriptor );
@@ -125,33 +126,37 @@ public final class DetailPanel
 
     public final void onEntitySelected( EntityDetailDescriptor aDescriptor )
     {
-        // TODO
-        onCompositeSelected( aDescriptor );
+        updateDetailScrollPanelWithCompositeForm( aDescriptor );
+        treePanel.onEntitySelected( aDescriptor );
     }
 
     @SuppressWarnings( "unchecked" )
-    public final void onCompositeSelected( CompositeDetailDescriptor aDescriptor )
+    private void updateDetailScrollPanelWithCompositeForm( CompositeDetailDescriptor aDescriptor )
     {
         CompositeDescriptorForm compositeForm;
-        if( !( form instanceof CompositeDescriptorForm ) )
+        if( !( descriptorForm instanceof CompositeDescriptorForm ) )
         {
             compositeForm = new CompositeDescriptorForm();
-            detailScrollPanel.setViewportView( compositeForm );
+            detailScrollPanel.setViewportView( compositeForm.$$$getRootComponent$$$() );
         }
         else
         {
-            compositeForm = (CompositeDescriptorForm) form;
+            compositeForm = (CompositeDescriptorForm) descriptorForm;
         }
-        form = compositeForm;
+        descriptorForm = compositeForm;
         compositeForm.updateModel( aDescriptor );
+    }
 
+    public final void onCompositeSelected( CompositeDetailDescriptor aDescriptor )
+    {
+        updateDetailScrollPanelWithCompositeForm( aDescriptor );
         treePanel.onCompositeSelected( aDescriptor );
     }
 
     public final void onObjectSelected( ObjectDetailDescriptor aDescriptor )
     {
         // TODO
-        form = null;
+        descriptorForm = null;
         treePanel.onObjectSelected( aDescriptor );
     }
 
@@ -174,6 +179,8 @@ public final class DetailPanel
         detailPanel = new JPanel();
         detailPanel.setLayout( new BorderLayout( 0, 0 ) );
         final JSplitPane splitPane1 = new JSplitPane();
+        splitPane1.setDividerLocation( 200 );
+        splitPane1.setOneTouchExpandable( true );
         detailPanel.add( splitPane1, BorderLayout.CENTER );
         splitPane1.setLeftComponent( treePanel.$$$getRootComponent$$$() );
         detailScrollPanel = new JScrollPane();
