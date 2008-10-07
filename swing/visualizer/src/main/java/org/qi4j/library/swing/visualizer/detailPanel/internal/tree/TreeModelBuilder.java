@@ -27,9 +27,7 @@ import org.qi4j.library.swing.visualizer.model.MixinDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ModuleDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ObjectDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ServiceDetailDescriptor;
-import org.qi4j.service.ServiceDescriptor;
 import org.qi4j.spi.composite.CompositeDescriptor;
-import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.object.ObjectDescriptor;
 import org.qi4j.structure.Visibility;
 
@@ -89,15 +87,15 @@ final class TreeModelBuilder
         layerNode.add( moduleNode );
 
         DefaultMutableTreeNode servicesNode = new DefaultMutableTreeNode( "services" );
-        addServiceNodes( servicesNode, aModule, null );
+        addServiceNodes( servicesNode, aModule );
         addIfNotEmpty( moduleNode, servicesNode );
 
         DefaultMutableTreeNode entities = new DefaultMutableTreeNode( "entities" );
-        addEntityNodes( entities, aModule, null );
+        addEntityNodes( entities, aModule );
         addIfNotEmpty( moduleNode, entities );
 
         DefaultMutableTreeNode composites = new DefaultMutableTreeNode( "composites" );
-        addCompositeNodes( composites, aModule, null );
+        addCompositeNodes( composites, aModule );
         addIfNotEmpty( moduleNode, composites );
 
         DefaultMutableTreeNode objects = new DefaultMutableTreeNode( "objects" );
@@ -105,56 +103,32 @@ final class TreeModelBuilder
         addIfNotEmpty( moduleNode, objects );
     }
 
-    private void addServiceNodes(
-        DefaultMutableTreeNode aServicesNode,
-        ModuleDetailDescriptor aModule,
-        Visibility aVisibilityFilter )
+    private void addServiceNodes( DefaultMutableTreeNode aServicesNode, ModuleDetailDescriptor aModule )
     {
         Iterable<ServiceDetailDescriptor> services = aModule.services();
         for( ServiceDetailDescriptor service : services )
         {
-            ServiceDescriptor descriptor = service.descriptor();
-            Visibility visibility = descriptor.visibility();
-            if( aVisibilityFilter == null || visibility == aVisibilityFilter )
-            {
-                aServicesNode.add( new DefaultMutableTreeNode( service ) );
-            }
+            aServicesNode.add( new DefaultMutableTreeNode( service ) );
         }
     }
 
-    private void addEntityNodes(
-        DefaultMutableTreeNode aEntitiesNode,
-        ModuleDetailDescriptor aModule,
-        Visibility aVisibilityFilter )
+    private void addEntityNodes( DefaultMutableTreeNode aEntitiesNode, ModuleDetailDescriptor aModule )
     {
         Iterable<EntityDetailDescriptor> entities = aModule.entities();
         for( EntityDetailDescriptor entity : entities )
         {
-            EntityDescriptor entityDesc = entity.descriptor();
-            Visibility visibility = entityDesc.visibility();
-            if( aVisibilityFilter == null || visibility == aVisibilityFilter )
-            {
-                DefaultMutableTreeNode entityNode = new DefaultMutableTreeNode( entity );
-                aEntitiesNode.add( entityNode );
-            }
+            DefaultMutableTreeNode entityNode = new DefaultMutableTreeNode( entity );
+            aEntitiesNode.add( entityNode );
         }
     }
 
     @SuppressWarnings( "unchecked" )
-    private void addCompositeNodes(
-        DefaultMutableTreeNode aCompositesNode,
-        ModuleDetailDescriptor aModule,
-        Visibility aVisibilityFilter )
+    private void addCompositeNodes( DefaultMutableTreeNode aCompositesNode, ModuleDetailDescriptor aModule )
     {
         Iterable<CompositeDetailDescriptor> composites = aModule.composites();
         for( CompositeDetailDescriptor composite : composites )
         {
-            CompositeDescriptor compDesc = composite.descriptor();
-            Visibility visibility = compDesc.visibility();
-            if( aVisibilityFilter == null || visibility == aVisibilityFilter )
-            {
-                addCompositeNode( aCompositesNode, composite );
-            }
+            addCompositeNode( aCompositesNode, composite );
         }
     }
 
@@ -177,10 +151,39 @@ final class TreeModelBuilder
         Iterable<MixinDetailDescriptor> mixins = aCompositeDetailDescriptor.mixins();
         for( MixinDetailDescriptor mixin : mixins )
         {
-            DefaultMutableTreeNode mixinNode = new DefaultMutableTreeNode( mixin );
-            mixinsNode.add( mixinNode );
+            addMixinNode( mixinsNode, mixin );
         }
         addIfNotEmpty( aCompositeNode, mixinsNode );
+    }
+
+    private void addMixinNode( DefaultMutableTreeNode mixinsNode, MixinDetailDescriptor aMixin )
+    {
+        DefaultMutableTreeNode mixinNode = new DefaultMutableTreeNode( aMixin );
+        mixinsNode.add( mixinNode );
+
+        // Constructors
+        DefaultMutableTreeNode constructorsNode = new DefaultMutableTreeNode( "constructors" );
+        addIterableItemNodes( constructorsNode, aMixin.constructors() );
+        addIfNotEmpty( mixinNode, constructorsNode );
+
+        // Injected fields
+        DefaultMutableTreeNode fieldsNode = new DefaultMutableTreeNode( "injected fields" );
+        addIterableItemNodes( fieldsNode, aMixin.injectedFields() );
+        addIfNotEmpty( mixinNode, fieldsNode );
+
+        // Injected methods
+        DefaultMutableTreeNode methodsNode = new DefaultMutableTreeNode( "injected methods" );
+        addIterableItemNodes( methodsNode, aMixin.injectedMethods() );
+        addIfNotEmpty( mixinNode, methodsNode );
+    }
+
+    private void addIterableItemNodes( DefaultMutableTreeNode aGroupNode, Iterable iterable )
+    {
+        for( Object item : iterable )
+        {
+            DefaultMutableTreeNode itemNode = new DefaultMutableTreeNode( item );
+            aGroupNode.add( itemNode );
+        }
     }
 
     private void addMethodsNode(
@@ -196,7 +199,6 @@ final class TreeModelBuilder
         }
         addIfNotEmpty( aCompositeNode, methodsNode );
     }
-
 
     private void addObjectNodes(
         DefaultMutableTreeNode aObjectsNode,

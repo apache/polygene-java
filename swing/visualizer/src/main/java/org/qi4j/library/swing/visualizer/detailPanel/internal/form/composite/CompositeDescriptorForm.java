@@ -101,13 +101,13 @@ public class CompositeDescriptorForm
         compositePanel.add( label3, cc.xy( 2, 8 ) );
         compositeClassName = new JTextField();
         compositeClassName.setEditable( false );
-        compositePanel.add( compositeClassName, cc.xy( 4, 4, CellConstraints.FILL, CellConstraints.DEFAULT ) );
+        compositePanel.add( compositeClassName, cc.xy( 4, 4 ) );
         compositeURI = new JTextField();
         compositeURI.setEditable( false );
-        compositePanel.add( compositeURI, cc.xy( 4, 6, CellConstraints.FILL, CellConstraints.DEFAULT ) );
+        compositePanel.add( compositeURI, cc.xy( 4, 6 ) );
         compositeVisibility = new JTextField();
         compositeVisibility.setEditable( false );
-        compositePanel.add( compositeVisibility, cc.xy( 4, 8, CellConstraints.FILL, CellConstraints.DEFAULT ) );
+        compositePanel.add( compositeVisibility, cc.xy( 4, 8 ) );
     }
 
     /**

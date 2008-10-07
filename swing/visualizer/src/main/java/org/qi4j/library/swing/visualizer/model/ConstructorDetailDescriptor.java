@@ -105,7 +105,8 @@ public final class ConstructorDetailDescriptor
         parameters = aDescriptor;
     }
 
-    public String toString()
+    @Override
+    public final String toString()
     {
         return descriptor.constructor().getDeclaringClass().getSimpleName();
     }

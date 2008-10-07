@@ -82,4 +82,10 @@ public final class InjectedFieldDetailDescriptor
 
         mixin = aDescriptor;
     }
+
+    @Override
+    public final String toString()
+    {
+        return descriptor.field().getName();
+    }
 }
