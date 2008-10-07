@@ -142,4 +142,10 @@ public final class ModuleDetailDescriptor
         aDescriptor.setModule( this );
         objects.add( aDescriptor );
     }
+
+    @Override
+    public final String toString()
+    {
+        return descriptor.name();
+    }
 }

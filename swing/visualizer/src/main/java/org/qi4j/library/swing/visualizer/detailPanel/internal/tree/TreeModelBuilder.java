@@ -124,8 +124,7 @@ public final class TreeModelBuilder
 
     private void addModuleNode( DefaultMutableTreeNode modulesNode, ModuleDetailDescriptor aModule )
     {
-        String moduleName = aModule.descriptor().name();
-        DefaultMutableTreeNode moduleNode = new DefaultMutableTreeNode( moduleName );
+        DefaultMutableTreeNode moduleNode = new DefaultMutableTreeNode( aModule );
         modulesNode.add( moduleNode );
 
         DefaultMutableTreeNode servicesNode = new DefaultMutableTreeNode( "services" );

@@ -139,7 +139,7 @@ public class LayerDescriptorForm
     {
         createUIComponents();
         layerForm = new JPanel();
-        layerForm.setLayout( new FormLayout( "fill:max(d;4px):noGrow,fill:83px:noGrow,left:4dlu:noGrow,fill:max(p;80dlu):noGrow,left:4dlu:noGrow,fill:83px:noGrow,left:4dlu:noGrow,fill:max(p;75dlu):noGrow,left:5dlu:noGrow,fill:d:grow,left:max(d;4px):noGrow", "center:p:noGrow,center:max(d;4px):noGrow,center:p:noGrow,top:4dlu:noGrow,center:50px:noGrow,top:4dlu:noGrow,fill:p:grow" ) );
+        layerForm.setLayout( new FormLayout( "fill:max(d;4px):noGrow,fill:83px:noGrow,left:4dlu:noGrow,fill:max(p;80dlu):noGrow,left:4dlu:noGrow,fill:83px:noGrow,left:4dlu:noGrow,fill:max(p;80dlu):noGrow,left:5dlu:noGrow,fill:d:grow,left:max(d;4px):noGrow", "center:p:noGrow,center:max(d;4px):noGrow,center:p:noGrow,top:4dlu:noGrow,center:50px:noGrow,top:4dlu:noGrow,fill:p:grow" ) );
         ( (FormLayout) layerForm.getLayout() ).setColumnGroups( new int[][]{ new int[]{ 2, 6 }, new int[]{ 4, 8 }, new int[]{ 3, 5, 7, 9 } } );
         final JLabel label1 = new JLabel();
         label1.setText( "Name" );

@@ -124,44 +124,105 @@ public final class ApplicationTreePanel
         return isSelected;
     }
 
-    public final void onLayerSelected( LayerDetailDescriptor aDescriptor )
+    public final void onLayerSelected( LayerDetailDescriptor aLayerDescriptor )
     {
-        if( isNodeSelected( aDescriptor ) )
+        if( isNodeSelected( aLayerDescriptor ) )
         {
             return;
         }
 
-        TreeModel model = applicationTree.getModel();
-        DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
-        Enumeration children = root.children();
-        while( children.hasMoreElements() )
+        DefaultMutableTreeNode layerNode = getLayerNode( aLayerDescriptor );
+        if( layerNode != null )
         {
-            DefaultMutableTreeNode child = (DefaultMutableTreeNode) children.nextElement();
-            String nodeObject = (String) child.getUserObject();
+            TreeNode[] path = layerNode.getPath();
 
-            if( "layers".equals( nodeObject ) )
+            TreeSelectionModel selectionModel = applicationTree.getSelectionModel();
+            selectionModel.setSelectionPath( new TreePath( path ) );
+        }
+    }
+
+    private DefaultMutableTreeNode getLayerNode( LayerDetailDescriptor aDescriptor )
+    {
+        if( aDescriptor != null )
+        {
+            TreeModel model = applicationTree.getModel();
+            DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
+            Enumeration children = root.children();
+            while( children.hasMoreElements() )
             {
-                Enumeration layerNodes = child.children();
-                while( layerNodes.hasMoreElements() )
-                {
-                    DefaultMutableTreeNode layerNode = (DefaultMutableTreeNode) layerNodes.nextElement();
-                    LayerDetailDescriptor layer = (LayerDetailDescriptor) layerNode.getUserObject();
-                    if( layer.equals( aDescriptor ) )
-                    {
-                        TreeSelectionModel selectionModel = applicationTree.getSelectionModel();
-                        TreeNode[] path = layerNode.getPath();
-                        selectionModel.setSelectionPath( new TreePath( path ) );
+                DefaultMutableTreeNode child = (DefaultMutableTreeNode) children.nextElement();
+                String nodeObject = (String) child.getUserObject();
 
-                        return;
+                // TODO: Localization.
+                if( "layers".equals( nodeObject ) )
+                {
+                    Enumeration layerNodes = child.children();
+                    while( layerNodes.hasMoreElements() )
+                    {
+                        DefaultMutableTreeNode layerNode = (DefaultMutableTreeNode) layerNodes.nextElement();
+                        LayerDetailDescriptor layer = (LayerDetailDescriptor) layerNode.getUserObject();
+                        if( layer.equals( aDescriptor ) )
+                        {
+                            return layerNode;
+                        }
                     }
                 }
             }
         }
+
+        return null;
     }
 
-    public final void onModuleSelected( ModuleDetailDescriptor aDescriptor )
+    public final void onModuleSelected( ModuleDetailDescriptor aModuleDescriptor )
     {
-        //To change body of implemented methods use File | Settings | File Templates.
+        if( isNodeSelected( aModuleDescriptor ) )
+        {
+            return;
+        }
+
+        DefaultMutableTreeNode moduleNode = getModuleNode( aModuleDescriptor );
+        if( moduleNode != null )
+        {
+            TreeNode[] path = moduleNode.getPath();
+
+            TreeSelectionModel selectionModel = applicationTree.getSelectionModel();
+            selectionModel.setSelectionPath( new TreePath( path ) );
+        }
+    }
+
+    private DefaultMutableTreeNode getModuleNode( ModuleDetailDescriptor aModuleDescriptor )
+    {
+        if( aModuleDescriptor != null )
+        {
+            LayerDetailDescriptor layerDescriptor = aModuleDescriptor.layer();
+            DefaultMutableTreeNode layerNode = getLayerNode( layerDescriptor );
+            if( layerNode != null )
+            {
+                Enumeration children = layerNode.children();
+                while( children.hasMoreElements() )
+                {
+                    DefaultMutableTreeNode child = (DefaultMutableTreeNode) children.nextElement();
+                    String nodeObject = (String) child.getUserObject();
+
+                    // TODO: Localization.
+                    if( "modules".equals( nodeObject ) )
+                    {
+                        Enumeration moduleNodes = child.children();
+                        while( moduleNodes.hasMoreElements() )
+                        {
+                            DefaultMutableTreeNode moduleNode = (DefaultMutableTreeNode) moduleNodes.nextElement();
+                            ModuleDetailDescriptor module = (ModuleDetailDescriptor) moduleNode.getUserObject();
+                            if( module.equals( aModuleDescriptor ) )
+                            {
+                                return moduleNode;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return null;
     }
 
     public final void onCompositeSelected( CompositeDetailDescriptor aDescriptor )
