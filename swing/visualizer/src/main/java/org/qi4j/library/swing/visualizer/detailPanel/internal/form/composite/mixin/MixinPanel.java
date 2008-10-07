@@ -71,7 +71,11 @@ public final class MixinPanel
 
     private void populateTabbePanels( MixinDetailDescriptor aDescriptor )
     {
-        Iterable<ConstructorDetailDescriptor> constructors = aDescriptor.constructors();
+        Iterable<ConstructorDetailDescriptor> constructors = null;
+        if( aDescriptor != null )
+        {
+            constructors = aDescriptor.constructors();
+        }
         constructorsTabPanel.updateModel( constructors );
     }
 

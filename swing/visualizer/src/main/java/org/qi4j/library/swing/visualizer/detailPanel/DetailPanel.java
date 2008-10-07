@@ -59,7 +59,7 @@ public final class DetailPanel
         treePanel = new ApplicationTreePanel( this );
     }
 
-    public void onApplicationSelected( ApplicationDetailDescriptor aDescriptor )
+    public final void onApplicationSelected( ApplicationDetailDescriptor aDescriptor )
     {
         form = null;
         detailScrollPanel.setViewportView( null );
@@ -67,7 +67,7 @@ public final class DetailPanel
         treePanel.onApplicationSelected( aDescriptor );
     }
 
-    public void onLayerSelected( LayerDetailDescriptor aDescriptor )
+    public final void onLayerSelected( LayerDetailDescriptor aDescriptor )
     {
         LayerDescriptorForm layerForm;
         if( !( form instanceof LayerDescriptorForm ) )
@@ -85,7 +85,7 @@ public final class DetailPanel
         treePanel.onLayerSelected( aDescriptor );
     }
 
-    public void onModuleSelected( ModuleDetailDescriptor aDescriptor )
+    public final void onModuleSelected( ModuleDetailDescriptor aDescriptor )
     {
         ModuleDescriptorForm moduleForm;
 
@@ -104,31 +104,7 @@ public final class DetailPanel
         treePanel.onModuleSelected( aDescriptor );
     }
 
-    @SuppressWarnings( "unchecked" )
-    public void onCompositeSelected( CompositeDetailDescriptor aDescriptor )
-    {
-        CompositeDescriptorForm compositeForm;
-        if( !( form instanceof CompositeDescriptorForm ) )
-        {
-            compositeForm = new CompositeDescriptorForm();
-            detailScrollPanel.setViewportView( compositeForm );
-        }
-        else
-        {
-            compositeForm = (CompositeDescriptorForm) form;
-        }
-        form = compositeForm;
-        compositeForm.updateModel( aDescriptor );
-
-        treePanel.onCompositeSelected( aDescriptor );
-    }
-
-    public void onEntitySelected( EntityDetailDescriptor aDescriptor )
-    {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public void onServiceSelected( ServiceDetailDescriptor aDescriptor )
+    public final void onServiceSelected( ServiceDetailDescriptor aDescriptor )
     {
         ServiceDescriptorForm serviceForm;
 
@@ -147,12 +123,39 @@ public final class DetailPanel
         treePanel.onServiceSelected( aDescriptor );
     }
 
-    public void onObjectSelected( ObjectDetailDescriptor aDescriptor )
+    public final void onEntitySelected( EntityDetailDescriptor aDescriptor )
     {
-        //To change body of implemented methods use File | Settings | File Templates.
+        // TODO
+        onCompositeSelected( aDescriptor );
     }
 
-    public void resetSelection()
+    @SuppressWarnings( "unchecked" )
+    public final void onCompositeSelected( CompositeDetailDescriptor aDescriptor )
+    {
+        CompositeDescriptorForm compositeForm;
+        if( !( form instanceof CompositeDescriptorForm ) )
+        {
+            compositeForm = new CompositeDescriptorForm();
+            detailScrollPanel.setViewportView( compositeForm );
+        }
+        else
+        {
+            compositeForm = (CompositeDescriptorForm) form;
+        }
+        form = compositeForm;
+        compositeForm.updateModel( aDescriptor );
+
+        treePanel.onCompositeSelected( aDescriptor );
+    }
+
+    public final void onObjectSelected( ObjectDetailDescriptor aDescriptor )
+    {
+        // TODO
+        form = null;
+        treePanel.onObjectSelected( aDescriptor );
+    }
+
+    public final void resetSelection()
     {
         treePanel.resetSelection();
         detailScrollPanel.setViewportView( null );

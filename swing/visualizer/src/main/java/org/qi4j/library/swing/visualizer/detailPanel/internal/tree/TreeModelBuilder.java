@@ -32,7 +32,6 @@ import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.object.ObjectDescriptor;
 import org.qi4j.structure.Visibility;
-import static org.qi4j.structure.Visibility.application;
 
 /**
  * TODO: localization
@@ -40,37 +39,8 @@ import static org.qi4j.structure.Visibility.application;
  * @author edward.yakop@gmail.com
  * @since 0.5
  */
-public final class TreeModelBuilder
+final class TreeModelBuilder
 {
-    private boolean isDisplayApplicationScopeItems;
-    private boolean isDisplayLayerScopeItems;
-
-    public TreeModelBuilder()
-    {
-        isDisplayApplicationScopeItems = false;
-        isDisplayLayerScopeItems = false;
-    }
-
-    public final void displayApplicationScopeItems( boolean isEnabled )
-    {
-        isDisplayApplicationScopeItems = isEnabled;
-    }
-
-    public final boolean isDisplayApplicationScopeItems()
-    {
-        return isDisplayApplicationScopeItems;
-    }
-
-    public final void displayLayerScopeItems( boolean isEnabled )
-    {
-        isDisplayLayerScopeItems = isEnabled;
-    }
-
-    public final boolean isDisplayLayerScopeItems()
-    {
-        return isDisplayLayerScopeItems;
-    }
-
     public final DefaultMutableTreeNode build( ApplicationDetailDescriptor aDetailDescriptor )
     {
         DefaultMutableTreeNode root = new DefaultMutableTreeNode( aDetailDescriptor );
@@ -78,7 +48,6 @@ public final class TreeModelBuilder
         if( aDetailDescriptor != null )
         {
             addLayersNode( root, aDetailDescriptor );
-            addApplicationScopeItemsNodes( root, aDetailDescriptor );
         }
 
         return root;
@@ -95,7 +64,6 @@ public final class TreeModelBuilder
             layersNode.add( layerNode );
 
             addModulesNode( layerNode, layer );
-            addLayerScopeItemNodes( layerNode, layer );
         }
 
         addIfNotEmpty( root, layersNode );
@@ -252,66 +220,5 @@ public final class TreeModelBuilder
                 aObjectsNode.add( new DefaultMutableTreeNode( object ) );
             }
         }
-    }
-
-
-    private void addLayerScopeItemNodes( DefaultMutableTreeNode layersNode, LayerDetailDescriptor layer )
-    {
-        if( !isDisplayLayerScopeItems )
-        {
-            return;
-        }
-
-        DefaultMutableTreeNode servicesNode = new DefaultMutableTreeNode( "services" );
-        DefaultMutableTreeNode entities = new DefaultMutableTreeNode( "entities" );
-        DefaultMutableTreeNode composites = new DefaultMutableTreeNode( "composites" );
-        DefaultMutableTreeNode objects = new DefaultMutableTreeNode( "objects" );
-
-        Iterable<ModuleDetailDescriptor> modules = layer.modules();
-        for( ModuleDetailDescriptor module : modules )
-        {
-            addServiceNodes( servicesNode, module, application );
-            addEntityNodes( entities, module, application );
-            addCompositeNodes( composites, module, application );
-            addObjectNodes( objects, module, application );
-        }
-
-        addIfNotEmpty( layersNode, servicesNode );
-        addIfNotEmpty( layersNode, entities );
-        addIfNotEmpty( layersNode, composites );
-        addIfNotEmpty( layersNode, objects );
-    }
-
-    private void addApplicationScopeItemsNodes(
-        DefaultMutableTreeNode root,
-        ApplicationDetailDescriptor aDetailDescriptor )
-    {
-        if( !isDisplayApplicationScopeItems )
-        {
-            return;
-        }
-
-        DefaultMutableTreeNode servicesNode = new DefaultMutableTreeNode( "services" );
-        DefaultMutableTreeNode entities = new DefaultMutableTreeNode( "entities" );
-        DefaultMutableTreeNode composites = new DefaultMutableTreeNode( "composites" );
-        DefaultMutableTreeNode objects = new DefaultMutableTreeNode( "objects" );
-
-        Iterable<LayerDetailDescriptor> layers = aDetailDescriptor.layers();
-        for( LayerDetailDescriptor layer : layers )
-        {
-            Iterable<ModuleDetailDescriptor> modules = layer.modules();
-            for( ModuleDetailDescriptor module : modules )
-            {
-                addServiceNodes( servicesNode, module, application );
-                addEntityNodes( entities, module, application );
-                addCompositeNodes( composites, module, application );
-                addObjectNodes( objects, module, application );
-            }
-        }
-
-        addIfNotEmpty( root, servicesNode );
-        addIfNotEmpty( root, entities );
-        addIfNotEmpty( root, composites );
-        addIfNotEmpty( root, objects );
     }
 }

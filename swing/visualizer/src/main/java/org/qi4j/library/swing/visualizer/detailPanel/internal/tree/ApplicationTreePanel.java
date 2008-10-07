@@ -18,6 +18,8 @@ package org.qi4j.library.swing.visualizer.detailPanel.internal.tree;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Enumeration;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -25,7 +27,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 import javax.swing.JTree;
-import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
@@ -52,21 +53,27 @@ import org.qi4j.library.swing.visualizer.model.ServiceDetailDescriptor;
 public final class ApplicationTreePanel
     implements SelectionListener
 {
-    private JPanel treePanel;
-    private JButton button1;
+    private JButton collapseButton;
     private JTree applicationTree;
-
-    private final TreeSelectionListener listener;
-    private final TreeModelBuilder builder;
+    private JPanel treePanel;
 
     public ApplicationTreePanel( SelectionListener aListener )
         throws IllegalArgumentException
     {
         validateNotNull( "aListener", aListener );
-        listener = new ApplicationTreeSelectionListener( aListener );
 
         $$$setupUI$$$();
-        builder = new TreeModelBuilder();
+
+        // Selection settings
+        TreeSelectionModel selectionModel = applicationTree.getSelectionModel();
+        selectionModel.setSelectionMode( SINGLE_TREE_SELECTION );
+        selectionModel.addTreeSelectionListener( new ApplicationTreeSelectionListener( aListener ) );
+
+        // Cell renderer settings
+        TreeCellRenderer treeCellRenderer = new DefaultTreeCellRenderer();
+        applicationTree.setCellRenderer( treeCellRenderer );
+
+        collapseButton.addActionListener( new CollapseTreeActionListener() );
     }
 
     public final void onApplicationSelected( ApplicationDetailDescriptor aDescriptor )
@@ -74,6 +81,7 @@ public final class ApplicationTreePanel
         // Update tree model
         if( !isApplicationDisplayed( aDescriptor ) )
         {
+            TreeModelBuilder builder = new TreeModelBuilder();
             DefaultMutableTreeNode root = builder.build( aDescriptor );
             applicationTree.setModel( new DefaultTreeModel( root ) );
         }
@@ -95,13 +103,16 @@ public final class ApplicationTreePanel
     {
         TreeModel model = applicationTree.getModel();
 
-        DefaultMutableTreeNode rootNode = (DefaultMutableTreeNode) model.getRoot();
-        if( rootNode != null )
+        if( model != null )
         {
-            Object userObject = rootNode.getUserObject();
-            if( userObject != null && userObject.equals( aDescriptor ) )
+            DefaultMutableTreeNode rootNode = (DefaultMutableTreeNode) model.getRoot();
+            if( rootNode != null )
             {
-                return true;
+                Object userObject = rootNode.getUserObject();
+                if( userObject != null && userObject.equals( aDescriptor ) )
+                {
+                    return true;
+                }
             }
         }
 
@@ -132,9 +143,14 @@ public final class ApplicationTreePanel
         }
 
         DefaultMutableTreeNode layerNode = getLayerNode( aLayerDescriptor );
-        if( layerNode != null )
+        selectNode( layerNode );
+    }
+
+    private void selectNode( DefaultMutableTreeNode aNode )
+    {
+        if( aNode != null )
         {
-            TreeNode[] path = layerNode.getPath();
+            TreeNode[] path = aNode.getPath();
 
             TreeSelectionModel selectionModel = applicationTree.getSelectionModel();
             selectionModel.setSelectionPath( new TreePath( path ) );
@@ -146,24 +162,27 @@ public final class ApplicationTreePanel
         if( aDescriptor != null )
         {
             TreeModel model = applicationTree.getModel();
-            DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
-            Enumeration children = root.children();
-            while( children.hasMoreElements() )
+            if( model != null )
             {
-                DefaultMutableTreeNode child = (DefaultMutableTreeNode) children.nextElement();
-                String nodeObject = (String) child.getUserObject();
-
-                // TODO: Localization.
-                if( "layers".equals( nodeObject ) )
+                DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
+                Enumeration children = root.children();
+                while( children.hasMoreElements() )
                 {
-                    Enumeration layerNodes = child.children();
-                    while( layerNodes.hasMoreElements() )
+                    DefaultMutableTreeNode child = (DefaultMutableTreeNode) children.nextElement();
+                    String nodeObject = (String) child.getUserObject();
+
+                    // TODO: Localization.
+                    if( "layers".equals( nodeObject ) )
                     {
-                        DefaultMutableTreeNode layerNode = (DefaultMutableTreeNode) layerNodes.nextElement();
-                        LayerDetailDescriptor layer = (LayerDetailDescriptor) layerNode.getUserObject();
-                        if( layer.equals( aDescriptor ) )
+                        Enumeration layerNodes = child.children();
+                        while( layerNodes.hasMoreElements() )
                         {
-                            return layerNode;
+                            DefaultMutableTreeNode layerNode = (DefaultMutableTreeNode) layerNodes.nextElement();
+                            LayerDetailDescriptor layer = (LayerDetailDescriptor) layerNode.getUserObject();
+                            if( layer.equals( aDescriptor ) )
+                            {
+                                return layerNode;
+                            }
                         }
                     }
                 }
@@ -181,13 +200,7 @@ public final class ApplicationTreePanel
         }
 
         DefaultMutableTreeNode moduleNode = getModuleNode( aModuleDescriptor );
-        if( moduleNode != null )
-        {
-            TreeNode[] path = moduleNode.getPath();
-
-            TreeSelectionModel selectionModel = applicationTree.getSelectionModel();
-            selectionModel.setSelectionPath( new TreePath( path ) );
-        }
+        selectNode( moduleNode );
     }
 
     private DefaultMutableTreeNode getModuleNode( ModuleDetailDescriptor aModuleDescriptor )
@@ -225,44 +238,97 @@ public final class ApplicationTreePanel
         return null;
     }
 
-    public final void onCompositeSelected( CompositeDetailDescriptor aDescriptor )
+    public final void onServiceSelected( ServiceDetailDescriptor aDescriptor )
     {
-        //To change body of implemented methods use File | Settings | File Templates.
+        ModuleDetailDescriptor module = aDescriptor.module();
+        // TODO: Localization
+        selectModuleChildNode( module, "services", aDescriptor );
+    }
+
+    private void selectModuleChildNode(
+        ModuleDetailDescriptor aModuleDescriptor,
+        String directModuleChildName,
+        Object descriptor )
+    {
+        if( isNodeSelected( descriptor ) )
+        {
+            return;
+        }
+
+        DefaultMutableTreeNode moduleNode = getModuleNode( aModuleDescriptor );
+        DefaultMutableTreeNode moduleChildNode = getModuleChildNode( moduleNode, directModuleChildName, descriptor );
+        selectNode( moduleChildNode );
+    }
+
+    private DefaultMutableTreeNode getModuleChildNode(
+        DefaultMutableTreeNode moduleNode, String searchTerm, Object aNodeUserObject
+    )
+    {
+        DefaultMutableTreeNode directChildNode = getModuleDirectChildNode( moduleNode, searchTerm );
+        if( directChildNode != null )
+        {
+
+            Enumeration children = directChildNode.children();
+            while( children.hasMoreElements() )
+            {
+                DefaultMutableTreeNode child = (DefaultMutableTreeNode) children.nextElement();
+                Object userObject = child.getUserObject();
+
+                if( aNodeUserObject.equals( userObject ) )
+                {
+                    return child;
+                }
+            }
+        }
+
+        return null;
+    }
+
+
+    private DefaultMutableTreeNode getModuleDirectChildNode( DefaultMutableTreeNode aModuleNode, String aNodeName )
+    {
+        if( aModuleNode != null )
+        {
+            Enumeration children = aModuleNode.children();
+            while( children.hasMoreElements() )
+            {
+                DefaultMutableTreeNode child = (DefaultMutableTreeNode) children.nextElement();
+                String nodeObject = (String) child.getUserObject();
+                if( aNodeName.equals( nodeObject ) )
+                {
+                    return child;
+                }
+            }
+        }
+
+        return null;
     }
 
     public final void onEntitySelected( EntityDetailDescriptor aDescriptor )
     {
-        //To change body of implemented methods use File | Settings | File Templates.
+        ModuleDetailDescriptor module = aDescriptor.module();
+        // TODO: Localization
+        selectModuleChildNode( module, "entities", aDescriptor );
     }
 
-    public final void onServiceSelected( ServiceDetailDescriptor aDescriptor )
+    public final void onCompositeSelected( CompositeDetailDescriptor aDescriptor )
     {
-        //To change body of implemented methods use File | Settings | File Templates.
+        ModuleDetailDescriptor module = aDescriptor.module();
+        // TODO: Localization
+        selectModuleChildNode( module, "composites", aDescriptor );
     }
 
     public final void onObjectSelected( ObjectDetailDescriptor aDescriptor )
     {
-        //To change body of implemented methods use File | Settings | File Templates.
+        ModuleDetailDescriptor module = aDescriptor.module();
+        // TODO: Localization
+        selectModuleChildNode( module, "objects", aDescriptor );
     }
 
     public void resetSelection()
     {
         TreeSelectionModel selectionModel = applicationTree.getSelectionModel();
         selectionModel.clearSelection();
-    }
-
-    private void createUIComponents()
-    {
-        applicationTree = new JTree();
-
-        // Selection settings
-        TreeSelectionModel selectionModel = applicationTree.getSelectionModel();
-        selectionModel.setSelectionMode( SINGLE_TREE_SELECTION );
-        selectionModel.addTreeSelectionListener( listener );
-
-        // Cell renderer settings
-        TreeCellRenderer treeCellRenderer = new DefaultTreeCellRenderer();
-        applicationTree.setCellRenderer( treeCellRenderer );
     }
 
     /**
@@ -274,17 +340,17 @@ public final class ApplicationTreePanel
      */
     private void $$$setupUI$$$()
     {
-        createUIComponents();
         treePanel = new JPanel();
         treePanel.setLayout( new FormLayout( "fill:d:grow", "center:25px:noGrow,center:d:grow" ) );
         final JToolBar toolBar1 = new JToolBar();
         CellConstraints cc = new CellConstraints();
         treePanel.add( toolBar1, cc.xy( 1, 1, CellConstraints.FILL, CellConstraints.DEFAULT ) );
-        button1 = new JButton();
-        button1.setText( "Button" );
-        toolBar1.add( button1 );
+        collapseButton = new JButton();
+        collapseButton.setText( "Collapse" );
+        toolBar1.add( collapseButton );
         final JScrollPane scrollPane1 = new JScrollPane();
         treePanel.add( scrollPane1, cc.xy( 1, 2, CellConstraints.FILL, CellConstraints.FILL ) );
+        applicationTree = new JTree();
         scrollPane1.setViewportView( applicationTree );
     }
 
@@ -296,5 +362,14 @@ public final class ApplicationTreePanel
         return treePanel;
     }
 
-
+    private class CollapseTreeActionListener implements ActionListener
+    {
+        public void actionPerformed( ActionEvent e )
+        {
+            // Reset the model to force collapsing the tree
+            TreeModel model = applicationTree.getModel();
+            applicationTree.setModel( null );
+            applicationTree.setModel( model );
+        }
+    }
 }

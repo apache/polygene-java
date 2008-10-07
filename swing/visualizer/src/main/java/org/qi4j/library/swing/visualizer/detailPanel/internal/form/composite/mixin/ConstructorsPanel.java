@@ -70,7 +70,7 @@ public final class ConstructorsPanel
     @SuppressWarnings( "unchecked" )
     public final void updateModel( Iterable<ConstructorDetailDescriptor> aDescriptor )
     {
-        ListListModel constructorsModel = null;
+        ListListModel constructorsModel = ListListModel.EMPTY_MODEL;
 
         if( aDescriptor != null )
         {

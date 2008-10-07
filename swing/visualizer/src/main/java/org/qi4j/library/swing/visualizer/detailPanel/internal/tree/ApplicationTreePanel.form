@@ -20,10 +20,10 @@
         <properties/>
         <border type="none"/>
         <children>
-          <component id="9f65" class="javax.swing.JButton" binding="button1" default-binding="true">
+          <component id="9f65" class="javax.swing.JButton" binding="collapseButton" default-binding="true">
             <constraints/>
             <properties>
-              <text value="Button"/>
+              <text value="Collapse"/>
             </properties>
           </component>
         </children>
@@ -36,7 +36,7 @@
         <properties/>
         <border type="none"/>
         <children>
-          <component id="ffa34" class="org.qi4j.library.swing.visualizer.detailPanel.internal.tree.ApplicationTree" binding="applicationTree" custom-create="true">
+          <component id="4a31" class="javax.swing.JTree" binding="applicationTree">
             <constraints/>
             <properties/>
           </component>
